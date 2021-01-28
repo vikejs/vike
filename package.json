@@ -1,0 +1,18 @@
+{
+  "workspaces": [
+    "src/"
+  ],
+  "scripts": {
+    "// Demo": "",
+    "demo": "cd examples/vue/ && npm run start",
+    "// Dev": "",
+    "dev": "npm install && npm run build:watch",
+    "// Build": "",
+    "build": "npm install && npm run build:once",
+    "build:once": "tsc --build",
+    "build:watch": "tsc --build --watch"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
+}
