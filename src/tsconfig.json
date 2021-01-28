@@ -1,0 +1,14 @@
+{
+  "include": ["./"],
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "lib": ["DOM"],
+    "target": "ES2017",
+    "module": "CommonJS",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "stripInternal": true,
+    "strict": true
+  }
+}
