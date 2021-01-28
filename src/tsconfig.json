@@ -5,6 +5,7 @@
     "lib": ["DOM"],
     "target": "ES2017",
     "module": "ES2020",
+    "moduleResolution": "Node",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
