@@ -9,10 +9,7 @@
     "dev": "npm install && npm run build:watch",
     "// Build": "",
     "build": "npm install && npm run build:once",
-    "build:once": "tsc --build",
-    "build:watch": "tsc --build --watch"
-  },
-  "devDependencies": {
-    "typescript": "^4.1.3"
+    "build:once": "cd src/ && tsc --build",
+    "build:watch": "cd src/ && tsc --build --watch"
   }
 }
