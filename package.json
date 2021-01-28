@@ -3,13 +3,18 @@
     "src/"
   ],
   "scripts": {
-    "// Demo": "",
+    "// Demo showcasing usage of Vite SSR Plugin": "",
     "demo": "cd examples/vue/ && npm run start",
-    "// Dev": "",
-    "dev": "npm install && npm run build:watch",
-    "// Build": "",
-    "build": "npm install && npm run build:once",
-    "build:once": "cd src/ && tsc --build",
-    "build:watch": "cd src/ && tsc --build --watch"
+    "// Develop Vite SSR Plugin": "",
+    "dev": "npm install && npm run build:ejs:watch",
+    "// Build Vite SSR Plugin": "",
+    "build": "npm install && npm run build:ejs",
+    "build:ejs": "cd src/ && tsc --build",
+    "build:ejs:watch": "cd src/ && tsc --build --watch",
+    "build:cjs": "cd src/ && tsc --build --module CommonJS",
+    "// Release new version": "",
+    "release": "npm install && npm run release:build && npm run release:publish",
+    "release:build": "npm run build:ejs && npm run build:cjs",
+    "release:publish": "cd src/ && npm publish"
   }
 }

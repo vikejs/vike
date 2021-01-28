@@ -1,2 +1,6 @@
 /node_modules/
-/dist/
+
+# ES6 modules build
+/ejs/
+# CommonJS build
+/cjs/

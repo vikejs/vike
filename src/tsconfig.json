@@ -1,10 +1,10 @@
 {
   "include": ["./"],
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./ejs/",
     "lib": ["DOM"],
     "target": "ES2017",
-    "module": "CommonJS",
+    "module": "ES2020",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
