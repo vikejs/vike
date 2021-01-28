@@ -11,9 +11,10 @@
     "build": "npm install && npm run build:ejs",
     "build:ejs": "cd src/ && tsc --build",
     "build:ejs:watch": "cd src/ && tsc --build --watch",
-    "build:cjs": "cd src/ && tsc --build --module CommonJS",
+    "build:cjs": "cd src/ && tsc --module commonjs --outDir cjs",
     "// Release new version": "",
-    "release": "npm install && npm run release:build && npm run release:publish",
+    "release": "npm run release:clean && npm install && npm run release:build && npm run release:publish",
+    "release:clean": "git clean -Xdf",
     "release:build": "npm run build:ejs && npm run build:cjs",
     "release:publish": "cd src/ && npm publish"
   }

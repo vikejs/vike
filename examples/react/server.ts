@@ -1,5 +1,6 @@
 import * as vite from "vite";
 import * as express from "express";
+import { s } from "vite-plugin-ssr";
 
 startServer();
 
@@ -14,7 +15,7 @@ async function startServer() {
   app.use(viteServer.middlewares);
 
   app.use("*", (_, res) => {
-    res.send("hello");
+    res.send(s);
   });
 
   const port = 3000;

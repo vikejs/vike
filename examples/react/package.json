@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start:": "npm install && npm run build:vite-plugin-ssr && npm run start:server",
+    "start": "npm install && npm run build:vite-plugin-ssr && npm run start:server",
     "start:server": "ts-node-dev server.ts",
     "build:vite-plugin-ssr": "cd ../../ && npm run build"
   },

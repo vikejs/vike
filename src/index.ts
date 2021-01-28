@@ -1,2 +1,1 @@
-const s: string = "heelo";
-console.log(s);
+export const s: string = "heelo";
