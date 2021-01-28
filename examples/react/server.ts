@@ -1,5 +1,5 @@
 import * as vite from "vite";
-import * as express from "express";
+import express from "express";
 import { s } from "vite-plugin-ssr";
 
 startServer();
