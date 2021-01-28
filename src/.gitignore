@@ -1,6 +1,6 @@
 /node_modules/
 
-# ES6 modules build
+# ES modules build
 /ejs/
 # CommonJS build
 /cjs/
