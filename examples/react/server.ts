@@ -15,7 +15,7 @@ async function startServer() {
   app.use(viteServer.middlewares);
 
   app.use("*", (_, res) => {
-    res.send(s);
+    res.send(`${s}<br/>--<br/>${s}`);
   });
 
   const port = 3000;

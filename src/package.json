@@ -15,6 +15,7 @@
       "require": "./cjs/index.js"
     }
   },
+  "type": "module",
   "description": "Vite SSR Plugin",
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "license": "MIT",
