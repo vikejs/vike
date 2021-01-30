@@ -1,5 +1,6 @@
 import * as vite from "vite";
 import express from "express";
+import { getPage } from "vite-plugin-ssr";
 
 startServer();
 
@@ -13,8 +14,10 @@ async function startServer() {
   });
   app.use(viteServer.middlewares);
 
-  app.use("*", (_, res) => {
-    res.send(`heyo`);
+  app.use("*", async (req, res) => {
+    const page = await getPage(req.url);
+    let html = await page.renderPage();
+    res.send(html);
   });
 
   const port = 3000;

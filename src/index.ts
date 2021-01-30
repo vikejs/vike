@@ -6,14 +6,68 @@ import {
   OutputBundle,
   PluginHooks,
 } from "rollup";
+import { PageInstance } from "./types";
+import { assert } from "./utils/assert";
+
+export { PageConfig, addWindowType } from "./types";
+export { renderToHtml };
+export { getPage };
+export { html } from "./html";
+export { ssrPlugin };
+
+import { userFiles } from "./userFiles";
+import { getPageInstance } from "./getPageInstance";
+
+async function getPage(url: string): Promise<PageInstance> {
+  const pageInstance = getPageInstance(url);
+  return {
+    initialProps: { eqh: 1 },
+    html() {
+      return "ewuih";
+    },
+    view() {
+      return "ewuih";
+    },
+    render() {
+      return "ba";
+    },
+  };
+}
 
 type VitePlugin = Partial<PluginHooks> & { name: string };
 
-export default ssr;
+function getDefaultHtml(scriptPaths: string[]): string {
+  // TODO sanetize scriptPaths
+  const scriptTags = scriptPaths.map((path) => {
+    assert(path.startsWith("/"));
+    return `  <script type="module" src="${path}" async></script>`;
+  });
+  return `<!DOCTYPE html>
+<html>
+ <head>
+  <script type="module" src="/@vite/client"></script>
+  <script type="module">
+   import RefreshRuntime from "/@react-refresh";
+   RefreshRuntime.injectIntoGlobalHook(window);
+   window.$RefreshReg$ = () => {};
+   window.$RefreshSig$ = () => (type) => type;
+   window.__vite_plugin_react_preamble_installed__ = true;
+  </script>
+ </head>
+ <body>
+  <div id="react-root"></div>
+${scriptTags}
+ </body>
+</html>`;
+}
+async function renderToHtml(): Promise<string> {
+  let html = getDefaultHtml([]);
+  return html;
+}
 
-function ssr() {
+function ssrPlugin() {
   const plugin: VitePlugin = {
-    name: "vite-ssr-plugin",
+    name: "vite-plugin-ssr",
     options,
     generateBundle,
   };

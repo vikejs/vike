@@ -17,5 +17,8 @@
     "release:clean": "git clean -Xdf",
     "release:build": "npm run build:ejs && npm run build:cjs",
     "release:publish": "cd src/ && npm publish"
+  },
+  "devDependencies": {
+    "vite": "^2.0.0-beta.58"
   }
 }

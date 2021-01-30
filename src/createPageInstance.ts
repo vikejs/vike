@@ -1,0 +1,1 @@
+function createPageInstance(url) {}
