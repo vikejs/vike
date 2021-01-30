@@ -3,12 +3,22 @@ import { assert, assertUsage } from "./utils/assert";
 import { isCallable } from "./utils/isCallable";
 import * as vite from "vite";
 import { sep as pathSep } from "path";
-import { readFile } from "fs-extra";
 
 export { getPageDefinitions };
+export { Page };
+
+type PageView = unknown;
+
+type HtmlProps = Record<string, string>;
+
+type PageConfig = {
+  route?: string | UrlMatcher;
+  render?: (view: PageView) => string | Promise<string>;
+  html?: (args: { viewHtml: string } & HtmlProps) => string | Promise<string>;
+};
 
 type PageId = string;
-type PageDefinition = {
+type Page = {
   pageId: string;
   files: {
     html?: string;
@@ -17,20 +27,20 @@ type PageDefinition = {
     config?: string;
   };
   isDefaultTemplate: boolean;
-  config: any; // TODO add type
-  matchesUrl: MatchesUrl;
+  config: PageConfig;
+  matchesUrl: UrlMatcher;
   renderPageHtml: RenderPageHtml;
-  view: Function;
+  view: PageView;
 };
 
-type RenderPageHtml = () => string;
+type RenderPageHtml = () => Promise<string>;
 
-type MatchesUrl = (url: string) => boolean;
+type UrlMatcher = (url: string) => boolean | number;
 
 async function getPageDefinitions() {
   const userFiles = await getUserFiles();
 
-  const pageDefinitions: Record<PageId, PageDefinition> = {};
+  const pageDefinitions: Record<PageId, Page> = {};
   userFiles.forEach((filePath) => {
     const { pageId, fileType } = parseFilePath(filePath);
 
@@ -73,29 +83,27 @@ async function getPageDefinitions() {
     }
   });
 
-  return pageDefinitions;
+  return Object.values(pageDefinitions);
 }
 
 function getRenderPageHtml(
-  pageDefinition: PageDefinition,
-  pageDefinitions: PageDefinition[]
+  pageDefinition: Page,
+  pageDefinitions: Page[]
 ): RenderPageHtml {
-  const defaultPageDef = getDefaultPageDefinition(pageDefinitions);
-  // TODO get default htmls
-  assert(pageDefinition.files.html);
-  return () => {
-    const viewHtml = defaultPageDef.config.render(pageDefinition.view);
+  return async () => {
+    const defaultPageDef = getDefaultPageDefinition(pageDefinitions);
+    assert(defaultPageDef.config.render); // TODO
+    const viewHtml = await defaultPageDef.config.render(pageDefinition.view);
+    assert(defaultPageDef.config.html); // TODO
     // TODO: pass initial props
-    let html = defaultPageDef.config.html(pageDefinition.files.html, {
+    let html = await defaultPageDef.config.html({
       viewHtml,
       title: "TODO-Title",
     });
     return html;
   };
 }
-function getDefaultPageDefinition(
-  pageDefinitions: PageDefinition[]
-): PageDefinition {
+function getDefaultPageDefinition(pageDefinitions: Page[]): Page {
   let defaultPageDefinition;
   pageDefinitions.forEach((pageDef) => {
     if (pageDef.isDefaultTemplate) {
@@ -107,30 +115,29 @@ function getDefaultPageDefinition(
   return defaultPageDefinition;
 }
 function getRouteUrlMatcher(
-  pageDefinition: PageDefinition,
-  pageDefinitions: PageDefinition[]
-): MatchesUrl {
-  const route = pageDefinition?.config?.route;
-  if (!route) {
-    return getMagicRoute(pageDefinition.pageId, pageDefinitions);
-  }
-  if (typeof route === "string") {
-    assert(false); // "TODO: use path-to-regexp"
-  }
-  if (isCallable(route)) {
-    return route;
-  }
-  assert(pageDefinition.files.config);
-  assertUsage(
-    false,
-    `route defined in ${pageDefinition.files.config} should be either a string or a function`
-  );
+  pageDefinition: Page,
+  pageDefinitions: Page[]
+): UrlMatcher {
+  return (url) => {
+    const route = pageDefinition?.config?.route;
+    if (!route) {
+      return getMagicRoute(pageDefinition.pageId, pageDefinitions)(url);
+    }
+    if (typeof route === "string") {
+      assert(false); // "TODO: use path-to-regexp"
+    }
+    if (isCallable(route)) {
+      return route(url);
+    }
+    assert(pageDefinition.files.config);
+    assertUsage(
+      false,
+      `route defined in ${pageDefinition.files.config} should be either a string or a function`
+    );
+  };
 }
 
-function getMagicRoute(
-  pageId: PageId,
-  pageDefinitions: PageDefinition[]
-): MatchesUrl {
+function getMagicRoute(pageId: PageId, pageDefinitions: Page[]): UrlMatcher {
   let pageRoute = removeCommonPrefix(pageId, pageDefinitions);
   pageRoute = pageRoute
     .split(pathSep)
@@ -139,7 +146,7 @@ function getMagicRoute(
   return (url: string) => url.toLowerCase() === pageRoute.toLowerCase();
 }
 
-function removeCommonPrefix(pageId: PageId, pageDefinitions: PageDefinition[]) {
+function removeCommonPrefix(pageId: PageId, pageDefinitions: Page[]) {
   const pageIds = pageDefinitions
     .filter((pd) => !pd.isDefaultTemplate)
     .map((pd) => pd.pageId);

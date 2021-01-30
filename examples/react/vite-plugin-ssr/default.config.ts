@@ -8,9 +8,9 @@ const pageConfig: PageConfig = {
     const viewHtml = ReactDOMServer.renderToString(viewElement);
     return viewHtml;
   },
-  html() {
+  html({title}) {
     return html(require.resolve("./index.html"), {
-      title: "hello",
+      title,
       viewHtml: this.viewHtml,
     });
   },

@@ -14,9 +14,13 @@ async function startServer() {
   });
   app.use(viteServer.middlewares);
 
-  app.use("*", async (req, res) => {
+  app.use("*", async (req, res, next) => {
     const page = await getPage(req.url);
-    let html = await page.renderPage();
+    if (!page) {
+      next();
+      return;
+    }
+    let html = await page.renderPageHtml();
     res.send(html);
   });
 

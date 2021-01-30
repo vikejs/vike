@@ -6,8 +6,8 @@ import {
   OutputBundle,
   PluginHooks,
 } from "rollup";
-import { PageInstance } from "./types";
 import { assert } from "./utils/assert";
+import { higherFirst } from "./utils/sorter";
 
 export { PageConfig, addWindowType } from "./types";
 export { renderToHtml };
@@ -15,23 +15,26 @@ export { getPage };
 export { html } from "./html";
 export { ssrPlugin };
 
-import { userFiles } from "./userFiles";
-import { getPageInstance } from "./getPageInstance";
+import { getPageDefinitions, Page } from "./getPageDefinitions";
 
-async function getPage(url: string): Promise<PageInstance> {
-  const pageInstance = getPageInstance(url);
-  return {
-    initialProps: { eqh: 1 },
-    html() {
-      return "ewuih";
-    },
-    view() {
-      return "ewuih";
-    },
-    render() {
-      return "ba";
-    },
-  };
+async function getPage(url: string): Promise<Page | null> {
+  const pageDefinitions = await getPageDefinitions();
+  const matches = pageDefinitions
+    .map((page) => {
+      const matchValue = page.matchesUrl(url);
+      return { page, matchValue };
+    })
+    .filter(({ matchValue }) => matchValue !== false)
+    .sort(
+      higherFirst(({ matchValue }) => {
+        assert(matchValue !== false);
+        return matchValue === true ? 0 : matchValue;
+      })
+    );
+  if (matches.length === 0) {
+    return null;
+  }
+  return matches[0].page;
 }
 
 type VitePlugin = Partial<PluginHooks> & { name: string };

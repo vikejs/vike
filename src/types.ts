@@ -12,10 +12,13 @@ type PageInstance = PageServerSide;
 
 type PageConfig = Partial<PageServerProps>;
 
+type HtmlProps = Record<string, string>;
+
 type PageServerProps = {
   render: (this: PageServerSide) => string;
   html: (
-    this: PageServerSide & { viewHtml: string }
+    this: PageServerSide & { viewHtml: string },
+    htmlProps: HtmlProps
   ) => Promise<string> | string;
 };
 
