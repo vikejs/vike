@@ -21,10 +21,10 @@ type PageId = string;
 type Page = {
   pageId: string;
   files: {
-    html?: string;
-    ["browser-entry"]?: string;
-    page?: string;
-    config?: string;
+    [".html"]?: string;
+    [".browser-entry"]?: string;
+    [".page"]?: string;
+    [".config"]?: string;
   };
   isDefaultTemplate: boolean;
   config: PageConfig;
@@ -41,51 +41,55 @@ async function getPageDefinitions() {
   const userFiles = await getUserFiles();
   console.log("u", userFiles);
 
-  const pageDefinitions: Record<PageId, Page> = {};
-  userFiles.forEach(async (filePath) => {
+  let pagesMap: Record<PageId, Page> = {};
+  for (const filePath of userFiles) {
     const { pageId, fileType } = parseFilePath(filePath);
 
     const isDefaultTemplate = pageId.split(pathSep).slice(-1)[0] === "default";
 
-    const pageDefinition = (pageDefinitions[pageId] = pageDefinitions[
-      pageId
-    ] || { files: {}, pageId, isDefaultTemplate });
+    const pageDefinition = (pagesMap[pageId] = pagesMap[pageId] || {
+      files: {},
+      pageId,
+      isDefaultTemplate,
+    });
 
     assert(
-      fileType === "page" ||
-        fileType === "config" ||
-        fileType === "html" ||
-        fileType === "browser-entry"
+      fileType === ".page" ||
+        fileType === ".config" ||
+        fileType === ".html" ||
+        fileType === ".browser-entry"
     );
     assert(!(fileType in pageDefinition));
     pageDefinition.files[fileType] = filePath;
 
-    if (pageDefinition.files.config) {
-      console.log("k", Object.keys(vite));
+    //@ts-ignore
+    if (pageDefinition.files[".config"]) {
       pageDefinition.config =
         // @ts-ignore
-        await vite.ssrLoadModule(pageDefinition.files.config);
+        await global.viteServer.ssrLoadModule(pageDefinition.files[".config"]);
     }
-    if (pageDefinition.files.page) {
+    if (pageDefinition.files[".page"]) {
       pageDefinition.view =
         // @ts-ignore
-        await vite.ssrLoadModule(pageDefinition.files.page);
+        await global.viteServer.ssrLoadModule(pageDefinition.files[".page"]);
     }
 
     pageDefinition.renderPageHtml = getRenderPageHtml(
       pageDefinition,
-      Object.values(pageDefinitions)
+      Object.values(pagesMap)
     );
 
     if (!pageDefinition.isDefaultTemplate) {
       pageDefinition.matchesUrl = getRouteUrlMatcher(
         pageDefinition,
-        Object.values(pageDefinitions)
+        Object.values(pagesMap)
       );
     }
-  });
+  }
 
-  return Object.values(pageDefinitions);
+  let pages = Object.values(pagesMap);
+  pages = pages.filter((page) => page.isDefaultTemplate || page.view);
+  return pages;
 }
 
 function getRenderPageHtml(
@@ -131,10 +135,10 @@ function getRouteUrlMatcher(
     if (isCallable(route)) {
       return route(url);
     }
-    assert(pageDefinition.files.config);
+    assert(pageDefinition.files[".config"]);
     assertUsage(
       false,
-      `route defined in ${pageDefinition.files.config} should be either a string or a function`
+      `route defined in ${pageDefinition.files[".config"]} should be either a string or a function`
     );
   };
 }
@@ -145,6 +149,8 @@ function getMagicRoute(pageId: PageId, pageDefinitions: Page[]): UrlMatcher {
     .split(pathSep)
     .filter((part) => part !== "index")
     .join("/");
+  if (pageRoute === "") pageRoute = "/";
+  console.log("pr", pageId, pageRoute);
   return (url: string) => url.toLowerCase() === pageRoute.toLowerCase();
 }
 
@@ -153,6 +159,7 @@ function removeCommonPrefix(pageId: PageId, pageDefinitions: Page[]) {
     .filter((pd) => !pd.isDefaultTemplate)
     .map((pd) => pd.pageId);
   const commonPrefix = getCommonPrefix(pageIds);
+  console.log("cp", commonPrefix);
   assert(pageId.startsWith(commonPrefix));
   return pageId.slice(commonPrefix.length);
 }
@@ -168,8 +175,23 @@ function getCommonPrefix(strings: string[]): string {
 }
 
 function parseFilePath(filePath: string): { pageId: PageId; fileType: string } {
-  const [fileType, fileExtension] = filePath.split(".").slice(-2);
-  const pageId = filePath.split(".").slice(0, -2).join(".");
-  assert(pageId + "." + fileType + "." + fileExtension === filePath);
+  let [fileType, fileExtension] = filePath.split(".").slice(-2);
+  let pageId;
+  if (fileExtension === "html") {
+    fileType = ".html";
+    fileExtension = "";
+    pageId = filePath.split(".").slice(0, -1).join(".");
+  } else {
+    fileType = "." + fileType;
+    fileExtension = "." + fileExtension;
+    pageId = filePath.split(".").slice(0, -2).join(".");
+  }
+  /*
+  console.log(11);
+  console.log(pageId, fileType, fileExtension, filePath);
+  console.log(pageId + fileType + fileExtension === filePath);
+  console.log(22);
+  */
+  assert(pageId + fileType + fileExtension === filePath);
   return { fileType, pageId };
 }

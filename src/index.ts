@@ -21,8 +21,12 @@ async function getPage(url: string): Promise<Page | null> {
   const pageDefinitions = await getPageDefinitions();
   console.log("pd", pageDefinitions);
   const matches = pageDefinitions
+    .filter((page) => !page.isDefaultTemplate)
     .map((page) => {
       const matchValue = page.matchesUrl(url);
+      console.log(url);
+      console.log(page.pageId);
+      console.log(matchValue);
       return { page, matchValue };
     })
     .filter(({ matchValue }) => matchValue !== false)

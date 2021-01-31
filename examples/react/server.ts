@@ -12,6 +12,7 @@ async function startServer() {
       middlewareMode: true,
     },
   });
+  hotfix__expose_server(viteServer);
   app.use(viteServer.middlewares);
 
   app.use("*", async (req, res, next) => {
@@ -28,4 +29,15 @@ async function startServer() {
   const port = 3000;
   app.listen(port);
   console.log(`Server running at http://localhost:${port}`);
+}
+
+function hotfix__expose_server(viteServer: vite.ViteDevServer) {
+  global.viteServer = viteServer;
+}
+declare global {
+  namespace NodeJS {
+    interface Global {
+      viteServer: vite.ViteDevServer;
+    }
+  }
 }
