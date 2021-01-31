@@ -1,21 +1,25 @@
 import { readFile } from "fs-extra";
 import { isAbsolute as pathIsAbsolute } from "path";
-import { assertUsage } from "./utils/assert";
+import { assert, assertUsage } from "./utils/assert";
 
 export { renderHtml };
 
 async function renderHtml(
   htmlFile: string,
   htmlVariables: Record<string, string>,
+  viewHtml: string,
   scripts: string[]
 ): Promise<string> {
   assertUsage(
     typeof htmlFile === "string" && pathIsAbsolute(htmlFile),
     "Wrong `html(htmlFile, htmlVariables)` usage: `htmlFile` should be the absolute path to your file holding html."
   );
+  assert(typeof viewHtml === "string");
 
   // TODO assert file existence
   let html = (await readFile(htmlFile)).toString();
+
+  html = injectValue(html, "viewHtml", viewHtml, { alreadySanetized: true });
 
   Object.entries(htmlVariables).forEach(([varName, varValue]) => {
     assertUsage(typeof varValue === "string", "TODO");

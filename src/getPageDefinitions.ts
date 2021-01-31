@@ -160,16 +160,28 @@ async function getHtml(
     scripts.push(resolveFileUrl(defaultPage.files[".browser-entry"]));
   }
 
-  const htmlProps = { viewHtml, ...initialProps };
   let html;
+  /*
   if (page?.config?.html) {
     html = await page.config.html(htmlProps);
   } else if (defaultPage?.config?.html) {
     html = await defaultPage.config.html(htmlProps);
-  } else if (page.files[".html"]) {
-    html = await renderHtml(page.files[".html"], htmlProps, scripts);
+  }
+  */
+  if (page.files[".html"]) {
+    html = await renderHtml(
+      page.files[".html"],
+      initialProps,
+      viewHtml,
+      scripts
+    );
   } else if (defaultPage.files[".html"]) {
-    html = await renderHtml(defaultPage.files[".html"], htmlProps, scripts);
+    html = await renderHtml(
+      defaultPage.files[".html"],
+      initialProps,
+      viewHtml,
+      scripts
+    );
   } else {
     assertUsage(false, "Missing HTML render [TODO]");
   }
