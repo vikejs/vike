@@ -16,11 +16,14 @@
     "release": "npm run release:clean && npm install && npm run release:build && npm run release:publish",
     "release:clean": "git clean -Xdf",
     "release:build": "npm run tsc:once",
-    "release:publish": "cd src/ && npm publish"
+    "release:publish": "cd src/ && npm publish",
+    "// Clean": "",
+    "clean": "npm run clean:all",
+    "clean:all": "git clean -Xdf"
   },
   "// [Hotfix] Manually load es-module-lexer; vite seems to be missing it": "",
   "devDependencies": {
     "@types/es-module-lexer": "^0.3.0",
-    "vite": "file:../../tmp/vite/packages/vite"
+    "vite": "^2.0.0-beta.60"
   }
 }

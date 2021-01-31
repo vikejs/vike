@@ -42,8 +42,7 @@ async function getPageDefinitions() {
   const userFiles = await getUserFiles();
 
   const pages: Page[] = [];
-  // let pagesMap: Record<PageId, Page> = {};
-  let pagesMap: { [key: string]: Page } = {};
+  const pagesMap: Record<PageId, Page> = {};
   for (const filePath of userFiles) {
     const { pageId, fileType } = parseFilePath(filePath);
 
@@ -64,15 +63,6 @@ async function getPageDefinitions() {
     assert(!(fileType in pageDefinition));
     pageDefinition.files[fileType] = filePath;
 
-    if (pageDefinition.files[".config"]) {
-      pageDefinition.config = (await loadModule(
-        pageDefinition.files[".config"]
-      )) as PageConfig;
-    }
-    if (pageDefinition.files[".page"]) {
-      pageDefinition.view = await loadModule(pageDefinition.files[".page"]);
-    }
-
     pageDefinition.renderPageHtml = getRenderPageHtml(pageDefinition, pages);
 
     if (!pageDefinition.isDefaultTemplate) {
@@ -81,9 +71,19 @@ async function getPageDefinitions() {
   }
 
   for (const page of Object.values(pagesMap)) {
-    if (page.isDefaultTemplate || page.view) {
-      pages.push(page);
+    if (!page.isDefaultTemplate && !page.files[".page"]) {
+      continue;
     }
+
+    if (page.files[".config"]) {
+      page.config = (await loadModule(page.files[".config"])) as PageConfig;
+    }
+    if (page.files[".page"]) {
+      page.view = await loadModule(page.files[".page"]);
+      assert(page.view);
+    }
+
+    pages.push(page);
   }
   return pages;
 }
@@ -91,14 +91,18 @@ async function getPageDefinitions() {
 async function loadModule(modulePath: string): Promise<unknown> {
   // @ts-ignore
   const { viteServer } = global;
-  const moduleExports = viteServer.ssrLoadModule(modulePath);
+  const moduleExports = await viteServer.ssrLoadModule(modulePath);
+  assert(moduleExports);
   const defaultExport = moduleExports.default;
+  assert(defaultExport);
   return defaultExport;
 }
 async function transformHtml(html: string): Promise<string> {
   // @ts-ignore
   const { viteServer } = global;
   console.log("kk", Object.keys(viteServer));
+  console.log("k1", Object.keys(viteServer.config));
+  console.log("k2", Object.keys(viteServer.app));
   html = await viteServer.transformIndexHtml(html);
   return html;
 }

@@ -17,8 +17,9 @@ export { ssrPlugin };
 import { getPageDefinitions, Page } from "./getPageDefinitions";
 
 async function getPage(url: string): Promise<Page | null> {
-  const pageDefinitions = await getPageDefinitions();
-  const matches = pageDefinitions
+  const pages = await getPageDefinitions();
+  console.log("pages", pages);
+  const matches = pages
     .filter((page) => !page.isDefaultTemplate)
     .map((page) => {
       const matchValue = page.matchesUrl(url);
