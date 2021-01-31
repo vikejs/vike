@@ -44,6 +44,7 @@ type UrlMatcher = (url: string) => boolean | number;
 
 async function getPageDefinitions() {
   const userFiles = await getUserFiles();
+  // console.log("user files:\n" + userFiles.sort().join("\n"));
 
   const pages: Page[] = [];
   const pagesMap: Record<PageId, Page> = {};
@@ -95,11 +96,20 @@ async function getPageDefinitions() {
 async function loadModule(modulePath: string): Promise<unknown> {
   // @ts-ignore
   const { viteServer } = global;
-  const moduleExports = await viteServer.ssrLoadModule(modulePath);
+  let moduleExports;
+  try {
+    moduleExports = await viteServer.ssrLoadModule(modulePath);
+  } catch (err) {
+    if (!isProduction()) viteServer.ssrFixStacktrace(err);
+    throw err;
+  }
   assert(moduleExports);
   const defaultExport = moduleExports.default;
   assert(defaultExport);
   return defaultExport;
+}
+function isProduction() {
+  return process.env.NODE_ENV === "production";
 }
 function resolveFileUrl(filePath: string): string {
   assert(typeof filePath === "string");
@@ -201,11 +211,17 @@ function getRouteUrlMatcher(pageDefinition: Page, pages: Page[]): UrlMatcher {
 
 function getMagicRoute(pageId: PageId, pages: Page[]): UrlMatcher {
   let pageRoute = removeCommonPrefix(pageId, pages);
+  pageRoute = pageRoute.split(pathSep).join("/");
   pageRoute = pageRoute
-    .split(pathSep)
+    .split("/")
     .filter((part) => part !== "index")
     .join("/");
-  return (url: string) => normalize(url) === normalize(pageRoute);
+  pageRoute = normalize(pageRoute);
+  return (url: string) => {
+    url = normalize(url);
+    console.log("url:" + url, "pageRoute:" + pageRoute);
+    return url === pageRoute;
+  };
   function normalize(url: string): string {
     return url.split("/").filter(Boolean).join("/").toLowerCase();
   }

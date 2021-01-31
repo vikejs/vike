@@ -9,15 +9,17 @@ export { getUserFiles };
 watchUserFiles();
 
 async function getUserFiles() {
+  return userFiles.slice();
+  /*
   const tsFiles = userFiles.filter(
     (path) => path.endsWith(".ts") || path.endsWith(".tsx")
   );
   const htmlFiles = userFiles.filter((path) => path.endsWith(".html"));
 
-  // TODO
   //const jsFiles = userFiles.filter(path => path.endsWith('js') || path.endsWith('jsx'));
 
   return [...tsFiles, ...htmlFiles];
+  */
 }
 
 const userFiles: string[] = [];
@@ -35,15 +37,16 @@ async function watchUserFiles() {
     rootDir + "/**/*.html",
   ];
 
+  // TODO retrieve all `.gitignore` and filter `userFiles` accordingly
   const watcher = chokidar.watch(watchGlob, {
     ignored: ["**/node_modules/**", "**/.git/**"],
     ignoreInitial: false,
     ignorePermissionErrors: true,
   });
 
-  watcher.on("ready", () =>
-    console.log("Initial scan complete. Ready for changes")
-  );
+  watcher.on("ready", () => {
+    //TODO await initial scan
+  });
 
   watcher.on("add", (path) => {
     assert(isAbsolute(path));
