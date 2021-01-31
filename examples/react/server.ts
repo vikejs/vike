@@ -1,6 +1,6 @@
-import * as vite from "vite";
-import express from "express";
 import { getPage } from "vite-plugin-ssr";
+import express from "express";
+import * as vite from "vite";
 
 startServer();
 
@@ -16,6 +16,7 @@ async function startServer() {
 
   app.use("*", async (req, res, next) => {
     const page = await getPage(req.url);
+    console.log("p", page);
     if (!page) {
       next();
       return;

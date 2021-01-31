@@ -5,19 +5,20 @@
   "scripts": {
     "// Demo showcasing usage of Vite SSR Plugin": "",
     "demo": "cd examples/vue/ && npm run start",
-    "// Develop Vite SSR Plugin": "",
-    "dev": "npm install && npm run build:watch",
     "// Build Vite SSR Plugin": "",
-    "build": "npm install && npm run build:once",
-    "build:once": "cd src/ && tsc",
-    "build:watch": "cd src/ && tsc --watch",
+    "build": "npm install && npm run tsc:once",
+    "// Develop Vite SSR Plugin": "",
+    "dev": "npm run tsc:watch",
+    "// TypeScript": "",
+    "tsc:once": "cd src/ && tsc",
+    "tsc:watch": "cd src/ && tsc --watch --preserveWatchOutput",
     "// Release new version": "",
     "release": "npm run release:clean && npm install && npm run release:build && npm run release:publish",
     "release:clean": "git clean -Xdf",
-    "release:build": "npm run build:once",
+    "release:build": "npm run tsc:once",
     "release:publish": "cd src/ && npm publish"
   },
   "devDependencies": {
-    "vite": "^2.0.0-beta.58"
+    "vite": "^2.0.0-beta.60"
   }
 }

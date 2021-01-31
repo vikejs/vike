@@ -19,6 +19,7 @@ import { getPageDefinitions, Page } from "./getPageDefinitions";
 
 async function getPage(url: string): Promise<Page | null> {
   const pageDefinitions = await getPageDefinitions();
+  console.log("pd", pageDefinitions);
   const matches = pageDefinitions
     .map((page) => {
       const matchValue = page.matchesUrl(url);

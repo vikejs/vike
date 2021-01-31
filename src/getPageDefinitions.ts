@@ -39,9 +39,10 @@ type UrlMatcher = (url: string) => boolean | number;
 
 async function getPageDefinitions() {
   const userFiles = await getUserFiles();
+  console.log("u", userFiles);
 
   const pageDefinitions: Record<PageId, Page> = {};
-  userFiles.forEach((filePath) => {
+  userFiles.forEach(async (filePath) => {
     const { pageId, fileType } = parseFilePath(filePath);
 
     const isDefaultTemplate = pageId.split(pathSep).slice(-1)[0] === "default";
@@ -60,6 +61,7 @@ async function getPageDefinitions() {
     pageDefinition.files[fileType] = filePath;
 
     if (pageDefinition.files.config) {
+      console.log("k", Object.keys(vite));
       pageDefinition.config =
         // @ts-ignore
         await vite.ssrLoadModule(pageDefinition.files.config);
