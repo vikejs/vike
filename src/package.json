@@ -17,15 +17,7 @@
     "vite": "*",
     "rollup": "*"
   },
-  "main": "./cjs/index.js",
-  "module": "./ejs/index.js",
-  "exports": {
-    ".": {
-      "import": "./ejs/index.js",
-      "require": "./cjs/index.js"
-    }
-  },
-  "type": "module",
+  "main": "./dist/index.js",
   "description": "Vite SSR Plugin",
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "license": "MIT",
