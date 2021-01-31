@@ -2,7 +2,11 @@ import { getUserFiles } from "./userFiles";
 import { assert, assertUsage } from "./utils/assert";
 import { isCallable } from "./utils/isCallable";
 import * as vite from "vite";
-import { sep as pathSep } from "path";
+import {
+  sep as pathSep,
+  relative as pathRelative,
+  join as pathJoin,
+} from "path";
 import { renderHtml } from "./renderHtml";
 
 export { getPageDefinitions };
@@ -34,7 +38,7 @@ type Page = {
   view: PageView;
 };
 
-type RenderPageHtml = () => Promise<string>;
+type RenderPageHtml = (url: string) => Promise<string>;
 
 type UrlMatcher = (url: string) => boolean | number;
 
@@ -97,33 +101,55 @@ async function loadModule(modulePath: string): Promise<unknown> {
   assert(defaultExport);
   return defaultExport;
 }
-async function transformHtml(html: string): Promise<string> {
+function resolveFileUrl(filePath: string): string {
+  assert(typeof filePath === "string");
   // @ts-ignore
   const { viteServer } = global;
-  console.log("kk", Object.keys(viteServer));
-  console.log("k1", Object.keys(viteServer.config));
-  console.log("k2", Object.keys(viteServer.app));
-  html = await viteServer.transformIndexHtml(html);
+  const viteRootDirectory = viteServer.config.root;
+  assert(typeof viteRootDirectory === "string");
+  let fileUrl = pathRelative(viteRootDirectory, filePath);
+  assert(pathJoin(viteRootDirectory, fileUrl) === filePath);
+  fileUrl = fileUrl.split(pathSep).join("/");
+  assert(!fileUrl.startsWith("/"));
+  fileUrl = "/" + fileUrl;
+  return fileUrl;
+}
+async function transformHtml(url: string, html: string): Promise<string> {
+  // @ts-ignore
+  const { viteServer } = global;
+  assert(url);
+  assert(html);
+  assert(html.length);
+  html = await viteServer.transformIndexHtml(url, html);
   return html;
 }
 
 function getRenderPageHtml(page: Page, pages: Page[]): RenderPageHtml {
-  return async () => {
+  return async (url: string) => {
     const defaultPage = getDefaultPage(pages);
     assert(defaultPage.config.render); // TODO
     assert(page.view);
     const viewHtml = await defaultPage.config.render(page.view);
-    const html = await getHtml(page, viewHtml, defaultPage);
+    const html = await getHtml(page, viewHtml, url, defaultPage);
     return html;
   };
 }
 async function getHtml(
   page: Page,
   viewHtml: string,
+  url: string,
   defaultPage: Page
 ): Promise<string> {
+  // TODO
   const initialProps = { title: "TODO-Title" };
-  // TODO: pass initial props
+
+  const scripts: string[] = [];
+  if (page.files[".browser-entry"]) {
+    scripts.push(resolveFileUrl(page.files[".browser-entry"]));
+  } else if (defaultPage.files[".browser-entry"]) {
+    scripts.push(resolveFileUrl(defaultPage.files[".browser-entry"]));
+  }
+
   const htmlProps = { viewHtml, ...initialProps };
   let html;
   if (page?.config?.html) {
@@ -131,14 +157,14 @@ async function getHtml(
   } else if (defaultPage?.config?.html) {
     html = await defaultPage.config.html(htmlProps);
   } else if (page.files[".html"]) {
-    html = await renderHtml(page.files[".html"], htmlProps, []);
+    html = await renderHtml(page.files[".html"], htmlProps, scripts);
   } else if (defaultPage.files[".html"]) {
-    html = await renderHtml(defaultPage.files[".html"], htmlProps, []);
+    html = await renderHtml(defaultPage.files[".html"], htmlProps, scripts);
   } else {
     assertUsage(false, "Missing HTML render [TODO]");
   }
 
-  html = await transformHtml(html);
+  html = await transformHtml(url, html);
 
   return html;
 }
@@ -179,8 +205,10 @@ function getMagicRoute(pageId: PageId, pages: Page[]): UrlMatcher {
     .split(pathSep)
     .filter((part) => part !== "index")
     .join("/");
-  if (pageRoute === "") pageRoute = "/";
-  return (url: string) => url.toLowerCase() === pageRoute.toLowerCase();
+  return (url: string) => normalize(url) === normalize(pageRoute);
+  function normalize(url: string): string {
+    return url.split("/").filter(Boolean).join("/").toLowerCase();
+  }
 }
 
 function removeCommonPrefix(pageId: PageId, pages: Page[]) {

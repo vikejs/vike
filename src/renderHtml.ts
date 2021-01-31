@@ -19,21 +19,23 @@ async function renderHtml(
 
   Object.entries(htmlVariables).forEach(([varName, varValue]) => {
     assertUsage(typeof varValue === "string", "TODO");
-    injectValue(html, varName, varValue);
+    html = injectValue(html, varName, varValue);
   });
 
-  injectScripts(html, scripts);
+  html = injectScripts(html, scripts);
 
   return html;
 }
 
-function injectScripts(html: string, scripts: string[]) {
-  let htmlScritps = "";
+function injectScripts(html: string, scripts: string[]): string {
+  const htmlScritps: string[] = [];
   scripts.forEach((scriptUrl) => {
     scriptUrl = sanetize(scriptUrl);
-    htmlScritps += `<script src="${scriptUrl}"></script>\n`;
+    htmlScritps.push(`<script src="${scriptUrl}"></script>`);
   });
-  html = injectValue(html, "$scripts", htmlScritps, { alreadySanetized: true });
+  html = injectValue(html, "scripts", htmlScritps.join("\n"), {
+    alreadySanetized: true,
+  });
   return html;
 }
 
@@ -50,7 +52,15 @@ function injectValue(
   return html;
 }
 
-function sanetize(str: string): string {
-  // TODO
-  return str;
+function sanetize(unsafe: string): string {
+  return escapeHtml(unsafe);
+}
+
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

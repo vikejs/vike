@@ -17,15 +17,15 @@ async function startServer() {
   hotfix__expose_server(viteServer);
   app.use(viteServer.middlewares);
 
-  app.use("*", async (req, res, next) => {
-    const { url } = req;
+  app.get("*", async (req, res, next) => {
+    const url = req.originalUrl;
     const page = await getPage(url);
     console.log("Match:", `[${url}]: ${page?.pageId}`);
     if (!page) {
       next();
       return;
     }
-    let html = await page.renderPageHtml();
+    let html = await page.renderPageHtml(url);
     res.send(html);
   });
 
