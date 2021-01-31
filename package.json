@@ -18,7 +18,9 @@
     "release:build": "npm run tsc:once",
     "release:publish": "cd src/ && npm publish"
   },
+  "// [Hotfix] Manually load es-module-lexer; vite seems to be missing it": "",
   "devDependencies": {
-    "vite": "^2.0.0-beta.60"
+    "@types/es-module-lexer": "^0.3.0",
+    "vite": "file:../../tmp/vite/packages/vite"
   }
 }
