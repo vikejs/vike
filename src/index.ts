@@ -10,23 +10,18 @@ import { assert } from "./utils/assert";
 import { higherFirst } from "./utils/sorter";
 
 export { PageConfig, addWindowType } from "./types";
-export { renderToHtml };
+// export { renderToHtml };
 export { getPage };
-export { html } from "./html";
 export { ssrPlugin };
 
 import { getPageDefinitions, Page } from "./getPageDefinitions";
 
 async function getPage(url: string): Promise<Page | null> {
   const pageDefinitions = await getPageDefinitions();
-  console.log("pd", pageDefinitions);
   const matches = pageDefinitions
     .filter((page) => !page.isDefaultTemplate)
     .map((page) => {
       const matchValue = page.matchesUrl(url);
-      console.log(url);
-      console.log(page.pageId);
-      console.log(matchValue);
       return { page, matchValue };
     })
     .filter(({ matchValue }) => matchValue !== false)
@@ -83,7 +78,6 @@ function ssrPlugin() {
 }
 
 function options(inputOptions: InputOptions) {
-  console.log(inputOptions);
   // inputOptions.input = "<div>abc</div>";
   // throw new Error("ewuqh");
   return null;
@@ -96,7 +90,6 @@ async function generateBundle(
 ) {
   const source = "<html>178</html>";
 
-  console.log(98);
   const htmlFile: EmittedAsset = {
     type: "asset",
     source,

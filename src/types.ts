@@ -15,7 +15,7 @@ type PageConfig = Partial<PageServerProps>;
 type HtmlProps = Record<string, string>;
 
 type PageServerProps = {
-  render: (this: PageServerSide) => string;
+  render: (view: any) => string;
   html: (
     this: PageServerSide & { viewHtml: string },
     htmlProps: HtmlProps

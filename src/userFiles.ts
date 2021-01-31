@@ -41,6 +41,10 @@ async function watchUserFiles() {
     ignorePermissionErrors: true,
   });
 
+  watcher.on("ready", () =>
+    console.log("Initial scan complete. Ready for changes")
+  );
+
   watcher.on("add", (path) => {
     assert(isAbsolute(path));
     userFiles.push(path);

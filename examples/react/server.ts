@@ -2,6 +2,8 @@ import { getPage } from "vite-plugin-ssr";
 import express from "express";
 import * as vite from "vite";
 
+Error.stackTraceLimit = Infinity;
+
 startServer();
 
 async function startServer() {
@@ -16,8 +18,9 @@ async function startServer() {
   app.use(viteServer.middlewares);
 
   app.use("*", async (req, res, next) => {
-    const page = await getPage(req.url);
-    console.log("p", page);
+    const { url } = req;
+    const page = await getPage(url);
+    console.log("Match:", `[${url}]: ${page?.pageId}`);
     if (!page) {
       next();
       return;

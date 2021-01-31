@@ -3,11 +3,12 @@ import { assert, assertUsage } from "./utils/assert";
 import { isCallable } from "./utils/isCallable";
 import * as vite from "vite";
 import { sep as pathSep } from "path";
+import { renderHtml } from "./renderHtml";
 
 export { getPageDefinitions };
 export { Page };
 
-type PageView = unknown;
+type PageView = any;
 
 type HtmlProps = Record<string, string>;
 
@@ -39,9 +40,10 @@ type UrlMatcher = (url: string) => boolean | number;
 
 async function getPageDefinitions() {
   const userFiles = await getUserFiles();
-  console.log("u", userFiles);
 
-  let pagesMap: Record<PageId, Page> = {};
+  const pages: Page[] = [];
+  // let pagesMap: Record<PageId, Page> = {};
+  let pagesMap: { [key: string]: Page } = {};
   for (const filePath of userFiles) {
     const { pageId, fileType } = parseFilePath(filePath);
 
@@ -62,72 +64,96 @@ async function getPageDefinitions() {
     assert(!(fileType in pageDefinition));
     pageDefinition.files[fileType] = filePath;
 
-    //@ts-ignore
     if (pageDefinition.files[".config"]) {
-      pageDefinition.config =
-        // @ts-ignore
-        await global.viteServer.ssrLoadModule(pageDefinition.files[".config"]);
+      pageDefinition.config = (await loadModule(
+        pageDefinition.files[".config"]
+      )) as PageConfig;
     }
     if (pageDefinition.files[".page"]) {
-      pageDefinition.view =
-        // @ts-ignore
-        await global.viteServer.ssrLoadModule(pageDefinition.files[".page"]);
+      pageDefinition.view = await loadModule(pageDefinition.files[".page"]);
     }
 
-    pageDefinition.renderPageHtml = getRenderPageHtml(
-      pageDefinition,
-      Object.values(pagesMap)
-    );
+    pageDefinition.renderPageHtml = getRenderPageHtml(pageDefinition, pages);
 
     if (!pageDefinition.isDefaultTemplate) {
-      pageDefinition.matchesUrl = getRouteUrlMatcher(
-        pageDefinition,
-        Object.values(pagesMap)
-      );
+      pageDefinition.matchesUrl = getRouteUrlMatcher(pageDefinition, pages);
     }
   }
 
-  let pages = Object.values(pagesMap);
-  pages = pages.filter((page) => page.isDefaultTemplate || page.view);
+  for (const page of Object.values(pagesMap)) {
+    if (page.isDefaultTemplate || page.view) {
+      pages.push(page);
+    }
+  }
   return pages;
 }
 
-function getRenderPageHtml(
-  pageDefinition: Page,
-  pageDefinitions: Page[]
-): RenderPageHtml {
+async function loadModule(modulePath: string): Promise<unknown> {
+  // @ts-ignore
+  const { viteServer } = global;
+  const moduleExports = viteServer.ssrLoadModule(modulePath);
+  const defaultExport = moduleExports.default;
+  return defaultExport;
+}
+async function transformHtml(html: string): Promise<string> {
+  // @ts-ignore
+  const { viteServer } = global;
+  console.log("kk", Object.keys(viteServer));
+  html = await viteServer.transformIndexHtml(html);
+  return html;
+}
+
+function getRenderPageHtml(page: Page, pages: Page[]): RenderPageHtml {
   return async () => {
-    const defaultPageDef = getDefaultPageDefinition(pageDefinitions);
-    assert(defaultPageDef.config.render); // TODO
-    const viewHtml = await defaultPageDef.config.render(pageDefinition.view);
-    assert(defaultPageDef.config.html); // TODO
-    // TODO: pass initial props
-    let html = await defaultPageDef.config.html({
-      viewHtml,
-      title: "TODO-Title",
-    });
+    const defaultPage = getDefaultPage(pages);
+    assert(defaultPage.config.render); // TODO
+    assert(page.view);
+    const viewHtml = await defaultPage.config.render(page.view);
+    const html = await getHtml(page, viewHtml, defaultPage);
     return html;
   };
 }
-function getDefaultPageDefinition(pageDefinitions: Page[]): Page {
-  let defaultPageDefinition;
-  pageDefinitions.forEach((pageDef) => {
+async function getHtml(
+  page: Page,
+  viewHtml: string,
+  defaultPage: Page
+): Promise<string> {
+  const initialProps = { title: "TODO-Title" };
+  // TODO: pass initial props
+  const htmlProps = { viewHtml, ...initialProps };
+  let html;
+  if (page?.config?.html) {
+    html = await page.config.html(htmlProps);
+  } else if (defaultPage?.config?.html) {
+    html = await defaultPage.config.html(htmlProps);
+  } else if (page.files[".html"]) {
+    html = await renderHtml(page.files[".html"], htmlProps, []);
+  } else if (defaultPage.files[".html"]) {
+    html = await renderHtml(defaultPage.files[".html"], htmlProps, []);
+  } else {
+    assertUsage(false, "Missing HTML render [TODO]");
+  }
+
+  html = await transformHtml(html);
+
+  return html;
+}
+function getDefaultPage(pages: Page[]): Page {
+  let defaultPage;
+  pages.forEach((pageDef) => {
     if (pageDef.isDefaultTemplate) {
-      defaultPageDefinition = pageDef;
+      defaultPage = pageDef;
     }
   });
   // TODO - provide defaults
-  assert(defaultPageDefinition);
-  return defaultPageDefinition;
+  assert(defaultPage);
+  return defaultPage;
 }
-function getRouteUrlMatcher(
-  pageDefinition: Page,
-  pageDefinitions: Page[]
-): UrlMatcher {
+function getRouteUrlMatcher(pageDefinition: Page, pages: Page[]): UrlMatcher {
   return (url) => {
     const route = pageDefinition?.config?.route;
     if (!route) {
-      return getMagicRoute(pageDefinition.pageId, pageDefinitions)(url);
+      return getMagicRoute(pageDefinition.pageId, pages)(url);
     }
     if (typeof route === "string") {
       assert(false); // "TODO: use path-to-regexp"
@@ -143,23 +169,21 @@ function getRouteUrlMatcher(
   };
 }
 
-function getMagicRoute(pageId: PageId, pageDefinitions: Page[]): UrlMatcher {
-  let pageRoute = removeCommonPrefix(pageId, pageDefinitions);
+function getMagicRoute(pageId: PageId, pages: Page[]): UrlMatcher {
+  let pageRoute = removeCommonPrefix(pageId, pages);
   pageRoute = pageRoute
     .split(pathSep)
     .filter((part) => part !== "index")
     .join("/");
   if (pageRoute === "") pageRoute = "/";
-  console.log("pr", pageId, pageRoute);
   return (url: string) => url.toLowerCase() === pageRoute.toLowerCase();
 }
 
-function removeCommonPrefix(pageId: PageId, pageDefinitions: Page[]) {
-  const pageIds = pageDefinitions
+function removeCommonPrefix(pageId: PageId, pages: Page[]) {
+  const pageIds = pages
     .filter((pd) => !pd.isDefaultTemplate)
     .map((pd) => pd.pageId);
   const commonPrefix = getCommonPrefix(pageIds);
-  console.log("cp", commonPrefix);
   assert(pageId.startsWith(commonPrefix));
   return pageId.slice(commonPrefix.length);
 }
@@ -186,12 +210,6 @@ function parseFilePath(filePath: string): { pageId: PageId; fileType: string } {
     fileExtension = "." + fileExtension;
     pageId = filePath.split(".").slice(0, -2).join(".");
   }
-  /*
-  console.log(11);
-  console.log(pageId, fileType, fileExtension, filePath);
-  console.log(pageId + fileType + fileExtension === filePath);
-  console.log(22);
-  */
   assert(pageId + fileType + fileExtension === filePath);
   return { fileType, pageId };
 }
