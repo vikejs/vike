@@ -7,4 +7,7 @@ export default defineConfig({
     reactRefresh(),
     // ssrPlugin(),
   ],
+  optimizeDeps: {
+    include: ["vite-plugin-ssr/client"],
+  },
 });

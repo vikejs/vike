@@ -3,12 +3,15 @@ import { isAbsolute as pathIsAbsolute } from "path";
 import { assert, assertUsage } from "./utils/assert";
 
 export { renderHtml };
+export { Script };
+export { injectScripts };
+
+type Script = { scriptUrl: string } | { scriptContent: string };
 
 async function renderHtml(
   htmlFile: string,
   htmlVariables: Record<string, string>,
-  viewHtml: string,
-  scripts: string[]
+  viewHtml: string
 ): Promise<string> {
   assertUsage(
     typeof htmlFile === "string" && pathIsAbsolute(htmlFile),
@@ -26,16 +29,20 @@ async function renderHtml(
     html = injectValue(html, varName, varValue);
   });
 
-  html = injectScripts(html, scripts);
-
   return html;
 }
 
-function injectScripts(html: string, scripts: string[]): string {
+function injectScripts(html: string, scripts: Script[]): string {
   const htmlScritps: string[] = [];
-  scripts.forEach((scriptUrl) => {
-    scriptUrl = sanetize(scriptUrl);
-    htmlScritps.push(`<script src="${scriptUrl}"></script>`);
+  scripts.forEach((script) => {
+    if ("scriptUrl" in script) {
+      htmlScritps.push(
+        `<script type="module" src="${sanetize(script.scriptUrl)}"></script>`
+      );
+    }
+    if ("scriptContent" in script) {
+      htmlScritps.push(script.scriptContent);
+    }
   });
   html = injectValue(html, "scripts", htmlScritps.join("\n"), {
     alreadySanetized: true,

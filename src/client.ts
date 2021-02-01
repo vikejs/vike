@@ -1,0 +1,1 @@
+export { addWindowType } from "./types";

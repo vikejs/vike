@@ -1,13 +1,12 @@
 import { getUserFiles } from "./userFiles";
 import { assert, assertUsage } from "./utils/assert";
 import { isCallable } from "./utils/isCallable";
-import * as vite from "vite";
 import {
   sep as pathSep,
   relative as pathRelative,
   join as pathJoin,
 } from "path";
-import { renderHtml } from "./renderHtml";
+import { injectScripts, renderHtml, Script } from "./renderHtml";
 
 export { getPageDefinitions };
 export { Page };
@@ -153,13 +152,6 @@ async function getHtml(
   // TODO
   const initialProps = { title: "TODO-Title" };
 
-  const scripts: string[] = [];
-  if (page.files[".browser-entry"]) {
-    scripts.push(resolveFileUrl(page.files[".browser-entry"]));
-  } else if (defaultPage.files[".browser-entry"]) {
-    scripts.push(resolveFileUrl(defaultPage.files[".browser-entry"]));
-  }
-
   let html;
   /*
   if (page?.config?.html) {
@@ -169,24 +161,35 @@ async function getHtml(
   }
   */
   if (page.files[".html"]) {
-    html = await renderHtml(
-      page.files[".html"],
-      initialProps,
-      viewHtml,
-      scripts
-    );
+    html = await renderHtml(page.files[".html"], initialProps, viewHtml);
   } else if (defaultPage.files[".html"]) {
-    html = await renderHtml(
-      defaultPage.files[".html"],
-      initialProps,
-      viewHtml,
-      scripts
-    );
+    html = await renderHtml(defaultPage.files[".html"], initialProps, viewHtml);
   } else {
     assertUsage(false, "Missing HTML render [TODO]");
   }
 
   html = await transformHtml(url, html);
+
+  const scripts: Script[] = [];
+  if (page.files[".browser-entry"]) {
+    const scriptUrl = resolveFileUrl(page.files[".browser-entry"]);
+    scripts.push({ scriptUrl });
+  } else if (defaultPage.files[".browser-entry"]) {
+    const scriptUrl = resolveFileUrl(defaultPage.files[".browser-entry"]);
+    scripts.push({ scriptUrl });
+  }
+  {
+    assert(page.files[".page"]);
+    const pageUrl = resolveFileUrl(page.files[".page"]);
+    const scriptContent = [
+      '<script type="module">',
+      `import pageView from "${pageUrl}";`,
+      "window.vitePluginSsr = {page: {view: pageView}};",
+      "</script>",
+    ].join("\n");
+    scripts.unshift({ scriptContent });
+  }
+  html = injectScripts(html, scripts);
 
   return html;
 }
@@ -231,7 +234,7 @@ function getMagicRoute(pageId: PageId, pages: Page[]): UrlMatcher {
   pageRoute = normalize(pageRoute);
   return (url: string) => {
     url = normalize(url);
-    console.log("url:" + url, "pageRoute:" + pageRoute);
+    // console.log("url:" + url, "pageRoute:" + pageRoute);
     return url === pageRoute;
   };
   function normalize(url: string): string {
