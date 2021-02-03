@@ -3,7 +3,7 @@
     "src/"
   ],
   "scripts": {
-    "// Demo showcasing usage of Vite SSR Plugin": "",
+    "// Demo showcasing Vite SSR Plugin usage": "",
     "demo": "cd examples/vue/ && npm run start",
     "// Build Vite SSR Plugin": "",
     "build": "npm install && npm run tsc:once",

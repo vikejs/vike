@@ -99,7 +99,8 @@ async function loadModule(modulePath: string): Promise<unknown> {
   try {
     moduleExports = await viteServer.ssrLoadModule(modulePath);
   } catch (err) {
-    if (!isProduction()) viteServer.ssrFixStacktrace(err);
+    // TODO re-enable this
+    // if (!isProduction()) viteServer.ssrFixStacktrace(err);
     throw err;
   }
   assert(moduleExports);
