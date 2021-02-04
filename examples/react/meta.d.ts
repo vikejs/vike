@@ -1,0 +1,3 @@
+interface ImportMeta {
+  glob: any;
+}

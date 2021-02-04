@@ -43,7 +43,7 @@ type UrlMatcher = (url: string) => boolean | number
 
 async function getPageDefinitions() {
   const userFiles = await getUserFiles()
-  // console.log("user files:\n" + userFiles.sort().join("\n"));
+  console.log("user files:\n" + userFiles.sort().join("\n"));
 
   const pages: Page[] = []
   const pagesMap: Record<PageId, Page> = {}

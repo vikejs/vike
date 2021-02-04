@@ -1,4 +1,3 @@
-import { getPage } from 'vite-plugin-ssr'
 import express from 'express'
 import * as vite from 'vite'
 
@@ -19,6 +18,7 @@ async function startServer() {
 
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
+    const { getPage } = await viteServer.ssrLoadModule('./entry-server.ts')
     const page = await getPage(url)
     console.log('Match:', `[${url}]: ${page?.pageId}`)
     if (!page) {

@@ -4,12 +4,13 @@ import { defineConfig } from 'vite'
 // import type { UserConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [
-    reactRefresh(),
-    mdx()
-  ],
+  plugins: [reactRefresh(), mdx()],
   optimizeDeps: {
     include: ['vite-plugin-ssr/client', 'react', 'react-dom']
+  },
+  //@ts-ignore
+  ssr: {
+    external: ['vite-plugin-ssr']
   },
   clearScreen: false
 })
