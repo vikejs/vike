@@ -39,35 +39,6 @@ async function getPage(url: string): Promise<Page | null> {
 
 type VitePlugin = Partial<PluginHooks> & { name: string }
 
-function getDefaultHtml(scriptPaths: string[]): string {
-  // TODO sanetize scriptPaths
-  const scriptTags = scriptPaths.map((path) => {
-    assert(path.startsWith('/'))
-    return `  <script type="module" src="${path}" async></script>`
-  })
-  return `<!DOCTYPE html>
-<html>
- <head>
-  <script type="module" src="/@vite/client"></script>
-  <script type="module">
-   import RefreshRuntime from "/@react-refresh";
-   RefreshRuntime.injectIntoGlobalHook(window);
-   window.$RefreshReg$ = () => {};
-   window.$RefreshSig$ = () => (type) => type;
-   window.__vite_plugin_react_preamble_installed__ = true;
-  </script>
- </head>
- <body>
-  <div id="react-root"></div>
-${scriptTags}
- </body>
-</html>`
-}
-async function renderToHtml(): Promise<string> {
-  let html = getDefaultHtml([])
-  return html
-}
-
 function ssrPlugin() {
   const plugin: VitePlugin = {
     name: 'vite-plugin-ssr',
