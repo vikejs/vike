@@ -4,47 +4,47 @@ import {
   EmittedAsset,
   NormalizedOutputOptions,
   OutputBundle,
-  PluginHooks,
-} from "rollup";
-import { assert } from "./utils/assert";
-import { higherFirst } from "./utils/sorter";
+  PluginHooks
+} from 'rollup'
+import { assert } from './utils/assert'
+import { higherFirst } from './utils/sorter'
 
-export { PageConfig, addWindowType } from "./types";
+export { PageConfig, addWindowType } from './types'
 // export { renderToHtml };
-export { getPage };
-export { ssrPlugin };
+export { getPage }
+export { ssrPlugin }
 
-import { getPageDefinitions, Page } from "./getPageDefinitions";
+import { getPageDefinitions, Page } from './getPageDefinitions'
 
 async function getPage(url: string): Promise<Page | null> {
-  const pages = await getPageDefinitions();
+  const pages = await getPageDefinitions()
   const matches = pages
     .filter((page) => !page.isDefaultTemplate)
     .map((page) => {
-      const matchValue = page.matchesUrl(url);
-      return { page, matchValue };
+      const matchValue = page.matchesUrl(url)
+      return { page, matchValue }
     })
     .filter(({ matchValue }) => matchValue !== false)
     .sort(
       higherFirst(({ matchValue }) => {
-        assert(matchValue !== false);
-        return matchValue === true ? 0 : matchValue;
+        assert(matchValue !== false)
+        return matchValue === true ? 0 : matchValue
       })
-    );
+    )
   if (matches.length === 0) {
-    return null;
+    return null
   }
-  return matches[0].page;
+  return matches[0].page
 }
 
-type VitePlugin = Partial<PluginHooks> & { name: string };
+type VitePlugin = Partial<PluginHooks> & { name: string }
 
 function getDefaultHtml(scriptPaths: string[]): string {
   // TODO sanetize scriptPaths
   const scriptTags = scriptPaths.map((path) => {
-    assert(path.startsWith("/"));
-    return `  <script type="module" src="${path}" async></script>`;
-  });
+    assert(path.startsWith('/'))
+    return `  <script type="module" src="${path}" async></script>`
+  })
   return `<!DOCTYPE html>
 <html>
  <head>
@@ -61,26 +61,26 @@ function getDefaultHtml(scriptPaths: string[]): string {
   <div id="react-root"></div>
 ${scriptTags}
  </body>
-</html>`;
+</html>`
 }
 async function renderToHtml(): Promise<string> {
-  let html = getDefaultHtml([]);
-  return html;
+  let html = getDefaultHtml([])
+  return html
 }
 
 function ssrPlugin() {
   const plugin: VitePlugin = {
-    name: "vite-plugin-ssr",
+    name: 'vite-plugin-ssr',
     options,
-    generateBundle,
-  };
-  return plugin;
+    generateBundle
+  }
+  return plugin
 }
 
 function options(inputOptions: InputOptions) {
   // inputOptions.input = "<div>abc</div>";
   // throw new Error("ewuqh");
-  return null;
+  return null
 }
 
 async function generateBundle(
@@ -88,14 +88,14 @@ async function generateBundle(
   output: NormalizedOutputOptions,
   bundle: OutputBundle
 ) {
-  const source = "<html>178</html>";
+  const source = '<html>178</html>'
 
   const htmlFile: EmittedAsset = {
-    type: "asset",
+    type: 'asset',
     source,
-    name: "Rollup HTML Asset",
-    fileName: "index.html",
-  };
+    name: 'Rollup HTML Asset',
+    fileName: 'index.html'
+  }
 
-  this.emitFile(htmlFile);
+  this.emitFile(htmlFile)
 }

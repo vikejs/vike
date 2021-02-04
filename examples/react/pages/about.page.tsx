@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
-export default AboutPage;
+export default AboutPage
 
 function AboutPage() {
-  return <>vite-plugin-ssr supports multli pages a la Next.js</>;
+  return <>vite-plugin-ssr supports multli pages a la Next.js</>
 }

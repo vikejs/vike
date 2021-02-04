@@ -1,43 +1,43 @@
 import {
   isAbsolute as pathIsAbsolute,
   dirname as pathDirname,
-  sep as pathSep,
-} from "path";
-import { findUp } from "./findUp";
-import { assert } from "./assert";
-import getCallsites from "callsites";
+  sep as pathSep
+} from 'path'
+import { findUp } from './findUp'
+import { assert } from './assert'
+import getCallsites from 'callsites'
 
-export { findRootDir };
+export { findRootDir }
 
 // We get the callstack now to make sure we don't get the callstack of an event loop
-const callstack = getCallstack();
+const callstack = getCallstack()
 
 /**
  * Find the user's project root directory
  */
 async function findRootDir(): Promise<string | null> {
-  const firstUserFile = getFirstUserFile();
-  if (!firstUserFile) return null;
-  assert(pathIsAbsolute(firstUserFile));
+  const firstUserFile = getFirstUserFile()
+  if (!firstUserFile) return null
+  assert(pathIsAbsolute(firstUserFile))
 
   const packageJsonFile = await findUp(
-    "package.json",
+    'package.json',
     pathDirname(firstUserFile)
-  );
+  )
 
   if (!packageJsonFile) {
-    return null;
+    return null
   }
 
-  const userRootDir = pathDirname(packageJsonFile);
-  return userRootDir;
+  const userRootDir = pathDirname(packageJsonFile)
+  return userRootDir
 }
 
 function getFirstUserFile() {
-  const userScripts = getUserFiles();
+  const userScripts = getUserFiles()
   // const userScript = userScripts.slice(-1)[0] || null;
-  const userScript = userScripts[0] || null;
-  return userScript;
+  const userScript = userScripts[0] || null
+  return userScript
 }
 /*
 function getLastUserFile() {
@@ -47,22 +47,22 @@ function getLastUserFile() {
 }
 */
 function getUserFiles() {
-  const userScripts = [];
+  const userScripts = []
   for (let i = 0; i < callstack.length; i++) {
-    const filePath = callstack[i];
+    const filePath = callstack[i]
     if (isNodeModules(filePath)) {
-      continue;
+      continue
     }
     if (isTsNodeDev(filePath)) {
-      continue;
+      continue
     }
-    userScripts.push(filePath);
+    userScripts.push(filePath)
   }
-  return userScripts;
+  return userScripts
 }
 function isNodeModules(filePath: string) {
   // Whether `filePath` contains `node_modules`
-  return filePath.split(pathSep).includes("node_modules");
+  return filePath.split(pathSep).includes('node_modules')
 }
 function isTsNodeDev(filePath: string) {
   /* ts-node-dev seems to first run ts-node-dev code,
@@ -73,37 +73,37 @@ function isTsNodeDev(filePath: string) {
    *    ...
    * ]
    */
-  return filePath.includes("ts-node-dev-hook");
+  return filePath.includes('ts-node-dev-hook')
 }
 
 function getCallstack() {
-  const callsites = getAllCallsites();
+  const callsites = getAllCallsites()
 
-  const callstack = [];
+  const callstack = []
   for (let i = callsites.length - 1; i >= 0; i--) {
-    const callsite = callsites[i];
+    const callsite = callsites[i]
     if (callsite.isNative()) {
-      continue;
+      continue
     }
-    const filePath = callsite.getFileName();
+    const filePath = callsite.getFileName()
     if (!filePath) {
-      continue;
+      continue
     }
     if (isNodejsSourceFile(filePath)) {
-      continue;
+      continue
     }
-    callstack.push(filePath);
+    callstack.push(filePath)
   }
 
-  return callstack;
+  return callstack
 }
 function isNodejsSourceFile(filePath: string) {
-  return !pathIsAbsolute(filePath);
+  return !pathIsAbsolute(filePath)
 }
 function getAllCallsites() {
-  const stackTraceLimit__original = Error.stackTraceLimit;
-  Error.stackTraceLimit = Infinity;
-  const callsites = getCallsites();
-  Error.stackTraceLimit = stackTraceLimit__original;
-  return callsites;
+  const stackTraceLimit__original = Error.stackTraceLimit
+  Error.stackTraceLimit = Infinity
+  const callsites = getCallsites()
+  Error.stackTraceLimit = stackTraceLimit__original
+  return callsites
 }

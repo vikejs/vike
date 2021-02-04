@@ -1,32 +1,32 @@
-export { PageInstance };
-export { PageConfig };
-export { addWindowType };
+export { PageInstance }
+export { PageConfig }
+export { addWindowType }
 
 type Window = {
   vitePluginSsr: {
-    page: PageBrowserSide;
-  };
-};
+    page: PageBrowserSide
+  }
+}
 
-type PageInstance = PageServerSide;
+type PageInstance = PageServerSide
 
-type PageConfig = Partial<PageServerProps>;
+type PageConfig = Partial<PageServerProps>
 
-type HtmlProps = Record<string, string>;
+type HtmlProps = Record<string, string>
 
 type PageServerProps = {
-  render: (view: any) => string;
+  render: (view: any) => string
   html: (
     this: PageServerSide & { viewHtml: string },
     htmlProps: HtmlProps
-  ) => Promise<string> | string;
-};
+  ) => Promise<string> | string
+}
 
 type PageBrowserSide = {
-  view: any;
-  initialProps: Record<string, unknown>;
-};
-type PageServerSide = PageBrowserSide & PageServerProps;
+  view: any
+  initialProps: Record<string, unknown>
+}
+type PageServerSide = PageBrowserSide & PageServerProps
 
 function addWindowType(_: unknown): asserts _ is Window {}
 

@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
-export default LandingPage;
+export default LandingPage
 
 function LandingPage() {
-  return <>A Vite SSR React landing page!</>;
+  return <>A Vite SSR React landing page!</>
 }
