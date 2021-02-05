@@ -1,3 +1,3 @@
 interface ImportMeta {
-  glob: any;
+  glob: any
 }

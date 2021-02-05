@@ -42,8 +42,13 @@ type RenderPageHtml = (url: string) => Promise<string>
 type UrlMatcher = (url: string) => boolean | number
 
 async function getPageDefinitions() {
+  const findUserPageFiles = (await loadModule(
+    require.resolve('../../src/findUserPageFiles.ts')
+  )) as any
+  console.log('te', findUserPageFiles())
+
   const userFiles = await getUserFiles()
-  console.log("user files:\n" + userFiles.sort().join("\n"));
+  console.log('user files:\n' + userFiles.sort().join('\n'))
 
   const pages: Page[] = []
   const pagesMap: Record<PageId, Page> = {}
