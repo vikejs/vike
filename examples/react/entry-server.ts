@@ -3,8 +3,8 @@ import { getPage as _getPage } from 'vite-plugin-ssr'
 export { getPage }
 
 function getPage(url: string) {
-  const pageViews = import.meta.glob('./**/*.page.*') as any
-  const pageConfigs = import.meta.glob('./**/*.config.*') as any
+  const pageViews = import.meta.glob('/**/*.page.*') as any
+  const pageConfigs = import.meta.glob('/**/*.config.*') as any
   console.log(pageViews)
   console.log(pageConfigs)
 

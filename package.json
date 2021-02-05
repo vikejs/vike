@@ -20,10 +20,5 @@
     "// Clean": "",
     "clean": "npm run clean:all",
     "clean:all": "git clean -Xdf"
-  },
-  "// [Hotfix] Manually load es-module-lexer; vite seems to be missing it": "",
-  "devDependencies": {
-    "@types/es-module-lexer": "^0.3.0",
-    "vite": "^2.0.0-beta.64"
   }
 }
