@@ -1,3 +1,12 @@
+export type PageView = any & { _brand?: 'PageView' }
+export type Html = string & { _brand?: 'Html' }
+export type PageId = string & { _brand?: 'PageId' }
+export type PageServerConfig = {
+  render: ({ pageView }: { pageView: PageView }) => Promise<Html>
+}
+export type Url = string & { _brand?: 'Url' }
+export type FilePath = string
+
 export { PageInstance }
 export { PageConfig }
 export { addWindowType }

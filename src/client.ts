@@ -1,1 +1,1 @@
-export { addWindowType } from './types'
+export { getPage } from './getPage'

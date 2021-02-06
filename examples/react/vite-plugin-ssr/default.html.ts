@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+export default `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,4 +10,4 @@
     <div id="page-view">$viewHtml</div>
     $scripts
   </body>
-</html>
+</html>`

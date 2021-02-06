@@ -1,13 +1,34 @@
 import { readFile } from 'fs-extra'
 import { isAbsolute as pathIsAbsolute } from 'path'
+import { Html } from './types'
 import { assert, assertUsage } from './utils/assert'
 
 export { renderHtml }
+export { renderHtmlTemplate }
 export { Script }
 export { injectScripts }
 
 type Script = { scriptUrl: string } | { scriptContent: string }
 
+function renderHtmlTemplate(
+  htmlTemplate: string,
+  viewHtml: string,
+  scripts: Script[],
+  htmlVariables: Record<string, string>
+): Html {
+  let html = injectValue(htmlTemplate, 'viewHtml', viewHtml, {
+    alreadySanetized: true
+  })
+
+  Object.entries(htmlVariables).forEach(([varName, varValue]) => {
+    assertUsage(typeof varValue === 'string', 'TODO')
+    html = injectValue(html, varName, varValue)
+  })
+
+  html = injectScripts(html, scripts)
+
+  return html
+}
 async function renderHtml(
   htmlFile: string,
   htmlVariables: Record<string, string>,

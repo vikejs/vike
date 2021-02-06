@@ -1,11 +1,10 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { PageConfig } from 'vite-plugin-ssr'
 
-const pageConfig: PageConfig = {
-  render(view) {
+const pageConfig: any = {
+  render({ pageView }: any) {
     const initialProps = {} // TODO
-    const viewElement = React.createElement(view, initialProps)
+    const viewElement = React.createElement(pageView, initialProps)
     const viewHtml = ReactDOMServer.renderToString(viewElement)
     return viewHtml
   }
