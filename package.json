@@ -20,5 +20,9 @@
     "// Clean": "",
     "clean": "npm run clean:all",
     "clean:all": "git clean -Xdf"
+  },
+  "devDependencies": {
+    "@types/es-module-lexer": "^0.3.0",
+    "es-module-lexer": "^0.3.26"
   }
 }

@@ -1,1 +1,3 @@
-console.log(3)
+import { hydratePage } from './hydrate'
+
+hydratePage()

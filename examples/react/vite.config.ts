@@ -7,7 +7,15 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [reactRefresh(), mdx(), ssr()],
   optimizeDeps: {
-    include: ['vite-plugin-ssr/client', 'react', 'react-dom']
+    include: [
+      'vite-plugin-ssr/client',
+      /*
+      'vite-plugin-ssr/browserTest',
+      '/home/romuuu/code/vite-plugin-ssr/src/dist/browserTest.js',
+      */
+      'react',
+      'react-dom'
+    ]
   },
   //@ts-ignore
   ssr: {
