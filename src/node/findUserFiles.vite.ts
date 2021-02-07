@@ -1,6 +1,6 @@
 export { fileFinder }
 
-function fileFinder() {
+function fileFinder(): any {
   //@ts-ignore
   if (import.meta.env.SSR) {
     return {
@@ -14,7 +14,9 @@ function fileFinder() {
   } else {
     return {
       //@ts-ignore
-      '.page': import.meta.glob('/**/*.page.*')
+      '.page': import.meta.glob('/**/*.page.*'),
+      //@ts-ignore
+      '.browser': import.meta.glob('/**/*.browser.*')
     }
   }
 }

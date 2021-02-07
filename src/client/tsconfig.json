@@ -2,7 +2,7 @@
   "include": ["./"],
   "compilerOptions": {
     "outDir": "./dist/",
-    "lib": ["DOM"],
+    "lib": ["DOM", "ES2019"],
     "target": "ES2019",
     "module": "ESNext",
     "moduleResolution": "Node",

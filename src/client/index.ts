@@ -1,1 +1,1 @@
-export { getPage } from './getPage'
+// nothing

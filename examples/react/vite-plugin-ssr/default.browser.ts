@@ -1,12 +1,11 @@
 import ReactDOM from 'react-dom'
 import React from 'react'
-import { getPage } from 'vite-plugin-ssr/client'
 
-hydrate()
+export default hydrate
 
-async function hydrate() {
-  const page = await getPage()
-  const app = React.createElement(page.view, page.initialProps)
+async function hydrate({ pageView, initialProps }: any) {
+  const app = React.createElement(pageView, initialProps)
   //@ts-ignore
   ReactDOM.hydrate(app, document.getElementById('page-view'))
+  console.log('initialProps:', initialProps)
 }

@@ -1,7 +1,7 @@
 import { fileFinder } from './findUserFiles.vite'
-import { setFileFinder } from './findUserFiles'
+import { setFileFinder, UserFiles } from './findUserFiles'
 
 setFileFinder(async () => {
-  const filesByType = fileFinder()
-  return filesByType
+  const userFiles = fileFinder() as UserFiles
+  return userFiles
 })
