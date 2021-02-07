@@ -48,9 +48,9 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
     '</script>'
   ].join('\n')
   });
-  */
+  //*/
   scripts.push({
-    scriptUrl: '/@vite-plugin-ssr/browserTest'
+    scriptUrl: '/vite-plugin-ssr/browserTest'
   })
   const initialProps = {}
   const html = renderHtmlTemplate(
