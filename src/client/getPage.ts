@@ -1,20 +1,20 @@
-import {findUserFiles} from "./findUserFiles";
-import {route} from "./route.shared";
-import {FilePath, PageId, PageView} from "./types";
-import {assert, assertUsage} from "./utils/assert";
+import { findUserFiles } from '../node/findUserFiles'
+import { route } from '../node/route.shared'
+import { FilePath, PageId, PageView } from '../node/types'
+import { assert, assertUsage } from '../node/utils/assert'
 
-export {getPage};
+export { getPage }
 
 async function getPage() {
-  const url = window.location.pathname;
-  const pageId = await route(url);
-  assert(pageId);
+  const url = window.location.pathname
+  const pageId = await route(url)
+  assert(pageId)
   const pageView = await findPageView(pageId)
   const page = {
     view: pageView,
-    initialProps: {},
-  };
-  return page;
+    initialProps: {}
+  }
+  return page
 }
 
 // TODO dedupe
@@ -42,8 +42,7 @@ function findFile<T>(
     assert(filter.defaultFile === true)
     fileNames = fileNames.filter(
       (fileName) =>
-        fileName.includes('/default.') ||
-        fileName.includes('\default.')
+        fileName.includes('/default.') || fileName.includes('default.')
     )
     assertUsage(fileNames.length === 1, 'TODO')
   }

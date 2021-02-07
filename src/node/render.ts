@@ -50,7 +50,7 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
   });
   //*/
   scripts.push({
-    scriptUrl: '/vite-plugin-ssr/browserTest'
+    scriptUrl: '/vite-plugin-ssr/client/browserTest'
   })
   const initialProps = {}
   const html = renderHtmlTemplate(

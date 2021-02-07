@@ -1,7 +1,7 @@
 import { setFileFinder } from './findUserFiles'
 
 setFileFinder(async () => {
-  const viteEntry = require.resolve('../../src/findUserFiles.vite.ts')
+  const viteEntry = require.resolve('../findUserFiles.vite.ts')
   const viteEntryExports = await loadViteEntry(viteEntry)
   const { fileFinder } = viteEntryExports
   const filesByType = fileFinder()

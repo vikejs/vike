@@ -10,8 +10,8 @@
     "// Develop Vite SSR Plugin": "",
     "dev": "npm run tsc:watch",
     "// TypeScript": "",
-    "tsc:once": "cd src/ && tsc",
-    "tsc:watch": "cd src/ && tsc --watch --preserveWatchOutput",
+    "tsc:once": "tsc --project ./src/node/ && tsc --project ./src/client/",
+    "tsc:watch": "concurrently \"tsc --project ./src/node/ --watch --preserveWatchOutput\" \"tsc --project ./src/client/ --watch --preserveWatchOutput\" --kill-others",
     "// Release new version": "",
     "release": "npm run release:clean && npm install && npm run release:build && npm run release:publish",
     "release:clean": "git clean -Xdf",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/es-module-lexer": "^0.3.0",
+    "concurrently": "^5.3.0",
     "es-module-lexer": "^0.3.26"
   }
 }

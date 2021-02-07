@@ -1,4 +1,4 @@
-import { route } from './route.shared'
+import { route } from '../node/route.shared'
 
 export { hydratePage }
 

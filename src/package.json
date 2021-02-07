@@ -18,7 +18,7 @@
   "peerDependencies": {
     "vite": "*"
   },
-  "main": "./dist/index.js",
+  "main": "./node/dist/index.js",
   "description": "Vite SSR Plugin",
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "license": "MIT",
