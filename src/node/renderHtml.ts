@@ -7,17 +7,22 @@ export { injectScripts }
 
 type Script = { scriptUrl: string } | { scriptContent: string }
 
-function renderHtmlTemplate(
-  htmlTemplate: string,
-  viewHtml: string,
-  scripts: Script[],
-  htmlVariables: Record<string, string>
-): Html {
-  let html = injectValue(htmlTemplate, 'viewHtml', viewHtml, {
+function renderHtmlTemplate({
+  htmlTemplate,
+  pageViewHtml,
+  scripts,
+  initialProps
+}: {
+  htmlTemplate: string
+  pageViewHtml: string
+  scripts: Script[]
+  initialProps: Record<string, string>
+}): Html {
+  let html = injectValue(htmlTemplate, 'viewHtml', pageViewHtml, {
     alreadySanetized: true
   })
 
-  Object.entries(htmlVariables).forEach(([varName, varValue]) => {
+  Object.entries(initialProps).forEach(([varName, varValue]) => {
     assertUsage(typeof varValue === 'string', 'TODO')
     html = injectValue(html, varName, varValue)
   })

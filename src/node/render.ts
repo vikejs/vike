@@ -31,27 +31,13 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
 
   htmlTemplate = await applyViteHtmlTransform(htmlTemplate, url)
 
-  const scripts = []
-  /*
-  scripts.push({
-    scriptContent: [
-    '<script type="module">',
-    `console.log(9);`,
-    `import "/vite-plugin-ssr/browserTest.ts";`,
-    '</script>'
-  ].join('\n')
-  });
-  //*/
-  scripts.push({
-    scriptUrl: '/vite-plugin-ssr/client/browserTest'
-  })
   const initialProps = {}
-  const html = renderHtmlTemplate(
+  const html = renderHtmlTemplate({
     htmlTemplate,
     pageViewHtml,
-    scripts,
+    scripts: [{ scriptUrl: '/@vite-plugin-ssr/client/browser-dev-entry' }],
     initialProps
-  )
+  })
 
   return html
 }

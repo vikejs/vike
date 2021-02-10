@@ -69,39 +69,38 @@ function findUserFiles(fileType: FileType): Promise<Files>
 async function findUserFiles(fileType: FileType): Promise<Files> {
   const filesByType: UserFiles = await fileFinder()
 
-  const filesWithExports: Record<FilePath, FileExportsGetter> =
+  const filesWithAllExports: Record<FilePath, FileExportsGetter> =
     filesByType[fileType]
   let files: Record<FilePath, FileDefaultExportGetter>
 
   if (fileType === '.page') {
-    files = mapExports(filesWithExports)
+    files = mapExports(filesWithAllExports)
     return files
   }
   if (fileType === '.server') {
-    files = mapExports(filesWithExports, (defaultExport, filePath) => {
-      assertUsage(
-        defaultExport.constructor === Object,
-        `The default export of ${filePath} should be an object`
-      )
+    files = mapExports(filesWithAllExports, {
+      assertDefaultExport: (defaultExport, filePath) => {
+        assertUsage(
+          defaultExport.constructor === Object,
+          `The default export of ${filePath} should be an object`
+        )
+      }
     })
     return files
   }
   if (fileType === '.html') {
-    files = mapExports(filesWithExports, (defaultExport, filePath) => {
-      assertUsage(
-        typeof defaultExport === 'string',
-        `The default export of ${filePath} should be a string`
-      )
+    files = mapExports(filesWithAllExports, {
+      assertDefaultExport: (defaultExport, filePath) => {
+        assertUsage(
+          typeof defaultExport === 'string',
+          `The default export of ${filePath} should be a string`
+        )
+      }
     })
     return files
   }
   if (fileType === '.browser') {
-    files = mapExports(filesWithExports, (defaultExport, filePath) => {
-      assertUsage(
-        isCallable(defaultExport),
-        `The default export of ${filePath} should be a function`
-      )
-    })
+    files = mapExports(filesWithAllExports, { noExports: true })
     return files
   }
   assert(false)
@@ -109,16 +108,34 @@ async function findUserFiles(fileType: FileType): Promise<Files> {
 
 function mapExports(
   files: Record<FilePath, FileExportsGetter>,
-  assertDefaultExport?: (
-    fileDefaultExport: FileDefaultExport,
-    filePath: FilePath
-  ) => void
+  {
+    assertDefaultExport,
+    noExports
+  }: {
+    assertDefaultExport?: (
+      fileDefaultExport: FileDefaultExport,
+      filePath: FilePath
+    ) => void
+    noExports?: boolean
+  } = {}
 ): Record<FilePath, FileDefaultExportGetter> {
   return mapObject(
     files,
     (filePath: FilePath, fileExportsGetter: FileDefaultExportGetter) => {
       return async () => {
         const fileExports = await fileExportsGetter()
+        if (noExports) {
+          const exportNames = Object.keys(fileExports)
+          assertUsage(
+            exportNames.length === 0,
+            [
+              `${filePath} exports`,
+              exportNames.map((s) => `\`${s}\``).join(', '),
+              'but it should not export anything'
+            ].join(' ')
+          )
+          return undefined
+        }
         assertUsage(
           'default' in fileExports,
           `${filePath} should have a default export`

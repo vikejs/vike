@@ -4,8 +4,6 @@ import { getPage } from 'vite-plugin-ssr/client'
 
 hydrate()
 
-export default hydrate
-
 async function hydrate() {
   const { pageView, initialProps } = await getPage()
 

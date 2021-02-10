@@ -6,13 +6,10 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [reactRefresh(), mdx(), ssr()],
+  /*
   optimizeDeps: {
     include: [
       'vite-plugin-ssr/client',
-      /*
-      'vite-plugin-ssr/browserTest',
-      '/home/romuuu/code/vite-plugin-ssr/src/dist/browserTest.js',
-      */
       'react',
       'react-dom'
     ]
@@ -21,5 +18,6 @@ export default defineConfig({
   ssr: {
     external: ['vite-plugin-ssr']
   },
+  */
   clearScreen: false
 })
