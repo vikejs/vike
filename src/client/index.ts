@@ -1,1 +1,1 @@
-// nothing
+export { getPage } from './getPage'
