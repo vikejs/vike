@@ -3,6 +3,7 @@ import { route } from './route.shared'
 import { Html, Url, PageId, PageView, PageServerConfig } from './types'
 import { loadUserFile } from './findUserFiles'
 import { renderHtmlTemplate } from './renderHtml'
+import { getGlobal } from './global'
 
 export { PageConfig, addWindowType } from './types'
 export { render }
@@ -43,9 +44,10 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
 }
 
 async function applyViteHtmlTransform(html: Html, url: Url): Promise<Html> {
-  // @ts-ignore
-  const { viteServer } = global
-  assert(viteServer)
-  html = await viteServer.transformIndexHtml(url, html)
+  const { viteDevServer, isProduction } = getGlobal()
+  if (isProduction) {
+    return html
+  }
+  html = await viteDevServer.transformIndexHtml(url, html)
   return html
 }

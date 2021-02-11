@@ -1,7 +1,10 @@
 import { setFileFinder, UserFiles } from './findUserFiles'
+import { getGlobal } from './global'
+
+const viteEntryFileBase = 'findUserFiles.vite'
 
 setFileFinder(async () => {
-  const viteEntry = require.resolve('../findUserFiles.vite.ts')
+  const viteEntry = require.resolve(`../${viteEntryFileBase}.ts`)
   const viteEntryExports = await loadViteEntry(viteEntry)
   const { fileFinder } = viteEntryExports
   const filesByType = fileFinder() as UserFiles
@@ -9,15 +12,19 @@ setFileFinder(async () => {
 })
 
 async function loadViteEntry(modulePath: string): Promise<any> {
-  // @ts-ignore
-  const { viteServer } = global
-  let moduleExports
-  try {
-    moduleExports = await viteServer.ssrLoadModule(modulePath)
-  } catch (err) {
-    // TODO re-enable this
-    // if (!isProduction()) viteServer.ssrFixStacktrace(err);
-    throw err
+  const { viteDevServer, isProduction, root } = getGlobal()
+
+  if (isProduction) {
+    const moduleExports = require(`${root}/dist/server/${viteEntryFileBase}.js`)
+    return moduleExports
+  } else {
+    let moduleExports
+    try {
+      moduleExports = await viteDevServer.ssrLoadModule(modulePath)
+    } catch (err) {
+      viteDevServer.ssrFixStacktrace(err)
+      throw err
+    }
+    return moduleExports
   }
-  return moduleExports
 }
