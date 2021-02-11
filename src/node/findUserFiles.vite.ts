@@ -7,6 +7,8 @@ function fileFinder(): any {
       //@ts-ignore
       '.page': import.meta.glob('/**/*.page.*'),
       //@ts-ignore
+      '.browser': import.meta.glob('/**/*.browser.*'),
+      //@ts-ignore
       '.server': import.meta.glob('/**/*.server.*'),
       //@ts-ignore
       '.html': import.meta.glob('/**/*.html.*')

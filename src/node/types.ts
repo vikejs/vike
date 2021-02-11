@@ -6,6 +6,7 @@ export type PageServerConfig = {
 }
 export type Url = string & { _brand?: 'Url' }
 export type FilePath = string
+export type FilePathFromRoot = string
 
 export { PageInstance }
 export { PageConfig }

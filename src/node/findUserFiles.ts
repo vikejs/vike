@@ -1,15 +1,21 @@
-import { FilePath, Html, PageId, PageServerConfig, PageView } from './types'
+import {
+  FilePathFromRoot,
+  Html,
+  PageId,
+  PageServerConfig,
+  PageView
+} from './types'
 import { assert, assertUsage } from './utils/assert'
-import { isCallable } from './utils/isCallable'
 
 export { findUserFiles }
 export { loadUserFile }
+export { findUserFilePath }
 export { setFileFinder }
 export { UserFiles }
 
 type FileType = '.page' | '.server' | '.html' | '.browser'
-type UserFiles = Record<FileType, Record<FilePath, FileExportsGetter>>
-type Files = Record<FilePath, FileDefaultExportGetter>
+type UserFiles = Record<FileType, Record<FilePathFromRoot, FileExportsGetter>>
+type Files = Record<FilePathFromRoot, FileDefaultExportGetter>
 type FileExportsGetter = () => Promise<FileExports>
 type FileDefaultExportGetter = () => Promise<FileDefaultExport>
 type FileExports = Record<string, any>
@@ -45,33 +51,46 @@ async function loadUserFile(
   filter: Filter
 ): Promise<FileDefaultExport> {
   const files = await findUserFiles(fileType)
-  const fileGetter: FileDefaultExportGetter | null = findFile(files, filter)
-  if (fileGetter === null) {
+  const file = findFile(files, filter)
+  if (file === null) {
     return null
   }
-  const fileDefaultExport = await fileGetter()
+  const fileDefaultExport = await file.fileGetter()
   return fileDefaultExport
+}
+
+async function findUserFilePath(
+  fileType: FileType,
+  filter: Filter
+): Promise<FilePathFromRoot | null> {
+  const files = await findUserFiles(fileType)
+  const file = findFile(files, filter)
+  if (file === null) {
+    return null
+  }
+  const { filePath } = file
+  return filePath
 }
 
 function findUserFiles(
   fileType: '.page'
-): Promise<Record<FilePath, () => Promise<PageView>>>
+): Promise<Record<FilePathFromRoot, () => Promise<PageView>>>
 function findUserFiles(
   fileType: '.server'
-): Promise<Record<FilePath, () => Promise<PageServerConfig>>>
+): Promise<Record<FilePathFromRoot, () => Promise<PageServerConfig>>>
 function findUserFiles(
   fileType: '.html'
-): Promise<Record<FilePath, () => Promise<Html>>>
+): Promise<Record<FilePathFromRoot, () => Promise<Html>>>
 function findUserFiles(
   fileType: '.browser'
-): Promise<Record<FilePath, () => Promise<BrowserInit>>>
+): Promise<Record<FilePathFromRoot, () => Promise<BrowserInit>>>
 function findUserFiles(fileType: FileType): Promise<Files>
 async function findUserFiles(fileType: FileType): Promise<Files> {
   const filesByType: UserFiles = await fileFinder()
 
-  const filesWithAllExports: Record<FilePath, FileExportsGetter> =
+  const filesWithAllExports: Record<FilePathFromRoot, FileExportsGetter> =
     filesByType[fileType]
-  let files: Record<FilePath, FileDefaultExportGetter>
+  let files: Record<FilePathFromRoot, FileDefaultExportGetter>
 
   if (fileType === '.page') {
     files = mapExports(filesWithAllExports)
@@ -107,21 +126,24 @@ async function findUserFiles(fileType: FileType): Promise<Files> {
 }
 
 function mapExports(
-  files: Record<FilePath, FileExportsGetter>,
+  files: Record<FilePathFromRoot, FileExportsGetter>,
   {
     assertDefaultExport,
     noExports
   }: {
     assertDefaultExport?: (
       fileDefaultExport: FileDefaultExport,
-      filePath: FilePath
+      filePath: FilePathFromRoot
     ) => void
     noExports?: boolean
   } = {}
-): Record<FilePath, FileDefaultExportGetter> {
+): Record<FilePathFromRoot, FileDefaultExportGetter> {
   return mapObject(
     files,
-    (filePath: FilePath, fileExportsGetter: FileDefaultExportGetter) => {
+    (
+      filePath: FilePathFromRoot,
+      fileExportsGetter: FileDefaultExportGetter
+    ) => {
       return async () => {
         const fileExports = await fileExportsGetter()
         if (noExports) {
@@ -165,26 +187,30 @@ function mapObject<Before, After>(
   )
 }
 
-function findFile<T>(files: Record<FilePath, T>, filter: Filter): T | null {
-  let fileNames = Object.keys(files) as FilePath[]
+function findFile<T>(
+  files: Record<FilePathFromRoot, T>,
+  filter: Filter
+): { filePath: FilePathFromRoot; fileGetter: T } | null {
+  let filePaths = Object.keys(files) as FilePathFromRoot[]
   if ('pageId' in filter) {
-    fileNames = fileNames.filter((fileName) =>
-      fileName.startsWith(filter.pageId)
+    filePaths = filePaths.filter((filePath) =>
+      filePath.startsWith(filter.pageId)
     )
-    assertUsage(fileNames.length <= 1, 'Conflicting ' + fileNames.join(' '))
+    assertUsage(filePaths.length <= 1, 'Conflicting ' + filePaths.join(' '))
   }
   if ('defaultFile' in filter) {
     assert(filter.defaultFile === true)
-    fileNames = fileNames.filter(
-      (fileName) =>
-        fileName.includes('/default.') || fileName.includes('default.')
+    filePaths = filePaths.filter(
+      (filePath) =>
+        filePath.includes('/default.') || filePath.includes('default.')
     )
-    assertUsage(fileNames.length === 1, 'TODO')
+    assertUsage(filePaths.length === 1, 'TODO')
   }
-  if (fileNames.length === 0) {
+  if (filePaths.length === 0) {
     return null
   }
-  assert(fileNames.length === 1)
-  const fileName = fileNames[0]
-  return files[fileName]
+  assert(filePaths.length === 1)
+  const filePath = filePaths[0]
+  const fileGetter = files[filePath]
+  return { filePath, fileGetter }
 }

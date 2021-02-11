@@ -1,9 +1,17 @@
 import { assert } from './utils/assert'
 import { route } from './route.shared'
-import { Html, Url, PageId, PageView, PageServerConfig } from './types'
-import { loadUserFile } from './findUserFiles'
+import {
+  Html,
+  Url,
+  PageId,
+  PageView,
+  PageServerConfig,
+  FilePathFromRoot
+} from './types'
+import { findUserFilePath, loadUserFile } from './findUserFiles'
 import { renderHtmlTemplate } from './renderHtml'
 import { getGlobal } from './global'
+import { relative as pathRelative } from 'path'
 
 export { PageConfig, addWindowType } from './types'
 export { render }
@@ -33,14 +41,43 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
   htmlTemplate = await applyViteHtmlTransform(htmlTemplate, url)
 
   const initialProps = {}
+  const scriptUrl = await getBrowserEntry(pageId)
   const html = renderHtmlTemplate({
     htmlTemplate,
     pageViewHtml,
-    scripts: [{ scriptUrl: '/@vite-plugin-ssr/client/browser-dev-entry' }],
+    scripts: [{ scriptUrl }],
     initialProps
   })
 
   return html
+}
+
+async function getBrowserEntry(pageId: PageId): Promise<string> {
+  let browserEntry: FilePathFromRoot | null =
+    (await findUserFilePath('.browser', { pageId })) ||
+    (await findUserFilePath('.browser', { defaultFile: true }))
+  assert(browserEntry)
+  browserEntry = await pathRelativeToRoot(browserEntry)
+  return browserEntry
+}
+
+var viteManifest: Record<string, { file: string; isEntry?: true }>
+async function pathRelativeToRoot(filePath: FilePathFromRoot): Promise<string> {
+  assert(filePath.startsWith('/'))
+  const { root, isProduction } = getGlobal()
+
+  if (!isProduction) {
+    return filePath
+  } else {
+    viteManifest = viteManifest || require(`${root}/dist/client/manifest.json`)
+    const manifestKey = filePath.slice(1)
+    const manifestVal = viteManifest[manifestKey]
+    assert(manifestVal)
+    assert(manifestVal.isEntry)
+    const { file } = manifestVal
+    assert(!file.startsWith('/'))
+    return '/' + file
+  }
 }
 
 async function applyViteHtmlTransform(html: Html, url: Url): Promise<Html> {
