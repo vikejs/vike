@@ -1,4 +1,5 @@
 {
+  "private": true,
   "workspaces": [
     "src/"
   ],
@@ -6,7 +7,7 @@
     "// Demo showcasing Vite SSR Plugin usage": "",
     "demo": "cd examples/vue/ && npm run start",
     "// Build Vite SSR Plugin": "",
-    "build": "npm install && npm run tsc:once",
+    "build": "yarn install && npm run tsc:once",
     "// Develop Vite SSR Plugin": "",
     "dev": "npm run tsc:watch",
     "// TypeScript": "",
