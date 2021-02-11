@@ -25,7 +25,7 @@ async function route(url: Url): Promise<PageId | null> {
 
   const winner = candidates[0]
 
-  console.log('Match:', `[${url}]: ${winner?.pageId}`)
+  console.log('Match:', `[${url}]: ${winner && winner.pageId}`)
 
   if (!winner) {
     return null
