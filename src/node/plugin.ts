@@ -17,7 +17,9 @@ function plugin(): Plugin[] {
       name: 'vite-plugin-ssr[dev]',
       apply: 'serve',
       config: () => ({
-        alias: [aliasPluginImport()]
+        resolve: {
+          alias: [aliasPluginImport()]
+        }
       })
     },
     {
@@ -26,7 +28,7 @@ function plugin(): Plugin[] {
       config: (config: UserConfig) => ({
         build: {
           outDir: getOutDir(config),
-          // manifest: true,
+          manifest: true,
           rollupOptions: { input: entryPoints(config) }
         }
       })

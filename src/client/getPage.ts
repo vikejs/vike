@@ -1,4 +1,3 @@
-import '../node/findUserFiles.entry-browser'
 import { loadUserFile } from '../node/findUserFiles'
 import { route } from '../node/route.shared'
 import { assert } from '../node/utils/assert'
