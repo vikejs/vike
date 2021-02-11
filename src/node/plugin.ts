@@ -28,7 +28,7 @@ function plugin(): Plugin[] {
       config: (config: UserConfig) => ({
         build: {
           outDir: getOutDir(config),
-          manifest: true,
+          manifest: !isSSR(config),
           rollupOptions: { input: entryPoints(config) }
         }
       })
@@ -54,8 +54,7 @@ function aliasPluginImport() {
 }
 
 function entryPoints(config: UserConfig): Record<string, string> {
-  const ssr = !!config?.build?.ssr
-  if (ssr) {
+  if (isSSR(config)) {
     return serverEntryPoints()
   } else {
     return browserEntryPoints(config)
@@ -98,7 +97,16 @@ function pathRelativeToRoot(filePath: string, config: UserConfig): string {
   return pathRelative(root, filePath)
 }
 
+function isSSR(config: UserConfig): boolean {
+  return !!config?.build?.ssr
+}
+
 function getRoot(config: UserConfig): string {
+  function getRoot(config: UserConfig): string {
+    const root = config.root || process.cwd()
+    assert(pathIsAbsolute(root))
+    return root
+  }
   const root = config.root || process.cwd()
   assert(pathIsAbsolute(root))
   return root
