@@ -67,7 +67,6 @@ function serverEntryPoints(): Record<string, string> {
   const entryPoints = {
     [entryName]: serverEntry
   }
-  console.log(entryPoints)
   return entryPoints
 }
 
@@ -75,9 +74,8 @@ function browserEntryPoints(config: UserConfig): Record<string, string> {
   const root = getRoot(config)
   assert(pathIsAbsolute(root))
 
-  const distFiles = pathJoin(`${root}/`, `${getOutDir(config)}/`, '**')
-  const browserEntries = glob.sync(`${root}/**/*.browser.*`, {
-    ignore: ['**/node_modules/**', distFiles]
+  const browserEntries = glob.sync(`${root}/**/*.browser.*([a-zA-Z0-9])`, {
+    ignore: ['**/node_modules/**']
   })
 
   const entryPoints: Record<string, string> = {}
@@ -86,7 +84,6 @@ function browserEntryPoints(config: UserConfig): Record<string, string> {
     const outFilePath = pathRelativeToRoot(filePath, config)
     entryPoints[outFilePath] = filePath
   }
-  console.log(entryPoints)
   return entryPoints
 }
 
