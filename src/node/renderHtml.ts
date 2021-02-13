@@ -10,11 +10,13 @@ type Script = { scriptUrl: string } | { scriptContent: string }
 function renderHtmlTemplate({
   htmlTemplate,
   pageViewHtml,
+  preloadLinks,
   scripts,
   initialProps
 }: {
   htmlTemplate: string
   pageViewHtml: string
+  preloadLinks: string[]
   scripts: Script[]
   initialProps: Record<string, string>
 }): Html {
@@ -28,6 +30,10 @@ function renderHtmlTemplate({
   })
 
   html = injectScripts(html, scripts)
+
+  html = injectValue(html, 'preloadLinks', preloadLinks.join('\n'), {
+    alreadySanetized: true
+  })
 
   return html
 }

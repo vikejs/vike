@@ -1,4 +1,4 @@
-import { assert } from './utils/assert'
+import { assert, assertWarning } from './utils/assert'
 import { route } from './route.shared'
 import {
   Html,
@@ -11,7 +11,6 @@ import {
 import { findUserFilePath, loadUserFile } from './findUserFiles'
 import { renderHtmlTemplate } from './renderHtml'
 import { getGlobal } from './global'
-import { relative as pathRelative } from 'path'
 
 export { PageConfig, addWindowType } from './types'
 export { render }
@@ -27,6 +26,14 @@ async function render(url: Url): Promise<Html | null> {
 
 async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
   const pageView: PageView = await loadUserFile('.page', { pageId })
+  assert(pageView)
+  const pageFilePath: FilePathFromRoot | null = await findUserFilePath(
+    '.page',
+    { pageId }
+  )
+  assert(pageFilePath)
+  assert(pageFilePath.startsWith('/'))
+
   let htmlTemplate: Html =
     (await loadUserFile('.html', { pageId })) ||
     (await loadUserFile('.html', { defaultFile: true }))
@@ -40,11 +47,20 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
 
   htmlTemplate = await applyViteHtmlTransform(htmlTemplate, url)
 
+  let browserEntryPath: FilePathFromRoot | null =
+    (await findUserFilePath('.browser', { pageId })) ||
+    (await findUserFilePath('.browser', { defaultFile: true }))
+  assert(browserEntryPath)
+
+  const preloadLinks = getPreloadLinks(pageFilePath, browserEntryPath)
+
+  assert(browserEntryPath)
   const initialProps = {}
-  const scriptUrl = await getBrowserEntry(pageId)
+  const scriptUrl = await pathRelativeToRoot(browserEntryPath)
   const html = renderHtmlTemplate({
     htmlTemplate,
     pageViewHtml,
+    preloadLinks,
     scripts: [{ scriptUrl }],
     initialProps
   })
@@ -52,24 +68,88 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
   return html
 }
 
-async function getBrowserEntry(pageId: PageId): Promise<string> {
-  let browserEntry: FilePathFromRoot | null =
-    (await findUserFilePath('.browser', { pageId })) ||
-    (await findUserFilePath('.browser', { defaultFile: true }))
-  assert(browserEntry)
-  browserEntry = await pathRelativeToRoot(browserEntry)
-  return browserEntry
+type Manifest = Record<string, ManifestChunk>
+
+type ManifestChunk = {
+  src?: string
+  file: string
+  css?: string[]
+  assets?: string[]
+  isEntry?: boolean
+  isDynamicEntry?: boolean
+  imports?: string[]
+  dynamicImports?: string[]
 }
 
-var viteManifest: Record<string, { file: string; isEntry?: true }>
+function getPreloadLinks(
+  pageFilePath: FilePathFromRoot,
+  browserEntryPath: FilePathFromRoot
+): string[] {
+  const manifest = getViteManifest()
+  const preloadLinks = unique([
+    ...retrievePreloadLinks(pageFilePath, manifest),
+    ...retrievePreloadLinks(browserEntryPath, manifest)
+  ])
+  return preloadLinks
+}
+
+function unique(arr: string[]): string[] {
+  return Array.from(new Set(arr))
+}
+
+function retrievePreloadLinks(
+  filePath: FilePathFromRoot,
+  manifest: Manifest
+): Set<string> {
+  if (filePath.startsWith('/')) {
+    filePath = filePath.slice(1)
+  }
+  const manifestEntry = manifest[filePath]
+  //console.log(filePath, manifest)
+  assert(manifestEntry)
+
+  const preloadLinks = new Set<string>()
+
+  const { imports = [], assets = [], css = [] } = manifestEntry
+  for (const importAsset of imports) {
+    const importManifestEntry = manifest[importAsset]
+    const { file } = importManifestEntry
+    retrievePreloadLinks(importAsset, manifest).forEach((link) =>
+      preloadLinks.add(link)
+    )
+    if (!file.endsWith('.js')) {
+      assertWarning(false, `${file} will not be preloaded`)
+      continue
+    }
+    assert(file.startsWith('assets/'))
+    preloadLinks.add(`<link rel="modulepreload" crossorigin href="/${file}">`)
+  }
+
+  for (const cssAsset of css) {
+    if (!cssAsset.endsWith('.css')) {
+      assertWarning(false, `${cssAsset} will not be preloaded`)
+      continue
+    }
+    assert(cssAsset.startsWith('assets/'))
+    preloadLinks.add(`<link rel="stylesheet" href="/${cssAsset}">`)
+  }
+
+  for (let asset of assets) {
+    assert(asset.startsWith('assets/'))
+    preloadLinks.add(`<link rel="preload" href="/${asset}">`)
+  }
+
+  return preloadLinks
+}
+
 async function pathRelativeToRoot(filePath: FilePathFromRoot): Promise<string> {
   assert(filePath.startsWith('/'))
-  const { root, isProduction } = getGlobal()
+  const { isProduction } = getGlobal()
 
   if (!isProduction) {
     return filePath
   } else {
-    viteManifest = viteManifest || require(`${root}/dist/client/manifest.json`)
+    const manifest = getViteManifest()
     const manifestKey = filePath.slice(1)
     const manifestVal = viteManifest[manifestKey]
     assert(manifestVal)
@@ -78,6 +158,15 @@ async function pathRelativeToRoot(filePath: FilePathFromRoot): Promise<string> {
     assert(!file.startsWith('/'))
     return '/' + file
   }
+}
+
+var viteManifest: Manifest
+function getViteManifest(): Manifest {
+  const { root } = getGlobal()
+  if (!viteManifest) {
+    viteManifest = require(`${root}/dist/client/manifest.json`)
+  }
+  return viteManifest
 }
 
 async function applyViteHtmlTransform(html: Html, url: Url): Promise<Html> {

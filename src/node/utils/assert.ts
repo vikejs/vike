@@ -2,12 +2,14 @@ import { createError } from '@brillout/libassert'
 
 export { assert }
 export { assertUsage }
+export { assertWarning }
 
 const repoName = 'vite-plugin-ssr'
 const libName = repoName
 const requestForContact = `Please open a new issue at https://github.com/brillout/${repoName}/issues/new and include this error stack.`
 const internalErroPrefix = `[${libName}][Internal Error] Something unexpected happened. ${requestForContact}`
 const usageErrorPrefix = `[${libName}][Wrong Usage]`
+const warningPrefix = `[${libName}][Warning]`
 
 function assert(condition: unknown): asserts condition {
   if (condition) {
@@ -28,4 +30,13 @@ function assertUsage(
   const prefix = usageErrorPrefix
   const usageError = createError({ prefix, errorMessage })
   throw usageError
+}
+
+function assertWarning(condition: unknown, errorMessage: string): void {
+  if (condition) {
+    return
+  }
+  const prefix = warningPrefix
+  const usageError = createError({ prefix, errorMessage })
+  console.warn(usageError)
 }
