@@ -1,9 +1,16 @@
 {
   "scripts": {
+    "// User scripts": "",
     "start": "npm run vite-plugin-ssr:build && npm install && npm run server:start",
     "dev": "concurrently \"npm run server:watch\" \"npm run vite-plugin-ssr:watch\" --kill-others",
+    "prod": "npm run build:prod && npm run server:start:prod",
+    "// Build app": "",
+    "build:prod": "vite build && vite build --ssr",
+    "// Start server": "",
     "server:start": "ts-node ./server.ts",
+    "server:start:prod": "cross-env NODE_ENV=production ts-node ./server.ts",
     "server:watch": "ts-node-dev ./server.ts",
+    "// Build/watch vite-plugin-ssr": "",
     "vite-plugin-ssr:build": "cd ../../ && npm run build",
     "vite-plugin-ssr:watch": "cd ../../ && npm run dev"
   },
@@ -16,6 +23,7 @@
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-react-refresh": "^1.1.2",
     "concurrently": "^5.3.0",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

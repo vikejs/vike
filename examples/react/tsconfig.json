@@ -6,5 +6,8 @@
     "lib": ["DOM"],
     "jsx": "react",
     "esModuleInterop": true
+  },
+  "ts-node": {
+    "transpileOnly": true
   }
 }
