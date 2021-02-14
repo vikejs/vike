@@ -8,10 +8,13 @@ import {
   PageServerConfig,
   FilePathFromRoot
 } from './types'
-import { findUserFilePath, loadUserFile } from './findUserFiles'
-import { loadHtmlFile } from './user-files/loadHtmlFile'
-import { renderHtmlTemplate } from './renderHtml'
-import { getGlobal } from './global'
+import {
+  findUserFilePath,
+  loadUserFile
+} from './user-files/findUserFiles.shared'
+import { loadHtmlFile } from './user-files/loadHtmlFile.node'
+import { renderHtmlTemplate } from './renderHtml.node'
+import { getGlobal } from './global.node'
 
 export { PageConfig, addWindowType } from './types'
 export { render }

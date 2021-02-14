@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs'
-import { getGlobal } from '../global'
+import { getGlobal } from '../global.node'
 import { join as pathJoin } from 'path'
-import { findUserFiles, findFile } from '../findUserFiles'
+import { findUserFiles, findFile } from './findUserFiles.shared'
 
 export { loadHtmlFile }
 

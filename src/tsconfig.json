@@ -2,10 +2,9 @@
   "include": ["./"],
   "compilerOptions": {
     "outDir": "./dist/",
-    "lib": ["DOM", "ES2019"],
-    "target": "ES2019",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "lib": ["DOM", "ESNext"],
+    "target": "ES2017",
+    "module": "CommonJS",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

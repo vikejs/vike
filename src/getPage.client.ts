@@ -1,6 +1,6 @@
-import { loadUserFile } from '../node/findUserFiles'
-import { route } from '../node/route.shared'
-import { assert } from '../node/utils/assert'
+import { loadUserFile } from './user-files/findUserFiles.shared'
+import { route } from './route.shared'
+import { assert } from './utils/assert'
 
 export { getPage }
 

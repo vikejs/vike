@@ -1,5 +1,5 @@
 // TODO - check whether `vite/dynamic-import-polyfill` needs to be inserted as very first dependency
 import 'vite/dynamic-import-polyfill'
-import '../node/findUserFiles.entry-browser'
+import './user-files/findUserFiles.entry.client'
 
-export { getPage } from './getPage'
+export { getPage } from './getPage.client'

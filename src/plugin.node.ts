@@ -8,6 +8,8 @@ import {
 } from 'path'
 import { assert } from './utils/assert'
 import * as glob from 'fast-glob'
+const CLIENT_ENTRY = require.resolve('vite-plugin-ssr/dist/client.js')
+const SERVER_ENTRY = require.resolve('./user-files/findUserFiles.vite')
 
 export { plugin }
 
@@ -37,9 +39,6 @@ function plugin(): Plugin[] {
 }
 
 function aliasPluginImport() {
-  const CLIENT_ENTRY = require.resolve(
-    'vite-plugin-ssr/client/dist/client/index.js'
-  )
   const CLIENT_DIR = pathDirname(CLIENT_ENTRY)
 
   // CLIENT_DIR may contain $$ which cannot be used as direct replacement
@@ -62,10 +61,9 @@ function entryPoints(config: UserConfig): Record<string, string> {
 }
 
 function serverEntryPoints(): Record<string, string> {
-  const serverEntry = require.resolve('./findUserFiles.vite')
-  const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
+  const entryName = pathFilename(SERVER_ENTRY).replace(/\.js$/, '')
   const entryPoints = {
-    [entryName]: serverEntry
+    [entryName]: SERVER_ENTRY
   }
   return entryPoints
 }

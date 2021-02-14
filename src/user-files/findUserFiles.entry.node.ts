@@ -1,10 +1,12 @@
-import { setFileFinder, UserFiles } from './findUserFiles'
-import { getGlobal } from './global'
-
+import { setFileFinder, UserFiles } from './findUserFiles.shared'
+import { assert } from '../utils/assert'
+import { sep as pathSep } from 'path'
+import { getGlobal } from '../global.node'
 const viteEntryFileBase = 'findUserFiles.vite'
+assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
+const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
 
 setFileFinder(async () => {
-  const viteEntry = require.resolve(`../${viteEntryFileBase}.ts`)
   const viteEntryExports = await loadViteEntry(viteEntry)
   const { fileFinder } = viteEntryExports
   const filesByType = fileFinder() as UserFiles

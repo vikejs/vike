@@ -1,5 +1,5 @@
-import { setGlobal } from './global'
-import { render } from './render'
+import { setGlobal } from './global.node'
+import { render } from './render.node'
 import { assertUsage } from './utils/assert'
 
 export { createRender }

@@ -1,6 +1,6 @@
 import { higherFirst } from './utils/sorter'
 import { PageId, Url } from './types'
-import { findUserFiles } from './findUserFiles'
+import { findUserFiles } from './user-files/findUserFiles.shared'
 import { assert } from './utils/assert'
 
 export { route }
