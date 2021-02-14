@@ -8,14 +8,6 @@ const pageConfig: any = {
     const viewHtml = ReactDOMServer.renderToString(viewElement)
     return viewHtml
   }
-  /*
-  html({ title, viewHtml }) {
-    return html(require.resolve("./index.html"), {
-      title,
-      viewHtml,
-    });
-  },
-  */
 }
 
 export default pageConfig

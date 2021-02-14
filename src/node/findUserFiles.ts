@@ -12,6 +12,7 @@ export { loadUserFile }
 export { findUserFilePath }
 export { setFileFinder }
 export { UserFiles }
+export { findFile }
 
 type FileType = '.page' | '.server' | '.html' | '.browser'
 type UserFiles = Record<FileType, Record<FilePathFromRoot, FileExportsGetter>>
@@ -109,11 +110,9 @@ async function findUserFiles(fileType: FileType): Promise<Files> {
   }
   if (fileType === '.html') {
     files = mapExports(filesWithAllExports, {
-      assertDefaultExport: (defaultExport, filePath) => {
-        assertUsage(
-          typeof defaultExport === 'string',
-          `The default export of ${filePath} should be a string`
-        )
+      assertDefaultExport: () => {
+        // TODO
+        assert(false)
       }
     })
     return files
@@ -129,12 +128,16 @@ function mapExports(
   files: Record<FilePathFromRoot, FileExportsGetter>,
   {
     assertDefaultExport,
+    defaultExportGetter,
     noExports
   }: {
     assertDefaultExport?: (
       fileDefaultExport: FileDefaultExport,
       filePath: FilePathFromRoot
     ) => void
+    defaultExportGetter?: (
+      filePath: FilePathFromRoot
+    ) => Promise<FileDefaultExport>
     noExports?: boolean
   } = {}
 ): Record<FilePathFromRoot, FileDefaultExportGetter> {
@@ -145,6 +148,10 @@ function mapExports(
       fileExportsGetter: FileDefaultExportGetter
     ) => {
       return async () => {
+        if (defaultExportGetter) {
+          const defaultExport = await defaultExportGetter(filePath)
+          return defaultExport
+        }
         const fileExports = await fileExportsGetter()
         if (noExports) {
           const exportNames = Object.keys(fileExports)
@@ -162,14 +169,15 @@ function mapExports(
           'default' in fileExports,
           `${filePath} should have a default export`
         )
+        const defaultExport = fileExports.default
         assertUsage(
-          fileExports.default,
-          `The default export of ${filePath} is \`${fileExports.default}\``
+          defaultExport,
+          `The default export of ${filePath} is \`${defaultExport}\``
         )
         if (assertDefaultExport) {
-          assertDefaultExport(fileExports.default, filePath)
+          assertDefaultExport(defaultExport, filePath)
         }
-        return fileExports.default
+        return defaultExport
       }
     }
   )

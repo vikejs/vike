@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom'
 import React from 'react'
 import { getPage } from 'vite-plugin-ssr/client'
+import './default.css'
 
 hydrate()
 

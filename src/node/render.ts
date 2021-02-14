@@ -9,6 +9,7 @@ import {
   FilePathFromRoot
 } from './types'
 import { findUserFilePath, loadUserFile } from './findUserFiles'
+import { loadHtmlFile } from './user-files/loadHtmlFile'
 import { renderHtmlTemplate } from './renderHtml'
 import { getGlobal } from './global'
 
@@ -34,9 +35,9 @@ async function renderPageToHtml(pageId: PageId, url: Url): Promise<Html> {
   assert(pageFilePath)
   assert(pageFilePath.startsWith('/'))
 
-  let htmlTemplate: Html =
-    (await loadUserFile('.html', { pageId })) ||
-    (await loadUserFile('.html', { defaultFile: true }))
+  let htmlTemplate: Html | null =
+    (await loadHtmlFile({ pageId })) ||
+    (await loadHtmlFile({ defaultFile: true }))
   assert(htmlTemplate)
   const pageServerConfig: PageServerConfig =
     (await loadUserFile('.server', { pageId })) ||
@@ -85,6 +86,10 @@ function getPreloadLinks(
   pageFilePath: FilePathFromRoot,
   browserEntryPath: FilePathFromRoot
 ): string[] {
+  const { isProduction } = getGlobal()
+  if (!isProduction) {
+    return []
+  }
   const manifest = getViteManifest()
   const preloadLinks = unique([
     ...retrievePreloadLinks(pageFilePath, manifest),
