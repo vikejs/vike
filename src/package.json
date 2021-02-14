@@ -2,7 +2,7 @@
   "name": "vite-plugin-ssr",
   "version": "0.1.0-beta.1",
   "dependencies": {
-    "@brillout/libassert": "^0.2.2",
+    "@brillout/libassert": "^0.3.0",
     "fast-glob": "^3.2.5"
   },
   "devDependencies": {

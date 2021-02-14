@@ -1,4 +1,4 @@
-import { createError } from '@brillout/libassert'
+import { newError } from '@brillout/libassert'
 
 export { assert }
 export { assertUsage }
@@ -15,8 +15,7 @@ function assert(condition: unknown): asserts condition {
   if (condition) {
     return
   }
-  const prefix = internalErroPrefix
-  const internalError = createError({ prefix })
+  const internalError = newError(internalErroPrefix)
   throw internalError
 }
 
@@ -27,8 +26,7 @@ function assertUsage(
   if (condition) {
     return
   }
-  const prefix = usageErrorPrefix
-  const usageError = createError({ prefix, errorMessage })
+  const usageError = newError(`${usageErrorPrefix} ${errorMessage}`)
   throw usageError
 }
 
@@ -36,7 +34,6 @@ function assertWarning(condition: unknown, errorMessage: string): void {
   if (condition) {
     return
   }
-  const prefix = warningPrefix
-  const usageError = createError({ prefix, errorMessage })
+  const usageError = newError(`${warningPrefix} ${errorMessage}`)
   console.warn(usageError)
 }
