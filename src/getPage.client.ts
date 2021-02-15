@@ -17,7 +17,13 @@ async function getPage(): Promise<{
   assert(pageId)
 
   const pageView = await loadUserFile('.page', { pageId })
-  const initialProps = { testProp: 42 }
+
+  const initialProps = getInitialProps()
 
   return { pageView, initialProps }
+}
+
+function getInitialProps(): Record<string, any> {
+  //@ts-ignore
+  return window.__vite_plugin_ssr__initialProps
 }

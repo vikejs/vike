@@ -5,6 +5,7 @@
     "lib": ["DOM", "ESNext"],
     "target": "ES2017",
     "module": "CommonJS",
+    "esModuleInterop": true,
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,

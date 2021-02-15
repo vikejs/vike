@@ -1,6 +1,7 @@
 import { route } from './route.shared'
 import { getViteManifest } from './getViteManfiest.node'
 import { assert } from './utils/assert'
+import devalue from 'devalue'
 import {
   findUserFilePath,
   loadUserFile
@@ -47,13 +48,19 @@ async function render(
   let htmlDocument = template
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
+  // Inject initialProps
+  htmlDocument = injectInitialProps(htmlDocument, initialProps)
+
+  // Inject script
   const browserEntryPath = await getBrowserEntryPath(pageId)
   const scriptSrc = await pathRelativeToRoot(browserEntryPath)
   htmlDocument = injectScript(htmlDocument, scriptSrc)
 
+  // Inject preload links
   const preloadLinks = getPreloadLinks(pageFilePaths, browserEntryPath)
   htmlDocument = injectPreloadLinks(htmlDocument, preloadLinks)
 
+  // Inject initialProps variables
   htmlDocument = renderHtmlTemplate({
     htmlDocument,
     variables
@@ -220,20 +227,19 @@ function injectValue(
   return htmlDocument
 }
 
+function injectInitialProps(
+  htmlDocument: string,
+  initialProps: Record<string, any>
+): string {
+  const injection = `<script>window.__vite_plugin_ssr__initialProps = ${devalue(
+    initialProps
+  )}</script>`
+  return injectEnd(htmlDocument, injection)
+}
+
 function injectScript(htmlDocument: string, scriptSrc: string): string {
   const injection = `<script type="module" src="${scriptSrc}"></script>`
-
-  const bodyClose = '</body>'
-  if (htmlDocument.includes(bodyClose)) {
-    return injectHtml(htmlDocument, bodyClose, injection)
-  }
-
-  const htmlClose = '</html>'
-  if (htmlDocument.includes(htmlClose)) {
-    return injectHtml(htmlDocument, htmlClose, injection)
-  }
-
-  return htmlDocument + '\n' + injection
+  return injectEnd(htmlDocument, injection)
 }
 
 function injectPreloadLinks(
@@ -241,7 +247,10 @@ function injectPreloadLinks(
   preloadLinks: string[]
 ): string {
   const injection = preloadLinks.join('')
+  return injectBegin(htmlDocument, injection)
+}
 
+function injectBegin(htmlDocument: string, injection: string): string {
   const headClose = '</head>'
   if (htmlDocument.includes(headClose)) {
     return injectHtml(htmlDocument, headClose, injection)
@@ -258,6 +267,20 @@ function injectPreloadLinks(
   } else {
     return injection + '\n' + htmlDocument
   }
+}
+
+function injectEnd(htmlDocument: string, injection: string): string {
+  const bodyClose = '</body>'
+  if (htmlDocument.includes(bodyClose)) {
+    return injectHtml(htmlDocument, bodyClose, injection)
+  }
+
+  const htmlClose = '</html>'
+  if (htmlDocument.includes(htmlClose)) {
+    return injectHtml(htmlDocument, htmlClose, injection)
+  }
+
+  return htmlDocument + '\n' + injection
 }
 
 function injectHtml(
