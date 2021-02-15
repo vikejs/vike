@@ -24,7 +24,7 @@ async function render(
     return null
   }
 
-  const { pageView, pageFilePath } = await getPageView(pageId)
+  const { pageView, pageFilePaths } = await getPageView(pageId)
 
   const { render, html, addInitialProps } = await getServerFunctions(pageId)
 
@@ -51,7 +51,7 @@ async function render(
   const scriptSrc = await pathRelativeToRoot(browserEntryPath)
   htmlDocument = injectScript(htmlDocument, scriptSrc)
 
-  const preloadLinks = getPreloadLinks(pageFilePath, browserEntryPath)
+  const preloadLinks = getPreloadLinks(pageFilePaths, browserEntryPath)
   htmlDocument = injectPreloadLinks(htmlDocument, preloadLinks)
 
   htmlDocument = renderHtmlTemplate({
@@ -71,14 +71,37 @@ async function getBrowserEntryPath(pageId: string): Promise<string> {
 }
 
 async function getPageView(pageId: string) {
-  const pageView: any = await loadUserFile('.page', { pageId })
+  let pageView: any = await loadUserFile('.page', { pageId })
   assert(pageView)
+
+  const pageFilePaths = []
+
   const pageFilePath: string | null = await findUserFilePath('.page', {
     pageId
   })
   assert(pageFilePath)
   assert(pageFilePath.startsWith('/'))
-  return { pageView, pageFilePath }
+  pageFilePaths.push(pageFilePath)
+
+  /*
+  const pageViewWrapper: any = await loadUserFile('.page', {
+    defaultFile: true
+  })
+  if (pageViewWrapper) {
+    const pageView_original = pageView
+    pageView = (initialProps: Record<string, any>) => {
+      return pageViewWrapper(pageView_original, initialProps)
+    }
+    const pageFilePath: string | null = await findUserFilePath('.page', {
+      defaultFile: true
+    })
+    assert(pageFilePath)
+    assert(pageFilePath.startsWith('/'))
+    pageFilePaths.push(pageFilePath)
+  }
+  */
+
+  return { pageView, pageFilePaths }
 }
 
 type HtmlTemplate = { template: string; variables: Record<string, unknown> }

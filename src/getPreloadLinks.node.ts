@@ -5,7 +5,7 @@ import { getViteManifest, ViteManifest } from './getViteManfiest.node'
 export { getPreloadLinks }
 
 function getPreloadLinks(
-  pageFilePath: string,
+  pageFilePaths: string[],
   browserEntryPath: string
 ): string[] {
   const { isProduction } = getGlobal()
@@ -13,10 +13,15 @@ function getPreloadLinks(
     return []
   }
   const manifest = getViteManifest()
-  const preloadLinks = unique([
-    ...retrievePreloadLinks(pageFilePath, manifest),
-    ...retrievePreloadLinks(browserEntryPath, manifest)
-  ])
+
+  let preloadLinks: string[] = []
+
+  ;[...pageFilePaths, browserEntryPath].forEach((filePath) =>
+    preloadLinks.push(...retrievePreloadLinks(filePath, manifest))
+  )
+
+  preloadLinks = unique(preloadLinks)
+
   return preloadLinks
 }
 

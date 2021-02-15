@@ -192,10 +192,10 @@ function findFile<T>(
   }
   if ('defaultFile' in filter) {
     assert(filter.defaultFile === true)
-    filePaths = filePaths.filter(
-      (filePath) =>
-        filePath.includes('/default.') || filePath.includes('default.')
-    )
+    filePaths = filePaths.filter((filePath) => {
+      assert(filePath.startsWith('/'))
+      return filePath.includes('/default.')
+    })
     assertUsage(filePaths.length === 1, 'TODO')
   }
   if (filePaths.length === 0) {
