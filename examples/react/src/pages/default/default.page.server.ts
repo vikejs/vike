@@ -1,21 +1,32 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 
+type InitialProps = {
+  title?: string
+}
+
 export default {
+  addInitialProps,
   render,
   html
 }
 
-function render({ pageView }: any) {
-  const initialProps = {} // TODO
+function addInitialProps(initialProps: InitialProps) {
+  return {
+    title: initialProps.title || 'Vite SSR Demo'
+  }
+}
+
+function render(pageView: string, initialProps: InitialProps) {
   const viewElement = React.createElement(pageView, initialProps)
   const viewHtml = ReactDOMServer.renderToString(viewElement)
   return viewHtml
 }
 
-function html({ pageHtml }: any) {
+function html(pageHtml: string, initialProps: InitialProps) {
+  const { title } = initialProps
   const variables = {
-    title: 'bla',
+    title,
     pageHtml
   }
   const template = `<!DOCTYPE html>

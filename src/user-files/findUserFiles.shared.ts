@@ -1,6 +1,11 @@
 import { FilePathFromRoot, Html, PageId, PageView } from '../types'
 import { assert, assertUsage } from '../utils/assert'
 
+// TODO
+
+export { fileFinder }
+export { FileType }
+
 export { findUserFiles }
 export { loadUserFile }
 export { findUserFilePath }
@@ -67,9 +72,6 @@ async function findUserFilePath(
 function findUserFiles(
   fileType: '.page'
 ): Promise<Record<FilePathFromRoot, () => Promise<PageView>>>
-function findUserFiles(
-  fileType: '.server'
-): Promise<Record<FilePathFromRoot, () => Promise<never>>>
 function findUserFiles(
   fileType: '.browser'
 ): Promise<Record<FilePathFromRoot, () => Promise<BrowserInit>>>

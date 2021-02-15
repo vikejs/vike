@@ -34,7 +34,8 @@ async function startServer() {
   })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
-    const html = await render(url)
+    const initialProps = {}
+    const html = await render(url, initialProps)
     if (!html) {
       next()
       return
