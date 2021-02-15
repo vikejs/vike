@@ -14,9 +14,7 @@ function fileFinder(): any {
   if (import.meta.env.SSR) {
     Object.assign(filesByType, {
       //@ts-ignore
-      '.server': import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])'),
-      //@ts-ignore
-      '.html': import.meta.glob('/**/*.page.html')
+      '.server': import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])')
     })
   }
   return filesByType

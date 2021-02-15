@@ -1,10 +1,4 @@
-import {
-  FilePathFromRoot,
-  Html,
-  PageId,
-  PageServerConfig,
-  PageView
-} from '../types'
+import { FilePathFromRoot, Html, PageId, PageView } from '../types'
 import { assert, assertUsage } from '../utils/assert'
 
 export { findUserFiles }
@@ -38,10 +32,7 @@ function setFileFinder(fileFinder_: () => Promise<UserFiles>): void {
 type Filter = { pageId: PageId } | { defaultFile: true }
 
 function loadUserFile(fileType: '.page', filter: Filter): Promise<PageView>
-function loadUserFile(
-  fileType: '.server',
-  filter: Filter
-): Promise<PageServerConfig>
+function loadUserFile(fileType: '.server', filter: Filter): Promise<never>
 function loadUserFile(fileType: '.html', filter: Filter): Promise<Html>
 function loadUserFile(
   fileType: '.browser',
@@ -78,10 +69,7 @@ function findUserFiles(
 ): Promise<Record<FilePathFromRoot, () => Promise<PageView>>>
 function findUserFiles(
   fileType: '.server'
-): Promise<Record<FilePathFromRoot, () => Promise<PageServerConfig>>>
-function findUserFiles(
-  fileType: '.html'
-): Promise<Record<FilePathFromRoot, () => Promise<Html>>>
+): Promise<Record<FilePathFromRoot, () => Promise<never>>>
 function findUserFiles(
   fileType: '.browser'
 ): Promise<Record<FilePathFromRoot, () => Promise<BrowserInit>>>
@@ -109,13 +97,7 @@ async function findUserFiles(fileType: FileType): Promise<Files> {
     return files
   }
   if (fileType === '.html') {
-    files = mapExports(filesWithAllExports, {
-      assertDefaultExport: () => {
-        // TODO
-        assert(false)
-      }
-    })
-    return files
+    return filesWithAllExports
   }
   if (fileType === '.browser') {
     files = mapExports(filesWithAllExports, { noExports: true })
