@@ -1,17 +1,20 @@
 import { FilePathFromRoot, Html, PageId, PageView } from '../types'
 import { assert, assertUsage } from '../utils/assert'
 
-// TODO
-
-export { fileFinder }
 export { FileType }
+export { findUserFiles2 }
 
 export { findUserFiles }
 export { loadUserFile }
 export { findUserFilePath }
 export { setFileFinder }
-export { UserFiles }
 export { findFile }
+
+async function findUserFiles2(fileType: FileType) {
+  const userFiles_byType: UserFiles = await fileFinder()
+  const userFiles = userFiles_byType[fileType]
+  return userFiles
+}
 
 type FileType = '.page' | '.server' | '.html' | '.browser'
 type UserFiles = Record<FileType, Record<FilePathFromRoot, FileExportsGetter>>

@@ -1,7 +1,7 @@
 import { fileFinder } from './findUserFiles.vite'
-import { setFileFinder, UserFiles } from './findUserFiles.shared'
+import { setFileFinder } from './findUserFiles.shared'
 
 setFileFinder(async () => {
-  const userFiles = fileFinder() as UserFiles
+  const userFiles = fileFinder()
   return userFiles
 })

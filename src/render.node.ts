@@ -1,4 +1,4 @@
-import { route } from './route.shared'
+import { route } from './route.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { assert } from './utils/assert'
 import devalue from 'devalue'
@@ -20,14 +20,16 @@ async function render(
   url: string,
   initialProps: Record<string, any> = {}
 ): Promise<null | string> {
-  const pageId = await route(url)
-  if (!pageId) {
+  const routedPage = await route(url)
+  if (!routedPage) {
     return null
   }
+  const { pageId, routeProps } = routedPage
+  Object.assign(initialProps, routeProps)
 
   const { pageView, pageFilePaths } = await getPageView(pageId)
 
-  const { render, html, addInitialProps } = await getServerFunctions(pageId)
+  const { render, html, addInitialProps } = await getPageFunctions(pageId)
 
   if (addInitialProps) {
     const newInitialProps = await addInitialProps(initialProps)
@@ -49,7 +51,7 @@ async function render(
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
   // Inject initialProps
-  htmlDocument = injectInitialProps(htmlDocument, initialProps)
+  htmlDocument = injectPageInfo(htmlDocument, initialProps, pageId)
 
   // Inject script
   const browserEntryPath = await getBrowserEntryPath(pageId)
@@ -122,7 +124,7 @@ type ServerFunctions = {
     initialProps: Record<string, unknown>
   ) => Record<string, unknown> | Promise<Record<string, unknown>>
 }
-async function getServerFunctions(pageId: string): Promise<ServerFunctions> {
+async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const files = await findPageFiles('.server', pageId)
 
   let render
@@ -227,13 +229,14 @@ function injectValue(
   return htmlDocument
 }
 
-function injectInitialProps(
+function injectPageInfo(
   htmlDocument: string,
-  initialProps: Record<string, any>
+  initialProps: Record<string, any>,
+  pageId: string
 ): string {
-  const injection = `<script>window.__vite_plugin_ssr__initialProps = ${devalue(
-    initialProps
-  )}</script>`
+  const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(
+    pageId
+  )}, initialProps: ${devalue(initialProps)}}</script>`
   return injectEnd(htmlDocument, injection)
 }
 

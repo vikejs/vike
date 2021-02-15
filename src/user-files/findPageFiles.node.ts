@@ -1,13 +1,12 @@
 import { assert } from '../utils/assert'
-import { fileFinder, FileType, UserFiles } from './findUserFiles.shared'
+import { FileType, findUserFiles2 } from './findUserFiles.shared'
 import { relative } from 'path'
 import { lowerFirst } from '../utils/sorter'
 
 export { findPageFiles }
 
 async function findPageFiles(fileType: FileType, pageId: string) {
-  const userFiles_byType: UserFiles = await fileFinder()
-  const userFiles = userFiles_byType[fileType]
+  const userFiles = await findUserFiles2(fileType)
 
   const userFiles_forPage = []
   for (const filePath in userFiles) {

@@ -3,6 +3,7 @@
   "version": "0.1.0-beta.1",
   "dependencies": {
     "@brillout/libassert": "^0.3.0",
+    "@brillout/path-to-regexp": "^0.1.2",
     "devalue": "^2.0.1",
     "fast-glob": "^3.2.5"
   },
