@@ -5,7 +5,7 @@ Next Generation SSR tool.
 ### Status
 
 :white_check_mark: Design.<br/>
-:white_check_mark: Working basic prototype.<br/>
+:white_check_mark: Basic working prototype.<br/>
 :construction: Feature completeness, docs, polish details.
 
 ### Features
