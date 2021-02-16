@@ -1,0 +1,55 @@
+.page-layout {
+  display: flex !important;
+  max-width: 900px;
+  margin: auto;
+}
+.page-content {
+  padding: 20px;
+  border-left: 2px solid #eee;
+  padding-bottom: 50px;
+}
+.page-navigation {
+  padding: 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.8em;
+}
+.header {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+body {
+  margin-top: 30px;
+}
+
+code {
+  font-family: monospace;
+  background-color: #eaeaea;
+  padding: 2px 3px;
+  border-radius: 4px;
+}
+a {
+  text-decoration: none;
+}
+
+.react-logo {
+  position: relative;
+  top: -12px;
+  pointer-events: none;
+  animation: spin infinite 20s linear;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
