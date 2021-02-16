@@ -4,7 +4,7 @@
 
 ### What is this?
 
-Next Generation SSR tool.
+Vite Plugin for SSR.
 
 ### Status
 
