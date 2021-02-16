@@ -4,6 +4,7 @@ import { relative } from 'path'
 import { lowerFirst } from '../utils/sorter'
 
 export { findPageFiles }
+export { findPageFile }
 
 async function findPageFiles(fileType: FileType, pageId: string) {
   const userFiles = await findUserFiles2(fileType)
@@ -26,4 +27,8 @@ async function findPageFiles(fileType: FileType, pageId: string) {
     })
   )
   return userFiles_forPage
+}
+
+async function findPageFile(fileType: FileType, pageId: string) {
+  const userFiles = await findUserFiles2(fileType)
 }

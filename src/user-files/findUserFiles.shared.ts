@@ -16,7 +16,7 @@ async function findUserFiles2(fileType: FileType) {
   return userFiles
 }
 
-type FileType = '.page' | '.server' | '.html' | '.browser'
+type FileType = '.page' | '.server' | '.route' | '.browser'
 type UserFiles = Record<FileType, Record<FilePathFromRoot, FileExportsGetter>>
 type Files = Record<FilePathFromRoot, FileDefaultExportGetter>
 type FileExportsGetter = () => Promise<FileExports>
@@ -41,7 +41,6 @@ type Filter = { pageId: PageId } | { defaultFile: true }
 
 function loadUserFile(fileType: '.page', filter: Filter): Promise<PageView>
 function loadUserFile(fileType: '.server', filter: Filter): Promise<never>
-function loadUserFile(fileType: '.html', filter: Filter): Promise<Html>
 function loadUserFile(
   fileType: '.browser',
   filter: Filter
@@ -100,9 +99,6 @@ async function findUserFiles(fileType: FileType): Promise<Files> {
       }
     })
     return files
-  }
-  if (fileType === '.html') {
-    return filesWithAllExports
   }
   if (fileType === '.browser') {
     files = mapExports(filesWithAllExports, { noExports: true })

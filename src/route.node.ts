@@ -1,5 +1,6 @@
 import { higherFirst } from './utils/sorter'
 import {
+  findFile,
   findUserFiles,
   findUserFiles2
 } from './user-files/findUserFiles.shared'
@@ -18,7 +19,9 @@ type PageId = string
 async function route(
   url: string
 ): Promise<null | { pageId: PageId; routeProps: RouteProps }> {
-  const pageRoutes = (await getPageRoutes())
+  const allPageIds = await getPageIds()
+
+  const pageRoutes = (await getPageRoutes(allPageIds))
     .map(({ pageId, routeFunction }) => {
       const { matchValue, routeProps } = routeFunction(url)
       return { pageId, matchValue, routeProps }
@@ -42,62 +45,66 @@ async function route(
   return { pageId, routeProps }
 }
 
-async function getPageRoutes(): Promise<
-  { pageId: string; routeFunction: (url: string) => RouteResult }[]
-> {
-  const pageServerFiles = await findUserFiles2('.server')
+async function getPageRoutes(
+  allPageIds: PageId[]
+): Promise<{ pageId: string; routeFunction: (url: string) => RouteResult }[]> {
+  const pageRouteFiles = await findUserFiles2('.route')
 
-  const fileSystemRoute = await getFileSystemRoute()
+  const fileSystemRoute = await getFileSystemRoute(allPageIds)
 
   const pageRoutes = await Promise.all(
-    Object.entries(pageServerFiles).map(async ([filePath, loadFile]) => {
-      const fileExports = await loadFile()
+    allPageIds.map(async (pageId) => {
+      const pageRouteFile = findFile(pageRouteFiles, { pageId })
 
       let routeFunction: (url: string) => RouteResult
 
-      const pageId = computePageId(filePath)
-
-      let pageRoute = fileExports.route
-      assertUsage(
-        !pageRoute || typeof pageRoute === 'string' || isCallable(pageRoute),
-        `\`route\` defined in ${filePath} should be a string or a function.`
-      )
-
-      if (isCallable(pageRoute)) {
-        routeFunction = (...args: any[]) => {
-          const routeResult = pageRoute(...args)
-          if (!routeResult) {
-            return { matchValue: false }
-          } else {
-            const keys = Object.keys(routeResult)
-            if (
-              keys.length === 2 &&
-              keys.includes('matchValue') &&
-              keys.includes('routeProps')
-            ) {
-              assertUsage(
-                typeof routeResult.matchValue === 'boolean' ||
-                  typeof routeResult.matchValue === 'number',
-                `The \`route\` function defined in ${filePath} should return a \`matchValue\` that is either a boolean or a number.`
-              )
-              return routeResult
-            } else {
-              return { matchValue: true, routeProps: routeResult }
-            }
-          }
-        }
-      } else if (typeof pageRoute === 'string') {
-        routeFunction = (url: string) => {
-          const match = pathToRegexp(url, { path: pageRoute, exact: true })
-          // The longer the route string, the more likely is it specific
-          const matchValue = pageRoute.length
-          const routeProps = match.params
-          return { matchValue, routeProps }
-        }
-      } else if (!pageRoute) {
+      if (!pageRouteFile) {
         routeFunction = fileSystemRoute.bind(null, pageId)
       } else {
-        assert(false)
+        const { filePath, fileGetter } = pageRouteFile
+
+        const fileExports = await fileGetter()
+
+        let pageRoute = fileExports.route
+        assertUsage(
+          !pageRoute || typeof pageRoute === 'string' || isCallable(pageRoute),
+          `\`route\` defined in ${filePath} should be a string or a function.`
+        )
+
+        if (typeof pageRoute === 'string') {
+          routeFunction = (url: string) => {
+            const match = pathToRegexp(url, { path: pageRoute, exact: true })
+            // The longer the route string, the more likely is it specific
+            const matchValue = pageRoute.length
+            const routeProps = match.params
+            return { matchValue, routeProps }
+          }
+        } else if (isCallable(pageRoute)) {
+          routeFunction = (url: string) => {
+            const routeResult = pageRoute(url)
+            if (!routeResult) {
+              return { matchValue: false }
+            } else {
+              const keys = Object.keys(routeResult)
+              if (
+                keys.length === 2 &&
+                keys.includes('matchValue') &&
+                keys.includes('routeProps')
+              ) {
+                assertUsage(
+                  typeof routeResult.matchValue === 'boolean' ||
+                    typeof routeResult.matchValue === 'number',
+                  `The \`matchValue\` returned by the \`route\` function in ${filePath} should be a boolean or a number.`
+                )
+                return routeResult
+              } else {
+                return { matchValue: true, routeProps: routeResult }
+              }
+            }
+          }
+        } else {
+          assert(false)
+        }
       }
 
       return { pageId, routeFunction }
@@ -107,11 +114,9 @@ async function getPageRoutes(): Promise<
   return pageRoutes
 }
 
-async function getFileSystemRoute() {
-  const pageIds = await getPageIds()
-
+async function getFileSystemRoute(allPageIds: PageId[]) {
   return (pageId: string, url: string): RouteResult => {
-    let pageRoute = removeCommonPrefix(pageId, pageIds)
+    let pageRoute = removeCommonPrefix(pageId, allPageIds)
     pageRoute = pageRoute
       .split('/')
       .filter((part) => part !== 'index')
@@ -130,19 +135,8 @@ async function getFileSystemRoute() {
     return url.split('/').filter(Boolean).join('/').toLowerCase()
   }
 }
-async function getPageIds(): Promise<PageId[]> {
-  const files = await findUserFiles('.page')
-  let filePaths = Object.keys(files)
-  filePaths = filePaths.filter(
-    (fileName) => !fileName.includes('/default.page.')
-  )
-
-  let pageIds = filePaths.map(computePageId)
-  return pageIds
-}
-
-function removeCommonPrefix(pageId: PageId, pageIds: PageId[]) {
-  const commonPrefix = getCommonPrefix(pageIds)
+function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
+  const commonPrefix = getCommonPrefix(allPageIds)
   assert(pageId.startsWith(commonPrefix))
   return pageId.slice(commonPrefix.length)
 }
@@ -157,6 +151,16 @@ function getCommonPrefix(strings: string[]): string {
   return first.slice(0, idx)
 }
 
+async function getPageIds(): Promise<PageId[]> {
+  const files = await findUserFiles('.page')
+  let filePaths = Object.keys(files)
+  filePaths = filePaths.filter(
+    (fileName) => !fileName.includes('/default.page.')
+  )
+
+  let allPageIds = filePaths.map(computePageId)
+  return allPageIds
+}
 function computePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
