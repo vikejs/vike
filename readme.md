@@ -14,7 +14,7 @@ Next Generation SSR tool.
 
 ### Features
 
-- **Small but Sturdy:** `vite-plugin-ssr` is only a couple of kLOCs. Not only does a small source code lead to a more robust tool, but also to a tool that can rapidly adapt to a fast evolving Vite & JavaScript ecosystem.
+- **Small & Sturdy:** `vite-plugin-ssr` is only a couple of kLOCs. Not only does a small source code lead to a more robust tool, but also to a tool that can rapidly adapt to a fast evolving Vite & JavaScript ecosystem.
 - **Minimal Config:** Both getting started and advanced usage is easy and quick.
 - **Flexible:** being a Vite plugin, `vite-plugin-ssr` can be easily integrated into all kinds of Vite apps. It works with any view library (Vue, React, etc.), any view tool (Vuex, React Router, etc.), and any server framework (Express, Koa, Hapi, Fastify, etc.).
 - **Minimal but Powerful Interface:** `vite-plugin-ssr`'s interface has been desgined with meticulous care. It's simple: you can read the entire documentation (this page) in 10 minutes. It's powerful: it aims to allow you to achieve whatever you want; if `vite-plugin-ssr` is limiting you in any way, then open a GitHub issue.
