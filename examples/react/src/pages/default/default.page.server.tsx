@@ -1,5 +1,6 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
+import { PageLayout } from './PageLayout'
 
 type InitialProps = {
   title?: string
@@ -18,9 +19,10 @@ function addInitialProps(initialProps: InitialProps) {
 }
 
 function render(pageView: string, initialProps: InitialProps) {
-  const viewElement = React.createElement(pageView, initialProps)
-  const viewHtml = ReactDOMServer.renderToString(viewElement)
-  return viewHtml
+  const app = (
+    <PageLayout>{React.createElement(pageView, initialProps)}</PageLayout>
+  )
+  return ReactDOMServer.renderToString(app)
 }
 
 function html(pageHtml: string, initialProps: InitialProps) {
