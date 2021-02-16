@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="787.43" height="341.58" fill="none" version="1.1" viewBox="0 0 787.43 341.58" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <metadata>
+  <rdf:RDF>
+   <cc:Work rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title/>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <g transform="matrix(.4304 0 0 .4304 614.88 -.63391)">
+  <path d="m399.64 59.525-184 329.02c-3.799 6.793-13.559 6.833-17.415 0.073l-187.65-329.06c-4.2008-7.3667 2.0985-16.29 10.446-14.798l184.19 32.924c1.175 0.21 2.378 0.208 3.553-0.0061l180.34-32.87c8.32-1.5164 14.649 7.3376 10.522 14.719z" fill="url(#linearGradient863)"/>
+  <path d="m292.96 1.5744-136.16 26.681c-2.238 0.4385-3.895 2.3351-4.03 4.6112l-8.376 141.46c-0.197 3.332 2.863 5.918 6.115 5.168l37.91-8.749c3.547-0.818 6.752 2.306 6.023 5.873l-11.263 55.153c-0.758 3.712 2.727 6.886 6.352 5.785l23.415-7.114c3.63-1.102 7.118 2.081 6.35 5.796l-17.899 86.633c-1.12 5.419 6.088 8.374 9.094 3.728l2.008-3.103 110.95-221.43c1.858-3.7075-1.346-7.935-5.418-7.1492l-39.022 7.5312c-3.667 0.707-6.787-2.708-5.752-6.2957l25.469-88.291c1.036-3.5938-2.095-7.0117-5.766-6.2925z" fill="url(#paint1_linear)"/>
+ </g>
+ <defs>
+  <linearGradient id="paint0_linear" x1="6.0002" x2="235" y1="33" y2="344" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#41D1FF" offset="0"/>
+   <stop stop-color="#BD34FE" offset="1"/>
+  </linearGradient>
+  <linearGradient id="paint1_linear" x1="194.65" x2="236.08" y1="8.8182" y2="292.99" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#FFEA83" offset="0"/>
+   <stop stop-color="#FFDD35" offset=".083333"/>
+   <stop stop-color="#FFA800" offset="1"/>
+  </linearGradient>
+  <linearGradient id="linearGradient861" x1="98.317" x2="704.98" y1="524.8" y2="524.8" gradientTransform="translate(-98.317 -299.88)" gradientUnits="userSpaceOnUse" xlink:href="#paint0_linear"/>
+  <linearGradient id="linearGradient863" x1="6.0002" x2="235" y1="33" y2="344" gradientUnits="userSpaceOnUse" xlink:href="#paint0_linear"/>
+ </defs>
+ <text x="-0.26666698" y="341.58386" fill="url(#linearGradient861)" font-family="'Retro New Version'" font-size="266.67px" style="line-height:1.25" xml:space="preserve"><tspan x="-0.26666698" y="341.58386" fill="url(#linearGradient861)" font-family="'Retro New Version'" font-size="266.67px">SSR</tspan></text>
+</svg>

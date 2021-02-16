@@ -1,3 +1,9 @@
+<p align="right">
+  <a href="/../../#readme">
+    <img src="/logo.svg" height="50" alt="Vite Plugin SSR"/>
+  </a>
+</p>
+
 ### What is this?
 
 Next Generation SSR tool.
