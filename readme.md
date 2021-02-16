@@ -1,8 +1,14 @@
+### What is this?
+
 Next Generation SSR tool.
 
-Status: :white_check_mark: Design. :white_check_mark: Working basic prototype. :construction: Feature completness, docs, polish details.
+### Status
 
-Features:
+:white_check_mark: Design.<br/>
+:white_check_mark: Working basic prototype.<br/>
+:construction: Feature completeness, docs, polish details.
+
+### Features:
 
 - **Small but Sturdy:** `vite-plugin-ssr` is only a couple of kLOCs. Not only does a small source code lead to a more robust tool, but also to a tool that can rapidly adapt to a fast evolving Vite & JavaScript ecosystem.
 - **Minimal Config:** Both getting started and advanced usage is easy and quick.
