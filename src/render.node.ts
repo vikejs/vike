@@ -115,7 +115,7 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
       !htmlFunction || isCallable(htmlFunction),
       `\`html\` defined in ${filePath} should be a function.`
     )
-    if (html) {
+    if (htmlFunction) {
       htmlFunction.sourceFilePath = filePath
     }
     html = html || htmlFunction
@@ -160,12 +160,14 @@ function filterAndSort<T extends { filePath: string }>(
 ): T[] {
   userFiles = userFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
+    assert(!filePath.includes('\\'))
     return filePath.startsWith(pageId) || filePath.includes('/_default')
   })
 
   // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
   userFiles.sort(
     lowerFirst(({ filePath }) => {
+      if (filePath.startsWith(pageId)) return -1
       const relativePath = pathRelative(pageId, filePath)
       assert(!relativePath.includes('\\'))
       const changeDirCount = relativePath.split('/').length
