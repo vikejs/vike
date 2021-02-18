@@ -18,10 +18,11 @@ function Hello({ name }: { name: string }) {
         </li>
       </ul>
       <p>
-        Parameterized routes are defined by creating a{' '}
+        Parameterized routes can be defined by creating a{' '}
         <code>.page.route.*</code> file.
       </p>
       <pre>{`// /pages/hello.page.route.ts
+
 export default '/hello/:name';`}</pre>
     </>
   )

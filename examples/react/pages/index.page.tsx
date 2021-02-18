@@ -6,12 +6,14 @@ export default IndexPage
 function IndexPage() {
   return (
     <>
-      <h1>Welcome</h1>
-      To <code>vite-plugin-ssr</code>. This page is:
+      <h1>
+        Welcome to <code>vite-plugin-ssr</code>
+      </h1>
+      This page is:
       <ul>
         <li>Rendered to HTML.</li>
         <li>
-          Interactive: <Counter />.
+          Interactive. <Counter />
         </li>
       </ul>
     </>

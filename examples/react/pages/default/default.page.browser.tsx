@@ -6,11 +6,12 @@ import { PageLayout } from '../../components/PageLayout/PageLayout'
 hydrate()
 
 async function hydrate() {
-  const { pageView, initialProps } = await getPage()
+  const { Page, initialProps } = await getPage()
 
-  const app = (
-    <PageLayout>{React.createElement(pageView, initialProps)}</PageLayout>
+  ReactDOM.hydrate(
+    <PageLayout>
+      <Page {...initialProps} />
+    </PageLayout>,
+    document.getElementById('page-view')
   )
-  ReactDOM.hydrate(app, document.getElementById('page-view'))
-  console.log('initialProps:', initialProps)
 }

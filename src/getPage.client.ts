@@ -3,22 +3,21 @@ import { assert } from './utils/assert'
 
 export { getPage }
 
-type PageView = any
 type InitialProps = Record<string, any>
 
 async function getPage(): Promise<{
-  pageView: PageView
+  Page: any
   initialProps: InitialProps
 }> {
   const pageId = getPageId()
   assert(pageId)
 
-  const pageView = await loadUserFile('.page', { pageId })
+  const Page = await loadUserFile('.page', { pageId })
 
   const initialProps = getInitialProps()
   assert(initialProps)
 
-  return { pageView, initialProps }
+  return { Page, initialProps }
 }
 
 function getPageId(): string {

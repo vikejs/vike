@@ -14,15 +14,19 @@ export default {
 
 function addInitialProps(initialProps: InitialProps) {
   return {
-    title: initialProps.title || 'Vite SSR Demo'
+    title: initialProps.title || 'Demo: vite-plugin-ssr'
   }
 }
 
-function render(pageView: string, initialProps: InitialProps) {
-  const app = (
-    <PageLayout>{React.createElement(pageView, initialProps)}</PageLayout>
+function render(
+  Page: (initialProps: InitialProps) => JSX.Element,
+  initialProps: InitialProps
+) {
+  return ReactDOMServer.renderToString(
+    <PageLayout>
+      <Page {...initialProps} />
+    </PageLayout>
   )
-  return ReactDOMServer.renderToString(app)
 }
 
 function html(pageHtml: string, initialProps: InitialProps) {

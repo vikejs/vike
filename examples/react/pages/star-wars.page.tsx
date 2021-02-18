@@ -21,17 +21,18 @@ function StarWars({
         Source: <a href="https://swapi.dev/api/films/">swapi.dev/api/films/</a>.
       </p>
       <p>
-        Data can be fetched by defining <code>addInitialProps</code> in the{' '}
-        <code>.page.server.</code> file.
+        Data can be fetched by defining <code>addInitialProps</code> in{' '}
+        <code>.page.server.js</code>.
       </p>
       <pre>{`// /pages/star-wars.page.server.ts
+
 import fetch from 'node-fetch'
 
 export default {
   addInitialProps
 }
 
-async function addInitialProps() {
+async function addInitialProps(initialProps) {
   const response = await fetch('https://swapi.dev/api/films/')
   const data: any = await response.json()
   const starWarsMovies = data.results
