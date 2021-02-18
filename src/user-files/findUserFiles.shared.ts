@@ -1,9 +1,11 @@
 import { FilePathFromRoot, PageId, PageView } from '../types'
 import { assert, assertUsage } from '../utils/assert'
 
+export { getUserFiles }
+export { getUserFile }
+
 export { FileType }
 export { findUserFiles2 }
-export { getUserFiles }
 
 export { findUserFiles }
 export { loadUserFile }
@@ -11,11 +13,12 @@ export { findUserFilePath }
 export { setFileFinder }
 export { findFile }
 
-async function getUserFiles(
-  fileType: FileType
-): Promise<
-  { filePath: string; loadFile: () => Promise<Record<string, any>> }[]
-> {
+type UserFile = {
+  filePath: string
+  loadFile: () => Promise<Record<string, any>>
+}
+
+async function getUserFiles(fileType: FileType): Promise<UserFile[]> {
   const userFiles_byType: UserFiles = await fileFinder()
   const userFiles = Object.entries(userFiles_byType[fileType]).map(
     ([filePath, loadFile]) => {
@@ -23,6 +26,18 @@ async function getUserFiles(
     }
   )
   return userFiles
+}
+
+async function getUserFile(
+  fileType: FileType,
+  pageId: string
+): Promise<null | UserFile> {
+  const userFiles = await getUserFiles(fileType)
+  const userFile = findFile2(userFiles, pageId)
+  if (userFile === null) {
+    return null
+  }
+  return userFile
 }
 
 async function findUserFiles2(fileType: FileType) {
@@ -219,4 +234,19 @@ function findFile<T>(
   const filePath = filePaths[0]
   const fileGetter = files[filePath]
   return { filePath, fileGetter }
+}
+
+function findFile2<T>(
+  userFiles: { filePath: string; loadFile: T }[],
+  pageId: string
+): { filePath: string; loadFile: T } | null {
+  userFiles = userFiles.filter(({ filePath }) => filePath.startsWith(pageId))
+  if (userFiles.length === 0) {
+    return null
+  }
+  assertUsage(
+    userFiles.length === 1,
+    'Conflicting ' + userFiles.map(({ filePath }) => filePath).join(' ')
+  )
+  return userFiles[0]
 }

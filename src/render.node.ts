@@ -2,11 +2,9 @@ import { route } from './route.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { assert } from './utils/assert'
 import devalue from 'devalue'
-import {
-  findUserFilePath,
-  loadUserFile
-} from './user-files/findUserFiles.shared'
-import { findPageFiles } from './user-files/findPageFiles.node'
+import { getUserFile, getUserFiles } from './user-files/findUserFiles.shared'
+import { relative as pathRelative } from 'path'
+import { lowerFirst } from './utils/sorter'
 
 import { assertUsage } from './utils/assert'
 import { isCallable } from './utils/isCallable'
@@ -27,7 +25,7 @@ async function render(
   const { pageId, routeProps } = routedPage
   Object.assign(initialProps, routeProps)
 
-  const { pageView, pageFilePaths } = await getPageView(pageId)
+  const { Page, pageFilePaths } = await getPageView(pageId)
 
   const { render, html, addInitialProps } = await getPageFunctions(pageId)
 
@@ -36,7 +34,7 @@ async function render(
     Object.assign(initialProps, newInitialProps)
   }
 
-  const pageHtml: string = await render(pageView, initialProps)
+  const pageHtml: string = await render(Page, initialProps)
 
   const { template, variables } = await html(
     { dangerouslyManuallyEscaped: pageHtml },
@@ -54,12 +52,12 @@ async function render(
   htmlDocument = injectPageInfo(htmlDocument, initialProps, pageId)
 
   // Inject script
-  const browserEntryPath = await getBrowserEntryPath(pageId)
-  const scriptSrc = await pathRelativeToRoot(browserEntryPath)
+  const browserFilePath = await getBrowserFilePath(pageId)
+  const scriptSrc = await pathRelativeToRoot(browserFilePath)
   htmlDocument = injectScript(htmlDocument, scriptSrc)
 
   // Inject preload links
-  const preloadLinks = getPreloadLinks(pageFilePaths, browserEntryPath)
+  const preloadLinks = getPreloadLinks(pageFilePaths, browserFilePath)
   htmlDocument = injectPreloadLinks(htmlDocument, preloadLinks)
 
   // Inject initialProps variables
@@ -71,51 +69,23 @@ async function render(
   return htmlDocument
 }
 
-async function getBrowserEntryPath(pageId: string): Promise<string> {
-  const browserEntryPath: string | null =
-    (await findUserFilePath('.browser', { pageId })) ||
-    (await findUserFilePath('.browser', { defaultFile: true }))
-  assert(browserEntryPath)
-  return browserEntryPath
-}
-
 async function getPageView(pageId: string) {
-  let pageView: any = await loadUserFile('.page', { pageId })
-  assert(pageView)
+  const pageFile = await getUserFile('.page', pageId)
+  assert(pageFile)
+  const { filePath, loadFile } = pageFile
+  const fileExports = await loadFile()
+  assertUsage(
+    typeof fileExports === 'object' && 'default' in fileExports,
+    `${filePath} should have a default export.`
+  )
+  const Page = fileExports.default
 
-  const pageFilePaths = []
-
-  const pageFilePath: string | null = await findUserFilePath('.page', {
-    pageId
-  })
-  assert(pageFilePath)
-  assert(pageFilePath.startsWith('/'))
-  pageFilePaths.push(pageFilePath)
-
-  /*
-  const pageViewWrapper: any = await loadUserFile('.page', {
-    defaultFile: true
-  })
-  if (pageViewWrapper) {
-    const pageView_original = pageView
-    pageView = (initialProps: Record<string, any>) => {
-      return pageViewWrapper(pageView_original, initialProps)
-    }
-    const pageFilePath: string | null = await findUserFilePath('.page', {
-      defaultFile: true
-    })
-    assert(pageFilePath)
-    assert(pageFilePath.startsWith('/'))
-    pageFilePaths.push(pageFilePath)
-  }
-  */
-
-  return { pageView, pageFilePaths }
+  return { Page, pageFilePaths: [filePath] }
 }
 
 type HtmlTemplate = { template: string; variables: Record<string, unknown> }
 type ServerFunctions = {
-  render: (pageView: any, initialProps: Record<string, any>) => Promise<string>
+  render: (Page: any, initialProps: Record<string, any>) => Promise<string>
   html: ((
     pageHtml: { dangerouslyManuallyEscaped: string },
     initialProps: Record<string, unknown>
@@ -125,13 +95,13 @@ type ServerFunctions = {
   ) => Record<string, unknown> | Promise<Record<string, unknown>>
 }
 async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
-  const files = await findPageFiles('.server', pageId)
+  const serverFiles = await getServerFiles(pageId)
 
   let render
   let html
   let addInitialProps
 
-  for (const { filePath, loadFile } of files) {
+  for (const { filePath, loadFile } of serverFiles) {
     const fileExports = await loadFile()
     assertUsage(
       typeof fileExports === 'object' && 'default' in fileExports,
@@ -164,11 +134,51 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   }
 
   const howToResolve =
-    'Make sure to define a `*.page.server.*` file that exports a `render` function. You can define to `default.page.server.js` which will apply as a default to all your pages.'
+    'Make sure to define a `*.page.server.js` file that exports a `render` function. You can create a file `_default.page.server.js` which will apply as a default to all your pages.'
   assertUsage(render, 'No `render` function found. ' + howToResolve)
   assertUsage(html, 'No `html` function found. ' + howToResolve)
 
   return { render, html, addInitialProps }
+}
+
+async function getBrowserFilePath(pageId: string) {
+  const browserFiles = await getBrowserFiles(pageId)
+  const browserFile = browserFiles[0]
+  const browserFilePath = browserFile.filePath
+  return browserFilePath
+}
+async function getBrowserFiles(pageId: string) {
+  let browserFiles = await getUserFiles('.browser')
+  browserFiles = filterAndSort(browserFiles, pageId)
+  return browserFiles
+}
+
+async function getServerFiles(pageId: string) {
+  let serverFiles = await getUserFiles('.server')
+  serverFiles = filterAndSort(serverFiles, pageId)
+  return serverFiles
+}
+
+function filterAndSort<T extends { filePath: string }>(
+  userFiles: T[],
+  pageId: string
+): T[] {
+  userFiles = userFiles.filter(({ filePath }) => {
+    assert(filePath.startsWith('/'))
+    return filePath.startsWith(pageId) || filePath.includes('/default.page.')
+  })
+
+  // Sort `default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
+  userFiles.sort(
+    lowerFirst(({ filePath }) => {
+      const relativePath = pathRelative(pageId, filePath)
+      assert(!relativePath.includes('\\'))
+      const changeDirCount = relativePath.split('/').length
+      return changeDirCount
+    })
+  )
+
+  return userFiles
 }
 
 async function applyViteHtmlTransform(

@@ -6,7 +6,7 @@ export { getPreloadLinks }
 
 function getPreloadLinks(
   pageFilePaths: string[],
-  browserEntryPath: string
+  browserFilePath: string
 ): string[] {
   const { isProduction } = getGlobal()
   if (!isProduction) {
@@ -16,7 +16,7 @@ function getPreloadLinks(
 
   let preloadLinks: string[] = []
 
-  ;[...pageFilePaths, browserEntryPath].forEach((filePath) =>
+  ;[...pageFilePaths, browserFilePath].forEach((filePath) =>
     preloadLinks.push(...retrievePreloadLinks(filePath, manifest))
   )
 

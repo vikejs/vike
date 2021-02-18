@@ -153,7 +153,7 @@ async function loadPageRoutes(): Promise<
     userRouteFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
       assertUsage(
-        fileExports && 'default' in fileExports,
+        typeof fileExports === 'object' && 'default' in fileExports,
         `${filePath} should have a default export.`
       )
 
