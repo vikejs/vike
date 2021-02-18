@@ -1,6 +1,6 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { PageLayout } from '../../components/PageLayout/PageLayout'
+import { PageLayout } from '../components/PageLayout/PageLayout'
 
 type InitialProps = {
   title?: string

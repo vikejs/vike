@@ -71,7 +71,7 @@ function browserEntryPoints(config: UserConfig): Record<string, string> {
   const root = getRoot(config)
   assert(pathIsAbsolute(root))
 
-  const browserEntries = glob.sync(`${root}/**/*.browser.*([a-zA-Z0-9])`, {
+  const browserEntries = glob.sync(`${root}/**/*.page.client.*([a-zA-Z0-9])`, {
     ignore: ['**/node_modules/**']
   })
 

@@ -58,7 +58,7 @@ yarn create vite-plugin-ssr
 
 2. Use `createServer` with your Express.js/Koa/... server.
 
-3. Write `_default.page.browser.js` and `_default.page.server.js`
+3. Write `_default.page.client.js` and `_default.page.server.js`
 
 4. Write your first page `index.page.js`
 

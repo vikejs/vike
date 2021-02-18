@@ -2,7 +2,7 @@ export { getAllUserFiles }
 export { setAllUserFilesGetter }
 export { FileType }
 
-type FileType = '.page' | '.server' | '.route' | '.browser'
+type FileType = '.page' | '.page.server' | '.page.route' | '.page.client'
 
 type AllUserFiles = Record<FileType, Record<FilePath, LoadFile>>
 type FilePath = string

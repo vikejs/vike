@@ -143,13 +143,13 @@ async function getBrowserFilePath(pageId: string) {
   return browserFilePath
 }
 async function getBrowserFiles(pageId: string) {
-  let browserFiles = await getUserFiles('.browser')
+  let browserFiles = await getUserFiles('.page.client')
   browserFiles = filterAndSort(browserFiles, pageId)
   return browserFiles
 }
 
 async function getServerFiles(pageId: string) {
-  let serverFiles = await getUserFiles('.server')
+  let serverFiles = await getUserFiles('.page.server')
   serverFiles = filterAndSort(serverFiles, pageId)
   return serverFiles
 }
@@ -160,10 +160,10 @@ function filterAndSort<T extends { filePath: string }>(
 ): T[] {
   userFiles = userFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
-    return filePath.startsWith(pageId) || filePath.includes('/default.page.')
+    return filePath.startsWith(pageId) || filePath.includes('/_default')
   })
 
-  // Sort `default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
+  // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
   userFiles.sort(
     lowerFirst(({ filePath }) => {
       const relativePath = pathRelative(pageId, filePath)

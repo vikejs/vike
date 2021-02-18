@@ -8,15 +8,15 @@ function __getAllUserFiles(): any {
     //@ts-ignore
     '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])'),
     //@ts-ignore
-    '.browser': import.meta.glob('/**/*.page.browser.*([a-zA-Z0-9])')
+    '.page.client': import.meta.glob('/**/*.page.client.*([a-zA-Z0-9])')
   }
   //@ts-ignore
   if (import.meta.env.SSR) {
     Object.assign(allUserFiles, {
       //@ts-ignore
-      '.server': import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])'),
+      '.page.server': import.meta.glob('/**/*.page.server.*([a-zA-Z0-9])'),
       //@ts-ignore
-      '.route': import.meta.glob('/**/*.page.route.*([a-zA-Z0-9])')
+      '.page.route': import.meta.glob('/**/*.page.route.*([a-zA-Z0-9])')
     })
   }
   return allUserFiles

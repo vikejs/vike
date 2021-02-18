@@ -32,7 +32,7 @@ async function route(
     }
     const pageRoute = pageRoutes[pageId]
 
-    // Route with `.route.page.js` defined route string
+    // Route with `.page.route.js` defined route string
     if (typeof pageRoute === 'string') {
       const routeString: string = pageRoute
       const { matchValue, routeProps } = routeWith_pathToRegexp(
@@ -42,7 +42,7 @@ async function route(
       return { pageId, matchValue, routeProps }
     }
 
-    // Route with `.route.page.js` defined route function
+    // Route with `.page.route.js` defined route function
     if (isCallable(pageRoute)) {
       const routeFunction = pageRoute
       const { matchValue, routeProps } = routeFunction(url)
@@ -131,9 +131,10 @@ function getCommonPrefix(strings: string[]): string {
 async function getPageIds(): Promise<PageId[]> {
   const pageFiles = await getUserFiles('.page')
   let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-  pageFilePaths = pageFilePaths.filter(
-    (fileName) => !fileName.includes('/default.page.')
-  )
+  pageFilePaths = pageFilePaths.filter((filePath) => {
+    assert(!filePath.includes('\\'))
+    return !filePath.includes('/_default')
+  })
 
   let allPageIds = pageFilePaths.map(computePageId)
   return allPageIds
@@ -147,7 +148,7 @@ function computePageId(filePath: string): string {
 async function loadPageRoutes(): Promise<
   Record<PageId, string | ((url: string) => RouteResult)>
 > {
-  const userRouteFiles = await getUserFiles('.route')
+  const userRouteFiles = await getUserFiles('.page.route')
 
   const pageRoutes = await Promise.all(
     userRouteFiles.map(async ({ filePath, loadFile }) => {
