@@ -1,14 +1,29 @@
-import { FilePathFromRoot, Html, PageId, PageView } from '../types'
+import { FilePathFromRoot, PageId, PageView } from '../types'
 import { assert, assertUsage } from '../utils/assert'
 
 export { FileType }
 export { findUserFiles2 }
+export { getUserFiles }
 
 export { findUserFiles }
 export { loadUserFile }
 export { findUserFilePath }
 export { setFileFinder }
 export { findFile }
+
+async function getUserFiles(
+  fileType: FileType
+): Promise<
+  { filePath: string; loadFile: () => Promise<Record<string, any>> }[]
+> {
+  const userFiles_byType: UserFiles = await fileFinder()
+  const userFiles = Object.entries(userFiles_byType[fileType]).map(
+    ([filePath, loadFile]) => {
+      return { filePath, loadFile }
+    }
+  )
+  return userFiles
+}
 
 async function findUserFiles2(fileType: FileType) {
   const userFiles_byType: UserFiles = await fileFinder()

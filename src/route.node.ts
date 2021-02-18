@@ -1,31 +1,71 @@
-import { higherFirst } from './utils/sorter'
-import {
-  findFile,
-  findUserFiles,
-  findUserFiles2
-} from './user-files/findUserFiles.shared'
-import { assert, assertUsage } from './utils/assert'
-import { isCallable } from './utils/isCallable'
-import { slice } from './utils/slice'
+import { getUserFiles } from './user-files/findUserFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
+import {
+  assert,
+  assertUsage,
+  cast,
+  isCallable,
+  higherFirst,
+  slice
+} from './utils'
 
 export { route }
 
-type RouteProps = Record<string, string>
-type RouteResult = { matchValue: boolean | number; routeProps?: RouteProps }
 type PageId = string
+type RouteResult = {
+  matchValue: boolean | number
+  routeProps: Record<string, string>
+}
 
 async function route(
   url: string
-): Promise<null | { pageId: PageId; routeProps?: RouteProps }> {
+): Promise<null | { pageId: PageId; routeProps: Record<string, string> }> {
   const allPageIds = await getPageIds()
+  const pageRoutes = await loadPageRoutes()
 
-  const pageRoutes = (await getPageRoutes(allPageIds))
-    .map(({ pageId, routeFunction }) => {
+  const routeResults = allPageIds.map((pageId) => {
+    // Route with filesystem
+    if (!(pageId in pageRoutes)) {
+      const matchValue = routeWith_filesystem(url, pageId, allPageIds)
+      return { pageId, matchValue, routeProps: {} }
+    }
+    const pageRoute = pageRoutes[pageId]
+
+    // Route with `.route.page.js` defined route string
+    if (typeof pageRoute === 'string') {
+      const routeString: string = pageRoute
+      const { matchValue, routeProps } = routeWith_pathToRegexp(
+        url,
+        routeString
+      )
+      return { pageId, matchValue, routeProps }
+    }
+
+    // Route with `.route.page.js` defined route function
+    if (isCallable(pageRoute)) {
+      const routeFunction = pageRoute
       const { matchValue, routeProps } = routeFunction(url)
       return { pageId, matchValue, routeProps }
-    })
+    }
+
+    assert(false)
+  })
+
+  const winner = pickWinner(routeResults)
+
+  console.log('Match:', `[${url}]: ${winner && winner.pageId}`)
+
+  if (!winner) return null
+
+  const { pageId, routeProps } = winner
+  return { pageId, routeProps }
+}
+
+function pickWinner(
+  routeResults: (RouteResult & { pageId: PageId })[]
+): RouteResult & { pageId: PageId } {
+  const candidates = routeResults
     .filter(({ matchValue }) => matchValue !== false)
     .sort(
       higherFirst(({ matchValue }) => {
@@ -34,108 +74,39 @@ async function route(
       })
     )
 
-  const winner = pageRoutes[0]
+  const winner = candidates[0]
 
-  console.log('Match:', `[${url}]: ${winner && winner.pageId}`)
-
-  if (!winner) {
-    return null
-  }
-  const { pageId, routeProps } = winner
-  return { pageId, routeProps }
+  return winner
 }
 
-async function getPageRoutes(
+function routeWith_pathToRegexp(url: string, routeString: string): RouteResult {
+  const match = pathToRegexp(url, { path: routeString, exact: true })
+  if (!match) {
+    return { matchValue: false, routeProps: {} }
+  }
+  // The longer the route string, the more likely is it specific
+  const matchValue = routeString.length
+  const routeProps = match.params
+  return { matchValue, routeProps }
+}
+
+function routeWith_filesystem(
+  url: string,
+  pageId: string,
   allPageIds: PageId[]
-): Promise<{ pageId: string; routeFunction: (url: string) => RouteResult }[]> {
-  const pageRouteFiles = await findUserFiles2('.route')
+): boolean {
+  let pageRoute = removeCommonPrefix(pageId, allPageIds)
+  pageRoute = pageRoute
+    .split('/')
+    .filter((part) => part !== 'index')
+    .join('/')
+  pageRoute = normalize(pageRoute)
 
-  const fileSystemRoute = await getFileSystemRoute(allPageIds)
+  url = normalize(url)
+  // console.log("url:" + url, "pageRoute:" + pageRoute);
 
-  const pageRoutes = await Promise.all(
-    allPageIds.map(async (pageId) => {
-      const pageRouteFile = findFile(pageRouteFiles, { pageId })
-
-      let routeFunction: (url: string) => RouteResult
-
-      if (!pageRouteFile) {
-        routeFunction = fileSystemRoute.bind(null, pageId)
-      } else {
-        const { filePath, fileGetter } = pageRouteFile
-
-        const fileExports = await fileGetter()
-        assertUsage(
-          fileExports && 'default' in fileExports,
-          `${filePath} should have a default export.`
-        )
-
-        const pageRoute = fileExports.default
-        assertUsage(
-          typeof pageRoute === 'string' || isCallable(pageRoute),
-          `\`route\` defined in ${filePath} should be a string or a function.`
-        )
-
-        if (typeof pageRoute === 'string') {
-          routeFunction = (url: string): RouteResult => {
-            const match = pathToRegexp(url, { path: pageRoute, exact: true })
-            if (!match) {
-              return { matchValue: false }
-            }
-            // The longer the route string, the more likely is it specific
-            const matchValue = pageRoute.length
-            const routeProps = match.params
-            return { matchValue, routeProps }
-          }
-        } else if (isCallable(pageRoute)) {
-          routeFunction = (url: string): RouteResult => {
-            const routeResult = pageRoute(url)
-            if (!routeResult) {
-              return { matchValue: false }
-            } else {
-              const keys = Object.keys(routeResult)
-              if (
-                keys.length === 2 &&
-                keys.includes('matchValue') &&
-                keys.includes('routeProps')
-              ) {
-                assertUsage(
-                  typeof routeResult.matchValue === 'boolean' ||
-                    typeof routeResult.matchValue === 'number',
-                  `The \`matchValue\` returned by the \`route\` function in ${filePath} should be a boolean or a number.`
-                )
-                return routeResult
-              } else {
-                return { matchValue: true, routeProps: routeResult }
-              }
-            }
-          }
-        } else {
-          assert(false)
-        }
-      }
-
-      return { pageId, routeFunction }
-    })
-  )
-
-  return pageRoutes
-}
-
-async function getFileSystemRoute(allPageIds: PageId[]) {
-  return (pageId: string, url: string): RouteResult => {
-    let pageRoute = removeCommonPrefix(pageId, allPageIds)
-    pageRoute = pageRoute
-      .split('/')
-      .filter((part) => part !== 'index')
-      .join('/')
-    pageRoute = normalize(pageRoute)
-
-    url = normalize(url)
-    // console.log("url:" + url, "pageRoute:" + pageRoute);
-
-    const matchValue = url === pageRoute
-    return { matchValue }
-  }
+  const matchValue = url === pageRoute
+  return matchValue
 
   function normalize(url: string): string {
     return url.split('/').filter(Boolean).join('/').toLowerCase()
@@ -158,17 +129,81 @@ function getCommonPrefix(strings: string[]): string {
 }
 
 async function getPageIds(): Promise<PageId[]> {
-  const files = await findUserFiles('.page')
-  let filePaths = Object.keys(files)
-  filePaths = filePaths.filter(
+  const pageFiles = await getUserFiles('.page')
+  let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
+  pageFilePaths = pageFilePaths.filter(
     (fileName) => !fileName.includes('/default.page.')
   )
 
-  let allPageIds = filePaths.map(computePageId)
+  let allPageIds = pageFilePaths.map(computePageId)
   return allPageIds
 }
 function computePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
   return pageId
+}
+
+async function loadPageRoutes(): Promise<
+  Record<PageId, string | ((url: string) => RouteResult)>
+> {
+  const userRouteFiles = await getUserFiles('.route')
+
+  const pageRoutes = await Promise.all(
+    userRouteFiles.map(async ({ filePath, loadFile }) => {
+      const fileExports = await loadFile()
+      assertUsage(
+        fileExports && 'default' in fileExports,
+        `${filePath} should have a default export.`
+      )
+
+      let pageRoute
+      if (typeof fileExports.default === 'string') {
+        pageRoute = fileExports.default
+      } else if (isCallable(fileExports.default)) {
+        pageRoute = (url: string) => {
+          const result = fileExports.default(url)
+          const { match, params } = result
+          assertUsage(
+            typeof match === 'boolean' || typeof match === 'number',
+            `\`match\` returned by the \`route\` function in ${filePath} should be a boolean or a number.`
+          )
+          assertUsage(
+            params?.constructor === Object,
+            `\`params\` returned by the \`route\` function in ${filePath} should be an object.`
+          )
+          Object.entries(params).forEach(([key, val]) => {
+            assertUsage(
+              typeof val === 'string',
+              `\`params.${key}\` returned by the \`route\` function in ${filePath} should be a string.`
+            )
+          })
+          cast<Record<string, string>>(params)
+          assertUsage(
+            Object.keys(result).length === 2,
+            `The \`route\` function in ${filePath} should be return an object \`{match, params}\`.`
+          )
+          return {
+            matchValue: match,
+            routeProps: params
+          }
+        }
+      } else {
+        assertUsage(
+          false,
+          `\`route\` defined in ${filePath} should be a string or a function.`
+        )
+      }
+
+      const pageId = computePageId(filePath)
+
+      return { pageId, pageRoute }
+    })
+  )
+
+  const routeFiles = Object.fromEntries(
+    pageRoutes.map(({ pageId, pageRoute }) => [pageId, pageRoute])
+  )
+
+  return routeFiles
 }

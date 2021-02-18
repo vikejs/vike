@@ -2,7 +2,6 @@ import { Plugin, UserConfig } from 'vite'
 import {
   dirname as pathDirname,
   isAbsolute as pathIsAbsolute,
-  join as pathJoin,
   relative as pathRelative,
   basename as pathFilename
 } from 'path'
