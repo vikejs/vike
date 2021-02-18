@@ -1,16 +1,11 @@
+import devalue from 'devalue'
 import { route } from './route.node'
 import { getViteManifest } from './getViteManfiest.node'
-import { assert } from './utils/assert'
-import devalue from 'devalue'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
-import { relative as pathRelative } from 'path'
-import { lowerFirst } from './utils/sorter'
-
-import { assertUsage } from './utils/assert'
-import { isCallable } from './utils/isCallable'
-import { slice } from './utils/slice'
 import { getGlobal } from './global.node'
 import { getPreloadLinks } from './getPreloadLinks.node'
+import { relative as pathRelative } from 'path'
+import { assert, assertUsage, lowerFirst, isCallable, slice } from './utils'
 
 export { render }
 

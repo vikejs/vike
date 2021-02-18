@@ -1,22 +1,20 @@
 import { assertUsage } from '../utils/assert'
+import { getAllUserFiles, FileType } from './infra.shared'
 
 export { getUserFiles }
 export { getUserFile }
 
-export { setFileFinder }
-
-type FileType = '.page' | '.server' | '.route' | '.browser'
 type UserFile = {
   filePath: string
   loadFile: () => Promise<Record<string, any>>
 }
 
 async function getUserFiles(fileType: FileType): Promise<UserFile[]> {
-  const userFiles_byType: Record<
-    UserFile['filePath'],
-    UserFile['loadFile']
-  > = await fileFinder()
-  const userFiles = Object.entries(userFiles_byType[fileType]).map(
+  const allUserFiles: Record<
+    FileType,
+    Record<UserFile['filePath'], UserFile['loadFile']>
+  > = await getAllUserFiles()
+  const userFiles = Object.entries(allUserFiles[fileType]).map(
     ([filePath, loadFile]) => {
       return { filePath, loadFile }
     }
@@ -34,11 +32,6 @@ async function getUserFile(
     return null
   }
   return userFile
-}
-
-let fileFinder: any
-function setFileFinder(fileFinder_: any): void {
-  fileFinder = fileFinder_
 }
 
 function getPageFile<T>(

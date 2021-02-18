@@ -1,3 +1,3 @@
-import './user-files/getUserFiles.entry.node'
+import './user-files/infra.node'
 export { createRender } from './createRender.node'
 export { plugin } from './plugin.node'

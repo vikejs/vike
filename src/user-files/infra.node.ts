@@ -1,16 +1,16 @@
-import { setFileFinder } from './getUserFiles.shared'
+import { setAllUserFilesGetter } from './infra.shared'
 import { assert } from '../utils/assert'
 import { sep as pathSep } from 'path'
 import { getGlobal } from '../global.node'
-const viteEntryFileBase = 'getUserFiles.vite'
+const viteEntryFileBase = 'infra.vite'
+require.resolve(`./${viteEntryFileBase}`)
 assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
 const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
 
-setFileFinder(async () => {
+setAllUserFilesGetter(async () => {
   const viteEntryExports = await loadViteEntry(viteEntry)
-  const { fileFinder } = viteEntryExports
-  const filesByType = fileFinder()
-  return filesByType
+  const { __getAllUserFiles } = viteEntryExports
+  return __getAllUserFiles()
 })
 
 async function loadViteEntry(modulePath: string): Promise<any> {
@@ -20,7 +20,7 @@ async function loadViteEntry(modulePath: string): Promise<any> {
     const moduleExports = require(`${root}/dist/server/${viteEntryFileBase}.js`)
     return moduleExports
   } else {
-    let moduleExports
+    let moduleExports: any
     try {
       moduleExports = await viteDevServer.ssrLoadModule(modulePath)
     } catch (err) {

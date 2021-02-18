@@ -8,7 +8,7 @@ import {
 import { assert } from './utils/assert'
 import * as glob from 'fast-glob'
 const CLIENT_ENTRY = require.resolve('vite-plugin-ssr/dist/client.js')
-const SERVER_ENTRY = require.resolve('./user-files/getUserFiles.vite')
+const SERVER_ENTRY = require.resolve('./user-files/infra.vite')
 
 export { plugin }
 
