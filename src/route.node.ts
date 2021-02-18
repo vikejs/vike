@@ -1,4 +1,4 @@
-import { getUserFiles } from './user-files/findUserFiles.shared'
+import { getUserFiles } from './user-files/getUserFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
 import {
@@ -54,7 +54,7 @@ async function route(
 
   const winner = pickWinner(routeResults)
 
-  console.log('Match:', `[${url}]: ${winner && winner.pageId}`)
+  // console.log('Match:', `[${url}]: ${winner && winner.pageId}`)
 
   if (!winner) return null
 

@@ -2,7 +2,7 @@ import { route } from './route.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { assert } from './utils/assert'
 import devalue from 'devalue'
-import { getUserFile, getUserFiles } from './user-files/findUserFiles.shared'
+import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { relative as pathRelative } from 'path'
 import { lowerFirst } from './utils/sorter'
 

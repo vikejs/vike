@@ -1,4 +1,4 @@
-import { getUserFile } from './user-files/findUserFiles.shared'
+import { getUserFile } from './user-files/getUserFiles.shared'
 import { assert, assertUsage } from './utils/assert'
 
 export { getPage }

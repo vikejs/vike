@@ -1,8 +1,8 @@
-import { setFileFinder } from './findUserFiles.shared'
+import { setFileFinder } from './getUserFiles.shared'
 import { assert } from '../utils/assert'
 import { sep as pathSep } from 'path'
 import { getGlobal } from '../global.node'
-const viteEntryFileBase = 'findUserFiles.vite'
+const viteEntryFileBase = 'getUserFiles.vite'
 assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
 const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
 
