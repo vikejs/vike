@@ -17,6 +17,8 @@ async function render(
   if (!routedPage) {
     return null
   }
+  Object.assign(initialProps, { url })
+
   const { pageId, routeProps } = routedPage
   Object.assign(initialProps, routeProps)
 

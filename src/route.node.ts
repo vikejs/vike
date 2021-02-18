@@ -25,6 +25,11 @@ async function route(
   const pageRoutes = await loadPageRoutes()
 
   const routeResults = allPageIds.map((pageId) => {
+    // Route 404
+    if (is404Page(pageId)) {
+      return { pageId, matchValue: -Infinity, routeProps: {} }
+    }
+
     // Route with filesystem
     if (!(pageId in pageRoutes)) {
       const matchValue = routeWith_filesystem(url, pageId, allPageIds)
@@ -207,4 +212,9 @@ async function loadPageRoutes(): Promise<
   )
 
   return routeFiles
+}
+
+function is404Page(pageId: string): boolean {
+  assert(!pageId.includes('\\'))
+  return pageId.includes('/_404')
 }
