@@ -7,7 +7,7 @@ function Counter() {
 
   return (
     <button onClick={() => setCount((count) => count + 1)}>
-      Counter {count}
+      Counter - {count}
     </button>
   )
 }

@@ -2,10 +2,8 @@ import { Counter } from '../components/Counter';
 
 # Markdown
 
-By using `@brillout/vite-plugin-mdx`, you write pages using MDX.
+You can write pages using Markdown by using `@brillout/vite-plugin-mdx`.
 
 This page is written in _markdown_.
 
-With MDX we can embed interactive views right within our markdown: <Counter/>
-
-Edit this page see HMR in action.
+MDX allows us to use interactive views right within our markdown: <Counter/>.

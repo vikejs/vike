@@ -146,11 +146,13 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
     render = render || renderFunction
 
     const htmlFunction = fileExports.default.html
-    htmlFunction.sourceFilePath = filePath
     assertUsage(
       !htmlFunction || isCallable(htmlFunction),
       `\`html\` defined in ${filePath} should be a function.`
     )
+    if (html) {
+      htmlFunction.sourceFilePath = filePath
+    }
     html = html || htmlFunction
 
     const addInitialPropsFunction = fileExports.default.addInitialProps

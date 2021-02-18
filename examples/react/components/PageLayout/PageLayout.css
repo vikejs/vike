@@ -35,6 +35,14 @@ code {
   padding: 2px 3px;
   border-radius: 4px;
 }
+
+pre {
+  font-family: monospace;
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
 a {
   text-decoration: none;
 }

@@ -13,12 +13,12 @@ import pathToRegexp from '@brillout/path-to-regexp'
 export { route }
 
 type RouteProps = Record<string, string>
-type RouteResult = { matchValue: boolean | number; routeProps: RouteProps }
+type RouteResult = { matchValue: boolean | number; routeProps?: RouteProps }
 type PageId = string
 
 async function route(
   url: string
-): Promise<null | { pageId: PageId; routeProps: RouteProps }> {
+): Promise<null | { pageId: PageId; routeProps?: RouteProps }> {
   const allPageIds = await getPageIds()
 
   const pageRoutes = (await getPageRoutes(allPageIds))
@@ -64,23 +64,30 @@ async function getPageRoutes(
         const { filePath, fileGetter } = pageRouteFile
 
         const fileExports = await fileGetter()
-
-        let pageRoute = fileExports.route
         assertUsage(
-          !pageRoute || typeof pageRoute === 'string' || isCallable(pageRoute),
+          fileExports && 'default' in fileExports,
+          `${filePath} should have a default export.`
+        )
+
+        const pageRoute = fileExports.default
+        assertUsage(
+          typeof pageRoute === 'string' || isCallable(pageRoute),
           `\`route\` defined in ${filePath} should be a string or a function.`
         )
 
         if (typeof pageRoute === 'string') {
-          routeFunction = (url: string) => {
+          routeFunction = (url: string): RouteResult => {
             const match = pathToRegexp(url, { path: pageRoute, exact: true })
+            if (!match) {
+              return { matchValue: false }
+            }
             // The longer the route string, the more likely is it specific
             const matchValue = pageRoute.length
             const routeProps = match.params
             return { matchValue, routeProps }
           }
         } else if (isCallable(pageRoute)) {
-          routeFunction = (url: string) => {
+          routeFunction = (url: string): RouteResult => {
             const routeResult = pageRoute(url)
             if (!routeResult) {
               return { matchValue: false }
@@ -127,8 +134,7 @@ async function getFileSystemRoute(allPageIds: PageId[]) {
     // console.log("url:" + url, "pageRoute:" + pageRoute);
 
     const matchValue = url === pageRoute
-    const routeProps = {}
-    return { matchValue, routeProps }
+    return { matchValue }
   }
 
   function normalize(url: string): string {

@@ -7,11 +7,11 @@ function IndexPage() {
   return (
     <>
       <h1>Welcome</h1>
-      Welcome to <code>vite-plugin-ssr</code>.
+      To <code>vite-plugin-ssr</code>. This page is:
       <ul>
-        <li>This page is rendered to HTML.</li>
+        <li>Rendered to HTML.</li>
         <li>
-          This page is interactive: <Counter />
+          Interactive: <Counter />.
         </li>
       </ul>
     </>

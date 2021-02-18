@@ -21,18 +21,20 @@ function PageLayout({ children }: { children: React.ReactNode }) {
   )
 }
 
-function PageContent({ children }: { children: React.ReactNode }) {
-  return <div className="page-content">{children}</div>
-}
-
 function PageNavigation() {
   return (
     <div className="page-navigation">
       <Header />
       <a href="/markdown">Markdown</a>
+      <a href="/star-wars">Data Fetching</a>
+      <a href="/hello/alice">Routing</a>
       <a href="/zero-js">Zero JS</a>
     </div>
   )
+}
+
+function PageContent({ children }: { children: React.ReactNode }) {
+  return <div className="page-content">{children}</div>
 }
 
 function Header() {
