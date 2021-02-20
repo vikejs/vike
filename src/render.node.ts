@@ -25,18 +25,25 @@ async function render(
 
   const { Page, pageFilePaths } = await getPageView(pageId)
 
-  const { render, addInitialProps } = await getPageFunctions(pageId)
+  const { renderFunction, addInitialPropsFunction } = await getPageFunctions(
+    pageId
+  )
 
-  if (addInitialProps) {
-    const newInitialProps = await addInitialProps(initialProps)
+  if (addInitialPropsFunction) {
+    const newInitialProps = await addInitialPropsFunction.addInitialProps(
+      initialProps
+    )
     assertUsage(
       newInitialProps && (newInitialProps as any).constructor === Object,
-      'Your `addInitialProps` function should return a plain JavaScript object.'
+      `The \`addInitialProps\` function exported by ${addInitialPropsFunction.filePath} should return a plain JavaScript object.`
     )
     Object.assign(initialProps, newInitialProps)
   }
 
-  let htmlDocument: string = getSanetizedHtml(await render(Page, initialProps))
+  let htmlDocument: string = getSanetizedHtml(
+    await renderFunction.render(Page, initialProps),
+    renderFunction.filePath
+  )
 
   // Inject Vite transformations
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
@@ -71,42 +78,48 @@ async function getPageView(pageId: string) {
 }
 
 type ServerFunctions = {
-  render: (Page: any, initialProps: Record<string, any>) => unknown
-  addInitialProps: (initialProps: Record<string, unknown>) => unknown
+  renderFunction: {
+    filePath: string
+    render: (Page: any, initialProps: Record<string, any>) => unknown
+  }
+  addInitialPropsFunction?: {
+    filePath: string
+    addInitialProps: (initialProps: Record<string, unknown>) => unknown
+  }
 }
 async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const serverFiles = await getServerFiles(pageId)
 
-  let render
-  let addInitialProps
+  let renderFunction
+  let addInitialPropsFunction
 
   for (const { filePath, loadFile } of serverFiles) {
     const fileExports = await loadFile()
+    const render = fileExports.render || fileExports.default?.render
     assertUsage(
-      typeof fileExports === 'object' && 'default' in fileExports,
-      `${filePath} should have a default export`
+      !render || isCallable(render),
+      `The \`render\` export of ${filePath} should be a function.`
+    )
+    const addInitialProps =
+      fileExports.addInitialProps || fileExports.default?.addInitialProps
+    assertUsage(
+      !addInitialProps || isCallable(addInitialProps),
+      `The \`addInitialProps\` export of ${filePath} should be a function.`
     )
 
-    const renderFunction = fileExports.default.render
-    assertUsage(
-      !renderFunction || isCallable(renderFunction),
-      `\`render\` defined in ${filePath} should be a function.`
-    )
-    render = render || renderFunction
-
-    const addInitialPropsFunction = fileExports.default.addInitialProps
-    assertUsage(
-      !addInitialPropsFunction || isCallable(addInitialPropsFunction),
-      `\`addInitialProps\` defined in ${filePath} should be a function.`
-    )
-    addInitialProps = addInitialProps || addInitialPropsFunction
+    renderFunction = renderFunction || { render, filePath }
+    addInitialPropsFunction = addInitialPropsFunction || {
+      addInitialProps,
+      filePath
+    }
   }
 
-  const howToResolve =
-    'Make sure to define a `*.page.server.js` file that exports a `render` function. You can create a file `_default.page.server.js` which will apply as a default to all your pages.'
-  assertUsage(render, 'No `render` function found. ' + howToResolve)
+  assertUsage(
+    renderFunction,
+    'No `render` function found. Make sure to define a `*.page.server.js` file that exports a `render` function. You can export a `render` function in a file `_default.page.server.js` which will apply as a default to all your pages.'
+  )
 
-  return { render, addInitialProps }
+  return { renderFunction, addInitialPropsFunction }
 }
 
 async function getBrowserFilePath(pageId: string) {

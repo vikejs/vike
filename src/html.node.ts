@@ -6,53 +6,68 @@ export { getSanetizedHtml }
 html.sanitize = sanitize
 html.alreadySanitized = alreadySanitized
 
-const __sanitizedHtml = Symbol('__sanitizedHtml')
+const __htmlTemplate = Symbol('__htmlTemplate')
+const __htmlTemplateVariable = Symbol('__htmlTemplateVariable')
 
-type SanetizedHtml = {
-  [__sanitizedHtml]: string
+type HtmlTemplate = {
+  [__htmlTemplate]: {
+    templateParts: TemplateStringsArray
+    templateVariables: unknown[]
+  }
 }
 type SanetizedHtmlVariable = {
-  [__sanitizedHtml]: unknown
+  [__htmlTemplateVariable]: string
 }
 
-function getSanetizedHtml(sanitizedHtml: unknown): string {
+function getSanetizedHtml(renderResult: unknown, filePath: string): string {
   assertUsage(
-    typeof sanitizedHtml !== 'string',
-    "Not sanitized HTML. Make sure to use the `html` template string tag (`import { html } from 'vite-plugin-ssr';`)."
+    typeof renderResult !== 'string',
+    `The \`render\` function exported by ${filePath} returns a string that is not sanitized. Make sure to sanitize the string by using the \`html\` template string tag.`
   )
-  cast<SanetizedHtml>(sanitizedHtml)
+  cast<HtmlTemplate>(renderResult)
   assertUsage(
-    sanitizedHtml && __sanitizedHtml in sanitizedHtml,
-    "Your `html` function should return HTML. It should retrun a `html` template string (`import { html } from 'vite-plugin-ssr';`)."
+    renderResult && __htmlTemplate in renderResult,
+    `The \`render\` function exported by ${filePath} should return a (sanitized) string.`
   )
-  return sanitizedHtml[__sanitizedHtml]
+  return renderTemplate(renderResult, filePath)
 }
 
 function html(
   templateParts: TemplateStringsArray,
   ...templateVariables: SanetizedHtmlVariable[]
 ) {
+  return {
+    [__htmlTemplate]: {
+      templateParts,
+      templateVariables
+    }
+  }
+}
+
+function renderTemplate(htmlTemplate: HtmlTemplate, filePath: string) {
+  const { templateParts, templateVariables } = htmlTemplate[__htmlTemplate]
   const templateVariables__safe = templateVariables.map((templateVar) => {
+    cast<SanetizedHtmlVariable>(templateVar)
     assertUsage(
-      templateVar && __sanitizedHtml in templateVar,
-      'Not sanitized HTML. Make sure to call `html.sanitize` or `html.alreadySanitized` on each HTML template variable.'
+      templateVar && __htmlTemplate in templateVar,
+      `Not sanitized HTML variable: the \`render\` function exported by ${filePath} uses a HTML variable that is not sanitized. Make sure to call \`html.sanitize\` or \`html.alreadySanitized\` on each HTML template variable.`
     )
-    const htmlVar = String(templateVar[__sanitizedHtml])
+    const htmlVar = String(templateVar[__htmlTemplateVariable])
     return htmlVar
   })
   const htmlString = identityTemplateTag(
     templateParts,
     ...templateVariables__safe
   )
-  return { [__sanitizedHtml]: htmlString }
+  return htmlString
 }
 
 function sanitize(unsafe: unknown) {
   const unsafeString = String(unsafe)
-  return { [__sanitizedHtml]: escapeHtml(unsafeString) }
+  return { [__htmlTemplateVariable]: escapeHtml(unsafeString) }
 }
 function alreadySanitized(safe: unknown) {
-  return { [__sanitizedHtml]: safe }
+  return { [__htmlTemplateVariable]: safe }
 }
 
 function identityTemplateTag(
