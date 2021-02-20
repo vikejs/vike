@@ -1,30 +1,12 @@
-import { createSSRApp, defineComponent, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import PageLayout from '../components/PageLayout/PageLayout.vue'
 import { html } from 'vite-plugin-ssr'
+import { getApp, InitialProps } from './_app'
 
 export { render }
 
-type InitialProps = {
-  title?: string
-}
-
 async function render(Page: any, initialProps: InitialProps) {
-  const PageWithLayout = defineComponent({
-    render() {
-      return h(
-        PageLayout,
-        {},
-        {
-          default() {
-            return h(Page, initialProps)
-          }
-        }
-      )
-    }
-  })
-  const app = createSSRApp(PageWithLayout)
-  const pageHtml = await renderToString(app)
+  const app = getApp(Page, initialProps)
+  const appHtml = await renderToString(app)
 
   const title = initialProps.title || 'Demo: vite-plugin-ssr'
 
@@ -37,7 +19,7 @@ async function render(Page: any, initialProps: InitialProps) {
         <title>${html.sanitize(title)}</title>
       </head>
       <body>
-        <div id="app">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
       </body>
     </html>`
 }
