@@ -10,7 +10,9 @@ Vite Plugin for SSR.
 
 :white_check_mark: Design.<br/>
 :white_check_mark: Basic working prototype.<br/>
-:construction: Feature completeness, docs, polish details.
+:white_check_mark: Feature completeness.<br/>
+:white_check_mark: Polished details.<br/>
+:construction: Docs.
 
 ### Features
 
