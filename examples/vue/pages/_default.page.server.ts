@@ -3,12 +3,10 @@ import { renderToString } from '@vue/server-renderer'
 import PageLayout from '../components/PageLayout/PageLayout.vue'
 import { html } from 'vite-plugin-ssr'
 
+export { render }
+
 type InitialProps = {
   title?: string
-}
-
-export default {
-  render
 }
 
 async function render(Page: any, initialProps: InitialProps) {
@@ -26,7 +24,7 @@ async function render(Page: any, initialProps: InitialProps) {
     }
   })
   const app = createSSRApp(PageWithLayout)
-  const pageHtml = await renderToString(app /*, ctx*/)
+  const pageHtml = await renderToString(app)
 
   const title = initialProps.title || 'Demo: vite-plugin-ssr'
 
@@ -39,7 +37,7 @@ async function render(Page: any, initialProps: InitialProps) {
         <title>${html.sanitize(title)}</title>
       </head>
       <body>
-        <div id="app">${html.alreadySanitized(pageHtml)}</div>
+        <div id="app">${html.dangerouslySetHtml(pageHtml)}</div>
       </body>
     </html>`
 }

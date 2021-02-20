@@ -1,91 +1,95 @@
 import { assert, assertUsage, cast } from './utils'
 
 export { html }
-export { getSanetizedHtml }
+export { getSanitizedHtml }
 
 html.sanitize = sanitize
-html.alreadySanitized = alreadySanitized
+html.dangerouslySetHtml = dangerouslySetHtml
 
-const __htmlTemplate = Symbol('__htmlTemplate')
-const __htmlTemplateVariable = Symbol('__htmlTemplateVariable')
+const __template = Symbol('__template')
+const __templateVar = Symbol('__templateVar')
 
-type HtmlTemplate = {
-  [__htmlTemplate]: {
+type SanitizedHtmlString = {
+  [__template]: {
     templateParts: TemplateStringsArray
-    templateVariables: unknown[]
+    templateVariables: {
+      [__templateVar]: any
+    }[]
   }
 }
-type SanetizedHtmlVariable = {
-  [__htmlTemplateVariable]: string
-}
-
-function getSanetizedHtml(renderResult: unknown, filePath: string): string {
-  assertUsage(
-    typeof renderResult !== 'string',
-    `The \`render\` function exported by ${filePath} returns a string that is not sanitized. Make sure to sanitize the string by using the \`html\` template string tag.`
-  )
-  cast<HtmlTemplate>(renderResult)
-  assertUsage(
-    renderResult && __htmlTemplate in renderResult,
-    `The \`render\` function exported by ${filePath} should return a (sanitized) string.`
-  )
-  return renderTemplate(renderResult, filePath)
-}
-
+type TemplateString = TemplateStringsArray
 function html(
-  templateParts: TemplateStringsArray,
-  ...templateVariables: SanetizedHtmlVariable[]
-) {
+  templateString: TemplateString,
+  ...templateVariables: ReturnType<
+    typeof html.sanitize | typeof html.dangerouslySetHtml
+  >[]
+): SanitizedHtmlString {
   return {
-    [__htmlTemplate]: {
-      templateParts,
+    [__template]: {
+      templateParts: templateString,
       templateVariables
     }
   }
 }
+type SanitizedString = { [__templateVar]: any; dangerouslySetHtml?: true }
+function sanitize(unsafe: any): SanitizedString {
+  return { [__templateVar]: unsafe }
+}
+function dangerouslySetHtml(safe: any): SanitizedString {
+  return { [__templateVar]: safe, dangerouslySetHtml: true }
+}
 
-function renderTemplate(htmlTemplate: HtmlTemplate, filePath: string) {
-  const { templateParts, templateVariables } = htmlTemplate[__htmlTemplate]
-  const templateVariables__safe = templateVariables.map((templateVar) => {
-    cast<SanetizedHtmlVariable>(templateVar)
+function getSanitizedHtml(renderResult: unknown, filePath: string): string {
+  assertUsage(
+    typeof renderResult !== 'string',
+    `The \`render\` function exported by ${filePath} returns a string that is not sanitized. Make sure to sanitize the string by using the \`html\` template string tag.`
+  )
+  cast<{
+    [__template]: {
+      templateParts: TemplateStringsArray
+      templateVariables: unknown[]
+    }
+  }>(renderResult)
+  assertUsage(
+    renderResult && __template in renderResult,
+    `The \`render\` function exported by ${filePath} should return a (sanitized) string.`
+  )
+  const { templateParts, templateVariables } = renderResult[__template]
+  const templateVariablesUnwrapped = templateVariables.map((templateVar) => {
+    cast<SanitizedString>(templateVar)
     assertUsage(
-      templateVar && __htmlTemplate in templateVar,
-      `Not sanitized HTML variable: the \`render\` function exported by ${filePath} uses a HTML variable that is not sanitized. Make sure to call \`html.sanitize\` or \`html.alreadySanitized\` on each HTML template variable.`
+      templateVar && __templateVar in templateVar,
+      `Not sanitized HTML variable: the \`render\` function exported by ${filePath} uses a HTML variable that is not sanitized. Make sure to call \`html.sanitize\` or \`html.dangerouslySetHtml\` on each HTML template variable.`
     )
-    const htmlVar = String(templateVar[__htmlTemplateVariable])
-    return htmlVar
+    const unsafe = templateVar[__templateVar]
+    const safe = templateVar.dangerouslySetHtml
+      ? unsafe
+      : escapeHtml(String(unsafe))
+    return safe
   })
   const htmlString = identityTemplateTag(
     templateParts,
-    ...templateVariables__safe
+    ...templateVariablesUnwrapped
   )
   return htmlString
 }
 
-function sanitize(unsafe: unknown) {
-  const unsafeString = String(unsafe)
-  return { [__htmlTemplateVariable]: escapeHtml(unsafeString) }
-}
-function alreadySanitized(safe: unknown) {
-  return { [__htmlTemplateVariable]: safe }
-}
-
 function identityTemplateTag(
-  templateParts: TemplateStringsArray,
-  ...templateVariables: string[]
+  parts: TemplateStringsArray,
+  ...variables: string[]
 ) {
-  assert(templateParts.length === templateVariables.length + 1)
+  assert(parts.length === variables.length + 1)
   let str = ''
-  for (let i = 0; i < templateVariables.length; i++) {
-    const templateVar = templateVariables[i]
-    assert(typeof templateVar === 'string')
-    str += templateParts[i] + templateVar
+  for (let i = 0; i < variables.length; i++) {
+    const variable = variables[i]
+    assert(typeof variable === 'string')
+    str += parts[i] + variable
   }
-  return str + templateParts[templateParts.length - 1]
+  return str + parts[parts.length - 1]
 }
 
-// Source: https://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript/6234804#6234804
 function escapeHtml(unsafeString: string): string {
+  // Source: https://stackoverflow.com/questions/6234773/can-i-escape-html-special-chars-in-javascript/6234804#6234804
   const safe = unsafeString
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

@@ -1,6 +1,6 @@
 import devalue from 'devalue'
 import { route } from './route.node'
-import { getSanetizedHtml } from './html.node'
+import { getSanitizedHtml } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getGlobal } from './global.node'
@@ -40,7 +40,7 @@ async function render(
     Object.assign(initialProps, newInitialProps)
   }
 
-  let htmlDocument: string = getSanetizedHtml(
+  let htmlDocument: string = getSanitizedHtml(
     await renderFunction.render(Page, initialProps),
     renderFunction.filePath
   )
@@ -107,10 +107,14 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
       `The \`addInitialProps\` export of ${filePath} should be a function.`
     )
 
-    renderFunction = renderFunction || { render, filePath }
-    addInitialPropsFunction = addInitialPropsFunction || {
-      addInitialProps,
-      filePath
+    if (render) {
+      renderFunction = renderFunction || { render, filePath }
+    }
+    if (addInitialProps) {
+      addInitialPropsFunction = addInitialPropsFunction || {
+        addInitialProps,
+        filePath
+      }
     }
   }
 
