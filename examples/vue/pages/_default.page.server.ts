@@ -1,21 +1,14 @@
 import { createSSRApp, defineComponent, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import PageLayout from '../components/PageLayout/PageLayout.vue'
+import { html } from 'vite-plugin-ssr'
 
 type InitialProps = {
   title?: string
 }
 
 export default {
-  addInitialProps,
-  render,
-  html
-}
-
-function addInitialProps(initialProps: InitialProps) {
-  return {
-    title: initialProps.title || 'Demo: vite-plugin-ssr'
-  }
+  render
 }
 
 async function render(Page: any, initialProps: InitialProps) {
@@ -33,27 +26,20 @@ async function render(Page: any, initialProps: InitialProps) {
     }
   })
   const app = createSSRApp(PageWithLayout)
-  const html = await renderToString(app /*, ctx*/)
-  return html
-}
+  const pageHtml = await renderToString(app /*, ctx*/)
 
-function html(pageHtml: string, initialProps: InitialProps) {
-  const { title } = initialProps
-  const variables = {
-    title,
-    pageHtml
-  }
-  const template = `<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>$title</title>
-  </head>
-  <body>
-    <div id="app">$pageHtml</div>
-  </body>
-</html>`
-  return { template, variables }
+  const title = initialProps.title || 'Demo: vite-plugin-ssr'
+
+  return html`<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="app">${html.alreadySanitized(pageHtml)}</div>
+      </body>
+    </html>`
 }

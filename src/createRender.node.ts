@@ -14,7 +14,7 @@ function createRender({
   isProduction?: boolean
   viteDevServer?: any
   root: string
-}): (url: string, initialProps: Record<string, any>) => Promise<string | null> {
+}): typeof render {
   assertUsage(!alreadyCalled, '`createRender` should be called only once.')
   alreadyCalled = true
   setGlobal({
@@ -22,14 +22,5 @@ function createRender({
     viteDevServer,
     root
   })
-  return async (
-    url: string,
-    initialProps: Record<string, any>
-  ): Promise<string | null> => {
-    const html = await render(url, initialProps)
-    if (!html) {
-      return null
-    }
-    return html
-  }
+  return render
 }

@@ -13,6 +13,7 @@ const SERVER_ENTRY = require.resolve('./user-files/infra.vite')
 export { plugin }
 
 function plugin(): Plugin[] {
+  const ssr = { external: ['vite-plugin-ssr'] }
   return [
     {
       name: 'vite-plugin-ssr[dev]',
@@ -20,7 +21,8 @@ function plugin(): Plugin[] {
       config: () => ({
         resolve: {
           alias: [aliasPluginImport()]
-        }
+        },
+        ssr
       })
     },
     {
@@ -31,7 +33,8 @@ function plugin(): Plugin[] {
           outDir: getOutDir(config),
           manifest: !isSSR(config),
           rollupOptions: { input: entryPoints(config) }
-        }
+        },
+        ssr
       })
     }
   ]

@@ -1,5 +1,6 @@
 import devalue from 'devalue'
 import { route } from './route.node'
+import { getSanetizedHtml } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getGlobal } from './global.node'
@@ -28,11 +29,16 @@ async function render(
 
   if (addInitialProps) {
     const newInitialProps = await addInitialProps(initialProps)
+    assertUsage(
+      newInitialProps && (newInitialProps as any).constructor === Object,
+      'Your `addInitialProps` function should return a plain JavaScript object.'
+    )
     Object.assign(initialProps, newInitialProps)
   }
 
-  const pageHtml: string = await render(Page, initialProps)
+  let htmlDocument: string = getSanetizedHtml(await render(Page, initialProps))
 
+  /*
   const { template, variables } = await html(
     { dangerouslyManuallyEscaped: pageHtml },
     initialProps
@@ -41,8 +47,10 @@ async function render(
     template && variables,
     `The \`html\` function defined in ${html.sourceFilePath} should \`return { templates, variables }\`.`
   )
-
   let htmlDocument = template
+  */
+
+  // Inject Vite transformations
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
   // Inject initialProps
@@ -57,11 +65,13 @@ async function render(
   const preloadLinks = getPreloadLinks(pageFilePaths, browserFilePath)
   htmlDocument = injectPreloadLinks(htmlDocument, preloadLinks)
 
+  /*
   // Inject initialProps variables
   htmlDocument = renderHtmlTemplate({
     htmlDocument,
     variables
   })
+  */
 
   return htmlDocument
 }
@@ -82,14 +92,12 @@ async function getPageView(pageId: string) {
 
 type HtmlTemplate = { template: string; variables: Record<string, unknown> }
 type ServerFunctions = {
-  render: (Page: any, initialProps: Record<string, any>) => Promise<string>
+  render: (Page: any, initialProps: Record<string, any>) => unknown
   html: ((
     pageHtml: { dangerouslyManuallyEscaped: string },
     initialProps: Record<string, unknown>
   ) => HtmlTemplate | Promise<HtmlTemplate>) & { sourceFilePath: string }
-  addInitialProps: (
-    initialProps: Record<string, unknown>
-  ) => Record<string, unknown> | Promise<Record<string, unknown>>
+  addInitialProps: (initialProps: Record<string, unknown>) => unknown
 }
 async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const serverFiles = await getServerFiles(pageId)
@@ -133,7 +141,7 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const howToResolve =
     'Make sure to define a `*.page.server.js` file that exports a `render` function. You can create a file `_default.page.server.js` which will apply as a default to all your pages.'
   assertUsage(render, 'No `render` function found. ' + howToResolve)
-  assertUsage(html, 'No `html` function found. ' + howToResolve)
+  // assertUsage(html, 'No `html` function found. ' + howToResolve)
 
   return { render, html, addInitialProps }
 }
