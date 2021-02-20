@@ -2,10 +2,6 @@
   <img src="/logo.svg" align="right" height="50" alt="Vite Plugin SSR"/>
 </a>
 
-### What is this?
-
-Vite Plugin for SSR.
-
 ### Status
 
 :white_check_mark: Design.<br/>
