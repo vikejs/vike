@@ -25,7 +25,7 @@ async function render(
 
   const { Page, pageFilePaths } = await getPageView(pageId)
 
-  const { render, html, addInitialProps } = await getPageFunctions(pageId)
+  const { render, addInitialProps } = await getPageFunctions(pageId)
 
   if (addInitialProps) {
     const newInitialProps = await addInitialProps(initialProps)
@@ -37,18 +37,6 @@ async function render(
   }
 
   let htmlDocument: string = getSanetizedHtml(await render(Page, initialProps))
-
-  /*
-  const { template, variables } = await html(
-    { dangerouslyManuallyEscaped: pageHtml },
-    initialProps
-  )
-  assertUsage(
-    template && variables,
-    `The \`html\` function defined in ${html.sourceFilePath} should \`return { templates, variables }\`.`
-  )
-  let htmlDocument = template
-  */
 
   // Inject Vite transformations
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
@@ -64,14 +52,6 @@ async function render(
   // Inject preload links
   const preloadLinks = getPreloadLinks(pageFilePaths, browserFilePath)
   htmlDocument = injectPreloadLinks(htmlDocument, preloadLinks)
-
-  /*
-  // Inject initialProps variables
-  htmlDocument = renderHtmlTemplate({
-    htmlDocument,
-    variables
-  })
-  */
 
   return htmlDocument
 }
@@ -90,20 +70,14 @@ async function getPageView(pageId: string) {
   return { Page, pageFilePaths: [filePath] }
 }
 
-type HtmlTemplate = { template: string; variables: Record<string, unknown> }
 type ServerFunctions = {
   render: (Page: any, initialProps: Record<string, any>) => unknown
-  html: ((
-    pageHtml: { dangerouslyManuallyEscaped: string },
-    initialProps: Record<string, unknown>
-  ) => HtmlTemplate | Promise<HtmlTemplate>) & { sourceFilePath: string }
   addInitialProps: (initialProps: Record<string, unknown>) => unknown
 }
 async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const serverFiles = await getServerFiles(pageId)
 
   let render
-  let html
   let addInitialProps
 
   for (const { filePath, loadFile } of serverFiles) {
@@ -120,19 +94,9 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
     )
     render = render || renderFunction
 
-    const htmlFunction = fileExports.default.html
-    assertUsage(
-      !htmlFunction || isCallable(htmlFunction),
-      `\`html\` defined in ${filePath} should be a function.`
-    )
-    if (htmlFunction) {
-      htmlFunction.sourceFilePath = filePath
-    }
-    html = html || htmlFunction
-
     const addInitialPropsFunction = fileExports.default.addInitialProps
     assertUsage(
-      !htmlFunction || isCallable(addInitialPropsFunction),
+      !addInitialPropsFunction || isCallable(addInitialPropsFunction),
       `\`addInitialProps\` defined in ${filePath} should be a function.`
     )
     addInitialProps = addInitialProps || addInitialPropsFunction
@@ -141,9 +105,8 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const howToResolve =
     'Make sure to define a `*.page.server.js` file that exports a `render` function. You can create a file `_default.page.server.js` which will apply as a default to all your pages.'
   assertUsage(render, 'No `render` function found. ' + howToResolve)
-  // assertUsage(html, 'No `html` function found. ' + howToResolve)
 
-  return { render, html, addInitialProps }
+  return { render, addInitialProps }
 }
 
 async function getBrowserFilePath(pageId: string) {
@@ -216,36 +179,6 @@ async function pathRelativeToRoot(filePath: string): Promise<string> {
     assert(!file.startsWith('/'))
     return '/' + file
   }
-}
-
-function renderHtmlTemplate({
-  htmlDocument,
-  variables
-}: {
-  htmlDocument: string
-  variables: Record<string, any>
-}): string {
-  Object.entries(variables).forEach(([varName, varValue]) => {
-    htmlDocument = injectValue(htmlDocument, varName, varValue)
-  })
-  return htmlDocument
-}
-function injectValue(
-  htmlDocument: string,
-  varName: string,
-  varValue: any
-): string {
-  if (
-    typeof varValue === 'object' &&
-    'dangerouslyManuallyEscaped' in varValue
-  ) {
-    varValue = varValue.dangerouslyManuallyEscaped
-  } else {
-    varValue = '' + varValue
-    varValue = escapeHtml(varValue)
-  }
-  htmlDocument = htmlDocument.split('$' + varName).join(varValue)
-  return htmlDocument
 }
 
 function injectPageInfo(
@@ -327,13 +260,4 @@ function injectHtml(
     const after = slice(htmlParts, 1, 0).join(targetTag)
     return before + targetTag + injection + after
   }
-}
-
-function escapeHtml(unsafe: string): string {
-  return unsafe
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
 }
