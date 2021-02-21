@@ -5,7 +5,7 @@
 # `vite-plugin-ssr`
 
 `vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool:
-while Next.js and Nuxt are often too framework-like `vite-plugin-ssr` aims to never interfere with the rest of your stack.
+while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to never interfere with the rest of your stack.
 
 `vite-plugin-ssr` has been designed with care for simplicity and flexibility.
 
