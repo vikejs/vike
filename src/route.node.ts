@@ -59,7 +59,7 @@ async function route(
 
   const winner = pickWinner(routeResults)
 
-  // console.log('Match:', `[${url}]: ${winner && winner.pageId}`)
+  // console.log('[Route Match]:', `[${url}]: ${winner && winner.pageId}`)
 
   if (!winner) return null
 
@@ -108,7 +108,7 @@ function routeWith_filesystem(
   pageRoute = normalize(pageRoute)
 
   url = normalize(url)
-  // console.log("url:" + url, "pageRoute:" + pageRoute);
+  // console.log('[Route Candidate] url:' + url, 'pageRoute:' + pageRoute)
 
   const matchValue = url === pageRoute
   return matchValue
