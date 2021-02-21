@@ -4,7 +4,13 @@
 
 # `vite-plugin-ssr`
 
-[Intro & Demo]()
+`vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool:
+while Next.js and Nuxt are often too framework-like `vite-plugin-ssr` aims to never interfere with the rest of your stack.
+
+`vite-plugin-ssr` has been designed with care for simplicity and flexibility.
+
+
+[Demo]()
 <br/> [Features]()
 <br/> [Get Started]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate]()
@@ -28,12 +34,7 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { plugin } from 'vite-plugin-ssr'`]()
 
-## Intro & Demo
-
-In a nutshell, `vite-plugin-ssr` gives you a similar experience than Next.js/Nuxt, but as do-one-thing-do-it-well Vite plugin:
-where Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to never interfere with the rest of your stack.
-
-We designed `vite-plugin-ssr` with care for simplicity and flexibility.
+## Demo
 
 <details>
 <summary>
@@ -81,7 +82,7 @@ pages/index.page.js         /
 pages/about.page.js         /about
 ```
 
-Your `*.page.jsx` files don't have to live in a `pages/` directory, you can defined yoru pages' routes with parameterized route strings and, if you need even more flexibility, you can use route functions giving you full programmatic power to define your routing logic.
+Your `*.page.jsx` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.jsx` files). You can defined a page's route with a parameterized route strings or with a route function. (Route functions give you full programmatic power to define your page's route.)
 
 Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
@@ -131,14 +132,15 @@ async function hydrate() {
 }
 ```
 
-This enables you to easily integrate with view tools such as React Router or Redux, and to use React-like alternatives such as Preact or Inferno.
+Because you control rendering,
+you can easily integrate view tools such as React Router or Redux, or use React-like alternatives such as Preact or Inferno.
 
-`_default.*` files define the defaults for all your pages, but you can override these:
+The `_default.*` files can be overriden:
 
 ```js
 // /pages/about.page.client.js
 
-// This file is purposely empty; it means that the `/about` page has
+// This file is purposely empty which means that the `/about` page has
 // zero browser-side JavaScript!
 ```
 ```js
@@ -148,10 +150,9 @@ export { Page };
 
 function Page() {
   return <>
-    This page is only rendered to HTML.
+    This page is only rendered to HTML!
   <>;
 }
-
 ```
 
 You could even render some of your pages with an entire different view framework, for example Vue!
@@ -283,7 +284,7 @@ pages/about.page.js         /about
 pages/HELLO.page.js         /hello     (Mapping is done lower case)
 ```
 
-Your `.page.js` files can live anywhere; they don't have to live in `pages/` (`vite-plugin-ssr` considers as root the directory that is common to your all pages.)
+Your `.page.js` files can live anywhere; they don't have to live in `pages/` (`vite-plugin-ssr` considers as root the directory common to all your `*.page.js` files.)
 
 ```
 Filesystem                  URL
