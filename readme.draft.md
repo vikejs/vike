@@ -15,7 +15,7 @@ while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to n
 <br/> [Get Started]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation]()
-<br/> Guides
+<br/> [Guides]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Async Data]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML]()
@@ -60,7 +60,7 @@ export { Page };
 
 function Page() {
   return <>
-    This page is rendered to HTML as well as interactive: <Counter />
+    This page is rendered to HTML and interactive: <Counter />
   </>;
 }
 
@@ -82,14 +82,14 @@ pages/index.page.js         /
 pages/about.page.js         /about
 ```
 
-Your `*.page.jsx` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.jsx` files). You can defined a page's route with a parameterized route strings or with a route function. (Route functions give you full programmatic power to define your page's route.)
+Your `*.page.jsx` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.jsx` files). You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
 
 Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
 ```jsx
 // /pages/_default.page.server.jsx
 
-import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
 import React from 'react';
 import { html } from 'vite-plugin-ssr';
 
@@ -108,7 +108,7 @@ function render(Page, initialProps) {
         <title>${html.sanitize(title)}</title>
       </head>
       <body>
-        <div id="app">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
       </body>
     </html>`;
 }
@@ -123,17 +123,18 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate();
 
 async function hydrate() {
+  // (In production, the page is `<link rel="preload">`'d.)
   const { Page, initialProps } = await getPage();
 
   ReactDOM.hydrate(
-    <Page {...initialProps} />
+    <Page {...initialProps} />,
     document.getElementById('page-view')
   );
 }
 ```
 
 Because you control rendering,
-you can easily integrate view tools such as React Router or Redux, or use React-like alternatives such as Preact or Inferno.
+you can easily integrate view tools such as React Router or Redux, and even use Preact or Inferno.
 
 The `_default.*` files can be overriden:
 
@@ -155,7 +156,7 @@ function Page() {
 }
 ```
 
-You could even render some of your pages with an entire different view framework, for example Vue!
+You could even render some of your pages with an entire different view framework such as Vue!
 
 </details>
 
@@ -174,6 +175,8 @@ You could even render some of your pages with an entire different view framework
 
 ### Boilerplate
 
+If you start from scratch, you can use the `vite-plugin-ssr` boilerplate:
+
 With NPM:
 
 ```
@@ -187,6 +190,8 @@ yarn create vite-plugin-ssr
 ```
 
 ### Manual Installation
+
+If you already have an existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
 
