@@ -1,34 +1,24 @@
 <a href="/../../#readme">
-  <img src="/logo.svg" align="right" height="100" alt="Vite Plugin SSR"/>
+  <img src="/logo.svg" align="right" height="70" alt="Vite Plugin SSR"/>
 </a>
 
-SSR plugin for Vite.
+# `vite-plugin-ssr`
+
+**SSR plugin for Vite.**
 
 [Intro & Demo]()
-<br/>
-[Features]()
-<br/>
-[Get Started]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Boilerplate]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Manual Installation]()
-<br/>
-[Guides]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Async Data]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Routing]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [HTML]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Markdown]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Global Page Wrapper]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp;
-  [Full Control]()
-<br/>
-[API]()
+<br/> [Features]()
+<br/> [Get Started]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation]()
+<br/> [Guides]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Async Data]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Global Page Wrapper]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Full Control]()
+<br/> [API]()
   [`*.page.js`]()
   [`*.page.client.js`]()
   [`*.page.server.js`]()
