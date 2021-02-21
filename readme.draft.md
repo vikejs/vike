@@ -40,6 +40,111 @@ while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to n
 <summary>
 Vue Demo
 </summary>
+<br/>
+
+Pages are created by defining new `*.page.vue` files:
+
+```vue
+// /pages/index.page.vue
+
+<template>
+  This page is rendered to HTML and interactive:
+  <button @click="state.count++">Counter {{ state.count }}</button>
+</template>
+
+<script>
+import { reactive } from 'vue'
+export default {
+  setup(props) {
+    const state = reactive({ count: 0 })
+    return {
+      state,
+    }
+  }
+}
+</script>
+```
+
+By default, `vite-plugin-ssr` does filesystem routing:
+```
+Filesystem                  URL
+pages/index.page.vue        /
+pages/about.page.vue        /about
+```
+
+Your `*.page.vue` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.vue` files). You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
+
+Unlike Next.js/Nuxt, *you* define how your pages are rendered:
+
+```js
+// /pages/_default.page.server.js
+
+import { createSSRApp, h } from 'vue'
+import { renderToString } from '@vue/server-renderer'
+import { html } from 'vite-plugin-ssr';
+
+export { render };
+
+async function render(Page, initialProps) {
+  const app = createSSRApp({
+    render() {
+      return h(Page, initialProps)
+    }
+  })
+  const appHtml = await renderToString(app)
+
+  const title = initialProps.title || 'Demo: vite-plugin-ssr';
+
+  return html`<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+      </body>
+    </html>`;
+}
+```
+```js
+// /pages/_default.page.client.js
+
+import { createSSRApp, h } from 'vue'
+import { getPage } from 'vite-plugin-ssr/client'
+
+hydrate()
+
+async function hydrate() {
+  const { Page, initialProps } = await getPage()
+  const app = createSSRApp({
+    render() {
+      return h(Page, initialProps)
+    }
+  })
+  app.mount('#app')
+}
+```
+
+Because you control rendering,
+you can easily integrate view tools such as Vue Router or Vuex and use any Vue version you want.
+
+The `_default.*` files can be overriden:
+
+```js
+// /pages/about.page.client.js
+
+// This file is purposely empty which means that the `/about` page has
+// zero browser-side JavaScript!
+```
+```js
+// /pages/about.page.vue
+
+<template>
+  This page is only rendered to HTML!
+</template>
+```
+
+You could even render some of your pages with an entire different view framework such as React!
 
 </details>
 
@@ -51,7 +156,7 @@ React Demo
 
 Pages are created by defining new `*.page.jsx` files:
 
-```js
+```jsx
 // /pages/index.page.jsx
 
 import React from 'react';
@@ -78,8 +183,8 @@ function Counter() {
 By default, `vite-plugin-ssr` does filesystem routing:
 ```
 Filesystem                  URL
-pages/index.page.js         /
-pages/about.page.js         /about
+pages/index.page.jsx        /
+pages/about.page.jsx        /about
 ```
 
 Your `*.page.jsx` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.jsx` files). You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
