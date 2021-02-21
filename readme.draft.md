@@ -42,7 +42,7 @@ Vue Demo
 </summary>
 <br/>
 
-Pages are created by defining new `*.page.vue` files:
+Pages are defined by creating `*.page.vue` files:
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -87,9 +87,7 @@ export { render };
 
 async function render(Page, initialProps) {
   const app = createSSRApp({
-    render() {
-      return h(Page, initialProps)
-    }
+    render: () => h(Page, initialProps)
   })
   const appHtml = await renderToString(app)
 
@@ -117,9 +115,7 @@ hydrate()
 async function hydrate() {
   const { Page, initialProps } = await getPage()
   const app = createSSRApp({
-    render() {
-      return h(Page, initialProps)
-    }
+    render: () => h(Page, initialProps)
   })
   app.mount('#app')
 }
@@ -154,7 +150,7 @@ React Demo
 </summary>
 <br/>
 
-Pages are created by defining new `*.page.jsx` files:
+Pages are defined by creating `*.page.jsx` files:
 
 ```jsx
 // /pages/index.page.jsx
