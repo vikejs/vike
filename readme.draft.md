@@ -45,7 +45,7 @@ Vue Demo
 Pages are created by defining new `*.page.vue` files:
 
 ```vue
-// /pages/index.page.vue
+<!-- /pages/index.page.vue -->
 
 <template>
   This page is rendered to HTML and interactive:
@@ -136,8 +136,8 @@ The `_default.*` files can be overriden:
 // This file is purposely empty which means that the `/about` page has
 // zero browser-side JavaScript!
 ```
-```js
-// /pages/about.page.vue
+```vue
+<!-- /pages/index.page.vue -->
 
 <template>
   This page is only rendered to HTML!
