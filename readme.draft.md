@@ -1,8 +1,8 @@
-# `vite-plugin-ssr`
-
 <a href="/../../#readme">
   <img src="/logo.svg" align="right" height="70" alt="Vite Plugin SSR"/>
 </a>
+
+# `vite-plugin-ssr`
 
 [Intro & Demo]()
 <br/> [Features]()
