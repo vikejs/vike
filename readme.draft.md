@@ -4,14 +4,14 @@
 
 # `vite-plugin-ssr`
 
-**SSR plugin for Vite.**
+Next generation SSR tool.
 
 [Intro & Demo]()
 <br/> [Features]()
 <br/> [Get Started]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation]()
-<br/> [Guides]()
+<br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Async Data]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML]()
@@ -19,21 +19,22 @@
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Global Page Wrapper]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Full Control]()
 <br/> [API]()
-  [`*.page.js`]()
-  [`*.page.client.js`]()
-  [`*.page.server.js`]()
-  [`*.page.route.js`]()
-  [`_default.page.js`]()
-  [`_404.page.js`]()
-  [`import { getPage } from 'vite-plugin-ssr/client'`]()
-  [`import { createRender } from 'vite-plugin-ssr'`]()
-  [`import { html } from 'vite-plugin-ssr'`]()
-  [`import { plugin } from 'vite-plugin-ssr'`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { plugin } from 'vite-plugin-ssr'`]()
 
 ## Intro & Demo
 
 In a nutshell, `vite-plugin-ssr` gives you a similar experience than Next.js/Nuxt, but as do-one-thing-do-it-well Vite plugin:
 where Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to never interfere with the rest of your stack.
+
 We designed `vite-plugin-ssr` with care for simplicity and flexibility.
 
 <details>
@@ -47,6 +48,7 @@ Vue Demo
 <summary>
 React Demo
 </summary>
+<br/>
 
 Pages are created by defining new `*.page.jsx` files:
 
