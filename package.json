@@ -4,11 +4,11 @@
     "src/"
   ],
   "scripts": {
-    "// Demo showcasing Vite SSR Plugin usage": "",
+    "// Demo using vite-plugin-ssr": "",
     "demo": "cd examples/vue/ && npm run start",
-    "// Build Vite SSR Plugin": "",
+    "// Build vite-plugin-ssr": "",
     "build": "npm install && npm run tsc:once",
-    "// Develop Vite SSR Plugin": "",
+    "// Develop vite-plugin-ssr": "",
     "dev": "npm run tsc:watch",
     "// TypeScript": "",
     "tsc:once": "cd src/ && tsc --build",
