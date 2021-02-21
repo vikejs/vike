@@ -2,17 +2,19 @@
   <img src="/logo.svg" align="right" height="50" alt="Vite Plugin SSR"/>
 </a>
 
-Simple, flexible, and powerful SSR Vite plugin.
+SSR plugin for Vite.
 
+- [Intro & Demo]()
 - [Features]()
 - [Get Started]()
   - [Boilerplate]()
   - [Manual Installation]()
 - [Guides]()
-  - [Global Page Wrapper]()
+  - [Async Data]()
   - [Routing]()
   - [HTML]()
   - [Markdown]()
+  - [Global Page Wrapper]()
   - [Full Control]()
 - [API]()
   - [`*.page.js`]()
@@ -25,6 +27,134 @@ Simple, flexible, and powerful SSR Vite plugin.
   - [`import { createRender } from 'vite-plugin-ssr'`]()
   - [`import { html } from 'vite-plugin-ssr'`]()
   - [`import { plugin } from 'vite-plugin-ssr'`]()
+
+## Intro & Demo
+
+In a nutshell, `vite-plugin-ssr` gives you a similar experience than Next.js/Nuxt, but as do-one-thing-do-it-well Vite plugin:
+where Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to never interfere with the rest of your stack.
+We designed `vite-plugin-ssr` with care for simplicity and flexibility.
+
+<details>
+<summary>
+Vue Demo
+</summary>
+
+</details>
+
+<details>
+<summary>
+React Demo
+</summary>
+
+Pages are created by defining new `*.page.jsx` files:
+
+```js
+// /pages/index.page.jsx
+
+import React from 'react';
+
+export { Page };
+
+function Page() {
+  return <>
+    This page is rendered to HTML as well as interactive: <Counter />
+  </>;
+}
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button onClick={() => setCount((count) => count + 1)}>
+      Counter {count}
+    </button>
+  );
+}
+```
+
+By default, `vite-plugin-ssr` does filesystem routing:
+```
+Filesystem                  URL
+pages/index.page.js         /
+pages/about.page.js         /about
+```
+
+Your `*.page.jsx` files don't have to live in a `pages/` directory, you can defined yoru pages' routes with parameterized route strings and, if you need even more flexibility, you can use route functions giving you full programmatic power to define your routing logic.
+
+Unlike Next.js/Nuxt, *you* define how your pages are rendered:
+
+```jsx
+// /pages/_default.page.server.jsx
+
+import ReactDOM from 'react-dom';
+import React from 'react';
+import { html } from 'vite-plugin-ssr';
+
+export { render };
+
+function render(Page, initialProps) {
+  const pageHtml = ReactDOMServer.renderToString(
+    <Page {...initialProps} />
+  );
+
+  const title = initialProps.title || 'Demo: vite-plugin-ssr';
+
+  return html`<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="app">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`;
+}
+```
+```jsx
+// /pages/_default.page.client.jsx
+
+import ReactDOM from 'react-dom'
+import React from 'react'
+import { getPage } from 'vite-plugin-ssr/client'
+
+hydrate();
+
+async function hydrate() {
+  const { Page, initialProps } = await getPage();
+
+  ReactDOM.hydrate(
+    <Page {...initialProps} />
+    document.getElementById('page-view')
+  );
+}
+```
+
+This enables you to easily integrate with view tools such as React Router or Redux, and to use React-like alternatives such as Preact or Inferno.
+
+`_default.*` files define the defaults for all your pages, but you can override these:
+
+```js
+// /pages/about.page.client.js
+
+// This file is purposely empty; it means that the `/about` page has
+// zero browser-side JavaScript!
+```
+```js
+// /pages/about.page.jsx
+
+export { Page };
+
+function Page() {
+  return <>
+    This page is only rendered to HTML.
+  <>;
+}
+
+```
+
+You could even render some of your pages with an entire different view framework, for example Vue!
+
+</details>
 
 ## Features
 
@@ -201,7 +331,7 @@ function addInitialProps(initialProps) {
 }
 ```
 
-**Route functions**. Route functions give you programmatic full power to define your routing logic.
+**Route functions**. Route functions give you full programmatic power to define your routing logic.
 
 ```js
 // pages/film.page.route.js
