@@ -55,11 +55,9 @@ Pages are defined by creating `*.page.vue` files:
 <script>
 import { reactive } from 'vue'
 export default {
-  setup(props) {
+  setup() {
     const state = reactive({ count: 0 })
-    return {
-      state,
-    }
+    return { state }
   }
 }
 </script>
@@ -113,6 +111,7 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
+  // (In production, the page is `<link rel="preload">`'d.)
   const { Page, initialProps } = await getPage()
   const app = createSSRApp({
     render: () => h(Page, initialProps)
