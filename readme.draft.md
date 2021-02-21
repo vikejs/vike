@@ -81,9 +81,9 @@ Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import { html } from 'vite-plugin-ssr';
+import { html } from 'vite-plugin-ssr'
 
-export { render };
+export { render }
 
 async function render(Page, initialProps) {
   const app = createSSRApp({
@@ -91,7 +91,7 @@ async function render(Page, initialProps) {
   })
   const appHtml = await renderToString(app)
 
-  const title = initialProps.title || 'Demo: vite-plugin-ssr';
+  const title = initialProps.title || 'Demo: vite-plugin-ssr'
 
   return html`<!DOCTYPE html>
     <html lang="en">
@@ -101,7 +101,7 @@ async function render(Page, initialProps) {
       <body>
         <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
       </body>
-    </html>`;
+    </html>`
 }
 ```
 ```js
@@ -155,7 +155,7 @@ Pages are defined by creating `*.page.jsx` files:
 ```jsx
 // /pages/index.page.jsx
 
-import React from 'react';
+import React from "react";
 
 export { Page };
 
@@ -190,9 +190,9 @@ Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 ```jsx
 // /pages/_default.page.server.jsx
 
-import ReactDOMServer from 'react-dom/server';
-import React from 'react';
-import { html } from 'vite-plugin-ssr';
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import { html } from "vite-plugin-ssr";
 
 export { render };
 
@@ -201,7 +201,7 @@ function render(Page, initialProps) {
     <Page {...initialProps} />
   );
 
-  const title = initialProps.title || 'Demo: vite-plugin-ssr';
+  const title = initialProps.title || "Demo: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
     <html lang="en">
@@ -217,9 +217,9 @@ function render(Page, initialProps) {
 ```jsx
 // /pages/_default.page.client.jsx
 
-import ReactDOM from 'react-dom'
-import React from 'react'
-import { getPage } from 'vite-plugin-ssr/client'
+import ReactDOM from "react-dom"
+import React from "react"
+import { getPage } from "vite-plugin-ssr/client"
 
 hydrate();
 
@@ -229,7 +229,7 @@ async function hydrate() {
 
   ReactDOM.hydrate(
     <Page {...initialProps} />,
-    document.getElementById('page-view')
+    document.getElementById("page-view")
   );
 }
 ```
