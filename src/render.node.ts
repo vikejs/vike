@@ -24,11 +24,7 @@ async function render({
   url: string
   contextProps: Record<string, any>
 }): Promise<null | string> {
-  assertUsage(url, '`render({url})`: argument `url` is missing.')
-  assertUsage(
-    url.startsWith('/'),
-    '`render({url})`: argument `url` should start with a `/`.'
-  )
+  assertArguments(...arguments)
 
   const routedPage = await route(url)
   if (!routedPage) {
@@ -166,7 +162,7 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
         filePath
       }
     }
-    if (render) {
+    if (setPageProps) {
       setPagePropsFunction = setPagePropsFunction || { setPageProps, filePath }
     }
   }
@@ -330,4 +326,28 @@ function injectHtml(
     const after = slice(htmlParts, 1, 0).join(targetTag)
     return before + targetTag + injection + after
   }
+}
+
+function assertArguments(...args: any[]) {
+  const { url, contextProps, ...rest } = args[0]
+  assertUsage(url, '`render({url, contextProps})`: argument `url` is missing.')
+  assertUsage(
+    url.startsWith('/'),
+    '`render({url, contextProps})`: argument `url` should start with a `/`.'
+  )
+  assertUsage(
+    typeof contextProps === 'object',
+    '`render({url, contextProps})`: argument `contextProps` should be a `typeof contextProps === "object"`.'
+  )
+  assertUsage(
+    args.length === 1,
+    '`render({url, contextProps})`: arguments should be passed as a single object.'
+  )
+  const unknownArgs = Object.keys(rest)
+  assertUsage(
+    unknownArgs.length === 0,
+    '`render({url, contextProps})`: unknown arguments [' +
+      unknownArgs.map((s) => `'${s}'`).join(', ') +
+      '].'
+  )
 }
