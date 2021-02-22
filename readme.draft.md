@@ -5,19 +5,20 @@
 # `vite-plugin-ssr`
 
 `vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool:
-while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to never interfere with the rest of your stack.
+while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` doesn't interfere with the rest of your stack.
 
 `vite-plugin-ssr` has been designed with care for simplicity and flexibility.
 
+Check the [Intro & Demo](#intro--demo) to get an idea of what using `vite-plugin-ssr` is like.
 
-[Demo]()
+[Intro & Demo](#intro--demo)
 <br/> [Features]()
 <br/> [Get Started]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation]()
 <br/> [Guides]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Async Data]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Async Data]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Global Page Wrapper]()
@@ -35,7 +36,7 @@ while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to n
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { plugin } from 'vite-plugin-ssr'`]()
 
-## Demo
+## Intro & Demo
 
 <details>
 <summary>
@@ -276,7 +277,7 @@ You could even render some of your pages with an entire different view framework
 
 ### Boilerplate
 
-If you start from scratch, you can use the `vite-plugin-ssr` boilerplate:
+If you start from scratch, then simply use the `vite-plugin-ssr` boilerplate:
 
 With NPM:
 
@@ -295,14 +296,61 @@ yarn create vite-plugin-ssr
 If you already have an existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
+   - [React](/create-vite-plugin-ssr/template-react/vite.config.js)
+   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/vite.config.ts)
 
-2. Use `createServer` with your Express.js/Koa/... server.
+2. Integrate Vite and `vite-plugin-ssr` with your server (Express.js, Koa, Hapi, Fastify, etc.).
+   - [React](/create-vite-plugin-ssr/template-react/server/index.js)
+   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
 
-3. Write `_default.page.client.js` and `_default.page.server.js`
+3. Define your `_default.page.client.js` and `_default.page.server.js`.
+   - [React](/create-vite-plugin-ssr/template-react/pages/_default/)
+   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/_default/)
 
-4. Write your first page `index.page.js`
+4. Create your first page `index.page.js`.
+   - [React](/create-vite-plugin-ssr/template-react/pages/index/index.page.jsx)
+   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/index/index.page.tsx)
+
+5. Create the `dev` and `build` scripts.
+   - [React](/create-vite-plugin-ssr/template-react/package.json)
+   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/package.json)
 
 ## Guides
+
+### Routing
+
+By default `vite-plugin-ssr` does Filesystem Routing. For example:
+
+```
+Filesystem                  URL           Comment
+pages/about.page.js         /about
+pages/index.page.js         /             (`index` is mapped to the empty string)
+pages/hello/index.page.js   /hello
+```
+
+The `pages/` directory is optional and you can save your `*.page.jsx` files wherever you want. For example:
+
+```
+Filesystem                  URL
+user/list.page.js           /user/list
+user/create.page.js         /user/detail
+todo/list.page.js           /todo/list
+todo/create.page.js         /todo/detail
+```
+
+The directory common to all your `*.page.jsx` files is considered the root for Filesytem Routing.
+
+You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
+
+You can also implement more complex routing
+
+More:
+ - [API - Filesystem Routing]()
+ - [API - `*.page.route.js`]()
+
+### Async Data
+
+
 
 ### Global Page Wrapper
 
@@ -384,11 +432,11 @@ The route of your pages can be defined in several ways:
 **Filesystem routing.** By default your pages are mapped to a URL based on where its `.page.js` is located on your filesystem. For example
 
 ```
-Filesystem                  URL
+Filesystem                  URL        Comment
 pages/about.page.js         /about
 pages/HELLO.page.js         /hello     (Mapping is done lower case)
 pages/index.page.js         /
-pages/faq/index.page.js     /faq       (index.page.js is mapped to the empty string)
+pages/faq/index.page.js     /faq       (`index` is mapped to the empty string)
 ```
 
 Your `.page.js` files can live anywhere; they don't have to live in `pages/` (`vite-plugin-ssr` considers as root the directory common to all your `*.page.js` files.)

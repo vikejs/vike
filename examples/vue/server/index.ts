@@ -12,30 +12,18 @@ async function startServer() {
 
   let viteDevServer
   if (isProduction) {
-    app.use(
-      express.static(`${root}/dist/client`, {
-        index: false
-      })
-    )
+    app.use(express.static(`${root}/dist/client`, { index: false }))
   } else {
     viteDevServer = await vite.createServer({
       root,
-      server: {
-        middlewareMode: true
-      }
+      server: { middlewareMode: true }
     })
     app.use(viteDevServer.middlewares)
   }
 
-  const render = createRender({
-    viteDevServer,
-    isProduction,
-    root
-  })
+  const render = createRender({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
-    const url = req.originalUrl
-    const contextProps = {}
-    const html = await render({ url, contextProps })
+    const html = await render({ url: req.originalUrl, contextProps: {} })
     if (!html) {
       next()
       return

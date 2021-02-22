@@ -1,9 +1,9 @@
-import express from "express";
-import { createRender } from "vite-plugin-ssr";
-import * as vite from "vite";
+const express = require("express");
+const { createRender } = require("vite-plugin-ssr");
+const vite = require("vite");
 
 const isProduction = process.env.NODE_ENV === "production";
-const root = `${__dirname}/..`;
+const root = __dirname;
 
 startServer();
 

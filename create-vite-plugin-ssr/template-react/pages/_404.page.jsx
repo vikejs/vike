@@ -1,6 +1,6 @@
 import React from "react";
 
-export default { Page };
+export { Page };
 
 function Page() {
   return (
