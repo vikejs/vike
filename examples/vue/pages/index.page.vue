@@ -12,12 +12,8 @@
 </template>
 
 <script lang="ts">
-import Counter from '../components/Counter.vue';
-
-export default {
-  props: ['url'],
-  components: {
-    Counter
-  }
-}
+import Counter from './_components/Counter.vue';
+const props = ['url']
+const components = { Counter }
+export default { props, components }
 </script>

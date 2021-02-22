@@ -1,14 +1,14 @@
 import { createSSRApp, defineComponent, h } from 'vue'
-import PageLayout from '../components/PageLayout/PageLayout.vue'
+import PageLayout from './PageLayout.vue'
 
 export { getApp }
-export { InitialProps }
+export { PageProps }
 
-type InitialProps = {
+type PageProps = {
   title?: string
 }
 
-function getApp(Page: any, initialProps: InitialProps) {
+function getApp(Page: any, pageProps: PageProps) {
   const PageWithLayout = defineComponent({
     render() {
       return h(
@@ -16,7 +16,7 @@ function getApp(Page: any, initialProps: InitialProps) {
         {},
         {
           default() {
-            return h(Page, initialProps)
+            return h(Page, pageProps)
           }
         }
       )

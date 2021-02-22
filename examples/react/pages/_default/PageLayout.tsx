@@ -85,7 +85,7 @@ function Logo() {
   );
 }
 
-// In development Vite loads the CSS dynamically leading to a flickering effect.
+// In development Vite loads CSS dynamically leading to a flickering effect.
 // The <ViteAntiFlicker> component removes the flickering.
 function ViteAntiFlicker({ children }: { children: Children }) {
   return (

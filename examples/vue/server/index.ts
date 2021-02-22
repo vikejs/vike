@@ -3,7 +3,7 @@ import { createRender } from 'vite-plugin-ssr'
 import * as vite from 'vite'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const root = __dirname
+const root = `${__dirname}/..`
 
 startServer()
 
