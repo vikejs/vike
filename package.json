@@ -5,7 +5,7 @@
   ],
   "scripts": {
     "// Demo using vite-plugin-ssr": "",
-    "demo": "cd examples/vue/ && npm run start",
+    "demo": "cd examples/react/ && npm run start",
     "// Build vite-plugin-ssr": "",
     "build": "npm install && npm run tsc:once",
     "// Develop vite-plugin-ssr": "",
@@ -14,7 +14,7 @@
     "tsc:once": "cd src/ && tsc",
     "tsc:watch": "cd src/ && tsc --incremental --watch --preserveWatchOutput",
     "// Release new version": "",
-    "release": "npm run clean:all && npm install && npm run tsc:once && npm run publish",
+    "release": "npm run clean:all && npm install && npm run tsc:once && (cd src/ && npm publish)",
     "// Clean": "",
     "clean": "npm run clean:all",
     "clean:all": "git clean -Xdf"

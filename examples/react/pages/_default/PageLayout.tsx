@@ -60,8 +60,9 @@ function Content({ children }: { children: Children }) {
     <div
       style={{
         padding: 20,
-        borderLeft: "2px solid #eee",
         paddingBottom: 50,
+        borderLeft: "2px solid #eee",
+        minHeight: "100vh",
       }}
     >
       {children}

@@ -3,23 +3,24 @@ import React from "react";
 import { PageLayout } from "./PageLayout";
 import { html } from "vite-plugin-ssr";
 
-type InitialProps = {
-  title?: string;
-};
-
 export { render };
 
-function render(
-  Page: (initialProps: InitialProps) => JSX.Element,
-  initialProps: InitialProps
-) {
+function render({
+  Page,
+  pageProps,
+  contextProps,
+}: {
+  Page: (pageProps: any) => JSX.Element;
+  pageProps: any;
+  contextProps: { title?: string };
+}) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...initialProps} />
+      <Page {...pageProps} />
     </PageLayout>
   );
 
-  const { title } = initialProps || "My SSR Vite App";
+  const title = contextProps.title || "My SSR Vite App";
 
   return html`<!DOCTYPE html>
     <html lang="en">

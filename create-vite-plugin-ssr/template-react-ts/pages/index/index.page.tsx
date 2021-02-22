@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
-export default IndexPage;
+export { Page };
 
-function IndexPage() {
+function Page() {
   return (
     <>
       <h1>Welcome</h1>
@@ -19,7 +19,6 @@ function IndexPage() {
 
 function Counter() {
   const [count, setCount] = useState(0);
-
   return (
     <button onClick={() => setCount((count) => count + 1)}>
       Counter {count}
