@@ -8,15 +8,15 @@ Your small but mighty SSR companion.
 
 [Intro & Demo](#intro--demo)
 <br/> [Features](#features)
-<br/> [Get Started](#get-started)
+<br/> Get Started
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate](#boilerplate)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
-<br/> [Guides](#guides)
+<br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
-<br/> [API](#api)
+<br/> API
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
@@ -279,9 +279,7 @@ You could even render some of your pages with an entire different view framework
 <br/><br/>
 
 
-## Get Started
-
-### Boilerplate
+## Boilerplate
 
 If you start from scratch, then simply use the `vite-plugin-ssr` boilerplate:
 
@@ -297,7 +295,7 @@ With Yarn:
 yarn create vite-plugin-ssr
 ```
 
-### Manual Installation
+## Manual Installation
 
 If you already have an existing Vite app and don't want to start from scratch:
 
@@ -324,9 +322,7 @@ If you already have an existing Vite app and don't want to start from scratch:
 <br/><br/>
 
 
-## Guides
-
-### Routing
+## Routing
 
 By default `vite-plugin-ssr` does Filesystem Routing.
 
@@ -367,7 +363,7 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 <br/><br/>
 
 
-### Data Fetching
+## Data Fetching
 
 Data fetching is done with two functions: `async addContextProps()` and `setPageProps()`: the `async addContextProps()` function fetches data while `setPageProps()` specifies what data should be serialized and passed to the browser.
 
@@ -454,14 +450,14 @@ async funcion hydrate() {
 <br/><br/>
 
 
-### Pre-rendering
+## Pre-rendering
 
 Pre-rendering is work-in-progress, ETA: 4-5 days.
 
 <br/><br/>
 
 
-### Markdown
+## Markdown
 
 Since `vite-plugin-ssr` is just a Vite plugin, you can use it with any Vite markdown plugin.
 
@@ -472,9 +468,7 @@ For example with `@brillout/vite-plugin-mdx`.
 <br/><br/>
 
 
-## API
-
-### Filesystem Routing
+## Filesystem Routing
 
 By default a page is mapped to a URL based on where its `.page.js` file is located on your filesystem.
 
@@ -504,7 +498,7 @@ For more control over routing, use route strings and route functions.
 <br/><br/>
 
 
-### `*.page.js`
+## `*.page.js`
 
 Execution environement: `Browser`, `Node.js`.
 <br>
@@ -523,7 +517,7 @@ The `*.page.js` file is lazy loaded when an HTTP request matches its route.
 <br/><br/>
 
 
-### `*.page.client.js`
+## `*.page.client.js`
 
 Execution environement: Browser
 <br>
@@ -537,7 +531,7 @@ It represents the *entire* browser-side code. This means that if you create an e
 <br/><br/>
 
 
-### `*.page.server.js`
+## `*.page.server.js`
 
 Execution environement: Node.js
 <br>
@@ -643,7 +637,7 @@ function Page({movies}) {
 <br/><br/>
 
 
-### `*.page.route.js`
+## `*.page.route.js`
 
 Execution environement: Node.js
 <br>
@@ -706,7 +700,7 @@ export default () => ({match: -Infinity})
 <br/><br/>
 
 
-### `_default.page.*`
+## `_default.page.*`
 
 The `_default.page.server.js` and `_default.page.client.js` files are like regular `*.page.server.js` and `*.page.client.js` files but they are special in the sense that they don't apply to a single page file (in other words they are not adjacent to a `.page.js` file), instead they apply as a default to all pages.
 
@@ -731,7 +725,7 @@ Defining a `_default.page.js` and `_default.page.route.js` files is forbidden.
 <br/><br/>
 
 
-### `_404.page.js`
+## `_404.page.js`
 
 The `_404.page.js` is like any other page with the exception that it has a predefined route.
 
@@ -745,7 +739,7 @@ export default () => ({match: -Infinity})
 <br/><br/>
 
 
-### `import { getPage } from 'vite-plugin-ssr/client'`
+## `import { getPage } from 'vite-plugin-ssr/client'`
 
 Execution environement: `Browser`
 
@@ -774,7 +768,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 <br/><br/>
 
 
-### `import { createRender } from 'vite-plugin-ssr'`
+## `import { createRender } from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
 
@@ -799,7 +793,7 @@ app.get('*', async (req, res, next) => {
 <br/><br/>
 
 
-### `import { html } from 'vite-plugin-ssr'`
+## `import { html } from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
 
@@ -831,7 +825,7 @@ The `html.sanitize()` function can be used to inject untrusted strings, while `h
 <br/><br/>
 
 
-### `import vitePlugin from 'vite-plugin-ssr'`
+## `import vitePlugin from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
 
