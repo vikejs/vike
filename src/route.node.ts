@@ -22,6 +22,10 @@ async function route(
   url: string
 ): Promise<null | { pageId: PageId; routeProps: Record<string, string> }> {
   const allPageIds = await getPageIds()
+  assertUsage(
+    allPageIds.length > 0,
+    'No *.page.js file found. You can create a `index.page.js` (or `index.page.jsx`, `index.page.vue`, ...) which will serve `/`.'
+  )
   const pageRoutes = await loadPageRoutes()
 
   const routeResults = allPageIds.map((pageId) => {

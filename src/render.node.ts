@@ -169,7 +169,7 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
 
   assertUsage(
     renderFunction,
-    'No `render` function found. Make sure to define a `*.page.server.js` file that exports a `render` function. You can export a `render` function in a file `_default.page.server.js` which will apply as a default to all your pages.'
+    'No `render` function found. Make sure to define a `*.page.server.js` file that exports a `render` function. You can export a `render` function in a file `_default.page.server.js` which will apply as default to all your pages.'
   )
 
   return { renderFunction, addContextPropsFunction, setPagePropsFunction }
@@ -183,12 +183,20 @@ async function getBrowserFilePath(pageId: string) {
 }
 async function getBrowserFiles(pageId: string) {
   let browserFiles = await getUserFiles('.page.client')
+  assertUsage(
+    browserFiles.length > 0,
+    'No *.page.client.* file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
+  )
   browserFiles = filterAndSort(browserFiles, pageId)
   return browserFiles
 }
 
 async function getServerFiles(pageId: string) {
   let serverFiles = await getUserFiles('.page.server')
+  assertUsage(
+    serverFiles.length > 0,
+    'No *.page.server.* file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
+  )
   serverFiles = filterAndSort(serverFiles, pageId)
   return serverFiles
 }
