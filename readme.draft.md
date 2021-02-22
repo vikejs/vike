@@ -14,6 +14,7 @@ Your small but mighty SSR companion.
 <br/> [Guides]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown]()
 <br/> [API]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing]()
@@ -317,23 +318,138 @@ If you already have an existing Vite app and don't want to start from scratch:
 
 ### Data Fetching
 
-### Global Page Wrapper
+### Pre-rendering
+
+Pre-rendering is work-in-progress, ETA: 4-5 days.
+
+### Markdown
+
+Since `vite-plugin-ssr` is just a Vite plugin, you can use it with any Vite markdown plugin.
+
+For example with `@brillout/vite-plugin-mdx`.
+ - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
+ - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
 
 ## API
 
-### `.page.js`
+### Filesystem Routing
 
-### `.page.client.js`
+### `*.page.js`
 
-### `.page.server.js`
+Execution environement: `Browser`, `Node.js`.
+<br>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.page.*([a-zA-Z0-9])'`.
 
-### `.page.route.js`
+A `*.page.js` file defines the page's view that is rendered to HTML and the DOM.
+
+The `export { Page }` in `.page.js` (or the `export default`) is passed untouched to:
+ - `render({ Page })` (defined in `.page.server.js`)
+ - `const { Page } = await getPage()` (from `import { getPage } from 'vite-plugin-ssr/client'`).
+
+`vite-plugin-ssr` doesn't do anything with `Page`: it is your `.page.server.js` and `.page.client.js` files that use `Page`.
+
+The `*.page.js` file is lazy loaded when an HTTP request matches its route.
+
+### `*.page.client.js`
+
+Execution environement: Browser
+<br>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.client.*([a-zA-Z0-9])'`.
+
+A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side entry.
+
+It represents the *entire* browser-side code. This means that if you create an empty `.page.client.js` file, then the page has zero browser-side JavaScript.
+(With the exception of Vite's dev code when not in production.)
+
+### `*.page.server.js`
+
+Execution environement: Node.js
+<br>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.server.*([a-zA-Z0-9])'`.
+
+A `.page.server.js` file is a `.page.js`-adjacent file that defines the page's server-side lifecycle methods:
+- `export { render }`
+- `export { addContextProps }`
+- `export { setPageProps }`
+
+**`export { render }`**
+
+**`export { setPageProps }`**
+
+**`export { addContextProps }`**
+
+### `*.page.route.js`
+
+Execution environement: Browser, Node.js
+<br>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.route.*([a-zA-Z0-9])'`.
+
+### `_default.page.*`
+
+The `_default.page.server.js` and `_default.page.client.js` files are like regular `*.page.server.js` and `*.page.client.js` files but they are special in the sense that they don't apply to a single page file (in other words they are not adjacent to a `.page.js` file), instead they apply as a default to all pages.
+
+There can be several `_default.page.*` files.
+
+```
+marketing/_default.page.server.js
+marketing/_default.page.client.js
+marketing/index.page.js
+marketing/about.page.js
+marketing/jobs.page.js
+admin-panel/_default.page.server.js
+admin-panel/_default.page.client.js
+admin-panel/index.page.js
+```
+
+This has the effect that `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
+
+Defining a `_default.page.js` and `_default.page.route.js` files is forbidden.
+
+### `_404.page.js`
+
+The `_404.page.js` is like any other page with the exception that it has a predefined route.
+
+```js
+// node_modules/vite-plugin-ssr/.../_404.page.route.js
+
+// Ensure lowest priority for the 404 page
+export default () => ({match: -Infinity})
+```
 
 ### `import { getPage } from 'vite-plugin-ssr/client'`
 
+Execution environement: `Browser`
+
+```js
+// pages/demo.page.client.js
+
+import { getPage } from 'vite-plugin-ssr/client'
+
+hydrate()
+
+async function hydrate() {
+  const { Page, pageProps } = await getPage()
+  /* ... */
+}
+```
+
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `pages/demo.page.js` file.
+- `pageProps` is the value returned by the `setPageProps()` function, which is `export { setPageProps }`'d in the adjacent `pages/demo.page.server.js` file.
+
 ### `import { createRender } from 'vite-plugin-ssr'`
 
-### `import { plugin } from 'vite-plugin-ssr'`
+Execution environement: `Node.js`
 
-## Get Started
+```js
+
+```
+
+### `import { html } from 'vite-plugin-ssr'`
+
+Execution environement: `Node.js`
+
+### `import vitePlugin from 'vite-plugin-ssr'`
+
+Execution environement: `Node.js`
 
