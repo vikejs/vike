@@ -23,10 +23,11 @@ while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` aims to n
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Global Page Wrapper]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Full Control]()
 <br/> [API]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.js`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`]()
@@ -384,9 +385,10 @@ The route of your pages can be defined in several ways:
 
 ```
 Filesystem                  URL
-pages/index.page.js         /
 pages/about.page.js         /about
 pages/HELLO.page.js         /hello     (Mapping is done lower case)
+pages/index.page.js         /
+pages/faq/index.page.js     /faq       (index.page.js is mapped to the empty string)
 ```
 
 Your `.page.js` files can live anywhere; they don't have to live in `pages/` (`vite-plugin-ssr` considers as root the directory common to all your `*.page.js` files.)
