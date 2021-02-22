@@ -407,16 +407,102 @@ A `.page.server.js` file is a `.page.js`-adjacent file that defines the page's s
 
 **`export { render }`**
 
-**`export { setPageProps }`**
+The `async render()` function renders a `Page` to an HTML string.
+
+```jsx
+import renderToHtml from 'a-view-libray'
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render({ Page, pageProps, contextProps }){
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
+
+  const title = contextProps.title || 'My SSR App'
+
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```js
+
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `pages/demo.page.js` file.
+- `pageProps` is the value returned by the `setPageProps()` function
+- `contextProps` is the object passed to `createRender()({contextProps})` and merged with the object returned by the `addContextProps()` function (if the function exists).
 
 **`export { addContextProps }`**
+
+The `async addContextProps()` function adds values to the `contextProps` object which is available to all `.page.server.js` lifecycle methods as well as to route functions defined in `.page.route.js`.
+
+The `async addContextProps()` function is usually used to fetch data.
+
+Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
+
+```js
+// pages/movies.page.server.js
+
+import fetch from "node-fetch";
+
+export { addContextProps }
+
+async function addContextProps({ contextProps }){
+  const response = await fetch("https://api.imdb.com/api/movies/")
+  const { movies } = await response.json()
+  return { movies }
+}
+```
+
+**`export { setPageProps }`**
+
+The `setPageProps()` returns the props `pageProps` that are to be consumed by `Page`.
+
+The `pageProps` are serialized and passed to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+
+It is usally used in combination with `async addContextProps()`: data is fetched in `addContextProps` and then made available to `Page` with `setPageProps()`.
+
+```js
+// pages/movies.page.server.js
+
+import fetch from "node-fetch";
+
+async function addContextProps(): Promise<ContextProps> {
+  const response = await fetch("https://api.imdb.com/api/movies/")
+  const { movies } = await response.json()
+  return { movies }
+}
+
+function setPageProps(contextProps: { movies }) {
+  // We remove data we don't need: `vite-plugin-ssr` serializes and passes `pageProps`
+  // to the client and we want to minimize what it sent over the network.
+  movies = movies.map(({ title, release_date }) => ({title, release_date}))
+
+  return { movies }
+}
+```
+```js
+// pages/movies.page.js
+
+export { Page }
+
+function Page({movies}) {
+  /* Some JSX iterating over `movies`
+     ...
+  */
+}
+```
 
 <br/><br/>
 
 
 ### `*.page.route.js`
 
-Execution environement: Browser, Node.js
+Execution environement: Node.js
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.route.*([a-zA-Z0-9])'`.
 
