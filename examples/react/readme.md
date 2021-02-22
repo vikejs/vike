@@ -1,4 +1,4 @@
-An example of using `vite-plugin-ssr` with React showcasing all of `vite-plugin-ssr`'s features.
+Example of using `vite-plugin-ssr` with React showcasing all of `vite-plugin-ssr`'s features.
 
 To run it:
 
