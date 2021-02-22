@@ -4,12 +4,7 @@
 
 # `vite-plugin-ssr`
 
-`vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool:
-while Next.js and Nuxt are often too framework-like, `vite-plugin-ssr` doesn't interfere with the rest of your stack.
-
-`vite-plugin-ssr` has been designed with care for simplicity and flexibility.
-
-Check the [Intro & Demo](#intro--demo) to get an idea of what using `vite-plugin-ssr` is like.
+Your small but mighty SSR companion.
 
 [Intro & Demo](#intro--demo)
 <br/> [Features]()
@@ -18,11 +13,8 @@ Check the [Intro & Demo](#intro--demo) to get an idea of what using `vite-plugin
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation]()
 <br/> [Guides]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Async Data]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Global Page Wrapper]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Full Control]()
 <br/> [API]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`]()
@@ -34,9 +26,13 @@ Check the [Intro & Demo](#intro--demo) to get an idea of what using `vite-plugin
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`]()
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { plugin } from 'vite-plugin-ssr'`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`]()
 
 ## Intro & Demo
+
+`vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool.
+Where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack.
+And it comes with all the wonderful Vite DX.
 
 <details>
 <summary>
@@ -72,7 +68,7 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-Your `*.page.vue` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.vue` files). You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
+Route can also be defined with route strings and route functions; route strings enable simple parameterized routing while route functions enable full programmatic flexibility.
 
 Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
@@ -85,13 +81,13 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
-async function render(Page, initialProps) {
+async function render({ Page, pageProps, contextProps }) {
   const app = createSSRApp({
-    render: () => h(Page, initialProps)
+    render: () => h(Page, pageProps)
   })
   const appHtml = await renderToString(app)
 
-  const title = initialProps.title || 'Demo: vite-plugin-ssr'
+  const title = contextProps.title || 'Demo: vite-plugin-ssr'
 
   return html`<!DOCTYPE html>
     <html lang="en">
@@ -114,9 +110,9 @@ hydrate()
 
 async function hydrate() {
   // (In production, the page is `<link rel="preload">`'d.)
-  const { Page, initialProps } = await getPage()
+  const { Page, pageProps } = await getPage()
   const app = createSSRApp({
-    render: () => h(Page, initialProps)
+    render: () => h(Page, pageProps)
   })
   app.mount('#app')
 }
@@ -184,7 +180,7 @@ pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-Your `*.page.jsx` files don't have to live in a `pages/` directory (`vite-plugin-ssr` considers as root the directory common to all your `*.page.jsx` files). You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
+Route can also be defined with route strings and route functions; route strings enable simple parameterized routing while route functions enable full programmatic flexibility.
 
 Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
@@ -197,12 +193,12 @@ import { html } from "vite-plugin-ssr";
 
 export { render };
 
-function render(Page, initialProps) {
+function render({ Page, pageProps, contextProps }) {
   const pageHtml = ReactDOMServer.renderToString(
-    <Page {...initialProps} />
+    <Page {...pageProps} />
   );
 
-  const title = initialProps.title || "Demo: vite-plugin-ssr";
+  const title = contextProps.title || "Demo: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
     <html lang="en">
@@ -226,10 +222,10 @@ hydrate();
 
 async function hydrate() {
   // (In production, the page is `<link rel="preload">`'d.)
-  const { Page, initialProps } = await getPage();
+  const { Page, pageProps } = await getPage();
 
   ReactDOM.hydrate(
-    <Page {...initialProps} />,
+    <Page {...pageProps} />,
     document.getElementById("page-view")
   );
 }
@@ -319,89 +315,9 @@ If you already have an existing Vite app and don't want to start from scratch:
 
 ### Routing
 
-By default `vite-plugin-ssr` does Filesystem Routing. For example:
-
-```
-Filesystem                  URL           Comment
-pages/about.page.js         /about
-pages/index.page.js         /             (`index` is mapped to the empty string)
-pages/hello/index.page.js   /hello
-```
-
-The `pages/` directory is optional and you can save your `*.page.jsx` files wherever you want. For example:
-
-```
-Filesystem                  URL
-user/list.page.js           /user/list
-user/create.page.js         /user/detail
-todo/list.page.js           /todo/list
-todo/create.page.js         /todo/detail
-```
-
-The directory common to all your `*.page.jsx` files is considered the root for Filesytem Routing.
-
-You can also define a page's route with a parameterized route string or with a route function. (Route functions give you full flexibility and full programmatic power to define your page's route.)
-
-You can also implement more complex routing
-
-More:
- - [API - Filesystem Routing]()
- - [API - `*.page.route.js`]()
-
-### Async Data
-
-
+### Data Fetching
 
 ### Global Page Wrapper
-
-A "page wrapper" can be added to all your pages by using the render(/hydrate) functions defined in `_default.page.server.js` and `_default.page.client.js`.
-
-```jsx
-// _default.page.server.jsx
-
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { PageLayout } from '../components/PageLayout'
-
-export default { render }
-
-function render(Page, initialProps) {
-  const page = (
-    <PageLayout>
-      <Page {...initialProps} />
-    </PageLayout>
-  )
-
-  return ReactDOMServer.renderToString(page)
-}
-```
-
-```jsx
-// _default.page.client.jsx
-
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { PageLayout } from '../components/PageLayout'
-import { getPage } from 'vite-plugin-ssr/client'
-
-const { Page, initialProps } = await getPage()
-
-const page = (
-  <PageLayout>
-    <Page {...initialProps} />
-  </PageLayout>
-)
-
-ReactDOM.hydrate(page, document.getElementById('page-view'))
-```
-
-### Routing
-
-### HTML
-
-### Page Rendering (where/when/how)
-
-### Browser Entry
 
 ## API
 
@@ -421,93 +337,3 @@ ReactDOM.hydrate(page, document.getElementById('page-view'))
 
 ## Get Started
 
-## Routing
-
-The route of your pages can be defined in several ways:
-
-- Filesystem routing
-- Route string
-- Route function
-
-**Filesystem routing.** By default your pages are mapped to a URL based on where its `.page.js` is located on your filesystem. For example
-
-```
-Filesystem                  URL        Comment
-pages/about.page.js         /about
-pages/HELLO.page.js         /hello     (Mapping is done lower case)
-pages/index.page.js         /
-pages/faq/index.page.js     /faq       (`index` is mapped to the empty string)
-```
-
-Your `.page.js` files can live anywhere; they don't have to live in `pages/` (`vite-plugin-ssr` considers as root the directory common to all your `*.page.js` files.)
-
-```
-Filesystem                  URL
-index/index.page.js         /
-about/index.page.js         /about
-hello/index.page.js         /hello
-```
-
-**Route string**. For a page `pages/film.page.js` a route string can be defined at `pages/film.page.route.js`.
-
-```js
-// pages/film.page.route.js
-
-// Match URLs `/film/1`, `/film/2`, ...
-export default '/film/:filmId'
-```
-
-The syntax is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
-which is the most widespread route string syntax in the JavaScript ecosystem (used by Express.js, React Router, etc.).
-For more user friendly docs, check out the [Express.js Routing docs](https://expressjs.com/en/guide/routing.html).
-
-The route parameters are available at `initialProps`.
-
-```js
-// pages/film.page.client.js
-import { getPage } from 'vite-plugin-ssr/client'
-
-const { Page, initialProps } = await getPage()
-// initialProps.filmId
-```
-
-```js
-// pages/film.page.server.js
-
-export default { render, html, addInitialProps }
-
-function render(Page, initialProps) {
-  // initialProps.filmId
-}
-
-function html(pageViewHtml, initialProps) {
-  // initialProps.filmId
-}
-
-function addInitialProps(initialProps) {
-  // initialProps.filmId
-}
-```
-
-**Route functions**. Route functions give you full programmatic power to define your routing logic.
-
-```js
-// pages/film.page.route.js
-
-export default route
-
-async function route(url) {
-  if (url.startsWith('/foo'))
-    return {
-      // `match` can be a boolean or a (negative) number.
-      // The higher the number, the higher the priority.
-      match: 1000,
-      // Route parameters passed to `initialProps`
-      params: {
-        isFoo: true
-      }
-    }
-
-  return { match: false }
-}
-```

@@ -1,0 +1,4 @@
+- Show warning in dev when hitting a 404, with a list of all pages and their routes
+- Test wrong usages DX
+- Pass {url, contextProps} to route functions
+- Rename {params} to {contextProps} in route functions
