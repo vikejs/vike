@@ -1,14 +1,10 @@
 {
   "name": "create-vite-plugin-ssr",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.4",
   "license": "MIT",
   "bin": {
     "create-vite-plugin-ssr": "index.js"
   },
-  "files": [
-    "index.js",
-    "template-*"
-  ],
   "main": "index.js",
   "engines": {
     "node": ">=12.0.0"
