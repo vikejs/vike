@@ -471,18 +471,18 @@ It is usally used in combination with `async addContextProps()`: data is fetched
 
 import fetch from "node-fetch";
 
-async function addContextProps(): Promise<ContextProps> {
+async function addContextProps({ contextProps }) {
   const response = await fetch("https://api.imdb.com/api/movies/")
   const { movies } = await response.json()
   return { movies }
 }
 
-function setPageProps(contextProps: { movies }) {
+function setPageProps({ contextProps: { movies } }) {
   // We remove data we don't need: `vite-plugin-ssr` serializes and passes `pageProps`
   // to the client and we want to minimize what it sent over the network.
   movies = movies.map(({ title, release_date }) => ({title, release_date}))
-
-  return { movies }
+  const pageProps = { movies }
+  return pageProps
 }
 ```
 ```js
