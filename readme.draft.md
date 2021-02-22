@@ -421,6 +421,8 @@ export default () => ({match: -Infinity})
 
 Execution environement: `Browser`
 
+The `async getPage()` function is used to get the `Page` and `pageProps` in the browser.
+
 ```js
 // pages/demo.page.client.js
 
@@ -437,19 +439,72 @@ async function hydrate() {
 - `Page` is the `export { Page }` (or `export default`) of the adjacent `pages/demo.page.js` file.
 - `pageProps` is the value returned by the `setPageProps()` function, which is `export { setPageProps }`'d in the adjacent `pages/demo.page.server.js` file.
 
+The `pageProps` are serialized and passed from the server with [`devalue`](https://github.com/Rich-Harris/devalue).
+
+In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
+
 ### `import { createRender } from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
 
-```js
+The `createRender()` function creates the `render` function that is essentially the entry of `vite-plugin-ssr` server integration.
 
+```js
+const render = createRender({ viteDevServer, isProduction, root })
+
+app.get('*', async (req, res, next) => {
+  const url = req.originalUrl
+  const contextProps = {}
+  const html = await render({ url, contextProps })
+  if (!html) return next()
+  res.send(html)
+})
 ```
+
+- `isProduction` is a boolean. When set to true `vite-plugin-ssr` loads already-transpiled code from `dist/`, instead of on-the-fly transpiling your source code.
+- `root` is a string holding the absolute path of your app's root directory. All your `page.*` files should be a descendent of the root directory.
+- `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer()`.
 
 ### `import { html } from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
 
+The `html` template string tag is used to sanitize HTML in order to avoid XSS injections.
+
+```js
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render() {
+  const title = 'Hello <script src="https://devil.org/evil-code"></script>'
+  const pageHtml = "<div>I'm already <b>sanitized</b> by Vue/React</div>"
+
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+The `html.sanitize()` function can be used to inject untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering with Vue or React).
+
 ### `import vitePlugin from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
+
+The Vite plugin has no options, just include it in your `vite.config.js`'s `module.exports.plugins`.
+
+```js
+const ssr = require("vite-plugin-ssr");
+
+module.exports = {
+  plugins: [ssr()]
+};
+```
 
