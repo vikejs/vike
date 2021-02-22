@@ -39,7 +39,7 @@ async function render({
   const { pageId, routeProps } = routedPage
   Object.assign(contextProps, routeProps)
 
-  const { Page, pageFilePaths } = await getPageView(pageId)
+  const { Page, pageFilePaths } = await getPage(pageId)
 
   const {
     renderFunction,
@@ -94,16 +94,17 @@ async function render({
   return htmlDocument
 }
 
-async function getPageView(pageId: string) {
+async function getPage(pageId: string) {
   const pageFile = await getUserFile('.page', pageId)
   assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
   assertUsage(
-    typeof fileExports === 'object' && 'default' in fileExports,
-    `${filePath} should have a default export.`
+    typeof fileExports === 'object' &&
+      ('Page' in fileExports || 'default' in fileExports),
+    `${filePath} should have a \`export { Page }\`.`
   )
-  const Page = fileExports.default
+  const Page = fileExports.Page || fileExports.default
 
   return { Page, pageFilePaths: [filePath] }
 }

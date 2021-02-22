@@ -10,7 +10,7 @@ async function getPage(): Promise<{
   const pageId = getPageId()
   assert(pageId)
 
-  const Page = await getPageView(pageId)
+  const Page = await getPage_(pageId)
 
   const pageProps = getPageProps()
   assert(pageProps)
@@ -18,16 +18,17 @@ async function getPage(): Promise<{
   return { Page, pageProps }
 }
 
-async function getPageView(pageId: string) {
+async function getPage_(pageId: string): Promise<any> {
   const pageFile = await getUserFile('.page', pageId)
   assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
   assertUsage(
-    typeof fileExports === 'object' && 'default' in fileExports,
-    `${filePath} should have a default export.`
+    typeof fileExports === 'object' &&
+      ('Page' in fileExports || 'default' in fileExports),
+    `${filePath} should have a \`export { Page }\`.`
   )
-  const Page = fileExports.default
+  const Page = fileExports.Page || fileExports.default
   return Page
 }
 
