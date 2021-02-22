@@ -295,6 +295,9 @@ With Yarn:
 yarn create vite-plugin-ssr
 ```
 
+<br/><br/>
+
+
 ## Manual Installation
 
 If you already have an existing Vite app and don't want to start from scratch:
