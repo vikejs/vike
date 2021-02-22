@@ -1,32 +1,43 @@
 import fetch from 'node-fetch'
 
-export default {
-  addInitialProps
-}
+export { addContextProps }
+export { setPageProps }
 
 type Movie = {
   title: string
   release_date: string
 }
+type ContextProps = {
+  starWarsMovies: Movie[]
+  title: string
+}
 
-async function addInitialProps() {
+async function addContextProps(): Promise<ContextProps> {
   const response = await fetch('https://swapi.dev/api/films/')
   const data: any = await response.json()
   let starWarsMovies: Movie[] = data.results
 
   starWarsMovies = patchResult(starWarsMovies)
 
-  // We only retrun the data we need. (`vite-plugin-ssr` passes the data to the client
-  // and we want to minimize was it sent over the network.)
+  // The page's <title>
+  const title = `${starWarsMovies.length} Star Wars Movies`
+
+  return { starWarsMovies, title }
+}
+
+function setPageProps({
+  contextProps: { starWarsMovies }
+}: {
+  contextProps: ContextProps
+}) {
+  // We remove data we don't need: (`vite-plugin-ssr` serializes and passes `pageProps`
+  // to the client; we want to minimize what it sent over the network.)
   starWarsMovies = starWarsMovies.map(({ title, release_date }) => ({
     title,
     release_date
   }))
 
-  // The page's <title>
-  const title = `${starWarsMovies.length} Star Wars Movies`
-
-  return { starWarsMovies, title }
+  return { starWarsMovies }
 }
 
 // The API is missing the latest star wars movies
@@ -59,5 +70,3 @@ function patchResult(starWarsMovies: Movie[]) {
     // ...sideFranchise
   ]
 }
-
-function extractRelevantData(starWarsMovies: Movie[]) {}

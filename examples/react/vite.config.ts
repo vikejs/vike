@@ -1,6 +1,6 @@
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import mdx from '@brillout/vite-plugin-mdx'
-import { plugin as ssr } from 'vite-plugin-ssr'
+import ssr from 'vite-plugin-ssr'
 import { UserConfig } from 'vite'
 
 const config: UserConfig = {

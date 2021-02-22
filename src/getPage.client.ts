@@ -3,21 +3,19 @@ import { assert, assertUsage } from './utils/assert'
 
 export { getPage }
 
-type InitialProps = Record<string, any>
-
 async function getPage(): Promise<{
   Page: any
-  initialProps: InitialProps
+  pageProps: Record<string, any>
 }> {
   const pageId = getPageId()
   assert(pageId)
 
   const Page = await getPageView(pageId)
 
-  const initialProps = getInitialProps()
-  assert(initialProps)
+  const pageProps = getPageProps()
+  assert(pageProps)
 
-  return { Page, initialProps }
+  return { Page, pageProps }
 }
 
 async function getPageView(pageId: string) {
@@ -38,7 +36,7 @@ function getPageId(): string {
   return window.__vite_plugin_ssr.pageId
 }
 
-function getInitialProps(): Record<string, any> {
+function getPageProps(): Record<string, any> {
   //@ts-ignore
-  return window.__vite_plugin_ssr.initialProps
+  return window.__vite_plugin_ssr.pageProps
 }

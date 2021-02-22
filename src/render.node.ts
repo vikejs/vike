@@ -6,50 +6,81 @@ import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getGlobal } from './global.node'
 import { getPreloadLinks } from './getPreloadLinks.node'
 import { relative as pathRelative } from 'path'
-import { assert, assertUsage, lowerFirst, isCallable, slice } from './utils'
+import {
+  assert,
+  assertUsage,
+  lowerFirst,
+  isCallable,
+  slice,
+  cast
+} from './utils'
 
 export { render }
 
-async function render(
-  url: string,
-  initialProps: Record<string, any> = {}
-): Promise<null | string> {
+async function render({
+  url,
+  contextProps = {}
+}: {
+  url: string
+  contextProps: Record<string, any>
+}): Promise<null | string> {
+  assertUsage(url, '`render({url})`: argument `url` is missing.')
+  assertUsage(
+    url.startsWith('/'),
+    '`render({url})`: argument `url` should start with a `/`.'
+  )
+
   const routedPage = await route(url)
   if (!routedPage) {
     return null
   }
-  Object.assign(initialProps, { url })
+  Object.assign(contextProps, { url })
 
   const { pageId, routeProps } = routedPage
-  Object.assign(initialProps, routeProps)
+  Object.assign(contextProps, routeProps)
 
   const { Page, pageFilePaths } = await getPageView(pageId)
 
-  const { renderFunction, addInitialPropsFunction } = await getPageFunctions(
-    pageId
-  )
+  const {
+    renderFunction,
+    addContextPropsFunction,
+    setPagePropsFunction
+  } = await getPageFunctions(pageId)
 
-  if (addInitialPropsFunction) {
-    const newInitialProps = await addInitialPropsFunction.addInitialProps(
-      initialProps
-    )
+  if (addContextPropsFunction) {
+    const newContextProps = await addContextPropsFunction.addContextProps({
+      contextProps
+    })
     assertUsage(
-      newInitialProps && (newInitialProps as any).constructor === Object,
-      `The \`addInitialProps\` function exported by ${addInitialPropsFunction.filePath} should return a plain JavaScript object.`
+      newContextProps && (newContextProps as any).constructor === Object,
+      `The \`addContextProps\` function exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
     )
-    Object.assign(initialProps, newInitialProps)
+    Object.assign(contextProps, newContextProps)
+  }
+
+  let pageProps: Record<string, unknown>
+  if (setPagePropsFunction) {
+    const props = await setPagePropsFunction.setPageProps({ contextProps })
+    assertUsage(
+      props && typeof props === 'object' && props.constructor === Object,
+      `The \`setPageProps\` function exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
+    )
+    cast<Record<string, unknown>>(props)
+    pageProps = props
+  } else {
+    pageProps = {}
   }
 
   let htmlDocument: string = getSanitizedHtml(
-    await renderFunction.render(Page, initialProps),
+    await renderFunction.render({ Page, contextProps, pageProps }),
     renderFunction.filePath
   )
 
   // Inject Vite transformations
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
-  // Inject initialProps
-  htmlDocument = injectPageInfo(htmlDocument, initialProps, pageId)
+  // Inject pageProps
+  htmlDocument = injectPageInfo(htmlDocument, pageProps, pageId)
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
@@ -80,41 +111,62 @@ async function getPageView(pageId: string) {
 type ServerFunctions = {
   renderFunction: {
     filePath: string
-    render: (Page: any, initialProps: Record<string, any>) => unknown
+    render: (arg1: {
+      Page: any
+      contextProps: Record<string, any>
+      pageProps: Record<string, any>
+    }) => unknown
   }
-  addInitialPropsFunction?: {
+  addContextPropsFunction?: {
     filePath: string
-    addInitialProps: (initialProps: Record<string, unknown>) => unknown
+    addContextProps: (arg1: {
+      contextProps: Record<string, unknown>
+    }) => unknown
+  }
+  setPagePropsFunction?: {
+    filePath: string
+    setPageProps: (arg1: { contextProps: Record<string, unknown> }) => unknown
   }
 }
 async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const serverFiles = await getServerFiles(pageId)
 
   let renderFunction
-  let addInitialPropsFunction
+  let addContextPropsFunction
+  let setPagePropsFunction
 
   for (const { filePath, loadFile } of serverFiles) {
     const fileExports = await loadFile()
+
     const render = fileExports.render || fileExports.default?.render
     assertUsage(
       !render || isCallable(render),
       `The \`render\` export of ${filePath} should be a function.`
     )
-    const addInitialProps =
-      fileExports.addInitialProps || fileExports.default?.addInitialProps
+    const addContextProps =
+      fileExports.addContextProps || fileExports.default?.addContextProps
     assertUsage(
-      !addInitialProps || isCallable(addInitialProps),
-      `The \`addInitialProps\` export of ${filePath} should be a function.`
+      !addContextProps || isCallable(addContextProps),
+      `The \`addContextProps\` export of ${filePath} should be a function.`
+    )
+    const setPageProps =
+      fileExports.setPageProps || fileExports.default?.setPageProps
+    assertUsage(
+      !setPageProps || isCallable(setPageProps),
+      `The \`setPageProps\` export of ${filePath} should be a function.`
     )
 
     if (render) {
       renderFunction = renderFunction || { render, filePath }
     }
-    if (addInitialProps) {
-      addInitialPropsFunction = addInitialPropsFunction || {
-        addInitialProps,
+    if (addContextProps) {
+      addContextPropsFunction = addContextPropsFunction || {
+        addContextProps,
         filePath
       }
+    }
+    if (render) {
+      setPagePropsFunction = setPagePropsFunction || { setPageProps, filePath }
     }
   }
 
@@ -123,7 +175,7 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
     'No `render` function found. Make sure to define a `*.page.server.js` file that exports a `render` function. You can export a `render` function in a file `_default.page.server.js` which will apply as a default to all your pages.'
   )
 
-  return { renderFunction, addInitialPropsFunction }
+  return { renderFunction, addContextPropsFunction, setPagePropsFunction }
 }
 
 async function getBrowserFilePath(pageId: string) {
@@ -200,12 +252,12 @@ async function pathRelativeToRoot(filePath: string): Promise<string> {
 
 function injectPageInfo(
   htmlDocument: string,
-  initialProps: Record<string, any>,
+  pageProps: Record<string, any>,
   pageId: string
 ): string {
   const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(
     pageId
-  )}, initialProps: ${devalue(initialProps)}}</script>`
+  )}, pageProps: ${devalue(pageProps)}}</script>`
   return injectEnd(htmlDocument, injection)
 }
 
