@@ -9,7 +9,7 @@ Your small but mighty SSR companion.
 [Intro & Demo](#intro--demo)
 <br/> [Features](#features)
 <br/> [Get Started](#get-started)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate](#boilerplates)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate](#boilerplate)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
 <br/> [Guides](#guides)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
@@ -28,6 +28,8 @@ Your small but mighty SSR companion.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`](#import-viteplugin-from-vite-plugin-ssr)
+
+<br/>
 
 
 ## Intro & Demo
@@ -260,9 +262,12 @@ You could even render some of your pages with an entire different view framework
 
 </details>
 
+<br/><br/>
+
+
 ## Features
 
-- **Do-one-thing-do-it-well Tool**: `vite-plugin-ssr` only takes care of SSR. The rest of the stack is up to you: `vite-plugin-ssr` works with any view framework (Vue, React, etc.), any view library (Vuex, React Router, etc.), and any server framework (Express, Koa, Hapi, Fastify, etc.).
+- **Do-one-thing-do-it-well**: `vite-plugin-ssr` only takes care of SSR. The rest of the stack is up to you: `vite-plugin-ssr` works with any view framework (Vue, React, etc.), any view library (Vuex, React Router, etc.), and any server framework (Express, Koa, Hapi, Fastify, etc.).
 - **Simple but Powerful:** `vite-plugin-ssr` has been carefully designed to be simple, while allowing you to have full control not only over your tech stack, but also over how & when your pages are rendered.
 - **Pre-render / SSG / Static Websites:** Deploy your app to a static host by pre-rendering all your pages.
 - **Scalable:** Thanks to Vite's radical new approach of lazy transpiling & loading everything, Vite apps can scale to thousands of modules with no hit on dev speed.
@@ -270,6 +275,9 @@ You could even render some of your pages with an entire different view framework
 - **Small but Sturdy:** `vite-plugin-ssr`'s source code is an order of magnitude smaller than SSR frameworks. A smaller source code leads to not only a more robust tool, but also a tool that can quickly adapt to a fast evolving Vite & JavaScript ecosystem.
 
 **Want something?** Search [GitHub issues](https://github.com/brillout/vite-plugin-ssr/issues/) if someone has already requested what you want and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
+
+<br/><br/>
+
 
 ## Get Started
 
@@ -313,15 +321,27 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React](/create-vite-plugin-ssr/template-react/package.json)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/package.json)
 
+<br/><br/>
+
+
 ## Guides
 
 ### Routing
 
+<br/><br/>
+
+
 ### Data Fetching
+
+<br/><br/>
+
 
 ### Pre-rendering
 
 Pre-rendering is work-in-progress, ETA: 4-5 days.
+
+<br/><br/>
+
 
 ### Markdown
 
@@ -331,9 +351,15 @@ For example with `@brillout/vite-plugin-mdx`.
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
 
+<br/><br/>
+
+
 ## API
 
 ### Filesystem Routing
+
+<br/><br/>
+
 
 ### `*.page.js`
 
@@ -351,6 +377,9 @@ The `export { Page }` in `.page.js` (or the `export default`) is passed untouche
 
 The `*.page.js` file is lazy loaded when an HTTP request matches its route.
 
+<br/><br/>
+
+
 ### `*.page.client.js`
 
 Execution environement: Browser
@@ -361,6 +390,9 @@ A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's b
 
 It represents the *entire* browser-side code. This means that if you create an empty `.page.client.js` file, then the page has zero browser-side JavaScript.
 (With the exception of Vite's dev code when not in production.)
+
+<br/><br/>
+
 
 ### `*.page.server.js`
 
@@ -379,11 +411,17 @@ A `.page.server.js` file is a `.page.js`-adjacent file that defines the page's s
 
 **`export { addContextProps }`**
 
+<br/><br/>
+
+
 ### `*.page.route.js`
 
 Execution environement: Browser, Node.js
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.route.*([a-zA-Z0-9])'`.
+
+<br/><br/>
+
 
 ### `_default.page.*`
 
@@ -407,6 +445,9 @@ the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` fil
 
 Defining a `_default.page.js` and `_default.page.route.js` files is forbidden.
 
+<br/><br/>
+
+
 ### `_404.page.js`
 
 The `_404.page.js` is like any other page with the exception that it has a predefined route.
@@ -417,6 +458,9 @@ The `_404.page.js` is like any other page with the exception that it has a prede
 // Ensure lowest priority for the 404 page
 export default () => ({match: -Infinity})
 ```
+
+<br/><br/>
+
 
 ### `import { getPage } from 'vite-plugin-ssr/client'`
 
@@ -444,6 +488,9 @@ The `pageProps` are serialized and passed from the server with [`devalue`](https
 
 In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
 
+<br/><br/>
+
+
 ### `import { createRender } from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
@@ -465,6 +512,9 @@ app.get('*', async (req, res, next) => {
 - `isProduction` is a boolean. When set to true `vite-plugin-ssr` loads already-transpiled code from `dist/`, instead of on-the-fly transpiling your source code.
 - `root` is a string holding the absolute path of your app's root directory. All your `page.*` files should be a descendent of the root directory.
 - `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer()`.
+
+<br/><br/>
+
 
 ### `import { html } from 'vite-plugin-ssr'`
 
@@ -495,6 +545,9 @@ async function render() {
 
 The `html.sanitize()` function can be used to inject untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering with Vue or React).
 
+<br/><br/>
+
+
 ### `import vitePlugin from 'vite-plugin-ssr'`
 
 Execution environement: `Node.js`
@@ -508,4 +561,7 @@ module.exports = {
   plugins: [ssr()]
 };
 ```
+
+<br/><br/>
+
 
