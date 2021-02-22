@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-export { Counter }
+export { Counter };
 
 function Counter() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <button onClick={() => setCount((count) => count + 1)}>
       Counter {count}
     </button>
-  )
+  );
 }

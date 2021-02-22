@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
-export default Hello
+export { Page };
 
-function Hello({ name }: { name: string }) {
+function Page({ name }: { name: string }) {
   return (
     <>
       <h1>Hello</h1>
@@ -18,12 +18,9 @@ function Hello({ name }: { name: string }) {
         </li>
       </ul>
       <p>
-        Parameterized routes can be defined by creating a{' '}
-        <code>.page.route.*</code> file.
+        Parameterized routes can be defined by exporting a route string in the{" "}
+        <code>*.page.route.js</code> file.
       </p>
-      <pre>{`// /pages/hello.page.route.ts
-
-export default '/hello/:name';`}</pre>
     </>
-  )
+  );
 }

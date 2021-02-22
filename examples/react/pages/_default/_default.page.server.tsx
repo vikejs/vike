@@ -1,26 +1,26 @@
-import ReactDOMServer from 'react-dom/server'
-import React from 'react'
-import { PageLayout } from '../components/PageLayout/PageLayout'
-import { html } from 'vite-plugin-ssr'
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import { html } from "vite-plugin-ssr";
+import { PageLayout } from "./PageLayout";
 
-export { render }
+export { render };
 
 function render({
   Page,
   pageProps,
-  contextProps
+  contextProps,
 }: {
-  Page: (pageProps: any) => JSX.Element
-  pageProps: any
-  contextProps: { title?: string }
+  Page: (pageProps: any) => JSX.Element;
+  pageProps: any;
+  contextProps: { title?: string };
 }) {
   const pageContent = ReactDOMServer.renderToString(
     <PageLayout>
       <Page {...pageProps} />
     </PageLayout>
-  )
+  );
 
-  const title = contextProps.title || 'Demo: vite-plugin-ssr'
+  const title = contextProps.title || "Demo: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
     <html>
@@ -30,5 +30,5 @@ function render({
       <body>
         <div id="page-content">${html.dangerouslySetHtml(pageContent)}</div>
       </body>
-    </html>`
+    </html>`;
 }

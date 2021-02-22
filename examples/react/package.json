@@ -7,9 +7,9 @@
     "// Build app": "",
     "build": "vite build && vite build --ssr",
     "// Start server": "",
-    "server": "ts-node ./server.ts",
-    "server:prod": "cross-env NODE_ENV=production ts-node ./server.ts",
-    "server:watch": "ts-node-dev ./server.ts",
+    "server": "ts-node ./server",
+    "server:prod": "cross-env NODE_ENV=production ts-node ./server",
+    "server:watch": "ts-node-dev ./server",
     "// Build/watch vite-plugin-ssr": "",
     "vite-plugin-ssr:build": "cd ../../ && npm run build",
     "vite-plugin-ssr:watch": "cd ../../ && npm run dev"

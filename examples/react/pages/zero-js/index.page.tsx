@@ -1,13 +1,13 @@
-import React from 'react'
+import React from "react";
 
-export default NoJs
+export { Page };
 
-function NoJs() {
+function Page() {
   return (
     <>
       <h1>Zero JS</h1>
       This page page is rendered <i>only</i> to HTML; it has no browser-side
       JavaScript!
     </>
-  )
+  );
 }

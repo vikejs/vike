@@ -1,7 +1,7 @@
-import React from 'react'
-import { Counter } from '../components/Counter'
+import React from "react";
+import { Counter } from "./_components/Counter";
 
-export default IndexPage
+export default IndexPage;
 
 function IndexPage() {
   return (
@@ -17,5 +17,5 @@ function IndexPage() {
         </li>
       </ul>
     </>
-  )
+  );
 }

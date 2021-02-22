@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 
-export default IndexPage
+export { Page };
 
-function IndexPage({ url }: { url: string }) {
+function Page({ url }: { url: string }) {
   return (
     <>
       <h1>Not Found</h1>
       Nothing to be found at <code>{url}</code>.
     </>
-  )
+  );
 }
