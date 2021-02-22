@@ -573,7 +573,7 @@ async function render({ Page, pageProps, contextProps }){
       </body>
     </html>`
 }
-```js
+```
 
 - `Page` is the `export { Page }` (or `export default`) of the adjacent `pages/demo.page.js` file.
 - `pageProps` is the value returned by the `setPageProps()` function
