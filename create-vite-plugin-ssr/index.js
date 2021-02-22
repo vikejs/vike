@@ -5,7 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const argv = require('minimist')(process.argv.slice(2))
 const { prompt } = require('enquirer')
-const { green, cyan, stripColors } = require('kolorist')
+const { green, cyan, stripColors, bold } = require('kolorist')
 
 const cwd = process.cwd()
 
@@ -112,11 +112,15 @@ async function init() {
 
   console.log(`\nDone. Now run:\n`)
   if (root !== cwd) {
-    console.log(`  cd ${path.relative(cwd, root)}`)
+    console.log(cmd(`  cd ${path.relative(cwd, root)}/`))
   }
-  console.log(`  ${cyan('npm install')} (or ${cyan('yarn install')})`)
-  console.log(`  ${cyan('npm run dev')} (or ${cyan('yarn dev')})`)
+  console.log(`  ${cmd('npm install')} (or ${cmd('yarn install')})`)
+  console.log(`  ${cmd('npm run dev')} (or ${cmd('yarn dev')})`)
   console.log()
+}
+
+function cmd(str) {
+  return bold(str)
 }
 
 function copy(src, dest) {
