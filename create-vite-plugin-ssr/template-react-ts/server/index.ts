@@ -24,11 +24,7 @@ async function startServer() {
   const render = createRender({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const html = await render({ url: req.originalUrl, contextProps: {} });
-    if (!html) {
-      next();
-      return;
-    }
-    res.send(html);
+    if (!html) return next();
   });
 
   const port = 3000;
