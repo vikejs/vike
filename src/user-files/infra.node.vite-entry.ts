@@ -1,6 +1,4 @@
-import { setAllUserFilesGetter } from './infra.shared'
-
-setAllUserFilesGetter(__getAllUserFiles)
+export { __getAllUserFiles }
 
 function __getAllUserFiles(): any {
   // Vite resolves globs with micromatch: https://github.com/micromatch/micromatch
@@ -9,7 +7,11 @@ function __getAllUserFiles(): any {
     //@ts-ignore
     '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])'),
     //@ts-ignore
-    '.page.client': import.meta.glob('/**/*.client.*([a-zA-Z0-9])')
+    '.page.client': import.meta.glob('/**/*.client.*([a-zA-Z0-9])'),
+    //@ts-ignore
+    '.page.server': import.meta.glob('/**/*.server.*([a-zA-Z0-9])'),
+    //@ts-ignore
+    '.page.route': import.meta.glob('/**/*.route.*([a-zA-Z0-9])')
   }
   return allUserFiles
 }

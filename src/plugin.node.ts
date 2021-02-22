@@ -8,7 +8,7 @@ import {
 import { assert } from './utils/assert'
 import * as glob from 'fast-glob'
 const CLIENT_ENTRY = require.resolve('vite-plugin-ssr/dist/client.js')
-const SERVER_ENTRY = require.resolve('./user-files/infra.vite')
+const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
 
 export { plugin }
 
@@ -22,7 +22,13 @@ function plugin(): Plugin[] {
         resolve: {
           alias: [aliasPluginImport()]
         },
-        ssr
+        ssr,
+        optimizeDeps: {
+          entries: [
+            '**/*.page.*([a-zA-Z0-9])',
+            '**/*.page.client.*([a-zA-Z0-9])'
+          ]
+        }
       })
     },
     {

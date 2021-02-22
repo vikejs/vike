@@ -2,7 +2,7 @@ import { setAllUserFilesGetter } from './infra.shared'
 import { assert } from '../utils/assert'
 import { sep as pathSep } from 'path'
 import { getGlobal } from '../global.node'
-const viteEntryFileBase = 'infra.vite'
+const viteEntryFileBase = 'infra.node.vite-entry'
 require.resolve(`./${viteEntryFileBase}`)
 assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
 const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
