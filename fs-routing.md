@@ -23,4 +23,4 @@ The directory common to all your `*.page.js` files is considered the root.
 
 For more control over routing, use route strings and route functions.
  - [Routing](#routing)
- - [API - `*.page.route.js`]()
+ - [API - `*.page.route.js`](#pageroutejs)

@@ -18,16 +18,17 @@ Your small but mighty SSR companion.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> [API](#api)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`]()
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`]()
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`](#pageserverjs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`](#pageroutejs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_defaultpage)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`](#_404pagejs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`](#import-viteplugin-from-vite-plugin-ssr)
+
 
 ## Intro & Demo
 

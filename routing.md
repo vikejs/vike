@@ -33,5 +33,5 @@ export default async ({url, contextProps}) => {
 ```
 
 For detailed informations about Filesystem Routing, route strings, and route functions:
- - [API - Filesystem Routing]()
- - [API - `*.page.route.js`]()
+ - [API - Filesystem Routing](#filesystem-routing)
+ - [API - `*.page.route.js`](#pageroutejs)
