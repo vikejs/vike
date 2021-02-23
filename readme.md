@@ -524,12 +524,12 @@ Environement: `Browser`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.client.*([a-zA-Z0-9])`
 
-A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side entry.
+A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side code.
 
 It represents the *entire* browser-side code. This means that if you create an empty `.page.client.js` file, then the page has zero browser-side JavaScript.
 (Except of Vite's dev code when not in production.)
 
-This also means that you have full control over the browser-side code: not only can you render/hydrate your pages as you wish, but you can also easily integrate any browser library.
+This also means that you have full control over the browser-side code: not only can you render/hydrate your pages as you wish, but you can also easily integrate browser libraries.
 
 ```jsx
 // *.page.client.js
@@ -833,6 +833,10 @@ app.get('*', async (req, res, next) => {
 - `root` is a string holding the absolute path of your app's root directory. All your `page.*` files should be a descendent of the root directory.
 - `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer()`.
 
+Examples:
+ - [JavaScript](/create-vite-plugin-ssr/template-react/server/index.js)
+ - [TypeScript](/examples/react/server/index.ts)
+
 <br/><br/>
 
 
@@ -843,6 +847,8 @@ Environement: `Node.js`
 The `html` template string tag is used to sanitize HTML in order to avoid XSS injections.
 
 ```js
+// *.page.server.js
+
 import { html } from 'vite-plugin-ssr'
 
 export { render }
@@ -875,6 +881,8 @@ Environement: `Node.js`
 The Vite plugin has no options, just include it in your `vite.config.js`'s `module.exports.plugins`.
 
 ```js
+// vite.config.js
+
 const ssr = require("vite-plugin-ssr");
 
 module.exports = {
