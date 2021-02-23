@@ -4,9 +4,9 @@
 
 # `vite-plugin-ssr`
 
-Your small but mighty SSR companion.
+Small but mighty SSR tool.
 
-[Intro & Overview](#intro--overview)
+[Introduction](#introduction)
 <br/> [Features](#features)
 <br/> Get Started
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
@@ -32,15 +32,15 @@ Your small but mighty SSR companion.
 <br/>
 
 
-## Intro & Overview
+## Introduction
 
-`vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool.
-Where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack.
-And it comes with all the wonderful Vite DX.
+`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too rigid and framework-like `vite-plugin-ssr` doesn't interfere with your stack and can be used with other Vite plugins.
+
+To get an idea of what it's like to use `vite-plugin-ssr`, select <b>Vue Tour</b> or <b>React Tour</b>:
 
 <details>
 <summary>
-<b>Overview with Vue</b>
+<b>Vue Tour</b>
 </summary>
 <br/>
 
@@ -72,9 +72,10 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-Alternatively, a page's route can be defined with a route string or a route function. Route strings enable simple parameterized routing (e.g. `/movies/:id`), and route functions enable full programmatic flexibility (to implement advanced routing such as route guards).
+Alternatively, the route of a page can be defined with a Route String or Route Function.
+Route Strings enable simple parameterized routing (e.g. `/movies/:id`), and Route Functions enable full programmatic flexibility (enabling you to implement advanced routing such as route guards).
 
-Unlike Next.js/Nuxt, *you* define how your pages are rendered:
+Unlike Nuxt, *you* define how your pages are rendered:
 
 ```js
 // /pages/_default.page.server.js
@@ -122,32 +123,45 @@ async function hydrate() {
 }
 ```
 
-Because *you* control rendering,
-you can easily integrate tools such as Vue Router or Vuex, and use any Vue version you want.
+Note how these `_default.*` files end with `.page.server.js` and `.page.client.js`.
 
-The `_default.*` files can be overridden:
+There are four types of files:
+ - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: defines the page's server-side lifecycle methods.
+ - `.page.route.js`: defines the page's Route String or Route function.
+
+Using `vite-plugin-ssr` simply consists of writing these four types of files; there is no configuration beyond these files.
+
+Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create a `_default.page.client.js` and `_default.page.server.js` file which apply as default for all pages. Route files `.page.route.js` are optional. This means that the three pages we defined above are enough to get a fully functional SSR app running.
+
+The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
 ```js
 // /pages/about.page.client.js
 
-// This file is purposely empty which means that the `/about` page has
-// zero browser-side JavaScript!
+// This file is empty which means that the `/about` page has
+// zero browser-side JavaScript.
 ```
 ```vue
 <!-- /pages/about.page.vue -->
 
 <template>
-  This page is only rendered to HTML!
+  This page is only rendered to HTML.
 </template>
 ```
 
-You could even render some of your pages with an entire different view framework such as React.
+By overriding `_default.page.server.js` you can
+even render some of our pages with an entire different view framework such as React.
+
+Because *you* control rendering,
+you can easily integrate tools such as Vue Router or Vuex, and use any Vue version you want.
 
 </details>
 
 <details>
 <summary>
-<b>Overview with React</b>
+<b>React Tour</b>
 </summary>
 <br/>
 
@@ -184,9 +198,10 @@ pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-Alternatively, a page's route can be defined with a route string or a route function. Route strings enable simple parameterized routing (e.g. `/movies/:id`), and route functions enable full programmatic flexibility (to implement advanced routing such as route guards).
+Alternatively, the route of a page can be defined with a Route String or Route Function.
+Route Strings enable simple parameterized routing (e.g. `/movies/:id`), and Route Functions enable full programmatic flexibility (enabling you to implement advanced routing such as route guards).
 
-Unlike Next.js/Nuxt, *you* define how your pages are rendered:
+Unlike Next.js, *you* define how your pages are rendered:
 
 ```jsx
 // /pages/_default.page.server.jsx
@@ -235,16 +250,25 @@ async function hydrate() {
 }
 ```
 
-Because *you* control rendering,
-you can easily integrate tools such as React Router or Redux, and use Preact, Inferno, or any other React-like alternative.
+Note how these `_default.*` files end with `.page.server.jsx` and `.page.client.jsx`.
 
-The `_default.*` files can be overridden:
+There are four types of files:
+ - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: defines the page's server-side lifecycle methods.
+ - `.page.route.js`: defines the page's Route String or Route function.
+
+Using `vite-plugin-ssr` simply consists of writing these four types of files; there is no configuration beyond these files.
+
+Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create a `_default.page.client.js` and `_default.page.server.js` file which apply as default for all pages. Route files `.page.route.js` are optional. This means that the three pages we defined above are enough to get a fully functional SSR app running.
+
+The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
 ```js
 // /pages/about.page.client.js
 
-// This file is purposely empty which means that the `/about` page has
-// zero browser-side JavaScript!
+// This file is empty which means that the `/about` page has
+// zero browser-side JavaScript.
 ```
 ```jsx
 // /pages/about.page.jsx
@@ -252,13 +276,15 @@ The `_default.*` files can be overridden:
 export { Page };
 
 function Page() {
-  return <>
-    This page is only rendered to HTML!
-  <>;
+  return <>This page is only rendered to HTML.<>;
 }
 ```
 
-You could even render some of your pages with an entire different view framework such as Vue.
+By overriding `_default.page.server.js` you can
+even render some of our pages with an entire different view framework such as Vue.
+
+Because *you* control rendering,
+you can easily integrate tools such as React Router or Redux, and use Preact, Inferno, or any other React-like alternative.
 
 </details>
 
@@ -267,14 +293,14 @@ You could even render some of your pages with an entire different view framework
 
 ## Features
 
-- **Do-one-thing-do-it-well**: `vite-plugin-ssr` only takes care of SSR and the rest of the stack is up to you: `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Simple yet Powerful:** `vite-plugin-ssr` has been carefully designed to be simple, while allowing you to have full control not only over your tech stack, but also over how & when your pages are rendered.
-- **Pre-render / SSG / Static Websites:** Deploy your app to a static host by pre-rendering all your pages.
-- **Scalable:** Thanks to Vite's radical new approach of lazy transpiling & loading everything, Vite apps can scale to thousands of modules with no hit on dev speed.
-- **Fast Production Cold Start:** `vite-plugin-ssr` lazy loads your pages; adding pages doesn't increase cold start.
-- **Small & Sturdy:** `vite-plugin-ssr`'s source code is an order of magnitude smaller than SSR frameworks. A smaller source code leads not only to a more robust tool, but also to a tool that can quickly adapt to a fast evolving Vite & JavaScript ecosystem.
-
-**Want something?** Search [GitHub issues](https://github.com/brillout/vite-plugin-ssr/issues/) if someone has already requested what you want and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
+- **Do-one-thing-do-it-well Tool.** You keep control over your stack and `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control.** *You* control how your pages are rendered & hydrated, enabling you to easily integrate with tools such as Vue Router, React Router, Vuex, Redux, and use any Vue version you want.
+- **Simple & Flexible Routing.**: Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility.
+- **Pre-render / SSG / Static Websites.** Deploy your app to a static host by pre-rendering your pages.
+- **Scalable.** Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
+- **Fast Production Cold Start.** Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
+- **Code Splitting.** Each page loads only the browser-side code it needs.
+- **Simple Design**: Simple overall architecture for a smaller & more robust tool.
 
 <br/><br/>
 
@@ -507,7 +533,7 @@ Environement: `Browser`, `Node.js`
 
 A `*.page.js` file should have a `export { Page }` (or `export default`).
 
-`Page` represents the page's view that is to be rendered to HTML / the DOM.
+`Page` represents the page's view that is rendered to HTML / the DOM.
 
 `vite-plugin-ssr` doesn't do anything with `Page` and just passes it untouched to:
  - Your `render({ Page })` function (defined in your `.page.server.js` file) which renders `Page` to HTML.
