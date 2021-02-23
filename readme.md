@@ -267,12 +267,12 @@ You could even render some of your pages with an entire different view framework
 
 ## Features
 
-- **Do-one-thing-do-it-well**: `vite-plugin-ssr` only takes care of SSR. The rest of the stack is up to you: `vite-plugin-ssr` works with any view framework (Vue, React, etc.), any view library (Vuex, React Router, etc.), and any server framework (Express, Koa, Hapi, Fastify, etc.).
-- **Simple but Powerful:** `vite-plugin-ssr` has been carefully designed to be simple, while allowing you to have full control not only over your tech stack, but also over how & when your pages are rendered.
+- **Do-one-thing-do-it-well**: `vite-plugin-ssr` only takes care of SSR and the rest of the stack is up to you: `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Simple yet Powerful:** `vite-plugin-ssr` has been carefully designed to be simple, while allowing you to have full control not only over your tech stack, but also over how & when your pages are rendered.
 - **Pre-render / SSG / Static Websites:** Deploy your app to a static host by pre-rendering all your pages.
 - **Scalable:** Thanks to Vite's radical new approach of lazy transpiling & loading everything, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start:** `vite-plugin-ssr` lazy loads your pages; adding pages doesn't increase cold start.
-- **Small but Sturdy:** `vite-plugin-ssr`'s source code is an order of magnitude smaller than SSR frameworks. A smaller source code leads to not only a more robust tool, but also a tool that can quickly adapt to a fast evolving Vite & JavaScript ecosystem.
+- **Small & Sturdy:** `vite-plugin-ssr`'s source code is an order of magnitude smaller than SSR frameworks. A smaller source code leads not only to a more robust tool, but also to a tool that can quickly adapt to a fast evolving Vite & JavaScript ecosystem.
 
 **Want something?** Search [GitHub issues](https://github.com/brillout/vite-plugin-ssr/issues/) if someone has already requested what you want and upvote it, or open a new issue if not. Roadmap is prioritized based on user feedback.
 
@@ -281,7 +281,7 @@ You could even render some of your pages with an entire different view framework
 
 ## Boilerplates
 
-If you start from scratch, then simply use the `vite-plugin-ssr` boilerplates.
+If you start from scratch, use the `vite-plugin-ssr` boilerplates.
 
 With NPM:
 
@@ -295,7 +295,7 @@ With Yarn:
 yarn create vite-plugin-ssr
 ```
 
-Follow the prompts to choose between `vue`, `vue-ts`, `react`, or `react-ts`.
+Follow the prompts and choose `vue`, `vue-ts`, `react`, or `react-ts`.
 
 <br/><br/>
 
@@ -308,7 +308,7 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React](/create-vite-plugin-ssr/template-react/vite.config.js)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/vite.config.ts)
 
-2. Integrate Vite and `vite-plugin-ssr` with your server (Express.js, Koa, Hapi, Fastify, etc.).
+2. Integrate Vite and `vite-plugin-ssr` to your server (Express.js, Koa, Hapi, Fastify, ...).
    - [React](/create-vite-plugin-ssr/template-react/server/index.js)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
 
@@ -320,7 +320,7 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React](/create-vite-plugin-ssr/template-react/pages/index/index.page.jsx)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/index/index.page.tsx)
 
-5. Add `dev` and `build` scripts.
+5. Add the `dev` and `build` scripts to your `package.json`.
    - [React](/create-vite-plugin-ssr/template-react/package.json)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/package.json)
 
@@ -370,14 +370,14 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 
 ## Data Fetching
 
-Data fetching is done with two functions: `async addContextProps()` and `setPageProps()`: the `async addContextProps()` function fetches data while `setPageProps()` specifies what data should be serialized and passed to the browser.
+You fech data by defining two functions: `async addContextProps()` and `setPageProps()`. The `async addContextProps()` function fetches data, while `setPageProps()` specifies the data that is serialized and passed from the server to the browser.
 
 The `async addContextProps()` function is always called in Node.js so that ORM/SQL database queries can be used.
 
 Both lifecycle methods are defined in `.page.server.js`.
 
 ```js
-// pages/movies.page.server.js
+// /pages/movies.page.server.js
 // Environement: Node.js
 
 import fetch from "node-fetch";
@@ -400,19 +400,8 @@ function setPageProps({ contextProps: { movies } }) {
 }
 ```
 
-The `pageProps` are passed to the server-side `render()` function (which renders the `Page` to HTML), and to the client-side `getPage()` function (which is used ot hydrate the `Page` to the DOM).
+The `pageProps` are passed to your `render()` lifecycle method, and are provided on the client-side by the `import { getPage } from 'vite-plugin-ssr/client'` function.
 
-```jsx
-// pages/movies.page.js
-// Environement: Browser, Node.js
-
-export { Page }
-
-function Page(pageProps) {
-  const { movies } = pageProps
-  /* ... */
-}
-```
 ```jsx
 // /page/_default.page.server.js
 // Environement: Node.js
@@ -423,7 +412,7 @@ import { html } from 'vite-plugin-ssr'
 export { render }
 
 async function render({ Page, pageProps }) {
-  // `Page` is the function we defined in `movies.page.js`.
+  // `Page` is defined bellow in `movies.page.js`.
   const pageHtml = await renderView(<Page {...pageProps} />)
   return html`<html>
     <div id='view-root'>
@@ -442,10 +431,21 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  // `Page` is the function we defined in `movies.page.js`.
+  // `Page` is defined bellow in `movies.page.js`.
   // `vite-plugin-ssr` serializes and passes `pageProps` to the browser
   const { Page, pageProps } = await getPage()
   await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
+}
+```
+```jsx
+// pages/movies.page.js
+// Environement: Browser, Node.js
+
+export { Page }
+
+function Page(pageProps) {
+  const { movies } = pageProps
+  /* ... */
 }
 ```
 
