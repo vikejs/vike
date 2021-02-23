@@ -1,7 +1,5 @@
 <template>
-  <h1>
-    Welcome to.
-  </h1>
+  <h1>Welcome</h1>
   This page is:
   <ul>
     <li>Rendered to HTML.</li>
