@@ -7,7 +7,7 @@ function Page({ name }: { name: string }) {
     <>
       <h1>Hello</h1>
       <p>
-        Bonjour <b>{name}</b>.
+        Hi <b>{name}</b>.
       </p>
       <ul>
         <li>
@@ -18,8 +18,8 @@ function Page({ name }: { name: string }) {
         </li>
       </ul>
       <p>
-        Parameterized routes can be defined by exporting a route string in the{" "}
-        <code>*.page.route.js</code> file.
+        Parameterized routes can be defined by exporting a route string in{" "}
+        <code>*.page.route.js</code>.
       </p>
     </>
   );

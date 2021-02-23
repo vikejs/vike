@@ -8,7 +8,6 @@
         <a href="/markdown">Markdown</a>
         <a href="/star-wars">Data Fetching</a>
         <a href="/hello/alice">Routing</a>
-        <a href="/zero-js">Zero JS</a>
       </div>
       <div class="content"><slot/></div>
     </div>
@@ -50,6 +49,7 @@ code {
   padding: 20px;
   border-left: 2px solid #eee;
   padding-bottom: 50px;
+  min-height: 100vh;
 }
 .navigation {
   padding: 20px;

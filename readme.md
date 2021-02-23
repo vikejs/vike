@@ -6,7 +6,7 @@
 
 Your small but mighty SSR companion.
 
-[Intro & Demo](#intro--demo)
+[Intro & Preview](#intro--preview)
 <br/> [Features](#features)
 <br/> Get Started
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
@@ -32,7 +32,7 @@ Your small but mighty SSR companion.
 <br/>
 
 
-## Intro & Demo
+## Intro & Preview
 
 `vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool.
 Where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack.
@@ -40,7 +40,7 @@ And it comes with all the wonderful Vite DX.
 
 <details>
 <summary>
-Vue Demo
+Vue Preview
 </summary>
 <br/>
 
@@ -72,7 +72,7 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-Route can also be defined with route strings and route functions; route strings enable simple parameterized routing while route functions enable full programmatic flexibility.
+Alternatively, a page's route can be defined with a route string or a route function. Route strings enable simple parameterized routing (e.g. `/movies/:id`), and route functions enable full programmatic flexibility (to implement advanced routing such as route guards).
 
 Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
@@ -91,7 +91,7 @@ async function render({ Page, pageProps, contextProps }) {
   })
   const appHtml = await renderToString(app)
 
-  const title = contextProps.title || 'Demo: vite-plugin-ssr'
+  const title = contextProps.title || 'Preview: vite-plugin-ssr'
 
   return html`<!DOCTYPE html>
     <html>
@@ -147,7 +147,7 @@ You could even render some of your pages with an entire different view framework
 
 <details>
 <summary>
-React Demo
+React Preview
 </summary>
 <br/>
 
@@ -184,7 +184,7 @@ pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-Route can also be defined with route strings and route functions; route strings enable simple parameterized routing while route functions enable full programmatic flexibility.
+Alternatively, a page's route can be defined with a route string or a route function. Route strings enable simple parameterized routing (e.g. `/movies/:id`), and route functions enable full programmatic flexibility (to implement advanced routing such as route guards).
 
 Unlike Next.js/Nuxt, *you* define how your pages are rendered:
 
@@ -202,7 +202,7 @@ function render({ Page, pageProps, contextProps }) {
     <Page {...pageProps} />
   );
 
-  const title = contextProps.title || "Demo: vite-plugin-ssr";
+  const title = contextProps.title || "Preview: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
     <html>

@@ -22,7 +22,7 @@ function Page({
       </p>
       <p>
         Data can be fetched by using <code>addContextProps</code> and{" "}
-        <code>addPageProps</code>.
+        <code>setPageProps</code>.
       </p>
     </>
   );

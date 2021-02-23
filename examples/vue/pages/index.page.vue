@@ -13,7 +13,6 @@
 
 <script lang="ts">
 import Counter from './_components/Counter.vue';
-const props = ['url']
 const components = { Counter }
-export default { props, components }
+export default { components }
 </script>
