@@ -320,7 +320,7 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React](/create-vite-plugin-ssr/template-react/pages/index/index.page.jsx)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/index/index.page.tsx)
 
-5. Create the `dev` and `build` scripts.
+5. Add `dev` and `build` scripts.
    - [React](/create-vite-plugin-ssr/template-react/package.json)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/package.json)
 
@@ -641,7 +641,7 @@ async function addContextProps({ contextProps }){
 
 The `setPageProps()` returns the `pageProps` consumed by `Page`.
 
-The `pageProps` are serialized and passed to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
 It is usally used in conjunction with `async addContextProps()`: data is fetched in `async addContextProps()` and then made available to `Page` with `setPageProps()`.
 
@@ -765,7 +765,7 @@ admin-panel/_default.page.client.js
 admin-panel/index.page.js
 ```
 
-This has the effect that `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
+The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
 the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
 
 The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
@@ -776,7 +776,7 @@ defining `_default.page.js` or `_default.page.route.js` is forbidden.
 
 ## `_404.page.js`
 
-The `_404.page.js` is like any other page with the exception that it has a predefined route.
+The `_404.page.js` page is like any other page with the exception that it has a predefined route.
 
 ```js
 // node_modules/vite-plugin-ssr/.../_404.page.route.js
@@ -792,7 +792,7 @@ export default () => ({match: -Infinity})
 
 Environement: `Browser`
 
-The `async getPage()` function is used to get the `Page` and `pageProps` in the browser.
+The `async getPage()` function provides `Page` and `pageProps` in the browser.
 
 ```js
 // /pages/demo.page.client.js
@@ -807,12 +807,12 @@ async function hydrate() {
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `pages/demo.page.js` file.
-- `pageProps` is the value returned by the `setPageProps()` function, which is `export { setPageProps }`'d in the adjacent `pages/demo.page.server.js` file.
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `/pages/demo.page.js` file.
+- `pageProps` is the value returned by your `setPageProps()` function (which you define and export in the adjacent `pages/demo.page.server.js` file).
 
-The `pageProps` are serialized and passed from the server with [`devalue`](https://github.com/Rich-Harris/devalue).
+The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
+In development `getPage()` dynamically `import()`s the page, while in production the page is preloaded (with `<link rel="preload">`).
 
 <br/><br/>
 
@@ -841,7 +841,7 @@ app.get('*', async (req, res, next) => {
 
 Examples:
  - [JavaScript](/create-vite-plugin-ssr/template-react/server/index.js)
- - [TypeScript](/examples/react/server/index.ts)
+ - [TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
 
 <br/><br/>
 
