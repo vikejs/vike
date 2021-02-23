@@ -67,7 +67,7 @@ export default {
 
 By default, `vite-plugin-ssr` does filesystem routing:
 ```
-Filesystem                  URL
+FILESYSTEM                  URL
 pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
@@ -179,7 +179,7 @@ function Counter() {
 
 By default, `vite-plugin-ssr` does filesystem routing:
 ```
-Filesystem                  URL
+FILESYSTEM                  URL
 pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
@@ -281,7 +281,7 @@ You could even render some of your pages with an entire different view framework
 
 ## Boilerplates
 
-If you start from scratch, then simply use the `vite-plugin-ssr` boilerplates:
+If you start from scratch, then simply use the `vite-plugin-ssr` boilerplates.
 
 With NPM:
 
@@ -332,7 +332,7 @@ If you already have an existing Vite app and don't want to start from scratch:
 By default `vite-plugin-ssr` does Filesystem Routing.
 
 ```
-Filesystem                  URL
+FILESYSTEM                  URL
 pages/index.page.js         /
 pages/about.page.js         /about
 pages/faq/index.page.js     /faq
@@ -348,7 +348,7 @@ export default '/product/:productId'
 
 The `productId` value is available at `contextProps.productId` so that you can fetch data in `async addContextProps({contextProps})` which is explained at [Data Fetching](#data-fetching).
 
-For full programmatic control, you can define route functions.
+For full programmatic flexibility, you can define route functions.
 
 ```js
 // pages/admin.page.route.js
@@ -475,58 +475,56 @@ For example with `@brillout/vite-plugin-mdx`.
 
 ## Filesystem Routing
 
-By default a page is mapped to a URL based on where its `.page.js` file is located on your filesystem.
+By default a page is mapped to a URL based on where its `.page.js` file is located.
 
 ```
-Filesystem                    URL         Comment
-pages/about.page.js           /about
-pages/index/index.page.js     /           (`index` is mapped to the empty string)
-pages/HELLO.page.js           /hello      (Mapping is done lower case)
+FILESYSTEM                        URL              COMMENT
+pages/about.page.js               /about
+pages/index/index.page.js         /                (`index` is mapped to the empty string)
+pages/HELLO.page.js               /hello           (Mapping is done lower case)
 ```
 
-The `pages/` directory is optional and you can save your `*.page.jsx` files wherever you want.
+The `pages/` directory is optional and you can save your `*.page.js` files wherever you want.
 
 ```
-Filesystem                  URL
-user/list.page.js           /user/list
-user/create.page.js         /user/create
-todo/list.page.js           /todo/list
-todo/create.page.js         /todo/create
+FILESYSTEM                        URL
+user/list.page.js                 /user/list
+user/create.page.js               /user/create
+todo/list.page.js                 /todo/list
+todo/create.page.js               /todo/create
 ```
 
-The directory common to all your `*.page.js` files is considered the root.
+The directory common to all your `*.page.js` files is considered the routing root.
 
-For more control over routing, use route strings and route functions.
- - [Routing](#routing)
- - [API - `*.page.route.js`](#pageroutejs)
+For more control over routing, define route strings and route functions in [`*.page.route.js`](#pageroutejs).
 
 <br/><br/>
 
 
 ## `*.page.js`
 
-Execution environement: `Browser`, `Node.js`.
+Environement: `Browser`, `Node.js`.
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.page.*([a-zA-Z0-9])'`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`.
 
-A `*.page.js` file defines the page's view that is rendered to HTML and the DOM.
+A `*.page.js` file should have a `export { Page }` (or `export default`).
 
-The `export { Page }` in `.page.js` (or the `export default`) is passed untouched to:
- - `render({ Page })` (defined in `.page.server.js`)
- - `const { Page } = await getPage()` (from `import { getPage } from 'vite-plugin-ssr/client'`).
+`Page` represents the page's view that is to be rendered to HTML / the DOM.
 
-`vite-plugin-ssr` doesn't do anything with `Page`: it is your `.page.server.js` and `.page.client.js` files that use `Page`.
+`vite-plugin-ssr` doesn't do anything with `Page` and just passes it untouched to:
+ - `render({ Page })` (defined in `.page.server.js`) which renders `Page` to HTML.
+ - `const { Page } = await getPage()` (from `import { getPage } from 'vite-plugin-ssr/client'`) which renders/hydrates `Page` to the DOM.
 
-The `*.page.js` file is lazy loaded when an HTTP request matches its route.
+The `*.page.js` file is lazy loaded and only when needed, that is only when an HTTP request matches the page's route.
 
 <br/><br/>
 
 
 ## `*.page.client.js`
 
-Execution environement: Browser
+Environement: `Browser`.
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.client.*([a-zA-Z0-9])'`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.client.*([a-zA-Z0-9])`.
 
 A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side entry.
 
@@ -538,9 +536,9 @@ It represents the *entire* browser-side code. This means that if you create an e
 
 ## `*.page.server.js`
 
-Execution environement: Node.js
+Environement: `Node.js`.
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.server.*([a-zA-Z0-9])'`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.server.*([a-zA-Z0-9])`.
 
 A `.page.server.js` file is a `.page.js`-adjacent file that defines the page's server-side lifecycle methods:
 - `export { render }`
@@ -644,9 +642,9 @@ function Page({movies}) {
 
 ## `*.page.route.js`
 
-Execution environement: Node.js
+Environement: `Node.js`.
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `'/**/*.route.*([a-zA-Z0-9])'`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.route.*([a-zA-Z0-9])`.
 
 The `*.page.route.*` files enable full control over the routing.
 
@@ -746,7 +744,7 @@ export default () => ({match: -Infinity})
 
 ## `import { getPage } from 'vite-plugin-ssr/client'`
 
-Execution environement: `Browser`
+Environement: `Browser`.
 
 The `async getPage()` function is used to get the `Page` and `pageProps` in the browser.
 
@@ -775,7 +773,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 ## `import { createRender } from 'vite-plugin-ssr'`
 
-Execution environement: `Node.js`
+Environement: `Node.js`.
 
 The `createRender()` function creates the `render` function that is essentially the entry of `vite-plugin-ssr` server integration.
 
@@ -800,7 +798,7 @@ app.get('*', async (req, res, next) => {
 
 ## `import { html } from 'vite-plugin-ssr'`
 
-Execution environement: `Node.js`
+Environement: `Node.js`.
 
 The `html` template string tag is used to sanitize HTML in order to avoid XSS injections.
 
@@ -832,7 +830,7 @@ The `html.sanitize()` function can be used to inject untrusted strings, while `h
 
 ## `import vitePlugin from 'vite-plugin-ssr'`
 
-Execution environement: `Node.js`
+Environement: `Node.js`.
 
 The Vite plugin has no options, just include it in your `vite.config.js`'s `module.exports.plugins`.
 
