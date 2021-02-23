@@ -534,6 +534,7 @@ This also means that you have full control over the browser-side code: not only 
 ```jsx
 // *.page.client.js
 
+import { getPage } from 'vite-plugin-ssr/client'
 import { hydrateView } from 'some-view-library'
 import GoogleAnalytics from '@brillout/google-analytics'
 
