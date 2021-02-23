@@ -685,7 +685,9 @@ Environement: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
-The `*.page.route.*` files enable full control over routing.
+The `*.page.route.*` files enable further control over routing with:
+ - Route Strings
+ - Route Functions
 
 <br/>
 
