@@ -44,7 +44,7 @@ Vue Demo
 </summary>
 <br/>
 
-Pages are defined by creating `*.page.vue` files:
+Pages are defined by creating `.page.vue` files:
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -151,7 +151,7 @@ React Demo
 </summary>
 <br/>
 
-Pages are defined by creating `*.page.jsx` files:
+Pages are defined by creating `.page.jsx` files:
 
 ```jsx
 // /pages/index.page.js
@@ -354,7 +354,7 @@ For full programmatic flexibility, you can define route functions.
 // pages/admin.page.route.js
 
 // Route functions allow us to implement advanced routing such as route guards.
-export default async ({url, contextProps}) => {
+export default async ({ url, contextProps }) => {
   if (url==='/admin' && contextProps.user.isAdmin) {
     return { match: true }
   }
@@ -395,7 +395,6 @@ function setPageProps({ contextProps: { movies } }) {
   // We remove data we don't need: `vite-plugin-ssr` serializes and passes `pageProps`
   // to the client and we want to minimize what it sent over the network.
   movies = movies.map(({ title, release_date }) => ({title, release_date}))
-
   const pageProps = { movies }
   return pageProps
 }
@@ -482,7 +481,7 @@ pages/index/index.page.js         /                (`index` is mapped to the emp
 pages/HELLO.page.js               /hello           (Mapping is done lower case)
 ```
 
-The `pages/` directory is optional and you can save your `*.page.js` files wherever you want.
+The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
 
 ```
 FILESYSTEM                        URL
@@ -685,7 +684,7 @@ Environement: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
-The `*.page.route.*` files enable further control over routing with:
+The `*.page.route.js` files enable further control over routing with:
  - Route Strings
  - Route Functions
 
@@ -693,7 +692,7 @@ The `*.page.route.*` files enable further control over routing with:
 
 ### Route Strings
 
-For a page `/pages/film.page.js`, its route string can be defined at its `/pages/film.page.route.js` adjacent file.
+For a page `/pages/film.page.js`, a route string can be defined in a `/pages/film.page.route.js` adjacent file.
 
 ```js
 // /pages/film.page.route.js
@@ -705,9 +704,9 @@ export default '/film/:filmId'
 If the URL matches, the value of `filmId` is available at `contextProps.filmId`.
 
 The syntax of route strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
-(the most widespread syntax in the JavaScript ecosystem).
-For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html)
-(Express uses `path-to-regexp` as well).
+(the most widespread route syntax in JavaScript).
+For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html#route-parameters)
+(Express.js uses `path-to-regexp`).
 
 <br/>
 
@@ -718,25 +717,26 @@ Route functions give you full programmatic flexibility to define your routing lo
 ```js
 // /pages/film/admin.page.route.js
 
-export default route
-
-async function route(url, contextProps) {
+export default async ({ url, contextProps }) {
+  // Route functions allow us to implement advanced routing such as route guards.
   if (! contextProps.user.isAdmin) {
     return {match: false}
   }
+  // We can use RegExp and any JavaScript tool we want.
   if (! /\/film\/[0-9]+\/admin/.test(url)) {
     return {match: false}
   }
   filmId = url.split('/')[2]
   return {
     match: true,
-    // Add additional context props
-    contextProps: { filmId }
+    // Add `filmId` to `contextProps`
+    addContextProps: { filmId }
   }
 }
 ```
 
-The `match` value can be a (negative) number which allows for resolving route conflicts.
+The `match` value can be a (negative) number which enables you to resolve route conflicts.
+The higher the number, the higher the priority.
 For example, `vite-plugin-ssr` internally defines `_404.page.js`'s route as:
 
 ```js
@@ -750,7 +750,7 @@ export default () => ({match: -Infinity})
 
 ## `_default.page.*`
 
-The `_default.page.server.js` and `_default.page.client.js` files are like regular `*.page.server.js` and `*.page.client.js` files but they are special in the sense that they don't apply to a single page file (in other words they are not adjacent to a `.page.js` file), instead they apply as a default to all pages.
+The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files but they are special in the sense that they don't apply to a single page file (in other words they are not adjacent to a `.page.js` file), instead they apply as a default to all pages.
 
 There can be several `_default.page.*` files.
 
@@ -835,7 +835,7 @@ app.get('*', async (req, res, next) => {
 ```
 
 - `isProduction` is a boolean. When set to true `vite-plugin-ssr` loads already-transpiled code from `dist/`, instead of on-the-fly transpiling your source code.
-- `root` is a string holding the absolute path of your app's root directory. All your `page.*` files should be a descendent of the root directory.
+- `root` is a string holding the absolute path of your app's root directory. All your `.page.js` files should be a descendent of the root directory.
 - `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer()`.
 
 Examples:

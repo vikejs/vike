@@ -1,7 +1,7 @@
 - Show warning in dev when hitting a 404, with a list of all pages and their routes
 - Test wrong usages DX
 - Pass {url, contextProps} to route functions
-- Rename {params} to {contextProps} in route functions
+- Rename {params} to {addContextProps} in route functions
 - Skip all pages that have a `_` prefix in their path
 - Assert that `setPageProps` never returns a promise
 - Add .gitingore to boilerplates
