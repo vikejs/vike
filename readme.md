@@ -547,7 +547,7 @@ A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's s
 
 The `*.page.server.js` file is lazy loaded only when needed.
 
-**`export { render }`**
+### `export { render }`
 
 Your `async render()` function should render `Page` to an HTML string.
 
@@ -578,6 +578,8 @@ async function render({ Page, pageProps, contextProps }){
 - `pageProps` is the value returned by the `setPageProps()` function (usually defined wihtin the same `.page.server.js` file).
 - `contextProps` is the object that `vite-plugin-ssr` composed by merging the `contextProps` you passed to [`createRender()({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
 
+<br/>
+
 **`export { addContextProps }`**
 
 The `async addContextProps()` function adds values to the `contextProps` object. The `contextProps` is available to all `.page.server.js` lifecycle methods and to route functions defined in `.page.route.js`.
@@ -604,7 +606,7 @@ async function addContextProps({ contextProps }){
 }
 ```
 
-**`export { setPageProps }`**
+#### `export { setPageProps }`
 
 The `setPageProps()` returns the props `pageProps` that are to be consumed by `Page`.
 
