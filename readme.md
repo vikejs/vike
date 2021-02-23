@@ -503,9 +503,9 @@ For more control over routing, define route strings and route functions in [`*.p
 
 ## `*.page.js`
 
-Environement: `Browser`, `Node.js`.
+Environement: `Browser`, `Node.js`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
 
 A `*.page.js` file should have a `export { Page }` (or `export default`).
 
@@ -522,9 +522,9 @@ The `*.page.js` file is lazy loaded and only when needed, that is only when an H
 
 ## `*.page.client.js`
 
-Environement: `Browser`.
+Environement: `Browser`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.client.*([a-zA-Z0-9])`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.client.*([a-zA-Z0-9])`
 
 A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side entry.
 
@@ -536,9 +536,9 @@ It represents the *entire* browser-side code. This means that if you create an e
 
 ## `*.page.server.js`
 
-Environement: `Node.js`.
+Environement: `Node.js`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.server.*([a-zA-Z0-9])`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.server.*([a-zA-Z0-9])`
 
 A `.page.server.js` file is a `.page.js`-adjacent file that defines the page's server-side lifecycle methods:
 - `export { render }`
@@ -642,9 +642,9 @@ function Page({movies}) {
 
 ## `*.page.route.js`
 
-Environement: `Node.js`.
+Environement: `Node.js`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.route.*([a-zA-Z0-9])`.
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.route.*([a-zA-Z0-9])`
 
 The `*.page.route.*` files enable full control over the routing.
 
@@ -744,7 +744,7 @@ export default () => ({match: -Infinity})
 
 ## `import { getPage } from 'vite-plugin-ssr/client'`
 
-Environement: `Browser`.
+Environement: `Browser`
 
 The `async getPage()` function is used to get the `Page` and `pageProps` in the browser.
 
@@ -773,7 +773,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 ## `import { createRender } from 'vite-plugin-ssr'`
 
-Environement: `Node.js`.
+Environement: `Node.js`
 
 The `createRender()` function creates the `render` function that is essentially the entry of `vite-plugin-ssr` server integration.
 
@@ -798,7 +798,7 @@ app.get('*', async (req, res, next) => {
 
 ## `import { html } from 'vite-plugin-ssr'`
 
-Environement: `Node.js`.
+Environement: `Node.js`
 
 The `html` template string tag is used to sanitize HTML in order to avoid XSS injections.
 
@@ -830,7 +830,7 @@ The `html.sanitize()` function can be used to inject untrusted strings, while `h
 
 ## `import vitePlugin from 'vite-plugin-ssr'`
 
-Environement: `Node.js`.
+Environement: `Node.js`
 
 The Vite plugin has no options, just include it in your `vite.config.js`'s `module.exports.plugins`.
 
