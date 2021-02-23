@@ -613,10 +613,9 @@ async function render({ Page, pageProps, contextProps }){
 
 ### `export { addContextProps }`
 
-The `async addContextProps()` function adds values to the `contextProps` object. The `contextProps` is available to all `.page.server.js` lifecycle methods and to route functions defined in `.page.route.js`.
+The `async addContextProps()` function adds values to `contextProps`. The `contextProps` are available to all `.page.server.js` lifecycle methods and to all route functions defined in `.page.route.js` files.
 
 The `async addContextProps()` function is usually used to fetch data.
-
 Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
 
 ```js
@@ -645,7 +644,7 @@ The `setPageProps()` returns the props `pageProps` that are to be consumed by `P
 
 The `pageProps` are serialized and passed to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-It is usally used in combination with `async addContextProps()`: data is fetched in `addContextProps` and then made available to `Page` with `setPageProps()`.
+It is usally used in conjunction with `async addContextProps()`: data is fetched in `addContextProps` and then made available to `Page` with `setPageProps()`.
 
 ```js
 // /pages/movies.page.server.js
