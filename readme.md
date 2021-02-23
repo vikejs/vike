@@ -423,7 +423,7 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
-async funcion render({ Page, pageProps }) {
+async function render({ Page, pageProps }) {
   // `Page` is the function we defined in `movies.page.js`.
   const pageHtml = await renderView(<Page {...pageProps} />)
   return html`<html>
@@ -442,7 +442,7 @@ import { getPage } from 'vite-plugin-ssr/client'
 
 hydrate()
 
-async funcion hydrate() {
+async function hydrate() {
   // `Page` is the function we defined in `movies.page.js`.
   // `vite-plugin-ssr` serializes and passes `pageProps` to the browser
   const { Page, pageProps } = await getPage()
@@ -539,7 +539,7 @@ import GoogleAnalytics from '@brillout/google-analytics'
 
 main()
 
-async funcion main() {
+async function main() {
   analytics_init()
   analytics.event('[hydration] begin')
   await hydrate()
