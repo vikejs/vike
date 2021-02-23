@@ -750,7 +750,7 @@ export default () => ({match: -Infinity})
 
 ## `_default.page.*`
 
-The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files but they are special in the sense that they don't apply to a single page file (in other words they are not adjacent to a `.page.js` file), instead they apply as a default to all pages.
+The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
 
 There can be several `_default.page.*` files.
 
@@ -768,7 +768,8 @@ admin-panel/index.page.js
 This has the effect that `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
 the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
 
-Defining a `_default.page.js` and `_default.page.route.js` files is forbidden.
+The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
+defining `_default.page.js` or `_default.page.route.js` is forbidden.
 
 <br/><br/>
 
