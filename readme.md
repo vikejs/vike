@@ -6,7 +6,7 @@
 
 Your small but mighty SSR companion.
 
-[Intro & Preview](#intro--preview)
+[Intro & Overview](#intro--overview)
 <br/> [Features](#features)
 <br/> Get Started
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
@@ -32,7 +32,7 @@ Your small but mighty SSR companion.
 <br/>
 
 
-## Intro & Preview
+## Intro & Overview
 
 `vite-plugin-ssr` is a Vite plugin that gives you a similar experience than Next.js/Nuxt but as do-one-thing-do-it-well tool.
 Where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack.
@@ -40,7 +40,7 @@ And it comes with all the wonderful Vite DX.
 
 <details>
 <summary>
-Vue Preview
+### Overview with Vue
 </summary>
 <br/>
 
@@ -147,7 +147,7 @@ You could even render some of your pages with an entire different view framework
 
 <details>
 <summary>
-React Preview
+### Overview with React
 </summary>
 <br/>
 
