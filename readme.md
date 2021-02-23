@@ -36,7 +36,7 @@ Small but mighty SSR tool.
 
 `vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too rigid and framework-like `vite-plugin-ssr` doesn't interfere with your stack and can be used with other Vite plugins.
 
-To get an idea of what it's like to use `vite-plugin-ssr`, select <b>Vue Tour</b> or <b>React Tour</b>:
+To get an idea of what it's like to use `vite-plugin-ssr`, click on <b>Vue Tour</b> or <b>React Tour</b>.
 
 <details>
 <summary>
