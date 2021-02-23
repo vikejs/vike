@@ -123,15 +123,13 @@ async function hydrate() {
 }
 ```
 
-Note how these `_default.*` files end with `.page.server.js` and `.page.client.js`.
-
-There are four types of files:
+Note how these `_default.*` files end with `.page.server.js` and `.page.client.js`. There are four types of files:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
  - `.page.route.js`: defines the page's Route String or Route function.
 
-Using `vite-plugin-ssr` simply consists of writing these four types of files; there is no configuration beyond these files.
+Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create a `_default.page.client.js` and `_default.page.server.js` file which apply as default for all pages. Route files `.page.route.js` are optional. This means that the three pages we defined above are enough to get a fully functional SSR app running.
 
@@ -152,7 +150,7 @@ The `_default.page.*` files can be overridden. For example, you can create a pag
 ```
 
 By overriding `_default.page.server.js` you can
-even render some of our pages with an entire different view framework such as React.
+even render some of your pages with an entire different view framework such as React.
 
 Because *you* control rendering,
 you can easily integrate tools such as Vue Router or Vuex, and use any Vue version you want.
@@ -250,15 +248,13 @@ async function hydrate() {
 }
 ```
 
-Note how these `_default.*` files end with `.page.server.jsx` and `.page.client.jsx`.
-
-There are four types of files:
+Note how these `_default.*` files end with `.page.server.jsx` and `.page.client.jsx`. There are four types of files:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
  - `.page.route.js`: defines the page's Route String or Route function.
 
-Using `vite-plugin-ssr` simply consists of writing these four types of files; there is no configuration beyond these files.
+Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create a `_default.page.client.js` and `_default.page.server.js` file which apply as default for all pages. Route files `.page.route.js` are optional. This means that the three pages we defined above are enough to get a fully functional SSR app running.
 
@@ -281,7 +277,7 @@ function Page() {
 ```
 
 By overriding `_default.page.server.js` you can
-even render some of our pages with an entire different view framework such as Vue.
+even render some of your pages with an entire different view framework such as Vue.
 
 Because *you* control rendering,
 you can easily integrate tools such as React Router or Redux, and use Preact, Inferno, or any other React-like alternative.
@@ -321,7 +317,7 @@ With Yarn:
 yarn create vite-plugin-ssr
 ```
 
-Follow the prompts and choose `vue`, `vue-ts`, `react`, or `react-ts`.
+Follow the prompts to choose `vue`, `vue-ts`, `react`, or `react-ts`.
 
 <br/><br/>
 
@@ -490,7 +486,13 @@ Pre-rendering is work-in-progress, ETA: 4-5 days.
 
 ## Markdown
 
-You can use `vite-plugin-ssr` with any Vite markdown plugin, for example `@brillout/vite-plugin-mdx`:
+You can use `vite-plugin-ssr` with any Vite markdown plugin.
+
+For Vue you can use `vite-plugin-md`:
+ - [/examples/vue/pages/markdown.page.md](/examples/vue/pages/markdown.page.md)
+ - [/examples/vue/vite.config.ts](/examples/vue/vite.config.ts)
+
+For React you can use `@brillout/vite-plugin-mdx`:
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
 
