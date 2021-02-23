@@ -812,7 +812,7 @@ async function hydrate() {
 
 The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-In development `getPage()` dynamically `import()`s the page, while in production the page is preloaded (with `<link rel="preload">`).
+In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
 
 <br/><br/>
 
@@ -821,7 +821,7 @@ In development `getPage()` dynamically `import()`s the page, while in production
 
 Environement: `Node.js`
 
-The `createRender()` function creates the `render` function that is essentially the entry of `vite-plugin-ssr` server integration.
+The `createRender()` is the integration point between your server and `vite-plugin-ssr`.
 
 ```js
 const render = createRender({ viteDevServer, isProduction, root })
@@ -835,9 +835,11 @@ app.get('*', async (req, res, next) => {
 })
 ```
 
-- `isProduction` is a boolean. When set to true `vite-plugin-ssr` loads already-transpiled code from `dist/`, instead of on-the-fly transpiling your source code.
+- `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is a string holding the absolute path of your app's root directory. All your `.page.js` files should be a descendent of the root directory.
-- `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer()`.
+- `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer(/*...*/)`.
+
+Since `render({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
 
 Examples:
  - [JavaScript](/create-vite-plugin-ssr/template-react/server/index.js)
@@ -850,7 +852,7 @@ Examples:
 
 Environement: `Node.js`
 
-The `html` template string tag is used to sanitize HTML in order to avoid XSS injections.
+The `html` template string tag sanitizes HTML in order to avoid XSS injections.
 
 ```js
 // *.page.server.js
@@ -875,7 +877,7 @@ async function render() {
 }
 ```
 
-The `html.sanitize()` function can be used to inject untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering with Vue or React).
+The `html.sanitize()` function is used for injecting untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering a view to HTML with Vue or React).
 
 <br/><br/>
 
@@ -884,7 +886,7 @@ The `html.sanitize()` function can be used to inject untrusted strings, while `h
 
 Environement: `Node.js`
 
-The Vite plugin has no options, just include it in your `vite.config.js`'s `module.exports.plugins`.
+The Vite plugin has no options.
 
 ```js
 // vite.config.js
