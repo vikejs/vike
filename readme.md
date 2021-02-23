@@ -154,7 +154,7 @@ React Demo
 Pages are defined by creating `*.page.jsx` files:
 
 ```jsx
-// /pages/index.page.jsx
+// /pages/index.page.js
 
 import React from "react";
 
@@ -246,7 +246,7 @@ The `_default.*` files can be overriden:
 // This file is purposely empty which means that the `/about` page has
 // zero browser-side JavaScript!
 ```
-```js
+```jsx
 // /pages/about.page.jsx
 
 export { Page };
@@ -403,7 +403,7 @@ function setPageProps({ contextProps: { movies } }) {
 
 The `pageProps` are passed to the server-side `render()` function (which renders the `Page` to HTML), and to the client-side `getPage()` function (which is used ot hydrate the `Page` to the DOM).
 
-```js
+```jsx
 // pages/movies.page.js
 // Environement: Browser, Node.js
 
@@ -411,25 +411,23 @@ export { Page }
 
 function Page(pageProps) {
   const { movies } = pageProps
-  /* Some JSX iterating over `movies`
-     ...
-  */
+  /* ... */
 }
 ```
 ```jsx
 // /page/_default.page.server.js
 // Environement: Node.js
 
-import { renderJSX } from 'some-jsx-library'
+import { renderView } from 'some-view-library'
 import { html } from 'vite-plugin-ssr'
 
 export { render }
 
 async funcion render({ Page, pageProps }) {
   // `Page` is the function we defined in `movies.page.js`.
-  const pageHtml = await renderJSX(<Page {...pageProps} />)
+  const pageHtml = await renderView(<Page {...pageProps} />)
   return html`<html>
-    <div id='jsx-root'>
+    <div id='view-root'>
       ${html.dangerouslySetHtml(pageHtml)}
     </div>
   </html>;
@@ -439,7 +437,7 @@ async funcion render({ Page, pageProps }) {
 // /page/_default.page.client.js
 // Environement: Browser
 
-import { hydrateJSX } from 'some-jsx-library'
+import { hydrateView } from 'some-view-library'
 import { getPage } from 'vite-plugin-ssr/client'
 
 hydrate()
@@ -448,7 +446,7 @@ async funcion hydrate() {
   // `Page` is the function we defined in `movies.page.js`.
   // `vite-plugin-ssr` serializes and passes `pageProps` to the browser
   const { Page, pageProps } = await getPage()
-  await hydrate(<Page {...pageProps} />, document.getElementById('jsx-root')
+  await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
 }
 ```
 
@@ -534,7 +532,9 @@ It represents the *entire* browser-side code. This means that if you create an e
 This also means that you have full control over the browser-side code: not only can you render/hydrate your pages as you wish, but you can also easily integrate any browser library.
 
 ```jsx
-import { hydrateJSX } from 'some-jsx-library'
+// *.page.client.js
+
+import { hydrateView } from 'some-view-library'
 import GoogleAnalytics from '@brillout/google-analytics'
 
 main()
@@ -548,7 +548,7 @@ async funcion main() {
 
 async function hydrate() {
   const { Page, pageProps } = await getPage()
-  await hydrateJSX(<Page {...pageProps} />, document.getElementById('jsx-root')
+  await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
 }
 
 let analytics
@@ -580,7 +580,9 @@ The `*.page.server.js` file is lazy loaded only when needed.
 Your `async render()` function should render `Page` to an HTML string.
 
 ```jsx
-import renderToHtml from 'some-jsx-library'
+// *.page.server.js
+
+import renderToHtml from 'some-view-library'
 import { html } from 'vite-plugin-ssr'
 
 export { render }
@@ -617,7 +619,7 @@ The `async addContextProps()` function is usually used to fetch data.
 Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
 
 ```js
-// pages/movies.page.server.js
+// /pages/movies.page.server.js
 
 import fetch from "node-fetch";
 
@@ -645,7 +647,7 @@ The `pageProps` are serialized and passed to the browser with [`devalue`](https:
 It is usally used in combination with `async addContextProps()`: data is fetched in `addContextProps` and then made available to `Page` with `setPageProps()`.
 
 ```js
-// pages/movies.page.server.js
+// /pages/movies.page.server.js
 
 import fetch from "node-fetch";
 
@@ -664,14 +666,13 @@ function setPageProps({ contextProps: { movies } }) {
 }
 ```
 ```js
-// pages/movies.page.js
+// /pages/movies.page.js
 
 export { Page }
 
-function Page({movies}) {
-  /* Some JSX iterating over `movies`
-     ...
-  */
+function Page(pageProps) {
+  const { movies } = pageProps
+  /* ... */
 }
 ```
 
@@ -787,7 +788,7 @@ Environement: `Browser`
 The `async getPage()` function is used to get the `Page` and `pageProps` in the browser.
 
 ```js
-// pages/demo.page.client.js
+// /pages/demo.page.client.js
 
 import { getPage } from 'vite-plugin-ssr/client'
 
