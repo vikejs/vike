@@ -606,8 +606,8 @@ async function render({ Page, pageProps, contextProps }){
 ```
 
 - `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
-- `pageProps` is the value returned by the `setPageProps()` function (usually defined wihtin the same `.page.server.js` file).
-- `contextProps` is the object that `vite-plugin-ssr` composed by merging the `contextProps` you passed to [`createRender()({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
+- `pageProps` is the value returned by the `setPageProps()` function (usually defined in the same `.page.server.js` file).
+- `contextProps` is the merge of the `contextProps` you passed to [`createRender()({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
 
 <br/>
 
