@@ -40,7 +40,7 @@ And it comes with all the wonderful Vite DX.
 
 <details>
 <summary>
-<h3>Overview with Vue</h3>
+<b>Overview with Vue</b>
 </summary>
 <br/>
 
@@ -147,7 +147,7 @@ You could even render some of your pages with an entire different view framework
 
 <details>
 <summary>
-<h3>Overview with React</h3>
+<b>Overview with React</b>
 </summary>
 <br/>
 
