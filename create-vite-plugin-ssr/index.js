@@ -10,10 +10,8 @@ const { green, cyan, stripColors, bold } = require('kolorist')
 const cwd = process.cwd()
 
 const TEMPLATES = [
-  /*
   green('vue'),
   green('vue-ts'),
-  */
   cyan('react'),
   cyan('react-ts')
 ]
@@ -106,9 +104,6 @@ async function init() {
 
   const files = fs.readdirSync(templateDir)
   for (const file of files.filter((f) => !ignoreFiles.includes(f))) {
-    write(file)
-  }
-  for (const file of files) {
     write(file)
   }
 

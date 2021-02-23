@@ -6,7 +6,8 @@ export { Page };
 function Page() {
   return (
     <>
-      <h1>About</h1>A colorized page.
+      <h1>About</h1>
+      <p>A colorized text.</p>
     </>
   );
 }

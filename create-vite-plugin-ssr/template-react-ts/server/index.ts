@@ -25,6 +25,7 @@ async function startServer() {
   app.get("*", async (req, res, next) => {
     const html = await render({ url: req.originalUrl, contextProps: {} });
     if (!html) return next();
+    res.send(html);
   });
 
   const port = 3000;
