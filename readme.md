@@ -411,6 +411,7 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
+// The `render()` lifecycle method
 async function render({ Page, pageProps }) {
   // `Page` is defined bellow in `movies.page.js`.
   const pageHtml = await renderView(<Page {...pageProps} />)
@@ -418,7 +419,7 @@ async function render({ Page, pageProps }) {
     <div id='view-root'>
       ${html.dangerouslySetHtml(pageHtml)}
     </div>
-  </html>;
+  </html>`
 }
 ```
 ```jsx
@@ -432,7 +433,7 @@ hydrate()
 
 async function hydrate() {
   // `Page` is defined bellow in `movies.page.js`.
-  // `vite-plugin-ssr` serializes and passes `pageProps` to the browser
+  // The `pageProps` are serialized and passed from the server to the browser.
   const { Page, pageProps } = await getPage()
   await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
 }
@@ -443,6 +444,8 @@ async function hydrate() {
 
 export { Page }
 
+// `Page` is always called either by a `render()` lifecycle method, or
+// in a `.page.client.js` file.
 function Page(pageProps) {
   const { movies } = pageProps
   /* ... */
@@ -461,9 +464,7 @@ Pre-rendering is work-in-progress, ETA: 4-5 days.
 
 ## Markdown
 
-Since `vite-plugin-ssr` is just a Vite plugin, you can use it with any Vite markdown plugin.
-
-For example with `@brillout/vite-plugin-mdx`.
+You can use `vite-plugin-ssr` with any Vite markdown plugin, for example with `@brillout/vite-plugin-mdx`.
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
 
@@ -493,7 +494,7 @@ todo/create.page.js               /todo/create
 
 The directory common to all your `*.page.js` files is considered the routing root.
 
-For more control over routing, define route strings and route functions in [`*.page.route.js`](#pageroutejs).
+For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
 
 <br/><br/>
 
