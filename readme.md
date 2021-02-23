@@ -631,7 +631,7 @@ async function addContextProps({ contextProps }){
   /* Or with an ORM:
   const movies = Movie.findAll() */
   /* Or with SQL:
-  const movies = sql`SELECT * FROM movies` */
+  const movies = sql`SELECT * FROM movies;` */
   return { movies }
 }
 ```
@@ -640,11 +640,11 @@ async function addContextProps({ contextProps }){
 
 ### `export { setPageProps }`
 
-The `setPageProps()` returns the props `pageProps` that are to be consumed by `Page`.
+The `setPageProps()` returns the `pageProps` consumed by `Page`.
 
 The `pageProps` are serialized and passed to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-It is usally used in conjunction with `async addContextProps()`: data is fetched in `addContextProps` and then made available to `Page` with `setPageProps()`.
+It is usally used in conjunction with `async addContextProps()`: data is fetched in `async addContextProps()` and then made available to `Page` with `setPageProps()`.
 
 ```js
 // /pages/movies.page.server.js
@@ -685,9 +685,11 @@ Environement: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
-The `*.page.route.*` files enable full control over the routing.
+The `*.page.route.*` files enable full control over routing.
 
-**Route strings**
+<br/>
+
+### Route Strings
 
 For a page `/pages/film.page.js`, its route string can be defined at its `/pages/film.page.route.js` adjacent file.
 
@@ -705,7 +707,9 @@ The syntax of route strings is based on [`path-to-regexp`](https://github.com/pi
 For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html)
 (Express uses `path-to-regexp` as well).
 
-**Route functions**
+<br/>
+
+### Route Functions
 
 Route functions give you full programmatic flexibility to define your routing logic.
 
