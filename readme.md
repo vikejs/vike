@@ -529,7 +529,33 @@ Environement: `Browser`
 A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side entry.
 
 It represents the *entire* browser-side code. This means that if you create an empty `.page.client.js` file, then the page has zero browser-side JavaScript.
-(With the exception of Vite's dev code when not in production.)
+(Except of Vite's dev code when not in production.)
+
+This also means that you have full control over the browser-side code: not only can you render/hydrate your pages as you wish, but you can also easily integrate any browser library.
+
+```jsx
+import { hydrateJSX } from 'some-jsx-library'
+import GoogleAnalytics from '@brillout/google-analytics'
+
+main()
+
+async funcion main() {
+  analytics_init()
+  analytics.event('[hydration] begin')
+  await hydrate()
+  analytics.event('[hydration] end')
+}
+
+async function hydrate() {
+  const { Page, pageProps } = await getPage()
+  await hydrateJSX(<Page {...pageProps} />, document.getElementById('jsx-root')
+}
+
+let analytics
+function analytics_init() {
+  analytics = new GoogleAnalytics('UA-121991291')
+}
+```
 
 <br/><br/>
 
