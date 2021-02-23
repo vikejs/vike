@@ -4,3 +4,5 @@
 - Rename {params} to {contextProps} in route functions
 - Skip all pages that have a `_` prefix in their path
 - Assert that `setPageProps` never returns a promise
+- Add .gitingore to boilerplates
+- Add `Production Build` guide
