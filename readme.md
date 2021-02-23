@@ -512,10 +512,10 @@ A `*.page.js` file should have a `export { Page }` (or `export default`).
 `Page` represents the page's view that is to be rendered to HTML / the DOM.
 
 `vite-plugin-ssr` doesn't do anything with `Page` and just passes it untouched to:
- - `render({ Page })` (defined in `.page.server.js`) which renders `Page` to HTML.
- - `const { Page } = await getPage()` (from `import { getPage } from 'vite-plugin-ssr/client'`) which renders/hydrates `Page` to the DOM.
+ - Your `render({ Page })` function (defined in your `.page.server.js` file) which renders `Page` to HTML.
+ - `const { Page } = await getPage()` (from `import { getPage } from 'vite-plugin-ssr/client'`) which you typically use in a `.page.client.js` file to render/hydrate `Page` to the DOM.
 
-The `*.page.js` file is lazy loaded and only when needed, that is only when an HTTP request matches the page's route.
+The `*.page.js` file is lazy loaded only when needed, that is only when an HTTP request matches the page's route.
 
 <br/><br/>
 
@@ -524,7 +524,7 @@ The `*.page.js` file is lazy loaded and only when needed, that is only when an H
 
 Environement: `Browser`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.client.*([a-zA-Z0-9])`
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.client.*([a-zA-Z0-9])`
 
 A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side entry.
 
@@ -538,19 +538,21 @@ It represents the *entire* browser-side code. This means that if you create an e
 
 Environement: `Node.js`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.server.*([a-zA-Z0-9])`
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
-A `.page.server.js` file is a `.page.js`-adjacent file that defines the page's server-side lifecycle methods:
+A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's server-side lifecycle methods:
 - `export { render }`
 - `export { addContextProps }`
 - `export { setPageProps }`
 
+The `*.page.server.js` file is lazy loaded only when needed.
+
 **`export { render }`**
 
-The `async render()` function renders a `Page` to an HTML string.
+Your `async render()` function should render `Page` to an HTML string.
 
 ```jsx
-import renderToHtml from 'a-view-libray'
+import renderToHtml from 'some-jsx-library'
 import { html } from 'vite-plugin-ssr'
 
 export { render }
@@ -572,13 +574,13 @@ async function render({ Page, pageProps, contextProps }){
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `pages/demo.page.js` file.
-- `pageProps` is the value returned by the `setPageProps()` function
-- `contextProps` is the object passed to `createRender()({contextProps})` and merged with the object returned by the `addContextProps()` function (if the function exists).
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
+- `pageProps` is the value returned by the `setPageProps()` function (usually defined wihtin the same `.page.server.js` file).
+- `contextProps` is the object that `vite-plugin-ssr` composed by merging the `contextProps` you passed to [`createRender()({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
 
 **`export { addContextProps }`**
 
-The `async addContextProps()` function adds values to the `contextProps` object which is available to all `.page.server.js` lifecycle methods as well as to route functions defined in `.page.route.js`.
+The `async addContextProps()` function adds values to the `contextProps` object. The `contextProps` is available to all `.page.server.js` lifecycle methods and to route functions defined in `.page.route.js`.
 
 The `async addContextProps()` function is usually used to fetch data.
 
@@ -594,6 +596,10 @@ export { addContextProps }
 async function addContextProps({ contextProps }){
   const response = await fetch("https://api.imdb.com/api/movies/")
   const { movies } = await response.json()
+  /* Or with an ORM:
+  const movies = Movie.findAll() */
+  /* Or with SQL:
+  const movies = sql`SELECT * FROM movies` */
   return { movies }
 }
 ```
@@ -644,7 +650,7 @@ function Page({movies}) {
 
 Environement: `Node.js`
 <br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.route.*([a-zA-Z0-9])`
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
 The `*.page.route.*` files enable full control over the routing.
 
