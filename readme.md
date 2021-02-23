@@ -403,7 +403,7 @@ function setPageProps({ contextProps: { movies } }) {
 The `pageProps` are passed to your `render()` lifecycle method, and are provided on the client-side by the `import { getPage } from 'vite-plugin-ssr/client'` function.
 
 ```jsx
-// /page/_default.page.server.js
+// /pages/_default.page.server.js
 // Environement: Node.js
 
 import { renderView } from 'some-view-library'
@@ -422,7 +422,7 @@ async function render({ Page, pageProps }) {
 }
 ```
 ```jsx
-// /page/_default.page.client.js
+// /pages/_default.page.client.js
 // Environement: Browser
 
 import { hydrateView } from 'some-view-library'
