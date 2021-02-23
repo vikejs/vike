@@ -122,7 +122,7 @@ async function hydrate() {
 }
 ```
 
-Because you control rendering,
+Because *you* control rendering,
 you can easily integrate tools such as Vue Router or Vuex, and use any Vue version you want.
 
 The `_default.*` files can be overridden:
@@ -134,7 +134,8 @@ The `_default.*` files can be overridden:
 // zero browser-side JavaScript!
 ```
 ```vue
-<!-- /pages/index.page.vue -->
+<!-- /pages/about.page.vue -->
+
 <template>
   This page is only rendered to HTML!
 </template>
@@ -155,7 +156,7 @@ Pages are defined by creating `.page.jsx` files:
 ```jsx
 // /pages/index.page.jsx
 
-import React from "react";
+import React, { useState } from "react";
 
 export { Page };
 
@@ -217,9 +218,9 @@ function render({ Page, pageProps, contextProps }) {
 ```jsx
 // /pages/_default.page.client.jsx
 
-import ReactDOM from "react-dom"
-import React from "react"
-import { getPage } from "vite-plugin-ssr/client"
+import ReactDOM from "react-dom";
+import React from "react";
+import { getPage } from "vite-plugin-ssr/client";
 
 hydrate();
 
@@ -234,8 +235,8 @@ async function hydrate() {
 }
 ```
 
-Because you control rendering,
-you can easily integrate view tools such as React Router or Redux, and even use Preact or Inferno.
+Because *you* control rendering,
+you can easily integrate tools such as React Router or Redux, and use Preact, Inferno, or any other React-like alternative.
 
 The `_default.*` files can be overridden:
 
