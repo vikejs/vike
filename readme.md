@@ -547,6 +547,8 @@ A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's s
 
 The `*.page.server.js` file is lazy loaded only when needed.
 
+<br/>
+
 ### `export { render }`
 
 Your `async render()` function should render `Page` to an HTML string.
@@ -580,7 +582,7 @@ async function render({ Page, pageProps, contextProps }){
 
 <br/>
 
-**`export { addContextProps }`**
+### `export { addContextProps }`
 
 The `async addContextProps()` function adds values to the `contextProps` object. The `contextProps` is available to all `.page.server.js` lifecycle methods and to route functions defined in `.page.route.js`.
 
@@ -606,7 +608,9 @@ async function addContextProps({ contextProps }){
 }
 ```
 
-#### `export { setPageProps }`
+<br/>
+
+### `export { setPageProps }`
 
 The `setPageProps()` returns the props `pageProps` that are to be consumed by `Page`.
 
