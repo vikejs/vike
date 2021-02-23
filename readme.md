@@ -9,7 +9,7 @@ Your small but mighty SSR companion.
 [Intro & Demo](#intro--demo)
 <br/> [Features](#features)
 <br/> Get Started
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplate](#boilerplate)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
 <br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
@@ -279,9 +279,9 @@ You could even render some of your pages with an entire different view framework
 <br/><br/>
 
 
-## Boilerplate
+## Boilerplates
 
-If you start from scratch, then simply use the `vite-plugin-ssr` boilerplate:
+If you start from scratch, then simply use the `vite-plugin-ssr` boilerplates:
 
 With NPM:
 
@@ -294,6 +294,8 @@ With Yarn:
 ```
 yarn create vite-plugin-ssr
 ```
+
+Follow the prompts to choose between `vue`, `vue-ts`, `react`, or `react-ts`.
 
 <br/><br/>
 
