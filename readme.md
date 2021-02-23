@@ -94,7 +94,7 @@ async function render({ Page, pageProps, contextProps }) {
   const title = contextProps.title || 'Demo: vite-plugin-ssr'
 
   return html`<!DOCTYPE html>
-    <html lang="en">
+    <html>
       <head>
         <title>${html.sanitize(title)}</title>
       </head>
@@ -123,9 +123,9 @@ async function hydrate() {
 ```
 
 Because you control rendering,
-you can easily integrate view tools such as Vue Router or Vuex and use any Vue version you want.
+you can easily integrate tools such as Vue Router or Vuex, and use any Vue version you want.
 
-The `_default.*` files can be overriden:
+The `_default.*` files can be overridden:
 
 ```js
 // /pages/about.page.client.js
@@ -135,13 +135,12 @@ The `_default.*` files can be overriden:
 ```
 ```vue
 <!-- /pages/index.page.vue -->
-
 <template>
   This page is only rendered to HTML!
 </template>
 ```
 
-You could even render some of your pages with an entire different view framework such as React!
+You could even render some of your pages with an entire different view framework such as React.
 
 </details>
 
@@ -154,7 +153,7 @@ React Demo
 Pages are defined by creating `.page.jsx` files:
 
 ```jsx
-// /pages/index.page.js
+// /pages/index.page.jsx
 
 import React from "react";
 
@@ -205,7 +204,7 @@ function render({ Page, pageProps, contextProps }) {
   const title = contextProps.title || "Demo: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
-    <html lang="en">
+    <html>
       <head>
         <title>${html.sanitize(title)}</title>
       </head>
@@ -238,7 +237,7 @@ async function hydrate() {
 Because you control rendering,
 you can easily integrate view tools such as React Router or Redux, and even use Preact or Inferno.
 
-The `_default.*` files can be overriden:
+The `_default.*` files can be overridden:
 
 ```js
 // /pages/about.page.client.js
@@ -258,7 +257,7 @@ function Page() {
 }
 ```
 
-You could even render some of your pages with an entire different view framework such as Vue!
+You could even render some of your pages with an entire different view framework such as Vue.
 
 </details>
 
