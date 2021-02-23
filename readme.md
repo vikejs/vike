@@ -464,7 +464,7 @@ Pre-rendering is work-in-progress, ETA: 4-5 days.
 
 ## Markdown
 
-You can use `vite-plugin-ssr` with any Vite markdown plugin, for example with `@brillout/vite-plugin-mdx`.
+You can use `vite-plugin-ssr` with any Vite markdown plugin, for example `@brillout/vite-plugin-mdx`:
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
 
