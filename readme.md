@@ -416,8 +416,8 @@ That's it, and we have actually already seen most of `vite-plugin-ssr`'s interfa
 
 ## Features
 
-- **Do-One-Thing-Do-It-Well Tool**. You control your stack; `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Render Control**. You control how your pages are rendered & hydrated; you can easily integrate tools such as Vue Router, React Router, Vuex, Redux, and use any Vue version you want.
+- **Do-One-Thing-Do-It-Well Tool**. You control your stack; `vite-plugin-ssr` works with any view framework (Vue 3, Vue 2, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control**. You control how your pages are rendered enabling you to easily integrate tools like Vue Router, Vuex, React Router, Redux, etc.
 - **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Vue Router / React Router for nested client-side routes, and Route Functions for full flexibility.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
@@ -454,22 +454,32 @@ Follow the prompts to choose `vue`, `vue-ts`, `react`, or `react-ts`.
 If you already have an existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
+   - [Vue](/create-vite-plugin-ssr/template-vue/vite.config.js)
+   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/vite.config.ts)
    - [React](/create-vite-plugin-ssr/template-react/vite.config.js)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/vite.config.ts)
 
 2. Integrate Vite and `vite-plugin-ssr` to your server (Express.js, Koa, Hapi, Fastify, ...).
+   - [Vue](/create-vite-plugin-ssr/template-vue/server/index.js)
+   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/server/index.ts)
    - [React](/create-vite-plugin-ssr/template-react/server/index.js)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
 
 3. Define your `_default.page.client.js` and `_default.page.server.js`.
+   - [Vue](/create-vite-plugin-ssr/template-vue/pages/_default/)
+   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/pages/_default/)
    - [React](/create-vite-plugin-ssr/template-react/pages/_default/)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/_default/)
 
 4. Create your first page `index.page.js`.
+   - [Vue](/create-vite-plugin-ssr/template-vue/pages/index/index.page.vue)
+   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/pages/index/index.page.vue)
    - [React](/create-vite-plugin-ssr/template-react/pages/index/index.page.jsx)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/index/index.page.tsx)
 
 5. Add the `dev` and `build` scripts to your `package.json`.
+   - [Vue](/create-vite-plugin-ssr/template-vue/package.json)
+   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/package.json)
    - [React](/create-vite-plugin-ssr/template-react/package.json)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/package.json)
 
