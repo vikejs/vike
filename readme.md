@@ -416,14 +416,14 @@ That's it, and we have actually already seen most of `vite-plugin-ssr`'s interfa
 
 ## Features
 
-- **Do-One-Thing-Do-It-Well Tool.** You control your stack; `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Render Control.** You control how your pages are rendered & hydrated; you can easily integrate tools such as Vue Router, React Router, Vuex, Redux, and use any Vue version you want.
-- **Routing.**: Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Vue Router / React Router for nested client-side routes, and Route Functions for full flexibility.
-- **Pre-render / SSG / Static Websites.** Deploy your app to a static host by pre-rendering your pages.
-- **Scalable.** Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
-- **Fast Production Cold Start.** Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
-- **Code Splitting.** Each page loads only the browser-side code it needs.
-- **Simple Architecture.** Resulting in a small & robust tool.
+- **Do-One-Thing-Do-It-Well Tool**. You control your stack; `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control**. You control how your pages are rendered & hydrated; you can easily integrate tools such as Vue Router, React Router, Vuex, Redux, and use any Vue version you want.
+- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Vue Router / React Router for nested client-side routes, and Route Functions for full flexibility.
+- **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
+- **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
+- **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
+- **Code Splitting**. Each page loads only the browser-side code it needs.
+- **Simple Architecture**. Resulting in a small & robust tool.
 
 <br/><br/>
 
