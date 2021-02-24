@@ -48,6 +48,7 @@ Pages are defined by creating `.page.vue` files:
 
 ```vue
 <!-- /pages/index.page.vue -->
+<!-- Environment: Browser, Node.js -->
 
 <template>
   This page is rendered to HTML and interactive:
@@ -78,7 +79,7 @@ Unlike Nuxt, *you* define how your pages are rendered:
 
 ```js
 // /pages/_default.page.server.js
-// Environement: Node.js
+// Environment: Node.js
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
@@ -107,7 +108,7 @@ async function render({ Page, pageProps, contextProps }) {
 ```
 ```js
 // /pages/_default.page.client.js
-// Environement: Browser
+// Environment: Browser
 
 import { createSSRApp, h } from 'vue'
 import { getPage } from 'vite-plugin-ssr/client'
@@ -166,6 +167,7 @@ Let's now have a look at how to do data fetching with a parameterized route.
 
 ```vue
 <!-- /pages/star-wars/movie.page.vue -->
+<!-- Environment: Node.js, Browser -->
 
 <template>
   <h1>{{movie.title}}</h1>
@@ -180,11 +182,13 @@ export default { props }
 ```
 ```js
 // /pages/star-wars/movie.page.route.js
+// Environment: Node.js
 
 export default '/star-wars/:movieId'
 ```
 ```js
 // /pages/star-wars/movie.page.server.js
+// Environment: Node.js
 
 import fetch from 'node-fetch'
 
@@ -227,6 +231,7 @@ Pages are defined by creating `.page.jsx` files:
 
 ```jsx
 // /pages/index.page.jsx
+// Environment: Browser, Node.js
 
 import React, { useState } from "react";
 
@@ -262,6 +267,7 @@ Unlike Next.js, *you* define how your pages are rendered:
 
 ```jsx
 // /pages/_default.page.server.jsx
+// Environment: Node.js
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
@@ -289,6 +295,7 @@ function render({ Page, pageProps, contextProps }) {
 ```
 ```jsx
 // /pages/_default.page.client.jsx
+// Environment: Browser
 
 import ReactDOM from "react-dom";
 import React from "react";
@@ -351,6 +358,7 @@ Let's now have a look at how to do data fetching with a parameterized route.
 
 ```jsx
 // /pages/star-wars/movie.page.jsx
+// Environment: Browser, Node.js
 
 import React from "react";
 
@@ -368,11 +376,13 @@ function Page({ movie }) {
 ```
 ```js
 // /pages/star-wars/movie.page.route.js
+// Environment: Node.js
 
 export default "/star-wars/:movieId";
 ```
 ```js
 // /pages/star-wars/movie.page.server.js
+// Environment: Node.js
 
 import fetch from "node-fetch";
 
@@ -521,7 +531,7 @@ Both lifecycle methods are defined in `.page.server.js`.
 
 ```js
 // /pages/movies.page.server.js
-// Environement: Node.js
+// Environment: Node.js
 
 import fetch from "node-fetch";
 
@@ -547,7 +557,7 @@ The `pageProps` are passed to your `render()` lifecycle method, and are provided
 
 ```jsx
 // /pages/_default.page.server.js
-// Environement: Node.js
+// Environment: Node.js
 
 import { renderView } from 'some-view-library'
 import { html } from 'vite-plugin-ssr'
@@ -567,7 +577,7 @@ async function render({ Page, pageProps }) {
 ```
 ```jsx
 // /pages/_default.page.client.js
-// Environement: Browser
+// Environment: Browser
 
 import { hydrateView } from 'some-view-library'
 import { getPage } from 'vite-plugin-ssr/client'
@@ -583,7 +593,7 @@ async function hydrate() {
 ```
 ```jsx
 // pages/movies.page.js
-// Environement: Browser, Node.js
+// Environment: Browser, Node.js
 
 export { Page }
 
@@ -650,7 +660,7 @@ For more control over routing, define route strings or route functions in [`*.pa
 
 ## `*.page.js`
 
-Environement: `Browser`, `Node.js`
+Environment: `Browser`, `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
 
@@ -669,7 +679,7 @@ The `*.page.js` file is lazy loaded only when needed, that is only when an HTTP 
 
 ## `*.page.client.js`
 
-Environement: `Browser`
+Environment: `Browser`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.client.*([a-zA-Z0-9])`
 
@@ -712,7 +722,7 @@ function analytics_init() {
 
 ## `*.page.server.js`
 
-Environement: `Node.js`
+Environment: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
@@ -830,7 +840,7 @@ function Page(pageProps) {
 
 ## `*.page.route.js`
 
-Environement: `Node.js`
+Environment: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
@@ -940,7 +950,7 @@ export default () => ({match: -Infinity})
 
 ## `import { getPage } from 'vite-plugin-ssr/client'`
 
-Environement: `Browser`
+Environment: `Browser`
 
 The `async getPage()` function provides `Page` and `pageProps` in the browser.
 
@@ -969,7 +979,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 ## `import { createRender } from 'vite-plugin-ssr'`
 
-Environement: `Node.js`
+Environment: `Node.js`
 
 The `createRender()` is the integration point between your server and `vite-plugin-ssr`.
 
@@ -1000,7 +1010,7 @@ Examples:
 
 ## `import { html } from 'vite-plugin-ssr'`
 
-Environement: `Node.js`
+Environment: `Node.js`
 
 The `html` template string tag sanitizes HTML in order to avoid XSS injections.
 
@@ -1034,7 +1044,7 @@ The `html.sanitize()` function is used for injecting untrusted strings, while `h
 
 ## `import vitePlugin from 'vite-plugin-ssr'`
 
-Environement: `Node.js`
+Environment: `Node.js`
 
 The Vite plugin has no options.
 
