@@ -1,8 +1,8 @@
 <template>
   <h1>Star Wars Movies</h1>
   <ol>
-    <li v-for="item in starWarsMovies" :key="item.title">
-      {{item.title}}, {{item.release_date}}.
+    <li v-for="item in movies" :key="item.id">
+      <a :href="'/star-wars/'+item.id">{{item.title}}</a> ({{item.release_date}})
     </li>
   </ol>
   <p>
@@ -15,6 +15,6 @@
 </template>
 
 <script lang="ts">
-const props = ['starWarsMovies']
+const props = ['movies']
 export default { props }
 </script>
