@@ -1,1 +1,1 @@
-export default "/hello/:name";
+export default '/hello/:name'

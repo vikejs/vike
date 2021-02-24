@@ -1,10 +1,10 @@
-export { setPageProps };
+export { setPageProps }
 
 type ContextProps = {
-  name: string;
-};
+  name: string
+}
 
 function setPageProps({ contextProps }: { contextProps: ContextProps }) {
-  const { name } = contextProps;
-  return { name };
+  const { name } = contextProps
+  return { name }
 }
