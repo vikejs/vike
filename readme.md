@@ -72,13 +72,13 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-Alternatively, the route of a page can be defined with a Route String or Route Function.
-Route Strings enable simple parameterized routing (e.g. `/movies/:id`), and Route Functions enable full programmatic flexibility (enabling you to implement advanced routing such as route guards).
+You can also use Route Strings (e.g. `/movies/:id`) and Route Functions (giving you full programmatic flexibility).
 
 Unlike Nuxt, *you* define how your pages are rendered:
 
 ```js
 // /pages/_default.page.server.js
+// Environement: Node.js
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
@@ -107,6 +107,7 @@ async function render({ Page, pageProps, contextProps }) {
 ```
 ```js
 // /pages/_default.page.client.js
+// Environement: Browser
 
 import { createSSRApp, h } from 'vue'
 import { getPage } from 'vite-plugin-ssr/client'
@@ -123,7 +124,7 @@ async function hydrate() {
 }
 ```
 
-Note how these `_default.*` files end with `.page.server.js` and `.page.client.js`. There are four types of files:
+Note how the files we created so far end with `.page.js`, `.page.server.js`, and `.page.client.js`. There are four types of files:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
@@ -131,7 +132,7 @@ Note how these `_default.*` files end with `.page.server.js` and `.page.client.j
 
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
-Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create a `_default.page.client.js` and `_default.page.server.js` file which apply as default for all pages. Route files `.page.route.js` are optional. This means that the three pages we defined above are enough to get a fully functional SSR app running.
+Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create `_default.page.client.js` and `_default.page.server.js` which applies as default for all pages. Route files `.page.route.js` are optional. This means that the three pages we defined above are enough for the app to work.
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -149,11 +150,67 @@ The `_default.page.*` files can be overridden. For example, you can create a pag
 </template>
 ```
 
-By overriding `_default.page.server.js` you can
+And by overriding `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as React.
 
-Because *you* control rendering,
-you can easily integrate tools such as Vue Router or Vuex, and use any Vue version you want.
+Note how the files are colocated and share the same base `/pages/about.page.*`;
+this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
+
+The `.page.server.js` and `.page.client.js` files give you full control over rendering.
+This means that you can easily integrate any tool you want, such as Vue Router or Vuex, and use any Vue version you want.
+
+Let's now have a look at how to do data fetching with a parameterized route.
+
+```vue
+<!-- /pages/star-wars/movie.page.vue -->
+
+<template>
+  <h1>{{movie.title}}</h1>
+  <p>Release Date: {{movie.release_date}}</p>
+  <p>Director: {{movie.director}}</p>
+</template>
+
+<script lang="ts">
+const props = ['movie']
+export default { props }
+</script>
+```
+```js
+// /pages/star-wars/movie.page.route.js
+
+export default "/star-wars/:movieId";
+```
+```js
+// /pages/star-wars/movie.page.server.js
+
+import fetch from 'node-fetch'
+
+export { addContextProps }
+export { setPageProps }
+
+async function addContextProps({ contextProps }) {
+  // The route parameters are made available at `contextProps`
+  const { movieId } = contextProps
+  // We can also use SQL/ORM queries here
+  const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
+  const movie = await response.json()
+  return { movie }
+}
+
+// The `contextProps` are available only on the server; only the `pageProps`
+// are serialized and passed to the browser.
+function setPageProps({ contextProps }) {
+  // We remove data we don't need in order to minimize what it sent over the network
+  const { title, release_date, director } = contextProps.movie
+  const movie = { title, release_date, director }
+  return { movie }
+}
+```
+
+All lifecycle methods (`render`, `addContextProps`, and `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
+This means you can use SQL/ORM queries in `addContextProps`.
+
+That's it, and we have already seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 </details>
 
@@ -289,14 +346,14 @@ you can easily integrate tools such as React Router or Redux, and use Preact, In
 
 ## Features
 
-- **Do-one-thing-do-it-well Tool.** You keep control over your stack and `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Render Control.** *You* control how your pages are rendered & hydrated, enabling you to easily integrate with tools such as Vue Router, React Router, Vuex, Redux, and use any Vue version you want.
-- **Simple & Flexible Routing.**: Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility.
+- **Do-One-Thing-Do-It-Well Tool.** You control your stack; `vite-plugin-ssr` works with any view framework (Vue, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control.** You control how your pages are rendered & hydrated; you can easily integrate tools such as Vue Router, React Router, Vuex, Redux, and use any Vue version you want.
+- **Routing.**: Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Vue Router / React Router for nested client-side routes, and Route Functions for full flexibility.
 - **Pre-render / SSG / Static Websites.** Deploy your app to a static host by pre-rendering your pages.
 - **Scalable.** Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start.** Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
 - **Code Splitting.** Each page loads only the browser-side code it needs.
-- **Simple Design**: Simple overall architecture for a smaller & more robust tool.
+- **Simple Architecture.** Resulting in a small & robust tool.
 
 <br/><br/>
 
@@ -479,7 +536,7 @@ function Page(pageProps) {
 
 ## Pre-rendering
 
-Pre-rendering is work-in-progress, ETA: 4-5 days.
+Pre-rendering is work-in-progress.
 
 <br/><br/>
 
