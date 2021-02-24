@@ -133,7 +133,7 @@ Note how the files we created so far end with `.page.js`, `.page.server.js`, and
 
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
-Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create `_default.page.client.js` and `_default.page.server.js` which applies as default for all pages.
+Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 Route files `.page.route.js` are optional.
 This means that the three pages we defined above are enough for the app to work.
 
@@ -160,14 +160,14 @@ Note how the files are colocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
 
 The `.page.server.js` and `.page.client.js` files give you full control over rendering.
-This means that you can easily integrate any tool you want, such as
+This enables you to easily integrate tools, such as
 Vue Router or Vuex, and use any Vue version you want.
 
-Let's now have a look at how to do data fetching with a parameterized route.
+Let's now have a look at how to fetch data for a page with a parameterized route.
 
 ```vue
 <!-- /pages/star-wars/movie.page.vue -->
-<!-- Environment: Node.js, Browser -->
+<!-- Environment: Browser, Node.js -->
 
 <template>
   <h1>{{movie.title}}</h1>
@@ -217,7 +217,7 @@ function setPageProps({ contextProps }) {
 All lifecycle methods (`render`, `addContextProps`, and `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
 This means you can use SQL/ORM queries in `addContextProps`.
 
-That's it, and we have already seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 </details>
 
@@ -245,7 +245,6 @@ function Page() {
 
 function Counter() {
   const [count, setCount] = useState(0);
-
   return (
     <button onClick={() => setCount((count) => count + 1)}>
       Counter {count}
@@ -306,7 +305,6 @@ hydrate();
 async function hydrate() {
   // (In production, the page is `<link rel="preload">`'d.)
   const { Page, pageProps } = await getPage();
-
   ReactDOM.hydrate(
     <Page {...pageProps} />,
     document.getElementById("page-view")
@@ -314,7 +312,7 @@ async function hydrate() {
 }
 ```
 
-Note how these `_default.*` files end with `.page.server.jsx` and `.page.client.jsx`. There are four types of files:
+Note how the files we created so far end with `.page.jsx`, `.page.server.jsx`, and `.page.client.jsx`. There are four types of files:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
@@ -322,7 +320,7 @@ Note how these `_default.*` files end with `.page.server.jsx` and `.page.client.
 
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
-Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you usually create a `_default.page.client.js` and `_default.page.server.js` file which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 Route files `.page.route.js` are optional.
 This means that the three pages we defined above are enough for the app to work.
 
@@ -351,10 +349,10 @@ Note how the files are colocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
 
 The `.page.server.js` and `.page.client.js` files give you full control over rendering.
-This means that you can easily integrate tools, such as
+This enables you to easily integrate tools, such as
 React Router or Redux, and use Preact, Inferno or any other React-like alternative.
 
-Let's now have a look at how to do data fetching with a parameterized route.
+Let's now have a look at how to fetch data for a page with a parameterized route.
 
 ```jsx
 // /pages/star-wars/movie.page.jsx
@@ -365,13 +363,11 @@ import React from "react";
 export { Page };
 
 function Page({ movie }) {
-  return (
-    <>
-      <h1>{movie.title}</h1>
-      <p>Release Date: {movie.release_date}</p>
-      <p>Director: {movie.director}</p>
-    </>
-  );
+  return <>
+    <h1>{movie.title}</h1>
+    <p>Release Date: {movie.release_date}</p>
+    <p>Director: {movie.director}</p>
+  </>;
 }
 ```
 ```js
