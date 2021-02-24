@@ -1,19 +1,16 @@
 import React from "react";
+import { Movie } from "./types";
 
 export { Page };
 
-function Page({
-  starWarsMovies,
-}: {
-  starWarsMovies: { title: string; release_date: string }[];
-}) {
+function Page({ movies }: { movies: Movie[] }) {
   return (
     <>
-      <h1>Star Wars movies</h1>
+      <h1>Star Wars Movies</h1>
       <ol>
-        {starWarsMovies.map(({ title, release_date }) => (
-          <li key={title}>
-            {title}, {release_date}.
+        {movies.map(({ id, title, release_date }) => (
+          <li key={id}>
+            <a href={`/star-wars/${id}`}>{title}</a> ({release_date})
           </li>
         ))}
       </ol>

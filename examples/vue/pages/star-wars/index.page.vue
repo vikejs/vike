@@ -1,7 +1,7 @@
 <template>
-  <h1>Star Wars movies</h1>
+  <h1>Star Wars Movies</h1>
   <ol>
-    <li v-for="item in starWarsMovies" :key="item.message">
+    <li v-for="item in starWarsMovies" :key="item.title">
       {{item.title}}, {{item.release_date}}.
     </li>
   </ol>
