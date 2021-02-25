@@ -159,7 +159,10 @@ Note how the files we created so far end with `.page.js`, `.page.route.js`, `.pa
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
-This means that the pages we defined above are enough for the app to work.
+
+We already defined our `_default.*` files above,
+which means that we can now create a new page simply by defining a new `.page.vue` file
+(and optionally a new collocated `.page.route.js` file if we want to define a parameterized route.)
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -180,7 +183,7 @@ The `_default.page.*` files can be overridden. For example, you can create a pag
 By overriding `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as React.
 
-Note how files are colocated and share the same base `/pages/about.page.*`;
+Note how files are collocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
 
 The `.page.server.js` and `.page.client.js` files give you full control over rendering.
@@ -350,7 +353,10 @@ Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.p
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
-This means that the pages we defined above are enough for the app to work.
+
+We already defined our `_default.*` files above,
+which means that we can now create a new page simply by defining a new `.page.jsx` file
+(and optionally a new collocated `.page.route.js` file if we want to define a parameterized route.)
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -373,7 +379,7 @@ function Page() {
 By overriding `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as Vue.
 
-Note how files are colocated and share the same base `/pages/about.page.*`;
+Note how files are collocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
 
 The `.page.server.js` and `.page.client.js` files give you full control over rendering.
