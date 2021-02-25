@@ -530,7 +530,7 @@ async function addContextProps({ contextProps }) {
 }
 
 function setPageProps({ contextProps: { movies } }) {
-  // We remove data we don't need: `vite-plugin-ssr` serializes and passes `pageProps`
+  // We only select data we need: `vite-plugin-ssr` serializes and passes `pageProps`
   // to the client and we want to minimize what it sent over the network.
   movies = movies.map(({ title, release_date }) => ({title, release_date}))
   const pageProps = { movies }
@@ -538,7 +538,7 @@ function setPageProps({ contextProps: { movies } }) {
 }
 ```
 
-The `pageProps` are passed to your `render()` lifecycle method, and are provided on the client-side by the `import { getPage } from 'vite-plugin-ssr/client'` function.
+The `pageProps` are passed to your `render()` lifecycle method, and are provided on the client-side by the `import { getPage, pageProps } from 'vite-plugin-ssr/client'` function.
 
 ```jsx
 // /pages/_default.page.server.js
@@ -551,7 +551,7 @@ export { render }
 
 // The `render()` lifecycle method
 async function render({ Page, pageProps }) {
-  // `Page` is defined bellow in `movies.page.js`.
+  // `Page` is defined below in `/pages/movies.page.js`.
   const pageHtml = await renderView(<Page {...pageProps} />)
   return html`<html>
     <div id='view-root'>
@@ -570,14 +570,14 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  // `Page` is defined bellow in `movies.page.js`.
+  // `Page` is defined below in `/pages/movies.page.js`.
   // The `pageProps` are serialized and passed from the server to the browser.
   const { Page, pageProps } = await getPage()
   await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
 }
 ```
 ```jsx
-// pages/movies.page.js
+// /pages/movies.page.js
 // Environment: Browser, Node.js
 
 export { Page }
@@ -912,11 +912,12 @@ function Page(pageProps) {
 
 The lifecycle method `prerender()` is used for prerendering parameterized routes (e.g. `/movies/:movieId`).
 
-If you don't have any parameterized, then you need to define any `prerender()` to prerender your app.
+If you don't have any page that has a parameterized route,
+then you don't need to define any `prerender()` function to prerender your app.
 
-Is only used when prerendering: if you don't call
+It is only used when prerendering: if you don't call
 `npx vite-plugin-ssr prerender` (or `yarn vite-plugin-ssr prerender`)
-then your `prerender` functions will never be called.
+then your `prerender()` functions will never be called.
 
 ```js
 // /pages/movie.page.server.js
