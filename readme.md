@@ -654,34 +654,6 @@ For React you can use `@brillout/vite-plugin-mdx`:
 <br/><br/>
 
 
-## Filesystem Routing
-
-By default a page is mapped to a URL based on where its `.page.js` file is located.
-
-```
-FILESYSTEM                        URL              COMMENT
-pages/about.page.js               /about
-pages/index/index.page.js         /                (`index` is mapped to the empty string)
-pages/HELLO.page.js               /hello           (Mapping is done lower case)
-```
-
-The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
-
-```
-FILESYSTEM                        URL
-user/list.page.js                 /user/list
-user/create.page.js               /user/create
-todo/list.page.js                 /todo/list
-todo/create.page.js               /todo/create
-```
-
-The directory common to all your `*.page.js` files is considered the routing root.
-
-For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
-
-<br/><br/>
-
-
 ## `*.page.js`
 
 Environment: `Browser`, `Node.js`
@@ -1081,6 +1053,34 @@ The `_404.page.js` page is like any other page with the exception that it has a 
 // Ensure lowest priority for the 404 page
 export default () => ({match: -Infinity})
 ```
+
+<br/><br/>
+
+
+## Filesystem Routing
+
+By default a page is mapped to a URL based on where its `.page.js` file is located.
+
+```
+FILESYSTEM                        URL              COMMENT
+pages/about.page.js               /about
+pages/index/index.page.js         /                (`index` is mapped to the empty string)
+pages/HELLO.page.js               /hello           (Mapping is done lower case)
+```
+
+The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
+
+```
+FILESYSTEM                        URL
+user/list.page.js                 /user/list
+user/create.page.js               /user/create
+todo/list.page.js                 /todo/list
+todo/create.page.js               /todo/create
+```
+
+The directory common to all your `*.page.js` files is considered the routing root.
+
+For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
 
 <br/><br/>
 
