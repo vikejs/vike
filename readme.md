@@ -222,7 +222,7 @@ export { addContextProps }
 export { setPageProps }
 
 async function addContextProps({ contextProps }) {
-  // Route parameters are made available at `contextProps`
+  // Route parameters are available at `contextProps`
   const { movieId } = contextProps
   // We could also use SQL/ORM queries here
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
@@ -418,7 +418,7 @@ export { addContextProps };
 export { setPageProps };
 
 async function addContextProps({ contextProps }) {
-  // Route parameters are made available at `contextProps`
+  // Route parameters are available at `contextProps`
   const { movieId } = contextProps;
   // We could also use SQL/ORM queries here
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`);
