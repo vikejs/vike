@@ -233,7 +233,7 @@ async function addContextProps({ contextProps }) {
 // The `contextProps` are available only on the server; only the `pageProps`
 // are serialized and passed to the browser.
 function setPageProps({ contextProps }) {
-  // We remove data we don't need in order to minimize what it sent over the network
+  // We select only the data we need in order to minimize what it sent over the network
   const { title, release_date, director } = contextProps.movie
   const movie = { title, release_date, director }
   return { movie }
@@ -429,7 +429,7 @@ async function addContextProps({ contextProps }) {
 // The `contextProps` are available only on the server; only the `pageProps`
 // are serialized and passed to the browser.
 function setPageProps({ contextProps }) {
-  // We remove data we don't need in order to minimize what it sent over the network
+  // We select only the data we need in order to minimize what it sent over the network
   const { title, release_date, director } = contextProps.movie;
   const movie = { title, release_date, director };
   return { movie };
