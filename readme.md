@@ -150,13 +150,13 @@ async function hydrate() {
 }
 ```
 
-Note how the files we created so far end with `.page.js`, `.page.route.js`, `.page.server.js`, and `.page.client.js`:
+Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
  - `.page.route.js`: defines the page's Route String or Route function.
 
-Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
+Using `vite-plugin-ssr` consists simply of writing these four types of files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
@@ -350,7 +350,7 @@ Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.p
  - `.page.server.js`: defines the page's server-side lifecycle methods.
  - `.page.route.js`: defines the page's Route String or Route function.
 
-Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
+Using `vite-plugin-ssr` consists simply of writing these four types of files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
