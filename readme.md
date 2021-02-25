@@ -15,8 +15,8 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> API
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
@@ -630,15 +630,6 @@ function Page(pageProps) {
 <br/><br/>
 
 
-## Pre-rendering
-
-To pre-render your pages, simply run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
-
-For parameterized routes (e.g. `/movie/:movieId`), you'll have to `export { prerender }` in your `.page.server.js`. It is a function that returns the list of URLs and optionally the URL's `contextProps`. See [API - `export { prerender }`](#export--prerender-) for more infos.
-
-<br/><br/>
-
-
 ## Markdown
 
 You can use `vite-plugin-ssr` with any Vite markdown plugin.
@@ -650,6 +641,15 @@ For Vue you can use `vite-plugin-md`:
 For React you can use `@brillout/vite-plugin-mdx`:
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
+
+<br/><br/>
+
+
+## Pre-rendering
+
+To pre-render your pages, simply run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
+
+For parameterized routes (e.g. `/movie/:movieId`), you'll have to `export { prerender }` in your `.page.server.js`. It is a function that returns the list of URLs and optionally the URL's `contextProps`. See [API - `export { prerender }`](#export--prerender-) for more infos.
 
 <br/><br/>
 
@@ -715,7 +715,7 @@ function analytics_init() {
 
 <br/>
 
-## `import { getPage } from 'vite-plugin-ssr/client'`
+### `import { getPage } from 'vite-plugin-ssr/client'`
 
 Environment: `Browser`
 
@@ -740,6 +740,77 @@ async function hydrate() {
 The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
 In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
+
+<br/><br/>
+
+
+## `*.page.route.js`
+
+Environment: `Node.js`
+<br>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
+
+The `*.page.route.js` files enable further control over routing with:
+ - Route Strings
+ - Route Functions
+
+<br/>
+
+### Route String
+
+For a page `/pages/film.page.js`, a route string can be defined in a `/pages/film.page.route.js` adjacent file.
+
+```js
+// /pages/film.page.route.js
+
+// Match URLs `/film/1`, `/film/2`, ...
+export default '/film/:filmId'
+```
+
+If the URL matches, the value of `filmId` is available at `contextProps.filmId`.
+
+The syntax of route strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
+(the most widespread route syntax in JavaScript).
+For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html#route-parameters)
+(Express.js uses `path-to-regexp`).
+
+<br/>
+
+### Route Function
+
+Route functions give you full programmatic flexibility to define your routing logic.
+
+```js
+// /pages/film/admin.page.route.js
+
+export default async ({ url, contextProps }) {
+  // Route functions allow us to implement advanced routing such as route guards.
+  if (! contextProps.user.isAdmin) {
+    return {match: false}
+  }
+  // We can use RegExp and any JavaScript tool we want.
+  if (! /\/film\/[0-9]+\/admin/.test(url)) {
+    return {match: false}
+  }
+  filmId = url.split('/')[2]
+  return {
+    match: true,
+    // Add `filmId` to `contextProps`
+    contextProps: { filmId }
+  }
+}
+```
+
+The `match` value can be a (negative) number which enables you to resolve route conflicts.
+The higher the number, the higher the priority.
+For example, `vite-plugin-ssr` internally defines `_404.page.js`'s route as:
+
+```js
+// node_modules/vite-plugin-ssr/.../_404.page.route.js
+
+// Ensure lowest priority for the 404 page
+export default () => ({match: -Infinity})
+```
 
 <br/><br/>
 
@@ -912,7 +983,7 @@ async function render({ Page, pageProps, contextProps }){
 
 <br/>
 
-## `import { html } from 'vite-plugin-ssr'`
+### `import { html } from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
 
@@ -942,77 +1013,6 @@ async function render() {
 ```
 
 The `html.sanitize()` function is used for injecting untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering a view to HTML with Vue or React).
-
-<br/><br/>
-
-
-## `*.page.route.js`
-
-Environment: `Node.js`
-<br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
-
-The `*.page.route.js` files enable further control over routing with:
- - Route Strings
- - Route Functions
-
-<br/>
-
-### Route Strings
-
-For a page `/pages/film.page.js`, a route string can be defined in a `/pages/film.page.route.js` adjacent file.
-
-```js
-// /pages/film.page.route.js
-
-// Match URLs `/film/1`, `/film/2`, ...
-export default '/film/:filmId'
-```
-
-If the URL matches, the value of `filmId` is available at `contextProps.filmId`.
-
-The syntax of route strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
-(the most widespread route syntax in JavaScript).
-For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html#route-parameters)
-(Express.js uses `path-to-regexp`).
-
-<br/>
-
-### Route Functions
-
-Route functions give you full programmatic flexibility to define your routing logic.
-
-```js
-// /pages/film/admin.page.route.js
-
-export default async ({ url, contextProps }) {
-  // Route functions allow us to implement advanced routing such as route guards.
-  if (! contextProps.user.isAdmin) {
-    return {match: false}
-  }
-  // We can use RegExp and any JavaScript tool we want.
-  if (! /\/film\/[0-9]+\/admin/.test(url)) {
-    return {match: false}
-  }
-  filmId = url.split('/')[2]
-  return {
-    match: true,
-    // Add `filmId` to `contextProps`
-    contextProps: { filmId }
-  }
-}
-```
-
-The `match` value can be a (negative) number which enables you to resolve route conflicts.
-The higher the number, the higher the priority.
-For example, `vite-plugin-ssr` internally defines `_404.page.js`'s route as:
-
-```js
-// node_modules/vite-plugin-ssr/.../_404.page.route.js
-
-// Ensure lowest priority for the 404 page
-export default () => ({match: -Infinity})
-```
 
 <br/><br/>
 
