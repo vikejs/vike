@@ -189,7 +189,7 @@ The `.page.server.js` and `.page.client.js` files give you full control over ren
 This enables you to easily integrate tools, such as
 Vue Router or Vuex, and use any Vue version you want.
 
-Let's now have a look at how to fetch data for a page with a parameterized route.
+Let's now have a look at how to fetch data for a page that has a parameterized route.
 
 ```vue
 <!-- /pages/star-wars/movie.page.vue -->
@@ -384,7 +384,7 @@ The `.page.server.js` and `.page.client.js` files give you full control over ren
 This enables you to easily integrate tools, such as
 React Router or Redux, and use Preact, Inferno or any other React-like alternative.
 
-Let's now have a look at how to fetch data for a page with a parameterized route.
+Let's now have a look at how to fetch data for a page that has a parameterized route.
 
 ```jsx
 // /pages/star-wars/movie.page.jsx
