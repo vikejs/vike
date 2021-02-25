@@ -504,6 +504,8 @@ If you already have an existing Vite app and don't want to start from scratch:
 
 ## Data Fetching
 
+> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
 You fech data by defining two functions: `async addContextProps()` and `setPageProps()`. The `async addContextProps()` function fetches data, while `setPageProps()` specifies the data that is serialized and passed from the server to the browser.
 
 The `async addContextProps()` function is always called in Node.js so that ORM/SQL database queries can be used.
@@ -591,6 +593,8 @@ function Page(pageProps) {
 
 ## Routing
 
+> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
 By default `vite-plugin-ssr` does Filesystem Routing.
 
 ```
@@ -632,6 +636,8 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 
 ## Markdown
 
+> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
 You can use `vite-plugin-ssr` with any Vite markdown plugin.
 
 For Vue you can use `vite-plugin-md`:
@@ -646,6 +652,8 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 
 ## Pre-rendering
+
+> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 To pre-render your pages, simply run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
 
