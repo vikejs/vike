@@ -4,7 +4,7 @@
 
 # `vite-plugin-ssr`
 
-Small but mighty SSR tool.
+Do-One-Thing-Do-It-Well, Flexible, Simple SSR tool.
 
 [Introduction](#introduction)
 <br/> [Features](#features)
@@ -34,7 +34,7 @@ Small but mighty SSR tool.
 
 ## Introduction
 
-`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too framework-like `vite-plugin-ssr` doesn't interfere with your stack and can be used with other Vite plugins.
+`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack. For example, you can use `vite-plugin-ssr` with other Vite plugins and with any view framework (React, Vue 3, Vue 2, Svelte, Preact, etc.).
 
 To get an idea of what it's like to use `vite-plugin-ssr`, click on <b>Vue Tour</b> or <b>React Tour</b>.
 
@@ -214,10 +214,10 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-All lifecycle methods (`render`, `addContextProps`, and `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
+Lifecycle methods (`addContextProps`, `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
 This means you can use SQL/ORM queries in `addContextProps`.
 
-That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 </details>
 
@@ -404,10 +404,10 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-All lifecycle methods (`render`, `addContextProps`, and `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
+Lifecycle methods (`addContextProps`, `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
 This means you can use SQL/ORM queries in `addContextProps`.
 
-That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 </details>
 
@@ -416,9 +416,9 @@ That's it, and we have actually already seen most of `vite-plugin-ssr`'s interfa
 
 ## Features
 
-- **Do-One-Thing-Do-It-Well Tool**. You control your stack; `vite-plugin-ssr` works with any view framework (Vue 3, Vue 2, React, ...), any view library (Vuex, React Router, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Render Control**. You control how your pages are rendered enabling you to easily integrate tools like Vue Router, Vuex, React Router, Redux, etc.
-- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Vue Router / React Router for nested client-side routes, and Route Functions for full flexibility.
+- **Do-One-Thing-Do-It-Well Tool**. Only takes care of SSR and works with other Vite plugins, any view framework (Vue 3, Vue 2, React, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control**. You control how your pages are rendered enabling you to easily integrate tools like Vuex and Redux.
+- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router / React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
@@ -616,7 +616,9 @@ function Page(pageProps) {
 
 ## Pre-rendering
 
-Pre-rendering is work-in-progress.
+To pre-render your pages, simply run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
+
+For parameterized routes (e.g. `/movie/:movieId`), you'll have to `export { prerender }` in your `.page.server.js`. It is a function that returns the list of URLs and optionally the URL's `contextProps`. See [API - `export { prerender }`](#export--prerender-) for more infos.
 
 <br/><br/>
 
@@ -733,46 +735,12 @@ Environment: `Node.js`
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
 A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's server-side lifecycle methods:
-- `export { render }`
 - `export { addContextProps }`
 - `export { setPageProps }`
+- `export { render }`
+- `export { prerender }`
 
 The `*.page.server.js` file is lazy loaded only when needed.
-
-<br/>
-
-### `export { render }`
-
-Your `async render()` function should render `Page` to an HTML string.
-
-```jsx
-// *.page.server.js
-
-import renderToHtml from 'some-view-library'
-import { html } from 'vite-plugin-ssr'
-
-export { render }
-
-async function render({ Page, pageProps, contextProps }){
-  const pageHtml = await renderToHtml(<Page {...pageProps} />)
-
-  const title = contextProps.title || 'My SSR App'
-
-  return html`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>${html.sanitize(title)}</title>
-      </head>
-      <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
-      </body>
-    </html>`
-}
-```
-
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
-- `pageProps` is the value returned by the `setPageProps()` function (usually defined in the same `.page.server.js` file).
-- `contextProps` is the merge of the `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
 
 <br/>
 
@@ -841,6 +809,91 @@ function Page(pageProps) {
 }
 ```
 
+<br/>
+
+### `export { render }`
+
+Your `async render()` function should render `Page` to an HTML string.
+
+```jsx
+// *.page.server.js
+
+import renderToHtml from 'some-view-library'
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render({ Page, pageProps, contextProps }){
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
+
+  const title = contextProps.title || 'My SSR App'
+
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
+- `pageProps` is the value returned by the `setPageProps()` function (usually defined in the same `.page.server.js` file).
+- `contextProps` is the merge of the `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
+
+<br/>
+
+### `export { prerender }`
+
+The lifecycle method `prerender()` is used for prerendering parameterized routes (e.g. `/movies/:movieId`).
+
+If you don't have any parameterized, then you need to define any `prerender()` to prerender your app.
+
+Is only used when prerendering: if you don't call
+`npx vite-plugin-ssr prerender` (or `yarn vite-plugin-ssr prerender`)
+then your `prerender` functions will never be called.
+
+```js
+// /pages/movie.page.server.js
+
+export { prerender }
+
+async function prerender() {
+  const movies = await Movie.findAll()
+
+  cosnt movieDetails = (
+    movies
+    .map(movie => {
+      const url = `/movie/${movie.id}`
+      const contextProps = {movie}
+      return {
+        url,
+        // We already return the `contextProps` so that `addContextProps()` will *not* be called.
+        // That way, we save redundant database requests.
+        contextProps
+      }
+      /* We could also just return the `url` (`addContextProps()` will then be called).
+       * But since we already have the data it would be redundant to have `addContextProps()`
+       * for each
+      return { url }
+       */
+    })
+  )
+
+  // We can also return URLs that don't match the page's route.
+  // That way we can prefetch the `contextProps` of other pages.
+  cosnt movieList = {
+    url: '/movie/list',
+    contextProps: movies.map(({id, title}) => ({id, title})
+  }
+
+  return [movieList, ...movieDetails];
+}
+```
+
 <br/><br/>
 
 
@@ -896,7 +949,7 @@ export default async ({ url, contextProps }) {
   return {
     match: true,
     // Add `filmId` to `contextProps`
-    addContextProps: { filmId }
+    contextProps: { filmId }
   }
 }
 ```
@@ -911,6 +964,7 @@ For example, `vite-plugin-ssr` internally defines `_404.page.js`'s route as:
 // Ensure lowest priority for the 404 page
 export default () => ({match: -Infinity})
 ```
+
 <br/><br/>
 
 
