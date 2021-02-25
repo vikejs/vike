@@ -141,9 +141,11 @@ hydrate()
 async function hydrate() {
   // (In production, the page is `<link rel="preload">`'d.)
   const { Page, pageProps } = await getPage()
+
   const app = createSSRApp({
     render: () => h(Page, pageProps)
   })
+
   app.mount('#app')
 }
 ```
@@ -332,6 +334,7 @@ hydrate();
 async function hydrate() {
   // (In production, the page is `<link rel="preload">`'d.)
   const { Page, pageProps } = await getPage();
+
   ReactDOM.hydrate(
     <Page {...pageProps} />,
     document.getElementById("page-view")
