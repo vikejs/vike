@@ -89,7 +89,7 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-You can also use Route Strings (e.g. `/movies/:id`) and Route Functions (which give you full programmatic flexibility).
+You can also use Route Strings (for parameterized routes such as `/movies/:id`) and Route Functions (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
@@ -111,18 +111,17 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
-async function render({ Page, pageProps, contextProps }) {
+async function render({ Page, pageProps }) {
   const app = createSSRApp({
     render: () => h(Page, pageProps)
   })
-  const appHtml = await renderToString(app)
 
-  const title = contextProps.title || 'Preview: vite-plugin-ssr'
+  const appHtml = await renderToString(app)
 
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${html.sanitize(title)}</title>
+        <title>Vite w/ SSR Demo</title>
       </head>
       <body>
         <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
@@ -180,7 +179,7 @@ The `_default.page.*` files can be overridden. For example, you can create a pag
 By overriding `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as React.
 
-Note how the files are colocated and share the same base `/pages/about.page.*`;
+Note how files are colocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
 
 The `.page.server.js` and `.page.client.js` files give you full control over rendering.
@@ -282,7 +281,7 @@ pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-You can also use Route Strings (e.g. `/movies/:id`) and Route Functions (which give you full programmatic flexibility).
+You can also use Route Strings (for parameterized routes such as `/movies/:id`) and Route Functions (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
@@ -304,20 +303,18 @@ import { html } from "vite-plugin-ssr";
 
 export { render };
 
-function render({ Page, pageProps, contextProps }) {
-  const pageHtml = ReactDOMServer.renderToString(
+function render({ Page, pageProps }) {
+  const viewHtml = ReactDOMServer.renderToString(
     <Page {...pageProps} />
   );
-
-  const title = contextProps.title || "Preview: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${html.sanitize(title)}</title>
+        <title>Vite w/ SSR Demo</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-view">${html.dangerouslySetHtml(viewHtml)}</div>
       </body>
     </html>`;
 }
@@ -375,7 +372,7 @@ function Page() {
 By overriding `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as Vue.
 
-Note how the files are colocated and share the same base `/pages/about.page.*`;
+Note how files are colocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
 
 The `.page.server.js` and `.page.client.js` files give you full control over rendering.
