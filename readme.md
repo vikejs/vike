@@ -169,8 +169,7 @@ The `_default.*` files can be overridden. For example, you can create a page wit
 ```js
 // /pages/about.page.client.js
 
-// This file is empty which means that the `/about` page has
-// zero browser-side JavaScript.
+// This file is empty which means that the `/about` page has zero browser-side JavaScript.
 ```
 ```vue
 <!-- /pages/about.page.vue -->
@@ -363,8 +362,7 @@ The `_default.*` files can be overridden. For example, you can create a page wit
 ```js
 // /pages/about.page.client.js
 
-// This file is empty which means that the `/about` page has
-// zero browser-side JavaScript.
+// This file is empty which means that the `/about` page has zero browser-side JavaScript.
 ```
 ```jsx
 // /pages/about.page.jsx
