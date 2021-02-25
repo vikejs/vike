@@ -41,11 +41,11 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 
 ## Introduction
 
-`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack.
+`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: `vite-plugin-ssr` doesn't interfere with your stack and can be used with any tool you want.
 
-- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate view tools such as Vuex and Redux.
-- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router / React Router for client-side dynamic nested routes.
+- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router or React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
