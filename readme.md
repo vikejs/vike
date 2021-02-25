@@ -240,7 +240,7 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-The `addContextProps` function is always run in Node.js,
+The `addContextProps` function always runs in Node.js,
 which means you can use SQL/ORM queries to fetch data.
 
 That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
@@ -436,7 +436,7 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-The `addContextProps` function is always run in Node.js,
+The `addContextProps` function always runs in Node.js,
 which means you can use SQL/ORM queries to fetch data.
 
 That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
