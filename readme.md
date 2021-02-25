@@ -150,7 +150,7 @@ async function hydrate() {
 }
 ```
 
-Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`:
+Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
@@ -343,7 +343,7 @@ async function hydrate() {
 }
 ```
 
-Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`:
+Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
