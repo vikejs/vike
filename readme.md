@@ -159,7 +159,6 @@ Note how the files we created so far end with `.page.js`, `.page.route.js`, `.pa
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
-Route files `.page.route.js` are optional.
 This means that the pages we defined above are enough for the app to work.
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
@@ -351,7 +350,6 @@ Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.p
 Using `vite-plugin-ssr` consists of writing these four types of files; there is no configuration beyond these files.
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
-Route files `.page.route.js` are optional.
 This means that the pages we defined above are enough for the app to work.
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
