@@ -538,7 +538,7 @@ function setPageProps({ contextProps: { movies } }) {
 }
 ```
 
-The `pageProps` are passed to your `render()` lifecycle method and are provided to the client-side by the `import { getPage } from 'vite-plugin-ssr/client'` function.
+The `pageProps` are passed to your `render()` lifecycle method and are serialized and passed to the client-side and returned by the `import { getPage } from 'vite-plugin-ssr/client'` function.
 
 ```jsx
 // /pages/_default.page.server.js
@@ -549,7 +549,6 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
-// The `render()` lifecycle method
 async function render({ Page, pageProps }) {
   // `Page` is defined below in `/pages/movies.page.js`.
   const pageHtml = await renderView(<Page {...pageProps} />)
@@ -570,8 +569,6 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  // `Page` is defined below in `/pages/movies.page.js`.
-  // The `pageProps` are serialized and passed from the server to the browser.
   const { Page, pageProps } = await getPage()
   await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
 }
