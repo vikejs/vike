@@ -655,9 +655,9 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 > We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-To pre-render your pages, simply run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
+To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
 
-For a page that has a parameterized route (e.g. `/movie/:movieId`), you have to `export { prerender }` in the page's `.page.server.js`. The `prerender()` lifecycle method provides the list of URLs and (optionally) the URL's `contextProps`, see [API - `export { prerender }`](#export--prerender-).
+For a page that has a parameterized route (e.g. `/movie/:movieId`), you have to `export { prerender }` in the page's `.page.server.js`. The `prerender()` lifecycle method provides the list of URLs and (optionally) the URL's `contextProps`, see [`export { prerender }`](#export--prerender-).
 
 <br/><br/>
 
