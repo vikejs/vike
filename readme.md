@@ -580,7 +580,7 @@ async function hydrate() {
 
 export { Page }
 
-// `Page` is always called either by a `render()` lifecycle method, or
+// `Page` is always used either by a `render()` lifecycle method, or
 // in a `.page.client.js` file.
 function Page(pageProps) {
   const { movies } = pageProps
@@ -617,7 +617,7 @@ The `productId` value is available at `contextProps.productId` so that you can f
 For full programmatic flexibility, you can define route functions.
 
 ```js
-// pages/admin.page.route.js
+// /pages/admin.page.route.js
 
 // Route functions allow us to implement advanced routing such as route guards.
 export default async ({ url, contextProps }) => {
@@ -657,7 +657,7 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 To pre-render your pages, simply run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
 
-For parameterized routes (e.g. `/movie/:movieId`), you'll have to `export { prerender }` in your `.page.server.js`. It is a function that returns the list of URLs and optionally the URL's `contextProps`. See [API - `export { prerender }`](#export--prerender-) for more infos.
+For a page that has a parameterized route (e.g. `/movie/:movieId`), you have to `export { prerender }` in the page's `.page.server.js`. The `prerender()` lifecycle method provides the list of URLs and (optionally) the URL's `contextProps`, see [API - `export { prerender }`](#export--prerender-).
 
 <br/><br/>
 
