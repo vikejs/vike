@@ -4,10 +4,11 @@
 
 # `vite-plugin-ssr`
 
-Do-One-Thing-Do-It-Well, Flexible, Simple SSR tool.
+SSR tool. Do-One-Thing-Do-It-Well, Flexible, Simple.
 
 [Introduction](#introduction)
-<br/> [Features](#features)
+<br/> [Vue Tour](#vue-tour)
+<br/> [React Tour](#react-tour)
 <br/> Get Started
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
@@ -34,17 +35,26 @@ Do-One-Thing-Do-It-Well, Flexible, Simple SSR tool.
 
 ## Introduction
 
-`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack. For example, you can use `vite-plugin-ssr` with other Vite plugins and with any view framework (React, Vue 3, Vue 2, Svelte, Preact, etc.).
+`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: where Next.js and Nuxt are too framework-like, `vite-plugin-ssr` doesn't interfere with your stack.
 
-To get an idea of what it's like to use `vite-plugin-ssr`, click on <b>Vue Tour</b> or <b>React Tour</b>.
+- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate view tools such as Vuex and Redux.
+- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router / React Router for client-side dynamic nested routes.
+- **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
+- **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
+- **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
+- **Code Splitting**. Each page loads only the browser-side code it needs.
+- **Simple Design**. The overall architecutre is simple resulting in a small & robust tool.
 
-<details>
-<summary>
-<b>Vue Tour</b>
-</summary>
-<br/>
+To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
-Pages are defined by creating `.page.vue` files:
+<br/><br/>
+
+
+## Vue Tour
+
+Similarly to SSR frameworks,
+pages are defined by creating page files.
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -75,7 +85,15 @@ pages/about.page.vue        /about
 
 You can also use Route Strings (e.g. `/movies/:id`) and Route Functions (which give you full programmatic flexibility).
 
-Unlike Nuxt, *you* define how your pages are rendered:
+```js
+// /pages/index.page.route.js
+// Environment: Node.js
+
+export default '/'
+```
+
+Unlike SSR frameworks,
+*you* define how your pages are rendered.
 
 ```js
 // /pages/_default.page.server.js
@@ -219,15 +237,13 @@ This means you can use SQL/ORM queries in `addContextProps`.
 
 That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
-</details>
+<br/><br/>
 
-<details>
-<summary>
-<b>React Tour</b>
-</summary>
-<br/>
 
-Pages are defined by creating `.page.jsx` files:
+## React Tour
+
+Similarly to SSR frameworks,
+pages are defined by creating page files.
 
 ```jsx
 // /pages/index.page.jsx
@@ -262,7 +278,15 @@ pages/about.page.jsx        /about
 
 You can also use Route Strings (e.g. `/movies/:id`) and Route Functions (which give you full programmatic flexibility).
 
-Unlike Next.js, *you* define how your pages are rendered:
+```js
+// /pages/index.page.route.js
+// Environment: Node.js
+
+export default "/";
+```
+
+Unlike SSR frameworks,
+*you* define how your pages are rendered.
 
 ```jsx
 // /pages/_default.page.server.jsx
@@ -410,20 +434,6 @@ This means you can use SQL/ORM queries in `addContextProps`.
 That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 </details>
-
-<br/><br/>
-
-
-## Features
-
-- **Do-One-Thing-Do-It-Well Tool**. Only takes care of SSR and works with other Vite plugins, any view framework (Vue 3, Vue 2, React, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Render Control**. You control how your pages are rendered enabling you to easily integrate tools like Vuex and Redux.
-- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router / React Router for client-side dynamic nested routes.
-- **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
-- **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
-- **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
-- **Code Splitting**. Each page loads only the browser-side code it needs.
-- **Simple Architecture**. Resulting in a small & robust tool.
 
 <br/><br/>
 
