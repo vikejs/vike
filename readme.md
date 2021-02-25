@@ -43,7 +43,7 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 
 `vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: `vite-plugin-ssr` doesn't interfere with your stack and can be used with any tool you want.
 
-- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate view tools such as Vuex and Redux.
 - **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router or React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
@@ -150,7 +150,7 @@ async function hydrate() {
 }
 ```
 
-Note how the files we created so far end with `.page.js`, `.page.server.js`, and `.page.client.js`. There are four types of files:
+Note how the files we created so far end with `.page.js`, `.page.route.js`, `.page.server.js`, and `.page.client.js`:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
@@ -160,7 +160,7 @@ Using `vite-plugin-ssr` consists of writing these four types of files; there is 
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 Route files `.page.route.js` are optional.
-This means that the three pages we defined above are enough for the app to work.
+This means that the pages we defined above are enough for the app to work.
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -342,7 +342,7 @@ async function hydrate() {
 }
 ```
 
-Note how the files we created so far end with `.page.jsx`, `.page.server.jsx`, and `.page.client.jsx`. There are four types of files:
+Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`:
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: defines the page's server-side lifecycle methods.
@@ -352,7 +352,7 @@ Using `vite-plugin-ssr` consists of writing these four types of files; there is 
 
 Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 Route files `.page.route.js` are optional.
-This means that the three pages we defined above are enough for the app to work.
+This means that the pages we defined above are enough for the app to work.
 
 The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
