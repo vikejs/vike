@@ -202,8 +202,8 @@ Let's now have a look at how to fetch data for a page with a parameterized route
 </template>
 
 <script lang="ts">
-const props = ['movie']
-export default { props }
+const pageProps = ['movie']
+export default { props: pageProps }
 </script>
 ```
 ```js
@@ -240,10 +240,10 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-Lifecycle methods (`addContextProps`, `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
-This means you can use SQL/ORM queries in `addContextProps`.
+The `addContextProps` function is always run in Node.js,
+which means you can use SQL/ORM queries to fetch data.
 
-That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 <br/><br/>
 
@@ -436,10 +436,10 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-Lifecycle methods (`addContextProps`, `setPageProps`) are defined in `.page.server.js` and are always run in Node.js.
-This means you can use SQL/ORM queries in `addContextProps`.
+The `addContextProps` function is always run in Node.js,
+which means you can use SQL/ORM queries to fetch data.
 
-That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
 </details>
 
