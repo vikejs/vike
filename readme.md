@@ -30,7 +30,7 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_defaultpage)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.*`](#_default)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`](#_404pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
@@ -164,7 +164,7 @@ We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.vue` file
 (and optionally a new collocated `.page.route.js` file if we want to define a parameterized route.)
 
-The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
+The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
 ```js
 // /pages/about.page.client.js
@@ -358,7 +358,7 @@ We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.jsx` file
 (and optionally a new collocated `.page.route.js` file if we want to define a parameterized route.)
 
-The `_default.page.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
+The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
 ```js
 // /pages/about.page.client.js
@@ -1029,11 +1029,11 @@ The `html.sanitize()` function is used for injecting untrusted strings, while `h
 <br/><br/>
 
 
-## `_default.page.*`
+## `_default.*`
 
 The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
 
-There can be several `_default.page.*` files.
+There can be several `_default.*` files.
 
 ```
 marketing/_default.page.server.js
@@ -1046,8 +1046,8 @@ admin-panel/_default.page.client.js
 admin-panel/index.page.js
 ```
 
-The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
-the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
+The `marketing/_default.*` files apply to the `marketing/*.page.js` files, while
+the `admin-panel/_default.*` files apply to the `admin-panel/*.page.js` files.
 
 The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
 defining `_default.page.js` or `_default.page.route.js` is forbidden.
