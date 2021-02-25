@@ -18,16 +18,22 @@ SSR tool. Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> API
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`](#pageserverjs)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`](#pageroutejs)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route String](#route-string)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route Function](#route-function)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`](#pageserverjs)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addContextProps }`](#export--addcontextprops-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { setPageProps }`](#export--setpageprops-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_defaultpage)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`](#_404pagejs)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`](#import-viteplugin-from-vite-plugin-ssr)
 
 <br/>
@@ -735,6 +741,34 @@ function analytics_init() {
 }
 ```
 
+<br/>
+
+## `import { getPage } from 'vite-plugin-ssr/client'`
+
+Environment: `Browser`
+
+The `async getPage()` function provides `Page` and `pageProps` for the browser-side code `.page.client.js`.
+
+```js
+// /pages/demo.page.client.js
+
+import { getPage } from 'vite-plugin-ssr/client'
+
+hydrate()
+
+async function hydrate() {
+  const { Page, pageProps } = await getPage()
+  /* ... */
+}
+```
+
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `/pages/demo.page.js` file.
+- `pageProps` is the value returned by your `setPageProps()` function (which you define and export in the adjacent `pages/demo.page.server.js` file).
+
+The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+
+In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
+
 <br/><br/>
 
 
@@ -821,41 +855,6 @@ function Page(pageProps) {
 
 <br/>
 
-### `export { render }`
-
-Your `async render()` function should render `Page` to an HTML string.
-
-```jsx
-// *.page.server.js
-
-import renderToHtml from 'some-view-library'
-import { html } from 'vite-plugin-ssr'
-
-export { render }
-
-async function render({ Page, pageProps, contextProps }){
-  const pageHtml = await renderToHtml(<Page {...pageProps} />)
-
-  const title = contextProps.title || 'My SSR App'
-
-  return html`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>${html.sanitize(title)}</title>
-      </head>
-      <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
-      </body>
-    </html>`
-}
-```
-
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
-- `pageProps` is the value returned by the `setPageProps()` function (usually defined in the same `.page.server.js` file).
-- `contextProps` is the merge of the `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
-
-<br/>
-
 ### `export { prerender }`
 
 The lifecycle method `prerender()` is used for prerendering parameterized routes (e.g. `/movies/:movieId`).
@@ -903,6 +902,74 @@ async function prerender() {
   return [movieList, ...movieDetails];
 }
 ```
+
+<br/>
+
+### `export { render }`
+
+Your `async render()` function should render `Page` to an HTML string.
+
+```jsx
+// *.page.server.js
+
+import renderToHtml from 'some-view-library'
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render({ Page, pageProps, contextProps }){
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
+
+  const title = contextProps.title || 'My SSR App'
+
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+- `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
+- `pageProps` is the value returned by the `setPageProps()` function (usually defined in the same `.page.server.js` file).
+- `contextProps` is the merge of the `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
+
+<br/>
+
+## `import { html } from 'vite-plugin-ssr'`
+
+Environment: `Node.js`
+
+The `html` template string tag sanitizes HTML in order to avoid XSS injections. It is used in conjunction with the `export { render }` lifecycle method defined in `..page.server.js`
+
+```js
+// *.page.server.js
+
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render() {
+  const title = 'Hello <script src="https://devil.org/evil-code"></script>'
+  const pageHtml = "<div>I'm already <b>sanitized</b> by Vue/React</div>"
+
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${html.sanitize(title)}</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+The `html.sanitize()` function is used for injecting untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering a view to HTML with Vue or React).
 
 <br/><br/>
 
@@ -1018,35 +1085,6 @@ export default () => ({match: -Infinity})
 <br/><br/>
 
 
-## `import { getPage } from 'vite-plugin-ssr/client'`
-
-Environment: `Browser`
-
-The `async getPage()` function provides `Page` and `pageProps` in the browser.
-
-```js
-// /pages/demo.page.client.js
-
-import { getPage } from 'vite-plugin-ssr/client'
-
-hydrate()
-
-async function hydrate() {
-  const { Page, pageProps } = await getPage()
-  /* ... */
-}
-```
-
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `/pages/demo.page.js` file.
-- `pageProps` is the value returned by your `setPageProps()` function (which you define and export in the adjacent `pages/demo.page.server.js` file).
-
-The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
-
-In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
-
-<br/><br/>
-
-
 ## `import { createRender } from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
@@ -1074,40 +1112,6 @@ Since `render({ url, contextProps})` is agnostic to Express.js, you can use `vit
 Examples:
  - [JavaScript](/create-vite-plugin-ssr/template-react/server/index.js)
  - [TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
-
-<br/><br/>
-
-
-## `import { html } from 'vite-plugin-ssr'`
-
-Environment: `Node.js`
-
-The `html` template string tag sanitizes HTML in order to avoid XSS injections.
-
-```js
-// *.page.server.js
-
-import { html } from 'vite-plugin-ssr'
-
-export { render }
-
-async function render() {
-  const title = 'Hello <script src="https://devil.org/evil-code"></script>'
-  const pageHtml = "<div>I'm already <b>sanitized</b> by Vue/React</div>"
-
-  return html`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>${html.sanitize(title)}</title>
-      </head>
-      <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
-      </body>
-    </html>`
-}
-```
-
-The `html.sanitize()` function is used for injecting untrusted strings, while `html.dangerouslySetHtml()` should be used with caution only for HTML strings that have already been sanitized (which is the case when rendering a view to HTML with Vue or React).
 
 <br/><br/>
 
