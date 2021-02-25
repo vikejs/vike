@@ -4,7 +4,7 @@
 
 # `vite-plugin-ssr`
 
-SSR tool. Do-One-Thing-Do-It-Well, Flexible, Simple.
+Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 
 [Introduction](#introduction)
 <br/> [Vue Tour](#vue-tour)
@@ -60,7 +60,7 @@ To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tou
 ## Vue Tour
 
 Similarly to SSR frameworks,
-pages are defined by creating page files.
+pages are defined by page files.
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -249,7 +249,7 @@ That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible 
 ## React Tour
 
 Similarly to SSR frameworks,
-pages are defined by creating page files.
+pages are defined by page files.
 
 ```jsx
 // /pages/index.page.jsx
@@ -446,7 +446,7 @@ That's it, we have seen most of `vite-plugin-ssr`'s interface, and how flexible 
 
 ## Boilerplates
 
-If you start from scratch, use the `vite-plugin-ssr` boilerplates.
+If you start from scratch, then you can use the `vite-plugin-ssr` boilerplates.
 
 With NPM:
 
