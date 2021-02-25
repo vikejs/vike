@@ -13,8 +13,8 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
 <br/> Guides
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> API
@@ -502,47 +502,6 @@ If you already have an existing Vite app and don't want to start from scratch:
 <br/><br/>
 
 
-## Routing
-
-By default `vite-plugin-ssr` does Filesystem Routing.
-
-```
-FILESYSTEM                  URL
-pages/index.page.js         /
-pages/about.page.js         /about
-pages/faq/index.page.js     /faq
-```
-
-For more control, you can define route strings in `.page.route.js` files.
-
-```
-// /pages/product.page.route.js
-
-export default '/product/:productId'
-```
-
-The `productId` value is available at `contextProps.productId` so that you can fetch data in `async addContextProps({contextProps})` which is explained at [Data Fetching](#data-fetching).
-
-For full programmatic flexibility, you can define route functions.
-
-```js
-// pages/admin.page.route.js
-
-// Route functions allow us to implement advanced routing such as route guards.
-export default async ({ url, contextProps }) => {
-  if (url==='/admin' && contextProps.user.isAdmin) {
-    return { match: true }
-  }
-}
-```
-
-For detailed informations about Filesystem Routing, route strings, and route functions:
- - [API - Filesystem Routing](#filesystem-routing)
- - [API - `*.page.route.js`](#pageroutejs)
-
-<br/><br/>
-
-
 ## Data Fetching
 
 You fech data by defining two functions: `async addContextProps()` and `setPageProps()`. The `async addContextProps()` function fetches data, while `setPageProps()` specifies the data that is serialized and passed from the server to the browser.
@@ -626,6 +585,47 @@ function Page(pageProps) {
   /* ... */
 }
 ```
+
+<br/><br/>
+
+
+## Routing
+
+By default `vite-plugin-ssr` does Filesystem Routing.
+
+```
+FILESYSTEM                  URL
+pages/index.page.js         /
+pages/about.page.js         /about
+pages/faq/index.page.js     /faq
+```
+
+For more control, you can define route strings in `.page.route.js` files.
+
+```
+// /pages/product.page.route.js
+
+export default '/product/:productId'
+```
+
+The `productId` value is available at `contextProps.productId` so that you can fetch data in `async addContextProps({contextProps})` which is explained at [Data Fetching](#data-fetching).
+
+For full programmatic flexibility, you can define route functions.
+
+```js
+// pages/admin.page.route.js
+
+// Route functions allow us to implement advanced routing such as route guards.
+export default async ({ url, contextProps }) => {
+  if (url==='/admin' && contextProps.user.isAdmin) {
+    return { match: true }
+  }
+}
+```
+
+For detailed informations about Filesystem Routing, route strings, and route functions:
+ - [API - Filesystem Routing](#filesystem-routing)
+ - [API - `*.page.route.js`](#pageroutejs)
 
 <br/><br/>
 
