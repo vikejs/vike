@@ -658,10 +658,10 @@ For React you can use `@brillout/vite-plugin-mdx`:
 > :asterisk: **What is pre-rendering?**
 > Pre-rendering means to render the HTML of all your pages at once.
 > Normally, the HTML of a page is rendered at request-time
-> (when your user goes to your website),
-> but with pre-rendering the HTML of a page is rendered at build-time instead
+> (when your user goes to your website).
+> With pre-rendering, the HTML of a page is rendered at build-time instead
 > (when yun run `vite-plugin-ssr prerender`).
-> With pre-rendering, your app consists only of static assets (HTML, JS, CSS, images, ...)
+> Your app then consists only of static assets (HTML, JS, CSS, images, ...)
 > and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
 > Without pre-rendering, you need to use a Node.js server that will render your pages' HTML at request-time.
 
