@@ -925,7 +925,7 @@ you define a `prerender()` function in order to provide the list of URLs (`/movi
 
 If you don't have any parameterized route,
 then you can prerender your app without defining any `prerender()` function.
-You can still use use the `prerender()` lifecycle method
+You can, however, still use the `prerender()` lifecycle method
 to increase the effeciency of pre-rendering as
 it enables you to fetch data for multiple pages at once.
 
