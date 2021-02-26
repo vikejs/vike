@@ -969,10 +969,10 @@ async function prerender() {
     url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
     contextProps: {
       movieList: movies.map(({id, title}) => ({id, title})
-    },
+    }
   }
 
-  return [movieListPage, ...moviePages];
+  return [movieListPage, ...moviePages]
 }
 ```
 
