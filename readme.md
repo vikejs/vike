@@ -943,16 +943,15 @@ export { prerender }
 async function prerender() {
   const movies = await Movie.findAll()
 
-  const movieDetails = (
+  const moviePages = (
     movies
     .map(movie => {
       const url = `/movie/${movie.id}`
       const contextProps = { movie }
       return {
         url,
-        // Beacuse we return the `contextProps`, vite-plugin-ssr will *not* call
-        // the `addContextProps()` lifecycle method. (Since we already
-        // provide the `contextProps`.)
+        // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
+        // the `addContextProps()` lifecycle method.
         contextProps
       }
       // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
@@ -963,17 +962,17 @@ async function prerender() {
   )
 
   // We can also return URLs that don't match the page's route.
-  // That way we can prefetch the `contextProps` of other pages.
+  // That way we can provide the `contextProps` of other pages.
   // Here we provide the `contextProps` of the `/movies` page since
   // we already have the data.
-  const movieList = {
+  const movieListPage = {
     url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
     contextProps: {
       movieList: movies.map(({id, title}) => ({id, title})
     },
   }
 
-  return [movieList, ...movieDetails];
+  return [movieListPage, ...moviePages];
 }
 ```
 
