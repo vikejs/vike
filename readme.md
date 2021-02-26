@@ -921,7 +921,7 @@ function Page(pageProps) {
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
 The lifecycle method `prerender()` enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-by defining the `prerender()` function you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and optionally the `contextProps` of each URL.
+you define the `prerender()` function in order to provide the list of URLs (`/movie/1`, `/movie/2`, ...) and optionally the `contextProps` of each URL.
 
 If you don't have any parameterized route,
 then `prerender()` is optional and you can prerender your app without defining any `prerender()` function.
