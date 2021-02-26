@@ -950,14 +950,13 @@ async function prerender() {
       const contextProps = {movie}
       return {
         url,
-        // If we return the `contextProps` then `addContextProps()` will *not* be called.
-        // That way, we save redundant data fetching.
+        // Beacuse we return the `contextProps`, the `addContextProps()` lifecycle method will
+        // *not* be called.
         contextProps
       }
-      /* We could also just return the `url`. In that case `addContextProps()` *will* be
+      /* We could also just return the `url`. In that case `addContextProps()` would be
        * called in order to get the `contextProps`.
-       * But since we already have the data it would be redundant to call `addContextProps()`
-       * so we don't do that.
+       * But since we already have the data it would be redundant to call `addContextProps()`.
       return { url }
        */
     })
