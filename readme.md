@@ -950,15 +950,14 @@ async function prerender() {
       const contextProps = { movie }
       return {
         url,
-        // Beacuse we return the `contextProps`, the `addContextProps()` lifecycle method will
-        // *not* be called.
+        // Beacuse we return the `contextProps`, vite-plugin-ssr will *not* call the `addContextProps()`
+        // lifecycle method. (Since we already provide the `contextProps` here.)
         contextProps
       }
-      /* We could also just return the `url`. In that case `addContextProps()` would be
-       * called in order to get the `contextProps`.
-       * But since we already have the data it would be redundant to call `addContextProps()`.
-      return { url }
-       */
+      // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
+      // call `addContextProps()`. But that would be redundant since we already have all the data of all
+      // movies from our `await Movie.findAll()` call.
+      // return { url }
     })
   )
 
