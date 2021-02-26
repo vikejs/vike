@@ -656,7 +656,7 @@ For React you can use `@brillout/vite-plugin-mdx`:
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 > :asterisk: **What is pre-rendering?**
-> Pre-rendering means to render all the HTML of all your pages at once.
+> Pre-rendering means to render the HTML of all your pages at once.
 > Normally, the HTML of a page is rendered at request-time
 > (when your user goes to your website),
 > but with pre-rendering the HTML of a page is rendered at build-time instead
@@ -927,7 +927,7 @@ If you don't have any parameterized route,
 then `prerender()` is optional and you can prerender your app without defining any `prerender()` function.
 
 You can also use use the `prerender()` lifecycle method
-to increase the effeciency of data fetching as
+to increase the effeciency of pre-rendering as
 it enables you to fetch data for multiple pages at once.
 
 ```js
@@ -950,13 +950,14 @@ async function prerender() {
       const contextProps = {movie}
       return {
         url,
-        // We already return the `contextProps` so that `addContextProps()` will *not* be called.
-        // That way, we save redundant database requests.
+        // If we return the `contextProps` then `addContextProps()` will *not* be called.
+        // That way, we save redundant data fetching.
         contextProps
       }
-      /* We could also just return the `url` (`addContextProps()` will then be called).
-       * But since we already have the data it would be redundant to have `addContextProps()`
-       * for each
+      /* We could also just return the `url`. In that case `addContextProps()` *will* be
+       * called in order to get the `contextProps`.
+       * But since we already have the data it would be redundant to call `addContextProps()`
+       * so we don't do that.
       return { url }
        */
     })
