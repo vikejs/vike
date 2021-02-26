@@ -655,7 +655,7 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-> :grey_question: **What is pre-rendering**
+> :asterisk: **What is pre-rendering?**
 > Pre-rendering means to render all the HTML of all your pages.
 > With SSR, the HTML of a page is rendered at request-time
 > (when your user goes to your website),
@@ -918,7 +918,7 @@ function Page(pageProps) {
 
 ### `export { prerender }`
 
-> :information_source: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
+> :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
 The lifecycle method `prerender()` enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
 by defining the `prerender()` function you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and the `contextProps` of each URL.
