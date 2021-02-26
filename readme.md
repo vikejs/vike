@@ -947,7 +947,7 @@ async function prerender() {
     movies
     .map(movie => {
       const url = `/movie/${movie.id}`
-      const contextProps = {movie}
+      const contextProps = { movie }
       return {
         url,
         // Beacuse we return the `contextProps`, the `addContextProps()` lifecycle method will
