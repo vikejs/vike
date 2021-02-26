@@ -656,14 +656,14 @@ For React you can use `@brillout/vite-plugin-mdx`:
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 > :asterisk: **What is pre-rendering?**
-> Pre-rendering means to render all the HTML of all your pages.
-> With SSR, the HTML of a page is rendered at request-time
+> Pre-rendering means to render all the HTML of all your pages at once.
+> Normally, the HTML of a page is rendered at request-time
 > (when your user goes to your website),
-> while with pre-rendering the HTML of a page is rendered at build-time
+> but with pre-rendering the HTML of a page is rendered at build-time instead
 > (when yun run `vite-plugin-ssr prerender`).
-> With pre-render, your app then consists only static assets (HTML, JS, CSS, images, ...)
-> and you can deploy your app to so-called static hosts such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
-> With SSR, you need to run your app with a Node.js server that will render your pages' HTML at render-time.
+> With pre-render, your app consists only of static assets (HTML, JS, CSS, images, ...)
+> and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
+> Without pre-render, you need to use a Node.js server that will render your pages' HTML at request-time.
 
 To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
 
