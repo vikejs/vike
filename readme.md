@@ -448,7 +448,7 @@ That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible 
 
 ## Boilerplates
 
-If you start from scratch, then you can use the `vite-plugin-ssr` boilerplates.
+Scaffold a Vite app that uses `vite-plugin-ssr`.
 
 With NPM:
 
@@ -462,14 +462,14 @@ With Yarn:
 yarn create vite-plugin-ssr
 ```
 
-Follow the prompts to choose `vue`, `vue-ts`, `react`, or `react-ts`.
+Then choose between `vue`, `vue-ts`, `react`, and `react-ts`.
 
 <br/><br/>
 
 
 ## Manual Installation
 
-If you already have an existing Vite app and don't want to start from scratch:
+If you already have an existing Vite app:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
    - [Vue](/create-vite-plugin-ssr/template-vue/vite.config.js)
@@ -477,7 +477,7 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React](/create-vite-plugin-ssr/template-react/vite.config.js)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/vite.config.ts)
 
-2. Integrate Vite and `vite-plugin-ssr` to your server (Express.js, Koa, Hapi, Fastify, ...).
+2. Add `vite-plugin-ssr` to your server (Express.js, Koa, Hapi, Fastify, ...).
    - [Vue](/create-vite-plugin-ssr/template-vue/server/index.js)
    - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/server/index.ts)
    - [React](/create-vite-plugin-ssr/template-react/server/index.js)
@@ -506,7 +506,7 @@ If you already have an existing Vite app and don't want to start from scratch:
 
 ## Data Fetching
 
-> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 You fech data by defining two functions: `async addContextProps()` and `setPageProps()`. The `async addContextProps()` function fetches data, while `setPageProps()` specifies the data that is serialized and passed from the server to the browser.
 
@@ -593,7 +593,7 @@ function Page(pageProps) {
 
 ## Routing
 
-> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 By default `vite-plugin-ssr` does Filesystem Routing.
 
@@ -636,7 +636,7 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 
 ## Markdown
 
-> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 You can use `vite-plugin-ssr` with any Vite markdown plugin.
 
@@ -653,11 +653,21 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 ## Pre-rendering
 
-> We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender` (or `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`).
+> :grey_question: **What is pre-rendering**
+> Pre-rendering means to render all the HTML of all your pages.
+> With SSR, the HTML of a page is rendered at request-time
+> (when your user goes to your website),
+> while with pre-rendering the HTML of a page is rendered at build-time
+> (when yun run `vite-plugin-ssr prerender`).
+> With pre-render, your app then consists only static assets (HTML, JS, CSS, images, ...)
+> and you can deploy your app to so-called static hosts such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
+> With SSR, you need to run your app with a Node.js server that will render your pages' HTML at render-time.
 
-For a page that has a parameterized route (e.g. `/movie/:movieId`), you have to `export { prerender }` in the page's `.page.server.js`. The `prerender()` lifecycle method provides the list of URLs and (optionally) the URL's `contextProps`, see [`export { prerender }`](#export--prerender-).
+To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
+
+For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender` lifecycle method](#export--prerender-).
 
 <br/><br/>
 
@@ -908,15 +918,23 @@ function Page(pageProps) {
 
 ### `export { prerender }`
 
-The lifecycle method `prerender()` is used for prerendering parameterized routes (e.g. `/movies/:movieId`).
+> :information_source: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
-If you don't have any page that has a parameterized route,
-then you don't need to define any `prerender()` function to prerender your app.
+The lifecycle method `prerender()` enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
+by defining the `prerender()` function you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and the `contextProps` of each URL.
 
-It is only used when prerendering: if you don't call
-`npx vite-plugin-ssr prerender` (or `yarn vite-plugin-ssr prerender`)
-then your `prerender()` functions will never be called.
+If you don't have any parameterized route,
+then `prerender()` is optional and you can prerender your app without defining any `prerender()` function.
 
+You can also use use the `prerender()` lifecycle method
+in order to increase the effeciency of data fetching:
+`prerender()` enables you to fetch data of multiple pages at once.
+
+```js
+// /pages/movie.page.route.js
+
+export default '/movie/:movieId`
+```
 ```js
 // /pages/movie.page.server.js
 
@@ -925,7 +943,7 @@ export { prerender }
 async function prerender() {
   const movies = await Movie.findAll()
 
-  cosnt movieDetails = (
+  const movieDetails = (
     movies
     .map(movie => {
       const url = `/movie/${movie.id}`
@@ -946,14 +964,21 @@ async function prerender() {
 
   // We can also return URLs that don't match the page's route.
   // That way we can prefetch the `contextProps` of other pages.
-  cosnt movieList = {
-    url: '/movie/list',
-    contextProps: movies.map(({id, title}) => ({id, title})
+  const movieList = {
+    url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
+    contextProps: {
+      movieList: movies.map(({id, title}) => ({id, title})
+    },
   }
 
   return [movieList, ...movieDetails];
 }
 ```
+
+The lifecycle method `prerender()` is only used when pre-rendering:
+if you don't call
+`vite-plugin-ssr prerender`
+then no `prerender()` function are called.
 
 <br/>
 
