@@ -661,9 +661,9 @@ For React you can use `@brillout/vite-plugin-mdx`:
 > (when your user goes to your website),
 > but with pre-rendering the HTML of a page is rendered at build-time instead
 > (when yun run `vite-plugin-ssr prerender`).
-> With pre-render, your app consists only of static assets (HTML, JS, CSS, images, ...)
+> With pre-rendering, your app consists only of static assets (HTML, JS, CSS, images, ...)
 > and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
-> Without pre-render, you need to use a Node.js server that will render your pages' HTML at request-time.
+> Without pre-rendering, you need to use a Node.js server that will render your pages' HTML at request-time.
 
 To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
 
@@ -921,14 +921,14 @@ function Page(pageProps) {
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
 The lifecycle method `prerender()` enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-by defining the `prerender()` function you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and the `contextProps` of each URL.
+by defining the `prerender()` function you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and optionally the `contextProps` of each URL.
 
 If you don't have any parameterized route,
 then `prerender()` is optional and you can prerender your app without defining any `prerender()` function.
 
 You can also use use the `prerender()` lifecycle method
-in order to increase the effeciency of data fetching:
-`prerender()` enables you to fetch data of multiple pages at once.
+to increase the effeciency of data fetching as
+it enables you to fetch data for multiple pages at once.
 
 ```js
 // /pages/movie.page.route.js
