@@ -50,7 +50,7 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
 - **Code Splitting**. Each page loads only the browser-side code it needs.
-- **Simple Design**. Simple overall design resulting in a small & robust tool.
+- **Simple Design**. Simple overall design resulting in a small & robust tool that is easy to use.
 
 To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
