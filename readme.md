@@ -669,6 +669,8 @@ To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr
 
 For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender` lifecycle method](#export--prerender-).
 
+The `prerender` lifecycle method can also be used to prefetch data for multiple pages at once.
+
 <br/><br/>
 
 
