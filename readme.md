@@ -694,7 +694,7 @@ A `*.page.js` file should have a `export { Page }`. (Or a `export default`.)
 export { Page }
 
 // We export a JSX component, but we could as well export a Vue/Svelte/... component,
-// or even export some totally custom object as vite-plugin-ssr doesn't do anything
+// or even export some totally custom object since vite-plugin-ssr doesn't do anything
 // with `Page`: it just passes it to your `render()` hook and to the client-side.
 function Page() {
   return <>Hello</>
