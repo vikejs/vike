@@ -238,7 +238,8 @@ function setPageProps({ contextProps }) {
   // We select only the data we need in order to minimize what it sent over the network
   const { title, release_date, director } = contextProps.movie
   const movie = { title, release_date, director }
-  return { movie }
+  const pageProps = { movie }
+  return pageProps
 }
 ```
 
@@ -444,7 +445,8 @@ function setPageProps({ contextProps }) {
   // We select only the data we need in order to minimize what it sent over the network
   const { title, release_date, director } = contextProps.movie;
   const movie = { title, release_date, director };
-  return { movie };
+  const pageProps = { movie };
+  return pageProps;
 }
 ```
 
