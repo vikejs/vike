@@ -232,7 +232,7 @@ async function addContextProps({ contextProps }) {
   return { movie }
 }
 
-// The `contextProps` are available only on the server; only the `pageProps` are
+// The `contextProps` are available only on the server, and only the `pageProps` are
 // serialized and passed to the browser.
 function setPageProps({ contextProps }) {
   // We select only the data we need in order to minimize what it sent over the network
@@ -440,7 +440,7 @@ async function addContextProps({ contextProps }) {
   return { movie };
 }
 
-// The `contextProps` are available only on the server; only the `pageProps` are
+// The `contextProps` are available only on the server, and only the `pageProps` are
 // serialized and passed to the browser.
 function setPageProps({ contextProps }) {
   // We select only the data we need in order to minimize what it sent over the network
