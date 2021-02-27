@@ -167,8 +167,8 @@ Using `vite-plugin-ssr` consists simply of writing these four types of files.
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined our `_default.*` files above,
-which means that we can now create a new page simply by defining a new `.page.vue` file
-(the `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
+which means that we can now create a new page simply by defining a new `.page.vue` file.
+(The `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
 
 The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -370,8 +370,8 @@ Using `vite-plugin-ssr` consists simply of writing these four types of files.
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined our `_default.*` files above,
-which means that we can now create a new page simply by defining a new `.page.jsx` file
-(the `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
+which means that we can now create a new page simply by defining a new `.page.jsx` file.
+(The `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
 
 The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
