@@ -164,7 +164,7 @@ Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.p
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.vue` file.
@@ -368,7 +368,7 @@ Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.p
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.jsx` file.
