@@ -735,7 +735,7 @@ hydrate()
 async function hydrate() {
   // `Page` is available in the browser.
   const { Page } = await getPage()
-  await hydrateToDom(Page))
+  await hydrateToDom(Page)
 }
 ```
 
