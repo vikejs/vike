@@ -153,7 +153,7 @@ async function hydrate() {
 Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
- - `.page.server.js`: defines the page's server-side lifecycle methods.
+ - `.page.server.js`: defines the page's hooks.
  - `.page.route.js`: defines the page's Route String or Route function.
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
@@ -240,8 +240,8 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-The `addContextProps` function always runs in Node.js,
-which means you can use SQL/ORM queries to fetch data.
+The `addContextProps()` hook always runs in Node.js,
+which means SQL/ORM queries can be used to fetch data.
 
 That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
@@ -306,7 +306,7 @@ import { html } from "vite-plugin-ssr";
 
 export { render };
 
-function render({ Page, pageProps }) {
+async function render({ Page, pageProps }) {
   const viewHtml = ReactDOMServer.renderToString(
     <Page {...pageProps} />
   );
@@ -346,7 +346,7 @@ async function hydrate() {
 Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
- - `.page.server.js`: defines the page's server-side lifecycle methods.
+ - `.page.server.js`: defines the page's hooks.
  - `.page.route.js`: defines the page's Route String or Route function.
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
@@ -436,8 +436,8 @@ function setPageProps({ contextProps }) {
 }
 ```
 
-The `addContextProps` function always runs in Node.js,
-which means you can use SQL/ORM queries to fetch data.
+The `addContextProps()` hook always runs in Node.js,
+which means SQL/ORM queries can be used to fetch data.
 
 That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
 
@@ -508,11 +508,11 @@ If you already have an existing Vite app:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You fech data by defining two functions: `async addContextProps()` and `setPageProps()`. The `async addContextProps()` function fetches data, while `setPageProps()` specifies the data that is serialized and passed from the server to the browser.
+You fech data by providing two hooks: `addContextProps()` and `setPageProps()`. The `async function addContextProps()` fetches data, while the `function setPageProps()` (not `async`) specifies the data that is serialized and passed to the browser.
 
-The `async addContextProps()` function is always called in Node.js so that ORM/SQL database queries can be used.
+Hooks are called in Node.js, which means that you can use ORM/SQL database queries in your `addcontextprops()` hook.
 
-Both lifecycle methods are defined in `.page.server.js`.
+Hooks are defined in `.page.server.js`.
 
 ```js
 // /pages/movies.page.server.js
@@ -538,15 +538,16 @@ function setPageProps({ contextProps: { movies } }) {
 }
 ```
 
-The `pageProps` are passed to your `render()` lifecycle method,
-and they are serialized and passed to the client-side and returned by the `import { getPage } from 'vite-plugin-ssr/client'` function.
+The `pageProps` are:
+1. Passed to your `render()` hook.
+2. Serialized and passed to the client-side.
 
 ```jsx
 // /pages/_default.page.server.js
 // Environment: Node.js
 
-import { renderView } from 'some-view-library'
 import { html } from 'vite-plugin-ssr'
+import { renderView } from 'some-view-library'
 
 export { render }
 
@@ -564,8 +565,8 @@ async function render({ Page, pageProps }) {
 // /pages/_default.page.client.js
 // Environment: Browser
 
-import { hydrateView } from 'some-view-library'
 import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateView } from 'some-view-library'
 
 hydrate()
 
@@ -580,8 +581,6 @@ async function hydrate() {
 
 export { Page }
 
-// `Page` is always used either by a `render()` lifecycle method, or
-// in a `.page.client.js` file.
 function Page(pageProps) {
   const { movies } = pageProps
   /* ... */
@@ -667,9 +666,9 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
 
-For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender` lifecycle method](#export--prerender-).
+For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
 
-The `prerender` lifecycle method can also be used to prefetch data for multiple pages at once.
+The `prerender()` hook can also be used to prefetch data for multiple pages at once.
 
 <br/><br/>
 
@@ -680,13 +679,65 @@ Environment: `Browser`, `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
 
-A `*.page.js` file should have a `export { Page }` (or `export default`).
+A `*.page.js` file should have a `export { Page }`. (Or a `export default`.)
 
 `Page` represents the page's view that is rendered to HTML / the DOM.
 
 `vite-plugin-ssr` doesn't do anything with `Page` and just passes it untouched to:
- - Your `render({ Page })` function (defined in your `.page.server.js` file) which renders `Page` to HTML.
- - `const { Page } = await getPage()` (from `import { getPage } from 'vite-plugin-ssr/client'`) which you typically use in a `.page.client.js` file to render/hydrate `Page` to the DOM.
+ - Your `render({ Page })` hook.
+ - The client-side.
+
+```js
+// *.page.js
+// Environment: Browser, Node.js
+
+export { Page }
+
+// We export a JSX component, but we could as well export a Vue/Svelte/... component,
+// or even export some totally custom object as vite-plugin-ssr doesn't do anything
+// with `Page`: it just passes it to your `render()` hook and to the client-side.
+function Page() {
+  return <>Hello</>
+}
+```
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+import renderToHtml from 'some-view-library'
+
+export { render }
+
+// `Page` is passed to the `render()` hook
+async function render({ Page }) {
+  const pageHtml = await renderToHtml(Page)
+
+  return html`<html>
+    <body>
+      <div id="root">
+        ${html.dangerouslySetHtml(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+```js
+// *.page.server.js
+// Environment: Browser
+
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom } from 'some-view-library'
+
+hydrate()
+
+async function hydrate() {
+  // `Page` is available in the browser.
+  const { Page } = await getPage()
+  await hydrateToDom(Page))
+}
+```
 
 The `*.page.js` file is lazy loaded only when needed, that is only when an HTTP request matches the page's route.
 
@@ -841,7 +892,7 @@ Environment: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
-A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's server-side lifecycle methods:
+A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's hooks:
 - `export { addContextProps }`
 - `export { setPageProps }`
 - `export { render }`
@@ -853,9 +904,10 @@ The `*.page.server.js` file is lazy loaded only when needed.
 
 ### `export { addContextProps }`
 
-The `async addContextProps()` function adds values to `contextProps`. The `contextProps` are available to all `.page.server.js` lifecycle methods and to all route functions defined in `.page.route.js` files.
+The `addContextProps()` hook provides `contextProps` values. The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
 
-The `async addContextProps()` function is usually used to fetch data.
+The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data.
+
 Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
 
 ```js
@@ -880,14 +932,15 @@ async function addContextProps({ contextProps }){
 
 ### `export { setPageProps }`
 
-The `setPageProps()` returns the `pageProps` consumed by `Page`.
+The `setPageProps()` hook provides the `pageProps` which are consumed by `Page`.
 
 The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-It is usally used in conjunction with `async addContextProps()`: data is fetched in `async addContextProps()` and then made available to `Page` with `setPageProps()`.
+It is usally used in conjunction with the `addContextProps()` hook: data is fetched in `addContextProps()` and then made available to `Page` with `setPageProps()`.
 
 ```js
 // /pages/movies.page.server.js
+// Environment: Node.js
 
 import fetch from "node-fetch";
 
@@ -907,6 +960,7 @@ function setPageProps({ contextProps: { movies } }) {
 ```
 ```js
 // /pages/movies.page.js
+// Environment: Browser, Node.js
 
 export { Page }
 
@@ -922,12 +976,12 @@ function Page(pageProps) {
 
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
-The lifecycle method `prerender()` enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-you define a `prerender()` function in order to provide the list of URLs (`/movie/1`, `/movie/2`, ...) and optionally the `contextProps` of each URL.
+The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
+by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `contextProps` of each URL.
 
 If you don't have any parameterized route,
-then you can prerender your app without defining any `prerender()` function.
-You can, however, still use the `prerender()` lifecycle method
+then you can prerender your app without defining any `prerender()` hook.
+You can, however, still use the `prerender()` hook
 to increase the effeciency of pre-rendering as
 it enables you to fetch data for multiple pages at once.
 
@@ -952,7 +1006,7 @@ async function prerender() {
       return {
         url,
         // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
-        // the `addContextProps()` lifecycle method.
+        // the `addContextProps()` hook.
         contextProps
       }
       // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
@@ -977,22 +1031,22 @@ async function prerender() {
 }
 ```
 
-The lifecycle method `prerender()` is only used when pre-rendering:
+The `prerender()` hook is only used when pre-rendering:
 if you don't call
 `vite-plugin-ssr prerender`
-then no `prerender()` function are called.
+then no `prerender()` hook is called.
 
 <br/>
 
 ### `export { render }`
 
-Your `async render()` function should render `Page` to an HTML string.
+Your `async render()` hook renders `Page` to an HTML string.
 
 ```jsx
 // *.page.server.js
 
-import renderToHtml from 'some-view-library'
 import { html } from 'vite-plugin-ssr'
+import renderToHtml from 'some-view-library'
 
 export { render }
 
@@ -1014,8 +1068,10 @@ async function render({ Page, pageProps, contextProps }){
 ```
 
 - `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
-- `pageProps` is the value returned by the `setPageProps()` function (usually defined in the same `.page.server.js` file).
-- `contextProps` is the merge of the `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr) with the `contextProps` you returned in your `addContextProps()` function (if you defined one).
+- `pageProps` is the value returned by the `setPageProps()` hook.
+- The `contextProps` object is the merge of:
+   1. The `contextProps` object you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
+   2. The `contextProps` object you returned in your `addContextProps()` hook (if you defined one).
 
 <br/>
 
@@ -1023,7 +1079,7 @@ async function render({ Page, pageProps, contextProps }){
 
 Environment: `Node.js`
 
-The `html` template string tag sanitizes HTML in order to avoid XSS injections. It is used in conjunction with the `export { render }` lifecycle method defined in `..page.server.js`
+The `html` template string tag sanitizes HTML in order to avoid XSS injections. It is used in conjunction with the `render()` hook defined in `.page.server.js`.
 
 ```js
 // *.page.server.js
