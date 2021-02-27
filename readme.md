@@ -739,7 +739,7 @@ async function hydrate() {
 }
 ```
 
-The `*.page.js` file is lazy loaded only when needed, that is only when an HTTP request matches the page's route.
+The `*.page.js` file is lazy-loaded only when needed, that is only when an HTTP request matches the page's route.
 
 <br/><br/>
 
@@ -898,7 +898,7 @@ A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's h
 - `export { render }`
 - `export { prerender }`
 
-The `*.page.server.js` file is lazy loaded only when needed.
+The `*.page.server.js` file is lazy-loaded only when needed.
 
 <br/>
 
