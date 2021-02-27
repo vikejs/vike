@@ -150,7 +150,7 @@ async function hydrate() {
 }
 ```
 
-The `render()` hook in `pages/_default.page.server.js` gives you full control over how your pages are rendered to HTML,
+The `render()` hook in `pages/_default.page.server.js` gives you full control over how your pages are rendered,
 and `pages/_default.page.client.js` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally*:
  - Use any tool you want such as Vue Router and Vuex.
@@ -354,7 +354,7 @@ async function hydrate() {
 }
 ```
 
-The `render()` hook in `pages/_default.page.server.jsx` gives you full control over how your pages are rendered to HTML,
+The `render()` hook in `pages/_default.page.server.jsx` gives you full control over how your pages are rendered,
 and `pages/_default.page.client.jsx` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally*:
  - Use any tool you want such as React Router or Redux.
