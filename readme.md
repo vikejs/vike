@@ -159,7 +159,7 @@ This control enables you to *easily* and *naturally*:
 Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
- - `.page.server.js`: defines the page's hooks.
+ - `.page.server.js`: defines the page's hooks (always run in Node.js).
  - `.page.route.js`: defines the page's Route String or Route function.
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
@@ -363,7 +363,7 @@ This control enables you to *easily* and *naturally*:
 Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
- - `.page.server.js`: defines the page's hooks.
+ - `.page.server.js`: defines the page's hooks (always run in Node.js).
  - `.page.route.js`: defines the page's Route String or Route function.
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
