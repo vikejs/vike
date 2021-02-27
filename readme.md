@@ -724,7 +724,7 @@ async function render({ Page }) {
 }
 ```
 ```js
-// *.page.server.js
+// *.page.client.js
 // Environment: Browser
 
 import { getPage } from 'vite-plugin-ssr/client'
