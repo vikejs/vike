@@ -739,7 +739,7 @@ async function hydrate() {
 }
 ```
 
-The `*.page.js` file is lazy-loaded only when needed, that is only when an HTTP request matches the page's route.
+The `*.page.js` file is lazy-loaded only when needed, that is when an HTTP request matches the page's route.
 
 <br/><br/>
 
