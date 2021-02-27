@@ -168,7 +168,7 @@ Instead of creating a `.page.client.js` and `.page.server.js` file for each page
 
 We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.vue` file
-(and optionally a new collocated `.page.route.js` file if we want to define a parameterized route.)
+(the `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
 
 The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -371,7 +371,7 @@ Instead of creating a `.page.client.js` and `.page.server.js` file for each page
 
 We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.jsx` file
-(and optionally a new collocated `.page.route.js` file if we want to define a parameterized route.)
+(the `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
 
 The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
