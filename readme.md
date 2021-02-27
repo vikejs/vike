@@ -150,6 +150,12 @@ async function hydrate() {
 }
 ```
 
+The `render()` hook in `pages/_default.page.server.js` gives you full control over how your pages are rendered to HTML,
+and `pages/_default.page.client.js` gives you full control over the browser-side code.
+This control enables you to *easily* and *naturally*:
+ - Use any tool you want such as Vue Router and Vuex.
+ - Use any Vue version you want.
+
 Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
@@ -158,7 +164,7 @@ Note how the files we created so far end with `.page.vue`, `.page.route.js`, `.p
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
 
-Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.vue` file
@@ -184,10 +190,6 @@ even render some of your pages with an entire different view framework such as R
 
 Note how files are collocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
-
-The `.page.server.js` and `.page.client.js` files give you full control over rendering.
-This enables you to easily integrate tools, such as
-Vue Router or Vuex, and use any Vue version you want.
 
 Let's now have a look at how to fetch data for a page that has a parameterized route.
 
@@ -243,7 +245,15 @@ function setPageProps({ contextProps }) {
 The `addContextProps()` hook always runs in Node.js,
 which means SQL/ORM queries can be used to fetch data.
 
-That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface.
+
+Thanks to the `render()` hook
+you keep full control over how your pages are rendered,
+and thanks to `*.page.client.js`,
+you keep full control over the entire browser-side code.
+This makes it *easy* and *natural* to use `vite-plugin-ssr` with any tool you want.
+
+In short: `vite-plugin-ssr` is not only the most flexible, but also the easiest SSR tool out there.
 
 <br/><br/>
 
@@ -343,6 +353,12 @@ async function hydrate() {
 }
 ```
 
+The `render()` hook in `pages/_default.page.server.jsx` gives you full control over how your pages are rendered to HTML,
+and `pages/_default.page.client.jsx` gives you full control over the browser-side code.
+This control enables you to *easily* and *naturally*:
+ - Use any tool you want such as React Router or Redux.
+ - Use Preact, Inferno or any other React-like alternative.
+
 Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
  - `.page.client.js`: defines the page's browser-side code.
@@ -351,7 +367,7 @@ Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.p
 
 Using `vite-plugin-ssr` consists simply of writing these four types of files.
 
-Instead of creating a `.page.client.js` and `.page.serer.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.jsx` file
@@ -379,10 +395,6 @@ even render some of your pages with an entire different view framework such as V
 
 Note how files are collocated and share the same base `/pages/about.page.*`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
-
-The `.page.server.js` and `.page.client.js` files give you full control over rendering.
-This enables you to easily integrate tools, such as
-React Router or Redux, and use Preact, Inferno or any other React-like alternative.
 
 Let's now have a look at how to fetch data for a page that has a parameterized route.
 
@@ -439,7 +451,15 @@ function setPageProps({ contextProps }) {
 The `addContextProps()` hook always runs in Node.js,
 which means SQL/ORM queries can be used to fetch data.
 
-That's it. We have seen most of `vite-plugin-ssr`'s interface, and how flexible yet simple it is.
+That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface.
+
+Thanks to the `render()` hook
+you keep full control over how your pages are rendered,
+and thanks to `*.page.client.js`,
+you keep full control over the entire browser-side code.
+This makes it *easy* and *natural* to use `vite-plugin-ssr` with any tool you want.
+
+In short: `vite-plugin-ssr` is not only the most flexible, but also the easiest SSR tool out there.
 
 </details>
 
