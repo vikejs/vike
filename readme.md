@@ -358,7 +358,7 @@ The `render()` hook in `pages/_default.page.server.jsx` gives you full control o
 and `pages/_default.page.client.jsx` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally*:
  - Use any tool you want such as React Router or Redux.
- - Use Preact, Inferno or any other React-like alternative.
+ - Use Preact, Inferno, Solid or any other React-like alternative.
 
 Note how the files we created so far end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`.
  - `.page.js`: defines the page's view that is rendered to HTML / the DOM.
