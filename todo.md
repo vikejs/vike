@@ -9,3 +9,4 @@
 - Add assertUsage when not instantiating the `ssr` vite plugin
 - Add assertUsage contextProps to return a plain javascript object
 - Make html.sanitize() implicit
+- Republish & test vue-template
