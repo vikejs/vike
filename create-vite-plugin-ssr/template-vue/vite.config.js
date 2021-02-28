@@ -1,8 +1,6 @@
 import vue from '@vitejs/plugin-vue'
 import ssr from 'vite-plugin-ssr'
 
-const config = {
+export default {
   plugins: [vue(), ssr()]
 }
-
-export default config
