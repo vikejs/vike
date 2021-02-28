@@ -15,6 +15,7 @@ Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Auth Data](#auth-data)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> API
@@ -656,6 +657,32 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 <br/><br/>
 
 
+## Auth Data
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+You add user authentication information to `contextProps` at your server integration point
+[`createRender()`](#import--createrender--from-vite-plugin-ssr).
+
+The `contextProps` are available to all hooks and to route functions.
+
+```js
+const render = createRender(/*...*/)
+
+app.get('*', async (req, res, next) => {
+  const url = req.originalUrl
+  // The `user` object, which holds user information, is provided by your
+  // authentication middleware, for example Express.js' Passoport middleware.
+  const { user } = req
+  const contextProps = { user }
+  const html = await render({ url, contextProps })
+  if (!html) return next()
+  res.send(html)
+})
+```
+<br/><br/>
+
+
 ## Markdown
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
@@ -929,6 +956,10 @@ The `*.page.server.js` file is lazy-loaded only when needed.
 
 The `addContextProps()` hook provides `contextProps` values. The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
 
+You can also provide `contextProps` values at your server integration point: [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr),
+which you can use to pass information about the authenticated user,
+see the [Auth Data](#auth-data) guide.
+
 The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data.
 
 Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
@@ -1092,9 +1123,9 @@ async function render({ Page, pageProps, contextProps }){
 
 - `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
 - `pageProps` is the value returned by the `setPageProps()` hook.
-- The `contextProps` object is the merge of:
-   1. The `contextProps` object you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
-   2. The `contextProps` object you returned in your `addContextProps()` hook (if you defined one).
+- `contextProps` is the accumulation of:
+   1. The `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
+   2. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
 <br/>
 
