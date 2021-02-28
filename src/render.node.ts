@@ -45,6 +45,7 @@ async function render({
 
   if (addContextPropsFunction) {
     const newContextProps = await addContextPropsFunction.addContextProps({
+      Page,
       contextProps
     })
     assertUsage(
@@ -117,6 +118,7 @@ type ServerFunctions = {
   addContextPropsFunction?: {
     filePath: string
     addContextProps: (arg1: {
+      Page: any
       contextProps: Record<string, unknown>
     }) => unknown
   }
