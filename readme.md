@@ -661,10 +661,9 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You add user authentication information to `contextProps` at your server integration point
+Information about the authenticated user can be added to `contextProps` at the server integration point
 [`createRender()`](#import--createrender--from-vite-plugin-ssr).
-
-The `contextProps` are available to all hooks and to route functions.
+The `contextProps` are available to all hooks and route functions.
 
 ```js
 const render = createRender(/*...*/)
@@ -672,7 +671,7 @@ const render = createRender(/*...*/)
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
   // The `user` object, which holds user information, is provided by your
-  // authentication middleware, for example Express.js' Passoport middleware.
+  // authentication middleware, for example the Express.js Passport middleware.
   const { user } = req
   const contextProps = { user }
   const html = await render({ url, contextProps })
@@ -855,7 +854,7 @@ async function hydrate() {
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `/pages/demo.page.js` file.
+- `Page` is the `export { Page }` (or `export default`) of the `/pages/demo.page.js` file.
 - `pageProps` is the value returned by your `setPageProps()` function (which you define and export in the adjacent `pages/demo.page.server.js` file).
 
 The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
@@ -954,13 +953,15 @@ The `*.page.server.js` file is lazy-loaded only when needed.
 
 ### `export { addContextProps }`
 
-The `addContextProps()` hook provides `contextProps` values. The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
+The `addContextProps()` hook is used to provide further `contextProps` values.
 
-You can also provide `contextProps` values at your server integration point: [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr),
-which you can use to pass information about the authenticated user,
-see the [Auth Data](#auth-data) guide.
+The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
 
-The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data.
+You can provide initial `contextProps` values at your server integration point: [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
+Which you usually use to pass information about the authenticated user,
+see [Auth Data](#auth-data) guide.
+
+The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data, see [Data Fetching](#data-fetching) guide.
 
 Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
 
@@ -971,7 +972,7 @@ import fetch from "node-fetch";
 
 export { addContextProps }
 
-async function addContextProps({ contextProps }){
+async function addContextProps({ contextProps, Page }){
   const response = await fetch("https://api.imdb.com/api/movies/")
   const { movies } = await response.json()
   /* Or with an ORM:
@@ -981,6 +982,11 @@ async function addContextProps({ contextProps }){
   return { movies }
 }
 ```
+
+- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
+- `contextProps` is the initial accumulation of:
+   1. The `contextProps` you provided in your the server integration point `createRender()`.
+   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
 
 <br/>
 
@@ -1121,11 +1127,12 @@ async function render({ Page, pageProps, contextProps }){
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the adjacent `.page.js` file.
+- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
 - `pageProps` is the value returned by the `setPageProps()` hook.
 - `contextProps` is the accumulation of:
    1. The `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
-   2. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
+   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
+   3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
 <br/>
 
