@@ -10,3 +10,5 @@
 - Add assertUsage contextProps to return a plain javascript object
 - Make html.sanitize() implicit
 - Republish & test vue-template
+- Remove `pageProps.title || ...` from templates
+- Check stack traces
