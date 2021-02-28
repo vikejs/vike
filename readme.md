@@ -502,7 +502,7 @@ If you already have an existing Vite app:
    - [React](/create-vite-plugin-ssr/template-react/vite.config.js)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/vite.config.ts)
 
-2. Add `vite-plugin-ssr` to your server (Express.js, Koa, Hapi, Fastify, ...).
+2. Integrate `createRender()` with your server (Express.js, Koa, Hapi, Fastify, ...).
    - [Vue](/create-vite-plugin-ssr/template-vue/server/index.js)
    - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/server/index.ts)
    - [React](/create-vite-plugin-ssr/template-react/server/index.js)
@@ -514,7 +514,7 @@ If you already have an existing Vite app:
    - [React](/create-vite-plugin-ssr/template-react/pages/_default/)
    - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/_default/)
 
-4. Create your first page `index.page.js`.
+4. Create your first `index.page.js`.
    - [Vue](/create-vite-plugin-ssr/template-vue/pages/index/index.page.vue)
    - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/pages/index/index.page.vue)
    - [React](/create-vite-plugin-ssr/template-react/pages/index/index.page.jsx)
