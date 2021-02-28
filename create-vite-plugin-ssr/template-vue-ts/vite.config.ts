@@ -3,8 +3,7 @@ import ssr from 'vite-plugin-ssr'
 import { UserConfig } from 'vite'
 
 const config: UserConfig = {
-  plugins: [vue(), ssr()],
-  clearScreen: false
+  plugins: [vue(), ssr()]
 }
 
 export default config

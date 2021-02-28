@@ -4,7 +4,6 @@ import { UserConfig } from "vite";
 
 const config: UserConfig = {
   plugins: [reactRefresh(), ssr()],
-  clearScreen: false,
 };
 
 export default config;
