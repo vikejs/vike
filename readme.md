@@ -4,7 +4,7 @@
 
 # `vite-plugin-ssr`
 
-Vite SSR Plugin. Do-One-Thing-Do-It-Well, Flexible, Simple.
+Do-One-Thing-Do-It-Well, Flexible, Simple.
 
 [Introduction](#introduction)
 <br/> [Vue Tour](#vue-tour)
