@@ -16,6 +16,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Auth Data](#auth-data)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> API
@@ -679,6 +680,24 @@ app.get('*', async (req, res, next) => {
   res.send(html)
 })
 ```
+<br/><br/>
+
+
+## Store
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Even complex integrations, such as Vuex or Redux, are simple and straightforward to implement.
+Because you control how your pages are rendered,
+integration is just a matter of following the official guide of the tool you want to integrate.
+
+While you can follow the official guides *exactly* as they are (including serializing and injecting the initial state into HTML),
+you can also leverage `vite-plugin-ssr`'s `pageProps` to make your life slightly easier,
+as shown in the following examples.
+
+ - [/examples/vuex/](/examples/vuex/)
+ - [/examples/redux/](/examples/redux/)
+
 <br/><br/>
 
 
