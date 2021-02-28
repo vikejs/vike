@@ -533,7 +533,7 @@ If you already have an existing Vite app:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You fech data by providing two hooks: `addContextProps()` and `setPageProps()`. The `async function addContextProps()` fetches data, while the `function setPageProps()` (not `async`) specifies the data that is serialized and passed to the browser.
+You fech data by using two hooks: `addContextProps()` and `setPageProps()`. The `async function addContextProps()` fetches data, while the `function setPageProps()` (not `async`) specifies what data is serialized and passed to the browser.
 
 Hooks are called in Node.js, which means that you can use ORM/SQL database queries in your `addcontextprops()` hook.
 
