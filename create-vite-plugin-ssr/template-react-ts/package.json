@@ -20,6 +20,6 @@
     "ts-node-dev": "^1.1.1",
     "typescript": "^4.1.5",
     "vite": "^2.0.1",
-    "vite-plugin-ssr": "^0.1.0-beta.8"
+    "vite-plugin-ssr": "^0.1.0-beta.9"
   }
 }
