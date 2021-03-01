@@ -15,7 +15,7 @@
     "build": "npm install && npm run tsc:once",
     "// TypeScript": "",
     "tsc:once": "cd src/ && tsc",
-    "tsc:watch": "cd src/ && tsc --incremental --watch --preserveWatchOutput",
+    "tsc:watch": "cd src/ && tsc --incremental --watch",
     "// Release new version": "",
     "release": "cd scripts && npm run release",
     "// Clean Caches": "",

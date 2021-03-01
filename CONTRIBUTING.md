@@ -8,4 +8,6 @@ npm run link
 npm run watch
 ```
 
-Start hacking.
+The script `npm run link` installs the dependencies of all `examples/**/` and `create-vite-plugin-ssr/template-***/`, and symlinks `src/`.
+
+You can now change the source code at `src/` and try your modifications with one of the examples at `examples/`.
