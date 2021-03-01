@@ -3,7 +3,7 @@
     <div class="layout">
       <div class="navigation">
         <a href="/" class="logo">
-          <img src="./logo.svg" height="30" />
+          <img src="./logo.svg" height="64" />
         </a>
         <a href="/">Home</a>
         <a href="/about">About</a>
@@ -49,6 +49,7 @@ a {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   line-height: 1.8em;
 }
 .logo {

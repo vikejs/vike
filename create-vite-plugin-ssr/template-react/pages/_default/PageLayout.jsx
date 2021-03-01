@@ -43,6 +43,7 @@ function Sidebar({ children }) {
         flexShrink: 0,
         display: "flex",
         flexDirection: "column",
+        alignItems: "center",
         lineHeight: "1.8em",
       }}
     >
@@ -75,7 +76,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logo} height={30} />
+        <img src={logo} height={64} />
       </a>
     </div>
   );

@@ -2,6 +2,8 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageLayout } from "./PageLayout";
 import { html } from "vite-plugin-ssr";
+import { PageProps, ContextProps, ReactComponent } from "./types";
+import logoUrl from "./logo.svg";
 
 export { render };
 
@@ -10,9 +12,9 @@ function render({
   pageProps,
   contextProps,
 }: {
-  Page: (pageProps: any) => JSX.Element;
-  pageProps: any;
-  contextProps: { title?: string };
+  Page: ReactComponent;
+  pageProps: PageProps;
+  contextProps: ContextProps;
 }) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
@@ -20,15 +22,13 @@ function render({
     </PageLayout>
   );
 
-  const title = contextProps.title || "My SSR Vite App";
-
   return html`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="${logoUrl}" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>${title}</title>
+        <title>Vite App</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
