@@ -12,6 +12,7 @@
     "server:watch": "ts-node-dev ./server"
   },
   "dependencies": {
+    "@types/express": "^4.17.11",
     "@types/node": "^14.14.22",
     "@vitejs/plugin-vue": "^1.0.0",
     "@vue/compiler-sfc": "^3.0.5",

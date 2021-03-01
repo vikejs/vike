@@ -15,6 +15,7 @@
     "@brillout/vite-plugin-mdx": "0.1.4",
     "@mdx-js/mdx": "^1.6.22",
     "@mdx-js/react": "^1.6.22",
+    "@types/express": "^4.17.11",
     "@types/node": "^14.14.22",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
