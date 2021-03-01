@@ -1,7 +1,8 @@
 {
   "private": true,
   "workspaces": [
-    "src/"
+    "src/",
+    "scripts/"
   ],
   "scripts": {
     "// Demo using vite-plugin-ssr": "",
@@ -14,7 +15,7 @@
     "tsc:once": "cd src/ && tsc",
     "tsc:watch": "cd src/ && tsc --incremental --watch --preserveWatchOutput",
     "// Release new version": "",
-    "release": "npm run clean:all && npm install && npm run tsc:once && (cd src/ && npm publish)",
+    "release": "(cd scripts && npm run release)",
     "// Clean": "",
     "clean": "npm run clean:all",
     "clean:all": "git clean -Xdf"
