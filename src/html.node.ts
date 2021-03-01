@@ -48,17 +48,13 @@ function getSanitizedHtml(renderResult: unknown, filePath: string): string {
     }
   }>(renderResult)
   assertUsage(
-    renderResult && __html_template in renderResult,
+    hasProp(renderResult, __html_template),
     `The \`render\` function exported by ${filePath} should return a string.`
   )
   const { templateParts, templateVariables } = renderResult[__html_template]
   const templateVariablesUnwrapped = templateVariables.map((templateVar) => {
     let templateVar__safe_string: string
-    if (
-      typeof templateVar === 'object' &&
-      templateVar !== null &&
-      hasProp(templateVar, __already_sanitized_string)
-    ) {
+    if (hasProp(templateVar, __already_sanitized_string)) {
       const varVal = templateVar[__already_sanitized_string]
       assertUsage(
         typeof varVal === 'string',
