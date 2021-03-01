@@ -1,10 +1,10 @@
 import * as execa from 'execa'
 import { readdirSync, lstatSync } from 'fs'
 import { resolve as pathResolve } from 'path'
-import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC, rootDir } from './_locations'
+import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC, DIR_ROOT } from './_locations'
 import { green, bold } from 'kolorist'
 
-const yarnBin = require.resolve(`${rootDir}/node_modules/.bin/yarn`)
+const yarnBin = require.resolve(`${DIR_ROOT}/node_modules/.bin/yarn`)
 const stdio = 'inherit'
 
 link()
@@ -26,9 +26,9 @@ function getDirectories() {
   ]
 }
 
-function retrieveDirectories(rootDir: string): string[] {
-  const directories = readdirSync(rootDir)
-    .map((file) => pathResolve(`${rootDir}/${file}`))
+function retrieveDirectories(DIR_ROOT: string): string[] {
+  const directories = readdirSync(DIR_ROOT)
+    .map((file) => pathResolve(`${DIR_ROOT}/${file}`))
     .filter((filePath) => lstatSync(filePath).isDirectory())
   return directories
 }
