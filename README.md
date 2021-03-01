@@ -722,6 +722,8 @@ For React you can use `@brillout/vite-plugin-mdx`:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
+> :warning: Pre-rendering is currenlty being worked on. If you want an ETA, open a GitHub issue.
+
 > :asterisk: **What is pre-rendering?**
 > Pre-rendering means to render the HTML of all your pages at once.
 > Normally, the HTML of a page is rendered at request-time
