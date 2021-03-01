@@ -1,14 +1,12 @@
 <a href="/../../#readme">
-  <img src="/docs/logo.svg" align="right" height="70" alt="vite-plugin-ssr"/>
-</a>
-
-<a href="https://discord.gg/qTq92FQzKb">
-  <img src="/docs/discord.svg" align="right" height="70" alt="vite-plugin-ssr discord"/>
+  <img src="/docs/logo.svg" align="right" height="160" alt="vite-plugin-ssr"/>
 </a>
 
 # `vite-plugin-ssr`
 
 Do-One-Thing-Do-It-Well, Flexible, Simple.
+
+Join the conversation on <a href="https://discord.gg/qTq92FQzKb"><img src="/docs/discord.svg" height="30" alt="vite-plugin-ssr discord"/></a>.
 
 [Introduction](#introduction)
 <br/> [Vue Tour](#vue-tour)
