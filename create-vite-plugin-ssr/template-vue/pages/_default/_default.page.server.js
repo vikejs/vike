@@ -13,7 +13,7 @@ async function render({ Page, pageProps }) {
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${html.sanitize(title)}</title>
+        <title>${title}</title>
       </head>
       <body>
         <div id="app">${html.dangerouslySetHtml(appHtml)}</div>

@@ -25,7 +25,7 @@ function render({
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${html.sanitize(title)}</title>
+        <title>${title}</title>
       </head>
       <body>
         <div id="page-content">${html.dangerouslySetHtml(pageContent)}</div>

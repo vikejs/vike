@@ -20,7 +20,7 @@ function render({ Page, pageProps, contextProps }) {
         <meta charset="UTF-8" />
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>${html.sanitize(title)}</title>
+        <title>${title}</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>

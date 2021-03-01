@@ -8,7 +8,6 @@
 - Add assertUsage for "defining _default.page.js or _default.page.route.js is forbidden."
 - Add assertUsage when not instantiating the `ssr` vite plugin
 - Add assertUsage contextProps to return a plain javascript object
-- Make html.sanitize() implicit
 - Republish & test vue-template
 - Remove `pageProps.title || ...` from templates
 - Check stack traces
