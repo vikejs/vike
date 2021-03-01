@@ -64,6 +64,6 @@ function update(pkgPath: string[], updater: (pkg: PackageJson) => void) {
   pkgPath.forEach((pkgPath) => {
     const pkg = require(pkgPath) as PackageJson
     updater(pkg)
-    writeFileSync(pkgPath, JSON.stringify(pkg, null, 2))
+    writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
   })
 }
