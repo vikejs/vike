@@ -6,7 +6,7 @@
 
 Do-One-Thing-Do-It-Well, Flexible, Simple.
 
-Join the conversation on <a href="https://discord.gg/qTq92FQzKb"><img src="/docs/discord.svg" height="30" alt="vite-plugin-ssr discord"/></a>.
+<a href="https://discord.gg/qTq92FQzKb"><img src="/docs/discord.svg" height="30" alt="vite-plugin-ssr discord"/></a>
 
 [Introduction](#introduction)
 <br/> [Vue Tour](#vue-tour)
