@@ -1161,7 +1161,8 @@ async function render({ Page, pageProps, contextProps }){
 
 Environment: `Node.js`
 
-The `html` template string tag sanitizes HTML in order to avoid XSS injections. It is used in conjunction with the `render()` hook defined in `.page.server.js`.
+The `html` tag sanitizes HTML (to prevent XSS injections).
+It is usually used in your `render()` hook defined in `.page.server.js`.
 
 ```js
 // *.page.server.js
@@ -1171,9 +1172,10 @@ import { html } from 'vite-plugin-ssr'
 export { render }
 
 async function render() {
-  const title = 'Hello <script src="https://devil.org/evil-code"></script>'
-  const pageHtml = "<div>I'm already <b>sanitized</b> by Vue/React</div>"
+  const title = 'Hello<script src="https://devil.org/evil-code"></script>'
+  const pageHtml = "<div>I'm already <b>sanitized</b>, e.g. by Vue/React</div>"
 
+  // We're safe because `html` sanitizes `title`
   return html`<!DOCTYPE html>
     <html>
       <head>
