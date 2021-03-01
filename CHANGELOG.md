@@ -19,7 +19,8 @@ string and vite-plugin-ssr will automatically sanitize it
 
 
 
-## [0.1.0-beta.7](https://github.com/vitejs/vite/compare/v0.1.0-beta.6...v0.1.0-beta.7) (2021-02-28)
+# [0.1.0-beta.7](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.6...v0.1.0-beta.7) (2021-02-28)
+
 
 ### Features
 
@@ -27,6 +28,6 @@ string and vite-plugin-ssr will automatically sanitize it
 
 
 
-## [0.1.0-beta.6](https://github.com/brillout/vite-plugin-ssr/tree/963afbafa5697d7745b6803bf1475b4aad7559c2) (2021-02-22)
+# [0.1.0-beta.6](https://github.com/brillout/vite-plugin-ssr/tree/963afbafa5697d7745b6803bf1475b4aad7559c2) (2021-02-22)
 
 Initial public release
