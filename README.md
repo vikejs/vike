@@ -1,5 +1,9 @@
 <a href="/../../#readme">
-  <img src="/logo.svg" align="right" height="70" alt="Vite Plugin SSR"/>
+  <img src="/docs/logo.svg" align="right" height="70" alt="vite-plugin-ssr"/>
+</a>
+
+<a href="https://discord.gg/qTq92FQzKb">
+  <img src="/docs/discord.svg" align="right" height="70" alt="vite-plugin-ssr discord"/>
 </a>
 
 # `vite-plugin-ssr`
