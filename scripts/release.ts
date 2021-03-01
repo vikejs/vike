@@ -1,5 +1,4 @@
 import { readdirSync, writeFileSync, lstatSync } from 'fs'
-import { join as pathJoin } from 'path'
 import * as assert from 'assert'
 import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC } from './_locations'
 
