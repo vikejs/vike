@@ -776,7 +776,7 @@ app.get('*', async (req, res, next) => {
   if (renderResult?.redirectTo) {
     res.redirect(307, '/movie/add')
   } else if (typeof renderResult === 'string') {
-    res.send(html)
+    res.send(renderResult)
   } else {
     next()
   }
