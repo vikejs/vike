@@ -761,7 +761,7 @@ function render({ contextProps }) {
   if (contextProps.movieId === null) {
     return { redirectTo: '/movie/add' }
   } else {
-    // The usual Render stuff
+    // The usual render stuff
     // ...
   }
 }
