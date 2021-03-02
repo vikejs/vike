@@ -750,7 +750,7 @@ The `prerender()` hook can also be used to prefetch data for multiple pages at o
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Your `render()` hook doesn't have to return HTML and can, for example, return `{ redirectTo: '/some/url'}` which allows you to easily implement page redirections.
+Your `render()` hook doesn't have to return HTML and can, for example, return `{ redirectTo: '/some/url' }` in order to do a URL redirect.
 
 ```js
 export { render }
@@ -758,10 +758,10 @@ export { render }
 function render({ contextProps }) {
   // If the user goes to `/movie/42` but there is no movie with ID `42` then
   // we redirect the user to `/movie/add` so he can add a new movie.
-  if( contextProps.movieId === null ){
+  if (contextProps.movieId === null) {
     return { redirectTo: '/movie/add' }
   } else {
-    // Do the usual Render stuff
+    // The usual Render stuff
     // ...
   }
 }
@@ -771,7 +771,7 @@ const render = createRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
-  const contextProps = { }
+  const contextProps = {}
   const renderResult = await render({ url, contextProps })
   if (renderResult?.redirectTo) {
     res.redirect(307, '/movie/add')
@@ -1167,7 +1167,7 @@ then no `prerender()` hook is called.
 The `render()` hook renders `Page` to an HTML string.
 
 Note that the `render()` hook can also return something else than HTML,
-for example an object `{ redirectTo: '/some/url'}` in order to do [Page Redirection](#page-redirection).
+for example an object `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
 
 ```jsx
 // *.page.server.js
