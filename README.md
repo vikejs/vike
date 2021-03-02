@@ -21,6 +21,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Page Redirection](#page-redirection)
 <br/> API
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
@@ -745,6 +746,46 @@ The `prerender()` hook can also be used to prefetch data for multiple pages at o
 <br/><br/>
 
 
+## Page Redirection
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Your `render()` hook doesn't have to return HTML and can, for example, return `{ redirectTo: '/some/url'}` which allows you to easily implement page redirections.
+
+```js
+export { render }
+
+function render({ contextProps }) {
+  // If the user goes to `/movie/42` but there is no movie with ID `42` then
+  // we redirect the user to `/movie/add` so he can add a new movie.
+  if( contextProps.movieId === null ){
+    return { redirectTo: '/movie/add' }
+  } else {
+    // Do the usual Render stuff
+    // ...
+  }
+}
+```
+```js
+const render = createRender(/*...*/)
+
+app.get('*', async (req, res, next) => {
+  const url = req.originalUrl
+  const contextProps = { }
+  const renderResult = await render({ url, contextProps })
+  if (renderResult?.redirectTo) {
+    res.redirect(307, '/movie/add')
+  } else if (typeof renderResult === 'string') {
+    res.send(html)
+  } else {
+    next()
+  }
+})
+```
+
+<br/><br/>
+
+
 ## `*.page.js`
 
 Environment: `Browser`, `Node.js`
@@ -1123,7 +1164,10 @@ then no `prerender()` hook is called.
 
 ### `export { render }`
 
-Your `async render()` hook renders `Page` to an HTML string.
+The `render()` hook renders `Page` to an HTML string.
+
+Note that the `render()` hook can also return something else than HTML,
+for example an object `{ redirectTo: '/some/url'}` in order to do [Page Redirection](#page-redirection).
 
 ```jsx
 // *.page.server.js

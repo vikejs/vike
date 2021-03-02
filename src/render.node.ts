@@ -23,7 +23,7 @@ async function render({
 }: {
   url: string
   contextProps: Record<string, any>
-}): Promise<null | string> {
+}): Promise<string | any> {
   assertArguments(...arguments)
 
   const routedPage = await route(url)
@@ -68,8 +68,19 @@ async function render({
     pageProps = {}
   }
 
+  const renderResult: unknown = await renderFunction.render({
+    Page,
+    contextProps,
+    pageProps
+  })
+
+  // Allow user to return whatever he wants in their `render` hook, such as `{redirectTo: '/some/path'}`.
+  if (typeof renderResult !== 'string') {
+    return renderResult
+  }
+
   let htmlDocument: string = getSanitizedHtml(
-    await renderFunction.render({ Page, contextProps, pageProps }),
+    renderResult,
     renderFunction.filePath
   )
 
