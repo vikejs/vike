@@ -5,20 +5,20 @@
     "scripts/"
   ],
   "scripts": {
-    "// Run Demo": "",
+    "// Run demo": "",
     "demo": "cd examples/react/ && npm run start",
     "// Develop vite-plugin-ssr": "",
-    "dev": "npm install && npm run link && npm run watch",
-    "watch": "npm run tsc:watch",
-    "link": "cd scripts && npm run link",
+    "dev": "npm install && npm run link && npm run build:watch",
+    "build:watch": "npm run tsc:watch",
+    "link": "cd scripts/ && npm run link",
     "// Build vite-plugin-ssr": "",
     "build": "npm install && npm run tsc:once",
     "// TypeScript": "",
     "tsc:once": "cd src/ && tsc",
     "tsc:watch": "cd src/ && tsc --incremental --watch",
     "// Release new version": "",
-    "release": "cd scripts && npm run release",
-    "// Clean Caches": "",
+    "release": "cd scripts/ && npm run release",
+    "// Clean caches": "",
     "clean": "npm run clean:all",
     "clean:all": "git clean -Xdf"
   }
