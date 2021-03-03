@@ -732,7 +732,7 @@ export { addContextProps }
 
 function addContextProps() {
   const docHtml = {
-    // This title and description will overwrite the defaults defined in the `render()` hook above
+    // This title and description will overwrite the defaults
     title: 'About SpaceX',
     description: 'Our mission is to explore the galaxy.'
   }
