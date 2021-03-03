@@ -176,7 +176,7 @@ We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.vue` file.
 (The `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
 
-The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
+The `_default.*` files can be overwriten. For example, you can create a page with a different browser-side code than your other pages.
 
 ```js
 // /pages/about.page.client.js
@@ -191,7 +191,7 @@ The `_default.*` files can be overridden. For example, you can create a page wit
 </template>
 ```
 
-By overriding `_default.page.server.js` you can
+By overwriting `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as React.
 
 Note how files are collocated and share the same base `/pages/about.page.*`;
@@ -380,7 +380,7 @@ We already defined our `_default.*` files above,
 which means that we can now create a new page simply by defining a new `.page.jsx` file.
 (The `.page.route.js` file is optional and only needed if we want to define a parameterized route.)
 
-The `_default.*` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
+The `_default.*` files can be overwriten. For example, you can create a page with a different browser-side code than your other pages.
 
 ```js
 // /pages/about.page.client.js
@@ -397,7 +397,7 @@ function Page() {
 }
 ```
 
-By overriding `_default.page.server.js` you can
+By overwriting `_default.page.server.js` you can
 even render some of your pages with an entire different view framework such as Vue.
 
 Note how files are collocated and share the same base `/pages/about.page.*`;
@@ -693,7 +693,7 @@ app.get('*', async (req, res, next) => {
 
 If you want to define `<title>` and `<meta>` tags on a page-by-page basis, you can use `contextProps`.
 
-```
+```js
 // _default.page.server.js
 
 import { html } from 'vite-plugin-ssr'
@@ -704,18 +704,18 @@ eport { render }
 async function render({ Page, contextProps }) {
   cont pageHtml = await renderToHtml(Page)
 
-  // We use a `contextProps.docHtml` which pages can define with their `addContextProps()` hook
+  // We use `contextProps.docHtml` which pages can define with their `addContextProps()` hook
   let title = contextProps.docHtml.title
   let description = contextProps.docHtml.description
 
-  // Set defaults
-  title = title || 'My App'
-  description = description || 'My App does this and that'
+  // Defaults
+  title = title || 'SpaceX'
+  description = description || 'We deliver your payload to space.'
 
   return html`<html>
     <head>
       <title>${title}</title>
-      <meta name="description" content="${description}.">
+      <meta name="description" content="${description}">
     </head>
     <body>
       <div id="root">
@@ -723,6 +723,20 @@ async function render({ Page, contextProps }) {
       </div>
     </body>
   </html>`
+}
+```
+```js
+// about.page.server.js
+
+export { addContextProps }
+
+function addContextProps() {
+  const docHtml = {
+    // This title and description will overwrite the defaults defined in the `render()` hook above
+    title: 'About SpaceX',
+    description: 'Our mission is to explore the galaxy.'
+  }
+  return { docHtml }
 }
 ```
 
