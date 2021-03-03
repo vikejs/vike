@@ -691,6 +691,31 @@ app.get('*', async (req, res, next) => {
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
+HTML `<head>` tags such as `<title>` and `<meta>` are defined in the `render()` hook.
+
+```js
+// _default.page.server.js
+
+import { html } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-view-framework'
+
+eport { render }
+
+async function render({ Page, contextProps }) {
+  return html`<html>
+    <head>
+      <title>SpaceX</title>
+      <meta name="description" content="We deliver your payload to space.">
+    </head>
+    <body>
+      <div id="root">
+        ${html.dangerouslySetHtml(await renderToHtml(Page))}
+      </div>
+    </body>
+  </html>`
+}
+```
+
 If you want to define `<title>` and `<meta>` tags on a page-by-page basis, you can use `contextProps`.
 
 ```js
@@ -702,8 +727,6 @@ import { renderToHtml } from 'some-view-framework'
 eport { render }
 
 async function render({ Page, contextProps }) {
-  cont pageHtml = await renderToHtml(Page)
-
   // We use `contextProps.docHtml` which pages can define with their `addContextProps()` hook
   let title = contextProps.docHtml.title
   let description = contextProps.docHtml.description
@@ -719,7 +742,7 @@ async function render({ Page, contextProps }) {
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(pageHtml)}
+        ${html.dangerouslySetHtml(await renderToHtml(Page))}
       </div>
     </body>
   </html>`
