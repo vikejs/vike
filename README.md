@@ -741,7 +741,7 @@ function addContextProps() {
 ```
 
 If you want to define `<head>` tags by some deeply nested view component, you can use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
-(Thanks to `vite-plugin-ssr`'s design you can easily use and integrate any tool you want, including these two tools.)
+(Thanks to `vite-plugin-ssr`'s design you can easily use and integrate any tool you want, including these two libraries.)
 We recommend using such libraries only if you have a strong rationale:
 the aforementioned solution using `contextProps` is simpler and works in the vast majority of cases.
 
