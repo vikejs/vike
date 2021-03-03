@@ -18,6 +18,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Auth Data](#auth-data)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML <head>](#html-head)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
@@ -683,6 +684,53 @@ app.get('*', async (req, res, next) => {
   res.send(html)
 })
 ```
+<br/><br/>
+
+
+## HTML <head>
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+If you want to define `<title>` and `<meta>` tags on a page-by-page basis, you can use `contextProps`.
+
+```
+// _default.page.server.js
+
+import { html } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-view-library'
+
+eport { render }
+
+async function render({ Page, contextProps }) {
+  cont pageHtml = await renderToHtml(Page)
+
+  // We use a `contextProps.docHtml` which pages can define with their `addContextProps()` hook
+  let title = contextProps.docHtml.title
+  let description = contextProps.docHtml.description
+
+  // Set defaults
+  title = title || 'My App'
+  description = description || 'My App does this and that'
+
+  return html`<html>
+    <head>
+      <title>${title}</title>
+      <meta name="description" content="${description}.">
+    </head>
+    <body>
+      <div id="root">
+        ${html.dangerouslySetHtml(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+
+If you want to define `<head>` tags by some deeply nested view component, you can use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
+Thanks to `vite-plugin-ssr`'s design, you can easily integrate any tool and these tools are no exception.
+That said, we recommend using such libraries only if you have a strong rationale:
+the aforementioned solution using `contextProps` is simpler and works in the vast majority of cases.
+
 <br/><br/>
 
 
