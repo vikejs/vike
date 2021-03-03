@@ -699,7 +699,7 @@ HTML `<head>` tags such as `<title>` and `<meta>` are defined in the `render()` 
 import { html } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
-eport { render }
+export { render }
 
 async function render({ Page, contextProps }) {
   return html`<html>
@@ -724,7 +724,7 @@ If you want to define `<title>` and `<meta>` tags on a page-by-page basis, you c
 import { html } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
-eport { render }
+export { render }
 
 async function render({ Page, contextProps }) {
   // We use `contextProps.docHtml` which pages can define with their `addContextProps()` hook
@@ -1338,7 +1338,7 @@ For example, when you want some HTML parts to be included only for certain pages
 import { html } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
-eport { render }
+export { render }
 
 async function render({ Page, contextProps }) {
   cont pageHtml = await renderToHtml(Page)
