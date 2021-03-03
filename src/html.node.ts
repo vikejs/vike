@@ -1,12 +1,13 @@
 import { assert, assertUsage, cast, hasProp } from './utils'
 
 export { html }
-export { getSanitizedHtml }
+export { renderHtmlTemplate }
+export { isHtmlTemplate }
 
 html.dangerouslySetHtml = dangerouslySetHtml
 
 const __html_template = Symbol('__html_template')
-const __already_sanitized_string = Symbol('__already_sanitized_string')
+const __dangerouslySetHtml = Symbol('__dangerouslySetHtml')
 
 type SanitizedHtmlString = {
   [__html_template]: {
@@ -14,7 +15,7 @@ type SanitizedHtmlString = {
     templateVariables: (
       | any
       | {
-          [__already_sanitized_string]: string
+          [__dangerouslySetHtml]: string
         }
     )[]
   }
@@ -31,42 +32,53 @@ function html(
     }
   }
 }
-type SanitizedString = { [__already_sanitized_string]: string }
+type SanitizedString = { [__dangerouslySetHtml]: string }
 function dangerouslySetHtml(alreadySanitizedString: string): SanitizedString {
-  return { [__already_sanitized_string]: alreadySanitizedString }
+  return { [__dangerouslySetHtml]: alreadySanitizedString }
 }
 
-function getSanitizedHtml(renderResult: unknown, filePath: string): string {
-  assertUsage(
-    typeof renderResult !== 'string',
-    `The \`render\` function exported by ${filePath} returned a string that is an unsafe. Make sure to return safe strings by using the \`html\` tag (\`import { html } from 'vite-plugin-ssr'\`).`
-  )
-  cast<{
-    [__html_template]: {
-      templateParts: TemplateStringsArray
-      templateVariables: unknown[]
+function isHtmlTemplate(
+  something: unknown
+): something is { [__html_template]: HtmlTemplate } {
+  return hasProp(something, __html_template)
+}
+function renderHtmlTemplate(
+  renderResult: { [__html_template]: HtmlTemplate },
+  filePath: string
+): string {
+  return renderHtml(renderResult[__html_template], filePath)
+}
+
+type HtmlTemplate = {
+  templateParts: TemplateStringsArray
+  templateVariables: unknown[]
+}
+function renderHtml(htmlTemplate: HtmlTemplate, filePath: string) {
+  const { templateParts, templateVariables } = htmlTemplate
+  const templateVariablesUnwrapped: string[] = templateVariables.map(
+    (templateVar: unknown) => {
+      // Process `html.dangerouslySetHtml()`
+      if (hasProp(templateVar, __dangerouslySetHtml)) {
+        const val = templateVar[__dangerouslySetHtml]
+        assertUsage(
+          typeof val === 'string',
+          `[html.dangerouslySetHtml(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof val}"\`. (While executing the \`render()\` hook exported by ${filePath})`
+        )
+        // User used `html.dangerouslySetHtml()` so we assume the string to be safe
+        return val
+      }
+
+      // Process `html` tag composition
+      if (hasProp(templateVar, __html_template)) {
+        const htmlTemplate__segment = templateVar[__html_template]
+        cast<HtmlTemplate>(htmlTemplate__segment)
+        return renderHtml(htmlTemplate__segment, filePath)
+      }
+
+      // Process and sanitize untrusted template variable
+      return escapeHtml(toString(templateVar))
     }
-  }>(renderResult)
-  assertUsage(
-    hasProp(renderResult, __html_template),
-    `The \`render\` function exported by ${filePath} should return a string.`
   )
-  const { templateParts, templateVariables } = renderResult[__html_template]
-  const templateVariablesUnwrapped = templateVariables.map((templateVar) => {
-    let templateVar__safe_string: string
-    if (hasProp(templateVar, __already_sanitized_string)) {
-      const varVal = templateVar[__already_sanitized_string]
-      assertUsage(
-        typeof varVal === 'string',
-        `[html.dangerouslySetHtml(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof varVal}"\`.`
-      )
-      // User used `html.dangerouslySetHtml()` so we assume the string to be safe
-      templateVar__safe_string = varVal
-    } else {
-      templateVar__safe_string = escapeHtml(String(templateVar))
-    }
-    return templateVar__safe_string
-  })
   const htmlString = identityTemplateTag(
     templateParts,
     ...templateVariablesUnwrapped
@@ -86,6 +98,13 @@ function identityTemplateTag(
     str += parts[i] + variable
   }
   return str + parts[parts.length - 1]
+}
+
+function toString(val: unknown): string {
+  if (val === null || val === undefined) {
+    return ''
+  }
+  return String(val)
 }
 
 function escapeHtml(unsafeString: string): string {

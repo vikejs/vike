@@ -1,6 +1,6 @@
 import devalue from 'devalue'
 import { route } from './route.node'
-import { getSanitizedHtml } from './html.node'
+import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getGlobal } from './global.node'
@@ -74,12 +74,17 @@ async function render({
     pageProps
   })
 
-  // Allow user to return whatever he wants in their `render` hook, such as `{redirectTo: '/some/path'}`.
-  if (typeof renderResult !== 'string') {
-    return renderResult
+  if (!isHtmlTemplate(renderResult)) {
+    // Allow user to return whatever he wants in their `render` hook, such as `{redirectTo: '/some/path'}`.
+    if (typeof renderResult !== 'string') {
+      return renderResult
+    }
+    assertUsage(
+      typeof renderResult !== 'string',
+      `The \`render()\` hook exported by ${renderFunction.filePath} returned a string that is an unsafe. Make sure to return a sanitized string by using the \`html\` tag (\`import { html } from 'vite-plugin-ssr'\`).`
+    )
   }
-
-  let htmlDocument: string = getSanitizedHtml(
+  let htmlDocument: string = renderHtmlTemplate(
     renderResult,
     renderFunction.filePath
   )
