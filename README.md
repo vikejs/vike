@@ -18,7 +18,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Auth Data](#auth-data)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML <head>](#html-head)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
@@ -687,7 +687,7 @@ app.get('*', async (req, res, next) => {
 <br/><br/>
 
 
-## HTML <head>
+## HTML `<head>`
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
