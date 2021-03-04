@@ -47,16 +47,16 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 
 ## Introduction
 
-`vite-plugin-ssr` gives you a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool: `vite-plugin-ssr` doesn't interfere with your stack and can be used with any tool you want.
+`vite-plugin-ssr` provides a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool.
 
-- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
-- **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools such as Vuex and Redux.
+- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
 - **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router or React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
 - **Code Splitting**. Each page loads only the browser-side code it needs.
-- **Simple Design**. Simple overall design resulting in a small & robust tool that is easy to use.
+- **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
 
 To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
@@ -820,7 +820,7 @@ For React you can use `@brillout/vite-plugin-mdx`:
 > (when yun run `vite-plugin-ssr prerender`).
 > Your app then consists only of static assets (HTML, JS, CSS, images, ...)
 > and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
-> Without pre-rendering, you need to use a Node.js server that will render your pages' HTML at request-time.
+> Without pre-rendering, you need to use a Node.js server that renders your pages' HTML at request-time.
 
 To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
 
