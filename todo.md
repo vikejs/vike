@@ -1,10 +1,7 @@
-- Show warning in dev when hitting a 404, with a list of all pages and their routes
 - Test wrong usages DX
 - Pass {url, contextProps} to route functions
 - Rename {params} to {addContextProps} in route functions
-- Skip all pages that have a `_` prefix in their path
 - Assert that `setPageProps` never returns a promise
-- Add assertUsage for "defining _default.page.js or _default.page.route.js is forbidden."
 - Add assertUsage when not instantiating the `ssr` vite plugin
 - Add assertUsage contextProps to return a plain javascript object
-- Check stack traces
+- Return status code, e.g. 404 or 500

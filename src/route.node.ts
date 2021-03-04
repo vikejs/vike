@@ -7,10 +7,13 @@ import {
   cast,
   isCallable,
   higherFirst,
-  slice
+  slice,
+  assertWarning
 } from './utils'
+import { getGlobal } from './global.node'
 
 export { route }
+export { getErrorPageId }
 
 type PageId = string
 type RouteResult = {
@@ -28,47 +31,94 @@ async function route(
   )
   const pageRoutes = await loadPageRoutes()
 
-  const routeResults = allPageIds.map((pageId) => {
-    // Route 404
-    if (is404Page(pageId)) {
-      return { pageId, matchValue: -Infinity, routeProps: {} }
-    }
+  const routeResults = allPageIds
+    .filter((pageId) => !is500Page(pageId))
+    .map((pageId) => {
+      // Route 404
+      if (is404Page(pageId)) {
+        return { pageId, matchValue: -Infinity, routeProps: {} }
+      } else {
+        assertUsage(
+          !isReservedPageId(pageId),
+          'Only `_default.page.*`, `_404.page.js`, and `_500.page.js` are allowed to include the special character `_` in their file path.'
+        )
+      }
 
-    // Route with filesystem
-    if (!(pageId in pageRoutes)) {
-      const matchValue = routeWith_filesystem(url, pageId, allPageIds)
-      return { pageId, matchValue, routeProps: {} }
-    }
-    const pageRoute = pageRoutes[pageId]
+      // Route with filesystem
+      if (!(pageId in pageRoutes)) {
+        const matchValue = routeWith_filesystem(url, pageId, allPageIds)
+        return { pageId, matchValue, routeProps: {} }
+      }
+      const pageRoute = pageRoutes[pageId]
 
-    // Route with `.page.route.js` defined route string
-    if (typeof pageRoute === 'string') {
-      const routeString: string = pageRoute
-      const { matchValue, routeProps } = routeWith_pathToRegexp(
-        url,
-        routeString
-      )
-      return { pageId, matchValue, routeProps }
-    }
+      // Route with `.page.route.js` defined route string
+      if (typeof pageRoute === 'string') {
+        const routeString: string = pageRoute
+        const { matchValue, routeProps } = routeWith_pathToRegexp(
+          url,
+          routeString
+        )
+        return { pageId, matchValue, routeProps }
+      }
 
-    // Route with `.page.route.js` defined route function
-    if (isCallable(pageRoute)) {
-      const routeFunction = pageRoute
-      const { matchValue, routeProps } = routeFunction(url)
-      return { pageId, matchValue, routeProps }
-    }
+      // Route with `.page.route.js` defined route function
+      if (isCallable(pageRoute)) {
+        const routeFunction = pageRoute
+        const { matchValue, routeProps } = routeFunction(url)
+        return { pageId, matchValue, routeProps }
+      }
 
-    assert(false)
-  })
+      assert(false)
+    })
 
   const winner = pickWinner(routeResults)
 
+  if (is404Page(winner.pageId)) {
+    userHintNoPageFound(url, allPageIds)
+  }
   // console.log('[Route Match]:', `[${url}]: ${winner && winner.pageId}`)
 
   if (!winner) return null
 
   const { pageId, routeProps } = winner
   return { pageId, routeProps }
+}
+
+function userHintNoPageFound(url: string, allPageIds: string[]) {
+  const { isProduction } = getGlobal()
+  if (!isProduction) {
+    assertWarning(
+      false,
+      `No page is matching URL \`${url}\`. Defined pages: ${allPageIds
+        .map((pageId) => `${pageId}.page.*`)
+        .join(' ')} (this warning message is not shown in production.)`
+    )
+  }
+}
+
+async function getErrorPageId(): Promise<string | null> {
+  const allPageIds = await getPageIds()
+  const pages_500 = allPageIds.filter((pageId) => is500Page(pageId))
+  assertUsage(
+    pages_500.length <= 1,
+    `Only one \`_500.page.js\` is allowed. Found several: ${pages_500.join(
+      ' '
+    )}`
+  )
+  if (pages_500.length > 0) {
+    return pages_500[0]
+  }
+  const pages_404 = allPageIds.filter((pageId) => is404Page(pageId))
+  assertUsage(
+    pages_404.length <= 1,
+    `Only one \`_404.page.js\` is allowed. Found several: ${pages_404.join(
+      ' '
+    )}`
+  )
+  if (pages_404.length > 0) {
+    return pages_404[0]
+  }
+  return null
 }
 
 function pickWinner(
@@ -140,10 +190,9 @@ function getCommonPrefix(strings: string[]): string {
 async function getPageIds(): Promise<PageId[]> {
   const pageFiles = await getUserFiles('.page')
   let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-  pageFilePaths = pageFilePaths.filter((filePath) => {
-    assert(!filePath.includes('\\'))
-    return !filePath.includes('/_default')
-  })
+  pageFilePaths = pageFilePaths.filter(
+    (filePath) => !isDefaultPageFile(filePath)
+  )
 
   let allPageIds = pageFilePaths.map(computePageId)
   return allPageIds
@@ -152,6 +201,19 @@ function computePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
   return pageId
+}
+
+function isDefaultPageFile(filePath: string): boolean {
+  assert(!filePath.includes('\\'))
+  if (!filePath.includes('/_default')) {
+    return false
+  }
+  assertUsage(
+    filePath.includes('_default.page.client.') ||
+      filePath.includes('_default.page.server.'),
+    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
+  )
+  return true
 }
 
 async function loadPageRoutes(): Promise<
@@ -218,7 +280,15 @@ async function loadPageRoutes(): Promise<
   return routeFiles
 }
 
+function isReservedPageId(pageId: string): boolean {
+  assert(!pageId.includes('\\'))
+  return pageId.includes('/_')
+}
 function is404Page(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_404')
+}
+function is500Page(pageId: string): boolean {
+  assert(!pageId.includes('\\'))
+  return pageId.includes('/_500')
 }

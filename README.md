@@ -38,6 +38,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.*`](#_default)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`](#_404pagejs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_500.page.js`](#_500pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`](#import-viteplugin-from-vite-plugin-ssr)
@@ -1410,6 +1411,17 @@ The `_404.page.js` page is like any other page with the exception that it has a 
 // Ensure lowest priority for the 404 page
 export default () => ({match: -Infinity})
 ```
+
+<br/><br/>
+
+
+## `_500.page.js`
+
+The `_500.page.js` page is shown to your user when an error occurs.
+
+It is optional. (If there is no `_500.page.js`, then `_404.page.js` is shown instead.)
+
+You define it like any other page. (You create a `_500.page.js`, and you can define `_500.page.client.js` and `_500.page.server.js`.)
 
 <br/><br/>
 

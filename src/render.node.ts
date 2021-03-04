@@ -1,5 +1,5 @@
 import devalue from 'devalue'
-import { route } from './route.node'
+import { getErrorPageId, route } from './route.node'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
@@ -12,7 +12,8 @@ import {
   lowerFirst,
   isCallable,
   slice,
-  cast
+  cast,
+  assertWarning
 } from './utils'
 
 export { render }
@@ -25,16 +26,41 @@ async function render({
   contextProps: Record<string, any>
 }): Promise<string | any> {
   assertArguments(...arguments)
-
-  const routedPage = await route(url)
-  if (!routedPage) {
-    return null
-  }
   Object.assign(contextProps, { url })
 
-  const { pageId, routeProps } = routedPage
+  // We use a try-catch because `route()` executes `.page.route.js` source code which is
+  // written by the user and may contain errors.
+  let routeResult
+  try {
+    routeResult = await route(url)
+  } catch (err) {
+    return await renderErrorPage(err, contextProps, url)
+  }
+  if (!routeResult) {
+    userHintNo404Page()
+    return null
+  }
+
+  const { pageId, routeProps } = routeResult
   Object.assign(contextProps, routeProps)
 
+  // We use a try-catch because `renderPage()` executes `*.page.*` files which are
+  // written by the user and may contain errors.
+  let renderResult
+  try {
+    renderResult = await renderPage(pageId, contextProps, url)
+  } catch (err) {
+    return await renderErrorPage(err, contextProps, url)
+  }
+
+  return renderResult
+}
+
+async function renderPage(
+  pageId: string,
+  contextProps: Record<string, any>,
+  url: string
+) {
   const { Page, pageFilePaths } = await getPage(pageId)
 
   const {
@@ -376,4 +402,47 @@ function assertArguments(...args: any[]) {
       unknownArgs.map((s) => `'${s}'`).join(', ') +
       '].'
   )
+}
+
+function userHintNo404Page() {
+  const { isProduction } = getGlobal()
+  if (!isProduction) {
+    assertWarning(
+      false,
+      'No `_404.page.js` file found. We recommend defining a `_404.page.js`. (This warning message is not shown in production.)'
+    )
+  }
+}
+async function renderErrorPage(
+  err: unknown,
+  contextProps: Record<string, any>,
+  url: string
+) {
+  handleErr(err)
+
+  const pageId = await getErrorPageId()
+  if (pageId === null) {
+    userHintNo404Page()
+    return null
+  }
+
+  let renderResult
+  try {
+    renderResult = await renderPage(pageId, contextProps, url)
+  } catch (err) {
+    // We purposely swallow the error, because another error was already shown to the user in `handleErr()`.
+    // (And chances are high that this is the same error.)
+    return null
+  }
+  return renderResult
+}
+function handleErr(err: unknown) {
+  const { viteDevServer } = getGlobal()
+  if (viteDevServer) {
+    cast<Error>(err)
+    if (err?.stack) {
+      viteDevServer.ssrFixStacktrace(err)
+    }
+  }
+  console.error(err)
 }
