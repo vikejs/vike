@@ -571,18 +571,21 @@ The `pageProps` are:
 1. Passed to your `render()` hook.
 2. Serialized and passed to the client-side.
 
-```jsx
+```js
 // /pages/_default.page.server.js
 // Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
-import { renderView } from 'some-view-framework'
+import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
 
 async function render({ Page, pageProps }) {
   // `Page` is defined below in `/pages/movies.page.js`.
-  const pageHtml = await renderView(<Page {...pageProps} />)
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+  /* Or if you use JSX:
+  const pageHtml = await renderToHtml(<Page {...pageProps}/>)
+  */
   return html`<html>
     <div id='view-root'>
       ${html.dangerouslySetHtml(pageHtml)}
@@ -590,21 +593,24 @@ async function render({ Page, pageProps }) {
   </html>`
 }
 ```
-```jsx
+```js
 // /pages/_default.page.client.js
 // Environment: Browser
 
 import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateView } from 'some-view-framework'
+import { hydrateToDom, createElement } from 'some-view-framework'
 
 hydrate()
 
 async function hydrate() {
   const { Page, pageProps } = await getPage()
-  await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
+  await hydrateToDom(createElement(Page, pageProps), document.getElementById('view-root'))
+  /* Or if you use JSX:
+  await hydrateToDom(<Page {...pageProps} />, document.getElementById('view-root'))
+  */
 }
 ```
-```jsx
+```js
 // /pages/movies.page.js
 // Environment: Browser, Node.js
 
@@ -955,11 +961,11 @@ It represents the *entire* browser-side code. This means that if you create an e
 
 This also means that you have full control over the browser-side code: not only can you render/hydrate your pages as you wish, but you can also easily integrate browser libraries.
 
-```jsx
+```js
 // *.page.client.js
 
 import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateView } from 'some-view-framework'
+import { hydrateToDom, createElement } from 'some-view-framework'
 import GoogleAnalytics from '@brillout/google-analytics'
 
 main()
@@ -973,7 +979,7 @@ async function main() {
 
 async function hydrate() {
   const { Page, pageProps } = await getPage()
-  await hydrateView(<Page {...pageProps} />, document.getElementById('view-root'))
+  await hydrateToDom(createElement(Page, pageProps), document.getElementById('view-root'))
 }
 
 let analytics
@@ -1254,16 +1260,16 @@ The `render()` hook renders `Page` to an HTML string.
 Note that the `render()` hook can also return something else than HTML,
 for example an object `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
 
-```jsx
+```js
 // *.page.server.js
 
 import { html } from 'vite-plugin-ssr'
-import renderToHtml from 'some-view-framework'
+import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
 
 async function render({ Page, pageProps, contextProps }){
-  const pageHtml = await renderToHtml(<Page {...pageProps} />)
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
 
   const title = contextProps.title || 'My SSR App'
 
@@ -1341,8 +1347,6 @@ import { renderToHtml } from 'some-view-framework'
 export { render }
 
 async function render({ Page, contextProps }) {
-  cont pageHtml = await renderToHtml(Page)
-
   // We only include the `<meta name="description">` tag if the page has a description.
   // (A page can define `contextProps.docHtml.description` with its `addContextProps()` hook.)
   const description = contextProps.docHtml?.description
@@ -1360,7 +1364,7 @@ async function render({ Page, contextProps }) {
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(pageHtml)}
+        ${html.dangerouslySetHtml(await renderToHtml(Page))}
       </div>
     </body>
   </html>`
