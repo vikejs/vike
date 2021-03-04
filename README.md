@@ -584,7 +584,7 @@ async function render({ Page, pageProps }) {
   // `Page` is defined below in `/pages/movies.page.js`.
   const pageHtml = await renderToHtml(createElement(Page, pageProps))
   /* Or if you use JSX:
-  const pageHtml = await renderToHtml(<Page {...pageProps}/>)
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
   */
   return html`<html>
     <div id='view-root'>
