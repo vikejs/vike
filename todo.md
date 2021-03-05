@@ -1,6 +1,4 @@
 - Test wrong usages DX
-- Pass {url, contextProps} to route functions
-- Rename {params} to {addContextProps} in route functions
 - Assert that `setPageProps` never returns a promise
 - Add assertUsage when not instantiating the `ssr` vite plugin
 - Add assertUsage contextProps to return a plain javascript object

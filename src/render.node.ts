@@ -32,7 +32,7 @@ async function render({
   // written by the user and may contain errors.
   let routeResult
   try {
-    routeResult = await route(url)
+    routeResult = await route(url, contextProps)
   } catch (err) {
     return await renderErrorPage(err, contextProps, url)
   }
@@ -41,8 +41,8 @@ async function render({
     return null
   }
 
-  const { pageId, routeProps } = routeResult
-  Object.assign(contextProps, routeProps)
+  const { pageId, contextPropsAddendum } = routeResult
+  Object.assign(contextProps, contextPropsAddendum)
 
   // We use a try-catch because `renderPage()` executes `*.page.*` files which are
   // written by the user and may contain errors.
