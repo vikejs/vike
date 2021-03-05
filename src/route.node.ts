@@ -94,7 +94,7 @@ function userHintNoPageFound(url: string, allPageIds: string[]) {
       false,
       `No page is matching URL \`${url}\`. Defined pages: ${allPageIds
         .map((pageId) => `${pageId}.page.*`)
-        .join(' ')} (this warning message is not shown in production.)`
+        .join(' ')} (this warning is not shown in production.)`
     )
   }
 }

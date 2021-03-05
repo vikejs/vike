@@ -41,7 +41,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_500.page.js`](#_500pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import vitePlugin from 'vite-plugin-ssr'`](#import-viteplugin-from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr)
 
 <br/>
 
@@ -1485,7 +1485,7 @@ Examples:
 <br/><br/>
 
 
-## `import vitePlugin from 'vite-plugin-ssr'`
+## `import ssr from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
 
@@ -1497,6 +1497,7 @@ The Vite plugin has no options.
 const ssr = require("vite-plugin-ssr");
 
 module.exports = {
+  // Make sure to include `ssr()` and not `ssr`
   plugins: [ssr()]
 };
 ```

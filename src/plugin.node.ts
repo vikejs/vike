@@ -7,7 +7,7 @@ import {
   sep as pathSep,
   posix as pathPosix
 } from 'path'
-import { assert } from './utils/assert'
+import { assert, assertUsage } from './utils/assert'
 import * as glob from 'fast-glob'
 const CLIENT_ENTRY = require.resolve('vite-plugin-ssr/dist/client.js')
 const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
@@ -125,3 +125,13 @@ function getOutDir(config: UserConfig): string {
 function posixPath(path: string): string {
   return path.split(pathSep).join(pathPosix.sep)
 }
+
+Object.defineProperty(plugin, 'apply', {
+  enumerable: true,
+  get: () => {
+    assertUsage(
+      false,
+      'Make sure to instantiate the `ssr` plugin (`import ssr from "vite-plugin-ssr"`): include `ssr()` instead of `ssr` in the `plugins` list of your `vite.config.js`.'
+    )
+  }
+})

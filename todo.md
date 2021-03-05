@@ -1,6 +1,2 @@
-- Test wrong usages DX
-- Assert that `setPageProps` never returns a promise
-- Add assertUsage when not instantiating the `ssr` vite plugin
-- Add assertUsage contextProps to return a plain javascript object
 - Return status code, e.g. 404 or 500
 - Retrieve CSS loaded by server-side-only files

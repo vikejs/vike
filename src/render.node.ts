@@ -13,7 +13,8 @@ import {
   isCallable,
   slice,
   cast,
-  assertWarning
+  assertWarning,
+  hasProp
 } from './utils'
 
 export { render }
@@ -23,8 +24,8 @@ async function render({
   contextProps = {}
 }: {
   url: string
-  contextProps: Record<string, any>
-}): Promise<string | any> {
+  contextProps: Record<string, unknown>
+}): Promise<string | unknown> {
   assertArguments(...arguments)
   Object.assign(contextProps, { url })
 
@@ -58,7 +59,7 @@ async function render({
 
 async function renderPage(
   pageId: string,
-  contextProps: Record<string, any>,
+  contextProps: Record<string, unknown>,
   url: string
 ) {
   const { Page, pageFilePaths } = await getPage(pageId)
@@ -70,28 +71,35 @@ async function renderPage(
   } = await getPageFunctions(pageId)
 
   if (addContextPropsFunction) {
-    const newContextProps = await addContextPropsFunction.addContextProps({
+    const contextPropsAddendum = await addContextPropsFunction.addContextProps({
       Page,
       contextProps
     })
     assertUsage(
-      newContextProps && (newContextProps as any).constructor === Object,
-      `The \`addContextProps\` function exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
+      typeof contextPropsAddendum === 'object' &&
+        contextPropsAddendum !== null &&
+        contextPropsAddendum.constructor === Object,
+      `The \`addContextProps\` hook exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
     )
-    Object.assign(contextProps, newContextProps)
+    Object.assign(contextProps, contextPropsAddendum)
   }
 
-  let pageProps: Record<string, unknown>
+  const pageProps: Record<string, unknown> = {}
   if (setPagePropsFunction) {
-    const props = await setPagePropsFunction.setPageProps({ contextProps })
+    const pagePropsAddendum = setPagePropsFunction.setPageProps({
+      contextProps
+    })
     assertUsage(
-      props && typeof props === 'object' && props.constructor === Object,
-      `The \`setPageProps\` function exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
+      typeof pagePropsAddendum === 'object' &&
+        pagePropsAddendum !== null &&
+        pagePropsAddendum.constructor === Object,
+      `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
     )
-    cast<Record<string, unknown>>(props)
-    pageProps = props
-  } else {
-    pageProps = {}
+    assertUsage(
+      !hasProp(pagePropsAddendum, 'then'),
+      `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should not return a promise.`
+    )
+    Object.assign(pageProps, pagePropsAddendum)
   }
 
   const renderResult: unknown = await renderFunction.render({
@@ -141,7 +149,7 @@ async function getPage(pageId: string) {
   assertUsage(
     typeof fileExports === 'object' &&
       ('Page' in fileExports || 'default' in fileExports),
-    `${filePath} should have a \`export { Page }\`.`
+    `${filePath} should have a \`export { Page }\` (or a default export).`
   )
   const Page = fileExports.Page || fileExports.default
 
@@ -152,15 +160,15 @@ type ServerFunctions = {
   renderFunction: {
     filePath: string
     render: (arg1: {
-      Page: any
-      contextProps: Record<string, any>
-      pageProps: Record<string, any>
+      Page: unknown
+      contextProps: Record<string, unknown>
+      pageProps: Record<string, unknown>
     }) => unknown
   }
   addContextPropsFunction?: {
     filePath: string
     addContextProps: (arg1: {
-      Page: any
+      Page: unknown
       contextProps: Record<string, unknown>
     }) => unknown
   }
@@ -301,7 +309,7 @@ async function pathRelativeToRoot(filePath: string): Promise<string> {
 
 function injectPageInfo(
   htmlDocument: string,
-  pageProps: Record<string, any>,
+  pageProps: Record<string, unknown>,
   pageId: string
 ): string {
   const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(
@@ -380,22 +388,28 @@ function injectHtml(
   }
 }
 
-function assertArguments(...args: any[]) {
-  const { url, contextProps, ...rest } = args[0]
-  assertUsage(url, '`render({url, contextProps})`: argument `url` is missing.')
+function assertArguments(...args: unknown[]) {
+  const argObject = args[0]
   assertUsage(
-    url.startsWith('/'),
+    hasProp(argObject, 'url'),
+    '`render({url, contextProps})`: argument `url` is missing.'
+  )
+  assertUsage(
+    typeof argObject.url === 'string' && argObject.url.startsWith('/'),
     '`render({url, contextProps})`: argument `url` should start with a `/`.'
   )
   assertUsage(
-    typeof contextProps === 'object',
+    !hasProp(argObject, 'contextProps') ||
+      typeof argObject.contextProps === 'object',
     '`render({url, contextProps})`: argument `contextProps` should be a `typeof contextProps === "object"`.'
   )
   assertUsage(
     args.length === 1,
-    '`render({url, contextProps})`: arguments should be passed as a single object.'
+    '`render({url, contextProps})`: all arguments should be passed as a single argument object.'
   )
-  const unknownArgs = Object.keys(rest)
+  const unknownArgs = Object.keys(argObject).filter(
+    (key) => !['url', 'contextProps'].includes(key)
+  )
   assertUsage(
     unknownArgs.length === 0,
     '`render({url, contextProps})`: unknown arguments [' +
@@ -409,13 +423,13 @@ function userHintNo404Page() {
   if (!isProduction) {
     assertWarning(
       false,
-      'No `_404.page.js` file found. We recommend defining a `_404.page.js`. (This warning message is not shown in production.)'
+      'No `_404.page.js` file found. We recommend defining a `_404.page.js`. (This warning is not shown in production.)'
     )
   }
 }
 async function renderErrorPage(
   err: unknown,
-  contextProps: Record<string, any>,
+  contextProps: Record<string, unknown>,
   url: string
 ) {
   handleErr(err)

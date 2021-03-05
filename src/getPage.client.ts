@@ -26,7 +26,7 @@ async function getPage_(pageId: string): Promise<any> {
   assertUsage(
     typeof fileExports === 'object' &&
       ('Page' in fileExports || 'default' in fileExports),
-    `${filePath} should have a \`export { Page }\`.`
+    `${filePath} should have a \`export { Page }\` (or a default export).`
   )
   const Page = fileExports.Page || fileExports.default
   return Page
