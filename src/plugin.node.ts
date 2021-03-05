@@ -3,7 +3,9 @@ import {
   dirname as pathDirname,
   isAbsolute as pathIsAbsolute,
   relative as pathRelative,
-  basename as pathFilename
+  basename as pathFilename,
+  sep as pathSep,
+  posix as pathPosix
 } from 'path'
 import { assert } from './utils/assert'
 import * as glob from 'fast-glob'
@@ -106,13 +108,9 @@ function isSSR(config: UserConfig): boolean {
 }
 
 function getRoot(config: UserConfig): string {
-  function getRoot(config: UserConfig): string {
-    const root = config.root || process.cwd()
-    assert(pathIsAbsolute(root))
-    return root
-  }
-  const root = config.root || process.cwd()
+  let root = config.root || process.cwd()
   assert(pathIsAbsolute(root))
+  root = posixPath(root)
   return root
 }
 
@@ -122,4 +120,8 @@ function getOutDir(config: UserConfig): string {
     outDir = config.build?.ssr ? 'dist/server' : 'dist/client'
   }
   return outDir
+}
+
+function posixPath(path: string): string {
+  return path.split(pathSep).join(pathPosix.sep)
 }
