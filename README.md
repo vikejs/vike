@@ -54,6 +54,7 @@ Do-One-Thing-Do-It-Well, Flexible, Simple.
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
 - **Routing**. Supports Filesystem Routing for basic needs, Route Strings for simple parameterized routes, Route Functions for full flexibility, and can be used with Vue Router or React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
+- **HMR**. Both browser and server code are HMR'd.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
 - **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
 - **Code Splitting**. Each page loads only the browser-side code it needs.
