@@ -503,34 +503,34 @@ Then choose between `vue`, `vue-ts`, `react`, and `react-ts`.
 If you already have an existing Vite app:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
-   - [Vue](/create-vite-plugin-ssr/template-vue/vite.config.js)
-   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/vite.config.ts)
-   - [React](/create-vite-plugin-ssr/template-react/vite.config.js)
-   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/vite.config.ts)
+   - [Vue](/boilerplates/boilerplate-vue/vite.config.js)
+   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/vite.config.ts)
+   - [React](/boilerplates/boilerplate-react/vite.config.js)
+   - [React + TypeScript](/boilerplates/boilerplate-react-ts/vite.config.ts)
 
 2. Integrate `createRender()` with your server (Express.js, Koa, Hapi, Fastify, ...).
-   - [Vue](/create-vite-plugin-ssr/template-vue/server/index.js)
-   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/server/index.ts)
-   - [React](/create-vite-plugin-ssr/template-react/server/index.js)
-   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
+   - [Vue](/boilerplates/boilerplate-vue/server/index.js)
+   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/server/index.ts)
+   - [React](/boilerplates/boilerplate-react/server/index.js)
+   - [React + TypeScript](/boilerplates/boilerplate-react-ts/server/index.ts)
 
 3. Define your `_default.page.client.js` and `_default.page.server.js`.
-   - [Vue](/create-vite-plugin-ssr/template-vue/pages/_default/)
-   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/pages/_default/)
-   - [React](/create-vite-plugin-ssr/template-react/pages/_default/)
-   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/_default/)
+   - [Vue](/boilerplates/boilerplate-vue/pages/_default/)
+   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/_default/)
+   - [React](/boilerplates/boilerplate-react/pages/_default/)
+   - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/_default/)
 
 4. Create your first `index.page.js`.
-   - [Vue](/create-vite-plugin-ssr/template-vue/pages/index/index.page.vue)
-   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/pages/index/index.page.vue)
-   - [React](/create-vite-plugin-ssr/template-react/pages/index/index.page.jsx)
-   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/pages/index/index.page.tsx)
+   - [Vue](/boilerplates/boilerplate-vue/pages/index/index.page.vue)
+   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/index/index.page.vue)
+   - [React](/boilerplates/boilerplate-react/pages/index/index.page.jsx)
+   - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/index/index.page.tsx)
 
 5. Add the `dev` and `build` scripts to your `package.json`.
-   - [Vue](/create-vite-plugin-ssr/template-vue/package.json)
-   - [Vue + TypeScript](/create-vite-plugin-ssr/template-vue-ts/package.json)
-   - [React](/create-vite-plugin-ssr/template-react/package.json)
-   - [React + TypeScript](/create-vite-plugin-ssr/template-react-ts/package.json)
+   - [Vue](/boilerplates/boilerplate-vue/package.json)
+   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/package.json)
+   - [React](/boilerplates/boilerplate-react/package.json)
+   - [React + TypeScript](/boilerplates/boilerplate-react-ts/package.json)
 
 <br/><br/>
 
@@ -1480,8 +1480,8 @@ app.get('*', async (req, res, next) => {
 Since `render({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
 
 Examples:
- - [JavaScript](/create-vite-plugin-ssr/template-react/server/index.js)
- - [TypeScript](/create-vite-plugin-ssr/template-react-ts/server/index.ts)
+ - [JavaScript](/boilerplates/boilerplate-react/server/index.js)
+ - [TypeScript](/boilerplates/boilerplate-react-ts/server/index.ts)
 
 <br/><br/>
 

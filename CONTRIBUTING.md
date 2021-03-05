@@ -10,4 +10,4 @@ npm run build:watch
 
 You can now change the source code at `src/` and try your modifications with one of the examples at `examples/`.
 
-`npm run link` installs the dependencies of all `examples/*` and all `create-vite-plugin-ssr/template-*` while (sym)linking their `vite-plugin-ssr` dependency to `src/`.
+`npm run link` installs the dependencies of all `examples/*` and all `boilerplates/*` while (sym)linking their `vite-plugin-ssr` dependency to `src/`.

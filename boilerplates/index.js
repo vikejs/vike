@@ -9,7 +9,7 @@ const { green, cyan, stripColors, bold } = require('kolorist')
 
 const cwd = process.cwd()
 
-const TEMPLATES = [
+const BOILERPLATES = [
   green('vue'),
   green('vue-ts'),
   cyan('react'),
@@ -64,19 +64,19 @@ async function init() {
     }
   }
 
-  // determine template
-  let template = argv.t || argv.template
-  let message = 'Select a template:'
-  let isValidTemplate = false
+  // determine boilerplate
+  let boilerplate = argv.t || argv.boilerplate
+  let message = 'Select a boilerplate:'
+  let isValidBoilerplate = false
 
-  // --template expects a value
-  if (typeof template === 'string') {
-    const availableTemplates = TEMPLATES.map(stripColors)
-    isValidTemplate = availableTemplates.includes(template)
-    message = `${template} isn't a valid template. Please choose from below:`
+  // --boilerplate expects a value
+  if (typeof boilerplate === 'string') {
+    const availableBoilerplates = BOILERPLATES.map(stripColors)
+    isValidBoilerplate = availableBoilerplates.includes(boilerplate)
+    message = `${boilerplate} isn't a valid boilerplate. Please choose from below:`
   }
 
-  if (!template || !isValidTemplate) {
+  if (!boilerplate || !isValidBoilerplate) {
     /**
      * @type {{ t: string }}
      */
@@ -84,12 +84,12 @@ async function init() {
       type: 'select',
       name: 't',
       message,
-      choices: TEMPLATES
+      choices: BOILERPLATES
     })
-    template = stripColors(t)
+    boilerplate = stripColors(t)
   }
 
-  const templateDir = path.join(__dirname, `template-${template}`)
+  const boilerplateDir = path.join(__dirname, `boilerplate-${boilerplate}`)
 
   const write = (file, content) => {
     const targetPath = renameFiles[file]
@@ -98,11 +98,11 @@ async function init() {
     if (content) {
       fs.writeFileSync(targetPath, content)
     } else {
-      copy(path.join(templateDir, file), targetPath)
+      copy(path.join(boilerplateDir, file), targetPath)
     }
   }
 
-  const files = fs.readdirSync(templateDir)
+  const files = fs.readdirSync(boilerplateDir)
   for (const file of files.filter((f) => !ignoreFiles.includes(f))) {
     write(file)
   }
