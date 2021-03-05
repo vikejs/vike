@@ -1490,7 +1490,7 @@ Examples:
 
 Environment: `Node.js`
 
-The Vite plugin has no options.
+The plugin has no options.
 
 ```js
 // vite.config.js
