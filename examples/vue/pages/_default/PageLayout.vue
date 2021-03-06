@@ -3,7 +3,7 @@
     <div class="layout">
       <div class="navigation">
         <a href="/" class="logo">
-          <img src="./logo.svg" height="30" />
+          <img src="./logo.svg" height="64" />
         </a>
         <a href="/markdown">Markdown</a>
         <a href="/star-wars">Data Fetching</a>

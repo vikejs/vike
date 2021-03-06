@@ -79,7 +79,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logo} height={30} />
+        <img src={logo} height={64} />
       </a>
     </div>
   );
