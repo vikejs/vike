@@ -4,7 +4,7 @@
 
 # `vite-plugin-ssr`
 
-Do-One-Thing-Do-It-Well, Flexible, Simple.
+Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 
 <a href="https://discord.gg/qTq92FQzKb"><img src="/docs/discord.svg" height="30" alt="vite-plugin-ssr discord"/></a>
 
