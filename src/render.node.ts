@@ -27,6 +27,11 @@ async function render({
   contextProps: Record<string, unknown>
 }): Promise<string | unknown> {
   assertArguments(...arguments)
+
+  if (isFaviconRequest(url)) {
+    return null
+  }
+
   Object.assign(contextProps, { url })
 
   // We use a try-catch because `route()` executes `.page.route.js` source code which is
@@ -459,4 +464,8 @@ function handleErr(err: unknown) {
     }
   }
   console.error(err)
+}
+
+function isFaviconRequest(url: string): boolean {
+  return url === '/favicon.ico'
 }
