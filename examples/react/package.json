@@ -1,15 +1,14 @@
 {
   "scripts": {
     "// User scripts": "",
-    "start": "npm install && npm run server",
-    "dev": "npm run server:watch",
+    "start": "npm install && npm run dev",
+    "dev": "npm run server",
     "prod": "npm run build && npm run server:prod",
     "// Build app": "",
     "build": "vite build && vite build --ssr",
     "// Start server": "",
     "server": "ts-node ./server",
-    "server:prod": "cross-env NODE_ENV=production ts-node ./server",
-    "server:watch": "ts-node-dev ./server"
+    "server:prod": "cross-env NODE_ENV=production ts-node ./server"
   },
   "dependencies": {
     "@brillout/vite-plugin-mdx": "0.1.4",
@@ -26,7 +25,6 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "ts-node": "^9.1.1",
-    "ts-node-dev": "^1.1.1",
     "typescript": "^4.1.5",
     "vite": "2.0.1",
     "vite-plugin-ssr": "^0.1.0-beta.10"

@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "dev": "npm run server:watch",
+    "dev": "npm run server",
     "prod": "npm run build && npm run server:prod",
     "build": "vite build && vite build --ssr",
-    "server:watch": "nodemon ./server",
+    "server": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
@@ -12,7 +12,6 @@
     "@vue/server-renderer": "^3.0.5",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
-    "nodemon": "^2.0.7",
     "vite": "^2.0.1",
     "vite-plugin-ssr": "^0.1.0-beta.10",
     "vue": "^3.0.5"
