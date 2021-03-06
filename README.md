@@ -807,7 +807,7 @@ For Vue you can use `vite-plugin-md`:
  - [/examples/vue/pages/markdown.page.md](/examples/vue/pages/markdown.page.md)
  - [/examples/vue/vite.config.ts](/examples/vue/vite.config.ts)
 
-For React you can use `@brillout/vite-plugin-mdx`:
+For React you can use `vite-plugin-mdx`:
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
 
