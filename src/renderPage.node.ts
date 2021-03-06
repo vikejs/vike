@@ -17,9 +17,9 @@ import {
   hasProp
 } from './utils'
 
-export { render }
+export { renderPage }
 
-async function render({
+async function renderPage({
   url,
   contextProps = {}
 }: {
@@ -80,11 +80,11 @@ async function render({
   Object.assign(contextProps, contextPropsAddendum)
 
   // *** Render ***
-  // We use a try-catch because `renderPage()` execute a `*.page.*` file which is
+  // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
   // written by the user and may contain an error.
   let renderResult
   try {
-    renderResult = await renderPage(pageId, contextProps, url)
+    renderResult = await renderPageId(pageId, contextProps, url)
   } catch (err) {
     return await render500Page(err, allPageIds, contextProps, url)
   }
@@ -92,7 +92,7 @@ async function render({
   return { nothingRendered: false, renderResult, statusCode }
 }
 
-async function renderPage(
+async function renderPageId(
   pageId: string,
   contextProps: Record<string, unknown>,
   url: string
@@ -508,7 +508,7 @@ async function render500Page(
   Object.assign(contextProps, { is404: false })
   let renderResult
   try {
-    renderResult = await renderPage(errorPageId, contextProps, url)
+    renderResult = await renderPageId(errorPageId, contextProps, url)
   } catch (err) {
     // We purposely swallow the error, because another error was already shown to the user in `handleErr()`.
     // (And chances are high that this is the same error.)

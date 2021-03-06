@@ -39,7 +39,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.*`](#_default)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.js`](#_errorpagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr)
 
 <br/>
@@ -507,7 +507,7 @@ If you already have an existing Vite app:
    - [React](/boilerplates/boilerplate-react/vite.config.js)
    - [React + TypeScript](/boilerplates/boilerplate-react-ts/vite.config.ts)
 
-2. Integrate `createRender()` with your server (Express.js, Koa, Hapi, Fastify, ...).
+2. Integrate `createPageRender()` with your server (Express.js, Koa, Hapi, Fastify, ...).
    - [Vue](/boilerplates/boilerplate-vue/server/index.js)
    - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/server/index.ts)
    - [React](/boilerplates/boilerplate-react/server/index.js)
@@ -674,11 +674,11 @@ For detailed informations about Filesystem Routing, route strings, and route fun
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 Information about the authenticated user can be added to `contextProps` at the server integration point
-[`createRender()`](#import--createrender--from-vite-plugin-ssr).
+[`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 The `contextProps` are available to all hooks and route functions.
 
 ```js
-const render = createRender(/*...*/)
+const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
@@ -686,9 +686,9 @@ app.get('*', async (req, res, next) => {
   // authentication middleware, for example the Express.js Passport middleware.
   const { user } = req
   const contextProps = { user }
-  const html = await render({ url, contextProps })
-  if (!html) return next()
-  res.send(html)
+  const result = await renderPage({ url, contextProps })
+  if (result.nothingRendered) return next()
+  res.status(result.statusCode).send(result.renderResult)
 })
 ```
 <br/><br/>
@@ -859,18 +859,18 @@ function render({ contextProps }) {
 }
 ```
 ```js
-const render = createRender(/*...*/)
+const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
   const contextProps = {}
-  const renderResult = await render({ url, contextProps })
-  if (renderResult?.redirectTo) {
+  const result = await renderPage({ url, contextProps })
+  if (result.nothingRendered) {
+    return next()
+  } else if (result.renderResult?.redirectTo) {
     res.redirect(307, '/movie/add')
-  } else if (typeof renderResult === 'string') {
-    res.send(renderResult)
   } else {
-    next()
+    res.status(result.statusCode).send(result.renderResult)
   }
 })
 ```
@@ -1105,8 +1105,8 @@ The `addContextProps()` hook is used to provide further `contextProps` values.
 
 The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
 
-You can provide initial `contextProps` values at your server integration point: [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
-Which you usually use to pass information about the authenticated user,
+You can provide initial `contextProps` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
+This is where you usually pass information about the authenticated user,
 see [Auth Data](#auth-data) guide.
 
 The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data, see [Data Fetching](#data-fetching) guide.
@@ -1133,7 +1133,7 @@ async function addContextProps({ contextProps, Page }){
 
 - `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
 - `contextProps` is the initial accumulation of:
-   1. The `contextProps` you provided in your the server integration point `createRender()`.
+   1. The `contextProps` you provided in your the server integration point `createPageRender()`.
    2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
 
 <br/>
@@ -1281,7 +1281,7 @@ async function render({ Page, pageProps, contextProps }){
 - `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
 - `pageProps` is the value returned by the `setPageProps()` hook.
 - `contextProps` is the accumulation of:
-   1. The `contextProps` you passed to [`const render = createRender(/*...*/); render({ url, contextProps })`](#import--createrender--from-vite-plugin-ssr).
+   1. The `contextProps` you passed to [`const renderPage = createPageRender(/*...*/); renderPage({ url, contextProps })`](#import--createpagerender--from-vite-plugin-ssr).
    2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
    3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
@@ -1436,29 +1436,29 @@ For more control over routing, define route strings or route functions in [`*.pa
 <br/><br/>
 
 
-## `import { createRender } from 'vite-plugin-ssr'`
+## `import { createPageRender } from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
 
-The `createRender()` is the integration point between your server and `vite-plugin-ssr`.
+The `createPageRender()` is the integration point between your server and `vite-plugin-ssr`.
 
 ```js
-const render = createRender({ viteDevServer, isProduction, root })
+const renderPage = createPageRender({ viteDevServer, isProduction, root })
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
   const contextProps = {}
-  const html = await render({ url, contextProps })
-  if (!html) return next()
-  res.send(html)
+  const result = await renderPage({ url, contextProps })
+  if (result.nothingRendered) return next()
+  res.status(result.statusCode).send(result.renderResult)
 })
 ```
 
-- `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
-- `root` is a string holding the absolute path of your app's root directory. All your `.page.js` files should be a descendent of the root directory.
 - `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer(/*...*/)`.
+- `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
+- `root` is a string holding the absolute path of your app's root directory. All your `.page.js` files should be a descendent of the `root` directory.
 
-Since `render({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
+Since `renderPage({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
 
 Examples:
  - [JavaScript](/boilerplates/boilerplate-react/server/index.js)
