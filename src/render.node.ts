@@ -1,5 +1,5 @@
 import devalue from 'devalue'
-import { getErrorPageId, route } from './route.node'
+import { getErrorPageId, getPageIds, route, isErrorPage } from './route.node'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
@@ -25,41 +25,71 @@ async function render({
 }: {
   url: string
   contextProps: Record<string, unknown>
-}): Promise<string | unknown> {
+}): Promise<
+  | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
+  | {
+      nothingRendered: false
+      renderResult: string | unknown
+      statusCode: 200 | 404 | 500
+    }
+> {
   assertArguments(...arguments)
 
   if (isFaviconRequest(url)) {
-    return null
+    return {
+      nothingRendered: true,
+      renderResult: undefined,
+      statusCode: undefined
+    }
   }
 
   Object.assign(contextProps, { url })
 
+  const allPageIds = await getPageIds()
+
+  // *** Route ***
   // We use a try-catch because `route()` executes `.page.route.js` source code which is
   // written by the user and may contain errors.
   let routeResult
   try {
-    routeResult = await route(url, contextProps)
+    routeResult = await route(url, allPageIds, contextProps)
   } catch (err) {
-    return await renderErrorPage(err, contextProps, url)
+    return await render500Page(err, allPageIds, contextProps, url)
   }
+
+  // *** Handle 404 ***
+  let statusCode: 200 | 404
   if (!routeResult) {
-    userHintNo404Page()
-    return null
+    warn404(url, allPageIds)
+    const errorPageId = getErrorPageId(allPageIds)
+    if (!errorPageId) {
+      warnMissingErrorPage()
+      return {
+        nothingRendered: true,
+        renderResult: undefined,
+        statusCode: undefined
+      }
+    }
+    statusCode = 404
+    routeResult = { pageId: errorPageId, contextPropsAddendum: { is404: true } }
+  } else {
+    statusCode = 200
   }
 
   const { pageId, contextPropsAddendum } = routeResult
   Object.assign(contextProps, contextPropsAddendum)
 
-  // We use a try-catch because `renderPage()` executes `*.page.*` files which are
-  // written by the user and may contain errors.
+  // *** Render ***
+  // We use a try-catch because `renderPage()` execute a `*.page.*` file which is
+  // written by the user and may contain an error.
   let renderResult
   try {
     renderResult = await renderPage(pageId, contextProps, url)
   } catch (err) {
-    return await renderErrorPage(err, contextProps, url)
+    return await render500Page(err, allPageIds, contextProps, url)
   }
 
-  return renderResult
+  return { nothingRendered: false, renderResult, statusCode }
 }
 
 async function renderPage(
@@ -105,6 +135,11 @@ async function renderPage(
       `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should not return a promise.`
     )
     Object.assign(pageProps, pagePropsAddendum)
+  } else if (isErrorPage(pageId)) {
+    assert(
+      hasProp(contextProps, 'is404') && typeof contextProps.is404 === 'boolean'
+    )
+    Object.assign(pageProps, { is404: contextProps.is404 })
   }
 
   const renderResult: unknown = await renderFunction.render({
@@ -423,37 +458,67 @@ function assertArguments(...args: unknown[]) {
   )
 }
 
-function userHintNo404Page() {
+function warnMissingErrorPage() {
   const { isProduction } = getGlobal()
   if (!isProduction) {
     assertWarning(
       false,
-      'No `_404.page.js` file found. We recommend defining a `_404.page.js`. (This warning is not shown in production.)'
+      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)'
     )
   }
 }
-async function renderErrorPage(
+function warn404(url: string, allPageIds: string[]) {
+  const { isProduction } = getGlobal()
+  if (!isProduction) {
+    const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+    assertUsage(
+      relevantPageIds.length > 0,
+      'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+    )
+    assertWarning(
+      false,
+      `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
+        .map((pageId) => `${pageId}.page.*`)
+        .join(' ')} (this warning is not shown in production.)`
+    )
+  }
+}
+
+async function render500Page(
   err: unknown,
+  allPageIds: string[],
   contextProps: Record<string, unknown>,
   url: string
-) {
+): Promise<
+  | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
+  | { nothingRendered: false; renderResult: string | unknown; statusCode: 500 }
+> {
   handleErr(err)
 
-  const pageId = await getErrorPageId()
-  if (pageId === null) {
-    userHintNo404Page()
-    return null
+  const errorPageId = getErrorPageId(allPageIds)
+  if (errorPageId === null) {
+    warnMissingErrorPage()
+    return {
+      nothingRendered: true,
+      renderResult: undefined,
+      statusCode: undefined
+    }
   }
 
+  Object.assign(contextProps, { is404: false })
   let renderResult
   try {
-    renderResult = await renderPage(pageId, contextProps, url)
+    renderResult = await renderPage(errorPageId, contextProps, url)
   } catch (err) {
     // We purposely swallow the error, because another error was already shown to the user in `handleErr()`.
     // (And chances are high that this is the same error.)
-    return null
+    return {
+      nothingRendered: true,
+      renderResult: undefined,
+      statusCode: undefined
+    }
   }
-  return renderResult
+  return { nothingRendered: false, renderResult, statusCode: 500 }
 }
 function handleErr(err: unknown) {
   const { viteDevServer } = getGlobal()

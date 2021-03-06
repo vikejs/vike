@@ -1,2 +1,1 @@
-- Return status code, e.g. 404 or 500
 - Retrieve CSS loaded by server-side-only files

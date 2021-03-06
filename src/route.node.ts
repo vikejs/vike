@@ -7,24 +7,24 @@ import {
   isCallable,
   higherFirst,
   slice,
-  assertWarning,
   hasProp
 } from './utils'
-import { getGlobal } from './global.node'
 
+export { getPageIds }
 export { route }
 export { getErrorPageId }
+export { isErrorPage }
 
 type PageId = string
 
 async function route(
   url: string,
+  allPageIds: string[],
   contextProps: Record<string, unknown>
 ): Promise<null | {
   pageId: PageId
   contextPropsAddendum: Record<string, unknown>
 }> {
-  const allPageIds = await getPageIds()
   assertUsage(
     allPageIds.length > 0,
     'No *.page.js file found. You can create a `index.page.js` (or `index.page.jsx`, `index.page.vue`, ...) which will serve `/`.'
@@ -32,17 +32,13 @@ async function route(
   const pageRoutes = await loadPageRoutes()
 
   const routeResults = allPageIds
-    .filter((pageId) => !is500Page(pageId))
+    .filter((pageId) => !isErrorPage(pageId))
     .map((pageId) => {
-      // Route 404
-      if (is404Page(pageId)) {
-        return { pageId, matchValue: -Infinity, contextPropsAddendum: {} }
-      } else {
-        assertUsage(
-          !isReservedPageId(pageId),
-          'Only `_default.page.*`, `_404.page.js`, and `_500.page.js` are allowed to include the special character `_` in their file path.'
-        )
-      }
+      assertUsage(
+        !isReservedPageId(pageId),
+        "Only `_default.page.*` and `_error.page.*` files are allowed to include the special character `_` in their path. The following shouldn't include `_`: " +
+          pageId
+      )
 
       // Route with filesystem
       if (!(pageId in pageRoutes)) {
@@ -75,10 +71,6 @@ async function route(
     })
 
   const winner = pickWinner(routeResults)
-
-  if (is404Page(winner.pageId)) {
-    userHintNoPageFound(url, allPageIds)
-  }
   // console.log('[Route Match]:', `[${url}]: ${winner && winner.pageId}`)
 
   if (!winner) return null
@@ -87,39 +79,16 @@ async function route(
   return { pageId, contextPropsAddendum }
 }
 
-function userHintNoPageFound(url: string, allPageIds: string[]) {
-  const { isProduction } = getGlobal()
-  if (!isProduction) {
-    assertWarning(
-      false,
-      `No page is matching URL \`${url}\`. Defined pages: ${allPageIds
-        .map((pageId) => `${pageId}.page.*`)
-        .join(' ')} (this warning is not shown in production.)`
-    )
-  }
-}
-
-async function getErrorPageId(): Promise<string | null> {
-  const allPageIds = await getPageIds()
-  const pages_500 = allPageIds.filter((pageId) => is500Page(pageId))
+function getErrorPageId(allPageIds: string[]): string | null {
+  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
   assertUsage(
-    pages_500.length <= 1,
-    `Only one \`_500.page.js\` is allowed. Found several: ${pages_500.join(
+    errorPageIds.length <= 1,
+    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(
       ' '
     )}`
   )
-  if (pages_500.length > 0) {
-    return pages_500[0]
-  }
-  const pages_404 = allPageIds.filter((pageId) => is404Page(pageId))
-  assertUsage(
-    pages_404.length <= 1,
-    `Only one \`_404.page.js\` is allowed. Found several: ${pages_404.join(
-      ' '
-    )}`
-  )
-  if (pages_404.length > 0) {
-    return pages_404[0]
+  if (errorPageIds.length > 0) {
+    return errorPageIds[0]
   }
   return null
 }
@@ -317,11 +286,7 @@ function isReservedPageId(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_')
 }
-function is404Page(pageId: string): boolean {
+function isErrorPage(pageId: string): boolean {
   assert(!pageId.includes('\\'))
-  return pageId.includes('/_404')
-}
-function is500Page(pageId: string): boolean {
-  assert(!pageId.includes('\\'))
-  return pageId.includes('/_500')
+  return pageId.includes('/_error')
 }

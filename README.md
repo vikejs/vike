@@ -37,8 +37,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.*`](#_default)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_404.page.js`](#_404pagejs)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_500.page.js`](#_500pagejs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.js`](#_errorpagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createRender } from 'vite-plugin-ssr'`](#import--createrender--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr)
@@ -1080,14 +1079,6 @@ export default ({ url, contextProps }) {
 
 The `match` value can be a (negative) number which enables you to resolve route conflicts.
 The higher the number, the higher the priority.
-For example, `vite-plugin-ssr` internally defines `_404.page.js`'s route as:
-
-```js
-// node_modules/vite-plugin-ssr/.../_404.page.route.js
-
-// Ensure lowest priority for the 404 page
-export default () => ({match: -Infinity})
-```
 
 <br/><br/>
 
@@ -1402,27 +1393,17 @@ defining `_default.page.js` or `_default.page.route.js` is forbidden.
 <br/><br/>
 
 
-## `_404.page.js`
+## `_error.page.js`
 
-The `_404.page.js` page is like any other page with the exception that it has a predefined route.
+The page `_error.page.js` is shown to your user when an error occurs:
+ - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
+ - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===true`).
 
-```js
-// node_modules/vite-plugin-ssr/.../_404.page.route.js
+It comes with a built-in `setPageProps()` hook that sets `pageProps.is404`.
+The `pageProps.is404` flag enables you to decided whether to show a 404 or 500 page.
+The flag is also available at `contextProps.is404`.
 
-// Ensure lowest priority for the 404 page
-export default () => ({match: -Infinity})
-```
-
-<br/><br/>
-
-
-## `_500.page.js`
-
-The `_500.page.js` page is shown to your user when an error occurs.
-
-It is optional. (If there is no `_500.page.js`, then `_404.page.js` is shown instead.)
-
-You define it like any other page. (You create a `_500.page.js`, and you can define `_500.page.client.js` and `_500.page.server.js`.)
+You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`. (You can then overwrite the built-in `setPageProps()` hook.)
 
 <br/><br/>
 

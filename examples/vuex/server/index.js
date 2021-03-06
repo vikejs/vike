@@ -1,34 +1,36 @@
-const express = require("express");
-const { createRender } = require("vite-plugin-ssr");
-const vite = require("vite");
+const express = require('express')
+const { createRender } = require('vite-plugin-ssr')
+const vite = require('vite')
 
-const isProduction = process.env.NODE_ENV === "production";
-const root = `${__dirname}/..`;
+const isProduction = process.env.NODE_ENV === 'production'
+const root = `${__dirname}/..`
 
-startServer();
+startServer()
 
 async function startServer() {
-  const app = express();
+  const app = express()
 
-  let viteDevServer;
+  let viteDevServer
   if (isProduction) {
-    app.use(express.static(`${root}/dist/client`, { index: false }));
+    app.use(express.static(`${root}/dist/client`, { index: false }))
   } else {
     viteDevServer = await vite.createServer({
       root,
-      server: { middlewareMode: true },
-    });
-    app.use(viteDevServer.middlewares);
+      server: { middlewareMode: true }
+    })
+    app.use(viteDevServer.middlewares)
   }
 
-  const render = createRender({ viteDevServer, isProduction, root });
-  app.get("*", async (req, res, next) => {
-    const html = await render({ url: req.originalUrl, contextProps: {} });
-    if (!html) return next();
-    res.send(html);
-  });
+  const render = createRender({ viteDevServer, isProduction, root })
+  app.get('*', async (req, res, next) => {
+    const url = req.originalUrl
+    const contextProps = {}
+    const result = await render({ url, contextProps })
+    if (result.nothingRendered) return next()
+    res.status(result.statusCode).send(result.renderResult)
+  })
 
-  const port = 3000;
-  app.listen(port);
-  console.log(`Server running at http://localhost:${port}`);
+  const port = 3000
+  app.listen(port)
+  console.log(`Server running at http://localhost:${port}`)
 }
