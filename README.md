@@ -522,8 +522,8 @@ If you already have an existing Vite app:
 4. Create your first `index.page.js`.
    - [Vue](/boilerplates/boilerplate-vue/pages/index/index.page.vue)
    - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/index/index.page.vue)
-   - [React](/boilerplates/boilerplate-react/pages/index/index.page.jsx)
-   - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/index/index.page.tsx)
+   - [React](/boilerplates/boilerplate-react/pages/index.page.jsx)
+   - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/index.page.tsx)
 
 5. Add the `dev` and `build` scripts to your `package.json`.
    - [Vue](/boilerplates/boilerplate-vue/package.json)
