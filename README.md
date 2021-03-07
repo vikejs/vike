@@ -499,7 +499,7 @@ Then choose between `vue`, `vue-ts`, `react`, and `react-ts`.
 
 ## Manual Installation
 
-If you already have an existing Vite app:
+If you have an already existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
    - [Vue](/boilerplates/boilerplate-vue/vite.config.js)
