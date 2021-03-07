@@ -1,12 +1,27 @@
+<p></p>
+
 <a href="/../../#readme">
-  <img src="/docs/logo.svg" align="right" height="160" alt="vite-plugin-ssr"/>
+  <img src="/docs/logo.svg" align="left" height="154" alt="vite-plugin-ssr"/>
 </a>
 
 # `vite-plugin-ssr`
 
 Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 
-<a href="https://discord.gg/qTq92FQzKb"><img src="/docs/discord.svg" height="30" alt="vite-plugin-ssr discord"/></a>
+<a href="https://discord.gg/qTq92FQzKb">
+  <img src="/docs/discord.svg" height="32" width="117.078" alt="Discord vite-plugin-ssr"/>
+</a>
+&nbsp;&nbsp;&nbsp;
+<a href="https://twitter.com/brillout/status/1365939892170215426">
+  <img src="/docs/twitter_retweet.svg" height="32" width="179" alt="Retweet vite-plugin-ssr"/>
+</a>
+&nbsp;&nbsp;&nbsp;
+<a href="https://twitter.com/brillout">
+  <img src="/docs/twitter_follow.svg" height="32" width="133" alt="Follow @brillout"/>
+</a>
+
+<br/>
+<br/>
 
 [Introduction](#introduction)
 <br/> [Vue Tour](#vue-tour)
