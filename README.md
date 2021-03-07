@@ -1454,9 +1454,9 @@ app.get('*', async (req, res, next) => {
 })
 ```
 
-- `viteDevServer` is the value returned by `const viteDevServer = await vite.createServer(/*...*/)`.
+- `viteDevServer` is the Vite dev server (`const viteDevServer = await vite.createServer(/*...*/)`).
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
-- `root` is a string holding the absolute path of your app's root directory. All your `.page.js` files should be a descendent of the `root` directory.
+- `root` is the absolute path of your app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. Make sure that all your `.page.js` files are descendent of the `root` directory.
 
 Since `renderPage({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
 
