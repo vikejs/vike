@@ -51,7 +51,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 
 - **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can be used with Vue Router or React Router for client-side dynamic nested routing.
+- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can also be used with Vue Router or React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **HMR**. Both browser and server code are automatically reloaded.
 - **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
