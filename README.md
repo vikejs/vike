@@ -69,7 +69,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 - **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can also be used with Vue Router or React Router for client-side dynamic nested routes.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **HMR**. Both browser and server code are automatically reloaded.
-- **Scalable**. Thanks to Vite's lazy transpiling, Vite apps can scale to thousands of modules with no hit on dev speed.
+- **Scalable**. Can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling).
 - **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
 - **Code Splitting**. Each page loads only the browser-side code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
