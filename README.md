@@ -1,7 +1,7 @@
 <p></p>
 
 <a href="/../../#readme">
-  <img src="/docs/logo.svg" align="left" height="154" alt="vite-plugin-ssr"/>
+  <img src="/docs/logo.svg" align="left" height="154"  width="154" alt="vite-plugin-ssr"/>
 </a>
 
 # `vite-plugin-ssr`
