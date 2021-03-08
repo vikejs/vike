@@ -1494,7 +1494,7 @@ For more control over routing, define route strings or route functions in [`*.pa
 
 Environment: `Node.js`
 
-The `createPageRender()` is the integration point between your server and `vite-plugin-ssr`.
+`createPageRender()` is the integration point between your server and `vite-plugin-ssr`.
 
 ```js
 // server/index.js
@@ -1538,7 +1538,7 @@ async function startServer() {
 }
 ```
 
-- `viteDevServer` is the Vite dev server (`const viteDevServer = await vite.createServer(/*...*/)`).
+- `viteDevServer` is the Vite dev server.
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is the absolute path of your app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. Make sure that all your `.page.js` files are descendent of the `root` directory.
 - `result.nothingRendered` is `true` when a) an error occurred while rendering `_error.page.js`, or b) you didn't define an `_error.page.js` and no `.page.js` matches the `url`.
@@ -1548,8 +1548,8 @@ async function startServer() {
 Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...).
 
 Examples:
- - [JavaScript](/boilerplates/boilerplate-react/server/index.js)
- - [TypeScript](/boilerplates/boilerplate-react-ts/server/index.ts)
+ - [JavaScript](/boilerplates/boilerplate-vue/server/index.js)
+ - [TypeScript](/boilerplates/boilerplate-vue-ts/server/index.ts)
 
 <br/><br/>
 
