@@ -1273,7 +1273,10 @@ then no `prerender()` hook is called.
 
 ### `export { render }`
 
-The `render()` hook is used to render `Page` to an HTML string. (It can also return something else than HTML which we talk more about down below.)
+The `render()` hook defines how a page is rendered to HTML.
+
+It usually returns an HTML string,
+but it can also return something else than HTML which we talk more about down below.
 
 ```js
 // *.page.server.js
@@ -1301,7 +1304,7 @@ async function render({ Page, pageProps, contextProps }){
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
+- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file being rendered.
 - `pageProps` is the value returned by the `setPageProps()` hook.
 - `contextProps` is the accumulation of:
    1. The `contextProps` you passed to [`const renderPage = createPageRender(/*...*/); renderPage({ url, contextProps })`](#import--createpagerender--from-vite-plugin-ssr).
@@ -1309,40 +1312,33 @@ async function render({ Page, pageProps, contextProps }){
    3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
 The value `renderResult` returned by your `render()` hook doesn't have to be HTML:
-`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched at your server integration point `createPageRender()`.
+`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched to your server integration point `createPageRender()`.
 
 ```js
 // *.page.server.js
-// Environment: Node.js
 
 export { render }
 
-function render({ contextProps }) {
+function render({ Page, pageProps, contextProps }) {
   let renderResult
-  /*...*/
+  /* ... */
   return renderResult
 }
 ```
 ```js
 // server.js
-// Environment: Node.js
 
 const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
-  const url = req.originalUrl
-  const result = await renderPage({ url, contextProps: {} })
-  if (result.nothingRendered) {
-    return next()
-  } else if (result.renderResult?.redirectTo) {
-    // `renderResult` is what was returned by your `render()` hook.
-    const { renderResult } = result
-    /*...*/
-  }
+  const result = await renderPage({ url: req.originalUrl, contextProps: {} })
+  // `renderResult` is what was returned by your `render()` hook.
+  const { renderResult } = result
+  /* ... */
 })
 ```
 
-You can for example return an object `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
+Your `render()` hook can for example return an object like `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
 
 <br/>
 
@@ -1518,11 +1514,11 @@ app.get('*', async (req, res, next) => {
 - `viteDevServer` is the Vite dev server (`const viteDevServer = await vite.createServer(/*...*/)`).
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is the absolute path of your app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. Make sure that all your `.page.js` files are descendent of the `root` directory.
-- `result.nothingRendered` is `true` when a) an error occurred while rendering your page `_error.page.js`, or b) you didn't define a `_error.page.js` and no `.page.js` matches the `url`.
+- `result.nothingRendered` is `true` when a) an error occurred while rendering `_error.page.js`, or b) you didn't define an `_error.page.js` and no `.page.js` matches the `url`.
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by the `render()` hook.
 
-Since `renderPage({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
+Since `renderPage({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...).
 
 Examples:
  - [JavaScript](/boilerplates/boilerplate-react/server/index.js)
