@@ -1518,7 +1518,7 @@ app.get('*', async (req, res, next) => {
 - `viteDevServer` is the Vite dev server (`const viteDevServer = await vite.createServer(/*...*/)`).
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is the absolute path of your app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. Make sure that all your `.page.js` files are descendent of the `root` directory.
-- `result.nothingRendered` is `true` when a) an error occured while rendering your page `_error.page.js`, or b) you didn't define a `_error.page.js` and no `.page.js` matches the `url`.
+- `result.nothingRendered` is `true` when a) an error occurred while rendering your page `_error.page.js`, or b) you didn't define a `_error.page.js` and no `.page.js` matches the `url`.
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by the `render()` hook.
 
