@@ -1289,13 +1289,10 @@ export { render }
 
 async function render({ Page, pageProps, contextProps }){
   const pageHtml = await renderToHtml(createElement(Page, pageProps))
-
-  const title = contextProps.title || 'My SSR App'
-
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${title}</title>
+        <title>My SSR App</title>
       </head>
       <body>
         <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
@@ -1307,7 +1304,7 @@ async function render({ Page, pageProps, contextProps }){
 - `Page` is the `export { Page }` (or `export default`) of the `.page.js` file being rendered.
 - `pageProps` is the value returned by the `setPageProps()` hook.
 - `contextProps` is the accumulation of:
-   1. The `contextProps` you passed to [`const renderPage = createPageRender(/*...*/); renderPage({ url, contextProps })`](#import--createpagerender--from-vite-plugin-ssr).
+   1. The `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(/*...*/); renderPage({ url, contextProps })`).
    2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
    3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
@@ -1332,7 +1329,7 @@ const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const result = await renderPage({ url: req.originalUrl, contextProps: {} })
-  // `renderResult` is what was returned by your `render()` hook.
+  // `result.renderResult` is the value returned by your `render()` hook.
   const { renderResult } = result
   /* ... */
 })
@@ -1500,15 +1497,45 @@ Environment: `Node.js`
 The `createPageRender()` is the integration point between your server and `vite-plugin-ssr`.
 
 ```js
-const renderPage = createPageRender({ viteDevServer, isProduction, root })
+// server/index.js
 
-app.get('*', async (req, res, next) => {
-  const url = req.originalUrl
-  const contextProps = {}
-  const result = await renderPage({ url, contextProps })
-  if (result.nothingRendered) return next()
-  res.status(result.statusCode).send(result.renderResult)
-})
+// In this example we use Express.js but we could use any other server framework.
+const express = require('express')
+const { createPageRender } = require('vite-plugin-ssr')
+const vite = require('vite')
+
+const isProduction = process.env.NODE_ENV === 'production'
+const root = `${__dirname}/..`
+
+startServer()
+
+async function startServer() {
+  const app = express()
+
+  let viteDevServer
+  if (isProduction) {
+    app.use(express.static(`${root}/dist/client`, { index: false }))
+  } else {
+    viteDevServer = await vite.createServer({
+      root,
+      server: { middlewareMode: true }
+    })
+    app.use(viteDevServer.middlewares)
+  }
+
+  const renderPage = createPageRender({ viteDevServer, isProduction, root })
+  app.get('*', async (req, res, next) => {
+    const url = req.originalUrl
+    const contextProps = {}
+    const result = await renderPage({ url, contextProps })
+    if (result.nothingRendered) return next()
+    res.status(result.statusCode).send(result.renderResult)
+  })
+
+  const port = 3000
+  app.listen(port)
+  console.log(`Server running at http://localhost:${port}`)
+}
 ```
 
 - `viteDevServer` is the Vite dev server (`const viteDevServer = await vite.createServer(/*...*/)`).
@@ -1518,7 +1545,7 @@ app.get('*', async (req, res, next) => {
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by the `render()` hook.
 
-Since `renderPage({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...).
+Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...).
 
 Examples:
  - [JavaScript](/boilerplates/boilerplate-react/server/index.js)
