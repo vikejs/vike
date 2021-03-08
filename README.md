@@ -857,9 +857,15 @@ The `prerender()` hook can also be used to prefetch data for multiple pages at o
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Your `render()` hook doesn't have to return HTML and can, for example, return `{ redirectTo: '/some/url' }` in order to do a URL redirect.
+Your `render()` hook doesn't have to return HTML and can, for example,
+return an object such as `{ redirectTo: '/some/url' }`
+which is then available at your server integration point `createPageRender()`
+(you can then perform a URL redirect there).
 
 ```js
+// movie.page.server.js
+// Environment: Node.js
+
 export { render }
 
 function render({ contextProps }) {
@@ -868,12 +874,14 @@ function render({ contextProps }) {
   if (contextProps.movieId === null) {
     return { redirectTo: '/movie/add' }
   } else {
-    // The usual render stuff
-    // ...
+    // The usual stuff
   }
 }
 ```
 ```js
+// server.js
+// Environment: Node.js
+
 const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
@@ -1210,11 +1218,13 @@ it enables you to fetch data for multiple pages at once.
 
 ```js
 // /pages/movie.page.route.js
+// Environment: Node.js
 
 export default '/movie/:movieId`
 ```
 ```js
 // /pages/movie.page.server.js
+// Environment: Node.js
 
 export { prerender }
 
@@ -1263,13 +1273,11 @@ then no `prerender()` hook is called.
 
 ### `export { render }`
 
-The `render()` hook renders `Page` to an HTML string.
-
-Note that the `render()` hook can also return something else than HTML,
-for example an object `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
+The `render()` hook is used to render `Page` to an HTML string. (It can also return something else than HTML which we talk more about down below.)
 
 ```js
 // *.page.server.js
+// Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
 import { renderToHtml, createElement } from 'some-view-framework'
@@ -1300,6 +1308,42 @@ async function render({ Page, pageProps, contextProps }){
    2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
    3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
+The value `renderResult` returned by your `render()` hook doesn't have to be HTML:
+`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched at your server integration point `createPageRender()`.
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+export { render }
+
+function render({ contextProps }) {
+  let renderResult
+  /*...*/
+  return renderResult
+}
+```
+```js
+// server.js
+// Environment: Node.js
+
+const renderPage = createPageRender(/*...*/)
+
+app.get('*', async (req, res, next) => {
+  const url = req.originalUrl
+  const result = await renderPage({ url, contextProps: {} })
+  if (result.nothingRendered) {
+    return next()
+  } else if (result.renderResult?.redirectTo) {
+    // `renderResult` is what was returned by your `render()` hook.
+    const { renderResult } = result
+    /*...*/
+  }
+})
+```
+
+You can for example return an object `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
+
 <br/>
 
 ### `import { html } from 'vite-plugin-ssr'`
@@ -1311,6 +1355,7 @@ It is usually used in your `render()` hook defined in `.page.server.js`.
 
 ```js
 // *.page.server.js
+// Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
 
@@ -1320,7 +1365,7 @@ async function render() {
   const title = 'Hello<script src="https://devil.org/evil-code"></script>'
   const pageHtml = "<div>I'm already <b>sanitized</b>, e.g. by Vue/React</div>"
 
-  // We're safe because `html` sanitizes `title`
+  // This HTML is safe thanks to the string template tag `html` which sanitizes `title`
   return html`<!DOCTYPE html>
     <html>
       <head>
@@ -1348,6 +1393,7 @@ For example, when you want some HTML parts to be included only for certain pages
 
 ```js
 // _default.page.server.js
+// Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
@@ -1356,16 +1402,16 @@ export { render }
 
 async function render({ Page, contextProps }) {
   // We only include the `<meta name="description">` tag if the page has a description.
-  // (A page can define `contextProps.docHtml.description` with its `addContextProps()` hook.)
+  // (Pages define `contextProps.docHtml.description` with their `addContextProps()` hook.)
   const description = contextProps.docHtml?.description
   let descriptionTag = ''
   if( description ) {
-    // Note how we use the `html` tag for an HTML segment
+    // Note how we use the `html` string template tag for an HTML segment.
     descriptionTag = html`<meta name="description" content="${description}">`
   }
 
-  // We use the `html` tag again for the overall HTML
-  // `descriptionTag` is already sanitized and will not be sanitized again
+  // We use the `html` tag again for the overall HTML, and since `descriptionTag` is
+  // already sanitized it will not be sanitized again.
   return html`<html>
     <head>
       ${descriptionTag}
@@ -1472,6 +1518,9 @@ app.get('*', async (req, res, next) => {
 - `viteDevServer` is the Vite dev server (`const viteDevServer = await vite.createServer(/*...*/)`).
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is the absolute path of your app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. Make sure that all your `.page.js` files are descendent of the `root` directory.
+- `result.nothingRendered` is `true` when a) an error occured while rendering your page `_error.page.js`, or b) you didn't define a `_error.page.js` and no `.page.js` matches the `url`.
+- `result.statusCode` is either `200`, `404`, or `500`.
+- `result.renderResult` is the value returned by the `render()` hook.
 
 Since `renderPage({ url, contextProps})` is agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework such as Koa, Hapi, Fastify, or vanilla Node.js.
 
