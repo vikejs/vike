@@ -1,6 +1,5 @@
 import { Plugin, UserConfig } from 'vite'
 import {
-  dirname as pathDirname,
   isAbsolute as pathIsAbsolute,
   relative as pathRelative,
   basename as pathFilename,
@@ -9,7 +8,6 @@ import {
 } from 'path'
 import { assert, assertUsage } from './utils/assert'
 import * as glob from 'fast-glob'
-const CLIENT_ENTRY = require.resolve('vite-plugin-ssr/dist/client.js')
 const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
 
 export { plugin }
@@ -21,9 +19,6 @@ function plugin(): Plugin[] {
       name: 'vite-plugin-ssr[dev]',
       apply: 'serve',
       config: () => ({
-        resolve: {
-          alias: [aliasPluginImport()]
-        },
         ssr,
         optimizeDeps: {
           entries: [
@@ -47,20 +42,6 @@ function plugin(): Plugin[] {
       })
     }
   ]
-}
-
-function aliasPluginImport() {
-  const CLIENT_DIR = pathDirname(CLIENT_ENTRY)
-
-  // CLIENT_DIR may contain $$ which cannot be used as direct replacement
-  // string, see https://github.com/vitejs/vite/issues/1732
-  const replacement = () => CLIENT_DIR + '/'
-
-  return {
-    find: /^\/@vite-plugin-ssr\/client\//,
-    // Fix Rollup's incorrect type declaration
-    replacement: (replacement as unknown) as string
-  }
 }
 
 function entryPoints(config: UserConfig): Record<string, string> {
