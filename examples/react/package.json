@@ -27,6 +27,6 @@
     "typescript": "^4.1.5",
     "vite": "2.0.1",
     "vite-plugin-mdx": "^3.0.0",
-    "vite-plugin-ssr": "^0.1.0-beta.10"
+    "vite-plugin-ssr": "^0.1.0-beta.11"
   }
 }
