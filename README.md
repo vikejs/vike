@@ -19,6 +19,10 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <a href="https://twitter.com/brillout">
   <img src="/docs/twitter_follow.svg" height="32" width="133" alt="Follow @brillout"/>
 </a>
+&nbsp;&nbsp;&nbsp;
+<a href="/CHANGELOG.md">
+  <img src="/docs/changelog.svg" height="32" width="116" alt="Changelog"/>
+</a>
 
 <br/>
 <br/>
