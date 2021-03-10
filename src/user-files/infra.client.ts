@@ -9,7 +9,7 @@ function __getAllUserFiles(): any {
     //@ts-ignore
     '.page': import.meta.glob('/**/*.page.*([a-zA-Z0-9])'),
     //@ts-ignore
-    '.page.client': import.meta.glob('/**/*.client.*([a-zA-Z0-9])')
+    '.page.client': import.meta.glob('/**/*.page.client.*([a-zA-Z0-9])')
   }
   return allUserFiles
 }

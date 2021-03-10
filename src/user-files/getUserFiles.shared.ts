@@ -1,4 +1,4 @@
-import { assert, assertUsage, slice } from '../utils'
+import { assertUsage } from '../utils'
 import { getAllUserFiles, FileType } from './infra.shared'
 
 export { getUserFiles }
@@ -16,8 +16,6 @@ type AllUserFiles = Record<
 
 async function getUserFiles(fileType: FileType): Promise<UserFile[]> {
   const allUserFiles: AllUserFiles = await getAllUserFiles()
-
-  assertExtensions(allUserFiles)
 
   const userFiles = Object.entries(allUserFiles[fileType]).map(
     ([filePath, loadFile]) => {
@@ -53,20 +51,4 @@ function findPageFile<T>(
     'Conflicting ' + userFiles.map(({ filePath }) => filePath).join(' ')
   )
   return userFiles[0]
-}
-
-function assertExtensions(allUserFiles: AllUserFiles) {
-  ;['client', 'server', 'route'].forEach((ext) => {
-    const fileExt = `.page.${ext}` as
-      | '.page.client'
-      | '.page.server'
-      | '.page.route'
-    Object.keys(allUserFiles[fileExt] || {}).forEach((filePath) => {
-      const fileExt = slice(filePath.split('.'), -3, -1)
-      assertUsage(
-        fileExt[0] === 'page' && fileExt[1] === ext,
-        `The file ${filePath} should be name \`*.page.${ext}.*\`. Add the missing \`.page\`.`
-      )
-    })
-  })
 }
