@@ -1,7 +1,7 @@
 {
   "scripts": {
     "// User scripts": "",
-    "start": "npm install && npm run dev",
+    "start": "npm run dev",
     "dev": "npm run server",
     "prod": "npm run build && npm run server:prod",
     "// Build app": "",

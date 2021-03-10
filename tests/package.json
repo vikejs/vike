@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/jest": "^26.0.20",
+    "@types/node": "^14.14.31",
+    "jest": "^26.6.3",
+    "jest-playwright-preset": "^1.5.1",
+    "node-fetch": "^3.0.0-beta.9",
+    "playwright-chromium": "^1.9.2",
+    "ts-jest": "^26.5.3",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3"
+  }
+}
