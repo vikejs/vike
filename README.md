@@ -1453,7 +1453,7 @@ defining `_default.page.js` or `_default.page.route.js` is forbidden.
 
 The page `_error.page.js` is shown to your user when an error occurs:
  - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
- - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===true`).
+ - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===false`).
 
 It comes with a built-in `setPageProps()` hook that sets `pageProps.is404`.
 The `pageProps.is404` flag enables you to decided whether to show a 404 or 500 page.
