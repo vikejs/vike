@@ -2,7 +2,7 @@ import { spawn } from 'child_process'
 import { ChildProcessWithoutNullStreams } from 'child_process'
 import { dirname as pathDirname } from 'path'
 import assert = require('assert')
-import { partRegExp } from './utils'
+import { partRegExp, sleep } from './utils'
 import fetch from 'node-fetch'
 import './test.d'
 
@@ -11,7 +11,11 @@ global._page = global.page
 // @ts-ignore
 global._fetch = fetch
 // @ts-ignore
+global._sleep = sleep
+// @ts-ignore
 global._partRegExp = partRegExp
+
+jest.setTimeout(60 * 1000)
 
 beforeAll(async () => {
   await startServer()
@@ -26,6 +30,7 @@ let runningServer: null | {
   proc: ChildProcessWithoutNullStreams
   cwd: string
   cmd: string
+  isRunning: boolean
 } = null
 function startServer() {
   let resolve: () => void
@@ -37,33 +42,40 @@ function startServer() {
 
   const { testPath } = expect.getState()
   const cwd = pathDirname(testPath)
-  const cmd = 'npm run dev'
+  const cmd = cwd.includes('boilerplate') ? 'npm run dev' : 'npm run start'
   const proc = runCommand(cmd, cwd)
 
   assert(runningServer === null)
-  runningServer = { proc, cwd, cmd }
+  runningServer = { proc, cwd, cmd, isRunning: false }
 
   const prefix = `[Server Start][${cwd}][${cmd}]`
 
   let hasError = false
-  proc.stdout.on('data', (data) => {
+  proc.stdout.on('data', async (data) => {
     data = data.toString()
     if (data.startsWith('Server running at') && !hasError) {
       if (hasError) {
         reject(`${prefix} An error occurred while starting the server.`)
       } else {
+        runningServer.isRunning = true
+        await sleep(1000)
         resolve()
       }
     }
   })
   proc.stderr.on('data', (data) => {
     data = data.toString()
+    if (data.includes('EADDRINUSE')) {
+      forceLog(data)
+      process.exit(1)
+    }
     hasError = true
     process.stderr.write(data)
   })
   proc.on('exit', (code) => {
+    assert(runningServer.isRunning === true)
     runningServer = null
-    reject(`${prefix} Server did not start, exit code: ${code}`)
+    reject(`${prefix} Server stopped prematurely, exit code: ${code}`)
   })
 
   return promise
@@ -97,4 +109,8 @@ function stopServer() {
 function runCommand(cmd: string, cwd: string) {
   const [command, ...args] = cmd.split(' ')
   return spawn(command, args, { cwd, detached: true })
+}
+
+function forceLog(str: string) {
+  process.stderr.write(str)
 }
