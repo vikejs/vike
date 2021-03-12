@@ -54,6 +54,7 @@ function retrieveDirectories(DIR_ROOT: string): string[] {
   const directories = readdirSync(DIR_ROOT)
     .map((file) => pathResolve(`${DIR_ROOT}/${file}`))
     .filter((filePath) => lstatSync(filePath).isDirectory())
+    .filter((filePath) => !filePath.includes('node_modules'))
   return directories
 }
 
