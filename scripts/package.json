@@ -1,7 +1,9 @@
 {
   "scripts": {
     "release": "ts-node ./release.ts",
-    "link": "ts-node ./link.ts"
+    "link": "ts-node ./link.ts",
+    "unlink": "ts-node ./unlink.ts",
+    "bump-lockfiles": "ts-node ./bump-lockfiles.ts"
   },
   "dependencies": {
     "@types/node": "^14.14.22",

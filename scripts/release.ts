@@ -1,7 +1,12 @@
 import * as execa from 'execa'
 import { readdirSync, writeFileSync, lstatSync } from 'fs'
 import * as assert from 'assert'
-import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC, DIR_ROOT } from './_locations'
+import {
+  DIR_BOILERPLATES,
+  DIR_EXAMPLES,
+  DIR_SRC,
+  DIR_ROOT
+} from './helpers/locations'
 import * as semver from 'semver'
 
 release()
