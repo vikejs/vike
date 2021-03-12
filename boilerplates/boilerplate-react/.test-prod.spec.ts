@@ -1,2 +1,2 @@
 import { testPages } from "../.testPages";
-testPages("react");
+testPages("npm run prod", "react");

@@ -1,21 +1,38 @@
-import '../tests/test.d'
-import assert = require('assert')
+import {
+  page,
+  run,
+  stop,
+  RunProcess,
+  partRegExp,
+  sleep,
+  fetch
+} from '../tests/setup'
 
 const urlBase = 'http://localhost:3000'
 
 export { testPages }
 
-function testPages(viewFramework: 'vue' | 'react') {
-  assert(viewFramework === 'vue' || viewFramework === 'react')
+function testPages(
+  cmd: 'npm run dev' | 'npm run prod',
+  viewFramework: 'vue' | 'react'
+) {
+  let runProcess: RunProcess
+  beforeAll(async () => {
+    runProcess = await run(cmd)
+    await page.goto(urlBase)
+  })
+  afterAll(async () => {
+    await stop(runProcess)
+  })
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
 
     expect(html).toContain('<h1>Welcome</h1>')
     if (viewFramework === 'vue') {
-      expect(html).toMatch(_partRegExp`<a href="/" data-v-${/[^\>]*/}>Home</a>`)
+      expect(html).toMatch(partRegExp`<a href="/" data-v-${/[^\>]*/}>Home</a>`)
       expect(html).toMatch(
-        _partRegExp`<a href="/about" data-v-${/[^\>]*/}>About</a>`
+        partRegExp`<a href="/about" data-v-${/[^\>]*/}>About</a>`
       )
     } else {
       expect(html).toContain('<a href="/">Home</a>')
@@ -23,27 +40,58 @@ function testPages(viewFramework: 'vue' | 'react') {
     }
   })
 
+  test('production asset preloading', async () => {
+    const isProduction = cmd === 'npm run prod'
+    const html = await fetchHtml('/')
+    if (isProduction) {
+      const hashRegexp = /[a-z0-9]+/
+      const extRegexp = /[a-z]+/
+      expect(html).toMatch(
+        partRegExp`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`
+      )
+      expect(html).toMatch(
+        partRegExp`<link rel="stylesheet" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css">`
+      )
+      expect(html).toMatch(
+        partRegExp`<link rel="preload" href="/assets/logo.${hashRegexp}.svg">`
+      )
+      expect(html).toMatch(
+        partRegExp`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
+      )
+      expect(html).toMatch(
+        partRegExp`<link rel="modulepreload" crossorigin href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
+      )
+      expect(html).not.toContain(
+        '<script type="module" src="/@vite/client"></script>'
+      )
+    } else {
+      expect(html).toContain(
+        '<script type="module" src="/@vite/client"></script>'
+      )
+    }
+  })
+
   test('page is rendered to the DOM and interacive', async () => {
-    await _page.click('a[href="/"]')
-    expect(await _page.textContent('h1')).toBe('Welcome')
-    expect(await _page.textContent('button')).toBe('Counter 0')
-    await _page.click('button')
-    expect(await _page.textContent('button')).toBe('Counter 1')
+    await page.click('a[href="/"]')
+    expect(await page.textContent('h1')).toBe('Welcome')
+    expect(await page.textContent('button')).toBe('Counter 0')
+    await page.click('button')
+    expect(await page.textContent('button')).toBe('Counter 1')
   })
 
   test('about page', async () => {
-    await _page.click('a[href="/about"]')
-    expect(await _page.textContent('h1')).toBe('About')
+    await page.click('a[href="/about"]')
+    expect(await page.textContent('h1')).toBe('About')
     // CSS is loaded only after being dynamically `import()`'d from JS
-    await _sleep(500)
-    expect(await _page.$eval('p', (e) => getComputedStyle(e).color)).toBe(
+    await sleep(500)
+    expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(
       'rgb(0, 128, 0)'
     )
   })
 }
 
 async function fetchHtml(pathname: string) {
-  const response = await _fetch(urlBase + pathname)
+  const response = await fetch(urlBase + pathname)
   const html = await response.text()
   return html
 }

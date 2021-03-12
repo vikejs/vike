@@ -6,7 +6,6 @@ import playwrightPreset = require('jest-playwright-preset/jest-preset')
 const config: Config.InitialOptions = {
   ...tsPreset,
   ...playwrightPreset,
-  setupFilesAfterEnv: [`${__dirname}/jestPerTestSetup.ts`],
   rootDir: `${__dirname}/..`
 }
 
