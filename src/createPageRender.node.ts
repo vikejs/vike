@@ -50,22 +50,25 @@ function assertArguments({ viteDevServer, root, isProduction }: Args) {
     [true, false, undefined].includes(isProduction),
     '`createPageRender({ viteDevServer, root, isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.'
   )
-  assertUsage(
-    isProduction !== true || viteDevServer === undefined,
-    '`createPageRender({ viteDevServer, root, isProduction })`: if `isProduction` is `true`, then `viteDevServer` should be `undefined`.'
-  )
-  assertUsage(
-    isProduction === true || !!viteDevServer,
-    '`createPageRender({ viteDevServer, root, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` cannot be `undefined`.'
-  )
-  assertUsage(
-    hasProp(viteDevServer, 'config') &&
-      hasProp(viteDevServer.config, 'root') &&
-      typeof viteDevServer.config.root === 'string',
-    '`createPageRender({ viteDevServer, root, isProduction })`: argument `viteDevServer` should be `viteDevServer = await vite.createServer()`.'
-  )
-  assertUsage(
-    pathNormalize(viteDevServer.config.root) === pathNormalize(root),
-    '`createPageRender({ viteDevServer, root, isProduction })`: wrong `root` value, make sure that `path.normalize(root) === path.normalize(viteDevServer.root)`.'
-  )
+  if (isProduction === true) {
+    assertUsage(
+      viteDevServer === undefined,
+      '`createPageRender({ viteDevServer, root, isProduction })`: if `isProduction` is `true`, then `viteDevServer` should be `undefined`.'
+    )
+  } else {
+    assertUsage(
+      !!viteDevServer,
+      '`createPageRender({ viteDevServer, root, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` cannot be `undefined`.'
+    )
+    assertUsage(
+      hasProp(viteDevServer, 'config') &&
+        hasProp(viteDevServer.config, 'root') &&
+        typeof viteDevServer.config.root === 'string',
+      '`createPageRender({ viteDevServer, root, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` should be `viteDevServer = await vite.createServer(/*...*/)`.'
+    )
+    assertUsage(
+      pathNormalize(viteDevServer.config.root) === pathNormalize(root),
+      '`createPageRender({ viteDevServer, root, isProduction })`: wrong `root` value, make sure that `path.normalize(root) === path.normalize(viteDevServer.root)`.'
+    )
+  }
 }
