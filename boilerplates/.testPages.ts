@@ -4,8 +4,8 @@ import {
   stop,
   RunProcess,
   partRegExp,
-  sleep,
-  fetch
+  fetch,
+  autoRetry
 } from '../tests/setup'
 
 const urlBase = 'http://localhost:3000'
@@ -83,10 +83,11 @@ function testPages(
     await page.click('a[href="/about"]')
     expect(await page.textContent('h1')).toBe('About')
     // CSS is loaded only after being dynamically `import()`'d from JS
-    await sleep(500)
-    expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(
-      'rgb(0, 128, 0)'
-    )
+    await autoRetry(async () => {
+      expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(
+        'rgb(0, 128, 0)'
+      )
+    })
   })
 }
 

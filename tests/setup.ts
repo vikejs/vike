@@ -5,12 +5,13 @@ import { Page } from 'playwright-chromium'
 import { sleep } from './utils'
 import { red, bold, blue } from 'kolorist'
 
-export { partRegExp, sleep } from './utils'
+export { partRegExp } from './utils'
 export { default as fetch } from 'node-fetch'
 export const page: Page = (global as any).page as Page
 export { RunProcess }
 export { run }
 export { stop }
+export { autoRetry }
 
 jest.setTimeout(60 * 1000)
 
@@ -112,4 +113,23 @@ function forceLog(std: 'stdout' | 'stderr' | string, str: string) {
   if (std === 'stderr') std = bold(red(std))
   if (std === 'stdout') std = bold(blue(std))
   process.stderr.write(`[${std}]${str}`)
+}
+
+async function autoRetry(test: () => void | Promise<void>): Promise<void> {
+  const timeout = 10 * 1000
+  const period = 100
+  const numberOfTries = timeout / period
+  let i = 0
+  while (true) {
+    try {
+      await test()
+      return
+    } catch (err) {
+      i = i + 1
+      if (i > numberOfTries) {
+        throw err
+      }
+    }
+    await sleep(period)
+  }
 }

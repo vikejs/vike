@@ -4,8 +4,8 @@ import {
   stop,
   RunProcess,
   partRegExp,
-  sleep,
-  fetch
+  fetch,
+  autoRetry
 } from '../tests/setup'
 import assert = require('assert')
 
@@ -89,7 +89,6 @@ function testPages(viewFramework: 'vue' | 'react') {
     expect(await page.textContent('body')).toContain(pageContent)
   })
 
-  /*
   test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
     expect(html).toContain('This page is written in <em>Markdown</em>')
@@ -103,20 +102,18 @@ function testPages(viewFramework: 'vue' | 'react') {
       assert(false)
     }
   })
-  */
-  /* Every part of this test seem to lead to random failures.
   test('markdown page DOM', async () => {
     await page.click('a[href="/markdown"]')
     expect(await page.textContent('body')).toContain(
       'This page is written in Markdown'
     )
     expect(await page.textContent('button')).toBe('Counter 0')
-    await page.click('button')
-    await sleep(1000)
-    expect(await page.textContent('body')).toContain('Counter 1')
-    expect(await page.textContent('button')).toBe('Counter 1')
+    // `autoRetry` to ensure that browser-side code is loaded
+    await autoRetry(async () => {
+      await page.click('button')
+      expect(await page.textContent('button')).toContain('Counter 1')
+    })
   })
-  //*/
 }
 
 async function fetchHtml(pathname: string) {
