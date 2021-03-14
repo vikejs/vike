@@ -9,7 +9,6 @@ import {
 import { assert, assertUsage } from './utils/assert'
 import * as glob from 'fast-glob'
 import { workaroundViteIssue2390 } from './workaroundViteIssue2390'
-const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
 
 export { plugin }
 
@@ -57,9 +56,10 @@ function entryPoints(config: UserConfig): Record<string, string> {
 }
 
 function serverEntryPoints(): Record<string, string> {
-  const entryName = pathFilename(SERVER_ENTRY).replace(/\.js$/, '')
+  const serverEntry = require.resolve('./user-files/infra.node.vite-entry')
+  const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
   const entryPoints = {
-    [entryName]: SERVER_ENTRY
+    [entryName]: serverEntry
   }
   return entryPoints
 }
