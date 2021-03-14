@@ -1,3 +1,18 @@
+# [0.1.0-beta.13](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.11...v0.1.0-beta.13) (2021-03-14)
+
+
+### Bug Fixes
+
+* (un)link script ([ee9cef2](https://github.com/brillout/vite-plugin-ssr/commit/ee9cef256608588c80042d729680e121a8477f33))
+* do not assertUsage viteDevServer in production ([d7f69c5](https://github.com/brillout/vite-plugin-ssr/commit/d7f69c56b270faa5c449d97e402b02e0c667c8cc))
+
+
+### Features
+
+* allow non-page .server file extensions ([10a14d1](https://github.com/brillout/vite-plugin-ssr/commit/10a14d10462aac26f08736d72da1ff028b7a2a51)), closes [#3](https://github.com/brillout/vite-plugin-ssr/issues/3)
+
+
+
 # [0.1.0-beta.12](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.11...v0.1.0-beta.12) (2021-03-12)
 
 
