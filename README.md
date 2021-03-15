@@ -59,7 +59,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.js`](#_errorpagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr/plugin'`](#import-ssr-from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr)
 
 <br/>
 
@@ -520,7 +520,7 @@ Then choose between `vue`, `vue-ts`, `react`, and `react-ts`.
 
 If you have an already existing Vite app and don't want to start from scratch:
 
-1. Add `vite-plugin-ssr/plugin` to your `vite.config.js`.
+1. Add `vite-plugin-ssr` to your `vite.config.js`.
    - [Vue](/boilerplates/boilerplate-vue/vite.config.js)
    - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/vite.config.ts)
    - [React](/boilerplates/boilerplate-react/vite.config.js)
@@ -1560,7 +1560,7 @@ Examples:
 <br/><br/>
 
 
-## `import ssr from 'vite-plugin-ssr/plugin'`
+## `import ssr from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
 
@@ -1569,7 +1569,7 @@ The plugin has no options.
 ```js
 // vite.config.js
 
-const ssr = require("vite-plugin-ssr/plugin");
+const ssr = require("vite-plugin-ssr");
 
 module.exports = {
   // Make sure to include `ssr()` and not `ssr`
