@@ -131,7 +131,8 @@ async function renderPageId(
       `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
     )
     assertUsage(
-      !hasProp(pagePropsAddendum, 'then') || !isCallable(pagePropsAddendum.then),
+      !hasProp(pagePropsAddendum, 'then') ||
+        !isCallable(pagePropsAddendum.then),
       `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should not return a promise.`
     )
     Object.assign(pageProps, pagePropsAddendum)
@@ -475,13 +476,26 @@ function warn404(url: string, allPageIds: string[]) {
       relevantPageIds.length > 0,
       'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
     )
-    assertWarning(
-      false,
-      `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
-        .map((pageId) => `${pageId}.page.*`)
-        .join(' ')} (this warning is not shown in production.)`
-    )
+    if (!isFileRequest(url)) {
+      assertWarning(
+        false,
+        `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
+          .map((pageId) => `\`${pageId}.page.*\``)
+          .join(', ')}. (This warning is not shown in production.)`
+      )
+    }
   }
+}
+
+function isFileRequest(url: string) {
+  const paths = url.split('/')
+  const lastPath = paths[paths.length - 1]
+  const parts = lastPath.split('.')
+  if (parts.length < 2) {
+    return false
+  }
+  const fileExtension = parts[parts.length - 1]
+  return /^[a-z0-9]+$/.test(fileExtension)
 }
 
 async function render500Page(
