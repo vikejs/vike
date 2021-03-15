@@ -1,5 +1,3 @@
-import './workaroundViteIssue2390'
-//import { workaroundViteIssue2390 } from './workaroundViteIssue2390'
 import { Plugin, UserConfig } from 'vite'
 import {
   isAbsolute as pathIsAbsolute,
@@ -33,18 +31,15 @@ function plugin(): Plugin[] {
     {
       name: 'vite-plugin-ssr[build]',
       apply: 'build',
-      config: (config: UserConfig) => {
-        //workaroundViteIssue2390()
-        return {
-          build: {
-            outDir: getOutDir(config),
-            manifest: !isSSR(config),
-            rollupOptions: { input: entryPoints(config) },
-            polyfillDynamicImport: false
-          },
-          ssr
-        }
-      }
+      config: (config: UserConfig) => ({
+        build: {
+          outDir: getOutDir(config),
+          manifest: !isSSR(config),
+          rollupOptions: { input: entryPoints(config) },
+          polyfillDynamicImport: false
+        },
+        ssr
+      })
     }
   ]
 }
