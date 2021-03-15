@@ -4,10 +4,8 @@
   "dependencies": {
     "@brillout/libassert": "^0.3.0",
     "@brillout/path-to-regexp": "^0.1.2",
-    "@types/fs-extra": "^9.0.8",
     "devalue": "^2.0.1",
-    "fast-glob": "^3.2.5",
-    "fs-extra": "^9.1.0"
+    "fast-glob": "^3.2.5"
   },
   "devDependencies": {
     "@types/node": "^14.14.22",

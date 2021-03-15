@@ -8,7 +8,7 @@ import {
 } from 'path'
 import { assert, assertUsage } from './utils/assert'
 import * as glob from 'fast-glob'
-import { workaroundViteIssue2390 } from './workaroundViteIssue2390'
+const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
 
 export { plugin }
 
@@ -31,18 +31,15 @@ function plugin(): Plugin[] {
     {
       name: 'vite-plugin-ssr[build]',
       apply: 'build',
-      config: (config: UserConfig) => {
-        workaroundViteIssue2390(getRoot(config))
-        return {
-          build: {
-            outDir: getOutDir(config),
-            manifest: !isSSR(config),
-            rollupOptions: { input: entryPoints(config) },
-            polyfillDynamicImport: false
-          },
-          ssr
-        }
-      }
+      config: (config: UserConfig) => ({
+        build: {
+          outDir: getOutDir(config),
+          manifest: !isSSR(config),
+          rollupOptions: { input: entryPoints(config) },
+          polyfillDynamicImport: false
+        },
+        ssr
+      })
     }
   ]
 }
@@ -56,10 +53,9 @@ function entryPoints(config: UserConfig): Record<string, string> {
 }
 
 function serverEntryPoints(): Record<string, string> {
-  const serverEntry = require.resolve('./user-files/infra.node.vite-entry')
-  const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
+  const entryName = pathFilename(SERVER_ENTRY).replace(/\.js$/, '')
   const entryPoints = {
-    [entryName]: serverEntry
+    [entryName]: SERVER_ENTRY
   }
   return entryPoints
 }
