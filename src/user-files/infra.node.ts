@@ -1,6 +1,6 @@
 import { setAllUserFilesGetter } from './infra.shared'
-import { assert } from '../utils/assert'
-import { sep as pathSep } from 'path'
+import { assert, assertUsage } from '../utils/assert'
+import { sep as pathSep, resolve as pathResolve } from 'path'
 import { getGlobal } from '../global.node'
 const viteEntryFileBase = 'infra.node.vite-entry'
 require.resolve(`./${viteEntryFileBase}`)
@@ -19,7 +19,18 @@ async function loadViteEntry(modulePath: string): Promise<any> {
   const { viteDevServer, isProduction, root } = getGlobal()
 
   if (isProduction) {
-    const moduleExports = require(`${root}/dist/server/${viteEntryFileBase}.js`)
+    const modulePath = pathResolve(
+      `${root}/dist/server/${viteEntryFileBase}.js`
+    )
+    let moduleExports
+    try {
+      moduleExports = require(modulePath)
+    } catch (err) {
+      assertUsage(
+        false,
+        `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`
+      )
+    }
     return moduleExports
   } else {
     let moduleExports: any
