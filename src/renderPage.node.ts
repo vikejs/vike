@@ -131,7 +131,7 @@ async function renderPageId(
       `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
     )
     assertUsage(
-      !hasProp(pagePropsAddendum, 'then'),
+      !hasProp(pagePropsAddendum, 'then') || !isCallable(pagePropsAddendum.then),
       `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should not return a promise.`
     )
     Object.assign(pageProps, pagePropsAddendum)
