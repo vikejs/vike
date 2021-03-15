@@ -5,7 +5,8 @@ import {
   mkdirSync,
   existsSync,
   unlinkSync,
-  copyFileSync
+  copyFileSync,
+  mkdtempSync
 } from 'fs'
 import { copySync, ensureFileSync } from 'fs-extra'
 import {
@@ -16,6 +17,7 @@ import {
 } from 'path'
 import { assert } from './utils'
 import * as glob from 'fast-glob'
+import { tmpdir } from 'os'
 
 export { workaroundViteIssue2390 }
 
@@ -24,8 +26,10 @@ function workaroundViteIssue2390(userRoot: string): void {
   assert(__dirname.endsWith('node_modules/vite-plugin-ssr/dist'))
 
   const pluginRoot = pathResolve(`${__dirname}/..`)
-  const pluginDist = pathJoin(pluginRoot, 'dist')
-  const pluginDistPristine = pathJoin(pluginRoot, 'dist-copy')
+  const pluginDist = pluginRoot
+  const pluginDistPristine = pathJoin(
+    pathResolve(`${pluginRoot}/..`, 'vite-plugin-ssr-copy')
+  )
 
   if (!existsSync(pluginDistPristine)) {
     mkdirSync(pluginDistPristine)
@@ -34,8 +38,11 @@ function workaroundViteIssue2390(userRoot: string): void {
 
   const userDist = pathJoin(userRoot, 'dist')
   mkdirp(userDist)
-  const pluginDistUserland = pathJoin(userDist, 'vite-plugin-ssr')
+  //const pluginDistUserland = pathJoin(userDist, 'vite-plugin-ssr')
+  const pluginDistUserland = pathJoin(tmpdir(), 'vite-plugin-ssr')
   mkdirp(pluginDistUserland)
+  //const pluginDistUserland = mkdtempSync(pathJoin(tmpdir(), 'vite-plugin-ssr_'))
+  console.log(pluginDistUserland)
 
   const filesToSymlink = getFilesToSymlink(pluginDistPristine)
   filesToSymlink.forEach((file) => {
@@ -52,24 +59,50 @@ function workaroundViteIssue2390(userRoot: string): void {
     unlinkSync(source)
     symlinkSync(targetRelative, source)
   })
+
+  symlinkSync(
+    pathJoin(userRoot, 'node_modules'),
+    pathJoin(pluginDistUserland, 'node_modules')
+  )
 }
 
+//function getFilesToSymlink(pluginDistPristine: string): string[] {
+//  const clientFiles = glob.sync('**/*', { cwd: pluginDistPristine })
+//  return clientFiles
+//}
 function getFilesToSymlink(pluginDistPristine: string): string[] {
-  const clientFiles = glob.sync('**/*', { cwd: pluginDistPristine })
-  return clientFiles
+  const clientFiles = []
+  clientFiles.push(
+    ...glob.sync('**/*.client.ts', {
+      cwd: pluginDistPristine,
+      ignore: ['**/node_modules/**', '**/dist/**']
+    })
+  )
+  clientFiles.push(
+    ...glob.sync('**/*.shared.ts', {
+      cwd: pluginDistPristine,
+      ignore: ['**/node_modules/**', '**/dist/**']
+    })
+  )
+  const clientEntry = pathJoin('client.ts')
+  require.resolve(pathJoin(pluginDistPristine, clientEntry))
+  clientFiles.push(clientEntry)
+
+  const nodeFiles = []
+  nodeFiles.push(
+    ...glob.sync('dist/**/*.shared.js', {
+      cwd: pluginDistPristine,
+      ignore: ['**/node_modules/**']
+    })
+  )
+  const nodeEntry = pathJoin('dist', 'user-files', 'infra.node.vite-entry.js')
+  require.resolve(pathJoin(pluginDistPristine, nodeEntry))
+  nodeFiles.push(nodeEntry)
+  const packageJson = 'package.json'
+  require.resolve(pathJoin(pluginDistPristine, packageJson))
+  nodeFiles.push(packageJson)
+  return [...clientFiles, ...nodeFiles]
 }
-// function getFilesToSymlink(pluginDistPristine: string): string[] {
-//   const clientFiles = glob.sync('**/*.client.js', { cwd: pluginDistPristine })
-//   const sharedFiles = glob.sync('**/*.shared.js', { cwd: pluginDistPristine })
-//   const nodeFiles = []
-//   const clientEntry = 'client.js'
-//   require.resolve(pathJoin(pluginDistPristine, clientEntry))
-//   clientFiles.push(clientEntry)
-//   const nodeEntry = pathJoin('user-files', 'infra.node.vite-entry.js')
-//   require.resolve(pathJoin(pluginDistPristine, nodeEntry))
-//   nodeFiles.push(nodeEntry)
-//   return [...clientFiles, ...sharedFiles, ...nodeFiles]
-// }
 // function getFilesToSymlink(pluginDistPristine: string): string[] {
 //   const clientFiles = glob.sync(`${pluginDistPristine}/**/*.client.js`)
 //   const sharedFiles = glob.sync(`${pluginDistPristine}/**/*.shared.js`)
