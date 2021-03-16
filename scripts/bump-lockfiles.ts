@@ -10,16 +10,6 @@ async function bumpLockfiles() {
   const lockfiles = await getLockfiles()
   await removeLockfiles(lockfiles)
   await createLockfiles(lockfiles)
-  await gitCommit()
-}
-
-async function gitCommit() {
-  await runCommand('git add .')
-  await runCommand__arr('git', [
-    'commit',
-    '-am',
-    'chore: bump package-lock.json'
-  ])
 }
 
 async function getLockfiles() {
@@ -46,6 +36,8 @@ async function createLockfiles(lockfiles: string[]) {
       console.log(`[Done] npm install (${cwd})`)
     })
   )
+  // Running `npm install` twice to fix `npm install` not being idempotent
+  await runCommand('npm install', { cwd: DIR_ROOT })
 }
 
 async function runCommand(

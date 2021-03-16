@@ -1,10 +1,16 @@
 {
   "scripts": {
+    "// Update version": "",
     "release": "ts-node ./release.ts",
+    "// Link/unlink src/": "",
     "link": "ts-node ./link.ts",
     "unlink": "ts-node ./unlink.ts",
-    "bump-lockfiles": "ts-node ./bump-lockfiles.ts",
-    "update-dependencies": "ts-node ./update-dependencies.ts"
+    "// Update dependencies": "",
+    "bump": "npm run bump:dependencies && npm run bump:lockfiles && npm run bump:commit && npm run bump:test",
+    "bump:dependencies": "ts-node ./bump-dependencies.ts",
+    "bump:lockfiles": "ts-node ./bump-lockfiles.ts",
+    "bump:commit": "cd ../ && git add . && git commit -am 'chore: update dependencies' &2> /dev/null",
+    "bump:test": "cd ../ && npm run test"
   },
   "dependencies": {
     "@types/node": "^14.14.35",
