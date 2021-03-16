@@ -75,9 +75,8 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **Fast Cold Start**. Your pages are lazy-loaded on the server: adding pages doesn't increase cold start (crucial for serverless deployments).
 - **Code Splitting**. In the browser, each page loads only the code it needs.
-- **Scalable DX**. Can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling).
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
-- **Scalable Architecture**. Your app has a simple SSR architecture that can scale from a small one-man hobby project to a large-scale app.
+- **Scalable**. Your app can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling) and has an SSR architecture that can scale from a small one-man simple hobby project up to a complex feature-rich large-scale app.
 
 To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
