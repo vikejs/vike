@@ -12,7 +12,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
   <img src="/docs/discord.svg" height="32" width="117.078" alt="Discord vite-plugin-ssr"/>
 </a>
 &nbsp;&nbsp;&nbsp;
-<a href="https://twitter.com/brillout/status/1365939892170215426">
+<a href="https://twitter.com/brillout/status/1371806177424777216">
   <img src="/docs/twitter_retweet.svg" height="32" width="179" alt="Retweet vite-plugin-ssr"/>
 </a>
 &nbsp;&nbsp;&nbsp;
