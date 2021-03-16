@@ -1,27 +1,16 @@
 import {
-  page,
   run,
-  stop,
-  RunProcess,
+  page,
+  urlBase,
   partRegExp,
-  fetch,
+  fetchHtml,
   autoRetry
 } from '../tests/setup'
 import assert = require('assert')
 
-const urlBase = 'http://localhost:3000'
-
 export { testPages }
-
 function testPages(viewFramework: 'vue' | 'react') {
-  let runProcess: RunProcess
-  beforeAll(async () => {
-    runProcess = await run('npm run start')
-    await page.goto(urlBase)
-  })
-  afterAll(async () => {
-    await stop(runProcess)
-  })
+  run('npm run start')
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -114,10 +103,4 @@ function testPages(viewFramework: 'vue' | 'react') {
       expect(await page.textContent('button')).toContain('Counter 1')
     })
   })
-}
-
-async function fetchHtml(pathname: string) {
-  const response = await fetch(urlBase + pathname)
-  const html = await response.text()
-  return html
 }

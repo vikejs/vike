@@ -4,23 +4,34 @@ import { dirname as pathDirname } from 'path'
 import { Page } from 'playwright-chromium'
 import { sleep } from './utils'
 import { red, bold, blue } from 'kolorist'
+import fetch from 'node-fetch'
 
+export const urlBase = 'http://localhost:3000'
 export { partRegExp } from './utils'
-export { default as fetch } from 'node-fetch'
 export const page: Page = (global as any).page as Page
-export { RunProcess }
-export { run }
-export { stop }
 export { autoRetry }
+export { fetchHtml }
+export { run }
 
-jest.setTimeout(60 * 1000)
+function run(cmd: string) {
+  jest.setTimeout(60 * 1000)
+
+  let runProcess: RunProcess
+  beforeAll(async () => {
+    runProcess = await start(cmd)
+    await page.goto(urlBase)
+  })
+  afterAll(async () => {
+    await stop(runProcess)
+  })
+}
 
 type RunProcess = {
   proc: ChildProcessWithoutNullStreams
   cwd: string
   cmd: string
 }
-function run(cmd: string): Promise<RunProcess> {
+function start(cmd: string): Promise<RunProcess> {
   let resolve: (_: RunProcess) => void
   let reject: (err: string) => void
   const promise = new Promise<RunProcess>((_resolve, _reject) => {
@@ -132,4 +143,10 @@ async function autoRetry(test: () => void | Promise<void>): Promise<void> {
     }
     await sleep(period)
   }
+}
+
+async function fetchHtml(pathname: string) {
+  const response = await fetch(urlBase + pathname)
+  const html = await response.text()
+  return html
 }

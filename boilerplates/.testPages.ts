@@ -1,14 +1,4 @@
-import {
-  page,
-  run,
-  stop,
-  RunProcess,
-  partRegExp,
-  fetch,
-  autoRetry
-} from '../tests/setup'
-
-const urlBase = 'http://localhost:3000'
+import { page, run, partRegExp, autoRetry, fetchHtml } from '../tests/setup'
 
 export { testPages }
 
@@ -16,14 +6,7 @@ function testPages(
   cmd: 'npm run dev' | 'npm run prod',
   viewFramework: 'vue' | 'react'
 ) {
-  let runProcess: RunProcess
-  beforeAll(async () => {
-    runProcess = await run(cmd)
-    await page.goto(urlBase)
-  })
-  afterAll(async () => {
-    await stop(runProcess)
-  })
+  run(cmd)
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -89,10 +72,4 @@ function testPages(
       )
     })
   })
-}
-
-async function fetchHtml(pathname: string) {
-  const response = await fetch(urlBase + pathname)
-  const html = await response.text()
-  return html
 }
