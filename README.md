@@ -68,15 +68,16 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 
 `vite-plugin-ssr` provides a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool.
 
-- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can also be used with Vue Router or React Router for client-side dynamic nested routes.
+- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can also be used with Vue Router or React Router.
+- **HMR**. Browser as well as server code is automatically reloaded.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
-- **HMR**. Both browser and server code are automatically reloaded.
-- **Scalable**. Can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling).
-- **Fast Production Cold Start**. Your pages' server-side code is lazy loaded so that adding pages doesn't increase cold start.
-- **Code Splitting**. Each page loads only the browser-side code it needs.
+- **Fast Cold Start**. Your pages are lazy-loaded on the server: adding pages doesn't increase cold start (crucial for serverless deployments).
+- **Code Splitting**. In the browser, each page loads only the code it needs.
+- **Scalable DX**. Can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling).
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
+- **Scalable Architecture**. Your app has a simple SSR architecture that can scale from a small one-man hobby project to a large-scale app.
 
 To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
