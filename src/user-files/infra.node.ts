@@ -9,7 +9,9 @@ const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
 
 setAllUserFilesGetter(async () => {
   const viteEntryExports = await loadViteEntry(viteEntry)
-  const { __getAllUserFiles } = viteEntryExports
+  const __getAllUserFiles =
+    viteEntryExports.__getAllUserFiles ||
+    viteEntryExports.default.__getAllUserFiles
   return __getAllUserFiles()
 })
 
