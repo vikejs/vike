@@ -21,7 +21,7 @@
     "node-fetch": "^3.0.0-beta.9",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.3",
-    "vite": "2.1.1",
+    "vite": "2.1.2",
     "vite-plugin-md": "^0.6.1",
     "vite-plugin-ssr": "^0.1.0-beta.14",
     "vue": "3.0.7"
