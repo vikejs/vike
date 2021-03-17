@@ -15,6 +15,7 @@ async function release() {
   const { versionCurrent, versionNew } = getVersion()
   updateVersion(versionNew)
   updateDependencies({ versionNew, versionCurrent })
+  await updateLockFile()
   await changelog()
   const tag = `v${versionNew}`
   await commit(tag)
@@ -87,6 +88,10 @@ function update(pkgPath: string[], updater: (pkg: PackageJson) => void) {
     updater(pkg)
     writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
   })
+}
+
+async function updateLockFile() {
+  await run('npm', ['install'])
 }
 
 type PackageJson = {
