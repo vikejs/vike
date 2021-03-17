@@ -23,7 +23,7 @@ async function getLockfiles() {
 
 async function removeLockfiles(lockfiles: string[]) {
   if (lockfiles.length === 0) return
-  await runCommand('git rm ' + lockfiles.join(' '))
+  await runCommand('git rm -f ' + lockfiles.join(' '))
   console.log(`[Done] removed package-lock.json files`)
 }
 

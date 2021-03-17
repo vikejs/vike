@@ -16,6 +16,7 @@
     "build:watch": "npm run tsc:watch",
     "link": "cd scripts/ && npm run link",
     "unlink": "cd scripts/ && npm run unlink",
+    "bump": "cd scripts/ && npm run bump",
     "// Build vite-plugin-ssr": "",
     "build": "npm install && npm run tsc:once",
     "// TypeScript": "",
