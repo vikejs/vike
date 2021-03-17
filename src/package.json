@@ -16,6 +16,9 @@
     "vite": "^2.1.1"
   },
   "main": "./dist/node.js",
+  "bin": {
+    "vite-plugin-ssr": "bin/vite-plugin-ssr.js"
+  },
   "description": "Vite SSR Plugin",
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "license": "MIT",
