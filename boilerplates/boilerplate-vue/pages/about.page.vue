@@ -1,10 +1,10 @@
 <template>
   <h1>About</h1>
-  <p>A colorized text.</p>
+  <p>A colored page.</p>
 </template>
 
-<style scoped>
-p {
+<style>
+h1, p {
   color: green;
 }
 </style>

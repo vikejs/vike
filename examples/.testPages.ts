@@ -33,12 +33,15 @@ function testPages(viewFramework: 'vue' | 'react') {
     }
   })
 
-  test('page is rendered to the DOM and interacive', async () => {
+  test('page is rendered to the DOM and interactive', async () => {
     await page.click('a[href="/"]')
     expect(await page.textContent('h1')).toBe('Welcome to vite-plugin-ssr')
     expect(await page.textContent('button')).toBe('Counter 0')
-    await page.click('button')
-    expect(await page.textContent('button')).toBe('Counter 1')
+    // `autoRetry` because browser-side code may not be loaded yet
+    await autoRetry(async () => {
+      await page.click('button')
+      expect(await page.textContent('button')).toContain('Counter 1')
+    })
   })
 
   test('supports route functions', async () => {
@@ -97,7 +100,7 @@ function testPages(viewFramework: 'vue' | 'react') {
       'This page is written in Markdown'
     )
     expect(await page.textContent('button')).toBe('Counter 0')
-    // `autoRetry` to ensure that browser-side code is loaded
+    // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')

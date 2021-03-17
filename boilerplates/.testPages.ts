@@ -54,12 +54,15 @@ function testPages(
     }
   })
 
-  test('page is rendered to the DOM and interacive', async () => {
+  test('page is rendered to the DOM and interactive', async () => {
     await page.click('a[href="/"]')
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
-    await page.click('button')
-    expect(await page.textContent('button')).toBe('Counter 1')
+    // `autoRetry` because browser-side code may not be loaded yet
+    await autoRetry(async () => {
+      await page.click('button')
+      expect(await page.textContent('button')).toContain('Counter 1')
+    })
   })
 
   test('about page', async () => {
@@ -67,7 +70,7 @@ function testPages(
     expect(await page.textContent('h1')).toBe('About')
     // CSS is loaded only after being dynamically `import()`'d from JS
     await autoRetry(async () => {
-      expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(
+      expect(await page.$eval('h1', (e) => getComputedStyle(e).color)).toBe(
         'rgb(0, 128, 0)'
       )
     })

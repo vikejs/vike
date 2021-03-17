@@ -1,24 +1,16 @@
 <template>
-  <ViteAntiFlicker>
-    <div class="layout">
-      <div class="navigation">
-        <a href="/" class="logo">
-          <img src="./logo.svg" height="64" />
-        </a>
-        <a href="/markdown">Markdown</a>
-        <a href="/star-wars">Data Fetching</a>
-        <a href="/hello/alice">Routing</a>
-      </div>
-      <div class="content"><slot/></div>
+  <div class="layout">
+    <div class="navigation">
+      <a href="/" class="logo">
+        <img src="./logo.svg" height="64" width="64" />
+      </a>
+      <a href="/markdown">Markdown</a>
+      <a href="/star-wars">Data Fetching</a>
+      <a href="/hello/alice">Routing</a>
     </div>
-  </ViteAntiFlicker>
+    <div class="content"><slot/></div>
+  </div>
 </template>
-
-<script lang="ts">
-import ViteAntiFlicker from './ViteAntiFlicker.vue'
-const components = { ViteAntiFlicker }
-export default { components }
-</script>
 
 <style>
 body {

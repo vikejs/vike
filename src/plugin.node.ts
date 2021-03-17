@@ -34,7 +34,7 @@ function plugin(): Plugin[] {
       config: (config: UserConfig) => ({
         build: {
           outDir: getOutDir(config),
-          manifest: !isSSR(config),
+          manifest: true,
           rollupOptions: { input: entryPoints(config) },
           polyfillDynamicImport: false
         },

@@ -4,7 +4,7 @@ import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getGlobal } from './global.node'
-import { getPreloadLinks } from './getPreloadLinks.node'
+import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
 import {
   assert,
@@ -97,7 +97,7 @@ async function renderPageId(
   contextProps: Record<string, unknown>,
   url: string
 ) {
-  const { Page, pageFilePaths } = await getPage(pageId)
+  const { Page, pageFilePath } = await getPage(pageId)
 
   const {
     renderFunction,
@@ -172,12 +172,19 @@ async function renderPageId(
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
-  const scriptSrc = await pathRelativeToRoot(browserFilePath)
+  const scriptSrc = pathRelativeToRoot(browserFilePath)
   htmlDocument = injectScript(htmlDocument, scriptSrc)
 
   // Inject preload links
-  const preloadLinks = getPreloadLinks(pageFilePaths, browserFilePath)
-  htmlDocument = injectPreloadLinks(htmlDocument, preloadLinks)
+  const dependencies = new Set<string>()
+  dependencies.add(pageFilePath)
+  dependencies.add(browserFilePath)
+  dependencies.add(renderFunction.filePath)
+  if (setPagePropsFunction) dependencies.add(setPagePropsFunction.filePath)
+  if (addContextPropsFunction)
+    dependencies.add(addContextPropsFunction.filePath)
+  const preloadTags = await getPreloadTags(Array.from(dependencies))
+  htmlDocument = injectPreloadTags(htmlDocument, preloadTags)
 
   return htmlDocument
 }
@@ -194,7 +201,7 @@ async function getPage(pageId: string) {
   )
   const Page = fileExports.Page || fileExports.default
 
-  return { Page, pageFilePaths: [filePath] }
+  return { Page, pageFilePath: filePath }
 }
 
 type ServerFunctions = {
@@ -330,16 +337,16 @@ async function applyViteHtmlTransform(
   return htmlDocument
 }
 
-async function pathRelativeToRoot(filePath: string): Promise<string> {
+function pathRelativeToRoot(filePath: string): string {
   assert(filePath.startsWith('/'))
   const { isProduction } = getGlobal()
 
   if (!isProduction) {
     return filePath
   } else {
-    const manifest = getViteManifest()
+    const { clientManifest } = getViteManifest()
     const manifestKey = filePath.slice(1)
-    const manifestVal = manifest[manifestKey]
+    const manifestVal = clientManifest[manifestKey]
     assert(manifestVal)
     assert(manifestVal.isEntry)
     const { file } = manifestVal
@@ -364,11 +371,11 @@ function injectScript(htmlDocument: string, scriptSrc: string): string {
   return injectEnd(htmlDocument, injection)
 }
 
-function injectPreloadLinks(
+function injectPreloadTags(
   htmlDocument: string,
-  preloadLinks: string[]
+  preloadTags: string[]
 ): string {
-  const injection = preloadLinks.join('')
+  const injection = preloadTags.join('')
   return injectBegin(htmlDocument, injection)
 }
 
