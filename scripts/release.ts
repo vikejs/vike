@@ -20,6 +20,7 @@ async function release() {
   const tag = `v${versionNew}`
   await commit(tag)
   await commitTag(tag)
+  await build()
 }
 
 async function changelog() {
@@ -41,6 +42,9 @@ async function commit(tag: string) {
 async function commitTag(tag: string) {
   assert(tag.startsWith('v0'))
   await run('git', ['tag', tag])
+}
+async function build() {
+  await run('npm', ['run', 'build'])
 }
 
 function getVersion(): { versionNew: string; versionCurrent: string } {
