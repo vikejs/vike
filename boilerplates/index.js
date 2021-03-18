@@ -6,6 +6,7 @@ const path = require('path')
 const argv = require('minimist')(process.argv.slice(2))
 const { prompt } = require('enquirer')
 const { green, cyan, stripColors, bold } = require('kolorist')
+const { execSync } = require('child_process')
 
 const cwd = process.cwd()
 
@@ -107,6 +108,8 @@ async function init() {
     write(file)
   }
 
+  initGitRepo(root)
+
   console.log(`\nDone. Now run:\n`)
   if (root !== cwd) {
     console.log(cmd(`  cd ${path.relative(cwd, root)}/`))
@@ -152,6 +155,32 @@ function emptyDir(dir) {
       fs.unlinkSync(abs)
     }
   }
+}
+
+function initGitRepo(cwd) {
+  if (!isGitInstalled()) {
+    return
+  }
+  execSync('git init', { cwd })
+  execSync('git add .', { cwd })
+  execSync(
+    [
+      'git commit',
+      '--message="chore: boilerplate Vite w/ vite-plugin-ssr"',
+      '--author="Romuald Brillout <git@brillout.com>"',
+      '--date="Mon Mar 1 14:45:24 2021 +0100"'
+    ].join(' '),
+    { cwd }
+  )
+}
+function isGitInstalled() {
+  let stdout
+  try {
+    stdout = execSync('git --version')
+  } catch (err) {
+    return false
+  }
+  return !!stdout
 }
 
 init().catch((e) => {
