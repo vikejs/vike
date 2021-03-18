@@ -6,6 +6,7 @@ import {
   sep as pathSep,
   posix as pathPosix
 } from 'path'
+import { assertPatch } from '@brillout/vite-fix-2390'
 import { assert, assertUsage } from './utils/assert'
 import * as glob from 'fast-glob'
 const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
@@ -31,15 +32,18 @@ function plugin(): Plugin[] {
     {
       name: 'vite-plugin-ssr[build]',
       apply: 'build',
-      config: (config: UserConfig) => ({
-        build: {
-          outDir: getOutDir(config),
-          manifest: true,
-          rollupOptions: { input: entryPoints(config) },
-          polyfillDynamicImport: false
-        },
-        ssr
-      })
+      config: (config: UserConfig) => {
+        assertPatch()
+        return {
+          build: {
+            outDir: getOutDir(config),
+            manifest: true,
+            rollupOptions: { input: entryPoints(config) },
+            polyfillDynamicImport: false
+          },
+          ssr
+        }
+      }
     }
   ]
 }
