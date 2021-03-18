@@ -165,7 +165,7 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  // (In production, the page is `<link rel="preload">`'d.)
+  // (Both `Page` and `pageProps` are preloaded in production.)
   const { Page, pageProps } = await getPage()
 
   const app = createSSRApp({
@@ -370,7 +370,7 @@ import { getPage } from "vite-plugin-ssr/client";
 hydrate();
 
 async function hydrate() {
-  // (In production, the page is `<link rel="preload">`'d.)
+  // (Both `Page` and `pageProps` are preloaded in production.)
   const { Page, pageProps } = await getPage();
 
   ReactDOM.hydrate(
