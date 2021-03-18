@@ -18,7 +18,7 @@
     "unlink": "cd scripts/ && npm run unlink",
     "bump": "cd scripts/ && npm run bump",
     "// Build vite-plugin-ssr": "",
-    "build": "npm install && npm run tsc:once",
+    "build": "npm install && rm -rf src/dist/ && npm run tsc:once",
     "// TypeScript": "",
     "tsc:once": "cd src/ && tsc",
     "tsc:watch": "cd src/ && tsc --incremental --watch",
