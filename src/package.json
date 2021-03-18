@@ -4,7 +4,7 @@
   "dependencies": {
     "@brillout/libassert": "^0.3.0",
     "@brillout/path-to-regexp": "^0.1.2",
-    "@brillout/vite-fix-2390": "^0.1.2",
+    "@brillout/vite-fix-2390": "^0.1.3",
     "devalue": "^2.0.1",
     "fast-glob": "^3.2.5"
   },
