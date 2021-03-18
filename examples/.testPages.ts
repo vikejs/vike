@@ -9,8 +9,11 @@ import {
 import assert = require('assert')
 
 export { testPages }
-function testPages(viewFramework: 'vue' | 'react') {
-  run('npm run start')
+function testPages(
+  viewFramework: 'vue' | 'react',
+  cmd: 'npm run start' | 'npm run prod'
+) {
+  run(cmd)
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -47,12 +50,14 @@ function testPages(viewFramework: 'vue' | 'react') {
   test('supports route functions', async () => {
     await page.click('a[href="/hello/alice"]')
     expect(await page.textContent('body')).toContain('Hi alice')
-    await page.goto(urlBase + '/hello')
-    expect(await page.textContent('body')).toContain('Hi anonymous')
-    await page.goto(urlBase + '/hello/blibu')
-    expect(await page.textContent('body')).toContain('Hi blibu')
-    await page.goto(urlBase + '/hello/')
-    expect(await page.textContent('body')).toContain('Hi anonymous')
+    await page.goto(urlBase + '/hello/evan')
+    expect(await page.textContent('body')).toContain('Hi evan')
+    if (cmd !== 'npm run prod') {
+      await page.goto(urlBase + '/hello')
+      expect(await page.textContent('body')).toContain('Hi anonymous')
+      await page.goto(urlBase + '/hello/')
+      expect(await page.textContent('body')).toContain('Hi anonymous')
+    }
   })
 
   test('data fetching page, HTML', async () => {

@@ -1,4 +1,4 @@
-import { getGlobal } from './global.node'
+import { getSsrEnv } from './ssrEnv.node'
 import { assert } from './utils/assert'
 import { getViteManifest, ViteManifest } from './getViteManfiest.node'
 import { ModuleNode } from 'vite'
@@ -7,11 +7,10 @@ import { getUserFiles } from './user-files/getUserFiles.shared'
 export { getPreloadTags }
 
 async function getPreloadTags(dependencies: string[]): Promise<string[]> {
-  const { isProduction } = getGlobal()
+  const ssrEnv = getSsrEnv()
 
   let preloadUrls = new Set<string>()
-  if (!isProduction) {
-    const { viteDevServer } = getGlobal()
+  if (!ssrEnv.isProduction) {
     const visitedModules = new Set<string>()
     const skipPageFiles = (await getPageFiles()).filter(
       (pageFile) => !dependencies.some((dep) => dep.includes(pageFile))
@@ -19,16 +18,17 @@ async function getPreloadTags(dependencies: string[]): Promise<string[]> {
     await Promise.all(
       dependencies.map(async (filePath) => {
         assert(filePath)
-        const mod = await viteDevServer.moduleGraph.getModuleByUrl(filePath)
+        const mod = await ssrEnv.viteDevServer.moduleGraph.getModuleByUrl(
+          filePath
+        )
         collectCss(mod, preloadUrls, visitedModules, skipPageFiles)
       })
     )
   } else {
-    const { root } = getGlobal()
     const { serverManifest, clientManifest } = getViteManifest()
     const visistedAssets = new Set<string>()
     dependencies.forEach((filePath) => {
-      const modulePath = getModulePath(filePath, root)
+      const modulePath = getModulePath(filePath, ssrEnv.root)
       let manifest: ViteManifest | undefined = undefined
       if (serverManifest[modulePath]) manifest = serverManifest
       if (clientManifest[modulePath]) manifest = clientManifest

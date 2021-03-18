@@ -3,7 +3,7 @@ import { getErrorPageId, getPageIds, route, isErrorPage } from './route.node'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
-import { getGlobal } from './global.node'
+import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
 import {
@@ -18,6 +18,8 @@ import {
 } from './utils'
 
 export { renderPage }
+export { renderPageId }
+export { getPageFunctions }
 
 async function renderPage({
   url,
@@ -95,7 +97,8 @@ async function renderPage({
 async function renderPageId(
   pageId: string,
   contextProps: Record<string, unknown>,
-  url: string
+  url: string,
+  contextPropsAlreadyFetched?: boolean
 ) {
   const { Page, pageFilePath } = await getPage(pageId)
 
@@ -105,7 +108,7 @@ async function renderPageId(
     setPagePropsFunction
   } = await getPageFunctions(pageId)
 
-  if (addContextPropsFunction) {
+  if (!contextPropsAlreadyFetched && addContextPropsFunction) {
     const contextPropsAddendum = await addContextPropsFunction.addContextProps({
       Page,
       contextProps
@@ -114,7 +117,7 @@ async function renderPageId(
       typeof contextPropsAddendum === 'object' &&
         contextPropsAddendum !== null &&
         contextPropsAddendum.constructor === Object,
-      `The \`addContextProps\` hook exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
+      `The \`addContextProps()\` hook exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
     )
     Object.assign(contextProps, contextPropsAddendum)
   }
@@ -128,12 +131,12 @@ async function renderPageId(
       typeof pagePropsAddendum === 'object' &&
         pagePropsAddendum !== null &&
         pagePropsAddendum.constructor === Object,
-      `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
+      `The \`setPageProps()\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
     )
     assertUsage(
       !hasProp(pagePropsAddendum, 'then') ||
         !isCallable(pagePropsAddendum.then),
-      `The \`setPageProps\` hook exported by ${setPagePropsFunction.filePath} should not return a promise.`
+      `The \`setPageProps()\` hook exported by ${setPagePropsFunction.filePath} returns a promise which is not allowed: \`setPageProps()\` hooks should be synchronous. Use the \`addContextProps()\` hook to asynchronously fetch data instead.`
     )
     Object.assign(pageProps, pagePropsAddendum)
   } else if (isErrorPage(pageId)) {
@@ -224,6 +227,10 @@ type ServerFunctions = {
     filePath: string
     setPageProps: (arg1: { contextProps: Record<string, unknown> }) => unknown
   }
+  prerenderFunction?: {
+    filePath: string
+    prerender: () => unknown
+  }
 }
 async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   const serverFiles = await getServerFiles(pageId)
@@ -231,6 +238,7 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
   let renderFunction
   let addContextPropsFunction
   let setPagePropsFunction
+  let prerenderFunction
 
   for (const { filePath, loadFile } of serverFiles) {
     const fileExports = await loadFile()
@@ -238,19 +246,24 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
     const render = fileExports.render || fileExports.default?.render
     assertUsage(
       !render || isCallable(render),
-      `The \`render\` export of ${filePath} should be a function.`
+      `The \`render()\` hook defined in ${filePath} should be a function.`
     )
     const addContextProps =
       fileExports.addContextProps || fileExports.default?.addContextProps
     assertUsage(
       !addContextProps || isCallable(addContextProps),
-      `The \`addContextProps\` export of ${filePath} should be a function.`
+      `The \`addContextProps()\` hook defined in ${filePath} should be a function.`
     )
     const setPageProps =
       fileExports.setPageProps || fileExports.default?.setPageProps
     assertUsage(
       !setPageProps || isCallable(setPageProps),
-      `The \`setPageProps\` export of ${filePath} should be a function.`
+      `The \`setPageProps()\` hook defined in ${filePath} should be a function.`
+    )
+    const prerender = fileExports.prerender || fileExports.default?.prerender
+    assertUsage(
+      !prerender || isCallable(prerender),
+      `The \`prerender()\` hook defined in ${filePath} should be a function.`
     )
 
     if (render) {
@@ -265,6 +278,9 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
     if (setPageProps) {
       setPagePropsFunction = setPagePropsFunction || { setPageProps, filePath }
     }
+    if (prerender) {
+      prerenderFunction = prerenderFunction || { prerender, filePath }
+    }
   }
 
   assertUsage(
@@ -272,7 +288,12 @@ async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
     'No `render` function found. Make sure to define a `*.page.server.js` file that exports a `render` function. You can export a `render` function in a file `_default.page.server.js` which will apply as default to all your pages.'
   )
 
-  return { renderFunction, addContextPropsFunction, setPagePropsFunction }
+  return {
+    renderFunction,
+    addContextPropsFunction,
+    setPagePropsFunction,
+    prerenderFunction
+  }
 }
 
 async function getBrowserFilePath(pageId: string) {
@@ -329,17 +350,20 @@ async function applyViteHtmlTransform(
   htmlDocument: string,
   url: string
 ): Promise<string> {
-  const { viteDevServer, isProduction } = getGlobal()
-  if (isProduction) {
+  const ssrEnv = getSsrEnv()
+  if (ssrEnv.isProduction) {
     return htmlDocument
   }
-  htmlDocument = await viteDevServer.transformIndexHtml(url, htmlDocument)
+  htmlDocument = await ssrEnv.viteDevServer.transformIndexHtml(
+    url,
+    htmlDocument
+  )
   return htmlDocument
 }
 
 function pathRelativeToRoot(filePath: string): string {
   assert(filePath.startsWith('/'))
-  const { isProduction } = getGlobal()
+  const { isProduction } = getSsrEnv()
 
   if (!isProduction) {
     return filePath
@@ -467,7 +491,7 @@ function assertArguments(...args: unknown[]) {
 }
 
 function warnMissingErrorPage() {
-  const { isProduction } = getGlobal()
+  const { isProduction } = getSsrEnv()
   if (!isProduction) {
     assertWarning(
       false,
@@ -476,7 +500,7 @@ function warnMissingErrorPage() {
   }
 }
 function warn404(url: string, allPageIds: string[]) {
-  const { isProduction } = getGlobal()
+  const { isProduction } = getSsrEnv()
   if (!isProduction) {
     const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
     assertUsage(
@@ -542,7 +566,7 @@ async function render500Page(
   return { nothingRendered: false, renderResult, statusCode: 500 }
 }
 function handleErr(err: unknown) {
-  const { viteDevServer } = getGlobal()
+  const { viteDevServer } = getSsrEnv()
   if (viteDevServer) {
     cast<Error>(err)
     if (err?.stack) {

@@ -838,8 +838,6 @@ Example:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-> :warning: Pre-rendering is currenlty being worked on. If you want an ETA, open a GitHub issue.
-
 > :asterisk: **What is pre-rendering?**
 > Pre-rendering means to render the HTML of all your pages at once.
 > Normally, the HTML of a page is rendered at request-time
@@ -854,7 +852,7 @@ To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr
 
 For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
 
-The `prerender()` hook can also be used to prefetch data for multiple pages at once.
+The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
 <br/><br/>
 
@@ -1274,6 +1272,14 @@ The `prerender()` hook is only used when pre-rendering:
 if you don't call
 `vite-plugin-ssr prerender`
 then no `prerender()` hook is called.
+
+Examples:
+ - [/examples/vue/package.json#build:prerender](/examples/vue/package.json)
+ - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts)
+ - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts)
+ - [/examples/react/package.json#build:prerender](/examples/react/package.json)
+ - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts)
+ - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts)
 
 <br/>
 

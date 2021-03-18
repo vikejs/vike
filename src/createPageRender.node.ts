@@ -1,43 +1,45 @@
-import { setGlobal } from './global.node'
+import { SsrEnv, setSsrEnv } from './ssrEnv.node'
 import { renderPage } from './renderPage.node'
 import { hasProp } from './utils'
 import { assertUsage } from './utils/assert'
 import { normalize as pathNormalize } from 'path'
+import { ViteDevServer } from 'vite'
 
 export { createPageRender }
 
 let alreadyCalled = false
 
-type Args = {
-  viteDevServer?: any
-  root: string
-  isProduction?: boolean
-}
 type RenderPage = typeof renderPage
 
 function createPageRender({
   viteDevServer,
   root,
   isProduction
-}: Args): RenderPage {
+}: {
+  viteDevServer?: ViteDevServer
+  root: string
+  isProduction?: boolean
+}): RenderPage {
   assertUsage(
     !alreadyCalled,
     '`createPageRender()` should be called only once.'
   )
   alreadyCalled = true
 
-  assertArguments({ viteDevServer, root, isProduction })
+  const ssrEnv = { viteDevServer, root, isProduction }
+  assertArguments(ssrEnv)
 
-  setGlobal({
-    isProduction,
-    viteDevServer,
-    root
-  })
+  setSsrEnv(ssrEnv)
 
   return renderPage
 }
 
-function assertArguments({ viteDevServer, root, isProduction }: Args) {
+function assertArguments(ssrEnv: {
+  viteDevServer?: unknown
+  root?: unknown
+  isProduction?: unknown
+}): asserts ssrEnv is SsrEnv {
+  const { viteDevServer, root, isProduction } = ssrEnv
   assertUsage(
     root,
     '`createPageRender({ viteDevServer, root, isProduction })`: argument `root` is missing.'
@@ -47,7 +49,9 @@ function assertArguments({ viteDevServer, root, isProduction }: Args) {
     '`createPageRender({ viteDevServer, root, isProduction })`: argument `root` should be a string.'
   )
   assertUsage(
-    [true, false, undefined].includes(isProduction),
+    isProduction === true ||
+      isProduction === false ||
+      isProduction === undefined,
     '`createPageRender({ viteDevServer, root, isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.'
   )
   if (isProduction === true) {

@@ -1,0 +1,2 @@
+- don't pass url as object arg for route function
+- rename contextProps serverProps/serverData and pageProps clientProps/clientData

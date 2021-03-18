@@ -1,4 +1,4 @@
-import { getGlobal } from './global.node'
+import { getSsrEnv } from './ssrEnv.node'
 import { assert, assertUsage } from './utils'
 
 export { getViteManifest }
@@ -21,7 +21,7 @@ type ViteManifest = Record<
 var clientManifest: ViteManifest
 var serverManifest: ViteManifest
 function getViteManifest() {
-  const { root, isProduction } = getGlobal()
+  const { root, isProduction } = getSsrEnv()
   assert(isProduction)
   if (!clientManifest || !serverManifest) {
     const errMsg =

@@ -3,6 +3,7 @@ import { Movie } from './types'
 
 export { addContextProps }
 export { setPageProps }
+export { prerender }
 
 type ContextProps = {
   movies: Movie[]
@@ -16,7 +17,7 @@ async function addContextProps(): Promise<ContextProps> {
   )
 
   // The page's <title>
-  const title = `${movies.length} Star Wars Movies`
+  const title = getTitle(movies)
 
   return { movies, title }
 }
@@ -35,4 +36,38 @@ function setPageProps({
   }))
 
   return { movies }
+}
+
+async function prerender() {
+  const { movies } = await addContextProps()
+
+  return [
+    {
+      url: '/star-wars',
+      // We already provide `contextProps` here so that `vite-plugin-ssr`
+      // will *not* have to call the `addContextProps()` hook defined
+      // above in this file.
+      contextProps: { movies }
+    },
+    ...movies.map((movie) => {
+      const url = `/star-wars/${movie.id}`
+      return {
+        url,
+        // Note that we can also provide the `contextProps` of other pages.
+        // This means that `vite-plugin-ssr` will not have to call the
+        // `addContextProps()` hook a single time and the Star Wars API
+        // will be called only once (in this `prerender()` hook) for
+        // pre-rendering all pages.
+        contextProps: {
+          movie,
+          title: movie.title
+        }
+      }
+    })
+  ]
+}
+
+function getTitle(movies: Movie[]): string {
+  const title = `${movies.length} Star Wars Movies`
+  return title
 }

@@ -14,6 +14,9 @@ export { getPageIds }
 export { route }
 export { getErrorPageId }
 export { isErrorPage }
+export { loadPageRoutes }
+export { getFilesystemRoute }
+export { isStaticRoute }
 
 type PageId = string
 
@@ -124,27 +127,33 @@ function routeWith_pathToRegexp(
   return { matchValue, routeProps }
 }
 
+function isStaticRoute(route: string): boolean {
+  const { matchValue, routeProps } = routeWith_pathToRegexp(route, route)
+  return matchValue !== false && Object.keys(routeProps).length === 0
+}
+
 function routeWith_filesystem(
   url: string,
   pageId: string,
   allPageIds: PageId[]
 ): boolean {
+  const pageRoute = getFilesystemRoute(pageId, allPageIds)
+  url = normalizeUrl(url)
+  // console.log('[Route Candidate] url:' + url, 'pageRoute:' + pageRoute)
+  const matchValue = url === pageRoute
+  return matchValue
+}
+function normalizeUrl(url: string): string {
+  return '/' + url.split('/').filter(Boolean).join('/').toLowerCase()
+}
+function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   let pageRoute = removeCommonPrefix(pageId, allPageIds)
   pageRoute = pageRoute
     .split('/')
     .filter((part) => part !== 'index')
     .join('/')
-  pageRoute = normalize(pageRoute)
-
-  url = normalize(url)
-  // console.log('[Route Candidate] url:' + url, 'pageRoute:' + pageRoute)
-
-  const matchValue = url === pageRoute
-  return matchValue
-
-  function normalize(url: string): string {
-    return url.split('/').filter(Boolean).join('/').toLowerCase()
-  }
+  pageRoute = normalizeUrl(pageRoute)
+  return pageRoute
 }
 function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
   const commonPrefix = getCommonPrefix(allPageIds)

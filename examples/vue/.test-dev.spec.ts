@@ -1,2 +1,2 @@
 import { testPages } from '../.testPages'
-testPages('vue')
+testPages('vue', 'npm run start')

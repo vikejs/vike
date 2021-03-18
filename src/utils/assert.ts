@@ -34,6 +34,5 @@ function assertWarning(condition: unknown, errorMessage: string): void {
   if (condition) {
     return
   }
-  const usageError = newError(`${warningPrefix} ${errorMessage}`)
-  console.warn(usageError)
+  console.warn(`${warningPrefix} ${errorMessage}`)
 }
