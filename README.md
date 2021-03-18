@@ -73,10 +73,10 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 - **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can also be used with Vue Router or React Router.
 - **HMR**. Browser as well as server code is automatically reloaded.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
-- **Fast Cold Start**. Your pages are lazy-loaded on the server: adding pages doesn't increase cold start (crucial for serverless deployments).
+- **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
 - **Code Splitting**. In the browser, each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
-- **Scalable**. Your app can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling) and has an SSR architecture that scales from a small hobby project up to a large-scale app with precise SSR needs.
+- **Scalable**. Your app can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling) with an SSR architecture that scales from a small hobby project up to a large-scale app with precise SSR needs.
 
 To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
