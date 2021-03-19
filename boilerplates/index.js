@@ -166,7 +166,7 @@ function initGitRepo(cwd) {
   execSync(
     [
       'git commit',
-      '--message="chore: boilerplate Vite w/ vite-plugin-ssr"',
+      '--message="boilerplate Vite w/ vite-plugin-ssr"',
       '--author="Romuald Brillout <git@brillout.com>"',
       '--date="Mon Mar 1 14:45:24 2021 +0100"'
     ].join(' '),
