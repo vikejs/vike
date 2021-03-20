@@ -1,6 +1,6 @@
 // Route Functions give us full flexibility
 // This is a route similar to `/hello/:name` but with details impossible to achieve with a route string.
-export default (url: string) => {
+export default ({ url }: { url: string }) => {
   if (!url.startsWith('/hello')) {
     return { match: false }
   }

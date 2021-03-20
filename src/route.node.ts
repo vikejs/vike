@@ -214,7 +214,7 @@ function resolveRouteFunction(
   matchValue: boolean | number
   contextPropsAddendum: Record<string, unknown>
 } {
-  const result = routeFunction(url, { contextProps })
+  const result = routeFunction({ url, contextProps })
   assertUsage(
     typeof result === 'object' &&
       result !== null &&

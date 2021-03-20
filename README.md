@@ -674,7 +674,7 @@ For full programmatic flexibility, you can define route functions.
 // /pages/admin.page.route.js
 
 // Route functions allow us to implement advanced routing such as route guards.
-export default (url, { contextProps }) => {
+export default ({ url, contextProps }) => {
   if (url==='/admin' && contextProps.user.isAdmin) {
     return { match: true }
   }
@@ -1086,7 +1086,7 @@ Route functions give you full programmatic flexibility to define your routing lo
 ```js
 // /pages/film/admin.page.route.js
 
-export default (url, { contextProps }) {
+export default ({ url, contextProps }) {
   // Route functions allow us to implement advanced routing such as route guards.
   if (! contextProps.user.isAdmin) {
     return {match: false}
