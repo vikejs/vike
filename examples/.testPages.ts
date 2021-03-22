@@ -9,6 +9,7 @@ import {
 import assert = require('assert')
 
 export { testPages }
+
 function testPages(
   viewFramework: 'vue' | 'react',
   cmd: 'npm run start' | 'npm run prod'
@@ -37,21 +38,41 @@ function testPages(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.click('a[href="/"]')
+    await page.goto(urlBase + '/')
     expect(await page.textContent('h1')).toBe('Welcome to vite-plugin-ssr')
+
+    // Interactive button
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')
     })
+
+    // Client-side routing
+    await page.click('a[href="/star-wars"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Star Wars Movies')
+    })
+    expect(await page.textContent('body')).toContain('The Phantom Menace')
+    // The HTML is from the first page before client-side routing
+    const html = await page.content()
+    // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
+    // Therefore only the serialized `pageProps` tell us the original HTML.
+    expect(html).toContain(
+      '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", pageProps: {}}</script>'
+    )
   })
 
   test('supports route functions', async () => {
-    await page.click('a[href="/hello/alice"]')
+    await page.goto(urlBase + '/hello/alice')
+    expect(await page.textContent('h1')).toContain('Hello')
     expect(await page.textContent('body')).toContain('Hi alice')
+
     await page.goto(urlBase + '/hello/evan')
+    expect(await page.textContent('h1')).toContain('Hello')
     expect(await page.textContent('body')).toContain('Hi evan')
+
     if (cmd !== 'npm run prod') {
       await page.goto(urlBase + '/hello')
       expect(await page.textContent('body')).toContain('Hi anonymous')
@@ -73,12 +94,15 @@ function testPages(
   })
 
   test('data fetching page, DOM', async () => {
-    await page.click('a[href="/star-wars"]')
+    await page.goto(urlBase + '/star-wars')
     const text = await page.textContent('body')
     expect(text).toContain('Revenge of the Sith')
     expect(text).toContain('The Phantom Menace')
 
     await page.click('a[href="/star-wars/4"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('The Phantom Menace')
+    })
     const pageContent =
       viewFramework === 'vue'
         ? 'The Phantom Menace Release Date: 1999-05-19  Director: George Lucas  Producer: Rick McCallum'
@@ -100,7 +124,7 @@ function testPages(
     }
   })
   test('markdown page DOM', async () => {
-    await page.click('a[href="/markdown"]')
+    await page.goto(urlBase + '/markdown')
     expect(await page.textContent('body')).toContain(
       'This page is written in Markdown'
     )

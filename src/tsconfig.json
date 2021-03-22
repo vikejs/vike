@@ -1,5 +1,4 @@
 {
-  "include": ["./"],
   "compilerOptions": {
     "outDir": "./dist/",
     "lib": ["DOM", "ESNext"],

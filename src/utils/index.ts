@@ -1,6 +1,7 @@
 export * from './assert'
 export * from './cast'
 export * from './isCallable'
+export * from './isPromise'
 export * from './hasProp'
 export * from './slice'
 export * from './sorter'

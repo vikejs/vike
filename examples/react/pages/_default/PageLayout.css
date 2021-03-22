@@ -16,3 +16,10 @@ code {
   padding: 3px 5px;
   border-radius: 4px;
 }
+
+#page-content {
+  transition: opacity 0.1s ease-in;
+}
+#page-content.page-transition {
+  opacity: 0;
+}

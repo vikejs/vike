@@ -4,9 +4,10 @@
     "dev": "ts-node ./server",
     "prod": "npm run build && npm run prod:serve",
     "// Build for production": "",
-    "build": "npm run build:vite && npm run build:prerender",
+    "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
+    "build:clean": "rm -rf dist/",
     "build:vite": "vite build && vite build --ssr",
-    "build:prerender": "vite-plugin-ssr prerender",
+    "build:prerender": "vite-plugin-ssr prerender --client-router",
     "// Static serve for production": "",
     "prod:serve": "serve dist/client/ --listen 3000"
   },

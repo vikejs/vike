@@ -6,8 +6,9 @@ const cli = cac('vite-plugin-ssr')
 cli
   .command('prerender')
   .option('--partial', 'Allow only a subset of pages to be pre-rendered')
+  .option('--client-router', 'Pre-render pageProps for client router')
   .action(async (options) => {
-    await prerender(options.partial)
+    await prerender(options.partial, options.clientRouter)
   })
 
 // Listen to unknown commands

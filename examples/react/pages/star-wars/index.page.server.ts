@@ -7,7 +7,7 @@ export { prerender };
 
 type ContextProps = {
   movies: Movie[];
-  title: string;
+  docTitle: string;
 };
 
 async function addContextProps(): Promise<ContextProps> {
@@ -17,13 +17,13 @@ async function addContextProps(): Promise<ContextProps> {
   );
 
   // The page's <title>
-  const title = getTitle(movies);
+  const docTitle = getTitle(movies);
 
-  return { movies, title };
+  return { movies, docTitle };
 }
 
 function setPageProps({
-  contextProps: { movies },
+  contextProps: { movies, docTitle },
 }: {
   contextProps: ContextProps;
 }) {
@@ -35,7 +35,7 @@ function setPageProps({
     id,
   }));
 
-  return { movies };
+  return { movies, docTitle };
 }
 
 async function prerender() {
@@ -47,7 +47,7 @@ async function prerender() {
       // We already provide `contextProps` here so that `vite-plugin-ssr`
       // will *not* have to call the `addContextProps()` hook defined
       // above in this file.
-      contextProps: { movies },
+      contextProps: { movies, docTitle: getTitle(movies) },
     },
     ...movies.map((movie) => {
       const url = `/star-wars/${movie.id}`;
@@ -60,7 +60,7 @@ async function prerender() {
         // pre-rendering all pages.
         contextProps: {
           movie,
-          title: movie.title,
+          docTitle: movie.title,
         },
       };
     }),

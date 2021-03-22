@@ -45,6 +45,7 @@ function Sidebar({ children }: { children: Children }) {
         display: "flex",
         flexDirection: "column",
         lineHeight: "1.8em",
+        borderRight: "2px solid #eee",
       }}
     >
       {children}
@@ -55,10 +56,10 @@ function Sidebar({ children }: { children: Children }) {
 function Content({ children }: { children: Children }) {
   return (
     <div
+      id="page-content"
       style={{
         padding: 20,
         paddingBottom: 50,
-        borderLeft: "2px solid #eee",
         minHeight: "100vh",
       }}
     >
