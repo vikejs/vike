@@ -406,17 +406,17 @@ function injectPreloadTags(
 function injectBegin(htmlDocument: string, injection: string): string {
   const headClose = '</head>'
   if (htmlDocument.includes(headClose)) {
-    return injectHtml(htmlDocument, headClose, injection)
+    return injectAtClosingTag(htmlDocument, headClose, injection)
   }
 
-  const htmlBegin = '<html>'
-  if (htmlDocument.includes(htmlBegin)) {
-    return injectHtml(htmlDocument, htmlBegin, injection)
+  const htmlBegin = /<html[^>]*>/
+  if (htmlBegin.test(htmlDocument)) {
+    return injectAtOpeningTag(htmlDocument, htmlBegin, injection)
   }
 
   if (htmlDocument.toLowerCase().startsWith('<!doctype')) {
     const lines = htmlDocument.split('\n')
-    return [slice(lines, 0, 1), injection, slice(lines, 1, 0)].join('\n')
+    return [...slice(lines, 0, 1), injection, ...slice(lines, 1, 0)].join('\n')
   } else {
     return injection + '\n' + htmlDocument
   }
@@ -425,39 +425,50 @@ function injectBegin(htmlDocument: string, injection: string): string {
 function injectEnd(htmlDocument: string, injection: string): string {
   const bodyClose = '</body>'
   if (htmlDocument.includes(bodyClose)) {
-    return injectHtml(htmlDocument, bodyClose, injection)
+    return injectAtClosingTag(htmlDocument, bodyClose, injection)
   }
 
   const htmlClose = '</html>'
   if (htmlDocument.includes(htmlClose)) {
-    return injectHtml(htmlDocument, htmlClose, injection)
+    return injectAtClosingTag(htmlDocument, htmlClose, injection)
   }
 
   return htmlDocument + '\n' + injection
 }
 
-function injectHtml(
+function injectAtOpeningTag(
   htmlDocument: string,
-  targetTag: string,
+  openingTag: RegExp,
   injection: string
 ): string {
-  assert(targetTag.startsWith('<'))
-  assert(targetTag.endsWith('>'))
-  assert(!targetTag.includes(' '))
+  const matches = htmlDocument.match(openingTag)
+  assert(matches && matches.length >= 1)
+  const tag = matches[0]
+  const htmlParts = htmlDocument.split(tag)
+  assert(htmlParts.length >= 2)
 
-  const htmlParts = htmlDocument.split(targetTag)
+  // Insert `injection` after first `tag`
+  const before = slice(htmlParts, 0, 1)
+  const after = slice(htmlParts, 1, 0).join(tag)
+  return before + tag + injection + after
+}
 
-  if (targetTag.startsWith('</')) {
-    // Insert `injection` before last `targetTag`
-    const before = slice(htmlParts, 0, -1).join(targetTag)
-    const after = slice(htmlParts, -1, 0)
-    return before + injection + targetTag + after
-  } else {
-    // Insert `injection` after first `targetTag`
-    const before = slice(htmlParts, 0, 1)
-    const after = slice(htmlParts, 1, 0).join(targetTag)
-    return before + targetTag + injection + after
-  }
+function injectAtClosingTag(
+  htmlDocument: string,
+  closingTag: string,
+  injection: string
+): string {
+  assert(closingTag.startsWith('</'))
+  assert(closingTag.endsWith('>'))
+  assert(!closingTag.includes(' '))
+
+  const htmlParts = htmlDocument.split(closingTag)
+  assert(htmlParts.length >= 2)
+
+  // Insert `injection` before last `closingTag`
+  const before = slice(htmlParts, 0, -1).join(closingTag)
+  const after = slice(htmlParts, -1, 0)
+  return before + injection + closingTag + after
 }
 
 function assertArguments(...args: unknown[]) {
