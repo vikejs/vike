@@ -36,7 +36,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Auth Data](#auth-data)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Authentication](#authentication)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
@@ -46,6 +46,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`](#pageroutejs)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route String](#route-string)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route Function](#route-function)
@@ -55,9 +56,10 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.*`](#_default)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.js`](#_errorpagejs)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_default-page)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.*`](#_errorpage)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr)
 
@@ -70,7 +72,7 @@ Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
 
 - **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **Routing**. Supports Filesystem Routing for basic needs, Route Strings for parameterized routes, and Route Functions for full flexibility. Can also be used with Vue Router or React Router.
+- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster and animated page transitions). Can also be used with Vue Router and React Router.
 - **HMR**. Browser as well as server code is automatically reloaded.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
 - **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
@@ -649,7 +651,25 @@ function Page(pageProps) {
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-By default `vite-plugin-ssr` does Filesystem Routing.
+There are three ways of defining the URLs of your pages:
+ - Filesystem Routing
+ - Route Strings
+ - Route Functions
+
+You can choose between two routing strategy:
+ - Server-side Routing (for a simpler architecture)
+ - Client-side Routing (for faster and animated page transitions)
+
+Regardless of what routing strategy you choose, you define your pages' URL with Filesystem Routing, Route Strings, and Route Functions.
+Alaternatively (in complete replacement or in combination),
+you can use Vue Router and React Router as shown in [/examples/vue-router/](/examples/vue-router/) and [/examples/react-router/](/examples/react-router/).
+
+ - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
+ - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
+
+### Filesystem Routing VS Route Strings VS Route Functions
+
+If a page doesn't have a `.page.route.js` file then it's routed based on its filesystem location.
 
 ```
 FILESYSTEM                  URL
@@ -658,7 +678,7 @@ pages/about.page.js         /about
 pages/faq/index.page.js     /faq
 ```
 
-For more control, you can define route strings in `.page.route.js` files.
+To define a parameterized route, or for more control, you can `export default` a Route String in `.page.route.js`.
 
 ```
 // /pages/product.page.route.js
@@ -668,7 +688,7 @@ export default '/product/:productId'
 
 The `productId` value is available at `contextProps.productId` so that you can fetch data in `async addContextProps({contextProps})` which is explained at [Data Fetching](#data-fetching).
 
-For full programmatic flexibility, you can define route functions.
+For full programmatic flexibility, you can define a Route Function.
 
 ```js
 // /pages/admin.page.route.js
@@ -681,18 +701,42 @@ export default ({ url, contextProps }) => {
 }
 ```
 
-For detailed informations about Filesystem Routing, route strings, and route functions:
+For detailed informations about Filesystem Routing, Route Strings, and Route Functions:
  - [API - Filesystem Routing](#filesystem-routing)
  - [API - `*.page.route.js`](#pageroutejs)
+ - [API - Route String](#route-string)
+ - [API - Route Function](#route-function)
+
+### Server-side Routing VS Client-side Routing
+
+Server-side Routing (*SR*) is simple and familiar:
+that's how the old web (PHP, Ruby on Rails, Django, etc.) did routing, and it's easy to reason about. "For an HTTP request with a given URL, what page should be rendered?" &mdash; that's what SR does, that's it.
+
+Client-side Routing (*CR*) is straightforward as well, however, it does add complexity to your architecture:
+you now have to maintain and reason about an additional second scenario.
+Scenario 1: the page is rendered to HTML and then hydrated to the DOM (like in SR),
+which happens when the user goes to the page by opening a new browser tab (or refreshes the page).
+Scenario 2: the page is only rendered to the DOM,
+which happens when the user is already on your website and navigates to the page by clicking a link (or hits the browser back/forward history button).
+
+The added complexity of having to deal with two scenarios instead of one
+is subtle but non-negligable, especially around the integration of tools.
+
+Performance is usually a bad reason to choose CR over SR:
+chances are that the dev time wasted on CR's added complexity would be better invested in other performance-critical aspects of your application.
+That said, if your business has a strong requirement for you to squeeze out every possible millisecond of latency, then CR will give you non-negligable improvement in page transition speed. Or, if you are building a simple application, such as a homepage or a blog, then CR can be a good choice as it gives you that cool effect of smooth page transitions.
+
+By default, `vite-plugin-ssr` does SR and you can opt-in for CR by using `useClientRouter()`.
+ - [API - `import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 
 <br/><br/>
 
 
-## Auth Data
+## Authentication
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Information about the authenticated user can be added to `contextProps` at the server integration point
+Information about the authenticated user can be added to the `contextProps` at the server integration point
 [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 The `contextProps` are available to all hooks and route functions.
 
@@ -790,9 +834,8 @@ function addContextProps() {
 ```
 
 If you want to define `<head>` tags by some deeply nested view component, you can use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
-(Thanks to `vite-plugin-ssr`'s design you can easily use and integrate any tool you want, including these two libraries.)
-We recommend using such libraries only if you have a strong rationale:
-the aforementioned solution using `contextProps` is simpler and works in the vast majority of cases.
+But, use such library only if you have a *strong* rationale:
+the aforementioned solution using `contextProps` is considerably simpler and works for the vast majority of cases.
 
 <br/><br/>
 
@@ -1044,12 +1087,83 @@ The `pageProps` are serialized and passed from the server to the browser with [`
 
 In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
 
+<br/>
+
+### `import { useClientRouter } from 'vite-plugin-ssr/client/router'`
+
+Environment: `Browser`
+
+By default, `vite-plugin-ssr` does Server-side Routing (SR).
+But if you use `useClientRouter()` then `vite-plugin-ssr` will do Client-side Routing (CR).
+
+`useClientRouter()` is fairly high-level, if you need lower-level control over CR, then open a GitHub issue.
+
+```js
+// *.page.client.js
+// Environment: Browser
+
+import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+const { awaitInitialPageRender } = useClientRouter({
+  async render({ Page, pageProps, isHydration }) {
+    const page = createElement(Page, pageProps)
+    const container = document.getElementById('page-view')
+
+    // Render the page
+    if (isHydration) {
+      // This is the first page rendering; the page has been rendered to HTML
+      // and we now make it interactive.
+      await hydrateToDom(page)
+    } else {
+      // Render a new page
+      await renderToDom(page)
+    }
+
+    // If you want to update `<title>`:
+    document.title =
+      pageProps.docTitle ||
+      // Some default title
+      'Demo'
+  },
+  onTransitionStart,
+  onTransitionEnd
+})
+
+awaitInitialPageRender.then(() => {
+  console.log('Hydration finished; page is now interactive.')
+})
+
+function onTransitionStart() {
+  console.log('Page transition start')
+  // For example:
+  document.body.classList.add('page-transition')
+}
+function onTransitionEnd() {
+  console.log('Page transition end')
+  // For example:
+  document.body.classList.remove('page-transition')
+}
+```
+
+You can keep your `<a href="/some-url">` links as they are: link clicks are intercepted.
+(Which means that if your user's browser has no JavaScript runtime or if your code has a bug, then your app gracefully degrades to Server-side Routing.)
+You can also use `import { navigate } from "vite-plugin-ssr/client/router"` to programmatically navigate your user to a new page.
+
+Vue example:
+ - [/examples/vue/pages/_default/_default.page.client.tsx](/examples/vue/pages/_default/_default.page.client.tsx)
+ - [/examples/vue/pages/index.page.tsx](/examples/vue/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+
+React example:
+ - [/examples/react/pages/_default/_default.page.client.tsx](/examples/react/pages/_default/_default.page.client.tsx)
+ - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+
 <br/><br/>
 
 
 ## `*.page.route.js`
 
-Environment: `Node.js`
+Environment: `Node.js` (and `Browser` if you call `useClientRouter()`)
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
@@ -1134,7 +1248,7 @@ The `contextProps` are passed to all hooks (which are defined in `.page.server.j
 
 You can provide initial `contextProps` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 This is where you usually pass information about the authenticated user,
-see [Auth Data](#auth-data) guide.
+see [Authentication](#authentication) guide.
 
 The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data, see [Data Fetching](#data-fetching) guide.
 
@@ -1433,11 +1547,11 @@ async function render({ Page, contextProps }) {
 <br/><br/>
 
 
-## `_default.*`
+## `_default.page.*`
 
 The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
 
-There can be several `_default.*` files.
+There can be several `_default`:
 
 ```
 marketing/_default.page.server.js
@@ -1450,8 +1564,8 @@ admin-panel/_default.page.client.js
 admin-panel/index.page.js
 ```
 
-The `marketing/_default.*` files apply to the `marketing/*.page.js` files, while
-the `admin-panel/_default.*` files apply to the `admin-panel/*.page.js` files.
+The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
 
 The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
 defining `_default.page.js` or `_default.page.route.js` is forbidden.
@@ -1459,7 +1573,7 @@ defining `_default.page.js` or `_default.page.route.js` is forbidden.
 <br/><br/>
 
 
-## `_error.page.js`
+## `_error.page.*`
 
 The page `_error.page.js` is shown to your user when an error occurs:
  - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
@@ -1498,6 +1612,46 @@ todo/create.page.js               /todo/create
 The directory common to all your `*.page.js` files is considered the routing root.
 
 For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
+
+<br/><br/>
+
+## `import { navigate } from 'vite-plugin-ssr/client/router'`
+
+Environment: `Browser`, `Node.js`. (In Node.js, `navigate()` is a no-op.)
+
+You can use `navigate('/some-url')` to programmatically navigate your user to another page (i.e. when there is no `<a href="/some-url">`), for example to redirect your user after a successful form submission.
+
+```jsx
+import { navigate } from "vite-plugin-ssr/client/router";
+
+// Some deeply nested view component
+function Form() {
+   return (
+     <form onSubmit={onSubmit}>
+       {/*...*/}
+     </form>
+   );
+}
+
+async function onSubmit() {
+  /* ...  */
+
+  const navigationPromise = navigate('/form/success');
+
+  console.log("The URL changed but the new page hasn't rendered yet.");
+  await navigationPromise
+  console.log("The new page has finished rendering.");
+}
+```
+
+While you can import `navigate()` in Node.js, you cannot call it: calling `navigate()` in Node.js throws a `[Wrong Usage]` error.
+(`vite-plugin-ssr` allows you to import `navigate()` because, with SSR, your view components' code is loaded in Node.js.)
+
+Vue example:
+ - [/examples/vue/pages/index.page.tsx](/examples/vue/pages/index.page.tsx)
+
+React example:
+ - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx)
 
 <br/><br/>
 
