@@ -21,11 +21,10 @@ awaitInitialPageRender.then(() => {
 })
 
 function onTransitionStart() {
-  document.querySelector('.content')!.classList.add('page-transition')
   console.log('Page transition start')
+  document.querySelector('.content')!.classList.add('page-transition')
 }
 function onTransitionEnd() {
-  document.querySelector('.content')!.classList.remove('page-transition')
-  document.body.classList.remove('page-transition')
   console.log('Page transition end')
+  document.querySelector('.content')!.classList.remove('page-transition')
 }

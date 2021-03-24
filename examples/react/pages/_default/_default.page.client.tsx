@@ -27,11 +27,10 @@ awaitInitialPageRender.then(() => {
 });
 
 function onTransitionStart() {
-  document.querySelector("#page-content")!.classList.add("page-transition");
   console.log("Page transition start");
+  document.querySelector("#page-content")!.classList.add("page-transition");
 }
 function onTransitionEnd() {
-  document.querySelector("#page-content")!.classList.remove("page-transition");
-  document.body.classList.remove("page-transition");
   console.log("Page transition end");
+  document.querySelector("#page-content")!.classList.remove("page-transition");
 }
