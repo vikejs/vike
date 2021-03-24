@@ -68,8 +68,8 @@ function updateDependencies({ versionNew, versionCurrent }) {
   update(pkgPaths, (pkg) => {
     const version = pkg.dependencies['vite-plugin-ssr']
     assert(version)
-    assert.strictEqual(version, `^${versionCurrent}`)
-    pkg.dependencies['vite-plugin-ssr'] = `^${versionNew}`
+    assert.strictEqual(version, `${versionCurrent}`)
+    pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
   })
 }
 
