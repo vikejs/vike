@@ -14,7 +14,8 @@ release()
 async function release() {
   const { versionCurrent, versionNew } = getVersion()
   updateVersion(versionNew)
-  updateDependencies({ versionNew, versionCurrent })
+  updateDependencies(versionNew, versionCurrent)
+  bumpBoilerplateVersion()
   await updateLockFile()
   await changelog()
   const tag = `v${versionNew}`
@@ -60,7 +61,18 @@ function updateVersion(versionNew: string) {
   })
 }
 
-function updateDependencies({ versionNew, versionCurrent }) {
+function bumpBoilerplateVersion() {
+  const pkgPath = require.resolve(`${DIR_BOILERPLATES}/package.json`)
+  const pkg = require(pkgPath)
+  assert(pkg.version.startsWith('0.0.'))
+  const versionParts = pkg.version.split('.')
+  assert(versionParts.length === 3)
+  const newPatch = parseInt(versionParts[2], 10) + 1
+  pkg.version = `0.0.${newPatch}`
+  writePackageJson(pkgPath, pkg)
+}
+
+function updateDependencies(versionNew: string, versionCurrent: string) {
   const pkgPaths = [
     ...retrievePkgPaths(DIR_BOILERPLATES),
     ...retrievePkgPaths(DIR_EXAMPLES)
@@ -90,8 +102,12 @@ function update(pkgPath: string[], updater: (pkg: PackageJson) => void) {
   pkgPath.forEach((pkgPath) => {
     const pkg = require(pkgPath) as PackageJson
     updater(pkg)
-    writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+    writePackageJson(pkgPath, pkg)
   })
+}
+
+function writePackageJson(pkgPath: string, pkg: object) {
+  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
 
 async function updateLockFile() {
