@@ -29,7 +29,7 @@ function useClientRouter({
   onTransitionStart: () => void
   onTransitionEnd: () => void
 }): {
-  awaitInitialPageRender: Promise<void>
+  hydrationPromise: Promise<void>
 } {
   assertUsage(
     isAlreadyCalled === false,
@@ -51,7 +51,7 @@ function useClientRouter({
   })
 
   let resolveInitialPagePromise: () => void
-  const awaitInitialPageRender = new Promise<void>(
+  const hydrationPromise = new Promise<void>(
     (resolve) => (resolveInitialPagePromise = resolve)
   )
 
@@ -60,7 +60,7 @@ function useClientRouter({
   let isTransitioning: boolean = false
   fetchAndRender()
 
-  return { awaitInitialPageRender }
+  return { hydrationPromise }
 
   async function fetchAndRender(): Promise<undefined> {
     const callNumber = ++callCount

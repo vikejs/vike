@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { PageLayout } from "./PageLayout";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 
-const { awaitInitialPageRender } = useClientRouter({
+const { hydrationPromise } = useClientRouter({
   render({ Page, pageProps, isHydration }) {
     const page = (
       <PageLayout>
@@ -22,7 +22,7 @@ const { awaitInitialPageRender } = useClientRouter({
   onTransitionEnd,
 });
 
-awaitInitialPageRender.then(() => {
+hydrationPromise.then(() => {
   console.log("Hydration finished; page is now interactive.");
 });
 

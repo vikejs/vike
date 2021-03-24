@@ -1105,7 +1105,7 @@ But if you use `useClientRouter()` then `vite-plugin-ssr` will do Client-side Ro
 import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
-const { awaitInitialPageRender } = useClientRouter({
+const { hydrationPromise } = useClientRouter({
   async render({ Page, pageProps, isHydration }) {
     const page = createElement(Page, pageProps)
     const container = document.getElementById('page-view')
@@ -1130,7 +1130,7 @@ const { awaitInitialPageRender } = useClientRouter({
   onTransitionEnd
 })
 
-awaitInitialPageRender.then(() => {
+hydrationPromise.then(() => {
   console.log('Hydration finished; page is now interactive.')
 })
 

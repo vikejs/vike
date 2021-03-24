@@ -2,7 +2,7 @@ import { getApp } from './app'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 let app: ReturnType<typeof getApp>
-const { awaitInitialPageRender } = useClientRouter({
+const { hydrationPromise } = useClientRouter({
   render({ Page, pageProps }) {
     if (!app) {
       app = getApp(Page, pageProps)
@@ -16,7 +16,7 @@ const { awaitInitialPageRender } = useClientRouter({
   onTransitionEnd
 })
 
-awaitInitialPageRender.then(() => {
+hydrationPromise.then(() => {
   console.log('Hydration finished; page is now interactive.')
 })
 
