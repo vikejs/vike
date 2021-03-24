@@ -108,7 +108,9 @@ async function init() {
     write(file)
   }
 
-  initGitRepo(root)
+  if (!argv['skip-git']) {
+    initGitRepo(root)
+  }
 
   console.log(`\nDone. Now run:\n`)
   if (root !== cwd) {
@@ -161,14 +163,17 @@ function initGitRepo(cwd) {
   if (!isGitInstalled()) {
     return
   }
+
   execSync('git init', { cwd })
   execSync('git add .', { cwd })
   execSync(
     [
-      'git commit',
-      '--message="boilerplate Vite w/ vite-plugin-ssr"',
-      '--author="Romuald Brillout <git@brillout.com>"',
-      '--date="Mon Mar 1 14:45:24 2021 +0100"'
+      'git',
+      '-c user.name="Romuald Brillout"',
+      '-c user.email="git@brillout.com"',
+      'commit',
+      '--no-gpg-sign',
+      '--message="boilerplate Vite w/ vite-plugin-ssr"'
     ].join(' '),
     { cwd }
   )
