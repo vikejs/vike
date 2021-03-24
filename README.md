@@ -6,7 +6,7 @@
 
 # `vite-plugin-ssr`
 
-Simple full-fledged do-one-thing-do-it-well SSR Vite plugin.
+Simple, full-fledged, do-one-thing-do-it-well.
 
 <a href="https://discord.gg/qTq92FQzKb">
   <img src="/docs/discord.svg" height="32" width="117.078" alt="Discord vite-plugin-ssr"/>
