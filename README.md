@@ -515,6 +515,8 @@ yarn create vite-plugin-ssr
 
 Then choose between `vue`, `vue-ts`, `react`, and `react-ts`.
 
+You can use the `--skip-git` flag to skip the initialization of a new git repository.
+
 <br/><br/>
 
 
