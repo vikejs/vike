@@ -1151,8 +1151,8 @@ You can keep your `<a href="/some-url">` links as they are: link clicks are inte
 You can also use `import { navigate } from "vite-plugin-ssr/client/router"` to programmatically navigate your user to a new page.
 
 Vue example:
- - [/examples/vue/pages/_default/_default.page.client.tsx](/examples/vue/pages/_default/_default.page.client.tsx)
- - [/examples/vue/pages/index.page.tsx](/examples/vue/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+ - [/examples/vue/pages/_default/_default.page.client.ts](/examples/vue/pages/_default/_default.page.client.js)
+ - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 React example:
  - [/examples/react/pages/_default/_default.page.client.tsx](/examples/react/pages/_default/_default.page.client.tsx)
@@ -1648,7 +1648,7 @@ While you can import `navigate()` in Node.js, you cannot call it: calling `navig
 (`vite-plugin-ssr` allows you to import `navigate()` because, with SSR, your view components' code is loaded in Node.js.)
 
 Vue example:
- - [/examples/vue/pages/index.page.tsx](/examples/vue/pages/index.page.tsx)
+ - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue)
 
 React example:
  - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx)
