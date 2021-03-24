@@ -1151,7 +1151,7 @@ You can keep your `<a href="/some-url">` links as they are: link clicks are inte
 You can also use `import { navigate } from "vite-plugin-ssr/client/router"` to programmatically navigate your user to a new page.
 
 Vue example:
- - [/examples/vue/pages/_default/_default.page.client.ts](/examples/vue/pages/_default/_default.page.client.js)
+ - [/examples/vue/pages/_default/_default.page.client.ts](/examples/vue/pages/_default/_default.page.client.ts)
  - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 React example:
