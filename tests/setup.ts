@@ -1,4 +1,4 @@
-import { spawn } from 'child_process'
+import { spawn, exec } from 'child_process'
 import { ChildProcessWithoutNullStreams } from 'child_process'
 import { dirname as pathDirname } from 'path'
 import { Page } from 'playwright-chromium'
@@ -31,7 +31,7 @@ type RunProcess = {
   cwd: string
   cmd: string
 }
-function start(cmd: string): Promise<RunProcess> {
+async function start(cmd: string): Promise<RunProcess> {
   let resolve: (_: RunProcess) => void
   let reject: (err: string) => void
   const promise = new Promise<RunProcess>((_resolve, _reject) => {
@@ -39,9 +39,12 @@ function start(cmd: string): Promise<RunProcess> {
     reject = _reject
   })
 
+  // Kill any process that listens to port `3000`
+  await runCommand('fuser -k 3000/tcp')
+
   const { testPath } = expect.getState()
   const cwd = pathDirname(testPath)
-  const proc = runCommand(cmd, cwd)
+  const proc = startProcess(cmd, cwd)
 
   const prefix = `[Run Start][${cwd}][${cmd}]`
 
@@ -53,7 +56,8 @@ function start(cmd: string): Promise<RunProcess> {
     data = data.toString()
     stdout.push(data)
     if (
-      (data.startsWith('Server running at') || data.includes('Accepting connections at')) &&
+      (data.startsWith('Server running at') ||
+        data.includes('Accepting connections at')) &&
       !hasError
     ) {
       if (hasError) {
@@ -118,7 +122,7 @@ function stop(runProcess: RunProcess, signal = 'SIGINT') {
   return promise
 }
 
-function runCommand(cmd: string, cwd: string) {
+function startProcess(cmd: string, cwd: string) {
   const [command, ...args] = cmd.split(' ')
   return spawn(command, args, { cwd, detached: true })
 }
@@ -152,4 +156,36 @@ async function fetchHtml(pathname: string) {
   const response = await fetch(urlBase + pathname)
   const html = await response.text()
   return html
+}
+
+function runCommand(cmd: string) {
+  const { promise, resolvePromise } = genPromise<void>()
+
+  const timeout = setTimeout(() => {
+    console.error(`Command call ${cmd} is hanging.`)
+    process.exit()
+  }, 5 * 1000)
+
+  const options = {}
+  exec(cmd, options, (err, _stdout, _stderr) => {
+    clearTimeout(timeout)
+    if (err) {
+      // Swallow error
+      resolvePromise()
+    } else {
+      resolvePromise()
+    }
+  })
+
+  return promise
+}
+
+function genPromise<T>() {
+  let resolvePromise!: (value?: T) => void
+  let rejectPromise!: (value?: T) => void
+  const promise: Promise<T> = new Promise((resolve, reject) => {
+    resolvePromise = resolve
+    rejectPromise = reject
+  })
+  return { promise, resolvePromise, rejectPromise }
 }
