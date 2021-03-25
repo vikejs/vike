@@ -911,7 +911,7 @@ When deploying a pre-rendered app, you can change the Base URL (aka Public Base 
 
 1. Use Vite's [`--base` CLI option](https://vitejs.dev/guide/build.html#public-base-path) for your build script: `vite build --base=/some-base-path/ && vite build --ssr --base=/some-base-path/`. (Alternatively, you can define the [`base` config](https://vitejs.dev/config/#base) in your `vite.config.js`.)
 2. Use `vite-plugin-ssr`'s CLI option `--base`: `vite-plugin-ssr prerender --base=/some-base-path/`. (The `base` config in `vite.config.js` will not work; you have to use the CLI option.)
-3. Use `import.meta.env.BASE_URL` [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the base url.
+3. Use the `import.meta.env.BASE_URL` value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the base url.
 
 <br/><br/>
 
@@ -1109,10 +1109,8 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 Environment: `Browser`
 
-By default, `vite-plugin-ssr` does Server-side Routing (SR).
-But if you use `useClientRouter()` then `vite-plugin-ssr` will do Client-side Routing (CR).
-
-`useClientRouter()` is fairly high-level, if you need lower-level control over CR, then open a GitHub issue.
+By default, `vite-plugin-ssr` does Server-side Routing.
+You can do Client-side Routing instead by using `useClientRouter()`.
 
 ```js
 // *.page.client.js
@@ -1163,8 +1161,14 @@ function onTransitionEnd() {
 ```
 
 You can keep your `<a href="/some-url">` links as they are: link clicks are intercepted.
-(Which means that if your user's browser has no JavaScript runtime or if your code has a bug, then your app gracefully degrades to Server-side Routing.)
-You can also use `import { navigate } from "vite-plugin-ssr/client/router"` to programmatically navigate your user to a new page.
+You can also use
+[`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
+to programmatically navigate your user to a new page.
+
+If you do pre-rendering, make sure to use the `--client-router` CLI flag: `vite-plugin-ssr prerender --client-router`.
+This will serialize your pages' `pageProps` to JSON files which `vite-plugin-ssr`'s client router will load upon page navigation.
+
+`useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
 Vue example:
  - [/examples/vue/pages/_default/_default.page.client.ts](/examples/vue/pages/_default/_default.page.client.ts)
@@ -1635,7 +1639,8 @@ For more control over routing, define route strings or route functions in [`*.pa
 
 Environment: `Browser`, `Node.js`. (In Node.js, `navigate()` is a no-op.)
 
-You can use `navigate('/some-url')` to programmatically navigate your user to another page (i.e. when there is no `<a href="/some-url">`), for example to redirect your user after a successful form submission.
+You can use `navigate('/some-url')` to programmatically navigate your user to another page (i.e. when navigation isn't triggered by the user clicking on an anchor tag `<a>`).
+For example, you can use `navigate()` to redirect your user after a successful form submission.
 
 ```jsx
 import { navigate } from "vite-plugin-ssr/client/router";
@@ -1661,7 +1666,7 @@ async function onSubmit() {
 ```
 
 While you can import `navigate()` in Node.js, you cannot call it: calling `navigate()` in Node.js throws a `[Wrong Usage]` error.
-(`vite-plugin-ssr` allows you to import `navigate()` because, with SSR, your view components' code is loaded in Node.js.)
+(`vite-plugin-ssr` allows you to import `navigate()` in Node.js because when doing SSR your view components' code is loaded in the browser as well as Node.js.)
 
 Vue example:
  - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue)
