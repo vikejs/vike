@@ -3,8 +3,10 @@ import { assert } from './utils/assert'
 import { getViteManifest, ViteManifest } from './getViteManfiest.node'
 import { ModuleNode } from 'vite'
 import { getUserFiles } from './user-files/getUserFiles.shared'
+import { slice } from './utils'
 
 export { getPreloadTags }
+export { prependBaseUrl }
 
 async function getPreloadTags(dependencies: string[]): Promise<string[]> {
   const ssrEnv = getSsrEnv()
@@ -44,7 +46,9 @@ async function getPreloadTags(dependencies: string[]): Promise<string[]> {
     })
   }
 
-  const preloadTags = Array.from(preloadUrls).map(getPreloadTag)
+  const preloadTags = Array.from(preloadUrls)
+    .map(prependBaseUrl)
+    .map(getPreloadTag)
   return preloadTags
 }
 
@@ -134,4 +138,13 @@ function collectCss(
   mod.importedModules.forEach((dep) => {
     collectCss(dep, preloadUrls, visitedModules, skipPageFiles)
   })
+}
+
+function prependBaseUrl(url: string): string {
+  assert(url.startsWith('/'))
+  let { baseUrl } = getSsrEnv()
+  if (!baseUrl) return url
+  if (baseUrl.endsWith('/')) baseUrl = slice(baseUrl, 0, -1)
+  if (!baseUrl.startsWith('/')) baseUrl = `/${baseUrl}`
+  return `${baseUrl}${url}`
 }

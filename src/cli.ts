@@ -5,10 +5,15 @@ const cli = cac('vite-plugin-ssr')
 
 cli
   .command('prerender')
-  .option('--partial', 'Allow only a subset of pages to be pre-rendered')
-  .option('--client-router', 'Pre-render pageProps for client router')
+  .option('--partial', 'allow only a subset of pages to be pre-rendered')
+  .option(
+    '--client-router',
+    'serialize `pageProps` to JSON files for Client-side Routing'
+  )
+  .option('--base <path>', `[string] public base path (default: /)`)
   .action(async (options) => {
-    await prerender(options.partial, options.clientRouter)
+    const { partial, clientRouter: serializePageProps, base: baseUrl } = options
+    await prerender(partial, serializePageProps, baseUrl)
   })
 
 // Listen to unknown commands

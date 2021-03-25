@@ -41,6 +41,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Page Redirection](#page-redirection)
 <br/> API
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
@@ -902,6 +903,19 @@ The `prerender()` hook can also be used to accelerate the pre-rendering process 
 <br/><br/>
 
 
+## Base URL
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+When deploying a pre-rendered app, you can change the Base URL (aka Public Base Path) by doing the following.
+
+1. Use Vite's [`--base` CLI option](https://vitejs.dev/guide/build.html#public-base-path) for your build script: `vite build --base=/some-base-path/ && vite build --ssr --base=/some-base-path/`. (Alternatively, you can define the [`base` config](https://vitejs.dev/config/#base) in your `vite.config.js`.)
+2. Use `vite-plugin-ssr`'s CLI option `--base`: `vite-plugin-ssr prerender --base=/some-base-path/`. (The `base` config in `vite.config.js` will not work; you have to use the CLI option.)
+3. Use `import.meta.env.BASE_URL` [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the base url.
+
+<br/><br/>
+
+
 ## Page Redirection
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
@@ -1437,7 +1451,7 @@ async function render({ Page, pageProps, contextProps }){
    3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
 
 The value `renderResult` returned by your `render()` hook doesn't have to be HTML:
-`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched to your server integration point `createPageRender()`.
+`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 
 ```js
 // *.page.server.js

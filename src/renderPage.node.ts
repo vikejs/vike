@@ -4,7 +4,7 @@ import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
-import { getPreloadTags } from './getPreloadTags.node'
+import { getPreloadTags, prependBaseUrl } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
@@ -51,7 +51,8 @@ async function renderPage({
   const pagePropsSuffix = '.pageProps.json'
   const isPagePropsRequest = url.endsWith(pagePropsSuffix)
   if (isPagePropsRequest) {
-    url = url === '/index.pageProps.json'
+    url =
+      url === '/index.pageProps.json'
         ? '/'
         : slice(url, 0, -1 * pagePropsSuffix.length)
   }
@@ -505,7 +506,9 @@ function injectPageInfo(
 }
 
 function injectScript(htmlDocument: string, scriptSrc: string): string {
-  const injection = `<script type="module" src="${scriptSrc}"></script>`
+  const injection = `<script type="module" src="${prependBaseUrl(
+    scriptSrc
+  )}"></script>`
   return injectEnd(htmlDocument, injection)
 }
 

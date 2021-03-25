@@ -24,7 +24,8 @@ type HtmlDocument = {
 
 async function prerender(
   partial: undefined | boolean,
-  serializePageProps: boolean = false
+  serializePageProps: boolean = false,
+  baseUrl: undefined | string
 ) {
   console.log(
     `${cyan(`vite-plugin-ssr ${require('../package.json').version}`)} ${green(
@@ -37,7 +38,8 @@ async function prerender(
   setSsrEnv({
     isProduction: true,
     root,
-    viteDevServer: undefined
+    viteDevServer: undefined,
+    baseUrl
   })
 
   const allPageIds = (await getPageIds()).filter(
