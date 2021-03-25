@@ -36,11 +36,11 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Authentication](#authentication)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Page Redirection](#page-redirection)
 <br/> API
@@ -735,6 +735,48 @@ By default, `vite-plugin-ssr` does SR and you can opt-in for CR by using `useCli
 <br/><br/>
 
 
+## Markdown
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+You can use `vite-plugin-ssr` with any Vite markdown plugin.
+
+For Vue you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
+Example:
+ - [/examples/vue/vite.config.ts](/examples/vue/vite.config.ts)
+ - [/examples/vue/pages/markdown.page.md](/examples/vue/pages/markdown.page.md)
+
+For React you can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
+Example:
+ - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
+ - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
+
+<br/><br/>
+
+
+## Pre-rendering
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+> :asterisk: **What is pre-rendering?**
+> Pre-rendering means to render the HTML of all your pages at once.
+> Normally, the HTML of a page is rendered at request-time
+> (when your user goes to your website).
+> With pre-rendering, the HTML of a page is rendered at build-time instead
+> (when yun run `vite-plugin-ssr prerender`).
+> Your app then consists only of static assets (HTML, JS, CSS, images, ...)
+> and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
+> Without pre-rendering, you need to use a Node.js server that renders your pages' HTML at request-time.
+
+To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
+
+For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
+
+The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
+
+<br/><br/>
+
+
 ## Authentication
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
@@ -857,48 +899,6 @@ as shown in the following examples.
 
  - [/examples/vuex/](/examples/vuex/)
  - [/examples/redux/](/examples/redux/)
-
-<br/><br/>
-
-
-## Markdown
-
-> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
-
-You can use `vite-plugin-ssr` with any Vite markdown plugin.
-
-For Vue you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
-Example:
- - [/examples/vue/vite.config.ts](/examples/vue/vite.config.ts)
- - [/examples/vue/pages/markdown.page.md](/examples/vue/pages/markdown.page.md)
-
-For React you can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
-Example:
- - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
- - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
-
-<br/><br/>
-
-
-## Pre-rendering
-
-> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
-
-> :asterisk: **What is pre-rendering?**
-> Pre-rendering means to render the HTML of all your pages at once.
-> Normally, the HTML of a page is rendered at request-time
-> (when your user goes to your website).
-> With pre-rendering, the HTML of a page is rendered at build-time instead
-> (when yun run `vite-plugin-ssr prerender`).
-> Your app then consists only of static assets (HTML, JS, CSS, images, ...)
-> and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
-> Without pre-rendering, you need to use a Node.js server that renders your pages' HTML at request-time.
-
-To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
-
-For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
-
-The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
 <br/><br/>
 
