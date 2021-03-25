@@ -1,25 +1,11 @@
 import React from "react";
 import { html } from "vite-plugin-ssr";
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client';
-import { getDataFromTree } from '@apollo/client/react/ssr';
-import App from '../App'
+import { getDataFromTree } from "@apollo/client/react/ssr";
+import App from "../App";
 
 export { render, addContextProps, setPageProps };
 
-type Page = (pageProps: any) => JSX.Element;
-type PageProps = any;
-type ContextProps = {
-  title?: string
-  client: ApolloClient<NormalizedCacheObject>
-  initialApolloState: NormalizedCacheObject
-  pageHtml: string
-};
-
-function render({
-  contextProps,
-}: {
-  contextProps: ContextProps;
-}) {
+function render({ contextProps }) {
   const title = contextProps.title || "Demo: vite-plugin-ssr";
 
   return html`<!DOCTYPE html>
@@ -33,15 +19,7 @@ function render({
     </html>`;
 }
 
-async function addContextProps({
-  Page,
-  pageProps,
-  contextProps
-}: {
-  Page: Page;
-  pageProps: PageProps;
-  contextProps: ContextProps;
-}) {
+async function addContextProps({ Page, pageProps, contextProps }) {
   let pageHtml, initialApolloState;
 
   const tree = <App client={contextProps.client}>
@@ -56,6 +34,6 @@ async function addContextProps({
   return { pageHtml, initialApolloState };
 }
 
-function setPageProps({ contextProps }: {contextProps: ContextProps}) {
+function setPageProps({ contextProps }) {
   return { initialApolloState: contextProps.initialApolloState };
 }
