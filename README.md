@@ -48,21 +48,21 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`](#pageroutejs)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route String](#route-string)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route Function](#route-function)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`](#pageserverjs)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addContextProps }`](#export--addcontextprops-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { setPageProps }`](#export--setpageprops-)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr) (Server Integration Point)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_defaultpage)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.*`](#_errorpage)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr) (Vite Plugin)
 
 <br/>
 
@@ -1181,6 +1181,48 @@ React example:
 <br/><br/>
 
 
+## `import { navigate } from 'vite-plugin-ssr/client/router'`
+
+Environment: `Browser`, `Node.js`. (In Node.js, `navigate()` is a no-op.)
+
+You can use `navigate('/some-url')` to programmatically navigate your user to another page (i.e. when navigation isn't triggered by the user clicking on an anchor tag `<a>`).
+For example, you can use `navigate()` to redirect your user after a successful form submission.
+
+```jsx
+import { navigate } from "vite-plugin-ssr/client/router";
+
+// Some deeply nested view component
+function Form() {
+   return (
+     <form onSubmit={onSubmit}>
+       {/*...*/}
+     </form>
+   );
+}
+
+async function onSubmit() {
+  /* ...  */
+
+  const navigationPromise = navigate('/form/success');
+
+  console.log("The URL changed but the new page hasn't rendered yet.");
+  await navigationPromise
+  console.log("The new page has finished rendering.");
+}
+```
+
+While you can import `navigate()` in Node.js, you cannot call it: calling `navigate()` in Node.js throws a `[Wrong Usage]` error.
+(`vite-plugin-ssr` allows you to import `navigate()` in Node.js because when doing SSR your view components' code is loaded in the browser as well as Node.js.)
+
+Vue example:
+ - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue)
+
+React example:
+ - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx)
+
+<br/><br/>
+
+
 ## `*.page.route.js`
 
 Environment: `Node.js` (and `Browser` if you call `useClientRouter()`)
@@ -1240,6 +1282,34 @@ export default ({ url, contextProps }) {
 
 The `match` value can be a (negative) number which enables you to resolve route conflicts.
 The higher the number, the higher the priority.
+
+<br/><br/>
+
+
+## Filesystem Routing
+
+By default a page is mapped to a URL based on where its `.page.js` file is located.
+
+```
+FILESYSTEM                        URL              COMMENT
+pages/about.page.js               /about
+pages/index/index.page.js         /                (`index` is mapped to the empty string)
+pages/HELLO.page.js               /hello           (Mapping is done lower case)
+```
+
+The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
+
+```
+FILESYSTEM                        URL
+user/list.page.js                 /user/list
+user/create.page.js               /user/create
+todo/list.page.js                 /todo/list
+todo/create.page.js               /todo/create
+```
+
+The directory common to all your `*.page.js` files is considered the routing root.
+
+For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
 
 <br/><br/>
 
@@ -1338,82 +1408,6 @@ function Page(pageProps) {
   /* ... */
 }
 ```
-
-<br/>
-
-### `export { prerender }`
-
-> :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
-
-The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `contextProps` of each URL.
-
-If you don't have any parameterized route,
-then you can prerender your app without defining any `prerender()` hook.
-You can, however, still use the `prerender()` hook
-to increase the effeciency of pre-rendering as
-it enables you to fetch data for multiple pages at once.
-
-```js
-// /pages/movie.page.route.js
-// Environment: Node.js
-
-export default '/movie/:movieId`
-```
-```js
-// /pages/movie.page.server.js
-// Environment: Node.js
-
-export { prerender }
-
-async function prerender() {
-  const movies = await Movie.findAll()
-
-  const moviePages = (
-    movies
-    .map(movie => {
-      const url = `/movie/${movie.id}`
-      const contextProps = { movie }
-      return {
-        url,
-        // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
-        // the `addContextProps()` hook.
-        contextProps
-      }
-      // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
-      // call `addContextProps()`. But that would be wasteful since we already have all the data
-      // of all movies from our `await Movie.findAll()` call.
-      // return { url }
-    })
-  )
-
-  // We can also return URLs that don't match the page's route.
-  // That way we can provide the `contextProps` of other pages.
-  // Here we provide the `contextProps` of the `/movies` page since
-  // we already have the data.
-  const movieListPage = {
-    url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
-    contextProps: {
-      movieList: movies.map(({id, title}) => ({id, title})
-    }
-  }
-
-  return [movieListPage, ...moviePages]
-}
-```
-
-The `prerender()` hook is only used when pre-rendering:
-if you don't call
-`vite-plugin-ssr prerender`
-then no `prerender()` hook is called.
-
-Examples:
- - [/examples/vue/package.json#build:prerender](/examples/vue/package.json)
- - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts)
- - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts)
- - [/examples/react/package.json#build:prerender](/examples/react/package.json)
- - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts)
- - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts)
 
 <br/>
 
@@ -1564,115 +1558,81 @@ async function render({ Page, contextProps }) {
 }
 ```
 
-<br/><br/>
+<br/>
 
+### `export { prerender }`
 
-## `_default.page.*`
+> :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
-The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
+The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
+by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `contextProps` of each URL.
 
-There can be several `_default`:
+If you don't have any parameterized route,
+then you can prerender your app without defining any `prerender()` hook.
+You can, however, still use the `prerender()` hook
+to increase the effeciency of pre-rendering as
+it enables you to fetch data for multiple pages at once.
 
+```js
+// /pages/movie.page.route.js
+// Environment: Node.js
+
+export default '/movie/:movieId`
 ```
-marketing/_default.page.server.js
-marketing/_default.page.client.js
-marketing/index.page.js
-marketing/about.page.js
-marketing/jobs.page.js
-admin-panel/_default.page.server.js
-admin-panel/_default.page.client.js
-admin-panel/index.page.js
-```
+```js
+// /pages/movie.page.server.js
+// Environment: Node.js
 
-The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
-the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
+export { prerender }
 
-The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
-defining `_default.page.js` or `_default.page.route.js` is forbidden.
+async function prerender() {
+  const movies = await Movie.findAll()
 
-<br/><br/>
+  const moviePages = (
+    movies
+    .map(movie => {
+      const url = `/movie/${movie.id}`
+      const contextProps = { movie }
+      return {
+        url,
+        // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
+        // the `addContextProps()` hook.
+        contextProps
+      }
+      // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
+      // call `addContextProps()`. But that would be wasteful since we already have all the data
+      // of all movies from our `await Movie.findAll()` call.
+      // return { url }
+    })
+  )
 
+  // We can also return URLs that don't match the page's route.
+  // That way we can provide the `contextProps` of other pages.
+  // Here we provide the `contextProps` of the `/movies` page since
+  // we already have the data.
+  const movieListPage = {
+    url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
+    contextProps: {
+      movieList: movies.map(({id, title}) => ({id, title})
+    }
+  }
 
-## `_error.page.*`
-
-The page `_error.page.js` is shown to your user when an error occurs:
- - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
- - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===false`).
-
-It comes with a built-in `setPageProps()` hook that sets `pageProps.is404`.
-The `pageProps.is404` flag enables you to decided whether to show a 404 or 500 page.
-The flag is also available at `contextProps.is404`.
-
-You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`. (You can then overwrite the built-in `setPageProps()` hook.)
-
-<br/><br/>
-
-
-## Filesystem Routing
-
-By default a page is mapped to a URL based on where its `.page.js` file is located.
-
-```
-FILESYSTEM                        URL              COMMENT
-pages/about.page.js               /about
-pages/index/index.page.js         /                (`index` is mapped to the empty string)
-pages/HELLO.page.js               /hello           (Mapping is done lower case)
-```
-
-The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
-
-```
-FILESYSTEM                        URL
-user/list.page.js                 /user/list
-user/create.page.js               /user/create
-todo/list.page.js                 /todo/list
-todo/create.page.js               /todo/create
-```
-
-The directory common to all your `*.page.js` files is considered the routing root.
-
-For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
-
-<br/><br/>
-
-## `import { navigate } from 'vite-plugin-ssr/client/router'`
-
-Environment: `Browser`, `Node.js`. (In Node.js, `navigate()` is a no-op.)
-
-You can use `navigate('/some-url')` to programmatically navigate your user to another page (i.e. when navigation isn't triggered by the user clicking on an anchor tag `<a>`).
-For example, you can use `navigate()` to redirect your user after a successful form submission.
-
-```jsx
-import { navigate } from "vite-plugin-ssr/client/router";
-
-// Some deeply nested view component
-function Form() {
-   return (
-     <form onSubmit={onSubmit}>
-       {/*...*/}
-     </form>
-   );
-}
-
-async function onSubmit() {
-  /* ...  */
-
-  const navigationPromise = navigate('/form/success');
-
-  console.log("The URL changed but the new page hasn't rendered yet.");
-  await navigationPromise
-  console.log("The new page has finished rendering.");
+  return [movieListPage, ...moviePages]
 }
 ```
 
-While you can import `navigate()` in Node.js, you cannot call it: calling `navigate()` in Node.js throws a `[Wrong Usage]` error.
-(`vite-plugin-ssr` allows you to import `navigate()` in Node.js because when doing SSR your view components' code is loaded in the browser as well as Node.js.)
+The `prerender()` hook is only used when pre-rendering:
+if you don't call
+`vite-plugin-ssr prerender`
+then no `prerender()` hook is called.
 
-Vue example:
- - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue)
-
-React example:
- - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx)
+Examples:
+ - [/examples/vue/package.json#build:prerender](/examples/vue/package.json)
+ - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts)
+ - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts)
+ - [/examples/react/package.json#build:prerender](/examples/react/package.json)
+ - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts)
+ - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts)
 
 <br/><br/>
 
@@ -1737,6 +1697,47 @@ Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you ca
 Examples:
  - [JavaScript](/boilerplates/boilerplate-vue/server/index.js)
  - [TypeScript](/boilerplates/boilerplate-vue-ts/server/index.ts)
+
+<br/><br/>
+
+
+## `_default.page.*`
+
+The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
+
+There can be several `_default`:
+
+```
+marketing/_default.page.server.js
+marketing/_default.page.client.js
+marketing/index.page.js
+marketing/about.page.js
+marketing/jobs.page.js
+admin-panel/_default.page.server.js
+admin-panel/_default.page.client.js
+admin-panel/index.page.js
+```
+
+The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
+
+The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
+defining `_default.page.js` or `_default.page.route.js` is forbidden.
+
+<br/><br/>
+
+
+## `_error.page.*`
+
+The page `_error.page.js` is shown to your user when an error occurs:
+ - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
+ - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===false`).
+
+It comes with a built-in `setPageProps()` hook that sets `pageProps.is404`.
+The `pageProps.is404` flag enables you to decided whether to show a 404 or 500 page.
+The flag is also available at `contextProps.is404`.
+
+You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`. (You can then overwrite the built-in `setPageProps()` hook.)
 
 <br/><br/>
 
