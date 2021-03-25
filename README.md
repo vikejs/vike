@@ -1631,14 +1631,14 @@ if you don't call
 then no `prerender()` hook is called.
 
 Vue Example:
- - [/examples/vue/package.json#build:prerender](/examples/vue/package.json)
- - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts)
- - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts)
+ - [/examples/vue/package.json](/examples/vue/package.json) (see the `build:prerender` script)
+ - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts) (see the `prerender()` hook)
 
 React Example:
- - [/examples/react/package.json#build:prerender](/examples/react/package.json)
- - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts)
- - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts)
+ - [/examples/react/package.json#build:prerender](/examples/react/package.json) (see the `build:prerender` script)
+ - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts) (see the `prerender()` hook)
 
 <br/><br/>
 
