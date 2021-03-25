@@ -1630,10 +1630,12 @@ if you don't call
 `vite-plugin-ssr prerender`
 then no `prerender()` hook is called.
 
-Examples:
+Vue Example:
  - [/examples/vue/package.json#build:prerender](/examples/vue/package.json)
  - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts)
  - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts)
+
+React Example:
  - [/examples/react/package.json#build:prerender](/examples/react/package.json)
  - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts)
  - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts)
