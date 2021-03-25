@@ -774,6 +774,10 @@ For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to us
 
 The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
+Examples:
+ - [/examples/vuex/](/examples/vue/)
+ - [/examples/redux/](/examples/react/)
+
 <br/><br/>
 
 
