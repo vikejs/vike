@@ -2,7 +2,7 @@ import React from "react";
 
 export { Page };
 
-function Page({ is404 }: { is404: boolean }) {
+function Page({ is404 }) {
   if (is404) {
     return (
       <>

@@ -1,8 +1,8 @@
-import express from "express";
-import { createPageRender } from "vite-plugin-ssr";
-import * as vite from "vite";
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
-import fetch from 'cross-fetch'
+const express = require("express");
+const { createPageRender } = require("vite-plugin-ssr");
+const vite = require("vite");
+const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client');
+const fetch = require("cross-fetch");
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;
@@ -28,7 +28,7 @@ async function startServer() {
     const client = new ApolloClient({
       ssrMode: true,
       link: createHttpLink({
-        uri: 'https://countries.trevorblades.com',
+        uri: "https://countries.trevorblades.com",
         fetch,
       }),
       cache: new InMemoryCache(),

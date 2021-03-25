@@ -3,12 +3,10 @@
 body {
   margin: 0;
   font-family: sans-serif;
+  padding: 3rem;
 }
 * {
   box-sizing: border-box;
-}
-a {
-  text-decoration: none;
 }
 code {
   font-family: monospace;
