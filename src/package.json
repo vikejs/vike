@@ -31,6 +31,9 @@
     "./client/router": {
       "require": "./client/router.js",
       "import": "./client/router.ts"
+    },
+    "./cli": {
+      "require": "./dist/cli.js"
     }
   },
   "bin": {

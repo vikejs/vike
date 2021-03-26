@@ -22,11 +22,25 @@ type HtmlDocument = {
   pagePropsSerialized: string | null
 }
 
-async function prerender(
-  partial: undefined | boolean,
-  serializePageProps: boolean = false,
-  baseUrl: undefined | string
-) {
+/**
+ * Used for proxying regular HTTP(S) requests
+ * @param partial Allow only a subset of pages to be pre-rendered.
+ * @param clientRouter Serialize `pageProps` to JSON files for Client-side Routing.
+ * @param base Public base path.
+ */
+async function prerender({
+  partial = false,
+  clientRouter = false,
+  base
+}: {
+  partial?: boolean
+  clientRouter?: boolean
+  base?: string
+} = {}) {
+  assertArguments(partial, clientRouter, base)
+  const serializePageProps = clientRouter
+  const baseUrl = base
+
   console.log(
     `${cyan(`vite-plugin-ssr ${require('../package.json').version}`)} ${green(
       'pre-rendering HTML...'
@@ -162,22 +176,22 @@ async function writeHtmlDocument(
   root: string
 ) {
   assert(url.startsWith('/'))
-  let base = urlToFile(url)
-  assert(base.startsWith('/'))
-  base = base.slice(1)
-  base = base.split('/').join(sep)
-  assert(!base.startsWith('/') && !base.startsWith(sep))
-  const pathBase = join(root, 'dist', 'client', base)
+  let fileBase = urlToFile(url)
+  assert(fileBase.startsWith('/'))
+  fileBase = fileBase.slice(1)
+  fileBase = fileBase.split('/').join(sep)
+  assert(!fileBase.startsWith('/') && !fileBase.startsWith(sep))
+  const pathBase = join(root, 'dist', 'client', fileBase)
   await mkdirp(dirname(pathBase))
 
   const write = async (
     fileExtension: '.html' | '.pageProps.json',
     content: string
   ) => {
-    const fileBase = base + fileExtension
+    const fileUrl = fileBase + fileExtension
     const filePath = pathBase + fileExtension
     await writeFile(filePath, content)
-    console.log(`${gray(join('dist', 'client') + sep)}${blue(fileBase)}`)
+    console.log(`${gray(join('dist', 'client') + sep)}${blue(fileUrl)}`)
   }
 
   const writeJobs = [write('.html', htmlDocument)]
@@ -265,4 +279,23 @@ function normalizePrerenderResult(
     )
     return prerenderElement as any
   }
+}
+
+function assertArguments(
+  partial: unknown,
+  clientRouter: unknown,
+  base: unknown
+) {
+  assertUsage(
+    partial === true || partial === false,
+    '[prerender()] Option `partial` should be a boolean.'
+  )
+  assertUsage(
+    clientRouter === true || clientRouter === false,
+    '[prerender()] Option `clientRouter` should be a boolean.'
+  )
+  assertUsage(
+    base === undefined || typeof base === 'string',
+    '[prerender()] Option `base` should be a string.'
+  )
 }
