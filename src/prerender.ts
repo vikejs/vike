@@ -9,7 +9,7 @@ import {
   loadPageRoutes,
   route
 } from './route.node'
-import { assert, assertUsage, assertWarning, hasProp } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, urlToFile } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -162,7 +162,10 @@ async function writeHtmlDocument(
   root: string
 ) {
   assert(url.startsWith('/'))
-  const base = url === '/' ? 'index' : url.slice(1).split('/').join(sep)
+  let base = urlToFile(url)
+  assert(base.startsWith('/'))
+  base = base.slice(1)
+  base = base.split('/').join(sep)
   assert(!base.startsWith('/') && !base.startsWith(sep))
   const pathBase = join(root, 'dist', 'client', base)
   await mkdirp(dirname(pathBase))

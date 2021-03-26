@@ -23,7 +23,9 @@ import {
   cast,
   assertWarning,
   hasProp,
-  isPromise
+  isPromise,
+  isPagePropsUrl,
+  retrieveOriginalUrl
 } from './utils'
 
 export { renderPage }
@@ -55,13 +57,9 @@ async function renderPage({
     }
   }
 
-  const pagePropsSuffix = '.pageProps.json'
-  const isPagePropsRequest = url.endsWith(pagePropsSuffix)
+  const isPagePropsRequest = isPagePropsUrl(url)
   if (isPagePropsRequest) {
-    url =
-      url === '/index.pageProps.json'
-        ? '/'
-        : slice(url, 0, -1 * pagePropsSuffix.length)
+    url = retrieveOriginalUrl(url)
   }
 
   Object.assign(contextProps, { url })

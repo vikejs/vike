@@ -1,5 +1,5 @@
 import { route, getPageIds } from '../route.node'
-import { assert, assertInfo, assertUsage } from '../utils'
+import { assert, assertInfo, assertUsage, urlToFile } from '../utils'
 import { getPage } from './getPage.client'
 import { setPageInfoRetriever } from './getPageInfo.client'
 import { getUrl } from './getUrl.client'
@@ -171,7 +171,7 @@ function retrievePageInfo(url: string) {
 async function retrievePageProps(
   url: string
 ): Promise<Record<string, unknown>> {
-  const response = await fetch(`${url !== '/' ? url : '/index'}.pageProps.json`)
+  const response = await fetch(`${urlToFile(url)}.pageProps.json`)
   const responseText = await response.text()
   const responseObject = parse(responseText) as
     | { pageProps: Record<string, unknown> }
