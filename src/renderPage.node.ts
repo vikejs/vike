@@ -1,5 +1,12 @@
 import devalue from 'devalue'
-import { getErrorPageId, getPageIds, route, isErrorPage } from './route.node'
+import {
+  getErrorPageId,
+  getPageIds,
+  route,
+  isErrorPage,
+  loadPageRoutes,
+  getFilesystemRoute
+} from './route.node'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
@@ -78,7 +85,7 @@ async function renderPage({
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    warn404(url, allPageIds)
+    await warn404(url, allPageIds)
     if (isPagePropsRequest) {
       return renderPagePropsError()
     }
@@ -627,7 +634,7 @@ function warnMissingErrorPage() {
     )
   }
 }
-function warn404(url: string, allPageIds: string[]) {
+async function warn404(url: string, allPageIds: string[]) {
   const { isProduction } = getSsrEnv()
   const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
   assertUsage(
@@ -637,10 +644,47 @@ function warn404(url: string, allPageIds: string[]) {
   if (!isProduction && !isFileRequest(url)) {
     assertWarning(
       false,
-      `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
-        .map((pageId) => `\`${pageId}.page.*\``)
-        .join(', ')}. (This warning is not shown in production.)`
+      `No page is matching the URL \`${url}\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
     )
+  }
+}
+async function getPagesAndRoutesInfo(): Promise<string> {
+  const allPageIds = await getPageIds()
+  const pageRoutes = await loadPageRoutes()
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  return [
+    'Defined pages:',
+    relevantPageIds
+      .map((pageId) => {
+        let routeInfo
+        let routeSrc
+        if (!(pageId in pageRoutes)) {
+          routeInfo = `\`${getFilesystemRoute(pageId, allPageIds)}\``
+          routeSrc = 'Filesystem Routing'
+        } else {
+          const { pageRoute, pageRouteFile } = pageRoutes[pageId]
+          const pageRouteStringified = truncateString(
+            String(pageRoute).split(/\s/).filter(Boolean).join(' '),
+            64
+          )
+          routeInfo = `\`${pageRouteStringified}\``
+          const routeType =
+            typeof pageRoute === 'string' ? 'Route String' : 'Route Function'
+          const routeFile = pageRouteFile
+          routeSrc = `${routeType} defined in \`${routeFile}\``
+        }
+        return `\`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
+      })
+      .join(', ')
+  ].join(' ')
+}
+
+function truncateString(str: string, len: number) {
+  if (len > str.length) {
+    return str
+  } else {
+    str = str.substring(0, len)
+    return str + '...'
   }
 }
 

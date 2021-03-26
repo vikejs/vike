@@ -156,7 +156,8 @@ function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   return pageRoute
 }
 function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
-  const commonPrefix = getCommonPrefix(allPageIds)
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  const commonPrefix = getCommonPrefix(relevantPageIds)
   assert(pageId.startsWith(commonPrefix))
   return pageId.slice(commonPrefix.length)
 }
@@ -171,6 +172,9 @@ function getCommonPrefix(strings: string[]): string {
   return first.slice(0, idx)
 }
 
+/**
+  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
+*/
 async function getPageIds(): Promise<PageId[]> {
   const pageFiles = await getUserFiles('.page')
   let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
