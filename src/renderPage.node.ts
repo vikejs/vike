@@ -629,20 +629,18 @@ function warnMissingErrorPage() {
 }
 function warn404(url: string, allPageIds: string[]) {
   const { isProduction } = getSsrEnv()
-  if (!isProduction) {
-    const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
-    assertUsage(
-      relevantPageIds.length > 0,
-      'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  assertUsage(
+    relevantPageIds.length > 0,
+    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+  )
+  if (!isProduction && !isFileRequest(url)) {
+    assertWarning(
+      false,
+      `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
+        .map((pageId) => `\`${pageId}.page.*\``)
+        .join(', ')}. (This warning is not shown in production.)`
     )
-    if (!isFileRequest(url)) {
-      assertWarning(
-        false,
-        `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
-          .map((pageId) => `\`${pageId}.page.*\``)
-          .join(', ')}. (This warning is not shown in production.)`
-      )
-    }
   }
 }
 
