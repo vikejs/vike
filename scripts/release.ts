@@ -14,7 +14,7 @@ release()
 async function release() {
   const { versionCurrent, versionNew } = getVersion()
   updateVersion(versionNew)
-  updateDependencies(versionNew, versionCurrent)
+  await updateDependencies(versionNew, versionCurrent)
   bumpBoilerplateVersion()
   await updateLockFile()
   await changelog()
@@ -56,7 +56,7 @@ function getVersion(): { versionNew: string; versionCurrent: string } {
   return { versionNew, versionCurrent }
 }
 function updateVersion(versionNew: string) {
-  update([`${DIR_SRC}/package.json`], (pkg) => {
+  updatePkg(`${DIR_SRC}/package.json`, (pkg) => {
     pkg.version = versionNew
   })
 }
@@ -72,17 +72,21 @@ function bumpBoilerplateVersion() {
   writePackageJson(pkgPath, pkg)
 }
 
-function updateDependencies(versionNew: string, versionCurrent: string) {
+async function updateDependencies(versionNew: string, versionCurrent: string) {
   const pkgPaths = [
     ...retrievePkgPaths(DIR_BOILERPLATES),
     ...retrievePkgPaths(DIR_EXAMPLES)
   ]
-  update(pkgPaths, (pkg) => {
-    const version = pkg.dependencies['vite-plugin-ssr']
-    assert(version)
-    assert.strictEqual(version, `${versionCurrent}`)
-    pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
-  })
+  for (const pkgPath of pkgPaths) {
+    updatePkg(pkgPath, (pkg) => {
+      const version = pkg.dependencies['vite-plugin-ssr']
+      assert(version)
+      assert.strictEqual(version, `${versionCurrent}`)
+      pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
+    })
+    // Update package-json.lock
+    await run('npm', ['install'])
+  }
 }
 
 function retrievePkgPaths(rootDir: string): string[] {
@@ -98,12 +102,10 @@ function retrievePkgPaths(rootDir: string): string[] {
   return pkgPaths
 }
 
-function update(pkgPath: string[], updater: (pkg: PackageJson) => void) {
-  pkgPath.forEach((pkgPath) => {
-    const pkg = require(pkgPath) as PackageJson
-    updater(pkg)
-    writePackageJson(pkgPath, pkg)
-  })
+function updatePkg(pkgPath: string, updater: (pkg: PackageJson) => void) {
+  const pkg = require(pkgPath) as PackageJson
+  updater(pkg)
+  writePackageJson(pkgPath, pkg)
 }
 
 function writePackageJson(pkgPath: string, pkg: object) {
