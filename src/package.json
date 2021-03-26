@@ -22,7 +22,8 @@
   "main": "./dist/node.js",
   "exports": {
     ".": {
-      "require": "./dist/node.js"
+      "require": "./dist/node.js",
+      "import": "./node.ts"
     },
     "./client": {
       "import": "./client/index.ts"
