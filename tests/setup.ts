@@ -134,7 +134,7 @@ function forceLog(std: 'stdout' | 'stderr' | string, str: string) {
 }
 
 async function autoRetry(test: () => void | Promise<void>): Promise<void> {
-  const timeout = 10 * 1000
+  const timeout = 60 * 1000
   const period = 100
   const numberOfTries = timeout / period
   let i = 0
