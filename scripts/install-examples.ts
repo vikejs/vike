@@ -6,7 +6,13 @@ installExamples()
 async function installExamples() {
   const dependers = getDependers()
   for (const cwd of dependers) {
-    await runCommand('npm', ['install'], { cwd, silent: true })
-    console.log(`Installed dependencies of: ${cwd}`)
+    process.stdout.write(`Installing dependencies for: ${cwd}...`)
+    try {
+      await runCommand('npm', ['install'], { cwd, silent: true })
+    } catch (err) {
+      process.stdout.write(' Failed.\n')
+      await runCommand('npm', ['install'], { cwd }) // Not silent; print error
+    }
+    process.stdout.write(' Done.\n')
   }
 }
