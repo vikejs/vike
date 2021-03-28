@@ -1,5 +1,5 @@
 import { route, getPageIds } from '../route.node'
-import { assert, assertInfo, assertUsage, urlToFile } from '../utils'
+import { assert, assertInfo, assertUsage, hasProp, urlToFile } from '../utils'
 import { getPage } from './getPage.client'
 import { setPageInfoRetriever } from './getPageInfo.client'
 import { getUrl } from './getUrl.client'
@@ -37,17 +37,19 @@ function useClientRouter({
   )
   isAlreadyCalled = true
   setPageInfoRetriever(retrievePageInfo)
+  disableBrowserScrollRestoration()
+  autoSaveScrollPosition()
 
   onLinkClick((url: string) => {
     changeUrl(url)
-    fetchAndRender()
+    fetchAndRender(null)
   })
-  onBrowserHistoryNavigation(() => {
-    fetchAndRender()
+  onBrowserHistoryNavigation((scrollPosition) => {
+    fetchAndRender(scrollPosition)
   })
-  navigateFunction = (url: string) => {
+  navigateFunction = async (url: string) => {
     changeUrl(url)
-    return fetchAndRender()
+    await fetchAndRender(null)
   }
 
   let resolveInitialPagePromise: () => void
@@ -62,7 +64,9 @@ function useClientRouter({
 
   return { hydrationPromise }
 
-  async function fetchAndRender(): Promise<undefined> {
+  async function fetchAndRender(
+    scrollPosition?: ScrollPosition | null
+  ): Promise<undefined> {
     const callNumber = ++callCount
     const urlNew = getUrl()
 
@@ -103,11 +107,15 @@ function useClientRouter({
       isTransitioning = false
     }
     isFirstPageRender = false
+
+    if (scrollPosition !== undefined) {
+      setScrollPosition(scrollPosition)
+    }
   }
 }
 
 let navigateFunction: undefined | ((url: string) => Promise<void>)
-function navigate(url: string): Promise<void> {
+async function navigate(url: string): Promise<void> {
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',
@@ -123,7 +131,7 @@ function navigate(url: string): Promise<void> {
     navigateFunction,
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
   )
-  return navigateFunction(url)
+  await navigateFunction(url)
 }
 
 function onLinkClick(callback: (url: string) => void) {
@@ -190,15 +198,62 @@ function onLinkClick(callback: (url: string) => void) {
   }
 }
 
-function onBrowserHistoryNavigation(callback: Function) {
-  window.addEventListener('popstate', () => {
-    callback()
+function onBrowserHistoryNavigation(
+  callback: (scrollPosition: ScrollPosition | null) => void
+) {
+  window.addEventListener('popstate', (ev) => {
+    const scrollPosition = hasProp(ev.state, 'scrollPosition')
+      ? (ev.state.scrollPosition as ScrollPosition)
+      : null
+    callback(scrollPosition)
   })
 }
 
 function changeUrl(url: string) {
   if (getUrl() === url) return
+
+  // Change URL
   window.history.pushState(undefined, '', url)
+}
+
+type ScrollPosition = { x: number; y: number }
+function getScrollPosition(): ScrollPosition {
+  const scrollPosition = { x: window.scrollX, y: window.scrollY }
+  return scrollPosition
+}
+function setScrollPosition(scrollPosition: ScrollPosition | null): void {
+  if (!scrollPosition) {
+    const hash = getUrlHash()
+    // We mirror the browser's native behavior
+    if (hash && hash !== 'top') {
+      const hashTarget =
+        document.getElementById(hash) || document.getElementsByName(hash)[0]
+      if (hashTarget) {
+        hashTarget.scrollIntoView()
+        return
+      }
+    }
+    scrollPosition = { x: 0, y: 0 }
+  }
+  const { x, y } = scrollPosition
+  window.scrollTo(x, y)
+}
+
+function autoSaveScrollPosition() {
+  window.addEventListener('scroll', saveScrollPosition, { passive: true })
+}
+function saveScrollPosition() {
+  // Save scroll position
+  const scrollPosition = getScrollPosition()
+  window.history.replaceState({ scrollPosition }, '')
+}
+
+function getUrlHash(): string | null {
+  let { hash } = window.location
+  if (hash === '') return null
+  assert(hash.startsWith('#'))
+  hash = hash.slice(1)
+  return hash
 }
 
 function retrievePageInfo(url: string) {
@@ -231,4 +286,11 @@ async function retrievePageProps(
   const { pageProps } = responseObject
   assert(pageProps.constructor === Object)
   return pageProps
+}
+
+function disableBrowserScrollRestoration() {
+  // Prevent browser scroll behavior on History popstate
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'manual'
+  }
 }
