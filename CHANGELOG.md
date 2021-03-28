@@ -1,3 +1,25 @@
+# [0.1.0-beta.22](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.21...v0.1.0-beta.22) (2021-03-28)
+
+
+### Bug Fixes
+
+* only intercept regular left clicks on regular links ([405a27f](https://github.com/brillout/vite-plugin-ssr/commit/405a27f7200997c24014edf9b9ca73dc8698fca2))
+* save & restore scroll position upon client-side routing ([72815c7](https://github.com/brillout/vite-plugin-ssr/commit/72815c7c00adb04f8fdb8a20924b473cc3a66f49))
+
+
+### improve
+
+* don't load plugin code in production ([95e7e0f](https://github.com/brillout/vite-plugin-ssr/commit/95e7e0f5492cb907748da312d0ec8b6cb7b5f659))
+
+
+### BREAKING CHANGES
+
+* It's now recommended to do `import ssr from
+'vite-plugin-ssr/plugin';` instead of `import ssr from
+'vite-plugin-ssr';`. A warning will be shown otherwise.
+
+
+
 # [0.1.0-beta.21](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.20...v0.1.0-beta.21) (2021-03-26)
 
 
