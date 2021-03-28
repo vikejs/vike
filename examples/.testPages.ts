@@ -116,9 +116,7 @@ function testPages(
     if (viewFramework === 'react') {
       expect(html).toContain('<button>Counter <!-- -->0</button>')
     } else if (viewFramework === 'vue') {
-      expect(html).toMatch(
-        partRegExp`<button data-v-${/[^\>]+/}>Counter 0</button>`
-      )
+      expect(html).toContain('<button>Counter 0</button>')
     } else {
       assert(false)
     }
