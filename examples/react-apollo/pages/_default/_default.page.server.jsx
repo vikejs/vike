@@ -6,12 +6,10 @@ import App from "../App";
 export { render, addContextProps, setPageProps };
 
 function render({ contextProps }) {
-  const title = contextProps.title || "Demo: vite-plugin-ssr";
-
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${title}</title>
+        <title>vite-plugin-ssr: React + Apollo example</title>
       </head>
       <body>
         <div id="page-content">${html.dangerouslySetHtml(contextProps.pageHtml)}</div>
