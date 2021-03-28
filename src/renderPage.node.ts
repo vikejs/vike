@@ -526,9 +526,9 @@ function injectPreloadTags(
 }
 
 function injectBegin(htmlDocument: string, injection: string): string {
-  const headClose = '</head>'
-  if (htmlDocument.includes(headClose)) {
-    return injectAtClosingTag(htmlDocument, headClose, injection)
+  const headOpen = /<head[^>]*>/
+  if (headOpen.test(htmlDocument)) {
+    return injectAtOpeningTag(htmlDocument, headOpen, injection)
   }
 
   const htmlBegin = /<html[^>]*>/
