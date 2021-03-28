@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('../dist/cli-bin')
+require('../dist/cli/index.js')

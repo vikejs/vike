@@ -8,7 +8,7 @@ import {
   isStaticRoute,
   loadPageRoutes,
   route
-} from './route.node'
+} from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, urlToFile } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage } from './renderPage.node'

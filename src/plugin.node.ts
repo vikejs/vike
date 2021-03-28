@@ -12,6 +12,7 @@ import * as glob from 'fast-glob'
 const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
 
 export { plugin }
+export default plugin
 
 function plugin(): Plugin[] {
   const ssr = { external: ['vite-plugin-ssr'] }

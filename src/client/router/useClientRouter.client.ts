@@ -1,8 +1,14 @@
-import { route, getPageIds } from '../route.node'
-import { assert, assertInfo, assertUsage, hasProp, urlToFile } from '../utils'
-import { getPage } from './getPage.client'
-import { setPageInfoRetriever } from './getPageInfo.client'
-import { getUrl } from './getUrl.client'
+import { route, getPageIds } from '../../route.shared'
+import {
+  assert,
+  assertInfo,
+  assertUsage,
+  hasProp,
+  urlToFile
+} from '../../utils'
+import { getPage } from '../getPage.client'
+import { setPageInfoRetriever } from '../getPageInfo.client'
+import { getUrl } from '../getUrl.client'
 import { parse } from '@brillout/json-s'
 
 export { useClientRouter }

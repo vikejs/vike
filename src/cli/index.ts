@@ -1,5 +1,5 @@
 import { cac } from 'cac'
-import { prerender } from './prerender'
+import { prerender } from '../prerender'
 
 const cli = cac('vite-plugin-ssr')
 
@@ -22,7 +22,7 @@ cli.on('command:*', () => {
 })
 
 cli.help()
-cli.version(require('../package.json').version)
+cli.version(require('../../package.json').version)
 
 cli.parse(
   process.argv.length === 2 ? [...process.argv, '--help'] : process.argv

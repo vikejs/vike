@@ -6,7 +6,7 @@ import {
   isErrorPage,
   loadPageRoutes,
   getFilesystemRoute
-} from './route.node'
+} from './route.shared'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
