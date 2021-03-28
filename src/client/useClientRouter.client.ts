@@ -123,23 +123,67 @@ function navigate(url: string): Promise<void> {
 }
 
 function onLinkClick(callback: (url: string) => void) {
-  document.addEventListener('click', (ev) => {
-    let target = ev.target as HTMLElement
+  document.addEventListener('click', onClick)
+
+  return
+
+  // Code adapted from https://github.com/HenrikJoreteg/internal-nav-helper/blob/5199ec5448d0b0db7ec63cf76d88fa6cad878b7d/src/index.js#L11-L29
+
+  function onClick(ev: MouseEvent) {
+    if (!isNormalLeftClick(ev)) return
+
+    const linkTag = findLinkTag(ev.target as HTMLElement)
+    if (!linkTag) return
+    if (!isNotNewTabLink(linkTag)) return
+
+    const url = linkTag.getAttribute('href')
+    if (!url) return
+    if (isExternalLink(url)) return
+    if (isHashLink(url)) return
+
+    ev.preventDefault()
+    callback(url)
+  }
+
+  function isExternalLink(url: string) {
+    return !url.startsWith('/') && !url.startsWith('.')
+  }
+
+  function isHashLink(url: string) {
+    return url.startsWith('#') || url.startsWith(`${window.location.pathname}#`)
+  }
+
+  function isNotNewTabLink(linkTag: HTMLElement) {
+    const target = linkTag.getAttribute('target')
+    const rel = linkTag.getAttribute('rel')
+    return (
+      target !== '_blank' &&
+      target !== '_external' &&
+      rel !== 'external' &&
+      !linkTag.hasAttribute('download')
+    )
+  }
+
+  function isNormalLeftClick(ev: MouseEvent): boolean {
+    return (
+      ev.button === 0 &&
+      !ev.ctrlKey &&
+      !ev.shiftKey &&
+      !ev.altKey &&
+      !ev.metaKey
+    )
+  }
+
+  function findLinkTag(target: HTMLElement): null | HTMLElement {
     while (target.tagName !== 'A') {
       const { parentNode } = target
       if (!parentNode) {
-        return
+        return null
       }
       target = parentNode as HTMLElement
     }
-    if (target.tagName === 'A') {
-      const url = target.getAttribute('href')
-      if (url && (url.startsWith('/') || url.startsWith('.'))) {
-        ev.preventDefault()
-        callback(url)
-      }
-    }
-  })
+    return target
+  }
 }
 
 function onBrowserNavigation(callback: Function) {
