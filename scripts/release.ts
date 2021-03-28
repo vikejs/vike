@@ -21,7 +21,7 @@ async function release() {
   const tag = `v${versionNew}`
   await commit(tag)
   await commitTag(tag)
-  await build()
+  // await build()
 }
 
 async function changelog() {
@@ -85,7 +85,7 @@ async function updateDependencies(versionNew: string, versionCurrent: string) {
       pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
     })
     // Update package-json.lock
-    await run('npm', ['install'])
+    // await run('npm', ['install'])
   }
 }
 
