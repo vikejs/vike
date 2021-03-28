@@ -25,6 +25,9 @@ async function startServer() {
 
   const renderPage = createPageRender({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
+    // It's important to create an entirely new instance of Apollo Client for each request.
+    // Otherwise, your response to a request might include sensitive cached query results
+    // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
     const client = new ApolloClient({
       ssrMode: true,
       link: createHttpLink({
