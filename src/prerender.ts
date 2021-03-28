@@ -9,14 +9,38 @@ import {
   loadPageRoutes,
   route
 } from './route.node'
-import { assert, assertUsage, assertWarning, hasProp } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, urlToFile } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
-import { getPageFunctions, renderPageId } from './renderPage.node'
+import { getPageFunctions, prerenderPage } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
 
 export { prerender }
 
-async function prerender(partial: undefined | boolean) {
+type HtmlDocument = {
+  url: string
+  htmlDocument: string
+  pagePropsSerialized: string | null
+}
+
+/**
+ * Used for proxying regular HTTP(S) requests
+ * @param partial Allow only a subset of pages to be pre-rendered.
+ * @param clientRouter Serialize `pageProps` to JSON files for Client-side Routing.
+ * @param base Public base path.
+ */
+async function prerender({
+  partial = false,
+  clientRouter = false,
+  base
+}: {
+  partial?: boolean
+  clientRouter?: boolean
+  base?: string
+} = {}) {
+  assertArguments(partial, clientRouter, base)
+  const serializePageProps = clientRouter
+  const baseUrl = base
+
   console.log(
     `${cyan(`vite-plugin-ssr ${require('../package.json').version}`)} ${green(
       'pre-rendering HTML...'
@@ -28,7 +52,8 @@ async function prerender(partial: undefined | boolean) {
   setSsrEnv({
     isProduction: true,
     root,
-    viteDevServer: undefined
+    viteDevServer: undefined,
+    baseUrl
   })
 
   const allPageIds = (await getPageIds()).filter(
@@ -76,7 +101,7 @@ async function prerender(partial: undefined | boolean) {
     })
   )
 
-  const htmlFiles: { url: string; renderResult: string }[] = []
+  const htmlDocuments: HtmlDocument[] = []
   const renderedPageIds: Record<string, true> = {}
 
   await Promise.all(
@@ -91,14 +116,14 @@ async function prerender(partial: undefined | boolean) {
           `The \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs returned by \`prerender()\` hooks to always match the URL of a page.`
         )
         const { pageId } = routeResult
-        const renderResult = await renderPageId(
+        const { htmlDocument, pagePropsSerialized } = await prerenderPage(
           pageId,
           { ...contextProps, ...routeResult.contextPropsAddendum },
           url,
-          !noPrenderContextProps
+          !noPrenderContextProps,
+          serializePageProps
         )
-        assertRenderResult(renderResult)
-        htmlFiles.push({ url, renderResult })
+        htmlDocuments.push({ url, htmlDocument, pagePropsSerialized })
         renderedPageIds[pageId] = true
       }
     )
@@ -127,29 +152,53 @@ async function prerender(partial: undefined | boolean) {
             return
           }
         }
-        const renderResult = await renderPageId(pageId, contextProps, url)
-        assertRenderResult(renderResult)
-        htmlFiles.push({ url, renderResult })
+        const { htmlDocument, pagePropsSerialized } = await prerenderPage(
+          pageId,
+          contextProps,
+          url,
+          false,
+          serializePageProps
+        )
+        htmlDocuments.push({ url, htmlDocument, pagePropsSerialized })
       })
   )
-  console.log(`${green(`✓`)} ${htmlFiles.length} HTML files pre-rendered.`)
+  console.log(
+    `${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`
+  )
 
   await Promise.all(
-    htmlFiles.map(async ({ url, renderResult }) => {
-      await writeHtml(url, renderResult, root)
-    })
+    htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root))
   )
 }
 
-async function writeHtml(url: string, html: string, root: string) {
+async function writeHtmlDocument(
+  { url, htmlDocument, pagePropsSerialized }: HtmlDocument,
+  root: string
+) {
   assert(url.startsWith('/'))
-  const pathname =
-    (url === '/' ? 'index' : url.slice(1).split('/').join(sep)) + '.html'
-  assert(!pathname.startsWith('/') && !pathname.startsWith(sep))
-  const htmlFilePath = join(root, 'dist', 'client', pathname)
-  await mkdirp(dirname(htmlFilePath))
-  await writeFile(htmlFilePath, html)
-  console.log(`${gray(join('dist', 'client') + sep)}${blue(pathname)}`)
+  let fileBase = urlToFile(url)
+  assert(fileBase.startsWith('/'))
+  fileBase = fileBase.slice(1)
+  fileBase = fileBase.split('/').join(sep)
+  assert(!fileBase.startsWith('/') && !fileBase.startsWith(sep))
+  const pathBase = join(root, 'dist', 'client', fileBase)
+  await mkdirp(dirname(pathBase))
+
+  const write = async (
+    fileExtension: '.html' | '.pageProps.json',
+    content: string
+  ) => {
+    const fileUrl = fileBase + fileExtension
+    const filePath = pathBase + fileExtension
+    await writeFile(filePath, content)
+    console.log(`${gray(join('dist', 'client') + sep)}${blue(fileUrl)}`)
+  }
+
+  const writeJobs = [write('.html', htmlDocument)]
+  if (pagePropsSerialized !== null) {
+    writeJobs.push(write('.pageProps.json', pagePropsSerialized))
+  }
+  await Promise.all(writeJobs)
 }
 
 function writeFile(path: string, fileContent: string): Promise<void> {
@@ -232,11 +281,21 @@ function normalizePrerenderResult(
   }
 }
 
-function assertRenderResult(
-  renderResult: unknown
-): asserts renderResult is string {
+function assertArguments(
+  partial: unknown,
+  clientRouter: unknown,
+  base: unknown
+) {
   assertUsage(
-    typeof renderResult === 'string',
-    "Pre-rendering requires your `html()` render hook to return a string. Open a GitHub issue if that's a problem for you."
+    partial === true || partial === false,
+    '[prerender()] Option `partial` should be a boolean.'
+  )
+  assertUsage(
+    clientRouter === true || clientRouter === false,
+    '[prerender()] Option `clientRouter` should be a boolean.'
+  )
+  assertUsage(
+    base === undefined || typeof base === 'string',
+    '[prerender()] Option `base` should be a string.'
   )
 }

@@ -39,7 +39,6 @@ code {
 }
 .content {
   padding: 20px;
-  border-left: 2px solid #eee;
   padding-bottom: 50px;
   min-height: 100vh;
 }
@@ -49,9 +48,16 @@ code {
   display: flex;
   flex-direction: column;
   line-height: 1.8em;
+  border-right: 2px solid #eee;
 }
 .logo {
   margin-top: 20px;
   margin-bottom: 10px;
+}
+.content {
+  transition: opacity 0.1s ease-in;
+}
+.content.page-transition {
+  opacity: 0;
 }
 </style>

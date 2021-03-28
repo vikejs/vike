@@ -8,11 +8,9 @@ export { render };
 function render({
   Page,
   pageProps,
-  contextProps,
 }: {
   Page: (pageProps: any) => JSX.Element;
-  pageProps: any;
-  contextProps: { title?: string };
+  pageProps: Record<string, any>;
 }) {
   const pageContent = ReactDOMServer.renderToString(
     <PageLayout>
@@ -20,15 +18,13 @@ function render({
     </PageLayout>
   );
 
-  const title = contextProps.title || "Demo: vite-plugin-ssr";
-
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${title}</title>
+        <title>${pageProps.docTitle || "Demo"}</title>
       </head>
       <body>
-        <div id="page-content">${html.dangerouslySetHtml(pageContent)}</div>
+        <div id="page-view">${html.dangerouslySetHtml(pageContent)}</div>
       </body>
     </html>`;
 }

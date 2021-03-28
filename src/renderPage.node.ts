@@ -1,11 +1,19 @@
 import devalue from 'devalue'
-import { getErrorPageId, getPageIds, route, isErrorPage } from './route.node'
+import {
+  getErrorPageId,
+  getPageIds,
+  route,
+  isErrorPage,
+  loadPageRoutes,
+  getFilesystemRoute
+} from './route.node'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest } from './getViteManfiest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
-import { getPreloadTags } from './getPreloadTags.node'
+import { getPreloadTags, prependBaseUrl } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
+import { stringify } from '@brillout/json-s'
 import {
   assert,
   assertUsage,
@@ -14,12 +22,16 @@ import {
   slice,
   cast,
   assertWarning,
-  hasProp
+  hasProp,
+  isPromise,
+  isPagePropsUrl,
+  retrieveOriginalUrl
 } from './utils'
 
 export { renderPage }
 export { renderPageId }
 export { getPageFunctions }
+export { prerenderPage }
 
 async function renderPage({
   url,
@@ -45,6 +57,11 @@ async function renderPage({
     }
   }
 
+  const isPagePropsRequest = isPagePropsUrl(url)
+  if (isPagePropsRequest) {
+    url = retrieveOriginalUrl(url)
+  }
+
   Object.assign(contextProps, { url })
 
   const allPageIds = await getPageIds()
@@ -56,13 +73,20 @@ async function renderPage({
   try {
     routeResult = await route(url, allPageIds, contextProps)
   } catch (err) {
-    return await render500Page(err, allPageIds, contextProps, url)
+    if (isPagePropsRequest) {
+      return renderPagePropsError(err)
+    } else {
+      return await render500Page(err, allPageIds, contextProps, url)
+    }
   }
 
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    warn404(url, allPageIds)
+    await warn404(url, allPageIds)
+    if (isPagePropsRequest) {
+      return renderPagePropsError()
+    }
     const errorPageId = getErrorPageId(allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
@@ -86,9 +110,19 @@ async function renderPage({
   // written by the user and may contain an error.
   let renderResult
   try {
-    renderResult = await renderPageId(pageId, contextProps, url)
+    renderResult = await renderPageId(
+      pageId,
+      contextProps,
+      url,
+      false,
+      isPagePropsRequest
+    )
   } catch (err) {
-    return await render500Page(err, allPageIds, contextProps, url)
+    if (isPagePropsRequest) {
+      return renderPagePropsError(err)
+    } else {
+      return await render500Page(err, allPageIds, contextProps, url)
+    }
   }
 
   return { nothingRendered: false, renderResult, statusCode }
@@ -98,15 +132,60 @@ async function renderPageId(
   pageId: string,
   contextProps: Record<string, unknown>,
   url: string,
-  contextPropsAlreadyFetched?: boolean
+  contextPropsAlreadyFetched: boolean = false,
+  isPagePropsRequest: boolean = false
+) {
+  const renderData = await getRenderData(
+    pageId,
+    contextProps,
+    url,
+    contextPropsAlreadyFetched
+  )
+
+  if (isPagePropsRequest) {
+    const renderResult = renderPageProps(renderData)
+    return renderResult
+  } else {
+    const renderResult = await renderHtmlDocument(renderData)
+    return renderResult
+  }
+}
+
+async function prerenderPage(
+  pageId: string,
+  contextProps: Record<string, unknown>,
+  url: string,
+  contextPropsAlreadyFetched: boolean,
+  serializePageProps: boolean
+) {
+  const renderData = await getRenderData(
+    pageId,
+    contextProps,
+    url,
+    contextPropsAlreadyFetched
+  )
+  const htmlDocument = await renderHtmlDocument(renderData)
+  assertUsage(
+    typeof htmlDocument === 'string',
+    "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
+  )
+  if (!serializePageProps) {
+    return { htmlDocument, pagePropsSerialized: null }
+  }
+  const pagePropsSerialized = renderPageProps(renderData)
+  return { htmlDocument, pagePropsSerialized }
+}
+
+async function getRenderData(
+  pageId: string,
+  contextProps: Record<string, unknown>,
+  url: string,
+  contextPropsAlreadyFetched: boolean
 ) {
   const { Page, pageFilePath } = await getPage(pageId)
 
-  const {
-    renderFunction,
-    addContextPropsFunction,
-    setPagePropsFunction
-  } = await getPageFunctions(pageId)
+  const pageFunctions = await getPageFunctions(pageId)
+  const { addContextPropsFunction, setPagePropsFunction } = pageFunctions
 
   if (!contextPropsAlreadyFetched && addContextPropsFunction) {
     const contextPropsAddendum = await addContextPropsFunction.addContextProps({
@@ -134,8 +213,7 @@ async function renderPageId(
       `The \`setPageProps()\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
     )
     assertUsage(
-      !hasProp(pagePropsAddendum, 'then') ||
-        !isCallable(pagePropsAddendum.then),
+      !isPromise(pagePropsAddendum),
       `The \`setPageProps()\` hook exported by ${setPagePropsFunction.filePath} returns a promise which is not allowed: \`setPageProps()\` hooks should be synchronous. Use the \`addContextProps()\` hook to asynchronously fetch data instead.`
     )
     Object.assign(pageProps, pagePropsAddendum)
@@ -145,6 +223,48 @@ async function renderPageId(
     )
     Object.assign(pageProps, { is404: contextProps.is404 })
   }
+
+  return {
+    Page,
+    pageId,
+    pageFilePath,
+    pageFunctions,
+    contextProps,
+    pageProps,
+    url
+  }
+}
+
+type RenderData = {
+  Page: unknown
+  contextProps: Record<string, unknown>
+  pageProps: Record<string, unknown>
+  url: string
+  pageId: string
+  pageFilePath: string
+  pageFunctions: PageFunctions
+}
+
+function renderPageProps({ pageProps }: RenderData) {
+  const pagePropsSerialized = stringify({
+    pageProps
+  })
+  return pagePropsSerialized
+}
+async function renderHtmlDocument({
+  Page,
+  contextProps,
+  pageProps,
+  url,
+  pageId,
+  pageFilePath,
+  pageFunctions
+}: RenderData) {
+  const {
+    renderFunction,
+    addContextPropsFunction,
+    setPagePropsFunction
+  } = pageFunctions
 
   const renderResult: unknown = await renderFunction.render({
     Page,
@@ -207,7 +327,7 @@ async function getPage(pageId: string) {
   return { Page, pageFilePath: filePath }
 }
 
-type ServerFunctions = {
+type PageFunctions = {
   renderFunction: {
     filePath: string
     render: (arg1: {
@@ -232,7 +352,7 @@ type ServerFunctions = {
     prerender: () => unknown
   }
 }
-async function getPageFunctions(pageId: string): Promise<ServerFunctions> {
+async function getPageFunctions(pageId: string): Promise<PageFunctions> {
   const serverFiles = await getServerFiles(pageId)
 
   let renderFunction
@@ -391,7 +511,9 @@ function injectPageInfo(
 }
 
 function injectScript(htmlDocument: string, scriptSrc: string): string {
-  const injection = `<script type="module" src="${scriptSrc}"></script>`
+  const injection = `<script type="module" src="${prependBaseUrl(
+    scriptSrc
+  )}"></script>`
   return injectEnd(htmlDocument, injection)
 }
 
@@ -406,17 +528,17 @@ function injectPreloadTags(
 function injectBegin(htmlDocument: string, injection: string): string {
   const headClose = '</head>'
   if (htmlDocument.includes(headClose)) {
-    return injectHtml(htmlDocument, headClose, injection)
+    return injectAtClosingTag(htmlDocument, headClose, injection)
   }
 
-  const htmlBegin = '<html>'
-  if (htmlDocument.includes(htmlBegin)) {
-    return injectHtml(htmlDocument, htmlBegin, injection)
+  const htmlBegin = /<html[^>]*>/
+  if (htmlBegin.test(htmlDocument)) {
+    return injectAtOpeningTag(htmlDocument, htmlBegin, injection)
   }
 
   if (htmlDocument.toLowerCase().startsWith('<!doctype')) {
     const lines = htmlDocument.split('\n')
-    return [slice(lines, 0, 1), injection, slice(lines, 1, 0)].join('\n')
+    return [...slice(lines, 0, 1), injection, ...slice(lines, 1, 0)].join('\n')
   } else {
     return injection + '\n' + htmlDocument
   }
@@ -425,39 +547,50 @@ function injectBegin(htmlDocument: string, injection: string): string {
 function injectEnd(htmlDocument: string, injection: string): string {
   const bodyClose = '</body>'
   if (htmlDocument.includes(bodyClose)) {
-    return injectHtml(htmlDocument, bodyClose, injection)
+    return injectAtClosingTag(htmlDocument, bodyClose, injection)
   }
 
   const htmlClose = '</html>'
   if (htmlDocument.includes(htmlClose)) {
-    return injectHtml(htmlDocument, htmlClose, injection)
+    return injectAtClosingTag(htmlDocument, htmlClose, injection)
   }
 
   return htmlDocument + '\n' + injection
 }
 
-function injectHtml(
+function injectAtOpeningTag(
   htmlDocument: string,
-  targetTag: string,
+  openingTag: RegExp,
   injection: string
 ): string {
-  assert(targetTag.startsWith('<'))
-  assert(targetTag.endsWith('>'))
-  assert(!targetTag.includes(' '))
+  const matches = htmlDocument.match(openingTag)
+  assert(matches && matches.length >= 1)
+  const tag = matches[0]
+  const htmlParts = htmlDocument.split(tag)
+  assert(htmlParts.length >= 2)
 
-  const htmlParts = htmlDocument.split(targetTag)
+  // Insert `injection` after first `tag`
+  const before = slice(htmlParts, 0, 1)
+  const after = slice(htmlParts, 1, 0).join(tag)
+  return before + tag + injection + after
+}
 
-  if (targetTag.startsWith('</')) {
-    // Insert `injection` before last `targetTag`
-    const before = slice(htmlParts, 0, -1).join(targetTag)
-    const after = slice(htmlParts, -1, 0)
-    return before + injection + targetTag + after
-  } else {
-    // Insert `injection` after first `targetTag`
-    const before = slice(htmlParts, 0, 1)
-    const after = slice(htmlParts, 1, 0).join(targetTag)
-    return before + targetTag + injection + after
-  }
+function injectAtClosingTag(
+  htmlDocument: string,
+  closingTag: string,
+  injection: string
+): string {
+  assert(closingTag.startsWith('</'))
+  assert(closingTag.endsWith('>'))
+  assert(!closingTag.includes(' '))
+
+  const htmlParts = htmlDocument.split(closingTag)
+  assert(htmlParts.length >= 2)
+
+  // Insert `injection` before last `closingTag`
+  const before = slice(htmlParts, 0, -1).join(closingTag)
+  const after = slice(htmlParts, -1, 0)
+  return before + injection + closingTag + after
 }
 
 function assertArguments(...args: unknown[]) {
@@ -499,22 +632,57 @@ function warnMissingErrorPage() {
     )
   }
 }
-function warn404(url: string, allPageIds: string[]) {
+async function warn404(url: string, allPageIds: string[]) {
   const { isProduction } = getSsrEnv()
-  if (!isProduction) {
-    const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
-    assertUsage(
-      relevantPageIds.length > 0,
-      'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  assertUsage(
+    relevantPageIds.length > 0,
+    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+  )
+  if (!isProduction && !isFileRequest(url)) {
+    assertWarning(
+      false,
+      `No page is matching the URL \`${url}\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
     )
-    if (!isFileRequest(url)) {
-      assertWarning(
-        false,
-        `No page is matching the URL \`${url}\`. Defined pages: ${relevantPageIds
-          .map((pageId) => `\`${pageId}.page.*\``)
-          .join(', ')}. (This warning is not shown in production.)`
-      )
-    }
+  }
+}
+async function getPagesAndRoutesInfo(): Promise<string> {
+  const allPageIds = await getPageIds()
+  const pageRoutes = await loadPageRoutes()
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  return [
+    'Defined pages:',
+    relevantPageIds
+      .map((pageId) => {
+        let routeInfo
+        let routeSrc
+        if (!(pageId in pageRoutes)) {
+          routeInfo = `\`${getFilesystemRoute(pageId, allPageIds)}\``
+          routeSrc = 'Filesystem Routing'
+        } else {
+          const { pageRoute, pageRouteFile } = pageRoutes[pageId]
+          const pageRouteStringified = truncateString(
+            String(pageRoute).split(/\s/).filter(Boolean).join(' '),
+            64
+          )
+          routeInfo = `\`${pageRouteStringified}\``
+          const routeType =
+            typeof pageRoute === 'string' ? 'Route String' : 'Route Function'
+          const routeFile = pageRouteFile
+          routeSrc = `${routeType} defined in \`${routeFile}\``
+        }
+        return `\`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
+      })
+      .join(', ')
+  ].join(' ')
+}
+
+function truncateString(str: string, len: number) {
+  if (len > str.length) {
+    return str
+  } else {
+    str = str.substring(0, len)
+    return str + '...'
   }
 }
 
@@ -565,6 +733,19 @@ async function render500Page(
   }
   return { nothingRendered: false, renderResult, statusCode: 500 }
 }
+
+function renderPagePropsError(
+  err?: unknown
+): { nothingRendered: false; renderResult: string; statusCode: 500 } {
+  if (err) {
+    handleErr(err)
+  }
+  const renderResult = stringify({
+    userError: true
+  })
+  return { nothingRendered: false, renderResult, statusCode: 500 }
+}
+
 function handleErr(err: unknown) {
   const { viteDevServer } = getSsrEnv()
   if (viteDevServer) {

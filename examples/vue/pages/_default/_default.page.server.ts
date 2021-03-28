@@ -14,12 +14,10 @@ async function render({
   const app = getApp(Page, pageProps)
   const appHtml = await renderToString(app)
 
-  const title = pageProps.title || 'Demo: vite-plugin-ssr'
-
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${title}</title>
+        <title>${pageProps.docTitle || 'Demo'}</title>
       </head>
       <body>
         <div id="app">${html.dangerouslySetHtml(appHtml)}</div>

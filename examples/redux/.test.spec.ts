@@ -1,4 +1,4 @@
-import { fetchHtml, page, run, urlBase } from "../../tests/setup";
+import { autoRetry, fetchHtml, page, run, urlBase } from "../../tests/setup";
 
 run("npm run start");
 
@@ -12,6 +12,9 @@ test("page content is rendered to HTML", async () => {
 test("page content is rendered to DOM", async () => {
   page.goto(`${urlBase}/`);
   expect(await page.textContent("body")).toContain("Count: 0.");
-  await page.click("button");
-  expect(await page.textContent("body")).toContain("Count: 1.");
+  // `autoRetry` because browser-side code may not be loaded yet
+  await autoRetry(async () => {
+    await page.click('button')
+    expect(await page.textContent("body")).toContain("Count: 1.");
+  })
 });

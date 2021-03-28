@@ -1,7 +1,7 @@
 import * as execa from 'execa'
 import { join, dirname } from 'path'
 import { DIR_ROOT } from './helpers/locations'
-const ncuBin = require.resolve(`${DIR_ROOT}/node_modules/.bin/ncu`)
+const ncuBin = require.resolve(`${DIR_ROOT}/node_modules/.bin/ncu`) // `ncu` is bin of npm package `npm-check-updates`
 
 updateDependencies()
 

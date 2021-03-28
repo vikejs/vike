@@ -14,7 +14,8 @@ release()
 async function release() {
   const { versionCurrent, versionNew } = getVersion()
   updateVersion(versionNew)
-  updateDependencies({ versionNew, versionCurrent })
+  await updateDependencies(versionNew, versionCurrent)
+  bumpBoilerplateVersion()
   await updateLockFile()
   await changelog()
   const tag = `v${versionNew}`
@@ -55,22 +56,37 @@ function getVersion(): { versionNew: string; versionCurrent: string } {
   return { versionNew, versionCurrent }
 }
 function updateVersion(versionNew: string) {
-  update([`${DIR_SRC}/package.json`], (pkg) => {
+  updatePkg(`${DIR_SRC}/package.json`, (pkg) => {
     pkg.version = versionNew
   })
 }
 
-function updateDependencies({ versionNew, versionCurrent }) {
+function bumpBoilerplateVersion() {
+  const pkgPath = require.resolve(`${DIR_BOILERPLATES}/package.json`)
+  const pkg = require(pkgPath)
+  assert(pkg.version.startsWith('0.0.'))
+  const versionParts = pkg.version.split('.')
+  assert(versionParts.length === 3)
+  const newPatch = parseInt(versionParts[2], 10) + 1
+  pkg.version = `0.0.${newPatch}`
+  writePackageJson(pkgPath, pkg)
+}
+
+async function updateDependencies(versionNew: string, versionCurrent: string) {
   const pkgPaths = [
     ...retrievePkgPaths(DIR_BOILERPLATES),
     ...retrievePkgPaths(DIR_EXAMPLES)
   ]
-  update(pkgPaths, (pkg) => {
-    const version = pkg.dependencies['vite-plugin-ssr']
-    assert(version)
-    assert.strictEqual(version, `^${versionCurrent}`)
-    pkg.dependencies['vite-plugin-ssr'] = `^${versionNew}`
-  })
+  for (const pkgPath of pkgPaths) {
+    updatePkg(pkgPath, (pkg) => {
+      const version = pkg.dependencies['vite-plugin-ssr']
+      assert(version)
+      assert.strictEqual(version, `${versionCurrent}`)
+      pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
+    })
+    // Update package-json.lock
+    await run('npm', ['install'])
+  }
 }
 
 function retrievePkgPaths(rootDir: string): string[] {
@@ -86,12 +102,14 @@ function retrievePkgPaths(rootDir: string): string[] {
   return pkgPaths
 }
 
-function update(pkgPath: string[], updater: (pkg: PackageJson) => void) {
-  pkgPath.forEach((pkgPath) => {
-    const pkg = require(pkgPath) as PackageJson
-    updater(pkg)
-    writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
-  })
+function updatePkg(pkgPath: string, updater: (pkg: PackageJson) => void) {
+  const pkg = require(pkgPath) as PackageJson
+  updater(pkg)
+  writePackageJson(pkgPath, pkg)
+}
+
+function writePackageJson(pkgPath: string, pkg: object) {
+  writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
 }
 
 async function updateLockFile() {

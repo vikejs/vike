@@ -1,10 +1,30 @@
-import { getPage } from 'vite-plugin-ssr/client'
 import { getApp } from './app'
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
-hydrate()
+let app: ReturnType<typeof getApp>
+const { hydrationPromise } = useClientRouter({
+  render({ Page, pageProps }) {
+    if (!app) {
+      app = getApp(Page, pageProps)
+      app.mount('#app')
+    } else {
+      app.changePage(Page, pageProps)
+    }
+    document.title = pageProps.docTitle || 'Demo'
+  },
+  onTransitionStart,
+  onTransitionEnd
+})
 
-async function hydrate() {
-  const { Page, pageProps } = await getPage()
-  const app = getApp(Page, pageProps)
-  app.mount('#app')
+hydrationPromise.then(() => {
+  console.log('Hydration finished; page is now interactive.')
+})
+
+function onTransitionStart() {
+  console.log('Page transition start')
+  document.querySelector('.content')!.classList.add('page-transition')
+}
+function onTransitionEnd() {
+  console.log('Page transition end')
+  document.querySelector('.content')!.classList.remove('page-transition')
 }

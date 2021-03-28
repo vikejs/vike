@@ -1,24 +1,41 @@
 {
   "name": "vite-plugin-ssr",
-  "version": "0.1.0-beta.17",
+  "version": "0.1.0-beta.21",
   "dependencies": {
+    "@brillout/json-s": "^0.2.0",
     "@brillout/libassert": "^0.3.0",
     "@brillout/path-to-regexp": "^0.1.2",
-    "@brillout/vite-fix-2390": "^0.1.3",
+    "@brillout/vite-fix-2390": "^0.2.0",
     "cac": "^6.7.2",
     "devalue": "^2.0.1",
     "fast-glob": "^3.2.5",
     "kolorist": "^1.3.2"
   },
   "devDependencies": {
-    "@types/node": "^14.14.35",
+    "@types/node": "^14.14.36",
     "typescript": "^4.2.3",
-    "vite": "2.1.2"
+    "vite": "2.1.3"
   },
   "peerDependencies": {
-    "vite": "2.1.2"
+    "vite": "2.1.3"
   },
   "main": "./dist/node.js",
+  "exports": {
+    ".": {
+      "require": "./dist/node.js",
+      "import": "./node.ts"
+    },
+    "./client": {
+      "import": "./client/index.ts"
+    },
+    "./client/router": {
+      "require": "./client/router.js",
+      "import": "./client/router.ts"
+    },
+    "./cli": {
+      "require": "./dist/cli.js"
+    }
+  },
   "bin": {
     "vite-plugin-ssr": "bin/vite-plugin-ssr.js"
   },

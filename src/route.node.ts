@@ -156,21 +156,35 @@ function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   return pageRoute
 }
 function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
-  const commonPrefix = getCommonPrefix(allPageIds)
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  const commonPrefix = getCommonPath(relevantPageIds)
   assert(pageId.startsWith(commonPrefix))
   return pageId.slice(commonPrefix.length)
 }
-function getCommonPrefix(strings: string[]): string {
-  const list = strings.concat().sort()
-  const first = list[0]
-  const last = list[list.length - 1]
+function getCommonPath(pageIds: string[]): string {
+  pageIds.forEach((pageId) => {
+    assertUsage(
+      !pageId.includes('\\'),
+      'Your directory names and file names are not allowed to contain the character `\\`'
+    )
+  })
+  const pageIdList = pageIds.concat().sort()
+  const first = pageIdList[0]
+  const last = pageIdList[pageIdList.length - 1]
   let idx = 0
   for (; idx < first.length; idx++) {
     if (first[idx] !== last[idx]) break
   }
-  return first.slice(0, idx)
+  const commonPrefix = first.slice(0, idx)
+  const pathsPart = commonPrefix.split('/')
+  assert(pathsPart.length >= 2)
+  const commonPath = slice(pathsPart, 0, -1).join('/') + '/'
+  return commonPath
 }
 
+/**
+  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
+*/
 async function getPageIds(): Promise<PageId[]> {
   const pageFiles = await getUserFiles('.page')
   let pageFilePaths = pageFiles.map(({ filePath }) => filePath)

@@ -7,7 +7,7 @@ export { setPageProps };
 type ContextProps = {
   movieId: string;
   movie: MovieDetails;
-  title: string;
+  docTitle: string;
 };
 
 async function addContextProps({
@@ -20,15 +20,19 @@ async function addContextProps({
   const movie = (await response.json()) as MovieDetails;
 
   // The page's <title>
-  const { title } = movie;
+  const docTitle = movie.title;
 
-  return { movie, title };
+  return { movie, docTitle };
 }
 
-function setPageProps({ contextProps }: { contextProps: ContextProps }) {
+function setPageProps({
+  contextProps: { movie, docTitle },
+}: {
+  contextProps: ContextProps;
+}) {
   // We remove data we don't need: (`vite-plugin-ssr` serializes and passes `pageProps`
   // to the client; we want to minimize what it sent over the network.)
-  const { title, release_date, director, producer } = contextProps.movie;
-  const movie = { title, release_date, director, producer };
-  return { movie };
+  const { title, release_date, director, producer } = movie;
+  movie = { title, release_date, director, producer };
+  return { movie, docTitle };
 }
