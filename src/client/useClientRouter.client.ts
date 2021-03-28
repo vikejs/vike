@@ -42,13 +42,13 @@ function useClientRouter({
     changeUrl(url)
     fetchAndRender()
   })
+  onBrowserHistoryNavigation(() => {
+    fetchAndRender()
+  })
   navigateFunction = (url: string) => {
     changeUrl(url)
     return fetchAndRender()
   }
-  onBrowserNavigation(() => {
-    fetchAndRender()
-  })
 
   let resolveInitialPagePromise: () => void
   const hydrationPromise = new Promise<void>(
@@ -106,18 +106,22 @@ function useClientRouter({
   }
 }
 
-let navigateFunction: (url: string) => Promise<void>
+let navigateFunction: undefined | ((url: string) => Promise<void>)
 function navigate(url: string): Promise<void> {
-  assertUsage(url, '[`navigate(url)`] Missing argument `url`.')
+  assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',
-    '[`navigate(url)`] Argument `url` should be a string (but we got `typeof url === "' +
+    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' +
       typeof url +
       '"`.'
   )
   assertUsage(
     url.startsWith('/'),
-    '[`navigate(url)`] Argument `url` should start with a leading `/`.'
+    '[navigate(url)] Argument `url` should start with a leading `/`.'
+  )
+  assertUsage(
+    navigateFunction,
+    '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
   )
   return navigateFunction(url)
 }
@@ -186,7 +190,7 @@ function onLinkClick(callback: (url: string) => void) {
   }
 }
 
-function onBrowserNavigation(callback: Function) {
+function onBrowserHistoryNavigation(callback: Function) {
   window.addEventListener('popstate', () => {
     callback()
   })
