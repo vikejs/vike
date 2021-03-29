@@ -658,14 +658,14 @@ function Page(pageProps) {
 > :asterisk: **What is pre-rendering?**
 > Pre-rendering means to *pre*-generate the HTML of *all* your pages *at once*:
 > normally the HTML of a page is generated at request-time
-> (when your user goes to your website), but
+> (when your user navigates to that page), but
 > with pre-rendering the HTML of a page is generated at build-time instead
-> (when yun run `vite-plugin-ssr prerender`).
+> (when yun run `$ vite-plugin-ssr prerender`).
 > Your app then consists only of static files (HTML, JS, CSS, images, ...)
 > that you can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
 > If you don't use pre-rendering, then you need to use a Node.js server to be able to render your pages' HTML at request-time.
 
-To pre-render your pages, run `npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
+To pre-render your pages, run `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
 
 For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
 
