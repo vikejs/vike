@@ -1758,12 +1758,12 @@ The plugin has no options.
 ```js
 // vite.config.js
 
-const ssr = require("vite-plugin-ssr/plugin");
+const ssr = require('vite-plugin-ssr/plugin');
 
 module.exports = {
-  // Make sure to include `ssr()` and not `ssr`
+  // Make sure to include `ssr()` and not `ssr`.
   plugins: [ssr()]
-};
+}
 ```
 
 <br/><br/>
