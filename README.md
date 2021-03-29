@@ -682,12 +682,12 @@ Examples:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-There are three ways of defining the URLs of your pages:
+You can choose between three methods to define the URLs of your pages:
  - Filesystem Routing
  - Route Strings
  - Route Functions
 
-You can choose between two routing strategy:
+There are two routing strategy you can use:
  - Server-side Routing (for simpler architecture)
  - Client-side Routing (for faster and animated page transitions)
 
