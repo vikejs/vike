@@ -37,7 +37,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Authentication](#authentication)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
@@ -760,16 +760,16 @@ Example:
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 > :asterisk: **What is pre-rendering?**
-> Pre-rendering means to render the HTML of all your pages at once.
-> Normally, the HTML of a page is rendered at request-time
-> (when your user goes to your website).
-> With pre-rendering, the HTML of a page is rendered at build-time instead
+> Pre-rendering means to *pre*-generate the HTML of *all* your pages *at once*:
+> normally the HTML of a page is generated at request-time
+> (when your user goes to your website), but
+> with pre-rendering the HTML of a page is generated at build-time instead
 > (when yun run `vite-plugin-ssr prerender`).
-> Your app then consists only of static assets (HTML, JS, CSS, images, ...)
-> and you can deploy your app to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/) or [Netlify](https://www.netlify.com/).
-> Without pre-rendering, you need to use a Node.js server that renders your pages' HTML at request-time.
+> Your app then consists only of static files (HTML, JS, CSS, images, ...)
+> that you can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
+> If you don't use pre-rendering, then you need to use a Node.js server to be able to render your pages' HTML at request-time.
 
-To pre-render your pages, run `npx vite && npx vite --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite && yarn vite --ssr && yarn vite-plugin-ssr prerender`.)
+To pre-render your pages, run `npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
 
 For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
 
