@@ -62,7 +62,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr) (Server Integration Point)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_defaultpage)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.*`](#_errorpage)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr'`](#import-ssr-from-vite-plugin-ssr) (Vite Plugin)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr/plugin'`](#import-ssr-from-vite-plugin-ssrplugin) (Vite Plugin)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [CLI command `prerender`](#cli-command-prerender)
 
 <br/>
@@ -1749,7 +1749,7 @@ You can define `_error.page.js` like any other page and create `_error.page.clie
 <br/><br/>
 
 
-## `import ssr from 'vite-plugin-ssr'`
+## `import ssr from 'vite-plugin-ssr/plugin'`
 
 Environment: `Node.js`
 
@@ -1758,7 +1758,7 @@ The plugin has no options.
 ```js
 // vite.config.js
 
-const ssr = require("vite-plugin-ssr");
+const ssr = require("vite-plugin-ssr/plugin");
 
 module.exports = {
   // Make sure to include `ssr()` and not `ssr`
