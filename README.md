@@ -35,9 +35,9 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
 <br/> Guides
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
+<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Authentication](#authentication)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
@@ -651,6 +651,33 @@ function Page(pageProps) {
 <br/><br/>
 
 
+## Pre-rendering
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+> :asterisk: **What is pre-rendering?**
+> Pre-rendering means to *pre*-generate the HTML of *all* your pages *at once*:
+> normally the HTML of a page is generated at request-time
+> (when your user goes to your website), but
+> with pre-rendering the HTML of a page is generated at build-time instead
+> (when yun run `vite-plugin-ssr prerender`).
+> Your app then consists only of static files (HTML, JS, CSS, images, ...)
+> that you can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
+> If you don't use pre-rendering, then you need to use a Node.js server to be able to render your pages' HTML at request-time.
+
+To pre-render your pages, run `npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
+
+For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
+
+The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
+
+Examples:
+ - [/examples/vuex/](/examples/vue/)
+ - [/examples/redux/](/examples/react/)
+
+<br/><br/>
+
+
 ## Routing
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
@@ -751,33 +778,6 @@ For React you can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugi
 Example:
  - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
  - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
-
-<br/><br/>
-
-
-## Pre-rendering
-
-> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
-
-> :asterisk: **What is pre-rendering?**
-> Pre-rendering means to *pre*-generate the HTML of *all* your pages *at once*:
-> normally the HTML of a page is generated at request-time
-> (when your user goes to your website), but
-> with pre-rendering the HTML of a page is generated at build-time instead
-> (when yun run `vite-plugin-ssr prerender`).
-> Your app then consists only of static files (HTML, JS, CSS, images, ...)
-> that you can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
-> If you don't use pre-rendering, then you need to use a Node.js server to be able to render your pages' HTML at request-time.
-
-To pre-render your pages, run `npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
-
-For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
-
-The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
-
-Examples:
- - [/examples/vuex/](/examples/vue/)
- - [/examples/redux/](/examples/react/)
 
 <br/><br/>
 
