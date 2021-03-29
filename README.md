@@ -688,19 +688,19 @@ There are three ways of defining the URLs of your pages:
  - Route Functions
 
 You can choose between two routing strategy:
- - Server-side Routing (for a simpler architecture)
+ - Server-side Routing (for simpler architecture)
  - Client-side Routing (for faster and animated page transitions)
 
-Regardless of what routing strategy you choose, you define your pages' URL with Filesystem Routing, Route Strings, and Route Functions.
-Alaternatively (in complete replacement or in combination),
-you can use Vue Router and React Router as shown in [/examples/vue-router/](/examples/vue-router/) and [/examples/react-router/](/examples/react-router/).
+Regardless of the routing strategy, your pages' route are defined by Filesystem Routing, Route Strings, and Route Functions.
+
+You can also use a routing library such as Vue Router and React Router (in complete replacement or in combination). For example: [/examples/vue-router/](/examples/vue-router/) and [/examples/react-router/](/examples/react-router/).
 
  - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
 
 ### Filesystem Routing VS Route Strings VS Route Functions
 
-If a page doesn't have a `.page.route.js` file then it's routed based on its filesystem location.
+If a page doesn't have a `.page.route.js` file then `vite-plugin-ssr` uses Filesystem Routing:
 
 ```
 FILESYSTEM                  URL
@@ -741,7 +741,7 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
 ### Server-side Routing VS Client-side Routing
 
 Server-side Routing (*SR*) is simple and familiar:
-that's how the old web (PHP, Ruby on Rails, Django, etc.) did routing, and it's easy to reason about. "For an HTTP request with a given URL, what page should be rendered?" &mdash; that's what SR does, that's it.
+that's how the old web (PHP, Ruby on Rails, Django, etc.) did routing. It's easy to reason about: "For an HTTP request with a given URL, what page should be rendered?" &mdash; that's all what SR does, that's it.
 
 Client-side Routing (*CR*) is straightforward as well, however, it does add complexity to your architecture:
 you now have to maintain and reason about an additional second scenario.
@@ -755,9 +755,9 @@ is subtle but non-negligable, especially around the integration of tools.
 
 Performance is usually a bad reason to choose CR over SR:
 chances are that the dev time wasted on CR's added complexity would be better invested in other performance-critical aspects of your application.
-That said, if your business has a strong requirement for you to squeeze out every possible millisecond of latency, then CR will give you non-negligable improvement in page transition speed. Or, if you are building a simple application, such as a homepage or a blog, then CR can be a good choice as it gives you that cool effect of smooth page transitions.
+That said, if your business has a strong requirement for you to squeeze out every possible millisecond of latency, then CR will give you a non-negligable improvement in page transition speed. Or, if you are building a simple application, such as a homepage or a blog, then CR can be the right choice as it gives you that cool effect of smooth page transitions and the architectural DX scability of your simple app is not much of a problem to begin with.
 
-By default, `vite-plugin-ssr` does SR and you can opt-in for CR by using `useClientRouter()`.
+By default, `vite-plugin-ssr` does SR. You opt-in for CR by using `useClientRouter()`.
  - [API - `import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 
 <br/><br/>
