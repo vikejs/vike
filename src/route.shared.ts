@@ -272,18 +272,16 @@ function resolveRouteFunction(
   }
 }
 
-async function loadPageRoutes(): Promise<
-  Record<
-    PageId,
-    {
-      pageRouteFile: string
-      pageRoute: string | Function
-    }
-  >
-> {
+type PageRoute = {
+  pageRouteFile: string
+  pageRoute: string | Function
+}
+async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getUserFiles('.page.route')
 
-  const pageRoutes = await Promise.all(
+  const pageRoutes: Record<PageId, PageRoute> = {}
+
+  await Promise.all(
     userRouteFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
       assertUsage(
@@ -298,18 +296,12 @@ async function loadPageRoutes(): Promise<
       const pageRoute = fileExports.default
       const pageId = computePageId(filePath)
       const pageRouteFile = filePath
-      return { pageId, pageRoute, pageRouteFile }
+
+      pageRoutes[pageId] = { pageRoute, pageRouteFile }
     })
   )
 
-  const routeFiles = Object.fromEntries(
-    pageRoutes.map(({ pageId, pageRoute, pageRouteFile }) => [
-      pageId,
-      { pageRoute, pageRouteFile }
-    ])
-  )
-
-  return routeFiles
+  return pageRoutes
 }
 
 function isReservedPageId(pageId: string): boolean {

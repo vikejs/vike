@@ -4,7 +4,8 @@ import {
   assertInfo,
   assertUsage,
   hasProp,
-  getFileUrl
+  getFileUrl,
+  isNodejs
 } from '../../utils'
 import { getPage } from '../getPage.client'
 import { setPageInfoRetriever } from '../getPageInfo.client'
@@ -122,6 +123,10 @@ function useClientRouter({
 
 let navigateFunction: undefined | ((url: string) => Promise<void>)
 async function navigate(url: string): Promise<void> {
+  assertUsage(
+    !isNodejs(),
+    '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
+  )
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',
@@ -262,6 +267,8 @@ function getUrlHash(): string | null {
 
 function retrievePageInfo() {
   const url = getUrl()
+  assert(!isNodejs())
+  assert(url)
   const pageIdPromise = (async () => {
     const allPageIds = await getPageIds()
     const contextProps = {}

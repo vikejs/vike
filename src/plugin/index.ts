@@ -7,9 +7,9 @@ import {
   posix as pathPosix
 } from 'path'
 import { assertPatch } from '@brillout/vite-fix-2390'
-import { assert, assertUsage } from './utils/assert'
+import { assert, assertUsage } from '../utils/assert'
 import * as glob from 'fast-glob'
-const SERVER_ENTRY = require.resolve('./user-files/infra.node.vite-entry')
+const SERVER_ENTRY = require.resolve('../user-files/infra.node.vite-entry')
 
 export { plugin }
 export default plugin

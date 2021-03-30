@@ -3,8 +3,9 @@ export { createPageRender } from './createPageRender.node'
 export { html } from './html.node'
 
 // Add depecration warning
-import { plugin } from './plugin.node'
+import { plugin } from './plugin'
 import { assertWarning } from './utils'
+
 export default pluginWithWarning
 function pluginWithWarning(): ReturnType<typeof plugin> {
   assertWarning(
@@ -13,6 +14,5 @@ function pluginWithWarning(): ReturnType<typeof plugin> {
   )
   return plugin()
 }
-
 // Enable `const ssr = require('vite-plugin-ssr')`
 module.exports = Object.assign(exports.default, exports)

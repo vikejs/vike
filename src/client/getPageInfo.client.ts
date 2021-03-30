@@ -45,7 +45,9 @@ function getPageInfo(): PageInfoPromise {
 }
 
 function getUrlPathname() {
-  return parseUrl(getUrl()).pathname
+  const url = getUrl()
+  if (url === null) return null
+  return parseUrl(url).pathname
 }
 
 declare global {

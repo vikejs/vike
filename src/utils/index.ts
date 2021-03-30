@@ -1,6 +1,7 @@
 export * from './assert'
 export * from './cast'
 export * from './isCallable'
+export * from './isNodejs'
 export * from './isPromise'
 export * from './getFileUrl'
 export * from './hasProp'

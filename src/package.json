@@ -29,14 +29,14 @@
       "import": "./client/index.ts"
     },
     "./client/router": {
-      "require": "./dist/client/router/index.node.js",
-      "import": "./client/router/index.client.ts"
+      "import": "./client/router/index.ts",
+      "require": "./dist/client/router/index.node.js"
     },
     "./cli": {
-      "require": "./dist/cli/api.node.js"
+      "require": "./dist/cli/index.js"
     },
     "./plugin": {
-      "require": "./dist/plugin.node.js"
+      "require": "./dist/plugin/index.js"
     }
   },
   "bin": {

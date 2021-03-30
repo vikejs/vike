@@ -1,1 +1,0 @@
-export { prerender } from '../prerender'
