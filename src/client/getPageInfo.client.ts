@@ -1,4 +1,4 @@
-import { assert, assertWarning } from '../utils'
+import { assert, assertWarning, parseUrl } from '../utils'
 import { getUrl } from './getUrl.client'
 
 export { getPageInfo }
@@ -12,27 +12,27 @@ type PageInfoPromise = {
   pageIdPromise: Promise<string>
   pagePropsPromise: Promise<Record<string, unknown>>
 }
-type PageInfoRetriever = (urlNow: string) => PageInfoPromise
+type PageInfoRetriever = () => PageInfoPromise
 
 let retrievePageInfo: PageInfoRetriever
 function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
   retrievePageInfo = _retrievePageInfo
 }
 
-let originalUrl = getUrl()
+let urlOriginal = getUrlPathname()
 let navigated = false
 
 function getPageInfo(): PageInfoPromise {
-  const urlNow = getUrl()
-  if (urlNow !== originalUrl || navigated) {
+  const urlNow = getUrlPathname()
+  if (urlNow !== urlOriginal || navigated) {
     assert(urlNow)
     if (retrievePageInfo) {
       navigated = true
-      return retrievePageInfo(urlNow)
+      return retrievePageInfo()
     } else {
       assertWarning(
         false,
-        `\`getPage()\` returned page information for URL \`${originalUrl}\` instead of \`${urlNow}\` because you didn't call \`useClientRouter()\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then make sure to call \`useClientRouter()\`.`
+        `\`getPage()\` returned page information for URL \`${urlOriginal}\` instead of \`${urlNow}\` because you didn't call \`useClientRouter()\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then make sure to call \`useClientRouter()\`.`
       )
     }
   }
@@ -42,6 +42,10 @@ function getPageInfo(): PageInfoPromise {
   const pageProps = window.__vite_plugin_ssr.pageProps
   const pagePropsPromise = Promise.resolve(pageProps)
   return { pageIdPromise, pagePropsPromise }
+}
+
+function getUrlPathname() {
+  return parseUrl(getUrl()).pathname
 }
 
 declare global {

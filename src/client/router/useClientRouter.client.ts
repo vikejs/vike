@@ -4,7 +4,7 @@ import {
   assertInfo,
   assertUsage,
   hasProp,
-  urlToFile
+  getFileUrl
 } from '../../utils'
 import { getPage } from '../getPage.client'
 import { setPageInfoRetriever } from '../getPageInfo.client'
@@ -217,8 +217,6 @@ function onBrowserHistoryNavigation(
 
 function changeUrl(url: string) {
   if (getUrl() === url) return
-
-  // Change URL
   window.history.pushState(undefined, '', url)
 }
 
@@ -262,7 +260,8 @@ function getUrlHash(): string | null {
   return hash
 }
 
-function retrievePageInfo(url: string) {
+function retrievePageInfo() {
+  const url = getUrl()
   const pageIdPromise = (async () => {
     const allPageIds = await getPageIds()
     const contextProps = {}
@@ -280,7 +279,7 @@ function retrievePageInfo(url: string) {
 async function retrievePageProps(
   url: string
 ): Promise<Record<string, unknown>> {
-  const response = await fetch(`${urlToFile(url)}.pageProps.json`)
+  const response = await fetch(getFileUrl(url, '.pageProps.json'))
   const responseText = await response.text()
   const responseObject = parse(responseText) as
     | { pageProps: Record<string, unknown> }

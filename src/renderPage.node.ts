@@ -25,7 +25,8 @@ import {
   hasProp,
   isPromise,
   isPagePropsUrl,
-  retrieveOriginalUrl
+  retrieveOriginalUrl,
+  parseUrl
 } from './utils'
 
 export { renderPage }
@@ -49,7 +50,7 @@ async function renderPage({
 > {
   assertArguments(...arguments)
 
-  if (isFaviconRequest(url)) {
+  if (url === '/favicon.ico') {
     return {
       nothingRendered: true,
       renderResult: undefined,
@@ -642,7 +643,9 @@ async function warn404(url: string, allPageIds: string[]) {
   if (!isProduction && !isFileRequest(url)) {
     assertWarning(
       false,
-      `No page is matching the URL \`${url}\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
+      `No page is matching the URL \`${
+        parseUrl(url).pathname
+      }\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
     )
   }
 }
@@ -687,7 +690,9 @@ function truncateString(str: string, len: number) {
 }
 
 function isFileRequest(url: string) {
-  const paths = url.split('/')
+  const { pathname } = parseUrl(url)
+  assert(pathname.startsWith('/'))
+  const paths = pathname.split('/')
   const lastPath = paths[paths.length - 1]
   const parts = lastPath.split('.')
   if (parts.length < 2) {
@@ -755,8 +760,4 @@ function handleErr(err: unknown) {
     }
   }
   console.error(err)
-}
-
-function isFaviconRequest(url: string): boolean {
-  return url === '/favicon.ico'
 }

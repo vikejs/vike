@@ -9,7 +9,13 @@ import {
   loadPageRoutes,
   route
 } from './route.shared'
-import { assert, assertUsage, assertWarning, hasProp, urlToFile } from './utils'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  hasProp,
+  getFileUrl
+} from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -176,29 +182,28 @@ async function writeHtmlDocument(
   root: string
 ) {
   assert(url.startsWith('/'))
-  let fileBase = urlToFile(url)
-  assert(fileBase.startsWith('/'))
-  fileBase = fileBase.slice(1)
-  fileBase = fileBase.split('/').join(sep)
-  assert(!fileBase.startsWith('/') && !fileBase.startsWith(sep))
-  const pathBase = join(root, 'dist', 'client', fileBase)
-  await mkdirp(dirname(pathBase))
 
-  const write = async (
-    fileExtension: '.html' | '.pageProps.json',
-    content: string
-  ) => {
-    const fileUrl = fileBase + fileExtension
-    const filePath = pathBase + fileExtension
-    await writeFile(filePath, content)
-    console.log(`${gray(join('dist', 'client') + sep)}${blue(fileUrl)}`)
-  }
-
-  const writeJobs = [write('.html', htmlDocument)]
+  const writeJobs = [write(url, '.html', htmlDocument, root)]
   if (pagePropsSerialized !== null) {
-    writeJobs.push(write('.pageProps.json', pagePropsSerialized))
+    writeJobs.push(write(url, '.pageProps.json', pagePropsSerialized, root))
   }
   await Promise.all(writeJobs)
+}
+
+async function write(
+  url: string,
+  fileExtension: '.html' | '.pageProps.json',
+  fileContent: string,
+  root: string
+) {
+  const fileUrl = getFileUrl(url, fileExtension)
+  assert(fileUrl.startsWith('/'))
+  const filePathRelative = fileUrl.slice(1).split('/').join(sep)
+  assert(!filePathRelative.startsWith(sep))
+  const filePath = join(root, 'dist', 'client', filePathRelative)
+  await mkdirp(dirname(filePath))
+  await writeFile(filePath, fileContent)
+  console.log(`${gray(join('dist', 'client') + sep)}${blue(filePathRelative)}`)
 }
 
 function writeFile(path: string, fileContent: string): Promise<void> {

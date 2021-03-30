@@ -7,7 +7,8 @@ import {
   isCallable,
   higherFirst,
   slice,
-  hasProp
+  hasProp,
+  parseUrl
 } from './utils'
 
 export { getPageIds }
@@ -34,6 +35,9 @@ async function route(
   )
   const pageRoutes = await loadPageRoutes()
 
+  const urlPathname = parseUrl(url).pathname
+  assert(urlPathname.startsWith('/'))
+
   const routeResults = allPageIds
     .filter((pageId) => !isErrorPage(pageId))
     .map((pageId) => {
@@ -45,7 +49,7 @@ async function route(
 
       // Route with filesystem
       if (!(pageId in pageRoutes)) {
-        const matchValue = routeWith_filesystem(url, pageId, allPageIds)
+        const matchValue = routeWith_filesystem(urlPathname, pageId, allPageIds)
         return { pageId, matchValue, contextPropsAddendum: {} }
       }
       const { pageRoute, pageRouteFile } = pageRoutes[pageId]
@@ -54,7 +58,7 @@ async function route(
       if (typeof pageRoute === 'string') {
         const { matchValue, contextPropsAddendum } = resolveRouteString(
           pageRoute,
-          url
+          urlPathname
         )
         return { pageId, matchValue, contextPropsAddendum }
       }
@@ -63,7 +67,7 @@ async function route(
       if (isCallable(pageRoute)) {
         const { matchValue, contextPropsAddendum } = resolveRouteFunction(
           pageRoute,
-          url,
+          urlPathname,
           contextProps,
           pageRouteFile
         )
@@ -74,7 +78,7 @@ async function route(
     })
 
   const winner = pickWinner(routeResults)
-  // console.log('[Route Match]:', `[${url}]: ${winner && winner.pageId}`)
+  // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
 
   if (!winner) return null
 
@@ -114,10 +118,10 @@ function pickWinner<T extends { matchValue: boolean | number }>(
 }
 
 function routeWith_pathToRegexp(
-  url: string,
+  urlPathname: string,
   routeString: string
 ): { matchValue: false | number; routeProps: Record<string, string> } {
-  const match = pathToRegexp(url, { path: routeString, exact: true })
+  const match = pathToRegexp(urlPathname, { path: routeString, exact: true })
   if (!match) {
     return { matchValue: false, routeProps: {} }
   }
@@ -133,18 +137,18 @@ function isStaticRoute(route: string): boolean {
 }
 
 function routeWith_filesystem(
-  url: string,
+  urlPathname: string,
   pageId: string,
   allPageIds: PageId[]
 ): boolean {
   const pageRoute = getFilesystemRoute(pageId, allPageIds)
-  url = normalizeUrl(url)
-  // console.log('[Route Candidate] url:' + url, 'pageRoute:' + pageRoute)
-  const matchValue = url === pageRoute
+  urlPathname = normalizeUrl(urlPathname)
+  // console.log('[Route Candidate] url:' + urlPathname, 'pageRoute:' + pageRoute)
+  const matchValue = urlPathname === pageRoute
   return matchValue
 }
-function normalizeUrl(url: string): string {
-  return '/' + url.split('/').filter(Boolean).join('/').toLowerCase()
+function normalizeUrl(urlPathname: string): string {
+  return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
 }
 function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   let pageRoute = removeCommonPrefix(pageId, allPageIds)
@@ -214,21 +218,24 @@ function isDefaultPageFile(filePath: string): boolean {
   return true
 }
 
-function resolveRouteString(routeString: string, url: string) {
-  const { matchValue, routeProps } = routeWith_pathToRegexp(url, routeString)
+function resolveRouteString(routeString: string, urlPathname: string) {
+  const { matchValue, routeProps } = routeWith_pathToRegexp(
+    urlPathname,
+    routeString
+  )
   const contextPropsAddendum = routeProps
   return { matchValue, contextPropsAddendum }
 }
 function resolveRouteFunction(
   routeFunction: Function,
-  url: string,
+  urlPathname: string,
   contextProps: Record<string, unknown>,
   routeFilePath: string
 ): {
   matchValue: boolean | number
   contextPropsAddendum: Record<string, unknown>
 } {
-  const result = routeFunction({ url, contextProps })
+  const result = routeFunction({ url: urlPathname, contextProps })
   assertUsage(
     typeof result === 'object' &&
       result !== null &&
