@@ -931,19 +931,35 @@ which is then available at your server integration point `createPageRender()`
 (you can then perform a URL redirect there).
 
 ```js
+// movie.page.route.js
+export default "/star-wars/:movieId";
+```
+```js
 // movie.page.server.js
+// Environment: Node.js
+
+export { addContextProps }
+
+function addContextProps({ contextProps }) {
+  // If the user goes to `/movie/42` but there is no movie with ID `42` then
+  // we redirect the user to `/movie/add` so he can add a new movie.
+  if (contextProps.movieId === null) {
+    return { redirectTo: '/movie/add' }
+  }
+}
+```
+```js
+// _default.page.server.js
 // Environment: Node.js
 
 export { render }
 
 function render({ contextProps }) {
-  // If the user goes to `/movie/42` but there is no movie with ID `42` then
-  // we redirect the user to `/movie/add` so he can add a new movie.
-  if (contextProps.movieId === null) {
-    return { redirectTo: '/movie/add' }
-  } else {
-    // The usual stuff
-  }
+  const { redirectTo } = contextProps
+  if (redirectTo) return { redirectTo }
+
+  // The usual stuff
+  // ...
 }
 ```
 ```js
@@ -962,6 +978,40 @@ app.get('*', async (req, res, next) => {
     res.redirect(307, '/movie/add')
   } else {
     res.status(result.statusCode).send(result.renderResult)
+  }
+})
+```
+
+If you use Client-side Routing, then also redirect at `*.page.client.js`.
+
+```js
+// movie.page.server.js
+// Environment: Node.js
+
+// ...
+
+// We make `redirectTo` available to the browser for Client-side Routing redirection
+export function setPageProps({ contextProps }) {
+  const { redirectTo } = contextProps
+  if (redirectTo) return { redirectTo }
+}
+```
+```js
+// _default.page.client.js
+// Environment: Browser
+
+import { useClientRouter, navigate } from 'vite-plugin-ssr/client/router'
+
+useClientRouter({
+  render({ Page, pageProps }) {
+    const { redirectTo } = pageProps
+    if (redirectTo) {
+      navigate(redirectTo)
+      return
+    }
+
+    // The usual stuff
+    // ...
   }
 })
 ```
