@@ -8,7 +8,7 @@
     </li>
   </ul>
   <p>
-    We use <code>useClientRouter()</code> to do client-side routing.
+    We use <code>useClientRouter()</code> to do Client-side Routing.
     <button @click="randomNavigation">Random Page</button>
   </p>
 </template>
