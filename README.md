@@ -1238,7 +1238,7 @@ React example:
 
 ## `import { navigate } from 'vite-plugin-ssr/client/router'`
 
-Environment: `Browser`, `Node.js`. (In Node.js, `navigate()` is a no-op.)
+Environment: `Browser`, `Node.js`. (In Node.js `navigate()` is importable but not callable.)
 
 You can use `navigate('/some-url')` to programmatically navigate your user to another page (i.e. when navigation isn't triggered by the user clicking on an anchor tag `<a>`).
 For example, you can use `navigate()` to redirect your user after a successful form submission.
@@ -1267,7 +1267,9 @@ async function onSubmit() {
 ```
 
 While you can import `navigate()` in Node.js, you cannot call it: calling `navigate()` in Node.js throws a `[Wrong Usage]` error.
-(`vite-plugin-ssr` allows you to import `navigate()` in Node.js because when doing SSR your view components' code is loaded in the browser as well as Node.js.)
+(`vite-plugin-ssr` allows you to import `navigate()` in Node.js because with SSR your view components are loaded in the browser as well as Node.js.)
+
+If you want to redirect your user at page-load time, see the [Page Redirection](#page-redirection) guide.
 
 Vue example:
  - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue)
