@@ -14,5 +14,6 @@ function pluginWithWarning(): ReturnType<typeof plugin> {
   )
   return plugin()
 }
+
 // Enable `const ssr = require('vite-plugin-ssr')`
 module.exports = Object.assign(exports.default, exports)

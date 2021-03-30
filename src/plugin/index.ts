@@ -13,8 +13,6 @@ const SERVER_ENTRY = require.resolve('../user-files/infra.node.vite-entry')
 
 export { plugin }
 export default plugin
-// Enable `const ssr = require('vite-plugin-ssr/plugin')`
-module.exports = Object.assign(exports.default, exports)
 
 function plugin(): Plugin[] {
   const ssr = { external: ['vite-plugin-ssr'] }
@@ -123,3 +121,6 @@ Object.defineProperty(plugin, 'apply', {
     )
   }
 })
+
+// Enable `const ssr = require('vite-plugin-ssr/plugin')`
+module.exports = Object.assign(exports.default, exports)
