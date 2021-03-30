@@ -1,3 +1,23 @@
+# [0.1.0-beta.24](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.23...v0.1.0-beta.24) (2021-03-30)
+
+
+### Bug Fixes
+
+* use vite@2.1.4 ([1ff3668](https://github.com/brillout/vite-plugin-ssr/commit/1ff36683e09fe1cdd1a759b01655bb5363d225a8))
+
+
+### Features
+
+* support URL query strings ([#22](https://github.com/brillout/vite-plugin-ssr/issues/22)) ([4d58d4c](https://github.com/brillout/vite-plugin-ssr/commit/4d58d4c3ff3b400814caa63ce80049f225226d17))
+
+
+### BREAKING CHANGES
+
+* This release only works with `@vite@2.1.4`; make sure
+to pin your `vite` dependency to `2.1.4` in your `package.json`.
+
+
+
 # [0.1.0-beta.23](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.22...v0.1.0-beta.23) (2021-03-28)
 
 
