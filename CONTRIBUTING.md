@@ -38,7 +38,7 @@ npm install
 npm run install:examples
 ```
 
-Symlink `**/node_modules/vite-plugin-ssr` to `src/`:
+Symlink `**/node_modules/vite-plugin-ssr/` to `/src/`:
 
 ```shell
 npm run link
@@ -50,11 +50,11 @@ Start TSC in watch mode:
 npm run tsc:watch
 ```
 
-You can now change the source code of `vite-plugin-ssr` at `src/` and try your modifications at one of the `examples/`.
-To start the example, follow the README.md instructions of the example.
-You may need to restart the server of the example for your `vite-plugin-ssr` modifications to apply.
+You can now change the source code of `vite-plugin-ssr` (at `/src/`) and try your modifications with one of the `/examples/*`.
+To start the example, follow the `README.md` instructions of the example.
+You may need to restart the example's Node.js server for your `vite-plugin-ssr` modifications to apply.
 
-Run the test suite to ensure that your modifications don't break anything.
+Once you're done and before opening a pull request, run the test suite to ensure that your modifications don't break anything.
 
 ## Run Test Suite
 
@@ -67,7 +67,7 @@ npm install
 npm run install:examples
 ```
 
-If you made modifications in `src/`, make sure to symlink `src/`:
+If you made modifications in `/src/`, make sure to symlink `/src/`:
 
 ```shell
 npm run link
