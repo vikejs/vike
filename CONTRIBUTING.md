@@ -7,7 +7,7 @@
 
 
 ## Requirements
-- Node.js 15.*.*
+- Node.js `v15.x.x`
 
 
 ## Modify Example
