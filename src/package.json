@@ -25,6 +25,9 @@
       "require": "./dist/index.js",
       "import": "./index.ts"
     },
+    "./client/get-page-props": {
+      "import": "./client/getPageProps.client.ts"
+    },
     "./client": {
       "import": "./client/index.ts"
     },

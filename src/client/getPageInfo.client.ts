@@ -1,38 +1,25 @@
 import { assert, assertWarning, parseUrl } from '../utils'
 import { getUrl } from './getUrl.client'
-
-export { getPageInfo }
-export { setPageInfoRetriever }
-
-type PageInfo = {
-  pageId: string
-  pageProps: Record<string, unknown>
-}
-type PageInfoPromise = {
-  pageIdPromise: Promise<string>
-  pagePropsPromise: Promise<Record<string, unknown>>
-}
-type PageInfoRetriever = () => PageInfoPromise
+import routingState from './routingState.client'
+import { PageInfo, PageInfoPromise, PageInfoRetriever } from './types';
 
 let retrievePageInfo: PageInfoRetriever
-function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
+
+export function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
   retrievePageInfo = _retrievePageInfo
 }
 
-let urlOriginal = getUrlPathname()
-let navigated = false
-
-function getPageInfo(): PageInfoPromise {
+export function getPageInfo(): PageInfoPromise {
   const urlNow = getUrlPathname()
-  if (urlNow !== urlOriginal || navigated) {
+  if (routingState.isInitialRoute) {
     assert(urlNow)
     if (retrievePageInfo) {
-      navigated = true
+      routingState.navigated = true
       return retrievePageInfo()
     } else {
       assertWarning(
         false,
-        `\`getPage()\` returned page information for URL \`${urlOriginal}\` instead of \`${urlNow}\` because you didn't call \`useClientRouter()\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then make sure to call \`useClientRouter()\`.`
+        `\`getPage()\` returned page information for URL \`${routingState.urlOriginal}\` instead of \`${urlNow}\` because you didn't call \`useClientRouter()\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then make sure to call \`useClientRouter()\`.`
       )
     }
   }
