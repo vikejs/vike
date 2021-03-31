@@ -7,6 +7,7 @@
 
 
 ## Requirements
+
 - Node.js `v15.x.x`
 
 
@@ -89,7 +90,7 @@ Sometimes the test suite returns the following which is a false positive you can
     Expected an Error, but "" was thrown
 ```
 
-Which means that the following test run is actually successfull.
+Which means that the following test run is actually successful.
 
 ```shell
 $ npm test
