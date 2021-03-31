@@ -1,12 +1,14 @@
 # Contribute to `vite-plugin-ssr`
 
+- [Requirements](#requirements)
 - [Modify Example](#modify-example)
 - [Modify `vite-plugin-ssr`](#modify-vite-plugin-ssr)
 - [Run Test Suite](#run-test-suite)
 
 
-## Environment Requirements
+## Requirements
 - Node.js 15.*.*
+
 
 ## Modify Example
 
@@ -29,6 +31,7 @@ cd ../../ # Go to the root of the vite-plugin-ssr Git repository
 npm install
 npm test -- --root-dir examples/some-example/
 ```
+
 
 ## Modify `vite-plugin-ssr`
 
@@ -58,6 +61,7 @@ To start the example, follow the `README.md` instructions of the example.
 You may need to restart the example's Node.js server for your `vite-plugin-ssr` modifications to apply.
 
 Once you're done and before opening a pull request, run the test suite to ensure that your modifications don't break anything.
+
 
 ## Run Test Suite
 
