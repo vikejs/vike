@@ -6,7 +6,7 @@
 
 
 ## Environment Requirements
-- Node 15.*.*
+- Node.js 15.*.*
 
 ## Modify Example
 
