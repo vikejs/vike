@@ -10,6 +10,10 @@ function getUrlPathname() {
   return parseUrl(url).pathname
 }
 
+function checkIfInitialUrl(url:string|null=getUrlPathname()) {
+  return !(url !== urlOriginal || navigated)
+}
+
 export default {
   get navigated() {
     return navigated;
@@ -20,7 +24,8 @@ export default {
   get urlOriginal() {
     return urlOriginal
   },
-  get isInitialRoute() {
-    return getUrlPathname() !== urlOriginal || navigated
-  }
+  get isInitialUrl() {
+    return checkIfInitialUrl();
+  },
+  checkIfInitialUrl
 }

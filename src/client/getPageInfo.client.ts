@@ -11,7 +11,7 @@ export function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
 
 export function getPageInfo(): PageInfoPromise {
   const urlNow = getUrlPathname()
-  if (routingState.isInitialRoute) {
+  if (routingState.isInitialUrl) {
     assert(urlNow)
     if (retrievePageInfo) {
       routingState.navigated = true
