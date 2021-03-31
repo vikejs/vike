@@ -6,7 +6,7 @@ import { PageInfo } from './types';
 export async function getPageProps(
   url: string
 ): Promise<Record<string, unknown>> {
-  if (!routingState.isInitialRoute) {
+  if (!routingState.checkIfInitialUrl(url)) {
     const response = await fetch(getFileUrl(url, '.pageProps.json'))
     const responseText = await response.text()
     const responseObject = parse(responseText) as
