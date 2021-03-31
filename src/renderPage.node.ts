@@ -8,7 +8,7 @@ import {
   getFilesystemRoute
 } from './route.shared'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
-import { getViteManifest } from './getViteManfiest.node'
+import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags, prependBaseUrl } from './getPreloadTags.node'
@@ -30,7 +30,6 @@ import {
 } from './utils'
 
 export { renderPage }
-export { renderPageId }
 export { getPageFunctions }
 export { prerenderPage }
 
@@ -140,7 +139,8 @@ async function renderPageId(
     pageId,
     contextProps,
     url,
-    contextPropsAlreadyFetched
+    contextPropsAlreadyFetched,
+    false
   )
 
   if (isPagePropsRequest) {
@@ -163,7 +163,8 @@ async function prerenderPage(
     pageId,
     contextProps,
     url,
-    contextPropsAlreadyFetched
+    contextPropsAlreadyFetched,
+    true
   )
   const htmlDocument = await renderHtmlDocument(renderData)
   assertUsage(
@@ -181,7 +182,8 @@ async function getRenderData(
   pageId: string,
   contextProps: Record<string, unknown>,
   url: string,
-  contextPropsAlreadyFetched: boolean
+  contextPropsAlreadyFetched: boolean,
+  isPreRendering: boolean
 ) {
   const { Page, pageFilePath } = await getPage(pageId)
 
@@ -232,7 +234,8 @@ async function getRenderData(
     pageFunctions,
     contextProps,
     pageProps,
-    url
+    url,
+    isPreRendering
   }
 }
 
@@ -244,6 +247,7 @@ type RenderData = {
   pageId: string
   pageFilePath: string
   pageFunctions: PageFunctions
+  isPreRendering: boolean
 }
 
 function renderPageProps({ pageProps }: RenderData) {
@@ -259,13 +263,23 @@ async function renderHtmlDocument({
   url,
   pageId,
   pageFilePath,
-  pageFunctions
+  pageFunctions,
+  isPreRendering
 }: RenderData) {
   const {
     renderFunction,
     addContextPropsFunction,
     setPagePropsFunction
   } = pageFunctions
+
+  const { isProduction = false } = getSsrEnv()
+  let clientManifest: null | ViteManifest = null
+  let serverManifest: null | ViteManifest = null
+  if (isPreRendering || isProduction) {
+    const manifests = retrieveViteManifest(isPreRendering)
+    clientManifest = manifests.clientManifest
+    serverManifest = manifests.serverManifest
+  }
 
   const renderResult: unknown = await renderFunction.render({
     Page,
@@ -296,7 +310,9 @@ async function renderHtmlDocument({
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
-  const scriptSrc = pathRelativeToRoot(browserFilePath)
+  const scriptSrc = !isProduction
+    ? browserFilePath
+    : resolveScriptSrc(browserFilePath, clientManifest!)
   htmlDocument = injectScript(htmlDocument, scriptSrc)
 
   // Inject preload links
@@ -307,7 +323,11 @@ async function renderHtmlDocument({
   if (setPagePropsFunction) dependencies.add(setPagePropsFunction.filePath)
   if (addContextPropsFunction)
     dependencies.add(addContextPropsFunction.filePath)
-  const preloadTags = await getPreloadTags(Array.from(dependencies))
+  const preloadTags = await getPreloadTags(
+    Array.from(dependencies),
+    clientManifest,
+    serverManifest
+  )
   htmlDocument = injectPreloadTags(htmlDocument, preloadTags)
 
   return htmlDocument
@@ -482,22 +502,19 @@ async function applyViteHtmlTransform(
   return htmlDocument
 }
 
-function pathRelativeToRoot(filePath: string): string {
+function resolveScriptSrc(
+  filePath: string,
+  clientManifest: ViteManifest
+): string {
   assert(filePath.startsWith('/'))
-  const { isProduction } = getSsrEnv()
-
-  if (!isProduction) {
-    return filePath
-  } else {
-    const { clientManifest } = getViteManifest()
-    const manifestKey = filePath.slice(1)
-    const manifestVal = clientManifest[manifestKey]
-    assert(manifestVal)
-    assert(manifestVal.isEntry)
-    const { file } = manifestVal
-    assert(!file.startsWith('/'))
-    return '/' + file
-  }
+  assert(getSsrEnv().isProduction)
+  const manifestKey = filePath.slice(1)
+  const manifestVal = clientManifest[manifestKey]
+  assert(manifestVal)
+  assert(manifestVal.isEntry)
+  const { file } = manifestVal
+  assert(!file.startsWith('/'))
+  return '/' + file
 }
 
 function injectPageInfo(
@@ -760,4 +777,30 @@ function handleErr(err: unknown) {
     }
   }
   console.error(err)
+}
+
+function retrieveViteManifest(
+  isPreRendering: boolean
+): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
+  // Get Vite manifest
+  const {
+    clientManifest,
+    serverManifest,
+    clientManifestPath,
+    serverManifestPath
+  } = getViteManifest()
+  const userOperation = isPreRendering
+    ? 'running `$ vite-plugin-ssr prerender`'
+    : 'running the server with `isProduction: true`'
+  assertUsage(
+    clientManifest && serverManifest,
+    'You are ' +
+      userOperation +
+      " but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before. (Following build manifest is missing: `" +
+      clientManifestPath +
+      '` and/or `' +
+      serverManifestPath +
+      '`.)'
+  )
+  return { clientManifest, serverManifest }
 }

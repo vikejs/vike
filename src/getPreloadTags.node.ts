@@ -1,6 +1,6 @@
 import { getSsrEnv } from './ssrEnv.node'
 import { assert } from './utils/assert'
-import { getViteManifest, ViteManifest } from './getViteManfiest.node'
+import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
 import { getUserFiles } from './user-files/getUserFiles.shared'
 import { slice } from './utils'
@@ -8,7 +8,11 @@ import { slice } from './utils'
 export { getPreloadTags }
 export { prependBaseUrl }
 
-async function getPreloadTags(dependencies: string[]): Promise<string[]> {
+async function getPreloadTags(
+  dependencies: string[],
+  clientManifest: null | ViteManifest,
+  serverManifest: null | ViteManifest
+): Promise<string[]> {
   const ssrEnv = getSsrEnv()
 
   let preloadUrls = new Set<string>()
@@ -27,7 +31,7 @@ async function getPreloadTags(dependencies: string[]): Promise<string[]> {
       })
     )
   } else {
-    const { serverManifest, clientManifest } = getViteManifest()
+    assert(clientManifest && serverManifest)
     const visistedAssets = new Set<string>()
     dependencies.forEach((filePath) => {
       const modulePath = getModulePath(filePath, ssrEnv.root)
@@ -144,7 +148,7 @@ function prependBaseUrl(url: string): string {
   assert(url.startsWith('/'))
   let { baseUrl } = getSsrEnv()
   if (!baseUrl) return url
-  if (baseUrl.endsWith('/')) baseUrl = slice(baseUrl, 0, -1)
   if (!baseUrl.startsWith('/')) baseUrl = `/${baseUrl}`
+  if (baseUrl.endsWith('/')) baseUrl = slice(baseUrl, 0, -1)
   return `${baseUrl}${url}`
 }
