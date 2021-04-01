@@ -1,7 +1,11 @@
 const express = require("express");
 const { createPageRender } = require("vite-plugin-ssr");
 const vite = require("vite");
-const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client');
+const {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+} = require("@apollo/client");
 const fetch = require("cross-fetch");
 
 const isProduction = process.env.NODE_ENV === "production";

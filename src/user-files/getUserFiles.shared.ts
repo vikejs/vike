@@ -42,7 +42,9 @@ function findPageFile<T>(
   userFiles: { filePath: string; loadFile: T }[],
   pageId: string
 ): { filePath: string; loadFile: T } | null {
-  userFiles = userFiles.filter(({ filePath }) => filePath.startsWith(`${pageId}.page.`))
+  userFiles = userFiles.filter(({ filePath }) =>
+    filePath.startsWith(`${pageId}.page.`)
+  )
   if (userFiles.length === 0) {
     return null
   }

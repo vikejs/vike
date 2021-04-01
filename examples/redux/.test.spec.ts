@@ -14,7 +14,7 @@ test("page content is rendered to DOM", async () => {
   expect(await page.textContent("body")).toContain("Count: 0.");
   // `autoRetry` because browser-side code may not be loaded yet
   await autoRetry(async () => {
-    await page.click('button')
+    await page.click("button");
     expect(await page.textContent("body")).toContain("Count: 1.");
-  })
+  });
 });

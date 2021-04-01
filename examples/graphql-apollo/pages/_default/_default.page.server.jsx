@@ -17,7 +17,7 @@ function render({ contextProps }) {
 
 async function addContextProps({ Page, contextProps }) {
   const { apolloClient } = contextProps;
-  const randomMessage = Math.floor(Math.random() * 1e16).toString(16)
+  const randomMessage = Math.floor(Math.random() * 1e16).toString(16);
   const pageProps = { randomMessage };
   const tree = (
     <App apolloClient={apolloClient}>
