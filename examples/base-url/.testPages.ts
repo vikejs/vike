@@ -6,9 +6,10 @@ function testPages(
   cmd: "npm run dev" | "npm run prod:static" | "npm run prod:server",
   isDev: boolean = false
 ) {
-  const addBaseUrl = (url: string) => (isDev ? "" : "/dist/client") + url;
+  const baseUrl = isDev ? "" : "/dist/client";
+  const addBaseUrl = (url: string) => baseUrl + url;
 
-  run(cmd);
+  run(cmd, baseUrl);
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml(addBaseUrl("/"));
@@ -19,7 +20,6 @@ function testPages(
   });
 
   test("page is rendered to the DOM and interactive", async () => {
-    await page.goto(urlBase + addBaseUrl("/"));
     expect(await page.textContent("h1")).toBe("Welcome");
     expect(await page.textContent("button")).toBe("Counter 0");
     await autoRetry(async () => {

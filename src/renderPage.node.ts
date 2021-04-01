@@ -57,6 +57,16 @@ async function renderPage({
     }
   }
 
+  if (!startsWithBaseUrl(url)) {
+    return {
+      nothingRendered: true,
+      renderResult: undefined,
+      statusCode: undefined
+    }
+  } else {
+    url = removeBaseUrl(url)
+  }
+
   const isPagePropsRequest = isPagePropsUrl(url)
   if (isPagePropsRequest) {
     url = retrieveOriginalUrl(url)
@@ -803,4 +813,20 @@ function retrieveViteManifest(
       '`.)'
   )
   return { clientManifest, serverManifest }
+}
+
+function startsWithBaseUrl(url: string): boolean {
+  const { baseUrl } = getSsrEnv()
+  if (!baseUrl) return true
+  assert(baseUrl.startsWith('/'))
+  assert(url.startsWith('/'))
+  return url.startsWith(baseUrl)
+}
+function removeBaseUrl(url: string): string {
+  const { baseUrl } = getSsrEnv()
+  if (!baseUrl) return url
+  assert(url.startsWith(baseUrl))
+  url = url.slice(baseUrl.length)
+  if (!url.startsWith('/')) url = '/' + url
+  return url
 }

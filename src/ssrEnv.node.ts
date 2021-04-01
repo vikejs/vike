@@ -6,16 +6,16 @@ export { SsrEnv }
 
 type SsrEnv =
   | {
-      isProduction?: false
+      isProduction: false
       viteDevServer: ViteDevServer
       root: string
-      baseUrl?: string
+      baseUrl: string
     }
   | {
       isProduction: true
-      viteDevServer?: undefined
+      viteDevServer: undefined
       root: string
-      baseUrl?: string
+      baseUrl: string
     }
 
 function getSsrEnv(): SsrEnv {

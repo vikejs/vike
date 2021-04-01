@@ -13,15 +13,20 @@ export { autoRetry }
 export { fetchHtml }
 export { run }
 
-const browserLogs: { type: string; text: string }[] = []
-function run(cmd: string) {
+const browserLogs: {
+  type: string
+  text: string
+  location: any
+  args: any
+}[] = []
+function run(cmd: string, baseUrl = '') {
   jest.setTimeout(60 * 1000)
 
   let runProcess: RunProcess
   beforeAll(async () => {
     runProcess = await start(cmd)
     page.on('console', onConsole)
-    await page.goto(urlBase)
+    await page.goto(urlBase + baseUrl)
   })
   afterAll(async () => {
     page.off('console', onConsole)
@@ -31,11 +36,11 @@ function run(cmd: string) {
   })
 }
 function onConsole(msg: ConsoleMessage) {
-  const type = msg.type()
-  const text = msg.text()
   browserLogs.push({
-    type,
-    text
+    type: msg.type(),
+    text: msg.text(),
+    location: msg.location(),
+    args: msg.args()
   })
 }
 
@@ -105,7 +110,7 @@ async function start(cmd: string): Promise<RunProcess> {
 async function terminate(runProcess: RunProcess) {
   setTimeout(() => {
     process.exit(2)
-  }, 10 * 1000)
+  }, 60 * 1000)
   if (runProcess) {
     await stop(runProcess, 'SIGKILL')
   }
