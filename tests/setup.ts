@@ -1,7 +1,7 @@
 import { spawn, exec } from 'child_process'
 import { ChildProcessWithoutNullStreams } from 'child_process'
 import { dirname as pathDirname } from 'path'
-import { Page } from 'playwright-chromium'
+import { ConsoleMessage, Page } from 'playwright-chromium'
 import { sleep } from './utils'
 import { red, bold, blue } from 'kolorist'
 import fetch from 'node-fetch'
@@ -13,16 +13,29 @@ export { autoRetry }
 export { fetchHtml }
 export { run }
 
+const browserLogs: { type: string; text: string }[] = []
 function run(cmd: string) {
   jest.setTimeout(60 * 1000)
 
   let runProcess: RunProcess
   beforeAll(async () => {
     runProcess = await start(cmd)
+    page.on('console', onConsole)
     await page.goto(urlBase)
   })
   afterAll(async () => {
+    page.off('console', onConsole)
+    expect(browserLogs.filter(({ type }) => type === 'error')).toEqual([])
+    browserLogs.length = 0
     await stop(runProcess)
+  })
+}
+function onConsole(msg: ConsoleMessage) {
+  const type = msg.type()
+  const text = msg.text()
+  browserLogs.push({
+    type,
+    text
   })
 }
 

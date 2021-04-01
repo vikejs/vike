@@ -4,9 +4,9 @@ import './App.css';
 
 export default App
 
-function App({ client, children }) {
+function App({ apolloClient, children }) {
   return (
-    <ApolloProvider client={client}>
+    <ApolloProvider client={apolloClient}>
       {children}
     </ApolloProvider>
   );

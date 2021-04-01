@@ -7,22 +7,22 @@ import App from "../App";
 hydrate();
 
 async function hydrate() {
-  const { Page, pageProps } = await getPage();
-
+  const {
+    Page,
+    pageProps: { apolloIntialState, pageProps },
+  } = await getPage();
+  const apolloClient = makeApolloClient(apolloIntialState);
   ReactDOM.hydrate(
-    <App client={makeApolloClient(pageProps)}>
+    <App apolloClient={apolloClient}>
       <Page {...pageProps} />
-    </App>
-    , document.getElementById("page-content")
+    </App>,
+    document.getElementById("page-content")
   );
 }
 
-function makeApolloClient(pageProps) {
-  // It's important to create an entirely new instance of Apollo Client for each request.
-  // Otherwise, your response to a request might include sensitive cached query results
-  // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
+function makeApolloClient(apolloIntialState) {
   return new ApolloClient({
     uri: "https://countries.trevorblades.com",
-    cache: new InMemoryCache().restore(pageProps.initialApolloState),
+    cache: new InMemoryCache().restore(apolloIntialState),
   });
 }
