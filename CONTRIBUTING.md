@@ -8,7 +8,7 @@
 
 ## Requirements
 
-- Node.js `v15.x.x`
+- Node.js `>= v15.x.x` (for *developing*; using `vite-plugin-ssr` works with `>= v12.7.x`.)
 
 
 ## Modify Example
