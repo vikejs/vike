@@ -1,9 +1,10 @@
 # Contribute to `vite-plugin-ssr`
 
 - [Requirements](#requirements)
-- [Modify Example](#modify-example)
+- [Ceate new example](#create-new-example)
+- [Modify existing example](#modify-existing-example)
 - [Modify `vite-plugin-ssr`](#modify-vite-plugin-ssr)
-- [Run Test Suite](#run-test-suite)
+- [Run test suite](#run-test-suite)
 
 
 ## Requirements
@@ -11,7 +12,13 @@
 Node.js `>= v15.x.x` (for *developing*; using `vite-plugin-ssr` works with `>= v12.7.x`).
 
 
-## Modify Example
+## Create new example
+
+New examples should be minimal and implement only what the example wants to showcase;
+a good start for new examples are `/boilerplates/boilerplate-react` and `/boilerplates/boilerplate-vue`.
+(Do not start off `/examples/react/` nor `/examples/vue/` as these are full-featured demos.)
+
+## Modify existing example
 
 To run an example:
 
@@ -64,7 +71,7 @@ You may need to restart the example's Node.js server for your `vite-plugin-ssr` 
 Once you're done and before opening a pull request, run the test suite to ensure that your modifications don't break anything.
 
 
-## Run Test Suite
+## Run test suite
 
 Install everything:
 
