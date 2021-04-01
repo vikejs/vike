@@ -1084,7 +1084,7 @@ async function hydrate() {
 }
 ```
 
-The `.page.js` file is lazy-loaded: it is loaded only when needed which means that if no URL were to match the page's route then `.page.js` is not loaded in your Node.js process nor in the user's browser.
+The `.page.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.js` is not loaded in your Node.js process nor in the user's browser.
 
 The `.page.js` file is usually executed in both Node.js and the browser.
 
@@ -1381,7 +1381,7 @@ The `.page.server.js` file defines and exports the page's hooks:
 - `export { render }`
 - `export { prerender }`
 
-The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL were to match the page's route then `.page.server.js` is not loaded in your Node.js process' memory.
+The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is not loaded in your Node.js process' memory.
 
 The `.page.server.js` file is executed in Node.js and never in the browser.
 
