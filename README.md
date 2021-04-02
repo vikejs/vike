@@ -30,40 +30,48 @@ Simple, full-fledged, do-one-thing-do-it-well.
 [Introduction](#introduction)
 <br/> [Vue Tour](#vue-tour)
 <br/> [React Tour](#react-tour)
+<br/>
 <br/> Get Started
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Boilerplates](#boilerplates)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Manual Installation](#manual-installation)
+<br/> &nbsp;&nbsp; [Boilerplates](#boilerplates)
+<br/> &nbsp;&nbsp; [Manual Installation](#manual-installation)
+<br/>
 <br/> Guides
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Data Fetching](#data-fetching)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Routing](#routing)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Markdown](#markdown)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Authentication](#authentication)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [HTML `<head>`](#html-head)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Store](#store)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Base URL](#base-url)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Page Redirection](#page-redirection)
+<br/> &nbsp;&nbsp; [Data Fetching](#data-fetching)
+<br/> &nbsp;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
+<br/> &nbsp;&nbsp; [Routing](#routing)
+<br/> &nbsp;&nbsp; [Markdown](#markdown)
+<br/> &nbsp;&nbsp; [Authentication](#authentication)
+<br/> &nbsp;&nbsp; [HTML `<head>`](#html-head)
+<br/> &nbsp;&nbsp; [Store](#store)
+<br/> &nbsp;&nbsp; [Base URL](#base-url)
+<br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
+<br/>
 <br/> API
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.js`](#pagejs)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.client.js`](#pageclientjs)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.route.js`](#pageroutejs)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route String](#route-string)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route Function](#route-function)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Filesystem Routing](#filesystem-routing)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`*.page.server.js`](#pageserverjs)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addContextProps }`](#export--addcontextprops-)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { setPageProps }`](#export--setpageprops-)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr) (Server Integration Point)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_default.page.*`](#_defaultpage)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`_error.page.*`](#_errorpage)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`import ssr from 'vite-plugin-ssr/plugin'`](#import-ssr-from-vite-plugin-ssrplugin) (Vite Plugin)
-<br/> &nbsp;&nbsp;&nbsp;&#8226;&nbsp; [CLI command `prerender`](#cli-command-prerender)
+<br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
+<br/> &nbsp;&nbsp; [`_default.page.*`](#_defaultpage)
+<br/> &nbsp;&nbsp; [`_error.page.*`](#_errorpage)
+<br/><sub>&nbsp;&nbsp;&nbsp; Node.js</sub>
+<br/> &nbsp;&nbsp; [`*.page.server.js`](#pageserverjs)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addContextProps }`](#export--addcontextprops-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { setPageProps }`](#export--setpageprops-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
+<br/> &nbsp;&nbsp; [`import { html } from 'vite-plugin-ssr'`](#import--html--from-vite-plugin-ssr)
+<br/><sub>&nbsp;&nbsp;&nbsp; Browser</sub>
+<br/> &nbsp;&nbsp; [`*.page.client.js`](#pageclientjs)
+<br/> &nbsp;&nbsp; [`import { getPage } from 'vite-plugin-ssr/client'`](#import--getpage--from-vite-plugin-ssrclient)
+<br/> &nbsp;&nbsp; [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+<br/> &nbsp;&nbsp; [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
+<br/><sub>&nbsp;&nbsp;&nbsp; Routing</sub>
+<br/> &nbsp;&nbsp; [`*.page.route.js`](#pageroutejs)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route String](#route-string)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route Function](#route-function)
+<br/> &nbsp;&nbsp; [Filesystem Routing](#filesystem-routing)
+<br/><sub>&nbsp;&nbsp;&nbsp; Integration</sub>
+<br/> &nbsp;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr) (Server Integration Point)
+<br/> &nbsp;&nbsp; [`import ssr from 'vite-plugin-ssr/plugin'`](#import-ssr-from-vite-plugin-ssrplugin) (Vite Plugin)
+<br/><sub>&nbsp;&nbsp;&nbsp; CLI</sub>
+<br/> &nbsp;&nbsp; [Command `prerender`](#command-prerender)
 
 <br/>
 
@@ -1104,6 +1112,375 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 <br/><br/>
 
 
+## `_default.page.*`
+
+The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
+
+There can be several `_default`:
+
+```
+marketing/_default.page.server.js
+marketing/_default.page.client.js
+marketing/index.page.js
+marketing/about.page.js
+marketing/jobs.page.js
+admin-panel/_default.page.server.js
+admin-panel/_default.page.client.js
+admin-panel/index.page.js
+```
+
+The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
+
+The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
+defining `_default.page.js` or `_default.page.route.js` is forbidden.
+
+<br/><br/>
+
+
+## `_error.page.*`
+
+The page `_error.page.js` is shown to your user when an error occurs:
+ - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
+ - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===false`).
+
+It comes with a built-in `setPageProps()` hook that sets `pageProps.is404`.
+The `pageProps.is404` flag enables you to decided whether to show a 404 or 500 page.
+The flag is also available at `contextProps.is404`.
+
+You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`. (You can then overwrite the built-in `setPageProps()` hook.)
+
+<br/><br/>
+
+
+## `*.page.server.js`
+
+Environment: `Node.js`
+<br>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
+
+The `.page.server.js` file defines and exports the page's hooks:
+- `export { addContextProps }`
+- `export { setPageProps }`
+- `export { render }`
+- `export { prerender }`
+
+The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is not loaded in your Node.js process' memory.
+
+The `.page.server.js` file is executed in Node.js and never in the browser.
+
+<br/>
+
+### `export { addContextProps }`
+
+The `addContextProps()` hook is used to provide further `contextProps` values.
+
+The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
+
+You can provide initial `contextProps` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
+This is where you usually pass information about the authenticated user,
+see [Authentication](#authentication) guide.
+
+The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data, see [Data Fetching](#data-fetching) guide.
+
+Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
+
+```js
+// /pages/movies.page.server.js
+
+import fetch from "node-fetch";
+
+export { addContextProps }
+
+async function addContextProps({ contextProps, Page }){
+  const response = await fetch("https://api.imdb.com/api/movies/")
+  const { movies } = await response.json()
+  /* Or with an ORM:
+  const movies = Movie.findAll() */
+  /* Or with SQL:
+  const movies = sql`SELECT * FROM movies;` */
+  return { movies }
+}
+```
+
+- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
+- `contextProps` is the initial accumulation of:
+   1. The `contextProps` you provided in your the server integration point `createPageRender()`.
+   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
+
+<br/>
+
+### `export { setPageProps }`
+
+The `setPageProps()` hook provides the `pageProps` which are consumed by `Page`.
+
+The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+
+It is usally used in conjunction with the `addContextProps()` hook: data is fetched in `addContextProps()` and then made available to `Page` with `setPageProps()`.
+
+```js
+// /pages/movies.page.server.js
+// Environment: Node.js
+
+import fetch from "node-fetch";
+
+async function addContextProps({ contextProps }) {
+  const response = await fetch("https://api.imdb.com/api/movies/")
+  const { movies } = await response.json()
+  return { movies }
+}
+
+function setPageProps({ contextProps: { movies } }) {
+  // We remove data we don't need: `vite-plugin-ssr` serializes and passes `pageProps`
+  // to the client and we want to minimize what it sent over the network.
+  movies = movies.map(({ title, release_date }) => ({title, release_date}))
+  const pageProps = { movies }
+  return pageProps
+}
+```
+```js
+// /pages/movies.page.js
+// Environment: Browser, Node.js
+
+export { Page }
+
+function Page(pageProps) {
+  const { movies } = pageProps
+  /* ... */
+}
+```
+
+<br/>
+
+### `export { render }`
+
+The `render()` hook defines how a page is rendered to HTML.
+
+It usually returns an HTML string,
+but it can also return something else than HTML which we talk more about down below.
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+import { renderToHtml, createElement } from 'some-view-framework'
+
+export { render }
+
+async function render({ Page, pageProps, contextProps }){
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>My SSR App</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file being rendered.
+- `pageProps` is the value returned by the `setPageProps()` hook.
+- `contextProps` is the accumulation of:
+   1. The `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(/*...*/); renderPage({ url, contextProps })`).
+   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
+   3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
+
+The value `renderResult` returned by your `render()` hook doesn't have to be HTML:
+`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
+
+```js
+// *.page.server.js
+
+export { render }
+
+function render({ Page, pageProps, contextProps }) {
+  let renderResult
+  /* ... */
+  return renderResult
+}
+```
+```js
+// server.js
+
+const renderPage = createPageRender(/*...*/)
+
+app.get('*', async (req, res, next) => {
+  const result = await renderPage({ url: req.originalUrl, contextProps: {} })
+  // `result.renderResult` is the value returned by your `render()` hook.
+  const { renderResult } = result
+  /* ... */
+})
+```
+
+Your `render()` hook can for example return an object like `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
+
+<br/>
+
+### `export { prerender }`
+
+> :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
+
+The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
+by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `contextProps` of each URL.
+
+If you don't have any parameterized route,
+then you can prerender your app without defining any `prerender()` hook.
+You can, however, still use the `prerender()` hook
+to increase the effeciency of pre-rendering as
+it enables you to fetch data for multiple pages at once.
+
+```js
+// /pages/movie.page.route.js
+// Environment: Node.js
+
+export default '/movie/:movieId`
+```
+```js
+// /pages/movie.page.server.js
+// Environment: Node.js
+
+export { prerender }
+
+async function prerender() {
+  const movies = await Movie.findAll()
+
+  const moviePages = (
+    movies
+    .map(movie => {
+      const url = `/movie/${movie.id}`
+      const contextProps = { movie }
+      return {
+        url,
+        // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
+        // the `addContextProps()` hook.
+        contextProps
+      }
+      // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
+      // call `addContextProps()`. But that would be wasteful since we already have all the data
+      // of all movies from our `await Movie.findAll()` call.
+      // return { url }
+    })
+  )
+
+  // We can also return URLs that don't match the page's route.
+  // That way we can provide the `contextProps` of other pages.
+  // Here we provide the `contextProps` of the `/movies` page since
+  // we already have the data.
+  const movieListPage = {
+    url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
+    contextProps: {
+      movieList: movies.map(({id, title}) => ({id, title})
+    }
+  }
+
+  return [movieListPage, ...moviePages]
+}
+```
+
+The `prerender()` hook is only used when pre-rendering:
+if you don't call
+`vite-plugin-ssr prerender`
+then no `prerender()` hook is called.
+
+Vue Example:
+ - [/examples/vue/package.json](/examples/vue/package.json) (see the `build:prerender` script)
+ - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts) (see the `prerender()` hook)
+
+React Example:
+ - [/examples/react/package.json#build:prerender](/examples/react/package.json) (see the `build:prerender` script)
+ - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts) (see the `prerender()` hook)
+
+<br/><br/>
+
+
+## `import { html } from 'vite-plugin-ssr'`
+
+Environment: `Node.js`
+
+The `html` tag sanitizes HTML (to prevent XSS injections).
+It is usually used in your `render()` hook defined in `.page.server.js`.
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render() {
+  const title = 'Hello<script src="https://devil.org/evil-code"></script>'
+  const pageHtml = "<div>I'm already <b>sanitized</b>, e.g. by Vue/React</div>"
+
+  // This HTML is safe thanks to the string template tag `html` which sanitizes `title`
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${title}</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+All strings, e.g. `title`, are automatically sanitized (technically speaking: HTML-escaped)
+so that you can safely include untrusted strings
+such as user-generated text.
+
+The `html.dangerouslySetHtml(str)` function injects the string `str` as-is *without* sanitizing.
+It should be used with caution and
+only for HTML strings that are guaranteed to be already sanitized.
+It is usually used to include HTML generated by React/Vue/Solid/... as these frameworks always generate sanitized HTML.
+If you find yourself using `html.dangerouslySetHtml()` in other situations be extra careful as you run into the risk of creating a security breach.
+
+You can assemble the overall HTML document from several pieces of HTML segments.
+For example, when you want some HTML parts to be included only for certain pages:
+
+```js
+// _default.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-view-framework'
+
+export { render }
+
+async function render({ Page, contextProps }) {
+  // We only include the `<meta name="description">` tag if the page has a description.
+  // (Pages define `contextProps.docHtml.description` with their `addContextProps()` hook.)
+  const description = contextProps.docHtml?.description
+  let descriptionTag = ''
+  if( description ) {
+    // Note how we use the `html` string template tag for an HTML segment.
+    descriptionTag = html`<meta name="description" content="${description}">`
+  }
+
+  // We use the `html` tag again for the overall HTML, and since `descriptionTag` is
+  // already sanitized it will not be sanitized again.
+  return html`<html>
+    <head>
+      ${descriptionTag}
+    </head>
+    <body>
+      <div id="root">
+        ${html.dangerouslySetHtml(await renderToHtml(Page))}
+      </div>
+    </body>
+  </html>`
+}
+```
+
+<br/><br/>
+
+
 ## `*.page.client.js`
 
 Environment: `Browser`
@@ -1146,7 +1523,7 @@ function analytics_init() {
 
 <br/>
 
-### `import { getPage } from 'vite-plugin-ssr/client'`
+## `import { getPage } from 'vite-plugin-ssr/client'`
 
 Environment: `Browser`
 
@@ -1174,7 +1551,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 <br/>
 
-### `import { useClientRouter } from 'vite-plugin-ssr/client/router'`
+## `import { useClientRouter } from 'vite-plugin-ssr/client/router'`
 
 Environment: `Browser`
 
@@ -1382,333 +1759,6 @@ For more control over routing, define route strings or route functions in [`*.pa
 <br/><br/>
 
 
-## `*.page.server.js`
-
-Environment: `Node.js`
-<br>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
-
-The `.page.server.js` file defines and exports the page's hooks:
-- `export { addContextProps }`
-- `export { setPageProps }`
-- `export { render }`
-- `export { prerender }`
-
-The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is not loaded in your Node.js process' memory.
-
-The `.page.server.js` file is executed in Node.js and never in the browser.
-
-<br/>
-
-### `export { addContextProps }`
-
-The `addContextProps()` hook is used to provide further `contextProps` values.
-
-The `contextProps` are passed to all hooks (which are defined in `.page.server.js`) and to the route function (if there is one defined in `.page.route.js`).
-
-You can provide initial `contextProps` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
-This is where you usually pass information about the authenticated user,
-see [Authentication](#authentication) guide.
-
-The `addContextProps()` hook is usually used in conjunction with the [`setPageProps()` hook](#export--setpageprops-) to fetch data, see [Data Fetching](#data-fetching) guide.
-
-Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
-
-```js
-// /pages/movies.page.server.js
-
-import fetch from "node-fetch";
-
-export { addContextProps }
-
-async function addContextProps({ contextProps, Page }){
-  const response = await fetch("https://api.imdb.com/api/movies/")
-  const { movies } = await response.json()
-  /* Or with an ORM:
-  const movies = Movie.findAll() */
-  /* Or with SQL:
-  const movies = sql`SELECT * FROM movies;` */
-  return { movies }
-}
-```
-
-- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
-- `contextProps` is the initial accumulation of:
-   1. The `contextProps` you provided in your the server integration point `createPageRender()`.
-   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
-
-<br/>
-
-### `export { setPageProps }`
-
-The `setPageProps()` hook provides the `pageProps` which are consumed by `Page`.
-
-The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
-
-It is usally used in conjunction with the `addContextProps()` hook: data is fetched in `addContextProps()` and then made available to `Page` with `setPageProps()`.
-
-```js
-// /pages/movies.page.server.js
-// Environment: Node.js
-
-import fetch from "node-fetch";
-
-async function addContextProps({ contextProps }) {
-  const response = await fetch("https://api.imdb.com/api/movies/")
-  const { movies } = await response.json()
-  return { movies }
-}
-
-function setPageProps({ contextProps: { movies } }) {
-  // We remove data we don't need: `vite-plugin-ssr` serializes and passes `pageProps`
-  // to the client and we want to minimize what it sent over the network.
-  movies = movies.map(({ title, release_date }) => ({title, release_date}))
-  const pageProps = { movies }
-  return pageProps
-}
-```
-```js
-// /pages/movies.page.js
-// Environment: Browser, Node.js
-
-export { Page }
-
-function Page(pageProps) {
-  const { movies } = pageProps
-  /* ... */
-}
-```
-
-<br/>
-
-### `export { render }`
-
-The `render()` hook defines how a page is rendered to HTML.
-
-It usually returns an HTML string,
-but it can also return something else than HTML which we talk more about down below.
-
-```js
-// *.page.server.js
-// Environment: Node.js
-
-import { html } from 'vite-plugin-ssr'
-import { renderToHtml, createElement } from 'some-view-framework'
-
-export { render }
-
-async function render({ Page, pageProps, contextProps }){
-  const pageHtml = await renderToHtml(createElement(Page, pageProps))
-  return html`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>My SSR App</title>
-      </head>
-      <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
-      </body>
-    </html>`
-}
-```
-
-- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file being rendered.
-- `pageProps` is the value returned by the `setPageProps()` hook.
-- `contextProps` is the accumulation of:
-   1. The `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(/*...*/); renderPage({ url, contextProps })`).
-   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
-   3. The `contextProps` you returned in your `addContextProps()` hook (if you defined one).
-
-The value `renderResult` returned by your `render()` hook doesn't have to be HTML:
-`vite-plugin-ssr` doesn't do anything with `renderResult` and just passes it untouched at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
-
-```js
-// *.page.server.js
-
-export { render }
-
-function render({ Page, pageProps, contextProps }) {
-  let renderResult
-  /* ... */
-  return renderResult
-}
-```
-```js
-// server.js
-
-const renderPage = createPageRender(/*...*/)
-
-app.get('*', async (req, res, next) => {
-  const result = await renderPage({ url: req.originalUrl, contextProps: {} })
-  // `result.renderResult` is the value returned by your `render()` hook.
-  const { renderResult } = result
-  /* ... */
-})
-```
-
-Your `render()` hook can for example return an object like `{ redirectTo: '/some/url' }` in order to do [Page Redirection](#page-redirection).
-
-<br/>
-
-### `import { html } from 'vite-plugin-ssr'`
-
-Environment: `Node.js`
-
-The `html` tag sanitizes HTML (to prevent XSS injections).
-It is usually used in your `render()` hook defined in `.page.server.js`.
-
-```js
-// *.page.server.js
-// Environment: Node.js
-
-import { html } from 'vite-plugin-ssr'
-
-export { render }
-
-async function render() {
-  const title = 'Hello<script src="https://devil.org/evil-code"></script>'
-  const pageHtml = "<div>I'm already <b>sanitized</b>, e.g. by Vue/React</div>"
-
-  // This HTML is safe thanks to the string template tag `html` which sanitizes `title`
-  return html`<!DOCTYPE html>
-    <html>
-      <head>
-        <title>${title}</title>
-      </head>
-      <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
-      </body>
-    </html>`
-}
-```
-
-All strings, e.g. `title`, are automatically sanitized (technically speaking: HTML-escaped)
-so that you can safely include untrusted strings
-such as user-generated text.
-
-The `html.dangerouslySetHtml(str)` function injects the string `str` as-is *without* sanitizing.
-It should be used with caution and
-only for HTML strings that are guaranteed to be already sanitized.
-It is usually used to include HTML generated by React/Vue/Solid/... as these frameworks always generate sanitized HTML.
-If you find yourself using `html.dangerouslySetHtml()` in other situations be extra careful as you run into the risk of creating a security breach.
-
-You can assemble the overall HTML document from several pieces of HTML segments.
-For example, when you want some HTML parts to be included only for certain pages:
-
-```js
-// _default.page.server.js
-// Environment: Node.js
-
-import { html } from 'vite-plugin-ssr'
-import { renderToHtml } from 'some-view-framework'
-
-export { render }
-
-async function render({ Page, contextProps }) {
-  // We only include the `<meta name="description">` tag if the page has a description.
-  // (Pages define `contextProps.docHtml.description` with their `addContextProps()` hook.)
-  const description = contextProps.docHtml?.description
-  let descriptionTag = ''
-  if( description ) {
-    // Note how we use the `html` string template tag for an HTML segment.
-    descriptionTag = html`<meta name="description" content="${description}">`
-  }
-
-  // We use the `html` tag again for the overall HTML, and since `descriptionTag` is
-  // already sanitized it will not be sanitized again.
-  return html`<html>
-    <head>
-      ${descriptionTag}
-    </head>
-    <body>
-      <div id="root">
-        ${html.dangerouslySetHtml(await renderToHtml(Page))}
-      </div>
-    </body>
-  </html>`
-}
-```
-
-<br/>
-
-### `export { prerender }`
-
-> :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
-
-The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `contextProps` of each URL.
-
-If you don't have any parameterized route,
-then you can prerender your app without defining any `prerender()` hook.
-You can, however, still use the `prerender()` hook
-to increase the effeciency of pre-rendering as
-it enables you to fetch data for multiple pages at once.
-
-```js
-// /pages/movie.page.route.js
-// Environment: Node.js
-
-export default '/movie/:movieId`
-```
-```js
-// /pages/movie.page.server.js
-// Environment: Node.js
-
-export { prerender }
-
-async function prerender() {
-  const movies = await Movie.findAll()
-
-  const moviePages = (
-    movies
-    .map(movie => {
-      const url = `/movie/${movie.id}`
-      const contextProps = { movie }
-      return {
-        url,
-        // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
-        // the `addContextProps()` hook.
-        contextProps
-      }
-      // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
-      // call `addContextProps()`. But that would be wasteful since we already have all the data
-      // of all movies from our `await Movie.findAll()` call.
-      // return { url }
-    })
-  )
-
-  // We can also return URLs that don't match the page's route.
-  // That way we can provide the `contextProps` of other pages.
-  // Here we provide the `contextProps` of the `/movies` page since
-  // we already have the data.
-  const movieListPage = {
-    url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
-    contextProps: {
-      movieList: movies.map(({id, title}) => ({id, title})
-    }
-  }
-
-  return [movieListPage, ...moviePages]
-}
-```
-
-The `prerender()` hook is only used when pre-rendering:
-if you don't call
-`vite-plugin-ssr prerender`
-then no `prerender()` hook is called.
-
-Vue Example:
- - [/examples/vue/package.json](/examples/vue/package.json) (see the `build:prerender` script)
- - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
- - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts) (see the `prerender()` hook)
-
-React Example:
- - [/examples/react/package.json#build:prerender](/examples/react/package.json) (see the `build:prerender` script)
- - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
- - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts) (see the `prerender()` hook)
-
-<br/><br/>
-
-
 ## `import { createPageRender } from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
@@ -1775,47 +1825,6 @@ Examples:
 <br/><br/>
 
 
-## `_default.page.*`
-
-The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
-
-There can be several `_default`:
-
-```
-marketing/_default.page.server.js
-marketing/_default.page.client.js
-marketing/index.page.js
-marketing/about.page.js
-marketing/jobs.page.js
-admin-panel/_default.page.server.js
-admin-panel/_default.page.client.js
-admin-panel/index.page.js
-```
-
-The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
-the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
-
-The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
-defining `_default.page.js` or `_default.page.route.js` is forbidden.
-
-<br/><br/>
-
-
-## `_error.page.*`
-
-The page `_error.page.js` is shown to your user when an error occurs:
- - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
- - When a `.page.*` file throws an error (it then acts as a 500 page and `pageProps.is404===false`).
-
-It comes with a built-in `setPageProps()` hook that sets `pageProps.is404`.
-The `pageProps.is404` flag enables you to decided whether to show a 404 or 500 page.
-The flag is also available at `contextProps.is404`.
-
-You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`. (You can then overwrite the built-in `setPageProps()` hook.)
-
-<br/><br/>
-
-
 ## `import ssr from 'vite-plugin-ssr/plugin'`
 
 Environment: `Node.js`
@@ -1836,7 +1845,7 @@ module.exports = {
 <br/><br/>
 
 
-## CLI command `prerender`
+## Command `prerender`
 
 The command `prerender` does pre-rendering, see [Pre-rendering](#pre-rendering).
 
