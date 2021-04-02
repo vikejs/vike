@@ -1,7 +1,11 @@
 const express = require("express");
 const { createPageRender } = require("vite-plugin-ssr");
 const vite = require("vite");
-const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client');
+const {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+} = require("@apollo/client");
 const fetch = require("cross-fetch");
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -25,19 +29,12 @@ async function startServer() {
 
   const renderPage = createPageRender({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
-    // It's important to create an entirely new instance of Apollo Client for each request.
-    // Otherwise, your response to a request might include sensitive cached query results
-    // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
-    const client = new ApolloClient({
-      ssrMode: true,
-      link: createHttpLink({
-        uri: "https://countries.trevorblades.com",
-        fetch,
-      }),
-      cache: new InMemoryCache(),
-    });
     const url = req.originalUrl;
-    const contextProps = { client };
+    // It's important to create an entirely new instance of Apollo Client for each request.
+    // Otherwise, our response to a request might include sensitive cached query results
+    // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
+    const apolloClient = makeApolloClient();
+    const contextProps = { apolloClient };
     const result = await renderPage({ url, contextProps });
     if (result.nothingRendered) return next();
     res.status(result.statusCode).send(result.renderResult);
@@ -46,4 +43,16 @@ async function startServer() {
   const port = 3000;
   app.listen(port);
   console.log(`Server running at http://localhost:${port}`);
+}
+
+function makeApolloClient() {
+  const apolloClient = new ApolloClient({
+    ssrMode: true,
+    link: createHttpLink({
+      uri: "https://countries.trevorblades.com",
+      fetch,
+    }),
+    cache: new InMemoryCache(),
+  });
+  return apolloClient;
 }

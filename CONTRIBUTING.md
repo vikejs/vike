@@ -1,14 +1,24 @@
 # Contribute to `vite-plugin-ssr`
 
-- [Modify Example](#modify-example)
+- [Requirements](#requirements)
+- [Ceate new example](#create-new-example)
+- [Modify existing example](#modify-existing-example)
 - [Modify `vite-plugin-ssr`](#modify-vite-plugin-ssr)
-- [Run Test Suite](#run-test-suite)
+- [Run test suite](#run-test-suite)
 
 
-## Environment Requirements
-- Node.js 15.*.*
+## Requirements
 
-## Modify Example
+Node.js `>= v15.x.x` (for *developing*; using `vite-plugin-ssr` works with `>= v12.7.x`).
+
+
+## Create new example
+
+New examples should be minimal and implement only what the example wants to showcase;
+a good start for new examples are `/boilerplates/boilerplate-react` and `/boilerplates/boilerplate-vue`.
+(Do not start off `/examples/react/` nor `/examples/vue/` as these are full-featured demos.)
+
+## Modify existing example
 
 To run an example:
 
@@ -29,6 +39,7 @@ cd ../../ # Go to the root of the vite-plugin-ssr Git repository
 npm install
 npm test -- --root-dir examples/some-example/
 ```
+
 
 ## Modify `vite-plugin-ssr`
 
@@ -59,7 +70,8 @@ You may need to restart the example's Node.js server for your `vite-plugin-ssr` 
 
 Once you're done and before opening a pull request, run the test suite to ensure that your modifications don't break anything.
 
-## Run Test Suite
+
+## Run test suite
 
 Install everything:
 
@@ -85,7 +97,7 @@ Sometimes the test suite returns the following which is a false positive you can
     Expected an Error, but "" was thrown
 ```
 
-Which means that the following test run is actually successfull.
+Which means that the following test run is actually successful.
 
 ```shell
 $ npm test

@@ -15,7 +15,10 @@ async function link() {
       silent: true
     })
     console.log(
-      `symlink: /src/ <- /${relative(DIR_ROOT, cwd)}/node_modules/vite-plugin-ssr`
+      `symlink: /src/ <- /${relative(
+        DIR_ROOT,
+        cwd
+      )}/node_modules/vite-plugin-ssr`
     )
   }
 }

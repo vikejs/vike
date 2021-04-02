@@ -31,8 +31,6 @@ type HtmlDocument = {
 /**
  * Used for proxying regular HTTP(S) requests
  * @param partial Allow only a subset of pages to be pre-rendered.
- * @param clientRouter Serialize `pageProps` to JSON files for Client-side Routing.
- * @param base Public base path.
  */
 async function prerender({
   partial = false,
@@ -44,17 +42,25 @@ async function prerender({
   base?: string
 } = {}) {
   assertArguments(partial, clientRouter, base)
-  const serializePageProps = clientRouter
-  const baseUrl = base
-
   console.log(
     `${cyan(`vite-plugin-ssr ${require('../package.json').version}`)} ${green(
       'pre-rendering HTML...'
     )}`
   )
 
-  process.env.NODE_ENV = 'production'
   const root = process.cwd()
+
+  const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
+  assertUsage(
+    pluginManifest !== null,
+    "You are trying to run `$ vite-plugin-ssr prerender` but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before running the pre-rendering. (Following build manifest is missing: `" +
+      pluginManifestPath +
+      '`.)'
+  )
+  const serializePageProps: boolean = pluginManifest.usesClientRouter
+  const baseUrl: string = pluginManifest.base
+
+  process.env.NODE_ENV = 'production'
   setSsrEnv({
     isProduction: true,
     root,
@@ -286,6 +292,34 @@ function normalizePrerenderResult(
   }
 }
 
+type PluginManifest = {
+  base: string
+  usesClientRouter: boolean
+}
+function getPluginManifest(
+  root: string
+): {
+  pluginManifest: PluginManifest | null
+  pluginManifestPath: string
+} {
+  const pluginManifestPath = `${root}/dist/client/manifest_vite-plugin-ssr.json`
+
+  let manifestContent: unknown
+  try {
+    manifestContent = require(pluginManifestPath)
+  } catch (err) {
+    return { pluginManifest: null, pluginManifestPath }
+  }
+  assert(hasProp(manifestContent, 'base'))
+  assert(hasProp(manifestContent, 'usesClientRouter'))
+  const { base, usesClientRouter } = manifestContent
+  assert(typeof usesClientRouter === 'boolean')
+  assert(typeof base === 'string')
+
+  const pluginManifest = { base, usesClientRouter }
+  return { pluginManifest, pluginManifestPath }
+}
+
 function assertArguments(
   partial: unknown,
   clientRouter: unknown,
@@ -295,12 +329,12 @@ function assertArguments(
     partial === true || partial === false,
     '[prerender()] Option `partial` should be a boolean.'
   )
-  assertUsage(
-    clientRouter === true || clientRouter === false,
-    '[prerender()] Option `clientRouter` should be a boolean.'
+  assertWarning(
+    clientRouter === false,
+    '[prerender()] Option `clientRouter` is deprecated and has no-effect.'
   )
-  assertUsage(
-    base === undefined || typeof base === 'string',
-    '[prerender()] Option `base` should be a string.'
+  assertWarning(
+    base === undefined,
+    '[prerender()] Option `base` is deprecated and has no-effect.'
   )
 }

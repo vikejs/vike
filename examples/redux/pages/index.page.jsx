@@ -13,8 +13,7 @@ function Page() {
   return (
     <>
       <h1>Redux-Controlled Counter</h1>
-      Count: {count}.{" "}
-      <button onClick={increment}>++</button>{" "}
+      Count: {count}. <button onClick={increment}>++</button>{" "}
       <button onClick={decrement}>--</button>
     </>
   );

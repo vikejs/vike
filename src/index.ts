@@ -10,10 +10,11 @@ export default pluginWithWarning
 function pluginWithWarning(): ReturnType<typeof plugin> {
   assertWarning(
     false,
-    "`import ssr from 'vite-plugin-ssr';` is depecrated: use `import ssr from 'vite-plugin-ssr/plugin';` instead."
+    "`import ssr from 'vite-plugin-ssr';` is depecrated: use `import ssr from 'vite-plugin-ssr/plugin';` instead. This will break in a future versions."
   )
   return plugin()
 }
 
 // Enable `const ssr = require('vite-plugin-ssr')`
+// This lives at the end of the file to ensure it happens after all assignments to `exports`
 module.exports = Object.assign(exports.default, exports)

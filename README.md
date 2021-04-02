@@ -915,8 +915,7 @@ as shown in the following examples.
 When deploying a pre-rendered app, you can change the Base URL (aka Public Base Path) by doing the following.
 
 1. Use Vite's [`--base` CLI option](https://vitejs.dev/guide/build.html#public-base-path) for your build script: `vite build --base=/some-base-path/ && vite build --ssr --base=/some-base-path/`. (Alternatively, you can define the [`base` config](https://vitejs.dev/config/#base) in your `vite.config.js`.)
-2. Use `vite-plugin-ssr`'s CLI option `--base`: `vite-plugin-ssr prerender --base=/some-base-path/`. (The `base` config in `vite.config.js` will not work; you have to use the CLI option.)
-3. Use the `import.meta.env.BASE_URL` value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the base url.
+2. Use the `import.meta.env.BASE_URL` value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the base url.
 
 <br/><br/>
 
@@ -1085,7 +1084,9 @@ async function hydrate() {
 }
 ```
 
-The `*.page.js` file is lazy-loaded only when needed, that is when an HTTP request matches the page's route.
+The `.page.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.js` is not loaded in your Node.js process nor in the user's browser.
+
+The `.page.js` file is usually executed in both Node.js and the browser.
 
 <br/><br/>
 
@@ -1096,12 +1097,12 @@ Environment: `Browser`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.client.*([a-zA-Z0-9])`
 
-A `.page.client.js` file is a `.page.js`-adjacent file that defines the page's browser-side code.
+The `.page.client.js` file defines the page's browser-side code.
 
 It represents the *entire* browser-side code. This means that if you create an empty `.page.client.js` file, then the page has zero browser-side JavaScript.
 (Except of Vite's dev code when not in production.)
 
-This also means that you have full control over the browser-side code: not only can you render/hydrate your pages as you wish, but you can also easily integrate browser libraries.
+This also means that you have full control over the browser-side code. Not only can you render/hydrate your pages as you wish, but you can also easily & naturally integrate browser libraries.
 
 ```js
 // *.page.client.js
@@ -1152,7 +1153,7 @@ async function hydrate() {
 ```
 
 - `Page` is the `export { Page }` (or `export default`) of the `/pages/demo.page.js` file.
-- `pageProps` is the value returned by your `setPageProps()` function (which you define and export in the adjacent `pages/demo.page.server.js` file).
+- `pageProps` is the value returned by your `setPageProps()` hook (which you define and export in the adjacent `pages/demo.page.server.js` file).
 
 The `pageProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
@@ -1219,9 +1220,6 @@ You can keep your `<a href="/some-url">` links as they are: link clicks are inte
 You can also use
 [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
 to programmatically navigate your user to a new page.
-
-If you do pre-rendering, make sure to use the `--client-router` CLI flag: `vite-plugin-ssr prerender --client-router`.
-This will serialize your pages' `pageProps` to JSON files which `vite-plugin-ssr`'s client router will load upon page navigation.
 
 `useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
@@ -1377,13 +1375,15 @@ Environment: `Node.js`
 <br>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
-A `.page.server.js` file is a `.page.js`-adjacent file that exports the page's hooks:
+The `.page.server.js` file defines and exports the page's hooks:
 - `export { addContextProps }`
 - `export { setPageProps }`
 - `export { render }`
 - `export { prerender }`
 
-The `*.page.server.js` file is lazy-loaded only when needed.
+The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is not loaded in your Node.js process' memory.
+
+The `.page.server.js` file is executed in Node.js and never in the browser.
 
 <br/>
 
@@ -1780,7 +1780,7 @@ admin-panel/index.page.js
 The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
 the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
 
-The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file, and
+The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
 defining `_default.page.js` or `_default.page.route.js` is forbidden.
 
 <br/><br/>

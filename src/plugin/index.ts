@@ -9,7 +9,6 @@ import {
 import { assertPatch } from '@brillout/vite-fix-2390'
 import { assert, assertUsage } from '../utils/assert'
 import * as glob from 'fast-glob'
-const SERVER_ENTRY = require.resolve('../user-files/infra.node.vite-entry')
 
 export { plugin }
 export default plugin
@@ -18,7 +17,7 @@ function plugin(): Plugin[] {
   const ssr = { external: ['vite-plugin-ssr'] }
   return [
     {
-      name: 'vite-plugin-ssr[dev]',
+      name: 'vite-plugin-ssr:dev',
       apply: 'serve',
       config: () => ({
         ssr,
@@ -31,9 +30,9 @@ function plugin(): Plugin[] {
       })
     },
     {
-      name: 'vite-plugin-ssr[build]',
+      name: 'vite-plugin-ssr:build',
       apply: 'build',
-      config: (config: UserConfig) => {
+      config: (config) => {
         assertPatch()
         return {
           build: {
@@ -45,8 +44,49 @@ function plugin(): Plugin[] {
           ssr
         }
       }
-    }
+    },
+    (() => {
+      let base: string
+      let ssr: boolean
+      return {
+        name: 'vite-plugin-ssr:manifest',
+        apply: 'build',
+        configResolved(config) {
+          base = config.base
+          ssr = isSSR(config)
+        },
+        generateBundle(_, bundle) {
+          if (ssr) return
+          assert(typeof base === 'string')
+          assert(typeof ssr === 'boolean')
+          const usesClientRouter = includesUseClientRouter(bundle as any)
+          const pluginManifest = { usesClientRouter, base }
+          this.emitFile({
+            fileName: `manifest_vite-plugin-ssr.json`,
+            type: 'asset',
+            source: JSON.stringify(pluginManifest, null, 2)
+          })
+        }
+      } as Plugin
+    })()
   ]
+}
+
+function includesUseClientRouter(
+  bundle: Record<string, { modules?: Record<string, unknown> }>
+) {
+  const fileSource = require.resolve(
+    '../../client/router/useClientRouter.client.ts'
+  )
+  const fileDist = require.resolve('../client/router/useClientRouter.client.js')
+  for (const file of Object.keys(bundle)) {
+    const bundleFile = bundle[file]
+    const modules = bundleFile.modules || {}
+    if (fileSource in modules || fileDist in modules) {
+      return true
+    }
+  }
+  return false
 }
 
 function entryPoints(config: UserConfig): Record<string, string> {
@@ -58,9 +98,10 @@ function entryPoints(config: UserConfig): Record<string, string> {
 }
 
 function serverEntryPoints(): Record<string, string> {
-  const entryName = pathFilename(SERVER_ENTRY).replace(/\.js$/, '')
+  const serverEntry = require.resolve('../user-files/infra.node.vite-entry')
+  const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
   const entryPoints = {
-    [entryName]: SERVER_ENTRY
+    [entryName]: serverEntry
   }
   return entryPoints
 }
@@ -89,7 +130,7 @@ function pathRelativeToRoot(filePath: string, config: UserConfig): string {
   return pathRelative(root, filePath)
 }
 
-function isSSR(config: UserConfig): boolean {
+function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
   return !!config?.build?.ssr
 }
 
@@ -123,4 +164,5 @@ Object.defineProperty(plugin, 'apply', {
 })
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`
+// This lives at the end of the file to ensure it happens after all assignments to `exports`
 module.exports = Object.assign(exports.default, exports)
