@@ -170,7 +170,7 @@ function initGitRepo(cwd) {
     [
       'git',
       '-c user.name="Romuald Brillout"',
-      '-c user.email="git@brillout.com"',
+      '-c user.email="vite-plugin-ssr@brillout.com"',
       'commit',
       '--no-gpg-sign',
       '--message="boilerplate Vite w/ vite-plugin-ssr"'
