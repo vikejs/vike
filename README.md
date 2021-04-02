@@ -912,10 +912,23 @@ as shown in the following examples.
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-When deploying a pre-rendered app, you can change the Base URL (aka Public Base Path) by doing the following.
+The Base URL (aka Public Base Path) is about changing the URL root of your Vite app.
+For example, instead of deploying your Vite app at `https://example.org` (i.e. `base: '/'`), you can set `base: '/some/nested/path/'` and deploy your Vite app at `https://example.org/some/nested/path/`.
 
-1. Use Vite's [`--base` CLI option](https://vitejs.dev/guide/build.html#public-base-path) for your build script: `vite build --base=/some-base-path/ && vite build --ssr --base=/some-base-path/`. (Alternatively, you can define the [`base` config](https://vitejs.dev/config/#base) in your `vite.config.js`.)
-2. Use the `import.meta.env.BASE_URL` value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the base url.
+Change Base URL for production:
+1. Use Vite's [`--base` CLI build option](https://vitejs.dev/guide/build.html#public-base-path): `$ vite build --base=/some/nested/path/ && vite build --ssr --base=/some/nested/path/`. (For both `$ vite build` *and* `$ vite build --ssr`.)
+2. If you don't pre-render your app: pass `base` to `createPageRender({ base: isProduction ? '/some/nested/path/' : '/' })`. (Pre-rendering automatically sets the right Base URL.)
+3. Use the `import.meta.env.BASE_URL` value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/star-wars">` component that prepends the Base URL.
+
+Change Base URL for local dev:
+1. Pass `base` to `createServer({ base: '/some/nested/path/' })` (`import { createServer } from 'vite'`) and `createPageRender({ base: '/some/nested/path/' })` (`import { createPageRender } from 'vite-plugin-ssr'`).
+
+You can also set `base: 'https://another-origin.example.org/'` (for cross-origin deployments) and `base: './'` (for embedded deployments at multiple paths).
+
+Example:
+ - [/examples/base-url/pages/_components/Link.jsx](/examples/base-url/pages/_components/Link.jsx) (a `<Link>` component built on top of `import.meta.env.BASE_URL`)
+ - [/examples/base-url/server/index.js](/examples/base-url/server/index.js) (see the `base` option passed to `vite` and `vite-plugin-ssr`)
+ - [/examples/base-url/package.json](/examples/base-url/package.json) (see the build scripts)
 
 <br/><br/>
 
