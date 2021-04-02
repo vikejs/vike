@@ -1828,13 +1828,11 @@ module.exports = {
 The command `prerender` does pre-rendering, see [Pre-rendering](#pre-rendering).
 
 It can be called:
- - from the CLI command `npx vite-plugin-ssr prerender`/`yarn vite-plugin-ssr prerender`, or
- - from the JavaScript API `import { prerender } from 'vite-plugin-ssr/cli`.
+ - As CLI command: `$ npx vite-plugin-ssr prerender` / `$ yarn vite-plugin-ssr prerender`.
+ - As JavaScript API: `import { prerender } from 'vite-plugin-ssr/cli`.
 
-It has three options:
- - `clientRouter`: serialize `pageProps` to JSON files for Client-side Routing, see [Routing](#routing).
- - `base`: public base path, see [Base URL](#base-url).
- - `partial`: allow only a subset of pages to be pre-rendered. Parameterized routes without `prerender()` hook cannot be pre-rendered and the `--partial` option suppresses the warning that these pages are not pre-rendered.
+It has one option:
+ - `partial`: Allow only a subset of pages to be pre-rendered. (Parameterized routes without `prerender()` hook cannot be pre-rendered and the `--partial` option suppresses the warning that warns you about pages not being pre-rendered.) (`$ vite-plugin-ssr prerendered --partial` / `prerender({ partial: true })`)
 
 <br/><br/>
 
