@@ -9,13 +9,15 @@
 
 ## Requirements
 
-Node.js `>= v15.x.x` (for *developing*; using `vite-plugin-ssr` works with `>= v12.7.x`).
+These requirements are for *developing* the source code; you can use `vite-plugin-ssr` with Windows and Node.js `>= v12.7.x`.
 
+- Node.js `>= v15.x.x`.
+- Unix (e.g. macOS and Linux). (Windows may work but there are no guarantees.)
 
 ## Create new example
 
-New examples should be minimal and implement only what the example wants to showcase;
-a good start for new examples are `/boilerplates/boilerplate-react` and `/boilerplates/boilerplate-vue`.
+New examples should be minimal and implement only what the example wants to showcase.
+Use the [boilerplates](/#boilerplates) to create a new minimal example.
 (Do not start off `/examples/react/` nor `/examples/vue/` as these are full-featured demos.)
 
 ## Modify existing example
@@ -32,14 +34,6 @@ npm run start
 `npm run start` starts the example in dev mode: it will auto-reload most modifications.
 
 Check whether `.test.spec.ts` is still valid and make changes accordingly.
-To run the test:
-
-```shell
-cd ../../ # Go to the root of the vite-plugin-ssr Git repository
-npm install
-npm test -- --root-dir examples/some-example/
-```
-
 
 ## Modify `vite-plugin-ssr`
 
@@ -48,23 +42,11 @@ Install everything:
 ```shell
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/
-npm install
-npm run install:examples
+npm run dev:setup
+npm run dev
 ```
 
-Symlink `**/node_modules/vite-plugin-ssr/` to `/src/`:
-
-```shell
-npm run link
-```
-
-Start TSC in watch mode:
-
-```
-npm run tsc:watch
-```
-
-You can now change the source code of `vite-plugin-ssr` (at `/src/`) and try your modifications with one of the `/examples/*`.
+You can now change the source code of `vite-plugin-ssr` (at `/src/`) and try your modifications with one of the `/examples/*` or `/boilerplates/boilerplate-*`.
 To start the example, follow the `README.md` instructions of the example.
 You may need to restart the example's Node.js server for your `vite-plugin-ssr` modifications to apply.
 
@@ -73,19 +55,22 @@ Once you're done and before opening a pull request, run the test suite to ensure
 
 ## Run test suite
 
-Install everything:
-
 ```shell
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/
-npm install
-npm run install:examples
+npm run test:setup
 ```
 
-If you made modifications in `/src/`, make sure to symlink `/src/`:
+To run a single test:
 
 ```shell
-npm run link
+npm test -- --root-dir examples/some-example/
+```
+
+To run all tests:
+
+```
+npm test
 ```
 
 Sometimes the test suite returns the following which is a false positive you can safely ignore.
