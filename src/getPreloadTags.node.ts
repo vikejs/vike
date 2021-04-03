@@ -3,10 +3,9 @@ import { assert } from './utils/assert'
 import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
 import { getUserFiles } from './user-files/getUserFiles.shared'
-import { slice } from './utils'
+import { prependBaseUrl } from './baseUrlHandling'
 
 export { getPreloadTags }
-export { prependBaseUrl }
 
 async function getPreloadTags(
   dependencies: string[],
@@ -142,13 +141,4 @@ function collectCss(
   mod.importedModules.forEach((dep) => {
     collectCss(dep, preloadUrls, visitedModules, skipPageFiles)
   })
-}
-
-function prependBaseUrl(url: string): string {
-  assert(url.startsWith('/'))
-  let { baseUrl } = getSsrEnv()
-  if (!baseUrl) return url
-  if (!baseUrl.startsWith('/')) baseUrl = `/${baseUrl}`
-  if (baseUrl.endsWith('/')) baseUrl = slice(baseUrl, 0, -1)
-  return `${baseUrl}${url}`
 }

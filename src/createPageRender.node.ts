@@ -4,6 +4,7 @@ import { hasProp } from './utils'
 import { assertUsage } from './utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
+import { assertBaseUrl } from './baseUrlHandling'
 
 export { createPageRender }
 
@@ -48,9 +49,10 @@ function assertArguments(ssrEnv: {
     '`createPageRender({ root })`: argument `root` should be a string.'
   )
   assertUsage(
-    baseUrl === undefined || typeof baseUrl === 'string',
+    typeof baseUrl === 'string',
     '`createPageRender({ base })`: argument `base` should be a string or `undefined`.'
   )
+  assertBaseUrl(baseUrl, '`createPageRender({ base })`: ')
   assertUsage(
     isProduction === true ||
       isProduction === false ||

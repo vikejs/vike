@@ -11,7 +11,7 @@ import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
-import { getPreloadTags, prependBaseUrl } from './getPreloadTags.node'
+import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
@@ -28,6 +28,11 @@ import {
   retrieveOriginalUrl,
   parseUrl
 } from './utils'
+import {
+  prependBaseUrl,
+  removeBaseUrl,
+  startsWithBaseUrl
+} from './baseUrlHandling'
 
 export { renderPage }
 export { getPageFunctions }
@@ -813,20 +818,4 @@ function retrieveViteManifest(
       '`.)'
   )
   return { clientManifest, serverManifest }
-}
-
-function startsWithBaseUrl(url: string): boolean {
-  const { baseUrl } = getSsrEnv()
-  if (!baseUrl) return true
-  assert(baseUrl.startsWith('/'))
-  assert(url.startsWith('/'))
-  return url.startsWith(baseUrl)
-}
-function removeBaseUrl(url: string): string {
-  const { baseUrl } = getSsrEnv()
-  if (!baseUrl) return url
-  assert(url.startsWith(baseUrl))
-  url = url.slice(baseUrl.length)
-  if (!url.startsWith('/')) url = '/' + url
-  return url
 }
