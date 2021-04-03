@@ -1,16 +1,6 @@
-import { route, getPageIds } from '../../route.shared'
-import {
-  assert,
-  assertInfo,
-  assertUsage,
-  hasProp,
-  getFileUrl,
-  isNodejs
-} from '../../utils'
-import { getPage } from '../getPage.client'
-import { setPageInfoRetriever } from '../getPageInfo.client'
+import { assert, assertUsage, hasProp, isNodejs } from '../../utils'
 import { getUrl } from '../getUrl.client'
-import { parse } from '@brillout/json-s'
+import { getPageByUrl } from './getPageByUrl.client'
 
 export { useClientRouter }
 export { navigate }
@@ -43,7 +33,6 @@ function useClientRouter({
     '`useClientRouter` can be called only once.'
   )
   isAlreadyCalled = true
-  setPageInfoRetriever(retrievePageInfo)
   disableBrowserScrollRestoration()
   autoSaveScrollPosition()
 
@@ -75,7 +64,6 @@ function useClientRouter({
     scrollPosition?: ScrollPosition | null
   ): Promise<undefined> {
     const callNumber = ++callCount
-    const urlNew = getUrl()
 
     if (!isFirstPageRender) {
       if (isTransitioning === false) {
@@ -84,7 +72,8 @@ function useClientRouter({
       }
     }
 
-    const { Page, pageProps } = await getPage()
+    const urlNow = getUrl()
+    const { Page, pageProps } = await getPageByUrl(urlNow)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -97,8 +86,8 @@ function useClientRouter({
       return
     }
 
-    assert(urlNew === getUrl())
-    const isHydration = isFirstPageRender && urlNew === urlOriginal
+    assert(urlNow === getUrl())
+    const isHydration = isFirstPageRender && urlNow === urlOriginal
 
     assert(renderPromise === undefined)
     renderPromise = (async () => {
@@ -263,41 +252,6 @@ function getUrlHash(): string | null {
   assert(hash.startsWith('#'))
   hash = hash.slice(1)
   return hash
-}
-
-function retrievePageInfo() {
-  const url = getUrl()
-  assert(!isNodejs())
-  assert(url)
-  const pageIdPromise = (async () => {
-    const allPageIds = await getPageIds()
-    const contextProps = {}
-    const routeResult = await route(url, allPageIds, contextProps)
-    if (!routeResult) {
-      window.location.pathname = url
-      assertUsage(false, `Couldn't not find page for URL \`${url}\``)
-    }
-    const { pageId } = routeResult
-    return pageId
-  })()
-  const pagePropsPromise = retrievePageProps(url)
-  return { pageIdPromise, pagePropsPromise }
-}
-async function retrievePageProps(
-  url: string
-): Promise<Record<string, unknown>> {
-  const response = await fetch(getFileUrl(url, '.pageProps.json'))
-  const responseText = await response.text()
-  const responseObject = parse(responseText) as
-    | { pageProps: Record<string, unknown> }
-    | { userError: true }
-  assertInfo(
-    !('userError' in responseObject),
-    `Couldn't get the \`pageProps\` for \`${url}\`: one of your hooks is throwing an error. Check out the server logs.`
-  )
-  const { pageProps } = responseObject
-  assert(pageProps.constructor === Object)
-  return pageProps
 }
 
 function disableBrowserScrollRestoration() {

@@ -1,22 +1,26 @@
 import { getUserFile } from '../user-files/getUserFiles.shared'
-import { assert, assertUsage } from '../utils/assert'
-import { getPageInfo } from './getPageInfo.client'
+import { assert, assertUsage, assertWarning } from '../utils/assert'
+import { navigationState } from './navigationState.client'
 
 export { getPage }
+export { getPageById }
+export { getPageInfo }
 
 async function getPage(): Promise<{
   Page: any
   pageProps: Record<string, any>
 }> {
-  const { pageIdPromise, pagePropsPromise } = getPageInfo()
-
-  const [Page, pageProps] = await Promise.all([
-    (async () => await getPageById(await pageIdPromise))(),
-    (async () => await pagePropsPromise)()
-  ])
-  assert(pageProps.constructor === Object)
-
+  const { pageId, pageProps } = getPageInfo()
+  const Page = await getPageById(pageId)
+  assertPristineUrl()
   return { Page, pageProps }
+}
+
+function assertPristineUrl() {
+  assertWarning(
+    navigationState.isFirstNavigation,
+    `\`getPage()\` returned page information for URL \`${navigationState.urlOriginal}\` instead of \`${navigationState.urlNow}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
+  )
 }
 
 async function getPageById(pageId: string): Promise<any> {
@@ -32,4 +36,22 @@ async function getPageById(pageId: string): Promise<any> {
   )
   const Page = fileExports.Page || fileExports.default
   return Page
+}
+
+function getPageInfo(): {
+  pageId: string
+  pageProps: Record<string, unknown>
+} {
+  const pageId = window.__vite_plugin_ssr.pageId
+  const pageProps = window.__vite_plugin_ssr.pageProps
+  return { pageId, pageProps }
+}
+
+declare global {
+  interface Window {
+    __vite_plugin_ssr: {
+      pageId: string
+      pageProps: Record<string, unknown>
+    }
+  }
 }

@@ -3,13 +3,11 @@ import { newError } from '@brillout/libassert'
 export { assert }
 export { assertUsage }
 export { assertWarning }
-export { assertInfo }
 
 const repoName = 'vite-plugin-ssr'
 const libName = repoName
 const requestForContact = `Please open a new issue at https://github.com/brillout/${repoName}/issues/new and include this error stack.`
 const internalErroPrefix = `[${libName}][Internal Error] Something unexpected happened. ${requestForContact}`
-const errorPrefix = `[${libName}][Error]`
 const usageErrorPrefix = `[${libName}][Wrong Usage]`
 const warningPrefix = `[${libName}][Warning]`
 
@@ -19,17 +17,6 @@ function assert(condition: unknown): asserts condition {
   }
   const internalError = newError(internalErroPrefix)
   throw internalError
-}
-
-function assertInfo(
-  condition: unknown,
-  errorMessage: string
-): asserts condition {
-  if (condition) {
-    return
-  }
-  const usageError = newError(`${errorPrefix} ${errorMessage}`)
-  throw usageError
 }
 
 function assertUsage(

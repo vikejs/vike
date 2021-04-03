@@ -1,3 +1,2 @@
 import '../user-files/infra.client'
-export { getPage } from './getPage.client'
-export { getPageProps } from './getPageProps.client'
+export { getPage, getPageById } from './getPage.client'
