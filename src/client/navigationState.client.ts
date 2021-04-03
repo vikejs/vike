@@ -1,5 +1,4 @@
-import { parseUrl } from '../utils'
-import { getUrl } from './getUrl.client'
+import { getUrlPathname } from './getUrl.client'
 
 let urlOriginal = getUrlPathname()
 let navigationChanged = false
@@ -17,10 +16,4 @@ export const navigationState = {
   get urlNow() {
     return getUrlPathname()
   }
-}
-
-function getUrlPathname() {
-  const url = getUrl()
-  if (url === null) return null
-  return parseUrl(url).pathname
 }
