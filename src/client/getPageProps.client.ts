@@ -1,17 +1,18 @@
-import routingState from './routingState.client'
-import { assert, assertInfo, getFileUrl, hasProp } from '../utils'
+import { navigationState } from './navigationState.client'
+import { assert, assertWarning, getFileUrl, hasProp } from '../utils'
 import { parse } from '@brillout/json-s'
 import { PageInfo } from './types'
 
 export { getPageProps }
 
 async function getPageProps(url: string): Promise<Record<string, unknown>> {
-  if (routingState.checkIfInitialUrl(url)) {
+  if (navigationState.isFirstNavigation) {
     const pageProps = window.__vite_plugin_ssr.pageProps
     return pageProps
+  } else {
+    const pageProps = await fetchPageProps(url)
+    return pageProps
   }
-  const pageProps = await fetchPageProps(url)
-  return pageProps
 }
 
 async function fetchPageProps(url: string): Promise<Record<string, unknown>> {
@@ -20,10 +21,14 @@ async function fetchPageProps(url: string): Promise<Record<string, unknown>> {
   const responseObject = parse(responseText) as
     | { pageProps: Record<string, unknown> }
     | { userError: true }
-  assertInfo(
-    !('userError' in responseObject),
-    `Couldn't get the \`pageProps\` for \`${url}\`: one of your hooks is throwing an error. Check out the server logs.`
-  )
+  if ('userError' in responseObject) {
+    assertWarning(
+      false,
+      `Couldn't get the \`pageProps\` for \`${url}\`: one of your hooks is throwing an error. Check out the server logs.`
+    )
+    const pageProps = {}
+    return pageProps
+  }
   assert(hasProp(responseObject, 'pageProps'))
   const { pageProps } = responseObject
   assert(pageProps.constructor === Object)
@@ -35,4 +40,3 @@ declare global {
     __vite_plugin_ssr: PageInfo
   }
 }
-

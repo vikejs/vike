@@ -1,6 +1,5 @@
-import { assert, assertWarning, parseUrl } from '../utils'
-import { getUrl } from './getUrl.client'
-import routingState from './routingState.client'
+import { assertWarning } from '../utils'
+import { navigationState } from './navigationState.client'
 import { PageInfo, PageInfoPromise, PageInfoRetriever } from './types'
 
 export { getPageInfo }
@@ -13,31 +12,28 @@ function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
 }
 
 function getPageInfo(): PageInfoPromise {
-  const urlNow = getUrlPathname()
-  if (routingState.isInitialUrl) {
-    assert(urlNow)
+  if (navigationState.isFirstNavigation) {
+    return getOriginalPageInfo()
+  } else {
     if (retrievePageInfo) {
-      routingState.navigated = true
+      navigationState.markNavigationChange()
       return retrievePageInfo()
     } else {
       assertWarning(
         false,
-        `\`getPage()\` returned page information for URL \`${routingState.urlOriginal}\` instead of \`${urlNow}\` because you didn't call \`useClientRouter()\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then make sure to call \`useClientRouter()\`.`
+        `\`getPage()\` returned page information for URL \`${navigationState.urlOriginal}\` instead of \`${navigationState.urlNow}\` because you didn't call \`useClientRouter()\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then make sure to call \`useClientRouter()\`.`
       )
+      return getOriginalPageInfo()
     }
   }
+}
 
+function getOriginalPageInfo(): PageInfoPromise {
   const pageId = window.__vite_plugin_ssr.pageId
   const pageIdPromise = Promise.resolve(pageId)
   const pageProps = window.__vite_plugin_ssr.pageProps
   const pagePropsPromise = Promise.resolve(pageProps)
   return { pageIdPromise, pagePropsPromise }
-}
-
-function getUrlPathname() {
-  const url = getUrl()
-  if (url === null) return null
-  return parseUrl(url).pathname
 }
 
 declare global {

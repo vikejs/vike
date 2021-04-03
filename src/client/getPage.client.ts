@@ -11,7 +11,7 @@ async function getPage(): Promise<{
   const { pageIdPromise, pagePropsPromise } = getPageInfo()
 
   const [Page, pageProps] = await Promise.all([
-    (async () => await getPage_(await pageIdPromise))(),
+    (async () => await getPageById(await pageIdPromise))(),
     (async () => await pagePropsPromise)()
   ])
   assert(pageProps.constructor === Object)
@@ -19,7 +19,7 @@ async function getPage(): Promise<{
   return { Page, pageProps }
 }
 
-async function getPage_(pageId: string): Promise<any> {
+async function getPageById(pageId: string): Promise<any> {
   assert(typeof pageId === 'string')
   const pageFile = await getUserFile('.page', pageId)
   assert(pageFile)
