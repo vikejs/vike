@@ -1,8 +1,11 @@
 import { assert, isNodejs } from '../utils'
+
+export { getUrl }
+
 /**
  Returns `${pathname}${search}${hash}`
 */
-export function getUrl(): string | null {
+function getUrl(): string | null {
   if (isNodejs()) return null
   const { href } = window.location
   const { origin, pathname, search, hash } = new URL(href)

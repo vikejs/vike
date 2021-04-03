@@ -3,7 +3,9 @@ import { assert, assertInfo, getFileUrl } from '../utils'
 import { parse } from '@brillout/json-s'
 import { PageInfo } from './types';
 
-export async function getPageProps(
+export { getPageProps }
+
+async function getPageProps(
   url: string
 ): Promise<Record<string, unknown>> {
   if (!routingState.checkIfInitialUrl(url)) {

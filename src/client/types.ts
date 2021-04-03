@@ -1,10 +1,14 @@
+export { PageInfo }
+export { PageInfoPromise }
+export { PageInfoRetriever }
 
-export type PageInfo = {
+type PageInfo = {
   pageId: string
   pageProps: Record<string, unknown>
 }
-export type PageInfoPromise = {
+type PageInfoPromise = {
   pageIdPromise: Promise<string>
   pagePropsPromise: Promise<Record<string, unknown>>
 }
-export type PageInfoRetriever = () => PageInfoPromise
+type PageInfoRetriever = () => PageInfoPromise
+

@@ -1,15 +1,18 @@
 import { assert, assertWarning, parseUrl } from '../utils'
 import { getUrl } from './getUrl.client'
 import routingState from './routingState.client'
-import { PageInfo, PageInfoPromise, PageInfoRetriever } from './types';
+import { PageInfo, PageInfoPromise, PageInfoRetriever } from './types'
+
+export { getPageInfo }
+export { setPageInfoRetriever }
 
 let retrievePageInfo: PageInfoRetriever
 
-export function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
+function setPageInfoRetriever(_retrievePageInfo: PageInfoRetriever) {
   retrievePageInfo = _retrievePageInfo
 }
 
-export function getPageInfo(): PageInfoPromise {
+function getPageInfo(): PageInfoPromise {
   const urlNow = getUrlPathname()
   if (routingState.isInitialUrl) {
     assert(urlNow)

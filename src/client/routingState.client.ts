@@ -4,16 +4,6 @@ import { parseUrl } from '../utils'
 let urlOriginal = getUrlPathname()
 let navigated = false
 
-function getUrlPathname() {
-  const url = getUrl()
-  if (url === null) return null
-  return parseUrl(url).pathname
-}
-
-function checkIfInitialUrl(url:string|null=getUrlPathname()) {
-  return !(url !== urlOriginal || navigated)
-}
-
 export default {
   get navigated() {
     return navigated;
@@ -28,4 +18,14 @@ export default {
     return checkIfInitialUrl();
   },
   checkIfInitialUrl
+}
+
+function getUrlPathname() {
+  const url = getUrl()
+  if (url === null) return null
+  return parseUrl(url).pathname
+}
+
+function checkIfInitialUrl(url:string|null=getUrlPathname()) {
+  return !(url !== urlOriginal || navigated)
 }
