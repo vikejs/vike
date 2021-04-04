@@ -56,8 +56,8 @@ function plugin(): Plugin[] {
           if (ssr) return
           assert(typeof base === 'string')
           assert(typeof ssr === 'boolean')
-          const usesClientRouter = includesUseClientRouter(bundle as any)
-          const pluginManifest = { usesClientRouter, base }
+          const doesClientSideRouting = includesClientSideRouter(bundle as any)
+          const pluginManifest = { doesClientSideRouting, base }
           this.emitFile({
             fileName: `manifest_vite-plugin-ssr.json`,
             type: 'asset',
@@ -69,7 +69,7 @@ function plugin(): Plugin[] {
   ]
 }
 
-function includesUseClientRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
+function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
   const fileSource = require.resolve('../../client/router/getPageProps.client.ts')
   const fileDist = require.resolve('../client/router/getPageProps.client.js')
   for (const file of Object.keys(bundle)) {

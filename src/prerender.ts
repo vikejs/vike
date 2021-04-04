@@ -40,7 +40,7 @@ async function prerender({
       pluginManifestPath +
       '`.)'
   )
-  const serializePageProps: boolean = pluginManifest.usesClientRouter
+  const serializePageProps: boolean = pluginManifest.doesClientSideRouting
   const baseUrl: string = pluginManifest.base
 
   process.env.NODE_ENV = 'production'
@@ -243,7 +243,7 @@ function normalizePrerenderResult(
 
 type PluginManifest = {
   base: string
-  usesClientRouter: boolean
+  doesClientSideRouting: boolean
 }
 function getPluginManifest(
   root: string
@@ -260,12 +260,12 @@ function getPluginManifest(
     return { pluginManifest: null, pluginManifestPath }
   }
   assert(hasProp(manifestContent, 'base'))
-  assert(hasProp(manifestContent, 'usesClientRouter'))
-  const { base, usesClientRouter } = manifestContent
-  assert(typeof usesClientRouter === 'boolean')
+  assert(hasProp(manifestContent, 'doesClientSideRouting'))
+  const { base, doesClientSideRouting } = manifestContent
+  assert(typeof doesClientSideRouting === 'boolean')
   assert(typeof base === 'string')
 
-  const pluginManifest = { base, usesClientRouter }
+  const pluginManifest = { base, doesClientSideRouting }
   return { pluginManifest, pluginManifestPath }
 }
 
