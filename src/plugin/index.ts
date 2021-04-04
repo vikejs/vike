@@ -7,7 +7,7 @@ import {
   posix as pathPosix
 } from 'path'
 import { assertPatch } from '@brillout/vite-fix-2390'
-import { assert, assertUsage } from '../utils/assert'
+import { assert, assertUsage } from '../utils'
 import * as glob from 'fast-glob'
 
 export { plugin }
@@ -76,9 +76,9 @@ function includesUseClientRouter(
   bundle: Record<string, { modules?: Record<string, unknown> }>
 ) {
   const fileSource = require.resolve(
-    '../../client/router/useClientRouter.client.ts'
+    '../../client/router/getPageProps.client.ts'
   )
-  const fileDist = require.resolve('../client/router/useClientRouter.client.js')
+  const fileDist = require.resolve('../client/router/getPageProps.client.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
     const modules = bundleFile.modules || {}
