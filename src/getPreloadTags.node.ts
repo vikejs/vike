@@ -23,9 +23,7 @@ async function getPreloadTags(
     await Promise.all(
       dependencies.map(async (filePath) => {
         assert(filePath)
-        const mod = await ssrEnv.viteDevServer.moduleGraph.getModuleByUrl(
-          filePath
-        )
+        const mod = await ssrEnv.viteDevServer.moduleGraph.getModuleByUrl(filePath)
         collectCss(mod, preloadUrls, visitedModules, skipPageFiles)
       })
     )
@@ -39,19 +37,11 @@ async function getPreloadTags(
       if (clientManifest[modulePath]) manifest = clientManifest
       assert(manifest)
       const onlyCollectStaticAssets = manifest === serverManifest
-      collectAssets(
-        modulePath,
-        preloadUrls,
-        visistedAssets,
-        manifest,
-        onlyCollectStaticAssets
-      )
+      collectAssets(modulePath, preloadUrls, visistedAssets, manifest, onlyCollectStaticAssets)
     })
   }
 
-  const preloadTags = Array.from(preloadUrls)
-    .map(prependBaseUrl)
-    .map(getPreloadTag)
+  const preloadTags = Array.from(preloadUrls).map(prependBaseUrl).map(getPreloadTag)
   return preloadTags
 }
 
@@ -81,13 +71,7 @@ function collectAssets(
     if (!onlyCollectStaticAssets) {
       preloadUrls.add(`/${file}`)
     }
-    collectAssets(
-      importAsset,
-      preloadUrls,
-      visistedAssets,
-      manifest,
-      onlyCollectStaticAssets
-    )
+    collectAssets(importAsset, preloadUrls, visistedAssets, manifest, onlyCollectStaticAssets)
   }
   for (const cssAsset of css) {
     assert(cssAsset.startsWith('assets/'))
@@ -131,8 +115,7 @@ function collectCss(
 ): void {
   if (!mod) return
   if (!mod.url) return
-  if (skipPageFiles.some((pageFile) => mod.id && mod.id.includes(pageFile)))
-    return
+  if (skipPageFiles.some((pageFile) => mod.id && mod.id.includes(pageFile))) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
   if (mod.url.endsWith('.css') || (mod.id && /\?vue&type=style/.test(mod.id))) {

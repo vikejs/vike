@@ -1,15 +1,7 @@
 import { getUserFiles } from './user-files/getUserFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import {
-  assert,
-  assertUsage,
-  isCallable,
-  higherFirst,
-  slice,
-  hasProp,
-  parseUrl
-} from './utils'
+import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, parseUrl } from './utils'
 
 export { getPageIds }
 export { route }
@@ -56,10 +48,7 @@ async function route(
 
       // Route with `.page.route.js` defined route string
       if (typeof pageRoute === 'string') {
-        const { matchValue, contextPropsAddendum } = resolveRouteString(
-          pageRoute,
-          urlPathname
-        )
+        const { matchValue, contextPropsAddendum } = resolveRouteString(pageRoute, urlPathname)
         return { pageId, matchValue, contextPropsAddendum }
       }
 
@@ -90,9 +79,7 @@ function getErrorPageId(allPageIds: string[]): string | null {
   const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
   assertUsage(
     errorPageIds.length <= 1,
-    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(
-      ' '
-    )}`
+    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
   )
   if (errorPageIds.length > 0) {
     return errorPageIds[0]
@@ -100,9 +87,7 @@ function getErrorPageId(allPageIds: string[]): string | null {
   return null
 }
 
-function pickWinner<T extends { matchValue: boolean | number }>(
-  routeResults: T[]
-): T {
+function pickWinner<T extends { matchValue: boolean | number }>(routeResults: T[]): T {
   const candidates = routeResults
     .filter(({ matchValue }) => matchValue !== false)
     .sort(
@@ -136,11 +121,7 @@ function isStaticRoute(route: string): boolean {
   return matchValue !== false && Object.keys(routeProps).length === 0
 }
 
-function routeWith_filesystem(
-  urlPathname: string,
-  pageId: string,
-  allPageIds: PageId[]
-): boolean {
+function routeWith_filesystem(urlPathname: string, pageId: string, allPageIds: PageId[]): boolean {
   const pageRoute = getFilesystemRoute(pageId, allPageIds)
   urlPathname = normalizeUrl(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'pageRoute:' + pageRoute)
@@ -192,9 +173,7 @@ function getCommonPath(pageIds: string[]): string {
 async function getPageIds(): Promise<PageId[]> {
   const pageFiles = await getUserFiles('.page')
   let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-  pageFilePaths = pageFilePaths.filter(
-    (filePath) => !isDefaultPageFile(filePath)
-  )
+  pageFilePaths = pageFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
 
   let allPageIds = pageFilePaths.map(computePageId)
   return allPageIds
@@ -211,18 +190,14 @@ function isDefaultPageFile(filePath: string): boolean {
     return false
   }
   assertUsage(
-    filePath.includes('_default.page.client.') ||
-      filePath.includes('_default.page.server.'),
+    filePath.includes('_default.page.client.') || filePath.includes('_default.page.server.'),
     `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
   )
   return true
 }
 
 function resolveRouteString(routeString: string, urlPathname: string) {
-  const { matchValue, routeProps } = routeWith_pathToRegexp(
-    urlPathname,
-    routeString
-  )
+  const { matchValue, routeProps } = routeWith_pathToRegexp(urlPathname, routeString)
   const contextPropsAddendum = routeProps
   return { matchValue, contextPropsAddendum }
 }
@@ -237,15 +212,10 @@ function resolveRouteFunction(
 } {
   const result = routeFunction({ url: urlPathname, contextProps })
   assertUsage(
-    typeof result === 'object' &&
-      result !== null &&
-      result.constructor === Object,
+    typeof result === 'object' && result !== null && result.constructor === Object,
     `The Route Function ${routeFilePath} should return a plain JavaScript object, e.g. \`{ match: true }\`.`
   )
-  assertUsage(
-    hasProp(result, 'match'),
-    `The Route Function ${routeFilePath} should return a \`{ match }\` value.`
-  )
+  assertUsage(hasProp(result, 'match'), `The Route Function ${routeFilePath} should return a \`{ match }\` value.`)
   assertUsage(
     typeof result.match === 'boolean' || typeof result.match === 'number',
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
@@ -284,13 +254,9 @@ async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   await Promise.all(
     userRouteFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
+      assertUsage(hasProp(fileExports, 'default'), `${filePath} should have a default export.`)
       assertUsage(
-        hasProp(fileExports, 'default'),
-        `${filePath} should have a default export.`
-      )
-      assertUsage(
-        typeof fileExports.default === 'string' ||
-          isCallable(fileExports.default),
+        typeof fileExports.default === 'string' || isCallable(fileExports.default),
         `The default export of ${filePath} should be a string or a function.`
       )
       const pageRoute = fileExports.default

@@ -9,9 +9,7 @@ const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
 
 setAllUserFilesGetter(async () => {
   const viteEntryExports = await loadViteEntry(viteEntry)
-  const __getAllUserFiles =
-    viteEntryExports.__getAllUserFiles ||
-    viteEntryExports.default.__getAllUserFiles
+  const __getAllUserFiles = viteEntryExports.__getAllUserFiles || viteEntryExports.default.__getAllUserFiles
   return __getAllUserFiles()
 })
 
@@ -19,9 +17,7 @@ async function loadViteEntry(modulePath: string): Promise<any> {
   const ssrEnv = getSsrEnv()
 
   if (ssrEnv.isProduction) {
-    const modulePath = pathResolve(
-      `${ssrEnv.root}/dist/server/${viteEntryFileBase}.js`
-    )
+    const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntryFileBase}.js`)
     let moduleExports
     try {
       moduleExports = require(modulePath)

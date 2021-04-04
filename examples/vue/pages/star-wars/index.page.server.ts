@@ -12,9 +12,10 @@ type ContextProps = {
 
 async function addContextProps(): Promise<ContextProps> {
   const response = await fetch('https://swapi.dev/api/films/')
-  const movies: Movie[] = ((await response.json()) as any).results.map(
-    (movie: any, i: number) => ({ ...movie, id: String(i + 1) })
-  )
+  const movies: Movie[] = ((await response.json()) as any).results.map((movie: any, i: number) => ({
+    ...movie,
+    id: String(i + 1)
+  }))
 
   // The page's <title>
   const docTitle = getTitle(movies)
@@ -22,11 +23,7 @@ async function addContextProps(): Promise<ContextProps> {
   return { movies, docTitle }
 }
 
-function setPageProps({
-  contextProps: { movies, docTitle }
-}: {
-  contextProps: ContextProps
-}) {
+function setPageProps({ contextProps: { movies, docTitle } }: { contextProps: ContextProps }) {
   // We remove data we don't need: (`vite-plugin-ssr` serializes and passes `pageProps`
   // to the client; we want to minimize what it sent over the network.)
   movies = movies.map(({ id, title, release_date }) => ({

@@ -40,10 +40,7 @@ async function createLockfiles(lockfiles: string[]) {
   await runCommand('npm install', { cwd: DIR_ROOT })
 }
 
-async function runCommand(
-  cmd: string,
-  { cwd = DIR_ROOT }: { cwd?: string } = {}
-): Promise<string> {
+async function runCommand(cmd: string, { cwd = DIR_ROOT }: { cwd?: string } = {}): Promise<string> {
   assert(isAbsolute(cwd))
   const [command, ...args] = cmd.split(' ')
   const { stdout } = await execa(command, args, { cwd })

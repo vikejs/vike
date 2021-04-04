@@ -73,11 +73,7 @@ async function start(cmd: string): Promise<RunProcess> {
   proc.stdout.on('data', async (data: string) => {
     data = data.toString()
     stdout.push(data)
-    if (
-      (data.startsWith('Server running at') ||
-        data.includes('Accepting connections at')) &&
-      !hasError
-    ) {
+    if ((data.startsWith('Server running at') || data.includes('Accepting connections at')) && !hasError) {
       if (hasError) {
         reject(`${prefix} An error occurred.`)
       } else {

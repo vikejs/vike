@@ -1,12 +1,5 @@
 import devalue from 'devalue'
-import {
-  getErrorPageId,
-  getPageIds,
-  route,
-  isErrorPage,
-  loadPageRoutes,
-  getFilesystemRoute
-} from './route.shared'
+import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
@@ -28,11 +21,7 @@ import {
   retrieveOriginalUrl,
   parseUrl
 } from './utils'
-import {
-  prependBaseUrl,
-  removeBaseUrl,
-  startsWithBaseUrl
-} from './baseUrlHandling'
+import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
 export { renderPage }
 export { getPageFunctions }
@@ -125,13 +114,7 @@ async function renderPage({
   // written by the user and may contain an error.
   let renderResult
   try {
-    renderResult = await renderPageId(
-      pageId,
-      contextProps,
-      url,
-      false,
-      isPagePropsRequest
-    )
+    renderResult = await renderPageId(pageId, contextProps, url, false, isPagePropsRequest)
   } catch (err) {
     if (isPagePropsRequest) {
       return renderPagePropsError(err)
@@ -150,13 +133,7 @@ async function renderPageId(
   contextPropsAlreadyFetched: boolean = false,
   isPagePropsRequest: boolean = false
 ) {
-  const renderData = await getRenderData(
-    pageId,
-    contextProps,
-    url,
-    contextPropsAlreadyFetched,
-    false
-  )
+  const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, false)
 
   if (isPagePropsRequest) {
     const renderResult = renderPageProps(renderData)
@@ -174,13 +151,7 @@ async function prerenderPage(
   contextPropsAlreadyFetched: boolean,
   serializePageProps: boolean
 ) {
-  const renderData = await getRenderData(
-    pageId,
-    contextProps,
-    url,
-    contextPropsAlreadyFetched,
-    true
-  )
+  const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, true)
   const htmlDocument = await renderHtmlDocument(renderData)
   assertUsage(
     typeof htmlDocument === 'string',
@@ -225,9 +196,7 @@ async function getRenderData(
       contextProps
     })
     assertUsage(
-      typeof pagePropsAddendum === 'object' &&
-        pagePropsAddendum !== null &&
-        pagePropsAddendum.constructor === Object,
+      typeof pagePropsAddendum === 'object' && pagePropsAddendum !== null && pagePropsAddendum.constructor === Object,
       `The \`setPageProps()\` hook exported by ${setPagePropsFunction.filePath} should return a plain JavaScript object.`
     )
     assertUsage(
@@ -236,9 +205,7 @@ async function getRenderData(
     )
     Object.assign(pageProps, pagePropsAddendum)
   } else if (isErrorPage(pageId)) {
-    assert(
-      hasProp(contextProps, 'is404') && typeof contextProps.is404 === 'boolean'
-    )
+    assert(hasProp(contextProps, 'is404') && typeof contextProps.is404 === 'boolean')
     Object.assign(pageProps, { is404: contextProps.is404 })
   }
 
@@ -281,11 +248,7 @@ async function renderHtmlDocument({
   pageFunctions,
   isPreRendering
 }: RenderData) {
-  const {
-    renderFunction,
-    addContextPropsFunction,
-    setPagePropsFunction
-  } = pageFunctions
+  const { renderFunction, addContextPropsFunction, setPagePropsFunction } = pageFunctions
 
   const { isProduction = false } = getSsrEnv()
   let clientManifest: null | ViteManifest = null
@@ -312,10 +275,7 @@ async function renderHtmlDocument({
       `The \`render()\` hook exported by ${renderFunction.filePath} returned a string that is an unsafe. Make sure to return a sanitized string by using the \`html\` tag (\`import { html } from 'vite-plugin-ssr'\`).`
     )
   }
-  let htmlDocument: string = renderHtmlTemplate(
-    renderResult,
-    renderFunction.filePath
-  )
+  let htmlDocument: string = renderHtmlTemplate(renderResult, renderFunction.filePath)
 
   // Inject Vite transformations
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
@@ -325,9 +285,7 @@ async function renderHtmlDocument({
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
-  const scriptSrc = !isProduction
-    ? browserFilePath
-    : resolveScriptSrc(browserFilePath, clientManifest!)
+  const scriptSrc = !isProduction ? browserFilePath : resolveScriptSrc(browserFilePath, clientManifest!)
   htmlDocument = injectScript(htmlDocument, scriptSrc)
 
   // Inject preload links
@@ -336,13 +294,8 @@ async function renderHtmlDocument({
   dependencies.add(browserFilePath)
   dependencies.add(renderFunction.filePath)
   if (setPagePropsFunction) dependencies.add(setPagePropsFunction.filePath)
-  if (addContextPropsFunction)
-    dependencies.add(addContextPropsFunction.filePath)
-  const preloadTags = await getPreloadTags(
-    Array.from(dependencies),
-    clientManifest,
-    serverManifest
-  )
+  if (addContextPropsFunction) dependencies.add(addContextPropsFunction.filePath)
+  const preloadTags = await getPreloadTags(Array.from(dependencies), clientManifest, serverManifest)
   htmlDocument = injectPreloadTags(htmlDocument, preloadTags)
 
   return htmlDocument
@@ -354,8 +307,7 @@ async function getPage(pageId: string) {
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
   assertUsage(
-    typeof fileExports === 'object' &&
-      ('Page' in fileExports || 'default' in fileExports),
+    typeof fileExports === 'object' && ('Page' in fileExports || 'default' in fileExports),
     `${filePath} should have a \`export { Page }\` (or a default export).`
   )
   const Page = fileExports.Page || fileExports.default
@@ -374,10 +326,7 @@ type PageFunctions = {
   }
   addContextPropsFunction?: {
     filePath: string
-    addContextProps: (arg1: {
-      Page: unknown
-      contextProps: Record<string, unknown>
-    }) => unknown
+    addContextProps: (arg1: { Page: unknown; contextProps: Record<string, unknown> }) => unknown
   }
   setPagePropsFunction?: {
     filePath: string
@@ -400,18 +349,13 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
     const fileExports = await loadFile()
 
     const render = fileExports.render || fileExports.default?.render
-    assertUsage(
-      !render || isCallable(render),
-      `The \`render()\` hook defined in ${filePath} should be a function.`
-    )
-    const addContextProps =
-      fileExports.addContextProps || fileExports.default?.addContextProps
+    assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
+    const addContextProps = fileExports.addContextProps || fileExports.default?.addContextProps
     assertUsage(
       !addContextProps || isCallable(addContextProps),
       `The \`addContextProps()\` hook defined in ${filePath} should be a function.`
     )
-    const setPageProps =
-      fileExports.setPageProps || fileExports.default?.setPageProps
+    const setPageProps = fileExports.setPageProps || fileExports.default?.setPageProps
     assertUsage(
       !setPageProps || isCallable(setPageProps),
       `The \`setPageProps()\` hook defined in ${filePath} should be a function.`
@@ -478,10 +422,7 @@ async function getServerFiles(pageId: string) {
   return serverFiles
 }
 
-function filterAndSort<T extends { filePath: string }>(
-  userFiles: T[],
-  pageId: string
-): T[] {
+function filterAndSort<T extends { filePath: string }>(userFiles: T[], pageId: string): T[] {
   userFiles = userFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
     assert(!filePath.includes('\\'))
@@ -502,25 +443,16 @@ function filterAndSort<T extends { filePath: string }>(
   return userFiles
 }
 
-async function applyViteHtmlTransform(
-  htmlDocument: string,
-  url: string
-): Promise<string> {
+async function applyViteHtmlTransform(htmlDocument: string, url: string): Promise<string> {
   const ssrEnv = getSsrEnv()
   if (ssrEnv.isProduction) {
     return htmlDocument
   }
-  htmlDocument = await ssrEnv.viteDevServer.transformIndexHtml(
-    url,
-    htmlDocument
-  )
+  htmlDocument = await ssrEnv.viteDevServer.transformIndexHtml(url, htmlDocument)
   return htmlDocument
 }
 
-function resolveScriptSrc(
-  filePath: string,
-  clientManifest: ViteManifest
-): string {
+function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): string {
   assert(filePath.startsWith('/'))
   assert(getSsrEnv().isProduction)
   const manifestKey = filePath.slice(1)
@@ -532,28 +464,19 @@ function resolveScriptSrc(
   return '/' + file
 }
 
-function injectPageInfo(
-  htmlDocument: string,
-  pageProps: Record<string, unknown>,
-  pageId: string
-): string {
-  const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(
-    pageId
-  )}, pageProps: ${devalue(pageProps)}}</script>`
+function injectPageInfo(htmlDocument: string, pageProps: Record<string, unknown>, pageId: string): string {
+  const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(pageId)}, pageProps: ${devalue(
+    pageProps
+  )}}</script>`
   return injectEnd(htmlDocument, injection)
 }
 
 function injectScript(htmlDocument: string, scriptSrc: string): string {
-  const injection = `<script type="module" src="${prependBaseUrl(
-    scriptSrc
-  )}"></script>`
+  const injection = `<script type="module" src="${prependBaseUrl(scriptSrc)}"></script>`
   return injectEnd(htmlDocument, injection)
 }
 
-function injectPreloadTags(
-  htmlDocument: string,
-  preloadTags: string[]
-): string {
+function injectPreloadTags(htmlDocument: string, preloadTags: string[]): string {
   const injection = preloadTags.join('')
   return injectBegin(htmlDocument, injection)
 }
@@ -591,11 +514,7 @@ function injectEnd(htmlDocument: string, injection: string): string {
   return htmlDocument + '\n' + injection
 }
 
-function injectAtOpeningTag(
-  htmlDocument: string,
-  openingTag: RegExp,
-  injection: string
-): string {
+function injectAtOpeningTag(htmlDocument: string, openingTag: RegExp, injection: string): string {
   const matches = htmlDocument.match(openingTag)
   assert(matches && matches.length >= 1)
   const tag = matches[0]
@@ -608,11 +527,7 @@ function injectAtOpeningTag(
   return before + tag + injection + after
 }
 
-function injectAtClosingTag(
-  htmlDocument: string,
-  closingTag: string,
-  injection: string
-): string {
+function injectAtClosingTag(htmlDocument: string, closingTag: string, injection: string): string {
   assert(closingTag.startsWith('</'))
   assert(closingTag.endsWith('>'))
   assert(!closingTag.includes(' '))
@@ -628,31 +543,23 @@ function injectAtClosingTag(
 
 function assertArguments(...args: unknown[]) {
   const argObject = args[0]
-  assertUsage(
-    hasProp(argObject, 'url'),
-    '`render({url, contextProps})`: argument `url` is missing.'
-  )
+  assertUsage(hasProp(argObject, 'url'), '`render({url, contextProps})`: argument `url` is missing.')
   assertUsage(
     typeof argObject.url === 'string' && argObject.url.startsWith('/'),
     '`render({url, contextProps})`: argument `url` should start with a `/`.'
   )
   assertUsage(
-    !hasProp(argObject, 'contextProps') ||
-      typeof argObject.contextProps === 'object',
+    !hasProp(argObject, 'contextProps') || typeof argObject.contextProps === 'object',
     '`render({url, contextProps})`: argument `contextProps` should be a `typeof contextProps === "object"`.'
   )
   assertUsage(
     args.length === 1,
     '`render({url, contextProps})`: all arguments should be passed as a single argument object.'
   )
-  const unknownArgs = Object.keys(argObject).filter(
-    (key) => !['url', 'contextProps'].includes(key)
-  )
+  const unknownArgs = Object.keys(argObject).filter((key) => !['url', 'contextProps'].includes(key))
   assertUsage(
     unknownArgs.length === 0,
-    '`render({url, contextProps})`: unknown arguments [' +
-      unknownArgs.map((s) => `'${s}'`).join(', ') +
-      '].'
+    '`render({url, contextProps})`: unknown arguments [' + unknownArgs.map((s) => `'${s}'`).join(', ') + '].'
   )
 }
 
@@ -696,13 +603,9 @@ async function getPagesAndRoutesInfo(): Promise<string> {
           routeSrc = 'Filesystem Routing'
         } else {
           const { pageRoute, pageRouteFile } = pageRoutes[pageId]
-          const pageRouteStringified = truncateString(
-            String(pageRoute).split(/\s/).filter(Boolean).join(' '),
-            64
-          )
+          const pageRouteStringified = truncateString(String(pageRoute).split(/\s/).filter(Boolean).join(' '), 64)
           routeInfo = `\`${pageRouteStringified}\``
-          const routeType =
-            typeof pageRoute === 'string' ? 'Route String' : 'Route Function'
+          const routeType = typeof pageRoute === 'string' ? 'Route String' : 'Route Function'
           const routeFile = pageRouteFile
           routeSrc = `${routeType} defined in \`${routeFile}\``
         }
@@ -771,9 +674,7 @@ async function render500Page(
   return { nothingRendered: false, renderResult, statusCode: 500 }
 }
 
-function renderPagePropsError(
-  err?: unknown
-): { nothingRendered: false; renderResult: string; statusCode: 500 } {
+function renderPagePropsError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
   if (err) {
     handleErr(err)
   }
@@ -794,16 +695,9 @@ function handleErr(err: unknown) {
   console.error(err)
 }
 
-function retrieveViteManifest(
-  isPreRendering: boolean
-): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
+function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
   // Get Vite manifest
-  const {
-    clientManifest,
-    serverManifest,
-    clientManifestPath,
-    serverManifestPath
-  } = getViteManifest()
+  const { clientManifest, serverManifest, clientManifestPath, serverManifestPath } = getViteManifest()
   const userOperation = isPreRendering
     ? 'running `$ vite-plugin-ssr prerender`'
     : 'running the server with `isProduction: true`'

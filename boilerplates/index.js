@@ -10,12 +10,7 @@ const { execSync } = require('child_process')
 
 const cwd = process.cwd()
 
-const BOILERPLATES = [
-  green('vue'),
-  green('vue-ts'),
-  cyan('react'),
-  cyan('react-ts')
-]
+const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts')]
 
 const ignoreFiles = ['.prettierrc']
 
@@ -53,9 +48,7 @@ async function init() {
         type: 'confirm',
         name: 'yes',
         initial: 'Y',
-        message:
-          `Target directory ${targetDir} is not empty.\n` +
-          `Remove existing files and continue?`
+        message: `Target directory ${targetDir} is not empty.\n` + `Remove existing files and continue?`
       })
       if (yes) {
         emptyDir(root)
@@ -93,9 +86,7 @@ async function init() {
   const boilerplateDir = path.join(__dirname, `boilerplate-${boilerplate}`)
 
   const write = (file, content) => {
-    const targetPath = renameFiles[file]
-      ? path.join(root, renameFiles[file])
-      : path.join(root, file)
+    const targetPath = renameFiles[file] ? path.join(root, renameFiles[file]) : path.join(root, file)
     if (content) {
       fs.writeFileSync(targetPath, content)
     } else {

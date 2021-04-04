@@ -9,22 +9,11 @@ async function unlink() {
   const dependers = getDependers()
   for (const cwd of dependers) {
     // This removes any symlink
-    const version = require(`${cwd}/package.json`).dependencies[
-      'vite-plugin-ssr'
-    ]
-    await runCommand(
-      'npm',
-      ['install', `vite-plugin-ssr@${version}`, '--no-save'],
-      {
-        cwd,
-        silent: true
-      }
-    )
-    console.log(
-      `from npm registry: ${relative(
-        DIR_ROOT,
-        cwd
-      )}/node_modules/vite-plugin-ssr`
-    )
+    const version = require(`${cwd}/package.json`).dependencies['vite-plugin-ssr']
+    await runCommand('npm', ['install', `vite-plugin-ssr@${version}`, '--no-save'], {
+      cwd,
+      silent: true
+    })
+    console.log(`from npm registry: ${relative(DIR_ROOT, cwd)}/node_modules/vite-plugin-ssr`)
   }
 }

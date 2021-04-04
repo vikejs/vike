@@ -1,12 +1,7 @@
 import * as execa from 'execa'
 import { readdirSync, writeFileSync, lstatSync } from 'fs'
 import * as assert from 'assert'
-import {
-  DIR_BOILERPLATES,
-  DIR_EXAMPLES,
-  DIR_SRC,
-  DIR_ROOT
-} from './helpers/locations'
+import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC, DIR_ROOT } from './helpers/locations'
 import * as semver from 'semver'
 
 release()
@@ -25,16 +20,7 @@ async function release() {
 }
 
 async function changelog() {
-  await run('npx', [
-    'conventional-changelog',
-    '-p',
-    'angular',
-    '-i',
-    'CHANGELOG.md',
-    '-s',
-    '--pkg',
-    DIR_SRC
-  ])
+  await run('npx', ['conventional-changelog', '-p', 'angular', '-i', 'CHANGELOG.md', '-s', '--pkg', DIR_SRC])
 }
 async function commit(tag: string) {
   assert(tag.startsWith('v0'))
@@ -73,10 +59,7 @@ function bumpBoilerplateVersion() {
 }
 
 async function updateDependencies(versionNew: string, versionCurrent: string) {
-  const pkgPaths = [
-    ...retrievePkgPaths(DIR_BOILERPLATES),
-    ...retrievePkgPaths(DIR_EXAMPLES)
-  ]
+  const pkgPaths = [...retrievePkgPaths(DIR_BOILERPLATES), ...retrievePkgPaths(DIR_EXAMPLES)]
   for (const pkgPath of pkgPaths) {
     updatePkg(pkgPath, (pkg) => {
       const version = pkg.dependencies['vite-plugin-ssr']

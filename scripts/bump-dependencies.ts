@@ -15,9 +15,7 @@ async function updateDependencies() {
 async function getAllPackageJson() {
   const cwd = DIR_ROOT
   const files = (await run__return('git ls-files', { cwd })).split('\n')
-  return files
-    .filter((path) => path.endsWith('package.json'))
-    .map((path) => join(cwd, path))
+  return files.filter((path) => path.endsWith('package.json')).map((path) => join(cwd, path))
 }
 
 async function run__follow(cmd: string, { cwd }): Promise<void> {

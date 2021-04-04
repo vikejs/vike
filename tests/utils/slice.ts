@@ -2,17 +2,9 @@ import assert = require('assert')
 
 export { slice }
 
-function slice<Element, T extends Array<Element>>(
-  thing: T,
-  from: number,
-  to: number
-): T
+function slice<Element, T extends Array<Element>>(thing: T, from: number, to: number): T
 function slice(thing: string, from: number, to: number): string
-function slice(
-  thing: string | unknown[],
-  from: number,
-  to: number
-): string | unknown[] {
+function slice(thing: string | unknown[], from: number, to: number): string | unknown[] {
   if (typeof thing === 'string') {
     return sliceArray(thing.split(''), from, to).join('')
   } else {
@@ -20,11 +12,7 @@ function slice(
   }
 }
 
-function sliceArray<Element, T extends Array<Element>>(
-  list: T,
-  from: number,
-  to: number
-): T {
+function sliceArray<Element, T extends Array<Element>>(list: T, from: number, to: number): T {
   const listSlice: T = ([] as unknown) as T
 
   let begin = from >= 0 ? from : list.length + from

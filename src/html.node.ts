@@ -37,15 +37,10 @@ function dangerouslySetHtml(alreadySanitizedString: string): SanitizedString {
   return { [__dangerouslySetHtml]: alreadySanitizedString }
 }
 
-function isHtmlTemplate(
-  something: unknown
-): something is { [__html_template]: HtmlTemplate } {
+function isHtmlTemplate(something: unknown): something is { [__html_template]: HtmlTemplate } {
   return hasProp(something, __html_template)
 }
-function renderHtmlTemplate(
-  renderResult: { [__html_template]: HtmlTemplate },
-  filePath: string
-): string {
+function renderHtmlTemplate(renderResult: { [__html_template]: HtmlTemplate }, filePath: string): string {
   return renderHtml(renderResult[__html_template], filePath)
 }
 
@@ -55,41 +50,33 @@ type HtmlTemplate = {
 }
 function renderHtml(htmlTemplate: HtmlTemplate, filePath: string) {
   const { templateParts, templateVariables } = htmlTemplate
-  const templateVariablesUnwrapped: string[] = templateVariables.map(
-    (templateVar: unknown) => {
-      // Process `html.dangerouslySetHtml()`
-      if (hasProp(templateVar, __dangerouslySetHtml)) {
-        const val = templateVar[__dangerouslySetHtml]
-        assertUsage(
-          typeof val === 'string',
-          `[html.dangerouslySetHtml(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof val}"\`. (While executing the \`render()\` hook exported by ${filePath})`
-        )
-        // User used `html.dangerouslySetHtml()` so we assume the string to be safe
-        return val
-      }
-
-      // Process `html` tag composition
-      if (hasProp(templateVar, __html_template)) {
-        const htmlTemplate__segment = templateVar[__html_template]
-        cast<HtmlTemplate>(htmlTemplate__segment)
-        return renderHtml(htmlTemplate__segment, filePath)
-      }
-
-      // Process and sanitize untrusted template variable
-      return escapeHtml(toString(templateVar))
+  const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
+    // Process `html.dangerouslySetHtml()`
+    if (hasProp(templateVar, __dangerouslySetHtml)) {
+      const val = templateVar[__dangerouslySetHtml]
+      assertUsage(
+        typeof val === 'string',
+        `[html.dangerouslySetHtml(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof val}"\`. (While executing the \`render()\` hook exported by ${filePath})`
+      )
+      // User used `html.dangerouslySetHtml()` so we assume the string to be safe
+      return val
     }
-  )
-  const htmlString = identityTemplateTag(
-    templateParts,
-    ...templateVariablesUnwrapped
-  )
+
+    // Process `html` tag composition
+    if (hasProp(templateVar, __html_template)) {
+      const htmlTemplate__segment = templateVar[__html_template]
+      cast<HtmlTemplate>(htmlTemplate__segment)
+      return renderHtml(htmlTemplate__segment, filePath)
+    }
+
+    // Process and sanitize untrusted template variable
+    return escapeHtml(toString(templateVar))
+  })
+  const htmlString = identityTemplateTag(templateParts, ...templateVariablesUnwrapped)
   return htmlString
 }
 
-function identityTemplateTag(
-  parts: TemplateStringsArray,
-  ...variables: string[]
-) {
+function identityTemplateTag(parts: TemplateStringsArray, ...variables: string[]) {
   assert(parts.length === variables.length + 1)
   let str = ''
   for (let i = 0; i < variables.length; i++) {

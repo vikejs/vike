@@ -1,8 +1,4 @@
-import {
-  createMemoryHistory,
-  createRouter as _createRouter,
-  createWebHistory
-} from 'vue-router'
+import { createMemoryHistory, createRouter as _createRouter, createWebHistory } from 'vue-router'
 
 export { createRouter }
 

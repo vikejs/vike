@@ -28,10 +28,7 @@ function useClientRouter({
 }): {
   hydrationPromise: Promise<void>
 } {
-  assertUsage(
-    isAlreadyCalled === false,
-    '`useClientRouter` can be called only once.'
-  )
+  assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
   isAlreadyCalled = true
   disableBrowserScrollRestoration()
   autoSaveScrollPosition()
@@ -49,9 +46,7 @@ function useClientRouter({
   }
 
   let resolveInitialPagePromise: () => void
-  const hydrationPromise = new Promise<void>(
-    (resolve) => (resolveInitialPagePromise = resolve)
-  )
+  const hydrationPromise = new Promise<void>((resolve) => (resolveInitialPagePromise = resolve))
 
   let callCount = 0
   let renderPromise: Promise<void> | undefined
@@ -60,9 +55,7 @@ function useClientRouter({
 
   return { hydrationPromise }
 
-  async function fetchAndRender(
-    scrollPosition?: ScrollPosition | null
-  ): Promise<undefined> {
+  async function fetchAndRender(scrollPosition?: ScrollPosition | null): Promise<undefined> {
     const callNumber = ++callCount
 
     if (!isFirstPageRender) {
@@ -119,14 +112,9 @@ async function navigate(url: string): Promise<void> {
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',
-    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' +
-      typeof url +
-      '"`.'
+    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.'
   )
-  assertUsage(
-    url.startsWith('/'),
-    '[navigate(url)] Argument `url` should start with a leading `/`.'
-  )
+  assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
   assertUsage(
     navigateFunction,
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
@@ -168,22 +156,11 @@ function onLinkClick(callback: (url: string) => void) {
   function isNotNewTabLink(linkTag: HTMLElement) {
     const target = linkTag.getAttribute('target')
     const rel = linkTag.getAttribute('rel')
-    return (
-      target !== '_blank' &&
-      target !== '_external' &&
-      rel !== 'external' &&
-      !linkTag.hasAttribute('download')
-    )
+    return target !== '_blank' && target !== '_external' && rel !== 'external' && !linkTag.hasAttribute('download')
   }
 
   function isNormalLeftClick(ev: MouseEvent): boolean {
-    return (
-      ev.button === 0 &&
-      !ev.ctrlKey &&
-      !ev.shiftKey &&
-      !ev.altKey &&
-      !ev.metaKey
-    )
+    return ev.button === 0 && !ev.ctrlKey && !ev.shiftKey && !ev.altKey && !ev.metaKey
   }
 
   function findLinkTag(target: HTMLElement): null | HTMLElement {
@@ -198,13 +175,9 @@ function onLinkClick(callback: (url: string) => void) {
   }
 }
 
-function onBrowserHistoryNavigation(
-  callback: (scrollPosition: ScrollPosition | null) => void
-) {
+function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | null) => void) {
   window.addEventListener('popstate', (ev) => {
-    const scrollPosition = hasProp(ev.state, 'scrollPosition')
-      ? (ev.state.scrollPosition as ScrollPosition)
-      : null
+    const scrollPosition = hasProp(ev.state, 'scrollPosition') ? (ev.state.scrollPosition as ScrollPosition) : null
     callback(scrollPosition)
   })
 }
@@ -224,8 +197,7 @@ function setScrollPosition(scrollPosition: ScrollPosition | null): void {
     const hash = getUrlHash()
     // We mirror the browser's native behavior
     if (hash && hash !== 'top') {
-      const hashTarget =
-        document.getElementById(hash) || document.getElementsByName(hash)[0]
+      const hashTarget = document.getElementById(hash) || document.getElementsByName(hash)[0]
       if (hashTarget) {
         hashTarget.scrollIntoView()
         return

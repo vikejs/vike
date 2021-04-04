@@ -23,10 +23,7 @@ function createPageRender({
   isProduction?: boolean
   base?: string
 }): RenderPage {
-  assertUsage(
-    !alreadyCalled,
-    '`createPageRender()` should be called only once.'
-  )
+  assertUsage(!alreadyCalled, '`createPageRender()` should be called only once.')
   alreadyCalled = true
 
   const ssrEnv = { viteDevServer, root, isProduction, baseUrl: base }
@@ -44,19 +41,14 @@ function assertArguments(ssrEnv: {
 }): asserts ssrEnv is SsrEnv {
   const { viteDevServer, root, isProduction, baseUrl } = ssrEnv
   assertUsage(root, '`createPageRender({ root })`: argument `root` is missing.')
-  assertUsage(
-    typeof root === 'string',
-    '`createPageRender({ root })`: argument `root` should be a string.'
-  )
+  assertUsage(typeof root === 'string', '`createPageRender({ root })`: argument `root` should be a string.')
   assertUsage(
     typeof baseUrl === 'string',
     '`createPageRender({ base })`: argument `base` should be a string or `undefined`.'
   )
   assertBaseUrl(baseUrl, '`createPageRender({ base })`: ')
   assertUsage(
-    isProduction === true ||
-      isProduction === false ||
-      isProduction === undefined,
+    isProduction === true || isProduction === false || isProduction === undefined,
     '`createPageRender({ isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.'
   )
   if (isProduction === true) {

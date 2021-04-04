@@ -1,19 +1,9 @@
-import {
-  run,
-  page,
-  urlBase,
-  partRegExp,
-  fetchHtml,
-  autoRetry
-} from '../tests/setup'
+import { run, page, urlBase, partRegExp, fetchHtml, autoRetry } from '../tests/setup'
 import assert = require('assert')
 
 export { testPages }
 
-function testPages(
-  viewFramework: 'vue' | 'react',
-  cmd: 'npm run start' | 'npm run prod'
-) {
+function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm run prod') {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
@@ -21,15 +11,9 @@ function testPages(
 
     expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
     if (viewFramework === 'vue') {
-      expect(html).toMatch(
-        partRegExp`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`
-      )
-      expect(html).toMatch(
-        partRegExp`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`
-      )
-      expect(html).toMatch(
-        partRegExp`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`
-      )
+      expect(html).toMatch(partRegExp`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
+      expect(html).toMatch(partRegExp`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
+      expect(html).toMatch(partRegExp`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`)
     } else {
       expect(html).toContain('<a href="/markdown">Markdown</a>')
       expect(html).toContain('<a href="/star-wars">Data Fetching</a>')
@@ -123,9 +107,7 @@ function testPages(
   })
   test('markdown page DOM', async () => {
     await page.goto(urlBase + '/markdown')
-    expect(await page.textContent('body')).toContain(
-      'This page is written in Markdown'
-    )
+    expect(await page.textContent('body')).toContain('This page is written in Markdown')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {

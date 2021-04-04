@@ -45,29 +45,15 @@ function getNormalizedBaseUrl(): string {
 function normalizeBaseUrl(baseUrl: string): string {
   if (!baseUrl) baseUrl = '/'
   if (!baseUrl.endsWith('/')) baseUrl = `${baseUrl}/`
-  if (
-    !baseUrl.startsWith('/') &&
-    !baseUrl.startsWith('http') &&
-    !baseUrl.startsWith('./')
-  )
-    baseUrl = `/${baseUrl}`
-  assert(
-    baseUrl.startsWith('/') ||
-      baseUrl.startsWith('http') ||
-      baseUrl.startsWith('./')
-  )
+  if (!baseUrl.startsWith('/') && !baseUrl.startsWith('http') && !baseUrl.startsWith('./')) baseUrl = `/${baseUrl}`
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('http') || baseUrl.startsWith('./'))
   assert(baseUrl.endsWith('/'))
   return baseUrl
 }
 
 function assertBaseUrl(baseUrl: string, errorMessagePrefix = '') {
   assertUsage(
-    baseUrl.startsWith('/') ||
-      baseUrl.startsWith('http') ||
-      baseUrl.startsWith('./'),
-    errorMessagePrefix +
-      'Wrong `base` value `' +
-      baseUrl +
-      '`; `base` should start with `/`, `./`, or `http`.'
+    baseUrl.startsWith('/') || baseUrl.startsWith('http') || baseUrl.startsWith('./'),
+    errorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.'
   )
 }

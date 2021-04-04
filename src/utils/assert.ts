@@ -19,10 +19,7 @@ function assert(condition: unknown): asserts condition {
   throw internalError
 }
 
-function assertUsage(
-  condition: unknown,
-  errorMessage: string
-): asserts condition {
+function assertUsage(condition: unknown, errorMessage: string): asserts condition {
   if (condition) {
     return
   }

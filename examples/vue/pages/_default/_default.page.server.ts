@@ -4,13 +4,7 @@ import { getApp, PageProps } from './app'
 
 export { render }
 
-async function render({
-  Page,
-  pageProps
-}: {
-  Page: any
-  pageProps: PageProps
-}) {
+async function render({ Page, pageProps }: { Page: any; pageProps: PageProps }) {
   const app = getApp(Page, pageProps)
   const appHtml = await renderToString(app)
 

@@ -17,14 +17,10 @@ async function getPageProps(url: string): Promise<Record<string, unknown>> {
   }
 }
 
-async function retrievePageProps(
-  url: string
-): Promise<Record<string, unknown>> {
+async function retrievePageProps(url: string): Promise<Record<string, unknown>> {
   const response = await fetch(getFileUrl(url, '.pageProps.json'))
   const responseText = await response.text()
-  const responseObject = parse(responseText) as
-    | { pageProps: Record<string, unknown> }
-    | { userError: true }
+  const responseObject = parse(responseText) as { pageProps: Record<string, unknown> } | { userError: true }
   if ('userError' in responseObject) {
     assertWarning(
       false,

@@ -14,10 +14,7 @@ export { retrieveOriginalUrl }
  (`/product/42?review=true#reviews`, `.pageProps`) -> `/product/42/index.pageProps?review=true#reviews`
  ...
 */
-function getFileUrl(
-  url: string,
-  fileExtension: '.html' | '.pageProps.json'
-): string {
+function getFileUrl(url: string, fileExtension: '.html' | '.pageProps.json'): string {
   assert(url.startsWith('/'))
   const { pathname, search, hash } = parseUrl(url)
   assert(url === `${pathname}${search}${hash}`)

@@ -5,10 +5,7 @@ import { DIR_BOILERPLATES, DIR_EXAMPLES } from '../helpers/locations'
 export { getDependers }
 
 function getDependers() {
-  return [
-    ...retrieveDirectories(DIR_EXAMPLES),
-    ...retrieveDirectories(DIR_BOILERPLATES)
-  ]
+  return [...retrieveDirectories(DIR_EXAMPLES), ...retrieveDirectories(DIR_BOILERPLATES)]
 }
 
 function retrieveDirectories(DIR_ROOT: string): string[] {

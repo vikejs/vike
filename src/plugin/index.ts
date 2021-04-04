@@ -22,10 +22,7 @@ function plugin(): Plugin[] {
       config: () => ({
         ssr,
         optimizeDeps: {
-          entries: [
-            '**/*.page.*([a-zA-Z0-9])',
-            '**/*.page.client.*([a-zA-Z0-9])'
-          ]
+          entries: ['**/*.page.*([a-zA-Z0-9])', '**/*.page.client.*([a-zA-Z0-9])']
         }
       })
     },
@@ -72,12 +69,8 @@ function plugin(): Plugin[] {
   ]
 }
 
-function includesUseClientRouter(
-  bundle: Record<string, { modules?: Record<string, unknown> }>
-) {
-  const fileSource = require.resolve(
-    '../../client/router/getPageProps.client.ts'
-  )
+function includesUseClientRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
+  const fileSource = require.resolve('../../client/router/getPageProps.client.ts')
   const fileDist = require.resolve('../client/router/getPageProps.client.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
