@@ -67,7 +67,7 @@ function useClientRouter({
     }
 
     const urlNow = getUrl()
-    const { Page, pageProps } = await getPageByUrl(urlNow)
+    const { Page, pageProps } = await getPageByUrl(urlNow, navigationState.isFirstNavigation)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
