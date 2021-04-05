@@ -7,11 +7,10 @@ export { getPageProps }
 export { retrievePageProps }
 
 async function getPageProps(url: string): Promise<Record<string, unknown>> {
-  if (navigationState.isFirstNavigation) {
+  if (navigationState.checkIfOriginalUrl(url)) {
     const { pageProps } = getOriginalPageInfo()
     return pageProps
   } else {
-    navigationState.markNavigationChange()
     const pageProps = await retrievePageProps(url)
     return pageProps
   }
