@@ -6,7 +6,10 @@ import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 export { getPageProps }
 export { retrievePageProps }
 
-async function getPageProps(url: string, useOriginalDataWhenPossible: boolean = true): Promise<Record<string, unknown>> {
+async function getPageProps(
+  url: string,
+  useOriginalDataWhenPossible: boolean = true
+): Promise<Record<string, unknown>> {
   if (navigationState.isOriginalUrl(url) && useOriginalDataWhenPossible) {
     const { pageProps } = getOriginalPageInfo()
     return pageProps

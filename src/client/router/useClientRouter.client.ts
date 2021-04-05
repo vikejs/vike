@@ -1,7 +1,7 @@
 import { assert, assertUsage, hasProp, isNodejs } from '../../utils'
 import { getUrl } from '../getUrl.client'
 import { getPageByUrl } from './getPageByUrl.client'
-import { navigationState } from '../navigationState.client';
+import { navigationState } from '../navigationState.client'
 
 export { useClientRouter }
 export { navigate }

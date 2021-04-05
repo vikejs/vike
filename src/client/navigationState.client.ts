@@ -1,6 +1,6 @@
 import { getUrlPathname } from './getUrl.client'
 
-let urlOriginal = getUrlPathname();
+let urlOriginal = getUrlPathname()
 let navigationChanged = false
 
 export const navigationState = {
@@ -8,13 +8,13 @@ export const navigationState = {
     navigationChanged = true
   },
   get noNavigationChangeYet() {
-    return !navigationChanged && this.isOriginalUrl(this.urlCurrent);
+    return !navigationChanged && this.isOriginalUrl(this.urlCurrent)
   },
-  isCurrentUrl(url : string) {
-    return url === this.urlCurrent;
+  isCurrentUrl(url: string) {
+    return url === this.urlCurrent
   },
-  isOriginalUrl(url : string) {
-    return url === this.urlOriginal;
+  isOriginalUrl(url: string) {
+    return url === this.urlOriginal
   },
   get urlOriginal() {
     return urlOriginal
