@@ -1,10 +1,14 @@
 import { getUrlPathname } from './getUrl.client'
 
 let urlOriginal = getUrlPathname();
+let navigationChanged = false
 
 export const navigationState = {
+  markNavigationChange() {
+    navigationChanged = true
+  },
   get isFirstNavigation() {
-    return this.checkIfOriginalUrl(this.urlNow);
+    return !navigationChanged && this.checkIfOriginalUrl(this.urlNow);
   },
   checkIfOriginalUrl(url : string) {
     return url === this.urlOriginal;
