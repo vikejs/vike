@@ -6,11 +6,8 @@ import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 export { getPageProps }
 export { retrievePageProps }
 
-async function getPageProps(url: string, triggerNavigationChange: boolean = true): Promise<Record<string, unknown>> {
-  if (triggerNavigationChange && !navigationState.checkIfCurrentUrl(url)) {
-    navigationState.markNavigationChange();
-  }
-  if (navigationState.isFirstNavigation) {
+async function getPageProps(url: string, useSsrCache: boolean = true): Promise<Record<string, unknown>> {
+  if (navigationState.checkIfCurrentUrl(url) && useSsrCache) {
     const { pageProps } = getOriginalPageInfo()
     return pageProps
   } else {
