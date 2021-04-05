@@ -6,7 +6,7 @@ import { navigationState } from '../navigationState.client'
 export { getPageId }
 
 async function getPageId(url: string): Promise<string> {
-  if (navigationState.isFirstNavigation) {
+  if (navigationState.checkIfOriginalUrl(url)) {
     const { pageId } = getOriginalPageInfo()
     return pageId
   } else {
