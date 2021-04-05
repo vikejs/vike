@@ -5,8 +5,8 @@ import { navigationState } from '../navigationState.client'
 
 export { getPageId }
 
-async function getPageId(url: string): Promise<string> {
-  if (navigationState.checkIfOriginalUrl(url)) {
+async function getPageId(url: string, useSsrCache: boolean = true): Promise<string> {
+  if (navigationState.checkIfOriginalUrl(url) && useSsrCache) {
     const { pageId } = getOriginalPageInfo()
     return pageId
   } else {
