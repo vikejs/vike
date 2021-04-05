@@ -7,19 +7,19 @@ export const navigationState = {
   markNavigationChange() {
     navigationChanged = true
   },
-  get isFirstNavigation() {
-    return !navigationChanged && this.checkIfOriginalUrl(this.urlNow);
+  get noNavigationChangeYet() {
+    return !navigationChanged && this.isOriginalUrl(this.urlCurrent);
   },
-  checkIfCurrentUrl(url : string) {
-    return url === this.urlNow;
+  isCurrentUrl(url : string) {
+    return url === this.urlCurrent;
   },
-  checkIfOriginalUrl(url : string) {
+  isOriginalUrl(url : string) {
     return url === this.urlOriginal;
   },
   get urlOriginal() {
     return urlOriginal
   },
-  get urlNow() {
+  get urlCurrent() {
     return getUrlPathname()
   }
 }

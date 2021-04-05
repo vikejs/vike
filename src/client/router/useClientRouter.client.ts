@@ -66,8 +66,8 @@ function useClientRouter({
       }
     }
 
-    const urlNow = getUrl()
-    const { Page, pageProps } = await getPageByUrl(urlNow, navigationState.isFirstNavigation)
+    const urlCurrent = getUrl()
+    const { Page, pageProps } = await getPageByUrl(urlCurrent, navigationState.noNavigationChangeYet)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -80,8 +80,8 @@ function useClientRouter({
       return
     }
 
-    assert(urlNow === getUrl())
-    const isHydration = isFirstPageRender && urlNow === urlOriginal
+    assert(urlCurrent === getUrl())
+    const isHydration = isFirstPageRender && urlCurrent === urlOriginal
 
     assert(renderPromise === undefined)
     renderPromise = (async () => {

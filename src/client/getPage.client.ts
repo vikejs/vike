@@ -18,8 +18,8 @@ async function getPage(): Promise<{
 
 function assertPristineUrl() {
   assertWarning(
-    navigationState.isFirstNavigation,
-    `\`getPage()\` returned page information for URL \`${navigationState.urlOriginal}\` instead of \`${navigationState.urlNow}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
+    navigationState.noNavigationChangeYet,
+    `\`getPage()\` returned page information for URL \`${navigationState.urlOriginal}\` instead of \`${navigationState.urlCurrent}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
   )
 }
 
