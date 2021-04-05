@@ -10,6 +10,9 @@ export const navigationState = {
   get isFirstNavigation() {
     return !navigationChanged && this.checkIfOriginalUrl(this.urlNow);
   },
+  checkIfCurrentUrl(url : string) {
+    return url === this.urlNow;
+  },
   checkIfOriginalUrl(url : string) {
     return url === this.urlOriginal;
   },
