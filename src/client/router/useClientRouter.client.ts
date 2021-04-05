@@ -35,15 +35,13 @@ function useClientRouter({
   autoSaveScrollPosition()
 
   onLinkClick((url: string) => {
-    changeUrl(url)
-    fetchAndRender(null)
+    fetchAndRender(null, url)
   })
   onBrowserHistoryNavigation((scrollPosition) => {
     fetchAndRender(scrollPosition)
   })
   navigateFunction = async (url: string) => {
-    changeUrl(url)
-    await fetchAndRender(null)
+    await fetchAndRender(null, url)
   }
 
   let resolveInitialPagePromise: () => void
@@ -56,7 +54,10 @@ function useClientRouter({
 
   return { hydrationPromise }
 
-  async function fetchAndRender(scrollPosition?: ScrollPosition | null): Promise<undefined> {
+  async function fetchAndRender(
+    scrollPosition: ScrollPosition | null | undefined = undefined,
+    url: string = getUrl()
+  ): Promise<undefined> {
     const callNumber = ++callCount
 
     if (!isFirstPageRender) {
@@ -66,8 +67,7 @@ function useClientRouter({
       }
     }
 
-    const urlCurrent = getUrl()
-    const { Page, pageProps } = await getPageByUrl(urlCurrent, navigationState.noNavigationChangeYet)
+    const { Page, pageProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -80,12 +80,11 @@ function useClientRouter({
       return
     }
 
-    assert(urlCurrent === getUrl())
-    const isHydration = isFirstPageRender && urlCurrent === urlOriginal
-
+    changeUrl(url)
+    navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      await render({ Page, pageProps, isHydration })
+      await render({ Page, pageProps, isHydration: isFirstPageRender && url === urlOriginal })
     })()
     await renderPromise
     renderPromise = undefined
@@ -185,7 +184,6 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | 
 
 function changeUrl(url: string) {
   if (getUrl() === url) return
-  navigationState.markNavigationChange()
   window.history.pushState(undefined, '', url)
 }
 
