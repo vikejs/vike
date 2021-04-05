@@ -7,7 +7,7 @@ export { getPageProps }
 export { retrievePageProps }
 
 async function getPageProps(url: string, useSsrCache: boolean = true): Promise<Record<string, unknown>> {
-  if (navigationState.checkIfCurrentUrl(url) && useSsrCache) {
+  if (navigationState.checkIfOriginalUrl(url) && useSsrCache) {
     const { pageProps } = getOriginalPageInfo()
     return pageProps
   } else {
