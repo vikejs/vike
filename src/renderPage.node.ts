@@ -692,7 +692,9 @@ function handleErr(err: unknown) {
       viteDevServer.ssrFixStacktrace(err)
     }
   }
-  console.error(err)
+  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
+  const errStr = hasProp(err, 'stack') && String(err.stack) || String(err)
+  console.error(errStr)
 }
 
 function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
