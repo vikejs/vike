@@ -9,9 +9,9 @@
 
 ## Requirements
 
-These requirements are for *developing* the source code; you can use `vite-plugin-ssr` with Windows and Node.js `>= v12.7.x`.
+These requirements are for *developing* the source code; you can use `vite-plugin-ssr` with Windows and Node.js `>= v12.19.0`.
 
-- Node.js `>= v15.x.x`.
+- Node.js `>= v15.0.0`.
 - Unix (e.g. macOS and Linux). (Windows may work but there are no guarantees.)
 
 ## Create new example

@@ -19,6 +19,9 @@
   "peerDependencies": {
     "vite": "2.1.4"
   },
+  "engines": {
+    "node": ">=12.19.0"
+  },
   "main": "./dist/index.js",
   "exports": {
     ".": {
