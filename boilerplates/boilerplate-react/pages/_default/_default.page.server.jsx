@@ -12,14 +12,14 @@ function render({ Page, pageProps, contextProps }) {
       <Page {...pageProps} />
     </PageLayout>
   );
-
+  const title = "My Vite SSR app";
   return html`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
         <link rel="icon" href="${logoUrl}" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Vite App</title>
+        <title>${title}</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
