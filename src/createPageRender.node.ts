@@ -1,7 +1,7 @@
 import { SsrEnv, setSsrEnv } from './ssrEnv.node'
 import { renderPage } from './renderPage.node'
 import { hasProp } from './utils'
-import { assertUsage } from './utils/assert'
+import { assert, assertUsage } from './utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
@@ -27,18 +27,21 @@ function createPageRender({
   alreadyCalled = true
 
   const ssrEnv = { viteDevServer, root, isProduction, baseUrl: base }
-  assertArguments(ssrEnv)
+  assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
   return renderPage
 }
 
-function assertArguments(ssrEnv: {
-  viteDevServer?: unknown
-  root?: unknown
-  isProduction?: unknown
-  baseUrl?: unknown
-}): asserts ssrEnv is SsrEnv {
+function assertArguments(
+  ssrEnv: {
+    viteDevServer?: unknown
+    root?: unknown
+    isProduction?: unknown
+    baseUrl?: unknown
+  },
+  args: unknown[]
+): asserts ssrEnv is SsrEnv {
   const { viteDevServer, root, isProduction, baseUrl } = ssrEnv
   assertUsage(root, '`createPageRender({ root })`: argument `root` is missing.')
   assertUsage(typeof root === 'string', '`createPageRender({ root })`: argument `root` should be a string.')
@@ -72,4 +75,12 @@ function assertArguments(ssrEnv: {
       '`createPageRender({ viteDevServer, root })`: wrong `root` value, make sure that `path.normalize(root) === path.normalize(viteDevServer.root)`.'
     )
   }
+  assertUsage(args.length === 1, '`createPageRender()`: all arguments should be passed as a single argument object.')
+  assert(typeof args[0] === 'object' && args[0] !== null)
+  Object.keys(args[0]).forEach((argName) => {
+    assertUsage(
+      ['viteDevServer', 'root', 'isProduction', 'base'].includes(argName),
+      '`createPageRender()`: Unknown argument `' + argName + '`.'
+    )
+  })
 }
