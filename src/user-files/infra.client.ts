@@ -1,8 +1,8 @@
-import { setAllUserFilesGetter } from './infra.shared'
+import { setUserFilesGetter } from './infra.shared'
 
-setAllUserFilesGetter(__getAllUserFiles)
+setUserFilesGetter(_getAllUserFiles)
 
-function __getAllUserFiles(): any {
+function _getAllUserFiles(): any {
   // Vite resolves globs with micromatch: https://github.com/micromatch/micromatch
   // Pattern `*([a-zA-Z0-9])` is an Extglob: https://github.com/micromatch/micromatch#extglobs
   const allUserFiles: any = {

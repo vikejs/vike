@@ -1,41 +1,40 @@
-import { setAllUserFilesGetter } from './infra.shared'
+import { getterAlreadySet, setGetterLoader } from './infra.shared'
 import { assert, assertUsage } from '../utils/assert'
 import { sep as pathSep, resolve as pathResolve } from 'path'
 import { getSsrEnv } from '../ssrEnv.node'
-const viteEntryFileBase = 'infra.node.vite-entry'
-require.resolve(`./${viteEntryFileBase}`)
-assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
-const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
 
-setAllUserFilesGetter(async () => {
-  const viteEntryExports = await loadViteEntry(viteEntry)
-  const __getAllUserFiles = viteEntryExports.__getAllUserFiles || viteEntryExports.default.__getAllUserFiles
-  return __getAllUserFiles()
-})
+setGetterLoader(loadGetter)
 
-async function loadViteEntry(modulePath: string): Promise<any> {
+async function loadGetter(): Promise<void> {
+  if (getterAlreadySet()) {
+    return
+  }
   const ssrEnv = getSsrEnv()
-
+  const viteEntryFileBase = 'infra.node.vite-entry'
+  require.resolve(`./${viteEntryFileBase}`)
   if (ssrEnv.isProduction) {
     const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntryFileBase}.js`)
-    let moduleExports
     try {
-      moduleExports = require(modulePath)
+      require(modulePath)
     } catch (err) {
-      assertUsage(
-        false,
-        `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`
-      )
+      if (err.code !== 'MODULE_NOT_FOUND' || !err.message.includes(`Cannot find module '${modulePath}'`)) {
+        throw err
+      } else {
+        assertUsage(
+          false,
+          `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`
+        )
+      }
     }
-    return moduleExports
   } else {
-    let moduleExports: any
+    assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
+    const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
     try {
-      moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(modulePath)
+      await ssrEnv.viteDevServer.ssrLoadModule(viteEntry)
     } catch (err) {
       ssrEnv.viteDevServer.ssrFixStacktrace(err)
       throw err
     }
-    return moduleExports
   }
+  assert(getterAlreadySet())
 }
