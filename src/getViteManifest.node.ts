@@ -1,5 +1,7 @@
 import { getSsrEnv } from './ssrEnv.node'
+import { assert } from './utils'
 
+export { setViteManifest }
 export { getViteManifest }
 export { ViteManifest }
 
@@ -46,4 +48,10 @@ function getViteManifest(): {
     clientManifestPath,
     serverManifestPath
   }
+}
+
+function setViteManifest(manifests: { clientManifest: ViteManifest; serverManifest: ViteManifest }) {
+  clientManifest = manifests.clientManifest
+  serverManifest = manifests.serverManifest
+  assert(clientManifest && serverManifest)
 }
