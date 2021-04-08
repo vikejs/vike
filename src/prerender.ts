@@ -16,7 +16,7 @@ type HtmlDocument = {
 }
 
 /**
- * Used for proxying regular HTTP(S) requests
+ * Render your pages (e.g. for deploying to a static host).
  * @param partial Allow only a subset of pages to be pre-rendered.
  */
 async function prerender({
