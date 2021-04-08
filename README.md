@@ -765,7 +765,7 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
  - [API - Route String](#route-string)
  - [API - Route Function](#route-function)
 
-### Server-side Routing VS Client-side Routing
+#### Server-side Routing VS Client-side Routing
 
 Server-side Routing (*SR*) is simple and familiar:
 that's how the old web (PHP, Ruby on Rails, Django, etc.) did routing. It's easy to reason about: "For an HTTP request with a given URL, what page should be rendered?" &mdash; that's all what SR does, that's it.
