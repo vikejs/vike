@@ -15,10 +15,12 @@ import { isSSR } from './utils'
 export { buildPlugin }
 
 function buildPlugin(): Plugin {
+  let isSsrBuild: boolean | undefined
   return {
     name: 'vite-plugin-ssr:build',
     apply: 'build',
     config: (config) => {
+      isSsrBuild = isSSR(config)
       assertPatch()
       return {
         build: {
@@ -29,6 +31,22 @@ function buildPlugin(): Plugin {
         },
         ssr: ssrConfig
       }
+    },
+    transform: (_src, id) => {
+      assert(isSsrBuild === true || isSsrBuild === false)
+      return removeClientCode(isSsrBuild, id)
+    }
+  }
+}
+
+function removeClientCode(isSsrBuild: boolean, id: string) {
+  if (!isSsrBuild) {
+    return
+  }
+  if (id.includes('.page.client.')) {
+    return {
+      code: `throw new Error('[vite-plugin-ssr][Wrong Usage] File ${id} should not be loaded in Node.js');`,
+      map: null
     }
   }
 }
