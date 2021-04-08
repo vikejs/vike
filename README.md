@@ -37,6 +37,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/>
 <br/> Guides
 <br/> &nbsp;&nbsp; [Data Fetching](#data-fetching)
+<br/> &nbsp;&nbsp; [Pass data to all components](#pass-data-to-all-components)
 <br/> &nbsp;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
 <br/> &nbsp;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp; [Markdown](#markdown)
@@ -655,6 +656,18 @@ function Page(pageProps) {
   /* ... */
 }
 ```
+
+<br/><br/>
+
+
+## Pass data to all components
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+As we have seen in the [Data Fetching](#data-fetching) guide, you use the hooks `addContextProps()` and `setPageProps()` to pass data to the root component. You can also pass data to the whole component tree:
+ - React: [React.createContext](https://reactjs.org/docs/context.html)
+ - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
+ - Vue 3: [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
 
 <br/><br/>
 
