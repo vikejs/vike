@@ -22,3 +22,7 @@ cli.help()
 cli.version(require('../../package.json').version)
 
 cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
+
+process.on('unhandledRejection', (rejectValue) => {
+  throw rejectValue
+})
