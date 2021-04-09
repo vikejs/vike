@@ -516,7 +516,7 @@ In short: `vite-plugin-ssr` is not only the most flexible, but also the easiest 
 
 Scaffold a Vite app that uses `vite-plugin-ssr`.
 
-With NPM:
+With npm:
 
 ```
 npm init vite-plugin-ssr
@@ -692,7 +692,9 @@ As we have seen in the [Data Fetching](#data-fetching) guide, you use the hooks 
 > that you can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
 > If you don't use pre-rendering, then you need to use a Node.js server to be able to render your pages' HTML at request-time.
 
-To pre-render your pages, run `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
+To pre-render your pages, use the [CLI command `prerender`](#command-prerender) at the end of your build:
+ - With npm: run `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`.
+ - With Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.
 
 For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
 
