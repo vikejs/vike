@@ -1876,8 +1876,9 @@ It can be called:
  - As CLI command: `$ npx vite-plugin-ssr prerender` / `$ yarn vite-plugin-ssr prerender`.
  - As JavaScript API: `import { prerender } from 'vite-plugin-ssr/cli`.
 
-It has one option:
+Options:
  - `partial`: Allow only a subset of pages to be pre-rendered. (Parameterized routes without `prerender()` hook cannot be pre-rendered and the `--partial` option suppresses the warning that warns you about pages not being pre-rendered.) (`$ vite-plugin-ssr prerendered --partial` / `prerender({ partial: true })`)
+ - `root`: The root directory of your project (where `vite.config.js` and `dist/` live). Default: `process.cwd()`.
 
 <br/><br/>
 

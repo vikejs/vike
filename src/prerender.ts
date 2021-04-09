@@ -18,20 +18,21 @@ type HtmlDocument = {
 /**
  * Render your pages (e.g. for deploying to a static host).
  * @param partial Allow only a subset of pages to be pre-rendered.
+ * @param root The root directory of your project (where `vite.config.js` and `dist/` live) (default: `process.cwd()`).
  */
 async function prerender({
   partial = false,
+  root = process.cwd(),
   clientRouter = false,
   base
 }: {
   partial?: boolean
+  root?: string
   clientRouter?: boolean
   base?: string
 } = {}) {
   assertArguments(partial, clientRouter, base)
   console.log(`${cyan(`vite-plugin-ssr ${require('../package.json').version}`)} ${green('pre-rendering HTML...')}`)
-
-  const root = process.cwd()
 
   const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
   assertUsage(
