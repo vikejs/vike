@@ -696,13 +696,13 @@ To pre-render your pages, use the [CLI command `prerender`](#command-prerender) 
  - With npm: run `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`.
  - With Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.
 
-For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
+For pages with a parameterized route (e.g. `/movie/:movieId`), you have to use the [`prerender()` hook](#export--prerender-).
 
 The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
 Examples:
- - [/examples/vuex/](/examples/vue/)
- - [/examples/redux/](/examples/react/)
+ - [/examples/vue/](/examples/vue/)
+ - [/examples/react/](/examples/react/)
 
 <br/><br/>
 
