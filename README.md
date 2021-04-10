@@ -928,7 +928,7 @@ Even complex integrations, such as Vuex or Redux, are simple and straightforward
 Because you control how your pages are rendered,
 integration is just a matter of following the official guide of the tool you want to integrate.
 
-While you can follow the official guides *exactly* as they are (including serializing and injecting the initial state into HTML),
+While you can follow official guides *exactly* as-is (including serializing initial state into HTML),
 you can also leverage `vite-plugin-ssr`'s `pageProps` to make your life slightly easier,
 as shown in the following examples.
 
