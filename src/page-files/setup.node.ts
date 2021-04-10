@@ -9,12 +9,12 @@ setPageFilesAsync(setPageFiles)
 async function setPageFiles(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
   const viteEntry = 'pageFiles.node'
-  require.resolve(`./${viteEntry}`)
+  requireResolve(`./${viteEntry}`)
   if (ssrEnv.isProduction) {
     const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntry}.js`)
     let moduleExports: any
     try {
-      moduleExports = require(modulePath)
+      moduleExports = require_(modulePath)
     } catch (err) {
       if (err.code !== 'MODULE_NOT_FOUND' || !err.message.includes(`Cannot find module '${modulePath}'`)) {
         throw err
@@ -31,7 +31,7 @@ async function setPageFiles(): Promise<unknown> {
     return pageFiles
   } else {
     assert(__dirname.endsWith(['dist', 'page-files'].join(pathSep)))
-    const modulePath = require.resolve(`../../page-files/${viteEntry}.ts`)
+    const modulePath = requireResolve(`../../page-files/${viteEntry}.ts`)
     let moduleExports: any
     try {
       moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(modulePath)
@@ -44,4 +44,12 @@ async function setPageFiles(): Promise<unknown> {
     assert(hasProp(pageFiles, '.page'))
     return pageFiles
   }
+}
+
+// Make sure that dynamic module paths are not statically analysed by bundlers such as Webpack
+function require_(modulePath: string): unknown {
+  return eval('require')(modulePath)
+}
+function requireResolve(modulePath: string): string {
+  return eval('require').resolve(modulePath)
 }
