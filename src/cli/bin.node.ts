@@ -1,5 +1,4 @@
 import { cac } from 'cac'
-import { buildCloudflareWorker } from '../buildCloudflareWorker'
 import { prerender } from '../prerender'
 
 const cli = cac('vite-plugin-ssr')
@@ -17,10 +16,6 @@ cli
     const { partial, clientRouter, base, root } = options
     await prerender({ partial, clientRouter, base, root })
   })
-
-cli.command('build-cloudflare-worker <worker>').action(async (worker: string) => {
-  await buildCloudflareWorker({ worker })
-})
 
 // Listen to unknown commands
 cli.on('command:*', () => {
