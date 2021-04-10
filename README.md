@@ -46,6 +46,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
+<br/> &nbsp;&nbsp; [Cloudflare Workers](#cloudflare-workers)
 <br/>
 <br/> API
 <br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
@@ -83,11 +84,11 @@ Simple, full-fledged, do-one-thing-do-it-well.
 
 `vite-plugin-ssr` provides a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool.
 
-- **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue, React, ...), and any server environment (Express, Fastify, Cloudflare Workers, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster and animated page transitions). Can also be used with Vue Router and React Router.
+- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). Can also be used with Vue Router and React Router.
 - **HMR**. Browser as well as server code is automatically reloaded.
-- **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
+- **Pre-render / SSG / Static Websites**. Deploy your app to a static host (GitHub Pages, Netlify, Cloudflare Pages, ...) by pre-rendering your pages.
 - **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
 - **Code Splitting**. In the browser, each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
@@ -1060,6 +1061,18 @@ useClientRouter({
 <br/><br/>
 
 
+### Cloudflare Workers
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Make sure to import `/dist/server/importer.js` in your worker code. (The `importer.js` makes all dependencies statically analysable so that the entire server code can be bundled into a single worker file.)
+
+Example:
+ - [/examples/cloudflare-workers](/examples/cloudflare-workers)
+
+<br/><br/>
+
+
 ## API
 
 ### `*.page.js`
@@ -1839,7 +1852,7 @@ async function startServer() {
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by the `render()` hook.
 
-Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...).
+Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers.
 
 Examples:
  - [JavaScript](/boilerplates/boilerplate-vue/server/index.js)
