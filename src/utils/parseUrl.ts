@@ -9,7 +9,7 @@ function parseUrl(url: string): { origin: string; pathname: string; search: stri
     hash = '#'
   }
   assert(pathname.startsWith('/'))
-  assert(hash==='' || hash.startsWith('#'))
+  assert(hash === '' || hash.startsWith('#'))
   assert(url === `${origin}${pathname}${search}${hash}`)
   return { origin, pathname, search, hash }
 }

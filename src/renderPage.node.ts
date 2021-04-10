@@ -551,7 +551,9 @@ function assertArguments(...args: unknown[]) {
   assertUsage(hasProp(argObject, 'url'), '`renderPage({ url })`: argument `url` is missing.')
   assertUsage(
     typeof argObject.url === 'string',
-    '`renderPage({ url })`: argument `url` should be a string but we got `typeof url === "' + typeof argObject.url + '"`.'
+    '`renderPage({ url })`: argument `url` should be a string but we got `typeof url === "' +
+      typeof argObject.url +
+      '"`.'
   )
   try {
     removeOrigin(argObject.url)
