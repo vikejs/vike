@@ -770,25 +770,12 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
 
 #### Server-side Routing VS Client-side Routing
 
-Server-side Routing (*SR*) is simple and familiar:
-that's how the old web (PHP, Ruby on Rails, Django, etc.) did routing. It's easy to reason about: "For an HTTP request with a given URL, what page should be rendered?" &mdash; that's all what SR does, that's it.
+By default, `vite-plugin-ssr` does Server-side Routing. (It's the "old school" way of doing routing: when the user changes page, a new HTML request is made.)
 
-Client-side Routing (*CR*) is straightforward as well, however, it does add complexity to your architecture:
-you now have to maintain and reason about an additional second scenario.
-Scenario 1: the page is rendered to HTML and then hydrated to the DOM (like in SR),
-which happens when the user goes to the page by opening a new browser tab (or refreshes the page).
-Scenario 2: the page is only rendered to the DOM,
-which happens when the user is already on your website and navigates to the page by clicking a link (or hits the browser back/forward history button).
+If you don't have a strong rationale to do something differently, then you should stick to the default. (Because Server-side Routing leads to a fundamentally simpler tech stack with a higher DX efficiency.)
 
-The added complexity of having to deal with two scenarios instead of one
-is subtle but non-negligable, especially around the integration of tools.
-
-Performance is usually a bad reason to choose CR over SR:
-chances are that the dev time wasted on CR's added complexity would be better invested in other performance-critical aspects of your application.
-That said, if your business has a strong requirement for you to squeeze out every possible millisecond of latency, then CR will give you a non-negligable improvement in page transition speed. Or, if you are building a simple application, such as a homepage or a blog, then CR can be the right choice as it gives you that cool effect of smooth page transitions and the architectural DX scability of your simple app is not much of a problem to begin with.
-
-By default, `vite-plugin-ssr` does SR. You opt-in for CR by using `useClientRouter()`.
- - [API - `import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
+ - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 
 <br/><br/>
 
