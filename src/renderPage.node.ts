@@ -574,7 +574,12 @@ function assertArguments(...args: unknown[]) {
   const unknownArgs = Object.keys(argObject).filter((key) => !['url', 'contextProps'].includes(key))
   assertUsage(
     unknownArgs.length === 0,
-    '`renderPage({ /*...*/ })`: unknown arguments [' + unknownArgs.map((s) => `'${s}'`).join(', ') + '].'
+    '`renderPage({ /*...*/ })`: unknown arguments [' +
+      unknownArgs
+        .slice(10)
+        .map((s) => `'${s}'`)
+        .join(', ') +
+      '].'
   )
 }
 
