@@ -71,6 +71,8 @@ async function renderPage({
     url = removeBaseUrl(url)
   }
 
+  Object.assign(contextProps, { urlNormalized: url })
+
   const allPageIds = await getPageIds()
 
   // *** Route ***
