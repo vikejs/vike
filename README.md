@@ -673,7 +673,7 @@ function Page(pageProps) {
 As we have seen in the [Data Fetching](#data-fetching) guide, you use the hooks `addContextProps()` and `setPageProps()` to pass data to the root component. You can also pass data to the whole component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
- - Vue 3: [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
+ - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
 
 <br/><br/>
 
