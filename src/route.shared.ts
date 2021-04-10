@@ -42,25 +42,20 @@ async function route(
       // Route with filesystem
       if (!(pageId in pageRoutes)) {
         const matchValue = routeWith_filesystem(urlPathname, pageId, allPageIds)
-        return { pageId, matchValue, contextPropsAddendum: {} }
+        return { pageId, matchValue, routeParams: {} }
       }
       const { pageRoute, pageRouteFile } = pageRoutes[pageId]
 
       // Route with `.page.route.js` defined route string
       if (typeof pageRoute === 'string') {
-        const { matchValue, contextPropsAddendum } = resolveRouteString(pageRoute, urlPathname)
-        return { pageId, matchValue, contextPropsAddendum }
+        const { matchValue, routeParams } = resolveRouteString(pageRoute, urlPathname)
+        return { pageId, matchValue, routeParams }
       }
 
       // Route with `.page.route.js` defined route function
       if (isCallable(pageRoute)) {
-        const { matchValue, contextPropsAddendum } = resolveRouteFunction(
-          pageRoute,
-          urlPathname,
-          contextProps,
-          pageRouteFile
-        )
-        return { pageId, matchValue, contextPropsAddendum }
+        const { matchValue, routeParams } = resolveRouteFunction(pageRoute, urlPathname, contextProps, pageRouteFile)
+        return { pageId, matchValue, routeParams }
       }
 
       assert(false)
@@ -71,8 +66,8 @@ async function route(
 
   if (!winner) return null
 
-  const { pageId, contextPropsAddendum } = winner
-  return { pageId, contextPropsAddendum }
+  const { pageId, routeParams } = winner
+  return { pageId, contextPropsAddendum: { ...routeParams, routeParams } }
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -197,9 +192,7 @@ function isDefaultPageFile(filePath: string): boolean {
 }
 
 function resolveRouteString(routeString: string, urlPathname: string) {
-  const { matchValue, routeParams } = routeWith_pathToRegexp(urlPathname, routeString)
-  const contextPropsAddendum = routeParams
-  return { matchValue, contextPropsAddendum }
+  return routeWith_pathToRegexp(urlPathname, routeString)
 }
 function resolveRouteFunction(
   routeFunction: Function,
@@ -208,7 +201,7 @@ function resolveRouteFunction(
   routeFilePath: string
 ): {
   matchValue: boolean | number
-  contextPropsAddendum: Record<string, unknown>
+  routeParams: Record<string, unknown>
 } {
   const result = routeFunction({ url: urlPathname, contextProps })
   assertUsage(
@@ -220,7 +213,7 @@ function resolveRouteFunction(
     typeof result.match === 'boolean' || typeof result.match === 'number',
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
   )
-  let contextPropsAddendum = {}
+  let routeParams = {}
   if (hasProp(result, 'contextProps')) {
     assertUsage(
       typeof result.contextProps === 'object' &&
@@ -228,7 +221,7 @@ function resolveRouteFunction(
         result.contextProps.constructor === Object,
       `The \`contextProps\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
     )
-    contextPropsAddendum = result.contextProps
+    routeParams = result.contextProps
   }
   Object.keys(result).forEach((key) => {
     assertUsage(
@@ -238,7 +231,7 @@ function resolveRouteFunction(
   })
   return {
     matchValue: result.match,
-    contextPropsAddendum
+    routeParams
   }
 }
 
