@@ -1,4 +1,4 @@
-import { getUserFiles } from './user-files/getUserFiles.shared'
+import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
 import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, parseUrl } from './utils'
@@ -171,11 +171,11 @@ function getCommonPath(pageIds: string[]): string {
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
 async function getPageIds(): Promise<PageId[]> {
-  const pageFiles = await getUserFiles('.page')
-  let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-  pageFilePaths = pageFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
+  const pageViewFiles = await getPageFiles('.page')
+  let pageViewFilePaths = pageViewFiles.map(({ filePath }) => filePath)
+  pageViewFilePaths = pageViewFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
 
-  let allPageIds = pageFilePaths.map(computePageId)
+  let allPageIds = pageViewFilePaths.map(computePageId)
   return allPageIds
 }
 function computePageId(filePath: string): string {
@@ -247,7 +247,7 @@ type PageRoute = {
   pageRoute: string | Function
 }
 async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
-  const userRouteFiles = await getUserFiles('.page.route')
+  const userRouteFiles = await getPageFiles('.page.route')
 
   const pageRoutes: Record<PageId, PageRoute> = {}
 

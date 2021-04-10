@@ -1,4 +1,4 @@
-import './user-files/infra.node'
+import './page-files/infra.node'
 export { createPageRender } from './createPageRender.node'
 export { html } from './html.node'
 export { setViteManifest as __private_setViteManifest } from './getViteManifest.node'

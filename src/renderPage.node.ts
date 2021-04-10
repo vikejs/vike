@@ -2,7 +2,7 @@ import devalue from 'devalue'
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
-import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
+import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
@@ -302,7 +302,7 @@ async function renderHtmlDocument({
 }
 
 async function getPage(pageId: string) {
-  const pageFile = await getUserFile('.page', pageId)
+  const pageFile = await getPageFile('.page', pageId)
   assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
@@ -403,7 +403,7 @@ async function getBrowserFilePath(pageId: string) {
   return browserFilePath
 }
 async function getBrowserFiles(pageId: string) {
-  let browserFiles = await getUserFiles('.page.client')
+  let browserFiles = await getPageFiles('.page.client')
   assertUsage(
     browserFiles.length > 0,
     'No *.page.client.* file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
@@ -413,7 +413,7 @@ async function getBrowserFiles(pageId: string) {
 }
 
 async function getServerFiles(pageId: string) {
-  let serverFiles = await getUserFiles('.page.server')
+  let serverFiles = await getPageFiles('.page.server')
   assertUsage(
     serverFiles.length > 0,
     'No *.page.server.* file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
@@ -422,15 +422,15 @@ async function getServerFiles(pageId: string) {
   return serverFiles
 }
 
-function filterAndSort<T extends { filePath: string }>(userFiles: T[], pageId: string): T[] {
-  userFiles = userFiles.filter(({ filePath }) => {
+function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: string): T[] {
+  pageFiles = pageFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
     assert(!filePath.includes('\\'))
     return filePath.startsWith(pageId) || filePath.includes('/_default')
   })
 
   // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
-  userFiles.sort(
+  pageFiles.sort(
     lowerFirst(({ filePath }) => {
       if (filePath.startsWith(pageId)) return -1
       const relativePath = pathRelative(pageId, filePath)
@@ -440,7 +440,7 @@ function filterAndSort<T extends { filePath: string }>(userFiles: T[], pageId: s
     })
   )
 
-  return userFiles
+  return pageFiles
 }
 
 async function applyViteHtmlTransform(htmlDocument: string, url: string): Promise<string> {
@@ -693,7 +693,7 @@ function handleErr(err: unknown) {
     }
   }
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  const errStr = hasProp(err, 'stack') && String(err.stack) || String(err)
+  const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
   console.error(errStr)
 }
 

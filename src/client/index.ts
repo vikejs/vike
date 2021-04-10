@@ -1,2 +1,2 @@
-import '../user-files/infra.client'
+import '../page-files/infra.client'
 export { getPage, getPageById } from './getPage.client'

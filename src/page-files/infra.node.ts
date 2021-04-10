@@ -27,8 +27,8 @@ async function loadGetter(): Promise<void> {
       }
     }
   } else {
-    assert(__dirname.endsWith(['dist', 'user-files'].join(pathSep)))
-    const viteEntry = require.resolve(`../../user-files/${viteEntryFileBase}.ts`)
+    assert(__dirname.endsWith(['dist', 'page-files'].join(pathSep)))
+    const viteEntry = require.resolve(`../../page-files/${viteEntryFileBase}.ts`)
     try {
       await ssrEnv.viteDevServer.ssrLoadModule(viteEntry)
     } catch (err) {

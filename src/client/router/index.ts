@@ -1,4 +1,4 @@
-import '../../user-files/infra.client'
+import '../../page-files/infra.client'
 export { useClientRouter, navigate } from './useClientRouter.client'
 export { getPageId } from './getPageId.client'
 export { getPageProps } from './getPageProps.client'

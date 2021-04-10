@@ -1,4 +1,4 @@
-import { getUserFile } from '../user-files/getUserFiles.shared'
+import { getPageFile } from '../page-files/getPageFiles.shared'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { navigationState } from './navigationState.client'
 
@@ -25,7 +25,7 @@ function assertPristineUrl() {
 
 async function getPageById(pageId: string): Promise<any> {
   assert(typeof pageId === 'string')
-  const pageFile = await getUserFile('.page', pageId)
+  const pageFile = await getPageFile('.page', pageId)
   assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()

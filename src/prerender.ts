@@ -1,4 +1,4 @@
-import './user-files/infra.node'
+import './page-files/infra.node'
 import { writeFile as writeFile_cb, mkdir } from 'fs'
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
