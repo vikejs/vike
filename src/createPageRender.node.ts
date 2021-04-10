@@ -5,6 +5,7 @@ import { assert, assertUsage } from './utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
+import { isPageFilesSet } from './page-files/getPageFiles.shared'
 
 export { createPageRender }
 
@@ -19,7 +20,7 @@ function createPageRender({
   base = '/'
 }: {
   viteDevServer?: ViteDevServer
-  root: string
+  root?: string
   isProduction?: boolean
   base?: string
 }): RenderPage {
@@ -43,8 +44,10 @@ function assertArguments(
   args: unknown[]
 ): asserts ssrEnv is SsrEnv {
   const { viteDevServer, root, isProduction, baseUrl } = ssrEnv
-  assertUsage(root, '`createPageRender({ root })`: argument `root` is missing.')
-  assertUsage(typeof root === 'string', '`createPageRender({ root })`: argument `root` should be a string.')
+  assertUsage(
+    root === undefined || typeof root === 'string',
+    '`createPageRender({ root })`: argument `root` should be a string.'
+  )
   assertUsage(
     typeof baseUrl === 'string',
     '`createPageRender({ base })`: argument `base` should be a string or `undefined`.'
@@ -59,7 +62,12 @@ function assertArguments(
       viteDevServer === undefined,
       '`createPageRender({ viteDevServer, isProduction })`: if `isProduction` is `true`, then `viteDevServer` should be `undefined`.'
     )
+    assertUsage(
+      root || isPageFilesSet(),
+      "`createPageRender({ root })`: argument `root` is missing. (Alternatively, if `root` doesn't exist because you are bundling your server code into a single file, then import `/dist/server/importer.js`.)"
+    )
   } else {
+    assertUsage(root, '`createPageRender({ root })`: argument `root` is missing.')
     assertUsage(
       !!viteDevServer,
       '`createPageRender({ viteDevServer, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` cannot be `undefined`.'

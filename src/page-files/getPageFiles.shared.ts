@@ -5,12 +5,16 @@ export { getPageFile }
 
 export { setPageFiles }
 export { setPageFilesAsync }
+export { isPageFilesSet }
 
 let allPageFiles: PageFiles | undefined
 
 function setPageFiles(pageFiles: unknown) {
   assert(hasProp(pageFiles, '.page'))
   allPageFiles = pageFiles as PageFiles
+}
+function isPageFilesSet() {
+  return !!allPageFiles
 }
 
 let asyncSetter: () => Promise<unknown>

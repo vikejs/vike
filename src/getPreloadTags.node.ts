@@ -31,7 +31,7 @@ async function getPreloadTags(
     assert(clientManifest && serverManifest)
     const visistedAssets = new Set<string>()
     dependencies.forEach((filePath) => {
-      const modulePath = getModulePath(filePath, ssrEnv.root)
+      const modulePath = getModulePath(filePath)
       let manifest: ViteManifest | undefined = undefined
       if (serverManifest[modulePath]) manifest = serverManifest
       if (clientManifest[modulePath]) manifest = clientManifest
@@ -81,11 +81,8 @@ function collectAssets(
   }
 }
 
-function getModulePath(filePath: string, root: string): string {
+function getModulePath(filePath: string): string {
   let modulePath = filePath
-  if (modulePath.startsWith(root)) {
-    return modulePath.slice(root.length)
-  }
   if (modulePath.startsWith('/')) {
     modulePath = modulePath.slice(1)
   }
