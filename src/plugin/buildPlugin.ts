@@ -60,7 +60,7 @@ function entryPoints(config: UserConfig): Record<string, string> {
 }
 
 function serverEntryPoints(): Record<string, string> {
-  const serverEntry = require.resolve('../../page-files/infra.node.vite-entry.ts')
+  const serverEntry = require.resolve('../../page-files/pageFiles.node.ts')
   const entryName = pathFilename(serverEntry).replace(/\.ts$/, '')
   const entryPoints = {
     [entryName]: serverEntry

@@ -7,15 +7,16 @@ export { assertWarning }
 const repoName = 'vite-plugin-ssr'
 const libName = repoName
 const requestForContact = `Please open a new issue at https://github.com/brillout/${repoName}/issues/new and include this error stack.`
-const internalErroPrefix = `[${libName}][Internal Error] Something unexpected happened. ${requestForContact}`
+const internalErrorPrefix = `[${libName}][Internal Error]`
 const usageErrorPrefix = `[${libName}][Wrong Usage]`
 const warningPrefix = `[${libName}][Warning]`
 
-function assert(condition: unknown): asserts condition {
+function assert(condition: unknown /*, errorMessage = 'Something unexpected happened'*/): asserts condition {
   if (condition) {
     return
   }
-  const internalError = newError(internalErroPrefix)
+  const errorMessage = 'Something unexpected happened'
+  const internalError = newError(`${internalErrorPrefix} ${errorMessage}. ${requestForContact}`)
   throw internalError
 }
 

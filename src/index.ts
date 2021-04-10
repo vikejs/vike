@@ -1,7 +1,10 @@
-import './page-files/infra.node'
+import './page-files/setup.node'
 export { createPageRender } from './createPageRender.node'
 export { html } from './html.node'
-export { setViteManifest as __private_setViteManifest } from './getViteManifest.node'
+
+import { setViteManifest } from './getViteManifest.node'
+import { setPageFiles } from './page-files/getPageFiles.shared'
+export const __private = { setViteManifest, setPageFiles }
 
 // Plugin should be imported from `vite-plugin-ssr/plugin`
 import { assertUsage } from './utils'

@@ -1,18 +1,36 @@
-import { assertUsage } from '../utils'
-import { getAllUserFiles, FileType } from './infra.shared'
+import { assert, assertUsage, hasProp } from '../utils'
 
 export { getPageFiles }
 export { getPageFile }
+
+export { setPageFiles }
+export { setPageFilesAsync }
+
+let allPageFiles: PageFiles | undefined
+
+function setPageFiles(pageFiles: unknown) {
+  assert(hasProp(pageFiles, '.page'))
+  allPageFiles = pageFiles as PageFiles
+}
+
+let asyncSetter: () => Promise<unknown>
+function setPageFilesAsync(_asyncSetter: () => Promise<unknown>) {
+  asyncSetter = _asyncSetter
+}
 
 type PageFile = {
   filePath: string
   loadFile: () => Promise<Record<string, any>>
 }
-
+type FileType = '.page' | '.page.server' | '.page.route' | '.page.client'
 type PageFiles = Record<FileType, Record<PageFile['filePath'], PageFile['loadFile']>>
 
 async function getPageFiles(fileType: FileType): Promise<PageFile[]> {
-  const allPageFiles: PageFiles = await getAllUserFiles()
+  if (!allPageFiles && asyncSetter) {
+    allPageFiles = (await asyncSetter()) as any
+    assert(hasProp(allPageFiles, '.page'))
+  }
+  assert(hasProp(allPageFiles, '.page'))
 
   const pageFiles = Object.entries(allPageFiles[fileType]).map(([filePath, loadFile]) => {
     return { filePath, loadFile }
