@@ -2,7 +2,7 @@ Example of using [Cloudflare Workers](https://workers.cloudflare.com/).
 
 To run it:
 
-2. ```bash
+1. ```bash
     git clone git@github.com:brillout/vite-plugin-ssr
     cd vite-plugin-ssr/examples/cloudflare-workers/
     ```
