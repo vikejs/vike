@@ -150,7 +150,7 @@ function onLinkClick(callback: (url: string) => void) {
   }
 
   function isHashLink(url: string) {
-    return url.startsWith('#') || url.startsWith(`${window.location.pathname}#`)
+    return url.includes('#')
   }
 
   function isNotNewTabLink(linkTag: HTMLElement) {

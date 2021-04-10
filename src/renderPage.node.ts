@@ -43,13 +43,23 @@ async function renderPage({
 > {
   assertArguments(...arguments)
 
-  if (url === '/favicon.ico') {
+  if (url.endsWith('/favicon.ico')) {
     return {
       nothingRendered: true,
       renderResult: undefined,
       statusCode: undefined
     }
   }
+
+  const isPagePropsRequest = isPagePropsUrl(url)
+  if (isPagePropsRequest) {
+    url = retrieveOriginalUrl(url)
+  }
+
+  Object.assign(contextProps, { url })
+
+  url = removeOrigin(url)
+  assert(url.startsWith('/'))
 
   if (!startsWithBaseUrl(url)) {
     return {
@@ -60,13 +70,6 @@ async function renderPage({
   } else {
     url = removeBaseUrl(url)
   }
-
-  const isPagePropsRequest = isPagePropsUrl(url)
-  if (isPagePropsRequest) {
-    url = retrieveOriginalUrl(url)
-  }
-
-  Object.assign(contextProps, { url })
 
   const allPageIds = await getPageIds()
 
@@ -543,27 +546,31 @@ function injectAtClosingTag(htmlDocument: string, closingTag: string, injection:
 
 function assertArguments(...args: unknown[]) {
   const argObject = args[0]
-  assertUsage(hasProp(argObject, 'url'), '`render({url, contextProps})`: argument `url` is missing.')
+  assertUsage(hasProp(argObject, 'url'), '`renderPage({ url })`: argument `url` is missing.')
   assertUsage(
     typeof argObject.url === 'string',
-    '`render({url, contextProps})`: argument `url` should be a string but we got `' + typeof argObject.url + '`.'
+    '`renderPage({ url })`: argument `url` should be a string but we got `typeof url === "' + typeof argObject.url + '"`.'
   )
-  assertUsage(
-    argObject.url.startsWith('/'),
-    '`render({url, contextProps})`: argument `url` should start with a `/` but we got `url==="' + argObject.url + '"`.'
-  )
+  try {
+    removeOrigin(argObject.url)
+  } catch (err) {
+    assertUsage(
+      false,
+      '`renderPage({ url })`: argument `url` should be a URL but we got `url==="' + argObject.url + '"`.'
+    )
+  }
   assertUsage(
     !hasProp(argObject, 'contextProps') || typeof argObject.contextProps === 'object',
-    '`render({url, contextProps})`: argument `contextProps` should be a `typeof contextProps === "object"`.'
+    '`renderPage({ contextProps })`: argument `contextProps` should be a `typeof contextProps === "object"`.'
   )
   assertUsage(
     args.length === 1,
-    '`render({url, contextProps})`: all arguments should be passed as a single argument object.'
+    '`renderPage({ /*...*/ })`: all arguments should be passed as a single argument object.'
   )
   const unknownArgs = Object.keys(argObject).filter((key) => !['url', 'contextProps'].includes(key))
   assertUsage(
     unknownArgs.length === 0,
-    '`render({url, contextProps})`: unknown arguments [' + unknownArgs.map((s) => `'${s}'`).join(', ') + '].'
+    '`renderPage({ /*...*/ })`: unknown arguments [' + unknownArgs.map((s) => `'${s}'`).join(', ') + '].'
   )
 }
 
@@ -718,4 +725,10 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
       '`.)'
   )
   return { clientManifest, serverManifest }
+}
+
+function removeOrigin(url: string): string {
+  const { origin, pathname, search, hash } = parseUrl(url)
+  assert(url === `${origin}${pathname}${search}${hash}`)
+  return `${pathname}${search}${hash}`
 }

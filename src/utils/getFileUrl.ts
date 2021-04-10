@@ -18,8 +18,8 @@ function getFileUrl(url: string, fileExtension: '.html' | '.pageProps.json'): st
   assert(url.startsWith('/'))
   const { pathname, search, hash } = parseUrl(url)
   assert(url === `${pathname}${search}${hash}`)
-  const trailingHash = pathname.endsWith('/') ? '' : '/'
-  return `${pathname}${trailingHash}index${fileExtension}${search}${hash}`
+  const trailingSlash = pathname.endsWith('/') ? '' : '/'
+  return `${pathname}${trailingSlash}index${fileExtension}${search}${hash}`
 }
 
 function isPagePropsUrl(url: string): boolean {
@@ -28,9 +28,10 @@ function isPagePropsUrl(url: string): boolean {
 }
 function retrieveOriginalUrl(url: string): string {
   assert(isPagePropsUrl(url))
-  let { pathname, search, hash } = parseUrl(url)
-  assert(url === `${pathname}${search}${hash}`)
+  let { origin, pathname, search, hash } = parseUrl(url)
+  assert(url === `${origin}${pathname}${search}${hash}`)
+  assert(pathname.endsWith(pagePropsSuffix))
   pathname = slice(pathname, 0, -1 * pagePropsSuffix.length)
   if (pathname === '') pathname = '/'
-  return `${pathname}${search}${hash}`
+  return `${origin}${pathname}${search}${hash}`
 }
