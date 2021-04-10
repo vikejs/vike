@@ -105,20 +105,20 @@ function pickWinner<T extends { matchValue: boolean | number }>(routeResults: T[
 function routeWith_pathToRegexp(
   urlPathname: string,
   routeString: string
-): { matchValue: false | number; routeProps: Record<string, string> } {
+): { matchValue: false | number; routeParams: Record<string, string> } {
   const match = pathToRegexp(urlPathname, { path: routeString, exact: true })
   if (!match) {
-    return { matchValue: false, routeProps: {} }
+    return { matchValue: false, routeParams: {} }
   }
   // The longer the route string, the more likely is it specific
   const matchValue = routeString.length
-  const routeProps = match.params
-  return { matchValue, routeProps }
+  const routeParams = match.params
+  return { matchValue, routeParams }
 }
 
 function isStaticRoute(route: string): boolean {
-  const { matchValue, routeProps } = routeWith_pathToRegexp(route, route)
-  return matchValue !== false && Object.keys(routeProps).length === 0
+  const { matchValue, routeParams } = routeWith_pathToRegexp(route, route)
+  return matchValue !== false && Object.keys(routeParams).length === 0
 }
 
 function routeWith_filesystem(urlPathname: string, pageId: string, allPageIds: PageId[]): boolean {
@@ -197,8 +197,8 @@ function isDefaultPageFile(filePath: string): boolean {
 }
 
 function resolveRouteString(routeString: string, urlPathname: string) {
-  const { matchValue, routeProps } = routeWith_pathToRegexp(urlPathname, routeString)
-  const contextPropsAddendum = routeProps
+  const { matchValue, routeParams } = routeWith_pathToRegexp(urlPathname, routeString)
+  const contextPropsAddendum = routeParams
   return { matchValue, contextPropsAddendum }
 }
 function resolveRouteFunction(
