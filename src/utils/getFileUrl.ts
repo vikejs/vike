@@ -3,7 +3,7 @@ const pagePropsSuffix = '/index.pageProps.json'
 
 export { getFileUrl }
 export { isPagePropsUrl }
-export { retrieveOriginalUrl }
+export { removePagePropsSuffix }
 
 /**
  (`/`, `.html`) -> `/index.html`
@@ -26,7 +26,7 @@ function isPagePropsUrl(url: string): boolean {
   const { pathname } = parseUrl(url)
   return pathname.endsWith(pagePropsSuffix)
 }
-function retrieveOriginalUrl(url: string): string {
+function removePagePropsSuffix(url: string): string {
   assert(isPagePropsUrl(url))
   let { origin, pathname, search, hash } = parseUrl(url)
   assert(url === `${origin}${pathname}${search}${hash}`)

@@ -18,7 +18,7 @@ import {
   hasProp,
   isPromise,
   isPagePropsUrl,
-  retrieveOriginalUrl,
+  removePagePropsSuffix,
   parseUrl
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
@@ -53,7 +53,7 @@ async function renderPage({
 
   const isPagePropsRequest = isPagePropsUrl(url)
   if (isPagePropsRequest) {
-    url = retrieveOriginalUrl(url)
+    url = removePagePropsSuffix(url)
   }
 
   Object.assign(contextProps, { url })
