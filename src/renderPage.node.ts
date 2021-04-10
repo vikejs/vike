@@ -545,8 +545,12 @@ function assertArguments(...args: unknown[]) {
   const argObject = args[0]
   assertUsage(hasProp(argObject, 'url'), '`render({url, contextProps})`: argument `url` is missing.')
   assertUsage(
-    typeof argObject.url === 'string' && argObject.url.startsWith('/'),
-    '`render({url, contextProps})`: argument `url` should start with a `/`.'
+    typeof argObject.url === 'string',
+    '`render({url, contextProps})`: argument `url` should be a string but we got `' + typeof argObject.url + '`.'
+  )
+  assertUsage(
+    argObject.url.startsWith('/'),
+    '`render({url, contextProps})`: argument `url` should start with a `/` but we got `url==="' + argObject.url + '"`.'
   )
   assertUsage(
     !hasProp(argObject, 'contextProps') || typeof argObject.contextProps === 'object',
