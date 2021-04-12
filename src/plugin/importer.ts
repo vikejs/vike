@@ -1,8 +1,8 @@
 import { Plugin } from 'vite'
 
-export { importerPlugin }
+export { importer }
 
-function importerPlugin(): Plugin {
+function importer(): Plugin {
   let ssr: boolean
   return {
     name: 'vite-plugin-ssr:importer',

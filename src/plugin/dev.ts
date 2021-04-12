@@ -1,9 +1,8 @@
 import { Plugin } from 'vite'
-import { ssrConfig } from './ssrConfig'
 
-export { devPlugin }
+export { dev }
 
-function devPlugin(): Plugin {
+function dev(): Plugin {
   return {
     name: 'vite-plugin-ssr:dev',
     apply: 'serve',

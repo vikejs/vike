@@ -10,9 +10,9 @@ import {
 import { assert } from '../utils'
 import * as glob from 'fast-glob'
 
-export { buildPlugin }
+export { build }
 
-function buildPlugin(): Plugin {
+function build(): Plugin {
   let isSsrBuild: boolean | undefined
   return {
     name: 'vite-plugin-ssr:build',

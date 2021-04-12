@@ -1,9 +1,9 @@
 import { Plugin } from 'vite'
 import { assert } from '../utils'
 
-export { manifestPlugin }
+export { manifest }
 
-function manifestPlugin(): Plugin {
+function manifest(): Plugin {
   let base: string
   let ssr: boolean
   return {
