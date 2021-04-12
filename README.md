@@ -47,6 +47,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
 <br/> &nbsp;&nbsp; [Cloudflare Workers](#cloudflare-workers)
+<br/> &nbsp;&nbsp; [WindiCSS](#windicss)
 <br/>
 <br/> API
 <br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
@@ -1056,6 +1057,51 @@ Make sure to import `/dist/server/importer.js` in your worker code. (The `import
 
 Example:
  - [/examples/cloudflare-workers](/examples/cloudflare-workers)
+
+<br/><br/>
+
+
+### WindiCSS
+
+1. Install `vite-plugin-windicss` and `windicss` development dependencies
+```bash
+npm i -D vite-plugin-windicss windicss
+# or
+yarn add -D vite-plugin-windicss windicss
+```
+
+2. Add `vite-plugin-windicss` to your `vite.config.js`
+```js
+import ssr from "vite-plugin-ssr/plugin";
+import WindiCSS from "vite-plugin-windicss";
+
+export default {
+  plugins: [
+    ssr(),
+    WindiCSS(),
+  ],
+};
+```
+
+3. Add WindiCSS to your `pages/_default/_default.page.client.*`
+```js
+import 'virtual:windi.css'
+```
+
+4. Add WindiCSS config file to include the /pages directory
+```js
+// windi.config.js
+import { defineConfig } from "windicss/helpers";
+
+export default defineConfig({
+  extract: {
+    include: ["pages/**/*.{vue,html,mdx,pug,jsx,tsx}"],
+    exclude: ["node_modules", ".git"],
+  },
+});
+```
+
+> More in the [WindiCSS Docs](https://windicss.org/guide/vite.html)
 
 <br/><br/>
 
