@@ -252,7 +252,7 @@ function getPluginManifest(
   pluginManifest: PluginManifest | null
   pluginManifestPath: string
 } {
-  const pluginManifestPath = `${root}/dist/client/manifest_vite-plugin-ssr.json`
+  const pluginManifestPath = `${root}/dist/client/vite-plugin-ssr.json`
 
   let manifestContent: unknown
   try {

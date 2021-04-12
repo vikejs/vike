@@ -20,7 +20,7 @@ function manifest(): Plugin {
       const doesClientSideRouting = includesClientSideRouter(bundle as any)
       const pluginManifest = { doesClientSideRouting, base }
       this.emitFile({
-        fileName: `manifest_vite-plugin-ssr.json`,
+        fileName: `vite-plugin-ssr.json`,
         type: 'asset',
         source: JSON.stringify(pluginManifest, null, 2)
       })
