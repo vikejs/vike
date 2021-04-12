@@ -1090,7 +1090,7 @@ Example:
      ],
    };
    ```
-   > Alternatively, you can define these options in `windi.config.js`
+   > Alternatively, you can define these options in `windi.config.js`.
 
 3. Add WindiCSS to your `_default.page.client.js`.
    ```js
