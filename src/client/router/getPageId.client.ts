@@ -1,4 +1,5 @@
-import { route, getPageIds } from '../../route.shared'
+import { route } from '../../route.shared'
+import { getPageIds } from '../../routing/get-page-ids'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 import { assertUsage } from '../../utils'
 import { navigationState } from '../navigationState.client'

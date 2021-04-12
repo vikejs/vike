@@ -1,7 +1,13 @@
 import './page-files/setup.node'
 import { writeFile as writeFile_cb, mkdir } from 'fs'
 import { join, sep, dirname } from 'path'
-import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
+import { route } from './route.shared'
+import { loadPageRoutes } from './routing/load-page-routes';
+import { getFilesystemRoute } from './routing/get-fs-route';
+import { getPageIds } from './routing/get-page-ids';
+import { isErrorPage } from './routing/is-error-page';
+import { isStaticRoute } from './routing/is-static-path-to-regexp-route';
+
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage } from './renderPage.node'
