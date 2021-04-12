@@ -1,5 +1,5 @@
 import './user-files/infra.node'
-import { writeFile as writeFile_cb, mkdir } from 'fs'
+import { writeFile, mkdir } from 'fs/promises'
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl } from './utils'
@@ -173,27 +173,8 @@ async function write(url: string, fileExtension: '.html' | '.pageProps.json', fi
   console.log(`${gray(join('dist', 'client') + sep)}${blue(filePathRelative)}`)
 }
 
-function writeFile(path: string, fileContent: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    writeFile_cb(path, fileContent, 'utf8', (err) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-function mkdirp(path: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    mkdir(path, { recursive: true }, (err) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
+function mkdirp(path: string): Promise<string | undefined> {
+  return mkdir(path, { recursive: true })
 }
 
 function normalizePrerenderResult(
