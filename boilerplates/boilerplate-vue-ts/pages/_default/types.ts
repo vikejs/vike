@@ -1,2 +1,5 @@
 export type PageProps = {}
-export type ContextProps = {}
+export type ContextProps = {
+  pageProps: PageProps
+}
+export type VueComponent = any

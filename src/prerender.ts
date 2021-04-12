@@ -14,7 +14,7 @@ export { prerender }
 type HtmlDocument = {
   url: string
   htmlDocument: string
-  pagePropsSerialized: string | null
+  contextPropsSerialized: string | null
 }
 
 /**
@@ -47,7 +47,7 @@ async function prerender({
     pluginManifest.version === version,
     `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
-  const serializePageProps: boolean = pluginManifest.doesClientSideRouting
+  const contextPropsNeeded: boolean = pluginManifest.doesClientSideRouting
   const baseUrl: string = pluginManifest.base
 
   process.env.NODE_ENV = 'production'
@@ -109,14 +109,14 @@ async function prerender({
         `The \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs returned by \`prerender()\` hooks to always match the URL of a page.`
       )
       const { pageId } = routeResult
-      const { htmlDocument, pagePropsSerialized } = await prerenderPage(
+      const { htmlDocument, contextPropsSerialized } = await prerenderPage(
         pageId,
         { ...contextProps, ...routeResult.contextPropsAddendum },
         url,
         !noPrenderContextProps,
-        serializePageProps
+        contextPropsNeeded
       )
-      htmlDocuments.push({ url, htmlDocument, pagePropsSerialized })
+      htmlDocuments.push({ url, htmlDocument, contextPropsSerialized })
       renderedPageIds[pageId] = true
     })
   )
@@ -144,14 +144,14 @@ async function prerender({
             return
           }
         }
-        const { htmlDocument, pagePropsSerialized } = await prerenderPage(
+        const { htmlDocument, contextPropsSerialized } = await prerenderPage(
           pageId,
           contextProps,
           url,
           false,
-          serializePageProps
+          contextPropsNeeded
         )
-        htmlDocuments.push({ url, htmlDocument, pagePropsSerialized })
+        htmlDocuments.push({ url, htmlDocument, contextPropsSerialized })
       })
   )
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
@@ -159,17 +159,17 @@ async function prerender({
   await Promise.all(htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root)))
 }
 
-async function writeHtmlDocument({ url, htmlDocument, pagePropsSerialized }: HtmlDocument, root: string) {
+async function writeHtmlDocument({ url, htmlDocument, contextPropsSerialized }: HtmlDocument, root: string) {
   assert(url.startsWith('/'))
 
   const writeJobs = [write(url, '.html', htmlDocument, root)]
-  if (pagePropsSerialized !== null) {
-    writeJobs.push(write(url, '.pageProps.json', pagePropsSerialized, root))
+  if (contextPropsSerialized !== null) {
+    writeJobs.push(write(url, '.contextProps.json', contextPropsSerialized, root))
   }
   await Promise.all(writeJobs)
 }
 
-async function write(url: string, fileExtension: '.html' | '.pageProps.json', fileContent: string, root: string) {
+async function write(url: string, fileExtension: '.html' | '.contextProps.json', fileContent: string, root: string) {
   const fileUrl = getFileUrl(url, fileExtension)
   assert(fileUrl.startsWith('/'))
   const filePathRelative = fileUrl.slice(1).split('/').join(sep)

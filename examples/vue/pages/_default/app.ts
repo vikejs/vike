@@ -2,13 +2,8 @@ import { App, createSSRApp, defineComponent, h, markRaw } from 'vue'
 import PageLayout from './PageLayout.vue'
 
 export { getApp }
-export { PageProps }
 
-type PageProps = {
-  docTitle?: string
-}
-
-function getApp(Page: any, pageProps: PageProps) {
+function getApp(Page: any, pageProps: Record<string, unknown> = {}) {
   let rootComponent: any
   const PageWithLayout = defineComponent({
     data: () => ({
@@ -31,7 +26,7 @@ function getApp(Page: any, pageProps: PageProps) {
     }
   })
   const app: App<Element> & { changePage?: any } = createSSRApp(PageWithLayout)
-  app.changePage = (Page: any, pageProps: Record<string, unknown>) => {
+  app.changePage = (Page: any, pageProps: Record<string, unknown> = {}) => {
     rootComponent.Page = markRaw(Page)
     rootComponent.pageProps = markRaw(pageProps)
   }

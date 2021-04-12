@@ -2,6 +2,7 @@ import { assert, assertUsage, hasProp, isNodejs } from '../../utils'
 import { getUrl } from '../getUrl.client'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
+import { getContextPropsProxy } from '../getContextPropsProxy'
 
 export { useClientRouter }
 export { navigate }
@@ -17,11 +18,11 @@ function useClientRouter({
 }: {
   render: ({
     Page,
-    pageProps,
+    contextProps,
     isHydration
   }: {
     Page: any
-    pageProps: Record<string, any>
+    contextProps: Record<string, any>
     isHydration: boolean
   }) => Promise<void> | void
   onTransitionStart: () => void
@@ -67,7 +68,8 @@ function useClientRouter({
       }
     }
 
-    const { Page, pageProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
+    let { Page, contextProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
+    contextProps = getContextPropsProxy(contextProps)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -84,7 +86,18 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      await render({ Page, pageProps, isHydration: isFirstPageRender && url === urlOriginal })
+      await render({
+        Page,
+        contextProps,
+        isHydration: isFirstPageRender && url === urlOriginal,
+        // @ts-ignore
+        get pageProps() {
+          assertUsage(
+            false,
+            "`pageProps` in `useClientRouter(({ pageProps }) => {})` has been replaced with `useClientRouter(({ contextProps }) => {})`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
+          )
+        }
+      })
     })()
     await renderPromise
     renderPromise = undefined

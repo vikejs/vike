@@ -4,7 +4,9 @@ import { createApp } from './app'
 
 export { render }
 export { addContextProps }
-export { setPageProps }
+export { passToClient }
+
+const passToClient = ['INITIAL_STATE']
 
 async function render({ contextProps }) {
   const { appHtml } = contextProps
@@ -27,9 +29,4 @@ async function addContextProps({ Page }) {
     INITIAL_STATE,
     appHtml
   }
-}
-
-function setPageProps({ contextProps }) {
-  const { INITIAL_STATE } = contextProps
-  return { INITIAL_STATE }
 }

@@ -7,8 +7,8 @@ import { getStore } from "./store";
 hydrate();
 
 async function hydrate() {
-  const { Page, pageProps } = await getPage();
-  const store = getStore(pageProps.PRELOADED_STATE);
+  const { Page, contextProps } = await getPage();
+  const store = getStore(contextProps.PRELOADED_STATE);
   ReactDOM.hydrate(
     <Provider store={store}>
       <Page />

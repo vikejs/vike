@@ -4,7 +4,7 @@ import { createApp } from './app'
 hydrate()
 
 async function hydrate() {
-  const { Page, pageProps } = await getPage()
-  const app = createApp({ Page, pageProps })
+  const { Page, contextProps } = await getPage()
+  const app = createApp(Page, contextProps.pageProps)
   app.mount('#app')
 }

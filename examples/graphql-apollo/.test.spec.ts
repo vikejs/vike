@@ -1,13 +1,4 @@
-import {
-  autoRetry,
-  fetchHtml,
-  page,
-  partRegExp,
-  run,
-  urlBase,
-} from "../../tests/setup";
-
-const isHexNumber = /[0-9a-f]+/;
+import { autoRetry, fetchHtml, page, run, urlBase } from "../../tests/setup";
 
 run("npm run start");
 
@@ -18,7 +9,7 @@ test("page is rendered to HTML", async () => {
   );
   expect(html).toContain("<button>Counter <span>0</span></button>");
   expect(html).toMatch(
-    partRegExp`{pageProps:{randomMessage:"${isHexNumber}"},apolloIntialState:{ROOT_QUERY`
+    '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {apolloIntialState:{ROOT_QUERY:'
   );
 });
 
@@ -30,8 +21,5 @@ test("page is hydrated to DOM", async () => {
     await page.click("button");
     expect(await page.textContent("button")).toBe("Counter 1");
   });
-  expect(await page.textContent("body")).toMatch(
-    partRegExp`Random message from server: ${isHexNumber}.`
-  );
   expect(await page.textContent("body")).toContain("Antarctica");
 });

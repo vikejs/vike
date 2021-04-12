@@ -1,5 +1,5 @@
 import '../../page-files/setup.client'
 export { useClientRouter, navigate } from './useClientRouter.client'
 export { getPageId } from './getPageId.client'
-export { getPageProps } from './getPageProps.client'
+export { getContextProps } from './getContextProps.client'
 export { getPageByUrl } from './getPageByUrl.client'
