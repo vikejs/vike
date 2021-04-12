@@ -1088,7 +1088,7 @@ Example:
          }
        })
      ]
-   };
+   }
    ```
    > Alternatively, you can define these options in `windi.config.js`.
 
