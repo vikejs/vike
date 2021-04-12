@@ -1,5 +1,6 @@
 import './page-files/setup.node'
-import { writeFile, mkdir } from 'fs/promises'
+import fs from 'fs'
+const { writeFile, mkdir } = fs.promises;
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl } from './utils'
