@@ -1078,43 +1078,10 @@ import WindiCSS from "vite-plugin-windicss";
 export default {
   plugins: [
     ssr(),
-    WindiCSS(),
-  ],
-};
-```
-
-3. Add WindiCSS to your `pages/_default/_default.page.client.*`
-```js
-import 'virtual:windi.css'
-```
-
-4. Add WindiCSS config to include the /pages directory.  
-Either in a dedicated `windi.config.js` or your existing `vite.config.js`
-
-```js
-// windi.config.js
-import { defineConfig } from "windicss/helpers";
-
-export default defineConfig({
-  extract: {
-    include: ["pages/**/*.{vue,html,mdx,pug,jsx,tsx}"],
-    exclude: ["node_modules", ".git"],
-  },
-});
-```
-Or directly in `vite.config.js`
-```js
-// vite.config.js
-import ssr from "vite-plugin-ssr/plugin";
-import WindiCSS from "vite-plugin-windicss";
-
-export default {
-  plugins: [
-    ssr(),
     WindiCSS({
       scan: {
         dirs: ["pages"],
-        fileExtensions: ["tsx"],
+        fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"],
       },
     }),
   ],
@@ -1122,6 +1089,14 @@ export default {
 ```
 
 > You only have to specify the file extensions you actually use.
+> Alternatively you can add a `windi.config.js` instead of supplying the config object to `WindiCSS`.
+
+3. Add WindiCSS to your `pages/_default/_default.page.client.*`
+```js
+import 'virtual:windi.css'
+```
+
+👍 That's it! 
 
 > More in the [WindiCSS Docs](https://windicss.org/guide/vite.html)
 
