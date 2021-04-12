@@ -8,7 +8,7 @@ function devPlugin(): Plugin {
     name: 'vite-plugin-ssr:dev',
     apply: 'serve',
     config: () => ({
-      ssr: ssrConfig,
+      ssr: { external: ['vite-plugin-ssr'] },
       optimizeDeps: {
         entries: ['**/*.page.*([a-zA-Z0-9])', '**/*.page.client.*([a-zA-Z0-9])']
       }

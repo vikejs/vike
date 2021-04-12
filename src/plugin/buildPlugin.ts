@@ -9,8 +9,6 @@ import {
 } from 'path'
 import { assert } from '../utils'
 import * as glob from 'fast-glob'
-import { ssrConfig } from './ssrConfig'
-import { isSSR } from './utils'
 
 export { buildPlugin }
 
@@ -29,7 +27,7 @@ function buildPlugin(): Plugin {
           rollupOptions: { input: entryPoints(config) },
           polyfillDynamicImport: false
         },
-        ssr: ssrConfig
+        ssr: { external: ['vite-plugin-ssr'] }
       }
     },
     transform: (_src, id) => {
@@ -109,4 +107,8 @@ function getOutDir(config: UserConfig): string {
 
 function posixPath(path: string): string {
   return path.split(pathSep).join(pathPosix.sep)
+}
+
+function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
+  return !!config?.build?.ssr
 }

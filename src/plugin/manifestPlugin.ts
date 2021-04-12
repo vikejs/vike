@@ -1,6 +1,5 @@
 import { Plugin } from 'vite'
 import { assert } from '../utils'
-import { isSSR } from './utils'
 
 export { manifestPlugin }
 
@@ -40,4 +39,8 @@ function includesClientSideRouter(bundle: Record<string, { modules?: Record<stri
     }
   }
   return false
+}
+
+function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
+  return !!config?.build?.ssr
 }
