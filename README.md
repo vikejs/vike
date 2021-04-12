@@ -1087,7 +1087,7 @@ Example:
            fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"]
          }
        })
-     ],
+     ]
    };
    ```
    > Alternatively, you can define these options in `windi.config.js`.
