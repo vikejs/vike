@@ -1,1 +1,2 @@
-- rename contextProps serverProps/serverData and pageProps clientProps/clientData
+- rename pageProps to clientProps
+- add granular unit tests

@@ -1,18 +1,19 @@
-import './user-files/infra.node'
+import './page-files/setup.node'
 export { createPageRender } from './createPageRender.node'
 export { html } from './html.node'
 
-// Add depecration warning
-import { plugin } from './plugin'
-import { assertWarning } from './utils'
+import { setViteManifest } from './getViteManifest.node'
+import { setPageFiles } from './page-files/getPageFiles.shared'
+export const __private = { setViteManifest, setPageFiles }
 
-export default pluginWithWarning
-function pluginWithWarning(): ReturnType<typeof plugin> {
-  assertWarning(
+// Plugin should be imported from `vite-plugin-ssr/plugin`
+import { assertUsage } from './utils'
+export default pluginWrongImport
+function pluginWrongImport(): never {
+  assertUsage(
     false,
-    "`import ssr from 'vite-plugin-ssr';` is depecrated: use `import ssr from 'vite-plugin-ssr/plugin';` instead. This will break in a future versions."
+    "`import ssr from 'vite-plugin-ssr';` is depecrated: use `import ssr from 'vite-plugin-ssr/plugin';` instead."
   )
-  return plugin()
 }
 
 // Enable `const ssr = require('vite-plugin-ssr')`

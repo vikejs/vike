@@ -6,6 +6,7 @@
     "module": "CommonJS",
     "esModuleInterop": true,
     "sourceMap": true,
+    "skipLibCheck": true,
     "declaration": true,
     "declarationMap": true,
     "stripInternal": true,

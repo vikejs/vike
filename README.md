@@ -25,11 +25,11 @@ Simple, full-fledged, do-one-thing-do-it-well.
 </a>
 
 <br/>
-<br/>
 
-[Introduction](#introduction)
-<br/> [Vue Tour](#vue-tour)
-<br/> [React Tour](#react-tour)
+<br/> Overview
+<br/> &nbsp;&nbsp; [Introduction](#introduction)
+<br/> &nbsp;&nbsp; [Vue Tour](#vue-tour)
+<br/> &nbsp;&nbsp; [React Tour](#react-tour)
 <br/>
 <br/> Get Started
 <br/> &nbsp;&nbsp; [Boilerplates](#boilerplates)
@@ -37,6 +37,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/>
 <br/> Guides
 <br/> &nbsp;&nbsp; [Data Fetching](#data-fetching)
+<br/> &nbsp;&nbsp; [Pass data to all components](#pass-data-to-all-components)
 <br/> &nbsp;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
 <br/> &nbsp;&nbsp; [Routing](#routing)
 <br/> &nbsp;&nbsp; [Markdown](#markdown)
@@ -45,6 +46,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Store](#store)
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
+<br/> &nbsp;&nbsp; [Cloudflare Workers](#cloudflare-workers)
 <br/>
 <br/> API
 <br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
@@ -76,15 +78,17 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/>
 
 
-## Introduction
+## Overview
+
+### Introduction
 
 `vite-plugin-ssr` provides a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool.
 
-- **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue 3, Vue 2, React, Svelte, Preact, Solid, ...), and any server framework (Express, Koa, Hapi, Fastify, ...).
+- **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue, React, ...), and any server environment (Express, Fastify, Cloudflare Workers, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster and animated page transitions). Can also be used with Vue Router and React Router.
+- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). Can also be used with Vue Router and React Router.
 - **HMR**. Browser as well as server code is automatically reloaded.
-- **Pre-render / SSG / Static Websites**. Deploy your app to a static host by pre-rendering your pages.
+- **Pre-render / SSG / Static Websites**. Deploy your app to a static host (GitHub Pages, Netlify, Cloudflare Pages, ...) by pre-rendering your pages.
 - **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
 - **Code Splitting**. In the browser, each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
@@ -95,7 +99,7 @@ To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tou
 <br/><br/>
 
 
-## Vue Tour
+### Vue Tour
 
 Similarly to SSR frameworks,
 pages are defined by page files.
@@ -297,7 +301,7 @@ In short: `vite-plugin-ssr` is not only the most flexible, but also the easiest 
 <br/><br/>
 
 
-## React Tour
+### React Tour
 
 Similarly to SSR frameworks,
 pages are defined by page files.
@@ -507,11 +511,13 @@ In short: `vite-plugin-ssr` is not only the most flexible, but also the easiest 
 <br/><br/>
 
 
-## Boilerplates
+## Get Started
+
+### Boilerplates
 
 Scaffold a Vite app that uses `vite-plugin-ssr`.
 
-With NPM:
+With npm:
 
 ```
 npm init vite-plugin-ssr
@@ -530,7 +536,7 @@ You can use the `--skip-git` flag to skip the initialization of a new git reposi
 <br/><br/>
 
 
-## Manual Installation
+### Manual Installation
 
 If you have an already existing Vite app and don't want to start from scratch:
 
@@ -567,7 +573,9 @@ If you have an already existing Vite app and don't want to start from scratch:
 <br/><br/>
 
 
-## Data Fetching
+## Guides
+
+### Data Fetching
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -659,7 +667,19 @@ function Page(pageProps) {
 <br/><br/>
 
 
-## Pre-rendering
+### Pass data to all components
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+As we have seen in the [Data Fetching](#data-fetching) guide, you use the hooks `addContextProps()` and `setPageProps()` to pass data to the root component. You can also pass data to the whole component tree:
+ - React: [React.createContext](https://reactjs.org/docs/context.html)
+ - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
+ - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
+
+<br/><br/>
+
+
+### Pre-rendering
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -673,20 +693,22 @@ function Page(pageProps) {
 > that you can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
 > If you don't use pre-rendering, then you need to use a Node.js server to be able to render your pages' HTML at request-time.
 
-To pre-render your pages, run `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`. (Or with Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.)
+To pre-render your pages, use the [CLI command `prerender`](#command-prerender) at the end of your build:
+ - With npm: run `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`.
+ - With Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.
 
-For pages with a parameterized route (e.g. `/movie/:movieId`), you'll have to use the [`prerender()` hook](#export--prerender-).
+For pages with a parameterized route (e.g. `/movie/:movieId`), you have to use the [`prerender()` hook](#export--prerender-).
 
 The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
 Examples:
- - [/examples/vuex/](/examples/vue/)
- - [/examples/redux/](/examples/react/)
+ - [/examples/vue/](/examples/vue/)
+ - [/examples/react/](/examples/react/)
 
 <br/><br/>
 
 
-## Routing
+### Routing
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -706,7 +728,7 @@ You can also use a routing library such as Vue Router and React Router (in compl
  - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
 
-### Filesystem Routing VS Route Strings VS Route Functions
+#### Filesystem Routing VS Route Strings VS Route Functions
 
 If a page doesn't have a `.page.route.js` file then `vite-plugin-ssr` uses Filesystem Routing:
 
@@ -746,32 +768,19 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
  - [API - Route String](#route-string)
  - [API - Route Function](#route-function)
 
-### Server-side Routing VS Client-side Routing
+#### Server-side Routing VS Client-side Routing
 
-Server-side Routing (*SR*) is simple and familiar:
-that's how the old web (PHP, Ruby on Rails, Django, etc.) did routing. It's easy to reason about: "For an HTTP request with a given URL, what page should be rendered?" &mdash; that's all what SR does, that's it.
+By default, `vite-plugin-ssr` does Server-side Routing. (It's the "old school" way of doing routing: when the user changes page, a new HTML request is made.)
 
-Client-side Routing (*CR*) is straightforward as well, however, it does add complexity to your architecture:
-you now have to maintain and reason about an additional second scenario.
-Scenario 1: the page is rendered to HTML and then hydrated to the DOM (like in SR),
-which happens when the user goes to the page by opening a new browser tab (or refreshes the page).
-Scenario 2: the page is only rendered to the DOM,
-which happens when the user is already on your website and navigates to the page by clicking a link (or hits the browser back/forward history button).
+If you don't have a strong rationale to do something differently, then you should stick to the default. (Because Server-side Routing leads to a fundamentally simpler tech stack with a higher DX efficiency.)
 
-The added complexity of having to deal with two scenarios instead of one
-is subtle but non-negligable, especially around the integration of tools.
-
-Performance is usually a bad reason to choose CR over SR:
-chances are that the dev time wasted on CR's added complexity would be better invested in other performance-critical aspects of your application.
-That said, if your business has a strong requirement for you to squeeze out every possible millisecond of latency, then CR will give you a non-negligable improvement in page transition speed. Or, if you are building a simple application, such as a homepage or a blog, then CR can be the right choice as it gives you that cool effect of smooth page transitions and the architectural DX scability of your simple app is not much of a problem to begin with.
-
-By default, `vite-plugin-ssr` does SR. You opt-in for CR by using `useClientRouter()`.
- - [API - `import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
+ - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 
 <br/><br/>
 
 
-## Markdown
+### Markdown
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -790,7 +799,7 @@ Example:
 <br/><br/>
 
 
-## Authentication
+### Authentication
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -815,7 +824,7 @@ app.get('*', async (req, res, next) => {
 <br/><br/>
 
 
-## HTML `<head>`
+### HTML `<head>`
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -898,7 +907,7 @@ the aforementioned solution using `contextProps` is considerably simpler and wor
 <br/><br/>
 
 
-## Store
+### Store
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -906,7 +915,7 @@ Even complex integrations, such as Vuex or Redux, are simple and straightforward
 Because you control how your pages are rendered,
 integration is just a matter of following the official guide of the tool you want to integrate.
 
-While you can follow the official guides *exactly* as they are (including serializing and injecting the initial state into HTML),
+While you can follow official guides *exactly* as-is (including serializing initial state into HTML),
 you can also leverage `vite-plugin-ssr`'s `pageProps` to make your life slightly easier,
 as shown in the following examples.
 
@@ -916,7 +925,7 @@ as shown in the following examples.
 <br/><br/>
 
 
-## Base URL
+### Base URL
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -941,7 +950,7 @@ Example:
 <br/><br/>
 
 
-## Page Redirection
+### Page Redirection
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
@@ -1039,7 +1048,21 @@ useClientRouter({
 <br/><br/>
 
 
-## `*.page.js`
+### Cloudflare Workers
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Make sure to import `/dist/server/importer.js` in your worker code. (The `importer.js` makes all dependencies statically analysable so that the entire server code can be bundled into a single worker file.)
+
+Example:
+ - [/examples/cloudflare-workers](/examples/cloudflare-workers)
+
+<br/><br/>
+
+
+## API
+
+### `*.page.js`
 
 Environment: `Browser`, `Node.js`
 <br>
@@ -1112,7 +1135,7 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 <br/><br/>
 
 
-## `_default.page.*`
+### `_default.page.*`
 
 The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
 
@@ -1138,7 +1161,7 @@ defining `_default.page.js` or `_default.page.route.js` is forbidden.
 <br/><br/>
 
 
-## `_error.page.*`
+### `_error.page.*`
 
 The page `_error.page.js` is shown to your user when an error occurs:
  - When no page has been found that matches the URL (it then acts as a 404 page and `pageProps.is404===true`).
@@ -1153,7 +1176,7 @@ You can define `_error.page.js` like any other page and create `_error.page.clie
 <br/><br/>
 
 
-## `*.page.server.js`
+### `*.page.server.js`
 
 Environment: `Node.js`
 <br>
@@ -1171,7 +1194,7 @@ The `.page.server.js` file is executed in Node.js and never in the browser.
 
 <br/>
 
-### `export { addContextProps }`
+#### `export { addContextProps }`
 
 The `addContextProps()` hook is used to provide further `contextProps` values.
 
@@ -1210,7 +1233,7 @@ async function addContextProps({ contextProps, Page }){
 
 <br/>
 
-### `export { setPageProps }`
+#### `export { setPageProps }`
 
 The `setPageProps()` hook provides the `pageProps` which are consumed by `Page`.
 
@@ -1252,7 +1275,7 @@ function Page(pageProps) {
 
 <br/>
 
-### `export { render }`
+#### `export { render }`
 
 The `render()` hook defines how a page is rendered to HTML.
 
@@ -1320,7 +1343,7 @@ Your `render()` hook can for example return an object like `{ redirectTo: '/some
 
 <br/>
 
-### `export { prerender }`
+#### `export { prerender }`
 
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
@@ -1399,7 +1422,7 @@ React Example:
 <br/><br/>
 
 
-## `import { html } from 'vite-plugin-ssr'`
+### `import { html } from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
 
@@ -1481,7 +1504,7 @@ async function render({ Page, contextProps }) {
 <br/><br/>
 
 
-## `*.page.client.js`
+### `*.page.client.js`
 
 Environment: `Browser`
 <br>
@@ -1523,7 +1546,7 @@ function analytics_init() {
 
 <br/>
 
-## `import { getPage } from 'vite-plugin-ssr/client'`
+### `import { getPage } from 'vite-plugin-ssr/client'`
 
 Environment: `Browser`
 
@@ -1551,7 +1574,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 <br/>
 
-## `import { useClientRouter } from 'vite-plugin-ssr/client/router'`
+### `import { useClientRouter } from 'vite-plugin-ssr/client/router'`
 
 Environment: `Browser`
 
@@ -1624,7 +1647,7 @@ React example:
 <br/><br/>
 
 
-## `import { navigate } from 'vite-plugin-ssr/client/router'`
+### `import { navigate } from 'vite-plugin-ssr/client/router'`
 
 Environment: `Browser`, `Node.js`. (In Node.js `navigate()` is importable but not callable.)
 
@@ -1668,7 +1691,7 @@ React example:
 <br/><br/>
 
 
-## `*.page.route.js`
+### `*.page.route.js`
 
 Environment: `Node.js` (and `Browser` if you call `useClientRouter()`)
 <br>
@@ -1680,7 +1703,7 @@ The `*.page.route.js` files enable further control over routing with:
 
 <br/>
 
-### Route String
+#### Route String
 
 For a page `/pages/film.page.js`, a route string can be defined in a `/pages/film.page.route.js` adjacent file.
 
@@ -1700,7 +1723,7 @@ For user friendlier docs, check out the [Express.js Routing Docs](https://expres
 
 <br/>
 
-### Route Function
+#### Route Function
 
 Route functions give you full programmatic flexibility to define your routing logic.
 
@@ -1731,7 +1754,7 @@ The higher the number, the higher the priority.
 <br/><br/>
 
 
-## Filesystem Routing
+### Filesystem Routing
 
 By default a page is mapped to a URL based on where its `.page.js` file is located.
 
@@ -1759,7 +1782,7 @@ For more control over routing, define route strings or route functions in [`*.pa
 <br/><br/>
 
 
-## `import { createPageRender } from 'vite-plugin-ssr'`
+### `import { createPageRender } from 'vite-plugin-ssr'`
 
 Environment: `Node.js`
 
@@ -1816,7 +1839,7 @@ async function startServer() {
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by the `render()` hook.
 
-Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...).
+Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers.
 
 Examples:
  - [JavaScript](/boilerplates/boilerplate-vue/server/index.js)
@@ -1825,7 +1848,7 @@ Examples:
 <br/><br/>
 
 
-## `import ssr from 'vite-plugin-ssr/plugin'`
+### `import ssr from 'vite-plugin-ssr/plugin'`
 
 Environment: `Node.js`
 
@@ -1845,7 +1868,7 @@ module.exports = {
 <br/><br/>
 
 
-## Command `prerender`
+### Command `prerender`
 
 The command `prerender` does pre-rendering, see [Pre-rendering](#pre-rendering).
 
@@ -1853,8 +1876,9 @@ It can be called:
  - As CLI command: `$ npx vite-plugin-ssr prerender` / `$ yarn vite-plugin-ssr prerender`.
  - As JavaScript API: `import { prerender } from 'vite-plugin-ssr/cli`.
 
-It has one option:
+Options:
  - `partial`: Allow only a subset of pages to be pre-rendered. (Parameterized routes without `prerender()` hook cannot be pre-rendered and the `--partial` option suppresses the warning that warns you about pages not being pre-rendered.) (`$ vite-plugin-ssr prerendered --partial` / `prerender({ partial: true })`)
+ - `root`: The root directory of your project (where `vite.config.js` and `dist/` live). Default: `process.cwd()`.
 
 <br/><br/>
 

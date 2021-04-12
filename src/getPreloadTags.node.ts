@@ -2,7 +2,7 @@ import { getSsrEnv } from './ssrEnv.node'
 import { assert } from './utils/assert'
 import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
-import { getUserFiles } from './user-files/getUserFiles.shared'
+import { getPageFiles } from './page-files/getPageFiles.shared'
 import { prependBaseUrl } from './baseUrlHandling'
 
 export { getPreloadTags }
@@ -17,21 +17,21 @@ async function getPreloadTags(
   let preloadUrls = new Set<string>()
   if (!ssrEnv.isProduction) {
     const visitedModules = new Set<string>()
-    const skipPageFiles = (await getPageFiles()).filter(
-      (pageFile) => !dependencies.some((dep) => dep.includes(pageFile))
+    const skipPageViewFiles = (await getPageViewFiles()).filter(
+      (pageViewFile) => !dependencies.some((dep) => dep.includes(pageViewFile))
     )
     await Promise.all(
       dependencies.map(async (filePath) => {
         assert(filePath)
         const mod = await ssrEnv.viteDevServer.moduleGraph.getModuleByUrl(filePath)
-        collectCss(mod, preloadUrls, visitedModules, skipPageFiles)
+        collectCss(mod, preloadUrls, visitedModules, skipPageViewFiles)
       })
     )
   } else {
     assert(clientManifest && serverManifest)
     const visistedAssets = new Set<string>()
     dependencies.forEach((filePath) => {
-      const modulePath = getModulePath(filePath, ssrEnv.root)
+      const modulePath = getModulePath(filePath)
       let manifest: ViteManifest | undefined = undefined
       if (serverManifest[modulePath]) manifest = serverManifest
       if (clientManifest[modulePath]) manifest = clientManifest
@@ -45,10 +45,10 @@ async function getPreloadTags(
   return preloadTags
 }
 
-async function getPageFiles(): Promise<string[]> {
-  const files = await getUserFiles('.page')
-  const pageFiles = files.map(({ filePath }) => filePath)
-  return pageFiles
+async function getPageViewFiles(): Promise<string[]> {
+  const files = await getPageFiles('.page')
+  const pageViewFiles = files.map(({ filePath }) => filePath)
+  return pageViewFiles
 }
 
 function collectAssets(
@@ -67,28 +67,22 @@ function collectAssets(
   for (const importAsset of imports) {
     const importManifestEntry = manifest[importAsset]
     const { file } = importManifestEntry
-    assert(file.startsWith('assets/'))
     if (!onlyCollectStaticAssets) {
       preloadUrls.add(`/${file}`)
     }
     collectAssets(importAsset, preloadUrls, visistedAssets, manifest, onlyCollectStaticAssets)
   }
   for (const cssAsset of css) {
-    assert(cssAsset.startsWith('assets/'))
     preloadUrls.add(`/${cssAsset}`)
   }
 
   for (const asset of assets) {
-    assert(asset.startsWith('assets/'))
     preloadUrls.add(`/${asset}`)
   }
 }
 
-function getModulePath(filePath: string, root: string): string {
+function getModulePath(filePath: string): string {
   let modulePath = filePath
-  if (modulePath.startsWith(root)) {
-    return modulePath.slice(root.length)
-  }
   if (modulePath.startsWith('/')) {
     modulePath = modulePath.slice(1)
   }
@@ -111,17 +105,17 @@ function collectCss(
   mod: ModuleNode | undefined,
   preloadUrls: Set<string>,
   visitedModules: Set<string>,
-  skipPageFiles: string[]
+  skipPageViewFiles: string[]
 ): void {
   if (!mod) return
   if (!mod.url) return
-  if (skipPageFiles.some((pageFile) => mod.id && mod.id.includes(pageFile))) return
+  if (skipPageViewFiles.some((pageViewFile) => mod.id && mod.id.includes(pageViewFile))) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
   if (mod.url.endsWith('.css') || (mod.id && /\?vue&type=style/.test(mod.id))) {
     preloadUrls.add(mod.url)
   }
   mod.importedModules.forEach((dep) => {
-    collectCss(dep, preloadUrls, visitedModules, skipPageFiles)
+    collectCss(dep, preloadUrls, visitedModules, skipPageViewFiles)
   })
 }

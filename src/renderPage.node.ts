@@ -2,7 +2,7 @@ import devalue from 'devalue'
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
-import { getUserFile, getUserFiles } from './user-files/getUserFiles.shared'
+import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
@@ -18,7 +18,7 @@ import {
   hasProp,
   isPromise,
   isPagePropsUrl,
-  retrieveOriginalUrl,
+  removePagePropsSuffix,
   parseUrl
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
@@ -43,13 +43,23 @@ async function renderPage({
 > {
   assertArguments(...arguments)
 
-  if (url === '/favicon.ico') {
+  if (url.endsWith('/favicon.ico')) {
     return {
       nothingRendered: true,
       renderResult: undefined,
       statusCode: undefined
     }
   }
+
+  const isPagePropsRequest = isPagePropsUrl(url)
+  if (isPagePropsRequest) {
+    url = removePagePropsSuffix(url)
+  }
+
+  Object.assign(contextProps, { url })
+
+  url = removeOrigin(url)
+  assert(url.startsWith('/'))
 
   if (!startsWithBaseUrl(url)) {
     return {
@@ -61,12 +71,7 @@ async function renderPage({
     url = removeBaseUrl(url)
   }
 
-  const isPagePropsRequest = isPagePropsUrl(url)
-  if (isPagePropsRequest) {
-    url = retrieveOriginalUrl(url)
-  }
-
-  Object.assign(contextProps, { url })
+  Object.assign(contextProps, { urlNormalized: url })
 
   const allPageIds = await getPageIds()
 
@@ -302,7 +307,7 @@ async function renderHtmlDocument({
 }
 
 async function getPage(pageId: string) {
-  const pageFile = await getUserFile('.page', pageId)
+  const pageFile = await getPageFile('.page', pageId)
   assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
@@ -403,7 +408,7 @@ async function getBrowserFilePath(pageId: string) {
   return browserFilePath
 }
 async function getBrowserFiles(pageId: string) {
-  let browserFiles = await getUserFiles('.page.client')
+  let browserFiles = await getPageFiles('.page.client')
   assertUsage(
     browserFiles.length > 0,
     'No *.page.client.* file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
@@ -413,7 +418,7 @@ async function getBrowserFiles(pageId: string) {
 }
 
 async function getServerFiles(pageId: string) {
-  let serverFiles = await getUserFiles('.page.server')
+  let serverFiles = await getPageFiles('.page.server')
   assertUsage(
     serverFiles.length > 0,
     'No *.page.server.* file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
@@ -422,15 +427,15 @@ async function getServerFiles(pageId: string) {
   return serverFiles
 }
 
-function filterAndSort<T extends { filePath: string }>(userFiles: T[], pageId: string): T[] {
-  userFiles = userFiles.filter(({ filePath }) => {
+function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: string): T[] {
+  pageFiles = pageFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
     assert(!filePath.includes('\\'))
     return filePath.startsWith(pageId) || filePath.includes('/_default')
   })
 
   // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
-  userFiles.sort(
+  pageFiles.sort(
     lowerFirst(({ filePath }) => {
       if (filePath.startsWith(pageId)) return -1
       const relativePath = pathRelative(pageId, filePath)
@@ -440,7 +445,7 @@ function filterAndSort<T extends { filePath: string }>(userFiles: T[], pageId: s
     })
   )
 
-  return userFiles
+  return pageFiles
 }
 
 async function applyViteHtmlTransform(htmlDocument: string, url: string): Promise<string> {
@@ -543,23 +548,38 @@ function injectAtClosingTag(htmlDocument: string, closingTag: string, injection:
 
 function assertArguments(...args: unknown[]) {
   const argObject = args[0]
-  assertUsage(hasProp(argObject, 'url'), '`render({url, contextProps})`: argument `url` is missing.')
+  assertUsage(hasProp(argObject, 'url'), '`renderPage({ url })`: argument `url` is missing.')
   assertUsage(
-    typeof argObject.url === 'string' && argObject.url.startsWith('/'),
-    '`render({url, contextProps})`: argument `url` should start with a `/`.'
+    typeof argObject.url === 'string',
+    '`renderPage({ url })`: argument `url` should be a string but we got `typeof url === "' +
+      typeof argObject.url +
+      '"`.'
   )
+  try {
+    removeOrigin(argObject.url)
+  } catch (err) {
+    assertUsage(
+      false,
+      '`renderPage({ url })`: argument `url` should be a URL but we got `url==="' + argObject.url + '"`.'
+    )
+  }
   assertUsage(
     !hasProp(argObject, 'contextProps') || typeof argObject.contextProps === 'object',
-    '`render({url, contextProps})`: argument `contextProps` should be a `typeof contextProps === "object"`.'
+    '`renderPage({ contextProps })`: argument `contextProps` should be a `typeof contextProps === "object"`.'
   )
   assertUsage(
     args.length === 1,
-    '`render({url, contextProps})`: all arguments should be passed as a single argument object.'
+    '`renderPage({ /*...*/ })`: all arguments should be passed as a single argument object.'
   )
   const unknownArgs = Object.keys(argObject).filter((key) => !['url', 'contextProps'].includes(key))
   assertUsage(
     unknownArgs.length === 0,
-    '`render({url, contextProps})`: unknown arguments [' + unknownArgs.map((s) => `'${s}'`).join(', ') + '].'
+    '`renderPage({ /*...*/ })`: unknown arguments [' +
+      unknownArgs
+        .slice(10)
+        .map((s) => `'${s}'`)
+        .join(', ') +
+      '].'
   )
 }
 
@@ -692,7 +712,9 @@ function handleErr(err: unknown) {
       viteDevServer.ssrFixStacktrace(err)
     }
   }
-  console.error(err)
+  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
+  const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
+  console.error(errStr)
 }
 
 function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
@@ -712,4 +734,10 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
       '`.)'
   )
   return { clientManifest, serverManifest }
+}
+
+function removeOrigin(url: string): string {
+  const { origin, pathname, search, hash } = parseUrl(url)
+  assert(url === `${origin}${pathname}${search}${hash}`)
+  return `${pathname}${search}${hash}`
 }
