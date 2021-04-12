@@ -1,9 +1,10 @@
 export type Movie = {
+  id: string;
   title: string;
   release_date: string;
-  id: number;
 };
 export type MovieDetails = {
+  id: string;
   title: string;
   release_date: string;
   director: string;

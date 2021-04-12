@@ -4,24 +4,27 @@ import { html } from "vite-plugin-ssr";
 import { PageLayout } from "./PageLayout";
 
 export { render };
+export { passToClient };
+
+const passToClient = ["pageProps", "docTitle"];
 
 function render({
   Page,
-  pageProps,
+  contextProps,
 }: {
   Page: (pageProps: any) => JSX.Element;
-  pageProps: Record<string, any>;
+  contextProps: Record<string, any>;
 }) {
   const pageContent = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...pageProps} />
+      <Page {...contextProps.pageProps} />
     </PageLayout>
   );
 
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${pageProps.docTitle || "Demo"}</title>
+        <title>${contextProps.docTitle || "Demo"}</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySetHtml(pageContent)}</div>

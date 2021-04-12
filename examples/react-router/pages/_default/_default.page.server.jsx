@@ -4,12 +4,15 @@ import { StaticRouter } from "react-router";
 import { html } from "vite-plugin-ssr";
 
 export { render };
+export { passToClient };
 
-async function render({ Page, pageProps, contextProps }) {
+const passToClient = ["pageProps"];
+
+async function render({ Page, contextProps }) {
   const { url } = contextProps;
   const pageHtml = renderToString(
     <StaticRouter location={url}>
-      <Page {...pageProps} />
+      <Page {...contextProps.pageProps} />
     </StaticRouter>
   );
   return html`<!DOCTYPE html>

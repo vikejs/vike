@@ -3,14 +3,14 @@ import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 let app: ReturnType<typeof getApp>
 const { hydrationPromise } = useClientRouter({
-  render({ Page, pageProps }) {
+  render({ Page, contextProps: { docTitle, pageProps } }) {
     if (!app) {
       app = getApp(Page, pageProps)
       app.mount('#app')
     } else {
       app.changePage(Page, pageProps)
     }
-    document.title = pageProps.docTitle || 'Demo'
+    document.title = docTitle || 'Demo'
   },
   onTransitionStart,
   onTransitionEnd

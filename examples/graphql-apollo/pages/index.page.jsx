@@ -3,7 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 
 export default IndexPage;
 
-function IndexPage({ randomMessage }) {
+function IndexPage() {
   const { data } = useQuery(gql`
     {
       countries {
@@ -15,9 +15,6 @@ function IndexPage({ randomMessage }) {
 
   return (
     <>
-      <p>
-        Random message from server: <span>{randomMessage}</span>.
-      </p>
       <p>
         <Counter />
       </p>

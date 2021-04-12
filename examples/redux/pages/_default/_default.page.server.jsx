@@ -6,7 +6,9 @@ import { html } from "vite-plugin-ssr";
 
 export { render };
 export { addContextProps };
-export { setPageProps };
+export { passToClient };
+
+const passToClient = ["PRELOADED_STATE"];
 
 async function render({ contextProps }) {
   const { pageHtml } = contextProps;
@@ -34,9 +36,4 @@ async function addContextProps({ Page }) {
     PRELOADED_STATE,
     pageHtml,
   };
-}
-
-function setPageProps({ contextProps }) {
-  const { PRELOADED_STATE } = contextProps;
-  return { PRELOADED_STATE };
 }

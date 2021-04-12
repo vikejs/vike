@@ -1,21 +1,18 @@
 import { renderToString } from '@vue/server-renderer'
 import { html } from 'vite-plugin-ssr'
 import { createApp } from './app'
-import { PageProps, ContextProps } from './types'
+import { ContextProps, VueComponent } from './types'
 import logoUrl from './logo.svg'
 
 export { render }
+export { passToClient }
 
-async function render({
-  Page,
-  pageProps,
-  contextProps
-}: {
-  Page: any
-  pageProps: PageProps
-  contextProps: ContextProps
-}) {
-  const app = createApp(Page, pageProps)
+// We use `contextProps.pageProps` to hold the props of the root component.
+// We pass `contextProps.pageProps` to the browser for `hydrate()` in `_default.page.client.ts`.
+const passToClient = ['pageProps']
+
+async function render({ Page, contextProps }: { Page: VueComponent; contextProps: ContextProps }) {
+  const app = createApp(Page, contextProps.pageProps)
   const appHtml = await renderToString(app)
   const title = 'My Vite SSR app'
   return html`<!DOCTYPE html>

@@ -1,42 +1,49 @@
 import fetch from 'node-fetch'
-import { Movie } from './types'
+import { filterMovieData } from './movie.page.server'
+import { Movie, MovieDetails } from './types'
 
 export { addContextProps }
-export { setPageProps }
 export { prerender }
 
 type ContextProps = {
-  movies: Movie[]
+  pageProps: {
+    movies: Movie[]
+  }
   docTitle: string
 }
 
 async function addContextProps(): Promise<ContextProps> {
+  const movies = await getStarWarsMovies()
+  return {
+    pageProps: {
+      // We remove data we don't need because we pass `contextProps.movies` to
+      // the client; we want to minimize what it sent over the network.
+      movies: filterMoviesData(movies)
+    },
+    // The page's <title>
+    docTitle: getTitle(movies)
+  }
+}
+
+async function getStarWarsMovies(): Promise<MovieDetails[]> {
   const response = await fetch('https://swapi.dev/api/films/')
-  const movies: Movie[] = ((await response.json()) as any).results.map((movie: any, i: number) => ({
+  let movies: MovieDetails[] = ((await response.json()) as any).results
+  movies = movies.map((movie: MovieDetails, i: number) => ({
     ...movie,
     id: String(i + 1)
   }))
-
-  // The page's <title>
-  const docTitle = getTitle(movies)
-
-  return { movies, docTitle }
+  return movies
 }
 
-function setPageProps({ contextProps: { movies, docTitle } }: { contextProps: ContextProps }) {
-  // We remove data we don't need: (`vite-plugin-ssr` serializes and passes `pageProps`
-  // to the client; we want to minimize what it sent over the network.)
-  movies = movies.map(({ id, title, release_date }) => ({
-    title,
-    release_date,
-    id
-  }))
-
-  return { movies, docTitle }
+function filterMoviesData(movies: MovieDetails[]): Movie[] {
+  return movies.map((movie: MovieDetails) => {
+    const { title, release_date, id } = movie
+    return { title, release_date, id }
+  })
 }
 
 async function prerender() {
-  const { movies } = await addContextProps()
+  const movies = await getStarWarsMovies()
 
   return [
     {
@@ -44,19 +51,25 @@ async function prerender() {
       // We already provide `contextProps` here so that `vite-plugin-ssr`
       // will *not* have to call the `addContextProps()` hook defined
       // above in this file.
-      contextProps: { movies, docTitle: getTitle(movies) }
+      contextProps: {
+        pageProps: {
+          movies: filterMoviesData(movies)
+        },
+        docTitle: getTitle(movies)
+      }
     },
     ...movies.map((movie) => {
       const url = `/star-wars/${movie.id}`
       return {
         url,
         // Note that we can also provide the `contextProps` of other pages.
-        // This means that `vite-plugin-ssr` will not have to call the
-        // `addContextProps()` hook a single time and the Star Wars API
-        // will be called only once (in this `prerender()` hook) for
-        // pre-rendering all pages.
+        // This means that `vite-plugin-ssr` will not call any
+        // `addContextProps()` hook and the Star Wars API will be called
+        // only once (in this `prerender()` hook).
         contextProps: {
-          movie,
+          pageProps: {
+            movie: filterMovieData(movie)
+          },
           docTitle: movie.title
         }
       }
@@ -64,7 +77,7 @@ async function prerender() {
   ]
 }
 
-function getTitle(movies: Movie[]): string {
+function getTitle(movies: Movie[] | MovieDetails[]): string {
   const title = `${movies.length} Star Wars Movies`
   return title
 }

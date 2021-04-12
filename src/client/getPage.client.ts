@@ -1,5 +1,6 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
+import { getContextPropsProxy } from './getContextPropsProxy'
 import { navigationState } from './navigationState.client'
 
 export { getPage }
@@ -8,12 +9,23 @@ export { getPageInfo }
 
 async function getPage(): Promise<{
   Page: any
-  pageProps: Record<string, any>
+  contextProps: Record<string, any>
 }> {
-  const { pageId, pageProps } = getPageInfo()
+  let { pageId, contextProps } = getPageInfo()
   const Page = await getPageById(pageId)
+  contextProps = getContextPropsProxy(contextProps)
   assertPristineUrl()
-  return { Page, pageProps }
+  return {
+    Page,
+    contextProps,
+    // @ts-ignore
+    get pageProps() {
+      assertUsage(
+        false,
+        "`pageProps` in `const { pageProps } = await getPage()` has been replaced with `const { contextProps } = await getPage()`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
+      )
+    }
+  }
 }
 
 function assertPristineUrl() {
@@ -39,18 +51,18 @@ async function getPageById(pageId: string): Promise<any> {
 
 function getPageInfo(): {
   pageId: string
-  pageProps: Record<string, unknown>
+  contextProps: Record<string, unknown>
 } {
   const pageId = window.__vite_plugin_ssr.pageId
-  const pageProps = window.__vite_plugin_ssr.pageProps
-  return { pageId, pageProps }
+  const contextProps = window.__vite_plugin_ssr.contextProps
+  return { pageId, contextProps }
 }
 
 declare global {
   interface Window {
     __vite_plugin_ssr: {
       pageId: string
-      pageProps: Record<string, unknown>
+      contextProps: Record<string, unknown>
     }
   }
 }

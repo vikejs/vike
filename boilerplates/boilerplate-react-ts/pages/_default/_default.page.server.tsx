@@ -2,23 +2,26 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageLayout } from "./PageLayout";
 import { html } from "vite-plugin-ssr";
-import { PageProps, ContextProps, ReactComponent } from "./types";
+import { ContextProps, ReactComponent } from "./types";
 import logoUrl from "./logo.svg";
 
 export { render };
+export { passToClient };
+
+// We use `contextProps.pageProps` to hold the props of the root component.
+// We pass `contextProps.pageProps` to the browser for `hydrate()` in `_default.page.client.tsx`.
+const passToClient = ["pageProps"];
 
 function render({
   Page,
-  pageProps,
   contextProps,
 }: {
   Page: ReactComponent;
-  pageProps: PageProps;
   contextProps: ContextProps;
 }) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...pageProps} />
+      <Page {...contextProps.pageProps} />
     </PageLayout>
   );
   const title = "My Vite SSR app";

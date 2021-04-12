@@ -42,9 +42,9 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     // The HTML is from the first page before client-side routing
     const html = await page.content()
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
-    // Therefore only the serialized `pageProps` tell us the original HTML.
+    // Therefore only the serialized `contextProps` tell us the original HTML.
     expect(html).toContain(
-      '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", pageProps: {}}</script>'
+      '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {pageProps:a,docTitle:a}}(void 0))}</script>'
     )
   })
 

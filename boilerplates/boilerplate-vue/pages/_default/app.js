@@ -3,7 +3,7 @@ import PageLayout from './PageLayout.vue'
 
 export { createApp }
 
-function createApp({ Page, pageProps }) {
+function createApp(Page, pageProps = {}) {
   const PageWithLayout = {
     render() {
       return h(
