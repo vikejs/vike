@@ -1088,7 +1088,9 @@ export default {
 import 'virtual:windi.css'
 ```
 
-4. Add WindiCSS config file to include the /pages directory
+4. Add WindiCSS config to include the /pages directory.  
+Either in a dedicated `windi.config.js` or your existing `vite.config.js`
+
 ```js
 // windi.config.js
 import { defineConfig } from "windicss/helpers";
@@ -1100,6 +1102,26 @@ export default defineConfig({
   },
 });
 ```
+Or directly in `vite.config.js`
+```js
+// vite.config.js
+import ssr from "vite-plugin-ssr/plugin";
+import WindiCSS from "vite-plugin-windicss";
+
+export default {
+  plugins: [
+    ssr(),
+    WindiCSS({
+      scan: {
+        dirs: ["pages"],
+        fileExtensions: ["tsx"],
+      },
+    }),
+  ],
+};
+```
+
+> You only have to specify the file extensions you actually use.
 
 > More in the [WindiCSS Docs](https://windicss.org/guide/vite.html)
 
