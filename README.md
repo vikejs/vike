@@ -1063,16 +1063,18 @@ Example:
 
 ### Tailwind CSS
 
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
 1. ```bash
    npm install vite-plugin-windicss windicss
    # or
    yarn add vite-plugin-windicss windicss
    ```
 
-2. Add `vite-plugin-windicss` to your `vite.config.js`
+2. Add `vite-plugin-windicss` to your `vite.config.js`.
    ```js
-   import ssr from "vite-plugin-ssr/plugin";
-   import WindiCSS from "vite-plugin-windicss";
+   import ssr from "vite-plugin-ssr/plugin"
+   import WindiCSS from "vite-plugin-windicss"
 
    export default {
      plugins: [
@@ -1082,15 +1084,15 @@ Example:
            // By default only `src/` is scanned
            dirs: ["pages"],
            // You only have to specify the file extensions you actually use.
-           fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"],
-         },
-       }),
+           fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"]
+         }
+       })
      ],
    };
    ```
    > Alternatively you can define these options in `windi.config.js`
 
-3. Add WindiCSS to your `_default.page.client.js`
+3. Add WindiCSS to your `_default.page.client.js`.
    ```js
    import 'virtual:windi.css'
    ```
