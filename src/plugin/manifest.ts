@@ -18,11 +18,11 @@ function manifest(): Plugin {
       assert(typeof base === 'string')
       assert(typeof ssr === 'boolean')
       const doesClientSideRouting = includesClientSideRouter(bundle as any)
-      const pluginManifest = { doesClientSideRouting, base }
+      const manifest = { doesClientSideRouting, base }
       this.emitFile({
         fileName: `vite-plugin-ssr.json`,
         type: 'asset',
-        source: JSON.stringify(pluginManifest, null, 2)
+        source: JSON.stringify(manifest, null, 2)
       })
     }
   } as Plugin
