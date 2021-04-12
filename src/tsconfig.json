@@ -5,6 +5,7 @@
     "target": "ES2017",
     "module": "CommonJS",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "skipLibCheck": true,
     "declaration": true,
