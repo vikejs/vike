@@ -1,5 +1,6 @@
 import './page-files/setup.node'
-import { writeFile as writeFile_cb, mkdir } from 'fs'
+import fs from 'fs'
+const { writeFile, mkdir } = fs.promises;
 import { join, sep, dirname } from 'path'
 import { route } from './route.shared'
 import { loadPageRoutes } from './routing/load-page-routes';
@@ -7,11 +8,11 @@ import { getFilesystemRoute } from './routing/get-fs-route';
 import { getPageIds } from './routing/get-page-ids';
 import { isErrorPage } from './routing/is-error-page';
 import { isStaticRoute } from './routing/is-static-path-to-regexp-route';
-
-import { assert, assertUsage, assertWarning, hasProp, getFileUrl } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
+import { version } from './package.json'
 
 export { prerender }
 
@@ -38,7 +39,7 @@ async function prerender({
   base?: string
 } = {}) {
   assertArguments(partial, clientRouter, base)
-  console.log(`${cyan(`vite-plugin-ssr ${require('../package.json').version}`)} ${green('pre-rendering HTML...')}`)
+  console.log(`${cyan(`vite-plugin-ssr ${version}`)} ${green('pre-rendering HTML...')}`)
 
   const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
   assertUsage(
@@ -46,6 +47,10 @@ async function prerender({
     "You are trying to run `$ vite-plugin-ssr prerender` but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before running the pre-rendering. (Following build manifest is missing: `" +
       pluginManifestPath +
       '`.)'
+  )
+  assertUsage(
+    pluginManifest.version === version,
+    `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
   const serializePageProps: boolean = pluginManifest.doesClientSideRouting
   const baseUrl: string = pluginManifest.base
@@ -180,27 +185,8 @@ async function write(url: string, fileExtension: '.html' | '.pageProps.json', fi
   console.log(`${gray(join('dist', 'client') + sep)}${blue(filePathRelative)}`)
 }
 
-function writeFile(path: string, fileContent: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    writeFile_cb(path, fileContent, 'utf8', (err) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
-}
-function mkdirp(path: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    mkdir(path, { recursive: true }, (err) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve()
-      }
-    })
-  })
+function mkdirp(path: string): Promise<string | undefined> {
+  return mkdir(path, { recursive: true })
 }
 
 function normalizePrerenderResult(
@@ -249,6 +235,7 @@ function normalizePrerenderResult(
 }
 
 type PluginManifest = {
+  version: string
   base: string
   doesClientSideRouting: boolean
 }
@@ -258,21 +245,20 @@ function getPluginManifest(
   pluginManifest: PluginManifest | null
   pluginManifestPath: string
 } {
-  const pluginManifestPath = `${root}/dist/client/manifest_vite-plugin-ssr.json`
-
-  let manifestContent: unknown
-  try {
-    manifestContent = require(pluginManifestPath)
-  } catch (err) {
+  const pluginManifestPath = `${root}/dist/client/vite-plugin-ssr.json`
+  if (!moduleExists(pluginManifestPath)) {
     return { pluginManifest: null, pluginManifestPath }
   }
+
+  let manifestContent: unknown = require(pluginManifestPath)
+  assert(hasProp(manifestContent, 'version'))
   assert(hasProp(manifestContent, 'base'))
   assert(hasProp(manifestContent, 'doesClientSideRouting'))
   const { base, doesClientSideRouting } = manifestContent
   assert(typeof doesClientSideRouting === 'boolean')
   assert(typeof base === 'string')
 
-  const pluginManifest = { base, doesClientSideRouting }
+  const pluginManifest = { version, base, doesClientSideRouting }
   return { pluginManifest, pluginManifestPath }
 }
 

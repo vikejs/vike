@@ -1,10 +1,10 @@
 import { Plugin } from 'vite'
 import { assert } from '../utils'
-import { isSSR } from './utils'
+import { version } from '../package.json'
 
-export { manifestPlugin }
+export { manifest }
 
-function manifestPlugin(): Plugin {
+function manifest(): Plugin {
   let base: string
   let ssr: boolean
   return {
@@ -19,11 +19,15 @@ function manifestPlugin(): Plugin {
       assert(typeof base === 'string')
       assert(typeof ssr === 'boolean')
       const doesClientSideRouting = includesClientSideRouter(bundle as any)
-      const pluginManifest = { doesClientSideRouting, base }
+      const manifest = {
+        version,
+        doesClientSideRouting,
+        base
+      }
       this.emitFile({
-        fileName: `manifest_vite-plugin-ssr.json`,
+        fileName: `vite-plugin-ssr.json`,
         type: 'asset',
-        source: JSON.stringify(pluginManifest, null, 2)
+        source: JSON.stringify(manifest, null, 2)
       })
     }
   } as Plugin
@@ -40,4 +44,8 @@ function includesClientSideRouter(bundle: Record<string, { modules?: Record<stri
     }
   }
   return false
+}
+
+function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
+  return !!config?.build?.ssr
 }

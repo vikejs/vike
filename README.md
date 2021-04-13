@@ -47,6 +47,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
 <br/> &nbsp;&nbsp; [Cloudflare Workers](#cloudflare-workers)
+<br/> &nbsp;&nbsp; [Tailwind CSS](#tailwind-css)
 <br/>
 <br/> API
 <br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
@@ -1056,6 +1057,49 @@ Make sure to import `/dist/server/importer.js` in your worker code. (The `import
 
 Example:
  - [/examples/cloudflare-workers](/examples/cloudflare-workers)
+
+<br/><br/>
+
+
+### Tailwind CSS
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+1. ```bash
+   npm install vite-plugin-windicss windicss
+   # or
+   yarn add vite-plugin-windicss windicss
+   ```
+
+2. Add `vite-plugin-windicss` to your `vite.config.js`.
+   ```js
+   import ssr from "vite-plugin-ssr/plugin"
+   import WindiCSS from "vite-plugin-windicss"
+
+   export default {
+     plugins: [
+       ssr(),
+       WindiCSS({
+         scan: {
+           // By default only `src/` is scanned
+           dirs: ["pages"],
+           // You only have to specify the file extensions you actually use.
+           fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"]
+         }
+       })
+     ]
+   }
+   ```
+   > Alternatively, you can define these options in `windi.config.js`.
+
+3. Add WindiCSS to your `_default.page.client.js`.
+   ```js
+   import 'virtual:windi.css'
+   ```
+
+That's it.
+
+> More in the [WindiCSS Vite Guide](https://windicss.org/guide/vite.html).
 
 <br/><br/>
 

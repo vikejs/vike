@@ -1,9 +1,8 @@
 import { Plugin } from 'vite'
-import { isSSR } from './utils'
 
-export { importerPlugin }
+export { importer }
 
-function importerPlugin(): Plugin {
+function importer(): Plugin {
   let ssr: boolean
   return {
     name: 'vite-plugin-ssr:importer',
@@ -32,4 +31,8 @@ const { __private: { setPageFiles, setViteManifest } } = require("vite-plugin-ss
 setViteManifest({ clientManifest, serverManifest });
 setPageFiles(pageFiles);
 `
+}
+
+function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
+  return !!config?.build?.ssr
 }

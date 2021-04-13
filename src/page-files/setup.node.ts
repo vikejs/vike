@@ -2,7 +2,7 @@ import { setPageFilesAsync } from './getPageFiles.shared'
 import { assert, assertUsage } from '../utils/assert'
 import { sep as pathSep, resolve as pathResolve } from 'path'
 import { getSsrEnv } from '../ssrEnv.node'
-import { hasProp } from '../utils'
+import { hasProp, moduleExists } from '../utils'
 
 setPageFilesAsync(setPageFiles)
 
@@ -12,19 +12,11 @@ async function setPageFiles(): Promise<unknown> {
   requireResolve(`./${viteEntry}`)
   if (ssrEnv.isProduction) {
     const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntry}.js`)
-    let moduleExports: any
-    try {
-      moduleExports = require_(modulePath)
-    } catch (err) {
-      if (err.code !== 'MODULE_NOT_FOUND' || !err.message.includes(`Cannot find module '${modulePath}'`)) {
-        throw err
-      } else {
-        assertUsage(
-          false,
-          `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`
-        )
-      }
-    }
+    assertUsage(
+      moduleExists(modulePath),
+      `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`
+    )
+    const moduleExports: any = require_(modulePath)
     const pageFiles: unknown = moduleExports.pageFiles || moduleExports.default.pageFiles
     assert(pageFiles)
     assert(hasProp(pageFiles, '.page'))
@@ -46,10 +38,13 @@ async function setPageFiles(): Promise<unknown> {
   }
 }
 
-// Make sure that dynamic module paths are not statically analysed by bundlers such as Webpack
 function require_(modulePath: string): unknown {
-  return eval('require')(modulePath)
+  // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
+  const req = require
+  return req(modulePath)
 }
 function requireResolve(modulePath: string): string {
-  return eval('require').resolve(modulePath)
+  // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
+  const req = require
+  return req.resolve(modulePath)
 }

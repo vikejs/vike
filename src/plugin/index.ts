@@ -1,15 +1,15 @@
 import { Plugin } from 'vite'
 import { assertUsage } from '../utils'
-import { buildPlugin } from './buildPlugin'
-import { devPlugin } from './devPlugin'
-import { manifestPlugin } from './manifestPlugin'
-import { importerPlugin } from './importerPlugin'
+import { build } from './build'
+import { dev } from './dev'
+import { manifest } from './manifest'
+import { importer } from './importer'
 
 export { plugin }
 export default plugin
 
 function plugin(): Plugin[] {
-  return [devPlugin(), buildPlugin(), manifestPlugin(), importerPlugin()]
+  return [dev(), build(), manifest(), importer()]
 }
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`
