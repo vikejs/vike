@@ -5,11 +5,15 @@ export type FunctionalRouteMatch = {
   routeParams: Record<string, unknown>
 }
 
-export type PageRoute = {
+export type PageRoute<T=string | Function | FunctionalRouteMatch> = {
   pageRouteFile?: string
-  pageRoute: string | Function | FunctionalRouteMatch
+  pageRoute: T
   id: PageId
 }
+
+export type FunctionalRoute = PageRoute<Function>;
+
+export type CompiledFunctionalRoute = PageRoute<(FunctionalRouteMatch|string)>;
 
 export type RouteMatch = { 
   routeParams: Record<string, unknown>, 

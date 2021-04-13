@@ -1,6 +1,7 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { navigationState } from './navigationState.client'
+import { PageRoute } from '../routing/types';
 
 export { getPage }
 export { getPageById }
@@ -40,17 +41,20 @@ async function getPageById(pageId: string): Promise<any> {
 function getPageInfo(): {
   pageId: string
   pageProps: Record<string, unknown>
+  routes: PageRoute[]
 } {
   const pageId = window.__vite_plugin_ssr.pageId
   const pageProps = window.__vite_plugin_ssr.pageProps
-  return { pageId, pageProps }
+  const routes = window.__vite_plugin_ssr.routes
+  return { pageId, pageProps, routes }
 }
 
 declare global {
   interface Window {
     __vite_plugin_ssr: {
       pageId: string
-      pageProps: Record<string, unknown>
+      pageProps: Record<string, unknown>,
+      routes: PageRoute[]
     }
   }
 }

@@ -2,27 +2,29 @@ import { navigationState } from '../navigationState.client'
 import { assert, assertWarning, getFileUrl, hasProp } from '../../utils'
 import { parse } from '@brillout/json-s'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
+import { PageRoute } from '../../routing/types';
 
 export { getPageProps }
 export { retrievePageProps }
 
 async function getPageProps(
   url: string,
-  useOriginalDataWhenPossible: boolean = true
+  useOriginalDataWhenPossible: boolean = true,
+  includeRoutes: boolean = true
 ): Promise<Record<string, unknown>> {
   if (navigationState.isOriginalUrl(url) && useOriginalDataWhenPossible) {
-    const { pageProps } = getOriginalPageInfo()
-    return pageProps
+    const { pageProps, routes } = getOriginalPageInfo()
+    return includeRoutes ? { ...pageProps, routes } : pageProps
   } else {
-    const pageProps = await retrievePageProps(url)
+    const pageProps = await retrievePageProps(url, includeRoutes)
     return pageProps
   }
 }
 
-async function retrievePageProps(url: string): Promise<Record<string, unknown>> {
+async function retrievePageProps(url: string, includeRoutes: boolean=true): Promise<Record<string, unknown>> {
   const response = await fetch(getFileUrl(url, '.pageProps.json'))
   const responseText = await response.text()
-  const responseObject = parse(responseText) as { pageProps: Record<string, unknown> } | { userError: true }
+  const responseObject = parse(responseText) as { pageProps: Record<string, unknown>, routes: PageRoute[] } | { userError: true }
   if ('userError' in responseObject) {
     assertWarning(
       false,
@@ -32,7 +34,7 @@ async function retrievePageProps(url: string): Promise<Record<string, unknown>> 
     return pageProps
   }
   assert(hasProp(responseObject, 'pageProps'))
-  const { pageProps } = responseObject
+  const { pageProps, routes } = responseObject
   assert(pageProps.constructor === Object)
-  return pageProps
+  return includeRoutes ? { ...pageProps, routes } : pageProps
 }

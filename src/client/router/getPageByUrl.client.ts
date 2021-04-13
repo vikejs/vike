@@ -7,11 +7,12 @@ export { getPageByUrl }
 
 async function getPageByUrl(
   url: string,
-  useOriginalDataWhenPossible: boolean = true
+  useOriginalDataWhenPossible: boolean = true,
+  includeRoutes: boolean = true
 ): Promise<{ Page: unknown; pageProps: Record<string, unknown> }> {
   const [Page, pageProps] = await Promise.all([
     (async () => await getPageById(await getPageId(url, useOriginalDataWhenPossible)))(),
-    (async () => await getPageProps(url, useOriginalDataWhenPossible))()
+    (async () => await getPageProps(url, useOriginalDataWhenPossible, includeRoutes))()
   ])
   assert(pageProps.constructor === Object)
   return { Page, pageProps }

@@ -12,6 +12,8 @@ import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
 import { stringify } from '@brillout/json-s'
+import { PageRoute } from './routing/types';
+
 import {
   assert,
   assertUsage,
@@ -227,7 +229,8 @@ async function getRenderData(
     contextProps,
     pageProps,
     url,
-    isPreRendering
+    isPreRendering,
+    routes: contextProps.routes as PageRoute[]
   }
 }
 
@@ -240,11 +243,13 @@ type RenderData = {
   pageFilePath: string
   pageFunctions: PageFunctions
   isPreRendering: boolean
+  routes: PageRoute[]
 }
 
-function renderPageProps({ pageProps }: RenderData) {
+function renderPageProps({ pageProps, routes }: RenderData) {
   const pagePropsSerialized = stringify({
-    pageProps
+    pageProps,
+    routes
   })
   return pagePropsSerialized
 }
@@ -256,7 +261,8 @@ async function renderHtmlDocument({
   pageId,
   pageFilePath,
   pageFunctions,
-  isPreRendering
+  isPreRendering,
+  routes
 }: RenderData) {
   const { renderFunction, addContextPropsFunction, setPagePropsFunction } = pageFunctions
 
@@ -291,7 +297,7 @@ async function renderHtmlDocument({
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
   // Inject pageProps
-  htmlDocument = injectPageInfo(htmlDocument, pageProps, pageId)
+  htmlDocument = injectPageInfo(htmlDocument, pageProps, pageId, routes)
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
@@ -474,10 +480,10 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
-function injectPageInfo(htmlDocument: string, pageProps: Record<string, unknown>, pageId: string): string {
+function injectPageInfo(htmlDocument: string, pageProps: Record<string, unknown>, pageId: string, routes: PageRoute[]): string {
   const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(pageId)}, pageProps: ${devalue(
     pageProps
-  )}}</script>`
+  )}, routes: ${devalue(routes)}}</script>`
   return injectEnd(htmlDocument, injection)
 }
 

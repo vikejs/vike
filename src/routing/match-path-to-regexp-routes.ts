@@ -1,10 +1,6 @@
 import { RouteMatch, PageRoute, FunctionalRouteMatch } from './types';
 import { parseRoute } from './parse-path-to-regexp-route';
 
-function resolveRouteString(routeString: string, urlPathname: string) {
-  return parseRoute(urlPathname, routeString)
-}
-
 export async function matchRoutes(
   routes: PageRoute[],
   url: string
@@ -16,7 +12,7 @@ export async function matchRoutes(
 
     // Route with `.page.route.js` defined route string
     if (typeof pageRoute === 'string') {
-      const { matchValue, routeParams } = resolveRouteString(pageRoute, url)
+      const { matchValue, routeParams } = parseRoute(url, pageRoute)
       return { pageId, routeParams }
     }
 
