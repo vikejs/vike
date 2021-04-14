@@ -12,7 +12,7 @@ const cwd = process.cwd()
 
 const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts')]
 
-const ignoreFiles = ['.prettierrc']
+const ignoreFiles = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
 
 const renameFiles = {
   _gitignore: '.gitignore'
