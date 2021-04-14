@@ -7,18 +7,18 @@ export { render }
 
 async function render({ Page, contextProps, pageProps }) {
   const app = createApp({ routes: contextProps.routes })
+  const pagePropsByPath = {
+    [contextProps.url]: pageProps
+  };
   const router = createRouter({
     history: createMemoryHistory(),
     routes: contextProps.routes.map(route => ({
       name: route.id,
       path: route.pageRoute,
       meta: {
-        isViteSsrPageRoute: true,
-        pagePropsByPath: {
-          [contextProps.url]: pageProps
-        }
+        isViteSsrPageRoute: true
       },
-      props: (route) => route.meta.pagePropsByPath[route.fullPath],
+      props: (route) => pagePropsByPath[route.fullPath],
       component: Page
     }))
   });
