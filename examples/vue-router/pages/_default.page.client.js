@@ -32,10 +32,9 @@ async function hydrate() {
               name: route.id,
               path: route.pageRoute,
               meta: {
-                isViteSsrPageRoute: true,
-                pagePropsByPath
+                isViteSsrPageRoute: true
               },
-              props: (route) => route.meta.pagePropsByPath[route.fullPath],
+              props: (route) => pagePropsByPath[route.fullPath],
               component: async () => getPageById(route.id)
             })
           });
@@ -46,9 +45,9 @@ async function hydrate() {
           return to.fullPath;
         }
 
-        if (to.meta.isViteSsrPageRoute && !to.meta.pagePropsByPath[to.fullPath]) {
+        if (to.meta.isViteSsrPageRoute && !pagePropsByPath[to.fullPath]) {
           const pageProps = await getPageProps(to.fullPath);
-          
+
           pagePropsByPath[to.fullPath] = pageProps;
 
           return to.fullPath;
