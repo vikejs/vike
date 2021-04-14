@@ -3,8 +3,7 @@
     <nav>
       <router-link class="nav-route" :to="{ name: '/pages/about' }">
         About
-      </router-link>
-      <router-link class="nav-route" :to="{ name: '/pages/home' }">
+      </router-link> | <router-link class="nav-route" :to="{ name: '/pages/home' }">
         Home
       </router-link>
     </nav>
@@ -45,10 +44,5 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-}
-
-.nav-route:not(:last-child)::after {
-  content: '|';
-  margin: 0 5px;
 }
 </style>

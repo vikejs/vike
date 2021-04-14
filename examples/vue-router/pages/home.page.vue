@@ -1,12 +1,13 @@
 <template>
   <h1>{{ msg }}</h1>
-  <p>This content is rendered to HTML.</p>
+  <p>{{ specialHomeMsg }}</p>
 </template>
 <script>
 export default {
   props: {
     routes: Array,
-    msg: String
+    msg: String,
+    specialHomeMsg: String
   },
   setup() {
     return {}
