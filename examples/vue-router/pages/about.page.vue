@@ -5,10 +5,12 @@
 
 <script>
 export default {
+  props: {
+    routes: Array,
+    msg: String
+  },
   async setup() {
-    return {
-      msg: 'About'
-    }
+    return {}
   }
 }
 </script>

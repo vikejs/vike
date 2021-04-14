@@ -1,11 +1,9 @@
 import { createSSRApp } from 'vue'
-import { createRouter } from './router'
+import App from '../App.vue';
 
 export { createApp }
 
-function createApp({ Page }) {
-  const app = createSSRApp(Page)
-  const router = createRouter()
-  app.use(router)
-  return { app, router }
+function createApp(props) {
+  const app = createSSRApp(App, props)
+  return app
 }
