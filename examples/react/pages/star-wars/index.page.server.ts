@@ -17,7 +17,7 @@ async function addContextProps(): Promise<ContextProps> {
   return {
     pageProps: {
       // We remove data we don't need because we pass `contextProps.movies` to
-      // the client; we want to minimize what it sent over the network.
+      // the client; we want to minimize what is sent over the network.
       movies: filterMoviesData(movies),
     },
     // The page's <title>
