@@ -1,3 +1,23 @@
+# [0.1.0-beta.32](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.31...v0.1.0-beta.32) (2021-04-16)
+
+
+### Features
+
+* simplify data fetching ([2d1a52d](https://github.com/brillout/vite-plugin-ssr/commit/2d1a52d4f698741c90049e9978a0904c6ca0dc0d))
+
+
+### BREAKING CHANGES
+
+* `pageProps` and `setPageProps()` are deprecated. Define
+your page props on `context.pageProps` by returning `pageProps` in
+`addContextProps()`, and then `export const passToClient = 'pageProps'`
+in `.page.server.js` to tell `vite-plugin-ssr` to serialize and pass
+`contextProps.pageProps` to the browser. In the browser `contextProps`
+is now available at `const { Page, contextProps } = await getPage()`
+and `useClientRouter({ render({ Page, contextProps, isHydration }) })`.
+
+
+
 # [0.1.0-beta.31](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.30...v0.1.0-beta.31) (2021-04-15)
 
 
