@@ -9,8 +9,8 @@
 ### BREAKING CHANGES
 
 * `pageProps` and `setPageProps()` are deprecated. Define
-your page props on `context.pageProps` by returning `pageProps` in
-`addContextProps()`, and then `export const passToClient = 'pageProps'`
+your page props on `contextProps.pageProps` by returning `pageProps` in
+`addContextProps()`, and then `export const passToClient = ['pageProps']`
 in `.page.server.js` to tell `vite-plugin-ssr` to serialize and pass
 `contextProps.pageProps` to the browser. In the browser `contextProps`
 is now available at `const { Page, contextProps } = await getPage()`
