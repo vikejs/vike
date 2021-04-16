@@ -23,7 +23,7 @@ async function addContextProps({
   let movie = (await response.json()) as MovieDetails;
 
   // We remove data we don't need because we pass `contextProps.movie` to
-  // the client; we want to minimize what it sent over the network.
+  // the client; we want to minimize what is sent over the network.
   movie = filterMovieData(movie);
 
   // The page's <title>
