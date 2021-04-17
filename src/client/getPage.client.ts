@@ -1,11 +1,14 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { getContextPropsProxy } from './getContextPropsProxy'
+import { getUrlPathname } from './getUrl.client'
 import { navigationState } from './navigationState.client'
 
 export { getPage }
 export { getPageById }
 export { getPageInfo }
+
+const urlPathnameOriginal = getUrlPathname()
 
 async function getPage(): Promise<{
   Page: any
@@ -29,9 +32,10 @@ async function getPage(): Promise<{
 }
 
 function assertPristineUrl() {
+  const urlPathnameCurrent = getUrlPathname()
   assertWarning(
-    navigationState.noNavigationChangeYet,
-    `\`getPage()\` returned page information for URL \`${navigationState.urlOriginal}\` instead of \`${navigationState.urlCurrent}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
+    urlPathnameOriginal === urlPathnameCurrent,
+    `\`getPage()\` returned page information for URL \`${urlPathnameOriginal}\` instead of \`${urlPathnameCurrent}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
   )
 }
 
