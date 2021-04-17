@@ -23,6 +23,9 @@ async function retrieveContextProps(url: string): Promise<Record<string, unknown
   const response = await fetch(getFileUrl(url, '.contextProps.json'))
   const responseText = await response.text()
   const responseObject = parse(responseText) as { contextProps: Record<string, unknown> } | { userError: true }
+  if ('contextProps404PageDoesNotExist' in responseObject) {
+    window.location.pathname = url
+  }
   assertUsage(!('userError' in responseObject), `An error occurred on the server. Check your server logs.`)
   assert(hasProp(responseObject, 'contextProps'))
   const { contextProps } = responseObject

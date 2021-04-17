@@ -82,7 +82,7 @@ async function renderPage({
     routeResult = await route(url, allPageIds, contextProps)
   } catch (err) {
     if (isContextPropsRequest) {
-      return renderContextPropsJsonError(err)
+      return renderContextPropsError(err)
     } else {
       return await render500Page(err, allPageIds, contextProps, url)
     }
@@ -92,19 +92,23 @@ async function renderPage({
   let statusCode: 200 | 404
   if (!routeResult) {
     await warn404(url, allPageIds)
-    if (isContextPropsRequest) {
-      return renderContextPropsJsonError()
-    }
     const errorPageId = getErrorPageId(allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
+      if (isContextPropsRequest) {
+        return renderContextProps404PageDoesNotExist()
+      }
       return {
         nothingRendered: true,
         renderResult: undefined,
         statusCode: undefined
       }
     }
-    statusCode = 404
+    if( !isContextPropsRequest ) {
+      statusCode = 404
+    } else {
+      statusCode = 200
+    }
     routeResult = { pageId: errorPageId, contextPropsAddendum: { is404: true } }
   } else {
     statusCode = 200
@@ -121,7 +125,7 @@ async function renderPage({
     renderResult = await renderPageId(pageId, contextProps, url, false, isContextPropsRequest)
   } catch (err) {
     if (isContextPropsRequest) {
-      return renderContextPropsJsonError(err)
+      return renderContextPropsError(err)
     } else {
       return await render500Page(err, allPageIds, contextProps, url)
     }
@@ -705,7 +709,7 @@ async function render500Page(
   return { nothingRendered: false, renderResult, statusCode: 500 }
 }
 
-function renderContextPropsJsonError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
+function renderContextPropsError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
   if (err) {
     handleErr(err)
   }
@@ -713,6 +717,12 @@ function renderContextPropsJsonError(err?: unknown): { nothingRendered: false; r
     userError: true
   })
   return { nothingRendered: false, renderResult, statusCode: 500 }
+}
+function renderContextProps404PageDoesNotExist(): { nothingRendered: false; renderResult: string; statusCode: 200 } {
+  const renderResult = stringify({
+    contextProps404PageDoesNotExist: true
+  })
+  return { nothingRendered: false, renderResult, statusCode: 200 }
 }
 
 function handleErr(err: unknown) {
