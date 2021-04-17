@@ -69,6 +69,7 @@ function useClientRouter({
     }
 
     let { Page, contextProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
+    assert(contextProps.urlFull && contextProps.urlPathname)
     contextProps = getContextPropsProxy(contextProps)
 
     if (renderPromise) {

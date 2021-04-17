@@ -18,7 +18,8 @@ import {
   hasProp,
   isContextPropsUrl,
   removeContextPropsUrlSuffix,
-  parseUrl
+  parseUrl,
+  addUrlToContextProps
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
@@ -55,8 +56,6 @@ async function renderPage({
     url = removeContextPropsUrlSuffix(url)
   }
 
-  const urlOriginal = url
-
   url = removeOrigin(url)
   assert(url.startsWith('/'))
 
@@ -70,7 +69,7 @@ async function renderPage({
     url = removeBaseUrl(url)
   }
 
-  Object.assign(contextProps, { url: urlOriginal, urlNormalized: url })
+  addUrlToContextProps(contextProps, url)
 
   const allPageIds = await getPageIds()
 
@@ -91,7 +90,7 @@ async function renderPage({
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    if( !isContextPropsRequest ){
+    if (!isContextPropsRequest) {
       await warn404(url, allPageIds)
     }
     const errorPageId = getErrorPageId(allPageIds)
@@ -106,7 +105,7 @@ async function renderPage({
         statusCode: undefined
       }
     }
-    if( !isContextPropsRequest ) {
+    if (!isContextPropsRequest) {
       statusCode = 404
     } else {
       statusCode = 200

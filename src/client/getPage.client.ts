@@ -1,20 +1,22 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
+import { addUrlToContextProps } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { getContextPropsProxy } from './getContextPropsProxy'
-import { getUrlPathname } from './getUrl.client'
-import { navigationState } from './navigationState.client'
+import { getUrl, getUrlPathname } from './getUrl.client'
 
 export { getPage }
 export { getPageById }
 export { getPageInfo }
 
 const urlPathnameOriginal = getUrlPathname()
+const urlFullOriginal = getUrl()
 
 async function getPage(): Promise<{
   Page: any
   contextProps: Record<string, any>
 }> {
   let { pageId, contextProps } = getPageInfo()
+  assert(contextProps.urlFull && contextProps.urlPathname)
   const Page = await getPageById(pageId)
   contextProps = getContextPropsProxy(contextProps)
   assertPristineUrl()
@@ -58,7 +60,9 @@ function getPageInfo(): {
   contextProps: Record<string, unknown>
 } {
   const pageId = window.__vite_plugin_ssr.pageId
-  const contextProps = window.__vite_plugin_ssr.contextProps
+  const contextProps = {}
+  Object.assign(contextProps, window.__vite_plugin_ssr.contextProps)
+  addUrlToContextProps(contextProps, urlFullOriginal)
   return { pageId, contextProps }
 }
 
