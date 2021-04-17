@@ -91,7 +91,9 @@ async function renderPage({
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    await warn404(url, allPageIds)
+    if( !isContextPropsRequest ){
+      await warn404(url, allPageIds)
+    }
     const errorPageId = getErrorPageId(allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
