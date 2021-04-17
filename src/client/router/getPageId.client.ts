@@ -21,10 +21,7 @@ async function retrievePageId(url: string): Promise<string> {
   const allPageIds = await getPageIds()
   const contextProps = {}
   const routeResult = await route(url, allPageIds, contextProps)
-  if (!routeResult) {
-    window.location.pathname = url
-    assertUsage(false, `Could not find page for URL \`${url}\``)
-  }
+  assertUsage(routeResult, `No page is matching the URL \`${url}\`. Make sure to define an \`_error.page.js\`.`)
   const { pageId } = routeResult
   return pageId
 }
