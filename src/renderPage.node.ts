@@ -55,7 +55,7 @@ async function renderPage({
     url = removeContextPropsUrlSuffix(url)
   }
 
-  Object.assign(contextProps, { url })
+  const urlOriginal = url
 
   url = removeOrigin(url)
   assert(url.startsWith('/'))
@@ -70,7 +70,7 @@ async function renderPage({
     url = removeBaseUrl(url)
   }
 
-  Object.assign(contextProps, { urlNormalized: url })
+  Object.assign(contextProps, { url: urlOriginal, urlNormalized: url })
 
   const allPageIds = await getPageIds()
 
@@ -356,7 +356,9 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
 
     assertUsage(
       !('setPageProps' in fileExports),
-      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `"+filePath+"`.)"
+      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
+        filePath +
+        '`.)'
     )
 
     const render = fileExports.render || fileExports.default?.render
