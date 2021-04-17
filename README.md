@@ -49,9 +49,8 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Tailwind CSS](#tailwind-css)
 <br/>
 <br/> API
+<br/><sub>&nbsp;&nbsp;&nbsp; Node.js & Browser</sub>
 <br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
-<br/> &nbsp;&nbsp; [`_default.page.*`](#_defaultpage)
-<br/> &nbsp;&nbsp; [`_error.page.*`](#_errorpage)
 <br/><sub>&nbsp;&nbsp;&nbsp; Node.js</sub>
 <br/> &nbsp;&nbsp; [`*.page.server.js`](#pageserverjs)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addContextProps }`](#export--addcontextprops-)
@@ -69,6 +68,9 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route String](#route-string)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [Route Function](#route-function)
 <br/> &nbsp;&nbsp; [Filesystem Routing](#filesystem-routing)
+<br/><sub>&nbsp;&nbsp;&nbsp; Special Pages</sub>
+<br/> &nbsp;&nbsp; [`_default.page.*`](#_defaultpage)
+<br/> &nbsp;&nbsp; [`_error.page.*`](#_errorpage)
 <br/><sub>&nbsp;&nbsp;&nbsp; Integration</sub>
 <br/> &nbsp;&nbsp; [`import { createPageRender } from 'vite-plugin-ssr'`](#import--createpagerender--from-vite-plugin-ssr) (Server Integration Point)
 <br/> &nbsp;&nbsp; [`import ssr from 'vite-plugin-ssr/plugin'`](#import-ssr-from-vite-plugin-ssrplugin) (Vite Plugin)
@@ -1185,46 +1187,6 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 <br/><br/>
 
 
-### `_default.page.*`
-
-The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages. 
-
-There can be several `_default`:
-
-```
-marketing/_default.page.server.js
-marketing/_default.page.client.js
-marketing/index.page.js
-marketing/about.page.js
-marketing/jobs.page.js
-admin-panel/_default.page.server.js
-admin-panel/_default.page.client.js
-admin-panel/index.page.js
-```
-
-The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
-the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
-
-The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
-defining `_default.page.js` or `_default.page.route.js` is forbidden.
-
-<br/><br/>
-
-
-### `_error.page.*`
-
-The page `_error.page.js` is used for when an error occurs:
- - When no page matches the URL (acting as a `404` page).
- - When one of your `.page.*` files throws an error (acting as a `500` page).
-
-`vite-plugin-ssr` automatically sets `contextProps.pageProps.is404: boolean` allowing you to decided whether to show a `404` or `500` page.
-(Normally `contextProps.pageProps` is completely defined/controlled by you and `vite-plugin-ssr`'s source code doesn't know anything about `contextProps.pageProps` but this is the only exception.)
-
-You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`.
-
-<br/><br/>
-
-
 ### `*.page.server.js`
 
 Environment: `Node.js`
@@ -1860,6 +1822,46 @@ todo/create.page.js               /todo/create
 The directory common to all your `*.page.js` files is considered the routing root.
 
 For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
+
+<br/><br/>
+
+
+### `_default.page.*`
+
+The `_default.page.server.js` and `_default.page.client.js` files are like regular `.page.server.js` and `.page.client.js` files, but they are special in the sense that they don't apply to a single page file; instead, they apply as a default to all pages.
+
+There can be several `_default`:
+
+```
+marketing/_default.page.server.js
+marketing/_default.page.client.js
+marketing/index.page.js
+marketing/about.page.js
+marketing/jobs.page.js
+admin-panel/_default.page.server.js
+admin-panel/_default.page.client.js
+admin-panel/index.page.js
+```
+
+The `marketing/_default.page.*` files apply to the `marketing/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply to the `admin-panel/*.page.js` files.
+
+The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
+defining `_default.page.js` or `_default.page.route.js` is forbidden.
+
+<br/><br/>
+
+
+### `_error.page.*`
+
+The page `_error.page.js` is used for when an error occurs:
+ - When no page matches the URL (acting as a `404` page).
+ - When one of your `.page.*` files throws an error (acting as a `500` page).
+
+`vite-plugin-ssr` automatically sets `contextProps.pageProps.is404: boolean` allowing you to decided whether to show a `404` or `500` page.
+(Normally `contextProps.pageProps` is completely defined/controlled by you and `vite-plugin-ssr`'s source code doesn't know anything about `contextProps.pageProps` but this is the only exception.)
+
+You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`.
 
 <br/><br/>
 
