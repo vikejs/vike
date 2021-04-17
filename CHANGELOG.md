@@ -1,3 +1,28 @@
+# [0.1.0-beta.33](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.31...v0.1.0-beta.33) (2021-04-17)
+
+
+### Bug Fixes
+
+* retrieve context props for 404 page, and expect missing context props for 404 page if no `_error.page.js` is defined (fix [#41](https://github.com/brillout/vite-plugin-ssr/issues/41)) ([55cd596](https://github.com/brillout/vite-plugin-ssr/commit/55cd5969c18d0b876ed8fa86bf554eda5efaad79))
+
+
+### Features
+
+* simplify data fetching ([462ce37](https://github.com/brillout/vite-plugin-ssr/commit/462ce37534684be05c9ff3e6c189602e77a63ff3))
+
+
+### BREAKING CHANGES
+
+* `pageProps` and `setPageProps()` are deprecated. Define
+your page props on `contextProps.pageProps` by returning `pageProps` in
+`addContextProps()`, and then `export const passToClient = ['pageProps']`
+in `.page.server.js` to tell `vite-plugin-ssr` to serialize and pass
+`contextProps.pageProps` to the browser. In the browser `contextProps`
+is now available at `const { Page, contextProps } = await getPage()`
+and `useClientRouter({ render({ Page, contextProps, isHydration }) })`.
+
+
+
 # [0.1.0-beta.32](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.31...v0.1.0-beta.32) (2021-04-16)
 
 
