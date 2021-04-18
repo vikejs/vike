@@ -686,7 +686,9 @@ function Page(pageProps) {
 }
 ```
 
-We can also pass data to any component in the component tree:
+#### Pass `contextProps` to all/any components
+
+We can also pass some `contextProps` to any component in the component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
@@ -742,6 +744,7 @@ You can also use a routing library such as Vue Router and React Router (in compl
 
  - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
+ - [Active Links `<a class="is-active">`](#active-links-a-classis-active)
 
 #### Filesystem Routing VS Route Strings VS Route Functions
 
@@ -791,6 +794,11 @@ If you don't have a strong rationale to do something differently, then you shoul
 
 That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
  - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+
+#### Active Links `<a class="is-active">`
+
+Use `contextProps.urlPathname` (available on both the client and server)
+and [pass it to your link component](#pass-contextprops-to-allany-components).
 
 <br/><br/>
 
