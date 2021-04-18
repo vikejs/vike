@@ -1,13 +1,12 @@
-export { setPageProps }
+export { addContextProps }
 export { prerender }
 
-type ContextProps = {
-  name: string
-}
-
-function setPageProps({ contextProps }: { contextProps: ContextProps }) {
+async function addContextProps({ contextProps }: { contextProps: { name: string } }) {
   const { name } = contextProps
-  return { name }
+  const pageProps = { name }
+  return {
+    pageProps
+  }
 }
 
 function prerender() {

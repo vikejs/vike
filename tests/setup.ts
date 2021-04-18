@@ -13,6 +13,8 @@ export { autoRetry }
 export { fetchHtml }
 export { run }
 
+const TIMEOUT = 100 * 1000
+
 const browserLogs: {
   type: string
   text: string
@@ -20,12 +22,13 @@ const browserLogs: {
   args: any
 }[] = []
 function run(cmd: string, baseUrl = '') {
-  jest.setTimeout(60 * 1000)
+  jest.setTimeout(TIMEOUT)
 
   let runProcess: RunProcess
   beforeAll(async () => {
     runProcess = await start(cmd)
     page.on('console', onConsole)
+    page.setDefaultTimeout(TIMEOUT)
     await page.goto(urlBase + baseUrl)
   })
   afterAll(async () => {
@@ -148,9 +151,8 @@ function forceLog(std: 'stdout' | 'stderr' | string, str: string) {
 }
 
 async function autoRetry(test: () => void | Promise<void>): Promise<void> {
-  const timeout = 60 * 1000
   const period = 100
-  const numberOfTries = timeout / period
+  const numberOfTries = TIMEOUT / period
   let i = 0
   while (true) {
     try {

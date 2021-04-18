@@ -7,14 +7,11 @@ import App from "../App";
 hydrate();
 
 async function hydrate() {
-  const {
-    Page,
-    pageProps: { apolloIntialState, pageProps },
-  } = await getPage();
-  const apolloClient = makeApolloClient(apolloIntialState);
+  const { Page, contextProps } = await getPage();
+  const apolloClient = makeApolloClient(contextProps.apolloIntialState);
   ReactDOM.hydrate(
     <App apolloClient={apolloClient}>
-      <Page {...pageProps} />
+      <Page />
     </App>,
     document.getElementById("page-content")
   );

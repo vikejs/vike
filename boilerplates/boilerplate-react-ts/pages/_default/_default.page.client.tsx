@@ -6,11 +6,11 @@ import { PageLayout } from "./PageLayout";
 hydrate();
 
 async function hydrate() {
-  const { Page, pageProps } = await getPage();
+  const { Page, contextProps } = await getPage();
 
   ReactDOM.hydrate(
     <PageLayout>
-      <Page {...pageProps} />
+      <Page {...contextProps.pageProps} />
     </PageLayout>,
     document.getElementById("page-view")
   );

@@ -6,6 +6,4 @@ export async function addContextProps({ contextProps: {} }) {
   }
 }
 
-export function setPageProps({ contextProps: { msg, specialHomeMsg } }) {
-  return { msg, specialHomeMsg }
-}
+export const passToClient = ['specialHomeMsg', 'msg']

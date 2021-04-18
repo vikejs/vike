@@ -4,7 +4,7 @@ import { PageProps } from './types'
 
 export { createApp }
 
-function createApp(Page: any, pageProps: PageProps) {
+function createApp(Page: any, pageProps: PageProps = {}) {
   const PageWithLayout = defineComponent({
     render() {
       return h(

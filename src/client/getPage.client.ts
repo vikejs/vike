@@ -1,5 +1,7 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
+import { getContextPropsProxy } from './getContextPropsProxy'
+import { getUrlPathname } from './getUrl.client'
 import { navigationState } from './navigationState.client'
 import { PageRoute } from '../routing/types';
 
@@ -7,20 +9,34 @@ export { getPage }
 export { getPageById }
 export { getPageInfo }
 
+const urlPathnameOriginal = getUrlPathname()
+
 async function getPage(): Promise<{
   Page: any
-  pageProps: Record<string, any>
+  contextProps: Record<string, any>
 }> {
-  const { pageId, pageProps } = getPageInfo()
+  let { pageId, contextProps } = getPageInfo()
   const Page = await getPageById(pageId)
+  contextProps = getContextPropsProxy(contextProps)
   assertPristineUrl()
-  return { Page, pageProps }
+  return {
+    Page,
+    contextProps,
+    // @ts-ignore
+    get pageProps() {
+      assertUsage(
+        false,
+        "`pageProps` in `const { pageProps } = await getPage()` has been replaced with `const { contextProps } = await getPage()`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
+      )
+    }
+  }
 }
 
 function assertPristineUrl() {
+  const urlPathnameCurrent = getUrlPathname()
   assertWarning(
-    navigationState.noNavigationChangeYet,
-    `\`getPage()\` returned page information for URL \`${navigationState.urlOriginal}\` instead of \`${navigationState.urlCurrent}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
+    urlPathnameOriginal === urlPathnameCurrent,
+    `\`getPage()\` returned page information for URL \`${urlPathnameOriginal}\` instead of \`${urlPathnameCurrent}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`
   )
 }
 
@@ -40,20 +56,20 @@ async function getPageById(pageId: string): Promise<any> {
 
 function getPageInfo(): {
   pageId: string
-  pageProps: Record<string, unknown>
+  contextProps: Record<string, unknown>
   routes: PageRoute[]
 } {
   const pageId = window.__vite_plugin_ssr.pageId
-  const pageProps = window.__vite_plugin_ssr.pageProps
+  const contextProps = window.__vite_plugin_ssr.contextProps
   const routes = window.__vite_plugin_ssr.routes
-  return { pageId, pageProps, routes }
+  return { pageId, contextProps, routes }
 }
 
 declare global {
   interface Window {
     __vite_plugin_ssr: {
       pageId: string
-      pageProps: Record<string, unknown>,
+      contextProps: Record<string, unknown>
       routes: PageRoute[]
     }
   }

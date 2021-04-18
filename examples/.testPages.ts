@@ -42,9 +42,9 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     // The HTML is from the first page before client-side routing
     const html = await page.content()
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
-    // Therefore only the serialized `pageProps` tell us the original HTML.
+    // Therefore only the serialized `contextProps` tell us the original HTML.
     expect(html).toContain(
-      '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", pageProps: {}}</script>'
+      '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {pageProps:a,docTitle:a}}(void 0))}</script>'
     )
   })
 
@@ -114,5 +114,15 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
       await page.click('button')
       expect(await page.textContent('button')).toContain('Counter 1')
     })
+  })
+  test('test 404 page', async () => {
+    const html = await fetchHtml('/doesNotExist')
+    if (cmd !== 'npm run prod') {
+      const whitespace = viewFramework === 'vue' ? ' ' : ''
+      expect(html).toContain(`<h1>404 Page Not Found</h1>${whitespace}This page could not be found.`)
+    } else {
+      // We pre-render and static serve for prod => the 404 page is defined by the static server.
+      expect(html).toContain('<span>404</span> <p>The requested path could not be found</p>')
+    }
   })
 }

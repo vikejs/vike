@@ -1,5 +1,5 @@
 import { assert } from '../../utils'
-import { getPageProps } from './getPageProps.client'
+import { getContextProps } from './getContextProps.client'
 import { getPageId } from './getPageId.client'
 import { getPageById } from '../getPage.client'
 
@@ -7,13 +7,12 @@ export { getPageByUrl }
 
 async function getPageByUrl(
   url: string,
-  useOriginalDataWhenPossible: boolean = true,
-  includeRoutes: boolean = true
-): Promise<{ Page: unknown; pageProps: Record<string, unknown> }> {
-  const [Page, pageProps] = await Promise.all([
+  useOriginalDataWhenPossible: boolean = true
+): Promise<{ Page: unknown; contextProps: Record<string, unknown> }> {
+  const [Page, contextProps] = await Promise.all([
     (async () => await getPageById(await getPageId(url, useOriginalDataWhenPossible)))(),
-    (async () => await getPageProps(url, useOriginalDataWhenPossible, includeRoutes))()
+    (async () => await getContextProps(url, useOriginalDataWhenPossible))()
   ])
-  assert(pageProps.constructor === Object)
-  return { Page, pageProps }
+  assert(contextProps.constructor === Object)
+  return { Page, contextProps }
 }

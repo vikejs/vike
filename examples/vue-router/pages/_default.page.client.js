@@ -1,4 +1,4 @@
-import { getPageProps, getPageById } from 'vite-plugin-ssr/client/router'
+import { getContextProps, getPageById } from 'vite-plugin-ssr/client/router'
 import { createApp } from './app'
 import { createRouter, createWebHistory } from 'vue-router'
 import { reactive } from 'vue';
@@ -25,7 +25,7 @@ async function hydrate() {
 
       router.beforeResolve(async (to, from) => {
         if (currentRoutesPath !== to.fullPath) {
-          const pageProps = pagePropsByPath[to.fullPath] || await getPageProps(to.fullPath);
+          const pageProps = pagePropsByPath[to.fullPath] || await getContextProps(to.fullPath);
           
           pageProps.routes.forEach(route => {
             router.addRoute({
@@ -46,7 +46,7 @@ async function hydrate() {
         }
 
         if (to.meta.isViteSsrPageRoute && !pagePropsByPath[to.fullPath]) {
-          const pageProps = await getPageProps(to.fullPath);
+          const pageProps = await getContextProps(to.fullPath);
 
           pagePropsByPath[to.fullPath] = pageProps;
 

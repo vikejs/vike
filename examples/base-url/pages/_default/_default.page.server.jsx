@@ -5,11 +5,14 @@ import { html } from "vite-plugin-ssr";
 import logoUrl from "./logo.svg";
 
 export { render };
+export { passToClient };
 
-function render({ Page, pageProps, contextProps }) {
+const passToClient = ["pageProps"];
+
+function render({ Page, contextProps }) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...pageProps} />
+      <Page {...contextProps.pageProps} />
     </PageLayout>
   );
 

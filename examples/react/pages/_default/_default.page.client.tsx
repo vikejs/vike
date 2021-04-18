@@ -4,10 +4,10 @@ import { PageLayout } from "./PageLayout";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 
 const { hydrationPromise } = useClientRouter({
-  render({ Page, pageProps, isHydration }) {
+  render({ Page, contextProps, isHydration }) {
     const page = (
       <PageLayout>
-        <Page {...pageProps} />
+        <Page {...contextProps.pageProps} />
       </PageLayout>
     );
     const container = document.getElementById("page-view");
@@ -16,7 +16,7 @@ const { hydrationPromise } = useClientRouter({
     } else {
       ReactDOM.render(page, container);
     }
-    document.title = pageProps.docTitle || "Demo";
+    document.title = contextProps.docTitle || "Demo";
   },
   onTransitionStart,
   onTransitionEnd,
