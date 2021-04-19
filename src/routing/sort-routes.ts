@@ -12,6 +12,6 @@ const getMatchVal = (route: PageRoute): number =>
         : 0
     : 0;
 
-export function sortRoutes(a: PageRoute, b: PageRoute) {
+export function sortRoutes(a: PageRoute, b: PageRoute): number {
   return getMatchVal(b) - getMatchVal(a);
 }

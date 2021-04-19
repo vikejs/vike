@@ -19,3 +19,11 @@ export type RouteMatch = {
   routeParams: Record<string, unknown>, 
   pageId: PageId 
 }
+
+export type RoutingHandler = {
+  matchRoutes: (
+    routes: PageRoute[],
+    url: string
+  ) => Promise<null | undefined | RouteMatch>,
+  sortRoutes?: (a: PageRoute, b: PageRoute) => number
+}

@@ -3,7 +3,8 @@
   "workspaces": [
     "src/",
     "scripts/",
-    "tests/"
+    "tests/",
+    "routing-handlers/vue-router/"
   ],
   "scripts": {
     "// Run demo": "",

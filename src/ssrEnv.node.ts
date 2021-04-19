@@ -1,4 +1,5 @@
 import { ViteDevServer } from 'vite'
+import { RoutingHandler } from './routing/types';
 
 export { setSsrEnv }
 export { getSsrEnv }
@@ -9,13 +10,15 @@ type SsrEnv =
       isProduction: false
       viteDevServer: ViteDevServer
       root: string
-      baseUrl: string
+      baseUrl: string,
+      customRouting?: RoutingHandler
     }
   | {
       isProduction: true
       viteDevServer: undefined
       root?: string
       baseUrl: string
+      customRouting?: RoutingHandler
     }
 
 function getSsrEnv(): SsrEnv {

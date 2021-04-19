@@ -6,6 +6,7 @@ import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
 import { isPageFilesSet } from './page-files/getPageFiles.shared'
+import { RoutingHandler } from './routing/types';
 
 export { createPageRender }
 
@@ -17,17 +18,19 @@ function createPageRender({
   viteDevServer,
   root,
   isProduction,
-  base = '/'
+  base = '/',
+  customRouting
 }: {
   viteDevServer?: ViteDevServer
   root?: string
   isProduction?: boolean
-  base?: string
+  base?: string,
+  customRouting: RoutingHandler
 }): RenderPage {
   assertUsage(!alreadyCalled, '`createPageRender()` should be called only once.')
   alreadyCalled = true
 
-  const ssrEnv = { viteDevServer, root, isProduction, baseUrl: base }
+  const ssrEnv = { viteDevServer, root, isProduction, baseUrl: base, customRouting }
   assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
@@ -40,6 +43,7 @@ function assertArguments(
     root?: unknown
     isProduction?: unknown
     baseUrl?: unknown
+    customRouting?: RoutingHandler
   },
   args: unknown[]
 ): asserts ssrEnv is SsrEnv {
@@ -87,7 +91,7 @@ function assertArguments(
   assert(typeof args[0] === 'object' && args[0] !== null)
   Object.keys(args[0]).forEach((argName) => {
     assertUsage(
-      ['viteDevServer', 'root', 'isProduction', 'base'].includes(argName),
+      ['viteDevServer', 'root', 'isProduction', 'base', 'customRouting'].includes(argName),
       '`createPageRender()`: Unknown argument `' + argName + '`.'
     )
   })

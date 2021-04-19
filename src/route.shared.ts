@@ -1,12 +1,12 @@
 import { assert, assertUsage, parseUrl, isCallable, hasProp } from './utils'
 import { matchRoutes as matchPathToRegexpRoutes } from './routing/match-path-to-regexp-routes';
-import { matchRoutes } from './routing/match-vue-routes';
+import { sortRoutes as defaultSortRoutes } from './routing/sort-routes';
 import { PageId, PageRoute, RouteFunction, RouteFunctionMatch, CompiledRouteFunction } from './routing/types';
 import { normalizeUrl } from './utils/normalizeUrl';
 import { isErrorPage } from './routing/is-error-page';
 import { loadPageRoutes } from './routing/load-page-routes';
-import { sortRoutes } from './routing/sort-routes';
 import { getFilesystemRoute } from './routing/get-fs-route';
+import { getSsrEnv } from './ssrEnv.node';
 
 export { route }
 export { getErrorPageId }
@@ -46,6 +46,7 @@ async function route(
     ...compiledRouteFunctions,
     ...routeStrings
   ]
+  const { customRouting: { matchRoutes=matchPathToRegexpRoutes }={} } = getSsrEnv();
 
   const result = await matchRoutes(
     routes,
@@ -71,6 +72,7 @@ function getErrorPageId(allPageIds: string[]): string | null {
 }
 
 function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
+  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
   const fsRouteStrings : PageRoute[] = pageIds
     .filter(pageId => !routes.some(route => route.id === pageId) && !isErrorPage(pageId))
     .map(id => ({ pageRoute: getFilesystemRoute(id, pageIds), id }));
@@ -85,6 +87,7 @@ function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
 }
 
 function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): CompiledRouteFunction[] {
+  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
   const functionalRoutes : RouteFunction[] = (routes as RouteFunction[])
     .filter(route => isCallable(route.pageRoute))
 
