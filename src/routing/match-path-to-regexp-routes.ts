@@ -1,4 +1,4 @@
-import { RouteMatch, PageRoute, FunctionalRouteMatch } from './types';
+import { RouteMatch, PageRoute, RouteFunctionMatch } from './types';
 import { parseRoute } from './parse-path-to-regexp-route';
 
 export async function matchRoutes(
@@ -18,7 +18,7 @@ export async function matchRoutes(
 
     // Route with `.page.route.js` defined route function
     if (pageRoute.constructor === Object) {
-      const { matchValue, routeParams } = pageRoute as FunctionalRouteMatch;
+      const { matchValue, routeParams } = pageRoute as RouteFunctionMatch;
       return { pageId, routeParams }
     }
   }

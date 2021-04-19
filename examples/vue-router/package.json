@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "start": "node ./server"
+    "start": "node ./server",
+    "build": "cross-env NODE_ENV=production vite build && vite build --ssr",
+    "prerender": "cross-env NODE_ENV=production vite-plugin-ssr prerender"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^1.2.0",
@@ -11,5 +13,8 @@
     "vite-plugin-ssr": "0.1.0-beta.33",
     "vue": "^3.0.6",
     "vue-router": "^4.0.5"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
   }
 }

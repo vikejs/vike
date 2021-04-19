@@ -109,6 +109,7 @@ async function prerender({
   await Promise.all(
     Object.entries(prerenderData).map(async ([url, { contextProps, prerenderSourceFile, noPrenderContextProps }]) => {
       const routeResult = await route(url, allPageIds, contextProps)
+
       assertUsage(
         routeResult,
         `The \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs returned by \`prerender()\` hooks to always match the URL of a page.`
@@ -149,6 +150,10 @@ async function prerender({
             return
           }
         }
+        const routeResult = await route(url, allPageIds, contextProps)
+
+        Object.assign(contextProps, { url }, routeResult?.contextPropsAddendum)
+
         const { htmlDocument, contextPropsSerialized } = await prerenderPage(
           pageId,
           contextProps,

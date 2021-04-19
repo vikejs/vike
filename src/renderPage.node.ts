@@ -1,6 +1,5 @@
 import devalue from 'devalue'
-import { route } from './route.shared'
-import { getErrorPageId } from './routing/get-error-page-id';
+import { route, getErrorPageId } from './route.shared'
 import { getPageIds } from './routing/get-page-ids';
 import { isErrorPage } from './routing/is-error-page';
 import { loadPageRoutes } from './routing/load-page-routes';
@@ -150,7 +149,7 @@ async function renderPageId(
   isContextPropsRequest: boolean = false
 ) {
   const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, false)
-  
+
   if (isContextPropsRequest) {
     const renderResult = serializeContextProps(renderData)
     return renderResult
@@ -168,6 +167,7 @@ async function prerenderPage(
   contextPropsNeeded: boolean
 ) {
   const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, true)
+
   const htmlDocument = await renderHtmlDocument(renderData)
   assertUsage(
     typeof htmlDocument === 'string',

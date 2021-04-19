@@ -1,19 +1,19 @@
 export type PageId = string
 
-export type FunctionalRouteMatch = {
+export type RouteFunctionMatch = {
   matchValue: boolean | number
   routeParams: Record<string, unknown>
 }
 
-export type PageRoute<T=string | Function | FunctionalRouteMatch> = {
+export type PageRoute<T=string | Function | RouteFunctionMatch> = {
   pageRouteFile?: string
   pageRoute: T
   id: PageId
 }
 
-export type FunctionalRoute = PageRoute<Function>;
+export type RouteFunction = PageRoute<Function>;
 
-export type CompiledFunctionalRoute = PageRoute<(FunctionalRouteMatch|string)>;
+export type CompiledRouteFunction = PageRoute<(RouteFunctionMatch|string)>;
 
 export type RouteMatch = { 
   routeParams: Record<string, unknown>, 

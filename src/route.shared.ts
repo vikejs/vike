@@ -1,13 +1,12 @@
-import { assert, assertUsage, parseUrl } from './utils'
+import { assert, assertUsage, parseUrl, isCallable, hasProp } from './utils'
 import { matchRoutes as matchPathToRegexpRoutes } from './routing/match-path-to-regexp-routes';
 import { matchRoutes } from './routing/match-vue-routes';
-import { PageId } from './routing/types';
-import { normalizeUrl } from './routing/normalize-url';
+import { PageId, PageRoute, RouteFunction, RouteFunctionMatch, CompiledRouteFunction } from './routing/types';
+import { normalizeUrl } from './utils/normalizeUrl';
 import { isErrorPage } from './routing/is-error-page';
-import { isReservedPageId } from './routing/is-reserved-page-id';
 import { loadPageRoutes } from './routing/load-page-routes';
-import { compileFunctionalRoutesForUrl } from './routing/compile-functional-routes-for-url';
-import { getStaticRoutes } from './routing/get-static-routes';
+import { sortRoutes } from './routing/sort-routes';
+import { getFilesystemRoute } from './routing/get-fs-route';
 
 export { getErrorPageId }
 
@@ -39,12 +38,12 @@ export async function route(
 
   const pageRoutes = await loadPageRoutes()
 
-  const functionalRoutes = compileFunctionalRoutesForUrl(Object.values(pageRoutes), url, contextProps);
-  const staticRoutes = getStaticRoutes(Object.values(pageRoutes), allPageIds);
+  const compiledRouteFunctions = compileRouteFunctionsForUrl(Object.values(pageRoutes), url, contextProps);
+  const routeStrings = getRouteStrings(Object.values(pageRoutes), allPageIds);
     
   const routes = [
-    ...functionalRoutes,
-    ...staticRoutes
+    ...compiledRouteFunctions,
+    ...routeStrings
   ]
 
   const result = await matchRoutes(
@@ -70,7 +69,79 @@ function getErrorPageId(allPageIds: string[]): string | null {
   return null
 }
 
+function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
+  const fsRouteStrings : PageRoute[] = pageIds
+    .filter(pageId => !routes.some(route => route.id === pageId) && !isErrorPage(pageId))
+    .map(id => ({ pageRoute: getFilesystemRoute(id, pageIds), id }));
 
+  const routeStrings = Object.values(routes)
+    .filter(route => !isCallable(route.pageRoute));
 
+  return [
+    ...fsRouteStrings,
+    ...routeStrings
+  ].sort(sortRoutes)
+}
 
+function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): CompiledRouteFunction[] {
+  const functionalRoutes : RouteFunction[] = (routes as RouteFunction[])
+    .filter(route => isCallable(route.pageRoute))
 
+  const compiledRoutes : CompiledRouteFunction[] = functionalRoutes
+    .map(route => {
+      assert(route.pageRouteFile);
+      const routeFunctionResult : (string|RouteFunctionMatch) = resolveRouteFunction(route.pageRoute, url, contextProps, route.pageRouteFile);
+      
+      return { ...route, pageRoute: routeFunctionResult };
+    });
+
+  return compiledRoutes
+    .sort(sortRoutes)
+}
+
+function resolveRouteFunction(
+  routeFunction: Function,
+  urlPathname: string,
+  contextProps: Record<string, unknown>,
+  routeFilePath: string
+): RouteFunctionMatch|string {
+  const result = routeFunction({ url: urlPathname, contextProps });
+  if (typeof result === 'string') {
+    // A string will get processed by the underlying matcher
+    return result;
+  }
+  assertUsage(
+    typeof result === 'object' && result !== null && result.constructor === Object,
+    `The Route Function ${routeFilePath} should return a route string or plain JavaScript object, e.g. \`{ match: true }\`.`
+  )
+  assertUsage(hasProp(result, 'match'), `The Route Function ${routeFilePath} should return a \`{ match }\` value.`)
+  assertUsage(
+    typeof result.match === 'boolean' || typeof result.match === 'number',
+    `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
+  )
+  let routeParams = {}
+  if (hasProp(result, 'contextProps')) {
+    assertUsage(
+      typeof result.contextProps === 'object' &&
+        result.contextProps !== null &&
+        result.contextProps.constructor === Object,
+      `The \`contextProps\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
+    )
+    routeParams = result.contextProps
+  }
+  Object.keys(result).forEach((key) => {
+    assertUsage(
+      key === 'match' || key === 'contextProps',
+      `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'contextProps'].`
+    )
+  })
+  return {
+    matchValue: result.match,
+    routeParams
+  }
+}
+
+function isReservedPageId(pageId: string): boolean {
+  assert(!pageId.includes('\\'))
+  return pageId.includes('/_')
+}
