@@ -836,9 +836,12 @@ const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
-  // The `user` object, which holds user information, is provided by your
-  // authentication middleware, for example the Express.js Passport middleware.
-  const { user } = req
+  // Express.js authentication middlewares provide the logged-in user information
+  // on the `req` object, e.g. `req.user` when using Passport.js.
+  const user = req.user
+  /* Or when using a third-party authentication provider:
+  const user = await authProviderApi.getUser(req.headers)
+  */
   const contextProps = { user }
   const result = await renderPage({ url, contextProps })
   if (result.nothingRendered) return next()
