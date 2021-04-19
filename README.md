@@ -686,9 +686,9 @@ function Page(pageProps) {
 }
 ```
 
-#### Pass `contextProps` to all/any components
+#### Pass `contextProps` to any/all components
 
-We can also pass some `contextProps` to any component in the component tree:
+We can also pass some `contextProps` to any/all components of the component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
@@ -797,8 +797,9 @@ That said, `vite-plugin-ssr` has first-class support for Client-side Routing and
 
 #### Active Links `<a class="is-active">`
 
-Use `contextProps.urlPathname` (available on both the client and server)
-and [pass it to your link component](#pass-contextprops-to-allany-components).
+Pass `contextProps.urlPathname` (available on both the client and the server)
+[to your link component](#pass-contextprops-to-anyall-components).
+You can then set `isActive = href===urlPathname` in your link component.
 
 <br/><br/>
 
