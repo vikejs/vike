@@ -19,36 +19,36 @@ async function hydrate() {
   app.use(router);
   app.use({
     install(app) {
-      const pagePropsByPath = reactive({});
+      const contextPropsByPath = reactive({});
       let currentRoutesPath = null;
       const router = app.config.globalProperties.$router;
 
       router.beforeResolve(async (to, from) => {
         if (currentRoutesPath !== to.fullPath) {
-          const pageProps = pagePropsByPath[to.fullPath] || await getContextProps(to.fullPath);
-          
-          pageProps.routes.forEach(route => {
+          const contextProps = contextPropsByPath[to.fullPath] || await getContextProps(to.fullPath);
+
+          contextProps.routes.forEach(route => {
             router.addRoute({
               name: route.id,
               path: route.pageRoute,
               meta: {
                 isViteSsrPageRoute: true
               },
-              props: (route) => pagePropsByPath[route.fullPath],
+              props: (route) => contextPropsByPath[route.fullPath],
               component: async () => getPageById(route.id)
             })
           });
 
-          pagePropsByPath[to.fullPath] = pageProps;
+          contextPropsByPath[to.fullPath] = contextProps;
           currentRoutesPath = to.fullPath;
 
           return to.fullPath;
         }
 
-        if (to.meta.isViteSsrPageRoute && !pagePropsByPath[to.fullPath]) {
-          const pageProps = await getContextProps(to.fullPath);
+        if (to.meta.isViteSsrPageRoute && !contextPropsByPath[to.fullPath]) {
+          const contextProps = await getContextProps(to.fullPath);
 
-          pagePropsByPath[to.fullPath] = pageProps;
+          contextPropsByPath[to.fullPath] = contextProps;
 
           return to.fullPath;
         }

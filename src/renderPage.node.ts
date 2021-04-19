@@ -125,7 +125,6 @@ async function renderPage({
 
   const { pageId, contextPropsAddendum } = routeResult
   Object.assign(contextProps, contextPropsAddendum)
-
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
   // written by the user and may contain an error.
@@ -151,7 +150,7 @@ async function renderPageId(
   isContextPropsRequest: boolean = false
 ) {
   const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, false)
-
+  
   if (isContextPropsRequest) {
     const renderResult = serializeContextProps(renderData)
     return renderResult
@@ -224,6 +223,9 @@ async function getRenderData(
     contextProps.pageProps = pageProps
     passToClient.push(...['pageProps', 'is404'])
   }
+
+  passToClient.push('routes');
+
   passToClient.forEach((prop) => {
     contextProps__client[prop] = contextProps[prop]
   })
@@ -236,8 +238,7 @@ async function getRenderData(
     contextProps,
     contextProps__client,
     url,
-    isPreRendering,
-    routes: contextProps.routes as PageRoute[]
+    isPreRendering
   }
 }
 
@@ -250,13 +251,11 @@ type RenderData = {
   pageFilePath: string
   pageFunctions: PageFunctions
   isPreRendering: boolean
-  routes: PageRoute[]
 }
 
-function serializeContextProps({ contextProps__client, routes }: RenderData) {
+function serializeContextProps({ contextProps__client }: RenderData) {
   const contextPropsSerialized = stringify({
-    contextProps: contextProps__client,
-    routes
+    contextProps: contextProps__client
   })
   return contextPropsSerialized
 }
@@ -268,8 +267,7 @@ async function renderHtmlDocument({
   pageId,
   pageFilePath,
   pageFunctions,
-  isPreRendering,
-  routes
+  isPreRendering
 }: RenderData) {
   const { renderFunction, addContextPropsFunction } = pageFunctions
 
@@ -312,7 +310,7 @@ async function renderHtmlDocument({
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
   // Inject contextProps__client
-  htmlDocument = injectPageInfo(htmlDocument, contextProps__client, pageId, routes)
+  htmlDocument = injectPageInfo(htmlDocument, contextProps__client, pageId)
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
@@ -497,10 +495,10 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
-function injectPageInfo(htmlDocument: string, contextProps__client: Record<string, unknown>, pageId: string, routes: PageRoute[]): string {
+function injectPageInfo(htmlDocument: string, contextProps__client: Record<string, unknown>, pageId: string): string {
   const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(pageId)}, contextProps: ${devalue(
     contextProps__client
-  )}, routes: ${devalue(routes)}}}</script>`
+  )}}</script>`
   return injectEnd(htmlDocument, injection)
 }
 

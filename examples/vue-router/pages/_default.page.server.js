@@ -5,11 +5,13 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 
 export { render }
 
-async function render({ Page, contextProps, pageProps }) {
+async function render({ Page, contextProps }) {
   const app = createApp({ routes: contextProps.routes })
-  const pagePropsByPath = {
-    [contextProps.url]: pageProps
+
+  const contextPropsByPath = {
+    [contextProps.url]: contextProps
   };
+
   const router = createRouter({
     history: createMemoryHistory(),
     routes: contextProps.routes.map(route => ({
@@ -18,7 +20,7 @@ async function render({ Page, contextProps, pageProps }) {
       meta: {
         isViteSsrPageRoute: true
       },
-      props: (route) => pagePropsByPath[route.fullPath],
+      props: (route) => contextPropsByPath[route.fullPath],
       component: Page
     }))
   });

@@ -9,6 +9,8 @@ import { loadPageRoutes } from './routing/load-page-routes';
 import { compileFunctionalRoutesForUrl } from './routing/compile-functional-routes-for-url';
 import { getStaticRoutes } from './routing/get-static-routes';
 
+export { getErrorPageId }
+
 export async function route(
   url: string,
   allPageIds: string[],
@@ -56,7 +58,17 @@ export async function route(
   return { pageId, contextPropsAddendum: { ...routeParams, routeParams, routes } };
 }
 
-
+function getErrorPageId(allPageIds: string[]): string | null {
+  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
+  assertUsage(
+    errorPageIds.length <= 1,
+    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
+  )
+  if (errorPageIds.length > 0) {
+    return errorPageIds[0]
+  }
+  return null
+}
 
 
 
