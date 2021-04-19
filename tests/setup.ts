@@ -29,7 +29,9 @@ function run(cmd: string, baseUrl = '') {
     runProcess = await start(cmd)
     page.on('console', onConsole)
     page.setDefaultTimeout(TIMEOUT)
-    await page.goto(urlBase + baseUrl)
+    await bailOnTimeout(async () => {
+      await page.goto(urlBase + baseUrl)
+    })
   })
   afterAll(async () => {
     page.off('console', onConsole)
@@ -56,9 +58,19 @@ async function start(cmd: string): Promise<RunProcess> {
   let resolve: (_: RunProcess) => void
   let reject: (err: string) => void
   const promise = new Promise<RunProcess>((_resolve, _reject) => {
-    resolve = _resolve
-    reject = _reject
+    resolve = (...args) => {
+      clearTimeout(timeout)
+      _resolve(...args)
+    }
+    reject = (...args) => {
+      clearTimeout(timeout)
+      _reject(...args)
+    }
   })
+  const timeout = setTimeout(() => {
+    console.error(`Npm script ${cmd} is hanging.`)
+    process.exit(1)
+  }, 30 * 1000)
 
   // Kill any process that listens to port `3000`
   await runCommand('fuser -k 3000/tcp')
@@ -108,7 +120,8 @@ async function start(cmd: string): Promise<RunProcess> {
 }
 async function terminate(runProcess: RunProcess) {
   setTimeout(() => {
-    process.exit(2)
+    console.error('Process termination timeout.')
+    process.exit(1)
   }, 60 * 1000)
   if (runProcess) {
     await stop(runProcess, 'SIGKILL')
@@ -179,7 +192,7 @@ function runCommand(cmd: string) {
 
   const timeout = setTimeout(() => {
     console.error(`Command call ${cmd} is hanging.`)
-    process.exit()
+    process.exit(1)
   }, 5 * 1000)
 
   const options = {}
@@ -204,4 +217,13 @@ function genPromise<T>() {
     rejectPromise = reject
   })
   return { promise, resolvePromise, rejectPromise }
+}
+
+async function bailOnTimeout(asyncFunc: () => Promise<void>) {
+  const timeout = setTimeout(() => {
+    console.error(`Function timeout.`)
+    process.exit(1)
+  }, 30 * 1000)
+  await asyncFunc()
+  clearTimeout(timeout)
 }

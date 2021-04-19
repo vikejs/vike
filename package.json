@@ -10,7 +10,7 @@
     "demo": "cd examples/react/ && npm install && npm run start",
     "========= Test": "",
     "// Run tests": "",
-    "test": "jest --config=tests/jest.config.ts",
+    "test": "jest --config=tests/jest.config.ts --runInBand",
     "test:setup": "npm install && npm run install:examples && npm run link && npm run build",
     "========= Dev": "",
     "// Develop vite-plugin-ssr": "",
