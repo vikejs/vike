@@ -11,8 +11,6 @@ import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
 import { relative as pathRelative } from 'path'
 import { stringify } from '@brillout/json-s'
-import { PageRoute } from './routing/types';
-
 import {
   assert,
   assertUsage,
@@ -124,6 +122,7 @@ async function renderPage({
 
   const { pageId, contextPropsAddendum } = routeResult
   Object.assign(contextProps, contextPropsAddendum)
+
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
   // written by the user and may contain an error.
@@ -167,7 +166,6 @@ async function prerenderPage(
   contextPropsNeeded: boolean
 ) {
   const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, true)
-
   const htmlDocument = await renderHtmlDocument(renderData)
   assertUsage(
     typeof htmlDocument === 'string',

@@ -3,7 +3,6 @@ import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { getContextPropsProxy } from './getContextPropsProxy'
 import { getUrlPathname } from './getUrl.client'
 import { navigationState } from './navigationState.client'
-import { PageRoute } from '../routing/types';
 
 export { getPage }
 export { getPageById }
@@ -57,12 +56,10 @@ async function getPageById(pageId: string): Promise<any> {
 function getPageInfo(): {
   pageId: string
   contextProps: Record<string, unknown>
-  routes: PageRoute[]
 } {
   const pageId = window.__vite_plugin_ssr.pageId
   const contextProps = window.__vite_plugin_ssr.contextProps
-  const routes = window.__vite_plugin_ssr.routes
-  return { pageId, contextProps, routes }
+  return { pageId, contextProps }
 }
 
 declare global {
@@ -70,7 +67,6 @@ declare global {
     __vite_plugin_ssr: {
       pageId: string
       contextProps: Record<string, unknown>
-      routes: PageRoute[]
     }
   }
 }

@@ -8,9 +8,10 @@ import { loadPageRoutes } from './routing/load-page-routes';
 import { sortRoutes } from './routing/sort-routes';
 import { getFilesystemRoute } from './routing/get-fs-route';
 
+export { route }
 export { getErrorPageId }
 
-export async function route(
+async function route(
   url: string,
   allPageIds: string[],
   contextProps: Record<string, unknown>
