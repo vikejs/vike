@@ -13,7 +13,8 @@
     "vite": "2.1.4",
     "vite-plugin-ssr": "0.1.0-beta.33",
     "vue": "^3.0.6",
-    "vue-router": "^4.0.5"
+    "vue-router": "^4.0.5",
+    "@vite-plugin-ssr/vue-router": "^0.1.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"

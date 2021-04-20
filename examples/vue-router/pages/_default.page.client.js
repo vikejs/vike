@@ -1,6 +1,6 @@
 import { createApp } from './app'
 import { createRouter, createWebHistory } from 'vue-router'
-import { viteSsrRoutes } from '@vite-plugin-ssr/vue-router/client/plugin';
+import { vitePluginSsrRoutes } from '@vite-plugin-ssr/vue-router/client/plugin';
 
 hydrate()
 
@@ -16,7 +16,7 @@ async function hydrate() {
   });
 
   app.use(router);
-  app.use(viteSsrRoutes());
+  app.use(vitePluginSsrRoutes());
 
   await router.isReady()
 

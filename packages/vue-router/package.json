@@ -8,13 +8,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "exports": {
-    "./": {
+    ".": {
       "require": "./dist/index.js",
       "import": "./index.ts"
     },
     "./client/plugin": {
       "require": "./dist/client/plugin.js",
       "import": "./client/plugin.ts"
+    },
+    "./server/plugin": {
+      "require": "./dist/server/plugin.js",
+      "import": "./server/plugin.ts"
     }
   },
   "keywords": [

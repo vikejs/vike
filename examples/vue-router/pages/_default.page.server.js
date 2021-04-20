@@ -2,30 +2,20 @@ import { renderToString } from '@vue/server-renderer'
 import { html } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import { createMemoryHistory, createRouter } from 'vue-router'
+import { vitePluginSsrRoutes } from '@vite-plugin-ssr/vue-router/server/plugin';
 
 export { render }
 
 async function render({ Page, contextProps }) {
   const app = createApp({ routes: contextProps.routes })
 
-  const contextPropsByPath = {
-    [contextProps.url]: contextProps
-  };
-
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: contextProps.routes.map(route => ({
-      name: route.id,
-      path: route.pageRoute,
-      meta: {
-        isViteSsrPageRoute: true
-      },
-      props: (route) => contextPropsByPath[route.fullPath],
-      component: Page
-    }))
+    routes: []
   });
 
   app.use(router);
+  app.use(vitePluginSsrRoutes({ contextProps, Page }));
 
   // set the router to the desired URL before rendering
   

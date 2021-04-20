@@ -4,7 +4,7 @@ import { Router } from 'vue-router';
 
 type ContextProps = Record<string, unknown> & { routes?: {id: string, pageRoute: string}[] }
 
-export function viteSsrRoutes(config={}) {
+export function vitePluginSsrRoutes(config={}) {
   return {
     install(app: App) {
       const contextPropsByPath : Record<string, ContextProps> = reactive({});
