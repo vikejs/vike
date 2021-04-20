@@ -1,8 +1,8 @@
 import { getSsrEnv } from './ssrEnv.node';
 import { getPageFiles } from './page-files/getPageFiles.shared'
-import { assert, assertUsage, isCallable, slice, hasProp, parseUrl } from './utils'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
+import { assert, assertUsage, isCallable, slice, hasProp, parseUrl } from './utils'
 
 export { getPageIds }
 export { route }
@@ -10,6 +10,7 @@ export { getErrorPageId }
 export { isErrorPage }
 export { loadPageRoutes }
 export { getFilesystemRoute }
+export { isStaticRoute }
 export { PageId }
 export { PageRoute }
 
@@ -96,6 +97,13 @@ function getErrorPageId(allPageIds: string[]): string | null {
   }
   return null
 }
+
+/* Note: this is specific to the pathToRegexp implementation and should really be renamed / moved. Leaving it in place for now. */
+function isStaticRoute(route: string): boolean {
+  const { matchValue, routeParams } = parseRoute(route, route)
+  return matchValue !== false && Object.keys(routeParams).length === 0
+}
+
 function normalizeUrl(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
 }
@@ -291,7 +299,7 @@ export function defaultSortRoutes(a: PageRoute, b: PageRoute): number {
   return getMatchVal(b) - getMatchVal(a);
 }
 
-/* pathToRegexp route handling */
+/* pathToRegexp route handling. These should be moved out (possibly to a separate package). */
 
 export function parseRoute(
   urlPathname: string,
@@ -329,9 +337,4 @@ export async function matchPathToRegexpRoutes(
     }
   }
   return null;
-}
-
-export function isStaticRoute(route: string): boolean {
-  const { matchValue, routeParams } = parseRoute(route, route)
-  return matchValue !== false && Object.keys(routeParams).length === 0
 }

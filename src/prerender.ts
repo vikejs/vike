@@ -2,8 +2,7 @@ import './page-files/setup.node'
 import fs from 'fs'
 const { writeFile, mkdir } = fs.promises;
 import { join, sep, dirname } from 'path'
-import { getFilesystemRoute, getPageIds, isErrorPage, loadPageRoutes, route } from './route.shared'
-import { isStaticRoute } from './route.shared';
+import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage } from './renderPage.node'
