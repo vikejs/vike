@@ -1,9 +1,8 @@
-import { matchRoutes as matchPathToRegexpRoutes } from './routing/match-path-to-regexp-routes';
-import { sortRoutes as defaultSortRoutes } from './routing/sort-routes';
-import { PageId, PageRoute, RouteFunction, RouteFunctionMatch, RouteFunctionResult } from './routing/types';
 import { getSsrEnv } from './ssrEnv.node';
 import { getPageFiles } from './page-files/getPageFiles.shared'
 import { assert, assertUsage, isCallable, slice, hasProp, parseUrl } from './utils'
+// @ts-ignore
+import pathToRegexp from '@brillout/path-to-regexp'
 
 export { getPageIds }
 export { route }
@@ -11,6 +10,32 @@ export { getErrorPageId }
 export { isErrorPage }
 export { loadPageRoutes }
 export { getFilesystemRoute }
+export { PageId }
+export { PageRoute }
+
+type PageId = string
+
+export type RouteFunctionMatch = {
+  matchValue: boolean | number
+  routeParams: Record<string, unknown>
+}
+
+export type RouteFunction = PageRoute<Function>;
+
+export type RouteFunctionResult = PageRoute<(RouteFunctionMatch|string)>;
+
+export type RouteMatch = { 
+  routeParams: Record<string, unknown>, 
+  pageId: PageId 
+}
+
+export type RoutingHandler = {
+  matchRoutes: (
+    routes: PageRoute[],
+    url: string
+  ) => Promise<null | undefined | RouteMatch>,
+  sortRoutes?: (a: PageRoute, b: PageRoute) => number
+}
 
 async function route(
   url: string,
@@ -181,6 +206,11 @@ function resolveRouteFunction(
   }
 }
 
+type PageRoute<T=string | Function | RouteFunctionMatch> = {
+  pageRouteFile?: string
+  pageRoute: T
+  id: PageId
+}
 async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getPageFiles('.page.route')
 
@@ -244,4 +274,64 @@ function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
     ...fsRouteStrings,
     ...routeStrings
   ].sort(sortRoutes)
+}
+
+const getMatchVal = (route: PageRoute): number => 
+  typeof route.pageRoute === 'string' 
+  ? route.pageRoute.length
+  : route.pageRoute.constructor === Object && !isCallable(route.pageRoute)
+    ? typeof route.pageRoute.matchValue === 'number'
+      ? route.pageRoute.matchValue
+      : route.pageRoute.matchValue
+        ? 1
+        : 0
+    : 0;
+
+export function defaultSortRoutes(a: PageRoute, b: PageRoute): number {
+  return getMatchVal(b) - getMatchVal(a);
+}
+
+/* pathToRegexp route handling */
+
+export function parseRoute(
+  urlPathname: string,
+  routeString: string
+): { matchValue: false | number; routeParams: Record<string, string> } {
+  const match = pathToRegexp(urlPathname, { path: routeString, exact: true })
+  if (!match) {
+    return { matchValue: false, routeParams: {} }
+  }
+  // The longer the route string, the more likely is it specific
+  const matchValue = routeString.length
+  const routeParams = match.params
+  return { matchValue, routeParams }
+}
+
+export async function matchPathToRegexpRoutes(
+  routes: PageRoute[],
+  url: string
+): Promise<null | undefined | RouteMatch> {
+
+  for (var ii = 0; ii < routes.length; ++ii) {
+    const route = routes[ii];
+    const { pageRoute, id: pageId } = route;
+
+    // Route with `.page.route.js` defined route string
+    if (typeof pageRoute === 'string') {
+      const { matchValue, routeParams } = parseRoute(url, pageRoute)
+      return { pageId, routeParams }
+    }
+
+    // Route with `.page.route.js` defined route function
+    if (pageRoute.constructor === Object) {
+      const { matchValue, routeParams } = pageRoute as RouteFunctionMatch;
+      return { pageId, routeParams }
+    }
+  }
+  return null;
+}
+
+export function isStaticRoute(route: string): boolean {
+  const { matchValue, routeParams } = parseRoute(route, route)
+  return matchValue !== false && Object.keys(routeParams).length === 0
 }

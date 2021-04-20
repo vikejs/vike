@@ -6,7 +6,7 @@ import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
 import { isPageFilesSet } from './page-files/getPageFiles.shared'
-import { RoutingHandler } from './routing/types';
+import { RoutingHandler } from './route.shared';
 
 export { createPageRender }
 

@@ -1,5 +1,5 @@
 import { ViteDevServer } from 'vite'
-import { RoutingHandler } from './routing/types';
+import { RoutingHandler } from './route.shared';
 
 export { setSsrEnv }
 export { getSsrEnv }
