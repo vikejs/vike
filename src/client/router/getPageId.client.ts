@@ -1,4 +1,4 @@
-import { getPageIds } from '../../routing/get-page-ids'
+import { getPageIds } from '../../route.shared'
 import { route, getErrorPageId } from '../../route.shared'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 import { assertUsage } from '../../utils'

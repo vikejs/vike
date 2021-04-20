@@ -1,12 +1,10 @@
-import { assert, assertUsage, parseUrl, isCallable, hasProp } from './utils'
+import { assert, parseUrl, isCallable, hasProp, assertUsage, slice } from './utils'
 import { matchRoutes as matchPathToRegexpRoutes } from './routing/match-path-to-regexp-routes';
 import { sortRoutes as defaultSortRoutes } from './routing/sort-routes';
 import { PageId, PageRoute, RouteFunction, RouteFunctionMatch, CompiledRouteFunction } from './routing/types';
 import { normalizeUrl } from './utils/normalizeUrl';
-import { isErrorPage } from './routing/is-error-page';
-import { loadPageRoutes } from './routing/load-page-routes';
-import { getFilesystemRoute } from './routing/get-fs-route';
 import { getSsrEnv } from './ssrEnv.node';
+import { getPageFiles } from './page-files/getPageFiles.shared'
 
 export { route }
 export { getErrorPageId }
@@ -148,4 +146,101 @@ function resolveRouteFunction(
 function isReservedPageId(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_')
+}
+
+/**
+  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
+*/
+export async function getPageIds(): Promise<PageId[]> {
+  const pageViewFiles = await getPageFiles('.page')
+  let pageViewFilePaths = pageViewFiles.map(({ filePath }) => filePath)
+  pageViewFilePaths = pageViewFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
+
+  let allPageIds = pageViewFilePaths.map(computePageId)
+  return allPageIds
+}
+
+function isDefaultPageFile(filePath: string): boolean {
+  assert(!filePath.includes('\\'))
+  if (!filePath.includes('/_default')) {
+    return false
+  }
+  assertUsage(
+    filePath.includes('_default.page.client.') || filePath.includes('_default.page.server.'),
+    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
+  )
+  return true
+}
+
+export function computePageId(filePath: string): string {
+  const pageSuffix = '.page.'
+  const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
+  return pageId
+}
+
+export async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
+  const userRouteFiles = await getPageFiles('.page.route')
+
+  const pageRoutes: Record<PageId, PageRoute> = {}
+
+  await Promise.all(
+    userRouteFiles.map(async ({ filePath, loadFile }) => {
+      const fileExports = await loadFile()
+      assertUsage(hasProp(fileExports, 'default'), `${filePath} should have a default export.`)
+      assertUsage(
+        typeof fileExports.default === 'string' || isCallable(fileExports.default),
+        `The default export of ${filePath} should be a string or a function.`
+      )
+      const pageRoute = fileExports.default
+      const id = computePageId(filePath)
+      const pageRouteFile = filePath
+
+      pageRoutes[id] = { pageRoute, pageRouteFile, id }
+    })
+  )
+
+  return pageRoutes
+}
+
+function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  const commonPrefix = getCommonPath(relevantPageIds)
+  assert(pageId.startsWith(commonPrefix))
+  return pageId.slice(commonPrefix.length)
+}
+
+function getCommonPath(pageIds: string[]): string {
+  pageIds.forEach((pageId) => {
+    assertUsage(
+      !pageId.includes('\\'),
+      'Your directory names and file names are not allowed to contain the character `\\`'
+    )
+  })
+  const pageIdList = pageIds.concat().sort()
+  const first = pageIdList[0]
+  const last = pageIdList[pageIdList.length - 1]
+  let idx = 0
+  for (; idx < first.length; idx++) {
+    if (first[idx] !== last[idx]) break
+  }
+  const commonPrefix = first.slice(0, idx)
+  const pathsPart = commonPrefix.split('/')
+  assert(pathsPart.length >= 2)
+  const commonPath = slice(pathsPart, 0, -1).join('/') + '/'
+  return commonPath
+}
+
+export function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
+  let pageRoute = removeCommonPrefix(pageId, allPageIds)
+  pageRoute = pageRoute
+    .split('/')
+    .filter((part) => part !== 'index')
+    .join('/')
+  pageRoute = normalizeUrl(pageRoute)
+  return pageRoute
+}
+
+export function isErrorPage(pageId: string): boolean {
+  assert(!pageId.includes('\\'))
+  return pageId.includes('/_error')
 }

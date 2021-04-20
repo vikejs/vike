@@ -1,9 +1,5 @@
 import devalue from 'devalue'
-import { route, getErrorPageId } from './route.shared'
-import { getPageIds } from './routing/get-page-ids';
-import { isErrorPage } from './routing/is-error-page';
-import { loadPageRoutes } from './routing/load-page-routes';
-import { getFilesystemRoute } from './routing/get-fs-route';
+import { route, getErrorPageId, loadPageRoutes, getPageIds, getFilesystemRoute, isErrorPage } from './route.shared'
 import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
