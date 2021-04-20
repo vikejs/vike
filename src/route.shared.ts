@@ -61,16 +61,56 @@ async function route(
   return { pageId, contextPropsAddendum: { ...routeParams, routeParams, routes } };
 }
 
-function getErrorPageId(allPageIds: string[]): string | null {
-  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
-  assertUsage(
-    errorPageIds.length <= 1,
-    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
-  )
-  if (errorPageIds.length > 0) {
-    return errorPageIds[0]
+function normalizeUrl(urlPathname: string): string {
+  return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
+}
+function getCommonPath(pageIds: string[]): string {
+  pageIds.forEach((pageId) => {
+    assertUsage(
+      !pageId.includes('\\'),
+      'Your directory names and file names are not allowed to contain the character `\\`'
+    )
+  })
+  const pageIdList = pageIds.concat().sort()
+  const first = pageIdList[0]
+  const last = pageIdList[pageIdList.length - 1]
+  let idx = 0
+  for (; idx < first.length; idx++) {
+    if (first[idx] !== last[idx]) break
   }
-  return null
+  const commonPrefix = first.slice(0, idx)
+  const pathsPart = commonPrefix.split('/')
+  assert(pathsPart.length >= 2)
+  const commonPath = slice(pathsPart, 0, -1).join('/') + '/'
+  return commonPath
+}
+/**
+  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
+*/
+async function getPageIds(): Promise<PageId[]> {
+  const pageViewFiles = await getPageFiles('.page')
+  let pageViewFilePaths = pageViewFiles.map(({ filePath }) => filePath)
+  pageViewFilePaths = pageViewFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
+
+  let allPageIds = pageViewFilePaths.map(computePageId)
+  return allPageIds
+}
+function computePageId(filePath: string): string {
+  const pageSuffix = '.page.'
+  const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
+  return pageId
+}
+
+function isDefaultPageFile(filePath: string): boolean {
+  assert(!filePath.includes('\\'))
+  if (!filePath.includes('/_default')) {
+    return false
+  }
+  assertUsage(
+    filePath.includes('_default.page.client.') || filePath.includes('_default.page.server.'),
+    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
+  )
+  return true
 }
 
 function resolveRouteFunction(
@@ -116,6 +156,19 @@ function resolveRouteFunction(
 }
 
 
+function getErrorPageId(allPageIds: string[]): string | null {
+  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
+  assertUsage(
+    errorPageIds.length <= 1,
+    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
+  )
+  if (errorPageIds.length > 0) {
+    return errorPageIds[0]
+  }
+  return null
+}
+
+
 async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getPageFiles('.page.route')
 
@@ -149,9 +202,6 @@ function isErrorPage(pageId: string): boolean {
   return pageId.includes('/_error')
 }
 
-function normalizeUrl(urlPathname: string): string {
-  return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
-}
 function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   let pageRoute = removeCommonPrefix(pageId, allPageIds)
   pageRoute = pageRoute
@@ -166,55 +216,6 @@ function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
   const commonPrefix = getCommonPath(relevantPageIds)
   assert(pageId.startsWith(commonPrefix))
   return pageId.slice(commonPrefix.length)
-}
-
-function getCommonPath(pageIds: string[]): string {
-  pageIds.forEach((pageId) => {
-    assertUsage(
-      !pageId.includes('\\'),
-      'Your directory names and file names are not allowed to contain the character `\\`'
-    )
-  })
-  const pageIdList = pageIds.concat().sort()
-  const first = pageIdList[0]
-  const last = pageIdList[pageIdList.length - 1]
-  let idx = 0
-  for (; idx < first.length; idx++) {
-    if (first[idx] !== last[idx]) break
-  }
-  const commonPrefix = first.slice(0, idx)
-  const pathsPart = commonPrefix.split('/')
-  assert(pathsPart.length >= 2)
-  const commonPath = slice(pathsPart, 0, -1).join('/') + '/'
-  return commonPath
-}
-/**
-  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
-*/
-async function getPageIds(): Promise<PageId[]> {
-  const pageViewFiles = await getPageFiles('.page')
-  let pageViewFilePaths = pageViewFiles.map(({ filePath }) => filePath)
-  pageViewFilePaths = pageViewFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
-
-  let allPageIds = pageViewFilePaths.map(computePageId)
-  return allPageIds
-}
-
-function isDefaultPageFile(filePath: string): boolean {
-  assert(!filePath.includes('\\'))
-  if (!filePath.includes('/_default')) {
-    return false
-  }
-  assertUsage(
-    filePath.includes('_default.page.client.') || filePath.includes('_default.page.server.'),
-    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
-  )
-  return true
-}
-function computePageId(filePath: string): string {
-  const pageSuffix = '.page.'
-  const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
-  return pageId
 }
 
 function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): CompiledRouteFunction[] {
