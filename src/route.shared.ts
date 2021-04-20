@@ -13,24 +13,29 @@ export { getFilesystemRoute }
 export { isStaticRoute }
 export { PageId }
 export { PageRoute }
+export { RouteMatch }
+export { RouteFunctionMatch }
+export { RouteFunction }
+export { RouteFunctionResult }
+export { RoutingHandler }
 
 type PageId = string
 
-export type RouteFunctionMatch = {
+type RouteFunctionMatch = {
   matchValue: boolean | number
   routeParams: Record<string, unknown>
 }
 
-export type RouteFunction = PageRoute<Function>;
+type RouteFunction = PageRoute<Function>;
 
-export type RouteFunctionResult = PageRoute<(RouteFunctionMatch|string)>;
+type RouteFunctionResult = PageRoute<(RouteFunctionMatch|string)>;
 
-export type RouteMatch = { 
+type RouteMatch = { 
   routeParams: Record<string, unknown>, 
   pageId: PageId 
 }
 
-export type RoutingHandler = {
+type RoutingHandler = {
   matchRoutes: (
     routes: PageRoute[],
     url: string

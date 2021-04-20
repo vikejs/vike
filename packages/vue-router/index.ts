@@ -1,4 +1,4 @@
-import { RouteMatch, PageRoute } from 'vite-plugin-ssr/routing/types';
+import { RouteMatch, PageRoute } from 'vite-plugin-ssr/route.shared';
 import { createRouter, createMemoryHistory } from 'vue-router';
 
 export  { useVueRouter };

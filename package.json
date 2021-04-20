@@ -4,7 +4,8 @@
     "src/",
     "scripts/",
     "tests/",
-    "routing-handlers/vue-router/"
+    "packages/vue-router/",
+    "examples/vue-router/"
   ],
   "scripts": {
     "// Run demo": "",

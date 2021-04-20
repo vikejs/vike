@@ -1,4 +1,5 @@
 {
+  "name": "@vie-plugin-ssr/vue-router-example",
   "scripts": {
     "start": "node ./server",
     "build": "cross-env NODE_ENV=production vite build && vite build --ssr",
