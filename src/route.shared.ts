@@ -73,38 +73,6 @@ function getErrorPageId(allPageIds: string[]): string | null {
   return null
 }
 
-function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
-  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
-  const fsRouteStrings : PageRoute[] = pageIds
-    .filter(pageId => !routes.some(route => route.id === pageId) && !isErrorPage(pageId))
-    .map(id => ({ pageRoute: getFilesystemRoute(id, pageIds), id }));
-
-  const routeStrings = Object.values(routes)
-    .filter(route => !isCallable(route.pageRoute));
-
-  return [
-    ...fsRouteStrings,
-    ...routeStrings
-  ].sort(sortRoutes)
-}
-
-function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): CompiledRouteFunction[] {
-  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
-  const functionalRoutes : RouteFunction[] = (routes as RouteFunction[])
-    .filter(route => isCallable(route.pageRoute))
-
-  const compiledRoutes : CompiledRouteFunction[] = functionalRoutes
-    .map(route => {
-      assert(route.pageRouteFile);
-      const routeFunctionResult : (string|RouteFunctionMatch) = resolveRouteFunction(route.pageRoute, url, contextProps, route.pageRouteFile);
-      
-      return { ...route, pageRoute: routeFunctionResult };
-    });
-
-  return compiledRoutes
-    .sort(sortRoutes)
-}
-
 function resolveRouteFunction(
   routeFunction: Function,
   urlPathname: string,
@@ -147,10 +115,6 @@ function resolveRouteFunction(
   }
 }
 
-function isReservedPageId(pageId: string): boolean {
-  assert(!pageId.includes('\\'))
-  return pageId.includes('/_')
-}
 
 async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getPageFiles('.page.route')
@@ -176,6 +140,10 @@ async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   return pageRoutes
 }
 
+function isReservedPageId(pageId: string): boolean {
+  assert(!pageId.includes('\\'))
+  return pageId.includes('/_')
+}
 function isErrorPage(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_error')
@@ -247,4 +215,36 @@ function computePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
   return pageId
+}
+
+function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): CompiledRouteFunction[] {
+  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
+  const functionalRoutes : RouteFunction[] = (routes as RouteFunction[])
+    .filter(route => isCallable(route.pageRoute))
+
+  const compiledRoutes : CompiledRouteFunction[] = functionalRoutes
+    .map(route => {
+      assert(route.pageRouteFile);
+      const routeFunctionResult : (string|RouteFunctionMatch) = resolveRouteFunction(route.pageRoute, url, contextProps, route.pageRouteFile);
+      
+      return { ...route, pageRoute: routeFunctionResult };
+    });
+
+  return compiledRoutes
+    .sort(sortRoutes)
+}
+
+function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
+  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
+  const fsRouteStrings : PageRoute[] = pageIds
+    .filter(pageId => !routes.some(route => route.id === pageId) && !isErrorPage(pageId))
+    .map(id => ({ pageRoute: getFilesystemRoute(id, pageIds), id }));
+
+  const routeStrings = Object.values(routes)
+    .filter(route => !isCallable(route.pageRoute));
+
+  return [
+    ...fsRouteStrings,
+    ...routeStrings
+  ].sort(sortRoutes)
 }
