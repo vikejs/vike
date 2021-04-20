@@ -99,8 +99,23 @@ function getErrorPageId(allPageIds: string[]): string | null {
 }
 
 /* Note: this is specific to the pathToRegexp implementation and should really be renamed / moved. Leaving it in place for now. */
+function routeWith_pathToRegexp(
+  urlPathname: string,
+  routeString: string
+): { matchValue: false | number; routeParams: Record<string, string> } {
+  const match = pathToRegexp(urlPathname, { path: routeString, exact: true })
+  if (!match) {
+    return { matchValue: false, routeParams: {} }
+  }
+  // The longer the route string, the more likely is it specific
+  const matchValue = routeString.length
+  const routeParams = match.params
+  return { matchValue, routeParams }
+}
+
+/* Note: this is specific to the pathToRegexp implementation and should really be renamed / moved. Leaving it in place for now. */
 function isStaticRoute(route: string): boolean {
-  const { matchValue, routeParams } = parseRoute(route, route)
+  const { matchValue, routeParams } = routeWith_pathToRegexp(route, route)
   return matchValue !== false && Object.keys(routeParams).length === 0
 }
 
@@ -301,20 +316,6 @@ export function defaultSortRoutes(a: PageRoute, b: PageRoute): number {
 
 /* pathToRegexp route handling. These should be moved out (possibly to a separate package). */
 
-export function parseRoute(
-  urlPathname: string,
-  routeString: string
-): { matchValue: false | number; routeParams: Record<string, string> } {
-  const match = pathToRegexp(urlPathname, { path: routeString, exact: true })
-  if (!match) {
-    return { matchValue: false, routeParams: {} }
-  }
-  // The longer the route string, the more likely is it specific
-  const matchValue = routeString.length
-  const routeParams = match.params
-  return { matchValue, routeParams }
-}
-
 export async function matchPathToRegexpRoutes(
   routes: PageRoute[],
   url: string
@@ -326,7 +327,7 @@ export async function matchPathToRegexpRoutes(
 
     // Route with `.page.route.js` defined route string
     if (typeof pageRoute === 'string') {
-      const { matchValue, routeParams } = parseRoute(url, pageRoute)
+      const { matchValue, routeParams } = routeWith_pathToRegexp(url, pageRoute)
       return { pageId, routeParams }
     }
 
