@@ -13,7 +13,7 @@ export type PageRoute<T=string | Function | RouteFunctionMatch> = {
 
 export type RouteFunction = PageRoute<Function>;
 
-export type CompiledRouteFunction = PageRoute<(RouteFunctionMatch|string)>;
+export type RouteFunctionResult = PageRoute<(RouteFunctionMatch|string)>;
 
 export type RouteMatch = { 
   routeParams: Record<string, unknown>, 

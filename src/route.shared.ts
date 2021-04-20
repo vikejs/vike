@@ -1,6 +1,6 @@
 import { matchRoutes as matchPathToRegexpRoutes } from './routing/match-path-to-regexp-routes';
 import { sortRoutes as defaultSortRoutes } from './routing/sort-routes';
-import { PageId, PageRoute, RouteFunction, RouteFunctionMatch, CompiledRouteFunction } from './routing/types';
+import { PageId, PageRoute, RouteFunction, RouteFunctionMatch, RouteFunctionResult } from './routing/types';
 import { getSsrEnv } from './ssrEnv.node';
 import { getPageFiles } from './page-files/getPageFiles.shared'
 import { assert, assertUsage, isCallable, slice, hasProp, parseUrl } from './utils'
@@ -11,7 +11,6 @@ export { getErrorPageId }
 export { isErrorPage }
 export { loadPageRoutes }
 export { getFilesystemRoute }
-export { computePageId }
 
 async function route(
   url: string,
@@ -41,11 +40,11 @@ async function route(
 
   const pageRoutes = await loadPageRoutes()
 
-  const compiledRouteFunctions = compileRouteFunctionsForUrl(Object.values(pageRoutes), url, contextProps);
+  const routeFunctionResults = evaluateRouteFunctionsForUrl(Object.values(pageRoutes), url, contextProps);
   const routeStrings = getRouteStrings(Object.values(pageRoutes), allPageIds);
     
   const routes = [
-    ...compiledRouteFunctions,
+    ...routeFunctionResults,
     ...routeStrings
   ]
   const { customRouting: { matchRoutes=matchPathToRegexpRoutes }={} } = getSsrEnv();
@@ -61,8 +60,34 @@ async function route(
   return { pageId, contextPropsAddendum: { ...routeParams, routeParams, routes } };
 }
 
+function getErrorPageId(allPageIds: string[]): string | null {
+  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
+  assertUsage(
+    errorPageIds.length <= 1,
+    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
+  )
+  if (errorPageIds.length > 0) {
+    return errorPageIds[0]
+  }
+  return null
+}
 function normalizeUrl(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
+}
+function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
+  let pageRoute = removeCommonPrefix(pageId, allPageIds)
+  pageRoute = pageRoute
+    .split('/')
+    .filter((part) => part !== 'index')
+    .join('/')
+  pageRoute = normalizeUrl(pageRoute)
+  return pageRoute
+}
+function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
+  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  const commonPrefix = getCommonPath(relevantPageIds)
+  assert(pageId.startsWith(commonPrefix))
+  return pageId.slice(commonPrefix.length)
 }
 function getCommonPath(pageIds: string[]): string {
   pageIds.forEach((pageId) => {
@@ -84,6 +109,7 @@ function getCommonPath(pageIds: string[]): string {
   const commonPath = slice(pathsPart, 0, -1).join('/') + '/'
   return commonPath
 }
+
 /**
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
@@ -155,20 +181,6 @@ function resolveRouteFunction(
   }
 }
 
-
-function getErrorPageId(allPageIds: string[]): string | null {
-  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
-  assertUsage(
-    errorPageIds.length <= 1,
-    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
-  )
-  if (errorPageIds.length > 0) {
-    return errorPageIds[0]
-  }
-  return null
-}
-
-
 async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getPageFiles('.page.route')
 
@@ -202,28 +214,12 @@ function isErrorPage(pageId: string): boolean {
   return pageId.includes('/_error')
 }
 
-function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
-  let pageRoute = removeCommonPrefix(pageId, allPageIds)
-  pageRoute = pageRoute
-    .split('/')
-    .filter((part) => part !== 'index')
-    .join('/')
-  pageRoute = normalizeUrl(pageRoute)
-  return pageRoute
-}
-function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
-  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
-  const commonPrefix = getCommonPath(relevantPageIds)
-  assert(pageId.startsWith(commonPrefix))
-  return pageId.slice(commonPrefix.length)
-}
-
-function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): CompiledRouteFunction[] {
+function evaluateRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): RouteFunctionResult[] {
   const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
   const functionalRoutes : RouteFunction[] = (routes as RouteFunction[])
     .filter(route => isCallable(route.pageRoute))
 
-  const compiledRoutes : CompiledRouteFunction[] = functionalRoutes
+  const routeFunctionResults : RouteFunctionResult[] = functionalRoutes
     .map(route => {
       assert(route.pageRouteFile);
       const routeFunctionResult : (string|RouteFunctionMatch) = resolveRouteFunction(route.pageRoute, url, contextProps, route.pageRouteFile);
@@ -231,7 +227,7 @@ function compileRouteFunctionsForUrl(routes: PageRoute[], url: string, contextPr
       return { ...route, pageRoute: routeFunctionResult };
     });
 
-  return compiledRoutes
+  return routeFunctionResults
     .sort(sortRoutes)
 }
 
