@@ -98,7 +98,7 @@ function getErrorPageId(allPageIds: string[]): string | null {
   return null
 }
 
-/* Note: this is specific to the pathToRegexp implementation and should really be renamed / moved. Leaving it in place for now. */
+/* Note: this is specific to the pathToRegexp implementation and should be moved. Leaving it in place for now. */
 function routeWith_pathToRegexp(
   urlPathname: string,
   routeString: string
@@ -113,7 +113,7 @@ function routeWith_pathToRegexp(
   return { matchValue, routeParams }
 }
 
-/* Note: this is specific to the pathToRegexp implementation and should really be renamed / moved. Leaving it in place for now. */
+/* Note: this is specific to the pathToRegexp implementation and should be renamed / moved. Leaving it in place for now. */
 function isStaticRoute(route: string): boolean {
   const { matchValue, routeParams } = routeWith_pathToRegexp(route, route)
   return matchValue !== false && Object.keys(routeParams).length === 0
@@ -310,13 +310,13 @@ const getMatchVal = (route: PageRoute): number =>
         : 0
     : 0;
 
-export function defaultSortRoutes(a: PageRoute, b: PageRoute): number {
+function defaultSortRoutes(a: PageRoute, b: PageRoute): number {
   return getMatchVal(b) - getMatchVal(a);
 }
 
 /* pathToRegexp route handling. These should be moved out (possibly to a separate package). */
 
-export async function matchPathToRegexpRoutes(
+async function matchPathToRegexpRoutes(
   routes: PageRoute[],
   url: string
 ): Promise<null | undefined | RouteMatch> {
