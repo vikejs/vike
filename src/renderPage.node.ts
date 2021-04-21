@@ -5,7 +5,7 @@ import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
-import { relative as pathRelative } from 'path'
+import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
   assert,
@@ -454,7 +454,9 @@ function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: s
   pageFiles.sort(
     lowerFirst(({ filePath }) => {
       if (filePath.startsWith(pageId)) return -1
-      const relativePath = pathRelative(pageId, filePath)
+      assert(!filePath.includes('\\'))
+      assert(!pageId.includes('\\'))
+      const relativePath = pathPosix.relative(pageId, filePath)
       assert(!relativePath.includes('\\'))
       const changeDirCount = relativePath.split('/').length
       return changeDirCount
