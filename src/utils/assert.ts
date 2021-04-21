@@ -5,19 +5,19 @@ export { assert }
 export { assertUsage }
 export { assertWarning }
 
-const repoName = `vite-plugin-ssr@${version}`
-const libName = repoName
-const requestForContact = `Please open a new issue at https://github.com/brillout/${repoName}/issues/new and include this error stack.`
-const internalErrorPrefix = `[${libName}][Internal Error]`
-const usageErrorPrefix = `[${libName}][Wrong Usage]`
-const warningPrefix = `[${libName}][Warning]`
+const libName = `vite-plugin-ssr`
+const npmPackage = `${libName}@${version}`
+const internalErrorPrefix = `[${npmPackage}][Internal Failure]`
+const usageErrorPrefix = `[${npmPackage}][Wrong Usage]`
+const warningPrefix = `[${npmPackage}][Warning]`
 
-function assert(condition: unknown /*, errorMessage = 'Something unexpected happened'*/): asserts condition {
+function assert(condition: unknown): asserts condition {
   if (condition) {
     return
   }
-  const errorMessage = 'Something unexpected happened'
-  const internalError = newError(`${internalErrorPrefix} ${errorMessage}. ${requestForContact}`)
+  const internalError = newError(
+    `${internalErrorPrefix} You stumbled upon an bug in \`${libName}\`'s source code (an internal assertion failed). This should definitely not be happening, and you should create a new issue at https://github.com/brillout/${libName}/issues/new that includes this error stack (the error stack is enough to debug this). Or reach out on Discord. A fix will be written promptly.`
+  )
   throw internalError
 }
 
