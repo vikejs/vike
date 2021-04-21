@@ -666,7 +666,7 @@ async function hydrate() {
 
 export { Page }
 
-// In both our `render()` and `hydrate()` functions above, we pass `contextProps.pageProps` to `Page`
+// In our `render()` and `hydrate()` functions above, we pass `contextProps.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
 
