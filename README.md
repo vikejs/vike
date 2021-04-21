@@ -237,7 +237,7 @@ The `_default` files can be overridden. For example, you can create a page with 
 ```
 
 By overriding `_default.page.server.js#render` you can
-render some of your pages with a different view framework, e.g. another Vue version (for progressive upgrading) or even React.
+even render some of your pages with a different view framework, e.g. another Vue version (for progressive upgrading) or even React.
 
 Note how files are collocated and share the same base `/pages/about.page.`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
@@ -455,7 +455,7 @@ function Page() {
 ```
 
 By overriding `_default.page.server.js#render` you can
-render some of your pages with a different view framework, e.g. another React version (for progressive upgrading) or even Vue.
+even render some of your pages with a different view framework, e.g. another React version (for progressive upgrading) or even Vue.
 
 Note how files are collocated and share the same base `/pages/about.page.`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
