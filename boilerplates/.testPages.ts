@@ -26,14 +26,14 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
       const extRegexp = /[a-z]+/
       expect(html).toMatch(partRegExp`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(
-        partRegExp`<link rel="stylesheet" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css">`
+        partRegExp`<link rel="stylesheet" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css" as="style">`
       )
       expect(html).toMatch(partRegExp`<link rel="preload" href="/assets/logo.${hashRegexp}.svg">`)
       expect(html).toMatch(
         partRegExp`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
       )
       expect(html).toMatch(
-        partRegExp`<link rel="modulepreload" crossorigin href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
+        partRegExp`<link rel="modulepreload" crossorigin href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js" as="script">`
       )
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     } else {
