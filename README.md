@@ -105,7 +105,7 @@ To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tou
 ### Vue Tour
 
 Similarly to Nuxt,
-you create pages by defining new `.page.vue` files.
+you create pages by defining `.page.vue` files.
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -127,20 +127,31 @@ export default {
 </script>
 ```
 
-By default, `vite-plugin-ssr` does filesystem routing.
+By default, `vite-plugin-ssr` does Filesystem Routing.
 ```
 FILESYSTEM                  URL
 pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-You can also use Route Strings (for parameterized routes such as `/movies/:id`) and Route Functions (for full programmatic flexibility).
+If you need more control, you can create a `.page.route.js` file to define a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js
+// Environment: Node.js, Browser
 
+// We define a Route Function for `/pages/index.page.vue`
+export default ({ url }) => {
+  if (url === '/') {
+    return { match: true }
+  }
+}
+
+/* Or we define a Route String:
 export default '/'
+*/
+
+// Creating `.page.route.js` is optional; Filesystem Routing is used when omitted.
 ```
 
 Unlike Nuxt,
@@ -163,7 +174,7 @@ async function render({ Page, contextProps }) {
 
   const appHtml = await renderToString(app)
 
-  const title = 'Vite w/ SSR'
+  const title = 'Vite SSR'
 
   return html`<!DOCTYPE html>
     <html>
@@ -207,7 +218,7 @@ The files we created end with `.page.vue`, `.page.route.js`, `.page.server.js`, 
  - `.page.js`: exports the page's root Vue component.
  - `.page.client.js` (optional): defines the page's browser-side code.
  - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
- - `.page.route.js` (optional): exports the page's Route String or Route function.
+ - `.page.route.js` (optional): exports the page's Route String or Route Function.
 
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
@@ -313,7 +324,7 @@ In short: `vite-plugin-ssr` is not only the most flexible, but also the easiest 
 ### React Tour
 
 Similarly to Next.js,
-you create pages by defining new `.page.jsx` files.
+you create pages by defining `.page.jsx` files.
 
 ```jsx
 // /pages/index.page.jsx
@@ -339,20 +350,31 @@ function Counter() {
 }
 ```
 
-By default, `vite-plugin-ssr` does filesystem routing.
+By default, `vite-plugin-ssr` does Filesystem Routing.
 ```
 FILESYSTEM                  URL
 pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-You can also use Route Strings (for parameterized routes such as `/movies/:id`) and Route Functions (for full programmatic flexibility).
+If you need more control, you can create a `.page.route.js` file to define a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js
+// Environment: Node.js, Browser
 
+// We define a Route Function for `/pages/index.page.jsx`
+export default ({ url }) => {
+  if (url === "/") {
+    return { match: true };
+  }
+}
+
+/* Or we define a Route String:
 export default "/";
+*/
+
+// Creating `.page.route.js` is optional; Filesystem Routing is used when omitted.
 ```
 
 Unlike Next.js,
@@ -373,7 +395,7 @@ async function render({ Page, contextProps }) {
     <Page {...contextProps.pageProps} />
   );
 
-  const title = "Vite w/ SSR";
+  const title = "Vite SSR";
 
   return html`<!DOCTYPE html>
     <html>
@@ -417,7 +439,7 @@ The files we created end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`,
  - `.page.js`: exports the page's root React component.
  - `.page.client.js` (optional): defines the page's browser-side code.
  - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
- - `.page.route.js` (optional): exports the page's Route String or Route function.
+ - `.page.route.js` (optional): exports the page's Route String or Route Function.
 
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
@@ -772,9 +794,9 @@ For full programmatic flexibility, you can define a Route Function.
 ```js
 // /pages/admin.page.route.js
 
-// Route functions allow us to implement advanced routing such as route guards.
+// Route Functions allow us to implement advanced routing such as route guards.
 export default ({ url, contextProps }) => {
-  if (url==='/admin' && contextProps.user.isAdmin) {
+  if (url === '/admin' && contextProps.user.isAdmin) {
     return { match: true }
   }
 }
@@ -1802,13 +1824,13 @@ For user friendlier docs, check out the [Express.js Routing Docs](https://expres
 
 #### Route Function
 
-Route functions give you full programmatic flexibility to define your routing logic.
+Route Functions give you full programmatic flexibility to define your routing logic.
 
 ```js
 // /pages/film/admin.page.route.js
 
 export default ({ url, contextProps }) {
-  // Route functions allow us to implement advanced routing such as route guards.
+  // Route Functions allow us to implement advanced routing such as route guards.
   if (! contextProps.user.isAdmin) {
     return {match: false}
   }
