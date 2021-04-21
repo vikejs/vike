@@ -218,7 +218,7 @@ Note how the files we created have different suffixes:
 
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
-We already defined our `_default` files above,
+We already defined `_default` files above,
 which means that all we have to do now to create a new page is to define a new `.page.vue` file (and optionally a `.page.route.js` file).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
@@ -434,7 +434,7 @@ Note how the files we created have different suffixes:
 
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
-We already defined our `_default` files above,
+We already defined `_default` files above,
 which means that all we have to do now to create a new page is to define a new `.page.jsx` file (and optionally a `.page.route.js` file).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
