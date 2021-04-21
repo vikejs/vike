@@ -138,20 +138,16 @@ If you need more control, you can create a `.page.route.js` file to define a *Ro
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js, Browser
+// Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// We define a Route Function for `/pages/index.page.vue`
-export default ({ url }) => {
-  if (url === '/') {
-    return { match: true }
-  }
-}
+// We define a Route Function for `/pages/index.page.vue`:
+export default ({ url }) => url === '/'
 
 /* Or we define a Route String:
 export default '/'
 */
 
-// Creating `.page.route.js` is optional; Filesystem Routing is used when omitted.
+// Or we don't create `.page.route.js` and Filesystem Routing is used
 ```
 
 Unlike Nuxt,
@@ -208,13 +204,13 @@ async function hydrate() {
 }
 ```
 
-The `render()` hook in `pages/_default.page.server.js` gives you full control over how your pages are rendered,
+The `render()` hook in `/pages/_default.page.server.js` gives you full control over how your pages are rendered,
 and `pages/_default.page.client.js` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally*:
  - Use any tool you want such as Vue Router and Vuex.
- - Use any Vue version you want.
+ - Use Vue 2, Vue 3, any any future Vue version (you can actually use any view framework you want, e.g. React).
 
-The files we created end with `.page.vue`, `.page.route.js`, `.page.server.js`, and `.page.client.js`.
+Note how the files we created have different suffixes:
  - `.page.js`: exports the page's root Vue component.
  - `.page.client.js` (optional): defines the page's browser-side code.
  - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
@@ -361,20 +357,16 @@ If you need more control, you can create a `.page.route.js` file to define a *Ro
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js, Browser
+// Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// We define a Route Function for `/pages/index.page.jsx`
-export default ({ url }) => {
-  if (url === "/") {
-    return { match: true };
-  }
-}
+// We define a Route Function for `/pages/index.page.jsx`:
+export default ({ url }) => url === "/";
 
 /* Or we define a Route String:
 export default "/";
 */
 
-// Creating `.page.route.js` is optional; Filesystem Routing is used when omitted.
+// Or we don't create `.page.route.js` and Filesystem Routing is used
 ```
 
 Unlike Next.js,
@@ -429,13 +421,13 @@ async function hydrate() {
 }
 ```
 
-The `render()` hook in `pages/_default.page.server.jsx` gives you full control over how your pages are rendered,
+The `render()` hook in `/pages/_default.page.server.jsx` gives you full control over how your pages are rendered,
 and `pages/_default.page.client.jsx` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally*:
  - Use any tool you want such as React Router or Redux.
  - Use Preact, Inferno, Solid and any other React-like alternative.
 
-The files we created end with `.page.jsx`, `.page.route.js`, `.page.server.jsx`, and `.page.client.jsx`.
+Note how the files we created have different suffixes:
  - `.page.js`: exports the page's root React component.
  - `.page.client.js` (optional): defines the page's browser-side code.
  - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
