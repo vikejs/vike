@@ -1199,15 +1199,15 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 ### `contextProps`
 
 The `contextProps` object is the accumulation of:
- - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/1`).
- - `contextProps.urlFull`: `${pathname}${search}${hash}` (e.g. `/product/42?getDetails=yes#reviews`).
- - Route parameters (e.g. `contextProps.movieId` for a page with a route string `/movie/:movieId`).
- - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) (which allows you to `passToClient = ['routeParams']`).
- - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`).
- - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one).
- - `contextProps` you returned in your `_default.page.server.js`'s `addContextProps()` hook (if you defined one).
+ - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/1`)
+ - `contextProps.urlFull`: `${pathname}${search}${hash}` (e.g. `/product/42?getDetails=yes#reviews`)
+ - Route parameters (e.g. `contextProps.movieId` for a page with a route string `/movie/:movieId`)
+ - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) which allows you to `passToClient = ['routeParams']`
+ - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`)
+ - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one)
+ - `contextProps` you returned in your `_default.page.server.js`'s `addContextProps()` hook (if you defined one)
 
-By default only `contextProps.urlPathname` and `contextProps.urlFull` are available in the browser, and you [`export const passToClient: string[]`](#export--passtoclient-)[`passToClient()`]() to make more available.
+By default only `contextProps.urlPathname` and `contextProps.urlFull` are available in the browser; use [`export const passToClient: string[]`](#export--passtoclient-) to make more `contextProps` available in the browser.
 
 The `contextProps` can be accessed at:
  - (Node.js) `export function addContextProps({ contextProps })` (`*.page.server.js`)
