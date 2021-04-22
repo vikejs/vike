@@ -560,13 +560,13 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React](/boilerplates/boilerplate-react/server/index.js)
    - [React + TypeScript](/boilerplates/boilerplate-react-ts/server/index.ts)
 
-3. Define your `_default.page.client.js` and `_default.page.server.js`.
+3. Define `_default.page.client.js` and `_default.page.server.js`.
    - [Vue](/boilerplates/boilerplate-vue/pages/_default/)
    - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/_default/)
    - [React](/boilerplates/boilerplate-react/pages/_default/)
    - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/_default/)
 
-4. Create your first `index.page.js`.
+4. Create your first `.page.js` file.
    - [Vue](/boilerplates/boilerplate-vue/pages/index/index.page.vue)
    - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/index/index.page.vue)
    - [React](/boilerplates/boilerplate-react/pages/index.page.jsx)
