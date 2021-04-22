@@ -1200,22 +1200,22 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 
 The `contextProps` object is the accumulation of:
  - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/1`).
- - `contextProps.urlFull`: `\`${pathname}${search}${hash}\`` (e.g. `/product/42?getDetails=yes#reviews`).
+ - `contextProps.urlFull`: `${pathname}${search}${hash}` (e.g. `/product/42?getDetails=yes#reviews`).
  - Route parameters (e.g. `contextProps.movieId` for a page with a route string `/movie/:movieId`).
- - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) (convenient when using `passToClient = ['routeParams']`).
- - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(/*...*/); renderPage({ contextProps })`).
+ - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) (which allows you to `passToClient = ['routeParams']`).
+ - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`).
  - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one).
  - `contextProps` you returned in your `_default.page.server.js`'s `addContextProps()` hook (if you defined one).
 
 By default only `contextProps.urlPathname` and `contextProps.urlFull` are available in the browser, and you [`export const passToClient: string[]`](#export--passtoclient-)[`passToClient()`]() to make more available.
 
 The `contextProps` can be accessed at:
- - [Node.js] `export function addContextProps({ contextProps }){/*...*/}` (`*.page.server.js`)
- - [Node.js] `export function render({ contextProps }){/*...*/}` (`*.page.server.js`)
- - [Node.js] `export function prerender({ contextProps }){/*...*/}` (`*.page.server.js`)
- - [Node.js (& Browser)] `export default function routeFunction({ contextProps }){/*...*/}` (`*.page.route.js`)
- - [Browser] `const { contextProps } = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
- - [Browser] `useClientRouter({ render({contextProps}){/*...*/} })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
+ - (Node.js) `export function addContextProps({ contextProps })` (`*.page.server.js`)
+ - (Node.js) `export function render({ contextProps })` (`*.page.server.js`)
+ - (Node.js) `export function prerender({ contextProps })` (`*.page.server.js`)
+ - (Node.js (& Browser)) `export default function routeFunction({ contextProps })` (`*.page.route.js`)
+ - (Browser) `const { contextProps } = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
+ - (Browser) `useClientRouter({ render({ contextProps }) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
 
 <br/><br/>
 
