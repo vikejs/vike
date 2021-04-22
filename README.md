@@ -549,25 +549,25 @@ Options:
 If you already have an existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
-   - [Example](/boilerplates/boilerplate-vue/vite.config.js)
+   - [Example](boilerplates/boilerplate-vue/vite.config.js)
 
 2. Integrate `createPageRender()` to your server (Express.js, Koa, Hapi, Fastify, ...).
-   - [Example](/boilerplates/boilerplate-vue/server/index.js)
+   - [Example](boilerplates/boilerplate-vue/server/index.js)
 
 3. Define `_default.page.client.js` and `_default.page.server.js`.
-   - [Vue](/boilerplates/boilerplate-vue/pages/_default/)
-   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/_default/)
-   - [React](/boilerplates/boilerplate-react/pages/_default/)
-   - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/_default/)
+   - [Vue](boilerplates/boilerplate-vue/pages/_default/)
+   - [Vue + TypeScript](boilerplates/boilerplate-vue-ts/pages/_default/)
+   - [React](boilerplates/boilerplate-react/pages/_default/)
+   - [React + TypeScript](boilerplates/boilerplate-react-ts/pages/_default/)
 
 4. Create your first `.page.js` file.
-   - [Vue](/boilerplates/boilerplate-vue/pages/index/index.page.vue)
-   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/pages/index/index.page.vue)
-   - [React](/boilerplates/boilerplate-react/pages/index.page.jsx)
-   - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/index.page.tsx)
+   - [Vue](boilerplates/boilerplate-vue/pages/index/index.page.vue)
+   - [Vue + TypeScript](boilerplates/boilerplate-vue-ts/pages/index/index.page.vue)
+   - [React](boilerplates/boilerplate-react/pages/index.page.jsx)
+   - [React + TypeScript](boilerplates/boilerplate-react-ts/pages/index.page.tsx)
 
 5. Add the `dev` and `build` scripts to your `package.json`.
-   - [Example](/boilerplates/boilerplate-vue/package.json)
+   - [Example](boilerplates/boilerplate-vue/package.json)
 
 <br/><br/>
 
@@ -725,7 +725,7 @@ There are two routing strategy you can use:
 
 Regardless of the routing strategy, your pages' route are defined by Filesystem Routing, Route Strings, and Route Functions.
 
-You can also use a routing library such as Vue Router and React Router (in complete replacement or in combination). For example: [/examples/vue-router/](/examples/vue-router/) and [/examples/react-router/](/examples/react-router/).
+You can also use a routing library such as Vue Router and React Router (in complete replacement or in combination). For example: [/examples/vue-router/](examples/vue-router/) and [/examples/react-router/](examples/react-router/).
 
  - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
@@ -812,8 +812,8 @@ For pages with a parameterized route (e.g. `/movie/:movieId`), you have to use t
 The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
 Examples:
- - [/examples/vue/](/examples/vue/)
- - [/examples/react/](/examples/react/)
+ - [/examples/vue/](examples/vue/)
+ - [/examples/react/](examples/react/)
 
 <br/><br/>
 
@@ -937,13 +937,13 @@ You can use `vite-plugin-ssr` with any Vite markdown plugin.
 
 For Vue you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
 Example:
- - [/examples/vue/vite.config.ts](/examples/vue/vite.config.ts)
- - [/examples/vue/pages/markdown.page.md](/examples/vue/pages/markdown.page.md)
+ - [/examples/vue/vite.config.ts](examples/vue/vite.config.ts)
+ - [/examples/vue/pages/markdown.page.md](examples/vue/pages/markdown.page.md)
 
 For React you can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
 Example:
- - [/examples/react/vite.config.ts](/examples/react/vite.config.ts)
- - [/examples/react/pages/markdown.page.md](/examples/react/pages/markdown.page.md)
+ - [/examples/react/vite.config.ts](examples/react/vite.config.ts)
+ - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
 
 <br/><br/>
 
@@ -958,8 +958,8 @@ While you can follow the official guides *exactly* as-is (including serializing 
 you can also leverage `vite-plugin-ssr`'s `export { passToClient }` to make your life slightly easier,
 as shown in the following examples.
 
- - [/examples/vuex/](/examples/vuex/)
- - [/examples/redux/](/examples/redux/)
+ - [/examples/vuex/](examples/vuex/)
+ - [/examples/redux/](examples/redux/)
 
 <br/><br/>
 
@@ -1118,9 +1118,9 @@ Change Base URL for local dev:
 You can also set `base: 'https://another-origin.example.org/'` (for cross-origin deployments) and `base: './'` (for embedded deployments at multiple paths).
 
 Example:
- - [/examples/base-url/pages/_components/Link.jsx](/examples/base-url/pages/_components/Link.jsx) (a `<Link>` component built on top of `import.meta.env.BASE_URL`)
- - [/examples/base-url/server/index.js](/examples/base-url/server/index.js) (see the `base` option passed to `vite` and `vite-plugin-ssr`)
- - [/examples/base-url/package.json](/examples/base-url/package.json) (see the build scripts)
+ - [/examples/base-url/pages/_components/Link.jsx](examples/base-url/pages/_components/Link.jsx) (a `<Link>` component built on top of `import.meta.env.BASE_URL`)
+ - [/examples/base-url/server/index.js](examples/base-url/server/index.js) (see the `base` option passed to `vite` and `vite-plugin-ssr`)
+ - [/examples/base-url/package.json](examples/base-url/package.json) (see the build scripts)
 
 <br/><br/>
 
@@ -1132,7 +1132,7 @@ Example:
 Make sure to import `/dist/server/importer.js` in your worker code. (The `importer.js` makes all dependencies statically analysable so that the entire server code can be bundled into a single worker file.)
 
 Example:
- - [/examples/cloudflare-workers](/examples/cloudflare-workers)
+ - [/examples/cloudflare-workers](examples/cloudflare-workers)
 
 <br/><br/>
 
@@ -1496,14 +1496,14 @@ if you don't call
 then no `prerender()` hook is called.
 
 Vue Example:
- - [/examples/vue/package.json](/examples/vue/package.json) (see the `build:prerender` script)
- - [/examples/vue/pages/star-wars/index.page.server.ts](/examples/vue/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
- - [/examples/vue/pages/hello/index.page.server.ts](/examples/vue/pages/hello/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/vue/package.json](examples/vue/package.json) (see the `build:prerender` script)
+ - [/examples/vue/pages/star-wars/index.page.server.ts](examples/vue/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/vue/pages/hello/index.page.server.ts](examples/vue/pages/hello/index.page.server.ts) (see the `prerender()` hook)
 
 React Example:
- - [/examples/react/package.json#build:prerender](/examples/react/package.json) (see the `build:prerender` script)
- - [/examples/react/pages/star-wars/index.page.server.ts](/examples/react/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
- - [/examples/react/pages/hello/index.page.server.ts](/examples/react/pages/hello/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/react/package.json#build:prerender](examples/react/package.json) (see the `build:prerender` script)
+ - [/examples/react/pages/star-wars/index.page.server.ts](examples/react/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/react/pages/hello/index.page.server.ts](examples/react/pages/hello/index.page.server.ts) (see the `prerender()` hook)
 
 <br/><br/>
 
@@ -1727,12 +1727,12 @@ to programmatically navigate your user to a new page.
 `useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
 Vue example:
- - [/examples/vue/pages/_default/_default.page.client.ts](/examples/vue/pages/_default/_default.page.client.ts)
- - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+ - [/examples/vue/pages/_default/_default.page.client.ts](examples/vue/pages/_default/_default.page.client.ts)
+ - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 React example:
- - [/examples/react/pages/_default/_default.page.client.tsx](/examples/react/pages/_default/_default.page.client.tsx)
- - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+ - [/examples/react/pages/_default/_default.page.client.tsx](examples/react/pages/_default/_default.page.client.tsx)
+ - [/examples/react/pages/index.page.tsx](examples/react/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 <br/><br/>
 
@@ -1773,10 +1773,10 @@ While you can import `navigate()` in Node.js, you cannot call it: calling `navig
 If you want to redirect your user at page-load time, see the [Page Redirection](#page-redirection) guide.
 
 Vue example:
- - [/examples/vue/pages/index.page.vue](/examples/vue/pages/index.page.vue)
+ - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue)
 
 React example:
- - [/examples/react/pages/index.page.tsx](/examples/react/pages/index.page.tsx)
+ - [/examples/react/pages/index.page.tsx](examples/react/pages/index.page.tsx)
 
 <br/><br/>
 
@@ -1972,8 +1972,8 @@ async function startServer() {
 Since `createPageRender()` and `renderPage()` are agnostic to Express.js, you can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers.
 
 Examples:
- - [JavaScript](/boilerplates/boilerplate-vue/server/index.js)
- - [TypeScript](/boilerplates/boilerplate-vue-ts/server/index.ts)
+ - [JavaScript](boilerplates/boilerplate-vue/server/index.js)
+ - [TypeScript](boilerplates/boilerplate-vue-ts/server/index.ts)
 
 <br/><br/>
 
