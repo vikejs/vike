@@ -549,16 +549,10 @@ Options:
 If you already have an existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
-   - [Vue](/boilerplates/boilerplate-vue/vite.config.js)
-   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/vite.config.ts)
-   - [React](/boilerplates/boilerplate-react/vite.config.js)
-   - [React + TypeScript](/boilerplates/boilerplate-react-ts/vite.config.ts)
+   - [Example](/boilerplates/boilerplate-vue/vite.config.js)
 
 2. Integrate `createPageRender()` to your server (Express.js, Koa, Hapi, Fastify, ...).
-   - [Vue](/boilerplates/boilerplate-vue/server/index.js)
-   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/server/index.ts)
-   - [React](/boilerplates/boilerplate-react/server/index.js)
-   - [React + TypeScript](/boilerplates/boilerplate-react-ts/server/index.ts)
+   - [Example](/boilerplates/boilerplate-vue/server/index.js)
 
 3. Define `_default.page.client.js` and `_default.page.server.js`.
    - [Vue](/boilerplates/boilerplate-vue/pages/_default/)
@@ -573,10 +567,7 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React + TypeScript](/boilerplates/boilerplate-react-ts/pages/index.page.tsx)
 
 5. Add the `dev` and `build` scripts to your `package.json`.
-   - [Vue](/boilerplates/boilerplate-vue/package.json)
-   - [Vue + TypeScript](/boilerplates/boilerplate-vue-ts/package.json)
-   - [React](/boilerplates/boilerplate-react/package.json)
-   - [React + TypeScript](/boilerplates/boilerplate-react-ts/package.json)
+   - [Example](/boilerplates/boilerplate-vue/package.json)
 
 <br/><br/>
 
