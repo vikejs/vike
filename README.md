@@ -673,6 +673,8 @@ conveniently hold all props of the root component.
 We could have defined `movies` directly on `contextProps.movies` but it's cumbersome:
 our render/hydrate function would then need to know what `contextProps` should be passed to the root component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root component.
 
+We can also fetch data in a stateful component (but then the fetched data is not rendered to HTML) by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then pass it to the stateful component.
+
 #### Pass `contextProps` to any/all components
 
 We can also pass some `contextProps` to any/all components of the component tree:
