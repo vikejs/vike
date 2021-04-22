@@ -816,7 +816,7 @@ Example:
 
 Information about the authenticated user can be added to the `contextProps` at the server integration point
 [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
-The `contextProps` are available to all hooks and route functions.
+The `contextProps` are available to all hooks and Route Functions.
 
 ```js
 const renderPage = createPageRender(/*...*/)
@@ -1193,7 +1193,7 @@ The `contextProps` object is the accumulation of:
  - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/42`)
  - `contextProps.urlFull`: ```${pathname}${search}${hash}``` (e.g. `/product/42?details=yes#reviews`)
  - `contextProps.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: '?details=yes', hash: '#reviews' }`)
- - Route parameters (e.g. `contextProps.movieId` for a page with a route string `/movie/:movieId`)
+ - Route parameters (e.g. `contextProps.movieId` for a page with a Route String `/movie/:movieId`)
  - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) which allows you to `passToClient = ['routeParams']`
  - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`)
  - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one)
@@ -1234,7 +1234,7 @@ The `.page.server.js` file is executed in Node.js and never in the browser.
 
 The `addContextProps()` hook is used to provide further `contextProps` values.
 
-The `contextProps` are passed to all hooks (defined in `.page.server.js`) and all route functions (defined in `.page.route.js`).
+The `contextProps` are passed to all hooks (defined in `.page.server.js`) and all Route Functions (defined in `.page.route.js`).
 
 You can provide initial `contextProps` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 This is where you usually pass information about the authenticated user,
@@ -1265,7 +1265,7 @@ async function addContextProps({ contextProps, Page }){
 - `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
 - `contextProps` is the initial accumulation of:
    1. The `contextProps` you provided in your the server integration point `createPageRender()`.
-   2. The route parameters (such as `contextProps.movieId` for a page with a route string `/movie/:movieId`).
+   2. The route parameters (such as `contextProps.movieId` for a page with a Route String `/movie/:movieId`).
 
 <br/>
 
@@ -1770,7 +1770,7 @@ The `*.page.route.js` files enable further control over routing with:
 
 #### Route String
 
-For a page `/pages/film.page.js`, a route string can be defined in a `/pages/film.page.route.js` adjacent file.
+For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/film.page.route.js` adjacent file.
 
 ```js
 // /pages/film.page.route.js
@@ -1781,7 +1781,7 @@ export default '/film/:filmId'
 
 If the URL matches, the value of `filmId` is available at `contextProps.filmId`.
 
-The syntax of route strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
+The syntax of Route Strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
 (the most widespread route syntax in JavaScript).
 For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html#route-parameters)
 (Express.js uses `path-to-regexp`).
@@ -1842,7 +1842,7 @@ todo/create.page.js               /todo/create
 
 The directory common to all your `*.page.js` files is considered the routing root.
 
-For more control over routing, define route strings or route functions in [`*.page.route.js`](#pageroutejs).
+For more control over routing, define Route Strings or Route Functions in [`*.page.route.js`](#pageroutejs).
 
 <br/><br/>
 
