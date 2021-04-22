@@ -8,5 +8,6 @@ function addUrlToContextProps(contextProps: Record<string, unknown>, url: string
   const urlFull = `${pathname}${search}${hash}`
   const urlPathname = pathname
   assert(urlPathname.startsWith('/') && urlFull.startsWith('/'))
-  Object.assign(contextProps, { urlFull, urlPathname })
+  const urlParsed = { pathname, search, hash }
+  Object.assign(contextProps, { urlFull, urlPathname, urlParsed })
 }
