@@ -1194,7 +1194,7 @@ The `contextProps` object is the accumulation of:
  - `contextProps.urlFull`: ```${pathname}${search}${hash}``` (e.g. `/product/42?details=yes#reviews`)
  - `contextProps.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: '?details=yes', hash: '#reviews' }`)
  - Route parameters (e.g. `contextProps.movieId` for a page with a Route String `/movie/:movieId`)
- - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) which allows you to `passToClient = ['routeParams']`
+ - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) which allows you to `passToClient = ['routeParams']` at once.
  - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`)
  - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one)
  - `contextProps` you returned in your `_default.page.server.js`'s `addContextProps()` hook (if you defined one)
