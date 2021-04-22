@@ -584,7 +584,7 @@ If you have an already existing Vite app and don't want to start from scratch:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You fech data by defining an `export { addContextProps }` and `export { passToClient }` in the Page's `.page.server.js` file.
+You fech data by defining `export { addContextProps, passToClient }` in the Page's `.page.server.js` file.
 
 ```js
 // /pages/movies.page.server.js
