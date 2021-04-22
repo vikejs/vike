@@ -1798,11 +1798,11 @@ Route Functions give you full programmatic flexibility to define your routing lo
 export default ({ url, contextProps }) {
   // Route Functions allow us to implement advanced routing such as route guards.
   if (! contextProps.user.isAdmin) {
-    return { match: false }
+    return false
   }
   // We can use RegExp and any JavaScript tool we want.
   if (! /\/film\/[0-9]+\/admin/.test(url)) {
-    return { match: false }
+    return { match: false } // equivalent to `return false`
   }
   filmId = url.split('/')[2]
   return {
@@ -1813,8 +1813,8 @@ export default ({ url, contextProps }) {
 }
 ```
 
-The `match` value can be a (negative) number which enables you to resolve route conflicts.
-The higher the number, the higher the priority.
+The `match` value can be a (negative) number which enables you to resolve route conflicts;
+the higher the number, the higher the priority.
 
 <br/><br/>
 

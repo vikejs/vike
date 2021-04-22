@@ -203,12 +203,18 @@ function resolveRouteFunction(
   matchValue: boolean | number
   routeParams: Record<string, unknown>
 } {
-  const result = routeFunction({ url: urlPathname, contextProps })
+  let result = routeFunction({ url: urlPathname, contextProps })
+  if ([true, false].includes(result)) {
+    result = { match: result }
+  }
   assertUsage(
     typeof result === 'object' && result !== null && result.constructor === Object,
-    `The Route Function ${routeFilePath} should return a plain JavaScript object, e.g. \`{ match: true }\`.`
+    `The Route Function ${routeFilePath} should return a boolean or a plain JavaScript object, e.g. \`{ match: true }\`.`
   )
-  assertUsage(hasProp(result, 'match'), `The Route Function ${routeFilePath} should return a \`{ match }\` value.`)
+  if (!hasProp(result, 'match')) {
+    result.match = true
+  }
+  assert(hasProp(result, 'match'))
   assertUsage(
     typeof result.match === 'boolean' || typeof result.match === 'number',
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
