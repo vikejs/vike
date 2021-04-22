@@ -38,6 +38,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> Guides
 <br/> &nbsp;&nbsp; [Data Fetching](#data-fetching)
 <br/> &nbsp;&nbsp; [Routing](#routing)
+<br/> &nbsp;&nbsp; [SPA vs SSR vs HTML](#spa-vs-ssr-vs-html)
 <br/> &nbsp;&nbsp; [Pre-rendering](#pre-rendering) (SSG)
 <br/> &nbsp;&nbsp; [Authentication](#authentication)
 <br/> &nbsp;&nbsp; [HTML `<head>`](#html-head)
@@ -789,6 +790,55 @@ You can then set `isActive = href===urlPathname` in your link component.
 <br/><br/>
 
 
+### SPA vs SSR vs HTML
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+With `vite-plugin-ssr` you can also create a SPA (an MPA more precisely speaking) and an HTML website (with zero/minimal browser-side JavaScript).
+
+You can also mix. For example, you can render your admin panel as a SPA, while your render your marketing pages to HTML.
+
+The rule of thumb is to render a page to:
+ - HTML (with zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
+ - SPA, if the page has interactivity and doesn't need SEO (the page doesn't need to appear on Goolge). Example: admin panel, rich interactive desktop-like app.
+ - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
+
+To render a page as a SPA, simply render static HTML:
+
+```js
+// .page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+
+export function render () {
+  // Note how the HTML is static, and `div#app-root` is empty.
+  return html`<html>
+    <head>
+      <title>My Website</title>
+    </head>
+    <body>
+      <div id="app-root"/>
+    </body>
+  </html>`
+}
+```
+
+To render a page to HTML only, simply define an empty `.page.client.js`:
+
+```js
+// .page.client.js
+// Environment: Browser
+
+// We leave this empty; there is no browser-side JavaScript.
+
+// We can still include CSS
+import './path/to/some.css'
+```
+
+<br/><br/>
+
+
 ### Pre-rendering
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
@@ -854,6 +904,7 @@ HTML `<head>` tags such as `<title>` and `<meta>` are defined in the `render()` 
 
 ```js
 // _default.page.server.js
+// Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
