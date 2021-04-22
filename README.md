@@ -683,7 +683,7 @@ our render/hydrate function would then need to know what `contextProps` should b
 
 #### Pass `contextProps` to any/all components
 
-We can also pass some `contextProps` to any/all components of the component tree:
+We can pass some `contextProps` to any/all components of the component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
