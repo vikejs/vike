@@ -275,7 +275,7 @@ export async function addContextProps({ contextProps }) {
   // The route parameter of `/star-wars/:movieId` is available at `contextProps.movieId`
   const { movieId } = contextProps
 
-  // `.page.server.js` files always run in Node.js; we can use SQL/ORM queries here.
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
   let movie = await response.json()
 
@@ -484,7 +484,7 @@ export async function addContextProps({ contextProps }) {
   // The route parameter of `/star-wars/:movieId` is available at `contextProps.movieId`
   const { movieId } = contextProps;
 
-  // `.page.server.js` files always run in Node.js; we can use SQL/ORM queries here.
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
   let movie = await response.json();
 
@@ -1798,11 +1798,11 @@ Route Functions give you full programmatic flexibility to define your routing lo
 export default ({ url, contextProps }) {
   // Route Functions allow us to implement advanced routing such as route guards.
   if (! contextProps.user.isAdmin) {
-    return {match: false}
+    return { match: false }
   }
   // We can use RegExp and any JavaScript tool we want.
   if (! /\/film\/[0-9]+\/admin/.test(url)) {
-    return {match: false}
+    return { match: false }
   }
   filmId = url.split('/')[2]
   return {
