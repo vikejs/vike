@@ -294,10 +294,10 @@ export async function addContextProps({ contextProps }) {
 export const passToClient = ['pageProps']
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we created to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root Vue component.
 (We could have defined `movie` directly on `contextProps.movie` but it's cumbersome:
-our render/hydrate function would then need to know what `contextProps` should be passed to the root Vue component, whereas with `contextProps.pageProps` our render/hydrate function can simple pass `contextProps.pageProps` to the root Vue component.)
+our render/hydrate function would then need to know what `contextProps` should be passed to the root Vue component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root Vue component.)
 
 That's it, we have seen most of `vite-plugin-ssr`'s interface;
 not only is `vite-plugin-ssr` flexible but also simple and easy to use.
@@ -503,10 +503,10 @@ export async function addContextProps({ contextProps }) {
 export const passToClient = ["pageProps"];
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we created to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root React component.
 (We could have defined `movie` directly on `contextProps.movie` but it's cumbersome:
-our render/hydrate function would then need to know what `contextProps` should be passed to the root React component, whereas with `contextProps.pageProps` our render/hydrate function can simple pass `contextProps.pageProps` to the root React component.)
+our render/hydrate function would then need to know what `contextProps` should be passed to the root React component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root React component.)
 
 That's it, we have seen most of `vite-plugin-ssr`'s interface;
 not only is `vite-plugin-ssr` flexible but also simple and easy to use.
@@ -668,10 +668,10 @@ function Page(pageProps) {
 }
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we created to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root component.
 We could have defined `movies` directly on `contextProps.movies` but it's cumbersome:
-our render/hydrate function would then need to know what `contextProps` should be passed to the root component, whereas with `contextProps.pageProps` our render/hydrate function can simple pass `contextProps.pageProps` to the root component.
+our render/hydrate function would then need to know what `contextProps` should be passed to the root component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root component.
 
 #### Pass `contextProps` to any/all components
 
