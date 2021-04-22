@@ -973,9 +973,66 @@ function addContextProps() {
 }
 ```
 
-If you want to define `<head>` tags by some deeply nested view component, you can use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
-But, use such library only if you have a *strong* rationale:
-the aforementioned solution using `contextProps` is considerably simpler and works for the vast majority of cases.
+If you want to define `<head>` tags by some deeply nested view component:
+ 1. Add `docHtml` to `passToClient`.
+ 2. Pass `contextProps.docHtml` [to all your components](#pass-contextprops-to-anyall-components).
+ 3. Modify `contextProps.docHtml` in your deeply nested component.
+
+```js
+// _default.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+
+// We make `contextProps.docHtml` available in the browser.
+export const passToClient = ['pageProps', 'docHtml']
+
+export async function render({ Page, contextProps }) {
+  // Use your view framework to pass `contextProps.docHtml` to all components
+  // of your component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
+
+  // What happens here is:
+  // 1. Your view framework passes `docHtml` to all your components
+  // 2. You modify `docHtml` in one of your components
+  // 3. You render the HTML meta tags with `contextProps.docHtml`
+  return html`<html>
+    <head>
+      <title>${contextProps.docHtml}</title>
+      <meta name="description" content="${contextProps.docHtml.description}">
+    </head>
+    <body>
+      <div id="app">
+        ${html.dangerouslySetHtml(appHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+```js
+// _default.page.client.js
+// Environment: Browser
+
+hydrate()
+
+function hydrate() {
+  // Thanks to the fact that `passToClient.includes('docHtml')`,
+  // `contextProps.docHtml` is available here in the browser.
+  // Use your view framework to pass `contextProps.docHtml` to all components
+  // of your component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
+}
+```
+
+```js
+// Somwhere deep in one of your view component
+
+// Thanks to our previous steps, `docHtml` is available here.
+docHtml.title = 'I was set by some deep component.'
+docHtml.description = 'Me too.'
+```
+
+You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet)
+but use such library only if you have a *strong* rationale:
+the solution using `contextProps.docHtml` is considerably simpler and works for the vast majority of cases.
 
 <br/><br/>
 
