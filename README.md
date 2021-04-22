@@ -539,14 +539,14 @@ You'll then be able to choose between:
  - `react-ts`: Vite + SSR + React + TypeScript
 
 Options:
- - `--skip-git`: don't initialize a new Git repository.
+ - `--skip-git`: don't initialize a new Git repository
 
 <br/><br/>
 
 
 ### Manual Installation
 
-If you have an already existing Vite app and don't want to start from scratch:
+If you already have an existing Vite app and don't want to start from scratch:
 
 1. Add `vite-plugin-ssr` to your `vite.config.js`.
    - [Vue](/boilerplates/boilerplate-vue/vite.config.js)
