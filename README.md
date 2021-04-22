@@ -580,6 +580,14 @@ If you already have an existing Vite app and don't want to start from scratch:
 
 You fech data by defining `export { addContextProps, passToClient }` in the Page's `.page.server.js` file.
 
+ - [Example](#example)
+ - [Pass `contextProps` to any/all components](#pass-contextprops-to-anyall-components)
+ - [Data Fetching with Stateful Component](#data-fetching-with-stateful-component)
+ - [GraphQL](#graphql)
+ - [Store (Vuex/Redux...)](#store-vuexredux)
+
+#### Example
+
 ```js
 // /pages/movies.page.server.js
 // Environment: Node.js
@@ -673,14 +681,31 @@ conveniently hold all props of the root component.
 We could have defined `movies` directly on `contextProps.movies` but it's cumbersome:
 our render/hydrate function would then need to know what `contextProps` should be passed to the root component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root component.
 
-We can also fetch data in a stateful component (but then the fetched data is not rendered to HTML) by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then pass it to the stateful component.
-
 #### Pass `contextProps` to any/all components
 
 We can also pass some `contextProps` to any/all components of the component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
+
+#### Data Fetching with Stateful Component
+
+We can fetch data in a stateful component (but then the fetched data is not rendered to HTML) by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-contextprops-to-anyall-components).
+
+#### GraphQL
+
+When using GraphQL with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/) you can define GraphQL queries/fragments on a component-level, but you still always fetch data globally on a page-level. With `vite-plugin-ssr`, you do this global fetch in the `addContextProps()` hook.
+ - Apollo GraphQL Example: [/examples/graphql-apollo/](examples/graphql-apollo/)
+
+With `vite-plugin-ssr` you have full control over the rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL SSR](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
+
+#### Store (Vuex/Redux...)
+
+When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/) or [Redux](https://redux.js.org/)), your components don't use the fetched data directly but instead you use the fetched data to set the initial state of the store. When doing SSR, you need to pass the initial store state to the client; with `vite-plugin-ssr` you can do that with `export const passToClient = ['initialStoreState']`.
+ - Redux Example: [/examples/redux/](examples/redux/)
+ - Vuex Example: [/examples/vuex/](examples/vuex/)
+
+With `vite-plugin-ssr` you have full control over the rendering which means that integrating a global state is mostly a matter of following the official SSR guide of the tool you are using ([Redux SSR](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
 
 <br/><br/>
 
