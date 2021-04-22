@@ -697,15 +697,15 @@ We can fetch data in a stateful component (but then the fetched data is not rend
 When using GraphQL with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/) you can define GraphQL queries/fragments on a component-level, but you still always fetch data globally on a page-level. With `vite-plugin-ssr`, you do this global fetch in the `addContextProps()` hook.
  - Apollo GraphQL Example: [/examples/graphql-apollo/](examples/graphql-apollo/)
 
-With `vite-plugin-ssr` you have full control over the rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL SSR](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
+With `vite-plugin-ssr` you have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL SSR](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
 
 #### Store (Vuex/Redux...)
 
 When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/) or [Redux](https://redux.js.org/)), your components don't use the fetched data directly but instead you use the fetched data to set the initial state of the store. When doing SSR, you need to pass the initial store state to the client; with `vite-plugin-ssr` you can do that with `export const passToClient = ['initialStoreState']`.
- - Redux Example: [/examples/redux/](examples/redux/)
- - Vuex Example: [/examples/vuex/](examples/vuex/)
+ - [/examples/redux/](examples/redux/)
+ - [/examples/vuex/](examples/vuex/)
 
-With `vite-plugin-ssr` you have full control over the rendering which means that integrating a global state is mostly a matter of following the official SSR guide of the tool you are using ([Redux SSR](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
+With `vite-plugin-ssr` you have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Redux SSR](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
 
 <br/><br/>
 
@@ -952,11 +952,9 @@ Example:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Even complex integrations, such as Vuex or Redux, are simple and straightforward to implement.
-Because you control how your pages are rendered,
-integration is just a matter of following the official guide of the tool you want to integrate.
+With `vite-plugin-ssr` you have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool you are using ([Redux SSR](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
 
-While you can follow official guides *exactly* as-is (including serializing initial state into HTML),
+While you can follow the official guides *exactly* as-is (including serializing initial state into HTML),
 you can also leverage `vite-plugin-ssr`'s `export { passToClient }` to make your life slightly easier,
 as shown in the following examples.
 
