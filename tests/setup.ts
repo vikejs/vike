@@ -37,6 +37,7 @@ function run(cmd: string, baseUrl = '') {
     page.off('console', onConsole)
     expect(browserLogs.filter(({ type }) => type === 'error')).toEqual([])
     browserLogs.length = 0
+    await page.close() // See https://github.com/vitejs/vite/pull/3097
     await stop(runProcess)
   })
 }
