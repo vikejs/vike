@@ -1836,6 +1836,7 @@ to programmatically navigate your user to a new page.
 
 Vue example:
  - [/examples/vue/pages/_default/_default.page.client.ts](examples/vue/pages/_default/_default.page.client.ts)
+ - [/examples/vue/pages/_default/app.ts](examples/vue/pages/_default/app.ts)
  - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 React example:
