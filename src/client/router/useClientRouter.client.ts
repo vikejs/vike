@@ -22,7 +22,7 @@ function useClientRouter({
     isHydration
   }: {
     Page: any
-    contextProps: Record<string, any>
+    contextProps: any
     isHydration: boolean
   }) => Promise<void> | void
   onTransitionStart: () => void
