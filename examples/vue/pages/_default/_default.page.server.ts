@@ -1,20 +1,15 @@
 import { renderToString } from '@vue/server-renderer'
 import { html } from 'vite-plugin-ssr'
-import { getApp } from './app'
+import { createApp } from './app'
+import { Component, ContextProps } from './types'
 
 export { passToClient }
 export { render }
 
-const passToClient = ['pageProps', 'docTitle']
+const passToClient = ['pageProps', 'docTitle', 'routeParams']
 
-async function render({
-  Page,
-  contextProps
-}: {
-  Page: any
-  contextProps: { docTitle: string; pageProps: Record<string, unknown> }
-}) {
-  const app = getApp(Page, contextProps.pageProps)
+async function render({ Page, contextProps }: { Page: Component; contextProps: ContextProps }) {
+  const app = createApp(Page, contextProps)
   const appHtml = await renderToString(app)
 
   return html`<!DOCTYPE html>
