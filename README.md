@@ -521,13 +521,13 @@ not only is `vite-plugin-ssr` flexible but also simple and easy to use.
 
 ### Boilerplates
 
-npm:
+With npm:
 
 ```
 npm init vite-plugin-ssr
 ```
 
-Yarn:
+With Yarn:
 
 ```
 yarn create vite-plugin-ssr
@@ -602,8 +602,7 @@ export { addContextProps }
 export const passToClient = ['pageProps']
 
 async function addContextProps({ contextProps }) {
-  // `.page.server.js` files are always executed in Node.js;
-  // we could use ORM/SQL database queries to fetch data.
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch("https://movies.example.org/api")
   let movies = await response.json()
 
@@ -630,7 +629,7 @@ async function render({ Page, contextProps }) {
     // Our convenience object `pageProps` allows us to pass all root component props at once.
     createElement(Page, contextProps.pageProps)
   )
-  /* With JSX:
+  /* JSX:
   const pageHtml = await renderToHtml(<Page {...contextProps.pageProps} />)
   */
 
@@ -658,7 +657,7 @@ async function hydrate() {
     createElement(Page, contextProps.pageProps),
     document.getElementById('view-root')
   )
-  /* With JSX:
+  /* JSX:
   await hydrateToDom(<Page {...contextProps.pageProps} />, document.getElementById('view-root'))
   */
 }
@@ -691,22 +690,22 @@ We can pass some `contextProps` to any/all components of the component tree:
 
 #### Data Fetching with Stateful Component
 
-We can fetch data in a stateful component (but then the fetched data is not rendered to HTML) by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-contextprops-to-anyall-components).
+We can also fetch data by using a stateful component by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-contextprops-to-anyall-components). Note that with this technique, the fetched data is *not* rendered to HTML (which defeats the purpose of SSR).
 
 #### GraphQL
 
 When using GraphQL with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/) you can define GraphQL queries/fragments on a component-level, but you still always fetch data globally on a page-level. With `vite-plugin-ssr`, you do this global fetch in the `addContextProps()` hook.
- - Apollo GraphQL Example: [/examples/graphql-apollo/](examples/graphql-apollo/)
+ - [/examples/graphql-apollo/](examples/graphql-apollo/)
 
-With `vite-plugin-ssr` you have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL SSR](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
+In general, with `vite-plugin-ssr`, you have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL - SSR Guide](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
 
 #### Store (Vuex/Redux...)
 
-When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/) or [Redux](https://redux.js.org/)), your components don't use the fetched data directly but instead you use the fetched data to set the initial state of the store. When doing SSR, you need to pass the initial store state to the client; with `vite-plugin-ssr` you can do that with `export const passToClient = ['initialStoreState']`.
+When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/) or [Redux](https://redux.js.org/)), your components use the store and don't use the fetched data directly; instead, you use the fetched data to set the initial state of the store. You then render the HTML with that initial store state and then pass the initial store state to the client for hydration, which, with `vite-plugin-ssr`, you can do with `export const passToClient = ['initialStoreState']`.
  - [/examples/redux/](examples/redux/)
  - [/examples/vuex/](examples/vuex/)
 
-With `vite-plugin-ssr` you have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Redux SSR](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
+In general, with `vite-plugin-ssr`, you have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Redux - SSR Guide](https://redux.js.org/recipes/server-rendering), [Vuex - SSR Guide](https://ssr.vuejs.org/guide/data.html#data-store)).
 
 <br/><br/>
 
@@ -794,13 +793,13 @@ You can then set `isActive = href===urlPathname` in your link component.
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-With `vite-plugin-ssr` you can also create a SPA (an MPA more precisely speaking) and an HTML website (with zero/minimal browser-side JavaScript).
+With `vite-plugin-ssr` you can also create a SPA(/MPA) and an HTML website (with zero/minimal browser-side JavaScript).
 
 You can also mix. For example, you can render your admin panel as a SPA, while your render your marketing pages to HTML.
 
 The rule of thumb is to render a page to:
- - HTML (with zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
- - SPA, if the page has interactivity and doesn't need SEO (the page doesn't need to appear on Goolge). Example: admin panel, rich interactive desktop-like app.
+ - HTML (zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
+ - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Goolge). Example: admin panel, desktop-like web app.
  - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
 
 To render a page as a SPA, simply render static HTML:
@@ -994,10 +993,10 @@ export async function render({ Page, contextProps }) {
   // What happens here is:
   // 1. Your view framework passes `docHtml` to all your components
   // 2. You modify `docHtml` in one of your components
-  // 3. You render the HTML meta tags with `contextProps.docHtml`
+  // 3. You render the HTML meta tags with `docHtml`
   return html`<html>
     <head>
-      <title>${contextProps.docHtml}</title>
+      <title>${contextProps.docHtml.title}</title>
       <meta name="description" content="${contextProps.docHtml.description}">
     </head>
     <body>
@@ -1023,7 +1022,7 @@ function hydrate() {
 ```
 
 ```js
-// Somwhere deep in one of your view component
+// Somewhere in a component deep inside your component tree
 
 // Thanks to our previous steps, `docHtml` is available here.
 docHtml.title = 'I was set by some deep component.'
@@ -1060,7 +1059,7 @@ Example:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-With `vite-plugin-ssr` you have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool you are using ([Redux SSR](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
+With `vite-plugin-ssr`, you have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool you are using ([Redux - SSR Guide](https://redux.js.org/recipes/server-rendering), [Vuex SSR](https://ssr.vuejs.org/guide/data.html#data-store)).
 
 While you can follow the official guides *exactly* as-is (including serializing initial state into HTML),
 you can also leverage `vite-plugin-ssr`'s `export { passToClient }` to make your life slightly easier,
