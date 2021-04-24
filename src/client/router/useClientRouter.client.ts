@@ -11,6 +11,9 @@ let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
 const urlOriginal = getUrl()
 
+browserNativeScrollRestoration_enable()
+onPageClose(browserNativeScrollRestoration_enable)
+
 function useClientRouter({
   render,
   onTransitionStart,
@@ -32,7 +35,6 @@ function useClientRouter({
 } {
   assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
   isAlreadyCalled = true
-  disableBrowserScrollRestoration()
   autoSaveScrollPosition()
 
   onLinkClick((url: string) => {
@@ -114,6 +116,7 @@ function useClientRouter({
     if (scrollPosition !== undefined) {
       setScrollPosition(scrollPosition)
     }
+    browserNativeScrollRestoration_disable()
   }
 }
 
@@ -191,13 +194,14 @@ function onLinkClick(callback: (url: string) => void) {
 
 function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | null) => void) {
   window.addEventListener('popstate', (ev) => {
-    const scrollPosition = hasProp(ev.state, 'scrollPosition') ? (ev.state.scrollPosition as ScrollPosition) : null
+    const scrollPosition = getScrollPositionFromHistory(ev.state);
     callback(scrollPosition)
   })
 }
 
 function changeUrl(url: string) {
   if (getUrl() === url) return
+  browserNativeScrollRestoration_disable()
   window.history.pushState(undefined, '', url)
 }
 
@@ -223,6 +227,10 @@ function setScrollPosition(scrollPosition: ScrollPosition | null): void {
   window.scrollTo(x, y)
 }
 
+function getScrollPositionFromHistory(historyState: unknown = window.history.state) {
+  return hasProp(historyState, 'scrollPosition') ? (historyState.scrollPosition as ScrollPosition) : null
+}
+
 function autoSaveScrollPosition() {
   window.addEventListener('scroll', saveScrollPosition, { passive: true })
 }
@@ -240,9 +248,18 @@ function getUrlHash(): string | null {
   return hash
 }
 
-function disableBrowserScrollRestoration() {
-  // Prevent browser scroll behavior on History popstate
+function browserNativeScrollRestoration_disable() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
   }
+}
+function browserNativeScrollRestoration_enable() {
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'auto'
+  }
+}
+
+function onPageClose(listener: () => void) {
+  window.addEventListener('beforeunload', () => {listener()})
+  window.addEventListener('unload', () => {listener()})
 }
