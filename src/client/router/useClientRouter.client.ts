@@ -3,6 +3,7 @@ import { getUrl } from '../getUrl.client'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
 import { getContextPropsProxy } from '../getContextPropsProxy'
+import { throttle } from '../../utils/throttle'
 
 export { useClientRouter }
 export { navigate }
@@ -232,7 +233,9 @@ function getScrollPositionFromHistory(historyState: unknown = window.history.sta
 }
 
 function autoSaveScrollPosition() {
-  window.addEventListener('scroll', saveScrollPosition, { passive: true })
+  // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
+  window.addEventListener('scroll', throttle(saveScrollPosition, 100), { passive: true })
+  onPageClose(saveScrollPosition)
 }
 function saveScrollPosition() {
   // Save scroll position
@@ -260,6 +263,10 @@ function browserNativeScrollRestoration_enable() {
 }
 
 function onPageClose(listener: () => void) {
-  window.addEventListener('beforeunload', () => {listener()})
-  window.addEventListener('unload', () => {listener()})
+  window.addEventListener('beforeunload', () => {
+    listener()
+  })
+  window.addEventListener('unload', () => {
+    listener()
+  })
 }
