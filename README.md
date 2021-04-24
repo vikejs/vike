@@ -774,9 +774,9 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
 
 #### Server-side Routing VS Client-side Routing
 
-By default, `vite-plugin-ssr` does Server-side Routing. (It's the "old school" way of doing routing: when the user changes page, a new HTML request is made.)
+By default, `vite-plugin-ssr` does Server-side Routing. (The "old school" way: when the user changes the page, a new HTML request is made.)
 
-If you don't have a strong rationale to do something differently, then you should stick to the default. (Because Server-side Routing leads to a fundamentally simpler tech stack with a higher DX efficiency.)
+If you don't have a *strong* rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
 
 That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
  - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
