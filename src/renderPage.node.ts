@@ -5,7 +5,7 @@ import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { getPreloadTags } from './getPreloadTags.node'
-import { relative as pathRelative } from 'path'
+import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
   assert,
@@ -18,7 +18,8 @@ import {
   hasProp,
   isContextPropsUrl,
   removeContextPropsUrlSuffix,
-  parseUrl
+  parseUrl,
+  addUrlToContextProps
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
@@ -55,8 +56,6 @@ async function renderPage({
     url = removeContextPropsUrlSuffix(url)
   }
 
-  const urlOriginal = url
-
   url = removeOrigin(url)
   assert(url.startsWith('/'))
 
@@ -70,7 +69,7 @@ async function renderPage({
     url = removeBaseUrl(url)
   }
 
-  Object.assign(contextProps, { url: urlOriginal, urlNormalized: url })
+  addUrlToContextProps(contextProps, url)
 
   const allPageIds = await getPageIds()
 
@@ -91,7 +90,7 @@ async function renderPage({
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    if( !isContextPropsRequest ){
+    if (!isContextPropsRequest) {
       await warn404(url, allPageIds)
     }
     const errorPageId = getErrorPageId(allPageIds)
@@ -106,7 +105,7 @@ async function renderPage({
         statusCode: undefined
       }
     }
-    if( !isContextPropsRequest ) {
+    if (!isContextPropsRequest) {
       statusCode = 404
     } else {
       statusCode = 200
@@ -458,7 +457,9 @@ function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: s
   pageFiles.sort(
     lowerFirst(({ filePath }) => {
       if (filePath.startsWith(pageId)) return -1
-      const relativePath = pathRelative(pageId, filePath)
+      assert(!filePath.includes('\\'))
+      assert(!pageId.includes('\\'))
+      const relativePath = pathPosix.relative(pageId, filePath)
       assert(!relativePath.includes('\\'))
       const changeDirCount = relativePath.split('/').length
       return changeDirCount

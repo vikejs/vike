@@ -197,17 +197,23 @@ function resolveRouteFunction(
   urlPathname: string,
   contextProps: Record<string, unknown>,
   routeFilePath: string
-): RouteFunctionMatch|string {
-  const result = routeFunction({ url: urlPathname, contextProps });
+): RouteFunctionMatch|string|boolean {
+  let result = routeFunction({ url: urlPathname, contextProps })
   if (typeof result === 'string') {
     // A string will get processed by the underlying matcher
     return result;
   }
+  if ([true, false].includes(result)) {
+    result = { match: result }
+  }
   assertUsage(
     typeof result === 'object' && result !== null && result.constructor === Object,
-    `The Route Function ${routeFilePath} should return a route string or plain JavaScript object, e.g. \`{ match: true }\`.`
+    `The Route Function ${routeFilePath} should return a route string, boolean or plain JavaScript object, e.g. \`{ match: true }\`.`
   )
-  assertUsage(hasProp(result, 'match'), `The Route Function ${routeFilePath} should return a \`{ match }\` value.`)
+  if (!hasProp(result, 'match')) {
+    result.match = true
+  }
+  assert(hasProp(result, 'match'))
   assertUsage(
     typeof result.match === 'boolean' || typeof result.match === 'number',
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`

@@ -13,6 +13,7 @@ function getContextPropsProxy(contextProps: Record<string, unknown>) {
         `\`contextProps.${prop}\` is not available on the client.`,
         `Make sure that \`passToClient.includes('${prop}')\`.`,
         `(Currently: \`passToClient == [${Object.keys(contextProps)
+          .filter((prop) => !['urlFull', 'urlPathname', 'urlParsed'].includes(prop))
           .map((prop) => `"${prop}"`)
           .join(',')}]\`.)`
       ].join(' ')

@@ -93,10 +93,10 @@ function getPreloadTag(href: string): string {
   assert(href.startsWith('/'))
   assert(!href.startsWith('//'))
   if (href.endsWith('.css')) {
-    return `<link rel="stylesheet" href="${href}">`
+    return `<link rel="stylesheet" href="${href}" as="style">`
   }
   if (href.endsWith('.js')) {
-    return `<link rel="modulepreload" crossorigin href="${href}">`
+    return `<link rel="modulepreload" crossorigin href="${href}" as="script">`
   }
   return `<link rel="preload" href="${href}">`
 }

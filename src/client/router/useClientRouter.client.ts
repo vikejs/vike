@@ -22,7 +22,7 @@ function useClientRouter({
     isHydration
   }: {
     Page: any
-    contextProps: Record<string, any>
+    contextProps: any
     isHydration: boolean
   }) => Promise<void> | void
   onTransitionStart: () => void
@@ -69,6 +69,7 @@ function useClientRouter({
     }
 
     let { Page, contextProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
+    assert(contextProps.urlFull && contextProps.urlPathname)
     contextProps = getContextPropsProxy(contextProps)
 
     if (renderPromise) {

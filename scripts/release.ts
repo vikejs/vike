@@ -16,7 +16,8 @@ async function release() {
   const tag = `v${versionNew}`
   await commit(tag)
   await commitTag(tag)
-  // await build()
+  // Ensure a fresh build to have a correct `dist/package.json#version`.
+  await build()
 }
 
 async function changelog() {

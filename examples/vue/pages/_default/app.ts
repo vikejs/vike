@@ -1,14 +1,15 @@
 import { App, createSSRApp, defineComponent, h, markRaw } from 'vue'
 import PageLayout from './PageLayout.vue'
+import { Component, ContextProps } from './types'
 
-export { getApp }
+export { createApp }
 
-function getApp(Page: any, pageProps: Record<string, unknown> = {}) {
-  let rootComponent: any
+function createApp(Page: Component, contextProps: ContextProps) {
+  let rootComponent: Component
   const PageWithLayout = defineComponent({
     data: () => ({
       Page: markRaw(Page),
-      pageProps: markRaw(pageProps)
+      pageProps: markRaw(contextProps.pageProps || {})
     }),
     created() {
       rootComponent = this
@@ -25,10 +26,20 @@ function getApp(Page: any, pageProps: Record<string, unknown> = {}) {
       )
     }
   })
-  const app: App<Element> & { changePage?: any } = createSSRApp(PageWithLayout)
-  app.changePage = (Page: any, pageProps: Record<string, unknown> = {}) => {
+
+  const changePage = (Page: Component, contextProps: ContextProps) => {
     rootComponent.Page = markRaw(Page)
-    rootComponent.pageProps = markRaw(pageProps)
+    rootComponent.pageProps = markRaw(contextProps.pageProps || {})
+    setRouteParams(contextProps)
   }
+  const app: App<Element> & { changePage: typeof changePage } = Object.assign(createSSRApp(PageWithLayout), {
+    changePage
+  })
+
+  const setRouteParams = (contextProps: ContextProps) => {
+    app.config.globalProperties.$routeParams = contextProps.routeParams
+  }
+  setRouteParams(contextProps)
+
   return app
 }

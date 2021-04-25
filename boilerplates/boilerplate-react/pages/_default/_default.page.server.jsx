@@ -7,8 +7,7 @@ import logoUrl from "./logo.svg";
 export { render };
 export { passToClient };
 
-// We use `contextProps.pageProps` to hold the props of the root component.
-// We pass `contextProps.pageProps` to the browser for `hydrate()` in `_default.page.client.jsx`.
+// See https://github.com/brillout/vite-plugin-ssr#data-fetching
 const passToClient = ["pageProps"];
 
 function render({ Page, contextProps }) {

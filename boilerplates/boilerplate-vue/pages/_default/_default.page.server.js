@@ -6,12 +6,11 @@ import logoUrl from './logo.svg'
 export { render }
 export { passToClient }
 
-// We use `contextProps.pageProps` to hold the props of the root component.
-// We pass `contextProps.pageProps` to the browser for `hydrate()` in `_default.page.client.js`.
-const passToClient = ["pageProps"];
+// See https://github.com/brillout/vite-plugin-ssr#data-fetching
+const passToClient = ["pageProps", "routeParams"];
 
 async function render({ Page, contextProps }) {
-  const app = createApp(Page, contextProps.pageProps)
+  const app = createApp(Page, contextProps)
   const appHtml = await renderToString(app)
   const title = 'My Vite SSR app'
   return html`<!DOCTYPE html>

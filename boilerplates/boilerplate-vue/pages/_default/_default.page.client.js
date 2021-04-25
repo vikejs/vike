@@ -5,6 +5,6 @@ hydrate()
 
 async function hydrate() {
   const { Page, contextProps } = await getPage()
-  const app = createApp(Page, contextProps.pageProps)
+  const app = createApp(Page, contextProps)
   app.mount('#app')
 }
