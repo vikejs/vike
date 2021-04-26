@@ -10,6 +10,6 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "vite": "^2.2.3",
-    "vite-plugin-ssr": "0.1.0-beta.34"
+    "vite-plugin-ssr": "0.1.0-beta.35"
   }
 }
