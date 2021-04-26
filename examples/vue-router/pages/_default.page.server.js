@@ -18,8 +18,7 @@ async function render({ Page, contextProps }) {
   app.use(vitePluginSsrRoutes({ contextProps, Page }));
 
   // set the router to the desired URL before rendering
-  
-  router.push(contextProps.url)
+  router.push(contextProps.urlPathname)
 
   await router.isReady()
 

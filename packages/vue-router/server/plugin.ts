@@ -1,7 +1,7 @@
 import { App, Component } from 'vue';
 import { Router } from 'vue-router';
 
-type ContextProps = Record<string, unknown> & { url: string, routes?: {id: string, pageRoute: string}[] }
+type ContextProps = Record<string, unknown> & { urlPathname: string, routes?: {id: string, pageRoute: string}[] }
 
 type Config = { 
   contextProps: ContextProps,
@@ -26,14 +26,14 @@ export function vitePluginSsrRoutes(config: Config) {
       }
 
       const contextPropsByPath = {
-        [contextProps.url]: contextProps
+        [contextProps.urlPathname]: contextProps
       };
 
       const router : Router = app.config.globalProperties.$router;
 
       router.beforeEach((to, from) => {
-        if (to.fullPath !== contextProps.url) {
-          throw new Error(`Vue SSR process expected to route to ${contextProps.url} but was routed to ${to.fullPath}`)
+        if (to.fullPath !== contextProps.urlPathname) {
+          throw new Error(`Vue SSR process expected to route to ${contextProps.urlPathname} but was routed to ${to.fullPath}`)
         }
       });
       

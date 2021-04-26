@@ -197,7 +197,7 @@ function resolveRouteFunction(
   urlPathname: string,
   contextProps: Record<string, unknown>,
   routeFilePath: string
-): RouteFunctionMatch|string|boolean {
+): RouteFunctionMatch|string {
   let result = routeFunction({ url: urlPathname, contextProps })
   if (typeof result === 'string') {
     // A string will get processed by the underlying matcher

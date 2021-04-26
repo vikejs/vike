@@ -1,6 +1,8 @@
 <template>
-  <h1>{{ msg }}</h1>
-  <p>The count is preserved when switching between "Home" and "About".</p>
+  <main class="about-view">
+    <h1>{{ msg }}</h1>
+    <p>The count is preserved when switching between "Home" and "About".</p>
+  </main>
 </template>
 
 <script>

@@ -1,6 +1,8 @@
 <template>
-  <h1>{{ msg }}</h1>
-  <p>{{ specialHomeMsg }}</p>
+  <main class="home-view">
+    <h1>{{ msg }}</h1>
+    <p>{{ specialHomeMsg }}</p>
+  </main>
 </template>
 <script>
 export default {
