@@ -36,6 +36,7 @@ async function getPreloadTags(
       if (serverManifest[modulePath]) manifest = serverManifest
       if (clientManifest[modulePath]) manifest = clientManifest
       assert(manifest)
+      if (manifest === serverManifest) return // We disable this for now; changes to Vite are required for this to work.
       const onlyCollectStaticAssets = manifest === serverManifest
       collectAssets(modulePath, preloadUrls, visistedAssets, manifest, onlyCollectStaticAssets)
     })
