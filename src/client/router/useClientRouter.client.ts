@@ -1,5 +1,4 @@
-import { assert, assertUsage, hasProp, isNodejs } from '../../utils'
-import { getUrl } from '../getUrl.client'
+import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isNodejs } from '../../utils'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
 import { getContextPropsProxy } from '../getContextPropsProxy'
@@ -10,7 +9,7 @@ export { navigate }
 
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
-const urlOriginal = getUrl()
+const urlFullOriginal = getUrlFull()
 
 browserNativeScrollRestoration_enable()
 onPageClose(browserNativeScrollRestoration_enable)
@@ -60,7 +59,7 @@ function useClientRouter({
 
   async function fetchAndRender(
     scrollPosition: ScrollPosition | null | undefined = undefined,
-    url: string = getUrl()
+    url: string = getUrlFull()
   ): Promise<undefined> {
     const callNumber = ++callCount
 
@@ -93,7 +92,7 @@ function useClientRouter({
       await render({
         Page,
         contextProps,
-        isHydration: isFirstPageRender && url === urlOriginal,
+        isHydration: isFirstPageRender && url === urlFullOriginal,
         // @ts-ignore
         get pageProps() {
           assertUsage(
@@ -201,7 +200,7 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | 
 }
 
 function changeUrl(url: string) {
-  if (getUrl() === url) return
+  if (getUrlFull() === url) return
   browserNativeScrollRestoration_disable()
   window.history.pushState(undefined, '', url)
 }

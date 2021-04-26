@@ -1,7 +1,7 @@
 import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, parseUrl } from './utils'
+import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, getUrlPathname } from './utils'
 
 export { getPageIds }
 export { route }
@@ -27,7 +27,7 @@ async function route(
   )
   const pageRoutes = await loadPageRoutes()
 
-  const urlPathname = parseUrl(url).pathname
+  const urlPathname = getUrlPathname(url)
   assert(urlPathname.startsWith('/'))
 
   const routeResults = allPageIds
