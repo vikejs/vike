@@ -90,7 +90,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 
 - **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue, React, ...), and any server environment (Express, Fastify, Cloudflare Workers, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **SSR & SPA & HTML**. Render some of your pages as SPA, some with SSR, and some to HTML only (with zero/minimal browser-side JavaScript).
+- **SPA & SSR & HTML**. Render some pages as SPA, some with SSR, and some to HTML-only (with zero/minimal browser-side JavaScript).
 - **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). Can also be used with Vue Router and React Router.
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host (GitHub Pages, Netlify, Cloudflare Pages, ...) by pre-rendering your pages.
 - **HMR**. Browser as well as server code is automatically reloaded.
