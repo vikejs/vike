@@ -19,11 +19,16 @@ async function release() {
   // Ensure a fresh build to have a correct `dist/package.json#version`.
   await build()
   await publish()
+  await publishBoilerplates()
   await gitPush()
 }
 
 async function publish() {
   await run('npm', ['publish'], { cwd: DIR_SRC })
+}
+
+async function publishBoilerplates() {
+  await run('npm', ['publish'], { cwd: DIR_BOILERPLATES })
 }
 
 async function gitPush() {
