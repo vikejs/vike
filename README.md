@@ -806,7 +806,7 @@ The rule of thumb is to render a page to:
  - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Goolge). Example: admin panel, desktop-like web app.
  - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
 
-To render a page as a SPA, simply render static HTML:
+To render a page as a SPA, just render static HTML:
 
 ```js
 // .page.server.js
@@ -815,7 +815,7 @@ To render a page as a SPA, simply render static HTML:
 import { html } from 'vite-plugin-ssr'
 
 export function render () {
-  // Note how the HTML is static, and `div#app-root` is empty.
+  // Note that the HTML is static and `div#app-root` is empty.
   return html`<html>
     <head>
       <title>My Website</title>
@@ -827,7 +827,7 @@ export function render () {
 }
 ```
 
-To render a page to HTML only, simply define an empty `.page.client.js`:
+To render a page to HTML only, define an empty `.page.client.js`:
 
 ```js
 // .page.client.js
