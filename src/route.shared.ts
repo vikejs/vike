@@ -41,8 +41,8 @@ async function route(
 
       // Route with filesystem
       if (!(pageId in pageRoutes)) {
-        const matchValue = routeWith_filesystem(urlPathname, pageId, allPageIds)
-        return { pageId, matchValue, routeParams: {} }
+        const { matchValue, routeParams } = routeWith_filesystem(urlPathname, pageId, allPageIds)
+        return { pageId, matchValue, routeParams }
       }
       const { pageRoute, pageRouteFile } = pageRoutes[pageId]
 
@@ -116,12 +116,16 @@ function isStaticRoute(route: string): boolean {
   return matchValue !== false && Object.keys(routeParams).length === 0
 }
 
-function routeWith_filesystem(urlPathname: string, pageId: string, allPageIds: PageId[]): boolean {
+function routeWith_filesystem(
+  urlPathname: string,
+  pageId: string,
+  allPageIds: PageId[]
+): { matchValue: boolean; routeParams: Record<string, string> } {
   const pageRoute = getFilesystemRoute(pageId, allPageIds)
   urlPathname = normalizeUrl(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'pageRoute:' + pageRoute)
   const matchValue = urlPathname === pageRoute
-  return matchValue
+  return { matchValue, routeParams: {} }
 }
 function normalizeUrl(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()

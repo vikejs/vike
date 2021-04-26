@@ -45,7 +45,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     // Therefore only the serialized `contextProps` tell us the original HTML.
     expect(html).toContain(
       `<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {pageProps:a,docTitle:a${
-        viewFramework === 'vue' ? ',routeParams:a' : ''
+        viewFramework === 'vue' ? ',routeParams:{}' : ''
       }}}(void 0))}</script>`
     )
   })
