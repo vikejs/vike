@@ -96,7 +96,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 - **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
 - **Code Splitting**. In the browser, each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
-- **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr`'s SSR architecture scales from small hobby projects to large-scale enterprise with precise SSR needs.
+- **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr`'s SSR architecture scales from small hobby projects to large-scale enterprise projects with precise SSR needs.
 - **Maintained & Responsive**. Made with :heart:; GitHub issues are welcome and swiftly addressed; chatting is welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
 
 To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
