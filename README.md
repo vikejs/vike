@@ -794,9 +794,12 @@ You can then set `isActive = href===urlPathname` in your link component.
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-With `vite-plugin-ssr` you can also create a SPA(/MPA) and an HTML website (with zero/minimal browser-side JavaScript).
+With `vite-plugin-ssr` you can create:
+ - SSR pages
+ - SPA(/MPA) pages
+ - HTML pages (with zero/minimal browser-side JavaScript)
 
-You can also mix. For example, you can render your admin panel as a SPA, while your render your marketing pages to HTML.
+For example, you can render your admin panel as a SPA, while your render your marketing pages as HTML pages.
 
 The rule of thumb is to render a page to:
  - HTML (zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
