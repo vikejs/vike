@@ -192,9 +192,17 @@ function onLinkClick(callback: (url: string) => void) {
   }
 }
 
+let urlFullWithoutHash__previous = getUrlFullWithoutHash()
 function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | null) => void) {
   window.addEventListener('popstate', (ev) => {
-    const scrollPosition = getScrollPositionFromHistory(ev.state);
+    // Skip hash changes
+    const urlFullWithoutHash__current = getUrlFullWithoutHash()
+    if (urlFullWithoutHash__current == urlFullWithoutHash__previous) {
+      return
+    }
+    urlFullWithoutHash__previous = urlFullWithoutHash__current
+
+    const scrollPosition = getScrollPositionFromHistory(ev.state)
     callback(scrollPosition)
   })
 }
@@ -203,6 +211,7 @@ function changeUrl(url: string) {
   if (getUrlFull() === url) return
   browserNativeScrollRestoration_disable()
   window.history.pushState(undefined, '', url)
+  urlFullWithoutHash__previous = getUrlFullWithoutHash()
 }
 
 type ScrollPosition = { x: number; y: number }
