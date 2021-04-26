@@ -11,6 +11,7 @@ export { isErrorPage }
 export { loadPageRoutes }
 export { getFilesystemRoute }
 export { isStaticRoute }
+export { getRouteStrings }
 export { PageId }
 export { PageRoute }
 export { RouteMatch }

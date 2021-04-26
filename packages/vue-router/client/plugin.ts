@@ -1,4 +1,4 @@
-import { getContextProps, getPageById } from 'vite-plugin-ssr/client/router'
+import { getContextProps, getPageById, loadPageRoutes, getPageIds, getRouteStrings } from 'vite-plugin-ssr/client/router'
 import { reactive, App } from 'vue';
 import { Router } from 'vue-router';
 
@@ -12,8 +12,14 @@ export function vitePluginSsrRoutes(config={}) {
       const router : Router = app.config.globalProperties.$router;
 
       router.beforeResolve(async (to, from) => {
+        const [ pageIds, pageRoutes ] = await Promise.all([ getPageIds(), loadPageRoutes() ]);
+
+        const routes = getRouteStrings(Object.values(pageRoutes), pageIds);
+
+        debugger;
         if (currentRoutesPath !== to.fullPath) {
           const contextProps : ContextProps = contextPropsByPath[to.fullPath] || await getContextProps(to.fullPath);
+
 
           if (!contextProps.routes) {
             throw new Error('Context props do not include routes.');
