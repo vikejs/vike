@@ -1,5 +1,6 @@
 import { App, Component } from 'vue';
 import { Router } from 'vue-router';
+import { getRoutes } from '../isomorphic/get-routes';
 
 type ContextProps = Record<string, unknown> & { urlPathname: string, routes?: {id: string, pageRoute: string}[] }
 
@@ -21,33 +22,39 @@ export function vitePluginSsrRoutes(config: Config) {
         throw new Error('vitePluginSsrRoutes plugin must be passed Page component at initialization when used on the server.');
       }
 
-      if (!contextProps.routes) {
-        throw new Error('contextProps passed to vitePluginSsrRoutes must contain routes.');
-      }
-
       const contextPropsByPath = {
         [contextProps.urlPathname]: contextProps
       };
 
       const router : Router = app.config.globalProperties.$router;
+      let initRoutesPromise : Promise<void>;
 
-      router.beforeEach((to, from) => {
+      async function initRoutes() {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const routes = await getRoutes();
+
+        routes.forEach(route => {
+          router.addRoute({
+            name: route.id,
+            path: route.pageRoute as string,
+            meta: {
+              isViteSsrPageRoute: true
+            },
+            props: (route) => contextPropsByPath[route.fullPath],
+            component: Page
+          })
+        })
+      }
+
+      router.beforeEach(async (to, from) => {
+        if (!initRoutesPromise) {
+          await (initRoutesPromise = initRoutes())
+          return to.fullPath;
+        }
         if (to.fullPath !== contextProps.urlPathname) {
           throw new Error(`Vue SSR process expected to route to ${contextProps.urlPathname} but was routed to ${to.fullPath}`)
         }
       });
-      
-      contextProps.routes.forEach(route => {
-        router.addRoute({
-          name: route.id,
-          path: route.pageRoute,
-          meta: {
-            isViteSsrPageRoute: true
-          },
-          props: (route) => contextPropsByPath[route.fullPath],
-          component: Page
-        })
-      })
     }
   }
 }

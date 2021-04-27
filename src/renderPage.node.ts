@@ -217,8 +217,6 @@ async function getRenderData(
     passToClient.push(...['pageProps', 'is404'])
   }
 
-  passToClient.push('routes');
-
   passToClient.forEach((prop) => {
     contextProps__client[prop] = contextProps[prop]
   })

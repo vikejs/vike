@@ -40,6 +40,10 @@
     },
     "./plugin": {
       "require": "./dist/plugin/index.js"
+    },
+    "./route.shared": {
+      "import": "./route.shared.ts",
+      "require": "./dist/route.shared.js"
     }
   },
   "bin": {

@@ -7,7 +7,7 @@ import { vitePluginSsrRoutes } from '@vite-plugin-ssr/vue-router/server/plugin';
 export { render }
 
 async function render({ Page, contextProps }) {
-  const app = createApp({ routes: contextProps.routes })
+  const app = createApp({})
 
   const router = createRouter({
     history: createMemoryHistory(),

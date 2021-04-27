@@ -19,6 +19,14 @@
     "./server/plugin": {
       "require": "./dist/server/plugin.js",
       "import": "./server/plugin.ts"
+    },
+    "./client": {
+      "require": "./dist/client/index.js",
+      "import": "./client/index.ts"
+    },
+    "./server": {
+      "require": "./dist/server/index.js",
+      "import": "./server/index.ts"
     }
   },
   "keywords": [

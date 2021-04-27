@@ -19,6 +19,8 @@ export { RouteFunctionMatch }
 export { RouteFunction }
 export { RouteFunctionResult }
 export { RoutingHandler }
+export { getCustomRouter }
+export { setCustomRouter }
 
 type PageId = string
 
@@ -79,8 +81,7 @@ async function route(
     ...routeFunctionResults,
     ...routeStrings
   ]
-  const { customRouting: { matchRoutes=matchPathToRegexpRoutes }={} } = getSsrEnv();
-
+  const { matchRoutes } = getCustomRouter();
   const result = await matchRoutes(
     routes,
     url    
@@ -89,7 +90,7 @@ async function route(
     return null;
   }
   const { pageId, routeParams } = result;
-  return { pageId, contextPropsAddendum: { ...routeParams, routeParams, routes } };
+  return { pageId, contextPropsAddendum: { ...routeParams, routeParams } };
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -280,7 +281,8 @@ function isErrorPage(pageId: string): boolean {
 }
 
 function evaluateRouteFunctionsForUrl(routes: PageRoute[], url: string, contextProps: Record<string, unknown>): RouteFunctionResult[] {
-  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
+  const { sortRoutes } = getCustomRouter();
+
   const functionalRoutes : RouteFunction[] = (routes as RouteFunction[])
     .filter(route => isCallable(route.pageRoute))
 
@@ -297,7 +299,8 @@ function evaluateRouteFunctionsForUrl(routes: PageRoute[], url: string, contextP
 }
 
 function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
-  const { customRouting: { sortRoutes=defaultSortRoutes }={} } = getSsrEnv();
+  const { sortRoutes } = getCustomRouter();
+
   const fsRouteStrings : PageRoute[] = pageIds
     .filter(pageId => !routes.some(route => route.id === pageId) && !isErrorPage(pageId))
     .map(id => ({ pageRoute: getFilesystemRoute(id, pageIds), id }));
@@ -350,4 +353,38 @@ async function matchPathToRegexpRoutes(
     }
   }
   return null;
+}
+
+declare global {
+  namespace NodeJS {
+    interface Global {
+      __vite_ssr_plugin_custom_router: RoutingHandler
+    }
+  }
+}
+
+declare global {
+  interface Window {
+    __vite_ssr_plugin_custom_router: RoutingHandler
+  }
+}
+
+function getCustomRouter() {
+  if( typeof window !== "undefined") {
+    // Browser
+    return window.__vite_ssr_plugin_custom_router
+  } else {
+    // Node.js; `global.customRouter` has been set somewhere during the `createPageRender()` call.
+    return global.__vite_ssr_plugin_custom_router
+  }
+}
+// @TODO eventually the pathToRegexp implementation should be removed from this file entirely so as not to bloat the bundle when it is unused
+function setCustomRouter(customRouter:RoutingHandler = { matchRoutes: matchPathToRegexpRoutes, sortRoutes: defaultSortRoutes }) {
+  if( typeof window !== "undefined") {
+    // Browser
+    return window.__vite_ssr_plugin_custom_router = customRouter
+  } else {
+    // Node.js; `global.customRouter` has been set somewhere during the `createPageRender()` call.
+    return global.__vite_ssr_plugin_custom_router = customRouter
+  }
 }

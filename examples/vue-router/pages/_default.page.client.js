@@ -1,6 +1,9 @@
 import { createApp } from './app'
 import { createRouter, createWebHistory } from 'vue-router'
 import { vitePluginSsrRoutes } from '@vite-plugin-ssr/vue-router/client/plugin';
+import { useVueRouter } from '@vite-plugin-ssr/vue-router/client';
+
+useVueRouter()
 
 hydrate()
 

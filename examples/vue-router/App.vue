@@ -5,6 +5,8 @@
         About
       </router-link> | <router-link class="nav-route" :to="{ name: '/pages/home' }">
         Home
+      </router-link> | <router-link class="nav-route" to="/other" >
+        Other
       </router-link>
     </nav>
     <router-view v-slot="{ Component }">

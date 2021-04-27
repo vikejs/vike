@@ -1,7 +1,7 @@
 const express = require('express')
 const { createPageRender } = require('vite-plugin-ssr')
 const vite = require('vite')
-const { useVueRouter } = require('@vite-plugin-ssr/vue-router');
+const { useVueRouter } = require('@vite-plugin-ssr/vue-router/server');
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
 
@@ -21,7 +21,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
-  const renderPage = createPageRender({ viteDevServer, isProduction, root, customRouting: useVueRouter })
+  const renderPage = createPageRender({ viteDevServer, isProduction, root, customRouter: useVueRouter })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const contextProps = {}
