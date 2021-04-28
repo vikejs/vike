@@ -27,7 +27,7 @@ function build(): Plugin {
           rollupOptions: { input: entryPoints(config) },
           polyfillDynamicImport: false
         },
-        ssr: { external: ['vite-plugin-ssr'] }
+        ssr: { external: ['vite-plugin-ssr', '@vite-plugin-ssr/vue-router'] }
       }
     },
     transform: (_src, id) => {

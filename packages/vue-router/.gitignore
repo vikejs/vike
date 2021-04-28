@@ -1,2 +1,5 @@
-dist
-node_modules
+/client
+/isomorphic
+/server
+/dist
+/node_modules

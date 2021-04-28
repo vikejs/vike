@@ -2,31 +2,31 @@
   "name": "@vite-plugin-ssr/vue-router",
   "version": "0.1.0",
   "description": "Vue Router integration in vite-plugin-ssr projects.",
-  "main": "index.ts",
+  "main": "dist/server/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r ./dist/* ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "require": "./index.js",
       "import": "./index.ts"
     },
     "./client/plugin": {
-      "require": "./dist/client/plugin.js",
-      "import": "./client/plugin.ts"
+      "require": "./client/plugin.js",
+      "import": "./src/client/plugin.ts"
     },
     "./server/plugin": {
-      "require": "./dist/server/plugin.js",
-      "import": "./server/plugin.ts"
+      "require": "./server/plugin.js",
+      "import": "./server/plugin.js"
     },
     "./client": {
-      "require": "./dist/client/index.js",
-      "import": "./client/index.ts"
+      "require": "./client/index.js",
+      "import": "./src/client/index.ts"
     },
     "./server": {
-      "require": "./dist/server/index.js",
-      "import": "./server/index.ts"
+      "require": "./server/index.js",
+      "import": "./server/index.js"
     }
   },
   "keywords": [
