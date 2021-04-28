@@ -112,7 +112,7 @@ async function start(cmd: string): Promise<RunProcess> {
     }
   })
   proc.on('exit', async (code) => {
-    if ([0, null].includes(code) && hasStarted) return
+    if (([0, null].includes(code) || code===1 && process.platform==='win32') && hasStarted) return
     stdout.forEach(forceLog.bind(null, 'stdout'))
     stderr.forEach(forceLog.bind(null, 'stderr'))
     forceLog(prefix, `Unexpected process termination, exit code: ${code}`)
@@ -145,7 +145,7 @@ function stopProcess(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
   })
 
   const onProcessClose = (code: number) => {
-    if (code === 0 || code === null) {
+    if (code === 0 || code === null || code===1 && process.platform === 'win32') {
       resolve()
     } else {
       reject(`${prefix} Terminated with non-0 error code ${code}`)
