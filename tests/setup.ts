@@ -156,7 +156,10 @@ function stop(runProcess: RunProcess, signal = 'SIGINT') {
 }
 
 function startProcess(cmd: string, cwd: string) {
-  const [command, ...args] = cmd.split(' ')
+  let [command, ...args] = cmd.split(' ')
+  if (process.platform === 'win32' && command === 'npm') {
+    command = 'npm.cmd'
+  }
   return spawn(command, args, { cwd, detached: true })
 }
 
