@@ -17,6 +17,7 @@ import {
   assertWarning,
   hasProp,
   isContextPropsUrl,
+  normalizePath,
   removeContextPropsUrlSuffix,
   getUrlPathname,
   addUrlToContextProps,
@@ -483,8 +484,9 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   const manifestVal = clientManifest[manifestKey]
   assert(manifestVal)
   assert(manifestVal.isEntry)
-  const { file } = manifestVal
+  let { file } = manifestVal
   assert(!file.startsWith('/'))
+  file = normalizePath(file)
   return '/' + file
 }
 

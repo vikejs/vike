@@ -1,5 +1,5 @@
 import { getSsrEnv } from './ssrEnv.node'
-import { assert } from './utils/assert'
+import { assert, normalizePath } from './utils'
 import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
 import { getPageFiles } from './page-files/getPageFiles.shared'
@@ -42,7 +42,7 @@ async function getPreloadTags(
     })
   }
 
-  const preloadTags = Array.from(preloadUrls).map(prependBaseUrl).map(getPreloadTag)
+  const preloadTags = Array.from(preloadUrls).map(prependBaseUrl).map(normalizePath).map(getPreloadTag)
   return preloadTags
 }
 
