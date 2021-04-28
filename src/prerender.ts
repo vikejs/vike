@@ -1,6 +1,6 @@
 import './page-files/setup.node'
 import fs from 'fs'
-const { writeFile, mkdir } = fs.promises;
+const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists } from './utils'
@@ -101,6 +101,7 @@ async function prerender({
   const htmlDocuments: HtmlDocument[] = []
   const renderedPageIds: Record<string, true> = {}
 
+  // Render URLs renturned by `prerender()` hooks
   await Promise.all(
     Object.entries(prerenderData).map(async ([url, { contextProps, prerenderSourceFile, noPrenderContextProps }]) => {
       const routeResult = await route(url, allPageIds, contextProps)
@@ -121,12 +122,15 @@ async function prerender({
     })
   )
 
+  // Render pages that have a static route
   await Promise.all(
     allPageIds
       .filter((pageId) => !renderedPageIds[pageId])
       .map(async (pageId) => {
         let url
-        const contextProps = {}
+        const contextProps = {
+          routeParams: {}
+        }
         // Route with filesystem
         if (!(pageId in pageRoutes)) {
           url = getFilesystemRoute(pageId, allPageIds)

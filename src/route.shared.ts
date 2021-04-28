@@ -2,7 +2,7 @@ import { getSsrEnv } from './ssrEnv.node';
 import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, isCallable, slice, hasProp, parseUrl } from './utils'
+import { assert, assertUsage, isCallable, slice, hasProp, getUrlPathname } from './utils'
 
 export { getPageIds }
 export { route }
@@ -59,6 +59,9 @@ async function route(
     'No *.page.js file found. You can create a `index.page.js` (or `index.page.jsx`, `index.page.vue`, ...) which will serve `/`.'
   )
 
+  const urlPathname = getUrlPathname(url)
+  assert(urlPathname.startsWith('/'))
+
   allPageIds
     .filter((pageId) => !isErrorPage(pageId))
     .forEach(pageId => {
@@ -68,9 +71,6 @@ async function route(
           pageId
       )
     })
-
-  const urlPathname = normalizeUrl(parseUrl(url).pathname)
-  assert(urlPathname.startsWith('/'))
 
   const pageRoutes = await loadPageRoutes()
 

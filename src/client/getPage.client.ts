@@ -1,15 +1,14 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
-import { addUrlToContextProps } from '../utils'
+import { addUrlToContextProps, getUrlFull, getUrlPathname } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { getContextPropsProxy } from './getContextPropsProxy'
-import { getUrl, getUrlPathname } from './getUrl.client'
 
 export { getPage }
 export { getPageById }
 export { getPageInfo }
 
 const urlPathnameOriginal = getUrlPathname()
-const urlFullOriginal = getUrl()
+const urlFullOriginal = getUrlFull()
 
 async function getPage(): Promise<{
   Page: any

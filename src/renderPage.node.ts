@@ -18,8 +18,9 @@ import {
   hasProp,
   isContextPropsUrl,
   removeContextPropsUrlSuffix,
-  parseUrl,
-  addUrlToContextProps
+  getUrlPathname,
+  addUrlToContextProps,
+  getUrlFull
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
@@ -621,9 +622,9 @@ async function warn404(url: string, allPageIds: string[]) {
   if (!isProduction && !isFileRequest(url)) {
     assertWarning(
       false,
-      `No page is matching the URL \`${
-        parseUrl(url).pathname
-      }\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
+      `No page is matching the URL \`${getUrlPathname(
+        url
+      )}\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
     )
   }
 }
@@ -664,9 +665,9 @@ function truncateString(str: string, len: number) {
 }
 
 function isFileRequest(url: string) {
-  const { pathname } = parseUrl(url)
-  assert(pathname.startsWith('/'))
-  const paths = pathname.split('/')
+  const urlPathname = getUrlPathname(url)
+  assert(urlPathname.startsWith('/'))
+  const paths = urlPathname.split('/')
   const lastPath = paths[paths.length - 1]
   const parts = lastPath.split('.')
   if (parts.length < 2) {
@@ -762,7 +763,6 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 }
 
 function removeOrigin(url: string): string {
-  const { origin, pathname, search, hash } = parseUrl(url)
-  assert(url === `${origin}${pathname}${search}${hash}`)
-  return `${pathname}${search}${hash}`
+  const urlFull = getUrlFull(url)
+  return urlFull
 }

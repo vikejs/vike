@@ -7,6 +7,8 @@ export { setPageFiles }
 export { setPageFilesAsync }
 export { isPageFilesSet }
 
+assertNotAlreadyLoaded()
+
 let allPageFiles: PageFiles | undefined
 
 function setPageFiles(pageFiles: unknown) {
@@ -62,4 +64,13 @@ function findPageFile<T>(
   }
   assertUsage(pageFiles.length === 1, 'Conflicting ' + pageFiles.map(({ filePath }) => filePath).join(' '))
   return pageFiles[0]
+}
+
+function assertNotAlreadyLoaded() {
+  // The functionality of this file will fail if it's loaded more than
+  // once; we assert that it's loaded only once.
+  const alreadyLoaded = Symbol()
+  const globalObject: any = typeof window !== 'undefined' ? window : global
+  assert(!globalObject[alreadyLoaded])
+  globalObject[alreadyLoaded] = true
 }

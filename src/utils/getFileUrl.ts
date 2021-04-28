@@ -1,4 +1,6 @@
-import { assert, slice, parseUrl } from '../utils'
+import { getUrlParts, getUrlPathname } from './parseUrl'
+import { assert } from './assert'
+import { slice } from './slice'
 const contextPropsUrlSuffix = '/index.contextProps.json'
 
 export { getFileUrl }
@@ -15,23 +17,23 @@ export { removeContextPropsUrlSuffix }
  ...
 */
 function getFileUrl(url: string, fileExtension: '.html' | '.contextProps.json'): string {
-  assert(url.startsWith('/'))
-  const { pathname, search, hash } = parseUrl(url)
-  assert(url === `${pathname}${search}${hash}`)
+  assert(url.startsWith('/'), { url })
+  const { pathname, searchString, hashString } = getUrlParts(url)
+  assert(url === `${pathname}${searchString}${hashString}`, { url })
   const trailingSlash = pathname.endsWith('/') ? '' : '/'
-  return `${pathname}${trailingSlash}index${fileExtension}${search}${hash}`
+  return `${pathname}${trailingSlash}index${fileExtension}${searchString}${hashString}`
 }
 
 function isContextPropsUrl(url: string): boolean {
-  const { pathname } = parseUrl(url)
-  return pathname.endsWith(contextPropsUrlSuffix)
+  const urlPathname = getUrlPathname(url)
+  return urlPathname.endsWith(contextPropsUrlSuffix)
 }
 function removeContextPropsUrlSuffix(url: string): string {
-  assert(isContextPropsUrl(url))
-  let { origin, pathname, search, hash } = parseUrl(url)
-  assert(url === `${origin}${pathname}${search}${hash}`)
-  assert(pathname.endsWith(contextPropsUrlSuffix))
+  assert(isContextPropsUrl(url), { url })
+  let { origin, pathname, searchString, hashString } = getUrlParts(url)
+  assert(url === `${origin}${pathname}${searchString}${hashString}`, { url })
+  assert(pathname.endsWith(contextPropsUrlSuffix), { url })
   pathname = slice(pathname, 0, -1 * contextPropsUrlSuffix.length)
   if (pathname === '') pathname = '/'
-  return `${origin}${pathname}${search}${hash}`
+  return `${origin}${pathname}${searchString}${hashString}`
 }

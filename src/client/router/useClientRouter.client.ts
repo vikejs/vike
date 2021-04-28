@@ -1,15 +1,18 @@
-import { assert, assertUsage, hasProp, isNodejs } from '../../utils'
-import { getUrl } from '../getUrl.client'
+import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isNodejs } from '../../utils'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
 import { getContextPropsProxy } from '../getContextPropsProxy'
+import { throttle } from '../../utils/throttle'
 
 export { useClientRouter }
 export { navigate }
 
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
-const urlOriginal = getUrl()
+const urlFullOriginal = getUrlFull()
+
+browserNativeScrollRestoration_enable()
+onPageClose(browserNativeScrollRestoration_enable)
 
 function useClientRouter({
   render,
@@ -32,7 +35,6 @@ function useClientRouter({
 } {
   assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
   isAlreadyCalled = true
-  disableBrowserScrollRestoration()
   autoSaveScrollPosition()
 
   onLinkClick((url: string) => {
@@ -57,7 +59,7 @@ function useClientRouter({
 
   async function fetchAndRender(
     scrollPosition: ScrollPosition | null | undefined = undefined,
-    url: string = getUrl()
+    url: string = getUrlFull()
   ): Promise<undefined> {
     const callNumber = ++callCount
 
@@ -90,7 +92,7 @@ function useClientRouter({
       await render({
         Page,
         contextProps,
-        isHydration: isFirstPageRender && url === urlOriginal,
+        isHydration: isFirstPageRender && url === urlFullOriginal,
         // @ts-ignore
         get pageProps() {
           assertUsage(
@@ -114,6 +116,7 @@ function useClientRouter({
     if (scrollPosition !== undefined) {
       setScrollPosition(scrollPosition)
     }
+    browserNativeScrollRestoration_disable()
   }
 }
 
@@ -189,16 +192,26 @@ function onLinkClick(callback: (url: string) => void) {
   }
 }
 
+let urlFullWithoutHash__previous = getUrlFullWithoutHash()
 function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | null) => void) {
   window.addEventListener('popstate', (ev) => {
-    const scrollPosition = hasProp(ev.state, 'scrollPosition') ? (ev.state.scrollPosition as ScrollPosition) : null
+    // Skip hash changes
+    const urlFullWithoutHash__current = getUrlFullWithoutHash()
+    if (urlFullWithoutHash__current == urlFullWithoutHash__previous) {
+      return
+    }
+    urlFullWithoutHash__previous = urlFullWithoutHash__current
+
+    const scrollPosition = getScrollPositionFromHistory(ev.state)
     callback(scrollPosition)
   })
 }
 
 function changeUrl(url: string) {
-  if (getUrl() === url) return
+  if (getUrlFull() === url) return
+  browserNativeScrollRestoration_disable()
   window.history.pushState(undefined, '', url)
+  urlFullWithoutHash__previous = getUrlFullWithoutHash()
 }
 
 type ScrollPosition = { x: number; y: number }
@@ -223,8 +236,14 @@ function setScrollPosition(scrollPosition: ScrollPosition | null): void {
   window.scrollTo(x, y)
 }
 
+function getScrollPositionFromHistory(historyState: unknown = window.history.state) {
+  return hasProp(historyState, 'scrollPosition') ? (historyState.scrollPosition as ScrollPosition) : null
+}
+
 function autoSaveScrollPosition() {
-  window.addEventListener('scroll', saveScrollPosition, { passive: true })
+  // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
+  window.addEventListener('scroll', throttle(saveScrollPosition, 100), { passive: true })
+  onPageClose(saveScrollPosition)
 }
 function saveScrollPosition() {
   // Save scroll position
@@ -240,9 +259,22 @@ function getUrlHash(): string | null {
   return hash
 }
 
-function disableBrowserScrollRestoration() {
-  // Prevent browser scroll behavior on History popstate
+function browserNativeScrollRestoration_disable() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
   }
+}
+function browserNativeScrollRestoration_enable() {
+  if ('scrollRestoration' in window.history) {
+    window.history.scrollRestoration = 'auto'
+  }
+}
+
+function onPageClose(listener: () => void) {
+  window.addEventListener('beforeunload', () => {
+    listener()
+  })
+  window.addEventListener('unload', () => {
+    listener()
+  })
 }

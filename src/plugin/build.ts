@@ -1,4 +1,3 @@
-import { assertPatch } from '@brillout/vite-fix-2390'
 import { Plugin, UserConfig } from 'vite'
 import {
   isAbsolute as pathIsAbsolute,
@@ -19,7 +18,6 @@ function build(): Plugin {
     apply: 'build',
     config: (config) => {
       isSsrBuild = isSSR(config)
-      assertPatch()
       return {
         build: {
           outDir: getOutDir(config),

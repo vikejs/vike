@@ -90,16 +90,17 @@ Simple, full-fledged, do-one-thing-do-it-well.
 
 - **Do-One-Thing-Do-It-Well**. Takes care only of SSR and works with: other Vite plugins, any view framework (Vue, React, ...), and any server environment (Express, Fastify, Cloudflare Workers, ...).
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
+- **SPA & SSR & HTML**. Render some pages as SPA, some with SSR, and some to HTML-only (with zero/minimal browser-side JavaScript).
+- **Pre-render / SSG / Static Websites**. Deploy your app to a static host (GitHub Pages, Netlify, Cloudflare Pages, ...) by pre-rendering your pages.
 - **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). Can also be used with Vue Router and React Router.
 - **HMR**. Browser as well as server code is automatically reloaded.
-- **Pre-render / SSG / Static Websites**. Deploy your app to a static host (GitHub Pages, Netlify, Cloudflare Pages, ...) by pre-rendering your pages.
 - **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
 - **Code Splitting**. In the browser, each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
-- **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr`'s SSR architecture scales from small hobby projects to large-scale enterprise with precise SSR needs.
-- **Maintained & Responsive**. Made with passion; GitHub issues are welcome and swiftly addressed; join us on [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
+- **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr`'s SSR architecture scales from small hobby projects to large-scale enterprise projects with precise SSR needs.
+- **Maintained & Responsive**. Made with :heart:; GitHub issues are welcome and swiftly addressed; chatting is welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
 
-To get an idea of what it's like to use `vite-plugin-ssr`, checkout the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
+To get an idea of what it's like to use `vite-plugin-ssr`, check out the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
 <br/><br/>
 
@@ -794,16 +795,19 @@ You can then set `isActive = href===urlPathname` in your link component.
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-With `vite-plugin-ssr` you can also create a SPA(/MPA) and an HTML website (with zero/minimal browser-side JavaScript).
+With `vite-plugin-ssr` you can create:
+ - SSR pages
+ - SPA(/MPA) pages
+ - HTML pages (with zero/minimal browser-side JavaScript)
 
-You can also mix. For example, you can render your admin panel as a SPA, while your render your marketing pages to HTML.
+For example, you can render your admin panel as a SPA, while your render your marketing pages as HTML pages.
 
 The rule of thumb is to render a page to:
  - HTML (zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
  - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Goolge). Example: admin panel, desktop-like web app.
  - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
 
-To render a page as a SPA, simply render static HTML:
+To render a page as a SPA, just render static HTML:
 
 ```js
 // .page.server.js
@@ -812,7 +816,7 @@ To render a page as a SPA, simply render static HTML:
 import { html } from 'vite-plugin-ssr'
 
 export function render () {
-  // Note how the HTML is static, and `div#app-root` is empty.
+  // Note that the HTML is static and `div#app-root` is empty.
   return html`<html>
     <head>
       <title>My Website</title>
@@ -824,7 +828,7 @@ export function render () {
 }
 ```
 
-To render a page to HTML only, simply define an empty `.page.client.js`:
+To render a page to HTML only, define an empty `.page.client.js`:
 
 ```js
 // .page.client.js
@@ -1325,7 +1329,7 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 The `contextProps` object is the accumulation of:
  - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/42`)
  - `contextProps.urlFull`: ```${pathname}${search}${hash}``` (e.g. `/product/42?details=yes#reviews`)
- - `contextProps.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: '?details=yes', hash: '#reviews' }`)
+ - `contextProps.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`)
  - Route parameters (e.g. `contextProps.movieId` for a page with a Route String `/movie/:movieId`)
  - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) which allows you to `passToClient = ['routeParams']` at once.
  - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`)

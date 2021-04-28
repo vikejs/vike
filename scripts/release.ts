@@ -18,6 +18,22 @@ async function release() {
   await commitTag(tag)
   // Ensure a fresh build to have a correct `dist/package.json#version`.
   await build()
+  await publish()
+  await publishBoilerplates()
+  await gitPush()
+}
+
+async function publish() {
+  await run('npm', ['publish'], { cwd: DIR_SRC })
+}
+
+async function publishBoilerplates() {
+  await run('npm', ['publish'], { cwd: DIR_BOILERPLATES })
+}
+
+async function gitPush() {
+  await run('git', ['push'])
+  await run('git', ['push', '--tags'])
 }
 
 async function changelog() {
@@ -107,8 +123,7 @@ type PackageJson = {
   }
 }
 
-async function run(cmd: string, args: string[]): Promise<void> {
+async function run(cmd: string, args: string[], { cwd = DIR_ROOT } = {}): Promise<void> {
   const stdio = 'inherit'
-  const cwd = DIR_ROOT
   await execa(cmd, args, { cwd, stdio })
 }
