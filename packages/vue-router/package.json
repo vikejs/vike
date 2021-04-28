@@ -4,29 +4,25 @@
   "description": "Vue Router integration in vite-plugin-ssr projects.",
   "main": "dist/server/index.js",
   "scripts": {
-    "build": "tsc && cp -r ./dist/* ./",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "exports": {
-    ".": {
-      "require": "./index.js",
-      "import": "./index.ts"
-    },
     "./client/plugin": {
-      "require": "./client/plugin.js",
+      "require": "./dist/client/plugin.js",
       "import": "./src/client/plugin.ts"
     },
     "./server/plugin": {
-      "require": "./server/plugin.js",
-      "import": "./server/plugin.js"
+      "require": "./dist/server/plugin.js",
+      "import": "./dist/server/plugin.js"
     },
     "./client": {
-      "require": "./client/index.js",
+      "require": "./dist/client/index.js",
       "import": "./src/client/index.ts"
     },
     "./server": {
-      "require": "./server/index.js",
-      "import": "./server/index.js"
+      "require": "./dist/server/index.js",
+      "import": "./dist/server/index.js"
     }
   },
   "keywords": [
