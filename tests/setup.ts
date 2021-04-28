@@ -150,7 +150,13 @@ function stop(runProcess: RunProcess, signal = 'SIGINT') {
       reject(`${prefix} Terminated with non-0 error code ${code}`)
     }
   })
-  process.kill(-proc.pid, signal)
+  if (process.platform === 'win32') {
+    // - https://github.com/nodejs/node/issues/3617#issuecomment-377731194
+    // - https://stackoverflow.com/questions/23706055/why-can-i-not-kill-my-child-process-in-nodejs-on-windows/28163919#28163919
+    spawn("taskkill", ["/pid", String(proc.pid), '/f', '/t'], {stdio: ['ignore', 'ignore', 'inherit']});
+  } else {
+    process.kill(-proc.pid, signal)
+  }
 
   return promise
 }
