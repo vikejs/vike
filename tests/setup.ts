@@ -74,7 +74,9 @@ async function start(cmd: string): Promise<RunProcess> {
   }, 30 * 1000)
 
   // Kill any process that listens to port `3000`
-  await runCommand('fuser -k 3000/tcp')
+  if (!process.env.CI && process.platform === 'linux') {
+    await runCommand('fuser -k 3000/tcp')
+  }
 
   const { testPath } = expect.getState()
   const cwd = pathDirname(testPath)
