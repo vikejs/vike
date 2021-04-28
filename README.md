@@ -804,7 +804,7 @@ For example, you can render your admin panel as a SPA, while your render your ma
 
 The rule of thumb is to render a page to:
  - HTML (zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
- - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Goolge). Example: admin panel, desktop-like web app.
+ - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Google). Example: admin panel, desktop-like web app.
  - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
 
 To render a page as a SPA, just render static HTML:
