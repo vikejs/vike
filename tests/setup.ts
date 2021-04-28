@@ -38,7 +38,7 @@ function run(cmd: string, baseUrl = '') {
     expect(browserLogs.filter(({ type }) => type === 'error')).toEqual([])
     browserLogs.length = 0
     await page.close() // See https://github.com/vitejs/vite/pull/3097
-    await stop(runProcess)
+    await terminate(runProcess, 'SIGINT')
   })
 }
 function onConsole(msg: ConsoleMessage) {
@@ -115,23 +115,24 @@ async function start(cmd: string): Promise<RunProcess> {
     if ([0, null].includes(code) && hasStarted) return
     stdout.forEach(forceLog.bind(null, 'stdout'))
     stderr.forEach(forceLog.bind(null, 'stderr'))
-    forceLog(prefix, `Unexpected stop, exit code: ${code}`)
-    await terminate(runProcess)
+    forceLog(prefix, `Unexpected process termination, exit code: ${code}`)
+    await terminate(runProcess, 'SIGKILL')
   })
 
   return promise
 }
-async function terminate(runProcess: RunProcess) {
-  setTimeout(() => {
+async function terminate(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
+  const timeout = setTimeout(() => {
     console.error('Process termination timeout.')
     process.exit(1)
   }, 60 * 1000)
   if (runProcess) {
-    await stop(runProcess, 'SIGKILL')
+    await stopProcess(runProcess, signal)
+    clearTimeout(timeout)
   }
 }
 
-function stop(runProcess: RunProcess, signal = 'SIGINT') {
+function stopProcess(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
   const { cwd, cmd, proc } = runProcess
 
   const prefix = `[Run Stop][${cwd}][${cmd}]`
@@ -143,13 +144,15 @@ function stop(runProcess: RunProcess, signal = 'SIGINT') {
     reject = _reject
   })
 
-  proc.on('close', (code) => {
+  const onProcessClose = (code: number) => {
     if (code === 0 || code === null) {
       resolve()
     } else {
       reject(`${prefix} Terminated with non-0 error code ${code}`)
     }
-  })
+  }
+  proc.on('close', onProcessClose)
+  proc.on('exit', onProcessClose)
   if (process.platform === 'win32') {
     // - https://github.com/nodejs/node/issues/3617#issuecomment-377731194
     // - https://stackoverflow.com/questions/23706055/why-can-i-not-kill-my-child-process-in-nodejs-on-windows/28163919#28163919
