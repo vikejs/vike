@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node_version: [12, 16]
+        include:
+          - os: macos-latest
+            node_version: 14
+          - os: windows-latest
+            node_version: 15
+      fail-fast: false
+    name: 'Test on node-${{ matrix.node_version }}, ${{ matrix.os }}'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set node version to ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install & Build
+        run: npm run test:setup
+
+      - name: Run tests
+        run: npm run test
