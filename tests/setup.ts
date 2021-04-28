@@ -163,10 +163,14 @@ function stop(runProcess: RunProcess, signal = 'SIGINT') {
 
 function startProcess(cmd: string, cwd: string) {
   let [command, ...args] = cmd.split(' ')
-  if (process.platform === 'win32' && command === 'npm') {
-    command = 'npm.cmd'
+  let detached = true
+  if (process.platform === 'win32') {
+    detached = false
+    if( command === 'npm' ) {
+      command = 'npm.cmd'
+    }
   }
-  return spawn(command, args, { cwd, detached: true })
+  return spawn(command, args, { cwd, detached })
 }
 
 function forceLog(std: 'stdout' | 'stderr' | string, str: string) {
