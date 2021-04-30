@@ -5,8 +5,9 @@ import { dev } from './dev'
 import { manifest } from './manifest'
 import { importer } from './importer'
 
-export { plugin }
 export default plugin
+export { plugin }
+export { plugin as ssr }
 
 function plugin(): Plugin[] {
   return [dev(), build(), manifest(), importer()]
