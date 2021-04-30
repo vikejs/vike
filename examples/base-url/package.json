@@ -7,7 +7,7 @@
     "// Build for production": "",
     "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
     "build:clean": "rm -rf dist/",
-    "build:vite": "vite build --base='/dist/client/' && vite build --base='/dist/client/' --ssr",
+    "build:vite": "vite build --base=/dist/client/ && vite build --base=/dist/client/ --ssr",
     "build:prerender": "vite-plugin-ssr prerender",
     "prod:serve:server": "cross-env NODE_ENV=production node ./server",
     "// We purposely serve `./` instead of `dist/client/`": "",
