@@ -35,7 +35,7 @@ async function getPreloadTags(
       let manifest: ViteManifest | undefined = undefined
       if (serverManifest[modulePath]) manifest = serverManifest
       if (clientManifest[modulePath]) manifest = clientManifest
-      assert(manifest)
+      if (!manifest) return // `modulePath` may be missing in the manifest; https://github.com/brillout/vite-plugin-ssr/issues/51
       if (manifest === serverManifest) return // We disable this for now; changes to Vite are required for this to work.
       const onlyCollectStaticAssets = manifest === serverManifest
       collectAssets(modulePath, preloadUrls, visistedAssets, manifest, onlyCollectStaticAssets)
