@@ -112,7 +112,7 @@ async function start(cmd: string): Promise<RunProcess> {
     }
   })
   proc.on('exit', async (code) => {
-    if (([0, null].includes(code) || code===1 && process.platform==='win32') && hasStarted) return
+    if (([0, null].includes(code) || (code === 1 && process.platform === 'win32')) && hasStarted) return
     stdout.forEach(forceLog.bind(null, 'stdout'))
     stderr.forEach(forceLog.bind(null, 'stderr'))
     forceLog(prefix, `Unexpected process termination, exit code: ${code}`)
@@ -121,7 +121,7 @@ async function start(cmd: string): Promise<RunProcess> {
 
   return promise
 }
-async function terminate(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
+async function terminate(runProcess: RunProcess, signal: 'SIGINT' | 'SIGKILL') {
   const timeout = setTimeout(() => {
     console.error('Process termination timeout.')
     process.exit(1)
@@ -132,7 +132,7 @@ async function terminate(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
   }
 }
 
-function stopProcess(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
+function stopProcess(runProcess: RunProcess, signal: 'SIGINT' | 'SIGKILL') {
   const { cwd, cmd, proc } = runProcess
 
   const prefix = `[Run Stop][${cwd}][${cmd}]`
@@ -145,7 +145,7 @@ function stopProcess(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
   })
 
   const onProcessClose = (code: number) => {
-    if (code === 0 || code === null || code===1 && process.platform === 'win32') {
+    if (code === 0 || code === null || (code === 1 && process.platform === 'win32')) {
       resolve()
     } else {
       reject(`${prefix} Terminated with non-0 error code ${code}`)
@@ -156,7 +156,7 @@ function stopProcess(runProcess: RunProcess, signal: 'SIGINT'|'SIGKILL') {
   if (process.platform === 'win32') {
     // - https://github.com/nodejs/node/issues/3617#issuecomment-377731194
     // - https://stackoverflow.com/questions/23706055/why-can-i-not-kill-my-child-process-in-nodejs-on-windows/28163919#28163919
-    spawn("taskkill", ["/pid", String(proc.pid), '/f', '/t'], {stdio: ['ignore', 'ignore', 'inherit']});
+    spawn('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { stdio: ['ignore', 'ignore', 'inherit'] })
   } else {
     process.kill(-proc.pid, signal)
   }
@@ -169,7 +169,7 @@ function startProcess(cmd: string, cwd: string) {
   let detached = true
   if (process.platform === 'win32') {
     detached = false
-    if( command === 'npm' ) {
+    if (command === 'npm') {
       command = 'npm.cmd'
     }
   }

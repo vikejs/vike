@@ -7,7 +7,7 @@ export { render }
 export { passToClient }
 
 // See https://github.com/brillout/vite-plugin-ssr#data-fetching
-const passToClient = ["pageProps", "routeParams"];
+const passToClient = ['pageProps', 'routeParams']
 
 async function render({ Page, contextProps }) {
   const app = createApp(Page, contextProps)
