@@ -8,11 +8,6 @@
 * fix preload tags paths when building on windows ([9c2fd40](https://github.com/brillout/vite-plugin-ssr/commit/9c2fd40608f0ad0798da573afcb948561652b246))
 
 
-### Reverts
-
-* Revert "test: temp remove testing on windows" ([99e7d6a](https://github.com/brillout/vite-plugin-ssr/commit/99e7d6a3f03d7f90e5ffdf26df6b9a3ed2f96b5c))
-
-
 
 # [0.1.0-beta.35](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.34...v0.1.0-beta.35) (2021-04-26)
 
