@@ -275,8 +275,8 @@ export default '/star-wars/:movieId'
 import fetch from 'node-fetch'
 
 export async function addContextProps({ contextProps }) {
-  // The route parameter of `/star-wars/:movieId` is available at `contextProps.movieId`
-  const { movieId } = contextProps
+  // The route parameter of `/star-wars/:movieId` is available at `contextProps.routeParams.movieId`
+  const { movieId } = contextProps.routeParams
 
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
@@ -484,8 +484,8 @@ export default "/star-wars/:movieId";
 import fetch from "node-fetch";
 
 export async function addContextProps({ contextProps }) {
-  // The route parameter of `/star-wars/:movieId` is available at `contextProps.movieId`
-  const { movieId } = contextProps;
+  // The route parameter of `/star-wars/:movieId` is available at `contextProps.routeParams.movieId`
+  const { movieId } = contextProps.routeParams
 
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
@@ -1098,7 +1098,7 @@ export { addContextProps }
 function addContextProps({ contextProps }) {
   // If the user goes to `/movie/42` but there is no movie with ID `42` then
   // we redirect the user to `/movie/add` so he can add a new movie.
-  if (contextProps.movieId === null) {
+  if (contextProps.routeParams.movieId === null) {
     return { redirectTo: '/movie/add' }
   }
 }
@@ -1330,8 +1330,7 @@ The `contextProps` object is the accumulation of:
  - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/42`)
  - `contextProps.urlFull`: ```${pathname}${search}${hash}``` (e.g. `/product/42?details=yes#reviews`)
  - `contextProps.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`)
- - Route parameters (e.g. `contextProps.movieId` for a page with a Route String `/movie/:movieId`)
- - `contextProps.routeParams` which contains *all* route parameters (e.g. `contextProps.routeParams.movieId`) which allows you to `passToClient = ['routeParams']` at once.
+ - `contextProps.routeParams` which contains the route parameters (e.g. `contextProps.routeParams.movieId` for a page with a Route String `/movie/:movieId`)
  - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`)
  - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one)
  - `contextProps` you returned in your `_default.page.server.js`'s `addContextProps()` hook (if you defined one)
@@ -1399,10 +1398,7 @@ async function addContextProps({ contextProps, Page }){
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
-- `contextProps` is the initial accumulation of:
-   1. The `contextProps` you provided in your the server integration point `createPageRender()`.
-   2. The route parameters (such as `contextProps.movieId` for a page with a Route String `/movie/:movieId`).
+`Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
 
 <br/>
 

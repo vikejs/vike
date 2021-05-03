@@ -67,7 +67,7 @@ async function route(
   if (!winner) return null
 
   const { pageId, routeParams } = winner
-  return { pageId, contextPropsAddendum: { ...routeParams, routeParams } }
+  return { pageId, contextPropsAddendum: { routeParams } }
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {

@@ -5,7 +5,9 @@ export { addContextProps }
 export { filterMovieData }
 
 type ContextProps = {
-  movieId: string
+  routeParams: {
+    movieId: string
+  }
   pageProps: {
     movie: MovieDetails
   }
@@ -13,7 +15,7 @@ type ContextProps = {
 }
 
 async function addContextProps({ contextProps }: { contextProps: ContextProps }): Promise<Partial<ContextProps>> {
-  const response = await fetch(`https://swapi.dev/api/films/${contextProps.movieId}`)
+  const response = await fetch(`https://swapi.dev/api/films/${contextProps.routeParams.movieId}`)
   let movie = (await response.json()) as MovieDetails
 
   // We remove data we don't need because we pass `contextProps.movie` to
