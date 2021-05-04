@@ -8,7 +8,8 @@ updateDependencies()
 async function updateDependencies() {
   for (const packageJson of await getAllPackageJson()) {
     const cwd = dirname(packageJson)
-    await run__follow(`${ncuBin} -u --dep dev,prod`, { cwd })
+    await run__follow(`${ncuBin} -u --dep dev,prod --reject vue`, { cwd })
+    await run__follow(`${ncuBin} -u --dep dev,prod --filter vue --target greatest`, { cwd })
   }
 }
 
