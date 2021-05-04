@@ -125,7 +125,7 @@ async function terminate(runProcess: RunProcess, signal: 'SIGINT' | 'SIGKILL') {
   const timeout = setTimeout(() => {
     console.error('Process termination timeout.')
     process.exit(1)
-  }, 60 * 1000)
+  }, TIMEOUT)
   if (runProcess) {
     await stopProcess(runProcess, signal)
     clearTimeout(timeout)
