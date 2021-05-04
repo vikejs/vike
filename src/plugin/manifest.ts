@@ -34,7 +34,7 @@ function manifest(): Plugin {
 }
 
 function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
-  const fileSource = require.resolve('../../client/router/getContextProps.client.ts')
+  const fileSource = require.resolve('../../../client/router/getContextProps.client.ts')
   const fileDist = require.resolve('../client/router/getContextProps.client.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]

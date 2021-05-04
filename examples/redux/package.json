@@ -11,5 +11,6 @@
     "redux": "^4.1.0",
     "vite": "^2.2.4",
     "vite-plugin-ssr": "0.1.0-beta.37"
-  }
+  },
+  "type": "module"
 }

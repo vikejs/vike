@@ -22,8 +22,7 @@ async function setPageFiles(): Promise<unknown> {
     assert(hasProp(pageFiles, '.page'))
     return pageFiles
   } else {
-    assert(__dirname.endsWith(['dist', 'page-files'].join(pathSep)))
-    const modulePath = requireResolve(`../../page-files/${viteEntry}.ts`)
+    const modulePath = requireResolve(`../../../page-files/${viteEntry}.ts`)
     let moduleExports: any
     try {
       moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(modulePath)
