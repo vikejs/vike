@@ -8,16 +8,16 @@
   },
   "dependencies": {
     "@types/express": "^4.17.11",
-    "@types/node": "^14.14.37",
-    "@vitejs/plugin-vue": "^1.2.0",
-    "@vue/compiler-sfc": "^3.0.9",
-    "@vue/server-renderer": "^3.0.9",
+    "@types/node": "^15.0.1",
+    "@vitejs/plugin-vue": "^1.2.2",
+    "@vue/compiler-sfc": "^3.0.11",
+    "@vue/server-renderer": "^3.0.11",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3",
-    "vite": "^2.2.3",
+    "typescript": "^4.2.4",
+    "vite": "^2.2.4",
     "vite-plugin-ssr": "0.1.0-beta.36",
-    "vue": "^3.0.5"
+    "vue": "^3.0.11"
   }
 }
