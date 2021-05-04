@@ -21,24 +21,25 @@
   "engines": {
     "node": ">=12.19.0"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "exports": {
     ".": {
-      "node": "./dist/index.js",
-      "import": "./index.ts"
+      "node": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
     },
     "./client": {
-      "browser": "./client/index.ts"
+      "browser": "./dist/esm/client/index.js"
     },
     "./client/router": {
-      "browser": "./client/router/index.ts",
-      "node": "./dist/client/router/index.node.js"
+      "browser": "./dist/esm/client/router/index.js",
+      "node": "./dist/cjs/client/router/index.node.js"
     },
     "./cli": {
-      "node": "./dist/cli/index.js"
+      "node": "./dist/cjs/cli/index.js"
     },
     "./plugin": {
-      "node": "./dist/plugin/index.js"
+      "node": "./dist/cjs/plugin/index.js"
     }
   },
   "bin": {

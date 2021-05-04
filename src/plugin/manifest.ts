@@ -34,17 +34,11 @@ function manifest(): Plugin {
 }
 
 function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
-  const fileSource = require.resolve('../../client/router/getPageContext.client.ts')
-  const fileDist = require.resolve('../client/router/getPageContext.client.js')
+  const filePath = require.resolve('../../../dist/esm/client/router/getPageContext.client.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
     const modules = bundleFile.modules || {}
-    if (
-      fileSource in modules ||
-      normalizePath(fileSource) in modules ||
-      fileDist in modules ||
-      normalizePath(fileDist) in modules
-    ) {
+    if (filePath in modules || normalizePath(filePath) in modules) {
       return true
     }
   }
