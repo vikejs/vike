@@ -1,3 +1,17 @@
+# [0.1.0-beta.37](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.36...v0.1.0-beta.37) (2021-05-04)
+
+
+* make route parameters available only at `contextProps.routeParams` ([f98f94b](https://github.com/brillout/vite-plugin-ssr/commit/f98f94b072921d9c0325afe57e24e7862e7e27bc))
+
+
+### BREAKING CHANGES
+
+* Route parameters are not available directly at `contextProps`
+anymore. E.g. use `contextProps.routeParams.movieId` instead of
+`contextProps.movieId` (for a route string `/movie/:movieId`).
+
+
+
 # [0.1.0-beta.36](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.35...v0.1.0-beta.36) (2021-05-01)
 
 
