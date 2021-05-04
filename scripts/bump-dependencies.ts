@@ -8,7 +8,7 @@ updateDependencies()
 async function updateDependencies() {
   for (const packageJson of await getAllPackageJson()) {
     const cwd = dirname(packageJson)
-    await run__follow(`${ncuBin} -u`, { cwd })
+    await run__follow(`${ncuBin} -u --dep dev,prod`, { cwd })
   }
 }
 
