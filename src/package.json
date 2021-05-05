@@ -23,21 +23,21 @@
   "main": "./dist/index.js",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "node": "./dist/index.js",
       "import": "./index.ts"
     },
     "./client": {
-      "import": "./client/index.ts"
+      "browser": "./client/index.ts"
     },
     "./client/router": {
-      "import": "./client/router/index.ts",
-      "require": "./dist/client/router/index.node.js"
+      "browser": "./client/router/index.ts",
+      "node": "./dist/client/router/index.node.js"
     },
     "./cli": {
-      "require": "./dist/cli/index.js"
+      "node": "./dist/cli/index.js"
     },
     "./plugin": {
-      "require": "./dist/plugin/index.js"
+      "node": "./dist/plugin/index.js"
     }
   },
   "bin": {
