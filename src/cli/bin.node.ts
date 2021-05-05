@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import { prerender } from '../prerender'
-const pkg = require('../../../package.json')
+const pkg = require('../../package.json')
 
 const cli = cac(pkg.name)
 

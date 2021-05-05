@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/cjs/",
+    "outDir": "./dist/",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "target": "ES2017",
     "module": "CommonJS",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "moduleResolution": "Node",
     "sourceMap": true,
     "skipLibCheck": true,
     "declaration": true,
