@@ -71,7 +71,7 @@ async function start(cmd: string): Promise<RunProcess> {
   const timeout = setTimeout(() => {
     console.error(`Npm script ${cmd} is hanging.`)
     process.exit(1)
-  }, 30 * 1000)
+  }, TIMEOUT)
 
   // Kill any process that listens to port `3000`
   if (!process.env.CI && process.platform === 'linux') {
@@ -212,7 +212,7 @@ function runCommand(cmd: string) {
   const timeout = setTimeout(() => {
     console.error(`Command call ${cmd} is hanging.`)
     process.exit(1)
-  }, 5 * 1000)
+  }, TIMEOUT)
 
   const options = {}
   exec(cmd, options, (err, _stdout, _stderr) => {
