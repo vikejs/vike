@@ -92,14 +92,14 @@ Simple, full-fledged, do-one-thing-do-it-well.
 - **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
 - **SPA & SSR & HTML**. Render some pages as SPA, some with SSR, and some to HTML-only (with zero/minimal browser-side JavaScript).
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host (GitHub Pages, Netlify, Cloudflare Pages, ...) by pre-rendering your pages.
-- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). Can also be used with Vue Router and React Router.
+- **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). You can also use Vue Router and React Router.
 - **HMR**. Browser as well as server code is automatically reloaded.
-- **Fast Cold Start**. Your pages are lazy-loaded on the server; adding pages doesn't increase the cold start of your serverless functions.
-- **Code Splitting**. In the browser, each page loads only the code it needs.
+- **Fast Cold Start**. [Node.js] Your pages are lazy-loaded; adding pages doesn't increase the cold start of your serverless functions.
+- **Code Splitting**. [Browser] Each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
 - **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr`'s SSR architecture scales from small hobby projects to large-scale enterprise projects with precise SSR needs.
-- **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; if you find a bug, it will be fixed quickly.
-- **Responsive**. Made with :heart:; GitHub issues are welcome and swiftly answered; chatting is welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
+- **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; any bug you may find will be fixed quickly.
+- **Responsive**. Made with :heart:; GitHub issues are welcome and answered; conversations are welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
 
 To get an idea of what it's like to use `vite-plugin-ssr`, check out the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
