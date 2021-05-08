@@ -98,7 +98,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 - **Code Splitting**. [Browser] Each page loads only the code it needs.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
 - **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr`'s SSR architecture scales from small hobby projects to large-scale enterprise projects with precise SSR needs.
-- **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; any bug you may find will be fixed quickly.
+- **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; any bug you may encounter will be quickly fixed.
 - **Responsive**. Made with :heart:; GitHub issues are welcome and answered; conversations are welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
 
 To get an idea of what it's like to use `vite-plugin-ssr`, check out the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
