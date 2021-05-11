@@ -7,7 +7,7 @@
     "@vue/compiler-sfc": "^3.0.11",
     "@vue/server-renderer": "^3.0.11",
     "express": "^4.17.1",
-    "vite": "^2.2.4",
+    "vite": "^2.3.0",
     "vite-plugin-ssr": "0.1.0-beta.40",
     "vue": "^3.0.11",
     "vuex": "^4.0.0"
