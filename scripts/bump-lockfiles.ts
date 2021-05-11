@@ -28,14 +28,13 @@ async function removeLockfiles(lockfiles: string[]) {
 }
 
 async function createLockfiles(lockfiles: string[]) {
-  await Promise.all(
-    lockfiles.map(async (lockfile) => {
-      const cwd = dirname(lockfile)
-      await runCommand('git clean -Xdf node_modules', { cwd })
-      await runCommand('npm install', { cwd })
-      console.log(`[Done] npm install (${cwd})`)
-    })
-  )
+  for (const lockfile of lockfiles) {
+    const cwd = dirname(lockfile)
+    process.stdout.write(`Installing dependencies for: ${cwd}...`)
+    await runCommand('git clean -Xdf node_modules', { cwd })
+    await runCommand('npm install', { cwd })
+    process.stdout.write(' Done.\n')
+  }
   // Running `npm install` twice to fix `npm install` not being idempotent
   await runCommand('npm install', { cwd: DIR_ROOT })
 }
@@ -45,8 +44,4 @@ async function runCommand(cmd: string, { cwd = DIR_ROOT }: { cwd?: string } = {}
   const [command, ...args] = cmd.split(' ')
   const { stdout } = await execa(command, args, { cwd })
   return stdout
-}
-async function runCommand__arr(command: string, args: string[]) {
-  const cwd = DIR_ROOT
-  await execa(command, args, { cwd })
 }
