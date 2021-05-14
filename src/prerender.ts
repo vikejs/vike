@@ -5,7 +5,7 @@ import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
-import { getPageFunctions, prerenderPage } from './renderPage.node'
+import { getPageFunctions, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
 import { version } from './package.json'
 
@@ -15,6 +15,7 @@ type HtmlDocument = {
   url: string
   htmlDocument: string
   contextPropsSerialized: string | null
+  doNotCreateExtraDirectory?: true
 }
 
 /**
@@ -158,23 +159,42 @@ async function prerender({
         htmlDocuments.push({ url, htmlDocument, contextPropsSerialized })
       })
   )
+
+  if (!htmlDocuments.find(({ url }) => url === '/404')) {
+    const result = await renderStatic404Page()
+    if (result) {
+      const url = '/404'
+      const { htmlDocument } = result
+      htmlDocuments.push({ url, htmlDocument, contextPropsSerialized: null, doNotCreateExtraDirectory: true })
+    }
+  }
+
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
 
   await Promise.all(htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root)))
 }
 
-async function writeHtmlDocument({ url, htmlDocument, contextPropsSerialized }: HtmlDocument, root: string) {
+async function writeHtmlDocument(
+  { url, htmlDocument, contextPropsSerialized, doNotCreateExtraDirectory }: HtmlDocument,
+  root: string
+) {
   assert(url.startsWith('/'))
 
-  const writeJobs = [write(url, '.html', htmlDocument, root)]
+  const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory)]
   if (contextPropsSerialized !== null) {
-    writeJobs.push(write(url, '.contextProps.json', contextPropsSerialized, root))
+    writeJobs.push(write(url, '.contextProps.json', contextPropsSerialized, root, doNotCreateExtraDirectory))
   }
   await Promise.all(writeJobs)
 }
 
-async function write(url: string, fileExtension: '.html' | '.contextProps.json', fileContent: string, root: string) {
-  const fileUrl = getFileUrl(url, fileExtension)
+async function write(
+  url: string,
+  fileExtension: '.html' | '.contextProps.json',
+  fileContent: string,
+  root: string,
+  doNotCreateExtraDirectory?: true
+) {
+  const fileUrl = getFileUrl(url, fileExtension, doNotCreateExtraDirectory)
   assert(fileUrl.startsWith('/'))
   const filePathRelative = fileUrl.slice(1).split('/').join(sep)
   assert(!filePathRelative.startsWith(sep))

@@ -28,6 +28,7 @@ import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandl
 export { renderPage }
 export { getPageFunctions }
 export { prerenderPage }
+export { renderStatic404Page }
 
 async function renderPage({
   url,
@@ -173,6 +174,18 @@ async function prerenderPage(
   }
   const contextPropsSerialized = serializeContextProps(renderData)
   return { htmlDocument, contextPropsSerialized }
+}
+
+async function renderStatic404Page() {
+  const allPageIds = await getPageIds()
+  const errorPageId = getErrorPageId(allPageIds)
+  if (!errorPageId) {
+    return null
+  }
+  const url = '/fake-404-url' // A `url` is needed for `applyViteHtmlTransform`
+  const contextProps = { is404: true }
+  const contextPropsNeeded = false // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no client-side routing.
+  return prerenderPage(errorPageId, contextProps, url, false, contextPropsNeeded)
 }
 
 async function getRenderData(

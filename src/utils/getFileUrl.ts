@@ -16,12 +16,24 @@ export { removeContextPropsUrlSuffix }
  (`/product/42?review=true#reviews`, `.contextProps`) -> `/product/42/index.contextProps?review=true#reviews`
  ...
 */
-function getFileUrl(url: string, fileExtension: '.html' | '.contextProps.json'): string {
+function getFileUrl(
+  url: string,
+  fileExtension: '.html' | '.contextProps.json',
+  doNotCreateExtraDirectory?: true
+): string {
   assert(url.startsWith('/'), { url })
   const { pathname, searchString, hashString } = getUrlParts(url)
   assert(url === `${pathname}${searchString}${hashString}`, { url })
-  const trailingSlash = pathname.endsWith('/') ? '' : '/'
-  return `${pathname}${trailingSlash}index${fileExtension}${searchString}${hashString}`
+
+  let fileBase: string
+  if (doNotCreateExtraDirectory) {
+    fileBase = pathname.endsWith('/') ? 'index' : ''
+  } else {
+    const trailingSlash = pathname.endsWith('/') ? '' : '/'
+    fileBase = `${trailingSlash}index`
+  }
+
+  return `${pathname}${fileBase}${fileExtension}${searchString}${hashString}`
 }
 
 function isContextPropsUrl(url: string): boolean {
