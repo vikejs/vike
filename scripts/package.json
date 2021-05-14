@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@brillout/verify-markdown-links": "^0.1.0",
-    "@types/node": "^15.0.2",
-    "@types/semver": "^7.3.5",
+    "@types/node": "^15.0.3",
+    "@types/semver": "^7.3.6",
     "conventional-changelog-cli": "^2.1.1",
     "execa": "^5.0.0",
     "kolorist": "^1.4.1",
