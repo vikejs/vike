@@ -565,8 +565,8 @@ If you already have an existing Vite app and don't want to start from scratch:
    - [React + TypeScript](boilerplates/boilerplate-react-ts/pages/_default/)
 
 4. Create your first `.page.js` file.
-   - [Vue](boilerplates/boilerplate-vue/pages/index/index.page.vue)
-   - [Vue + TypeScript](boilerplates/boilerplate-vue-ts/pages/index/index.page.vue)
+   - [Vue](boilerplates/boilerplate-vue/pages/index.page.vue)
+   - [Vue + TypeScript](boilerplates/boilerplate-vue-ts/pages/index.page.vue)
    - [React](boilerplates/boilerplate-react/pages/index.page.jsx)
    - [React + TypeScript](boilerplates/boilerplate-react-ts/pages/index.page.tsx)
 
@@ -1208,7 +1208,7 @@ useClientRouter({
 
 That's it.
 
-> More in the [WindiCSS Vite Guide](https://windicss.org/guide/vite.html).
+> More at [WindiCSS Vite Guide](https://windicss.org/integrations/vite.html).
 
 <br/><br/>
 
