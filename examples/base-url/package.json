@@ -10,7 +10,7 @@
     "build:vite": "vite build --base=/dist/client/ && vite build --base=/dist/client/ --ssr",
     "build:prerender": "vite-plugin-ssr prerender",
     "prod:serve:server": "cross-env NODE_ENV=production node ./server",
-    "// We purposely serve `./` instead of `dist/client/`": "",
+    "// We purposely serve `./` instead of `dist/client/` to simulate a Base URL change": "",
     "prod:serve:static": "serve ./ --listen 3000"
   },
   "dependencies": {

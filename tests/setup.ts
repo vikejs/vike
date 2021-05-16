@@ -13,7 +13,7 @@ export { autoRetry }
 export { fetchHtml }
 export { run }
 
-const TIMEOUT = (process.env.CI ? 200 : 100) * 1000
+const TIMEOUT = (process.env.CI ? 300 : 100) * 1000
 
 const browserLogs: {
   type: string
