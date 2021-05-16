@@ -1787,7 +1787,7 @@ import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 const { hydrationPromise } = useClientRouter({
-  async render({ Page, contextProps }) {
+  async render({ Page, contextProps, isHydration }) {
     const page = createElement(Page, contextProps)
     const container = document.getElementById('page-view')
 
