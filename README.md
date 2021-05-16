@@ -798,17 +798,17 @@ You can then set `isActive = href===urlPathname` in your link component.
 
 With `vite-plugin-ssr` you can create:
  - SSR pages
- - SPA(/MPA) pages
- - HTML pages (with zero/minimal browser-side JavaScript)
+ - SPA pages (aka MPA)
+ - HTML pages (zero/minimal browser-side JavaScript)
 
-For example, you can render your admin panel as a SPA, while your render your marketing pages as HTML pages.
+For example, you can render your admin panel as SPA while rendering your marketing pages to HTML-only.
 
 The rule of thumb is to render a page to:
  - HTML (zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
  - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Google). Example: admin panel, desktop-like web app.
  - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
 
-To render a page as a SPA, just render static HTML:
+To render a page as SPA, simply render static HTML (you can then [pre-render](#pre-rendering) and deploy to a static host):
 
 ```js
 // .page.server.js
@@ -817,7 +817,7 @@ To render a page as a SPA, just render static HTML:
 import { html } from 'vite-plugin-ssr'
 
 export function render () {
-  // Note that the HTML is static and `div#app-root` is empty.
+  // `div#app-root` is empty; the HTML is static.
   return html`<html>
     <head>
       <title>My Website</title>
@@ -829,7 +829,7 @@ export function render () {
 }
 ```
 
-To render a page to HTML only, define an empty `.page.client.js`:
+To render a page to HTML-only, define an empty `.page.client.js`:
 
 ```js
 // .page.client.js
