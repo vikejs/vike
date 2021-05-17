@@ -10,3 +10,8 @@ body {
 a {
   text-decoration: none;
 }
+
+.navitem {
+  padding: 10px 8px;
+  margin: 4px;
+}

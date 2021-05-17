@@ -10,8 +10,8 @@ function PageLayout({ children }) {
       <Layout>
         <Sidebar>
           <Logo />
-          <a style={{padding: '10px 8px', margin: '4px'}} href="/">Home</a>
-          <a style={{padding: '10px 8px', margin: '4px'}} href="/about">About</a>
+          <a className="navitem" href="/">Home</a>
+          <a className="navitem" href="/about">About</a>
         </Sidebar>
         <Content>{children}</Content>
       </Layout>
