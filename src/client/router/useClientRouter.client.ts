@@ -7,12 +7,11 @@ import { throttle } from '../../utils/throttle'
 export { useClientRouter }
 export { navigate }
 
+setupNativeScrollRestoration()
+
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
 const urlFullOriginal = getUrlFull()
-
-browserNativeScrollRestoration_enable()
-onPageClose(browserNativeScrollRestoration_enable)
 
 function useClientRouter({
   render,
@@ -117,6 +116,7 @@ function useClientRouter({
       setScrollPosition(scrollPosition)
     }
     browserNativeScrollRestoration_disable()
+    initialRenderIsDone = true
   }
 }
 
@@ -243,7 +243,7 @@ function getScrollPositionFromHistory(historyState: unknown = window.history.sta
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
   window.addEventListener('scroll', throttle(saveScrollPosition, 100), { passive: true })
-  onPageClose(saveScrollPosition)
+  onPageHide(saveScrollPosition)
 }
 function saveScrollPosition() {
   // Save scroll position
@@ -259,6 +259,13 @@ function getUrlHash(): string | null {
   return hash
 }
 
+let initialRenderIsDone: boolean = false
+// We use the browser's native scroll restoration mechanism only for the first render
+function setupNativeScrollRestoration() {
+  browserNativeScrollRestoration_enable()
+  onPageHide(browserNativeScrollRestoration_enable)
+  onPageShow(() => initialRenderIsDone && browserNativeScrollRestoration_disable())
+}
 function browserNativeScrollRestoration_disable() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
@@ -270,11 +277,17 @@ function browserNativeScrollRestoration_enable() {
   }
 }
 
-function onPageClose(listener: () => void) {
-  window.addEventListener('beforeunload', () => {
-    listener()
+function onPageHide(listener: () => void) {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      listener()
+    }
   })
-  window.addEventListener('unload', () => {
-    listener()
+}
+function onPageShow(listener: () => void) {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      listener()
+    }
   })
 }
