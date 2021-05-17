@@ -738,9 +738,18 @@ Regardless of the routing strategy, your pages' route are defined by Filesystem 
 
 You can also use a routing library such as Vue Router and React Router (in complete replacement or in combination). For example [/examples/vue-router/](examples/vue-router/) or [/examples/react-router/](examples/react-router/).
 
- - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
+ - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Active Links `<a class="is-active">`](#active-links-a-classis-active)
+
+#### Server-side Routing VS Client-side Routing
+
+By default, `vite-plugin-ssr` does Server-side Routing. (The "old school" way: when the user changes the page, a new HTML request is made.)
+
+If you don't have a *strong* rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
+
+That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
+ - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 
 #### Filesystem Routing VS Route Strings VS Route Functions
 
@@ -781,15 +790,6 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
  - [API - `*.page.route.js`](#pageroutejs)
  - [API - Route String](#route-string)
  - [API - Route Function](#route-function)
-
-#### Server-side Routing VS Client-side Routing
-
-By default, `vite-plugin-ssr` does Server-side Routing. (The "old school" way: when the user changes the page, a new HTML request is made.)
-
-If you don't have a *strong* rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
-
-That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
- - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
 
 #### Active Links `<a class="is-active">`
 
