@@ -598,6 +598,8 @@ You fech data by defining `export { addContextProps, passToClient }` in the Page
  - [GraphQL](#graphql)
  - [Store (Vuex/Redux...)](#store-vuexredux)
 
+<br/>
+
 #### Example
 
 ```js
@@ -692,6 +694,8 @@ conveniently hold all props of the root component.
 We could have defined `movies` directly on `contextProps.movies` but it's cumbersome:
 our render/hydrate function would then need to know what `contextProps` should be passed to the root component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root component.
 
+<br/>
+
 #### Pass `contextProps` to any/all components
 
 We can pass some `contextProps` to any/all components of the component tree:
@@ -699,9 +703,13 @@ We can pass some `contextProps` to any/all components of the component tree:
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
 
+<br/>
+
 #### Data Fetching with Stateful Component
 
 We can also fetch data by using a stateful component by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-contextprops-to-anyall-components). Note that with this technique, the fetched data is *not* rendered to HTML (which defeats the purpose of SSR).
+
+<br/>
 
 #### GraphQL
 
@@ -709,6 +717,8 @@ When using GraphQL with [Apollo GraphQL](https://www.apollographql.com/) or [Rel
  - [/examples/graphql-apollo/](examples/graphql-apollo/)
 
 In general, with `vite-plugin-ssr`, you have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL - SSR Guide](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
+
+<br/>
 
 #### Store (Vuex/Redux...)
 
@@ -743,6 +753,8 @@ You can also use a routing library such as Vue Router and React Router (in compl
  - [Active Links `<a class="is-active">`](#active-links-a-classis-active)
  - [Nested Routes](#nested-routes)
 
+<br/>
+
 #### Server-side Routing VS Client-side Routing
 
 By default, `vite-plugin-ssr` does Server-side Routing. (The "old school" way: when the user changes the page, a new HTML request is made.)
@@ -751,6 +763,8 @@ If you don't have a *strong* rationale to do something differently, then stick t
 
 That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
  - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+
+<br/>
 
 #### Filesystem Routing VS Route Strings VS Route Functions
 
@@ -792,11 +806,15 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
  - [API - Route String](#route-string)
  - [API - Route Function](#route-function)
 
+<br/>
+
 #### Active Links `<a class="is-active">`
 
 Pass `contextProps.urlPathname` (available on both the client and the server)
 [to your link component](#pass-contextprops-to-anyall-components).
 You can then set `isActive = href===urlPathname` in your link component.
+
+<br/>
 
 #### Nested Routes
 
@@ -1407,7 +1425,7 @@ This means you can simply follow [Firebase's official guide](https://firebase.go
 ### `*.page.js`
 
 Environment: `Browser`, `Node.js`
-<br>
+<br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
 
 A `*.page.js` file should have a `export { Page }`. (Or a `export default`.)
@@ -1504,7 +1522,7 @@ The `contextProps` can be accessed at:
 ### `*.page.server.js`
 
 Environment: `Node.js`
-<br>
+<br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
 The `.page.server.js` file defines and exports
@@ -1854,7 +1872,7 @@ async function render({ Page, contextProps }) {
 ### `*.page.client.js`
 
 Environment: `Browser`
-<br>
+<br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.client.*([a-zA-Z0-9])`
 
 The `.page.client.js` file defines the page's browser-side code.
@@ -2046,7 +2064,7 @@ React example:
 ### `*.page.route.js`
 
 Environment: `Node.js` (and `Browser` if you call `useClientRouter()`)
-<br>
+<br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.route.*([a-zA-Z0-9])`
 
 The `*.page.route.js` files enable further control over routing with:
