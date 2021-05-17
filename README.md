@@ -814,7 +814,7 @@ Pass `contextProps.urlPathname` (available on both the client and the server)
 [to your link component](#pass-contextprops-to-anyall-components).
 You can then set `isActive = href===urlPathname` in your link component.
 
-<br/>
+&nbsp;
 
 #### Nested Routes
 
