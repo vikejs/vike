@@ -741,6 +741,7 @@ You can also use a routing library such as Vue Router and React Router (in compl
  - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
  - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
  - [Active Links `<a class="is-active">`](#active-links-a-classis-active)
+ - [Nested Routes](#nested-routes)
 
 #### Server-side Routing VS Client-side Routing
 
@@ -796,6 +797,59 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
 Pass `contextProps.urlPathname` (available on both the client and the server)
 [to your link component](#pass-contextprops-to-anyall-components).
 You can then set `isActive = href===urlPathname` in your link component.
+
+#### Nested Routes
+
+Nested routes (aka sub routes) are, essentially, routes with multiple arguments, for example `/product/:productId/:productView`.
+
+```
+URL                        productId     productView
+/prodct/1337               1337          null
+/product/1337/pricing      1337          pricing
+/product/42/reviews        42            reviews
+```
+
+```js
+// product.page.route.js
+
+// We can create a nested route simply by defining a Route String with two(/multiple) arguments
+export default `/product/:productId/:productView`;
+
+// Alternatively, we can use a Route Function:
+export default ({ url }) => {
+  if (! url.startsWith('/product/')) return false
+  const [productId, productView] = url.split('/').slice(2)
+  return { match: true, contextProps: { productId, productView } }
+}
+```
+
+You may want to use [Client-side Routing](#import--useClientRouter--from-vite-plugin-ssrclientrouter) (to avoid full HTML reloads between sub route navigation).
+
+```js
+// product.page.client.js
+
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+// We use Client-side Routing so that, when the user navigates between `/product/42/pricing`
+// and `/product/42/reviews`, only the DOM of the changed views are updated.
+
+// Note that we override `_default.page.client.js`. This means all our other pages can use
+// Server-side Routing while this page uses Client-side Routing.
+// (If we already have `useClientRouter()` in `_default.page.client.js`, then we don't need to
+// create this `product.page.client.js` file.)
+
+useClientRouter({
+  render({ Page, contextProps }) {
+    /* ... */
+  }
+})
+```
+
+Make sure to then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` (to avoid the browser scroll to go to the top of the page upon sub route navigation).
+
+Alternatively,
+you can use a Route String Wildcard (e.g. `/product/:params*`) and then use a Routing Library (Vue Router, React Router, ...) for that page,
+but we recommend the aforementioned solution as it is simpler.
 
 <br/><br/>
 
@@ -949,7 +1003,7 @@ export { addContextProps }
 
 function addContextProps() {
   const docHtml = {
-    // This title and description will overwrite the defaults
+    // This title and description will override the defaults
     title: 'About SpaceX',
     description: 'Our mission is to explore the galaxy.'
   }
