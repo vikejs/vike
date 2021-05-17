@@ -49,7 +49,6 @@ a {
   margin-bottom: 10px;
 }
 .navitem {
-  padding: 10px 8px;
-  margin: 4px;
+  padding: 3px;
 }
 </style>
