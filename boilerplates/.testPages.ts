@@ -13,8 +13,8 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
       expect(html).toMatch(partRegExp`<a class="navitem" href="/" data-v-${/[^\>]*/}>Home</a>`)
       expect(html).toMatch(partRegExp`<a class="navitem" href="/about" data-v-${/[^\>]*/}>About</a>`)
     } else {
-      expect(html).toContain('<a style="padding:10px 8px;margin:4px" href="/">Home</a>')
-      expect(html).toContain('<a style="padding:10px 8px;margin:4px" href="/about">About</a>')
+      expect(html).toContain('<a class="navitem" href="/">Home</a>')
+      expect(html).toContain('<a class="navitem" href="/about">About</a>')
     }
   })
 
