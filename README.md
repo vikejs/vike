@@ -786,7 +786,7 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
 
 #### Server-side Routing VS Client-side Routing
 
-You can choose between two routing strategy you can use:
+You can choose between two routing strategy:
  - Server-side Routing (for simpler architecture)
  - Client-side Routing (for faster and animated page transitions)
 
