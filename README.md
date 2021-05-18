@@ -774,7 +774,7 @@ renders the new root component to the DOM.
 
 Client-side Routing enables:
 - Slightly faster page transitions.
-- Custom page transition animations.
+- Custom animated page transitions.
 
 But Client-side Routing leads to an inherently more complex app architecture,
 which is why we recommend using Client-side Routing only if you
