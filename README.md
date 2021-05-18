@@ -2041,6 +2041,10 @@ You can also use
 [`import { navigate } from 'vite-plugin-ssr/client/router'`](#import--navigate--from-vite-plugin-ssrclientrouter)
 to programmatically navigate your user to a new page.
 
+By default, the Client-side Router scrolls the page to the top upon page transitions;
+make sure to use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })`
+if you want to preserve the scroll position instead. (Useful for [Nested Routes](#nested-routes).)
+
 `useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
 Vue example:
@@ -2089,6 +2093,9 @@ While you can import `navigate()` in Node.js, you cannot call it: calling `navig
 (`vite-plugin-ssr` allows you to import `navigate()` in Node.js because with SSR your view components are loaded in the browser as well as Node.js.)
 
 If you want to redirect your user at page-load time, see the [Page Redirection](#page-redirection) guide.
+
+Options:
+ - `navigate('/some-url, { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](#nested-routes).) (Alternatively, you can use `<a href="/some-url" keep-scroll-position />`.)
 
 Vue example:
  - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue)
