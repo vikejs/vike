@@ -2042,7 +2042,7 @@ You can also use
 to programmatically navigate your user to a new page.
 
 By default, the Client-side Router scrolls the page to the top upon page transitions;
-make sure to use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })`
+use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })`
 if you want to preserve the scroll position instead. (Useful for [Nested Routes](#nested-routes).)
 
 `useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
