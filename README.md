@@ -845,8 +845,12 @@ With `vite-plugin-ssr`, we can define a Route String that has multiple arguments
 // product.page.route.js
 
 export default `/product/:productId/:productView`
+```
 
-// Alternatively, we can use a Route Function:
+```js
+// product.page.route.js
+
+// We can also use a Route Function
 export default ({ url }) => {
   if (! url.startsWith('/product/')) return false
   const [productId, productView] = url.split('/').slice(2)
