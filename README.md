@@ -871,7 +871,7 @@ Usually, the sub route is used for navigating some (deeply) nested view:
 +------------------+                  +-----------------+
 ```
 
-> :warning: If your sub routes don't need URLs (if it's fine that the Product Pricing and the Product Reviews share the same URL `/product/42`), then you can simply use a stateful component instead. (When the user clicks on the "pricing" link => the stateful component changes its internal state `productView` to show the pricing view.)
+> :warning: If your sub routes don't need URLs (if it's fine that the Product Pricing and the Product Reviews share the same URL `/product/42`), then you can simply use a stateful component instead. (When the user clicks on the "pricing" link => the stateful component changes its internal state `productView` to `'pricing'` to show the pricing view.)
 
 By default,
 `vite-plugin-ssr` does [Server-side Routing](#server-side-routing-vs-client-side-routing),
