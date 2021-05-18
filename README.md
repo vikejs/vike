@@ -904,7 +904,7 @@ We can also [pass the `contextProps.routeParams` to any/all components](#pass-co
 so that we can navigate/render the the (deeply) nested view(s).
 
 Alternatively,
-you can use a Route String Wildcard (e.g. `/product/:params*`) and then use a Routing Library (Vue Router, React Router, ...) for that page,
+we can use a Route String Wildcard (e.g. `/product/:params*`) and then use a Routing Library (Vue Router, React Router, ...) for that page,
 but we recommend the aforementioned solution instead as it is simpler.
 
 <br/><br/>
