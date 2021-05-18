@@ -872,10 +872,10 @@ Usually, the sub route is used for navigating some (deeply) nested view:
 By default,
 `vite-plugin-ssr` does [Server-side Routing](#server-side-routing-vs-client-side-routing),
 which means that when the user navigates from `/product/42/pricing` to `/product/42/reviews`,
-the old page (i.e. the HTML of) `/product/42/pricing` is if fully replaced with the new page (i.e. the HTML of) `/product/42/reviews`,
+the old page (i.e. the HTML of) `/product/42/pricing` is fully replaced with the new page (i.e. the HTML of) `/product/42/reviews`,
 leading to a jittery experience.
 
-For smooth sub route navigation, we can use [Client-side Routing](#import--useClientRouter--from-vite-plugin-ssrclientrouter).
+For smoother navigations, we can use [Client-side Routing](#import--useClientRouter--from-vite-plugin-ssrclientrouter).
 
 ```js
 // product.page.client.js
@@ -888,7 +888,7 @@ import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 // Note that we override `_default.page.client.js`. This means all our other pages can use
 // Server-side Routing while this page uses Client-side Routing.
-// (If we already have `useClientRouter()` in `_default.page.client.js`, then we don't need to
+// (If we are already using `useClientRouter()` in `_default.page.client.js`, then we don't need to
 // create this `product.page.client.js` file.)
 
 useClientRouter({
@@ -898,7 +898,7 @@ useClientRouter({
 })
 ```
 
-Make sure to then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` (to avoid the browser to scroll to the top of the page upon sub route navigation).
+We can then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` to avoid the browser to scroll to the top upon navigation.
 
 Note that you can [pass the `contextProps.routeParams` to any/all components](#pass-contextprops-to-anyall-components),
 so that you can navigate and render the right the (deeply) nested view.
