@@ -163,7 +163,9 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     if (isExternalLink(url)) return
     if (isHashLink(url)) return
 
-    const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
+    const getBooleanAttribute = (attributeName: string) =>
+      ![null, 'false'].includes(linkTag.getAttribute(attributeName))
+    const keepScrollPosition = getBooleanAttribute('keep-scroll-position') || getBooleanAttribute('keepScrollPosition')
 
     ev.preventDefault()
     callback(url, { keepScrollPosition })
