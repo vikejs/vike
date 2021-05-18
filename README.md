@@ -900,8 +900,8 @@ useClientRouter({
 
 We can then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` to avoid the browser to scroll to the top upon navigation.
 
-Note that you can [pass the `contextProps.routeParams` to any/all components](#pass-contextprops-to-anyall-components),
-so that you can navigate and render the right the (deeply) nested view.
+We can also [pass the `contextProps.routeParams` to any/all components](#pass-contextprops-to-anyall-components),
+so that we can navigate/render the the (deeply) nested view(s).
 
 Alternatively,
 you can use a Route String Wildcard (e.g. `/product/:params*`) and then use a Routing Library (Vue Router, React Router, ...) for that page,
