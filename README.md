@@ -839,7 +839,7 @@ URL                        productId     productView
 /product/42/reviews        42            reviews
 ```
 
-With `vite-plugin-ssr`, we can simply define a Route String that has multiple arguments.
+With `vite-plugin-ssr`, we can define a Route String that has multiple arguments.
 
 ```js
 // product.page.route.js
