@@ -757,12 +757,27 @@ You can also use a routing library such as Vue Router and React Router (in compl
 
 #### Server-side Routing VS Client-side Routing
 
-By default, `vite-plugin-ssr` does Server-side Routing. (The "old school" way: when the user changes the page, a new HTML request is made.)
+By default, `vite-plugin-ssr` does Server-side Routing,
+which is the "old school" way of doing routing: when the user changes the page,
+a new HTML request is made, and the old page (i.e. its HTML) is completely replaced with the new page.
 
-If you don't have a *strong* rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
+If you don't have a strong rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
 
 That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
  - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+
+With Client-side Routing,
+instead of doing a full HTML reload,
+only the DOM is updated:
+the new page's root (Vue/React/...) component is loaded and the view framework (Vue/React/...)
+renders the new root component to the DOM.
+
+Client-side Routing enables:
+- Slightly faster page transitions.
+- Custom page transition animations.
+But Client-side Routing leads to an inherently more complex app architecture,
+which is why we recommend using Client-side Routing only if you
+have a strong rationale.
 
 <br/>
 
@@ -818,20 +833,22 @@ You can then set `isActive = href===urlPathname` in your link component.
 
 #### Nested Routes
 
-Nested routes (aka sub routes) are, essentially, routes with multiple arguments, for example `/product/:productId/:productView`.
+A nested route (aka sub route) is, essentially, when you have a route with multiple arguments,
+for example `/product/:productId/:productView`.
 
 ```
 URL                        productId     productView
-/prodct/1337               1337          null
+/product/1337              1337          null
 /product/1337/pricing      1337          pricing
 /product/42/reviews        42            reviews
 ```
 
+With `vite-plugin-ssr`, we can simply define a Route String with two(/multiple) arguments.
+
 ```js
 // product.page.route.js
 
-// We can create a nested route simply by defining a Route String with two(/multiple) arguments
-export default `/product/:productId/:productView`;
+export default `/product/:productId/:productView`
 
 // Alternatively, we can use a Route Function:
 export default ({ url }) => {
@@ -841,7 +858,26 @@ export default ({ url }) => {
 }
 ```
 
-You may want to use [Client-side Routing](#import--useClientRouter--from-vite-plugin-ssrclientrouter) (to avoid full HTML reloads between sub route navigation).
+Usually, the sub route is used for navigating some (deeply) nested view:
+
+```
+/product/42/pricing                   /product/42/reviews
++------------------+                  +-----------------+
+| Product          |                  | Product         |
+| +--------------+ |                  | +-------------+ |
+| | Pricing      | |  +------------>  | | Reviews     | |
+| |              | |                  | |             | |
+| +--------------+ |                  | +-------------+ |
++------------------+                  +-----------------+
+```
+
+By default,
+`vite-plugin-ssr` does [Server-side Routing](#server-side-routing-vs-client-side-routing),
+which means that when the user navigates from `/product/42/pricing` to `/product/42/reviews`,
+the old page (i.e. the HTML of) `/product/42/pricing` is if fully replaced with the new page (i.e. the HTML of) `/product/42/reviews`,
+leading to a jittery experience.
+
+For smooth sub route navigation, we can use [Client-side Routing](#import--useClientRouter--from-vite-plugin-ssrclientrouter).
 
 ```js
 // product.page.client.js
@@ -863,11 +899,11 @@ useClientRouter({
 })
 ```
 
-Make sure to then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` (to avoid the browser scroll to go to the top of the page upon sub route navigation).
+Make sure to then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` (to avoid the browser to scroll to the top of the page upon sub route navigation).
 
 Alternatively,
 you can use a Route String Wildcard (e.g. `/product/:params*`) and then use a Routing Library (Vue Router, React Router, ...) for that page,
-but we recommend the aforementioned solution as it is simpler.
+but we recommend the aforementioned solution instead as it is simpler.
 
 <br/><br/>
 
