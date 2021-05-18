@@ -36,14 +36,14 @@ function useClientRouter({
   isAlreadyCalled = true
   autoSaveScrollPosition()
 
-  onLinkClick((url: string) => {
-    fetchAndRender(null, url)
+  onLinkClick((url: string, { keepScrollPosition }) => {
+    fetchAndRender(keepScrollPosition ? undefined : null, url)
   })
   onBrowserHistoryNavigation((scrollPosition) => {
     fetchAndRender(scrollPosition)
   })
-  navigateFunction = async (url: string) => {
-    await fetchAndRender(null, url)
+  navigateFunction = async (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => {
+    await fetchAndRender(keepScrollPosition ? undefined : null, url)
   }
 
   let resolveInitialPagePromise: () => void
@@ -120,8 +120,10 @@ function useClientRouter({
   }
 }
 
-let navigateFunction: undefined | ((url: string) => Promise<void>)
-async function navigate(url: string): Promise<void> {
+let navigateFunction:
+  | undefined
+  | ((url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => Promise<void>)
+async function navigate(url: string, { keepScrollPosition = false } = {}): Promise<void> {
   assertUsage(
     !isNodejs(),
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
@@ -131,15 +133,21 @@ async function navigate(url: string): Promise<void> {
     typeof url === 'string',
     '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.'
   )
+  assertUsage(
+    typeof keepScrollPosition === 'boolean',
+    '[navigate(url, { keepScrollPosition })] Argument `keepScrollPosition` should be a boolean (but we got `typeof keepScrollPosition === "' +
+      typeof keepScrollPosition +
+      '"`.'
+  )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
   assertUsage(
     navigateFunction,
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
   )
-  await navigateFunction(url)
+  await navigateFunction(url, { keepScrollPosition })
 }
 
-function onLinkClick(callback: (url: string) => void) {
+function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
   document.addEventListener('click', onClick)
 
   return
@@ -158,8 +166,10 @@ function onLinkClick(callback: (url: string) => void) {
     if (isExternalLink(url)) return
     if (isHashLink(url)) return
 
+    const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
+
     ev.preventDefault()
-    callback(url)
+    callback(url, { keepScrollPosition })
   }
 
   function isExternalLink(url: string) {
