@@ -885,8 +885,9 @@ For smooth sub route navigation, we can use [Client-side Routing](#import--useCl
 
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
-// We use Client-side Routing so that, when the user navigates between `/product/42/pricing`
-// and `/product/42/reviews`, only the DOM of the changed views are updated.
+// We use Client-side Routing so that, when the user navigates from `/product/42/pricing`
+// to `/product/42/reviews`, only the relevant (deeply) nested view is updated (instead of
+// a full HTML reload).
 
 // Note that we override `_default.page.client.js`. This means all our other pages can use
 // Server-side Routing while this page uses Client-side Routing.
