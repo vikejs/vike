@@ -798,7 +798,7 @@ By default, `vite-plugin-ssr` does Server-side Routing,
 which is the "old school" way of doing routing: when the user changes the page,
 a new HTML request is made, and the old page (i.e. its HTML) is completely replaced with the new page.
 
-If you don't have a strong rationale for doing something differently, then stick to Server-side Routing as it leads to a simpler architecture.
+If you don't have a strong rationale for doing something differently, then stick to Server-side Routing as it leads to a simpler app architecture.
 
 That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
  - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
