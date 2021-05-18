@@ -37,13 +37,15 @@ function useClientRouter({
   autoSaveScrollPosition()
 
   onLinkClick((url: string, { keepScrollPosition }) => {
-    fetchAndRender(keepScrollPosition ? undefined : null, url)
+    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+    fetchAndRender(scrollTarget, url)
   })
-  onBrowserHistoryNavigation((scrollPosition) => {
-    fetchAndRender(scrollPosition)
+  onBrowserHistoryNavigation((scrollTarget) => {
+    fetchAndRender(scrollTarget)
   })
   navigateFunction = async (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => {
-    await fetchAndRender(keepScrollPosition ? undefined : null, url)
+    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+    await fetchAndRender(scrollTarget, url)
   }
 
   let resolveInitialPagePromise: () => void
@@ -52,14 +54,11 @@ function useClientRouter({
   let callCount = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
-  fetchAndRender()
+  fetchAndRender('preserve-scroll')
 
   return { hydrationPromise }
 
-  async function fetchAndRender(
-    scrollPosition: ScrollPosition | null | undefined = undefined,
-    url: string = getUrlFull()
-  ): Promise<undefined> {
+  async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<undefined> {
     const callNumber = ++callCount
 
     if (!isFirstPageRender) {
@@ -112,9 +111,7 @@ function useClientRouter({
     }
     isFirstPageRender = false
 
-    if (scrollPosition !== undefined) {
-      setScrollPosition(scrollPosition)
-    }
+    setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
     initialRenderIsDone = true
   }
@@ -203,7 +200,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 }
 
 let urlFullWithoutHash__previous = getUrlFullWithoutHash()
-function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | null) => void) {
+function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => void) {
   window.addEventListener('popstate', (ev) => {
     // Skip hash changes
     const urlFullWithoutHash__current = getUrlFullWithoutHash()
@@ -213,7 +210,8 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | 
     urlFullWithoutHash__previous = urlFullWithoutHash__current
 
     const scrollPosition = getScrollPositionFromHistory(ev.state)
-    callback(scrollPosition)
+    const scrollTarget = scrollPosition || 'scroll-to-top-or-hash'
+    callback(scrollTarget)
   })
 }
 
@@ -229,8 +227,13 @@ function getScrollPosition(): ScrollPosition {
   const scrollPosition = { x: window.scrollX, y: window.scrollY }
   return scrollPosition
 }
-function setScrollPosition(scrollPosition: ScrollPosition | null): void {
-  if (!scrollPosition) {
+type ScrollTarget = ScrollPosition | 'scroll-to-top-or-hash' | 'preserve-scroll'
+function setScrollPosition(scrollTarget: ScrollTarget): void {
+  if (scrollTarget === 'preserve-scroll') {
+    return
+  }
+  let scrollPosition: ScrollPosition
+  if (scrollTarget === 'scroll-to-top-or-hash') {
     const hash = getUrlHash()
     // We mirror the browser's native behavior
     if (hash && hash !== 'top') {
@@ -241,6 +244,9 @@ function setScrollPosition(scrollPosition: ScrollPosition | null): void {
       }
     }
     scrollPosition = { x: 0, y: 0 }
+  } else {
+    assert('x' in scrollTarget && 'y' in scrollTarget)
+    scrollPosition = scrollTarget
   }
   const { x, y } = scrollPosition
   window.scrollTo(x, y)
