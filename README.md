@@ -829,7 +829,7 @@ You can then set `isActive = href===urlPathname` in your link component.
 
 #### Nested Routes
 
-A nested route (aka sub route) is, essentially, when you have a route with multiple arguments,
+A nested route (aka sub route) is, essentially, when you have a route with multiple parameters,
 for example `/product/:productId/:productView`.
 
 ```
@@ -839,7 +839,7 @@ URL                        productId     productView
 /product/42/reviews        42            reviews
 ```
 
-With `vite-plugin-ssr`, we can define a Route String that has multiple arguments.
+With `vite-plugin-ssr`, we can define a Route String that has multiple parameters.
 
 ```js
 // product.page.route.js
