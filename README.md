@@ -698,7 +698,7 @@ our render/hydrate function would then need to know what `contextProps` should b
 
 #### Pass `contextProps` to any/all components
 
-We can pass some `contextProps` to any/all components of the component tree:
+You can pass some `contextProps` to any/all components of your component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
@@ -872,6 +872,8 @@ Usually, the sub route is used for navigating some (deeply) nested view:
 +------------------+                  +-----------------+
 ```
 
+> :warning: If your sub routes don't need URLs (if it's fine that the Product Pricing and the Product Reviews share the same URL `/product/42`), then you can simply use a stateful component instead. (When the user clicks on the "pricing" link -> the stateful component changes an internal state `productView` and shows the pricing view).
+
 By default,
 `vite-plugin-ssr` does [Server-side Routing](#server-side-routing-vs-client-side-routing),
 which means that when the user navigates from `/product/42/pricing` to `/product/42/reviews`,
@@ -902,6 +904,9 @@ useClientRouter({
 ```
 
 Make sure to then use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })` (to avoid the browser to scroll to the top of the page upon sub route navigation).
+
+Note that you can [pass the `contextProps.routeParams` to any/all components](#pass-contextprops-to-anyall-components),
+so that you can navigate and render the right the (deeply) nested view.
 
 Alternatively,
 you can use a Route String Wildcard (e.g. `/product/:params*`) and then use a Routing Library (Vue Router, React Router, ...) for that page,
