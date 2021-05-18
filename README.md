@@ -735,50 +735,10 @@ In general, with `vite-plugin-ssr`, you have full control over rendering which m
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You can choose between three methods to define the URLs of your pages:
- - Filesystem Routing
- - Route Strings
- - Route Functions
-
-There are two routing strategy you can use:
- - Server-side Routing (for simpler architecture)
- - Client-side Routing (for faster and animated page transitions)
-
-Regardless of the routing strategy, your pages' route are defined by Filesystem Routing, Route Strings, and Route Functions.
-
-You can also use a routing library such as Vue Router and React Router (in complete replacement or in combination). For example [/examples/vue-router/](examples/vue-router/) or [/examples/react-router/](examples/react-router/).
-
- - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
  - [Filesystem Routing VS Route Strings VS Route Functions](#filesystem-routing-vs-route-strings-vs-route-functions)
+ - [Server-side Routing VS Client-side Routing](#server-side-routing-vs-client-side-routing)
  - [Active Links `<a class="is-active">`](#active-links-a-classis-active)
  - [Nested Routes](#nested-routes)
-
-<br/>
-
-#### Server-side Routing VS Client-side Routing
-
-By default, `vite-plugin-ssr` does Server-side Routing,
-which is the "old school" way of doing routing: when the user changes the page,
-a new HTML request is made, and the old page (i.e. its HTML) is completely replaced with the new page.
-
-If you don't have a strong rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
-
-That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
- - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
-
-With Client-side Routing,
-instead of doing a full HTML reload,
-only the DOM is updated:
-the new page's root (Vue/React/...) component is loaded and the view framework (Vue/React/...)
-renders the new root component to the DOM.
-
-Client-side Routing enables:
-- Slightly faster page transitions.
-- Custom animated page transitions.
-
-But Client-side Routing leads to an inherently more complex app architecture,
-which is why we recommend using Client-side Routing only if you
-have a strong rationale.
 
 <br/>
 
@@ -821,6 +781,41 @@ For detailed informations about Filesystem Routing, Route Strings, and Route Fun
  - [API - `*.page.route.js`](#pageroutejs)
  - [API - Route String](#route-string)
  - [API - Route Function](#route-function)
+
+<br/>
+
+#### Server-side Routing VS Client-side Routing
+
+You can choose between two routing strategy you can use:
+ - Server-side Routing (for simpler architecture)
+ - Client-side Routing (for faster and animated page transitions)
+
+You can also use a routing library such as Vue Router and React Router (in complete replacement or in combination). Examples:
+ - [/examples/vue-router/](examples/vue-router/)
+ - [/examples/react-router/](examples/react-router/)
+
+By default, `vite-plugin-ssr` does Server-side Routing,
+which is the "old school" way of doing routing: when the user changes the page,
+a new HTML request is made, and the old page (i.e. its HTML) is completely replaced with the new page.
+
+If you don't have a strong rationale to do something differently, then stick to Server-side Routing as it leads to a simpler architecture.
+
+That said, `vite-plugin-ssr` has first-class support for Client-side Routing and you can opt-in by using `useClientRouter()`:
+ - [`import { useClientRouter } from 'vite-plugin-ssr/client/router'`](#import--useClientRouter--from-vite-plugin-ssrclientrouter)
+
+With Client-side Routing,
+instead of doing a full HTML reload,
+only the DOM is updated:
+the new page's root (Vue/React/...) component is loaded and the view framework (Vue/React/...)
+renders the new root component to the DOM.
+
+Client-side Routing enables:
+- Slightly faster page transitions.
+- Custom animated page transitions.
+
+But Client-side Routing leads to an inherently more complex app architecture,
+which is why we recommend using Client-side Routing only if you
+have a strong rationale.
 
 <br/>
 
