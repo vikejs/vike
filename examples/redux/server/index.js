@@ -1,8 +1,8 @@
 import express from "express";
 import vitePluginSsr from "vite-plugin-ssr";
 import vite from "vite";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 const { createPageRender } = vitePluginSsr;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 

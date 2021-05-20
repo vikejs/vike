@@ -22,7 +22,7 @@ async function retrieveContextProps(url: string): Promise<Record<string, unknown
   const response = await fetch(getFileUrl(url, '.contextProps.json'))
 
   // Static hosts will return a 404
-  if( response.status === 404 ) {
+  if (response.status === 404) {
     fallbackToServerSideRouting()
   }
 
