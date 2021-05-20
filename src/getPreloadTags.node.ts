@@ -94,16 +94,16 @@ function getPreloadTag(href: string): string {
   assert(href.startsWith('/'))
   assert(!href.startsWith('//'))
   if (href.endsWith('.png')) {
-    return `<link rel="preload" href="${href} as="image" type="image/png">`
+    return `<link rel="preload" href="${href}" as="image" type="image/png">`
   }
   if (href.endsWith('.jpg') || href.endsWith('.jpeg')) {
-    return `<link rel="preload" href="${href} as="image" type="image/jpeg">`
+    return `<link rel="preload" href="${href}" as="image" type="image/jpeg">`
   }
   if (href.endsWith('.gif')) {
-    return `<link rel="preload" href="${href} as="image" type="image/gif">`
+    return `<link rel="preload" href="${href}" as="image" type="image/gif">`
   }
   if (href.endsWith('svg')) {
-    return `<link rel="preload" href="${href} as="image" type="image/svg+xml">`
+    return `<link rel="preload" href="${href}" as="image" type="image/svg+xml">`
   }
   if (href.endsWith('.css')) {
     return `<link rel="stylesheet" href="${href}" as="style" type="text/css">`

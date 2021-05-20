@@ -26,14 +26,16 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
       const extRegexp = /[a-z]+/
       expect(html).toMatch(partRegExp`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(
-        partRegExp`<link rel="stylesheet" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css" as="style">`
+        partRegExp`<link rel="stylesheet" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css" as="style" type="text/css">`
       )
-      expect(html).toMatch(partRegExp`<link rel="preload" href="/assets/logo.${hashRegexp}.svg">`)
+      expect(html).toMatch(
+        partRegExp`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`
+      )
       expect(html).toMatch(
         partRegExp`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
       )
       expect(html).toMatch(
-        partRegExp`<link rel="modulepreload" crossorigin href="/assets/vendor.${hashRegexp}.js" as="script">`
+        partRegExp`<link rel="modulepreload" crossorigin href="/assets/vendor.${hashRegexp}.js" as="script" type="text/javascript">`
       )
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     } else {
