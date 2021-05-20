@@ -1,3 +1,4 @@
+import { getSsrEnv } from '../ssrEnv.node'
 import { assert, assertUsage, hasProp } from '../utils'
 
 export { getPageFiles }
@@ -32,8 +33,15 @@ type FileType = '.page' | '.page.server' | '.page.route' | '.page.client'
 type PageFiles = Record<FileType, Record<PageFile['filePath'], PageFile['loadFile']>>
 
 async function getPageFiles(fileType: FileType): Promise<PageFile[]> {
-  if (!allPageFiles && asyncSetter) {
-    allPageFiles = (await asyncSetter()) as any
+  if (asyncSetter) {
+    const ssrEnv = getSsrEnv()
+    if (
+      !allPageFiles ||
+      // We reload glob imports in dev to make auto-reload works
+      !ssrEnv.isProduction
+    ) {
+      allPageFiles = (await asyncSetter()) as any
+    }
     assert(hasProp(allPageFiles, '.page'))
   }
   assert(hasProp(allPageFiles, '.page'))
