@@ -548,8 +548,8 @@ yarn create vite-plugin-ssr
 
 A prompt will let you choose between:
  - `vue`: Vue + JavaScript
- - `react`: React + JavaScript
  - `vue-ts`: Vue + TypeScript
+ - `react`: React + JavaScript
  - `react-ts`: React + TypeScript
 
 Options:
