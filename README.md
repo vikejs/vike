@@ -532,6 +532,8 @@ not only is `vite-plugin-ssr` flexible but also simple and easy to use.
 
 ### Boilerplates
 
+Scaffold a Vite + `vite-plugin-ssr` app.
+
 With npm:
 
 ```
@@ -545,10 +547,10 @@ yarn create vite-plugin-ssr
 ```
 
 A prompt will let you choose between:
- - `vue`: Vite + SSR + Vue + JavaScript
- - `react`: Vite + SSR + React + JavaScript
- - `vue-ts`: Vite + SSR + Vue + TypeScript
- - `react-ts`: Vite + SSR + React + TypeScript
+ - `vue`: Vue + JavaScript
+ - `react`: React + JavaScript
+ - `vue-ts`: Vue + TypeScript
+ - `react-ts`: React + TypeScript
 
 Options:
  - `--skip-git`: don't initialize a new Git repository
