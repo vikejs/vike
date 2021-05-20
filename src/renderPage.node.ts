@@ -647,9 +647,9 @@ async function getPagesAndRoutesInfo(): Promise<string> {
   const pageRoutes = await loadPageRoutes()
   const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
   return [
-    'Defined pages:',
+    `You defined ${relevantPageIds.length} pages:`,
     relevantPageIds
-      .map((pageId) => {
+      .map((pageId, i) => {
         let routeInfo
         let routeSrc
         if (!(pageId in pageRoutes)) {
@@ -663,7 +663,7 @@ async function getPagesAndRoutesInfo(): Promise<string> {
           const routeFile = pageRouteFile
           routeSrc = `${routeType} defined in \`${routeFile}\``
         }
-        return `\`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
+        return `(${i+1}) \`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
       })
       .join(', ')
   ].join(' ')
