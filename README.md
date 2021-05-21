@@ -51,6 +51,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Store](#store) (Vuex, Redux, ...)
 <br/> &nbsp;&nbsp; [GraphQL & RPC](#graphql--rpc) (Apollo, Relay, Wildcard API, ...)
 <br/> &nbsp;&nbsp; [Tailwind CSS](#tailwind-css)
+<br/> &nbsp;&nbsp; [Other Tools](#other-tools) (CSS Frameworks, Google Analytics, jQuery, Service Workers, Sentry, ...)
 <br/><sub>&nbsp;&nbsp;&nbsp; Deploy</sub>
 <br/> &nbsp;&nbsp; [Static Hosts](#static-hosts) (Netlify, GitHub Pages, Cloudflare Pages, ...)
 <br/> &nbsp;&nbsp; [Cloudflare Workers](#cloudflare-workers)
@@ -1393,6 +1394,103 @@ as shown in the following example.
 That's it.
 
 > More at [WindiCSS Vite Guide](https://windicss.org/integrations/vite.html).
+
+<br/><br/>
+
+
+### Other Tools
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+In general,
+thanks to the fact that with `vite-plugin-ssr` you have full control over how your pages are rendered,
+you can use `vite-plugin-ssr` with whatever tool you want.
+
+In fact, `vite-plugin-ssr` is being used with a high variety of tools at companies with all kinds of diverse environments.
+So far, no tool couldn't be used.
+
+```js
+// _default.page.server.js
+// Environment: Node.js
+
+import renderToHtml from 'some-view-framework'
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render({ Page, contextProps }) {
+  // We have full control over how pages are rendered.
+  // E.g. we can use any view framework version we want (Vue 2, Vue 3, React 16, React 17, ...).
+  const pageHtml = await renderToHtml(Page)
+
+  // We have full control over the HTML
+  return html`<html>
+    <body>
+      <div id="root">
+        ${html.dangerouslySetHtml(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+
+```
+// server.js
+// Environment: Node.js
+
+// The server entry point
+
+// We use Express.js here but we could as well use Fastify, Koa, Hapi, ...
+const express = require('express')
+
+const { createPageRender } = require('vite-plugin-ssr')
+
+startServer()
+
+async function startServer() {
+  const app = express()
+
+  // Server integration is just a function `renderPage()`.
+  const renderPage = createPageRender(/*...*/)
+
+  app.get('*', async (req, res, next) => {
+    const url = req.originalUrl
+    // `renderPage()` is simply a function that, for a given URL, returns the result of our
+    // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
+    // we can use it with whatever server environment we want (Fastify, Cloudflare Workers, ...).
+    const result = await renderPage({ url })
+    res.send(result.renderResult)
+  })
+}
+```
+
+```js
+// _default.page.client.js
+// Environment: Browser
+
+// This is the *entire* browser-side code; we have full control over the browser-side.
+// If we save an empty `.page.client.js` then we have zero browser-side JavaScript.
+
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom } from 'some-view-framework'
+
+// We can initialize browser libraries here.
+$('.my-modals').modal()
+
+// We can also initialize Service Workers here.
+
+hydrate()
+
+async function hydrate() {
+  // `Page` is what we export in `*.page.js`; we have full control over what
+  // we define in `*.page.js` and we can do whatever we want with it.
+  const { Page } = await getPage()
+  // We have full control over how pages are hydrated.
+  await hydrateToDom(Page)
+}
+```
+
+You have full control and you can do whatever you want.
 
 <br/><br/>
 
