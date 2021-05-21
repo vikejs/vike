@@ -1434,7 +1434,7 @@ async function render({ Page, contextProps }) {
 }
 ```
 
-```
+```js
 // server.js
 // Environment: Node.js
 
