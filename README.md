@@ -532,7 +532,7 @@ not only is `vite-plugin-ssr` flexible but also simple and easy to use.
 
 ### Boilerplates
 
-Scaffold a Vite with `vite-plugin-ssr` app.
+Scaffold an app with Vite and `vite-plugin-ssr`.
 
 With npm:
 
