@@ -9,7 +9,7 @@ async function matchRoutes(
 ): Promise<null | undefined | RouteMatch> {
 
   const router = createRouter({
-    routes: routes.map(route => ({ name: route.id, path: route.pageRoute as string, component: {} })),
+    routes: routes.map(route => ({ name: route.pageId, path: route.pageRoute as string, component: {} })),
     history: createWebHistory()
   });
 

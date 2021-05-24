@@ -245,7 +245,7 @@ function resolveRouteFunction(
 type PageRoute<T=string | Function | RouteFunctionMatch> = {
   pageRouteFile?: string
   pageRoute: T
-  id: PageId
+  pageId: PageId
 }
 async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getPageFiles('.page.route')
@@ -261,10 +261,10 @@ async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
         `The default export of ${filePath} should be a string or a function.`
       )
       const pageRoute = fileExports.default
-      const id = computePageId(filePath)
+      const pageId = computePageId(filePath)
       const pageRouteFile = filePath
 
-      pageRoutes[id] = { pageRoute, pageRouteFile, id }
+      pageRoutes[pageId] = { pageRoute, pageRouteFile, pageId }
     })
   )
 
@@ -302,8 +302,8 @@ function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
   const { sortRoutes } = getCustomRouter();
 
   const fsRouteStrings : PageRoute[] = pageIds
-    .filter(pageId => !routes.some(route => route.id === pageId) && !isErrorPage(pageId))
-    .map(id => ({ pageRoute: getFilesystemRoute(id, pageIds), id }));
+    .filter(pageId => !routes.some(route => route.pageId === pageId) && !isErrorPage(pageId))
+    .map(pageId => ({ pageRoute: getFilesystemRoute(pageId, pageIds), pageId }));
 
   const routeStrings = Object.values(routes)
     .filter(route => !isCallable(route.pageRoute));
@@ -338,7 +338,7 @@ async function matchPathToRegexpRoutes(
 
   for (var ii = 0; ii < routes.length; ++ii) {
     const route = routes[ii];
-    const { pageRoute, id: pageId } = route;
+    const { pageRoute, pageId } = route;
 
     // Route with `.page.route.js` defined route string
     if (typeof pageRoute === 'string') {

@@ -3,7 +3,7 @@ import { reactive, App } from 'vue';
 import { Router } from 'vue-router';
 import { getRoutes } from '../isomorphic/get-routes';
 
-type ContextProps = Record<string, unknown> & { routes?: {id: string, pageRoute: string}[] }
+type ContextProps = Record<string, unknown> & { routes?: {pageId: string, pageRoute: string}[] }
 
 export function vitePluginSsrRoutes(config={}) {
   return {
@@ -18,13 +18,13 @@ export function vitePluginSsrRoutes(config={}) {
 
         routes.forEach(route => {
           router.addRoute({
-            name: route.id,
+            name: route.pageId,
             path: route.pageRoute as string,
             meta: {
               isViteSsrPageRoute: true
             },
             props: (route) => contextPropsByPath[route.fullPath],
-            component: async () => getPageById(route.id)
+            component: async () => getPageById(route.pageId)
           })
         })
       }

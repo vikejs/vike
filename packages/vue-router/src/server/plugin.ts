@@ -2,7 +2,7 @@ import { App, Component } from 'vue';
 import { Router } from 'vue-router';
 import { getRoutes } from '../isomorphic/get-routes';
 
-type ContextProps = Record<string, unknown> & { urlPathname: string, routes?: {id: string, pageRoute: string}[] }
+type ContextProps = Record<string, unknown> & { urlPathname: string, routes?: {pageId: string, pageRoute: string}[] }
 
 type Config = { 
   contextProps: ContextProps,
@@ -35,7 +35,7 @@ export function vitePluginSsrRoutes(config: Config) {
 
         routes.forEach(route => {
           router.addRoute({
-            name: route.id,
+            name: route.pageId,
             path: route.pageRoute as string,
             meta: {
               isViteSsrPageRoute: true
