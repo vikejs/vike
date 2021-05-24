@@ -7,12 +7,11 @@ import { throttle } from '../../utils/throttle'
 export { useClientRouter }
 export { navigate }
 
+setupNativeScrollRestoration()
+
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
 const urlFullOriginal = getUrlFull()
-
-browserNativeScrollRestoration_enable()
-onPageClose(browserNativeScrollRestoration_enable)
 
 function useClientRouter({
   render,
@@ -37,14 +36,16 @@ function useClientRouter({
   isAlreadyCalled = true
   autoSaveScrollPosition()
 
-  onLinkClick((url: string) => {
-    fetchAndRender(null, url)
+  onLinkClick((url: string, { keepScrollPosition }) => {
+    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+    fetchAndRender(scrollTarget, url)
   })
-  onBrowserHistoryNavigation((scrollPosition) => {
-    fetchAndRender(scrollPosition)
+  onBrowserHistoryNavigation((scrollTarget) => {
+    fetchAndRender(scrollTarget)
   })
-  navigateFunction = async (url: string) => {
-    await fetchAndRender(null, url)
+  navigateFunction = async (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => {
+    const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
+    await fetchAndRender(scrollTarget, url)
   }
 
   let resolveInitialPagePromise: () => void
@@ -53,14 +54,11 @@ function useClientRouter({
   let callCount = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
-  fetchAndRender()
+  fetchAndRender('preserve-scroll')
 
   return { hydrationPromise }
 
-  async function fetchAndRender(
-    scrollPosition: ScrollPosition | null | undefined = undefined,
-    url: string = getUrlFull()
-  ): Promise<undefined> {
+  async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<undefined> {
     const callNumber = ++callCount
 
     if (!isFirstPageRender) {
@@ -113,15 +111,16 @@ function useClientRouter({
     }
     isFirstPageRender = false
 
-    if (scrollPosition !== undefined) {
-      setScrollPosition(scrollPosition)
-    }
+    setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
+    initialRenderIsDone = true
   }
 }
 
-let navigateFunction: undefined | ((url: string) => Promise<void>)
-async function navigate(url: string): Promise<void> {
+let navigateFunction:
+  | undefined
+  | ((url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => Promise<void>)
+async function navigate(url: string, { keepScrollPosition = false } = {}): Promise<void> {
   assertUsage(
     !isNodejs(),
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
@@ -131,15 +130,21 @@ async function navigate(url: string): Promise<void> {
     typeof url === 'string',
     '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.'
   )
+  assertUsage(
+    typeof keepScrollPosition === 'boolean',
+    '[navigate(url, { keepScrollPosition })] Argument `keepScrollPosition` should be a boolean (but we got `typeof keepScrollPosition === "' +
+      typeof keepScrollPosition +
+      '"`.'
+  )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
   assertUsage(
     navigateFunction,
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
   )
-  await navigateFunction(url)
+  await navigateFunction(url, { keepScrollPosition })
 }
 
-function onLinkClick(callback: (url: string) => void) {
+function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
   document.addEventListener('click', onClick)
 
   return
@@ -158,8 +163,10 @@ function onLinkClick(callback: (url: string) => void) {
     if (isExternalLink(url)) return
     if (isHashLink(url)) return
 
+    const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
+
     ev.preventDefault()
-    callback(url)
+    callback(url, { keepScrollPosition })
   }
 
   function isExternalLink(url: string) {
@@ -193,7 +200,7 @@ function onLinkClick(callback: (url: string) => void) {
 }
 
 let urlFullWithoutHash__previous = getUrlFullWithoutHash()
-function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | null) => void) {
+function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => void) {
   window.addEventListener('popstate', (ev) => {
     // Skip hash changes
     const urlFullWithoutHash__current = getUrlFullWithoutHash()
@@ -203,7 +210,8 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollPosition | 
     urlFullWithoutHash__previous = urlFullWithoutHash__current
 
     const scrollPosition = getScrollPositionFromHistory(ev.state)
-    callback(scrollPosition)
+    const scrollTarget = scrollPosition || 'scroll-to-top-or-hash'
+    callback(scrollTarget)
   })
 }
 
@@ -219,8 +227,13 @@ function getScrollPosition(): ScrollPosition {
   const scrollPosition = { x: window.scrollX, y: window.scrollY }
   return scrollPosition
 }
-function setScrollPosition(scrollPosition: ScrollPosition | null): void {
-  if (!scrollPosition) {
+type ScrollTarget = ScrollPosition | 'scroll-to-top-or-hash' | 'preserve-scroll'
+function setScrollPosition(scrollTarget: ScrollTarget): void {
+  if (scrollTarget === 'preserve-scroll') {
+    return
+  }
+  let scrollPosition: ScrollPosition
+  if (scrollTarget === 'scroll-to-top-or-hash') {
     const hash = getUrlHash()
     // We mirror the browser's native behavior
     if (hash && hash !== 'top') {
@@ -231,6 +244,9 @@ function setScrollPosition(scrollPosition: ScrollPosition | null): void {
       }
     }
     scrollPosition = { x: 0, y: 0 }
+  } else {
+    assert('x' in scrollTarget && 'y' in scrollTarget)
+    scrollPosition = scrollTarget
   }
   const { x, y } = scrollPosition
   window.scrollTo(x, y)
@@ -243,7 +259,7 @@ function getScrollPositionFromHistory(historyState: unknown = window.history.sta
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
   window.addEventListener('scroll', throttle(saveScrollPosition, 100), { passive: true })
-  onPageClose(saveScrollPosition)
+  onPageHide(saveScrollPosition)
 }
 function saveScrollPosition() {
   // Save scroll position
@@ -259,6 +275,13 @@ function getUrlHash(): string | null {
   return hash
 }
 
+let initialRenderIsDone: boolean = false
+// We use the browser's native scroll restoration mechanism only for the first render
+function setupNativeScrollRestoration() {
+  browserNativeScrollRestoration_enable()
+  onPageHide(browserNativeScrollRestoration_enable)
+  onPageShow(() => initialRenderIsDone && browserNativeScrollRestoration_disable())
+}
 function browserNativeScrollRestoration_disable() {
   if ('scrollRestoration' in window.history) {
     window.history.scrollRestoration = 'manual'
@@ -270,11 +293,17 @@ function browserNativeScrollRestoration_enable() {
   }
 }
 
-function onPageClose(listener: () => void) {
-  window.addEventListener('beforeunload', () => {
-    listener()
+function onPageHide(listener: () => void) {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      listener()
+    }
   })
-  window.addEventListener('unload', () => {
-    listener()
+}
+function onPageShow(listener: () => void) {
+  window.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      listener()
+    }
   })
 }

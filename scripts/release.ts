@@ -21,6 +21,11 @@ async function release() {
   await publish()
   await publishBoilerplates()
   await gitPush()
+
+  // Test & commit lock file changes
+  await testRelease()
+  await commitLockfileChanges()
+  await gitPush()
 }
 
 async function publish() {
@@ -49,6 +54,13 @@ async function commitTag(tag: string) {
 }
 async function build() {
   await run('npm', ['run', 'build'])
+}
+
+async function testRelease() {
+  await run('npm', ['run', 'release:test-post-release'])
+}
+async function commitLockfileChanges() {
+  await run('git', ['commit', '-am', `chore: update lockfiles`])
 }
 
 function getVersion(): { versionNew: string; versionCurrent: string } {

@@ -2,12 +2,12 @@
   <div class="layout">
     <div class="navigation">
       <a href="/" class="logo">
-        <img src="./logo.svg" height="64" width="64" />
+        <img src="./logo.svg" height="64" width="64" alt="logo" />
       </a>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
+      <a class="navitem" href="/">Home</a>
+      <a class="navitem" href="/about">About</a>
     </div>
-    <div class="content"><slot/></div>
+    <div class="content"><slot /></div>
   </div>
 </template>
 
@@ -47,5 +47,8 @@ a {
 .logo {
   margin-top: 20px;
   margin-bottom: 10px;
+}
+.navitem {
+  padding: 3px;
 }
 </style>

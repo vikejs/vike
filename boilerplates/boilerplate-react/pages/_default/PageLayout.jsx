@@ -10,8 +10,8 @@ function PageLayout({ children }) {
       <Layout>
         <Sidebar>
           <Logo />
-          <a href="/">Home</a>
-          <a href="/about">About</a>
+          <a className="navitem" href="/">Home</a>
+          <a className="navitem" href="/about">About</a>
         </Sidebar>
         <Content>{children}</Content>
       </Layout>
@@ -74,7 +74,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logo} height={64} width={64} />
+        <img src={logo} height={64} width={64} alt="logo" />
       </a>
     </div>
   );

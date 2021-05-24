@@ -14,6 +14,8 @@ jobs:
         include:
           - os: macos-latest
             node_version: 16
+          - os: windows-latest
+            node_version: 16
       fail-fast: false
     name: 'Test on node-${{ matrix.node_version }}, ${{ matrix.os }}'
     steps:

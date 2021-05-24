@@ -1,5 +1,5 @@
 import { getSsrEnv } from './ssrEnv.node'
-import { assert } from './utils/assert'
+import { assert, normalizePath } from './utils'
 import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
 import { getPageFiles } from './page-files/getPageFiles.shared'
@@ -35,14 +35,14 @@ async function getPreloadTags(
       let manifest: ViteManifest | undefined = undefined
       if (serverManifest[modulePath]) manifest = serverManifest
       if (clientManifest[modulePath]) manifest = clientManifest
-      assert(manifest)
+      if (!manifest) return // `modulePath` may be missing in the manifest; https://github.com/brillout/vite-plugin-ssr/issues/51
       if (manifest === serverManifest) return // We disable this for now; changes to Vite are required for this to work.
       const onlyCollectStaticAssets = manifest === serverManifest
       collectAssets(modulePath, preloadUrls, visistedAssets, manifest, onlyCollectStaticAssets)
     })
   }
 
-  const preloadTags = Array.from(preloadUrls).map(prependBaseUrl).map(getPreloadTag)
+  const preloadTags = Array.from(preloadUrls).map(prependBaseUrl).map(normalizePath).map(getPreloadTag)
   return preloadTags
 }
 
@@ -93,11 +93,23 @@ function getModulePath(filePath: string): string {
 function getPreloadTag(href: string): string {
   assert(href.startsWith('/'))
   assert(!href.startsWith('//'))
+  if (href.endsWith('.png')) {
+    return `<link rel="preload" href="${href}" as="image" type="image/png">`
+  }
+  if (href.endsWith('.jpg') || href.endsWith('.jpeg')) {
+    return `<link rel="preload" href="${href}" as="image" type="image/jpeg">`
+  }
+  if (href.endsWith('.gif')) {
+    return `<link rel="preload" href="${href}" as="image" type="image/gif">`
+  }
+  if (href.endsWith('svg')) {
+    return `<link rel="preload" href="${href}" as="image" type="image/svg+xml">`
+  }
   if (href.endsWith('.css')) {
-    return `<link rel="stylesheet" href="${href}" as="style">`
+    return `<link rel="stylesheet" href="${href}" as="style" type="text/css">`
   }
   if (href.endsWith('.js')) {
-    return `<link rel="modulepreload" crossorigin href="${href}" as="script">`
+    return `<link rel="modulepreload" crossorigin href="${href}" as="script" type="text/javascript">`
   }
   return `<link rel="preload" href="${href}">`
 }

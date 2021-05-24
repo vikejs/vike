@@ -8,7 +8,11 @@ updateDependencies()
 async function updateDependencies() {
   for (const packageJson of await getAllPackageJson()) {
     const cwd = dirname(packageJson)
-    await run__follow(`${ncuBin} -u`, { cwd })
+    await run__follow(
+      `${ncuBin} -u --dep dev,prod --reject vue --reject @vue/server-renderer --reject @vue/compiler-sfc`,
+      { cwd }
+    )
+    // await run__follow(`${ncuBin} -u --dep dev,prod vue @vue/server-renderer @vue/compiler-sfc --target greatest`, { cwd })
   }
 }
 

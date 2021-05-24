@@ -1,5 +1,5 @@
 import { Plugin } from 'vite'
-import { assert } from '../utils'
+import { assert, normalizePath } from '../utils'
 import { version } from '../package.json'
 
 export { manifest }
@@ -39,7 +39,12 @@ function includesClientSideRouter(bundle: Record<string, { modules?: Record<stri
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
     const modules = bundleFile.modules || {}
-    if (fileSource in modules || fileDist in modules) {
+    if (
+      fileSource in modules ||
+      normalizePath(fileSource) in modules ||
+      fileDist in modules ||
+      normalizePath(fileDist) in modules
+    ) {
       return true
     }
   }

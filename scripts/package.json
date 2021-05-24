@@ -16,15 +16,15 @@
   },
   "dependencies": {
     "@brillout/verify-markdown-links": "^0.1.0",
-    "@types/node": "^14.14.37",
-    "@types/semver": "^7.3.4",
+    "@types/node": "^15.0.3",
+    "@types/semver": "^7.3.6",
     "conventional-changelog-cli": "^2.1.1",
     "execa": "^5.0.0",
-    "kolorist": "^1.3.2",
-    "npm-check-updates": "^11.3.0",
+    "kolorist": "^1.4.1",
+    "npm-check-updates": "^11.5.11",
     "semver": "^7.3.5",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.3",
+    "typescript": "^4.2.4",
     "yarn": "^1.22.10"
   }
 }

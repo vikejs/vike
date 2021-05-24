@@ -2,7 +2,7 @@ import { getSsrEnv } from './ssrEnv.node';
 import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, isCallable, slice, hasProp, getUrlPathname } from './utils'
+import { assert, assertUsage, isCallable, slice, hasProp, getUrlPathname, isPlainObject } from './utils'
 
 export { getPageIds }
 export { route }
@@ -90,7 +90,7 @@ async function route(
     return null;
   }
   const { pageId, routeParams } = result;
-  return { pageId, contextPropsAddendum: { ...routeParams, routeParams } };
+  return { pageId, contextPropsAddendum: { routeParams } };
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -209,8 +209,10 @@ function resolveRouteFunction(
     result = { match: result }
   }
   assertUsage(
-    typeof result === 'object' && result !== null && result.constructor === Object,
-    `The Route Function ${routeFilePath} should return a route string, boolean or plain JavaScript object, e.g. \`{ match: true }\`.`
+    isPlainObject(result),
+    `The Route Function ${routeFilePath} should return a boolean or a plain JavaScript object, instead it returns \`${
+      result && result.constructor
+    }\`.`
   )
   if (!hasProp(result, 'match')) {
     result.match = true
@@ -223,9 +225,7 @@ function resolveRouteFunction(
   let routeParams = {}
   if (hasProp(result, 'contextProps')) {
     assertUsage(
-      typeof result.contextProps === 'object' &&
-        result.contextProps !== null &&
-        result.contextProps.constructor === Object,
+      isPlainObject(result.contextProps),
       `The \`contextProps\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
     )
     routeParams = result.contextProps

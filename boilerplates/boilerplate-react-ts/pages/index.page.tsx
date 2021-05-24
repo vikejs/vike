@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { Counter } from "./_components/Counter";
 
 export { Page };
 
@@ -14,14 +15,5 @@ function Page() {
         </li>
       </ul>
     </>
-  );
-}
-
-function Counter() {
-  const [count, setCount] = useState(0);
-  return (
-    <button onClick={() => setCount((count) => count + 1)}>
-      Counter {count}
-    </button>
   );
 }

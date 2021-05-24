@@ -17,16 +17,19 @@ import {
   assertWarning,
   hasProp,
   isContextPropsUrl,
+  normalizePath,
   removeContextPropsUrlSuffix,
   getUrlPathname,
   addUrlToContextProps,
-  getUrlFull
+  getUrlFull,
+  isPlainObject
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
 export { renderPage }
 export { getPageFunctions }
 export { prerenderPage }
+export { renderStatic404Page }
 
 async function renderPage({
   url,
@@ -174,6 +177,18 @@ async function prerenderPage(
   return { htmlDocument, contextPropsSerialized }
 }
 
+async function renderStatic404Page() {
+  const allPageIds = await getPageIds()
+  const errorPageId = getErrorPageId(allPageIds)
+  if (!errorPageId) {
+    return null
+  }
+  const url = '/fake-404-url' // A `url` is needed for `applyViteHtmlTransform`
+  const contextProps = { is404: true }
+  const contextPropsNeeded = false // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no client-side routing.
+  return prerenderPage(errorPageId, contextProps, url, false, contextPropsNeeded)
+}
+
 async function getRenderData(
   pageId: string,
   contextProps: Record<string, unknown>,
@@ -201,9 +216,7 @@ async function getRenderData(
       }
     })
     assertUsage(
-      typeof contextPropsAddendum === 'object' &&
-        contextPropsAddendum !== null &&
-        contextPropsAddendum.constructor === Object,
+      isPlainObject(contextPropsAddendum),
       `The \`addContextProps()\` hook exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
     )
     Object.assign(contextProps, contextPropsAddendum)
@@ -484,8 +497,9 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   const manifestVal = clientManifest[manifestKey]
   assert(manifestVal)
   assert(manifestVal.isEntry)
-  const { file } = manifestVal
+  let { file } = manifestVal
   assert(!file.startsWith('/'))
+  file = normalizePath(file)
   return '/' + file
 }
 
@@ -633,9 +647,9 @@ async function getPagesAndRoutesInfo(): Promise<string> {
   const pageRoutes = await loadPageRoutes()
   const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
   return [
-    'Defined pages:',
+    `You defined ${relevantPageIds.length} pages:`,
     relevantPageIds
-      .map((pageId) => {
+      .map((pageId, i) => {
         let routeInfo
         let routeSrc
         if (!(pageId in pageRoutes)) {
@@ -649,7 +663,7 @@ async function getPagesAndRoutesInfo(): Promise<string> {
           const routeFile = pageRouteFile
           routeSrc = `${routeType} defined in \`${routeFile}\``
         }
-        return `\`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
+        return `(${i+1}) \`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
       })
       .join(', ')
   ].join(' ')

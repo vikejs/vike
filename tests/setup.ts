@@ -13,7 +13,7 @@ export { autoRetry }
 export { fetchHtml }
 export { run }
 
-const TIMEOUT = 100 * 1000
+const TIMEOUT = (process.env.CI ? 300 : 100) * 1000
 
 const browserLogs: {
   type: string
@@ -38,7 +38,7 @@ function run(cmd: string, baseUrl = '') {
     expect(browserLogs.filter(({ type }) => type === 'error')).toEqual([])
     browserLogs.length = 0
     await page.close() // See https://github.com/vitejs/vite/pull/3097
-    await stop(runProcess)
+    await terminate(runProcess, 'SIGINT')
   })
 }
 function onConsole(msg: ConsoleMessage) {
@@ -71,7 +71,7 @@ async function start(cmd: string): Promise<RunProcess> {
   const timeout = setTimeout(() => {
     console.error(`Npm script ${cmd} is hanging.`)
     process.exit(1)
-  }, 30 * 1000)
+  }, TIMEOUT)
 
   // Kill any process that listens to port `3000`
   if (!process.env.CI && process.platform === 'linux') {
@@ -112,26 +112,27 @@ async function start(cmd: string): Promise<RunProcess> {
     }
   })
   proc.on('exit', async (code) => {
-    if ([0, null].includes(code) && hasStarted) return
+    if (([0, null].includes(code) || (code === 1 && process.platform === 'win32')) && hasStarted) return
     stdout.forEach(forceLog.bind(null, 'stdout'))
     stderr.forEach(forceLog.bind(null, 'stderr'))
-    forceLog(prefix, `Unexpected stop, exit code: ${code}`)
-    await terminate(runProcess)
+    forceLog(prefix, `Unexpected process termination, exit code: ${code}`)
+    await terminate(runProcess, 'SIGKILL')
   })
 
   return promise
 }
-async function terminate(runProcess: RunProcess) {
-  setTimeout(() => {
+async function terminate(runProcess: RunProcess, signal: 'SIGINT' | 'SIGKILL') {
+  const timeout = setTimeout(() => {
     console.error('Process termination timeout.')
     process.exit(1)
-  }, 60 * 1000)
+  }, TIMEOUT)
   if (runProcess) {
-    await stop(runProcess, 'SIGKILL')
+    await stopProcess(runProcess, signal)
+    clearTimeout(timeout)
   }
 }
 
-function stop(runProcess: RunProcess, signal = 'SIGINT') {
+function stopProcess(runProcess: RunProcess, signal: 'SIGINT' | 'SIGKILL') {
   const { cwd, cmd, proc } = runProcess
 
   const prefix = `[Run Stop][${cwd}][${cmd}]`
@@ -143,21 +144,36 @@ function stop(runProcess: RunProcess, signal = 'SIGINT') {
     reject = _reject
   })
 
-  proc.on('close', (code) => {
-    if (code === 0 || code === null) {
+  const onProcessClose = (code: number) => {
+    if (code === 0 || code === null || (code === 1 && process.platform === 'win32')) {
       resolve()
     } else {
       reject(`${prefix} Terminated with non-0 error code ${code}`)
     }
-  })
-  process.kill(-proc.pid, signal)
+  }
+  proc.on('close', onProcessClose)
+  proc.on('exit', onProcessClose)
+  if (process.platform === 'win32') {
+    // - https://github.com/nodejs/node/issues/3617#issuecomment-377731194
+    // - https://stackoverflow.com/questions/23706055/why-can-i-not-kill-my-child-process-in-nodejs-on-windows/28163919#28163919
+    spawn('taskkill', ['/pid', String(proc.pid), '/f', '/t'], { stdio: ['ignore', 'ignore', 'inherit'] })
+  } else {
+    process.kill(-proc.pid, signal)
+  }
 
   return promise
 }
 
 function startProcess(cmd: string, cwd: string) {
-  const [command, ...args] = cmd.split(' ')
-  return spawn(command, args, { cwd, detached: true })
+  let [command, ...args] = cmd.split(' ')
+  let detached = true
+  if (process.platform === 'win32') {
+    detached = false
+    if (command === 'npm') {
+      command = 'npm.cmd'
+    }
+  }
+  return spawn(command, args, { cwd, detached })
 }
 
 function forceLog(std: 'stdout' | 'stderr' | string, str: string) {
@@ -196,7 +212,7 @@ function runCommand(cmd: string) {
   const timeout = setTimeout(() => {
     console.error(`Command call ${cmd} is hanging.`)
     process.exit(1)
-  }, 5 * 1000)
+  }, TIMEOUT)
 
   const options = {}
   exec(cmd, options, (err, _stdout, _stderr) => {

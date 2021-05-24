@@ -1,19 +1,18 @@
 {
   "name": "vite-plugin-ssr",
-  "version": "0.1.0-beta.35",
+  "version": "0.1.0-beta.44",
   "dependencies": {
     "@brillout/json-s": "^0.2.0",
     "@brillout/libassert": "^0.3.0",
     "@brillout/path-to-regexp": "^0.1.2",
-    "cac": "^6.7.2",
+    "cac": "^6.7.3",
     "devalue": "^2.0.1",
     "fast-glob": "^3.2.5",
-    "kolorist": "^1.3.2"
+    "kolorist": "^1.4.1"
   },
   "devDependencies": {
-    "@types/node": "^14.14.37",
-    "typescript": "^4.2.3",
-    "vite": "^2.2.3"
+    "@types/node": "^15.0.3",
+    "typescript": "^4.2.4"
   },
   "peerDependencies": {
     "vite": "^2.2.3"
@@ -24,25 +23,25 @@
   "main": "./dist/index.js",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
+      "node": "./dist/index.js",
       "import": "./index.ts"
     },
     "./client": {
-      "import": "./client/index.ts"
+      "browser": "./client/index.ts"
     },
     "./client/router": {
-      "import": "./client/router/index.ts",
-      "require": "./dist/client/router/index.node.js"
+      "browser": "./client/router/index.ts",
+      "node": "./dist/client/router/index.node.js"
     },
     "./cli": {
-      "require": "./dist/cli/index.js"
+      "node": "./dist/cli/index.js"
     },
     "./plugin": {
-      "require": "./dist/plugin/index.js"
+      "node": "./dist/plugin/index.js"
     },
     "./route.shared": {
-      "import": "./route.shared.ts",
-      "require": "./dist/route.shared.js"
+      "browser": "./route.shared.ts",
+      "node": "./dist/route.shared.js"
     }
   },
   "bin": {

@@ -10,6 +10,10 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     const html = await fetchHtml('/')
 
     expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
+    containsNavigationPanel(html)
+  })
+
+  function containsNavigationPanel(html: string) {
     if (viewFramework === 'vue') {
       expect(html).toMatch(partRegExp`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
       expect(html).toMatch(partRegExp`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
@@ -19,7 +23,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
       expect(html).toContain('<a href="/star-wars">Data Fetching</a>')
       expect(html).toContain('<a href="/hello/alice">Routing</a>')
     }
-  })
+  }
 
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(urlBase + '/')
@@ -119,12 +123,8 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
   })
   test('test 404 page', async () => {
     const html = await fetchHtml('/doesNotExist')
-    if (cmd !== 'npm run prod') {
-      const whitespace = viewFramework === 'vue' ? ' ' : ''
-      expect(html).toContain(`<h1>404 Page Not Found</h1>${whitespace}This page could not be found.`)
-    } else {
-      // We pre-render and static serve for prod => the 404 page is defined by the static server.
-      expect(html).toContain('<span>404</span> <p>The requested path could not be found</p>')
-    }
+    const whitespace = viewFramework === 'vue' ? ' ' : ''
+    expect(html).toContain(`<h1>404 Page Not Found</h1>${whitespace}This page could not be found.`)
+    containsNavigationPanel(html)
   })
 }

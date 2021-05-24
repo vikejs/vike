@@ -3,9 +3,9 @@ import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
-import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
-import { getPageFunctions, prerenderPage } from './renderPage.node'
+import { getPageFunctions, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
 import { version } from './package.json'
 
@@ -15,6 +15,7 @@ type HtmlDocument = {
   url: string
   htmlDocument: string
   contextPropsSerialized: string | null
+  doNotCreateExtraDirectory?: true
 }
 
 /**
@@ -79,7 +80,7 @@ async function prerender({
       result.forEach(({ url, contextProps }) => {
         assert(typeof url === 'string')
         assert(url.startsWith('/'))
-        assert(contextProps === null || contextProps.constructor === Object)
+        assert(contextProps === null || isPlainObject(contextProps))
         if (!('url' in prerenderData)) {
           prerenderData[url] = {
             contextProps: { url },
@@ -162,23 +163,45 @@ async function prerender({
         htmlDocuments.push({ url, htmlDocument, contextPropsSerialized })
       })
   )
+
+  if (!htmlDocuments.find(({ url }) => url === '/404')) {
+    const result = await renderStatic404Page()
+    if (result) {
+      const url = '/404'
+      const { htmlDocument } = result
+      htmlDocuments.push({ url, htmlDocument, contextPropsSerialized: null, doNotCreateExtraDirectory: true })
+    }
+  }
+
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
 
-  await Promise.all(htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root)))
+  // `htmlDocuments.length` can be very big; to avoid `EMFILE, too many open files` we don't parallelize the writing
+  for (const htmlDoc of htmlDocuments) {
+    await writeHtmlDocument(htmlDoc, root)
+  }
 }
 
-async function writeHtmlDocument({ url, htmlDocument, contextPropsSerialized }: HtmlDocument, root: string) {
+async function writeHtmlDocument(
+  { url, htmlDocument, contextPropsSerialized, doNotCreateExtraDirectory }: HtmlDocument,
+  root: string
+) {
   assert(url.startsWith('/'))
 
-  const writeJobs = [write(url, '.html', htmlDocument, root)]
+  const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory)]
   if (contextPropsSerialized !== null) {
-    writeJobs.push(write(url, '.contextProps.json', contextPropsSerialized, root))
+    writeJobs.push(write(url, '.contextProps.json', contextPropsSerialized, root, doNotCreateExtraDirectory))
   }
   await Promise.all(writeJobs)
 }
 
-async function write(url: string, fileExtension: '.html' | '.contextProps.json', fileContent: string, root: string) {
-  const fileUrl = getFileUrl(url, fileExtension)
+async function write(
+  url: string,
+  fileExtension: '.html' | '.contextProps.json',
+  fileContent: string,
+  root: string,
+  doNotCreateExtraDirectory?: true
+) {
+  const fileUrl = getFileUrl(url, fileExtension, doNotCreateExtraDirectory)
   assert(fileUrl.startsWith('/'))
   const filePathRelative = fileUrl.slice(1).split('/').join(sep)
   assert(!filePathRelative.startsWith(sep))
@@ -207,11 +230,8 @@ function normalizePrerenderResult(
 
     const errMsg1 = `The \`prerender()\` hook defined in \`${prerenderSourceFile}\` returned an invalid value`
     const errMsg2 =
-      'Make sure your `prerender()` hook returns an object `{url, contextProps}` or an array of such objects.'
-    assertUsage(
-      typeof prerenderElement === 'object' && prerenderElement !== null && prerenderElement.constructor === Object,
-      `${errMsg1}. ${errMsg2}`
-    )
+      'Make sure your `prerender()` hook returns an object `{ url, contextProps }` or an array of such objects.'
+    assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
     assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
     assertUsage(
       typeof prerenderElement.url === 'string',
@@ -229,8 +249,7 @@ function normalizePrerenderResult(
     }
     assertUsage(
       hasProp(prerenderElement, 'contextProps') &&
-        typeof prerenderElement.contextProps === 'object' &&
-        (prerenderElement.contextProps === null || prerenderElement.contextProps.constructor === Object),
+        (prerenderElement.contextProps === null || isPlainObject(prerenderElement.contextProps)),
       `The \`prerender()\` hook exported by ${prerenderSourceFile} returned invalid \`contextProps\`. Make sure all \`contextProps\` to be plain JavaScript object.`
     )
     return prerenderElement as any

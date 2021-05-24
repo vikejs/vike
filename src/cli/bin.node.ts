@@ -1,7 +1,8 @@
 import { cac } from 'cac'
 import { prerender } from '../prerender'
+const pkg = require('../../package.json')
 
-const cli = cac('vite-plugin-ssr')
+const cli = cac(pkg.name)
 
 cli
   .command('prerender')
@@ -23,7 +24,7 @@ cli.on('command:*', () => {
 })
 
 cli.help()
-cli.version(require('../../package.json').version)
+cli.version(pkg.version)
 
 cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
 
