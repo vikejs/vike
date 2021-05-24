@@ -1,7 +1,7 @@
 import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, getUrlPathname } from './utils'
+import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, getUrlPathname, isPlainObject } from './utils'
 
 export { getPageIds }
 export { route }
@@ -212,8 +212,10 @@ function resolveRouteFunction(
     result = { match: result }
   }
   assertUsage(
-    typeof result === 'object' && result !== null && result.constructor === Object,
-    `The Route Function ${routeFilePath} should return a boolean or a plain JavaScript object, e.g. \`{ match: true }\`.`
+    isPlainObject(result),
+    `The Route Function ${routeFilePath} should return a boolean or a plain JavaScript object, instead it returns \`${
+      result && result.constructor
+    }\`.`
   )
   if (!hasProp(result, 'match')) {
     result.match = true
@@ -226,9 +228,7 @@ function resolveRouteFunction(
   let routeParams = {}
   if (hasProp(result, 'contextProps')) {
     assertUsage(
-      typeof result.contextProps === 'object' &&
-        result.contextProps !== null &&
-        result.contextProps.constructor === Object,
+      isPlainObject(result.contextProps),
       `The \`contextProps\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
     )
     routeParams = result.contextProps

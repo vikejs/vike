@@ -1,4 +1,5 @@
 import { assert } from './assert'
+import { isPlainObject } from './isPlainObject'
 import { getUrlFull, getUrlParsed, getUrlPathname } from './parseUrl'
 
 export { addUrlToContextProps }
@@ -8,6 +9,6 @@ function addUrlToContextProps(contextProps: Record<string, unknown>, url: string
   const urlPathname = getUrlPathname(url)
   const urlParsed = getUrlParsed(url)
   assert(urlPathname.startsWith('/') && urlFull.startsWith('/'))
-  assert(urlParsed === null || urlParsed.constructor === Object)
+  assert(isPlainObject(urlParsed))
   Object.assign(contextProps, { urlFull, urlPathname, urlParsed })
 }

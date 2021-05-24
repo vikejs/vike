@@ -3,7 +3,7 @@ import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
-import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageFunctions, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -80,7 +80,7 @@ async function prerender({
       result.forEach(({ url, contextProps }) => {
         assert(typeof url === 'string')
         assert(url.startsWith('/'))
-        assert(contextProps === null || contextProps.constructor === Object)
+        assert(contextProps === null || isPlainObject(contextProps))
         if (!('url' in prerenderData)) {
           prerenderData[url] = {
             contextProps: { url },
@@ -226,11 +226,8 @@ function normalizePrerenderResult(
 
     const errMsg1 = `The \`prerender()\` hook defined in \`${prerenderSourceFile}\` returned an invalid value`
     const errMsg2 =
-      'Make sure your `prerender()` hook returns an object `{url, contextProps}` or an array of such objects.'
-    assertUsage(
-      typeof prerenderElement === 'object' && prerenderElement !== null && prerenderElement.constructor === Object,
-      `${errMsg1}. ${errMsg2}`
-    )
+      'Make sure your `prerender()` hook returns an object `{ url, contextProps }` or an array of such objects.'
+    assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
     assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
     assertUsage(
       typeof prerenderElement.url === 'string',
@@ -248,8 +245,7 @@ function normalizePrerenderResult(
     }
     assertUsage(
       hasProp(prerenderElement, 'contextProps') &&
-        typeof prerenderElement.contextProps === 'object' &&
-        (prerenderElement.contextProps === null || prerenderElement.contextProps.constructor === Object),
+        (prerenderElement.contextProps === null || isPlainObject(prerenderElement.contextProps)),
       `The \`prerender()\` hook exported by ${prerenderSourceFile} returned invalid \`contextProps\`. Make sure all \`contextProps\` to be plain JavaScript object.`
     )
     return prerenderElement as any

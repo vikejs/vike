@@ -1,5 +1,5 @@
 import { navigationState } from '../navigationState.client'
-import { addUrlToContextProps, assert, assertUsage, getFileUrl, hasProp } from '../../utils'
+import { addUrlToContextProps, assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../utils'
 import { parse } from '@brillout/json-s'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 
@@ -35,7 +35,7 @@ async function retrieveContextProps(url: string): Promise<Record<string, unknown
 
   assert(hasProp(responseObject, 'contextProps'))
   const { contextProps } = responseObject
-  assert(contextProps.constructor === Object)
+  assert(isPlainObject(contextProps))
 
   addUrlToContextProps(contextProps, url)
 

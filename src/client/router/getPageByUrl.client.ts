@@ -1,4 +1,4 @@
-import { assert } from '../../utils'
+import { assert, isPlainObject } from '../../utils'
 import { getContextProps } from './getContextProps.client'
 import { getPageId } from './getPageId.client'
 import { getPageById } from '../getPage.client'
@@ -13,6 +13,6 @@ async function getPageByUrl(
     (async () => await getPageById(await getPageId(url, useOriginalDataWhenPossible)))(),
     (async () => await getContextProps(url, useOriginalDataWhenPossible))()
   ])
-  assert(contextProps.constructor === Object)
+  assert(isPlainObject(contextProps))
   return { Page, contextProps }
 }

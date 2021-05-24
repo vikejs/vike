@@ -21,7 +21,8 @@ import {
   removeContextPropsUrlSuffix,
   getUrlPathname,
   addUrlToContextProps,
-  getUrlFull
+  getUrlFull,
+  isPlainObject
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
@@ -215,9 +216,7 @@ async function getRenderData(
       }
     })
     assertUsage(
-      typeof contextPropsAddendum === 'object' &&
-        contextPropsAddendum !== null &&
-        contextPropsAddendum.constructor === Object,
+      isPlainObject(contextPropsAddendum),
       `The \`addContextProps()\` hook exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
     )
     Object.assign(contextProps, contextPropsAddendum)
