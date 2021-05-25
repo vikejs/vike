@@ -242,7 +242,7 @@ async function bailOnTimeout(asyncFunc: () => Promise<void>) {
   const timeout = setTimeout(() => {
     console.error(`Function timeout.`)
     process.exit(1)
-  }, 30 * 1000)
+  }, TIMEOUT * 1000)
   await asyncFunc()
   clearTimeout(timeout)
 }
