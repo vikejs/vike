@@ -301,7 +301,7 @@ export async function addPageContext({ pageContext }) {
 }
 
 // By default `pageContext` is available only on the server. But our hydrate function
-// we defined earlier runs in the browser and uses `pageContext.pageProps`. We use
+// we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
 // `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
 // available in the browser.
 export const passToClient = ['pageProps']
@@ -313,7 +313,7 @@ conveniently hold all props of the root Vue component.
 our render/hydrate function would then need to know what `pageContext` should be passed to the root Vue component, whereas with `pageContext.pageProps` our render/hydrate function can simply pass `pageContext.pageProps` to the root Vue component.)
 
 That's it, we have seen most of `vite-plugin-ssr`'s interface;
-not only is `vite-plugin-ssr` flexible but also simple and easy to use.
+not only is `vite-plugin-ssr` flexible but also simple, easy, and fun to use.
 
 <br/><br/>
 
@@ -510,7 +510,7 @@ export async function addPageContext({ pageContext }) {
 }
 
 // By default `pageContext` is available only on the server. But our hydrate function
-// we defined earlier runs in the browser and uses `pageContext.pageProps`. We use
+// we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
 // `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
 // available in the browser.
 export const passToClient = ["pageProps"];
@@ -522,7 +522,7 @@ conveniently hold all props of the root React component.
 our render/hydrate function would then need to know what `pageContext` should be passed to the root React component, whereas with `pageContext.pageProps` our render/hydrate function can simply pass `pageContext.pageProps` to the root React component.)
 
 That's it, we have seen most of `vite-plugin-ssr`'s interface;
-not only is `vite-plugin-ssr` flexible but also simple and easy to use.
+not only is `vite-plugin-ssr` flexible but also simple, easy, and fun to use.
 
 </details>
 
@@ -1721,7 +1721,8 @@ You can tell `vite-plugin-ssr` what `pageContext` to send to the browser by usin
 
 The `pageContext` is serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-It is usally used with the `addPageContext()` hook: data is fetched in `async addPageContext()` and then made available to `Page`.
+It is usally used with the `addPageContext()` hook to fetch data:
+data is fetched in `async addPageContext()` and then made available to the browser with `passToClient`.
 
 ```js
 // *.page.server.js
