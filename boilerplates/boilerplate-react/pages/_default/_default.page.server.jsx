@@ -16,8 +16,8 @@ function render({ Page, contextProps }) {
       <Page {...contextProps.pageProps} />
     </PageLayout>
   );
-  const title = "My Vite SSR app";
-  const description = "A Vite SSR app";
+  const title = "Vite SSR app";
+  const description = "An app using Vite and vite-plugin-ssr.";
   return html`<!DOCTYPE html>
     <html lang="en">
       <head>

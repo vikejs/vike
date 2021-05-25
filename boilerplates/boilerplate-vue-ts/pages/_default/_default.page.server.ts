@@ -13,8 +13,8 @@ const passToClient = ['pageProps', 'routeParams']
 async function render({ Page, contextProps }: { Page: VueComponent; contextProps: ContextProps }) {
   const app = createApp(Page, contextProps)
   const appHtml = await renderToString(app)
-  const title = 'My Vite SSR app'
-  const description = 'A Vite SSR app'
+  const title = 'Vite SSR app'
+  const description = 'An app using Vite and vite-plugin-ssr.'
   return html`<!DOCTYPE html>
     <html lang="en">
       <head>
