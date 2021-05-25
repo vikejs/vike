@@ -1,4 +1,4 @@
-import execa from 'execa'
+import * as execa from 'execa'
 
 export { runCommand }
 
