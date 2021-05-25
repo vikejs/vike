@@ -710,7 +710,7 @@ You can pass some `pageContext` to any/all components of your component tree:
 
 #### Data Fetching with Stateful Component
 
-We can also fetch data by using a stateful component by making [`pageContext.routeParams`](#pagecontext) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-pagecontext-to-anyall-components). Note that with this technique, the fetched data is *not* rendered to HTML (which defeats the purpose of SSR).
+We can also fetch data by using a stateful component by making [`pageContext.routeParams`](#pagecontext) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-pagecontext-to-anyall-components). Note that with this technique, the fetched data is *not* rendered to HTML.
 
 <br/>
 
