@@ -1,5 +1,5 @@
 export type PageProps = {}
-export type ContextProps = {
+export type PageContext = {
   pageProps?: PageProps
   routeParams: Record<string, string>
 }

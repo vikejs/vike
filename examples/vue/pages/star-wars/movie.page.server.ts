@@ -1,10 +1,10 @@
 import fetch from 'node-fetch'
 import { MovieDetails } from './types'
 
-export { addContextProps }
+export { addPageContext }
 export { filterMovieData }
 
-type ContextProps = {
+type PageContext = {
   routeParams: {
     movieId: string
   }
@@ -14,11 +14,11 @@ type ContextProps = {
   docTitle: string
 }
 
-async function addContextProps({ contextProps }: { contextProps: ContextProps }): Promise<Partial<ContextProps>> {
-  const response = await fetch(`https://swapi.dev/api/films/${contextProps.routeParams.movieId}`)
+async function addPageContext({ pageContext }: { pageContext: PageContext }): Promise<Partial<PageContext>> {
+  const response = await fetch(`https://swapi.dev/api/films/${pageContext.routeParams.movieId}`)
   let movie = (await response.json()) as MovieDetails
 
-  // We remove data we don't need because we pass `contextProps.movie` to
+  // We remove data we don't need because we pass `pageContext.movie` to
   // the client; we want to minimize what is sent over the network.
   movie = filterMovieData(movie)
 

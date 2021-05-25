@@ -9,7 +9,7 @@ test("page is rendered to HTML", async () => {
   );
   expect(html).toContain("<button>Counter <span>0</span></button>");
   expect(html).toMatch(
-    '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {apolloIntialState:{ROOT_QUERY:'
+    '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", pageContext: (function(a){return {apolloIntialState:{ROOT_QUERY:'
   );
 });
 

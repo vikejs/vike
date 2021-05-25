@@ -34,8 +34,8 @@ async function startServer() {
     // Otherwise, our response to a request might include sensitive cached query results
     // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
     const apolloClient = makeApolloClient();
-    const contextProps = { apolloClient };
-    const result = await renderPage({ url, contextProps });
+    const pageContext = { apolloClient };
+    const result = await renderPage({ url, pageContext });
     if (result.nothingRendered) return next();
     res.status(result.statusCode).send(result.renderResult);
   });

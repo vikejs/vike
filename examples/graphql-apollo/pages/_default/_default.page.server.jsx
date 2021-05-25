@@ -4,13 +4,13 @@ import { getDataFromTree } from "@apollo/client/react/ssr";
 import App from "../App";
 
 export { render };
-export { addContextProps };
+export { addPageContext };
 export { passToClient };
 
 const passToClient = ["apolloIntialState"];
 
-function render({ contextProps }) {
-  const { pageHtml } = contextProps;
+function render({ pageContext }) {
+  const { pageHtml } = pageContext;
   return html`<!DOCTYPE html>
     <html>
       <body>
@@ -19,8 +19,8 @@ function render({ contextProps }) {
     </html>`;
 }
 
-async function addContextProps({ Page, contextProps }) {
-  const { apolloClient } = contextProps;
+async function addPageContext({ Page, pageContext }) {
+  const { apolloClient } = pageContext;
   const tree = (
     <App apolloClient={apolloClient}>
       <Page />

@@ -4,11 +4,11 @@ import { createApp } from './app'
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render({ Page, pageContext }) {
   const { app, router } = createApp({ Page })
 
   // set the router to the desired URL before rendering
-  router.push(contextProps.urlFull)
+  router.push(pageContext.urlFull)
   await router.isReady()
 
   const appHtml = await renderToString(app)

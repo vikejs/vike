@@ -14,7 +14,7 @@ export { prerender }
 type HtmlDocument = {
   url: string
   htmlDocument: string
-  contextPropsSerialized: string | null
+  pageContextSerialized: string | null
   doNotCreateExtraDirectory?: true
 }
 
@@ -48,7 +48,7 @@ async function prerender({
     pluginManifest.version === version,
     `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
-  const contextPropsNeeded: boolean = pluginManifest.doesClientSideRouting
+  const pageContextNeeded: boolean = pluginManifest.doesClientSideRouting
   const baseUrl: string = pluginManifest.base
 
   process.env.NODE_ENV = 'production'
@@ -66,8 +66,8 @@ async function prerender({
     string,
     {
       prerenderSourceFile: string
-      contextProps: Record<string, unknown>
-      noPrenderContextProps: boolean
+      pageContext: Record<string, unknown>
+      noPrenderPageContext: boolean
     }
   > = {}
   await Promise.all(
@@ -77,22 +77,22 @@ async function prerender({
       const prerenderSourceFile = prerenderFunction.filePath
       const prerenderResult = await prerenderFunction.prerender()
       const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
-      result.forEach(({ url, contextProps }) => {
+      result.forEach(({ url, pageContext }) => {
         assert(typeof url === 'string')
         assert(url.startsWith('/'))
-        assert(contextProps === null || isPlainObject(contextProps))
+        assert(pageContext === null || isPlainObject(pageContext))
         if (!('url' in prerenderData)) {
           prerenderData[url] = {
-            contextProps: { url },
-            noPrenderContextProps: true,
+            pageContext: { url },
+            noPrenderPageContext: true,
             prerenderSourceFile
           }
         }
-        if (contextProps) {
-          prerenderData[url].noPrenderContextProps = false
-          prerenderData[url].contextProps = {
-            ...prerenderData[url].contextProps,
-            ...contextProps
+        if (pageContext) {
+          prerenderData[url].noPrenderPageContext = false
+          prerenderData[url].pageContext = {
+            ...prerenderData[url].pageContext,
+            ...pageContext
           }
         }
       })
@@ -104,21 +104,21 @@ async function prerender({
 
   // Render URLs renturned by `prerender()` hooks
   await Promise.all(
-    Object.entries(prerenderData).map(async ([url, { contextProps, prerenderSourceFile, noPrenderContextProps }]) => {
-      const routeResult = await route(url, allPageIds, contextProps)
+    Object.entries(prerenderData).map(async ([url, { pageContext, prerenderSourceFile, noPrenderPageContext }]) => {
+      const routeResult = await route(url, allPageIds, pageContext)
       assertUsage(
         routeResult,
         `The \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs returned by \`prerender()\` hooks to always match the URL of a page.`
       )
       const { pageId } = routeResult
-      const { htmlDocument, contextPropsSerialized } = await prerenderPage(
+      const { htmlDocument, pageContextSerialized } = await prerenderPage(
         pageId,
-        { ...contextProps, ...routeResult.contextPropsAddendum },
+        { ...pageContext, ...routeResult.pageContextAddendum },
         url,
-        !noPrenderContextProps,
-        contextPropsNeeded
+        !noPrenderPageContext,
+        pageContextNeeded
       )
-      htmlDocuments.push({ url, htmlDocument, contextPropsSerialized })
+      htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
       renderedPageIds[pageId] = true
     })
   )
@@ -129,7 +129,7 @@ async function prerender({
       .filter((pageId) => !renderedPageIds[pageId])
       .map(async (pageId) => {
         let url
-        const contextProps = {
+        const pageContext = {
           routeParams: {}
         }
         // Route with filesystem
@@ -149,14 +149,14 @@ async function prerender({
             return
           }
         }
-        const { htmlDocument, contextPropsSerialized } = await prerenderPage(
+        const { htmlDocument, pageContextSerialized } = await prerenderPage(
           pageId,
-          contextProps,
+          pageContext,
           url,
           false,
-          contextPropsNeeded
+          pageContextNeeded
         )
-        htmlDocuments.push({ url, htmlDocument, contextPropsSerialized })
+        htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
       })
   )
 
@@ -165,7 +165,7 @@ async function prerender({
     if (result) {
       const url = '/404'
       const { htmlDocument } = result
-      htmlDocuments.push({ url, htmlDocument, contextPropsSerialized: null, doNotCreateExtraDirectory: true })
+      htmlDocuments.push({ url, htmlDocument, pageContextSerialized: null, doNotCreateExtraDirectory: true })
     }
   }
 
@@ -178,21 +178,21 @@ async function prerender({
 }
 
 async function writeHtmlDocument(
-  { url, htmlDocument, contextPropsSerialized, doNotCreateExtraDirectory }: HtmlDocument,
+  { url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory }: HtmlDocument,
   root: string
 ) {
   assert(url.startsWith('/'))
 
   const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory)]
-  if (contextPropsSerialized !== null) {
-    writeJobs.push(write(url, '.contextProps.json', contextPropsSerialized, root, doNotCreateExtraDirectory))
+  if (pageContextSerialized !== null) {
+    writeJobs.push(write(url, '.pageContext.json', pageContextSerialized, root, doNotCreateExtraDirectory))
   }
   await Promise.all(writeJobs)
 }
 
 async function write(
   url: string,
-  fileExtension: '.html' | '.contextProps.json',
+  fileExtension: '.html' | '.pageContext.json',
   fileContent: string,
   root: string,
   doNotCreateExtraDirectory?: true
@@ -214,19 +214,19 @@ function mkdirp(path: string): Promise<string | undefined> {
 function normalizePrerenderResult(
   prerenderResult: unknown,
   prerenderSourceFile: string
-): { url: string; contextProps: null | Record<string, unknown> }[] {
+): { url: string; pageContext: null | Record<string, unknown> }[] {
   if (Array.isArray(prerenderResult)) {
     return prerenderResult.map(normalize)
   } else {
     return [normalize(prerenderResult)]
   }
 
-  function normalize(prerenderElement: unknown): { url: string; contextProps: null | Record<string, unknown> } {
-    if (typeof prerenderElement === 'string') return { url: prerenderElement, contextProps: null }
+  function normalize(prerenderElement: unknown): { url: string; pageContext: null | Record<string, unknown> } {
+    if (typeof prerenderElement === 'string') return { url: prerenderElement, pageContext: null }
 
     const errMsg1 = `The \`prerender()\` hook defined in \`${prerenderSourceFile}\` returned an invalid value`
     const errMsg2 =
-      'Make sure your `prerender()` hook returns an object `{ url, contextProps }` or an array of such objects.'
+      'Make sure your `prerender()` hook returns an object `{ url, pageContext }` or an array of such objects.'
     assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
     assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
     assertUsage(
@@ -238,15 +238,15 @@ function normalizePrerenderResult(
       `${errMsg1}: the \`url\` with value \`${prerenderElement.url}\` doesn't start with \`/\`. Make sure each URL starts with \`/\`.`
     )
     Object.keys(prerenderElement).forEach((key) => {
-      assertUsage(key === 'url' || key === 'contextProps', `${errMsg1}: unexpected object key \`${key}\` ${errMsg2}`)
+      assertUsage(key === 'url' || key === 'pageContext', `${errMsg1}: unexpected object key \`${key}\` ${errMsg2}`)
     })
-    if (!hasProp(prerenderElement, 'contextProps')) {
-      prerenderElement = { ...prerenderElement, contextProps: null }
+    if (!hasProp(prerenderElement, 'pageContext')) {
+      prerenderElement = { ...prerenderElement, pageContext: null }
     }
     assertUsage(
-      hasProp(prerenderElement, 'contextProps') &&
-        (prerenderElement.contextProps === null || isPlainObject(prerenderElement.contextProps)),
-      `The \`prerender()\` hook exported by ${prerenderSourceFile} returned invalid \`contextProps\`. Make sure all \`contextProps\` to be plain JavaScript object.`
+      hasProp(prerenderElement, 'pageContext') &&
+        (prerenderElement.pageContext === null || isPlainObject(prerenderElement.pageContext)),
+      `The \`prerender()\` hook exported by ${prerenderSourceFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
     )
     return prerenderElement as any
   }

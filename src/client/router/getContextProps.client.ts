@@ -1,25 +1,25 @@
 import { navigationState } from '../navigationState.client'
-import { addUrlToContextProps, assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../utils'
+import { addUrlToPageContext, assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../utils'
 import { parse } from '@brillout/json-s'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 
-export { getContextProps }
+export { getPageContext }
 
-async function getContextProps(
+async function getPageContext(
   url: string,
   useOriginalDataWhenPossible: boolean = true
 ): Promise<Record<string, unknown>> {
   if (navigationState.isOriginalUrl(url) && useOriginalDataWhenPossible) {
-    const { contextProps } = getOriginalPageInfo()
-    return contextProps
+    const { pageContext } = getOriginalPageInfo()
+    return pageContext
   } else {
-    const contextProps = await retrieveContextProps(url)
-    return contextProps
+    const pageContext = await retrievePageContext(url)
+    return pageContext
   }
 }
 
-async function retrieveContextProps(url: string): Promise<Record<string, unknown>> {
-  const response = await fetch(getFileUrl(url, '.contextProps.json'))
+async function retrievePageContext(url: string): Promise<Record<string, unknown>> {
+  const response = await fetch(getFileUrl(url, '.pageContext.json'))
 
   // Static hosts will return a 404
   if (response.status === 404) {
@@ -27,19 +27,19 @@ async function retrieveContextProps(url: string): Promise<Record<string, unknown
   }
 
   const responseText = await response.text()
-  const responseObject = parse(responseText) as { contextProps: Record<string, unknown> } | { userError: true }
-  if ('contextProps404PageDoesNotExist' in responseObject) {
+  const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { userError: true }
+  if ('pageContext404PageDoesNotExist' in responseObject) {
     fallbackToServerSideRouting()
   }
   assertUsage(!('userError' in responseObject), `An error occurred on the server. Check your server logs.`)
 
-  assert(hasProp(responseObject, 'contextProps'))
-  const { contextProps } = responseObject
-  assert(isPlainObject(contextProps))
+  assert(hasProp(responseObject, 'pageContext'))
+  const { pageContext } = responseObject
+  assert(isPlainObject(pageContext))
 
-  addUrlToContextProps(contextProps, url)
+  addUrlToPageContext(pageContext, url)
 
-  return contextProps
+  return pageContext
 
   function fallbackToServerSideRouting() {
     window.location.pathname = url

@@ -10,10 +10,10 @@ export { passToClient };
 // See https://github.com/brillout/vite-plugin-ssr#data-fetching
 const passToClient = ["pageProps"];
 
-function render({ Page, contextProps }) {
+function render({ Page, pageContext }) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageContext.pageProps} />
     </PageLayout>
   );
   const title = "Vite SSR app";

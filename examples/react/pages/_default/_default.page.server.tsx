@@ -10,21 +10,21 @@ const passToClient = ["pageProps", "docTitle"];
 
 function render({
   Page,
-  contextProps,
+  pageContext,
 }: {
   Page: (pageProps: any) => JSX.Element;
-  contextProps: Record<string, any>;
+  pageContext: Record<string, any>;
 }) {
   const pageContent = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageContext.pageProps} />
     </PageLayout>
   );
 
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${contextProps.docTitle || "Demo"}</title>
+        <title>${pageContext.docTitle || "Demo"}</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySetHtml(pageContent)}</div>

@@ -19,8 +19,8 @@ export { retrievePageId }
 
 async function retrievePageId(url: string): Promise<string> {
   const allPageIds = await getPageIds()
-  const contextProps = {}
-  const routeResult = await route(url, allPageIds, contextProps)
+  const pageContext = {}
+  const routeResult = await route(url, allPageIds, pageContext)
   if (routeResult) {
     return routeResult.pageId
   }

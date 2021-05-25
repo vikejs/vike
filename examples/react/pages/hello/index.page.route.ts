@@ -5,5 +5,5 @@ export default ({ url }: { url: string }) => {
     return { match: false };
   }
   const name = url.split("/")[2] || "anonymous";
-  return { match: true, contextProps: { name } };
+  return { match: true, pageContext: { name } };
 };

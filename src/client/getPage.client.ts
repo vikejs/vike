@@ -1,7 +1,7 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
-import { addUrlToContextProps, getUrlFull, getUrlPathname } from '../utils'
+import { addUrlToPageContext, getUrlFull, getUrlPathname } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
-import { getContextPropsProxy } from './getContextPropsProxy'
+import { getPageContextProxy } from './getPageContextProxy'
 
 export { getPage }
 export { getPageById }
@@ -12,21 +12,21 @@ const urlFullOriginal = getUrlFull()
 
 async function getPage(): Promise<{
   Page: any
-  contextProps: Record<string, any>
+  pageContext: Record<string, any>
 }> {
-  let { pageId, contextProps } = getPageInfo()
-  assert(contextProps.urlFull && contextProps.urlPathname)
+  let { pageId, pageContext } = getPageInfo()
+  assert(pageContext.urlFull && pageContext.urlPathname)
   const Page = await getPageById(pageId)
-  contextProps = getContextPropsProxy(contextProps)
+  pageContext = getPageContextProxy(pageContext)
   assertPristineUrl()
   return {
     Page,
-    contextProps,
+    pageContext,
     // @ts-ignore
     get pageProps() {
       assertUsage(
         false,
-        "`pageProps` in `const { pageProps } = await getPage()` has been replaced with `const { contextProps } = await getPage()`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
+        "`pageProps` in `const { pageProps } = await getPage()` has been replaced with `const { pageContext } = await getPage()`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
       )
     }
   }
@@ -56,20 +56,20 @@ async function getPageById(pageId: string): Promise<any> {
 
 function getPageInfo(): {
   pageId: string
-  contextProps: Record<string, unknown>
+  pageContext: Record<string, unknown>
 } {
   const pageId = window.__vite_plugin_ssr.pageId
-  const contextProps = {}
-  Object.assign(contextProps, window.__vite_plugin_ssr.contextProps)
-  addUrlToContextProps(contextProps, urlFullOriginal)
-  return { pageId, contextProps }
+  const pageContext = {}
+  Object.assign(pageContext, window.__vite_plugin_ssr.pageContext)
+  addUrlToPageContext(pageContext, urlFullOriginal)
+  return { pageId, pageContext }
 }
 
 declare global {
   interface Window {
     __vite_plugin_ssr: {
       pageId: string
-      contextProps: Record<string, unknown>
+      pageContext: Record<string, unknown>
     }
   }
 }

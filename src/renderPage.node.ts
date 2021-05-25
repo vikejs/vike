@@ -16,11 +16,11 @@ import {
   cast,
   assertWarning,
   hasProp,
-  isContextPropsUrl,
+  isPageContextUrl,
   normalizePath,
-  removeContextPropsUrlSuffix,
+  removePageContextUrlSuffix,
   getUrlPathname,
-  addUrlToContextProps,
+  addUrlToPageContext,
   getUrlFull,
   isPlainObject
 } from './utils'
@@ -33,10 +33,10 @@ export { renderStatic404Page }
 
 async function renderPage({
   url,
-  contextProps = {}
+  pageContext = {}
 }: {
   url: string
-  contextProps: Record<string, unknown>
+  pageContext: Record<string, unknown>
 }): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
   | {
@@ -55,9 +55,9 @@ async function renderPage({
     }
   }
 
-  const isContextPropsRequest = isContextPropsUrl(url)
-  if (isContextPropsRequest) {
-    url = removeContextPropsUrlSuffix(url)
+  const isPageContextRequest = isPageContextUrl(url)
+  if (isPageContextRequest) {
+    url = removePageContextUrlSuffix(url)
   }
 
   url = removeOrigin(url)
@@ -73,7 +73,7 @@ async function renderPage({
     url = removeBaseUrl(url)
   }
 
-  addUrlToContextProps(contextProps, url)
+  addUrlToPageContext(pageContext, url)
 
   const allPageIds = await getPageIds()
 
@@ -82,26 +82,26 @@ async function renderPage({
   // written by the user and may contain errors.
   let routeResult
   try {
-    routeResult = await route(url, allPageIds, contextProps)
+    routeResult = await route(url, allPageIds, pageContext)
   } catch (err) {
-    if (isContextPropsRequest) {
-      return renderContextPropsError(err)
+    if (isPageContextRequest) {
+      return renderPageContextError(err)
     } else {
-      return await render500Page(err, allPageIds, contextProps, url)
+      return await render500Page(err, allPageIds, pageContext, url)
     }
   }
 
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    if (!isContextPropsRequest) {
+    if (!isPageContextRequest) {
       await warn404(url, allPageIds)
     }
     const errorPageId = getErrorPageId(allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
-      if (isContextPropsRequest) {
-        return renderContextProps404PageDoesNotExist()
+      if (isPageContextRequest) {
+        return renderPageContext404PageDoesNotExist()
       }
       return {
         nothingRendered: true,
@@ -109,30 +109,30 @@ async function renderPage({
         statusCode: undefined
       }
     }
-    if (!isContextPropsRequest) {
+    if (!isPageContextRequest) {
       statusCode = 404
     } else {
       statusCode = 200
     }
-    routeResult = { pageId: errorPageId, contextPropsAddendum: { is404: true } }
+    routeResult = { pageId: errorPageId, pageContextAddendum: { is404: true } }
   } else {
     statusCode = 200
   }
 
-  const { pageId, contextPropsAddendum } = routeResult
-  Object.assign(contextProps, contextPropsAddendum)
+  const { pageId, pageContextAddendum } = routeResult
+  Object.assign(pageContext, pageContextAddendum)
 
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
   // written by the user and may contain an error.
   let renderResult
   try {
-    renderResult = await renderPageId(pageId, contextProps, url, false, isContextPropsRequest)
+    renderResult = await renderPageId(pageId, pageContext, url, false, isPageContextRequest)
   } catch (err) {
-    if (isContextPropsRequest) {
-      return renderContextPropsError(err)
+    if (isPageContextRequest) {
+      return renderPageContextError(err)
     } else {
-      return await render500Page(err, allPageIds, contextProps, url)
+      return await render500Page(err, allPageIds, pageContext, url)
     }
   }
 
@@ -141,15 +141,15 @@ async function renderPage({
 
 async function renderPageId(
   pageId: string,
-  contextProps: Record<string, unknown>,
+  pageContext: Record<string, unknown>,
   url: string,
-  contextPropsAlreadyFetched: boolean = false,
-  isContextPropsRequest: boolean = false
+  pageContextAlreadyFetched: boolean = false,
+  isPageContextRequest: boolean = false
 ) {
-  const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, false)
+  const renderData = await getRenderData(pageId, pageContext, url, pageContextAlreadyFetched, false)
 
-  if (isContextPropsRequest) {
-    const renderResult = serializeContextProps(renderData)
+  if (isPageContextRequest) {
+    const renderResult = serializePageContext(renderData)
     return renderResult
   } else {
     const renderResult = await renderHtmlDocument(renderData)
@@ -159,22 +159,22 @@ async function renderPageId(
 
 async function prerenderPage(
   pageId: string,
-  contextProps: Record<string, unknown>,
+  pageContext: Record<string, unknown>,
   url: string,
-  contextPropsAlreadyFetched: boolean,
-  contextPropsNeeded: boolean
+  pageContextAlreadyFetched: boolean,
+  pageContextNeeded: boolean
 ) {
-  const renderData = await getRenderData(pageId, contextProps, url, contextPropsAlreadyFetched, true)
+  const renderData = await getRenderData(pageId, pageContext, url, pageContextAlreadyFetched, true)
   const htmlDocument = await renderHtmlDocument(renderData)
   assertUsage(
     typeof htmlDocument === 'string',
     "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
   )
-  if (!contextPropsNeeded) {
-    return { htmlDocument, contextPropsSerialized: null }
+  if (!pageContextNeeded) {
+    return { htmlDocument, pageContextSerialized: null }
   }
-  const contextPropsSerialized = serializeContextProps(renderData)
-  return { htmlDocument, contextPropsSerialized }
+  const pageContextSerialized = serializePageContext(renderData)
+  return { htmlDocument, pageContextSerialized }
 }
 
 async function renderStatic404Page() {
@@ -184,54 +184,54 @@ async function renderStatic404Page() {
     return null
   }
   const url = '/fake-404-url' // A `url` is needed for `applyViteHtmlTransform`
-  const contextProps = { is404: true }
-  const contextPropsNeeded = false // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no client-side routing.
-  return prerenderPage(errorPageId, contextProps, url, false, contextPropsNeeded)
+  const pageContext = { is404: true }
+  const pageContextNeeded = false // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no client-side routing.
+  return prerenderPage(errorPageId, pageContext, url, false, pageContextNeeded)
 }
 
 async function getRenderData(
   pageId: string,
-  contextProps: Record<string, unknown>,
+  pageContext: Record<string, unknown>,
   url: string,
-  contextPropsAlreadyFetched: boolean,
+  pageContextAlreadyFetched: boolean,
   isPreRendering: boolean
 ) {
   const { Page, pageFilePath } = await getPage(pageId)
 
   const pageFunctions = await getPageFunctions(pageId)
-  const { addContextPropsFunction, passToClient } = pageFunctions
+  const { addPageContextFunction, passToClient } = pageFunctions
 
-  if (!contextPropsAlreadyFetched && addContextPropsFunction) {
-    const contextPropsAddendum = await addContextPropsFunction.addContextProps({
+  if (!pageContextAlreadyFetched && addPageContextFunction) {
+    const pageContextAddendum = await addPageContextFunction.addPageContext({
       Page,
-      contextProps,
+      pageContext,
       // @ts-ignore
       get pageProps() {
         assertUsage(
           false,
-          '`pageProps` is deprecated. See `BREAKING CHANGE` in `CHANGELOG.md`. (You are using `pageProps` in `addContextProps({ pageProps })` in ' +
-            addContextPropsFunction?.filePath +
+          '`pageProps` is deprecated. See `BREAKING CHANGE` in `CHANGELOG.md`. (You are using `pageProps` in `addPageContext({ pageProps })` in ' +
+            addPageContextFunction?.filePath +
             ').'
         )
       }
     })
     assertUsage(
-      isPlainObject(contextPropsAddendum),
-      `The \`addContextProps()\` hook exported by ${addContextPropsFunction.filePath} should return a plain JavaScript object.`
+      isPlainObject(pageContextAddendum),
+      `The \`addPageContext()\` hook exported by ${addPageContextFunction.filePath} should return a plain JavaScript object.`
     )
-    Object.assign(contextProps, contextPropsAddendum)
+    Object.assign(pageContext, pageContextAddendum)
   }
 
-  const contextProps__client: Record<string, unknown> = {}
+  const pageContext__client: Record<string, unknown> = {}
   if (isErrorPage(pageId)) {
-    assert(typeof contextProps.is404 === 'boolean')
-    const pageProps = (contextProps.pageProps as Record<string, unknown>) || {}
-    pageProps.is404 = pageProps.is404 || contextProps.is404
-    contextProps.pageProps = pageProps
+    assert(typeof pageContext.is404 === 'boolean')
+    const pageProps = (pageContext.pageProps as Record<string, unknown>) || {}
+    pageProps.is404 = pageProps.is404 || pageContext.is404
+    pageContext.pageProps = pageProps
     passToClient.push(...['pageProps', 'is404'])
   }
   passToClient.forEach((prop) => {
-    contextProps__client[prop] = contextProps[prop]
+    pageContext__client[prop] = pageContext[prop]
   })
 
   return {
@@ -239,8 +239,8 @@ async function getRenderData(
     pageId,
     pageFilePath,
     pageFunctions,
-    contextProps,
-    contextProps__client,
+    pageContext,
+    pageContext__client,
     url,
     isPreRendering
   }
@@ -248,8 +248,8 @@ async function getRenderData(
 
 type RenderData = {
   Page: unknown
-  contextProps: Record<string, unknown>
-  contextProps__client: Record<string, unknown>
+  pageContext: Record<string, unknown>
+  pageContext__client: Record<string, unknown>
   url: string
   pageId: string
   pageFilePath: string
@@ -257,23 +257,23 @@ type RenderData = {
   isPreRendering: boolean
 }
 
-function serializeContextProps({ contextProps__client }: RenderData) {
-  const contextPropsSerialized = stringify({
-    contextProps: contextProps__client
+function serializePageContext({ pageContext__client }: RenderData) {
+  const pageContextSerialized = stringify({
+    pageContext: pageContext__client
   })
-  return contextPropsSerialized
+  return pageContextSerialized
 }
 async function renderHtmlDocument({
   Page,
-  contextProps,
-  contextProps__client,
+  pageContext,
+  pageContext__client,
   url,
   pageId,
   pageFilePath,
   pageFunctions,
   isPreRendering
 }: RenderData) {
-  const { renderFunction, addContextPropsFunction } = pageFunctions
+  const { renderFunction, addPageContextFunction } = pageFunctions
 
   const { isProduction = false } = getSsrEnv()
   let clientManifest: null | ViteManifest = null
@@ -286,7 +286,7 @@ async function renderHtmlDocument({
 
   const renderResult: unknown = await renderFunction.render({
     Page,
-    contextProps,
+    pageContext,
     // @ts-ignore
     get pageProps() {
       assertUsage(
@@ -313,8 +313,8 @@ async function renderHtmlDocument({
   // Inject Vite transformations
   htmlDocument = await applyViteHtmlTransform(htmlDocument, url)
 
-  // Inject contextProps__client
-  htmlDocument = injectPageInfo(htmlDocument, contextProps__client, pageId)
+  // Inject pageContext__client
+  htmlDocument = injectPageInfo(htmlDocument, pageContext__client, pageId)
 
   // Inject script
   const browserFilePath = await getBrowserFilePath(pageId)
@@ -326,7 +326,7 @@ async function renderHtmlDocument({
   dependencies.add(pageFilePath)
   dependencies.add(browserFilePath)
   dependencies.add(renderFunction.filePath)
-  if (addContextPropsFunction) dependencies.add(addContextPropsFunction.filePath)
+  if (addPageContextFunction) dependencies.add(addPageContextFunction.filePath)
   const preloadTags = await getPreloadTags(Array.from(dependencies), clientManifest, serverManifest)
   htmlDocument = injectPreloadTags(htmlDocument, preloadTags)
 
@@ -350,11 +350,11 @@ async function getPage(pageId: string) {
 type PageFunctions = {
   renderFunction: {
     filePath: string
-    render: (arg1: { Page: unknown; contextProps: Record<string, unknown> }) => unknown
+    render: (arg1: { Page: unknown; pageContext: Record<string, unknown> }) => unknown
   }
-  addContextPropsFunction?: {
+  addPageContextFunction?: {
     filePath: string
-    addContextProps: (arg1: { Page: unknown; contextProps: Record<string, unknown> }) => unknown
+    addPageContext: (arg1: { Page: unknown; pageContext: Record<string, unknown> }) => unknown
   }
   prerenderFunction?: {
     filePath: string
@@ -366,7 +366,7 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
   const serverFiles = await getServerFiles(pageId)
 
   let renderFunction
-  let addContextPropsFunction
+  let addPageContextFunction
   let prerenderFunction
   const passToClient: string[] = []
 
@@ -375,7 +375,7 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
 
     assertUsage(
       !('setPageProps' in fileExports),
-      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
+      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
         filePath +
         '`.)'
     )
@@ -383,10 +383,10 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
     const render = fileExports.render || fileExports.default?.render
     assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
 
-    const addContextProps = fileExports.addContextProps || fileExports.default?.addContextProps
+    const addPageContext = fileExports.addPageContext || fileExports.default?.addPageContext
     assertUsage(
-      !addContextProps || isCallable(addContextProps),
-      `The \`addContextProps()\` hook defined in ${filePath} should be a function.`
+      !addPageContext || isCallable(addPageContext),
+      `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
     )
 
     const passToClient_ = fileExports.passToClient || fileExports.default?.passToClient
@@ -407,9 +407,9 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
     if (render) {
       renderFunction = renderFunction || { render, filePath }
     }
-    if (addContextProps) {
-      addContextPropsFunction = addContextPropsFunction || {
-        addContextProps,
+    if (addPageContext) {
+      addPageContextFunction = addPageContextFunction || {
+        addPageContext,
         filePath
       }
     }
@@ -425,7 +425,7 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
 
   return {
     renderFunction,
-    addContextPropsFunction,
+    addPageContextFunction,
     passToClient,
     prerenderFunction
   }
@@ -502,9 +502,9 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
-function injectPageInfo(htmlDocument: string, contextProps__client: Record<string, unknown>, pageId: string): string {
-  const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(pageId)}, contextProps: ${devalue(
-    contextProps__client
+function injectPageInfo(htmlDocument: string, pageContext__client: Record<string, unknown>, pageId: string): string {
+  const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(pageId)}, pageContext: ${devalue(
+    pageContext__client
   )}}</script>`
   return injectEnd(htmlDocument, injection)
 }
@@ -597,14 +597,14 @@ function assertArguments(...args: unknown[]) {
     )
   }
   assertUsage(
-    !hasProp(argObject, 'contextProps') || typeof argObject.contextProps === 'object',
-    '`renderPage({ contextProps })`: argument `contextProps` should be a `typeof contextProps === "object"`.'
+    !hasProp(argObject, 'pageContext') || typeof argObject.pageContext === 'object',
+    '`renderPage({ pageContext })`: argument `pageContext` should be a `typeof pageContext === "object"`.'
   )
   assertUsage(
     args.length === 1,
     '`renderPage({ /*...*/ })`: all arguments should be passed as a single argument object.'
   )
-  const unknownArgs = Object.keys(argObject).filter((key) => !['url', 'contextProps'].includes(key))
+  const unknownArgs = Object.keys(argObject).filter((key) => !['url', 'pageContext'].includes(key))
   assertUsage(
     unknownArgs.length === 0,
     '`renderPage({ /*...*/ })`: unknown arguments [' +
@@ -693,7 +693,7 @@ function isFileRequest(url: string) {
 async function render500Page(
   err: unknown,
   allPageIds: string[],
-  contextProps: Record<string, unknown>,
+  pageContext: Record<string, unknown>,
   url: string
 ): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
@@ -711,10 +711,10 @@ async function render500Page(
     }
   }
 
-  Object.assign(contextProps, { is404: false })
+  Object.assign(pageContext, { is404: false })
   let renderResult
   try {
-    renderResult = await renderPageId(errorPageId, contextProps, url)
+    renderResult = await renderPageId(errorPageId, pageContext, url)
   } catch (err) {
     // We purposely swallow the error, because another error was already shown to the user in `handleErr()`.
     // (And chances are high that this is the same error.)
@@ -727,7 +727,7 @@ async function render500Page(
   return { nothingRendered: false, renderResult, statusCode: 500 }
 }
 
-function renderContextPropsError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
+function renderPageContextError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
   if (err) {
     handleErr(err)
   }
@@ -736,9 +736,9 @@ function renderContextPropsError(err?: unknown): { nothingRendered: false; rende
   })
   return { nothingRendered: false, renderResult, statusCode: 500 }
 }
-function renderContextProps404PageDoesNotExist(): { nothingRendered: false; renderResult: string; statusCode: 200 } {
+function renderPageContext404PageDoesNotExist(): { nothingRendered: false; renderResult: string; statusCode: 200 } {
   const renderResult = stringify({
-    contextProps404PageDoesNotExist: true
+    pageContext404PageDoesNotExist: true
   })
   return { nothingRendered: false, renderResult, statusCode: 200 }
 }

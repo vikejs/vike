@@ -1,24 +1,24 @@
 import { getUrlParts, getUrlPathname } from './parseUrl'
 import { assert } from './assert'
 import { slice } from './slice'
-const contextPropsUrlSuffix = '/index.contextProps.json'
+const pageContextUrlSuffix = '/index.pageContext.json'
 
 export { getFileUrl }
-export { isContextPropsUrl }
-export { removeContextPropsUrlSuffix }
+export { isPageContextUrl }
+export { removePageContextUrlSuffix }
 
 /**
  (`/`, `.html`) -> `/index.html`
- (`/`, `.contextProps`) -> `/index.contextProps.json`
+ (`/`, `.pageContext`) -> `/index.pageContext.json`
  (`/about`, `.html`) -> `/about/index.html`
- (`/about/`, `.contextProps`) -> `/about/index.contextProps.json`
+ (`/about/`, `.pageContext`) -> `/about/index.pageContext.json`
  (`/news/hello`, `.html`) -> `/news/hello/index.html`
- (`/product/42?review=true#reviews`, `.contextProps`) -> `/product/42/index.contextProps?review=true#reviews`
+ (`/product/42?review=true#reviews`, `.pageContext`) -> `/product/42/index.pageContext?review=true#reviews`
  ...
 */
 function getFileUrl(
   url: string,
-  fileExtension: '.html' | '.contextProps.json',
+  fileExtension: '.html' | '.pageContext.json',
   doNotCreateExtraDirectory?: true
 ): string {
   assert(url.startsWith('/'), { url })
@@ -36,16 +36,16 @@ function getFileUrl(
   return `${pathname}${fileBase}${fileExtension}${searchString}${hashString}`
 }
 
-function isContextPropsUrl(url: string): boolean {
+function isPageContextUrl(url: string): boolean {
   const urlPathname = getUrlPathname(url)
-  return urlPathname.endsWith(contextPropsUrlSuffix)
+  return urlPathname.endsWith(pageContextUrlSuffix)
 }
-function removeContextPropsUrlSuffix(url: string): string {
-  assert(isContextPropsUrl(url), { url })
+function removePageContextUrlSuffix(url: string): string {
+  assert(isPageContextUrl(url), { url })
   let { origin, pathname, searchString, hashString } = getUrlParts(url)
   assert(url === `${origin}${pathname}${searchString}${hashString}`, { url })
-  assert(pathname.endsWith(contextPropsUrlSuffix), { url })
-  pathname = slice(pathname, 0, -1 * contextPropsUrlSuffix.length)
+  assert(pathname.endsWith(pageContextUrlSuffix), { url })
+  pathname = slice(pathname, 0, -1 * pageContextUrlSuffix.length)
   if (pathname === '') pathname = '/'
   return `${origin}${pathname}${searchString}${hashString}`
 }

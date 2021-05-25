@@ -1,18 +1,18 @@
 import { assertUsage } from '../utils'
 
-export { getContextPropsProxy }
+export { getPageContextProxy }
 
-function getContextPropsProxy(contextProps: Record<string, unknown>) {
-  return new Proxy(contextProps, { get })
+function getPageContextProxy(pageContext: Record<string, unknown>) {
+  return new Proxy(pageContext, { get })
 
   function get(_: never, prop: string) {
-    if (prop in contextProps) return contextProps[prop]
+    if (prop in pageContext) return pageContext[prop]
     assertUsage(
       false,
       [
-        `\`contextProps.${prop}\` is not available on the client.`,
+        `\`pageContext.${prop}\` is not available on the client.`,
         `Make sure that \`passToClient.includes('${prop}')\`.`,
-        `(Currently: \`passToClient == [${Object.keys(contextProps)
+        `(Currently: \`passToClient == [${Object.keys(pageContext)
           .filter((prop) => !['urlFull', 'urlPathname', 'urlParsed'].includes(prop))
           .map((prop) => `"${prop}"`)
           .join(',')}]\`.)`

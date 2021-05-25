@@ -1,4 +1,4 @@
-export * from './addUrlToContextProps'
+export * from './addUrlToPageContext'
 export * from './assert'
 export * from './cast'
 export * from './isCallable'

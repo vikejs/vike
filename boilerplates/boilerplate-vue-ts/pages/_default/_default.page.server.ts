@@ -1,7 +1,7 @@
 import { renderToString } from '@vue/server-renderer'
 import { html } from 'vite-plugin-ssr'
 import { createApp } from './app'
-import { ContextProps, VueComponent } from './types'
+import { PageContext, VueComponent } from './types'
 import logoUrl from './logo.svg'
 
 export { render }
@@ -10,8 +10,8 @@ export { passToClient }
 // See https://github.com/brillout/vite-plugin-ssr#data-fetching
 const passToClient = ['pageProps', 'routeParams']
 
-async function render({ Page, contextProps }: { Page: VueComponent; contextProps: ContextProps }) {
-  const app = createApp(Page, contextProps)
+async function render({ Page, pageContext }: { Page: VueComponent; pageContext: PageContext }) {
+  const app = createApp(Page, pageContext)
   const appHtml = await renderToString(app)
   const title = 'Vite SSR app'
   const description = 'An app using Vite and vite-plugin-ssr.'

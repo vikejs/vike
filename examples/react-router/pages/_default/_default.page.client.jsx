@@ -6,10 +6,10 @@ import { getPage } from "vite-plugin-ssr/client";
 hydrate();
 
 async function hydrate() {
-  const { Page, contextProps } = await getPage();
+  const { Page, pageContext } = await getPage();
   ReactDOM.hydrate(
     <BrowserRouter>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageContext.pageProps} />
     </BrowserRouter>,
     document.getElementById("react-root")
   );

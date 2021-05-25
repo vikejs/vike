@@ -16,10 +16,10 @@ type PageId = string
 async function route(
   url: string,
   allPageIds: string[],
-  contextProps: Record<string, unknown>
+  pageContext: Record<string, unknown>
 ): Promise<null | {
   pageId: PageId
-  contextPropsAddendum: Record<string, unknown>
+  pageContextAddendum: Record<string, unknown>
 }> {
   assertUsage(
     allPageIds.length > 0,
@@ -54,7 +54,7 @@ async function route(
 
       // Route with `.page.route.js` defined route function
       if (isCallable(pageRoute)) {
-        const { matchValue, routeParams } = resolveRouteFunction(pageRoute, urlPathname, contextProps, pageRouteFile)
+        const { matchValue, routeParams } = resolveRouteFunction(pageRoute, urlPathname, pageContext, pageRouteFile)
         return { pageId, matchValue, routeParams }
       }
 
@@ -67,7 +67,7 @@ async function route(
   if (!winner) return null
 
   const { pageId, routeParams } = winner
-  return { pageId, contextPropsAddendum: { routeParams } }
+  return { pageId, pageContextAddendum: { routeParams } }
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -201,13 +201,13 @@ function resolveRouteString(routeString: string, urlPathname: string) {
 function resolveRouteFunction(
   routeFunction: Function,
   urlPathname: string,
-  contextProps: Record<string, unknown>,
+  pageContext: Record<string, unknown>,
   routeFilePath: string
 ): {
   matchValue: boolean | number
   routeParams: Record<string, unknown>
 } {
-  let result = routeFunction({ url: urlPathname, contextProps })
+  let result = routeFunction({ url: urlPathname, pageContext })
   if ([true, false].includes(result)) {
     result = { match: result }
   }
@@ -226,17 +226,17 @@ function resolveRouteFunction(
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
   )
   let routeParams = {}
-  if (hasProp(result, 'contextProps')) {
+  if (hasProp(result, 'pageContext')) {
     assertUsage(
-      isPlainObject(result.contextProps),
-      `The \`contextProps\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
+      isPlainObject(result.pageContext),
+      `The \`pageContext\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
     )
-    routeParams = result.contextProps
+    routeParams = result.pageContext
   }
   Object.keys(result).forEach((key) => {
     assertUsage(
-      key === 'match' || key === 'contextProps',
-      `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'contextProps'].`
+      key === 'match' || key === 'pageContext',
+      `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'pageContext'].`
     )
   })
   return {

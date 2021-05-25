@@ -1,7 +1,7 @@
 import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isNodejs } from '../../utils'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
-import { getContextPropsProxy } from '../getContextPropsProxy'
+import { getPageContextProxy } from '../getPageContextProxy'
 import { throttle } from '../../utils/throttle'
 
 export { useClientRouter }
@@ -20,11 +20,11 @@ function useClientRouter({
 }: {
   render: ({
     Page,
-    contextProps,
+    pageContext,
     isHydration
   }: {
     Page: any
-    contextProps: any
+    pageContext: any
     isHydration: boolean
   }) => Promise<void> | void
   onTransitionStart: () => void
@@ -68,9 +68,9 @@ function useClientRouter({
       }
     }
 
-    let { Page, contextProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
-    assert(contextProps.urlFull && contextProps.urlPathname)
-    contextProps = getContextPropsProxy(contextProps)
+    let { Page, pageContext } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
+    assert(pageContext.urlFull && pageContext.urlPathname)
+    pageContext = getPageContextProxy(pageContext)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -89,13 +89,13 @@ function useClientRouter({
     renderPromise = (async () => {
       await render({
         Page,
-        contextProps,
+        pageContext,
         isHydration: isFirstPageRender && url === urlFullOriginal,
         // @ts-ignore
         get pageProps() {
           assertUsage(
             false,
-            "`pageProps` in `useClientRouter(({ pageProps }) => {})` has been replaced with `useClientRouter(({ contextProps }) => {})`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
+            "`pageProps` in `useClientRouter(({ pageProps }) => {})` has been replaced with `useClientRouter(({ pageContext }) => {})`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
           )
         }
       })

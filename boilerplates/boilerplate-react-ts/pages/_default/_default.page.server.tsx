@@ -2,7 +2,7 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageLayout } from "./PageLayout";
 import { html } from "vite-plugin-ssr";
-import { ContextProps, ReactComponent } from "./types";
+import { PageContext, ReactComponent } from "./types";
 import logoUrl from "./logo.svg";
 
 export { render };
@@ -13,14 +13,14 @@ const passToClient = ["pageProps"];
 
 function render({
   Page,
-  contextProps,
+  pageContext,
 }: {
   Page: ReactComponent;
-  contextProps: ContextProps;
+  pageContext: PageContext;
 }) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageContext.pageProps} />
     </PageLayout>
   );
   const title = "Vite SSR app";

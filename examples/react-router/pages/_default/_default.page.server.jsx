@@ -8,11 +8,11 @@ export { passToClient };
 
 const passToClient = ["pageProps"];
 
-async function render({ Page, contextProps }) {
-  const { url } = contextProps;
+async function render({ Page, pageContext }) {
+  const { url } = pageContext;
   const pageHtml = renderToString(
     <StaticRouter location={url}>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageContext.pageProps} />
     </StaticRouter>
   );
   return html`<!DOCTYPE html>
