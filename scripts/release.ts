@@ -42,6 +42,7 @@ async function gitPush() {
 }
 
 async function changelog() {
+  // npx conventional-changelog -p angular -i CHANGELOG.md -s --pkg src/
   await run('npx', ['conventional-changelog', '-p', 'angular', '-i', 'CHANGELOG.md', '-s', '--pkg', DIR_SRC])
 }
 async function commit(tag: string) {
