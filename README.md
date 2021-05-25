@@ -857,7 +857,7 @@ export default `/product/:productId/:productView`
 export default ({ url }) => {
   if (! url.startsWith('/product/')) return false
   const [productId, productView] = url.split('/').slice(2)
-  return { match: true, pageContext: { productId, productView } }
+  return { match: true, routeParams: { productId, productView } }
 }
 ```
 
@@ -2261,8 +2261,8 @@ export default ({ url, pageContext }) {
   filmId = url.split('/')[2]
   return {
     match: true,
-    // Add `filmId` to `pageContext`
-    pageContext: { filmId }
+    // We make `filmId` available at `pageContext.routeParams.filmId`
+    routeParams: { filmId }
   }
 }
 ```

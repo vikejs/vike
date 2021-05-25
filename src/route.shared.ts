@@ -226,17 +226,17 @@ function resolveRouteFunction(
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
   )
   let routeParams = {}
-  if (hasProp(result, 'pageContext')) {
+  if (hasProp(result, 'routeParams')) {
     assertUsage(
-      isPlainObject(result.pageContext),
-      `The \`pageContext\` returned by the Route function ${routeFilePath} should be a plain JavaScript object.`
+      isPlainObject(result.routeParams),
+      `The \`routeParams\` object returned by the Route Function ${routeFilePath} should be a plain JavaScript object.`
     )
-    routeParams = result.pageContext
+    routeParams = result.routeParams
   }
   Object.keys(result).forEach((key) => {
     assertUsage(
-      key === 'match' || key === 'pageContext',
-      `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'pageContext'].`
+      key === 'match' || key === 'routeParams',
+      `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams'].`
     )
   })
   return {
