@@ -6,7 +6,7 @@ import { Component, PageContext } from './types'
 export { passToClient }
 export { render }
 
-const passToClient = ['pageProps', 'docTitle', 'routeParams']
+const passToClient = ['pageProps', 'documentProps', 'routeParams']
 
 async function render({ Page, pageContext }: { Page: Component; pageContext: PageContext }) {
   const app = createApp(Page, pageContext)
@@ -15,7 +15,7 @@ async function render({ Page, pageContext }: { Page: Component; pageContext: Pag
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${pageContext.docTitle || 'Demo'}</title>
+        <title>${pageContext.documentProps?.title || 'Demo'}</title>
       </head>
       <body>
         <div id="app">${html.dangerouslySetHtml(appHtml)}</div>

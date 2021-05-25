@@ -2112,10 +2112,11 @@ const { hydrationPromise } = useClientRouter({
       await renderToDom(page)
     }
 
-    // We use `pageContext.docTitle` to update `<title>`.
-    // (Make sure to return `docTitle` in your `addPageContext()` hook and add it to `passToClient`.)
+    // We use `pageContext.documentProps.title` to update `<title>`.
+    // (Make sure to add it to `export const passToClient = ['pageProps, 'documentProps']`,
+    // and your pages can then return `documentProps` in their `addPageContext()` hook.)
     document.title =
-      pageContext.docTitle ||
+      pageContext.documentProps?.title ||
       // A default title
       'Demo'
   },

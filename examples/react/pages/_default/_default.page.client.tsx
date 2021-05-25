@@ -16,7 +16,7 @@ const { hydrationPromise } = useClientRouter({
     } else {
       ReactDOM.render(page, container);
     }
-    document.title = pageContext.docTitle || "Demo";
+    document.title = pageContext.documentProps?.title || "Demo";
   },
   onTransitionStart,
   onTransitionEnd,

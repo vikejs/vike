@@ -9,7 +9,9 @@ type PageContext = {
   pageProps: {
     movies: Movie[]
   }
-  docTitle: string
+  documentProps: {
+    title: string
+  }
 }
 
 async function addPageContext(): Promise<PageContext> {
@@ -21,7 +23,7 @@ async function addPageContext(): Promise<PageContext> {
       movies: filterMoviesData(movies)
     },
     // The page's <title>
-    docTitle: getTitle(movies)
+    documentProps: { title: getTitle(movies) }
   }
 }
 
@@ -55,7 +57,7 @@ async function prerender() {
         pageProps: {
           movies: filterMoviesData(movies)
         },
-        docTitle: getTitle(movies)
+        documentProps: { title: getTitle(movies) }
       }
     },
     ...movies.map((movie) => {
@@ -70,7 +72,7 @@ async function prerender() {
           pageProps: {
             movie: filterMovieData(movie)
           },
-          docTitle: movie.title
+          documentProps: { title: movie.title }
         }
       }
     })

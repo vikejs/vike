@@ -11,7 +11,7 @@ const { hydrationPromise } = useClientRouter({
     } else {
       app.changePage(Page, pageContext)
     }
-    document.title = pageContext.docTitle || 'Demo'
+    document.title = pageContext.documentProps?.title || 'Demo'
   },
   onTransitionStart,
   onTransitionEnd

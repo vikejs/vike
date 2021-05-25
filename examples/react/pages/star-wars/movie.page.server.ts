@@ -11,7 +11,9 @@ type PageContext = {
   pageProps: {
     movie: MovieDetails;
   };
-  docTitle: string;
+  documentProps: {
+    title: string;
+  };
 };
 
 async function addPageContext({
@@ -28,21 +30,23 @@ async function addPageContext({
   // the client; we want to minimize what is sent over the network.
   movie = filterMovieData(movie);
 
-  // The page's <title>
-  const docTitle = movie.title;
+  const { title } = movie;
 
   return {
     pageProps: {
       movie,
     },
-    docTitle,
+    documentProps: {
+      // The page's <title>
+      title,
+    },
   };
 }
 
 function filterMovieData(
   movie: MovieDetails & Record<string, unknown>
 ): MovieDetails {
-  const { title, release_date, director, producer } = movie;
-  movie = { title, release_date, director, producer };
+  const { id, title, release_date, director, producer } = movie;
+  movie = { id, title, release_date, director, producer };
   return movie;
 }

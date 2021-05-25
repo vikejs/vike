@@ -6,7 +6,7 @@ import { PageLayout } from "./PageLayout";
 export { render };
 export { passToClient };
 
-const passToClient = ["pageProps", "docTitle"];
+const passToClient = ["pageProps", "documentProps"];
 
 function render({
   Page,
@@ -24,7 +24,7 @@ function render({
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${pageContext.docTitle || "Demo"}</title>
+        <title>${pageContext.documentProps?.title || "Demo"}</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySetHtml(pageContent)}</div>

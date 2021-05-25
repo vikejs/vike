@@ -48,7 +48,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
     // Therefore only the serialized `pageContext` tell us the original HTML.
     expect(html).toContain(
-      `<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", pageContext: (function(a){return {pageProps:a,docTitle:a${
+      `<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", pageContext: (function(a){return {pageProps:a,documentProps:a${
         viewFramework === 'vue' ? ',routeParams:{}' : ''
       }}}(void 0))}</script>`
     )
