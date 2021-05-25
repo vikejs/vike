@@ -1,5 +1,5 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
-import { addUrlToPageContext, getUrlFull, getUrlPathname } from '../utils'
+import { addPageIdToPageContext, addUrlToPageContext, getUrlFull, getUrlPathname } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { getPageContextProxy } from './getPageContextProxy'
 
@@ -58,18 +58,18 @@ function getPageInfo(): {
   pageId: string
   pageContext: Record<string, unknown>
 } {
-  const pageId = window.__vite_plugin_ssr.pageId
-  const pageContext = {}
-  Object.assign(pageContext, window.__vite_plugin_ssr.pageContext)
+  const pageContext: Record<string, unknown> = {}
+  Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
   addUrlToPageContext(pageContext, urlFullOriginal)
+
+  assert(typeof pageContext.pageId === 'string')
+  const { pageId } = pageContext
+
   return { pageId, pageContext }
 }
 
 declare global {
   interface Window {
-    __vite_plugin_ssr: {
-      pageId: string
-      pageContext: Record<string, unknown>
-    }
+    __vite_plugin_ssr__pageContext: Record<string, unknown>
   }
 }

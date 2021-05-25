@@ -22,7 +22,9 @@ import {
   getUrlPathname,
   addUrlToPageContext,
   getUrlFull,
-  isPlainObject
+  isPlainObject,
+  addPageIdToPageContext,
+  assertPageContext
 } from './utils'
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
@@ -121,6 +123,7 @@ async function renderPage({
 
   const { pageId, pageContextAddendum } = routeResult
   Object.assign(pageContext, pageContextAddendum)
+  addPageIdToPageContext(pageContext, pageId)
 
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
@@ -164,6 +167,10 @@ async function prerenderPage(
   pageContextAlreadyFetched: boolean,
   pageContextNeeded: boolean
 ) {
+  addUrlToPageContext(pageContext, url)
+  addPageIdToPageContext(pageContext, pageId)
+  assertPageContext(pageContext)
+
   const renderData = await getRenderData(pageId, pageContext, url, pageContextAlreadyFetched, true)
   const htmlDocument = await renderHtmlDocument(renderData)
   assertUsage(
@@ -230,6 +237,8 @@ async function getRenderData(
     pageContext.pageProps = pageProps
     passToClient.push(...['pageProps', 'is404'])
   }
+  assert(pageContext.pageId === pageId)
+  passToClient.push('pageId')
   passToClient.forEach((prop) => {
     pageContext__client[prop] = pageContext[prop]
   })
@@ -503,9 +512,8 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 }
 
 function injectPageInfo(htmlDocument: string, pageContext__client: Record<string, unknown>, pageId: string): string {
-  const injection = `<script>window.__vite_plugin_ssr = {pageId: ${devalue(pageId)}, pageContext: ${devalue(
-    pageContext__client
-  )}}</script>`
+  assert(pageContext__client.pageId === pageId)
+  const injection = `<script>window.__vite_plugin_ssr__pageContext = ${devalue(pageContext__client)}</script>`
   return injectEnd(htmlDocument, injection)
 }
 
@@ -662,7 +670,7 @@ async function getPagesAndRoutesInfo(): Promise<string> {
           const routeFile = pageRouteFile
           routeSrc = `${routeType} defined in \`${routeFile}\``
         }
-        return `(${i+1}) \`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
+        return `(${i + 1}) \`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
       })
       .join(', ')
   ].join(' ')

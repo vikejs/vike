@@ -1,3 +1,4 @@
+/* TODO: Check whether `@vite-plugin-ssr/vue-router` needs this file and, if not, remove it.
 import { route, getPageIds, getErrorPageId } from '../../route.shared'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 import { assertUsage } from '../../utils'
@@ -28,3 +29,4 @@ async function retrievePageId(url: string): Promise<string> {
   assertUsage(errorPageId, `No page is matching the URL \`${url}\`. Make sure to define an \`_error.page.js\`.`)
   return errorPageId
 }
+*/

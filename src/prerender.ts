@@ -83,7 +83,7 @@ async function prerender({
         assert(pageContext === null || isPlainObject(pageContext))
         if (!('url' in prerenderData)) {
           prerenderData[url] = {
-            pageContext: { url },
+            pageContext: {},
             noPrenderPageContext: true,
             prerenderSourceFile
           }

@@ -6,7 +6,7 @@ test("page content is rendered to HTML", async () => {
   const html = await fetchHtml("/");
   expect(html).toContain("<h1>Redux-Controlled Counter</h1>");
   expect(html).toContain("Count: <!-- -->0<!-- -->.");
-  expect(html).toContain("pageContext: {PRELOADED_STATE:{value:0}");
+  expect(html).toContain("<script>window.__vite_plugin_ssr__pageContext = {PRELOADED_STATE:{value:0}");
 });
 
 test("page content is rendered to DOM", async () => {

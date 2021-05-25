@@ -38,6 +38,7 @@ async function retrievePageContext(url: string): Promise<Record<string, unknown>
   assert(isPlainObject(pageContext))
 
   addUrlToPageContext(pageContext, url)
+  assert(pageContext.pageId)
 
   return pageContext
 
