@@ -16,8 +16,13 @@ function render({ Page, pageContext }) {
       <Page {...pageContext.pageProps} />
     </PageLayout>
   );
-  const title = "Vite SSR app";
-  const description = "An app using Vite and vite-plugin-ssr.";
+
+  // See https://github.com/brillout/vite-plugin-ssr#html-head
+  const title = pageContext.documentProps?.title || "Vite SSR app";
+  const description =
+    pageContext.documentProps?.description ||
+    "An app using Vite and vite-plugin-ssr.";
+
   return html`<!DOCTYPE html>
     <html lang="en">
       <head>
