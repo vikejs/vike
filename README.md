@@ -1038,9 +1038,9 @@ import { renderToHtml } from 'some-view-framework'
 export { render }
 
 async function render({ Page, pageContext }) {
-  // We use `pageContext.docHtml` which pages can define with their `addPageContext()` hook
-  let title = pageContext.docHtml.title
-  let description = pageContext.docHtml.description
+  // We use `pageContext.documentProps` which pages define in their `addPageContext()` hook
+  let title = pageContext.documentProps.title
+  let description = pageContext.documentProps.description
 
   // Defaults
   title = title || 'SpaceX'
@@ -1065,19 +1065,19 @@ async function render({ Page, pageContext }) {
 export { addPageContext }
 
 function addPageContext() {
-  const docHtml = {
+  const documentProps = {
     // This title and description will override the defaults
     title: 'About SpaceX',
     description: 'Our mission is to explore the galaxy.'
   }
-  return { docHtml }
+  return { documentProps }
 }
 ```
 
 If you want to define `<head>` tags by some deeply nested view component:
- 1. Add `docHtml` to `passToClient`.
- 2. Pass `pageContext.docHtml` [to all your components](#pass-pagecontext-to-anyall-components).
- 3. Modify `pageContext.docHtml` in your deeply nested component.
+ 1. Add `documentProps` to `passToClient`.
+ 2. Pass `pageContext.documentProps` [to all your components](#pass-pagecontext-to-anyall-components).
+ 3. Modify `pageContext.documentProps` in your deeply nested component.
 
 ```js
 // _default.page.server.js
@@ -1085,21 +1085,21 @@ If you want to define `<head>` tags by some deeply nested view component:
 
 import { html } from 'vite-plugin-ssr'
 
-// We make `pageContext.docHtml` available in the browser.
-export const passToClient = ['pageProps', 'docHtml']
+// We make `pageContext.documentProps` available in the browser.
+export const passToClient = ['pageProps', 'documentProps']
 
 export async function render({ Page, pageContext }) {
-  // Use your view framework to pass `pageContext.docHtml` to all components
+  // Use your view framework to pass `pageContext.documentProps` to all components.
   // of your component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
 
   // What happens here is:
-  // 1. Your view framework passes `docHtml` to all your components
-  // 2. You modify `docHtml` in one of your components
-  // 3. You render the HTML meta tags with `docHtml`
+  // 1. Your view framework passes `documentProps` to all your components
+  // 2. You modify `documentProps` in one of your components
+  // 3. You render the HTML meta tags with `documentProps`
   return html`<html>
     <head>
-      <title>${pageContext.docHtml.title}</title>
-      <meta name="description" content="${pageContext.docHtml.description}">
+      <title>${pageContext.documentProps.title}</title>
+      <meta name="description" content="${pageContext.documentProps.description}">
     </head>
     <body>
       <div id="app">
@@ -1116,9 +1116,9 @@ export async function render({ Page, pageContext }) {
 hydrate()
 
 function hydrate() {
-  // Thanks to the fact that `passToClient.includes('docHtml')`,
-  // `pageContext.docHtml` is available here in the browser.
-  // Use your view framework to pass `pageContext.docHtml` to all components
+  // Thanks to the fact that `passToClient.includes('documentProps')`,
+  // `pageContext.documentProps` is available here in the browser.
+  // Use your view framework to pass `pageContext.documentProps` to all components.
   // of your component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
 }
 ```
@@ -1126,14 +1126,14 @@ function hydrate() {
 ```js
 // Somewhere in a component deep inside your component tree
 
-// Thanks to our previous steps, `docHtml` is available here.
-docHtml.title = 'I was set by some deep component.'
-docHtml.description = 'Me too.'
+// Thanks to our previous steps, `documentProps` is available here.
+documentProps.title = 'I was set by some deep component.'
+documentProps.description = 'Me too.'
 ```
 
 You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet)
 but use such library only if you have a *strong* rationale:
-the solution using `pageContext.docHtml` is considerably simpler and works for the vast majority of cases.
+the solution using `pageContext.documentProps` is considerably simpler and works for the vast majority of cases.
 
 <br/><br/>
 
@@ -1984,8 +1984,8 @@ export { render }
 
 async function render({ Page, pageContext }) {
   // We only include the `<meta name="description">` tag if the page has a description.
-  // (Pages define `pageContext.docHtml.description` with their `addPageContext()` hook.)
-  const description = pageContext.docHtml?.description
+  // (Pages define `pageContext.documentProps.description` with their `addPageContext()` hook.)
+  const description = pageContext.documentProps?.description
   let descriptionTag = ''
   if( description ) {
     // Note how we use the `html` string template tag for an HTML segment.
