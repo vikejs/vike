@@ -1,3 +1,36 @@
+# [0.1.0-beta.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.44...v0.1.0-beta.45) (2021-05-26)
+
+
+### Bug Fixes
+
+* reload glob imports in dev ([#66](https://github.com/brillout/vite-plugin-ssr/issues/66)) ([09b54c0](https://github.com/brillout/vite-plugin-ssr/commit/09b54c0dfd988f42d8237450a2f57e0f4d6abf1a))
+* Route Functions should return `routeParams` instead of `contextProps` (fix [#63](https://github.com/brillout/vite-plugin-ssr/issues/63)) ([e03b918](https://github.com/brillout/vite-plugin-ssr/commit/e03b9185917f94c4b826a83cb0eafb8a6b98bd93))
+
+
+### Features
+
+* always route on the server-side (fix [#73](https://github.com/brillout/vite-plugin-ssr/issues/73)) ([ef3eb3c](https://github.com/brillout/vite-plugin-ssr/commit/ef3eb3ce56ded30d2cffdf86f06096e6fd1529ad))
+
+
+* rename `contextProps` to `pageContext`, and `addContextProps` to `addPageContext` (fix #58) ([aedf9fc](https://github.com/brillout/vite-plugin-ssr/commit/aedf9fc516cc72b3d06128dedd900994a8457767)), closes [#58](https://github.com/brillout/vite-plugin-ssr/issues/58)
+
+
+### BREAKING CHANGES
+
+* Make your Route Functions return
+`{ match: true, routeParams: {/*...*/} }` instead of
+`{ match: true, pageContext: {/*...*/} }` (or
+`{ match: true, contextProps: {/*...*/} }` if you didn't
+rename `contextProps` to `pageContext` yet).
+* Replace all occurences in your source code of `addContextProps` to
+`addPageContext`, and all occurences of `contextProps` to `pageContext`.
+There is no need for semantic replacing: you can simply replace
+text, for example with a linux terminal:
+ - `git ls-files | xargs sed -i "s/addContextProps/addPageContext/g"`
+ - `git ls-files | xargs sed -i "s/contextProps/pageContext/g"`
+
+
+
 # [0.1.0-beta.44](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.43...v0.1.0-beta.44) (2021-05-20)
 
 
