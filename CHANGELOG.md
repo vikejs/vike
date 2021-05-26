@@ -10,24 +10,22 @@
 ### Features
 
 * always route on the server-side (fix [#73](https://github.com/brillout/vite-plugin-ssr/issues/73)) ([ef3eb3c](https://github.com/brillout/vite-plugin-ssr/commit/ef3eb3ce56ded30d2cffdf86f06096e6fd1529ad))
-
-
 * rename `contextProps` to `pageContext`, and `addContextProps` to `addPageContext` (fix #58) ([aedf9fc](https://github.com/brillout/vite-plugin-ssr/commit/aedf9fc516cc72b3d06128dedd900994a8457767)), closes [#58](https://github.com/brillout/vite-plugin-ssr/issues/58)
 
 
 ### BREAKING CHANGES
 
-* Make your Route Functions return
-`{ match: true, routeParams: {/*...*/} }` instead of
-`{ match: true, pageContext: {/*...*/} }` (or
-`{ match: true, contextProps: {/*...*/} }` if you didn't
-rename `contextProps` to `pageContext` yet).
-* Replace all occurences in your source code of `addContextProps` to
-`addPageContext`, and all occurences of `contextProps` to `pageContext`.
-There is no need for semantic replacing: you can simply replace
-text, for example with a linux terminal:
- - `git ls-files | xargs sed -i "s/addContextProps/addPageContext/g"`
- - `git ls-files | xargs sed -i "s/contextProps/pageContext/g"`
+- Replace all occurences in your source code of `addContextProps` to
+  `addPageContext`, and all occurences of `contextProps` to `pageContext`.
+  There is no need for semantic replacing: you can simply replace
+  text, for example with a linux terminal:
+   1. `git ls-files | xargs sed -i "s/addContextProps/addPageContext/g"`
+   2. `git ls-files | xargs sed -i "s/contextProps/pageContext/g"`
+- Make your Route Functions return
+  `{ match: true, routeParams: {/*...*/} }` instead of
+  `{ match: true, pageContext: {/*...*/} }` (or
+  `{ match: true, contextProps: {/*...*/} }` if you didn't
+  rename `contextProps` to `pageContext` yet).
 
 
 
