@@ -40,7 +40,7 @@
     "// Remove caches": "",
     "clean": "npm run clean:all",
     "clean:all": "git clean -Xdf",
-    "clean:build": "rm -rf src/dist/"
+    "clean:build": "rimraf src/dist/"
   },
   "devDependencies": {
     "rimraf": "^3.0.2"
