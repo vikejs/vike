@@ -110,7 +110,9 @@ Simple, full-fledged, do-one-thing-do-it-well.
 - **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; any bug you may encounter will be quickly fixed.
 - **Responsive**. Made with :heart:; GitHub issues are welcome and answered; conversations are welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
 
-To get an idea of what it's like to use `vite-plugin-ssr`, check out the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
+Get an idea of what it's like to use `vite-plugin-ssr` with the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
+
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app. (We recommend to first read the Vue/React tour before getting started.)
 
 <br/><br/>
 
@@ -314,6 +316,8 @@ our render/hydrate function would then need to know what `pageContext` should be
 
 That's it, we have seen most of `vite-plugin-ssr`'s interface;
 not only is `vite-plugin-ssr` flexible but also simple, easy, and fun to use.
+
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
 <br/><br/>
 
@@ -524,7 +528,7 @@ our render/hydrate function would then need to know what `pageContext` should be
 That's it, we have seen most of `vite-plugin-ssr`'s interface;
 not only is `vite-plugin-ssr` flexible but also simple, easy, and fun to use.
 
-</details>
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
 <br/><br/>
 
