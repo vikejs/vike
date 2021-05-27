@@ -112,7 +112,7 @@ Simple, full-fledged, do-one-thing-do-it-well.
 
 Get an idea of what it's like to use `vite-plugin-ssr` with the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
-Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app. (We recommend to first read the Vue/React tour before getting started.)
+Scaffold a new app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually add](#manual-installation) `vite-plugin-ssr` to your existing Vite app. (We recommend to first read the Vue/React tour before getting started.)
 
 <br/><br/>
 
