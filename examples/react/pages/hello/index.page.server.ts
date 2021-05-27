@@ -1,11 +1,7 @@
 export { addPageContext };
 export { prerender };
 
-async function addPageContext({
-  pageContext,
-}: {
-  pageContext: { routeParams: { name: string } };
-}) {
+async function addPageContext(pageContext: { routeParams: { name: string } }) {
   const { name } = pageContext.routeParams;
   const pageProps = { name };
   return {

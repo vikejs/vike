@@ -1,5 +1,7 @@
 export type PageProps = {}
+export type VueComponent = any
 export type PageContext = {
+  Page: VueComponent
   pageProps?: PageProps
   documentProps?: {
     title?: string
@@ -7,4 +9,3 @@ export type PageContext = {
   }
   routeParams: Record<string, string>
 }
-export type VueComponent = any

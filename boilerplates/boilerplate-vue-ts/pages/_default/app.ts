@@ -4,7 +4,8 @@ import { PageContext } from './types'
 
 export { createApp }
 
-function createApp(Page: any, pageContext: PageContext) {
+function createApp(pageContext: PageContext) {
+  const { Page, pageProps } = pageContext
   const PageWithLayout = defineComponent({
     render() {
       return h(
@@ -12,7 +13,7 @@ function createApp(Page: any, pageContext: PageContext) {
         {},
         {
           default() {
-            return h(Page, pageContext.pageProps || {})
+            return h(Page, pageProps || {})
           }
         }
       )

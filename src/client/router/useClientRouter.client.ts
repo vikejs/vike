@@ -18,15 +18,9 @@ function useClientRouter({
   onTransitionStart,
   onTransitionEnd
 }: {
-  render: ({
-    Page,
-    pageContext,
-    isHydration
-  }: {
-    Page: any
-    pageContext: any
-    isHydration: boolean
-  }) => Promise<void> | void
+  // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
+  // render: (pageContext: { Page: any; isHydration: boolean } & Record<string, any>) => Promise<void> | void
+  render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
 }): {
@@ -69,7 +63,8 @@ function useClientRouter({
     }
 
     let { Page, pageContext } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
-    assert(pageContext.urlFull && pageContext.urlPathname)
+    pageContext.Page = Page
+    assert(hasProp(pageContext, 'Page'))
     pageContext = getPageContextProxy(pageContext)
 
     if (renderPromise) {
@@ -87,18 +82,11 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      await render({
-        Page,
-        pageContext,
-        isHydration: isFirstPageRender && url === urlFullOriginal,
-        // @ts-ignore
-        get pageProps() {
-          assertUsage(
-            false,
-            "`pageProps` in `useClientRouter(({ pageProps }) => {})` has been replaced with `useClientRouter(({ pageContext }) => {})`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
-          )
-        }
-      })
+      pageContext.isHydration = isFirstPageRender && url === urlFullOriginal
+      assert(hasProp<boolean, 'isHydration'>(pageContext, 'isHydration'))
+      assert(hasProp(pageContext, 'Page'))
+      assert(typeof pageContext.isHydration === 'boolean')
+      await render(pageContext)
     })()
     await renderPromise
     renderPromise = undefined

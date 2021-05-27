@@ -9,13 +9,14 @@ export { passToClient }
 // See https://github.com/brillout/vite-plugin-ssr#data-fetching
 const passToClient = ['pageProps', 'routeParams']
 
-async function render({ Page, pageContext }) {
-  const app = createApp(Page, pageContext)
+async function render(pageContext) {
+  const app = createApp(pageContext)
   const appHtml = await renderToString(app)
 
   // See https://github.com/brillout/vite-plugin-ssr#html-head
-  const title = pageContext.documentProps?.title || 'Vite SSR app'
-  const description = pageContext.documentProps?.description || 'An app using Vite and vite-plugin-ssr.'
+  const { documentProps } = pageContext
+  const title = documentProps?.title || 'Vite SSR app'
+  const desc = documentProps?.description || 'App using Vite + vite-plugin-ssr'
 
   return html`<!DOCTYPE html>
     <html lang="en">
@@ -23,7 +24,7 @@ async function render({ Page, pageContext }) {
         <meta charset="UTF-8" />
         <link rel="icon" href="${logoUrl}" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="${description}" />
+        <meta name="description" content="${desc}" />
         <title>${title}</title>
       </head>
       <body>

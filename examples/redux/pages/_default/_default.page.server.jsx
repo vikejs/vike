@@ -10,7 +10,7 @@ export { passToClient };
 
 const passToClient = ["PRELOADED_STATE"];
 
-async function render({ pageContext }) {
+async function render(pageContext) {
   const { pageHtml } = pageContext;
   return html`<!DOCTYPE html>
     <html>
@@ -20,9 +20,10 @@ async function render({ pageContext }) {
     </html>`;
 }
 
-async function addPageContext({ Page }) {
+async function addPageContext(pageContext) {
   const store = getStore();
 
+  const { Page } = pageContext;
   const pageHtml = renderToString(
     <Provider store={store}>
       <Page />

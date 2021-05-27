@@ -9,7 +9,7 @@ export { getUrlFullWithoutHash }
 /**
  Returns `${pathname}${search}${hash}`. (Basically removes the origin.)
 */
-function getUrlFull(url?: string): string {
+function getUrlFull(url?: string): string { // TODO
   url = retrieveUrl(url)
   const { origin } = parseWithNewUrl(url)
   assert(url.startsWith(origin), { url })

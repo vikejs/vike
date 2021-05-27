@@ -13,7 +13,7 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`, { index: false }));
   } else {
-    const vite = require('vite')
+    const vite = require("vite");
     viteDevServer = await vite.createServer({
       root,
       server: { middlewareMode: true },
@@ -24,8 +24,10 @@ async function startServer() {
   const renderPage = createPageRender({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
-    const pageContext = {};
-    const result = await renderPage({ url, pageContext });
+    const pageContext = {
+      url,
+    };
+    const result = await renderPage(pageContext);
     if (result.nothingRendered) return next();
     res.status(result.statusCode).send(result.renderResult);
   });

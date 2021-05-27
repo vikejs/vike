@@ -66,7 +66,7 @@ async function prerender({
     string,
     {
       prerenderSourceFile: string
-      pageContext: Record<string, unknown>
+      pageContext: { url: string } & Record<string, unknown>
       noPrenderPageContext: boolean
     }
   > = {}
@@ -83,7 +83,7 @@ async function prerender({
         assert(pageContext === null || isPlainObject(pageContext))
         if (!('url' in prerenderData)) {
           prerenderData[url] = {
-            pageContext: {},
+            pageContext: { url },
             noPrenderPageContext: true,
             prerenderSourceFile
           }
@@ -111,10 +111,11 @@ async function prerender({
         `The \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs returned by \`prerender()\` hooks to always match the URL of a page.`
       )
       const { pageId } = routeResult
+      Object.assign(pageContext, routeResult.pageContextAddendum)
+      assert(pageContext.url)
       const { htmlDocument, pageContextSerialized } = await prerenderPage(
         pageId,
-        { ...pageContext, ...routeResult.pageContextAddendum },
-        url,
+        pageContext,
         !noPrenderPageContext,
         pageContextNeeded
       )
@@ -129,9 +130,6 @@ async function prerender({
       .filter((pageId) => !renderedPageIds[pageId])
       .map(async (pageId) => {
         let url
-        const pageContext = {
-          routeParams: {}
-        }
         // Route with filesystem
         if (!(pageId in pageRoutes)) {
           url = getFilesystemRoute(pageId, allPageIds)
@@ -149,10 +147,13 @@ async function prerender({
             return
           }
         }
+        const pageContext = {
+          routeParams: {},
+          url
+        }
         const { htmlDocument, pageContextSerialized } = await prerenderPage(
           pageId,
           pageContext,
-          url,
           false,
           pageContextNeeded
         )

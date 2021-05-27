@@ -2,16 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { PageLayout } from "./PageLayout";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
+import { PageContext } from "./types";
 
 const { hydrationPromise } = useClientRouter({
-  render({ Page, pageContext, isHydration }) {
+  render(pageContext: PageContext) {
+    const { Page, pageProps } = pageContext;
     const page = (
       <PageLayout>
-        <Page {...pageContext.pageProps} />
+        <Page {...pageProps} />
       </PageLayout>
     );
     const container = document.getElementById("page-view");
-    if (isHydration) {
+    if (pageContext.isHydration) {
       ReactDOM.hydrate(page, container);
     } else {
       ReactDOM.render(page, container);

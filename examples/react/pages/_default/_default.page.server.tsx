@@ -2,22 +2,18 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { html } from "vite-plugin-ssr";
 import { PageLayout } from "./PageLayout";
+import { PageContext } from "./types";
 
 export { render };
 export { passToClient };
 
 const passToClient = ["pageProps", "documentProps"];
 
-function render({
-  Page,
-  pageContext,
-}: {
-  Page: (pageProps: any) => JSX.Element;
-  pageContext: Record<string, any>;
-}) {
+function render(pageContext: PageContext) {
+  const { Page, pageProps } = pageContext;
   const pageContent = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...pageContext.pageProps} />
+      <Page {...pageProps} />
     </PageLayout>
   );
 

@@ -1,5 +1,5 @@
 import { navigationState } from '../navigationState.client'
-import { addUrlToPageContext, assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../utils'
+import { assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../utils'
 import { parse } from '@brillout/json-s'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 
@@ -36,8 +36,6 @@ async function retrievePageContext(url: string): Promise<Record<string, unknown>
   assert(hasProp(responseObject, 'pageContext'))
   const { pageContext } = responseObject
   assert(isPlainObject(pageContext))
-
-  addUrlToPageContext(pageContext, url)
   assert(pageContext.pageId)
 
   return pageContext

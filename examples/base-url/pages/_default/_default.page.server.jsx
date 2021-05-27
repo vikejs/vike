@@ -9,10 +9,11 @@ export { passToClient };
 
 const passToClient = ["pageProps"];
 
-function render({ Page, pageContext }) {
+function render(pageContext) {
+  const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...pageContext.pageProps} />
+      <Page {...pageProps} />
     </PageLayout>
   );
 

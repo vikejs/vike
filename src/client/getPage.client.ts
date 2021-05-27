@@ -1,5 +1,5 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
-import { addPageIdToPageContext, addUrlToPageContext, getUrlFull, getUrlPathname } from '../utils'
+import { getUrlPathname, hasProp } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { getPageContextProxy } from './getPageContextProxy'
 
@@ -8,28 +8,15 @@ export { getPageById }
 export { getPageInfo }
 
 const urlPathnameOriginal = getUrlPathname()
-const urlFullOriginal = getUrlFull()
 
-async function getPage(): Promise<{
-  Page: any
-  pageContext: Record<string, any>
-}> {
+async function getPage(): Promise<{ Page: any } & Record<string, any>> {
   let { pageId, pageContext } = getPageInfo()
-  assert(pageContext.urlFull && pageContext.urlPathname)
   const Page = await getPageById(pageId)
+  pageContext.Page = Page
   pageContext = getPageContextProxy(pageContext)
   assertPristineUrl()
-  return {
-    Page,
-    pageContext,
-    // @ts-ignore
-    get pageProps() {
-      assertUsage(
-        false,
-        "`pageProps` in `const { pageProps } = await getPage()` has been replaced with `const { pageContext } = await getPage()`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
-      )
-    }
-  }
+  assert(hasProp(pageContext, 'Page'))
+  return pageContext
 }
 
 function assertPristineUrl() {
@@ -60,7 +47,6 @@ function getPageInfo(): {
 } {
   const pageContext: Record<string, unknown> = {}
   Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
-  addUrlToPageContext(pageContext, urlFullOriginal)
 
   assert(typeof pageContext.pageId === 'string')
   const { pageId } = pageContext

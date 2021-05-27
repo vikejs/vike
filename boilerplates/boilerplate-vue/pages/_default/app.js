@@ -3,7 +3,8 @@ import PageLayout from './PageLayout.vue'
 
 export { createApp }
 
-function createApp(Page, pageContext) {
+function createApp(pageContext) {
+  const { Page, pageProps } = pageContext
   const PageWithLayout = {
     render() {
       return h(
@@ -11,7 +12,7 @@ function createApp(Page, pageContext) {
         {},
         {
           default() {
-            return h(Page, pageContext.pageProps || {})
+            return h(Page, pageProps || {})
           }
         }
       )

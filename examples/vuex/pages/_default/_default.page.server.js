@@ -8,7 +8,7 @@ export { passToClient }
 
 const passToClient = ['INITIAL_STATE']
 
-async function render({ pageContext }) {
+async function render(pageContext) {
   const { appHtml } = pageContext
   return html`<!DOCTYPE html>
     <html>
@@ -18,7 +18,8 @@ async function render({ pageContext }) {
     </html>`
 }
 
-async function addPageContext({ Page }) {
+async function addPageContext(pageContext) {
+  const { Page } = pageContext
   const { app, store } = createApp({ Page })
 
   const appHtml = await renderToString(app)

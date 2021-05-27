@@ -1,5 +1,8 @@
 export { hasProp }
 
-function hasProp<K extends PropertyKey>(obj: unknown, prop: K): obj is Record<K, unknown> {
+function hasProp<PropValueType = unknown, PropKeyType extends PropertyKey = never, ObjectType = unknown>(
+  obj: ObjectType,
+  prop: PropKeyType
+): obj is ObjectType & Record<PropKeyType, PropValueType> {
   return typeof obj === 'object' && obj !== null && prop in obj
 }

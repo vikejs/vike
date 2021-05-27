@@ -9,7 +9,7 @@ export { passToClient };
 
 const passToClient = ["apolloIntialState"];
 
-function render({ pageContext }) {
+function render(pageContext) {
   const { pageHtml } = pageContext;
   return html`<!DOCTYPE html>
     <html>
@@ -19,8 +19,8 @@ function render({ pageContext }) {
     </html>`;
 }
 
-async function addPageContext({ Page, pageContext }) {
-  const { apolloClient } = pageContext;
+async function addPageContext(pageContext) {
+  const { Page, apolloClient } = pageContext;
   const tree = (
     <App apolloClient={apolloClient}>
       <Page />

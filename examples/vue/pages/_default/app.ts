@@ -4,7 +4,9 @@ import { Component, PageContext } from './types'
 
 export { createApp }
 
-function createApp(Page: Component, pageContext: PageContext) {
+function createApp(pageContext: PageContext) {
+  const { Page } = pageContext
+
   let rootComponent: Component
   const PageWithLayout = defineComponent({
     data: () => ({
@@ -27,8 +29,8 @@ function createApp(Page: Component, pageContext: PageContext) {
     }
   })
 
-  const changePage = (Page: Component, pageContext: PageContext) => {
-    rootComponent.Page = markRaw(Page)
+  const changePage = (pageContext: PageContext) => {
+    rootComponent.Page = markRaw(pageContext.Page)
     rootComponent.pageProps = markRaw(pageContext.pageProps || {})
     setRouteParams(pageContext)
   }

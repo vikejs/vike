@@ -1,15 +1,15 @@
 import { createApp } from './app'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
-import { Component, PageContext } from './types'
+import { PageContext } from './types'
 
 let app: ReturnType<typeof createApp>
 const { hydrationPromise } = useClientRouter({
-  render({ Page, pageContext }: { Page: Component; pageContext: PageContext }) {
+  render(pageContext: PageContext) {
     if (!app) {
-      app = createApp(Page, pageContext)
+      app = createApp(pageContext)
       app.mount('#app')
     } else {
-      app.changePage(Page, pageContext)
+      app.changePage(pageContext)
     }
     document.title = pageContext.documentProps?.title || 'Demo'
   },

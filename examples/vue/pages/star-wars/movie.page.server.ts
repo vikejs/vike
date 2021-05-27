@@ -16,7 +16,7 @@ type PageContext = {
   }
 }
 
-async function addPageContext({ pageContext }: { pageContext: PageContext }): Promise<Partial<PageContext>> {
+async function addPageContext(pageContext: PageContext): Promise<Partial<PageContext>> {
   const response = await fetch(`https://swapi.dev/api/films/${pageContext.routeParams.movieId}`)
   let movie = (await response.json()) as MovieDetails
 
