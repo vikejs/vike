@@ -1660,39 +1660,51 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 ### `pageContext`
 
 Built-in:
- - `Page` which is the value of the page's `.page.js` file being rendered.
-
-Built-in about routing:
- - `pageContext.routeParams` which contains the route parameters (e.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`).
- - `pageContext.isHydration` [Only in the browser, and only if you use Client-side Routing] whether the page is being hydrated or a new page is being rendered.
+ - `Page`: the value exported by the page's `.page.js` file being rendered.
+ - `pageContext.routeParams`: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
+ - `pageContext.isHydration`: [Only in the browser, and only if you use Client-side Routing] whether the page is being hydrated or a new page is being rendered.
  - `pageContext.url`: The `url` you passed at your server integration point.
     ```js
     // Server Integration Point
     const renderPage = createPageRender(/*...*/)
     app.get('*', async (req, res, next) => {
-      const pageContext = { url: req.url }
+      const pageContext = {}
+      // `pageContext.url` is defined here
+      pageContext.url = req.url
       const result = await renderPage(pageContext)
       /* ... */
     })
     ```
- - `pageContext.urlNormalized`: Same than `pageContext.url` but normalized: URL Origin and Base URL removed (e.g. `pageContext.url === 'https://example.org/blog/introducing-vite' && pageContext.urlNormalized === '/introducing-vite'` with a Base URL `/blog/`).
- - `pageContext.urlPathname`: the URL's pathname (e.g. `/product/42`). (After the URL has been normalized.)
- - `pageContext.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`). (After the URL has been normalized.)
+ - `pageContext.urlNormalized`: same than `pageContext.url` but normalized which means URL Origin and Base URL are removed. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'` and a Base URL `/some-base-url/`.)
+ - `pageContext.urlPathname`: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
+ - `pageContext.urlParsed`: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`).
 
 Custom:
- - `pageContext` you passed at your server integration point.
  - `pageContext` you returned in your page's `addPageContext()` hook (if you defined one).
  - `pageContext` you returned in your `_default.page.server.js`'s `addPageContext()` hook (if you defined one).
+ - `pageContext` you passed at your server integration point.
+    ```js
+    // Server Integration Point
+    const renderPage = createPageRender(/*...*/)
+    app.get('*', async (req, res, next) => {
+      const pageContext = {
+        url: req.url,
+        // We can add more `pageContext` here
+      }
+      const result = await renderPage(pageContext)
+      /* ... */
+    })
+    ```
 
 By default only `pageContext.Page` is available in the browser;
 use [`export const passToClient: string[]`](#export--passtoclient-) to make more `pageContext` available in the browser.
 
 The `pageContext` can be accessed at:
- - (Node.js) `export function addPageContext(pageContext)` (`*.page.server.js`)
- - (Node.js) `export function render(pageContext)` (`*.page.server.js`)
- - (Node.js (& Browser)) `export default function routeFunction(pageContext)` (`*.page.route.js`)
- - (Browser) `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
- - (Browser) `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
+ - [Node.js] `export function addPageContext(pageContext)` (`*.page.server.js`)
+ - [Node.js] `export function render(pageContext)` (`*.page.server.js`)
+ - [Node.js (& Browser)] `export default function routeFunction(pageContext)` (`*.page.route.js`)
+ - [Browser] `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
+ - [Browser] `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
 
 <br/><br/>
 
