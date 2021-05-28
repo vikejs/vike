@@ -1700,11 +1700,11 @@ By default only `pageContext.Page` is available in the browser;
 use [`export const passToClient: string[]`](#export--passtoclient-) to make more `pageContext` available in the browser.
 
 The `pageContext` can be accessed at:
- - [Node.js] `export function addPageContext(pageContext)` (`*.page.server.js`)
- - [Node.js] `export function render(pageContext)` (`*.page.server.js`)
- - [Node.js (& Browser)] `export default function routeFunction(pageContext)` (`*.page.route.js`)
- - [Browser] `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
- - [Browser] `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
+ - *[Node.js]* `export function addPageContext(pageContext)` (`*.page.server.js`)
+ - *[Node.js]* `export function render(pageContext)` (`*.page.server.js`)
+ - *[Node.js (& Browser)]* `export default function routeFunction(pageContext)` (`*.page.route.js`)
+ - *[Browser]* `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
+ - *[Browser]* `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
 
 <br/><br/>
 
