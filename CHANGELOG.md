@@ -1,3 +1,83 @@
+# [0.1.0-beta.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.45...v0.1.0-beta.46) (2021-05-28)
+
+
+* define everything on `pageContext` (fix #76) ([15d68f8](https://github.com/brillout/vite-plugin-ssr/commit/15d68f8bd6133b1c5e8916fa5c2aaad8cf5f4579)), closes [#76](https://github.com/brillout/vite-plugin-ssr/issues/76)
+
+
+### Bug Fixes
+
+* fixes build process on Windows ([6e7bc1b](https://github.com/brillout/vite-plugin-ssr/commit/6e7bc1b2007fad463ca3a4030461a234f32e45b0)), closes [#74](https://github.com/brillout/vite-plugin-ssr/issues/74)
+* fixes build process on Windows ([b9a9935](https://github.com/brillout/vite-plugin-ssr/commit/b9a99352323a7b69e1627810719542eb64d1d601)), closes [#74](https://github.com/brillout/vite-plugin-ssr/issues/74)
+
+
+### BREAKING CHANGES
+
+* Apply following changes:
+
+```diff
+  // *.page.server.js
+
+  export { render }
+- function render({ Page, pageContext }) {
++ function render(pageContext) {
++   const { Page } = pageContext
+    /* ... */
+  }
+
+  export { addPageContext }
+- function addPageContext({ Page, pageContext }) {
++ function addPageContext(pageContext) {
++   const { Page } = pageContext
+    /* ... */
+  }
+```
+
+```diff
+  // *.page.client.js
+
+  import { getPage } from "vite-plugin-ssr/client";
+
+- const { Page, pageContext } = await getPage();
++ const pageContext = await getPage();
++ const { Page } = pageContext
+```
+
+```diff
+  // *.page.client.js
+
+  import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+  useClientRouter({
+-   render({ Page, pageContext, isHydration }) {
++   render(pageContext) {
++     const { Page, isHydration } = pageContext
+      /* ... */
+    },
+  })
+```
+
+```diff
+  // At your server integration point
+
+  const express = require('express')
+  const { createPageRender } = require('vite-plugin-ssr')
+
+  /* ... */
+
+  const pageRender = createPageRender(/*...*/)
+
+  /* ... */
+
+- pageRender({ url, pageContext })
++ pageContext.url = url
++ pageRender(pageContext)
+```
+
+- `pageContext.urlFull` is deprecated; use `pageContext.urlNormalized`
+instead.
+
+
+
 # [0.1.0-beta.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.44...v0.1.0-beta.45) (2021-05-26)
 
 
