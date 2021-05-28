@@ -1662,7 +1662,7 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 Built-in:
  - **`pageContext.Page`**: the value exported by the page's `.page.js` file being rendered.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
- - **`pageContext.isHydration`**: [Only in the browser, and only if you use Client-side Routing] whether the page is being hydrated or a new page is being rendered.
+ - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
  - **`pageContext.url`**: The `url` you passed at your server integration point.
     ```js
     // Server Integration Point
@@ -1675,9 +1675,9 @@ Built-in:
       /* ... */
     })
     ```
- - **`pageContext.urlNormalized`**: same than `pageContext.url` but normalized which means URL Origin and Base URL are removed. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'` and a Base URL `/some-base-url/`.)
+ - **`pageContext.urlNormalized`**: same than `pageContext.url` but with removed URL Origin and Base URL. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`.)
  - **`pageContext.urlPathname`**: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
- - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`).
+ - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
 Custom:
  - `pageContext` you returned in your page's `addPageContext()` hook (if you defined one).
