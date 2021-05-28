@@ -1660,8 +1660,8 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 ### `pageContext`
 
 Built-in:
- - `Page`: the value exported by the page's `.page.js` file being rendered.
- - `pageContext.routeParams`: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
+ - **`pageContext.Page`**: the value exported by the page's `.page.js` file being rendered.
+ - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - `pageContext.isHydration`: [Only in the browser, and only if you use Client-side Routing] whether the page is being hydrated or a new page is being rendered.
  - `pageContext.url`: The `url` you passed at your server integration point.
     ```js
