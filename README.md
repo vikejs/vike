@@ -1665,7 +1665,7 @@ Built-in:
 Built-in about routing:
  - `pageContext.routeParams` which contains the route parameters (e.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`).
  - `pageContext.isHydration` [Only in the browser, and only if you use Client-side Routing] whether the page is being hydrated or a new page is being rendered.
- - `pageContext.url`: The `url` (e.g. `/product/42?details=yes#reviews`) you passed at your server integration point.
+ - `pageContext.url`: The `url` you passed at your server integration point.
     ```js
     // Server Integration Point
     const renderPage = createPageRender(/*...*/)
