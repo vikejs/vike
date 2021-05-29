@@ -1,5 +1,7 @@
 # [0.1.0-beta.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.46...v0.1.0-beta.47) (2021-05-29)
 
+*  make `*.page.js` exports available to user as `pageContext.pageExports` (fix #80)
+
 
 
 # [0.1.0-beta.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.45...v0.1.0-beta.46) (2021-05-28)
