@@ -1331,6 +1331,10 @@ Example:
  - [/examples/react/vite.config.ts](examples/react/vite.config.ts)
  - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
 
+#### Markdown Front Matter
+
+When you define a markdown front matter, the metadata defined by your front matter will be exported in `.page.js` which you can access at `pageContext.pageExports` (e.g. `pageContext.pageExports.frontMatter`).
+
 <br/><br/>
 
 
@@ -1661,6 +1665,7 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 
 Built-in:
  - **`pageContext.Page`**: the value exported by the page's `.page.js` file being rendered.
+ - **`pageContext.pageExports`**: the exports of the page's `.page.js` file being rendered.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
  - **`pageContext.url`**: The `url` you passed at your server integration point.

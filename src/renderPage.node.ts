@@ -186,14 +186,15 @@ async function getRenderData(
   pageContextAlreadyFetched: boolean,
   isPreRendering: boolean
 ) {
-  const { Page, pageFilePath } = await getPage(pageId)
+  const { Page, pageFilePath, pageExports } = await getPage(pageId)
 
   const pageFunctions = await getPageFunctions(pageId)
 
   addUrlPropsToPageContext(pageContext)
   Object.assign(pageContext, {
     Page,
-    pageId
+    pageId,
+    pageExports
     /*
     isPreRendering,
     addPageContext: pageFunctions.addPageContextFunction || null,
@@ -324,14 +325,14 @@ async function getPage(pageId: string) {
   const pageFile = await getPageFile('.page', pageId)
   assert(pageFile)
   const { filePath, loadFile } = pageFile
-  const fileExports = await loadFile()
+  const pageExports = await loadFile()
   assertUsage(
-    typeof fileExports === 'object' && ('Page' in fileExports || 'default' in fileExports),
+    typeof pageExports === 'object' && ('Page' in pageExports || 'default' in pageExports),
     `${filePath} should have a \`export { Page }\` (or a default export).`
   )
-  const Page = fileExports.Page || fileExports.default
+  const Page = pageExports.Page || pageExports.default
 
-  return { Page, pageFilePath: filePath }
+  return { Page, pageFilePath: filePath, pageExports }
 }
 
 type PageFunctions = {
