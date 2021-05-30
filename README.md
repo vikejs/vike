@@ -1156,6 +1156,8 @@ You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head
 but use such library only if you have a *strong* rationale:
 the solution using `pageContext.documentProps` is considerably simpler and works for the vast majority of cases.
 
+If you use markdown, have a look at [Markdown Front Matter](#markdown-front-matter).
+
 <br/><br/>
 
 
@@ -1334,6 +1336,21 @@ Example:
 #### Markdown Front Matter
 
 When you define a markdown front matter, the metadata defined by your front matter will be exported in `.page.js` which you can access at `pageContext.pageExports` (e.g. `pageContext.pageExports.frontMatter`).
+
+A simpler alternative to frontmatter is to export a value.
+
+~~~js
+// *.page.md
+
+export const documentProps = {
+  title: 'Markdown Page',
+  description: 'This page is an example of setting `<title>` and `<meta name="description">`'
+}
+
+# Markdown
+
+This page is written in _Markdown_.
+~~~
 
 <br/><br/>
 
