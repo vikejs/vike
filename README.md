@@ -155,7 +155,7 @@ You can also define a page's route with a *Route String* (for parameterized rout
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// Note how the files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// Note how two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `pages/index.page.route.js` defines the route of `pages/index.page.vue`.
 
 // Route Function
@@ -164,7 +164,7 @@ export default pageContext => pageContext.url === '/'
 // Route String
 export default "/"
 
-// If we don't create `.page.route.js` then Filesystem Routing is used
+// If we don't create a `.page.route.js` file then Filesystem Routing is used
 ```
 
 Unlike Nuxt,
@@ -254,9 +254,6 @@ The `_default` files can be overridden. For example, you can create a page with 
 By overriding `_default.page.server.js#render` you can
 even render some of your pages with a different view framework, e.g. another Vue version (for progressive upgrade) or even React.
 
-Note how files are collocated and share the same base `/pages/about.page.`;
-this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
-
 Let's now have a look at how to fetch data.
 
 ```vue
@@ -312,8 +309,8 @@ export const passToClient = ['pageProps']
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an object we create to
 conveniently hold all props of the root Vue component.
 
-That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface;
-`vite-plugin-ssr` is not only flexible, but also simple, easy, and fun to use.
+That's it, and we have actually already seen most of the interface;
+not only is `vite-plugin-ssr` flexible, but is is also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
@@ -362,7 +359,7 @@ You can also define a page's route with a *Route String* (for parameterized rout
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// Note how the files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// Note how two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `pages/index.page.route.js` defines the route of `pages/index.page.jsx`.
 
 // Route Function
@@ -371,7 +368,7 @@ export default pageContext => pageContext.url === '/';
 // Route String
 export default "/";
 
-// If we don't create `.page.route.js` then Filesystem Routing is used
+// If we don't create a `.page.route.js` file then Filesystem Routing is used
 ```
 
 Unlike Next.js,
@@ -519,8 +516,8 @@ export const passToClient = ["pageProps"];
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an object we create to
 conveniently hold all props of the root React component.
 
-That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface;
-`vite-plugin-ssr` is not only flexible, but also simple, easy, and fun to use.
+That's it, and we have actually already seen most of the interface;
+not only is `vite-plugin-ssr` flexible, but is is also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
