@@ -155,7 +155,7 @@ You can also define a page's route with a *Route String* (for parameterized rout
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// Note how two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// Note how the two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `pages/index.page.route.js` defines the route of `pages/index.page.vue`.
 
 // Route Function
@@ -359,7 +359,7 @@ You can also define a page's route with a *Route String* (for parameterized rout
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// Note how two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// Note how the two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `pages/index.page.route.js` defines the route of `pages/index.page.jsx`.
 
 // Route Function
