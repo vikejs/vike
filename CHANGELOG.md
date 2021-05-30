@@ -1,3 +1,22 @@
+# [0.1.0-beta.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.47...v0.1.0-beta.48) (2021-05-30)
+
+
+* rename `dangerouslySetHtml` to `dangerouslySkipEscape` (fix #84) ([b14bd17](https://github.com/brillout/vite-plugin-ssr/commit/b14bd17b0177a0b2bedb74f143677cad7521d365)), closes [#84](https://github.com/brillout/vite-plugin-ssr/issues/84)
+
+
+### Bug Fixes
+
+* export SsrEnv as type ([8c8f5ba](https://github.com/brillout/vite-plugin-ssr/commit/8c8f5ba800cb45f951031a0a5ce2546a5fdc9a68))
+
+
+### BREAKING CHANGES
+
+* Replace `dangerouslySetHtml` with
+`dangerouslySkipEscape`. E.g. for linux users:
+`git ls-files | xargs sed -i "s/dangerouslySetHtml/dangerouslySkipEscape/g"`
+
+
+
 # [0.1.0-beta.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.46...v0.1.0-beta.47) (2021-05-29)
 
 ### Features
