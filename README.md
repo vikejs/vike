@@ -1335,13 +1335,13 @@ Example:
 
 #### Markdown `<head>`
 
-You can simply export `<head>` values.
+You can simply export the page's `<head>` values.
 
 ~~~js
 // markdown.page.mdx
 
 export const documentProps = {
-  title: 'Markdown Example Page',
+  title: 'A Markdown Page',
   description: 'Example of setting `<title>` and `<meta name="description">`'
 }
 
@@ -1371,8 +1371,8 @@ You can use a so-called *front matter* to define the page's metadata.
 
 ```markdown
 ---
-title: 'Markdown Page',
-description: 'This page is an example of setting `<title>` and `<meta name="description">`'
+title: A Markdown Page
+description: Example of setting `<title>` and `<meta name="description">`
 ---
 
 # Markdown
