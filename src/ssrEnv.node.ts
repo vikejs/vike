@@ -2,7 +2,7 @@ import { ViteDevServer } from 'vite'
 
 export { setSsrEnv }
 export { getSsrEnv }
-export { SsrEnv }
+export type { SsrEnv }
 
 type SsrEnv =
   | {
