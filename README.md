@@ -308,7 +308,7 @@ Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an obj
 conveniently hold all props of the root Vue component.
 
 That's it, and we have actually already seen most of the interface;
-not only is `vite-plugin-ssr` flexible, but is is also simple, easy, and fun to use.
+not only is `vite-plugin-ssr` flexible, but it is also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
@@ -513,7 +513,7 @@ Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an obj
 conveniently hold all props of the root React component.
 
 That's it, and we have actually already seen most of the interface;
-not only is `vite-plugin-ssr` flexible, but is is also simple, easy, and fun to use.
+not only is `vite-plugin-ssr` flexible, but it is also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
