@@ -156,7 +156,7 @@ If you need more control, you can create a `.page.route.js` file to define a *Ro
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
 // We define a Route Function for `/pages/index.page.vue`:
-export default ({ url }) => url === '/'
+export default pageContext => pageContext.url === '/'
 
 /* Or we define a Route String:
 export default '/'
@@ -222,7 +222,7 @@ The `render()` hook in `/pages/_default.page.server.js` gives you full control o
 and `/pages/_default.page.client.js` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally*:
  - Use any tool you want such as Vue Router and Vuex.
- - Use Vue 2, Vue 3, any any future Vue version (you can actually use any view framework you want, e.g. React).
+ - Use Vue 2, Vue 3, any any future Vue version (or even another view framework, e.g. React).
 
 Note the suffixes of the files we created:
  - `.page.js`: exports the page's root Vue component.
@@ -357,20 +357,22 @@ pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-If you need more control, you can create a `.page.route.js` file to define a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
+You can also define a page's route with a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// We define a Route Function for `/pages/index.page.jsx`:
-export default ({ url }) => url === "/";
+// Note how the files share the same base `pages/index.page.`. This is how `vite-plugin-ssr`
+// knows that `pages/index.page.route.js` defines the route of `pages/index.page.jsx`.
 
-/* Or we define a Route String:
+// Route Function
+export default pageContext => pageContext.url === '/';
+
+// Route String
 export default "/";
-*/
 
-// Or we don't create `.page.route.js` and Filesystem Routing is used
+// If we don't create `.page.route.js` then Filesystem Routing is used
 ```
 
 Unlike Next.js,
@@ -427,20 +429,19 @@ async function hydrate() {
 
 The `render()` hook in `/pages/_default.page.server.jsx` gives you full control over how your pages are rendered,
 and `/pages/_default.page.client.jsx` gives you full control over the browser-side code.
-This control enables you to *easily* and *naturally*:
- - Use any tool you want such as React Router and Redux.
- - Use Preact, Inferno, Solid and any other React-like alternative.
+This control enables you to *easily* and *naturally* use any tool you want (Redux, GraphQL, Preact, ...).
 
 Note the suffixes of the files we created:
  - `.page.js`: exports the page's root React component.
- - `.page.client.js` (optional): defines the page's browser-side code.
- - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
- - `.page.route.js` (optional): exports the page's Route String or Route Function.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: exports the page's hooks (always run in Node.js).
+ - `.page.route.js`: exports the page's Route String or Route Function.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
+you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
 We already defined `_default` files above,
-which means that all we have to do now to create a new page is to define a new `.page.jsx` file.
+which means that all we have to do now to create a new page is to define a new `.page.jsx` file (the `.page.route.js` file is optional).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -462,10 +463,9 @@ function Page() {
 By overriding `_default.page.server.js#render` you can
 even render some of your pages with a different view framework, e.g. another React version (for progressive upgrade) or even Vue.
 
-Note how files are collocated and share the same base `/pages/about.page.`;
-this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
+Note again how files are collocated and share the same base `/pages/about.page.`.
 
-Let's now have a look at how to fetch data for a page that has a parameterized route.
+Let's now have a look at how to fetch data.
 
 ```jsx
 // /pages/star-wars/movie.page.jsx
@@ -521,11 +521,9 @@ export const passToClient = ["pageProps"];
 
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root React component.
-(We could have defined `movie` directly on `pageContext.movie` but it's cumbersome:
-our render/hydrate function would then need to know what `pageContext` should be passed to the root React component, whereas with `pageContext.pageProps` our render/hydrate function can simply pass `pageContext.pageProps` to the root React component.)
 
-That's it, we have seen most of `vite-plugin-ssr`'s interface;
-not only is `vite-plugin-ssr` flexible but also simple, easy, and fun to use.
+That's it, and we have actually seen most of `vite-plugin-ssr`'s interface;
+`vite-plugin-ssr` is not only flexible, but also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
