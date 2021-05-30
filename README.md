@@ -161,9 +161,6 @@ You can also define a page's route with a *Route String* (for parameterized rout
 // Route Function
 export default pageContext => pageContext.url === '/'
 
-// Route String
-export default "/"
-
 // If we don't create a `.page.route.js` file then Filesystem Routing is used
 ```
 
@@ -275,6 +272,7 @@ export default { props: pageProps }
 // /pages/star-wars/movie.page.route.js
 // Environment: Node.js
 
+// Route String
 export default '/star-wars/:movieId'
 ```
 ```js
@@ -364,9 +362,6 @@ You can also define a page's route with a *Route String* (for parameterized rout
 
 // Route Function
 export default pageContext => pageContext.url === '/';
-
-// Route String
-export default "/";
 
 // If we don't create a `.page.route.js` file then Filesystem Routing is used
 ```
@@ -482,6 +477,7 @@ function Page(pageProps) {
 // /pages/star-wars/movie.page.route.js
 // Environment: Node.js
 
+// Route String
 export default "/star-wars/:movieId";
 ```
 ```js
