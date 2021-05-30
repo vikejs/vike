@@ -1733,9 +1733,9 @@ Built-in:
  - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
 Custom:
- - `pageContext` you returned in your page's `addPageContext()` hook (if you defined one).
- - `pageContext` you returned in your `_default.page.server.js`'s `addPageContext()` hook (if you defined one).
- - `pageContext` you passed at your server integration point.
+ - The `pageContext` values you returned in your page's `addPageContext()` hook (if you defined one).
+ - The `pageContext` values you returned in your `_default.page.server.js`'s `addPageContext()` hook (if you defined one).
+ - The `pageContext` values you passed at your server integration point.
     ```js
     // Server Integration Point
     const renderPage = createPageRender(/*...*/)
