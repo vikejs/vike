@@ -120,7 +120,7 @@ Scaffold a new app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-
 ### Vue Tour
 
 Similarly to Nuxt,
-you create pages by defining `.page.vue` files.
+you create a page by defining a new `.page.vue` file.
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -149,20 +149,22 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-If you need more control, you can create a `.page.route.js` file to define a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
+You can also define a page's route with a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// We define a Route Function for `/pages/index.page.vue`:
+// Note how the files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// knows that `pages/index.page.route.js` defines the route of `pages/index.page.vue`.
+
+// Route Function
 export default pageContext => pageContext.url === '/'
 
-/* Or we define a Route String:
-export default '/'
-*/
+// Route String
+export default "/"
 
-// Or we don't create `.page.route.js` and Filesystem Routing is used
+// If we don't create `.page.route.js` then Filesystem Routing is used
 ```
 
 Unlike Nuxt,
@@ -220,20 +222,19 @@ async function hydrate() {
 
 The `render()` hook in `/pages/_default.page.server.js` gives you full control over how your pages are rendered,
 and `/pages/_default.page.client.js` gives you full control over the browser-side code.
-This control enables you to *easily* and *naturally*:
- - Use any tool you want such as Vue Router and Vuex.
- - Use Vue 2, Vue 3, any any future Vue version (or even another view framework, e.g. React).
+This control enables you to *easily* and *naturally* use any tool you want (Vuex, GraphQL, Service Worker, ...).
 
-Note the suffixes of the files we created:
+There are 4 suffixes.
  - `.page.js`: exports the page's root Vue component.
- - `.page.client.js` (optional): defines the page's browser-side code.
- - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
- - `.page.route.js` (optional): exports the page's Route String or Route Function.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: exports the page's hooks (always run in Node.js).
+ - `.page.route.js`: exports the page's Route String or Route Function.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
+you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
-We already defined `_default` files above,
-which means that all we have to do now to create a new page is to define a new `.page.vue` file.
+We already defined our `_default` files,
+which means that we can create a new page only by defining a new `.page.vue` file (the `.page.route.js` file is optional).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -256,7 +257,7 @@ even render some of your pages with a different view framework, e.g. another Vue
 Note how files are collocated and share the same base `/pages/about.page.`;
 this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
 
-Let's now have a look at how to fetch data for a page that has a parameterized route.
+Let's now have a look at how to fetch data.
 
 ```vue
 <!-- /pages/star-wars/movie.page.vue -->
@@ -308,13 +309,11 @@ export async function addPageContext(pageContext) {
 export const passToClient = ['pageProps']
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an object we create to
 conveniently hold all props of the root Vue component.
-(We could have defined `movie` directly on `pageContext.movie` but it's cumbersome:
-our render/hydrate function would then need to know what `pageContext` should be passed to the root Vue component, whereas with `pageContext.pageProps` our render/hydrate function can simply pass `pageContext.pageProps` to the root Vue component.)
 
-That's it, we have seen most of `vite-plugin-ssr`'s interface;
-not only is `vite-plugin-ssr` flexible but also simple, easy, and fun to use.
+That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface;
+`vite-plugin-ssr` is not only flexible, but also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
@@ -324,7 +323,7 @@ Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn c
 ### React Tour
 
 Similarly to Next.js,
-you create pages by defining `.page.jsx` files.
+you create a page by defining a new `.page.jsx` file.
 
 ```jsx
 // /pages/index.page.jsx
@@ -363,7 +362,7 @@ You can also define a page's route with a *Route String* (for parameterized rout
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// Note how the files share the same base `pages/index.page.`. This is how `vite-plugin-ssr`
+// Note how the files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `pages/index.page.route.js` defines the route of `pages/index.page.jsx`.
 
 // Route Function
@@ -429,9 +428,9 @@ async function hydrate() {
 
 The `render()` hook in `/pages/_default.page.server.jsx` gives you full control over how your pages are rendered,
 and `/pages/_default.page.client.jsx` gives you full control over the browser-side code.
-This control enables you to *easily* and *naturally* use any tool you want (Redux, GraphQL, Preact, ...).
+This control enables you to *easily* and *naturally* use any tool you want (Redux, GraphQL, Service Worker, Preact, ...).
 
-Note the suffixes of the files we created:
+There are 4 suffixes.
  - `.page.js`: exports the page's root React component.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: exports the page's hooks (always run in Node.js).
@@ -440,8 +439,8 @@ Note the suffixes of the files we created:
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
 you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
-We already defined `_default` files above,
-which means that all we have to do now to create a new page is to define a new `.page.jsx` file (the `.page.route.js` file is optional).
+We already defined our `_default` files,
+which means that we can create a new page only by defining a new `.page.jsx` file (the `.page.route.js` file is optional).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -462,8 +461,6 @@ function Page() {
 
 By overriding `_default.page.server.js#render` you can
 even render some of your pages with a different view framework, e.g. another React version (for progressive upgrade) or even Vue.
-
-Note again how files are collocated and share the same base `/pages/about.page.`.
 
 Let's now have a look at how to fetch data.
 
@@ -519,10 +516,10 @@ export async function addPageContext(pageContext) {
 export const passToClient = ["pageProps"];
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an object we create to
 conveniently hold all props of the root React component.
 
-That's it, and we have actually seen most of `vite-plugin-ssr`'s interface;
+That's it, and we have actually already seen most of `vite-plugin-ssr`'s interface;
 `vite-plugin-ssr` is not only flexible, but also simple, easy, and fun to use.
 
 Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
