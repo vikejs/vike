@@ -1156,7 +1156,7 @@ You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head
 but use such library only if you have a *strong* rationale:
 the solution using `pageContext.documentProps` is considerably simpler and works for the vast majority of cases.
 
-If you use markdown, have a look at [Markdown Front Matter](#markdown-front-matter).
+For pages defined with markdown, have a look at [Markdown `<head>`](#markdown-head).
 
 <br/><br/>
 
@@ -1333,24 +1333,56 @@ Example:
  - [/examples/react/vite.config.ts](examples/react/vite.config.ts)
  - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
 
-#### Markdown Front Matter
+#### Markdown `<head>`
 
-When you define a markdown front matter, the metadata defined by your front matter will be exported in `.page.js` which you can access at `pageContext.pageExports` (e.g. `pageContext.pageExports.frontMatter`).
+You can simply export `<head>` values.
 
-A simpler alternative to frontmatter is to export a value.
-
-~~~js
-// *.page.md
+~~~md
+// markdown.page.mdx
 
 export const documentProps = {
-  title: 'Markdown Page',
-  description: 'This page is an example of setting `<title>` and `<meta name="description">`'
+  title: 'Markdown Example Page',
+  description: 'Example of setting `<title>` and `<meta name="description">`'
 }
 
 # Markdown
 
 This page is written in _Markdown_.
 ~~~
+
+```js
+// _default.page.server.js
+
+import { html } from 'vite-plugin-ssr'
+
+export async function render(pageContext) {
+  // `pageContext.pageExports` holds the exports of the page's `.page.js` file being rendered.
+  const { title, description } = pageContext.pageExports.documentProps
+  return html`<html>
+    <head>
+      <title>${title}</title>
+      <meta name="description" content="${description}">
+    </head>
+    <body>
+      <!-- ... -->
+    </body>
+  </html>`
+}
+```
+You can use a so called *front matter* to define the metadata of your page.
+
+```md
+---
+title: 'Markdown Page',
+description: 'This page is an example of setting `<title>` and `<meta name="description">`'
+---
+
+# Markdown
+
+This page is written in _Markdown_.
+```
+
+The metadata is exported in your `.page.js` file which you can access at `pageContext.pageExports` (e.g. `pageContext.pageExports.frontMatter`).
 
 <br/><br/>
 
