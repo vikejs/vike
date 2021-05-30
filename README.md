@@ -1367,7 +1367,7 @@ export async function render(pageContext) {
   </html>`
 }
 ```
-You can use a so-called *front matter* to define the page's metadata.
+You can also use a so-called *front matter* to define the page's metadata.
 
 ```markdown
 ---
@@ -1380,7 +1380,7 @@ description: Example of setting `<title>` and `<meta name="description">`
 This page is written in _Markdown_.
 ```
 
-The data of the front matter is then usually available has an export,
+The front matter data is usually available has an export,
 which you can access at [`pageContext.pageExports`](#pagecontext).
 
 <br/><br/>
