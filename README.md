@@ -1337,7 +1337,7 @@ Example:
 
 You can simply export `<head>` values.
 
-~~~mdx
+~~~js
 // markdown.page.mdx
 
 export const documentProps = {
@@ -1367,9 +1367,9 @@ export async function render(pageContext) {
   </html>`
 }
 ```
-You can use a so-called *front matter* to define the metadata of your page.
+You can use a so-called *front matter* to define the page's metadata.
 
-```md
+```markdown
 ---
 title: 'Markdown Page',
 description: 'This page is an example of setting `<title>` and `<meta name="description">`'
@@ -1380,7 +1380,8 @@ description: 'This page is an example of setting `<title>` and `<meta name="desc
 This page is written in _Markdown_.
 ```
 
-The data of the front matter is then usually available has an export which you can access at [`pageContext.pageExports`](#pagecontext) (e.g. `pageContext.pageExports.frontMatter`).
+The data of the front matter is then usually available has an export,
+which you can access at [`pageContext.pageExports`](#pagecontext).
 
 <br/><br/>
 
@@ -1711,8 +1712,8 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 ### `pageContext`
 
 Built-in:
- - **`pageContext.Page`**: the value exported by the page's `.page.js` file being rendered.
- - **`pageContext.pageExports`**: the exports of the page's `.page.js` file being rendered.
+ - **`pageContext.Page`**: the `export { Page }` or `default export` of the page's `.page.js` file being rendered.
+ - **`pageContext.pageExports`**: all exports of the page's `.page.js` file being rendered.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
  - **`pageContext.url`**: The `url` you passed at your server integration point.
