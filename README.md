@@ -221,7 +221,7 @@ The `render()` hook in `/pages/_default.page.server.js` gives you full control o
 and `/pages/_default.page.client.js` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally* use any tool you want (Vuex, GraphQL, Service Worker, ...).
 
-There are 4 suffixes.
+There are four suffixes.
  - `.page.js`: exports the page's root Vue component.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: exports the page's hooks (always run in Node.js).
@@ -422,7 +422,7 @@ The `render()` hook in `/pages/_default.page.server.jsx` gives you full control 
 and `/pages/_default.page.client.jsx` gives you full control over the browser-side code.
 This control enables you to *easily* and *naturally* use any tool you want (Redux, GraphQL, Service Worker, Preact, ...).
 
-There are 4 suffixes.
+There are four suffixes.
  - `.page.js`: exports the page's root React component.
  - `.page.client.js`: defines the page's browser-side code.
  - `.page.server.js`: exports the page's hooks (always run in Node.js).
