@@ -1337,7 +1337,7 @@ Example:
 
 You can simply export `<head>` values.
 
-~~~md
+~~~mdx
 // markdown.page.mdx
 
 export const documentProps = {
@@ -1356,20 +1356,18 @@ This page is written in _Markdown_.
 import { html } from 'vite-plugin-ssr'
 
 export async function render(pageContext) {
-  // `pageContext.pageExports` holds the exports of the page's `.page.js` file being rendered.
+  // `pageContext.pageExports` holds the exports of the page's `.page.js` file being rendered
   const { title, description } = pageContext.pageExports.documentProps
   return html`<html>
     <head>
       <title>${title}</title>
       <meta name="description" content="${description}">
     </head>
-    <body>
-      <!-- ... -->
-    </body>
+    <!-- ... -->
   </html>`
 }
 ```
-You can use a so called *front matter* to define the metadata of your page.
+You can use a so-called *front matter* to define the metadata of your page.
 
 ```md
 ---
@@ -1382,7 +1380,7 @@ description: 'This page is an example of setting `<title>` and `<meta name="desc
 This page is written in _Markdown_.
 ```
 
-The metadata is exported in your `.page.js` file which you can access at `pageContext.pageExports` (e.g. `pageContext.pageExports.frontMatter`).
+The data of the front matter is then usually available has an export which you can access at [`pageContext.pageExports`](#pagecontext) (e.g. `pageContext.pageExports.frontMatter`).
 
 <br/><br/>
 
