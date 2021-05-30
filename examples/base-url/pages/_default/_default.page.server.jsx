@@ -26,7 +26,7 @@ function render(pageContext) {
         <title>Vite App</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

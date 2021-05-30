@@ -23,7 +23,7 @@ function render(pageContext: PageContext) {
         <title>${pageContext.documentProps?.title || "Demo"}</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(pageContent)}</div>
+        <div id="page-view">${html.dangerouslySkipEscape(pageContent)}</div>
       </body>
     </html>`;
 }

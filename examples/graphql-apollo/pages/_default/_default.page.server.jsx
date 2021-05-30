@@ -14,7 +14,7 @@ function render(pageContext) {
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-content">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-content">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

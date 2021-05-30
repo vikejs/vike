@@ -18,7 +18,7 @@ async function render(pageContext: PageContext) {
         <title>${pageContext.documentProps?.title || 'Demo'}</title>
       </head>
       <body>
-        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+        <div id="app">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

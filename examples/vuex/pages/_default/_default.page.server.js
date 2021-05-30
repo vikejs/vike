@@ -13,7 +13,7 @@ async function render(pageContext) {
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+        <div id="app">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

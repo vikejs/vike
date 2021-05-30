@@ -15,7 +15,7 @@ async function render(pageContext) {
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="react-root">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="react-root">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

@@ -29,7 +29,7 @@ async function render(pageContext: PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+        <div id="app">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

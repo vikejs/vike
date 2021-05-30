@@ -4,10 +4,10 @@ export { html }
 export { renderHtmlTemplate }
 export { isHtmlTemplate }
 
-html.dangerouslySetHtml = dangerouslySetHtml
+html.dangerouslySkipEscape = dangerouslySkipEscape
 
 const __html_template = Symbol('__html_template')
-const __dangerouslySetHtml = Symbol('__dangerouslySetHtml')
+const __dangerouslySkipEscape = Symbol('__dangerouslySkipEscape')
 
 type SanitizedHtmlString = {
   [__html_template]: {
@@ -15,7 +15,7 @@ type SanitizedHtmlString = {
     templateVariables: (
       | any
       | {
-          [__dangerouslySetHtml]: string
+          [__dangerouslySkipEscape]: string
         }
     )[]
   }
@@ -23,7 +23,7 @@ type SanitizedHtmlString = {
 type TemplateString = TemplateStringsArray
 function html(
   templateString: TemplateString,
-  ...templateVariables: (string | ReturnType<typeof html.dangerouslySetHtml>)[]
+  ...templateVariables: (string | ReturnType<typeof html.dangerouslySkipEscape>)[]
 ): SanitizedHtmlString {
   return {
     [__html_template]: {
@@ -32,9 +32,9 @@ function html(
     }
   }
 }
-type SanitizedString = { [__dangerouslySetHtml]: string }
-function dangerouslySetHtml(alreadySanitizedString: string): SanitizedString {
-  return { [__dangerouslySetHtml]: alreadySanitizedString }
+type SanitizedString = { [__dangerouslySkipEscape]: string }
+function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString {
+  return { [__dangerouslySkipEscape]: alreadySanitizedString }
 }
 
 function isHtmlTemplate(something: unknown): something is { [__html_template]: HtmlTemplate } {
@@ -51,14 +51,14 @@ type HtmlTemplate = {
 function renderHtml(htmlTemplate: HtmlTemplate, filePath: string) {
   const { templateParts, templateVariables } = htmlTemplate
   const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
-    // Process `html.dangerouslySetHtml()`
-    if (hasProp(templateVar, __dangerouslySetHtml)) {
-      const val = templateVar[__dangerouslySetHtml]
+    // Process `html.dangerouslySkipEscape()`
+    if (hasProp(templateVar, __dangerouslySkipEscape)) {
+      const val = templateVar[__dangerouslySkipEscape]
       assertUsage(
         typeof val === 'string',
-        `[html.dangerouslySetHtml(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof val}"\`. (While executing the \`render()\` hook exported by ${filePath})`
+        `[html.dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof val}"\`. (While executing the \`render()\` hook exported by ${filePath})`
       )
-      // User used `html.dangerouslySetHtml()` so we assume the string to be safe
+      // User used `html.dangerouslySkipEscape()` so we assume the string to be safe
       return val
     }
 
