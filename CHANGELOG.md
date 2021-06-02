@@ -1,3 +1,12 @@
+# [0.1.0-beta.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.48...v0.1.0-beta.49) (2021-06-02)
+
+
+### Reverts
+
+* Revert "boilerplate: pin vite@2.3.4 because 2.3.5 is broken" ([d4f0b03](https://github.com/brillout/vite-plugin-ssr/commit/d4f0b032462c0ae0165bb3f6f528110db59c697e))
+
+
+
 # [0.1.0-beta.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.47...v0.1.0-beta.48) (2021-05-30)
 
 
