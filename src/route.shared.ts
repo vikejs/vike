@@ -23,7 +23,7 @@ async function route(
 }> {
   assertUsage(
     allPageIds.length > 0,
-    'No *.page.js file found. You can create a `index.page.js` (or `index.page.jsx`, `index.page.vue`, ...) which will serve `/`.'
+    'No `*.page.js` file found. You can create a `index.page.js` (or `index.page.jsx`, `index.page.vue`, ...) which will serve `/`.'
   )
   const pageRoutes = await loadPageRoutes()
 

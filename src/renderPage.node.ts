@@ -429,7 +429,7 @@ async function getBrowserFiles(pageId: string) {
   let browserFiles = await getPageFiles('.page.client')
   assertUsage(
     browserFiles.length > 0,
-    'No *.page.client.* file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
+    'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
   )
   browserFiles = filterAndSort(browserFiles, pageId)
   return browserFiles
@@ -439,7 +439,7 @@ async function getServerFiles(pageId: string) {
   let serverFiles = await getPageFiles('.page.server')
   assertUsage(
     serverFiles.length > 0,
-    'No *.page.server.* file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
+    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
   )
   serverFiles = filterAndSort(serverFiles, pageId)
   return serverFiles
