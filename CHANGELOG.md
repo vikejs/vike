@@ -6,11 +6,6 @@
 * define ESM build in tsconfig.ts instead of CLI (vitejs/vite[#3617](https://github.com/brillout/vite-plugin-ssr/issues/3617), fix [#85](https://github.com/brillout/vite-plugin-ssr/issues/85)) ([4fdbf91](https://github.com/brillout/vite-plugin-ssr/commit/4fdbf91e9c59f91ca8111dd88b6df7a3c664d0c2))
 
 
-### Reverts
-
-* Revert "boilerplate: pin vite@2.3.4" ([8940d8b](https://github.com/brillout/vite-plugin-ssr/commit/8940d8bdcc14c1787f6a31801224a11c9d627be8))
-
-
 
 # [0.1.0-beta.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.48...v0.1.0-beta.49) (2021-06-02)
 
