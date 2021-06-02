@@ -1,0 +1,16 @@
+body {
+  font-family: Inter;
+  color: #323d48;
+  margin: 0;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./Inter-Var.ttf') format('truetype');
+}
+
+code {
+  background-color: #f4f4f4;
+  border-radius: 4px;
+  padding: 2px 5px;
+}
