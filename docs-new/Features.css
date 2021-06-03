@@ -1,3 +1,14 @@
+#features-row-1 {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-column-gap: 30px;
+}
+#features-row-2 {
+  display: grid;
+  font-size: 0.9em;
+  grid-template-columns: repeat(5, auto);
+  grid-column-gap: 30px;
+}
 #features p {
-  margin: 4px 0
+  margin: 4px 0;
 }
