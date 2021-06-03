@@ -6,9 +6,14 @@
 #features-row-2 {
   display: grid;
   font-size: 0.9em;
-  grid-template-columns: repeat(5, auto);
+  grid-template-columns: repeat(2, auto);
   grid-column-gap: 30px;
 }
+#features-row-2 h2 {
+  font-size: 1.1em;
+  margin-bottom: 0.9em;
+  margin-top: 2em;
+}
 #features p {
-  margin: 4px 0;
+  margin: 5px 0;
 }

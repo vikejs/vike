@@ -29,10 +29,10 @@ function Layout({ children }) {
         display: 'flex'
       }}
     >
-      <div style={{ flexShrink: 0, overflowY: 'auto', height: '100vh', width: 300 }}>
+      <div style={{ flexShrink: 0, overflowY: 'auto', height: '100vh', width: 280 }}>
         <div style={{ /*height: '100vh',*/ position: 'fixed', top: 0 }}>{left}</div>
       </div>
-      <div>{right}</div>
+      <div style={{ padding: '0 10px' }}>{right}</div>
     </div>
   )
 }

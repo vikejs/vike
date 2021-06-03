@@ -18,7 +18,7 @@ function Header() {
   return (
     <Center>
       <a
-        style={{ display: 'flex', alignItems: 'center', paddingTop: 20, textDecoration: 'none', color: 'inherit' }}
+        style={{ display: 'flex', alignItems: 'center', paddingTop: 20, textDecoration: 'none', color: 'inherit', paddingBottom: 20, marginBottom: 10 }}
         href="/"
       >
         <img src={iconPlugin} height="128" style={{ marginRight: 20 }} />
@@ -26,7 +26,7 @@ function Header() {
           <h1 style={{ margin: 0, marginTop: 0, fontSize: '2.7em' }}>
             <code>vite-plugin-ssr</code>
           </h1>
-          <p style={{ fontSize: '1.45em', margin: 0, marginTop: '0.4em', opacity: 0.9, fontWeight: 500 }}>
+          <p style={{ fontSize: '1.45em', margin: 0, marginTop: '0.1em', opacity: 0.9, fontWeight: 500 }}>
             Add SSR to your Vite app
           </p>
           {/*

@@ -2,6 +2,7 @@ body {
   font-family: Inter;
   color: #323d48;
   margin: 0;
+  line-height: 1.5;
 }
 
 @font-face {

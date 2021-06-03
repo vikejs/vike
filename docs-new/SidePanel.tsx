@@ -48,7 +48,7 @@ function NavItem({ children }) {
         fontWeight: 600,
         letterSpacing: '0.15ch',
         color: '#323d48',
-        padding: '15px 4px 15px 40px',
+        padding: '12px 4px 12px 40px',
         display: 'block',
         textDecoration: 'none'
       }}
