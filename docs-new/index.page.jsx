@@ -11,11 +11,11 @@ function Page() {
   return (
     <Layout>
       <SidePanel />
-    <div>
-      <Header />
-      <Features />
-      <Docs />
-    </div>
+      <div>
+        <Header />
+        <Features />
+        <Docs />
+      </div>
     </Layout>
   )
 }
@@ -27,10 +27,11 @@ function Layout({ children }) {
     <div
       style={{
         display: 'flex'
-        //flexDirection: 'column'
       }}
     >
-      <div style={{ flexShrink: 0 }}>{left}</div>
+      <div style={{ flexShrink: 0, overflowY: 'auto', height: '100vh', width: 300 }}>
+        <div style={{ /*height: '100vh',*/ position: 'fixed', top: 0 }}>{left}</div>
+      </div>
       <div>{right}</div>
     </div>
   )

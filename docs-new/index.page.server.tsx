@@ -15,7 +15,7 @@ function render(pageContext: any) {
     <html>
       <head>
         <title>Vite SSR Plugin</title>
-        <meta name="description" content="Vite SSR Plugin" />
+        <meta name="description" content="Add SSR to your Vite app." />
       </head>
       <body>
         <div id="page-view">${html.dangerouslySkipEscape(pageContent)}</div>
