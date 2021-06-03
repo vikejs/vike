@@ -7,14 +7,26 @@ import Docs from './Docs.mdx'
 
 export { Page }
 
+const MyH1 = props => <h1 style={{color: 'tomato'}} {...props} />
+const MyParagraph = props => <p style={{fontSize: '18px', lineHeight: 1.6}} />
+
+const components = {
+  h3: MyH1,
+  p: MyParagraph
+}
+
+console.log(114)
+
 function Page() {
+  const docs = <Docs components={components} />
+
   return (
     <Layout>
       <SidePanel />
       <div>
         <Header />
         <Features />
-        <Docs />
+        {docs}
       </div>
     </Layout>
   )

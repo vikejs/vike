@@ -30,9 +30,9 @@ function Features() {
         <div>
           <h2>⛰️ Rock-solid</h2>
           <p>
-            <b>Used in production</b> by many companies.
+            <b>Used in production</b> by many comp&shy;anies.
           </p>
-          <b>No known bug</b> (bugs are fixed promptly).
+          <b>No known bug</b> (bugs are fixed promp&shy;tly).
           <p></p>
           <p>
             Every release is assailed against a heavy suite of <b>automated tests</b>.
