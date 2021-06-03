@@ -22,7 +22,7 @@ function Header() {
         href="/"
       >
         <img src={iconPlugin} height="128" style={{ marginRight: 20 }} />
-        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
           <h1 style={{ margin: 0, marginTop: 0, fontSize: '2.7em' }}>
             <code>vite-plugin-ssr</code>
           </h1>

@@ -9,13 +9,14 @@ function Features() {
       <div>
         <h2>🔧 Composable</h2>
         <p>
-          You <b>control how pages are rendered</b> and you can use not only <b>any view framework</b> (React, Vue, ...) but really <b>any tool</b> you want (Vuex/Redux, Apollo GraphQL, Service Workers, ...).
+          You <b>control how pages are rendered</b> and you can use not only <b>any view framework</b> (React, Vue, ...) but really <b>any tool</b> you want (Vuex/Redux, Apollo GraphQL, Service Workers, Vue/React Router, ...).
         </p>
         <p>Say goodbye to framework lock-in.</p>
       </div>
       <div>
-        <h2>✨ Simple</h2>
-        <p>Simple design resulting in a tool that is a joy to use.</p>
+        <h2>✨ Full-fledged</h2>
+        <p><b>Routing</b>, <b>data-fetching</b>, <b>pre-rendering</b>, ... all tools you expect form a full-fleged SSR tool.</p>
+        Choose between <b>Server-side Routing</b> (for a simple architecture) and <b>Client-side Routing</b> (for faster/animated page transitions).
         <p>
           Render some pages as SPA, some with SSR, and some to HTML-only (zero/minimal browser-side JavaScript).
         </p>
@@ -27,7 +28,7 @@ function Features() {
           Any bug you may encounter will be <b>promptly fixed</b>.
         </p>
         <p>
-          Every release is assailed against a <b>heavy suite of automated tests</b>.
+          Every release is assailed against a heavy suite of <b>automated tests</b>.
         </p>
       </div>
       <div>
@@ -43,7 +44,7 @@ function Features() {
       </div>
       <div>
         <h2>🚀 Scalable</h2>
-        <p>Scale to <b>thousands of files</b> with no hit on dev speed (thanks to Vite's lazy transpiling)</p>
+        <p>Scale to <b>thousands of files</b> with no hit on dev speed, thanks to Vite's lazy dev transpiling.</p>
         <p>SSR <b>architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly <b>custom and precise needs</b>.</p>
       </div>
       <div>
