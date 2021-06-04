@@ -15,7 +15,7 @@ if (typeof window !== 'undefined') {
       let previousTop: number | null = null
       for (const header of traverse(headers)) {
         const top = getHeaderTop(header)
-        console.log(header, top)
+        //console.log(header, top)
         if (top === null) continue
         if (!screenBegin && top > 0) {
           assert(previousHeader !== null) // The first header is `Introduction` which has `top === 0`
@@ -29,20 +29,21 @@ if (typeof window !== 'undefined') {
           assert(previousTop !== null)
           assert(previousTop <= window.innerHeight)
           const boundaryPosition = (window.innerHeight - previousTop) / (top - previousTop)
-          screenEnd = { header: header, boundaryPosition }
+          screenEnd = { header: previousHeader, boundaryPosition }
           break
         }
         previousHeader = header
         previousTop = top
       }
       assert(previousHeader)
-      assert(previousTop)
+      assert(previousTop!==null)
       if (!screenBegin) {
         const boundaryPosition = (0 - previousTop) / (window.innerHeight - previousTop)
         screenBegin = { header: previousHeader, boundaryPosition }
       }
       if (!screenEnd) {
-        const boundaryPosition = (window.innerHeight - previousTop) / (top - previousTop)
+        // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
+        const boundaryPosition = (window.scrollY + window.innerHeight - previousTop) / (document.body.clientHeight - previousTop)
         screenEnd = { header: previousHeader, boundaryPosition }
       }
       console.log(screenBegin.header.title, screenBegin.boundaryPosition, screenEnd.header.title, screenEnd.boundaryPosition)
@@ -54,7 +55,7 @@ if (typeof window !== 'undefined') {
 
 function getHeaderTop(header: Header): number | null {
   const id = getHeaderId(header)
-  if (id === '') return 0
+  if (id === '') return - scrollY
   assert(id)
   const el = document.getElementById(id)
   if (!el) return null
