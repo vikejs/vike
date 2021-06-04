@@ -6,56 +6,99 @@ import { assert, getHeaderId } from './utils'
 export { SidePanel }
 
 if (typeof window !== 'undefined') {
-  window.addEventListener(
-    'scroll',
-    (ev) => {
-      let screenBegin: { header: Header; boundaryPosition: number } | null = null
-      let screenEnd: { header: Header; boundaryPosition: number } | null = null
-      let previousHeader: Header | null = null
-      let previousTop: number | null = null
-      for (const header of traverse(headers)) {
-        const top = getHeaderTop(header)
-        //console.log(header, top)
-        if (top === null) continue
-        if (!screenBegin && top > 0) {
-          assert(previousHeader !== null) // The first header is `Introduction` which has `top <= 0`
-          assert(previousTop !== null)
-          assert(previousTop <= 0)
-          const boundaryPosition = (0 - previousTop) / (top - previousTop)
-          screenBegin = { header: previousHeader, boundaryPosition }
-        }
-        if (top > window.innerHeight) {
-          assert(previousHeader !== null)
-          assert(previousTop !== null)
-          assert(previousTop <= window.innerHeight)
-          const boundaryPosition = (window.innerHeight - previousTop) / (top - previousTop)
-          screenEnd = { header: previousHeader, boundaryPosition }
-          break
-        }
-        previousHeader = header
-        previousTop = top
-      }
-      assert(previousHeader)
-      assert(previousTop!==null)
-      if (!screenBegin) {
-        const boundaryPosition = (0 - previousTop) / (window.innerHeight - previousTop)
-        screenBegin = { header: previousHeader, boundaryPosition }
-      }
-      if (!screenEnd) {
-        // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
-        const boundaryPosition = (window.scrollY + window.innerHeight - previousTop) / (document.body.clientHeight - previousTop)
-        screenEnd = { header: previousHeader, boundaryPosition }
-      }
-      console.log(screenBegin.header.title, screenBegin.boundaryPosition, screenEnd.header.title, screenEnd.boundaryPosition)
-      //document.querySelectorAll('h1, h2, h3, h4')
-    },
-    { passive: true }
+  window.addEventListener('scroll', setNavigationScrollWindow, { passive: true })
+  window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
+}
+
+function setNavigationScrollWindow() {
+  let screenBegin: { header: Header; boundaryPosition: number } | null = null
+  let screenEnd: { header: Header; boundaryPosition: number } | null = null
+  let previousHeader: Header | null = null
+  let previousTop: number | null = null
+  for (const header of traverse(headers)) {
+    const top = getHeaderTop(header)
+    //console.log(header, top)
+    if (top === null) continue
+    if (!screenBegin && top > 0) {
+      assert(previousHeader !== null) // The first header is `Introduction` which has `top <= 0`
+      assert(previousTop !== null)
+      assert(previousTop <= 0)
+      console.log(1, previousTop, top)
+      const boundaryPosition = (0 - previousTop) / (top - previousTop)
+      screenBegin = { header: previousHeader, boundaryPosition }
+    }
+    if (top > window.innerHeight) {
+      assert(previousHeader !== null)
+      assert(previousTop !== null)
+      assert(previousTop <= window.innerHeight)
+      console.log(2, previousTop, top, window.innerHeight)
+      const boundaryPosition = (window.innerHeight - previousTop) / (top - previousTop)
+      screenEnd = { header: previousHeader, boundaryPosition }
+      break
+    }
+    previousHeader = header
+    previousTop = top
+  }
+  assert(previousHeader)
+  assert(previousTop !== null)
+  if (!screenBegin) {
+    console.log(3, previousTop, window.innerHeight)
+    const boundaryPosition = (window.scrollY - previousTop) / ((document.body.clientHeight-window.scrollY) - previousTop)
+    screenBegin = { header: previousHeader, boundaryPosition }
+  }
+  if (!screenEnd) {
+    // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
+    console.log(4, previousTop, window.innerHeight, scrollY, document.body.clientHeight)
+    const boundaryPosition =
+      (window.scrollY + window.innerHeight - previousTop) / ((document.body.clientHeight-window.scrollY) - previousTop)
+    //(window.scrollY - previousTop) / (document.body.clientHeight - previousTop)
+    screenEnd = { header: previousHeader, boundaryPosition }
+  }
+  //*
+    console.log(5, window.innerHeight, document.body.clientHeight, previousTop)
+  console.log(
+    screenBegin.header.title,
+    screenBegin.boundaryPosition,
+    screenEnd.header.title,
+    screenEnd.boundaryPosition,
+    screenEnd.boundaryPosition - screenBegin.boundaryPosition,
+    ///window.innerHeight /  (document.body.clientHeight - previousTop)
   )
+  //*/
+  //document.querySelectorAll('h1, h2, h3, h4')
+
+  const navigationEl = document.getElementById('navigation')!
+  const getNavItem = (link: string): HTMLElement => {
+    const el: HTMLElement = navigationEl.querySelector(`a[href="#${link}"]`)!
+    //console.log(navigationEl, el, link)
+    assert(el)
+    return el
+  }
+  const getOffsetY = (el: HTMLElement) => {
+    let offsetY = el.offsetTop
+    const parentEl = el.offsetParent as HTMLElement
+    if (parentEl !== navigationEl) {
+      offsetY += getOffsetY(parentEl)
+    }
+    return offsetY
+  }
+  const beginEl = getNavItem(getHeaderId(screenBegin.header)!)
+  const endEl = getNavItem(getHeaderId(screenEnd.header)!)
+  const beginOffsetY = getOffsetY(beginEl)
+  const endOffsetY = getOffsetY(endEl)
+  const scrollOverlayBegin = beginOffsetY + beginEl.clientHeight * screenBegin.boundaryPosition
+  const scrollOverlayEnd = endOffsetY + endEl.clientHeight * screenEnd.boundaryPosition
+  const top = scrollOverlayBegin
+  const h = Math.ceil(scrollOverlayEnd - scrollOverlayBegin)
+  const height = Math.max(1, h)
+  //console.log(beginEl, beginOffsetY, endEl, endOffsetY, top, height)
+  //console.log('h', h, height, screenBegin.boundaryPosition, screenEnd.boundaryPosition)
+  setScrollOverlay(top, height)
 }
 
 function getHeaderTop(header: Header): number | null {
   const id = getHeaderId(header)
-  if (id === '') return - scrollY
+  if (id === '') return -scrollY
   assert(id)
   const el = document.getElementById(id)
   if (!el) return null
@@ -126,7 +169,26 @@ function SideHeader() {
 }
 
 function Navigation() {
-  return <NavTree headers={headers} />
+  return (
+    <div id="navigation" style={{ position: 'relative' }}>
+      <NavTree headers={headers} />
+      <ScrollOverlay />
+    </div>
+  )
+}
+
+function setScrollOverlay(top: number, height: number) {
+  const scrollOverlayEl = document.getElementById('scroll-overlay')!
+  scrollOverlayEl.style.top = top + 'px'
+  scrollOverlayEl.style.height = height + 'px'
+}
+function ScrollOverlay() {
+  return (
+    <div
+      id="scroll-overlay"
+      style={{ position: 'absolute', left: '0', width: '100%', backgroundColor: 'rgba(0,0,0,0.3)' }}
+    />
+  )
 }
 
 function NavTree({ headers }: { headers?: Header[] }) {
