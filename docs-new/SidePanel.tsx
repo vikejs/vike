@@ -18,7 +18,7 @@ if (typeof window !== 'undefined') {
         //console.log(header, top)
         if (top === null) continue
         if (!screenBegin && top > 0) {
-          assert(previousHeader !== null) // The first header is `Introduction` which has `top === 0`
+          assert(previousHeader !== null) // The first header is `Introduction` which has `top <= 0`
           assert(previousTop !== null)
           assert(previousTop <= 0)
           const boundaryPosition = (0 - previousTop) / (top - previousTop)
