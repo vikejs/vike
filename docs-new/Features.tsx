@@ -10,7 +10,7 @@ function Features() {
         <div>
           <h2>🔧 Composable</h2>
           <p>
-            You <b>control how pages are rendered</b> and you can not only <b>use any view framework</b> (React, Vue,
+            You <b>control how pages are rendered</b> and you can not only use <b>any view framework</b> (React, Vue,
             ...) but really <b>any tool you want</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
@@ -44,11 +44,11 @@ function Features() {
         <div>
           <h2>🌍 Deploy Anywhere</h2>
           <p>
-            <b>Use any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
-            Express.js, Fastify, Koa, ...).
+            Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
+            Express.js, Fastify, Hapi, ...).
           </p>
           <p>
-            Thanks to <b>pre-rendering</b> you can deploy to a <b>static host</b> (Netlify, GitHub Pages, Cloudflare
+            You can <b>pre-render</b> your app and deploy to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
             Pages, ...).
           </p>
         </div>

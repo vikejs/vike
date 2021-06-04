@@ -4,21 +4,26 @@ import { SidePanel } from './SidePanel'
 import { Header } from './Header'
 import { Features } from './Features'
 import Docs from './Docs.mdx'
+import { MDXProvider } from '@mdx-js/react'
 
 export { Page }
 
-const MyH1 = props => <h1 style={{color: 'tomato'}} {...props} />
-const MyParagraph = props => <p style={{fontSize: '18px', lineHeight: 1.6}} />
+const MyH1 = (props) => <h1 className="euh" style={{ color: 'green' }} {...props} />
+const MyParagraph = (props) => <p className="euh" style={{ color: 'blue', fontSize: '18px', lineHeight: 1.6 }} />
 
 const components = {
+  h1: MyH1,
+  h2: MyH1,
   h3: MyH1,
   p: MyParagraph
 }
 
-console.log(114)
-
 function Page() {
-  const docs = <Docs components={components} />
+  const docs = (
+    <MDXProvider components={components}>
+      <Docs components={components} />
+    </MDXProvider>
+  )
 
   return (
     <Layout>

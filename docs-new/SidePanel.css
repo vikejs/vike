@@ -1,2 +1,23 @@
-code {
+.nav-h1 {
+  font-size: 14.4px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.15ch;
+  color: #323d48;
+  padding: 12px 0;
+  padding-left: 40px;
+  padding-right: 4px;
+  display: block;
+  text-decoration: none;
+}
+.nav-h2 {
+  font-size: 14.4px;
+  font-weight: 400;
+  letter-spacing: 0.15ch;
+  color: #323d48;
+  padding: 6px 0;
+  padding-left: 60px;
+  padding-right: 4px;
+  display: block;
+  text-decoration: none;
 }
