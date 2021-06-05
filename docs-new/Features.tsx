@@ -20,8 +20,8 @@ function Features() {
         <div>
           <h2>✨ Full-fledged</h2>
           <p>
-            <b>Server-side Routing</b> (for a simple architecture) or <b>Client-side Routing</b> (for faster/animated
-            page transitions), <b>data fetching</b>, <b>pre-rendering</b>.
+            <b>Data fetching</b>, <b>pre-rendering</b>, <b>HMR</b>, <b>Server-side Routing</b> (for simple architecture) or <b>Client-side Routing</b> (for faster/animated
+            page transitions).
           </p>
           <p>
             Render some pages as <b>SPA</b>, some with <b>SSR</b>, and some to <b>HTML-only</b>.
@@ -74,7 +74,7 @@ function Features() {
         </div>
         <div>
           <h2>
-            <span style={{ fontFamily: 'reset' }}>❤️</span> Craft
+            <span style={{ fontFamily: 'reset' }}>❤️</span> Craftmanship
           </h2>
           <p>
             Crafted with <b>attention to details</b> and <b>care for simplicity</b>.

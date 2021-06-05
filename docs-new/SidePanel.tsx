@@ -6,34 +6,43 @@ import { assert, getHeaderId } from './utils'
 export { SidePanel }
 
 if (typeof window !== 'undefined') {
+  window.addEventListener('load', setNavigationScrollWindow)
+  window.onload = setNavigationScrollWindow
+  setTimeout(setNavigationScrollWindow, 0)
   window.addEventListener('scroll', setNavigationScrollWindow, { passive: true })
   window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
 }
 
+type ScreenBegin = { header: Header; boundaryPosition: number }
+type ScreenEnd = { header: Header; boundaryPosition: number }
+
 function setNavigationScrollWindow() {
-  let screenBegin: { header: Header; boundaryPosition: number } | null = null
-  let screenEnd: { header: Header; boundaryPosition: number } | null = null
+  let screenBegin: ScreenBegin | null = null
+  let screenEnd: ScreenEnd | null = null
   let previousHeader: Header | null = null
   let previousTop: number | null = null
+
+  const computeBoundaryBegin = (previousTop: number, top: number) => (0 - previousTop) / (top - previousTop)
+  const computeBoundaryEnd = (previousTop: number, top: number) => (window.innerHeight - previousTop) / (top - previousTop)
+
   for (const header of traverse(headers)) {
     const top = getHeaderTop(header)
-    //console.log(header, top)
     if (top === null) continue
     if (!screenBegin && top > 0) {
       assert(previousHeader !== null) // The first header is `Introduction` which has `top <= 0`
       assert(previousTop !== null)
       assert(previousTop <= 0)
-      console.log(1, previousTop, top)
-      const boundaryPosition = (0 - previousTop) / (top - previousTop)
+      const boundaryPosition = computeBoundaryBegin(previousTop, top)
       screenBegin = { header: previousHeader, boundaryPosition }
+      assertBoundaryPosition(screenBegin.boundaryPosition)
     }
     if (top > window.innerHeight) {
       assert(previousHeader !== null)
       assert(previousTop !== null)
       assert(previousTop <= window.innerHeight)
-      console.log(2, previousTop, top, window.innerHeight)
-      const boundaryPosition = (window.innerHeight - previousTop) / (top - previousTop)
+      const boundaryPosition = computeBoundaryEnd(previousTop, top)
       screenEnd = { header: previousHeader, boundaryPosition }
+      assertBoundaryPosition(screenEnd.boundaryPosition)
       break
     }
     previousHeader = header
@@ -42,30 +51,38 @@ function setNavigationScrollWindow() {
   assert(previousHeader)
   assert(previousTop !== null)
   if (!screenBegin) {
-    console.log(3, previousTop, window.innerHeight)
-    const boundaryPosition = (window.scrollY - previousTop) / ((document.body.clientHeight-window.scrollY) - previousTop)
+    const top = document.body.clientHeight - scrollY
+    const boundaryPosition = computeBoundaryBegin(previousTop, top)
     screenBegin = { header: previousHeader, boundaryPosition }
+    assertBoundaryPosition(screenBegin.boundaryPosition)
   }
   if (!screenEnd) {
     // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
-    console.log(4, previousTop, window.innerHeight, scrollY, document.body.clientHeight)
-    const boundaryPosition =
-      (window.scrollY + window.innerHeight - previousTop) / ((document.body.clientHeight-window.scrollY) - previousTop)
-    //(window.scrollY - previousTop) / (document.body.clientHeight - previousTop)
+    const top = document.body.clientHeight - scrollY
+    const boundaryPosition = computeBoundaryEnd(previousTop, top)
     screenEnd = { header: previousHeader, boundaryPosition }
+    assertBoundaryPosition(screenEnd.boundaryPosition)
   }
-  //*
-    console.log(5, window.innerHeight, document.body.clientHeight, previousTop)
+  /*
   console.log(
     screenBegin.header.title,
     screenBegin.boundaryPosition,
     screenEnd.header.title,
-    screenEnd.boundaryPosition,
-    screenEnd.boundaryPosition - screenBegin.boundaryPosition,
-    ///window.innerHeight /  (document.body.clientHeight - previousTop)
+    screenEnd.boundaryPosition
   )
+  console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
   //*/
   //document.querySelectorAll('h1, h2, h3, h4')
+  updateScrollOverlay(screenBegin, screenEnd)
+}
+
+function assertBoundaryPosition(boundaryPosition: number) {
+  assert(0 <= boundaryPosition && boundaryPosition <= 1)
+}
+
+function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
+  assertBoundaryPosition(screenBegin.boundaryPosition)
+  assertBoundaryPosition(screenEnd.boundaryPosition)
 
   const navigationEl = document.getElementById('navigation')!
   const getNavItem = (link: string): HTMLElement => {
@@ -183,10 +200,28 @@ function setScrollOverlay(top: number, height: number) {
   scrollOverlayEl.style.height = height + 'px'
 }
 function ScrollOverlay() {
+  const width = '1px'
+  const color = '#aaa'
   return (
     <div
       id="scroll-overlay"
-      style={{ position: 'absolute', left: '0', width: '100%', backgroundColor: 'rgba(0,0,0,0.3)' }}
+      style={{
+        position: 'absolute',
+        left: '0',
+        width: '100%',
+        background: `linear-gradient(to right, ${color} ${width}, transparent ${width}) 0 0,
+    linear-gradient(to right, ${color} ${width}, transparent ${width}) 0 100%,
+    linear-gradient(to left, ${color} ${width}, transparent ${width}) 100% 0,
+    linear-gradient(to left, ${color} ${width}, transparent ${width}) 100% 100%,
+    linear-gradient(to bottom, ${color} ${width}, transparent ${width}) 0 0,
+    linear-gradient(to bottom, ${color} ${width}, transparent ${width}) 100% 0,
+    linear-gradient(to top, ${color} ${width}, transparent ${width}) 0 100%,
+    linear-gradient(to top, ${color} ${width}, transparent ${width}) 100% 100%`,
+        backgroundColor: 'rgba(0,0,0,0.03)',
+        backgroundRepeat: 'no-repeat',
+
+        backgroundSize: '10px 10px'
+      }}
     />
   )
 }
