@@ -5,6 +5,24 @@ body {
   line-height: 1.5;
 }
 
+a {
+  color: #4747ff;
+  text-decoration: none;
+}
+
+/*
+.remark-highlight {
+  font-size: 13.6px;
+  line-height: 1.5;
+}
+pre[class*="language-"] {
+  background: #f6f6f6;
+}
+*/
+code[class*="language-"] {
+  padding: 16px;
+}
+
 @font-face {
   font-family: 'Inter';
   font-weight: 100 900;
@@ -13,7 +31,7 @@ body {
   src: url('./Inter-Var.ttf') format('truetype-variations');
 }
 
-code {
+code:not([class*="language-"]) {
   background-color: #f4f4f4;
   border-radius: 4px;
   padding: 2px 5px;

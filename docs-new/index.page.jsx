@@ -57,7 +57,7 @@ function Layout({ children }) {
           {left}
         </div>
       </div>
-      <div style={{ padding: '0 10px' }}>{right}</div>
+      <div style={{ padding: '0 100px' }}>{right}</div>
     </div>
   )
 }
