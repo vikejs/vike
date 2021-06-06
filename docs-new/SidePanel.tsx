@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import iconPlugin from './icons/vite-plugin-ssr.svg'
 import './SidePanel.css'
-import { assert, getHeaderId } from './utils'
+import { Section } from './types'
+import { assert, getSectionId } from './utils'
 
 export { SidePanel }
 
@@ -13,61 +14,66 @@ if (typeof window !== 'undefined') {
   window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
 }
 
-type ScreenBegin = { header: Header; boundaryPosition: number }
-type ScreenEnd = { header: Header; boundaryPosition: number }
+type ScreenBegin = { section: Section; boundaryPosition: number }
+type ScreenEnd = { section: Section; boundaryPosition: number }
 
+let _sections: Section[] | null = null
 function setNavigationScrollWindow() {
+  if (_sections === null) return
+  const sections = _sections
+
   let screenBegin: ScreenBegin | null = null
   let screenEnd: ScreenEnd | null = null
-  let previousHeader: Header | null = null
+  let prviousSection: Section | null = null
   let previousTop: number | null = null
 
   const computeBoundaryBegin = (previousTop: number, top: number) => (0 - previousTop) / (top - previousTop)
-  const computeBoundaryEnd = (previousTop: number, top: number) => (window.innerHeight - previousTop) / (top - previousTop)
+  const computeBoundaryEnd = (previousTop: number, top: number) =>
+    (window.innerHeight - previousTop) / (top - previousTop)
 
-  for (const header of traverse(headers)) {
-    const top = getHeaderTop(header)
+  for (const section of traverse(sections)) {
+    const top = getHeaderTop(section)
     if (top === null) continue
     if (!screenBegin && top > 0) {
-      assert(previousHeader !== null) // The first header is `Introduction` which has `top <= 0`
+      assert(prviousSection !== null) // The first section is `Introduction` which has `top <= 0`
       assert(previousTop !== null)
       assert(previousTop <= 0)
       const boundaryPosition = computeBoundaryBegin(previousTop, top)
-      screenBegin = { header: previousHeader, boundaryPosition }
+      screenBegin = { section: prviousSection, boundaryPosition }
       assertBoundaryPosition(screenBegin.boundaryPosition)
     }
     if (top > window.innerHeight) {
-      assert(previousHeader !== null)
+      assert(prviousSection !== null)
       assert(previousTop !== null)
       assert(previousTop <= window.innerHeight)
       const boundaryPosition = computeBoundaryEnd(previousTop, top)
-      screenEnd = { header: previousHeader, boundaryPosition }
+      screenEnd = { section: prviousSection, boundaryPosition }
       assertBoundaryPosition(screenEnd.boundaryPosition)
       break
     }
-    previousHeader = header
+    prviousSection = section
     previousTop = top
   }
-  assert(previousHeader)
+  assert(prviousSection)
   assert(previousTop !== null)
   if (!screenBegin) {
     const top = document.body.clientHeight - scrollY
     const boundaryPosition = computeBoundaryBegin(previousTop, top)
-    screenBegin = { header: previousHeader, boundaryPosition }
+    screenBegin = { section: prviousSection, boundaryPosition }
     assertBoundaryPosition(screenBegin.boundaryPosition)
   }
   if (!screenEnd) {
     // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
     const top = document.body.clientHeight - scrollY
     const boundaryPosition = computeBoundaryEnd(previousTop, top)
-    screenEnd = { header: previousHeader, boundaryPosition }
+    screenEnd = { section: prviousSection, boundaryPosition }
     assertBoundaryPosition(screenEnd.boundaryPosition)
   }
   /*
   console.log(
-    screenBegin.header.title,
+    screenBegin.section.title,
     screenBegin.boundaryPosition,
-    screenEnd.header.title,
+    screenEnd.section.title,
     screenEnd.boundaryPosition
   )
   console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
@@ -99,8 +105,8 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
     }
     return offsetY
   }
-  const beginEl = getNavItem(getHeaderId(screenBegin.header)!)
-  const endEl = getNavItem(getHeaderId(screenEnd.header)!)
+  const beginEl = getNavItem(getSectionId(screenBegin.section)!)
+  const endEl = getNavItem(getSectionId(screenEnd.section)!)
   const beginOffsetY = getOffsetY(beginEl)
   const endOffsetY = getOffsetY(endEl)
   const scrollOverlayBegin = beginOffsetY + beginEl.clientHeight * screenBegin.boundaryPosition
@@ -113,8 +119,8 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   setScrollOverlay(top, height)
 }
 
-function getHeaderTop(header: Header): number | null {
-  const id = getHeaderId(header)
+function getHeaderTop(section: Section): number | null {
+  const id = getSectionId(section)
   if (id === '') return -scrollY
   assert(id)
   const el = document.getElementById(id)
@@ -123,47 +129,22 @@ function getHeaderTop(header: Header): number | null {
   return top
 }
 
-type Header = {
-  title: string
-  level: number
-  id?: string
-  headers?: Header[]
-}
-
-function traverse(headers: Header[]): Header[] {
-  const headersFlattened: Header[] = []
-  headers.forEach((header) => {
-    headersFlattened.push(header)
-    if (header.headers) {
-      headersFlattened.push(...traverse(header.headers))
+function traverse(sections: Section[]): Section[] {
+  const sectionList: Section[] = []
+  sections.forEach((section) => {
+    sectionList.push(section)
+    if (section.sections) {
+      sectionList.push(...traverse(section.sections))
     }
   })
-  return headersFlattened
+  return sectionList
 }
 
-const headers: Header[] = [
-  { level: 1, title: 'Introduction', id: '' },
-  { level: 1, title: 'Table of Contents' },
-  {
-    level: 1,
-    title: 'Get Started',
-    headers: [
-      { level: 2, title: 'Tour' },
-      { level: 2, title: 'Boilerplates' },
-      { level: 2, title: 'Manual Install' }
-    ]
-  },
-  { level: 1, title: 'Guides' },
-  { level: 2, title: 'Routing' },
-  { level: 2, title: 'Pre-rendering' },
-  { level: 1, title: 'API' }
-]
-
-function SidePanel() {
+function SidePanel({ sections }: { sections: Section[] }) {
   return (
     <>
       <SideHeader />
-      <Navigation />
+      <Navigation sections={sections} />
     </>
   )
 }
@@ -185,10 +166,13 @@ function SideHeader() {
   )
 }
 
-function Navigation() {
+function Navigation({ sections }: { sections: Section[] }) {
+  useEffect(() => {
+    _sections = sections
+  }, [])
   return (
     <div id="navigation" style={{ position: 'relative' }}>
-      <NavTree headers={headers} />
+      <NavTree sections={sections} />
       <ScrollOverlay />
     </div>
   )
@@ -226,18 +210,18 @@ function ScrollOverlay() {
   )
 }
 
-function NavTree({ headers }: { headers?: Header[] }) {
-  if (headers === undefined) return null
+function NavTree({ sections }: { sections?: Section[] }) {
+  if (sections === undefined) return null
   return (
     <>
-      {headers.map((header) => {
-        const { level, title, headers } = header
+      {sections.map((section) => {
+        const { level, title, sections } = section
         return (
           <div key={title}>
-            <a className={'nav-h' + level} href={'#' + getHeaderId(header)}>
+            <a className={'nav-h' + level} href={'#' + getSectionId(section)}>
               {title}
             </a>
-            <NavTree headers={headers} />
+            <NavTree sections={sections} />
           </div>
         )
       })}

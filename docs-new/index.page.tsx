@@ -2,17 +2,36 @@ import './index.css'
 import React from 'react'
 import { SidePanel } from './SidePanel'
 import { Header } from './Header'
+import { Section } from './types'
 import { Features } from './Features'
 import Docs from './Docs.mdx'
 import { MDXProvider } from '@mdx-js/react'
-import { getHeaderId } from './utils'
+import { getSectionId } from './utils'
 
 export { Page }
 
-const headerWithId = (headerTag) => (props) => {
+const sections: Section[] = [
+  { level: 1, title: 'Introduction', id: '' },
+  { level: 1, title: 'Table of Contents' },
+  {
+    level: 1,
+    title: 'Get Started',
+    sections: [
+      { level: 2, title: 'Tour' },
+      { level: 2, title: 'Boilerplates' },
+      { level: 2, title: 'Manual Install' }
+    ]
+  },
+  { level: 1, title: 'Guides' },
+  { level: 2, title: 'Routing' },
+  { level: 2, title: 'Pre-rendering' },
+  { level: 1, title: 'API' }
+]
+
+const headerWithId = (headerTag: string) => (props: Record<string, unknown>) => {
   const title = props.children
   if (typeof title === 'string') {
-    const id = getHeaderId({ title })
+    const id = getSectionId({ title })
     props = { id, ...props }
   }
   return React.createElement(headerTag, props)
@@ -27,13 +46,13 @@ const components = {
 function Page() {
   const docs = (
     <MDXProvider components={components}>
-      <Docs components={components} />
+      <Docs />
     </MDXProvider>
   )
 
   return (
     <Layout>
-      <SidePanel />
+      <SidePanel sections={sections} />
       <div>
         <Header />
         <Features />
@@ -43,7 +62,7 @@ function Page() {
   )
 }
 
-function Layout({ children }) {
+function Layout({ children }: { children: JSX.Element[] }) {
   const left = children[0]
   const right = children[1]
   return (
