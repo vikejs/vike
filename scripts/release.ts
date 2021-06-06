@@ -68,7 +68,8 @@ function getVersion(): { versionNew: string; versionCurrent: string } {
   const pkg = require(`${DIR_SRC}/package.json`) as PackageJson
   const versionCurrent = pkg.version
   assert(versionCurrent)
-  const versionNew = semver.inc(versionCurrent, 'prerelease')
+  const versionNew = versionCurrent
+  //const versionNew = semver.inc(versionCurrent, 'prerelease')
   return { versionNew, versionCurrent }
 }
 function updateVersion(versionNew: string) {
@@ -94,7 +95,7 @@ async function updateDependencies(versionNew: string, versionCurrent: string) {
     updatePkg(pkgPath, (pkg) => {
       const version = pkg.dependencies['vite-plugin-ssr']
       assert(version)
-      assert.strictEqual(version, `${versionCurrent}`)
+      //assert.strictEqual(version, `${versionCurrent}`)
       pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
     })
     // Update package-json.lock
