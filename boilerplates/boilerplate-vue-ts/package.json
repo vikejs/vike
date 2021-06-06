@@ -8,15 +8,15 @@
   },
   "dependencies": {
     "@types/express": "^4.17.12",
-    "@types/node": "^15.6.1",
-    "@vitejs/plugin-vue": "^1.2.2",
+    "@types/node": "^15.12.1",
+    "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.11",
     "@vue/server-renderer": "^3.0.11",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "ts-node": "^9.1.1",
     "typescript": "^4.3.2",
-    "vite": "^2.3.5",
+    "vite": "^2.3.6",
     "vite-plugin-ssr": "0.1.0-beta.50",
     "vue": "^3.0.11"
   }
