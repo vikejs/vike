@@ -4,7 +4,6 @@ import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
 const remarkPlugins = [
-  // require('remark-prism')
   require('remark-highlight.js')
 ]
 

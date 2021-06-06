@@ -10,15 +10,6 @@ a {
   text-decoration: none;
 }
 
-/*
-.remark-highlight {
-  font-size: 13.6px;
-  line-height: 1.5;
-}
-pre[class*="language-"] {
-  background: #f6f6f6;
-}
-*/
 code[class*="language-"] {
   padding: 16px;
 }
