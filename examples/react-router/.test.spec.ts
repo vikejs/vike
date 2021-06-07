@@ -20,7 +20,7 @@ test("page content is rendered to DOM", async () => {
 
   // Count state is preserved when navigating to `/about`
   expect(await page.textContent("h2")).toContain("Home");
-  await page.click('a[href="/about"]')
+  await page.click('a[href="/about"]');
   await autoRetry(async () => {
     expect(await page.textContent("h2")).toContain("About");
   });
