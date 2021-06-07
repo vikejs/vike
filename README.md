@@ -1315,7 +1315,32 @@ Example: [/examples/import-paths-alias-mapping/](examples/import-paths-alias-map
 Note that `server/index.ts` is *not* processed by Vite
 which means that path aliases won't work for code imported by `server/index.ts`.
 
-Vite's `resolve.alias` only works for `pages/**.page.*` files (and the files they import) as only these files are processed by Vite.
+Vite's `resolve.alias` only works for `pages/**.page.*` files (and all files they import) as these files are the only processed by Vite.
+Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js), is usually not processed by Vite and path aliases won't work there.
+
+<br/><br/>
+
+
+### .env Files
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Vite automatically exposes environment variables defined in `.env` at `import.meta.env`, see [Vite - `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+
+Note that:
+ - Vite only exposes variables prefixed with `VITE_`.
+ - Vite only exposes variables at Vite-processed code.
+   All your `pages/**.page.*` files (and all files they import) are processed by Vite and therefore environment variables available at `import.meta.env`.
+   Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js), is usually not processed by Vite and `.env` variables not available.
+   You can however load `.env` files yourself:
+   ```js
+   // server/index.js
+
+   if (!isProduction) {
+     // npm install dotenv
+     require('dotenv').config()
+   }
+   ```
 
 <br/><br/>
 
