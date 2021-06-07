@@ -1,6 +1,5 @@
 import './index.css'
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { SidePanel } from './SidePanel'
 import { Header } from './Header'
 import { Section } from './types'
@@ -57,31 +56,19 @@ const components = {
 }
 
 function Page() {
-  const docs = (
-    <MDXProvider components={components}>
-      <Docs />
-    </MDXProvider>
-  )
-
-  console.log(12, headings)
-  let sidePanel = null
-  /*
-  if (!isBrowser() && false) {
-    sidePanel = null
-  } else {
-    //fakeRender(docs)
-    sidePanel = <SidePanel sections={sections} />
-  }
-  //console.log(sections)
-  */
-
+  console.log(<Docs />)
   return (
     <Layout>
-      {sidePanel}
+      {/*
+      <SidePanel sections={sections} />
+      */}
+      <div/>
       <div>
         <Header />
         <Features />
-        {docs}
+        <MDXProvider components={components}>
+          <Docs />
+        </MDXProvider>
       </div>
     </Layout>
   )
@@ -104,11 +91,4 @@ function Layout({ children }: { children: (JSX.Element | null)[] }) {
       <div style={{ padding: '0 100px' }}>{right}</div>
     </div>
   )
-}
-
-function fakeRender(el: JSX.Element) {
-  const tempEl = document.createElement('div')
-  assert(isBrowser())
-  //const ReactDOM = await import('react-dom')
-  ReactDOM.render(el, tempEl)
 }
