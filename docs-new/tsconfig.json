@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true

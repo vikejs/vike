@@ -1,16 +1,18 @@
 import './index.css'
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { SidePanel } from './SidePanel'
 import { Header } from './Header'
 import { Section } from './types'
 import { Features } from './Features'
-import Docs from './Docs.mdx'
+import Docs, { headings } from './Docs.mdx'
 import { MDXProvider } from '@mdx-js/react'
-import { getSectionId } from './utils'
+import { assert, getSectionId, isBrowser } from './utils'
 
 export { Page }
 
 const sections: Section[] = [
+  /*
   { level: 1, title: 'Introduction', id: '' },
   { level: 1, title: 'Table of Contents' },
   {
@@ -26,6 +28,7 @@ const sections: Section[] = [
   { level: 2, title: 'Routing' },
   { level: 2, title: 'Pre-rendering' },
   { level: 1, title: 'API' }
+  */
 ]
 
 const headerWithId = (headerTag: string) => (props: Record<string, unknown>) => {
@@ -33,6 +36,16 @@ const headerWithId = (headerTag: string) => (props: Record<string, unknown>) => 
   if (typeof title === 'string') {
     const id = getSectionId({ title })
     props = { id, ...props }
+    const level = parseInt(headerTag.slice(1), 10) - 1
+    const lastSection = sections[sections.length - 1]
+    const section = { title, level }
+    //console.log(section)
+    if (lastSection && level > lastSection.level) {
+      lastSection.sections = lastSection.sections || []
+      lastSection.sections.push(section)
+    } else {
+      sections.push(section)
+    }
   }
   return React.createElement(headerTag, props)
 }
@@ -50,9 +63,21 @@ function Page() {
     </MDXProvider>
   )
 
+  console.log(12, headings)
+  let sidePanel = null
+  /*
+  if (!isBrowser() && false) {
+    sidePanel = null
+  } else {
+    //fakeRender(docs)
+    sidePanel = <SidePanel sections={sections} />
+  }
+  //console.log(sections)
+  */
+
   return (
     <Layout>
-      <SidePanel sections={sections} />
+      {sidePanel}
       <div>
         <Header />
         <Features />
@@ -62,7 +87,7 @@ function Page() {
   )
 }
 
-function Layout({ children }: { children: JSX.Element[] }) {
+function Layout({ children }: { children: (JSX.Element | null)[] }) {
   const left = children[0]
   const right = children[1]
   return (
@@ -79,4 +104,11 @@ function Layout({ children }: { children: JSX.Element[] }) {
       <div style={{ padding: '0 100px' }}>{right}</div>
     </div>
   )
+}
+
+function fakeRender(el: JSX.Element) {
+  const tempEl = document.createElement('div')
+  assert(isBrowser())
+  //const ReactDOM = await import('react-dom')
+  ReactDOM.render(el, tempEl)
 }
