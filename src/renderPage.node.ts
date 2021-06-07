@@ -408,7 +408,7 @@ async function getPageFunctions(pageId: string): Promise<PageFunctions> {
 
   assertUsage(
     renderFunction,
-    'No `render` function found. Make sure to define a `*.page.server.js` file that exports a `render` function. You can export a `render` function in a file `_default.page.server.js` which will apply as default to all your pages.'
+    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
   )
 
   return {
