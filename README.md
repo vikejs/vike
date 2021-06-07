@@ -45,6 +45,7 @@ Vite SSR plugin. Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
+<br/> &nbsp;&nbsp; [Import Paths Alias Mapping](#import-paths-alias-mapping)
 <br/><sub>&nbsp;&nbsp;&nbsp; Integrations</sub>
 <br/> &nbsp;&nbsp; [Authentication](#authentication) (Auth0, Passport.js, Grant, ...)
 <br/> &nbsp;&nbsp; [Markdown](#markdown)
@@ -1263,6 +1264,58 @@ Example:
  - [/examples/base-url/pages/_components/Link.jsx](examples/base-url/pages/_components/Link.jsx) (a `<Link>` component built on top of `import.meta.env.BASE_URL`)
  - [/examples/base-url/server/index.js](examples/base-url/server/index.js) (see the `base` option passed to `vite` and `vite-plugin-ssr`)
  - [/examples/base-url/package.json](examples/base-url/package.json) (see the build scripts)
+
+<br/><br/>
+
+
+### Import Paths Alias Mapping
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Instead of using relative import paths,
+which are often cumbersome (e.g. `import { Counter } from '../../../components/Counter'`),
+you can use use import path aliases:
+
+```js
+// `~/components/` denotes the `components/` directory living in your project root directory
+import { Counter } from `~/components/Counter`
+
+// ...
+```
+
+Path aliases are defined at [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias):
+
+```js
+export default {
+  resolve: {
+    alias: {
+     // We can now `import ~/path/to/module` where `~` references the project root
+     "~": __dirname,
+    }
+  },
+  // ...
+}
+```
+
+If you use TypeScript:
+
+```json5
+// tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./*"]
+    }
+    // ...
+  }
+}
+```
+
+Example: [/examples/import-paths-alias-mapping/](examples/import-paths-alias-mapping/).
+Note that `server/index.ts` is *not* processed by Vite
+which means that path aliases won't work for code imported by `server/index.ts`.
+
+Vite's `resolve.alias` only works for `pages/**.page.*` files (and the files they import) as only these files are processed by Vite.
 
 <br/><br/>
 
