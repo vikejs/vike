@@ -1328,7 +1328,7 @@ Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Vite automatically exposes environment variables defined in `.env` at `import.meta.env`, see [[Vite] `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+Vite automatically exposes environment variables defined in `.env` at `import.meta.env`, see [Vite: `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
 
 Note that:
  - Vite only exposes variables prefixed with `VITE_`.
