@@ -46,6 +46,7 @@ Vite SSR plugin. Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
 <br/> &nbsp;&nbsp; [Import Paths Alias Mapping](#import-paths-alias-mapping)
+<br/> &nbsp;&nbsp; [`.env` Files](#env-files)
 <br/><sub>&nbsp;&nbsp;&nbsp; Integrations</sub>
 <br/> &nbsp;&nbsp; [Authentication](#authentication) (Auth0, Passport.js, Grant, ...)
 <br/> &nbsp;&nbsp; [Markdown](#markdown)
@@ -1272,9 +1273,9 @@ Example:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Instead of using relative import paths,
+Instead of using relative import paths
 which are often cumbersome (e.g. `import { Counter } from '../../../components/Counter'`),
-you can use use import path aliases:
+you can use import path aliases:
 
 ```js
 // `~/components/` denotes the `components/` directory living in your project root directory
@@ -1286,10 +1287,12 @@ import { Counter } from `~/components/Counter`
 Path aliases are defined at [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias):
 
 ```js
+// vite.config.js
+
 export default {
   resolve: {
     alias: {
-     // We can now `import ~/path/to/module` where `~` references the project root
+     // We can now `import '~/path/to/module'` where `~` references the project root
      "~": __dirname,
     }
   },
@@ -1315,22 +1318,22 @@ Example: [/examples/import-paths-alias-mapping/](examples/import-paths-alias-map
 Note that `server/index.ts` is *not* processed by Vite
 which means that path aliases won't work for code imported by `server/index.ts`.
 
-Vite's `resolve.alias` only works for `pages/**.page.*` files (and all files they import) as these files are the only processed by Vite.
+Vite's `resolve.alias` only works for `**/*.page.*` files (and all files they import) since only these files are processed by Vite.
 Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js), is usually not processed by Vite and path aliases won't work there.
 
 <br/><br/>
 
 
-### .env Files
+### `.env` Files
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Vite automatically exposes environment variables defined in `.env` at `import.meta.env`, see [Vite - `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+Vite automatically exposes environment variables defined in `.env` at `import.meta.env`, see [[Vite] `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
 
 Note that:
  - Vite only exposes variables prefixed with `VITE_`.
  - Vite only exposes variables at Vite-processed code.
-   All your `pages/**.page.*` files (and all files they import) are processed by Vite and therefore environment variables available at `import.meta.env`.
+   All your `**/*.page.*` files (and all files they import) are processed by Vite and therefore environment variables available at `import.meta.env`.
    Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js), is usually not processed by Vite and `.env` variables not available.
    You can however load `.env` files yourself:
    ```js
