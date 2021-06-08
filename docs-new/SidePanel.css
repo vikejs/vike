@@ -1,4 +1,4 @@
-.nav-h2 {
+.nav-item-h2 {
   font-size: 14.4px;
   text-transform: uppercase;
   font-weight: 600;
@@ -10,7 +10,7 @@
   display: block;
   text-decoration: none;
 }
-.nav-h3 {
+.nav-item-h3 {
   font-size: 14.4px;
   font-weight: 400;
   letter-spacing: 0.15ch;
@@ -20,4 +20,25 @@
   padding-right: 4px;
   display: block;
   text-decoration: none;
+}
+/*
+.nav-item {
+  border-top: 1px solid transparent;
+}
+.nav-item.is-active {
+  border-color: #eaeaea;
+}
+*/
+
+h2 + h3 {
+  margin-top: 0;
+}
+h2,
+h3 {
+  margin-top: 120px;
+  padding-top: 30px
+  /*
+  margin-top: 0;
+  padding-top: 150px
+  */
 }
