@@ -2,9 +2,11 @@ import reactRefresh from '@vitejs/plugin-react-refresh'
 import mdx from 'vite-plugin-mdx'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
-import { assert } from './utils'
+import { assert, parseTitleMdx, getHeadingId } from './utils'
 
-const remarkPlugins = [require('remark-highlight.js')]
+const remarkPlugins = [
+  require('remark-highlight.js')
+]
 
 const config: UserConfig = {
   plugins: [reactRefresh(), exportHeadings(), mdx({ remarkPlugins }), ssr()],
@@ -21,23 +23,31 @@ function exportHeadings() {
       if (!id.endsWith('.mdx')) {
         return
       }
-      const headings: { level: number; title: string }[] = []
-      code.split('\n').forEach((line) => {
-        if (!line.startsWith('#')) {
-          return
+      const headings: { level: number; title: string, id: string }[] = []
+      let codeNew = code.split('\n').map((line) => {
+        if (line.startsWith('#')) {
+          const [word, ...titleWords] = line.split(' ')
+          assert(word.split('#').join('') === '')
+          const level = word.length
+          const title = titleWords.join(' ')
+          assert(title)
+          const id = getHeadingId({title})
+          assert(id)
+          headings.push({ level, title, id })
+          return `<h${level} id=${JSON.stringify(id)}>${parseTitleMdx(title)}</h${level}>`
         }
-        const [word, ...titleWords] = line.split(' ')
-        assert(word.split('#').join('') === '')
-        const level = word.length
-        const title = titleWords.join(' ')
-        assert(title)
-        headings.push({ level, title })
-      })
+        if( line.startsWith('<h') ) {
+          ;
+        }
+        return line
+      }).join('\n')
       const headingsExportCode = `export const headings = [${headings
-        .map(({ level, title }) => `{ title: ${JSON.stringify(title)}, level: ${level} }`)
+        // .map(({ level, title }) => `{ title: ${JSON.stringify(title)}, id: ${JSON.stringify(id)}, level: ${level} }`)
+        .map(heading => JSON.stringify(heading))
         .join(', ')}];`
-      code += `\n\n${headingsExportCode}\n`
-      return code
+      codeNew += `\n\n${headingsExportCode}\n`
+      //console.log(codeNew)
+      return codeNew
     }
   }
 }

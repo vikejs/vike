@@ -1,6 +1,6 @@
-export type Section = {
+export type Heading = {
   title: string
   level: number
   id?: string
-  sections?: Section[]
+  sections?: Heading[]
 }

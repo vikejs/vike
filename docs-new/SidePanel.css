@@ -1,4 +1,4 @@
-.nav-h1 {
+.nav-h2 {
   font-size: 14.4px;
   text-transform: uppercase;
   font-weight: 600;
@@ -10,7 +10,7 @@
   display: block;
   text-decoration: none;
 }
-.nav-h2 {
+.nav-h3 {
   font-size: 14.4px;
   font-weight: 400;
   letter-spacing: 0.15ch;

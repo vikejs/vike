@@ -1,11 +1,11 @@
-export { getSectionId }
+export { getHeadingId }
 
 type Header = {
   title: string
   id?: string
 }
 
-function getSectionId(header: Header) {
+function getHeadingId(header: Header) {
   return 'id' in header ? header.id : computeHeaderId(header.title)
 }
 

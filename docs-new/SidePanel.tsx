@@ -1,8 +1,15 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import iconPlugin from './icons/vite-plugin-ssr.svg'
 import './SidePanel.css'
-import { Section } from './types'
-import { assert, getSectionId } from './utils'
+import { Heading } from './types'
+import { assert, getHeadingId, parseTitleMdx } from './utils'
+import { headings } from './Docs.mdx'
+
+headings.unshift({
+  level: 2,
+  title: 'Introduction',
+  id: ''
+})
 
 export { SidePanel }
 
@@ -14,17 +21,17 @@ if (typeof window !== 'undefined') {
   window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
 }
 
-type ScreenBegin = { section: Section; boundaryPosition: number }
-type ScreenEnd = { section: Section; boundaryPosition: number }
+type ScreenBegin = { section: Heading; boundaryPosition: number }
+type ScreenEnd = { section: Heading; boundaryPosition: number }
 
-let _sections: Section[] | null = null
+let _sections: Heading[] | null = null
 function setNavigationScrollWindow() {
   if (_sections === null) return
   const sections = _sections
 
   let screenBegin: ScreenBegin | null = null
   let screenEnd: ScreenEnd | null = null
-  let prviousSection: Section | null = null
+  let prviousHeading: Heading | null = null
   let previousTop: number | null = null
 
   const computeBoundaryBegin = (previousTop: number, top: number) => (0 - previousTop) / (top - previousTop)
@@ -32,41 +39,41 @@ function setNavigationScrollWindow() {
     (window.innerHeight - previousTop) / (top - previousTop)
 
   for (const section of traverse(sections)) {
-    const top = getHeaderTop(section)
+    const top = getHeadingPosition(section)
     if (top === null) continue
     if (!screenBegin && top > 0) {
-      assert(prviousSection !== null) // The first section is `Introduction` which has `top <= 0`
+      assert(prviousHeading !== null) // The first section is `Introduction` which has `top <= 0`
       assert(previousTop !== null)
       assert(previousTop <= 0)
       const boundaryPosition = computeBoundaryBegin(previousTop, top)
-      screenBegin = { section: prviousSection, boundaryPosition }
+      screenBegin = { section: prviousHeading, boundaryPosition }
       assertBoundaryPosition(screenBegin.boundaryPosition)
     }
     if (top > window.innerHeight) {
-      assert(prviousSection !== null)
+      assert(prviousHeading !== null)
       assert(previousTop !== null)
       assert(previousTop <= window.innerHeight)
       const boundaryPosition = computeBoundaryEnd(previousTop, top)
-      screenEnd = { section: prviousSection, boundaryPosition }
+      screenEnd = { section: prviousHeading, boundaryPosition }
       assertBoundaryPosition(screenEnd.boundaryPosition)
       break
     }
-    prviousSection = section
+    prviousHeading = section
     previousTop = top
   }
-  assert(prviousSection)
+  assert(prviousHeading)
   assert(previousTop !== null)
   if (!screenBegin) {
     const top = document.body.clientHeight - scrollY
     const boundaryPosition = computeBoundaryBegin(previousTop, top)
-    screenBegin = { section: prviousSection, boundaryPosition }
+    screenBegin = { section: prviousHeading, boundaryPosition }
     assertBoundaryPosition(screenBegin.boundaryPosition)
   }
   if (!screenEnd) {
     // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
     const top = document.body.clientHeight - scrollY
     const boundaryPosition = computeBoundaryEnd(previousTop, top)
-    screenEnd = { section: prviousSection, boundaryPosition }
+    screenEnd = { section: prviousHeading, boundaryPosition }
     assertBoundaryPosition(screenEnd.boundaryPosition)
   }
   /*
@@ -105,8 +112,8 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
     }
     return offsetY
   }
-  const beginEl = getNavItem(getSectionId(screenBegin.section)!)
-  const endEl = getNavItem(getSectionId(screenEnd.section)!)
+  const beginEl = getNavItem(getHeadingId(screenBegin.section)!)
+  const endEl = getNavItem(getHeadingId(screenEnd.section)!)
   const beginOffsetY = getOffsetY(beginEl)
   const endOffsetY = getOffsetY(endEl)
   const scrollOverlayBegin = beginOffsetY + beginEl.clientHeight * screenBegin.boundaryPosition
@@ -119,8 +126,8 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   setScrollOverlay(top, height)
 }
 
-function getHeaderTop(section: Section): number | null {
-  const id = getSectionId(section)
+function getHeadingPosition(section: Heading): number | null {
+  const id = getHeadingId(section)
   if (id === '') return -scrollY
   assert(id)
   const el = document.getElementById(id)
@@ -129,8 +136,8 @@ function getHeaderTop(section: Section): number | null {
   return top
 }
 
-function traverse(sections: Section[]): Section[] {
-  const sectionList: Section[] = []
+function traverse(sections: Heading[]): Heading[] {
+  const sectionList: Heading[] = []
   sections.forEach((section) => {
     sectionList.push(section)
     if (section.sections) {
@@ -140,11 +147,11 @@ function traverse(sections: Section[]): Section[] {
   return sectionList
 }
 
-function SidePanel({ sections }: { sections: Section[] }) {
+function SidePanel() {
   return (
     <>
       <SideHeader />
-      <Navigation sections={sections} />
+      <Navigation />
     </>
   )
 }
@@ -166,13 +173,10 @@ function SideHeader() {
   )
 }
 
-function Navigation({ sections }: { sections: Section[] }) {
-  useEffect(() => {
-    _sections = sections
-  }, [])
+function Navigation() {
   return (
     <div id="navigation" style={{ position: 'relative' }}>
-      <NavTree sections={sections} />
+      <NavTree sections={headings} />
       <ScrollOverlay />
     </div>
   )
@@ -210,7 +214,7 @@ function ScrollOverlay() {
   )
 }
 
-function NavTree({ sections }: { sections?: Section[] }) {
+function NavTree({ sections }: { sections?: Heading[] }) {
   if (sections === undefined) return null
   return (
     <>
@@ -218,8 +222,8 @@ function NavTree({ sections }: { sections?: Section[] }) {
         const { level, title, sections } = section
         return (
           <div key={title}>
-            <a className={'nav-h' + level} href={'#' + getSectionId(section)}>
-              {title}
+            <a className={'nav-h' + level} href={'#' + getHeadingId(section)}>
+              <span dangerouslySetInnerHTML={{__html:parseTitleMdx(title)}} />
             </a>
             <NavTree sections={sections} />
           </div>
