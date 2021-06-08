@@ -30,12 +30,13 @@ function exportHeadings() {
           const [word, ...titleWords] = line.split(' ')
           assert(word.split('#').join('') === '')
           const level = word.length
-          const title = titleWords.join(' ')
+          let title = titleWords.join(' ')
           assert(title)
           const id = getHeadingId({title})
+          title = parseTitleMdx(title)
           assert(id)
           headings.push({ level, title, id })
-          const lineProcessed = `<h${level} id=${JSON.stringify(id)}>${parseTitleMdx(title)}</h${level}>`
+          const lineProcessed = `<h${level} id=${JSON.stringify(id)}>${title}</h${level}>`
           return lineProcessed
         }
         if( line.startsWith('<h') ) {

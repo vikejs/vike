@@ -1,6 +1,6 @@
 export type Heading = {
   title: string
   level: number
-  id?: string
-  sections?: Heading[]
+  id: string
+  titleLong?: string
 }
