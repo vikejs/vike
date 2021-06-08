@@ -2369,7 +2369,7 @@ While you can import `navigate()` in Node.js, you cannot call it: calling `navig
 If you want to redirect your user at page-load time, see the [Page Redirection](#page-redirection) guide.
 
 Options:
- - `navigate('/some-url, { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](#nested-routes).) (You can also use `<a href="/some-url" keep-scroll-position />`.)
+ - `navigate('/some-url', { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](#nested-routes).) (You can also use `<a href="/some-url" keep-scroll-position />`.)
 
 Vue example:
  - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue)
