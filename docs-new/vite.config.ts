@@ -3,6 +3,7 @@ import mdx from 'vite-plugin-mdx'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 import { assert, parseTitleMdx, getHeadingId } from './utils'
+import { parse as parseHtml } from 'node-html-parser';
 
 const remarkPlugins = [
   require('remark-highlight.js')
@@ -23,7 +24,7 @@ function exportHeadings() {
       if (!id.endsWith('.mdx')) {
         return
       }
-      const headings: { level: number; title: string, id: string }[] = []
+      const headings: { level: number; title: string, id: string, titleAddendum?: string }[] = []
       let codeNew = code.split('\n').map((line) => {
         if (line.startsWith('#')) {
           const [word, ...titleWords] = line.split(' ')
@@ -34,10 +35,25 @@ function exportHeadings() {
           const id = getHeadingId({title})
           assert(id)
           headings.push({ level, title, id })
-          return `<h${level} id=${JSON.stringify(id)}>${parseTitleMdx(title)}</h${level}>`
+          const lineProcessed = `<h${level} id=${JSON.stringify(id)}>${parseTitleMdx(title)}</h${level}>`
+          return lineProcessed
         }
         if( line.startsWith('<h') ) {
-          ;
+          const htmlNode = parseHtml(line).querySelector('h1, h2, h3, h4, h5, h6')
+          const { rawTagName, textContent } = htmlNode
+          assert(['h1', 'h2', 'h3', 'h4', 'h5', 'h5'].includes(rawTagName))
+          assert(textContent)
+          const title = textContent
+          const level = parseInt(rawTagName.slice(1), 10)
+          const id = getHeadingId({title})
+          assert(id)
+          const titleAddendum = htmlNode.getAttribute('title-addendum')
+          assert(titleAddendum===undefined || typeof titleAddendum === 'string')
+          htmlNode.setAttribute('id', id)
+          const lineProcessed = htmlNode.toString()
+          headings.push({ level, title, id, titleAddendum })
+          // console.log(line, lineProcessed)
+          return lineProcessed
         }
         return line
       }).join('\n')

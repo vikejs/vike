@@ -10,32 +10,35 @@ function Features() {
         <div>
           <h2>🔧 Composable</h2>
           <p>
-            You <b>control how pages are rendered</b> and you can not only use <b>any view framework</b> (React, Vue,
-            ...) but really <b>any tool you want</b> (Vuex/Redux, GraphQL, Service Workers, ...).
+            You control how pages are rendered, meaning you can use <b>any view framework</b> (React, Vue,
+              ...) and <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
-            This render control enables you to <b>easily</b> and <b>naturally integrate tools</b>.
+            Tool <b>integration is easy & natural</b>.
+          </p>
+          <p>
+            <a>Tell me more...</a>
           </p>
         </div>
         <div>
           <h2>✨ Full-fledged</h2>
           <p>
-            <b>Data fetching</b>, <b>pre-rendering</b>, <b>HMR</b>, <b>Server-side Routing</b> (for simple architecture) or <b>Client-side Routing</b> (for faster/animated
+            <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>, <b>Server-side Routing</b> (for simple architecture) or <b>Client-side Routing</b> (for faster/animated
             page transitions).
           </p>
           <p>
-            Render some pages as <b>SPA</b>, some with <b>SSR</b>, and some to <b>HTML-only</b>.
+            Render pages as <b>SPA</b>, <b>SSR</b>, or <b>Zero-JS HTML</b>.
           </p>
         </div>
         <div>
           <h2>⛰️ Rock-solid</h2>
-          <p>
-            <b>Used in production</b> by many comp&shy;anies.
-          </p>
-          <b>No known bug</b> (bugs are fixed promp&shy;tly).
+          Our source code has <b>no known bug</b> (new found ones are fixed promp&shy;tly).
           <p></p>
           <p>
             Every release is assailed against a heavy suite of <b>automated tests</b>.
+          </p>
+          <p>
+            <b>Used in production</b> by many comp&shy;anies.
           </p>
           <p></p>
         </div>
@@ -48,7 +51,7 @@ function Features() {
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>
-            You can <b>pre-render</b> your app and deploy to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
+            By <b>pre-rendering</b> your app you can deploy to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
             Pages, ...).
           </p>
         </div>
@@ -69,7 +72,10 @@ function Features() {
           </p>
           <p>
             SSR <b>architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
-            <b>custom and precise needs</b>.
+            <b>custom precise needs</b>.
+          </p>
+          <p>
+            At (very large) scale, you can progressively start using Vite's native SSR API directly.
           </p>
         </div>
         <div>
@@ -84,6 +90,9 @@ function Features() {
           </p>
           <p>
             GitHub and Discord <b>conversations are welcome</b>.
+          </p>
+          <p>
+            Ultimate goal: using <code>vite-plugin-ssr</code> should be fun.
           </p>
         </div>
       </div>

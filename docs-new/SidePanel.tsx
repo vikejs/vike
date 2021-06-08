@@ -10,6 +10,7 @@ headings.unshift({
   title: 'Introduction',
   id: ''
 })
+console.log(headings)
 
 export { SidePanel }
 
