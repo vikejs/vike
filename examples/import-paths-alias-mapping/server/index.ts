@@ -1,5 +1,15 @@
+// Note that the scripts `package.json#scripts` use `ts-node` which means that
+// node directly executes this file; Vite doesn't process this file. We use
+// the npm module `module-alias` to add path alias support for files that are
+// not processed by Vite such as this one. The path aliases for `module-alias`
+// are defined at `package.json#_moduleAliases`.
+import "module-alias/register";
+import { msg } from "~/server/msg";
+
 import express from "express";
 import { createPageRender } from "vite-plugin-ssr";
+
+console.log(msg);
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;

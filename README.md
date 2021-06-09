@@ -1314,12 +1314,11 @@ If you use TypeScript:
 }
 ```
 
-Example: [/examples/import-paths-alias-mapping/](examples/import-paths-alias-mapping/).
-Note that `server/index.ts` is *not* processed by Vite
-which means that path aliases won't work for code imported by `server/index.ts`.
+Vite's `vite.config.js#resolve.alias` only works for Vite processed files (i.e. `**/*.page.*` files and their imports).
+For files that are not processed by Vite (typically your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js)) you can use [`module-alias`](https://github.com/ilearnio/module-alias).
 
-Vite's `resolve.alias` only works for `**/*.page.*` files (and all files they import) since only these files are processed by Vite.
-Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js), is usually not processed by Vite and path aliases won't work there.
+Example:
+ - [/examples/import-paths-alias-mapping/](examples/import-paths-alias-mapping/).
 
 <br/><br/>
 
@@ -1328,14 +1327,12 @@ Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-Vite automatically exposes environment variables defined in `.env` at `import.meta.env`, see [[Vite] `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+Vite automatically makes environment variables defined in `.env` available as `import.meta.env`, see [[Vite] `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
 
 Note that:
- - Vite only exposes variables prefixed with `VITE_`.
- - Vite only exposes variables at Vite-processed code.
-   All your `**/*.page.*` files (and all files they import) are processed by Vite and therefore environment variables available at `import.meta.env`.
-   Your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js), is usually not processed by Vite and `.env` variables not available.
-   You can however load `.env` files yourself:
+ - Vite only makes available environment variables that are prefixed with `VITE_` (for security reasons).
+ - Vite makes variables available at `import.meta.env` only for files that are processed by Vite (i.e. `**/*.page.*` files and their imports).
+   For files not processed by Vite (typically your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js)) you can load `.env` files yourself:
    ```js
    // server/index.js
 
