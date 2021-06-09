@@ -11,9 +11,9 @@ If you don't use TypeScript you can simply skip defining `tsconfig#compilerOptio
 
 If you don't plan to use path aliases for your server entry you can skip using `module-alias` and therefore skip defining `package.json#_moduleAliases`.
 
-See path aliases in action at
-[./pages/index.page.tsx](pages/index.page.tsx) and
-[./server/index.ts](server/index.ts).
+You can see path aliases in action at
+[pages/index.page.tsx](pages/index.page.tsx) and
+[server/index.ts](server/index.ts).
 
 To run the example:
 
