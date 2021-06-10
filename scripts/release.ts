@@ -94,8 +94,14 @@ async function updateDependencies(versionNew: string, versionCurrent: string) {
     updatePkg(pkgPath, (pkg) => {
       const version = pkg.dependencies['vite-plugin-ssr']
       assert(version)
-      assert.strictEqual(version, `${versionCurrent}`)
-      pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
+      let versionCurrentSemver = versionCurrent
+      let versionNewSemver = versionNew
+      if (pkgPath.includes('boilerplates/boilerplate-')) {
+        versionCurrentSemver = '^' + versionCurrentSemver
+        versionNewSemver = '^' + versionNewSemver
+      }
+      assert.strictEqual(version, versionCurrentSemver)
+      pkg.dependencies['vite-plugin-ssr'] = versionNewSemver
     })
     // Update package-json.lock
     // await run('npm', ['install'])
