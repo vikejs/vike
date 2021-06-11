@@ -83,9 +83,8 @@ function useClientRouter({
     assert(renderPromise === undefined)
     renderPromise = (async () => {
       pageContext.isHydration = isFirstPageRender && url === urlFullOriginal
-      assert(hasProp<boolean, 'isHydration'>(pageContext, 'isHydration'))
+      assert(hasProp(pageContext, 'isHydration', 'boolean'))
       assert(hasProp(pageContext, 'Page'))
-      assert(typeof pageContext.isHydration === 'boolean')
       await render(pageContext)
     })()
     await renderPromise

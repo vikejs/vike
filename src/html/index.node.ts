@@ -1,10 +1,13 @@
 import { assert, assertUsage, cast, hasProp } from '../utils'
+import { injectAssets, injectAssets_internal } from './injectAssets.node'
 
 export { html }
 export { renderHtmlTemplate }
 export { isHtmlTemplate }
+export { injectAssets_internal }
 
 html.dangerouslySkipEscape = dangerouslySkipEscape
+html.injectAssets = injectAssets
 
 const __html_template = Symbol('__html_template')
 const __dangerouslySkipEscape = Symbol('__dangerouslySkipEscape')

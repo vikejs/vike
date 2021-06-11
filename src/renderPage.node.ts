@@ -1,10 +1,8 @@
-import devalue from 'devalue'
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
-import { renderHtmlTemplate, isHtmlTemplate } from './html/index.node'
+import { renderHtmlTemplate, isHtmlTemplate, injectAssets_internal } from './html/index.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
-import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
+import { getPageFile, getPageFiles, PageFile } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
-import { getPreloadTags } from './getPreloadTags.node'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
@@ -12,12 +10,10 @@ import {
   assertUsage,
   lowerFirst,
   isCallable,
-  slice,
   cast,
   assertWarning,
   hasProp,
   isPageContextUrl,
-  normalizePath,
   removePageContextUrlSuffix,
   getUrlPathname,
   getUrlFull,
@@ -27,8 +23,9 @@ import {
 import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 
 export { renderPage }
-export { getPageFunctions }
 export { prerenderPage }
+export { addPagePropsToPageContext }
+export { addPagePropsToPageContext_assert }
 export { renderStatic404Page }
 
 async function renderPage(
@@ -63,7 +60,7 @@ async function renderPage(
   }
   pageContext.url = urlWithoutOrigin
   pageContext.urlNormalized = urlNormalized
-  assert(hasProp<string, 'urlNormalized'>(pageContext, 'urlNormalized'))
+  assert(hasProp(pageContext, 'urlNormalized', 'string'))
 
   const allPageIds = await getPageIds()
 
@@ -135,13 +132,24 @@ async function renderPageId(
   pageContextAlreadyFetched: boolean = false,
   isPageContextRequest: boolean = false
 ) {
-  const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, false)
+  pageContext.pageId = pageId
+  assert(hasProp(pageContext, 'pageId', 'string'))
+  pageContext.isPageContextRequest = isPageContextRequest
+  assert(hasProp(pageContext, 'isPageContextRequest', 'boolean'))
+  pageContext.pageContextAlreadyFetched = pageContextAlreadyFetched
+  assert(hasProp(pageContext, 'pageContextAlreadyFetched', 'boolean'))
+  pageContext.isPreRendering = false
+  assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
 
-  if (isPageContextRequest) {
-    const renderResult = serializePageContext(renderData)
+  await addPagePropsToPageContext(pageContext)
+  addPagePropsToPageContext_assert(pageContext)
+  //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, false)
+
+  if (pageContext.isPageContextRequest) {
+    const renderResult = serializeClientPageContext(pageContext)
     return renderResult
   } else {
-    const renderResult = await renderHtmlDocument(renderData)
+    const renderResult = await renderHtmlDocument(pageContext)
     return renderResult
   }
 }
@@ -154,9 +162,22 @@ async function prerenderPage(
 ) {
   const { urlNormalized } = analyzeUrl(pageContext.url)
   pageContext.urlNormalized = urlNormalized
-  assert(hasProp<string, 'urlNormalized'>(pageContext, 'urlNormalized'))
-  const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, true)
-  const htmlDocument = await renderHtmlDocument(renderData)
+  assert(hasProp(pageContext, 'urlNormalized', 'string'))
+
+  pageContext.pageId = pageId
+  assert(hasProp(pageContext, 'pageId', 'string'))
+  pageContext.isPageContextRequest = false
+  assert(hasProp(pageContext, 'isPageContextRequest', 'boolean'))
+  pageContext.pageContextAlreadyFetched = pageContextAlreadyFetched
+  assert(hasProp(pageContext, 'pageContextAlreadyFetched', 'boolean'))
+  pageContext.isPreRendering = true
+  assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
+
+  //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, true)
+  await addPagePropsToPageContext(pageContext)
+  addPagePropsToPageContext_assert(pageContext)
+
+  const htmlDocument = await renderHtmlDocument(pageContext)
   assertUsage(
     typeof htmlDocument === 'string',
     "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
@@ -164,7 +185,7 @@ async function prerenderPage(
   if (!pageContextNeeded) {
     return { htmlDocument, pageContextSerialized: null }
   }
-  const pageContextSerialized = serializePageContext(renderData)
+  const pageContextSerialized = serializeClientPageContext(pageContext)
   return { htmlDocument, pageContextSerialized }
 }
 
@@ -186,9 +207,11 @@ async function getRenderData(
   pageContextAlreadyFetched: boolean,
   isPreRendering: boolean
 ) {
-  const { Page, pageFilePath, pageExports } = await getPage(pageId)
+  const allPageFiles = await loadPageFiles(pageId)
+  const { pageServerFile, pageServerFileDefault, pageBrowserFile, pageBrowserFileDefault, pageViewFile } = allPageFiles
 
-  const pageFunctions = await getPageFunctions(pageId)
+  const pageExports = pageViewFile.fileExports
+  const Page = pageExports.Page || pageExports.default
 
   addUrlPropsToPageContext(pageContext)
   Object.assign(pageContext, {
@@ -200,11 +223,21 @@ async function getRenderData(
     addPageContext: pageFunctions.addPageContextFunction || null,
     render: pageFunctions.renderFunction,
     prerenderFunction: pageFunctions.prerenderFunction || null,
-    passToClient: pageFunctions.passToClient || []
     */
   })
+  assert(hasProp(pageContext, 'pageId', 'string'))
+  assert(hasProp(pageContext, 'Page'))
+  assert(hasProp(pageContext, 'pageExports', 'object'))
+  // assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
+  pageContext.pageAssets = getPageAssets(pageContext)
 
-  const { addPageContextFunction, passToClient } = pageFunctions
+  pageContext.passToClient = {
+    ...getDefaultPassToClientProps(pageContext),
+    ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
+  }
+  assert(hasProp(pageContext, 'passToClient', 'string[]'))
+
+  const { addPageContextFunction } = pageFunctions
   if (!pageContextAlreadyFetched && addPageContextFunction) {
     assertPageContext(pageContext)
     assert(hasProp(pageContext, 'Page'))
@@ -217,32 +250,48 @@ async function getRenderData(
   }
 
   const pageContext__client: Record<string, unknown> = {}
-  if (isErrorPage(pageId)) {
-    assert(typeof pageContext.is404 === 'boolean')
-    const pageProps = (pageContext.pageProps as Record<string, unknown>) || {}
-    pageProps.is404 = pageProps.is404 || pageContext.is404
-    pageContext.pageProps = pageProps
-    passToClient.push(...['pageProps', 'is404'])
-  }
-  assert(pageContext.pageId === pageId)
-  passToClient.push('pageId')
-  passToClient.forEach((prop) => {
+  pageContext.passToClient.forEach((prop) => {
     pageContext__client[prop] = pageContext[prop]
   })
+  pageContext.pageContextClient = pageContext__client
 
   return {
     Page,
     pageId,
-    pageFilePath,
-    pageFunctions,
+    pageFilePath: pageViewFile.filePath,
     pageContext,
     pageContext__client,
     isPreRendering
   }
 }
 
+function getDefaultPassToClientProps(pageContext: { pageId: string; pageProps?: Record<string, unknown> }): string[] {
+  const passToClient = ['pageId']
+  if (isErrorPage(pageContext.pageId)) {
+    assert(hasProp(pageContext, 'is404', 'boolean'))
+    const pageProps = pageContext.pageProps || {}
+    pageProps.is404 = pageProps.is404 || pageContext.is404
+    pageContext.pageProps = pageProps
+    passToClient.push(...['pageProps', 'is404'])
+  }
+  return passToClient
+}
+
 type PageContext = {
   urlNormalized: string
+  pageServerFile?: {
+    fileExports: {
+      render?: Function
+    }
+    filePath: string
+  }
+  pageServerFileDefault?: {
+    fileExports: {
+      render?: Function
+    }
+    filePath: string
+  }
+  isPreRendering: boolean
 } & Record<string, unknown>
 type RenderData = {
   Page: unknown
@@ -250,30 +299,39 @@ type RenderData = {
   pageContext__client: Record<string, unknown>
   pageId: string
   pageFilePath: string
-  pageFunctions: PageFunctions
   isPreRendering: boolean
 }
 
-function serializePageContext({ pageContext__client }: RenderData) {
+function serializeClientPageContext(pageContext: { pageContextClient: Record<string, unknown> }) {
+  const { pageContextClient } = pageContext
+  assert(isPlainObject(pageContextClient))
   const pageContextSerialized = stringify({
-    pageContext: pageContext__client
+    pageContext: pageContextClient
   })
   return pageContextSerialized
 }
-async function renderHtmlDocument({
-  Page,
-  pageContext,
-  pageContext__client,
-  pageId,
-  pageFilePath,
-  pageFunctions,
-  isPreRendering
-}: RenderData) {
-  const { renderFunction, addPageContextFunction } = pageFunctions
+async function renderHtmlDocument(pageContext: PageContext) {
+  let render
+  let renderFilePath
+  const { pageServerFile } = pageContext
+  const pageRenderFunction = pageServerFile?.fileExports.render
+  if (pageServerFile && pageRenderFunction) {
+    render = pageRenderFunction
+    renderFilePath = pageServerFile.filePath
+  }
+  const { pageServerFileDefault } = pageContext
+  const pageDefaultRenderFunction = pageServerFileDefault?.fileExports.render
+  if (pageServerFileDefault && pageDefaultRenderFunction) {
+    render = pageDefaultRenderFunction
+    renderFilePath = pageServerFileDefault.filePath
+  }
+  assert(render)
+  assert(renderFilePath)
 
   const { isProduction = false } = getSsrEnv()
   let clientManifest: null | ViteManifest = null
   let serverManifest: null | ViteManifest = null
+  const { isPreRendering } = pageContext
   if (isPreRendering || isProduction) {
     const manifests = retrieveViteManifest(isPreRendering)
     clientManifest = manifests.clientManifest
@@ -282,7 +340,7 @@ async function renderHtmlDocument({
 
   assertPageContext(pageContext)
   assert(hasProp(pageContext, 'Page'))
-  const renderResult: unknown = await renderFunction.render(pageContext)
+  const renderResult: unknown = await render(pageContext)
 
   if (!isHtmlTemplate(renderResult)) {
     // Allow user to return whatever he wants in their `render` hook, such as `{redirectTo: '/some/path'}`.
@@ -291,34 +349,13 @@ async function renderHtmlDocument({
     }
     assertUsage(
       typeof renderResult !== 'string',
-      `The \`render()\` hook exported by ${renderFunction.filePath} returned a string that is an unsafe. Make sure to return a sanitized string by using the \`html\` tag (\`import { html } from 'vite-plugin-ssr'\`).`
+      `The \`render()\` hook exported by ${renderFilePath} returned an unsafe (i.e. unescaped) string. Make sure to return a sanitized (i.e. escaped) string by using the \`html\` template tag (\`import { html } from 'vite-plugin-ssr'\`). Alternatively, you can use \`html.injectAssets()\` and wrap your entire html with \`html.dangerouslySkipEscape()\`.`
     )
+  } else {
+    let htmlDocument: string = renderHtmlTemplate(renderResult, renderFilePath)
+    htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
+    return htmlDocument
   }
-  let htmlDocument: string = renderHtmlTemplate(renderResult, renderFunction.filePath)
-
-  // Inject Vite transformations
-  const { urlNormalized } = pageContext
-  assert(typeof urlNormalized === 'string')
-  htmlDocument = await applyViteHtmlTransform(htmlDocument, urlNormalized)
-
-  // Inject pageContext__client
-  htmlDocument = injectPageInfo(htmlDocument, pageContext__client, pageId)
-
-  // Inject script
-  const browserFilePath = await getBrowserFilePath(pageId)
-  const scriptSrc = !isProduction ? browserFilePath : resolveScriptSrc(browserFilePath, clientManifest!)
-  htmlDocument = injectScript(htmlDocument, scriptSrc)
-
-  // Inject preload links
-  const dependencies = new Set<string>()
-  dependencies.add(pageFilePath)
-  dependencies.add(browserFilePath)
-  dependencies.add(renderFunction.filePath)
-  if (addPageContextFunction) dependencies.add(addPageContextFunction.filePath)
-  const preloadTags = await getPreloadTags(Array.from(dependencies), clientManifest, serverManifest)
-  htmlDocument = injectPreloadTags(htmlDocument, preloadTags)
-
-  return htmlDocument
 }
 
 async function getPage(pageId: string) {
@@ -349,74 +386,85 @@ type PageFunctions = {
   }
   passToClient: string[]
 }
-async function getPageFunctions(pageId: string): Promise<PageFunctions> {
-  const serverFiles = await getServerFiles(pageId)
-
-  let renderFunction
-  let addPageContextFunction
-  let prerenderFunction
-  const passToClient: string[] = []
-
-  for (const { filePath, loadFile } of serverFiles) {
-    const fileExports = await loadFile()
-
-    assertUsage(
-      !('setPageProps' in fileExports),
-      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
-        filePath +
-        '`.)'
-    )
-
-    const render = fileExports.render || fileExports.default?.render
-    assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
-
-    const addPageContext = fileExports.addPageContext || fileExports.default?.addPageContext
-    assertUsage(
-      !addPageContext || isCallable(addPageContext),
-      `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
-    )
-
-    const passToClient_ = fileExports.passToClient || fileExports.default?.passToClient
-    if (passToClient_) {
-      assertUsage(
-        Array.isArray(passToClient_) && passToClient_.every((prop) => typeof prop === 'string'),
-        `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
-      )
-      passToClient.push(...passToClient_)
-    }
-
-    const prerender = fileExports.prerender || fileExports.default?.prerender
-    assertUsage(
-      !prerender || isCallable(prerender),
-      `The \`prerender()\` hook defined in ${filePath} should be a function.`
-    )
-
-    if (render) {
-      renderFunction = renderFunction || { render, filePath }
-    }
-    if (addPageContext) {
-      addPageContextFunction = addPageContextFunction || {
-        addPageContext,
-        filePath
-      }
-    }
-    if (prerender) {
-      prerenderFunction = prerenderFunction || { prerender, filePath }
-    }
-  }
-
-  assertUsage(
-    renderFunction,
-    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
-  )
-
-  return {
-    renderFunction,
-    addPageContextFunction,
-    passToClient,
-    prerenderFunction
-  }
+async function addPagePropsToPageContext<PageContext extends { pageId: string } & Record<string, unknown>>(
+  pageContext: PageContext
+): Promise<void> {
+  assert(hasProp(pageContext, 'url'))
+  pageContext
 }
+function addPagePropsToPageContext_assert<PageContext extends { pageId: string } & Record<string, unknown>>(
+  pageContext: PageContext
+): asserts pageContext is PageContext & {
+  pageServerFile: { fileExports: { prerender?: Function } & Record<string, unknown>; filePath: string }
+  pageContextClient: Record<string, unknown>
+} {
+  // @ts-ignore
+  // prettier-ignore
+  const { pageServerFile: { fileExports, filePath } } = pageContext
+  assert(Object.keys(fileExports).length >= 1)
+  assert(filePath)
+}
+
+type LoadedFile = {
+  filePath: string
+  fileExports: Record<string, unknown>
+}
+type PageServerFile2 = {
+  filePath: string
+  fileExports: {
+    prerender?: Function
+    render?: Function
+    passToClient?: string[]
+  } & Record<string, unknown>
+}
+type ViewComponent = unknown
+type PageViewFile = {
+  filePath: string
+  fileExports: (
+    | {
+        default?: ViewComponent
+      }
+    | {
+        Page?: Function
+      }
+  ) &
+    Record<string, unknown>
+}
+
+async function loadPageFiles(
+  pageId: string
+): Promise<{
+  pageServerFile: PageServerFile2
+  pageServerFileDefault: PageServerFile2
+  pageBrowserFile: string
+  pageBrowserFileDefault: string
+  pageViewFile: PageViewFile
+}> {
+  const { Page, pageFilePath, pageExports } = await getPage(pageId)
+  const pageFunctions = await getPageServerFiles(pageId)
+  const pageClientFile = await getBrowserFilePath(pageId)
+}
+async function getPageServerFiles(
+  pageId: string
+): Promise<{
+  pageServerFile: PageFile | null
+  defaultPageServerFile: PageFile | null
+}> {
+  let serverFiles = await getPageFiles('.page.server')
+  assertUsage(
+    serverFiles.length > 0,
+    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
+  )
+  const fileExports = await loadFile()
+  assert_pageServerFiles(pageServerFile, defaultPageServerFile)
+  serverFiles = filterAndSort(serverFiles, pageId)
+  return serverFiles
+  const pageExports = {}
+  const defaultExports = {}
+  return { pageExports, defaultExports }
+}
+
+function isDefaultPageFile(filePath: string): boolean {}
 
 async function getBrowserFilePath(pageId: string) {
   const browserFiles = await getBrowserFiles(pageId)
@@ -434,18 +482,19 @@ async function getBrowserFiles(pageId: string) {
   return browserFiles
 }
 
-async function getServerFiles(pageId: string) {
-  let serverFiles = await getPageFiles('.page.server')
-  assertUsage(
-    serverFiles.length > 0,
-    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
-  )
-  serverFiles = filterAndSort(serverFiles, pageId)
-  return serverFiles
-}
+function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: string): (T & { isDefault: boolean })[] {
+  pageFiles = pageFiles.map((pageFile) => {
+    const { filePath } = pageFile
+    assert(filePath.startsWith('/'))
+    assert(!filePath.includes('\\'))
+    const pageFileEnhanced = {
+      ...pageFile,
+      isDefault: filePath.includes('/_default')
+    }
+    return pageFileEnhanced
+  })
 
-function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: string): T[] {
-  pageFiles = pageFiles.filter(({ filePath }) => {
+  pageFiles = pageFiles.filter(({ filePath, isDefault }) => {
     assert(filePath.startsWith('/'))
     assert(!filePath.includes('\\'))
     return filePath.startsWith(pageId) || filePath.includes('/_default')
@@ -467,102 +516,56 @@ function filterAndSort<T extends { filePath: string }>(pageFiles: T[], pageId: s
   return pageFiles
 }
 
-async function applyViteHtmlTransform(htmlDocument: string, urlNormalized: string): Promise<string> {
-  const ssrEnv = getSsrEnv()
-  if (ssrEnv.isProduction) {
-    return htmlDocument
+type PageServerFile = null | { filePath: string; fileExports: Record<string, unknown> }
+function assert_pageServerFiles(pageServerFile: PageServerFile, defaultPageServerFile: PageServerFile) {
+  let renderHookExists = false
+  const passToClient: string[] = []
+
+  const files = []
+  if (pageServerFile) {
+    files.push(pageServerFile)
   }
-  htmlDocument = await ssrEnv.viteDevServer.transformIndexHtml(urlNormalized, htmlDocument)
-  return htmlDocument
-}
-
-function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): string {
-  assert(filePath.startsWith('/'))
-  assert(getSsrEnv().isProduction)
-  const manifestKey = filePath.slice(1)
-  const manifestVal = clientManifest[manifestKey]
-  assert(manifestVal)
-  assert(manifestVal.isEntry)
-  let { file } = manifestVal
-  assert(!file.startsWith('/'))
-  file = normalizePath(file)
-  return '/' + file
-}
-
-function injectPageInfo(htmlDocument: string, pageContext__client: Record<string, unknown>, pageId: string): string {
-  assert(pageContext__client.pageId === pageId)
-  const injection = `<script>window.__vite_plugin_ssr__pageContext = ${devalue(pageContext__client)}</script>`
-  return injectEnd(htmlDocument, injection)
-}
-
-function injectScript(htmlDocument: string, scriptSrc: string): string {
-  const injection = `<script type="module" src="${prependBaseUrl(scriptSrc)}"></script>`
-  return injectEnd(htmlDocument, injection)
-}
-
-function injectPreloadTags(htmlDocument: string, preloadTags: string[]): string {
-  const injection = preloadTags.join('')
-  return injectBegin(htmlDocument, injection)
-}
-
-function injectBegin(htmlDocument: string, injection: string): string {
-  const headOpen = /<head[^>]*>/
-  if (headOpen.test(htmlDocument)) {
-    return injectAtOpeningTag(htmlDocument, headOpen, injection)
+  if (defaultPageServerFile) {
+    files.push(defaultPageServerFile)
   }
+  for (const { filePath, fileExports } of files) {
+    assertUsage(
+      !('setPageProps' in fileExports),
+      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
+        filePath +
+        '`.)'
+    )
 
-  const htmlBegin = /<html[^>]*>/
-  if (htmlBegin.test(htmlDocument)) {
-    return injectAtOpeningTag(htmlDocument, htmlBegin, injection)
+    const render = fileExports.render
+    assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
+    renderHookExists = !!render || renderHookExists
+
+    const addPageContext = fileExports.addPageContext
+    assertUsage(
+      !addPageContext || isCallable(addPageContext),
+      `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
+    )
+
+    const passToClient_ = fileExports.passToClient
+    if (passToClient_) {
+      assertUsage(
+        Array.isArray(passToClient_) && passToClient_.every((prop) => typeof prop === 'string'),
+        `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
+      )
+      passToClient.push(...passToClient_)
+    }
+
+    const prerender = fileExports.prerender
+    assertUsage(
+      !prerender || isCallable(prerender),
+      `The \`prerender()\` hook defined in ${filePath} should be a function.`
+    )
   }
 
-  if (htmlDocument.toLowerCase().startsWith('<!doctype')) {
-    const lines = htmlDocument.split('\n')
-    return [...slice(lines, 0, 1), injection, ...slice(lines, 1, 0)].join('\n')
-  } else {
-    return injection + '\n' + htmlDocument
-  }
-}
-
-function injectEnd(htmlDocument: string, injection: string): string {
-  const bodyClose = '</body>'
-  if (htmlDocument.includes(bodyClose)) {
-    return injectAtClosingTag(htmlDocument, bodyClose, injection)
-  }
-
-  const htmlClose = '</html>'
-  if (htmlDocument.includes(htmlClose)) {
-    return injectAtClosingTag(htmlDocument, htmlClose, injection)
-  }
-
-  return htmlDocument + '\n' + injection
-}
-
-function injectAtOpeningTag(htmlDocument: string, openingTag: RegExp, injection: string): string {
-  const matches = htmlDocument.match(openingTag)
-  assert(matches && matches.length >= 1)
-  const tag = matches[0]
-  const htmlParts = htmlDocument.split(tag)
-  assert(htmlParts.length >= 2)
-
-  // Insert `injection` after first `tag`
-  const before = slice(htmlParts, 0, 1)
-  const after = slice(htmlParts, 1, 0).join(tag)
-  return before + tag + injection + after
-}
-
-function injectAtClosingTag(htmlDocument: string, closingTag: string, injection: string): string {
-  assert(closingTag.startsWith('</'))
-  assert(closingTag.endsWith('>'))
-  assert(!closingTag.includes(' '))
-
-  const htmlParts = htmlDocument.split(closingTag)
-  assert(htmlParts.length >= 2)
-
-  // Insert `injection` before last `closingTag`
-  const before = slice(htmlParts, 0, -1).join(closingTag)
-  const after = slice(htmlParts, -1, 0)
-  return before + injection + closingTag + after
+  assertUsage(
+    renderHookExists,
+    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
+  )
 }
 
 function assertArguments(...args: unknown[]) {

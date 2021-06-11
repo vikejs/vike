@@ -3,6 +3,7 @@ import { assert, assertUsage, hasProp } from '../utils'
 
 export { getPageFiles }
 export { getPageFile }
+export { PageFile }
 
 export { setPageFiles }
 export { setPageFilesAsync }

@@ -5,7 +5,12 @@ import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
-import { getPageFunctions, prerenderPage, renderStatic404Page } from './renderPage.node'
+import {
+  addPagePropsToPageContext,
+  addPagePropsToPageContext_assert,
+  prerenderPage,
+  renderStatic404Page
+} from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
 import { version } from './package.json'
 
@@ -72,10 +77,14 @@ async function prerender({
   > = {}
   await Promise.all(
     allPageIds.map(async (pageId) => {
-      const { prerenderFunction } = await getPageFunctions(pageId)
+      const pageContext = { pageId }
+      await addPagePropsToPageContext(pageContext)
+      addPagePropsToPageContext_assert(pageContext)
+      const { fileExports, filePath } = pageContext.pageServerFile
+      const prerenderFunction = fileExports.prerender
       if (!prerenderFunction) return
-      const prerenderSourceFile = prerenderFunction.filePath
-      const prerenderResult = await prerenderFunction.prerender()
+      const prerenderSourceFile = filePath
+      const prerenderResult = await prerenderFunction()
       const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
       result.forEach(({ url, pageContext }) => {
         assert(typeof url === 'string')
