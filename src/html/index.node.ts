@@ -1,4 +1,4 @@
-import { assert, assertUsage, cast, hasProp } from './utils'
+import { assert, assertUsage, cast, hasProp } from '../utils'
 
 export { html }
 export { renderHtmlTemplate }

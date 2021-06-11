@@ -1,6 +1,6 @@
 import devalue from 'devalue'
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
-import { renderHtmlTemplate, isHtmlTemplate } from './html.node'
+import { renderHtmlTemplate, isHtmlTemplate } from './html/index.node'
 import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
