@@ -2443,7 +2443,7 @@ the higher the number, the higher the priority.
 
 ### Filesystem Routing
 
-By default a page is mapped to a URL based on where its `.page.js` file is located.
+By default `vite-plugin-ssr` does Filesystem Routing: the URL of the page is determined base on where its `.page.js` file is located.
 
 ```
 FILESYSTEM                        URL              COMMENT
@@ -2452,7 +2452,8 @@ pages/index/index.page.js         /                (`index` is mapped to the emp
 pages/HELLO.page.js               /hello           (Mapping is done lower case)
 ```
 
-The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
+In the above example, the common ancestor directory, which `vite-plugin-ssr` considers the routing root, is `pages/`.
+It doesn't have to be `pages/` and you can save your `.page.js` files wherever you want. For example:
 
 ```
 FILESYSTEM                        URL
@@ -2462,7 +2463,15 @@ todo/list.page.js                 /todo/list
 todo/create.page.js               /todo/create
 ```
 
-The directory common to all your `*.page.js` files is considered the routing root.
+You can also move your page files in a `src/` directory.
+
+```
+FILESYSTEM                        URL
+src/pages/index.page.js           /
+src/pages/about.page.js           /about
+```
+
+The common ancestor directory here is `src/pages/`.
 
 For more control over routing, define Route Strings or Route Functions in [`*.page.route.js`](#pageroutejs).
 
