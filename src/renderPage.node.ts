@@ -24,8 +24,8 @@ import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandl
 
 export { renderPage }
 export { prerenderPage }
-export { addPagePropsToPageContext }
-export { addPagePropsToPageContext_assert }
+export { populatePageContext }
+export { assert_pageContext_populated }
 export { renderStatic404Page }
 
 async function renderPage(
@@ -61,8 +61,12 @@ async function renderPage(
   pageContext.url = urlWithoutOrigin
   pageContext.urlNormalized = urlNormalized
   assert(hasProp(pageContext, 'urlNormalized', 'string'))
+  pageContext._isPageContextRequest = isPageContextRequest
+  assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
 
   const allPageIds = await getPageIds()
+  pageContext._allPageIds = allPageIds
+  assert(hasProp(pageContext, '_allPageIds', 'string[]'))
 
   // *** Route ***
   // We use a try-catch because `route()` executes `.page.route.js` source code which is
@@ -71,23 +75,25 @@ async function renderPage(
   try {
     routeResult = await route(pageContext.urlNormalized, allPageIds, pageContext)
   } catch (err) {
-    if (isPageContextRequest) {
+    pageContext._err = err
+    assert(hasProp(pageContext, '_err'))
+    if (pageContext._isPageContextRequest) {
       return renderPageContextError(err)
     } else {
-      return await render500Page(err, allPageIds, pageContext)
+      return await render500Page(pageContext)
     }
   }
 
   // *** Handle 404 ***
   let statusCode: 200 | 404
   if (!routeResult) {
-    if (!isPageContextRequest) {
+    if (!pageContext._isPageContextRequest) {
       await warn404(pageContext.urlNormalized, allPageIds)
     }
     const errorPageId = getErrorPageId(allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
-      if (isPageContextRequest) {
+      if (pageContext._isPageContextRequest) {
         return renderPageContext404PageDoesNotExist()
       }
       return {
@@ -96,7 +102,7 @@ async function renderPage(
         statusCode: undefined
       }
     }
-    if (!isPageContextRequest) {
+    if (!pageContext._isPageContextRequest) {
       statusCode = 404
     } else {
       statusCode = 200
@@ -107,6 +113,8 @@ async function renderPage(
   }
 
   const { pageId, pageContextAddendum } = routeResult
+  pageContext.pageId = pageId
+  assert(hasProp(pageContext, 'pageId', 'string'))
   Object.assign(pageContext, pageContextAddendum)
 
   // *** Render ***
@@ -114,12 +122,14 @@ async function renderPage(
   // written by the user and may contain an error.
   let renderResult
   try {
-    renderResult = await renderPageId(pageId, pageContext, false, isPageContextRequest)
+    renderResult = await renderPageId(pageContext)
   } catch (err) {
-    if (isPageContextRequest) {
+    pageContext._err = err
+    assert(hasProp(pageContext, '_err'))
+    if (pageContext._isPageContextRequest) {
       return renderPageContextError(err)
     } else {
-      return await render500Page(err, allPageIds, pageContext)
+      return await render500Page(pageContext)
     }
   }
 
@@ -127,66 +137,64 @@ async function renderPage(
 }
 
 async function renderPageId(
-  pageId: string,
-  pageContext: PageContext,
-  pageContextAlreadyFetched: boolean = false,
-  isPageContextRequest: boolean = false
+  pageContext: Record<string, unknown> & {
+    pageId: string,
+    url: string,
+    urlNormalized: string,
+    _isPageContextRequest: boolean
+  },
 ) {
-  pageContext.pageId = pageId
-  assert(hasProp(pageContext, 'pageId', 'string'))
-  pageContext.isPageContextRequest = isPageContextRequest
-  assert(hasProp(pageContext, 'isPageContextRequest', 'boolean'))
-  pageContext.pageContextAlreadyFetched = pageContextAlreadyFetched
-  assert(hasProp(pageContext, 'pageContextAlreadyFetched', 'boolean'))
   pageContext.isPreRendering = false
   assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
 
-  await addPagePropsToPageContext(pageContext)
-  addPagePropsToPageContext_assert(pageContext)
+  await populatePageContext(pageContext)
+  assert_pageContext_populated(pageContext)
   //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, false)
 
   if (pageContext.isPageContextRequest) {
     const renderResult = serializeClientPageContext(pageContext)
     return renderResult
   } else {
-    const renderResult = await renderHtmlDocument(pageContext)
+    const renderResult = await renderHtml(pageContext)
     return renderResult
   }
 }
 
 async function prerenderPage(
-  pageId: string,
-  pageContext: { url: string } & Record<string, unknown>,
-  pageContextAlreadyFetched: boolean,
-  pageContextNeeded: boolean
+  pageContext: {
+    pageId: string
+    _serializedPageContextClientNeeded: boolean
+    _pageContextAlreadyAddedInPrerenderHook: boolean
+    url: string
+    pageContextClient: Record<string, unknown>
+  } & Record<string, unknown>
 ) {
+  assert_pageContext_populated(pageContext)
+
   const { urlNormalized } = analyzeUrl(pageContext.url)
   pageContext.urlNormalized = urlNormalized
   assert(hasProp(pageContext, 'urlNormalized', 'string'))
 
-  pageContext.pageId = pageId
-  assert(hasProp(pageContext, 'pageId', 'string'))
   pageContext.isPageContextRequest = false
   assert(hasProp(pageContext, 'isPageContextRequest', 'boolean'))
-  pageContext.pageContextAlreadyFetched = pageContextAlreadyFetched
-  assert(hasProp(pageContext, 'pageContextAlreadyFetched', 'boolean'))
   pageContext.isPreRendering = true
   assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
 
-  //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, true)
-  await addPagePropsToPageContext(pageContext)
-  addPagePropsToPageContext_assert(pageContext)
+  //assert_pageContext_full(pageContext)
 
-  const htmlDocument = await renderHtmlDocument(pageContext)
+  //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, true)
+
+  const htmlDocument = await renderHtml(pageContext)
   assertUsage(
     typeof htmlDocument === 'string',
     "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
   )
-  if (!pageContextNeeded) {
+  if (!pageContext._serializedPageContextClientNeeded) {
     return { htmlDocument, pageContextSerialized: null }
+  } else {
+    const pageContextSerialized = serializeClientPageContext(pageContext)
+    return { htmlDocument, pageContextSerialized }
   }
-  const pageContextSerialized = serializeClientPageContext(pageContext)
-  return { htmlDocument, pageContextSerialized }
 }
 
 async function renderStatic404Page() {
@@ -195,10 +203,17 @@ async function renderStatic404Page() {
   if (!errorPageId) {
     return null
   }
-  const url = '/fake-404-url' // A `url` is needed for `applyViteHtmlTransform`
-  const pageContext = { is404: true, url, urlNormalized: url }
-  const pageContextNeeded = false // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no client-side routing.
-  return prerenderPage(errorPageId, pageContext, false, pageContextNeeded)
+  const pageContext = {
+    pageId: errorPageId,
+    is404: true,
+    url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
+    // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
+    _serializedPageContextClientNeeded: false,
+    _pageContextAlreadyAddedInPrerenderHook: false
+  }
+  populatePageContext(pageContext)
+  assert_pageContext_populated(pageContext)
+  return prerenderPage(pageContext)
 }
 
 async function getRenderData(
@@ -213,7 +228,6 @@ async function getRenderData(
   const pageExports = pageViewFile.fileExports
   const Page = pageExports.Page || pageExports.default
 
-  addUrlPropsToPageContext(pageContext)
   Object.assign(pageContext, {
     Page,
     pageId,
@@ -310,7 +324,7 @@ function serializeClientPageContext(pageContext: { pageContextClient: Record<str
   })
   return pageContextSerialized
 }
-async function renderHtmlDocument(pageContext: PageContext) {
+async function renderHtml(pageContext: PageContext) {
   let render
   let renderFilePath
   const { pageServerFile } = pageContext
@@ -386,18 +400,33 @@ type PageFunctions = {
   }
   passToClient: string[]
 }
-async function addPagePropsToPageContext<PageContext extends { pageId: string } & Record<string, unknown>>(
+async function populatePageContext<PageContext extends { pageId: string } & Record<string, unknown>>(
   pageContext: PageContext
 ): Promise<void> {
   assert(hasProp(pageContext, 'url'))
+  assert(hasProp(pageContext, 'urlNormalized'))
+  addUrlPropsToPageContext(pageContext)
   pageContext
 }
-function addPagePropsToPageContext_assert<PageContext extends { pageId: string } & Record<string, unknown>>(
-  pageContext: PageContext
-): asserts pageContext is PageContext & {
-  pageServerFile: { fileExports: { prerender?: Function } & Record<string, unknown>; filePath: string }
+type PageServerFile3 = {
+  fileExports: Record<string, unknown> & {
+    prerender?: Function
+    render?: Function
+    addPageContext?: Function
+    passToClient?: string[]
+  }
+  filePath: string
+}
+type PageContextPopulated = {
+  pageId: string
+  url: string
+  pageServerFile: PageServerFile3
+  pageServerFileDefault: PageServerFile3
   pageContextClient: Record<string, unknown>
-} {
+}
+function assert_pageContext_populated<PageContext extends Record<string, unknown>>(
+  pageContext: PageContext
+): asserts pageContext is PageContext & PageContextPopulated {
   // @ts-ignore
   // prettier-ignore
   const { pageServerFile: { fileExports, filePath } } = pageContext
@@ -679,16 +708,19 @@ function isFileRequest(urlNormalized: string) {
 }
 
 async function render500Page(
-  err: unknown,
-  allPageIds: string[],
-  pageContext: PageContext
+  pageContext: Record<string, unknown> & {
+    url: string,
+    urlNormalized: string,
+    _allPageIds: string[],
+    _err: unknown,
+  }
 ): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
   | { nothingRendered: false; renderResult: string | unknown; statusCode: 500 }
 > {
-  handleErr(err)
+  handleErr(pageContext._err)
 
-  const errorPageId = getErrorPageId(allPageIds)
+  const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (errorPageId === null) {
     warnMissingErrorPage()
     return {
@@ -698,10 +730,16 @@ async function render500Page(
     }
   }
 
-  Object.assign(pageContext, { is404: false })
+  pageContext.is404 = false
+  assert(hasProp(pageContext, 'is404', 'boolean'))
+  pageContext.pageId = errorPageId
+  assert(hasProp(pageContext, 'pageId', 'string'))
+  pageContext._isPageContextRequest = false
+  assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
+
   let renderResult
   try {
-    renderResult = await renderPageId(errorPageId, pageContext)
+    renderResult = await renderPageId(pageContext)
   } catch (err) {
     // We purposely swallow the error, because another error was already shown to the user in `handleErr()`.
     // (And chances are high that this is the same error.)

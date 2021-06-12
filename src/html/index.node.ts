@@ -44,14 +44,14 @@ function isHtmlTemplate(something: unknown): something is { [__html_template]: H
   return hasProp(something, __html_template)
 }
 function renderHtmlTemplate(renderResult: { [__html_template]: HtmlTemplate }, filePath: string): string {
-  return renderHtml(renderResult[__html_template], filePath)
+  return renderTemplate(renderResult[__html_template], filePath)
 }
 
 type HtmlTemplate = {
   templateParts: TemplateStringsArray
   templateVariables: unknown[]
 }
-function renderHtml(htmlTemplate: HtmlTemplate, filePath: string) {
+function renderTemplate(htmlTemplate: HtmlTemplate, filePath: string) {
   const { templateParts, templateVariables } = htmlTemplate
   const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
     // Process `html.dangerouslySkipEscape()`
@@ -69,7 +69,7 @@ function renderHtml(htmlTemplate: HtmlTemplate, filePath: string) {
     if (hasProp(templateVar, __html_template)) {
       const htmlTemplate__segment = templateVar[__html_template]
       cast<HtmlTemplate>(htmlTemplate__segment)
-      return renderHtml(htmlTemplate__segment, filePath)
+      return renderTemplate(htmlTemplate__segment, filePath)
     }
 
     // Process and sanitize untrusted template variable

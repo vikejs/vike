@@ -6,8 +6,8 @@ import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRou
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import {
-  addPagePropsToPageContext,
-  addPagePropsToPageContext_assert,
+  populatePageContext,
+  assert_pageContext_populated,
   prerenderPage,
   renderStatic404Page
 } from './renderPage.node'
@@ -53,7 +53,7 @@ async function prerender({
     pluginManifest.version === version,
     `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
-  const pageContextNeeded: boolean = pluginManifest.doesClientSideRouting
+  const _serializedPageContextClientNeeded: boolean = pluginManifest.doesClientSideRouting
   const baseUrl: string = pluginManifest.base
 
   process.env.NODE_ENV = 'production'
@@ -71,38 +71,45 @@ async function prerender({
     string,
     {
       prerenderSourceFile: string
-      pageContext: { url: string } & Record<string, unknown>
-      noPrenderPageContext: boolean
+      pageContext: {
+        pageId: string
+        url: string
+        _pageContextAlreadyAddedInPrerenderHook: boolean
+        _serializedPageContextClientNeeded: boolean
+      } & Record<string, unknown>
     }
   > = {}
   await Promise.all(
     allPageIds.map(async (pageId) => {
-      const pageContext = { pageId }
-      await addPagePropsToPageContext(pageContext)
-      addPagePropsToPageContext_assert(pageContext)
+      const pageContext = {
+        pageId,
+        _serializedPageContextClientNeeded
+      }
+      await populatePageContext(pageContext)
+      assert_pageContext_populated(pageContext)
+
       const { fileExports, filePath } = pageContext.pageServerFile
       const prerenderFunction = fileExports.prerender
       if (!prerenderFunction) return
       const prerenderSourceFile = filePath
-      const prerenderResult = await prerenderFunction()
+      assert(prerenderSourceFile)
+
+      const prerenderResult = await prerenderFunction(pageContext)
       const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
+
       result.forEach(({ url, pageContext }) => {
         assert(typeof url === 'string')
         assert(url.startsWith('/'))
         assert(pageContext === null || isPlainObject(pageContext))
-        if (!('url' in prerenderData)) {
-          prerenderData[url] = {
-            pageContext: { url },
-            noPrenderPageContext: true,
-            prerenderSourceFile
-          }
-        }
-        if (pageContext) {
-          prerenderData[url].noPrenderPageContext = false
-          prerenderData[url].pageContext = {
-            ...prerenderData[url].pageContext,
+        prerenderData[url] = {
+          pageContext: {
+            ...prerenderData[url]?.pageContext,
+            url,
+            _pageContextAlreadyAddedInPrerenderHook:
+              !!pageContext || prerenderData[url]?.pageContext._pageContextAlreadyAddedInPrerenderHook,
             ...pageContext
-          }
+          },
+          prerenderSourceFile
         }
       })
     })
@@ -113,7 +120,7 @@ async function prerender({
 
   // Render URLs renturned by `prerender()` hooks
   await Promise.all(
-    Object.entries(prerenderData).map(async ([url, { pageContext, prerenderSourceFile, noPrenderPageContext }]) => {
+    Object.entries(prerenderData).map(async ([url, { pageContext, prerenderSourceFile }]) => {
       const routeResult = await route(url, allPageIds, pageContext)
       assertUsage(
         routeResult,
@@ -122,12 +129,8 @@ async function prerender({
       const { pageId } = routeResult
       Object.assign(pageContext, routeResult.pageContextAddendum)
       assert(pageContext.url)
-      const { htmlDocument, pageContextSerialized } = await prerenderPage(
-        pageId,
-        pageContext,
-        !noPrenderPageContext,
-        pageContextNeeded
-      )
+      assert_pageContext_populated(pageContext)
+      const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
       htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
       renderedPageIds[pageId] = true
     })
@@ -157,15 +160,16 @@ async function prerender({
           }
         }
         const pageContext = {
-          routeParams: {},
-          url
-        }
-        const { htmlDocument, pageContextSerialized } = await prerenderPage(
+          url,
           pageId,
-          pageContext,
-          false,
-          pageContextNeeded
-        )
+          _serializedPageContextClientNeeded,
+          _pageContextAlreadyAddedInPrerenderHook: false,
+          routeParams: {}
+        }
+        await populatePageContext(pageContext)
+        assert_pageContext_populated(pageContext)
+
+        const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
         htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
       })
   )
