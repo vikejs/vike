@@ -403,8 +403,8 @@ type PageFunctions = {
 async function populatePageContext<PageContext extends { pageId: string } & Record<string, unknown>>(
   pageContext: PageContext
 ): Promise<void> {
-  assert(hasProp(pageContext, 'url'))
-  assert(hasProp(pageContext, 'urlNormalized'))
+  assert(hasProp(pageContext, 'url', 'string'))
+  assert(hasProp(pageContext, 'urlNormalized', 'string'))
   addUrlPropsToPageContext(pageContext)
   pageContext
 }
@@ -805,7 +805,7 @@ function removeOrigin(url: string): string {
   return urlFull
 }
 
-function addUrlPropsToPageContext(pageContext: PageContext) {
+function addUrlPropsToPageContext<PageContext extends Record<string, unknown> & {urlNormalized: string}>(pageContext: PageContext): asserts pageContext is PageContext & { urlPathname: string, urlParsed: string} {
   const { urlNormalized } = pageContext
   assert(typeof urlNormalized === 'string')
   const urlPathname = getUrlPathname(urlNormalized)
