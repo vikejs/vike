@@ -1,3 +1,5 @@
+import { isCallable } from './isCallable'
+
 export { hasProp }
 
 // prettier-ignore
@@ -11,17 +13,23 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'string[]'): obj is ObjectType & Record<PropName, string[]>;
 // prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, Function>;
+// prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName): obj is ObjectType & Record<PropName, unknown>;
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string = 'unknown'): boolean {
   const propExists = typeof obj === 'object' && obj !== null && prop in obj
+  const propValue = (obj as Record<any,unknown>)[prop]
   if( type === 'unknown' ) {
     return propExists
   }
   if( type === 'string[]') {
-    return propExists && Array.isArray(obj) && obj.every(el => typeof el === 'string')
+    return propExists && Array.isArray(propValue) && propValue.every(el => typeof el === 'string')
   }
-  return propExists && typeof (obj as Record<any,unknown>)[prop] === type;
+  if( type === 'function') {
+    return propExists && isCallable(propValue)
+  }
+  return propExists && typeof propValue === type;
 }
 
 // Resources:

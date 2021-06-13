@@ -257,29 +257,42 @@ function serializeClientPageContext(pageContext: { pageContextClient: Record<str
 }
 
 function assert_pageContext_full(pageContext: { pageId: string; url: string; urlNormalized: string; urlParsed: {} }) {
-  assert(hasProp(pageContext, 'url', 'string'))
-  assert(hasProp(pageContext, 'urlNormalized', 'string'))
-  addUrlPropsToPageContext(pageContext)
+  assert(typeof pageContext.url === 'string')
+  assert(typeof pageContext.urlNormalized === 'string')
+  assert(typeof pageContext.urlPathname === 'string')
+  assert(pageContext.urlParsed)
+  assert(pageContext.Page)
+  assert(pageContext.pageExports)
+  assert(pageContext.urlParsed)
 }
 type PageFileLoaded = {
   filePath: string
-  fileExports: null | Record<string, unknown>
+  fileExports: Record<string, unknown>
 }
 type AllPageFiles = {
   pageClientFilePath: string
   pageViewFile: PageFileLoaded
 } & PageServerFiles
 
+type PageServerFile = {
+  filePath: string
+  fileExports: Record<string, unknown> & {
+    render?: Function
+    prerender?: Function
+    addPageContext?: Function
+    setPageProps: never
+    passToClient?: string[]
+  }
+}
 //*
-type PageServerFiles = (
-  | { pageServerFile: PageFileLoaded; pageServerFileDefault: PageFileLoaded }
-  | { pageServerFile: null; pageServerFileDefault: PageFileLoaded }
-  | { pageServerFile: PageFileLoaded; pageServerFileDefault: null }
-)
+type PageServerFiles =
+  | { pageServerFile: PageServerFile; pageServerFileDefault: PageServerFile }
+  | { pageServerFile: null; pageServerFileDefault: PageServerFile }
+  | { pageServerFile: PageServerFile; pageServerFileDefault: null }
 /*/
 type PageServerFiles = {
-  pageServerFile: PageFileLoaded | null
-  pageServerFileDefault: PageFileLoaded | null
+  pageServerFile: PageServerFile | null
+  pageServerFileDefault: PageServerFile | null
 }
 //*/
 
@@ -307,10 +320,6 @@ async function loadPageViewFile(pageId: string): Promise<PageFileLoaded> {
   const pageFile = await getPageFile('.page', pageId)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
-  assertUsage(
-    typeof fileExports === 'object' && ('Page' in fileExports || 'default' in fileExports),
-    `${filePath} should have a \`export { Page }\` (or a default export).`
-  )
   return { filePath, fileExports }
 }
 async function loadPageServerFiles(pageId: string): Promise<PageServerFiles> {
@@ -335,105 +344,80 @@ async function loadPageServerFiles(pageId: string): Promise<PageServerFiles> {
         filePath: serverFileDefault.filePath,
         fileExports: await serverFileDefault.loadFile()
       }
-  assert_pageServerFiles(pageServerFile, pageServerFileDefault)
-  if( pageServerFile !== null ) {
+  if (pageServerFile !== null) {
+    assert_pageServerFile(pageServerFile)
+  }
+  if (pageServerFileDefault !== null) {
+    assert_pageServerFile(pageServerFileDefault)
+  }
+  if (pageServerFile !== null) {
     return { pageServerFile, pageServerFileDefault }
   }
-  if( pageServerFileDefault !== null ) {
+  if (pageServerFileDefault !== null) {
     return { pageServerFile, pageServerFileDefault }
   }
   assert(false)
 }
-type PageServerFile = null | { filePath: string; fileExports: Record<string, unknown> }
-function assert_pageServerFiles(pageServerFile: PageServerFile, defaultPageServerFile: PageServerFile) {
-  let renderHookExists = false
-  const passToClient: string[] = []
+function assert_pageServerFile(pageServerFile: {
+  filePath: string
+  fileExports: Record<string, unknown>
+}): asserts pageServerFile is PageServerFile {
+  if (pageServerFile === null) return
 
-  const files = []
-  if (pageServerFile) {
-    files.push(pageServerFile)
-  }
-  if (defaultPageServerFile) {
-    files.push(defaultPageServerFile)
-  }
-  for (const { filePath, fileExports } of files) {
-    assertUsage(
-      !('setPageProps' in fileExports),
-      "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
-        filePath +
-        '`.)'
-    )
-
-    const render = fileExports.render
-    assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
-    renderHookExists = !!render || renderHookExists
-
-    const addPageContext = fileExports.addPageContext
-    assertUsage(
-      !addPageContext || isCallable(addPageContext),
-      `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
-    )
-
-    const passToClient_ = fileExports.passToClient
-    if (passToClient_) {
-      assertUsage(
-        Array.isArray(passToClient_) && passToClient_.every((prop) => typeof prop === 'string'),
-        `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
-      )
-      passToClient.push(...passToClient_)
-    }
-
-    const prerender = fileExports.prerender
-    assertUsage(
-      !prerender || isCallable(prerender),
-      `The \`prerender()\` hook defined in ${filePath} should be a function.`
-    )
-  }
+  const { filePath, fileExports } = pageServerFile
+  assert(filePath)
+  assert(fileExports)
 
   assertUsage(
-    renderHookExists,
-    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
+    !('setPageProps' in fileExports),
+    "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
+      filePath +
+      '`.)'
+  )
+
+  const render = fileExports.render
+  assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
+
+  const addPageContext = fileExports.addPageContext
+  assertUsage(
+    !addPageContext || isCallable(addPageContext),
+    `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
+  )
+
+  assertUsage(
+    !('passToClient' in fileExports) || hasProp(fileExports, 'passToClient', 'string[]'),
+    `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
+  )
+
+  const prerender = fileExports.prerender
+  assertUsage(
+    !prerender || isCallable(prerender),
+    `The \`prerender()\` hook defined in ${filePath} should be a function.`
   )
 }
-async function populatePageContext<PageContext extends { pageId: string } & Record<string, unknown>>(
-  pageContext: PageContext
-): Promise<void> {
+async function populatePageContext(pageContext: { pageId: string } & Record<string, unknown>): Promise<void> {
   assert(pageContext.pageId)
+  const allPageFiles = await loadAllPageFiles( pageContext.pageId)
 
-  const { pageServerFile, pageServerFileDefault, pageClientFilePath, pageViewFile } = await loadAllPageFiles(
-    pageContext.pageId
-  )
-
-  Object.assign(pageContext, {
-    Page,
-    pageExports
-    /*
-    isPreRendering,
-    addPageContext: pageFunctions.addPageContextFunction || null,
-    render: pageFunctions.renderFunction,
-    prerenderFunction: pageFunctions.prerenderFunction || null,
-    */
-  })
-  assert(hasProp(pageContext, 'pageId', 'string'))
+  const { pageViewFile } = allPageFiles
+  const pageExports = pageViewFile.fileExports
+  assert(pageExports)
+  const Page = pageViewFile.fileExports.Page || pageViewFile.fileExports.default
+  assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` (or a default export).`)
+  pageContext.Page = Page
   assert(hasProp(pageContext, 'Page'))
+  pageContext.pageExports = pageExports
   assert(hasProp(pageContext, 'pageExports', 'object'))
-  // assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
-  pageContext.pageAssets = getPageAssets(pageContext)
 
+  const { pageServerFile, pageServerFileDefault} = allPageFiles
   pageContext.passToClient = {
     ...getDefaultPassToClientProps(pageContext),
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
   }
   assert(hasProp(pageContext, 'passToClient', 'string[]'))
 
-  return {
-    Page,
-    pageId,
-    pageFilePath: pageViewFile.filePath,
-    pageContext,
-    pageContext__client,
-    isPreRendering
-  }
+  const { pageClientFilePath} = allPageFiles
+  pageContext.pageAssets = getPageAssets(pageContext)
 }
 
 type PageServerFile3 = {
@@ -488,6 +472,10 @@ async function renderHtml(pageContext: PageContext) {
     render = pageRenderFunction
     renderFilePath = _pageServerFile.filePath
   }
+  assertUsage(
+    render,
+    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
+  )
   const { pageServerFileDefault } = pageContext
   const pageDefaultRenderFunction = pageServerFileDefault?.fileExports.render
   if (pageServerFileDefault && pageDefaultRenderFunction) {
