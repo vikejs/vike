@@ -256,11 +256,13 @@ function serializeClientPageContext(pageContext: { pageContextClient: Record<str
   return pageContextSerialized
 }
 
-function assert_pageContext_full(pageContext: { pageId: string; url: string; urlNormalized: string; urlParsed: {} }) {
+type PageContextPublic = { pageId: string; url: string; urlNormalized: string; urlParsed: UrlParsed, urlPathname: string, Page: unknown, pageExports: Record<string, unknown> }
+function assert_pageContext_full(pageContext: PageContextPublic) {
+  assert(typeof pageContext.pageId === 'string')
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
-  assert(pageContext.urlParsed)
+  assert(isPlainObject(pageContext.urlParsed))
   assert(pageContext.Page)
   assert(pageContext.pageExports)
   assert(pageContext.urlParsed)
@@ -445,15 +447,22 @@ function assert_pageContext_populated<PageContext extends Record<string, unknown
   assert(Object.keys(fileExports).length >= 1)
   assert(filePath)
 }
-async function renderHtml(pageContext: PageContext) {
-  const { addPageContextFunction } = pageFunctions
-  if (!pageContextAlreadyFetched && addPageContextFunction) {
-    assertPageContext(pageContext)
-    assert(hasProp(pageContext, 'Page'))
-    const pageContextAddendum = await addPageContextFunction.addPageContext(pageContext)
+async function renderHtml(pageContext: PageContextPublic & {
+  _pageServerFile: null | PageServerFile,
+  _pageServerFileDefault: null | PageServerFile
+  _pageContextAlreadyAddedInPrerenderHook: boolean
+}) {
+  assert(pageContext.Page)
+
+  const addPageContext = pageContext._pageServerFile?.fileExports.addPageContext || pageContext._pageServerFileDefault?.fileExports.addPageContext
+  if (!pageContext._pageContextAlreadyAddedInPrerenderHook && addPageContext) {
+    assert_pageContext_full(pageContext)
+    const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
+    assert(filePath)
+    const pageContextAddendum = await addPageContext(pageContext)
     assertUsage(
       isPlainObject(pageContextAddendum),
-      `The \`addPageContext()\` hook exported by ${addPageContextFunction.filePath} should return a plain JavaScript object.`
+      `The \`addPageContext()\` hook exported by ${filePath} should return a plain JavaScript object.`
     )
     Object.assign(pageContext, pageContextAddendum)
   }
@@ -464,6 +473,7 @@ async function renderHtml(pageContext: PageContext) {
   })
   pageContext.pageContextClient = pageContext__client
 
+  assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)
   let render
   let renderFilePath
   const { _pageServerFile } = pageContext
@@ -495,8 +505,8 @@ async function renderHtml(pageContext: PageContext) {
     serverManifest = manifests.serverManifest
   }
 
-  assertPageContext(pageContext)
   assert(hasProp(pageContext, 'Page'))
+  assert_pageContext_full(pageContext)
   const renderResult: unknown = await render(pageContext)
 
   if (!isHtmlTemplate(renderResult)) {
@@ -795,15 +805,6 @@ function addUrlPropsToPageContext<
   assert(urlPathname.startsWith('/'))
   assert(isPlainObject(urlParsed))
   Object.assign(pageContext, { urlPathname, urlParsed })
-}
-
-function assertPageContext(pageContext: PageContext) {
-  // todo
-  assert(typeof pageContext.url === 'string')
-  assert(typeof pageContext.urlNormalized === 'string')
-  assert(typeof pageContext.urlPathname === 'string')
-  assert(isPlainObject(pageContext.urlParsed))
-  assert(typeof pageContext.pageId === 'string')
 }
 
 function analyzeUrl(
