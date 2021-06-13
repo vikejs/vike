@@ -88,7 +88,7 @@ async function prerender({
       await populatePageContext(pageContext)
       assert_pageContext_populated(pageContext)
 
-      const { fileExports, filePath } = pageContext.pageServerFile
+      const { fileExports, filePath } = pageContext._pageServerFile // todo: may be non existent
       const prerenderFunction = fileExports.prerender
       if (!prerenderFunction) return
       const prerenderSourceFile = filePath
