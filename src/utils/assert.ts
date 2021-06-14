@@ -19,7 +19,7 @@ function assert(condition: unknown, debugInfo?: Record<string, unknown>): assert
     ? ''
     : ` Debug info: \`${JSON.stringify(debugInfo)}\` (this if for the \`${libName}\` maintainers; you can ignore this).`
   const internalError = newError(
-    `${internalErrorPrefix} You stumbled upon a bug in \`${libName}\`'s source code (an internal assertion failed). This should definitely not be happening, and you should create a new issue at https://github.com/brillout/${libName}/issues/new that includes this error stack (the error stack is enough to debug this). Or reach out on Discord. A fix will be written promptly.${debugStr}`
+    `${internalErrorPrefix} You stumbled upon a bug in \`${libName}\`'s source code (a internal \`assert()\` failed). This should definitely not be happening, and you should create a new issue at https://github.com/brillout/${libName}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`
   )
   throw internalError
 }
