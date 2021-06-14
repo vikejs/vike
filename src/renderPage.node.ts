@@ -25,9 +25,10 @@ import { getPageAssets, injectAssets_internal } from './html/injectAssets.node'
 
 export { renderPage }
 export { prerenderPage }
+export { renderStatic404Page }
+
 export { populatePageContext }
 export { populatePageContext_addTypes }
-export { renderStatic404Page }
 
 async function renderPage(
   pageContext: { url: string } & Record<string, unknown>
@@ -117,8 +118,8 @@ async function renderPage(
   }
 
   const { pageId, pageContextAddendum } = routeResult
-  pageContext.pageId = pageId
-  assert(hasProp(pageContext, 'pageId', 'string'))
+  pageContext._pageId = pageId
+  assert(hasProp(pageContext, '_pageId', 'string'))
   Object.assign(pageContext, pageContextAddendum)
 
   // *** Render ***
@@ -143,9 +144,9 @@ async function renderPage(
 async function renderPageId(
   pageContext: Record<string, unknown> &
     PageContextUrls & {
-      pageId: string
       url: string
       urlNormalized: string
+      _pageId: string
       _isPageContextRequest: boolean
     }
 ) {
@@ -167,15 +168,15 @@ async function renderPageId(
     const renderResult = serializeClientPageContext(pageContext)
     return renderResult
   } else {
-    const renderResult = await renderHtml(pageContext)
+    const renderResult = await executeRenderHook(pageContext)
     return renderResult
   }
 }
 
 async function prerenderPage(
   pageContext: {
-    pageId: string
     url: string
+    _pageId: string
     _serializedPageContextClientNeeded: boolean
     _pageContextAlreadyAddedInPrerenderHook: boolean
   } & Record<string, unknown>
@@ -192,11 +193,12 @@ async function prerenderPage(
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
 
-  const htmlDocument = await renderHtml(pageContext)
+  const renderResult: unknown = await executeRenderHook(pageContext)
   assertUsage(
-    typeof htmlDocument === 'string',
+    typeof renderResult === 'string',
     "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
   )
+  const htmlDocument: string = renderResult
   if (!pageContext._serializedPageContextClientNeeded) {
     return { htmlDocument, pageContextSerialized: null }
   } else {
@@ -212,7 +214,7 @@ async function renderStatic404Page() {
     return null
   }
   const pageContext = {
-    pageId: errorPageId,
+    _pageId: errorPageId,
     is404: true,
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
@@ -224,9 +226,9 @@ async function renderStatic404Page() {
   return prerenderPage(pageContext)
 }
 
-function getDefaultPassToClientProps(pageContext: { pageId: string; pageProps?: Record<string, unknown> }): string[] {
+function getDefaultPassToClientProps(pageContext: { _pageId: string; pageProps?: Record<string, unknown> }): string[] {
   const passToClient = ['pageId']
-  if (isErrorPage(pageContext.pageId)) {
+  if (isErrorPage(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     const pageProps = pageContext.pageProps || {}
     pageProps.is404 = pageProps.is404 || pageContext.is404
@@ -246,7 +248,6 @@ function serializeClientPageContext(pageContext: { _pageContextClient: PageConte
 }
 
 type PageContextPublic = {
-  pageId: string
   url: string
   urlNormalized: string
   urlParsed: UrlParsed
@@ -256,7 +257,6 @@ type PageContextPublic = {
   // routeParams: Record<string, unknown> // todo
 }
 function assert_pageContextPublic(pageContext: PageContextPublic) {
-  assert(typeof pageContext.pageId === 'string')
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
@@ -398,22 +398,28 @@ function assert_pageServerFile(pageServerFile: {
 }
 
 type PageContextPopulated = {
-  pageId: string
   Page: unknown
   pageExports: Record<string, unknown>
+  _pageId: string
   _passToClient: string[]
   _pageServerFile: PageServerFile
   _pageServerFileDefault: PageServerFile
+  _clientAssets: Set<string>
 }
-async function populatePageContext(pageContext: { pageId: string } & Record<string, unknown>): Promise<void> {
-  assert(pageContext.pageId)
-  const allPageFiles = await loadAllPageFiles(pageContext.pageId)
+async function populatePageContext(pageContext: { _pageId: string } & Record<string, unknown>): Promise<void> {
+  assert(pageContext._pageId)
+  const allPageFiles = await loadAllPageFiles(pageContext._pageId)
+
+  const clientAssets: Set<string> = new Set()
 
   const { pageViewFile } = allPageFiles
   const pageExports = pageViewFile.fileExports
   assert(pageExports)
   const Page = pageViewFile.fileExports.Page || pageViewFile.fileExports.default
   assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` (or a default export).`)
+  const pageFilePath = pageViewFile.filePath
+  assert(pageFilePath)
+  clientAssets.add(pageFilePath)
 
   const { pageServerFile, pageServerFileDefault } = allPageFiles
 
@@ -422,17 +428,17 @@ async function populatePageContext(pageContext: { pageId: string } & Record<stri
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
   }
 
-  /*
   const { pageClientFilePath } = allPageFiles
   const pageAssets = getPageAssets(pageContext) // todo
-  //*/
+  clientAssets.add(pageClientFilePath)
 
   const pageContextNew = {
     Page,
     pageExports,
     _passToClient: passToClient,
     _pageServerFile: pageServerFile,
-    _pageServerFileDefault: pageServerFileDefault
+    _pageServerFileDefault: pageServerFileDefault,
+    _clientAssets: clientAssets,
   }
   Object.assign(pageContext, pageContextNew)
   populatePageContext_checkType({
@@ -450,9 +456,10 @@ function populatePageContext_addTypes<PageContext extends Record<string, unknown
 }
 
 type PageContextUser = Record<string, unknown>
-type PageContextClient = Record<string, unknown>
+type PageContextClient = { _pageId: string } & Record<string, unknown>
 async function executeAddPageContextHook(
   pageContext: {
+    _pageId: string
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
     _passToClient: string[]
@@ -474,7 +481,7 @@ async function executeAddPageContextHook(
     Object.assign(pageContext, pageContextAddendum)
   }
 
-  const pageContextClient: PageContextClient = {}
+  const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
   pageContext._passToClient.forEach((prop) => {
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
@@ -486,8 +493,9 @@ function executeAddPageContextHook_addTypes<PageContext extends Record<string, u
   pageContext // make TS happy
 }
 
-async function renderHtml(
+async function executeRenderHook(
   pageContext: PageContextPublic & {
+    _pageId: string
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
   }
@@ -701,8 +709,8 @@ async function render500Page(
 
   pageContext.is404 = false
   assert(hasProp(pageContext, 'is404', 'boolean'))
-  pageContext.pageId = errorPageId
-  assert(hasProp(pageContext, 'pageId', 'string'))
+  pageContext._pageId = errorPageId
+  assert(hasProp(pageContext, '_pageId', 'string'))
   pageContext._isPageContextRequest = false
   assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
 

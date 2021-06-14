@@ -5,9 +5,10 @@ import { ModuleNode } from 'vite'
 import { getPageFiles } from './page-files/getPageFiles.shared'
 import { prependBaseUrl } from './baseUrlHandling'
 
-export { getPreloadTags }
+export { getPreloadAssets }
+export { getPreloadTag }
 
-async function getPreloadTags(
+async function getPreloadAssets(
   dependencies: string[],
   clientManifest: null | ViteManifest,
   serverManifest: null | ViteManifest
@@ -42,8 +43,8 @@ async function getPreloadTags(
     })
   }
 
-  const preloadTags = Array.from(preloadUrls).map(prependBaseUrl).map(normalizePath).map(getPreloadTag)
-  return preloadTags
+  const preloadAssets = Array.from(preloadUrls).map(prependBaseUrl).map(normalizePath)
+  return preloadAssets
 }
 
 async function getPageViewFiles(): Promise<string[]> {
@@ -102,7 +103,7 @@ function getPreloadTag(href: string): string {
   if (href.endsWith('.gif')) {
     return `<link rel="preload" href="${href}" as="image" type="image/gif">`
   }
-  if (href.endsWith('svg')) {
+  if (href.endsWith('.svg')) {
     return `<link rel="preload" href="${href}" as="image" type="image/svg+xml">`
   }
   if (href.endsWith('.css')) {

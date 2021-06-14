@@ -1,9 +1,8 @@
-import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import {assert, assertUsage, hasProp, normalizePath, slice} from "../utils"
-import { getPreloadTags } from '../getPreloadTags.node'
+import { getPreloadAssets, getPreloadTag } from '../getPreloadTags.node'
 import {getSsrEnv} from "../ssrEnv.node"
 import { getViteManifest, ViteManifest } from '../getViteManifest.node'
-import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
+import { getPageFile, getPageFiles } from '../page-files/getPageFiles.shared'
 import {prependBaseUrl} from "../baseUrlHandling"
 import devalue from "devalue"
 
@@ -43,32 +42,33 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 
 
 function getPageAssets(pageContext: {}) {
+  getPreloadAssets
   return {}
 }
 
 async function injectAssets(htmlDocument: string, pageContext: Record<string, unknown>): Promise<string> {
-  const errMsg = (body: string) => "[html.injectAssets(htmlDocument, pageContext)]: "+body+". Make sure that `pageContext` is the object provided to your `render()` hook."
-  assertUsage(hasProp(pageContext, 'pageId', 'string'), errMsg("`pageContext.pageId` should be a string"))
+  const errMsg = (body: string) => "[html.injectAssets(htmlDocument, pageContext)]: "+body+". Make sure that `pageContext` is the object that `vite-plugin-ssr` provided to your `render(pageContext)` hook."
   assertUsage(hasProp(pageContext, 'urlNormalized', 'string'), errMsg("`pageContext.urlNormalized` should be a string"))
   assertUsage(hasProp(pageContext, 'pageAssets'), errMsg("`pageContext.pageAssets` is missing"))
+  assertUsage(hasProp(pageContext, '_pageId', 'string'), errMsg("`pageContext._pageId` should be a string"))
+  assertUsage(hasProp(pageContext, '_pageContextClient', 'object'), errMsg("`pageContext._pageContextClient` is missing"))
   htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
   return htmlDocument
 }
 
 async function injectAssets_internal(htmlDocument: string, pageContext: {
-  pageId: string,
   urlNormalized: string,
   pageAssets: any,
+  _pageId: string,
+  _pageContextClient: Record<string, unknown>
 }): Promise<string> {
-  const { pageId } = pageContext
-
   // Inject Vite transformations
   const { urlNormalized } = pageContext
   assert(typeof urlNormalized === 'string')
   htmlDocument = await applyViteHtmlTransform(htmlDocument, urlNormalized)
 
   // Inject pageContext__client
-  htmlDocument = injectPageInfo(htmlDocument, pageContext__client, pageId)
+  htmlDocument = injectPageInfo(htmlDocument, pageContext)
 
   // Inject script
   const browserFilePath = pageContext.pageClientFile
@@ -109,9 +109,11 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
-function injectPageInfo(htmlDocument: string, pageContext__client: Record<string, unknown>, pageId: string): string {
-  assert(pageContext__client.pageId === pageId)
-  const injection = `<script>window.__vite_plugin_ssr__pageContext = ${devalue(pageContext__client)}</script>`
+function injectPageInfo(htmlDocument: string, pageContext: { _pageId: string, _pageContextClient: Record<string, unknown>}): string {
+  assert(pageContext._pageContextClient._pageId)
+  assert(pageContext._pageContextClient._pageId===pageContext._pageId)
+  const pageContextSerialized = devalue(pageContext._pageContextClient)
+  const injection = `<script>window.__vite_plugin_ssr__pageContext = ${pageContextSerialized}</script>`
   return injectEnd(htmlDocument, injection)
 }
 
