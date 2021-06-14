@@ -7,7 +7,7 @@ import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, 
 import { setSsrEnv } from './ssrEnv.node'
 import {
   populatePageContext,
-  assert_pageContext_populated,
+  populatePageContext_addTypes,
   prerenderPage,
   renderStatic404Page
 } from './renderPage.node'
@@ -86,9 +86,10 @@ async function prerender({
         _serializedPageContextClientNeeded
       }
       await populatePageContext(pageContext)
-      assert_pageContext_populated(pageContext)
+      populatePageContext_addTypes(pageContext)
 
-      const { fileExports, filePath } = pageContext._pageServerFile // todo: may be non existent
+      if (!pageContext._pageServerFile) return
+      const { fileExports, filePath } = pageContext._pageServerFile
       const prerenderFunction = fileExports.prerender
       if (!prerenderFunction) return
       const prerenderSourceFile = filePath
@@ -129,7 +130,7 @@ async function prerender({
       const { pageId } = routeResult
       Object.assign(pageContext, routeResult.pageContextAddendum)
       assert(pageContext.url)
-      assert_pageContext_populated(pageContext)
+      populatePageContext_addTypes(pageContext)
       const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
       htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
       renderedPageIds[pageId] = true
@@ -167,7 +168,7 @@ async function prerender({
           routeParams: {}
         }
         await populatePageContext(pageContext)
-        assert_pageContext_populated(pageContext)
+        populatePageContext_addTypes(pageContext)
 
         const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
         htmlDocuments.push({ url, htmlDocument, pageContextSerialized })

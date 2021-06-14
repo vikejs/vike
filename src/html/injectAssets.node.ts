@@ -1,3 +1,4 @@
+import { getViteManifest, ViteManifest } from './getViteManifest.node'
 import {assert, assertUsage, hasProp, normalizePath, slice} from "../utils"
 import { getPreloadTags } from '../getPreloadTags.node'
 import {getSsrEnv} from "../ssrEnv.node"
@@ -8,11 +9,41 @@ import devalue from "devalue"
 
 export { injectAssets }
 export { injectAssets_internal }
+export { getPageAssets }
 
-type PageContext_Assets = {
-  pageId: string,
-  urlNormalized: string,
-  pageAssets: any,
+  /* todo
+  const { isProduction = false } = getSsrEnv()
+  let clientManifest: null | ViteManifest = null
+  let serverManifest: null | ViteManifest = null
+  const isPreRendering = pageContext._isPreRendering
+  if (isPreRendering || isProduction) {
+    const manifests = retrieveViteManifest(isPreRendering)
+    clientManifest = manifests.clientManifest
+    serverManifest = manifests.serverManifest
+  }
+  */
+function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
+  // Get Vite manifest
+  const { clientManifest, serverManifest, clientManifestPath, serverManifestPath } = getViteManifest()
+  const userOperation = isPreRendering
+    ? 'running `$ vite-plugin-ssr prerender`'
+    : 'running the server with `isProduction: true`'
+  assertUsage(
+    clientManifest && serverManifest,
+    'You are ' +
+      userOperation +
+      " but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before. (Following build manifest is missing: `" +
+      clientManifestPath +
+      '` and/or `' +
+      serverManifestPath +
+      '`.)'
+  )
+  return { clientManifest, serverManifest }
+}
+
+
+function getPageAssets(pageContext: {}) {
+  return {}
 }
 
 async function injectAssets(htmlDocument: string, pageContext: Record<string, unknown>): Promise<string> {
@@ -24,7 +55,11 @@ async function injectAssets(htmlDocument: string, pageContext: Record<string, un
   return htmlDocument
 }
 
-async function injectAssets_internal(htmlDocument: string, pageContext: PageContext_Assets): Promise<string> {
+async function injectAssets_internal(htmlDocument: string, pageContext: {
+  pageId: string,
+  urlNormalized: string,
+  pageAssets: any,
+}): Promise<string> {
   const { pageId } = pageContext
 
   // Inject Vite transformations

@@ -1,7 +1,6 @@
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
-import { renderHtmlTemplate, isHtmlTemplate, injectAssets_internal } from './html/index.node'
-import { getViteManifest, ViteManifest } from './getViteManifest.node'
-import { getPageFile, getPageFiles, PageFile } from './page-files/getPageFiles.shared'
+import { renderHtmlTemplate, isHtmlTemplate } from './html/index.node'
+import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
@@ -21,12 +20,13 @@ import {
   getUrlParsed,
   UrlParsed
 } from './utils'
-import { prependBaseUrl, removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
+import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
+import { getPageAssets, injectAssets_internal } from './html/injectAssets.node'
 
 export { renderPage }
 export { prerenderPage }
 export { populatePageContext }
-export { assert_pageContext_populated }
+export { populatePageContext_addTypes }
 export { renderStatic404Page }
 
 async function renderPage(
@@ -141,19 +141,27 @@ async function renderPage(
 }
 
 async function renderPageId(
-  pageContext: Record<string, unknown> & {
-    pageId: string
-    url: string
-    urlNormalized: string
-    _isPageContextRequest: boolean
-  }
+  pageContext: Record<string, unknown> &
+    PageContextUrls & {
+      pageId: string
+      url: string
+      urlNormalized: string
+      _isPageContextRequest: boolean
+    }
 ) {
-  pageContext.isPreRendering = false
-  assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
+  /* todo
+  pageContext._isPreRendering = false
+  assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
+  */
+
+  pageContext._pageContextAlreadyAddedInPrerenderHook = false
+  assert(hasProp(pageContext, '_pageContextAlreadyAddedInPrerenderHook', 'boolean'))
 
   await populatePageContext(pageContext)
-  assert_pageContext_populated(pageContext)
-  //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, false)
+  populatePageContext_addTypes(pageContext)
+
+  await executeAddPageContextHook(pageContext)
+  executeAddPageContextHook_addTypes(pageContext)
 
   if (pageContext.isPageContextRequest) {
     const renderResult = serializeClientPageContext(pageContext)
@@ -167,13 +175,12 @@ async function renderPageId(
 async function prerenderPage(
   pageContext: {
     pageId: string
+    url: string
     _serializedPageContextClientNeeded: boolean
     _pageContextAlreadyAddedInPrerenderHook: boolean
-    url: string
-    pageContextClient: Record<string, unknown>
   } & Record<string, unknown>
 ) {
-  assert_pageContext_populated(pageContext)
+  populatePageContext_addTypes(pageContext)
 
   addUrlPropsToPageContext(pageContext)
 
@@ -182,9 +189,8 @@ async function prerenderPage(
   pageContext.isPreRendering = true
   assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
 
-  //assert_pageContext_full(pageContext)
-
-  //const renderData = await getRenderData(pageId, pageContext, pageContextAlreadyFetched, true)
+  await executeAddPageContextHook(pageContext)
+  executeAddPageContextHook_addTypes(pageContext)
 
   const htmlDocument = await renderHtml(pageContext)
   assertUsage(
@@ -214,7 +220,7 @@ async function renderStatic404Page() {
     _pageContextAlreadyAddedInPrerenderHook: false
   }
   populatePageContext(pageContext)
-  assert_pageContext_populated(pageContext)
+  populatePageContext_addTypes(pageContext)
   return prerenderPage(pageContext)
 }
 
@@ -230,25 +236,8 @@ function getDefaultPassToClientProps(pageContext: { pageId: string; pageProps?: 
   return passToClient
 }
 
-type PageContext = {
-  urlNormalized: string
-  pageServerFile?: {
-    fileExports: {
-      render?: Function
-    }
-    filePath: string
-  }
-  pageServerFileDefault?: {
-    fileExports: {
-      render?: Function
-    }
-    filePath: string
-  }
-  isPreRendering: boolean
-} & Record<string, unknown>
-
-function serializeClientPageContext(pageContext: { pageContextClient: Record<string, unknown> }) {
-  const { pageContextClient } = pageContext
+function serializeClientPageContext(pageContext: { _pageContextClient: PageContextClient }) {
+  const pageContextClient = pageContext._pageContextClient
   assert(isPlainObject(pageContextClient))
   const pageContextSerialized = stringify({
     pageContext: pageContextClient
@@ -256,8 +245,17 @@ function serializeClientPageContext(pageContext: { pageContextClient: Record<str
   return pageContextSerialized
 }
 
-type PageContextPublic = { pageId: string; url: string; urlNormalized: string; urlParsed: UrlParsed, urlPathname: string, Page: unknown, pageExports: Record<string, unknown> }
-function assert_pageContext_full(pageContext: PageContextPublic) {
+type PageContextPublic = {
+  pageId: string
+  url: string
+  urlNormalized: string
+  urlParsed: UrlParsed
+  urlPathname: string
+  Page: unknown
+  pageExports: Record<string, unknown>
+  // routeParams: Record<string, unknown> // todo
+}
+function assert_pageContextPublic(pageContext: PageContextPublic) {
   assert(typeof pageContext.pageId === 'string')
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
@@ -276,7 +274,7 @@ type AllPageFiles = {
   pageViewFile: PageFileLoaded
 } & PageServerFiles
 
-type PageServerFile = {
+type PageServerFileProps = {
   filePath: string
   fileExports: Record<string, unknown> & {
     render?: Function
@@ -286,11 +284,12 @@ type PageServerFile = {
     passToClient?: string[]
   }
 }
+type PageServerFile = null | PageServerFileProps
 //*
 type PageServerFiles =
-  | { pageServerFile: PageServerFile; pageServerFileDefault: PageServerFile }
-  | { pageServerFile: null; pageServerFileDefault: PageServerFile }
-  | { pageServerFile: PageServerFile; pageServerFileDefault: null }
+  | { pageServerFile: PageServerFileProps; pageServerFileDefault: PageServerFileProps }
+  | { pageServerFile: null; pageServerFileDefault: PageServerFileProps }
+  | { pageServerFile: PageServerFileProps; pageServerFileDefault: null }
 /*/
 type PageServerFiles = {
   pageServerFile: PageServerFile | null
@@ -363,7 +362,7 @@ async function loadPageServerFiles(pageId: string): Promise<PageServerFiles> {
 function assert_pageServerFile(pageServerFile: {
   filePath: string
   fileExports: Record<string, unknown>
-}): asserts pageServerFile is PageServerFile {
+}): asserts pageServerFile is PageServerFileProps {
   if (pageServerFile === null) return
 
   const { filePath, fileExports } = pageServerFile
@@ -397,66 +396,74 @@ function assert_pageServerFile(pageServerFile: {
     `The \`prerender()\` hook defined in ${filePath} should be a function.`
   )
 }
+
+type PageContextPopulated = {
+  pageId: string
+  Page: unknown
+  pageExports: Record<string, unknown>
+  _passToClient: string[]
+  _pageServerFile: PageServerFile
+  _pageServerFileDefault: PageServerFile
+}
 async function populatePageContext(pageContext: { pageId: string } & Record<string, unknown>): Promise<void> {
   assert(pageContext.pageId)
-  const allPageFiles = await loadAllPageFiles( pageContext.pageId)
+  const allPageFiles = await loadAllPageFiles(pageContext.pageId)
 
   const { pageViewFile } = allPageFiles
   const pageExports = pageViewFile.fileExports
   assert(pageExports)
   const Page = pageViewFile.fileExports.Page || pageViewFile.fileExports.default
   assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` (or a default export).`)
-  pageContext.Page = Page
-  assert(hasProp(pageContext, 'Page'))
-  pageContext.pageExports = pageExports
-  assert(hasProp(pageContext, 'pageExports', 'object'))
 
-  const { pageServerFile, pageServerFileDefault} = allPageFiles
-  pageContext.passToClient = {
+  const { pageServerFile, pageServerFileDefault } = allPageFiles
+
+  const passToClient = {
     ...getDefaultPassToClientProps(pageContext),
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
   }
-  assert(hasProp(pageContext, 'passToClient', 'string[]'))
 
-  const { pageClientFilePath} = allPageFiles
-  pageContext.pageAssets = getPageAssets(pageContext)
-}
+  /*
+  const { pageClientFilePath } = allPageFiles
+  const pageAssets = getPageAssets(pageContext) // todo
+  //*/
 
-type PageServerFile3 = {
-  fileExports: Record<string, unknown> & {
-    prerender?: Function
-    render?: Function
-    addPageContext?: Function
-    passToClient?: string[]
+  const pageContextNew = {
+    Page,
+    pageExports,
+    _passToClient: passToClient,
+    _pageServerFile: pageServerFile,
+    _pageServerFileDefault: pageServerFileDefault
   }
-  filePath: string
+  Object.assign(pageContext, pageContextNew)
+  populatePageContext_checkType({
+    ...pageContext,
+    ...pageContextNew
+  })
 }
-type PageContextPopulated = {
-  pageId: string
-  url: string
-  _pageServerFile: PageServerFile3
-  pageServerFileDefault: PageServerFile3
-  pageContextClient: Record<string, unknown>
+function populatePageContext_checkType(pageContext: PageContextPopulated): void {
+  pageContext // make TS happy
 }
-function assert_pageContext_populated<PageContext extends Record<string, unknown>>(
+function populatePageContext_addTypes<PageContext extends Record<string, unknown>>(
   pageContext: PageContext
 ): asserts pageContext is PageContext & PageContextPopulated {
-  // @ts-ignore
-  // prettier-ignore
-  const { _pageServerFile: { fileExports, filePath } } = pageContext
-  assert(Object.keys(fileExports).length >= 1)
-  assert(filePath)
+  pageContext // make TS happy
 }
-async function renderHtml(pageContext: PageContextPublic & {
-  _pageServerFile: null | PageServerFile,
-  _pageServerFileDefault: null | PageServerFile
-  _pageContextAlreadyAddedInPrerenderHook: boolean
-}) {
-  assert(pageContext.Page)
 
-  const addPageContext = pageContext._pageServerFile?.fileExports.addPageContext || pageContext._pageServerFileDefault?.fileExports.addPageContext
+type PageContextUser = Record<string, unknown>
+type PageContextClient = Record<string, unknown>
+async function executeAddPageContextHook(
+  pageContext: {
+    _pageServerFile: PageServerFile
+    _pageServerFileDefault: PageServerFile
+    _passToClient: string[]
+    _pageContextAlreadyAddedInPrerenderHook: boolean
+  } & PageContextPublic
+) {
+  const addPageContext =
+    pageContext._pageServerFile?.fileExports.addPageContext ||
+    pageContext._pageServerFileDefault?.fileExports.addPageContext
   if (!pageContext._pageContextAlreadyAddedInPrerenderHook && addPageContext) {
-    assert_pageContext_full(pageContext)
+    assert_pageContextPublic(pageContext)
     const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
     assert(filePath)
     const pageContextAddendum = await addPageContext(pageContext)
@@ -467,46 +474,46 @@ async function renderHtml(pageContext: PageContextPublic & {
     Object.assign(pageContext, pageContextAddendum)
   }
 
-  const pageContext__client: Record<string, unknown> = {}
-  pageContext.passToClient.forEach((prop) => {
-    pageContext__client[prop] = pageContext[prop]
+  const pageContextClient: PageContextClient = {}
+  pageContext._passToClient.forEach((prop) => {
+    pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
-  pageContext.pageContextClient = pageContext__client
+  ;(pageContext as Record<string, unknown>)._pageContextClient = pageContextClient
+}
+function executeAddPageContextHook_addTypes<PageContext extends Record<string, unknown>>(
+  pageContext: PageContext
+): asserts pageContext is PageContext & { _pageContextClient: PageContextClient } {
+  pageContext // make TS happy
+}
 
+async function renderHtml(
+  pageContext: PageContextPublic & {
+    _pageServerFile: PageServerFile
+    _pageServerFileDefault: PageServerFile
+  }
+) {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)
   let render
   let renderFilePath
-  const { _pageServerFile } = pageContext
-  const pageRenderFunction = _pageServerFile?.fileExports.render
-  if (_pageServerFile && pageRenderFunction) {
+  const pageServerFile = pageContext._pageServerFile
+  const pageRenderFunction = pageServerFile?.fileExports.render
+  if (pageServerFile && pageRenderFunction) {
     render = pageRenderFunction
-    renderFilePath = _pageServerFile.filePath
+    renderFilePath = pageServerFile.filePath
   }
-  assertUsage(
-    render,
-    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
-  )
-  const { pageServerFileDefault } = pageContext
+  const pageServerFileDefault = pageContext._pageServerFileDefault
   const pageDefaultRenderFunction = pageServerFileDefault?.fileExports.render
   if (pageServerFileDefault && pageDefaultRenderFunction) {
     render = pageDefaultRenderFunction
     renderFilePath = pageServerFileDefault.filePath
   }
-  assert(render)
+  assertUsage(
+    render,
+    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
+  )
   assert(renderFilePath)
 
-  const { isProduction = false } = getSsrEnv()
-  let clientManifest: null | ViteManifest = null
-  let serverManifest: null | ViteManifest = null
-  const { isPreRendering } = pageContext
-  if (isPreRendering || isProduction) {
-    const manifests = retrieveViteManifest(isPreRendering)
-    clientManifest = manifests.clientManifest
-    serverManifest = manifests.serverManifest
-  }
-
-  assert(hasProp(pageContext, 'Page'))
-  assert_pageContext_full(pageContext)
+  assert_pageContextPublic(pageContext)
   const renderResult: unknown = await render(pageContext)
 
   if (!isHtmlTemplate(renderResult)) {
@@ -523,28 +530,6 @@ async function renderHtml(pageContext: PageContextPublic & {
     htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
     return htmlDocument
   }
-}
-
-type PageServerFile2 = {
-  filePath: string
-  fileExports: {
-    prerender?: Function
-    render?: Function
-    passToClient?: string[]
-  } & Record<string, unknown>
-}
-type ViewComponent = unknown
-type PageViewFile = {
-  filePath: string
-  fileExports: (
-    | {
-        default?: ViewComponent
-      }
-    | {
-        Page?: Function
-      }
-  ) &
-    Record<string, unknown>
 }
 
 function findPageSpecific<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
@@ -691,12 +676,13 @@ function isFileRequest(urlNormalized: string) {
 }
 
 async function render500Page(
-  pageContext: Record<string, unknown> & {
-    url: string
-    urlNormalized: string
-    _allPageIds: string[]
-    _err: unknown
-  }
+  pageContext: Record<string, unknown> &
+    PageContextUrls & {
+      url: string
+      urlNormalized: string
+      _allPageIds: string[]
+      _err: unknown
+    }
 ): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
   | { nothingRendered: false; renderResult: string | unknown; statusCode: 500 }
@@ -764,35 +750,15 @@ function handleErr(err: unknown) {
   console.error(errStr)
 }
 
-function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
-  // Get Vite manifest
-  const { clientManifest, serverManifest, clientManifestPath, serverManifestPath } = getViteManifest()
-  const userOperation = isPreRendering
-    ? 'running `$ vite-plugin-ssr prerender`'
-    : 'running the server with `isProduction: true`'
-  assertUsage(
-    clientManifest && serverManifest,
-    'You are ' +
-      userOperation +
-      " but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before. (Following build manifest is missing: `" +
-      clientManifestPath +
-      '` and/or `' +
-      serverManifestPath +
-      '`.)'
-  )
-  return { clientManifest, serverManifest }
-}
-
 function removeOrigin(url: string): string {
   const urlFull = getUrlFull(url)
   return urlFull
 }
 
+type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
 function addUrlPropsToPageContext<
   PageContext extends Record<string, unknown> & { url: string; urlNormalized?: string }
->(
-  pageContext: PageContext
-): asserts pageContext is PageContext & { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed } {
+>(pageContext: PageContext): asserts pageContext is PageContext & PageContextUrls {
   if (!('urlNormalized' in pageContext)) {
     const urlNormalized: string = analyzeUrl(pageContext.url).urlNormalized
     pageContext.urlNormalized = urlNormalized
