@@ -1060,6 +1060,9 @@ async function getGlobalContext() {
 }
 
 function throwPrerenderError(err: unknown) {
+  // `err` originates from a user hook throwing; Vite is out of the equation here.
+  assert(viteAlreadyLoggedError(err) === false)
+
   viteErrorCleanup(err)
 
   if (hasProp(err, 'stack')) {
@@ -1069,10 +1072,16 @@ function throwPrerenderError(err: unknown) {
   }
 }
 function logError(err: unknown) {
+  if (viteAlreadyLoggedError(err)) {
+    return
+  }
+
   assertUsage(
     isObject(err),
     'Your source code threw a primitive value as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.'
   )
+
+  // Avoid logging error twice (which can happen when rendering the error page throws the same error)
   {
     const key = '_wasAlreadyConsoleLogged'
     if (err[key]) {
@@ -1088,10 +1097,19 @@ function logError(err: unknown) {
   console.error(errStr)
 }
 
+function viteAlreadyLoggedError(err: unknown) {
+  const { viteDevServer } = getSsrEnv()
+  if (viteDevServer) {
+    return viteDevServer.config.logger.hasErrorLogged(err as Error)
+  }
+  return false
+}
+
 function viteErrorCleanup(err: unknown) {
   const { viteDevServer } = getSsrEnv()
   if (viteDevServer) {
     if (hasProp(err, 'stack')) {
+      // Apply source maps
       viteDevServer.ssrFixStacktrace(err as Error)
     }
   }

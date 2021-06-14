@@ -26,12 +26,7 @@ async function loadViteEntry({
   } else {
     assert(viteDevServer)
     const devPathResolved = requireResolve(devPath)
-    try {
-      moduleExports = await viteDevServer.ssrLoadModule(devPathResolved)
-    } catch (err) {
-      viteDevServer.ssrFixStacktrace(err as Error)
-      throw err
-    }
+    moduleExports = await viteDevServer.ssrLoadModule(devPathResolved)
   }
   return moduleExports
 }
