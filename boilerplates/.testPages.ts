@@ -35,7 +35,7 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
         partRegExp`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
       )
       expect(html).toMatch(
-        partRegExp`<link rel="modulepreload" href="/assets/vendor.${hashRegexp}.js" as="script" type="text/javascript">`
+        partRegExp`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`
       )
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     } else {
