@@ -28,9 +28,7 @@ function assertPristineUrl() {
 }
 
 async function getPageById(pageId: string): Promise<any> {
-  assert(typeof pageId === 'string')
   const pageFile = await getPageFile('.page', pageId)
-  assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
   assertUsage(

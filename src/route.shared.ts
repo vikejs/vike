@@ -180,6 +180,7 @@ async function getPageIds(): Promise<PageId[]> {
 function computePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
+  assert(!pageId.includes('\\'))
   return pageId
 }
 

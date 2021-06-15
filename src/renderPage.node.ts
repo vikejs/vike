@@ -323,7 +323,6 @@ async function renderHtmlDocument({
 
 async function getPage(pageId: string) {
   const pageFile = await getPageFile('.page', pageId)
-  assert(pageFile)
   const { filePath, loadFile } = pageFile
   const pageExports = await loadFile()
   assertUsage(
