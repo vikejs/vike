@@ -1,7 +1,7 @@
 import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, getUrlPathname, isPlainObject } from './utils'
+import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, getUrlPathname, isPlainObject, castProp } from './utils'
 
 export { getPageIds }
 export { route }
@@ -19,7 +19,7 @@ async function route(
   pageContext: Record<string, unknown>
 ): Promise<null | {
   pageId: PageId
-  pageContextAddendum: { routeParams: Record<string, unknown> } & Record<string, unknown>
+  pageContextAddendum: { routeParams: Record<string, string> } & Record<string, unknown>
 }> {
   assertUsage(
     allPageIds.length > 0,
@@ -67,6 +67,7 @@ async function route(
   if (!winner) return null
 
   const { pageId, routeParams } = winner
+  assert(isPlainObject(routeParams))
   return { pageId, pageContextAddendum: { routeParams } }
 }
 
@@ -107,7 +108,8 @@ function routeWith_pathToRegexp(
   }
   // The longer the route string, the more likely is it specific
   const matchValue = routeString.length
-  const routeParams = match.params
+  const routeParams: Record<string, string> = match.params || {}
+  assert(isPlainObject(routeParams))
   return { matchValue, routeParams }
 }
 
@@ -206,7 +208,7 @@ function resolveRouteFunction(
   routeFilePath: string
 ): {
   matchValue: boolean | number
-  routeParams: Record<string, unknown>
+  routeParams: Record<string, string>
 } {
   let result = routeFunction({ url: urlPathname, pageContext })
   if ([true, false].includes(result)) {
@@ -226,12 +228,17 @@ function resolveRouteFunction(
     typeof result.match === 'boolean' || typeof result.match === 'number',
     `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
   )
-  let routeParams = {}
+  let routeParams: Record<string, string> = {}
   if (hasProp(result, 'routeParams')) {
     assertUsage(
       isPlainObject(result.routeParams),
       `The \`routeParams\` object returned by the Route Function ${routeFilePath} should be a plain JavaScript object.`
     )
+    assertUsage(
+      Object.values(result.routeParams).every(val => typeof val === 'string'),
+      `The \`routeParams\` object returned by the Route Function ${routeFilePath} should only hold string values.`
+    )
+    castProp<Record<string, string>, typeof result, 'routeParams'>(result, 'routeParams')
     routeParams = result.routeParams
   }
   Object.keys(result).forEach((key) => {
@@ -240,6 +247,7 @@ function resolveRouteFunction(
       `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams'].`
     )
   })
+  assert(isPlainObject(routeParams))
   return {
     matchValue: result.match,
     routeParams

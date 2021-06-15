@@ -111,7 +111,7 @@ async function renderPage(
     } else {
       statusCode = 200
     }
-    routeResult = { pageId: errorPageId, pageContextAddendum: { is404: true } }
+    routeResult = { pageId: errorPageId, pageContextAddendum: { is404: true, routeParams: {} } }
   } else {
     statusCode = 200
   }
@@ -153,7 +153,6 @@ async function renderPageId(
 ) {
   ;(pageContext as Record<string, unknown>)._isPreRendering = false
   assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
-
   ;(pageContext as Record<string, unknown>)._pageContextAlreadyAddedInPrerenderHook = false
   assert(hasProp(pageContext, '_pageContextAlreadyAddedInPrerenderHook', 'boolean'))
 
@@ -172,15 +171,13 @@ async function renderPageId(
   }
 }
 
-async function prerenderPage(
-  pageContext: {
-    url: string
-    routeParams: Record<string, string>
-    _pageId: string
-    _serializedPageContextClientNeeded: boolean
-    _pageContextAlreadyAddedInPrerenderHook: boolean
-  }
-) {
+async function prerenderPage(pageContext: {
+  url: string
+  routeParams: Record<string, string>
+  _pageId: string
+  _serializedPageContextClientNeeded: boolean
+  _pageContextAlreadyAddedInPrerenderHook: boolean
+}) {
   ;(pageContext as Record<string, unknown>)._isPreRendering = true
   assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
 
@@ -414,9 +411,7 @@ type PageContextPopulated = {
   _pageFilePath: string
   _pageClientFilePath: string
 }
-async function populatePageContext(
-  pageContext: { _pageId: string; _isPreRendering: boolean }
-): Promise<void> {
+async function populatePageContext(pageContext: { _pageId: string; _isPreRendering: boolean }): Promise<void> {
   assert(pageContext._pageId)
   const allPageFiles = await loadAllPageFiles(pageContext._pageId)
 
@@ -702,11 +697,11 @@ function isFileRequest(urlNormalized: string) {
 
 async function render500Page(
   pageContext: PageContextUrls & {
-      url: string
-      urlNormalized: string
-      _allPageIds: string[]
-      _err: unknown
-    }
+    url: string
+    urlNormalized: string
+    _allPageIds: string[]
+    _err: unknown
+  }
 ): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
   | { nothingRendered: false; renderResult: string | unknown; statusCode: 500 }
