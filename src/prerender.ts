@@ -131,6 +131,7 @@ async function prerender({
       const { pageId } = routeResult
       Object.assign(pageContext, routeResult.pageContextAddendum)
       assert(pageContext.url)
+      await populatePageContext(pageContext)
       populatePageContext_addTypes(pageContext)
       const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
       htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
