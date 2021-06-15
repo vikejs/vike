@@ -26,9 +26,7 @@ import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectA
 export { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
-
-export { populatePageContext }
-export { populatePageContext_addTypes }
+export { getPageServerFile }
 
 async function renderPage(
   pageContext: { url: string } & Record<string, unknown>
@@ -173,11 +171,16 @@ async function renderPageId(
 async function prerenderPage(
   pageContext: {
     url: string
+    routeParams: Record<string, unknown>
     _pageId: string
     _serializedPageContextClientNeeded: boolean
     _pageContextAlreadyAddedInPrerenderHook: boolean
   }
 ) {
+  ;(pageContext as Record<string, unknown>)._isPreRendering = true
+  assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
+
+  await populatePageContext(pageContext)
   populatePageContext_addTypes(pageContext)
 
   addUrlPropsToPageContext(pageContext)
@@ -209,6 +212,7 @@ async function renderStatic404Page() {
     _pageId: errorPageId,
     _isPreRendering: true,
     is404: true,
+    routeParams: {},
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
     _serializedPageContextClientNeeded: false,
@@ -248,13 +252,14 @@ type PageContextPublic = {
   Page: unknown
   pageExports: Record<string, unknown>
   pageAssets: PageAssets
-  // routeParams: Record<string, unknown> // todo
+  routeParams: Record<string, unknown>
 }
 function assert_pageContextPublic(pageContext: PageContextPublic) {
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
+  assert(isPlainObject(pageContext.routeParams))
   assert(pageContext.Page)
   assert(pageContext.pageExports)
   assert(pageContext.urlParsed)
@@ -291,8 +296,11 @@ type PageServerFiles = {
 }
 //*/
 
+async function getPageServerFile(pageId: string) {
+  const { pageServerFile } = await loadAllPageFiles(pageId)
+  return pageServerFile
+}
 async function loadAllPageFiles(pageId: string): Promise<AllPageFiles> {
-  // todo: parallelize loading
   const pageViewFile: PageFileLoaded = await loadPageViewFile(pageId)
   const pageClientFilePath: string = await getPageClientFile(pageId)
   const pageServerFiles: PageServerFiles = await loadPageServerFiles(pageId)

@@ -19,7 +19,7 @@ async function route(
   pageContext: Record<string, unknown>
 ): Promise<null | {
   pageId: PageId
-  pageContextAddendum: Record<string, unknown>
+  pageContextAddendum: { routeParams: Record<string, unknown> } & Record<string, unknown>
 }> {
   assertUsage(
     allPageIds.length > 0,
