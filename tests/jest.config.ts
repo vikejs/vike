@@ -8,7 +8,7 @@ const config: Config.InitialOptions = {
   ...tsPreset,
   ...playwrightPreset,
   rootDir: `${__dirname}/..`,
-  bail: true
+  // bail: true
 }
 
 export default config
