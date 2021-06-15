@@ -47,11 +47,8 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     const html = await page.content()
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
     // Therefore only the serialized `pageContext` tell us the original HTML.
-    expect(html).toContain(
-      `<script>window.__vite_plugin_ssr__pageContext = (function(a){return {pageProps:a,documentProps:a,${
-        viewFramework === 'vue' ? 'routeParams:{},' : ''
-      }pageId:\"\\u002Fpages\\u002Findex\"}}(void 0))</script>`
-    )
+    expect(html.split('_pageId')).toBe(2)
+    expect(html).toContain("_pageId:\"\\u002Fpages\\u002Findex\"")
   })
 
   test('supports route functions', async () => {
