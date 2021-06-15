@@ -3,7 +3,7 @@ import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
-import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject } from './utils'
+import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject, castProp } from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -127,6 +127,7 @@ async function prerender({
       const { pageId } = routeResult
       Object.assign(pageContext, routeResult.pageContextAddendum)
       assert(hasProp(pageContext, 'routeParams', 'object'))
+      castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
       ;(pageContext as Record<string, unknown>)._pageId = pageId
       assert(hasProp(pageContext, '_pageId', 'string'))
       assert(pageContext.url)

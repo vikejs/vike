@@ -1,4 +1,4 @@
-import { assert, assertUsage, hasProp, higherFirst, normalizePath, slice } from '../utils'
+import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, slice } from '../utils'
 import { getPreloadUrls } from '../getPreloadTags.node'
 import { getSsrEnv } from '../ssrEnv.node'
 import { getViteManifest, ViteManifest } from '../getViteManifest.node'
@@ -128,7 +128,7 @@ async function injectAssets(htmlDocument: string, pageContext: Record<string, un
     hasProp(pageContext, '_pageClientFilePath', 'string'),
     errMsg('`pageContext._pageClientFilePath` is missing')
   )
-  castObj<PageAssets, typeof pageContext, 'pageAssets'>(pageContext, 'pageAssets')
+  castProp<PageAssets, typeof pageContext, 'pageAssets'>(pageContext, 'pageAssets')
   pageContext.pageAssets
   htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
   return htmlDocument
@@ -274,11 +274,6 @@ function injectAtClosingTag(htmlDocument: string, closingTag: string, injection:
   const after = slice(htmlParts, -1, 0)
   return before + injection + closingTag + after
 }
-
-function castObj<PropType, ObjectType, PropName extends PropertyKey>(
-  obj: ObjectType,
-  prop: PropName
-): asserts obj is ObjectType & Record<PropName, PropType> {}
 
 function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
   const { src, assetType, mediaType, preloadType } = pageAsset

@@ -18,7 +18,8 @@ import {
   getUrlFull,
   isPlainObject,
   getUrlParsed,
-  UrlParsed
+  UrlParsed,
+  castProp
 } from './utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets.node'
@@ -119,6 +120,8 @@ async function renderPage(
   pageContext._pageId = pageId
   assert(hasProp(pageContext, '_pageId', 'string'))
   Object.assign(pageContext, pageContextAddendum)
+  assert(hasProp(pageContext, 'routeParams', 'object'))
+  castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
 
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
@@ -143,6 +146,7 @@ async function renderPageId(
   pageContext: PageContextUrls & {
     url: string
     urlNormalized: string
+    routeParams: Record<string, string>
     _pageId: string
     _isPageContextRequest: boolean
   }
@@ -171,7 +175,7 @@ async function renderPageId(
 async function prerenderPage(
   pageContext: {
     url: string
-    routeParams: Record<string, unknown>
+    routeParams: Record<string, string>
     _pageId: string
     _serializedPageContextClientNeeded: boolean
     _pageContextAlreadyAddedInPrerenderHook: boolean
@@ -252,7 +256,7 @@ type PageContextPublic = {
   Page: unknown
   pageExports: Record<string, unknown>
   pageAssets: PageAssets
-  routeParams: Record<string, unknown>
+  routeParams: Record<string, string>
 }
 function assert_pageContextPublic(pageContext: PageContextPublic) {
   assert(typeof pageContext.url === 'string')
@@ -697,8 +701,7 @@ function isFileRequest(urlNormalized: string) {
 }
 
 async function render500Page(
-  pageContext: Record<string, unknown> &
-    PageContextUrls & {
+  pageContext: PageContextUrls & {
       url: string
       urlNormalized: string
       _allPageIds: string[]
@@ -720,12 +723,15 @@ async function render500Page(
     }
   }
 
-  pageContext.is404 = false
+  ;(pageContext as Record<string, unknown>).is404 = false
   assert(hasProp(pageContext, 'is404', 'boolean'))
-  pageContext._pageId = errorPageId
+  ;(pageContext as Record<string, unknown>)._pageId = errorPageId
   assert(hasProp(pageContext, '_pageId', 'string'))
-  pageContext._isPageContextRequest = false
+  ;(pageContext as Record<string, unknown>)._isPageContextRequest = false
   assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
+  ;(pageContext as Record<string, unknown>).routeParams = {}
+  assert(hasProp(pageContext, 'routeParams', 'object'))
+  castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
 
   let renderResult
   try {
