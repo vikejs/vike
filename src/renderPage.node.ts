@@ -21,7 +21,7 @@ import {
   UrlParsed
 } from './utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
-import { getPageAssets, injectAssets_internal } from './html/injectAssets.node'
+import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets.node'
 
 export { renderPage }
 export { prerenderPage }
@@ -150,10 +150,8 @@ async function renderPageId(
       _isPageContextRequest: boolean
     }
 ) {
-  /* todo
   pageContext._isPreRendering = false
   assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
-  */
 
   pageContext._pageContextAlreadyAddedInPrerenderHook = false
   assert(hasProp(pageContext, '_pageContextAlreadyAddedInPrerenderHook', 'boolean'))
@@ -187,8 +185,6 @@ async function prerenderPage(
 
   pageContext.isPageContextRequest = false
   assert(hasProp(pageContext, 'isPageContextRequest', 'boolean'))
-  pageContext.isPreRendering = true
-  assert(hasProp(pageContext, 'isPreRendering', 'boolean'))
 
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
@@ -215,6 +211,7 @@ async function renderStatic404Page() {
   }
   const pageContext = {
     _pageId: errorPageId,
+    _isPreRendering: true,
     is404: true,
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
@@ -254,6 +251,7 @@ type PageContextPublic = {
   urlPathname: string
   Page: unknown
   pageExports: Record<string, unknown>
+  pageAssets: PageAssets
   // routeParams: Record<string, unknown> // todo
 }
 function assert_pageContextPublic(pageContext: PageContextPublic) {
@@ -400,17 +398,19 @@ function assert_pageServerFile(pageServerFile: {
 type PageContextPopulated = {
   Page: unknown
   pageExports: Record<string, unknown>
+  pageAssets: PageAssets
   _pageId: string
   _passToClient: string[]
   _pageServerFile: PageServerFile
   _pageServerFileDefault: PageServerFile
-  _clientAssets: Set<string>
+  _pageFilePath: string
+  _pageClientFilePath: string
 }
-async function populatePageContext(pageContext: { _pageId: string } & Record<string, unknown>): Promise<void> {
+async function populatePageContext(
+  pageContext: { _pageId: string; _isPreRendering: boolean } & Record<string, unknown>
+): Promise<void> {
   assert(pageContext._pageId)
   const allPageFiles = await loadAllPageFiles(pageContext._pageId)
-
-  const clientAssets: Set<string> = new Set()
 
   const { pageViewFile } = allPageFiles
   const pageExports = pageViewFile.fileExports
@@ -419,7 +419,6 @@ async function populatePageContext(pageContext: { _pageId: string } & Record<str
   assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` (or a default export).`)
   const pageFilePath = pageViewFile.filePath
   assert(pageFilePath)
-  clientAssets.add(pageFilePath)
 
   const { pageServerFile, pageServerFileDefault } = allPageFiles
 
@@ -429,16 +428,19 @@ async function populatePageContext(pageContext: { _pageId: string } & Record<str
   }
 
   const { pageClientFilePath } = allPageFiles
-  const pageAssets = getPageAssets(pageContext) // todo
-  clientAssets.add(pageClientFilePath)
+  assert(pageClientFilePath)
+
+  const pageAssets = await getPageAssets([pageFilePath, pageClientFilePath], pageClientFilePath, pageContext._isPreRendering)
 
   const pageContextNew = {
     Page,
     pageExports,
+    pageAssets,
     _passToClient: passToClient,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
-    _clientAssets: clientAssets,
+    _pageClientFilePath: pageClientFilePath,
+    _pageFilePath: pageFilePath
   }
   Object.assign(pageContext, pageContextNew)
   populatePageContext_checkType({
@@ -496,8 +498,11 @@ function executeAddPageContextHook_addTypes<PageContext extends Record<string, u
 async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
+    _pageContextClient: Record<string, unknown>
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
+    _pageFilePath: string
+    _pageClientFilePath: string
   }
 ) {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)

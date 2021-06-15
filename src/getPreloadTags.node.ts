@@ -1,14 +1,12 @@
 import { getSsrEnv } from './ssrEnv.node'
-import { assert, normalizePath } from './utils'
+import { assert} from './utils'
 import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
 import { getPageFiles } from './page-files/getPageFiles.shared'
-import { prependBaseUrl } from './baseUrlHandling'
 
-export { getPreloadAssets }
-export { getPreloadTag }
+export { getPreloadUrls }
 
-async function getPreloadAssets(
+async function getPreloadUrls(
   dependencies: string[],
   clientManifest: null | ViteManifest,
   serverManifest: null | ViteManifest
@@ -43,8 +41,7 @@ async function getPreloadAssets(
     })
   }
 
-  const preloadAssets = Array.from(preloadUrls).map(prependBaseUrl).map(normalizePath)
-  return preloadAssets
+  return Array.from(preloadUrls)
 }
 
 async function getPageViewFiles(): Promise<string[]> {
@@ -89,30 +86,6 @@ function getModulePath(filePath: string): string {
     modulePath = modulePath.slice(1)
   }
   return modulePath
-}
-
-function getPreloadTag(href: string): string {
-  assert(href.startsWith('/'))
-  assert(!href.startsWith('//'))
-  if (href.endsWith('.png')) {
-    return `<link rel="preload" href="${href}" as="image" type="image/png">`
-  }
-  if (href.endsWith('.jpg') || href.endsWith('.jpeg')) {
-    return `<link rel="preload" href="${href}" as="image" type="image/jpeg">`
-  }
-  if (href.endsWith('.gif')) {
-    return `<link rel="preload" href="${href}" as="image" type="image/gif">`
-  }
-  if (href.endsWith('.svg')) {
-    return `<link rel="preload" href="${href}" as="image" type="image/svg+xml">`
-  }
-  if (href.endsWith('.css')) {
-    return `<link rel="stylesheet" href="${href}" as="style" type="text/css">`
-  }
-  if (href.endsWith('.js')) {
-    return `<link rel="modulepreload" crossorigin href="${href}" as="script" type="text/javascript">`
-  }
-  return `<link rel="preload" href="${href}">`
 }
 
 function collectCss(

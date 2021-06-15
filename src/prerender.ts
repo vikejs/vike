@@ -82,8 +82,9 @@ async function prerender({
   await Promise.all(
     allPageIds.map(async (pageId) => {
       const pageContext = {
-        pageId,
-        _serializedPageContextClientNeeded
+        _pageId: pageId,
+        _serializedPageContextClientNeeded,
+        _isPreRendering: true
       }
       await populatePageContext(pageContext)
       populatePageContext_addTypes(pageContext)
@@ -162,10 +163,11 @@ async function prerender({
         }
         const pageContext = {
           url,
-          pageId,
+          routeParams: {},
+          _pageId: pageId,
           _serializedPageContextClientNeeded,
           _pageContextAlreadyAddedInPrerenderHook: false,
-          routeParams: {}
+          _isPreRendering: true
         }
         await populatePageContext(pageContext)
         populatePageContext_addTypes(pageContext)
