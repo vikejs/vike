@@ -47,7 +47,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     const html = await page.content()
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
     // Therefore only the serialized `pageContext` tell us the original HTML.
-    expect(html.split('_pageId')).toBe(2)
+    expect(html.split('_pageId').length).toBe(2)
     expect(html).toContain("_pageId:\"\\u002Fpages\\u002Findex\"")
   })
 
