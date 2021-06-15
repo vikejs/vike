@@ -85,8 +85,8 @@ function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
       priority--
 
       // JavaScript has lowest priority
-      if( preloadType === 'script' ) return priority-1
-      if( assetType === 'script' ) return priority-2
+      if (preloadType === 'script') return priority - 1
+      if (assetType === 'script') return priority - 2
 
       return priority
     })
@@ -145,8 +145,6 @@ async function injectAssets_internal(
     _pageClientFilePath: string
   }
 ): Promise<string> {
-  const { isProduction = false } = getSsrEnv()
-
   // Inject Vite transformations
   const { urlNormalized } = pageContext
   assert(typeof urlNormalized === 'string')
@@ -158,14 +156,14 @@ async function injectAssets_internal(
   // Inject script
   const scripts = pageContext.pageAssets.filter(({ assetType }) => assetType === 'script')
   assert(scripts.length === 1)
-  htmlDocument = injectScript(htmlDocument, scripts[0], isProduction)
+  htmlDocument = injectScript(htmlDocument, scripts[0])
 
   // Inject preload links
   const preloadAssets = pageContext.pageAssets.filter(
     ({ assetType }) => assetType === 'preload' || assetType === 'style'
   )
   const linkTags = preloadAssets.map((pageAsset) => {
-    const isEsModule = pageAsset.preloadType === 'script' && !isProduction
+    const isEsModule = pageAsset.preloadType === 'script'
     return inferAssetTag(pageAsset, isEsModule)
   })
   htmlDocument = injectLinkTags(htmlDocument, linkTags)
@@ -205,8 +203,8 @@ function injectPageInfo(
   return injectEnd(htmlDocument, injection)
 }
 
-function injectScript(htmlDocument: string, script: PageAsset, isProduction: boolean): string {
-  const isEsModule = !isProduction
+function injectScript(htmlDocument: string, script: PageAsset): string {
+  const isEsModule = true
   const injection = inferAssetTag(script, isEsModule)
   return injectEnd(htmlDocument, injection)
 }
