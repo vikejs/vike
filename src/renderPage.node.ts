@@ -403,7 +403,7 @@ type PageContextPopulated = {
   _pageClientFilePath: string
 }
 async function populatePageContext(
-  pageContext: { _pageId: string; _isPreRendering: boolean } & Record<string, unknown>
+  pageContext: { _pageId: string; _isPreRendering: boolean }
 ): Promise<void> {
   assert(pageContext._pageId)
   const allPageFiles = await loadAllPageFiles(pageContext._pageId)
