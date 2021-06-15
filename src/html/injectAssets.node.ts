@@ -206,7 +206,7 @@ function injectPageInfo(
 }
 
 function injectScript(htmlDocument: string, script: PageAsset, isProduction: boolean): string {
-  const isEsModule = isProduction
+  const isEsModule = !isProduction
   const injection = inferAssetTag(script, isEsModule)
   return injectEnd(htmlDocument, injection)
 }
@@ -284,7 +284,7 @@ function castObj<PropType, ObjectType, PropName extends PropertyKey>(
 
 function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
   const { src, assetType, mediaType, preloadType } = pageAsset
-  assert(isEsModule === undefined || assetType === 'script' || preloadType === 'script')
+  assert(isEsModule === false || assetType === 'script' || preloadType === 'script')
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
     if (isEsModule) {

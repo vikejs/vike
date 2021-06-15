@@ -10,7 +10,7 @@ async function getPageByUrl(
 ): Promise<{ Page: unknown; pageContext: Record<string, unknown> }> {
   const pageContext = await getPageContext(url, useOriginalDataWhenPossible)
   assert(isPlainObject(pageContext))
-  assert(typeof pageContext.pageId === 'string')
-  const Page = await getPageById(pageContext.pageId)
+  assert(typeof pageContext._pageId === 'string')
+  const Page = await getPageById(pageContext._pageId)
   return { Page, pageContext }
 }

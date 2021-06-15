@@ -46,8 +46,8 @@ function getPageInfo(): {
   const pageContext: Record<string, unknown> = {}
   Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
 
-  assert(typeof pageContext.pageId === 'string')
-  const { pageId } = pageContext
+  assert(typeof pageContext._pageId === 'string')
+  const pageId = pageContext._pageId
 
   return { pageId, pageContext }
 }

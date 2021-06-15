@@ -36,7 +36,7 @@ async function retrievePageContext(url: string): Promise<Record<string, unknown>
   assert(hasProp(responseObject, 'pageContext'))
   const { pageContext } = responseObject
   assert(isPlainObject(pageContext))
-  assert(pageContext.pageId)
+  assert(pageContext._pageId)
 
   return pageContext
 
