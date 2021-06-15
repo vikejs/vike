@@ -422,10 +422,10 @@ async function populatePageContext(
 
   const { pageServerFile, pageServerFileDefault } = allPageFiles
 
-  const passToClient = {
+  const passToClient: string[] = [
     ...getDefaultPassToClientProps(pageContext),
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
-  }
+  ]
 
   const { pageClientFilePath } = allPageFiles
   assert(pageClientFilePath)
