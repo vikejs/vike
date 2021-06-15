@@ -22,9 +22,9 @@ async function setPageFiles(): Promise<unknown> {
     const modulePath = requireResolve(`../../../dist/esm/page-files/${viteEntry}.js`)
     try {
       moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(modulePath)
-    } catch {
-      // Vite logs the error, so just return empty array.
-      return []
+    } catch (err) {
+      err._loggedByVite = true
+      throw err
     }
   }
   const pageFiles: unknown = moduleExports.pageFiles || moduleExports.default.pageFiles
