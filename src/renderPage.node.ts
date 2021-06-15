@@ -142,18 +142,17 @@ async function renderPage(
 }
 
 async function renderPageId(
-  pageContext: Record<string, unknown> &
-    PageContextUrls & {
-      url: string
-      urlNormalized: string
-      _pageId: string
-      _isPageContextRequest: boolean
-    }
+  pageContext: PageContextUrls & {
+    url: string
+    urlNormalized: string
+    _pageId: string
+    _isPageContextRequest: boolean
+  }
 ) {
-  pageContext._isPreRendering = false
+  ;(pageContext as Record<string, unknown>)._isPreRendering = false
   assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
 
-  pageContext._pageContextAlreadyAddedInPrerenderHook = false
+  ;(pageContext as Record<string, unknown>)._pageContextAlreadyAddedInPrerenderHook = false
   assert(hasProp(pageContext, '_pageContextAlreadyAddedInPrerenderHook', 'boolean'))
 
   await populatePageContext(pageContext)
@@ -162,7 +161,7 @@ async function renderPageId(
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
 
-  if (pageContext.isPageContextRequest) {
+  if (pageContext._isPageContextRequest) {
     const renderResult = serializeClientPageContext(pageContext)
     return renderResult
   } else {
@@ -177,14 +176,11 @@ async function prerenderPage(
     _pageId: string
     _serializedPageContextClientNeeded: boolean
     _pageContextAlreadyAddedInPrerenderHook: boolean
-  } & Record<string, unknown>
+  }
 ) {
   populatePageContext_addTypes(pageContext)
 
   addUrlPropsToPageContext(pageContext)
-
-  pageContext.isPageContextRequest = false
-  assert(hasProp(pageContext, 'isPageContextRequest', 'boolean'))
 
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
@@ -430,7 +426,11 @@ async function populatePageContext(
   const { pageClientFilePath } = allPageFiles
   assert(pageClientFilePath)
 
-  const pageAssets = await getPageAssets([pageFilePath, pageClientFilePath], pageClientFilePath, pageContext._isPreRendering)
+  const pageAssets = await getPageAssets(
+    [pageFilePath, pageClientFilePath],
+    pageClientFilePath,
+    pageContext._isPreRendering
+  )
 
   const pageContextNew = {
     Page,
