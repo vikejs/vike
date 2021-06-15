@@ -72,8 +72,9 @@ async function prerender({
     {
       prerenderSourceFile: string
       pageContext: {
-        pageId: string
         url: string
+        _pageId: string
+        _isPreRendering: true
         _pageContextAlreadyAddedInPrerenderHook: boolean
         _serializedPageContextClientNeeded: boolean
       } & Record<string, unknown>
