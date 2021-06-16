@@ -6,7 +6,7 @@ export { renderHtmlTemplate }
 export { isHtmlTemplate }
 
 html.dangerouslySkipEscape = dangerouslySkipEscape
-html.injectAssets = injectAssets
+html._injectAssets = injectAssets
 
 const __html_template = Symbol('__html_template')
 const __dangerouslySkipEscape = Symbol('__dangerouslySkipEscape')

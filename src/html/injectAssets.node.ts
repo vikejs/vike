@@ -112,24 +112,32 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 }
 
 async function injectAssets(htmlDocument: string, pageContext: Record<string, unknown>): Promise<string> {
+  assertUsage(
+    typeof htmlDocument === 'string',
+    '[html.injectAssets(htmlDocument, pageContext)]: Argument `htmlDocument` should be a string.'
+  )
+  assertUsage(
+    pageContext,
+    '[html.injectAssets(htmlDocument, pageContext)]: Argument `pageContext` is missing.'
+  )
   const errMsg = (body: string) =>
     '[html.injectAssets(htmlDocument, pageContext)]: ' +
     body +
     '. Make sure that `pageContext` is the object that `vite-plugin-ssr` provided to your `render(pageContext)` hook.'
   assertUsage(hasProp(pageContext, 'urlNormalized', 'string'), errMsg('`pageContext.urlNormalized` should be a string'))
-  assertUsage(hasProp(pageContext, 'pageAssets'), errMsg('`pageContext.pageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_pageId', 'string'), errMsg('`pageContext._pageId` should be a string'))
   assertUsage(
     hasProp(pageContext, '_pageContextClient', 'object'),
     errMsg('`pageContext._pageContextClient` is missing')
   )
+  assertUsage(hasProp(pageContext, '_pageAssets'), errMsg('`pageContext._pageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_pageFilePath', 'string'), errMsg('`pageContext._pageFilePath` is missing'))
   assertUsage(
     hasProp(pageContext, '_pageClientFilePath', 'string'),
     errMsg('`pageContext._pageClientFilePath` is missing')
   )
-  castProp<PageAssets, typeof pageContext, 'pageAssets'>(pageContext, 'pageAssets')
-  pageContext.pageAssets
+  castProp<PageAssets, typeof pageContext, '_pageAssets'>(pageContext, '_pageAssets')
+  pageContext._pageAssets
   htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
   return htmlDocument
 }
@@ -138,7 +146,7 @@ async function injectAssets_internal(
   htmlDocument: string,
   pageContext: {
     urlNormalized: string
-    pageAssets: PageAssets
+    _pageAssets: PageAssets
     _pageId: string
     _pageContextClient: Record<string, unknown>
     _pageFilePath: string
@@ -154,12 +162,12 @@ async function injectAssets_internal(
   htmlDocument = injectPageInfo(htmlDocument, pageContext)
 
   // Inject script
-  const scripts = pageContext.pageAssets.filter(({ assetType }) => assetType === 'script')
+  const scripts = pageContext._pageAssets.filter(({ assetType }) => assetType === 'script')
   assert(scripts.length === 1)
   htmlDocument = injectScript(htmlDocument, scripts[0])
 
   // Inject preload links
-  const preloadAssets = pageContext.pageAssets.filter(
+  const preloadAssets = pageContext._pageAssets.filter(
     ({ assetType }) => assetType === 'preload' || assetType === 'style'
   )
   const linkTags = preloadAssets.map((pageAsset) => {

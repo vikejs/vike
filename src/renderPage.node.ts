@@ -248,12 +248,11 @@ function serializeClientPageContext(pageContext: { _pageContextClient: PageConte
 type PageContextPublic = {
   url: string
   urlNormalized: string
-  urlParsed: UrlParsed
   urlPathname: string
+  urlParsed: UrlParsed
+  routeParams: Record<string, string>
   Page: unknown
   pageExports: Record<string, unknown>
-  pageAssets: PageAssets
-  routeParams: Record<string, string>
 }
 function assert_pageContext_publicProps(pageContext: PageContextPublic) {
   assert(typeof pageContext.url === 'string')
@@ -263,7 +262,6 @@ function assert_pageContext_publicProps(pageContext: PageContextPublic) {
   assert(isPlainObject(pageContext.routeParams))
   assert(pageContext.Page)
   assert(pageContext.pageExports)
-  assert(pageContext.urlParsed)
 }
 type PageFileLoaded = {
   filePath: string
@@ -403,7 +401,7 @@ function assert_pageServerFile(pageServerFile: {
 type PageContextPopulated = {
   Page: unknown
   pageExports: Record<string, unknown>
-  pageAssets: PageAssets
+  _pageAssets: PageAssets
   _pageId: string
   _passToClient: string[]
   _pageServerFile: PageServerFile
@@ -442,7 +440,7 @@ async function populatePageContext(pageContext: { _pageId: string; _isPreRenderi
   const pageContextNew = {
     Page,
     pageExports,
-    pageAssets,
+    _pageAssets: pageAssets,
     _passToClient: passToClient,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
@@ -506,6 +504,7 @@ async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
     _pageContextClient: Record<string, unknown>
+    _pageAssets: PageAssets
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
     _pageFilePath: string
