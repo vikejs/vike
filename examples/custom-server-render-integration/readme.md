@@ -6,7 +6,7 @@ Example showcasing:
    const htmlString = `<!DOCTYPE html>
      <html>
        <body>
-         <div id="react-root">${html.dangerouslySkipEscape(pageHtml)}</div>
+         <div id="react-root">${pageHtml}</div>
        </body>
      </html>`;
    return html.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
