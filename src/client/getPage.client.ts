@@ -1,6 +1,7 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
 import { getUrlPathname, hasProp } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
+import { assert_pageContext_publicProps } from './assert_pageContext_publicProps'
 import { getPageContextProxy } from './getPageContextProxy'
 
 export { getPage }
@@ -11,11 +12,12 @@ const urlPathnameOriginal = getUrlPathname()
 
 async function getPage(): Promise<{ Page: any } & Record<string, any>> {
   let { pageId, pageContext } = getPageInfo()
-  const Page = await getPageById(pageId)
+  const { Page, pageExports } = await getPageById(pageId)
   pageContext.Page = Page
+  pageContext.pageExports = pageExports
   pageContext = getPageContextProxy(pageContext)
   assertPristineUrl()
-  assert(hasProp(pageContext, 'Page'))
+  assert_pageContext_publicProps(pageContext)
   return pageContext
 }
 
@@ -35,8 +37,9 @@ async function getPageById(pageId: string): Promise<any> {
     typeof fileExports === 'object' && ('Page' in fileExports || 'default' in fileExports),
     `${filePath} should have a \`export { Page }\` (or a default export).`
   )
-  const Page = fileExports.Page || fileExports.default
-  return Page
+  const pageExports = fileExports
+  const Page = pageExports.Page || pageExports.default
+  return { Page, pageExports }
 }
 
 function getPageInfo(): {

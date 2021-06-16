@@ -3,6 +3,7 @@ import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
 import { getPageContextProxy } from '../getPageContextProxy'
 import { throttle } from '../../utils/throttle'
+import { assert_pageContext_publicProps } from '../assert_pageContext_publicProps'
 
 export { useClientRouter }
 export { navigate }
@@ -19,7 +20,8 @@ function useClientRouter({
   onTransitionEnd
 }: {
   // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
-  // render: (pageContext: { Page: any; isHydration: boolean } & Record<string, any>) => Promise<void> | void
+  // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
+  // render: (pageContext: Record<string, any>) => Promise<void> | void
   render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
@@ -62,9 +64,7 @@ function useClientRouter({
       }
     }
 
-    let { Page, pageContext } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
-    pageContext.Page = Page
-    assert(hasProp(pageContext, 'Page'))
+    let pageContext = await getPageByUrl(url, navigationState.noNavigationChangeYet)
     pageContext = getPageContextProxy(pageContext)
 
     if (renderPromise) {
@@ -82,9 +82,9 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      pageContext.isHydration = isFirstPageRender && url === urlFullOriginal
+      ;(pageContext as Record<string, unknown>).isHydration = isFirstPageRender && url === urlFullOriginal
+      assert_pageContext_publicProps(pageContext)
       assert(hasProp(pageContext, 'isHydration', 'boolean'))
-      assert(hasProp(pageContext, 'Page'))
       await render(pageContext)
     })()
     await renderPromise

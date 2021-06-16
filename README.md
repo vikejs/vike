@@ -1815,7 +1815,7 @@ Custom:
     })
     ```
 
-By default only `pageContext.Page` is available in the browser;
+By default only `pageContext.Page` and `pageContext.pageExports` are available in the browser;
 use [`export const passToClient: string[]`](#export--passtoclient-) to make more `pageContext` available in the browser.
 
 The `pageContext` can be accessed at:

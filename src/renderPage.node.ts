@@ -255,7 +255,7 @@ type PageContextPublic = {
   pageAssets: PageAssets
   routeParams: Record<string, string>
 }
-function assert_pageContextPublic(pageContext: PageContextPublic) {
+function assert_pageContext_publicProps(pageContext: PageContextPublic) {
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
@@ -479,7 +479,7 @@ async function executeAddPageContextHook(
     pageContext._pageServerFile?.fileExports.addPageContext ||
     pageContext._pageServerFileDefault?.fileExports.addPageContext
   if (!pageContext._pageContextAlreadyAddedInPrerenderHook && addPageContext) {
-    assert_pageContextPublic(pageContext)
+    assert_pageContext_publicProps(pageContext)
     const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
     assert(filePath)
     const pageContextAddendum = await addPageContext(pageContext)
@@ -533,7 +533,7 @@ async function executeRenderHook(
   )
   assert(renderFilePath)
 
-  assert_pageContextPublic(pageContext)
+  assert_pageContext_publicProps(pageContext)
   const renderResult: unknown = await render(pageContext)
 
   if (!isHtmlTemplate(renderResult)) {

@@ -4,7 +4,7 @@ export { getPageContextProxy }
 
 const SKIP = ['then']
 
-function getPageContextProxy(pageContext: Record<string, unknown>) {
+function getPageContextProxy<T extends Record<string, unknown>>(pageContext: T): T {
   return new Proxy(pageContext, { get })
 
   function get(_: never, prop: string) {
