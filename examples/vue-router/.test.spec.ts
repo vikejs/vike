@@ -1,12 +1,12 @@
-import { autoRetry, fetchHtml, page, partRegExp, run, urlBase } from '../../tests/setup'
+import { autoRetry, fetchHtml, page, partRegex, run, urlBase } from '../../tests/setup'
 
 run('npm run start')
 
 test('page content is rendered to HTML', async () => {
   const htmlHome = await fetchHtml('/')
-  expect(htmlHome).toMatch(partRegExp`<h1 data-v-${/[^\>]*/}>Home</h1>`)
+  expect(htmlHome).toMatch(partRegex`<h1 data-v-${/[^\>]*/}>Home</h1>`)
   const htmlAbout = await fetchHtml('/about')
-  expect(htmlAbout).toMatch(partRegExp`<h1 data-v-${/[^\>]*/}>About</h1>`)
+  expect(htmlAbout).toMatch(partRegex`<h1 data-v-${/[^\>]*/}>About</h1>`)
 })
 
 test('page content is rendered to DOM', async () => {

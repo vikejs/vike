@@ -1,8 +1,8 @@
 const assert = require("assert");
 
-module.exports.partRegExp = partRegExp;
+module.exports.partRegex = partRegex;
 
-function partRegExp(parts, ...variables) {
+function partRegex(parts, ...variables) {
   assert(parts.length === variables.length + 1);
   let str = "";
   for (let i = 0; i < variables.length; i++) {

@@ -2,7 +2,7 @@ const express = require("express");
 const { createPageRender } = require("vite-plugin-ssr");
 const vite = require("vite");
 const assert = require("assert");
-const { partRegExp } = require("../utils/partRegExp");
+const { partRegex } = require("../utils/partRegex");
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;
@@ -58,17 +58,17 @@ function assert_pageAssets(pageAssets) {
     assert(a2.preloadType === null);
   } else {
     const a1 = pageAssets[0];
-    assert(partRegExp`/assets/index.page.${/[a-z0-9]+/}.css`.test(a1.src));
+    assert(partRegex`/assets/index.page.${/[a-z0-9]+/}.css`.test(a1.src));
     assert(a1.assetType === "style");
     assert(a1.mediaType === "text/css");
     assert(a1.preloadType === "style");
     const a2 = pageAssets[1];
-    assert(partRegExp`/assets/vendor.${/[a-z0-9]+/}.js`.test(a2.src));
+    assert(partRegex`/assets/vendor.${/[a-z0-9]+/}.js`.test(a2.src));
     assert(a2.assetType === "preload");
     assert(a2.mediaType === "text/javascript");
     assert(a2.preloadType === "script");
     const a3 = pageAssets[2];
-    assert(partRegExp`/assets/pages/_default/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(a3.src));
+    assert(partRegex`/assets/pages/_default/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(a3.src));
     assert(a3.assetType === "script");
     assert(a3.mediaType === "text/javascript");
     assert(a3.preloadType === null);

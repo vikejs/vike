@@ -1,4 +1,4 @@
-import { run, page, urlBase, partRegExp, fetchHtml, autoRetry } from '../tests/setup'
+import { run, page, urlBase, partRegex, fetchHtml, autoRetry } from '../tests/setup'
 import assert = require('assert')
 
 export { testPages }
@@ -15,9 +15,9 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
 
   function containsNavigationPanel(html: string) {
     if (viewFramework === 'vue') {
-      expect(html).toMatch(partRegExp`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
-      expect(html).toMatch(partRegExp`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
-      expect(html).toMatch(partRegExp`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`)
+      expect(html).toMatch(partRegex`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
+      expect(html).toMatch(partRegex`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
+      expect(html).toMatch(partRegex`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`)
     } else {
       expect(html).toContain('<a href="/markdown">Markdown</a>')
       expect(html).toContain('<a href="/star-wars">Data Fetching</a>')

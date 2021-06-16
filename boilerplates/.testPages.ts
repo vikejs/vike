@@ -1,4 +1,4 @@
-import { page, run, partRegExp, autoRetry, fetchHtml } from '../tests/setup'
+import { page, run, partRegex, autoRetry, fetchHtml } from '../tests/setup'
 
 export { testPages }
 
@@ -10,8 +10,8 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
 
     expect(html).toContain('<h1>Welcome</h1>')
     if (viewFramework === 'vue') {
-      expect(html).toMatch(partRegExp`<a class="navitem" href="/" data-v-${/[^\>]*/}>Home</a>`)
-      expect(html).toMatch(partRegExp`<a class="navitem" href="/about" data-v-${/[^\>]*/}>About</a>`)
+      expect(html).toMatch(partRegex`<a class="navitem" href="/" data-v-${/[^\>]*/}>Home</a>`)
+      expect(html).toMatch(partRegex`<a class="navitem" href="/about" data-v-${/[^\>]*/}>About</a>`)
     } else {
       expect(html).toContain('<a class="navitem" href="/">Home</a>')
       expect(html).toContain('<a class="navitem" href="/about">About</a>')
@@ -24,18 +24,18 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     if (isProduction) {
       const hashRegexp = /[a-z0-9]+/
       const extRegexp = /[a-z]+/
-      expect(html).toMatch(partRegExp`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
+      expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(
-        partRegExp`<link rel="stylesheet" type="text/css" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css">`
       )
       expect(html).toMatch(
-        partRegExp`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`
+        partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`
       )
       expect(html).toMatch(
-        partRegExp`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
+        partRegex`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
       )
       expect(html).toMatch(
-        partRegExp`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`
       )
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     } else {

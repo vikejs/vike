@@ -7,7 +7,7 @@ import { red, bold, blue } from 'kolorist'
 import fetch from 'node-fetch'
 
 export const urlBase = 'http://localhost:3000'
-export { partRegExp } from './utils'
+export { partRegex } from './utils'
 export const page: Page = (global as any).page as Page
 export { autoRetry }
 export { fetchHtml }

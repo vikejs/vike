@@ -1,9 +1,9 @@
 import assert = require('assert')
 import { slice } from './slice'
 
-export { partRegExp }
+export { partRegex }
 
-function partRegExp(parts: TemplateStringsArray, ...variables: RegExp[]): RegExp {
+function partRegex(parts: TemplateStringsArray, ...variables: RegExp[]): RegExp {
   assert(parts.length === variables.length + 1)
   let str = ''
   for (let i = 0; i < variables.length; i++) {
