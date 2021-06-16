@@ -1433,6 +1433,11 @@ export async function render(pageContext) {
   </html>`
 }
 ```
+
+Examples:
+ - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
+ - [/examples/vue/pages/markdown.page.md](examples/vue/pages/markdown.page.md)
+
 You can also use a so-called *front matter* to define the page's metadata.
 
 ```markdown

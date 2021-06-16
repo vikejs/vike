@@ -100,6 +100,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
   test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
     expect(html).toContain('This page is written in <em>Markdown</em>')
+    expect(html).toContain('<title>Some Markdown Page</title>')
     if (viewFramework === 'react') {
       expect(html).toContain('<button>Counter <!-- -->0</button>')
     } else if (viewFramework === 'vue') {

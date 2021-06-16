@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { PageLayout } from "./PageLayout";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 import { PageContext } from "./types";
+import { getPageTitle } from "./getPageTitle";
 
 const { hydrationPromise } = useClientRouter({
   render(pageContext: PageContext) {
@@ -18,7 +19,7 @@ const { hydrationPromise } = useClientRouter({
     } else {
       ReactDOM.render(page, container);
     }
-    document.title = pageContext.documentProps?.title || "Demo";
+    document.title = getPageTitle(pageContext)
   },
   onTransitionStart,
   onTransitionEnd,

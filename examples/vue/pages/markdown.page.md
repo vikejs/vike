@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import Counter from './_components/Counter.vue';
+import Counter from './_components/Counter.vue'
+</script>
+<script>
+export const documentProps = {
+  title: 'Some Markdown Page'
+}
 </script>
 
 # Markdown

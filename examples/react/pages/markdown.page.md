@@ -1,4 +1,8 @@
-import { Counter } from './_components/Counter';
+import { Counter } from './\_components/Counter';
+
+export const documentProps = {
+  title: 'Some Markdown Page'
+};
 
 # Markdown
 

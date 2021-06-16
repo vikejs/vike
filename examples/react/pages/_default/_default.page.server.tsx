@@ -3,6 +3,7 @@ import React from "react";
 import { html } from "vite-plugin-ssr";
 import { PageLayout } from "./PageLayout";
 import { PageContext } from "./types";
+import { getPageTitle } from "./getPageTitle";
 
 export { render };
 export { passToClient };
@@ -17,10 +18,12 @@ function render(pageContext: PageContext) {
     </PageLayout>
   );
 
+  const title = getPageTitle(pageContext);
+
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${pageContext.documentProps?.title || "Demo"}</title>
+        <title>${title}</title>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySkipEscape(pageContent)}</div>
