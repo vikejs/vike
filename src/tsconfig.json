@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/esm/",
+    "outDir": "./dist/",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "target": "ES2020",
     "module": "ES2020",
