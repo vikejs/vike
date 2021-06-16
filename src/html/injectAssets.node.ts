@@ -112,16 +112,16 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 }
 
 async function injectAssets(
-  htmlDocument: string,
+  htmlString: string,
   pageContext: Record<string, unknown>
 ): Promise<string> {
   assertUsage(
-    typeof htmlDocument === 'string',
-    '[html.injectAssets(htmlDocument, pageContext)]: Argument `htmlDocument` should be a string.'
+    typeof htmlString === 'string',
+    '[html.injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'
   )
-  assertUsage(pageContext, '[html.injectAssets(htmlDocument, pageContext)]: Argument `pageContext` is missing.')
+  assertUsage(pageContext, '[html.injectAssets(htmlString, pageContext)]: Argument `pageContext` is missing.')
   const errMsg = (body: string) =>
-    '[html.injectAssets(htmlDocument, pageContext)]: ' +
+    '[html.injectAssets(htmlString, pageContext)]: ' +
     body +
     '. Make sure that `pageContext` is the object that `vite-plugin-ssr` provided to your `render(pageContext)` hook.'
   assertUsage(hasProp(pageContext, 'urlNormalized', 'string'), errMsg('`pageContext.urlNormalized` should be a string'))
@@ -138,12 +138,12 @@ async function injectAssets(
   )
   castProp<PageAssets, typeof pageContext, '_pageAssets'>(pageContext, '_pageAssets')
   pageContext._pageAssets
-  htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
-  return htmlDocument
+  htmlString = await injectAssets_internal(htmlString, pageContext)
+  return htmlString
 }
 
 async function injectAssets_internal(
-  htmlDocument: string,
+  htmlString: string,
   pageContext: {
     urlNormalized: string
     _pageAssets: PageAssets
@@ -153,21 +153,21 @@ async function injectAssets_internal(
     _pageClientFilePath: string
   }
 ): Promise<string> {
-  assert(htmlDocument)
-  assert(typeof htmlDocument === 'string')
+  assert(htmlString)
+  assert(typeof htmlString === 'string')
 
   // Inject Vite transformations
   const { urlNormalized } = pageContext
   assert(typeof urlNormalized === 'string')
-  htmlDocument = await applyViteHtmlTransform(htmlDocument, urlNormalized)
+  htmlString = await applyViteHtmlTransform(htmlString, urlNormalized)
 
   // Inject pageContext__client
-  htmlDocument = injectPageInfo(htmlDocument, pageContext)
+  htmlString = injectPageInfo(htmlString, pageContext)
 
   // Inject script
   const scripts = pageContext._pageAssets.filter(({ assetType }) => assetType === 'script')
   assert(scripts.length === 1)
-  htmlDocument = injectScript(htmlDocument, scripts[0])
+  htmlString = injectScript(htmlString, scripts[0])
 
   // Inject preload links
   const preloadAssets = pageContext._pageAssets.filter(
@@ -177,18 +177,18 @@ async function injectAssets_internal(
     const isEsModule = pageAsset.preloadType === 'script'
     return inferAssetTag(pageAsset, isEsModule)
   })
-  htmlDocument = injectLinkTags(htmlDocument, linkTags)
+  htmlString = injectLinkTags(htmlString, linkTags)
 
-  return htmlDocument
+  return htmlString
 }
 
-async function applyViteHtmlTransform(htmlDocument: string, urlNormalized: string): Promise<string> {
+async function applyViteHtmlTransform(htmlString: string, urlNormalized: string): Promise<string> {
   const ssrEnv = getSsrEnv()
   if (ssrEnv.isProduction) {
-    return htmlDocument
+    return htmlString
   }
-  htmlDocument = await ssrEnv.viteDevServer.transformIndexHtml(urlNormalized, htmlDocument)
-  return htmlDocument
+  htmlString = await ssrEnv.viteDevServer.transformIndexHtml(urlNormalized, htmlString)
+  return htmlString
 }
 
 function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): string {
@@ -204,66 +204,66 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 }
 
 function injectPageInfo(
-  htmlDocument: string,
+  htmlString: string,
   pageContext: { _pageId: string; _pageContextClient: Record<string, unknown> }
 ): string {
   assert(pageContext._pageContextClient._pageId)
   assert(pageContext._pageContextClient._pageId === pageContext._pageId)
   const pageContextSerialized = devalue(pageContext._pageContextClient)
   const injection = `<script>window.__vite_plugin_ssr__pageContext = ${pageContextSerialized}</script>`
-  return injectEnd(htmlDocument, injection)
+  return injectEnd(htmlString, injection)
 }
 
-function injectScript(htmlDocument: string, script: PageAsset): string {
+function injectScript(htmlString: string, script: PageAsset): string {
   const isEsModule = true
   const injection = inferAssetTag(script, isEsModule)
-  return injectEnd(htmlDocument, injection)
+  return injectEnd(htmlString, injection)
 }
 
-function injectLinkTags(htmlDocument: string, linkTags: string[]): string {
+function injectLinkTags(htmlString: string, linkTags: string[]): string {
   assert(linkTags.every((tag) => tag.startsWith('<') && tag.endsWith('>')))
   const injection = linkTags.join('')
-  return injectBegin(htmlDocument, injection)
+  return injectBegin(htmlString, injection)
 }
 
-function injectBegin(htmlDocument: string, injection: string): string {
+function injectBegin(htmlString: string, injection: string): string {
   const headOpen = /<head[^>]*>/
-  if (headOpen.test(htmlDocument)) {
-    return injectAtOpeningTag(htmlDocument, headOpen, injection)
+  if (headOpen.test(htmlString)) {
+    return injectAtOpeningTag(htmlString, headOpen, injection)
   }
 
   const htmlBegin = /<html[^>]*>/
-  if (htmlBegin.test(htmlDocument)) {
-    return injectAtOpeningTag(htmlDocument, htmlBegin, injection)
+  if (htmlBegin.test(htmlString)) {
+    return injectAtOpeningTag(htmlString, htmlBegin, injection)
   }
 
-  if (htmlDocument.toLowerCase().startsWith('<!doctype')) {
-    const lines = htmlDocument.split('\n')
+  if (htmlString.toLowerCase().startsWith('<!doctype')) {
+    const lines = htmlString.split('\n')
     return [...slice(lines, 0, 1), injection, ...slice(lines, 1, 0)].join('\n')
   } else {
-    return injection + '\n' + htmlDocument
+    return injection + '\n' + htmlString
   }
 }
 
-function injectEnd(htmlDocument: string, injection: string): string {
+function injectEnd(htmlString: string, injection: string): string {
   const bodyClose = '</body>'
-  if (htmlDocument.includes(bodyClose)) {
-    return injectAtClosingTag(htmlDocument, bodyClose, injection)
+  if (htmlString.includes(bodyClose)) {
+    return injectAtClosingTag(htmlString, bodyClose, injection)
   }
 
   const htmlClose = '</html>'
-  if (htmlDocument.includes(htmlClose)) {
-    return injectAtClosingTag(htmlDocument, htmlClose, injection)
+  if (htmlString.includes(htmlClose)) {
+    return injectAtClosingTag(htmlString, htmlClose, injection)
   }
 
-  return htmlDocument + '\n' + injection
+  return htmlString + '\n' + injection
 }
 
-function injectAtOpeningTag(htmlDocument: string, openingTag: RegExp, injection: string): string {
-  const matches = htmlDocument.match(openingTag)
+function injectAtOpeningTag(htmlString: string, openingTag: RegExp, injection: string): string {
+  const matches = htmlString.match(openingTag)
   assert(matches && matches.length >= 1)
   const tag = matches[0]
-  const htmlParts = htmlDocument.split(tag)
+  const htmlParts = htmlString.split(tag)
   assert(htmlParts.length >= 2)
 
   // Insert `injection` after first `tag`
@@ -272,12 +272,12 @@ function injectAtOpeningTag(htmlDocument: string, openingTag: RegExp, injection:
   return before + tag + injection + after
 }
 
-function injectAtClosingTag(htmlDocument: string, closingTag: string, injection: string): string {
+function injectAtClosingTag(htmlString: string, closingTag: string, injection: string): string {
   assert(closingTag.startsWith('</'))
   assert(closingTag.endsWith('>'))
   assert(!closingTag.includes(' '))
 
-  const htmlParts = htmlDocument.split(closingTag)
+  const htmlParts = htmlString.split(closingTag)
   assert(htmlParts.length >= 2)
 
   // Insert `injection` before last `closingTag`
