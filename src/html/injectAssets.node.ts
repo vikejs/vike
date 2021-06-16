@@ -111,15 +111,15 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
   return { clientManifest, serverManifest }
 }
 
-async function injectAssets(htmlDocument: string, pageContext: Record<string, unknown>): Promise<string> {
+async function injectAssets(
+  htmlDocument: string,
+  pageContext: Record<string, unknown>
+): Promise<string> {
   assertUsage(
     typeof htmlDocument === 'string',
     '[html.injectAssets(htmlDocument, pageContext)]: Argument `htmlDocument` should be a string.'
   )
-  assertUsage(
-    pageContext,
-    '[html.injectAssets(htmlDocument, pageContext)]: Argument `pageContext` is missing.'
-  )
+  assertUsage(pageContext, '[html.injectAssets(htmlDocument, pageContext)]: Argument `pageContext` is missing.')
   const errMsg = (body: string) =>
     '[html.injectAssets(htmlDocument, pageContext)]: ' +
     body +
@@ -153,6 +153,9 @@ async function injectAssets_internal(
     _pageClientFilePath: string
   }
 ): Promise<string> {
+  assert(htmlDocument)
+  assert(typeof htmlDocument === 'string')
+
   // Inject Vite transformations
   const { urlNormalized } = pageContext
   assert(typeof urlNormalized === 'string')

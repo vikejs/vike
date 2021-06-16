@@ -1,5 +1,5 @@
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
-import { renderHtmlTemplate, isHtmlTemplate } from './html/index.node'
+import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index.node'
 import { getPageFile, getPageFiles } from './page-files/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
 import { posix as pathPosix } from 'path'
@@ -535,14 +535,17 @@ async function executeRenderHook(
   assert_pageContext_publicProps(pageContext)
   const renderResult: unknown = await render(pageContext)
 
-  if (!isHtmlTemplate(renderResult)) {
+  if (isSanitizedString(renderResult)) {
+    return renderSanitizedString(renderResult)
+  } else if (!isHtmlTemplate(renderResult)) {
     // Allow user to return whatever he wants in their `render` hook, such as `{redirectTo: '/some/path'}`.
     if (typeof renderResult !== 'string') {
       return renderResult
     }
     assertUsage(
       typeof renderResult !== 'string',
-      `The \`render()\` hook exported by ${renderFilePath} returned an unsafe (i.e. unescaped) string. Make sure to return a sanitized (i.e. escaped) string by using the \`html\` template tag (\`import { html } from 'vite-plugin-ssr'\`). Alternatively, you can use \`html.injectAssets()\` and wrap your entire html with \`html.dangerouslySkipEscape()\`.`
+      `The \`render()\` hook exported by ${renderFilePath} returned an unsafe (i.e. unescaped) string. Make sure to return a sanitized (i.e. escaped) string by using the \`html\` template tag (\`import { html } from 'vite-plugin-ssr'\`).`
+      // Alternatively, you can use \`html._injectAssets()\` and wrap your entire html with \`html.dangerouslySkipEscape()\`.`
     )
   } else {
     let htmlDocument: string = renderHtmlTemplate(renderResult, renderFilePath)
