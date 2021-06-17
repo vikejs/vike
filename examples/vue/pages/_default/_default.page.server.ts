@@ -2,7 +2,7 @@ import { renderToString } from '@vue/server-renderer'
 import { html } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import { PageContext } from './types'
-import { getPageTitle } from "./getPageTitle";
+import { getPageTitle } from './getPageTitle'
 
 export { passToClient }
 export { render }

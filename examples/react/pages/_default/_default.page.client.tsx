@@ -19,7 +19,7 @@ const { hydrationPromise } = useClientRouter({
     } else {
       ReactDOM.render(page, container);
     }
-    document.title = getPageTitle(pageContext)
+    document.title = getPageTitle(pageContext);
   },
   onTransitionStart,
   onTransitionEnd,

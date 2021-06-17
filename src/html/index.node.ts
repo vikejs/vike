@@ -55,9 +55,7 @@ function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString 
 function isSanitizedString(something: unknown): something is SanitizedString {
   return hasProp(something, '__dangerouslySkipEscape')
 }
-function renderSanitizedString(
-  renderResult: { __html_template: HtmlTemplate } | SanitizedString
-): string {
+function renderSanitizedString(renderResult: { __html_template: HtmlTemplate } | SanitizedString): string {
   let htmlString: string
   if ('__dangerouslySkipEscape' in renderResult) {
     htmlString = renderResult['__dangerouslySkipEscape']
@@ -71,10 +69,7 @@ function renderSanitizedString(
 function isHtmlTemplate(something: unknown): something is { __html_template: HtmlTemplate } {
   return hasProp(something, '__html_template')
 }
-function renderHtmlTemplate(
-  renderResult: { __html_template: HtmlTemplate },
-  filePath: string
-): string {
+function renderHtmlTemplate(renderResult: { __html_template: HtmlTemplate }, filePath: string): string {
   let htmlString: string
   if ('__html_template' in renderResult) {
     htmlString = renderTemplate(renderResult['__html_template'], filePath)

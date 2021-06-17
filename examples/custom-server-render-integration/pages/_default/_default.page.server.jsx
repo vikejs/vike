@@ -17,7 +17,5 @@ async function render(pageContext) {
       </body>
     </html>`;
 
-  return html.dangerouslySkipEscape(
-    await html._injectAssets(htmlString, pageContext)
-  );
+  return html.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
 }

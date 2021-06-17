@@ -7,4 +7,3 @@ function castProp<PropType, ObjectType, PropName extends PropertyKey>(
   obj: ObjectType,
   prop: PropName
 ): asserts obj is ObjectType & Record<PropName, PropType> {}
-

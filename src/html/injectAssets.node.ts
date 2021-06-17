@@ -111,10 +111,7 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
   return { clientManifest, serverManifest }
 }
 
-async function injectAssets(
-  htmlString: string,
-  pageContext: Record<string, unknown>
-): Promise<string> {
+async function injectAssets(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
   assertUsage(
     typeof htmlString === 'string',
     '[html.injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'

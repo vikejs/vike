@@ -58,7 +58,7 @@ async function getPageFile(fileType: FileType, pageId: string): Promise<PageFile
   assert(!pageId.includes('\\'))
   const pageFiles = await getPageFiles(fileType)
   const pageFile = findPageFile(pageFiles, pageId)
-  const pageFilePaths = pageFiles.map(({filePath}) => filePath)
+  const pageFilePaths = pageFiles.map(({ filePath }) => filePath)
   assert(pageFile, { pageId, pageFilePaths })
   return pageFile
 }
