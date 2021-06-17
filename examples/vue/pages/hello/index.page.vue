@@ -1,7 +1,8 @@
 <template>
   <h1>Hello</h1>
   <p>
-    Hi <b>{{name}}</b>.
+    Hi <b>{{ name }}</b
+    >.
   </p>
   <ul>
     <li>

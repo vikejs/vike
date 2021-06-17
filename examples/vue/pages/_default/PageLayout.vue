@@ -8,7 +8,7 @@
       <a href="/star-wars">Data Fetching</a>
       <a href="/hello/alice">Routing</a>
     </div>
-    <div class="content"><slot/></div>
+    <div class="content"><slot /></div>
   </div>
 </template>
 

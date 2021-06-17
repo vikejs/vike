@@ -1,10 +1,10 @@
 <template>
-  <h1>{{movie.title}}</h1>
-  Release Date: {{movie.release_date}}
+  <h1>{{ movie.title }}</h1>
+  Release Date: {{ movie.release_date }}
   <br />
-  Director: {{movie.director}}
+  Director: {{ movie.director }}
   <br />
-  Producer: {{movie.producer}}
+  Producer: {{ movie.producer }}
 </template>
 
 <script lang="ts">
