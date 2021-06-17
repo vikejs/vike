@@ -257,7 +257,7 @@ function normalizePrerenderResult(
       prerenderElement.pageContext = null
     }
     assertUsage(
-      hasProp(prerenderElement, 'pageContext', "object"),
+      hasProp(prerenderElement, 'pageContext', 'object'),
       `The \`prerender()\` hook exported by ${prerenderSourceFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
     )
     return prerenderElement
