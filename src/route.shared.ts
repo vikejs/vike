@@ -1,7 +1,7 @@
 import { getPageFiles } from './page-files/getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, isCallable, higherFirst, slice, hasProp, getUrlPathname, isPlainObject, castProp } from './utils'
+import { assert, assertUsage, higherFirst, slice, hasProp, getUrlPathname, isPlainObject, castProp, isPromise } from './utils'
 
 export { getPageIds }
 export { route }
@@ -25,14 +25,15 @@ async function route(
     allPageIds.length > 0,
     'No `*.page.js` file found. You must create a `*.page.js` file, e.g. `pages/index.page.js` (or `pages/index.page.{jsx, tsx, vue, ...}`).'
   )
-  const pageRoutes = await loadPageRoutes()
+  const pageRoutes = await loadPageRouteFiles()
 
   const urlPathname = getUrlPathname(url)
   assert(urlPathname.startsWith('/'))
 
-  const routeResults = allPageIds
+  const routeResults = await Promise.all(
+    allPageIds
     .filter((pageId) => !isErrorPage(pageId))
-    .map((pageId) => {
+    .map(async (pageId) => {
       assertUsage(
         !isReservedPageId(pageId),
         "Only `_default.page.*` and `_error.page.*` files are allowed to include the special character `_` in their path. The following shouldn't include `_`: " +
@@ -44,22 +45,23 @@ async function route(
         const { matchValue, routeParams } = routeWith_filesystem(urlPathname, pageId, allPageIds)
         return { pageId, matchValue, routeParams }
       }
-      const { pageRoute, pageRouteFile } = pageRoutes[pageId]
+      const { pageRouteFileExports, pageRouteFile } = pageRoutes[pageId]
 
       // Route with `.page.route.js` defined route string
-      if (typeof pageRoute === 'string') {
-        const { matchValue, routeParams } = resolveRouteString(pageRoute, urlPathname)
+      if (hasProp(pageRouteFileExports, 'default', 'string')) {
+        const { matchValue, routeParams } = resolveRouteString(pageRouteFileExports, urlPathname)
         return { pageId, matchValue, routeParams }
       }
 
       // Route with `.page.route.js` defined route function
-      if (isCallable(pageRoute)) {
-        const { matchValue, routeParams } = resolveRouteFunction(pageRoute, urlPathname, pageContext, pageRouteFile)
+      if (hasProp(pageRouteFileExports, 'default', 'function')) {
+        const { matchValue, routeParams } = await resolveRouteFunction(pageRouteFileExports, urlPathname, pageContext, pageRouteFile)
         return { pageId, matchValue, routeParams }
       }
 
       assert(false)
     })
+  )
 
   const winner = pickWinner(routeResults)
   // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
@@ -69,6 +71,17 @@ async function route(
   const { pageId, routeParams } = winner
   assert(isPlainObject(routeParams))
   return { pageId, pageContextAddendum: { routeParams } }
+}
+
+async function loadPageRoutes(): Promise<Record<PageId, {pageRoute: string | Function, pageRouteFile: string}>> {
+  return (
+    Object.fromEntries(
+      Object.entries((await loadPageRouteFiles()))
+      .map(([pageId, {pageRouteFileExports, pageRouteFile}]) => {
+        return [pageId, {pageRouteFile, pageRoute: pageRouteFileExports.default}]
+      })
+    )
+  )
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -198,19 +211,26 @@ function isDefaultPageFile(filePath: string): boolean {
   return true
 }
 
-function resolveRouteString(routeString: string, urlPathname: string) {
+function resolveRouteString(pageRouteFileExports: {default: string}, urlPathname: string) {
+  const routeString: string = pageRouteFileExports.default
   return routeWith_pathToRegexp(urlPathname, routeString)
 }
-function resolveRouteFunction(
-  routeFunction: Function,
+async function resolveRouteFunction(
+  pageRouteFileExports: {default: Function, iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean},
   urlPathname: string,
   pageContext: Record<string, unknown>,
   routeFilePath: string
-): {
+): Promise<{
   matchValue: boolean | number
   routeParams: Record<string, string>
-} {
+}> {
+  const routeFunction: Function = pageRouteFileExports.default
   let result = routeFunction({ url: urlPathname, pageContext })
+  assertUsage(
+    !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
+    `The Route Function ${routeFilePath} returned a promise. Async Route Functions may significantly slow down your app: every time a page is rendered the Route Functions of *all* your pages are called and awaited for. A slow Route Function will slow down all your pages. If you still want to define an async Route Function then \`export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true\` in \`${routeFilePath}\`.`
+  )
+  result = await result
   if ([true, false].includes(result)) {
     result = { match: result }
   }
@@ -254,11 +274,12 @@ function resolveRouteFunction(
   }
 }
 
+type PageRouteExports = {default: string | Function, iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean} & Record<string, unknown>
 type PageRoute = {
   pageRouteFile: string
-  pageRoute: string | Function
+  pageRouteFileExports: PageRouteExports
 }
-async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
+async function loadPageRouteFiles(): Promise<Record<PageId, PageRoute>> {
   const userRouteFiles = await getPageFiles('.page.route')
 
   const pageRoutes: Record<PageId, PageRoute> = {}
@@ -266,16 +287,17 @@ async function loadPageRoutes(): Promise<Record<PageId, PageRoute>> {
   await Promise.all(
     userRouteFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
-      assertUsage(hasProp(fileExports, 'default'), `${filePath} should have a default export.`)
+      assertUsage('default' in fileExports, `${filePath} should have a default export.`)
       assertUsage(
-        typeof fileExports.default === 'string' || isCallable(fileExports.default),
+        hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
         `The default export of ${filePath} should be a string or a function.`
       )
-      const pageRoute = fileExports.default
+      assertUsage(!('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) || hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'), `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`)
+      const pageRouteFileExports = fileExports
       const pageId = computePageId(filePath)
       const pageRouteFile = filePath
 
-      pageRoutes[pageId] = { pageRoute, pageRouteFile }
+      pageRoutes[pageId] = { pageRouteFileExports, pageRouteFile }
     })
   )
 
