@@ -28,7 +28,7 @@ function setPageFilesAsync(_asyncSetter: () => Promise<unknown>) {
 
 type PageFile = {
   filePath: string
-  loadFile: () => Promise<Record<string, any>>
+  loadFile: () => Promise<Record<string, unknown>>
 }
 type FileType = '.page' | '.page.server' | '.page.route' | '.page.client'
 type PageFiles = Record<FileType, Record<PageFile['filePath'], PageFile['loadFile']>>

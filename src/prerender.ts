@@ -243,8 +243,8 @@ function normalizePrerenderResult(
     assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
     assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
     assertUsage(
-      typeof prerenderElement.url === 'string',
-      `${errMsg1}: unexpected \`url\` of type \`${typeof prerenderElement.url}\`.`
+      hasProp(prerenderElement, 'url', 'string'),
+      `${errMsg1}: \`url\` should be a string (but we got \`typeof url === "${typeof prerenderElement.url}"\`).`
     )
     assertUsage(
       prerenderElement.url.startsWith('/'),
@@ -254,14 +254,13 @@ function normalizePrerenderResult(
       assertUsage(key === 'url' || key === 'pageContext', `${errMsg1}: unexpected object key \`${key}\` ${errMsg2}`)
     })
     if (!hasProp(prerenderElement, 'pageContext')) {
-      prerenderElement = { ...prerenderElement, pageContext: null }
+      prerenderElement.pageContext = null
     }
     assertUsage(
-      hasProp(prerenderElement, 'pageContext') &&
-        (prerenderElement.pageContext === null || isPlainObject(prerenderElement.pageContext)),
+      hasProp(prerenderElement, 'pageContext', "object"),
       `The \`prerender()\` hook exported by ${prerenderSourceFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
     )
-    return prerenderElement as any
+    return prerenderElement
   }
 }
 

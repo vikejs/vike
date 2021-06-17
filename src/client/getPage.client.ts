@@ -1,5 +1,5 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
-import { getUrlPathname, hasProp } from '../utils'
+import { getUrlPathname } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { assert_pageContext_publicProps } from './assert_pageContext_publicProps'
 import { getPageContextProxy } from './getPageContextProxy'
@@ -29,7 +29,7 @@ function assertPristineUrl() {
   )
 }
 
-async function getPageById(pageId: string): Promise<any> {
+async function getPageById(pageId: string): Promise<{ Page: unknown; pageExports: Record<string, unknown> }> {
   const pageFile = await getPageFile('.page', pageId)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
