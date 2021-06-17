@@ -1,3 +1,18 @@
+## [0.1.2](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.1...v0.1.2) (2021-06-17)
+
+
+### Features
+
+* also expose `pageContext.pageExports` on the client-side ([83801ff](https://github.com/brillout/vite-plugin-ssr/commit/83801ff17182cd5a7aa5063cc48e3472efeaf217))
+* support async route functions (fix [#97](https://github.com/brillout/vite-plugin-ssr/issues/97)) ([0aca411](https://github.com/brillout/vite-plugin-ssr/commit/0aca411e01373c9717678b123d5d0f4390ba060a))
+
+
+### Reverts
+
+* Revert "chore: update lockfiles" ([de40f3d](https://github.com/brillout/vite-plugin-ssr/commit/de40f3d96efd36646a6ea4a1fb274c62afd43c3c))
+
+
+
 ## [0.1.1](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0...v0.1.1) (2021-06-09)
 
 
