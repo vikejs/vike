@@ -3,6 +3,7 @@ import * as execa from 'execa'
 import { dirname } from 'path'
 import assert = require('assert')
 import { isAbsolute, join } from 'path'
+import { hasTest } from './helpers/hasTest'
 
 bumpLockfiles()
 
@@ -18,6 +19,7 @@ async function getLockfiles() {
     .split('\n')
     .filter((filePath) => filePath.endsWith('package-lock.json'))
     .map((filePath) => join(DIR_ROOT, filePath))
+    .filter((filePath) => hasTest(dirname(filePath)))
   return lockfiles
 }
 

@@ -1,6 +1,14 @@
 export type Component = any
-export type ContextProps = {
+export type PageContext = {
+  Page: Component
   pageProps: Record<string, unknown>
-  docTitle?: string
+  pageExports: {
+    documentProps?: {
+      title: string
+    }
+  }
+  documentProps?: {
+    title: string
+  }
   routeParams: Record<string, unknown>
-} & Record<string, any>
+}

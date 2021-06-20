@@ -28,8 +28,8 @@ async function startServer() {
   const renderPage = createPageRender({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
-    const contextProps = {};
-    const result = await renderPage({ url, contextProps });
+    const pageContext = { url };
+    const result = await renderPage(pageContext);
     if (result.nothingRendered) return next();
     res.status(result.statusCode).send(result.renderResult);
   });

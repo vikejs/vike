@@ -2,26 +2,28 @@ import fetch from "node-fetch";
 import { filterMovieData } from "./movie.page.server";
 import { Movie, MovieDetails } from "./types";
 
-export { addContextProps };
+export { addPageContext };
 export { prerender };
 
-type ContextProps = {
+type PageContext = {
   pageProps: {
     movies: Movie[];
   };
-  docTitle: string;
+  documentProps: {
+    title: string;
+  };
 };
 
-async function addContextProps(): Promise<ContextProps> {
+async function addPageContext(): Promise<PageContext> {
   const movies = await getStarWarsMovies();
   return {
     pageProps: {
-      // We remove data we don't need because we pass `contextProps.movies` to
+      // We remove data we don't need because we pass `pageContext.movies` to
       // the client; we want to minimize what is sent over the network.
       movies: filterMoviesData(movies),
     },
     // The page's <title>
-    docTitle: getTitle(movies),
+    documentProps: { title: getTitle(movies) },
   };
 }
 
@@ -48,29 +50,29 @@ async function prerender() {
   return [
     {
       url: "/star-wars",
-      // We already provide `contextProps` here so that `vite-plugin-ssr`
-      // will *not* have to call the `addContextProps()` hook defined
+      // We already provide `pageContext` here so that `vite-plugin-ssr`
+      // will *not* have to call the `addPageContext()` hook defined
       // above in this file.
-      contextProps: {
+      pageContext: {
         pageProps: {
           movies: filterMoviesData(movies),
         },
-        docTitle: getTitle(movies),
+        documentProps: { title: getTitle(movies) },
       },
     },
     ...movies.map((movie) => {
       const url = `/star-wars/${movie.id}`;
       return {
         url,
-        // Note that we can also provide the `contextProps` of other pages.
+        // Note that we can also provide the `pageContext` of other pages.
         // This means that `vite-plugin-ssr` will not call any
-        // `addContextProps()` hook and the Star Wars API will be called
+        // `addPageContext()` hook and the Star Wars API will be called
         // only once (in this `prerender()` hook).
-        contextProps: {
+        pageContext: {
           pageProps: {
             movie: filterMovieData(movie),
           },
-          docTitle: movie.title,
+          documentProps: { title: movie.title },
         },
       };
     }),

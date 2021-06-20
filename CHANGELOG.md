@@ -1,3 +1,174 @@
+## [0.1.2](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.1...v0.1.2) (2021-06-17)
+
+
+### Features
+
+* also expose `pageContext.pageExports` on the client-side ([83801ff](https://github.com/brillout/vite-plugin-ssr/commit/83801ff17182cd5a7aa5063cc48e3472efeaf217))
+* support async route functions (fix [#97](https://github.com/brillout/vite-plugin-ssr/issues/97)) ([0aca411](https://github.com/brillout/vite-plugin-ssr/commit/0aca411e01373c9717678b123d5d0f4390ba060a))
+
+
+
+## [0.1.1](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0...v0.1.1) (2021-06-09)
+
+
+### Features
+
+* enable Jest/Babel component unit testing (fix [#91](https://github.com/brillout/vite-plugin-ssr/issues/91)) ([cb3417d](https://github.com/brillout/vite-plugin-ssr/commit/cb3417de974de6697ab29a8a55347fd91f72feac))
+
+
+
+# [0.1.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.50...v0.1.0) (2021-06-06)
+
+Nothing changed (`0.1.0` is equivalent to `0.1.0-beta.50`); `vite-plugin-ssr` is now out of beta :-).
+
+
+# [0.1.0-beta.50](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.49...v0.1.0-beta.50) (2021-06-02)
+
+
+### Bug Fixes
+
+* define ESM build in tsconfig.ts instead of CLI (vitejs/vite[#3617](https://github.com/brillout/vite-plugin-ssr/issues/3617), fix [#85](https://github.com/brillout/vite-plugin-ssr/issues/85)) ([4fdbf91](https://github.com/brillout/vite-plugin-ssr/commit/4fdbf91e9c59f91ca8111dd88b6df7a3c664d0c2))
+
+
+
+# [0.1.0-beta.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.48...v0.1.0-beta.49) (2021-06-02)
+
+### Bug Fixes
+
+*  dual publish CJS + ESM (vitejs/vite#3617, fix #85)
+
+
+
+# [0.1.0-beta.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.47...v0.1.0-beta.48) (2021-05-30)
+
+
+* rename `dangerouslySetHtml` to `dangerouslySkipEscape` (fix #84) ([b14bd17](https://github.com/brillout/vite-plugin-ssr/commit/b14bd17b0177a0b2bedb74f143677cad7521d365)), closes [#84](https://github.com/brillout/vite-plugin-ssr/issues/84)
+
+
+### Bug Fixes
+
+* export SsrEnv as type ([8c8f5ba](https://github.com/brillout/vite-plugin-ssr/commit/8c8f5ba800cb45f951031a0a5ce2546a5fdc9a68))
+
+
+### BREAKING CHANGES
+
+* Replace `dangerouslySetHtml` with
+`dangerouslySkipEscape`. E.g. for linux users:
+`git ls-files | xargs sed -i "s/dangerouslySetHtml/dangerouslySkipEscape/g"`
+
+
+
+# [0.1.0-beta.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.46...v0.1.0-beta.47) (2021-05-29)
+
+### Features
+
+*  make `*.page.js` exports available to user as `pageContext.pageExports` (fix [#80](https://github.com/brillout/vite-plugin-ssr/issues/80))
+
+
+
+# [0.1.0-beta.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.45...v0.1.0-beta.46) (2021-05-28)
+
+* define everything on `pageContext` (fix #76) ([15d68f8](https://github.com/brillout/vite-plugin-ssr/commit/15d68f8bd6133b1c5e8916fa5c2aaad8cf5f4579)), closes [#76](https://github.com/brillout/vite-plugin-ssr/issues/76)
+
+### BREAKING CHANGES
+
+* Apply following changes:
+
+```diff
+  // *.page.server.js
+
+  export { render }
+- function render({ Page, pageContext }) {
++ function render(pageContext) {
++   const { Page } = pageContext
+    /* ... */
+  }
+
+  export { addPageContext }
+- function addPageContext({ Page, pageContext }) {
++ function addPageContext(pageContext) {
++   const { Page } = pageContext
+    /* ... */
+  }
+```
+
+```diff
+  // *.page.client.js
+
+  import { getPage } from "vite-plugin-ssr/client";
+
+- const { Page, pageContext } = await getPage();
++ const pageContext = await getPage();
++ const { Page } = pageContext
+```
+
+```diff
+  // *.page.client.js
+
+  import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+  useClientRouter({
+-   render({ Page, pageContext, isHydration }) {
++   render(pageContext) {
++     const { Page, isHydration } = pageContext
+      /* ... */
+    },
+  })
+```
+
+```diff
+  // At your server integration point
+
+  const express = require('express')
+  const { createPageRender } = require('vite-plugin-ssr')
+
+  /* ... */
+
+  const pageRender = createPageRender(/*...*/)
+
+  /* ... */
+
+- pageRender({ url, pageContext })
++ pageContext.url = url
++ pageRender(pageContext)
+```
+
+- `pageContext.urlFull` is deprecated; use `pageContext.urlNormalized`
+instead.
+
+
+
+# [0.1.0-beta.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.44...v0.1.0-beta.45) (2021-05-26)
+
+
+### Bug Fixes
+
+* reload glob imports in dev ([#66](https://github.com/brillout/vite-plugin-ssr/issues/66)) ([09b54c0](https://github.com/brillout/vite-plugin-ssr/commit/09b54c0dfd988f42d8237450a2f57e0f4d6abf1a))
+* Route Functions should return `routeParams` instead of `contextProps` (fix [#63](https://github.com/brillout/vite-plugin-ssr/issues/63)) ([e03b918](https://github.com/brillout/vite-plugin-ssr/commit/e03b9185917f94c4b826a83cb0eafb8a6b98bd93))
+
+
+### Features
+
+* always route on the server-side (fix [#73](https://github.com/brillout/vite-plugin-ssr/issues/73)) ([ef3eb3c](https://github.com/brillout/vite-plugin-ssr/commit/ef3eb3ce56ded30d2cffdf86f06096e6fd1529ad))
+* rename `contextProps` to `pageContext`, and `addContextProps` to `addPageContext` (fix #58) ([aedf9fc](https://github.com/brillout/vite-plugin-ssr/commit/aedf9fc516cc72b3d06128dedd900994a8457767)), closes [#58](https://github.com/brillout/vite-plugin-ssr/issues/58)
+
+
+### BREAKING CHANGES
+
+- Replace all occurences in your source code of `addContextProps` to
+  `addPageContext`, and all occurences of `contextProps` to `pageContext`.
+  There is no need for semantic replacing: you can simply replace
+  text, for example with a linux terminal:
+   1. `git ls-files | xargs sed -i "s/addContextProps/addPageContext/g"`
+   2. `git ls-files | xargs sed -i "s/contextProps/pageContext/g"`
+- Make your Route Functions return
+  `{ match: true, routeParams: {/*...*/} }` instead of
+  `{ match: true, pageContext: {/*...*/} }` (or
+  `{ match: true, contextProps: {/*...*/} }` if you didn't
+  rename `contextProps` to `pageContext` yet).
+
+
+
 # [0.1.0-beta.44](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.0-beta.43...v0.1.0-beta.44) (2021-05-20)
 
 

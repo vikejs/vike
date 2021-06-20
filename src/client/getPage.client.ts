@@ -1,35 +1,24 @@
 import { getPageFile } from '../page-files/getPageFiles.shared'
-import { addUrlToContextProps, getUrlFull, getUrlPathname } from '../utils'
+import { getUrlPathname } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
-import { getContextPropsProxy } from './getContextPropsProxy'
+import { assert_pageContext_publicProps } from './assert_pageContext_publicProps'
+import { getPageContextProxy } from './getPageContextProxy'
 
 export { getPage }
 export { getPageById }
 export { getPageInfo }
 
 const urlPathnameOriginal = getUrlPathname()
-const urlFullOriginal = getUrlFull()
 
-async function getPage(): Promise<{
-  Page: any
-  contextProps: Record<string, any>
-}> {
-  let { pageId, contextProps } = getPageInfo()
-  assert(contextProps.urlFull && contextProps.urlPathname)
-  const Page = await getPageById(pageId)
-  contextProps = getContextPropsProxy(contextProps)
+async function getPage(): Promise<{ Page: any } & Record<string, any>> {
+  let { pageId, pageContext } = getPageInfo()
+  const { Page, pageExports } = await getPageById(pageId)
+  pageContext.Page = Page
+  pageContext.pageExports = pageExports
+  pageContext = getPageContextProxy(pageContext)
   assertPristineUrl()
-  return {
-    Page,
-    contextProps,
-    // @ts-ignore
-    get pageProps() {
-      assertUsage(
-        false,
-        "`pageProps` in `const { pageProps } = await getPage()` has been replaced with `const { contextProps } = await getPage()`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
-      )
-    }
-  }
+  assert_pageContext_publicProps(pageContext)
+  return pageContext
 }
 
 function assertPristineUrl() {
@@ -40,36 +29,34 @@ function assertPristineUrl() {
   )
 }
 
-async function getPageById(pageId: string): Promise<any> {
-  assert(typeof pageId === 'string')
+async function getPageById(pageId: string): Promise<{ Page: unknown; pageExports: Record<string, unknown> }> {
   const pageFile = await getPageFile('.page', pageId)
-  assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()
   assertUsage(
     typeof fileExports === 'object' && ('Page' in fileExports || 'default' in fileExports),
     `${filePath} should have a \`export { Page }\` (or a default export).`
   )
-  const Page = fileExports.Page || fileExports.default
-  return Page
+  const pageExports = fileExports
+  const Page = pageExports.Page || pageExports.default
+  return { Page, pageExports }
 }
 
 function getPageInfo(): {
   pageId: string
-  contextProps: Record<string, unknown>
+  pageContext: Record<string, unknown>
 } {
-  const pageId = window.__vite_plugin_ssr.pageId
-  const contextProps = {}
-  Object.assign(contextProps, window.__vite_plugin_ssr.contextProps)
-  addUrlToContextProps(contextProps, urlFullOriginal)
-  return { pageId, contextProps }
+  const pageContext: Record<string, unknown> = {}
+  Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
+
+  assert(typeof pageContext._pageId === 'string')
+  const pageId = pageContext._pageId
+
+  return { pageId, pageContext }
 }
 
 declare global {
   interface Window {
-    __vite_plugin_ssr: {
-      pageId: string
-      contextProps: Record<string, unknown>
-    }
+    __vite_plugin_ssr__pageContext: Record<string, unknown>
   }
 }

@@ -3,12 +3,12 @@
     "start": "node ./server"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^1.2.2",
+    "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.11",
     "@vue/server-renderer": "^3.0.11",
     "express": "^4.17.1",
-    "vite": "^2.3.2",
-    "vite-plugin-ssr": "0.1.0-beta.44",
+    "vite": "^2.3.6",
+    "vite-plugin-ssr": "0.1.2",
     "vue": "^3.0.11",
     "vuex": "^4.0.0"
   }

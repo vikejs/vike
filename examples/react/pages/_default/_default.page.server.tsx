@@ -2,32 +2,31 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { html } from "vite-plugin-ssr";
 import { PageLayout } from "./PageLayout";
+import { PageContext } from "./types";
+import { getPageTitle } from "./getPageTitle";
 
 export { render };
 export { passToClient };
 
-const passToClient = ["pageProps", "docTitle"];
+const passToClient = ["pageProps", "documentProps"];
 
-function render({
-  Page,
-  contextProps,
-}: {
-  Page: (pageProps: any) => JSX.Element;
-  contextProps: Record<string, any>;
-}) {
+function render(pageContext: PageContext) {
+  const { Page, pageProps } = pageContext;
   const pageContent = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageProps} />
     </PageLayout>
   );
+
+  const title = getPageTitle(pageContext);
 
   return html`<!DOCTYPE html>
     <html>
       <head>
-        <title>${contextProps.docTitle || "Demo"}</title>
+        <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(pageContent)}</div>
+        <div id="page-view">${html.dangerouslySkipEscape(pageContent)}</div>
       </body>
     </html>`;
 }

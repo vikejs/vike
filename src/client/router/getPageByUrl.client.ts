@@ -1,6 +1,5 @@
-import { assert, isPlainObject } from '../../utils'
-import { getContextProps } from './getContextProps.client'
-import { getPageId } from './getPageId.client'
+import { assert, hasProp, isPlainObject } from '../../utils'
+import { getPageContext } from './getPageContext.client'
 import { getPageById } from '../getPage.client'
 
 export { getPageByUrl }
@@ -8,11 +7,14 @@ export { getPageByUrl }
 async function getPageByUrl(
   url: string,
   useOriginalDataWhenPossible: boolean = true
-): Promise<{ Page: unknown; contextProps: Record<string, unknown> }> {
-  const [Page, contextProps] = await Promise.all([
-    (async () => await getPageById(await getPageId(url, useOriginalDataWhenPossible)))(),
-    (async () => await getContextProps(url, useOriginalDataWhenPossible))()
-  ])
-  assert(isPlainObject(contextProps))
-  return { Page, contextProps }
+): Promise<{ Page: unknown; pageExports: Record<string, unknown> }> {
+  const pageContext = await getPageContext(url, useOriginalDataWhenPossible)
+  assert(isPlainObject(pageContext))
+  assert(typeof pageContext._pageId === 'string')
+  const { Page, pageExports } = await getPageById(pageContext._pageId)
+  pageContext.Page = Page
+  assert(hasProp(pageContext, 'Page'))
+  pageContext.pageExports = pageExports
+  assert(hasProp(pageContext, 'pageExports', 'object'))
+  return pageContext
 }

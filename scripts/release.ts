@@ -42,6 +42,7 @@ async function gitPush() {
 }
 
 async function changelog() {
+  // npx conventional-changelog -p angular -i CHANGELOG.md -s --pkg src/
   await run('npx', ['conventional-changelog', '-p', 'angular', '-i', 'CHANGELOG.md', '-s', '--pkg', DIR_SRC])
 }
 async function commit(tag: string) {
@@ -67,7 +68,7 @@ function getVersion(): { versionNew: string; versionCurrent: string } {
   const pkg = require(`${DIR_SRC}/package.json`) as PackageJson
   const versionCurrent = pkg.version
   assert(versionCurrent)
-  const versionNew = semver.inc(versionCurrent, 'prerelease')
+  const versionNew = semver.inc(versionCurrent, 'patch')
   return { versionNew, versionCurrent }
 }
 function updateVersion(versionNew: string) {
@@ -93,8 +94,14 @@ async function updateDependencies(versionNew: string, versionCurrent: string) {
     updatePkg(pkgPath, (pkg) => {
       const version = pkg.dependencies['vite-plugin-ssr']
       assert(version)
-      assert.strictEqual(version, `${versionCurrent}`)
-      pkg.dependencies['vite-plugin-ssr'] = `${versionNew}`
+      let versionCurrentSemver = versionCurrent
+      let versionNewSemver = versionNew
+      if (pkgPath.includes('boilerplates/boilerplate-')) {
+        versionCurrentSemver = '^' + versionCurrentSemver
+        versionNewSemver = '^' + versionNewSemver
+      }
+      assert.strictEqual(version, versionCurrentSemver)
+      pkg.dependencies['vite-plugin-ssr'] = versionNewSemver
     })
     // Update package-json.lock
     // await run('npm', ['install'])

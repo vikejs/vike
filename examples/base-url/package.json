@@ -6,7 +6,7 @@
     "prod:server": "npm run build && npm run prod:serve:server",
     "// Build for production": "",
     "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
-    "build:clean": "rm -rf dist/",
+    "build:clean": "rimraf dist/",
     "build:vite": "vite build --base=/dist/client/ && vite build --base=/dist/client/ --ssr",
     "build:prerender": "vite-plugin-ssr prerender",
     "prod:serve:server": "cross-env NODE_ENV=production node ./server",
@@ -19,8 +19,9 @@
     "express": "^4.17.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
     "serve": "^11.3.2",
-    "vite": "^2.3.2",
-    "vite-plugin-ssr": "0.1.0-beta.44"
+    "vite": "^2.3.6",
+    "vite-plugin-ssr": "0.1.2"
   }
 }

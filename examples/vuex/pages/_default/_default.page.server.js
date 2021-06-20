@@ -3,22 +3,23 @@ import { html } from 'vite-plugin-ssr'
 import { createApp } from './app'
 
 export { render }
-export { addContextProps }
+export { addPageContext }
 export { passToClient }
 
 const passToClient = ['INITIAL_STATE']
 
-async function render({ contextProps }) {
-  const { appHtml } = contextProps
+async function render(pageContext) {
+  const { appHtml } = pageContext
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+        <div id="app">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }
 
-async function addContextProps({ Page }) {
+async function addPageContext(pageContext) {
+  const { Page } = pageContext
   const { app, store } = createApp({ Page })
 
   const appHtml = await renderToString(app)

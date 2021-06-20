@@ -56,8 +56,9 @@ function entryPoints(config: UserConfig): Record<string, string> {
 }
 
 function serverEntryPoints(): Record<string, string> {
-  const serverEntry = require.resolve('../../page-files/pageFiles.node.ts')
-  const entryName = pathFilename(serverEntry).replace(/\.ts$/, '')
+  const serverEntry = require.resolve('../../../dist/esm/page-files/pageFiles.node.js')
+  assert(serverEntry.endsWith('.js'))
+  const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
   const entryPoints = {
     [entryName]: serverEntry
   }

@@ -8,17 +8,17 @@ export { passToClient };
 
 const passToClient = ["pageProps"];
 
-async function render({ Page, contextProps }) {
-  const { url } = contextProps;
+async function render(pageContext) {
+  const { Page, pageProps, url } = pageContext;
   const pageHtml = renderToString(
     <StaticRouter location={url}>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageProps} />
     </StaticRouter>
   );
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="react-root">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="react-root">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

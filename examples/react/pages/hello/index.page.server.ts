@@ -1,12 +1,8 @@
-export { addContextProps };
+export { addPageContext };
 export { prerender };
 
-async function addContextProps({
-  contextProps,
-}: {
-  contextProps: { routeParams: { name: string } };
-}) {
-  const { name } = contextProps.routeParams;
+async function addPageContext(pageContext: { routeParams: { name: string } }) {
+  const { name } = pageContext.routeParams;
   const pageProps = { name };
   return {
     pageProps,

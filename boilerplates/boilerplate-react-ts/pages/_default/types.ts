@@ -1,5 +1,10 @@
 export type ReactComponent = (pageProps: PageProps) => JSX.Element;
 export type PageProps = {};
-export type ContextProps = {
+export type PageContext = {
+  Page: ReactComponent;
   pageProps: PageProps;
+  documentProps?: {
+    title?: string;
+    description?: string;
+  };
 };

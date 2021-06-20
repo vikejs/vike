@@ -10,14 +10,20 @@ export { passToClient };
 // See https://github.com/brillout/vite-plugin-ssr#data-fetching
 const passToClient = ["pageProps"];
 
-function render({ Page, contextProps }) {
+function render(pageContext) {
+  const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageProps} />
     </PageLayout>
   );
-  const title = "My Vite SSR app";
-  const description = "A Vite SSR app";
+
+  // See https://github.com/brillout/vite-plugin-ssr#html-head
+  const { documentProps } = pageContext;
+  const title = documentProps?.title || "Vite SSR app";
+  const description =
+    documentProps?.description || "An app using Vite and vite-plugin-ssr.";
+
   return html`<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -28,7 +34,7 @@ function render({ Page, contextProps }) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

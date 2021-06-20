@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import { prerender } from '../prerender'
-const pkg = require('../../package.json')
+const pkg = require('../../../package.json')
 
 const cli = cac(pkg.name)
 
@@ -11,7 +11,7 @@ cli
     '--root <path>',
     '[string] root directory of your project (where `vite.config.js` and `dist/` live) (default: `process.cwd()`)'
   )
-  .option('--client-router', 'serialize `contextProps` to JSON files for Client-side Routing')
+  .option('--client-router', 'serialize `pageContext` to JSON files for Client-side Routing')
   .option('--base <path>', `[string] public base path (default: /)`)
   .action(async (options) => {
     const { partial, clientRouter, base, root } = options

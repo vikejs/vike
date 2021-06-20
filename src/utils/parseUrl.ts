@@ -5,11 +5,13 @@ export { getUrlPathname }
 export { getUrlParsed }
 export { getUrlParts }
 export { getUrlFullWithoutHash }
+export type { UrlParsed }
 
 /**
  Returns `${pathname}${search}${hash}`. (Basically removes the origin.)
 */
 function getUrlFull(url?: string): string {
+  // TODO
   url = retrieveUrl(url)
   const { origin } = parseWithNewUrl(url)
   assert(url.startsWith(origin), { url })
@@ -48,9 +50,13 @@ function getUrlParts(url?: string): { origin: string; pathname: string; searchSt
   return { origin, pathname, searchString, hashString }
 }
 
-function getUrlParsed(
-  url?: string
-): { origin: string; pathname: string; search: null | Record<string, string>; hash: null | string } {
+type UrlParsed = {
+  origin: string
+  pathname: string
+  search: null | Record<string, string>
+  hash: null | string
+}
+function getUrlParsed(url?: string): UrlParsed {
   url = retrieveUrl(url)
 
   const { origin, pathname, searchString, hashString } = getUrlParts(url)

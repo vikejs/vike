@@ -2,28 +2,25 @@ import { App, Component } from 'vue';
 import { Router } from 'vue-router';
 import { getRoutes } from '../isomorphic/get-routes';
 
-type ContextProps = Record<string, unknown> & { urlPathname: string, routes?: {pageId: string, pageRoute: string}[] }
-
-type Config = { 
-  contextProps: ContextProps,
+type PageContext = Record<string, unknown> & { urlPathname: string, routes?: {pageId: string, pageRoute: string}[] } & {
   Page: Component
 };
 
-export function vitePluginSsrRoutes(config: Config) {
+export function vitePluginSsrRoutes(pageContext: PageContext) {
   return {
     install(app: App) {
-      const { contextProps, Page } = config;
+      const { Page } = pageContext;
 
-      if (!contextProps) {
-        throw new Error('vitePluginSsrRoutes plugin must be passed contextProps at initialization when used on the server.');
+      if (!pageContext) {
+        throw new Error('vitePluginSsrRoutes plugin must be passed pageContext at initialization when used on the server.');
       }
 
       if (!Page) {
         throw new Error('vitePluginSsrRoutes plugin must be passed Page component at initialization when used on the server.');
       }
 
-      const contextPropsByPath = {
-        [contextProps.urlPathname]: contextProps
+      const pageContextByPath = {
+        [pageContext.urlPathname]: pageContext
       };
 
       const router : Router = app.config.globalProperties.$router;
@@ -40,7 +37,7 @@ export function vitePluginSsrRoutes(config: Config) {
             meta: {
               isViteSsrPageRoute: true
             },
-            props: (route) => contextPropsByPath[route.fullPath],
+            props: (route) => pageContextByPath[route.fullPath],
             component: Page
           })
         })
@@ -51,8 +48,8 @@ export function vitePluginSsrRoutes(config: Config) {
           await (initRoutesPromise = initRoutes())
           return to.fullPath;
         }
-        if (to.fullPath !== contextProps.urlPathname) {
-          throw new Error(`Vue SSR process expected to route to ${contextProps.urlPathname} but was routed to ${to.fullPath}`)
+        if (to.fullPath !== pageContext.urlPathname) {
+          throw new Error(`Vue SSR process expected to route to ${pageContext.urlPathname} but was routed to ${to.fullPath}`)
         }
       });
     }

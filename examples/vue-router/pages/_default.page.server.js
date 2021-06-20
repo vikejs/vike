@@ -6,7 +6,8 @@ import { vitePluginSsrRoutes } from '@vite-plugin-ssr/vue-router/server/plugin';
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
+  const { Page } = pageContext
   const app = createApp({})
 
   const router = createRouter({
@@ -15,10 +16,10 @@ async function render({ Page, contextProps }) {
   });
 
   app.use(router);
-  app.use(vitePluginSsrRoutes({ contextProps, Page }));
+  app.use(vitePluginSsrRoutes(pageContext));
 
   // set the router to the desired URL before rendering
-  router.push(contextProps.urlFull)
+  router.push(pageContext.url)
   await router.isReady()
 
   const appHtml = await renderToString(app)
@@ -26,7 +27,7 @@ async function render({ Page, contextProps }) {
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+        <div id="app">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

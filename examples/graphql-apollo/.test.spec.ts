@@ -8,9 +8,6 @@ test("page is rendered to HTML", async () => {
     "<li>Angola</li><li>Antarctica</li><li>Argentina</li><li>American Samoa</li>"
   );
   expect(html).toContain("<button>Counter <span>0</span></button>");
-  expect(html).toMatch(
-    '<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {apolloIntialState:{ROOT_QUERY:'
-  );
 });
 
 test("page is hydrated to DOM", async () => {

@@ -6,7 +6,7 @@
 
 # `vite-plugin-ssr`
 
-Simple, full-fledged, do-one-thing-do-it-well.
+Vite SSR plugin. Simple, full-fledged, do-one-thing-do-it-well.
 
 <a href="https://discord.gg/qTq92FQzKb">
   <img src="/docs/discord.svg" height="32" width="117.078" alt="Discord vite-plugin-ssr"/>
@@ -45,6 +45,8 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> &nbsp;&nbsp; [HTML `<head>`](#html-head)
 <br/> &nbsp;&nbsp; [Page Redirection](#page-redirection)
 <br/> &nbsp;&nbsp; [Base URL](#base-url)
+<br/> &nbsp;&nbsp; [Import Paths Alias Mapping](#import-paths-alias-mapping)
+<br/> &nbsp;&nbsp; [`.env` Files](#env-files)
 <br/><sub>&nbsp;&nbsp;&nbsp; Integrations</sub>
 <br/> &nbsp;&nbsp; [Authentication](#authentication) (Auth0, Passport.js, Grant, ...)
 <br/> &nbsp;&nbsp; [Markdown](#markdown)
@@ -61,10 +63,10 @@ Simple, full-fledged, do-one-thing-do-it-well.
 <br/> **API**
 <br/><sub>&nbsp;&nbsp;&nbsp; Node.js & Browser</sub>
 <br/> &nbsp;&nbsp; [`*.page.js`](#pagejs)
-<br/> &nbsp;&nbsp; [`contextProps`](#contextprops)
+<br/> &nbsp;&nbsp; [`pageContext`](#pagecontext)
 <br/><sub>&nbsp;&nbsp;&nbsp; Node.js</sub>
 <br/> &nbsp;&nbsp; [`*.page.server.js`](#pageserverjs)
-<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addContextProps }`](#export--addcontextprops-)
+<br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { addPageContext }`](#export--addpagecontext-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { passToClient }`](#export--passtoclient-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { render }`](#export--render-)
 <br/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8226;&nbsp; [`export { prerender }`](#export--prerender-)
@@ -97,20 +99,22 @@ Simple, full-fledged, do-one-thing-do-it-well.
 
 `vite-plugin-ssr` provides a similar experience than Nuxt/Next.js, but with Vite's wonderful DX, and as a do-one-thing-do-it-well tool.
 
-- **Do-One-Thing-Do-It-Well**. Only takes care of SSR, and works with: other Vite plugins, any view framework (Vue, React, ...), and any server environment (Express, Fastify, Cloudflare Workers, Firebase, ...).
-- **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate tools (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
-- **SPA & SSR & HTML**. Render some pages as SPA, some with SSR, and some to HTML-only (with zero/minimal browser-side JavaScript).
+- **Do-One-Thing-Do-It-Well**. Only takes care of SSR and works with: other Vite plugins, any view framework (Vue, React, ...), and any server environment (Express, Fastify, Cloudflare Workers, Firebase, ...).
+- **Render Control**. You control how your pages are rendered enabling you to easily and naturally integrate any tool you want (Vuex, Redux, Apollo GraphQL, Service Workers, ...).
+- **SPA & SSR & HTML**. Render some pages as SPA, some with SSR, and some to HTML-only (zero/minimal browser-side JavaScript).
 - **Pre-render / SSG / Static Websites**. Deploy your app to a static host (Netlify, GitHub Pages, Cloudflare Pages, ...) by pre-rendering your pages.
 - **Routing**. You can choose between Server-side Routing (for a simple architecture) and Client-side Routing (for faster/animated page transitions). You can also use Vue Router and React Router.
-- **HMR**. Browser as well as server code is automatically reloaded.
+- **HMR**. Browser as well as server code is automatically refreshed/reloaded.
 - **Fast Cold Start**. [Node.js] Your pages are lazy-loaded; adding pages doesn't increase the cold start of your serverless functions.
 - **Code Splitting**. [Browser] Each page loads only the code it needs. Lighthouse score of 100%.
 - **Simple Design**. Simple overall design resulting in a tool that is small, robust, and easy to use.
-- **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and with `vite-plugin-ssr` you get an SSR architecture that scales from small hobby projects with simple needs to large-scale enterprise projects with highly custom SSR needs.
-- **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; any bug you may encounter will be quickly fixed.
-- **Responsive**. Made with :heart:; GitHub issues are welcome and answered; conversations are welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
+- **Scalable**. Your source code can scale to thousands of files with no hit on dev speed (thanks to Vite's lazy transpiling), and `vite-plugin-ssr` provides you with an SSR architecture that scales from small hobby projects with simple needs to large-scale enterprise projects with highly custom SSR needs.
+- **No Known Bug**. The source code of `vite-plugin-ssr` has no known bug; if you encounter a bug then it will be quickly fixed.
+- **Responsive**. Made with :heart:. GitHub issues are welcome and answered. Conversations are welcome at [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb).
 
-To get an idea of what it's like to use `vite-plugin-ssr`, check out the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
+Get an idea of what it's like to use `vite-plugin-ssr` with the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
+
+Scaffold a new app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually add](#manual-installation) `vite-plugin-ssr` to your existing Vite app. (Although we recommend to first read the Vue/React tour before getting started.)
 
 <br/><br/>
 
@@ -118,7 +122,7 @@ To get an idea of what it's like to use `vite-plugin-ssr`, check out the [Vue To
 ### Vue Tour
 
 Similarly to Nuxt,
-you create pages by defining `.page.vue` files.
+you create a page by defining a new `.page.vue` file.
 
 ```vue
 <!-- /pages/index.page.vue -->
@@ -147,20 +151,19 @@ pages/index.page.vue        /
 pages/about.page.vue        /about
 ```
 
-If you need more control, you can create a `.page.route.js` file to define a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
+You can also define a page's route with a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// We define a Route Function for `/pages/index.page.vue`:
-export default ({ url }) => url === '/'
+// Note how the two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// knows that `pages/index.page.route.js` defines the route of `pages/index.page.vue`.
 
-/* Or we define a Route String:
-export default '/'
-*/
+// Route Function
+export default pageContext => pageContext.url === '/'
 
-// Or we don't create `.page.route.js` and Filesystem Routing is used
+// If we don't create a `.page.route.js` file then Filesystem Routing is used
 ```
 
 Unlike Nuxt,
@@ -176,9 +179,10 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext
   const app = createSSRApp({
-    render: () => h(Page, contextProps.pageProps)
+    render: () => h(Page, pageProps)
   })
 
   const appHtml = await renderToString(app)
@@ -191,7 +195,7 @@ async function render({ Page, contextProps }) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${html.dangerouslySetHtml(appHtml)}</div>
+        <div id="app">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }
@@ -206,33 +210,30 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  // `Page` and `contextProps` are preloaded in production
-  const { Page, contextProps } = await getPage()
-
+  const pageContext = await getPage() // (Page context is preloaded in production)
+  const { Page, pageProps } = pageContext
   const app = createSSRApp({
-    render: () => h(Page, contextProps.pageProps)
+    render: () => h(Page, pageProps)
   })
-
   app.mount('#app')
 }
 ```
 
 The `render()` hook in `/pages/_default.page.server.js` gives you full control over how your pages are rendered,
 and `/pages/_default.page.client.js` gives you full control over the browser-side code.
-This control enables you to *easily* and *naturally*:
- - Use any tool you want such as Vue Router and Vuex.
- - Use Vue 2, Vue 3, any any future Vue version (you can actually use any view framework you want, e.g. React).
+This control enables you to *easily* and *naturally* use any tool you want (Vuex, GraphQL, Service Worker, ...).
 
-Note the suffixes of the files we created:
+There are four suffixes:
  - `.page.js`: exports the page's root Vue component.
- - `.page.client.js` (optional): defines the page's browser-side code.
- - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
- - `.page.route.js` (optional): exports the page's Route String or Route Function.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: exports the page's hooks (always run in Node.js).
+ - `.page.route.js`: exports the page's Route String or Route Function.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
+you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
-We already defined `_default` files above,
-which means that all we have to do now to create a new page is to define a new `.page.vue` file.
+We already defined our `_default` files,
+which means that we can create a new page solely by defining a new `.page.vue` file (the `.page.route.js` file is optional).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -252,10 +253,7 @@ The `_default` files can be overridden. For example, you can create a page with 
 By overriding `_default.page.server.js#render` you can
 even render some of your pages with a different view framework, e.g. another Vue version (for progressive upgrade) or even React.
 
-Note how files are collocated and share the same base `/pages/about.page.`;
-this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.vue`.
-
-Let's now have a look at how to fetch data for a page that has a parameterized route.
+Let's now have a look at how to fetch data.
 
 ```vue
 <!-- /pages/star-wars/movie.page.vue -->
@@ -276,6 +274,7 @@ export default { props: pageProps }
 // /pages/star-wars/movie.page.route.js
 // Environment: Node.js
 
+// Route String
 export default '/star-wars/:movieId'
 ```
 ```js
@@ -284,36 +283,36 @@ export default '/star-wars/:movieId'
 
 import fetch from 'node-fetch'
 
-export async function addContextProps({ contextProps }) {
-  // The route parameter of `/star-wars/:movieId` is available at `contextProps.routeParams.movieId`
-  const { movieId } = contextProps.routeParams
+export async function addPageContext(pageContext) {
+  // The route parameter of `/star-wars/:movieId` is available at `pageContext.routeParams.movieId`
+  const { movieId } = pageContext.routeParams
 
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
   let movie = await response.json()
 
-  // The render/hydrate functions we defined earlier use `contextProps.pageProps`.
-  // This is where we define `contextProps.pageProps`.
+  // The render/hydrate functions we defined earlier use `pageContext.pageProps`.
+  // This is where we define `pageContext.pageProps`.
   const pageProps = { movie }
 
-  // `pageProps` is now available at `contextProps.pageProps`
+  // `pageProps` is now available at `pageContext.pageProps`
   return { pageProps }
 }
 
-// By default `contextProps` are available only on the server. But our hydrate function
-// we defined earlier runs in the browser and uses `contextProps.pageProps`. We use
-// `passToClient` to tell `vite-plugin-ssr` to serialize and make `contextProps.pageProps`
+// By default `pageContext` is available only on the server. But our hydrate function
+// we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
+// `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
 // available in the browser.
 export const passToClient = ['pageProps']
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an object we create to
 conveniently hold all props of the root Vue component.
-(We could have defined `movie` directly on `contextProps.movie` but it's cumbersome:
-our render/hydrate function would then need to know what `contextProps` should be passed to the root Vue component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root Vue component.)
 
-That's it, we have seen most of `vite-plugin-ssr`'s interface;
-not only is `vite-plugin-ssr` flexible but also simple and easy to use.
+That's it, and we have actually already seen most of the interface;
+not only is `vite-plugin-ssr` flexible, but it is also simple, easy, and fun to use.
+
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
 <br/><br/>
 
@@ -321,7 +320,7 @@ not only is `vite-plugin-ssr` flexible but also simple and easy to use.
 ### React Tour
 
 Similarly to Next.js,
-you create pages by defining `.page.jsx` files.
+you create a page by defining a new `.page.jsx` file.
 
 ```jsx
 // /pages/index.page.jsx
@@ -354,20 +353,19 @@ pages/index.page.jsx        /
 pages/about.page.jsx        /about
 ```
 
-If you need more control, you can create a `.page.route.js` file to define a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
+You can also define a page's route with a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
 
 ```js
 // /pages/index.page.route.js
 // Environment: Node.js (and Browser if you opt-in for Client-side Routing)
 
-// We define a Route Function for `/pages/index.page.jsx`:
-export default ({ url }) => url === "/";
+// Note how the two files share the same base `pages/index.page.`; this is how `vite-plugin-ssr`
+// knows that `pages/index.page.route.js` defines the route of `pages/index.page.jsx`.
 
-/* Or we define a Route String:
-export default "/";
-*/
+// Route Function
+export default pageContext => pageContext.url === '/';
 
-// Or we don't create `.page.route.js` and Filesystem Routing is used
+// If we don't create a `.page.route.js` file then Filesystem Routing is used
 ```
 
 Unlike Next.js,
@@ -383,9 +381,10 @@ import { html } from "vite-plugin-ssr";
 
 export { render };
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext;
   const viewHtml = ReactDOMServer.renderToString(
-    <Page {...contextProps.pageProps} />
+    <Page {...pageProps} />
   );
 
   const title = "Vite SSR";
@@ -396,7 +395,7 @@ async function render({ Page, contextProps }) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(viewHtml)}</div>
+        <div id="page-view">${html.dangerouslySkipEscape(viewHtml)}</div>
       </body>
     </html>`;
 }
@@ -412,11 +411,10 @@ import { getPage } from "vite-plugin-ssr/client";
 hydrate();
 
 async function hydrate() {
-  // `Page` and `contextProps` are preloaded in production
-  const { Page, contextProps } = await getPage();
-
+  const pageContext = await getPage(); // (Page context is preloaded in production)
+  const { Page, pageProps } = pageContext
   ReactDOM.hydrate(
-    <Page {...contextProps.pageProps} />,
+    <Page {...pageProps} />,
     document.getElementById("page-view")
   );
 }
@@ -424,20 +422,19 @@ async function hydrate() {
 
 The `render()` hook in `/pages/_default.page.server.jsx` gives you full control over how your pages are rendered,
 and `/pages/_default.page.client.jsx` gives you full control over the browser-side code.
-This control enables you to *easily* and *naturally*:
- - Use any tool you want such as React Router and Redux.
- - Use Preact, Inferno, Solid and any other React-like alternative.
+This control enables you to *easily* and *naturally* use any tool you want (Redux, GraphQL, Service Worker, Preact, ...).
 
-Note the suffixes of the files we created:
+There are four suffixes:
  - `.page.js`: exports the page's root React component.
- - `.page.client.js` (optional): defines the page's browser-side code.
- - `.page.server.js` (optional): exports the page's hooks (always run in Node.js).
- - `.page.route.js` (optional): exports the page's Route String or Route Function.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: exports the page's hooks (always run in Node.js).
+ - `.page.route.js`: exports the page's Route String or Route Function.
 
-Instead of creating a `.page.client.js` and `.page.server.js` file for each page, you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
+you can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
 
-We already defined `_default` files above,
-which means that all we have to do now to create a new page is to define a new `.page.jsx` file.
+We already defined our `_default` files,
+which means that we can create a new page solely by defining a new `.page.jsx` file (the `.page.route.js` file is optional).
 
 The `_default` files can be overridden. For example, you can create a page with a different browser-side code than your other pages.
 
@@ -459,10 +456,7 @@ function Page() {
 By overriding `_default.page.server.js#render` you can
 even render some of your pages with a different view framework, e.g. another React version (for progressive upgrade) or even Vue.
 
-Note how files are collocated and share the same base `/pages/about.page.`;
-this is how you tell `vite-plugin-ssr` that `/pages/about.page.client.js` is the browser-side code of `/pages/about.page.jsx`.
-
-Let's now have a look at how to fetch data for a page that has a parameterized route.
+Let's now have a look at how to fetch data.
 
 ```jsx
 // /pages/star-wars/movie.page.jsx
@@ -485,6 +479,7 @@ function Page(pageProps) {
 // /pages/star-wars/movie.page.route.js
 // Environment: Node.js
 
+// Route String
 export default "/star-wars/:movieId";
 ```
 ```js
@@ -493,38 +488,36 @@ export default "/star-wars/:movieId";
 
 import fetch from "node-fetch";
 
-export async function addContextProps({ contextProps }) {
-  // The route parameter of `/star-wars/:movieId` is available at `contextProps.routeParams.movieId`
-  const { movieId } = contextProps.routeParams
+export async function addPageContext(pageContext) {
+  // The route parameter of `/star-wars/:movieId` is available at `pageContext.routeParams.movieId`
+  const { movieId } = pageContext.routeParams
 
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
   let movie = await response.json();
 
-  // The render/hydrate functions we defined earlier use `contextProps.pageProps`.
-  // This is where we define `contextProps.pageProps`.
+  // The render/hydrate functions we defined earlier use `pageContext.pageProps`.
+  // This is where we define `pageContext.pageProps`.
   const pageProps = { movie };
 
-  // `pageProps` is now available at `contextProps.pageProps`
+  // `pageProps` is now available at `pageContext.pageProps`
   return { pageProps };
 }
 
-// By default `contextProps` are available only on the server. But our hydrate function
-// we defined earlier runs in the browser and uses `contextProps.pageProps`. We use
-// `passToClient` to tell `vite-plugin-ssr` to serialize and make `contextProps.pageProps`
+// By default `pageContext` is available only on the server. But our hydrate function
+// we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
+// `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
 // available in the browser.
 export const passToClient = ["pageProps"];
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`; it's an object we create to
 conveniently hold all props of the root React component.
-(We could have defined `movie` directly on `contextProps.movie` but it's cumbersome:
-our render/hydrate function would then need to know what `contextProps` should be passed to the root React component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root React component.)
 
-That's it, we have seen most of `vite-plugin-ssr`'s interface;
-not only is `vite-plugin-ssr` flexible but also simple and easy to use.
+That's it, and we have actually already seen most of the interface;
+not only is `vite-plugin-ssr` flexible, but it is also simple, easy, and fun to use.
 
-</details>
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
 <br/><br/>
 
@@ -593,10 +586,10 @@ If you already have an existing Vite app and don't want to start from scratch:
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You fech data by defining `export { addContextProps, passToClient }` in the Page's `.page.server.js` file.
+You fech data by defining `export { addPageContext, passToClient }` in the Page's `.page.server.js` file.
 
  - [Example](#example)
- - [Pass `contextProps` to any/all components](#pass-contextprops-to-anyall-components)
+ - [Pass `pageContext` to any/all components](#pass-pagecontext-to-anyall-components)
  - [Data Fetching with Stateful Component](#data-fetching-with-stateful-component)
  - [GraphQL](#graphql)
  - [Store (Vuex/Redux...)](#store-vuexredux)
@@ -611,13 +604,13 @@ You fech data by defining `export { addContextProps, passToClient }` in the Page
 
 import fetch from "node-fetch";
 
-export { addContextProps }
-// Tell `vite-plugin-ssr` to make `contextProps.pageProps` available in the browser.
-// Make sure that `contextProps.pageProps` is serializable: `vite-plugin-ssr` will
-// serialize and pass `contextProps.pageProps` to the browser.
+export { addPageContext }
+// Tell `vite-plugin-ssr` to make `pageContext.pageProps` available in the browser.
+// Make sure that `pageContext.pageProps` is serializable: `vite-plugin-ssr` will
+// serialize and pass `pageContext.pageProps` to the browser.
 export const passToClient = ['pageProps']
 
-async function addContextProps({ contextProps }) {
+async function addPageContext(pageContext) {
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
   const response = await fetch("https://movies.example.org/api")
   let movies = await response.json()
@@ -640,18 +633,19 @@ import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext
   const pageHtml = await renderToHtml(
     // Our convenience object `pageProps` allows us to pass all root component props at once.
-    createElement(Page, contextProps.pageProps)
+    createElement(Page, pageProps)
   )
   /* JSX:
-  const pageHtml = await renderToHtml(<Page {...contextProps.pageProps} />)
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
   */
 
   return html`<html>
     <div id='view-root'>
-      ${html.dangerouslySetHtml(pageHtml)}
+      ${html.dangerouslySkipEscape(pageHtml)}
     </div>
   </html>`
 }
@@ -666,15 +660,15 @@ import { hydrateToDom, createElement } from 'some-view-framework'
 hydrate()
 
 async function hydrate() {
-  const { Page, contextProps } = await getPage()
+  const pageContext = await getPage()
   await hydrateToDom(
-    // Thanks to `passToClient = ['pageProps']` our `contextProps.pageProps` is
+    // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
     // available here in the browser.
-    createElement(Page, contextProps.pageProps),
+    createElement(pageContext.Page, pageContext.pageProps),
     document.getElementById('view-root')
   )
   /* JSX:
-  await hydrateToDom(<Page {...contextProps.pageProps} />, document.getElementById('view-root'))
+  await hydrateToDom(<Page {...pageContext.pageProps} />, document.getElementById('view-root'))
   */
 }
 ```
@@ -684,7 +678,7 @@ async function hydrate() {
 
 export { Page }
 
-// In our `render()` and `hydrate()` functions above, we pass `contextProps.pageProps` to `Page`
+// In our `render()` and `hydrate()` functions above, we pass `pageContext.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
 
@@ -694,14 +688,14 @@ function Page(pageProps) {
 
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root component.
-We could have defined `movies` directly on `contextProps.movies` but it's cumbersome:
-our render/hydrate function would then need to know what `contextProps` should be passed to the root component, whereas with `contextProps.pageProps` our render/hydrate function can simply pass `contextProps.pageProps` to the root component.
+We could have defined `movies` directly on `pageContext.movies` but it's cumbersome:
+our render/hydrate function would then need to know what `pageContext` should be passed to the root component, whereas with `pageContext.pageProps` our render/hydrate function can simply pass `pageContext.pageProps` to the root component.
 
 <br/>
 
-#### Pass `contextProps` to any/all components
+#### Pass `pageContext` to any/all components
 
-You can pass some `contextProps` to any/all components of your component tree:
+You can pass some `pageContext` to any/all components of your component tree:
  - React: [React.createContext](https://reactjs.org/docs/context.html)
  - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
  - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
@@ -710,13 +704,13 @@ You can pass some `contextProps` to any/all components of your component tree:
 
 #### Data Fetching with Stateful Component
 
-We can also fetch data by using a stateful component by making [`contextProps.routeParams`](#contextprops) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-contextprops-to-anyall-components). Note that with this technique, the fetched data is *not* rendered to HTML (which defeats the purpose of SSR).
+We can also fetch data by using a stateful component by making [`pageContext.routeParams`](#pagecontext) available everywhere with `export const passToClient = ['routeParams']` and then [pass it to the stateful component](#pass-pagecontext-to-anyall-components). Note that with this technique, the fetched data is *not* rendered to HTML.
 
 <br/>
 
 #### GraphQL
 
-When using GraphQL with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/) you can define GraphQL queries/fragments on a component-level, but you still always fetch data globally on a page-level. With `vite-plugin-ssr`, you do this global fetch in the `addContextProps()` hook.
+When using GraphQL with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/) you can define GraphQL queries/fragments on a component-level, but you still always fetch data globally on a page-level. With `vite-plugin-ssr`, you do this global fetch in the `addPageContext()` hook.
  - [/examples/graphql-apollo/](examples/graphql-apollo/)
 
 In general, with `vite-plugin-ssr`, you have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool you are using (e.g. [Apollo GraphQL - SSR Guide](https://www.apollographql.com/docs/react/performance/server-side-rendering/)).
@@ -764,7 +758,7 @@ To define a parameterized route, or for more control, you can `export default` a
 export default '/product/:productId'
 ```
 
-The `productId` value is available at `contextProps.productId` so that you can fetch data in `async addContextProps({contextProps})` which is explained at [Data Fetching](#data-fetching).
+The `productId` value is available at `pageContext.routeParams.productId` so that you can fetch data in `async addPageContext(pageContext)` which is explained at [Data Fetching](#data-fetching).
 
 For full programmatic flexibility, you can define a Route Function.
 
@@ -772,8 +766,9 @@ For full programmatic flexibility, you can define a Route Function.
 // /pages/admin.page.route.js
 
 // Route Functions allow us to implement advanced routing such as route guards.
-export default ({ url, contextProps }) => {
-  if (url === '/admin' && contextProps.user.isAdmin) {
+export default (pageContext) => {
+  const { url } = pageContext
+  if (url === '/admin' && pageContext.user.isAdmin) {
     return { match: true }
   }
 }
@@ -824,8 +819,8 @@ have a strong rationale.
 
 #### Active Links `<a class="is-active">`
 
-Pass `contextProps.urlPathname` (available on both the client and the server)
-[to your link component](#pass-contextprops-to-anyall-components).
+Pass `pageContext.urlPathname` (available on both the client and the server)
+[to your link component](#pass-pagecontext-to-anyall-components).
 You can then set `isActive = href===urlPathname` in your link component.
 
 <br/>
@@ -854,10 +849,11 @@ export default `/product/:productId/:productView`
 // product.page.route.js
 
 // We can also use a Route Function
-export default ({ url }) => {
+export default (pageContext) => {
+  const { url } = pageContext
   if (! url.startsWith('/product/')) return false
   const [productId, productView] = url.split('/').slice(2)
-  return { match: true, contextProps: { productId, productView } }
+  return { match: true, routeParams: { productId, productView } }
 }
 ```
 
@@ -899,7 +895,7 @@ import { useClientRouter } from 'vite-plugin-ssr/client/router'
 // create this `product.page.client.js` file.)
 
 useClientRouter({
-  render({ Page, contextProps }) {
+  render(pageContext) {
     /* ... */
   }
 })
@@ -907,7 +903,7 @@ useClientRouter({
 
 We can then use `<a href="/product/42/reviews" keep-scroll-position />` / `navigate('/product/42/reviews', { keepScrollPosition: true })` to avoid the browser to scroll to the top upon navigation.
 
-We can also [pass `contextProps.routeParams` to any/all components](#pass-contextprops-to-anyall-components),
+We can also [pass `pageContext.routeParams` to any/all components](#pass-pagecontext-to-anyall-components),
 so that we can navigate/render the routed nested view.
 
 Alternatively,
@@ -969,7 +965,7 @@ To render a page as SPA, simply render static HTML:
 
 import { html } from 'vite-plugin-ssr'
 
-export function render () {
+export function render() {
   // `div#app-root` is empty; the HTML is static.
   return html`<html>
     <head>
@@ -1012,7 +1008,7 @@ import { renderToHtml } from 'some-view-framework'
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
   return html`<html>
     <head>
       <title>SpaceX</title>
@@ -1020,14 +1016,14 @@ async function render({ Page, contextProps }) {
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(await renderToHtml(Page))}
+        ${html.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
 }
 ```
 
-If you want to define `<title>` and `<meta>` tags on a page-by-page basis, you can use `contextProps`.
+If you want to define `<title>` and `<meta>` tags on a page-by-page basis, you can use `pageContext`.
 
 ```js
 // _default.page.server.js
@@ -1037,10 +1033,10 @@ import { renderToHtml } from 'some-view-framework'
 
 export { render }
 
-async function render({ Page, contextProps }) {
-  // We use `contextProps.docHtml` which pages can define with their `addContextProps()` hook
-  let title = contextProps.docHtml.title
-  let description = contextProps.docHtml.description
+async function render(pageContext) {
+  // We use `pageContext.documentProps` which pages define in their `addPageContext()` hook
+  let title = pageContext.documentProps.title
+  let description = pageContext.documentProps.description
 
   // Defaults
   title = title || 'SpaceX'
@@ -1053,7 +1049,7 @@ async function render({ Page, contextProps }) {
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(await renderToHtml(Page))}
+        ${html.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
@@ -1062,78 +1058,95 @@ async function render({ Page, contextProps }) {
 ```js
 // about.page.server.js
 
-export { addContextProps }
+export { addPageContext }
 
-function addContextProps() {
-  const docHtml = {
+function addPageContext() {
+  const documentProps = {
     // This title and description will override the defaults
     title: 'About SpaceX',
     description: 'Our mission is to explore the galaxy.'
   }
-  return { docHtml }
+  return { documentProps }
 }
 ```
 
 If you want to define `<head>` tags by some deeply nested view component:
- 1. Add `docHtml` to `passToClient`.
- 2. Pass `contextProps.docHtml` [to all your components](#pass-contextprops-to-anyall-components).
- 3. Modify `contextProps.docHtml` in your deeply nested component.
+ 1. Add `documentProps` to `passToClient`.
+ 2. Pass `pageContext.documentProps` [to all your components](#pass-pagecontext-to-anyall-components).
+ 3. Modify `pageContext.documentProps` in your deeply nested component.
 
 ```js
 // _default.page.server.js
 // Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
+import renderToHtml from 'some-view-framework'
 
-// We make `contextProps.docHtml` available in the browser.
-export const passToClient = ['pageProps', 'docHtml']
-
-export async function render({ Page, contextProps }) {
-  // Use your view framework to pass `contextProps.docHtml` to all components
+export async function render(pageContext) {
+  // Use your view framework to pass `pageContext.documentProps` to all components
   // of your component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
+  const pageHtml = await renderToHtml(
+    <ContextProvider documentProps={pageContext.documentProps} >
+      <Page />
+    </ContextProvider>
+  )
 
   // What happens here is:
-  // 1. Your view framework passes `docHtml` to all your components
-  // 2. You modify `docHtml` in one of your components
-  // 3. You render the HTML meta tags with `docHtml`
+  // 1. Your view framework passed `documentProps` to all your components
+  // 2. One of your (deeply nested) component modified `documentProps`
+  // 3. You now render `documentProps` to HTML meta tags
   return html`<html>
     <head>
-      <title>${contextProps.docHtml.title}</title>
-      <meta name="description" content="${contextProps.docHtml.description}">
+      <title>${pageContext.documentProps.title}</title>
+      <meta name="description" content="${pageContext.documentProps.description}">
     </head>
     <body>
       <div id="app">
-        ${html.dangerouslySetHtml(appHtml)}
+        ${html.dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`
-}
-```
-```js
-// _default.page.client.js
-// Environment: Browser
-
-hydrate()
-
-function hydrate() {
-  // Thanks to the fact that `passToClient.includes('docHtml')`,
-  // `contextProps.docHtml` is available here in the browser.
-  // Use your view framework to pass `contextProps.docHtml` to all components
-  // of your component tree. (E.g. React Context or Vue's `app.config.globalProperties`.)
 }
 ```
 
 ```js
 // Somewhere in a component deep inside your component tree
 
-// Thanks to our previous steps, `docHtml` is available here.
-docHtml.title = 'I was set by some deep component.'
-docHtml.description = 'Me too.'
+// Thanks to our previous steps, `documentProps` is available here.
+documentProps.title = 'I was set by some deep component.'
+documentProps.description = 'Me too.'
+```
+
+If you use Client-side Routing, make sure to update `document.title` upon page navigation.
+
+```js
+// _default.page.server.js
+
+// We make `pageContext.documentProps` available in the browser.
+export const passToClient = ['documentProps', 'pageProps']
+```
+```js
+// _default.page.client.js
+
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+useClientRouter({
+  render(pageContext) {
+    if( ! pageContext.isHydration ) {
+      document.title = pageContext.documentProps.title
+    }
+    // The usual stuff.
+    // (Make sure to pass `pageContext.documentProps` to your whole component tree also here.)
+    // ...
+  }
+})
 ```
 
 You can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet)
 but use such library only if you have a *strong* rationale:
-the solution using `contextProps.docHtml` is considerably simpler and works for the vast majority of cases.
+the solution using `pageContext.documentProps` is considerably simpler and works for the vast majority of cases.
+
+For pages defined with markdown, have a look at [Markdown `<head>`](#markdown-head).
 
 <br/><br/>
 
@@ -1155,12 +1168,12 @@ export default "/star-wars/:movieId";
 // movie.page.server.js
 // Environment: Node.js
 
-export { addContextProps }
+export { addPageContext }
 
-function addContextProps({ contextProps }) {
+function addPageContext(pageContext) {
   // If the user goes to `/movie/42` but there is no movie with ID `42` then
   // we redirect the user to `/movie/add` so he can add a new movie.
-  if (contextProps.routeParams.movieId === null) {
+  if (pageContext.routeParams.movieId === null) {
     return { redirectTo: '/movie/add' }
   }
 }
@@ -1171,8 +1184,8 @@ function addContextProps({ contextProps }) {
 
 export { render }
 
-function render({ contextProps }) {
-  const { redirectTo } = contextProps
+function render(pageContext) {
+  const { redirectTo } = pageContext
   if (redirectTo) return { redirectTo }
 
   // The usual stuff
@@ -1187,8 +1200,8 @@ const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
-  const contextProps = {}
-  const result = await renderPage({ url, contextProps })
+  const pageContext = { url }
+  const result = await renderPage(pageContext)
   if (result.nothingRendered) {
     return next()
   } else if (result.renderResult?.redirectTo) {
@@ -1205,7 +1218,7 @@ If you use Client-side Routing, then also redirect at `*.page.client.js`.
 // movie.page.server.js
 // Environment: Node.js
 
-// We make `contextProps.redirectTo` available to the browser for Client-side Routing redirection
+// We make `pageContext.redirectTo` available to the browser for Client-side Routing redirection
 export const passToClient = ['redirectTo']
 ```
 ```js
@@ -1215,8 +1228,8 @@ export const passToClient = ['redirectTo']
 import { useClientRouter, navigate } from 'vite-plugin-ssr/client/router'
 
 useClientRouter({
-  render({ Page, contextProps }) {
-    const { redirectTo } = contextProps
+  render(pageContext) {
+    const { redirectTo } = pageContext
     if (redirectTo) {
       navigate(redirectTo)
       return
@@ -1256,11 +1269,87 @@ Example:
 <br/><br/>
 
 
+### Import Paths Alias Mapping
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Instead of using relative import paths
+which are often cumbersome (e.g. `import { Counter } from '../../../components/Counter'`),
+you can use import path aliases:
+
+```js
+// `~/components/` denotes the `components/` directory living in your project root directory
+import { Counter } from `~/components/Counter`
+
+// ...
+```
+
+Path aliases are defined at [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias):
+
+```js
+// vite.config.js
+
+export default {
+  resolve: {
+    alias: {
+     // We can now `import '~/path/to/module'` where `~` references the project root
+     "~": __dirname,
+    }
+  },
+  // ...
+}
+```
+
+If you use TypeScript:
+
+```json5
+// tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./*"]
+    }
+    // ...
+  }
+}
+```
+
+Vite's `vite.config.js#resolve.alias` only works for Vite processed files (i.e. `**/*.page.*` files and their imports).
+For files that are not processed by Vite (typically your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js)) you can use [`module-alias`](https://github.com/ilearnio/module-alias).
+
+Example:
+ - [/examples/import-paths-alias-mapping/](examples/import-paths-alias-mapping/).
+
+<br/><br/>
+
+
+### `.env` Files
+
+> :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
+
+Vite automatically makes environment variables defined in `.env` available as `import.meta.env`, see [[Vite] `.env` Files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+
+Note that:
+ - Vite only makes available environment variables that are prefixed with `VITE_` (for security reasons).
+ - Vite makes variables available at `import.meta.env` only for files that are processed by Vite (i.e. `**/*.page.*` files and their imports).
+   For files not processed by Vite (typically your server entry, e.g. [server/index.js](boilerplates/boilerplate-react/server/index.js)) you can load `.env` files yourself:
+   ```js
+   // server/index.js
+
+   if (!isProduction) {
+     // npm install dotenv
+     require('dotenv').config()
+   }
+   ```
+
+<br/><br/>
+
+
 ### Authentication
 
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
-You can add information about the authenticated user to `contextProps` at the server integration point
+You can add information about the authenticated user to `pageContext` at the server integration point
 [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 
 ```js
@@ -1277,9 +1366,9 @@ app.get('*', async (req, res, next) => {
   const user = await authProviderApi.getUser(req.headers)
   */
 
-  // We add the user auth information to `contextProps`
-  const contextProps = { user }
-  const result = await renderPage({ url, contextProps })
+  // We add the user auth information to `pageContext`
+  const pageContext = { user, url }
+  const result = await renderPage(pageContext)
 
   if (result.nothingRendered) return next()
   res.status(result.statusCode).send(result.renderResult)
@@ -1310,6 +1399,61 @@ Example:
  - [/examples/react/vite.config.ts](examples/react/vite.config.ts)
  - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
 
+#### Markdown `<head>`
+
+You can simply export the page's `<head>` values.
+
+~~~js
+// markdown.page.mdx
+
+export const documentProps = {
+  title: 'A Markdown Page',
+  description: 'Example of setting `<title>` and `<meta name="description">`'
+}
+
+# Markdown
+
+This page is written in _Markdown_.
+~~~
+
+```js
+// _default.page.server.js
+
+import { html } from 'vite-plugin-ssr'
+
+export async function render(pageContext) {
+  // `pageContext.pageExports` holds the exports of the page's `.page.js` file being rendered
+  const { title, description } = pageContext.pageExports.documentProps
+  return html`<html>
+    <head>
+      <title>${title}</title>
+      <meta name="description" content="${description}">
+    </head>
+    <!-- ... -->
+  </html>`
+}
+```
+
+Examples:
+ - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
+ - [/examples/vue/pages/markdown.page.md](examples/vue/pages/markdown.page.md)
+
+You can also use a so-called *front matter* to define the page's metadata.
+
+```markdown
+---
+title: A Markdown Page
+description: Example of setting `<title>` and `<meta name="description">`
+---
+
+# Markdown
+
+This page is written in _Markdown_.
+```
+
+The front matter data is usually available has an export,
+which you can access at [`pageContext.pageExports`](#pagecontext).
+
 <br/><br/>
 
 
@@ -1324,7 +1468,7 @@ With `vite-plugin-ssr`, you have full control over rendering, which means that i
 - [Redux SSR](https://redux.js.org/recipes/server-rendering)
 
 While you can follow the official guides *exactly* as-is and serialize the initial state into HTML,
-you can also leverage `addContextProps()` with `passToClient` to make your life slightly easier
+you can also leverage `addPageContext()` with `passToClient` to make your life slightly easier
 as shown in the following examples.
 
  - [/examples/vuex/](examples/vuex/)
@@ -1347,7 +1491,7 @@ GraphQL:
  - [Relay - SSR docs #3468](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
 
 While you can follow the official guides *exactly* as-is and serialize the initial fetched data into HTML,
-you can also leverage `addContextProps()` with `passToClient` to make your life slightly easier
+you can also leverage `addPageContext()` with `passToClient` to make your life slightly easier
 as shown in the following example.
 
  - [/examples/graphql-apollo/](examples/graphql-apollo/)
@@ -1418,16 +1562,16 @@ import { html } from 'vite-plugin-ssr'
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
   // We have full control over how pages are rendered.
   // E.g. we can use any view framework version we want (Vue 2, Vue 3, React 16, React 17, ...).
-  const pageHtml = await renderToHtml(Page)
+  const pageHtml = await renderToHtml(pageContext.Page)
 
   // We have full control over the HTML
   return html`<html>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(pageHtml)}
+        ${html.dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`
@@ -1570,13 +1714,11 @@ Environment: `Browser`, `Node.js`
 <br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
 
-A `*.page.js` file should have a `export { Page }`. (Or a `export default`.)
+A `*.page.js` file should have a `export { Page }` (or `export default`).
 
 `Page` represents the page's view that is rendered to HTML / the DOM.
 
-`vite-plugin-ssr` doesn't do anything with `Page` and just passes it untouched to:
- - Your `render({ Page })` hook.
- - The client-side.
+`vite-plugin-ssr` doesn't do anything with `Page` and just makes it available at `pageContext.Page`.
 
 ```js
 // *.page.js
@@ -1601,14 +1743,14 @@ import renderToHtml from 'some-view-framework'
 
 export { render }
 
-// `Page` is passed to the `render()` hook
-async function render({ Page }) {
-  const pageHtml = await renderToHtml(Page)
+// `Page` is available at `pageContext.Page`
+async function render(pageContext) {
+  const pageHtml = await renderToHtml(pageContext.Page)
 
   return html`<html>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(pageHtml)}
+        ${html.dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`
@@ -1624,8 +1766,9 @@ import { hydrateToDom } from 'some-view-framework'
 hydrate()
 
 async function hydrate() {
-  // `Page` is available in the browser.
-  const { Page } = await getPage()
+  const pageContext = await getPage()
+  // `pageContext.Page` is available in the browser.
+  const { Page } = pageContext
   await hydrateToDom(Page)
 }
 ```
@@ -1637,26 +1780,55 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 <br/><br/>
 
 
-### `contextProps`
+### `pageContext`
 
-The `contextProps` object is the accumulation of:
- - `contextProps.urlPathname`: the URL's pathname (e.g. `/product/42`)
- - `contextProps.urlFull`: ```${pathname}${search}${hash}``` (e.g. `/product/42?details=yes#reviews`)
- - `contextProps.urlParsed`: `{ pathname, search, hash }` (e.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`)
- - `contextProps.routeParams` which contains the route parameters (e.g. `contextProps.routeParams.movieId` for a page with a Route String `/movie/:movieId`)
- - `contextProps` you passed at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr) (`const renderPage = createPageRender(); renderPage({ contextProps })`)
- - `contextProps` you returned in your page's `addContextProps()` hook (if you defined one)
- - `contextProps` you returned in your `_default.page.server.js`'s `addContextProps()` hook (if you defined one)
+Built-in:
+ - **`pageContext.Page`**: the `export { Page }` or `default export` of the page's `.page.js` file being rendered.
+ - **`pageContext.pageExports`**: all exports of the page's `.page.js` file being rendered.
+ - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
+ - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
+ - **`pageContext.url`**: The `url` you passed at your server integration point.
+    ```js
+    // Server Integration Point
+    const renderPage = createPageRender(/*...*/)
+    app.get('*', async (req, res, next) => {
+      const pageContext = {}
+      // `pageContext.url` is defined here
+      pageContext.url = req.url
+      const result = await renderPage(pageContext)
+      /* ... */
+    })
+    ```
+ - **`pageContext.urlNormalized`**: same than `pageContext.url` but with removed URL Origin and Base URL. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`.)
+ - **`pageContext.urlPathname`**: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
+ - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
-By default only `contextProps.urlPathname`, `contextProps.urlFull`, and `contextProps.urlParsed` are available in the browser; use [`export const passToClient: string[]`](#export--passtoclient-) to make more `contextProps` available in the browser.
+Custom:
+ - The `pageContext` values you returned in your page's `addPageContext()` hook (if you defined one).
+ - The `pageContext` values you returned in your `_default.page.server.js`'s `addPageContext()` hook (if you defined one).
+ - The `pageContext` values you passed at your server integration point.
+    ```js
+    // Server Integration Point
+    const renderPage = createPageRender(/*...*/)
+    app.get('*', async (req, res, next) => {
+      const pageContext = {
+        url: req.url,
+        // We can add more `pageContext` here
+      }
+      const result = await renderPage(pageContext)
+      /* ... */
+    })
+    ```
 
-The `contextProps` can be accessed at:
- - (Node.js) `export function addContextProps({ contextProps })` (`*.page.server.js`)
- - (Node.js) `export function render({ contextProps })` (`*.page.server.js`)
- - (Node.js) `export function prerender({ contextProps })` (`*.page.server.js`)
- - (Node.js (& Browser)) `export default function routeFunction({ contextProps })` (`*.page.route.js`)
- - (Browser) `const { contextProps } = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
- - (Browser) `useClientRouter({ render({ contextProps }) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
+By default only `pageContext.Page` and `pageContext.pageExports` are available in the browser;
+use [`export const passToClient: string[]`](#export--passtoclient-) to make more `pageContext` available in the browser.
+
+The `pageContext` can be accessed at:
+ - *[Node.js]* `export function addPageContext(pageContext)` (`*.page.server.js`)
+ - *[Node.js]* `export function render(pageContext)` (`*.page.server.js`)
+ - *[Node.js (& Browser)]* `export default function routeFunction(pageContext)` (`*.page.route.js`)
+ - *[Browser]* `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
+ - *[Browser]* `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
 
 <br/><br/>
 
@@ -1668,7 +1840,7 @@ Environment: `Node.js`
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
 
 The `.page.server.js` file defines and exports
-- `export { addContextProps }`
+- `export { addPageContext }`
 - `export { passToClient }`
 - `export { render }`
 - `export { prerender }`
@@ -1679,28 +1851,28 @@ The `.page.server.js` file is executed in Node.js and never in the browser.
 
 <br/>
 
-#### `export { addContextProps }`
+#### `export { addPageContext }`
 
-The `addContextProps()` hook is used to provide further `contextProps` values.
+The `addPageContext()` hook is used to provide further `pageContext` values.
 
-The `contextProps` are passed to all hooks (defined in `.page.server.js`) and all Route Functions (defined in `.page.route.js`).
+The `pageContext` is passed to all hooks (defined in `.page.server.js`) and all Route Functions (defined in `.page.route.js`).
 
-You can provide initial `contextProps` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
+You can provide initial `pageContext` values at your server integration point [`createPageRender()`](#import--createpagerender--from-vite-plugin-ssr).
 This is where you usually pass information about the authenticated user,
 see [Authentication](#authentication) guide.
 
-The `addContextProps()` hook is usually used in conjunction with [`const passToClient: string[]`](#export--passtoclient-) to fetch data, see [Data Fetching](#data-fetching) guide.
+The `addPageContext()` hook is usually used with [`const passToClient: string[]`](#export--passtoclient-) to fetch data, see [Data Fetching](#data-fetching) guide.
 
-Since `addContextProps()` is always called in Node.js, ORM/SQL database queries can be used.
+Since `addPageContext()` is always called in Node.js, ORM/SQL database queries can be used.
 
 ```js
 // /pages/movies.page.server.js
 
 import fetch from "node-fetch";
 
-export { addContextProps }
+export { addPageContext }
 
-async function addContextProps({ contextProps, Page }){
+async function addPageContext(pageContext){
   const response = await fetch("https://api.imdb.com/api/movies/")
   const { movies } = await response.json()
   /* Or with an ORM:
@@ -1711,17 +1883,16 @@ async function addContextProps({ contextProps, Page }){
 }
 ```
 
-`Page` is the `export { Page }` (or `export default`) of the `.page.js` file.
-
 <br/>
 
 #### `export { passToClient }`
 
-You can tell `vite-plugin-ssr` what `contextProps` to send to the browser by using `passToClient`.
+You can tell `vite-plugin-ssr` what `pageContext` to send to the browser by using `passToClient`.
 
-The `contextProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+The `pageContext` is serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
-It is usally used in conjunction with the `addContextProps()` hook: data is fetched in `addContextProps()` and then made available to `Page`.
+It is usally used with the `addPageContext()` hook to fetch data:
+data is fetched in `async addPageContext()` and then made available to the browser with `passToClient`.
 
 ```js
 // *.page.server.js
@@ -1731,11 +1902,9 @@ import fetch from "node-fetch";
 
 export { passToClient }
 
-// Example of `contextProps` that are often passed to the browser
+// Example of `pageContext` often passed to the browser
 const passToClient = [
   'pageProps',
-  // `vite-plugin-ssr` makes all route parameters available not only at `contextProps`
-  // but also at `contextProps.routeParams` so that they can be sent to the browser all at once.
   'routeParams',
   // (Deep selection is not implemented yet; open a GitHub ticket if you want this.)
   'user.id',
@@ -1752,13 +1921,13 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  const { Page, contextProps } = await getPage()
+  const pageContext = await getPage()
 
-  // Thanks to `passToClient` all these `contextProps` are available here in the browser
-  contextProps.pageProps
-  contextProps.routeParams
-  contextProps.user.id
-  contextProps.user.name
+  // Thanks to `passToClient`, these `pageContext` are available here in the browser
+  pageContext.pageProps
+  pageContext.routeParams
+  pageContext.user.id
+  pageContext.user.name
 
   /* ... */
 }
@@ -1773,12 +1942,12 @@ Or when using Client-side Routing:
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 useClientRouter({
-  render({ Page, contextProps }) {
-    // Thanks to `passToClient` all these `contextProps` are available here in the browser
-    contextProps.pageProps
-    contextProps.routeParams
-    contextProps.user.id
-    contextProps.user.name
+  render(pageContext) {
+    // Thanks to `passToClient`, these `pageContext` are available here in the browser
+    pageContext.pageProps
+    pageContext.routeParams
+    pageContext.user.id
+    pageContext.user.name
 
     /* ... */
   }
@@ -1803,15 +1972,16 @@ import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
 
-async function render({ Page, contextProps }){
-  const pageHtml = await renderToHtml(createElement(Page, contextProps.pageProps))
+async function render(pageContext){
+  const { Page, pageProps } = pageContext
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
   return html`<!DOCTYPE html>
     <html>
       <head>
         <title>My SSR App</title>
       </head>
       <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-root">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
@@ -1827,7 +1997,7 @@ The value `renderResult` returned by your `render()` hook doesn't have to be HTM
 
 export { render }
 
-function render({ Page, contextProps }) {
+function render(pageContext) {
   let renderResult
   /* ... */
   return renderResult
@@ -1839,7 +2009,7 @@ function render({ Page, contextProps }) {
 const renderPage = createPageRender(/*...*/)
 
 app.get('*', async (req, res, next) => {
-  const result = await renderPage({ url: req.originalUrl, contextProps: {} })
+  const result = await renderPage({ url: req.originalUrl })
   // `result.renderResult` is the value returned by your `render()` hook.
   const { renderResult } = result
   /* ... */
@@ -1855,7 +2025,7 @@ Your `render()` hook can for example return an object like `{ redirectTo: '/some
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
 The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `contextProps` of each URL.
+by defining the `prerender()` hook you provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `pageContext` of each URL.
 
 If you don't have any parameterized route,
 then you can prerender your app without defining any `prerender()` hook.
@@ -1882,27 +2052,27 @@ async function prerender() {
     movies
     .map(movie => {
       const url = `/movie/${movie.id}`
-      const contextProps = { movie }
+      const pageContext = { movie }
       return {
         url,
-        // Beacuse we already provide the `contextProps`, vite-plugin-ssr will *not* call
-        // the `addContextProps()` hook.
-        contextProps
+        // Beacuse we already provide the `pageContext`, vite-plugin-ssr will *not* call
+        // any `addPageContext()` hook for `url`.
+        pageContext
       }
-      // We could also return `url` wtihout `contextProps`. In that case vite-plugin-ssr would
-      // call `addContextProps()`. But that would be wasteful since we already have all the data
-      // of all movies from our `await Movie.findAll()` call.
+      // We could also only return `url`. In that case vite-plugin-ssr would call
+      // `addPageContext()`. But that would be wasteful since we already have all
+      // the data of all movies from our `await Movie.findAll()` call.
       // return { url }
     })
   )
 
   // We can also return URLs that don't match the page's route.
-  // That way we can provide the `contextProps` of other pages.
-  // Here we provide the `contextProps` of the `/movies` page since
+  // That way we can provide the `pageContext` of other pages.
+  // Here we provide the `pageContext` of the `/movies` page since
   // we already have the data.
   const movieListPage = {
     url: '/movies', // The `/movies` URL doesn't belong to the page's route `/movie/:movieId`
-    contextProps: {
+    pageContext: {
       movieList: movies.map(({id, title}) => ({id, title})
     }
   }
@@ -1955,7 +2125,7 @@ async function render() {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-root">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-root">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
@@ -1965,11 +2135,11 @@ All strings, e.g. `title`, are automatically sanitized (technically speaking: HT
 so that you can safely include untrusted strings
 such as user-generated text.
 
-The `html.dangerouslySetHtml(str)` function injects the string `str` as-is *without* sanitizing.
+The `html.dangerouslySkipEscape(str)` function injects the string `str` as-is *without* sanitizing.
 It should be used with caution and
 only for HTML strings that are guaranteed to be already sanitized.
 It is usually used to include HTML generated by React/Vue/Solid/... as these frameworks always generate sanitized HTML.
-If you find yourself using `html.dangerouslySetHtml()` in other situations be extra careful as you run into the risk of creating a security breach.
+If you find yourself using `html.dangerouslySkipEscape()` in other situations be extra careful as you run into the risk of creating a security breach.
 
 You can assemble the overall HTML document from several pieces of HTML segments.
 For example, when you want some HTML parts to be included only for certain pages:
@@ -1983,10 +2153,10 @@ import { renderToHtml } from 'some-view-framework'
 
 export { render }
 
-async function render({ Page, contextProps }) {
+async function render(pageContext) {
   // We only include the `<meta name="description">` tag if the page has a description.
-  // (Pages define `contextProps.docHtml.description` with their `addContextProps()` hook.)
-  const description = contextProps.docHtml?.description
+  // (Pages define `pageContext.documentProps.description` with their `addPageContext()` hook.)
+  const description = pageContext.documentProps?.description
   let descriptionTag = ''
   if( description ) {
     // Note how we use the `html` string template tag for an HTML segment.
@@ -2001,7 +2171,7 @@ async function render({ Page, contextProps }) {
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySetHtml(await renderToHtml(Page))}
+        ${html.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
@@ -2041,9 +2211,10 @@ async function main() {
 }
 
 async function hydrate() {
-  const { Page, contextProps } = await getPage()
+  const pageContext = await getPage()
+  const { Page, pageProps } = pageContext
   await hydrateToDom(
-    createElement(Page, contextProps.pageProps),
+    createElement(Page, pageProps),
     document.getElementById('view-root')
   )
 }
@@ -2060,7 +2231,7 @@ function analytics_init() {
 
 Environment: `Browser`
 
-The `async getPage()` function provides `Page` and `contextProps` to the browser-side.
+You use `async getPage()` to get `pageContext.Page` and furhter `pageContext` in the browser-side.
 
 ```js
 // *.page.client.js
@@ -2070,15 +2241,15 @@ import { getPage } from 'vite-plugin-ssr/client'
 hydrate()
 
 async function hydrate() {
-  const { Page, contextProps } = await getPage()
+  const pageContext = await getPage()
   /* ... */
 }
 ```
 
-- `Page` is the `export { Page }` (or `export default`) of the `/pages/demo.page.js` file.
-- `contextProps` is a subset of the `contextProps` defined on the server-side; the `passToClient` determines what `contextProps` are sent to the browser.
+- `pageContext.Page` is the `export { Page }` (or `export default`) of the `/pages/demo.page.js` file.
+- `pageContext` is a subset of the `pageContext` defined on the server-side; the `passToClient` determines what `pageContext` is sent to the browser.
 
-The `contextProps` are serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+The `pageContext` is serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
 
 In development `getPage()` dynamically `import()` the page, while in production the page is preloaded (with `<link rel="preload">`).
 
@@ -2099,12 +2270,12 @@ import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 const { hydrationPromise } = useClientRouter({
-  async render({ Page, contextProps, isHydration }) {
-    const page = createElement(Page, contextProps)
+  async render(pageContext) {
+    const page = createElement(pageContext.Page, pageContext.pageProps)
     const container = document.getElementById('page-view')
 
     // Render the page
-    if (isHydration) {
+    if (pageContext.isHydration) {
       // This is the first page rendering; the page has been rendered to HTML
       // and we now make it interactive.
       await hydrateToDom(page)
@@ -2113,10 +2284,11 @@ const { hydrationPromise } = useClientRouter({
       await renderToDom(page)
     }
 
-    // We use `contextProps` to update `<title>`.
-    // (Make sure to return `docTitle` in your `addContextProps()` hook and add it to `passToClient`.)
+    // We use `pageContext.documentProps.title` to update `<title>`.
+    // (Make sure to add it to `export const passToClient = ['pageProps, 'documentProps']`,
+    // and your pages can then return `documentProps` in their `addPageContext()` hook.)
     document.title =
-      contextProps.docTitle ||
+      pageContext.documentProps?.title ||
       // A default title
       'Demo'
   },
@@ -2199,7 +2371,7 @@ While you can import `navigate()` in Node.js, you cannot call it: calling `navig
 If you want to redirect your user at page-load time, see the [Page Redirection](#page-redirection) guide.
 
 Options:
- - `navigate('/some-url, { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](#nested-routes).) (You can also use `<a href="/some-url" keep-scroll-position />`.)
+ - `navigate('/some-url', { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](#nested-routes).) (You can also use `<a href="/some-url" keep-scroll-position />`.)
 
 Vue example:
  - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue)
@@ -2233,7 +2405,7 @@ For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/fil
 export default '/film/:filmId'
 ```
 
-If the URL matches, the value of `filmId` is available at `contextProps.filmId`.
+If the URL matches, the value of `filmId` is available at `pageContext.routeParams.filmId`.
 
 The syntax of Route Strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
 (the most widespread route syntax in JavaScript).
@@ -2249,11 +2421,12 @@ Route Functions give you full programmatic flexibility to define your routing lo
 ```js
 // /pages/film/admin.page.route.js
 
-export default ({ url, contextProps }) {
+export default (pageContext) => {
   // Route Functions allow us to implement advanced routing such as route guards.
-  if (! contextProps.user.isAdmin) {
+  if (! pageContext.user.isAdmin) {
     return false
   }
+  const { url } = pageContext
   // We can use RegExp and any JavaScript tool we want.
   if (! /\/film\/[0-9]+\/admin/.test(url)) {
     return { match: false } // equivalent to `return false`
@@ -2261,8 +2434,8 @@ export default ({ url, contextProps }) {
   filmId = url.split('/')[2]
   return {
     match: true,
-    // Add `filmId` to `contextProps`
-    contextProps: { filmId }
+    // We make `filmId` available at `pageContext.routeParams.filmId`
+    routeParams: { filmId }
   }
 }
 ```
@@ -2275,7 +2448,7 @@ the higher the number, the higher the priority.
 
 ### Filesystem Routing
 
-By default a page is mapped to a URL based on where its `.page.js` file is located.
+By default `vite-plugin-ssr` does Filesystem Routing: the URL of the page is determined base on where its `.page.js` file is located.
 
 ```
 FILESYSTEM                        URL              COMMENT
@@ -2284,7 +2457,8 @@ pages/index/index.page.js         /                (`index` is mapped to the emp
 pages/HELLO.page.js               /hello           (Mapping is done lower case)
 ```
 
-The `pages/` directory is optional and you can save your `.page.js` files wherever you want.
+In the above example, the common ancestor directory, which `vite-plugin-ssr` considers the routing root, is `pages/`.
+It doesn't have to be `pages/` and you can save your `.page.js` files wherever you want. For example:
 
 ```
 FILESYSTEM                        URL
@@ -2294,7 +2468,15 @@ todo/list.page.js                 /todo/list
 todo/create.page.js               /todo/create
 ```
 
-The directory common to all your `*.page.js` files is considered the routing root.
+You can also move your page files in a `src/` directory.
+
+```
+FILESYSTEM                        URL
+src/pages/index.page.js           /
+src/pages/about.page.js           /about
+```
+
+The common ancestor directory here is `src/pages/`.
 
 For more control over routing, define Route Strings or Route Functions in [`*.page.route.js`](#pageroutejs).
 
@@ -2333,8 +2515,8 @@ The page `_error.page.js` is used for when an error occurs:
  - When no page matches the URL (acting as a `404` page).
  - When one of your `.page.*` files throws an error (acting as a `500` page).
 
-`vite-plugin-ssr` automatically sets `contextProps.pageProps.is404: boolean` allowing you to decided whether to show a `404` or `500` page.
-(Normally `contextProps.pageProps` is completely defined/controlled by you and `vite-plugin-ssr`'s source code doesn't know anything about `contextProps.pageProps` but this is the only exception.)
+`vite-plugin-ssr` automatically sets `pageContext.pageProps.is404: boolean` allowing you to decided whether to show a `404` or `500` page.
+(Normally `pageContext.pageProps` is completely defined/controlled by you and `vite-plugin-ssr`'s source code doesn't know anything about `pageContext.pageProps` but this is the only exception.)
 
 You can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`.
 
@@ -2353,7 +2535,6 @@ Environment: `Node.js`
 // In this example we use Express.js but we could use any other server framework.
 const express = require('express')
 const { createPageRender } = require('vite-plugin-ssr')
-const vite = require('vite')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -2368,6 +2549,7 @@ async function startServer() {
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`, { index: false }))
   } else {
+    const vite = require('vite')
     viteDevServer = await vite.createServer({
       root,
       server: { middlewareMode: true }
@@ -2378,8 +2560,8 @@ async function startServer() {
   const renderPage = createPageRender({ viteDevServer, isProduction, root, base })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
-    const contextProps = {}
-    const result = await renderPage({ url, contextProps })
+    const pageContext = { url }
+    const result = await renderPage(pageContext)
     if (result.nothingRendered) return next()
     res.status(result.statusCode).send(result.renderResult)
   })

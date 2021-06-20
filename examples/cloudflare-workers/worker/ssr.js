@@ -7,8 +7,8 @@ export { handleSsr };
 const renderPage = createPageRender({ isProduction: true });
 
 async function handleSsr(url) {
-  const contextProps = {};
-  const result = await renderPage({ url, contextProps });
+  const pageContext = { url };
+  const result = await renderPage(pageContext);
   if (result.nothingRendered) {
     return null;
   } else {

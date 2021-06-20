@@ -7,7 +7,7 @@ import { red, bold, blue } from 'kolorist'
 import fetch from 'node-fetch'
 
 export const urlBase = 'http://localhost:3000'
-export { partRegExp } from './utils'
+export { partRegex } from './utils'
 export const page: Page = (global as any).page as Page
 export { autoRetry }
 export { fetchHtml }
@@ -242,7 +242,7 @@ async function bailOnTimeout(asyncFunc: () => Promise<void>) {
   const timeout = setTimeout(() => {
     console.error(`Function timeout.`)
     process.exit(1)
-  }, 30 * 1000)
+  }, TIMEOUT * 1000)
   await asyncFunc()
   clearTimeout(timeout)
 }

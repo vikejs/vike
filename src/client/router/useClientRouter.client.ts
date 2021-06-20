@@ -1,8 +1,9 @@
 import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isNodejs } from '../../utils'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
-import { getContextPropsProxy } from '../getContextPropsProxy'
+import { getPageContextProxy } from '../getPageContextProxy'
 import { throttle } from '../../utils/throttle'
+import { assert_pageContext_publicProps } from '../assert_pageContext_publicProps'
 
 export { useClientRouter }
 export { navigate }
@@ -18,15 +19,10 @@ function useClientRouter({
   onTransitionStart,
   onTransitionEnd
 }: {
-  render: ({
-    Page,
-    contextProps,
-    isHydration
-  }: {
-    Page: any
-    contextProps: any
-    isHydration: boolean
-  }) => Promise<void> | void
+  // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
+  // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
+  // render: (pageContext: Record<string, any>) => Promise<void> | void
+  render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
 }): {
@@ -68,9 +64,8 @@ function useClientRouter({
       }
     }
 
-    let { Page, contextProps } = await getPageByUrl(url, navigationState.noNavigationChangeYet)
-    assert(contextProps.urlFull && contextProps.urlPathname)
-    contextProps = getContextPropsProxy(contextProps)
+    let pageContext = await getPageByUrl(url, navigationState.noNavigationChangeYet)
+    pageContext = getPageContextProxy(pageContext)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -87,18 +82,10 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      await render({
-        Page,
-        contextProps,
-        isHydration: isFirstPageRender && url === urlFullOriginal,
-        // @ts-ignore
-        get pageProps() {
-          assertUsage(
-            false,
-            "`pageProps` in `useClientRouter(({ pageProps }) => {})` has been replaced with `useClientRouter(({ contextProps }) => {})`. The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addContextProps()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`."
-          )
-        }
-      })
+      ;(pageContext as Record<string, unknown>).isHydration = isFirstPageRender && url === urlFullOriginal
+      assert_pageContext_publicProps(pageContext)
+      assert(hasProp(pageContext, 'isHydration', 'boolean'))
+      await render(pageContext)
     })()
     await renderPromise
     renderPromise = undefined

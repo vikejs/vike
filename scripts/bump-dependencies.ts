@@ -1,5 +1,6 @@
 import * as execa from 'execa'
 import { join, dirname } from 'path'
+import { hasTest } from './helpers/hasTest'
 import { DIR_ROOT } from './helpers/locations'
 const ncuBin = require.resolve(`${DIR_ROOT}/node_modules/.bin/ncu`) // `ncu` is bin of npm package `npm-check-updates`
 
@@ -8,8 +9,9 @@ updateDependencies()
 async function updateDependencies() {
   for (const packageJson of await getAllPackageJson()) {
     const cwd = dirname(packageJson)
+    if (!hasTest(cwd)) continue
     await run__follow(
-      `${ncuBin} -u --dep dev,prod --reject vue --reject @vue/server-renderer --reject @vue/compiler-sfc`,
+      `${ncuBin} -u --dep dev,prod --reject vue --reject @vue/server-renderer --reject @vue/compiler-sfc --reject jest --reject ts-node`,
       { cwd }
     )
     // await run__follow(`${ncuBin} -u --dep dev,prod vue @vue/server-renderer @vue/compiler-sfc --target greatest`, { cwd })

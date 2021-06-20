@@ -9,10 +9,11 @@ export { passToClient };
 
 const passToClient = ["pageProps"];
 
-function render({ Page, contextProps }) {
+function render(pageContext) {
+  const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
-      <Page {...contextProps.pageProps} />
+      <Page {...pageProps} />
     </PageLayout>
   );
 
@@ -25,7 +26,7 @@ function render({ Page, contextProps }) {
         <title>Vite App</title>
       </head>
       <body>
-        <div id="page-view">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

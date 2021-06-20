@@ -3,6 +3,7 @@ import { assert, assertUsage, hasProp } from '../utils'
 
 export { getPageFiles }
 export { getPageFile }
+// export { PageFile }
 
 export { setPageFiles }
 export { setPageFilesAsync }
@@ -27,7 +28,7 @@ function setPageFilesAsync(_asyncSetter: () => Promise<unknown>) {
 
 type PageFile = {
   filePath: string
-  loadFile: () => Promise<Record<string, any>>
+  loadFile: () => Promise<Record<string, unknown>>
 }
 type FileType = '.page' | '.page.server' | '.page.route' | '.page.client'
 type PageFiles = Record<FileType, Record<PageFile['filePath'], PageFile['loadFile']>>
@@ -53,12 +54,12 @@ async function getPageFiles(fileType: FileType): Promise<PageFile[]> {
   return pageFiles
 }
 
-async function getPageFile(fileType: FileType, pageId: string): Promise<null | PageFile> {
+async function getPageFile(fileType: FileType, pageId: string): Promise<PageFile> {
+  assert(!pageId.includes('\\'))
   const pageFiles = await getPageFiles(fileType)
   const pageFile = findPageFile(pageFiles, pageId)
-  if (pageFile === null) {
-    return null
-  }
+  const pageFilePaths = pageFiles.map(({ filePath }) => filePath)
+  assert(pageFile, { pageId, pageFilePaths })
   return pageFile
 }
 

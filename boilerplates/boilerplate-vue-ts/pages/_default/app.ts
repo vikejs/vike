@@ -1,10 +1,11 @@
 import { createSSRApp, defineComponent, h } from 'vue'
 import PageLayout from './PageLayout.vue'
-import { ContextProps } from './types'
+import { PageContext } from './types'
 
 export { createApp }
 
-function createApp(Page: any, contextProps: ContextProps) {
+function createApp(pageContext: PageContext) {
+  const { Page, pageProps } = pageContext
   const PageWithLayout = defineComponent({
     render() {
       return h(
@@ -12,7 +13,7 @@ function createApp(Page: any, contextProps: ContextProps) {
         {},
         {
           default() {
-            return h(Page, contextProps.pageProps || {})
+            return h(Page, pageProps || {})
           }
         }
       )
@@ -21,9 +22,9 @@ function createApp(Page: any, contextProps: ContextProps) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // We make `contextProps.routeParams` available in all components as `$routeParams`
+  // We make `pageContext.routeParams` available in all components as `$routeParams`
   // (e.g. `$routeParams.movieId` for a Route String `/movie/:movieId`).
-  app.config.globalProperties.$routeParams = contextProps.routeParams
+  app.config.globalProperties.$routeParams = pageContext.routeParams
 
   return app
 }

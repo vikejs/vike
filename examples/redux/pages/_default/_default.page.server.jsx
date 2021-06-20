@@ -5,24 +5,25 @@ import { getStore } from "./store";
 import { html } from "vite-plugin-ssr";
 
 export { render };
-export { addContextProps };
+export { addPageContext };
 export { passToClient };
 
 const passToClient = ["PRELOADED_STATE"];
 
-async function render({ contextProps }) {
-  const { pageHtml } = contextProps;
+async function render(pageContext) {
+  const { pageHtml } = pageContext;
   return html`<!DOCTYPE html>
     <html>
       <body>
-        <div id="react-root">${html.dangerouslySetHtml(pageHtml)}</div>
+        <div id="react-root">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }
 
-async function addContextProps({ Page }) {
+async function addPageContext(pageContext) {
   const store = getStore();
 
+  const { Page } = pageContext;
   const pageHtml = renderToString(
     <Provider store={store}>
       <Page />

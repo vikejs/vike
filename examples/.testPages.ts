@@ -1,4 +1,4 @@
-import { run, page, urlBase, partRegExp, fetchHtml, autoRetry } from '../tests/setup'
+import { run, page, urlBase, partRegex, fetchHtml, autoRetry } from '../tests/setup'
 import assert = require('assert')
 
 export { testPages }
@@ -15,9 +15,9 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
 
   function containsNavigationPanel(html: string) {
     if (viewFramework === 'vue') {
-      expect(html).toMatch(partRegExp`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
-      expect(html).toMatch(partRegExp`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
-      expect(html).toMatch(partRegExp`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`)
+      expect(html).toMatch(partRegex`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
+      expect(html).toMatch(partRegex`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
+      expect(html).toMatch(partRegex`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`)
     } else {
       expect(html).toContain('<a href="/markdown">Markdown</a>')
       expect(html).toContain('<a href="/star-wars">Data Fetching</a>')
@@ -46,12 +46,9 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     // The HTML is from the first page before client-side routing
     const html = await page.content()
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
-    // Therefore only the serialized `contextProps` tell us the original HTML.
-    expect(html).toContain(
-      `<script>window.__vite_plugin_ssr = {pageId: "\\u002Fpages\\u002Findex", contextProps: (function(a){return {pageProps:a,docTitle:a${
-        viewFramework === 'vue' ? ',routeParams:{}' : ''
-      }}}(void 0))}</script>`
-    )
+    // Therefore only the serialized `pageContext` tell us the original HTML.
+    expect(html.split('_pageId').length).toBe(2)
+    expect(html).toContain('_pageId:"\\u002Fpages\\u002Findex"')
   })
 
   test('supports route functions', async () => {
@@ -103,6 +100,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
   test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
     expect(html).toContain('This page is written in <em>Markdown</em>')
+    expect(html).toContain('<title>Some Markdown Page</title>')
     if (viewFramework === 'react') {
       expect(html).toContain('<button>Counter <!-- -->0</button>')
     } else if (viewFramework === 'vue') {
