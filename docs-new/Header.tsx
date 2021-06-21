@@ -35,10 +35,10 @@ function Header(props: { style: React.CSSProperties }) {
           </h1>
         </div>
         <p style={{ fontSize: '2em', padding: 0, margin: 0 }}>
-          Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.
+          Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.
         </p>
       </div>
-      <div>
+      <div style={{ marginLeft: 20 }}>
         <div
           style={{
             whiteSpace: 'nowrap',
@@ -47,15 +47,22 @@ function Header(props: { style: React.CSSProperties }) {
             marginTop: 30
           }}
         >
-          <SocialLink icon={iconGithub} href="https://github.com/brillout/vite-plugin-ssr" />
-          <SocialLink icon={iconDiscord} href="https://discord.gg/qTq92FQzKb" />
-          <SocialLink icon={iconTwitter} href="https://twitter.com/brillout" />
+          <SocialLink id="github-link" icon={iconGithub} href="https://github.com/brillout/vite-plugin-ssr" />
+          <SocialLink id="discord-link" icon={iconDiscord} href="https://discord.gg/qTq92FQzKb" />
+          <SocialLink id="twitter-link" icon={iconTwitter} href="https://twitter.com/brillout" />
         </div>
         <div style={{ marginTop: 10 }}>
           <code
-            style={{ fontSize: '1.55em', padding: '10px 20px', whiteSpace: 'nowrap', borderRight: 7, display: 'block' }}
+            style={{
+              fontSize: '1.55em',
+              padding: '10px 20px',
+              whiteSpace: 'nowrap',
+              borderRadius: 5,
+              display: 'block',
+              color: 'black'
+            }}
           >
-            $ npm init vite-plugin-ssr
+            <span style={{ color: '#bbb' }}>$</span> npm init vite-plugin-ssr
           </code>
         </div>
         <Center>
@@ -71,10 +78,15 @@ function Header(props: { style: React.CSSProperties }) {
   )
 }
 
-function SocialLink({ icon, href }: { icon: string; href: string }) {
+function SocialLink({ id, icon, href }: { id: string; icon: string; href: string }) {
   return (
     <>
-      <a className="social-link" href={href} style={{ padding: '5px 10px', display: 'inline-block', lineHeight: 0 }}>
+      <a
+        id={id}
+        className="social-link"
+        href={href}
+        style={{ padding: '5px 10px', display: 'inline-block', lineHeight: 0 }}
+      >
         <img src={icon} height="28" style={{}} />
       </a>
     </>

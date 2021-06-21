@@ -1,7 +1,22 @@
 .social-link {
+  transition: filter 0.3s ease-in-out;
   filter: grayscale(1);
-  transition: filter 0.2s ease-in-out;
+}
+.social-link#twitter-link {
+  filter: grayscale(1) opacity(0.7);
+}
+.social-link#discord-link {
+  filter: grayscale(1) opacity(0.6);
+}
+.social-link#github-link {
+  filter: grayscale(1) opacity(0.4);
 }
 .social-link:hover {
-  filter: grayscale(0);
+  filter: grayscale(0) opacity(1) !important;
 }
+
+/*
+ * Twitter opacity(0.7): #ababab > #868686
+ * == Following computation does NOT work ==
+ * Discord opacity(0.7): #6c6c6c > (0.7 * (#fff - #ababab) = #868686 = x * (#fff - #6c6c6c) <=> x = 0.7 * ((#fff - #ababab) / (#fff - #6c6c6c)) = 0.7 * ((255 - 171) / (255 - 108)) = 0.4)
+ */
