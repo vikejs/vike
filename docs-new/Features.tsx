@@ -71,7 +71,7 @@ function Features(props: {style: React.CSSProperties}) {
             Scale to <b>thousands of files</b> with no hit on dev speed.
           </p>
           <p>
-            SSR <b>architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
+            <b>SSR architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
             <b>custom precise needs</b>.
           </p>
           <p>
@@ -92,7 +92,7 @@ function Features(props: {style: React.CSSProperties}) {
             GitHub and Discord <b>conversations are welcome</b>.
           </p>
           <p>
-            Ultimate goal: using <code>vite-plugin-ssr</code> should be fun.
+            Our unique goal: using <code>vite-plugin-ssr</code> should be fun.
           </p>
         </div>
       </div>

@@ -1,0 +1,7 @@
+.social-link {
+  filter: grayscale(1);
+  transition: filter 0.2s ease-in-out;
+}
+.social-link:hover {
+  filter: grayscale(0);
+}
