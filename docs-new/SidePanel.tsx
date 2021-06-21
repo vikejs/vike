@@ -24,58 +24,67 @@ if (typeof window !== 'undefined') {
   window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
 }
 
-type ScreenBegin = { heading: Heading; boundaryPosition: number }
-type ScreenEnd = { heading: Heading; boundaryPosition: number }
+type DocSection = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
+type ScreenBegin = DocSection
+type ScreenEnd = DocSection
 
 function setNavigationScrollWindow() {
   let screenBegin: ScreenBegin | null = null
   let screenEnd: ScreenEnd | null = null
   let headingPrevious: Heading | null = null
-  let headingViewportPositionPrevious: number | null = null
+  let headingPreviousViewportPosition: number | null = null
 
-  const getBoundaryBegin = (headingViewportPositionPrevious: number, headingViewportPosition: number) =>
-    (0 - headingViewportPositionPrevious) / (headingViewportPosition - headingViewportPositionPrevious)
-  const getBoundaryEnd = (headingViewportPositionPrevious: number, headingViewportPosition: number) =>
-    (window.innerHeight - headingViewportPositionPrevious) / (headingViewportPosition - headingViewportPositionPrevious)
+  const viewportHeight = window.innerHeight
+
+  const getBoundaryBegin = (headingPreviousViewportPosition: number, headingViewportPosition: number) =>
+    (0 - headingPreviousViewportPosition) / (headingViewportPosition - headingPreviousViewportPosition)
+  const getBoundaryEnd = (headingPreviousViewportPosition: number, headingViewportPosition: number) =>
+    (viewportHeight - headingPreviousViewportPosition) / (headingViewportPosition - headingPreviousViewportPosition)
+
+  const getScreenBegin = (headingViewportPosition: number) => {
+    const boundaryPosition = getBoundaryBegin(headingPreviousViewportPosition, headingViewportPosition)
+    assertBoundaryPosition(boundaryPosition)
+    const viewportPercentage = headingViewportPosition / viewportHeight
+    return { heading: headingPrevious, boundaryPosition, viewportPercentage }
+  }
+  const getScreenEnd = (headingViewportPosition: number) => {
+    const boundaryPosition = getBoundaryEnd(headingPreviousViewportPosition, headingViewportPosition)
+    const viewportPercentage = (viewportHeight - screenBegin.viewportPercentage) / viewportHeight
+    screenEnd = { heading: headingPrevious, boundaryPosition, viewportPercentage }
+    assertBoundaryPosition(screenEnd.boundaryPosition)
+  }
 
   for (const heading of headings) {
     const headingViewportPosition = getHeadingPosition(heading)
     if (headingViewportPosition === null) continue
-    // `headingViewportPosition > 0` => heading is within the viewport
+    // `headingViewportPosition > 0` => heading is within viewport
     if (!screenBegin && headingViewportPosition > 0) {
       assert(headingPrevious !== null) // The first heading is `Introduction` which has `headingViewportPosition <= 0`
-      assert(headingViewportPositionPrevious !== null)
-      assert(headingViewportPositionPrevious <= 0)
-      const boundaryPosition = getBoundaryBegin(headingViewportPositionPrevious, headingViewportPosition)
-      screenBegin = { heading: headingPrevious, boundaryPosition }
-      assertBoundaryPosition(screenBegin.boundaryPosition)
+      assert(headingPreviousViewportPosition !== null)
+      assert(headingPreviousViewportPosition <= 0)
+      screenBegin = getScreenBegin(headingPrevious, headingViewportPosition)
     }
-    if (headingViewportPosition > window.innerHeight) {
+    if (headingViewportPosition > viewportHeight) {
+      assert(screenBegin)
       assert(headingPrevious !== null)
-      assert(headingViewportPositionPrevious !== null)
-      assert(headingViewportPositionPrevious <= window.innerHeight)
-      const boundaryPosition = getBoundaryEnd(headingViewportPositionPrevious, headingViewportPosition)
-      screenEnd = { heading: headingPrevious, boundaryPosition }
-      assertBoundaryPosition(screenEnd.boundaryPosition)
+      assert(headingPreviousViewportPosition !== null)
+      assert(headingPreviousViewportPosition <= viewportHeight)
+      screenEnd = getScreenEnd(headingViewportPosition)
       break
     }
     headingPrevious = heading
-    headingViewportPositionPrevious = headingViewportPosition
+    headingPreviousViewportPosition = headingViewportPosition
   }
   assert(headingPrevious)
-  assert(headingViewportPositionPrevious !== null)
+  assert(headingPreviousViewportPosition !== null)
   if (!screenBegin) {
     const headingViewportPosition = document.body.clientHeight - scrollY
-    const boundaryPosition = getBoundaryBegin(headingViewportPositionPrevious, headingViewportPosition)
-    screenBegin = { heading: headingPrevious, boundaryPosition }
-    assertBoundaryPosition(screenBegin.boundaryPosition)
+    screenBegin = getScreenBegin(headingPrevious, headingViewportPosition)
   }
   if (!screenEnd) {
-    // When scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
+    // When scrolled all the way down: `scrollY + viewportHeight === document.body.clientHeight`
     const headingViewportPosition = document.body.clientHeight - scrollY
-    const boundaryPosition = getBoundaryEnd(headingViewportPositionPrevious, headingViewportPosition)
-    screenEnd = { heading: headingPrevious, boundaryPosition }
-    assertBoundaryPosition(screenEnd.boundaryPosition)
+    screenEnd = getScreenEnd(headingViewportPosition)
   }
   assert(screenBegin && screenEnd)
   //*
