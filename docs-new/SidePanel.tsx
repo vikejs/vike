@@ -75,16 +75,19 @@ function setNavigationScrollWindow() {
     screenEnd = { heading: previousHeading, boundaryPosition }
     assertBoundaryPosition(screenEnd.boundaryPosition)
   }
-  /*
+  //*
   console.log(
+    'screenBegin',
     screenBegin.heading.title,
     screenBegin.boundaryPosition,
+  )
+  console.log(
+    'screenEnd',
     screenEnd.heading.title,
     screenEnd.boundaryPosition
   )
   console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
   //*/
-  //document.querySelectorAll('h1, h2, h3, h4')
   updateScrollOverlay(screenBegin, screenEnd)
   setActiveHeadings(screenBegin, screenEnd)
 }
@@ -96,12 +99,12 @@ function assertBoundaryPosition(boundaryPosition: number) {
 function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   headings.forEach((heading, idx) => {
     const isActive = headings.indexOf(screenBegin.heading) <= idx && idx <= headings.indexOf(screenEnd.heading) + 1
-    const navItem = findNavItem(heading)
+    const navItem = findNavLink(heading)
     navItem.classList[isActive? 'add' : 'remove']('is-active')
   })
 }
 
-function findNavItem(heading: Heading): HTMLElement {
+function findNavLink(heading: Heading): HTMLElement {
   const { id } = heading
   assert(typeof id === 'string')
   const navigationEl = getNavigationEl()
@@ -122,20 +125,22 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   assertBoundaryPosition(screenEnd.boundaryPosition)
 
   const navigationEl = getNavigationEl()
-  const getOffsetY = (el: HTMLElement) => {
+  const getLinkNavPosition = (el: HTMLElement): number => {
     let offsetY = el.offsetTop
     const parentEl = el.offsetParent as HTMLElement
     if (parentEl !== navigationEl) {
-      offsetY += getOffsetY(parentEl)
+      offsetY += getLinkNavPosition(parentEl)
     }
     return offsetY
   }
-  const beginEl = findNavItem(screenBegin.heading)
-  const endEl = findNavItem(screenEnd.heading)
-  const beginOffsetY = getOffsetY(beginEl)
-  const endOffsetY = getOffsetY(endEl)
-  const scrollOverlayBegin = beginOffsetY + beginEl.clientHeight * screenBegin.boundaryPosition
-  const scrollOverlayEnd = endOffsetY + endEl.clientHeight * screenEnd.boundaryPosition
+  const getOverlayPosition = ({heading, boundaryPosition}: {heading: Heading, boundaryPosition: number}): number => {
+    const navLink = findNavLink(heading)
+    const navLinkPos = getLinkNavPosition(navLink)
+    const scrollOverlayBoundaryPos = navLinkPos + navLink.clientHeight * boundaryPosition
+    return scrollOverlayBoundaryPos
+  }
+  const scrollOverlayBegin = getOverlayPosition(screenBegin)
+  const scrollOverlayEnd = getOverlayPosition(screenEnd)
   const top = scrollOverlayBegin
   const h = Math.ceil(scrollOverlayEnd - scrollOverlayBegin)
   const height = Math.max(1, h)
