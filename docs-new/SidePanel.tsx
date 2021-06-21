@@ -58,7 +58,7 @@ function setNavigationScrollWindow() {
     const boundaryPosition = getBoundaryEnd(headingPreviousViewportPosition, headingViewportPosition)
     assertBoundaryPosition(boundaryPosition)
     assert(screenBegin)
-    const viewportPercentage = (viewportHeight - screenBegin.viewportPercentage) / viewportHeight
+    const viewportPercentage = (viewportHeight - Math.max(headingPreviousViewportPosition, 0)) / viewportHeight
     assert(viewportPercentage >= 0 && viewportPercentage <= 1)
     return { heading: headingPrevious, boundaryPosition, viewportPercentage }
   }
@@ -103,6 +103,7 @@ function assertBoundaryPosition(boundaryPosition: number) {
 function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   const screenBeginIdx = headings.indexOf(screenBegin.heading)
   const screenEndIdx = headings.indexOf(screenEnd.heading)
+  const viewportPercentageLeftover = 1 - (screenBegin.viewportPercentage + screenEnd.viewportPercentage)
   let viewportPercentageTotal = 0
   headings.forEach((heading, idx) => {
     const isActive = screenBeginIdx <= idx && idx <= screenEndIdx
@@ -111,7 +112,7 @@ function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
       const viewportPercentage: number =
         (idx == screenBeginIdx && screenBegin.viewportPercentage) ||
         (idx == screenEndIdx && screenEnd.viewportPercentage) ||
-        1
+        viewportPercentageLeftover / (screenEndIdx - screenBeginIdx - 1)
       viewportPercentageTotal += viewportPercentage
       assert(viewportPercentage >= 0 && viewportPercentage <= 1)
       const backgroundColor = `rgba(0, 0, 0, ${viewportPercentage / 20})`
@@ -120,8 +121,8 @@ function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
       navItem.style.backgroundColor = 'transparent'
     }
   })
-  console.log('vpt', viewportPercentageTotal)
-  assert(viewportPercentageTotal===1)
+  // console.log('vpt', viewportPercentageTotal, screenBegin.viewportPercentage, screenEnd.viewportPercentage)
+  assert(viewportPercentageTotal === 1)
 }
 
 function findNavLink(heading: Heading): HTMLElement {

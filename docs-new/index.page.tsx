@@ -64,37 +64,28 @@ const components = {
 
 function Page() {
   return (
-    <Layout>
-      <SidePanel />
+    <div
+      style={{
+        display: 'flex'
+      }}
+    >
+      <div id="panel-left" style={{ flexShrink: 0, width: 280 }}>
+        <div style={{ height: '100vh', position: 'fixed', top: 0, overflowY: 'auto', borderRight: '1px solid #eee' }}>
+          <SidePanel />
+        </div>
+      </div>
       <div>
         <Header />
-        <Features />
-        <Docs />
+        <Features style={{ padding: '0 20px' }}/>
+        <div style={{ padding: '0 100px' }}>
+          <Docs />
+        </div>
         {/*
         <MDXProvider components={components}>
           <Docs />
         </MDXProvider>
         */}
       </div>
-    </Layout>
-  )
-}
-
-function Layout({ children }: { children: (JSX.Element | null)[] }) {
-  const left = children[0]
-  const right = children[1]
-  return (
-    <div
-      style={{
-        display: 'flex'
-      }}
-    >
-      <div style={{ flexShrink: 0, width: 280 }}>
-        <div style={{ height: '100vh', position: 'fixed', top: 0, overflowY: 'auto', borderRight: '1px solid #eee' }}>
-          {left}
-        </div>
-      </div>
-      <div style={{ padding: '0 100px' }}>{right}</div>
     </div>
   )
 }

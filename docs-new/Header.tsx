@@ -26,10 +26,10 @@ function Header() {
           <h1 style={{ margin: 0, marginTop: 0, fontSize: '2.7em' }}>
             <code>vite-plugin-ssr</code>
           </h1>
+          {/*
           <p style={{ fontSize: '1.45em', margin: 0, marginTop: '0.1em', opacity: 0.9, fontWeight: 500 }}>
             Add SSR to your Vite app
           </p>
-          {/*
           <div>Simple. Full-fledged. Do-One-Thing-Do-It-Well.</div>
           <div>Simple.</div>
           <div>Full-fledged.</div>
@@ -37,10 +37,13 @@ function Header() {
           */}
         </div>
       </a>
+    <p>
+    Bla
+    </p>
     </Center>
   )
 }
 
-function Center({ children }) {
+function Center({ children }: {children: JSX.Element}) {
   return <div style={{ display: 'flex', justifyContent: 'center' }}>{children}</div>
 }

@@ -45,3 +45,15 @@ h3 {
   padding-top: 150px
   */
 }
+
+#panel-left:not(:hover) ::-webkit-scrollbar {
+  display: none
+}
+/*
+#panel-left ::-webkit-scrollbar-thumb {
+  opacity: 0;
+}
+#panel-left ::-webkit-scrollbar-track {
+  opacity: 0;
+}
+*/

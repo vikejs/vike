@@ -10,7 +10,7 @@ a {
   text-decoration: none;
 }
 
-code[class*="language-"] {
+code[class*='language-'] {
   padding: 16px;
 }
 
@@ -22,8 +22,12 @@ code[class*="language-"] {
   src: url('./Inter-Var.ttf') format('truetype-variations');
 }
 
-code:not([class*="language-"]) {
+code:not([class*='language-']) {
+  /*
   background-color: #f4f4f4;
+  0.043137255 = 1 - (#f4 / #ff)
+  */
+  background-color: rgba(0, 0, 0, 0.043137255);
   border-radius: 4px;
   padding: 2px 5px;
 }
