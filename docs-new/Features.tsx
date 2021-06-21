@@ -3,9 +3,10 @@ import './Features.css'
 
 export { Features }
 
-function Features(props: {style: React.CSSProperties}) {
+function Features(props: {style: React.CSSProperties, styleLine: React.CSSProperties}) {
   return (
     <div id="features" {...props}>
+    <HorizontalLine style={props.styleLine} />
       <div id="features-row-1">
         <div>
           <h2>🔧 Composable</h2>
@@ -96,6 +97,24 @@ function Features(props: {style: React.CSSProperties}) {
           </p>
         </div>
       </div>
+    <HorizontalLine style={{marginTop: 40, marginBottom: -40}} />
+    </div>
+  )
+}
+
+function HorizontalLine(props: {style?: React.CSSProperties}) {
+  return (
+    <div style={{textAlign: 'center'}}>
+    <hr
+     style={{
+       display: 'inline-block',
+       margin: 0,
+         border: 0,
+         borderTop: '1px solid #eee',
+         width: 500,
+         ...props.style
+     }}
+    />
     </div>
   )
 }

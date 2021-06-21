@@ -6,6 +6,9 @@ body {
 }
 
 a {
+  /*
+  color: inherit;
+  */
   color: #4747ff;
   text-decoration: none;
 }
