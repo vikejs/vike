@@ -4,20 +4,22 @@ export * from './getHeadingId'
 
 export function parseTitleMdx(title: string) {
   const parts = title.split('`')
-  return parts.map((part, idx) => {
-    if( idx===parts.length-1) {
-      return escapeHtml(part)
-    }
-    if( isEven(idx) ) {
-      return escapeHtml(part)+'<code>'
-    } else {
-      return escapeHtml(part)+'</code>'
-    }
-  }).join('')
+  return parts
+    .map((part, idx) => {
+      if (idx === parts.length - 1) {
+        return escapeHtml(part)
+      }
+      if (isEven(idx)) {
+        return escapeHtml(part) + '<code>'
+      } else {
+        return escapeHtml(part) + '</code>'
+      }
+    })
+    .join('')
 }
 
 function isEven(i: number) {
-  return i%2===0
+  return i % 2 === 0
 }
 
 function escapeHtml(unsafeString: string): string {

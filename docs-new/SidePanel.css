@@ -47,7 +47,7 @@ h3 {
 }
 
 #panel-left:not(:hover) ::-webkit-scrollbar {
-  display: none
+  display: none;
 }
 /*
 #panel-left ::-webkit-scrollbar-thumb {

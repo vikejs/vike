@@ -3,16 +3,16 @@ import './Features.css'
 
 export { Features }
 
-function Features(props: {style: React.CSSProperties, styleLine: React.CSSProperties}) {
+function Features(props: { style: React.CSSProperties; styleLine: React.CSSProperties }) {
   return (
     <div id="features" {...props}>
-    <HorizontalLine style={props.styleLine} />
+      <HorizontalLine style={props.styleLine} />
       <div id="features-row-1">
         <div>
           <h2>🔧 Composable</h2>
           <p>
-            You control how pages are rendered and can use <b>any view framework</b> (React, Vue,
-              ...) and <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
+            You control how pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
+            <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
             Integration is <b>easy & natural</b>.
@@ -24,8 +24,8 @@ function Features(props: {style: React.CSSProperties, styleLine: React.CSSProper
         <div>
           <h2>🦾 Full-fledged</h2>
           <p>
-            <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>, <b>Server-side Routing</b> (for simple architecture) or <b>Client-side Routing</b> (for faster/animated
-            page transitions).
+            <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>, <b>Server-side Routing</b> (for simple
+            architecture) or <b>Client-side Routing</b> (for faster/animated page transitions).
           </p>
           <p>
             Render pages as <b>SPA</b>, <b>SSR</b>, or <b>Zero-JS HTML</b>.
@@ -75,9 +75,7 @@ function Features(props: {style: React.CSSProperties, styleLine: React.CSSProper
             <b>SSR architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
             <b>custom precise needs</b>.
           </p>
-          <p>
-            At (very large) scale, you can progressively start using Vite's native SSR API directly.
-          </p>
+          <p>At (very large) scale, you can progressively start using Vite's native SSR API directly.</p>
         </div>
         <div>
           <h2>
@@ -97,24 +95,24 @@ function Features(props: {style: React.CSSProperties, styleLine: React.CSSProper
           </p>
         </div>
       </div>
-    <HorizontalLine style={{marginTop: 40, marginBottom: -40}} />
+      <HorizontalLine style={{ marginTop: 40, marginBottom: -40 }} />
     </div>
   )
 }
 
-function HorizontalLine(props: {style?: React.CSSProperties}) {
+function HorizontalLine(props: { style?: React.CSSProperties }) {
   return (
-    <div style={{textAlign: 'center'}}>
-    <hr
-     style={{
-       display: 'inline-block',
-       margin: 0,
-         border: 0,
-         borderTop: '1px solid #eee',
-         width: 500,
-         ...props.style
-     }}
-    />
+    <div style={{ textAlign: 'center' }}>
+      <hr
+        style={{
+          display: 'inline-block',
+          margin: 0,
+          border: 0,
+          borderTop: '1px solid #eee',
+          width: 500,
+          ...props.style
+        }}
+      />
     </div>
   )
 }

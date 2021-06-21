@@ -21,7 +21,7 @@ function Page() {
       </div>
       <div>
         <Header style={{ padding: '50px 70px', paddingBottom: 50 }} />
-        <Features style={{ marginTop: 0, padding: '0 20px'}} styleLine={{paddingBottom: 20}} />
+        <Features style={{ marginTop: 0, padding: '0 20px' }} styleLine={{ paddingBottom: 20 }} />
         <div style={{ padding: '0 100px' }}>
           <Docs />
         </div>

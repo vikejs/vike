@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { getPage } from 'vite-plugin-ssr/client'
-import 'highlight.js/styles/stackoverflow-light.css';
+import 'highlight.js/styles/stackoverflow-light.css'
 
 hydrate()
 
