@@ -30,62 +30,57 @@ type ScreenEnd = { heading: Heading; boundaryPosition: number }
 function setNavigationScrollWindow() {
   let screenBegin: ScreenBegin | null = null
   let screenEnd: ScreenEnd | null = null
-  let previousHeading: Heading | null = null
-  let previousTop: number | null = null
+  let headingPrevious: Heading | null = null
+  let headingViewportPositionPrevious: number | null = null
 
-  const computeBoundaryBegin = (previousTop: number, top: number) => (0 - previousTop) / (top - previousTop)
-  const computeBoundaryEnd = (previousTop: number, top: number) =>
-    (window.innerHeight - previousTop) / (top - previousTop)
+  const getBoundaryBegin = (headingViewportPositionPrevious: number, headingViewportPosition: number) =>
+    (0 - headingViewportPositionPrevious) / (headingViewportPosition - headingViewportPositionPrevious)
+  const getBoundaryEnd = (headingViewportPositionPrevious: number, headingViewportPosition: number) =>
+    (window.innerHeight - headingViewportPositionPrevious) / (headingViewportPosition - headingViewportPositionPrevious)
 
   for (const heading of headings) {
-    const top = getHeadingPosition(heading)
-    if (top === null) continue
-    if (!screenBegin && top > 0) {
-      assert(previousHeading !== null) // The first heading is `Introduction` which has `top <= 0`
-      assert(previousTop !== null)
-      assert(previousTop <= 0)
-      const boundaryPosition = computeBoundaryBegin(previousTop, top)
-      screenBegin = { heading: previousHeading, boundaryPosition }
+    const headingViewportPosition = getHeadingPosition(heading)
+    if (headingViewportPosition === null) continue
+    // `headingViewportPosition > 0` => heading is within the viewport
+    if (!screenBegin && headingViewportPosition > 0) {
+      assert(headingPrevious !== null) // The first heading is `Introduction` which has `headingViewportPosition <= 0`
+      assert(headingViewportPositionPrevious !== null)
+      assert(headingViewportPositionPrevious <= 0)
+      const boundaryPosition = getBoundaryBegin(headingViewportPositionPrevious, headingViewportPosition)
+      screenBegin = { heading: headingPrevious, boundaryPosition }
       assertBoundaryPosition(screenBegin.boundaryPosition)
     }
-    if (top > window.innerHeight) {
-      assert(previousHeading !== null)
-      assert(previousTop !== null)
-      assert(previousTop <= window.innerHeight)
-      const boundaryPosition = computeBoundaryEnd(previousTop, top)
-      screenEnd = { heading: previousHeading, boundaryPosition }
+    if (headingViewportPosition > window.innerHeight) {
+      assert(headingPrevious !== null)
+      assert(headingViewportPositionPrevious !== null)
+      assert(headingViewportPositionPrevious <= window.innerHeight)
+      const boundaryPosition = getBoundaryEnd(headingViewportPositionPrevious, headingViewportPosition)
+      screenEnd = { heading: headingPrevious, boundaryPosition }
       assertBoundaryPosition(screenEnd.boundaryPosition)
       break
     }
-    previousHeading = heading
-    previousTop = top
+    headingPrevious = heading
+    headingViewportPositionPrevious = headingViewportPosition
   }
-  assert(previousHeading)
-  assert(previousTop !== null)
+  assert(headingPrevious)
+  assert(headingViewportPositionPrevious !== null)
   if (!screenBegin) {
-    const top = document.body.clientHeight - scrollY
-    const boundaryPosition = computeBoundaryBegin(previousTop, top)
-    screenBegin = { heading: previousHeading, boundaryPosition }
+    const headingViewportPosition = document.body.clientHeight - scrollY
+    const boundaryPosition = getBoundaryBegin(headingViewportPositionPrevious, headingViewportPosition)
+    screenBegin = { heading: headingPrevious, boundaryPosition }
     assertBoundaryPosition(screenBegin.boundaryPosition)
   }
   if (!screenEnd) {
-    // Wenn scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
-    const top = document.body.clientHeight - scrollY
-    const boundaryPosition = computeBoundaryEnd(previousTop, top)
-    screenEnd = { heading: previousHeading, boundaryPosition }
+    // When scrolled all the way down: `scrollY + innerHeight === document.body.clientHeight`
+    const headingViewportPosition = document.body.clientHeight - scrollY
+    const boundaryPosition = getBoundaryEnd(headingViewportPositionPrevious, headingViewportPosition)
+    screenEnd = { heading: headingPrevious, boundaryPosition }
     assertBoundaryPosition(screenEnd.boundaryPosition)
   }
+  assert(screenBegin && screenEnd)
   //*
-  console.log(
-    'screenBegin',
-    screenBegin.heading.title,
-    screenBegin.boundaryPosition,
-  )
-  console.log(
-    'screenEnd',
-    screenEnd.heading.title,
-    screenEnd.boundaryPosition
-  )
+  console.log('screenBegin', screenBegin.heading.title, screenBegin.boundaryPosition)
+  console.log('screenEnd', screenEnd.heading.title, screenEnd.boundaryPosition)
   console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
   //*/
   updateScrollOverlay(screenBegin, screenEnd)
@@ -100,7 +95,7 @@ function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   headings.forEach((heading, idx) => {
     const isActive = headings.indexOf(screenBegin.heading) <= idx && idx <= headings.indexOf(screenEnd.heading) + 1
     const navItem = findNavLink(heading)
-    navItem.classList[isActive? 'add' : 'remove']('is-active')
+    navItem.classList[isActive ? 'add' : 'remove']('is-active')
   })
 }
 
@@ -133,20 +128,24 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
     }
     return offsetY
   }
-  const getOverlayPosition = ({heading, boundaryPosition}: {heading: Heading, boundaryPosition: number}): number => {
+  const getOverlayPosition = ({
+    heading,
+    boundaryPosition
+  }: {
+    heading: Heading
+    boundaryPosition: number
+  }): number => {
     const navLink = findNavLink(heading)
     const navLinkPos = getLinkNavPosition(navLink)
     const scrollOverlayBoundaryPos = navLinkPos + navLink.clientHeight * boundaryPosition
     return scrollOverlayBoundaryPos
   }
-  const scrollOverlayBegin = getOverlayPosition(screenBegin)
-  const scrollOverlayEnd = getOverlayPosition(screenEnd)
-  const top = scrollOverlayBegin
-  const h = Math.ceil(scrollOverlayEnd - scrollOverlayBegin)
-  const height = Math.max(1, h)
-  //console.log(beginEl, beginOffsetY, endEl, endOffsetY, top, height)
-  //console.log('h', h, height, screenBegin.boundaryPosition, screenEnd.boundaryPosition)
-  setScrollOverlay(top, height)
+  const overlayBegin = getOverlayPosition(screenBegin)
+  const overlayEnd = getOverlayPosition(screenEnd)
+  const overlayHeight = Math.max(1, Math.ceil(overlayEnd - overlayBegin))
+  const scrollOverlayEl = document.getElementById('scroll-overlay')!
+  scrollOverlayEl.style.top = overlayBegin + 'px'
+  scrollOverlayEl.style.height = overlayHeight + 'px'
 }
 
 function getHeadingPosition(heading: Heading): number | null {
@@ -155,8 +154,9 @@ function getHeadingPosition(heading: Heading): number | null {
   assert(id)
   const el = document.getElementById(id)
   if (!el) return null
-  const { top } = el.getBoundingClientRect()
-  return top
+  const headingViewportPosition = el.getBoundingClientRect().top
+  assert(typeof headingViewportPosition === 'number')
+  return headingViewportPosition
 }
 
 function SidePanel() {
@@ -194,11 +194,6 @@ function Navigation() {
   )
 }
 
-function setScrollOverlay(top: number, height: number) {
-  const scrollOverlayEl = document.getElementById('scroll-overlay')!
-  scrollOverlayEl.style.top = top + 'px'
-  scrollOverlayEl.style.height = height + 'px'
-}
 function ScrollOverlay() {
   const width = '1px'
   const color = '#aaa'
