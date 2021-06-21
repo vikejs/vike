@@ -28,6 +28,9 @@
 .nav-item.is-active {
   border-color: #eaeaea;
 }
+.nav-item[is-active] {
+  background-color: attr(is-active)
+}
 */
 
 h2 + h3 {

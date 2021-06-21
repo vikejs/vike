@@ -42,16 +42,25 @@ function setNavigationScrollWindow() {
     (viewportHeight - headingPreviousViewportPosition) / (headingViewportPosition - headingPreviousViewportPosition)
 
   const getScreenBegin = (headingViewportPosition: number) => {
+    assert(headingPrevious !== null) // The first heading is `Introduction` which has `headingViewportPosition <= 0`
+    assert(headingPreviousViewportPosition !== null)
+    assert(headingPreviousViewportPosition <= 0)
     const boundaryPosition = getBoundaryBegin(headingPreviousViewportPosition, headingViewportPosition)
     assertBoundaryPosition(boundaryPosition)
-    const viewportPercentage = headingViewportPosition / viewportHeight
+    const viewportPercentage = Math.min(headingViewportPosition, viewportHeight) / viewportHeight
+    assert(viewportPercentage >= 0 && viewportPercentage <= 1)
     return { heading: headingPrevious, boundaryPosition, viewportPercentage }
   }
   const getScreenEnd = (headingViewportPosition: number) => {
+    assert(headingPrevious !== null)
+    assert(headingPreviousViewportPosition !== null)
+    assert(headingPreviousViewportPosition <= viewportHeight)
     const boundaryPosition = getBoundaryEnd(headingPreviousViewportPosition, headingViewportPosition)
+    assertBoundaryPosition(boundaryPosition)
+    assert(screenBegin)
     const viewportPercentage = (viewportHeight - screenBegin.viewportPercentage) / viewportHeight
-    screenEnd = { heading: headingPrevious, boundaryPosition, viewportPercentage }
-    assertBoundaryPosition(screenEnd.boundaryPosition)
+    assert(viewportPercentage >= 0 && viewportPercentage <= 1)
+    return { heading: headingPrevious, boundaryPosition, viewportPercentage }
   }
 
   for (const heading of headings) {
@@ -59,27 +68,18 @@ function setNavigationScrollWindow() {
     if (headingViewportPosition === null) continue
     // `headingViewportPosition > 0` => heading is within viewport
     if (!screenBegin && headingViewportPosition > 0) {
-      assert(headingPrevious !== null) // The first heading is `Introduction` which has `headingViewportPosition <= 0`
-      assert(headingPreviousViewportPosition !== null)
-      assert(headingPreviousViewportPosition <= 0)
-      screenBegin = getScreenBegin(headingPrevious, headingViewportPosition)
+      screenBegin = getScreenBegin(headingViewportPosition)
     }
     if (headingViewportPosition > viewportHeight) {
-      assert(screenBegin)
-      assert(headingPrevious !== null)
-      assert(headingPreviousViewportPosition !== null)
-      assert(headingPreviousViewportPosition <= viewportHeight)
       screenEnd = getScreenEnd(headingViewportPosition)
       break
     }
     headingPrevious = heading
     headingPreviousViewportPosition = headingViewportPosition
   }
-  assert(headingPrevious)
-  assert(headingPreviousViewportPosition !== null)
   if (!screenBegin) {
     const headingViewportPosition = document.body.clientHeight - scrollY
-    screenBegin = getScreenBegin(headingPrevious, headingViewportPosition)
+    screenBegin = getScreenBegin(headingViewportPosition)
   }
   if (!screenEnd) {
     // When scrolled all the way down: `scrollY + viewportHeight === document.body.clientHeight`
@@ -87,7 +87,7 @@ function setNavigationScrollWindow() {
     screenEnd = getScreenEnd(headingViewportPosition)
   }
   assert(screenBegin && screenEnd)
-  //*
+  /*
   console.log('screenBegin', screenBegin.heading.title, screenBegin.boundaryPosition)
   console.log('screenEnd', screenEnd.heading.title, screenEnd.boundaryPosition)
   console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
@@ -101,11 +101,27 @@ function assertBoundaryPosition(boundaryPosition: number) {
 }
 
 function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
+  const screenBeginIdx = headings.indexOf(screenBegin.heading)
+  const screenEndIdx = headings.indexOf(screenEnd.heading)
+  let viewportPercentageTotal = 0
   headings.forEach((heading, idx) => {
-    const isActive = headings.indexOf(screenBegin.heading) <= idx && idx <= headings.indexOf(screenEnd.heading) + 1
+    const isActive = screenBeginIdx <= idx && idx <= screenEndIdx
     const navItem = findNavLink(heading)
-    navItem.classList[isActive ? 'add' : 'remove']('is-active')
+    if (isActive) {
+      const viewportPercentage: number =
+        (idx == screenBeginIdx && screenBegin.viewportPercentage) ||
+        (idx == screenEndIdx && screenEnd.viewportPercentage) ||
+        1
+      viewportPercentageTotal += viewportPercentage
+      assert(viewportPercentage >= 0 && viewportPercentage <= 1)
+      const backgroundColor = `rgba(0, 0, 0, ${viewportPercentage / 20})`
+      navItem.style.backgroundColor = backgroundColor
+    } else {
+      navItem.style.backgroundColor = 'transparent'
+    }
   })
+  console.log('vpt', viewportPercentageTotal)
+  assert(viewportPercentageTotal===1)
 }
 
 function findNavLink(heading: Heading): HTMLElement {
@@ -214,6 +230,7 @@ function ScrollOverlay() {
         position: 'absolute',
         left: '0',
         width: '100%',
+        /*
         background: `linear-gradient(to right, ${color} ${width}, transparent ${width}) 0 0,
     linear-gradient(to right, ${color} ${width}, transparent ${width}) 0 100%,
     linear-gradient(to left, ${color} ${width}, transparent ${width}) 100% 0,
@@ -222,7 +239,12 @@ function ScrollOverlay() {
     linear-gradient(to bottom, ${color} ${width}, transparent ${width}) 100% 0,
     linear-gradient(to top, ${color} ${width}, transparent ${width}) 0 100%,
     linear-gradient(to top, ${color} ${width}, transparent ${width}) 100% 100%`,
-        backgroundColor: 'rgba(0,0,0,0.03)',
+        //*/
+        //borderRight: `5px solid ${color}`,
+        borderRight: `3px solid #666`,
+        //border: `1px solid ${color}`,
+        boxSizing: 'border-box',
+        // backgroundColor: 'rgba(0,0,0,0.03)',
         backgroundRepeat: 'no-repeat',
 
         backgroundSize: '10px 10px'

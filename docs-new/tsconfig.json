@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react",
+    "files": ["SidePanel.tsx"],
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "esModuleInterop": true,
     "skipLibCheck": true,
