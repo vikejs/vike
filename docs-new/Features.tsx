@@ -5,25 +5,26 @@ export { Features }
 
 function Features(props: { style: React.CSSProperties; styleLine: React.CSSProperties }) {
   return (
-    <div id="features" {...props}>
+    <div id="features" style={props.style}>
       <HorizontalLine style={props.styleLine} />
       <div id="features-row-1">
         <div>
-          <h2>🔧 Composable</h2>
+          <h2>🔧 Control</h2>
           <p>
             You control how pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
             <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
-            Integration is <b>easy & natural</b>.
+            Integrating tools is <b>simple & natural</b>.
           </p>
           <p>
-            <a>Tell me more...</a>
+            <a onClick={() => {}}>Tell me more...</a>
           </p>
         </div>
         <div>
           <h2>🦾 Full-fledged</h2>
           <p>
+            <b>Filesystem Routing</b>,
             <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>, <b>Server-side Routing</b> (for simple
             architecture) or <b>Client-side Routing</b> (for faster/animated page transitions).
           </p>

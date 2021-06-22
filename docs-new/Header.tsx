@@ -1,6 +1,6 @@
 import React from 'react'
 import './Header.css'
-// import iconPlugin from './icons/vite-plugin-ssr.svg'
+import iconPlugin from './icons/vite-plugin-ssr.svg'
 import iconGithub from './icons/github.svg'
 import iconTwitter from './icons/twitter.svg'
 import iconDiscord from './icons/discord.svg'
@@ -25,18 +25,18 @@ function Header(props: { style: React.CSSProperties }) {
             marginBottom: 10
           }}
         >
-          {/*
-        <img src={iconPlugin} height="128" style={{ marginRight: 20 }} />
-            <h1 style={{ margin: 0, marginTop: 0, fontSize: '3.2em' }}>
-              <code>vite-plugin-ssr</code>
+            <img src={iconPlugin} height="90" style={{ marginRight: 20 }} />
+            <h1 style={{ margin: 0, marginTop: 0, fontSize: '1em' }}>
+              <code style={{ fontSize: '3em', padding: '10px 14px', borderRadius: 5 }}>vite-plugin-ssr</code>
             </h1>
-         */}
+          {/*
           <h1 style={{ fontSize: '1em', margin: 0 }}>
             <code style={{ fontSize: '3.5em', padding: '10px 14px', borderRadius: 5 }}>vite-plugin-ssr</code>
           </h1>
+         */}
         </div>
         <p style={{ fontSize: '2em', padding: 0, margin: 0 }}>
-          Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.
+          Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.
         </p>
       </div>
       <div style={{ marginLeft: 20 }}>

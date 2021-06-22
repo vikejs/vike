@@ -1,13 +1,13 @@
 #features-row-1 {
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  grid-column-gap: 30px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 16px;
 }
 #features-row-2 {
   display: grid;
   font-size: 0.9em;
-  grid-template-columns: repeat(2, auto);
-  grid-column-gap: 30px;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 14px;
 }
 #features-row-2 h2 {
   font-size: 1.1em;
