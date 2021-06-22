@@ -13,7 +13,7 @@ function Features(props: {
       <HorizontalLine style={props.styleLineTop} />
       <div id="features-row-1">
         <Feature name="control">
-          <h2>🔧 Control</h2>
+          <h2>{String.fromCodePoint(0x1F527)} Control</h2>
           <p>
             You control how your pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
             <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
@@ -26,7 +26,7 @@ function Features(props: {
           </p>
         </Feature>
         <Feature name="control">
-          <h2>🦾 Full-fledged</h2>
+          <h2>{String.fromCodePoint(0x1F9BE)} Full-fledged</h2>
           <p>
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
             <b>Client-side Routing</b> (faster/animated page transitions) or <b>Server-side Routing</b> (simple
@@ -37,7 +37,7 @@ function Features(props: {
           </p>
         </Feature>
         <div>
-          <h2>🪨 Rock-solid</h2>
+          <h2>{String.fromCodePoint(0x1FAA8)} Rock-solid</h2>
           Our source code has <b>no known bug</b> (new found ones are fixed promp&shy;tly).
           <p></p>
           <p>
@@ -51,7 +51,7 @@ function Features(props: {
       </div>
       <div id="features-row-2">
         <div>
-          <h2>🌍 Deploy Anywhere</h2>
+          <h2>{String.fromCodePoint(0x1F30D)} Deploy Anywhere</h2>
           <p>
             Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
             Express.js, Fastify, Hapi, ...).
@@ -62,7 +62,7 @@ function Features(props: {
           </p>
         </div>
         <div>
-          <h2>⚡ Fast</h2>
+          <h2>{String.fromCodePoint(0x26A1)} Fast</h2>
           <p>
             <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
           </p>
@@ -72,7 +72,7 @@ function Features(props: {
           </p>
         </div>
         <div>
-          <h2>🚀 Scalable</h2>
+          <h2>{String.fromCodePoint(0x1F680)} Scalable</h2>
           <p>
             Scale to <b>thousands of files</b> with no hit on dev speed.
           </p>
@@ -84,7 +84,7 @@ function Features(props: {
         </div>
         <div>
           <h2>
-            <span style={{ fontFamily: 'reset' }}>❤️</span> Craftmanship
+            <span style={{ fontFamily: 'reset' }}>{String.fromCodePoint(0x2764)}</span> Craftmanship
           </h2>
           <p>
             Crafted with <b>attention to details</b> and <b>care for simplicity</b>.
