@@ -20,8 +20,12 @@ function Page() {
         </div>
       </div>
       <div>
-        <Header style={{ padding: '50px 70px', paddingBottom: 50 }} />
-        <Features style={{ marginTop: 0, padding: '0 20px' }} styleLine={{ paddingBottom: 20 }} />
+        <Header style={{ padding: '50px 70px', paddingBottom: 70 }} />
+        <Features
+          style={{ marginTop: 0, padding: '0 30px' }}
+          styleLineTop={{ paddingBottom: 35 }}
+          styleLineBottom={{ marginTop: 40, marginBottom: -70 }}
+        />
         <div style={{ padding: '0 100px' }}>
           <Docs />
         </div>

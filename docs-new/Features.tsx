@@ -3,15 +3,19 @@ import './Features.css'
 
 export { Features }
 
-function Features(props: { style: React.CSSProperties; styleLine: React.CSSProperties }) {
+function Features(props: {
+  style: React.CSSProperties
+  styleLineTop: React.CSSProperties
+  styleLineBottom: React.CSSProperties
+}) {
   return (
     <div id="features" style={props.style}>
-      <HorizontalLine style={props.styleLine} />
+      <HorizontalLine style={props.styleLineTop} />
       <div id="features-row-1">
         <div>
           <h2>🔧 Control</h2>
           <p>
-            You control how pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
+            You control how your pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
             <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
@@ -24,9 +28,9 @@ function Features(props: { style: React.CSSProperties; styleLine: React.CSSPrope
         <div>
           <h2>🦾 Full-fledged</h2>
           <p>
-            <b>Filesystem Routing</b>,
-            <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>, <b>Server-side Routing</b> (for simple
-            architecture) or <b>Client-side Routing</b> (for faster/animated page transitions).
+            <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
+            <b>Client-side Routing</b> (faster/animated page transitions) or <b>Server-side Routing</b> (simple
+            architecture).
           </p>
           <p>
             Render pages as <b>SPA</b>, <b>SSR</b>, or <b>Zero-JS HTML</b>.
@@ -96,7 +100,7 @@ function Features(props: { style: React.CSSProperties; styleLine: React.CSSPrope
           </p>
         </div>
       </div>
-      <HorizontalLine style={{ marginTop: 40, marginBottom: -40 }} />
+      <HorizontalLine style={props.styleLineBottom} />
     </div>
   )
 }

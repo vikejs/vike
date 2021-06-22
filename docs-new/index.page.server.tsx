@@ -1,5 +1,6 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
+import logo from './icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 
 export { render }
@@ -14,6 +15,7 @@ function render(pageContext: any) {
   return html`<!DOCTYPE html>
     <html>
       <head>
+        <link rel="icon" href="${logo}" />
         <title>Vite SSR Plugin</title>
         <meta name="description" content="Add SSR to your Vite app." />
       </head>
