@@ -166,7 +166,7 @@ function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   }
   const overlayBegin = getOverlayPosition(screenBegin)
   const overlayEnd = getOverlayPosition(screenEnd)
-  const overlayHeight = Math.max(1, Math.ceil(overlayEnd - overlayBegin))
+  const overlayHeight = Math.max(1, overlayEnd - overlayBegin)
   const scrollOverlayEl = document.getElementById('scroll-overlay')!
   scrollOverlayEl.style.top = overlayBegin + 'px'
   scrollOverlayEl.style.height = overlayHeight + 'px'

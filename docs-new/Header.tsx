@@ -76,7 +76,7 @@ function Header(props: { style: React.CSSProperties }) {
               el.setAttribute(attr, 'Copied')
               setTimeout(() => {
                 el.setAttribute(attr, orignalText)
-              }, 1500)
+              }, 1200)
             }}
           >
             <div style={{ color: '#888' }}>

@@ -12,7 +12,7 @@ function Features(props: {
     <div id="features" style={props.style}>
       <HorizontalLine style={props.styleLineTop} />
       <div id="features-row-1">
-        <div>
+        <Feature name="control">
           <h2>🔧 Control</h2>
           <p>
             You control how your pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
@@ -22,10 +22,10 @@ function Features(props: {
             Integrating tools is <b>simple & natural</b>.
           </p>
           <p>
-            <a onClick={() => {}}>Tell me more...</a>
+            <a>Tell me more...</a>
           </p>
-        </div>
-        <div>
+        </Feature>
+        <Feature name="control">
           <h2>🦾 Full-fledged</h2>
           <p>
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
@@ -35,7 +35,7 @@ function Features(props: {
           <p>
             Render pages as <b>SPA</b>, <b>SSR</b>, or <b>Zero-JS HTML</b>.
           </p>
-        </div>
+        </Feature>
         <div>
           <h2>🪨 Rock-solid</h2>
           Our source code has <b>no known bug</b> (new found ones are fixed promp&shy;tly).
@@ -57,8 +57,8 @@ function Features(props: {
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>
-            By <b>pre-rendering</b> your app you can deploy to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
-            Pages, ...).
+            <b>Pre-render</b> your app and deploy to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare Pages,
+            ...).
           </p>
         </div>
         <div>
@@ -101,6 +101,14 @@ function Features(props: {
         </div>
       </div>
       <HorizontalLine style={props.styleLineBottom} />
+    </div>
+  )
+}
+
+function Feature({ children }: { children: any }) {
+  return (
+    <div className="feature" id="feature-control">
+      {children}
     </div>
   )
 }

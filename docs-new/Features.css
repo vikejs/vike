@@ -7,7 +7,7 @@
   display: grid;
   font-size: 0.9em;
   grid-template-columns: repeat(2, 1fr);
-  grid-column-gap: 14px;
+  grid-column-gap: 20px;
 }
 #features-row-2 h2 {
   font-size: 1.1em;
@@ -20,4 +20,9 @@
 #features-row-1 h2 {
   margin-bottom: 0.9em;
   margin-top: 0;
+}
+
+.feature:hover {
+  background-color: #fafafa;
+  cursor: pointer;
 }
