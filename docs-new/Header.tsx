@@ -1,9 +1,10 @@
 import React from 'react'
 import './Header.css'
-import iconPlugin from './icons/vite-plugin-ssr.svg'
+// import iconPlugin from './icons/vite-plugin-ssr.svg'
 import iconGithub from './icons/github.svg'
 import iconTwitter from './icons/twitter.svg'
 import iconDiscord from './icons/discord.svg'
+import 'balloon-css'
 
 export { Header }
 
@@ -53,16 +54,37 @@ function Header(props: { style: React.CSSProperties }) {
         </div>
         <div style={{ marginTop: 10 }}>
           <code
+            id="npm-init-code-snippet"
+            aria-label="Click to copy"
+            data-balloon-pos="left"
             style={{
               fontSize: '1.55em',
               padding: '10px 20px',
               whiteSpace: 'nowrap',
               borderRadius: 5,
               display: 'block',
-              color: 'black'
+              color: 'black',
+              cursor: 'pointer'
+            }}
+            onClick={async () => {
+              if (window.navigator.clipboard) {
+                await window.navigator.clipboard.writeText('npm init vite-plugin-ssr@latest')
+              }
+              const el = document.getElementById('npm-init-code-snippet')!
+              const attr = 'aria-label'
+              const orignalText = el.getAttribute(attr)!
+              el.setAttribute(attr, 'Copied')
+              setTimeout(() => {
+                el.setAttribute(attr, orignalText)
+              }, 1500)
             }}
           >
-            <span style={{ color: '#bbb' }}>$</span> npm init vite-plugin-ssr
+            <div style={{ color: '#888' }}>
+              <span style={{ color: '#bbb' }}>#</span> Scaffold a Vite SSR app
+            </div>
+            <div>
+              <span style={{ color: '#bbb' }}>$</span> npm init vite-plugin-ssr
+            </div>
           </code>
         </div>
         <Center>

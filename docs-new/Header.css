@@ -15,6 +15,21 @@
   filter: grayscale(0) opacity(1) !important;
 }
 
+#npm-init-code-snippet {
+  --balloon-color: #444;
+  --balloon-move: 2px;
+  --balloon-font-size: 15px;
+  --balloon-border-radius: 5px;
+}
+#npm-init-code-snippet:before {
+  z-index: 11;
+}
+#npm-init-code-snippet:after {
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 0px 10px 3px red;
+  box-shadow: 0px 0px 15px 2px white;
+}
+
 /*
  * Twitter opacity(0.7): #ababab > #868686
  * == Following computation does NOT work ==

@@ -2,7 +2,7 @@ import React from 'react'
 import iconPlugin from './icons/vite-plugin-ssr.svg'
 import './SidePanel.css'
 import { Heading } from './types'
-import { assert } from './utils'
+import { assert, isBrowser } from './utils'
 import { headings as headingsCrawled } from './Docs.mdx'
 
 const headings = [
@@ -16,9 +16,7 @@ const headings = [
 
 export { SidePanel }
 
-if (typeof window !== 'undefined') {
-  window.addEventListener('load', setNavigationScrollWindow)
-  window.onload = setNavigationScrollWindow
+if (isBrowser()) {
   setTimeout(setNavigationScrollWindow, 0)
   window.addEventListener('scroll', setNavigationScrollWindow, { passive: true })
   window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
