@@ -2260,10 +2260,10 @@ In development `getPage()` dynamically `import()` the page, while in production 
 Environment: `Browser`
 
 By default, `vite-plugin-ssr` does Server-side Routing.
-You can do Client-side Routing instead by using `useClientRouter()`.
+You can do Client-side Routing instead by using `useClientRouter()` in your `_default.page.client.js` (or in a page's `*.page.client.js`).
 
 ```js
-// *.page.client.js
+// _default.page.client.js
 // Environment: Browser
 
 import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
