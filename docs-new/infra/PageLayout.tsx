@@ -4,6 +4,7 @@ import { SidePanel } from '../SidePanel'
 import { Header } from '../Header'
 import { Features } from '../features/Features'
 import Docs from '../Docs.mdx'
+import '../Docs.css'
 
 export { PageLayout }
 
@@ -26,7 +27,7 @@ function PageLayout() {
           styleLineTop={{ paddingBottom: 45 }}
           styleLineBottom={{ marginTop: 40, marginBottom: -70 }}
         />
-        <div style={{ padding: '0 100px' }}>
+        <div id="docs" style={{ padding: '0 100px' }}>
           <Docs />
         </div>
         {/*

@@ -2,6 +2,8 @@ import React from 'react'
 import './Features.css'
 import iconChevron from '../icons/chevron.svg'
 import { assert } from '../utils'
+import Control from './Control.mdx'
+import DeployAnywhere from './DeployAnywhere.mdx'
 
 export { Features }
 
@@ -17,8 +19,8 @@ function Features(props: {
         <Feature name="control">
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
-            You control how your pages are rendered and can use <b>any view framework</b> (React, Vue, ...) and{' '}
-            <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
+            You control how your pages are rendered; you can use <b>any view framework</b> (React, Vue, ...) and{' '}
+            <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...) you want.
           </p>
           <p>
             Integrating tools is <b>simple & natural</b>.
@@ -49,8 +51,7 @@ function Features(props: {
         </Feature>
       </div>
       <LearnMore name="control">
-        With <code>vite-plugin-ssr</code>,
-        <i>you</i> define how your pages are rendered.
+        <Control/>
       </LearnMore>
       <LearnMore name="full-fledged">Blu</LearnMore>
       <LearnMore name="rock-solid">Blo</LearnMore>
@@ -105,6 +106,9 @@ function Features(props: {
           </p>
         </Feature>
       </div>
+      <LearnMore name="deploy-anywhere">
+        <DeployAnywhere/>
+      </LearnMore>
       <HorizontalLine style={props.styleLineBottom} />
     </div>
   )
@@ -115,7 +119,7 @@ function Feature({ children, name }: { name: string; children: any }) {
     <div className="feature" id={`feature-${name}`} onClick={onClick}>
       {children}
       <div style={{ textAlign: 'center' }}>
-        <img src={iconChevron} height="10" style={{ marginRight: 20 }} />
+        <img src={iconChevron} height="12" style={{ marginRight: 20 }} />
       </div>
     </div>
   )

@@ -41,3 +41,7 @@ code:not([class*='language-']) {
   border-radius: 4px;
   padding: 2px 5px;
 }
+
+pre {
+  display: grid;
+}

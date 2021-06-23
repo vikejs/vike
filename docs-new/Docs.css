@@ -1,0 +1,12 @@
+h2 + h3 {
+  margin-top: 0;
+}
+#docs h2,
+#docs h3 {
+  margin-top: 120px;
+  padding-top: 30px;
+  /*
+  margin-top: 0;
+  padding-top: 150px
+  */
+}
