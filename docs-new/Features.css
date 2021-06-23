@@ -22,7 +22,48 @@
   margin-top: 0;
 }
 
+.learn-more,
+.feature {
+  transition: background-color 0.3s ease-in-out;
+}
+.learn-more {
+  display: none;
+}
+.learn-more.selected {
+  display: block;
+}
+.selected {
+  /*
+  background-color: #eaeaea;
+  background-color: #fafafa;
+  background-color: #f4f4f4;
+  */
+  border: 2px solid #ccc;
+}
+.feature.selected {
+  border-bottom: 0 !important;
+  background-color: white;
+  z-index: 1;
+}
+.learn-more.selected {
+  position: relative;
+  top: -2px;
+}
+/*
 .feature:hover {
   background-color: #fafafa;
+}
+*/
+.feature img {
+  filter: grayscale(1);
+  transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+.feature:hover img {
+  filter: grayscale(0);
+}
+.feature.selected img {
+  transform: rotate(180deg)
+}
+.feature {
   cursor: pointer;
 }
