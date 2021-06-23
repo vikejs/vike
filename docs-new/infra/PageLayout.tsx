@@ -1,13 +1,13 @@
-import './index.css'
+import './main.css'
 import React from 'react'
-import { SidePanel } from './SidePanel'
-import { Header } from './Header'
-import { Features } from './Features'
-import Docs from './Docs.mdx'
+import { SidePanel } from '../SidePanel'
+import { Header } from '../Header'
+import { Features } from '../features/Features'
+import Docs from '../Docs.mdx'
 
-export { Page }
+export { PageLayout }
 
-function Page() {
+function PageLayout() {
   return (
     <div
       style={{

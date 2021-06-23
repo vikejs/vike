@@ -1,6 +1,6 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import logo from './icons/vite-plugin-ssr.svg'
+import logo from '../../icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 
 export { render }

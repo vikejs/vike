@@ -1,7 +1,7 @@
 import React from 'react'
 import './Features.css'
-import iconChevron from './icons/chevron.svg'
-import { assert } from './utils'
+import iconChevron from '../icons/chevron.svg'
+import { assert } from '../utils'
 
 export { Features }
 
@@ -48,7 +48,10 @@ function Features(props: {
           <p></p>
         </Feature>
       </div>
-      <LearnMore name="control">Bla</LearnMore>
+      <LearnMore name="control">
+        With <code>vite-plugin-ssr</code>,
+        <i>you</i> define how your pages are rendered.
+      </LearnMore>
       <LearnMore name="full-fledged">Blu</LearnMore>
       <LearnMore name="rock-solid">Blo</LearnMore>
       <div id="features-row-2">
