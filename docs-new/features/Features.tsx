@@ -15,8 +15,8 @@ function Features(props: {
   return (
     <div id="features" style={props.style}>
       <HorizontalLine style={props.styleLineTop} />
-      <div id="features-row-1">
-        <Feature name="control">
+      <div id="features-row-top">
+        <Feature name="control" isExpandable={true}>
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
             You control how your pages are rendered; you can use <b>any view framework</b> (React, Vue, ...) and{' '}
@@ -26,7 +26,7 @@ function Features(props: {
             Integrating tools is <b>simple & natural</b>.
           </p>
         </Feature>
-        <Feature name="full-fledged">
+        <Feature>
           <h2>{String.fromCodePoint(0x1f9be)} Full-fledged</h2>
           <p>
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
@@ -34,7 +34,7 @@ function Features(props: {
             architecture).
           </p>
           <p>
-            Render pages as <b>SPA</b>, <b>SSR</b>, or <b>Zero-JS HTML</b>.
+            Render pages with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
           </p>
         </Feature>
         <Feature name="rock-solid">
@@ -51,12 +51,10 @@ function Features(props: {
         </Feature>
       </div>
       <LearnMore name="control">
-        <Control/>
+        <Control />
       </LearnMore>
-      <LearnMore name="full-fledged">Blu</LearnMore>
-      <LearnMore name="rock-solid">Blo</LearnMore>
-      <div id="features-row-2">
-        <Feature name="deploy-anywhere">
+      <div id="features-row-bottom">
+        <Feature name="deploy-anywhere" isExpandable={true}>
           <h2>{String.fromCodePoint(0x1f30d)} Deploy Anywhere</h2>
           <p>
             Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
@@ -77,6 +75,11 @@ function Features(props: {
             start of your serverless functions.
           </p>
         </Feature>
+      </div>
+      <LearnMore name="deploy-anywhere">
+        <DeployAnywhere />
+      </LearnMore>
+      <div id="features-row-bottom">
         <Feature name="scalable">
           <h2>{String.fromCodePoint(0x1f680)} Scalable</h2>
           <p>
@@ -101,25 +104,24 @@ function Features(props: {
           <p>
             GitHub and Discord <b>conversations are welcome</b>.
           </p>
-          <p>
-            Our unique goal: using <code>vite-plugin-ssr</code> should be fun.
-          </p>
         </Feature>
       </div>
-      <LearnMore name="deploy-anywhere">
-        <DeployAnywhere/>
-      </LearnMore>
       <HorizontalLine style={props.styleLineBottom} />
     </div>
   )
 }
 
-function Feature({ children, name }: { name: string; children: any }) {
+function Feature({ children, name, isExpandable }: { name?: string; isExpandable?: true; children: any }) {
   return (
-    <div className="feature" id={`feature-${name}`} onClick={onClick}>
+    <div
+      className="feature"
+      id={name && `feature-${name}`}
+      onClick={isExpandable && onClick}
+      style={{ cursor: isExpandable && 'pointer' }}
+    >
       {children}
       <div style={{ textAlign: 'center' }}>
-        <img src={iconChevron} height="12" style={{ marginRight: 20 }} />
+        {isExpandable && <img src={iconChevron} height="12" style={{ marginRight: 20 }} />}
       </div>
     </div>
   )
@@ -138,7 +140,7 @@ function Feature({ children, name }: { name: string; children: any }) {
       if (el.id === learnId || el.id === featureId) {
         el.classList.toggle(selected)
       } else {
-        el.classList.remove(selected)
+        // el.classList.remove(selected)
       }
     })
   }

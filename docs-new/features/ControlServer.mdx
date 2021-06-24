@@ -1,0 +1,18 @@
+From a server perspective, `vite-plugin-ssr` is simply a server middleware.
+
+```js
+const { createPageRender } = require('vite-plugin-ssr')
+
+// On the server-side, `vite-plugin-ssr` is simply a `renderPage()` function.
+const renderPage = createPageRender()
+
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // We can also use `renderPage()` in a serverless environment such as Cloudflare Workers
+  const result = await renderPage({ url: req.url })
+  res.send(result.renderResult)
+})
+```
+
+Not only can we use `vite-plugin-ssr` with any server environment we want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase, Express.js, Fastify, Hapi, ...),
+but we can also use any server tool we want, for example any authentication strategy & tool (email/password, OAuth, Passport.js, Grant, Auth0, ...).

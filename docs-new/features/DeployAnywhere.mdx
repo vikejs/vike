@@ -1,1 +1,14 @@
-From an architectural point of view, `vite-plugin-ssr` is simply a server middleware we can use with any server environment we want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase, Express.js, Fastify, Hapi, ...)
+import ControlServer from './ControlServer.mdx'
+import { PrerenderPreview } from './PrerenderPreview'
+
+### Any Server Environment
+
+<ControlServer />
+
+### Pre-rendering
+
+You can pre-render your pages to HTML and remove the need for a production server.
+
+<PrerenderPreview />
+
+You can then deploy to any static host (Netlify, GitHub Pages, Cloudflare Pages, ...).

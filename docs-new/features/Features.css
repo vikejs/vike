@@ -1,14 +1,14 @@
-#features-row-1 {
+#features-row-top {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
-#features-row-2 {
+#features-row-bottom {
   display: grid;
   font-size: 0.9em;
   grid-template-columns: repeat(2, 1fr);
   grid-column-gap: 4px;
 }
-#features-row-2 h2 {
+#features-row-bottom h2 {
   font-size: 1.1em;
   margin-bottom: 0.9em;
   margin-top: 2em;
@@ -83,7 +83,4 @@
 }
 .feature.selected img {
   transform: rotate(180deg);
-}
-.feature {
-  cursor: pointer;
 }

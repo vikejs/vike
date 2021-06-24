@@ -1,3 +1,5 @@
+import ControlServer from './ControlServer.mdx'
+
 ### Render Control
 
 With `vite-plugin-ssr`, _you_ define how your pages are rendered.
@@ -80,21 +82,4 @@ simply by following their official SSR guide.
 
 #### Server libraries
 
-From a server perspective, `vite-plugin-ssr` is simply a server middleware.
-
-```js
-const { createPageRender } = require('vite-plugin-ssr')
-
-// On the server-side, `vite-plugin-ssr` is simply a `renderPage()` function.
-const renderPage = createPageRender()
-
-// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
-app.get('*', async (req, res) => {
-  // We can also use `renderPage()` in a serverless environment such as Cloudflare Workers
-  const result = await renderPage({ url: req.url })
-  res.send(result.renderResult)
-})
-```
-
-Not only can we use `vite-plugin-ssr` with any server environment we want,
-but we can also use any server tool we want, for example any authentication strategy & tool.
+<ControlServer />

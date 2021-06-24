@@ -5,7 +5,7 @@
   max-width: var(--content-max-width);
   margin: auto;
 }
-h2 + h3 {
+#docs h2 + h3 {
   margin-top: 0;
 }
 #docs h2,

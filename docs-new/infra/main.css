@@ -51,3 +51,6 @@ code:not([class*='language-']) {
 pre {
   display: grid;
 }
+pre > code {
+  border-radius: 4px;
+}
