@@ -27,7 +27,7 @@ function PageLayout() {
           styleLineTop={{ paddingBottom: 45 }}
           styleLineBottom={{ marginTop: 40, marginBottom: -70 }}
         />
-        <div id="docs" style={{ padding: '0 100px' }}>
+        <div id="docs">
           <Docs />
         </div>
         {/*

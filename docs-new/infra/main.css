@@ -6,6 +6,12 @@ body {
 }
 
 /*
+* {
+  box-sizing: border-box;
+}
+*/
+
+/*
 :root {
   --link-color: #4747ff;
 }

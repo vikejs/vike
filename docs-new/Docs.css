@@ -1,3 +1,10 @@
+:root {
+  --content-max-width: 880px;
+}
+#docs {
+  max-width: var(--content-max-width);
+  margin: auto;
+}
 h2 + h3 {
   margin-top: 0;
 }

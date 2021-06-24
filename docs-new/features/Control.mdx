@@ -3,25 +3,7 @@
 With `vite-plugin-ssr`, _you_ define how your pages are rendered.
 
 ```js
-// /pages/index.page.js
-// Environment: Node.js, Browser
-
-// We use JSX here but this could also be anything such as a `.vue` or a `.svelte` file
-
-export default Page
-
-function Page() {
-  return (
-    <>
-      <h1>Welcome to vite-plugin-ssr</h1>
-      <p>Our first Vite + SSR app.</p>
-    </>
-  )
-}
-```
-
-```js
-// /pages/_default/_default.page.server.js
+// _default.page.server.js
 // Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
@@ -29,23 +11,10 @@ import { html } from 'vite-plugin-ssr'
 // This could be any view framework: React 16, React 17, Vue 2, Vue 3, Svelte, Solid, Preact, ...
 import { renderToHtml } from 'some-view-framework'
 
-export { render }
-
-async function render(pageContext) {
-  // `Page` is the `export default Page` of our `pages/index.page.js` above
-  const { Page } = pageContext
-
-  const pageHtml = await renderToHtml(Page)
-
-  const title = 'My first Vite SSR app'
-
-  // We have full control over how our `Page` is rendered to HTML.
+export async function render(pageContext) {
+  const pageHtml = await renderToHtml(pageContext.Page)
   return html`<!DOCTYPE html>
     <html>
-      <head>
-        <meta charset="UTF-8" />
-        <title>${title}</title>
-      </head>
       <body>
         <div id="page-root">${html.dangerouslySkipEscape(appHtml)}</div>
       </body>
@@ -54,13 +23,13 @@ async function render(pageContext) {
 ```
 
 ```js
-// /pages/_default/_default.page.client.js
+// _default.page.client.js
 // Environment: Browser
 
 import { hydrateToDom } from 'some-view-framework'
 
-// This files defines the *entire* browser-side code.
-// If we leave this file empty then there is zero browser-side code.
+// This file defines the *entire* browser-side code.
+// If we define an empty `_default.page.client.js` then our pages have zero browser-side code.
 
 hydrate()
 
@@ -75,55 +44,57 @@ async function hydrate() {
 
 This control means we can easily integrate any tool we want.
 
-Want to use bootstrap or some other CSS framework? Simply follow the CSS's official installation guide.
+#### Browser libraries
 
 ```js
-export async function render(pageContext) {
-  // We follow the official Bootstrap installation guide
-  return html`<!DOCTYPE html>
-    <html>
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous"
-        >
-        <title>${title}</title>
-      </head>
-      <body>
-        <div id="page-root">${html.dangerouslySkipEscape(renderToHtml(pageContext.Page))}</div>
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-          crossorigin="anonymous">
-        </script>
-
-      </body>
-    </html>`
-}
-```
-
-Want to use some browser-side library such as Google Analytics or Sentry? Simply follow their official installation guide.
-
-```js
-// /pages/_default/_default.page.client.js
+// _default.page.client.js
 // Environment: Browser
 
-import { hydrateToDom } from 'some-view-framework'
-
-// This files defines the *entire* browser-side code.
-// If we leave this file empty then there is zero browser-side code.
+// This is the first browser-side line of code.
+// This is a good place to initialize error tracking such as Sentry or Bugsnag.
+Sentry.init()
+// And also for initializing a Service Worker.
+navigator.serviceWorker.register('/sw.js')
 
 hydrate()
 
-async function hydrate() {
-  const pageContext = await getPage()
-  const { Page } = pageContext
-  await hydrateToDom(Page)
+// After hydration we can initialize vanilla JS component libraries, for example tooltips
+tooltip.init(document.querySelectorAll('.tooltip')
+
+hydrate() {
+  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
+  // ...
 }
 ```
 
-Same goes for GraphQL, Vuex, Redux, jQuery, Service Workes, ...: we can simply follow their official installation guide.
+This control over the browser-side allows us to integrate tools simply by following the tool's official installation guide;
+`vite-plugin-ssr` does not get in our way. In other words, integrating tools is natural.
 
-In other words, **integration is natural**.
+No more hassle adding our favorite CSS framework or favorite browser library/technology.
+
+#### Framework libraries
+
+We have full control over how we setup and integrate our view framework (React/Vue/Svelte/...) which means we can
+use any framework tool (Apollo GraphQL, Vuex, Redux, PullState, Recoil, ...)
+simply by following their official SSR guide.
+
+#### Server libraries
+
+From a server perspective, `vite-plugin-ssr` is simply a server middleware.
+
+```js
+const { createPageRender } = require('vite-plugin-ssr')
+
+// On the server-side, `vite-plugin-ssr` is simply a `renderPage()` function.
+const renderPage = createPageRender()
+
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // We can also use `renderPage()` in a serverless environment such as Cloudflare Workers
+  const result = await renderPage({ url: req.url })
+  res.send(result.renderResult)
+})
+```
+
+Not only can we use `vite-plugin-ssr` with any server environment we want,
+but we can also use any server tool we want, for example any authentication strategy & tool.
