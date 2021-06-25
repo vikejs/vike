@@ -9,14 +9,15 @@ import '../Docs.css'
 export { PageLayout }
 
 function PageLayout() {
+  const sidePanelWidth = 280
   return (
     <div
       style={{
         display: 'flex'
       }}
     >
-      <div id="panel-left" style={{ flexShrink: 0, width: 280 }}>
-        <div style={{ height: '100vh', position: 'fixed', top: 0, overflowY: 'auto', borderRight: '1px solid #eee' }}>
+      <div id="panel-left" style={{ flexShrink: 0, width: sidePanelWidth }}>
+        <div style={{ height: '100vh', width: sidePanelWidth, position: 'fixed', top: 0, overflowY: 'auto', borderRight: '1px solid #eee' }}>
           <SidePanel />
         </div>
       </div>

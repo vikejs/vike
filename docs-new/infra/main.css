@@ -38,7 +38,10 @@ code[class*='language-'] {
   src: url('./Inter-Var.ttf') format('truetype-variations');
 }
 
-code:not([class*='language-']) {
+pre {
+  display: grid;
+}
+pre > code {
   /*
   background-color: #f4f4f4;
   0.043137255 = 1 - (#f4 / #ff)
@@ -46,11 +49,4 @@ code:not([class*='language-']) {
   background-color: rgba(0, 0, 0, 0.043137255);
   border-radius: 4px;
   padding: 2px 5px;
-}
-
-pre {
-  display: grid;
-}
-pre > code {
-  border-radius: 4px;
 }
