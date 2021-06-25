@@ -4,6 +4,7 @@ import iconChevron from '../icons/chevron.svg'
 import { assert } from '../utils'
 import Control from './Control.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
+import { updateSidePanelScroll } from '../SidePanel'
 
 export { Features }
 
@@ -143,6 +144,7 @@ function Feature({ children, name, isExpandable }: { name?: string; isExpandable
         // el.classList.remove(selected)
       }
     })
+    updateSidePanelScroll()
   }
 }
 function LearnMore({ children, name }: { name: string; children: any }) {

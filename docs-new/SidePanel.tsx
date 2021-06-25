@@ -16,18 +16,19 @@ const headings = [
 assert_headings()
 
 export { SidePanel }
+export { updateSidePanelScroll }
 
 if (isBrowser()) {
-  setTimeout(setNavigationScrollWindow, 0)
-  window.addEventListener('scroll', setNavigationScrollWindow, { passive: true })
-  window.addEventListener('resize', setNavigationScrollWindow, { passive: true })
+  setTimeout(updateSidePanelScroll, 0)
+  window.addEventListener('scroll', updateSidePanelScroll, { passive: true })
+  window.addEventListener('resize', updateSidePanelScroll, { passive: true })
 }
 
 type DocSection = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
 type ScreenBegin = DocSection
 type ScreenEnd = DocSection
 
-function setNavigationScrollWindow() {
+function updateSidePanelScroll() {
   let screenBegin: ScreenBegin | null = null
   let screenEnd: ScreenEnd | null = null
   let headingPrevious: Heading | null = null
