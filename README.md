@@ -752,7 +752,7 @@ pages/faq/index.page.js     /faq
 
 To define a parameterized route, or for more control, you can `export default` a Route String in `.page.route.js`.
 
-```
+```js
 // /pages/product.page.route.js
 
 export default '/product/:productId'
