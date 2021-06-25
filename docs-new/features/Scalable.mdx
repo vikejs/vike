@@ -1,0 +1,23 @@
+import { Tweet } from './Tweet'
+
+### DX Scalability with Lazy-transpiling
+
+Vite does lazy-transpiling: only code requested by the browser is transpiled.
+This means that if you define 10 pages but load only one page in the browser, then only the code that is needed to render that page is transpiled.
+
+Thanks to Vite's lazy-transpiling approach, you can scale to (very!) large source code while with a dev speed and HMR that stays fast.
+
+### Scalable SSR Architecture
+
+As you scale you may need increasinlgy precise SSR needs; `vite-plugin-ssr` is designed to be flexible for even highly custom SSR needs.
+
+You can even, at very large scale, progressively replace `vite-plugin-ssr` with Vite's native SSR API which is a low level and robust (many projects, such as `vite-plugin-ssr`, and many companies are built on top of and depend on it). If you are Netflix and squeezing out each UX imperfection leads to a substantial revenue increase, then `vite-plugin-ssr` and/or Vite's SSR API are what you are looking for.
+
+<div style={{textAlign: 'center', fontSize: '0.9em', color: '#888', marginTop: 30}}>
+  Large production apps are using Vite for its dev speed.
+</div>
+<div style={{display: 'flex'}}>
+  <Tweet tweetId={'1398240747661533184'}/>
+  <div style={{width: 20, height: 1}}/>
+  <Tweet tweetId={'1392901819135795202'}/>
+</div>

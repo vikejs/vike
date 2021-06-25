@@ -4,6 +4,7 @@ import iconChevron from '../icons/chevron.svg'
 import { assert } from '../utils'
 import Control from './Control.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
+import Scalable from './Scalable.mdx'
 import { updateSidePanelScroll } from '../SidePanel'
 
 export { Features }
@@ -24,7 +25,7 @@ function Features(props: {
             <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...) you want.
           </p>
           <p>
-            Integrating tools is <b>simple & natural</b>.
+            Integrating tools is <b>simple</b> and <b>natural</b>.
           </p>
         </Feature>
         <Feature>
@@ -38,10 +39,11 @@ function Features(props: {
             Render pages with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
           </p>
         </Feature>
-        <Feature name="rock-solid">
+        <Feature>
           <h2>{String.fromCodePoint(0x1faa8)} Rock-solid</h2>
-          Our source code has <b>no known bug</b> (new found ones are fixed promp&shy;tly).
-          <p></p>
+          <p>
+            The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>.
+          </p>
           <p>
             Every release is assailed against a heavy suite of <b>automated tests</b>.
           </p>
@@ -66,7 +68,7 @@ function Features(props: {
             ...).
           </p>
         </Feature>
-        <Feature name="fast">
+        <Feature>
           <h2>{String.fromCodePoint(0x26a1)} Fast</h2>
           <p>
             <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
@@ -81,20 +83,19 @@ function Features(props: {
         <DeployAnywhere />
       </LearnMore>
       <div id="features-row-bottom">
-        <Feature name="scalable">
+        <Feature name="scalable" isExpandable={true}>
           <h2>{String.fromCodePoint(0x1f680)} Scalable</h2>
           <p>
-            Scale to <b>thousands of files</b> with no hit on dev speed.
+            Scale to 100 kLOCs while dev speed and <b>HMR stays fast.</b>
           </p>
           <p>
             <b>SSR architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
-            <b>custom precise needs</b>.
+            <b>custom precise SSR needs</b>.
           </p>
-          <p>At (very large) scale, you can progressively start using Vite's native SSR API directly.</p>
         </Feature>
-        <Feature name="craftmanship">
+        <Feature>
           <h2>
-            <span style={{ fontFamily: 'reset' }}>{String.fromCodePoint(0x2764)}</span> Craftmanship
+            <span style={{ fontFamily: 'reset' }}>{String.fromCodePoint(0x2764)}</span> Craft
           </h2>
           <p>
             Crafted with <b>attention to details</b> and <b>care for simplicity</b>.
@@ -107,12 +108,31 @@ function Features(props: {
           </p>
         </Feature>
       </div>
+      <LearnMore name="scalable">
+        <Scalable />
+    {/*
+<div id="container"></div>
+ <script src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
+ <script dangerouslySetInnerHTML={{__html: `
+console.log(11)
+twttr.widgets.createTweet(
+  '1398240747661533184',
+  document.getElementById('container'),
+  {
+    theme: 'dark'
+  }
+);
+console.log(12)
+`}}/>
+*/}
+      </LearnMore>
       <HorizontalLine style={props.styleLineBottom} />
     </div>
   )
 }
 
 function Feature({ children, name, isExpandable }: { name?: string; isExpandable?: true; children: any }) {
+  assert(!!name === !!isExpandable)
   return (
     <div
       className="feature"

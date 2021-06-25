@@ -18,6 +18,7 @@ function render(pageContext: any) {
         <link rel="icon" href="${logo}" />
         <title>Vite SSR Plugin</title>
         <meta name="description" content="Add SSR to your Vite app." />
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       </head>
       <body>
         <div id="page-view">${html.dangerouslySkipEscape(pageContent)}</div>
