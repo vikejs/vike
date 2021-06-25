@@ -7,7 +7,7 @@ function mdxExportHeadings() {
   return {
     name: 'vite-plugin-mdx-export-headings',
     transform: async (code: string, id: string) => {
-      if (!id.endsWith('.mdx')) {
+      if (!id.endsWith('/Docs.mdx')) {
         return
       }
       const headings: { level: number; title: string; id: string; titleAddendum?: string }[] = []

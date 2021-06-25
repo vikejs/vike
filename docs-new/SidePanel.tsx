@@ -13,6 +13,7 @@ const headings = [
   },
   ...headingsCrawled
 ]
+assert_headings()
 
 export { SidePanel }
 
@@ -127,9 +128,9 @@ function findNavLink(heading: Heading): HTMLElement {
   const { id } = heading
   assert(typeof id === 'string')
   const navigationEl = getNavigationEl()
-  const el: HTMLElement | null = navigationEl.querySelector(`a[href="#${id}"]`)
-  assert(el)
-  return el
+  const navLinks: HTMLElement[] = Array.from(navigationEl.querySelectorAll(`a[href="#${id}"]`))
+  assert(navLinks.length===1)
+  return navLinks[0]
 }
 
 let _navigationEl: HTMLElement
@@ -283,4 +284,12 @@ function NavTree({ headings }: { headings?: Heading[] }) {
       })}
     </>
   )
+}
+
+function assert_headings() {
+  const ids: string[] = []
+  headings.forEach(({id}) => {
+    assert(!ids.includes(id))
+    ids.push(id)
+  })
 }
