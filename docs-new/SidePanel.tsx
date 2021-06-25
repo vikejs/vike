@@ -92,7 +92,7 @@ function updateSidePanelScroll() {
   console.log('screenEnd', screenEnd.heading.title, screenEnd.boundaryPosition)
   console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
   //*/
-  updateScrollOverlay(screenBegin, screenEnd)
+  updateScrollPosition(screenBegin, screenEnd)
   setActiveHeadings(screenBegin, screenEnd)
 }
 
@@ -101,28 +101,52 @@ function assertBoundaryPosition(boundaryPosition: number) {
 }
 
 function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
+  const headingsViewportPercentage = getHeadingsViewportPercentage(screenBegin, screenEnd)
+  headingsViewportPercentage.forEach((heading) => {
+    const { viewportPercentage } = heading
+    const navItem = findNavLink(heading)
+    setNavItemBackgroundColor(navItem, viewportPercentage)
+  })
+}
+
+function setNavItemBackgroundColor(navItem: HTMLElement, viewportPercentage: number) {
+  if (viewportPercentage) {
+    assert(viewportPercentage >= 0 && viewportPercentage <= 1)
+    const backgroundColor = `rgba(0, 0, 0, ${viewportPercentage / 20})`
+    navItem.style.backgroundColor = backgroundColor
+  } else {
+    navItem.style.backgroundColor = 'transparent'
+  }
+}
+
+type HeadingViewportPercentage = Heading & { viewportPercentage: number }
+function getHeadingsViewportPercentage(screenBegin: ScreenBegin, screenEnd: ScreenEnd): HeadingViewportPercentage[] {
   const screenBeginIdx = headings.indexOf(screenBegin.heading)
   const screenEndIdx = headings.indexOf(screenEnd.heading)
+
   const viewportPercentageLeftover = 1 - (screenBegin.viewportPercentage + screenEnd.viewportPercentage)
+
   let viewportPercentageTotal = 0
-  headings.forEach((heading, idx) => {
+
+  const headingsViewportPercentage = headings.map((heading, idx) => {
     const isActive = screenBeginIdx <= idx && idx <= screenEndIdx
-    const navItem = findNavLink(heading)
-    if (isActive) {
+    if (!isActive) {
+      return { ...heading, viewportPercentage: 0 }
+    } else {
       const viewportPercentage: number =
         (idx == screenBeginIdx && screenBegin.viewportPercentage) ||
         (idx == screenEndIdx && screenEnd.viewportPercentage) ||
         viewportPercentageLeftover / (screenEndIdx - screenBeginIdx - 1)
       viewportPercentageTotal += viewportPercentage
       assert(viewportPercentage >= 0 && viewportPercentage <= 1)
-      const backgroundColor = `rgba(0, 0, 0, ${viewportPercentage / 20})`
-      navItem.style.backgroundColor = backgroundColor
-    } else {
-      navItem.style.backgroundColor = 'transparent'
+      return { ...heading, viewportPercentage }
     }
   })
+
   // console.log('vpt', viewportPercentageTotal, screenBegin.viewportPercentage, screenEnd.viewportPercentage)
-  assert(viewportPercentageTotal === 1)
+  assert(1 - 0.00001 <= viewportPercentageTotal && viewportPercentageTotal <= 1 + 0.00001)
+
+  return headingsViewportPercentage
 }
 
 function findNavLink(heading: Heading): HTMLElement {
@@ -130,7 +154,7 @@ function findNavLink(heading: Heading): HTMLElement {
   assert(typeof id === 'string')
   const navigationEl = getNavigationEl()
   const navLinks: HTMLElement[] = Array.from(navigationEl.querySelectorAll(`a[href="#${id}"]`))
-  assert(navLinks.length===1)
+  assert(navLinks.length === 1)
   return navLinks[0]
 }
 
@@ -141,7 +165,7 @@ function getNavigationEl(): HTMLElement {
   return _navigationEl
 }
 
-function updateScrollOverlay(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
+function updateScrollPosition(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   assertBoundaryPosition(screenBegin.boundaryPosition)
   assertBoundaryPosition(screenEnd.boundaryPosition)
 
@@ -219,6 +243,54 @@ function Navigation() {
     </div>
   )
 }
+/*
+function traverse(headings: Heading[]): Heading[] {
+  const headingList: Heading[] = []
+  headings.forEach((heading) => {
+    headingList.push(heading)
+    if (heading.headings) {
+      headingList.push(...traverse(heading.headings))
+    }
+  })
+  return headingList
+}
+*/
+function NavTree({ headings }: { headings: Heading[] }) {
+  const headingsTree = getHeadingsTree(headings)
+  return (
+    <>
+      {headingsTree.map((heading) => {
+        const { id, level, title, headingsChildren } = heading
+        assert(typeof heading.id === 'string')
+        return (
+          <div className="nav-tree" key={id || title}>
+            <a className={'nav-item nav-item-h' + level} href={'#' + heading.id}>
+              <span dangerouslySetInnerHTML={{ __html: title }} />
+            </a>
+            <NavTree headings={headingsChildren} />
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+type HeadingsRoot = Heading & { headingsChildren: Heading[] }
+function getHeadingsTree(headings: Heading[]): HeadingsRoot[] {
+  const headingLowestLevel = Math.min(...headings.map(({ level }) => level))
+  const headingsRoots: HeadingsRoot[] = []
+  headings.forEach((heading) => {
+    if (heading.level === headingLowestLevel) {
+      headingsRoots.push({
+        ...heading,
+        headingsChildren: []
+      })
+    } else {
+      headingsRoots[headingsRoots.length - 1].headingsChildren.push(heading)
+    }
+  })
+  return headingsRoots
+}
 
 function ScrollOverlay() {
   const width = '1px'
@@ -254,42 +326,9 @@ function ScrollOverlay() {
   )
 }
 
-/*
-function traverse(headings: Heading[]): Heading[] {
-  const headingList: Heading[] = []
-  headings.forEach((heading) => {
-    headingList.push(heading)
-    if (heading.headings) {
-      headingList.push(...traverse(heading.headings))
-    }
-  })
-  return headingList
-}
-*/
-function NavTree({ headings }: { headings?: Heading[] }) {
-  if (headings === undefined) return null
-  return (
-    <>
-      {headings.map((heading) => {
-        const { level, title /*, headings*/ } = heading
-        const headings: Heading[] = [] /// TODO
-        assert(typeof heading.id === 'string')
-        return (
-          <div key={title}>
-            <a className={'nav-item nav-item-h' + level} href={'#' + heading.id}>
-              <span dangerouslySetInnerHTML={{ __html: title }} />
-            </a>
-            <NavTree headings={headings} />
-          </div>
-        )
-      })}
-    </>
-  )
-}
-
 function assert_headings() {
   const ids: string[] = []
-  headings.forEach(({id}) => {
+  headings.forEach(({ id }) => {
     assert(!ids.includes(id))
     ids.push(id)
   })

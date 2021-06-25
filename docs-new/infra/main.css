@@ -26,10 +26,6 @@ a {
   text-decoration: none;
 }
 
-code[class*='language-'] {
-  padding: 16px;
-}
-
 @font-face {
   font-family: 'Inter';
   font-weight: 100 900;
@@ -38,10 +34,7 @@ code[class*='language-'] {
   src: url('./Inter-Var.ttf') format('truetype-variations');
 }
 
-pre {
-  display: grid;
-}
-pre > code {
+code {
   /*
   background-color: #f4f4f4;
   0.043137255 = 1 - (#f4 / #ff)
@@ -49,4 +42,10 @@ pre > code {
   background-color: rgba(0, 0, 0, 0.043137255);
   border-radius: 4px;
   padding: 2px 5px;
+}
+pre > code {
+  padding: 16px !important;
+}
+pre {
+  display: grid;
 }
