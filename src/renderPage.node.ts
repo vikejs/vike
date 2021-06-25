@@ -765,6 +765,9 @@ function handleErr(err: unknown) {
   const { viteDevServer } = getSsrEnv()
   if (viteDevServer) {
     cast<Error>(err)
+    if (viteDevServer.config.logger.hasLogged(err)) {
+      return
+    }
     if (err?.stack) {
       viteDevServer.ssrFixStacktrace(err)
     }
