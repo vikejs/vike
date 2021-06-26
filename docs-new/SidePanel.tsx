@@ -24,13 +24,11 @@ if (isBrowser()) {
   window.addEventListener('resize', updateSidePanelScroll, { passive: true })
 }
 
-type DocSection = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
-type ScreenBegin = DocSection
-type ScreenEnd = DocSection
+type HeadingVisible = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
 
 function updateSidePanelScroll() {
-  let screenBegin: ScreenBegin | null = null
-  let screenEnd: ScreenEnd | null = null
+  let headingVisibleFirst: HeadingVisible | null = null
+  let headingVisibleLast: HeadingVisible | null = null
   let headingPrevious: Heading | null = null
   let headingPreviousViewportPosition: number | null = null
 
@@ -41,7 +39,7 @@ function updateSidePanelScroll() {
   const getBoundaryEnd = (headingPreviousViewportPosition: number, headingViewportPosition: number) =>
     (viewportHeight - headingPreviousViewportPosition) / (headingViewportPosition - headingPreviousViewportPosition)
 
-  const getScreenBegin = (headingViewportPosition: number) => {
+  const getHeadingVisibleFirst = (headingViewportPosition: number) => {
     assert(headingPrevious !== null) // The first heading is `Introduction` which has `headingViewportPosition <= 0`
     assert(headingPreviousViewportPosition !== null)
     assert(headingPreviousViewportPosition <= 0)
@@ -51,13 +49,13 @@ function updateSidePanelScroll() {
     assert(viewportPercentage >= 0 && viewportPercentage <= 1)
     return { heading: headingPrevious, boundaryPosition, viewportPercentage }
   }
-  const getScreenEnd = (headingViewportPosition: number) => {
+  const getHeadingVisibleLast = (headingViewportPosition: number) => {
     assert(headingPrevious !== null)
     assert(headingPreviousViewportPosition !== null)
     assert(headingPreviousViewportPosition <= viewportHeight)
     const boundaryPosition = getBoundaryEnd(headingPreviousViewportPosition, headingViewportPosition)
     assertBoundaryPosition(boundaryPosition)
-    assert(screenBegin)
+    assert(headingVisibleFirst)
     const viewportPercentage = (viewportHeight - Math.max(headingPreviousViewportPosition, 0)) / viewportHeight
     assert(viewportPercentage >= 0 && viewportPercentage <= 1)
     return { heading: headingPrevious, boundaryPosition, viewportPercentage }
@@ -67,41 +65,44 @@ function updateSidePanelScroll() {
     const headingViewportPosition = getHeadingPosition(heading)
     if (headingViewportPosition === null) continue
     // `headingViewportPosition > 0` => heading is within viewport
-    if (!screenBegin && headingViewportPosition > 0) {
-      screenBegin = getScreenBegin(headingViewportPosition)
+    if (!headingVisibleFirst && headingViewportPosition > 0) {
+      headingVisibleFirst = getHeadingVisibleFirst(headingViewportPosition)
     }
     if (headingViewportPosition > viewportHeight) {
-      screenEnd = getScreenEnd(headingViewportPosition)
+      headingVisibleLast = getHeadingVisibleLast(headingViewportPosition)
       break
     }
     headingPrevious = heading
     headingPreviousViewportPosition = headingViewportPosition
   }
-  if (!screenBegin) {
+  if (!headingVisibleFirst) {
     const headingViewportPosition = document.body.clientHeight - scrollY
-    screenBegin = getScreenBegin(headingViewportPosition)
+    headingVisibleFirst = getHeadingVisibleFirst(headingViewportPosition)
   }
-  if (!screenEnd) {
+  if (!headingVisibleLast) {
     // When scrolled all the way down: `scrollY + viewportHeight === document.body.clientHeight`
     const headingViewportPosition = document.body.clientHeight - scrollY
-    screenEnd = getScreenEnd(headingViewportPosition)
+    headingVisibleLast = getHeadingVisibleLast(headingViewportPosition)
   }
-  assert(screenBegin && screenEnd)
+  assert(headingVisibleFirst && headingVisibleLast)
   /*
-  console.log('screenBegin', screenBegin.heading.title, screenBegin.boundaryPosition)
-  console.log('screenEnd', screenEnd.heading.title, screenEnd.boundaryPosition)
-  console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
+  console.log('headingVisibleFirst', headingVisibleFirst.heading.title, headingVisibleFirst.boundaryPosition)
+  console.log('headingVisibleLast', headingVisibleLast.heading.title, headingVisibleLast.boundaryPosition)
+  console.log(headingVisibleLast.boundaryPosition - headingVisibleFirst.boundaryPosition)
   //*/
-  setActiveHeadings(screenBegin, screenEnd)
-  updateScrollPosition(screenBegin, screenEnd)
+  setActiveHeadings(headingVisibleFirst, headingVisibleLast)
+  updateScrollPosition(headingVisibleFirst, headingVisibleLast)
+}
+
+function getVisibleHeadings() {
 }
 
 function assertBoundaryPosition(boundaryPosition: number) {
   assert(0 <= boundaryPosition && boundaryPosition <= 1)
 }
 
-function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
-  const headingsViewportPercentage = getHeadingsViewportPercentage(screenBegin, screenEnd)
+function setActiveHeadings(headingVisibleFirst: HeadingVisible, headingVisibleLast: HeadingVisible) {
+  const headingsViewportPercentage = getHeadingsViewportPercentage(headingVisibleFirst, headingVisibleLast)
   const viewportPercentageHighest = Math.max(
     ...headingsViewportPercentage.map(({ viewportPercentage }) => viewportPercentage)
   )
@@ -141,11 +142,11 @@ function setNavItemBackgroundColor(navItem: HTMLElement, viewportPercentage: num
 }
 
 type HeadingViewportPercentage = Heading & { viewportPercentage: number }
-function getHeadingsViewportPercentage(screenBegin: ScreenBegin, screenEnd: ScreenEnd): HeadingViewportPercentage[] {
-  const screenBeginIdx = headings.indexOf(screenBegin.heading)
-  const screenEndIdx = headings.indexOf(screenEnd.heading)
+function getHeadingsViewportPercentage(headingVisibleFirst: HeadingVisible, headingVisibleLast: HeadingVisible): HeadingViewportPercentage[] {
+  const screenBeginIdx = headings.indexOf(headingVisibleFirst.heading)
+  const screenEndIdx = headings.indexOf(headingVisibleLast.heading)
 
-  const viewportPercentageLeftover = 1 - (screenBegin.viewportPercentage + screenEnd.viewportPercentage)
+  const viewportPercentageLeftover = 1 - (headingVisibleFirst.viewportPercentage + headingVisibleLast.viewportPercentage)
 
   let viewportPercentageTotal = 0
 
@@ -155,8 +156,8 @@ function getHeadingsViewportPercentage(screenBegin: ScreenBegin, screenEnd: Scre
       return { ...heading, viewportPercentage: 0 }
     } else {
       const viewportPercentage: number =
-        (idx == screenBeginIdx && screenBegin.viewportPercentage) ||
-        (idx == screenEndIdx && screenEnd.viewportPercentage) ||
+        (idx == screenBeginIdx && headingVisibleFirst.viewportPercentage) ||
+        (idx == screenEndIdx && headingVisibleLast.viewportPercentage) ||
         viewportPercentageLeftover / (screenEndIdx - screenBeginIdx - 1)
       viewportPercentageTotal += viewportPercentage
       assert(viewportPercentage >= 0 && viewportPercentage <= 1)
@@ -164,7 +165,7 @@ function getHeadingsViewportPercentage(screenBegin: ScreenBegin, screenEnd: Scre
     }
   })
 
-  // console.log('vpt', viewportPercentageTotal, screenBegin.viewportPercentage, screenEnd.viewportPercentage)
+  // console.log('vpt', viewportPercentageTotal, headingVisibleFirst.viewportPercentage, headingVisibleLast.viewportPercentage)
   assert(1 - 0.00001 <= viewportPercentageTotal && viewportPercentageTotal <= 1 + 0.00001)
 
   return headingsViewportPercentage
@@ -186,9 +187,9 @@ function getNavigationEl(): HTMLElement {
   return _navigationEl
 }
 
-function updateScrollPosition(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
-  assertBoundaryPosition(screenBegin.boundaryPosition)
-  assertBoundaryPosition(screenEnd.boundaryPosition)
+function updateScrollPosition(headingVisibleFirst: HeadingVisible, headingVisibleLast: HeadingVisible) {
+  assertBoundaryPosition(headingVisibleFirst.boundaryPosition)
+  assertBoundaryPosition(headingVisibleLast.boundaryPosition)
 
   const navigationEl = getNavigationEl()
   const getLinkNavPosition = (el: HTMLElement): number => {
@@ -211,8 +212,8 @@ function updateScrollPosition(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
     const scrollOverlayBoundaryPos = navLinkPos + navLink.clientHeight * boundaryPosition
     return scrollOverlayBoundaryPos
   }
-  const overlayBegin = getOverlayPosition(screenBegin)
-  const overlayEnd = getOverlayPosition(screenEnd)
+  const overlayBegin = getOverlayPosition(headingVisibleFirst)
+  const overlayEnd = getOverlayPosition(headingVisibleLast)
   const overlayHeight = Math.max(1, overlayEnd - overlayBegin)
   const scrollOverlayEl = document.getElementById('scroll-overlay')!
   scrollOverlayEl.style.top = overlayBegin + 'px'
