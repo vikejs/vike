@@ -27,6 +27,12 @@ if (isBrowser()) {
 type HeadingVisible = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
 
 function updateSidePanelScroll() {
+  const { headingVisibleFirst, headingVisibleLast } = getVisibleHeadings()
+  setActiveHeadings(headingVisibleFirst, headingVisibleLast)
+  updateScrollPosition(headingVisibleFirst, headingVisibleLast)
+}
+
+function getVisibleHeadings(): { headingVisibleFirst: HeadingVisible; headingVisibleLast: HeadingVisible } {
   let headingVisibleFirst: HeadingVisible | null = null
   let headingVisibleLast: HeadingVisible | null = null
   let headingPrevious: Heading | null = null
@@ -90,11 +96,7 @@ function updateSidePanelScroll() {
   console.log('headingVisibleLast', headingVisibleLast.heading.title, headingVisibleLast.boundaryPosition)
   console.log(headingVisibleLast.boundaryPosition - headingVisibleFirst.boundaryPosition)
   //*/
-  setActiveHeadings(headingVisibleFirst, headingVisibleLast)
-  updateScrollPosition(headingVisibleFirst, headingVisibleLast)
-}
-
-function getVisibleHeadings() {
+  return { headingVisibleFirst, headingVisibleLast }
 }
 
 function assertBoundaryPosition(boundaryPosition: number) {
@@ -142,11 +144,15 @@ function setNavItemBackgroundColor(navItem: HTMLElement, viewportPercentage: num
 }
 
 type HeadingViewportPercentage = Heading & { viewportPercentage: number }
-function getHeadingsViewportPercentage(headingVisibleFirst: HeadingVisible, headingVisibleLast: HeadingVisible): HeadingViewportPercentage[] {
+function getHeadingsViewportPercentage(
+  headingVisibleFirst: HeadingVisible,
+  headingVisibleLast: HeadingVisible
+): HeadingViewportPercentage[] {
   const screenBeginIdx = headings.indexOf(headingVisibleFirst.heading)
   const screenEndIdx = headings.indexOf(headingVisibleLast.heading)
 
-  const viewportPercentageLeftover = 1 - (headingVisibleFirst.viewportPercentage + headingVisibleLast.viewportPercentage)
+  const viewportPercentageLeftover =
+    1 - (headingVisibleFirst.viewportPercentage + headingVisibleLast.viewportPercentage)
 
   let viewportPercentageTotal = 0
 
