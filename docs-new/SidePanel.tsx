@@ -41,8 +41,8 @@ function getVisibleHeadings(
   const hLast = h.find(({ screenEndPosition }) => screenEndPosition !== null)
   assert(hFirst)
   assert(hLast)
-  assert(hFirst.screenBeginPosition!==null)
-  assert(hLast.screenEndPosition!==null)
+  assert(hFirst.screenBeginPosition !== null)
+  assert(hLast.screenEndPosition !== null)
   const headingVisibleFirst = {
     heading: hFirst,
     boundaryPosition: hFirst.screenBeginPosition,
@@ -97,28 +97,25 @@ type HeadingSectionVisibility = Heading & {
   screenEndPosition: null | number
 }
 function getHeadingSectionsVisbility(headings: Heading[]): HeadingSectionVisibility[] {
-  type HeadingSection = HeadingSectionVisibility & {
-    beginPosition: number
-    endPosition: number
-  }
-  const headingSections: HeadingSection[] = []
+  const screenBeginPositionAbsolute = getScrollPosition()
+  const screenEndPositionAbsolute = screenBeginPositionAbsolute + getViewportHeight()
+
+  const headingSections: (HeadingSectionVisibility & { beginPosition: number; endPosition: number })[] = []
   headings.forEach((heading, i) => {
     const beginPosition = getHeadingPosition(heading)
 
     const headingNext = headings[i + 1]
-    const endPosition = !headingNext ? getDocumentHeight() : getHeadingPosition(headingNext) - 1
+    const endPosition = !headingNext ? getDocumentHeight() : getHeadingPosition(headingNext)
 
     const sectionHeight = endPosition - beginPosition
     assert(sectionHeight > 0)
 
-    const screenBeginPositionAbsolute = getScrollPosition()
     let screenBeginPosition = null
     if (beginPosition <= screenBeginPositionAbsolute && screenBeginPositionAbsolute <= endPosition) {
       screenBeginPosition = (screenBeginPositionAbsolute - beginPosition) / sectionHeight
       assert(0 <= screenBeginPosition && screenBeginPosition <= 1)
     }
 
-    const screenEndPositionAbsolute = screenBeginPositionAbsolute + getViewportHeight()
     let screenEndPosition = null
     if (beginPosition <= screenEndPositionAbsolute && screenEndPositionAbsolute <= endPosition) {
       screenEndPosition = (screenEndPositionAbsolute - beginPosition) / sectionHeight
@@ -137,18 +134,20 @@ function getHeadingSectionsVisbility(headings: Heading[]): HeadingSectionVisibil
 
     headingSections.push({
       ...heading,
-      beginPosition,
-      endPosition,
       viewportPercentage,
       screenBeginPosition,
-      screenEndPosition
+      screenEndPosition,
+      beginPosition,
+      endPosition
     })
   })
+
   const viewportPercentageTotal = sum(headingSections.map(({ viewportPercentage }) => viewportPercentage))
-  // console.log(JSON.stringify(headingSections, null, 2))
-  // console.log(viewportPercentageTotal)
-  // assert(1 - 0.00001 <= viewportPercentageTotal && viewportPercentageTotal <= 1 + 0.00001)
-  assert(viewportPercentageTotal <= 1 + 0.00001)
+  const debugInfo = JSON.stringify({ headingSections, screenBeginPositionAbsolute, screenEndPositionAbsolute }, null, 2)
+  assert(viewportPercentageTotal <= 1 + 0.00001, debugInfo)
+  // assert(1 - 0.00001 <= viewportPercentageTotal && viewportPercentageTotal <= 1 + 0.00001, debugInfo)
+  assert(headingSections.filter(({ screenBeginPosition }) => screenBeginPosition !== null).length === 1, debugInfo)
+  assert(headingSections.filter(({ screenEndPosition }) => screenEndPosition !== null).length === 1, debugInfo)
 
   return headingSections
 }
@@ -251,12 +250,16 @@ function getHeadingPosition(heading: Heading): number {
   assert(id)
   const el = document.getElementById(id)
   assert(el)
-  const headingPosition =
-    // `el.getBoundingClientRect()` returns position relative to viewport begin
-    // - https://stackoverflow.com/questions/5598743/finding-elements-position-relative-to-the-document
-    el.getBoundingClientRect().top +
-    // We add the viewport begin position
-    getScrollPosition()
+
+  // `el.getBoundingClientRect()` returns position relative to viewport begin
+  // - https://stackoverflow.com/questions/5598743/finding-elements-position-relative-to-the-document
+  const headingPositionRelative = el.getBoundingClientRect().top
+
+  const scrollPosition = getScrollPosition()
+
+  // We add the viewport begin position
+  const headingPosition = headingPositionRelative + scrollPosition
+
   return headingPosition
 }
 function getDocumentHeight(): number {
