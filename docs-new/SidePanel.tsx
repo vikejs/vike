@@ -9,7 +9,7 @@ const headings: Heading[] = [
   {
     level: 2,
     title: 'Introduction',
-    isDocumentBeing: true
+    isDocumentBegin: true
   },
   ...headingsCrawled
 ]
@@ -33,9 +33,13 @@ function updateSidePanelScroll() {
 type HeadingVisible = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
 function getVisibleHeadings(
   headingSectionsVisibility: HeadingSectionVisibility[]
-): { headingVisibleFirst: HeadingVisible; headingVisibleLast: HeadingVisible } {
+): HeadingSectionVisibility[] {
   const headings_withVisibileNavItem: Heading[] = filterHeadingsWithVisibileNavItem(headingSectionsVisibility)
   const headingSectionsWithVisibleNavItemVisibility = getHeadingSectionsVisbility(headings_withVisibileNavItem)
+  return headingSectionsWithVisibleNavItemVisibility
+}
+function getBoundaryHeading(headingSectionsVisibility: HeadingSectionVisibility[]):{ headingVisibleFirst: HeadingVisible; headingVisibleLast: HeadingVisible }  {
+  const headingSectionsWithVisibleNavItemVisibility = getVisibleHeadings(headingSectionsVisibility)
   const h: HeadingSectionVisibility[] = headingSectionsWithVisibleNavItemVisibility
   const hFirst = h.find(({ screenBeginPosition }) => screenBeginPosition !== null)
   const hLast = h.find(({ screenEndPosition }) => screenEndPosition !== null)
@@ -157,14 +161,29 @@ function assertBoundaryPosition(boundaryPosition: number) {
 }
 
 function setActiveHeadings(headingSectionsVisibility: HeadingSectionVisibility[]) {
+  /*
   const viewportPercentageHighest = Math.max(
     ...headingSectionsVisibility.map(({ viewportPercentage }) => viewportPercentage)
   )
+  */
+  const visibleHeadings = getVisibleHeadings(headingSectionsVisibility)
+  // console.log('v', visibleHeadings);
   headingSectionsVisibility.forEach((heading) => {
+    const navItem = findNavLink(heading)
+    const isVisibile = visibleHeadings.find((visibleHeading) => {
+      if( 'isDocumentBegin' in heading || 'isDocumentBegin' in visibleHeading ) {
+        return 'isDocumentBegin' in heading && 'isDocumentBegin' in visibleHeading
+      } else {
+        return heading.id === visibleHeading.id
+      }
+    })
+    navItem.style.display = isVisibile ? 'inherit' : 'none';
+    /*
     if (viewportPercentageHighest === heading.viewportPercentage) {
       const navItem = findNavLink(heading)
       updateNavTreeExpendedState(navItem)
     }
+    */
   })
   headingSectionsVisibility.forEach((heading) => {
     const navItem = findNavLink(heading)
@@ -211,7 +230,7 @@ function getNavigationEl(): HTMLElement {
 }
 
 function renderNavScrollBar(headingSectionsVisibility: HeadingSectionVisibility[]) {
-  const { headingVisibleFirst, headingVisibleLast } = getVisibleHeadings(headingSectionsVisibility)
+  const { headingVisibleFirst, headingVisibleLast } = getBoundaryHeading(headingSectionsVisibility)
   assertBoundaryPosition(headingVisibleFirst.boundaryPosition)
   assertBoundaryPosition(headingVisibleLast.boundaryPosition)
 
@@ -245,7 +264,7 @@ function renderNavScrollBar(headingSectionsVisibility: HeadingSectionVisibility[
 }
 
 function getHeadingPosition(heading: Heading): number {
-  if ('isDocumentBeing' in heading) return 0
+  if ('isDocumentBegin' in heading) return 0
   const { id } = heading
   assert(id)
   const el = document.getElementById(id)
@@ -312,7 +331,7 @@ function NavTree({ headings }: { headings: Heading[] }) {
     <>
       {headingsTree.map((heading) => {
         const { level, title, headingsChildren } = heading
-        const key = 'isDocumentBeing' in heading ? 'doc-begin' : heading.id
+        const key = 'isDocumentBegin' in heading ? 'doc-begin' : heading.id
         const href = getHref(heading)
         return (
           <div className="nav-tree" key={key}>
@@ -327,7 +346,7 @@ function NavTree({ headings }: { headings: Heading[] }) {
   )
 }
 function getHref(heading: Heading): string {
-  const href = 'isDocumentBeing' in heading ? '#' : `#${heading.id}`
+  const href = 'isDocumentBegin' in heading ? '#' : `#${heading.id}`
   return href
 }
 

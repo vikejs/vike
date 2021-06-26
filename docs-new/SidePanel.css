@@ -57,7 +57,7 @@
 */
 
 .nav-tree:not(.expanded) > .nav-tree {
- display: none;
+ edisplay: none;
  /*
   background:red;
   */
