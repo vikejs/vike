@@ -55,3 +55,21 @@
   opacity: 0;
 }
 */
+
+.nav-tree:not(.expanded) > .nav-tree {
+ display: none;
+ /*
+  background:red;
+  */
+}
+/*
+.nav-tree.expanded,
+.nav-tree.expanded > .nav-tree {
+  display: inherit;
+}
+.nav-tree.expanded,
+.nav-tree.expanded > .nav-tree {
+  display: inherit;
+  background:red;
+}
+*/

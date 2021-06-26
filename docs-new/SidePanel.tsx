@@ -92,8 +92,8 @@ function updateSidePanelScroll() {
   console.log('screenEnd', screenEnd.heading.title, screenEnd.boundaryPosition)
   console.log(screenEnd.boundaryPosition - screenBegin.boundaryPosition)
   //*/
-  updateScrollPosition(screenBegin, screenEnd)
   setActiveHeadings(screenBegin, screenEnd)
+  updateScrollPosition(screenBegin, screenEnd)
 }
 
 function assertBoundaryPosition(boundaryPosition: number) {
@@ -102,10 +102,31 @@ function assertBoundaryPosition(boundaryPosition: number) {
 
 function setActiveHeadings(screenBegin: ScreenBegin, screenEnd: ScreenEnd) {
   const headingsViewportPercentage = getHeadingsViewportPercentage(screenBegin, screenEnd)
+  const viewportPercentageHighest = Math.max(
+    ...headingsViewportPercentage.map(({ viewportPercentage }) => viewportPercentage)
+  )
   headingsViewportPercentage.forEach((heading) => {
-    const { viewportPercentage } = heading
+    if (viewportPercentageHighest === heading.viewportPercentage) {
+      const navItem = findNavLink(heading)
+      updateNavTreeExpendedState(navItem)
+    }
+  })
+  headingsViewportPercentage.forEach((heading) => {
     const navItem = findNavLink(heading)
-    setNavItemBackgroundColor(navItem, viewportPercentage)
+    setNavItemBackgroundColor(navItem, heading.viewportPercentage)
+  })
+}
+
+function updateNavTreeExpendedState(navItem: HTMLElement) {
+  const navItemHref = navItem.getAttribute('href')
+  assert(typeof navItemHref === 'string')
+  const selector = `a[href="${navItemHref}"]`
+  //console.log(11, selector, 2)
+  assert(document.querySelector(selector))
+  document.querySelectorAll('.nav-tree').forEach((navTree) => {
+    const isExpended = !!navTree.querySelector(selector)
+    //console.log(navTree.href, isExpended)
+    navTree.classList[isExpended ? 'add' : 'remove']('expanded')
   })
 }
 
@@ -243,18 +264,6 @@ function Navigation() {
     </div>
   )
 }
-/*
-function traverse(headings: Heading[]): Heading[] {
-  const headingList: Heading[] = []
-  headings.forEach((heading) => {
-    headingList.push(heading)
-    if (heading.headings) {
-      headingList.push(...traverse(heading.headings))
-    }
-  })
-  return headingList
-}
-*/
 function NavTree({ headings }: { headings: Heading[] }) {
   const headingsTree = getHeadingsTree(headings)
   return (
