@@ -1730,7 +1730,7 @@ The `.page.server.js` file is executed in Node.js and never in the browser.
 
 <br/>
 
-#### `export { addPageContext }`
+#### `addPageContext()`
 
 The `addPageContext()` hook is used to provide further `pageContext` values.
 
@@ -1764,7 +1764,7 @@ async function addPageContext(pageContext){
 
 <br/>
 
-#### `export { passToClient }`
+#### `passToClient`
 
 You can tell `vite-plugin-ssr` what `pageContext` to send to the browser by using `passToClient`.
 
@@ -1835,7 +1835,7 @@ useClientRouter({
 
 <br/>
 
-#### `export { render }`
+#### `render`
 
 The `render()` hook defines how a page is rendered to HTML.
 
@@ -1899,7 +1899,7 @@ Your `render()` hook can for example return an object like `{ redirectTo: '/some
 
 <br/>
 
-#### `export { prerender }`
+#### `prerender()`
 
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
@@ -1978,7 +1978,7 @@ React Example:
 <br/><br/>
 
 
-### `import { html } from 'vite-plugin-ssr'`
+### `html`
 
 Environment: `Node.js`
 
@@ -2106,7 +2106,7 @@ function analytics_init() {
 
 <br/>
 
-### `import { getPage } from 'vite-plugin-ssr/client'`
+### `getPage()`
 
 Environment: `Browser`
 
@@ -2134,7 +2134,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 <br/>
 
-### `import { useClientRouter } from 'vite-plugin-ssr/client/router'`
+### `useClientRouter`
 
 Environment: `Browser`
 
@@ -2214,7 +2214,7 @@ React example:
 <br/><br/>
 
 
-### `import { navigate } from 'vite-plugin-ssr/client/router'`
+### `navigate()`
 
 Environment: `Browser`, `Node.js`. (In Node.js `navigate()` is importable but not callable.)
 
@@ -2402,7 +2402,7 @@ You can define `_error.page.js` like any other page and create `_error.page.clie
 <br/><br/>
 
 
-### `import { createPageRender } from 'vite-plugin-ssr'`
+### `createPageRender()`
 
 Environment: `Node.js`
 
@@ -2468,7 +2468,7 @@ Examples:
 <br/><br/>
 
 
-### `import ssr from 'vite-plugin-ssr/plugin'`
+### `ssr`
 
 Environment: `Node.js`
 

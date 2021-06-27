@@ -38,6 +38,11 @@ function mdxExportHeadings() {
             title = parseTitleMdx(title)
             assert(id)
             headings.push({ level, title, id })
+
+            // MDX treats export/import occurences as code, instead of markdown content
+            assert(!title.includes('export'), title)
+            assert(!title.includes('import'), title)
+
             const lineProcessed = `<h${level} id=${JSON.stringify(id)}>${title}</h${level}>`
             return lineProcessed
           }
