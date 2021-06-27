@@ -8,7 +8,7 @@ import { headings as headingsCrawled } from './Docs.mdx'
 const headings: Heading[] = [
   {
     level: 2,
-    title: 'Introduction',
+    title: 'Overview',
     isDocumentBegin: true
   },
   ...headingsCrawled
@@ -405,7 +405,7 @@ function assert_headings() {
   const hrefs: string[] = []
   headings.forEach((heading) => {
     const href = getHref(heading)
-    assert(!hrefs.includes(href))
+    assert(!hrefs.includes(href), href)
     hrefs.push(href)
   })
 }

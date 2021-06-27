@@ -11,9 +11,23 @@ function mdxExportHeadings() {
         return
       }
       const headings: { level: number; title: string; id: string; titleAddendum?: string }[] = []
+      let isCodeBlock = false
       let codeNew = code
         .split('\n')
         .map((line) => {
+          // Skip code blocks, e.g.
+          // ~~~md
+          // # Markdown Example
+          // Bla
+          // ~~~
+          if (line.startsWith('~~~') || line.startsWith('```')) {
+            isCodeBlock = !isCodeBlock
+            return line
+          }
+          if (isCodeBlock) {
+            return line
+          }
+
           if (line.startsWith('#')) {
             const [word, ...titleWords] = line.split(' ')
             assert(word.split('#').join('') === '')
@@ -44,6 +58,7 @@ function mdxExportHeadings() {
             // console.log(line, lineProcessed)
             return lineProcessed
           }
+
           return line
         })
         .join('\n')
