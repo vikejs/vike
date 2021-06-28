@@ -25,9 +25,11 @@ if (isBrowser()) {
 }
 
 function updateSidePanelScroll() {
+  /*
   const headingSectionsVisibility = getHeadingSectionsVisbility(headings)
   setActiveHeadings(headingSectionsVisibility)
   renderNavScrollBar(headingSectionsVisibility)
+  */
 }
 
 type HeadingVisible = { heading: Heading; boundaryPosition: number; viewportPercentage: number }

@@ -1730,7 +1730,7 @@ The `.page.server.js` file is executed in Node.js and never in the browser.
 
 <br/>
 
-#### `addPageContext()`
+#### `export { addPageContext }`
 
 The `addPageContext()` hook is used to provide further `pageContext` values.
 
@@ -1764,7 +1764,7 @@ async function addPageContext(pageContext){
 
 <br/>
 
-#### `passToClient`
+#### `export { passToClient }`
 
 You can tell `vite-plugin-ssr` what `pageContext` to send to the browser by using `passToClient`.
 
@@ -1835,7 +1835,7 @@ useClientRouter({
 
 <br/>
 
-#### `render`
+#### `export { render }`
 
 The `render()` hook defines how a page is rendered to HTML.
 
@@ -1899,7 +1899,7 @@ Your `render()` hook can for example return an object like `{ redirectTo: '/some
 
 <br/>
 
-#### `prerender()`
+#### `export { prerender }`
 
 > :asterisk: Check out the [Pre-rendering Guide](#pre-rendering) to get an overview about pre-rendering.
 
@@ -1978,7 +1978,7 @@ React Example:
 <br/><br/>
 
 
-### `html`
+### `import { html }`
 
 Environment: `Node.js`
 
@@ -2134,7 +2134,7 @@ In development `getPage()` dynamically `import()` the page, while in production 
 
 <br/>
 
-### `useClientRouter`
+### `useClientRouter()`
 
 Environment: `Browser`
 
