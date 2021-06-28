@@ -1,14 +1,12 @@
 import './main.css'
 import React from 'react'
 import { SidePanel } from '../SidePanel'
-import { Header } from '../Header'
-import { Features } from '../features/Features'
-import Docs from '../Docs.mdx'
+import { Heading } from '../types'
 import '../Docs.css'
 
 export { PageLayout }
 
-function PageLayout() {
+function PageLayout({ headings, children }: { headings: Heading[]; children: JSX.Element }) {
   const sidePanelWidth = 280
   return (
     <div
@@ -17,25 +15,21 @@ function PageLayout() {
       }}
     >
       <div id="panel-left" style={{ flexShrink: 0, width: sidePanelWidth }}>
-        <div style={{ height: '100vh', width: sidePanelWidth, position: 'fixed', top: 0, overflowY: 'auto', borderRight: '1px solid #eee' }}>
-          <SidePanel />
+        <div
+          style={{
+            height: '100vh',
+            width: sidePanelWidth,
+            position: 'fixed',
+            top: 0,
+            overflowY: 'auto',
+            borderRight: '1px solid #eee'
+          }}
+        >
+          <SidePanel headings={headings} />
         </div>
       </div>
       <div>
-        <Header style={{ padding: '50px 70px', paddingBottom: 70 }} />
-        <Features
-          style={{ marginTop: 0, padding: '0 30px' }}
-          styleLineTop={{ paddingBottom: 45 }}
-          styleLineBottom={{ marginTop: 40, marginBottom: -70 }}
-        />
-        <div id="docs">
-          <Docs />
-        </div>
-        {/*
-        <MDXProvider components={components}>
-          <Docs />
-        </MDXProvider>
-        */}
+        <div id="docs">{children}</div>
       </div>
     </div>
   )

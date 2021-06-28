@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "lib": ["ESNext"],
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "strict": true
+  }
+}
