@@ -59,7 +59,7 @@ async function getPageFile(fileType: FileType, pageId: string): Promise<PageFile
   const pageFiles = await getPageFiles(fileType)
   const pageFile = findPageFile(pageFiles, pageId)
   const pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-  assert(pageFile, { pageId, pageFilePaths })
+  assert(pageFile, { pageId, fileType, pageFilePaths })
   return pageFile
 }
 
