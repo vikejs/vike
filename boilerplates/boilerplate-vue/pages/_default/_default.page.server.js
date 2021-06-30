@@ -15,8 +15,8 @@ async function render(pageContext) {
 
   // See https://github.com/brillout/vite-plugin-ssr#html-head
   const { documentProps } = pageContext
-  const title = documentProps?.title || 'Vite SSR app'
-  const desc = documentProps?.description || 'App using Vite + vite-plugin-ssr'
+  const title = (documentProps && documentProps.title) || 'Vite SSR app'
+  const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
 
   return html`<!DOCTYPE html>
     <html lang="en">
