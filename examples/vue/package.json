@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "npm run server",
+    "prod": "npm run build && npm run server:prod",
+    "build": "vite build && vite build --ssr",
+    "server": "node server.js",
+    "server:prod": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^1.2.3",
+    "@vue/compiler-sfc": "^3.0.11",
+    "@vue/server-renderer": "^3.0.11",
+    "express": "^4.17.1",
+    "vite": "^2.3.6",
+    "vite-plugin-ssr": "^0.1.2",
+    "vue": "^3.0.11"
+  }
+}
