@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "strict": true,
-    "module": "CommonJS",
+    "module": "ES2020",
     "target": "ES2017",
     "lib": ["DOM"],
     "skipLibCheck": true,
     "esModuleInterop": true
   },
   "ts-node": {
-    "transpileOnly": true
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   }
 }
