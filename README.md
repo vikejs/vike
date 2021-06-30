@@ -935,8 +935,8 @@ For pages with a parameterized route (e.g. `/movie/:movieId`), you have to use t
 The `prerender()` hook can also be used to accelerate the pre-rendering process as it allows you to prefetch data for multiple pages at once.
 
 Examples:
- - [/examples/vue/](examples/vue/)
- - [/examples/react/](examples/react/)
+ - [/examples/vue-full/](examples/vue-full/)
+ - [/examples/react-full/](examples/react-full/)
 
 <br/><br/>
 
@@ -1391,13 +1391,13 @@ You can use `vite-plugin-ssr` with any Vite markdown plugin.
 
 For Vue you can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
 Example:
- - [/examples/vue/vite.config.ts](examples/vue/vite.config.ts)
- - [/examples/vue/pages/markdown.page.md](examples/vue/pages/markdown.page.md)
+ - [/examples/vue-full/vite.config.ts](examples/vue-full/vite.config.ts)
+ - [/examples/vue-full/pages/markdown.page.md](examples/vue-full/pages/markdown.page.md)
 
 For React you can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
 Example:
- - [/examples/react/vite.config.ts](examples/react/vite.config.ts)
- - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
+ - [/examples/react-full/vite.config.ts](examples/react-full/vite.config.ts)
+ - [/examples/react-full/pages/markdown.page.md](examples/react-full/pages/markdown.page.md)
 
 #### Markdown `<head>`
 
@@ -1435,8 +1435,8 @@ export async function render(pageContext) {
 ```
 
 Examples:
- - [/examples/react/pages/markdown.page.md](examples/react/pages/markdown.page.md)
- - [/examples/vue/pages/markdown.page.md](examples/vue/pages/markdown.page.md)
+ - [/examples/react-full/pages/markdown.page.md](examples/react-full/pages/markdown.page.md)
+ - [/examples/vue-full/pages/markdown.page.md](examples/vue-full/pages/markdown.page.md)
 
 You can also use a so-called *front matter* to define the page's metadata.
 
@@ -1644,8 +1644,8 @@ You have full control and you can do whatever you want.
 > :warning: We recommend reading the [Vue Tour](#vue-tour) or [React Tour](#react-tour) before proceeding with guides.
 
 You can [pre-render](#pre-rendering) your pages to remove the need for a Node.js server. Examples:
-- [/examples/react/package.json](examples/react/package.json)
-- [/examples/vue/package.json](examples/vue/package.json)
+- [/examples/react-full/package.json](examples/react-full/package.json)
+- [/examples/vue-full/package.json](examples/vue-full/package.json)
 
 You can then deploy `dist/client/` to any static host, for example:
 
@@ -2087,14 +2087,14 @@ if you don't call
 then no `prerender()` hook is called.
 
 Vue Example:
- - [/examples/vue/package.json](examples/vue/package.json) (see the `build:prerender` script)
- - [/examples/vue/pages/star-wars/index.page.server.ts](examples/vue/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
- - [/examples/vue/pages/hello/index.page.server.ts](examples/vue/pages/hello/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/vue-full/package.json](examples/vue-full/package.json) (see the `build:prerender` script)
+ - [/examples/vue-full/pages/star-wars/index.page.server.ts](examples/vue-full/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/vue-full/pages/hello/index.page.server.ts](examples/vue-full/pages/hello/index.page.server.ts) (see the `prerender()` hook)
 
 React Example:
- - [/examples/react/package.json#build:prerender](examples/react/package.json) (see the `build:prerender` script)
- - [/examples/react/pages/star-wars/index.page.server.ts](examples/react/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
- - [/examples/react/pages/hello/index.page.server.ts](examples/react/pages/hello/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/react-full/package.json#build:prerender](examples/react-full/package.json) (see the `build:prerender` script)
+ - [/examples/react-full/pages/star-wars/index.page.server.ts](examples/react-full/pages/star-wars/index.page.server.ts) (see the `prerender()` hook)
+ - [/examples/react-full/pages/hello/index.page.server.ts](examples/react-full/pages/hello/index.page.server.ts) (see the `prerender()` hook)
 
 <br/><br/>
 
@@ -2324,13 +2324,13 @@ if you want to preserve the scroll position instead. (Useful for [Nested Routes]
 `useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
 Vue example:
- - [/examples/vue/pages/_default/_default.page.client.ts](examples/vue/pages/_default/_default.page.client.ts)
- - [/examples/vue/pages/_default/app.ts](examples/vue/pages/_default/app.ts)
- - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+ - [/examples/vue-full/pages/_default/_default.page.client.ts](examples/vue-full/pages/_default/_default.page.client.ts)
+ - [/examples/vue-full/pages/_default/app.ts](examples/vue-full/pages/_default/app.ts)
+ - [/examples/vue-full/pages/index.page.vue](examples/vue-full/pages/index.page.vue) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 React example:
- - [/examples/react/pages/_default/_default.page.client.tsx](examples/react/pages/_default/_default.page.client.tsx)
- - [/examples/react/pages/index.page.tsx](examples/react/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
+ - [/examples/react-full/pages/_default/_default.page.client.tsx](examples/react-full/pages/_default/_default.page.client.tsx)
+ - [/examples/react-full/pages/index.page.tsx](examples/react-full/pages/index.page.tsx) (example of using `import { navigate } from "vite-plugin-ssr/client/router"`)
 
 <br/><br/>
 
@@ -2374,10 +2374,10 @@ Options:
  - `navigate('/some-url', { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](#nested-routes).) (You can also use `<a href="/some-url" keep-scroll-position />`.)
 
 Vue example:
- - [/examples/vue/pages/index.page.vue](examples/vue/pages/index.page.vue)
+ - [/examples/vue-full/pages/index.page.vue](examples/vue-full/pages/index.page.vue)
 
 React example:
- - [/examples/react/pages/index.page.tsx](examples/react/pages/index.page.tsx)
+ - [/examples/react-full/pages/index.page.tsx](examples/react-full/pages/index.page.tsx)
 
 <br/><br/>
 
