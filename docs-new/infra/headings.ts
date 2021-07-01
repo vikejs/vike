@@ -1,9 +1,5 @@
 export type NavItem = {
   level: 1,
-  title: null,
-  url: '/',
-} | {
-  level: 1,
   title: string,
   url: null
 } | {
@@ -14,8 +10,23 @@ export type NavItem = {
 export const navItems: NavItem[] = [
   {
     level: 1,
-    title: null,
+    title: 'Overview',
+    url: null
+  },
+  {
+    level: 2,
+    title: 'Introduction',
     url: '/'
+  },
+  {
+    level: 2,
+    title: 'Vue Tour',
+    url: '/vue-tour'
+  },
+  {
+    level: 2,
+    title: 'React Tour',
+    url: '/react-tour'
   },
   {
     level: 1,

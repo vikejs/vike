@@ -42,9 +42,9 @@ function render(pageContext: { Page: ReactComponent, PageContent: ReactComponent
 function getHeadings(): Heading[] {
   const headings = []
   for (const navItem of navItems) {
-    const { level, url: _url, title: _title } = navItem
+    const { level: _level, url: _url, title } = navItem
+    const level = _level + 1
     const url = _url || '/fake-url'
-    const title = _title || 'Fake Title'
     const id = url
     const heading = {
       level,

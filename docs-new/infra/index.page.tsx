@@ -2,9 +2,9 @@ import React from 'react'
 import { Header } from '../Header'
 import { Features } from '../features/Features'
 
-export { LandingPage }
+export { Page }
 
-function LandingPage() {
+function Page() {
   return (
     <>
       <Header style={{ padding: '50px 70px', paddingBottom: 70 }} />
