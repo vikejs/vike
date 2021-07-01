@@ -417,7 +417,7 @@ async function populatePageContext(pageContext: { _pageId: string; _isPreRenderi
   const pageExports = pageViewFile.fileExports
   assert(pageExports)
   const Page = pageViewFile.fileExports.Page || pageViewFile.fileExports.default
-  assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` (or a default export).`)
+  assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` or \`export default\`).`)
   const pageFilePath = pageViewFile.filePath
   assert(pageFilePath)
 
