@@ -9,7 +9,7 @@ import { hljsDefineVue } from './infra/highlightjs-vue'
 
 low.registerLanguage('vue', hljsDefineVue)
 
-const remarkPlugins = [require('remark-highlight.js')]
+const remarkPlugins = [/*require('remark-highlight.js')*/]
 
 const config: UserConfig = {
   plugins: [reactRefresh(), mdxExportHeadings(), mdx({ remarkPlugins }), ssr()],

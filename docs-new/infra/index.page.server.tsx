@@ -4,7 +4,7 @@ import logo from '../icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 import { assert, slice, filter } from '../utils'
 import { PageLayout } from './PageLayout'
-import {Heading} from '../types'
+import { Heading } from '../types'
 
 type ReactComponent = () => JSX.Element
 declare global {
@@ -19,7 +19,7 @@ const docPages = getDocPages()
 export { render }
 export { addPageContext }
 
-function render(pageContext: { PageContent: ReactComponent, headings: Heading[] }) {
+function render(pageContext: { PageContent: ReactComponent; headings: Heading[] }) {
   //const { Page, pageProps } = pageContext
   //const pageContent = ReactDOMServer.renderToString(<Page {...pageProps} />)
   const { PageContent, headings } = pageContext
@@ -51,7 +51,7 @@ async function addPageContext(pageContext: { routeParams: { url: string } }) {
 }
 
 async function findPage(url: string): Promise<ReactComponent> {
-  if( url === '/' ) {
+  if (url === '/') {
     const { LandingPage } = await import('./LandingPage')
     return LandingPage
   }
@@ -63,13 +63,14 @@ async function findPage(url: string): Promise<ReactComponent> {
   }
   assert(matches.length >= 1, { docPages, url, msg: 'Page not found' })
   assert(matches.length <= 1, { docPages, url, msg: 'Routing conflict' })
-  const Page = docPages[matches[0]].default
+  //const Page = docPages[matches[0]].default
+  const Page = (await docPages[matches[0]]()).default
   return Page
 }
 
 function getHeadings(): Heading[] {
   const headings = []
-  for(const filePath in docPages) {
+  for (const filePath in docPages) {
     const url = getDocPageUrl(filePath)
     const heading = {
       level: 3,
@@ -82,32 +83,33 @@ function getHeadings(): Heading[] {
 }
 
 function getDocPages() {
-  const markdownFiles = import.meta.globEager('/**/*.mdx')
+  //console.log('r', import.meta.globEager('/**/*.mdx?raw'))
+  //const markdownFiles = import.meta.globEager('/**/*.mdx')
+  const markdownFiles = import.meta.glob('/**/*.mdx')
   const docPages = filter(markdownFiles, (_, fileName) => isPageDoc(fileName))
   return docPages
 }
 
 function isPageDoc(filePath: string) {
   const pathParts = filePath.split('/')
-  const fileName = pathParts[pathParts.length-1]
-  if(!/[0-9]/.test(fileName[0]) ) {
+  const fileName = pathParts[pathParts.length - 1]
+  if (!/[0-9]/.test(fileName[0])) {
     return false
   }
-  assert(/[0-9]/.test(fileName[0]), {fileName})
-  assert(/[0-9]/.test(fileName[1]), {fileName})
-  assert('-'===fileName[2], {fileName})
-  assert(fileName.endsWith('.mdx'), {fileName})
+  assert(/[0-9]/.test(fileName[0]), { fileName })
+  assert(/[0-9]/.test(fileName[1]), { fileName })
+  assert('-' === fileName[2], { fileName })
+  assert(fileName.endsWith('.mdx'), { fileName })
   return true
 }
 function getDocPageUrl(filePath: string): string {
   assert(isPageDoc(filePath))
   const pathParts = filePath.split('/')
-  const fileName = pathParts[pathParts.length-1]
+  const fileName = pathParts[pathParts.length - 1]
   const url = slice(fileName, '00-'.length, -'.mdx'.length)
-  assert(/[0-9]/.test(fileName[0]), {fileName})
-  assert(/[0-9]/.test(fileName[1]), {fileName})
-  assert('-'===fileName[2], {fileName})
-  assert(fileName.endsWith('.mdx'), {fileName})
+  assert(/[0-9]/.test(fileName[0]), { fileName })
+  assert(/[0-9]/.test(fileName[1]), { fileName })
+  assert('-' === fileName[2], { fileName })
+  assert(fileName.endsWith('.mdx'), { fileName })
   return url
 }
-
