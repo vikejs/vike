@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "dependencies": {
     "@brillout/json-s": "^0.2.0",
-    "@brillout/libassert": "^0.3.0",
+    "@brillout/libassert": "^0.4.0",
     "@brillout/path-to-regexp": "^0.1.2",
     "cac": "^6.7.3",
     "devalue": "^2.0.1",
