@@ -1783,7 +1783,7 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 ### `pageContext`
 
 Built-in:
- - **`pageContext.Page`**: the `export { Page }` or `default export` of the page's `.page.js` file being rendered.
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file being rendered.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file being rendered.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
