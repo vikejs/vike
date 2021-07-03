@@ -41,41 +41,28 @@ function Navigation({ headings }: { headings: Heading[] }) {
   )
 }
 function NavTree({ headings }: { headings: Heading[] }) {
-  const headingsTree = getHeadingsTree(headings)
   return (
     <>
-      {headingsTree.map((heading) => {
-        const { level, title, headingsChildren } = heading
+      {headings.map((heading) => {
         return (
-          <div className="nav-tree" key={heading.url || heading.title}>
-            <a
-              className={'nav-item nav-item-h' + level + (heading.isActive ? ' is-active' : '')}
-              href={heading.url || undefined}
-            >
-              <span dangerouslySetInnerHTML={{ __html: title }} />
-            </a>
-            <NavTree headings={headingsChildren} />
+          <a
+            className={'nav-item nav-item-h' + heading.level + (heading.isActive ? ' is-active' : '')}
+            href={heading.url || undefined}
+          >
+            {/*
+            <span dangerouslySetInnerHTML={{ __html: title }} />
+            */}
+          <div>
+            {heading.titleInNav || heading.title}
           </div>
+          <div className="title-addendum">
+            {heading.titleAddendum}
+          </div>
+          </a>
         )
       })}
     </>
   )
-}
-type HeadingsRoot = Heading & { headingsChildren: Heading[] }
-function getHeadingsTree(headings: Heading[]): HeadingsRoot[] {
-  const headingLowestLevel = Math.min(...headings.map(({ level }) => level))
-  const headingsRoots: HeadingsRoot[] = []
-  headings.forEach((heading) => {
-    if (heading.level === headingLowestLevel) {
-      headingsRoots.push({
-        ...heading,
-        headingsChildren: []
-      })
-    } else {
-      headingsRoots[headingsRoots.length - 1].headingsChildren.push(heading)
-    }
-  })
-  return headingsRoots
 }
 
 function ScrollOverlay() {

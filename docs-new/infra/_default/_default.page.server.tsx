@@ -18,12 +18,13 @@ export { render }
 
 function render(pageContext: { url: string; Page: ReactComponent; PageContent: ReactComponent; headings: Heading[] }) {
   let activeHeading: number | undefined
-  const headings2 = headings.map((heading, i) => {
+  const headings2: Heading[] = headings.map((heading, i) => {
     if (heading.url === pageContext.url) {
-      assert(activeHeading===undefined)
+      assert(activeHeading === undefined)
       activeHeading = i
-      console.log(heading)
-      return {...heading, isActive: true}
+      assert(heading.level === 2)
+      const heading_: Heading = { ...heading, isActive: true }
+      return heading_
     }
     return heading
   })

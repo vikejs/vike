@@ -1,3 +1,16 @@
+.nav-item-h4 {
+  position: relative;
+  top: 7px;
+  color: #999;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.15ch;
+  padding: 6px 0;
+  padding-left: 60px;
+  padding-right: 4px;
+  display: block;
+  text-decoration: none;
+}
 .nav-item-h1 {
   font-size: 14.4px;
   text-transform: uppercase;
