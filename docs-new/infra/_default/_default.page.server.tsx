@@ -3,8 +3,8 @@ import React from 'react'
 import logo from '../../icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 import { PageLayout } from '../PageLayout'
-import { Heading } from '../../types'
-import { navItems } from '../headings'
+import { Heading, headings } from '../headings'
+import { assert } from '../../utils'
 
 type ReactComponent = () => JSX.Element
 declare global {
@@ -16,11 +16,21 @@ declare global {
 
 export { render }
 
-function render(pageContext: { Page: ReactComponent, PageContent: ReactComponent; headings: Heading[] }) {
-  const headings = getHeadings()
+function render(pageContext: { url: string; Page: ReactComponent; PageContent: ReactComponent; headings: Heading[] }) {
+  let activeHeading: number | undefined
+  const headings2 = headings.map((heading, i) => {
+    if (heading.url === pageContext.url) {
+      assert(activeHeading===undefined)
+      activeHeading = i
+      console.log(heading)
+      return {...heading, isActive: true}
+    }
+    return heading
+  })
+  assert(typeof activeHeading === 'number')
   const { Page } = pageContext
   const page = (
-    <PageLayout headings={headings}>
+    <PageLayout headings={headings2} activeHeading={activeHeading}>
       <Page />
     </PageLayout>
   )
@@ -37,22 +47,4 @@ function render(pageContext: { Page: ReactComponent, PageContent: ReactComponent
         <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
-}
-
-function getHeadings(): Heading[] {
-  const headings = []
-  for (const navItem of navItems) {
-    const { level: _level, url: _url, title } = navItem
-    const level = _level + 1
-    const url = _url || '/fake-url'
-    const id = url
-    const heading = {
-      level,
-      id,
-      url,
-      title
-    }
-    headings.push(heading)
-  }
-  return headings
 }

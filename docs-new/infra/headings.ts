@@ -1,17 +1,23 @@
-export type NavItem = {
-  level: 1,
-  title: string,
-  url: null
-} | {
-  level: 2,
-  title: string,
-  url: string
+type HeadingBase = {
+  title: string
+  level: number
+  url?: string
+  isActive?: boolean
 }
-export const navItems: NavItem[] = [
+export type Heading = HeadingBase &
+  (
+    | {
+        level: 1
+      }
+    | {
+        level: 2
+        url: string
+      }
+  )
+export const headings: Heading[] = [
   {
     level: 1,
-    title: 'Overview',
-    url: null
+    title: 'Overview'
   },
   {
     level: 2,
@@ -30,12 +36,25 @@ export const navItems: NavItem[] = [
   },
   {
     level: 1,
-    title: 'Guides',
-    url: null
+    title: 'Get Started'
+  },
+  {
+    level: 2,
+    title: 'Boilerplates',
+    url: '/boilerplates'
+  },
+  {
+    level: 2,
+    title: 'Manual Installation',
+    url: '/install'
+  },
+  {
+    level: 1,
+    title: 'Guides'
   },
   {
     level: 2,
     title: 'Data Fetching',
     url: '/data-fetching'
-  },
+  }
 ]

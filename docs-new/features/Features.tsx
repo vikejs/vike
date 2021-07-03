@@ -5,18 +5,14 @@ import { assert } from '../utils'
 import Control from './Control.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
 import Scalable from './Scalable.mdx'
-import { updateSidePanelScroll } from '../SidePanel'
+// import { updateSidePanelScroll } from '../SidePanel'
 
 export { Features }
 
-function Features(props: {
-  style: React.CSSProperties
-  styleLineTop: React.CSSProperties
-  styleLineBottom: React.CSSProperties
-}) {
+function Features() {
   return (
-    <div id="features" style={props.style}>
-      <HorizontalLine style={props.styleLineTop} />
+    <div id="features">
+      <HorizontalLine style={{ paddingBottom: 45 }} />
       <div id="features-row-top">
         <Feature name="control" isExpandable={true}>
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
@@ -110,7 +106,7 @@ function Features(props: {
       </div>
       <LearnMore name="scalable">
         <Scalable />
-    {/*
+        {/*
 <div id="container"></div>
  <script src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
  <script dangerouslySetInnerHTML={{__html: `
@@ -126,7 +122,6 @@ console.log(12)
 `}}/>
 */}
       </LearnMore>
-      <HorizontalLine style={props.styleLineBottom} />
     </div>
   )
 }

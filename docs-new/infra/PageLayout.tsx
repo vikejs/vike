@@ -1,13 +1,23 @@
 import './main.css'
 import React from 'react'
 import { SidePanel } from '../SidePanel'
-import { Heading } from '../types'
-import '../Docs.css'
+import { Heading } from './headings'
+import './PageLayout.css'
 
 export { PageLayout }
 
-function PageLayout({ headings, children }: { headings: Heading[]; children: JSX.Element }) {
+function PageLayout({
+  headings,
+  activeHeading,
+  children
+}: {
+  headings: Heading[]
+  activeHeading: number
+  children: JSX.Element
+}) {
   const sidePanelWidth = 280
+  const heading = headings[activeHeading]
+  const isLandingPage = heading.url === '/';
   return (
     <div
       style={{
@@ -28,8 +38,9 @@ function PageLayout({ headings, children }: { headings: Heading[]; children: JSX
           <SidePanel headings={headings} />
         </div>
       </div>
-      <div>
-        <div id="docs">{children}</div>
+      <div id={isLandingPage?"":"doc-page"}>
+        {!isLandingPage && <h1>{heading.title}</h1>}
+        {children}
       </div>
     </div>
   )

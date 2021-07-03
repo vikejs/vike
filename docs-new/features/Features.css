@@ -13,6 +13,12 @@
   margin-bottom: 0.9em;
   margin-top: 2em;
 }
+#features {
+  margin: auto;
+  margin-top: 0;
+  padding: 0 30px;
+  max-width: 1080px;
+}
 #features p {
   margin: 5px 0;
 }

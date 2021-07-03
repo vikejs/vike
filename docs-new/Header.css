@@ -1,3 +1,11 @@
+#header {
+  display: flex;
+  padding: 50px 20px;
+  max-width: 900px;
+  margin: auto;
+  padding-bottom: 70px;
+}
+
 .social-link {
   transition: filter 0.3s ease-in-out;
   filter: grayscale(1);

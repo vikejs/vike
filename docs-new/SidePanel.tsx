@@ -1,7 +1,8 @@
 import React from 'react'
 import iconPlugin from './icons/vite-plugin-ssr.svg'
 import './SidePanel.css'
-import { Heading } from './types'
+import 'highlight.js/styles/stackoverflow-light.css'
+import { Heading } from './infra/headings'
 
 export { SidePanel }
 
@@ -19,7 +20,7 @@ function SideHeader() {
   return (
     <a
       style={{ display: 'flex', alignItems: 'center', color: 'inherit', textDecoration: 'none', padding: 20 }}
-      href="#"
+      href="/"
     >
       <img src={iconPlugin} height={SIZE} width={SIZE} />
       <code
@@ -45,11 +46,12 @@ function NavTree({ headings }: { headings: Heading[] }) {
     <>
       {headingsTree.map((heading) => {
         const { level, title, headingsChildren } = heading
-        const key = 'isDocumentBegin' in heading ? 'doc-begin' : heading.id
-        const href = getHref(heading)
         return (
-          <div className="nav-tree" key={key}>
-            <a className={'nav-item nav-item-h' + level} href={href}>
+          <div className="nav-tree" key={heading.url || heading.title}>
+            <a
+              className={'nav-item nav-item-h' + level + (heading.isActive ? ' is-active' : '')}
+              href={heading.url || undefined}
+            >
               <span dangerouslySetInnerHTML={{ __html: title }} />
             </a>
             <NavTree headings={headingsChildren} />
@@ -59,11 +61,6 @@ function NavTree({ headings }: { headings: Heading[] }) {
     </>
   )
 }
-function getHref(heading: Heading): string {
-  const href = 'isDocumentBegin' in heading ? '#' : `#${heading.id}`
-  return href
-}
-
 type HeadingsRoot = Heading & { headingsChildren: Heading[] }
 function getHeadingsTree(headings: Heading[]): HeadingsRoot[] {
   const headingLowestLevel = Math.min(...headings.map(({ level }) => level))

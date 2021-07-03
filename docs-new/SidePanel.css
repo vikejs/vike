@@ -1,4 +1,4 @@
-.nav-item-h2 {
+.nav-item-h1 {
   font-size: 14.4px;
   text-transform: uppercase;
   font-weight: 600;
@@ -10,7 +10,7 @@
   display: block;
   text-decoration: none;
 }
-.nav-item-h3 {
+.nav-item-h2 {
   font-size: 14.4px;
   font-weight: 400;
   letter-spacing: 0.15ch;
@@ -21,7 +21,7 @@
   display: block;
   text-decoration: none;
 }
-.nav-item-h4 {
+.nav-item-h3 {
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.15ch;
@@ -31,6 +31,9 @@
   padding-right: 4px;
   display: block;
   text-decoration: none;
+}
+.nav-item.is-active {
+  background-color: #eaeaea;
 }
 /*
 .nav-item {
