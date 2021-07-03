@@ -1376,6 +1376,7 @@ app.get('*', async (req, res, next) => {
 ```
 
 Some common auth tools:
+- [NextAuth.js](https://github.com/nextauthjs/next-auth) (also [works with Vite](https://github.com/s-kris/vite-ssr-next-auth))
 - [Grant](https://github.com/simov/grant)
 - [Passport.js](https://github.com/jaredhanson/passport)
 - [Auth0](https://auth0.com/)
