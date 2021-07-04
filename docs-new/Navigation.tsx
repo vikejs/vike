@@ -1,36 +1,9 @@
 import React from 'react'
-import iconPlugin from './icons/vite-plugin-ssr.svg'
-import './SidePanel.css'
+import './Navigation.css'
 import 'highlight.js/styles/stackoverflow-light.css'
 import { Heading } from './infra/headings'
 
-export { SidePanel }
-
-function SidePanel({ headings }: { headings: Heading[] }) {
-  return (
-    <>
-      <SideHeader />
-      <Navigation headings={headings} />
-    </>
-  )
-}
-
-function SideHeader() {
-  const SIZE = 50
-  return (
-    <a
-      style={{ display: 'flex', alignItems: 'center', color: 'inherit', textDecoration: 'none', padding: 20 }}
-      href="/"
-    >
-      <img src={iconPlugin} height={SIZE} width={SIZE} />
-      <code
-        style={{ backgroundColor: '#f4f4f4', borderRadius: 4, fontSize: '1.35em', padding: '2px 5px', marginLeft: 10 }}
-      >
-        vite-plugin-ssr
-      </code>
-    </a>
-  )
-}
+export { Navigation }
 
 function Navigation({ headings }: { headings: Heading[] }) {
   return (

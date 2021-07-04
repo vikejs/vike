@@ -1,6 +1,7 @@
 import './main.css'
 import React from 'react'
-import { SidePanel } from '../SidePanel'
+import iconPlugin from '../icons/vite-plugin-ssr.svg'
+import { Navigation } from '../Navigation'
 import { Heading } from './headings'
 import './PageLayout.css'
 
@@ -35,7 +36,8 @@ function PageLayout({
             borderRight: '1px solid #eee'
           }}
         >
-          <SidePanel headings={headings} />
+          <NavigationHeader/>
+          <Navigation headings={headings} />
         </div>
       </div>
       <div id={isLandingPage?"":"doc-page"}>
@@ -45,3 +47,21 @@ function PageLayout({
     </div>
   )
 }
+
+function NavigationHeader() {
+  const SIZE = 50
+  return (
+    <a
+      style={{ display: 'flex', alignItems: 'center', color: 'inherit', textDecoration: 'none', padding: 20 }}
+      href="/"
+    >
+      <img src={iconPlugin} height={SIZE} width={SIZE} />
+      <code
+        style={{ backgroundColor: '#f4f4f4', borderRadius: 4, fontSize: '1.35em', padding: '2px 5px', marginLeft: 10 }}
+      >
+        vite-plugin-ssr
+      </code>
+    </a>
+  )
+}
+
