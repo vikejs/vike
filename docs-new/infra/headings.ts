@@ -27,7 +27,7 @@ export type Heading = HeadingBase &
 export const headings: Heading[] = [
   {
     level: 1,
-    title: 'Overview'
+    title: withEmoji('Compass', 'Overview')
   },
   {
     level: 2,
@@ -46,7 +46,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: 'Get Started'
+    title: withEmoji('Seedling', 'Get Started')
   },
   {
     level: 2,
@@ -60,7 +60,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: 'Guides'
+    title: withEmoji('Books', 'Guides')
   },
   {
     level: 4,
@@ -117,7 +117,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: 'Integration'
+    title: withEmoji('Plug', 'Integration')
   },
   {
     level: 2,
@@ -154,7 +154,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: 'Deploy'
+    title: withEmoji('Earth', 'Deploy')
   },
   {
     level: 2,
@@ -179,7 +179,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: 'API'
+    title: withEmoji('Gear', 'API')
   },
   {
     level: 4,
@@ -382,4 +382,25 @@ function parse(title: string): JSX.Element {
   )
 
   return titleJsx
+}
+
+type EmojiName = 'Compass' | 'Seedling' | 'Books' | 'Plug' | 'Earth' | 'Gear'
+
+function withEmoji(emojiName: EmojiName, title: string): JSX.Element {
+  return React.createElement(React.Fragment, {}, [Emoji(emojiName), ' ', title])
+}
+
+function Emoji(name: EmojiName): JSX.Element {
+  const codePoint = (
+    name === 'Compass' && 0x1F9ED ||
+    name === 'Seedling' && 0x1F331 ||
+    name === 'Books' && 0x1F4DA ||
+    name === 'Plug' && 0x1F50C ||
+    name === 'Earth' && 0x1F30D ||
+    name === 'Gear' && 0x2699
+  )
+  assert(codePoint)
+  const str = String.fromCodePoint(codePoint)
+  const style = {fontSize: '1.4em'}
+  return React.createElement('span', {style}, str)
 }

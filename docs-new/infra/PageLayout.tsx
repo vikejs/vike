@@ -52,7 +52,7 @@ function NavigationHeader() {
   const SIZE = 50
   return (
     <a
-      style={{ display: 'flex', alignItems: 'center', color: 'inherit', textDecoration: 'none', padding: 20 }}
+      style={{ display: 'flex', alignItems: 'center', color: 'inherit', textDecoration: 'none', padding: 20, marginLeft: -5 }}
       href="/"
     >
       <img src={iconPlugin} height={SIZE} width={SIZE} />
