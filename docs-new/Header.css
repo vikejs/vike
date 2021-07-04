@@ -6,23 +6,6 @@
   padding-bottom: 70px;
 }
 
-.social-link {
-  transition: filter 0.3s ease-in-out;
-  filter: grayscale(1);
-}
-.social-link#twitter-link {
-  filter: grayscale(1) opacity(0.7);
-}
-.social-link#discord-link {
-  filter: grayscale(1) opacity(0.6);
-}
-.social-link#github-link {
-  filter: grayscale(1) opacity(0.4);
-}
-.social-link:hover {
-  filter: grayscale(0) opacity(1) !important;
-}
-
 #npm-init-code-snippet {
   --balloon-color: #444;
   --balloon-move: 2px;

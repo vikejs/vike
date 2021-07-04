@@ -148,7 +148,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Other Tools',
+    title: 'Other',
     titleAddendum: 'CSS Frameworks, Google Analytics, jQuery, Service Workers, Sentry, ...',
     url: '/tools'
   },
@@ -176,6 +176,11 @@ export const headings: Heading[] = [
     level: 2,
     title: 'Firebase',
     url: '/firebase'
+  },
+  {
+    level: 2,
+    title: 'Other',
+    url: '/deploy'
   },
   {
     level: 1,

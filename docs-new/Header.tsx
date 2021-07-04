@@ -112,7 +112,7 @@ function SocialLink({ id, icon, href }: { id: string; icon: string; href: string
     <>
       <a
         id={id}
-        className="social-link"
+        className="colorize-on-hover"
         href={href}
         style={{ padding: '5px 10px', display: 'inline-block', lineHeight: 0 }}
       >

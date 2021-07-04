@@ -1,6 +1,6 @@
 import './main.css'
 import React from 'react'
-import iconPlugin from '../icons/vite-plugin-ssr.svg'
+import { NavigationHeader } from './NavigationHeader'
 import { Navigation } from '../Navigation'
 import { Heading } from './headings'
 import './PageLayout.css'
@@ -47,21 +47,3 @@ function PageLayout({
     </div>
   )
 }
-
-function NavigationHeader() {
-  const SIZE = 50
-  return (
-    <a
-      style={{ display: 'flex', alignItems: 'center', color: 'inherit', textDecoration: 'none', padding: 20, marginLeft: -5 }}
-      href="/"
-    >
-      <img src={iconPlugin} height={SIZE} width={SIZE} />
-      <code
-        style={{ backgroundColor: '#f4f4f4', borderRadius: 4, fontSize: '1.35em', padding: '2px 5px', marginLeft: 10 }}
-      >
-        vite-plugin-ssr
-      </code>
-    </a>
-  )
-}
-
