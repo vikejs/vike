@@ -1,11 +1,12 @@
+import React from 'react'
 import { assert } from '../utils'
 
 type HeadingBase = {
-  title: string
+  title: string | JSX.Element
   level: number
   url?: string
   titleAddendum?: string
-  titleInNav?: string
+  titleInNav?: string | JSX.Element
   isActive?: true
 }
 type HeadingAbstract = {
@@ -21,9 +22,6 @@ export type Heading = HeadingBase &
     | {
         level: 2
         url: string
-        titleAddendum?: string
-        titleInNav?: string
-        isActive?: true
       }
   )
 export const headings: Heading[] = [
@@ -66,7 +64,7 @@ export const headings: Heading[] = [
   },
   {
     level: 4,
-    title: 'Basics',
+    title: 'Basics'
   },
   {
     level: 2,
@@ -85,7 +83,7 @@ export const headings: Heading[] = [
   },
   {
     level: 4,
-    title: 'More',
+    title: 'More'
   },
   {
     level: 2,
@@ -114,7 +112,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: '`.env` Files',
+    title: parse('`.env` Files'),
     url: '/.env'
   },
   {
@@ -189,47 +187,47 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: '`*.page.js`',
+    title: parse('`*.page.js`'),
     url: '/.page.js'
   },
   {
     level: 2,
-    title: '`pageContext`',
+    title: parse('`pageContext`'),
     url: '/pageContext'
   },
   {
     level: 2,
-    title: '`*.page.server.js`',
+    title: parse('`*.page.server.js`'),
     url: '/.page.server.js'
   },
   {
     level: 2,
-    title: '`addPageContext()` hook',
-    titleInNav: ' - `export { addPageContext }`',
+    title: parse('`addPageContext()` hook'),
+    titleInNav: parse(getListPrefix() + '`export { addPageContext }`'),
     url: '/addPageContext'
   },
   {
     level: 2,
-    title: '`passToClient`',
-    titleInNav: ' - `export { passToClient }`',
+    title: parse('`passToClient`'),
+    titleInNav: parse(getListPrefix()+'`export { passToClient }`'),
     url: '/passToClient'
   },
   {
     level: 2,
-    title: '`render()` hook',
-    titleInNav: ' - `export { render }`',
+    title: parse('`render()` hook'),
+    titleInNav: parse(getListPrefix()+'`export { render }`'),
     url: '/render'
   },
   {
     level: 2,
-    title: '`prerender()` hook',
-    titleInNav: ' - `export { prerender }`',
+    title: parse('`prerender()` hook'),
+    titleInNav: parse(getListPrefix()+'`export { prerender }`'),
     url: '/prerender-hook'
   },
   {
     level: 2,
-    title: "`import { html } from 'vite-plugin-ssr'`",
-    titleInNav: '`html` string template tag',
+    title: parse("`import { html } from 'vite-plugin-ssr'`"),
+    titleInNav: parse('`html` string template tag'),
     url: '/html-tag'
   },
   {
@@ -238,25 +236,25 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: '`*.page.client.js`',
+    title: parse('`*.page.client.js`'),
     url: '/.page.client.js'
   },
   {
     level: 2,
-    title: "import { getPage } from 'vite-plugin-ssr/client'",
-    titleInNav: '`getPage()`',
+    title: parse("import { getPage } from 'vite-plugin-ssr/client'"),
+    titleInNav: parse('`getPage()`'),
     url: '/getPage'
   },
   {
     level: 2,
-    title: "import { useClientRouter } from 'vite-plugin-ssr/client/router'",
-    titleInNav: '`useClientRouter()`',
+    title: parse("import { useClientRouter } from 'vite-plugin-ssr/client/router'"),
+    titleInNav: parse('`useClientRouter()`'),
     url: '/useClientRouter'
   },
   {
     level: 2,
-    title: "import { navigate } from 'vite-plugin-ssr/client/router'",
-    titleInNav: '`navigate()`',
+    title: parse("`import { navigate } from 'vite-plugin-ssr/client/router'`"),
+    titleInNav: parse('`navigate()`'),
     url: '/navigate'
   },
   {
@@ -265,7 +263,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: '`*.page.route.js`',
+    title: parse('`*.page.route.js`'),
     url: '/.page.route.js'
   },
   {
@@ -289,12 +287,12 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: '`_default.page.*`',
+    title: parse('`_default.page.*`'),
     url: '/_default.page'
   },
   {
     level: 2,
-    title: '`_error.page.*`',
+    title: parse('`_error.page.*`'),
     url: '/_error.page'
   },
   {
@@ -303,13 +301,13 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: "`import { createPageRender } from 'vite-plugin-ssr'` (Server Integration Point)",
-    titleInNav: '`createPageRender()` (Server Integration Point)',
+    title: parse("`import { createPageRender } from 'vite-plugin-ssr'` (Server Integration Point)"),
+    titleInNav: parse('`createPageRender()` (Server Integration Point)'),
     url: '/createPageRender'
   },
   {
     level: 2,
-    title: "`import ssr from 'vite-plugin-ssr/plugin'` (Vite Plugin)",
+    title: parse("`import ssr from 'vite-plugin-ssr/plugin'` (Vite Plugin)"),
     titleInNav: 'Vite Plugin',
     url: '/vite-plugin'
   },
@@ -319,7 +317,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Command `prerender`',
+    title: parse('Command `prerender`'),
     url: '/prerender-command'
   }
 ]
@@ -334,4 +332,54 @@ function assert_headings() {
       urls[url] = true
     }
   })
+}
+
+function getListPrefix() {
+  const nonBreakingSpace = String.fromCodePoint(0x00a0)
+  const bulletPoint = String.fromCodePoint(0x2022)
+  return nonBreakingSpace + bulletPoint + nonBreakingSpace
+}
+
+function parse(title: string): JSX.Element {
+  type Part = { nodeType: 'text' | 'code'; content: string }
+  const parts: Part[] = []
+  let current: Part | undefined
+  title.split('').forEach((letter) => {
+    if (letter === '`') {
+      if (current?.nodeType === 'code') {
+        // Code block end
+        parts.push(current)
+        current = undefined
+      } else {
+        // Code block begin
+        if (current) {
+          parts.push(current)
+        }
+        current = { nodeType: 'code', content: '' }
+      }
+    } else {
+      if (!current) {
+        current = { nodeType: 'text', content: '' }
+      }
+      current.content += letter
+    }
+  })
+  if( current ) {
+    parts.push(current)
+  }
+
+  const titleJsx = React.createElement(
+    React.Fragment,
+    {},
+    parts.map((part) => {
+      if (part.nodeType === 'code') {
+        return React.createElement('code', {}, part.content)
+      } else {
+        assert(part.nodeType === 'text')
+        return part.content
+      }
+    })
+  )
+
+  return titleJsx
 }

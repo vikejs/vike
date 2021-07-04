@@ -15,7 +15,7 @@ function PageLayout({
   activeHeading: number
   children: JSX.Element
 }) {
-  const sidePanelWidth = 280
+  const sidePanelWidth = 300
   const heading = headings[activeHeading]
   const isLandingPage = heading.url === '/';
   return (

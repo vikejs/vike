@@ -1,27 +1,36 @@
+.nav-item-h1 + .nav-item-h4 {
+  margin-top: -2px;
+}
 .nav-item-h4 {
-  position: relative;
-  top: 7px;
+  margin-top: 9px;
   color: #999;
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.15ch;
-  padding: 6px 0;
-  padding-left: 60px;
+  padding-left: 20px;
   padding-right: 4px;
   display: block;
   text-decoration: none;
 }
+.nav-item-addendum {
+  font-size: 10px;
+  color: #aaa;
+}
 .nav-item-h1 {
+  margin-top: 30px;
   font-size: 14.4px;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.15ch;
   color: #323d48;
   padding: 12px 0;
-  padding-left: 40px;
+  padding-left: 20px;
   padding-right: 4px;
   display: block;
   text-decoration: none;
+}
+.nav-item code {
+  font-size: 0.9em;
 }
 .nav-item-h2 {
   font-size: 14.4px;
@@ -29,7 +38,7 @@
   letter-spacing: 0.15ch;
   color: #323d48;
   padding: 6px 0;
-  padding-left: 60px;
+  padding-left: 20px;
   padding-right: 4px;
   display: block;
   text-decoration: none;
@@ -73,8 +82,8 @@
 */
 
 .nav-tree:not(.expanded) > .nav-tree {
- edisplay: none;
- /*
+  edisplay: none;
+  /*
   background:red;
   */
 }
