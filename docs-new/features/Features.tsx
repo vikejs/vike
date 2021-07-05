@@ -18,7 +18,7 @@ function Features() {
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
             You control how your pages are rendered; you can use <b>any view framework</b> (React, Vue, ...) and{' '}
-            <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...) you want.
+            <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
             Integrating tools is <b>simple</b> and <b>natural</b>.
@@ -27,8 +27,10 @@ function Features() {
         <Feature>
           <h2>{String.fromCodePoint(0x1f9be)} Full-fledged</h2>
           <p>
-            <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
-            <b>Client-side Routing</b> (faster/animated page transitions) or <b>Server-side Routing</b> (simple
+            <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
+          </p>
+          <p>
+            Choose between <b>Client-side Routing</b> (faster/animated page transitions) and <b>Server-side Routing</b> (simple
             architecture).
           </p>
           <p>
@@ -38,7 +40,7 @@ function Features() {
         <Feature>
           <h2>{String.fromCodePoint(0x1faa8)} Rock-solid</h2>
           <p>
-            The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>.
+            The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b> (new found ones are quickly fixed).
           </p>
           <p>
             Every release is assailed against a heavy suite of <b>automated tests</b>.
