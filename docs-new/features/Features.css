@@ -18,6 +18,7 @@
   margin-top: 0;
   padding: 0 30px;
   max-width: 1080px;
+  margin-bottom: 70px;
 }
 #features p {
   margin: 5px 0;
@@ -81,11 +82,7 @@
 }
 */
 .feature img {
-  filter: grayscale(1);
   transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out;
-}
-.feature:hover img {
-  filter: grayscale(0);
 }
 .feature.selected img {
   transform: rotate(180deg);

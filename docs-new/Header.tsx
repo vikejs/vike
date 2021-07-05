@@ -48,7 +48,7 @@ function RightSide() {
   return (
     <div style={{ marginLeft: 40 }}>
       <ScaffoldCallToAction />
-      <div style={{width: 1, height: 1, margin: 12}}/>
+      <div style={{ width: 1, height: 1, margin: 12 }} />
       <TourCallToAction />
     </div>
   )
@@ -76,14 +76,20 @@ function TourCallToAction() {
   )
 }
 
-function CallToActionDescription({ children, style }: { style?: React.CSSProperties, children: (string | JSX.Element)[] }) {
+function CallToActionDescription({
+  children,
+  style
+}: {
+  style?: React.CSSProperties
+  children: (string | JSX.Element)[]
+}) {
   return <p style={{ marginBottom: 5, color: 'inherit', opacity: 0.7, fontSize: '0.92em', ...style }}>{children}</p>
 }
 
 function ScaffoldCallToAction() {
   return (
     <>
-      <CallToActionDescription style={{marginTop: 0}}>
+      <CallToActionDescription style={{ marginTop: 0 }}>
         Scaffold a Vite + <code>vite-plugin-ssr</code> app.
       </CallToActionDescription>
       <code
@@ -99,18 +105,6 @@ function ScaffoldCallToAction() {
           color: 'black',
           cursor: 'pointer'
         }}
-        onClick={async () => {
-          if (window.navigator.clipboard) {
-            await window.navigator.clipboard.writeText('npm init vite-plugin-ssr@latest')
-          }
-          const el = document.getElementById('npm-init-code-snippet')!
-          const attr = 'aria-label'
-          const orignalText = el.getAttribute(attr)!
-          el.setAttribute(attr, 'Copied')
-          setTimeout(() => {
-            el.setAttribute(attr, orignalText)
-          }, 1200)
-        }}
       >
         {/*
           <div style={{ color: '#888' }}>
@@ -125,7 +119,7 @@ function ScaffoldCallToAction() {
   )
 }
 
-function CallToAction({ href, text, icon }: { href: string; text: string, icon: string }) {
+function CallToAction({ href, text, icon }: { href: string; text: string; icon: string }) {
   return (
     <a href={href}>
       <button
@@ -134,17 +128,13 @@ function CallToAction({ href, text, icon }: { href: string; text: string, icon: 
           width: '100%',
           height: '100%',
           fontSize: '1.3em',
-          backgroundColor: '#fafafa',
-          border: '1px solid #aaa',
-          cursor: 'pointer',
-          borderRadius: 5,
-            padding: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
-    <img src={icon} style={{height: 30, marginRight: 5}}/>
+        <img src={icon} style={{ height: 30, marginRight: 5 }} />
         {text}
       </button>
     </a>

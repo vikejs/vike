@@ -1,4 +1,3 @@
-import './main.css'
 import React from 'react'
 import { NavigationHeader } from './NavigationHeader'
 import { Navigation } from '../Navigation'
@@ -9,16 +8,16 @@ export { PageLayout }
 
 function PageLayout({
   headings,
-  activeHeading,
+  activeHeadingIdx,
   children
 }: {
   headings: Heading[]
-  activeHeading: number
+  activeHeadingIdx: number
   children: JSX.Element
 }) {
   const sidePanelWidth = 300
-  const heading = headings[activeHeading]
-  const isLandingPage = heading.url === '/';
+  const heading = headings[activeHeadingIdx]
+  const isLandingPage = heading.url === '/'
   return (
     <div
       style={{
@@ -36,11 +35,11 @@ function PageLayout({
             borderRight: '1px solid #eee'
           }}
         >
-          <NavigationHeader/>
+          <NavigationHeader />
           <Navigation headings={headings} />
         </div>
       </div>
-      <div id={isLandingPage?"":"doc-page"}>
+      <div id={isLandingPage ? '' : 'doc-page'}>
         {!isLandingPage && <h1>{heading.title}</h1>}
         {children}
       </div>

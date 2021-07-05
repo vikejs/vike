@@ -1,21 +1,6 @@
-* {
-  box-sizing: border-box;
-}
 #doc-page {
   max-width: 800px;
   box-sizing: content-box;
   padding: 20px;
   margin: auto;
-}
-#doc-page h2 + h3 {
-  margin-top: 0;
-}
-#doc-page h2,
-#doc-page h3 {
-  margin-top: 120px;
-  padding-top: 30px;
-  /*
-  margin-top: 0;
-  padding-top: 150px
-  */
 }

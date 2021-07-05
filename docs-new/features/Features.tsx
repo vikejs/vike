@@ -30,8 +30,8 @@ function Features() {
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
           </p>
           <p>
-            Choose between <b>Client-side Routing</b> (faster/animated page transitions) and <b>Server-side Routing</b> (simple
-            architecture).
+            Choose between <b>Client-side Routing</b> (faster/animated page transitions) and <b>Server-side Routing</b>{' '}
+            (simple architecture).
           </p>
           <p>
             Render pages with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
@@ -132,37 +132,33 @@ function Feature({ children, name, isExpandable }: { name?: string; isExpandable
   assert(!!name === !!isExpandable)
   return (
     <div
-      className="feature"
+      className={'feature colorize-on-hover' + (name ? ' has-learn-more' : '')}
       id={name && `feature-${name}`}
-      onClick={isExpandable && onClick}
       style={{ cursor: isExpandable && 'pointer' }}
     >
       {children}
-      <div style={{ textAlign: 'center' }}>
-        {isExpandable && <img src={iconChevron} height="12" style={{ marginRight: 20 }} />}
-      </div>
+      {isExpandable && (
+        <div style={{ textAlign: 'center', marginTop: 10 }}>
+          <button
+            type="button"
+            style={{
+              textAlign: 'center',
+              padding: '2px 7px',
+              display: 'inline-block',
+              fontSize: '10px',
+              textTransform: 'uppercase',
+              letterSpacing: '1px',
+              fontWeight: 600
+            }}
+          >
+            <span className="decolorize-5">Learn more</span>
+            <br />
+            <img className="decolorize-4" src={iconChevron} height="8" style={{ marginTop: 2 }} />
+          </button>
+        </div>
+      )}
     </div>
   )
-
-  function onClick() {
-    const selected = 'selected'
-    const learnId = 'learn-more-' + name
-    const featureId = 'feature-' + name
-    const learnEl = document.getElementById(learnId)
-    assert(learnEl)
-    const learnEls: HTMLElement[] = [
-      ...(document.querySelectorAll('.learn-more') as any),
-      ...(document.querySelectorAll('.feature') as any)
-    ]
-    learnEls.forEach((el) => {
-      if (el.id === learnId || el.id === featureId) {
-        el.classList.toggle(selected)
-      } else {
-        // el.classList.remove(selected)
-      }
-    })
-    updateSidePanelScroll()
-  }
 }
 function LearnMore({ children, name }: { name: string; children: any }) {
   return (

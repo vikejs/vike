@@ -1,0 +1,15 @@
+code {
+  /*
+  background-color: #f4f4f4;
+  0.043137255 = 1 - (#f4 / #ff)
+  */
+  background-color: rgba(0, 0, 0, 0.043137255);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+pre > code {
+  padding: 16px !important;
+}
+pre {
+  display: grid;
+}

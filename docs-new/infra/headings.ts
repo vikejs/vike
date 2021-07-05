@@ -6,12 +6,14 @@ type HeadingBase = {
   level: number
   url?: string
   titleAddendum?: string
+  titleDocument?: string
   titleInNav?: string | JSX.Element
   isActive?: true
 }
 type HeadingAbstract = {
   url?: undefined
   titleAddendum?: undefined
+  titleDocument?: undefined
   titleInNav?: undefined
   isActive?: undefined
 }
@@ -32,6 +34,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: 'Introduction',
+    titleDocument: 'vite-plugin-ssr',
     url: '/'
   },
   {
@@ -92,7 +95,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'HTML `head`',
+    title: parse('HTML `head`'),
     url: '/html-head'
   },
   {

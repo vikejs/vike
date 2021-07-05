@@ -4,7 +4,6 @@ import iconGithub from '../icons/github.svg'
 import iconTwitter from '../icons/twitter.svg'
 import iconDiscord from '../icons/discord.svg'
 import iconChangelog from '../icons/changelog.svg'
-import './NavigationHeader.css'
 
 export { NavigationHeader }
 
@@ -58,9 +57,9 @@ function Links() {
         justifyContent: 'left'
       }}
     >
-      <SocialLink id="github-link" icon={iconGithub} href="https://github.com/brillout/vite-plugin-ssr" />
-      <SocialLink id="discord-link" icon={iconDiscord} href="https://discord.gg/qTq92FQzKb" />
-      <SocialLink id="twitter-link" icon={iconTwitter} href="https://twitter.com/brillout" />
+      <SocialLink className="decolorize-4" icon={iconGithub} href="https://github.com/brillout/vite-plugin-ssr" />
+      <SocialLink className="decolorize-6" icon={iconDiscord} href="https://discord.gg/qTq92FQzKb" />
+      <SocialLink className="decolorize-7" icon={iconTwitter} href="https://twitter.com/brillout" />
       <ChangelogButton />
     </div>
   )
@@ -70,33 +69,27 @@ function ChangelogButton() {
   return (
     <a
       href="https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md"
-      id="changelog-link"
-      className="colorize-on-hover"
+      className="button colorize-on-hover"
       style={{
-        backgroundColor: '#555',
-        color: 'white',
-        borderRadius: 5,
         display: 'flex',
         alignItems: 'center',
-        padding: '2px 7px',
+        padding: '1px 7px',
         marginLeft: 2,
-        fontSize: '0.97em'
+        fontSize: '0.97em',
+        color: 'inherit',
       }}
     >
-      <img src={iconChangelog} height={16} style={{ marginRight: 5 }} />
-      <span>
-        <span style={{ textDecoration: 'unederline' }}>v0.1.2</span> changelog
-      </span>
+      <span className="decolorize-7">v0.1.2</span>
+      <img className="decolorize-6" src={iconChangelog} height={16} style={{ marginLeft: 5 }} />
     </a>
   )
 }
 
-function SocialLink({ id, icon, href }: { id: string; icon: string; href: string }) {
+function SocialLink({ className, icon, href }: { className: string; icon: string; href: string }) {
   return (
     <>
       <a
-        id={id}
-        className="colorize-on-hover"
+        className={"colorize-on-hover "+className}
         href={href}
         style={{ padding: 3, display: 'inline-block', lineHeight: 0 }}
       >
