@@ -55,13 +55,18 @@
   letter-spacing: 0.15ch;
   color: #323d48;
   padding: 6px 0;
-  padding-left: 80px;
+  margin-left: 20px;
+  padding-left: 10px;
+  border-left: 6px solid var(--background-color);
   padding-right: 4px;
   display: block;
   text-decoration: none;
 }
+#navigation {
+  --background-color: #eaeaea;
+}
 .nav-item.is-active {
-  background-color: #eaeaea;
+  background-color: var(--background-color);
 }
 /*
 .nav-item {

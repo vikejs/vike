@@ -83,9 +83,9 @@
   background-color: #fafafa;
 }
 */
-.feature img {
+.feature .chevron {
   transition: filter 0.3s ease-in-out, transform 0.3s ease-in-out !important;
 }
-.feature.selected img {
+.feature.selected .chevron {
   transform: rotate(180deg);
 }

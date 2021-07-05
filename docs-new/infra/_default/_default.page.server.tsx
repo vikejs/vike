@@ -3,9 +3,10 @@ import React from 'react'
 import logo from '../../icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 import { PageLayout } from '../PageLayout'
-import { Heading, headings } from '../headings'
-import { assert } from '../../utils'
+import { Heading, headings as headings_static, parse } from '../headings'
+import { assert, slice } from '../../utils'
 import { jsxToTextContent } from '../../utils/jsxToTextContent'
+import type { HeadingExtracted } from '../vite-plugin-mdx-export-headings'
 
 type ReactComponent = () => JSX.Element
 declare global {
@@ -17,25 +18,21 @@ declare global {
 
 export { render }
 
-function render(pageContext: { url: string; Page: ReactComponent; PageContent: ReactComponent; headings: Heading[] }) {
-  let activeHeadingIdx: number | undefined
-  let activeHeading: Heading | undefined
-  const headings2: Heading[] = headings.map((heading, i) => {
-    if (heading.url === pageContext.url) {
-      assert(activeHeadingIdx === undefined)
-      activeHeadingIdx = i
-      activeHeading = heading
-      assert(heading.level === 2)
-      const heading_: Heading = { ...heading, isActive: true }
-      return heading_
-    }
-    return heading
-  })
-  assert(typeof activeHeadingIdx === 'number')
-  assert(activeHeading)
+type PageExports = {
+  headings?: HeadingExtracted[]
+}
+type PageContext = {
+  url: string
+  Page: ReactComponent
+  PageContent: ReactComponent
+  headings: Heading[]
+  pageExports: PageExports
+}
+function render(pageContext: PageContext) {
+  const { headings, activeHeading, activeHeadingIdx } = supplementHeadings(headings_static, pageContext)
   const { Page } = pageContext
   const page = (
-    <PageLayout headings={headings2} activeHeadingIdx={activeHeadingIdx}>
+    <PageLayout headings={headings} activeHeadingIdx={activeHeadingIdx}>
       <Page />
     </PageLayout>
   )
@@ -55,4 +52,44 @@ function render(pageContext: { url: string; Page: ReactComponent; PageContent: R
         <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
+}
+
+function supplementHeadings(
+  headings_static: Heading[],
+  pageContext: { url: string; pageExports: PageExports }
+): { headings: Heading[]; activeHeadingIdx: number; activeHeading: Heading } {
+  let activeHeadingIdx: number | undefined
+  let activeHeading: Heading | undefined
+  const headings_withoutPageHeadings = headings_static.map((heading, i) => {
+    if (heading.url === pageContext.url) {
+      assert(activeHeadingIdx === undefined)
+      activeHeadingIdx = i
+      activeHeading = heading
+      assert(heading.level === 2)
+      const heading_: Heading = { ...heading, isActive: true }
+      return heading_
+    }
+    return heading
+  })
+  assert(typeof activeHeadingIdx === 'number')
+  assert(activeHeading)
+  const pageHeadings = pageContext.pageExports.headings || []
+  const headings: Heading[] = [
+    ...slice(headings_withoutPageHeadings, 0, activeHeadingIdx + 1),
+    ...pageHeadings.map((pageHeading) => {
+      const title = parse(pageHeading.title)
+      const url = '#' + pageHeading.id
+      const heading: Heading = {
+        url,
+        title,
+        level: 3
+      }
+      return heading
+    }),
+    ...slice(headings_withoutPageHeadings, activeHeadingIdx + 1, 0)
+  ]
+  if (pageHeadings) {
+    activeHeadingIdx
+  }
+  return { headings, activeHeadingIdx, activeHeading }
 }

@@ -1,6 +1,8 @@
 import React from 'react'
 import { assert } from '../utils'
 
+export { parse }
+
 type HeadingBase = {
   title: string | JSX.Element
   level: number
@@ -19,10 +21,14 @@ type HeadingAbstract = {
 }
 export type Heading = HeadingBase &
   (
-    | ({ level: 4 } & HeadingAbstract)
     | ({ level: 1 } & HeadingAbstract)
+    | ({ level: 4 } & HeadingAbstract)
     | {
         level: 2
+        url: string
+      }
+    | {
+        level: 3
         url: string
       }
   )

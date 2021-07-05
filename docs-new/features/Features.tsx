@@ -108,21 +108,6 @@ function Features() {
       </div>
       <LearnMore name="scalable">
         <Scalable />
-        {/*
-<div id="container"></div>
- <script src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
- <script dangerouslySetInnerHTML={{__html: `
-console.log(11)
-twttr.widgets.createTweet(
-  '1398240747661533184',
-  document.getElementById('container'),
-  {
-    theme: 'dark'
-  }
-);
-console.log(12)
-`}}/>
-*/}
       </LearnMore>
     </div>
   )
@@ -155,7 +140,7 @@ function Feature({ children, name, isExpandable }: { name?: string; isExpandable
           >
             <span className="decolorize-5">Learn more</span>
             <br />
-            <img className="decolorize-4" src={iconChevron} height="8" style={{ marginTop: 2 }} />
+            <img className="decolorize-4 chevron" src={iconChevron} height="7" style={{ marginTop: 2 }} />
           </button>
         </div>
       )}
