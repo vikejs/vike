@@ -143,7 +143,9 @@ function Feature({ children, name, isExpandable }: { name?: string; isExpandable
             type="button"
             style={{
               textAlign: 'center',
-              padding: '2px 7px',
+              padding: '0 7px',
+              paddingTop: 3,
+              paddingBottom: 1,
               display: 'inline-block',
               fontSize: '10px',
               textTransform: 'uppercase',
