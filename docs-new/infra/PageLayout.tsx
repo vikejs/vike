@@ -2,6 +2,7 @@ import React from 'react'
 import { NavigationHeader } from './NavigationHeader'
 import { Navigation } from '../Navigation'
 import { Heading } from './headings'
+import { MobileHeader } from './MobileHeader'
 import './PageLayout.css'
 
 export { PageLayout }
@@ -40,6 +41,7 @@ function PageLayout({
         </div>
       </div>
       <div id={isLandingPage ? '' : 'doc-page'}>
+        <MobileHeader />
         {!isLandingPage && <h1>{heading.title}</h1>}
         {children}
       </div>

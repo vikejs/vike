@@ -20,16 +20,17 @@ function LeftSide() {
   return (
     <div>
       <div
+        id="header-logo"
         style={{
           display: 'flex',
-          alignItems: 'center',
-          paddingBottom: 20,
-          marginBottom: 10
+          alignItems: 'center'
         }}
       >
-        <img src={iconPlugin} height="90" style={{ marginRight: 20 }} />
-        <h1 style={{ margin: 0, marginTop: 0, fontSize: '1em' }}>
-          <code style={{ fontSize: '3em', padding: '10px 14px', borderRadius: 5 }}>vite-plugin-ssr</code>
+        <img src={iconPlugin} />
+        <h1>
+          <code style={{ display: 'inline-block', fontSize: '3em', padding: '10px 14px', borderRadius: 5 }}>
+            vite-plugin-ssr
+          </code>
         </h1>
         {/*
           <h1 style={{ fontSize: '1em', margin: 0 }}>
@@ -37,16 +38,14 @@ function LeftSide() {
           </h1>
          */}
       </div>
-      <p style={{ fontSize: '2em', padding: 0, margin: 0 }}>
-        Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.
-      </p>
+      <p id="header-tagline">Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
     </div>
   )
 }
 
 function RightSide() {
   return (
-    <div style={{ marginLeft: 40 }}>
+    <div id="header-right-side" style={{ marginLeft: 40 }}>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />
       <TourCallToAction />

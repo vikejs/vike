@@ -47,6 +47,7 @@ function render(pageContext: PageContext) {
         <link rel="icon" href="${logo}" />
         <title>${activeHeading.titleDocument || jsxToTextContent(activeHeading.title)}</title>
         ${isLandingPage ? desc : ''}
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
       </head>
       <body>
         <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>

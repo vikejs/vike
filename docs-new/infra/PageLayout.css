@@ -4,3 +4,23 @@
   padding: 20px;
   margin: auto;
 }
+
+@media screen and (min-width: 719px) {
+  #mobile-header {
+    display: none !important;
+  }
+}
+@media screen and (max-width: 719px) {
+        #navigation-header-logo {
+          display: none;
+        }
+  #panel-left {
+    margin-left: -300px;
+  }
+  #panel-left {
+    padding-top: 60px;
+  }
+  #mobile-header {
+    display: inherit;
+  }
+}

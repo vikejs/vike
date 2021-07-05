@@ -18,6 +18,7 @@ function NavigationHeader() {
       }}
     >
       <a
+        id="navigation-header-logo"
         style={{
           display: 'flex',
           alignItems: 'center',
