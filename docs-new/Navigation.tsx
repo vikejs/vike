@@ -26,7 +26,7 @@ function NavTree({ headings }: { headings: Heading[] }) {
             <span dangerouslySetInnerHTML={{ __html: title }} />
             */}
             <div>{heading.titleInNav || heading.title}</div>
-            <div className="nav-item-addendum">{heading.titleAddendum}</div>
+            {heading.titleAddendum && <div className="nav-item-addendum">{heading.titleAddendum}</div>}
           </a>
         )
       })}

@@ -149,7 +149,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: 'Other',
-    titleAddendum: 'CSS Frameworks, Google Analytics, jQuery, Service Workers, Sentry, ...',
+    titleAddendum: 'CSS Frameworks, Service Workers, ...',
     url: '/tools'
   },
   {

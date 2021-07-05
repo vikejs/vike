@@ -2,9 +2,10 @@
   margin-top: -2px;
 }
 .nav-item-h4 {
-  margin-top: 9px;
+  margin-top: 11px;
+  margin-bottom: 2px;
   color: #999;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 400;
   letter-spacing: 0.15ch;
   padding-left: 20px;
@@ -15,6 +16,8 @@
 .nav-item-addendum {
   font-size: 10px;
   color: #aaa;
+  margin-top: -2px;
+  margin-bottom: -7px;
 }
 .nav-item-h1:first-of-type {
   margin-top: 20px;
