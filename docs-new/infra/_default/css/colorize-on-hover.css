@@ -1,9 +1,11 @@
 .colorize-on-hover,
-.colorize-on-hover * {
+.colorize-on-hover [class^="decolorize-"],
+.colorize-on-hover [class*=" decolorize-"] {
   transition: filter 0.3s ease-in-out;
 }
 .colorize-on-hover:hover,
-.colorize-on-hover:hover * {
+.colorize-on-hover:hover [class^="decolorize-"],
+.colorize-on-hover:hover [class*=" decolorize-"] {
   filter: grayscale(0) opacity(1) !important;
 }
 
