@@ -12,7 +12,6 @@ export { Features }
 function Features() {
   return (
     <div id="features">
-      <HorizontalLine />
       <div className="features-primary-row">
         <Feature name="control" isExpandable={true} className="primary-feature">
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
@@ -162,22 +161,5 @@ function LearnMore({ children, name }: { name: string; children: any }) {
     <aside style={{}} className="learn-more" id={`learn-more-${name}`}>
       {children}
     </aside>
-  )
-}
-
-function HorizontalLine() {
-  return (
-    <div id="header-separator-line" style={{ textAlign: 'center' }}>
-      <hr
-        style={{
-          display: 'inline-block',
-          margin: 0,
-          border: 0,
-          borderTop: '1px solid #eee',
-          maxWidth: 500,
-          width: '80%',
-        }}
-      />
-    </div>
   )
 }

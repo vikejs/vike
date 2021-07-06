@@ -15,9 +15,15 @@
   box-shadow: -2px 0px 15px 2px white;
 }
 
+#mobile-call-to-action {
+  display: none;
+}
 @media screen and (max-width: 1160px) {
   #header-right-side {
     display: none;
+  }
+  #mobile-call-to-action {
+    display: block;
   }
 }
 #header-logo h1 {
@@ -45,7 +51,7 @@
     max-width: 960px;
     padding: 50px 20px;
   }
-  #header-separator-line {
+  .header-separator-line {
     padding-bottom: 45px;
   }
   #header-logo {
@@ -72,7 +78,7 @@
   #header-left-side {
     max-width: 400px;
   }
-  #header-separator-line {
+  .header-separator-line {
     padding-bottom: 15px;
   }
   #header-logo {

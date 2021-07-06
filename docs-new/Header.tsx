@@ -6,13 +6,17 @@ import iconVue from './icons/vue.svg'
 import 'balloon-css'
 
 export { Header }
+export { MobileCallToAction }
 
 function Header() {
   return (
-    <div id="header">
-      <LeftSide />
-      <RightSide />
-    </div>
+    <>
+      <div id="header">
+        <LeftSide />
+        <RightSide />
+      </div>
+      <HorizontalLine />
+    </>
   )
 }
 
@@ -28,9 +32,7 @@ function LeftSide() {
       >
         <img src={iconPlugin} />
         <h1>
-          <code style={{ display: 'inline-block', padding: '0.2em 0.7em', borderRadius: 5 }}>
-            vite-plugin-ssr
-          </code>
+          <code style={{ display: 'inline-block', padding: '0.2em 0.7em', borderRadius: 5 }}>vite-plugin-ssr</code>
         </h1>
       </div>
       <p id="header-tagline">Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
@@ -48,11 +50,11 @@ function RightSide() {
   )
 }
 
-function TourCallToAction() {
+function TourCallToAction({ style }: { style?: React.CSSProperties }) {
   return (
-    <>
+    <div style={style}>
       <CallToActionDescription>
-        Explore how it's like to use <code>vite-plugin-ssr</code>.
+        Explore how it's like to use <code>vite-plugin-ssr</code>
       </CallToActionDescription>
       <div
         style={{
@@ -66,7 +68,7 @@ function TourCallToAction() {
         <CallToAction href="/vue-tour" text="Vue Tour" icon={iconVue} />
         <CallToAction href="/react-tour" text="React Tour" icon={iconReact} />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -84,7 +86,7 @@ function ScaffoldCallToAction() {
   return (
     <>
       <CallToActionDescription style={{ marginTop: 0 }}>
-        Scaffold a Vite + <code>vite-plugin-ssr</code> app.
+        Scaffold a Vite + <code>vite-plugin-ssr</code> app
       </CallToActionDescription>
       <code
         id="npm-init-code-snippet"
@@ -121,7 +123,7 @@ function CallToAction({ href, text, icon }: { href: string; text: string; icon: 
         style={{
           width: '100%',
           height: '100%',
-          fontSize: '1.3em',
+          fontSize: '1.2em',
           padding: 0,
           display: 'flex',
           alignItems: 'center',
@@ -135,19 +137,28 @@ function CallToAction({ href, text, icon }: { href: string; text: string; icon: 
   )
 }
 
-/*
-function Center({ children }: { children: any }) {
+function MobileCallToAction() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        //justifyContent: 'center',
-        flexDirection: 'column',
-        alignItems: 'center'
-      }}
-    >
-      {children}
+    <div id="mobile-call-to-action" style={{ marginTop: -50, marginBottom: 60 }}>
+      <HorizontalLine />
+      <TourCallToAction style={{ maxWidth: 400, padding: '0 10px', margin: 'auto', textAlign: 'center' }} />
     </div>
   )
 }
-*/
+
+function HorizontalLine() {
+  return (
+    <div className="header-separator-line" style={{ textAlign: 'center' }}>
+      <hr
+        style={{
+          display: 'inline-block',
+          margin: 0,
+          border: 0,
+          borderTop: '1px solid #eee',
+          maxWidth: 500,
+          width: '80%'
+        }}
+      />
+    </div>
+  )
+}
