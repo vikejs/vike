@@ -1,6 +1,9 @@
 import { assert, determineSectionUrlHash } from '../../utils'
 
 installSectionUrlHashs()
+/* Let browser restore previous scroll
+jumpToSection()
+*/
 
 function installSectionUrlHashs() {
   const docPage = document.getElementById('doc-page')
@@ -21,6 +24,21 @@ function installSectionUrlHashs() {
     docSection.id = docSectionId
     docSection.onclick = () => {
       window.location.hash = urlHash
+      // The browser doesn't jump if hash doesn't change
+      jumpToSection()
     }
   })
+}
+
+function jumpToSection() {
+  const { hash } = window.location
+  if( hash==='' || hash==='#' ){
+    return;
+  }
+  assert(hash.startsWith('#'))
+  const target = document.getElementById(hash.slice(1))
+  if( !target ) {
+    return
+  }
+  target.scrollIntoView()
 }

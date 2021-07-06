@@ -1,28 +1,20 @@
-/*
-#doc-page h2 + h3 {
-  margin-top: 0;
-}
-#doc-page h2,
-#doc-page h3 {
-  margin-top: 120px;
-  padding-top: 30px;
-}
-  */
 #doc-page h2 {
   --padding-top: 12px;
   --padding-bottom: 12px;
   padding-top: var(--padding-top);
   padding-bottom: var(--padding-bottom);
   margin-top: calc(50px - var(--padding-top));
-  margin-top: calc(16px - var(--padding-bottom));
+  margin-bottom: calc(0px - var(--padding-bottom));
 }
 #doc-page h2[id] {
   cursor: pointer;
   position: relative;
+  padding-left: 20px;
+  margin-left: -20px
 }
 #doc-page h2[id]:hover::before {
   content: '#';
   position: absolute;
-  left: calc(-1 * 1em);
+  left: calc(-1 * (0.75em - 20px));
   color: #aaa;
 }

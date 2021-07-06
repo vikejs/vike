@@ -42,8 +42,10 @@ function PageLayout({
       </div>
       <div id={isLandingPage ? '' : 'doc-page'}>
         <MobileHeader />
-        {!isLandingPage && <h1>{heading.title}</h1>}
-        {children}
+        <div id="page-content">
+          {!isLandingPage && <h1>{heading.title}</h1>}
+          {children}
+        </div>
       </div>
     </div>
   )

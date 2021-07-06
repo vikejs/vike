@@ -18,7 +18,7 @@ function Header() {
 
 function LeftSide() {
   return (
-    <div>
+    <div id="header-left-side">
       <div
         id="header-logo"
         style={{
@@ -28,15 +28,10 @@ function LeftSide() {
       >
         <img src={iconPlugin} />
         <h1>
-          <code style={{ display: 'inline-block', fontSize: '3em', padding: '10px 14px', borderRadius: 5 }}>
+          <code style={{ display: 'inline-block', padding: '0.2em 0.7em', borderRadius: 5 }}>
             vite-plugin-ssr
           </code>
         </h1>
-        {/*
-          <h1 style={{ fontSize: '1em', margin: 0 }}>
-            <code style={{ fontSize: '3.5em', padding: '10px 14px', borderRadius: 5 }}>vite-plugin-ssr</code>
-          </h1>
-         */}
       </div>
       <p id="header-tagline">Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
     </div>

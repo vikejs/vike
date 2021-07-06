@@ -12,7 +12,7 @@ export { Features }
 function Features() {
   return (
     <div id="features">
-      <HorizontalLine style={{ paddingBottom: 45 }} />
+      <HorizontalLine />
       <div className="features-primary-row">
         <Feature name="control" isExpandable={true} className="primary-feature">
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
@@ -165,9 +165,9 @@ function LearnMore({ children, name }: { name: string; children: any }) {
   )
 }
 
-function HorizontalLine(props: { style?: React.CSSProperties }) {
+function HorizontalLine() {
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div id="header-separator-line" style={{ textAlign: 'center' }}>
       <hr
         style={{
           display: 'inline-block',
@@ -176,7 +176,6 @@ function HorizontalLine(props: { style?: React.CSSProperties }) {
           borderTop: '1px solid #eee',
           maxWidth: 500,
           width: '80%',
-          ...props.style
         }}
       />
     </div>
