@@ -13,11 +13,15 @@ As you scale you may need increasinlgy precise SSR needs; `vite-plugin-ssr` is d
 
 You can even, at very large scale, progressively replace `vite-plugin-ssr` with Vite's native SSR API which is a low level and robust (many projects, such as `vite-plugin-ssr`, and many companies are built on top of and depend on it). If you are Netflix and squeezing out each UX imperfection leads to a substantial revenue increase, then `vite-plugin-ssr` and/or Vite's SSR API are what you are looking for.
 
-<div style={{textAlign: 'center', fontSize: '0.9em', color: '#888', marginTop: 30}}>
+<div style={{ textAlign: 'center', fontSize: '0.9em', color: '#888', marginTop: 30 }}>
   Large production apps are using Vite for its dev speed.
 </div>
-<div style={{display: 'flex'}}>
-  <Tweet tweetId={'1398240747661533184'}/>
-  <div style={{width: 20, height: 1}}/>
-  <Tweet tweetId={'1392901819135795202'}/>
+<div id="twitter-tweet-container">
+  <div style={{ width: 'calc(50% - 10px)' }}>
+    <Tweet tweetId={'1398240747661533184'} />
+  </div>
+  <div style={{ width: 20, height: 1 }} />
+  <div style={{ width: 'calc(50% - 10px)' }}>
+    <Tweet tweetId={'1392901819135795202'} />
+  </div>
 </div>

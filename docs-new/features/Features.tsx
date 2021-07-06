@@ -13,8 +13,8 @@ function Features() {
   return (
     <div id="features">
       <HorizontalLine style={{ paddingBottom: 45 }} />
-      <div id="features-row-top">
-        <Feature name="control" isExpandable={true}>
+      <div className="features-primary-row">
+        <Feature name="control" isExpandable={true} className="primary-feature">
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
             You control how your pages are rendered; you can use <b>any view framework</b> (React, Vue, ...) and{' '}
@@ -24,7 +24,10 @@ function Features() {
             Integrating tools is <b>simple</b> and <b>natural</b>.
           </p>
         </Feature>
-        <Feature>
+        <LearnMore name="control">
+          <Control />
+        </LearnMore>
+        <Feature className="primary-feature">
           <h2>{String.fromCodePoint(0x1f9be)} Full-fledged</h2>
           <p>
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
@@ -37,7 +40,7 @@ function Features() {
             Render pages with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
           </p>
         </Feature>
-        <Feature>
+        <Feature className="primary-feature">
           <h2>{String.fromCodePoint(0x1faa8)} Rock-solid</h2>
           <p>
             The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b> (new found ones are quickly fixed).
@@ -51,11 +54,8 @@ function Features() {
           <p></p>
         </Feature>
       </div>
-      <LearnMore name="control">
-        <Control />
-      </LearnMore>
-      <div id="features-row-bottom">
-        <Feature name="deploy-anywhere" isExpandable={true}>
+      <div className="features-secondary-row">
+        <Feature name="deploy-anywhere" isExpandable={true} className="secondary-feature">
           <h2>{String.fromCodePoint(0x1f30d)} Deploy Anywhere</h2>
           <p>
             Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
@@ -66,7 +66,10 @@ function Features() {
             ...).
           </p>
         </Feature>
-        <Feature>
+        <LearnMore name="deploy-anywhere">
+          <DeployAnywhere />
+        </LearnMore>
+        <Feature className="secondary-feature">
           <h2>{String.fromCodePoint(0x26a1)} Fast</h2>
           <p>
             <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
@@ -77,11 +80,8 @@ function Features() {
           </p>
         </Feature>
       </div>
-      <LearnMore name="deploy-anywhere">
-        <DeployAnywhere />
-      </LearnMore>
-      <div id="features-row-bottom">
-        <Feature name="scalable" isExpandable={true}>
+      <div className="features-secondary-row">
+        <Feature name="scalable" isExpandable={true} className="secondary-feature">
           <h2>{String.fromCodePoint(0x1f680)} Scalable</h2>
           <p>
             Scale to 100 kLOCs while dev speed and <b>HMR stays fast.</b>
@@ -91,7 +91,10 @@ function Features() {
             <b>custom precise SSR needs</b>.
           </p>
         </Feature>
-        <Feature>
+        <LearnMore name="scalable">
+          <Scalable />
+        </LearnMore>
+        <Feature className="secondary-feature">
           <h2>
             <span style={{ fontFamily: 'reset' }}>{String.fromCodePoint(0x2764)}</span> Craft
           </h2>
@@ -106,18 +109,25 @@ function Features() {
           </p>
         </Feature>
       </div>
-      <LearnMore name="scalable">
-        <Scalable />
-      </LearnMore>
     </div>
   )
 }
 
-function Feature({ children, name, isExpandable }: { name?: string; isExpandable?: true; children: any }) {
+function Feature({
+  children,
+  name,
+  isExpandable,
+  className = ''
+}: {
+  className?: string
+  name?: string
+  isExpandable?: true
+  children: any
+}) {
   assert(!!name === !!isExpandable)
   return (
-    <div
-      className={'feature colorize-on-hover' + (name ? ' has-learn-more' : '')}
+    <summary
+      className={className + ' feature colorize-on-hover' + (name ? ' has-learn-more' : '')}
       id={name && `feature-${name}`}
       style={{ cursor: isExpandable && 'pointer' }}
     >
@@ -144,14 +154,14 @@ function Feature({ children, name, isExpandable }: { name?: string; isExpandable
           </button>
         </div>
       )}
-    </div>
+    </summary>
   )
 }
 function LearnMore({ children, name }: { name: string; children: any }) {
   return (
-    <div style={{}} className="learn-more" id={`learn-more-${name}`}>
+    <aside style={{}} className="learn-more" id={`learn-more-${name}`}>
       {children}
-    </div>
+    </aside>
   )
 }
 
@@ -164,7 +174,8 @@ function HorizontalLine(props: { style?: React.CSSProperties }) {
           margin: 0,
           border: 0,
           borderTop: '1px solid #eee',
-          width: 500,
+          maxWidth: 500,
+          width: '80%',
           ...props.style
         }}
       />
