@@ -3,10 +3,9 @@ import React from 'react'
 import logo from './icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 import { PageLayout } from './PageLayout'
-import { Heading, headings as headings_static, parse } from '../../headings'
-import { assert, slice } from '../../utils'
-import { jsxToTextContent } from '../../utils/jsxToTextContent'
-import type { HeadingExtracted } from '../../vite.config/vite-plugin-mdx-export-headings'
+import { Heading, headings as headings_static, parse } from '../headings'
+import { assert, slice, jsxToTextContent } from '../utils'
+import type { HeadingExtracted } from '../vite.config/vite-plugin-mdx-export-headings'
 
 type ReactComponent = () => JSX.Element
 declare global {

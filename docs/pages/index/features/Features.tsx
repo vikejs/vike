@@ -1,6 +1,6 @@
 import React from 'react'
 import './Features.css'
-import iconChevron from '../../_default/icons/chevron.svg'
+import iconChevron from '../../../frame/icons/chevron.svg'
 import { assert } from '../../../utils'
 import Control from './Control.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'

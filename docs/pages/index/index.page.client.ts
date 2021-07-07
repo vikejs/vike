@@ -1,5 +1,5 @@
 import { assert } from '../../utils'
-import '../_default/_default.page.client'
+import '../../frame/_default.page.client'
 
 addTwitterWidgets()
 addScaffoldCodeClickHandler()
