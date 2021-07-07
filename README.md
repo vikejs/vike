@@ -114,7 +114,7 @@ Vite SSR plugin. Simple, full-fledged, do-one-thing-do-it-well.
 
 Get an idea of what it's like to use `vite-plugin-ssr` with the [Vue Tour](#vue-tour) or [React Tour](#react-tour).
 
-Scaffold a new app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually add](#manual-installation) `vite-plugin-ssr` to your existing Vite app. (Although we recommend to first read the Vue/React tour before getting started.)
+Scaffold a new app with `npm init vite-plugin-ssr@latest` (or `yarn create vite-plugin-ssr`), or [manually add](#manual-installation) `vite-plugin-ssr` to your existing Vite app. (Although we recommend to first read the Vue/React tour before getting started.)
 
 <br/><br/>
 
@@ -312,7 +312,7 @@ conveniently hold all props of the root Vue component.
 That's it, and we have actually already seen most of the interface;
 not only is `vite-plugin-ssr` flexible, but it is also simple, easy, and fun to use.
 
-Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr@latest` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
 <br/><br/>
 
@@ -517,7 +517,7 @@ conveniently hold all props of the root React component.
 That's it, and we have actually already seen most of the interface;
 not only is `vite-plugin-ssr` flexible, but it is also simple, easy, and fun to use.
 
-Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
+Scaffold a new `vite-plugin-ssr` app with `npm init vite-plugin-ssr@latest` (or `yarn create vite-plugin-ssr`), or [manually install](#manual-installation) `vite-plugin-ssr` to your existing Vite app.
 
 <br/><br/>
 
@@ -531,7 +531,7 @@ Scaffold an app with Vite and `vite-plugin-ssr`.
 With npm:
 
 ```
-npm init vite-plugin-ssr
+npm init vite-plugin-ssr@latest
 ```
 
 With Yarn:
