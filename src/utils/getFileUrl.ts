@@ -19,8 +19,9 @@ export { removePageContextUrlSuffix }
 function getFileUrl(
   url: string,
   fileExtension: '.html' | '.pageContext.json',
-  doNotCreateExtraDirectory?: true
+  doNotCreateExtraDirectory: boolean
 ): string {
+  assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
   assert(url.startsWith('/'), { url })
   const { pathname, searchString, hashString } = getUrlParts(url)
   assert(url === `${pathname}${searchString}${hashString}`, { url })
