@@ -4,7 +4,6 @@ import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 import { mdxExportHeadings } from './vite.config/vite-plugin-mdx-export-headings'
 import low from 'lowlight'
-// import {lowlight} from 'lowlight'
 import { hljsDefineVue } from './vite.config/highlightjs-vue'
 
 low.registerLanguage('vue', hljsDefineVue)
