@@ -80,7 +80,7 @@ function ChangelogButton() {
         color: 'inherit',
       }}
     >
-      <span className="decolorize-7">v0.1.2</span>
+      <span className="decolorize-7">v0.1.3</span>
       <img className="decolorize-6" src={iconChangelog} height={16} style={{ marginLeft: 5 }} />
     </a>
   )
