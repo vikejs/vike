@@ -2620,11 +2620,12 @@ It can be called:
 
 Options:
  - `partial`: Allow only a subset of pages to be pre-rendered. (Pages with a parameterized route cannot be pre-rendered without `prerender()` hook; the `--partial` option suppresses the warning telling you about pages not being pre-rendered.)
+ - `no-extra-dir`/`noExtraDir`: Do not create a new directory for each page, e.g. generate `dist/client/about.html` instead of `dist/client/about/index.html`.
  - `root`: The root directory of your project (where `vite.config.js` and `dist/` live). Default: `process.cwd()`.
 
 Options are passed like this:
- - CLI: `$ vite-plugin-ssr prerender --partial --root path/to/root`
- - API: `prerender({ partial: true, root: 'path/to/root' })`
+ - CLI: `$ vite-plugin-ssr prerender --partial --no-extra-dir --root path/to/root`
+ - API: `prerender({ partial: true, noExtraDir: true, root: 'path/to/root' })`
 
 <br/><br/>
 

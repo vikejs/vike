@@ -15,7 +15,7 @@ type HtmlDocument = {
   url: string
   htmlDocument: string
   pageContextSerialized: string | null
-  doNotCreateExtraDirectory?: true
+  doNotCreateExtraDirectory: boolean
 }
 
 /**
@@ -25,16 +25,18 @@ type HtmlDocument = {
  */
 async function prerender({
   partial = false,
+  noExtraDir = false,
   root = process.cwd(),
   clientRouter = false,
   base
 }: {
   partial?: boolean
+  noExtraDir?: boolean
   root?: string
   clientRouter?: boolean
   base?: string
 } = {}) {
-  assertArguments(partial, clientRouter, base)
+  assertArguments(partial, noExtraDir, clientRouter, base)
   console.log(`${cyan(`vite-plugin-ssr ${version}`)} ${green('pre-rendering HTML...')}`)
 
   const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
@@ -132,7 +134,7 @@ async function prerender({
       assert(hasProp(pageContext, '_pageId', 'string'))
       assert(pageContext.url)
       const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-      htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
+      htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir })
       renderedPageIds[pageId] = true
     })
   )
@@ -169,7 +171,7 @@ async function prerender({
         }
 
         const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-        htmlDocuments.push({ url, htmlDocument, pageContextSerialized })
+        htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir })
       })
   )
 
@@ -208,9 +210,9 @@ async function write(
   fileExtension: '.html' | '.pageContext.json',
   fileContent: string,
   root: string,
-  doNotCreateExtraDirectory?: true
+  doNotCreateExtraDirectory: boolean
 ) {
-  const fileUrl = getFileUrl(url, fileExtension, doNotCreateExtraDirectory)
+  const fileUrl = getFileUrl(url, fileExtension, fileExtension === '.pageContext.json' || doNotCreateExtraDirectory)
   assert(fileUrl.startsWith('/'))
   const filePathRelative = fileUrl.slice(1).split('/').join(sep)
   assert(!filePathRelative.startsWith(sep))
@@ -292,8 +294,9 @@ function getPluginManifest(
   return { pluginManifest, pluginManifestPath }
 }
 
-function assertArguments(partial: unknown, clientRouter: unknown, base: unknown) {
+function assertArguments(partial: unknown, noExtraDir: unknown, clientRouter: unknown, base: unknown) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
+  assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')
   assertWarning(clientRouter === false, '[prerender()] Option `clientRouter` is deprecated and has no-effect.')
   assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.')
 }

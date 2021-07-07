@@ -19,7 +19,7 @@ async function getPageContext(
 }
 
 async function retrievePageContext(url: string): Promise<Record<string, unknown>> {
-  const response = await fetch(getFileUrl(url, '.pageContext.json'))
+  const response = await fetch(getFileUrl(url, '.pageContext.json', true))
 
   // Static hosts will return a 404
   if (response.status === 404) {
