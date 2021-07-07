@@ -149,13 +149,10 @@ function routeWith_filesystem(
   allPageIds: PageId[]
 ): { matchValue: boolean; routeParams: Record<string, string> } {
   const pageRoute = getFilesystemRoute(pageId, allPageIds)
-  urlPathname = normalizeUrl(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'pageRoute:' + pageRoute)
+  assert(urlPathname.startsWith('/') && pageRoute.startsWith('/'))
   const matchValue = urlPathname === pageRoute
   return { matchValue, routeParams: {} }
-}
-function normalizeUrl(urlPathname: string): string {
-  return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
 }
 function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   let pageRoute = removeCommonPrefix(pageId, allPageIds)
@@ -163,7 +160,9 @@ function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
     .split('/')
     .filter((part) => part !== 'index')
     .join('/')
-  pageRoute = normalizeUrl(pageRoute)
+  if (!pageRoute.startsWith('/')) {
+    pageRoute = '/' + pageRoute
+  }
   return pageRoute
 }
 function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {

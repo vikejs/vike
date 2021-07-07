@@ -659,17 +659,17 @@ async function getPagesAndRoutesInfo(): Promise<string> {
         let routeInfo
         let routeSrc
         if (!(pageId in pageRoutes)) {
-          routeInfo = `\`${getFilesystemRoute(pageId, allPageIds)}\``
+          routeInfo = getFilesystemRoute(pageId, allPageIds)
           routeSrc = 'Filesystem Routing'
         } else {
           const { pageRoute, pageRouteFile } = pageRoutes[pageId]
           const pageRouteStringified = truncateString(String(pageRoute).split(/\s/).filter(Boolean).join(' '), 64)
-          routeInfo = `\`${pageRouteStringified}\``
+          routeInfo = pageRouteStringified
           const routeType = typeof pageRoute === 'string' ? 'Route String' : 'Route Function'
           const routeFile = pageRouteFile
           routeSrc = `${routeType} defined in \`${routeFile}\``
         }
-        return `(${i + 1}) \`${pageId}.page.*\` with route ${routeInfo} (${routeSrc})`
+        return `(${i + 1}) \`${pageId}.page.*\` with route \`${routeInfo}\` (${routeSrc})`
       })
       .join(', ')
   ].join(' ')
