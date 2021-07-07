@@ -18,7 +18,8 @@ cli
   .option('--client-router', 'serialize `pageContext` to JSON files for Client-side Routing')
   .option('--base <path>', `[string] public base path (default: /)`)
   .action(async (options) => {
-    const { partial, noExtraDir, clientRouter, base, root } = options
+    const { partial, extraDir, clientRouter, base, root } = options
+    const noExtraDir = !extraDir
     await prerender({ partial, noExtraDir, clientRouter, base, root })
   })
 
