@@ -1,6 +1,8 @@
 import React from 'react'
+/* Won't work this this file is loaded only on the server
 import './Navigation.css'
 import 'highlight.js/styles/stackoverflow-light.css'
+*/
 import { Heading } from '../../headings'
 
 export { Navigation }

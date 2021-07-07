@@ -3,7 +3,9 @@ import { NavigationHeader } from './NavigationHeader'
 import { Navigation } from './Navigation'
 import { Heading } from '../../headings'
 import { MobileHeader } from './MobileHeader'
+/* Won't work this this file is loaded only on the server
 import './PageLayout.css'
+*/
 
 export { PageLayout }
 

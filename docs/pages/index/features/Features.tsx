@@ -42,7 +42,7 @@ function Features() {
         <Feature className="primary-feature">
           <h2>{String.fromCodePoint(0x1faa8)} Rock-solid</h2>
           <p>
-            The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b> (new found ones are quickly fixed).
+            The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>.
           </p>
           <p>
             Every release is assailed against a heavy suite of <b>automated tests</b>.
