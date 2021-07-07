@@ -26,6 +26,8 @@ async function release() {
   await testRelease()
   await commitLockfileChanges()
   await gitPush()
+
+  await link()
 }
 
 async function publish() {
@@ -39,6 +41,10 @@ async function publishBoilerplates() {
 async function gitPush() {
   await run('git', ['push'])
   await run('git', ['push', '--tags'])
+}
+
+async function link() {
+  await run('npm', ['run', 'link'])
 }
 
 async function changelog() {
