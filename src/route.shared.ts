@@ -149,10 +149,21 @@ function routeWith_filesystem(
   allPageIds: PageId[]
 ): { matchValue: boolean; routeParams: Record<string, string> } {
   const pageRoute = getFilesystemRoute(pageId, allPageIds)
+  urlPathname = removeTrailingSlash(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'pageRoute:' + pageRoute)
-  assert(urlPathname.startsWith('/') && pageRoute.startsWith('/'))
+  assert(urlPathname.startsWith('/'))
+  assert(pageRoute.startsWith('/'))
+  assert(!urlPathname.endsWith('/') || urlPathname === '/')
+  assert(!pageRoute.endsWith('/') || pageRoute === '/')
   const matchValue = urlPathname === pageRoute
   return { matchValue, routeParams: {} }
+}
+function removeTrailingSlash(url: string) {
+  if (url === '/' || !url.endsWith('/')) {
+    return url
+  } else {
+    return slice(url, 0, -1)
+  }
 }
 function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   let pageRoute = removeCommonPrefix(pageId, allPageIds)
