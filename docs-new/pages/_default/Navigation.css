@@ -63,7 +63,8 @@
   text-decoration: none;
 }
 #navigation {
-  --background-color: #eaeaea;
+  --background-color: #f0f0f0;
+  padding-bottom: 70px;
 }
 .nav-item.is-active {
   background-color: var(--background-color);
@@ -80,10 +81,10 @@
 }
 */
 
+/*
 #panel-left:not(:hover) ::-webkit-scrollbar {
   display: none;
 }
-/*
 #panel-left ::-webkit-scrollbar-thumb {
   opacity: 0;
 }

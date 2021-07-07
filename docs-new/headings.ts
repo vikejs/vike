@@ -385,7 +385,7 @@ function parse(title: string): JSX.Element {
   const titleJsx = React.createElement(
     React.Fragment,
     {},
-    parts.map((part) => {
+    ...parts.map((part) => {
       if (part.nodeType === 'code') {
         return React.createElement('code', {}, part.content)
       } else {
@@ -401,7 +401,7 @@ function parse(title: string): JSX.Element {
 type EmojiName = 'Compass' | 'Seedling' | 'Books' | 'Plug' | 'Earth' | 'Gear'
 
 function withEmoji(emojiName: EmojiName, title: string): JSX.Element {
-  return React.createElement(React.Fragment, {}, [Emoji(emojiName), ' ', title])
+  return React.createElement(React.Fragment, {}, Emoji(emojiName), ' ', title)
 }
 
 function Emoji(name: EmojiName): JSX.Element {

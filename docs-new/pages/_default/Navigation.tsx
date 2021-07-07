@@ -8,29 +8,22 @@ export { Navigation }
 function Navigation({ headings }: { headings: Heading[] }) {
   return (
     <div id="navigation" style={{ position: 'relative' }}>
-      <NavTree headings={headings} />
-      <ScrollOverlay />
-    </div>
-  )
-}
-function NavTree({ headings }: { headings: Heading[] }) {
-  return (
-    <>
-      {headings.map((heading) => {
+      {headings.map((heading, i) => {
         return (
           <a
             className={'nav-item nav-item-h' + heading.level + (heading.isActive ? ' is-active' : '')}
             href={heading.url || undefined}
+            key={i}
           >
-            {/*
-            <span dangerouslySetInnerHTML={{ __html: title }} />
-            */}
             <div>{heading.titleInNav || heading.title}</div>
             {heading.titleAddendum && <div className="nav-item-addendum">{heading.titleAddendum}</div>}
           </a>
         )
       })}
-    </>
+      {/*
+      <ScrollOverlay />
+      */}
+    </div>
   )
 }
 

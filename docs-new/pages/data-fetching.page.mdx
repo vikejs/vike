@@ -95,7 +95,7 @@ conveniently hold all props of the root component.
 We could have defined `movies` directly on `pageContext.movies` but it's cumbersome:
 our render/hydrate function would then need to know what `pageContext` should be passed to the root component, whereas with `pageContext.pageProps` our render/hydrate function can simply pass `pageContext.pageProps` to the root component.
 
-## Access `pageContext` everywhere
+## Access `pageContext` anywhere
 
 You can pass (some) `pageContext` to any/all components of your component tree by using:
  - React: [React.createContext](https://reactjs.org/docs/context.html)

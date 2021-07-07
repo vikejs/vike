@@ -10,7 +10,7 @@ function autoScrollNav() {
   assert(navLinks.length === 1, { navLinks, href })
   const navLink = navLinks[0]
   navLink.scrollIntoView({
-    //*
+    /*
     behavior: 'smooth',
     /*/
     behavior: 'auto',
