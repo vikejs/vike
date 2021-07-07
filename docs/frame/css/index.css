@@ -5,3 +5,4 @@
 @import './link.css';
 @import './font.css';
 @import './code.css';
+@import 'highlight.js/styles/stackoverflow-light.css';
