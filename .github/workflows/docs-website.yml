@@ -1,4 +1,4 @@
-name: Build and Deploy Documentation Website
+name: Deploy Docs Website
 on:
   push:
     branches:
@@ -21,3 +21,6 @@ jobs:
         with:
           branch: gh-pages
           folder: docs/dist/client
+          clean: true
+          clean-exclude: |
+            .nojekyll
