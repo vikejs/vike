@@ -28,6 +28,10 @@
       "node": "./dist/cjs/index.js",
       "import": "./dist/esm/index.js"
     },
+    "./types": {
+      "node": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js"
+    },
     "./client": {
       "browser": "./dist/esm/client/index.js"
     },

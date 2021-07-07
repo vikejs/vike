@@ -2,6 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "module": "ES2020",
+    "moduleResolution": "Node",
     "target": "ES2017",
     "lib": ["DOM"],
     "skipLibCheck": true,

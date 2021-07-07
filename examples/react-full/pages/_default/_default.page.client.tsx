@@ -1,12 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { PageLayout } from "./PageLayout";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
+import type { PageContextBuiltInClient } from "vite-plugin-ssr/types";
 import { PageContext } from "./types";
+import { PageLayout } from "./PageLayout";
 import { getPageTitle } from "./getPageTitle";
 
 const { hydrationPromise } = useClientRouter({
-  render(pageContext: PageContext) {
+  render(pageContext: PageContext & PageContextBuiltInClient) {
     const { Page, pageProps } = pageContext;
     const page = (
       <PageLayout>

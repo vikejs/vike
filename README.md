@@ -1783,6 +1783,8 @@ The `.page.js` file is usually executed in both Node.js and the browser.
 
 ### `pageContext`
 
+> :asterisk: TypeScript users can `import type { PageContextBuiltIn, PageContextBuiltInClient } from 'vite-plugin-ssr/types'`.
+
 Built-in:
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file being rendered.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file being rendered.

@@ -2,7 +2,7 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageLayout } from "./PageLayout";
 import { html } from "vite-plugin-ssr";
-import { PageContext, ReactComponent } from "./types";
+import { PageContext } from "./types";
 import logoUrl from "./logo.svg";
 
 export { render };
