@@ -1,7 +1,7 @@
 import { getUrlParts, getUrlPathname } from './parseUrl'
 import { assert } from './assert'
 import { slice } from './slice'
-const pageContextUrlSuffix = '/index.pageContext.json'
+const pageContextUrlSuffix = '.pageContext.json'
 
 export { getFileUrl }
 export { isPageContextUrl }
