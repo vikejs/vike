@@ -1,6 +1,7 @@
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 export type PageProps = {}
 export type VueComponent = any
-export type PageContext = {
+export type PageContext = PageContextBuiltIn & {
   Page: VueComponent
   pageProps?: PageProps
   documentProps?: {

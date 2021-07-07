@@ -1,5 +1,6 @@
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 export type Component = any
-export type PageContext = {
+export type PageContext = PageContextBuiltIn & {
   Page: Component
   pageProps: Record<string, unknown>
   pageExports: {
@@ -10,5 +11,4 @@ export type PageContext = {
   documentProps?: {
     title: string
   }
-  routeParams: Record<string, unknown>
 }
