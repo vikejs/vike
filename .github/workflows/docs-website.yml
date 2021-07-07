@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - docs-website
+    paths:
+      - docs/**
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest

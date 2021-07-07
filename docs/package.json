@@ -6,7 +6,7 @@
     "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
     "build:clean": "rm -rf dist/",
     "build:vite": "vite build && vite build --ssr",
-    "build:prerender": "vite-plugin-ssr prerender",
+    "build:prerender": "vite-plugin-ssr prerender --no-extra-dir",
     "// Static serve for production": "",
     "prod:serve": "serve dist/client/ --listen 3000"
   },
@@ -28,6 +28,6 @@
     "typescript": "^4.3.2",
     "vite": "^2.3.6",
     "vite-plugin-mdx": "^3.5.6",
-    "vite-plugin-ssr": "^0.1.3"
+    "vite-plugin-ssr": "^0.1.4"
   }
 }
