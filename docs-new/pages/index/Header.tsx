@@ -1,8 +1,8 @@
 import React from 'react'
 import './Header.css'
-import iconPlugin from './icons/vite-plugin-ssr.svg'
-import iconReact from './icons/react.svg'
-import iconVue from './icons/vue.svg'
+import iconPlugin from '../_default/icons/vite-plugin-ssr.svg'
+import iconReact from '../_default/icons/react.svg'
+import iconVue from '../_default/icons/vue.svg'
 import 'balloon-css'
 
 export { Header }

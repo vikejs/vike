@@ -1,7 +1,7 @@
 import React from 'react'
 import './Navigation.css'
 import 'highlight.js/styles/stackoverflow-light.css'
-import { Heading } from './infra/headings'
+import { Heading } from '../../headings'
 
 export { Navigation }
 

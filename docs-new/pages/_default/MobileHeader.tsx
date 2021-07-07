@@ -1,5 +1,5 @@
 import React from 'react'
-import iconPlugin from '../icons/vite-plugin-ssr.svg'
+import iconPlugin from './icons/vite-plugin-ssr.svg'
 
 export { MobileHeader }
 

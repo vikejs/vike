@@ -2,10 +2,10 @@ import reactRefresh from '@vitejs/plugin-react-refresh'
 import mdx from 'vite-plugin-mdx'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
-import { mdxExportHeadings } from './infra/vite-plugin-mdx-export-headings'
+import { mdxExportHeadings } from './vite.config/vite-plugin-mdx-export-headings'
 import low from 'lowlight'
 // import {lowlight} from 'lowlight'
-import { hljsDefineVue } from './infra/highlightjs-vue'
+import { hljsDefineVue } from './vite.config/highlightjs-vue'
 
 low.registerLanguage('vue', hljsDefineVue)
 

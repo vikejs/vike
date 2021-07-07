@@ -1,9 +1,9 @@
 import React from 'react'
-import iconPlugin from '../icons/vite-plugin-ssr.svg'
-import iconGithub from '../icons/github.svg'
-import iconTwitter from '../icons/twitter.svg'
-import iconDiscord from '../icons/discord.svg'
-import iconChangelog from '../icons/changelog.svg'
+import iconPlugin from './icons/vite-plugin-ssr.svg'
+import iconGithub from './icons/github.svg'
+import iconTwitter from './icons/twitter.svg'
+import iconDiscord from './icons/discord.svg'
+import iconChangelog from './icons/changelog.svg'
 
 export { NavigationHeader }
 

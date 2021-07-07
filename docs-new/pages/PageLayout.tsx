@@ -1,8 +1,8 @@
 import React from 'react'
-import { NavigationHeader } from './NavigationHeader'
+import { NavigationHeader } from './_default/NavigationHeader'
 import { Navigation } from '../Navigation'
-import { Heading } from './headings'
-import { MobileHeader } from './MobileHeader'
+import { Heading } from '../headings'
+import { MobileHeader } from './_default/MobileHeader'
 import './PageLayout.css'
 
 export { PageLayout }
