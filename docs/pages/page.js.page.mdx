@@ -1,0 +1,61 @@
+Environment: `Browser`, `Node.js`<br/>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
+
+A `*.page.js` file `export { Page }` or `export default Page`, where `Page` represents the page's view that is rendered to HTML / the DOM.
+
+`vite-plugin-ssr` doesn't do anything with `Page` and just makes it available at `pageContext.Page`.
+
+```js
+// *.page.js
+// Environment: Browser, Node.js
+
+export { Page }
+
+// We export a JSX component, but we could as well export a Vue/Svelte/... component,
+// or even export some custom object since vite-plugin-ssr doesn't do anything
+// with `Page`: it just makes it available at `pageContext.Page`.
+function Page() {
+  return <>Hello</>
+}
+```
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+import renderToHtml from 'some-view-framework'
+
+export { render }
+
+// `Page` is available at `pageContext.Page`
+async function render(pageContext) {
+  const pageHtml = await renderToHtml(pageContext.Page)
+
+  return html`<html>
+    <body>
+      <div id="root">
+        ${html.dangerouslySkipEscape(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+```js
+// *.page.client.js
+// Environment: Browser
+
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom } from 'some-view-framework'
+
+hydrate()
+
+async function hydrate() {
+  const pageContext = await getPage()
+  // `pageContext.Page` is available in the browser.
+  const { Page } = pageContext
+  await hydrateToDom(Page)
+}
+```
+
+The `.page.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.js` is not loaded in your Node.js process nor in the user's browser.

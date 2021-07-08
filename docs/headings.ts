@@ -202,7 +202,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('`*.page.js`'),
-    url: '/*.page.js'
+    url: '/.page.js'
   },
   {
     level: 2,
@@ -212,7 +212,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('`*.page.server.js`'),
-    url: '/.page.server.js'
+    url: '/*.page.server.js'
   },
   {
     level: 2,
