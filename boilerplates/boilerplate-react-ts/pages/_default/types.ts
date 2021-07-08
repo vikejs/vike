@@ -1,8 +1,7 @@
 import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
-export type ReactComponent = (pageProps: PageProps) => JSX.Element;
 export type PageProps = {};
 export type PageContext = PageContextBuiltIn & {
-  Page: ReactComponent;
+  Page: (pageProps: PageProps) => JSX.Element;
   pageProps: PageProps;
   documentProps?: {
     title?: string;
