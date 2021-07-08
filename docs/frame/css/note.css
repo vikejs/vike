@@ -1,0 +1,11 @@
+blockquote {
+  border-left: 8px solid #e0e3e6;
+  background-color: #fafafa;
+  margin-left: 0;
+  padding: 4px 16px;
+}
+blockquote > p::before {
+  font-family: emoji;
+  content: "ℹ️";
+  margin-right: 4px;
+}

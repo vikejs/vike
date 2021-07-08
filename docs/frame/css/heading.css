@@ -18,3 +18,7 @@
   left: calc(-1 * (0.75em - 20px));
   color: #aaa;
 }
+
+#doc-page h1 + h2 {
+  margin-top: 0;
+}
