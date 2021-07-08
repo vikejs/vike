@@ -1,7 +1,7 @@
 Environment: `Browser`, `Node.js`<br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`
 
-A `*.page.js` file `export { Page }` or `export default Page`, where `Page` represents the page's view that is rendered to HTML / the DOM.
+A `*.page.js` file has a `export { Page }` or `export default Page`, where `Page` represents the page's root component.
 
 `vite-plugin-ssr` doesn't do anything with `Page` and just makes it available at `pageContext.Page`.
 
@@ -52,7 +52,7 @@ hydrate()
 
 async function hydrate() {
   const pageContext = await getPage()
-  // `pageContext.Page` is available in the browser.
+  // `pageContext.Page` is also available in the browser.
   const { Page } = pageContext
   await hydrateToDom(Page)
 }

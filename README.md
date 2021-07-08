@@ -1411,24 +1411,6 @@ The `pageContext` can be accessed at:
 <br/><br/>
 
 
-### `*.page.server.js`
-
-Environment: `Node.js`
-<br/>
-[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.server.*([a-zA-Z0-9])`
-
-The `.page.server.js` file defines and exports
-- `export { addPageContext }`
-- `export { passToClient }`
-- `export { render }`
-- `export { prerender }`
-
-The `.page.server.js` file is lazy-loaded: it is loaded only when needed which means that if no URL request were to match the page's route then `.page.server.js` is not loaded in your Node.js process' memory.
-
-The `.page.server.js` file is executed in Node.js and never in the browser.
-
-<br/>
-
 #### `export { addPageContext }`
 
 The `addPageContext()` hook is used to provide further `pageContext` values.

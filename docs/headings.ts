@@ -122,7 +122,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('`.env` Files'),
-    url: '/.env'
+    url: '/.env-files'
   },
   {
     level: 1,
@@ -201,7 +201,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: parse('`*.page.js`'),
+    title: parse('`.page.js`'),
     url: '/.page.js'
   },
   {
@@ -211,8 +211,8 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: parse('`*.page.server.js`'),
-    url: '/*.page.server.js'
+    title: parse('`.page.server.js`'),
+    url: '/.page.server.js'
   },
   {
     level: 2,
@@ -250,7 +250,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: parse('`*.page.client.js`'),
+    title: parse('`.page.client.js`'),
     url: '/.page.client.js'
   },
   {
@@ -277,7 +277,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: parse('`*.page.route.js`'),
+    title: parse('`.page.route.js`'),
     url: '/.page.route.js'
   },
   {
