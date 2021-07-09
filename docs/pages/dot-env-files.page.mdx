@@ -4,8 +4,8 @@ Vite automatically makes environment variables defined in `.env` files available
 
 Note that:
  - It only works for environment variables that are prefixed with `VITE_` (for security reasons).
- - It only works for files processed by Vite (all `.page.js`/`.page.server.js`/`.page.client.js`/`.page.route.js` files and all their imports).
-   For files not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server"/>) we can load our `.env` file ourself:
+ - It only works for files processed by Vite (all `.page.js` / `.page.server.js` / `.page.client.js` / `.page.route.js` files and all their imports).
+   For files not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>) we use some Node.js tool such as [`dotenv`](https://github.com/motdotla/dotenv) (all browser files are always processed by Vite):
    ```js
    // server.js
    if (!isProduction) {

@@ -1,0 +1,48 @@
+import { RepoLink } from '../components/RepoLink'
+
+Instead of using relative import paths
+which are often cumbersome (e.g. `import { Counter } from '../../../../components/Counter'`),
+we can use path aliases:
+
+```js
+// `~/components/` denotes the `components/` directory living in our project root directory
+import { Counter } from `~/components/Counter`
+
+// ...
+```
+
+Path aliases are defined at [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias):
+
+```js
+// vite.config.js
+
+export default {
+  resolve: {
+    alias: {
+     // We can now `import '~/path/to/module'` where `~` references the project root
+     "~": __dirname,
+    }
+  },
+  // ...
+}
+```
+
+For TypeScript:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./*"]
+    }
+    // ...
+  }
+}
+```
+
+Vite's `vite.config.js#resolve.alias` only works for Vite processed files (all `.page.js` / `.page.server.js` / `.page.client.js` / `.page.route.js` files and all their imports).
+For files that are not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>) we can use a Node.js aliasing tools such as [`module-alias`](https://github.com/ilearnio/module-alias) (all browser files are always processed by Vite).
+
+Example:
+ - <RepoLink path='/examples/import-paths-alias-mapping/' />

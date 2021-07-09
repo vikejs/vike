@@ -1,0 +1,85 @@
+The `render()` hook doesn't have to return HTML. For example,
+we can return an object `{ redirectTo: '/some/url' }` instead of an HTML string.
+Our object is then available at our server integration point and
+we can perform a URL redirect there.
+
+```js
+// movie.page.route.js
+export default "/star-wars/:movieId"
+```
+```js
+// movie.page.server.js
+// Environment: Node.js
+
+export { addPageContext }
+
+function addPageContext(pageContext) {
+  // If the user goes to `/movie/42` but there is no movie with ID `42` then
+  // we redirect the user to `/movie/add` so he can add a new movie.
+  if (pageContext.routeParams.movieId === null) {
+    return { redirectTo: '/movie/add' }
+  }
+}
+```
+```js
+// _default.page.server.js
+// Environment: Node.js
+
+export { render }
+
+function render(pageContext) {
+  const { redirectTo } = pageContext
+  if (redirectTo) return { redirectTo }
+
+  // The usual stuff
+  // ...
+}
+```
+```js
+// server.js
+// Environment: Node.js
+
+const renderPage = createPageRender(/*...*/)
+
+app.get('*', async (req, res, next) => {
+  const url = req.originalUrl
+  const pageContext = { url }
+  const result = await renderPage(pageContext)
+  if (result.nothingRendered) {
+    return next()
+  } else if (result.renderResult.redirectTo) {
+    res.redirect(307, '/movie/add')
+  } else {
+    res.status(result.statusCode).send(result.renderResult)
+  }
+})
+```
+
+If we use Client-side Routing, then we also redirect at the client-side.
+
+```js
+// movie.page.server.js
+// Environment: Node.js
+
+// We make `pageContext.redirectTo` available to the browser for client-side redirection
+export const passToClient = ['redirectTo']
+```
+```js
+// _default.page.client.js
+// Environment: Browser
+
+import { useClientRouter, navigate } from 'vite-plugin-ssr/client/router'
+
+useClientRouter({
+  render(pageContext) {
+    const { redirectTo } = pageContext
+    if (redirectTo) {
+      navigate(redirectTo)
+      return
+    }
+
+    // The usual stuff
+    // ...
+  }
+})
+```

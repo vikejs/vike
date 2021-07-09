@@ -1,0 +1,49 @@
+With `vite-plugin-ssr` we can create:
+ - SSR pages
+ - SPA pages (aka MPA)
+ - HTML pages (zero/minimal browser-side JavaScript)
+
+For example, we can render an admin panel as SPA while rendering marketing pages to HTML-only.
+
+The rule of thumb is to render a page to:
+ - HTML (zero/minimal browser-side JavaScript), if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, non-interactive marketing pages.
+ - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Google). Example: admin panel, desktop-like web app.
+ - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
+
+To render a page as SPA, we simply render HTML that is static:
+
+```js
+// .page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+
+export function render() {
+  // `div#app-root` is empty; the HTML is static.
+  return html`<html>
+    <head>
+      <title>My Website</title>
+    </head>
+    <body>
+      <div id="app-root"/>
+    </body>
+  </html>`
+}
+```
+
+To render a page to HTML-only, we simply define an empty `.page.client.js`:
+
+```js
+// .page.client.js
+// Environment: Browser
+
+// We leave this empty; there is no browser-side JavaScript.
+
+// We can still include CSS
+import './path/to/some.css'
+```
+
+<br/><br/>
+
+
+

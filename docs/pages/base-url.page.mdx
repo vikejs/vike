@@ -1,0 +1,62 @@
+import { RepoLink } from '../components/RepoLink'
+
+> ** What is the Base URL? ** Changing the Base URL (aka Public Path Base) is about changing the URL root of your Vite app.
+> For example, instead of deploying your Vite app at `https://example.org` (i.e. `base: '/'`), you can set `base: '/some/nested/path/'` and deploy your Vite app at `https://example.org/some/nested/path/`.
+
+To change Base URL for production:
+1. Use Vite's [`--base` CLI build option](https://vitejs.dev/guide/build.html#public-base-path):
+   ```shell
+   $ vite build --base=/some/nested/path/ && vite build --ssr --base=/some/nested/path/`
+   ```
+   For both `$ vite build` *and* `$ vite build --ssr`.
+2. If you use a server in production, then pass `base` to `createPageRender()`:
+   ```js
+   // server.js
+   const express = require("express")
+   const { createPageRender } = require("vite-plugin-ssr")
+   const vite = require("vite")
+
+   startServer()
+
+   async function startServer() {
+     const app = express()
+
+     const base = isProduction ? '/some/nested/path/' : '/'
+     const renderPage = createPageRender({ base, /* ... */ })
+
+     /* ... */
+   }
+   ```
+   If you pre-render you app you can skip this. (Pre-rendering automatically sets the right Base URL.)
+3. Use the `import.meta.env.BASE_URL` value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link href="/some-path">` component that prepends the Base URL.
+
+To change Base URL for local dev:
+ - Pass `base` to `createServer()` and `createPageRender()`:
+   ```js
+   // server.js
+   const express = require("express")
+   const { createPageRender } = require("vite-plugin-ssr")
+   const vite = require("vite")
+
+   startServer()
+
+   async function startServer() {
+     const app = express()
+
+     const base = '/some/nested/path/'
+
+     const viteDevServer = await vite.createServer({ base, /* ... */ })
+     app.use(viteDevServer.middlewares)
+
+     const renderPage = createPageRender({ base, /* ... */ })
+
+     /* ... */
+   }
+   ```
+
+You can also set `base` to `'https://another-origin.example.org/'` (for cross-origin deployments) or to `'./'` (for embedded deployments at multiple paths).
+
+Example:
+ - <RepoLink path='/examples/base-url/pages/_components/Link.jsx' /> (see the <code>&lt;Link&gt;</code> component built on top of <code>import.meta.env.BASE_URL</code>)
+ - <RepoLink path='/examples/base-url/server/index.js' /> (see the <code>base</code> option passed to <code>vite</code> and <code>vite-plugin-ssr</code>)
+ - <RepoLink path='/examples/base-url/package.json' /> (see the build scripts)

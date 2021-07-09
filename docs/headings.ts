@@ -102,7 +102,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('HTML `head`'),
-    url: '/html-head'
+    url: '/HTML-head'
   },
   {
     level: 2,
@@ -111,18 +111,18 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Base URL',
-    url: '/base-url'
-  },
-  {
-    level: 2,
-    title: 'Import Paths Alias Mapping',
-    url: '/paths-mapping'
+    title: 'Paths Aliases',
+    url: '/path-aliases'
   },
   {
     level: 2,
     title: parse('`.env` Files'),
     url: '/.env-files'
+  },
+  {
+    level: 2,
+    title: 'Base URL',
+    url: '/base-url'
   },
   {
     level: 1,
@@ -236,7 +236,7 @@ export const headings: Heading[] = [
     level: 2,
     title: parse('`prerender()` hook'),
     titleInNav: parse(getListPrefix()+'`export { prerender }`'),
-    url: '/prerender-hook'
+    url: '/prerender'
   },
   {
     level: 2,
