@@ -101,10 +101,10 @@
 }
 .selected {
   border-color: var(--border-color);
+  background-color: #fcfcfc;
 }
 .feature.selected {
   border-bottom: 0 !important;
-  background-color: white;
   z-index: 1;
 }
 
