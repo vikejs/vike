@@ -1,0 +1,66 @@
+We tell `vite-plugin-ssr` what `pageContext` to send to the browser by using `passToClient`.
+
+The `pageContext` is serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
+
+It is usally used together with the `addPageContext()` hook to fetch data:
+data is fetched in `async addPageContext()` and then made available to the browser with `passToClient`. See [Data Fetching](/data-fetching) guide.
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+import fetch from "node-fetch";
+
+export { passToClient }
+
+// Example of `pageContext` often passed to the browser
+const passToClient = [
+  'pageProps',
+  'routeParams',
+  // (Deep selection is not implemented yet; open a GitHub ticket if you want this.)
+  'user.id',
+  'user.name'
+]
+```
+
+```js
+// *.page.client.js
+// Environment: Browser
+
+import { getPage } from 'vite-plugin-ssr/client'
+
+hydrate()
+
+async function hydrate() {
+  const pageContext = await getPage()
+
+  // Thanks to `passToClient`, these `pageContext` are available here in the browser
+  pageContext.pageProps
+  pageContext.routeParams
+  pageContext.user.id
+  pageContext.user.name
+
+  /* ... */
+}
+```
+
+Or when using Client-side Routing:
+
+```js
+// *.page.client.js
+// Environment: Browser
+
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+useClientRouter({
+  render(pageContext) {
+    // Thanks to `passToClient`, these `pageContext` are available here in the browser
+    pageContext.pageProps
+    pageContext.routeParams
+    pageContext.user.id
+    pageContext.user.name
+
+    /* ... */
+  }
+})
+```

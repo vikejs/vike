@@ -1,0 +1,74 @@
+import { RepoLink } from './components/RepoLink'
+
+Environment: `Browser`
+
+By default, `vite-plugin-ssr` does Server-side Routing.
+We can do Client-side Routing instead by using `useClientRouter()` in our `_default.page.client.js` (or in a page's `.page.client.js` file).
+
+```js
+// _default.page.client.js
+// Environment: Browser
+
+import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+const { hydrationPromise } = useClientRouter({
+  async render(pageContext) {
+    const page = createElement(pageContext.Page, pageContext.pageProps)
+    const container = document.getElementById('page-view')
+
+    // Render the page
+    if (pageContext.isHydration) {
+      // This is the first page rendering; the page has been rendered to HTML
+      // and we now make it interactive.
+      await hydrateToDom(page)
+    } else {
+      // Render a new page
+      await renderToDom(page)
+    }
+
+    // We use `pageContext.documentProps.title` to update `<title>`.
+    document.title =
+      pageContext.documentProps?.title ||
+      // A default title
+      'Demo'
+  },
+  onTransitionStart,
+  onTransitionEnd
+})
+
+hydrationPromise.then(() => {
+  console.log('Hydration finished; page is now interactive.')
+})
+
+function onTransitionStart() {
+  console.log('Page transition start')
+  // For example:
+  document.body.classList.add('page-transition')
+}
+function onTransitionEnd() {
+  console.log('Page transition end')
+  // For example:
+  document.body.classList.remove('page-transition')
+}
+```
+
+We can keep our `<a href="/some-url">` links as they are: link clicks are intercepted.
+We can also use
+[`navigate()`](/navigate)
+to programmatically navigate our user to a new page.
+
+By default, the Client-side Router scrolls the page to the top upon page transitions;
+we can use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })`
+if we want to preserve the scroll position instead. (Useful for [Nested Routes](/routing#nested-routes).)
+
+`useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
+
+Vue example:
+ - <RepoLink path='/examples/vue-full/pages/_default/_default.page.client.ts' />
+ - <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
+ - <RepoLink path='/examples/vue-full/pages/index.page.vue' /> (example of using <code>navigate()</code>)
+
+React example:
+ - <RepoLink path='/examples/react-full/pages/_default/_default.page.client.tsx' />
+ - <RepoLink path='/examples/react-full/pages/index.page.tsx' /> (example of using <code>navigate()</code>)

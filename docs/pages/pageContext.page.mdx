@@ -1,6 +1,8 @@
+> TypeScript users can `import type { PageContextBuiltIn, PageContextBuiltInClient } from 'vite-plugin-ssr/types'`.
+
 Built-in:
- - **`pageContext.Page`**: the `export { Page }` or `default export` of the page's `.page.js` file being rendered.
- - **`pageContext.pageExports`**: all exports of the page's `.page.js` file being rendered.
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
+ - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
  - **`pageContext.url`**: The `url` you passed at your server integration point.
@@ -15,7 +17,7 @@ Built-in:
       /* ... */
     })
     ```
- - **`pageContext.urlNormalized`**: same than `pageContext.url` but with removed URL Origin and Base URL. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`.)
+ - **`pageContext.urlNormalized`**: same than `pageContext.url` but without URL Origin and Base URL. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`.)
  - **`pageContext.urlPathname`**: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
  - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
@@ -37,7 +39,7 @@ Custom:
     ```
 
 By default only `pageContext.Page` and `pageContext.pageExports` are available in the browser;
-use [`export const passToClient: string[]`](#export--passtoclient-) to make more `pageContext` available in the browser.
+use [`export const passToClient: string[]`](/passToClient) to make more `pageContext` available in the browser.
 
 The `pageContext` can be accessed at:
  - *[Node.js]* `export function addPageContext(pageContext)` (`*.page.server.js`)
@@ -45,8 +47,3 @@ The `pageContext` can be accessed at:
  - *[Node.js (& Browser)]* `export default function routeFunction(pageContext)` (`*.page.route.js`)
  - *[Browser]* `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
  - *[Browser]* `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
-
-<br/><br/>
-
-
-

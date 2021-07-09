@@ -1,0 +1,75 @@
+import { RepoLink } from './components/RepoLink'
+
+> Check out the [Pre-rendering Guide](/pre-rendering) to get an overview about how to pre-render your app with `vite-plugin-ssr`.
+
+The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
+by defining the `prerender()` hook we provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `pageContext` for each URL.
+
+If we don't have any parameterized route,
+then we can prerender our app without defining any `prerender()` hook.
+We can, however, still use the `prerender()` hook
+to increase the effeciency of pre-rendering as
+it enables us to fetch data for multiple pages at once.
+
+```js
+// /pages/movie.page.route.js
+// Environment: Node.js
+
+export default '/movie/:movieId`
+```
+```js
+// /pages/movie.page.server.js
+// Environment: Node.js
+
+export { prerender }
+
+async function prerender() {
+  const movies = await Movie.findAll()
+
+  const moviePages = (
+    movies
+    .map(movie => {
+      const url = `/movie/${movie.id}`
+      const pageContext = { movie }
+      return {
+        url,
+        // Beacuse we already provide the `pageContext`, vite-plugin-ssr will *not* call
+        // the `addPageContext()` hook for `url`.
+        pageContext
+      }
+      /* We could also only return `url` and not provide `pageContext`. In that case
+         vite-plugin-ssr would call the `addPageContext()` hook. But that would be wasteful
+         since we already have all the data of all movies from our `await Movie.findAll()` call.
+         return { url } */
+    })
+  )
+
+  // We can also return URLs that don't match the page's route.
+  // That way we can provide the `pageContext` of other pages.
+  // Here we provide the `pageContext` of the `/movies` page since
+  // we already have the data.
+  const movieListPage = {
+    url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/:movieId`
+    pageContext: {
+      movieList: movies.map(({id, title}) => ({id, title})
+    }
+  }
+
+  return [movieListPage, ...moviePages]
+}
+```
+
+The `prerender()` hook is only used for pre-rendering:
+if you don't call
+`vite-plugin-ssr prerender`
+then no `prerender()` hook is ever called.
+
+Vue Example:
+ - <RepoLink path='/examples/vue-full/package.json' /> (see the <code>build:prerender</code> script)
+ - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see the <code>prerender()</code> hook)
+ - <RepoLink path='/examples/vue-full/pages/hello/index.page.server.ts' /> (see the <code>prerender()</code> hook)
+
+React Example:
+ - <RepoLink path='/examples/react-full/package.json' /> (see the <code>build:prerender</code> script)
+ - <RepoLink path='/examples/react-full/pages/star-wars/index.page.server.ts' /> (see the <code>prerender()</code> hook)
+ - <RepoLink path='/examples/react-full/pages/hello/index.page.server.ts' /> (see the <code>prerender()</code> hook)

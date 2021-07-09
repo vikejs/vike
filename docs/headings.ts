@@ -256,13 +256,13 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: parse("import { getPage } from 'vite-plugin-ssr/client'"),
+    title: parse("`import { getPage } from 'vite-plugin-ssr/client'`"),
     titleInNav: parse('`getPage()`'),
     url: '/getPage'
   },
   {
     level: 2,
-    title: parse("import { useClientRouter } from 'vite-plugin-ssr/client/router'"),
+    title: parse("`import { useClientRouter } from 'vite-plugin-ssr/client/router'`"),
     titleInNav: parse('`useClientRouter()`'),
     url: '/useClientRouter'
   },

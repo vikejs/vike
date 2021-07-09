@@ -19,7 +19,7 @@ pre {
   display: grid;
 }
 .hljs {
-  padding-right: 8px !important;
+  padding-right: 0px !important;
 }
 
 code {

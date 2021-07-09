@@ -1,0 +1,60 @@
+The `render()` hook defines how a page is rendered to HTML.
+
+It usually returns an HTML string,
+but it can also return something else than HTML which we talk more about down below.
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+import { renderToHtml, createElement } from 'some-view-framework'
+
+export { render }
+
+async function render(pageContext){
+  const { Page, pageProps } = pageContext
+  const pageHtml = await renderToHtml(createElement(Page, pageProps))
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>My SSR App</title>
+      </head>
+      <body>
+        <div id="page-root">${html.dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+`Page` is the `export { Page }` (or `export default`) of the page's `.page.js` file.
+
+The value returned by the `render()` hook doesn't have to be HTML:
+`vite-plugin-ssr` doesn't do anything with it and just passes it untouched to the server middleware:
+
+```js
+// *.page.server.js
+
+export { render }
+
+function render(pageContext) {
+  let renderResult
+  // We can set `renderResult` to any value we want
+  /* ... */
+  return renderResult
+}
+```
+```js
+// server.js
+
+const renderPage = createPageRender(/*...*/)
+
+app.get('*', async (req, res, next) => {
+  const result = await renderPage({ url: req.originalUrl })
+  // `result.renderResult` is the value returned by the `render()` hook.
+  const { renderResult } = result
+  /* ... */
+})
+```
+
+Your `render()` hook can for example return an object like `{ redirectTo: '/some/url' }` in order to do [Page Redirection](/page-redirection).
