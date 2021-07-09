@@ -1,5 +1,5 @@
 import { createPageRender } from "vite-plugin-ssr";
-// We need to include `importer.js` so that the worker code can be bundled into one file
+// We include `importer.js` so that the worker code can be bundled into one file
 import "../dist/server/importer.js";
 
 export { handleSsr };

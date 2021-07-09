@@ -1,0 +1,38 @@
+1. Install:
+   ```shell
+   npm install vite-plugin-windicss windicss
+   ```
+   Or:
+   ```
+   yarn add vite-plugin-windicss windicss
+   ```
+
+2. Add `vite-plugin-windicss` to `vite.config.js`:
+   ```js
+   import ssr from "vite-plugin-ssr/plugin"
+   import WindiCSS from "vite-plugin-windicss"
+
+   export default {
+     plugins: [
+       ssr(),
+       WindiCSS({
+         scan: {
+           // By default only `src/` is scanned
+           dirs: ["pages"],
+           // We only have to specify the file extensions we actually use.
+           fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"]
+         }
+       })
+     ]
+   }
+   ```
+   > Alternatively, we can define these options in `windi.config.js`.
+
+3. Add WindiCSS to `_default.page.client.js`.
+   ```js
+   import 'virtual:windi.css'
+   ```
+
+That's it.
+
+> More at [WindiCSS Vite Guide](https://windicss.org/integrations/vite.html).

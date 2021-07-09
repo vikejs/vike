@@ -1,0 +1,6 @@
+import { RepoLink } from '../components/RepoLink'
+
+We import `dist/server/importer.js` in our worker code. (The `dist/server/importer.js` file loads all dependencies in a way that all dependencies can be determined statically at build-time, which Cloudflare Workers needs in order to be able to bundle the entire server code into a single worker file.)
+
+Example:
+ - <RepoLink path='/examples/cloudflare-workers/' />

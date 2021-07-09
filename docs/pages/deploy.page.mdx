@@ -1,0 +1,10 @@
+import { JustANodeApp1, JustANodeApp2 } from './components/JustANodeApp'
+import { RepoLink } from '../components/RepoLink'
+
+<JustANodeApp1 />
+<JustANodeApp2 />
+
+This means we can deploy `vite-plugin-ssr` apps anywhere we want.
+
+Some platforms, such as Cloudflare Workers or Vercel, bundle all server code into a single file, which means that all dependencies need to be statically determined at build-time. To that end, we can import `dist/server/importer.js` which loads all dependencies in a statically analysable way. Example:
+ - <RepoLink path='/examples/cloudflare-workers/worker/ssr.js' /> (note how <code>dist/server/importer.js</code> is imported)

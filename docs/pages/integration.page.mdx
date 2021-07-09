@@ -1,0 +1,89 @@
+In general,
+thanks to the fact that with `vite-plugin-ssr` we have full control over how our pages are rendered,
+we can use `vite-plugin-ssr` with whatever tool we want.
+
+In fact, `vite-plugin-ssr` is already being used with a high variety of tools within all kinds and diverse environments.
+So far, no tool couldn't be used.
+
+We have full control:
+
+```js
+// _default.page.server.js
+// Environment: Node.js
+
+import renderToHtml from 'some-view-framework'
+import { html } from 'vite-plugin-ssr'
+
+export { render }
+
+async function render(pageContext) {
+  // We have full control over how pages are rendered.
+  // E.g. we can use any view framework version we want (Vue 2, Vue 3, React 16, React 17, ...).
+  const pageHtml = await renderToHtml(pageContext.Page)
+
+  // We have full control over the HTML
+  return html`<html>
+    <body>
+      <div id="root">
+        ${html.dangerouslySkipEscape(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+
+```js
+// server.js
+// Environment: Node.js
+
+// The server entry point
+
+// We use Express.js here but we could as well use Fastify, Koa, Hapi, Cloudflare Workers, ...
+const express = require('express')
+
+const { createPageRender } = require('vite-plugin-ssr')
+
+startServer()
+
+async function startServer() {
+  const app = express()
+
+  const renderPage = createPageRender(/*...*/)
+
+  app.get('*', async (req, res, next) => {
+    const url = req.originalUrl
+    // `renderPage()` is just a function that, for a given URL, returns the result of our
+    // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
+    // we can use it with whatever server environment we want (Fastify, Cloudflare Workers, ...).
+    const result = await renderPage({ url })
+    res.send(result.renderResult)
+  })
+}
+```
+
+```js
+// _default.page.client.js
+// Environment: Browser
+
+// This is the *entire* browser-side code; we have full control over the browser-side.
+// If we save an empty `.page.client.js` then we have zero browser-side JavaScript.
+
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom } from 'some-view-framework'
+
+// We can initialize Service Workers here.
+navigator.serviceWorker.register(/* ... */)
+
+// We can initialize browser libraries here.
+$('.my-modals').modal()
+
+hydrate()
+
+async function hydrate() {
+  // `Page` is what we export in `*.page.js`; we have full control over what
+  // we define in `*.page.js` and we can do whatever we want with it.
+  const { Page } = await getPage()
+  // We have full control over how pages are hydrated.
+  await hydrateToDom(Page)
+}
+```

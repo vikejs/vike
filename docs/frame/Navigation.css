@@ -13,12 +13,6 @@
   display: block;
   text-decoration: none;
 }
-.nav-item-addendum {
-  font-size: 10px;
-  color: #aaa;
-  margin-top: -2px;
-  margin-bottom: -7px;
-}
 .nav-item-h1:first-of-type {
   margin-top: 20px;
 }
@@ -39,15 +33,28 @@
   font-size: 0.9em;
 }
 .nav-item-h2 {
+  text-decoration: none;
   font-size: 14.4px;
   font-weight: 400;
   letter-spacing: 0.15ch;
   color: #323d48;
-  padding: 6px 0;
   padding-left: 20px;
-  padding-right: 4px;
-  display: block;
-  text-decoration: none;
+  padding-right: 0;
+  height: 34px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.nav-item-h2 > .nav-item-title {
+  margin-top: -2px;
+}
+.nav-item-h2 > .nav-item-addendum {
+  font-size: 10px;
+  color: #aaa;
+  /*
+  margin-top: -2px;
+  margin-bottom: -7px;
+  */
 }
 .nav-item-h3 {
   font-size: 12px;

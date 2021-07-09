@@ -1,0 +1,20 @@
+import { RepoLink } from '../components/RepoLink'
+
+We can [pre-render](/pre-rendering) our pages to remove the need for a Node.js server.
+
+We can then deploy `dist/client/` to any static host, for example:
+
+- [Cloudflare Pages](https://pages.cloudflare.com/)
+  - If we want Cloudflare Pages to build our app for us, `vite-plugin-ssr` requires Node.js `>=12.19.0` and we may need to <a href="https://developers.cloudflare.com/pages/platform/build-configuration#language-support-and-tools">change the default Node.js version</a>.
+- [GitHub Pages](https://pages.github.com/)
+  - We recommend to use the [GitHub Pages Deploy Action](https://github.com/JamesIves/github-pages-deploy-action).
+  - Make sure to add an empty file `.nojekyll`, otherwise [GitHub Pages ingores files starting with `_`](https://stackoverflow.com/questions/6397780/names-starting-with-underscore-shows-errors-page-doesnot-exists-for-gh-pages-bra) (which breaks the loading of `_default.page.client.js`).
+  - Example of this website using a GitHub Action deploying to GitHub Pages: <RepoLink path='.github/workflows/docs-website.yml' />.
+- [Netlify](https://www.netlify.com/)
+
+We can choose between three deploy strategies:
+ - We build locally and upload `dist/client/` to the static host.
+ - We let a [GitHub action](https://github.com/features/actions) build and and upload `dist/client/` to the static host.
+ - We let the static host run the build for us.
+
+We can [change our app's Base URL](/base-url) in case we don't deploy our app at the URL root `/`.

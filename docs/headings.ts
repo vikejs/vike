@@ -157,9 +157,10 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Other',
+    title: 'Other Integration',
+    titleInNav: 'Other',
     titleAddendum: 'CSS Frameworks, Service Workers, ...',
-    url: '/tools'
+    url: '/integration'
   },
   {
     level: 1,

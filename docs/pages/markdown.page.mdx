@@ -1,0 +1,69 @@
+import { RepoLink } from '../components/RepoLink'
+
+We can use `vite-plugin-ssr` with any Vite markdown plugin.
+
+For example, for Vue, we can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
+Example:
+ - <RepoLink path='/examples/vue-full/vite.config.ts' />
+ - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
+
+For React, we can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
+Example:
+ - <RepoLink path='/examples/react-full/vite.config.ts' />
+ - <RepoLink path='/examples/react-full/pages/markdown.page.md' />
+
+## `<head>`
+
+To set the `<head>` tags value of a markdown page, we can simply export the values:
+
+~~~js
+// markdown.page.mdx
+
+export const documentProps = {
+  title: 'A Markdown Page',
+  description: 'Example of setting `<title>` and `<meta name="description">`'
+}
+
+# Markdown
+
+This page is written in _Markdown_.
+~~~
+
+```js
+// _default.page.server.js
+
+import { html } from 'vite-plugin-ssr'
+
+export async function render(pageContext) {
+  // `pageContext.pageExports` holds the exports of the page's `.page.js` file
+  const { title, description } = pageContext.pageExports.documentProps
+  return html`<html>
+    <head>
+      <title>${title}</title>
+      <meta name="description" content="${description}">
+    </head>
+    <!-- ... -->
+  </html>`
+}
+```
+
+Examples:
+ - <RepoLink path='/examples/react-full/pages/markdown.page.md' />
+ - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
+
+
+We can also use a so-called *front matter* to define the page's metadata.
+
+```markdown
+---
+title: A Markdown Page
+description: Example of setting `<title>` and `<meta name="description">`
+---
+
+# Markdown
+
+This page is written in _Markdown_.
+```
+
+The front matter data is usually exported,
+which we can access at [`pageContext.pageExports`](/pageContext).

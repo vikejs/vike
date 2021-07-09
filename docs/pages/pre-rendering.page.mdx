@@ -14,10 +14,18 @@ To pre-render our pages, we use the [CLI command `prerender`](/command-prerender
  - npm: `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`.
  - Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.
 
+After running `$ vite-plugin-ssr prerender`, all static assets are available at `dist/client/`
+
 For pages with a parameterized route (e.g. `/movie/:movieId`), we have to use the [`prerender()` hook](/prerender) and provide a list of URLs that are to be pre-rendered.
 
 We can also use the `prerender()` hook to accelerate the pre-rendering process as it allows us to prefetch data for multiple pages at once.
 
-Examples:
- - <RepoLink path='/examples/vue-full/' />
- - <RepoLink path='/examples/react-full/' />
+React Example:
+ - <RepoLink path='/examples/react-full/package.json' /> (see npm scripts using the CLI command <code>$ vite-plugin-ssr prerender</code> and static serving <code>dist/client/</code>)
+ - <RepoLink path='/examples/react-full/pages/hello/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)
+ - <RepoLink path='/examples/react-full/pages/star-wars/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)
+
+Vue Example:
+ - <RepoLink path='/examples/vue-full/package.json' /> (see npm scripts using the CLI command <code>$ vite-plugin-ssr prerender</code> and static serving <code>dist/client/</code>)
+ - <RepoLink path='/examples/vue-full/pages/hello/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)
+ - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)

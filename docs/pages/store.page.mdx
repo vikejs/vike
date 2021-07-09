@@ -1,0 +1,14 @@
+import { RepoLink } from '../components/RepoLink'
+
+With `vite-plugin-ssr`, we have full control over rendering, which means that integrating tools is simply a matter of following the official SSR guide of the tool we want to use.
+
+- [Vuex - SSR Guide](https://ssr.vuejs.org/guide/data.html#data-store)
+- [PullState - SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)
+- [Redux - SSR Recipe](https://redux.js.org/recipes/server-rendering)
+
+While we can follow the official guides *exactly* as-is and serialize the initial state into HTML,
+we can also leverage `addPageContext()` with `passToClient` to make our life slightly easier
+as shown in the following examples.
+
+ - <RepoLink path='/examples/vuex/' />
+ - <RepoLink path='/examples/redux/' />

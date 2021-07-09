@@ -1,13 +1,13 @@
 We can add information about the authenticated user to `pageContext` at the server integration point [`createPageRender()`](/createPageRender).
 
 ```js
-const renderPage = createPageRender(/*...*/)
+const renderPage = createPageRender(/* ... */)
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
 
-  // Authentication middlewares (e.g. Passport.js or Grant) provide informations
-  // about the logged-in user on the `req` object, e.g. `req.user`:
+  // Authentication middlewares (e.g. Passport.js or Grant) provide information
+  // about the logged-in user on the `req` object.
   const user = req.user
 
   /* Or when using a third-party authentication provider (e.g. Auth0):
@@ -17,9 +17,7 @@ app.get('*', async (req, res, next) => {
   // We add the user auth information to `pageContext`
   const pageContext = { user, url }
   const result = await renderPage(pageContext)
-
-  if (result.nothingRendered) return next()
-  res.status(result.statusCode).send(result.renderResult)
+  /* ... */
 })
 ```
 
