@@ -238,7 +238,7 @@ function resolveRouteString(pageRouteFileExports: { default: string }, urlPathna
   assert(typeof pageRouteFile === 'string')
   assertUsage(
     routeString.startsWith('/'),
-    `Route Strings should start with a leading \`/\` but \`${pageRouteFile}\` does \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
+    `A Route String should start with a leading \`/\` but \`${pageRouteFile}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
   )
   return routeWith_pathToRegexp(urlPathname, routeString)
 }
