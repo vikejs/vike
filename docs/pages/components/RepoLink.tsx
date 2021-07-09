@@ -1,5 +1,5 @@
 import React from 'react'
-import { assert } from '../utils'
+import { assert } from '../../utils'
 
 export { RepoLink }
 
