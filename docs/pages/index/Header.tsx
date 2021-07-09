@@ -3,7 +3,7 @@ import './Header.css'
 import iconPlugin from '../../frame/icons/vite-plugin-ssr.svg'
 import iconReact from '../../frame/icons/react.svg'
 import iconVue from '../../frame/icons/vue.svg'
-import 'balloon-css'
+import { CallToActionDescription, ScaffoldCallToAction } from './ScaffoldCallToAction'
 
 export { Header }
 export { MobileCallToAction }
@@ -43,6 +43,9 @@ function LeftSide() {
 function RightSide() {
   return (
     <div id="header-right-side" style={{ marginLeft: 40 }}>
+      <CallToActionDescription style={{ marginTop: 0 }}>
+        Scaffold a new Vite/<code>vite-plugin-ssr</code> app
+      </CallToActionDescription>
       <ScaffoldCallToAction />
       <div style={{ width: 1, height: 1, margin: 12 }} />
       <TourCallToAction />
@@ -69,49 +72,6 @@ function TourCallToAction({ style }: { style?: React.CSSProperties }) {
         <CallToAction href="/react-tour" text="React Tour" icon={iconReact} />
       </div>
     </div>
-  )
-}
-
-function CallToActionDescription({
-  children,
-  style
-}: {
-  style?: React.CSSProperties
-  children: (string | JSX.Element)[]
-}) {
-  return <p style={{ marginBottom: 5, color: 'inherit', opacity: 0.7, fontSize: '0.92em', ...style }}>{children}</p>
-}
-
-function ScaffoldCallToAction() {
-  return (
-    <>
-      <CallToActionDescription style={{ marginTop: 0 }}>
-        Scaffold a Vite + <code>vite-plugin-ssr</code> app
-      </CallToActionDescription>
-      <code
-        id="npm-init-code-snippet"
-        aria-label="Click to copy"
-        data-balloon-pos="left"
-        style={{
-          fontSize: '1.55em',
-          padding: '10px 20px',
-          whiteSpace: 'nowrap',
-          borderRadius: 5,
-          display: 'block',
-          color: 'black',
-          cursor: 'pointer'
-        }}
-      >
-        {/*
-          <div style={{ color: '#888' }}>
-            <span style={{ color: '#bbb' }}>#</span> Scaffold a Vite SSR app
-          </div>
-          */}
-        <div>
-          <span style={{ color: '#bbb' }}>$</span> npm init vite-plugin-ssr
-        </div>
-      </code>
-    </>
   )
 }
 

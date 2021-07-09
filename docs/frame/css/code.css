@@ -21,3 +21,10 @@ pre {
 .hljs {
   padding-right: 8px !important;
 }
+
+code {
+  font-size: 1.1em;
+}
+pre > code {
+  font-size: 1em;
+}

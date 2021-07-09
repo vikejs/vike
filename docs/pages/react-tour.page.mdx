@@ -1,0 +1,197 @@
+import { ScaffoldCallToActionTour } from './index/ScaffoldCallToAction'
+
+Similarly to Next.js,
+we create pages by defining new `.page.jsx` files.
+
+```jsx
+// /pages/index.page.jsx
+// Environment: Browser, Node.js
+
+import React, { useState } from "react";
+
+export { Page };
+
+function Page() {
+  return <>
+    This page is rendered to HTML and interactive: <Counter />
+  </>;
+}
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <button onClick={() => setCount((count) => count + 1)}>
+      Counter {count}
+    </button>
+  );
+}
+```
+
+By default, `vite-plugin-ssr` does Filesystem Routing.
+```
+FILESYSTEM                  URL
+pages/index.page.jsx        /
+pages/about.page.jsx        /about
+```
+
+We can also define a page's route with a *Route String* (for parameterized routes such as `/movies/:id`) or a *Route Function* (for full programmatic flexibility).
+
+```js
+// /pages/index.page.route.js
+// Environment: Node.js (and Browser if we opt-in for Client-side Routing)
+
+// Note how the two files share the same base `/pages/index.page.`; this is how `vite-plugin-ssr`
+// knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.jsx`.
+
+// Route Function
+export default pageContext => pageContext.url === '/';
+
+// If we don't create a `.page.route.js` file then vite-plugin-ssr does Filesystem Routing
+```
+
+Unlike Next.js, we define how our pages are rendered.
+
+```jsx
+// /pages/_default.page.server.jsx
+// Environment: Node.js
+
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import { html } from "vite-plugin-ssr";
+
+export { render };
+
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext;
+  const viewHtml = ReactDOMServer.renderToString(
+    <Page {...pageProps} />
+  );
+
+  const title = "Vite SSR";
+
+  return html`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${title}</title>
+      </head>
+      <body>
+        <div id="page-view">${html.dangerouslySkipEscape(viewHtml)}</div>
+      </body>
+    </html>`;
+}
+```
+```jsx
+// /pages/_default.page.client.jsx
+// Environment: Browser
+
+import ReactDOM from "react-dom";
+import React from "react";
+import { getPage } from "vite-plugin-ssr/client";
+
+hydrate();
+
+async function hydrate() {
+  const pageContext = await getPage(); // (Page context is preloaded in production)
+  const { Page, pageProps } = pageContext
+  ReactDOM.hydrate(
+    <Page {...pageProps} />,
+    document.getElementById("page-view")
+  );
+}
+```
+
+The `render()` hook in `/pages/_default.page.server.jsx` gives us full control over how our pages are rendered to HTML,
+and `/pages/_default.page.client.jsx` gives us full control over the browser-side code.
+This control enables us to *easily* and *naturally* use any tool we want (Redux, GraphQL, Service Worker, Preact, ...).
+
+There are four suffixes:
+ - `.page.js`: exports the page's root React component.
+ - `.page.client.js`: defines the page's browser-side code.
+ - `.page.server.js`: exports the page's hooks (always run in Node.js).
+ - `.page.route.js`: exports the page's Route String or Route Function.
+
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
+we can create `_default.page.client.js` and `_default.page.server.js` which apply as default for all pages.
+
+We already defined our `_default` files,
+which means that we can now create a new page just by defining a new `.page.jsx` file (the `.page.route.js` file is optional).
+
+The `_default` files can be overridden. For example, we can create a page with a different browser-side code than our other pages.
+
+```js
+// /pages/about.page.client.js
+
+// This file is empty which means that the `/about` page has zero browser-side JavaScript.
+```
+```jsx
+// /pages/about.page.jsx
+
+export { Page };
+
+function Page() {
+  return <>This page is only rendered to HTML.<>;
+}
+```
+
+By overriding the `render()` hook in `_default.page.server.js` we can
+even render a page with a different view framework, e.g. another React version (for progressive upgrade) or even Vue.
+
+Let's now have a look at how to fetch data.
+
+```jsx
+// /pages/star-wars/movie.page.jsx
+// Environment: Browser, Node.js
+
+import React from "react";
+
+export { Page };
+
+function Page(pageProps) {
+  const { movie } = pageProps;
+  return <>
+    <h1>{movie.title}</h1>
+    <p>Release Date: {movie.release_date}</p>
+    <p>Director: {movie.director}</p>
+  </>;
+}
+```
+```js
+// /pages/star-wars/movie.page.route.js
+// Environment: Node.js
+
+// Route String
+export default "/star-wars/:movieId";
+```
+```js
+// /pages/star-wars/movie.page.server.js
+// Environment: Node.js
+
+import fetch from "node-fetch";
+
+export async function addPageContext(pageContext) {
+  // The route parameter of `/star-wars/:movieId` is available at pageContext.routeParams.movieId
+  const { movieId } = pageContext.routeParams
+
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
+  const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
+  let movie = await response.json();
+
+  // The render/hydrate functions we defined earlier use `pageContext.pageProps`; this
+  // is where we define `pageProps`.
+  const pageProps = { movie };
+
+  // We make `pageProps` available as `pageContext.pageProps`
+  return { pageProps };
+}
+
+// By default `pageContext` is available only on the server. But our hydrate function
+// we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
+// `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
+// available in the browser.
+export const passToClient = ["pageProps"];
+```
+
+That's it, and we have actually already seen most of the interface;
+`vite-plugin-ssr` is not only flexible but also simple & easy to use.
+
+<ScaffoldCallToActionTour />

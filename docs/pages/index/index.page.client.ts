@@ -1,28 +1,13 @@
 import { assert } from '../../utils'
 import '../../frame/_default.page.client'
+import './ScaffoldCallToAction.client'
 import './importAssets'
 
 addTwitterWidgets()
-addScaffoldCodeClickHandler()
 addClickHandlerForFeatureExpansion()
 
 function addTwitterWidgets() {
   loadScript('https://platform.twitter.com/widgets.js')
-}
-
-function addScaffoldCodeClickHandler() {
-  document.getElementById('npm-init-code-snippet')!.onclick = async () => {
-    if (window.navigator.clipboard) {
-      await window.navigator.clipboard.writeText('npm init vite-plugin-ssr@latest')
-    }
-    const el = document.getElementById('npm-init-code-snippet')!
-    const attr = 'aria-label'
-    const orignalText = el.getAttribute(attr)!
-    el.setAttribute(attr, 'Copied')
-    setTimeout(() => {
-      el.setAttribute(attr, orignalText)
-    }, 1200)
-  }
 }
 
 function addClickHandlerForFeatureExpansion() {
