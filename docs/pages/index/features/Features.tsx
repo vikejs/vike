@@ -17,7 +17,7 @@ function Features() {
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
             Keep control over how your pages are rendered and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
-            <b>any tool</b> you want (Vuex/Redux, GraphQL, Service Workers, ...).
+            <b>any tool</b> you want (Vuex/Redux, PullState, RPC, GraphQL, Service Workers, ...).
           </p>
           <p>
             Integrating tools is <b>simple</b> and <b>natural</b>.
