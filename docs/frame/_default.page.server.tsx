@@ -28,10 +28,10 @@ type PageContext = {
   pageExports: PageExports
 }
 function render(pageContext: PageContext) {
-  const { headings, activeHeading, activeHeadingIdx } = supplementHeadings(headings_static, pageContext)
+  const { headings, activeHeading } = supplementHeadings(headings_static, pageContext)
   const { Page } = pageContext
   const page = (
-    <PageLayout headings={headings} activeHeadingIdx={activeHeadingIdx}>
+    <PageLayout headings={headings} activeHeading={activeHeading}>
       <Page />
     </PageLayout>
   )
@@ -46,7 +46,7 @@ function render(pageContext: PageContext) {
         <link rel="icon" href="${logo}" />
         <title>${activeHeading.titleDocument || jsxToTextContent(activeHeading.title)}</title>
         ${isLandingPage ? desc : ''}
-        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+        <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
       </head>
       <body>
         <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
@@ -57,9 +57,10 @@ function render(pageContext: PageContext) {
 function supplementHeadings(
   headings_static: Heading[],
   pageContext: { url: string; pageExports: PageExports }
-): { headings: Heading[]; activeHeadingIdx: number; activeHeading: Heading } {
+): { headings: Heading[]; activeHeading: Heading } {
   let activeHeadingIdx: number | undefined
   let activeHeading: Heading | undefined
+  assert(pageContext.url)
   const headings_withoutPageHeadings = headings_static.map((heading, i) => {
     if (heading.url === pageContext.url) {
       assert(activeHeadingIdx === undefined)
@@ -72,7 +73,7 @@ function supplementHeadings(
     return heading
   })
   assert(typeof activeHeadingIdx === 'number')
-  assert(activeHeading)
+  assert(activeHeading, { urls: headings_static.map((h) => h.url), url: pageContext.url })
   const pageHeadings = pageContext.pageExports.headings || []
   const headings: Heading[] = [
     ...slice(headings_withoutPageHeadings, 0, activeHeadingIdx + 1),
@@ -88,8 +89,6 @@ function supplementHeadings(
     }),
     ...slice(headings_withoutPageHeadings, activeHeadingIdx + 1, 0)
   ]
-  if (pageHeadings) {
-    activeHeadingIdx
-  }
-  return { headings, activeHeadingIdx, activeHeading }
+  assert(headings.length>0)
+  return { headings, activeHeading }
 }

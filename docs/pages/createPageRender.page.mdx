@@ -1,0 +1,62 @@
+import { RepoLink } from './components/RepoLink'
+
+Environment: `Node.js`
+
+We use `createPageRender()` to create the server middlware that performs server-side rendering:
+
+```js
+// server/index.js
+
+// In this example we use Express.js but we could use any other server framework.
+const express = require('express')
+const { createPageRender } = require('vite-plugin-ssr')
+
+const isProduction = process.env.NODE_ENV === 'production'
+const root = `${__dirname}/..`
+const base = '/'
+
+startServer()
+
+async function startServer() {
+  const app = express()
+
+  let viteDevServer
+  if (isProduction) {
+    app.use(express.static(`${root}/dist/client`, { index: false }))
+  } else {
+    const vite = require('vite')
+    viteDevServer = await vite.createServer({
+      root,
+      server: { middlewareMode: true }
+    })
+    app.use(viteDevServer.middlewares)
+  }
+
+  const renderPage = createPageRender({ viteDevServer, isProduction, root, base })
+  app.get('*', async (req, res, next) => {
+    const url = req.originalUrl
+    const pageContext = { url }
+    const result = await renderPage(pageContext)
+    if (result.nothingRendered) return next()
+    res.status(result.statusCode).send(result.renderResult)
+  })
+
+  const port = 3000
+  app.listen(port)
+  console.log(`Server running at http://localhost:${port}`)
+}
+```
+
+- `viteDevServer` is the Vite dev server.
+- `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
+- `root` is the absolute path of our app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. All our `.page.js` files need to be descendent of the `root` directory.
+- `base` is the [Base URL](/base-url).
+- `result.nothingRendered` is `true` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
+- `result.statusCode` is either `200`, `404`, or `500`.
+- `result.renderResult` is the value returned by our `render()` hook.
+
+Since `createPageRender()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers.
+
+Examples:
+ - <RepoLink text='JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
+ - <RepoLink text='TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />

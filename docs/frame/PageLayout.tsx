@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavigationHeader } from './NavigationHeader'
 import { Navigation } from './Navigation'
-import { Heading } from '../../headings'
+import { Heading } from '../headings'
 import { MobileHeader } from './MobileHeader'
 /* Won't work this this file is loaded only on the server
 import './PageLayout.css'
@@ -11,16 +11,15 @@ export { PageLayout }
 
 function PageLayout({
   headings,
-  activeHeadingIdx,
+  activeHeading,
   children
 }: {
   headings: Heading[]
-  activeHeadingIdx: number
+  activeHeading: Heading
   children: JSX.Element
 }) {
   const sidePanelWidth = 300
-  const heading = headings[activeHeadingIdx]
-  const isLandingPage = heading.url === '/'
+  const isLandingPage = activeHeading.url === '/'
   return (
     <div
       style={{
@@ -45,7 +44,7 @@ function PageLayout({
       <div id={isLandingPage ? '' : 'doc-page'}>
         <MobileHeader />
         <div id="page-content">
-          {!isLandingPage && <h1>{heading.title}</h1>}
+          {!isLandingPage && <h1>{activeHeading.title}</h1>}
           {children}
         </div>
       </div>

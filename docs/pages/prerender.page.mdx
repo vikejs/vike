@@ -1,6 +1,6 @@
 import { RepoLink } from './components/RepoLink'
 
-> Check out the [Pre-rendering Guide](/pre-rendering) to get an overview about how to pre-render your app with `vite-plugin-ssr`.
+> Check out the [Pre-rendering Guide](/pre-rendering) to get an overview about how to pre-render a `vite-plugin-ssr` app.
 
 The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
 by defining the `prerender()` hook we provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `pageContext` for each URL.
@@ -60,7 +60,7 @@ async function prerender() {
 ```
 
 The `prerender()` hook is only used for pre-rendering:
-if you don't call
+if we don't call
 `vite-plugin-ssr prerender`
 then no `prerender()` hook is ever called.
 

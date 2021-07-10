@@ -4,10 +4,10 @@ Built-in:
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
- - **`pageContext.isHydration`**: *[only in the browser, and only if you use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
- - **`pageContext.url`**: The `url` you passed at your server integration point.
+ - **`pageContext.isHydration`**: *[only in the browser, and only if we use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
+ - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
-    // Server Integration Point
+    // Server middleware
     const renderPage = createPageRender(/*...*/)
     app.get('*', async (req, res, next) => {
       const pageContext = {}
@@ -22,11 +22,11 @@ Built-in:
  - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
 Custom:
- - The `pageContext` values you returned in your page's `addPageContext()` hook (if you defined one).
- - The `pageContext` values you returned in your `_default.page.server.js`'s `addPageContext()` hook (if you defined one).
- - The `pageContext` values you passed at your server integration point.
+ - The `pageContext` values we returned in our page's `addPageContext()` hook (if we defined one).
+ - The `pageContext` values we returned in our `_default.page.server.js`'s `addPageContext()` hook (if we defined one).
+ - The `pageContext` values we passed at our server middleware.
     ```js
-    // Server Integration Point
+    // Server middleware
     const renderPage = createPageRender(/*...*/)
     app.get('*', async (req, res, next) => {
       const pageContext = {

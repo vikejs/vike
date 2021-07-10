@@ -1,0 +1,15 @@
+For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/film.page.route.js` adjacent file.
+
+```js
+// /pages/film.page.route.js
+
+// Match URLs `/film/1`, `/film/2`, ...
+export default '/film/:filmId'
+```
+
+If the URL matches, the value of `filmId` is available at `pageContext.routeParams.filmId`.
+
+The syntax of Route Strings is based on [`path-to-regexp`](https://github.com/pillarjs/path-to-regexp)
+(the most widespread route syntax in JavaScript).
+For user friendlier docs, check out the [Express.js Routing Docs](https://expressjs.com/en/guide/routing.html#route-parameters)
+(Express.js uses `path-to-regexp`).

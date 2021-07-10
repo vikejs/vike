@@ -303,12 +303,12 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('`_default.page.*`'),
-    url: '/_default.page'
+    url: '/_default.page.*'
   },
   {
     level: 2,
-    title: parse('`_error.page.*`'),
-    url: '/_error.page'
+    title: parse('`_error.page.js`'),
+    url: '/_error.page.js'
   },
   {
     level: 4,
@@ -316,8 +316,9 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: parse("`import { createPageRender } from 'vite-plugin-ssr'` (Server Integration Point)"),
-    titleInNav: parse('`createPageRender()` (Server Integration Point)'),
+    title: parse("`import { createPageRender } from 'vite-plugin-ssr'` (Server Middleware)"),
+    titleInNav: parse('`createPageRender()`'),
+    titleAddendum: 'Server Middleware',
     url: '/createPageRender'
   },
   {
@@ -333,7 +334,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('Command `prerender`'),
-    url: '/prerender-command'
+    url: '/command-prerender'
   }
 ]
 

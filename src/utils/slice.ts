@@ -15,17 +15,23 @@ function slice(thing: string | unknown[], from: number, to: number): string | un
 function sliceArray<Element, T extends Array<Element>>(list: T, from: number, to: number): T {
   const listSlice: T = ([] as unknown) as T
 
-  let begin = from >= 0 ? from : list.length + from
-  assert(begin >= 0 && begin < list.length)
-  const end = to >= 0 ? to : list.length + to
-  assert(end >= 0 && end < list.length)
+  let start = from >= 0 ? from : list.length + from
+  assert(start >= 0 && start <= list.length)
+  let end = to >= 0 ? to : list.length + to
+  assert(end >= 0 && end <= list.length)
 
-  while (begin !== end) {
-    listSlice.push(list[begin])
-    begin++
-    if (begin === list.length) {
-      begin = 0
+  while (true) {
+    if (start === end) {
+      break
     }
+    if (start === list.length) {
+      start = 0
+    }
+    if (start === end) {
+      break
+    }
+    listSlice.push(list[start])
+    start++
   }
 
   return listSlice

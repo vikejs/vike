@@ -1,8 +1,9 @@
-We can add information about the authenticated user to `pageContext` at the server integration point [`createPageRender()`](/createPageRender).
+We can add information about the authenticated user to `pageContext` at the server middlware:
 
 ```js
 const renderPage = createPageRender(/* ... */)
 
+// Server middlware
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
 

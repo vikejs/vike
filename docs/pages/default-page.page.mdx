@@ -1,0 +1,20 @@
+The `_default.page.server.js` and `_default.page.client.js` files are `.page.server.js` and `.page.client.js` files that apply as default to all pages.
+
+There can be several `_default` files:
+
+```
+marketing/_default.page.server.js
+marketing/_default.page.client.js
+marketing/index.page.js
+marketing/about.page.js
+marketing/jobs.page.js
+admin-panel/_default.page.server.js
+admin-panel/_default.page.client.js
+admin-panel/index.page.js
+```
+
+The `marketing/_default.page.*` files apply to `marketing/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply to `admin-panel/*.page.js` files.
+
+The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
+defining `_default.page.js` or `_default.page.route.js` is forbidden.

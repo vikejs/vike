@@ -1,8 +1,8 @@
 The `addPageContext()` hook provides further [`pageContext`](/pageContext) values.
 
-You can also provide initial `pageContext` values at your server integration point [`createPageRender()`](/createPageRender).
-This is where you usually pass information about the authenticated user,
-see [Authentication](/auth) guide.
+We can also provide initial `pageContext` values at our server middlware (see [`createPageRender()`](/createPageRender))
+which is where we usually pass information about the authenticated user
+(see [Authentication](/auth) guide).
 
 The `addPageContext()` hook is usually used together with [`const passToClient: string[]`](/passToClient) to fetch data, see [Data Fetching](/data-fetching) guide.
 
