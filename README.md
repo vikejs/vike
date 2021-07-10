@@ -6,4 +6,4 @@ Changelog: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/maste
 <br/>
 Twitter: [twitter.com/brillout](https://twitter.com/brillout)
 <br/>
-Discord: [Discord Server](https://discord.gg/qTq92FQzKb)
+Discord: [Server Invite](https://discord.gg/qTq92FQzKb)
