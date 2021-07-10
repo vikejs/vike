@@ -99,9 +99,9 @@ function getRoot(config: UserConfig): string {
 function getOutDir(config: UserConfig): string {
   let outDir = config.build?.outDir
   if (!outDir) {
-    outDir = config.build?.ssr ? 'dist/server' : 'dist/client'
+    outDir = 'dist'
   }
-  return outDir
+  return config.build?.ssr ? `${outDir}/server` : `${outDir}/client`
 }
 
 function posixPath(path: string): string {

@@ -12,7 +12,7 @@ async function setPageFiles(): Promise<unknown> {
   requireResolve(`./${viteEntry}`)
   let moduleExports: any
   if (ssrEnv.isProduction) {
-    const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntry}.js`)
+    const modulePath = pathResolve(`${ssrEnv.root}/${ssrEnv.outDir}/server/${viteEntry}.js`)
     assertUsage(
       moduleExists(modulePath),
       `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`

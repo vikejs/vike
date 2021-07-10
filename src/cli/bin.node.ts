@@ -15,12 +15,16 @@ cli
     '--root <path>',
     '[string] root directory of your project (where `vite.config.js` and `dist/` live) (default: `process.cwd()`)'
   )
+  .option(
+    '--outDir <path>',
+    '[string] vite output directory of your project (default: `dist`)'
+  )
   .option('--client-router', 'serialize `pageContext` to JSON files for Client-side Routing')
   .option('--base <path>', `[string] public base path (default: /)`)
   .action(async (options) => {
-    const { partial, extraDir, clientRouter, base, root } = options
+    const { partial, extraDir, clientRouter, base, root, outDir } = options
     const noExtraDir = !extraDir
-    await prerender({ partial, noExtraDir, clientRouter, base, root })
+    await prerender({ partial, noExtraDir, clientRouter, base, root, outDir })
   })
 
 // Listen to unknown commands

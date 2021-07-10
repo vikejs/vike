@@ -16,18 +16,20 @@ type RenderPage = typeof renderPage
 function createPageRender({
   viteDevServer,
   root,
+  outDir,
   isProduction,
   base = '/'
 }: {
   viteDevServer?: ViteDevServer
   root?: string
+  outDir?: string
   isProduction?: boolean
   base?: string
 }): RenderPage {
   assertUsage(!alreadyCalled, '`createPageRender()` should be called only once.')
   alreadyCalled = true
 
-  const ssrEnv = { viteDevServer, root, isProduction, baseUrl: base }
+  const ssrEnv = { viteDevServer, root, outDir, isProduction, baseUrl: base }
   assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
@@ -38,15 +40,20 @@ function assertArguments(
   ssrEnv: {
     viteDevServer?: unknown
     root?: unknown
+    outDir?: unknown
     isProduction?: unknown
     baseUrl?: unknown
   },
   args: unknown[]
 ): asserts ssrEnv is SsrEnv {
-  const { viteDevServer, root, isProduction, baseUrl } = ssrEnv
+  const { viteDevServer, root, outDir, isProduction, baseUrl } = ssrEnv
   assertUsage(
     root === undefined || typeof root === 'string',
     '`createPageRender({ root })`: argument `root` should be a string.'
+  )
+  assertUsage(
+    outDir === undefined || typeof outDir === 'string',
+    '`createPageRender({ outDir })`: argument `outDir` should be a string.'
   )
   assertUsage(
     typeof baseUrl === 'string',
@@ -87,7 +94,7 @@ function assertArguments(
   assert(typeof args[0] === 'object' && args[0] !== null)
   Object.keys(args[0]).forEach((argName) => {
     assertUsage(
-      ['viteDevServer', 'root', 'isProduction', 'base'].includes(argName),
+      ['viteDevServer', 'root', 'outDir', 'isProduction', 'base'].includes(argName),
       '`createPageRender()`: Unknown argument `' + argName + '`.'
     )
   })
