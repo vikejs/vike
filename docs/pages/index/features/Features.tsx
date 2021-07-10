@@ -16,7 +16,7 @@ function Features() {
         <Feature name="control" isExpandable={true} className="primary-feature">
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
-            You control how your pages are rendered; you can use <b>any view framework</b> (React, Vue, ...) and{' '}
+            You keep control over how your pages are rendered; you can use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
             <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
@@ -33,7 +33,7 @@ function Features() {
           </p>
           <p>
             Choose between <b>Client-side Routing</b> (faster/animated page transitions) and <b>Server-side Routing</b>{' '}
-            (simple architecture).
+            (simpler architecture).
           </p>
           <p>
             Render pages with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
@@ -57,7 +57,7 @@ function Features() {
         <Feature name="deploy-anywhere" isExpandable={true} className="secondary-feature">
           <h2>{String.fromCodePoint(0x1f30d)} Deploy Anywhere</h2>
           <p>
-            Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
+            You can use <b>any server environement</b> (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>
@@ -87,7 +87,7 @@ function Features() {
           </p>
           <p>
             <b>SSR architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
-            <b>custom precise SSR needs</b>.
+            custom precise needs.
           </p>
         </Feature>
         <LearnMore name="scalable">

@@ -59,13 +59,13 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Boilerplates',
-    url: '/boilerplates'
+    title: 'Scaffold new app',
+    url: '/scaffold'
   },
   {
     level: 2,
-    title: 'Manual Installation',
-    url: '/install'
+    title: 'Add to existing app',
+    url: '/add'
   },
   {
     level: 1,
@@ -211,6 +211,10 @@ export const headings: Heading[] = [
     url: '/pageContext'
   },
   {
+    level: 4,
+    title: 'Node.js'
+  },
+  {
     level: 2,
     title: parse('`.page.server.js`'),
     url: '/.page.server.js'
@@ -242,7 +246,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse("`import { html } from 'vite-plugin-ssr'`"),
-    titleInNav: parse('`html` string template tag'),
+    titleInNav: parse('`html` template tag'),
     url: '/html-tag'
   },
   {
@@ -284,11 +288,13 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: 'Route String',
+    titleInNav: parse(getListPrefix()+'Route String'),
     url: '/route-string'
   },
   {
     level: 2,
     title: 'Route Function',
+    titleInNav: parse(getListPrefix()+'Route Function'),
     url: '/route-function'
   },
   {
