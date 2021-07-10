@@ -16,8 +16,8 @@ function Features() {
         <Feature name="control" isExpandable={true} className="primary-feature">
           <h2>{String.fromCodePoint(0x1f527)} Control</h2>
           <p>
-            You keep control over how your pages are rendered; you can use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
-            <b>any tool</b> (Vuex/Redux, GraphQL, Service Workers, ...).
+            Keep control over how your pages are rendered and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
+            <b>any tool</b> you want (Vuex/Redux, GraphQL, Service Workers, ...).
           </p>
           <p>
             Integrating tools is <b>simple</b> and <b>natural</b>.
@@ -57,7 +57,7 @@ function Features() {
         <Feature name="deploy-anywhere" isExpandable={true} className="secondary-feature">
           <h2>{String.fromCodePoint(0x1f30d)} Deploy Anywhere</h2>
           <p>
-            You can use <b>any server environement</b> (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
+            Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>
@@ -83,11 +83,11 @@ function Features() {
         <Feature name="scalable" isExpandable={true} className="secondary-feature">
           <h2>{String.fromCodePoint(0x1f680)} Scalable</h2>
           <p>
-            Scale to 100 kLOCs while dev speed and <b>HMR stays fast.</b>
+            Scale to 100 kLOCs while keeping <b>fast HMR / dev speed</b>.
           </p>
           <p>
             <b>SSR architecture that scales</b> from small hobby projects to large-scale enterprise projects with highly{' '}
-            custom precise needs.
+            custom needs.
           </p>
         </Feature>
         <LearnMore name="scalable">

@@ -1,1 +1,1 @@
-export default '/_error.page.js'
+export default '/error-page'

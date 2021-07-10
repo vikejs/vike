@@ -1,27 +1,32 @@
 In general,
-thanks to the fact that with `vite-plugin-ssr` we have full control over how our pages are rendered,
-we can use `vite-plugin-ssr` with whatever tool we want.
+thanks to the fact that we have full control over how our pages are rendered,
+we can use whatever tool we want.
 
 In fact, `vite-plugin-ssr` is already being used with a high variety of tools within all kinds and diverse environments.
 So far, no tool couldn't be used.
 
-We have full control:
+## View tools
 
 ```js
 // _default.page.server.js
 // Environment: Node.js
 
-import renderToHtml from 'some-view-framework'
 import { html } from 'vite-plugin-ssr'
+// This can be any view framework (React, Vue, Svelte, ...)
+import renderToHtml from 'some-view-framework'
 
 export { render }
 
 async function render(pageContext) {
-  // We have full control over how pages are rendered.
-  // E.g. we can use any view framework version we want (Vue 2, Vue 3, React 16, React 17, ...).
-  const pageHtml = await renderToHtml(pageContext.Page)
+  // `Page` is what we export in `*.page.js`; we have full control over what
+  // we define in `*.page.js` and we can do whatever we want with it.
+  const { Page } = pageContext
 
-  // We have full control over the HTML
+  // We have full control over how we integrate our view frameowrk
+  // We control how we integrate our view framework with our pages.
+  const pageHtml = await renderToHtml(Page)
+
+  // We have full control over how our pages are rendered to HTML.
   return html`<html>
     <body>
       <div id="root">
@@ -33,57 +38,86 @@ async function render(pageContext) {
 ```
 
 ```js
-// server.js
-// Environment: Node.js
+// _default.page.client.js
+// Environment: Browser
 
-// The server entry point
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom } from 'some-view-framework'
 
-// We use Express.js here but we could as well use Fastify, Koa, Hapi, Cloudflare Workers, ...
-const express = require('express')
-
-const { createPageRender } = require('vite-plugin-ssr')
-
-startServer()
-
-async function startServer() {
-  const app = express()
-
-  const renderPage = createPageRender(/*...*/)
-
-  app.get('*', async (req, res, next) => {
-    const url = req.originalUrl
-    // `renderPage()` is just a function that, for a given URL, returns the result of our
-    // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
-    // we can use it with whatever server environment we want (Fastify, Cloudflare Workers, ...).
-    const result = await renderPage({ url })
-    res.send(result.renderResult)
-  })
+async hydrate() {
+  const pageContext = await getPage()
+  const { Page } = pageContext
+  // We have full control over how our pages are hydrated.
+  await hydrateToDom(Page)
 }
 ```
+
+Since we control how our pages and render to HTML and hydrated, we can use:
+- Any view framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
+- Any view library (Vuex, Redux, Relay, Apollo GraphQL, PullState, Recoil, Vue Router, React Router, ...)
+
+And, more importantly, integrate a view tool is simply a matter of following its official installation guide.
+
+## Browser tools
 
 ```js
 // _default.page.client.js
 // Environment: Browser
 
-// This is the *entire* browser-side code; we have full control over the browser-side.
-// If we save an empty `.page.client.js` then we have zero browser-side JavaScript.
-
 import { getPage } from 'vite-plugin-ssr/client'
 import { hydrateToDom } from 'some-view-framework'
 
-// We can initialize Service Workers here.
+// This is the first browser-side line of code.
+// This is a good place to initialize error tracking such as Sentry or Bugsnag.
+Sentry.init()
+// And also for initializing a Service Worker.
 navigator.serviceWorker.register(/* ... */)
 
-// We can initialize browser libraries here.
-$('.my-modals').modal()
+// This file represents the *entire* browser-side code; we have full control over the browser-side.
+// If we save an empty `.page.client.js` then we have zero browser-side JavaScript.
 
 hydrate()
 
-async function hydrate() {
-  // `Page` is what we export in `*.page.js`; we have full control over what
-  // we define in `*.page.js` and we can do whatever we want with it.
+// After hydration we can initialize vanilla JS component libraries, for example tooltips
+tooltip.init(document.querySelectorAll('.tooltip')
+// Or a vanilla JS modal library
+$('.my-modals').modal()
+
+async hydrate() {
+  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
   const { Page } = await getPage()
-  // We have full control over how pages are hydrated.
   await hydrateToDom(Page)
 }
 ```
+
+We can use:
+ - Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
+ - Any browser library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
+ - Any browser technology (Service Workers, PWA, ...)
+
+Integrating a browser tool is only a matter of following its official installation guide.
+
+## Server tools
+
+From a server perspective, `vite-plugin-ssr` is just a server middleware.
+
+```js
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // We can also use `renderPage()` in a serverless environment such as Cloudflare Workers
+  // `renderPage()` is just a function that, for a given URL, returns the result of our
+  // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
+  // we can use it with whatever server environment we want (Fastify, Cloudflare Workers, ...).
+  const result = await renderPage({ url: req.url })
+  res.send(result.renderResult)
+})
+```
+
+By [pre-rendering](/pre-rendering) we can remove the need for a Node.js production server and deploy to a static host instead.
+
+We can use:
+- Any server framework (Express, Koa, Fastify, Hapi, ...)
+- Any authentication strategy & tool (email/password, OAuth, NextAuth.js, Passport.js, Grant, Auth0, ...).
+- Any serverless environment (Cloudflare Workers, Firebase, AWS Lambda, Google Cloud Functions, ...)
+- Any server environment (AWS EC2, Google Cloud, ...)
+- Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)

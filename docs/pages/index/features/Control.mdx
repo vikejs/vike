@@ -1,8 +1,4 @@
-import ControlServer from './ControlServer.mdx'
-
-### Render Control
-
-With `vite-plugin-ssr`, _you_ define how your pages are rendered.
+With `vite-plugin-ssr`, we keep control over how we render our pages.
 
 ```js
 // _default.page.server.js
@@ -15,10 +11,14 @@ import { renderToHtml } from 'some-view-framework'
 
 export async function render(pageContext) {
   const pageHtml = await renderToHtml(pageContext.Page)
+  const title = 'My first vite-plugin-ssr app'
   return html`<!DOCTYPE html>
     <html>
+      <head>
+        <title>{title}</title>
+      </head>
       <body>
-        <div id="page-root">${html.dangerouslySkipEscape(appHtml)}</div>
+        <div id="page-root">${html.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
@@ -28,10 +28,11 @@ export async function render(pageContext) {
 // _default.page.client.js
 // Environment: Browser
 
+import { getPage } from 'vite-plugin-ssr/client'
 import { hydrateToDom } from 'some-view-framework'
 
 // This file defines the *entire* browser-side code.
-// If we define an empty `_default.page.client.js` then our pages have zero browser-side code.
+// If we leave this file empty then there is zero browser-side JavaScript.
 
 hydrate()
 
@@ -42,44 +43,8 @@ async function hydrate() {
 }
 ```
 
-### Natural Tool Integration
+This control allows us to integrate any tool we want simply by following the tool's official installation guide.
 
-This control means we can easily integrate any tool we want.
-
-#### Browser libraries
-
-```js
-// _default.page.client.js
-// Environment: Browser
-
-// This is the first browser-side line of code.
-// This is a good place to initialize error tracking such as Sentry or Bugsnag.
-Sentry.init()
-// And also for initializing a Service Worker.
-navigator.serviceWorker.register('/sw.js')
-
-hydrate()
-
-// After hydration we can initialize vanilla JS component libraries, for example tooltips
-tooltip.init(document.querySelectorAll('.tooltip')
-
-hydrate() {
-  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
-  // ...
-}
-```
-
-This control over the browser-side allows us to integrate tools simply by following the tool's official installation guide;
-`vite-plugin-ssr` does not get in our way. In other words, integrating tools is natural.
-
-No more hassle adding our favorite CSS framework or favorite browser library/technology.
-
-#### Framework libraries
-
-We have full control over how we setup and integrate our view framework (React/Vue/Svelte/...) which means we can
-use any framework tool (Apollo GraphQL, Vuex, Redux, PullState, Recoil, ...)
-simply by following their official SSR guide.
-
-#### Server libraries
-
-<ControlServer />
+No need to delve into some complex plugin system to integrate tools;
+`vite-plugin-ssr` gets out of our way and
+integrating tools is easy and natural.

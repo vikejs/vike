@@ -1,14 +1,20 @@
-import ControlServer from './ControlServer.mdx'
 import { PrerenderPreview } from './PrerenderPreview'
 
-### Any Server Environment
+From a server perspective, `vite-plugin-ssr` is just a server middleware.
 
-<ControlServer />
+```js
+const { createPageRender } = require('vite-plugin-ssr')
+const renderPage = createPageRender(/* ... */)
 
-### Pre-rendering
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // We can also use `renderPage()` in serverless environments such as Cloudflare Workers
+  const result = await renderPage({ url: req.url })
+  res.send(result.renderResult)
+})
+```
 
-You can pre-render your pages to HTML and remove the need for a production server.
+We can also pre-render our app and remove the need for a Node.js production server and deploy to a static host instead.
+(Cloudflare Pages, GitHub Pages, Netlify, ...)
 
 <PrerenderPreview />
-
-You can then deploy to any static host (Netlify, GitHub Pages, Cloudflare Pages, ...).

@@ -157,7 +157,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Other Integration',
+    title: 'Other Integrations',
     titleInNav: 'Other',
     titleAddendum: 'CSS Frameworks, Service Workers, ...',
     url: '/integration'
@@ -189,7 +189,8 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Other',
+    title: 'Other Deployments',
+    titleInNav: 'Ohter',
     url: '/deploy'
   },
   {
@@ -228,19 +229,19 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('`passToClient`'),
-    titleInNav: parse(getListPrefix()+'`export { passToClient }`'),
+    titleInNav: parse(getListPrefix() + '`export { passToClient }`'),
     url: '/passToClient'
   },
   {
     level: 2,
     title: parse('`render()` hook'),
-    titleInNav: parse(getListPrefix()+'`export { render }`'),
+    titleInNav: parse(getListPrefix() + '`export { render }`'),
     url: '/render'
   },
   {
     level: 2,
     title: parse('`prerender()` hook'),
-    titleInNav: parse(getListPrefix()+'`export { prerender }`'),
+    titleInNav: parse(getListPrefix() + '`export { prerender }`'),
     url: '/prerender'
   },
   {
@@ -288,13 +289,13 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: 'Route String',
-    titleInNav: parse(getListPrefix()+'Route String'),
+    titleInNav: parse(getListPrefix() + 'Route String'),
     url: '/route-string'
   },
   {
     level: 2,
     title: 'Route Function',
-    titleInNav: parse(getListPrefix()+'Route Function'),
+    titleInNav: parse(getListPrefix() + 'Route Function'),
     url: '/route-function'
   },
   {
@@ -309,12 +310,12 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('`_default.page.*`'),
-    url: '/_default.page.*'
+    url: '/default-page'
   },
   {
     level: 2,
     title: parse('`_error.page.js`'),
-    url: '/_error.page.js'
+    url: '/error-page'
   },
   {
     level: 4,
@@ -386,7 +387,7 @@ function parse(title: string): JSX.Element {
       current.content += letter
     }
   })
-  if( current ) {
+  if (current) {
     parts.push(current)
   }
 
@@ -413,16 +414,15 @@ function withEmoji(emojiName: EmojiName, title: string): JSX.Element {
 }
 
 function Emoji(name: EmojiName): JSX.Element {
-  const codePoint = (
-    name === 'Compass' && 0x1F9ED ||
-    name === 'Seedling' && 0x1F331 ||
-    name === 'Books' && 0x1F4DA ||
-    name === 'Plug' && 0x1F50C ||
-    name === 'Earth' && 0x1F30D ||
-    name === 'Gear' && 0x2699
-  )
+  const codePoint =
+    (name === 'Compass' && 0x1f9ed) ||
+    (name === 'Seedling' && 0x1f331) ||
+    (name === 'Books' && 0x1f4da) ||
+    (name === 'Plug' && 0x1f50c) ||
+    (name === 'Earth' && 0x1f30d) ||
+    (name === 'Gear' && 0x2699)
   assert(codePoint)
   const str = String.fromCodePoint(codePoint)
-  const style = {fontSize: '1.4em'}
-  return React.createElement('span', {style}, str)
+  const style = { fontSize: '1.4em' }
+  return React.createElement('span', { style }, str)
 }

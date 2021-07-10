@@ -1,1 +1,1 @@
-export default '/_default.page.*'
+export default '/default-page'
