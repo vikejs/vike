@@ -16,8 +16,8 @@ type RenderPage = typeof renderPage
 function createPageRender({
   viteDevServer,
   root,
-  outDir,
   isProduction,
+  outDir = 'dist',
   base = '/'
 }: {
   viteDevServer?: ViteDevServer
