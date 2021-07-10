@@ -1,9 +1,8 @@
 In general,
-thanks to the fact that we have full control over how our pages are rendered,
+thanks to the fact that we have control over how our pages are rendered,
 we can use whatever tool we want.
 
 In fact, `vite-plugin-ssr` is already being used with a high variety of tools within all kinds and diverse environments.
-So far, no tool couldn't be used.
 
 ## View tools
 
@@ -18,17 +17,21 @@ import renderToHtml from 'some-view-framework'
 export { render }
 
 async function render(pageContext) {
-  // `Page` is what we export in `*.page.js`; we have full control over what
-  // we define in `*.page.js` and we can do whatever we want with it.
+  // `Page` is the `export { Page }` (or `export default Page`) of our `*.page.js` files;
+  // `vite-plugin-ssr` doesn't do anything with `Page` and just makes it available as
+  // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
 
-  // We have full control over how we integrate our view frameowrk
-  // We control how we integrate our view framework with our pages.
+  // We have control over how we use our view framework to render our pages to HTML
   const pageHtml = await renderToHtml(Page)
 
-  // We have full control over how our pages are rendered to HTML.
+  // We have control over the entire HTML
   return html`<html>
     <body>
+      <head>
+        <!-- Some libraries recommend loading code from a CDN -->
+        <script src="https://cdn.example.com/some-library/3.3.7/lib.min.js"></script>
+      </head>
       <div id="root">
         ${html.dangerouslySkipEscape(pageHtml)}
       </div>
@@ -47,16 +50,16 @@ import { hydrateToDom } from 'some-view-framework'
 async hydrate() {
   const pageContext = await getPage()
   const { Page } = pageContext
-  // We have full control over how our pages are hydrated.
+  // We have control over how our pages are hydrated
   await hydrateToDom(Page)
 }
 ```
 
-Since we control how our pages and render to HTML and hydrated, we can use:
+Since we control how our pages are render to HTML and hydrated, we can use:
 - Any view framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
 - Any view library (Vuex, Redux, Relay, Apollo GraphQL, PullState, Recoil, Vue Router, React Router, ...)
 
-And, more importantly, integrate a view tool is simply a matter of following its official installation guide.
+And, more importantly, integrating a view tool is simply a matter of following its official installation guide.
 
 ## Browser tools
 
@@ -73,14 +76,14 @@ Sentry.init()
 // And also for initializing a Service Worker.
 navigator.serviceWorker.register(/* ... */)
 
-// This file represents the *entire* browser-side code; we have full control over the browser-side.
-// If we save an empty `.page.client.js` then we have zero browser-side JavaScript.
+// This file represents the *entire* browser-side code; we have full control over the browser-
+// side. If we save an empty `.page.client.js` then we have zero browser-side JavaScript.
 
 hydrate()
 
-// After hydration we can initialize vanilla JS component libraries, for example tooltips
+// After hydration we usually initialize vanilla JS component libraries, for example tooltips
 tooltip.init(document.querySelectorAll('.tooltip')
-// Or a vanilla JS modal library
+// Or some vanilla JS modal library
 $('.my-modals').modal()
 
 async hydrate() {
@@ -99,21 +102,20 @@ Integrating a browser tool is only a matter of following its official installati
 
 ## Server tools
 
-From a server perspective, `vite-plugin-ssr` is just a server middleware.
+From a server architecture perspective, `vite-plugin-ssr` is just a server middleware.
 
 ```js
 // `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
 app.get('*', async (req, res) => {
-  // We can also use `renderPage()` in a serverless environment such as Cloudflare Workers
-  // `renderPage()` is just a function that, for a given URL, returns the result of our
+  // The `renderPage()` function, for a given URL, returns the result of our
   // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
-  // we can use it with whatever server environment we want (Fastify, Cloudflare Workers, ...).
+  // can be used in any server environment, including serverless such as Cloudflare Workers.
   const result = await renderPage({ url: req.url })
   res.send(result.renderResult)
 })
 ```
 
-By [pre-rendering](/pre-rendering) we can remove the need for a Node.js production server and deploy to a static host instead.
+By [pre-rendering](/pre-rendering) we can remove the need for a Node.js production server and deploy to any static host instead.
 
 We can use:
 - Any server framework (Express, Koa, Fastify, Hapi, ...)
