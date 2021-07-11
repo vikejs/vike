@@ -240,7 +240,7 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
 }
 
 function getScrollPositionFromHistory(historyState: unknown = window.history.state) {
-  return hasProp(historyState, 'scrollPosition') ? (historyState.scrollPosition as ScrollPosition) : null
+  return historyState && hasProp(historyState, 'scrollPosition') ? (historyState.scrollPosition as ScrollPosition) : null
 }
 
 function autoSaveScrollPosition() {
