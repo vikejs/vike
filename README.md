@@ -2,8 +2,8 @@ Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.
 
 Docs: [vite-plugin-ssr.com](https://vite-plugin-ssr.com)
 <br/>
-Changelog: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md)
+Versions: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md)
 <br/>
-Twitter: [twitter.com/brillout](https://twitter.com/brillout)
+Follow: [twitter.com/brillout](https://twitter.com/brillout)
 <br/>
-Discord: [Server Invite](https://discord.gg/qTq92FQzKb)
+Chat: [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb)
