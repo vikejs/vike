@@ -90,7 +90,7 @@ function findNavLink(heading: Heading): HTMLElement {
 
 let _navigationEl: HTMLElement
 function getNavigationEl(): HTMLElement {
-  _navigationEl = _navigationEl || document.getElementById('navigation')
+  _navigationEl = _navigationEl || document.getElementById('navigation-content')
   assert(_navigationEl)
   return _navigationEl
 }

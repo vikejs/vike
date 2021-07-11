@@ -28,12 +28,9 @@ function PageLayout({
     >
       <div id="panel-left" style={{ flexShrink: 0, width: sidePanelWidth }}>
         <div
+          id="navigation-container"
           style={{
-            height: '100vh',
             width: sidePanelWidth,
-            position: 'fixed',
-            top: 0,
-            overflowY: 'auto',
             borderRight: '1px solid #eee'
           }}
         >

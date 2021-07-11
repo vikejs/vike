@@ -32,7 +32,7 @@ function LeftSide() {
       >
         <img src={iconPlugin} />
         <h1>
-          <code style={{ display: 'inline-block', padding: '0.2em 0.7em', borderRadius: 5 }}>vite-plugin-ssr</code>
+          <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vite-plugin-ssr</code>
         </h1>
       </div>
       <p id="header-tagline">Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
@@ -57,14 +57,14 @@ function TourCallToAction({ style }: { style?: React.CSSProperties }) {
   return (
     <div style={style}>
       <CallToActionDescription>
-        Explore how it's like to use <code>vite-plugin-ssr</code>
+        Explore how it's like to use <code style={{ whiteSpace: 'nowrap' }}>vite-plugin-ssr</code>
       </CallToActionDescription>
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
           marginTop: 0,
-          gridGap: 20,
+          gridGap: 10,
           height: 50
         }}
       >

@@ -1,4 +1,5 @@
 import React from 'react'
+import './ScaffoldCallToAction.css'
 
 export { ScaffoldCallToAction }
 export { CallToActionDescription }
@@ -7,7 +8,7 @@ export { ScaffoldCallToActionTour }
 function ScaffoldCallToActionTour() {
   const Code = ({children}: {children: string}) => <code style={{fontSize: '0.92em', padding: '1px 3px'}}>{children}</code>
   return (
-    <div style={{ textAlign: 'center', marginTop: 40 }}>
+    <div id="tour-call-to-action" style={{ textAlign: 'center', marginTop: 40 }}>
       <div style={{ display: 'inline-block', alignItems: 'center', flexDirection: 'column', textAlign: 'left' }}>
         <div style={{ fontSize: '1.2em' }}>
           <ScaffoldCallToAction />

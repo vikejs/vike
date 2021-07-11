@@ -5,12 +5,11 @@ export { MobileHeader }
 
 function MobileHeader() {
   const LOGO_SIZE = 40
-  const HEADER_HIGHT = 60
   return (
     <div
       id="mobile-header"
       style={{
-        height: HEADER_HIGHT,
+        height: 'var(--mobile-header-height)',
         width: '100vw',
         position: 'relative'
       }}
@@ -24,12 +23,12 @@ function MobileHeader() {
           zIndex: 999,
           top: 0,
           left: 0,
-          height: HEADER_HIGHT,
-          width: '100vw',
+          height: 'var(--mobile-header-height)',
+          width: '100%',
           borderBottom: '1px solid #ddd'
         }}
       >
-        <ButtonExpandMenu />
+        <MenuToggle />
         <a
           href="/"
           style={{
@@ -58,9 +57,9 @@ function MobileHeader() {
   )
 }
 
-function ButtonExpandMenu() {
+function MenuToggle() {
   return (
-    <div style={{ padding: 20, lineHeight: 0 }}>
+    <div style={{ padding: 20, lineHeight: 0 }} id="menu-toggle" >
       <svg
         style={{ width: 20 }}
         className="icon"

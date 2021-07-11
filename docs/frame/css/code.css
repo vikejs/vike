@@ -28,3 +28,19 @@ code {
 pre > code {
   font-size: 1em;
 }
+
+@media screen and (max-width: 1140px) {
+  pre > code {
+    font-size: 0.95em;
+  }
+}
+@media screen and (max-width: 1040px) {
+  pre > code {
+    font-size: 0.8em;
+  }
+}
+@media screen and (max-width: 940px) {
+  pre > code {
+    font-size: 0.7em;
+  }
+}

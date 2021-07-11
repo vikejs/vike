@@ -11,7 +11,7 @@ function installSectionUrlHashs() {
     assert(window.location.pathname==='/')
     return;
   }
-  const navigationEl = document.getElementById('navigation')
+  const navigationEl = document.getElementById('navigation-content')
   assert(navigationEl)
   const docSections = Array.from(document.querySelectorAll('h2'))
   docSections.forEach((docSection) => {

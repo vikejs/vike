@@ -3,13 +3,13 @@ import React from 'react'
 import './Navigation.css'
 import 'highlight.js/styles/stackoverflow-light.css'
 */
-import { Heading } from '../../headings'
+import { Heading } from '../headings'
 
 export { Navigation }
 
 function Navigation({ headings }: { headings: Heading[] }) {
   return (
-    <div id="navigation" style={{ position: 'relative' }}>
+    <div id="navigation-content" style={{ position: 'relative' }}>
       {headings.map((heading, i) => {
         return (
           <a
