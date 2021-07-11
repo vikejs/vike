@@ -2,6 +2,11 @@ name: CI
 
 on:
   push:
+    paths:
+      - src/**
+      - tests/**
+      - examples/**
+      - boilerplates/**
   pull_request:
 
 jobs:
