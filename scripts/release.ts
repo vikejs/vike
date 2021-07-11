@@ -7,9 +7,10 @@ import * as semver from 'semver'
 release()
 
 async function release() {
-  const { versionCurrent, versionNew } = getVersion()
-  updateVersion(versionCurrent, versionNew)
-  await updateDependencies(versionNew, versionCurrent)
+  const { versionOld, versionNew } = getVersion()
+  updateVersionMacro(versionOld, versionNew)
+  updatePackageJsonVersion(versionNew)
+  await updateDependencies(versionNew, versionOld)
   bumpBoilerplateVersion()
   await updateLockFile()
   await changelog()
@@ -70,25 +71,28 @@ async function commitLockfileChanges() {
   await run('git', ['commit', '-am', `chore: update lockfiles`])
 }
 
-function getVersion(): { versionNew: string; versionCurrent: string } {
+function getVersion(): { versionNew: string; versionOld: string } {
   const pkg = require(`${DIR_SRC}/package.json`) as PackageJson
-  const versionCurrent = pkg.version
-  assert(versionCurrent)
-  const versionNew = semver.inc(versionCurrent, 'patch')
-  return { versionNew, versionCurrent }
+  const versionOld = pkg.version
+  assert(versionOld)
+  const versionNew = semver.inc(versionOld, 'patch')
+  return { versionNew, versionOld }
 }
-function updateVersion(versionCurrent: string, versionNew: string) {
-  updatePkg(`${DIR_SRC}/package.json`, (pkg) => {
-    pkg.version = versionNew
-  })
+function updateVersionMacro(versionOld: string, versionNew: string) {
   VITE_PLUGIN_SSR_VERSION_FILES.forEach((filePath) => {
-    const getCodeSnippet = (version: string) => `const VITE_PLUGIN_SSR_VERSION_FILES = '${version}'`
-    const codeSnippetOld = getCodeSnippet(versionCurrent)
+    const getCodeSnippet = (version: string) => `const VITE_PLUGIN_SSR_VERSION = 'v${version}'`
+    const codeSnippetOld = getCodeSnippet(versionOld)
     const codeSnippetNew = getCodeSnippet(versionNew)
     const contentOld = readFileSync(filePath, 'utf8')
-    contentOld.includes(codeSnippetOld)
+    assert(contentOld.includes(codeSnippetOld))
     const contentNew = contentOld.replace(codeSnippetOld, codeSnippetNew)
+    assert(contentNew !== contentOld)
     writeFileSync(filePath, contentNew)
+  })
+}
+function updatePackageJsonVersion(versionNew: string) {
+  updatePkg(`${DIR_SRC}/package.json`, (pkg) => {
+    pkg.version = versionNew
   })
 }
 
@@ -103,13 +107,13 @@ function bumpBoilerplateVersion() {
   writePackageJson(pkgPath, pkg)
 }
 
-async function updateDependencies(versionNew: string, versionCurrent: string) {
+async function updateDependencies(versionNew: string, versionOld: string) {
   const pkgPaths = [...retrievePkgPaths(DIR_BOILERPLATES), ...retrievePkgPaths(DIR_EXAMPLES)]
   for (const pkgPath of pkgPaths) {
     updatePkg(pkgPath, (pkg) => {
       const version = pkg.dependencies['vite-plugin-ssr']
       assert(version)
-      let versionCurrentSemver = versionCurrent
+      let versionCurrentSemver = versionOld
       let versionNewSemver = versionNew
       if (pkgPath.includes('boilerplates/boilerplate-')) {
         versionCurrentSemver = '^' + versionCurrentSemver
