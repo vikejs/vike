@@ -10,12 +10,8 @@ export { Navigation }
 
 function Navigation({ headings }: { headings: Heading[] }) {
   return (
-      <div
-        id="navigation-container"
-        style={{ flexShrink: 0,
-          borderRight: '1px solid #eee'
-        }}
-      >
+    <>
+      <div id="navigation-container" style={{ flexShrink: 0, borderRight: '1px solid #eee' }}>
         <NavigationHeader />
         <div id="navigation-content" style={{ position: 'relative' }}>
           {headings.map((heading, i) => {
@@ -35,6 +31,8 @@ function Navigation({ headings }: { headings: Heading[] }) {
       */}
         </div>
       </div>
+      <div id="navigation-mask" />
+    </>
   )
 }
 
