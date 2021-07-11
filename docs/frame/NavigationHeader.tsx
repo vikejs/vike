@@ -7,6 +7,8 @@ import iconChangelog from './icons/changelog.svg'
 
 export { NavigationHeader }
 
+const VITE_PLUGIN_SSR_VERSION = 'v0.1.4'
+
 function NavigationHeader() {
   const SIZE = 55
   return (
@@ -77,10 +79,10 @@ function ChangelogButton() {
         padding: '1px 7px',
         marginLeft: 2,
         fontSize: '0.97em',
-        color: 'inherit',
+        color: 'inherit'
       }}
     >
-      <span className="decolorize-7">v0.1.4</span>
+      <span className="decolorize-7">{VITE_PLUGIN_SSR_VERSION}</span>
       <img className="decolorize-6" src={iconChangelog} height={16} style={{ marginLeft: 5 }} />
     </a>
   )
@@ -90,7 +92,7 @@ function SocialLink({ className, icon, href }: { className: string; icon: string
   return (
     <>
       <a
-        className={"colorize-on-hover "+className}
+        className={'colorize-on-hover ' + className}
         href={href}
         style={{ padding: 3, display: 'inline-block', lineHeight: 0 }}
       >

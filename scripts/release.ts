@@ -1,14 +1,14 @@
 import * as execa from 'execa'
-import { readdirSync, writeFileSync, lstatSync } from 'fs'
+import { readdirSync, writeFileSync, readFileSync, lstatSync } from 'fs'
 import * as assert from 'assert'
-import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC, DIR_ROOT } from './helpers/locations'
+import { DIR_BOILERPLATES, DIR_EXAMPLES, DIR_SRC, DIR_ROOT, VITE_PLUGIN_SSR_VERSION_FILES } from './helpers/locations'
 import * as semver from 'semver'
 
 release()
 
 async function release() {
   const { versionCurrent, versionNew } = getVersion()
-  updateVersion(versionNew)
+  updateVersion(versionCurrent, versionNew)
   await updateDependencies(versionNew, versionCurrent)
   bumpBoilerplateVersion()
   await updateLockFile()
@@ -77,9 +77,18 @@ function getVersion(): { versionNew: string; versionCurrent: string } {
   const versionNew = semver.inc(versionCurrent, 'patch')
   return { versionNew, versionCurrent }
 }
-function updateVersion(versionNew: string) {
+function updateVersion(versionCurrent: string, versionNew: string) {
   updatePkg(`${DIR_SRC}/package.json`, (pkg) => {
     pkg.version = versionNew
+  })
+  VITE_PLUGIN_SSR_VERSION_FILES.forEach((filePath) => {
+    const getCodeSnippet = (version: string) => `const VITE_PLUGIN_SSR_VERSION_FILES = '${version}'`
+    const codeSnippetOld = getCodeSnippet(versionCurrent)
+    const codeSnippetNew = getCodeSnippet(versionNew)
+    const contentOld = readFileSync(filePath, 'utf8')
+    contentOld.includes(codeSnippetOld)
+    const contentNew = contentOld.replace(codeSnippetOld, codeSnippetNew)
+    writeFileSync(filePath, contentNew)
   })
 }
 
