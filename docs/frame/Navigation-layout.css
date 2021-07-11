@@ -1,9 +1,12 @@
 :root {
-  --mobile-header-height: 60px
+  --mobile-header-height: 60px;
+  --navigation-width: 300px;
 }
 #navigation-container {
   position: fixed;
+  width: var(--navigation-width);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 @media screen and (min-width: 719px) {
   #mobile-header {
@@ -13,9 +16,12 @@
     height: 100vh;
     top: 0;
   }
+  #page-container {
+    margin-left: var(--navigation-width);
+  }
 }
-#panel-left {
-  transition: left .25s ease;
+#navigation-container {
+  transition: transform 0.25s ease;
   background: white;
   z-index: 2;
 }
@@ -28,18 +34,13 @@
     top: var(--mobile-header-height);
     padding-top: 20px;
   }
-  #panel-left {
-    position: relative;
-    margin-left: -300px;
-    left: 0;
-  }
-  #panel-left.show-menu {
-    left: 300px;
+  #navigation-container:not(.show-menu) {
+    transform: translateX(-300px);
   }
   #mobile-header {
     display: inherit;
   }
-  #doc-page h2 {
+  .doc-page h2 {
     --padding-top: calc(var(--mobile-header-height) + 12px) !important;
   }
 }

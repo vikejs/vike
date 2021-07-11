@@ -1,31 +1,40 @@
 import React from 'react'
+import { NavigationHeader } from './NavigationHeader'
+import { Heading } from '../headings'
 /* Won't work this this file is loaded only on the server
 import './Navigation.css'
 import 'highlight.js/styles/stackoverflow-light.css'
 */
-import { Heading } from '../headings'
 
 export { Navigation }
 
 function Navigation({ headings }: { headings: Heading[] }) {
   return (
-    <div id="navigation-content" style={{ position: 'relative' }}>
-      {headings.map((heading, i) => {
-        return (
-          <a
-            className={'nav-item nav-item-h' + heading.level + (heading.isActive ? ' is-active' : '')}
-            href={heading.url || undefined}
-            key={i}
-          >
-            <div className="nav-item-title">{heading.titleInNav || heading.title}</div>
-            {heading.titleAddendum && <div className="nav-item-addendum">{heading.titleAddendum}</div>}
-          </a>
-        )
-      })}
-      {/*
+      <div
+        id="navigation-container"
+        style={{ flexShrink: 0,
+          borderRight: '1px solid #eee'
+        }}
+      >
+        <NavigationHeader />
+        <div id="navigation-content" style={{ position: 'relative' }}>
+          {headings.map((heading, i) => {
+            return (
+              <a
+                className={'nav-item nav-item-h' + heading.level + (heading.isActive ? ' is-active' : '')}
+                href={heading.url || undefined}
+                key={i}
+              >
+                <div className="nav-item-title">{heading.titleInNav || heading.title}</div>
+                {heading.titleAddendum && <div className="nav-item-addendum">{heading.titleAddendum}</div>}
+              </a>
+            )
+          })}
+          {/*
       <ScrollOverlay />
       */}
-    </div>
+        </div>
+      </div>
   )
 }
 

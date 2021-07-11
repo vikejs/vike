@@ -1,5 +1,4 @@
 import React from 'react'
-import './ScaffoldCallToAction.css'
 
 export { ScaffoldCallToAction }
 export { CallToActionDescription }

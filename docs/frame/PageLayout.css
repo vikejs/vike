@@ -1,8 +1,8 @@
-#doc-page {
+.doc-page {
   width: 100%;
   padding-bottom: 100px;
 }
-#doc-page #page-content {
+.doc-page #page-content {
   max-width: 840px;
   padding: 20px;
   margin: auto;

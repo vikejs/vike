@@ -1,4 +1,4 @@
-#doc-page h2 {
+.doc-page h2 {
   --padding-top: 12px;
   --padding-bottom: 12px;
   padding-top: var(--padding-top);
@@ -6,19 +6,19 @@
   margin-top: calc(50px - var(--padding-top));
   margin-bottom: calc(0px - var(--padding-bottom));
 }
-#doc-page h2[id] {
+.doc-page h2[id] {
   cursor: pointer;
   position: relative;
   padding-left: 20px;
   margin-left: -20px
 }
-#doc-page h2[id]:hover::before {
+.doc-page h2[id]:hover::before {
   content: '#';
   position: absolute;
   left: calc(-1 * (0.75em - 20px));
   color: #aaa;
 }
 
-#doc-page h1 + h2 {
+.doc-page h1 + h2 {
   margin-top: 0;
 }

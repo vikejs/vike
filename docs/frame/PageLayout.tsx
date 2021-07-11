@@ -1,5 +1,4 @@
 import React from 'react'
-import { NavigationHeader } from './NavigationHeader'
 import { Navigation } from './Navigation'
 import { Heading } from '../headings'
 import { MobileHeader } from './MobileHeader'
@@ -18,7 +17,6 @@ function PageLayout({
   activeHeading: Heading
   children: JSX.Element
 }) {
-  const sidePanelWidth = 300
   const isLandingPage = activeHeading.url === '/'
   return (
     <div
@@ -26,19 +24,8 @@ function PageLayout({
         display: 'flex'
       }}
     >
-      <div id="panel-left" style={{ flexShrink: 0, width: sidePanelWidth }}>
-        <div
-          id="navigation-container"
-          style={{
-            width: sidePanelWidth,
-            borderRight: '1px solid #eee'
-          }}
-        >
-          <NavigationHeader />
-          <Navigation headings={headings} />
-        </div>
-      </div>
-      <div id={isLandingPage ? '' : 'doc-page'}>
+      <Navigation headings={headings} />
+      <div id="page-container" className={isLandingPage ? '' : 'doc-page'}>
         <MobileHeader />
         <div id="page-content">
           {!isLandingPage && <h1>{activeHeading.title}</h1>}

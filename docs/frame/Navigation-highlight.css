@@ -14,13 +14,13 @@
 */
 
 /*
-#panel-left:not(:hover) ::-webkit-scrollbar {
+#navigation-container:not(:hover) ::-webkit-scrollbar {
   display: none;
 }
-#panel-left ::-webkit-scrollbar-thumb {
+#navigation-container ::-webkit-scrollbar-thumb {
   opacity: 0;
 }
-#panel-left ::-webkit-scrollbar-track {
+#navigation-container ::-webkit-scrollbar-track {
   opacity: 0;
 }
 */

@@ -1,4 +1,5 @@
 import 'balloon-css'
+import './ScaffoldCallToAction.css'
 
 addScaffoldCodeClickHandler()
 

@@ -2,8 +2,8 @@ activateMenuToggle()
 
 function activateMenuToggle() {
   const menuToggle = document.getElementById('menu-toggle')!
-  const panelLeft = document.getElementById('panel-left')!
+  const navigationContainer = document.getElementById('navigation-container')!
   menuToggle.onclick = () => {
-    panelLeft.classList.toggle('show-menu')
+    navigationContainer.classList.toggle('show-menu')
   }
 }
