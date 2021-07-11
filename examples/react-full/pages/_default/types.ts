@@ -11,4 +11,4 @@ export type PageContext = PageContextBuiltIn & {
   documentProps?: {
     title: string;
   };
-}
+};

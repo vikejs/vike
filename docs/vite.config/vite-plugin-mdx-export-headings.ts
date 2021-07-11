@@ -4,9 +4,9 @@ export { HeadingExtracted }
 export { mdxExportHeadings }
 
 type HeadingExtracted = {
-  title: string,
-  id: string,
-  headingLevel: number,
+  title: string
+  id: string
+  headingLevel: number
   titleAddendum?: string
 }
 
@@ -60,9 +60,7 @@ function transformDocsMdx(code: string) {
   return codeNew
 }
 
-function parseMarkdownHeading(
-  line: string
-): HeadingExtracted {
+function parseMarkdownHeading(line: string): HeadingExtracted {
   const [lineBegin, ...lineWords] = line.split(' ')
   assert(lineBegin.split('#').join('') === '', { line, lineWords })
   const headingLevel = lineBegin.length

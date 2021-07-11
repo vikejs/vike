@@ -11,7 +11,6 @@ const headings: Heading[] = [
 ]
 assert_headings()
 
-
 export { updateSidePanelScroll }
 
 if (isBrowser()) {
@@ -37,13 +36,13 @@ function setActiveHeadings(headingSectionsVisibility: HeadingSectionVisibility[]
   headingSectionsVisibility.forEach((heading) => {
     const navItem = findNavLink(heading)
     const isVisibile = visibleHeadings.find((visibleHeading) => {
-      if( 'isDocumentBegin' in heading || 'isDocumentBegin' in visibleHeading ) {
+      if ('isDocumentBegin' in heading || 'isDocumentBegin' in visibleHeading) {
         return 'isDocumentBegin' in heading && 'isDocumentBegin' in visibleHeading
       } else {
         return heading.id === visibleHeading.id
       }
     })
-    navItem.style.display = isVisibile ? 'inherit' : 'none';
+    navItem.style.display = isVisibile ? 'inherit' : 'none'
     /*
     if (viewportPercentageHighest === heading.viewportPercentage) {
       const navItem = findNavLink(heading)
@@ -158,14 +157,14 @@ function getScrollPosition(): number {
 }
 
 type HeadingVisible = { heading: Heading; boundaryPosition: number; viewportPercentage: number }
-function getVisibleHeadings(
-  headingSectionsVisibility: HeadingSectionVisibility[]
-): HeadingSectionVisibility[] {
+function getVisibleHeadings(headingSectionsVisibility: HeadingSectionVisibility[]): HeadingSectionVisibility[] {
   const headings_withVisibileNavItem: Heading[] = filterHeadingsWithVisibileNavItem(headingSectionsVisibility)
   const headingSectionsWithVisibleNavItemVisibility = getHeadingSectionsVisbility(headings_withVisibileNavItem)
   return headingSectionsWithVisibleNavItemVisibility
 }
-function getBoundaryHeading(headingSectionsVisibility: HeadingSectionVisibility[]):{ headingVisibleFirst: HeadingVisible; headingVisibleLast: HeadingVisible }  {
+function getBoundaryHeading(
+  headingSectionsVisibility: HeadingSectionVisibility[]
+): { headingVisibleFirst: HeadingVisible; headingVisibleLast: HeadingVisible } {
   const headingSectionsWithVisibleNavItemVisibility = getVisibleHeadings(headingSectionsVisibility)
   const h: HeadingSectionVisibility[] = headingSectionsWithVisibleNavItemVisibility
   const hFirst = h.find(({ screenBeginPosition }) => screenBeginPosition !== null)

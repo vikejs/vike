@@ -5,7 +5,9 @@ export { CallToActionDescription }
 export { ScaffoldCallToActionTour }
 
 function ScaffoldCallToActionTour() {
-  const Code = ({children}: {children: string}) => <code style={{fontSize: '0.92em', padding: '1px 3px'}}>{children}</code>
+  const Code = ({ children }: { children: string }) => (
+    <code style={{ fontSize: '0.92em', padding: '1px 3px' }}>{children}</code>
+  )
   return (
     <div id="tour-call-to-action" style={{ textAlign: 'center', marginTop: 40 }}>
       <div style={{ display: 'inline-block', alignItems: 'center', flexDirection: 'column', textAlign: 'left' }}>
@@ -14,9 +16,8 @@ function ScaffoldCallToActionTour() {
         </div>
         <div style={{ fontSize: '0.83rem', marginTop: 9, display: 'flex' }}>
           <div style={{ width: 0, flexGrow: 1, color: '#888' }}>
-            Run <Code>$ npm init vite-plugin-ssr</Code> to scaffold a new Vite/<Code>vite-plugin-ssr</Code> app, or
-            add <Code>vite-plugin-ssr</Code> to your existing app by following the instructions{' '}
-            <a href="/install">here</a>.
+            Run <Code>$ npm init vite-plugin-ssr</Code> to scaffold a new Vite/<Code>vite-plugin-ssr</Code> app, or add{' '}
+            <Code>vite-plugin-ssr</Code> to your existing app by following the instructions <a href="/install">here</a>.
           </div>
         </div>
       </div>

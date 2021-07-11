@@ -89,6 +89,6 @@ function supplementHeadings(
     }),
     ...slice(headings_withoutPageHeadings, activeHeadingIdx + 1, 0)
   ]
-  assert(headings.length>0)
+  assert(headings.length > 0)
   return { headings, activeHeading }
 }

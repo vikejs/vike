@@ -10,7 +10,7 @@
   cursor: pointer;
   position: relative;
   padding-left: 20px;
-  margin-left: -20px
+  margin-left: -20px;
 }
 .doc-page h2[id]:hover::before {
   content: '#';

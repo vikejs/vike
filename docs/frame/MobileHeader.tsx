@@ -59,7 +59,7 @@ function MobileHeader() {
 
 function MenuToggle() {
   return (
-    <div style={{ padding: 20, lineHeight: 0 }} id="menu-toggle" >
+    <div style={{ padding: 20, lineHeight: 0 }} id="menu-toggle">
       <svg
         style={{ width: 20 }}
         className="icon"

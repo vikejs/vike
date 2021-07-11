@@ -7,9 +7,9 @@ jumpToSection()
 
 function installSectionUrlHashs() {
   const docPage = document.querySelector('#page-container.doc-page')
-  if( !docPage ) {
-    assert(window.location.pathname==='/')
-    return;
+  if (!docPage) {
+    assert(window.location.pathname === '/')
+    return
   }
   const navigationEl = document.getElementById('navigation-content')
   assert(navigationEl)
@@ -18,9 +18,9 @@ function installSectionUrlHashs() {
     const docTitle = docSection.textContent
     assert(docTitle)
     const docSectionId = determineSectionUrlHash(docTitle)
-    const urlHash = '#'+docSectionId
+    const urlHash = '#' + docSectionId
     const navLinks: HTMLElement[] = Array.from(navigationEl.querySelectorAll(`a[href="${urlHash}"]`))
-    assert(navLinks.length===1, {urlHash})
+    assert(navLinks.length === 1, { urlHash })
     docSection.id = docSectionId
     docSection.onclick = () => {
       window.location.hash = urlHash
@@ -32,12 +32,12 @@ function installSectionUrlHashs() {
 
 function jumpToSection() {
   const { hash } = window.location
-  if( hash==='' || hash==='#' ){
-    return;
+  if (hash === '' || hash === '#') {
+    return
   }
   assert(hash.startsWith('#'))
   const target = document.getElementById(hash.slice(1))
-  if( !target ) {
+  if (!target) {
     return
   }
   target.scrollIntoView()

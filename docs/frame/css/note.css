@@ -6,6 +6,6 @@ blockquote {
 }
 blockquote > p:first-of-type::before {
   font-family: emoji;
-  content: "ℹ️";
+  content: 'ℹ️';
   margin-right: 4px;
 }
