@@ -1,25 +1,19 @@
 import { ScaffoldCallToActionTour } from './index/ScaffoldCallToAction'
 
 Similarly to Nuxt,
-we create pages by defining new `.page.vue` files.
+we define a new page by creating a new `.page.vue` file.
 
 ```vue
 <!-- /pages/index.page.vue -->
 <!-- Environment: Browser, Node.js -->
 
 <template>
-  This page is rendered to HTML and interactive:
-  <button @click="state.count++">Counter {{ state.count }}</button>
+  This page is rendered to HTML and interactive: <Counter />
 </template>
 
 <script>
-import { reactive } from 'vue'
-export default {
-  setup() {
-    const state = reactive({ count: 0 })
-    return { state }
-  }
-}
+import Counter from '../components/Counter.vue'
+export default { components: { Counter } }
 </script>
 ```
 

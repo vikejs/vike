@@ -1,13 +1,14 @@
 import { ScaffoldCallToActionTour } from './index/ScaffoldCallToAction'
 
 Similarly to Next.js,
-we create pages by defining new `.page.jsx` files.
+we define a new page by creating a new `.page.jsx` file.
 
 ```jsx
 // /pages/index.page.jsx
 // Environment: Browser, Node.js
 
 import React, { useState } from "react";
+import { Counter } from "../components/Counter";
 
 export { Page };
 
@@ -15,15 +16,6 @@ function Page() {
   return <>
     This page is rendered to HTML and interactive: <Counter />
   </>;
-}
-
-function Counter() {
-  const [count, setCount] = useState(0);
-  return (
-    <button onClick={() => setCount((count) => count + 1)}>
-      Counter {count}
-    </button>
-  );
 }
 ```
 
