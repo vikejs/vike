@@ -37,8 +37,8 @@ function Features() {
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
           </p>
           <p>
-            Choose between <b>Client-side Routing</b> (faster/animated page transitions) and <b>Server-side Routing</b>{' '}
-            (simpler architecture).
+            Choose <b>Client-side Routing</b> (faster/animated page transitions) or <b>Server-side Routing</b> (simpler
+            architecture).
           </p>
           <p>
             Render pages with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
@@ -78,7 +78,9 @@ function Features() {
           <DeployAnywhere />
         </LearnMore>
         <Feature className="secondary-feature">
-          <h2><Emoji name="high-voltage" /> Fast</h2>
+          <h2>
+            <Emoji name="high-voltage" /> Fast
+          </h2>
           <p>
             <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
           </p>
