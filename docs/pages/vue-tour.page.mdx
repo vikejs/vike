@@ -164,7 +164,7 @@ export async function addPageContext(pageContext) {
   let movie = await response.json()
 
   // Our render and hydrate functions we defined earlier pass `pageContext.pageProps` to
-  // the root React component `Page`; this is where we define `pageProps`.
+  // the root Vue component `Page`; this is where we define `pageProps`.
   const pageProps = { movie }
 
   // We make `pageProps` available as `pageContext.pageProps`
