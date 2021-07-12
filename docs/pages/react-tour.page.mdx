@@ -168,8 +168,8 @@ export async function addPageContext(pageContext) {
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
   let movie = await response.json();
 
-  // The render and hydrate functions passes `pageContext.pageProps` to the root Vue
-  // component `Page`; this is where we define `pageProps`.
+  // Our render and hydrate functions we defined earlier pass `pageContext.pageProps` to
+  // the root Vue component `Page`; this is where we define `pageProps`.
   const pageProps = { movie };
 
   // We make `pageProps` available as `pageContext.pageProps`
