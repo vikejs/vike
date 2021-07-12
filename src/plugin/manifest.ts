@@ -1,6 +1,5 @@
 import { Plugin } from 'vite'
-import { assert, normalizePath } from '../utils'
-import { version } from '../package.json'
+import { assert, normalizePath, projectInfo } from '../utils'
 
 export { manifest }
 
@@ -18,10 +17,9 @@ function manifest(): Plugin {
       if (ssr) return
       assert(typeof base === 'string')
       assert(typeof ssr === 'boolean')
-      const doesClientSideRouting = includesClientSideRouter(bundle as any)
       const manifest = {
-        version,
-        doesClientSideRouting,
+        version: projectInfo.version,
+        doesClientSideRouting: includesClientSideRouter(bundle as any),
         base
       }
       this.emitFile({

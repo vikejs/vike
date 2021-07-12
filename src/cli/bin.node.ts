@@ -1,8 +1,8 @@
 import { cac } from 'cac'
 import { prerender } from '../prerender'
-const pkg = require('../../../package.json')
+import { projectInfo } from '../utils'
 
-const cli = cac(pkg.name)
+const cli = cac(projectInfo.name)
 
 cli
   .command('prerender')
@@ -29,7 +29,7 @@ cli.on('command:*', () => {
 })
 
 cli.help()
-cli.version(pkg.version)
+cli.version(projectInfo.version)
 
 cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
 

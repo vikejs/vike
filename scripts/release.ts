@@ -80,7 +80,7 @@ function getVersion(): { versionNew: string; versionOld: string } {
 }
 function updateVersionMacro(versionOld: string, versionNew: string) {
   VITE_PLUGIN_SSR_VERSION_FILES.forEach((filePath) => {
-    const getCodeSnippet = (version: string) => `const VITE_PLUGIN_SSR_VERSION = 'v${version}'`
+    const getCodeSnippet = (version: string) => `const VITE_PLUGIN_SSR_VERSION = '${version}'`
     const codeSnippetOld = getCodeSnippet(versionOld)
     const codeSnippetNew = getCodeSnippet(versionNew)
     const contentOld = readFileSync(filePath, 'utf8')

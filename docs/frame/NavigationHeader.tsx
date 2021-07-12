@@ -7,7 +7,7 @@ import iconChangelog from './icons/changelog.svg'
 
 export { NavigationHeader }
 
-const VITE_PLUGIN_SSR_VERSION = 'v0.1.5'
+const VITE_PLUGIN_SSR_VERSION = '0.1.5'
 
 function NavigationHeader() {
   const SIZE = 55
@@ -82,7 +82,7 @@ function ChangelogButton() {
         color: 'inherit'
       }}
     >
-      <span className="decolorize-7">{VITE_PLUGIN_SSR_VERSION}</span>
+      <span className="decolorize-7">v{VITE_PLUGIN_SSR_VERSION}</span>
       <img className="decolorize-6" src={iconChangelog} height={16} style={{ marginLeft: 5 }} />
     </a>
   )

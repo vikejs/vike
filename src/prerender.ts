@@ -3,11 +3,20 @@ import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
-import { assert, assertUsage, assertWarning, hasProp, getFileUrl, moduleExists, isPlainObject, castProp } from './utils'
+import {
+  assert,
+  assertUsage,
+  assertWarning,
+  hasProp,
+  getFileUrl,
+  moduleExists,
+  isPlainObject,
+  castProp,
+  projectInfo
+} from './utils'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
-import { version } from './package.json'
 
 export { prerender }
 
@@ -37,7 +46,7 @@ async function prerender({
   base?: string
 } = {}) {
   assertArguments(partial, noExtraDir, clientRouter, base)
-  console.log(`${cyan(`vite-plugin-ssr ${version}`)} ${green('pre-rendering HTML...')}`)
+  console.log(`${cyan(`vite-plugin-ssr ${projectInfo.version}`)} ${green('pre-rendering HTML...')}`)
 
   const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
   assertUsage(
@@ -47,8 +56,8 @@ async function prerender({
       '`.)'
   )
   assertUsage(
-    pluginManifest.version === version,
-    `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
+    pluginManifest.version === projectInfo.version,
+    `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
   const _serializedPageContextClientNeeded: boolean = pluginManifest.doesClientSideRouting
   const baseUrl: string = pluginManifest.base
@@ -290,7 +299,7 @@ function getPluginManifest(
   assert(typeof doesClientSideRouting === 'boolean')
   assert(typeof base === 'string')
 
-  const pluginManifest = { version, base, doesClientSideRouting }
+  const pluginManifest = { version: projectInfo.version, base, doesClientSideRouting }
   return { pluginManifest, pluginManifestPath }
 }
 
