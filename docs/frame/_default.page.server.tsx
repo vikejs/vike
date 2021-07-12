@@ -37,6 +37,8 @@ function render(pageContext: PageContext) {
   )
   const pageHtml = ReactDOMServer.renderToString(page)
   const isLandingPage = pageContext.url === '/'
+  const title =
+    (activeHeading.titleDocument || jsxToTextContent(activeHeading.title)) + (isLandingPage ? '' : ' | vite-plugin-ssr')
   const desc = html.dangerouslySkipEscape(
     '<meta name="description" content="Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin." />'
   )
@@ -44,7 +46,7 @@ function render(pageContext: PageContext) {
     <html>
       <head>
         <link rel="icon" href="${logo}" />
-        <title>${activeHeading.titleDocument || jsxToTextContent(activeHeading.title)}</title>
+        <title>${title}</title>
         ${isLandingPage ? desc : ''}
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
       </head>
