@@ -2,6 +2,7 @@ import React from 'react'
 import './Features.css'
 import iconChevron from '../../../frame/icons/chevron.svg'
 import { assert } from '../../../utils'
+import { Emoji } from '../../../utils/Emoji'
 import Control from './Control.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
 import Scalable from './Scalable.mdx'
@@ -14,7 +15,9 @@ function Features() {
     <div id="features">
       <div className="features-primary-row">
         <Feature name="control" isExpandable={true} className="primary-feature">
-          <h2>{String.fromCodePoint(0x1f527)} Control</h2>
+          <h2>
+            <Emoji name="wrench" /> Control
+          </h2>
           <p>
             Keep control over how your pages are rendered and use <b>any view framework</b> (React, Vue, Svelte, ...)
             and <b>any tool</b> you want (Vuex/Redux, PullState, RPC, GraphQL, Service Workers, ...).
@@ -27,7 +30,9 @@ function Features() {
           <Control />
         </LearnMore>
         <Feature className="primary-feature">
-          <h2>{String.fromCodePoint(0x1f9be)} Full-fledged</h2>
+          <h2>
+            <Emoji name="mechanical-arm" /> Full-fledged
+          </h2>
           <p>
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
           </p>
@@ -40,7 +45,9 @@ function Features() {
           </p>
         </Feature>
         <Feature className="primary-feature">
-          <h2>{String.fromCodePoint(0x1faa8)} Rock-solid</h2>
+          <h2>
+            <Emoji name="mountain" /> Rock-solid
+          </h2>
           <p>
             The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>.
           </p>
@@ -55,7 +62,9 @@ function Features() {
       </div>
       <div className="features-secondary-row">
         <Feature name="deploy-anywhere" isExpandable={true} className="secondary-feature">
-          <h2>{String.fromCodePoint(0x1f30d)} Deploy Anywhere</h2>
+          <h2>
+            <Emoji name="earth" /> Deploy Anywhere
+          </h2>
           <p>
             Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
             Express.js, Fastify, Hapi, ...).
@@ -69,7 +78,7 @@ function Features() {
           <DeployAnywhere />
         </LearnMore>
         <Feature className="secondary-feature">
-          <h2>{String.fromCodePoint(0x26a1)} Fast</h2>
+          <h2><Emoji name="high-voltage" /> Fast</h2>
           <p>
             <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
           </p>
@@ -81,7 +90,9 @@ function Features() {
       </div>
       <div className="features-secondary-row">
         <Feature name="scalable" isExpandable={true} className="secondary-feature">
-          <h2>{String.fromCodePoint(0x1f680)} Scalable</h2>
+          <h2>
+            <Emoji name="rocket" /> Scalable
+          </h2>
           <p>
             Scale to 100 kLOCs while keeping <b>fast HMR / dev speed</b>.
           </p>
@@ -95,7 +106,7 @@ function Features() {
         </LearnMore>
         <Feature className="secondary-feature">
           <h2>
-            <span style={{ fontFamily: 'reset' }}>{String.fromCodePoint(0x2764)}</span> Craft
+            <Emoji name="red-heart" /> Craft
           </h2>
           <p>
             Crafted with <b>attention to details</b> and <b>care for simplicity</b>.

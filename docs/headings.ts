@@ -1,5 +1,6 @@
 import React from 'react'
 import { assert } from './utils'
+import { Emoji, EmojiName } from './utils/Emoji'
 
 export { parse }
 
@@ -35,7 +36,7 @@ export type Heading = HeadingBase &
 export const headings: Heading[] = [
   {
     level: 1,
-    title: withEmoji('Compass', 'Overview')
+    title: withEmoji('compass', 'Overview')
   },
   {
     level: 2,
@@ -55,7 +56,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: withEmoji('Seedling', 'Get Started')
+    title: withEmoji('seedling', 'Get Started')
   },
   {
     level: 2,
@@ -69,7 +70,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: withEmoji('Books', 'Guides')
+    title: withEmoji('books', 'Guides')
   },
   {
     level: 4,
@@ -126,7 +127,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: withEmoji('Plug', 'Integration')
+    title: withEmoji('plug', 'Integration')
   },
   {
     level: 2,
@@ -164,7 +165,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: withEmoji('Earth', 'Deploy')
+    title: withEmoji('earth', 'Deploy')
   },
   {
     level: 2,
@@ -195,7 +196,7 @@ export const headings: Heading[] = [
   },
   {
     level: 1,
-    title: withEmoji('Gear', 'API')
+    title: withEmoji('gear', 'API')
   },
   {
     level: 4,
@@ -407,22 +408,8 @@ function parse(title: string): JSX.Element {
   return titleJsx
 }
 
-type EmojiName = 'Compass' | 'Seedling' | 'Books' | 'Plug' | 'Earth' | 'Gear'
-
-function withEmoji(emojiName: EmojiName, title: string): JSX.Element {
-  return React.createElement(React.Fragment, {}, Emoji(emojiName), ' ', title)
-}
-
-function Emoji(name: EmojiName): JSX.Element {
-  const codePoint =
-    (name === 'Compass' && 0x1f9ed) ||
-    (name === 'Seedling' && 0x1f331) ||
-    (name === 'Books' && 0x1f4da) ||
-    (name === 'Plug' && 0x1f50c) ||
-    (name === 'Earth' && 0x1f30d) ||
-    (name === 'Gear' && 0x2699)
-  assert(codePoint)
-  const str = String.fromCodePoint(codePoint)
+function withEmoji(name: EmojiName, title: string): JSX.Element {
   const style = { fontSize: '1.4em' }
-  return React.createElement('span', { style }, str)
+  //return React.createElement(React.Fragment, null, Emoji({ name, style }), ' ', title)
+  return React.createElement('span', { style }, Emoji({ name }), ' ', React.createElement('span', { style: {fontSize: '1rem'}}, title))
 }
