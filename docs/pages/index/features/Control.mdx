@@ -1,5 +1,19 @@
 With `vite-plugin-ssr`, we keep control over how we render our pages.
 
+```jsx
+// /pages/about.page.js
+// Environment: Node.js, Browser
+
+export { Page }
+
+// `Page` can be anything we want such as a React/Vue/Svelte/... component.
+function Page() {
+  return <>
+    <h1>About</h1>
+    <p>This is my first vite-plugin-ssr app.</p>
+  </>
+}
+```
 ```js
 // _default.page.server.js
 // Environment: Node.js
@@ -7,9 +21,10 @@ With `vite-plugin-ssr`, we keep control over how we render our pages.
 import { html } from 'vite-plugin-ssr'
 
 // This can be any view framework (React, Vue, Svelte, ...)
-import { renderToHtml } from 'some-view-framework'
+import { renderToHtml } from 'my-favorite-view-framework'
 
 export async function render(pageContext) {
+  // We control how we render our `Page` to HTML
   const pageHtml = await renderToHtml(pageContext.Page)
   const title = 'My first vite-plugin-ssr app'
   return html`<!DOCTYPE html>
@@ -23,13 +38,12 @@ export async function render(pageContext) {
     </html>`
 }
 ```
-
 ```js
 // _default.page.client.js
 // Environment: Browser
 
 import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom } from 'some-view-framework'
+import { hydrateToDom } from 'my-favorite-view-framework'
 
 // This file defines the *entire* browser-side code.
 // If we leave this file empty then there is zero browser-side JavaScript.
@@ -39,6 +53,7 @@ hydrate()
 async function hydrate() {
   const pageContext = await getPage()
   const { Page } = pageContext
+  // We control how we hydrate our `Page`
   await hydrateToDom(Page)
 }
 ```
