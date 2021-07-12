@@ -168,8 +168,8 @@ export async function addPageContext(pageContext) {
   const response = await fetch(`https://swapi.dev/api/films/${movieId}`)
   let movie = await response.json();
 
-  // The render and hydrate functions we defined earlier use `pageContext.pageProps`; this
-  // is where we define `pageProps`.
+  // The render and hydrate functions passes `pageContext.pageProps` to the root Vue
+  // component `Page`; this is where we define `pageProps`.
   const pageProps = { movie };
 
   // We make `pageProps` available as `pageContext.pageProps`
@@ -179,7 +179,7 @@ export async function addPageContext(pageContext) {
 // By default `pageContext` is available only on the server. But our hydrate function
 // we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
 // `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
-// available in the browser.
+// available to the browser.
 export const passToClient = ["pageProps"];
 ```
 
