@@ -30,7 +30,7 @@ We can also define a page's route with a *Route String* (for parameterized route
 
 ```js
 // /pages/index.page.route.js
-// Environment: Node.js (and Browser if we opt-in for Client-side Routing)
+// Environment: Node.js (and Browser if we choose Client-side Routing)
 
 // Note how the two files share the same base `/pages/index.page.`; this is how `vite-plugin-ssr`
 // knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.jsx`.
@@ -94,7 +94,7 @@ async function hydrate() {
 
 The `render()` hook in `/pages/_default.page.server.jsx` gives us full control over how our pages are rendered to HTML,
 and `/pages/_default.page.client.jsx` gives us full control over the browser-side code.
-This control enables us to *easily* and *naturally* use any tool we want (Redux, GraphQL, Service Worker, Preact, ...).
+This control enables us to *easily* and *naturally* integrate any tool we want (Redux, GraphQL, Service Worker, Preact, ...).
 
 There are four suffixes:
  - `.page.js`: exports the page's root React component.
@@ -126,7 +126,7 @@ function Page() {
 ```
 
 By also overriding the `render()` hook we can
-even render a page with a completly different view framework, e.g. Vue or another React version (for progressive React version upgrade).
+even render a page with a completely different view framework, e.g. Vue or another React version (for progressive React version upgrade).
 
 Let's now have a look at how to fetch data.
 
@@ -183,7 +183,7 @@ export async function addPageContext(pageContext) {
 export const passToClient = ["pageProps"];
 ```
 
-That's it, and we have actually already seen most of the interface;
+That's it for the tour and we have actually already seen most of the interface;
 `vite-plugin-ssr` is not only flexible but also simple & easy to use.
 
 <ScaffoldCallToActionTour />
