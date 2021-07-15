@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "node ./server",
+    "dev": "node ./dev-server",
     "prod": "npm run build:vite && wrangler dev",
     "deploy": "npm run build:vite && wrangler publish",
     "build": "npm run build:vite && npm run build:worker",

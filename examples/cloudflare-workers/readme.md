@@ -10,6 +10,17 @@ To run it:
 2. Create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
 
 3. ```bash
-    npm install
-    npm run prod
-    ```
+   npm install
+   ```
+   To develop (for increased dev speed we use an Express.js dev server):
+   ```bash
+   npm run dev
+   ```
+   To build and try the worker locally:
+   ```bash
+   npm run prod
+   ```
+   To build and deploy the worker to Cloudflare Workers:
+   ```bash
+   npm run deploy
+   ```
