@@ -17,6 +17,11 @@ function importer(): Plugin {
         type: 'asset',
         source: getImporterCode()
       })
+      this.emitFile({
+        fileName: `renderPage.js`,
+        type: 'asset',
+        source: getRenderPageCode()
+      })
     }
   } as Plugin
 }
@@ -32,6 +37,33 @@ setViteManifest({ clientManifest, serverManifest });
 setPageFiles(pageFiles);
 `
 }
+
+
+/* Source: https://www.typescriptlang.org/play?module=1#code/JYWwDg9gTgLgBAbzgYygUwIYzQBQwczQCU0A7AEzSjgF84AzKCEOAIgDdhsBaMAGwCu+YKW4BnMVFYBuAFChIsNgDoA9AujYoygFZiZs5BFJj46ClTyE4AXhTosuAsTKUoACiTAxOJuQHIMMDGAFxwMFACaLQAlHJoAB6K8EjmblbRNNJAA
+ *  ```ts
+ *  import { createPageRender } from "vite-plugin-ssr";
+ *  import "./importer.js";
+ *  const renderPage = createPageRender({ isProduction: true });
+ *  export { renderPage };
+ *  ```
+ */
+function getRenderPageCode(): string {
+  return `"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.renderPage = void 0;
+const vite_plugin_ssr_1 = require("vite-plugin-ssr");
+require("./importer.js");
+const renderPage = vite_plugin_ssr_1.createPageRender({ isProduction: true });
+exports.renderPage = renderPage;
+`
+}
+
+/*
+`
+import "./importer.js";
+declare const renderPage: typeof import("vite-plugin-ssr/dist/cjs/renderPage.node").renderPage;
+export { renderPage };`
+*/
 
 function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
   return !!config?.build?.ssr
