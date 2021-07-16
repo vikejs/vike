@@ -75,7 +75,13 @@ function getVersion(): { versionNew: string; versionOld: string } {
   const pkg = require(`${DIR_SRC}/package.json`) as PackageJson
   const versionOld = pkg.version
   assert(versionOld)
-  const versionNew = semver.inc(versionOld, 'patch')
+  const cliArgs = getCliArgs()
+  let versionNew = cliArgs[0]
+  if (!versionNew) {
+    versionNew = semver.inc(versionOld, 'patch')
+  }
+  assert(versionNew.startsWith('0.'))
+  assert(versionOld.startsWith('0.'))
   return { versionNew, versionOld }
 }
 function updateVersionMacro(versionOld: string, versionNew: string) {
@@ -164,4 +170,8 @@ type PackageJson = {
 async function run(cmd: string, args: string[], { cwd = DIR_ROOT } = {}): Promise<void> {
   const stdio = 'inherit'
   await execa(cmd, args, { cwd, stdio })
+}
+
+function getCliArgs(): string[] {
+  return process.argv.slice(2)
 }
