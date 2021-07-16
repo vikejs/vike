@@ -15,8 +15,8 @@ To run it:
 
 To develop (for increased dev speed we use an Express.js dev server instead of `vercel dev`):
 - ```bash
-  yarn install
-  yarn dev
+  npm install
+  npm run dev
   ```
 
 To deploy (using Vercel's Git integration, we simply have to push our code to GitHub/GitLab/...):
