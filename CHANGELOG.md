@@ -1,3 +1,16 @@
+# [0.2.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.5...v0.2.0) (2021-07-16)
+
+
+* improve `dist/server/importBuild.js` ergonomics ([cad8683](https://github.com/brillout/vite-plugin-ssr/commit/cad868369754aeb7093c71c97b57f4a769e43c22))
+
+
+### BREAKING CHANGES
+
+* `dist/server/importer.js` has been renamed to
+`dist/server/importBuild.js`.
+
+
+
 ## [0.1.5](https://github.com/brillout/vite-plugin-ssr/compare/v0.1.4...v0.1.5) (2021-07-11)
 
 
