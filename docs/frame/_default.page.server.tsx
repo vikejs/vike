@@ -74,8 +74,13 @@ function supplementHeadings(
     }
     return heading
   })
-  assert(typeof activeHeadingIdx === 'number')
-  assert(activeHeading, { urls: headings_static.map((h) => h.url), url: pageContext.url })
+  const debugInfo = {
+    msg: 'Page not found for url: ' + pageContext.url,
+    urls: headings_static.map((h) => h.url),
+    url: pageContext.url
+  }
+  assert(typeof activeHeadingIdx === 'number', debugInfo)
+  assert(activeHeading, debugInfo)
   const pageHeadings = pageContext.pageExports.headings || []
   const headings: Heading[] = [
     ...slice(headings_withoutPageHeadings, 0, activeHeadingIdx + 1),
