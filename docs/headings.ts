@@ -103,7 +103,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: parse('HTML `head`'),
-    url: '/HTML-head'
+    url: '/html-head'
   },
   {
     level: 2,

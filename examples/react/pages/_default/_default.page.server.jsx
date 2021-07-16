@@ -6,7 +6,7 @@ import { PageLayout } from "./PageLayout";
 export { render };
 export { passToClient };
 
-// See https://github.com/brillout/vite-plugin-ssr#data-fetching
+// See https://vite-plugin-ssr.com/data-fetching
 const passToClient = ["pageProps"];
 
 function render(pageContext) {

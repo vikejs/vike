@@ -8,7 +8,7 @@ import logoUrl from "./logo.svg";
 export { render };
 export { passToClient };
 
-// See https://github.com/brillout/vite-plugin-ssr#data-fetching
+// See https://vite-plugin-ssr.com/data-fetching
 const passToClient = ["pageProps"];
 
 function render(pageContext: PageContext) {
@@ -19,7 +19,7 @@ function render(pageContext: PageContext) {
     </PageLayout>
   );
 
-  // See https://github.com/brillout/vite-plugin-ssr#html-head
+  // See https://vite-plugin-ssr.com/html-head
   const { documentProps } = pageContext;
   const title = (documentProps && documentProps.title) || "Vite SSR app";
   const desc = (documentProps && documentProps.description) || "App using Vite + vite-plugin-ssr";
