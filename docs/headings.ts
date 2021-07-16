@@ -411,5 +411,11 @@ function parse(title: string): JSX.Element {
 function withEmoji(name: EmojiName, title: string): JSX.Element {
   const style = { fontSize: '1.4em' }
   //return React.createElement(React.Fragment, null, Emoji({ name, style }), ' ', title)
-  return React.createElement('span', { style }, Emoji({ name }), ' ', React.createElement('span', { style: {fontSize: '1rem'}}, title))
+  return React.createElement(
+    'span',
+    { style },
+    Emoji({ name }),
+    ' ',
+    React.createElement('span', { style: { fontSize: '1rem' } }, title)
+  )
 }
