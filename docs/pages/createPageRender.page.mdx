@@ -55,7 +55,7 @@ async function startServer() {
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by our `render()` hook.
 
-Since `createPageRender()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers.
+Since `createPageRender()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers or Vercel.
 
 Examples:
  - <RepoLink text='JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />

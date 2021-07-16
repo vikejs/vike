@@ -180,6 +180,11 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
+    title: 'Vercel',
+    url: '/vercel'
+  },
+  {
+    level: 2,
     title: 'AWS Lambda',
     url: '/aws-lambda'
   },

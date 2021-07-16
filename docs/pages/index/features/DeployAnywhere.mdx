@@ -8,7 +8,7 @@ const renderPage = createPageRender(/* ... */)
 
 // `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
 app.get('*', async (req, res) => {
-  // We can also use `renderPage()` in serverless environments such as Cloudflare Workers
+  // We can also use `renderPage()` in serverless environments such as Cloudflare Workers or Vercel
   const result = await renderPage({ url: req.url })
   res.send(result.renderResult)
 })

@@ -109,7 +109,8 @@ From a server architecture perspective, `vite-plugin-ssr` is just a server middl
 app.get('*', async (req, res) => {
   // The `renderPage()` function, for a given URL, returns the result of our
   // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
-  // can be used in any server environment, including serverless such as Cloudflare Workers.
+  // can be used in any server environment, including serverless such as Cloudflare Workers
+  // or Vercel.
   const result = await renderPage({ url: req.url })
   res.send(result.renderResult)
 })
@@ -120,6 +121,6 @@ By [pre-rendering](/pre-rendering) we can remove the need for a Node.js producti
 We can use:
 - Any server framework (Express, Koa, Fastify, Hapi, ...)
 - Any authentication strategy & tool (email/password, OAuth, NextAuth.js, Passport.js, Grant, Auth0, ...).
-- Any serverless environment (Cloudflare Workers, Firebase, AWS Lambda, Google Cloud Functions, ...)
+- Any serverless environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, ...)
 - Any server environment (AWS EC2, Google Cloud, ...)
 - Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)

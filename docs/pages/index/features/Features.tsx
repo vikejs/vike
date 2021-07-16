@@ -66,7 +66,7 @@ function Features() {
             <Emoji name="earth" /> Deploy Anywhere
           </h2>
           <p>
-            Use <b>any server environement</b> you want (Cloudflare Workers, EC2 instance, AWS lambda, Firebase,
+            Use <b>any server environement</b> you want (Cloudflare Workers, Vercel, EC2 instance, AWS lambda, Firebase,
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>

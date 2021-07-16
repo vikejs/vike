@@ -1,8 +1,12 @@
 {
   "scripts": {
+    "// For increased dev speed we use an Express.js dev server instead of wrangler": "",
     "dev": "node ./dev-server",
+    "// To build and try the worker locally": "",
     "prod": "npm run build:vite && wrangler dev",
+    "// To build and deploy the worker to Cloudflare Workers": "",
     "deploy": "npm run build:vite && wrangler publish",
+    "// Build process": "",
     "build": "npm run build:vite && npm run build:worker",
     "build:vite": "vite build && vite build --ssr",
     "build:worker": "wrangler build"

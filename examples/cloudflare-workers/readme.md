@@ -1,4 +1,4 @@
-Example of using [Cloudflare Workers](https://workers.cloudflare.com/).
+Example of deploying a Vite + `vite-plugin-ssr` app to [Cloudflare Workers](https://workers.cloudflare.com/).
 
 To run it:
 
@@ -12,7 +12,7 @@ To run it:
 3. ```bash
    npm install
    ```
-   To develop (for increased dev speed we use an Express.js dev server):
+   To develop (for increased dev speed we use an Express.js dev server instead of `wrangler`):
    ```bash
    npm run dev
    ```
