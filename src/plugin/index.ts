@@ -3,14 +3,14 @@ import { assertUsage } from '../utils'
 import { build } from './build'
 import { dev } from './dev'
 import { manifest } from './manifest'
-import { importer } from './importer'
+import { importBuildCode } from './importBuildCode'
 
 export default plugin
 export { plugin }
 export { plugin as ssr }
 
 function plugin(): Plugin[] {
-  return [dev(), build(), manifest(), importer()]
+  return [dev(), build(), manifest(), importBuildCode()]
 }
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`

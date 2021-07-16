@@ -1,3 +1,3 @@
-- Forbid `root` option in `createPageRender` when using `importer.js`
-- Unify all page retrieval around `pageContext._pageFiles`
+- Update all references to readme docs
+- ? Unify all page retrieval around `pageContext._pageFiles`
 - Filesystem Routing: ingore page with `.page.route.js` file
