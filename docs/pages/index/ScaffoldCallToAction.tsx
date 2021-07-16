@@ -17,7 +17,7 @@ function ScaffoldCallToActionTour() {
         <div style={{ fontSize: '0.83rem', marginTop: 9, display: 'flex' }}>
           <div style={{ width: 0, flexGrow: 1, color: '#888' }}>
             Run <Code>$ npm init vite-plugin-ssr</Code> to scaffold a new Vite/<Code>vite-plugin-ssr</Code> app, or add{' '}
-            <Code>vite-plugin-ssr</Code> to your existing app by following the instructions <a href="/install">here</a>.
+            <Code>vite-plugin-ssr</Code> to your existing app by following the instructions <a href="/add">here</a>.
           </div>
         </div>
       </div>
