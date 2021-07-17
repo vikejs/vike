@@ -3,7 +3,7 @@ import { loadPageRoutes, getPageIds, getRouteStrings } from 'vite-plugin-ssr/rou
 export async function getRoutes() {
   const [ pageIds, pageRoutes ] = await Promise.all([ getPageIds(), loadPageRoutes() ]);
 
-  const routes = getRouteStrings(Object.values(pageRoutes), pageIds);
+  const routes = getRouteStrings(Object.entries(pageRoutes).map(([pageId, route]) => ({...route, pageId})), pageIds);
 
   routes.forEach(route => {
     if (typeof route.pageRoute === 'function') {

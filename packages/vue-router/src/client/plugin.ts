@@ -1,4 +1,4 @@
-import { getContextProps, getPageById } from 'vite-plugin-ssr/client/router'
+import { getPageContext, getPageById } from 'vite-plugin-ssr/client/router'
 import { reactive, App } from 'vue';
 import { Router } from 'vue-router';
 import { getRoutes } from '../isomorphic/get-routes';
@@ -38,7 +38,7 @@ export function vitePluginSsrRoutes(config={}) {
         await initRoutesPromise
 
         if (to.meta.isViteSsrPageRoute && !contextPropsByPath[to.fullPath]) {
-          const contextProps = await getContextProps(to.fullPath);
+          const contextProps = await getPageContext(to.fullPath);
 
           contextPropsByPath[to.fullPath] = contextProps;
 

@@ -6,6 +6,7 @@
     "prerender": "cross-env NODE_ENV=production vite-plugin-ssr prerender"
   },
   "dependencies": {
+    "@vite-plugin-ssr/vue-router": "file:../../packages/vue-router/",
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.11",
     "@vue/server-renderer": "^3.0.11",
@@ -13,8 +14,7 @@
     "vite": "^2.3.6",
     "vite-plugin-ssr": "0.2.0",
     "vue": "^3.0.11",
-    "vue-router": "^4.0.5",
-    "@vite-plugin-ssr/vue-router": "^0.1.0"
+    "vue-router": "^4.0.5"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"

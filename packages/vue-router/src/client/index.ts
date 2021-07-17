@@ -16,9 +16,19 @@ async function matchRoutes(
   const resolved = router.resolve(url);
 
   if (resolved.matched && resolved.matched.length) {
+    const routeParams = Object.fromEntries(
+      Object.entries(resolved.params)
+        .map(([k,v]) => {
+          if (Array.isArray(v)) {
+            console.warn(`Vue router param ${k} has multiple values. This is not supported by vite-plugin-ssr`);
+            return [k,v[0]]
+          }
+          return [k,v]
+        })
+    );
     return {
       pageId: resolved.name as string,
-      routeParams: resolved.params
+      routeParams
     }
   }
 
