@@ -52,17 +52,21 @@
   }
 }
 
+:root {
+  --header-max-width: 960px;
+}
 #header {
   display: flex;
   margin: auto;
+  max-width: var(--header-max-width);
+  padding: var(--header-padding);
 }
 @media screen and (min-width: 720px) {
+  :root {
+    --header-padding: 20px;
+  }
   #header {
-    max-width: 960px;
-    padding-left: 20px;
-    padding-right: 20px;
     padding-top: 50px;
-    padding-bottom: 20px;
   }
   .header-separator-line {
     padding-top: 25px;
@@ -87,8 +91,10 @@
   }
 }
 @media screen and (max-width: 1159px) {
+  :root {
+    --header-padding: 10px;
+  }
   #header {
-    padding: 0 10px;
     padding-top: 30px;
     padding-bottom: 20px;
     justify-content: center;

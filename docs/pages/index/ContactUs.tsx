@@ -5,10 +5,10 @@ export { ContactUs }
 function ContactUs() {
   const style: React.CSSProperties = {
     fontSize: '1.5em',
-    padding: 20,
     textAlign: 'center',
     margin: 'auto',
-    maxWidth: 1000
+    padding: 'var(--header-padding)',
+    maxWidth: 'var(--header-max-width)'
   }
   return (
     <p style={style}>
