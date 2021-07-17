@@ -91,6 +91,14 @@ async function hydrate() {
 }
 ```
 
+> You may see `import { createSSRApp, h } from 'vue'` for the first time
+> but every SSR Vue app actually uses `createSSRApp` and `h`.
+> Nuxt abstracts this away from us and gives us a faster getting started but
+> we loose control over a central piece of architecture which means that things will eventualy break as we scale.
+> We'll then loose *much* more time circumventing Nuxt's black box & limitations.
+> The boilerplate `npm init vite-plugin-ssr@latest` provides a functioning setup
+> that will require only small adaptations for most users.
+
 The `render()` hook in `/pages/_default.page.server.js` gives us full control over how our pages are rendered to HTML,
 and `/pages/_default.page.client.js` gives us full control over the browser-side code.
 This control enables us to *easily* and *naturally* integrate any tool we want (Vuex, GraphQL, Service Worker, ...).
