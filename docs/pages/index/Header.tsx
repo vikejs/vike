@@ -3,6 +3,7 @@ import './Header.css'
 import iconPlugin from '../../frame/icons/vite-plugin-ssr.svg'
 import iconReact from '../../frame/icons/react.svg'
 import iconVue from '../../frame/icons/vue.svg'
+import { HorizontalLine } from './HorizontalLine'
 import { CallToActionDescription, ScaffoldCallToAction } from './ScaffoldCallToAction'
 
 export { Header }
@@ -15,7 +16,6 @@ function Header() {
         <LeftSide />
         <RightSide />
       </div>
-      <HorizontalLine />
     </>
   )
 }
@@ -99,26 +99,10 @@ function CallToAction({ href, text, icon }: { href: string; text: string; icon: 
 
 function MobileCallToAction() {
   return (
-    <div id="mobile-call-to-action" style={{ marginTop: -50, marginBottom: 60 }}>
+    <div id="mobile-call-to-action">
       <HorizontalLine />
+      <div style={{ height: 10 }} />
       <TourCallToAction style={{ maxWidth: 400, padding: '0 10px', margin: 'auto', textAlign: 'center' }} />
-    </div>
-  )
-}
-
-function HorizontalLine() {
-  return (
-    <div className="header-separator-line" style={{ textAlign: 'center' }}>
-      <hr
-        style={{
-          display: 'inline-block',
-          margin: 0,
-          border: 0,
-          borderTop: '1px solid #eee',
-          maxWidth: 500,
-          width: '80%'
-        }}
-      />
     </div>
   )
 }

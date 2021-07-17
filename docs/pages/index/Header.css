@@ -59,9 +59,17 @@
 @media screen and (min-width: 720px) {
   #header {
     max-width: 960px;
-    padding: 50px 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 50px;
+    padding-bottom: 20px;
   }
   .header-separator-line {
+    padding-top: 25px;
+    padding-bottom: 25px;
+  }
+  .header-separator-line.primary {
+    padding-top: 45px;
     padding-bottom: 45px;
   }
   #header-logo {
@@ -89,6 +97,7 @@
     max-width: 400px;
   }
   .header-separator-line {
+    padding-top: 15px;
     padding-bottom: 15px;
   }
   #header-logo {
