@@ -158,6 +158,11 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
+    title: 'Sass / Less / Stylus',
+    url: '/sass'
+  },
+  {
+    level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
     titleAddendum: 'CSS Frameworks, Service Workers, ...',
