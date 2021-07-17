@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "strict": true,
-    "module": "CommonJS",
+    "module": "ES2020",
+    "moduleResolution": "Node",
     "target": "ES2017",
     "lib": ["DOM"],
     "jsx": "react",
@@ -9,6 +10,9 @@
     "esModuleInterop": true
   },
   "ts-node": {
-    "transpileOnly": true
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
   }
 }

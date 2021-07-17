@@ -1,2 +1,2 @@
-- rename pageProps to clientProps
-- add granular unit tests
+- Unify all page retrieval around `pageContext._pageFiles`
+- Filesystem Routing: ingore page with `.page.route.js` file

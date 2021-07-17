@@ -1,0 +1,16 @@
+> Check out the [Pre-rendering Guide](/pre-rendering) to for an overview of how to pre-render a `vite-plugin-ssr` app.
+
+The `prerender` command executes pre-rendering.
+
+It can be called:
+ - As CLI command: `$ npx vite-plugin-ssr prerender` / `$ yarn vite-plugin-ssr prerender`.
+ - As JavaScript API: `import { prerender } from 'vite-plugin-ssr/cli`.
+
+Options:
+ - `partial`: Allow only a subset of pages to be pre-rendered. (Pages with a parameterized route cannot be pre-rendered without `prerender()` hook; the `--partial` option suppresses the warning telling you about pages not being pre-rendered.)
+ - `no-extra-dir`/`noExtraDir`: Do not create a new directory for each page, e.g. generate `dist/client/about.html` instead of `dist/client/about/index.html`.
+ - `root`: The root directory of your project (where `vite.config.js` and `dist/` live). Default: `process.cwd()`.
+
+Options are passed like this:
+ - CLI: `$ vite-plugin-ssr prerender --partial --no-extra-dir --root path/to/root`
+ - API: `prerender({ partial: true, noExtraDir: true, root: 'path/to/root' })`

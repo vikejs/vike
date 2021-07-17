@@ -1,0 +1,32 @@
+By default `vite-plugin-ssr` does Filesystem Routing: the URL of a page is determined based on where its `.page.js` file is located.
+
+```
+FILESYSTEM                        URL              COMMENT
+pages/about.page.js               /about
+pages/index/index.page.js         /                (`index` is mapped to the empty string)
+pages/HELLO.page.js               /HELLO           (Mapping is case sensitive)
+```
+
+In the above example, the common ancestor directory `pages/` is considered the URL root `/`.
+
+The common ancestor directory doesn't have to be `pages/`; we can save our `.page.js` files wherever we want. For example:
+
+```
+FILESYSTEM                        URL
+user/list.page.js                 /user/list
+user/create.page.js               /user/create
+todo/list.page.js                 /todo/list
+todo/create.page.js               /todo/create
+```
+
+We can also move our page files in a `src/` directory.
+
+```
+FILESYSTEM                        URL
+src/pages/index.page.js           /
+src/pages/about.page.js           /about
+```
+
+The common ancestor directory is then `src/pages/`.
+
+For more control over routing, we can define Route Strings or Route Functions in [`.page.route.js`](/.page.route.js) files.

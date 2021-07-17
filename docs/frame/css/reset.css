@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+
+/* Avoid tweet embeds to overflow the body width.
+ * Settings `overflow: hidden` to a container doesn't work (This is a CSS bug?) */
+iframe {
+  max-width: 100%;
+}

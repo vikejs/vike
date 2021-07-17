@@ -35,7 +35,7 @@ async function getPageById(pageId: string): Promise<{ Page: unknown; pageExports
   const fileExports = await loadFile()
   assertUsage(
     typeof fileExports === 'object' && ('Page' in fileExports || 'default' in fileExports),
-    `${filePath} should have a \`export { Page }\` (or a default export).`
+    `${filePath} should have a \`export { Page }\` or \`export default\`.`
   )
   const pageExports = fileExports
   const Page = pageExports.Page || pageExports.default

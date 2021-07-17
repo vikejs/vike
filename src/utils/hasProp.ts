@@ -19,17 +19,20 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string = 'unknown'): boolean {
   const propExists = typeof obj === 'object' && obj !== null && prop in obj
+  if( !propExists ){
+    return false
+  }
   const propValue = (obj as Record<any,unknown>)[prop]
   if( type === 'unknown' ) {
-    return propExists
+    return true
   }
   if( type === 'string[]') {
-    return propExists && Array.isArray(propValue) && propValue.every(el => typeof el === 'string')
+    return Array.isArray(propValue) && propValue.every(el => typeof el === 'string')
   }
   if( type === 'function') {
-    return propExists && isCallable(propValue)
+    return isCallable(propValue)
   }
-  return propExists && typeof propValue === type;
+  return typeof propValue === type;
 }
 
 // Resources:

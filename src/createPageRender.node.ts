@@ -5,12 +5,17 @@ import { assert, assertUsage } from './utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
-import { isPageFilesSet } from './page-files/getPageFiles.shared'
 import { RoutingHandler, setCustomRouter } from './route.shared';
+import { importBuildWasCalled } from './importBuild'
 
 export { createPageRender }
+export { createPageRenderWasCalled }
 
-let alreadyCalled = false
+let wasCalled = false
+
+function createPageRenderWasCalled() {
+  return wasCalled
+}
 
 type RenderPage = typeof renderPage
 
@@ -28,8 +33,11 @@ function createPageRender({
   base?: string,
   customRouter?: Function
 }): RenderPage {
-  assertUsage(!alreadyCalled, '`createPageRender()` should be called only once.')
-  alreadyCalled = true
+  assertUsage(
+    !wasCalled,
+    'You are trying to call `createPageRender()` a second time, but it should be called only once.'
+  )
+  wasCalled = true
 
   const ssrEnv = { viteDevServer, root, isProduction, baseUrl: base }
   assertArguments(ssrEnv, Array.from(arguments))
@@ -67,14 +75,24 @@ function assertArguments(
     isProduction === true || isProduction === false || isProduction === undefined,
     '`createPageRender({ isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.'
   )
+  if (importBuildWasCalled()) {
+    assertUsage(
+      isProduction,
+      '`createPageRender({ isProduction })`: argument `isProduction` should be `true` if `dist/server/importBuild.js` is loaded. (You should load `dist/server/importBuild.js` only in production.)'
+    )
+    assertUsage(
+      root === undefined,
+      '`createPageRender({ root })`: argument `root` has no effect if `dist/server/importBuild.js` is loaded. Remove the `root` argument.'
+    )
+  }
   if (isProduction === true) {
     assertUsage(
       viteDevServer === undefined,
       '`createPageRender({ viteDevServer, isProduction })`: if `isProduction` is `true`, then `viteDevServer` should be `undefined`.'
     )
     assertUsage(
-      root || isPageFilesSet(),
-      "`createPageRender({ root })`: argument `root` is missing. (Alternatively, if `root` doesn't exist because you are bundling your server code into a single file, then import `/dist/server/importer.js`.)"
+      root || importBuildWasCalled(),
+      "`createPageRender({ root })`: argument `root` is missing. (Alternatively, if `root` doesn't exist because you are bundling your server code into a single file, then load `dist/server/importBuild.js`.)"
     )
   } else {
     assertUsage(root, '`createPageRender({ root })`: argument `root` is missing.')

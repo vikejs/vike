@@ -1,0 +1,46 @@
+code {
+  /*
+  background-color: #f4f4f4;
+  0.043137255 = 1 - (#f4 / #ff)
+  */
+  background-color: rgba(0, 0, 0, 0.043137255);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+pre > code {
+  padding: 16px !important;
+}
+@media screen and (max-width: 900px) {
+  pre > code {
+    font-size: 0.7em;
+  }
+}
+pre {
+  display: grid;
+}
+.hljs {
+  padding-right: 0px !important;
+}
+
+code {
+  font-size: 1.1em;
+}
+pre > code {
+  font-size: 1em;
+}
+
+@media screen and (max-width: 1140px) {
+  pre > code {
+    font-size: 0.95em;
+  }
+}
+@media screen and (max-width: 1040px) {
+  pre > code {
+    font-size: 0.8em;
+  }
+}
+@media screen and (max-width: 940px) {
+  pre > code {
+    font-size: 0.7em;
+  }
+}

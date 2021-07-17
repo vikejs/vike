@@ -50,8 +50,8 @@ function getViteManifest(): {
   }
 }
 
-function setViteManifest(manifests: { clientManifest: ViteManifest; serverManifest: ViteManifest }) {
-  clientManifest = manifests.clientManifest
-  serverManifest = manifests.serverManifest
+function setViteManifest(manifests: { clientManifest: unknown; serverManifest: unknown }) {
+  clientManifest = manifests.clientManifest as ViteManifest
+  serverManifest = manifests.serverManifest as ViteManifest
   assert(clientManifest && serverManifest)
 }

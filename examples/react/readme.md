@@ -1,4 +1,4 @@
-Example of using `vite-plugin-ssr` with React that showcases the entire `vite-plugin-ssr` interface.
+Example of using `vite-plugin-ssr` with React.
 
 To run it:
 

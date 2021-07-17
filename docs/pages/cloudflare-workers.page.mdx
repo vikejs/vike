@@ -1,0 +1,7 @@
+import { RepoLink } from './components/RepoLink'
+
+We need to make sure to load `dist/server/importBuild.js` in our worker code so that the entire worker code can be bundled into a single file.
+(The `dist/server/importBuild.js` file loads all built modules in such a way that bundlers can determine the entire dependency tree at build-time.)
+
+Example:
+ - <RepoLink path='/examples/cloudflare-workers/' />

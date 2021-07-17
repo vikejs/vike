@@ -1,0 +1,8 @@
+@import './Navigation-layout.css';
+@import './Navigation-items.css';
+@import './Navigation-highlight.css';
+
+#navigation-container {
+  --background-color: #f0f0f0;
+  padding-bottom: 70px;
+}

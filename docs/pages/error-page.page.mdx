@@ -1,0 +1,8 @@
+The page `_error.page.js` is rendered when an error occurs:
+ - When no page matches the URL (acting as a `404` page).
+ - When a `.page.js` / `.page.server.js` / `.page.route.js` file throws an error (acting as a `500` page).
+
+`vite-plugin-ssr` automatically sets `pageContext.pageProps.is404: boolean` which allows us to decided whether to show a `404` or `500` page.
+(Normally `pageContext.pageProps` is completely defined/controlled by you and `vite-plugin-ssr`'s source code doesn't know anything about `pageContext.pageProps` but this is the only exception.)
+
+We can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`.

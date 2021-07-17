@@ -1,15 +1,16 @@
-import { version } from '../package.json'
 import { newError } from '@brillout/libassert'
+import { projectInfo } from './projectInfo'
 
 export { assert }
 export { assertUsage }
 export { assertWarning }
 
-const libName = `vite-plugin-ssr`
-const npmPackage = `${libName}@${version}`
+const npmPackage = `${projectInfo.npmPackageName}@${projectInfo.version}`
 const internalErrorPrefix = `[${npmPackage}][Internal Failure]`
 const usageErrorPrefix = `[${npmPackage}][Wrong Usage]`
 const warningPrefix = `[${npmPackage}][Warning]`
+
+const numberOfStackTraceLinesToRemove = 2
 
 function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   if (condition) {
@@ -17,11 +18,12 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   }
   const debugStr = !debugInfo
     ? ''
-    : ` Debug info: \`${JSON.stringify(
+    : ` Debug info (this is for the \`${projectInfo.name}\` maintainers; you can ignore this): \`${JSON.stringify(
         debugInfo
-      )}\` (the debug info is for the \`${libName}\` maintainers; you can ignore this).`
+      )}\`.`
   const internalError = newError(
-    `${internalErrorPrefix} You stumbled upon a bug in \`${libName}\`'s source code (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new issue at https://github.com/brillout/${libName}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`
+    `${internalErrorPrefix} You stumbled upon a bug in \`${projectInfo.name}\`'s source code (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new GitHub issue at ${projectInfo.githubRepository}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`,
+    numberOfStackTraceLinesToRemove
   )
   throw internalError
 }
@@ -30,7 +32,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   if (condition) {
     return
   }
-  const usageError = newError(`${usageErrorPrefix} ${errorMessage}`)
+  const usageError = newError(`${usageErrorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
   throw usageError
 }
 

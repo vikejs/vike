@@ -1,0 +1,134 @@
+import { RepoLink } from './components/RepoLink'
+
+To fetch data:
+1. Create a `.page.server.js` file. (For a page `movies.page.js`, create `movies.page.server.js`.)
+2. Create `export function addPageContext () { /*...*/ }` in `.page.server.js`.
+3. (Optionally) Add new property names to `passToClient: string[]` in `_default.page.server.js`.
+
+For example:
+
+```js
+// /pages/movies.page.server.js
+// Environment: Node.js
+
+import fetch from "node-fetch";
+
+export { addPageContext }
+
+async function addPageContext(pageContext) {
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
+  const response = await fetch("https://movies.example.org/api")
+  let movies = await response.json()
+
+  // `movies` will be serialized and passed to the browser; we select only the data we
+  // need in order to minimize what is sent over the network.
+  movies = movies.map(({ title, release_date }) => ({title, release_date}))
+
+  const pageProps = { movies }
+  return { pageProps }
+}
+```
+```js
+// /pages/_default.page.server.js
+// Environment: Node.js
+
+import { html } from 'vite-plugin-ssr'
+import { renderToHtml, createElement } from 'some-view-framework'
+
+// We tell `vite-plugin-ssr` to make `pageContext.pageProps` available in the browser.
+export const passToClient = ['pageProps']
+
+export { render }
+
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext
+  const pageHtml = await renderToHtml(
+    createElement(Page, pageProps)
+  )
+  /* JSX:
+  const pageHtml = await renderToHtml(<Page {...pageProps} />)
+  */
+
+  return html`<html>
+    <div id='view-root'>
+      ${html.dangerouslySkipEscape(pageHtml)}
+    </div>
+  </html>`
+}
+```
+```js
+// /pages/_default.page.client.js
+// Environment: Browser
+
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom, createElement } from 'some-view-framework'
+
+hydrate()
+
+async function hydrate() {
+  const pageContext = await getPage()
+  await hydrateToDom(
+    // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
+    // available here in the browser.
+    createElement(pageContext.Page, pageContext.pageProps),
+    document.getElementById('view-root')
+  )
+  /* JSX:
+  await hydrateToDom(<Page {...pageContext.pageProps} />, document.getElementById('view-root'))
+  */
+}
+```
+```js
+// /pages/movies.page.js
+// Environment: Browser, Node.js
+
+export { Page }
+
+// In our `render()` and `hydrate()` functions above, we pass `pageContext.pageProps` to `Page`
+function Page(pageProps) {
+  const { movies } = pageProps
+  // ...
+}
+```
+
+Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
+conveniently hold all props of the root component `Page`.
+
+We could have defined `movies` directly as `pageContext.movies` instead of `pageContext.pageProps.movies`, but it's cumbersome:
+our render/hydrate function would then need to know what `pageContext` should be passed to the root component `Page`.
+
+## Access `pageContext` anywhere
+
+We can pass (some) `pageContext` to any/all components of our component tree by using:
+ - React: [React.createContext](https://reactjs.org/docs/context.html)
+ - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
+ - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/guide/migration/global-api.html#vue-prototype-replaced-by-config-globalproperties)
+
+## Stateful Component
+
+We can also fetch data by using a stateful component.
+But note that with this technique, the fetched data is not rendered to HTML.
+
+We usually need to make the route parameters available to the data-fetching stateful component:
+1. Make [`pageContext.routeParams`](/pageContext) available in the browser by adding it to `passToClient.push('routeParams')`.
+2. [Pass `pageContext.routeParams` to the stateful component](#access-pagecontext-anywhere).
+
+## GraphQL
+
+When using GraphQL, e.g. with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/), we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in `addPageContext()`.
+ - <RepoLink path='/examples/graphql-apollo/' />
+
+In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool we want to use:
+ - [Apollo GraphQL - SSR Guide](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
+ - [Relay - SSR](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+
+## Store (Vuex/Redux...)
+
+When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/), [Redux](https://redux.js.org/), or [PullState](https://lostpebble.github.io/pullstate/)), our components don't access the fetched data directly. Instead, our components access the store, while the fetched data determines the store state.
+ - <RepoLink path='/examples/redux/' />
+ - <RepoLink path='/examples/vuex/' />
+
+In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool we want to use:
+ - [Redux - SSR Guide](https://redux.js.org/recipes/server-rendering)
+ - [Vuex - SSR Guide](https://ssr.vuejs.org/guide/data.html#data-store)
+ - [PullState - SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)

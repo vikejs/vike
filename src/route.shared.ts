@@ -153,13 +153,23 @@ function isStaticRoute(route: string): boolean {
 function normalizeUrl(urlPathname: string): string {
   return '/' + urlPathname.split('/').filter(Boolean).join('/').toLowerCase()
 }
+
+function removeTrailingSlash(url: string) {
+  if (url === '/' || !url.endsWith('/')) {
+    return url
+  } else {
+    return slice(url, 0, -1)
+  }
+}
 function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
   let pageRoute = removeCommonPrefix(pageId, allPageIds)
   pageRoute = pageRoute
     .split('/')
     .filter((part) => part !== 'index')
     .join('/')
-  pageRoute = normalizeUrl(pageRoute)
+  if (!pageRoute.startsWith('/')) {
+    pageRoute = '/' + pageRoute
+  }
   return pageRoute
 }
 function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
@@ -223,13 +233,13 @@ async function resolveRouteFunction(
   pageRouteFileExports: { default: Function; iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean },
   urlPathname: string,
   pageContext: Record<string, unknown>,
-  routeFilePath: string
+  pageRouteFile: string
 ): Promise<RouteFunctionMatch|string> {
   const routeFunction: Function = pageRouteFileExports.default
   let result = routeFunction({ url: urlPathname, pageContext })
   assertUsage(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
-    `The Route Function ${routeFilePath} returned a promise. Async Route Functions may significantly slow down your app: every time a page is rendered the Route Functions of *all* your pages are called and awaited for. A slow Route Function will slow down all your pages. If you still want to define an async Route Function then \`export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true\` in \`${routeFilePath}\`.`
+    `The Route Function ${pageRouteFile} returned a promise. Async Route Functions may significantly slow down your app: every time a page is rendered the Route Functions of *all* your pages are called and awaited for. A slow Route Function will slow down all your pages. If you still want to define an async Route Function then \`export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true\` in \`${pageRouteFile}\`.`
   )
   result = await result
   if (typeof result === 'string') {
@@ -241,7 +251,7 @@ async function resolveRouteFunction(
   }
   assertUsage(
     isPlainObject(result),
-    `The Route Function ${routeFilePath} should return a boolean or a plain JavaScript object, instead it returns \`${
+    `The Route Function ${pageRouteFile} should return a boolean or a plain JavaScript object, instead it returns \`${
       result && result.constructor
     }\`.`
   )
@@ -252,17 +262,17 @@ async function resolveRouteFunction(
   assert(hasProp(result, 'match'))
   assertUsage(
     typeof result.match === 'boolean' || typeof result.match === 'number',
-    `The \`match\` value returned by the Route Function ${routeFilePath} should be a boolean or a number.`
+    `The \`match\` value returned by the Route Function ${pageRouteFile} should be a boolean or a number.`
   )
   let routeParams: Record<string, string> = {}
   if (hasProp(result, 'routeParams')) {
     assertUsage(
       isPlainObject(result.routeParams),
-      `The \`routeParams\` object returned by the Route Function ${routeFilePath} should be a plain JavaScript object.`
+      `The \`routeParams\` object returned by the Route Function ${pageRouteFile} should be a plain JavaScript object.`
     )
     assertUsage(
       Object.values(result.routeParams).every((val) => typeof val === 'string'),
-      `The \`routeParams\` object returned by the Route Function ${routeFilePath} should only hold string values.`
+      `The \`routeParams\` object returned by the Route Function ${pageRouteFile} should only hold string values.`
     )
     castProp<Record<string, string>, typeof result, 'routeParams'>(result, 'routeParams')
     routeParams = result.routeParams
@@ -270,7 +280,7 @@ async function resolveRouteFunction(
   Object.keys(result).forEach((key) => {
     assertUsage(
       key === 'match' || key === 'routeParams',
-      `The Route Function ${routeFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams'].`
+      `The Route Function ${pageRouteFile} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams'].`
     )
   })
   assert(isPlainObject(routeParams))
@@ -360,6 +370,13 @@ function getRouteStrings(routes: PageRoute[], pageIds: PageId[]) {
 
   const routeStrings = Object.values(routes)
     .filter(route => !isCallable(route.pageRoute));
+
+  routeStrings.forEach(route => 
+    assertUsage(
+      (route.pageRoute as string).startsWith('/'),
+      `A Route String should start with a leading \`/\` but \`${route}\` has \`export default '${route.pageRoute}'\`. Make sure to \`export default '/${route.pageRoute}'\` instead.`
+    )
+  );
 
   return [
     ...fsRouteStrings,

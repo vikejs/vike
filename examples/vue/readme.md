@@ -1,4 +1,4 @@
-Example of using `vite-plugin-ssr` with Vue that showcases the entire `vite-plugin-ssr` interface.
+Example of using `vite-plugin-ssr` with Vue.
 
 To run it:
 

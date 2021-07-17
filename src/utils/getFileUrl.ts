@@ -1,7 +1,7 @@
 import { getUrlParts, getUrlPathname } from './parseUrl'
 import { assert } from './assert'
 import { slice } from './slice'
-const pageContextUrlSuffix = '/index.pageContext.json'
+const pageContextUrlSuffix = '.pageContext.json'
 
 export { getFileUrl }
 export { isPageContextUrl }
@@ -19,21 +19,28 @@ export { removePageContextUrlSuffix }
 function getFileUrl(
   url: string,
   fileExtension: '.html' | '.pageContext.json',
-  doNotCreateExtraDirectory?: true
+  doNotCreateExtraDirectory: boolean
 ): string {
+  assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
   assert(url.startsWith('/'), { url })
   const { pathname, searchString, hashString } = getUrlParts(url)
   assert(url === `${pathname}${searchString}${hashString}`, { url })
 
-  let fileBase: string
+  let pathnameModified = pathname
   if (doNotCreateExtraDirectory) {
-    fileBase = pathname.endsWith('/') ? 'index' : ''
+    if (pathnameModified.endsWith('/')) {
+      pathnameModified = slice(pathnameModified, 0, -1)
+    }
+    assert(!pathnameModified.endsWith('/'))
+    if (pathnameModified === '') {
+      pathnameModified = '/index'
+    }
   } else {
     const trailingSlash = pathname.endsWith('/') ? '' : '/'
-    fileBase = `${trailingSlash}index`
+    pathnameModified = pathnameModified + `${trailingSlash}index`
   }
 
-  return `${pathname}${fileBase}${fileExtension}${searchString}${hashString}`
+  return `${pathnameModified}${fileExtension}${searchString}${hashString}`
 }
 
 function isPageContextUrl(url: string): boolean {
@@ -46,6 +53,6 @@ function removePageContextUrlSuffix(url: string): string {
   assert(url === `${origin}${pathname}${searchString}${hashString}`, { url })
   assert(pathname.endsWith(pageContextUrlSuffix), { url })
   pathname = slice(pathname, 0, -1 * pageContextUrlSuffix.length)
-  if (pathname === '') pathname = '/'
+  if (pathname === '/index') pathname = '/'
   return `${origin}${pathname}${searchString}${hashString}`
 }

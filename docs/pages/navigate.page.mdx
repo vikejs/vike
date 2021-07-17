@@ -1,0 +1,40 @@
+import { RepoLink } from './components/RepoLink'
+
+Environment: `Browser`. (In `Node.js` we can import `navigate()` but not call it.)
+
+We can use `navigate('/some-url')` to programmatically navigate our user to another page (i.e. when navigation isn't triggered by the user clicking on an anchor tag `<a>`).
+For example, we can redirect our user after a successful form submission.
+
+```jsx
+import { navigate } from "vite-plugin-ssr/client/router";
+
+// Some deeply nested view component
+function Form() {
+   return (
+     <form onSubmit={onSubmit}>
+       {/* ... */}
+     </form>
+   );
+}
+
+async function onSubmit() {
+  /* ...  */
+
+  const navigationPromise = navigate('/form/success');
+
+  console.log("The URL changed but the new page hasn't rendered yet.");
+  await navigationPromise
+  console.log("The new page has finished rendering.");
+}
+```
+
+If you want to redirect your user at page-load time, see the [Page Redirection](/page-redirection) guide instead.
+
+Options:
+ - `navigate('/some-url', { keepScrollPosition: true })`: Do not scroll to the top of the page; keep scroll position where it is instead. (Useful for [Nested Routes](routing#nested-routes).) (We can also use `<a href="/some-url" keep-scroll-position />`.)
+
+Vue example:
+ - <RepoLink path='/examples/vue-full/pages/index.page.vue' />
+
+React example:
+ - <RepoLink path='/examples/react-full/pages/index.page.tsx' />

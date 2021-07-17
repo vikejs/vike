@@ -1,0 +1,40 @@
+Environment: `Browser`<br/>
+[Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.client.*([a-zA-Z0-9])`
+
+The `.page.client.js` file defines the page's browser-side code.
+
+It represents the *entire* browser-side code. This means that if we create an empty `.page.client.js` file, then the page has zero browser-side JavaScript.
+(Except of Vite's dev code when not in production.)
+
+This also means that we have full control over the browser-side code. Not only can we render/hydrate our pages as we wish, but we can also easily & naturally integrate browser libraries.
+
+```js
+// *.page.client.js
+
+import { getPage } from 'vite-plugin-ssr/client'
+import { hydrateToDom, createElement } from 'some-view-framework'
+import GoogleAnalytics from '@brillout/google-analytics'
+
+main()
+
+async function main() {
+  analytics_init()
+  analytics.event('[hydration] begin')
+  await hydrate()
+  analytics.event('[hydration] end')
+}
+
+async function hydrate() {
+  const pageContext = await getPage()
+  const { Page, pageProps } = pageContext
+  await hydrateToDom(
+    createElement(Page, pageProps),
+    document.getElementById('view-root')
+  )
+}
+
+let analytics
+function analytics_init() {
+  analytics = new GoogleAnalytics('UA-121991291')
+}
+```
