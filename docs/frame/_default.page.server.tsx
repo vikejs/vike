@@ -20,6 +20,7 @@ export { render }
 type PageExports = {
   headings?: HeadingExtracted[]
   noHeading?: true
+  pageTitle?: string
 }
 type PageContext = {
   url: string
@@ -33,13 +34,13 @@ function render(pageContext: PageContext) {
   const activeHeading = findActiveHeading(headings, pageContext)
   addSubHeadings(headings, pageContext, activeHeading)
   const { Page } = pageContext
+  const { title, desc, isLandingPage, pageTitle } = getMetaData(activeHeading, pageContext)
   const page = (
-    <PageLayout headings={headings} activeHeading={activeHeading}>
+    <PageLayout headings={headings} activeHeading={activeHeading} isLandingPage={isLandingPage} pageTitle={pageTitle}>
       <Page />
     </PageLayout>
   )
   const pageHtml = ReactDOMServer.renderToString(page)
-  const { title, desc } = getMetaData(activeHeading, pageContext)
   return html`<!DOCTYPE html>
     <html>
       <head>
@@ -54,18 +55,30 @@ function render(pageContext: PageContext) {
     </html>`
 }
 
-function getMetaData(activeHeading: Heading | null, pageContext: { url: string }) {
-  const isLandingPage = pageContext.url === '/'
+function getMetaData(activeHeading: Heading | null, pageContext: { url: string; pageExports: PageExports }) {
+  const { url, pageExports } = pageContext
+  const isLandingPage = url === '/'
 
   let title: string
-  if (!activeHeading) {
-    title = pageContext.url.slice(1)
+  let pageTitle: string | JSX.Element | null
+  if (pageExports.pageTitle) {
+    title = pageExports.pageTitle
+    pageTitle = title
+  } else if (!activeHeading) {
+    title = url.slice(1)
     assert(!title.startsWith('/'))
+    pageTitle = null
   } else {
     title = activeHeading.titleDocument || jsxToTextContent(activeHeading.title)
+    pageTitle = activeHeading.title
   }
+
   if (!isLandingPage) {
     title += ' | vite-plugin-ssr'
+  }
+
+  if (isLandingPage) {
+    pageTitle = null
   }
 
   const desc = isLandingPage
@@ -73,7 +86,7 @@ function getMetaData(activeHeading: Heading | null, pageContext: { url: string }
         '<meta name="description" content="Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin." />'
       )
     : ''
-  return { title, desc }
+  return { title, desc, isLandingPage, pageTitle }
 }
 
 function findActiveHeading(
@@ -111,10 +124,10 @@ function addSubHeadings(headings: Heading[], pageContext: { pageExports: PageExp
       title,
       level: 3
     }
-    headings.splice(activeHeadingIdx + i, 0, heading)
+    headings.splice(activeHeadingIdx + 1 + i, 0, heading)
   })
 }
 
-function clone<T>(thing: T): T {
-  return JSON.parse(JSON.stringify(thing))
+function clone(headings: Heading[]): Heading[] {
+  return headings.map((h) => ({ ...h }))
 }
