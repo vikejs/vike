@@ -1,9 +1,35 @@
 export const noHeading = true
-export const documentTitle = 'Hydration'
+export const pageTitle = 'Hydration'
 
-# Hydration
+## What is hydration?
 
-> **What is hydration?** See ([Vue - Hydration](https://ssr.vuejs.org/guide/hydration.html) for an explanation of
-> https://reactjs.org/docs/react-dom.html#hydrate.
+When using SSR our pages are rendered to HTML. But to make a page interactive HTML alone is not sufficient.
+
+To make our page interactive, our view framework (Vue/React/...) renders the page a second time on the client-side. (Technically speaking: it renders the page into an internal representation and maps it to the DOM elements of the already rendered HTML.)
+
+This process is called *hydration*. (Informally speaking: hydration is what brings our page "alive".)
+
+If we were to have zero browser-side JavaScript (with `vite-plugin-ssr` we can do this by defining an empty `_default.page.client.js` file), then our page is not hydrated (since the client-side doesn't execute any JavaScript) and our page is not interactive.
+
+Further reading:
+ - [Vue Docs - Hydration](https://ssr.vuejs.org/guide/hydration.html)
+ - [React Docs - `hydrate()`](https://reactjs.org/docs/react-dom.html#hydrate)
 
 ## Hydration Mismatch
+
+As explained in the previous section, when using SSR, our view framework (React/Vue/...) renders our page twice:
+ 1. A first time to HTML on the server-side.
+ 2. A second time on the browser-side.
+
+A mismatch is when the rendered HTML is not the same then what is rendered a second time on the browser-side.
+
+## Suppress Hydration Mismatch Warning
+
+In general, we should avoid hydration mismatches by making sure that what is rendered on the client-side is the same than what is rendered to HTML on the server-side.
+
+But there are situations where mismatches are inevitable. To suppress hydration mismatch warnings:
+ - React: https://stackoverflow.com/questions/53959948/is-there-any-way-to-avoid-text-content-did-not-match-warning-in-ssr-with-react/68438131#68438131
+ - Vue: https://stackoverflow.com/questions/68438016/vuessr-suppress-hydration-mismatch-warning/68438108#68438108
+
+More infos about hydration mismatches:
+ - [React Docs - `hydrate()`](https://reactjs.org/docs/react-dom.html#hydrate)
