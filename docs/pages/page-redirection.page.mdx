@@ -83,3 +83,13 @@ useClientRouter({
   }
 })
 ```
+
+## Hydration Mismatch
+
+If we use Client-side Routing and we redirect our user on the client-side only, then we'll have a [hydration mismatch](/hydration#mismatch).
+
+In general we should redirect both on the client-side and on the server-side, but there are situations when we can only redirect on the client-side. In such case we suppress the hydration mismatch warning:
+ - Vue: https://stackoverflow.com/questions/68438016/vuessr-suppress-hydration-mismatch-warning/68438108#68438108
+ - React: https://stackoverflow.com/questions/53959948/is-there-any-way-to-avoid-text-content-did-not-match-warning-in-ssr-with-react/68438131#68438131
+
+Alternatively we can first hydrate the original page (before redirecting) and then redirect and render the new page.

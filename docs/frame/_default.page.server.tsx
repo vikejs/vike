@@ -3,8 +3,8 @@ import React from 'react'
 import logo from './icons/vite-plugin-ssr.svg'
 import { html } from 'vite-plugin-ssr'
 import { PageLayout } from './PageLayout'
-import { Heading, headings as headings_static, parse } from '../headings'
-import { assert, slice, jsxToTextContent } from '../utils'
+import { Heading, headings as headings_, parse } from '../headings'
+import { assert, jsxToTextContent } from '../utils'
 import type { HeadingExtracted } from '../vite.config/vite-plugin-mdx-export-headings'
 
 type ReactComponent = () => JSX.Element
@@ -19,6 +19,7 @@ export { render }
 
 type PageExports = {
   headings?: HeadingExtracted[]
+  noHeading?: true
 }
 type PageContext = {
   url: string
@@ -28,7 +29,9 @@ type PageContext = {
   pageExports: PageExports
 }
 function render(pageContext: PageContext) {
-  const { headings, activeHeading } = supplementHeadings(headings_static, pageContext)
+  const headings = clone(headings_)
+  const activeHeading = findActiveHeading(headings, pageContext)
+  addSubHeadings(headings, pageContext, activeHeading)
   const { Page } = pageContext
   const page = (
     <PageLayout headings={headings} activeHeading={activeHeading}>
@@ -36,18 +39,13 @@ function render(pageContext: PageContext) {
     </PageLayout>
   )
   const pageHtml = ReactDOMServer.renderToString(page)
-  const isLandingPage = pageContext.url === '/'
-  const title =
-    (activeHeading.titleDocument || jsxToTextContent(activeHeading.title)) + (isLandingPage ? '' : ' | vite-plugin-ssr')
-  const desc = html.dangerouslySkipEscape(
-    '<meta name="description" content="Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin." />'
-  )
+  const { title, desc } = getMetaData(activeHeading, pageContext)
   return html`<!DOCTYPE html>
     <html>
       <head>
         <link rel="icon" href="${logo}" />
         <title>${title}</title>
-        ${isLandingPage ? desc : ''}
+        ${desc}
         <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
       </head>
       <body>
@@ -56,46 +54,67 @@ function render(pageContext: PageContext) {
     </html>`
 }
 
-function supplementHeadings(
-  headings_static: Heading[],
+function getMetaData(activeHeading: Heading | null, pageContext: { url: string }) {
+  const isLandingPage = pageContext.url === '/'
+
+  let title: string
+  if (!activeHeading) {
+    title = pageContext.url.slice(1)
+    assert(!title.startsWith('/'))
+  } else {
+    title = activeHeading.titleDocument || jsxToTextContent(activeHeading.title)
+  }
+  if (!isLandingPage) {
+    title += ' | vite-plugin-ssr'
+  }
+
+  const desc = isLandingPage
+    ? html.dangerouslySkipEscape(
+        '<meta name="description" content="Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin." />'
+      )
+    : ''
+  return { title, desc }
+}
+
+function findActiveHeading(
+  headings: Heading[],
   pageContext: { url: string; pageExports: PageExports }
-): { headings: Heading[]; activeHeading: Heading } {
-  let activeHeadingIdx: number | undefined
-  let activeHeading: Heading | undefined
+): Heading | null {
+  let activeHeading: Heading | null = null
   assert(pageContext.url)
-  const headings_withoutPageHeadings = headings_static.map((heading, i) => {
+  headings.forEach((heading) => {
     if (heading.url === pageContext.url) {
-      assert(activeHeadingIdx === undefined)
-      activeHeadingIdx = i
       activeHeading = heading
       assert(heading.level === 2)
-      const heading_: Heading = { ...heading, isActive: true }
-      return heading_
+      heading.isActive = true
     }
-    return heading
   })
   const debugInfo = {
-    msg: 'Page not found for url: ' + pageContext.url,
-    urls: headings_static.map((h) => h.url),
+    msg: 'Heading not found for url: ' + pageContext.url,
+    urls: headings.map((h) => h.url),
     url: pageContext.url
   }
-  assert(typeof activeHeadingIdx === 'number', debugInfo)
-  assert(activeHeading, debugInfo)
+  assert(activeHeading || pageContext.pageExports.noHeading === true, debugInfo)
+  return activeHeading
+}
+
+function addSubHeadings(headings: Heading[], pageContext: { pageExports: PageExports }, activeHeading: Heading | null) {
+  if (activeHeading === null) return
+  const activeHeadingIdx = headings.indexOf(activeHeading)
+  assert(activeHeadingIdx >= 0)
   const pageHeadings = pageContext.pageExports.headings || []
-  const headings: Heading[] = [
-    ...slice(headings_withoutPageHeadings, 0, activeHeadingIdx + 1),
-    ...pageHeadings.map((pageHeading) => {
-      const title = parse(pageHeading.title)
-      const url = '#' + pageHeading.id
-      const heading: Heading = {
-        url,
-        title,
-        level: 3
-      }
-      return heading
-    }),
-    ...slice(headings_withoutPageHeadings, activeHeadingIdx + 1, 0)
-  ]
-  assert(headings.length > 0)
-  return { headings, activeHeading }
+  pageHeadings.forEach((pageHeading, i) => {
+    const title = parse(pageHeading.title)
+    const url = '#' + pageHeading.id
+    const heading: Heading = {
+      url,
+      title,
+      level: 3
+    }
+    headings.splice(activeHeadingIdx + i, 0, heading)
+  })
+}
+
+function clone<T>(thing: T): T {
+  return JSON.parse(JSON.stringify(thing))
 }

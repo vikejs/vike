@@ -14,10 +14,10 @@ function PageLayout({
   children
 }: {
   headings: Heading[]
-  activeHeading: Heading
+  activeHeading: Heading | null
   children: JSX.Element
 }) {
-  const isLandingPage = activeHeading.url === '/'
+  const isLandingPage = activeHeading?.url === '/'
   return (
     <div
       style={{
@@ -28,7 +28,7 @@ function PageLayout({
       <div id="page-container" className={isLandingPage ? '' : 'doc-page'}>
         <MobileHeader />
         <div id="page-content">
-          {!isLandingPage && <h1>{activeHeading.title}</h1>}
+          {!isLandingPage && activeHeading && <h1>{activeHeading.title}</h1>}
           {children}
         </div>
       </div>
