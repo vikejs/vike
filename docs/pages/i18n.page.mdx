@@ -1,0 +1,44 @@
+To determine language, one of the following methods is usually used:
+
+- `Accept-Language: es` header
+- `?lang=es` query parameter
+- Domain TLD `domain.es`
+- URL path segment `domain.com/es`
+
+Regardless of the method, an easy way to implement i18n is to determine the language at the `vite-plugin-ssr` server middleware:
+
+```js
+const renderPage = createPageRender(/* ... */)
+
+// `vite-plugin-ssr` server middleware
+app.get('*', async (req, res) => {
+  const { language, url } = retrieveLanguage(req.url)
+
+  const pageContext = {
+    url,
+    // We make the language information available to pages as `pageContext.language`
+    user
+  }
+  const result = await renderPage(pageContext)
+
+  /* ... */
+})
+
+// We usually use a library instead of implementing our own language retrieval mechanism
+function retrieveLanguage(url) {
+  // We determine the language, for example:
+  //  retrieveLanguage('https://example.org/en-US/film/42').language === 'en-US'
+  //  retrieveLanguage('https://example.org/de-DE/film/42').language === 'de-DE'
+  const language = /*...*/
+
+  // We may also strip the language URL pahtname, for example:
+  //  retrieveLanguage('https://example.org/en-US/film/42').url === 'https://example.org/film/42'
+  //  retrieveLanguage('https://example.org/de-DE/film/42').url === 'https://example.org/film/42'
+  //  ...
+  url = /*...*/
+
+  return { language, url }
+}
+```
+
+We then make `pageContext.language` available to all components, see [Access `pageContext` anywhere](/data-fetching#access-pagecontext-anywhere).

@@ -3,10 +3,8 @@ We can add information about the authenticated user to `pageContext` at the serv
 ```js
 const renderPage = createPageRender(/* ... */)
 
-// Server middlware
-app.get('*', async (req, res, next) => {
-  const url = req.originalUrl
-
+// `vite-plugin-ssr` server middleware
+app.get('*', async (req, res) => {
   // Authentication middlewares (e.g. Passport.js or Grant) provide information
   // about the logged-in user on the `req` object.
   const user = req.user
@@ -15,9 +13,13 @@ app.get('*', async (req, res, next) => {
   const user = await authProviderApi.getUser(req.headers)
   */
 
-  // We add the user auth information to `pageContext`
-  const pageContext = { user, url }
+  const pageContext = {
+    url: req.url,
+    // We make logged-in user information available to pages as `pageContext.user`
+    user
+  }
   const result = await renderPage(pageContext)
+
   /* ... */
 })
 ```

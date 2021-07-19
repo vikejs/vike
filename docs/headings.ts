@@ -158,6 +158,11 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
+    title: 'Internationalization (i18n)',
+    url: '/i18n'
+  },
+  {
+    level: 2,
     title: 'Sass / Less / Stylus',
     url: '/sass'
   },
