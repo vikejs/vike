@@ -1,4 +1,4 @@
-import { assertUsage } from '../../utils'
+import { assertUsage, isNodejs } from '../../utils'
 
 export { navigate }
 
@@ -11,8 +11,4 @@ function navigate(): never {
     false,
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
   )
-}
-
-function isNodejs() {
-  return typeof window === 'undefined'
 }

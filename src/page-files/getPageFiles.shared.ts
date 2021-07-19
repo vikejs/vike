@@ -1,5 +1,5 @@
 import { getSsrEnv } from '../ssrEnv.node'
-import { assert, assertUsage, hasProp } from '../utils'
+import { assert, assertUsage, hasProp, isNodejs } from '../utils'
 
 export { getPageFiles }
 export { getPageFile }
@@ -85,7 +85,7 @@ function assertNotAlreadyLoaded() {
   // The functionality of this file will fail if it's loaded more than
   // once; we assert that it's loaded only once.
   const alreadyLoaded = Symbol()
-  const globalObject: any = typeof window !== 'undefined' ? window : global
+  const globalObject: any = isNodejs() ? global : window
   assert(!globalObject[alreadyLoaded])
   globalObject[alreadyLoaded] = true
 }
