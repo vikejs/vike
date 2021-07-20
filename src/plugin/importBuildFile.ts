@@ -1,11 +1,11 @@
 import type { Plugin } from 'vite'
 
-export { importBuildCode }
+export { importBuildFile }
 
-function importBuildCode(): Plugin {
+function importBuildFile(): Plugin {
   let ssr: boolean
   return {
-    name: 'vite-plugin-ssr:importBuildCode',
+    name: 'vite-plugin-ssr:importBuildFile',
     apply: 'build',
     configResolved(config) {
       ssr = isSSR(config)
