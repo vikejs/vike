@@ -1,10 +1,10 @@
 *Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.*
 
-Introduction & documentation: [vite-plugin-ssr.com](https://vite-plugin-ssr.com)
+Intro & docs: [vite-plugin-ssr.com](https://vite-plugin-ssr.com)
 <br/>
-Examples: [examples/](https://github.com/brillout/vite-plugin-ssr/tree/master/examples)
+Examples (Official): [examples/](https://github.com/brillout/vite-plugin-ssr/tree/master/examples)
 <br/>
-Community Examples: [examples/README.md](https://github.com/brillout/vite-plugin-ssr/tree/master/examples#community-examples)
+Examples (Community): [examples/README.md](https://github.com/brillout/vite-plugin-ssr/tree/master/examples#community-examples)
 
 Version history & breaking changes: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md)
 
