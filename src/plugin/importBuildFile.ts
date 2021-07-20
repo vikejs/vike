@@ -1,4 +1,5 @@
 import type { Plugin } from 'vite'
+import { isSSR } from './utils'
 
 export { importBuildFile }
 
@@ -33,8 +34,4 @@ const serverManifest = require("../server/manifest.json");
 const { __private: { importBuild } } = require("vite-plugin-ssr");
 importBuild({ pageFiles, clientManifest, serverManifest });
 `
-}
-
-function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
-  return !!config?.build?.ssr
 }

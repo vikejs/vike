@@ -4,13 +4,14 @@ import { build } from './build'
 import { dev } from './dev'
 import { manifest } from './manifest'
 import { importBuildFile } from './importBuildFile'
+import { packageJsonFile } from './packageJsonFile'
 
 export default plugin
 export { plugin }
 export { plugin as ssr }
 
 function plugin(): Plugin[] {
-  return [dev(), build(), manifest(), importBuildFile()]
+  return [dev(), build(), manifest(), importBuildFile(), packageJsonFile()]
 }
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`
