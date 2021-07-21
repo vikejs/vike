@@ -153,7 +153,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Tailwind CSS',
+    title: 'Tailwind CSS / Windi CSS',
     url: '/tailwind-css'
   },
   {
