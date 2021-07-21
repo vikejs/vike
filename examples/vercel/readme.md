@@ -19,7 +19,7 @@ To develop (for increased dev speed we use an Express.js dev server instead of `
   npm run dev
   ```
 
-To deploy (using Vercel's Git integration, we simply have to push our code to GitHub/GitLab/...):
+To deploy (Vercel's Git integration allows us to simply push to deploy):
 - ```bash
   git push
   ```

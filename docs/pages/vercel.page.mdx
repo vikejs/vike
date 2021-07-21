@@ -1,8 +1,10 @@
 import { RepoLink } from './components/RepoLink'
 
-We need to make sure to load `dist/server/importBuild.js` in our Vercel function. (Vercel bundles serverless functions behind the scenes; the `dist/server/importBuild.js` file loads all built modules in such a way that bundlers can determine the entire dependency tree at build-time.)
+We make sure to load `dist/server/importBuild.js` in our Vercel serverless function.
+(Vercel bundles serverless functions behind the scenes;
+`dist/server/importBuild.js` loads modules living in `dist/` in a way that bundlers can determine the dependency tree at build-time.)
 
-We need to run our build (`vite build && vite build --ssr`) in a `vercel-build` script instead of a `build` script. (Because Vercel discards all files generated during the `build` script, see [Vercel Docs - Custom Build Step for Node.js](https://vercel.com/docs/runtimes#advanced-usage/advanced-node-js-usage/custom-build-step-for-node-js) and conversation [here](https://github.com/vercel/vercel/discussions/6393#discussioncomment-1008607). Note that [`includeFiles` doesn't work for files that are not committed to the Git repository](https://github.com/vercel/vercel/issues/6478).)
+We run our build script (`vite build && vite build --ssr`) in `package.json#scripts['vercel-build']` instead of `package.json#scripts.build`. (Because Vercel discards all files generated in `package.json#scritps.build`. For more infos see [Vercel Docs - Custom Build Step for Node.js](https://vercel.com/docs/runtimes#advanced-usage/advanced-node-js-usage/custom-build-step-for-node-js) and [this conversation](https://github.com/vercel/vercel/discussions/6393#discussioncomment-1008607). Note that `vercel.json`'s config `includeFiles` [doesn't work for files that are not committed to the Git repository](https://github.com/vercel/vercel/issues/6478).)
 
 To increase build caching performance, Vercel recommends using yarn instead of npm.
 

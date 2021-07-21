@@ -10,7 +10,7 @@ export { Page }
 function Page() {
   return <>
     <h1>About</h1>
-    <p>This is my first vite-plugin-ssr app.</p>
+    <p>This is our first vite-plugin-ssr app.</p>
   </>
 }
 ```
@@ -24,7 +24,7 @@ import { html } from 'vite-plugin-ssr'
 import { renderToHtml } from 'my-favorite-view-framework'
 
 export async function render(pageContext) {
-  // We control how we render our `Page` to HTML
+  // We control how we render `Page` to HTML
   const pageHtml = await renderToHtml(pageContext.Page)
   const title = 'My first vite-plugin-ssr app'
   return html`<!DOCTYPE html>
@@ -53,13 +53,11 @@ hydrate()
 async function hydrate() {
   const pageContext = await getPage()
   const { Page } = pageContext
-  // We control how we hydrate our `Page`
+  // We control how we hydrate `Page`
   await hydrateToDom(Page)
 }
 ```
 
-This control allows us to integrate any tool we want simply by following the tool's official installation guide.
+Not only can we integrate any tool but integration is also simple: `vite-plugin-ssr` gets out of our way and we can simply follow the tool's official bare installation guide.
 
-No need to delve into some complex plugin system to integrate tools;
-`vite-plugin-ssr` gets out of our way and
-integrating tools is easy and natural.
+In a nutshell: integration is <b>simple</b> and <b>natural</b>.

@@ -1,4 +1,5 @@
 @media screen and (min-width: 1000px) {
+  /*
   .features-primary-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -19,6 +20,7 @@
     grid-row: 2;
     grid-column: 1 / 4;
   }
+  */
   .features-secondary-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

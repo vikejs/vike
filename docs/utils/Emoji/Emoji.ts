@@ -1,6 +1,6 @@
 import React from 'react'
 import iconMechanicalArm from './mechanical-arm.svg'
-import iconMountain from './mountain.svg'
+//import iconMountain from './mountain.svg'
 import iconCompass from './compass.svg'
 import { assert } from '../assert'
 
@@ -20,21 +20,35 @@ type EmojiName =
   | 'gear'
   | 'red-heart'
   | 'high-voltage'
+  | 'gem-stone'
+  | 'dizzy'
+  | 'sparkles'
 
 function Emoji({ name, style }: { name: EmojiName; style?: React.CSSProperties }): JSX.Element {
   const emoji =
+    /* ======= Unused ========
     // ***
-    // U+1F9BE
-    // https://iconify.design/icon-sets/noto/mechanical-arm.html
-    // https://emojipedia.org/mechanical-arm/
-    // https://www.unicompat.com/1f9be => 65.5%
-    (name === 'mechanical-arm' && Img(iconMechanicalArm)) ||
+    // U+1FAA8
+    // https://emojipedia.org/rock/
+    // https://www.unicompat.com/1faa8 => 20.7%
+    // ***
+    // U+1F4AB
+    // https://emojipedia.org/dizzy/
+    // https://www.unicompat.com/1F4AB => 94.1%
+    (name === 'dizzy' && Unicode(0x1F4AB)) ||
     // ***
     // U+26F0
     // https://emojipedia.org/mountain/
     // https://iconify.design/icon-sets/noto/mountain.html
     // https://www.unicompat.com/26F0 => 89.3%
     (name === 'mountain' && Img(iconMountain)) ||
+    ======================== */
+    // ***
+    // U+1F9BE
+    // https://iconify.design/icon-sets/noto/mechanical-arm.html
+    // https://emojipedia.org/mechanical-arm/
+    // https://www.unicompat.com/1f9be => 65.5%
+    (name === 'mechanical-arm' && Img(iconMechanicalArm)) ||
     // ***
     // U+1F680
     // https://www.unicompat.com/1F680 => 94.1
@@ -74,17 +88,21 @@ function Emoji({ name, style }: { name: EmojiName; style?: React.CSSProperties }
     // https://emojipedia.org/red-heart/
     // https://www.unicompat.com/2764 => 94.4%
     (name === 'red-heart' && React.createElement('span', { style: { fontFamily: 'reset' } }, Unicode(0x2764))) ||
-    // ***
-    // U+1FAA8
-    // https://emojipedia.org/rock/
-    // https://www.unicompat.com/1faa8 => 20.7%
-    // ***
     // U+26A1
     // https://www.unicompat.com/26A1 => 94.1%
     (name === 'high-voltage' && Unicode(0x26a1)) ||
+    // U+2728
+    // https://emojipedia.org/sparkles/
+    // https://www.unicompat.com/2728 => 94.1%
+    (name === 'sparkles' && Unicode(0x2728)) ||
+    // ***
+    // U+1F48E
+    // https://emojipedia.org/gem-stone/
+    // https://www.unicompat.com/1F48E => 94.1%
+    (name === 'gem-stone' && Unicode(0x1F48E)) ||
     false
 
-  assert(emoji)
+  assert(emoji, { name })
 
   return emoji
 

@@ -386,11 +386,11 @@ function parse(title: string): JSX.Element {
   title.split('').forEach((letter) => {
     if (letter === '`') {
       if (current?.nodeType === 'code') {
-        // Code block end
+        // </code>
         parts.push(current)
         current = undefined
       } else {
-        // Code block begin
+        // <code>
         if (current) {
           parts.push(current)
         }
