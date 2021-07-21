@@ -584,7 +584,7 @@ function findDefault<T extends { filePath: string }>(pageFiles: T[], pageId: str
     })
   )
 
-  return hits.length === 1 ? hits[0] : null
+  return hits[0] || null
 }
 
 function assertArguments(...args: unknown[]) {
