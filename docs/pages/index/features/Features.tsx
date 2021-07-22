@@ -19,8 +19,8 @@ function Features() {
             <Emoji name="wrench" /> Control
           </h2>
           <p>
-            We control how our pages are rendered and we can use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
-            <b>any tool</b> we want (Vuex/Redux, PullState, RPC, GraphQL, Service Workers, ...).
+            Control how your pages are rendered and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
+            <b>any tool</b> you want (Vuex/Redux, PullState, RPC, GraphQL, Service Workers, ...).
           </p>
           <p>
             Integrating tools is <b>simple</b> and <b>natural</b>.
@@ -51,9 +51,9 @@ function Features() {
             <Emoji name="sparkles" /> Less easy, but simpler
           </h2>
           <p>
-            With <code>vite-plugin-ssr</code> we integrate tools manually instead of using a plugin system.
+            With <code>vite-plugin-ssr</code> you integrate tools manually instead of using a plugin system.
           </p>
-          <p>While it means more work, it gives us a sturdy foundation to build upon.</p>
+          <p>While it means more work, it gives you a sturdy foundation to build upon.</p>
         </Feature>
         <LearnMore name="simpler">
           <p>We implement how pages are rendered and integrate our view framework and view tools ourselves.</p>
@@ -97,7 +97,7 @@ function Features() {
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>
-            We can <b>pre-render</b> our app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
+            <b>Pre-render</b> your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
             Pages, ...).
           </p>
         </Feature>
