@@ -49,4 +49,7 @@ pre > code {
   code {
     word-break: break-word;
   }
+  pre > code {
+    word-break: normal;
+  }
 }
