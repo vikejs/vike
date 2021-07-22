@@ -18,8 +18,9 @@ pre > code {
 pre {
   display: grid;
 }
-.hljs {
+pre > code {
   padding-right: 0px !important;
+  overflow-x: auto;
 }
 
 code {
@@ -42,5 +43,10 @@ pre > code {
 @media screen and (max-width: 940px) {
   pre > code {
     font-size: 0.7em;
+  }
+}
+@media screen and (max-width: 500px) {
+  code {
+    word-break: break-word;
   }
 }

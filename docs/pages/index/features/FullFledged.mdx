@@ -1,0 +1,38 @@
+### HMR
+
+Hot Module Replacement powered by Vite that is and stays fast as we scale.
+
+### Routing
+Pages are automatically routed:
+```
+FILESYSTEM                  URL
+pages/index.page.js         /
+pages/about.page.js         /about
+pages/faq/index.page.js     /faq
+```
+
+We can also define advanced routing:
+```js
+// We can define parameters with Route Strings
+export default '/movie/:movieId'
+
+// We can also use Route Functions for full flexibility
+export default ({ url, ...pageContext }) => url==='/admin' && pageContext.isAdmin
+```
+
+We can choose between:
+
+- Client-side Routing: instead of doing a full page reload, only minimal DOM changes are applied, leading to page
+  transitions that are faster and that can be animated.
+- Server-side Routing: the "old school way" which is to completely discard the old page and load the new page entirely.
+  While it is slightly slower, it leads to a simpler application architecture.
+
+### SSR, SPA, HTML-first
+
+We can create:
+- SSR pages.
+- SPA pages (aka MPA).
+- HTML-first pages (zero/minimal browser-side JavaScript).
+
+For example, we can render an admin panel as SPA while rendering marketing pages to HTML-first.
+

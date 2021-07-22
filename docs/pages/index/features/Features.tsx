@@ -4,6 +4,7 @@ import iconChevron from '../../../frame/icons/chevron.svg'
 import { assert } from '../../../utils'
 import { Emoji } from '../../../utils/Emoji'
 import Control from './Control.mdx'
+import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
 import { TweetsAboutScability } from './TweetsAboutScability'
 // import { updateSidePanelScroll } from '../SidePanel'
@@ -29,7 +30,7 @@ function Features() {
         <LearnMore name="control">
           <Control />
         </LearnMore>
-        <Feature>
+        <Feature name="full-fledged" isExpandable={true}>
           <h2>
             <Emoji name="mechanical-arm" /> Full-fledged
           </h2>
@@ -44,11 +45,14 @@ function Features() {
             Pages can be rendered with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
           </p>
         </Feature>
+        <LearnMore name="full-fledged" rightSide={true}>
+    <FullFleged/>
+        </LearnMore>
       </div>
       <div className="features-secondary-row">
         <Feature name="simpler" isExpandable={true}>
           <h2>
-            <Emoji name="sparkles" /> Less easy, but simpler
+            <Emoji name="dizzy" /> Less easy, but simpler
           </h2>
           <p>
             With <code>vite-plugin-ssr</code> you integrate tools manually instead of using a plugin system.
@@ -67,8 +71,8 @@ function Features() {
             it saved us.
           </p>
           <p>
-            In contrast, <code>vite-plugin-ssr</code> gets out of our way and we integrate tools simply by following their
-            official bare installation guide.
+            In contrast, <code>vite-plugin-ssr</code> gets out of our way and we integrate tools simply by following
+            their official bare installation guide.
           </p>
         </LearnMore>
         <Feature>
@@ -97,8 +101,8 @@ function Features() {
             Express.js, Fastify, Hapi, ...).
           </p>
           <p>
-            <b>Pre-render</b> your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
-            Pages, ...).
+            <b>Pre-render</b> your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare Pages,
+            ...).
           </p>
         </Feature>
         <LearnMore name="deploy-anywhere">
@@ -221,9 +225,9 @@ function Feature({
     </summary>
   )
 }
-function LearnMore({ children, name }: { name: string; children: any }) {
+function LearnMore({ children, name, rightSide }: { name: string; children: any; rightSide?: true }) {
   return (
-    <aside style={{}} className="learn-more" id={`learn-more-${name}`}>
+    <aside className={'learn-more ' + (rightSide ? 'right-side' : '')} id={`learn-more-${name}`}>
       {children}
     </aside>
   )

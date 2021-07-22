@@ -32,17 +32,17 @@ function Emoji({ name, style }: { name: EmojiName; style?: React.CSSProperties }
     // https://emojipedia.org/rock/
     // https://www.unicompat.com/1faa8 => 20.7%
     // ***
-    // U+1F4AB
-    // https://emojipedia.org/dizzy/
-    // https://www.unicompat.com/1F4AB => 94.1%
-    (name === 'dizzy' && Unicode(0x1F4AB)) ||
-    // ***
     // U+26F0
     // https://emojipedia.org/mountain/
     // https://iconify.design/icon-sets/noto/mountain.html
     // https://www.unicompat.com/26F0 => 89.3%
     (name === 'mountain' && Img(iconMountain)) ||
     ======================== */
+    // ***
+    // U+1F4AB
+    // https://emojipedia.org/dizzy/
+    // https://www.unicompat.com/1F4AB => 94.1%
+    (name === 'dizzy' && Unicode(0x1F4AB)) ||
     // ***
     // U+1F9BE
     // https://iconify.design/icon-sets/noto/mechanical-arm.html
