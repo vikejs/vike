@@ -46,6 +46,11 @@ function getPageInfo(): {
   pageId: string
   pageContext: Record<string, unknown>
 } {
+  assertUsage(
+    '__vite_plugin_ssr__pageContext' in window,
+    'Client-side `pageContext` missing. Make sure to apply `html._injectAssets()` to the HTML strings you generate.'
+  )
+
   const pageContext: Record<string, unknown> = {}
   Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
 
