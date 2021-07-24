@@ -2,9 +2,9 @@
 
 Intro & docs: [vite-plugin-ssr.com](https://vite-plugin-ssr.com)
 <br/>
-Examples (Official): [examples/](https://github.com/brillout/vite-plugin-ssr/tree/master/examples)
+Examples (official): [examples/](https://github.com/brillout/vite-plugin-ssr/tree/master/examples)
 <br/>
-Examples (Community): [examples/README.md](https://github.com/brillout/vite-plugin-ssr/tree/master/examples#community-examples)
+Examples (community): [examples/README.md](https://github.com/brillout/vite-plugin-ssr/tree/master/examples#community-examples)
 
 Version history & breaking changes: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md)
 
