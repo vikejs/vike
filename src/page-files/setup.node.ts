@@ -10,7 +10,7 @@ async function setPageFiles(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
   const viteEntry = 'pageFiles.node'
   requireResolve(`./${viteEntry}`)
-  let moduleExports: any
+  let moduleExports: unknown
   if (ssrEnv.isProduction) {
     const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntry}.js`)
     assertUsage(
@@ -27,7 +27,7 @@ async function setPageFiles(): Promise<unknown> {
       throw err
     }
   }
-  const pageFiles: unknown = moduleExports.pageFiles || moduleExports.default.pageFiles
+  const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles
   assert(pageFiles)
   assert(hasProp(pageFiles, '.page'))
   return pageFiles
