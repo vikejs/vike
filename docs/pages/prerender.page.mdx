@@ -30,7 +30,8 @@ async function prerender() {
     movies
     .map(movie => {
       const url = `/movie/${movie.id}`
-      const pageContext = { movie }
+      const pageProps = { movie }
+      const pageContext = { pageProps }
       return {
         url,
         // Beacuse we already provide the `pageContext`, vite-plugin-ssr will *not* call
@@ -39,8 +40,8 @@ async function prerender() {
       }
       /* We could also only return `url` and not provide `pageContext`. In that case
          vite-plugin-ssr would call the `addPageContext()` hook. But that would be wasteful
-         since we already have all the data of all movies from our `await Movie.findAll()` call.
-         return { url } */
+         since we already have all the data of all movies from our `await Movie.findAll()` call. */
+      // return { url }
     })
   )
 
@@ -51,7 +52,9 @@ async function prerender() {
   const movieListPage = {
     url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/:movieId`
     pageContext: {
-      movieList: movies.map(({id, title}) => ({id, title})
+      pageProps: {
+        movieList: movies.map(({id, title}) => ({id, title})
+      }
     }
   }
 
