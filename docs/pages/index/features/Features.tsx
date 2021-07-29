@@ -52,12 +52,12 @@ function Features() {
       <div className="features-secondary-row">
         <Feature name="simpler" isExpandable={true}>
           <h2>
-            <Emoji name="dizzy" /> Less easy, but simpler
+            <Emoji name="dizzy" /> Simple
           </h2>
           <p>
             With <code>vite-plugin-ssr</code> you integrate tools manually instead of using a plugin system.
           </p>
-          <p>While it means more work, it gives you a sturdy foundation to build upon.</p>
+          <p>While it means more work, it gives you a simple & sturdy foundation to build upon.</p>
         </Feature>
         <LearnMore name="simpler">
           <p>We implement how pages are rendered and integrate our view framework and view tools ourselves.</p>
