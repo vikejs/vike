@@ -168,6 +168,16 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
+    title: 'HTTPS',
+    url: '/https'
+  },
+  {
+    level: 2,
+    title: 'Svelte',
+    url: '/svelte'
+  },
+  {
+    level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
     titleAddendum: 'CSS Frameworks, Service Workers, ...',
