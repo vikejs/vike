@@ -92,10 +92,12 @@ async function hydrate() {
 ```
 
 > You may see `import { createSSRApp, h } from 'vue'` for the first time
-> but every SSR Vue app actually uses `createSSRApp` and `h`.
-> Nuxt abstracts this away from us and gives us a faster getting started but
-> we loose control over a central piece of architecture which means that things will break as we scale.
-> We'll then loose *much* more time circumventing Nuxt's limiting black box.
+> but every SSR app actually uses `createSSRApp` and `h`.
+>
+> Nuxt abstracts this away from us and gives us a slightly faster getting started. But this also means that we
+> loose control over a central piece of our app architecture and
+> we'll eventually loose much more time circumventing Nuxt's limiting black box as we scale.
+>
 > The boilerplate `$ npm init vite-plugin-ssr@latest` provides a functioning setup
 > that will require only small adaptations for most users.
 
