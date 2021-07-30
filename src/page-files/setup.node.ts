@@ -1,45 +1,34 @@
 import { setPageFilesAsync } from './getPageFiles.shared'
-import { assert, assertUsage } from '../utils/assert'
-import { resolve as pathResolve } from 'path'
+import { assert } from '../utils/assert'
 import { getSsrEnv } from '../ssrEnv.node'
 import { hasProp, moduleExists } from '../utils'
+import { loadViteEntry } from './loadViteEntry.node'
 
 setPageFilesAsync(setPageFiles)
 
 async function setPageFiles(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
-  const viteEntry = 'pageFiles.node'
-  requireResolve(`./${viteEntry}`)
-  let moduleExports: unknown
-  if (ssrEnv.isProduction) {
-    const modulePath = pathResolve(`${ssrEnv.root}/dist/server/${viteEntry}.js`)
-    assertUsage(
-      moduleExists(modulePath),
-      `Build file ${modulePath} is missing. Make sure to run \`vite build && vite build --ssr\` before running the server with \`isProduction: true\`.`
-    )
-    moduleExports = require_(modulePath)
-  } else {
-    const modulePath = requireResolve(`../../../dist/esm/page-files/${viteEntry}.js`)
-    try {
-      moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(modulePath)
-    } catch (err) {
-      ssrEnv.viteDevServer.ssrFixStacktrace(err)
-      throw err
-    }
-  }
+
+  const viteEntryFile = 'pageFiles.node.js'
+  assert(moduleExists(`./${viteEntryFile}`))
+  const userDist = `${ssrEnv.root}/dist`
+  const pluginDist = `../../../dist`
+  const prodPath = `${userDist}/server/${viteEntryFile}`
+  const devPath = `${pluginDist}/esm/page-files/${viteEntryFile}`
+
+  const errorMessage =
+    'Make sure to run `vite build && vite build --ssr` before running the server with `isProduction: true`.'
+
+  const moduleExports = await loadViteEntry({
+    devPath,
+    prodPath,
+    errorMessage,
+    viteDevServer: ssrEnv.viteDevServer,
+    isProduction: ssrEnv.isProduction
+  })
+
   const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles
   assert(pageFiles)
   assert(hasProp(pageFiles, '.page'))
   return pageFiles
-}
-
-function require_(modulePath: string): unknown {
-  // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
-  const req = require
-  return req(modulePath)
-}
-function requireResolve(modulePath: string): string {
-  // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
-  const req = require
-  return req.resolve(modulePath)
 }
