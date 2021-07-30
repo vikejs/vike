@@ -1,7 +1,8 @@
 import { setPageFilesAsync } from './getPageFiles.shared'
 import { assert } from '../utils/assert'
 import { getSsrEnv } from '../ssrEnv.node'
-import { hasProp, moduleExists } from '../utils'
+import { hasProp } from '../utils'
+import { moduleExists } from '../utils/moduleExists'
 import { loadViteEntry } from './loadViteEntry.node'
 
 setPageFilesAsync(setPageFiles)
@@ -10,7 +11,7 @@ async function setPageFiles(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
 
   const viteEntryFile = 'pageFiles.node.js'
-  assert(moduleExists(`./${viteEntryFile}`))
+  assert(moduleExists(`./${viteEntryFile}`, __dirname))
   const userDist = `${ssrEnv.root}/dist`
   const pluginDist = `../../../dist`
   const prodPath = `${userDist}/server/${viteEntryFile}`

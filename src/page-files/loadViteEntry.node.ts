@@ -1,7 +1,7 @@
 import { assert, assertUsage } from '../utils/assert'
 import { resolve as pathResolve } from 'path'
-import { moduleExists } from '../utils'
-import type { ViteDevServer} from 'vite'
+import { moduleExists } from '../utils/moduleExists'
+import type { ViteDevServer } from 'vite'
 
 export { loadViteEntry }
 
@@ -10,7 +10,7 @@ async function loadViteEntry({
   prodPath,
   isProduction,
   viteDevServer,
-  errorMessage,
+  errorMessage
 }: {
   devPath: string
   prodPath: string
@@ -21,10 +21,7 @@ async function loadViteEntry({
   let moduleExports: unknown
   if (isProduction) {
     const prodPathResolved = pathResolve(prodPath)
-    assertUsage(
-      moduleExists(prodPathResolved),
-      `Build file ${prodPathResolved} is missing. ${errorMessage}`
-    )
+    assertUsage(moduleExists(prodPathResolved), `Build file ${prodPathResolved} is missing. ${errorMessage}`)
     moduleExports = require_(prodPathResolved)
   } else {
     assert(viteDevServer)
@@ -49,4 +46,3 @@ function requireResolve(modulePath: string): string {
   const req = require
   return req.resolve(modulePath)
 }
-

@@ -3,17 +3,8 @@ import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
-import {
-  assert,
-  assertUsage,
-  assertWarning,
-  hasProp,
-  getFileUrl,
-  moduleExists,
-  isPlainObject,
-  castProp,
-  projectInfo
-} from './utils'
+import { assert, assertUsage, assertWarning, hasProp, getFileUrl, isPlainObject, castProp, projectInfo } from './utils'
+import { moduleExists } from './utils/moduleExists'
 import { setSsrEnv } from './ssrEnv.node'
 import { getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -280,9 +271,7 @@ type PluginManifest = {
   base: string
   doesClientSideRouting: boolean
 }
-function getPluginManifest(
-  root: string
-): {
+function getPluginManifest(root: string): {
   pluginManifest: PluginManifest | null
   pluginManifestPath: string
 } {
