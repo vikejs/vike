@@ -15,7 +15,6 @@
     "bump:test": "cd ../ && npm run test"
   },
   "dependencies": {
-    "@brillout/verify-markdown-links": "^0.1.0",
     "@types/node": "^15.6.1",
     "@types/semver": "^7.3.6",
     "conventional-changelog-cli": "^2.1.1",

@@ -16,7 +16,6 @@
     "// Develop vite-plugin-ssr": "",
     "dev": "npm run tsc:watch:cjs",
     "dev:setup": "npm install && npm run install:examples && npm run link",
-    "verify-markdown": "verify-markdown-links --ignore-pattern CHANGELOG.md",
     "========= Build": "",
     "// Build vite-plugin-ssr": "",
     "build": "npm run clean:build && npm run tsc:cjs && npm run tsc:esm",
