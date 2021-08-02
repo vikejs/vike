@@ -26,6 +26,8 @@
     "link": "cd scripts/ && npm run link",
     "// Install **/node_modules/vite-plugin-ssr/ from npm registry": "",
     "unlink": "cd scripts/ && npm run unlink",
+    "// Symlink **/node_modules/vite/ to local Vite build": "",
+    "link-vite": "cd scripts/ && npm run link-vite",
     "// Update dependencies of `src/`, examples, and boilerplates": "",
     "bump": "cd scripts/ && npm run bump",
     "========= TypeScript": "",

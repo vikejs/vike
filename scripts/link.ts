@@ -4,13 +4,13 @@ import { runCommand } from './helpers/runCommand'
 import { relative } from 'path'
 const yarnBin = require.resolve(`${DIR_ROOT}/node_modules/.bin/yarn`)
 
-link()
+export { link }
 
-async function link() {
+async function link(pkg: 'vite-plugin-ssr' | 'vite') {
   await runCommand(yarnBin, ['link'], { cwd: DIR_SRC, silent: true })
   const dependers = getDependers()
   for (const cwd of dependers) {
-    await runCommand(yarnBin, ['link', 'vite-plugin-ssr'], {
+    await runCommand(yarnBin, ['link', pkg], {
       cwd,
       silent: true
     })
@@ -20,6 +20,6 @@ async function link() {
       silent: true
     })
     //*/
-    console.log(`symlink: /src/ <- /${relative(DIR_ROOT, cwd)}/node_modules/vite-plugin-ssr`)
+    console.log(`symlink: /${relative(DIR_ROOT, cwd)}/node_modules/${pkg}`)
   }
 }

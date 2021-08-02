@@ -3,17 +3,17 @@ import { runCommand } from './helpers/runCommand'
 import { DIR_ROOT } from './helpers/locations'
 import { relative } from 'path'
 
-unlink()
+export { unlink }
 
-async function unlink() {
+async function unlink(pkg: 'vite-plugin-ssr' | 'vite') {
   const dependers = getDependers()
   for (const cwd of dependers) {
     // This removes any symlink
-    const version = require(`${cwd}/package.json`).dependencies['vite-plugin-ssr']
-    await runCommand('npm', ['install', `vite-plugin-ssr@${version}`, '--no-save'], {
+    const version = require(`${cwd}/package.json`).dependencies[pkg]
+    await runCommand('npm', ['install', `${pkg}@${version}`, '--no-save'], {
       cwd,
       silent: true
     })
-    console.log(`from npm registry: ${relative(DIR_ROOT, cwd)}/node_modules/vite-plugin-ssr`)
+    console.log(`from npm registry: ${relative(DIR_ROOT, cwd)}/node_modules/${pkg}`)
   }
 }
