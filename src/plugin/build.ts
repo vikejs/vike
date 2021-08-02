@@ -1,4 +1,5 @@
 import { Plugin, UserConfig } from 'vite'
+import type { InputOption } from 'rollup'
 import {
   isAbsolute as pathIsAbsolute,
   relative as pathRelative,
@@ -6,7 +7,7 @@ import {
   sep as pathSep,
   posix as pathPosix
 } from 'path'
-import { assert } from '../utils'
+import { assert, isObject } from '../utils'
 import * as glob from 'fast-glob'
 
 export { build }
@@ -18,11 +19,15 @@ function build(): Plugin {
     apply: 'build',
     config: (config) => {
       isSsrBuild = isSSR(config)
+      const input = {
+        ...entryPoints(config),
+        ...normalizeRollupInput(config.build?.rollupOptions?.input)
+      }
       return {
         build: {
           outDir: getOutDir(config),
           manifest: true,
-          rollupOptions: { input: entryPoints(config) },
+          rollupOptions: { input },
           polyfillDynamicImport: false
         },
         ssr: { external: ['vite-plugin-ssr'] }
@@ -110,4 +115,20 @@ function posixPath(path: string): string {
 
 function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
   return !!config?.build?.ssr
+}
+
+function normalizeRollupInput(input?: InputOption): Record<string, string> {
+  if (!input) {
+    return {}
+  }
+  /*
+  if (typeof input === "string") {
+    return { [input]: input };
+  }
+  if (Array.isArray(input)) {
+    return Object.fromEntries(input.map((i) => [i, i]));
+  }
+  */
+  assert(isObject(input))
+  return input
 }
