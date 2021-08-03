@@ -5,7 +5,7 @@
       <a :href="'/star-wars/' + item.id">{{ item.title }}</a> ({{ item.release_date }})
     </li>
   </ol>
-  <p>Source: <a href="https://swapi.dev/api/films/">swapi.dev/api/films/</a>.</p>
+  <p>Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.</p>
   <p>Data can be fetched by using the <code>addPageContext()</code> hook.</p>
 </template>
 

@@ -20,7 +20,7 @@ async function addPageContext(
   pageContext: PageContext
 ): Promise<Partial<PageContext>> {
   const response = await fetch(
-    `https://swapi.dev/api/films/${pageContext.routeParams.movieId}`
+    `https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`
   );
   let movie = (await response.json()) as MovieDetails;
 

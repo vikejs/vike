@@ -15,7 +15,7 @@ function Page({ movies }: { movies: Movie[] }) {
         ))}
       </ol>
       <p>
-        Source: <a href="https://swapi.dev/api/films/">swapi.dev/api/films/</a>.
+        Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.
       </p>
       <p>
         Data can be fetched by using the <code>addPageContext()</code> hook.
