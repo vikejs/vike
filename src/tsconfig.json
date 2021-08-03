@@ -15,5 +15,6 @@
     "declaration": true,
     "declarationMap": true,
     "stripInternal": true
-  }
+  },
+  "exclude": ["./dist/"]
 }

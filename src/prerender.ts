@@ -16,7 +16,10 @@ type HtmlDocument = {
   htmlDocument: string
   pageContextSerialized: string | null
   doNotCreateExtraDirectory: boolean
+  pageId: string | null
 }
+
+type DoNotPrerenderList = { pageId: string; pageServerFilePath: string }[]
 
 /**
  * Render your pages (e.g. for deploying to a static host).
@@ -76,11 +79,20 @@ async function prerender({
       }
     }
   > = {}
+  const doNotPrerenderList: DoNotPrerenderList = []
+
   await Promise.all(
     allPageIds.map(async (pageId) => {
       const pageServerFile = await getPageServerFile(pageId)
       if (!pageServerFile) return
+
       const { fileExports, filePath } = pageServerFile
+
+      if (fileExports.doNotPrerender) {
+        doNotPrerenderList.push({ pageId, pageServerFilePath: filePath })
+        return
+      }
+
       const prerenderFunction = fileExports.prerender
       if (!prerenderFunction) return
       const prerenderSourceFile = filePath
@@ -124,9 +136,16 @@ async function prerender({
       const routeResult = await route(url, allPageIds, pageContext)
       assertUsage(
         routeResult,
-        `The \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs returned by \`prerender()\` hooks to always match the URL of a page.`
+        `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
       )
       const { pageId } = routeResult
+
+      const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
+      assertUsage(
+        !doNotPrerenderListHit,
+        `Your \`prerender()\` hook defined in ${prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
+      )
+
       Object.assign(pageContext, routeResult.pageContextAddendum)
       assert(hasProp(pageContext, 'routeParams', 'object'))
       castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
@@ -134,7 +153,7 @@ async function prerender({
       assert(hasProp(pageContext, '_pageId', 'string'))
       assert(pageContext.url)
       const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-      htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir })
+      htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
       renderedPageIds[pageId] = true
     })
   )
@@ -171,7 +190,7 @@ async function prerender({
         }
 
         const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-        htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir })
+        htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
       })
   )
 
@@ -180,7 +199,13 @@ async function prerender({
     if (result) {
       const url = '/404'
       const { htmlDocument } = result
-      htmlDocuments.push({ url, htmlDocument, pageContextSerialized: null, doNotCreateExtraDirectory: true })
+      htmlDocuments.push({
+        url,
+        htmlDocument,
+        pageContextSerialized: null,
+        doNotCreateExtraDirectory: true,
+        pageId: null
+      })
     }
   }
 
@@ -188,15 +213,17 @@ async function prerender({
 
   // `htmlDocuments.length` can be very big; to avoid `EMFILE, too many open files` we don't parallelize the writing
   for (const htmlDoc of htmlDocuments) {
-    await writeHtmlDocument(htmlDoc, root)
+    await writeHtmlDocument(htmlDoc, root, doNotPrerenderList)
   }
 }
 
 async function writeHtmlDocument(
-  { url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory }: HtmlDocument,
-  root: string
+  { url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlDocument,
+  root: string,
+  doNotPrerenderList: DoNotPrerenderList
 ) {
   assert(url.startsWith('/'))
+  assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
 
   const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory)]
   if (pageContextSerialized !== null) {

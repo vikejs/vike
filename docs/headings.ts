@@ -272,6 +272,12 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
+    title: parse('`doNotPrerender`'),
+    titleInNav: parse(getListPrefix() + '`export { doNotPrerender }`'),
+    url: '/doNotPrerender'
+  },
+  {
+    level: 2,
     title: parse("`import { html } from 'vite-plugin-ssr'`"),
     titleInNav: parse('`html` template tag'),
     url: '/html-tag'

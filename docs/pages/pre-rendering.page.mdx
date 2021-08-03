@@ -20,6 +20,8 @@ For pages with a parameterized route (e.g. `/movie/:movieId`), we have to use th
 
 We can also use the `prerender()` hook to accelerate the pre-rendering process as it allows us to prefetch data for multiple pages at once.
 
+We can skip pre-rendering for certain pages by using [`.page.server.js#doNotPrerender`](/doNotPrerender).
+
 React Example:
  - <RepoLink path='/examples/react-full/package.json' /> (see npm scripts using the CLI command <code>$ vite-plugin-ssr prerender</code> and static serving <code>dist/client/</code>)
  - <RepoLink path='/examples/react-full/pages/hello/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)

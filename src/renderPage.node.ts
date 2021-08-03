@@ -278,6 +278,7 @@ type PageServerFileProps = {
     render?: Function
     prerender?: Function
     addPageContext?: Function
+    doNotPrerender?: true
     setPageProps: never
     passToClient?: string[]
   }
