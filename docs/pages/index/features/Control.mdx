@@ -1,4 +1,4 @@
-With `vite-plugin-ssr`, we keep control over how we render our pages.
+With `vite-plugin-ssr` you keep control over how your pages are rendered.
 
 ```jsx
 // /pages/about.page.js
@@ -6,7 +6,7 @@ With `vite-plugin-ssr`, we keep control over how we render our pages.
 
 export { Page }
 
-// `Page` can be anything we want such as a React/Vue/Svelte/... component.
+// `Page` can be anything you want such as a React/Vue/Svelte/... component.
 function Page() {
   return <>
     <h1>About</h1>
@@ -23,9 +23,9 @@ import { html } from 'vite-plugin-ssr'
 // This can be any view framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-view-framework'
 
-export async function render(pageContext) {
-  // We control how we render `Page` to HTML
-  const pageHtml = await renderToHtml(pageContext.Page)
+export async function render({ Page }) {
+  // You control how you render `Page` to HTML
+  const pageHtml = await renderToHtml(Page)
   const title = 'My first vite-plugin-ssr app'
   return html`<!DOCTYPE html>
     <html>
@@ -46,18 +46,17 @@ import { getPage } from 'vite-plugin-ssr/client'
 import { hydrateToDom } from 'my-favorite-view-framework'
 
 // This file defines the *entire* browser-side code.
-// If we leave this file empty then there is zero browser-side JavaScript.
+// If you leave this file empty then there is zero browser-side JavaScript.
 
 hydrate()
 
 async function hydrate() {
-  const pageContext = await getPage()
-  const { Page } = pageContext
-  // We control how we hydrate `Page`
+  const { Page } = await getPage() // In production, `await getPage()` is preloaded
+  // You control how `Page` is hydrated
   await hydrateToDom(Page)
 }
 ```
 
-Not only can we integrate any tool but integration is also simple: `vite-plugin-ssr` gets out of our way and we can simply follow the tool's official bare installation guide.
+Not only can you integrate any tool you want, but integration is also simple: `vite-plugin-ssr` gets out of your way and you can simply follow the tool's official bare installation guide.
 
 In a nutshell: integration is <b>simple</b> and <b>natural</b>.

@@ -38,15 +38,14 @@ function Features() {
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
           </p>
           <p>
-            <b>Client-side Routing</b> (faster/animated page transitions) or <b>Server-side Routing</b> (simpler
-            architecture).
+            <b>Client-side Routing</b> (faster page transitions) or <b>Server-side Routing</b> (simpler architecture).
           </p>
           <p>
             Pages can be rendered with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
           </p>
         </Feature>
         <LearnMore name="full-fledged" rightSide={true}>
-    <FullFleged/>
+          <FullFleged />
         </LearnMore>
       </div>
       <div className="features-secondary-row">
@@ -60,19 +59,27 @@ function Features() {
           <p>While it means more work, it gives you a simple & sturdy foundation to build upon.</p>
         </Feature>
         <LearnMore name="simpler">
-          <p>We implement how pages are rendered and integrate our view framework and view tools ourselves.</p>
+          <h3>Less easy, but simpler</h3>
           <p>
-            This manual integration requires work and is less easy than just adding a Next.js/Nuxt plugin; getting
-            started is often slower.
+            With <code>vite-plugin-ssr</code> you integrate tools yourself. This usually means more work and is less
+            easy than just adding a Next.js/Nuxt plugin; getting started is often slower.
           </p>
           <p>
-            But a plugin system comes with complexity and becomes counterproductive as we scale. At some point we spend
-            much more time fighting the plugin system and circumventing Next.js/Nuxt's limiting black box than the time
-            it saved us.
+            But a plugin system comes with complexity and limitations that becomes counterproductive as you scale. At
+            some point you spend a lot more time fighting the plugin system and circumventing Next.js/Nuxt's limiting
+            black-box nature. The net result is a considerable loss in dev time.
           </p>
           <p>
-            In contrast, <code>vite-plugin-ssr</code> gets out of our way and we integrate tools simply by following
-            their official bare installation guide.
+            In contrast, <code>vite-plugin-ssr</code> gets out of your way and you integrate a tool simply by following
+            its official installation guides.
+          </p>
+          <p>
+            In a nutshell: <code>vite-plugin-ssr</code> is less easy but simpler.
+          </p>
+          <h3>More fun</h3>
+          <p>
+            Last but not least, integration is more fun (and more insightful!) than fighting some arbitrary and
+            idiosyncratic framework.
           </p>
         </LearnMore>
         <Feature>
@@ -127,7 +134,7 @@ function Features() {
             <Emoji name="rocket" /> Scalable
           </h2>
           <p>
-            Scales to hundreds of kLOCs while keeping <b>fast HMR / dev speed</b>.
+            Scales to hundreds of kLOCs while <b>HMR stays fast</b>.
           </p>
           <p>
             <b>Design that scales</b> from small hobby projects to large-scale enterprise projects.
@@ -136,29 +143,29 @@ function Features() {
         <LearnMore name="scalable">
           <h3>Lazy-transpiling</h3>
           <p>
-            One of Vite's foundational novelty is lazy-transpiling: only executed code is transpiled. If we define ten
-            pages and load a page in the browser, then only the code that is needed to render that page is transpiled.
+            One of Vite's foundational novelty is lazy-transpiling: only executed code is transpiled. If you define ten
+            pages and load a page in the browser, then only the code that is needed to render that one page is transpiled.
           </p>
           <p>
-            Thanks to lazy-transpiling, we can scale to (very) large source code while keeping fast dev speed / HMR.
+            Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast dev speed / HMR.
           </p>
           <h3>No black box, no plugin system</h3>
-          <p>At scale, Next.js/Nuxt's black box nature and its plugin system become frustrating and limiting.</p>
+          <p>At scale, Next.js/Nuxt's black-box nature and its plugin system become painfully limiting.</p>
           <p>
-            In contrast, <code>vite-plugin-ssr</code> is transparent and we have full control over the server- and
+            In contrast, <code>vite-plugin-ssr</code> has a transparent design that let's you keep control over both the server- and
             browser-side.
           </p>
           <p>
-            As we scale we often have increasingly custom SSR needs; <code>vite-plugin-ssr</code>'s flexibility
+            As you scale you often get increasingly custom SSR integration needs; <code>vite-plugin-ssr</code>'s flexibility
             accommodates such needs.
           </p>
           <h3>
             Vite + SSR + Scale = <Emoji name="red-heart" />
           </h3>
           <p>
-            At (very) large scale, we can even progressively replace <code>vite-plugin-ssr</code> with Vite's native SSR
-            API which is lower-level and highly flexible. If we are Netflix and perfecting UX leads to a substantial
-            revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what we are looking for.
+            At (very) large scale, you can even progressively replace <code>vite-plugin-ssr</code> with Vite's native SSR
+            API which is low-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial
+            revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are looking for.
           </p>
           <TweetsAboutScability />
         </LearnMore>

@@ -8,13 +8,13 @@ const renderPage = createPageRender(/* ... */)
 
 // `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
 app.get('*', async (req, res) => {
-  // We can also use `renderPage()` in serverless environments such as Cloudflare Workers or Vercel
+  // `renderPage()` can also be used in serverless environments such as Cloudflare Workers and Vercel
   const result = await renderPage({ url: req.url })
   res.send(result.renderResult)
 })
 ```
 
-We can also pre-render our app to remove the need for a Node.js production server and deploy to a static host instead.
-(Cloudflare Pages, GitHub Pages, Netlify, ...)
+You can also pre-render your app to remove the need for a production Node.js server and deploy to any static host
+(Cloudflare Pages, GitHub Pages, Netlify, ...).
 
 <PrerenderPreview />
