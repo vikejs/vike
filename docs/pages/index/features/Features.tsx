@@ -61,17 +61,17 @@ function Features() {
         <LearnMore name="simpler">
           <h3>Less easy, but simpler</h3>
           <p>
-            With <code>vite-plugin-ssr</code> you integrate tools yourself. This usually means more work and is less
+            With <code>vite-plugin-ssr</code> you integrate tools yourself. This usually means more work and it's less
             easy than just adding a Next.js/Nuxt plugin; getting started is often slower.
           </p>
           <p>
-            But a plugin system comes with complexity and limitations that becomes counterproductive as you scale. At
-            some point you spend a lot more time fighting the plugin system and circumventing Next.js/Nuxt's limiting
-            black-box nature. The net result is a considerable loss in dev time.
+            But plugin systems are complex, limiting, and quickly become counterproductive. You end up spending time
+            fighting the plugin system and circumventing Next.js/Nuxt's limiting black-box nature and the net result is
+            a considerable loss in dev time.
           </p>
           <p>
-            In contrast, <code>vite-plugin-ssr</code> gets out of your way and you integrate a tool simply by following
-            its official installation guides.
+            In contrast, <code>vite-plugin-ssr</code> gets out of your way and integrating a tool is simply a matter of
+            following the tool's official installation guide.
           </p>
           <p>
             In a nutshell: <code>vite-plugin-ssr</code> is less easy but simpler.
