@@ -29,9 +29,7 @@ export { prerenderPage }
 export { renderStatic404Page }
 export { getPageServerFile }
 
-async function renderPage(
-  pageContext: { url: string } & Record<string, unknown>
-): Promise<
+async function renderPage(pageContext: { url: string } & Record<string, unknown>): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
   | {
       nothingRendered: false
@@ -798,9 +796,12 @@ function addUrlPropsToPageContext<
   Object.assign(pageContext, { urlPathname, urlParsed })
 }
 
-function analyzeUrl(
-  url: string
-): { urlWithoutOrigin: string; urlNormalized: string; isPageContextRequest: boolean; hasBaseUrl: boolean } {
+function analyzeUrl(url: string): {
+  urlWithoutOrigin: string
+  urlNormalized: string
+  isPageContextRequest: boolean
+  hasBaseUrl: boolean
+} {
   const isPageContextRequest = isPageContextUrl(url)
   if (isPageContextRequest) {
     url = removePageContextUrlSuffix(url)

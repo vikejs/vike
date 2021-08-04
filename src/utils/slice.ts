@@ -13,7 +13,7 @@ function slice(thing: string | unknown[], from: number, to: number): string | un
 }
 
 function sliceArray<Element, T extends Array<Element>>(list: T, from: number, to: number): T {
-  const listSlice: T = ([] as unknown) as T
+  const listSlice: T = [] as unknown as T
 
   let start = from >= 0 ? from : list.length + from
   assert(start >= 0 && start <= list.length)

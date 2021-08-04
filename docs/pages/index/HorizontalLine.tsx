@@ -2,9 +2,9 @@ import React from 'react'
 
 export { HorizontalLine }
 
-function HorizontalLine({primary}: {primary?: true}) {
+function HorizontalLine({ primary }: { primary?: true }) {
   return (
-    <div className={"header-separator-line "+(primary?"primary":"")} style={{ textAlign: 'center' }}>
+    <div className={'header-separator-line ' + (primary ? 'primary' : '')} style={{ textAlign: 'center' }}>
       <hr
         style={{
           display: 'inline-block',

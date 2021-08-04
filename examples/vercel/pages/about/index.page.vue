@@ -4,7 +4,8 @@
 </template>
 
 <style>
-h1, p {
+h1,
+p {
   color: magenta;
 }
 </style>

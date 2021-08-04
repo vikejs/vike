@@ -42,7 +42,7 @@ function Emoji({ name, style }: { name: EmojiName; style?: React.CSSProperties }
     // U+1F4AB
     // https://emojipedia.org/dizzy/
     // https://www.unicompat.com/1F4AB => 94.1%
-    (name === 'dizzy' && Unicode(0x1F4AB)) ||
+    (name === 'dizzy' && Unicode(0x1f4ab)) ||
     // ***
     // U+1F9BE
     // https://iconify.design/icon-sets/noto/mechanical-arm.html
@@ -99,7 +99,7 @@ function Emoji({ name, style }: { name: EmojiName; style?: React.CSSProperties }
     // U+1F48E
     // https://emojipedia.org/gem-stone/
     // https://www.unicompat.com/1F48E => 94.1%
-    (name === 'gem-stone' && Unicode(0x1F48E)) ||
+    (name === 'gem-stone' && Unicode(0x1f48e)) ||
     false
 
   assert(emoji, { name })

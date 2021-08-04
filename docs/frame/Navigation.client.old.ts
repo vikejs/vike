@@ -162,9 +162,10 @@ function getVisibleHeadings(headingSectionsVisibility: HeadingSectionVisibility[
   const headingSectionsWithVisibleNavItemVisibility = getHeadingSectionsVisbility(headings_withVisibileNavItem)
   return headingSectionsWithVisibleNavItemVisibility
 }
-function getBoundaryHeading(
-  headingSectionsVisibility: HeadingSectionVisibility[]
-): { headingVisibleFirst: HeadingVisible; headingVisibleLast: HeadingVisible } {
+function getBoundaryHeading(headingSectionsVisibility: HeadingSectionVisibility[]): {
+  headingVisibleFirst: HeadingVisible
+  headingVisibleLast: HeadingVisible
+} {
   const headingSectionsWithVisibleNavItemVisibility = getVisibleHeadings(headingSectionsVisibility)
   const h: HeadingSectionVisibility[] = headingSectionsWithVisibleNavItemVisibility
   const hFirst = h.find(({ screenBeginPosition }) => screenBeginPosition !== null)

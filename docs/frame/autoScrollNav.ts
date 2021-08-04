@@ -9,7 +9,7 @@ function autoScrollNav() {
   const navLinks: HTMLElement[] = Array.from(navigationEl.querySelectorAll(`a[href="${href}"]`))
   assert(navLinks.length <= 1, { navLinks, href })
   const navLink = navLinks[0]
-  if( !navLink ) return;
+  if (!navLink) return
   navLink.scrollIntoView({
     /*
     behavior: 'smooth',

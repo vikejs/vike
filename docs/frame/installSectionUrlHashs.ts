@@ -32,7 +32,7 @@ function installSectionUrlHashs() {
 function assertNavLink(navigationEl: HTMLElement, urlHash: string) {
   const parentNavLinkMatch = Array.from(navigationEl.querySelectorAll(`a[href="${window.location.pathname}"]`))
   assert(parentNavLinkMatch.length <= 1)
-  if (parentNavLinkMatch.length===0) return
+  if (parentNavLinkMatch.length === 0) return
   const navLinks: HTMLElement[] = Array.from(navigationEl.querySelectorAll(`a[href="${urlHash}"]`))
   assert(navLinks.length === 1, { urlHash })
 }
