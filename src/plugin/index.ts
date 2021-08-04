@@ -3,15 +3,16 @@ import { assertUsage } from '../utils'
 import { build } from './build'
 import { dev } from './dev'
 import { manifest } from './manifest'
-import { importBuildFile } from './importBuildFile'
 import { packageJsonFile } from './packageJsonFile'
+import { importBuild } from 'vite-plugin-import-build'
+import { getImportBuildCode } from './getImportBuildCode'
 
 export default plugin
 export { plugin }
 export { plugin as ssr }
 
 function plugin(): Plugin[] {
-  return [dev(), build(), manifest(), importBuildFile(), packageJsonFile()]
+  return [dev(), build(), manifest(), importBuild(getImportBuildCode()), packageJsonFile()]
 }
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`

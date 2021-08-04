@@ -8,12 +8,14 @@
     "cac": "^6.7.3",
     "devalue": "^2.0.1",
     "fast-glob": "^3.2.5",
-    "kolorist": "^1.4.1"
+    "kolorist": "^1.4.1",
+    "vite-plugin-import-build": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
     "rimraf": "^3.0.2",
-    "typescript": "^4.2.4"
+    "typescript": "^4.2.4",
+    "vite": "^2.4.4"
   },
   "peerDependencies": {
     "vite": "^2.2.3"
