@@ -707,7 +707,7 @@ async function render500Page(
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
   | { nothingRendered: false; renderResult: string | unknown; statusCode: 500 }
 > {
-  handleErr(pageContext._err)
+  handleError(pageContext._err)
 
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (errorPageId === null) {
@@ -733,7 +733,7 @@ async function render500Page(
   try {
     renderResult = await renderPageId(pageContext)
   } catch (err) {
-    // We purposely swallow the error, because another error was already shown to the user in `handleErr()`.
+    // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
     // (And chances are high that this is the same error.)
     return {
       nothingRendered: true,
@@ -746,7 +746,7 @@ async function render500Page(
 
 function renderPageContextError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
   if (err) {
-    handleErr(err)
+    handleError(err)
   }
   const renderResult = stringify({
     userError: true
@@ -760,7 +760,7 @@ function renderPageContext404PageDoesNotExist(): { nothingRendered: false; rende
   return { nothingRendered: false, renderResult, statusCode: 200 }
 }
 
-function handleErr(err: unknown) {
+function handleError(err: unknown) {
   const { viteDevServer } = getSsrEnv()
   if (viteDevServer) {
     cast<Error>(err)
