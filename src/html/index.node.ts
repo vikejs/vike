@@ -16,7 +16,7 @@ const __html_template = Symbol('__html_template')
 const __dangerouslySkipEscape = Symbol('__dangerouslySkipEscape')
 */
 
-type SanitizedHtmlString = {
+export type SanitizedHtmlString = {
   __html_template: {
     templateParts: TemplateStringsArray
     templateVariables: (
