@@ -3,7 +3,7 @@
 
 ### DX
 
-* dx: improve error message when `pageContext` is not serializable (#127) (fix #128)
+* dx: improve error message when `pageContext` is not serializable [#127](https://github.com/brillout/vite-plugin-ssr/issues/120) (fix [#128](https://github.com/brillout/vite-plugin-ssr/issues/128))
 
 
 
