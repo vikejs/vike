@@ -508,6 +508,7 @@ async function executeRenderHook(
     _pageServerFileDefault: PageServerFile
     _pageFilePath: string
     _pageClientFilePath: string
+    _passToClient: string[]
   }
 ) {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)

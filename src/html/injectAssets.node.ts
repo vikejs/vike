@@ -129,6 +129,7 @@ async function injectAssets(htmlString: string, pageContext: Record<string, unkn
   )
   assertUsage(hasProp(pageContext, '_pageAssets'), errMsg('`pageContext._pageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_pageFilePath', 'string'), errMsg('`pageContext._pageFilePath` is missing'))
+  assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   assertUsage(
     hasProp(pageContext, '_pageClientFilePath', 'string'),
     errMsg('`pageContext._pageClientFilePath` is missing')
@@ -148,6 +149,7 @@ async function injectAssets_internal(
     _pageContextClient: Record<string, unknown>
     _pageFilePath: string
     _pageClientFilePath: string
+    _passToClient: string[]
   }
 ): Promise<string> {
   assert(htmlString)
@@ -202,13 +204,38 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 
 function injectPageInfo(
   htmlString: string,
-  pageContext: { _pageId: string; _pageContextClient: Record<string, unknown> }
+  pageContext: { _pageId: string; _pageContextClient: Record<string, unknown>; _passToClient: string[] }
 ): string {
   assert(pageContext._pageContextClient._pageId)
   assert(pageContext._pageContextClient._pageId === pageContext._pageId)
-  const pageContextSerialized = devalue(pageContext._pageContextClient)
+  const pageContextSerialized = serializePageContext(pageContext)
   const injection = `<script>window.__vite_plugin_ssr__pageContext = ${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
+}
+
+function serializePageContext(pageContext: {
+  _pageContextClient: Record<string, unknown>
+  _passToClient: string[]
+}): string {
+  let pageContextSerialized: string
+  try {
+    pageContextSerialized = devalue(pageContext._pageContextClient)
+  } catch (err) {
+    pageContext._passToClient.forEach((prop) => {
+      try {
+        devalue((pageContext as Record<string, unknown>)[prop])
+      } catch (err) {
+        console.error(err)
+        assertUsage(
+          false,
+          `\`pageContext['${prop}']\` can not be serialized and therefore not passed to the client. Either remove \`'${prop}'\` from \`passToClient\` or make sure that \`pageContext['${prop}']\` is serializable. The \`devalue\` serialization error is shown above (serialization is done with https://github.com/Rich-Harris/devalue).`
+        )
+      }
+    })
+    console.error(err)
+    assert(false)
+  }
+  return pageContextSerialized
 }
 
 function injectScript(htmlString: string, script: PageAsset): string {
