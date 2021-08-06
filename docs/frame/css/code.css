@@ -45,11 +45,22 @@ pre > code {
     font-size: 0.7em;
   }
 }
+
+/*
+ * Line breaks in `<code>`:
+ *  - Avoid them on desktop
+ *  - Allow them on mobile
+ */
+code {
+  display: inline-block;
+}
 @media screen and (max-width: 500px) {
   code {
     word-break: break-word;
+    display: inline;
   }
-  pre > code {
-    word-break: normal;
-  }
+}
+pre > code {
+  display: reset;
+  word-break: reset;
 }

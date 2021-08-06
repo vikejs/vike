@@ -144,8 +144,7 @@ function Features() {
           <h3>Lazy-transpiling</h3>
           <p>
             One of Vite's foundational novelty is lazy-transpiling: only executed code is transpiled. If you define ten
-            pages and load a page in the browser, then only the code that is needed to render that one page is
-            transpiled.
+            pages but load only page in the browser, then only the code for that page is transpiled.
           </p>
           <p>
             Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast dev speed / HMR.
@@ -153,20 +152,21 @@ function Features() {
           <h3>No black box, no plugin system</h3>
           <p>At scale, Next.js/Nuxt's black-box nature and its plugin system become painfully limiting.</p>
           <p>
-            In contrast, <code>vite-plugin-ssr</code> has a transparent design that let's you keep control over both the
-            server- and browser-side.
+            In contrast, <code>vite-plugin-ssr</code> is transparent: you keep control over both the server- and
+            browser-side.
           </p>
           <p>
-            As you scale you often get increasingly custom SSR integration needs; <code>vite-plugin-ssr</code>'s
+            As you scale, you usually need increasingly custom SSR integrations; <code>vite-plugin-ssr</code>'s
             flexibility accommodates such needs.
           </p>
           <h3>
             Vite + SSR + Scale = <Emoji name="red-heart" />
           </h3>
           <p>
-            At (very) large scale, you can even progressively replace <code>vite-plugin-ssr</code> with Vite's native
-            SSR API which is low-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial
-            revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are looking for.
+            At (very) large scale, you can progressively replace <code>vite-plugin-ssr</code> with Vite's native SSR API
+            which is low-level and powerful (i.e. flexible and rock-solid). If you're Netflix and perfecting UX leads to
+            a substantial revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are
+            looking for.
           </p>
           <TweetsAboutScability />
         </LearnMore>
