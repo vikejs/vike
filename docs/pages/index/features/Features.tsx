@@ -78,7 +78,7 @@ function Features() {
           </p>
           <h3>More fun</h3>
           <p>
-            Last but not least, integration is more fun (and more insightful!) than fighting some arbitrary and
+            Last but not least, manual integration is more fun (and more insightful) than fighting some arbitrary and
             idiosyncratic framework.
           </p>
         </LearnMore>
