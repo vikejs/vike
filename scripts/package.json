@@ -10,11 +10,11 @@
     "// link `vite`": "",
     "link-vite": "ts-node ./link-vite.ts",
     "// Update all dependencies": "",
-    "bump": "npm run bump:dependencies && npm run bump:lockfiles && npm run bump:commit && npm run bump:test",
+    "bump": "yarn bump:dependencies && yarn bump:lockfiles && yarn bump:commit && yarn bump:test",
     "bump:dependencies": "ts-node ./bump-dependencies.ts",
     "bump:lockfiles": "ts-node ./bump-lockfiles.ts",
     "bump:commit": "cd ../ && git add . && git commit -am 'chore: update dependencies' &2> /dev/null",
-    "bump:test": "cd ../ && npm run test"
+    "bump:test": "cd ../ && yarn test"
   },
   "dependencies": {
     "@types/node": "^15.6.1",
@@ -27,5 +27,8 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
     "yarn": "^1.22.10"
-  }
+  },
+  "// Needed for Yarn workspaces": "",
+  "name": "scripts",
+  "version": "0.0.1"
 }

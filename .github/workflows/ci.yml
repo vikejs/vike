@@ -33,7 +33,7 @@ jobs:
           node-version: ${{ matrix.node_version }}
 
       - name: Install & Build
-        run: npm run test:setup
+        run: yarn test:setup
 
       - name: Run tests
-        run: npm run test
+        run: yarn test
