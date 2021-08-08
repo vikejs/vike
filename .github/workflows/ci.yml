@@ -1,1 +1,40 @@
-../../ci.yml
+name: CI
+
+on:
+  push:
+    paths:
+      - .github/workflows/ci.yml
+      - src/**
+      - tests/**
+      - examples/**
+      - boilerplates/**
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node_version: [16]
+        include:
+          - os: macos-latest
+            node_version: 16
+          - os: windows-latest
+            node_version: 16
+      fail-fast: false
+    name: 'Test on node-${{ matrix.node_version }}, ${{ matrix.os }}'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set node version to ${{ matrix.node_version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Install & Build
+        run: yarn test:setup
+
+      - name: Run tests
+        run: yarn test
