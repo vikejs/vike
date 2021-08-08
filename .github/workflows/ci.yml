@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     paths:
+      - .github/workflows/ci.yml
       - src/**
       - tests/**
       - examples/**
