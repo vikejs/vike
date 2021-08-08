@@ -4,8 +4,9 @@ on:
   push:
     paths:
       - .github/workflows/ci.yml
-      - src/**
-      - tests/**
+      - vite-plugin-ssr/**
+      - telefunc/**
+      - libframe/**
       - examples/**
       - boilerplates/**
   pull_request:
