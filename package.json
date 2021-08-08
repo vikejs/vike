@@ -21,7 +21,7 @@
     "build": "npm run clean:build && npm run tsc:cjs && npm run tsc:esm",
     "========= Install": "",
     "// Fetch the libframe/ workspace so that its dependencies are installed as well": "",
-    "preinstall": "git submodule init libframe/",
+    "preinstall": "git submodule update libframe/",
     "// Install dependencies for all examples and boilerplates": "",
     "install:examples": "cd libframe/scripts/ && npm run install:examples",
     "// Symlink **/node_modules/vite-plugin-ssr/ to /vite-plugin-ssr/": "",
