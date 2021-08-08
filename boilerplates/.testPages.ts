@@ -1,4 +1,4 @@
-import { page, run, partRegex, autoRetry, fetchHtml } from '../tests/setup'
+import { page, run, partRegex, autoRetry, fetchHtml } from '../libframe/test/setup'
 
 export { testPages }
 

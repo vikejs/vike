@@ -1,0 +1,3 @@
+[submodule "libframe"]
+	path = libframe
+	url = git@github.com:brillout/libframe

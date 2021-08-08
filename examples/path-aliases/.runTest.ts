@@ -1,4 +1,4 @@
-import { autoRetry, page, run, urlBase } from "../../tests/setup";
+import { autoRetry, page, run, urlBase } from "../../libframe/test/setup";
 
 export { runTest };
 

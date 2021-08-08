@@ -3,14 +3,14 @@
   "workspaces": [
     "src/",
     "scripts/",
-    "tests/"
+    "libframe/tests/"
   ],
   "scripts": {
     "========= Demo": "",
     "demo": "cd examples/react/ && npm install && npm run start",
     "========= Test": "",
     "// Run tests": "",
-    "test": "jest --config=tests/jest.config.ts --runInBand",
+    "test": "cd libframe/test/ && npm run test",
     "test:setup": "npm install && npm run install:examples && npm run link && npm run build",
     "========= Dev": "",
     "// Develop vite-plugin-ssr": "",
@@ -20,6 +20,8 @@
     "// Build vite-plugin-ssr": "",
     "build": "npm run clean:build && npm run tsc:cjs && npm run tsc:esm",
     "========= Install": "",
+    "// Fetch the libframe/ workspace so that its dependencies are installed as well": "",
+    "preinstall": "git submodule update --init libframe/",
     "// Install dependencies for all examples and boilerplates": "",
     "install:examples": "cd scripts/ && npm run install:examples",
     "// Symlink **/node_modules/vite-plugin-ssr/ to /src/": "",

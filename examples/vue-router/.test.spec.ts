@@ -1,4 +1,4 @@
-import { autoRetry, fetchHtml, page, partRegex, run, urlBase } from '../../tests/setup'
+import { autoRetry, fetchHtml, page, partRegex, run, urlBase } from '../../libframe/test/setup'
 
 run('npm run start')
 

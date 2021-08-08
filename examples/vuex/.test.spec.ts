@@ -1,4 +1,4 @@
-import { fetchHtml, run } from '../../tests/setup'
+import { fetchHtml, run } from '../../libframe/test/setup'
 
 run('npm run start')
 
