@@ -1,4 +1,4 @@
-import { assert } from 'console'
+import { assert } from '../utils'
 
 export { inferMediaType }
 export { MediaType }
