@@ -11,9 +11,19 @@
     "kolorist": "^1.4.1",
     "vite-plugin-import-build": "^0.1.1"
   },
+  "scripts": {
+    "dev": "yarn tsc:watch:cjs",
+    "build": "yarn clean && yarn tsc:cjs && yarn tsc:esm",
+    "========= TypeScript": "",
+    "tsc:esm": "tsc --outDir dist/esm/",
+    "tsc:cjs": "tsc --outDir dist/cjs/ --module CommonJS --target ES2017",
+    "tsc:watch:esm": "tsc --outDir dist/esm/ --incremental --watch",
+    "tsc:watch:cjs": "tsc --outDir dist/cjs/ --incremental --watch --module CommonJS --target ES2017",
+    "========= Clean": "",
+    "clean": "rm -r dist/"
+  },
   "devDependencies": {
     "@types/node": "^15.6.1",
-    "rimraf": "^3.0.2",
     "typescript": "^4.2.4",
     "vite": "^2.4.4"
   },
