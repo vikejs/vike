@@ -7,7 +7,7 @@ import iconChangelog from './icons/changelog.svg'
 
 export { NavigationHeader }
 
-const VITE_PLUGIN_SSR_VERSION = '0.2.5'
+const VITE_PLUGIN_SSR_VERSION = '0.2.6'
 
 function NavigationHeader() {
   const SIZE = 55
