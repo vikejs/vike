@@ -20,7 +20,7 @@
     "tsc:watch:esm": "tsc --outDir dist/esm/ --incremental --watch",
     "tsc:watch:cjs": "tsc --outDir dist/cjs/ --incremental --watch --module CommonJS --target ES2017",
     "========= Clean": "",
-    "clean": "rm -r dist/"
+    "clean": "rm -rf dist/"
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
