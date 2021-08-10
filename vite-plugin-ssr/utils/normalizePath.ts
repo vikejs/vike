@@ -1,10 +1,10 @@
 import { assert } from './assert'
-import { isNodejs } from './isNodejs'
+import { isBrowser } from './isBrowser'
 
 export { normalizePath }
 
 function normalizePath(urlPath: string): string {
-  assert(isNodejs())
+  assert(!isBrowser())
   if (process.platform !== 'win32') {
     return urlPath
   }

@@ -1,6 +1,7 @@
 export * from './assert'
 export * from './cast'
 export * from './isCallable'
+export * from './isBrowser'
 export * from './isNodejs'
 export * from './isPlainObject'
 export * from './isPromise'

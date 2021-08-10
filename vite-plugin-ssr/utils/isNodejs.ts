@@ -1,8 +1,9 @@
+import { assert } from './assert'
+
 export { isNodejs }
 
+// We don't use `isNodejs()` anymore because it doesn't work for Cloudflare Workers
 function isNodejs() {
-  /* We use `typeof windows` to support users using https://www.npmjs.com/package/ssr-window
-  return typeof window === 'undefined'
-  */
-  return typeof process !== 'undefined' && typeof process.versions.node !== 'undefined'
+  assert(false)
+  // return typeof process !== 'undefined' && typeof process.versions.node !== 'undefined'
 }

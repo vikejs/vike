@@ -1,4 +1,4 @@
-import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isNodejs } from '../../utils'
+import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isBrowser } from '../../utils'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
 import { getPageContextProxy } from '../getPageContextProxy'
@@ -109,7 +109,7 @@ let navigateFunction:
   | ((url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => Promise<void>)
 async function navigate(url: string, { keepScrollPosition = false } = {}): Promise<void> {
   assertUsage(
-    !isNodejs(),
+    isBrowser(),
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
   )
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
