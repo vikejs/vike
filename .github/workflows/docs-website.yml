@@ -28,7 +28,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: libframe/docs/dist/client
+          folder: docs/dist/client
           # Remove previous build files
           clean: true
           # Do not remove the `.nojekyll` file: we have manually added an empty `.nojekyll` file at the root of the `gh-pages` branch and we don't want having to re-create it after each build.
