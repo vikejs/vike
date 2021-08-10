@@ -7,6 +7,7 @@ on:
     # We only run this GitHub action if there are changes in the `docs/` directory
     paths:
       - docs/**
+      - libframe
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -15,16 +16,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install and Build
-        working-directory: ./docs
+        working-directory: ./libframe/docs
         run: |
-          npm install
-          npm run build
+          yarn install
+          yarn build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: docs/dist/client
+          folder: libframe/docs/dist/client
+          # Remove previous build files
           clean: true
           # Do not remove the `.nojekyll` file: we have manually added an empty `.nojekyll` file at the root of the `gh-pages` branch and we don't want having to re-create it after each build.
           clean-exclude: |

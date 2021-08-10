@@ -3,12 +3,17 @@
   "// We don't add examples/** nor boilerplates/** to `workspaces` because we have a custom linkage logic": "",
   "workspaces": [
     "vite-plugin-ssr/",
-    "libframe/scripts/",
-    "libframe/test/"
+    "libframe/test/",
+    "libframe/docs/",
+    "docs/",
+    "libframe/scripts/"
   ],
   "scripts": {
     "========= Demo": "",
     "demo": "cd examples/react/ && npm run install && npm run start",
+    "========= Docs": "",
+    "// Develop website https://vite-plugin-ssr.com": "",
+    "docs": "cd libframe/docs/ && yarn dev",
     "========= Test": "",
     "// Run tests": "",
     "test": "cd libframe/test/ && yarn test",

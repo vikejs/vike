@@ -1,8 +1,8 @@
 import React from 'react'
 import './Header.css'
-import iconPlugin from '../../frame/icons/vite-plugin-ssr.svg'
-import iconReact from '../../frame/icons/react.svg'
-import iconVue from '../../frame/icons/vue.svg'
+import iconPlugin from '../../icons/vite-plugin-ssr.svg'
+import iconReact from '../../icons/react.svg'
+import iconVue from '../../icons/vue.svg'
 import { HorizontalLine } from './HorizontalLine'
 import { CallToActionDescription, ScaffoldCallToAction } from './ScaffoldCallToAction'
 
