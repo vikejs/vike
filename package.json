@@ -15,7 +15,7 @@
     "// Develop website https://vite-plugin-ssr.com": "",
     "docs": "cd libframe/docs/ && yarn dev",
     "// Build website https://vite-plugin-ssr.com for production": "",
-    "docs:build": "cd libframe/docs/ && yarn dev",
+    "docs:build": "cd libframe/docs/ && yarn build",
     "========= Test": "",
     "// Run tests": "",
     "test": "cd libframe/test/ && yarn test",
