@@ -1,7 +1,7 @@
 import './page-files/setup.node'
 import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
-import { join, sep, dirname } from 'path'
+import { join, sep, dirname, isAbsolute } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, isPlainObject, castProp, projectInfo } from './utils'
 import { moduleExists } from './utils/moduleExists'
@@ -39,7 +39,7 @@ async function prerender({
   clientRouter?: boolean
   base?: string
 } = {}) {
-  assertArguments(partial, noExtraDir, clientRouter, base)
+  assertArguments(partial, noExtraDir, clientRouter, base, root)
   console.log(`${cyan(`vite-plugin-ssr ${projectInfo.version}`)} ${green('pre-rendering HTML...')}`)
 
   const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
@@ -319,9 +319,11 @@ function getPluginManifest(root: string): {
   return { pluginManifest, pluginManifestPath }
 }
 
-function assertArguments(partial: unknown, noExtraDir: unknown, clientRouter: unknown, base: unknown) {
+function assertArguments(partial: unknown, noExtraDir: unknown, clientRouter: unknown, base: unknown, root: unknown) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
   assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')
   assertWarning(clientRouter === false, '[prerender()] Option `clientRouter` is deprecated and has no-effect.')
   assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.')
+  assertUsage(typeof root === 'string', '[prerender()] Option `root` should be a string.')
+  assertUsage(isAbsolute(root), '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.')
 }
