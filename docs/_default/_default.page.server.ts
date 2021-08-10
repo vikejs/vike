@@ -2,10 +2,13 @@ export * from 'libframe-docs/_default.page.server'
 import logoUrl from '../icons/vite-plugin-ssr.svg'
 import { setFrame } from 'libframe-docs/_default.page.server'
 import { headings } from '../headings'
+import { projectInfo } from '../utils'
+
 setFrame({
-  projectName: 'vite-plugin-ssr',
+  projectVersion: projectInfo.version,
+  projectName: projectInfo.name,
   projectNameIsCodeSnippet: true,
-  repo: 'https://github.com/brillout/vite-plugin-ssr',
+  repo: projectInfo.githubRepository,
   headings,
   logoUrl
 })
