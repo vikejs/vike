@@ -1,1 +1,1 @@
-export { prerender } from '../prerender'
+export { prerender } from '../node/prerender'
