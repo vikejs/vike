@@ -6,7 +6,7 @@ import { importBuild } from './importBuild'
 export const __private = { importBuild }
 
 // Plugin should be imported from `vite-plugin-ssr/plugin`
-import { assertUsage } from '../utils'
+import { assertUsage } from '../shared/utils'
 export default pluginWrongImport
 function pluginWrongImport(): never {
   assertUsage(

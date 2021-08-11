@@ -1,4 +1,4 @@
-import { assert, hasProp } from '../utils'
+import { assert, hasProp } from '../shared/utils'
 
 export { assert_pageContext_publicProps }
 

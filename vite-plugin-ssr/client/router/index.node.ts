@@ -1,4 +1,4 @@
-import { assertUsage, isBrowser } from '../../utils'
+import { assertUsage, isBrowser } from '../../shared/utils'
 
 export { navigate }
 

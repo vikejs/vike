@@ -20,7 +20,7 @@ import {
   getUrlParsed,
   UrlParsed,
   castProp
-} from '../utils'
+} from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets.node'
 

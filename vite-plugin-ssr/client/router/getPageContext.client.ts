@@ -1,5 +1,5 @@
 import { navigationState } from '../navigationState.client'
-import { assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../utils'
+import { assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../shared/utils'
 import { parse } from '@brillout/json-s'
 import { getPageInfo as getOriginalPageInfo } from '../getPage.client'
 

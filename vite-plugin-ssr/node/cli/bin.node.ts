@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
 import { prerender } from '../prerender'
-import { projectInfo } from '../../utils'
+import { projectInfo } from '../../shared/utils'
 
 const cli = cac(projectInfo.name)
 

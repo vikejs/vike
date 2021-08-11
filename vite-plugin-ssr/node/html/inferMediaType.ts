@@ -1,4 +1,4 @@
-import { assert } from '../../utils'
+import { assert } from '../../shared/utils'
 
 export { inferMediaType }
 export { MediaType }

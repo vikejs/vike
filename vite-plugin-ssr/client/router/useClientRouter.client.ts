@@ -1,8 +1,8 @@
-import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isBrowser } from '../../utils'
+import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isBrowser } from '../../shared/utils'
 import { getPageByUrl } from './getPageByUrl.client'
 import { navigationState } from '../navigationState.client'
 import { getPageContextProxy } from '../getPageContextProxy'
-import { throttle } from '../../utils/throttle'
+import { throttle } from '../../shared/utils/throttle'
 import { assert_pageContext_publicProps } from '../assert_pageContext_publicProps'
 
 export { useClientRouter }

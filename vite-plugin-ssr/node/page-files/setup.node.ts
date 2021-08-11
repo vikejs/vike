@@ -1,8 +1,8 @@
 import { setPageFilesAsync } from '../../shared/getPageFiles.shared'
-import { assert } from '../../utils/assert'
+import { assert } from '../../shared/utils/assert'
 import { getSsrEnv } from '../ssrEnv.node'
-import { hasProp } from '../../utils'
-import { moduleExists } from '../../utils/moduleExists'
+import { hasProp } from '../../shared/utils'
+import { moduleExists } from '../../shared/utils/moduleExists'
 import { loadViteEntry } from './loadViteEntry.node'
 
 setPageFilesAsync(setPageFiles)

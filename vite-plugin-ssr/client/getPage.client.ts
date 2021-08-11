@@ -1,6 +1,6 @@
 import { getPageFile } from '../shared/getPageFiles.shared'
-import { getUrlPathname } from '../utils'
-import { assert, assertUsage, assertWarning } from '../utils/assert'
+import { getUrlPathname } from '../shared/utils'
+import { assert, assertUsage, assertWarning } from '../shared/utils/assert'
 import { assert_pageContext_publicProps } from './assert_pageContext_publicProps'
 import { getPageContextProxy } from './getPageContextProxy'
 

@@ -1,4 +1,4 @@
-import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, slice } from '../../utils'
+import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, slice } from '../../shared/utils'
 import { getPreloadUrls } from '../getPreloadTags.node'
 import { getSsrEnv } from '../ssrEnv.node'
 import { getViteManifest, ViteManifest } from '../getViteManifest.node'

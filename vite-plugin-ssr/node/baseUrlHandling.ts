@@ -1,4 +1,4 @@
-import { assert, assertUsage, slice } from '../utils'
+import { assert, assertUsage, slice } from '../shared/utils'
 
 import { getSsrEnv } from './ssrEnv.node'
 

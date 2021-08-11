@@ -1,4 +1,4 @@
-import { assert, hasProp, isPlainObject } from '../../utils'
+import { assert, hasProp, isPlainObject } from '../../shared/utils'
 import { getPageContext } from './getPageContext.client'
 import { getPageById } from '../getPage.client'
 

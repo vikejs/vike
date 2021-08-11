@@ -11,7 +11,7 @@ import {
   isPlainObject,
   castProp,
   isPromise
-} from '../utils'
+} from './utils'
 
 export { getPageIds }
 export { route }
