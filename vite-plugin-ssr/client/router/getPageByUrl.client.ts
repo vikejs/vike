@@ -1,6 +1,6 @@
 import { assert, hasProp, isPlainObject } from '../../shared/utils'
-import { getPageContext } from './getPageContext.client'
-import { getPageById } from '../getPage.client'
+import { getPageContext } from './getPageContext'
+import { getPageById } from '../getPage'
 
 export { getPageByUrl }
 

@@ -1,2 +1,2 @@
-import './page-files/setup.client'
-export { getPage, getPageById } from './getPage.client'
+import './page-files/setup'
+export { getPage, getPageById } from './getPage'
