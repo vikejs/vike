@@ -1,4 +1,4 @@
-import '../../page-files/setup.client'
+import '../page-files/setup.client'
 export { useClientRouter, navigate } from './useClientRouter.client'
 // export { getPageId } from './getPageId.client'
 export { getPageContext } from './getPageContext.client'
