@@ -1,11 +1,11 @@
-import { SsrEnv, setSsrEnv } from './ssrEnv.node'
-import { renderPage } from './renderPage.node'
-import { hasProp } from './utils'
-import { assert, assertUsage } from './utils/assert'
+import { SsrEnv, setSsrEnv } from '../ssrEnv.node'
+import { renderPage } from '../renderPage.node'
+import { hasProp } from '../utils'
+import { assert, assertUsage } from '../utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
-import { assertBaseUrl } from './node/baseUrlHandling'
-import { importBuildWasCalled } from './importBuild'
+import { assertBaseUrl } from './baseUrlHandling'
+import { importBuildWasCalled } from '../importBuild'
 
 export { createPageRender }
 export { createPageRenderWasCalled }

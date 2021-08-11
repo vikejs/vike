@@ -1,5 +1,5 @@
 import './page-files/setup.node'
-export { createPageRender } from './createPageRender.node'
+export { createPageRender } from './node/createPageRender.node'
 export { html } from './html/index.node'
 
 import { importBuild } from './importBuild'
