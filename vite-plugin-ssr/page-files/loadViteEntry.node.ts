@@ -21,7 +21,7 @@ async function loadViteEntry({
   let moduleExports: unknown
   if (isProduction) {
     const prodPathResolved = pathResolve(prodPath)
-    assertUsage(moduleExists(prodPathResolved), `Build file ${prodPathResolved} is missing. ${errorMessage}`)
+    assertUsage(moduleExists(prodPathResolved), `${errorMessage}. (Build file ${prodPathResolved} is missing.)`)
     moduleExports = require_(prodPathResolved)
   } else {
     assert(viteDevServer)

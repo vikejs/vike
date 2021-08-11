@@ -18,7 +18,7 @@ async function setPageFiles(): Promise<unknown> {
   const devPath = `${pluginDist}/esm/page-files/${viteEntryFile}`
 
   const errorMessage =
-    'Make sure to run `vite build && vite build --ssr` before running the server with `isProduction: true`.'
+    'Make sure to run `vite build && vite build --ssr` before running your Node.js server with `createPageRender({ isProduction: true })`'
 
   const moduleExports = await loadViteEntry({
     devPath,
