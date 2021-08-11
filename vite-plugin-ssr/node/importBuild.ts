@@ -1,5 +1,5 @@
-import { createPageRenderWasCalled } from './createPageRender.node'
-import { setViteManifest } from './getViteManifest.node'
+import { createPageRenderWasCalled } from './createPageRender'
+import { setViteManifest } from './getViteManifest'
 import { setPageFiles } from '../shared/getPageFiles.shared'
 import { assertUsage } from '../shared/utils'
 

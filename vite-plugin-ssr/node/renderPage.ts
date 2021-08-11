@@ -1,7 +1,7 @@
 import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from '../shared/route.shared'
-import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index.node'
+import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
 import { getPageFile, getPageFiles } from '../shared/getPageFiles.shared'
-import { getSsrEnv } from './ssrEnv.node'
+import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
@@ -22,7 +22,7 @@ import {
   castProp
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
-import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets.node'
+import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
 
 export { renderPage }
 export { prerenderPage }

@@ -1,6 +1,6 @@
-import './page-files/setup.node'
-export { createPageRender } from './createPageRender.node'
-export { html } from './html/index.node'
+import './page-files/setup'
+export { createPageRender } from './createPageRender'
+export { html } from './html/index'
 
 import { importBuild } from './importBuild'
 export const __private = { importBuild }

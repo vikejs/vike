@@ -1,5 +1,5 @@
 import { assert, assertUsage, cast, hasProp, isPromise } from '../../shared/utils'
-import { injectAssets } from './injectAssets.node'
+import { injectAssets } from './injectAssets'
 
 export { html }
 export { renderHtmlTemplate }

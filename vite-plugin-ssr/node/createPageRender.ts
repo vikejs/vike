@@ -1,5 +1,5 @@
-import { SsrEnv, setSsrEnv } from './ssrEnv.node'
-import { renderPage } from './renderPage.node'
+import { SsrEnv, setSsrEnv } from './ssrEnv'
+import { renderPage } from './renderPage'
 import { hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { normalize as pathNormalize } from 'path'
