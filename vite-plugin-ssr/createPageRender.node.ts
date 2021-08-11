@@ -4,7 +4,7 @@ import { hasProp } from './utils'
 import { assert, assertUsage } from './utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
-import { assertBaseUrl } from './baseUrlHandling'
+import { assertBaseUrl } from './node/baseUrlHandling'
 import { importBuildWasCalled } from './importBuild'
 
 export { createPageRender }

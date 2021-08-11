@@ -21,7 +21,7 @@ import {
   UrlParsed,
   castProp
 } from './utils'
-import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
+import { removeBaseUrl, startsWithBaseUrl } from './node/baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets.node'
 
 export { renderPage }

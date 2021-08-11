@@ -2,7 +2,7 @@ import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, sli
 import { getPreloadUrls } from '../getPreloadTags.node'
 import { getSsrEnv } from '../ssrEnv.node'
 import { getViteManifest, ViteManifest } from '../getViteManifest.node'
-import { prependBaseUrl } from '../baseUrlHandling'
+import { prependBaseUrl } from '../node/baseUrlHandling'
 import devalue from 'devalue'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'

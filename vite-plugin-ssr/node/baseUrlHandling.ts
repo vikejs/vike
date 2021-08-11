@@ -1,6 +1,6 @@
-import { assert, assertUsage, slice } from './utils'
+import { assert, assertUsage, slice } from '../utils'
 
-import { getSsrEnv } from './ssrEnv.node'
+import { getSsrEnv } from '../ssrEnv.node'
 
 export { prependBaseUrl }
 export { removeBaseUrl }
