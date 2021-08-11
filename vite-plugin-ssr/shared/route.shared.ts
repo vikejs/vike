@@ -1,4 +1,4 @@
-import { getPageFiles } from './shared/getPageFiles.shared'
+import { getPageFiles } from './getPageFiles.shared'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
 import {
@@ -11,7 +11,7 @@ import {
   isPlainObject,
   castProp,
   isPromise
-} from './utils'
+} from '../utils'
 
 export { getPageIds }
 export { route }

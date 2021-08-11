@@ -1,4 +1,4 @@
-import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './route.shared'
+import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, getFilesystemRoute } from './shared/route.shared'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index.node'
 import { getPageFile, getPageFiles } from './shared/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv.node'
