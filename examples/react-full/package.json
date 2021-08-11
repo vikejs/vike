@@ -19,7 +19,6 @@
     "@types/react": "^17.0.9",
     "@types/react-dom": "^17.0.6",
     "@vitejs/plugin-react-refresh": "^1.3.3",
-    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "node-fetch": "^3.0.0-beta.9",
     "react": "^17.0.2",

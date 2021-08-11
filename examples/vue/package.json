@@ -10,6 +10,7 @@
     "@vitejs/plugin-vue": "^1.2.3",
     "@vue/compiler-sfc": "^3.0.11",
     "@vue/server-renderer": "^3.0.11",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "vite": "^2.3.6",
     "vite-plugin-ssr": "0.2.7",
