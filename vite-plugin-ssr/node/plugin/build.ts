@@ -62,7 +62,7 @@ function entryPoints(config: UserConfig): Record<string, string> {
 
 function serverEntryPoints(): Record<string, string> {
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
-  const serverEntry = require.resolve('../../../../dist/esm/node/page-files/pageFiles.node.js')
+  const serverEntry = require.resolve('../../../../dist/esm/node/page-files/pageFiles.js')
   assert(serverEntry.endsWith('.js'))
   const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
   const entryPoints = {

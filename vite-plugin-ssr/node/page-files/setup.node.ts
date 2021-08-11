@@ -10,7 +10,7 @@ setPageFilesAsync(setPageFiles)
 async function setPageFiles(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
 
-  const viteEntryFile = 'pageFiles.node.js'
+  const viteEntryFile = 'pageFiles.js'
   assert(moduleExists(`./${viteEntryFile}`, __dirname))
   const userDist = `${ssrEnv.root}/dist`
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
