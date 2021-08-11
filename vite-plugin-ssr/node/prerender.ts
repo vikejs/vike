@@ -6,7 +6,7 @@ import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRou
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, isPlainObject, castProp, projectInfo } from '../utils'
 import { moduleExists } from '../utils/moduleExists'
 import { setSsrEnv } from './ssrEnv.node'
-import { getPageServerFile, prerenderPage, renderStatic404Page } from '../renderPage.node'
+import { getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
 
 export { prerender }
