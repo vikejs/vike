@@ -1,4 +1,4 @@
-import '../page-files/setup.node'
+import './page-files/setup.node'
 import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname, isAbsolute } from 'path'
