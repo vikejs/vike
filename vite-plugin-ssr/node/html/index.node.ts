@@ -1,4 +1,4 @@
-import { assert, assertUsage, cast, hasProp, isPromise } from '../utils'
+import { assert, assertUsage, cast, hasProp, isPromise } from '../../utils'
 import { injectAssets } from './injectAssets.node'
 
 export { html }
