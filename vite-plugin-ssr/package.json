@@ -33,16 +33,16 @@
   "engines": {
     "node": ">=12.19.0"
   },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/node/index.js",
+  "module": "./dist/esm/node/index.js",
   "exports": {
     ".": {
-      "node": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+      "node": "./dist/cjs/node/index.js",
+      "import": "./dist/esm/node/index.js"
     },
     "./types": {
-      "node": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+      "node": "./dist/cjs/types.js",
+      "import": "./dist/esm/types.js"
     },
     "./client": {
       "browser": "./dist/esm/client/index.js"
@@ -52,14 +52,14 @@
       "node": "./dist/cjs/client/router/index.node.js"
     },
     "./cli": {
-      "node": "./dist/cjs/cli/index.js"
+      "node": "./dist/cjs/node/cli/index.js"
     },
     "./plugin": {
-      "node": "./dist/cjs/plugin/index.js"
+      "node": "./dist/cjs/node/plugin/index.js"
     }
   },
   "bin": {
-    "vite-plugin-ssr": "bin/vite-plugin-ssr.js"
+    "vite-plugin-ssr": "node/bin/vite-plugin-ssr.js"
   },
   "description": "Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin",
   "repository": "https://github.com/brillout/vite-plugin-ssr",

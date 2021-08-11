@@ -13,9 +13,10 @@ async function setPageFiles(): Promise<unknown> {
   const viteEntryFile = 'pageFiles.node.js'
   assert(moduleExists(`./${viteEntryFile}`, __dirname))
   const userDist = `${ssrEnv.root}/dist`
-  const pluginDist = `../../../dist`
+  // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
+  const pluginDist = `../../../../dist`
   const prodPath = `${userDist}/server/${viteEntryFile}`
-  const devPath = `${pluginDist}/esm/page-files/${viteEntryFile}`
+  const devPath = `${pluginDist}/esm/node/page-files/${viteEntryFile}`
 
   const errorMessage =
     'Make sure to run `vite build && vite build --ssr` before running your Node.js server with `createPageRender({ isProduction: true })`'
