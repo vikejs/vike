@@ -1,5 +1,5 @@
 import { Plugin } from 'vite'
-import { assert, normalizePath, projectInfo } from '../utils'
+import { assert, normalizePath, projectInfo } from '../../utils'
 
 export { manifest }
 
