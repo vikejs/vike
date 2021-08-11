@@ -32,7 +32,7 @@ function manifest(): Plugin {
 }
 
 function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
-  const filePath = require.resolve('../../../../dist/esm/client/router/getPageContext.client.js')
+  const filePath = require.resolve('../../../../dist/esm/client/router/getPageContext.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
     const modules = bundleFile.modules || {}
