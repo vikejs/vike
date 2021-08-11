@@ -2,7 +2,7 @@ import { getSsrEnv } from './ssrEnv.node'
 import { assert } from './utils'
 import { ViteManifest } from './getViteManifest.node'
 import { ModuleNode } from 'vite'
-import { getPageFiles } from './page-files/getPageFiles.shared'
+import { getPageFiles } from './shared/getPageFiles.shared'
 
 export { getPreloadUrls }
 

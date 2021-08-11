@@ -1,4 +1,4 @@
-import { getPageFile } from '../page-files/getPageFiles.shared'
+import { getPageFile } from '../shared/getPageFiles.shared'
 import { getUrlPathname } from '../utils'
 import { assert, assertUsage, assertWarning } from '../utils/assert'
 import { assert_pageContext_publicProps } from './assert_pageContext_publicProps'
