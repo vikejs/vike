@@ -124,7 +124,7 @@ function Features() {
           </p>
           <p>
             <b>Fast Node.js cold start</b>: pages are lazy-loaded so that adding pages doesn't increase the cold start
-            of serverless functions.
+            of your serverless functions.
           </p>
         </Feature>
       </div>
