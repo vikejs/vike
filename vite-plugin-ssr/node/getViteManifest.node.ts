@@ -1,5 +1,5 @@
-import { getSsrEnv } from './ssrEnv.node'
-import { assert } from './utils'
+import { getSsrEnv } from '../ssrEnv.node'
+import { assert } from '../utils'
 
 export { setViteManifest }
 export { getViteManifest }

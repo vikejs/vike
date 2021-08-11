@@ -1,7 +1,7 @@
 import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, slice } from '../utils'
 import { getPreloadUrls } from '../node/getPreloadTags.node'
 import { getSsrEnv } from '../ssrEnv.node'
-import { getViteManifest, ViteManifest } from '../getViteManifest.node'
+import { getViteManifest, ViteManifest } from '../node/getViteManifest.node'
 import { prependBaseUrl } from '../node/baseUrlHandling'
 import devalue from 'devalue'
 import { isAbsolute } from 'path'
