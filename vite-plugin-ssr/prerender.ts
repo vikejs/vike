@@ -5,7 +5,7 @@ import { join, sep, dirname, isAbsolute } from 'path'
 import { getFilesystemRoute, getPageIds, isErrorPage, isStaticRoute, loadPageRoutes, route } from './shared/route.shared'
 import { assert, assertUsage, assertWarning, hasProp, getFileUrl, isPlainObject, castProp, projectInfo } from './utils'
 import { moduleExists } from './utils/moduleExists'
-import { setSsrEnv } from './ssrEnv.node'
+import { setSsrEnv } from './node/ssrEnv.node'
 import { getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage.node'
 import { blue, green, gray, cyan } from 'kolorist'
 

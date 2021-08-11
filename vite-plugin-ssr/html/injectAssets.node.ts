@@ -1,6 +1,6 @@
 import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, slice } from '../utils'
 import { getPreloadUrls } from '../node/getPreloadTags.node'
-import { getSsrEnv } from '../ssrEnv.node'
+import { getSsrEnv } from '../node/ssrEnv.node'
 import { getViteManifest, ViteManifest } from '../node/getViteManifest.node'
 import { prependBaseUrl } from '../node/baseUrlHandling'
 import devalue from 'devalue'

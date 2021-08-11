@@ -1,4 +1,4 @@
-import { getSsrEnv } from '../ssrEnv.node'
+import { getSsrEnv } from '../node/ssrEnv.node'
 import { assert, assertUsage, hasProp, isBrowser } from '../utils'
 
 export { getPageFiles }
