@@ -2,7 +2,7 @@ import './page-files/setup.node'
 export { createPageRender } from './node/createPageRender.node'
 export { html } from './html/index.node'
 
-import { importBuild } from './importBuild'
+import { importBuild } from './node/importBuild'
 export const __private = { importBuild }
 
 // Plugin should be imported from `vite-plugin-ssr/plugin`

@@ -5,7 +5,7 @@ import { assert, assertUsage } from '../utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
-import { importBuildWasCalled } from '../importBuild'
+import { importBuildWasCalled } from './importBuild'
 
 export { createPageRender }
 export { createPageRenderWasCalled }

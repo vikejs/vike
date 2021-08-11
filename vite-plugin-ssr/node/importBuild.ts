@@ -1,7 +1,7 @@
-import { createPageRenderWasCalled } from './node/createPageRender.node'
-import { setViteManifest } from './node/getViteManifest.node'
-import { setPageFiles } from './shared/getPageFiles.shared'
-import { assertUsage } from './utils'
+import { createPageRenderWasCalled } from './createPageRender.node'
+import { setViteManifest } from './getViteManifest.node'
+import { setPageFiles } from '../shared/getPageFiles.shared'
+import { assertUsage } from '../utils'
 
 export { importBuild }
 export { importBuildWasCalled }
