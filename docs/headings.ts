@@ -4,7 +4,7 @@ export const headings: Heading[] = [
   {
     level: 1,
     title: 'Overview',
-    titleEmoji: 'seedling'
+    titleEmoji: 'compass'
   },
   {
     level: 2,
@@ -40,7 +40,7 @@ export const headings: Heading[] = [
   {
     level: 1,
     title: 'Guides',
-    titleEmoji: 'seedling'
+    titleEmoji: 'books'
   },
   {
     level: 4,
@@ -98,7 +98,7 @@ export const headings: Heading[] = [
   {
     level: 1,
     title: 'Integration',
-    titleEmoji: 'seedling'
+    titleEmoji: 'plug'
   },
   {
     level: 2,
@@ -157,7 +157,7 @@ export const headings: Heading[] = [
   {
     level: 1,
     title: 'Deploy',
-    titleEmoji: 'seedling'
+    titleEmoji: 'earth'
   },
   {
     level: 2,
@@ -194,7 +194,7 @@ export const headings: Heading[] = [
   {
     level: 1,
     title: 'API',
-    titleEmoji: 'seedling'
+    titleEmoji: 'gear'
   },
   {
     level: 4,
