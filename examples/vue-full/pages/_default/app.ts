@@ -1,4 +1,4 @@
-import { App, createSSRApp, defineComponent, h, markRaw } from 'vue'
+import { App, createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageLayout from './PageLayout.vue'
 import { Component, PageContext } from './types'
 
@@ -29,19 +29,19 @@ function createApp(pageContext: PageContext) {
     }
   })
 
+  // We use `reactive` because we use Client-side Routing.
+  // When using Server-side Routing, we don't need `reactive`.
+  const pageContextReactive = reactive(pageContext)
   const changePage = (pageContext: PageContext) => {
+    Object.assign(pageContextReactive, pageContext)
     rootComponent.Page = markRaw(pageContext.Page)
     rootComponent.pageProps = markRaw(pageContext.pageProps || {})
-    setRouteParams(pageContext)
   }
+
   const app: App<Element> & { changePage: typeof changePage } = Object.assign(createSSRApp(PageWithLayout), {
     changePage
   })
-
-  const setRouteParams = (pageContext: PageContext) => {
-    app.config.globalProperties.$routeParams = pageContext.routeParams
-  }
-  setRouteParams(pageContext)
+  app.config.globalProperties.$pageContext = pageContextReactive
 
   return app
 }

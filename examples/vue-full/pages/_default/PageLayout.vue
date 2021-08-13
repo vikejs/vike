@@ -4,13 +4,20 @@
       <a href="/" class="logo">
         <img src="./logo.svg" height="64" width="64" />
       </a>
-      <a href="/markdown">Markdown</a>
-      <a href="/star-wars">Data Fetching</a>
-      <a href="/hello/alice">Routing</a>
+      <Link href="/">Welcome</Link>
+      <Link href="/markdown">Markdown</Link>
+      <Link href="/star-wars">Data Fetching</Link>
+      <Link href="/hello/alice">Routing</Link>
     </div>
     <div class="content"><slot /></div>
   </div>
 </template>
+
+<script lang="ts">
+import Link from './Link.vue'
+const components = { Link }
+export default { components }
+</script>
 
 <style>
 body {

@@ -1,4 +1,8 @@
-Example of using `vite-plugin-ssr` with Vue that showcases all of `vite-plugin-ssr` features:
+Example of using `vite-plugin-ssr` with Vue that showcases many features.
+
+For a simpler example, check out [/examples/vue/](/examples/vue/).
+
+Features:
  - Client-side Routing (+ usage of `navigate()`)
  - Data Fetching
  - Pre-rendering (+ usage of the `prerender()` hook)
@@ -6,6 +10,8 @@ Example of using `vite-plugin-ssr` with Vue that showcases all of `vite-plugin-s
  - TypeScript
  - Markdown
  - Error Page
+ - Active Links
+ - Access `pageContext` from any component (using `app.config.globalProperties` and `reactive`)
 
 To run it:
 

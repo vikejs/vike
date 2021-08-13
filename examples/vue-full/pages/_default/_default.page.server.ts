@@ -7,7 +7,7 @@ import { getPageTitle } from './getPageTitle'
 export { passToClient }
 export { render }
 
-const passToClient = ['pageProps', 'documentProps', 'routeParams']
+const passToClient = ['pageProps', 'documentProps', 'urlPathname']
 
 async function render(pageContext: PageContext) {
   const app = createApp(pageContext)
