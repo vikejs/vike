@@ -11,8 +11,10 @@ export default plugin
 export { plugin }
 export { plugin as ssr }
 
-function plugin(): Plugin[] {
-  return [dev(), build(), manifest(), importBuild(getImportBuildCode()), packageJsonFile()]
+function plugin(): any {
+  const plugins: Plugin[] = [dev(), build(), manifest(), importBuild(getImportBuildCode()), packageJsonFile()]
+  // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
+  return plugins as any
 }
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`
