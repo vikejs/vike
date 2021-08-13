@@ -2,12 +2,12 @@ import React from "react";
 import logo from "./logo.svg";
 import { PageContext, Children } from "./types";
 import { PageContextProvider } from "./ReactPageContext";
-import "./PageLayout.css";
+import "./PageWrapper.css";
 import { Link } from "./Link";
 
-export { PageLayout };
+export { PageWrapper };
 
-function PageLayout({
+function PageWrapper({
   pageContext,
   children,
 }: {

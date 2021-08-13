@@ -1,7 +1,7 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { html } from "vite-plugin-ssr";
-import { PageLayout } from "./PageLayout";
+import { PageWrapper } from "./PageWrapper";
 import { PageContext } from "./types";
 import { getPageTitle } from "./getPageTitle";
 
@@ -13,9 +13,9 @@ const passToClient = ["pageProps", "documentProps", "urlPathname"];
 function render(pageContext: PageContext) {
   const { Page, pageProps } = pageContext;
   const pageContent = ReactDOMServer.renderToString(
-    <PageLayout pageContext={pageContext}>
+    <PageWrapper pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageLayout>
+    </PageWrapper>
   );
 
   const title = getPageTitle(pageContext);

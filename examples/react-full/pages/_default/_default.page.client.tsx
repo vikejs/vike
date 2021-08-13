@@ -3,16 +3,16 @@ import ReactDOM from "react-dom";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 import type { PageContextBuiltInClient } from "vite-plugin-ssr/types";
 import { PageContext } from "./types";
-import { PageLayout } from "./PageLayout";
+import { PageWrapper } from "./PageWrapper";
 import { getPageTitle } from "./getPageTitle";
 
 const { hydrationPromise } = useClientRouter({
   render(pageContext: PageContext & PageContextBuiltInClient) {
     const { Page, pageProps } = pageContext;
     const page = (
-      <PageLayout pageContext={pageContext}>
+      <PageWrapper pageContext={pageContext}>
         <Page {...pageProps} />
-      </PageLayout>
+      </PageWrapper>
     );
     const container = document.getElementById("page-view");
     if (pageContext.isHydration) {
