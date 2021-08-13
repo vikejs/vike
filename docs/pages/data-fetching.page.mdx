@@ -97,13 +97,6 @@ conveniently hold all props of the root component `Page`.
 We could have defined `movies` directly as `pageContext.movies` instead of `pageContext.pageProps.movies`, but it's cumbersome:
 our render/hydrate function would then need to know what `pageContext` should be passed to the root component `Page`.
 
-## Access `pageContext` anywhere
-
-We can pass (some) `pageContext` to any/all components of our component tree by using:
- - React: [React.createContext](https://reactjs.org/docs/context.html)
- - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
- - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties)
-
 ## Stateful Component
 
 We can also fetch data by using a stateful component.
@@ -111,7 +104,7 @@ But note that with this technique, the fetched data is not rendered to HTML.
 
 We usually need to make the route parameters available to the data-fetching stateful component:
 1. Make [`pageContext.routeParams`](/pageContext) available in the browser by adding it to `passToClient.push('routeParams')`.
-2. [Pass `pageContext.routeParams` to the stateful component](#access-pagecontext-anywhere).
+2. [Pass `pageContext.routeParams` to the stateful component](/pageContext-anywhere).
 
 ## GraphQL
 

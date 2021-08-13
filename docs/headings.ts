@@ -53,13 +53,53 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Routing',
-    url: '/routing'
+    title: 'Access `pageContext` anywhere',
+    url: '/pageContext-anywhere'
   },
   {
     level: 2,
     title: 'Pre-rendering (SSG)',
     url: '/pre-rendering'
+  },
+  {
+    level: 4,
+    title: 'Routing'
+  },
+  {
+    level: 2,
+    titleInNav: 'Server- vs Client-side Routing',
+    title: 'Server-side Routing VS Client-side Routing',
+    url: '/SR-vs-CR'
+  },
+  {
+    level: 2,
+    title: 'Route Strings/Functions',
+    url: '/route-strings-functions'
+  },
+  {
+    level: 2,
+    title: 'Vue Router / React Router',
+    url: '/vue-router-and-react-router'
+  },
+  {
+    level: 2,
+    title: 'Active Links',
+    url: '/active-links'
+  },
+  {
+    level: 2,
+    title: 'Nested Routes',
+    url: '/nested-routes'
+  },
+  {
+    level: 2,
+    title: 'Page Redirection',
+    url: '/page-redirection'
+  },
+  {
+    level: 2,
+    title: 'Base URL',
+    url: '/base-url'
   },
   {
     level: 4,
@@ -77,11 +117,6 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Page Redirection',
-    url: '/page-redirection'
-  },
-  {
-    level: 2,
     title: 'Paths Aliases',
     url: '/path-aliases'
   },
@@ -89,11 +124,6 @@ export const headings: Heading[] = [
     level: 2,
     title: '`.env` Files',
     url: '/.env-files'
-  },
-  {
-    level: 2,
-    title: 'Base URL',
-    url: '/base-url'
   },
   {
     level: 1,

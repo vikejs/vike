@@ -1,0 +1,39 @@
+By default, `vite-plugin-ssr` does Filesystem Routing:
+
+```
+FILESYSTEM                  URL
+pages/index.page.js         /
+pages/about.page.js         /about
+pages/faq/index.page.js     /faq
+```
+
+For more control over the routing we can create `.page.route.js` files.
+
+For example, we can define a parameterized route by exporting a so-called *Route String*:
+
+```js
+// /pages/product.page.route.js
+
+// The `productId` value is available at `pageContext.routeParams.productId`
+export default '/product/:productId'
+```
+
+For full programmatic flexibility, we can define a so-called *Route Function*:
+
+```js
+// /pages/admin.page.route.js
+
+// Route Functions allow us to implement advanced routing such as route guards.
+export default (pageContext) => {
+  const { url } = pageContext
+  if (url === '/admin' && pageContext.user.isAdmin) {
+    return { match: true }
+  }
+}
+```
+
+See also:
+ - [API - Filesystem Routing](/filesystem-routing)
+ - [API - `.page.route.js`](/.page.route.js)
+ - [API - Route String](/route-string)
+ - [API - Route Function](/route-function)
