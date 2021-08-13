@@ -79,11 +79,21 @@ We can use a routing library such as Vue Router and React Router (in complete re
 
 ## Active Links
 
-To highlight the currently selected route (e.g. if you look at the sidebar of this website you'll see the "Routing" navigation link highlighted in gray) we usually need to access [`pageContext.urlPathname`](/pageContext) in our navigation link component.
- - See [access `pageContext` anywhere](/data-fetching#access-pagecontext-anywhere).
- - We may have to add it to `passToClient.push('urlPathname')` (more infos about `passToClient` in the [Data Fetching Guide](/data-fetching))
+> **What are active links?** It's the practice of highlighting the current page in the navigation's list of pages.
+> For example, we can see this page "Routing" highlighted in gray in the navgation sidebar on the left of this website; the navigation link pointing to this page is said to be "active".
 
-We can then simply `const isActive = href===urlPathname` in our link component and then add a CSS class `<a class="is-active">`.
+To implement active links we provide the current URL `pageContext.urlPathname` to our link component, so that our component can check whether the link is active `const isActive = href===urlPathname` and then add a CSS class `<a class="is-active">` accordingly.
+
+We don't use `window.location.pathname` as it's not available on the server-side (unless we [render our page as an SPA](/SPA-vs-SSR-vs-HTML)).
+
+To make `pageContext.urlPathname` available to our link component:
+ - We make `pageContext.urlPathname` available on the client-side by adding `'urlPathname'` to `passToClient`.
+   (See [Data Fetching Guide](/data-fetching) for an introduction about `passToClient`.
+   If we [render our page to HML-only](/SPA-vs-SSR-vs-HTML) then we can skip this.)
+ - We make `pageContext.urlPathname` available to the whole component tree so that our link component can access it.
+   (See [access `pageContext` anywhere](/data-fetching#access-pagecontext-anywhere).)
+
+Example:
 
 ## Nested Routes
 

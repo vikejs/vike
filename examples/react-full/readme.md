@@ -11,7 +11,7 @@ Features:
  - Markdown
  - Error Page
  - Active Links
- - React Context to make `pageContext` available to all components
+ - Access `pageContext` from any component (using React Context)
 
 To run it:
 
