@@ -88,13 +88,13 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Nested Routes',
-    url: '/nested-routes'
+    title: 'Page Redirection',
+    url: '/page-redirection'
   },
   {
     level: 2,
-    title: 'Page Redirection',
-    url: '/page-redirection'
+    title: 'Nested Routes',
+    url: '/nested-routes'
   },
   {
     level: 2,

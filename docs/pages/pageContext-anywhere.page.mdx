@@ -1,4 +1,30 @@
-We can pass (some) `pageContext` to any/all components of our component tree by using:
- - React: [React.createContext](https://reactjs.org/docs/context.html)
- - Vue 2: [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example)
- - Vue 3: [app.provide](https://v3.vuejs.org/api/application-api.html#provide) or [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties)
+import { RepoLink } from 'libframe-docs/components/RepoLink'
+
+By default `pageContext` is only available on the server-side and only to the root Vue/React component.
+
+## Browser
+
+To make `pageContext` available in the browser, we use [`passToClient`](/passToClient).
+
+## React
+
+To make `pageContext` available to all our React components we use [React Context](https://reactjs.org/docs/context.html).
+
+Example:
+ - Implemention of a `usePageContext()` hook using React Context: <RepoLink path='/examples/react-full/pages/_default/usePageContext.tsx' />
+ - Example of using `usePageContext()`: <RepoLink path='/examples/react-full/pages/_default/Link.tsx' />
+ - Integration of `<PageContextProvider>`: <RepoLink path='/examples/react-full/pages/_default/PageWrapper.tsx' />
+
+## Vue 3
+
+To make `pageContext` available to all our Vue components we use [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
+
+Example:
+ - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
+ - Example of using the now globally available `$pageContext`: <RepoLink path='/examples/vue-full/pages/_default/Link.vue' />
+
+Alternatively we can use [app.provide](https://v3.vuejs.org/api/application-api.html#provide).
+
+## Vue 2
+
+For Vue 2 we can use [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example).
