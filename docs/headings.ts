@@ -188,7 +188,7 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: 'Other Deployments',
-    titleInNav: 'Ohter',
+    titleInNav: 'Other',
     url: '/deploy'
   },
   {
