@@ -10,6 +10,13 @@ body {
 a {
   text-decoration: none;
 }
+a.navigation-link {
+  padding: 2px 10px;
+  margin-left: -10px;
+}
+a.navigation-link.is-active {
+  background-color: #eee;
+}
 code {
   font-family: monospace;
   background-color: #eaeaea;

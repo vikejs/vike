@@ -1,23 +1,33 @@
 import React from "react";
 import logo from "./logo.svg";
+import { PageContext, Children } from "./types";
+import { PageContextProvider } from "./ReactPageContext";
 import "./PageLayout.css";
+import { Link } from "./Link";
 
 export { PageLayout };
 
-type Children = React.ReactNode;
-
-function PageLayout({ children }: { children: Children }) {
+function PageLayout({
+  pageContext,
+  children,
+}: {
+  pageContext: PageContext;
+  children: Children;
+}) {
   return (
     <React.StrictMode>
-      <Layout>
-        <Sidebar>
-          <Logo />
-          <a href="/markdown">Markdown</a>
-          <a href="/star-wars">Data Fetching</a>
-          <a href="/hello/alice">Routing</a>
-        </Sidebar>
-        <Content>{children}</Content>
-      </Layout>
+      <PageContextProvider pageContext={pageContext}>
+        <Layout>
+          <Sidebar>
+            <Logo />
+            <Link href="/">Welcome</Link>
+            <Link href="/markdown">Markdown</Link>
+            <Link href="/star-wars">Data Fetching</Link>
+            <Link href="/hello/alice">Routing</Link>
+          </Sidebar>
+          <Content>{children}</Content>
+        </Layout>
+      </PageContextProvider>
     </React.StrictMode>
   );
 }

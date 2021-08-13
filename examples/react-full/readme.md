@@ -1,4 +1,8 @@
-Example of using `vite-plugin-ssr` with React that showcases all of `vite-plugin-ssr` features:
+Example of using `vite-plugin-ssr` with React that showcases many features.
+
+For a simpler example, check out [/examples/react/](/examples/react/).
+
+Features:
  - Client-side Routing (+ usage of `navigate()`)
  - Data Fetching
  - Pre-rendering (+ usage of the `prerender()` hook)
@@ -6,6 +10,8 @@ Example of using `vite-plugin-ssr` with React that showcases all of `vite-plugin
  - TypeScript
  - Markdown
  - Error Page
+ - Active Links
+ - React Context to make `pageContext` available to all components
 
 To run it:
 

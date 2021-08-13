@@ -10,7 +10,7 @@ const { hydrationPromise } = useClientRouter({
   render(pageContext: PageContext & PageContextBuiltInClient) {
     const { Page, pageProps } = pageContext;
     const page = (
-      <PageLayout>
+      <PageLayout pageContext={pageContext}>
         <Page {...pageProps} />
       </PageLayout>
     );

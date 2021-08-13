@@ -8,12 +8,12 @@ import { getPageTitle } from "./getPageTitle";
 export { render };
 export { passToClient };
 
-const passToClient = ["pageProps", "documentProps"];
+const passToClient = ["pageProps", "documentProps", "urlPathname"];
 
 function render(pageContext: PageContext) {
   const { Page, pageProps } = pageContext;
   const pageContent = ReactDOMServer.renderToString(
-    <PageLayout>
+    <PageLayout pageContext={pageContext}>
       <Page {...pageProps} />
     </PageLayout>
   );

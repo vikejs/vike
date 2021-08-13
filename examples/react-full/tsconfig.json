@@ -3,7 +3,8 @@
     "strict": true,
     "module": "CommonJS",
     "target": "ES2017",
-    "lib": ["DOM"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client"],
     "jsx": "react",
     "skipLibCheck": true,
     "esModuleInterop": true
