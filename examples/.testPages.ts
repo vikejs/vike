@@ -1,4 +1,4 @@
-import { run, page, urlBase, partRegex, fetchHtml, autoRetry } from '../libframe/test/setup'
+import { run, page, urlBase, fetchHtml, autoRetry } from '../libframe/test/setup'
 import assert = require('assert')
 
 export { testPages }
@@ -8,22 +8,8 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-
     expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
-    containsNavigationPanel(html)
   })
-
-  function containsNavigationPanel(html: string) {
-    if (viewFramework === 'vue') {
-      expect(html).toMatch(partRegex`<a href="/markdown" data-v-${/[^\>]*/}>Markdown</a>`)
-      expect(html).toMatch(partRegex`<a href="/star-wars" data-v-${/[^\>]*/}>Data Fetching</a>`)
-      expect(html).toMatch(partRegex`<a href="/hello/alice" data-v-${/[^\>]*/}>Routing</a>`)
-    } else {
-      expect(html).toContain('<a href="/markdown">Markdown</a>')
-      expect(html).toContain('<a href="/star-wars">Data Fetching</a>')
-      expect(html).toContain('<a href="/hello/alice">Routing</a>')
-    }
-  }
 
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(urlBase + '/')
@@ -123,6 +109,5 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     const html = await fetchHtml('/doesNotExist')
     const whitespace = viewFramework === 'vue' ? ' ' : ''
     expect(html).toContain(`<h1>404 Page Not Found</h1>${whitespace}This page could not be found.`)
-    containsNavigationPanel(html)
   })
 }
