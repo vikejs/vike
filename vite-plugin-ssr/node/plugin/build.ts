@@ -12,12 +12,31 @@ import * as glob from 'fast-glob'
 
 export { build }
 
-function build(): Plugin {
+type Config = {
+  root?: string
+  build?: {
+    outDir?: string
+    ssr?: boolean | string
+    rollupOptions?: {
+      input?: Record<string, string> | string | string[]
+    }
+  }
+}
+function checkConfigType() {
+  const config: UserConfig = (undefined as any)
+  const _: Config = config
+}
+function checkPluginType() {
+  const plugin: ReturnType<typeof build> = (undefined as any)
+  const _: Plugin = plugin
+}
+
+function build() {
   let isSsrBuild: boolean | undefined
   return {
     name: 'vite-plugin-ssr:build',
-    apply: 'build',
-    config: (config) => {
+    apply: 'build' as 'build',
+    config: (config: Config) => {
       isSsrBuild = isSSR(config)
       const input = {
         ...entryPoints(config),
@@ -33,7 +52,7 @@ function build(): Plugin {
         ssr: { external: ['vite-plugin-ssr'] }
       }
     },
-    transform: (_src, id) => {
+    transform: (_src: string, id: string) => {
       assert(isSsrBuild === true || isSsrBuild === false)
       return removeClientCode(isSsrBuild, id)
     }

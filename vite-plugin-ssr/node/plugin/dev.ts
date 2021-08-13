@@ -1,11 +1,9 @@
-import { Plugin } from 'vite'
-
 export { dev }
 
-function dev(): Plugin {
+function dev() {
   return {
     name: 'vite-plugin-ssr:dev',
-    apply: 'serve',
+    apply: 'serve' as 'serve',
     config: () => ({
       ssr: { external: ['vite-plugin-ssr'] },
       optimizeDeps: {

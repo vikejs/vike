@@ -3,23 +3,32 @@ import { assert, normalizePath, projectInfo } from '../../shared/utils'
 
 export { manifest }
 
-function manifest(): Plugin {
+type Config = {
+  base: string
+  build?: {
+    ssr?: boolean | string
+  }
+}
+
+type Bundle = Record<string, { modules?: Record<string, unknown> }>
+
+function manifest() {
   let base: string
   let ssr: boolean
   return {
     name: 'vite-plugin-ssr:manifest',
     apply: 'build',
-    configResolved(config) {
+    configResolved(config: Config) {
       base = config.base
       ssr = isSSR(config)
     },
-    generateBundle(_, bundle) {
+    generateBundle(_: never, bundle: Bundle) {
       if (ssr) return
       assert(typeof base === 'string')
       assert(typeof ssr === 'boolean')
       const manifest = {
         version: projectInfo.version,
-        doesClientSideRouting: includesClientSideRouter(bundle as any),
+        doesClientSideRouting: includesClientSideRouter(bundle),
         base
       }
       this.emitFile({
@@ -28,10 +37,10 @@ function manifest(): Plugin {
         source: JSON.stringify(manifest, null, 2)
       })
     }
-  } as Plugin
+  }
 }
 
-function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
+function includesClientSideRouter(bundle: Bundle) {
   const filePath = require.resolve('../../../../dist/esm/client/router/getPageContext.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
