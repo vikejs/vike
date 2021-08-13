@@ -49,7 +49,7 @@ async function startServer() {
 
 - `viteDevServer` is the Vite dev server.
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
-- `root` is the absolute path of our app's root directory. The `root` directory is usally the directory where `vite.config.js` lives. All our `.page.js` files need to be descendent of the `root` directory.
+- `root` is the absolute path of our app's root directory. The `root` directory is usually the directory where `vite.config.js` lives. All our `.page.js` files need to be descendent of the `root` directory.
 - `base` is the [Base URL](/base-url).
 - `result.nothingRendered` is `true` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
 - `result.statusCode` is either `200`, `404`, or `500`.

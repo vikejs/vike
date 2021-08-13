@@ -1,15 +1,8 @@
-We tell `vite-plugin-ssr` what `pageContext` to send to the browser by using `passToClient`.
-
-The `pageContext` is serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
-
-It is usally used together with the `addPageContext()` hook to fetch data:
-data is fetched in `async addPageContext()` and then made available to the browser with `passToClient`. See [Data Fetching](/data-fetching) guide.
+By default `pageContext` is available only on the server-side, but we can use `passToClient` to make some `pageContext` available in the browser.
 
 ```js
 // *.page.server.js
 // Environment: Node.js
-
-import fetch from "node-fetch";
 
 export { passToClient }
 
@@ -64,3 +57,8 @@ useClientRouter({
   }
 })
 ```
+
+`passToClient` is usually used together with the `addPageContext()` hook to fetch data:
+data is fetched in `async addPageContext()` and then made available to the browser with `passToClient`, see [Data Fetching](/data-fetching).
+
+Serialization is done with [`devalue`](https://github.com/Rich-Harris/devalue).

@@ -13,12 +13,13 @@ function getPageContextProxy<T extends Record<string, unknown>>(pageContext: T):
     assertUsage(
       false,
       [
-        `\`pageContext.${prop}\` is not available on the client.`,
+        `\`pageContext.${prop}\` is not available in the browser.`,
         `Make sure that \`passToClient.includes('${prop}')\`.`,
         `(Currently: \`passToClient == [${Object.keys(pageContext)
           .filter((prop) => !BUILT_IN.includes(prop))
-          .map((prop) => `"${prop}"`)
-          .join(',')}]\`.)`
+          .map((prop) => `'${prop}'`)
+          .join(', ')}]\`.)`,
+        'More infos at https://vite-plugin-ssr.com/passToClient',
       ].join(' ')
     )
   }
