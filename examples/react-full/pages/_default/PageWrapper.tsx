@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import { PageContext, Children } from "./types";
-import { PageContextProvider } from "./ReactPageContext";
+import { PageContextProvider } from "./usePageContext";
 import "./PageWrapper.css";
 import { Link } from "./Link";
 
