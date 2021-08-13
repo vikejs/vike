@@ -2,13 +2,17 @@ import { assertUsage } from '../shared/utils'
 
 export { getPageContextProxy }
 
-const SKIP = ['then']
+const SKIP = [
+  'then',
+  'toJSON', // Vue tries to access `toJSON`
+]
 const BUILT_IN = ['_pageId', 'Page', 'pageExports']
 
 function getPageContextProxy<T extends Record<string, unknown>>(pageContext: T): T {
   return new Proxy(pageContext, { get })
 
   function get(_: never, prop: string) {
+    if( typeof prop === 'symbol' ) return pageContext[prop] // Vue tries to access some symbols
     if (prop in pageContext || SKIP.includes(prop)) return pageContext[prop]
     assertUsage(
       false,
