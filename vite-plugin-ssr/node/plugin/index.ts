@@ -1,3 +1,4 @@
+import { Plugin } from 'vite'
 import { assertUsage } from '../../shared/utils'
 import { build } from './build'
 import { dev } from './dev'
@@ -10,7 +11,7 @@ export default plugin
 export { plugin }
 export { plugin as ssr }
 
-function plugin() {
+function plugin(): Plugin[] {
   return [dev(), build(), manifest(), importBuild(getImportBuildCode()), packageJsonFile()]
 }
 
