@@ -1,5 +1,9 @@
 Example of deploying a Vite + `vite-plugin-ssr` app to [Vercel](https://vercel.com/).
 
+Note how we load `dist/server/importBuild.js` in [api/render.js](api/render.js).
+
+Also see [vite-plugin-ssr.com/vercel](https://vite-plugin-ssr.com/vercel).
+
 To run it:
 1. ```bash
     git clone git@github.com:brillout/vite-plugin-ssr

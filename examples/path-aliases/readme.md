@@ -7,13 +7,13 @@ We use:
 
 This means we define the alias `~` three times: at `vite.config.js`, `tsconfig.json` and `package.json`.
 
-If you don't use TypeScript you can simply skip defining `tsconfig#compilerOptions.paths`.
+If we don't use TypeScript we can simply skip defining `tsconfig#compilerOptions.paths`.
 
-If you don't plan to use path aliases for your server entry you can skip using `module-alias` and therefore skip defining `package.json#_moduleAliases`.
+If we don't plan to use path aliases for our server entry we can skip using `module-alias` and therefore skip defining `package.json#_moduleAliases`.
 
-You can see path aliases in action at
-[pages/index.page.tsx](pages/index.page.tsx) and
-[server/index.ts](server/index.ts).
+Examples:
+ - [pages/index.page.tsx](pages/index.page.tsx)
+ - [server/index.ts](server/index.ts)
 
 To run the example:
 

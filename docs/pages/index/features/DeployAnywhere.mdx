@@ -1,18 +1,9 @@
 import { PrerenderPreview } from './PrerenderPreview'
+import ServerMiddleware from './ServerMiddleware.mdx'
 
-From a server perspective, `vite-plugin-ssr` is just a server middleware.
+From an architectural point of view, `vite-plugin-ssr` is just a server middleware.
 
-```js
-const { createPageRender } = require('vite-plugin-ssr')
-const renderPage = createPageRender(/* ... */)
-
-// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
-app.get('*', async (req, res) => {
-  // `renderPage()` can also be used in serverless environments such as Cloudflare Workers and Vercel
-  const result = await renderPage({ url: req.url })
-  res.send(result.renderResult)
-})
-```
+<ServerMiddleware />
 
 You can also pre-render your app to remove the need for a production Node.js server and deploy to any static host
 (Cloudflare Pages, GitHub Pages, Netlify, ...).

@@ -190,10 +190,33 @@ export const headings: Heading[] = [
     titleEmoji: 'earth'
   },
   {
-    level: 2,
+    level: 4,
     title: 'Satic Hosts',
-    titleAddendum: 'Netlify, GitHub Pages, Cloudflare Pages, ...',
+  },
+  {
+    level: 2,
+    title: 'GitHub Pages',
+    url: '/github-pages'
+  },
+  {
+    level: 2,
+    title: 'Cloudflare Pages',
+    url: '/cloudflare-pages'
+  },
+  {
+    level: 2,
+    title: 'Netlify',
+    url: '/netlify'
+  },
+  {
+    level: 2,
+    title: 'Static Hosts',
+    titleInNav: 'Other',
     url: '/static-hosts'
+  },
+  {
+    level: 4,
+    title: 'Serverless',
   },
   {
     level: 2,
@@ -216,8 +239,12 @@ export const headings: Heading[] = [
     url: '/firebase'
   },
   {
+    level: 4,
+    title: 'Other',
+  },
+  {
     level: 2,
-    title: 'Other Deployments',
+    title: 'Deploy',
     titleInNav: 'Other',
     url: '/deploy'
   },
@@ -286,8 +313,7 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: "`import { html } from 'vite-plugin-ssr'`",
-    titleInNav: '`html` template tag',
+    title: '`html` template tag',
     url: '/html-tag'
   },
   {
@@ -301,20 +327,17 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: "`import { getPage } from 'vite-plugin-ssr/client'`",
-    titleInNav: '`getPage()`',
+    title: '`getPage()`',
     url: '/getPage'
   },
   {
     level: 2,
-    title: "`import { useClientRouter } from 'vite-plugin-ssr/client/router'`",
-    titleInNav: '`useClientRouter()`',
+    title: '`useClientRouter()`',
     url: '/useClientRouter'
   },
   {
     level: 2,
-    title: "`import { navigate } from 'vite-plugin-ssr/client/router'`",
-    titleInNav: '`navigate()`',
+    title: '`navigate()`',
     url: '/navigate'
   },
   {
@@ -329,14 +352,12 @@ export const headings: Heading[] = [
   {
     level: 2,
     title: 'Route String',
-    titleInNav: 'Route String',
     isListTitle: true,
     url: '/route-string'
   },
   {
     level: 2,
     title: 'Route Function',
-    titleInNav: 'Route Function',
     isListTitle: true,
     url: '/route-function'
   },
@@ -365,15 +386,12 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: "`import { createPageRender } from 'vite-plugin-ssr'` (Server Middleware)",
-    titleInNav: '`createPageRender()`',
-    titleAddendum: 'Server Middleware',
+    title: '`createPageRender()`',
     url: '/createPageRender'
   },
   {
     level: 2,
-    title: "`import ssr from 'vite-plugin-ssr/plugin'` (Vite Plugin)",
-    titleInNav: 'Vite Plugin',
+    title: 'Vite Plugin',
     url: '/vite-plugin'
   },
   {

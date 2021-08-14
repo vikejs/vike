@@ -1,0 +1,12 @@
+```js
+const { createPageRender } = require('vite-plugin-ssr')
+const renderPage = createPageRender(/* ... */)
+
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // `renderPage()` can also be used in serverless environments such as
+  // Cloudflare Workers and Vercel
+  const result = await renderPage({ url: req.url })
+  res.send(result.renderResult)
+})
+```

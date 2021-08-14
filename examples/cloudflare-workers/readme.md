@@ -1,5 +1,9 @@
 Example of deploying a Vite + `vite-plugin-ssr` app to [Cloudflare Workers](https://workers.cloudflare.com/).
 
+Note how we load `dist/server/importBuild.js` in [worker/ssr.js](worker/ssr.js).
+
+Also see [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudflare-workers).
+
 To run it:
 
 1. ```bash
