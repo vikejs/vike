@@ -10,11 +10,6 @@
 * ts: return plugin as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed ([34e9b6a](https://github.com/brillout/vite-plugin-ssr/commit/34e9b6ac4c4799e0ca6c18117ecd97a6b9f4adae))
 
 
-### Reverts
-
-* Revert "use Partial<Plugin> instead of Plugin" ([d78712b](https://github.com/brillout/vite-plugin-ssr/commit/d78712be9f38834f19d947579a0320cdd98cc664))
-
-
 
 ## [0.2.8](https://github.com/brillout/vite-plugin-ssr/compare/v0.2.7...v0.2.8) (2021-08-12)
 
