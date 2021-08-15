@@ -1,5 +1,13 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-We can use a routing library such as Vue Router and React Router (in complete replacement or in combination):
+We can use any routing library, such as Vue Router or React Router.
  - <RepoLink path='/examples/vue-router/' />
  - <RepoLink path='/examples/react-router/' />
+
+That said,
+we recommend using only `vite-plugin-ssr`'s built-in router:
+it's simpler and enough for the vast majority of apps.
+
+If we want to use Client-side Routing,
+we can use `useClientRouter()`,
+see [Server-side Routing VS Client-side Routing](https://vite-plugin-ssr.com/SR-vs-CR).
