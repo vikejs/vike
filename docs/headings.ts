@@ -192,7 +192,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Satic Hosts'
+    title: 'Static Hosts'
   },
   {
     level: 2,
