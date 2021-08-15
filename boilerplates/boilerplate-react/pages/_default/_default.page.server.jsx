@@ -1,6 +1,6 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { PageLayout } from "./PageLayout";
+import { PageWrapper } from "./PageWrapper";
 import { html } from "vite-plugin-ssr";
 import logoUrl from "./logo.svg";
 
@@ -13,9 +13,9 @@ const passToClient = ["pageProps"];
 function render(pageContext) {
   const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
-    <PageLayout>
+    <PageWrapper>
       <Page {...pageProps} />
-    </PageLayout>
+    </PageWrapper>
   );
 
   // See https://vite-plugin-ssr.com/html-head

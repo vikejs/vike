@@ -1,12 +1,10 @@
 import React from "react";
 import logo from "./logo.svg";
-import "./PageLayout.css";
+import "./PageWrapper.css";
 
-export { PageLayout };
+export { PageWrapper };
 
-type Children = React.ReactNode;
-
-function PageLayout({ children }: { children: Children }) {
+function PageWrapper({ children }) {
   return (
     <React.StrictMode>
       <Layout>
@@ -25,7 +23,7 @@ function PageLayout({ children }: { children: Children }) {
   );
 }
 
-function Layout({ children }: { children: Children }) {
+function Layout({ children }) {
   return (
     <div
       style={{
@@ -39,7 +37,7 @@ function Layout({ children }: { children: Children }) {
   );
 }
 
-function Sidebar({ children }: { children: Children }) {
+function Sidebar({ children }) {
   return (
     <div
       style={{
@@ -56,7 +54,7 @@ function Sidebar({ children }: { children: Children }) {
   );
 }
 
-function Content({ children }: { children: Children }) {
+function Content({ children }) {
   return (
     <div
       style={{

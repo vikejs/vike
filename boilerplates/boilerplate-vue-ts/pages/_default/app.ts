@@ -1,5 +1,5 @@
 import { createSSRApp, defineComponent, h } from 'vue'
-import PageLayout from './PageLayout.vue'
+import PageWrapper from './PageWrapper.vue'
 import { PageContext } from './types'
 
 export { createApp }
@@ -9,7 +9,7 @@ function createApp(pageContext: PageContext) {
   const PageWithLayout = defineComponent({
     render() {
       return h(
-        PageLayout,
+        PageWrapper,
         {},
         {
           default() {
