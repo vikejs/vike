@@ -144,7 +144,7 @@ function Features() {
           <h3>Lazy-transpiling</h3>
           <p>
             One of Vite's foundational novelty is lazy-transpiling: only executed code is transpiled. If you define ten
-            pages but load only page in the browser, then only the code for that page is transpiled.
+            pages but load only one page in the browser, then only the code for that page is transpiled.
           </p>
           <p>
             Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast dev speed / HMR.
@@ -164,7 +164,7 @@ function Features() {
           </h3>
           <p>
             At (very) large scale, you can progressively replace <code>vite-plugin-ssr</code> with Vite's native SSR API
-            which is low-level and powerful (i.e. flexible and rock-solid). If you're Netflix and perfecting UX leads to
+            which is low-level and highly flexible. If you're Netflix and perfecting UX leads to
             a substantial revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are
             looking for.
           </p>

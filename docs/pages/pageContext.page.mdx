@@ -1,17 +1,18 @@
-> With TypeScript:
+> ** TypeScript ** &mdash; we can import the type definitions of the built-in `pageContext` properties.
 > ```ts
 > import type {PageContextBuiltIn, PageContextBuiltInClient} from 'vite-plugin-ssr/types'
 > ```
 
-Built-in:
+## Built-in
+
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - **`pageContext.isHydration`**: *[only in the browser, and only if we use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
-    // Server middleware
     const renderPage = createPageRender(/*...*/)
+    // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContext = {}
       // `pageContext.url` is defined here
@@ -24,13 +25,14 @@ Built-in:
  - **`pageContext.urlPathname`**: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
  - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
-Custom:
+## Custom
+
  - The `pageContext` values we returned in our page's `addPageContext()` hook (if we defined one).
  - The `pageContext` values we returned in our `_default.page.server.js`'s `addPageContext()` hook (if we defined one).
  - The `pageContext` values we passed at our server middleware.
     ```js
-    // Server middleware
     const renderPage = createPageRender(/*...*/)
+    // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContext = {
         url: req.url,
@@ -42,7 +44,7 @@ Custom:
     ```
 
 By default only `pageContext.Page` and `pageContext.pageExports` are available in the browser;
-use [`export const passToClient: string[]`](/passToClient) to make more `pageContext` available in the browser.
+we use [`passToClient`](/passToClient) to make more `pageContext` available in the browser.
 
 The `pageContext` can be accessed at:
  - *[Node.js]* `export function addPageContext(pageContext)` (`*.page.server.js`)

@@ -1,6 +1,6 @@
-import { Heading } from 'libframe-docs/types'
+import { HeadingDefinition } from 'libframe-docs/types'
 
-export const headings: Heading[] = [
+export const headings: HeadingDefinition[] = [
   {
     level: 1,
     title: 'Overview',
@@ -48,13 +48,13 @@ export const headings: Heading[] = [
   },
   {
     level: 2,
-    title: 'Data Fetching',
-    url: '/data-fetching'
+    title: 'Routing',
+    url: '/routing'
   },
   {
     level: 2,
-    title: 'Access `pageContext` anywhere',
-    url: '/pageContext-anywhere'
+    title: 'Data Fetching',
+    url: '/data-fetching'
   },
   {
     level: 2,
@@ -62,8 +62,38 @@ export const headings: Heading[] = [
     url: '/pre-rendering'
   },
   {
+    level: 2,
+    title: 'Access `pageContext` anywhere',
+    url: '/pageContext-anywhere'
+  },
+  {
     level: 4,
-    title: 'Routing'
+    title: 'More'
+  },
+  {
+    level: 2,
+    title: 'SPA vs SSR vs HTML',
+    url: '/SPA-vs-SSR-vs-HTML'
+  },
+  {
+    level: 2,
+    title: 'HTML `head`',
+    url: '/html-head'
+  },
+  {
+    level: 2,
+    title: 'Paths Aliases',
+    url: '/path-aliases'
+  },
+  {
+    level: 2,
+    title: '`.env` Files',
+    url: '/.env-files'
+  },
+  {
+    level: 1,
+    title: 'Routing',
+    titleEmoji: 'road-fork'
   },
   {
     level: 2,
@@ -100,30 +130,6 @@ export const headings: Heading[] = [
     level: 2,
     title: 'Base URL',
     url: '/base-url'
-  },
-  {
-    level: 4,
-    title: 'More'
-  },
-  {
-    level: 2,
-    title: 'SPA vs SSR vs HTML',
-    url: '/SPA-vs-SSR-vs-HTML'
-  },
-  {
-    level: 2,
-    title: 'HTML `head`',
-    url: '/html-head'
-  },
-  {
-    level: 2,
-    title: 'Paths Aliases',
-    url: '/path-aliases'
-  },
-  {
-    level: 2,
-    title: '`.env` Files',
-    url: '/.env-files'
   },
   {
     level: 1,
