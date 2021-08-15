@@ -103,11 +103,6 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Route Strings/Functions',
-    url: '/route-strings-functions'
-  },
-  {
-    level: 2,
     title: 'Vue Router / React Router',
     url: '/vue-router-and-react-router'
   },
@@ -197,7 +192,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Satic Hosts',
+    title: 'Satic Hosts'
   },
   {
     level: 2,
@@ -222,7 +217,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Serverless',
+    title: 'Serverless'
   },
   {
     level: 2,
@@ -246,7 +241,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Other',
+    title: 'Other'
   },
   {
     level: 2,
