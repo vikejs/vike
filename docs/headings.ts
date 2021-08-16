@@ -180,6 +180,16 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Solid',
+    url: '/solid'
+  },
+  {
+    level: 2,
+    title: 'Vue Query',
+    url: '/vue-query'
+  },
+  {
+    level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
     titleAddendum: 'CSS Frameworks, Service Workers, ...',
