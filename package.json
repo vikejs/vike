@@ -42,7 +42,7 @@
     "link-vite": "cd libframe/scripts/ && yarn link-vite",
     "// Install **/node_modules/vite/ from npm registry": "",
     "unlink-vite": "cd libframe/scripts/ && yarn link-vite",
-    "// Update dependencies of `vite-plugin-ssr/`, examples, and boilerplates": "",
+    "// Upgrade all dependencies of all `package.json` that have tests": "",
     "bump": "cd libframe/scripts/ && yarn bump",
     "========= Release": "",
     "release": "cd libframe/scripts/ && yarn release",
