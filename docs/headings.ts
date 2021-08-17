@@ -132,46 +132,78 @@ export const headings: HeadingDefinition[] = [
     titleEmoji: 'plug'
   },
   {
+    level: 4,
+    title: 'Data Fetching',
+  },
+  {
+    level: 2,
+    title: 'Apollo GraphQL',
+    url: '/apollo-graphql'
+  },
+  {
+    level: 2,
+    title: 'Vue Query',
+    url: '/vue-query'
+  },
+  {
+    level: 2,
+    title: 'Relay',
+    url: '/relay'
+  },
+  {
+    level: 2,
+    title: 'Wildcard API',
+    url: '/wildcard-api'
+  },
+  {
+    level: 2,
+    titleInNav: 'Other',
+    title: 'Data Fetching Tools',
+    url: '/data-fetching-tools'
+  },
+  {
+    level: 4,
+    title: 'Data Store',
+  },
+  {
+    level: 2,
+    title: 'Vuex',
+    url: '/vuex'
+  },
+  {
+    level: 2,
+    title: 'Redux',
+    url: '/redux'
+  },
+  {
+    level: 2,
+    title: 'PullState',
+    url: '/pullstate'
+  },
+  {
+    level: 2,
+    title: 'Data Store',
+    titleInNav: 'Other',
+    url: '/data-store'
+  },
+  {
+    level: 4,
+    title: 'Authentication',
+  },
+  {
+    level: 2,
+    title: 'NextAuth.js',
+    url: '/nextauth'
+  },
+  {
     level: 2,
     title: 'Authentication',
-    titleAddendum: 'NextAuth.js, Passport.js, Auth0, Grant, ...',
+    titleInNav: 'Other',
     url: '/auth'
   },
   {
-    level: 2,
-    title: 'Markdown',
-    url: '/markdown'
-  },
-  {
-    level: 2,
-    title: 'Store (Vuex, Redux, ...)',
-    url: '/store'
-  },
-  {
-    level: 2,
-    title: 'GraphQL & RPC',
-    titleAddendum: '',
-    url: '/graphql-rpc'
-  },
-  {
-    level: 2,
-    title: 'Tailwind CSS / Windi CSS',
-    url: '/tailwind-css'
-  },
-  {
-    level: 2,
-    title: 'Internationalization (i18n)',
-    url: '/i18n'
-  },
-  {
-    level: 2,
-    title: 'Sass / Less / Stylus',
-    url: '/sass'
-  },
-  {
-    level: 2,
-    title: 'HTTPS',
-    url: '/https'
+    level: 4,
+    title: 'View Frameworks',
   },
   {
     level: 2,
@@ -184,15 +216,42 @@ export const headings: HeadingDefinition[] = [
     url: '/solid'
   },
   {
+    level: 4,
+    title: 'CSS Frameworks',
+  },
+  {
     level: 2,
-    title: 'Vue Query',
-    url: '/vue-query'
+    title: 'Tailwind CSS / Windi CSS',
+    url: '/tailwind-css'
+  },
+  {
+    level: 2,
+    title: 'Sass / Less / Stylus',
+    url: '/sass'
+  },
+  {
+    level: 4,
+    title: 'Other',
+  },
+  {
+    level: 2,
+    title: 'Internationalization (i18n)',
+    url: '/i18n'
+  },
+  {
+    level: 2,
+    title: 'Markdown',
+    url: '/markdown'
+  },
+  {
+    level: 2,
+    title: 'HTTPS',
+    url: '/https'
   },
   {
     level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
-    titleAddendum: 'CSS Frameworks, Service Workers, ...',
     url: '/integration'
   },
   {

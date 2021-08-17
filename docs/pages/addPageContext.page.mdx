@@ -4,7 +4,7 @@ We can also provide initial `pageContext` values at our server middlware (see [`
 which is where we usually pass information about the authenticated user
 (see [Authentication](/auth) guide).
 
-The `addPageContext()` hook is usually used together with [`const passToClient: string[]`](/passToClient) to fetch data, see [Data Fetching](/data-fetching) guide.
+The `addPageContext()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see [Data Fetching](/data-fetching) guide.
 
 Since `addPageContext()` is always called in Node.js, ORM/SQL database queries can be used.
 
