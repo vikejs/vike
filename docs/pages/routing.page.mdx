@@ -1,14 +1,15 @@
 By default `vite-plugin-ssr` does:
- - Server-side Routing, but we can also use Client-side Routing instead.
- - Filesystem Routing, but we can also use Route Strings and Route Functions instead.
+ - Server-side Routing, but we can use Client-side Routing instead.
+ - Filesystem Routing, but we can also use Route Strings and Route Functions.
+
 
 ## Server-side Routing or Client-side Routing?
 
-In general, we recommand using Server-side Routing (full HTML reload upon page navigation) instead of Client-side Routing (DOM mutations upon page navigation).
+`vite-plugin-ssr` hast first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
 
-That said, `vite-plugin-ssr` hast first-class support for Client-side Routing.
-
+In general, we recommand using Server-side Routing because it usually leads to faster dev speed.
 More infos at [Server-side Routing VS Client-side Routing](/SR-vs-CR).
+
 
 ## Filesystem Routing VS Route Strings VS Route Functions
 
