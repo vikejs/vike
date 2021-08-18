@@ -32,7 +32,7 @@ function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGene
   return (
     <p>
       {text} on the server (its content is server-side rendered). This initial {dataName} is then passed onto the
-      browser for <a href="/hydration">hydration</a>; we can use
+      browser for <a href="/hydration">hydration</a>; we can use{' '}
       <a href="/passToClient">
         <code>passToClient</code>
       </a>{' '}
