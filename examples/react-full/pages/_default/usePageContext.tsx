@@ -1,26 +1,22 @@
 import React, { useContext } from "react";
-import { PageContext, Children } from "./types";
+import type { PageContext } from "./types";
 
 export { PageContextProvider };
 export { usePageContext };
 
-const ReactPageContext = React.createContext<PageContext>(undefined as any);
+const Context = React.createContext<PageContext>(undefined as any);
 
 function PageContextProvider({
   pageContext,
   children,
 }: {
   pageContext: PageContext;
-  children: Children;
+  children: React.ReactNode;
 }) {
-  return (
-    <ReactPageContext.Provider value={pageContext}>
-      {children}
-    </ReactPageContext.Provider>
-  );
+  return <Context.Provider value={pageContext}>{children}</Context.Provider>;
 }
 
 function usePageContext() {
-  const pageContext = useContext(ReactPageContext);
+  const pageContext = useContext(Context);
   return pageContext;
 }

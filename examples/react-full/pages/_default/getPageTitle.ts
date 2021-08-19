@@ -1,8 +1,9 @@
-import { PageContext } from "./types";
-
 export { getPageTitle };
 
-function getPageTitle(pageContext: PageContext): string {
+function getPageTitle(pageContext: {
+  pageExports: { documentProps?: { title: string } };
+  documentProps?: { title: string };
+}): string {
   const title =
     // For static titles (defined in the `export { documentProps }` of the page's `.page.js`)
     pageContext.pageExports.documentProps?.title ||

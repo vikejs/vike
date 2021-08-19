@@ -1,13 +1,12 @@
-import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
-export type Component = (pageProps: any) => JSX.Element;
-export type Children = React.ReactNode | React.ReactNode[];
-export type PageContext = PageContextBuiltIn & {
-  Page: Component;
+// The `pageContext` that are available in both on the server-side and browser-side
+export type PageContext = {
+  Page: React.ReactNode;
   pageExports: {
     documentProps?: {
       title: string;
     };
   };
+  urlPathname: string;
   pageProps: Record<string, unknown>;
   documentProps?: {
     title: string;

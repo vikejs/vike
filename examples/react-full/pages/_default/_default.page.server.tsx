@@ -2,15 +2,16 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { html } from "vite-plugin-ssr";
 import { PageWrapper } from "./PageWrapper";
-import { PageContext } from "./types";
 import { getPageTitle } from "./getPageTitle";
+import type { PageContext } from "./types";
+import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 
 export { render };
 export { passToClient };
 
-const passToClient = ["pageProps", "documentProps", "urlPathname"];
+const passToClient = ["pageProps", "documentProps", "urlPathname"] as const;
 
-function render(pageContext: PageContext) {
+function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext;
   const pageContent = ReactDOMServer.renderToString(
     <PageWrapper pageContext={pageContext}>

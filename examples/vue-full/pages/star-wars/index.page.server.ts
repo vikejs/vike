@@ -1,20 +1,11 @@
 import fetch from 'node-fetch'
 import { filterMovieData } from './movie.page.server'
-import { Movie, MovieDetails } from './types'
+import type { Movie, MovieDetails } from './types'
 
 export { addPageContext }
 export { prerender }
 
-type PageContext = {
-  pageProps: {
-    movies: Movie[]
-  }
-  documentProps: {
-    title: string
-  }
-}
-
-async function addPageContext(): Promise<PageContext> {
+async function addPageContext() {
   const movies = await getStarWarsMovies()
   return {
     pageProps: {

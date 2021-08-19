@@ -1,24 +1,11 @@
 import fetch from "node-fetch";
-import { MovieDetails } from "./types";
+import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
+import type { MovieDetails } from "./types";
 
 export { addPageContext };
 export { filterMovieData };
 
-type PageContext = {
-  routeParams: {
-    movieId: string;
-  };
-  pageProps: {
-    movie: MovieDetails;
-  };
-  documentProps: {
-    title: string;
-  };
-};
-
-async function addPageContext(
-  pageContext: PageContext
-): Promise<Partial<PageContext>> {
+async function addPageContext(pageContext: PageContextBuiltIn) {
   const response = await fetch(
     `https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`
   );

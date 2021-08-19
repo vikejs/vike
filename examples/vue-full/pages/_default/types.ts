@@ -1,6 +1,6 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 export type Component = any
-export type PageContext = PageContextBuiltIn & {
+// The `pageContext` that are available in both on the server-side and browser-side
+export type PageContext = {
   Page: Component
   pageProps: Record<string, unknown>
   pageExports: {

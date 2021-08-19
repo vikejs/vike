@@ -1,6 +1,6 @@
 import { App, createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageLayout from './PageLayout.vue'
-import { Component, PageContext } from './types'
+import type { Component, PageContext } from './types'
 
 export { createApp }
 
