@@ -212,6 +212,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Preact',
+    url: '/preact'
+  },
+  {
+    level: 2,
     title: 'Solid',
     url: '/solid'
   },
