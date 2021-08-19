@@ -1,8 +1,9 @@
 import { getPageFile } from '../shared/getPageFiles.shared'
-import { getUrlPathname } from '../shared/utils'
+import { getUrlPathname, hasProp, checkType } from '../shared/utils'
 import { assert, assertUsage, assertWarning } from '../shared/utils/assert'
 import { assert_pageContext_publicProps } from './assert_pageContext_publicProps'
 import { getPageContextProxy } from './getPageContextProxy'
+import type { PageContextBuiltInClient } from '../types'
 
 export { getPage }
 export { getPageById }
@@ -10,15 +11,18 @@ export { getPageInfo }
 
 const urlPathnameOriginal = getUrlPathname()
 
-async function getPage(): Promise<{ Page: any } & Record<string, any>> {
+async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuiltInClient & T> {
   let { pageId, pageContext } = getPageInfo()
   const { Page, pageExports } = await getPageById(pageId)
   pageContext.Page = Page
   pageContext.pageExports = pageExports
   pageContext = getPageContextProxy(pageContext)
+  pageContext.isHydration = false
+  assert(hasProp(pageContext, 'isHydration', 'boolean'))
   assertPristineUrl()
   assert_pageContext_publicProps(pageContext)
-  return pageContext
+  checkType<PageContextBuiltInClient>(pageContext)
+  return pageContext as PageContextBuiltInClient & T
 }
 
 function assertPristineUrl() {

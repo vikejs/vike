@@ -1,5 +1,6 @@
 export * from './assert'
 export * from './cast'
+export * from './checkType'
 export * from './isCallable'
 export * from './isBrowser'
 export * from './isNodejs'
