@@ -1,31 +1,39 @@
 import React from "react";
 import logo from "./logo.svg";
+import { PageContextProvider } from "./usePageContext";
+import type { PageContext } from "./types";
 import "./PageWrapper.css";
 
 export { PageWrapper };
 
-type Children = React.ReactNode;
-
-function PageWrapper({ children }: { children: Children }) {
+function PageWrapper({
+  children,
+  pageContext,
+}: {
+  children: React.ReactNode;
+  pageContext: PageContext;
+}) {
   return (
     <React.StrictMode>
-      <Layout>
-        <Sidebar>
-          <Logo />
-          <a className="navitem" href="/">
-            Home
-          </a>
-          <a className="navitem" href="/about">
-            About
-          </a>
-        </Sidebar>
-        <Content>{children}</Content>
-      </Layout>
+      <PageContextProvider pageContext={pageContext}>
+        <Layout>
+          <Sidebar>
+            <Logo />
+            <a className="navitem" href="/">
+              Home
+            </a>
+            <a className="navitem" href="/about">
+              About
+            </a>
+          </Sidebar>
+          <Content>{children}</Content>
+        </Layout>
+      </PageContextProvider>
     </React.StrictMode>
   );
 }
 
-function Layout({ children }: { children: Children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -39,7 +47,7 @@ function Layout({ children }: { children: Children }) {
   );
 }
 
-function Sidebar({ children }: { children: Children }) {
+function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -56,7 +64,7 @@ function Sidebar({ children }: { children: Children }) {
   );
 }
 
-function Content({ children }: { children: Children }) {
+function Content({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{

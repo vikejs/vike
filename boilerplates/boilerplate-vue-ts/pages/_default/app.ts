@@ -22,9 +22,9 @@ function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // We make `pageContext.routeParams` available in all components as `$routeParams`
-  // (e.g. `$routeParams.movieId` for a Route String `/movie/:movieId`).
-  app.config.globalProperties.$routeParams = pageContext.routeParams
+  // We make `pageContext` available in all components as `$pageContext`.
+  // More infos: https://vite-plugin-ssr.com/pageContext-anywhere
+  app.config.globalProperties.$pageContext = pageContext
 
   return app
 }

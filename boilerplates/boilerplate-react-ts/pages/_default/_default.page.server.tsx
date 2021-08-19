@@ -2,8 +2,9 @@ import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageWrapper } from "./PageWrapper";
 import { html } from "vite-plugin-ssr";
-import { PageContext } from "./types";
 import logoUrl from "./logo.svg";
+import type { PageContext } from "./types";
+import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 
 export { render };
 export { passToClient };
@@ -11,10 +12,10 @@ export { passToClient };
 // See https://vite-plugin-ssr.com/data-fetching
 const passToClient = ["pageProps"];
 
-function render(pageContext: PageContext) {
+function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
-    <PageWrapper>
+    <PageWrapper pageContext={pageContext}>
       <Page {...pageProps} />
     </PageWrapper>
   );
