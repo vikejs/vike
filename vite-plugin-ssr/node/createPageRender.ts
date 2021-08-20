@@ -3,7 +3,6 @@ import { renderPage } from './renderPage'
 import { hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { normalize as pathNormalize } from 'path'
-import { ViteDevServer } from 'vite'
 import { assertBaseUrl } from './baseUrlHandling'
 import { importBuildWasCalled } from './importBuild'
 
@@ -24,7 +23,10 @@ function createPageRender({
   isProduction,
   base = '/'
 }: {
+  viteDevServer?: unknown
+  /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
   viteDevServer?: ViteDevServer
+  */
   root?: string
   isProduction?: boolean
   base?: string
