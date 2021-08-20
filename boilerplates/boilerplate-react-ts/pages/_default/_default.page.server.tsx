@@ -7,12 +7,10 @@ import type { PageContext } from "./types";
 import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 
 export { render };
-export { passToClient };
-
 // See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ["pageProps"];
+export const passToClient = ["pageProps"];
 
-function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext;
   const pageHtml = ReactDOMServer.renderToString(
     <PageWrapper pageContext={pageContext}>
