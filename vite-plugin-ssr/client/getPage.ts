@@ -17,7 +17,7 @@ async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuilt
   pageContext.Page = Page
   pageContext.pageExports = pageExports
   pageContext = getPageContextProxy(pageContext)
-  pageContext.isHydration = false
+  pageContext.isHydration = true
   assert(hasProp(pageContext, 'isHydration', 'boolean'))
   assertPristineUrl()
   assert_pageContext_publicProps(pageContext)
