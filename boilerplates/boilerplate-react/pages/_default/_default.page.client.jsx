@@ -6,6 +6,8 @@ import { PageWrapper } from "./PageWrapper";
 hydrate();
 
 async function hydrate() {
+  // For Client-side Routing we should use `useClientRouter()` instead of `getPage()`.
+  // See https://vite-plugin-ssr.com/useClientRouter
   const pageContext = await getPage();
   const { Page, pageProps } = pageContext;
   ReactDOM.hydrate(

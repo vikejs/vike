@@ -8,7 +8,7 @@
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
- - **`pageContext.isHydration`**: *[only in the browser, and only if we use Client-side Routing]* whether the page is being hydrated or a new page is being rendered.
+ - **`pageContext.isHydration`**: *[only in the browser, and only when using `useClientRouter()` i.e. Client-side Routing]* boolean that is `true` when the page is already rendered to HTML. (When the page is already rendered to HTML we merely have to hydrate it. When doing SSR, it's `true` for the first page the user navigates to, and `false` when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
     const renderPage = createPageRender(/*...*/)

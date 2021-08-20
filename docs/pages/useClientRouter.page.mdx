@@ -2,36 +2,41 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 Environment: `Browser`
 
-By default, `vite-plugin-ssr` does Server-side Routing.
-We can do Client-side Routing instead by using `useClientRouter()` in our `_default.page.client.js` (or in a page's `.page.client.js` file).
+By default `vite-plugin-ssr` does Server-side Routing.
+We can do Client-side Routing instead by using `useClientRouter()` instead of `getPage()`.
+
+> In general, we recommend Server-side Routing over Client-side Routing, see [Server-side Routing VS Client-side Routing](/SR-vs-CR).
+
+React example:
+ - <RepoLink path='/examples/react-full/pages/_default/_default.page.client.tsx' />
+ - <RepoLink path='/examples/react-full/pages/index.page.tsx' /> (example of using <code>navigate()</code>)
+
+Vue example:
+ - <RepoLink path='/examples/vue-full/pages/_default/_default.page.client.ts' />
+ - <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
+ - <RepoLink path='/examples/vue-full/pages/index.page.vue' /> (example of using <code>navigate()</code>)
+
+Example showcasing all `useClientRouter()`'s options:
 
 ```js
 // _default.page.client.js
 // Environment: Browser
 
-import { renderToDom, hydrateToDom, createElement } from 'some-view-framework'
+import { render, hydrate } from 'some-view-framework'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
 const { hydrationPromise } = useClientRouter({
   async render(pageContext) {
-    const page = createElement(pageContext.Page, pageContext.pageProps)
-    const container = document.getElementById('page-view')
-
-    // Render the page
+    // `pageContext.isHydration` is set by `vite-plugin-ssr` and is `true` when the page
+    // is already rendered to HTML.
     if (pageContext.isHydration) {
-      // This is the first page rendering; the page has been rendered to HTML
-      // and we now make it interactive.
-      await hydrateToDom(page)
+      // When we render the first page. (Since we do SSR, the first page is already
+      // rendered to HTML and we merely have to hydrate it.)
+      await hydrate(pageContext.Page)
     } else {
-      // Render a new page
-      await renderToDom(page)
+      // When the user navigates to a new page.
+      await render(pageContext.Page)
     }
-
-    // We use `pageContext.documentProps.title` to update `<title>`.
-    document.title =
-      pageContext.documentProps?.title ||
-      // A default title
-      'Demo'
   },
   onTransitionStart,
   onTransitionEnd
@@ -53,22 +58,16 @@ function onTransitionEnd() {
 }
 ```
 
-We can keep our `<a href="/some-url">` links as they are: link clicks are intercepted.
+We can keep using `<a href="/some-url">` links: link clicks are automatically intercepted.
 We can also use
 [`navigate()`](/navigate)
 to programmatically navigate our user to a new page.
 
-By default, the Client-side Router scrolls the page to the top upon page transitions;
+By default, the Client-side Router scrolls to the top of the page upon page navigation;
 we can use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })`
 if we want to preserve the scroll position instead. (Useful for [Nested Routes](/nested-routes).)
 
 `useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
-Vue example:
- - <RepoLink path='/examples/vue-full/pages/_default/_default.page.client.ts' />
- - <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
- - <RepoLink path='/examples/vue-full/pages/index.page.vue' /> (example of using <code>navigate()</code>)
-
-React example:
- - <RepoLink path='/examples/react-full/pages/_default/_default.page.client.tsx' />
- - <RepoLink path='/examples/react-full/pages/index.page.tsx' /> (example of using <code>navigate()</code>)
+Also see:
+ - [What is hydration?](/hydration)
