@@ -7,7 +7,7 @@ export { render }
 export { passToClient }
 
 // See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps', 'routeParams']
+const passToClient = ['pageProps']
 
 async function render(pageContext) {
   const app = createApp(pageContext)

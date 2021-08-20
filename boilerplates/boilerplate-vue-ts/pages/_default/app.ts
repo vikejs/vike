@@ -1,6 +1,6 @@
 import { createSSRApp, defineComponent, h } from 'vue'
 import PageWrapper from './PageWrapper.vue'
-import { PageContext } from './types'
+import type { PageContext } from './types'
 
 export { createApp }
 
