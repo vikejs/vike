@@ -1,24 +1,28 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./PageWrapper.css";
+import { PageContextProvider } from "./usePageContext";
+import { Link } from "./Link";
 
 export { PageWrapper };
 
-function PageWrapper({ children }) {
+function PageWrapper({ pageContext, children }) {
   return (
     <React.StrictMode>
-      <Layout>
-        <Sidebar>
-          <Logo />
-          <a className="navitem" href="/">
-            Home
-          </a>
-          <a className="navitem" href="/about">
-            About
-          </a>
-        </Sidebar>
-        <Content>{children}</Content>
-      </Layout>
+      <PageContextProvider pageContext={pageContext}>
+        <Layout>
+          <Sidebar>
+            <Logo />
+            <Link className="navitem" href="/">
+              Home
+            </Link>
+            <Link className="navitem" href="/about">
+              About
+            </Link>
+          </Sidebar>
+          <Content>{children}</Content>
+        </Layout>
+      </PageContextProvider>
     </React.StrictMode>
   );
 }
