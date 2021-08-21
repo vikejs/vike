@@ -7,9 +7,8 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-
     expect(html).toContain('<h1>Welcome</h1>')
-    expect(html).toContain('<a class="navitem"')
+    expect(html).toContain('<div class="navigation"')
   })
 
   test('production asset preloading', async () => {
