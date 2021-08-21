@@ -9,13 +9,7 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     const html = await fetchHtml('/')
 
     expect(html).toContain('<h1>Welcome</h1>')
-    if (viewFramework === 'vue') {
-      expect(html).toMatch(partRegex`<a class="navitem" href="/" data-v-${/[^\>]*/}>Home</a>`)
-      expect(html).toMatch(partRegex`<a class="navitem" href="/about" data-v-${/[^\>]*/}>About</a>`)
-    } else {
-      expect(html).toContain('<a class="navitem" href="/">Home</a>')
-      expect(html).toContain('<a class="navitem" href="/about">About</a>')
-    }
+    expect(html).toContain('<a class="navitem"')
   })
 
   test('production asset preloading', async () => {
@@ -61,5 +55,10 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     await autoRetry(async () => {
       expect(await page.$eval('h1', (e) => getComputedStyle(e).color)).toBe('rgb(0, 128, 0)')
     })
+  })
+
+  test('active links', async () => {
+    expect(await page.$eval('a[href="/about"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgb(238, 238, 238)')
+    expect(await page.$eval('a[href="/"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
   })
 }
