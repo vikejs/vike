@@ -4,12 +4,18 @@
       <a href="/" class="logo">
         <img src="./logo.svg" height="64" width="64" alt="logo" />
       </a>
-      <a class="navitem" href="/">Home</a>
-      <a class="navitem" href="/about">About</a>
+      <Link href="/">Home</Link>
+      <Link href="/about">About</Link>
     </div>
     <div class="content"><slot /></div>
   </div>
 </template>
+
+<script>
+import Link from './Link.vue'
+const components = { Link }
+export default { components }
+</script>
 
 <style>
 body {
@@ -47,8 +53,5 @@ a {
 .logo {
   margin-top: 20px;
   margin-bottom: 10px;
-}
-.navitem {
-  padding: 3px;
 }
 </style>
