@@ -1,5 +1,5 @@
 import { App, createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
-import PageLayout from './PageLayout.vue'
+import PageWrapper from './PageWrapper.vue'
 import type { Component, PageContext } from './types'
 
 export { createApp }
@@ -8,7 +8,7 @@ function createApp(pageContext: PageContext) {
   const { Page } = pageContext
 
   let rootComponent: Component
-  const PageWithLayout = defineComponent({
+  const PageWithWrapper = defineComponent({
     data: () => ({
       Page: markRaw(Page),
       pageProps: markRaw(pageContext.pageProps || {})
@@ -18,7 +18,7 @@ function createApp(pageContext: PageContext) {
     },
     render() {
       return h(
-        PageLayout,
+        PageWrapper,
         {},
         {
           default: () => {
@@ -38,7 +38,7 @@ function createApp(pageContext: PageContext) {
     rootComponent.pageProps = markRaw(pageContext.pageProps || {})
   }
 
-  const app: App<Element> & { changePage: typeof changePage } = Object.assign(createSSRApp(PageWithLayout), {
+  const app: App<Element> & { changePage: typeof changePage } = Object.assign(createSSRApp(PageWithWrapper), {
     changePage
   })
   app.config.globalProperties.$pageContext = pageContextReactive
