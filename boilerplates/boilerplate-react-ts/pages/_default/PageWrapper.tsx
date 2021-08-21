@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import { PageContextProvider } from "./usePageContext";
 import type { PageContext } from "./types";
 import "./PageWrapper.css";
+import { Link } from "./Link";
 
 export { PageWrapper };
 
@@ -19,12 +20,12 @@ function PageWrapper({
         <Layout>
           <Sidebar>
             <Logo />
-            <a className="navitem" href="/">
+            <Link className="navitem" href="/">
               Home
-            </a>
-            <a className="navitem" href="/about">
+            </Link>
+            <Link className="navitem" href="/about">
               About
-            </a>
+            </Link>
           </Sidebar>
           <Content>{children}</Content>
         </Layout>
