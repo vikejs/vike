@@ -8,7 +8,9 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
-    expect(html).toContain('<div class="navigation"')
+    // Vue injects: `!--[-->Home<!--]-->`
+    expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
+    expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
   })
 
   test('production asset preloading', async () => {
