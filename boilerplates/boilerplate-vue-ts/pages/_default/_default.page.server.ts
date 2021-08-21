@@ -7,7 +7,7 @@ import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps']
+export const passToClient = ['pageProps', 'urlPathname']
 
 async function render(pageContext: PageContextBuiltIn & PageContext) {
   const app = createApp(pageContext)
