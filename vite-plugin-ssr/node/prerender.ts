@@ -24,6 +24,8 @@ import { moduleExists } from '../shared/utils/moduleExists'
 import { setSsrEnv } from './ssrEnv'
 import { getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
+import pLimit from 'p-limit'
+import { cpus } from 'os'
 
 export { prerender }
 
@@ -47,6 +49,7 @@ async function prerender({
   noExtraDir = false,
   root = process.cwd(),
   clientRouter = false,
+  parallel = cpus().length,
   base
 }: {
   partial?: boolean
@@ -54,6 +57,7 @@ async function prerender({
   root?: string
   clientRouter?: boolean
   base?: string
+  parallel?: number
 } = {}) {
   assertArguments(partial, noExtraDir, clientRouter, base, root)
   console.log(`${cyan(`vite-plugin-ssr ${projectInfo.version}`)} ${green('pre-rendering HTML...')}`)
@@ -97,50 +101,55 @@ async function prerender({
   > = {}
   const doNotPrerenderList: DoNotPrerenderList = []
 
+  // Concurrency limit
+  const limit = pLimit(parallel)
+
   await Promise.all(
-    allPageIds.map(async (pageId) => {
-      const pageServerFile = await getPageServerFile(pageId)
-      if (!pageServerFile) return
+    allPageIds.map((pageId) =>
+      limit(async () => {
+        const pageServerFile = await getPageServerFile(pageId)
+        if (!pageServerFile) return
 
-      const { fileExports, filePath } = pageServerFile
+        const { fileExports, filePath } = pageServerFile
 
-      if (fileExports.doNotPrerender) {
-        doNotPrerenderList.push({ pageId, pageServerFilePath: filePath })
-        return
-      }
+        if (fileExports.doNotPrerender) {
+          doNotPrerenderList.push({ pageId, pageServerFilePath: filePath })
+          return
+        }
 
-      const prerenderFunction = fileExports.prerender
-      if (!prerenderFunction) return
-      const prerenderSourceFile = filePath
-      assert(prerenderSourceFile)
+        const prerenderFunction = fileExports.prerender
+        if (!prerenderFunction) return
+        const prerenderSourceFile = filePath
+        assert(prerenderSourceFile)
 
-      const prerenderResult = await prerenderFunction()
-      const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
+        const prerenderResult = await prerenderFunction()
+        const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
 
-      result.forEach(({ url, pageContext }) => {
-        assert(typeof url === 'string')
-        assert(url.startsWith('/'))
-        assert(pageContext === null || isPlainObject(pageContext))
-        if (!('url' in prerenderData)) {
-          prerenderData[url] = {
-            prerenderSourceFile,
-            pageContext: {
-              url,
-              _isPreRendering: true,
-              _serializedPageContextClientNeeded,
-              _pageContextAlreadyAddedInPrerenderHook: !!pageContext,
-              ...pageContext
+        result.forEach(({ url, pageContext }) => {
+          assert(typeof url === 'string')
+          assert(url.startsWith('/'))
+          assert(pageContext === null || isPlainObject(pageContext))
+          if (!('url' in prerenderData)) {
+            prerenderData[url] = {
+              prerenderSourceFile,
+              pageContext: {
+                url,
+                _isPreRendering: true,
+                _serializedPageContextClientNeeded,
+                _pageContextAlreadyAddedInPrerenderHook: !!pageContext,
+                ...pageContext
+              }
+            }
+          } else {
+            if (!!pageContext) {
+              Object.assign(prerenderData[url].pageContext, pageContext)
+              prerenderData[url].pageContext._pageContextAlreadyAddedInPrerenderHook = true
             }
           }
-        } else {
-          if (!!pageContext) {
-            Object.assign(prerenderData[url].pageContext, pageContext)
-            prerenderData[url].pageContext._pageContextAlreadyAddedInPrerenderHook = true
-          }
-        }
-        assert(prerenderData[url].pageContext.url === url)
+          assert(prerenderData[url].pageContext.url === url)
+        })
       })
-    })
+    )
   )
 
   const htmlDocuments: HtmlDocument[] = []
@@ -148,66 +157,76 @@ async function prerender({
 
   // Render URLs renturned by `prerender()` hooks
   await Promise.all(
-    Object.entries(prerenderData).map(async ([url, { pageContext, prerenderSourceFile }]) => {
-      const routeResult = await route(url, allPageIds, pageContext)
-      assertUsage(
-        routeResult,
-        `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
-      )
-      const { pageId } = routeResult
+    Object.entries(prerenderData).map(([url, { pageContext, prerenderSourceFile }]) =>
+      limit(async () => {
+        const routeResult = await route(url, allPageIds, pageContext)
+        assertUsage(
+          routeResult,
+          `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
+        )
+        const { pageId } = routeResult
 
-      const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
-      assertUsage(
-        !doNotPrerenderListHit,
-        `Your \`prerender()\` hook defined in ${prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
-      )
+        const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
+        assertUsage(
+          !doNotPrerenderListHit,
+          `Your \`prerender()\` hook defined in ${prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
+        )
 
-      Object.assign(pageContext, routeResult.pageContextAddendum)
-      assert(hasProp(pageContext, 'routeParams', 'object'))
-      castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
-      ;(pageContext as Record<string, unknown>)._pageId = pageId
-      assert(hasProp(pageContext, '_pageId', 'string'))
-      assert(pageContext.url)
-      const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-      htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
-      renderedPageIds[pageId] = true
-    })
+        Object.assign(pageContext, routeResult.pageContextAddendum)
+        assert(hasProp(pageContext, 'routeParams', 'object'))
+        castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
+        ;(pageContext as Record<string, unknown>)._pageId = pageId
+        assert(hasProp(pageContext, '_pageId', 'string'))
+        assert(pageContext.url)
+        const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
+        htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
+        renderedPageIds[pageId] = true
+      })
+    )
   )
 
   // Render pages that have a static route
   await Promise.all(
     allPageIds
       .filter((pageId) => !renderedPageIds[pageId])
-      .map(async (pageId) => {
-        let url
-        // Route with filesystem
-        if (!(pageId in pageRoutes)) {
-          url = getFilesystemRoute(pageId, allPageIds)
-          assert(url.startsWith('/'))
-        } else {
-          const { pageRoute } = pageRoutes[pageId]
-          if (typeof pageRoute === 'string' && isStaticRoute(pageRoute)) {
-            assert(pageRoute.startsWith('/'))
-            url = pageRoute
+      .map((pageId) =>
+        limit(async () => {
+          let url
+          // Route with filesystem
+          if (!(pageId in pageRoutes)) {
+            url = getFilesystemRoute(pageId, allPageIds)
+            assert(url.startsWith('/'))
           } else {
-            assertWarning(
-              partial,
-              `Cannot pre-render page \`${pageId}.page.*\` because it has a non-static route and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Use the --partial option to suppress this warning.`
-            )
-            return
+            const { pageRoute } = pageRoutes[pageId]
+            if (typeof pageRoute === 'string' && isStaticRoute(pageRoute)) {
+              assert(pageRoute.startsWith('/'))
+              url = pageRoute
+            } else {
+              assertWarning(
+                partial,
+                `Cannot pre-render page \`${pageId}.page.*\` because it has a non-static route and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Use the --partial option to suppress this warning.`
+              )
+              return
+            }
           }
-        }
-        const pageContext = {
-          url,
-          routeParams: {},
-          _pageId: pageId,
-          _serializedPageContextClientNeeded,
-          _pageContextAlreadyAddedInPrerenderHook: false
-        }
+          const pageContext = {
+            url,
+            routeParams: {},
+            _pageId: pageId,
+            _serializedPageContextClientNeeded,
+            _pageContextAlreadyAddedInPrerenderHook: false
+          }
 
-        const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-        htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
-      })
+          const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
+          htmlDocuments.push({
+            url,
+            htmlDocument,
+            pageContextSerialized,
+            doNotCreateExtraDirectory: noExtraDir,
+            pageId
+          })
+        })
+      )
   )
 
   if (!htmlDocuments.find(({ url }) => url === '/404')) {
@@ -229,40 +248,44 @@ async function prerender({
 
   // `htmlDocuments.length` can be very big; to avoid `EMFILE, too many open files` we don't parallelize the writing
   for (const htmlDoc of htmlDocuments) {
-    await writeHtmlDocument(htmlDoc, root, doNotPrerenderList)
+    await writeHtmlDocument(htmlDoc, root, doNotPrerenderList, limit)
   }
 }
 
 async function writeHtmlDocument(
   { url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlDocument,
   root: string,
-  doNotPrerenderList: DoNotPrerenderList
+  doNotPrerenderList: DoNotPrerenderList,
+  limit: pLimit.Limit
 ) {
   assert(url.startsWith('/'))
   assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
 
-  const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory)]
+  const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory, limit)]
   if (pageContextSerialized !== null) {
-    writeJobs.push(write(url, '.pageContext.json', pageContextSerialized, root, doNotCreateExtraDirectory))
+    writeJobs.push(write(url, '.pageContext.json', pageContextSerialized, root, doNotCreateExtraDirectory, limit))
   }
   await Promise.all(writeJobs)
 }
 
-async function write(
+function write(
   url: string,
   fileExtension: '.html' | '.pageContext.json',
   fileContent: string,
   root: string,
-  doNotCreateExtraDirectory: boolean
+  doNotCreateExtraDirectory: boolean,
+  limit: pLimit.Limit
 ) {
-  const fileUrl = getFileUrl(url, fileExtension, fileExtension === '.pageContext.json' || doNotCreateExtraDirectory)
-  assert(fileUrl.startsWith('/'))
-  const filePathRelative = fileUrl.slice(1).split('/').join(sep)
-  assert(!filePathRelative.startsWith(sep))
-  const filePath = join(root, 'dist', 'client', filePathRelative)
-  await mkdirp(dirname(filePath))
-  await writeFile(filePath, fileContent)
-  console.log(`${gray(join('dist', 'client') + sep)}${blue(filePathRelative)}`)
+  return limit(async () => {
+    const fileUrl = getFileUrl(url, fileExtension, fileExtension === '.pageContext.json' || doNotCreateExtraDirectory)
+    assert(fileUrl.startsWith('/'))
+    const filePathRelative = fileUrl.slice(1).split('/').join(sep)
+    assert(!filePathRelative.startsWith(sep))
+    const filePath = join(root, 'dist', 'client', filePathRelative)
+    await mkdirp(dirname(filePath))
+    await writeFile(filePath, fileContent)
+    console.log(`${gray(join('dist', 'client') + sep)}${blue(filePathRelative)}`)
+  })
 }
 
 function mkdirp(path: string): Promise<string | undefined> {
