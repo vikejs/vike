@@ -9,32 +9,19 @@ It represents the *entire* browser-side code. This means that if we create an em
 This also means that we have full control over the browser-side code. Not only can we render/hydrate our pages as we wish, but we can also easily & naturally integrate browser libraries.
 
 ```js
-// *.page.client.js
+// _default.page.client.js
 
 import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom, createElement } from 'some-view-framework'
-import GoogleAnalytics from '@brillout/google-analytics'
+import { hydrate } from 'some-view-framework'
 
-main()
+// The browser side usually hdyrates the page — see https://vite-plugin-ssr.com/hydration
+// We can also partial/island hydrate, inject vanilla JavaScript event handlers, etc.
 
-async function main() {
-  analytics_init()
-  analytics.event('[hydration] begin')
-  await hydrate()
-  analytics.event('[hydration] end')
-}
+hydrate()
 
 async function hydrate() {
   const pageContext = await getPage()
-  const { Page, pageProps } = pageContext
-  await hydrateToDom(
-    createElement(Page, pageProps),
-    document.getElementById('view-root')
-  )
-}
-
-let analytics
-function analytics_init() {
-  analytics = new GoogleAnalytics('UA-121991291')
+  const { Page } = pageContext
+  await hydrate(Page)
 }
 ```
