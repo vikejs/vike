@@ -10,7 +10,7 @@
     "fast-glob": "^3.2.5",
     "kolorist": "^1.4.1",
     "p-limit": "^3.1.0",
-    "vite-plugin-import-build": "^0.1.1"
+    "vite-plugin-import-build": "^0.1.2"
   },
   "scripts": {
     "dev": "yarn tsc:watch:cjs",

@@ -11,9 +11,9 @@ export default plugin
 export { plugin }
 export { plugin as ssr }
 
+// Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(): any {
   const plugins: Plugin[] = [dev(), build(), manifest(), importBuild(getImportBuildCode()), packageJsonFile()]
-  // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
   return plugins as any
 }
 
