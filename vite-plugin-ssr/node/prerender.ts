@@ -59,7 +59,7 @@ async function prerender({
   base?: string
   parallel?: number
 } = {}) {
-  assertArguments(partial, noExtraDir, clientRouter, base, root)
+  assertArguments(partial, noExtraDir, clientRouter, base, root, parallel)
   console.log(`${cyan(`vite-plugin-ssr ${projectInfo.version}`)} ${green('pre-rendering HTML...')}`)
 
   const { pluginManifest, pluginManifestPath } = getPluginManifest(root)
@@ -358,11 +358,12 @@ function getPluginManifest(root: string): {
   return { pluginManifest, pluginManifestPath }
 }
 
-function assertArguments(partial: unknown, noExtraDir: unknown, clientRouter: unknown, base: unknown, root: unknown) {
+function assertArguments(partial: unknown, noExtraDir: unknown, clientRouter: unknown, base: unknown, root: unknown, parallel: number) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
   assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')
   assertWarning(clientRouter === false, '[prerender()] Option `clientRouter` is deprecated and has no-effect.')
   assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.')
   assertUsage(typeof root === 'string', '[prerender()] Option `root` should be a string.')
   assertUsage(isAbsolute(root), '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.')
+  assertUsage(parallel, '[prerender()] Option `parallel` should be a number `>=1`.')
 }

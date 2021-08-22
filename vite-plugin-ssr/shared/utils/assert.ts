@@ -32,7 +32,8 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   if (condition) {
     return
   }
-  const usageError = newError(`${usageErrorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
+  const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
+  const usageError = newError(`${usageErrorPrefix}${whiteSpace}${errorMessage}`, numberOfStackTraceLinesToRemove)
   throw usageError
 }
 
