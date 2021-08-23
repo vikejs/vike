@@ -12,6 +12,6 @@ Follow: [twitter.com/brillout](https://twitter.com/brillout)
 <br/>
 Chat: [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb)
 
-Have a question? Want a feature? A tool integration is not working? Chat on
-<a href="https://discord.com/invite/qTq92FQzKb">Discord</a> or open a
-<a href="https://github.com/brillout/vite-plugin-ssr/issues/new">GitHub ticket</a>.
+Have a question? Want a feature? A tool integration is not working?
+<a href="https://discord.com/invite/qTq92FQzKb">Join our Discord</a> or
+<a href="https://github.com/brillout/vite-plugin-ssr/issues/new">open a GitHub ticket</a>.
