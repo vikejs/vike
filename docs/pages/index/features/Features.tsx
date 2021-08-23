@@ -137,7 +137,7 @@ function Features() {
             Scales to hundreds of kLOCs while <b>HMR stays fast</b>.
           </p>
           <p>
-            <b>Design that scales</b> from small hobby projects to large-scale enterprise projects.
+            <b>Flexibility that scales</b> from small hobby projects to large-scale enterprise projects.
           </p>
         </Feature>
         <LearnMore name="scalable">
