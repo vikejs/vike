@@ -13,7 +13,7 @@ function ContactUs() {
   return (
     <p style={style}>
       Have a question? Want a feature? A tool integration is not working?
-      <a href="https://discord.com/invite/qTq92FQzKb">Jour our Discord</a> or{' '}
+      <a href="https://discord.com/invite/qTq92FQzKb">Join our Discord</a> or{' '}
       <a href="https://github.com/brillout/vite-plugin-ssr/issues/new">open a GitHub ticket</a>.
     </p>
   )
