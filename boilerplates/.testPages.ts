@@ -21,13 +21,13 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
       const extRegexp = /[a-z]+/
       expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.css">`
       )
       expect(html).toMatch(
         partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`
       )
       expect(html).toMatch(
-        partRegex`<script type="module" src="/assets/pages/_default/_default.page.client.${extRegexp}.${hashRegexp}.js">`
+        partRegex`<script type="module" src="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`
       )
       expect(html).toMatch(
         partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`
