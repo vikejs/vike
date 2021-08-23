@@ -117,7 +117,7 @@ function Features() {
         </LearnMore>
         <Feature className="secondary-feature">
           <h2>
-            <Emoji name="high-voltage" /> Fast
+            <Emoji name="high-voltage" /> High-performance
           </h2>
           <p>
             <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
@@ -134,7 +134,7 @@ function Features() {
             <Emoji name="rocket" /> Scalable
           </h2>
           <p>
-            Scales to hundreds of kLOCs while <b>HMR stays fast</b>.
+            <b>Dev speed that scales</b> to hundreds of kLOCs. (HMR stays fast!)
           </p>
           <p>
             <b>Flexibility that scales</b> from small hobby projects to large-scale enterprise projects.

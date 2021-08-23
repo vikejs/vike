@@ -1,17 +1,23 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-We use Route Strings and Route Functions to implement catch-all routes:
+We can use [Route Strings & Route Functions](/route-strings-and-route-functions) to implement catch-all routes:
 
 ```js
 // product.page.route.js
 
-// All URLs that start with `/product/*`
-export const '/product/:param*`
+// Match URLs that start with `/product/*`
+// For example:
+//  `/product/42/reviews`
+//  `/product/1337/details`
+//  `/product/2048/some/deeply/nested/path`
+export default '/product/:param*`
 ```
 
-If we want to route all URLs to a single page:
+To route all URLs to a single page:
 
 ```js
+// catch-all.page.route.js
+
 // We simply define a Route Function that always returns true
 export default () => true
 /* Or with a Route String:
@@ -19,7 +25,7 @@ export default '/:params*'
 */
 ```
 
-Route Functions allow us to implement all kinds of catch-all behavior.
+Route Functions enable all kinds of catch-all behavior.
 
 ```js
 // user.page.route.js
@@ -39,7 +45,8 @@ export default async (pageContext) => {
   if (!userId) {
     return false
   }
-  // Only if there is a user with `userId`
+
+  // Only if there is a user matching `userId`
   const user = await db.fetchUser(userId)
   if (!user) {
     return false
@@ -49,16 +56,17 @@ export default async (pageContext) => {
   // `/user/:userId/settings`
   // `/user/:userId/password-change`
   // `/user/:userId/profile`
-  const userView = urlParts[2]
-  if (['settings', 'password-change', 'profile'].includes(userView)) {
+  const selectedView = urlParts[2]
+  if (!['settings', 'password-change', 'profile'].includes(selectedView)) {
     return false
   }
 
   return {
-    pageContext: {
+    // We add retrieved information to `pageContext.routeParams`
+    routeParams: {
       userId,
       user,
-      userView,
+      selectedView,
     }
   }
 }

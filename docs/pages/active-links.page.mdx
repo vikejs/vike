@@ -5,18 +5,16 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 To implement active links we:
  - Implement a custom `<Link>` component.
- - Make [`pageContext.urlPathname`](/pageContext) available to the `<Link>` component. (See [Access `pageContext` anywhere](/pageContext-anywhere).)
+ - Make [`pageContext.urlPathname`](/pageContext) available to the `<Link>` component, see [Access `pageContext` anywhere](/pageContext-anywhere).
 
 Our `<Link>` component can then check whether the link is active with `const isActive = a.href === pageContext.urlPathname`
 and add a CSS class `<a class="is-active">` accordingly.
 
-React examples:
- - <RepoLink path='/boilerplates/boilerplate-react/pages/_default/Link.jsx' /> (React + JavaScript + Server-side Routing)
- - <RepoLink path='/examples/react-full/pages/_default/Link.tsx' /> (React + TypeScript + Client-side Routing)
+React example:
+ - <RepoLink path='/boilerplates/boilerplate-react/pages/_default/Link.jsx' />
 
-Vue examples:
- - <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/Link.vue' /> (Vue + JavaScript + Server-side Routing)
- - <RepoLink path='/examples/vue-full/pages/_default/Link.vue' /> (Vue + TypeScript + Client-side Routing)
+Vue example:
+ - <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/Link.vue' />
 
-> Unless we [render our pages as SPAs](/SPA-vs-SSR-vs-HTML)
-> we cannot use `window.location.pathname` as it's not available while our pages are rendered on the server-side.
+> Unless we [render our page as SPA](/SPA-vs-SSR-vs-HTML)
+> we cannot use `window.location.pathname` as it's not available while our page is rendered on the server-side.

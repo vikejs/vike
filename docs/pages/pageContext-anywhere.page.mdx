@@ -1,29 +1,35 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-By default `pageContext` is only available on the server-side and only to the root (Vue/React/...) component.
+By default `pageContext` is available:
+ - only on the server-side, and
+ - only at the root (Vue/React/...) component.
 
-## Browser
+## Browser-side
 
 To make `pageContext` available in the browser, we use [`passToClient`](/passToClient).
 
 ## React
 
-To make `pageContext` available to all our React components we use [React Context](https://reactjs.org/docs/context.html).
+To make `pageContext` available to all React components we use [React Context](https://reactjs.org/docs/context.html).
 
 Example:
- - Implemention of a `usePageContext()` hook using React Context: <RepoLink path='/examples/react-full/pages/_default/usePageContext.tsx' />
- - Example of using `usePageContext()`: <RepoLink path='/examples/react-full/pages/_default/Link.tsx' />
- - Integration of `<PageContextProvider>`: <RepoLink path='/examples/react-full/pages/_default/PageWrapper.tsx' />
+ - Implemention of a `usePageContext()` hook using React Context: <RepoLink path='/boilerplates/boilerplate-react/pages/_default/usePageContext.jsx' />
+ - Example of using `usePageContext()`: <RepoLink path='/boilerplates/boilerplate-react/pages/_default/Link.jsx' />
+ - Integration of `<PageContextProvider>`: <RepoLink path='/boilerplates/boilerplate-react/pages/_default/PageWrapper.jsx' />
 
 ## Vue 3
 
-To make `pageContext` available to all our Vue components we use [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
+To make `pageContext` available to all Vue components we use [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
 
 Example:
- - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
- - Example of using the now globally available `$pageContext`: <RepoLink path='/examples/vue-full/pages/_default/Link.vue' />
+ - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/app.js' />
+ - Example of using the globally available `$pageContext`: <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/Link.vue' />
 
-Alternatively we can use [app.provide](https://v3.vuejs.org/api/application-api.html#provide), e.g. [like this](https://discord.com/channels/815937377888632913/815937377888632916/876504859879292948).
+With Client-side Routing:
+ - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
+
+Alternatively we can use [app.provide](https://v3.vuejs.org/api/application-api.html#provide),
+for example [like this](https://discord.com/channels/815937377888632913/815937377888632916/876504859879292948).
 
 ## Vue 2
 

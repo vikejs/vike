@@ -103,6 +103,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Route Strings & Route Functions',
+    url: '/route-strings-and-route-functions'
+  },
+  {
+    level: 2,
     title: 'Vue Router & React Router',
     url: '/vue-router-and-react-router'
   },
@@ -129,7 +134,6 @@ export const headings: HeadingDefinition[] = [
   {
     level: 2,
     title: 'Catch-All Routes',
-    titleInNav: 'Catch-All',
     url: '/catch-all'
   },
   {
