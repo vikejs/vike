@@ -1,0 +1,66 @@
+import { RepoLink } from 'libframe-docs/components/RepoLink'
+
+We use Route Strings and Route Functions to implement Catch-All routes:
+
+```js
+// product.page.route.js
+
+// All URLs that start with `/product/*`
+export const '/product/:param*`
+```
+
+If we want to route all URLs to a single page:
+
+```js
+// We simply define a Route Function that always returns true
+export default () => true
+/* Or with a Route String:
+export default '/:params*'
+*/
+```
+
+Route Functions allow us to implement all kinds of catch-all behavior.
+
+```js
+// user.page.route.js
+
+export default async (pageContext) => {
+  const { url } = pageContext
+  // Parse the URL
+  const urlParts = url.slice(1).split('/')
+
+  // Only URLs that start with `/user/*`
+  if (urlParts[0] !== 'user') {
+    return false
+  }
+
+  // Only URLs that start with `/user/:userId/*`
+  const userId = urlParts[1]
+  if (!userId) {
+    return false
+  }
+  // Only if there is a user with `userId`
+  const user = await db.fetchUser(userId)
+  if (!user) {
+    return false
+  }
+
+  // Only URLs:
+  // `/user/:userId/settings`
+  // `/user/:userId/password-change`
+  // `/user/:userId/profile`
+  const userView = urlParts[2]
+  if (['settings', 'password-change', 'profile'].includes(userView)) {
+    return false
+  }
+
+  return {
+    pageContext: {
+      userId,
+      user,
+      userView,
+    }
+  }
+}
+```
+

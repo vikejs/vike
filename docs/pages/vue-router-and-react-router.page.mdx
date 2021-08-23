@@ -5,9 +5,11 @@ We can use any routing library, such as Vue Router or React Router.
  - <RepoLink path='/examples/react-router/' />
 
 That said,
-we recommend using only `vite-plugin-ssr`'s built-in router:
+we recommend using `vite-plugin-ssr`'s built-in router instead:
 it's simpler and enough for the vast majority of apps.
 
-If we want to use Client-side Routing,
-we can use `useClientRouter()`,
-see [Server-side Routing VS Client-side Routing](/SR-vs-CR).
+Note that `vite-plugin-ssr`'s built-in router supports:
+ - [Nested Routes](/nested-routes)
+ - [Client-side Routing](/useClientRouter)
+
+So chances are that we don't need Vue Router nor React Router.

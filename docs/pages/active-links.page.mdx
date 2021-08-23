@@ -1,7 +1,7 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-> **What are active links?** It's the practice of highlighting the current page in the navigation's list of pages.
-> For example, we can see this page "Routing" highlighted in gray in the navigation sidebar on the left of this website; the navigation link pointing to this page is said to be "active".
+> **What are active links?** It's the practice of visually highlighting the currently selected page in the navigation.
+> For example, we can see this page `Active Links` highlighted in gray in the navigation on the left of this website; the link in the navigation pointing to this page is said to be "active".
 
 To implement active links we:
  - Implement a custom `<Link>` component.
@@ -10,11 +10,13 @@ To implement active links we:
 Our `<Link>` component can then check whether the link is active with `const isActive = a.href === pageContext.urlPathname`
 and add a CSS class `<a class="is-active">` accordingly.
 
-React example:
- - <RepoLink path='/examples/react-full/pages/_default/Link.tsx' />
+React examples:
+ - <RepoLink path='/boilerplates/boilerplate-react/pages/_default/Link.jsx' /> (React + JavaScript + Server-side Routing)
+ - <RepoLink path='/examples/react-full/pages/_default/Link.tsx' /> (React + TypeScript + Client-side Routing)
 
-Vue example:
- - <RepoLink path='/examples/vue-full/pages/_default/Link.vue' />
+Vue examples:
+ - <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/Link.vue' /> (Vue + JavaScript + Server-side Routing)
+ - <RepoLink path='/examples/vue-full/pages/_default/Link.vue' /> (Vue + TypeScript + Client-side Routing)
 
 > Unless we [render our pages as SPAs](/SPA-vs-SSR-vs-HTML)
-> we cannot use `window.location.pathname` as it's not available while our pages render on the server-side.
+> we cannot use `window.location.pathname` as it's not available while our pages are rendered on the server-side.

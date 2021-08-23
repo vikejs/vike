@@ -12,10 +12,13 @@ const renderPage = createPageRender(/* ... */)
 
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {
-  const { language, url } = retrieveLanguage(req.url)
+  const { url } = req
+  const { language, urlProcessed } = retrieveLanguage(url)
 
+  // We set `pageContext.url` to `urlProcessed` instead of `req.url`.
+  // So that the language URL part `/en-US/` is stripped away.
   const pageContext = {
-    url,
+    url: urlProcessed,
     // We make the language information available to pages as `pageContext.language`
     user
   }
@@ -31,13 +34,13 @@ function retrieveLanguage(url) {
   //  retrieveLanguage('https://example.org/de-DE/film/42').language === 'de-DE'
   const language = /*...*/
 
-  // We may also strip the language URL pahtname, for example:
+  // We may also strip the language URL pathname, for example:
   //  retrieveLanguage('https://example.org/en-US/film/42').url === 'https://example.org/film/42'
   //  retrieveLanguage('https://example.org/de-DE/film/42').url === 'https://example.org/film/42'
   //  ...
-  url = /*...*/
+  urlProcessed = /*...*/
 
-  return { language, url }
+  return { language, urlProcessed }
 }
 ```
 
