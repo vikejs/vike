@@ -25,7 +25,7 @@ function IndexPage() {
       <p>
         The Apollo client on the server runs the query and stores the result in
         its cache. This cache is then passed to the client-side Apollo client
-        defined in <code>pages/_default/_default.page.client.jsx</code>
+        defined in <code>/renderer/_default.page.client.jsx</code>
         {" via "}
         <code>restore()</code>.
       </p>

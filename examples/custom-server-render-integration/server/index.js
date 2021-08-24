@@ -52,7 +52,7 @@ function assert_pageAssets(pageAssets) {
     assert(a1.mediaType === "text/css");
     assert(a1.preloadType === "style");
     const a2 = pageAssets[1];
-    assert(a2.src === "/pages/_default/_default.page.client.jsx");
+    assert(a2.src === "/renderer/_default.page.client.jsx");
     assert(a2.assetType === "script");
     assert(a2.mediaType === "text/javascript");
     assert(a2.preloadType === null);
@@ -68,7 +68,7 @@ function assert_pageAssets(pageAssets) {
     assert(a2.mediaType === "text/javascript");
     assert(a2.preloadType === "script");
     const a3 = pageAssets[2];
-    assert(partRegex`/assets/pages/_default/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(a3.src));
+    assert(partRegex`/assets/renderer/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(a3.src));
     assert(a3.assetType === "script");
     assert(a3.mediaType === "text/javascript");
     assert(a3.preloadType === null);
