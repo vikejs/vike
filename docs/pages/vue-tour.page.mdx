@@ -42,7 +42,7 @@ export default pageContext => pageContext.url === '/'
 Unlike Nuxt, we define how our pages are rendered.
 
 ```js
-// /pages/_default.page.server.js
+// _default.page.server.js
 // Environment: Node.js
 
 import { createSSRApp, h } from 'vue'
@@ -73,7 +73,7 @@ async function render(pageContext) {
 }
 ```
 ```js
-// /pages/_default.page.client.js
+// _default.page.client.js
 // Environment: Browser
 
 import { createSSRApp, h } from 'vue'
@@ -101,8 +101,8 @@ async function hydrate() {
 > The boilerplate `$ npm init vite-plugin-ssr@latest` provides a functioning setup
 > that will require only small adaptations for most users.
 
-The `render()` hook in `/pages/_default.page.server.js` gives us full control over how our pages are rendered to HTML,
-and `/pages/_default.page.client.js` gives us full control over the browser-side code.
+The `render()` hook in `_default.page.server.js` gives us full control over how our pages are rendered to HTML,
+and `_default.page.client.js` gives us full control over the browser-side code.
 This control enables us to *easily* and *naturally* integrate any tool we want (Vuex, GraphQL, Service Worker, ...).
 
 There are four suffixes:

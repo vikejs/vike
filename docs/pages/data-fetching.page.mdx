@@ -29,7 +29,7 @@ async function addPageContext(pageContext) {
 }
 ```
 ```js
-// /pages/_default.page.server.js
+// _default.page.server.js
 // Environment: Node.js
 
 import { html } from 'vite-plugin-ssr'
@@ -57,7 +57,7 @@ async function render(pageContext) {
 }
 ```
 ```js
-// /pages/_default.page.client.js
+// _default.page.client.js
 // Environment: Browser
 
 import { getPage } from 'vite-plugin-ssr/client'

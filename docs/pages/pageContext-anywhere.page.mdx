@@ -13,20 +13,20 @@ To make `pageContext` available in the browser, we use [`passToClient`](/passToC
 To make `pageContext` available to all React components we use [React Context](https://reactjs.org/docs/context.html).
 
 Example:
- - Implemention of a `usePageContext()` hook using React Context: <RepoLink path='/boilerplates/boilerplate-react/pages/_default/usePageContext.jsx' />
- - Example of using `usePageContext()`: <RepoLink path='/boilerplates/boilerplate-react/pages/_default/Link.jsx' />
- - Integration of `<PageContextProvider>`: <RepoLink path='/boilerplates/boilerplate-react/pages/_default/PageWrapper.jsx' />
+ - Implemention of a `usePageContext()` hook using React Context: <RepoLink path='/boilerplates/boilerplate-react/renderer/usePageContext.jsx' />
+ - Example of using `usePageContext()`: <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' />
+ - Integration of `<PageContextProvider>`: <RepoLink path='/boilerplates/boilerplate-react/renderer/PageWrapper.jsx' />
 
 ## Vue 3
 
 To make `pageContext` available to all Vue components we use [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
 
 Example:
- - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/app.js' />
- - Example of using the globally available `$pageContext`: <RepoLink path='/boilerplates/boilerplate-vue/pages/_default/Link.vue' />
+ - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' />
+ - Example of using the globally available `$pageContext`: <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' />
 
 With Client-side Routing:
- - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/examples/vue-full/pages/_default/app.ts' />
+ - Assignment of `app.config.globalProperties.$pageContext`: <RepoLink path='/examples/vue-full/renderer/app.ts' />
 
 Alternatively we can use [app.provide](https://v3.vuejs.org/api/application-api.html#provide),
 for example [like this](https://discord.com/channels/815937377888632913/815937377888632916/876504859879292948).

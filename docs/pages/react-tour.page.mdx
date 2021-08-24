@@ -44,7 +44,7 @@ export default pageContext => pageContext.url === '/';
 Unlike Next.js, we define how our pages are rendered.
 
 ```jsx
-// /pages/_default.page.server.jsx
+// _default.page.server.jsx
 // Environment: Node.js
 
 import ReactDOMServer from "react-dom/server";
@@ -73,7 +73,7 @@ async function render(pageContext) {
 }
 ```
 ```jsx
-// /pages/_default.page.client.jsx
+// _default.page.client.jsx
 // Environment: Browser
 
 import ReactDOM from "react-dom";
@@ -92,8 +92,8 @@ async function hydrate() {
 }
 ```
 
-The `render()` hook in `/pages/_default.page.server.jsx` gives us full control over how our pages are rendered to HTML,
-and `/pages/_default.page.client.jsx` gives us full control over the browser-side code.
+The `render()` hook in `_default.page.server.jsx` gives us full control over how our pages are rendered to HTML,
+and `_default.page.client.jsx` gives us full control over the browser-side code.
 This control enables us to *easily* and *naturally* integrate any tool we want (Redux, GraphQL, Service Worker, Preact, ...).
 
 There are four suffixes:
