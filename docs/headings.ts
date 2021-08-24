@@ -67,6 +67,11 @@ export const headings: HeadingDefinition[] = [
     url: '/pageContext-anywhere'
   },
   {
+    level: 2,
+    title: 'File Structure',
+    url: '/file-structure'
+  },
+  {
     level: 4,
     title: 'More'
   },

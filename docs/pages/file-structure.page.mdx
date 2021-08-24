@@ -1,0 +1,51 @@
+Recommended file structure:
+
+```bash
+/vite.config.js
+
+# Landing page, URL: `/`
+/pages/index/index.page.js
+# Another page, URL: `/about`
+/pages/about/index.page.js
+# We recommend creating a new directory `/pages/some-additional-page/` for each page
+/pages/**/*.page.js
+
+# (React/Vue/...) components shared by several pages
+/components/*
+
+# Infrastructure code that is basically takes care of rendering our `pages/**/.page.js`
+/renderer/_default.page.server.js
+/renderer/_default.page.client.js
+/renderer/_error.page.js
+/renderer/PageWrapper.js
+/renderer/logo.svg
+/renderer/*
+
+# Express.js/Fastify/... code
+/server/*
+```
+
+But we can define `.page.{''|'server'|'client'|'route'}.js` files wherever we want.
+
+If you want domain-driven file structure then write a comment to [GitHub - `brillout/vite-plugin-ssr` - #125](https://github.com/brillout/vite-plugin-ssr/issues/125) so we can discuss a solution; it will then be implemented.
+
+```shell
+# All marketing pages
+/marketing/pages/index/index.page.js
+/marketing/pages/about/index.page.js
+/marketing/pages/jobs/index.page.js
+/marketing/_default.page.route.js
+# All auth related code
+/auth/pages/signup/index.page.js
+/auth/pages/login/index.page.js
+/auth/components/UserInfo.js
+/auth/db/fetchUser.js
+# Code for product pages
+/product/pages/index/index.page.js
+/product/pages/index/index.page.route.js
+/product/pages/list/index.page.js
+/product/pages/list/index.page.route.js
+/product/db/fetchProduct.js
+/product/db/fetchProductList.js
+```
+
