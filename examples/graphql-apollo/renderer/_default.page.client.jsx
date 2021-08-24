@@ -2,7 +2,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 import { getPage } from "vite-plugin-ssr/client";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import App from "../App";
+import App from "./App";
 
 hydrate();
 

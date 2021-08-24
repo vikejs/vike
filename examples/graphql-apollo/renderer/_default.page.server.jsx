@@ -1,7 +1,7 @@
 import React from "react";
 import { html } from "vite-plugin-ssr";
 import { getDataFromTree } from "@apollo/client/react/ssr";
-import App from "../App";
+import App from "./App";
 
 export { render };
 export { addPageContext };

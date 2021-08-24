@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "../_components/Link";
+import { Link } from "./Link";
 import logo from "./logo.svg";
 import "./PageLayout.css";
 
