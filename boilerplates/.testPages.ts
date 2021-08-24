@@ -1,4 +1,4 @@
-import { page, run, partRegex, autoRetry, fetchHtml } from '../libframe/test/setup'
+import { page, run, partRegex, autoRetry, fetchHtml, urlBase } from '../libframe/test/setup'
 
 export { testPages }
 
@@ -61,5 +61,11 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
   test('active links', async () => {
     expect(await page.$eval('a[href="/about"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgb(238, 238, 238)')
     expect(await page.$eval('a[href="/"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+  })
+
+  test('error page', async () => {
+    await page.goto(urlBase + '/does-not-exist')
+    expect(await page.textContent('h1')).toBe('404 Page Not Found')
+    expect(await page.textContent('p')).toBe('This page could not be found.')
   })
 }
