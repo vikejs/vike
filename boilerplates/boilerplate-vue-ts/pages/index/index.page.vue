@@ -7,8 +7,8 @@
   </ul>
 </template>
 
-<script>
-import Counter from './_components/Counter.vue'
+<script lang="ts">
+import Counter from './Counter.vue'
 const components = { Counter }
 export default { components }
 </script>

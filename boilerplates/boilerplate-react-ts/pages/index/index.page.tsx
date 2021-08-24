@@ -1,5 +1,5 @@
 import React from "react";
-import { Counter } from "./_components/Counter";
+import { Counter } from "./Counter";
 
 export { Page };
 
