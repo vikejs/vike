@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import Counter from './_components/Counter.vue'
+import Counter from '../components/Counter.vue'
 import { navigate } from 'vite-plugin-ssr/client/router'
 
 const components = { Counter }

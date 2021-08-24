@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Counter from './_components/Counter.vue'
+import Counter from '../components/Counter.vue'
 </script>
 <script>
 export const documentProps = {
