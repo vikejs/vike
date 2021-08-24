@@ -1,45 +1,50 @@
 Recommended file structure:
 
 ```bash
-/vite.config.js
-
-# Landing page, URL: `/`
+# Landing page (URL: `/`)
 /pages/index/index.page.js
-# Another page, URL: `/about`
+/pages/index/SomeComponentForLandingPage.js
+/pages/index/**/* # More stuff specific to the landing page
+# About page (URL: `/about`)
 /pages/about/index.page.js
-# We recommend creating a new directory `/pages/some-additional-page/` for each page
-/pages/**/*.page.js
+/pages/about/SomeComponentForAboutPage.js
+/pages/about/**/* # More stuff specific to the about page
+# We create a new directory `/pages/some-additional-page/` for each page
+/pages/*/*.page.js
 
 # (React/Vue/...) components shared by several pages
-/components/*
+/components/
 
-# Infrastructure code that is basically takes care of rendering our `pages/**/.page.js`
+# Infrastructure code that specifies how our pages are rendered
 /renderer/_default.page.server.js
 /renderer/_default.page.client.js
 /renderer/_error.page.js
-/renderer/PageWrapper.js
-/renderer/logo.svg
-/renderer/*
+/renderer/PageWrapper.js  # The root (React/Vue/...) component that wraps our `Page`
+/renderer/PageWrapper.css # components defined in `/pages/**/*.page.js`.
+/renderer/Header.js # Our website header
+/renderer/logo.svg # Our website logo
 
 # Express.js/Fastify/... code
-/server/*
+/server/
 ```
 
-But we can define `.page.{''|'server'|'client'|'route'}.js` files wherever we want.
+That said, we can define `.page{''|'.server'|'.client'|'.route'}.js` files wherever we want and we can use whatever file structure we want.
 
-If you want domain-driven file structure then write a comment to [GitHub - `brillout/vite-plugin-ssr` - #125](https://github.com/brillout/vite-plugin-ssr/issues/125) so we can discuss a solution; it will then be implemented.
+For domain-driven file structure, like in the following, write a comment at [GitHub - `brillout/vite-plugin-ssr` - #125](https://github.com/brillout/vite-plugin-ssr/issues/125).
 
-```shell
+```bash
 # All marketing pages
 /marketing/pages/index/index.page.js
 /marketing/pages/about/index.page.js
 /marketing/pages/jobs/index.page.js
 /marketing/_default.page.route.js
+
 # All auth related code
 /auth/pages/signup/index.page.js
 /auth/pages/login/index.page.js
 /auth/components/UserInfo.js
 /auth/db/fetchUser.js
+
 # Code for product pages
 /product/pages/index/index.page.js
 /product/pages/index/index.page.route.js
