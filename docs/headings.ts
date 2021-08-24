@@ -250,6 +250,11 @@ export const headings: HeadingDefinition[] = [
     url: '/sass'
   },
   {
+    level: 2,
+    title: 'Vuetify',
+    url: '/vuetify'
+  },
+  {
     level: 4,
     title: 'Other',
   },
