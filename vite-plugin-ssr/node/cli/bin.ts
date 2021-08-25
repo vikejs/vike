@@ -18,7 +18,10 @@ cli
   )
   .option('--client-router', 'serialize `pageContext` to JSON files for Client-side Routing')
   .option('--base <path>', '[string] public base path (default: /)')
-  .option('--parallel <numberOfJobs>', '[number] Number of jobs running in parallel. Default: `os.cpus().length`. Set to `1` to disable concurrency.')
+  .option(
+    '--parallel <numberOfJobs>',
+    '[number] Number of jobs running in parallel. Default: `os.cpus().length`. Set to `1` to disable concurrency.'
+  )
   .action(async (options) => {
     const { partial, extraDir, clientRouter, base, parallel } = options
     const root = options.root && resolve(options.root)

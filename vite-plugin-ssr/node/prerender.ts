@@ -358,7 +358,14 @@ function getPluginManifest(root: string): {
   return { pluginManifest, pluginManifestPath }
 }
 
-function assertArguments(partial: unknown, noExtraDir: unknown, clientRouter: unknown, base: unknown, root: unknown, parallel: number) {
+function assertArguments(
+  partial: unknown,
+  noExtraDir: unknown,
+  clientRouter: unknown,
+  base: unknown,
+  root: unknown,
+  parallel: number
+) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
   assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')
   assertWarning(clientRouter === false, '[prerender()] Option `clientRouter` is deprecated and has no-effect.')

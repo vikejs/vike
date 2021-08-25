@@ -431,7 +431,7 @@ async function populatePageContext(pageContext: { _pageId: string; _isPreRenderi
   assert(pageFilePath)
   objectAssign(pageContext, {
     Page,
-    pageExports,
+    pageExports
   })
 
   const { pageServerFile, pageServerFileDefault } = allPageFilesOld
@@ -464,7 +464,7 @@ async function populatePageContext(pageContext: { _pageId: string; _isPreRenderi
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
     _pageClientFilePath: pageClientFilePath,
-    _pageFilePath: pageFilePath,
+    _pageFilePath: pageFilePath
   })
   checkType<PageContextPopulated>(pageContext)
 }
