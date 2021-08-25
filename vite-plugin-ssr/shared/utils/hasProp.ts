@@ -11,13 +11,19 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'object'): obj is ObjectType & Record<PropName, Record<string, unknown>>;
 // prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'array'): obj is ObjectType & Record<PropName, unknown[]>;
+// prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'string[]'): obj is ObjectType & Record<PropName, string[]>;
 // prettier-ignore
-function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, Function>;
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, (...args: any[]) => unknown>;
+// prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'null'): obj is ObjectType & Record<PropName, null>;
+// prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey, Enum>(obj: ObjectType, prop: PropName, type: Enum[]): obj is ObjectType & Record<PropName, Enum>;
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName): obj is ObjectType & Record<PropName, unknown>;
 // prettier-ignore
-function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string = 'unknown'): boolean {
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string | string[] = 'unknown'): boolean {
   const propExists = typeof obj === 'object' && obj !== null && prop in obj
   if( !propExists ){
     return false
@@ -26,11 +32,20 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   if( type === 'unknown' ) {
     return true
   }
+  if( type === 'array') {
+    return Array.isArray(propValue)
+  }
   if( type === 'string[]') {
     return Array.isArray(propValue) && propValue.every(el => typeof el === 'string')
   }
   if( type === 'function') {
     return isCallable(propValue)
+  }
+  if( Array.isArray(type) ) {
+    return typeof propValue === 'string' && type.includes(propValue)
+  }
+  if( type === 'null') {
+    return propValue===null
   }
   return typeof propValue === type;
 }
