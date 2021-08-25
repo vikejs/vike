@@ -236,6 +236,11 @@ export const headings: HeadingDefinition[] = [
     url: '/vuetify'
   },
   {
+    level: 2,
+    title: 'Other',
+    url: '/css-frameworks'
+  },
+  {
     level: 4,
     title: 'View Frameworks',
   },
@@ -253,6 +258,11 @@ export const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Solid',
     url: '/solid'
+  },
+  {
+    level: 2,
+    title: 'Other',
+    url: '/view-frameworks'
   },
   {
     level: 4,
