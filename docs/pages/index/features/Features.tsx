@@ -134,10 +134,10 @@ function Features() {
             <Emoji name="rocket" /> Scalable
           </h2>
           <p>
-            <b>Dev speed that scales</b> to hundreds of kLOCs. (HMR stays fast!)
+            <b>Dev speed that scales</b> to hundreds of kLOCs &mdash; HMR stays fast.
           </p>
           <p>
-            <b>Flexibility that scales</b> from small hobby projects to large-scale enterprise projects.
+            <b>Architectural flexibility that scales</b> from small hobby projects to large-scale enterprise projects.
           </p>
         </Feature>
         <LearnMore name="scalable">
