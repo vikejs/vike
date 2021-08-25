@@ -218,25 +218,6 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'View Frameworks',
-  },
-  {
-    level: 2,
-    title: 'Svelte',
-    url: '/svelte'
-  },
-  {
-    level: 2,
-    title: 'Preact',
-    url: '/preact'
-  },
-  {
-    level: 2,
-    title: 'Solid',
-    url: '/solid'
-  },
-  {
-    level: 4,
     title: 'CSS Frameworks',
   },
   {
@@ -253,6 +234,25 @@ export const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Vuetify',
     url: '/vuetify'
+  },
+  {
+    level: 4,
+    title: 'View Frameworks',
+  },
+  {
+    level: 2,
+    title: 'Svelte',
+    url: '/svelte'
+  },
+  {
+    level: 2,
+    title: 'Preact',
+    url: '/preact'
+  },
+  {
+    level: 2,
+    title: 'Solid',
+    url: '/solid'
   },
   {
     level: 4,
