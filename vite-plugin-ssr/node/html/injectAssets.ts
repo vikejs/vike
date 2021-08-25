@@ -6,6 +6,7 @@ import { prependBaseUrl } from '../baseUrlHandling'
 import devalue from 'devalue'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
+import { AllPageFiles } from '../../shared/getPageFiles.shared'
 
 export { injectAssets }
 export { injectAssets_internal }
@@ -21,6 +22,9 @@ type PageAsset = {
 }
 
 async function getPageAssets(
+  pageContext: {
+    _allPageFiles: AllPageFiles
+  },
   dependencies: string[],
   pageClientFilePath: string,
   isPreRendering: boolean
@@ -36,7 +40,7 @@ async function getPageAssets(
     serverManifest = manifests.serverManifest
   }
 
-  const preloadAssets: string[] = await getPreloadUrls(dependencies, clientManifest, serverManifest)
+  const preloadAssets: string[] = await getPreloadUrls(pageContext, dependencies, clientManifest, serverManifest)
 
   let pageAssets: PageAsset[] = preloadAssets.map((src) => {
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}

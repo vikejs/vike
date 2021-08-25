@@ -2,11 +2,14 @@ import { getSsrEnv } from './ssrEnv'
 import { assert } from '../shared/utils'
 import { ViteManifest } from './getViteManifest'
 import { ModuleNode } from 'vite'
-import { getPageFiles } from '../shared/getPageFiles.shared'
+import { AllPageFiles } from '../shared/getPageFiles.shared'
 
 export { getPreloadUrls }
 
 async function getPreloadUrls(
+  pageContext: {
+    _allPageFiles: AllPageFiles
+  },
   dependencies: string[],
   clientManifest: null | ViteManifest,
   serverManifest: null | ViteManifest
@@ -16,7 +19,8 @@ async function getPreloadUrls(
   let preloadUrls = new Set<string>()
   if (!ssrEnv.isProduction) {
     const visitedModules = new Set<string>()
-    const skipPageViewFiles = (await getPageViewFiles()).filter(
+    const pageViewFiles: string[] = pageContext._allPageFiles['.page'].map(({ filePath }) => filePath)
+    const skipPageViewFiles = pageViewFiles.filter(
       (pageViewFile) => !dependencies.some((dep) => dep.includes(pageViewFile))
     )
     await Promise.all(
@@ -42,12 +46,6 @@ async function getPreloadUrls(
   }
 
   return Array.from(preloadUrls)
-}
-
-async function getPageViewFiles(): Promise<string[]> {
-  const files = await getPageFiles('.page')
-  const pageViewFiles = files.map(({ filePath }) => filePath)
-  return pageViewFiles
 }
 
 function collectAssets(

@@ -1,6 +1,10 @@
 import { getSsrEnv } from '../node/ssrEnv'
 import { assert, assertUsage, hasProp, isBrowser } from './utils'
 
+export type { AllPageFiles }
+export { getAllPageFiles_clientSide }
+export { getAllPageFiles_serverSide }
+
 export { getPageFiles }
 export { getPageFile }
 // export { PageFile }
@@ -11,14 +15,14 @@ export { isPageFilesSet }
 
 assertNotAlreadyLoaded()
 
-let allPageFiles: PageFiles | undefined
+let allPageFilesUnprocessed: AllPageFilesUnproccessed | undefined
 
 function setPageFiles(pageFiles: unknown) {
   assert(hasProp(pageFiles, '.page'))
-  allPageFiles = pageFiles as PageFiles
+  allPageFilesUnprocessed = pageFiles as AllPageFilesUnproccessed
 }
 function isPageFilesSet() {
-  return !!allPageFiles
+  return !!allPageFilesUnprocessed
 }
 
 let asyncSetter: () => Promise<unknown>
@@ -30,27 +34,67 @@ type PageFile = {
   filePath: string
   loadFile: () => Promise<Record<string, unknown>>
 }
-type FileType = '.page' | '.page.server' | '.page.route' | '.page.client'
-type PageFiles = Record<FileType, Record<PageFile['filePath'], PageFile['loadFile']>>
+const fileTypes = ['.page', '.page.server', '.page.route', '.page.client'] as const
+type FileType = typeof fileTypes[number]
+type PageFileUnprocessed = Record<PageFile['filePath'], PageFile['loadFile']>
+//*
+type AllPageFilesUnproccessed = {
+  '.page': PageFileUnprocessed
+  '.page.server': PageFileUnprocessed | undefined
+  '.page.route': PageFileUnprocessed
+  '.page.client': PageFileUnprocessed
+}
+/*/
+type AllPageFilesUnproccessed = Record<FileType, PageFileUnprocessed>
+//*/
 
-async function getPageFiles(fileType: FileType): Promise<PageFile[]> {
+type AllPageFiles = Record<FileType, PageFile[]>
+type AllPageFiles_clientSide = Omit<AllPageFiles, '.page.server'>
+
+async function getAllPageFiles_clientSide(): Promise<AllPageFiles_clientSide> {
+  return await getAllPageFiles()
+}
+async function getAllPageFiles_serverSide(): Promise<AllPageFiles> {
+  const allPageFiles = await getAllPageFiles()
+  assert(allPageFiles['.page.server'] !== undefined)
+  assert(hasProp(allPageFiles, '.page.server', 'array'))
+  return allPageFiles
+}
+
+async function getAllPageFiles() {
   if (asyncSetter) {
     const ssrEnv = getSsrEnv()
     if (
-      !allPageFiles ||
+      !allPageFilesUnprocessed ||
       // We reload glob imports in dev to make auto-reload works
       !ssrEnv.isProduction
     ) {
-      allPageFiles = (await asyncSetter()) as any
+      allPageFilesUnprocessed = (await asyncSetter()) as any
     }
-    assert(hasProp(allPageFiles, '.page'))
+    assert(hasProp(allPageFilesUnprocessed, '.page'))
   }
-  assert(hasProp(allPageFiles, '.page'))
+  assert(hasProp(allPageFilesUnprocessed, '.page'))
 
-  const pageFiles = Object.entries(allPageFiles[fileType]).map(([filePath, loadFile]) => {
-    return { filePath, loadFile }
-  })
+  const tranform = (pageFiles: PageFileUnprocessed): PageFile[] => {
+    return Object.entries(pageFiles).map(([filePath, loadFile]) => {
+      return { filePath, loadFile }
+    })
+  }
+  const allPageFiles = {
+    '.page': tranform(allPageFilesUnprocessed['.page']),
+    '.page.route': tranform(allPageFilesUnprocessed['.page.route']),
+    '.page.server': !allPageFilesUnprocessed['.page.server']
+      ? undefined
+      : tranform(allPageFilesUnprocessed['.page.server']),
+    '.page.client': tranform(allPageFilesUnprocessed['.page.client'])
+  }
 
+  return allPageFiles
+}
+async function getPageFiles(fileType: FileType): Promise<PageFile[]> {
+  const allPageFiles = await getAllPageFiles()
+  const pageFiles = allPageFiles[fileType]
+  assert(pageFiles)
   return pageFiles
 }
 

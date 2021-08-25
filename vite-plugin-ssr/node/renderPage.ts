@@ -7,7 +7,7 @@ import {
   getFilesystemRoute
 } from '../shared/route.shared'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
-import { getPageFile, getPageFiles } from '../shared/getPageFiles.shared'
+import { getPageFile, getPageFiles, AllPageFiles, getAllPageFiles_serverSide } from '../shared/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
@@ -26,7 +26,9 @@ import {
   isPlainObject,
   getUrlParsed,
   UrlParsed,
-  castProp
+  castProp,
+  objectAssign,
+  checkType
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
@@ -272,7 +274,7 @@ type PageFileLoaded = {
   filePath: string
   fileExports: Record<string, unknown>
 }
-type AllPageFiles = {
+type AllPageFilesOld = {
   pageClientFilePath: string
   pageViewFile: PageFileLoaded
 } & PageServerFiles
@@ -302,10 +304,10 @@ type PageServerFiles = {
 //*/
 
 async function getPageServerFile(pageId: string) {
-  const { pageServerFile } = await loadAllPageFiles(pageId)
+  const { pageServerFile } = await loadAllPageFilesOld(pageId)
   return pageServerFile
 }
-async function loadAllPageFiles(pageId: string): Promise<AllPageFiles> {
+async function loadAllPageFilesOld(pageId: string): Promise<AllPageFilesOld> {
   const pageViewFile: PageFileLoaded = await loadPageViewFile(pageId)
   const pageClientFilePath: string = await getPageClientFile(pageId)
   const pageServerFiles: PageServerFiles = await loadPageServerFiles(pageId)
@@ -414,53 +416,57 @@ type PageContextPopulated = {
   _pageServerFileDefault: PageServerFile
   _pageFilePath: string
   _pageClientFilePath: string
+  _allPageFiles: AllPageFiles
 }
 async function populatePageContext(pageContext: { _pageId: string; _isPreRendering: boolean }): Promise<void> {
   assert(pageContext._pageId)
-  const allPageFiles = await loadAllPageFiles(pageContext._pageId)
+  const allPageFilesOld = await loadAllPageFilesOld(pageContext._pageId)
 
-  const { pageViewFile } = allPageFiles
+  const { pageViewFile } = allPageFilesOld
   const pageExports = pageViewFile.fileExports
   assert(pageExports)
   const Page = pageViewFile.fileExports.Page || pageViewFile.fileExports.default
   assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` or \`export default\`).`)
   const pageFilePath = pageViewFile.filePath
   assert(pageFilePath)
+  objectAssign(pageContext, {
+    Page,
+    pageExports,
+  })
 
-  const { pageServerFile, pageServerFileDefault } = allPageFiles
+  const { pageServerFile, pageServerFileDefault } = allPageFilesOld
 
   const passToClient: string[] = [
     ...getDefaultPassToClientProps(pageContext),
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
   ]
 
-  const { pageClientFilePath } = allPageFiles
+  const { pageClientFilePath } = allPageFilesOld
   assert(pageClientFilePath)
 
+  const allPageFiles = await getAllPageFiles_serverSide()
+  objectAssign(pageContext, {
+    _allPageFiles: allPageFiles
+  })
+
   const pageAssets = await getPageAssets(
+    pageContext,
     [pageFilePath, pageClientFilePath],
     pageClientFilePath,
     pageContext._isPreRendering
   )
+  objectAssign(pageContext, {
+    _pageAssets: pageAssets
+  })
 
-  const pageContextNew = {
-    Page,
-    pageExports,
-    _pageAssets: pageAssets,
+  objectAssign(pageContext, {
     _passToClient: passToClient,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
     _pageClientFilePath: pageClientFilePath,
-    _pageFilePath: pageFilePath
-  }
-  Object.assign(pageContext, pageContextNew)
-  populatePageContext_checkType({
-    ...pageContext,
-    ...pageContextNew
+    _pageFilePath: pageFilePath,
   })
-}
-function populatePageContext_checkType(pageContext: PageContextPopulated): void {
-  pageContext // make TS happy
+  checkType<PageContextPopulated>(pageContext)
 }
 function populatePageContext_addTypes<PageContext extends Record<string, unknown>>(
   pageContext: PageContext
