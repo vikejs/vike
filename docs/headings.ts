@@ -237,7 +237,8 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Other',
+    titleInNav: 'Other',
+    title: 'CSS Frameworks',
     url: '/css-frameworks'
   },
   {
@@ -261,7 +262,8 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Other',
+    titleInNav: 'Other',
+    title: 'View Frameworks',
     url: '/view-frameworks'
   },
   {
