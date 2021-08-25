@@ -67,11 +67,6 @@ export const headings: HeadingDefinition[] = [
     url: '/pageContext-anywhere'
   },
   {
-    level: 2,
-    title: 'File Structure',
-    url: '/file-structure'
-  },
-  {
     level: 4,
     title: 'More'
   },
@@ -87,13 +82,18 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Paths Aliases',
-    url: '/path-aliases'
+    title: '`.env` Files',
+    url: '/.env-files'
   },
   {
     level: 2,
-    title: '`.env` Files',
-    url: '/.env-files'
+    title: 'File Structure',
+    url: '/file-structure'
+  },
+  {
+    level: 2,
+    title: 'Paths Aliases',
+    url: '/path-aliases'
   },
   {
     level: 1,
