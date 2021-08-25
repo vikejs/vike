@@ -1,2 +1,2 @@
 import './page-files/setup'
-export { getPage, getPageById } from './getPage'
+export { getPage } from './getPage'

@@ -1,5 +1,2 @@
 import '../page-files/setup'
 export { useClientRouter, navigate } from './useClientRouter'
-// export { getPageId } from './getPageId'
-export { getPageContext } from './getPageContext'
-export { getPageByUrl } from './getPageByUrl'

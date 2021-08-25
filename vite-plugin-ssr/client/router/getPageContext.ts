@@ -1,16 +1,16 @@
 import { navigationState } from '../navigationState'
 import { assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../shared/utils'
 import { parse } from '@brillout/json-s'
-import { getPageInfo as getOriginalPageInfo } from '../getPage'
+import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 
 export { getPageContext }
 
 async function getPageContext(
   url: string,
   useOriginalDataWhenPossible: boolean = true
-): Promise<Record<string, unknown>> {
+): Promise<{ _pageId: string } & Record<string, unknown>> {
   if (navigationState.isOriginalUrl(url) && useOriginalDataWhenPossible) {
-    const { pageContext } = getOriginalPageInfo()
+    const pageContext = getPageContextSerializedInHtml()
     return pageContext
   } else {
     const pageContext = await retrievePageContext(url)
@@ -18,7 +18,7 @@ async function getPageContext(
   }
 }
 
-async function retrievePageContext(url: string): Promise<Record<string, unknown>> {
+async function retrievePageContext(url: string): Promise<{ _pageId: string } & Record<string, unknown>> {
   const response = await fetch(getFileUrl(url, '.pageContext.json', true))
 
   // Static hosts will return a 404
@@ -36,7 +36,7 @@ async function retrievePageContext(url: string): Promise<Record<string, unknown>
   assert(hasProp(responseObject, 'pageContext'))
   const { pageContext } = responseObject
   assert(isPlainObject(pageContext))
-  assert(pageContext._pageId)
+  assert(hasProp(pageContext, '_pageId', 'string'))
 
   return pageContext
 

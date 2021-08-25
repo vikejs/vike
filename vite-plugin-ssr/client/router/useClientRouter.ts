@@ -1,9 +1,16 @@
-import { assert, assertUsage, getUrlFull, getUrlFullWithoutHash, hasProp, isBrowser } from '../../shared/utils'
-import { getPageByUrl } from './getPageByUrl'
+import {
+  assert,
+  assertUsage,
+  getUrlFull,
+  getUrlFullWithoutHash,
+  hasProp,
+  isBrowser,
+  objectAssign
+} from '../../shared/utils'
 import { navigationState } from '../navigationState'
-import { getPageContextProxy } from '../getPageContextProxy'
 import { throttle } from '../../shared/utils/throttle'
-import { assert_pageContext_publicProps } from '../assert_pageContext_publicProps'
+import { getPageContext } from './getPageContext'
+import { preparePageContext } from '../preparePageContext'
 
 export { useClientRouter }
 export { navigate }
@@ -64,8 +71,8 @@ function useClientRouter({
       }
     }
 
-    let pageContext = await getPageByUrl(url, navigationState.noNavigationChangeYet)
-    pageContext = getPageContextProxy(pageContext)
+    const pageContext = await getPageContext(url, navigationState.noNavigationChangeYet)
+    const pageContextProxy = await preparePageContext(pageContext)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -82,10 +89,11 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      ;(pageContext as Record<string, unknown>).isHydration = isFirstPageRender && url === urlFullOriginal
-      assert_pageContext_publicProps(pageContext)
-      assert(hasProp(pageContext, 'isHydration', 'boolean'))
-      await render(pageContext)
+      objectAssign(pageContextProxy, { isHydration: isFirstPageRender && url === urlFullOriginal })
+      assert(hasProp(pageContextProxy, 'Page'))
+      assert(hasProp(pageContextProxy, 'pageExports', 'object'))
+      assert(hasProp(pageContextProxy, 'isHydration', 'boolean'))
+      await render(pageContextProxy)
     })()
     await renderPromise
     renderPromise = undefined

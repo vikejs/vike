@@ -4,6 +4,7 @@ import { assert, assertUsage, hasProp, isBrowser } from './utils'
 export type { AllPageFiles }
 export { getAllPageFiles_clientSide }
 export { getAllPageFiles_serverSide }
+export { findPageFile }
 
 export { getPageFiles }
 export { getPageFile }
