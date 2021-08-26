@@ -1,12 +1,6 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
-import {
-  getPageFile,
-  getPageFiles,
-  AllPageFiles,
-  getAllPageFiles_serverSide,
-  findPageFile
-} from '../shared/getPageFiles'
+import { AllPageFiles, getAllPageFiles_serverSide, findPageFile } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
@@ -25,18 +19,17 @@ import {
   isPlainObject,
   getUrlParsed,
   UrlParsed,
-  castProp,
-  objectAssign,
-  checkType
+  objectAssign
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
+import { loadPageView } from '../shared/loadPageView'
 
 export { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
-export { getPageServerFile }
 export { getGlobalContext }
+export { loadPageFiles }
 
 async function renderPage(pageContext: { url: string } & Record<string, unknown>): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
@@ -155,13 +148,13 @@ async function renderPageId(
     _allPageFiles: AllPageFiles
   }
 ) {
-  ;(pageContext as Record<string, unknown>)._isPreRendering = false
-  assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
-  ;(pageContext as Record<string, unknown>)._pageContextAlreadyAddedInPrerenderHook = false
-  assert(hasProp(pageContext, '_pageContextAlreadyAddedInPrerenderHook', 'boolean'))
+  objectAssign(pageContext, {
+    _isPreRendering: false,
+    _pageContextAlreadyAddedInPrerenderHook: false
+  })
 
-  await populatePageContext(pageContext)
-  populatePageContext_addTypes(pageContext)
+  const pageFilesData = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFilesData)
 
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
@@ -187,8 +180,8 @@ async function prerenderPage(pageContext: {
   //;(pageContext as Record<string, unknown>)._isPreRendering = true
   //assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
 
-  await populatePageContext(pageContext)
-  populatePageContext_addTypes(pageContext)
+  const pageFilesData = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFilesData)
 
   addUrlPropsToPageContext(pageContext)
 
@@ -216,6 +209,7 @@ async function renderStatic404Page() {
     return null
   }
   const pageContext = {
+    ...globalContext,
     _pageId: errorPageId,
     _isPreRendering: true,
     is404: true,
@@ -225,9 +219,10 @@ async function renderStatic404Page() {
     _serializedPageContextClientNeeded: false,
     _pageContextAlreadyAddedInPrerenderHook: false
   }
-  objectAssign(pageContext, globalContext)
-  populatePageContext(pageContext)
-  populatePageContext_addTypes(pageContext)
+
+  const pageFilesData = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFilesData)
+
   return prerenderPage(pageContext)
 }
 
@@ -270,15 +265,6 @@ function assert_pageContext_publicProps(pageContext: PageContextPublic) {
   assert(pageContext.Page)
   assert(pageContext.pageExports)
 }
-type PageFileLoaded = {
-  filePath: string
-  fileExports: Record<string, unknown>
-}
-type AllPageFilesOld = {
-  pageClientFilePath: string
-  pageViewFile: PageFileLoaded
-} & PageServerFiles
-
 type PageServerFileProps = {
   filePath: string
   fileExports: Record<string, unknown> & {
@@ -303,72 +289,6 @@ type PageServerFiles = {
 }
 //*/
 
-async function getPageServerFile(pageId: string) {
-  const { pageServerFile } = await loadAllPageFilesOld(pageId)
-  return pageServerFile
-}
-// TODO
-async function loadAllPageFilesOld(pageId: string): Promise<AllPageFilesOld> {
-  const pageViewFile: PageFileLoaded = await loadPageViewFile(pageId)
-  const pageClientFilePath: string = await getPageClientFile(pageId)
-  const pageServerFiles: PageServerFiles = await loadPageServerFiles(pageId)
-  return { pageViewFile, pageClientFilePath, ...pageServerFiles }
-}
-async function getPageClientFile(pageId: string): Promise<string> {
-  let pageClientFiles = await getPageFiles('.page.client')
-  assertUsage(
-    pageClientFiles.length > 0,
-    'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
-  )
-  let pageClientFile = findPageSpecific(pageClientFiles, pageId)
-  if (!pageClientFile) {
-    pageClientFile = findDefaultPageFile(pageClientFiles, pageId)
-    assert(pageClientFile)
-  }
-  return pageClientFile.filePath
-}
-async function loadPageViewFile(pageId: string): Promise<PageFileLoaded> {
-  const pageFile = await getPageFile('.page', pageId)
-  const { filePath, loadFile } = pageFile
-  const fileExports = await loadFile()
-  return { filePath, fileExports }
-}
-async function loadPageServerFiles(pageId: string): Promise<PageServerFiles> {
-  let serverFiles = await getPageFiles('.page.server')
-  assertUsage(
-    serverFiles.length > 0,
-    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
-  )
-
-  const serverFile = findPageSpecific(serverFiles, pageId)
-  const serverFileDefault = findDefaultPageFile(serverFiles, pageId)
-  assert(serverFile || serverFileDefault)
-  const pageServerFile = !serverFile
-    ? null
-    : {
-        filePath: serverFile.filePath,
-        fileExports: await serverFile.loadFile()
-      }
-  const pageServerFileDefault = !serverFileDefault
-    ? null
-    : {
-        filePath: serverFileDefault.filePath,
-        fileExports: await serverFileDefault.loadFile()
-      }
-  if (pageServerFile !== null) {
-    assert_pageServerFile(pageServerFile)
-  }
-  if (pageServerFileDefault !== null) {
-    assert_pageServerFile(pageServerFileDefault)
-  }
-  if (pageServerFile !== null) {
-    return { pageServerFile, pageServerFileDefault }
-  }
-  if (pageServerFileDefault !== null) {
-    return { pageServerFile, pageServerFileDefault }
-  }
-  assert(false)
-}
 function assert_pageServerFile(pageServerFile: {
   filePath: string
   fileExports: Record<string, unknown>
@@ -407,71 +327,89 @@ function assert_pageServerFile(pageServerFile: {
   )
 }
 
-type PageContextPopulated = {
-  Page: unknown
-  pageExports: Record<string, unknown>
-  _pageAssets: PageAssets
-  _pageId: string
-  _passToClient: string[]
-  _pageServerFile: PageServerFile
-  _pageServerFileDefault: PageServerFile
-  _pageFilePath: string
-  _pageClientFilePath: string
-  _allPageFiles: AllPageFiles
-}
-async function populatePageContext(pageContext: {
-  _pageId: string
-  _isPreRendering: boolean
-  _allPageFiles: AllPageFiles
-}): Promise<void> {
-  assert(pageContext._pageId)
-  const allPageFilesOld = await loadAllPageFilesOld(pageContext._pageId)
+async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllPageFiles; _isPreRendering: boolean }) {
+  const pageView = await loadPageView(pageContext)
+  const pageClientPath = getPageClientPath(pageContext)
 
-  const { pageViewFile } = allPageFilesOld
-  const pageExports = pageViewFile.fileExports
-  assert(pageExports)
-  const Page = pageViewFile.fileExports.Page || pageViewFile.fileExports.default
-  assertUsage(Page, `${pageViewFile.fileExports.filePath} should have a \`export { Page }\` or \`export default\`).`)
-  const pageFilePath = pageViewFile.filePath
-  assert(pageFilePath)
-  objectAssign(pageContext, {
-    Page,
-    pageExports
-  })
+  const { pageServerFile, pageServerFileDefault } = await loadPageServerFiles(pageContext)
 
-  const { pageServerFile, pageServerFileDefault } = allPageFilesOld
+  const pageFilesData = {
+    ...pageView,
+    _pageServerFile: pageServerFile,
+    _pageServerFileDefault: pageServerFileDefault,
+    _pageClientPath: pageClientPath
+  }
 
   const passToClient: string[] = [
     ...getDefaultPassToClientProps(pageContext),
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
   ]
-
-  const { pageClientFilePath } = allPageFilesOld
-  assert(pageClientFilePath)
+  objectAssign(pageFilesData, {
+    _passToClient: passToClient
+  })
 
   const pageAssets = await getPageAssets(
     pageContext,
-    [pageFilePath, pageClientFilePath],
-    pageClientFilePath,
+    [pageView._pageFilePath, pageClientPath],
+    pageClientPath,
     pageContext._isPreRendering
   )
-  objectAssign(pageContext, {
+  objectAssign(pageFilesData, {
     _pageAssets: pageAssets
   })
-
-  objectAssign(pageContext, {
-    _passToClient: passToClient,
-    _pageServerFile: pageServerFile,
-    _pageServerFileDefault: pageServerFileDefault,
-    _pageClientFilePath: pageClientFilePath,
-    _pageFilePath: pageFilePath
-  })
-  checkType<PageContextPopulated>(pageContext)
+  return pageFilesData
 }
-function populatePageContext_addTypes<PageContext extends Record<string, unknown>>(
-  pageContext: PageContext
-): asserts pageContext is PageContext & PageContextPopulated {
-  pageContext // make TS happy
+function getPageClientPath(pageContext: { _pageId: string; _allPageFiles: AllPageFiles }): string {
+  const { _pageId: pageId, _allPageFiles: allPageFiles } = pageContext
+  const pageClientFiles = allPageFiles['.page.client']
+  assertUsage(
+    pageClientFiles.length > 0,
+    'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
+  )
+  const pageClientPath =
+    findPageFile(pageClientFiles, pageId)?.filePath || findDefaultPageFile(pageClientFiles, pageId)?.filePath
+  assert(pageClientPath)
+  return pageClientPath
+}
+async function loadPageServerFiles(pageContext: {
+  _pageId: string
+  _allPageFiles: AllPageFiles
+}): Promise<PageServerFiles> {
+  const pageId = pageContext._pageId
+  let serverFiles = pageContext._allPageFiles['.page.server']
+  assertUsage(
+    serverFiles.length > 0,
+    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
+  )
+
+  const serverFile = findPageFile(serverFiles, pageId)
+  const serverFileDefault = findDefaultPageFile(serverFiles, pageId)
+  assert(serverFile || serverFileDefault)
+  const pageServerFile = !serverFile
+    ? null
+    : {
+        filePath: serverFile.filePath,
+        fileExports: await serverFile.loadFile()
+      }
+  const pageServerFileDefault = !serverFileDefault
+    ? null
+    : {
+        filePath: serverFileDefault.filePath,
+        fileExports: await serverFileDefault.loadFile()
+      }
+  if (pageServerFile !== null) {
+    assert_pageServerFile(pageServerFile)
+  }
+  if (pageServerFileDefault !== null) {
+    assert_pageServerFile(pageServerFileDefault)
+  }
+  if (pageServerFile !== null) {
+    return { pageServerFile, pageServerFileDefault }
+  }
+  if (pageServerFileDefault !== null) {
+    return { pageServerFile, pageServerFileDefault }
+  }
+  assert(false)
 }
 
 type PageContextUser = Record<string, unknown>
@@ -520,7 +458,7 @@ async function executeRenderHook(
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
     _pageFilePath: string
-    _pageClientFilePath: string
+    _pageClientPath: string
     _passToClient: string[]
   }
 ) {
@@ -567,16 +505,6 @@ async function executeRenderHook(
   }
 }
 
-function findPageSpecific<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
-  const hits = pageFiles.filter(({ filePath }) => {
-    assert(filePath.startsWith('/'))
-    assert(!filePath.includes('\\'))
-    assert(!pageId.includes('\\'))
-    return filePath.startsWith(pageId)
-  })
-  assert(hits.length <= 1)
-  return hits.length === 1 ? hits[0] : null
-}
 function findDefaultPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
   const hits = pageFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
@@ -733,15 +661,12 @@ async function render500Page(
     }
   }
 
-  ;(pageContext as Record<string, unknown>).is404 = false
-  assert(hasProp(pageContext, 'is404', 'boolean'))
-  ;(pageContext as Record<string, unknown>)._pageId = errorPageId
-  assert(hasProp(pageContext, '_pageId', 'string'))
-  ;(pageContext as Record<string, unknown>)._isPageContextRequest = false
-  assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
-  ;(pageContext as Record<string, unknown>).routeParams = {}
-  assert(hasProp(pageContext, 'routeParams', 'object'))
-  castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
+  objectAssign(pageContext, {
+    is404: false,
+    _pageId: errorPageId,
+    _isPageContextRequest: false,
+    routeParams: {} as Record<string, string>
+  })
 
   let renderResult
   try {
@@ -849,26 +774,4 @@ async function getGlobalContext() {
   objectAssign(globalContext, { _pageRoutes: pageRoutes })
 
   return globalContext
-}
-
-async function getPageContext(pageContext: { _pageId: string; _allPageFiles: AllPageFiles }) {
-  const pageContextAddendum = {}
-
-  const allPageFiles = pageContext._allPageFiles
-  const pageId = pageContext._pageId
-
-  const pageServerFile = findPageFile(allPageFiles['.page.server'], pageId)
-  objectAssign(pageContextAddendum, {
-    _pageFile: findPageFile(allPageFiles['.page'], pageId),
-    _pageServerFile: pageServerFile,
-    _pageClientFile: findPageFile(allPageFiles['.page.client'], pageId),
-    _pageRouteFile: findPageFile(allPageFiles['.page.route'], pageId),
-    _defaultPageServerFile: findDefaultPageFile(allPageFiles['.page.server'], pageId),
-    _defaultPageClientFile: findDefaultPageFile(allPageFiles['.page.client'], pageId),
-    _defaultPageRouteFile: findDefaultPageFile(allPageFiles['.page.route'], pageId)
-  })
-
-  //const _pageRoute = pageContextAddendum._pageRouteFile.
-
-  return pageContextAddendum
 }

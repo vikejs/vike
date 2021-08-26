@@ -135,8 +135,8 @@ async function injectAssets(htmlString: string, pageContext: Record<string, unkn
   assertUsage(hasProp(pageContext, '_pageFilePath', 'string'), errMsg('`pageContext._pageFilePath` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   assertUsage(
-    hasProp(pageContext, '_pageClientFilePath', 'string'),
-    errMsg('`pageContext._pageClientFilePath` is missing')
+    hasProp(pageContext, '_pageClientPath', 'string'),
+    errMsg('`pageContext._pageClientPath` is missing')
   )
   castProp<PageAssets, typeof pageContext, '_pageAssets'>(pageContext, '_pageAssets')
   pageContext._pageAssets
@@ -152,7 +152,7 @@ async function injectAssets_internal(
     _pageId: string
     _pageContextClient: Record<string, unknown>
     _pageFilePath: string
-    _pageClientFilePath: string
+    _pageClientPath: string
     _passToClient: string[]
   }
 ): Promise<string> {

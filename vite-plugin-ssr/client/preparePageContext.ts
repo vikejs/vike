@@ -1,6 +1,6 @@
-import { objectAssign } from '../shared/utils'
+import { assert, objectAssign, isObject } from '../shared/utils'
 import { getPageContextProxy } from './getPageContextProxy'
-import { populatePageContext, populatePageContext_type } from '../shared/populatePageContext'
+import { loadPageView } from '../shared/loadPageView'
 import { AllPageFiles, getAllPageFiles_clientSide } from '../shared/getPageFiles'
 
 export { preparePageContext }
@@ -16,8 +16,10 @@ async function preparePageContext<T extends { _pageId: string }>(
 > {
   const allPageFiles = await getAllPageFiles_clientSide()
   objectAssign(pageContext, { _allPageFiles: allPageFiles })
-  await populatePageContext(pageContext)
-  populatePageContext_type(pageContext)
+  const pageView = await loadPageView(pageContext)
+  objectAssign(pageContext, pageView)
+  assert('Page' in pageContext)
+  assert(isObject(pageContext.pageExports))
 
   const pageContextProxy = getPageContextProxy(pageContext)
 

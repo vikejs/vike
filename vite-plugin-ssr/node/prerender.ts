@@ -10,16 +10,16 @@ import {
   hasProp,
   getFileUrl,
   isPlainObject,
-  castProp,
   projectInfo,
   objectAssign
 } from '../shared/utils'
 import { moduleExists } from '../shared/utils/moduleExists'
 import { setSsrEnv } from './ssrEnv'
-import { getGlobalContext, getPageServerFile, prerenderPage, renderStatic404Page } from './renderPage'
+import { getGlobalContext, loadPageFiles, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
+import { AllPageFiles } from '../shared/getPageFiles'
 
 export { prerender }
 
@@ -85,16 +85,12 @@ async function prerender({
   // Concurrency limit
   const limit = pLimit(parallel)
 
-  const prerenderData: Record<
+  const pageContextList: Record<
     string,
     {
-      prerenderSourceFile: string
-      pageContext: {
-        url: string
-        _isPreRendering: true
-        _pageContextAlreadyAddedInPrerenderHook: boolean
-        _serializedPageContextClientNeeded: boolean
-      }
+      url: string
+      _prerenderSourceFile: string
+      _pageContextAlreadyAddedInPrerenderHook: boolean
     }
   > = {}
   await Promise.all(
@@ -102,7 +98,14 @@ async function prerender({
       .filter((pageId) => !isErrorPage(pageId))
       .map((pageId) =>
         limit(async () => {
-          const pageServerFile = await getPageServerFile(pageId)
+          const pageFilesData = await loadPageFiles({
+            ...globalContext,
+            _pageId: pageId,
+            _isPreRendering: true
+          })
+          assert('_pageServerFile' in pageFilesData)
+
+          const pageServerFile = pageFilesData._pageServerFile
           if (!pageServerFile) return
 
           const { fileExports, filePath } = pageServerFile
@@ -124,36 +127,36 @@ async function prerender({
             assert(typeof url === 'string')
             assert(url.startsWith('/'))
             assert(pageContext === null || isPlainObject(pageContext))
-            if (!('url' in prerenderData)) {
-              prerenderData[url] = {
-                prerenderSourceFile,
-                pageContext: {
-                  ...globalContext,
-                  url,
-                  _isPreRendering: true,
-                  _serializedPageContextClientNeeded,
-                  _pageContextAlreadyAddedInPrerenderHook: !!pageContext,
-                  ...pageContext
-                }
+            if (!('url' in pageContextList)) {
+              pageContextList[url] = {
+                _prerenderSourceFile: prerenderSourceFile,
+                url,
+                _pageContextAlreadyAddedInPrerenderHook: !!pageContext,
+                ...pageContext
               }
             } else {
               if (pageContext) {
-                Object.assign(prerenderData[url].pageContext, pageContext)
-                prerenderData[url].pageContext._pageContextAlreadyAddedInPrerenderHook = true
+                Object.assign(pageContextList[url], pageContext)
+                pageContextList[url]._pageContextAlreadyAddedInPrerenderHook = true
               }
             }
-            assert(prerenderData[url].pageContext.url === url)
+            assert(pageContextList[url].url === url)
           })
         })
       )
   )
 
-  objectAssign(globalContext, {
-    _prerenderPageContexts: Object.entries(prerenderData).map(([url, { pageContext, prerenderSourceFile }]) => {
-      objectAssign(pageContext, { url, urlNormalized: url, _prerenderSourceFile: prerenderSourceFile })
-      objectAssign(pageContext, globalContext)
-      return pageContext
+  const prerenderPageContexts = Object.values(pageContextList).map((pageContext) => {
+    objectAssign(pageContext, {
+      ...globalContext,
+      isPreRendering: true,
+      _serializedPageContextClientNeeded,
+      urlNormalized: pageContext.url
     })
+    return pageContext
+  })
+  objectAssign(globalContext, {
+    _prerenderPageContexts: prerenderPageContexts
   })
 
   const htmlDocuments: HtmlDocument[] = []
@@ -180,11 +183,6 @@ async function prerender({
           `Your \`prerender()\` hook defined in ${prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
         )
 
-        assert(hasProp(pageContext, 'routeParams', 'object'))
-        castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
-        ;(pageContext as Record<string, unknown>)._pageId = pageId
-        assert(hasProp(pageContext, '_pageId', 'string'))
-        assert(pageContext.url)
         const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
         htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
         alreadyIncluded[pageId] = true
