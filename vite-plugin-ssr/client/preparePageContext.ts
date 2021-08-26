@@ -1,7 +1,7 @@
 import { objectAssign } from '../shared/utils'
 import { getPageContextProxy } from './getPageContextProxy'
 import { populatePageContext, populatePageContext_type } from '../shared/populatePageContext'
-import { AllPageFiles, getAllPageFiles_clientSide } from '../shared/getPageFiles.shared'
+import { AllPageFiles, getAllPageFiles_clientSide } from '../shared/getPageFiles'
 
 export { preparePageContext }
 

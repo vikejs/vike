@@ -1,4 +1,4 @@
-import { setPageFilesAsync } from '../../shared/getPageFiles.shared'
+import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { assert } from '../../shared/utils/assert'
 import { getSsrEnv } from '../ssrEnv'
 import { hasProp } from '../../shared/utils'

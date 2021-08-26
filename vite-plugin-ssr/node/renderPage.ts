@@ -1,4 +1,4 @@
-import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route.shared'
+import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
 import {
   getPageFile,
@@ -6,7 +6,7 @@ import {
   AllPageFiles,
   getAllPageFiles_serverSide,
   findPageFile
-} from '../shared/getPageFiles.shared'
+} from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'

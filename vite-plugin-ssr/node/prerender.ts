@@ -2,7 +2,7 @@ import './page-files/setup'
 import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname, isAbsolute } from 'path'
-import { isErrorPage, isStaticRoute, route } from '../shared/route.shared'
+import { isErrorPage, isStaticRoute, route } from '../shared/route'
 import {
   assert,
   assertUsage,

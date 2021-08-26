@@ -1,4 +1,4 @@
-import { AllPageFiles, findPageFile } from './getPageFiles.shared'
+import { AllPageFiles, findPageFile } from './getPageFiles'
 import { assert, assertUsage, checkType, objectAssign } from './utils'
 
 export { populatePageContext }

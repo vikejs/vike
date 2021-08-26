@@ -6,7 +6,7 @@ import { prependBaseUrl } from '../baseUrlHandling'
 import devalue from 'devalue'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
-import { AllPageFiles } from '../../shared/getPageFiles.shared'
+import { AllPageFiles } from '../../shared/getPageFiles'
 
 export { injectAssets }
 export { injectAssets_internal }

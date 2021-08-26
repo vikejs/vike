@@ -1,4 +1,4 @@
-import { AllPageFiles, findPageFile, getPageFiles } from './getPageFiles.shared'
+import { AllPageFiles, findPageFile, getPageFiles } from './getPageFiles'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
 import {
