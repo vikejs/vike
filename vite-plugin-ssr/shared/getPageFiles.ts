@@ -6,10 +6,6 @@ export { getAllPageFiles_clientSide }
 export { getAllPageFiles_serverSide }
 export { findPageFile }
 
-export { getPageFiles }
-export { getPageFile }
-// export { PageFile }
-
 export { setPageFiles }
 export { setPageFilesAsync }
 export { isPageFilesSet }
@@ -91,27 +87,6 @@ async function getAllPageFiles() {
   }
 
   return allPageFiles
-}
-async function getPageFiles(fileType: FileType): Promise<PageFile[]> {
-  const allPageFiles = await getAllPageFiles()
-  const pageFiles = allPageFiles[fileType]
-  assert(pageFiles)
-  return pageFiles
-}
-
-async function getPageFile(fileType: FileType, pageId: string): Promise<PageFile> {
-  assert(!pageId.includes('\\'))
-  const pageFiles = await getPageFiles(fileType)
-  const pageFile = findPageFile(pageFiles, pageId)
-  if (!pageFile) {
-    const pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-    const debugInfo = { pageId, fileType, pageFilePaths }
-    throw new Error(
-      "[vite-plugin-ssr] You stumbled upon a known Vite error (cache invalidation). Reloading your page may solve the problem. If it doesn't, then remove the Vite cache `$ rm -r node_modules/.vite/` and try again. Please add a comment at https://github.com/brillout/vite-plugin-ssr/issues/109 and include this error stack trace and following debug info in your comment: " +
-        JSON.stringify(debugInfo)
-    )
-  }
-  return pageFile
 }
 
 function findPageFile<T>(

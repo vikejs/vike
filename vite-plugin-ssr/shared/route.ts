@@ -1,4 +1,4 @@
-import { AllPageFiles, findPageFile, getPageFiles } from './getPageFiles'
+import { AllPageFiles, findPageFile } from './getPageFiles'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
 import {
@@ -18,7 +18,7 @@ export { route }
 export { loadPageRoutes }
 export type { PageRoutes }
 
-export { getPageIds }
+export { getAllPageIds }
 export { getErrorPageId }
 export { isErrorPage }
 export { isStaticRoute }
@@ -203,12 +203,11 @@ function getCommonPath(pageIds: string[]): string {
 /**
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
-async function getPageIds(): Promise<PageId[]> {
-  const pageViewFiles = await getPageFiles('.page')
-  let pageViewFilePaths = pageViewFiles.map(({ filePath }) => filePath)
-  pageViewFilePaths = pageViewFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
-
-  let allPageIds = pageViewFilePaths.map(computePageId)
+async function getAllPageIds(allPageFiles: AllPageFiles): Promise<PageId[]> {
+  const pageFiles = allPageFiles['.page']
+  let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
+  pageFilePaths = pageFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
+  const allPageIds = pageFilePaths.map(computePageId)
   return allPageIds
 }
 function computePageId(filePath: string): string {

@@ -1,4 +1,4 @@
-import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
+import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
 import {
   getPageFile,
@@ -836,13 +836,14 @@ function analyzeUrl(url: string): {
 
 async function getGlobalContext() {
   const globalContext = {}
-  const allPageIds = await getPageIds()
-  objectAssign(globalContext, { _allPageIds: allPageIds })
 
   const allPageFiles = await getAllPageFiles_serverSide()
   objectAssign(globalContext, {
     _allPageFiles: allPageFiles
   })
+
+  const allPageIds = await getAllPageIds(allPageFiles)
+  objectAssign(globalContext, { _allPageIds: allPageIds })
 
   const pageRoutes = await loadPageRoutes(globalContext)
   objectAssign(globalContext, { _pageRoutes: pageRoutes })
