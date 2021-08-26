@@ -14,6 +14,6 @@ const Page: Component = () => {
       </ul>
     </>
   );
-}
+};
 
 export { Page };

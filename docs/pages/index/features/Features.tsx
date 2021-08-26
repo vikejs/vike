@@ -164,9 +164,8 @@ function Features() {
           </h3>
           <p>
             At (very) large scale, you can progressively replace <code>vite-plugin-ssr</code> with Vite's native SSR API
-            which is low-level and highly flexible. If you're Netflix and perfecting UX leads to
-            a substantial revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are
-            looking for.
+            which is low-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial revenue
+            increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are looking for.
           </p>
           <TweetsAboutScability />
         </LearnMore>

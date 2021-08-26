@@ -9,4 +9,4 @@ const Counter: Component = () => {
       Counter {count()}
     </button>
   );
-}
+};

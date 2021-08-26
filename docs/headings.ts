@@ -148,7 +148,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Data Fetching',
+    title: 'Data Fetching'
   },
   {
     level: 2,
@@ -178,7 +178,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Data Store',
+    title: 'Data Store'
   },
   {
     level: 2,
@@ -203,7 +203,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Authentication',
+    title: 'Authentication'
   },
   {
     level: 2,
@@ -218,7 +218,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'CSS Frameworks',
+    title: 'CSS Frameworks'
   },
   {
     level: 2,
@@ -243,7 +243,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'View Frameworks',
+    title: 'View Frameworks'
   },
   {
     level: 2,
@@ -268,7 +268,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Other',
+    title: 'Other'
   },
   {
     level: 2,

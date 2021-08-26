@@ -10,4 +10,4 @@ const Page: Component = () => {
       <p>A colored page.</p>
     </>
   );
-}
+};

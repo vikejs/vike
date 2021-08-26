@@ -1,4 +1,10 @@
-import { page, run, autoRetry, fetchHtml, urlBase } from "../../libframe/test/setup";
+import {
+  page,
+  run,
+  autoRetry,
+  fetchHtml,
+  urlBase,
+} from "../../libframe/test/setup";
 
 export { testPages };
 

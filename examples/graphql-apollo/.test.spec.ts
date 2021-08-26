@@ -1,4 +1,10 @@
-import { autoRetry, fetchHtml, page, run, urlBase } from "../../libframe/test/setup";
+import {
+  autoRetry,
+  fetchHtml,
+  page,
+  run,
+  urlBase,
+} from "../../libframe/test/setup";
 
 run("npm run start");
 

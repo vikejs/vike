@@ -1,7 +1,13 @@
 {
   "private": true,
   "// We don't add examples/** nor boilerplates/** to `workspaces` because we have a custom linkage logic": "",
-  "workspaces": ["vite-plugin-ssr/", "docs/", "libframe/test/", "libframe/docs/", "libframe/scripts/"],
+  "workspaces": [
+    "vite-plugin-ssr/",
+    "docs/",
+    "libframe/test/",
+    "libframe/docs/",
+    "libframe/scripts/"
+  ],
   "scripts": {
     "========= Demo": "",
     "demo": "cd examples/react/ && npm run install && npm run start",

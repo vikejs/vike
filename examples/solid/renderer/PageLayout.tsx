@@ -19,7 +19,7 @@ const PageLayout: Component = (props) => {
       <Content>{props.children}</Content>
     </Layout>
   );
-}
+};
 
 const Layout: Component = (props) => {
   return (
@@ -33,7 +33,7 @@ const Layout: Component = (props) => {
       {props.children}
     </div>
   );
-}
+};
 
 const Sidebar: Component = (props) => {
   return (
@@ -50,7 +50,7 @@ const Sidebar: Component = (props) => {
       {props.children}
     </div>
   );
-}
+};
 
 const Content: Component = (props) => {
   return (
@@ -65,7 +65,7 @@ const Content: Component = (props) => {
       {props.children}
     </div>
   );
-}
+};
 
 const Logo: Component = () => {
   return (
@@ -80,4 +80,4 @@ const Logo: Component = () => {
       </a>
     </div>
   );
-}
+};
