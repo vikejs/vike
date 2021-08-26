@@ -1,13 +1,12 @@
-import {
-  getErrorPageId,
-  getPageIds,
-  route,
-  isErrorPage,
-  loadPageRoutes,
-  getFilesystemRoute
-} from '../shared/route.shared'
+import { getErrorPageId, getPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route.shared'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
-import { getPageFile, getPageFiles, AllPageFiles, getAllPageFiles_serverSide } from '../shared/getPageFiles.shared'
+import {
+  getPageFile,
+  getPageFiles,
+  AllPageFiles,
+  getAllPageFiles_serverSide,
+  findPageFile
+} from '../shared/getPageFiles.shared'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
@@ -37,6 +36,7 @@ export { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
 export { getPageServerFile }
+export { getGlobalContext }
 
 async function renderPage(pageContext: { url: string } & Record<string, unknown>): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
@@ -75,16 +75,15 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   pageContext._isPageContextRequest = isPageContextRequest
   assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
 
-  const allPageIds = await getPageIds()
-  pageContext._allPageIds = allPageIds
-  assert(hasProp(pageContext, '_allPageIds', 'string[]'))
+  const globalContext = await getGlobalContext()
+  objectAssign(pageContext, globalContext)
 
   // *** Route ***
   // We use a try-catch because `route()` executes `.page.route.js` source code which is
   // written by the user and may contain errors.
-  let routeResult
+  let pageContextRouteAddendum
   try {
-    routeResult = await route(pageContext.urlNormalized, allPageIds, pageContext)
+    pageContextRouteAddendum = await route(pageContext)
   } catch (err) {
     pageContext._err = err
     assert(hasProp(pageContext, '_err'))
@@ -97,11 +96,11 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
 
   // *** Handle 404 ***
   let statusCode: 200 | 404
-  if (!routeResult) {
+  if (!pageContextRouteAddendum) {
     if (!pageContext._isPageContextRequest) {
-      await warn404(pageContext.urlNormalized, allPageIds)
+      await warn404(pageContext)
     }
-    const errorPageId = getErrorPageId(allPageIds)
+    const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
       if (pageContext._isPageContextRequest) {
@@ -118,17 +117,14 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
     } else {
       statusCode = 200
     }
-    routeResult = { pageId: errorPageId, pageContextAddendum: { is404: true, routeParams: {} } }
+    pageContextRouteAddendum = { _pageId: errorPageId, is404: true, routeParams: {} }
   } else {
     statusCode = 200
   }
+  assert(pageContextRouteAddendum._pageId)
+  assert(isPlainObject(pageContextRouteAddendum.routeParams))
 
-  const { pageId, pageContextAddendum } = routeResult
-  pageContext._pageId = pageId
-  assert(hasProp(pageContext, '_pageId', 'string'))
-  Object.assign(pageContext, pageContextAddendum)
-  assert(hasProp(pageContext, 'routeParams', 'object'))
-  castProp<Record<string, string>, typeof pageContext, 'routeParams'>(pageContext, 'routeParams')
+  objectAssign(pageContext, pageContextRouteAddendum)
 
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
@@ -156,6 +152,7 @@ async function renderPageId(
     routeParams: Record<string, string>
     _pageId: string
     _isPageContextRequest: boolean
+    _allPageFiles: AllPageFiles
   }
 ) {
   ;(pageContext as Record<string, unknown>)._isPreRendering = false
@@ -184,9 +181,11 @@ async function prerenderPage(pageContext: {
   _pageId: string
   _serializedPageContextClientNeeded: boolean
   _pageContextAlreadyAddedInPrerenderHook: boolean
+  _allPageFiles: AllPageFiles
 }) {
-  ;(pageContext as Record<string, unknown>)._isPreRendering = true
-  assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
+  objectAssign(pageContext, { _isPreRendering: true })
+  //;(pageContext as Record<string, unknown>)._isPreRendering = true
+  //assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
 
   await populatePageContext(pageContext)
   populatePageContext_addTypes(pageContext)
@@ -211,8 +210,8 @@ async function prerenderPage(pageContext: {
 }
 
 async function renderStatic404Page() {
-  const allPageIds = await getPageIds()
-  const errorPageId = getErrorPageId(allPageIds)
+  const globalContext = await getGlobalContext()
+  const errorPageId = getErrorPageId(globalContext._allPageIds)
   if (!errorPageId) {
     return null
   }
@@ -226,6 +225,7 @@ async function renderStatic404Page() {
     _serializedPageContextClientNeeded: false,
     _pageContextAlreadyAddedInPrerenderHook: false
   }
+  objectAssign(pageContext, globalContext)
   populatePageContext(pageContext)
   populatePageContext_addTypes(pageContext)
   return prerenderPage(pageContext)
@@ -307,6 +307,7 @@ async function getPageServerFile(pageId: string) {
   const { pageServerFile } = await loadAllPageFilesOld(pageId)
   return pageServerFile
 }
+// TODO
 async function loadAllPageFilesOld(pageId: string): Promise<AllPageFilesOld> {
   const pageViewFile: PageFileLoaded = await loadPageViewFile(pageId)
   const pageClientFilePath: string = await getPageClientFile(pageId)
@@ -321,7 +322,7 @@ async function getPageClientFile(pageId: string): Promise<string> {
   )
   let pageClientFile = findPageSpecific(pageClientFiles, pageId)
   if (!pageClientFile) {
-    pageClientFile = findDefault(pageClientFiles, pageId)
+    pageClientFile = findDefaultPageFile(pageClientFiles, pageId)
     assert(pageClientFile)
   }
   return pageClientFile.filePath
@@ -340,7 +341,7 @@ async function loadPageServerFiles(pageId: string): Promise<PageServerFiles> {
   )
 
   const serverFile = findPageSpecific(serverFiles, pageId)
-  const serverFileDefault = findDefault(serverFiles, pageId)
+  const serverFileDefault = findDefaultPageFile(serverFiles, pageId)
   assert(serverFile || serverFileDefault)
   const pageServerFile = !serverFile
     ? null
@@ -418,7 +419,11 @@ type PageContextPopulated = {
   _pageClientFilePath: string
   _allPageFiles: AllPageFiles
 }
-async function populatePageContext(pageContext: { _pageId: string; _isPreRendering: boolean }): Promise<void> {
+async function populatePageContext(pageContext: {
+  _pageId: string
+  _isPreRendering: boolean
+  _allPageFiles: AllPageFiles
+}): Promise<void> {
   assert(pageContext._pageId)
   const allPageFilesOld = await loadAllPageFilesOld(pageContext._pageId)
 
@@ -443,11 +448,6 @@ async function populatePageContext(pageContext: { _pageId: string; _isPreRenderi
 
   const { pageClientFilePath } = allPageFilesOld
   assert(pageClientFilePath)
-
-  const allPageFiles = await getAllPageFiles_serverSide()
-  objectAssign(pageContext, {
-    _allPageFiles: allPageFiles
-  })
 
   const pageAssets = await getPageAssets(
     pageContext,
@@ -577,7 +577,7 @@ function findPageSpecific<T extends { filePath: string }>(pageFiles: T[], pageId
   assert(hits.length <= 1)
   return hits.length === 1 ? hits[0] : null
 }
-function findDefault<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
+function findDefaultPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
   const hits = pageFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
     assert(!filePath.includes('\\'))
@@ -645,42 +645,41 @@ function warnMissingErrorPage() {
     )
   }
 }
-async function warn404(urlNormalized: string, allPageIds: string[]) {
+async function warn404(pageContext: { urlNormalized: string; _pageRoutes: PageRoutes }) {
   const { isProduction } = getSsrEnv()
-  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+  const pageRoutes = pageContext._pageRoutes
   assertUsage(
-    relevantPageIds.length > 0,
+    pageRoutes.length > 0,
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
   )
+  const { urlNormalized } = pageContext
   if (!isProduction && !isFileRequest(urlNormalized)) {
     assertWarning(
       false,
-      `No page is matching the URL \`${getUrlPathname(
-        urlNormalized
-      )}\`. ${await getPagesAndRoutesInfo()}. (This warning is not shown in production.)`
+      `No page is matching the URL \`${getUrlPathname(urlNormalized)}\`. ${await getPagesAndRoutesInfo(
+        pageRoutes
+      )}. (This warning is not shown in production.)`
     )
   }
 }
-async function getPagesAndRoutesInfo(): Promise<string> {
-  const allPageIds = await getPageIds()
-  const pageRoutes = await loadPageRoutes()
-  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
+async function getPagesAndRoutesInfo(pageRoutes: PageRoutes): Promise<string> {
   return [
-    `You defined ${relevantPageIds.length} pages:`,
-    relevantPageIds
-      .map((pageId, i) => {
+    `You defined ${pageRoutes.length} pages:`,
+    pageRoutes
+      .map((pageRoute, i) => {
+        const { pageId, filesystemRoute, pageRouteFile } = pageRoute
         let routeInfo
         let routeSrc
-        if (!(pageId in pageRoutes)) {
-          routeInfo = getFilesystemRoute(pageId, allPageIds)
-          routeSrc = 'Filesystem Routing'
-        } else {
-          const { pageRoute, pageRouteFile } = pageRoutes[pageId]
-          const pageRouteStringified = truncateString(String(pageRoute).split(/\s/).filter(Boolean).join(' '), 64)
+        if (pageRouteFile) {
+          const { routeValue } = pageRouteFile
+          const pageRouteStringified = truncateString(String(routeValue).split(/\s/).filter(Boolean).join(' '), 64)
           routeInfo = pageRouteStringified
-          const routeType = typeof pageRoute === 'string' ? 'Route String' : 'Route Function'
+          const routeType = typeof routeValue === 'string' ? 'Route String' : 'Route Function'
           const routeFile = pageRouteFile
           routeSrc = `${routeType} defined in \`${routeFile}\``
+        } else {
+          routeInfo = filesystemRoute
+          routeSrc = 'Filesystem Routing'
         }
         return `(${i + 1}) \`${pageId}.page.*\` with route \`${routeInfo}\` (${routeSrc})`
       })
@@ -715,6 +714,7 @@ async function render500Page(
     url: string
     urlNormalized: string
     _allPageIds: string[]
+    _allPageFiles: AllPageFiles
     _err: unknown
   }
 ): Promise<
@@ -832,4 +832,42 @@ function analyzeUrl(url: string): {
 
   const urlNormalized = url
   return { urlWithoutOrigin, urlNormalized, isPageContextRequest, hasBaseUrl }
+}
+
+async function getGlobalContext() {
+  const globalContext = {}
+  const allPageIds = await getPageIds()
+  objectAssign(globalContext, { _allPageIds: allPageIds })
+
+  const allPageFiles = await getAllPageFiles_serverSide()
+  objectAssign(globalContext, {
+    _allPageFiles: allPageFiles
+  })
+
+  const pageRoutes = await loadPageRoutes(globalContext)
+  objectAssign(globalContext, { _pageRoutes: pageRoutes })
+
+  return globalContext
+}
+
+async function getPageContext(pageContext: { _pageId: string; _allPageFiles: AllPageFiles }) {
+  const pageContextAddendum = {}
+
+  const allPageFiles = pageContext._allPageFiles
+  const pageId = pageContext._pageId
+
+  const pageServerFile = findPageFile(allPageFiles['.page.server'], pageId)
+  objectAssign(pageContextAddendum, {
+    _pageFile: findPageFile(allPageFiles['.page'], pageId),
+    _pageServerFile: pageServerFile,
+    _pageClientFile: findPageFile(allPageFiles['.page.client'], pageId),
+    _pageRouteFile: findPageFile(allPageFiles['.page.route'], pageId),
+    _defaultPageServerFile: findDefaultPageFile(allPageFiles['.page.server'], pageId),
+    _defaultPageClientFile: findDefaultPageFile(allPageFiles['.page.client'], pageId),
+    _defaultPageRouteFile: findDefaultPageFile(allPageFiles['.page.route'], pageId)
+  })
+
+  //const _pageRoute = pageContextAddendum._pageRouteFile.
+
+  return pageContextAddendum
 }
