@@ -227,7 +227,7 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
 }
 
 function getDefaultPassToClientProps(pageContext: { _pageId: string; pageProps?: Record<string, unknown> }): string[] {
-  const passToClient = ['pageId']
+  const passToClient = []
   if (isErrorPage(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     const pageProps = pageContext.pageProps || {}
