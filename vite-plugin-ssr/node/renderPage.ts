@@ -203,7 +203,9 @@ async function prerenderPage(pageContext: {
   }
 }
 
-async function renderStatic404Page(globalContext: PromiseType<ReturnType<typeof getGlobalContext>> & {_isPreRendering: true}) {
+async function renderStatic404Page(
+  globalContext: PromiseType<ReturnType<typeof getGlobalContext>> & { _isPreRendering: true }
+) {
   const errorPageId = getErrorPageId(globalContext._allPageIds)
   if (!errorPageId) {
     return null
