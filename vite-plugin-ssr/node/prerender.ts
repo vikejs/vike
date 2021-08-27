@@ -100,13 +100,13 @@ async function prerender({
 
   warnContradictoryNoPrerenderList(prerenderedPageIds, doNotPrerenderList)
 
-  warnMissingPages(prerenderedPageIds, doNotPrerenderList, globalContext, partial)
-
   await prerender404Page(htmlDocuments, globalContext)
 
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
 
   await Promise.all(htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit)))
+
+  warnMissingPages(prerenderedPageIds, doNotPrerenderList, globalContext, partial)
 }
 
 async function callPrerenderHooks(
@@ -287,10 +287,11 @@ function warnMissingPages(
   globalContext._allPageIds
     .filter((pageId) => !prerenderedPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
+    .filter((pageId) => !isErrorPage(pageId))
     .forEach((pageId) => {
       assertWarning(
         partial,
-        `Cannot pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Use the --partial option to suppress this warning.`
+        `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`
       )
     })
 }
