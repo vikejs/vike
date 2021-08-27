@@ -17,6 +17,7 @@ import {
   getUrlPathname,
   getUrlFull,
   isPlainObject,
+  isObject,
   getUrlParsed,
   UrlParsed,
   objectAssign,
@@ -261,8 +262,8 @@ function assert_pageContext_publicProps(pageContext: PageContextPublic) {
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
   assert(isPlainObject(pageContext.routeParams))
-  assert(pageContext.Page)
-  assert(pageContext.pageExports)
+  assert('Page' in pageContext)
+  assert(isObject(pageContext.pageExports))
 }
 type PageServerFileProps = {
   filePath: string
@@ -428,9 +429,9 @@ async function executeAddPageContextHook(
     pageContext._pageServerFile?.fileExports.addPageContext ||
     pageContext._pageServerFileDefault?.fileExports.addPageContext
   if (!pageContext._pageContextAlreadyProvidedByPrerenderHook && addPageContext) {
-    assert_pageContext_publicProps(pageContext)
     const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
     assert(filePath)
+    assert_pageContext_publicProps(pageContext)
     const pageContextAddendum = await addPageContext(pageContext)
     assertUsage(
       isPlainObject(pageContextAddendum),
