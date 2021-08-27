@@ -31,6 +31,11 @@ export { prerenderPage }
 export { renderStatic404Page }
 export { getGlobalContext }
 export { loadPageFiles }
+export type { PageFilesData }
+export type { GlobalContext }
+
+type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
+type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage(pageContext: { url: string } & Record<string, unknown>): Promise<
   | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
@@ -166,19 +171,18 @@ async function renderPageId(
   }
 }
 
-async function prerenderPage(pageContext: {
-  url: string
-  routeParams: Record<string, string>
-  _isPreRendering: true
-  _pageId: string
-  _usesClientRouter: boolean
-  _pageContextAlreadyProvidedByPrerenderHook?: true
-  _allPageFiles: AllPageFiles
-}) {
+async function prerenderPage(
+  pageContext: {
+    url: string
+    routeParams: Record<string, string>
+    _isPreRendering: true
+    _pageId: string
+    _usesClientRouter: boolean
+    _pageContextAlreadyProvidedByPrerenderHook?: true
+    _allPageFiles: AllPageFiles
+  } & PageFilesData
+) {
   assert(pageContext._isPreRendering === true)
-
-  const pageFilesData = await loadPageFiles(pageContext)
-  objectAssign(pageContext, pageFilesData)
 
   addUrlPropsToPageContext(pageContext)
 
@@ -199,9 +203,7 @@ async function prerenderPage(pageContext: {
   }
 }
 
-async function renderStatic404Page(
-  globalContext: PromiseType<ReturnType<typeof getGlobalContext>> & { _isPreRendering: true }
-) {
+async function renderStatic404Page(globalContext: GlobalContext & { _isPreRendering: true }) {
   const errorPageId = getErrorPageId(globalContext._allPageIds)
   if (!errorPageId) {
     return null
