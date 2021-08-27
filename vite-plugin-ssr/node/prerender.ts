@@ -161,7 +161,7 @@ async function prerender({
   const htmlDocuments: HtmlDocument[] = []
   const alreadyIncluded: Record<string, true> = {}
 
-  // Render URLs renturned by `prerender()` hooks
+  // Render URLs returned by `prerender()` hooks
   await Promise.all(
     globalContext._prerenderPageContexts.map((pageContext) =>
       limit(async () => {
