@@ -106,10 +106,13 @@ async function prerender({
 
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
 
-  // `htmlDocuments.length` can be very big; to avoid `EMFILE, too many open files` we don't parallelize the writing
-  for (const htmlDoc of htmlDocuments) {
-    await writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit)
-  }
+  await Promise.all(
+    htmlDocuments.map((htmlDoc) =>
+      concurrencyLimit(async () => {
+        await writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit)
+      })
+    )
+  )
 }
 
 async function callPrerenderHooks(
