@@ -19,7 +19,6 @@ import { getGlobalContext, loadPageFiles, prerenderPage, renderStatic404Page } f
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
-import { AllPageFiles } from '../shared/getPageFiles'
 
 export { prerender }
 
@@ -79,6 +78,7 @@ async function prerender({
   })
 
   const globalContext = await getGlobalContext()
+  objectAssign(globalContext, { _isPreRendering: true as const })
 
   const doNotPrerenderList: DoNotPrerenderList = []
 
@@ -100,8 +100,7 @@ async function prerender({
         limit(async () => {
           const pageFilesData = await loadPageFiles({
             ...globalContext,
-            _pageId: pageId,
-            _isPreRendering: true
+            _pageId: pageId
           })
           assert('_pageServerFile' in pageFilesData)
 
@@ -149,7 +148,6 @@ async function prerender({
   const prerenderPageContexts = Object.values(pageContextList).map((pageContext) => {
     objectAssign(pageContext, {
       ...globalContext,
-      _isPreRendering: true,
       _serializedPageContextClientNeeded,
       urlNormalized: pageContext.url
     })
@@ -237,7 +235,7 @@ async function prerender({
   )
 
   if (!htmlDocuments.find(({ url }) => url === '/404')) {
-    const result = await renderStatic404Page()
+    const result = await renderStatic404Page(globalContext)
     if (result) {
       const url = '/404'
       const { htmlDocument } = result

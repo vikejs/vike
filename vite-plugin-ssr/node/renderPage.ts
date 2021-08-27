@@ -19,7 +19,8 @@ import {
   isPlainObject,
   getUrlParsed,
   UrlParsed,
-  objectAssign
+  objectAssign,
+  PromiseType
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
@@ -69,6 +70,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
 
   const globalContext = await getGlobalContext()
+  objectAssign(globalContext, { _isPreRendering: false as const })
   objectAssign(pageContext, globalContext)
 
   // *** Route ***
@@ -171,14 +173,13 @@ async function renderPageId(
 async function prerenderPage(pageContext: {
   url: string
   routeParams: Record<string, string>
+  _isPreRendering: true
   _pageId: string
   _serializedPageContextClientNeeded: boolean
   _pageContextAlreadyAddedInPrerenderHook: boolean
   _allPageFiles: AllPageFiles
 }) {
-  objectAssign(pageContext, { _isPreRendering: true })
-  //;(pageContext as Record<string, unknown>)._isPreRendering = true
-  //assert(hasProp(pageContext, '_isPreRendering', 'boolean'))
+  assert(pageContext._isPreRendering === true)
 
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
@@ -202,16 +203,15 @@ async function prerenderPage(pageContext: {
   }
 }
 
-async function renderStatic404Page() {
-  const globalContext = await getGlobalContext()
+async function renderStatic404Page(globalContext: PromiseType<ReturnType<typeof getGlobalContext>> & {_isPreRendering: true}) {
   const errorPageId = getErrorPageId(globalContext._allPageIds)
   if (!errorPageId) {
     return null
   }
+
   const pageContext = {
     ...globalContext,
     _pageId: errorPageId,
-    _isPreRendering: true,
     is404: true,
     routeParams: {},
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
