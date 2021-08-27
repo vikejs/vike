@@ -90,7 +90,7 @@ async function prerender({
     {
       url: string
       _prerenderSourceFile: string
-      _pageContextAlreadyAddedInPrerenderHook: boolean
+      _pageContextAlreadyProvidedByPrerenderHook: boolean
     }
   > = {}
   await Promise.all(
@@ -130,13 +130,13 @@ async function prerender({
               pageContextList[url] = {
                 _prerenderSourceFile: prerenderSourceFile,
                 url,
-                _pageContextAlreadyAddedInPrerenderHook: !!pageContext,
+                _pageContextAlreadyProvidedByPrerenderHook: !!pageContext,
                 ...pageContext
               }
             } else {
               if (pageContext) {
                 Object.assign(pageContextList[url], pageContext)
-                pageContextList[url]._pageContextAlreadyAddedInPrerenderHook = true
+                pageContextList[url]._pageContextAlreadyProvidedByPrerenderHook = true
               }
             }
             assert(pageContextList[url].url === url)
@@ -219,7 +219,7 @@ async function prerender({
             routeParams: {},
             _pageId: pageId,
             _serializedPageContextClientNeeded,
-            _pageContextAlreadyAddedInPrerenderHook: false
+            _pageContextAlreadyProvidedByPrerenderHook: false
           }
 
           const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)

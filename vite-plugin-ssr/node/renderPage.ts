@@ -152,7 +152,7 @@ async function renderPageId(
 ) {
   objectAssign(pageContext, {
     _isPreRendering: false,
-    _pageContextAlreadyAddedInPrerenderHook: false
+    _pageContextAlreadyProvidedByPrerenderHook: false
   })
 
   const pageFilesData = await loadPageFiles(pageContext)
@@ -176,7 +176,7 @@ async function prerenderPage(pageContext: {
   _isPreRendering: true
   _pageId: string
   _serializedPageContextClientNeeded: boolean
-  _pageContextAlreadyAddedInPrerenderHook: boolean
+  _pageContextAlreadyProvidedByPrerenderHook: boolean
   _allPageFiles: AllPageFiles
 }) {
   assert(pageContext._isPreRendering === true)
@@ -219,7 +219,7 @@ async function renderStatic404Page(
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
     _serializedPageContextClientNeeded: false,
-    _pageContextAlreadyAddedInPrerenderHook: false
+    _pageContextAlreadyProvidedByPrerenderHook: false
   }
 
   const pageFilesData = await loadPageFiles(pageContext)
@@ -422,13 +422,13 @@ async function executeAddPageContextHook(
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
     _passToClient: string[]
-    _pageContextAlreadyAddedInPrerenderHook: boolean
+    _pageContextAlreadyProvidedByPrerenderHook: boolean
   } & PageContextPublic
 ) {
   const addPageContext =
     pageContext._pageServerFile?.fileExports.addPageContext ||
     pageContext._pageServerFileDefault?.fileExports.addPageContext
-  if (!pageContext._pageContextAlreadyAddedInPrerenderHook && addPageContext) {
+  if (!pageContext._pageContextAlreadyProvidedByPrerenderHook && addPageContext) {
     assert_pageContext_publicProps(pageContext)
     const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
     assert(filePath)
