@@ -106,13 +106,7 @@ async function prerender({
 
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
 
-  await Promise.all(
-    htmlDocuments.map((htmlDoc) =>
-      concurrencyLimit(async () => {
-        await writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit)
-      })
-    )
-  )
+  await Promise.all(htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit)))
 }
 
 async function callPrerenderHooks(
