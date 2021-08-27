@@ -212,7 +212,7 @@ async function prerender({
     _prerenderPageContexts: prerenderPageContexts
   })
 
-  const prerenderedPageIds: Record<string, true> = {}
+  const prerenderedPageIds: Record<string, { url: string; _prerenderSourceFile: string | null }> = {}
   const htmlDocuments: HtmlDocument[] = []
   // Route all URLs
   await Promise.all(
@@ -221,35 +221,28 @@ async function prerender({
         const { url, _prerenderSourceFile: prerenderSourceFile } = pageContext
         const pageContextRouteAddendum = await route(pageContext)
         assert(pageContextRouteAddendum === null || isPlainObject(pageContextRouteAddendum))
-        assertUsage(
-          pageContextRouteAddendum !== null,
-          `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
-        )
+        if (pageContextRouteAddendum === null) {
+          assert(prerenderSourceFile)
+          assertUsage(
+            false,
+            `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
+          )
+        }
 
+        assert(pageContextRouteAddendum._pageId)
         objectAssign(pageContext, pageContextRouteAddendum)
         const { _pageId: pageId } = pageContext
 
-        const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
-        assertUsage(
-          !doNotPrerenderListHit,
-          `Your \`prerender()\` hook defined in ${prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
-        )
-
         const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
         htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
-        prerenderedPageIds[pageId] = true
+        prerenderedPageIds[pageId] = pageContext
       })
     )
   )
 
-  globalContext._allPageIds
-    .filter((pageId) => !prerenderedPageIds[pageId])
-    .forEach((pageId) => {
-      assertWarning(
-        partial,
-        `Cannot pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Use the --partial option to suppress this warning.`
-      )
-    })
+  warnContradictoryNoPrerenderList(prerenderedPageIds, doNotPrerenderList)
+
+  warnMissingPages(prerenderedPageIds, doNotPrerenderList, globalContext, partial)
 
   await prerender404Page(htmlDocuments, globalContext)
 
@@ -259,6 +252,39 @@ async function prerender({
   for (const htmlDoc of htmlDocuments) {
     await writeHtmlDocument(htmlDoc, root, doNotPrerenderList, limit)
   }
+}
+
+function warnContradictoryNoPrerenderList(
+  prerenderedPageIds: Record<string, { url: string; _prerenderSourceFile: string | null }>,
+  doNotPrerenderList: { pageId: string; pageServerFilePath: string }[]
+) {
+  Object.entries(prerenderedPageIds).forEach(([pageId, { url, _prerenderSourceFile }]) => {
+    const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
+    if (doNotPrerenderListHit) {
+      assert(_prerenderSourceFile)
+      assertUsage(
+        false,
+        `Your \`prerender()\` hook defined in ${_prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
+      )
+    }
+  })
+}
+
+function warnMissingPages(
+  prerenderedPageIds: Record<string, unknown>,
+  doNotPrerenderList: { pageId: string }[],
+  globalContext: { _allPageIds: string[] },
+  partial: boolean
+) {
+  globalContext._allPageIds
+    .filter((pageId) => !prerenderedPageIds[pageId])
+    .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
+    .forEach((pageId) => {
+      assertWarning(
+        partial,
+        `Cannot pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Use the --partial option to suppress this warning.`
+      )
+    })
 }
 
 async function prerender404Page(
