@@ -149,7 +149,7 @@ async function prerender({
   const prerenderPageContexts = Object.values(pageContextList).map((pageContext) => {
     objectAssign(pageContext, {
       ...globalContext,
-      isPreRendering: true,
+      _isPreRendering: true,
       _serializedPageContextClientNeeded,
       urlNormalized: pageContext.url
     })
