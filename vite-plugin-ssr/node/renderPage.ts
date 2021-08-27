@@ -171,7 +171,7 @@ async function prerenderPage(pageContext: {
   routeParams: Record<string, string>
   _isPreRendering: true
   _pageId: string
-  _serializedPageContextClientNeeded: boolean
+  _usesClientRouter: boolean
   _pageContextAlreadyProvidedByPrerenderHook?: true
   _allPageFiles: AllPageFiles
 }) {
@@ -191,7 +191,7 @@ async function prerenderPage(pageContext: {
     "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
   )
   const htmlDocument: string = renderResult
-  if (!pageContext._serializedPageContextClientNeeded) {
+  if (!pageContext._usesClientRouter) {
     return { htmlDocument, pageContextSerialized: null }
   } else {
     const pageContextSerialized = serializeClientPageContext(pageContext)
@@ -214,7 +214,7 @@ async function renderStatic404Page(
     routeParams: {},
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
-    _serializedPageContextClientNeeded: false
+    _usesClientRouter: false
   }
 
   const pageFilesData = await loadPageFiles(pageContext)

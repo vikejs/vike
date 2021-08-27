@@ -19,7 +19,7 @@ function manifest(): Plugin {
       assert(typeof ssr === 'boolean')
       const manifest = {
         version: projectInfo.version,
-        doesClientSideRouting: includesClientSideRouter(bundle as any),
+        usesClientRouter: includesClientSideRouter(bundle as any),
         base
       }
       this.emitFile({

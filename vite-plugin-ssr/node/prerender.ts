@@ -66,7 +66,7 @@ async function prerender({
     pluginManifest.version === projectInfo.version,
     `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
-  const _serializedPageContextClientNeeded: boolean = pluginManifest.doesClientSideRouting
+  const _usesClientRouter: boolean = pluginManifest.usesClientRouter
   const baseUrl: string = pluginManifest.base
 
   process.env.NODE_ENV = 'production'
@@ -147,7 +147,7 @@ async function prerender({
   const prerenderPageContexts = Object.values(pageContextList).map((pageContext) => {
     objectAssign(pageContext, {
       ...globalContext,
-      _serializedPageContextClientNeeded,
+      _usesClientRouter,
       urlNormalized: pageContext.url
     })
     return pageContext
@@ -217,7 +217,7 @@ async function prerender({
             url,
             routeParams: {},
             _pageId: pageId,
-            _serializedPageContextClientNeeded
+            _usesClientRouter
           }
 
           const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
@@ -338,7 +338,7 @@ function normalizePrerenderResult(
 type PluginManifest = {
   version: string
   base: string
-  doesClientSideRouting: boolean
+  usesClientRouter: boolean
 }
 function getPluginManifest(root: string): {
   pluginManifest: PluginManifest | null
@@ -352,12 +352,12 @@ function getPluginManifest(root: string): {
   let manifestContent: unknown = require(pluginManifestPath)
   assert(hasProp(manifestContent, 'version'))
   assert(hasProp(manifestContent, 'base'))
-  assert(hasProp(manifestContent, 'doesClientSideRouting'))
-  const { base, doesClientSideRouting } = manifestContent
-  assert(typeof doesClientSideRouting === 'boolean')
+  assert(hasProp(manifestContent, 'usesClientRouter'))
+  const { base, usesClientRouter } = manifestContent
+  assert(typeof usesClientRouter === 'boolean')
   assert(typeof base === 'string')
 
-  const pluginManifest = { version: projectInfo.version, base, doesClientSideRouting }
+  const pluginManifest = { version: projectInfo.version, base, usesClientRouter }
   return { pluginManifest, pluginManifestPath }
 }
 
