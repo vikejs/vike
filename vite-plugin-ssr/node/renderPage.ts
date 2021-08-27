@@ -255,7 +255,7 @@ type PageContextPublic = {
   Page: unknown
   pageExports: Record<string, unknown>
 }
-function assert_pageContext_publicProps(pageContext: PageContextPublic) {
+function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
@@ -263,7 +263,24 @@ function assert_pageContext_publicProps(pageContext: PageContextPublic) {
   assert(isPlainObject(pageContext.routeParams))
   assert('Page' in pageContext)
   assert(isObject(pageContext.pageExports))
+
+  // Sort alphabetically to make reading `console.log(pageContext)` easier
+  const entries = Object.entries(pageContext)
+  for (const key in pageContext) {
+    delete pageContext[key]
+  }
+  entries
+    .sort(([key1], [key2]) => compareString(key1, key2))
+    .forEach(([key, val]) => {
+      ;(pageContext as Record<string, unknown>)[key] = val
+    })
 }
+function compareString(str1: string, str2: string): number {
+  if (str1 < str2) return -1
+  if (str1 > str2) return 1
+  return 0
+}
+
 type PageServerFileProps = {
   filePath: string
   fileExports: Record<string, unknown> & {
@@ -430,7 +447,7 @@ async function executeAddPageContextHook(
   if (!pageContext._pageContextAlreadyProvidedByPrerenderHook && addPageContext) {
     const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
     assert(filePath)
-    assert_pageContext_publicProps(pageContext)
+    preparePageContextNode(pageContext)
     const pageContextAddendum = await addPageContext(pageContext)
     assertUsage(
       isPlainObject(pageContextAddendum),
@@ -484,7 +501,7 @@ async function executeRenderHook(
   )
   assert(renderFilePath)
 
-  assert_pageContext_publicProps(pageContext)
+  preparePageContextNode(pageContext)
   const renderResult: unknown = await render(pageContext)
 
   if (isSanitizedString(renderResult)) {
