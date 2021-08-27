@@ -32,7 +32,6 @@ export { prerenderPage }
 export { renderStatic404Page }
 export { getGlobalContext }
 export { loadPageFiles }
-export type { PageFilesData }
 export type { GlobalContext }
 
 type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
