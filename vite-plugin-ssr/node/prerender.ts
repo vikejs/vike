@@ -78,7 +78,10 @@ async function prerender({
   })
 
   const globalContext = await getGlobalContext()
-  objectAssign(globalContext, { _isPreRendering: true as const })
+  objectAssign(globalContext, {
+    _isPreRendering: true as const,
+    _usesClientRouter
+  })
 
   const doNotPrerenderList: DoNotPrerenderList = []
 
@@ -147,7 +150,6 @@ async function prerender({
   const prerenderPageContexts = Object.values(pageContextList).map((pageContext) => {
     objectAssign(pageContext, {
       ...globalContext,
-      _usesClientRouter,
       urlNormalized: pageContext.url
     })
     return pageContext
@@ -216,8 +218,7 @@ async function prerender({
             ...globalContext,
             url,
             routeParams: {},
-            _pageId: pageId,
-            _usesClientRouter
+            _pageId: pageId
           }
 
           const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
