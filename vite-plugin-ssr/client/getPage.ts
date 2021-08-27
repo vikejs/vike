@@ -1,7 +1,8 @@
-import { checkType, getUrlPathname, hasProp, objectAssign } from '../shared/utils'
-import { assert, assertWarning } from '../shared/utils/assert'
+import { checkType, getUrlPathname, objectAssign } from '../shared/utils'
+import { assertWarning } from '../shared/utils/assert'
 import type { PageContextBuiltInClient } from '../types'
-import { preparePageContext } from './preparePageContext'
+import { releasePageContext } from './releasePageContext'
+import { loadPageFiles } from './loadPageFiles'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
 
 export { getPage }
@@ -11,12 +12,13 @@ const urlPathnameOriginal = getUrlPathname()
 async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuiltInClient & T> {
   let pageContext = getPageContextSerializedInHtml()
   objectAssign(pageContext, { isHydration: true })
-  assert(hasProp(pageContext, 'isHydration', 'boolean'))
 
-  const pageContextProxy = await preparePageContext(pageContext)
+  const pageFiles = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFiles)
 
   assertPristineUrl()
 
+  const pageContextProxy = releasePageContext(pageContext)
   checkType<PageContextBuiltInClient>(pageContextProxy)
   return pageContextProxy as PageContextBuiltInClient & T
 }

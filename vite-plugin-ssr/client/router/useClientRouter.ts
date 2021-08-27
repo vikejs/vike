@@ -10,7 +10,8 @@ import {
 import { navigationState } from '../navigationState'
 import { throttle } from '../../shared/utils/throttle'
 import { getPageContext } from './getPageContext'
-import { preparePageContext } from '../preparePageContext'
+import { loadPageFiles } from '../loadPageFiles'
+import { releasePageContext } from '../releasePageContext'
 
 export { useClientRouter }
 export { navigate }
@@ -72,7 +73,8 @@ function useClientRouter({
     }
 
     const pageContext = await getPageContext(url, navigationState.noNavigationChangeYet)
-    const pageContextProxy = await preparePageContext(pageContext)
+    const pageFiles = await loadPageFiles(pageContext)
+    objectAssign(pageContext, pageFiles)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -89,10 +91,8 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      objectAssign(pageContextProxy, { isHydration: isFirstPageRender && url === urlFullOriginal })
-      assert(hasProp(pageContextProxy, 'Page'))
-      assert(hasProp(pageContextProxy, 'pageExports', 'object'))
-      assert(hasProp(pageContextProxy, 'isHydration', 'boolean'))
+      objectAssign(pageContext, { isHydration: isFirstPageRender && url === urlFullOriginal })
+      const pageContextProxy = releasePageContext(pageContext)
       await render(pageContextProxy)
     })()
     await renderPromise
