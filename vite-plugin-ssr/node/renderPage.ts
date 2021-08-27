@@ -26,6 +26,7 @@ import {
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
 import { loadPageView } from '../shared/loadPageView'
+import { sortPageContext } from '../shared/sortPageContext'
 
 export { renderPage }
 export { prerenderPage }
@@ -263,22 +264,7 @@ function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
   assert(isPlainObject(pageContext.routeParams))
   assert('Page' in pageContext)
   assert(isObject(pageContext.pageExports))
-
-  // Sort alphabetically to make reading `console.log(pageContext)` easier
-  const entries = Object.entries(pageContext)
-  for (const key in pageContext) {
-    delete pageContext[key]
-  }
-  entries
-    .sort(([key1], [key2]) => compareString(key1, key2))
-    .forEach(([key, val]) => {
-      ;(pageContext as Record<string, unknown>)[key] = val
-    })
-}
-function compareString(str1: string, str2: string): number {
-  if (str1 < str2) return -1
-  if (str1 > str2) return 1
-  return 0
+  sortPageContext(pageContext)
 }
 
 type PageServerFileProps = {
