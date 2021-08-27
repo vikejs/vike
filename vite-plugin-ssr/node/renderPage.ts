@@ -147,14 +147,10 @@ async function renderPageId(
     routeParams: Record<string, string>
     _pageId: string
     _isPageContextRequest: boolean
+    _isPreRendering: false
     _allPageFiles: AllPageFiles
   }
 ) {
-  objectAssign(pageContext, {
-    _isPreRendering: false,
-    _pageContextAlreadyProvidedByPrerenderHook: false
-  })
-
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
@@ -176,7 +172,7 @@ async function prerenderPage(pageContext: {
   _isPreRendering: true
   _pageId: string
   _serializedPageContextClientNeeded: boolean
-  _pageContextAlreadyProvidedByPrerenderHook: boolean
+  _pageContextAlreadyProvidedByPrerenderHook?: true
   _allPageFiles: AllPageFiles
 }) {
   assert(pageContext._isPreRendering === true)
@@ -218,8 +214,7 @@ async function renderStatic404Page(
     routeParams: {},
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
-    _serializedPageContextClientNeeded: false,
-    _pageContextAlreadyProvidedByPrerenderHook: false
+    _serializedPageContextClientNeeded: false
   }
 
   const pageFilesData = await loadPageFiles(pageContext)
@@ -350,11 +345,13 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
     _passToClient: passToClient
   })
 
+  const isPreRendering = pageContext._isPreRendering
+  assert([true, false].includes(isPreRendering))
   const pageAssets = await getPageAssets(
     pageContext,
     [pageView._pageFilePath, pageClientPath],
     pageClientPath,
-    pageContext._isPreRendering
+    isPreRendering
   )
   objectAssign(pageFilesData, {
     _pageAssets: pageAssets
@@ -422,7 +419,7 @@ async function executeAddPageContextHook(
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
     _passToClient: string[]
-    _pageContextAlreadyProvidedByPrerenderHook: boolean
+    _pageContextAlreadyProvidedByPrerenderHook?: true
   } & PageContextPublic
 ) {
   const addPageContext =
@@ -645,6 +642,7 @@ async function render500Page(
     urlNormalized: string
     _allPageIds: string[]
     _allPageFiles: AllPageFiles
+    _isPreRendering: false
     _err: unknown
   }
 ): Promise<
