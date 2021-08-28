@@ -8,6 +8,13 @@ async function loadPageView(pageContext: { _pageId: string; _allPageFiles: Pick<
   const pageId = pageContext._pageId
 
   const pageFile = findPageFile(allPageFiles['.page'], pageId)
+  if (!pageFile) {
+    return {
+      Page: null,
+      pageExports: {}, // `{}` is slightly more convenient than `null` for the user
+      _pageFilePath: null
+    }
+  }
   assert(pageFile)
   const { filePath, loadFile } = pageFile
   const fileExports = await loadFile()

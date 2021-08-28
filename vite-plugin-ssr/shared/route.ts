@@ -1,4 +1,5 @@
-import { AllPageFiles, findPageFile } from './getPageFiles'
+import { findPageFile } from './getPageFiles'
+import type { AllPageFiles, PageFile } from './getPageFiles'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
 import {
@@ -204,17 +205,37 @@ function getCommonPath(pageIds: string[]): string {
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
 async function getAllPageIds(allPageFiles: AllPageFiles): Promise<PageId[]> {
-  const pageFiles = allPageFiles['.page']
-  let pageFilePaths = pageFiles.map(({ filePath }) => filePath)
-  pageFilePaths = pageFilePaths.filter((filePath) => !isDefaultPageFile(filePath))
-  const allPageIds = pageFilePaths.map(computePageId)
+  const pageFileIds = computePageIds(allPageFiles['.page'])
+  const pageClientFileIds = computePageIds(allPageFiles['.page.client'])
+  const pageServerFileIds = computePageIds(allPageFiles['.page.server'])
+
+  const allPageIds = unique([...pageFileIds, ...pageClientFileIds, ...pageServerFileIds])
+
+  allPageIds.forEach((pageId) => {
+    assertUsage(
+      pageFileIds.includes(pageId) || pageServerFileIds.includes(pageId),
+      `File missing. You need to create at least \`${pageId}.page.server.js\` or \`${pageId}.page.js\`.`
+    )
+    assertUsage(
+      pageFileIds.includes(pageId) || pageClientFileIds.includes(pageId),
+      `File missing. You need to create at least \`${pageId}.page.client.js\` or \`${pageId}.page.js\`.`
+    )
+  })
+
   return allPageIds
+}
+function computePageIds(pageFiles: PageFile[]): string[] {
+  const fileIds = pageFiles.map(({ filePath }) => filePath).filter((filePath) => !isDefaultPageFile(filePath)).map(computePageId)
+  return fileIds
 }
 function computePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
   assert(!pageId.includes('\\'))
   return pageId
+}
+function unique<T>(arr: T[]): T[] {
+  return Array.from(new Set(arr))
 }
 
 function isDefaultPageFile(filePath: string): boolean {

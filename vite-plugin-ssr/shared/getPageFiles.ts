@@ -2,6 +2,7 @@ import { getSsrEnv } from '../node/ssrEnv'
 import { assert, assertUsage, hasProp, isBrowser } from './utils'
 
 export type { AllPageFiles }
+export type { PageFile }
 export { getAllPageFiles_clientSide }
 export { getAllPageFiles_serverSide }
 export { findPageFile }

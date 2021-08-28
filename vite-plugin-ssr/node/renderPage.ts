@@ -353,12 +353,8 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const pageAssets = await getPageAssets(
-    pageContext,
-    [pageView._pageFilePath, pageClientPath],
-    pageClientPath,
-    isPreRendering
-  )
+  const dependencies: string[] = [pageView._pageFilePath, pageClientPath].filter((p): p is string => p !== null)
+  const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
   objectAssign(pageFilesData, {
     _pageAssets: pageAssets
   })
@@ -462,7 +458,7 @@ async function executeRenderHook(
     _pageAssets: PageAssets
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
-    _pageFilePath: string
+    _pageFilePath: string | null
     _pageClientPath: string
     _passToClient: string[]
   }

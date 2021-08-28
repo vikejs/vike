@@ -148,7 +148,7 @@ async function injectAssets_internal(
     _pageAssets: PageAssets
     _pageId: string
     _pageContextClient: Record<string, unknown>
-    _pageFilePath: string
+    _pageFilePath: string | null
     _pageClientPath: string
     _passToClient: string[]
   }
