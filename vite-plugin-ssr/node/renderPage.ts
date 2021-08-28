@@ -474,12 +474,13 @@ async function executeRenderHook(
   if (pageServerFile && pageRenderFunction) {
     render = pageRenderFunction
     renderFilePath = pageServerFile.filePath
-  }
-  const pageServerFileDefault = pageContext._pageServerFileDefault
-  const pageDefaultRenderFunction = pageServerFileDefault?.fileExports.render
-  if (pageServerFileDefault && pageDefaultRenderFunction) {
-    render = pageDefaultRenderFunction
-    renderFilePath = pageServerFileDefault.filePath
+  } else {
+    const pageServerFileDefault = pageContext._pageServerFileDefault
+    const pageDefaultRenderFunction = pageServerFileDefault?.fileExports.render
+    if (pageServerFileDefault && pageDefaultRenderFunction) {
+      render = pageDefaultRenderFunction
+      renderFilePath = pageServerFileDefault.filePath
+    }
   }
   assertUsage(
     render,
