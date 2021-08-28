@@ -21,7 +21,8 @@ import {
   getUrlParsed,
   UrlParsed,
   objectAssign,
-  PromiseType
+  PromiseType,
+  compareString
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
@@ -99,7 +100,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   let statusCode: 200 | 404
   if (!pageContextRouteAddendum) {
     if (!pageContext._isPageContextRequest) {
-      await warn404(pageContext)
+      warn404(pageContext)
     }
     const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (!errorPageId) {
@@ -578,7 +579,7 @@ function warnMissingErrorPage() {
     )
   }
 }
-async function warn404(pageContext: { urlNormalized: string; _pageRoutes: PageRoutes }) {
+function warn404(pageContext: { urlNormalized: string; _pageRoutes: PageRoutes }) {
   const { isProduction } = getSsrEnv()
   const pageRoutes = pageContext._pageRoutes
   assertUsage(
@@ -589,35 +590,39 @@ async function warn404(pageContext: { urlNormalized: string; _pageRoutes: PageRo
   if (!isProduction && !isFileRequest(urlNormalized)) {
     assertWarning(
       false,
-      `No page is matching the URL \`${getUrlPathname(urlNormalized)}\`. ${await getPagesAndRoutesInfo(
-        pageRoutes
-      )}. (This warning is not shown in production.)`
+      [
+        `URL \`${getUrlPathname(urlNormalized)}\` is not matching any of your ${
+          pageRoutes.length
+        } page routes (this warning is not shown in production):`,
+        ...getPagesAndRoutesInfo(pageRoutes)
+      ].join('\n')
     )
   }
 }
-async function getPagesAndRoutesInfo(pageRoutes: PageRoutes): Promise<string> {
-  return [
-    `You defined ${pageRoutes.length} pages:`,
-    pageRoutes
-      .map((pageRoute, i) => {
-        const { pageId, filesystemRoute, pageRouteFile } = pageRoute
-        let routeInfo
-        let routeSrc
-        if (pageRouteFile) {
-          const { routeValue } = pageRouteFile
-          const pageRouteStringified = truncateString(String(routeValue).split(/\s/).filter(Boolean).join(' '), 64)
-          routeInfo = pageRouteStringified
-          const routeType = typeof routeValue === 'string' ? 'Route String' : 'Route Function'
-          const routeFile = pageRouteFile
-          routeSrc = `${routeType} defined in \`${routeFile}\``
-        } else {
-          routeInfo = filesystemRoute
-          routeSrc = 'Filesystem Routing'
-        }
-        return `(${i + 1}) \`${pageId}.page.*\` with route \`${routeInfo}\` (${routeSrc})`
-      })
-      .join(', ')
-  ].join(' ')
+function getPagesAndRoutesInfo(pageRoutes: PageRoutes) {
+  return pageRoutes
+    .map((pageRoute) => {
+      const { pageId, filesystemRoute, pageRouteFile } = pageRoute
+      let route
+      let routeType
+      if (pageRouteFile) {
+        const { routeValue } = pageRouteFile
+        route =
+          typeof routeValue === 'string'
+            ? routeValue
+            : truncateString(String(routeValue).split(/\s/).filter(Boolean).join(' '), 64)
+        routeType = typeof routeValue === 'string' ? 'Route String' : 'Route Function'
+      } else {
+        route = filesystemRoute
+        routeType = 'Filesystem Route'
+      }
+      return `\`${route}\` (${routeType} of \`${pageId}.page.*\`)`
+    })
+    .sort(compareString)
+    .map((line, i) => {
+      const nth = (i + 1).toString().padStart(pageRoutes.length.toString().length, '0')
+      return ` (${nth}) ${line}`
+    })
 }
 
 function truncateString(str: string, len: number) {
