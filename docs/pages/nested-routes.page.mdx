@@ -44,24 +44,24 @@ Usually, the sub route is used for navigating some (deeply) nested view:
 > If our sub routes don't need URLs (the Product Pricing page and the Product Reviews page share the same URL `/product/42`), then we can simply use a stateful component instead. (When the user clicks on a "pricing" link, the stateful component changes an internal state `productView` to `'pricing'` to switch to the pricing view.)
 
 By default,
-`vite-plugin-ssr` does [Server-side Routing](/SR-vs-CR),
+`vite-plugin-ssr` does [Server Routing](/SR-vs-CR),
 which means that when the user navigates from `/product/42/pricing` to `/product/42/reviews`,
 the old page `/product/42/pricing` is fully replaced with the new page `/product/42/reviews`,
 leading to a jittery experience.
 
-For smoother navigations, we can use [Client-side Routing](/useClientRouter).
+For smoother navigations, we can use [Client Routing](/useClientRouter).
 
 ```js
 // product.page.client.js
 
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 
-// We use Client-side Routing so that, when the user navigates from `/product/42/pricing`
+// We use Client Routing so that, when the user navigates from `/product/42/pricing`
 // to `/product/42/reviews`, only the relevant (deeply) nested view is updated (instead of
 // a full HTML reload).
 
 // Note that we override `_default.page.client.js`. This means all our other pages can use
-// Server-side Routing while this page uses Client-side Routing.
+// Server Routing while this page uses Client Routing.
 // (If we already use `useClientRouter()` in `_default.page.client.js`, then we don't need to
 // create this `product.page.client.js` file.)
 

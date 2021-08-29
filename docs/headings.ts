@@ -102,8 +102,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    titleInNav: 'Server- vs Client-side Routing',
-    title: 'Server-side Routing VS Client-side Routing',
+    title: 'Server Routing VS Client Routing',
     url: '/SR-vs-CR'
   },
   {

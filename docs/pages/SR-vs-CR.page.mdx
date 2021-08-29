@@ -1,36 +1,36 @@
 We can choose between two routing strategies:
- - Server-side Routing (for a simpler architecture)
- - Client-side Routing (for faster and animated page transitions)
+ - Server Routing (for a simpler app architecture)
+ - Client Routing (for faster and animated page transitions)
 
-By default, `vite-plugin-ssr` does Server-side Routing,
+By default, `vite-plugin-ssr` does Server Routing,
 which is the "old school way" of doing routing:
 when the user navigates to a new page,
 the old page is completely discarded and the browser completely loads the new page.
 
-If we don't have a rationale for doing something differently, then we should stick to Server-side Routing as it leads to a simpler architecture.
+If we don't have a rationale for doing something differently, then we should stick to Server Routing as it leads to a simpler app architecture.
 
-That said, `vite-plugin-ssr` has first-class support for Client-side Routing and we can opt-in with [`useClientRouter()`](/useClientRouter).
+That said, `vite-plugin-ssr` has first-class support for Client Routing and we can opt-in with [`useClientRouter()`](/useClientRouter).
 
-With Client-side Routing,
+With Client Routing,
 when the user navigates to a new page,
 only minimal DOM changes are applied
 instead of doing a full HTML reload.
 
-Client-side Routing enables:
+Client Routing enables:
 - Slightly faster page transitions.
 - Custom animated page transitions.
 
-Since Server-side Routing leads to a simpler architecture,
-we recommend using Client-side Routing only with a rationale to prioritize performance over simplicity.
+Since Server Routing leads to a simpler app architecture,
+we recommend using Client Routing only with a rationale to prioritize performance over simplicity.
 
 We should keep in mind that simple architecture => faster dev speed => more features for our user. Does our user care more about features or about slightly faster page transitions?
 
-> While frameworks such as Next.js and Nuxt make it seem like using Client-side Routing is easy, it actually comes with many inherent complexities that makes our life more difficult as we scale.
+> While frameworks such as Next.js and Nuxt make it seem like using Client Routing is easy, it actually comes with many inherent complexities that makes our life more difficult as we scale.
 
-Client-side Routing is perfectly fine for certain apps, for example:
+Client Routing is perfectly fine for certain apps, for example:
  - Simple websites, e.g. a portfolio/homepage.
  - Highly polished apps such as Netflix.
 
 Either way, we should make a conscious decision about it.
 
-Open a new GitHub ticket if you want more information about why we recommend Server-side Routing.
+Open a new GitHub ticket if you want more information about why we recommend Server Routing.

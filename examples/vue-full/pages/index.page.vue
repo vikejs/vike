@@ -6,7 +6,7 @@
     <li>Interactive. <Counter /></li>
   </ul>
   <p>
-    We use <code>useClientRouter()</code> to do Client-side Routing.
+    We use <code>useClientRouter()</code> to do Client Routing.
     <button @click="randomNavigation">Random Page</button>
   </p>
 </template>

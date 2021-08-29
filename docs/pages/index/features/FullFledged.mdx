@@ -17,19 +17,17 @@ pages/faq/index.page.js     /faq
 
 You can also use so-called *Route Strings* and *Route Functions*.
 ```js
-// Route Strings for parameterized routes
+// Route String - for parameterized routes
 export default '/movie/:movieId'
 
-// Route Functions for full flexibility
+// Route Function - for full flexibility
 export default ({ url, ...pageContext }) => url==='/admin' && pageContext.isAdmin
 ```
 
 You can choose between:
 
-- Client-side Routing: instead of doing a full page reload, only minimal DOM changes are applied, leading to faster page
-  transitions.
-- Server-side Routing: the "old school way" which is to completely discard the old page and to completely load the new page.
-  While it is slightly slower, it leads to a simpler architecture.
+- Client Routing for faster page transitions. (DOM mutation upon page navigation.)
+- Server Routing for a simpler app architecture. (Full HTML reload upon page navigation.)
 
 ### SSR, SPA & HTML-first
 

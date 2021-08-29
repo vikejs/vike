@@ -18,7 +18,7 @@ function IndexPage() {
         </li>
       </ul>
       <p>
-        We use <code>useClientRouter()</code> to do Client-side Routing.{" "}
+        We use <code>useClientRouter()</code> to do Client Routing.{" "}
         <button
           onClick={() => {
             const randomIndex = Math.floor(Math.random() * 3);

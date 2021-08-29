@@ -38,7 +38,7 @@ function Features() {
             <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b> (<b>SSG</b>), <b>HMR</b>.
           </p>
           <p>
-            <b>Client-side Routing</b> (faster page transitions) or <b>Server-side Routing</b> (simpler architecture).
+            <b>Client Routing</b> (faster page transitions) or <b>Server Routing</b> (simpler app architecture).
           </p>
           <p>
             Pages can be rendered with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.

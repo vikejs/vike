@@ -29,8 +29,8 @@ function createApp(pageContext: PageContext) {
     }
   })
 
-  // We use `reactive` because we use Client-side Routing.
-  // When using Server-side Routing, we don't need `reactive`.
+  // We use `reactive` because we use Client Routing.
+  // When using Server Routing, we don't need `reactive`.
   const pageContextReactive = reactive(pageContext)
   const changePage = (pageContext: PageContext) => {
     Object.assign(pageContextReactive, pageContext)

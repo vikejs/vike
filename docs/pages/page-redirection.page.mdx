@@ -60,7 +60,7 @@ app.get('*', async (req, res, next) => {
 
 ## Client-side
 
-If we use Client-side Routing, then we can also redirect on the client-side.
+If we use Client Routing, then we can also redirect on the client-side.
 
 ```js
 // movie.page.server.js
@@ -91,7 +91,7 @@ useClientRouter({
 
 ## Hydration Mismatch
 
-If we use Client-side Routing we may end up with a [hydration mismatch](/hydration#hydration-mismatch).
+If we use Client Routing we may end up with a [hydration mismatch](/hydration#hydration-mismatch).
 
 To remove the hydration mismatch, we may need to redirect on both the client-side and server-side.
 

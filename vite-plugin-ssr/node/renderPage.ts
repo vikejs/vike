@@ -217,7 +217,7 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
     is404: true,
     routeParams: {},
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
-    // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client-Side Routing.
+    // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false
   }
 
