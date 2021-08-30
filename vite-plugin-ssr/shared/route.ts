@@ -1,4 +1,4 @@
-import { findPageFile } from './getPageFiles'
+import { findDefaultFiles, findPageFile } from './getPageFiles'
 import type { AllPageFiles, PageFile } from './getPageFiles'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
@@ -10,7 +10,6 @@ import {
   hasProp,
   getUrlPathname,
   isPlainObject,
-  castProp,
   isPromise,
   objectAssign
 } from './utils'
@@ -27,11 +26,51 @@ export { isStaticRoute }
 type PageId = string
 
 async function route(pageContext: {
+  url: string
   urlNormalized: string
   _allPageIds: string[]
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
-}) {
+  _pageRouteFileDefault: null | PageRouteFileDefault
+}): Promise<null | ({ _pageId: string; routeParams: Record<string, string> } & Record<string, unknown>)> {
+  const pageContextRouteAddendum = {}
+  if (pageContext._pageRouteFileDefault?.fileExports._onBeforeRoute) {
+    const result = await pageContext._pageRouteFileDefault.fileExports._onBeforeRoute(pageContext)
+    const errPrefix = `The \`_onBeforeRoute()\` hook defined in ${pageContext._pageRouteFileDefault.filePath}`
+    assertUsage(
+      hasProp(result, 'pageContext', 'object'),
+      `${errPrefix} should return an object \`{ pageContext: {/*...*/} }\`.`
+    )
+
+    // Call `_onBeforeRoute()` hook
+    if (hasProp(result.pageContext, '_pageId')) {
+      const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but \`_pageId\` should be`
+      if (typeof result.pageContext._pageId === null) {
+        // We bypass `vite-plugin-ssr`'s routing
+        return null
+      }
+      assertUsage(hasProp(result.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
+      assertUsage(
+        pageContext._allPageIds.includes(result.pageContext._pageId),
+        `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
+      )
+      assertRouteParams(
+        result.pageContext,
+        `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
+      )
+      const routeParams = result.pageContext.routeParams || {}
+      objectAssign(result.pageContext, { routeParams })
+
+      objectAssign(pageContextRouteAddendum, result.pageContext)
+
+      // We bypass `vite-plugin-ssr`'s routing
+      return pageContextRouteAddendum
+    }
+
+    objectAssign(pageContextRouteAddendum, result.pageContext)
+  }
+
+  // `vite-plugin-ssr`'s routing
   const allPageIds = pageContext._allPageIds
   assert(allPageIds.length >= 0)
   assertUsage(
@@ -86,10 +125,10 @@ async function route(pageContext: {
 
   const { pageId, routeParams } = winner
   assert(isPlainObject(routeParams))
-  const pageContextRouteAddendum = {
+  objectAssign(pageContextRouteAddendum, {
     _pageId: pageId,
     routeParams
-  }
+  })
   return pageContextRouteAddendum
 }
 
@@ -225,7 +264,10 @@ async function getAllPageIds(allPageFiles: AllPageFiles): Promise<PageId[]> {
   return allPageIds
 }
 function computePageIds(pageFiles: PageFile[]): string[] {
-  const fileIds = pageFiles.map(({ filePath }) => filePath).filter((filePath) => !isDefaultPageFile(filePath)).map(computePageId)
+  const fileIds = pageFiles
+    .map(({ filePath }) => filePath)
+    .filter((filePath) => !isDefaultPageFile(filePath))
+    .map(computePageId)
   return fileIds
 }
 function computePageId(filePath: string): string {
@@ -292,19 +334,8 @@ async function resolveRouteFunction(
     typeof result.match === 'boolean' || typeof result.match === 'number',
     `The \`match\` value returned by the Route Function ${pageRouteFilePath} should be a boolean or a number.`
   )
-  let routeParams: Record<string, string> = {}
-  if (hasProp(result, 'routeParams')) {
-    assertUsage(
-      isPlainObject(result.routeParams),
-      `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should be a plain JavaScript object.`
-    )
-    assertUsage(
-      Object.values(result.routeParams).every((val) => typeof val === 'string'),
-      `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should only hold string values.`
-    )
-    castProp<Record<string, string>, typeof result, 'routeParams'>(result, 'routeParams')
-    routeParams = result.routeParams
-  }
+  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
+  const routeParams: Record<string, string> = result.routeParams || {}
   Object.keys(result).forEach((key) => {
     assertUsage(
       key === 'match' || key === 'routeParams',
@@ -316,6 +347,21 @@ async function resolveRouteFunction(
     matchValue: result.match,
     routeParams
   }
+}
+
+function assertRouteParams<T>(
+  result: T,
+  errPrefix: string
+): asserts result is T & { routeParams?: Record<string, string> } {
+  assert(errPrefix.endsWith(' should'))
+  if (!hasProp(result, 'routeParams')) {
+    return
+  }
+  assertUsage(isPlainObject(result.routeParams), `${errPrefix} be a plain JavaScript object.`)
+  assertUsage(
+    Object.values(result.routeParams).every((val) => typeof val === 'string'),
+    `${errPrefix} only hold string values.`
+  )
 }
 
 type RouteValue = string | Function
@@ -330,6 +376,13 @@ type PageRoutes = {
   filesystemRoute: string
 }[]
 
+type PageRouteFileDefault = {
+  filePath: string
+  fileExports: {
+    _onBeforeRoute?: (pageContext: { url: string; urlNormalized: string } & Record<string, unknown>) => unknown
+  }
+}
+
 type PageRouteExports = {
   default: RouteValue
   iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean
@@ -337,49 +390,69 @@ type PageRouteExports = {
 async function loadPageRoutes(globalContext: {
   _allPageFiles: AllPageFiles
   _allPageIds: string[]
-}): Promise<PageRoutes> {
+}): Promise<{ pageRoutes: PageRoutes; pageRouteFileDefault: null | PageRouteFileDefault }> {
   const allPageIds = globalContext._allPageIds
 
   const pageRoutes: PageRoutes = []
+  const pageRoutesPromises = allPageIds
+    .filter((pageId) => !isErrorPage(pageId))
+    .map(async (pageId) => {
+      const filesystemRoute = getFilesystemRoute(pageId, allPageIds)
+      assert(filesystemRoute.startsWith('/'))
+      assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
+      const pageRoute = {
+        pageId,
+        filesystemRoute
+      }
 
-  await Promise.all(
-    allPageIds
-      .filter((pageId) => !isErrorPage(pageId))
-      .map(async (pageId) => {
-        const filesystemRoute = getFilesystemRoute(pageId, allPageIds)
-        assert(filesystemRoute.startsWith('/'))
-        assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
-        const pageRoute = {
-          pageId,
-          filesystemRoute
-        }
+      const pageRouteFile = findPageFile(globalContext._allPageFiles['.page.route'], pageId)
+      if (pageRouteFile) {
+        const { filePath, loadFile } = pageRouteFile
+        const fileExports = await loadFile()
+        assertUsage('default' in fileExports, `${filePath} should have a default export.`)
+        assertUsage(
+          hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
+          `The default export of ${filePath} should be a string or a function.`
+        )
+        assertUsage(
+          !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
+            hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
+          `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`
+        )
+        const routeValue: RouteValue = fileExports.default
+        objectAssign(pageRoute, {
+          pageRouteFile: { filePath, fileExports, routeValue }
+        })
+        pageRoutes.push(pageRoute)
+      } else {
+        pageRoutes.push(pageRoute)
+      }
+    })
 
-        const pageRouteFile = findPageFile(globalContext._allPageFiles['.page.route'], pageId)
-        if (pageRouteFile) {
-          const { filePath, loadFile } = pageRouteFile
-          const fileExports = await loadFile()
-          assertUsage('default' in fileExports, `${filePath} should have a default export.`)
-          assertUsage(
-            hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
-            `The default export of ${filePath} should be a string or a function.`
-          )
-          assertUsage(
-            !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
-              hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
-            `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`
-          )
-          const routeValue: RouteValue = fileExports.default
-          objectAssign(pageRoute, {
-            pageRouteFile: { filePath, fileExports, routeValue }
-          })
-          pageRoutes.push(pageRoute)
-        } else {
-          pageRoutes.push(pageRoute)
-        }
-      })
+  let pageRouteFileDefault: null | PageRouteFileDefault = null
+  const defaultPageRouteFiles = findDefaultFiles(globalContext._allPageFiles['.page.route'])
+  assertUsage(
+    defaultPageRouteFiles.length <= 1,
+    'There can be only one `_default.page.route.js`. If you want to be able to define several `_default.page.route.js` files, open a new GitHub issue.'
   )
+  let pageRouteFileDefaultPromise
+  if (defaultPageRouteFiles.length >= 1) {
+    pageRouteFileDefaultPromise = (async () => {
+      const defaultFile = defaultPageRouteFiles[0]
+      const { filePath, loadFile } = defaultFile
+      const fileExports = await loadFile()
+      //assertUsage('_onBeforeRoute' in fileExports, 'ewuiqh')
+      assertUsage(
+        !('_onBeforeRoute' in fileExports) || hasProp(fileExports, '_onBeforeRoute', 'function'),
+        `The \`_onBeforeRoute\` export of \`${filePath}\` should be a function.`
+      )
+      pageRouteFileDefault = { filePath, fileExports }
+    })()
+  }
 
-  return pageRoutes
+  await Promise.all([...pageRoutesPromises, pageRouteFileDefaultPromise])
+
+  return { pageRoutes, pageRouteFileDefault }
 }
 
 function isReservedPageId(pageId: string): boolean {

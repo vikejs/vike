@@ -6,6 +6,7 @@ export type { PageFile }
 export { getAllPageFiles_clientSide }
 export { getAllPageFiles_serverSide }
 export { findPageFile }
+export { findDefaultFiles }
 
 export { setPageFiles }
 export { setPageFilesAsync }
@@ -106,6 +107,15 @@ function findPageFile<T>(
   }
   assertUsage(pageFiles.length === 1, 'Conflicting ' + pageFiles.map(({ filePath }) => filePath).join(' '))
   return pageFiles[0]
+}
+
+function findDefaultFiles<T extends { filePath: string }>(pageFiles: T[]): T[] {
+  const defaultFiles = pageFiles.filter(({ filePath }) => {
+    assert(filePath.startsWith('/'))
+    assert(!filePath.includes('\\'))
+    return filePath.includes('/_default')
+  })
+  return defaultFiles
 }
 
 function assertNotAlreadyLoaded() {

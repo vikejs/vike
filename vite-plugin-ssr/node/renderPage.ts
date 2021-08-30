@@ -1,6 +1,6 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/index'
-import { AllPageFiles, getAllPageFiles_serverSide, findPageFile } from '../shared/getPageFiles'
+import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
@@ -270,7 +270,7 @@ function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
 
 type PageServerFileProps = {
   filePath: string
-  fileExports: Record<string, unknown> & {
+  fileExports: {
     render?: Function
     prerender?: Function
     addPageContext?: Function
@@ -368,7 +368,7 @@ function getPageClientPath(pageContext: { _pageId: string; _allPageFiles: AllPag
     'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
   )
   const pageClientPath =
-    findPageFile(pageClientFiles, pageId)?.filePath || findDefaultPageFile(pageClientFiles, pageId)?.filePath
+    findPageFile(pageClientFiles, pageId)?.filePath || findDefaultFile(pageClientFiles, pageId)?.filePath
   assert(pageClientPath)
   return pageClientPath
 }
@@ -384,7 +384,7 @@ async function loadPageServerFiles(pageContext: {
   )
 
   const serverFile = findPageFile(serverFiles, pageId)
-  const serverFileDefault = findDefaultPageFile(serverFiles, pageId)
+  const serverFileDefault = findDefaultFile(serverFiles, pageId)
   assert(serverFile || serverFileDefault)
   const pageServerFile = !serverFile
     ? null
@@ -507,15 +507,11 @@ async function executeRenderHook(
   }
 }
 
-function findDefaultPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
-  const hits = pageFiles.filter(({ filePath }) => {
-    assert(filePath.startsWith('/'))
-    assert(!filePath.includes('\\'))
-    return filePath.includes('/_default')
-  })
+function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
+  const defautFiles = findDefaultFiles(pageFiles)
 
   // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
-  hits.sort(
+  defautFiles.sort(
     lowerFirst(({ filePath }) => {
       if (filePath.startsWith(pageId)) return -1
       assert(!filePath.includes('\\'))
@@ -527,7 +523,7 @@ function findDefaultPageFile<T extends { filePath: string }>(pageFiles: T[], pag
     })
   )
 
-  return hits[0] || null
+  return defautFiles[0] || null
 }
 
 function assertArguments(...args: unknown[]) {
@@ -777,8 +773,8 @@ async function getGlobalContext() {
   const allPageIds = await getAllPageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
 
-  const pageRoutes = await loadPageRoutes(globalContext)
-  objectAssign(globalContext, { _pageRoutes: pageRoutes })
+  const { pageRoutes, pageRouteFileDefault } = await loadPageRoutes(globalContext)
+  objectAssign(globalContext, { _pageRoutes: pageRoutes, _pageRouteFileDefault: pageRouteFileDefault })
 
   return globalContext
 }
