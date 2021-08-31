@@ -1,47 +1,121 @@
-To determine the language, one of the following methods is usually used:
+import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-- `Accept-Language: es` header
-- `?lang=es` query parameter
-- Domain TLD `domain.es`
-- URL path segment `domain.com/es`
 
-Regardless of the method, an easy way to implement i18n is to determine the language at the `vite-plugin-ssr` server middleware:
+## Without pre-rendering
+
+Without [pre-rendering](/pre-rendering), we can simply determine the locale at the `vite-plugin-ssr` server middleware:
 
 ```js
 const renderPage = createPageRender(/* ... */)
 
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {
-  const { url } = req
-  const { language, urlProcessed } = retrieveLanguage(url)
+  let { url } = req
+  const { locale, urlWithoutLocale } = extractLocale(url)
 
-  // We set `pageContext.url` to `urlProcessed` instead of `req.url`.
-  // So that the language URL part `/en-US/` is stripped away.
+  // We set `pageContext.url` to `urlWithoutLocale` instead of `req.url`.
+  // So that the locale `/en-US/` in the URL is stripped away.
+  url = urlWithoutLocale
+
   const pageContext = {
-    url: urlProcessed,
-    // We make the language information available to pages as `pageContext.language`
-    user
+    url,
+    // We make `locale` available to pages as `pageContext.locale`
+    locale
   }
   const result = await renderPage(pageContext)
 
   /* ... */
 })
 
-// We usually use a library instead of implementing our own language retrieval mechanism
-function retrieveLanguage(url) {
-  // We determine the language, for example:
-  //  retrieveLanguage('https://example.org/en-US/film/42').language === 'en-US'
-  //  retrieveLanguage('https://example.org/de-DE/film/42').language === 'de-DE'
-  const language = /*...*/
+// We usually use a library instead of implementing our own locale retrieval mechanism
+function extractLocale(url) {
+  // We determine the locale, for example:
+  //  extractLocale('/en-US/film/42').locale === 'en-US'
+  //  extractLocale('/de-DE/film/42').locale === 'de-DE'
+  const locale = /*...*/
 
   // We may also strip the language URL pathname, for example:
-  //  retrieveLanguage('https://example.org/en-US/film/42').url === 'https://example.org/film/42'
-  //  retrieveLanguage('https://example.org/de-DE/film/42').url === 'https://example.org/film/42'
+  //  extractLocale('/en-US/film/42').urlWithoutLocale === '/film/42'
+  //  extractLocale('/de-DE/film/42').urlWithoutLocale === '/film/42'
   //  ...
-  urlProcessed = /*...*/
+  urlWithoutLocale = /*...*/
 
-  return { language, urlProcessed }
+  return { locale, urlWithoutLocale }
 }
 ```
 
-We then make `pageContext.language` available to all components, see [Access `pageContext` anywhere](/pageContext-anywhere).
+We can then make `pageContext.locale` available to all our components, see [Access `pageContext` anywhere](/pageContext-anywhere).
+
+This technique also works with:
+
+- `Accept-Language: fr` headers
+- `?lang=fr` query parameters
+- `domain.fr` domain TLDs
+
+Example:
+- <RepoLink path='/examples/i18n/' />
+
+
+## With pre-rendering
+
+When using [pre-rendering](/pre-rendering),
+we can use the hooks `_onBeforeRoute()` and `_onBeforePrerender()`.
+These are beta features, but we expect them to remain fairly stable.
+
+```js
+// _default.page.route.js
+
+export { _onBeforeRoute }
+
+function _onBeforeRoute(pageContext) {
+  let { url } = pageContext
+
+  const { urlWithoutLocale, locale } = extractLocale(url)
+  url = urlWithoutLocale
+
+  return {
+    pageContext: {
+      // We make `locale` available as `pageContext.locale`.
+      // We can then use https://vite-plugin-ssr.com/pageContext-anywhere
+      // to access `pageContext.locale` in any React/Vue component.
+      locale,
+      // We overwrite the original URL
+      url
+    }
+  }
+}
+```
+
+```js
+// _default.page.server.js
+
+export { _onBeforePrerender }
+
+function _onBeforePrerender(globalContext) {
+  const prerenderPageContexts = []
+  globalContext._prerenderPageContexts.forEach((pageContext) => {
+    prerenderPageContexts.push({
+      ...pageContext,
+      locale: localeDefault
+    })
+    // We add the localized pages to the list of pages that are going to be pre-rendered
+    locales
+      .filter((locale) => locale !== localeDefault)
+      .forEach((locale) => {
+        prerenderPageContexts.push({
+          ...pageContext,
+          url: `/${locale}${pageContext.url}`,
+          locale
+        })
+      })
+  })
+  return {
+    globalContext: {
+      _prerenderPageContexts: prerenderPageContexts
+    }
+  }
+}
+```
+
+Example:
+- <RepoLink path='/examples/i18n-prerender/' />
