@@ -27,16 +27,16 @@ function render(pageContext) {
 }
 
 function _onBeforePrerender(globalContext) {
-  const prerenderedPageContexts = []
+  const prerenderPageContexts = []
   globalContext._prerenderPageContexts.forEach((pageContext) => {
-    prerenderedPageContexts.push({
+    prerenderPageContexts.push({
       ...pageContext,
       locale: localeDefault
     })
     locales
       .filter((locale) => locale !== localeDefault)
       .forEach((locale) => {
-        prerenderedPageContexts.push({
+        prerenderPageContexts.push({
           ...pageContext,
           url: `/${locale}${pageContext.url}`,
           locale
@@ -45,7 +45,7 @@ function _onBeforePrerender(globalContext) {
   })
   return {
     globalContext: {
-      _prerenderPageContexts: prerenderedPageContexts
+      _prerenderPageContexts: prerenderPageContexts
     }
   }
 }
