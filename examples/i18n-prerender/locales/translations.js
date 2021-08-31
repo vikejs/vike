@@ -1,9 +1,9 @@
 export const translations = {
-  'Hello': {
+  Hello: {
     'de-DE': 'Hallo',
     'fr-FR': 'Bonjour'
   },
-  'Welcome': {
+  Welcome: {
     'de-DE': 'Wilkommen',
     'fr-FR': 'Bienvenue'
   },
@@ -11,7 +11,7 @@ export const translations = {
     'de-DE': 'Diese Seite ist',
     'fr-FR': 'Cette page est'
   },
-  'Localized': {
+  Localized: {
     'de-DE': 'Loaklisiert',
     'fr-FR': 'Localisé'
   },
@@ -23,11 +23,11 @@ export const translations = {
     'de-DE': 'Zu HTML gerendert',
     'fr-FR': 'Rendu en HTML'
   },
-  'Interactive': {
+  Interactive: {
     'de-DE': 'Interaktiv',
     'fr-FR': 'Interactif'
   },
-  'Counter': {
+  Counter: {
     'de-DE': 'Zähler',
     'fr-FR': 'Compteur'
   },
@@ -46,5 +46,5 @@ export const translations = {
   '': {
     'de-DE': '',
     'fr-FR': ''
-  },
+  }
 }

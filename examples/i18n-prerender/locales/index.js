@@ -16,7 +16,7 @@ function extractLocale(url) {
   const firstPath = urlPaths[1]
   if (locales.includes(firstPath)) {
     locale = firstPath
-    urlWithoutLocale = '/'+urlPaths.slice(2).join('/')
+    urlWithoutLocale = '/' + urlPaths.slice(2).join('/')
   } else {
     locale = localeDefault
     urlWithoutLocale = url
@@ -26,7 +26,7 @@ function extractLocale(url) {
 }
 
 function translate(text, locale) {
-  if( locale === localeDefault ) {
+  if (locale === localeDefault) {
     return text
   }
   return translations[text][locale]

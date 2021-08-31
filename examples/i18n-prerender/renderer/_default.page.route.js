@@ -15,7 +15,7 @@ function _onBeforeRoute(pageContext) {
       // to access `pageContext.locale` in any React/Vue component.
       locale,
       // We overwrite the original URL
-      url,
+      url
     }
   }
 }
