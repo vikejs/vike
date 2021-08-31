@@ -98,7 +98,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
 
   // *** Handle 404 ***
   let statusCode: 200 | 404
-  if (!pageContextRouteAddendum) {
+  if (pageContextRouteAddendum._pageId === null) {
     if (!pageContext._isPageContextRequest) {
       warn404(pageContext)
     }
@@ -123,7 +123,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   } else {
     statusCode = 200
   }
-  assert(pageContextRouteAddendum._pageId)
+  assert(hasProp(pageContextRouteAddendum, '_pageId', 'string'))
   assert(isPlainObject(pageContextRouteAddendum.routeParams))
 
   objectAssign(pageContext, pageContextRouteAddendum)

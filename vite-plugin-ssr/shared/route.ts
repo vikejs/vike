@@ -2,7 +2,17 @@ import { findDefaultFiles, findPageFile } from './getPageFiles'
 import type { AllPageFiles, PageFile } from './getPageFiles'
 // @ts-ignore
 import pathToRegexp from '@brillout/path-to-regexp'
-import { assert, assertUsage, higherFirst, slice, hasProp, isPlainObject, isPromise, objectAssign } from './utils'
+import {
+  assert,
+  assertUsage,
+  higherFirst,
+  slice,
+  hasProp,
+  isPlainObject,
+  isPromise,
+  objectAssign,
+  isObjectWithKeys
+} from './utils'
 import { addComputedUrlProps } from '../node/renderPage'
 
 export { route }
@@ -22,46 +32,22 @@ async function route(pageContext: {
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
   _pageRouteFileDefault: null | PageRouteFileDefault
-}): Promise<null | ({ _pageId: string; routeParams: Record<string, string> } & Record<string, unknown>)> {
+}): Promise<{ _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown>> {
   addComputedUrlProps(pageContext)
 
-  const pageContextRouteAddendum = {}
-  if (pageContext._pageRouteFileDefault?.fileExports._onBeforeRoute) {
-    const result = await pageContext._pageRouteFileDefault.fileExports._onBeforeRoute(pageContext)
-    const errPrefix = `The \`_onBeforeRoute()\` hook defined in ${pageContext._pageRouteFileDefault.filePath}`
-    assertUsage(
-      hasProp(result, 'pageContext', 'object'),
-      `${errPrefix} should return an object \`{ pageContext: {/*...*/} }\`.`
-    )
-
-    // Call `_onBeforeRoute()` hook
-    if (hasProp(result.pageContext, '_pageId')) {
-      const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but \`_pageId\` should be`
-      if (typeof result.pageContext._pageId === null) {
-        // We bypass `vite-plugin-ssr`'s routing
-        return null
-      }
-      assertUsage(hasProp(result.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
-      assertUsage(
-        pageContext._allPageIds.includes(result.pageContext._pageId),
-        `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
-      )
-      assertRouteParams(
-        result.pageContext,
-        `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
-      )
-      const routeParams = result.pageContext.routeParams || {}
-      objectAssign(result.pageContext, { routeParams })
-
-      objectAssign(pageContextRouteAddendum, result.pageContext)
-
+  const pageContextAddendum = {}
+  const pageContextAddendumHook = await callOnBeforeRouteHook(pageContext)
+  if (pageContextAddendumHook !== null) {
+    objectAssign(pageContextAddendum, pageContextAddendumHook)
+    if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
       // We bypass `vite-plugin-ssr`'s routing
-      return pageContextRouteAddendum
+      return {
+        ...pageContextAddendum,
+        routeParams: pageContextAddendum.routeParams || {}
+      }
     }
-
-    objectAssign(pageContextRouteAddendum, result.pageContext)
-    // We already assign so that `pageContext.url === pageContextRouteAddendum.url`. Enabling the `_onBeforeRoute()` hook to mutate `pageContext.url`.
-    objectAssign(pageContext, pageContextRouteAddendum)
+    // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `_onBeforeRoute()` hook to mutate `pageContext.url` before routing.
+    objectAssign(pageContext, pageContextAddendum)
   }
 
   // `vite-plugin-ssr`'s routing
@@ -115,15 +101,59 @@ async function route(pageContext: {
   const winner = pickWinner(routeResults)
   // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
 
-  if (!winner) return null
+  if (!winner) return { _pageId: null, routeParams: {} }
 
   const { pageId, routeParams } = winner
   assert(isPlainObject(routeParams))
-  objectAssign(pageContextRouteAddendum, {
+  objectAssign(pageContextAddendum, {
     _pageId: pageId,
     routeParams
   })
-  return pageContextRouteAddendum
+  return pageContextAddendum
+}
+
+async function callOnBeforeRouteHook(pageContext: {
+  url: string
+  _allPageIds: string[]
+  _pageRoutes: PageRoutes
+  _pageRouteFileDefault: null | PageRouteFileDefault
+}): Promise<null | (Record<string, unknown> & { _pageId?: string | null; routeParams?: Record<string, string> })> {
+  if (!pageContext._pageRouteFileDefault?.fileExports._onBeforeRoute) {
+    return null
+  }
+  const result = await pageContext._pageRouteFileDefault.fileExports._onBeforeRoute(pageContext)
+  if (result === null || result === undefined) {
+    return null
+  }
+
+  const errPrefix = `The \`_onBeforeRoute()\` hook defined in ${pageContext._pageRouteFileDefault.filePath}`
+
+  assertUsage(
+    isObjectWithKeys(result, ['pageContext'] as const),
+    `${errPrefix} should return \`null\`, \`undefined\`, or \`{ pageContext }\`.`
+  )
+
+  assertUsage(
+    hasProp(result, 'pageContext', 'object'),
+    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`
+  )
+
+  if (hasProp(result.pageContext, '_pageId') && !hasProp(result.pageContext, '_pageId', 'null')) {
+    const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but \`_pageId\` should be`
+    assertUsage(hasProp(result.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
+    assertUsage(
+      pageContext._allPageIds.includes(result.pageContext._pageId),
+      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
+    )
+  }
+  if (hasProp(result.pageContext, 'routeParams')) {
+    assertRouteParams(
+      result.pageContext,
+      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
+    )
+  }
+
+  return result.pageContext
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -373,7 +403,7 @@ type PageRoutes = {
 type PageRouteFileDefault = {
   filePath: string
   fileExports: {
-    _onBeforeRoute?: (pageContext: { url: string; urlNormalized: string } & Record<string, unknown>) => unknown
+    _onBeforeRoute?: (pageContext: { url: string } & Record<string, unknown>) => unknown
   }
 }
 

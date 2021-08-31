@@ -234,8 +234,10 @@ async function routeAndPrerender(
       concurrencyLimit(async () => {
         const { url, _prerenderSourceFile: prerenderSourceFile } = pageContext
         const pageContextRouteAddendum = await route(pageContext)
-        assert(pageContextRouteAddendum === null || isPlainObject(pageContextRouteAddendum))
-        if (pageContextRouteAddendum === null) {
+        assert(
+          hasProp(pageContextRouteAddendum, '_pageId', 'null') || hasProp(pageContextRouteAddendum, '_pageId', 'string')
+        )
+        if (pageContextRouteAddendum._pageId === null) {
           assert(prerenderSourceFile)
           assertUsage(
             false,
