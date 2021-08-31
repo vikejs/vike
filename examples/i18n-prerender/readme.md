@@ -12,5 +12,5 @@ To run it:
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/i18n-prerender/
 npm install
-npm run start
+npm run prod
 ```

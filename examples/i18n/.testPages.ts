@@ -2,7 +2,7 @@ import { run, page, urlBase, fetchHtml, autoRetry } from '../../libframe/test/se
 
 export { testPages }
 
-function testPages(cmd: 'npm run dev' | 'npm run prod') {
+function testPages(cmd: 'npm run dev' | 'npm run start' | 'npm run prod') {
   run(cmd)
 
   test('localized content is rendered to HTML', async () => {
