@@ -35,6 +35,7 @@ export { renderStatic404Page }
 export { getGlobalContext }
 export { loadPageFiles }
 export type { GlobalContext }
+export { addComputedUrlProps }
 
 type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
@@ -59,7 +60,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
     }
   }
 
-  const { urlWithoutOrigin, urlNormalized, isPageContextRequest, hasBaseUrl } = analyzeUrl(url)
+  const { urlWithoutOrigin, isPageContextRequest, hasBaseUrl } = analyzeUrl(url)
   if (!hasBaseUrl) {
     return {
       nothingRendered: true,
@@ -68,13 +69,12 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
     }
   }
 
-  pageContext.url = urlWithoutOrigin
-  pageContext.urlNormalized = urlNormalized
-  assert(hasProp(pageContext, 'urlNormalized', 'string'))
-  addUrlPropsToPageContext(pageContext)
+  addComputedUrlProps(pageContext)
 
-  pageContext._isPageContextRequest = isPageContextRequest
-  assert(hasProp(pageContext, '_isPageContextRequest', 'boolean'))
+  pageContext.url = urlWithoutOrigin
+  objectAssign(pageContext, {
+    _isPageContextRequest: isPageContextRequest
+  })
 
   const globalContext = await getGlobalContext()
   objectAssign(globalContext, { _isPreRendering: false as const })
@@ -150,7 +150,6 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
 async function renderPageId(
   pageContext: PageContextUrls & {
     url: string
-    urlNormalized: string
     routeParams: Record<string, string>
     _pageId: string
     _isPageContextRequest: boolean
@@ -186,7 +185,7 @@ async function prerenderPage(
 ) {
   assert(pageContext._isPreRendering === true)
 
-  addUrlPropsToPageContext(pageContext)
+  addComputedUrlProps(pageContext)
 
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
@@ -571,21 +570,19 @@ function warnMissingErrorPage() {
     )
   }
 }
-function warn404(pageContext: { urlNormalized: string; _pageRoutes: PageRoutes }) {
+function warn404(pageContext: { urlPathname: string; _pageRoutes: PageRoutes }) {
   const { isProduction } = getSsrEnv()
   const pageRoutes = pageContext._pageRoutes
   assertUsage(
     pageRoutes.length > 0,
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
   )
-  const { urlNormalized } = pageContext
-  if (!isProduction && !isFileRequest(urlNormalized)) {
+  const { urlPathname } = pageContext
+  if (!isProduction && !isFileRequest(urlPathname)) {
     assertWarning(
       false,
       [
-        `URL \`${getUrlPathname(urlNormalized)}\` is not matching any of your ${
-          pageRoutes.length
-        } page routes (this warning is not shown in production):`,
+        `URL \`${urlPathname}\` is not matching any of your ${pageRoutes.length} page routes (this warning is not shown in production):`,
         ...getPagesAndRoutesInfo(pageRoutes)
       ].join('\n')
     )
@@ -626,8 +623,7 @@ function truncateString(str: string, len: number) {
   }
 }
 
-function isFileRequest(urlNormalized: string) {
-  const urlPathname = getUrlPathname(urlNormalized)
+function isFileRequest(urlPathname: string) {
   assert(urlPathname.startsWith('/'))
   const paths = urlPathname.split('/')
   const lastPath = paths[paths.length - 1]
@@ -642,7 +638,6 @@ function isFileRequest(urlNormalized: string) {
 async function render500Page(
   pageContext: PageContextUrls & {
     url: string
-    urlNormalized: string
     _allPageIds: string[]
     _allPageFiles: AllPageFiles
     _isPreRendering: false
@@ -721,22 +716,6 @@ function removeOrigin(url: string): string {
 }
 
 type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
-function addUrlPropsToPageContext<
-  PageContext extends Record<string, unknown> & { url: string; urlNormalized?: string }
->(pageContext: PageContext): asserts pageContext is PageContext & PageContextUrls {
-  if (!('urlNormalized' in pageContext)) {
-    const urlNormalized: string = analyzeUrl(pageContext.url).urlNormalized
-    pageContext.urlNormalized = urlNormalized
-    assert(hasProp(pageContext, 'urlNormalized', 'string'))
-  }
-  const { urlNormalized } = pageContext
-  assert(typeof urlNormalized === 'string')
-  const urlPathname: string = getUrlPathname(urlNormalized)
-  const urlParsed: UrlParsed = getUrlParsed(urlNormalized)
-  assert(urlPathname.startsWith('/'))
-  assert(isPlainObject(urlParsed))
-  Object.assign(pageContext, { urlPathname, urlParsed })
-}
 
 function analyzeUrl(url: string): {
   urlWithoutOrigin: string
@@ -760,6 +739,30 @@ function analyzeUrl(url: string): {
 
   const urlNormalized = url
   return { urlWithoutOrigin, urlNormalized, isPageContextRequest, hasBaseUrl }
+}
+
+function addComputedUrlProps<PageContext extends Record<string, unknown> & { url: string }>(
+  pageContext: PageContext
+): asserts pageContext is PageContext & PageContextUrls {
+  if ('urlNormalized' in pageContext) {
+    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlNormalized')?.get === urlNormalizedGetter)
+    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlPathname')?.get === urlPathnameGetter)
+    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlParsed')?.get === urlParsedGetter)
+  } else {
+    Object.defineProperty(pageContext, 'urlNormalized', { get: urlNormalizedGetter })
+    Object.defineProperty(pageContext, 'urlPathname', { get: urlPathnameGetter })
+    Object.defineProperty(pageContext, 'urlParsed', { get: urlParsedGetter })
+  }
+}
+function urlNormalizedGetter(this: { url: string }) {
+  assert(hasProp(this, 'url', 'string'))
+  return analyzeUrl(this.url).urlNormalized
+}
+function urlPathnameGetter(this: { urlNormalized: string }) {
+  return getUrlPathname(this.urlNormalized)
+}
+function urlParsedGetter(this: { urlNormalized: string }) {
+  return getUrlParsed(this.urlNormalized)
 }
 
 async function getGlobalContext() {

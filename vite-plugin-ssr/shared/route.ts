@@ -8,11 +8,11 @@ import {
   higherFirst,
   slice,
   hasProp,
-  getUrlPathname,
   isPlainObject,
   isPromise,
   objectAssign
 } from './utils'
+import { addComputedUrlProps } from '../node/renderPage'
 
 export { route }
 export { loadPageRoutes }
@@ -27,12 +27,13 @@ type PageId = string
 
 async function route(pageContext: {
   url: string
-  urlNormalized: string
   _allPageIds: string[]
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
   _pageRouteFileDefault: null | PageRouteFileDefault
 }): Promise<null | ({ _pageId: string; routeParams: Record<string, string> } & Record<string, unknown>)> {
+  addComputedUrlProps(pageContext)
+
   const pageContextRouteAddendum = {}
   if (pageContext._pageRouteFileDefault?.fileExports._onBeforeRoute) {
     const result = await pageContext._pageRouteFileDefault.fileExports._onBeforeRoute(pageContext)
@@ -68,6 +69,8 @@ async function route(pageContext: {
     }
 
     objectAssign(pageContextRouteAddendum, result.pageContext)
+    // We already assign so that `pageContext.url === pageContextRouteAddendum.url`. Enabling the `_onBeforeRoute()` hook to mutate `pageContext.url`.
+    objectAssign(pageContext, pageContextRouteAddendum)
   }
 
   // `vite-plugin-ssr`'s routing
@@ -77,7 +80,7 @@ async function route(pageContext: {
     allPageIds.length > 0,
     'No `*.page.js` file found. You must create a `*.page.js` file, e.g. `pages/index.page.js` (or `pages/index.page.{jsx, tsx, vue, ...}`).'
   )
-  const urlPathname = getUrlPathname(pageContext.urlNormalized)
+  const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
   const routeResults = await Promise.all(

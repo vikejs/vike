@@ -41,7 +41,6 @@ type GlobalPrerenderingContext = GlobalContext & {
 
 type PageContext = GlobalPrerenderingContext & {
   url: string
-  urlNormalized: string
   _prerenderSourceFile: string | null
   _pageContextAlreadyProvidedByPrerenderHook?: true
 }
@@ -104,7 +103,9 @@ async function prerender({
 
   console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
 
-  await Promise.all(htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit)))
+  await Promise.all(
+    htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit))
+  )
 
   warnMissingPages(prerenderedPageIds, doNotPrerenderList, globalContext, partial)
 }
@@ -153,8 +154,7 @@ async function callPrerenderHooks(
               pageContextFound = {
                 ...globalContext,
                 _prerenderSourceFile: prerenderSourceFile,
-                url,
-                urlNormalized: url
+                url
               }
               globalContext._prerenderPageContexts.push(pageContextFound)
             }
@@ -210,7 +210,6 @@ async function handlePagesWithStaticRoutes(
           ...globalContext,
           _prerenderSourceFile: null,
           url,
-          urlNormalized: url,
           routeParams: {},
           _pageId: pageId
         }
