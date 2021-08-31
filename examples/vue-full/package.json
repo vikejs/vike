@@ -23,7 +23,7 @@
     "rimraf": "^3.0.2",
     "serve": "^12.0.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.2",
     "vite": "^2.5.0",
     "vite-plugin-md": "^0.6.7",
     "vite-plugin-ssr": "0.2.11",
