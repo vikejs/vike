@@ -12,9 +12,9 @@ function extractLocale(url) {
 
   let locale
   let urlWithoutLocale
-  // We remove the URL locale, e.g. `/en-US/` in `/en-US/about`
+  // We remove the URL locale, for example `/de-DE/about` => `/about`
   const firstPath = urlPaths[1]
-  if (locales.includes(firstPath)) {
+  if (locales.filter((locale) => locale !== localeDefault).includes(firstPath)) {
     locale = firstPath
     urlWithoutLocale = '/' + urlPaths.slice(2).join('/')
   } else {

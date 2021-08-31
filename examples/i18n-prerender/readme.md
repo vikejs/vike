@@ -1,4 +1,10 @@
-Example of internationalized (i18n) & pre-rendered `vite-plugin-ssr` app.
+Example of a `vite-plugin-ssr` app that is:
+ - Internationalized (i18n)
+ - Pre-rendered (SSG)
+
+Note the usage of the `_onBeforeRoute()` and `_onBeforePrerender()` hooks.
+
+If you don't pre-render your app, then have a look at [/examples/i18n/](/examples/i18n/) instead.
 
 To run it:
 
