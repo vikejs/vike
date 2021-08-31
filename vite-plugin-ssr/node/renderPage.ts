@@ -36,6 +36,7 @@ export { getGlobalContext }
 export { loadPageFiles }
 export type { GlobalContext }
 export { addComputedUrlProps }
+export { loadOnBeforePrerenderHook }
 
 type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
@@ -410,6 +411,37 @@ async function loadPageServerFiles(pageContext: {
     return { pageServerFile, pageServerFileDefault }
   }
   assert(false)
+}
+
+type OnBeforePrerenderHook = (globalContext: { _pageRoutes: PageRoutes }) => unknown
+async function loadOnBeforePrerenderHook(globalContext: {
+  _allPageFiles: AllPageFiles
+}): Promise<null | { onBeforePrerenderHook: OnBeforePrerenderHook; hookFilePath: string }> {
+  const defautFiles = findDefaultFiles(globalContext._allPageFiles['.page.server'])
+  let onBeforePrerenderHook: OnBeforePrerenderHook | null = null
+  let hookFilePath: string | undefined = undefined
+  await Promise.all(
+    defautFiles.map(async ({ filePath, loadFile }) => {
+      const fileExports = await loadFile()
+      if ('_onBeforePrerender' in fileExports) {
+        assertUsage(
+          hasProp(fileExports, '_onBeforePrerender', 'function'),
+          `The \`export { _onBeforePrerender }\` in ${filePath} should be a function.`
+        )
+        assertUsage(
+          onBeforePrerenderHook === null,
+          'There can be only one `_onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.'
+        )
+        onBeforePrerenderHook = fileExports._onBeforePrerender
+        hookFilePath = filePath
+      }
+    })
+  )
+  if (!onBeforePrerenderHook) {
+    return null
+  }
+  assert(hookFilePath)
+  return { onBeforePrerenderHook, hookFilePath }
 }
 
 type PageContextUser = Record<string, unknown>

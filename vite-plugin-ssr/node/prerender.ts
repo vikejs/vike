@@ -2,7 +2,7 @@ import './page-files/setup'
 import fs from 'fs'
 const { writeFile, mkdir } = fs.promises
 import { join, sep, dirname, isAbsolute } from 'path'
-import { isErrorPage, isStaticRoute, route } from '../shared/route'
+import { isErrorPage, isStaticRoute, PageRoutes, route } from '../shared/route'
 import {
   assert,
   assertUsage,
@@ -11,14 +11,23 @@ import {
   getFileUrl,
   isPlainObject,
   projectInfo,
-  objectAssign
+  objectAssign,
+  isObjectWithKeys
 } from '../shared/utils'
 import { moduleExists } from '../shared/utils/moduleExists'
 import { setSsrEnv } from './ssrEnv'
-import { getGlobalContext, GlobalContext, loadPageFiles, prerenderPage, renderStatic404Page } from './renderPage'
+import {
+  getGlobalContext,
+  GlobalContext,
+  loadOnBeforePrerenderHook,
+  loadPageFiles,
+  prerenderPage,
+  renderStatic404Page
+} from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
+import { AllPageFiles } from '../shared/getPageFiles'
 
 export { prerender }
 
@@ -92,6 +101,8 @@ async function prerender({
   await callPrerenderHooks(globalContext, doNotPrerenderList, concurrencyLimit)
 
   await handlePagesWithStaticRoutes(globalContext, doNotPrerenderList, concurrencyLimit)
+
+  await callOnBeforePrerenderHook(globalContext)
 
   const prerenderedPageIds: PrerenderedPageIds = {}
   const htmlDocuments: HtmlDocument[] = []
@@ -219,6 +230,33 @@ async function handlePagesWithStaticRoutes(
       })
     )
   )
+}
+
+async function callOnBeforePrerenderHook(globalContext: {
+  _allPageFiles: AllPageFiles
+  _prerenderPageContexts: PageContext[]
+  _pageRoutes: PageRoutes
+}) {
+  const hook = await loadOnBeforePrerenderHook(globalContext)
+  if (!hook) {
+    return
+  }
+  const { onBeforePrerenderHook, hookFilePath } = hook
+  const result = await onBeforePrerenderHook(globalContext)
+  if( result=== null || result===undefined) {
+    return
+  }
+  const errPrefix = `The \`_onBeforePrerender()\` hook defined in \`${hookFilePath}\``
+  assertUsage(
+    isObjectWithKeys(result, ['globalContext'] as const),
+    `${errPrefix} should return \`null\`, \`undefined\`, or \`{ globalContext }\`.`
+  )
+  const globalContextAddedum  = result.globalContext
+  assertUsage(
+    isPlainObject(globalContextAddedum),
+    `${errPrefix} returned \`{ globalContext }\` but \`globalContext\` should be a plain JavaScript object.`
+  )
+  objectAssign(globalContext, globalContextAddedum)
 }
 
 async function routeAndPrerender(
