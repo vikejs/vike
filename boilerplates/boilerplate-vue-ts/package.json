@@ -14,7 +14,7 @@
     "@vue/server-renderer": "^3.2.6",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.2.1",
     "typescript": "^4.4.2",
     "vite": "^2.5.2",
     "vite-plugin-ssr": "^0.2.11",
