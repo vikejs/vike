@@ -7,8 +7,8 @@
     "@brillout/path-to-regexp": "^0.1.2",
     "cac": "^6.7.3",
     "devalue": "^2.0.1",
-    "fast-glob": "^3.2.5",
-    "kolorist": "^1.4.1",
+    "fast-glob": "^3.2.7",
+    "kolorist": "^1.5.0",
     "p-limit": "^3.1.0",
     "vite-plugin-import-build": "^0.1.2"
   },
@@ -25,8 +25,8 @@
   },
   "devDependencies": {
     "@types/node": "^15.6.1",
-    "typescript": "^4.2.4",
-    "vite": "^2.4.4"
+    "typescript": "^4.4.2",
+    "vite": "^2.5.2"
   },
   "peerDependencies": {
     "vite": "^2.2.3"
