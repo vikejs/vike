@@ -72,11 +72,6 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'SPA vs SSR vs HTML',
-    url: '/SPA-vs-SSR-vs-HTML'
-  },
-  {
-    level: 2,
     title: 'HTML `head`',
     url: '/html-head'
   },
@@ -84,6 +79,16 @@ export const headings: HeadingDefinition[] = [
     level: 2,
     title: '`.env` Files',
     url: '/.env-files'
+  },
+  {
+    level: 2,
+    title: 'Internationalization (i18n)',
+    url: '/i18n'
+  },
+  {
+    level: 2,
+    title: 'SPA vs SSR vs HTML',
+    url: '/SPA-vs-SSR-vs-HTML'
   },
   {
     level: 2,
@@ -268,11 +273,6 @@ export const headings: HeadingDefinition[] = [
   {
     level: 4,
     title: 'Other'
-  },
-  {
-    level: 2,
-    title: 'Internationalization (i18n)',
-    url: '/i18n'
   },
   {
     level: 2,
