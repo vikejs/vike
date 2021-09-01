@@ -1,2 +1,2 @@
-import { testPages } from "../.testPages";
+import { testPages } from "./.testPages";
 testPages("react", "npm run prod");
