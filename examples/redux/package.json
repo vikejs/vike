@@ -10,7 +10,7 @@
     "react-redux": "^7.2.4",
     "redux": "^4.1.1",
     "vite": "^2.5.2",
-    "vite-plugin-ssr": "0.2.11"
+    "vite-plugin-ssr": "0.2.12"
   },
   "type": "module"
 }
