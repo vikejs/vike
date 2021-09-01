@@ -3,8 +3,8 @@
     "dev": "npm run server",
     "prod": "npm run build && npm run server:prod",
     "build": "vite build && vite build --ssr",
-    "server": "node server.js",
-    "server:prod": "NODE_ENV=production node server.js"
+    "server": "node ./server",
+    "server:prod": "NODE_ENV=production node ./server"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^1.6.0",
