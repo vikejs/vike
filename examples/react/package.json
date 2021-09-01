@@ -4,10 +4,11 @@
     "prod": "npm run build && npm run server:prod",
     "build": "vite build && vite build --ssr",
     "server": "node ./server",
-    "server:prod": "NODE_ENV=production node ./server"
+    "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
     "@vitejs/plugin-react-refresh": "^1.3.6",
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
