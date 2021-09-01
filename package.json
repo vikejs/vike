@@ -44,6 +44,7 @@
     "unlink-vite": "cd libframe/scripts/ && yarn link-vite",
     "// Upgrade all dependencies of all `package.json` that have tests": "",
     "bump": "cd libframe/scripts/ && yarn bump",
+    "bump-lockfiles": "cd libframe/scripts/ && yarn bump:lockfiles",
     "========= Release": "",
     "release": "cd libframe/scripts/ && yarn release",
     "========= Clean": "",
