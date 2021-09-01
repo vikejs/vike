@@ -28,7 +28,7 @@ function render(pageContext) {
 
 function _onBeforePrerender(globalContext) {
   const prerenderPageContexts = []
-  globalContext._prerenderPageContexts.forEach((pageContext) => {
+  globalContext.prerenderPageContexts.forEach((pageContext) => {
     prerenderPageContexts.push({
       ...pageContext,
       locale: localeDefault
@@ -45,7 +45,7 @@ function _onBeforePrerender(globalContext) {
   })
   return {
     globalContext: {
-      _prerenderPageContexts: prerenderPageContexts
+      prerenderPageContexts,
     }
   }
 }
