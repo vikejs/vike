@@ -1,4 +1,4 @@
-import { run, page, urlBase, fetchHtml, autoRetry } from '../libframe/test/setup'
+import { run, page, urlBase, fetchHtml, autoRetry } from '../../libframe/test/setup'
 import assert = require('assert')
 
 export { testPages }
