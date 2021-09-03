@@ -1,4 +1,4 @@
-`vite-plugin-ssr` has first-class support for both Server Routing and Client Routing.
+`vite-plugin-ssr` has first-class support for both Server-side Routing and Client-side Routing.
 
 ## Server Routing
 
@@ -19,22 +19,24 @@ instead of doing a full HTML reload.
 
 Client Routing enables:
 - Slightly faster page transitions.
+- Preserved state across page changes. (See example below.)
 - Custom page transition animations.
 
 We can opt-in with [`useClientRouter()`](/useClientRouter).
 
 ## Which one to choose?
 
-In general, we recommend Server Routing because it leads to a simpler app architecture;
-we recommend Client Routing only if we have a rationale to prioritize performance over simplicity.
+By default, we recommend Server Routing because it leads to a simpler app architecture.
+We should keep in mind that simpler app architecture => faster app development => more features for our users. Do our users care more about features or about slightly faster page transitions?
 
-We should keep in mind that simpler app architecture => faster app development => more features for our user. Does our user care more about features or about slightly faster page transitions?
+We should use Client Routing only if we have a rationale.
 
 > While frameworks such as Next.js and Nuxt make Client Routing seem easy at first,
 > it always comes with inherent complexity that makes scaling the architecture of Next.js/Nuxt apps more complex and thus slower.
 
-Client Routing is perfectly fine for certain apps, for example:
- - Simple websites, such as portfolio, landing, or marketing pages. Complexity is not an issue for simple websites.
- - Highly polished apps, such as Netflix's web app. The added complexity is worth it (and Netflix has the budget and manpower to handle added complexity).
+Examples for using Client Routing:
+ - Simple websites, such as a portfolio or landing/marketing website. Complexity is not an issue for simple websites while Client-side Routing gives a nice polished touch to the website.
+ - Apps that need to be highly polished. For example Netflix's web app: Netflix aggressively pushes for delightful user experiences, and has the budget and man-power to do it. For entertainment apps, the highly polished user experience can be worth the added complexity of using Client Routing.
+ - Web apps that need to maintain state across page changes. For example Spotify: the currently listened song should not be interrupted on page change.
 
-Either way, we should make a conscious decision about it.
+On the other hand, as a Startup who wants to deliver an MVP as quickly as possible, Server Routing should be the default choice.

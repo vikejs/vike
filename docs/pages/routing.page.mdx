@@ -2,14 +2,13 @@ import RouteStringsAndRouteFunctions from '../components/route-strings-and-route
 
 By default `vite-plugin-ssr` does:
  - Server Routing, but we can use Client Routing instead.
- - Filesystem Routing, but we can use *Route Strings* and *Route Functions* to define advanced routes.
+ - Filesystem Routing, but we can also use *Route Strings* and *Route Functions* to define advanced routes.
 
 ## Server Routing or Client Routing?
 
-`vite-plugin-ssr` hast first-class support for both Server Routing (full HTML reload upon page navigation) and Client Routing (DOM mutations upon page navigation).
+`vite-plugin-ssr` hast first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
 
-In general, we recommend using Server Routing because it leads to a simpler app architecture and, consequently, to a faster app development.
-More infos at [Server Routing VS Client Routing](/SR-vs-CR).
+The guide [Server Routing VS Client Routing](/SR-vs-CR) helps us choose which one to use.
 
 ## Filesystem Routing VS Route Strings VS Route Functions
 
