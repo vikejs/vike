@@ -30,7 +30,7 @@ type SanitizedHtmlString = {
 type TemplateString = TemplateStringsArray
 function html(
   templateString: TemplateString,
-  ...templateVariables: (string | ReturnType<typeof html.dangerouslySkipEscape>)[]
+  ...templateVariables: (string | ReturnType<typeof html.dangerouslySkipEscape> | SanitizedHtmlString)[]
 ): SanitizedHtmlString {
   return {
     __html_template: {
