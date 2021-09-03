@@ -24,6 +24,8 @@ async function render(pageContext) {
 }
 ```
 
+## Page specific `<head>`
+
 If we want to define `<title>` and `<meta>` tags on a page-by-page basis, we can use `pageContext`:
 
 ```js
@@ -70,6 +72,8 @@ function addPageContext() {
   return { documentProps }
 }
 ```
+
+## `<head>` defined by component
 
 To define `<head>` tags by some deeply nested view component:
  1. Add `documentProps` to `passToClient`.
@@ -120,6 +124,8 @@ documentProps.title = 'I was set by some deep component.'
 documentProps.description = 'Me too.'
 ```
 
+## Client Routing
+
 If we use Client Routing, we make sure to update `document.title` on page change:
 
 ```js
@@ -143,8 +149,12 @@ useClientRouter({
 })
 ```
 
+## Libraries
+
 We can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet)
 but we should do so only if we have a good reason:
 the solution using `pageContext.documentProps` is simpler and works for the vast majority of cases.
+
+## Markdown
 
 For pages defined with markdown, see [Markdown `<head>`](/markdown#head).
