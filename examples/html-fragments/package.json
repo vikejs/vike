@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "node ./server"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "typescript": "^4.4.2",
+    "vite": "^2.5.2",
+    "vite-plugin-ssr": "0.2.12"
+  }
+}
