@@ -14,6 +14,7 @@
   },
   "scripts": {
     "dev": "yarn tsc:watch:cjs",
+    "dev:client": "yarn tsc:watch:esm",
     "build": "yarn clean && yarn tsc:cjs && yarn tsc:esm",
     "========= TypeScript": "",
     "tsc:esm": "tsc --outDir dist/esm/",
