@@ -14,7 +14,7 @@ export { Features }
 function Features() {
   return (
     <div id="features">
-      <div className="features-secondary-row">
+      <div className="features-row">
         <Feature name="control" isExpandable={true}>
           <h2>
             <Emoji name="wrench" /> Control
@@ -48,7 +48,7 @@ function Features() {
           <FullFleged />
         </LearnMore>
       </div>
-      <div className="features-secondary-row">
+      <div className="features-row">
         <Feature name="simpler" isExpandable={true}>
           <h2>
             <Emoji name="dizzy" /> Simple
@@ -98,8 +98,8 @@ function Features() {
           <p></p>
         </Feature>
       </div>
-      <div className="features-secondary-row">
-        <Feature name="deploy-anywhere" isExpandable={true} className="secondary-feature">
+      <div className="features-row features-secondary">
+        <Feature name="deploy-anywhere" isExpandable={true}>
           <h2>
             <Emoji name="earth" /> Deploy anywhere
           </h2>
@@ -115,7 +115,7 @@ function Features() {
         <LearnMore name="deploy-anywhere">
           <DeployAnywhere />
         </LearnMore>
-        <Feature className="secondary-feature">
+        <Feature>
           <h2>
             <Emoji name="high-voltage" /> High-performance
           </h2>
@@ -128,8 +128,8 @@ function Features() {
           </p>
         </Feature>
       </div>
-      <div className="features-secondary-row">
-        <Feature name="scalable" isExpandable={true} className="secondary-feature">
+      <div className="features-row features-secondary">
+        <Feature name="scalable" isExpandable={true}>
           <h2>
             <Emoji name="rocket" /> Scalable
           </h2>
@@ -169,7 +169,7 @@ function Features() {
           </p>
           <TweetsAboutScability />
         </LearnMore>
-        <Feature className="secondary-feature">
+        <Feature>
           <h2>
             <Emoji name="red-heart" /> Craftmanship
           </h2>
