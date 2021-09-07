@@ -42,7 +42,7 @@ For TypeScript:
 ```
 
 Vite's `vite.config.js#resolve.alias` only works for Vite processed files (all `.page.js` / `.page.server.js` / `.page.client.js` / `.page.route.js` files and all their imports).
-For files that are not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>) we can use a Node.js aliasing tools such as [`module-alias`](https://github.com/ilearnio/module-alias) (all browser files are always processed by Vite).
+For files that are not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>) we can use a Node.js aliasing tools such as [`module-alias`](https://github.com/ilearnio/module-alias) or write it in `"imports"` section of `package.json` (see docs [here](https://nodejs.org/api/packages.html#packages_subpath_patterns)). All browser files are always processed by Vite.
 
 Example:
  - <RepoLink path='/examples/path-aliases/' />
