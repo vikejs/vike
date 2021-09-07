@@ -13,7 +13,7 @@ async function startServer() {
 
   let viteDevServer;
   if (isProduction) {
-    app.use(base, express.static(`${root}/dist/client`, { index: false }));
+    app.use(base, express.static(`${root}/dist/client`));
   } else {
     viteDevServer = await vite.createServer({
       root,
