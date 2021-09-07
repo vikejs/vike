@@ -1,8 +1,8 @@
 import React from 'react'
 import { Header, MobileCallToAction } from './Header'
 import { Features } from './features/Features'
-import { ContactUs } from './ContactUs'
-import { HorizontalLine } from './HorizontalLine'
+import { ContactUs } from 'libframe-docs/landing-page/ContactUs'
+import { HorizontalLine } from 'libframe-docs/landing-page/HorizontalLine'
 
 export { Page }
 
@@ -13,7 +13,7 @@ function Page() {
       <HorizontalLine primary={true} />
       <Features />
       <HorizontalLine />
-      <ContactUs />
+      <ContactUs githubRepoName="brillout/vite-plugin-ssr" discordInvite="qTq92FQzKb" />
       <MobileCallToAction />
       <div style={{ height: 70 }} />
     </>
