@@ -1,17 +1,17 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-Instead of using relative import paths
-which are often cumbersome (e.g. `import { Counter } from '../../.././components/Counter'`),
-we can use path aliases:
+Instead of using relative import paths,
+which are often cumbersome (e.g. `import { Counter } from '../../../../components/Counter'`),
+we can use path aliases.
 
 ```js
-// `~/components/` denotes the `components/` directory living in our project root directory
+// `~/` denotes our project root directory
 import { Counter } from `~/components/Counter`
-
-// ...
 ```
 
-Path aliases are defined at [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias):
+## Vite
+
+We can define path aliases with Vite at [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias).
 
 ```js
 // vite.config.js
@@ -22,12 +22,20 @@ export default {
      // We can now `import '~/path/to/module'` where `~` references the project root
      "~": __dirname,
     }
-  },
-  // ...
+  }
 }
 ```
 
-For TypeScript:
+> It applies only for files that are processed by Vite;
+> some of our Node.js server files may not be processed by Vite,
+> see the [Node.js section](#node-js).
+
+Example:
+ - <RepoLink path='/examples/path-aliases/vite.config.ts' />
+
+## TypeScript
+
+If we use TypeScript, then TypeScript needs to know about our path aliases:
 
 ```json
 // tsconfig.json
@@ -36,13 +44,25 @@ For TypeScript:
     "paths": {
       "~/*": ["./*"]
     }
-    // ...
   }
 }
 ```
 
-Vite's `vite.config.js#resolve.alias` only works for Vite processed files (all `.page.js` / `.page.server.js` / `.page.client.js` / `.page.route.js` files and all their imports).
-For files that are not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>) we can use a Node.js aliasing tools such as [`module-alias`](https://github.com/ilearnio/module-alias) or write it in `"imports"` section of `package.json` (see docs [here](https://nodejs.org/api/packages.html#packages_subpath_patterns)). All browser files are always processed by Vite.
-
 Example:
- - <RepoLink path='/examples/path-aliases/' />
+ - <RepoLink path='/examples/path-aliases/tsconfig.json' />
+
+## Node.js
+
+Vite's `vite.config.js#resolve.alias` only applies to files that are processed by Vite.
+In other words: `**/*.page.js`, `**/*.page.server.js`, `**/*.page.client.js`, `**/*.page.route.js`, and their imports.
+
+Browser files are always processed by Vite,
+but this is not always the case for Node.js server files,
+for example <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>.
+
+For these files we can use a Node.js aliasing tool such as:
+ - Node.js's built-in support with [`package.json#imports`](https://nodejs.org/api/packages.html#packages_subpath_patterns).
+ - The package [`module-alias`](https://github.com/ilearnio/module-alias).
+
+Example of using `module-alias`:
+ - <RepoLink path='/examples/path-aliases/package.json' /> (see <code>package.json#_moduleAliases</code> and <RepoLink path='/examples/path-aliases/server/msg.ts' />)
