@@ -15,26 +15,25 @@ function addFeatureClickHandlers() {
 
   featureEls.forEach((featureEl) => {
     featureEl.onclick = () => {
-      expandLearMore(featureEl)
+      expandLearnMore(featureEl)
     }
   })
 }
 
-function expandLearMore(featureEl: HTMLElement) {
+function expandLearnMore(featureEl: HTMLElement) {
   const featureId = featureEl.id
-  assert(featureId.startsWith('feature-'))
+  assert(featureId.startsWith('feature-'), { featureId })
   const featureName = featureId.slice('feature-'.length)
 
   const selectedClass = 'selected'
   const learnId = 'learn-more-' + featureName
   const learnEl = document.getElementById(learnId)
-  assert(learnEl)
+  assert(learnEl, { learnId })
 
   const isExpanded = featureEl.classList.contains(selectedClass)
 
   if (!isExpanded) {
     const rowEl = featureEl.parentNode as HTMLElement
-    assert(rowEl.classList.contains('features-secondary-row'))
     if (getComputedStyle(rowEl, 'display') === 'grid') {
       ;[
         ...(rowEl.querySelectorAll('.learn-more') as any as HTMLElement[]),
