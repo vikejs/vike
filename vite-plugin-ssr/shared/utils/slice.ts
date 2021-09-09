@@ -31,7 +31,7 @@ function sliceArray<Element, T extends Array<Element>>(list: T, from: number, to
       break
     }
     const el = list[start]
-    assert(el!==undefined)
+    assert(el !== undefined)
     listSlice.push(el)
     start++
   }
