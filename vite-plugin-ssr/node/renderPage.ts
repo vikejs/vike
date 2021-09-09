@@ -810,8 +810,8 @@ async function getGlobalContext() {
   const allPageIds = await getAllPageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
 
-  const { pageRoutes, pageRouteFileDefault } = await loadPageRoutes(globalContext)
-  objectAssign(globalContext, { _pageRoutes: pageRoutes, _pageRouteFileDefault: pageRouteFileDefault })
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(globalContext)
+  objectAssign(globalContext, { _pageRoutes: pageRoutes, _onBeforeRouteHook: onBeforeRouteHook })
 
   return globalContext
 }

@@ -31,7 +31,7 @@ async function route(pageContext: {
   _allPageIds: string[]
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
-  _pageRouteFileDefault: null | PageRouteFileDefault
+  _onBeforeRouteHook: null | OnBeforeRouteHook
 }): Promise<{ _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown>> {
   addComputedUrlProps(pageContext)
 
@@ -116,17 +116,17 @@ async function callOnBeforeRouteHook(pageContext: {
   url: string
   _allPageIds: string[]
   _pageRoutes: PageRoutes
-  _pageRouteFileDefault: null | PageRouteFileDefault
+  _onBeforeRouteHook: null | OnBeforeRouteHook
 }): Promise<null | (Record<string, unknown> & { _pageId?: string | null; routeParams?: Record<string, string> })> {
-  if (!pageContext._pageRouteFileDefault?.fileExports._onBeforeRoute) {
+  if (!pageContext._onBeforeRouteHook) {
     return null
   }
-  const result = await pageContext._pageRouteFileDefault.fileExports._onBeforeRoute(pageContext)
+  const result = await pageContext._onBeforeRouteHook._onBeforeRoute(pageContext)
   if (result === null || result === undefined) {
     return null
   }
 
-  const errPrefix = `The \`_onBeforeRoute()\` hook defined in ${pageContext._pageRouteFileDefault.filePath}`
+  const errPrefix = `The \`_onBeforeRoute()\` hook defined in ${pageContext._onBeforeRouteHook.filePath}`
 
   assertUsage(
     isObjectWithKeys(result, ['pageContext'] as const),
@@ -404,11 +404,9 @@ type PageRoutes = {
   filesystemRoute: string
 }[]
 
-type PageRouteFileDefault = {
+type OnBeforeRouteHook = {
   filePath: string
-  fileExports: {
-    _onBeforeRoute?: (pageContext: { url: string } & Record<string, unknown>) => unknown
-  }
+  _onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
 }
 
 type PageRouteExports = {
@@ -418,7 +416,7 @@ type PageRouteExports = {
 async function loadPageRoutes(globalContext: {
   _allPageFiles: AllPageFiles
   _allPageIds: string[]
-}): Promise<{ pageRoutes: PageRoutes; pageRouteFileDefault: null | PageRouteFileDefault }> {
+}): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   const allPageIds = globalContext._allPageIds
 
   const pageRoutes: PageRoutes = []
@@ -457,7 +455,7 @@ async function loadPageRoutes(globalContext: {
       }
     })
 
-  let pageRouteFileDefault: null | PageRouteFileDefault = null
+  let onBeforeRouteHook: null | OnBeforeRouteHook = null
   const defaultPageRouteFiles = findDefaultFiles(globalContext._allPageFiles['.page.route'])
   assertUsage(
     defaultPageRouteFiles.length <= 1,
@@ -470,18 +468,20 @@ async function loadPageRoutes(globalContext: {
       assert(defaultFile)
       const { filePath, loadFile } = defaultFile
       const fileExports = await loadFile()
-      //assertUsage('_onBeforeRoute' in fileExports, 'ewuiqh')
-      assertUsage(
-        !('_onBeforeRoute' in fileExports) || hasProp(fileExports, '_onBeforeRoute', 'function'),
-        `The \`_onBeforeRoute\` export of \`${filePath}\` should be a function.`
-      )
-      pageRouteFileDefault = { filePath, fileExports }
+      if ('_onBeforeRoute' in fileExports) {
+        assertUsage(
+          hasProp(fileExports, '_onBeforeRoute', 'function'),
+          `The \`_onBeforeRoute\` export of \`${filePath}\` should be a function.`
+        )
+        const { _onBeforeRoute } = fileExports
+        onBeforeRouteHook = { filePath, _onBeforeRoute }
+      }
     })()
   }
 
   await Promise.all([...pageRoutesPromises, pageRouteFileDefaultPromise])
 
-  return { pageRoutes, pageRouteFileDefault }
+  return { pageRoutes, onBeforeRouteHook }
 }
 
 function isReservedPageId(pageId: string): boolean {
