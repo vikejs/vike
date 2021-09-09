@@ -45,7 +45,7 @@ function _onBeforePrerender(globalContext) {
   })
   return {
     globalContext: {
-      prerenderPageContexts,
+      prerenderPageContexts
     }
   }
 }

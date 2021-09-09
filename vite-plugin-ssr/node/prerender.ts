@@ -243,7 +243,7 @@ async function callOnBeforePrerenderHook(globalContext: {
   }
   const { onBeforePrerenderHook, hookFilePath } = hook
   const result = await onBeforePrerenderHook(globalContext)
-  if( result=== null || result===undefined) {
+  if (result === null || result === undefined) {
     return
   }
   const errPrefix = `The \`_onBeforePrerender()\` hook defined in \`${hookFilePath}\``
@@ -251,7 +251,7 @@ async function callOnBeforePrerenderHook(globalContext: {
     isObjectWithKeys(result, ['globalContext'] as const),
     `${errPrefix} should return \`null\`, \`undefined\`, or \`{ globalContext }\`.`
   )
-  const globalContextAddedum  = result.globalContext
+  const globalContextAddedum = result.globalContext
   assertUsage(
     isPlainObject(globalContextAddedum),
     `${errPrefix} returned \`{ globalContext }\` but \`globalContext\` should be a plain JavaScript object.`
