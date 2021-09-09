@@ -225,8 +225,25 @@ function removeTrailingSlash(url: string) {
     return slice(url, 0, -1)
   }
 }
-function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
-  let pageRoute = removeCommonPrefix(pageId, allPageIds)
+function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string; rootValue: string }[]): string {
+  // Handle Filesystem Routing Root
+  const filesystemRootsMatch = filesystemRoots
+    .filter(({ rootPath }) => pageId.startsWith(rootPath))
+    .sort(higherFirst(({ rootPath }) => rootPath.length))
+  const root = filesystemRootsMatch[0]
+  let pageRoute = pageId
+  if (root) {
+    const { rootPath, rootValue } = root
+    assert(pageRoute.startsWith(rootPath))
+    pageRoute = slice(pageRoute, rootPath.length, 0)
+    assert(pageRoute.startsWith('/'))
+    pageRoute = rootValue + (rootValue.endsWith('/') ? '' : '/') + slice(pageRoute, 1, 0)
+  }
+
+  // Hanlde `/pages/` directory
+  pageRoute = pageRoute.split('/pages/').join('/')
+
+  // Hanlde `/index/` directory
   pageRoute = pageRoute
     .split('/')
     .filter((part) => part !== 'index')
@@ -235,37 +252,6 @@ function getFilesystemRoute(pageId: string, allPageIds: string[]): string {
     pageRoute = '/' + pageRoute
   }
   return pageRoute
-}
-function removeCommonPrefix(pageId: PageId, allPageIds: PageId[]) {
-  assert(!isErrorPage(pageId))
-  const relevantPageIds = allPageIds.filter((pageId) => !isErrorPage(pageId))
-  const commonPrefix = getCommonPath(relevantPageIds)
-  assert(pageId.startsWith(commonPrefix))
-  return pageId.slice(commonPrefix.length)
-}
-function getCommonPath(pageIds: string[]): string {
-  pageIds.forEach((pageId) => {
-    assertUsage(
-      !pageId.includes('\\'),
-      'Your directory names and file names are not allowed to contain the character `\\`'
-    )
-    assert(pageId.startsWith('/'))
-  })
-  const pageIdList = pageIds.concat().sort()
-  const first = pageIdList[0]
-  assert(first)
-  const last = pageIdList[pageIdList.length - 1]
-  assert(last)
-  let idx = 0
-  for (; idx < first.length; idx++) {
-    if (first[idx] !== last[idx]) break
-  }
-  const commonPrefix = first.slice(0, idx)
-  const pathsPart = commonPrefix.split('/')
-  assert(pathsPart.length >= 2)
-  const commonPath = slice(pathsPart, 0, -1).join('/') + '/'
-  assert(commonPath.startsWith('/'))
-  return commonPath
 }
 
 /**
@@ -418,6 +404,7 @@ async function loadPageRoutes(globalContext: {
   _allPageIds: string[]
 }): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   let onBeforeRouteHook: null | OnBeforeRouteHook = null
+  const filesystemRoots: { rootPath: string; rootValue: string }[] = []
   const defaultPageRouteFiles = findDefaultFiles(globalContext._allPageFiles['.page.route'])
   await Promise.all(
     defaultPageRouteFiles.map(async ({ filePath, loadFile }) => {
@@ -430,6 +417,16 @@ async function loadPageRoutes(globalContext: {
         const { _onBeforeRoute } = fileExports
         onBeforeRouteHook = { filePath, _onBeforeRoute }
       }
+      if ('filesystemRoutingRoot' in fileExports) {
+        assertUsage(
+          hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
+          `The \`filesystemRoutingRoot\` export of \`${filePath}\` should be a string.`
+        )
+        filesystemRoots.push({
+          rootPath: dirname(filePath),
+          rootValue: fileExports.filesystemRoutingRoot
+        })
+      }
     })
   )
 
@@ -439,7 +436,7 @@ async function loadPageRoutes(globalContext: {
     allPageIds
       .filter((pageId) => !isErrorPage(pageId))
       .map(async (pageId) => {
-        const filesystemRoute = getFilesystemRoute(pageId, allPageIds)
+        const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots)
         assert(filesystemRoute.startsWith('/'))
         assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
         const pageRoute = {
@@ -482,4 +479,14 @@ function isReservedPageId(pageId: string): boolean {
 function isErrorPage(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_error')
+}
+
+function dirname(filePath: string): string {
+  assert(filePath.startsWith('/'))
+  assert(!filePath.endsWith('/'))
+  const paths = filePath.split('/')
+  const dirPath = slice(paths, 0, -1).join('/')
+  assert(dirPath.startsWith('/'))
+  assert(!dirPath.endsWith('/') || dirPath === '/')
+  return dirPath
 }
