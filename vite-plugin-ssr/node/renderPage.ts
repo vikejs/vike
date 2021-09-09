@@ -88,7 +88,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   try {
     pageContextRouteAddendum = await route(pageContext)
   } catch (err) {
-    pageContext._err = err
+    pageContext['_err'] = err
     assert(hasProp(pageContext, '_err'))
     if (pageContext._isPageContextRequest) {
       return renderPageContextError(err)
@@ -136,7 +136,7 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   try {
     renderResult = await renderPageId(pageContext)
   } catch (err) {
-    pageContext._err = err
+    pageContext['_err'] = err
     assert(hasProp(pageContext, '_err'))
     if (pageContext._isPageContextRequest) {
       return renderPageContextError(err)
@@ -232,7 +232,7 @@ function getDefaultPassToClientProps(pageContext: { _pageId: string; pageProps?:
   if (isErrorPage(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     const pageProps = pageContext.pageProps || {}
-    pageProps.is404 = pageProps.is404 || pageContext.is404
+    pageProps['is404'] = pageProps['is404'] || pageContext.is404
     pageContext.pageProps = pageProps
     passToClient.push(...['pageProps', 'is404'])
   }
@@ -309,10 +309,10 @@ function assert_pageServerFile(pageServerFile: {
       '`.)'
   )
 
-  const render = fileExports.render
+  const render = fileExports['render']
   assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
 
-  const addPageContext = fileExports.addPageContext
+  const addPageContext = fileExports['addPageContext']
   assertUsage(
     !addPageContext || isCallable(addPageContext),
     `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
@@ -323,7 +323,7 @@ function assert_pageServerFile(pageServerFile: {
     `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
   )
 
-  const prerender = fileExports.prerender
+  const prerender = fileExports['prerender']
   assertUsage(
     !prerender || isCallable(prerender),
     `The \`prerender()\` hook defined in ${filePath} should be a function.`
@@ -474,7 +474,7 @@ async function executeAddPageContextHook(
   pageContext._passToClient.forEach((prop) => {
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
-  ;(pageContext as Record<string, unknown>)._pageContextClient = pageContextClient
+  ;(pageContext as Record<string, unknown>)['_pageContextClient'] = pageContextClient
 }
 function executeAddPageContextHook_addTypes<PageContext extends Record<string, unknown>>(
   pageContext: PageContext
@@ -659,11 +659,13 @@ function isFileRequest(urlPathname: string) {
   assert(urlPathname.startsWith('/'))
   const paths = urlPathname.split('/')
   const lastPath = paths[paths.length - 1]
+  assert(typeof lastPath === 'string')
   const parts = lastPath.split('.')
   if (parts.length < 2) {
     return false
   }
   const fileExtension = parts[parts.length - 1]
+  assert(typeof fileExtension === 'string')
   return /^[a-z0-9]+$/.test(fileExtension)
 }
 

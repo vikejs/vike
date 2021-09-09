@@ -106,7 +106,9 @@ function findPageFile<T>(
     return null
   }
   assertUsage(pageFiles.length === 1, 'Conflicting ' + pageFiles.map(({ filePath }) => filePath).join(' '))
-  return pageFiles[0]
+  const pageFile = pageFiles[0]
+  assert(pageFile)
+  return pageFile
 }
 
 function findDefaultFiles<T extends { filePath: string }>(pageFiles: T[]): T[] {

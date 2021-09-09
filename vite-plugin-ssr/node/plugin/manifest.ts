@@ -35,6 +35,7 @@ function includesClientSideRouter(bundle: Record<string, { modules?: Record<stri
   const filePath = require.resolve('../../../../dist/esm/client/router/useClientRouter.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
+    assert(bundleFile)
     const modules = bundleFile.modules || {}
     if (filePath in modules || normalizePath(filePath) in modules) {
       return true

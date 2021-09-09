@@ -35,12 +35,12 @@ function build(): Plugin {
     },
     transform: (_src, id) => {
       assert(isSsrBuild === true || isSsrBuild === false)
-      return removeClientCode(isSsrBuild, id)
+      return removeClientCode(isSsrBuild, id) || undefined
     }
   }
 }
 
-function removeClientCode(isSsrBuild: boolean, id: string) {
+function removeClientCode(isSsrBuild: boolean, id: string): void | { code: string; map: null } {
   if (!isSsrBuild) {
     return
   }

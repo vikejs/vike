@@ -63,6 +63,7 @@ function collectAssets(
   const { imports = [], assets = [], css = [] } = manifestEntry
   for (const importAsset of imports) {
     const importManifestEntry = manifest[importAsset]
+    assert(importManifestEntry)
     const { file } = importManifestEntry
     if (!onlyCollectStaticAssets) {
       preloadUrls.add(`/${file}`)

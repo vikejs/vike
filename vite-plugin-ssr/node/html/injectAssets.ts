@@ -167,7 +167,9 @@ async function injectAssets_internal(
   // Inject script
   const scripts = pageContext._pageAssets.filter(({ assetType }) => assetType === 'script')
   assert(scripts.length === 1)
-  htmlString = injectScript(htmlString, scripts[0])
+  const script = scripts[0]
+  assert(script)
+  htmlString = injectScript(htmlString, script)
 
   // Inject preload links
   const preloadAssets = pageContext._pageAssets.filter(
@@ -207,8 +209,8 @@ function injectPageInfo(
   htmlString: string,
   pageContext: { _pageId: string; _pageContextClient: Record<string, unknown>; _passToClient: string[] }
 ): string {
-  assert(pageContext._pageContextClient._pageId)
-  assert(pageContext._pageContextClient._pageId === pageContext._pageId)
+  assert(pageContext._pageContextClient['_pageId'])
+  assert(pageContext._pageContextClient['_pageId'] === pageContext._pageId)
   const pageContextSerialized = serializePageContext(pageContext)
   const injection = `<script>window.__vite_plugin_ssr__pageContext = ${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
@@ -288,6 +290,7 @@ function injectAtOpeningTag(htmlString: string, openingTag: RegExp, injection: s
   const matches = htmlString.match(openingTag)
   assert(matches && matches.length >= 1)
   const tag = matches[0]
+  assert(tag)
   const htmlParts = htmlString.split(tag)
   assert(htmlParts.length >= 2)
 

@@ -35,9 +35,11 @@ function getUrlParts(url?: string): { origin: string; pathname: string; searchSt
   url = retrieveUrl(url)
 
   const [urlWithoutHash, ...hashList] = url.split('#')
+  assert(urlWithoutHash)
   const hashString = ['', ...hashList].join('#')
 
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
+  assert(urlWithoutSearch)
   const searchString = ['', ...searchList].join('?')
 
   const { origin, pathname: pathnameFromNewUrl } = parseWithNewUrl(urlWithoutSearch)
@@ -75,6 +77,7 @@ function getUrlParsed(url?: string): UrlParsed {
 function getUrlFullWithoutHash(url?: string): string {
   const urlFull = getUrlFull(url)
   const urlFullWithoutHash = urlFull.split('#')[0]
+  assert(urlFullWithoutHash)
   return urlFullWithoutHash
 }
 

@@ -62,7 +62,7 @@ function useClientRouter({
 
   return { hydrationPromise }
 
-  async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<undefined> {
+  async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
     const callNumber = ++callCount
 
     if (!isFirstPageRender) {

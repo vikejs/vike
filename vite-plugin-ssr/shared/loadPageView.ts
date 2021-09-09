@@ -23,7 +23,7 @@ async function loadPageView(pageContext: { _pageId: string; _allPageFiles: Pick<
     `${filePath} should have a \`export { Page }\` or \`export default\`.`
   )
   const pageExports = fileExports
-  const Page = pageExports.Page || pageExports.default
+  const Page = pageExports['Page'] || pageExports['default']
   const pageView: {
     Page: unknown
     pageExports: Record<string, unknown>

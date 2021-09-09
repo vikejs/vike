@@ -30,7 +30,9 @@ function sliceArray<Element, T extends Array<Element>>(list: T, from: number, to
     if (start === end) {
       break
     }
-    listSlice.push(list[start])
+    const el = list[start]
+    assert(el)
+    listSlice.push(el)
     start++
   }
 

@@ -79,7 +79,7 @@ async function prerender({
 
   const pluginManifest = getPluginManifest(root)
 
-  process.env.NODE_ENV = 'production'
+  process.env['NODE_ENV'] = 'production'
   setSsrEnv({
     isProduction: true,
     root,
@@ -424,7 +424,7 @@ function normalizePrerenderResult(
       assertUsage(key === 'url' || key === 'pageContext', `${errMsg1}: unexpected object key \`${key}\` ${errMsg2}`)
     })
     if (!hasProp(prerenderElement, 'pageContext')) {
-      prerenderElement.pageContext = null
+      prerenderElement['pageContext'] = null
     }
     assertUsage(
       hasProp(prerenderElement, 'pageContext', 'object'),

@@ -163,12 +163,14 @@ function getErrorPageId(allPageIds: string[]): string | null {
     `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
   )
   if (errorPageIds.length > 0) {
-    return errorPageIds[0]
+    const errorPageId = errorPageIds[0]
+    assert(errorPageId)
+    return errorPageId
   }
   return null
 }
 
-function pickWinner<T extends { matchValue: boolean | number }>(routeResults: T[]): T {
+function pickWinner<T extends { matchValue: boolean | number }>(routeResults: T[]): T | undefined {
   const candidates = routeResults
     .filter(({ matchValue }) => matchValue !== false)
     .sort(
@@ -251,7 +253,9 @@ function getCommonPath(pageIds: string[]): string {
   })
   const pageIdList = pageIds.concat().sort()
   const first = pageIdList[0]
+  assert(first)
   const last = pageIdList[pageIdList.length - 1]
+  assert(last)
   let idx = 0
   for (; idx < first.length; idx++) {
     if (first[idx] !== last[idx]) break
@@ -351,7 +355,7 @@ async function resolveRouteFunction(
     }\`.`
   )
   if (!hasProp(result, 'match')) {
-    result.match = true
+    result['match'] = true
   }
   assert(hasProp(result, 'match'))
   assertUsage(
@@ -463,6 +467,7 @@ async function loadPageRoutes(globalContext: {
   if (defaultPageRouteFiles.length >= 1) {
     pageRouteFileDefaultPromise = (async () => {
       const defaultFile = defaultPageRouteFiles[0]
+      assert(defaultFile)
       const { filePath, loadFile } = defaultFile
       const fileExports = await loadFile()
       //assertUsage('_onBeforeRoute' in fileExports, 'ewuiqh')
