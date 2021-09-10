@@ -1,0 +1,30 @@
+The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to change the base of Filesystem Routing.
+
+For example:
+
+```bash
+/marketing/pages/index/index.page.js # Landing page (URL: `/`)
+/marketing/pages/about/index.page.js # About page (URL: `/about`)
+/marketing/pages/jobs/index.page.js # Jobs page (URL: `/jobs`)
+/marketing/_default.page.route.js # Route to `/*` instead of `/marketing/*` (see below)
+```
+
+```js
+// /marketing/_default.page.route.js
+
+// We route our marketing pages to `/*` instead of `/marketing/*`
+export const filesystemRoutingRoot = '/'
+```
+
+Which results in following route table:
+
+```
+PROJECT FILES                                    URL
+/marketing/pages/index/index.page.js             /
+/marketing/pages/about/index.page.js             /about
+/marketing/pages/jobs/index.page.js              /jobs
+```
+
+`filesystemRoutingRoot` is especially useful for [domain-driven file structure](/file-structure#domain-driven).
+
+> Do not use `filesystemRoutingRoot` to change the base URL of your app, see the [Base URL](/base-url) guide instead.

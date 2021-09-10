@@ -72,7 +72,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'HTML `head`',
+    title: 'HTML `<head>`',
     url: '/html-head'
   },
   {
@@ -452,6 +452,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Filesystem Routing',
+    url: '/filesystem-routing'
+  },
+  {
+    level: 2,
     title: '`.page.route.js`',
     url: '/.page.route.js'
   },
@@ -469,8 +474,24 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Filesystem Routing',
-    url: '/filesystem-routing'
+    title: '`_default.page.route.js`',
+    url: '/_default.page.route.js'
+  },
+  {
+    level: 2,
+    title: '`filesystemRoutingRoot`',
+    // titleInNav: '`export { filesystemRoutingRoot }`',
+    // titleSize: '0.81em',
+    isListTitle: true,
+    url: '/filesystemRoutingRoot'
+  },
+  {
+    level: 2,
+    title: '`onBeforeRoute()` hook',
+    // titleInNav: '`export { onBeforeRoute }`',
+    titleInNav: '`onBeforeRoute`',
+    isListTitle: true,
+    url: '/onBeforeRoute'
   },
   {
     level: 4,

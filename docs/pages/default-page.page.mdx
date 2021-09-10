@@ -1,20 +1,27 @@
-The `_default.page.server.js` and `_default.page.client.js` files are `.page.server.js` and `.page.client.js` files that apply as default to all pages.
+The `_default.page.{server|client|route}.js` files allow us to define hooks & settings in a global application-wide way.
 
-There can be several `_default` files:
+They are not adjacent to any `.page.js` file: defining a `_default.page.js` is forbidden.
+
+## `_default.page.{server|client}.js`
+
+The hooks & settings we export in `_default.page.server.js` and `_default.page.client.js` apply as default to all pages.
+
+There can be several `_default.{server|client}.js` files:
 
 ```
-marketing/_default.page.server.js
-marketing/_default.page.client.js
-marketing/index.page.js
-marketing/about.page.js
-marketing/jobs.page.js
-admin-panel/_default.page.server.js
-admin-panel/_default.page.client.js
-admin-panel/index.page.js
+marketing/renderer/_default.page.server.js
+marketing/renderer/_default.page.client.js
+marketing/pages/index.page.js
+marketing/pages/about.page.js
+marketing/pages/jobs.page.js
+admin-panel/renderer/_default.page.server.js
+admin-panel/renderer/_default.page.client.js
+admin-panel/pages/index.page.js
 ```
 
-The `marketing/_default.page.*` files apply to `marketing/*.page.js` files, while
-the `admin-panel/_default.page.*` files apply to `admin-panel/*.page.js` files.
+The `marketing/_default.page.*` files apply as default to the `marketing/**/*.page.js` files, while
+the `admin-panel/_default.page.*` files apply as default to the `admin-panel/**/*.page.js` files.
 
-The `_default.page.server.js` and `_default.page.client.js` files are not adjacent to any `.page.js` file:
-defining `_default.page.js` or `_default.page.route.js` is forbidden.
+## `_default.page.route.js`
+
+The `_default.page.route.js` exports special hooks that allows us to control the routing process, more infos at [_default.page.route.js](/_default.page.route.js).
