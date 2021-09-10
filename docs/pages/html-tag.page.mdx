@@ -2,7 +2,7 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 Environment: `Node.js`
 
-The `html` string template tag sanitizes HTML (to prevent XSS injections).
+The `escapeInjections` string template tag sanitizes HTML (to prevent XSS injections).
 It is usually used in the `render()` hook defined in `.page.server.js`.
 
 ```js
@@ -17,7 +17,7 @@ async function render() {
   const title = 'Hello<script src="https://devil.org/evil-code"></script>'
   const pageHtml = "<div>I'm already <b>sanitized</b>, e.g. by Vue/React</div>"
 
-  // This HTML is safe thanks to the string template tag `html` which sanitizes `title`
+  // This HTML is safe thanks to the template tag `escapeInjections` which sanitizes `title`
   return escapeInjections`<!DOCTYPE html>
     <html>
       <head>
@@ -60,11 +60,11 @@ async function render(pageContext) {
   const description = pageContext.documentProps?.description
   let descriptionTag = ''
   if( description ) {
-    // Note how we use the `html` string template tag for an HTML fragment
+    // Note how we use the `escapeInjections` string template tag for an HTML fragment
     descriptionTag = escapeInjections`<meta name="description" content="${description}">`
   }
 
-  // We use the `html` tag again for the overall HTML and we can use
+  // We use the `escapeInjections` template tag again for the overall HTML and we can use
   // our `descriptionTag` HTML fragment.
   return escapeInjections`<html>
     <head>

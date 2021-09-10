@@ -2,7 +2,7 @@ Example showcasing:
  - Custom HTML delivering. For example, the (now deprecated) HTTP/2 Server Push, or the (work-in-progress) 103 Early Hints.
  - Custom HTML generation.
    ```js
-   // We generate an HTML string without using the `html` string template tag
+   // We generate an HTML string without using the `escapeInjections` template tag
    export function render(pageContext) {
      const pageHtml = renderToHtml(pageContext.Page)
      const htmlString = `<!DOCTYPE html>
