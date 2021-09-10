@@ -1,5 +1,4 @@
 import { assert, assertUsage, cast, hasProp, isPromise } from '../../shared/utils'
-import { injectAssets } from './injectAssets'
 
 export { escapeInjections }
 export { renderHtmlTemplate }
@@ -9,7 +8,6 @@ export { isSanitizedString }
 export { renderSanitizedString }
 
 escapeInjections.dangerouslySkipEscape = dangerouslySkipEscape
-escapeInjections._injectAssets = injectAssets
 
 /* TS + Symbols are problematic: https://stackoverflow.com/questions/59118271/using-symbol-as-object-key-type-in-typescript
 const __html_template = Symbol('__html_template')

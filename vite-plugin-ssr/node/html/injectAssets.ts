@@ -118,11 +118,11 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 async function injectAssets(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
   assertUsage(
     typeof htmlString === 'string',
-    '[html.injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'
+    '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'
   )
-  assertUsage(pageContext, '[html.injectAssets(htmlString, pageContext)]: Argument `pageContext` is missing.')
+  assertUsage(pageContext, '[injectAssets(htmlString, pageContext)]: Argument `pageContext` is missing.')
   const errMsg = (body: string) =>
-    '[html.injectAssets(htmlString, pageContext)]: ' +
+    '[injectAssets(htmlString, pageContext)]: ' +
     body +
     '. Make sure that `pageContext` is the object that `vite-plugin-ssr` provided to your `render(pageContext)` hook.'
   assertUsage(hasProp(pageContext, 'urlNormalized', 'string'), errMsg('`pageContext.urlNormalized` should be a string'))

@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, injectAssets } from "vite-plugin-ssr";
 
 export { render };
 
@@ -17,5 +17,5 @@ async function render(pageContext) {
       </body>
     </html>`;
 
-  return escapeInjections.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
+  return escapeInjections.dangerouslySkipEscape(await injectAssets(htmlString, pageContext));
 }

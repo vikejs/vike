@@ -3,13 +3,16 @@ Example showcasing:
  - Custom HTML generation.
    ```js
    // We generate an HTML string without using the `html` string template tag
-   const htmlString = `<!DOCTYPE html>
-     <html>
-       <body>
-         <div id="react-root">${pageHtml}</div>
-       </body>
-     </html>`;
-   return escapeInjections.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
+   export function render(pageContext) {
+     const pageHtml = renderToHtml(pageContext.Page)
+     const htmlString = `<!DOCTYPE html>
+       <html>
+         <body>
+           <div id="react-root">${pageHtml}</div>
+         </body>
+       </html>`;
+     return escapeInjections.dangerouslySkipEscape(await injectAssets(htmlString, pageContext));
+   }
    ```
 
 To run it:
