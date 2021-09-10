@@ -18,11 +18,11 @@ To render a page as SPA, we simply render HTML that is static:
 // .page.server.js
 // Environment: Node.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 
 export function render() {
   // `div#app-root` is empty; the HTML is static.
-  return html`<html>
+  return escapeInjections`<html>
     <head>
       <title>My Website</title>
     </head>

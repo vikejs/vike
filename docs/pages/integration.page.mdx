@@ -10,7 +10,7 @@ In fact, `vite-plugin-ssr` is already being used with a high variety of tools wi
 // _default.page.server.js
 // Environment: Node.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 // This can be any view framework (React, Vue, Svelte, ...)
 import renderToHtml from 'some-view-framework'
 
@@ -26,14 +26,14 @@ async function render(pageContext) {
   const pageHtml = await renderToHtml(Page)
 
   // We have control over the entire HTML
-  return html`<html>
+  return escapeInjections`<html>
     <body>
       <head>
         <!-- Some libraries recommend loading code from a CDN -->
         <script src="https://cdn.example.com/some-library/3.3.7/lib.min.js"></script>
       </head>
       <div id="root">
-        ${html.dangerouslySkipEscape(pageHtml)}
+        ${escapeInjections.dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`

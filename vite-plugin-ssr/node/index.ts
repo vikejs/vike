@@ -1,6 +1,6 @@
 import './page-files/setup'
 export { createPageRender } from './createPageRender'
-export { html } from './html/index'
+export { escapeInjections } from './html/escapeInjections'
 
 import { importBuild } from './importBuild'
 export const __private = { importBuild }

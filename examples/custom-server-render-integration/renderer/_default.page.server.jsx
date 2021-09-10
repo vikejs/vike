@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
-import { html } from "vite-plugin-ssr";
+import { escapeInjections } from "vite-plugin-ssr";
 
 export { render };
 
@@ -9,7 +9,7 @@ async function render(pageContext) {
   const pageHtml = renderToString(<Page />);
 
   // This is a plain string: we don't use the `html` string template tag
-  // nor `html.dangerouslySkipEscape()`.
+  // nor `escapeInjections.dangerouslySkipEscape()`.
   const htmlString = `<!DOCTYPE html>
     <html>
       <body>
@@ -17,5 +17,5 @@ async function render(pageContext) {
       </body>
     </html>`;
 
-  return html.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
+  return escapeInjections.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
 }

@@ -4,20 +4,20 @@ We usually define HTML `<head>` tags, such as `<title>` or `<meta>`, in the `ren
 // _default.page.server.js
 // Environment: Node.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
 
 async function render(pageContext) {
-  return html`<html>
+  return escapeInjections`<html>
     <head>
       <title>SpaceX</title>
       <meta name="description" content="We deliver payload to space.">
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
+        ${escapeInjections.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
@@ -31,7 +31,7 @@ If we want to define `<title>` and `<meta>` tags on a page-by-page basis, we can
 ```js
 // _default.page.server.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
@@ -45,14 +45,14 @@ async function render(pageContext) {
   title = title || 'SpaceX'
   description = description || 'We deliver payload to space.'
 
-  return html`<html>
+  return escapeInjections`<html>
     <head>
       <title>${title}</title>
       <meta name="description" content="${description}">
     </head>
     <body>
       <div id="root">
-        ${html.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
+        ${escapeInjections.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
@@ -86,7 +86,7 @@ For example:
 // _default.page.server.js
 // Environment: Node.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 import renderToHtml from 'some-view-framework'
 
 export async function render(pageContext) {
@@ -102,14 +102,14 @@ export async function render(pageContext) {
   // 1. Our view framework passed `documentProps` to all our components
   // 2. One of our (deeply nested) component modified `documentProps`
   // 3. We now render `documentProps` to HTML meta tags
-  return html`<html>
+  return escapeInjections`<html>
     <head>
       <title>${pageContext.documentProps.title}</title>
       <meta name="description" content="${pageContext.documentProps.description}">
     </head>
     <body>
       <div id="app">
-        ${html.dangerouslySkipEscape(pageHtml)}
+        ${escapeInjections.dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`

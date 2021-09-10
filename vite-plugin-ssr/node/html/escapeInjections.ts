@@ -1,15 +1,15 @@
 import { assert, assertUsage, cast, hasProp, isPromise } from '../../shared/utils'
 import { injectAssets } from './injectAssets'
 
-export { html }
+export { escapeInjections }
 export { renderHtmlTemplate }
 export { isHtmlTemplate }
 
 export { isSanitizedString }
 export { renderSanitizedString }
 
-html.dangerouslySkipEscape = dangerouslySkipEscape
-html._injectAssets = injectAssets
+escapeInjections.dangerouslySkipEscape = dangerouslySkipEscape
+escapeInjections._injectAssets = injectAssets
 
 /* TS + Symbols are problematic: https://stackoverflow.com/questions/59118271/using-symbol-as-object-key-type-in-typescript
 const __html_template = Symbol('__html_template')
@@ -28,9 +28,9 @@ type SanitizedHtmlString = {
   }
 }
 type TemplateString = TemplateStringsArray
-function html(
+function escapeInjections(
   templateString: TemplateString,
-  ...templateVariables: (string | ReturnType<typeof html.dangerouslySkipEscape> | SanitizedHtmlString)[]
+  ...templateVariables: (string | ReturnType<typeof escapeInjections.dangerouslySkipEscape> | SanitizedHtmlString)[]
 ): SanitizedHtmlString {
   return {
     __html_template: {
@@ -43,11 +43,11 @@ type SanitizedString = { __dangerouslySkipEscape: string } // todo: toString
 function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString {
   assertUsage(
     !isPromise(alreadySanitizedString),
-    `[html.dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
+    `[escapeInjections.dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
   )
   assertUsage(
     typeof alreadySanitizedString === 'string',
-    `[html.dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof alreadySanitizedString}"\`.`
+    `[escapeInjections.dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof alreadySanitizedString}"\`.`
   )
   return { __dangerouslySkipEscape: alreadySanitizedString }
 }
@@ -87,15 +87,15 @@ type HtmlTemplate = {
 function renderTemplate(htmlTemplate: HtmlTemplate, filePath: string) {
   const { templateParts, templateVariables } = htmlTemplate
   const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
-    // Process `html.dangerouslySkipEscape()`
+    // Process `escapeInjections.dangerouslySkipEscape()`
     if (hasProp(templateVar, '__dangerouslySkipEscape')) {
       const val = templateVar['__dangerouslySkipEscape']
       assert(typeof val === 'string')
-      // User used `html.dangerouslySkipEscape()` so we assume the string to be safe
+      // User used `escapeInjections.dangerouslySkipEscape()` so we assume the string to be safe
       return val
     }
 
-    // Process `html` tag composition
+    // Process `escapeInjections` tag composition
     if (hasProp(templateVar, '__html_template')) {
       const htmlTemplate__segment = templateVar['__html_template']
       cast<HtmlTemplate>(htmlTemplate__segment)

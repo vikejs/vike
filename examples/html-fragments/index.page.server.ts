@@ -1,17 +1,17 @@
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 
 export { render }
 
 function render() {
   // Note how `<b>` is (not) escaped
-  const htmlFragment = html`<b>I was defined by an HTML Fragment</b>`
+  const htmlFragment = escapeInjections`<b>I was defined by an HTML Fragment</b>`
   const htmlWithoutFragment = `<b>I was defined without an HTML Fragment</b>`
 
   // Some supported edge cases that are useful to implement conditional HTML Fragments
-  const emptyFragment1 = html``
+  const emptyFragment1 = escapeInjections``
   const emptyFragment2 = ''
 
-  return html`<!DOCTYPE html>
+  return escapeInjections`<!DOCTYPE html>
     <html>
       <body>
         <h1>Hello</h1>

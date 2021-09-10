@@ -32,12 +32,12 @@ This page is written in _Markdown_.
 ```js
 // _default.page.server.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 
 export async function render(pageContext) {
   // `pageContext.pageExports` holds the exports of the page's `.page.js` file
   const { title, description } = pageContext.pageExports.documentProps
-  return html`<html>
+  return escapeInjections`<html>
     <head>
       <title>${title}</title>
       <meta name="description" content="${description}">

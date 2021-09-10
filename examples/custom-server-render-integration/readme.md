@@ -9,7 +9,7 @@ Example showcasing:
          <div id="react-root">${pageHtml}</div>
        </body>
      </html>`;
-   return html.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
+   return escapeInjections.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
    ```
 
 To run it:

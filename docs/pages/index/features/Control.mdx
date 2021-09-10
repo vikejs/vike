@@ -18,7 +18,7 @@ function Page() {
 // _default.page.server.js
 // Environment: Node.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 
 // This can be any view framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-view-framework'
@@ -27,13 +27,13 @@ export async function render({ Page }) {
   // You control how you render `Page` to HTML
   const pageHtml = await renderToHtml(Page)
   const title = 'My first vite-plugin-ssr app'
-  return html`<!DOCTYPE html>
+  return escapeInjections`<!DOCTYPE html>
     <html>
       <head>
         <title>{title}</title>
       </head>
       <body>
-        <div id="page-root">${html.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-root">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }

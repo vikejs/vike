@@ -2,7 +2,7 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { Provider } from "react-redux";
 import { getStore } from "./store";
-import { html } from "vite-plugin-ssr";
+import { escapeInjections } from "vite-plugin-ssr";
 
 export { render };
 export { addPageContext };
@@ -12,10 +12,10 @@ const passToClient = ["PRELOADED_STATE"];
 
 async function render(pageContext) {
   const { pageHtml } = pageContext;
-  return html`<!DOCTYPE html>
+  return escapeInjections`<!DOCTYPE html>
     <html>
       <body>
-        <div id="react-root">${html.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="react-root">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

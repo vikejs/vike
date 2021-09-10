@@ -7,7 +7,7 @@ but it can also return something else than HTML which we talk more about down be
 // *.page.server.js
 // Environment: Node.js
 
-import { html } from 'vite-plugin-ssr'
+import { escapeInjections } from 'vite-plugin-ssr'
 import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
@@ -15,13 +15,13 @@ export { render }
 async function render(pageContext){
   const { Page, pageProps } = pageContext
   const pageHtml = await renderToHtml(createElement(Page, pageProps))
-  return html`<!DOCTYPE html>
+  return escapeInjections`<!DOCTYPE html>
     <html>
       <head>
         <title>My SSR App</title>
       </head>
       <body>
-        <div id="page-root">${html.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-root">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
