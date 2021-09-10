@@ -1,5 +1,5 @@
 const express = require("express");
-const { createPageRender } = require("vite-plugin-ssr");
+const { createPageRenderer } = require("vite-plugin-ssr");
 const vite = require("vite");
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -22,7 +22,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares);
   }
 
-  const renderPage = createPageRender({
+  const renderPage = createPageRenderer({
     viteDevServer,
     isProduction,
     root,

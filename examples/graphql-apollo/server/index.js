@@ -1,5 +1,5 @@
 const express = require("express");
-const { createPageRender } = require("vite-plugin-ssr");
+const { createPageRenderer } = require("vite-plugin-ssr");
 const vite = require("vite");
 const {
   ApolloClient,
@@ -27,7 +27,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares);
   }
 
-  const renderPage = createPageRender({ viteDevServer, isProduction, root });
+  const renderPage = createPageRenderer({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
     // It's important to create an entirely new instance of Apollo Client for each request.

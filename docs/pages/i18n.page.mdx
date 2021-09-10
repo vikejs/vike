@@ -5,7 +5,7 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 Without [pre-rendering](/pre-rendering), we can simply determine the locale at the `vite-plugin-ssr` server middleware:
 
 ```js
-const renderPage = createPageRender(/* ... */)
+const renderPage = createPageRenderer(/* ... */)
 
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {

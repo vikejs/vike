@@ -1,5 +1,5 @@
 import './page-files/setup'
-export { createPageRender } from './createPageRender'
+export { createPageRenderer } from './createPageRenderer'
 export { escapeInjections, dangerouslySkipEscape } from './html/escapeInjections'
 export { injectAssets } from './html/injectAssets'
 

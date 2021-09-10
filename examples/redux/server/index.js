@@ -1,6 +1,6 @@
 import express from "express";
 import vite from "vite";
-import { createPageRender } from "vite-plugin-ssr";
+import { createPageRenderer } from "vite-plugin-ssr";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -24,7 +24,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares);
   }
 
-  const renderPage = createPageRender({ viteDevServer, isProduction, root });
+  const renderPage = createPageRenderer({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
     const pageContext = { url };

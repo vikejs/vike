@@ -2,14 +2,14 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 Environment: `Node.js`
 
-We use `createPageRender()` to create the server middlware that performs server-side rendering:
+We use `createPageRenderer()` to create the server middlware that performs server-side rendering:
 
 ```js
 // server/index.js
 
 // In this example we use Express.js but we could use any other server framework.
 const express = require('express')
-const { createPageRender } = require('vite-plugin-ssr')
+const { createPageRenderer } = require('vite-plugin-ssr')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
@@ -32,7 +32,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
-  const renderPage = createPageRender({ viteDevServer, isProduction, root, base })
+  const renderPage = createPageRenderer({ viteDevServer, isProduction, root, base })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContext = { url }
@@ -55,7 +55,7 @@ async function startServer() {
 - `result.statusCode` is either `200`, `404`, or `500`.
 - `result.renderResult` is the value returned by our `render()` hook.
 
-Since `createPageRender()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers or Vercel.
+Since `createPageRenderer()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers or Vercel.
 
 Examples:
  - <RepoLink text='JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />

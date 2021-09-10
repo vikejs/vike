@@ -11,7 +11,7 @@
  - **`pageContext.isHydration`**: *[only in the browser, and only when using `useClientRouter()` i.e. Client Routing]* boolean that is `true` when the page is already rendered to HTML. (When the page is already rendered to HTML we merely have to hydrate it. When doing SSR, it's `true` for the first page the user navigates to, and `false` when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
-    const renderPage = createPageRender(/*...*/)
+    const renderPage = createPageRenderer(/*...*/)
     // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContext = {}
@@ -31,7 +31,7 @@
  - The `pageContext` values we returned in our `_default.page.server.js`'s `addPageContext()` hook (if we defined one).
  - The `pageContext` values we passed at our server middleware.
     ```js
-    const renderPage = createPageRender(/*...*/)
+    const renderPage = createPageRenderer(/*...*/)
     // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContext = {

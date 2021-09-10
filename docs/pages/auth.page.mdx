@@ -3,7 +3,7 @@ import { Integration } from '../components/Integration'
 We can add information about the authenticated user to `pageContext` at the server middlware:
 
 ```js
-const renderPage = createPageRender(/* ... */)
+const renderPage = createPageRenderer(/* ... */)
 
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {

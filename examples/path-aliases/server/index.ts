@@ -7,7 +7,7 @@ import "module-alias/register";
 import { msg } from "~/server/msg";
 
 import express from "express";
-import { createPageRender } from "vite-plugin-ssr";
+import { createPageRenderer } from "vite-plugin-ssr";
 
 console.log(msg);
 
@@ -31,7 +31,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares);
   }
 
-  const renderPage = createPageRender({ viteDevServer, isProduction, root });
+  const renderPage = createPageRenderer({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
     const pageContext = {

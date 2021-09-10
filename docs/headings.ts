@@ -523,8 +523,8 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`createPageRender()`',
-    url: '/createPageRender'
+    title: '`createPageRenderer()`',
+    url: '/createPageRenderer'
   },
   {
     level: 2,

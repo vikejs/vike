@@ -47,7 +47,7 @@ function render(pageContext) {
 ```js
 // server.js
 
-const renderPage = createPageRender(/*...*/)
+const renderPage = createPageRenderer(/*...*/)
 
 app.get('*', async (req, res, next) => {
   const result = await renderPage({ url: req.originalUrl })

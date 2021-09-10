@@ -18,11 +18,11 @@ To change the Base URL we:
    };
    ```
 
-2. Pass `base` to `createPageRender()`:
+2. Pass `base` to `createPageRenderer()`:
    ```js
    // server.js
    const express = require('express')
-   const { createPageRender } = require('vite-plugin-ssr')
+   const { createPageRenderer } = require('vite-plugin-ssr')
    const vite = require('vite')
 
    startServer()
@@ -32,7 +32,7 @@ To change the Base URL we:
 
      const isProduction = process.env['NODE_ENV'] === 'production'
      const base = isProduction ? '/some/base/url/' : '/'
-     const renderPage = createPageRender({ base, /* ... */ })
+     const renderPage = createPageRenderer({ base, /* ... */ })
 
      /* ... */
    }

@@ -1,4 +1,4 @@
-import { createPageRenderWasCalled } from './createPageRender'
+import { createPageRendererWasCalled } from './createPageRenderer'
 import { setViteManifest } from './getViteManifest'
 import { setPageFiles } from '../shared/getPageFiles'
 import { assertUsage } from '../shared/utils'
@@ -26,8 +26,8 @@ function importBuild({
     'You are trying to load `dist/server/importBuild.js` a second time, but it should be loaded only once.'
   )
   assertUsage(
-    createPageRenderWasCalled() === false,
-    'You are trying to load `dist/server/importBuild.js` after calling `createPageRender()`. Make sure to load `dist/server/importBuild.js` before calling `createPageRender()` instead.'
+    createPageRendererWasCalled() === false,
+    'You are trying to load `dist/server/importBuild.js` after calling `createPageRenderer()`. Make sure to load `dist/server/importBuild.js` before calling `createPageRenderer()` instead.'
   )
   setPageFiles(pageFiles)
   setViteManifest({ clientManifest, serverManifest })
