@@ -5,7 +5,7 @@ When using the `escapeInjections` template tag, `vite-plugin-ssr` automatically 
 ```jsx
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 
 export { render }
 export { passToClient }
@@ -17,7 +17,7 @@ function render() {
   return escapeInjections`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
@@ -49,14 +49,14 @@ For example, the following will result in the same HTML than above.
 ```jsx
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInjections, injectAssets } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape, injectAssets } from 'vite-plugin-ssr'
 
 export { render }
 export { passToClient }
 
 const passToClient = ['pageProps']
 
-function render(pageContext) {
+async function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(<h1>Hello</h1>);
   const htmlString = `<!DOCTYPE html>
     <html>
@@ -64,13 +64,13 @@ function render(pageContext) {
         <div id="page-view">${pageHtml}</div>
       </body>
     </html>`
-  return escapeInjections.dangerouslySkipEscape(injectAssets(htmlString, pageContext))
+  return dangerouslySkipEscape(await injectAssets(htmlString, pageContext))
 }
 ```
 
-> We wrap the whole HTML string with `escapeInjections.dangerouslySkipEscape()`
+> We wrap the whole HTML string with `dangerouslySkipEscape()`
 > to let `vite-plugin-ssr` know that we are aware that we are dangerously skipping escaping.
-> See [`escapeInjections`](/escapeInjections) for an explanation why this is dangerous.
+> See [`escapeInjections`](/escapeInjections) for an explanation why skipping escaping is dangerous.
 
 Example:
 - <RepoLink path='/examples/custom-server-render-integration/' />

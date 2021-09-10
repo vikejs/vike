@@ -1,5 +1,5 @@
 import React from "react";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 import App from "./App";
 
@@ -14,7 +14,7 @@ function render(pageContext) {
   return escapeInjections`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-content">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-content">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

@@ -1,6 +1,6 @@
 import { generateHydrationScript, renderToString } from "solid-js/web";
 import { PageLayout } from "./PageLayout";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { PageContext } from "./types";
 import logoUrl from "./logo.svg";
 
@@ -34,10 +34,10 @@ function render(pageContext: PageContext) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="${description}" />
         <title>${title}</title>
-        ${escapeInjections.dangerouslySkipEscape(generateHydrationScript())}
+        ${dangerouslySkipEscape(generateHydrationScript())}
       </head>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

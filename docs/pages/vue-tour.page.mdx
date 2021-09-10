@@ -47,7 +47,7 @@ Unlike Nuxt, we define how our pages are rendered.
 
 import { createSSRApp, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 
 export { render }
 
@@ -67,7 +67,7 @@ async function render(pageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${escapeInjections.dangerouslySkipEscape(appHtml)}</div>
+        <div id="app">${dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

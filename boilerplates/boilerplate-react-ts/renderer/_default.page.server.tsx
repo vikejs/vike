@@ -1,7 +1,7 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageWrapper } from "./PageWrapper";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 import logoUrl from "./logo.svg";
 import type { PageContext } from "./types";
 import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
@@ -33,7 +33,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

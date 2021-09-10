@@ -1,10 +1,10 @@
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 
 export { render }
 
 async function render(pageContext) {
   const scriptSrc = pageContext._pageAssets.find((asset) => asset.assetType === 'script').src
-  return escapeInjections.dangerouslySkipEscape(`<!DOCTYPE html>
+  return dangerouslySkipEscape(`<!DOCTYPE html>
 <html>
   <!-- Note how this HTML does not contain \`Hello World\` -->
   <body>

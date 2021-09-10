@@ -10,7 +10,7 @@ In fact, `vite-plugin-ssr` is already being used with a high variety of tools wi
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 // This can be any view framework (React, Vue, Svelte, ...)
 import renderToHtml from 'some-view-framework'
 
@@ -33,7 +33,7 @@ async function render(pageContext) {
         <script src="https://cdn.example.com/some-library/3.3.7/lib.min.js"></script>
       </head>
       <div id="root">
-        ${escapeInjections.dangerouslySkipEscape(pageHtml)}
+        ${dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`

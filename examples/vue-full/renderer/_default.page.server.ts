@@ -1,5 +1,5 @@
 import { renderToString } from '@vue/server-renderer'
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
@@ -22,7 +22,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${escapeInjections.dangerouslySkipEscape(appHtml)}</div>
+        <div id="app">${dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

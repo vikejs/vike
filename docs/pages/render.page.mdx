@@ -7,7 +7,7 @@ but it can also return something else than HTML which we talk more about down be
 // *.page.server.js
 // Environment: Node.js
 
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
@@ -21,7 +21,7 @@ async function render(pageContext){
         <title>My SSR App</title>
       </head>
       <body>
-        <div id="page-root">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }

@@ -1,5 +1,5 @@
 import { renderToString } from '@vue/server-renderer'
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 
@@ -28,7 +28,7 @@ async function render(pageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="app">${escapeInjections.dangerouslySkipEscape(appHtml)}</div>
+        <div id="app">${dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

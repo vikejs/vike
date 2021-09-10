@@ -49,7 +49,7 @@ Unlike Next.js, we define how our pages are rendered.
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 
 export { render };
 
@@ -67,7 +67,7 @@ async function render(pageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(viewHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(viewHtml)}</div>
       </body>
     </html>`;
 }

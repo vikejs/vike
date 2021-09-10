@@ -4,7 +4,7 @@ We usually define HTML `<head>` tags, such as `<title>` or `<meta>`, in the `ren
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
@@ -17,7 +17,7 @@ async function render(pageContext) {
     </head>
     <body>
       <div id="root">
-        ${escapeInjections.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
+        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
@@ -31,7 +31,7 @@ If we want to define `<title>` and `<meta>` tags on a page-by-page basis, we can
 ```js
 // _default.page.server.js
 
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
@@ -52,7 +52,7 @@ async function render(pageContext) {
     </head>
     <body>
       <div id="root">
-        ${escapeInjections.dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
+        ${dangerouslySkipEscape(await renderToHtml(pageContext.Page))}
       </div>
     </body>
   </html>`
@@ -86,7 +86,7 @@ For example:
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import renderToHtml from 'some-view-framework'
 
 export async function render(pageContext) {
@@ -109,7 +109,7 @@ export async function render(pageContext) {
     </head>
     <body>
       <div id="app">
-        ${escapeInjections.dangerouslySkipEscape(pageHtml)}
+        ${dangerouslySkipEscape(pageHtml)}
       </div>
     </body>
   </html>`

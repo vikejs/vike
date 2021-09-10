@@ -528,8 +528,7 @@ async function executeRenderHook(
     }
     assertUsage(
       typeof renderResult !== 'string',
-      `The \`render()\` hook exported by ${renderFilePath} returned an unsafe (i.e. unescaped) string. Make sure to return a sanitized (i.e. escaped) string by using the \`escapeInjections\` template tag (\`import { escapeInjections } from 'vite-plugin-ssr'\`).`
-      // Alternatively, you can use \`injectAssets()\` and wrap your entire html with \`escapeInjections.dangerouslySkipEscape()\`.`
+      `The \`render()\` hook exported by ${renderFilePath} returned a plain JavaScript string which is forbidden. Either use the \`escapeInjections\` template tag, or wrap your HTML string with \`dangerouslySkipEscape(htmlString)\`. See https://vite-plugin-ssr/escapeInjections`
     )
   } else {
     let htmlDocument: string = renderHtmlTemplate(renderResult, renderFilePath)

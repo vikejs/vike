@@ -1,6 +1,6 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { PageWrapper } from "./PageWrapper";
 import { getPageTitle } from "./getPageTitle";
 import type { PageContext } from "./types";
@@ -27,7 +27,7 @@ function render(pageContext: PageContextBuiltIn & PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(pageContent)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageContent)}</div>
       </body>
     </html>`;
 }

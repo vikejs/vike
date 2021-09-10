@@ -1,7 +1,7 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { PageLayout } from "./PageLayout";
-import { escapeInjections } from "vite-plugin-ssr";
+import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 import logoUrl from "./logo.svg";
 
 export { render };
@@ -26,7 +26,7 @@ function render(pageContext) {
         <title>Vite App</title>
       </head>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`;
 }

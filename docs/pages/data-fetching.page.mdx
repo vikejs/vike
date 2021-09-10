@@ -32,7 +32,7 @@ async function addPageContext(pageContext) {
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml, createElement } from 'some-view-framework'
 
 // We tell `vite-plugin-ssr` to make `pageContext.pageProps` available in the browser.
@@ -51,7 +51,7 @@ async function render(pageContext) {
 
   return escapeInjections`<html>
     <div id='view-root'>
-      ${escapeInjections.dangerouslySkipEscape(pageHtml)}
+      ${dangerouslySkipEscape(pageHtml)}
     </div>
   </html>`
 }

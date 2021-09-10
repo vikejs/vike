@@ -1,5 +1,5 @@
 import { renderToString } from '@vue/server-renderer'
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 
 export { render }
@@ -15,7 +15,7 @@ async function render(pageContext) {
   return escapeInjections`<!DOCTYPE html>
     <html>
       <body>
-        <div id="app">${escapeInjections.dangerouslySkipEscape(appHtml)}</div>
+        <div id="app">${dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
 }

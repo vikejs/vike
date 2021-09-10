@@ -1,6 +1,6 @@
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInjections } from 'vite-plugin-ssr'
+import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageWrapper } from './PageWrapper'
 import { localeDefault, locales } from '../locales'
 
@@ -21,7 +21,7 @@ function render(pageContext) {
   return escapeInjections`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${escapeInjections.dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
