@@ -1,0 +1,44 @@
+export const noHeading = true
+export const pageTitle = 'Custom Exports'
+
+Exports in `*.page.{server|route}.js` that are unknown to `vite-plugin-ssr` are forbidden:
+
+```js
+// *.page.{server|route}.js
+
+// This is forbidden because `someStuff` is an export that is unknown to `vite-plugin-ssr`
+export { someStuff }
+
+function someStuff() {
+ // ...
+}
+```
+
+Instead, we define & export `someStuff` outside of `*.page.*`:
+
+```diff
+// *.page.{server|route}.js
+
++ import { someStuff } from './someStuff'
+
+- export { someStuff }
+-
+- function someStuff() {
+-  // ...
+- }
+```
+```js
++ // someStuff.js
++
++ export { someStuff }
++
++ function someStuff() {
++  // ...
++ }
+```
+
+> **Why?**
+> `vite-plugin-ssr` forbids unknown exports in order to improve code readability:
+> if someone unfamiliar with our code reads `export { someStuff }`,
+> then he'll be unsure whether `someStuff` has an effect on `vite-plugin-ssr` or not.
+> Forbidding custom exports makes code clearer, and thus easier to understand.

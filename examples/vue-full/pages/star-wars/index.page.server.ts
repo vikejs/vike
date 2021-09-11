@@ -1,5 +1,5 @@
 import fetch from 'node-fetch'
-import { filterMovieData } from './movie.page.server'
+import { filterMovieData } from "./filterMovieData";
 import type { Movie, MovieDetails } from './types'
 
 export { addPageContext }

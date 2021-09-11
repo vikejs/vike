@@ -22,7 +22,8 @@ import {
   UrlParsed,
   objectAssign,
   PromiseType,
-  compareString
+  compareString,
+  assertExports
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
@@ -392,12 +393,18 @@ async function loadPageServerFiles(pageContext: {
         filePath: serverFile.filePath,
         fileExports: await serverFile.loadFile()
       }
+  if (pageServerFile) {
+    assertExportsOfServerPage(pageServerFile.fileExports, pageServerFile.filePath)
+  }
   const pageServerFileDefault = !serverFileDefault
     ? null
     : {
         filePath: serverFileDefault.filePath,
         fileExports: await serverFileDefault.loadFile()
       }
+  if (pageServerFileDefault) {
+    assertExportsOfServerPage(pageServerFileDefault.fileExports, pageServerFileDefault.filePath)
+  }
   if (pageServerFile !== null) {
     assert_pageServerFile(pageServerFile)
   }
@@ -423,6 +430,7 @@ async function loadOnBeforePrerenderHook(globalContext: {
   await Promise.all(
     defautFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
+      assertExportsOfServerPage(fileExports, filePath)
       if ('onBeforePrerender' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'onBeforePrerender', 'function'),
@@ -442,6 +450,17 @@ async function loadOnBeforePrerenderHook(globalContext: {
   }
   assert(hookFilePath)
   return { onBeforePrerenderHook, hookFilePath }
+}
+
+function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePath: string) {
+  assertExports(
+    fileExports,
+    filePath,
+    ['render', 'addPageContext', 'passToClient', 'prerender', 'doNotPrerender', 'onBeforePrerender'],
+    {
+      ['_onBeforePrerender']: 'onBeforePrerender'
+    }
+  )
 }
 
 type PageContextUser = Record<string, unknown>

@@ -1,9 +1,9 @@
 import fetch from "node-fetch";
+import { filterMovieData } from "./filterMovieData";
 import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 import type { MovieDetails } from "./types";
 
 export { addPageContext };
-export { filterMovieData };
 
 async function addPageContext(pageContext: PageContextBuiltIn) {
   const response = await fetch(
@@ -26,12 +26,4 @@ async function addPageContext(pageContext: PageContextBuiltIn) {
       title,
     },
   };
-}
-
-function filterMovieData(
-  movie: MovieDetails & Record<string, unknown>
-): MovieDetails {
-  const { id, title, release_date, director, producer } = movie;
-  movie = { id, title, release_date, director, producer };
-  return movie;
 }

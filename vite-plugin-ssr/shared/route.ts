@@ -11,7 +11,8 @@ import {
   isPlainObject,
   isPromise,
   objectAssign,
-  isObjectWithKeys
+  isObjectWithKeys,
+  assertExports
 } from './utils'
 import { addComputedUrlProps } from '../node/renderPage'
 
@@ -409,6 +410,7 @@ async function loadPageRoutes(globalContext: {
   await Promise.all(
     defaultPageRouteFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
+      assertExportsOfDefaulteRoutePage(fileExports, filePath)
       if ('onBeforeRoute' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'onBeforeRoute', 'function'),
@@ -448,6 +450,7 @@ async function loadPageRoutes(globalContext: {
         if (pageRouteFile) {
           const { filePath, loadFile } = pageRouteFile
           const fileExports = await loadFile()
+          assertExportsOfRoutePage(fileExports, filePath)
           assertUsage('default' in fileExports, `${filePath} should have a default export.`)
           assertUsage(
             hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
@@ -489,4 +492,13 @@ function dirname(filePath: string): string {
   assert(dirPath.startsWith('/'))
   assert(!dirPath.endsWith('/') || dirPath === '/')
   return dirPath
+}
+
+function assertExportsOfRoutePage(fileExports: Record<string, unknown>, filePath: string) {
+  assertExports(fileExports, filePath, ['default', 'iKnowThePerformanceRisksOfAsyncRouteFunctions'])
+}
+function assertExportsOfDefaulteRoutePage(fileExports: Record<string, unknown>, filePath: string) {
+  assertExports(fileExports, filePath, ['onBeforeRoute', 'filesystemRoutingRoot'], {
+    ['_onBeforeRoute']: 'onBeforeRoute'
+  })
 }
