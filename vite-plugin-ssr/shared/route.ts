@@ -46,7 +46,7 @@ async function route(pageContext: {
         routeParams: pageContextAddendum.routeParams || {}
       }
     }
-    // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `_onBeforeRoute()` hook to mutate `pageContext.url` before routing.
+    // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
     objectAssign(pageContext, pageContextAddendum)
   }
 
@@ -121,12 +121,12 @@ async function callOnBeforeRouteHook(pageContext: {
   if (!pageContext._onBeforeRouteHook) {
     return null
   }
-  const result = await pageContext._onBeforeRouteHook._onBeforeRoute(pageContext)
+  const result = await pageContext._onBeforeRouteHook.onBeforeRoute(pageContext)
   if (result === null || result === undefined) {
     return null
   }
 
-  const errPrefix = `The \`_onBeforeRoute()\` hook defined in ${pageContext._onBeforeRouteHook.filePath}`
+  const errPrefix = `The \`onBeforeRoute()\` hook defined in ${pageContext._onBeforeRouteHook.filePath}`
 
   assertUsage(
     isObjectWithKeys(result, ['pageContext'] as const),
@@ -392,7 +392,7 @@ type PageRoutes = {
 
 type OnBeforeRouteHook = {
   filePath: string
-  _onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
+  onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
 }
 
 type PageRouteExports = {
@@ -409,13 +409,13 @@ async function loadPageRoutes(globalContext: {
   await Promise.all(
     defaultPageRouteFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
-      if ('_onBeforeRoute' in fileExports) {
+      if ('onBeforeRoute' in fileExports) {
         assertUsage(
-          hasProp(fileExports, '_onBeforeRoute', 'function'),
-          `The \`_onBeforeRoute\` export of \`${filePath}\` should be a function.`
+          hasProp(fileExports, 'onBeforeRoute', 'function'),
+          `The \`onBeforeRoute\` export of \`${filePath}\` should be a function.`
         )
-        const { _onBeforeRoute } = fileExports
-        onBeforeRouteHook = { filePath, _onBeforeRoute }
+        const { onBeforeRoute } = fileExports
+        onBeforeRouteHook = { filePath, onBeforeRoute }
       }
       if ('filesystemRoutingRoot' in fileExports) {
         assertUsage(

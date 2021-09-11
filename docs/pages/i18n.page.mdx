@@ -58,15 +58,15 @@ Example:
 ## With pre-rendering
 
 When using [pre-rendering](/pre-rendering),
-we can use the hooks `_onBeforeRoute()` and `_onBeforePrerender()`.
+we can use the hooks `onBeforeRoute()` and `_onBeforePrerender()`.
 (These are beta hooks, but we expect them to remain fairly stable.)
 
 ```js
 // _default.page.route.js
 
-export { _onBeforeRoute }
+export { onBeforeRoute }
 
-function _onBeforeRoute(pageContext) {
+function onBeforeRoute(pageContext) {
   let { url } = pageContext
 
   const { urlWithoutLocale, locale } = extractLocale(url)

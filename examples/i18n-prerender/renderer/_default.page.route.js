@@ -1,8 +1,8 @@
 import { extractLocale } from '../locales'
 
-export { _onBeforeRoute }
+export { onBeforeRoute }
 
-function _onBeforeRoute(pageContext) {
+function onBeforeRoute(pageContext) {
   let { url } = pageContext
 
   const { urlWithoutLocale, locale } = extractLocale(url)
