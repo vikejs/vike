@@ -423,16 +423,16 @@ async function loadOnBeforePrerenderHook(globalContext: {
   await Promise.all(
     defautFiles.map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
-      if ('_onBeforePrerender' in fileExports) {
+      if ('onBeforePrerender' in fileExports) {
         assertUsage(
-          hasProp(fileExports, '_onBeforePrerender', 'function'),
-          `The \`export { _onBeforePrerender }\` in ${filePath} should be a function.`
+          hasProp(fileExports, 'onBeforePrerender', 'function'),
+          `The \`export { onBeforePrerender }\` in ${filePath} should be a function.`
         )
         assertUsage(
           onBeforePrerenderHook === null,
-          'There can be only one `_onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.'
+          'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.'
         )
-        onBeforePrerenderHook = fileExports._onBeforePrerender
+        onBeforePrerenderHook = fileExports.onBeforePrerender
         hookFilePath = filePath
       }
     })

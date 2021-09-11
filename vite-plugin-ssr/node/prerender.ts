@@ -246,7 +246,7 @@ async function callOnBeforePrerenderHook(globalContext: {
   if (result === null || result === undefined) {
     return
   }
-  const errPrefix = `The \`_onBeforePrerender()\` hook defined in \`${hookFilePath}\``
+  const errPrefix = `The \`onBeforePrerender()\` hook defined in \`${hookFilePath}\``
   assertUsage(
     isObjectWithKeys(result, ['globalContext'] as const),
     `${errPrefix} should return \`null\`, \`undefined\`, or \`{ globalContext }\`.`

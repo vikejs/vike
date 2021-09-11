@@ -58,8 +58,7 @@ Example:
 ## With pre-rendering
 
 When using [pre-rendering](/pre-rendering),
-we can use the hooks `onBeforeRoute()` and `_onBeforePrerender()`.
-(These are beta hooks, but we expect them to remain fairly stable.)
+we can use the hooks `onBeforeRoute()` and `onBeforePrerender()`.
 
 ```js
 // _default.page.route.js
@@ -88,9 +87,9 @@ function onBeforeRoute(pageContext) {
 ```js
 // _default.page.server.js
 
-export { _onBeforePrerender }
+export { onBeforePrerender }
 
-function _onBeforePrerender(globalContext) {
+function onBeforePrerender(globalContext) {
   const prerenderPageContexts = []
   globalContext.prerenderPageContexts.forEach((pageContext) => {
     prerenderPageContexts.push({

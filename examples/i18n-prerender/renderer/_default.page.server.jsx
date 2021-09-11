@@ -6,7 +6,7 @@ import { localeDefault, locales } from '../locales'
 
 export { render }
 export { passToClient }
-export { _onBeforePrerender }
+export { onBeforePrerender }
 
 const passToClient = ['pageProps', 'locale']
 
@@ -26,7 +26,7 @@ function render(pageContext) {
     </html>`
 }
 
-function _onBeforePrerender(globalContext) {
+function onBeforePrerender(globalContext) {
   const prerenderPageContexts = []
   globalContext.prerenderPageContexts.forEach((pageContext) => {
     prerenderPageContexts.push({
