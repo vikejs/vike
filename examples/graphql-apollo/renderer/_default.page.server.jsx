@@ -4,7 +4,7 @@ import { getDataFromTree } from "@apollo/client/react/ssr";
 import App from "./App";
 
 export { render };
-export { addPageContext };
+export { onBeforeRender };
 export { passToClient };
 
 const passToClient = ["apolloIntialState"];
@@ -19,7 +19,7 @@ function render(pageContext) {
     </html>`;
 }
 
-async function addPageContext(pageContext) {
+async function onBeforeRender(pageContext) {
   const { Page, apolloClient } = pageContext;
   const tree = (
     <App apolloClient={apolloClient}>
@@ -28,5 +28,10 @@ async function addPageContext(pageContext) {
   );
   const pageHtml = await getDataFromTree(tree);
   const apolloIntialState = apolloClient.extract();
-  return { pageHtml, apolloIntialState };
+  return {
+    pageContext: {
+      pageHtml,
+      apolloIntialState,
+    },
+  };
 }

@@ -160,7 +160,7 @@ export default "/star-wars/:movieId";
 
 import fetch from "node-fetch";
 
-export async function addPageContext(pageContext) {
+export async function onBeforeRender(pageContext) {
   // The route parameter of `/star-wars/:movieId` is available at `pageContext.routeParams`
   const { movieId } = pageContext.routeParams;
 
@@ -173,7 +173,11 @@ export async function addPageContext(pageContext) {
   const pageProps = { movie };
 
   // We make `pageProps` available as `pageContext.pageProps`
-  return { pageProps };
+  return {
+    pageContext: {
+      pageProps
+    }
+  };
 }
 
 // By default `pageContext` is available only on the server. But our hydrate function

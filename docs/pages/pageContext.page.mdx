@@ -27,8 +27,8 @@
 
 ## Custom
 
- - The `pageContext` values we returned in our page's `addPageContext()` hook (if we defined one).
- - The `pageContext` values we returned in our `_default.page.server.js`'s `addPageContext()` hook (if we defined one).
+ - The `pageContext` values we returned in our page's `onBeforeRender()` hook (if we defined one).
+ - The `pageContext` values we returned in our `_default.page.server.js`'s `onBeforeRender()` hook (if we defined one).
  - The `pageContext` values we passed at our server middleware.
     ```js
     const renderPage = createPageRenderer(/*...*/)
@@ -47,7 +47,7 @@ By default only `pageContext.Page` and `pageContext.pageExports` are available i
 we use [`passToClient`](/passToClient) to make more `pageContext` available in the browser.
 
 The `pageContext` can be accessed at:
- - *[Node.js]* `export function addPageContext(pageContext)` (`*.page.server.js`)
+ - *[Node.js]* `export function onBeforeRender(pageContext)` (`*.page.server.js`)
  - *[Node.js]* `export function render(pageContext)` (`*.page.server.js`)
  - *[Node.js (& Browser)]* `export default function routeFunction(pageContext)` (`*.page.route.js`)
  - *[Browser]* `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)

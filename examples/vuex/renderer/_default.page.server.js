@@ -3,7 +3,7 @@ import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 
 export { render }
-export { addPageContext }
+export { onBeforeRender }
 export { passToClient }
 
 const passToClient = ['INITIAL_STATE']
@@ -18,7 +18,7 @@ async function render(pageContext) {
     </html>`
 }
 
-async function addPageContext(pageContext) {
+async function onBeforeRender(pageContext) {
   const { Page } = pageContext
   const { app, store } = createApp({ Page })
 
@@ -27,7 +27,9 @@ async function addPageContext(pageContext) {
   const INITIAL_STATE = store.state
 
   return {
-    INITIAL_STATE,
-    appHtml
+    pageContext: {
+      INITIAL_STATE,
+      appHtml
+    }
   }
 }

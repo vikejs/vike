@@ -13,14 +13,18 @@ export default "/star-wars/:movieId"
 // movie.page.server.js
 // Environment: Node.js
 
-export { addPageContext }
+export { onBeforeRender }
 
-async function addPageContext(pageContext) {
+async function onBeforeRender(pageContext) {
   const movie = await fetchMovie(pageContext.routeParams.movieId)
   // If the user goes to `/movie/42` but there is no movie with ID `42` then
   // we redirect the user to `/movie/add` so he can add a new movie.
   if (movie === null) {
-    return { redirectTo: '/movie/add' }
+    return {
+      pageContext: {
+        redirectTo: '/movie/add'
+      }
+    }
   }
 }
 ```

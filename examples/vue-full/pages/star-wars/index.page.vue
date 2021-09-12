@@ -6,7 +6,7 @@
     </li>
   </ol>
   <p>Source: <a href="https://star-wars.brillout.com">star-wars.brillout.com</a>.</p>
-  <p>Data can be fetched by using the <code>addPageContext()</code> hook.</p>
+  <p>Data can be fetched by using the <code>onBeforeRender()</code> hook.</p>
 </template>
 
 <script lang="ts">

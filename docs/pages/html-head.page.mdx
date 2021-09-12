@@ -37,7 +37,7 @@ import { renderToHtml } from 'some-view-framework'
 export { render }
 
 async function render(pageContext) {
-  // We use `pageContext.documentProps` which pages define in their `addPageContext()` hook
+  // We use `pageContext.documentProps` which pages define in their `onBeforeRender()` hook
   let title = pageContext.documentProps.title
   let description = pageContext.documentProps.description
 
@@ -61,15 +61,19 @@ async function render(pageContext) {
 ```js
 // about.page.server.js
 
-export { addPageContext }
+export { onBeforeRender }
 
-function addPageContext() {
+function onBeforeRender() {
   const documentProps = {
     // This title and description will override the defaults
     title: 'About SpaceX',
     description: 'Our mission is to explore the galaxy.'
   }
-  return { documentProps }
+  return {
+    pageContext: {
+      documentProps
+    }
+  }
 }
 ```
 

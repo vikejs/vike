@@ -5,7 +5,7 @@ import { getStore } from "./store";
 import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
 
 export { render };
-export { addPageContext };
+export { onBeforeRender };
 export { passToClient };
 
 const passToClient = ["PRELOADED_STATE"];
@@ -20,7 +20,7 @@ async function render(pageContext) {
     </html>`;
 }
 
-async function addPageContext(pageContext) {
+async function onBeforeRender(pageContext) {
   const store = getStore();
 
   const { Page } = pageContext;
@@ -34,7 +34,9 @@ async function addPageContext(pageContext) {
   const PRELOADED_STATE = store.getState();
 
   return {
-    PRELOADED_STATE,
-    pageHtml,
+    pageContext: {
+      PRELOADED_STATE,
+      pageHtml,
+    },
   };
 }

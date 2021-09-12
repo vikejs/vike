@@ -7,11 +7,16 @@ function assertExports(
   fileExports: Record<string, unknown>,
   filePath: string,
   exportNames: string[],
-  renamedExports: Record<string, string> = {}
+  renamedExports: Record<string, string> = {},
+  deprecatedExports: Record<string, string> = {}
 ) {
   assert(isObject(fileExports))
   const unknownExports: string[] = []
   Object.keys(fileExports).forEach((exportName) => {
+    assertUsage(
+      !(exportName in deprecatedExports),
+      `Your ${filePath} exports \`${exportName}\` which has been deprecated in favor of \`${deprecatedExports[exportName]}\`. See \`CHANGELOG.md\`.`
+    )
     assertUsage(
       !(exportName in renamedExports),
       `Rename the export \`${exportName}\` to \`${renamedExports[exportName]}\` in ${filePath}`

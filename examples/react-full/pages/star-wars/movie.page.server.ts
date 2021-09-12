@@ -3,9 +3,9 @@ import { filterMovieData } from "./filterMovieData";
 import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 import type { MovieDetails } from "./types";
 
-export { addPageContext };
+export { onBeforeRender };
 
-async function addPageContext(pageContext: PageContextBuiltIn) {
+async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const response = await fetch(
     `https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`
   );
@@ -18,12 +18,14 @@ async function addPageContext(pageContext: PageContextBuiltIn) {
   const { title } = movie;
 
   return {
-    pageProps: {
-      movie,
-    },
-    documentProps: {
-      // The page's <title>
-      title,
+    pageContext: {
+      pageProps: {
+        movie,
+      },
+      documentProps: {
+        // The page's <title>
+        title,
+      },
     },
   };
 }

@@ -56,7 +56,7 @@ export { render }
 
 async function render(pageContext) {
   // We only include the `<meta name="description">` tag if the page has a description.
-  // (Pages define `pageContext.documentProps.description` in their `addPageContext()` hook.)
+  // (Pages define `pageContext.documentProps.description` in their `onBeforeRender()` hook.)
   const description = pageContext.documentProps?.description
   let descriptionTag = ''
   if( description ) {

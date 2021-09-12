@@ -33,7 +33,7 @@ export async function render(pageContext: PageContextBuiltIn & PageContext) {
     </html>`
 }
 
-export async function addPageContext(pageContext: PageContextBuiltIn & PageContext) {
+export async function onBeforeRender(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext
 
   const ssr = ssrExchange({ initialState: undefined })
@@ -59,5 +59,12 @@ export async function addPageContext(pageContext: PageContextBuiltIn & PageConte
     </PageWrapper>
   )
 
-  return { pageHtml, urqlState: ssr.extractData() }
+  const urqlState = ssr.extractData()
+
+  return {
+    pageContext: {
+      pageHtml,
+      urqlState
+    }
+  }
 }

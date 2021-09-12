@@ -2,19 +2,21 @@ import fetch from "node-fetch";
 import { filterMovieData } from "./filterMovieData";
 import type { Movie, MovieDetails } from "./types";
 
-export { addPageContext };
+export { onBeforeRender };
 export { prerender };
 
-async function addPageContext() {
+async function onBeforeRender() {
   const movies = await getStarWarsMovies();
   return {
-    pageProps: {
-      // We remove data we don't need because we pass `pageContext.movies` to
-      // the client; we want to minimize what is sent over the network.
-      movies: filterMoviesData(movies),
-    },
-    // The page's <title>
-    documentProps: { title: getTitle(movies) },
+    pageContext: {
+      pageProps: {
+        // We remove data we don't need because we pass `pageContext.movies` to
+        // the client; we want to minimize what is sent over the network.
+        movies: filterMoviesData(movies),
+      },
+      // The page's <title>
+      documentProps: { title: getTitle(movies) },
+    }
   };
 }
 
@@ -42,7 +44,7 @@ async function prerender() {
     {
       url: "/star-wars",
       // We already provide `pageContext` here so that `vite-plugin-ssr`
-      // will *not* have to call the `addPageContext()` hook defined
+      // will *not* have to call the `onBeforeRender()` hook defined
       // above in this file.
       pageContext: {
         pageProps: {
@@ -57,7 +59,7 @@ async function prerender() {
         url,
         // Note that we can also provide the `pageContext` of other pages.
         // This means that `vite-plugin-ssr` will not call any
-        // `addPageContext()` hook and the Star Wars API will be called
+        // `onBeforeRender()` hook and the Star Wars API will be called
         // only once (in this `prerender()` hook).
         pageContext: {
           pageProps: {

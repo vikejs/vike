@@ -389,10 +389,10 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`addPageContext()` hook',
-    titleInNav: '`export { addPageContext }`',
+    title: '`onBeforeRender()` hook',
+    titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
-    url: '/addPageContext'
+    url: '/onBeforeRender'
   },
   {
     level: 2,

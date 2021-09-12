@@ -23,7 +23,8 @@ import {
   objectAssign,
   PromiseType,
   compareString,
-  assertExports
+  assertExports,
+  isObjectWithKeys
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
@@ -274,7 +275,7 @@ type PageServerFileProps = {
   fileExports: {
     render?: Function
     prerender?: Function
-    addPageContext?: Function
+    onBeforeRender?: Function
     doNotPrerender?: true
     setPageProps: never
     passToClient?: string[]
@@ -303,20 +304,12 @@ function assert_pageServerFile(pageServerFile: {
   assert(filePath)
   assert(fileExports)
 
-  assertUsage(
-    !('setPageProps' in fileExports),
-    "The `setPageProps()` hook is deprecated: instead, return `pageProps` in your `addPageContext()` hook and use `passToClient = ['pageProps']` to pass `context.pageProps` to the browser. See `BREAKING CHANGE` in `CHANGELOG.md`. (You have a `export { setPageProps }` in `" +
-      filePath +
-      '`.)'
-  )
-
   const render = fileExports['render']
   assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
 
-  const addPageContext = fileExports['addPageContext']
   assertUsage(
-    !addPageContext || isCallable(addPageContext),
-    `The \`addPageContext()\` hook defined in ${filePath} should be a function.`
+    !('onBeforeRender' in fileExports) || isCallable(fileExports['onBeforeRender']),
+    `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`
   )
 
   assertUsage(
@@ -456,9 +449,12 @@ function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePat
   assertExports(
     fileExports,
     filePath,
-    ['render', 'addPageContext', 'passToClient', 'prerender', 'doNotPrerender', 'onBeforePrerender'],
+    ['render', 'onBeforeRender', 'passToClient', 'prerender', 'doNotPrerender', 'onBeforePrerender'],
     {
-      ['_onBeforePrerender']: 'onBeforePrerender'
+      ['_onBeforePrerender']: 'onBeforePrerender',
+    },
+    {
+      ['addPageContext']: 'onBeforeRender'
     }
   )
 }
@@ -474,19 +470,21 @@ async function executeAddPageContextHook(
     _pageContextAlreadyProvidedByPrerenderHook?: true
   } & PageContextPublic
 ) {
-  const addPageContext =
-    pageContext._pageServerFile?.fileExports.addPageContext ||
-    pageContext._pageServerFileDefault?.fileExports.addPageContext
-  if (!pageContext._pageContextAlreadyProvidedByPrerenderHook && addPageContext) {
+  const onBeforeRender =
+    pageContext._pageServerFile?.fileExports.onBeforeRender ||
+    pageContext._pageServerFileDefault?.fileExports.onBeforeRender
+  if (!pageContext._pageContextAlreadyProvidedByPrerenderHook && onBeforeRender) {
     const filePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
     assert(filePath)
     preparePageContextNode(pageContext)
-    const pageContextAddendum = await addPageContext(pageContext)
+
+    const result: unknown = await onBeforeRender(pageContext)
+    const errPrefix = `The \`onBeforeRender()\` hook exported by ${filePath}`
     assertUsage(
-      isPlainObject(pageContextAddendum),
-      `The \`addPageContext()\` hook exported by ${filePath} should return a plain JavaScript object.`
+      result === null || result === undefined || isObjectWithKeys(result, ['pageContext'] as const),
+      `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
     )
-    Object.assign(pageContext, pageContextAddendum)
+    Object.assign(pageContext, result?.pageContext)
   }
 
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
