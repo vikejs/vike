@@ -156,7 +156,12 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Apollo GraphQL',
+    title: 'urql (GraphQL)',
+    url: '/urql'
+  },
+  {
+    level: 2,
+    title: 'Apollo (GraphQL)',
     url: '/apollo-graphql'
   },
   {

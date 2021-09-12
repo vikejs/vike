@@ -3,7 +3,7 @@ import { assert } from 'libframe-docs/utils'
 
 export { DataRenderControl, DataPassToClient }
 
-function DataRenderControl({ toolName, toolLink }: { toolName: string; toolLink?: string }) {
+function DataRenderControl({ toolName, toolLink }: { toolName: string | JSX.Element; toolLink?: string }) {
   assert(toolName)
   const toolEl = toolLink ? <a href={toolLink}>{toolName}</a> : toolName
   return (
