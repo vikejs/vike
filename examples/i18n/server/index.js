@@ -32,14 +32,16 @@ async function startServer() {
     const { urlWithoutLocale, locale } = extractLocale(url)
     url = urlWithoutLocale
 
-    const pageContext = {
+    const pageContextInit = {
       url,
       locale
-    }
+    };
 
-    const result = await renderPage(pageContext)
-    if (result.nothingRendered) return next()
-    res.status(result.statusCode).send(result.renderResult)
+    const pageContext = await renderPage(pageContextInit);
+    const { httpResponse } = pageContext
+    if (!httpResponse) return next();
+    const { statusCode, body } = httpResponse;
+    res.status(statusCode).send(body);
   })
 
   const port = 3000

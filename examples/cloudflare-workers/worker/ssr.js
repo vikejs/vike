@@ -7,14 +7,17 @@ export { handleSsr };
 const renderPage = createPageRenderer({ isProduction: true });
 
 async function handleSsr(url) {
-  const pageContext = { url };
-  const result = await renderPage(pageContext);
-  if (result.nothingRendered) {
+  const pageContextInit = { url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) {
     return null;
   } else {
-    return new Response(result.renderResult, {
+    const { statusCode, body } = httpResponse
+    res.status(statusCode).send(body)
+    return new Response(body, {
       headers: { "content-type": "text/html" },
-      status: result.statusCode,
+      status: statusCode,
     });
   }
 }

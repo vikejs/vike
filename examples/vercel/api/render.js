@@ -6,11 +6,13 @@ const renderPage = createPageRenderer({ isProduction: true })
 
 export default async (req, res) => {
   const { url } = req
-  const pageContext = { url }
-  const result = await renderPage(pageContext)
-  if (result.nothingRendered) {
+  const pageContextInit = { url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) {
     res.status(200).send('')
   } else {
-    res.status(result.statusCode).setHeader('content-type', 'text/html').send(result.renderResult)
+    const { body, statusCode } = httpResponse
+    res.status(statusCode).setHeader('content-type', 'text/html').send(body)
   }
 }

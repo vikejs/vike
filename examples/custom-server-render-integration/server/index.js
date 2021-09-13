@@ -26,17 +26,20 @@ async function startServer() {
   const renderPage = createPageRenderer({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
-    const pageContext = { url };
-    const result = await renderPage(pageContext);
-    if (result.nothingRendered) return next();
+    const pageContextInit = {
+      url
+    }
+    const pageContext = await renderPage(pageContextInit)
+    const { httpResponse } = pageContext
+    if (!httpResponse) return next()
 
     // We can use `pageContext._pageAssets` to HTTP/2 Server Push or `103` Early Hint
     // our page assets.
     console.log("Page Assets:", pageContext._pageAssets);
-
     assert_pageAssets(pageContext._pageAssets);
 
-    res.status(result.statusCode).send(result.renderResult);
+    const { statusCode, body } = httpResponse
+    res.status(statusCode).send(body)
   });
 
   const port = 3000;

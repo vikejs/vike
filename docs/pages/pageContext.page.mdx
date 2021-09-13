@@ -14,10 +14,10 @@
     const renderPage = createPageRenderer(/*...*/)
     // Server middleware
     app.get('*', async (req, res, next) => {
-      const pageContext = {}
+      const pageContextInit = {}
       // `pageContext.url` is defined here
-      pageContext.url = req.url
-      const result = await renderPage(pageContext)
+      pageContextInit.url = req.url
+      const result = await renderPage(pageContextInit)
       /* ... */
     })
     ```
@@ -27,18 +27,39 @@
 
 ## Custom
 
- - The `pageContext` values we returned in our page's `onBeforeRender()` hook (if we defined one).
- - The `pageContext` values we returned in our `_default.page.server.js`'s `onBeforeRender()` hook (if we defined one).
- - The `pageContext` values we passed at our server middleware.
+While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
+ - `onBeforeRender()` and `render()` hooks.
+    ```js
+    // *.page.server.js
+    // Environment: Node.js
+
+    export function onBeforeRender() {
+      return {
+        pageContext: {
+          // We can define some custom `pageContext` here
+        }
+      }
+    }
+
+    export function render() {
+      return {
+        documentHtml: escapeInjections`<html>...`,
+        pageContext: {
+          // We can define some custom `pageContext` here
+        }
+      }
+    }
+    ```
+ - Server middleware.
     ```js
     const renderPage = createPageRenderer(/*...*/)
     // Server middleware
     app.get('*', async (req, res, next) => {
-      const pageContext = {
+      const pageContextInit = {
         url: req.url,
-        // We can add more `pageContext` here
+        // We can define some custom `pageContext` here
       }
-      const result = await renderPage(pageContext)
+      const result = await renderPage(pageContextInit)
       /* ... */
     })
     ```

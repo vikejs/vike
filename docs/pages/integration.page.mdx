@@ -111,8 +111,8 @@ app.get('*', async (req, res) => {
   // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
   // can be used in any server environment, including serverless such as Cloudflare Workers
   // or Vercel.
-  const result = await renderPage({ url: req.url })
-  res.send(result.renderResult)
+  const pageContext = await renderPage({ url: req.url })
+  res.send(pageContext.httpResponse.body)
 })
 ```
 

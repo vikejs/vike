@@ -28,10 +28,10 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   if( !propExists ){
     return false
   }
-  const propValue = (obj as Record<any,unknown>)[prop]
   if( type === 'unknown' ) {
     return true
   }
+  const propValue = (obj as Record<any,unknown>)[prop]
   if( type === 'array') {
     return Array.isArray(propValue)
   }

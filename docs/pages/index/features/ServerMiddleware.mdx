@@ -6,7 +6,7 @@ const renderPage = createPageRenderer(/* ... */)
 app.get('*', async (req, res) => {
   // `renderPage()` can also be used in serverless environments such as
   // Cloudflare Workers and Vercel
-  const result = await renderPage({ url: req.url })
-  res.send(result.renderResult)
+  const pageContext = await renderPage({ url: req.url })
+  res.send(pageContext.httpResponse.body)
 })
 ```

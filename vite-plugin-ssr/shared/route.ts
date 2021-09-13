@@ -126,7 +126,9 @@ async function callOnBeforeRouteHook(pageContext: {
   const errPrefix = `The \`onBeforeRoute()\` hook exported by ${pageContext._onBeforeRouteHook.filePath}`
 
   assertUsage(
-    result === null || result === undefined || isObjectWithKeys(result, ['pageContext'] as const),
+    result === null ||
+      result === undefined ||
+      (isObjectWithKeys(result, ['pageContext'] as const) && hasProp(result, 'pageContext')),
     `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
   )
 

@@ -24,12 +24,13 @@ async function startServer() {
   const renderPage = createPageRenderer({ viteDevServer, isProduction, root });
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
-    const pageContext = {
+    const pageContextInit = {
       url,
     };
-    const result = await renderPage(pageContext);
-    if (result.nothingRendered) return next();
-    res.status(result.statusCode).send(result.renderResult);
+    const pageContext = await renderPage(pageContextInit);
+    const { httpResponse } = pageContext
+    if (!httpResponse) return next();
+    res.status(httpResponse.statusCode).send(httpResponse.body);
   });
 
   const port = process.env.PORT || 3000;

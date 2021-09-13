@@ -31,9 +31,9 @@ import { AllPageFiles } from '../shared/getPageFiles'
 
 export { prerender }
 
-type HtmlDocument = {
+type HtmlFile = {
   url: string
-  htmlDocument: string
+  htmlString: string
   pageContextSerialized: string | null
   doNotCreateExtraDirectory: boolean
   pageId: string | null
@@ -105,17 +105,17 @@ async function prerender({
   await callOnBeforePrerenderHook(globalContext)
 
   const prerenderPageIds: PrerenderedPageIds = {}
-  const htmlDocuments: HtmlDocument[] = []
-  await routeAndPrerender(globalContext, htmlDocuments, prerenderPageIds, concurrencyLimit, noExtraDir)
+  const htmlFiles: HtmlFile[] = []
+  await routeAndPrerender(globalContext, htmlFiles, prerenderPageIds, concurrencyLimit, noExtraDir)
 
   warnContradictoryNoPrerenderList(prerenderPageIds, doNotPrerenderList)
 
-  await prerender404Page(htmlDocuments, globalContext)
+  await prerender404Page(htmlFiles, globalContext)
 
-  console.log(`${green(`✓`)} ${htmlDocuments.length} HTML documents pre-rendered.`)
+  console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
 
   await Promise.all(
-    htmlDocuments.map((htmlDoc) => writeHtmlDocument(htmlDoc, root, doNotPrerenderList, concurrencyLimit))
+    htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, doNotPrerenderList, concurrencyLimit))
   )
 
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
@@ -248,7 +248,7 @@ async function callOnBeforePrerenderHook(globalContext: {
   }
   const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${hookFilePath}\``
   assertUsage(
-    isObjectWithKeys(result, ['globalContext'] as const),
+    isObjectWithKeys(result, ['globalContext'] as const) && hasProp(result, 'globalContext'),
     `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ globalContext: { /* ... */ } }\`.`
   )
   const globalContextAddedum = result.globalContext
@@ -261,7 +261,7 @@ async function callOnBeforePrerenderHook(globalContext: {
 
 async function routeAndPrerender(
   globalContext: GlobalPrerenderingContext & { prerenderPageContexts: PageContext[] },
-  htmlDocuments: HtmlDocument[],
+  htmlFiles: HtmlFile[],
   prerenderPageIds: PrerenderedPageIds,
   concurrencyLimit: pLimit.Limit,
   noExtraDir: boolean
@@ -293,8 +293,8 @@ async function routeAndPrerender(
         })
         objectAssign(pageContext, pageFilesData)
 
-        const { htmlDocument, pageContextSerialized } = await prerenderPage(pageContext)
-        htmlDocuments.push({ url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
+        const { documentHtml, pageContextSerialized } = await prerenderPage(pageContext)
+        htmlFiles.push({ url, htmlString: documentHtml, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
         prerenderPageIds[pageId] = pageContext
       })
     )
@@ -335,15 +335,15 @@ function warnMissingPages(
     })
 }
 
-async function prerender404Page(htmlDocuments: HtmlDocument[], globalContext: GlobalPrerenderingContext) {
-  if (!htmlDocuments.find(({ url }) => url === '/404')) {
+async function prerender404Page(htmlFiles: HtmlFile[], globalContext: GlobalPrerenderingContext) {
+  if (!htmlFiles.find(({ url }) => url === '/404')) {
     const result = await renderStatic404Page(globalContext)
     if (result) {
       const url = '/404'
-      const { htmlDocument } = result
-      htmlDocuments.push({
+      const { documentHtml } = result
+      htmlFiles.push({
         url,
-        htmlDocument,
+        htmlString: documentHtml,
         pageContextSerialized: null,
         doNotCreateExtraDirectory: true,
         pageId: null
@@ -352,8 +352,8 @@ async function prerender404Page(htmlDocuments: HtmlDocument[], globalContext: Gl
   }
 }
 
-async function writeHtmlDocument(
-  { url, htmlDocument, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlDocument,
+async function writeHtmlFile(
+  { url, htmlString, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlFile,
   root: string,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: pLimit.Limit
@@ -361,7 +361,7 @@ async function writeHtmlDocument(
   assert(url.startsWith('/'))
   assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
 
-  const writeJobs = [write(url, '.html', htmlDocument, root, doNotCreateExtraDirectory, concurrencyLimit)]
+  const writeJobs = [write(url, '.html', htmlString, root, doNotCreateExtraDirectory, concurrencyLimit)]
   if (pageContextSerialized !== null) {
     writeJobs.push(
       write(url, '.pageContext.json', pageContextSerialized, root, doNotCreateExtraDirectory, concurrencyLimit)

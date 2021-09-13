@@ -1,5 +1,6 @@
 import { assert, assertUsage, assertWarning } from './assert'
 import { isObject } from './isObject'
+import { stringifyStringArray } from './stringifyStringArray'
 
 export { assertExports }
 
@@ -25,15 +26,13 @@ function assertExports(
       unknownExports.push(exportName)
     }
   })
-  const errSuffix = `Only following exports are allowed: ${stringifyListOfStrings(exportNames)}. See https://vite-plugin-ssr.com/custom-exports if you want to re-use code defined in ${filePath}.`
+  const errSuffix = `Only following exports are allowed: ${stringifyStringArray(
+    exportNames
+  )}. See https://vite-plugin-ssr.com/custom-exports if you want to re-use code defined in ${filePath}.`
   assertWarning(
     unknownExports.length <= 1,
-    `Unknown exports ${stringifyListOfStrings(unknownExports)} in ${filePath}. ${errSuffix}`
+    `Unknown exports ${stringifyStringArray(unknownExports)} in ${filePath}. ${errSuffix}`
   )
   assertWarning(unknownExports.length !== 1, `Unknown export \`${unknownExports[0]}\` in ${filePath}. ${errSuffix}`)
   assert(unknownExports.length === 0)
-}
-
-function stringifyListOfStrings(stringList: string[]) {
-  return '[' + stringList.map((str) => "'" + str + "'").join(', ') + ']'
 }

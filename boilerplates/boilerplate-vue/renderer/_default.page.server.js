@@ -16,7 +16,7 @@ async function render(pageContext) {
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
   const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
 
-  return escapeInjections`<!DOCTYPE html>
+  const documentHtml = escapeInjections`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />
@@ -29,4 +29,11 @@ async function render(pageContext) {
         <div id="app">${dangerouslySkipEscape(appHtml)}</div>
       </body>
     </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
+    }
+  }
 }

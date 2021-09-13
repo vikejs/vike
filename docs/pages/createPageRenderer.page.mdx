@@ -35,10 +35,10 @@ async function startServer() {
   const renderPage = createPageRenderer({ viteDevServer, isProduction, root, base })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
-    const pageContext = { url }
-    const result = await renderPage(pageContext)
-    if (result.nothingRendered) return next()
-    res.status(result.statusCode).send(result.renderResult)
+    const pageContextInit = { url }
+    const pageContext = await renderPage(pageContextInit)
+    if (!pageContext.httpResponse) return next()
+    res.status(pageContext.httpResponse.statusCode).send(pageContext.httpResponse.body)
   })
 
   const port = 3000
@@ -51,9 +51,9 @@ async function startServer() {
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is the absolute path of our app's root directory. The `root` directory is usually the directory where `vite.config.js` lives. All our `.page.js` files need to be descendent of the `root` directory.
 - `base` is the [Base URL](/base-url).
-- `result.nothingRendered` is `true` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
-- `result.statusCode` is either `200`, `404`, or `500`.
-- `result.renderResult` is the value returned by our `render()` hook.
+- `pageContext.httpResponse` is `null` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
+- `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
+- `pageContext.httpResponse.body` is the HTML-sanitized string returned by the `render()` hook with assets that `vite-plugin-ssr` automatically injected with [`injectAssets()`](/injectAssets).
 
 Since `createPageRenderer()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers or Vercel.
 

@@ -24,7 +24,7 @@ import {
   PromiseType,
   compareString,
   assertExports,
-  isObjectWithKeys
+  stringifyStringArray
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
@@ -43,33 +43,25 @@ export { loadOnBeforePrerenderHook }
 type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
-async function renderPage(pageContext: { url: string } & Record<string, unknown>): Promise<
-  | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
-  | {
-      nothingRendered: false
-      renderResult: string | unknown
-      statusCode: 200 | 404 | 500
-    }
-> {
+async function renderPage<T extends { url: string } & Record<string, unknown>>(
+  pageContext: T
+): Promise<T & Record<string, unknown> & { httpResponse: null | { body: string, statusCode: 200 | 404 | 500 }}> {
+  /* Not very useful because of HTTP response `{ pageContext404PageDoesNotExist: true }` with status code `200`
+  : Promise<T & Record<string, unknown> & (({ httpResponse: null}) | ({httpResponse: { statusCode: 500, body: string}}) | (PageContextBuiltIn & { statusCode: 404 | 500; body: string }))>
+  */
   assertArguments(...arguments)
   let { url } = pageContext
   assert(url)
 
   if (url.endsWith('/favicon.ico')) {
-    return {
-      nothingRendered: true,
-      renderResult: undefined,
-      statusCode: undefined
-    }
+    objectAssign(pageContext, { httpResponse: null })
+    return pageContext
   }
 
   const { urlWithoutOrigin, isPageContextRequest, hasBaseUrl } = analyzeUrl(url)
   if (!hasBaseUrl) {
-    return {
-      nothingRendered: true,
-      renderResult: undefined,
-      statusCode: undefined
-    }
+    objectAssign(pageContext, { httpResponse: null })
+    return pageContext
   }
 
   addComputedUrlProps(pageContext)
@@ -90,13 +82,15 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   try {
     pageContextRouteAddendum = await route(pageContext)
   } catch (err) {
-    pageContext['_err'] = err
-    assert(hasProp(pageContext, '_err'))
+    objectAssign(pageContext, { _err: err })
     if (pageContext._isPageContextRequest) {
-      return renderPageContextError(err)
+      const httpResponse = renderPageContextError(err)
+      objectAssign(pageContext, { httpResponse })
     } else {
-      return await render500Page(pageContext)
+      const httpResponse = await render500Page(pageContext)
+      objectAssign(pageContext, { httpResponse })
     }
+    return pageContext
   }
 
   // *** Handle 404 ***
@@ -109,12 +103,18 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
     if (!errorPageId) {
       warnMissingErrorPage()
       if (pageContext._isPageContextRequest) {
-        return renderPageContext404PageDoesNotExist()
-      }
-      return {
-        nothingRendered: true,
-        renderResult: undefined,
-        statusCode: undefined
+        const httpResponse = {
+          body: stringify({
+            pageContext404PageDoesNotExist: true
+          }),
+          statusCode: 200 as const
+        }
+        objectAssign(pageContext, { httpResponse })
+        return pageContext
+      } else {
+        const httpResponse = null
+        objectAssign(pageContext, { httpResponse })
+        return pageContext
       }
     }
     if (!pageContext._isPageContextRequest) {
@@ -128,26 +128,32 @@ async function renderPage(pageContext: { url: string } & Record<string, unknown>
   }
   assert(hasProp(pageContextRouteAddendum, '_pageId', 'string'))
   assert(isPlainObject(pageContextRouteAddendum.routeParams))
-
   objectAssign(pageContext, pageContextRouteAddendum)
 
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
   // written by the user and may contain an error.
-  let renderResult
+  let httpResponseBody: string | null
   try {
-    renderResult = await renderPageId(pageContext)
+    httpResponseBody = await renderPageId(pageContext)
   } catch (err) {
-    pageContext['_err'] = err
-    assert(hasProp(pageContext, '_err'))
+    objectAssign(pageContext, { _err: err })
     if (pageContext._isPageContextRequest) {
-      return renderPageContextError(err)
+      const httpResponse = renderPageContextError(err)
+      objectAssign(pageContext, { httpResponse })
     } else {
-      return await render500Page(pageContext)
+      const httpResponse = await render500Page(pageContext)
+      objectAssign(pageContext, { httpResponse })
     }
+    return pageContext
   }
-
-  return { nothingRendered: false, renderResult, statusCode }
+  if (httpResponseBody === null) {
+    objectAssign(pageContext, { httpResponse: null })
+    return pageContext
+  } else {
+    objectAssign(pageContext, { httpResponse: { statusCode, body: httpResponseBody } })
+    return pageContext
+  }
 }
 
 async function renderPageId(
@@ -159,7 +165,7 @@ async function renderPageId(
     _isPreRendering: false
     _allPageFiles: AllPageFiles
   }
-) {
+): Promise<null | string> {
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
@@ -167,11 +173,11 @@ async function renderPageId(
   executeAddPageContextHook_addTypes(pageContext)
 
   if (pageContext._isPageContextRequest) {
-    const renderResult = serializeClientPageContext(pageContext)
-    return renderResult
+    const pageContextSerialized = serializeClientPageContext(pageContext)
+    return pageContextSerialized
   } else {
-    const renderResult = await executeRenderHook(pageContext)
-    return renderResult
+    const documentHtmlString = await executeRenderHook(pageContext)
+    return documentHtmlString
   }
 }
 
@@ -193,17 +199,18 @@ async function prerenderPage(
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
 
-  const renderResult: unknown = await executeRenderHook(pageContext)
+  const documentHtmlString: unknown = await executeRenderHook(pageContext)
   assertUsage(
-    typeof renderResult === 'string',
-    "Pre-rendering requires your `html()` hook to return a string. Open a GitHub issue if that's a problem for you."
+    documentHtmlString !== null,
+    "Pre-rendering requires your `html()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
   )
-  const htmlDocument: string = renderResult
+  assert(typeof documentHtmlString === 'string')
+  const documentHtml: string = documentHtmlString
   if (!pageContext._usesClientRouter) {
-    return { htmlDocument, pageContextSerialized: null }
+    return { documentHtml, pageContextSerialized: null }
   } else {
     const pageContextSerialized = serializeClientPageContext(pageContext)
-    return { htmlDocument, pageContextSerialized }
+    return { documentHtml, pageContextSerialized }
   }
 }
 
@@ -451,7 +458,7 @@ function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePat
     filePath,
     ['render', 'onBeforeRender', 'passToClient', 'prerender', 'doNotPrerender', 'onBeforePrerender'],
     {
-      ['_onBeforePrerender']: 'onBeforePrerender',
+      ['_onBeforePrerender']: 'onBeforePrerender'
     },
     {
       ['addPageContext']: 'onBeforeRender'
@@ -479,11 +486,7 @@ async function executeAddPageContextHook(
     preparePageContextNode(pageContext)
 
     const result: unknown = await onBeforeRender(pageContext)
-    const errPrefix = `The \`onBeforeRender()\` hook exported by ${filePath}`
-    assertUsage(
-      result === null || result === undefined || isObjectWithKeys(result, ['pageContext'] as const),
-      `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
-    )
+    assertHookResult(result, 'onBeforeRender', ['pageContext'] as const, filePath)
     Object.assign(pageContext, result?.pageContext)
   }
 
@@ -510,7 +513,7 @@ async function executeRenderHook(
     _pageClientPath: string
     _passToClient: string[]
   }
-) {
+): Promise<string | null> {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)
   let render
   let renderFilePath
@@ -534,24 +537,80 @@ async function executeRenderHook(
   assert(renderFilePath)
 
   preparePageContextNode(pageContext)
-  const renderResult: unknown = await render(pageContext)
-
-  if (isSanitizedString(renderResult)) {
-    return renderSanitizedString(renderResult)
-  } else if (!isHtmlTemplate(renderResult)) {
-    // Allow user to return whatever he wants in their `render` hook, such as `{redirectTo: '/some/path'}`.
-    if (typeof renderResult !== 'string') {
-      return renderResult
-    }
-    assertUsage(
-      typeof renderResult !== 'string',
-      `The \`render()\` hook exported by ${renderFilePath} returned a plain JavaScript string which is forbidden. Either use the \`escapeInjections\` template tag, or wrap your HTML string with \`dangerouslySkipEscape(htmlString)\`. See https://vite-plugin-ssr/escapeInjections`
-    )
-  } else {
-    let htmlDocument: string = renderHtmlTemplate(renderResult, renderFilePath)
-    htmlDocument = await injectAssets_internal(htmlDocument, pageContext)
-    return htmlDocument
+  const result: unknown = await render(pageContext)
+  if (isObject(result) && !isSanitizedString(result) && !isHtmlTemplate(result)) {
+    assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
+
+  if (hasProp(result, 'pageContext')) {
+    Object.assign(pageContext, result.pageContext)
+  }
+
+  let documentHtml: unknown
+  let definedOverObject: boolean
+  if (hasProp(result, 'documentHtml')) {
+    documentHtml = result.documentHtml
+    definedOverObject = true
+  } else {
+    documentHtml = result
+    definedOverObject = false
+  }
+  const errPrefix = `The \`render()\` hook exported by ${renderFilePath}`
+  const errSuffix = 'You can use the `escapeInjections` template tag, or wrap your HTML string with `dangerouslySkipEscape(htmlString)`, see https://vite-plugin-ssr/escapeInjections'
+  // (you can mark a string as "HTML-sanitized" by using \`escapeInjections\` or \`dangerouslySkipEscape()\`).`
+  assertUsage(
+    typeof documentHtml !== 'string',
+    `${errPrefix} returned ${!definedOverObject?'':'{ documentHtml }` but `documentHtml` is '}a plain JavaScript string which is forbidden; your string should be HTML-sanitized. ${errSuffix}`
+  )
+  assertUsage(
+    documentHtml === null || isSanitizedString(documentHtml) || isHtmlTemplate(documentHtml),
+    `${errPrefix} ${!definedOverObject?'should return':'returned `{ documentHtml }` but `documentHtml` should be'} \`null\` or an HTML-sanitized string. ${errSuffix}`
+  )
+
+  if (documentHtml === null) {
+    return null
+  }
+
+  let documentHtmlString: string
+  if (isSanitizedString(documentHtml)) {
+    documentHtmlString = renderSanitizedString(documentHtml)
+  } else if (isHtmlTemplate(documentHtml)) {
+    documentHtmlString = renderHtmlTemplate(documentHtml, renderFilePath)
+  } else {
+    assert(false)
+  }
+
+  documentHtmlString = await injectAssets_internal(documentHtmlString, pageContext)
+
+  return documentHtmlString
+}
+
+function assertHookResult<Keys extends readonly string[]>(
+  hookResult: unknown,
+  hookName: string,
+  hookResultKeys: Keys,
+  hookFile: string
+): asserts hookResult is undefined | null | { [key in Keys[number]]?: unknown } {
+  const errPrefix = `The \`${hookName}()\` hook exported by ${hookFile}`
+  assertUsage(
+    hookResult === null || hookResult === undefined || isPlainObject(hookResult),
+    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`
+  )
+  if (hookResult === undefined || hookResult === null) {
+    return
+  }
+  const unknownKeys = []
+  for (const key of Object.keys(hookResult)) {
+    if (!hookResultKeys.includes(key)) {
+      unknownKeys.push(key)
+    }
+  }
+  assertUsage(
+    unknownKeys.length === 0,
+    `${errPrefix} returned an object with unknown keys ${stringifyStringArray(
+      unknownKeys
+    )}. Only following keys are allowed: ${stringifyStringArray(hookResultKeys)}.`
+  )
 }
 
 function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
@@ -693,20 +752,14 @@ async function render500Page(
     _isPreRendering: false
     _err: unknown
   }
-): Promise<
-  | { nothingRendered: true; renderResult: undefined; statusCode: undefined }
-  | { nothingRendered: false; renderResult: string | unknown; statusCode: 500 }
-> {
+) {
   handleError(pageContext._err)
 
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (errorPageId === null) {
     warnMissingErrorPage()
-    return {
-      nothingRendered: true,
-      renderResult: undefined,
-      statusCode: undefined
-    }
+    const httpResponse = null
+    return httpResponse
   }
 
   objectAssign(pageContext, {
@@ -716,35 +769,37 @@ async function render500Page(
     routeParams: {} as Record<string, string>
   })
 
-  let renderResult
+  let httpResponseBody: string | null
   try {
-    renderResult = await renderPageId(pageContext)
+    httpResponseBody = await renderPageId(pageContext)
   } catch (err) {
     // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
     // (And chances are high that this is the same error.)
-    return {
-      nothingRendered: true,
-      renderResult: undefined,
-      statusCode: undefined
-    }
+    const httpResponse = null
+    return httpResponse
   }
-  return { nothingRendered: false, renderResult, statusCode: 500 }
+  if (httpResponseBody === null) {
+    const httpResponse = null
+    return httpResponse
+  }
+  const httpResponse = {
+    body: httpResponseBody,
+    statusCode: 500 as const
+  }
+  return httpResponse
 }
 
-function renderPageContextError(err?: unknown): { nothingRendered: false; renderResult: string; statusCode: 500 } {
+function renderPageContextError(err?: unknown) {
   if (err) {
     handleError(err)
   }
-  const renderResult = stringify({
-    userError: true
-  })
-  return { nothingRendered: false, renderResult, statusCode: 500 }
-}
-function renderPageContext404PageDoesNotExist(): { nothingRendered: false; renderResult: string; statusCode: 200 } {
-  const renderResult = stringify({
-    pageContext404PageDoesNotExist: true
-  })
-  return { nothingRendered: false, renderResult, statusCode: 200 }
+  const httpResponse = {
+    body: stringify({
+      userError: true
+    }),
+    statusCode: 500 as const
+  }
+  return httpResponse
 }
 
 function handleError(err: unknown) {
