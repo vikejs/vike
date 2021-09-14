@@ -24,7 +24,7 @@ export default (pageContext) => {
   const { url } = pageContext
   if (!url.startsWith('/product/')) return false
   const [productId, productView] = url.split('/').slice(2)
-  return { match: true, routeParams: { productId, productView } }
+  return { routeParams: { productId, productView } }
 }
 ```
 

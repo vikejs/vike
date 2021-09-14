@@ -5,8 +5,8 @@ import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 export default (pageContext: PageContextBuiltIn) => {
   const { url } = pageContext;
   if (!url.startsWith("/hello")) {
-    return { match: false };
+    return false
   }
   const name = url.split("/")[2] || "anonymous";
-  return { match: true, routeParams: { name } };
+  return { routeParams: { name } };
 };
