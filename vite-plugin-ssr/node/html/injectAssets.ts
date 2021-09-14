@@ -162,6 +162,10 @@ async function injectAssets_internal(
   htmlString = await applyViteHtmlTransform(htmlString, urlNormalized)
 
   // Inject pageContext__client
+  assertUsage(
+    !injectPageInfoAlreadyDone(htmlString),
+    'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).'
+  )
   htmlString = injectPageInfo(htmlString, pageContext)
 
   // Inject script
@@ -205,6 +209,7 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
+const pageInfoInjectionBegin = '<script>window.__vite_plugin_ssr__pageContext'
 function injectPageInfo(
   htmlString: string,
   pageContext: { _pageId: string; _pageContextClient: Record<string, unknown>; _passToClient: string[] }
@@ -212,8 +217,11 @@ function injectPageInfo(
   assert(pageContext._pageContextClient['_pageId'])
   assert(pageContext._pageContextClient['_pageId'] === pageContext._pageId)
   const pageContextSerialized = serializePageContext(pageContext)
-  const injection = `<script>window.__vite_plugin_ssr__pageContext = ${pageContextSerialized}</script>`
+  const injection = `${pageInfoInjectionBegin} = ${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
+}
+function injectPageInfoAlreadyDone(htmlString: string) {
+  return htmlString.includes(pageInfoInjectionBegin)
 }
 
 function serializePageContext(pageContext: {
