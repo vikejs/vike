@@ -1,7 +1,7 @@
 import './page-files/setup'
 export { createPageRenderer } from './createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/escapeInject'
-export { injectAssets } from './html/injectAssets'
+export { injectAssets as _injectAssets } from './html/injectAssets'
 
 import { importBuild } from './importBuild'
 export const __private = { importBuild }
