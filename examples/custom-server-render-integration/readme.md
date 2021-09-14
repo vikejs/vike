@@ -10,8 +10,8 @@ Example showcasing:
          <body>
            <div id="react-root">${pageHtml}</div>
          </body>
-       </html>`;
-     return dangerouslySkipEscape(await injectAssets(htmlString, pageContext));
+       </html>`
+     return dangerouslySkipEscape(await injectAssets(htmlString, pageContext))
    }
    ```
 
