@@ -29,10 +29,12 @@ function assertExports(
   const errSuffix = `Only following exports are allowed: ${stringifyStringArray(
     exportNames
   )}. See https://vite-plugin-ssr.com/custom-exports if you want to re-use code defined in ${filePath}.`
-  assertWarning(
-    unknownExports.length <= 1,
-    `Unknown exports ${stringifyStringArray(unknownExports)} in ${filePath}. ${errSuffix}`
-  )
-  assertWarning(unknownExports.length !== 1, `Unknown export \`${unknownExports[0]}\` in ${filePath}. ${errSuffix}`)
-  assert(unknownExports.length === 0)
+  if (unknownExports.length !== 0) {
+    if (unknownExports.length === 1) {
+      assertWarning(false, `Unknown exports ${stringifyStringArray(unknownExports)} in ${filePath}. ${errSuffix}`)
+    } else {
+      assert(unknownExports.length >= 2)
+      assertWarning(false, `Unknown export \`${unknownExports[0]}\` in ${filePath}. ${errSuffix}`)
+    }
+  }
 }
