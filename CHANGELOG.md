@@ -7,79 +7,13 @@
 * support latest `@types/node` version ([3078ac5](https://github.com/brillout/vite-plugin-ssr/commit/3078ac5021da335c1d3808b524154cd79bf1020a))
 * ts: use all strict flags in order to accommodate for users with strict TS settings ([#145](https://github.com/brillout/vite-plugin-ssr/issues/145)) ([fd5bae5](https://github.com/brillout/vite-plugin-ssr/commit/fd5bae5c0c5bd63117af56e3a75e37eb674bda96))
 
-
-* allow `render()` hook to provide some `pageContext` ([99ad219](https://github.com/brillout/vite-plugin-ssr/commit/99ad219795440234fe38aeee85f85ff112c8a711))
-* replace `addPageContext()` with `onBeforeRender()` ([80d705b](https://github.com/brillout/vite-plugin-ssr/commit/80d705b8f0c628efe5c42cda798f9bd046ecb6ff))
-* rename `_onBeforePrerender()` to `onBeforePrerender()` ([70e0682](https://github.com/brillout/vite-plugin-ssr/commit/70e06825eb7851fc2049e3abc6c41f3cffce6f68))
-* rename `_onBeforeRoute()` to `onBeforeRoute()` ([55d5c51](https://github.com/brillout/vite-plugin-ssr/commit/55d5c5186614de01df46c76283f9f44f04809755))
-* rename `createPageRender` to `createPageRenderer` ([90e0a10](https://github.com/brillout/vite-plugin-ssr/commit/90e0a1073313ae1bbcd31252a5b015ae488023bf))
-* rename `html._injectAssets` to `injectAssets` ([a63f534](https://github.com/brillout/vite-plugin-ssr/commit/a63f53486768da43f090f0f6bcb6dd83fc81666c))
-* rename `html` template tag to `escapeInjections` ([70acc0c](https://github.com/brillout/vite-plugin-ssr/commit/70acc0c2b3c3840a5da54d1fa45227fe1a8a10dd))
-
-
 ### Features
 
 * implement domain-drive file structure (closes [#125](https://github.com/brillout/vite-plugin-ssr/issues/125)) ([fb368ff](https://github.com/brillout/vite-plugin-ssr/commit/fb368ff2f9cffdd44e556492e01f021d34e84af5))
-* allow `render()` hook to modify `pageContext`
-
-
-### BREAKING CHANGES
-
-* `renderPage()` changes:
-```diff
-  // server.js
-
-  const renderPage = createPageRenderer(/*...*/)
-  app.get('*', async (req, res, next) => {
-    const url = req.originalUrl
--   const pageContext = {
-+   const pageContextInit = {
-      url
-    }
--   const result = await renderPage(pageContext)
--   if (result.nothingRendered) return next()
--   res.status(result.statusCode).send(result.renderResult)
-+   const pageContext = await renderPage(pageContextInit)
-+   const { httpResponse } = pageContext
-+   if (!httpResponse) return next()
-+   res.status(httpResponse.statusCode).send(httpResponse.body)
-  })
-```
-* Replaced `addPageContext()` hook with new hook
-`onBeforeRender()`. To migrate simply rename your hook and wrap its
-return object with a `pageContext` object:
-```diff
-  // *.page.server.js
-
-- export function addPageContext(pageContext) {
-+ export function onBeforeRender(pageContext) {
-    const pageProps = /*...*/;
-    return {
-+     pageContext: {
-        pageProps,
-+     }
-    }
-  }
-```
-* renamed `_onBeforePrerender()` to `onBeforePrerender()` (it's out of beta!). Linux migration script: `git ls-files | xargs sed -i 's/_onBeforePrerender\b/onBeforePrerender/g'
-* renamed `_onBeforeRoute()` to `onBeforeRoute()` (it's out of beta!). Linux migration script: `git ls-files | xargs sed -i 's/_onBeforeRoute\b/onBeforeRoute/g'`.
-* Renamed `createPageRender` to `createPageRenderer`. Linux migration script: `git ls-files | xargs sed -i 's/createPageRender\b/createPageRenderer/g'`.
-* Moved `html._injectAssets` to standalone import `injectAssets`:
-```diff
-  // _default.page.server.js
-
-- import { escapeInjections } from "vite-plugin-ssr";
-+ import { escapeInjections, injectAssets } from "vite-plugin-ssr";
-
-  export function render(pageContext) {
-    /* ... */
--   return escapeInjections.dangerouslySkipEscape(await html._injectAssets(htmlString, pageContext));
-+   return escapeInjections.dangerouslySkipEscape(await injectAssets(htmlString, pageContext));
-  }
-```
-* Renamed `import { html } from 'vite-plugin-ssr'` to `import { escapeInjections } from 'vite-plugin-ssr'`. Linux migration script: ``git ls-files | xargs sed -i 's/\(import.*\)html\(.*from.*vite-plugin-ssr\)/\1escapeInjections\2/g'; git ls-files | xargs sed -i 's/\(\s\)html`/\1escapeInjections`/g'; git ls-files | xargs sed -i 's/html.dangerouslySkipEscape/escapeInjections.dangerouslySkipEscape/g'``
-
-
+* allow `render()` hook to modify `pageContext` (e.g. [boilerplate-react/renderer/_default.page.server.jsx](/boilerplates/boilerplate-react/renderer/_default.page.server.jsx))
+* `onBeforeRoute()` out of beta
+* `onBeforePrerender()` out of beta
+* `vite-plugin-ssr` can now automatically inject assets to HTML in more situations (paving the way for built-in HTML streaming support)
 
 ### BREAKING CHANGES
 
