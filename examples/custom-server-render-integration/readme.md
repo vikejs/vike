@@ -11,7 +11,7 @@ Example showcasing:
            <div id="react-root">${pageHtml}</div>
          </body>
        </html>`
-     return dangerouslySkipEscape(await injectAssets(htmlString, pageContext))
+     return dangerouslySkipEscape(htmlString)
    }
    ```
 

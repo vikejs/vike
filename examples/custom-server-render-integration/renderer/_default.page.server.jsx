@@ -1,6 +1,6 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
-import { dangerouslySkipEscape, injectAssets } from "vite-plugin-ssr";
+import { dangerouslySkipEscape } from "vite-plugin-ssr";
 
 export { render };
 
@@ -16,5 +16,5 @@ async function render(pageContext) {
       </body>
     </html>`;
 
-  return dangerouslySkipEscape(await injectAssets(htmlString, pageContext));
+  return dangerouslySkipEscape(htmlString);
 }
