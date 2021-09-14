@@ -1,3 +1,98 @@
+### BREAKING CHANGES
+
+* `dangerouslySkipEscape` is now a standalone import.
+   ```diff
+     // _default.page.server.js
+
+   - import { html } from "vite-plugin-ssr"
+   + import { html, dangerouslySkipEscape } from "vite-plugin-ssr"
+
+     export function render() {
+       return html`<!DOCTYPE html>
+         <html>
+           <body>
+   -         <div id="page-view">${html.dangerouslySkipEscape(pageHtml)}</div>
+   +         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+           </body>
+         </html>`
+     }
+   ```
+
+* `html` template tag renamed to `escapeInject`.
+   ```diff
+     // _default.page.server.js
+
+   - import { html, dangerouslySkipEscape } from "vite-plugin-ssr"
+   + import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr"
+
+     export function render() {
+   -   return html`<!DOCTYPE html>
+   +   return escapeInject`<!DOCTYPE html>
+         <html>
+           <body>
+             <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+           </body>
+         </html>`
+     }
+   ```
+
+* `createPageRender()` renamed `createPageRenderer()`.
+  ```diff
+    // server.js
+
+  - const renderPage = createPageRender(/*...*/)
+  + const renderPage = createPageRenderer(/*...*/)
+  ```
+
+* `renderPage()` changes:
+  ```diff
+    // server.js
+
+    const renderPage = createPageRenderer(/*...*/)
+    app.get('*', async (req, res, next) => {
+      const url = req.originalUrl
+  -   const pageContext = { url }
+  -   const result = await renderPage(pageContext)
+  -   if (result.nothingRendered) return next()
+  -   res.status(result.statusCode).send(result.renderResult)
+  +   const pageContextInit = { url }
+  +   const pageContext = await renderPage(pageContextInit)
+  +   if (!pageContext.httpResponse) return next()
+  +   res.status(pageContext.httpResponse.statusCode).send(pageContext.httpResponse.body)
+    })
+  ```
+
+* Hook `addPageContext()` deprecated and replaced with `onBeforeRender()`.
+  ```diff
+    // *.page.server.js
+
+  - export function addPageContext(pageContext) {
+  + export function onBeforeRender(pageContext) {
+      const pageProps = /*...*/
+  -   return { pageProps }
+  +   return {
+  +     pageContext: {
+  +       pageProps
+  +     }
+  +   }
+    }
+  ```
+
+* `_onBeforeRoute()` and `_onBeforePrerender()` are out of beta: rename them to `onBeforeRoute()` and `onBeforePrerender()`.
+
+* `_injectAssets()` is now a standalone import.
+   ```diff
+     // _default.page.server.js
+
+   - import { html } from "vite-plugin-ssr"
+   + import { _injectAssets } from "vite-plugin-ssr"
+
+     export function render() {
+   -   html._injectAssets(/*...*/)
+   +   _injectAssets(/*...*/)
+     }
+   ```
+
 ## [0.2.13](https://github.com/brillout/vite-plugin-ssr/compare/v0.2.12...v0.2.13) (2021-09-03)
 
 
