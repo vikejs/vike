@@ -53,7 +53,7 @@ async function startServer() {
 - `base` is the [Base URL](/base-url).
 - `pageContext.httpResponse` is `null` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
 - `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
-- `pageContext.httpResponse.body` is the HTML-sanitized string returned by the `render()` hook with assets that `vite-plugin-ssr` automatically injected with [`injectAssets()`](/injectAssets).
+- `pageContext.httpResponse.body` is the HTML-sanitized string returned by the `render()` hook with added assets that `vite-plugin-ssr` automatically injected.
 
 Since `createPageRenderer()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers or Vercel.
 
