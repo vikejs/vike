@@ -28,7 +28,7 @@ async function startServer() {
       url,
     };
     const pageContext = await renderPage(pageContextInit);
-    const { httpResponse } = pageContext
+    const { httpResponse } = pageContext;
     if (!httpResponse) return next();
     res.status(httpResponse.statusCode).send(httpResponse.body);
   });

@@ -114,9 +114,7 @@ async function prerender({
 
   console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
 
-  await Promise.all(
-    htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, doNotPrerenderList, concurrencyLimit))
-  )
+  await Promise.all(htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, doNotPrerenderList, concurrencyLimit)))
 
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
 }
@@ -294,7 +292,13 @@ async function routeAndPrerender(
         objectAssign(pageContext, pageFilesData)
 
         const { documentHtml, pageContextSerialized } = await prerenderPage(pageContext)
-        htmlFiles.push({ url, htmlString: documentHtml, pageContextSerialized, doNotCreateExtraDirectory: noExtraDir, pageId })
+        htmlFiles.push({
+          url,
+          htmlString: documentHtml,
+          pageContextSerialized,
+          doNotCreateExtraDirectory: noExtraDir,
+          pageId
+        })
         prerenderPageIds[pageId] = pageContext
       })
     )

@@ -27,19 +27,19 @@ async function startServer() {
   app.get("*", async (req, res, next) => {
     const url = req.originalUrl;
     const pageContextInit = {
-      url
-    }
-    const pageContext = await renderPage(pageContextInit)
-    const { httpResponse } = pageContext
-    if (!httpResponse) return next()
+      url,
+    };
+    const pageContext = await renderPage(pageContextInit);
+    const { httpResponse } = pageContext;
+    if (!httpResponse) return next();
 
     // We can use `pageContext._pageAssets` to HTTP/2 Server Push or `103` Early Hint
     // our page assets.
     console.log("Page Assets:", pageContext._pageAssets);
     assert_pageAssets(pageContext._pageAssets);
 
-    const { statusCode, body } = httpResponse
-    res.status(statusCode).send(body)
+    const { statusCode, body } = httpResponse;
+    res.status(statusCode).send(body);
   });
 
   const port = 3000;

@@ -23,7 +23,7 @@ function getSsrEnv(): SsrEnv {
 }
 
 function setSsrEnv(ssrEnv: SsrEnv) {
-  (global as any).__vite_ssr_plugin = ssrEnv
+  ;(global as any).__vite_ssr_plugin = ssrEnv
 }
 
 /* We use `global as any` instead, because latest `@types/node` version `16.x.x` breaks `declare global`, see https://stackoverflow.com/questions/68481686/type-typeof-globalthis-has-no-index-signature

@@ -25,13 +25,13 @@ async function startServer() {
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = {
-      url,
-    };
-    const pageContext = await renderPage(pageContextInit);
+      url
+    }
+    const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) return next();
-    const { statusCode, body } = httpResponse;
-    res.status(statusCode).send(body);
+    if (!httpResponse) return next()
+    const { statusCode, body } = httpResponse
+    res.status(statusCode).send(body)
   })
 
   const port = process.env.PORT || 3000

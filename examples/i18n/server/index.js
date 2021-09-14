@@ -35,13 +35,13 @@ async function startServer() {
     const pageContextInit = {
       url,
       locale
-    };
+    }
 
-    const pageContext = await renderPage(pageContextInit);
+    const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
-    if (!httpResponse) return next();
-    const { statusCode, body } = httpResponse;
-    res.status(statusCode).send(body);
+    if (!httpResponse) return next()
+    const { statusCode, body } = httpResponse
+    res.status(statusCode).send(body)
   })
 
   const port = 3000

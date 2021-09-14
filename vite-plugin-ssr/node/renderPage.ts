@@ -45,7 +45,7 @@ type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<T extends { url: string } & Record<string, unknown>>(
   pageContext: T
-): Promise<T & Record<string, unknown> & { httpResponse: null | { body: string, statusCode: 200 | 404 | 500 }}> {
+): Promise<T & Record<string, unknown> & { httpResponse: null | { body: string; statusCode: 200 | 404 | 500 } }> {
   /* Not very useful because of HTTP response `{ pageContext404PageDoesNotExist: true }` with status code `200`
   : Promise<T & Record<string, unknown> & (({ httpResponse: null}) | ({httpResponse: { statusCode: 500, body: string}}) | (PageContextBuiltIn & { statusCode: 404 | 500; body: string }))>
   */
@@ -556,15 +556,20 @@ async function executeRenderHook(
     definedOverObject = false
   }
   const errPrefix = `The \`render()\` hook exported by ${renderFilePath}`
-  const errSuffix = 'You can use the `escapeInject` template tag, or wrap your HTML string with `dangerouslySkipEscape(htmlString)`, see https://vite-plugin-ssr/escapeInject'
+  const errSuffix =
+    'You can use the `escapeInject` template tag, or wrap your HTML string with `dangerouslySkipEscape(htmlString)`, see https://vite-plugin-ssr/escapeInject'
   // (you can mark a string as "HTML-sanitized" by using \`escapeInject\` or \`dangerouslySkipEscape()\`).`
   assertUsage(
     typeof documentHtml !== 'string',
-    `${errPrefix} returned ${!definedOverObject?'':'{ documentHtml }` but `documentHtml` is '}a plain JavaScript string which is forbidden; your string should be HTML-sanitized. ${errSuffix}`
+    `${errPrefix} returned ${
+      !definedOverObject ? '' : '{ documentHtml }` but `documentHtml` is '
+    }a plain JavaScript string which is forbidden; your string should be HTML-sanitized. ${errSuffix}`
   )
   assertUsage(
     documentHtml === null || isSanitizedString(documentHtml) || isHtmlTemplate(documentHtml),
-    `${errPrefix} ${!definedOverObject?'should return':'returned `{ documentHtml }` but `documentHtml` should be'} \`null\` or an HTML-sanitized string. ${errSuffix}`
+    `${errPrefix} ${
+      !definedOverObject ? 'should return' : 'returned `{ documentHtml }` but `documentHtml` should be'
+    } \`null\` or an HTML-sanitized string. ${errSuffix}`
   )
 
   if (documentHtml === null) {

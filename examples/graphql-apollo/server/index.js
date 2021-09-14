@@ -37,12 +37,12 @@ async function startServer() {
     const apolloClient = makeApolloClient();
 
     const pageContextInit = { url, apolloClient };
-    const pageContext = await renderPage(pageContextInit)
+    const pageContext = await renderPage(pageContextInit);
 
-    const { httpResponse } = pageContext
-    if (!httpResponse) return next()
-    const { statusCode, body } = httpResponse
-    res.status(statusCode).send(body)
+    const { httpResponse } = pageContext;
+    if (!httpResponse) return next();
+    const { statusCode, body } = httpResponse;
+    res.status(statusCode).send(body);
   });
 
   const port = 3000;

@@ -16,7 +16,7 @@ async function onBeforeRender() {
       },
       // The page's <title>
       documentProps: { title: getTitle(movies) },
-    }
+    },
   };
 }
 
