@@ -25,7 +25,7 @@ function Page() {
 // *.page.server.js
 // Environment: Node.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import renderToHtml from 'some-view-framework'
 
 export { render }
@@ -34,7 +34,7 @@ export { render }
 async function render(pageContext) {
   const pageHtml = await renderToHtml(pageContext.Page)
 
-  return escapeInjections`<html>
+  return escapeInject`<html>
     <body>
       <div id="root">
         ${dangerouslySkipEscape(pageHtml)}

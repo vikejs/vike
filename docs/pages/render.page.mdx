@@ -4,7 +4,7 @@ The `render()` hook defines how a page is rendered to HTML.
 // *.page.server.js
 // Environment: Node.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml, createElement } from 'some-view-framework'
 
 export { render }
@@ -13,7 +13,7 @@ async function render(pageContext){
   const { Page, pageProps } = pageContext
   const pageHtml = await renderToHtml(createElement(Page, pageProps))
 
-  const documentHtml = escapeInjections`<!DOCTYPE html>
+  const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>My SSR App</title>

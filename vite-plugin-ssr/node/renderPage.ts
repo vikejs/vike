@@ -1,5 +1,5 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
-import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/escapeInjections'
+import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/escapeInject'
 import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
@@ -556,8 +556,8 @@ async function executeRenderHook(
     definedOverObject = false
   }
   const errPrefix = `The \`render()\` hook exported by ${renderFilePath}`
-  const errSuffix = 'You can use the `escapeInjections` template tag, or wrap your HTML string with `dangerouslySkipEscape(htmlString)`, see https://vite-plugin-ssr/escapeInjections'
-  // (you can mark a string as "HTML-sanitized" by using \`escapeInjections\` or \`dangerouslySkipEscape()\`).`
+  const errSuffix = 'You can use the `escapeInject` template tag, or wrap your HTML string with `dangerouslySkipEscape(htmlString)`, see https://vite-plugin-ssr/escapeInject'
+  // (you can mark a string as "HTML-sanitized" by using \`escapeInject\` or \`dangerouslySkipEscape()\`).`
   assertUsage(
     typeof documentHtml !== 'string',
     `${errPrefix} returned ${!definedOverObject?'':'{ documentHtml }` but `documentHtml` is '}a plain JavaScript string which is forbidden; your string should be HTML-sanitized. ${errSuffix}`

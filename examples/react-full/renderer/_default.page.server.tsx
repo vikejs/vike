@@ -1,6 +1,6 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { PageWrapper } from "./PageWrapper";
 import { getPageTitle } from "./getPageTitle";
 import type { PageContext } from "./types";
@@ -21,7 +21,7 @@ function render(pageContext: PageContextBuiltIn & PageContext) {
 
   const title = getPageTitle(pageContext);
 
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>

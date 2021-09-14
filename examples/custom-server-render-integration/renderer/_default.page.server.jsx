@@ -8,7 +8,7 @@ async function render(pageContext) {
   const { Page } = pageContext;
   const pageHtml = renderToString(<Page />);
 
-  // This is a plain string: we don't use the `escapeInjections` template tag
+  // This is a plain string: we don't use the `escapeInject` template tag
   const htmlString = `<!DOCTYPE html>
     <html>
       <body>

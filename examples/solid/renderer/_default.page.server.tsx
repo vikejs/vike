@@ -1,6 +1,6 @@
 import { generateHydrationScript, renderToString } from "solid-js/web";
 import { PageLayout } from "./PageLayout";
-import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { PageContext } from "./types";
 import logoUrl from "./logo.svg";
 
@@ -26,7 +26,7 @@ function render(pageContext: PageContext) {
     (documentProps && documentProps.description) ||
     "App using Vite + vite-plugin-ssr";
 
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />

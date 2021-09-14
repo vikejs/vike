@@ -1,4 +1,4 @@
-Example of using [HTML fragments](https://vite-plugin-ssr.com/escapeInjections#html-fragments).
+Example of using [HTML fragments](https://vite-plugin-ssr.com/escapeInject#html-fragments).
 
 To run it:
 

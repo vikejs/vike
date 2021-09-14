@@ -1,5 +1,5 @@
 import { renderToString } from '@vue/server-renderer'
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 
@@ -18,7 +18,7 @@ async function render(pageContext) {
   const title = documentProps?.title || 'Vite SSR app'
   const desc = documentProps?.description || 'App using Vite + vite-plugin-ssr'
 
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />

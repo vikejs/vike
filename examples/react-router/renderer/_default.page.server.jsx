@@ -1,7 +1,7 @@
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router";
-import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 
 export { render };
 export { passToClient };
@@ -15,7 +15,7 @@ async function render(pageContext) {
       <Page {...pageProps} />
     </StaticRouter>
   );
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html>
       <body>
         <div id="react-root">${dangerouslySkipEscape(pageHtml)}</div>

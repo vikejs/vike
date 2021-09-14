@@ -49,7 +49,7 @@ Unlike Next.js, we define how our pages are rendered.
 
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 
 export { render };
 
@@ -61,7 +61,7 @@ async function render(pageContext) {
 
   const title = "Vite SSR";
 
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>

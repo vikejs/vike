@@ -1,11 +1,11 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-When using the `escapeInjections` template tag, `vite-plugin-ssr` automatically injects assets to the HTML:
+When using the `escapeInject` template tag, `vite-plugin-ssr` automatically injects assets to the HTML:
 
 ```jsx
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 
 export { render }
 export { passToClient }
@@ -14,7 +14,7 @@ const passToClient = ['pageProps']
 
 function render() {
   const pageHtml = ReactDOMServer.renderToString(<h1>Hello</h1>);
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
@@ -42,14 +42,14 @@ The actual HTML, after `vite-plugin-ssr` has injected the required assets:
 </html>
 ```
 
-If we don't use the template tag `escapeInjections`, then we need to call `injectAssets()`.
+If we don't use the template tag `escapeInject`, then we need to call `injectAssets()`.
 
 For example, the following will result in the same HTML than above.
 
 ```jsx
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInjections, dangerouslySkipEscape, injectAssets } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape, injectAssets } from 'vite-plugin-ssr'
 
 export { render }
 export { passToClient }
@@ -70,7 +70,7 @@ async function render(pageContext) {
 
 > We wrap the whole HTML string with `dangerouslySkipEscape()`
 > to let `vite-plugin-ssr` know that we are aware that we are dangerously skipping escaping.
-> See [`escapeInjections`](/escapeInjections) for an explanation why skipping escaping is dangerous.
+> See [`escapeInject`](/escapeInject) for an explanation why skipping escaping is dangerous.
 
 Example:
 - <RepoLink path='/examples/custom-server-render-integration/' />

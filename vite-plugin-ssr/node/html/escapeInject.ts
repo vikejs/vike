@@ -1,6 +1,6 @@
 import { assert, assertUsage, cast, hasProp, isPromise } from '../../shared/utils'
 
-export { escapeInjections }
+export { escapeInject }
 export { renderHtmlTemplate }
 export { isHtmlTemplate }
 
@@ -25,7 +25,7 @@ type SanitizedHtmlString = {
   }
 }
 type TemplateString = TemplateStringsArray
-function escapeInjections(
+function escapeInject(
   templateString: TemplateString,
   ...templateVariables: (string | ReturnType<typeof dangerouslySkipEscape> | SanitizedHtmlString)[]
 ): SanitizedHtmlString {
@@ -92,7 +92,7 @@ function renderTemplate(htmlTemplate: HtmlTemplate, filePath: string) {
       return val
     }
 
-    // Process `escapeInjections` tag composition
+    // Process `escapeInject` tag composition
     if (hasProp(templateVar, '__html_template')) {
       const htmlTemplate__segment = templateVar['__html_template']
       cast<HtmlTemplate>(htmlTemplate__segment)

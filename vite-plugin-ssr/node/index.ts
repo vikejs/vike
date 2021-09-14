@@ -1,6 +1,6 @@
 import './page-files/setup'
 export { createPageRenderer } from './createPageRenderer'
-export { escapeInjections, dangerouslySkipEscape } from './html/escapeInjections'
+export { escapeInject, dangerouslySkipEscape } from './html/escapeInject'
 export { injectAssets } from './html/injectAssets'
 
 import { importBuild } from './importBuild'

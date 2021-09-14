@@ -4,13 +4,13 @@ We usually define HTML `<head>` tags, such as `<title>` or `<meta>`, in the `ren
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
 
 async function render(pageContext) {
-  return escapeInjections`<html>
+  return escapeInject`<html>
     <head>
       <title>SpaceX</title>
       <meta name="description" content="We deliver payload to space.">
@@ -31,7 +31,7 @@ If we want to define `<title>` and `<meta>` tags on a page-by-page basis, we can
 ```js
 // _default.page.server.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
@@ -45,7 +45,7 @@ async function render(pageContext) {
   title = title || 'SpaceX'
   description = description || 'We deliver payload to space.'
 
-  return escapeInjections`<html>
+  return escapeInject`<html>
     <head>
       <title>${title}</title>
       <meta name="description" content="${description}">
@@ -90,7 +90,7 @@ For example:
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import renderToHtml from 'some-view-framework'
 
 export async function render(pageContext) {
@@ -106,7 +106,7 @@ export async function render(pageContext) {
   // 1. Our view framework passed `documentProps` to all our components
   // 2. One of our (deeply nested) component modified `documentProps`
   // 3. We now render `documentProps` to HTML meta tags
-  return escapeInjections`<html>
+  return escapeInject`<html>
     <head>
       <title>${pageContext.documentProps.title}</title>
       <meta name="description" content="${pageContext.documentProps.description}">

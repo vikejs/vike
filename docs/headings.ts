@@ -424,8 +424,8 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`escapeInjections`',
-    url: '/escapeInjections'
+    title: '`escapeInject`',
+    url: '/escapeInject'
   },
   {
     level: 2,

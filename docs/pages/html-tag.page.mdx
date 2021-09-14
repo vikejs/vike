@@ -2,14 +2,14 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 Environment: `Node.js`
 
-The `escapeInjections` string template tag sanitizes HTML (to prevent XSS injections).
+The `escapeInject` string template tag sanitizes HTML (to prevent XSS injections).
 It is usually used in the `render()` hook defined in `.page.server.js`.
 
 ```js
 // *.page.server.js
 // Environment: Node.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 
 export { render }
 
@@ -17,8 +17,8 @@ async function render() {
   const title = 'Hello<script src="https://devil.org/evil-code"></script>'
   const pageHtml = "<div>I'm already <b>sanitized</b>, e.g. by Vue/React</div>"
 
-  // This HTML is safe thanks to the template tag `escapeInjections` which sanitizes `title`
-  return escapeInjections`<!DOCTYPE html>
+  // This HTML is safe thanks to the template tag `escapeInject` which sanitizes `title`
+  return escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>
@@ -49,7 +49,7 @@ For example, if we want some HTML parts to be included only for certain pages:
 // _default.page.server.js
 // Environment: Node.js
 
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
 export { render }
@@ -60,13 +60,13 @@ async function render(pageContext) {
   const description = pageContext.documentProps?.description
   let descriptionTag = ''
   if( description ) {
-    // Note how we use the `escapeInjections` string template tag for an HTML fragment
-    descriptionTag = escapeInjections`<meta name="description" content="${description}">`
+    // Note how we use the `escapeInject` string template tag for an HTML fragment
+    descriptionTag = escapeInject`<meta name="description" content="${description}">`
   }
 
-  // We use the `escapeInjections` template tag again for the overall HTML and we can use
+  // We use the `escapeInject` template tag again for the overall HTML and we can use
   // our `descriptionTag` HTML fragment.
-  return escapeInjections`<html>
+  return escapeInject`<html>
     <head>
       ${descriptionTag}
     </head>

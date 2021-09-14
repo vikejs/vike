@@ -3,7 +3,7 @@ import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange,
 import prepass from 'react-ssr-prepass'
 import React from 'react'
 import { PageWrapper } from './PageWrapper'
-import { escapeInjections, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
 import 'isomorphic-fetch'
@@ -19,7 +19,7 @@ export async function render(pageContext: PageContextBuiltIn & PageContext) {
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
   const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
 
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="UTF-8" />

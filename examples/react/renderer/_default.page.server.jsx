@@ -1,6 +1,6 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInjections, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { PageLayout } from "./PageLayout";
 
 export { render };
@@ -17,7 +17,7 @@ function render(pageContext) {
     </PageLayout>
   );
 
-  return escapeInjections`<!DOCTYPE html>
+  return escapeInject`<!DOCTYPE html>
     <html>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>

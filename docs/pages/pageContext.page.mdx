@@ -43,7 +43,7 @@ While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define 
 
     export function render() {
       return {
-        documentHtml: escapeInjections`<html>...`,
+        documentHtml: escapeInject`<html>...`,
         pageContext: {
           // We can define some custom `pageContext` here
         }
