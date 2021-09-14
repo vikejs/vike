@@ -1,4 +1,4 @@
-const PROJECT_VERSION = '0.2.13'
+const PROJECT_VERSION = '0.3.0'
 
 export const projectInfo = {
   name: 'vite-plugin-ssr',

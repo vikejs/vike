@@ -6,7 +6,7 @@ Examples (official): [examples/](https://github.com/brillout/vite-plugin-ssr/tre
 <br/>
 Examples (community): [examples/README.md](https://github.com/brillout/vite-plugin-ssr/tree/master/examples#community-examples)
 
-Version history & breaking changes: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md)
+Version history & breaking changes: [CHANGELOG.md](/CHANGELOG.md)
 
 Follow: [twitter.com/brillout](https://twitter.com/brillout)
 <br/>
