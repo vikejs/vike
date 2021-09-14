@@ -1,5 +1,5 @@
 export * from 'libframe-docs/_default.page.server'
-import { setFrame } from 'libframe-docs/_default.page.server'
+import { setFrame } from 'libframe-docs/setFrame'
 import { headings } from '../headings'
 import { projectInfo } from '../utils'
 import logoUrl from '../icons/vite-plugin-ssr.svg'
