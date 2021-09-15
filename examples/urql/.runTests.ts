@@ -16,7 +16,7 @@ function runTests(cmd: "npm run dev" | "npm run prod") {
     expect(html).toContain('Bulbasaur');
     expect(html).toContain('Blastoise');
     expect(html).toContain('<h1>Counter</h1>');
-    expect(html).toContain('Counter 0');
+    expect(html).toContain('<button>Counter <!-- -->0</button>');
   });
 
   test("page is rendered to the DOM and interactive", async () => {
