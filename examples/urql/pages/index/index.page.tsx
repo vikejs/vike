@@ -1,5 +1,6 @@
 import React from 'react'
 import { gql, useQuery } from 'urql'
+import { Counter } from './Counter'
 
 const POKEMONS_QUERY = gql`
   query Pokemons {
@@ -16,19 +17,22 @@ const Home = () => {
   const { data, fetching, error } = result
 
   return (
-    <div>
-      {fetching && <p>Loading...</p>}
-
-      {error && <p>Oh no... {error.message}</p>}
-
-      {data && (
-        <ul>
-          {data.pokemons.map((pokemon: { name: string; id: string }) => (
-            <li key={pokemon.id}>{pokemon.name}</li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <>
+      <h1>Pokemons</h1>
+      <>
+        {fetching && <p>Loading...</p>}
+        {error && <p>Oh no... {error.message}</p>}
+        {data && (
+          <ul>
+            {data.pokemons.map((pokemon: { name: string; id: string }) => (
+              <li key={pokemon.id}>{pokemon.name}</li>
+            ))}
+          </ul>
+        )}
+      </>
+      <h1>Counter</h1>
+      <Counter />
+    </>
   )
 }
 

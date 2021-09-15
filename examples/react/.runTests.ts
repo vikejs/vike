@@ -26,7 +26,7 @@ function runTests(cmd: "npm run dev" | "npm run prod") {
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {
       await page.click("button");
-      expect(await page.textContent("button")).toContain("Counter 1");
+      expect(await page.textContent("button")).toBe("Counter 1");
     });
   });
 
