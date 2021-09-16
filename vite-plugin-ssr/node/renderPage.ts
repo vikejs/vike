@@ -553,7 +553,7 @@ async function executeRenderHook(
   ].join(' ')
 
   let documentHtml: unknown
-  if (!isObject(result)) {
+  if (!isObject(result) || isSanitizedString(result) || isHtmlTemplate(result)) {
     assertUsage(
       typeof result !== 'string',
       [
