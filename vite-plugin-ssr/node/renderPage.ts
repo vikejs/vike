@@ -546,33 +546,65 @@ async function executeRenderHook(
     Object.assign(pageContext, result.pageContext)
   }
 
+  const errPrefix = 'The `render()` hook exported by ' + renderFilePath
+  const errSuffix = [
+    "a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape('<p>Some HTML</p>')`",
+    ', see https://vite-plugin-ssr.com/escapeInject'
+  ].join(' ')
+
   let documentHtml: unknown
-  let definedOverObject: boolean
-  if (hasProp(result, 'documentHtml')) {
-    documentHtml = result.documentHtml
-    definedOverObject = true
-  } else {
+  if (!isObject(result)) {
+    assertUsage(
+      typeof result !== 'string',
+      [
+        errPrefix,
+        'returned a plain JavaScript string which is forbidden;',
+        'instead, it should return',
+        errSuffix
+      ].join(' ')
+    )
+    assertUsage(
+      result === null || isSanitizedString(result) || isHtmlTemplate(result),
+      [
+        errPrefix,
+        'should return `null`, a string `documentHtml`, or an object `{ documentHtml, pageContext }`',
+        'where `pageContext` is `undefined` or an object holding additional `pageContext` values',
+        'and `documentHtml` is',
+        errSuffix
+      ].join(' ')
+    )
     documentHtml = result
-    definedOverObject = false
+  } else {
+    assertKeys(result, ['documentHtml', 'pageContext'] as const, errPrefix)
+    if ('documentHtml' in result) {
+      documentHtml = result.documentHtml
+      assertUsage(
+        typeof documentHtml !== 'string',
+        [
+          errPrefix,
+          'returned `{ documentHtml }`, but `documentHtml` is a plain JavaScript string which is forbidden;',
+          '`documentHtml` should be',
+          errSuffix
+        ].join(' ')
+      )
+      assertUsage(
+        documentHtml === undefined ||
+          documentHtml === null ||
+          isSanitizedString(documentHtml) ||
+          isHtmlTemplate(documentHtml),
+        [errPrefix, 'returned `{ documentHtml }`, but `documentHtml` should be', errSuffix].join(' ')
+      )
+    }
   }
-  const errPrefix = `The \`render()\` hook exported by ${renderFilePath}`
-  const errSuffix =
-    'You can use the `escapeInject` template tag, or wrap your HTML string with `dangerouslySkipEscape(htmlString)`, see https://vite-plugin-ssr/escapeInject'
-  // (you can mark a string as "HTML-sanitized" by using \`escapeInject\` or \`dangerouslySkipEscape()\`).`
-  assertUsage(
-    typeof documentHtml !== 'string',
-    `${errPrefix} returned ${
-      !definedOverObject ? '' : '{ documentHtml }` but `documentHtml` is '
-    }a plain JavaScript string which is forbidden; your string should be HTML-sanitized. ${errSuffix}`
-  )
-  assertUsage(
-    documentHtml === null || isSanitizedString(documentHtml) || isHtmlTemplate(documentHtml),
-    `${errPrefix} ${
-      !definedOverObject ? 'should return' : 'returned `{ documentHtml }` but `documentHtml` should be'
-    } \`null\` or an HTML-sanitized string. ${errSuffix}`
+
+  assert(
+    documentHtml === undefined ||
+      documentHtml === null ||
+      isSanitizedString(documentHtml) ||
+      isHtmlTemplate(documentHtml)
   )
 
-  if (documentHtml === null) {
+  if (documentHtml === null || documentHtml === undefined) {
     return null
   }
 
@@ -604,17 +636,30 @@ function assertHookResult<Keys extends readonly string[]>(
   if (hookResult === undefined || hookResult === null) {
     return
   }
-  const unknownKeys = []
-  for (const key of Object.keys(hookResult)) {
-    if (!hookResultKeys.includes(key)) {
-      unknownKeys.push(key)
+  assertKeys(hookResult, hookResultKeys, errPrefix)
+}
+
+function assertKeys<Keys extends readonly string[]>(
+  obj: Record<string, unknown>,
+  keysExpected: Keys,
+  errPrefix: string
+): asserts obj is { [key in Keys[number]]?: unknown } {
+  const keysUnknown: string[] = []
+  const keys = Object.keys(obj)
+  for (const key of keys) {
+    if (!keysExpected.includes(key)) {
+      keysUnknown.push(key)
     }
   }
   assertUsage(
-    unknownKeys.length === 0,
-    `${errPrefix} returned an object with unknown keys ${stringifyStringArray(
-      unknownKeys
-    )}. Only following keys are allowed: ${stringifyStringArray(hookResultKeys)}.`
+    keysUnknown.length === 0,
+    [
+      errPrefix,
+      'returned an object with unknown keys',
+      stringifyStringArray(keysUnknown) + '.',
+      'Only following keys are allowed:',
+      stringifyStringArray(keysExpected) + '.'
+    ].join(' ')
   )
 }
 
