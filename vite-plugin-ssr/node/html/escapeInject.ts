@@ -12,9 +12,10 @@ export { getEscapedString }
 const __template = Symbol('__template')
 const __escaped = Symbol('__escaped')
 
-type SanitizedHtmlString = {
+type TemplateParts = TemplateStringsArray
+type TemplateString = {
   [__template]: {
-    templateParts: TemplateStringsArray
+    templateParts: TemplateParts
     templateVariables: (
       | unknown
       | {
@@ -23,35 +24,34 @@ type SanitizedHtmlString = {
     )[]
   }
 }
-type TemplateString = TemplateStringsArray
 function escapeInject(
-  templateString: TemplateString,
-  ...templateVariables: (string | ReturnType<typeof dangerouslySkipEscape> | SanitizedHtmlString)[]
-): SanitizedHtmlString {
+  templateParts: TemplateParts,
+  ...templateVariables: (string | ReadableStream | ReturnType<typeof dangerouslySkipEscape> | TemplateString)[]
+): TemplateString {
   return {
     [__template]: {
-      templateParts: templateString,
+      templateParts,
       templateVariables
     }
   }
 }
-type SanitizedString = { [__escaped]: string } // todo: toString
-function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString {
+type EscapedString = { [__escaped]: string } // todo: toString
+function dangerouslySkipEscape(alreadyEscapedString: string): EscapedString {
   assertUsage(
-    !isPromise(alreadySanitizedString),
+    !isPromise(alreadyEscapedString),
     `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
   )
   assertUsage(
-    typeof alreadySanitizedString === 'string',
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof alreadySanitizedString}"\`.`
+    typeof alreadyEscapedString === 'string',
+    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof alreadyEscapedString}"\`.`
   )
-  return { [__escaped]: alreadySanitizedString }
+  return { [__escaped]: alreadyEscapedString }
 }
 
-function isEscapedString(something: unknown): something is SanitizedString {
+function isEscapedString(something: unknown): something is EscapedString {
   return hasProp(something, __escaped)
 }
-function getEscapedString(renderResult: { [__template]: HtmlTemplate } | SanitizedString): string {
+function getEscapedString(renderResult: { [__template]: HtmlTemplate } | EscapedString): string {
   let htmlString: string
   assert(hasProp(renderResult, __escaped))
   htmlString = renderResult[__escaped]
@@ -95,7 +95,7 @@ function renderTemplate(htmlTemplate: HtmlTemplate) {
       return renderTemplate(htmlTemplate__segment)
     }
 
-    // Process and sanitize untrusted template variable
+    // Escape untrusted template variable
     return escapeHtml(toString(templateVar))
   })
   const htmlString = identityTemplateTag(templateParts, ...templateVariablesUnwrapped)
