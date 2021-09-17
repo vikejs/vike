@@ -64,10 +64,10 @@ function isEscapedString(something: unknown): something is EscapedString {
     return false
   }
 }
-function getEscapedString(renderResult: { [__template]: HtmlTemplate } | EscapedString): string {
+function getEscapedString(escapedString: { [__template]: HtmlTemplate } | EscapedString): string {
   let htmlString: string
-  assert(hasProp(renderResult, __escaped))
-  htmlString = renderResult[__escaped]
+  assert(hasProp(escapedString, __escaped))
+  htmlString = escapedString[__escaped]
   assert(typeof htmlString === 'string')
   return htmlString
 }
@@ -75,10 +75,10 @@ function getEscapedString(renderResult: { [__template]: HtmlTemplate } | Escaped
 function isTemplateString(something: unknown): something is { [__template]: HtmlTemplate } {
   return hasProp(something, __template)
 }
-function renderTemplateString(renderResult: { [__template]: HtmlTemplate }): string {
+function renderTemplateString(templateString: { [__template]: HtmlTemplate }): string {
   let htmlString: string
-  if (__template in renderResult) {
-    htmlString = renderTemplate(renderResult[__template])
+  if (__template in templateString) {
+    htmlString = renderTemplate(templateString[__template])
   } else {
     assert(false)
   }
@@ -94,7 +94,7 @@ function renderTemplate(htmlTemplate: HtmlTemplate) {
   const { templateParts, templateVariables } = htmlTemplate
   const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
     // Process `dangerouslySkipEscape()`
-    if (hasProp(templateVar, __escaped)) {
+    if (isEscapedString(templateVar)) {
       const val = templateVar[__escaped]
       assert(typeof val === 'string')
       // User used `dangerouslySkipEscape()` so we assume the string to be safe
