@@ -30,6 +30,7 @@ import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
 import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
 import { loadPageView } from '../shared/loadPageView'
 import { sortPageContext } from '../shared/sortPageContext'
+import Stream from 'stream'
 
 export { renderPage }
 export { prerenderPage }
@@ -133,9 +134,9 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   // *** Render ***
   // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
   // written by the user and may contain an error.
-  let httpResponseBody: string | null
+  let renderResult: RenderResult
   try {
-    httpResponseBody = await renderPageId(pageContext)
+    renderResult = await renderPageId(pageContext)
   } catch (err) {
     objectAssign(pageContext, { _err: err })
     if (pageContext._isPageContextRequest) {
@@ -147,11 +148,18 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
     }
     return pageContext
   }
-  if (httpResponseBody === null) {
+  if (renderResult === null) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
-    objectAssign(pageContext, { httpResponse: { statusCode, body: httpResponseBody } })
+    objectAssign(pageContext, {
+      httpResponse: {
+        statusCode,
+        get body() {
+          return renderResult!.getBodyString()
+        }
+      }
+    })
     return pageContext
   }
 }
@@ -165,7 +173,7 @@ async function renderPageId(
     _isPreRendering: false
     _allPageFiles: AllPageFiles
   }
-): Promise<null | string> {
+): Promise<RenderResult> {
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
@@ -174,10 +182,9 @@ async function renderPageId(
 
   if (pageContext._isPageContextRequest) {
     const pageContextSerialized = serializeClientPageContext(pageContext)
-    return pageContextSerialized
+    return renderFromString(pageContextSerialized)
   } else {
-    const documentHtmlString = await executeRenderHook(pageContext)
-    return documentHtmlString
+    return await executeRenderHook(pageContext)
   }
 }
 
@@ -199,13 +206,15 @@ async function prerenderPage(
   await executeAddPageContextHook(pageContext)
   executeAddPageContextHook_addTypes(pageContext)
 
-  const documentHtmlString: unknown = await executeRenderHook(pageContext)
+  const renderResult = await executeRenderHook(pageContext)
   assertUsage(
-    documentHtmlString !== null,
-    "Pre-rendering requires your `html()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
+    renderResult !== null,
+    "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
   )
-  assert(typeof documentHtmlString === 'string')
-  const documentHtml: string = documentHtmlString
+  const bodyString = renderResult.getBodyString()
+  assert(!('_isPageContextRequest' in pageContext))
+  const documentHtml = bodyString
+  assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null }
   } else {
@@ -502,6 +511,7 @@ function executeAddPageContextHook_addTypes<PageContext extends Record<string, u
   pageContext // make TS happy
 }
 
+type RenderResult = null | { getBodyString: () => string; bodyStream: NodeJS.ReadableStream }
 async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
@@ -513,7 +523,7 @@ async function executeRenderHook(
     _pageClientPath: string
     _passToClient: string[]
   }
-): Promise<string | null> {
+): Promise<RenderResult> {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)
   let render
   let renderFilePath
@@ -608,18 +618,27 @@ async function executeRenderHook(
     return null
   }
 
-  let documentHtmlString: string
+  //let getBodyString: () => string
+  //let bodyStream: NodeJS.ReadableStream
   if (isEscapedString(documentHtml)) {
-    documentHtmlString = getEscapedString(documentHtml)
+    let htmlString = getEscapedString(documentHtml)
+    htmlString = await injectAssets_internal(htmlString, pageContext)
+    return renderFromString(htmlString)
   } else if (isTemplateString(documentHtml)) {
-    documentHtmlString = renderTemplateString(documentHtml)
+    let htmlString = renderTemplateString(documentHtml)
+    htmlString = await injectAssets_internal(htmlString, pageContext)
+    return renderFromString(htmlString)
   } else {
     assert(false)
   }
 
-  documentHtmlString = await injectAssets_internal(documentHtmlString, pageContext)
+  //return { getBodyString, bodyStream }
+}
 
-  return documentHtmlString
+function renderFromString(str: string): RenderResult {
+  const getBodyString = () => str
+  const bodyStream = Stream.Readable.from(str)
+  return { getBodyString, bodyStream }
 }
 
 function assertHookResult<Keys extends readonly string[]>(
@@ -819,21 +838,23 @@ async function render500Page(
     routeParams: {} as Record<string, string>
   })
 
-  let httpResponseBody: string | null
+  let renderResult: RenderResult
   try {
-    httpResponseBody = await renderPageId(pageContext)
+    renderResult = await renderPageId(pageContext)
   } catch (err) {
     // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
     // (And chances are high that this is the same error.)
     const httpResponse = null
     return httpResponse
   }
-  if (httpResponseBody === null) {
+  if (renderResult === null) {
     const httpResponse = null
     return httpResponse
   }
   const httpResponse = {
-    body: httpResponseBody,
+    get body() {
+      return renderResult!.getBodyString()
+    },
     statusCode: 500 as const
   }
   return httpResponse
