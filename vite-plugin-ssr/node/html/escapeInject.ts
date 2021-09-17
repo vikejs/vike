@@ -1,4 +1,4 @@
-import { assert, assertUsage, cast, hasProp, isPromise } from '../../shared/utils'
+import { assert, assertUsage, cast, checkType, hasProp, isPromise } from '../../shared/utils'
 
 export { escapeInject }
 export { dangerouslySkipEscape }
@@ -37,19 +37,32 @@ function escapeInject(
 }
 type EscapedString = { [__escaped]: string } // todo: toString
 function dangerouslySkipEscape(alreadyEscapedString: string): EscapedString {
+  return _dangerouslySkipEscape(alreadyEscapedString)
+}
+function _dangerouslySkipEscape(arg: unknown): EscapedString {
+  if (hasProp(arg, __escaped)) {
+    assert(isEscapedString(arg))
+    return arg
+  }
   assertUsage(
-    !isPromise(alreadyEscapedString),
+    !isPromise(arg),
     `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
   )
   assertUsage(
-    typeof alreadyEscapedString === 'string',
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof alreadyEscapedString}"\`.`
+    typeof arg === 'string',
+    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`
   )
-  return { [__escaped]: alreadyEscapedString }
+  return { [__escaped]: arg }
 }
 
 function isEscapedString(something: unknown): something is EscapedString {
-  return hasProp(something, __escaped)
+  if (hasProp(something, __escaped)) {
+    assert(hasProp(something, __escaped, 'string'))
+    checkType<EscapedString>(something)
+    return true
+  } else {
+    return false
+  }
 }
 function getEscapedString(renderResult: { [__template]: HtmlTemplate } | EscapedString): string {
   let htmlString: string
