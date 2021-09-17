@@ -1,12 +1,13 @@
 import { assert, assertUsage, cast, hasProp, isPromise } from '../../shared/utils'
 
 export { escapeInject }
-export { renderHtmlTemplate }
-export { isHtmlTemplate }
-
-export { isSanitizedString }
-export { renderSanitizedString }
 export { dangerouslySkipEscape }
+
+export { isTemplateString }
+export { renderTemplateString }
+
+export { isEscapedString }
+export { getEscapedString }
 
 const __template = Symbol('__template')
 const __escaped = Symbol('__escaped')
@@ -47,10 +48,10 @@ function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString 
   return { [__escaped]: alreadySanitizedString }
 }
 
-function isSanitizedString(something: unknown): something is SanitizedString {
+function isEscapedString(something: unknown): something is SanitizedString {
   return hasProp(something, __escaped)
 }
-function renderSanitizedString(renderResult: { [__template]: HtmlTemplate } | SanitizedString): string {
+function getEscapedString(renderResult: { [__template]: HtmlTemplate } | SanitizedString): string {
   let htmlString: string
   assert(hasProp(renderResult, __escaped))
   htmlString = renderResult[__escaped]
@@ -58,10 +59,10 @@ function renderSanitizedString(renderResult: { [__template]: HtmlTemplate } | Sa
   return htmlString
 }
 
-function isHtmlTemplate(something: unknown): something is { [__template]: HtmlTemplate } {
+function isTemplateString(something: unknown): something is { [__template]: HtmlTemplate } {
   return hasProp(something, __template)
 }
-function renderHtmlTemplate(renderResult: { [__template]: HtmlTemplate }): string {
+function renderTemplateString(renderResult: { [__template]: HtmlTemplate }): string {
   let htmlString: string
   if (__template in renderResult) {
     htmlString = renderTemplate(renderResult[__template])

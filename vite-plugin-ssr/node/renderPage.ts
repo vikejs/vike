@@ -1,5 +1,5 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
-import { renderHtmlTemplate, isHtmlTemplate, isSanitizedString, renderSanitizedString } from './html/escapeInject'
+import { renderTemplateString, isTemplateString, isEscapedString, getEscapedString } from './html/escapeInject'
 import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
@@ -538,7 +538,7 @@ async function executeRenderHook(
 
   preparePageContextNode(pageContext)
   const result: unknown = await render(pageContext)
-  if (isObject(result) && !isSanitizedString(result) && !isHtmlTemplate(result)) {
+  if (isObject(result) && !isEscapedString(result) && !isTemplateString(result)) {
     assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
 
@@ -553,7 +553,7 @@ async function executeRenderHook(
   ].join(' ')
 
   let documentHtml: unknown
-  if (!isObject(result) || isSanitizedString(result) || isHtmlTemplate(result)) {
+  if (!isObject(result) || isEscapedString(result) || isTemplateString(result)) {
     assertUsage(
       typeof result !== 'string',
       [
@@ -564,7 +564,7 @@ async function executeRenderHook(
       ].join(' ')
     )
     assertUsage(
-      result === null || isSanitizedString(result) || isHtmlTemplate(result),
+      result === null || isEscapedString(result) || isTemplateString(result),
       [
         errPrefix,
         'should return `null`, a string `documentHtml`, or an object `{ documentHtml, pageContext }`',
@@ -590,8 +590,8 @@ async function executeRenderHook(
       assertUsage(
         documentHtml === undefined ||
           documentHtml === null ||
-          isSanitizedString(documentHtml) ||
-          isHtmlTemplate(documentHtml),
+          isEscapedString(documentHtml) ||
+          isTemplateString(documentHtml),
         [errPrefix, 'returned `{ documentHtml }`, but `documentHtml` should be', errSuffix].join(' ')
       )
     }
@@ -600,8 +600,8 @@ async function executeRenderHook(
   assert(
     documentHtml === undefined ||
       documentHtml === null ||
-      isSanitizedString(documentHtml) ||
-      isHtmlTemplate(documentHtml)
+      isEscapedString(documentHtml) ||
+      isTemplateString(documentHtml)
   )
 
   if (documentHtml === null || documentHtml === undefined) {
@@ -609,10 +609,10 @@ async function executeRenderHook(
   }
 
   let documentHtmlString: string
-  if (isSanitizedString(documentHtml)) {
-    documentHtmlString = renderSanitizedString(documentHtml)
-  } else if (isHtmlTemplate(documentHtml)) {
-    documentHtmlString = renderHtmlTemplate(documentHtml)
+  if (isEscapedString(documentHtml)) {
+    documentHtmlString = getEscapedString(documentHtml)
+  } else if (isTemplateString(documentHtml)) {
+    documentHtmlString = renderTemplateString(documentHtml)
   } else {
     assert(false)
   }
