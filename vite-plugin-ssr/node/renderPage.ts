@@ -612,7 +612,7 @@ async function executeRenderHook(
   if (isSanitizedString(documentHtml)) {
     documentHtmlString = renderSanitizedString(documentHtml)
   } else if (isHtmlTemplate(documentHtml)) {
-    documentHtmlString = renderHtmlTemplate(documentHtml, renderFilePath)
+    documentHtmlString = renderHtmlTemplate(documentHtml)
   } else {
     assert(false)
   }

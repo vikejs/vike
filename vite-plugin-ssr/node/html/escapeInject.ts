@@ -8,18 +8,16 @@ export { isSanitizedString }
 export { renderSanitizedString }
 export { dangerouslySkipEscape }
 
-/* TS + Symbols are problematic: https://stackoverflow.com/questions/59118271/using-symbol-as-object-key-type-in-typescript
-const __html_template = Symbol('__html_template')
-const __dangerouslySkipEscape = Symbol('__dangerouslySkipEscape')
-*/
+const __template = Symbol('__template')
+const __escaped = Symbol('__escaped')
 
 type SanitizedHtmlString = {
-  __html_template: {
+  [__template]: {
     templateParts: TemplateStringsArray
     templateVariables: (
       | unknown
       | {
-          __dangerouslySkipEscape: string
+          [__escaped]: string
         }
     )[]
   }
@@ -30,13 +28,13 @@ function escapeInject(
   ...templateVariables: (string | ReturnType<typeof dangerouslySkipEscape> | SanitizedHtmlString)[]
 ): SanitizedHtmlString {
   return {
-    __html_template: {
+    [__template]: {
       templateParts: templateString,
       templateVariables
     }
   }
 }
-type SanitizedString = { __dangerouslySkipEscape: string } // todo: toString
+type SanitizedString = { [__escaped]: string } // todo: toString
 function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString {
   assertUsage(
     !isPromise(alreadySanitizedString),
@@ -46,30 +44,27 @@ function dangerouslySkipEscape(alreadySanitizedString: string): SanitizedString 
     typeof alreadySanitizedString === 'string',
     `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof alreadySanitizedString}"\`.`
   )
-  return { __dangerouslySkipEscape: alreadySanitizedString }
+  return { [__escaped]: alreadySanitizedString }
 }
 
 function isSanitizedString(something: unknown): something is SanitizedString {
-  return hasProp(something, '__dangerouslySkipEscape')
+  return hasProp(something, __escaped)
 }
-function renderSanitizedString(renderResult: { __html_template: HtmlTemplate } | SanitizedString): string {
+function renderSanitizedString(renderResult: { [__template]: HtmlTemplate } | SanitizedString): string {
   let htmlString: string
-  if ('__dangerouslySkipEscape' in renderResult) {
-    htmlString = renderResult['__dangerouslySkipEscape']
-  } else {
-    assert(false)
-  }
+  assert(hasProp(renderResult, __escaped))
+  htmlString = renderResult[__escaped]
   assert(typeof htmlString === 'string')
   return htmlString
 }
 
-function isHtmlTemplate(something: unknown): something is { __html_template: HtmlTemplate } {
-  return hasProp(something, '__html_template')
+function isHtmlTemplate(something: unknown): something is { [__template]: HtmlTemplate } {
+  return hasProp(something, __template)
 }
-function renderHtmlTemplate(renderResult: { __html_template: HtmlTemplate }, filePath: string): string {
+function renderHtmlTemplate(renderResult: { [__template]: HtmlTemplate }): string {
   let htmlString: string
-  if ('__html_template' in renderResult) {
-    htmlString = renderTemplate(renderResult['__html_template'], filePath)
+  if (__template in renderResult) {
+    htmlString = renderTemplate(renderResult[__template])
   } else {
     assert(false)
   }
@@ -81,22 +76,22 @@ type HtmlTemplate = {
   templateParts: TemplateStringsArray
   templateVariables: unknown[]
 }
-function renderTemplate(htmlTemplate: HtmlTemplate, filePath: string) {
+function renderTemplate(htmlTemplate: HtmlTemplate) {
   const { templateParts, templateVariables } = htmlTemplate
   const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
     // Process `dangerouslySkipEscape()`
-    if (hasProp(templateVar, '__dangerouslySkipEscape')) {
-      const val = templateVar['__dangerouslySkipEscape']
+    if (hasProp(templateVar, __escaped)) {
+      const val = templateVar[__escaped]
       assert(typeof val === 'string')
       // User used `dangerouslySkipEscape()` so we assume the string to be safe
       return val
     }
 
     // Process `escapeInject` tag composition
-    if (hasProp(templateVar, '__html_template')) {
-      const htmlTemplate__segment = templateVar['__html_template']
+    if (hasProp(templateVar, __template)) {
+      const htmlTemplate__segment = templateVar[__template]
       cast<HtmlTemplate>(htmlTemplate__segment)
-      return renderTemplate(htmlTemplate__segment, filePath)
+      return renderTemplate(htmlTemplate__segment)
     }
 
     // Process and sanitize untrusted template variable
