@@ -30,9 +30,10 @@ function IndexPage() {
         <code>restore()</code>.
       </p>
       <ul>
-        {data?.countries.map((country) => (
-          <li key={country.code}>{country.name}</li>
-        ))}
+        {data &&
+          data.countries.map((country) => (
+            <li key={country.code}>{country.name}</li>
+          ))}
       </ul>
     </>
   );

@@ -4,19 +4,11 @@ import {
   page,
   run,
   urlBase,
-  isMinNodeVersion,
 } from "../../libframe/test/setup";
 
 runTest();
 
 function runTest() {
-  if (!isMinNodeVersion(14)) {
-    test("skip", () => {
-      expect(1).toBe(1);
-    });
-    return;
-  }
-
   run("npm run start");
 
   test("page is rendered to HTML", async () => {
