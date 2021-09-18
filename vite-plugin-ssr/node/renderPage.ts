@@ -81,16 +81,12 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   // written by the user and may contain errors.
   let pageContextRouteAddendum
   try {
+    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
     pageContextRouteAddendum = await route(pageContext)
   } catch (err) {
     objectAssign(pageContext, { _err: err })
-    if (pageContext._isPageContextRequest) {
-      const httpResponse = renderPageContextError(err)
-      objectAssign(pageContext, { httpResponse })
-    } else {
-      const httpResponse = await render500Page(pageContext)
-      objectAssign(pageContext, { httpResponse })
-    }
+    const httpResponse = await handleRenderError(pageContext)
+    objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 
@@ -131,61 +127,186 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   assert(isPlainObject(pageContextRouteAddendum.routeParams))
   objectAssign(pageContext, pageContextRouteAddendum)
 
-  // *** Render ***
-  // We use a try-catch because `renderPageId()` execute a `*.page.*` file which is
-  // written by the user and may contain an error.
-  let renderResult: RenderResult
+  const pageFilesData = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFilesData)
+
   try {
-    renderResult = await renderPageId(pageContext)
+    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
+    await executeAddPageContextHook(pageContext)
+    executeAddPageContextHook_addTypes(pageContext)
   } catch (err) {
     objectAssign(pageContext, { _err: err })
-    if (pageContext._isPageContextRequest) {
-      const httpResponse = renderPageContextError(err)
-      objectAssign(pageContext, { httpResponse })
-    } else {
-      const httpResponse = await render500Page(pageContext)
-      objectAssign(pageContext, { httpResponse })
-    }
+    const httpResponse = await handleRenderError(pageContext)
+    objectAssign(pageContext, { httpResponse })
     return pageContext
   }
-  if (renderResult === null) {
+
+  if (pageContext._isPageContextRequest) {
+    const pageContextSerialized = serializeClientPageContext(pageContext)
+    const httpResponse = createHttpResponseObject(pageContextSerialized, 200)
+    objectAssign(pageContext, { httpResponse })
+    return pageContext
+  }
+
+  let renderHookResult: RenderHookResult
+  try {
+    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
+    renderHookResult = await executeRenderHook(pageContext)
+  } catch (err) {
+    objectAssign(pageContext, { _err: err })
+    const httpResponse = await handleRenderError(pageContext)
+    objectAssign(pageContext, { httpResponse })
+    return pageContext
+  }
+  if (renderHookResult === null) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
-    objectAssign(pageContext, {
-      httpResponse: {
-        statusCode,
-        get body() {
-          return renderResult!.getBodyString()
-        }
-      }
-    })
+    const httpResponse = createHttpResponseObject(renderHookResult, statusCode)
+    objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 }
 
-async function renderPageId(
+async function handleRenderError(
   pageContext: PageContextUrls & {
     url: string
-    routeParams: Record<string, string>
-    _pageId: string
-    _isPageContextRequest: boolean
-    _isPreRendering: false
+    _allPageIds: string[]
     _allPageFiles: AllPageFiles
+    _isPreRendering: false
+    _isPageContextRequest: boolean
+    _pageContextClient?: PageContextClient
+    _err: unknown
   }
-): Promise<RenderResult> {
+): Promise<HttpResponse> {
+  handleError(pageContext._err)
+
+  if (pageContext._isPageContextRequest) {
+    const { body, statusCode } = renderPageContextError(pageContext._err)
+    const httpResponse = createHttpResponseObject(body, statusCode)
+    return httpResponse
+  }
+
+  const errorPageId = getErrorPageId(pageContext._allPageIds)
+  if (errorPageId === null) {
+    warnMissingErrorPage()
+    return null
+  }
+
+  objectAssign(pageContext, {
+    is404: false,
+    _pageId: errorPageId,
+    _isPageContextRequest: false,
+    routeParams: {} as Record<string, string>
+  })
+
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
-  await executeAddPageContextHook(pageContext)
-  executeAddPageContextHook_addTypes(pageContext)
-
-  if (pageContext._isPageContextRequest) {
-    const pageContextSerialized = serializeClientPageContext(pageContext)
-    return renderFromString(pageContextSerialized)
-  } else {
-    return await executeRenderHook(pageContext)
+  if (!pageContext._pageContextClient) {
+    try {
+      // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
+      await executeAddPageContextHook(pageContext)
+      executeAddPageContextHook_addTypes(pageContext)
+    } catch (err) {
+      // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
+      // (And chances are high that this is the same error.)
+      return null
+    }
   }
+  assert(hasProp(pageContext, '_pageContextClient', 'object'))
+
+  let renderHookResult: RenderHookResult
+  try {
+    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
+    renderHookResult = await executeRenderHook(pageContext)
+  } catch (err) {
+    // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
+    // (And chances are high that this is the same error.)
+    return null
+  }
+
+  const httpResponse = createHttpResponseObject(renderHookResult, 500)
+  return httpResponse
+}
+
+type RenderHookResult = null | string | ReadableStream | Stream.Readable
+type HttpResponse = null | {
+  statusCode: 200 | 404 | 500
+  body: string
+  getBody: () => Promise<string>
+  bodyNodeStream: Stream.Readable
+  bodyWebStream: ReadableStream
+  bodyPipeToNodeWritable: (writable: Stream.Writable) => void
+  bodyPipeToWebWritable: (writable: WritableStream) => void
+}
+function createHttpResponseObject(renderHookResult: RenderHookResult, statusCode: 200 | 404 | 500): HttpResponse {
+  return {
+    statusCode,
+    get body() {
+      assertUsage(
+        typeof renderHookResult === 'string',
+        '`pageContext.httpResponse.body` is not available: your `render()` hook provides an HTML stream; use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming'
+      )
+      return renderHookResult
+    },
+    async getBody(): Promise<string> {
+      const body = await streamToString(renderHookResult)
+      return body
+    },
+    get bodyNodeStream() {
+      if (typeof renderHookResult === 'string') {
+        return stringToNodeStream(renderHookResult)
+      }
+      assertUsage(
+        isNodeStream(renderHookResult),
+        '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
+      )
+      return renderHookResult
+    },
+    get bodyWebStream() {
+      if (typeof renderHookResult === 'string') {
+        return stringToWebStream(renderHookResult)
+      }
+      assertUsage(
+        isWebStream(renderHookResult),
+        '`pageContext.httpResponse.bodyWebStream` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming'
+      )
+      return renderHookResult
+    },
+    bodyPipeToWebWritable(writable: WritableStream) {
+      assertUsage(
+        isWebStream(renderHookResult),
+        '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming'
+      )
+      writable // Make TS happy
+    },
+    bodyPipeToNodeWritable(writable: Stream.Writable) {
+      assertUsage(
+        isNodeStream(renderHookResult),
+        '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
+      )
+      writable // Make TS happy
+    }
+  }
+}
+
+async function streamToString(renderHookResult: RenderHookResult): Promise<string> {
+  if (typeof renderHookResult === 'string') {
+    return renderHookResult
+  } else if (isWebStream(renderHookResult)) {
+    return webStreamToString(renderHookResult)
+  } else if (isNodeStream(renderHookResult)) {
+    return nodeStreamToString(renderHookResult)
+  }
+  assert(false)
+}
+
+function isWebStream(thing: unknown): thing is ReadableStream {
+  return thing instanceof ReadableStream
+}
+function isNodeStream(thing: unknown): thing is Stream.Readable {
+  return thing instanceof Stream.Readable
 }
 
 async function prerenderPage(
@@ -211,9 +332,8 @@ async function prerenderPage(
     renderResult !== null,
     "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
   )
-  const bodyString = renderResult.getBodyString()
   assert(!('_isPageContextRequest' in pageContext))
-  const documentHtml = bodyString
+  const documentHtml = await streamToString(renderResult)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null }
@@ -511,19 +631,20 @@ function executeAddPageContextHook_addTypes<PageContext extends Record<string, u
   pageContext // make TS happy
 }
 
-type RenderResult = null | { getBodyString: () => string; bodyStream: NodeJS.ReadableStream }
+type LoadedPageFiles = {
+  _pageAssets: PageAssets
+  _pageServerFile: PageServerFile
+  _pageServerFileDefault: PageServerFile
+  _pageFilePath: string | null
+  _pageClientPath: string
+  _passToClient: string[]
+}
 async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
-    _pageContextClient: Record<string, unknown>
-    _pageAssets: PageAssets
-    _pageServerFile: PageServerFile
-    _pageServerFileDefault: PageServerFile
-    _pageFilePath: string | null
-    _pageClientPath: string
-    _passToClient: string[]
-  }
-): Promise<RenderResult> {
+    _pageContextClient: PageContextClient
+  } & LoadedPageFiles
+): Promise<RenderHookResult> {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)
   let render
   let renderFilePath
@@ -618,27 +739,55 @@ async function executeRenderHook(
     return null
   }
 
-  //let getBodyString: () => string
-  //let bodyStream: NodeJS.ReadableStream
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
     htmlString = await injectAssets_internal(htmlString, pageContext)
-    return renderFromString(htmlString)
+    return htmlString
   } else if (isTemplateString(documentHtml)) {
     let htmlString = renderTemplateString(documentHtml)
     htmlString = await injectAssets_internal(htmlString, pageContext)
-    return renderFromString(htmlString)
+    return htmlString
   } else {
     assert(false)
   }
-
-  //return { getBodyString, bodyStream }
 }
 
-function renderFromString(str: string): RenderResult {
-  const getBodyString = () => str
-  const bodyStream = Stream.Readable.from(str)
-  return { getBodyString, bodyStream }
+async function nodeStreamToString(nodeStream: Stream.Readable): Promise<string> {
+  // Copied from: https://stackoverflow.com/questions/10623798/how-do-i-read-the-contents-of-a-node-js-stream-into-a-string-variable/49428486#49428486
+  const chunks: Buffer[] = []
+  return new Promise((resolve, reject) => {
+    nodeStream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
+    nodeStream.on('error', (err) => reject(err))
+    nodeStream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')))
+  })
+}
+
+async function webStreamToString(webStream: ReadableStream): Promise<string> {
+  let str: string = ''
+  const reader = webStream.getReader()
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) {
+      break
+    }
+    str += value
+  }
+  return str
+}
+
+function stringToNodeStream(str: string): Stream.Readable {
+  return Stream.Readable.from(str)
+}
+
+function stringToWebStream(str: string): ReadableStream {
+  // `ReadableStream.from()` spec discussion: https://github.com/whatwg/streams/issues/1018
+  const readableStream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(str)
+      controller.close()
+    }
+  })
+  return readableStream
 }
 
 function assertHookResult<Keys extends readonly string[]>(
@@ -811,53 +960,6 @@ function isFileRequest(urlPathname: string) {
   const fileExtension = parts[parts.length - 1]
   assert(typeof fileExtension === 'string')
   return /^[a-z0-9]+$/.test(fileExtension)
-}
-
-async function render500Page(
-  pageContext: PageContextUrls & {
-    url: string
-    _allPageIds: string[]
-    _allPageFiles: AllPageFiles
-    _isPreRendering: false
-    _err: unknown
-  }
-) {
-  handleError(pageContext._err)
-
-  const errorPageId = getErrorPageId(pageContext._allPageIds)
-  if (errorPageId === null) {
-    warnMissingErrorPage()
-    const httpResponse = null
-    return httpResponse
-  }
-
-  objectAssign(pageContext, {
-    is404: false,
-    _pageId: errorPageId,
-    _isPageContextRequest: false,
-    routeParams: {} as Record<string, string>
-  })
-
-  let renderResult: RenderResult
-  try {
-    renderResult = await renderPageId(pageContext)
-  } catch (err) {
-    // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
-    // (And chances are high that this is the same error.)
-    const httpResponse = null
-    return httpResponse
-  }
-  if (renderResult === null) {
-    const httpResponse = null
-    return httpResponse
-  }
-  const httpResponse = {
-    get body() {
-      return renderResult!.getBodyString()
-    },
-    statusCode: 500 as const
-  }
-  return httpResponse
 }
 
 function renderPageContextError(err?: unknown) {
