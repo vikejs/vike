@@ -15,7 +15,7 @@ function testPages(
   const baseUrl = isDev ? "" : "/dist/client";
   const addBaseUrl = (url: string) => baseUrl + url;
 
-  run(cmd, baseUrl);
+  run(cmd, { baseUrl });
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml(addBaseUrl("/"));

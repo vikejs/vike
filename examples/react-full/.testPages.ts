@@ -4,6 +4,7 @@ import {
   urlBase,
   fetchHtml,
   autoRetry,
+  isMinNodeVersion,
 } from "../../libframe/test/setup";
 import assert = require("assert");
 
@@ -13,6 +14,13 @@ function testPages(
   viewFramework: "vue" | "react",
   cmd: "npm run start" | "npm run prod"
 ) {
+  if (!isMinNodeVersion(14)) {
+    test("skip", () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
+
   run(cmd);
 
   test("page content is rendered to HTML", async () => {

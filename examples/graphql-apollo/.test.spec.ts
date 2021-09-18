@@ -4,25 +4,37 @@ import {
   page,
   run,
   urlBase,
+  isMinNodeVersion,
 } from "../../libframe/test/setup";
 
-run("npm run start");
+runTest();
 
-test("page is rendered to HTML", async () => {
-  const html = await fetchHtml("/");
-  expect(html).toContain(
-    "<li>Angola</li><li>Antarctica</li><li>Argentina</li><li>American Samoa</li>"
-  );
-  expect(html).toContain("<button>Counter <span>0</span></button>");
-});
+function runTest() {
+  if (!isMinNodeVersion(14)) {
+    test("skip", () => {
+      expect(1).toBe(1);
+    });
+    return;
+  }
 
-test("page is hydrated to DOM", async () => {
-  page.goto(`${urlBase}/`);
-  expect(await page.textContent("button")).toBe("Counter 0");
-  // `autoRetry` because browser-side code may not be loaded yet
-  await autoRetry(async () => {
-    await page.click("button");
-    expect(await page.textContent("button")).toBe("Counter 1");
+  run("npm run start");
+
+  test("page is rendered to HTML", async () => {
+    const html = await fetchHtml("/");
+    expect(html).toContain(
+      "<li>Angola</li><li>Antarctica</li><li>Argentina</li><li>American Samoa</li>"
+    );
+    expect(html).toContain("<button>Counter <span>0</span></button>");
   });
-  expect(await page.textContent("body")).toContain("Antarctica");
-});
+
+  test("page is hydrated to DOM", async () => {
+    page.goto(`${urlBase}/`);
+    expect(await page.textContent("button")).toBe("Counter 0");
+    // `autoRetry` because browser-side code may not be loaded yet
+    await autoRetry(async () => {
+      await page.click("button");
+      expect(await page.textContent("button")).toBe("Counter 1");
+    });
+    expect(await page.textContent("body")).toContain("Antarctica");
+  });
+}
