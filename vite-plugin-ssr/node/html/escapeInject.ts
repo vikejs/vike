@@ -1,13 +1,30 @@
-import { assert, assertUsage, cast, checkType, hasProp, isPromise } from '../../shared/utils'
+import { assert, assertUsage, cast, checkType, hasProp, isObject, isPromise } from '../../shared/utils'
+import Stream from 'stream'
 
+// Public
 export { escapeInject }
 export { dangerouslySkipEscape }
+export { pipeToWebWritable }
 
-export { isTemplateString }
-export { renderTemplateString }
+// Private
+export { isEscapeResult }
+export { renderEscapeResult }
 
-export { isEscapedString }
-export { getEscapedString }
+function isEscapeResult(thing: unknown): thing is EscapedString | HtmlTemplateString {
+  return isEscapedString(thing) || isTemplateString(thing)
+}
+
+function renderEscapeResult(documentHtml: EscapedString | HtmlTemplateString): string {
+  let htmlString: string
+  if (isEscapedString(documentHtml)) {
+    htmlString = getEscapedString(documentHtml)
+  } else if (isTemplateString(documentHtml)) {
+    htmlString = renderTemplateString(documentHtml)
+  } else {
+    assert(false)
+  }
+  return htmlString
+}
 
 const __template = Symbol('__template')
 const __escaped = Symbol('__escaped')
@@ -64,7 +81,7 @@ function isEscapedString(something: unknown): something is EscapedString {
     return false
   }
 }
-function getEscapedString(escapedString: { [__template]: HtmlTemplate } | EscapedString): string {
+function getEscapedString(escapedString: EscapedString): string {
   let htmlString: string
   assert(hasProp(escapedString, __escaped))
   htmlString = escapedString[__escaped]
@@ -72,10 +89,10 @@ function getEscapedString(escapedString: { [__template]: HtmlTemplate } | Escape
   return htmlString
 }
 
-function isTemplateString(something: unknown): something is { [__template]: HtmlTemplate } {
+function isTemplateString(something: unknown): something is HtmlTemplateString {
   return hasProp(something, __template)
 }
-function renderTemplateString(templateString: { [__template]: HtmlTemplate }): string {
+function renderTemplateString(templateString: HtmlTemplateString): string {
   let htmlString: string
   if (__template in templateString) {
     htmlString = renderTemplate(templateString[__template])
@@ -86,6 +103,9 @@ function renderTemplateString(templateString: { [__template]: HtmlTemplate }): s
   return htmlString
 }
 
+type HtmlTemplateString = {
+  [__template]: HtmlTemplate
+}
 type HtmlTemplate = {
   templateParts: TemplateStringsArray
   templateVariables: unknown[]
@@ -142,4 +162,12 @@ function escapeHtml(unsafeString: string): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;')
   return safe
+}
+
+const __pipeToWebWritable = Symbol('__pipeToWebWritable')
+function pipeToWebWritable(pipe: (writable: WritableStream) => void) {
+  return { [__pipeToWebWritable]: pipe }
+}
+function isPipeToWebWritable(thing: unknown): boolean {
+  return isObject(thing) && __pipeToWebWritable in thing
 }

@@ -1,5 +1,5 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
-import { renderTemplateString, isTemplateString, isEscapedString, getEscapedString } from './html/escapeInject'
+import { isEscapeResult, renderEscapeResult } from './html/escapeInject'
 import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
@@ -237,8 +237,11 @@ type HttpResponse = null | {
   getBody: () => Promise<string>
   bodyNodeStream: Stream.Readable
   bodyWebStream: ReadableStream
+  /*
   bodyPipeToNodeWritable: (writable: Stream.Writable) => void
   bodyPipeToWebWritable: (writable: WritableStream) => void
+  */
+  bodyPipeToWritable: (writable: WritableStream | Stream.Writable) => void
 }
 function createHttpResponseObject(renderHookResult: RenderHookResult, statusCode: 200 | 404 | 500): HttpResponse {
   return {
@@ -274,6 +277,7 @@ function createHttpResponseObject(renderHookResult: RenderHookResult, statusCode
       )
       return renderHookResult
     },
+    /*
     bodyPipeToWebWritable(writable: WritableStream) {
       assertUsage(
         isWebStream(renderHookResult),
@@ -286,6 +290,10 @@ function createHttpResponseObject(renderHookResult: RenderHookResult, statusCode
         isNodeStream(renderHookResult),
         '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
       )
+      writable // Make TS happy
+    },
+    */
+    bodyPipeToWritable(writable: Stream.Writable | WritableStream) {
       writable // Make TS happy
     }
   }
@@ -669,7 +677,7 @@ async function executeRenderHook(
 
   preparePageContextNode(pageContext)
   const result: unknown = await render(pageContext)
-  if (isObject(result) && !isEscapedString(result) && !isTemplateString(result)) {
+  if (isObject(result) && !isEscapeResult(result)) {
     assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
 
@@ -684,7 +692,7 @@ async function executeRenderHook(
   ].join(' ')
 
   let documentHtml: unknown
-  if (!isObject(result) || isEscapedString(result) || isTemplateString(result)) {
+  if (!isObject(result) || isEscapeResult(result)) {
     assertUsage(
       typeof result !== 'string',
       [
@@ -695,7 +703,7 @@ async function executeRenderHook(
       ].join(' ')
     )
     assertUsage(
-      result === null || isEscapedString(result) || isTemplateString(result),
+      result === null || isEscapeResult(result),
       [
         errPrefix,
         'should return `null`, a string `documentHtml`, or an object `{ documentHtml, pageContext }`',
@@ -719,37 +727,21 @@ async function executeRenderHook(
         ].join(' ')
       )
       assertUsage(
-        documentHtml === undefined ||
-          documentHtml === null ||
-          isEscapedString(documentHtml) ||
-          isTemplateString(documentHtml),
+        documentHtml === undefined || documentHtml === null || isEscapeResult(documentHtml),
         [errPrefix, 'returned `{ documentHtml }`, but `documentHtml` should be', errSuffix].join(' ')
       )
     }
   }
 
-  assert(
-    documentHtml === undefined ||
-      documentHtml === null ||
-      isEscapedString(documentHtml) ||
-      isTemplateString(documentHtml)
-  )
+  assert(documentHtml === undefined || documentHtml === null || isEscapeResult(documentHtml))
 
   if (documentHtml === null || documentHtml === undefined) {
     return null
   }
 
-  if (isEscapedString(documentHtml)) {
-    let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectAssets_internal(htmlString, pageContext)
-    return htmlString
-  } else if (isTemplateString(documentHtml)) {
-    let htmlString = renderTemplateString(documentHtml)
-    htmlString = await injectAssets_internal(htmlString, pageContext)
-    return htmlString
-  } else {
-    assert(false)
-  }
+  let htmlString = renderEscapeResult(documentHtml)
+  htmlString = await injectAssets_internal(htmlString, pageContext)
+  return htmlString
 }
 
 async function nodeStreamToString(nodeStream: Stream.Readable): Promise<string> {
