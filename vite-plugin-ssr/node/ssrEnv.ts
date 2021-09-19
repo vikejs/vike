@@ -28,9 +28,5 @@ function setSsrEnv(ssrEnv: SsrEnv) {
 
 // https://stackoverflow.com/questions/68481686/type-typeof-globalthis-has-no-index-signature/69238076#69238076
 declare global {
-  namespace NodeJS {
-    interface Global {
-      __vite_ssr_plugin: SsrEnv
-    }
-  }
+  var __vite_ssr_plugin: SsrEnv
 }
