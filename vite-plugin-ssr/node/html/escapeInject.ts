@@ -1,5 +1,7 @@
 import { assert, assertUsage, cast, checkType, hasProp, isObject, isPromise } from '../../shared/utils'
 import Stream from 'stream'
+import { injectAssets_internal } from './injectAssets'
+import type { PageContextInjectAssets } from './injectAssets'
 
 // Public
 export { escapeInject }
@@ -9,12 +11,16 @@ export { pipeToWebWritable }
 // Private
 export { isEscapeResult }
 export { renderEscapeResult }
+export type EscapeResult = string | ReadableStream | Stream.Readable
 
 function isEscapeResult(thing: unknown): thing is EscapedString | HtmlTemplateString {
   return isEscapedString(thing) || isTemplateString(thing)
 }
 
-function renderEscapeResult(documentHtml: EscapedString | HtmlTemplateString): string {
+async function renderEscapeResult(
+  documentHtml: EscapedString | HtmlTemplateString,
+  pageContext: PageContextInjectAssets
+): Promise<EscapeResult> {
   let htmlString: string
   if (isEscapedString(documentHtml)) {
     htmlString = getEscapedString(documentHtml)
@@ -23,6 +29,7 @@ function renderEscapeResult(documentHtml: EscapedString | HtmlTemplateString): s
   } else {
     assert(false)
   }
+  htmlString = await injectAssets_internal(htmlString, pageContext)
   return htmlString
 }
 
@@ -168,6 +175,7 @@ const __pipeToWebWritable = Symbol('__pipeToWebWritable')
 function pipeToWebWritable(pipe: (writable: WritableStream) => void) {
   return { [__pipeToWebWritable]: pipe }
 }
+isPipeToWebWritable;
 function isPipeToWebWritable(thing: unknown): boolean {
   return isObject(thing) && __pipeToWebWritable in thing
 }

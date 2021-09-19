@@ -1,5 +1,5 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
-import { isEscapeResult, renderEscapeResult } from './html/escapeInject'
+import { EscapeResult, isEscapeResult, renderEscapeResult } from './html/escapeInject'
 import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
@@ -27,7 +27,7 @@ import {
   stringifyStringArray
 } from '../shared/utils'
 import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
-import { getPageAssets, injectAssets_internal, PageAssets } from './html/injectAssets'
+import { getPageAssets, PageAssets } from './html/injectAssets'
 import { loadPageView } from '../shared/loadPageView'
 import { sortPageContext } from '../shared/sortPageContext'
 import Stream from 'stream'
@@ -230,7 +230,7 @@ async function handleRenderError(
   return httpResponse
 }
 
-type RenderHookResult = null | string | ReadableStream | Stream.Readable
+type RenderHookResult = null | EscapeResult
 type HttpResponse = null | {
   statusCode: 200 | 404 | 500
   body: string
@@ -739,8 +739,7 @@ async function executeRenderHook(
     return null
   }
 
-  let htmlString = renderEscapeResult(documentHtml)
-  htmlString = await injectAssets_internal(htmlString, pageContext)
+  let htmlString = renderEscapeResult(documentHtml, pageContext)
   return htmlString
 }
 
