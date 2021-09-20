@@ -1,11 +1,14 @@
 import Stream from 'stream'
-import {EscapeResult} from './escapeInject'
+import { assert } from '../../shared/utils'
+import { EscapeResult, getStreamPipeWeb, getStreamPipeNode } from './escapeInject'
 
 export { streamToString }
 export { getNodeStream }
 export { getWebStream }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
+export { isStreamReadableWeb }
+export { isStreamReadableNode }
 
 export type { StreamReadableWeb }
 export type { StreamReadableNode }
@@ -22,21 +25,23 @@ type StreamWritableNode = Stream.Writable
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
 
-async function streamToString(thing: string | StreamReadableNode | StreamReadableWeb | StreamPipeNode | StreamPipeWeb): Promise<string> {
+async function streamToString(
+  thing: StreamReadableNode | StreamReadableWeb | StreamPipeNode | StreamPipeWeb
+): Promise<string> {
   if (typeof thing === 'string') {
     return thing
-  } else if (isWebStream(thing)) {
+  } else if (isStreamReadableWeb(thing)) {
     return webStreamToString(thing)
-  } else if (isNodeStream(thing)) {
+  } else if (isStreamReadableNode(thing)) {
     return nodeStreamToString(thing)
   }
   assert(false)
 }
 
-function isWebStream(thing: unknown): thing is ReadableStream {
+function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
   return thing instanceof ReadableStream
 }
-function isNodeStream(thing: unknown): thing is Stream.Readable {
+function isStreamReadableNode(thing: unknown): thing is StreamReadableNode {
   return thing instanceof Stream.Readable
 }
 
@@ -63,11 +68,11 @@ async function webStreamToString(webStream: ReadableStream): Promise<string> {
   return str
 }
 
-function stringToNodeStream(str: string): Stream.Readable {
+function stringToStreamReadableNode(str: string): Stream.Readable {
   return Stream.Readable.from(str)
 }
 
-function stringToWebStream(str: string): ReadableStream {
+function stringToStreamReadableWeb(str: string): ReadableStream {
   // `ReadableStream.from()` spec discussion: https://github.com/whatwg/streams/issues/1018
   const readableStream = new ReadableStream({
     start(controller) {
@@ -78,28 +83,38 @@ function stringToWebStream(str: string): ReadableStream {
   return readableStream
 }
 
-function getNodeStream(escapeResult: EscapeResult):  null | StreamReadableNode {
-      if (typeof escapeResult === 'string') {
-        return stringToNodeStream(escapeResult)
-      }
-  if( isNodeStream(escapeResult) ) {
-      return escapeResult
+function getNodeStream(escapeResult: EscapeResult): null | StreamReadableNode {
+  if (typeof escapeResult === 'string') {
+    return stringToStreamReadableNode(escapeResult)
+  }
+  if (isStreamReadableNode(escapeResult)) {
+    return escapeResult
   }
   return null
 }
-function getWebStream(escapeResult: EscapeResult):  null | StreamReadableWeb {
-      if (typeof escapeResult === 'string') {
-        return stringToWebStream(escapeResult)
-      }
-  if( isWebStream(escapeResult) ) {
-      return escapeResult
+function getWebStream(escapeResult: EscapeResult): null | StreamReadableWeb {
+  if (typeof escapeResult === 'string') {
+    return stringToStreamReadableWeb(escapeResult)
+  }
+  if (isStreamReadableWeb(escapeResult)) {
+    return escapeResult
   }
   return null
 }
 
 function pipeToStreamWritableWeb(escapeResult: EscapeResult, writable: StreamWritableWeb): boolean {
-  
+  const streamPipeWeb = getStreamPipeWeb(escapeResult)
+  if (streamPipeWeb === null) {
+    return false
+  }
+  streamPipeWeb(writable)
+  return true
 }
 function pipeToStreamWritableNode(escapeResult: EscapeResult, writable: StreamWritableNode): boolean {
-  
+  const streamPipeNode = getStreamPipeNode(escapeResult)
+  if (streamPipeNode === null) {
+    return false
+  }
+  streamPipeNode(writable)
+  return true
 }

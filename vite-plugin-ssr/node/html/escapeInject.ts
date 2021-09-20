@@ -1,32 +1,80 @@
 import { assert, assertUsage, cast, checkType, hasProp, isObject, isPromise } from '../../shared/utils'
 import { injectAssets_internal } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
-import { StreamReadableNode, StreamReadableWeb, StreamPipeWeb, StreamPipeNode } from './stream'
+import {
+  StreamReadableNode,
+  StreamReadableWeb,
+  StreamPipeWeb,
+  StreamPipeNode,
+  isStreamReadableWeb,
+  isStreamReadableNode,
+  streamToString
+} from './stream'
 
 // Public
 export { escapeInject }
 export { dangerouslySkipEscape }
-export { pipeToWebWritable }
+export { pipeWebStream }
+export { pipeNodeStream }
 
 // Private
-export { isEscapeResult }
-export { renderEscapeResult }
+export { isEscapeInject }
+export { renderEscapeInject }
+export { getStreamPipeWeb }
+export { getStreamPipeNode }
+export { getHtmlString }
 export type { EscapeResult }
 
-type EscapeResult = string | StreamReadableWeb | StreamReadableNode | StreamPipeWeb | StreamPipeNode
+type EscapeInject =
+  | TemplateWrapped
+  | EscapedString
+  | StreamReadableWeb
+  | StreamReadableNode
+  | StreamPipeNodeWrapped
+  | StreamPipeWebWrapped
+type EscapeResult = string | StreamReadableWeb | StreamReadableNode | StreamPipeWebWrapped | StreamPipeNodeWrapped
 
-function isEscapeResult(thing: unknown): thing is EscapedString | HtmlTemplateString {
-  return isEscapedString(thing) || isTemplateString(thing)
+const __template = Symbol('__template')
+type TemplateStrings = TemplateStringsArray
+type TemplateVariable =
+  | string
+  | EscapedString
+  | StreamReadableWeb
+  | StreamReadableNode
+  | StreamPipeNodeWrapped
+  | StreamPipeWebWrapped
+  | TemplateWrapped
+type TemplateWrapped = {
+  [__template]: TemplateContent
+}
+type TemplateContent = {
+  templateStrings: TemplateStringsArray
+  templateVariables: TemplateVariable[]
 }
 
-async function renderEscapeResult(
-  documentHtml: EscapedString | HtmlTemplateString,
+function isEscapeInject(something: unknown): something is EscapeInject {
+  if (
+    isTemplateWrapped(something) ||
+    isEscapedString(something) ||
+    isStreamReadableWeb(something) ||
+    isStreamReadableNode(something) ||
+    isStreamPipeNode(something) ||
+    isStreamPipeWeb(something)
+  ) {
+    checkType<EscapeInject>(something)
+    return true
+  }
+  return false
+}
+
+async function renderEscapeInject(
+  documentHtml: EscapeInject,
   pageContext: PageContextInjectAssets
 ): Promise<EscapeResult> {
   let htmlString: string
   if (isEscapedString(documentHtml)) {
     htmlString = getEscapedString(documentHtml)
-  } else if (isTemplateString(documentHtml)) {
+  } else if (isTemplateWrapped(documentHtml)) {
     htmlString = renderTemplateString(documentHtml)
   } else {
     assert(false)
@@ -35,33 +83,36 @@ async function renderEscapeResult(
   return htmlString
 }
 
-const __template = Symbol('__template')
-const __escaped = Symbol('__escaped')
-
-type TemplateParts = TemplateStringsArray
-type TemplateString = {
-  [__template]: {
-    templateParts: TemplateParts
-    templateVariables: (
-      | unknown
-      | {
-          [__escaped]: string
-        }
-    )[]
-  }
+function isTemplateWrapped(something: unknown): something is TemplateWrapped {
+  return hasProp(something, __template)
 }
-function escapeInject(
-  templateParts: TemplateParts,
-  ...templateVariables: (string | ReadableStream | ReturnType<typeof dangerouslySkipEscape> | TemplateString)[]
-): TemplateString {
+function isEscapedString(something: unknown): something is EscapedString {
+  const result = hasProp(something, __escaped)
+  if (result) {
+    assert(hasProp(something, __escaped, 'string'))
+    checkType<EscapedString>(something)
+  }
+  return result
+}
+
+function getEscapedString(escapedString: EscapedString): string {
+  let htmlString: string
+  assert(hasProp(escapedString, __escaped))
+  htmlString = escapedString[__escaped]
+  assert(typeof htmlString === 'string')
+  return htmlString
+}
+
+function escapeInject(templateStrings: TemplateStrings, ...templateVariables: TemplateVariable[]): TemplateWrapped {
   return {
     [__template]: {
-      templateParts,
+      templateStrings,
       templateVariables
     }
   }
 }
-type EscapedString = { [__escaped]: string } // todo: toString
+const __escaped = Symbol('__escaped')
+type EscapedString = { [__escaped]: string }
 function dangerouslySkipEscape(alreadyEscapedString: string): EscapedString {
   return _dangerouslySkipEscape(alreadyEscapedString)
 }
@@ -81,30 +132,10 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   return { [__escaped]: arg }
 }
 
-function isEscapedString(something: unknown): something is EscapedString {
-  if (hasProp(something, __escaped)) {
-    assert(hasProp(something, __escaped, 'string'))
-    checkType<EscapedString>(something)
-    return true
-  } else {
-    return false
-  }
-}
-function getEscapedString(escapedString: EscapedString): string {
+function renderTemplateString(templateWrapped: TemplateWrapped): string {
   let htmlString: string
-  assert(hasProp(escapedString, __escaped))
-  htmlString = escapedString[__escaped]
-  assert(typeof htmlString === 'string')
-  return htmlString
-}
-
-function isTemplateString(something: unknown): something is HtmlTemplateString {
-  return hasProp(something, __template)
-}
-function renderTemplateString(templateString: HtmlTemplateString): string {
-  let htmlString: string
-  if (__template in templateString) {
-    htmlString = renderTemplate(templateString[__template])
+  if (__template in templateWrapped) {
+    htmlString = renderTemplate(templateWrapped[__template])
   } else {
     assert(false)
   }
@@ -112,15 +143,8 @@ function renderTemplateString(templateString: HtmlTemplateString): string {
   return htmlString
 }
 
-type HtmlTemplateString = {
-  [__template]: HtmlTemplate
-}
-type HtmlTemplate = {
-  templateParts: TemplateStringsArray
-  templateVariables: unknown[]
-}
-function renderTemplate(htmlTemplate: HtmlTemplate) {
-  const { templateParts, templateVariables } = htmlTemplate
+function renderTemplate(templateContent: TemplateContent) {
+  const { templateStrings, templateVariables } = templateContent
   const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
     // Process `dangerouslySkipEscape()`
     if (isEscapedString(templateVar)) {
@@ -133,14 +157,14 @@ function renderTemplate(htmlTemplate: HtmlTemplate) {
     // Process `escapeInject` tag composition
     if (hasProp(templateVar, __template)) {
       const htmlTemplate__segment = templateVar[__template]
-      cast<HtmlTemplate>(htmlTemplate__segment)
+      cast<TemplateContent>(htmlTemplate__segment)
       return renderTemplate(htmlTemplate__segment)
     }
 
     // Escape untrusted template variable
     return escapeHtml(toString(templateVar))
   })
-  const htmlString = identityTemplateTag(templateParts, ...templateVariablesUnwrapped)
+  const htmlString = identityTemplateTag(templateStrings, ...templateVariablesUnwrapped)
   return htmlString
 }
 
@@ -173,11 +197,53 @@ function escapeHtml(unsafeString: string): string {
   return safe
 }
 
-const __pipeToWebWritable = Symbol('__pipeToWebWritable')
-function pipeToWebWritable(pipe: StreamPipeWeb) {
-  return { [__pipeToWebWritable]: pipe }
+const __streamPipeWeb = Symbol('__streamPipeWeb')
+type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
+function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
+  return { [__streamPipeWeb]: pipe }
 }
-isPipeToWebWritable
-function isPipeToWebWritable(thing: unknown): boolean {
-  return isObject(thing) && __pipeToWebWritable in thing
+function getStreamPipeWeb(escapeResult: StreamPipeWebWrapped): StreamPipeWeb
+function getStreamPipeWeb(escapeResult: EscapeResult): null | StreamPipeWeb
+function getStreamPipeWeb(escapeResult: EscapeResult): null | StreamPipeWeb {
+  if (isStreamPipeWeb(escapeResult)) {
+    return escapeResult[__streamPipeWeb]
+  }
+  return null
+}
+function isStreamPipeWeb(something: unknown): something is StreamPipeWebWrapped {
+  return isObject(something) && __streamPipeWeb in something
+}
+
+const __streamPipeNode = Symbol('__streamPipeNode')
+type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
+function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
+  return { [__streamPipeNode]: pipe }
+}
+function getStreamPipeNode(escapeResult: StreamPipeNodeWrapped): StreamPipeNode
+function getStreamPipeNode(escapeResult: EscapeResult): null | StreamPipeNode
+function getStreamPipeNode(escapeResult: EscapeResult): null | StreamPipeNode {
+  if (isStreamPipeNode(escapeResult)) {
+    return escapeResult[__streamPipeNode]
+  }
+  return null
+}
+function isStreamPipeNode(something: unknown): something is StreamPipeNodeWrapped {
+  return isObject(something) && __streamPipeNode in something
+}
+
+async function getHtmlString(escapeResult: EscapeResult): Promise<string> {
+  if (typeof escapeResult === 'string') {
+    return escapeResult
+  }
+  if (isStreamReadableWeb(escapeResult) || isStreamReadableNode(escapeResult)) {
+    return streamToString(escapeResult)
+  }
+  if (isStreamPipeNode(escapeResult)) {
+    return streamToString(getStreamPipeNode(escapeResult))
+  }
+  if (isStreamPipeWeb(escapeResult)) {
+    return streamToString(getStreamPipeWeb(escapeResult))
+  }
+  checkType<never>(escapeResult)
+  assert(false)
 }
