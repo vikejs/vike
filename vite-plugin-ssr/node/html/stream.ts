@@ -58,11 +58,10 @@ async function streamReadableWebToString(webStream: ReadableStream): Promise<str
   }
   return str
 }
-function stringToStreamReadableNode(str: string): Readable {
+function stringToStreamReadableNode(str: string): StreamReadableNode {
   return Readable.from(str)
 }
-
-function stringToStreamReadableWeb(str: string): ReadableStream {
+function stringToStreamReadableWeb(str: string): StreamReadableWeb {
   // `ReadableStream.from()` spec discussion: https://github.com/whatwg/streams/issues/1018
   const readableStream = new ReadableStream({
     start(controller) {
@@ -71,6 +70,20 @@ function stringToStreamReadableWeb(str: string): ReadableStream {
     }
   })
   return readableStream
+}
+function stringToStreamPipeNode(str: string): StreamPipeNode {
+  return (writable: StreamWritableNode) => {
+    writable.write(str)
+    writable.end()
+  }
+}
+function stringToStreamPipeWeb(str: string): StreamPipeWeb {
+  return (writable: StreamWritableWeb) => {
+    const writer = writable.getWriter()
+    const encoder = new TextEncoder()
+    writer.write(encoder.encode(str))
+    writer.close()
+  }
 }
 
 function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string> {
@@ -93,7 +106,7 @@ function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string>
   streamPipeNode(writable)
   return promise
 }
-async function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
+function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   let str: string = ''
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
@@ -130,6 +143,11 @@ function getWebStream(escapeResult: EscapeResult): null | StreamReadableWeb {
 }
 
 function pipeToStreamWritableWeb(escapeResult: EscapeResult, writable: StreamWritableWeb): boolean {
+  if (typeof escapeResult === 'string') {
+    const streamPipeWeb = stringToStreamPipeWeb(escapeResult)
+    streamPipeWeb(writable)
+    return true
+  }
   const streamPipeWeb = getStreamPipeWeb(escapeResult)
   if (streamPipeWeb === null) {
     return false
@@ -138,6 +156,11 @@ function pipeToStreamWritableWeb(escapeResult: EscapeResult, writable: StreamWri
   return true
 }
 function pipeToStreamWritableNode(escapeResult: EscapeResult, writable: StreamWritableNode): boolean {
+  if (typeof escapeResult === 'string') {
+    const streamPipeNode = stringToStreamPipeNode(escapeResult)
+    streamPipeNode(writable)
+    return true
+  }
   const streamPipeNode = getStreamPipeNode(escapeResult)
   if (streamPipeNode === null) {
     return false
