@@ -263,13 +263,15 @@ function createHttpResponseObject(
   return {
     statusCode,
     get body() {
-      assert(renderFilePath)
-      assertUsage(
-        typeof escapeResult === 'string',
-        '`pageContext.httpResponse.body` is not available because your `render()` hook (' +
-          renderFilePath +
-          ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming'
-      )
+      if (typeof escapeResult !== 'string') {
+        assert(renderFilePath)
+        assertUsage(
+          false,
+          '`pageContext.httpResponse.body` is not available because your `render()` hook (' +
+            renderFilePath +
+            ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming'
+        )
+      }
       const body = escapeResult
       return body
     },

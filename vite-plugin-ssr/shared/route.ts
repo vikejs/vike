@@ -1,7 +1,5 @@
 import { findDefaultFiles, findPageFile } from './getPageFiles'
 import type { AllPageFiles, PageFile } from './getPageFiles'
-// @ts-ignore
-import pathToRegexp from '@brillout/path-to-regexp'
 import {
   assert,
   assertUsage,
@@ -15,6 +13,8 @@ import {
   assertExports
 } from './utils'
 import { addComputedUrlProps } from '../node/renderPage'
+// @ts-ignore
+import * as pathToRegexp from '@brillout/path-to-regexp'
 
 export { route }
 export { loadPageRoutes }

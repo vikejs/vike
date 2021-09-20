@@ -1,4 +1,5 @@
 import { Readable, Writable } from 'stream'
+import { assert } from '../../shared/utils'
 import { EscapeResult, getStreamPipeWeb, getStreamPipeNode } from './escapeInject'
 
 export { getNodeStream }
@@ -10,6 +11,8 @@ export { isStreamReadableNode }
 
 export { streamReadableNodeToString }
 export { streamReadableWebToString }
+export { streamPipeWebToString }
+export { streamPipeNodeToString }
 
 export type { StreamReadableWeb }
 export type { StreamReadableNode }
@@ -55,7 +58,6 @@ async function streamReadableWebToString(webStream: ReadableStream): Promise<str
   }
   return str
 }
-
 function stringToStreamReadableNode(str: string): Readable {
   return Readable.from(str)
 }
@@ -69,6 +71,43 @@ function stringToStreamReadableWeb(str: string): ReadableStream {
     }
   })
   return readableStream
+}
+
+function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string> {
+  let str: string = ''
+  let resolve: (s: string) => void
+  const promise = new Promise<string>((r) => (resolve = r))
+  const writable = new Writable({
+    write(chunk, encoding, callback) {
+      assert(encoding === 'utf8')
+      const s = chunk.toString()
+      assert(typeof s === 'string')
+      str += s
+      callback()
+    },
+    final(callback) {
+      resolve(str)
+      callback()
+    }
+  })
+  streamPipeNode(writable)
+  return promise
+}
+async function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
+  let str: string = ''
+  let resolve: (s: string) => void
+  const promise = new Promise<string>((r) => (resolve = r))
+  const writable = new WritableStream({
+    write(chunk) {
+      assert(typeof chunk === 'string')
+      str += chunk
+    },
+    close() {
+      resolve(str)
+    }
+  })
+  streamPipeWeb(writable)
+  return promise
 }
 
 function getNodeStream(escapeResult: EscapeResult): null | StreamReadableNode {
