@@ -10,6 +10,7 @@ import { AllPageFiles } from '../../shared/getPageFiles'
 
 export { injectAssets }
 export { injectAssets_internal }
+export type { PageContextInjectAssets }
 export { getPageAssets }
 export { PageAssets }
 
@@ -141,9 +142,7 @@ async function injectAssets(htmlString: string, pageContext: Record<string, unkn
   return htmlString
 }
 
-async function injectAssets_internal(
-  htmlString: string,
-  pageContext: {
+type PageContextInjectAssets = {
     urlNormalized: string
     _pageAssets: PageAssets
     _pageId: string
@@ -152,6 +151,9 @@ async function injectAssets_internal(
     _pageClientPath: string
     _passToClient: string[]
   }
+async function injectAssets_internal(
+  htmlString: string,
+  pageContext: PageContextInjectAssets
 ): Promise<string> {
   assert(htmlString)
   assert(typeof htmlString === 'string')

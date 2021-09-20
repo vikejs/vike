@@ -1,7 +1,7 @@
 import { assert, assertUsage, cast, checkType, hasProp, isObject, isPromise } from '../../shared/utils'
-import Stream from 'stream'
 import { injectAssets_internal } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
+import { StreamReadableNode, StreamReadableWeb, StreamPipeWeb, StreamPipeNode } from './stream'
 
 // Public
 export { escapeInject }
@@ -11,7 +11,9 @@ export { pipeToWebWritable }
 // Private
 export { isEscapeResult }
 export { renderEscapeResult }
-export type EscapeResult = string | ReadableStream | Stream.Readable
+export type { EscapeResult }
+
+type EscapeResult = string | StreamReadableWeb | StreamReadableNode | StreamPipeWeb | StreamPipeNode
 
 function isEscapeResult(thing: unknown): thing is EscapedString | HtmlTemplateString {
   return isEscapedString(thing) || isTemplateString(thing)
@@ -172,10 +174,10 @@ function escapeHtml(unsafeString: string): string {
 }
 
 const __pipeToWebWritable = Symbol('__pipeToWebWritable')
-function pipeToWebWritable(pipe: (writable: WritableStream) => void) {
+function pipeToWebWritable(pipe: StreamPipeWeb) {
   return { [__pipeToWebWritable]: pipe }
 }
-isPipeToWebWritable;
+isPipeToWebWritable
 function isPipeToWebWritable(thing: unknown): boolean {
   return isObject(thing) && __pipeToWebWritable in thing
 }
