@@ -30,7 +30,7 @@ type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
 
 function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
-  return thing instanceof ReadableStream
+  return typeof ReadableStream !== "undefined" && thing instanceof ReadableStream
 }
 function isStreamReadableNode(thing: unknown): thing is StreamReadableNode {
   return thing instanceof Readable
