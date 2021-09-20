@@ -1,6 +1,5 @@
 import './page-files/setup'
-import fs from 'fs'
-const { writeFile, mkdir } = fs.promises
+import { writeFile, mkdir } from 'fs/promises'
 import { join, sep, dirname, isAbsolute } from 'path'
 import { isErrorPage, isStaticRoute, PageRoutes, route } from '../shared/route'
 import {
@@ -25,7 +24,7 @@ import {
   renderStatic404Page
 } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
-import pLimit from 'p-limit'
+import * as pLimit from 'p-limit'
 import { cpus } from 'os'
 import { AllPageFiles } from '../shared/getPageFiles'
 

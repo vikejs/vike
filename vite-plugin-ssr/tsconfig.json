@@ -17,7 +17,6 @@
     "noImplicitOverride": true /* Ensure overriding members in derived classes are marked with an override modifier. */,
     "noPropertyAccessFromIndexSignature": true /* Discriminate between accessing a field via “dot” (obj.key) or “index” (obj["key"]) */,
     // Dependencies
-    "esModuleInterop": true,
     "skipLibCheck": true,
     // Source Maps
     "sourceMap": true,
