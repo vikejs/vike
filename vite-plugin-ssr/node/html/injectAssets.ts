@@ -3,10 +3,11 @@ import { getPreloadUrls } from '../getPreloadTags'
 import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'
 import { prependBaseUrl } from '../baseUrlHandling'
-import devalue from 'devalue'
+import * as _devalue from 'devalue'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
 import { AllPageFiles } from '../../shared/getPageFiles'
+const devalue = (_devalue as any as (arg: unknown) => string)
 
 export { injectAssets }
 export { injectAssets_internal }

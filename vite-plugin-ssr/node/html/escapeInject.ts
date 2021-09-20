@@ -8,7 +8,8 @@ import {
   StreamPipeNode,
   isStreamReadableWeb,
   isStreamReadableNode,
-  streamToString
+  streamReadableWebToString,
+  streamReadableNodeToString
 } from './stream'
 
 // Public
@@ -235,9 +236,13 @@ async function getHtmlString(escapeResult: EscapeResult): Promise<string> {
   if (typeof escapeResult === 'string') {
     return escapeResult
   }
-  if (isStreamReadableWeb(escapeResult) || isStreamReadableNode(escapeResult)) {
-    return streamToString(escapeResult)
+  if (isStreamReadableWeb(escapeResult)) {
+    return streamReadableWebToString(escapeResult)
   }
+  if (isStreamReadableNode(escapeResult)) {
+    return streamReadableNodeToString(escapeResult)
+  }
+  /*
   if (isStreamPipeNode(escapeResult)) {
     return streamToString(getStreamPipeNode(escapeResult))
   }
@@ -245,5 +250,6 @@ async function getHtmlString(escapeResult: EscapeResult): Promise<string> {
     return streamToString(getStreamPipeWeb(escapeResult))
   }
   checkType<never>(escapeResult)
+  */
   assert(false)
 }

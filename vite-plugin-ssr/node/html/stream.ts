@@ -1,14 +1,15 @@
 import { Readable, Writable } from 'stream'
-import { assert } from '../../shared/utils'
 import { EscapeResult, getStreamPipeWeb, getStreamPipeNode } from './escapeInject'
 
-export { streamToString }
 export { getNodeStream }
 export { getWebStream }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
 export { isStreamReadableWeb }
 export { isStreamReadableNode }
+
+export { streamReadableNodeToString }
+export { streamReadableWebToString }
 
 export type { StreamReadableWeb }
 export type { StreamReadableNode }
@@ -25,19 +26,6 @@ type StreamWritableNode = Writable
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
 
-async function streamToString(
-  thing: StreamReadableNode | StreamReadableWeb | StreamPipeNode | StreamPipeWeb
-): Promise<string> {
-  if (typeof thing === 'string') {
-    return thing
-  } else if (isStreamReadableWeb(thing)) {
-    return webStreamToString(thing)
-  } else if (isStreamReadableNode(thing)) {
-    return nodeStreamToString(thing)
-  }
-  assert(false)
-}
-
 function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
   return thing instanceof ReadableStream
 }
@@ -45,7 +33,7 @@ function isStreamReadableNode(thing: unknown): thing is StreamReadableNode {
   return thing instanceof Readable
 }
 
-async function nodeStreamToString(nodeStream: Readable): Promise<string> {
+async function streamReadableNodeToString(nodeStream: Readable): Promise<string> {
   // Copied from: https://stackoverflow.com/questions/10623798/how-do-i-read-the-contents-of-a-node-js-stream-into-a-string-variable/49428486#49428486
   const chunks: Buffer[] = []
   return new Promise((resolve, reject) => {
@@ -55,7 +43,7 @@ async function nodeStreamToString(nodeStream: Readable): Promise<string> {
   })
 }
 
-async function webStreamToString(webStream: ReadableStream): Promise<string> {
+async function streamReadableWebToString(webStream: ReadableStream): Promise<string> {
   let str: string = ''
   const reader = webStream.getReader()
   while (true) {

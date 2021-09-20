@@ -263,6 +263,7 @@ function createHttpResponseObject(
   return {
     statusCode,
     get body() {
+      assert(renderFilePath)
       assertUsage(
         typeof escapeResult === 'string',
         '`pageContext.httpResponse.body` is not available because your `render()` hook (' +
