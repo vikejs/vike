@@ -1,5 +1,6 @@
 import './page-files/setup'
-import { writeFile, mkdir } from 'fs/promises'
+import { promises } from 'fs'
+const { writeFile, mkdir } = promises
 import { join, sep, dirname, isAbsolute } from 'path'
 import { isErrorPage, isStaticRoute, PageRoutes, route } from '../shared/route'
 import {
