@@ -143,14 +143,16 @@ function renderTemplate(
   }
 
   const { templateStrings, templateVariables } = templateContent
-  templateVariables.forEach((templateVar: unknown, i) => {
+  for (const i in templateVariables) {
     addString(templateStrings[i]!)
+    const templateVar = templateVariables[i]
 
     // Process `dangerouslySkipEscape()`
     if (isEscapedString(templateVar)) {
       const htmlString = getEscapedString(templateVar)
       // User used `dangerouslySkipEscape()` so we assume the string to be safe
       addString(htmlString)
+      continue
     }
 
     // Process `escapeInject` tag composition
@@ -170,15 +172,17 @@ function renderTemplate(
       } else {
         assert(false)
       }
+      continue
     }
 
     if (isStream(templateVar)) {
       stream = templateVar
+      continue
     }
 
     // Escape untrusted template variable
     addString(escapeHtml(toString(templateVar)))
-  })
+  }
 
   assert(templateStrings.length === templateVariables.length + 1)
   addString(templateStrings[templateStrings.length - 1]!)
