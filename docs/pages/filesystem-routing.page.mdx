@@ -7,12 +7,12 @@ pages/index/index.page.js         /                (`index` is mapped to the emp
 pages/HELLO.page.js               /HELLO           (Mapping is case sensitive)
 ```
 
-Both `pages/` and `index/` directories are mapped to the empty string `''`. For example:
+The directories `pages/`, `src/`, and `index/` are mapped to the empty string `''`. For example:
 
 ```
-FILESYSTEM                              URL
-jobs/pages/index.page.js                /jobs
-pages/pages/index/pages/about.page.js   /about
+FILESYSTEM                                      URL
+src/pages/jobs/index.page.js                    /jobs
+pages/pages/src/src/index/pages/about.page.js   /about
 ```
 
 Which allows us to have a [domain-driven file structure](/file-structure#domain-driven) such as:

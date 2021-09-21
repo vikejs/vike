@@ -243,17 +243,22 @@ function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string;
     pageRoute = rootValue + (rootValue.endsWith('/') ? '' : '/') + slice(pageRoute, 1, 0)
   }
 
-  // Hanlde `/pages/` directory
+  // Remove `pages/`, `index/, and `src/`, directories
   pageRoute = pageRoute.split('/pages/').join('/')
+  pageRoute = pageRoute.split('/src/').join('/')
+  pageRoute = pageRoute.split('/index/').join('/')
 
-  // Hanlde `/index/` directory
-  pageRoute = pageRoute
-    .split('/')
-    .filter((part) => part !== 'index')
-    .join('/')
-  if (!pageRoute.startsWith('/')) {
-    pageRoute = '/' + pageRoute
+  // Hanlde `/index.page.*` suffix
+  assert(!pageRoute.includes('.page.'))
+  if (pageRoute.endsWith('/index')) {
+    pageRoute = slice(pageRoute, 0, -'/index'.length)
   }
+
+  if (pageRoute === '') {
+    pageRoute = '/'
+  }
+  assert(pageRoute.startsWith('/'))
+
   return pageRoute
 }
 
