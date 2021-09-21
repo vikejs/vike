@@ -12,6 +12,7 @@ Features:
  - Error Page
  - Active Links
  - Access `pageContext` from any component (using `app.config.globalProperties` and `reactive`)
+ - HTML streaming
 
 To run it:
 

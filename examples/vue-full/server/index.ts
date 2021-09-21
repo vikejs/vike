@@ -30,8 +30,9 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
-    const { statusCode, body } = httpResponse
-    res.status(statusCode).send(body)
+    res.status(httpResponse.statusCode)
+    const stream = httpResponse.bodyNodeStream
+    stream.pipe(res)
   })
 
   const port = 3000
