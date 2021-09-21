@@ -57,7 +57,7 @@ type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<T extends { url: string } & Record<string, unknown>>(
   pageContext: T
-): Promise<T & Record<string, unknown> & { httpResponse: null | { body: string; statusCode: 200 | 404 | 500 } }> {
+): Promise<T & Record<string, unknown> & { httpResponse: HttpResponse }> {
   /* Not very useful because of HTTP response `{ pageContext404PageDoesNotExist: true }` with status code `200`
   : Promise<T & Record<string, unknown> & (({ httpResponse: null}) | ({httpResponse: { statusCode: 500, body: string}}) | (PageContextBuiltIn & { statusCode: 404 | 500; body: string }))>
   */
@@ -111,12 +111,15 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
     if (!errorPageId) {
       warnMissingErrorPage()
       if (pageContext._isPageContextRequest) {
-        const httpResponse = {
-          body: stringify({
+        const httpResponse = createHttpResponseObject(
+          stringify({
             pageContext404PageDoesNotExist: true
           }),
-          statusCode: 200 as const
-        }
+          {
+            statusCode: 200,
+            renderFilePath: null
+          }
+        )
         objectAssign(pageContext, { httpResponse })
         return pageContext
       } else {

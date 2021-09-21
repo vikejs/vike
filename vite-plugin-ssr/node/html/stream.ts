@@ -239,14 +239,14 @@ function addStringWrapperToStream<T extends Stream>(stream: T, stringBegin: stri
     }) as typeof stream
   }
   if (isStreamReadableNode(stream)) {
-    const readableNodeProxy: StreamReadableNode = new Readable()
+    const readableNodeProxy: StreamReadableNode = new Readable({ read() {} })
     readableNodeProxy.push(stringBegin)
     const readableNode: StreamReadableNode = stream
     readableNode.on('data', (chunk) => readableNodeProxy.push(chunk))
     readableNode.on('error', (err) => readableNodeProxy.destroy(err))
     readableNode.on('end', () => {
       readableNodeProxy.push(stringEnd)
-      readableNodeProxy.destroy()
+      readableNodeProxy.push(null)
     })
     return readableNodeProxy as typeof stream
   }

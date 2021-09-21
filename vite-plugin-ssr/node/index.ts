@@ -1,6 +1,7 @@
 import './page-files/setup'
 export { createPageRenderer } from './createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/escapeInject'
+export { pipeWebStream,  pipeNodeStream } from './html/stream'
 export { injectAssets as _injectAssets } from './html/injectAssets'
 
 import { importBuild } from './importBuild'
