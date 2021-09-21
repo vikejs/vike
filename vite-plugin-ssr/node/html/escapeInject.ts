@@ -1,69 +1,34 @@
-import { assert, assertUsage, cast, checkType, hasProp, isObject, isPromise } from '../../shared/utils'
+import { assert, assertUsage, checkType, hasProp, isPromise } from '../../shared/utils'
 import { injectAssets_internal } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
-import {
-  StreamReadableNode,
-  StreamReadableWeb,
-  StreamPipeWeb,
-  StreamPipeNode,
-  isStreamReadableWeb,
-  isStreamReadableNode,
-  streamReadableWebToString,
-  streamReadableNodeToString,
-  streamPipeNodeToString,
-  streamPipeWebToString
-} from './stream'
+import { addStringWrapperToStream, isStream, Stream, streamToString } from './stream'
 
 // Public
 export { escapeInject }
 export { dangerouslySkipEscape }
-export { pipeWebStream }
-export { pipeNodeStream }
 
 // Private
 export { isEscapeInject }
 export { renderEscapeInject }
-export { getStreamPipeWeb }
-export { getStreamPipeNode }
 export { getHtmlString }
 export type { EscapeResult }
 
-type EscapeInject =
-  | TemplateWrapped
-  | EscapedString
-  | StreamReadableWeb
-  | StreamReadableNode
-  | StreamPipeNodeWrapped
-  | StreamPipeWebWrapped
-type EscapeResult = string | StreamReadableWeb | StreamReadableNode | StreamPipeWebWrapped | StreamPipeNodeWrapped
+type EscapeInject = TemplateWrapped | EscapedString | Stream
+type EscapeResult = string | Stream
 
 const __template = Symbol('__template')
 type TemplateStrings = TemplateStringsArray
-type TemplateVariable =
-  | string
-  | EscapedString
-  | StreamReadableWeb
-  | StreamReadableNode
-  | StreamPipeNodeWrapped
-  | StreamPipeWebWrapped
-  | TemplateWrapped
+type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
 type TemplateWrapped = {
   [__template]: TemplateContent
 }
 type TemplateContent = {
-  templateStrings: TemplateStringsArray
+  templateStrings: TemplateStrings
   templateVariables: TemplateVariable[]
 }
 
 function isEscapeInject(something: unknown): something is EscapeInject {
-  if (
-    isTemplateWrapped(something) ||
-    isEscapedString(something) ||
-    isStreamReadableWeb(something) ||
-    isStreamReadableNode(something) ||
-    isStreamPipeNode(something) ||
-    isStreamPipeWeb(something)
-  ) {
+  if (isTemplateWrapped(something) || isEscapedString(something) || isStream(something)) {
     checkType<EscapeInject>(something)
     return true
   }
@@ -71,19 +36,44 @@ function isEscapeInject(something: unknown): something is EscapeInject {
 }
 
 async function renderEscapeInject(
-  documentHtml: EscapeInject,
-  pageContext: PageContextInjectAssets
+  escapeInject: EscapeInject,
+  pageContext: PageContextInjectAssets,
+  renderFilePath: string
 ): Promise<EscapeResult> {
-  let htmlString: string
-  if (isEscapedString(documentHtml)) {
-    htmlString = getEscapedString(documentHtml)
-  } else if (isTemplateWrapped(documentHtml)) {
-    htmlString = renderTemplateString(documentHtml)
-  } else {
+  if (isEscapedString(escapeInject)) {
+    let htmlString = getEscapedString(escapeInject)
+    htmlString = await injectAssets_internal(htmlString, pageContext)
+    return htmlString
+  }
+  if (isStream(escapeInject)) {
+    return escapeInject
+  }
+  if (isTemplateWrapped(escapeInject)) {
+    const templateContent = escapeInject[__template]
+    const render = renderTemplate(templateContent, renderFilePath)
+    if (render.type === 'string') {
+      let htmlString = render.value
+      htmlString = await injectAssets_internal(htmlString, pageContext)
+      return htmlString
+    }
+    if (render.type === 'stream') {
+      const splitter = '<span>__VITE_PLUGIN_SSR__SPLITTER__</span>'
+      let htmlWrapper = render.stringBegin + splitter + render.stringEnd
+      htmlWrapper = await injectAssets_internal(htmlWrapper, pageContext)
+      assertUsage(
+        htmlWrapper.includes(splitter),
+        "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution."
+      )
+      const [stringBegin, stringEnd] = htmlWrapper.split(splitter)
+      assert(stringEnd !== undefined && stringBegin !== undefined)
+      const stream = addStringWrapperToStream(render.stream, stringBegin, stringEnd)
+      return stream
+    }
+    checkType<never>(render)
     assert(false)
   }
-  htmlString = await injectAssets_internal(htmlString, pageContext)
-  return htmlString
+  checkType<never>(escapeInject)
+  assert(false)
 }
 
 function isTemplateWrapped(something: unknown): something is TemplateWrapped {
@@ -135,51 +125,78 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   return { [__escaped]: arg }
 }
 
-function renderTemplateString(templateWrapped: TemplateWrapped): string {
-  let htmlString: string
-  if (__template in templateWrapped) {
-    htmlString = renderTemplate(templateWrapped[__template])
-  } else {
-    assert(false)
-  }
-  assert(typeof htmlString === 'string')
-  return htmlString
-}
+function renderTemplate(
+  templateContent: TemplateContent,
+  renderFilePath: string
+): { type: 'string'; value: string } | { type: 'stream'; stream: Stream; stringBegin: string; stringEnd: string } {
+  let stringBegin = ''
+  let stream: null | Stream = null
+  let stringEnd = ''
 
-function renderTemplate(templateContent: TemplateContent) {
+  const addString = (str: string) => {
+    assert(typeof str === 'string')
+    if (stream === null) {
+      stringBegin += str
+    } else {
+      stringEnd += str
+    }
+  }
+
   const { templateStrings, templateVariables } = templateContent
-  const templateVariablesUnwrapped: string[] = templateVariables.map((templateVar: unknown) => {
+  templateVariables.forEach((templateVar: unknown, i) => {
+    addString(templateStrings[i]!)
+
     // Process `dangerouslySkipEscape()`
     if (isEscapedString(templateVar)) {
-      const val = templateVar[__escaped]
-      assert(typeof val === 'string')
+      const htmlString = getEscapedString(templateVar)
       // User used `dangerouslySkipEscape()` so we assume the string to be safe
-      return val
+      addString(htmlString)
     }
 
     // Process `escapeInject` tag composition
-    if (hasProp(templateVar, __template)) {
-      const htmlTemplate__segment = templateVar[__template]
-      cast<TemplateContent>(htmlTemplate__segment)
-      return renderTemplate(htmlTemplate__segment)
+    if (isTemplateWrapped(templateVar)) {
+      const templateContentInner = templateVar[__template]
+      const render = renderTemplate(templateContentInner, renderFilePath)
+      assertUsage(
+        !(stream !== null && render.type === 'stream'),
+        `You are trying to eject two streams in your \`escapeInject\` template tag of your render() hook exported by ${renderFilePath}. Inject only one stream instead.`
+      )
+      if (render.type === 'string') {
+        addString(render.value)
+      } else if (render.type === 'stream') {
+        addString(render.stringBegin)
+        stream = render.stream
+        addString(render.stringEnd)
+      } else {
+        assert(false)
+      }
+    }
+
+    if (isStream(templateVar)) {
+      stream = templateVar
     }
 
     // Escape untrusted template variable
-    return escapeHtml(toString(templateVar))
+    addString(escapeHtml(toString(templateVar)))
   })
-  const htmlString = identityTemplateTag(templateStrings, ...templateVariablesUnwrapped)
-  return htmlString
-}
 
-function identityTemplateTag(parts: TemplateStringsArray, ...variables: string[]) {
-  assert(parts.length === variables.length + 1)
-  let str = ''
-  for (let i = 0; i < variables.length; i++) {
-    const variable = variables[i]
-    assert(typeof variable === 'string')
-    str += parts[i] + variable
+  assert(templateStrings.length === templateVariables.length + 1)
+  addString(templateStrings[templateStrings.length - 1]!)
+
+  if (stream === null) {
+    assert(stringEnd === '')
+    return {
+      type: 'string',
+      value: stringBegin
+    }
   }
-  return str + parts[parts.length - 1]
+
+  return {
+    type: 'stream',
+    stream,
+    stringBegin,
+    stringEnd
+  }
 }
 
 function toString(val: unknown): string {
@@ -200,55 +217,12 @@ function escapeHtml(unsafeString: string): string {
   return safe
 }
 
-const __streamPipeWeb = Symbol('__streamPipeWeb')
-type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
-function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
-  return { [__streamPipeWeb]: pipe }
-}
-function getStreamPipeWeb(escapeResult: StreamPipeWebWrapped): StreamPipeWeb
-function getStreamPipeWeb(escapeResult: EscapeResult): null | StreamPipeWeb
-function getStreamPipeWeb(escapeResult: EscapeResult): null | StreamPipeWeb {
-  if (isStreamPipeWeb(escapeResult)) {
-    return escapeResult[__streamPipeWeb]
-  }
-  return null
-}
-function isStreamPipeWeb(something: unknown): something is StreamPipeWebWrapped {
-  return isObject(something) && __streamPipeWeb in something
-}
-
-const __streamPipeNode = Symbol('__streamPipeNode')
-type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
-function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
-  return { [__streamPipeNode]: pipe }
-}
-function getStreamPipeNode(escapeResult: StreamPipeNodeWrapped): StreamPipeNode
-function getStreamPipeNode(escapeResult: EscapeResult): null | StreamPipeNode
-function getStreamPipeNode(escapeResult: EscapeResult): null | StreamPipeNode {
-  if (isStreamPipeNode(escapeResult)) {
-    return escapeResult[__streamPipeNode]
-  }
-  return null
-}
-function isStreamPipeNode(something: unknown): something is StreamPipeNodeWrapped {
-  return isObject(something) && __streamPipeNode in something
-}
-
 async function getHtmlString(escapeResult: EscapeResult): Promise<string> {
   if (typeof escapeResult === 'string') {
     return escapeResult
   }
-  if (isStreamReadableWeb(escapeResult)) {
-    return await streamReadableWebToString(escapeResult)
-  }
-  if (isStreamReadableNode(escapeResult)) {
-    return await streamReadableNodeToString(escapeResult)
-  }
-  if (isStreamPipeNode(escapeResult)) {
-    return streamPipeNodeToString(getStreamPipeNode(escapeResult))
-  }
-  if (isStreamPipeWeb(escapeResult)) {
-    return streamPipeWebToString(getStreamPipeWeb(escapeResult))
+  if (isStream(escapeResult)) {
+    return streamToString(escapeResult)
   }
   checkType<never>(escapeResult)
   assert(false)

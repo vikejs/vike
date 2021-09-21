@@ -737,7 +737,7 @@ async function executeRenderHook(
     return { escapeResult: null, renderFilePath }
   }
 
-  const escapeResult = await renderEscapeInject(documentHtml, pageContext)
+  const escapeResult = await renderEscapeInject(documentHtml, pageContext, renderFilePath)
   return { escapeResult, renderFilePath }
 }
 
