@@ -12,6 +12,7 @@ Features:
  - Error Page
  - Active Links
  - Access `pageContext` from any component (using React Context)
+ - HTML streaming
 
 To run it:
 

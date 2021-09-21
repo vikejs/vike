@@ -1,6 +1,6 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
-import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { escapeInject } from "vite-plugin-ssr";
 import { PageWrapper } from "./PageWrapper";
 import { getPageTitle } from "./getPageTitle";
 import type { PageContext } from "./types";
@@ -13,7 +13,7 @@ const passToClient = ["pageProps", "documentProps", "urlPathname"] as const;
 
 function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext;
-  const pageContent = ReactDOMServer.renderToString(
+  const stream = ReactDOMServer.renderToNodeStream(
     <PageWrapper pageContext={pageContext}>
       <Page {...pageProps} />
     </PageWrapper>
@@ -27,7 +27,7 @@ function render(pageContext: PageContextBuiltIn & PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageContent)}</div>
+        <div id="page-view">${stream}</div>
       </body>
     </html>`;
 }

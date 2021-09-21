@@ -17,6 +17,7 @@ export { isStream }
 export { streamToString }
 
 export type { Stream }
+export type { StreamTypePatch }
 export type { StreamReadableWeb }
 export type { StreamReadableNode }
 export type { StreamWritableWeb }
@@ -35,6 +36,8 @@ type StreamWritableNode = Writable
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
 type Stream = StreamReadableWeb | StreamReadableNode | StreamPipeWebWrapped | StreamPipeNodeWrapped
+// `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
+type StreamTypePatch = NodeJS.ReadableStream
 
 function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
   return typeof ReadableStream !== 'undefined' && thing instanceof ReadableStream

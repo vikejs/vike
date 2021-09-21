@@ -1,7 +1,7 @@
 import { assert, assertUsage, checkType, hasProp, isPromise } from '../../shared/utils'
 import { injectAssets_internal } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
-import { addStringWrapperToStream, isStream, Stream, streamToString } from './stream'
+import { addStringWrapperToStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 
 // Public
 export { escapeInject }
@@ -96,11 +96,11 @@ function getEscapedString(escapedString: EscapedString): string {
   return htmlString
 }
 
-function escapeInject(templateStrings: TemplateStrings, ...templateVariables: TemplateVariable[]): TemplateWrapped {
+function escapeInject(templateStrings: TemplateStrings, ...templateVariables: (TemplateVariable | StreamTypePatch)[]): TemplateWrapped {
   return {
     [__template]: {
       templateStrings,
-      templateVariables
+      templateVariables: (templateVariables as TemplateVariable[])
     }
   }
 }
