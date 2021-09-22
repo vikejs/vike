@@ -1,4 +1,8 @@
-import { assert } from '.'
+import { assert } from './assert'
+import { slice } from './slice'
+
+export { handleUrlOrigin }
+export { addUrlOrigin }
 
 export { getUrlFull }
 export { getUrlPathname }
@@ -7,18 +11,37 @@ export { getUrlParts }
 export { getUrlFullWithoutHash }
 export type { UrlParsed }
 
+function handleUrlOrigin(url: string): { urlWithoutOrigin: string; urlOrigin: null | string } {
+  assert(url.startsWith('/') || url.startsWith('http'))
+  if (url.startsWith('/')) {
+    return { urlWithoutOrigin: url, urlOrigin: null }
+  } else {
+    const urlOrigin = parseWithNewUrl(url).origin
+    assert(urlOrigin !== '', { url })
+    assert(urlOrigin.startsWith('http'), { url })
+    assert(url.startsWith(urlOrigin), { url })
+    const urlWithoutOrigin = url.slice(urlOrigin.length)
+    assert(`${urlOrigin}${urlWithoutOrigin}` === url, { url })
+    assert(urlWithoutOrigin.startsWith('/'), { url })
+    return { urlWithoutOrigin, urlOrigin }
+  }
+}
+function addUrlOrigin(url: string, urlOrigin: string): string {
+  assert(urlOrigin.startsWith('http'), { url, urlOrigin })
+  if (urlOrigin.endsWith('/')) {
+    urlOrigin = slice(urlOrigin, 0, -1)
+  }
+  assert(!urlOrigin.endsWith('/'), { url, urlOrigin })
+  assert(url.startsWith('/'), { url, urlOrigin })
+  return `${urlOrigin}${url}`
+}
+
 /**
  Returns `${pathname}${search}${hash}`. (Basically removes the origin.)
 */
 function getUrlFull(url?: string): string {
-  // TODO
   url = retrieveUrl(url)
-  const { origin } = parseWithNewUrl(url)
-  assert(url.startsWith(origin), { url })
-  const urlFull = url.slice(origin.length)
-  assert(`${origin}${urlFull}` === url, { url })
-  assert(urlFull.startsWith('/'), { url })
-  return urlFull
+  return handleUrlOrigin(url).urlWithoutOrigin
 }
 
 /**
@@ -94,7 +117,35 @@ function parseWithNewUrl(url: string) {
     return { origin, pathname }
   } catch (err) {
     assert(url.startsWith('/'), { url })
-    const { pathname } = new URL('https://fake-origin.example.org' + url)
+    const { pathname } = new URL('http://fake-origin.example.org' + url)
     return { origin: '', pathname }
   }
 }
+
+/* Tempting to also apply `cleanUrl()` on `pageContext.urlNormalized` but AFAICT no one needs this; `pageContext.urlParsed` is enough.
+ *
+function cleanUrl(url: string): string {
+  return getUrlFromParsed(getUrlParsed(url))
+}
+
+function getUrlFromParsed(urlParsed: UrlParsed): string {
+  const { origin, pathname, search, hash } = urlParsed
+
+  const searchParams = new URLSearchParams('')
+  assert(Array.from(searchParams.keys()).length === 0)
+  Object.entries(search || {}).forEach(([key, val]) => {
+    searchParams.set(key, val)
+  })
+  const searchString = searchParams.toString()
+
+  assert(hash === null || !hash.startsWith('#'))
+  const hashString = hash === null ? '' : '#' + hash
+
+  assert(origin === '' || origin.startsWith('http'))
+  assert(pathname.startsWith('/'))
+  assert(searchString === '' || searchString.startsWith('?'))
+  assert(hashString === '' || hashString.startsWith('#'))
+  return `${origin}${pathname}${searchString}${hashString}`
+}
+*
+*/

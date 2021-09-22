@@ -4,8 +4,7 @@ import { slice } from './slice'
 const pageContextUrlSuffix = '.pageContext.json'
 
 export { getFileUrl }
-export { isPageContextUrl }
-export { removePageContextUrlSuffix }
+export { handlePageContextRequestSuffix }
 
 /**
  (`/`, `.html`) -> `/index.html`
@@ -43,12 +42,18 @@ function getFileUrl(
   return `${pathnameModified}${fileExtension}${searchString}${hashString}`
 }
 
-function isPageContextUrl(url: string): boolean {
+function handlePageContextRequestSuffix(url: string): {
+  urlWithoutPageContextRequestSuffix: string
+  isPageContextRequest: boolean
+} {
   const urlPathname = getUrlPathname(url)
-  return urlPathname.endsWith(pageContextUrlSuffix)
+  if (!urlPathname.endsWith(pageContextUrlSuffix)) {
+    return { urlWithoutPageContextRequestSuffix: url, isPageContextRequest: false }
+  }
+  return { urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(url), isPageContextRequest: true }
 }
+
 function removePageContextUrlSuffix(url: string): string {
-  assert(isPageContextUrl(url), { url })
   let { origin, pathname, searchString, hashString } = getUrlParts(url)
   assert(url === `${origin}${pathname}${searchString}${hashString}`, { url })
   assert(pathname.endsWith(pageContextUrlSuffix), { url })

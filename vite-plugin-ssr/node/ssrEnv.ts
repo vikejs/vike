@@ -1,4 +1,5 @@
 import { ViteDevServer } from 'vite'
+import { assertBaseUrl } from './baseUrlHandling'
 
 export { setSsrEnv }
 export { getSsrEnv }
@@ -19,10 +20,13 @@ type SsrEnv =
     }
 
 function getSsrEnv(): SsrEnv {
-  return global.__vite_ssr_plugin
+  const ssrEnv = global.__vite_ssr_plugin
+  assertBaseUrl(ssrEnv.baseUrl)
+  return ssrEnv
 }
 
 function setSsrEnv(ssrEnv: SsrEnv) {
+  assertBaseUrl(ssrEnv.baseUrl)
   global.__vite_ssr_plugin = ssrEnv
 }
 

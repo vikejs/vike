@@ -12,10 +12,8 @@ import {
   cast,
   assertWarning,
   hasProp,
-  isPageContextUrl,
-  removePageContextUrlSuffix,
+  handlePageContextRequestSuffix,
   getUrlPathname,
-  getUrlFull,
   isPlainObject,
   isObject,
   getUrlParsed,
@@ -24,9 +22,10 @@ import {
   PromiseType,
   compareString,
   assertExports,
-  stringifyStringArray
+  stringifyStringArray,
+  handleUrlOrigin
 } from '../shared/utils'
-import { removeBaseUrl, startsWithBaseUrl } from './baseUrlHandling'
+import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import { loadPageView } from '../shared/loadPageView'
 import { sortPageContext } from '../shared/sortPageContext'
@@ -815,18 +814,25 @@ function assertArguments(...args: unknown[]) {
   )
   assertUsage(
     typeof pageContext.url === 'string',
-    '`renderPage(pageContext)`: `pageContext.url` should be a string but we got `typeof pageContext.url === "' +
+    '`renderPage(pageContext)`: `pageContext.url` should be a string but `typeof pageContext.url === "' +
       typeof pageContext.url +
       '"`.'
   )
+  assertUsage(
+    pageContext.url.startsWith('/') || pageContext.url.startsWith('http'),
+    '`renderPage(pageContext)`: `pageContext.url` should start with `/` (e.g. `/product/42`) or `http` (e.g. `http://example.org/product/42`) but `pageContext.url === "' +
+      pageContext.url +
+      '"`.'
+  )
   try {
-    removeOrigin(pageContext.url)
+    const { url } = pageContext
+    const urlWithOrigin = url.startsWith('http') ? url : 'http://fake-origin.example.org' + url
+    // `new URL()` conveniently throws if URL is not an URL
+    new URL(urlWithOrigin)
   } catch (err) {
     assertUsage(
       false,
-      '`renderPage(pageContext)`: argument `pageContext.url` should be a URL but we got `url==="' +
-        pageContext.url +
-        '"`.'
+      '`renderPage(pageContext)`: `pageContext.url` should be a URL but `pageContext.url==="' + pageContext.url + '"`.'
     )
   }
   const len = args.length
@@ -938,11 +944,6 @@ function handleError(err: unknown) {
   console.error(errStr)
 }
 
-function removeOrigin(url: string): string {
-  const urlFull = getUrlFull(url)
-  return urlFull
-}
-
 type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
 
 function analyzeUrl(url: string): {
@@ -950,19 +951,19 @@ function analyzeUrl(url: string): {
   isPageContextRequest: boolean
   hasBaseUrl: boolean
 } {
-  const isPageContextRequest = isPageContextUrl(url)
-  if (isPageContextRequest) {
-    url = removePageContextUrlSuffix(url)
-  }
-  url = removeOrigin(url)
+  assert(url.startsWith('/') || url.startsWith('http'))
+
+  const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
+  url = urlWithoutPageContextRequestSuffix
+
+  const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url)
+  url = urlWithoutBaseUrl
+
+  url = handleUrlOrigin(url).urlWithoutOrigin
   assert(url.startsWith('/'))
 
-  const hasBaseUrl = startsWithBaseUrl(url)
-  if (hasBaseUrl) {
-    url = removeBaseUrl(url)
-  }
-
   const urlNormalized = url
+  assert(urlNormalized.startsWith('/'))
   return { urlNormalized, isPageContextRequest, hasBaseUrl }
 }
 
