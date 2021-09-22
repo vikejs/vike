@@ -236,13 +236,18 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Sass / Less / Stylus',
-    url: '/sass'
+    title: 'Vuetify',
+    url: '/vuetify'
   },
   {
     level: 2,
-    title: 'Vuetify',
-    url: '/vuetify'
+    title: 'Boostrap (Vanilla JS)',
+    url: '/bootstrap'
+  },
+  {
+    level: 2,
+    title: 'Sass / Less / Stylus',
+    url: '/sass'
   },
   {
     level: 2,
