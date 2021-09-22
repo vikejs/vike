@@ -62,26 +62,22 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   : Promise<T & Record<string, unknown> & (({ httpResponse: null}) | ({httpResponse: { statusCode: 500, body: string}}) | (PageContextBuiltIn & { statusCode: 404 | 500; body: string }))>
   */
   assertArguments(...arguments)
-  let { url } = pageContext
-  assert(url)
 
-  if (url.endsWith('/favicon.ico')) {
+  if (pageContext.url.endsWith('/favicon.ico')) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   }
 
-  const { urlWithoutOrigin, isPageContextRequest, hasBaseUrl } = analyzeUrl(url)
+  const { isPageContextRequest, hasBaseUrl } = analyzeUrl(pageContext.url)
   if (!hasBaseUrl) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   }
-
-  addComputedUrlProps(pageContext)
-
-  pageContext.url = urlWithoutOrigin
   objectAssign(pageContext, {
     _isPageContextRequest: isPageContextRequest
   })
+
+  addComputedUrlProps(pageContext)
 
   const globalContext = await getGlobalContext()
   objectAssign(globalContext, { _isPreRendering: false as const })
@@ -950,7 +946,6 @@ function removeOrigin(url: string): string {
 type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
 
 function analyzeUrl(url: string): {
-  urlWithoutOrigin: string
   urlNormalized: string
   isPageContextRequest: boolean
   hasBaseUrl: boolean
@@ -959,8 +954,6 @@ function analyzeUrl(url: string): {
   if (isPageContextRequest) {
     url = removePageContextUrlSuffix(url)
   }
-  const urlWithoutOrigin = url
-
   url = removeOrigin(url)
   assert(url.startsWith('/'))
 
@@ -970,7 +963,7 @@ function analyzeUrl(url: string): {
   }
 
   const urlNormalized = url
-  return { urlWithoutOrigin, urlNormalized, isPageContextRequest, hasBaseUrl }
+  return { urlNormalized, isPageContextRequest, hasBaseUrl }
 }
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & { url: string }>(
