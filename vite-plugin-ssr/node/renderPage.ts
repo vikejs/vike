@@ -924,7 +924,7 @@ function renderPageContextError(err?: unknown) {
   }
   const httpResponse = {
     body: stringify({
-      userError: true
+      serverSideError: true
     }),
     statusCode: 500 as const
   }

@@ -10,14 +10,14 @@ export { assertBaseUrl }
 // `base: '/some-nested-path/'`
 // `base: 'http://another-origin.example.org/'`
 // `base: './'` (WIP: not supported yet)
-function assertBaseUrl(baseUrl: string, userErrorMessagePrefix?: string) {
-  if (!userErrorMessagePrefix) {
+function assertBaseUrl(baseUrl: string, usageErrorMessagePrefix?: string) {
+  if (!usageErrorMessagePrefix) {
     assert(baseUrl.startsWith('/') || baseUrl.startsWith('http'))
     return
   }
   assertUsage(
     baseUrl.startsWith('/') || baseUrl.startsWith('http') || baseUrl.startsWith('./'),
-    userErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.'
+    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.'
   )
   assertUsage(
     !baseUrl.startsWith('./'),

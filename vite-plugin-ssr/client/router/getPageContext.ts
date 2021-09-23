@@ -27,11 +27,11 @@ async function retrievePageContext(url: string): Promise<{ _pageId: string } & R
   }
 
   const responseText = await response.text()
-  const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { userError: true }
+  const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
   if ('pageContext404PageDoesNotExist' in responseObject) {
     fallbackToServerSideRouting()
   }
-  assertUsage(!('userError' in responseObject), `An error occurred on the server. Check your server logs.`)
+  assertUsage(!('serverSideError' in responseObject), `An error occurred on the server. Check your server logs.`)
 
   assert(hasProp(responseObject, 'pageContext'))
   const { pageContext } = responseObject
