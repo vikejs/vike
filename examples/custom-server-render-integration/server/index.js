@@ -33,10 +33,11 @@ async function startServer() {
     const { httpResponse } = pageContext;
     if (!httpResponse) return next();
 
-    // We can use `pageContext._pageAssets` to HTTP/2 Server Push or `103` Early Hint
+    // We can use `pageContext._getPageAssets()` to HTTP/2 Server Push or `103` Early Hint
     // our page assets.
-    console.log("Page Assets:", pageContext._pageAssets);
-    assert_pageAssets(pageContext._pageAssets);
+    const pageAssets = await pageContext._getPageAssets();
+    console.log("Page Assets:", pageAssets);
+    assert_pageAssets(pageAssets);
 
     const { statusCode, body } = httpResponse;
     res.status(statusCode).send(body);
