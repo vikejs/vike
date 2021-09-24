@@ -1,5 +1,5 @@
 import { navigationState } from '../navigationState'
-import { assert, assertUsage, getFileUrl, hasProp, isPlainObject } from '../../shared/utils'
+import { assert, getFileUrl, hasProp, isPlainObject, throwError } from '../../shared/utils'
 import { parse } from '@brillout/json-s'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 
@@ -31,7 +31,9 @@ async function retrievePageContext(url: string): Promise<{ _pageId: string } & R
   if ('pageContext404PageDoesNotExist' in responseObject) {
     fallbackToServerSideRouting()
   }
-  assertUsage(!('serverSideError' in responseObject), `An error occurred on the server. Check your server logs.`)
+  if ('serverSideError' in responseObject) {
+    throwError(`An error occurred on the server. Check your server logs.`)
+  }
 
   assert(hasProp(responseObject, 'pageContext'))
   const { pageContext } = responseObject

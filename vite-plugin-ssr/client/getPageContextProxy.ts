@@ -6,7 +6,7 @@ const SKIP = [
   'then',
   'toJSON' // Vue tries to access `toJSON`
 ]
-const BUILT_IN = ['_pageId', 'Page', 'pageExports']
+const BUILT_IN = ['_pageId', 'Page', 'pageExports', '_serverSideErrorWhileStreaming']
 
 function getPageContextProxy<T extends Record<string, unknown>>(pageContext: T): T {
   return new Proxy(pageContext, { get })

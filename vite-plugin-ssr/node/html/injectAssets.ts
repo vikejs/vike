@@ -7,10 +7,12 @@ import * as _devalue from 'devalue'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
 import { AllPageFiles } from '../../shared/getPageFiles'
-const devalue = (_devalue as any as (arg: unknown) => string)
+const devalue = _devalue as any as (arg: unknown) => string
 
+export { injectAssets__public }
 export { injectAssets }
-export { injectAssets_internal }
+export { injectAssetsBeforeRender }
+export { injectAssetsAfterRender }
 export type { PageContextInjectAssets }
 export { getPageAssets }
 export { PageAssets }
@@ -117,7 +119,7 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
   return { clientManifest, serverManifest }
 }
 
-async function injectAssets(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
+async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
   assertUsage(
     typeof htmlString === 'string',
     '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'
@@ -133,29 +135,32 @@ async function injectAssets(htmlString: string, pageContext: Record<string, unkn
     hasProp(pageContext, '_pageContextClient', 'object'),
     errMsg('`pageContext._pageContextClient` is missing')
   )
-  assertUsage(hasProp(pageContext, '_pageAssets'), errMsg('`pageContext._pageAssets` is missing'))
+  assertUsage(hasProp(pageContext, '_getPageAssets'), errMsg('`pageContext._getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_pageFilePath', 'string'), errMsg('`pageContext._pageFilePath` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   assertUsage(hasProp(pageContext, '_pageClientPath', 'string'), errMsg('`pageContext._pageClientPath` is missing'))
-  castProp<PageAssets, typeof pageContext, '_pageAssets'>(pageContext, '_pageAssets')
-  pageContext._pageAssets
-  htmlString = await injectAssets_internal(htmlString, pageContext)
+  castProp<() => Promise<PageAssets>, typeof pageContext, '_getPageAssets'>(pageContext, '_getPageAssets')
+  pageContext._getPageAssets
+  htmlString = await injectAssets(htmlString, pageContext)
   return htmlString
 }
 
 type PageContextInjectAssets = {
-    urlNormalized: string
-    _pageAssets: PageAssets
-    _pageId: string
-    _pageContextClient: Record<string, unknown>
-    _pageFilePath: string | null
-    _pageClientPath: string
-    _passToClient: string[]
-  }
-async function injectAssets_internal(
-  htmlString: string,
-  pageContext: PageContextInjectAssets
-): Promise<string> {
+  urlNormalized: string
+  _getPageAssets: () => Promise<PageAssets>
+  _pageId: string
+  _pageContextClient: Record<string, unknown>
+  _pageFilePath: string | null
+  _pageClientPath: string
+  _passToClient: string[]
+}
+async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
+  htmlString = await injectAssetsBeforeRender(htmlString, pageContext)
+  htmlString = await injectAssetsAfterRender(htmlString, pageContext)
+  return htmlString
+}
+
+async function injectAssetsBeforeRender(htmlString: string, pageContext: PageContextInjectAssets) {
   assert(htmlString)
   assert(typeof htmlString === 'string')
 
@@ -164,30 +169,33 @@ async function injectAssets_internal(
   assert(typeof urlNormalized === 'string')
   htmlString = await applyViteHtmlTransform(htmlString, urlNormalized)
 
-  // Inject pageContext__client
-  assertUsage(
-    !injectPageInfoAlreadyDone(htmlString),
-    'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).'
-  )
-  htmlString = injectPageInfo(htmlString, pageContext)
+  const pageAssets = await pageContext._getPageAssets()
 
   // Inject script
-  const scripts = pageContext._pageAssets.filter(({ assetType }) => assetType === 'script')
+  const scripts = pageAssets.filter(({ assetType }) => assetType === 'script')
   assert(scripts.length === 1)
   const script = scripts[0]
   assert(script)
   htmlString = injectScript(htmlString, script)
 
   // Inject preload links
-  const preloadAssets = pageContext._pageAssets.filter(
-    ({ assetType }) => assetType === 'preload' || assetType === 'style'
-  )
+  const preloadAssets = pageAssets.filter(({ assetType }) => assetType === 'preload' || assetType === 'style')
   const linkTags = preloadAssets.map((pageAsset) => {
     const isEsModule = pageAsset.preloadType === 'script'
     return inferAssetTag(pageAsset, isEsModule)
   })
   htmlString = injectLinkTags(htmlString, linkTags)
 
+  return htmlString
+}
+
+async function injectAssetsAfterRender(htmlString: string, pageContext: PageContextInjectAssets) {
+  // Inject pageContext__client
+  assertUsage(
+    !injectPageInfoAlreadyDone(htmlString),
+    'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).'
+  )
+  htmlString = injectPageInfo(htmlString, pageContext)
   return htmlString
 }
 

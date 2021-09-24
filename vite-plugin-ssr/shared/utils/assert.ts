@@ -4,11 +4,12 @@ import { projectInfo } from './projectInfo'
 export { assert }
 export { assertUsage }
 export { assertWarning }
+export { throwError }
 
-const npmPackage = `${projectInfo.npmPackageName}@${projectInfo.version}`
-const internalErrorPrefix = `[${npmPackage}][Internal Failure]`
-const usageErrorPrefix = `[${npmPackage}][Wrong Usage]`
-const warningPrefix = `[${npmPackage}][Warning]`
+const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.version}]`
+const internalErrorPrefix = `${errorPrefix}[Internal Failure]`
+const usageErrorPrefix = `${errorPrefix}[Wrong Usage]`
+const warningPrefix = `${errorPrefix}[Warning]`
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -34,6 +35,11 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   }
   const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
   const usageError = newError(`${usageErrorPrefix}${whiteSpace}${errorMessage}`, numberOfStackTraceLinesToRemove)
+  throw usageError
+}
+
+function throwError(errorMessage: string) {
+  const usageError = newError(`${errorPrefix}$ ${errorMessage}`, numberOfStackTraceLinesToRemove)
   throw usageError
 }
 

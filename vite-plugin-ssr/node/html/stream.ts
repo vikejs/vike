@@ -12,7 +12,7 @@ export { streamReadableNodeToString }
 export { streamReadableWebToString }
 export { streamPipeWebToString }
 export { streamPipeNodeToString }
-export { addStringWrapperToStream }
+export { manipulateStream }
 export { isStream }
 export { streamToString }
 
@@ -187,17 +187,58 @@ function f<T>(a: T): T {
   return a
 }
 
-function addStringWrapperToStream<T extends Stream>(stream: T, stringBegin: string, stringEnd: string): T {
+function manipulateStream<T extends Stream>(
+  stream: T,
+  {
+    injectStringAtBegin,
+    injectStringAtEnd,
+    onErrorWhileStreaming
+  }: {
+    injectStringAtBegin: () => Promise<string>
+    injectStringAtEnd: () => Promise<string>
+    onErrorWhileStreaming: (err: Error) => void
+  }
+): T {
+  let streamBeginPromise: Promise<void> | null = null
+  const getEventHandlers = ({
+    onStreamBegin,
+    onStreamEnd
+  }: {
+    onStreamBegin: (stringBegin: string) => void
+    onStreamEnd: (stringEnd: string) => void
+  }) => {
+    const onBegin = (): Promise<void> => {
+      if (streamBeginPromise !== null) {
+        return streamBeginPromise
+      }
+      return (streamBeginPromise = new Promise<void>(async (resolvePromise) => {
+        const stringBegin = await injectStringAtBegin()
+        onStreamBegin(stringBegin)
+        resolvePromise()
+      }))
+    }
+    const onEnd = async () => {
+      // For empty stream: the stream ends before anything was pushed to it
+      await onBegin()
+      const stringEnd = await injectStringAtEnd()
+      onStreamEnd(stringEnd)
+    }
+    return {
+      onBegin,
+      onEnd
+    }
+  }
+
   if (isStreamPipeNode(stream)) {
     return pipeNodeStream((writable: StreamWritableNode) => {
-      writable.write(stringBegin)
+      writable.write(injectStringAtBegin)
       const writableProxy = new Writable({
         write(chunk, _encoding, callback) {
           writable.write(chunk)
           callback()
         },
         final(callback) {
-          writable.write(stringEnd)
+          writable.write(injectStringAtEnd)
           writable.end()
           callback()
         }
@@ -209,13 +250,13 @@ function addStringWrapperToStream<T extends Stream>(stream: T, stringBegin: stri
   if (isStreamPipeWeb(stream)) {
     return pipeWebStream((writable: StreamWritableWeb) => {
       const writer = writable.getWriter()
-      writer.write(stringBegin)
+      writer.write(injectStringAtBegin)
       const writableProxy = new WritableStream({
         write(chunk) {
           writer.write(chunk)
         },
         close() {
-          writer.write(stringEnd)
+          writer.write(injectStringAtEnd)
           writer.close()
         }
       })
@@ -226,7 +267,7 @@ function addStringWrapperToStream<T extends Stream>(stream: T, stringBegin: stri
   if (isStreamReadableWeb(stream)) {
     return new ReadableStream({
       async start(controller) {
-        controller.enqueue(stringBegin)
+        controller.enqueue(injectStringAtBegin)
         const readableWeb: StreamReadableWeb = stream
         const reader = readableWeb.getReader()
         while (true) {
@@ -236,22 +277,35 @@ function addStringWrapperToStream<T extends Stream>(stream: T, stringBegin: stri
           }
           controller.enqueue(value)
         }
-        controller.enqueue(stringEnd)
+        controller.enqueue(injectStringAtEnd)
         controller.close()
       }
     }) as typeof stream
   }
   if (isStreamReadableNode(stream)) {
-    const readableNodeProxy: StreamReadableNode = new Readable({ read() {} })
-    readableNodeProxy.push(stringBegin)
-    const readableNode: StreamReadableNode = stream
-    readableNode.on('data', (chunk) => readableNodeProxy.push(chunk))
-    readableNode.on('error', (err) => readableNodeProxy.destroy(err))
-    readableNode.on('end', () => {
-      readableNodeProxy.push(stringEnd)
-      readableNodeProxy.push(null)
+    const readableNodeOriginal: StreamReadableNode = stream
+    const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
+    const { onBegin, onEnd } = getEventHandlers({
+      onStreamBegin: (stringBegin) => {
+        readableNodeWrapper.push(stringBegin)
+      },
+      onStreamEnd: (stringEnd) => {
+        readableNodeWrapper.push(stringEnd)
+        readableNodeWrapper.push(null)
+      }
     })
-    return readableNodeProxy as typeof stream
+    readableNodeOriginal.on('data', async (chunk) => {
+      await onBegin()
+      readableNodeWrapper.push(chunk)
+    })
+    readableNodeOriginal.on('error', async (err) => {
+      onErrorWhileStreaming(err)
+      await onEnd()
+    })
+    readableNodeOriginal.on('end', async () => {
+      await onEnd()
+    })
+    return readableNodeWrapper as typeof stream
   }
   assert(false)
 }

@@ -9,7 +9,6 @@ import {
   assertUsage,
   lowerFirst,
   isCallable,
-  cast,
   assertWarning,
   hasProp,
   handlePageContextRequestSuffix,
@@ -23,7 +22,8 @@ import {
   compareString,
   assertExports,
   stringifyStringArray,
-  handleUrlOrigin
+  handleUrlOrigin,
+  cast
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
@@ -189,11 +189,13 @@ async function handleRenderError(
     _err: unknown
   }
 ): Promise<HttpResponse> {
-  handleError(pageContext._err)
+  handleError(pageContext)
 
   if (pageContext._isPageContextRequest) {
-    const { body, statusCode } = renderPageContextError(pageContext._err)
-    const httpResponse = createHttpResponseObject(body, { statusCode, renderFilePath: null })
+    const body = stringify({
+      serverSideError: true
+    })
+    const httpResponse = createHttpResponseObject(body, { statusCode: 500, renderFilePath: null })
     return httpResponse
   }
 
@@ -284,6 +286,18 @@ function createHttpResponseObject(
         nodeStream !== null,
         '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
       )
+      /*
+      nodeStream.on('end', () => {
+        console.log('ee')
+      })
+      nodeStream.on('error', (err) => {
+        console.log(1011)
+        handleError(err)
+        nodeStream.push(null)
+        //nodeStream.destroy(err)
+        console.log(2113)
+      })
+      */
       return nodeStream
     },
     get bodyWebStream() {
@@ -487,9 +501,11 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
   const dependencies: string[] = [pageView._pageFilePath, pageClientPath].filter((p): p is string => p !== null)
-  const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
   objectAssign(pageFilesData, {
-    _pageAssets: pageAssets
+    _getPageAssets: async () => {
+      const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
+      return pageAssets
+    }
   })
   return pageFilesData
 }
@@ -626,6 +642,10 @@ async function executeAddPageContextHook(
   pageContext._passToClient.forEach((prop) => {
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
+  if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
+    assert(pageContext._serverSideErrorWhileStreaming === true)
+    pageContextClient['_serverSideErrorWhileStreaming'] = true
+  }
   ;(pageContext as Record<string, unknown>)['_pageContextClient'] = pageContextClient
 }
 function executeAddPageContextHook_addTypes<PageContext extends Record<string, unknown>>(
@@ -635,7 +655,7 @@ function executeAddPageContextHook_addTypes<PageContext extends Record<string, u
 }
 
 type LoadedPageFiles = {
-  _pageAssets: PageAssets
+  _getPageAssets: () => Promise<PageAssets>
   _pageServerFile: PageServerFile
   _pageServerFileDefault: PageServerFile
   _pageFilePath: string | null
@@ -647,6 +667,7 @@ async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
     _pageContextClient: PageContextClient
+    _isPreRendering: boolean
   } & LoadedPageFiles
 ): Promise<RenderHookResult> {
   assert(pageContext._pageServerFile || pageContext._pageServerFileDefault)
@@ -735,7 +756,14 @@ async function executeRenderHook(
     return { escapeResult: null, renderFilePath }
   }
 
-  const escapeResult = await renderEscapeInject(documentHtml, pageContext, renderFilePath)
+  const onErrorWhileStreaming = (err: Error) => {
+    objectAssign(pageContext, { _err: err })
+    handleError(pageContext)
+    objectAssign(pageContext, {
+      _serverSideErrorWhileStreaming: true
+    })
+  }
+  const escapeResult = await renderEscapeInject(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   return { escapeResult, renderFilePath }
 }
 
@@ -918,32 +946,6 @@ function isFileRequest(urlPathname: string) {
   return /^[a-z0-9]+$/.test(fileExtension)
 }
 
-function renderPageContextError(err?: unknown) {
-  if (err) {
-    handleError(err)
-  }
-  const httpResponse = {
-    body: stringify({
-      serverSideError: true
-    }),
-    statusCode: 500 as const
-  }
-  return httpResponse
-}
-
-function handleError(err: unknown) {
-  const { viteDevServer } = getSsrEnv()
-  if (viteDevServer) {
-    cast<Error>(err)
-    if (err?.stack) {
-      viteDevServer.ssrFixStacktrace(err)
-    }
-  }
-  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
-  console.error(errStr)
-}
-
 type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
 
 function analyzeUrl(url: string): {
@@ -1006,4 +1008,29 @@ async function getGlobalContext() {
   objectAssign(globalContext, { _pageRoutes: pageRoutes, _onBeforeRouteHook: onBeforeRouteHook })
 
   return globalContext
+}
+
+function handleError(pageContext: { _err: unknown; _isPreRendering: boolean }) {
+  assert('_err' in pageContext)
+  const err = pageContext._err
+  const { viteDevServer } = getSsrEnv()
+  if (viteDevServer) {
+    cast<Error>(err)
+    if (err?.stack) {
+      viteDevServer.ssrFixStacktrace(err)
+    }
+  }
+
+  assert([true, false].includes(pageContext._isPreRendering))
+  if (pageContext._isPreRendering) {
+    if (hasProp(err, 'stack')) {
+      throw err
+    } else {
+      throw new Error(err as any)
+    }
+  }
+
+  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
+  const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
+  console.error(errStr)
 }

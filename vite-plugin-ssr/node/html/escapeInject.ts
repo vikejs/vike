@@ -1,7 +1,7 @@
 import { assert, assertUsage, checkType, hasProp, isPromise } from '../../shared/utils'
-import { injectAssets_internal } from './injectAssets'
+import { injectAssets, injectAssetsAfterRender, injectAssetsBeforeRender } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
-import { addStringWrapperToStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
+import { manipulateStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 
 // Public
 export { escapeInject }
@@ -38,11 +38,12 @@ function isEscapeInject(something: unknown): something is EscapeInject {
 async function renderEscapeInject(
   escapeInject: EscapeInject,
   pageContext: PageContextInjectAssets,
-  renderFilePath: string
+  renderFilePath: string,
+  onErrorWhileStreaming: (err: Error) => void
 ): Promise<EscapeResult> {
   if (isEscapedString(escapeInject)) {
     let htmlString = getEscapedString(escapeInject)
-    htmlString = await injectAssets_internal(htmlString, pageContext)
+    htmlString = await injectAssets(htmlString, pageContext)
     return htmlString
   }
   if (isStream(escapeInject)) {
@@ -53,20 +54,34 @@ async function renderEscapeInject(
     const render = renderTemplate(templateContent, renderFilePath)
     if (render.type === 'string') {
       let htmlString = render.value
-      htmlString = await injectAssets_internal(htmlString, pageContext)
+      htmlString = await injectAssets(htmlString, pageContext)
       return htmlString
     }
     if (render.type === 'stream') {
-      const splitter = '<span>__VITE_PLUGIN_SSR__SPLITTER__</span>'
-      let htmlWrapper = render.stringBegin + splitter + render.stringEnd
-      htmlWrapper = await injectAssets_internal(htmlWrapper, pageContext)
-      assertUsage(
-        htmlWrapper.includes(splitter),
-        "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution."
-      )
-      const [stringBegin, stringEnd] = htmlWrapper.split(splitter)
-      assert(stringEnd !== undefined && stringBegin !== undefined)
-      const stream = addStringWrapperToStream(render.stream, stringBegin, stringEnd)
+      let stringEnd: string | null = null
+      const stream = manipulateStream(render.stream, {
+        injectStringAtBegin: async () => {
+          const splitter = '<span>__VITE_PLUGIN_SSR__SPLITTER__</span>'
+          let htmlWrapper = render.stringBegin + splitter + render.stringEnd
+          htmlWrapper = await injectAssetsBeforeRender(htmlWrapper, pageContext)
+          assertUsage(
+            htmlWrapper.includes(splitter),
+            "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution."
+          )
+          const [stringBegin, _stringEnd] = htmlWrapper.split(splitter)
+          assert(_stringEnd !== undefined && stringBegin !== undefined)
+          assert(stringEnd === null)
+          stringEnd = _stringEnd
+          assert(stringEnd !== null)
+          return stringBegin
+        },
+        injectStringAtEnd: async () => {
+          assert(stringEnd !== null)
+          stringEnd = await injectAssetsAfterRender(stringEnd, pageContext)
+          return stringEnd
+        },
+        onErrorWhileStreaming
+      })
       return stream
     }
     checkType<never>(render)
@@ -96,11 +111,14 @@ function getEscapedString(escapedString: EscapedString): string {
   return htmlString
 }
 
-function escapeInject(templateStrings: TemplateStrings, ...templateVariables: (TemplateVariable | StreamTypePatch)[]): TemplateWrapped {
+function escapeInject(
+  templateStrings: TemplateStrings,
+  ...templateVariables: (TemplateVariable | StreamTypePatch)[]
+): TemplateWrapped {
   return {
     [__template]: {
       templateStrings,
-      templateVariables: (templateVariables as TemplateVariable[])
+      templateVariables: templateVariables as TemplateVariable[]
     }
   }
 }

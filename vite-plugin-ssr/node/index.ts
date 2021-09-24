@@ -2,7 +2,7 @@ import './page-files/setup'
 export { createPageRenderer } from './createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/escapeInject'
 export { pipeWebStream,  pipeNodeStream } from './html/stream'
-export { injectAssets as _injectAssets } from './html/injectAssets'
+export { injectAssets__public as _injectAssets } from './html/injectAssets'
 
 import { importBuild } from './importBuild'
 export const __private = { importBuild }
