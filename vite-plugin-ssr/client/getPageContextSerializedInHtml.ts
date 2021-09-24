@@ -13,7 +13,7 @@ function getPageContextSerializedInHtml(): { _pageId: string } & Record<string, 
   Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
   assert(hasProp(pageContext, '_pageId', 'string'))
   if ('_serverSideErrorWhileStreaming' in pageContext) {
-    throwError(`An error occurred on the server while streaming the HTML. Check your server logs.`)
+    throwError(`An error occurred on the server while rendering/streaming to HTML. Check your server logs.`)
   }
 
   return pageContext

@@ -185,7 +185,7 @@ async function handleRenderError(
     _allPageFiles: AllPageFiles
     _isPreRendering: false
     _isPageContextRequest: boolean
-    _pageContextClient?: PageContextClient
+    _getPageContextClient?: () => PageContextClient
     _err: unknown
   }
 ): Promise<HttpResponse> {
@@ -215,7 +215,7 @@ async function handleRenderError(
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
-  if (!pageContext._pageContextClient) {
+  if (!pageContext._getPageContextClient) {
     try {
       // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
       await executeAddPageContextHook(pageContext)
@@ -226,7 +226,7 @@ async function handleRenderError(
       return null
     }
   }
-  assert(hasProp(pageContext, '_pageContextClient', 'object'))
+  assert(hasProp(pageContext, '_getPageContextClient', 'function'))
 
   let renderHookResult: RenderHookResult
   try {
@@ -394,8 +394,8 @@ function getDefaultPassToClientProps(pageContext: { _pageId: string; pageProps?:
   return passToClient
 }
 
-function serializeClientPageContext(pageContext: { _pageContextClient: PageContextClient }) {
-  const pageContextClient = pageContext._pageContextClient
+function serializeClientPageContext(pageContext: { _getPageContextClient: () => PageContextClient }) {
+  const pageContextClient = pageContext._getPageContextClient()
   assert(isPlainObject(pageContextClient))
   const pageContextSerialized = stringify({
     pageContext: pageContextClient
@@ -638,19 +638,21 @@ async function executeAddPageContextHook(
     Object.assign(pageContext, result?.pageContext)
   }
 
-  const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
-  pageContext._passToClient.forEach((prop) => {
-    pageContextClient[prop] = (pageContext as PageContextUser)[prop]
-  })
-  if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
-    assert(pageContext._serverSideErrorWhileStreaming === true)
-    pageContextClient['_serverSideErrorWhileStreaming'] = true
+  ;(pageContext as Record<string, unknown>)['_getPageContextClient'] = () => {
+    const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
+    pageContext._passToClient.forEach((prop) => {
+      pageContextClient[prop] = (pageContext as PageContextUser)[prop]
+    })
+    if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
+      assert(pageContext._serverSideErrorWhileStreaming === true)
+      pageContextClient['_serverSideErrorWhileStreaming'] = true
+    }
+    return pageContextClient
   }
-  ;(pageContext as Record<string, unknown>)['_pageContextClient'] = pageContextClient
 }
 function executeAddPageContextHook_addTypes<PageContext extends Record<string, unknown>>(
   pageContext: PageContext
-): asserts pageContext is PageContext & { _pageContextClient: PageContextClient } {
+): asserts pageContext is PageContext & { _getPageContextClient: () => PageContextClient } {
   pageContext // make TS happy
 }
 
@@ -666,7 +668,7 @@ type RenderHookResult = { escapeResult: null | EscapeResult; renderFilePath: str
 async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
-    _pageContextClient: PageContextClient
+    _getPageContextClient: () => PageContextClient
     _isPreRendering: boolean
   } & LoadedPageFiles
 ): Promise<RenderHookResult> {

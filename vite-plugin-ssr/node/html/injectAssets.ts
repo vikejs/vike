@@ -132,8 +132,12 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, 'urlNormalized', 'string'), errMsg('`pageContext.urlNormalized` should be a string'))
   assertUsage(hasProp(pageContext, '_pageId', 'string'), errMsg('`pageContext._pageId` should be a string'))
   assertUsage(
-    hasProp(pageContext, '_pageContextClient', 'object'),
-    errMsg('`pageContext._pageContextClient` is missing')
+    hasProp(pageContext, '_getPageContextClient', 'function'),
+    errMsg('`pageContext._getPageContextClient` is missing')
+  )
+  castProp<() => Record<string, unknown>, typeof pageContext, '_getPageContextClient'>(
+    pageContext,
+    '_getPageContextClient'
   )
   assertUsage(hasProp(pageContext, '_getPageAssets'), errMsg('`pageContext._getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_pageFilePath', 'string'), errMsg('`pageContext._pageFilePath` is missing'))
@@ -149,7 +153,7 @@ type PageContextInjectAssets = {
   urlNormalized: string
   _getPageAssets: () => Promise<PageAssets>
   _pageId: string
-  _pageContextClient: Record<string, unknown>
+  _getPageContextClient: () => Record<string, unknown>
   _pageFilePath: string | null
   _pageClientPath: string
   _passToClient: string[]
@@ -223,10 +227,8 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 const pageInfoInjectionBegin = '<script>window.__vite_plugin_ssr__pageContext'
 function injectPageInfo(
   htmlString: string,
-  pageContext: { _pageId: string; _pageContextClient: Record<string, unknown>; _passToClient: string[] }
+  pageContext: { _pageId: string; _getPageContextClient: () => Record<string, unknown>; _passToClient: string[] }
 ): string {
-  assert(pageContext._pageContextClient['_pageId'])
-  assert(pageContext._pageContextClient['_pageId'] === pageContext._pageId)
   const pageContextSerialized = serializePageContext(pageContext)
   const injection = `${pageInfoInjectionBegin} = ${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
@@ -236,12 +238,17 @@ function injectPageInfoAlreadyDone(htmlString: string) {
 }
 
 function serializePageContext(pageContext: {
-  _pageContextClient: Record<string, unknown>
+  _getPageContextClient: () => Record<string, unknown>
+  _pageId: string
   _passToClient: string[]
 }): string {
+  const pageContextClient = pageContext._getPageContextClient()
+  assert(pageContextClient['_pageId'])
+  assert(pageContextClient['_pageId'] === pageContext._pageId)
+
   let pageContextSerialized: string
   try {
-    pageContextSerialized = devalue(pageContext._pageContextClient)
+    pageContextSerialized = devalue(pageContextClient)
   } catch (err) {
     pageContext._passToClient.forEach((prop) => {
       try {
@@ -257,6 +264,7 @@ function serializePageContext(pageContext: {
     console.error(err)
     assert(false)
   }
+
   return pageContextSerialized
 }
 

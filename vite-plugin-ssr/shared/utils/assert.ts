@@ -39,7 +39,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
 }
 
 function throwError(errorMessage: string) {
-  const usageError = newError(`${errorPrefix}$ ${errorMessage}`, numberOfStackTraceLinesToRemove)
+  const usageError = newError(`${errorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
   throw usageError
 }
 
