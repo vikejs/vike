@@ -41,6 +41,7 @@ import {
   StreamWritableNode,
   StreamWritableWeb
 } from './html/stream'
+import { serializePageContextClientSide } from './serializePageContextClientSide'
 
 export { renderPage }
 export { prerenderPage }
@@ -91,7 +92,7 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
     pageContextRouteAddendum = await route(pageContext)
   } catch (err) {
     objectAssign(pageContext, { _err: err })
-    const httpResponse = await handleRenderError(pageContext)
+    const httpResponse = await handleHookError(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -139,34 +140,30 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
-  try {
-    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
-    await executeAddPageContextHook(pageContext)
-    executeAddPageContextHook_addTypes(pageContext)
-  } catch (err) {
-    objectAssign(pageContext, { _err: err })
-    const httpResponse = await handleRenderError(pageContext)
+  const hookResult = await executeOnBeforeRenderHook(pageContext)
+  if ('hookError' in hookResult) {
+    objectAssign(pageContext, { _err: hookResult.hookError })
+    const httpResponse = await handleHookError(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 
   if (pageContext._isPageContextRequest) {
-    const pageContextSerialized = serializeClientPageContext(pageContext)
+    const pageContextSerialized = serializePageContextClientSide(pageContext, 'json')
     const httpResponse = createHttpResponseObject(pageContextSerialized, { statusCode: 200, renderFilePath: null })
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 
-  let renderHookResult: RenderHookResult
-  try {
-    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
-    renderHookResult = await executeRenderHook(pageContext)
-  } catch (err) {
-    objectAssign(pageContext, { _err: err })
-    const httpResponse = await handleRenderError(pageContext)
+  const renderHookResult = await executeRenderHook(pageContext)
+
+  if ('hookError' in renderHookResult) {
+    objectAssign(pageContext, { _err: renderHookResult.hookError })
+    const httpResponse = await handleHookError(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
+
   if (renderHookResult === null) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
@@ -178,14 +175,13 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   }
 }
 
-async function handleRenderError(
+async function handleHookError(
   pageContext: PageContextUrls & {
     url: string
     _allPageIds: string[]
     _allPageFiles: AllPageFiles
     _isPreRendering: false
     _isPageContextRequest: boolean
-    _getPageContextClient?: () => PageContextClient
     _err: unknown
   }
 ): Promise<HttpResponse> {
@@ -215,25 +211,18 @@ async function handleRenderError(
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
-  if (!pageContext._getPageContextClient) {
-    try {
-      // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
-      await executeAddPageContextHook(pageContext)
-      executeAddPageContextHook_addTypes(pageContext)
-    } catch (err) {
-      // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
+  if ('_onBeforeRenderHookCalled' in pageContext) {
+    const hookResult = await executeOnBeforeRenderHook(pageContext)
+    if ('hookError' in hookResult) {
+      // We purposely swallow the error, because another error was already shown to the user in `handleError()` in this function above.
       // (And chances are high that this is the same error.)
       return null
     }
   }
-  assert(hasProp(pageContext, '_getPageContextClient', 'function'))
 
-  let renderHookResult: RenderHookResult
-  try {
-    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
-    renderHookResult = await executeRenderHook(pageContext)
-  } catch (err) {
-    // We purposely swallow the error, because another error was already shown to the user in `handleError()`.
+  const renderHookResult = await executeRenderHook(pageContext)
+  if ('hookError' in renderHookResult) {
+    // We purposely swallow the error, because another error was already shown to the user in `handleError()` in this function above.
     // (And chances are high that this is the same error.)
     return null
   }
@@ -341,10 +330,21 @@ async function prerenderPage(
 
   addComputedUrlProps(pageContext)
 
-  await executeAddPageContextHook(pageContext)
-  executeAddPageContextHook_addTypes(pageContext)
+  const hookResult = await executeOnBeforeRenderHook(pageContext)
+  if ('hookError' in hookResult) {
+    objectAssign(pageContext, { _err: hookResult.hookError })
+    handleError(pageContext)
+    // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
+    assert(false)
+  }
 
   const renderHookResult = await executeRenderHook(pageContext)
+  if ('hookError' in renderHookResult) {
+    objectAssign(pageContext, { _err: renderHookResult.hookError })
+    handleError(pageContext)
+    // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
+    assert(false)
+  }
   assertUsage(
     renderHookResult.escapeResult !== null,
     "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
@@ -355,7 +355,7 @@ async function prerenderPage(
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null }
   } else {
-    const pageContextSerialized = serializeClientPageContext(pageContext)
+    const pageContextSerialized = serializePageContextClientSide(pageContext, 'json')
     return { documentHtml, pageContextSerialized }
   }
 }
@@ -392,15 +392,6 @@ function getDefaultPassToClientProps(pageContext: { _pageId: string; pageProps?:
     passToClient.push(...['pageProps', 'is404'])
   }
   return passToClient
-}
-
-function serializeClientPageContext(pageContext: { _getPageContextClient: () => PageContextClient }) {
-  const pageContextClient = pageContext._getPageContextClient()
-  assert(isPlainObject(pageContextClient))
-  const pageContextSerialized = stringify({
-    pageContext: pageContextClient
-  })
-  return pageContextSerialized
 }
 
 type PageContextPublic = {
@@ -614,9 +605,7 @@ function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePat
   )
 }
 
-type PageContextUser = Record<string, unknown>
-type PageContextClient = { _pageId: string } & Record<string, unknown>
-async function executeAddPageContextHook(
+async function executeOnBeforeRenderHook(
   pageContext: {
     _pageId: string
     _pageServerFile: PageServerFile
@@ -624,7 +613,7 @@ async function executeAddPageContextHook(
     _passToClient: string[]
     _pageContextAlreadyProvidedByPrerenderHook?: true
   } & PageContextPublic
-) {
+): Promise<{ hookError: unknown } | {}> {
   const onBeforeRender =
     pageContext._pageServerFile?.fileExports.onBeforeRender ||
     pageContext._pageServerFileDefault?.fileExports.onBeforeRender
@@ -633,27 +622,22 @@ async function executeAddPageContextHook(
     assert(filePath)
     preparePageContextNode(pageContext)
 
-    const result: unknown = await onBeforeRender(pageContext)
-    assertHookResult(result, 'onBeforeRender', ['pageContext'] as const, filePath)
-    Object.assign(pageContext, result?.pageContext)
+    Object.assign(pageContext, {
+      _onBeforeRenderHookCalled: true
+    })
+
+    let hookReturn: unknown
+    try {
+      // We use a try-catch because the hook `onBeforeRender()` is user-defined and may throw an error.
+      hookReturn = await onBeforeRender(pageContext)
+    } catch (err) {
+      return { hookError: err }
+    }
+    assertHookResult(hookReturn, 'onBeforeRender', ['pageContext'] as const, filePath)
+    Object.assign(pageContext, hookReturn?.pageContext)
   }
 
-  ;(pageContext as Record<string, unknown>)['_getPageContextClient'] = () => {
-    const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
-    pageContext._passToClient.forEach((prop) => {
-      pageContextClient[prop] = (pageContext as PageContextUser)[prop]
-    })
-    if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
-      assert(pageContext._serverSideErrorWhileStreaming === true)
-      pageContextClient['_serverSideErrorWhileStreaming'] = true
-    }
-    return pageContextClient
-  }
-}
-function executeAddPageContextHook_addTypes<PageContext extends Record<string, unknown>>(
-  pageContext: PageContext
-): asserts pageContext is PageContext & { _getPageContextClient: () => PageContextClient } {
-  pageContext // make TS happy
+  return {}
 }
 
 type LoadedPageFiles = {
@@ -664,11 +648,19 @@ type LoadedPageFiles = {
   _pageClientPath: string
   _passToClient: string[]
 }
-type RenderHookResult = { escapeResult: null | EscapeResult; renderFilePath: string }
+type RenderHookResult = {
+  renderFilePath: string
+} & (
+  | {
+      escapeResult: null | EscapeResult
+    }
+  | {
+      hookError: unknown
+    }
+)
 async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
-    _getPageContextClient: () => PageContextClient
     _isPreRendering: boolean
   } & LoadedPageFiles
 ): Promise<RenderHookResult> {
@@ -695,7 +687,14 @@ async function executeRenderHook(
   assert(renderFilePath)
 
   preparePageContextNode(pageContext)
-  const result: unknown = await render(pageContext)
+
+  let result: unknown
+  try {
+    // We use a try-catch because the `render()` hook is user-defined and may throw an error.
+    result = await render(pageContext)
+  } catch (hookError) {
+    return { hookError, renderFilePath }
+  }
   if (isObject(result) && !isEscapeInject(result)) {
     assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
