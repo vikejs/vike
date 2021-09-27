@@ -151,7 +151,17 @@ async function callPrerenderHooks(
           const prerenderSourceFile = filePath
           assert(prerenderSourceFile)
 
-          const prerenderResult = await prerenderFunction()
+          let prerenderResult: unknown
+          try {
+            prerenderResult = await prerenderFunction()
+          } catch(err) {
+            const pageContext = {...globalContext}
+            objectAssign(pageContext, { _err: err })
+            checkType<{ _isPreRendering: true }>(pageContext)
+            handleError(pageContext)
+            // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
+            assert(false)
+          }
           const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
 
           result.forEach(({ url, pageContext }) => {
@@ -284,6 +294,7 @@ async function routeAndPrerender(
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
         )
         if (routeResult.pageContextAddendum._pageId === null) {
+          // Is this assertion also true with a `onBeforeRoute()` hook?
           assert(prerenderSourceFile)
           assertUsage(
             false,
