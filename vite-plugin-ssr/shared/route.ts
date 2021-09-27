@@ -94,9 +94,8 @@ async function route(pageContext: {
           const { matchValue, routeParams } = resolveRouteString(pageRouteFileExports, urlPathname, pageRouteFilePath)
           routeResults.push({ pageId, matchValue, routeParams })
         }
-
         // Route with Route Function defined in `.page.route.js`
-        if (hasProp(pageRouteFileExports, 'default', 'function')) {
+        else if (hasProp(pageRouteFileExports, 'default', 'function')) {
           const hookResult = await resolveRouteFunction(
             pageRouteFileExports,
             urlPathname,
@@ -109,9 +108,9 @@ async function route(pageContext: {
           }
           const { matchValue, routeParams } = hookResult
           routeResults.push({ pageId, matchValue, routeParams })
+        } else {
+          assert(false)
         }
-
-        assert(false)
       }
 
       const { matchValue, routeParams } = routeWith_filesystem(urlPathname, filesystemRoute)
