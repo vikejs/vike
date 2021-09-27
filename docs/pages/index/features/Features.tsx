@@ -23,7 +23,7 @@ function Features() {
               <p>
                 Control how your pages are rendered and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
                 <b>any tool</b> you want (Vuex/Redux/PullState, RPC or GraphQL, React/Vue Query, PWA, Service Workers,
-                ...).
+                other Vite plugins, ...).
               </p>
               <p>
                 Integrating tools is <b>simple</b> and <b>natural</b>.
@@ -164,7 +164,7 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>Dev speed that scales</b> to hundreds of kLOCs &mdash; HMR stays fast.
+                <b>DX that scales</b> to hundreds of kLOCs &mdash; HMR & dev start stays fast.
               </p>
               <p>
                 <b>Architectural flexibility that scales</b> from small hobby projects to large-scale enterprise
@@ -180,8 +180,8 @@ function Features() {
                 ten pages but load only one page in the browser, then only the code for that page is transpiled.
               </p>
               <p>
-                Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast dev speed /
-                HMR.
+                Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast HMR & dev
+                start.
               </p>
               <h3>No black box, no plugin system</h3>
               <p>At scale, Next.js/Nuxt's black-box nature and its plugin system become painfully limiting.</p>
