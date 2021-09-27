@@ -51,6 +51,7 @@ export { loadPageFiles }
 export type { GlobalContext }
 export { addComputedUrlProps }
 export { loadOnBeforePrerenderHook }
+export { handleError }
 
 type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
@@ -84,22 +85,21 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
   objectAssign(pageContext, globalContext)
 
   // *** Route ***
-  // We use a try-catch because `route()` executes `.page.route.js` source code which is
-  // written by the user and may contain errors.
-  let pageContextRouteAddendum
-  try {
-    // We use a try-catch because we execute user-defined `*.page.*` files which may contain an error.
-    pageContextRouteAddendum = await route(pageContext)
-  } catch (err) {
-    objectAssign(pageContext, { _err: err })
+  const routeResult = await route(pageContext)
+  if ('hookError' in routeResult) {
+    objectAssign(pageContext, { _err: routeResult.hookError })
     const httpResponse = await handleHookError(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
+  objectAssign(pageContext, routeResult.pageContextAddendum)
 
   // *** Handle 404 ***
   let statusCode: 200 | 404
-  if (pageContextRouteAddendum._pageId === null) {
+  if (hasProp(pageContext, '_pageId', 'string')) {
+    statusCode = 200
+  } else {
+    assert(pageContext._pageId === null)
     if (!pageContext._isPageContextRequest) {
       warn404(pageContext)
     }
@@ -129,13 +129,11 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
     } else {
       statusCode = 200
     }
-    pageContextRouteAddendum = { _pageId: errorPageId, is404: true, routeParams: {} }
-  } else {
-    statusCode = 200
+    objectAssign(pageContext, {
+      _pageId: errorPageId,
+      is404: true
+    })
   }
-  assert(hasProp(pageContextRouteAddendum, '_pageId', 'string'))
-  assert(isPlainObject(pageContextRouteAddendum.routeParams))
-  objectAssign(pageContext, pageContextRouteAddendum)
 
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)

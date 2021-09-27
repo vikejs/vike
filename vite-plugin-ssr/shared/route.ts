@@ -27,25 +27,34 @@ export { isStaticRoute }
 
 type PageId = string
 
+type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
 async function route(pageContext: {
   url: string
   _allPageIds: string[]
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: null | OnBeforeRouteHook
-}): Promise<{ _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown>> {
+}): Promise<
+  | HookError
+  | { pageContextAddendum: { _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown> }
+> {
   addComputedUrlProps(pageContext)
 
   const pageContextAddendum = {}
-  const pageContextAddendumHook = await callOnBeforeRouteHook(pageContext)
-  if (pageContextAddendumHook !== null) {
-    objectAssign(pageContextAddendum, pageContextAddendumHook)
+  const hookResult = await callOnBeforeRouteHook(pageContext)
+  if ('hookError' in hookResult) {
+    return hookResult
+  }
+  if ('pageContextAddendum' in hookResult) {
+    objectAssign(pageContextAddendum, hookResult)
     if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
       // We bypass `vite-plugin-ssr`'s routing
-      return {
-        ...pageContextAddendum,
-        routeParams: pageContextAddendum.routeParams || {}
+      if (!hasProp(pageContextAddendum, 'routeParams')) {
+        objectAssign(pageContextAddendum, { routeParams: {} })
+      } else {
+        assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
       }
+      return { pageContextAddendum }
     }
     // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
     objectAssign(pageContext, pageContextAddendum)
@@ -61,8 +70,14 @@ async function route(pageContext: {
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
-  const routeResults = await Promise.all(
-    pageContext._pageRoutes.map(async (pageRoute) => {
+  const hookErrors: HookError[] = []
+  const routeResults: {
+    pageId: string
+    matchValue: boolean | number
+    routeParams: Record<string, string>
+  }[] = []
+  await Promise.all(
+    pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, filesystemRoute, pageRouteFile } = pageRoute
       assertUsage(
         !isReservedPageId(pageId),
@@ -77,32 +92,47 @@ async function route(pageContext: {
         // Route with Route String defined in `.page.route.js`
         if (hasProp(pageRouteFileExports, 'default', 'string')) {
           const { matchValue, routeParams } = resolveRouteString(pageRouteFileExports, urlPathname, pageRouteFilePath)
-          return { pageId, matchValue, routeParams }
+          routeResults.push({ pageId, matchValue, routeParams })
         }
 
         // Route with Route Function defined in `.page.route.js`
         if (hasProp(pageRouteFileExports, 'default', 'function')) {
-          const { matchValue, routeParams } = await resolveRouteFunction(
+          const hookResult = await resolveRouteFunction(
             pageRouteFileExports,
             urlPathname,
             pageContext,
             pageRouteFilePath
           )
-          return { pageId, matchValue, routeParams }
+          if ('hookError' in hookResult) {
+            hookErrors.push(hookResult)
+            return
+          }
+          const { matchValue, routeParams } = hookResult
+          routeResults.push({ pageId, matchValue, routeParams })
         }
 
         assert(false)
       }
 
       const { matchValue, routeParams } = routeWith_filesystem(urlPathname, filesystemRoute)
-      return { pageId, matchValue, routeParams }
+      routeResults.push({ pageId, matchValue, routeParams })
     })
   )
+
+  if (hookErrors.length > 0) {
+    return hookErrors[0]!
+  }
 
   const winner = pickWinner(routeResults)
   // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
 
-  if (!winner) return { _pageId: null, routeParams: {} }
+  if (!winner) {
+    objectAssign(pageContextAddendum, {
+      _pageId: null,
+      routeParams: {}
+    })
+    return { pageContextAddendum }
+  }
 
   const { pageId, routeParams } = winner
   assert(isPlainObject(routeParams))
@@ -110,7 +140,7 @@ async function route(pageContext: {
     _pageId: pageId,
     routeParams
   })
-  return pageContextAddendum
+  return { pageContextAddendum }
 }
 
 async function callOnBeforeRouteHook(pageContext: {
@@ -118,11 +148,23 @@ async function callOnBeforeRouteHook(pageContext: {
   _allPageIds: string[]
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: null | OnBeforeRouteHook
-}): Promise<null | (Record<string, unknown> & { _pageId?: string | null; routeParams?: Record<string, string> })> {
+}): Promise<
+  | {}
+  | { hookError: unknown; hookFilePath: string; hookName: string }
+  | { pageContextAddendum: Record<string, unknown> & { _pageId?: string | null; routeParams?: Record<string, string> } }
+> {
   if (!pageContext._onBeforeRouteHook) {
-    return null
+    return {}
   }
-  const result = await pageContext._onBeforeRouteHook.onBeforeRoute(pageContext)
+  let result: unknown
+  try {
+    result = await pageContext._onBeforeRouteHook.onBeforeRoute(pageContext)
+  } catch (hookError) {
+    const hookFilePath = pageContext._onBeforeRouteHook.filePath
+    const hookName = 'onBeforeRoute()'
+    return { hookError, hookName, hookFilePath }
+  }
+
   const errPrefix = `The \`onBeforeRoute()\` hook exported by ${pageContext._onBeforeRouteHook.filePath}`
 
   assertUsage(
@@ -133,7 +175,7 @@ async function callOnBeforeRouteHook(pageContext: {
   )
 
   if (result === null || result === undefined) {
-    return null
+    return {}
   }
 
   assertUsage(
@@ -156,7 +198,9 @@ async function callOnBeforeRouteHook(pageContext: {
     )
   }
 
-  return result.pageContext
+  const pageContextAddendum = result.pageContext
+
+  return { pageContextAddendum }
 }
 
 function getErrorPageId(allPageIds: string[]): string | null {
@@ -328,24 +372,38 @@ async function resolveRouteFunction(
   urlPathname: string,
   pageContext: Record<string, unknown>,
   pageRouteFilePath: string
-): Promise<{
-  matchValue: boolean | number
-  routeParams: Record<string, string>
-}> {
-  const routeFunction: Function = pageRouteFileExports.default
-  let result = routeFunction({ url: urlPathname, pageContext })
+): Promise<
+  | { hookError: unknown; hookName: string; hookFilePath: string }
+  | {
+      matchValue: boolean | number
+      routeParams: Record<string, string>
+    }
+> {
+  const hookFilePath = pageRouteFilePath
+  const hookName = 'route()'
+
+  let result: unknown
+  try {
+    result = pageRouteFileExports.default({ url: urlPathname, pageContext })
+  } catch (hookError) {
+    return { hookError, hookName, hookFilePath }
+  }
   assertUsage(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
     `The Route Function ${pageRouteFilePath} returned a promise. Async Route Functions may significantly slow down your app: every time a page is rendered the Route Functions of *all* your pages are called and awaited for. A slow Route Function will slow down all your pages. If you still want to define an async Route Function then \`export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true\` in \`${pageRouteFilePath}\`.`
   )
-  result = await result
-  if ([true, false].includes(result)) {
+  try {
+    result = await result
+  } catch (hookError) {
+    return { hookError, hookName, hookFilePath }
+  }
+  if (result === true || result === false) {
     result = { match: result }
   }
   assertUsage(
     isPlainObject(result),
     `The Route Function ${pageRouteFilePath} should return a boolean or a plain JavaScript object, instead it returns \`${
-      result && result.constructor
+      hasProp(result, 'constructor') ? result.constructor : result
     }\`.`
   )
   if (!hasProp(result, 'match')) {

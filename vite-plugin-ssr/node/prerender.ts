@@ -12,13 +12,15 @@ import {
   isPlainObject,
   projectInfo,
   objectAssign,
-  isObjectWithKeys
+  isObjectWithKeys,
+  checkType
 } from '../shared/utils'
 import { moduleExists } from '../shared/utils/moduleExists'
 import { setSsrEnv } from './ssrEnv'
 import {
   getGlobalContext,
   GlobalContext,
+  handleError,
   loadOnBeforePrerenderHook,
   loadPageFiles,
   prerenderPage,
@@ -269,11 +271,19 @@ async function routeAndPrerender(
     globalContext.prerenderPageContexts.map((pageContext) =>
       concurrencyLimit(async () => {
         const { url, _prerenderSourceFile: prerenderSourceFile } = pageContext
-        const pageContextRouteAddendum = await route(pageContext)
+        const routeResult = await route(pageContext)
+        if ('hookError' in routeResult) {
+          objectAssign(pageContext, { _err: routeResult.hookError })
+          checkType<{ _isPreRendering: true }>(pageContext)
+          handleError(pageContext)
+          // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
+          assert(false)
+        }
         assert(
-          hasProp(pageContextRouteAddendum, '_pageId', 'null') || hasProp(pageContextRouteAddendum, '_pageId', 'string')
+          hasProp(routeResult.pageContextAddendum, '_pageId', 'null') ||
+            hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
         )
-        if (pageContextRouteAddendum._pageId === null) {
+        if (routeResult.pageContextAddendum._pageId === null) {
           assert(prerenderSourceFile)
           assertUsage(
             false,
@@ -281,8 +291,8 @@ async function routeAndPrerender(
           )
         }
 
-        assert(pageContextRouteAddendum._pageId)
-        objectAssign(pageContext, pageContextRouteAddendum)
+        assert(routeResult.pageContextAddendum._pageId)
+        objectAssign(pageContext, routeResult.pageContextAddendum)
         const { _pageId: pageId } = pageContext
 
         const pageFilesData = await loadPageFiles({
