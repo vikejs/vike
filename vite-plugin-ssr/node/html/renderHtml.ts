@@ -8,13 +8,13 @@ export { escapeInject }
 export { dangerouslySkipEscape }
 
 // Private
-export { isEscapeInject }
-export { renderEscapeInject }
+export { renderHtml }
+export { isDocumentHtml }
 export { getHtmlString }
-export type { EscapeResult }
+export type { HtmlRender }
 
-type EscapeInject = TemplateWrapped | EscapedString | Stream
-type EscapeResult = string | Stream
+type DocumentHtml = TemplateWrapped | EscapedString | Stream
+type HtmlRender = string | Stream
 
 const __template = Symbol('__template')
 type TemplateStrings = TemplateStringsArray
@@ -27,30 +27,30 @@ type TemplateContent = {
   templateVariables: TemplateVariable[]
 }
 
-function isEscapeInject(something: unknown): something is EscapeInject {
+function isDocumentHtml(something: unknown): something is DocumentHtml {
   if (isTemplateWrapped(something) || isEscapedString(something) || isStream(something)) {
-    checkType<EscapeInject>(something)
+    checkType<DocumentHtml>(something)
     return true
   }
   return false
 }
 
-async function renderEscapeInject(
-  escapeInject: EscapeInject,
+async function renderHtml(
+  documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
   renderFilePath: string,
   onErrorWhileStreaming: (err: Error) => void
-): Promise<EscapeResult> {
-  if (isEscapedString(escapeInject)) {
-    let htmlString = getEscapedString(escapeInject)
+): Promise<HtmlRender> {
+  if (isEscapedString(documentHtml)) {
+    let htmlString = getEscapedString(documentHtml)
     htmlString = await injectAssets(htmlString, pageContext)
     return htmlString
   }
-  if (isStream(escapeInject)) {
-    return escapeInject
+  if (isStream(documentHtml)) {
+    return documentHtml
   }
-  if (isTemplateWrapped(escapeInject)) {
-    const templateContent = escapeInject[__template]
+  if (isTemplateWrapped(documentHtml)) {
+    const templateContent = documentHtml[__template]
     const render = renderTemplate(templateContent, renderFilePath)
     if (render.type === 'string') {
       let htmlString = render.value
@@ -87,7 +87,7 @@ async function renderEscapeInject(
     checkType<never>(render)
     assert(false)
   }
-  checkType<never>(escapeInject)
+  checkType<never>(documentHtml)
   assert(false)
 }
 
@@ -239,13 +239,13 @@ function escapeHtml(unsafeString: string): string {
   return safe
 }
 
-async function getHtmlString(escapeResult: EscapeResult): Promise<string> {
-  if (typeof escapeResult === 'string') {
-    return escapeResult
+async function getHtmlString(htmlRender: HtmlRender): Promise<string> {
+  if (typeof htmlRender === 'string') {
+    return htmlRender
   }
-  if (isStream(escapeResult)) {
-    return streamToString(escapeResult)
+  if (isStream(htmlRender)) {
+    return streamToString(htmlRender)
   }
-  checkType<never>(escapeResult)
+  checkType<never>(htmlRender)
   assert(false)
 }

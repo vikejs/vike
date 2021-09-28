@@ -1,6 +1,6 @@
 import { Readable, Writable } from 'stream'
 import { assert, checkType, isObject } from '../../shared/utils'
-import { EscapeResult } from './escapeInject'
+import { HtmlRender } from './renderHtml'
 
 export { getNodeStream }
 export { getWebStream }
@@ -133,7 +133,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   return promise
 }
 
-function getNodeStream(escapeResult: EscapeResult): null | StreamReadableNode {
+function getNodeStream(escapeResult: HtmlRender): null | StreamReadableNode {
   if (typeof escapeResult === 'string') {
     return stringToStreamReadableNode(escapeResult)
   }
@@ -142,7 +142,7 @@ function getNodeStream(escapeResult: EscapeResult): null | StreamReadableNode {
   }
   return null
 }
-function getWebStream(escapeResult: EscapeResult): null | StreamReadableWeb {
+function getWebStream(escapeResult: HtmlRender): null | StreamReadableWeb {
   if (typeof escapeResult === 'string') {
     return stringToStreamReadableWeb(escapeResult)
   }
@@ -152,7 +152,7 @@ function getWebStream(escapeResult: EscapeResult): null | StreamReadableWeb {
   return null
 }
 
-function pipeToStreamWritableWeb(escapeResult: EscapeResult, writable: StreamWritableWeb): boolean {
+function pipeToStreamWritableWeb(escapeResult: HtmlRender, writable: StreamWritableWeb): boolean {
   if (typeof escapeResult === 'string') {
     const streamPipeWeb = stringToStreamPipeWeb(escapeResult)
     streamPipeWeb(writable)
@@ -165,7 +165,7 @@ function pipeToStreamWritableWeb(escapeResult: EscapeResult, writable: StreamWri
   streamPipeWeb(writable)
   return true
 }
-function pipeToStreamWritableNode(escapeResult: EscapeResult, writable: StreamWritableNode): boolean {
+function pipeToStreamWritableNode(escapeResult: HtmlRender, writable: StreamWritableNode): boolean {
   if (typeof escapeResult === 'string') {
     const streamPipeNode = stringToStreamPipeNode(escapeResult)
     streamPipeNode(writable)
@@ -207,7 +207,7 @@ function manipulateStream<T extends Stream>(
     onStreamBegin: (stringBegin: string) => void
     onStreamEnd: (stringEnd: string) => void
   }) => {
-    const onBegin = (): Promise<void> => {
+    const onData = (): Promise<void> => {
       if (streamBeginPromise !== null) {
         return streamBeginPromise
       }
@@ -218,13 +218,13 @@ function manipulateStream<T extends Stream>(
       }))
     }
     const onEnd = async () => {
-      // For empty stream: the stream ends before anything was pushed to it
-      await onBegin()
+      // If empty stream: the stream ends before anything was pushed to it
+      await onData()
       const stringEnd = await injectStringAtEnd()
       onStreamEnd(stringEnd)
     }
     return {
-      onBegin,
+      onData,
       onEnd
     }
   }
@@ -285,7 +285,7 @@ function manipulateStream<T extends Stream>(
   if (isStreamReadableNode(stream)) {
     const readableNodeOriginal: StreamReadableNode = stream
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
-    const { onBegin, onEnd } = getEventHandlers({
+    const { onData, onEnd } = getEventHandlers({
       onStreamBegin: (stringBegin) => {
         readableNodeWrapper.push(stringBegin)
       },
@@ -295,7 +295,7 @@ function manipulateStream<T extends Stream>(
       }
     })
     readableNodeOriginal.on('data', async (chunk) => {
-      await onBegin()
+      await onData()
       readableNodeWrapper.push(chunk)
     })
     readableNodeOriginal.on('error', async (err) => {
@@ -305,6 +305,9 @@ function manipulateStream<T extends Stream>(
     readableNodeOriginal.on('end', async () => {
       await onEnd()
     })
+    checkType<StreamReadableNode>(readableNodeWrapper)
+    checkType<StreamReadableNode>(stream)
+    //checkType<typeof stream>(readableNodeWrapper)
     return readableNodeWrapper as typeof stream
   }
   assert(false)

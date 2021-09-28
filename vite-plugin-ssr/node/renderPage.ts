@@ -1,5 +1,5 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
-import { EscapeResult, isEscapeInject, renderEscapeInject, getHtmlString } from './html/escapeInject'
+import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { posix as pathPosix } from 'path'
@@ -240,7 +240,7 @@ type HttpResponse = null | {
   bodyPipeToWebWritable: StreamPipeWeb
 }
 function createHttpResponseObject(
-  escapeResult: null | EscapeResult,
+  escapeResult: null | HtmlRender,
   { statusCode, renderFilePath }: { statusCode: 200 | 404 | 500; renderFilePath: null | string }
 ): HttpResponse {
   if (escapeResult === null) {
@@ -650,7 +650,7 @@ type RenderHookResult = {
   renderFilePath: string
 } & (
   | {
-      escapeResult: null | EscapeResult
+      escapeResult: null | HtmlRender
     }
   | {
       hookError: unknown
@@ -693,7 +693,7 @@ async function executeRenderHook(
   } catch (hookError) {
     return { hookError, renderFilePath }
   }
-  if (isObject(result) && !isEscapeInject(result)) {
+  if (isObject(result) && !isDocumentHtml(result)) {
     assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
 
@@ -708,7 +708,7 @@ async function executeRenderHook(
   ].join(' ')
 
   let documentHtml: unknown
-  if (!isObject(result) || isEscapeInject(result)) {
+  if (!isObject(result) || isDocumentHtml(result)) {
     assertUsage(
       typeof result !== 'string',
       [
@@ -719,7 +719,7 @@ async function executeRenderHook(
       ].join(' ')
     )
     assertUsage(
-      result === null || isEscapeInject(result),
+      result === null || isDocumentHtml(result),
       [
         errPrefix,
         'should return `null`, a string `documentHtml`, or an object `{ documentHtml, pageContext }`',
@@ -743,26 +743,26 @@ async function executeRenderHook(
         ].join(' ')
       )
       assertUsage(
-        documentHtml === undefined || documentHtml === null || isEscapeInject(documentHtml),
+        documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml),
         [errPrefix, 'returned `{ documentHtml }`, but `documentHtml` should be', errSuffix].join(' ')
       )
     }
   }
 
-  assert(documentHtml === undefined || documentHtml === null || isEscapeInject(documentHtml))
+  assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
 
   if (documentHtml === null || documentHtml === undefined) {
     return { escapeResult: null, renderFilePath }
   }
 
   const onErrorWhileStreaming = (err: Error) => {
-    objectAssign(pageContext, { _err: err })
-    handleError(pageContext)
     objectAssign(pageContext, {
+      _err: err,
       _serverSideErrorWhileStreaming: true
     })
+    handleError(pageContext)
   }
-  const escapeResult = await renderEscapeInject(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
+  const escapeResult = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   return { escapeResult, renderFilePath }
 }
 
