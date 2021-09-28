@@ -133,45 +133,45 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   return promise
 }
 
-function getNodeStream(escapeResult: HtmlRender): null | StreamReadableNode {
-  if (typeof escapeResult === 'string') {
-    return stringToStreamReadableNode(escapeResult)
+function getNodeStream(htmlRender: HtmlRender): null | StreamReadableNode {
+  if (typeof htmlRender === 'string') {
+    return stringToStreamReadableNode(htmlRender)
   }
-  if (isStreamReadableNode(escapeResult)) {
-    return escapeResult
+  if (isStreamReadableNode(htmlRender)) {
+    return htmlRender
   }
   return null
 }
-function getWebStream(escapeResult: HtmlRender): null | StreamReadableWeb {
-  if (typeof escapeResult === 'string') {
-    return stringToStreamReadableWeb(escapeResult)
+function getWebStream(htmlRender: HtmlRender): null | StreamReadableWeb {
+  if (typeof htmlRender === 'string') {
+    return stringToStreamReadableWeb(htmlRender)
   }
-  if (isStreamReadableWeb(escapeResult)) {
-    return escapeResult
+  if (isStreamReadableWeb(htmlRender)) {
+    return htmlRender
   }
   return null
 }
 
-function pipeToStreamWritableWeb(escapeResult: HtmlRender, writable: StreamWritableWeb): boolean {
-  if (typeof escapeResult === 'string') {
-    const streamPipeWeb = stringToStreamPipeWeb(escapeResult)
+function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritableWeb): boolean {
+  if (typeof htmlRender === 'string') {
+    const streamPipeWeb = stringToStreamPipeWeb(htmlRender)
     streamPipeWeb(writable)
     return true
   }
-  const streamPipeWeb = getStreamPipeWeb(escapeResult)
+  const streamPipeWeb = getStreamPipeWeb(htmlRender)
   if (streamPipeWeb === null) {
     return false
   }
   streamPipeWeb(writable)
   return true
 }
-function pipeToStreamWritableNode(escapeResult: HtmlRender, writable: StreamWritableNode): boolean {
-  if (typeof escapeResult === 'string') {
-    const streamPipeNode = stringToStreamPipeNode(escapeResult)
+function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritableNode): boolean {
+  if (typeof htmlRender === 'string') {
+    const streamPipeNode = stringToStreamPipeNode(htmlRender)
     streamPipeNode(writable)
     return true
   }
-  const streamPipeNode = getStreamPipeNode(escapeResult)
+  const streamPipeNode = getStreamPipeNode(htmlRender)
   if (streamPipeNode === null) {
     return false
   }
@@ -179,26 +179,18 @@ function pipeToStreamWritableNode(escapeResult: HtmlRender, writable: StreamWrit
   return true
 }
 
-f(1)
-function f<T>(a: T): T {
-  if (typeof a === 'number') {
-    return 2 as typeof a
-  }
-  return a
-}
-
-function manipulateStream<T extends Stream>(
-  stream: T,
+async function manipulateStream<StreamType extends Stream>(
+  streamOriginal: StreamType,
   {
     injectStringAtBegin,
     injectStringAtEnd,
     onErrorWhileStreaming
   }: {
-    injectStringAtBegin: () => Promise<string>
-    injectStringAtEnd: () => Promise<string>
+    injectStringAtBegin?: () => Promise<string>
+    injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: Error) => void
   }
-): T {
+): Promise<{ stream: StreamType } | { errorBeforeFirstData: unknown }> {
   let streamBeginPromise: Promise<void> | null = null
   const getEventHandlers = ({
     onStreamBegin,
@@ -212,16 +204,20 @@ function manipulateStream<T extends Stream>(
         return streamBeginPromise
       }
       return (streamBeginPromise = new Promise<void>(async (resolvePromise) => {
-        const stringBegin = await injectStringAtBegin()
-        onStreamBegin(stringBegin)
+        if (injectStringAtBegin) {
+          const stringBegin = await injectStringAtBegin()
+          onStreamBegin(stringBegin)
+        }
         resolvePromise()
       }))
     }
     const onEnd = async () => {
       // If empty stream: the stream ends before anything was pushed to it
       await onData()
-      const stringEnd = await injectStringAtEnd()
-      onStreamEnd(stringEnd)
+      if (injectStringAtEnd) {
+        const stringEnd = await injectStringAtEnd()
+        onStreamEnd(stringEnd)
+      }
     }
     return {
       onData,
@@ -229,8 +225,8 @@ function manipulateStream<T extends Stream>(
     }
   }
 
-  if (isStreamPipeNode(stream)) {
-    return pipeNodeStream((writable: StreamWritableNode) => {
+  if (isStreamPipeNode(streamOriginal)) {
+    const pipeNodeWrapper = pipeNodeStream((writable: StreamWritableNode) => {
       writable.write(injectStringAtBegin)
       const writableProxy = new Writable({
         write(chunk, _encoding, callback) {
@@ -243,12 +239,14 @@ function manipulateStream<T extends Stream>(
           callback()
         }
       })
-      const streamPipeNode = getStreamPipeNode(stream)
+      const streamPipeNode = getStreamPipeNode(streamOriginal)
       streamPipeNode(writableProxy)
-    }) as typeof stream
+    })
+    const stream = pipeNodeWrapper as typeof streamOriginal
+    return { stream }
   }
-  if (isStreamPipeWeb(stream)) {
-    return pipeWebStream((writable: StreamWritableWeb) => {
+  if (isStreamPipeWeb(streamOriginal)) {
+    const pipeWebWrapper = pipeWebStream((writable: StreamWritableWeb) => {
       const writer = writable.getWriter()
       writer.write(injectStringAtBegin)
       const writableProxy = new WritableStream({
@@ -260,16 +258,18 @@ function manipulateStream<T extends Stream>(
           writer.close()
         }
       })
-      const streamPipeWeb = getStreamPipeWeb(stream)
+      const streamPipeWeb = getStreamPipeWeb(streamOriginal)
       streamPipeWeb(writableProxy)
-    }) as typeof stream
+    })
+    const stream = pipeWebWrapper as typeof streamOriginal
+    return { stream }
   }
-  if (isStreamReadableWeb(stream)) {
-    return new ReadableStream({
+  if (isStreamReadableWeb(streamOriginal)) {
+    const readableWebOriginal: StreamReadableWeb = streamOriginal
+    const readableWebWrapper = new ReadableStream({
       async start(controller) {
         controller.enqueue(injectStringAtBegin)
-        const readableWeb: StreamReadableWeb = stream
-        const reader = readableWeb.getReader()
+        const reader = readableWebOriginal.getReader()
         while (true) {
           const { value, done } = await reader.read()
           if (done) {
@@ -280,10 +280,12 @@ function manipulateStream<T extends Stream>(
         controller.enqueue(injectStringAtEnd)
         controller.close()
       }
-    }) as typeof stream
+    }) as typeof streamOriginal
+    const stream = readableWebWrapper as typeof streamOriginal
+    return { stream }
   }
-  if (isStreamReadableNode(stream)) {
-    const readableNodeOriginal: StreamReadableNode = stream
+  if (isStreamReadableNode(streamOriginal)) {
+    const readableNodeOriginal: StreamReadableNode = streamOriginal
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
     const { onData, onEnd } = getEventHandlers({
       onStreamBegin: (stringBegin) => {
@@ -306,9 +308,10 @@ function manipulateStream<T extends Stream>(
       await onEnd()
     })
     checkType<StreamReadableNode>(readableNodeWrapper)
-    checkType<StreamReadableNode>(stream)
-    //checkType<typeof stream>(readableNodeWrapper)
-    return readableNodeWrapper as typeof stream
+    checkType<StreamReadableNode>(streamOriginal)
+    //checkType<typeof streamOriginal>(readableNodeWrapper)
+    const stream = readableNodeWrapper as typeof streamOriginal
+    return { stream }
   }
   assert(false)
 }
@@ -360,19 +363,19 @@ function isStreamPipeNode(something: unknown): something is StreamPipeNodeWrappe
   return isObject(something) && __streamPipeNode in something
 }
 
-async function streamToString(escapeResult: Stream): Promise<string> {
-  if (isStreamReadableWeb(escapeResult)) {
-    return await streamReadableWebToString(escapeResult)
+async function streamToString(stream: Stream): Promise<string> {
+  if (isStreamReadableWeb(stream)) {
+    return await streamReadableWebToString(stream)
   }
-  if (isStreamReadableNode(escapeResult)) {
-    return await streamReadableNodeToString(escapeResult)
+  if (isStreamReadableNode(stream)) {
+    return await streamReadableNodeToString(stream)
   }
-  if (isStreamPipeNode(escapeResult)) {
-    return streamPipeNodeToString(getStreamPipeNode(escapeResult))
+  if (isStreamPipeNode(stream)) {
+    return streamPipeNodeToString(getStreamPipeNode(stream))
   }
-  if (isStreamPipeWeb(escapeResult)) {
-    return streamPipeWebToString(getStreamPipeWeb(escapeResult))
+  if (isStreamPipeWeb(stream)) {
+    return streamPipeWebToString(getStreamPipeWeb(stream))
   }
-  checkType<never>(escapeResult)
+  checkType<never>(stream)
   assert(false)
 }

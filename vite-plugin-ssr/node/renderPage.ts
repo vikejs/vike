@@ -166,8 +166,8 @@ async function renderPage<T extends { url: string } & Record<string, unknown>>(
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
-    const { escapeResult, renderFilePath } = renderHookResult
-    const httpResponse = createHttpResponseObject(escapeResult, { statusCode, renderFilePath })
+    const { htmlRender, renderFilePath } = renderHookResult
+    const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath })
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -225,8 +225,8 @@ async function handleHookError(
     return null
   }
 
-  const { escapeResult, renderFilePath } = renderHookResult
-  const httpResponse = createHttpResponseObject(escapeResult, { statusCode: 500, renderFilePath })
+  const { htmlRender, renderFilePath } = renderHookResult
+  const httpResponse = createHttpResponseObject(htmlRender, { statusCode: 500, renderFilePath })
   return httpResponse
 }
 
@@ -240,17 +240,17 @@ type HttpResponse = null | {
   bodyPipeToWebWritable: StreamPipeWeb
 }
 function createHttpResponseObject(
-  escapeResult: null | HtmlRender,
+  htmlRender: null | HtmlRender,
   { statusCode, renderFilePath }: { statusCode: 200 | 404 | 500; renderFilePath: null | string }
 ): HttpResponse {
-  if (escapeResult === null) {
+  if (htmlRender === null) {
     return null
   }
 
   return {
     statusCode,
     get body() {
-      if (typeof escapeResult !== 'string') {
+      if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
         assertUsage(
           false,
@@ -259,16 +259,16 @@ function createHttpResponseObject(
             ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming'
         )
       }
-      const body = escapeResult
+      const body = htmlRender
       return body
     },
     async getBody(): Promise<string> {
-      const body = await getHtmlString(escapeResult)
+      const body = await getHtmlString(htmlRender)
       return body
     },
     get bodyNodeStream() {
-      assert(escapeResult !== null)
-      const nodeStream = getNodeStream(escapeResult)
+      assert(htmlRender !== null)
+      const nodeStream = getNodeStream(htmlRender)
       assertUsage(
         nodeStream !== null,
         '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
@@ -288,8 +288,8 @@ function createHttpResponseObject(
       return nodeStream
     },
     get bodyWebStream() {
-      assert(escapeResult !== null)
-      const webStream = getWebStream(escapeResult)
+      assert(htmlRender !== null)
+      const webStream = getWebStream(htmlRender)
       assertUsage(
         webStream !== null,
         '`pageContext.httpResponse.bodyWebStream` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming'
@@ -297,14 +297,14 @@ function createHttpResponseObject(
       return webStream
     },
     bodyPipeToWebWritable(writable: StreamWritableWeb) {
-      const success = pipeToStreamWritableWeb(escapeResult, writable)
+      const success = pipeToStreamWritableWeb(htmlRender, writable)
       assertUsage(
         success,
         '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream Pipe, see https://vite-plugin-ssr.com/html-streaming'
       )
     },
     bodyPipeToNodeWritable(writable: StreamWritableNode) {
-      const success = pipeToStreamWritableNode(escapeResult, writable)
+      const success = pipeToStreamWritableNode(htmlRender, writable)
       assertUsage(
         success,
         '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream Pipe, see https://vite-plugin-ssr.com/html-streaming'
@@ -344,11 +344,11 @@ async function prerenderPage(
     assert(false)
   }
   assertUsage(
-    renderHookResult.escapeResult !== null,
+    renderHookResult.htmlRender !== null,
     "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
   )
   assert(!('_isPageContextRequest' in pageContext))
-  const documentHtml = await getHtmlString(renderHookResult.escapeResult)
+  const documentHtml = await getHtmlString(renderHookResult.htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null }
@@ -650,7 +650,7 @@ type RenderHookResult = {
   renderFilePath: string
 } & (
   | {
-      escapeResult: null | HtmlRender
+      htmlRender: null | HtmlRender
     }
   | {
       hookError: unknown
@@ -752,7 +752,7 @@ async function executeRenderHook(
   assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
 
   if (documentHtml === null || documentHtml === undefined) {
-    return { escapeResult: null, renderFilePath }
+    return { htmlRender: null, renderFilePath }
   }
 
   const onErrorWhileStreaming = (err: Error) => {
@@ -762,8 +762,11 @@ async function executeRenderHook(
     })
     handleError(pageContext)
   }
-  const escapeResult = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
-  return { escapeResult, renderFilePath }
+  const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
+  if (hasProp(htmlRender, 'hookError')) {
+    return { hookError: htmlRender.hookError, renderFilePath }
+  }
+  return { htmlRender, renderFilePath }
 }
 
 function assertHookResult<Keys extends readonly string[]>(
