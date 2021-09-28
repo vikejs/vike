@@ -246,13 +246,12 @@ async function manipulateStream<StreamType extends Stream>(
       closeStream()
     }
     const onError = async (err: Error) => {
-      closeStream()
-
       if (resolved === false) {
+        closeStream()
         // Stream has not begun yet, which means that we have sent no HTML to the browser, and we can gracefully abort the stream.
         resolve({ errorBeforeFirstData: err })
       } else {
-        onEnd()
+        await onEnd()
         // Some HTML as already been sent to the browser
         onErrorWhileStreaming(err)
       }
@@ -267,65 +266,112 @@ async function manipulateStream<StreamType extends Stream>(
   }
 
   if (isStreamPipeNode(streamOriginal)) {
-    const pipeNodeWrapper = pipeNodeStream((writable: StreamWritableNode) => {
+    const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
+      writeData(chunk: string) {
+        writable.write(chunk)
+      },
+      closeStream() {
+        writable.end()
+      },
+      getStream() {
+        checkType<StreamPipeNodeWrapped>(pipeNodeWrapper)
+        checkType<StreamPipeNodeWrapped>(streamOriginal)
+        const stream = pipeNodeWrapper as typeof streamOriginal
+        return stream
+      }
+    })
+    let writable: StreamWritableNode
+    const pipeNodeWrapper = pipeNodeStream((writable_: StreamWritableNode) => {
+      writable = writable_
       writable.write(injectStringAtBegin)
       const writableProxy = new Writable({
-        write(chunk, _encoding, callback) {
-          writable.write(chunk)
+        async write(chunk, _encoding, callback) {
+          await onData(chunk)
           callback()
         },
-        final(callback) {
-          writable.write(injectStringAtEnd)
-          writable.end()
+        async final(callback) {
+          await onEnd()
           callback()
         }
       })
       const streamPipeNode = getStreamPipeNode(streamOriginal)
       streamPipeNode(writableProxy)
     })
-    const stream = pipeNodeWrapper as typeof streamOriginal
-    return { stream }
+    return streamPromise
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
+    const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
+      writeData(chunk: string) {
+        writer.write(chunk)
+      },
+      closeStream() {
+        writer.close()
+      },
+      getStream() {
+        checkType<StreamPipeWebWrapped>(pipeWebWrapper)
+        checkType<StreamPipeWebWrapped>(streamOriginal)
+        const stream = pipeWebWrapper as typeof streamOriginal
+        return stream
+      }
+    })
+    let writer: WritableStreamDefaultWriter<any>
     const pipeWebWrapper = pipeWebStream((writable: StreamWritableWeb) => {
-      const writer = writable.getWriter()
+      writer = writable.getWriter()
       writer.write(injectStringAtBegin)
       const writableProxy = new WritableStream({
         write(chunk) {
-          writer.write(chunk)
+          onData(chunk)
         },
         close() {
-          writer.write(injectStringAtEnd)
-          writer.close()
+          onEnd()
         }
       })
       const streamPipeWeb = getStreamPipeWeb(streamOriginal)
       streamPipeWeb(writableProxy)
     })
-    const stream = pipeWebWrapper as typeof streamOriginal
-    return { stream }
+    return streamPromise
   }
 
   if (isStreamReadableWeb(streamOriginal)) {
     const readableWebOriginal: StreamReadableWeb = streamOriginal
+    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
+      writeData(chunk: string) {
+        controller.enqueue(chunk)
+      },
+      closeStream() {
+        controller.close()
+      },
+      getStream() {
+        checkType<StreamReadableWeb>(readableWebWrapper)
+        checkType<StreamReadableWeb>(streamOriginal)
+        const stream = readableWebWrapper as typeof streamOriginal
+        return stream
+      }
+    })
+    let controller: ReadableStreamController<any>
     const readableWebWrapper = new ReadableStream({
-      async start(controller) {
-        controller.enqueue(injectStringAtBegin)
+      async start(controller_) {
+        controller = controller_
         const reader = readableWebOriginal.getReader()
         while (true) {
-          const { value, done } = await reader.read()
+          let result: ReadableStreamDefaultReadResult<any>
+          try {
+            result = await reader.read()
+          } catch (err) {
+            onError(err)
+            return
+          }
+          const { value, done } = result
           if (done) {
             break
           }
-          controller.enqueue(value)
+          onData(value)
         }
-        controller.enqueue(injectStringAtEnd)
-        controller.close()
+        onEnd()
       }
-    }) as typeof streamOriginal
-    const stream = readableWebWrapper as typeof streamOriginal
-    return { stream }
+    })
+    return streamPromise
   }
 
   if (isStreamReadableNode(streamOriginal)) {
@@ -341,7 +387,6 @@ async function manipulateStream<StreamType extends Stream>(
       getStream() {
         checkType<StreamReadableNode>(readableNodeWrapper)
         checkType<StreamReadableNode>(streamOriginal)
-        //checkType<typeof streamOriginal>(readableNodeWrapper)
         const stream = readableNodeWrapper as typeof streamOriginal
         return stream
       }
