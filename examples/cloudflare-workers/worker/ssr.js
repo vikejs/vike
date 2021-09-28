@@ -14,7 +14,6 @@ async function handleSsr(url) {
     return null;
   } else {
     const { statusCode, body } = httpResponse;
-    res.status(statusCode).send(body);
     return new Response(body, {
       headers: { "content-type": "text/html" },
       status: statusCode,
