@@ -39,7 +39,7 @@ async function renderHtml(
   documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
   renderFilePath: string,
-  onErrorWhileStreaming: (err: Error) => void
+  onErrorWhileStreaming: (err: unknown) => void
 ): Promise<HtmlRender | { hookError: unknown }> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
@@ -97,7 +97,7 @@ async function renderHtmlStream(
   }: {
     injectString?: { stringBegin: string; stringEnd: string }
     pageContext: PageContextInjectAssets
-    onErrorWhileStreaming: (err: Error) => void
+    onErrorWhileStreaming: (err: unknown) => void
   }
 ) {
   const opts = {

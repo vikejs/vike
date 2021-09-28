@@ -755,7 +755,7 @@ async function executeRenderHook(
     return { htmlRender: null, renderFilePath }
   }
 
-  const onErrorWhileStreaming = (err: Error) => {
+  const onErrorWhileStreaming = (err: unknown) => {
     objectAssign(pageContext, {
       _err: err,
       _serverSideErrorWhileStreaming: true

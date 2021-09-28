@@ -189,7 +189,7 @@ async function manipulateStream<StreamType extends Stream>(
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAtEnd?: () => Promise<string>
-    onErrorWhileStreaming: (err: Error) => void
+    onErrorWhileStreaming: (err: unknown) => void
   }
 ): Promise<StreamWrapper<StreamType>> {
   const getManipulationHandlers = ({
@@ -245,7 +245,7 @@ async function manipulateStream<StreamType extends Stream>(
 
       closeStream()
     }
-    const onError = async (err: Error) => {
+    const onError = async (err: unknown) => {
       if (resolved === false) {
         closeStream()
         // Stream has not begun yet, which means that we have sent no HTML to the browser, and we can gracefully abort the stream.
