@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./PageLayout.css";
 
 export { PageLayout };
@@ -9,9 +8,12 @@ function PageLayout({ children }) {
     <React.StrictMode>
       <Layout>
         <Sidebar>
-          <Logo />
-          <a href="/">Home</a>
-          <a href="/about">About</a>
+          <a className="navitem" href="/">
+            Home
+          </a>
+          <a className="navitem" href="/about">
+            About
+          </a>
         </Sidebar>
         <Content>{children}</Content>
       </Layout>
@@ -38,6 +40,7 @@ function Sidebar({ children }) {
     <div
       style={{
         padding: 20,
+        paddingTop: 42,
         flexShrink: 0,
         display: "flex",
         flexDirection: "column",
@@ -61,21 +64,6 @@ function Content({ children }) {
       }}
     >
       {children}
-    </div>
-  );
-}
-
-function Logo() {
-  return (
-    <div
-      style={{
-        marginTop: 20,
-        marginBottom: 10,
-      }}
-    >
-      <a href="/">
-        <img src={logo} height={64} width={64} />
-      </a>
     </div>
   );
 }

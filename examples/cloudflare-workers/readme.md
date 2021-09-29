@@ -1,4 +1,4 @@
-Example of deploying a Vite + `vite-plugin-ssr` app to [Cloudflare Workers](https://workers.cloudflare.com/).
+Example of deploying app to [Cloudflare Workers](https://workers.cloudflare.com/) with Vite + `vite-plugin-ssr` + React.
 
 Note how we load `dist/server/importBuild.js` in [worker/ssr.js](worker/ssr.js).
 
@@ -28,3 +28,16 @@ To run it:
    ```bash
    npm run deploy
    ```
+
+To link with the `vite-plugin-ssr` source code:
+
+1. Link the `vite-plugin-ssr` source code:
+   ```
+   cd ../../vite-plugin-ssr/ # Go to the root directory of the `vite-plugin-ssr` source code
+   yarn build # Build the `vite-plugin-ssr` source code
+   yarn link
+   cd examples/cloudflare-workers-vue-html-streaming/
+   yarn link vite-plugin-ssr
+   ```
+
+2. Uncomment the `postinstall` script in `package.json`, to ensure that Wrangler doesn't break the `yarn link`.

@@ -7,11 +7,10 @@ hydrate();
 
 async function hydrate() {
   const pageContext = await getPage();
-  const { Page } = pageContext;
-
+  const { Page, pageProps } = pageContext;
   ReactDOM.hydrate(
     <PageLayout>
-      <Page {...pageContext.pageProps} />
+      <Page {...pageProps} />
     </PageLayout>,
     document.getElementById("page-view")
   );
