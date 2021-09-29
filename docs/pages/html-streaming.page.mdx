@@ -15,23 +15,25 @@ import {
   renderToWebStream,
   pipeToNodeWritable,
   pipeToWebWritable
-} from 'some-view-framework'
+} from 'some-view-framework' // E.g. Vue or React
 
-function render(pageContext) {
+export { render }
+
+async function render(pageContext) {
   const { Page } = pageContext
 
-  const stream = renderToNodeStream(pageContext.Page)
+  const stream = renderToNodeStream(Page)
 
   // Or with a pipe:
   const stream = pipeNodeStream(writable => {
-    pipeToNodeWritable(pageContext.Page)
+    pipeToNodeWritable(Page, writable)
   })
 
   // Or with a Web Stream:
-  const stream = renderToWebStream(pageContext.Page)
+  const stream = renderToWebStream(Page)
   // Or:
   const stream = pipeWebStream(writable => {
-    pipeToWebWritable(pageContext.Page)
+    pipeToWebWritable(Page, writable)
   })
 
   return escapeInject`<!DOCTYPE html>
