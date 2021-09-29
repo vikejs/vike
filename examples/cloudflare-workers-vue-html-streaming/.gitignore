@@ -1,0 +1,4 @@
+/worker/.install.lock
+/node_modules/
+/worker/worker/
+/dist/

@@ -1,0 +1,9 @@
+name = "vite-ssr-worker"
+type = "webpack"
+account_id = ""
+workers_dev = true
+webpack_config = "./webpack.config.js"
+
+[site]
+bucket = "./dist/client"
+entry-point = "./worker"
