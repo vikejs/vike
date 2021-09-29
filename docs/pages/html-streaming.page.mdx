@@ -39,7 +39,7 @@ function render(pageContext) {
       <body>
         <div id="page-view">${stream}</div>
       </body>
-    </html>`;
+    </html>`
 }
 ```
 
@@ -47,20 +47,20 @@ function render(pageContext) {
 // server.js
 
 app.get("*", async (req, res, next) => {
-  const pageContextInit = { url: req.url };
-  const pageContext = await renderPage(pageContextInit);
-  const { httpResponse } = pageContext;
-  if (!httpResponse) return next();
+  const pageContextInit = { url: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
 
   httpResponse.bodyNodeStream.pipe(res)
 
   // Or with a pipe:
-  httpResponse.bodyPipeToNodeWritable(res);
+  httpResponse.bodyPipeToNodeWritable(res)
 
   // Or with a Web Stream:
   httpResponse.bodyWebStream.pipe(res)
   // Or:
-  httpResponse.bodyPipeToWebWritable(res);
+  httpResponse.bodyPipeToWebWritable(res)
 
   // We can also convert the stream to a string by using `httpResponse.getBody()`
   const body = await httpResponse.getBody()
@@ -69,7 +69,7 @@ app.get("*", async (req, res, next) => {
   const { body } = httpResponse
   res.send(body)
   */
-});
+})
 ```
 
 Streams API Docs:
