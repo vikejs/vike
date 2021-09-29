@@ -124,12 +124,16 @@ function Features() {
           desc: (
             <>
               <p>
-                Works with <b>any server environement</b> (Cloudflare Workers, Vercel, EC2 instance, AWS lambda,
-                Firebase, Express.js, Fastify, Hapi, ...).
+                Works with <b>any server environement</b> (Vercel, EC2 instance, AWS lambda, Firebase, Cloudflare
+                Workers, Express.js, Fastify, Hapi, ...).
               </p>
               <p>
                 <b>Pre-render</b> your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
                 Pages, ...).
+              </p>
+              <p>
+                <b>Fits well Cloudflare Workers</b>'s lean-serverless-functions model, and <code>vite-plugin-ssr</code>{' '}
+                has first-class support for it.
               </p>
             </>
           ),
