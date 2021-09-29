@@ -132,8 +132,7 @@ function Features() {
                 Pages, ...).
               </p>
               <p>
-                <b>Fits well Cloudflare Workers</b>'s lean-serverless-functions model, and <code>vite-plugin-ssr</code>{' '}
-                has first-class support for it.
+                <b>Fits Cloudflare Workers' compute model</b> with first-class support.
               </p>
             </>
           ),
