@@ -30,8 +30,8 @@ import { getPageAssets, PageAssets } from './html/injectAssets'
 import { loadPageView } from '../shared/loadPageView'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
-  getNodeStream,
-  getWebStream,
+  getStreamReadableNode,
+  getStreamReadableWeb,
   pipeToStreamWritableWeb,
   pipeToStreamWritableNode,
   StreamPipeNode,
@@ -268,7 +268,7 @@ function createHttpResponseObject(
     },
     get bodyNodeStream() {
       assert(htmlRender !== null)
-      const nodeStream = getNodeStream(htmlRender)
+      const nodeStream = getStreamReadableNode(htmlRender)
       assertUsage(
         nodeStream !== null,
         '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
@@ -289,7 +289,7 @@ function createHttpResponseObject(
     },
     get bodyWebStream() {
       assert(htmlRender !== null)
-      const webStream = getWebStream(htmlRender)
+      const webStream = getStreamReadableWeb(htmlRender)
       assertUsage(
         webStream !== null,
         '`pageContext.httpResponse.bodyWebStream` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming'

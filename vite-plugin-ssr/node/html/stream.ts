@@ -1,17 +1,11 @@
 import { Readable, Writable } from 'stream'
-import { assert, checkType, isObject } from '../../shared/utils'
+import { assert, assertUsage, checkType, isObject } from '../../shared/utils'
 import { HtmlRender } from './renderHtml'
 
-export { getNodeStream }
-export { getWebStream }
+export { getStreamReadableNode }
+export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
-export { isStreamReadableWeb }
-export { isStreamReadableNode }
-export { streamReadableNodeToString }
-export { streamReadableWebToString }
-export { streamPipeWebToString }
-export { streamPipeNodeToString }
 export { manipulateStream }
 export { isStream }
 export { streamToString }
@@ -25,7 +19,7 @@ export type { StreamWritableNode }
 export type { StreamPipeWeb }
 export type { StreamPipeNode }
 
-// Public
+// Public: consumed by vite-plugin-ssr users
 export { pipeWebStream }
 export { pipeNodeStream }
 
@@ -73,9 +67,10 @@ function stringToStreamReadableNode(str: string): StreamReadableNode {
 }
 function stringToStreamReadableWeb(str: string): StreamReadableWeb {
   // `ReadableStream.from()` spec discussion: https://github.com/whatwg/streams/issues/1018
+  assertReadableStreamConstructor()
   const readableStream = new ReadableStream({
     start(controller) {
-      controller.enqueue(str)
+      controller.enqueue(encodeForWebStream(str))
       controller.close()
     }
   })
@@ -90,8 +85,7 @@ function stringToStreamPipeNode(str: string): StreamPipeNode {
 function stringToStreamPipeWeb(str: string): StreamPipeWeb {
   return (writable: StreamWritableWeb) => {
     const writer = writable.getWriter()
-    const encoder = new TextEncoder()
-    writer.write(encoder.encode(str))
+    writer.write(encodeForWebStream(str))
     writer.close()
   }
 }
@@ -133,7 +127,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   return promise
 }
 
-function getNodeStream(htmlRender: HtmlRender): null | StreamReadableNode {
+function getStreamReadableNode(htmlRender: HtmlRender): null | StreamReadableNode {
   if (typeof htmlRender === 'string') {
     return stringToStreamReadableNode(htmlRender)
   }
@@ -142,7 +136,7 @@ function getNodeStream(htmlRender: HtmlRender): null | StreamReadableNode {
   }
   return null
 }
-function getWebStream(htmlRender: HtmlRender): null | StreamReadableWeb {
+function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb {
   if (typeof htmlRender === 'string') {
     return stringToStreamReadableWeb(htmlRender)
   }
@@ -266,12 +260,27 @@ async function manipulateStream<StreamType extends Stream>(
   }
 
   if (isStreamPipeNode(streamOriginal)) {
+    const buffer: string[] = []
     const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
-        writable.write(chunk)
+        if (!writableOriginalReady) {
+          buffer.push(chunk)
+        } else {
+          const write = (c: unknown) => {
+            writableOriginal.write(c)
+          }
+          if (buffer.length !== 0) {
+            buffer.forEach(write)
+            buffer.length = 0
+          }
+          write(chunk)
+        }
       },
       closeStream() {
-        writable.end()
+        if (!writableOriginalReady) {
+          return
+        }
+        writableOriginal.end()
       },
       getStream() {
         checkType<StreamPipeNodeWrapped>(pipeNodeWrapper)
@@ -280,33 +289,49 @@ async function manipulateStream<StreamType extends Stream>(
         return stream
       }
     })
-    let writable: StreamWritableNode
+    let writableOriginal: StreamWritableNode
+    let writableOriginalReady = false
     const pipeNodeWrapper = pipeNodeStream((writable_: StreamWritableNode) => {
-      writable = writable_
-      writable.write(injectStringAtBegin)
-      const writableProxy = new Writable({
-        async write(chunk, _encoding, callback) {
-          await onData(chunk)
-          callback()
-        },
-        async final(callback) {
-          await onEnd()
-          callback()
-        }
-      })
-      const streamPipeNode = getStreamPipeNode(streamOriginal)
-      streamPipeNode(writableProxy)
+      writableOriginal = writable_
+      writableOriginalReady = true
     })
+    const writableProxy = new Writable({
+      async write(chunk, _encoding, callback) {
+        await onData(chunk)
+        callback()
+      },
+      async final(callback) {
+        await onEnd()
+        callback()
+      }
+    })
+    const streamPipeNode = getStreamPipeNode(streamOriginal)
+    streamPipeNode(writableProxy)
     return streamPromise
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
-    const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
+    const buffer: string[] = []
+    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
-        writer.write(chunk)
+        if (!writableOriginalReady) {
+          buffer.push(chunk)
+        } else {
+          const write = (c: unknown) => {
+            writerOriginal.write(encodeForWebStream(c))
+          }
+          if (buffer.length !== 0) {
+            buffer.forEach(write)
+            buffer.length = 0
+          }
+          write(chunk)
+        }
       },
       closeStream() {
-        writer.close()
+        if (!writableOriginalReady) {
+          return
+        }
+        writerOriginal.close()
       },
       getStream() {
         checkType<StreamPipeWebWrapped>(pipeWebWrapper)
@@ -315,11 +340,22 @@ async function manipulateStream<StreamType extends Stream>(
         return stream
       }
     })
-    let writer: WritableStreamDefaultWriter<any>
-    const pipeWebWrapper = pipeWebStream((writable: StreamWritableWeb) => {
-      writer = writable.getWriter()
-      writer.write(injectStringAtBegin)
-      const writableProxy = new WritableStream({
+    let writerOriginal: WritableStreamDefaultWriter<any>
+    let writableOriginalReady = false
+    const pipeWebWrapper = pipeWebStream((writableOriginal: StreamWritableWeb) => {
+      writerOriginal = writableOriginal.getWriter()
+      ;(async () => {
+        // CloudFlare workers do not implement `ready` property
+        //  - https://github.com/vuejs/vue-next/issues/4287
+        try {
+          await writerOriginal.ready
+        } catch (e: any) {}
+        writableOriginalReady = true
+      })()
+    })
+    let writableProxy: WritableStream
+    if (typeof ReadableStream !== 'function') {
+      writableProxy = new WritableStream({
         write(chunk) {
           onData(chunk)
         },
@@ -327,9 +363,13 @@ async function manipulateStream<StreamType extends Stream>(
           onEnd()
         }
       })
-      const streamPipeWeb = getStreamPipeWeb(streamOriginal)
-      streamPipeWeb(writableProxy)
-    })
+    } else {
+      const { readable, writable } = new TransformStream()
+      writableProxy = writable
+      handleReadableWeb(readable, { onData, onError, onEnd })
+    }
+    const streamPipeWeb = getStreamPipeWeb(streamOriginal)
+    streamPipeWeb(writableProxy)
     return streamPromise
   }
 
@@ -337,7 +377,7 @@ async function manipulateStream<StreamType extends Stream>(
     const readableWebOriginal: StreamReadableWeb = streamOriginal
     const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
-        controller.enqueue(chunk)
+        controller.enqueue(encodeForWebStream(chunk))
       },
       closeStream() {
         controller.close()
@@ -350,25 +390,11 @@ async function manipulateStream<StreamType extends Stream>(
       }
     })
     let controller: ReadableStreamController<any>
+    assertReadableStreamConstructor()
     const readableWebWrapper = new ReadableStream({
       async start(controller_) {
         controller = controller_
-        const reader = readableWebOriginal.getReader()
-        while (true) {
-          let result: ReadableStreamDefaultReadResult<any>
-          try {
-            result = await reader.read()
-          } catch (err) {
-            onError(err)
-            return
-          }
-          const { value, done } = result
-          if (done) {
-            break
-          }
-          onData(value)
-        }
-        onEnd()
+        handleReadableWeb(readableWebOriginal, { onData, onError, onEnd })
       }
     })
     return streamPromise
@@ -376,6 +402,7 @@ async function manipulateStream<StreamType extends Stream>(
 
   if (isStreamReadableNode(streamOriginal)) {
     const readableNodeOriginal: StreamReadableNode = streamOriginal
+    assertReadableStreamConstructor()
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
     const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
@@ -404,6 +431,28 @@ async function manipulateStream<StreamType extends Stream>(
   }
 
   assert(false)
+}
+
+async function handleReadableWeb(
+  readable: ReadableStream,
+  { onData, onError, onEnd }: { onData: (chunk: string) => void; onError: (err: unknown) => void; onEnd: () => void }
+) {
+  const reader = readable.getReader()
+  while (true) {
+    let result: ReadableStreamDefaultReadResult<any>
+    try {
+      result = await reader.read()
+    } catch (err) {
+      onError(err)
+      return
+    }
+    const { value, done } = result
+    if (done) {
+      break
+    }
+    onData(value)
+  }
+  onEnd()
 }
 
 function isStream(something: unknown): something is Stream {
@@ -468,4 +517,25 @@ async function streamToString(stream: Stream): Promise<string> {
   }
   checkType<never>(stream)
   assert(false)
+}
+
+function assertReadableStreamConstructor() {
+  assertUsage(
+    typeof ReadableStream === 'function',
+    // Error message copied from vue's `renderToWebStream()` implementation
+    `ReadableStream constructor is not available in the global scope. ` +
+      `If the target environment does support web streams, consider using ` +
+      `pipeToWebWritable() with an existing WritableStream instance instead.`
+  )
+}
+
+let encoder: TextEncoder
+function encodeForWebStream(thing: unknown) {
+  if (!encoder) {
+    encoder = new TextEncoder()
+  }
+  if (typeof thing === 'string') {
+    return encoder.encode(thing)
+  }
+  return thing
 }
