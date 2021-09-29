@@ -402,7 +402,6 @@ async function manipulateStream<StreamType extends Stream>(
 
   if (isStreamReadableNode(streamOriginal)) {
     const readableNodeOriginal: StreamReadableNode = streamOriginal
-    assertReadableStreamConstructor()
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
     const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
