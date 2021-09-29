@@ -20,7 +20,7 @@
     "@vue/compiler-sfc": "^3.2.12",
     "@vue/server-renderer": "^3.2.12",
     "express": "^4.17.1",
-    "vite": "^2.3.5",
+    "vite": "2.5.10",
     "vite-plugin-ssr": "0.3.2",
     "vue": "^3.2.12",
     "webpack": "^4.46.0"
