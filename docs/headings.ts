@@ -102,7 +102,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'HTML streaming',
+    title: 'HTML Streaming',
     url: '/html-streaming'
   },
   {
