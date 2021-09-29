@@ -101,6 +101,11 @@ export const headings: HeadingDefinition[] = [
     url: '/path-aliases'
   },
   {
+    level: 2,
+    title: 'HTML streaming',
+    url: '/html-streaming'
+  },
+  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork'

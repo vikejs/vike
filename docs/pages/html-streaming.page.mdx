@@ -1,0 +1,83 @@
+import { RepoLink } from 'libframe-docs/components/RepoLink'
+
+> HTML streaming support is a beta feature.
+>
+> Breaking changes can be introduced in any version update; make to sure to pin your dependency to `vite-plugin-ssr`.
+
+HTML streaming has first-class support.
+
+```js
+// _deault.page.server.js
+
+import { escapeInject, pipeNodeStream, pipeWebStream } from 'vite-plugin-ssr'
+import {
+  renderToNodeStream,
+  renderToWebStream,
+  pipeToNodeWritable,
+  pipeToWebWritable
+} from 'some-view-framework'
+
+function render(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToNodeStream(pageContext.Page)
+
+  // Or with a pipe:
+  const stream = pipeNodeStream(writable => {
+    pipeToNodeWritable(pageContext.Page)
+  })
+
+  // Or with a Web Stream:
+  const stream = renderToWebStream(pageContext.Page)
+  // Or:
+  const stream = pipeWebStream(writable => {
+    pipeToWebWritable(pageContext.Page)
+  })
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`;
+}
+```
+
+```js
+// server.js
+
+app.get("*", async (req, res, next) => {
+  const pageContextInit = { url: req.url };
+  const pageContext = await renderPage(pageContextInit);
+  const { httpResponse } = pageContext;
+  if (!httpResponse) return next();
+
+  httpResponse.bodyNodeStream.pipe(res)
+
+  // Or with a pipe:
+  httpResponse.bodyPipeToNodeWritable(res);
+
+  // Or with a Web Stream:
+  httpResponse.bodyWebStream.pipe(res)
+  // Or:
+  httpResponse.bodyPipeToWebWritable(res);
+
+  // We can also convert the stream to a string by using `httpResponse.getBody()`
+  const body = await httpResponse.getBody()
+  res.send(body)
+  /* Note that this won't work:
+  const { body } = httpResponse
+  res.send(body)
+  */
+});
+```
+
+Streams API Docs:
+ - [Node.js Streams](https://nodejs.org/api/stream.html)
+ - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+
+Examples:
+ - With React's `renderToNodeStream()`: <RepoLink path='/examples/react-full/' />
+ - With Vue's `renderToNodeStream()`: <RepoLink path='/examples/vue-full/' />
+ - With Cloudlare Workers and Vue's `pipeToWebWritable()`: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
+
