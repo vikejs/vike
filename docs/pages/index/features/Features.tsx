@@ -132,7 +132,7 @@ function Features() {
                 Pages, ...).
               </p>
               <p>
-                <b>Fits Cloudflare Workers</b>' compute model.
+                Fits <b>Cloudflare Workers</b>' compute model.
               </p>
             </>
           ),
