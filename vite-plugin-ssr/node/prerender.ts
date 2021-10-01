@@ -20,7 +20,7 @@ import { setSsrEnv } from './ssrEnv'
 import {
   getGlobalContext,
   GlobalContext,
-  handleErr,
+  handleError,
   loadOnBeforePrerenderHook,
   loadPageFiles,
   prerenderPage,
@@ -158,8 +158,8 @@ async function callPrerenderHooks(
             const pageContext = {...globalContext}
             objectAssign(pageContext, { _err: err })
             checkType<{ _isPreRendering: true }>(pageContext)
-            handleErr(pageContext)
-            // Because `pageContext._isPreRendering === true` handleErr() will throw `pageContext._err`
+            handleError(pageContext)
+            // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
             assert(false)
           }
           const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
@@ -285,8 +285,8 @@ async function routeAndPrerender(
         if ('hookError' in routeResult) {
           objectAssign(pageContext, { _err: routeResult.hookError })
           checkType<{ _isPreRendering: true }>(pageContext)
-          handleErr(pageContext)
-          // Because `pageContext._isPreRendering === true` handleErr() will throw `pageContext._err`
+          handleError(pageContext)
+          // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
           assert(false)
         }
         assert(
