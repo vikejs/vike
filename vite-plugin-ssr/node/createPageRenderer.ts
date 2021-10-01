@@ -1,5 +1,5 @@
 import { SsrEnv, setSsrEnv } from './ssrEnv'
-import { renderPage } from './renderPage'
+import { renderPage, renderPageWithoutThrowing } from './renderPage'
 import { hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { normalize as pathNormalize } from 'path'
@@ -41,7 +41,7 @@ function createPageRenderer({
   assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
-  return renderPage
+  return renderPageWithoutThrowing as RenderPage
 }
 
 function assertArguments(
