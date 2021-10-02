@@ -22,8 +22,7 @@ import {
   compareString,
   assertExports,
   stringifyStringArray,
-  handleUrlOrigin,
-  cast
+  handleUrlOrigin
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
@@ -43,7 +42,8 @@ import {
 } from './html/stream'
 import { serializePageContextClientSide } from './serializePageContextClientSide'
 
-export { renderPage }
+export { renderPageWithoutThrowing }
+export type { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
 export { getGlobalContext }
@@ -51,7 +51,7 @@ export { loadPageFiles }
 export type { GlobalContext }
 export { addComputedUrlProps }
 export { loadOnBeforePrerenderHook }
-export { handleError }
+export { handleErr }
 
 type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
@@ -61,7 +61,8 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 ): Promise<PageContextInit & PageContextAdded & { httpResponse: HttpResponse }> {
   assertArguments(...arguments)
 
-  cast<typeof pageContext & PageContextAdded>(pageContext)
+  // `PageContextAdded` allows `vite-plugin-ssr` users to let TypeScript know about custom `pageContext` properties
+  objectAssign(pageContext, {} as PageContextAdded)
 
   if (pageContext.url.endsWith('/favicon.ico')) {
     objectAssign(pageContext, { httpResponse: null })
@@ -83,11 +84,17 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   objectAssign(globalContext, { _isPreRendering: false as const })
   objectAssign(pageContext, globalContext)
 
+  if ('_err' in pageContext) {
+    const httpResponse = await handleRenderFail(pageContext)
+    objectAssign(pageContext, { httpResponse })
+    return pageContext
+  }
+
   // *** Route ***
   const routeResult = await route(pageContext)
   if ('hookError' in routeResult) {
     objectAssign(pageContext, { _err: routeResult.hookError })
-    const httpResponse = await handleHookError(pageContext)
+    const httpResponse = await handleRenderFail(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -140,7 +147,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   const hookResult = await executeOnBeforeRenderHook(pageContext)
   if ('hookError' in hookResult) {
     objectAssign(pageContext, { _err: hookResult.hookError })
-    const httpResponse = await handleHookError(pageContext)
+    const httpResponse = await handleRenderFail(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -156,7 +163,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 
   if ('hookError' in renderHookResult) {
     objectAssign(pageContext, { _err: renderHookResult.hookError })
-    const httpResponse = await handleHookError(pageContext)
+    const httpResponse = await handleRenderFail(pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -172,7 +179,39 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   }
 }
 
-async function handleHookError(
+// `renderPageWithoutThrowing()` calls `renderPage()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (E.g. throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+async function renderPageWithoutThrowing(pageContext: Parameters<typeof renderPage>[0]): ReturnType<typeof renderPage> {
+  const args = arguments as any as Parameters<typeof renderPageWithoutThrowing>
+  try {
+    return renderPage.apply(null, args)
+  } catch (err) {
+    objectAssign(pageContext, { _err: err })
+    return renderPage.apply(null, args)
+    /*
+  const globalContext = await getGlobalContext()
+  objectAssign(globalContext, { _isPreRendering: false as const })
+  objectAssign(pageContext, globalContext)
+
+    const httpResponse = await handleRenderFail(pageContext)
+    objectAssign(pageContext, { httpResponse })
+
+    objectAssign(pageContext, { _err: err1 })
+    let pageContextAfterRender
+    try {
+      pageContextAfterRender = await renderPage.apply(null, args)
+    } catch (err2) {
+      objectAssign(pageContext, { _err: err2 })
+      objectAssign(pageContext, { httpResponse: null })
+      return pageContext
+    }
+    objectAssign(pageContext, { _isPreRendering: false })
+    handleErr(pageContext)
+    return pageContextAfterRender
+    */
+  }
+}
+
+async function handleRenderFail(
   pageContext: PageContextUrls & {
     url: string
     _allPageIds: string[]
@@ -182,7 +221,7 @@ async function handleHookError(
     _err: unknown
   }
 ): Promise<HttpResponse> {
-  handleError(pageContext)
+  handleErr(pageContext)
 
   if (pageContext._isPageContextRequest) {
     const body = stringify({
@@ -211,7 +250,7 @@ async function handleHookError(
   if ('_onBeforeRenderHookCalled' in pageContext) {
     const hookResult = await executeOnBeforeRenderHook(pageContext)
     if ('hookError' in hookResult) {
-      // We purposely swallow the error, because another error was already shown to the user in `handleError()` in this function above.
+      // We purposely swallow the error, because another error was already shown to the user in `handleErr()` in this function above.
       // (And chances are high that this is the same error.)
       return null
     }
@@ -219,7 +258,7 @@ async function handleHookError(
 
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
-    // We purposely swallow the error, because another error was already shown to the user in `handleError()` in this function above.
+    // We purposely swallow the error, because another error was already shown to the user in `handleErr()` in this function above.
     // (And chances are high that this is the same error.)
     return null
   }
@@ -278,7 +317,7 @@ function createHttpResponseObject(
       })
       nodeStream.on('error', (err) => {
         console.log(1011)
-        handleError(err)
+        handleErr(err)
         nodeStream.push(null)
         //nodeStream.destroy(err)
         console.log(2113)
@@ -330,16 +369,16 @@ async function prerenderPage(
   const hookResult = await executeOnBeforeRenderHook(pageContext)
   if ('hookError' in hookResult) {
     objectAssign(pageContext, { _err: hookResult.hookError })
-    handleError(pageContext)
-    // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
+    handleErr(pageContext)
+    // Because `pageContext._isPreRendering === true` handleErr() will throw `pageContext._err`
     assert(false)
   }
 
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
     objectAssign(pageContext, { _err: renderHookResult.hookError })
-    handleError(pageContext)
-    // Because `pageContext._isPreRendering === true` handleError() will throw `pageContext._err`
+    handleErr(pageContext)
+    // Because `pageContext._isPreRendering === true` handleErr() will throw `pageContext._err`
     assert(false)
   }
   assertUsage(
@@ -759,7 +798,7 @@ async function executeRenderHook(
       _err: err,
       _serverSideErrorWhileStreaming: true
     })
-    handleError(pageContext)
+    handleErr(pageContext)
   }
   const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   if (hasProp(htmlRender, 'hookError')) {
@@ -1011,16 +1050,13 @@ async function getGlobalContext() {
   return globalContext
 }
 
-function handleError(pageContext: { _err: unknown; _isPreRendering: boolean }) {
+// TODO now that we have `renderPageWithoutThrowing()`, can we remove `handleErr()`?
+//  - How about pre-rendering? We should then catch errors as early as possible in `prerender.ts` to apply `vite.ssrFixStacktrace()`.
+function handleErr(pageContext: { _err: unknown; _isPreRendering: boolean }) {
   assert('_err' in pageContext)
   const err = pageContext._err
-  const { viteDevServer } = getSsrEnv()
-  if (viteDevServer) {
-    cast<Error>(err)
-    if (err?.stack) {
-      viteDevServer.ssrFixStacktrace(err)
-    }
-  }
+
+  viteErrorCleanup(err)
 
   assert([true, false].includes(pageContext._isPreRendering))
   if (pageContext._isPreRendering) {
@@ -1031,6 +1067,25 @@ function handleError(pageContext: { _err: unknown; _isPreRendering: boolean }) {
     }
   }
 
+  logError(err)
+}
+/*
+function showError(err: unknown) {
+  viteErrorCleanup(err)
+  logError(err)
+}
+*/
+
+function viteErrorCleanup(err: unknown) {
+  const { viteDevServer } = getSsrEnv()
+  if (viteDevServer) {
+    if (hasProp(err, 'stack')) {
+      viteDevServer.ssrFixStacktrace(err as Error)
+    }
+  }
+}
+
+function logError(err: unknown) {
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
   const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
   console.error(errStr)
