@@ -12,15 +12,14 @@ import {
   isPlainObject,
   projectInfo,
   objectAssign,
-  isObjectWithKeys,
-  checkType
+  isObjectWithKeys
 } from '../shared/utils'
 import { moduleExists } from '../shared/utils/moduleExists'
 import { setSsrEnv } from './ssrEnv'
 import {
   getGlobalContext,
   GlobalContext,
-  handleErr,
+  throwPrerenderError,
   loadOnBeforePrerenderHook,
   loadPageFiles,
   prerenderPage,
@@ -154,12 +153,8 @@ async function callPrerenderHooks(
           let prerenderResult: unknown
           try {
             prerenderResult = await prerenderFunction()
-          } catch(err) {
-            const pageContext = {...globalContext}
-            objectAssign(pageContext, { _err: err })
-            checkType<{ _isPreRendering: true }>(pageContext)
-            handleErr(pageContext)
-            // Because `pageContext._isPreRendering === true` handleErr() will throw `pageContext._err`
+          } catch (err) {
+            throwPrerenderError(err)
             assert(false)
           }
           const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
@@ -283,10 +278,7 @@ async function routeAndPrerender(
         const { url, _prerenderSourceFile: prerenderSourceFile } = pageContext
         const routeResult = await route(pageContext)
         if ('hookError' in routeResult) {
-          objectAssign(pageContext, { _err: routeResult.hookError })
-          checkType<{ _isPreRendering: true }>(pageContext)
-          handleErr(pageContext)
-          // Because `pageContext._isPreRendering === true` handleErr() will throw `pageContext._err`
+          throwPrerenderError(routeResult.hookError)
           assert(false)
         }
         assert(
