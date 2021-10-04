@@ -903,7 +903,7 @@ function warnCouldNotRender500Page({ hookFilePath, hookName }: { hookFilePath: s
   assert(!hookName.endsWith('()'))
   assertWarning(
     false,
-    `The error page \`_error.page.js\` could be not rendered because your \`${hookName}()\` hook exported by ${hookFilePath} throwed an error.`
+    `The error page \`_error.page.js\` could be not rendered because your \`${hookName}()\` hook exported by ${hookFilePath} threw an error.`
   )
 }
 function warn404(pageContext: { urlPathname: string; _pageRoutes: PageRoutes }) {
