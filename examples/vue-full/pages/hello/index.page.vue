@@ -18,7 +18,6 @@
   </p>
 </template>
 
-<script lang="ts">
-const props = ['name']
-export default { props }
+<script lang="ts" setup>
+defineProps(['name'])
 </script>

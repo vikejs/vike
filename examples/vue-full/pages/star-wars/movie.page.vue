@@ -7,7 +7,6 @@
   Producer: {{ movie.producer }}
 </template>
 
-<script lang="ts">
-const props = ['movie']
-export default { props }
+<script lang="ts" setup>
+defineProps(['movie'])
 </script>

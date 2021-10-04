@@ -9,7 +9,6 @@
   <p>Data can be fetched by using the <code>onBeforeRender()</code> hook.</p>
 </template>
 
-<script lang="ts">
-const props = ['movies']
-export default { props }
+<script lang="ts" setup>
+defineProps(['movies'])
 </script>

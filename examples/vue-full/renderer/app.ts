@@ -44,7 +44,7 @@ function createApp(pageContext: PageContext) {
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
   // We make `pageContext` accessible from any Vue component, see https://vite-plugin-ssr.com/pageContext-anywhere
-  app.config.globalProperties.$pageContext = pageContextReactive
+  app.provide('pageContext', pageContextReactive)
 
   return app
 }

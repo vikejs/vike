@@ -11,7 +11,7 @@ Features:
  - Markdown
  - Error Page
  - Active Links
- - Access `pageContext` from any component (using `app.config.globalProperties` and `reactive`)
+ - Access `pageContext` from any component
  - HTML streaming
 
 To run it:

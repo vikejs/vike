@@ -13,10 +13,8 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Link from './Link.vue'
-const components = { Link }
-export default { components }
 </script>
 
 <style>

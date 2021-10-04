@@ -11,17 +11,12 @@
   </p>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import Counter from '../components/Counter.vue'
 import { navigate } from 'vite-plugin-ssr/client/router'
-
-const components = { Counter }
 
 const randomNavigation = () => {
   const randomIndex = Math.floor(Math.random() * 3)
   navigate(['/markdown', '/star-wars', '/hello/alice'][randomIndex])
 }
-const methods = { randomNavigation }
-
-export default { components, methods }
 </script>
