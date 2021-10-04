@@ -1,4 +1,4 @@
-import { App, createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
+import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageWrapper from './PageWrapper.vue'
 import type { Component, PageContext } from './types'
 
@@ -29,19 +29,30 @@ function createApp(pageContext: PageContext) {
     }
   })
 
-  // We use `reactive` because we use Client Routing.
-  // When using Server Routing, we don't need `reactive`.
-  const pageContextReactive = reactive(pageContext)
-  const changePage = (pageContext: PageContext) => {
-    Object.assign(pageContextReactive, pageContext)
-    rootComponent.Page = markRaw(pageContext.Page)
-    rootComponent.pageProps = markRaw(pageContext.pageProps || {})
-  }
+  const app = createSSRApp(PageWithWrapper)
 
-  const app: App<Element> & { changePage: typeof changePage } = Object.assign(createSSRApp(PageWithWrapper), {
-    changePage
+  // We use `app.changePage()` to do Client Routing, see `_default.page.client.js`
+  objectAssign(app, {
+    changePage: (pageContext: PageContext) => {
+      Object.assign(pageContextReactive, pageContext)
+      rootComponent.Page = markRaw(pageContext.Page)
+      rootComponent.pageProps = markRaw(pageContext.pageProps || {})
+    }
   })
+
+  // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
+  // We therefore use a reactive pageContext.
+  const pageContextReactive = reactive(pageContext)
+  // We make `pageContext` accessible from any Vue component, see https://vite-plugin-ssr.com/pageContext-anywhere
   app.config.globalProperties.$pageContext = pageContextReactive
 
   return app
+}
+
+// Same as `Object.assign()` but with type inference
+function objectAssign<Obj, ObjAddendum extends Record<string, unknown>>(
+  obj: Obj,
+  objAddendum: ObjAddendum
+): asserts obj is Obj & ObjAddendum {
+  Object.assign(obj, objAddendum)
 }
