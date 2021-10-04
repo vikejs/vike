@@ -61,7 +61,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 ): Promise<PageContextInit & (({ httpResponse: HttpResponse } & PageContextAdded) | { httpResponse: null })> {
   assertArguments(...arguments)
 
-  const pageContext = initializePageContext<PageContextInit, PageContextAdded>(pageContextInit)
+  const pageContext = initializePageContext(pageContextInit)
 
   if ('httpResponse' in pageContext) {
     assert(pageContext.httpResponse === null)
@@ -151,18 +151,11 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   }
 }
 
-function initializePageContext<PageContextInit extends { url: string }, PageContextAdded extends {}>(
-  pageContextInit: PageContextInit
-) {
-  const pageContext = {}
-
-  objectAssign(pageContext, { _isPreRendering: false as const })
-
-  objectAssign(pageContext, { _pageContextInit: pageContextInit })
-  objectAssign(pageContext, pageContextInit)
-
-  // `PageContextAdded` allows `vite-plugin-ssr` users to let TypeScript know about custom `pageContext` properties
-  objectAssign(pageContext, {} as PageContextAdded)
+function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
+  const pageContext = {
+    _isPreRendering: false as const,
+    ...pageContextInit
+  }
 
   if (pageContext.url.endsWith('/favicon.ico')) {
     objectAssign(pageContext, { httpResponse: null })
@@ -194,11 +187,14 @@ async function renderPageWithoutThrowing(
     try {
       return await render500Page(pageContextInit, err)
     } catch (_err2) {
-      // `_err2` is likely the same error than `err` and we don't log `_err2`.
+      // We swallow `_err2`; logging `err` should be enough; `_err2` is likely the same error than `err` anyways.
       logError(err)
       const pageContext = {}
       objectAssign(pageContext, pageContextInit)
-      objectAssign(pageContext, { httpResponse: null })
+      objectAssign(pageContext, {
+        httpResponse: null,
+        _err: _err2
+      })
       return pageContext
     }
   }
@@ -208,6 +204,7 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   logError(err)
 
   const pageContext = initializePageContext(pageContextInit)
+  // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
   assert(!('httpResponse' in pageContext))
 
   objectAssign(pageContext, {
@@ -246,20 +243,16 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   const pageFilesData = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFilesData)
 
+  // We swallow hook errors; another error was already shown to the user in the `logError()` at the beginning of this function; the second error is likely the same than the first error anyways.
   if ('_onBeforeRenderHookCalled' in pageContext) {
     const hookResult = await executeOnBeforeRenderHook(pageContext)
     if ('hookError' in hookResult) {
-      // We swallow the error, because another error was already shown to the user in `logError()` at the beginning of `render500Page()`.
-      // (And chances are high that this is the same error.)
       warnCouldNotRender500Page(hookResult)
       return pageContext
     }
   }
-
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
-    // We swallow the error, because another error was already shown to the user in `logError()` at the beginning of `render500Page()`.
-    // (And chances are high that this is the same error.)
     warnCouldNotRender500Page(renderHookResult)
     return pageContext
   }
@@ -1056,14 +1049,14 @@ function throwPrerenderError(err: unknown) {
 function logError(err: unknown) {
   assertUsage(
     isObject(err),
-    'An primitive value was thrown as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.'
+    'Your source code threw a primitive value as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.'
   )
   {
-    const key = '_errorWasAlreadyConsoleLogged'
-    err[key] = true
+    const key = '_wasAlreadyConsoleLogged'
     if (err[key]) {
       return
     }
+    err[key] = true
   }
 
   viteErrorCleanup(err)
