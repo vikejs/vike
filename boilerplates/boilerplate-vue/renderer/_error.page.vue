@@ -9,7 +9,6 @@
   </div>
 </template>
 
-<script>
-const props = ['is404']
-export default { props }
+<script setup>
+defineProps(['is404'])
 </script>

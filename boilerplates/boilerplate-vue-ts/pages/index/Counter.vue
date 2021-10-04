@@ -2,14 +2,7 @@
   <button type="button" @click="state.count++">Counter {{ state.count }}</button>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { reactive } from 'vue'
-export default {
-  setup(props) {
-    const state = reactive({ count: 0 })
-    return {
-      state
-    }
-  }
-}
+const state = reactive({ count: 0 })
 </script>

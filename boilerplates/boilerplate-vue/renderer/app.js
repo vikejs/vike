@@ -23,7 +23,7 @@ function createApp(pageContext) {
 
   // We make `pageContext` available in all components as `$pageContext`.
   // More infos: https://vite-plugin-ssr.com/pageContext-anywhere
-  app.config.globalProperties.$pageContext = pageContext
+  app.provide('pageContext', pageContext)
 
   return app
 }

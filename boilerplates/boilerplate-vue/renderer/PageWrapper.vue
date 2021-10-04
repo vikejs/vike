@@ -11,10 +11,8 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Link from './Link.vue'
-const components = { Link }
-export default { components }
 </script>
 
 <style>
