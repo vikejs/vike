@@ -182,7 +182,7 @@ async function renderPageWithoutThrowing(
 ): ReturnType<typeof renderPage> {
   const args = arguments as any as Parameters<typeof renderPageWithoutThrowing>
   try {
-    return renderPage.apply(null, args)
+    return await renderPage.apply(null, args)
   } catch (err) {
     try {
       return await render500Page(pageContextInit, err)
