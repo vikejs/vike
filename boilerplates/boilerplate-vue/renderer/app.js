@@ -21,8 +21,7 @@ function createApp(pageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // We make `pageContext` available in all components as `$pageContext`.
-  // More infos: https://vite-plugin-ssr.com/pageContext-anywhere
+  // We make `pageContext` available from any component, see https://vite-plugin-ssr.com/pageContext-anywhere
   app.provide('pageContext', pageContext)
 
   return app

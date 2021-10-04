@@ -21,9 +21,9 @@ Example:
 ## Vue 3 - Composition API
 
 We can use
-[app.provide()](https://v3.vuejs.org/api/application-api.html#provide)
+[`app.provide()`](https://v3.vuejs.org/api/application-api.html#provide)
 with
-[inject()](https://v3.vuejs.org/api/composition-api.html#provide-inject)
+[`inject()`](https://v3.vuejs.org/api/composition-api.html#provide-inject)
 to make `pageContext` accessible from any Vue component.
 
 ```js
@@ -48,7 +48,7 @@ const pageContext = inject('pageContext')
 
 We can also implement a `usePageContext()` hook:
 
-```
+```js
 // usePageContext.js
 
 import { inject } from 'vue'
@@ -66,12 +66,9 @@ const pageContext = usePageContext()
 ```
 
 Example:
- - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' />
-   (`app.provide('pageContext', pageContext)`)
- - <RepoLink path='/boilerplates/boilerplate-vue/renderer/usePageContext.js' />
-   (`usePageContext()` implementation)
- - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' />
-   (accessing `pageContext` from any Vue component)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' /> (<code>app.provide('pageContext', pageContext)</code>)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/usePageContext.js' /> (<code>usePageContext()</code> implementation)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' /> (accessing <code>pageContext</code> from any Vue component)
 
 If we use [Client Routing](/SR-vs-CR), we make `pageContext` reactive:
  - <RepoLink path='/examples/vue-full/renderer/app.ts' />
