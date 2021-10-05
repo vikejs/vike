@@ -14,9 +14,9 @@ We can use [React Context](https://reactjs.org/docs/context.html)
 to make `pageContext` accessible from any React component.
 
 Example:
- - <RepoLink path='/boilerplates/boilerplate-react/renderer/usePageContext.jsx' /> (using React Context to implement a hook <code>usePageContext()</code>)
- - <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' /> (example of using <code>usePageContext()</code>)
- - <RepoLink path='/boilerplates/boilerplate-react/renderer/PageWrapper.jsx' /> (integration with <code>{'<PageContextProvider>'}</code>)
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/usePageContext.jsx' /> (hook <code>usePageContext()</code> implementation)
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' /> (using <code>usePageContext()</code> to access <code>pageContext</code> from any React component)
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/PageWrapper.jsx' /> (<code>{'<PageContextProvider>'}</code> integration)
 
 ## Vue 3 - Composition API
 
@@ -53,10 +53,22 @@ We can also implement a `usePageContext()` hook:
 
 import { inject } from 'vue'
 
-export function usePageContext() {
-  const pageContext = inject('pageContext')
+export { usePageContext }
+export { setPageContext }
+
+const key = Symbol()
+
+function usePageContext() {
+  const pageContext = inject(key)
   return pageContext
 }
+function setPageContext(app, pageContext) {
+  app.provide(key, pageContext)
+}
+```
+```js
+const app = createSSRApp(/*...*/)
+setPageContext(app, pageContext)
 ```
 ```vue
 <script setup>
@@ -66,9 +78,9 @@ const pageContext = usePageContext()
 ```
 
 Example:
- - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' /> (<code>app.provide('pageContext', pageContext)</code>)
  - <RepoLink path='/boilerplates/boilerplate-vue/renderer/usePageContext.js' /> (<code>usePageContext()</code> implementation)
- - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' /> (accessing <code>pageContext</code> from any Vue component)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' /> (using <code>usePageContext()</code> to access <code>pageContext</code> from any Vue component)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' /> (<code>setPageContext(app, pageContext)</code>)
 
 If we use [Client Routing](/SR-vs-CR), we make `pageContext` reactive:
  - <RepoLink path='/examples/vue-full/renderer/app.ts' />

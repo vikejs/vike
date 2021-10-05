@@ -1,5 +1,6 @@
 import { createSSRApp, defineComponent, h } from 'vue'
 import PageWrapper from './PageWrapper.vue'
+import { setPageContext } from './usePageContext'
 import type { PageContext } from './types'
 
 export { createApp }
@@ -22,8 +23,8 @@ function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // We make `pageContext` available from any component, see https://vite-plugin-ssr.com/pageContext-anywhere
-  app.provide('pageContext', pageContext)
+  // Make `pageContext` available from any component
+  setPageContext(app, pageContext)
 
   return app
 }
