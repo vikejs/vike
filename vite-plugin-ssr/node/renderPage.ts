@@ -10,10 +10,8 @@ import {
   assertWarning,
   hasProp,
   handlePageContextRequestSuffix,
-  getUrlPathname,
   isPlainObject,
   isObject,
-  getUrlParsed,
   UrlParsed,
   objectAssign,
   PromiseType,
@@ -39,6 +37,7 @@ import {
   StreamWritableWeb
 } from './html/stream'
 import { serializePageContextClientSide } from './serializePageContextClientSide'
+import { addComputedUrlProps } from '../shared/addComputedurlProps'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
@@ -47,7 +46,6 @@ export { renderStatic404Page }
 export { getGlobalContext }
 export { loadPageFiles }
 export type { GlobalContext }
-export { addComputedUrlProps }
 export { loadOnBeforePrerenderHook }
 export { throwPrerenderError }
 
@@ -68,6 +66,8 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 
   const globalContext = await getGlobalContext()
   objectAssign(pageContext, globalContext)
+
+  addComputedUrlProps(pageContext)
 
   // *** Route ***
   const routeResult = await route(pageContext)
@@ -169,8 +169,6 @@ function initializePageContext<PageContextInit extends { url: string }>(pageCont
     _isPageContextRequest: isPageContextRequest
   })
 
-  addComputedUrlProps(pageContext)
-
   return pageContext
 }
 
@@ -204,6 +202,9 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   const pageContext = initializePageContext(pageContextInit)
   // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
   assert(!('httpResponse' in pageContext))
+
+  objectAssign(pageContext, { _getUrlNormalized: (url: string) => getUrlNormalized(url) })
+  addComputedUrlProps(pageContext)
 
   objectAssign(pageContext, {
     is404: false,
@@ -340,8 +341,8 @@ async function prerenderPage(
     _pageId: string
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
-    _allPageFiles: AllPageFiles
-  } & PageFilesData
+  } & PageFilesData &
+    GlobalContext
 ) {
   assert(pageContext._isPreRendering === true)
 
@@ -952,7 +953,10 @@ function isFileRequest(urlPathname: string) {
   return /^[a-z0-9]+$/.test(fileExtension)
 }
 
-type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
+function getUrlNormalized(url: string) {
+  const { urlNormalized } = analyzeUrl(url)
+  return urlNormalized
+}
 
 function analyzeUrl(url: string): {
   urlNormalized: string
@@ -975,32 +979,10 @@ function analyzeUrl(url: string): {
   return { urlNormalized, isPageContextRequest, hasBaseUrl }
 }
 
-function addComputedUrlProps<PageContext extends Record<string, unknown> & { url: string }>(
-  pageContext: PageContext
-): asserts pageContext is PageContext & PageContextUrls {
-  if ('urlNormalized' in pageContext) {
-    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlNormalized')?.get === urlNormalizedGetter)
-    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlPathname')?.get === urlPathnameGetter)
-    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlParsed')?.get === urlParsedGetter)
-  } else {
-    Object.defineProperty(pageContext, 'urlNormalized', { get: urlNormalizedGetter })
-    Object.defineProperty(pageContext, 'urlPathname', { get: urlPathnameGetter })
-    Object.defineProperty(pageContext, 'urlParsed', { get: urlParsedGetter })
-  }
-}
-function urlNormalizedGetter(this: { url: string }) {
-  assert(hasProp(this, 'url', 'string'))
-  return analyzeUrl(this.url).urlNormalized
-}
-function urlPathnameGetter(this: { urlNormalized: string }) {
-  return getUrlPathname(this.urlNormalized)
-}
-function urlParsedGetter(this: { urlNormalized: string }) {
-  return getUrlParsed(this.urlNormalized)
-}
-
 async function getGlobalContext() {
-  const globalContext = {}
+  const globalContext = {
+    _getUrlNormalized: (url: string) => getUrlNormalized(url)
+  }
 
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, {

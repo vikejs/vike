@@ -12,9 +12,9 @@ import {
   isObjectWithKeys,
   assertExports
 } from './utils'
-import { addComputedUrlProps } from '../node/renderPage'
 // @ts-ignore
 import * as pathToRegexp from '@brillout/path-to-regexp'
+import { addComputedUrlProps } from './addComputedurlProps'
 
 export { route }
 export { loadPageRoutes }
@@ -34,6 +34,7 @@ type PageContextForRoute = {
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: null | OnBeforeRouteHook
+  _getUrlNormalized: (url: string) => string
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
 async function route(

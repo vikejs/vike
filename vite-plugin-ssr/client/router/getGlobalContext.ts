@@ -1,6 +1,6 @@
 import { getAllPageFiles } from '../../shared/getPageFiles'
 import { getAllPageIds, loadPageRoutes } from '../../shared/route'
-import { assert, hasProp, objectAssign, PromiseType } from '../../shared/utils'
+import { assert, handleUrlOrigin, hasProp, objectAssign, PromiseType } from '../../shared/utils'
 
 export { getGlobalContext }
 export type { ServerFiles }
@@ -16,7 +16,10 @@ async function getGlobalContext() {
 
 type ServerFiles = { filePath: string; fileExports: { exportsOnBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
-  const globalContext = {}
+  const globalContext = {
+    _getUrlNormalized: (url: string) => getUrlNormalized(url)
+  }
+
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, { _allPageFiles: allPageFiles })
 
@@ -39,4 +42,11 @@ async function retrieveGlobalContext() {
   objectAssign(globalContext, { _serverFiles: serverFiles })
 
   return globalContext
+}
+
+function getUrlNormalized(url: string) {
+  assert(url)
+  const urlNormalized = handleUrlOrigin(url).urlWithoutOrigin
+  assert(urlNormalized.startsWith('/'))
+  return urlNormalized
 }
