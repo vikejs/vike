@@ -1,6 +1,7 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import PageWrapper from './PageWrapper.vue'
 import type { Component, PageContext } from './types'
+import { setPageContext } from './usePageContext'
 
 export { createApp }
 
@@ -43,8 +44,9 @@ function createApp(pageContext: PageContext) {
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
-  // We make `pageContext` accessible from any Vue component, see https://vite-plugin-ssr.com/pageContext-anywhere
-  app.provide('pageContext', pageContextReactive)
+
+  // Make `pageContext` accessible from any Vue component
+  setPageContext(app, pageContextReactive)
 
   return app
 }
