@@ -270,7 +270,7 @@ async function manipulateStream<StreamType extends Stream>(
             writableOriginal.write(c)
           }
           if (buffer.length !== 0) {
-            buffer.forEach(c => write(c))
+            buffer.forEach((c) => write(c))
             buffer.length = 0
           }
           write(chunk)
@@ -321,7 +321,7 @@ async function manipulateStream<StreamType extends Stream>(
             writerOriginal.write(encodeForWebStream(c))
           }
           if (buffer.length !== 0) {
-            buffer.forEach(c => write(c))
+            buffer.forEach((c) => write(c))
             buffer.length = 0
           }
           write(chunk)
