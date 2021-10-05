@@ -9,7 +9,9 @@ function dev(): Plugin {
     config: () => ({
       ssr: { external: ['vite-plugin-ssr'] },
       optimizeDeps: {
-        entries: ['**/*.page.*([a-zA-Z0-9])', '**/*.page.client.*([a-zA-Z0-9])']
+        entries: ['**/*.page.*([a-zA-Z0-9])', '**/*.page.client.*([a-zA-Z0-9])'],
+        exclude: ['vite-plugin-ssr/client'],
+        include: ['@brillout/libassert']
       }
     })
   }
