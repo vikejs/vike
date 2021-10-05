@@ -8,6 +8,7 @@
  */
 
 import type { Plugin } from 'vite'
+import { assert } from '../../shared/utils'
 import { isSSR } from './utils'
 
 export { packageJsonFile }
@@ -21,6 +22,7 @@ function packageJsonFile(): Plugin {
       ssr = isSSR(config)
     },
     generateBundle() {
+      assert(typeof ssr === 'boolean')
       if (!ssr) return
       this.emitFile({
         fileName: `package.json`,
