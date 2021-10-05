@@ -158,6 +158,9 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   assert(htmlString)
   assert(typeof htmlString === 'string')
 
+  // Ensure existence of `<head>` (Vite's `transformIndexHtml()` is buggy when `<head>` is missing)
+  htmlString = ensureHeadTagExistence(htmlString)
+
   // Inject Vite transformations
   const { urlNormalized } = pageContext
   assert(typeof urlNormalized === 'string')
@@ -215,10 +218,7 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 }
 
 const pageInfoInjectionBegin = '<script>window.__vite_plugin_ssr__pageContext'
-function injectPageInfo(
-  htmlString: string,
-  pageContext: { _pageId: string; _passToClient: string[] }
-): string {
+function injectPageInfo(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
   const pageContextSerialized = serializePageContextClientSide(pageContext, 'inlineScript')
   const injection = `${pageInfoInjectionBegin} = ${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
@@ -239,8 +239,8 @@ function injectLinkTags(htmlString: string, linkTags: string[]): string {
   return injectBegin(htmlString, injection)
 }
 
+const headOpen = /<head[^>]*>/
 function injectBegin(htmlString: string, injection: string): string {
-  const headOpen = /<head[^>]*>/
   if (headOpen.test(htmlString)) {
     return injectAtOpeningTag(htmlString, headOpen, injection)
   }
@@ -334,4 +334,12 @@ function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
     return `<link rel="preload" href="${src}"${attributeAs}${attributeType}>`
   }
   assert(false)
+}
+
+function ensureHeadTagExistence(htmlString: string): string {
+  if (headOpen.test(htmlString)) {
+    return htmlString
+  }
+  htmlString = injectBegin(htmlString, '<head></head>')
+  return htmlString
 }
