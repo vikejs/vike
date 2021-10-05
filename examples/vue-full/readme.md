@@ -11,7 +11,7 @@ Features:
  - Markdown
  - Error Page
  - Active Links
- - Access `pageContext` from any component
+ - Access `pageContext` from any Vue component
  - HTML streaming
 
 To run it:

@@ -23,7 +23,7 @@ function createApp(pageContext: PageContext) {
 
   const app = createSSRApp(PageWithLayout)
 
-  // Make `pageContext` available from any component
+  // Make `pageContext` available from any Vue component
   setPageContext(app, pageContext)
 
   return app
