@@ -12,6 +12,7 @@ import { throttle } from '../../shared/utils/throttle'
 import { getPageContext } from './getPageContext'
 import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContext } from '../releasePageContext'
+import { getGlobalContext } from './getGlobalContext'
 
 export { useClientRouter }
 export { navigate }
@@ -72,7 +73,14 @@ function useClientRouter({
       }
     }
 
-    const pageContext = await getPageContext(url, navigationState.noNavigationChangeYet)
+    const globalContext = await getGlobalContext()
+    const pageContext = {
+      url,
+      _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
+      ...globalContext
+    }
+    const pageContextAddendum = await getPageContext(pageContext)
+    objectAssign(pageContext, pageContextAddendum)
     const pageFiles = await loadPageFiles(pageContext)
     objectAssign(pageContext, pageFiles)
 

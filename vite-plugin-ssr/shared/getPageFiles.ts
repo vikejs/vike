@@ -78,10 +78,7 @@ async function getAllPageFiles(): Promise<AllPageFiles> {
   return allPageFiles
 }
 
-function findPageFile<T>(
-  pageFiles: { filePath: string; loadFile: T }[],
-  pageId: string
-): { filePath: string; loadFile: T } | null {
+function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
   pageFiles = pageFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
     assert(pageId.startsWith('/'))

@@ -19,6 +19,7 @@ import * as pathToRegexp from '@brillout/path-to-regexp'
 export { route }
 export { loadPageRoutes }
 export type { PageRoutes }
+export type { PageContextForRoute }
 
 export { getAllPageIds }
 export { getErrorPageId }
@@ -27,14 +28,17 @@ export { isStaticRoute }
 
 type PageId = string
 
-type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
-async function route(pageContext: {
+type PageContextForRoute = {
   url: string
   _allPageIds: string[]
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: null | OnBeforeRouteHook
-}): Promise<
+}
+type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
+async function route(
+  pageContext: PageContextForRoute
+): Promise<
   | HookError
   | { pageContextAddendum: { _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown> }
 > {

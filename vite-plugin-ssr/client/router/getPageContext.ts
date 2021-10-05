@@ -1,25 +1,47 @@
 import { navigationState } from '../navigationState'
-import { assert, getFileUrl, hasProp, isPlainObject, throwError } from '../../shared/utils'
+import { assert, getFileUrl, hasProp, isPlainObject, objectAssign, throwError } from '../../shared/utils'
 import { parse } from '@brillout/json-s'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
+import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'
+import { ServerFiles } from './getGlobalContext'
+import { PageContextForRoute, route } from '../../shared/route'
 
 export { getPageContext }
 
 async function getPageContext(
-  url: string,
-  useOriginalDataWhenPossible: boolean = true
+  pageContext: {
+    url: string
+    _serverFiles: ServerFiles
+  } & PageContextForRoute
 ): Promise<{ _pageId: string } & Record<string, unknown>> {
-  if (navigationState.isOriginalUrl(url) && useOriginalDataWhenPossible) {
-    const pageContext = getPageContextSerializedInHtml()
-    return pageContext
+  if (navigationState.isOriginalUrl(pageContext.url)) {
+    const pageContextAddendum = getPageContextSerializedInHtml()
+    return pageContextAddendum
   } else {
-    const pageContext = await retrievePageContext(url)
-    return pageContext
+    const pageContextAddendum = await retrievePageContext(pageContext)
+    return pageContextAddendum
   }
 }
 
-async function retrievePageContext(url: string): Promise<{ _pageId: string } & Record<string, unknown>> {
-  const response = await fetch(getFileUrl(url, '.pageContext.json', true))
+async function retrievePageContext(
+  pageContext: {
+    url: string
+    _serverFiles: ServerFiles
+  } & PageContextForRoute
+): Promise<{ _pageId: string } & Record<string, unknown>> {
+  const routeResult = await route(pageContext)
+  if ('hookError' in routeResult) {
+    throw routeResult.hookError
+  }
+  objectAssign(pageContext, routeResult.pageContextAddendum)
+  assert(pageContext._pageId !== null)
+  assert(hasProp(pageContext, '_pageId', 'string'))
+
+  if (!hasServerSideOnBeforeRenderHook(pageContext)) {
+    return pageContext
+  }
+
+  const response = await fetch(getFileUrl(pageContext.url, '.pageContext.json', true))
 
   // Static hosts will return a 404
   if (response.status === 404) {
@@ -36,13 +58,27 @@ async function retrievePageContext(url: string): Promise<{ _pageId: string } & R
   }
 
   assert(hasProp(responseObject, 'pageContext'))
-  const { pageContext } = responseObject
-  assert(isPlainObject(pageContext))
-  assert(hasProp(pageContext, '_pageId', 'string'))
+  const pageContextAddendum = responseObject.pageContext
+  assert(isPlainObject(pageContextAddendum))
+  assert(hasProp(pageContextAddendum, '_pageId', 'string'))
 
-  return pageContext
+  return pageContextAddendum
 
   function fallbackToServerSideRouting() {
-    window.location.pathname = url
+    window.location.pathname = pageContext.url
   }
+}
+
+function hasServerSideOnBeforeRenderHook(pageContext: { _serverFiles: ServerFiles; _pageId: string }): boolean {
+  const serverFiles = pageContext._serverFiles
+  const pageId = pageContext._pageId
+  const serverFileDefault = findDefaultFile(serverFiles, pageId)
+  if (serverFileDefault?.fileExports.exportsOnBeforeRender) {
+    return true
+  }
+  const serverFilePage = findPageFile(serverFiles, pageId)
+  if (serverFilePage?.fileExports.exportsOnBeforeRender) {
+    return true
+  }
+  return false
 }
