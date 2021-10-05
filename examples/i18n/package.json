@@ -7,7 +7,7 @@
     "express": "^4.17.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "vite": "^2.5.10",
+    "vite": "^2.6.2",
     "vite-plugin-ssr": "0.3.7"
   },
   "type": "module"
