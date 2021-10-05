@@ -1,12 +1,12 @@
 import { getSsrEnv } from '../node/ssrEnv'
-import { assert, assertUsage, hasProp, isBrowser } from './utils'
+import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst } from './utils'
 
 export type { AllPageFiles }
 export type { PageFile }
-export { getAllPageFiles_clientSide }
-export { getAllPageFiles_serverSide }
+export { getAllPageFiles }
 export { findPageFile }
 export { findDefaultFiles }
+export { findDefaultFile }
 
 export { setPageFiles }
 export { setPageFilesAsync }
@@ -39,7 +39,7 @@ type PageFileUnprocessed = Record<PageFile['filePath'], PageFile['loadFile']>
 //*
 type AllPageFilesUnproccessed = {
   '.page': PageFileUnprocessed
-  '.page.server': PageFileUnprocessed | undefined
+  '.page.server': PageFileUnprocessed
   '.page.route': PageFileUnprocessed
   '.page.client': PageFileUnprocessed
 }
@@ -48,19 +48,8 @@ type AllPageFilesUnproccessed = Record<FileType, PageFileUnprocessed>
 //*/
 
 type AllPageFiles = Record<FileType, PageFile[]>
-type AllPageFiles_clientSide = Omit<AllPageFiles, '.page.server'>
 
-async function getAllPageFiles_clientSide(): Promise<AllPageFiles_clientSide> {
-  return await getAllPageFiles()
-}
-async function getAllPageFiles_serverSide(): Promise<AllPageFiles> {
-  const allPageFiles = await getAllPageFiles()
-  assert(allPageFiles['.page.server'] !== undefined)
-  assert(hasProp(allPageFiles, '.page.server', 'array'))
-  return allPageFiles
-}
-
-async function getAllPageFiles() {
+async function getAllPageFiles(): Promise<AllPageFiles> {
   if (asyncSetter) {
     const ssrEnv = getSsrEnv()
     if (
@@ -82,9 +71,7 @@ async function getAllPageFiles() {
   const allPageFiles = {
     '.page': tranform(allPageFilesUnprocessed['.page']),
     '.page.route': tranform(allPageFilesUnprocessed['.page.route']),
-    '.page.server': !allPageFilesUnprocessed['.page.server']
-      ? undefined
-      : tranform(allPageFilesUnprocessed['.page.server']),
+    '.page.server': tranform(allPageFilesUnprocessed['.page.server']),
     '.page.client': tranform(allPageFilesUnprocessed['.page.client'])
   }
 
@@ -127,4 +114,18 @@ function assertNotAlreadyLoaded() {
   const globalObject: any = isBrowser() ? window : global
   assert(!globalObject[alreadyLoaded])
   globalObject[alreadyLoaded] = true
+}
+
+function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
+  const defautFiles = findDefaultFiles(pageFiles)
+
+  // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
+  defautFiles.sort(
+    lowerFirst(({ filePath }) => {
+      if (filePath.startsWith(pageId)) return -1
+      return getPathDistance(pageId, filePath)
+    })
+  )
+
+  return defautFiles[0] || null
 }

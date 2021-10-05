@@ -1,13 +1,11 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
-import { AllPageFiles, getAllPageFiles_serverSide, findPageFile, findDefaultFiles } from '../shared/getPageFiles'
+import { AllPageFiles, getAllPageFiles, findPageFile, findDefaultFiles, findDefaultFile } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
-import { posix as pathPosix } from 'path'
 import { stringify } from '@brillout/json-s'
 import {
   assert,
   assertUsage,
-  lowerFirst,
   isCallable,
   assertWarning,
   hasProp,
@@ -223,7 +221,7 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     return pageContext
   }
 
-  const allPageFiles = await getAllPageFiles_serverSide()
+  const allPageFiles = await getAllPageFiles()
   objectAssign(pageContext, {
     _allPageFiles: allPageFiles
   })
@@ -828,25 +826,6 @@ function assertKeys<Keys extends readonly string[]>(
   )
 }
 
-function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
-  const defautFiles = findDefaultFiles(pageFiles)
-
-  // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
-  defautFiles.sort(
-    lowerFirst(({ filePath }) => {
-      if (filePath.startsWith(pageId)) return -1
-      assert(!filePath.includes('\\'))
-      assert(!pageId.includes('\\'))
-      const relativePath = pathPosix.relative(pageId, filePath)
-      assert(!relativePath.includes('\\'))
-      const changeDirCount = relativePath.split('/').length
-      return changeDirCount
-    })
-  )
-
-  return defautFiles[0] || null
-}
-
 function assertArguments(...args: unknown[]) {
   const pageContext = args[0]
   assertUsage(pageContext, '`renderPage(pageContext)`: argument `pageContext` is missing.')
@@ -1023,7 +1002,7 @@ function urlParsedGetter(this: { urlNormalized: string }) {
 async function getGlobalContext() {
   const globalContext = {}
 
-  const allPageFiles = await getAllPageFiles_serverSide()
+  const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, {
     _allPageFiles: allPageFiles
   })
