@@ -100,6 +100,7 @@ function assertPassToClientDisable(prop: string) {
 // Remove propery descriptor getters because they break Vue's reactivity
 function resolveGetters(pageContext: Record<string, unknown>) {
   Object.entries(pageContext).forEach(([key, val]) => {
+    delete pageContext[key]
     pageContext[key] = val
   })
 }

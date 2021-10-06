@@ -18,8 +18,16 @@ function addComputedUrlProps<
       enumerable: true,
       configurable: true
     })
-    Object.defineProperty(pageContext, 'urlPathname', { get: urlPathnameGetter, enumerable: true, configurable: true })
-    Object.defineProperty(pageContext, 'urlParsed', { get: urlParsedGetter, enumerable: true, configurable: true })
+    Object.defineProperty(pageContext, 'urlPathname', {
+      get: urlPathnameGetter,
+      enumerable: true,
+      configurable: true
+    })
+    Object.defineProperty(pageContext, 'urlParsed', {
+      get: urlParsedGetter,
+      enumerable: true,
+      configurable: true
+    })
   }
 }
 function urlNormalizedGetter(this: { url: string; _getUrlNormalized: (url: string) => string }) {
