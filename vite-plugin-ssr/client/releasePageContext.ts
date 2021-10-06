@@ -58,11 +58,14 @@ function assertPassToClient(
     // We cannot infer `passToClient` if we didn't receive any `pageContext` from the server
     return
   }
+  if (!isMissing) {
+    return
+  }
   const passToClientInferred = Object.keys(pageContext._pageContextRetrievedFromServer).filter(
     (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop)
   )
   assertUsage(
-    !isMissing,
+    false,
     [
       `\`pageContext.${prop}\` is not available in the browser.`,
       `Make sure that \`passToClient.includes('${prop}')\`.`,
