@@ -1,6 +1,7 @@
 import {
   assert,
   assertUsage,
+  assertWarning,
   getUrlFull,
   getUrlFullWithoutHash,
   hasProp,
@@ -25,6 +26,7 @@ let isFirstPageRender: boolean = true
 
 function useClientRouter({
   render,
+  ensureHydration = false,
   onTransitionStart,
   onTransitionEnd
 }: {
@@ -34,10 +36,15 @@ function useClientRouter({
   render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
+  ensureHydration?: boolean
 }): {
   hydrationPromise: Promise<void>
 } {
   assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
+  assertWarning(
+    isVueApp() && ensureHydration !== true,
+    'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.'
+  )
   isAlreadyCalled = true
   autoSaveScrollPosition()
 
@@ -64,6 +71,11 @@ function useClientRouter({
   return { hydrationPromise }
 
   async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
+    if (ensureHydration) {
+      if (callCount !== 0) {
+        await hydrationPromise
+      }
+    }
     const callNumber = ++callCount
 
     if (!isFirstPageRender) {
@@ -114,7 +126,6 @@ function useClientRouter({
     assert(renderPromise === undefined)
     const wasFirstPageRender = isFirstPageRender
     renderPromise = (async () => {
-      assert(pageContext._pageId)
       const isHydration = isFirstPageRender && pageContext._pageContextComesFromHtml
       isFirstPageRender = false
       objectAssign(pageContext, { isHydration })
@@ -326,4 +337,13 @@ function onPageShow(listener: () => void) {
       listener()
     }
   })
+}
+
+function isVueApp() {
+  return typeof window.__VUE__ !== 'undefined'
+}
+declare global {
+  interface Window {
+    __VUE__?: true
+  }
 }

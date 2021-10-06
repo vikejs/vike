@@ -15,6 +15,8 @@ const { hydrationPromise } = useClientRouter({
     }
     document.title = getPageTitle(pageContext)
   },
+  // Vue needs the first render to be a hydration
+  ensureHydration: true,
   onTransitionStart,
   onTransitionEnd
 })

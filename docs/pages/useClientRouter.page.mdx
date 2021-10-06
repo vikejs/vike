@@ -38,6 +38,14 @@ const { hydrationPromise } = useClientRouter({
       await render(pageContext.Page)
     }
   },
+
+  // If we set `ensureHydration: true` then `vite-plugin-ssr` ensures that the first render is a
+  // hydration (i.e. the first `render()` call is never interrupted even if a user clicks on a link)
+  // If we use Vue, we set `ensureHydration: true` to avoid "Hydration Mismatch" errors.
+  // If we use React, we leave `ensureHydration: false` for a slight performance boost.
+  ensureHydration: true,
+
+  // To create custom page transition animations
   onTransitionStart,
   onTransitionEnd
 })
