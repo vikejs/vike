@@ -402,6 +402,8 @@ async function manipulateStream<StreamType extends Stream>(
 
   if (isStreamReadableNode(streamOriginal)) {
     const readableNodeOriginal: StreamReadableNode = streamOriginal
+    // Vue doesn't always set the `read()` handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375
+    readableNodeOriginal._read = readableNodeOriginal._read || function () {}
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
     const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
