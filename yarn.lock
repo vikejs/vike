@@ -374,10 +374,10 @@
   resolved "https://registry.yarnpkg.com/@brillout/libassert/-/libassert-0.4.2.tgz#e536e86edd4799796c95c436f05298c8ab1504f9"
   integrity sha512-8B3gmpeOlwnrWQh5c1lxBIKeUs7dGAxTt8q5hjlNuFZdGsV+AByoD6oQRmvCOHcu7bEQW7lYRIN8gfAIwqvYUQ==
 
-"@brillout/path-to-regexp@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@brillout/path-to-regexp/-/path-to-regexp-0.1.2.tgz#f6d415d3dc61c54e2ef59155a4df56e36c8eaf7f"
-  integrity sha512-hGwx0UhXfUmuQlzVv5799k1MkXh/Q6EOxUMDS0cf9iD2ZXMG6INUkkvK2I5rFRH0WD2bqnndnoN1dgaCRo8w7w==
+"@brillout/path-to-regexp@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@brillout/path-to-regexp/-/path-to-regexp-0.2.3.tgz#2e7333ddefd45506599b8cd27e2b41ca636893b9"
+  integrity sha512-+Q0F9Ni0Ux9ULQ+gTqddZNGYhnsEv8py1lsY35hkBTCwSTQDCt4iQe6chX5Q6zleu8PNQ7EGigKlRr/xmAWNnQ==
   dependencies:
     path-to-regexp "^1.7.0"
 
