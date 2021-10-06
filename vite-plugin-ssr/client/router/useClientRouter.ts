@@ -42,7 +42,7 @@ function useClientRouter({
 } {
   assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
   assertWarning(
-    isVueApp() && ensureHydration !== true,
+    !(isVueApp() && ensureHydration !== true),
     'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.'
   )
   isAlreadyCalled = true
