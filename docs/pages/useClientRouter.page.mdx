@@ -39,9 +39,9 @@ const { hydrationPromise } = useClientRouter({
     }
   },
 
-  // If `ensureHydration: true` then `vite-plugin-ssr` ensures that the first render is
-  // a hydration. I.e., the first `render()` call is never interrupted — even if a user
-  // clicks on a link. Default value: `false`.
+  // If `ensureHydration: true` then `vite-plugin-ssr` ensures that the first render is always
+  // a hydration. I.e. the first `render()` call is never interrupted — even if the user clicks
+  // on a link. Default value: `false`.
   // If we use Vue, we set `ensureHydration: true` to avoid "Hydration Mismatch" errors.
   // If we use React, we leave `ensureHydration: false` for a slight performance boost.
   ensureHydration: true,
