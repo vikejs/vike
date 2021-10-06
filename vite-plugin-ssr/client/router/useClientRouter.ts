@@ -22,7 +22,6 @@ setupNativeScrollRestoration()
 
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
-const urlFullOriginal = getUrlFull()
 
 function useClientRouter({
   render,
@@ -75,15 +74,29 @@ function useClientRouter({
     }
 
     const globalContext = await getGlobalContext()
+    if (callNumber !== callCount) {
+      // Abort since there is a newer call.
+      return
+    }
     const pageContext = {
       url,
       _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
       ...globalContext
     }
     addComputedUrlProps(pageContext)
+
     const pageContextAddendum = await getPageContext(pageContext)
+    if (callNumber !== callCount) {
+      // Abort since there is a newer call.
+      return
+    }
     objectAssign(pageContext, pageContextAddendum)
+
     const pageFiles = await loadPageFiles(pageContext)
+    if (callNumber !== callCount) {
+      // Abort since there is a newer call.
+      return
+    }
     objectAssign(pageContext, pageFiles)
 
     if (renderPromise) {
@@ -91,7 +104,6 @@ function useClientRouter({
       // otherwise that previous render may finish after this one.
       await renderPromise
     }
-
     if (callNumber !== callCount) {
       // Abort since there is a newer call.
       return
@@ -100,21 +112,24 @@ function useClientRouter({
     changeUrl(url)
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
+    const wasFirstPageRender = isFirstPageRender
     renderPromise = (async () => {
-      objectAssign(pageContext, { isHydration: isFirstPageRender && url === urlFullOriginal })
+      assert(pageContext._pageId)
+      const isHydration = isFirstPageRender && pageContext._pageContextComesFromHtml
+      isFirstPageRender = false
+      objectAssign(pageContext, { isHydration })
       const pageContextProxy = releasePageContext(pageContext)
       await render(pageContextProxy)
     })()
     await renderPromise
     renderPromise = undefined
 
-    if (isFirstPageRender) {
+    if (wasFirstPageRender) {
       resolveInitialPagePromise()
     } else if (callNumber === callCount) {
       onTransitionEnd()
       isTransitioning = false
     }
-    isFirstPageRender = false
 
     setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()

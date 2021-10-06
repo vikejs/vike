@@ -9,7 +9,7 @@ import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
 export { render };
 export { passToClient };
 
-const passToClient = ["pageProps", "documentProps", "urlPathname"] as const;
+const passToClient = ["pageProps", "documentProps"];
 
 function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext;

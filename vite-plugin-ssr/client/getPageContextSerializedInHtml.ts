@@ -6,6 +6,7 @@ export { getPageContextSerializedInHtml }
 function getPageContextSerializedInHtml(): {
   _pageId: string
   _pageContextRetrievedFromServer: Record<string, unknown>
+  _pageContextComesFromHtml: true
 } & Record<string, unknown> {
   assertUsage(
     '__vite_plugin_ssr__pageContext' in window,
@@ -20,11 +21,13 @@ function getPageContextSerializedInHtml(): {
   }
 
   objectAssign(pageContext, {
-    _pageContextRetrievedFromServer: { ...pageContext }
+    _pageContextRetrievedFromServer: { ...pageContext },
+    _pageContextComesFromHtml: true as const
   })
 
   return pageContext
 }
+
 declare global {
   interface Window {
     __vite_plugin_ssr__pageContext: Record<string, unknown>

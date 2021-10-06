@@ -15,6 +15,9 @@ function releasePageContext<
   assert(isObject(pageContext.pageExports))
   assert([true, false].includes(pageContext.isHydration))
 
+  // For Vue's reactivity
+  resolveGetters(pageContext)
+
   // For prettier `console.log(pageContext)`
   sortPageContext(pageContext)
 
@@ -45,6 +48,14 @@ function getPageContextProxy<
 
   function get(_: never, prop: string) {
     assertPassToClient(pageContext, prop, isMissing(prop))
+
+    // We disable `assertPassToClient` for the next attempt to read `prop`, because of how Vue's reactivity work.
+    // (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
+    assertPassToClientDisable(prop)
+    window.setTimeout(() => {
+      assertPassToClientEnable()
+    }, 0)
+
     return pageContext[prop]
   }
 }
@@ -56,6 +67,9 @@ function assertPassToClient(
 ) {
   if (pageContext._pageContextRetrievedFromServer === null) {
     // We cannot infer `passToClient` if we didn't receive any `pageContext` from the server
+    return
+  }
+  if (assertPassToClientDisabled === prop) {
     return
   }
   if (!isMissing) {
@@ -73,4 +87,19 @@ function assertPassToClient(
       'More infos at https://vite-plugin-ssr.com/passToClient'
     ].join(' ')
   )
+}
+
+let assertPassToClientDisabled: false | string = false
+function assertPassToClientEnable() {
+  assertPassToClientDisabled = false
+}
+function assertPassToClientDisable(prop: string) {
+  assertPassToClientDisabled = prop
+}
+
+// Remove propery descriptor getters because they break Vue's reactivity
+function resolveGetters(pageContext: Record<string, unknown>) {
+  Object.entries(pageContext).forEach(([key, val]) => {
+    pageContext[key] = val
+  })
 }

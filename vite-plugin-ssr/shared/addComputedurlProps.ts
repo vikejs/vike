@@ -13,9 +13,13 @@ function addComputedUrlProps<
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlPathname')?.get === urlPathnameGetter)
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlParsed')?.get === urlParsedGetter)
   } else {
-    Object.defineProperty(pageContext, 'urlNormalized', { get: urlNormalizedGetter })
-    Object.defineProperty(pageContext, 'urlPathname', { get: urlPathnameGetter })
-    Object.defineProperty(pageContext, 'urlParsed', { get: urlParsedGetter })
+    Object.defineProperty(pageContext, 'urlNormalized', {
+      get: urlNormalizedGetter,
+      enumerable: true,
+      configurable: true
+    })
+    Object.defineProperty(pageContext, 'urlPathname', { get: urlPathnameGetter, enumerable: true, configurable: true })
+    Object.defineProperty(pageContext, 'urlParsed', { get: urlParsedGetter, enumerable: true, configurable: true })
   }
 }
 function urlNormalizedGetter(this: { url: string; _getUrlNormalized: (url: string) => string }) {

@@ -14,7 +14,11 @@ async function getPageContext(
     _serverFiles: ServerFiles
   } & PageContextForRoute
 ): Promise<
-  { _pageId: string; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<string, unknown>
+  {
+    _pageId: string
+    _pageContextRetrievedFromServer: null | Record<string, unknown>
+    _pageContextComesFromHtml: boolean
+  } & Record<string, unknown>
 > {
   if (navigationState.isOriginalUrl(pageContext.url)) {
     const pageContextAddendum = getPageContextSerializedInHtml()
@@ -42,7 +46,9 @@ async function retrievePageContext(
   }
   assert(hasProp(routeResult.pageContextAddendum, '_pageId', 'string'))
 
-  const pageContextAddendum = {}
+  const pageContextAddendum = {
+    _pageContextComesFromHtml: false
+  }
   objectAssign(pageContextAddendum, routeResult.pageContextAddendum)
 
   if (!hasServerSideOnBeforeRenderHook({ ...pageContext, ...pageContextAddendum })) {
@@ -107,7 +113,7 @@ function deleteRedundantPageContext(pageContext: Record<string, unknown> & { [ke
         assert(prop.startsWith('url'))
         assertWarning(
           false,
-          `\`pageContext.${prop}\` is already available on the browser-side when using \`useClientRouter()\`; including \`${prop}\` in \`passToClient\` has no effect.`
+          `\`pageContext.${prop}\` is already available in the browser when using \`useClientRouter()\`; including \`${prop}\` in \`passToClient\` has no effect.`
         )
       } else {
         assertWarning(
