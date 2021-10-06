@@ -13,6 +13,7 @@ import { getPageContext } from './getPageContext'
 import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
+import { addComputedUrlProps } from '../../shared/addComputedurlProps'
 
 export { useClientRouter }
 export { navigate }
@@ -79,6 +80,7 @@ function useClientRouter({
       _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
       ...globalContext
     }
+    addComputedUrlProps(pageContext)
     const pageContextAddendum = await getPageContext(pageContext)
     objectAssign(pageContext, pageContextAddendum)
     const pageFiles = await loadPageFiles(pageContext)

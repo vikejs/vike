@@ -5,8 +5,7 @@ export { transformPageServerFiles }
 
 function transformPageServerFiles(): Plugin {
   return {
-    name: 'vite-plugin-ssr:packageJsonFile',
-    apply: 'build',
+    name: 'vite-plugin-ssr:transformPageServerFiles',
     async transform(src, id, ssr) {
       if (ssr) {
         return
@@ -16,10 +15,12 @@ function transformPageServerFiles(): Plugin {
       }
       await init
       const exports = parse(src)[1]
-      const exportsOnBeforeRender = 'onBeforeRender' in exports ? 'true' : 'false'
+      const exportsOnBeforeRender = exports.includes('onBeforeRender') ? 'true' : 'false'
       return {
         code: `export const exportsOnBeforeRender = ${exportsOnBeforeRender};`,
-        map: null
+        // Remove Source Map to save KBs
+        //  - https://rollupjs.org/guide/en/#source-code-transformations
+        map: { mappings: '' }
       }
     }
   } as Plugin
