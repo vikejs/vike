@@ -22,7 +22,8 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "stripInternal": true
+    "stripInternal": true,
+    "types": ["vite/client"]
   },
   "exclude": ["./dist/"]
 }
