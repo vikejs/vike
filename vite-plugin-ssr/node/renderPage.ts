@@ -22,7 +22,7 @@ import {
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
-import { loadPageView } from '../shared/loadPageView'
+import { loadPageMainFiles } from '../shared/loadPageMainFiles'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
   getStreamReadableNode,
@@ -483,7 +483,7 @@ function assert_pageServerFile(pageServerFile: {
 }
 
 async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllPageFiles; _isPreRendering: boolean }) {
-  const pageView = await loadPageView(pageContext)
+  const pageView = await loadPageMainFiles(pageContext)
   const pageClientPath = getPageClientPath(pageContext)
 
   const { pageServerFile, pageServerFileDefault } = await loadPageServerFiles(pageContext)

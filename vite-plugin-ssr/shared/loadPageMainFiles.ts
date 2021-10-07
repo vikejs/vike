@@ -1,9 +1,9 @@
 import { AllPageFiles, findPageFile } from './getPageFiles'
 import { assert, assertUsage, isObject } from './utils'
 
-export { loadPageView }
+export { loadPageMainFiles }
 
-async function loadPageView(pageContext: { _pageId: string; _allPageFiles: Pick<AllPageFiles, '.page'> }) {
+async function loadPageMainFiles(pageContext: { _pageId: string; _allPageFiles: Pick<AllPageFiles, '.page'> }) {
   const allPageFiles = pageContext._allPageFiles
   const pageId = pageContext._pageId
 
