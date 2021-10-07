@@ -15,20 +15,25 @@ import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
+import { route } from '../../shared/route'
 
 export { useClientRouter }
 export { navigate }
+export { prefetchUrl }
 
 setupNativeScrollRestoration()
 
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
 
+type PrefetchStrategy = 'inViewport' | 'onHover'
+
 function useClientRouter({
   render,
   ensureHydration = false,
   onTransitionStart,
-  onTransitionEnd
+  onTransitionEnd,
+  prefetch = 'onHover'
 }: {
   // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
   // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
@@ -36,7 +41,8 @@ function useClientRouter({
   render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
-  ensureHydration?: boolean
+  ensureHydration?: boolean,
+  prefetch: PrefetchStrategy
 }): {
   hydrationPromise: Promise<void>
 } {
@@ -131,6 +137,9 @@ function useClientRouter({
       objectAssign(pageContext, { isHydration })
       const pageContextProxy = releasePageContext(pageContext)
       await render(pageContextProxy)
+      if(import.meta.env.PROD) {
+        addLinkPrefetch(prefetch)
+      }
     })()
     await renderPromise
     renderPromise = undefined
@@ -175,6 +184,56 @@ async function navigate(url: string, { keepScrollPosition = false } = {}): Promi
   await navigateFunction(url, { keepScrollPosition })
 }
 
+async function prefetchUrl(url: string) {
+    if(isExternalLink(url)) return
+    const globalContext = await getGlobalContext()
+    const pageContext = {
+      url,
+      _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
+      ...globalContext
+    }
+    addComputedUrlProps(pageContext)
+    const routeContext = await route(pageContext)
+    if('pageContextAddendum' in routeContext) {
+      const _pageId = routeContext.pageContextAddendum._pageId
+      if(_pageId) {
+        loadPageFiles({_pageId})
+      }
+    }
+}
+
+function addLinkPrefetch(strategy: PrefetchStrategy) {
+  const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
+  linkTags.forEach(async (v) => {
+    const url = v.getAttribute('href')
+    if(url && isNotNewTabLink(v)) {
+      if(strategy === 'inViewport') {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting) {
+              prefetchUrl(url)
+            }
+          })
+        })
+        observer.observe(v)
+      } else if(strategy === 'onHover') {
+        v.addEventListener('mouseover', () => prefetchUrl(url))
+        v.addEventListener('touchstart', () => prefetchUrl(url))
+      }
+    }
+  })
+}
+
+function isExternalLink(url: string) {
+  return !url.startsWith('/') && !url.startsWith('.')
+}
+
+function isNotNewTabLink(linkTag: HTMLElement) {
+  const target = linkTag.getAttribute('target')
+  const rel = linkTag.getAttribute('rel')
+  return target !== '_blank' && target !== '_external' && rel !== 'external' && !linkTag.hasAttribute('download')
+}
+
 function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
   document.addEventListener('click', onClick)
 
@@ -190,6 +249,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     if (!isNotNewTabLink(linkTag)) return
 
     const url = linkTag.getAttribute('href')
+
     if (!url) return
     if (isExternalLink(url)) return
     if (isHashLink(url)) return
@@ -200,18 +260,8 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     callback(url, { keepScrollPosition })
   }
 
-  function isExternalLink(url: string) {
-    return !url.startsWith('/') && !url.startsWith('.')
-  }
-
   function isHashLink(url: string) {
     return url.includes('#')
-  }
-
-  function isNotNewTabLink(linkTag: HTMLElement) {
-    const target = linkTag.getAttribute('target')
-    const rel = linkTag.getAttribute('rel')
-    return target !== '_blank' && target !== '_external' && rel !== 'external' && !linkTag.hasAttribute('download')
   }
 
   function isNormalLeftClick(ev: MouseEvent): boolean {
