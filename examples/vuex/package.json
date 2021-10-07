@@ -8,7 +8,7 @@
     "@vue/server-renderer": "^3.2.19",
     "express": "^4.17.1",
     "vite": "^2.6.2",
-    "vite-plugin-ssr": "0.3.7",
+    "vite-plugin-ssr": "0.3.8",
     "vue": "^3.2.19",
     "vuex": "^4.0.0"
   }
