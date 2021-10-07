@@ -22,7 +22,7 @@ import {
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
-import { loadPageMainFiles } from '../shared/loadPageMainFiles'
+import { loadPageMainFiles, PageMainFile, PageMainFileDefault } from '../shared/loadPageMainFiles'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
   getStreamReadableNode,
@@ -49,7 +49,7 @@ export type { GlobalContext }
 export { loadOnBeforePrerenderHook }
 export { throwPrerenderError }
 
-type PageFilesData = PromiseType<ReturnType<typeof loadPageFiles>>
+type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
@@ -117,8 +117,8 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     })
   }
 
-  const pageFilesData = await loadPageFiles(pageContext)
-  objectAssign(pageContext, pageFilesData)
+  const pageFiles = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFiles)
 
   const hookResult = await executeOnBeforeRenderHook(pageContext)
   if ('hookError' in hookResult) {
@@ -239,8 +239,8 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     _pageId: errorPageId
   })
 
-  const pageFilesData = await loadPageFiles(pageContext)
-  objectAssign(pageContext, pageFilesData)
+  const pageFiles = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFiles)
 
   // We swallow hook errors; another error was already shown to the user in the `logError()` at the beginning of this function; the second error is likely the same than the first error anyways.
   if ('_onBeforeRenderHookCalled' in pageContext) {
@@ -341,7 +341,7 @@ async function prerenderPage(
     _pageId: string
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
-  } & PageFilesData &
+  } & PageFiles &
     GlobalContext
 ) {
   assert(pageContext._isPreRendering === true)
@@ -390,8 +390,8 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
     _usesClientRouter: false
   }
 
-  const pageFilesData = await loadPageFiles(pageContext)
-  objectAssign(pageContext, pageFilesData)
+  const pageFiles = await loadPageFiles(pageContext)
+  objectAssign(pageContext, pageFiles)
 
   return prerenderPage(pageContext)
 }
@@ -483,13 +483,16 @@ function assert_pageServerFile(pageServerFile: {
 }
 
 async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllPageFiles; _isPreRendering: boolean }) {
-  const pageView = await loadPageMainFiles(pageContext)
+  const { Page, pageExports, pageMainFile, pageMainFileDefault } = await loadPageMainFiles(pageContext)
   const pageClientPath = getPageClientPath(pageContext)
 
   const { pageServerFile, pageServerFileDefault } = await loadPageServerFiles(pageContext)
 
-  const pageFilesData = {
-    ...pageView,
+  const pageFiles = {
+    Page,
+    pageExports,
+    _pageMainFile: pageMainFile,
+    _pageMainFileDefault: pageMainFileDefault,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
     _pageClientPath: pageClientPath
@@ -499,20 +502,22 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
     ...getDefaultPassToClientProps(pageContext),
     ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
   ]
-  objectAssign(pageFilesData, {
+  objectAssign(pageFiles, {
     _passToClient: passToClient
   })
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const dependencies: string[] = [pageView._pageFilePath, pageClientPath].filter((p): p is string => p !== null)
-  objectAssign(pageFilesData, {
+  const dependencies: string[] = [pageMainFile?.filePath, pageMainFileDefault?.filePath, pageClientPath].filter(
+    (p): p is string => !!p
+  )
+  objectAssign(pageFiles, {
     _getPageAssets: async () => {
       const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
       return pageAssets
     }
   })
-  return pageFilesData
+  return pageFiles
 }
 function getPageClientPath(pageContext: { _pageId: string; _allPageFiles: AllPageFiles }): string {
   const { _pageId: pageId, _allPageFiles: allPageFiles } = pageContext
@@ -658,7 +663,8 @@ type LoadedPageFiles = {
   _getPageAssets: () => Promise<PageAssets>
   _pageServerFile: PageServerFile
   _pageServerFileDefault: PageServerFile
-  _pageFilePath: string | null
+  _pageMainFile: PageMainFile
+  _pageMainFileDefault: PageMainFileDefault
   _pageClientPath: string
   _passToClient: string[]
 }
