@@ -42,7 +42,7 @@ function useClientRouter({
   onTransitionStart: () => void
   onTransitionEnd: () => void
   ensureHydration?: boolean,
-  prefetch: PrefetchStrategy
+  prefetch?: PrefetchStrategy
 }): {
   hydrationPromise: Promise<void>
 } {
