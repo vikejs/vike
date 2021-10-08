@@ -186,21 +186,21 @@ async function navigate(url: string, { keepScrollPosition = false } = {}): Promi
 }
 
 async function prefetchUrl(url: string) {
-    if(isExternalLink(url)) return
-    const globalContext = await getGlobalContext()
-    const pageContext = {
-      url,
-      _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
-      ...globalContext
+  if(isExternalLink(url)) return
+  const globalContext = await getGlobalContext()
+  const pageContext = {
+    url,
+    _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
+    ...globalContext
+  }
+  addComputedUrlProps(pageContext)
+  const routeContext = await route(pageContext)
+  if('pageContextAddendum' in routeContext) {
+    const _pageId = routeContext.pageContextAddendum._pageId
+    if(_pageId) {
+      loadPageFiles({_pageId})
     }
-    addComputedUrlProps(pageContext)
-    const routeContext = await route(pageContext)
-    if('pageContextAddendum' in routeContext) {
-      const _pageId = routeContext.pageContextAddendum._pageId
-      if(_pageId) {
-        loadPageFiles({_pageId})
-      }
-    }
+  }
 }
 
 function addLinkPrefetch(strategy: PrefetchStrategy) {
