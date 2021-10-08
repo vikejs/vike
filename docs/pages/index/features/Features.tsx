@@ -76,9 +76,9 @@ function Features() {
                 less easy than just adding a Next.js/Nuxt plugin; getting started is often slower.
               </p>
               <p>
-                But plugin systems are complex, limiting, and quickly become counterproductive. You end up spending time
-                fighting the plugin system and circumventing Next.js/Nuxt's limiting black-box nature and the net result
-                is a considerable loss in dev time.
+                But plugin systems are complex, limiting, and quickly become counterproductive. You end up fighting the
+                plugin system and needing brittle workarounds to circumvent Next.js/Nuxt's black-box limiting nature.
+                The net result is a substantial loss in dev time and frustration.
               </p>
               <p>
                 In contrast, <code>vite-plugin-ssr</code> gets out of your way and integrating a tool is simply a matter
@@ -86,6 +86,13 @@ function Features() {
               </p>
               <p>
                 In a nutshell: <code>vite-plugin-ssr</code> is less easy but simpler.
+              </p>
+              <h3>Stable foundation</h3>
+              <p>
+                Plugin systems / frameworks need to constantly keep up with the ecosystem, whereas
+                do-one-thing-do-it-well tools tend to quickly stabilize. Actually, <code>vite-plugin-ssr</code> is
+                already stable: the <code>v1</code> release will most likley have no breaking changes with the current
+                version, and the goal will be to stay on <code>v1</code> for the foreseeable future.
               </p>
               <h3>More fun</h3>
               <p>
@@ -104,13 +111,13 @@ function Features() {
           desc: (
             <>
               <p>
-                The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>.
+                The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
+                against a heavy suite of <b>automated tests</b>, and it's <b>used in production</b> by many
+                comp&shy;anies.
               </p>
               <p>
-                Every release is assailed against a heavy suite of <b>automated tests</b>.
-              </p>
-              <p>
-                <b>Used in production</b> by many comp&shy;anies.
+                <b>Stable</b>: the <code>v1</code> release will most likely have no breaking changes with the current{' '}
+                <code>v0.3.x</code>.
               </p>
             </>
           )
