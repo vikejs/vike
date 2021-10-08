@@ -645,39 +645,49 @@ async function executeOnBeforeRenderHooks(
     pageHooks: {
       onBeforeRender() {
         assertUsage(
-          pageHookWasCalled===false,
-          "You already called `pageContext.pageHooks.onBeforeRender()`; you should call it exactly once."
+          pageHookWasCalled === false,
+          'You already called `pageContext.pageHooks.onBeforeRender()`; you should call it exactly once.'
         )
         pageHookWasCalled = true
       }
-    },
+    }
   })
 
-  const exec = async (pageHook: null | undefined | OnBeforeRenderHook, defaultHook: null | undefined | OnBeforeRenderHook) => {
-    if( defaultHook ) {
-      await defaultHook.callHook()
-    }
-    if( pageHook ){
-      if( !defaultHook ) {
-         await pageHook.callHook()
-      } else {
-        assertUsage(pageHook.skipDefaultOnBeforeRender || defaultHook.hookWasCalled,
-          "TODO")
+  const exec = async (
+    pageFile: null | { onBeforeRenderHook: null | OnBeforeRenderHook; skipDefaultOnBeforeRender: boolean },
+    defaultFile: null | { onBeforeRenderHook: OnBeforeRenderHook }
+  ) => {
+    if (defaultFile?.onBeforeRenderHook && !pageFile?.skipDefaultOnBeforeRender) {
+      await defaultFile.onBeforeRenderHook.callHook()
+      if (pageFile?.onBeforeRenderHook) {
+        assertUsage(pageFile.onBeforeRenderHook.hookWasCalled, 'TODO')
+      }
+    } else {
+      if (pageFile?.onBeforeRenderHook) {
+        await pageFile.onBeforeRenderHook.callHook()
       }
     }
+    assert([true, undefined].includes(pageFile?.onBeforeRenderHook?.hookWasCalled))
+    assert([true, undefined].includes(defaultFile?.onBeforeRenderHook?.hookWasCalled))
   }
 
-  const serverHooksWereCalled = () => pageContext._pageServerFileDefault?.fileExports.onBeforeRender?.hookWasCalled!==false && pageContext._pageServerFile?.fileExports.onBeforeRender?.hookWasCalled!==false
+  const serverHooksWereCalled = () =>
+    pageContext._pageServerFileDefault?.fileExports.onBeforeRender?.hookWasCalled !== false &&
+    pageContext._pageServerFile?.fileExports.onBeforeRender?.hookWasCalled !== false
   objectAssign(pageContext, {
     retrieveServerPageContext: async () => {
-      await exec(pageContext._pageServerFile?.fileExports.onBeforeRender, pageContext._pageServerFileDefault?.fileExports.onBeforeRender)
+      await exec(
+        pageContext._pageServerFile?.fileExports.onBeforeRender,
+        pageContext._pageServerFileDefault?.fileExports.onBeforeRender
+      )
       assert(serverHooksWereCalled())
     }
   })
 
-  const pageHookExists = !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook 
-  if( !pageContext._isPageContextRequest && pageHookExists ) {
-    await exec(pageContext._pageMainFile?.onBeforeRenderHook, pageContext._pageMainFileDefault?.onBeforeRenderHook)
+  const pageHookExists =
+    !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook
+  if (!pageContext._isPageContextRequest && pageHookExists) {
+    await exec(pageContext._pageMainFile, pageContext._pageMainFileDefault)
     assertUsage(serverHooksWereCalled(), 'TODO')
     return
   }
