@@ -26,7 +26,8 @@ setupNativeScrollRestoration()
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
 
-type PrefetchStrategy = 'inViewport' | 'onHover'
+const prefetchStrategies = ['inViewport','onHover'] as const
+type PrefetchStrategy = typeof prefetchStrategies[number]
 
 function useClientRouter({
   render,
@@ -207,7 +208,12 @@ function addLinkPrefetch(strategy: PrefetchStrategy) {
   linkTags.forEach(async (v) => {
     const url = v.getAttribute('href')
     if(url && isNotNewTabLink(v)) {
-      if(strategy === 'inViewport') {
+      const override = v.getAttribute('data-prefetch')
+      if(typeof override === 'string') {
+        assertUsage(prefetchStrategies.includes(override as PrefetchStrategy), `data-prefetch got invalid value: "${override}"`)
+      }
+      const strategyWithOverride = override || strategy
+      if(strategyWithOverride === 'inViewport') {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if(entry.isIntersecting) {
@@ -216,7 +222,7 @@ function addLinkPrefetch(strategy: PrefetchStrategy) {
           })
         })
         observer.observe(v)
-      } else if(strategy === 'onHover') {
+      } else if(strategyWithOverride === 'onHover') {
         v.addEventListener('mouseover', () => prefetchUrl(url))
         v.addEventListener('touchstart', () => prefetchUrl(url))
       }
