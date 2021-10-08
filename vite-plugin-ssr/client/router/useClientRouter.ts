@@ -34,7 +34,7 @@ function useClientRouter({
   ensureHydration = false,
   onTransitionStart,
   onTransitionEnd,
-  prefetchLinks = 'onHover'
+  prefetchLinks = 'inViewport'
 }: {
   // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
   // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
@@ -138,9 +138,10 @@ function useClientRouter({
       objectAssign(pageContext, { isHydration })
       const pageContextProxy = releasePageContext(pageContext)
       await render(pageContextProxy)
-      if(import.meta.env.PROD) {
-        addLinkPrefetch(prefetchLinks)
-      }
+      //if(import.meta.env.PROD) {
+        console.log({pageContext})
+        addLinkPrefetch(prefetchLinks, url)
+      //}
     })()
     await renderPromise
     renderPromise = undefined
@@ -203,11 +204,18 @@ async function prefetchUrl(url: string) {
   }
 }
 
-function addLinkPrefetch(strategy: PrefetchStrategy) {
+// TODO 
+// - check url validity 
+// - remove hash & search from url key
+const prefetchLinksHandled = new Map<string, boolean>()
+
+function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
+  // no need to prefetch current url files
+  prefetchLinksHandled.set(currentUrl, true)
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (v) => {
     const url = v.getAttribute('href')
-    if(url && isNotNewTabLink(v)) {
+    if(url && isNotNewTabLink(v) && !isExternalLink(url) && !prefetchLinksHandled.has(url)) {
       const override = v.getAttribute('data-prefetch')
       if(typeof override === 'string') {
         assertUsage(prefetchStrategies.includes(override as PrefetchStrategy), `data-prefetch got invalid value: "${override}"`)
@@ -217,17 +225,22 @@ function addLinkPrefetch(strategy: PrefetchStrategy) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if(entry.isIntersecting) {
-              prefetchUrl(url)
+              onVisible(url)
+              observer.disconnect()
             }
           })
         })
         observer.observe(v)
       } else if(strategyWithOverride === 'onHover') {
-        v.addEventListener('mouseover', () => prefetchUrl(url))
-        v.addEventListener('touchstart', () => prefetchUrl(url))
+        v.addEventListener('mouseover', () => onVisible(url))
       }
     }
   })
+
+  function onVisible(url: string) {
+    prefetchUrl(url)
+    prefetchLinksHandled.set(url, true)
+  }
 }
 
 function isExternalLink(url: string) {
