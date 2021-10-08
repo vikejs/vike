@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    // Output
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "Node",
+    "outDir": "dist/esm/",
     // User-code
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "strict": true,
@@ -20,5 +25,7 @@
     "declaration": true,
     "declarationMap": true,
     "stripInternal": true
-  }
+  },
+  "exclude": ["./node_modules/", "./dist/"],
+  "include": ["./**/*"]
 }

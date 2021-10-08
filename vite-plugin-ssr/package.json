@@ -18,10 +18,10 @@
     "dev:client": "yarn tsc:watch:esm",
     "build": "yarn clean && yarn tsc:cjs && yarn tsc:esm",
     "========= TypeScript": "",
-    "tsc:esm": "tsc --project ./tsconfig.esm.json",
+    "tsc:esm": "tsc",
     "tsc:cjs": "tsc --project ./tsconfig.cjs.json",
-    "tsc:watch:esm": "tsc --project ./tsconfig.esm.json --incremental --watch",
-    "tsc:watch:cjs": "tsc --project ./tsconfig.cjs.json --incremental --watch",
+    "tsc:watch:esm": "tsc --incremental --watch",
+    "tsc:watch:cjs": "tsc --incremental --watch --project ./tsconfig.cjs.json",
     "========= Clean": "",
     "clean": "rm -rf dist/"
   },
