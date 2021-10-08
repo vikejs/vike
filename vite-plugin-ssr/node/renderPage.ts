@@ -22,7 +22,7 @@ import {
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
-import { loadPageMainFiles, PageMainFile, PageMainFileDefault } from '../shared/loadPageMainFiles'
+import { loadPageMainFiles, OnBeforeRenderHook, PageMainFile, PageMainFileDefault } from '../shared/loadPageMainFiles'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
   getStreamReadableNode,
@@ -120,10 +120,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   const pageFiles = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFiles)
 
-  const hookResult = await executeOnBeforeRenderHook(pageContext)
-  if ('hookError' in hookResult) {
-    return await render500Page<PageContextInit>(pageContextInit, hookResult.hookError)
-  }
+  await executeOnBeforeRenderHooks(pageContext)
 
   if (pageContext._isPageContextRequest) {
     const pageContextSerialized = serializePageContextClientSide(pageContext, 'json')
@@ -243,12 +240,15 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   objectAssign(pageContext, pageFiles)
 
   // We swallow hook errors; another error was already shown to the user in the `logError()` at the beginning of this function; the second error is likely the same than the first error anyways.
-  if ('_onBeforeRenderHookCalled' in pageContext) {
-    const hookResult = await executeOnBeforeRenderHook(pageContext)
+  if (!('_onBeforeRenderHookCalled' in pageContext)) {
+    await executeOnBeforeRenderHooks(pageContext)
+    /*
+    const hookResult = await executeOnBeforeRenderHooks(pageContext)
     if ('hookError' in hookResult) {
       warnCouldNotRender500Page(hookResult)
       return pageContext
     }
+    */
   }
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
@@ -346,13 +346,13 @@ async function prerenderPage(
 ) {
   assert(pageContext._isPreRendering === true)
 
+  objectAssign(pageContext, {
+    _isPageContextRequest: false
+  })
+
   addComputedUrlProps(pageContext)
 
-  const hookResult = await executeOnBeforeRenderHook(pageContext)
-  if ('hookError' in hookResult) {
-    throwPrerenderError(hookResult.hookError)
-    assert(false)
-  }
+  await executeOnBeforeRenderHooks(pageContext)
 
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
@@ -363,7 +363,7 @@ async function prerenderPage(
     renderHookResult.htmlRender !== null,
     "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
   )
-  assert(!('_isPageContextRequest' in pageContext))
+  assert(pageContext._isPageContextRequest === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
@@ -624,39 +624,83 @@ function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePat
   )
 }
 
-async function executeOnBeforeRenderHook(
+async function executeOnBeforeRenderHooks(
   pageContext: {
     _pageId: string
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
+    _pageMainFile: PageMainFile
+    _pageMainFileDefault: PageMainFileDefault
     _passToClient: string[]
     _pageContextAlreadyProvidedByPrerenderHook?: true
+    _isPageContextRequest: boolean
   } & PageContextPublic
-): Promise<{ hookError: unknown; hookName: string; hookFilePath: string } | {}> {
-  const onBeforeRender =
-    pageContext._pageServerFile?.fileExports.onBeforeRender ||
-    pageContext._pageServerFileDefault?.fileExports.onBeforeRender
-  if (onBeforeRender && !pageContext._pageContextAlreadyProvidedByPrerenderHook) {
-    const onBeforeRenderFilePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
-    assert(onBeforeRenderFilePath)
-    preparePageContextNode(pageContext)
-
-    Object.assign(pageContext, {
-      _onBeforeRenderHookCalled: true
-    })
-
-    let hookReturn: unknown
-    try {
-      // We use a try-catch because the hook `onBeforeRender()` is user-defined and may throw an error.
-      hookReturn = await onBeforeRender(pageContext)
-    } catch (err) {
-      return { hookError: err, hookName: 'onBeforeRender', hookFilePath: onBeforeRenderFilePath }
-    }
-    assertHookResult(hookReturn, 'onBeforeRender', ['pageContext'] as const, onBeforeRenderFilePath)
-    Object.assign(pageContext, hookReturn?.pageContext)
+): Promise<void> {
+  if (pageContext._pageContextAlreadyProvidedByPrerenderHook) {
+    return
   }
 
-  return {}
+  let pageHookWasCalled = false
+  objectAssign(pageContext, {
+    pageHooks: {
+      onBeforeRender() {
+        assertUsage(
+          pageHookWasCalled===false,
+          "You already called `pageContext.pageHooks.onBeforeRender()`; you should call it exactly once."
+        )
+        pageHookWasCalled = true
+      }
+    },
+  })
+
+  const exec = async (pageHook: null | undefined | OnBeforeRenderHook, defaultHook: null | undefined | OnBeforeRenderHook) => {
+    if( defaultHook ) {
+      await defaultHook.callHook()
+    }
+    if( pageHook ){
+      if( !defaultHook ) {
+         await pageHook.callHook()
+      } else {
+        assertUsage(pageHook.skipDefaultOnBeforeRender || defaultHook.hookWasCalled,
+          "TODO")
+      }
+    }
+  }
+
+  const serverHooksWereCalled = () => pageContext._pageServerFileDefault?.fileExports.onBeforeRender?.hookWasCalled!==false && pageContext._pageServerFile?.fileExports.onBeforeRender?.hookWasCalled!==false
+  objectAssign(pageContext, {
+    retrieveServerPageContext: async () => {
+      await exec(pageContext._pageServerFile?.fileExports.onBeforeRender, pageContext._pageServerFileDefault?.fileExports.onBeforeRender)
+      assert(serverHooksWereCalled())
+    }
+  })
+
+  const pageHookExists = !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook 
+  if( !pageContext._isPageContextRequest && pageHookExists ) {
+    await exec(pageContext._pageMainFile?.onBeforeRenderHook, pageContext._pageMainFileDefault?.onBeforeRenderHook)
+    assertUsage(serverHooksWereCalled(), 'TODO')
+    return
+  }
+
+  await pageContext.retrieveServerPageContext()
+  assert(serverHooksWereCalled())
+
+  const onBeforeRenderFilePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
+  assert(onBeforeRenderFilePath)
+  preparePageContextNode(pageContext)
+
+  Object.assign(pageContext, {
+    _onBeforeRenderHookCalled: true
+  })
+
+  let hookReturn: unknown
+  try {
+    // We use a try-catch because the hook `onBeforeRender()` is user-defined and may throw an error.
+    hookReturn = await onBeforeRender(pageContext)
+  } catch (err) {
+    return { hookError: err, hookName: 'onBeforeRender', hookFilePath: onBeforeRenderFilePath }
+  }
+  Object.assign(pageContext, hookReturn?.pageContext)
 }
 
 type LoadedPageFiles = {

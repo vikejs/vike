@@ -1,17 +1,24 @@
 import { AllPageFiles, findDefaultFile, findPageFile } from './getPageFiles'
-import { assertUsage, hasProp, isCallable } from './utils'
+import { assert, assertUsage, hasProp, isCallable } from './utils'
 
 export { loadPageMainFiles }
+export { getOnBeforeRenderHook }
 export type { PageMainFile }
 export type { PageMainFileDefault }
+export type { OnBeforeRenderHook }
 
+type OnBeforeRenderHook = {
+  callHook: Function
+  hookWasCalled: boolean
+}
 type PageMainFile = null | {
   filePath: string
-  onBeforeRenderHook: null | Function
+  onBeforeRenderHook: null | OnBeforeRenderHook
+  skipDefaultOnBeforeRender: boolean
 }
 type PageMainFileDefault = null | {
   filePath: string
-  onBeforeRenderHook: Function
+  onBeforeRenderHook: OnBeforeRenderHook
 }
 
 async function loadPageMainFiles(pageContext: {
@@ -43,9 +50,18 @@ async function loadPageMainFiles(pageContext: {
 
       const onBeforeRenderHook = getOnBeforeRenderHook(fileExports, filePath)
 
+      let skipDefaultOnBeforeRender = false
+      if( hasProp(fileExports, 'skipDefaultOnBeforeRender') ) {
+      assertUsage(
+        hasProp(fileExports, 'skipDefaultOnBeforeRender', 'boolean'),
+        `${filePath} has \`export { skipDefaultOnBeforeRender }\` but \`skipDefaultOnBeforeRender\` should be a boolean.`)
+        skipDefaultOnBeforeRender = fileExports.skipDefaultOnBeforeRender
+      }
+
       const pageMainFile: PageMainFile = {
         filePath,
-        onBeforeRenderHook
+        onBeforeRenderHook,
+        skipDefaultOnBeforeRender,
       }
       return pageMainFile
     })(),
@@ -69,13 +85,17 @@ async function loadPageMainFiles(pageContext: {
   return { Page, pageExports, pageMainFile, pageMainFileDefault }
 }
 
-function getOnBeforeRenderHook(fileExports: Record<string, unknown>, filePath: string, required: true): Function
-function getOnBeforeRenderHook(fileExports: Record<string, unknown>, filePath: string): null | Function
+function getOnBeforeRenderHook(
+  fileExports: Record<string, unknown>,
+  filePath: string,
+  required: true
+): OnBeforeRenderHook
+function getOnBeforeRenderHook(fileExports: Record<string, unknown>, filePath: string): null | OnBeforeRenderHook
 function getOnBeforeRenderHook(
   fileExports: Record<string, unknown>,
   filePath: string,
   required?: true
-): null | Function {
+): null | OnBeforeRenderHook {
   if (required) {
     assertUsage(hasProp(fileExports, 'onBeforeRender'), `${filePath} should \`export { onBeforeRender }\`.`)
   } else {
@@ -84,8 +104,23 @@ function getOnBeforeRenderHook(
     }
   }
   assertUsage(
-    isCallable(fileExports['onBeforeRender']),
+    isCallable(fileExports.onBeforeRender),
     `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`
   )
-  return fileExports.onBeforeRender
+  const onBeforeRenderHook = {
+    async callHook(pageContext: Record<string, unknown>) {
+      assert(onBeforeRenderHook.hookWasCalled===false)
+      onBeforeRenderHook.hookWasCalled = true
+      assert(isCallable(fileExports.onBeforeRender))
+      const hookReturn = await fileExports.onBeforeRender()
+      assertUsage(
+        hasProp(hookReturn, 'pageContext'),
+        `The \`onBeforeRender()\` hook exported by ${filePath} should return \`{ pageContext: { /*...*/ }}\` (a plain JavaScript object with a single key \`pageContext\`).`
+      )
+      const pageContextAddendum = hookReturn.pageContext
+      Object.assign(pageContext, pageContextAddendum)
+    },
+    hookWasCalled: false
+  }
+  return onBeforeRenderHook
 }
