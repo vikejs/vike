@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist/cjs/",
+    "target": "ES2017",
+    "module": "CommonJS"
+  },
+  "exclude": ["./node_modules/", "./dist/", "./client/"],
+  "include": ["./**/*"],
+  "files": ["./client/router/index.node.ts"]
+}

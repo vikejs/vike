@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    // Output
-    "target": "ES2020",
-    "module": "ES2020",
-    "moduleResolution": "Node",
     // User-code
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "strict": true,
+    "types": ["vite/client"],
     // Full strictness
     "noUnusedLocals": true /* Enable error reporting when a local variables aren't read. */,
     "noUnusedParameters": true /* Raise an error when a function parameter isn't read */,
@@ -22,8 +19,6 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-    "stripInternal": true,
-    "types": ["vite/client"]
-  },
-  "exclude": ["./dist/"]
+    "stripInternal": true
+  }
 }
