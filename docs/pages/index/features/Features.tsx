@@ -139,7 +139,7 @@ function Features() {
                 Pages, ...).
               </p>
               <p>
-                Fits <b>Cloudflare Workers</b>'s compute model.
+                Fits very well <b>Cloudflare Workers</b>'s compute model.
               </p>
             </>
           ),
