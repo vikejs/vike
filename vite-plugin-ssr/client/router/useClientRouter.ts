@@ -19,7 +19,7 @@ import { route } from '../../shared/route'
 
 export { useClientRouter }
 export { navigate }
-export { prefetchUrl }
+export { prefetch }
 
 setupNativeScrollRestoration()
 
@@ -27,6 +27,8 @@ let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
 
 const prefetchStrategies = ['inViewport','onHover'] as const
+const prefetchLinksHandled = new Map<string, boolean>()
+
 type PrefetchStrategy = typeof prefetchStrategies[number]
 
 function useClientRouter({
@@ -138,10 +140,7 @@ function useClientRouter({
       objectAssign(pageContext, { isHydration })
       const pageContextProxy = releasePageContext(pageContext)
       await render(pageContextProxy)
-      //if(import.meta.env.PROD) {
-        console.log({pageContext})
-        addLinkPrefetch(prefetchLinks, url)
-      //}
+      addLinkPrefetch(prefetchLinks, url)
     })()
     await renderPromise
     renderPromise = undefined
@@ -186,8 +185,22 @@ async function navigate(url: string, { keepScrollPosition = false } = {}): Promi
   await navigateFunction(url, { keepScrollPosition })
 }
 
-async function prefetchUrl(url: string) {
-  if(isExternalLink(url)) return
+function getPrefetchUrl(url: string) {
+  return url.split('?')[0]?.split('#')[0] || ''
+}
+
+function shouldPrefetch(prefetchUrl: string) {
+  if(isExternalLink(prefetchUrl)) return false
+  if(prefetchLinksHandled.has(prefetchUrl)) return false
+
+  return true
+}
+
+async function prefetch(url: string) {
+  //TODO enable only in production: if(import.meta.env.DEV) return
+  const prefetchUrl = getPrefetchUrl(url)
+  if(!shouldPrefetch(prefetchUrl)) return
+  prefetchLinksHandled.set(prefetchUrl, true)
   const globalContext = await getGlobalContext()
   const pageContext = {
     url,
@@ -204,18 +217,15 @@ async function prefetchUrl(url: string) {
   }
 }
 
-// TODO 
-// - check url validity 
-// - remove hash & search from url key
-const prefetchLinksHandled = new Map<string, boolean>()
-
 function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
-  // no need to prefetch current url files
-  prefetchLinksHandled.set(currentUrl, true)
+  // no need to add listeners on current url links
+  prefetchLinksHandled.set(getPrefetchUrl(currentUrl), true)
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (v) => {
     const url = v.getAttribute('href')
-    if(url && isNotNewTabLink(v) && !isExternalLink(url) && !prefetchLinksHandled.has(url)) {
+    if(url && isNotNewTabLink(v)) {
+      const prefetchUrl = getPrefetchUrl(url)
+      if(!shouldPrefetch(prefetchUrl)) return
       const override = v.getAttribute('data-prefetch')
       if(typeof override === 'string') {
         assertUsage(prefetchStrategies.includes(override as PrefetchStrategy), `data-prefetch got invalid value: "${override}"`)
@@ -238,8 +248,7 @@ function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
   })
 
   function onVisible(url: string) {
-    prefetchUrl(url)
-    prefetchLinksHandled.set(url, true)
+    prefetch(url)
   }
 }
 

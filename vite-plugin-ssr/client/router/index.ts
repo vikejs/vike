@@ -1,2 +1,2 @@
 import '../page-files/setup'
-export { useClientRouter, navigate, prefetchUrl } from './useClientRouter'
+export { useClientRouter, navigate, prefetch } from './useClientRouter'
