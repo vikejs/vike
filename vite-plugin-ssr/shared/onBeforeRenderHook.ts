@@ -29,7 +29,7 @@ function getOnBeforeRenderHook(
   }
   assertUsage(
     isCallable(fileExports.onBeforeRender),
-    `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`
+    `The \`export { onBeforeRender }\` of ${filePath} should be a function.`
   )
   const onBeforeRenderHook = {
     async callHook(pageContext: Record<string, unknown>) {
@@ -58,32 +58,20 @@ async function runOnBeforeRenderHooks(
     fileExports: { skipDefaultOnBeforeRenderHook?: boolean }
   },
   defaultFile: null | { onBeforeRenderHook: null | OnBeforeRenderHook },
-  pageContextOriginal:{ _pageId: string } & Record<string, unknown>,
+  pageContextOriginal: { _pageId: string } & Record<string, unknown>
 ): Promise<{ pageContextAddendum: Record<string, unknown> }> {
   const pageContextAddendum = {}
 
   if (defaultFile?.onBeforeRenderHook && !pageFile?.fileExports.skipDefaultOnBeforeRenderHook) {
     const hookReturn = await defaultFile.onBeforeRenderHook.callHook({
       ...pageContextOriginal,
-      runPageOnBeforeRenderHook: async (pageContextProvided2?: Record<string, unknown>) => {
-        if (!pageFile?.onBeforeRenderHook) {
-          return { pageContext: {} }
-        }
-        const { onBeforeRenderHook } = pageFile
-        assertUsage(
-          onBeforeRenderHook.hookWasCalled === false,
-          'You already called `pageContext.runPageOnBeforeRenderHook()`; you should call it exactly once.'
-        )
-        const hookResult = await onBeforeRenderHook.callHook(pageContextProvided2 || pageContextOriginal)
-        assert('pageContext' in hookResult)
-        return hookResult
-      }
+      runPageOnBeforeRenderHook
     })
     assert(isObject(hookReturn.pageContext))
     Object.assign(pageContextAddendum, hookReturn.pageContext)
     assertUsage(
       !pageFile?.onBeforeRenderHook || pageFile.onBeforeRenderHook.hookWasCalled,
-      `The page \`${pageContextOriginal._pageId}\` has several \`onBeforeRender()\` hooks: one \`export { onBeforeRender }\` in ${pageFile} +' and another \`export { onBeforeRender }\` in ${defaultFile}. Either \`export const skipDefaultOnBeforeRenderHook = true\` in ${pageFile} or call \`const { pageContext: pageContextAddendum } = await pageContext.runPageOnBeforeRenderHook(pageContext)\` in the \`onBeforeRender()\` hook defined in ${defaultFile}`
+      `The page \`${pageContextOriginal._pageId}\` has a \`onBeforeRender()\` a hook defined in ${pageFile} +' as well as in ${defaultFile}. Either \`export const skipDefaultOnBeforeRenderHook = true\` in ${pageFile} or call \`const { pageContext: pageContextAddendum } = await pageContext.runPageOnBeforeRenderHook(pageContext)\` in the \`onBeforeRender()\` hook defined in ${defaultFile} — see https://vite-plugin-ssr.com/onBeforeRender`
     )
   } else {
     if (pageFile?.onBeforeRenderHook) {
@@ -97,4 +85,18 @@ async function runOnBeforeRenderHooks(
   assert(!defaultFile?.onBeforeRenderHook || defaultFile.onBeforeRenderHook.hookWasCalled === true)
 
   return { pageContextAddendum }
+
+  async function runPageOnBeforeRenderHook(pageContextProvided?: Record<string, unknown>) {
+    if (!pageFile?.onBeforeRenderHook) {
+      return { pageContext: {} }
+    }
+    const { onBeforeRenderHook } = pageFile
+    assertUsage(
+      onBeforeRenderHook.hookWasCalled === false,
+      'You already called `pageContext.runPageOnBeforeRenderHook()`; you cannot call it a second time.'
+    )
+    const hookResult = await onBeforeRenderHook.callHook(pageContextProvided || pageContextOriginal)
+    assert('pageContext' in hookResult)
+    return hookResult
+  }
 }

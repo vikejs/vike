@@ -660,7 +660,7 @@ async function executeOnBeforeRenderHooks(
     Object.assign(pageContext, pageContextAddendum)
   }
 
-  return undefined;
+  return undefined
 
   function mainHooksExist() {
     return !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook
@@ -668,10 +668,10 @@ async function executeOnBeforeRenderHooks(
 
   function serverHooksCalled() {
     return (
-    (!pageContext._pageServerFileDefault?.onBeforeRenderHook ||
-      pageContext._pageServerFileDefault.onBeforeRenderHook.hookWasCalled === true) &&
-    (!pageContext._pageServerFile?.onBeforeRenderHook ||
-      pageContext._pageServerFile.onBeforeRenderHook.hookWasCalled === true)
+      (!pageContext._pageServerFileDefault?.onBeforeRenderHook ||
+        pageContext._pageServerFileDefault.onBeforeRenderHook.hookWasCalled === true) &&
+      (!pageContext._pageServerFile?.onBeforeRenderHook ||
+        pageContext._pageServerFile.onBeforeRenderHook.hookWasCalled === true)
     )
   }
 
@@ -710,7 +710,8 @@ async function executeOnBeforeRenderHooks(
           `Either \`export const skipServerOnBeforeRenderHooks = true\``,
           `or call \`const { pageContext: pageContextAddendum } = await pageContext.runServerOnBeforeRenderHooks(pageContext)\` in \`onBeforeRender()\` in`,
           hookFileMain || hookFileMainDefault,
-          hookFileMain && hookFileMainDefault ? ` or ${hookFileMainDefault}` : null
+          hookFileMain && hookFileMainDefault ? ` or ${hookFileMainDefault}` : null,
+          '— see https://vite-plugin-ssr.com/onBeforeRender'
         ]
           .filter(Boolean)
           .join(' ')
