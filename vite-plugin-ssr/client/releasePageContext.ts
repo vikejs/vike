@@ -2,13 +2,35 @@ import { assert, assertUsage, isObject } from '../shared/utils'
 import { sortPageContext } from '../shared/sortPageContext'
 
 export { releasePageContext }
+export { releasePageContextInterim }
+export type { PageContextPublic }
 
+type PageContextPublic = {
+  isHydration: boolean
+  Page: unknown
+  pageExports: Record<string, unknown>
+}
+function releasePageContextInterim<T extends Record<string, unknown>>(
+  pageContext: T,
+  pageContextRetrievedFromServer: Record<string, unknown>
+) {
+  return new Proxy(pageContext, { get })
+
+  function get(_: never, prop: string) {
+    assertPassToClient(pageContextRetrievedFromServer, prop, isMissing(prop))
+    return pageContext[prop]
+  }
+
+  function isMissing(prop: string) {
+    if (prop in pageContext) return false
+    if (JAVASCRIPT_BUILT_INS.includes(prop)) return false
+    return true
+  }
+}
 function releasePageContext<
-  T extends {
-    Page: unknown
-    pageExports: Record<string, unknown>
-    isHydration: boolean
+  T extends PageContextPublic & {
     _pageContextRetrievedFromServer: null | Record<string, unknown>
+    _comesDirectlyFromServer: boolean
   } & Record<string, unknown>
 >(pageContext: T) {
   assert('Page' in pageContext)
@@ -21,8 +43,12 @@ function releasePageContext<
   // For prettier `console.log(pageContext)`
   sortPageContext(pageContext)
 
-  const pageContextProxy = getPageContextProxy(pageContext)
+  assert([true, false].includes(pageContext._comesDirectlyFromServer))
+  if (!pageContext._comesDirectlyFromServer) {
+    return pageContext
+  }
 
+  const pageContextProxy = getPageContextProxy(pageContext)
   return pageContextProxy
 }
 
@@ -47,7 +73,7 @@ function getPageContextProxy<
   }
 
   function get(_: never, prop: string) {
-    assertPassToClient(pageContext, prop, isMissing(prop))
+    assertPassToClient(pageContext._pageContextRetrievedFromServer, prop, isMissing(prop))
 
     // We disable `assertPassToClient` for the next attempt to read `prop`, because of how Vue's reactivity work.
     // (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
@@ -61,11 +87,11 @@ function getPageContextProxy<
 }
 
 function assertPassToClient(
-  pageContext: { _pageContextRetrievedFromServer: null | Record<string, unknown> },
+  pageContextRetrievedFromServer: null | Record<string, unknown>,
   prop: string,
   isMissing: boolean
 ) {
-  if (pageContext._pageContextRetrievedFromServer === null) {
+  if (pageContextRetrievedFromServer === null) {
     // We cannot infer `passToClient` if we didn't receive any `pageContext` from the server
     return
   }
@@ -75,7 +101,7 @@ function assertPassToClient(
   if (!isMissing) {
     return
   }
-  const passToClientInferred = Object.keys(pageContext._pageContextRetrievedFromServer).filter(
+  const passToClientInferred = Object.keys(pageContextRetrievedFromServer).filter(
     (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop)
   )
   assertUsage(

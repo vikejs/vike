@@ -2,6 +2,7 @@ import { isObject, assert, assertUsage, hasProp, isCallable } from './utils'
 
 export { getOnBeforeRenderHook }
 export { runOnBeforeRenderHooks }
+export { assertUsageServerHooksCalled }
 export type { OnBeforeRenderHook }
 
 type OnBeforeRenderHook = {
@@ -59,7 +60,7 @@ async function runOnBeforeRenderHooks(
   },
   defaultFile: null | { onBeforeRenderHook: null | OnBeforeRenderHook },
   pageContextOriginal: { _pageId: string } & Record<string, unknown>
-): Promise<{ pageContextAddendum: Record<string, unknown> }> {
+): Promise<Record<string, unknown>> {
   const pageContextAddendum = {}
 
   if (defaultFile?.onBeforeRenderHook && !pageFile?.fileExports.skipDefaultOnBeforeRenderHook) {
@@ -84,7 +85,7 @@ async function runOnBeforeRenderHooks(
   assert(!pageFile?.onBeforeRenderHook || pageFile.onBeforeRenderHook.hookWasCalled === true)
   assert(!defaultFile?.onBeforeRenderHook || defaultFile.onBeforeRenderHook.hookWasCalled === true)
 
-  return { pageContextAddendum }
+  return pageContextAddendum
 
   async function runPageOnBeforeRenderHook(pageContextProvided?: Record<string, unknown>) {
     if (!pageFile?.onBeforeRenderHook) {
@@ -98,5 +99,51 @@ async function runOnBeforeRenderHooks(
     const hookResult = await onBeforeRenderHook.callHook(pageContextProvided || pageContextOriginal)
     assert('pageContext' in hookResult)
     return hookResult
+  }
+}
+
+function assertUsageServerHooksCalled(args: {
+  hooksServer: (string | null | undefined)[]
+  hooksMain: (string | null | undefined)[]
+  serverHooksCalled: boolean
+  _pageId: string
+}) {
+  const hooksMain: string[] = args.hooksMain.filter(isFilePath)
+  assert(hooksMain.length > 0)
+  const hooksServer: string[] = args.hooksServer.filter(isFilePath)
+  ;[...hooksMain, ...hooksServer].forEach((filePath) => filePath.startsWith('/'))
+  if (hooksServer.length > 0) {
+    assertUsage(
+      args.serverHooksCalled,
+      [
+        `The page \`${args._pageId}\` has \`onBeforeRender()\` hooks defined in \`.page.js\` as well as in \`.page.server.js\` files:`,
+        `\`export { onBeforeRender }\` in`,
+        hooksMain[0],
+        hooksMain[1] ? ` and ${hooksMain[1]}` : null,
+        '(`.page.js`)',
+        `as well as \`export { onBeforeRender }\` in`,
+        hooksServer[0],
+        hooksServer[1] ? ` and ${hooksServer[1]}` : null,
+        '(`.page.server.js`).',
+        `Either \`export const skipServerOnBeforeRenderHooks = true\``,
+        `or call \`const { pageContext: pageContextAddendum } = await pageContext.runServerOnBeforeRenderHooks(pageContext)\` in \`onBeforeRender()\` in`,
+        hooksMain[0],
+        hooksMain[1] ? ` or ${hooksMain[1]}` : null,
+        '— see https://vite-plugin-ssr.com/onBeforeRender'
+      ]
+        .filter(Boolean)
+        .join(' ')
+    )
+  }
+
+  return
+
+  function isFilePath(v: string | undefined | null): v is string {
+    if (typeof v === 'string') {
+      assert(v.startsWith('/'))
+      return true
+    }
+    assert(v === undefined || v === null)
+    return false
   }
 }

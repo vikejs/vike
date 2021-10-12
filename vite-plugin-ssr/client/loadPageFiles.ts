@@ -5,11 +5,21 @@ import { getAllPageFiles } from '../shared/getPageFiles'
 export { loadPageFiles }
 
 async function loadPageFiles(pageContext: { _pageId: string }) {
-  const pageId = pageContext._pageId
   const pageFiles = {}
+
   const allPageFiles = await getAllPageFiles()
   objectAssign(pageFiles, { _allPageFiles: allPageFiles })
-  const pageView = await loadPageMainFiles({ _pageId: pageId, _allPageFiles: allPageFiles })
-  objectAssign(pageFiles, pageView)
+
+  const { Page, pageExports, pageMainFile, pageMainFileDefault } = await loadPageMainFiles({
+    ...pageContext,
+    ...pageFiles
+  })
+  objectAssign(pageFiles, {
+    Page,
+    pageExports,
+    _pageMainFile: pageMainFile,
+    _pageMainFileDefault: pageMainFileDefault
+  })
+
   return pageFiles
 }

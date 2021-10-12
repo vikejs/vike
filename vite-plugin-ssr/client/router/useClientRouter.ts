@@ -11,7 +11,6 @@ import {
 import { navigationState } from '../navigationState'
 import { throttle } from '../../shared/utils/throttle'
 import { getPageContext } from './getPageContext'
-import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
@@ -92,6 +91,7 @@ function useClientRouter({
     }
     const pageContext = {
       url,
+      _isFirstRender: isFirstPageRender,
       _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
       ...globalContext
     }
@@ -103,13 +103,6 @@ function useClientRouter({
       return
     }
     objectAssign(pageContext, pageContextAddendum)
-
-    const pageFiles = await loadPageFiles(pageContext)
-    if (callNumber !== callCount) {
-      // Abort since there is a newer call.
-      return
-    }
-    objectAssign(pageContext, pageFiles)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -124,18 +117,15 @@ function useClientRouter({
     changeUrl(url)
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
-    const wasFirstPageRender = isFirstPageRender
     renderPromise = (async () => {
-      const isHydration = isFirstPageRender && pageContext._pageContextComesFromHtml
-      isFirstPageRender = false
-      objectAssign(pageContext, { isHydration })
       const pageContextProxy = releasePageContext(pageContext)
       await render(pageContextProxy)
+      isFirstPageRender = false
     })()
     await renderPromise
     renderPromise = undefined
 
-    if (wasFirstPageRender) {
+    if (pageContext._isFirstRender) {
       resolveInitialPagePromise()
     } else if (callNumber === callCount) {
       onTransitionEnd()

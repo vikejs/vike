@@ -30,7 +30,12 @@ import {
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import { loadPageMainFiles, PageMainFile, PageMainFileDefault } from '../shared/loadPageMainFiles'
-import { getOnBeforeRenderHook, OnBeforeRenderHook, runOnBeforeRenderHooks } from '../shared/onBeforeRenderHook'
+import {
+  assertUsageServerHooksCalled,
+  getOnBeforeRenderHook,
+  OnBeforeRenderHook,
+  runOnBeforeRenderHooks
+} from '../shared/onBeforeRenderHook'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
   getStreamReadableNode,
@@ -626,7 +631,6 @@ async function executeOnBeforeRenderHooks(
     _pageServerFileDefault: PageServerFile
     _pageMainFile: PageMainFile
     _pageMainFileDefault: PageMainFileDefault
-    _passToClient: string[]
     _pageContextAlreadyProvidedByPrerenderHook?: true
     _isPageContextRequest: boolean
   } & PageContextPublic
@@ -636,7 +640,7 @@ async function executeOnBeforeRenderHooks(
   }
 
   if (mainHooksExist() && !pageContext._isPageContextRequest) {
-    const { pageContextAddendum } = await runOnBeforeRenderHooks(
+    const pageContextAddendum = await runOnBeforeRenderHooks(
       pageContext._pageMainFile,
       pageContext._pageMainFileDefault,
       {
@@ -644,7 +648,18 @@ async function executeOnBeforeRenderHooks(
         runServerOnBeforeRenderHooks
       }
     )
-    assertUsageServerHooksCalled()
+    assertUsageServerHooksCalled({
+      hooksServer: [
+        pageContext._pageServerFile?.onBeforeRenderHook && pageContext._pageServerFile.filePath,
+        pageContext._pageServerFileDefault?.onBeforeRenderHook && pageContext._pageServerFileDefault.filePath
+      ],
+      hooksMain: [
+        pageContext._pageMainFile?.onBeforeRenderHook && pageContext._pageMainFile.filePath,
+        pageContext._pageMainFileDefault?.onBeforeRenderHook && pageContext._pageMainFileDefault.filePath
+      ],
+      serverHooksCalled: serverHooksCalled(),
+      _pageId: pageContext._pageId
+    })
     Object.assign(pageContext, pageContextAddendum)
   } else {
     const { pageContext: pageContextAddendum } = await runServerOnBeforeRenderHooks()
@@ -668,47 +683,13 @@ async function executeOnBeforeRenderHooks(
   }
 
   async function runServerOnBeforeRenderHooks() {
-    const { pageContextAddendum } = await runOnBeforeRenderHooks(
+    const pageContextAddendum = await runOnBeforeRenderHooks(
       pageContext._pageServerFile,
       pageContext._pageServerFileDefault,
       pageContext
     )
     assert(serverHooksCalled())
     return { pageContext: pageContextAddendum }
-  }
-
-  function assertUsageServerHooksCalled() {
-    const hookFileServer = pageContext._pageServerFile?.onBeforeRenderHook && pageContext._pageServerFile.filePath
-    const hookFileServerDefault =
-      pageContext._pageServerFileDefault?.onBeforeRenderHook && pageContext._pageServerFileDefault.filePath
-    if (hookFileServer || hookFileServerDefault) {
-      const hookFileMain = pageContext._pageMainFile?.onBeforeRenderHook && pageContext._pageMainFile.filePath
-      const hookFileMainDefault =
-        pageContext._pageMainFileDefault?.onBeforeRenderHook && pageContext._pageMainFileDefault.filePath
-      assert(hookFileMain || hookFileMainDefault)
-      assert(hookFileServer || hookFileServerDefault)
-      assertUsage(
-        serverHooksCalled(),
-        [
-          `The page \`${pageContext._pageId}\` has \`onBeforeRender()\` hooks defined in \`.page.js\` as well as in \`.page.server.js\` files:`,
-          `\`export { onBeforeRender }\` in`,
-          hookFileMain || hookFileMainDefault,
-          hookFileMain && hookFileMainDefault ? ` and ${hookFileMainDefault}` : null,
-          '(`.page.js`)',
-          `as well as \`export { onBeforeRender }\` in`,
-          hookFileServer || hookFileServerDefault,
-          hookFileServer && hookFileServerDefault ? ` and ${hookFileServerDefault}` : null,
-          '(`.page.server.js`).',
-          `Either \`export const skipServerOnBeforeRenderHooks = true\``,
-          `or call \`const { pageContext: pageContextAddendum } = await pageContext.runServerOnBeforeRenderHooks(pageContext)\` in \`onBeforeRender()\` in`,
-          hookFileMain || hookFileMainDefault,
-          hookFileMain && hookFileMainDefault ? ` or ${hookFileMainDefault}` : null,
-          '— see https://vite-plugin-ssr.com/onBeforeRender'
-        ]
-          .filter(Boolean)
-          .join(' ')
-      )
-    }
   }
 }
 
