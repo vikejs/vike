@@ -639,6 +639,8 @@ async function executeOnBeforeRenderHooks(
     return
   }
 
+  let serverHooksCalled: boolean = false
+
   if (mainHooksExist() && !pageContext._isPageContextRequest) {
     const pageContextAddendum = await runOnBeforeRenderHooks(
       pageContext._pageMainFile,
@@ -648,6 +650,7 @@ async function executeOnBeforeRenderHooks(
         runServerOnBeforeRenderHooks
       }
     )
+    Object.assign(pageContext, pageContextAddendum)
     assertUsageServerHooksCalled({
       hooksServer: [
         pageContext._pageServerFile?.onBeforeRenderHook && pageContext._pageServerFile.filePath,
@@ -657,15 +660,15 @@ async function executeOnBeforeRenderHooks(
         pageContext._pageMainFile?.onBeforeRenderHook && pageContext._pageMainFile.filePath,
         pageContext._pageMainFileDefault?.onBeforeRenderHook && pageContext._pageMainFileDefault.filePath
       ],
-      serverHooksCalled: serverHooksCalled(),
+      serverHooksCalled,
       _pageId: pageContext._pageId
     })
-    Object.assign(pageContext, pageContextAddendum)
   } else {
     const { pageContext: pageContextAddendum } = await runServerOnBeforeRenderHooks()
-    assert(serverHooksCalled())
     Object.assign(pageContext, pageContextAddendum)
   }
+
+  assert(serverHooksCalled)
 
   return undefined
 
@@ -673,22 +676,17 @@ async function executeOnBeforeRenderHooks(
     return !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook
   }
 
-  function serverHooksCalled() {
-    return (
-      (!pageContext._pageServerFileDefault?.onBeforeRenderHook ||
-        pageContext._pageServerFileDefault.onBeforeRenderHook.hookWasCalled === true) &&
-      (!pageContext._pageServerFile?.onBeforeRenderHook ||
-        pageContext._pageServerFile.onBeforeRenderHook.hookWasCalled === true)
-    )
-  }
-
   async function runServerOnBeforeRenderHooks() {
+    assertUsage(
+      serverHooksCalled === false,
+      'You already called `pageContext.runServerOnBeforeRenderHooks()`; you cannot call it a second time.'
+    )
+    serverHooksCalled = true
     const pageContextAddendum = await runOnBeforeRenderHooks(
       pageContext._pageServerFile,
       pageContext._pageServerFileDefault,
       pageContext
     )
-    assert(serverHooksCalled())
     return { pageContext: pageContextAddendum }
   }
 }

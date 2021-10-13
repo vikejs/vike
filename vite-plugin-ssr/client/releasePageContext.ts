@@ -96,11 +96,9 @@ function getAssertPassToClientProxyWithVueSupport<
   }
 
   function get(_: never, prop: string) {
-    if (disable === prop) {
-      return
+    if (disable !== false && disable !== prop) {
+      assertPassToClient(pageContext._pageContextRetrievedFromServer, prop, isMissing(prop))
     }
-
-    assertPassToClient(pageContext._pageContextRetrievedFromServer, prop, isMissing(prop))
 
     // We disable `assertPassToClient` for the next attempt to read `prop`, because of how Vue's reactivity work.
     // (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
@@ -139,7 +137,8 @@ function assertPassToClient(
   )
 }
 
-// Remove propery descriptor getters because they break Vue's reactivity
+// Remove propery descriptor getters because they break Vue's reactivity.
+// E.g. resolve the `pageContext.urlNormalized` getter.
 function resolveGetters(pageContext: Record<string, unknown>) {
   Object.entries(pageContext).forEach(([key, val]) => {
     delete pageContext[key]

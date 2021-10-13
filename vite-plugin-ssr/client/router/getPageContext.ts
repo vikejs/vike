@@ -109,12 +109,10 @@ async function retrievePageContext(
     throwError(`An error occurred on the server. Check your server logs.`)
   }
 
-  const pageContextFromServer = {}
-
   assert(hasProp(responseObject, 'pageContext'))
-  const pageContextRetrievedFromServer = responseObject.pageContext
-  assert(isPlainObject(pageContextRetrievedFromServer))
-  assert(hasProp(pageContextRetrievedFromServer, '_pageId', 'string'))
+  const pageContextFromServer = responseObject.pageContext
+  assert(isPlainObject(pageContextFromServer))
+  assert(hasProp(pageContextFromServer, '_pageId', 'string'))
 
   deleteRedundantPageContext(pageContextFromServer)
 
@@ -183,7 +181,7 @@ async function executeOnBeforeRenderHooks(
       pageContext._pageMainFileDefault,
       {
         ...pageContext,
-        runServerOnBeforeRenderHooks
+        runServerOnBeforeRenderHooks: () => runServerOnBeforeRenderHooks(false)
       }
     )
     assertUsageServerHooksCalled({
@@ -210,18 +208,17 @@ async function executeOnBeforeRenderHooks(
     return !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook
   }
 
-  async function runServerOnBeforeRenderHooks(doNotCreateProxy = false) {
-    assert(serverHooksCalled === undefined)
+  async function runServerOnBeforeRenderHooks(doNotReleasePageContext: boolean) {
     assertUsage(
-      serverHooksCalled === undefined,
+      serverHooksCalled === false,
       'You already called `pageContext.runServerOnBeforeRenderHooks()`; you cannot call it a second time.'
     )
-    const pageContextRetrievedFromServer = await retrievePageContext(pageContext)
-    objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: pageContextRetrievedFromServer })
     serverHooksCalled = true
-    let pageContextReadyForRelease = !doNotCreateProxy
-      ? releasePageContextInterim(pageContextRetrievedFromServer, pageContextAddendum)
-      : pageContextRetrievedFromServer
+    const pageContextFromServer = await retrievePageContext(pageContext)
+    objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: pageContextFromServer })
+    let pageContextReadyForRelease = !doNotReleasePageContext
+      ? releasePageContextInterim(pageContextFromServer, pageContextAddendum)
+      : pageContextFromServer
     return { pageContext: pageContextReadyForRelease }
   }
 }
