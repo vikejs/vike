@@ -243,6 +243,7 @@ function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
         observer.observe(v)
       } else if(strategyWithOverride === 'onHover') {
         v.addEventListener('mouseover', () => onVisible(url))
+        v.addEventListener('touchstart', () => onVisible(url))
       }
     }
   })
