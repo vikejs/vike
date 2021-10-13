@@ -18,7 +18,10 @@ import { PageContextForRoute, route } from '../../shared/route'
 import { PageMainFile, PageMainFileDefault } from '../../shared/loadPageMainFiles'
 import { assertUsageServerHooksCalled, runOnBeforeRenderHooks } from '../../shared/onBeforeRenderHook'
 import { loadPageFiles } from '../loadPageFiles'
-import { PageContextPublic, releasePageContextInterim } from '../releasePageContext'
+import { releasePageContextInterim } from '../releasePageContext'
+import { PageContextBuiltInClient } from '../../types'
+
+type PageContextPublic = PageContextBuiltInClient
 
 export { getPageContext }
 
@@ -216,9 +219,9 @@ async function executeOnBeforeRenderHooks(
     const pageContextRetrievedFromServer = await retrievePageContext(pageContext)
     objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: pageContextRetrievedFromServer })
     serverHooksCalled = true
-    let pageContextProxy = !doNotCreateProxy
+    let pageContextReadyForRelease = !doNotCreateProxy
       ? releasePageContextInterim(pageContextRetrievedFromServer, pageContextAddendum)
       : pageContextRetrievedFromServer
-    return { pageContext: pageContextProxy }
+    return { pageContext: pageContextReadyForRelease }
   }
 }

@@ -1,5 +1,5 @@
 export type PageContextBuiltInClient = Partial<PageContextBuiltIn> & {
-  Page: any
+  Page: unknown
   pageExports: Record<string, any>
   isHydration: boolean
 }

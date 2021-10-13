@@ -18,9 +18,9 @@ async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuilt
 
   assertPristineUrl()
 
-  const pageContextProxy = releasePageContext(pageContext)
-  checkType<PageContextBuiltInClient>(pageContextProxy)
-  return pageContextProxy as PageContextBuiltInClient & T
+  const pageContextReadyForRelease = releasePageContext(pageContext)
+  checkType<PageContextBuiltInClient>(pageContextReadyForRelease)
+  return pageContextReadyForRelease as PageContextBuiltInClient & T
 }
 
 function assertPristineUrl() {

@@ -118,8 +118,8 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      const pageContextProxy = releasePageContext(pageContext)
-      await render(pageContextProxy)
+      const pageContextReadyForRelease = releasePageContext(pageContext)
+      await render(pageContextReadyForRelease)
       isFirstPageRender = false
     })()
     await renderPromise
