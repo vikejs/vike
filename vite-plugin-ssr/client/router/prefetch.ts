@@ -7,11 +7,8 @@ import { loadPageFiles } from '../loadPageFiles'
 import { isExternalLink } from './utils/isExternalLink'
 import { isNotNewTabLink } from './utils/isNotNewTabLink'
 
-export { addLinkPrefetch, prefetch, PrefetchStrategy }
+export { addLinkPrefetch, prefetch }
 
-type PrefetchStrategy = typeof prefetchStrategies[number]
-
-const prefetchStrategies = ['inViewport','onHover'] as const
 const prefetchLinksHandled = new Map<string, boolean>()
 
 async function prefetch(url: string) {
@@ -35,7 +32,7 @@ async function prefetch(url: string) {
   }
 }
 
-function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
+function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
   // no need to add listeners on current url links
   prefetchLinksHandled.set(getPrefetchUrl(currentUrl), true)
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
@@ -44,12 +41,8 @@ function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
     if(url && isNotNewTabLink(v)) {
       const prefetchUrl = getPrefetchUrl(url)
       if(!shouldPrefetch(prefetchUrl)) return
-      const override = v.getAttribute('data-prefetch')
-      if(typeof override === 'string') {
-        assertUsage(prefetchStrategies.includes(override as PrefetchStrategy), `data-prefetch got invalid value: "${override}"`)
-      }
-      const strategyWithOverride = override || strategy
-      if(strategyWithOverride === 'inViewport') {
+      const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, v)
+      if(prefetchOptionWithOverride) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if(entry.isIntersecting) {
@@ -59,7 +52,7 @@ function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
           })
         })
         observer.observe(v)
-      } else if(strategyWithOverride === 'onHover') {
+      } else {
         v.addEventListener('mouseover', () => onVisible(url))
         v.addEventListener('touchstart', () => onVisible(url))
       }
@@ -68,6 +61,21 @@ function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
 
   function onVisible(url: string) {
     prefetch(url)
+  }
+
+  function getPrefetchOverride(prefetchOption: boolean, link: HTMLElement): boolean {
+    const prefetchAttribute = link.getAttribute('data-prefetch')
+    if(typeof prefetchAttribute === 'string') {
+      const options = ['true', 'false']
+      assertUsage(options.includes(prefetchAttribute), `data-prefetch got invalid value: "${prefetchAttribute}", available options: ${options.map(v => `"${v}"`).join(', ')}`)
+    }
+    if(prefetchAttribute === 'true') {
+      return true
+    } else if(prefetchAttribute === 'false') {
+      return false
+    }
+
+    return prefetchOption
   }
 }
 
