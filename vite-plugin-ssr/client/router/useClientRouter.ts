@@ -15,21 +15,17 @@ import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
-import { route } from '../../shared/route'
+import { PrefetchStrategy, addLinkPrefetch } from './prefetch'
+import { isNotNewTabLink } from './utils/isNotNewTabLink'
+import { isExternalLink } from './utils/isExternalLink'
 
 export { useClientRouter }
 export { navigate }
-export { prefetch }
 
 setupNativeScrollRestoration()
 
 let isAlreadyCalled: boolean = false
 let isFirstPageRender: boolean = true
-
-const prefetchStrategies = ['inViewport','onHover'] as const
-const prefetchLinksHandled = new Map<string, boolean>()
-
-type PrefetchStrategy = typeof prefetchStrategies[number]
 
 function useClientRouter({
   render,
@@ -183,84 +179,6 @@ async function navigate(url: string, { keepScrollPosition = false } = {}): Promi
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
   )
   await navigateFunction(url, { keepScrollPosition })
-}
-
-function getPrefetchUrl(url: string) {
-  return url.split('?')[0]?.split('#')[0] || ''
-}
-
-function shouldPrefetch(prefetchUrl: string) {
-  if(isExternalLink(prefetchUrl)) return false
-  if(prefetchLinksHandled.has(prefetchUrl)) return false
-
-  return true
-}
-
-async function prefetch(url: string) {
-  //TODO enable only in production: if(import.meta.env.DEV) return
-  const prefetchUrl = getPrefetchUrl(url)
-  if(!shouldPrefetch(prefetchUrl)) return
-  prefetchLinksHandled.set(prefetchUrl, true)
-  const globalContext = await getGlobalContext()
-  const pageContext = {
-    url,
-    _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
-    ...globalContext
-  }
-  addComputedUrlProps(pageContext)
-  const routeContext = await route(pageContext)
-  if('pageContextAddendum' in routeContext) {
-    const _pageId = routeContext.pageContextAddendum._pageId
-    if(_pageId) {
-      loadPageFiles({_pageId})
-    }
-  }
-}
-
-function addLinkPrefetch(strategy: PrefetchStrategy, currentUrl: string) {
-  // no need to add listeners on current url links
-  prefetchLinksHandled.set(getPrefetchUrl(currentUrl), true)
-  const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
-  linkTags.forEach(async (v) => {
-    const url = v.getAttribute('href')
-    if(url && isNotNewTabLink(v)) {
-      const prefetchUrl = getPrefetchUrl(url)
-      if(!shouldPrefetch(prefetchUrl)) return
-      const override = v.getAttribute('data-prefetch')
-      if(typeof override === 'string') {
-        assertUsage(prefetchStrategies.includes(override as PrefetchStrategy), `data-prefetch got invalid value: "${override}"`)
-      }
-      const strategyWithOverride = override || strategy
-      if(strategyWithOverride === 'inViewport') {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if(entry.isIntersecting) {
-              onVisible(url)
-              observer.disconnect()
-            }
-          })
-        })
-        observer.observe(v)
-      } else if(strategyWithOverride === 'onHover') {
-        v.addEventListener('mouseover', () => onVisible(url))
-        v.addEventListener('touchstart', () => onVisible(url))
-      }
-    }
-  })
-
-  function onVisible(url: string) {
-    prefetch(url)
-  }
-}
-
-function isExternalLink(url: string) {
-  return !url.startsWith('/') && !url.startsWith('.')
-}
-
-function isNotNewTabLink(linkTag: HTMLElement) {
-  const target = linkTag.getAttribute('target')
-  const rel = linkTag.getAttribute('rel')
-  return target !== '_blank' && target !== '_external' && rel !== 'external' && !linkTag.hasAttribute('download')
 }
 
 function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
