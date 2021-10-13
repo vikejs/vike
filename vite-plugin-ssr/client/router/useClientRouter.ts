@@ -21,8 +21,6 @@ export { navigate }
 setupNativeScrollRestoration()
 
 let isAlreadyCalled: boolean = false
-let isFirstPageRender: boolean = true
-
 function useClientRouter({
   render,
   ensureHydration = false,
@@ -70,14 +68,16 @@ function useClientRouter({
   return { hydrationPromise }
 
   async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
+    const callNumber = ++callCount
+    assert(callNumber >= 1)
+
     if (ensureHydration) {
-      if (callCount !== 0) {
+      if (callNumber > 1) {
         await hydrationPromise
       }
     }
-    const callNumber = ++callCount
 
-    if (!isFirstPageRender) {
+    if (callNumber > 1) {
       if (isTransitioning === false) {
         onTransitionStart()
         isTransitioning = true
@@ -91,7 +91,7 @@ function useClientRouter({
     }
     const pageContext = {
       url,
-      _isFirstRender: isFirstPageRender,
+      _isFirstRender: callNumber === 1,
       _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
       ...globalContext
     }
@@ -120,7 +120,6 @@ function useClientRouter({
     renderPromise = (async () => {
       const pageContextReadyForRelease = releasePageContext(pageContext)
       await render(pageContextReadyForRelease)
-      isFirstPageRender = false
     })()
     await renderPromise
     renderPromise = undefined
