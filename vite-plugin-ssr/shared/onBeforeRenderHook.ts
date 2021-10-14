@@ -104,22 +104,22 @@ async function runOnBeforeRenderHooks(
 
 function assertUsageServerHooksCalled(args: {
   hooksServer: (string | null | undefined)[]
-  hooksMain: (string | null | undefined)[]
+  hooksIsomorphic: (string | null | undefined)[]
   serverHooksCalled: boolean
   _pageId: string
 }) {
-  const hooksMain: string[] = args.hooksMain.filter(isFilePath)
-  assert(hooksMain.length > 0)
+  const hooksIsomorphic: string[] = args.hooksIsomorphic.filter(isFilePath)
+  assert(hooksIsomorphic.length > 0)
   const hooksServer: string[] = args.hooksServer.filter(isFilePath)
-  ;[...hooksMain, ...hooksServer].forEach((filePath) => filePath.startsWith('/'))
+  ;[...hooksIsomorphic, ...hooksServer].forEach((filePath) => filePath.startsWith('/'))
   if (hooksServer.length > 0) {
     assertUsage(
       args.serverHooksCalled,
       [
         `The page \`${args._pageId}\` has \`onBeforeRender()\` hooks defined in \`.page.js\` as well as in \`.page.server.js\` files:`,
         `\`export { onBeforeRender }\` in`,
-        hooksMain[0],
-        hooksMain[1] ? ` and ${hooksMain[1]}` : null,
+        hooksIsomorphic[0],
+        hooksIsomorphic[1] ? ` and ${hooksIsomorphic[1]}` : null,
         '(`.page.js`)',
         `as well as \`export { onBeforeRender }\` in`,
         hooksServer[0],
@@ -127,8 +127,8 @@ function assertUsageServerHooksCalled(args: {
         '(`.page.server.js`).',
         `Either \`export const skipServerOnBeforeRenderHooks = true\``,
         `or call \`const { pageContext: pageContextAddendum } = await pageContext.runServerOnBeforeRenderHooks()\` in \`onBeforeRender()\` in`,
-        hooksMain[0],
-        hooksMain[1] ? ` or ${hooksMain[1]}` : null,
+        hooksIsomorphic[0],
+        hooksIsomorphic[1] ? ` or ${hooksIsomorphic[1]}` : null,
         '— see https://vite-plugin-ssr.com/onBeforeRender'
       ]
         .filter(Boolean)

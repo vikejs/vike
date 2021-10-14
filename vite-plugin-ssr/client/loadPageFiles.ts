@@ -1,4 +1,4 @@
-import { loadPageMainFiles } from '../shared/loadPageMainFiles'
+import { loadPageIsomorphicFiles } from '../shared/loadPageIsomorphicFiles'
 import { objectAssign } from '../shared/utils'
 import { getAllPageFiles } from '../shared/getPageFiles'
 
@@ -10,15 +10,15 @@ async function loadPageFiles(pageContext: { _pageId: string }) {
   const allPageFiles = await getAllPageFiles()
   objectAssign(pageFiles, { _allPageFiles: allPageFiles })
 
-  const { Page, pageExports, pageMainFile, pageMainFileDefault } = await loadPageMainFiles({
+  const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles({
     ...pageContext,
     ...pageFiles
   })
   objectAssign(pageFiles, {
     Page,
     pageExports,
-    _pageMainFile: pageMainFile,
-    _pageMainFileDefault: pageMainFileDefault
+    _pageIsomorphicFile: pageIsomorphicFile,
+    _pageIsomorphicFileDefault: pageIsomorphicFileDefault
   })
 
   return pageFiles

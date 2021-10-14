@@ -2,34 +2,34 @@ import { AllPageFiles, findDefaultFile, findPageFile } from './getPageFiles'
 import { getOnBeforeRenderHook, OnBeforeRenderHook } from './onBeforeRenderHook'
 import { assertUsage, hasProp } from './utils'
 
-export { loadPageMainFiles }
-export type { PageMainFile }
-export type { PageMainFileDefault }
+export { loadPageIsomorphicFiles }
+export type { PageIsomorphicFile }
+export type { PageIsomorphicFileDefault }
 
-type PageMainFile = null | {
+type PageIsomorphicFile = null | {
   filePath: string
   onBeforeRenderHook: null | OnBeforeRenderHook
   fileExports: {
     skipDefaultOnBeforeRenderHook?: boolean
   }
 }
-type PageMainFileDefault = null | {
+type PageIsomorphicFileDefault = null | {
   filePath: string
   onBeforeRenderHook: OnBeforeRenderHook
 }
 
-async function loadPageMainFiles(pageContext: {
+async function loadPageIsomorphicFiles(pageContext: {
   _pageId: string
   _allPageFiles: Pick<AllPageFiles, '.page'>
 }): Promise<{
-  pageMainFile: PageMainFile
-  pageMainFileDefault: PageMainFileDefault
+  pageIsomorphicFile: PageIsomorphicFile
+  pageIsomorphicFileDefault: PageIsomorphicFileDefault
   Page: unknown
   pageExports: Record<string, unknown>
 }> {
   let Page: unknown = null
   let pageExports: Record<string, unknown> = {} // `{}` is slightly more convenient than `null` for the user
-  const [pageMainFile, pageMainFileDefault] = await Promise.all([
+  const [pageIsomorphicFile, pageIsomorphicFileDefault] = await Promise.all([
     (async () => {
       const pageFile = findPageFile(pageContext._allPageFiles['.page'], pageContext._pageId)
       if (pageFile === null) {
@@ -58,12 +58,12 @@ async function loadPageMainFiles(pageContext: {
         fileExportsTyped.skipDefaultOnBeforeRenderHook = fileExports.skipDefaultOnBeforeRenderHook
       }
 
-      const pageMainFile: PageMainFile = {
+      const pageIsomorphicFile: PageIsomorphicFile = {
         filePath,
         onBeforeRenderHook,
         fileExports: fileExportsTyped
       }
-      return pageMainFile
+      return pageIsomorphicFile
     })(),
     (async () => {
       const pageFile = findDefaultFile(pageContext._allPageFiles['.page'], pageContext._pageId)
@@ -74,13 +74,13 @@ async function loadPageMainFiles(pageContext: {
       const fileExports = await loadFile()
       const onBeforeRenderHook = getOnBeforeRenderHook(fileExports, filePath, true)
 
-      const pageMainFileDefault: PageMainFileDefault = {
+      const pageIsomorphicFileDefault: PageIsomorphicFileDefault = {
         filePath,
         onBeforeRenderHook
       }
-      return pageMainFileDefault
+      return pageIsomorphicFileDefault
     })()
   ])
 
-  return { Page, pageExports, pageMainFile, pageMainFileDefault }
+  return { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault }
 }

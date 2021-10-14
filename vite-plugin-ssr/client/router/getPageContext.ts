@@ -15,7 +15,7 @@ import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedurlProps'
 import { ServerFiles } from './getGlobalContext'
 import { PageContextForRoute, route } from '../../shared/route'
-import { PageMainFile, PageMainFileDefault } from '../../shared/loadPageMainFiles'
+import { PageIsomorphicFile, PageIsomorphicFileDefault } from '../../shared/loadPageIsomorphicFiles'
 import { assertUsageServerHooksCalled, runOnBeforeRenderHooks } from '../../shared/onBeforeRenderHook'
 import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContextInterim } from '../releasePageContext'
@@ -164,8 +164,8 @@ function deleteRedundantPageContext(pageContext: Record<string, unknown> & { [ke
 async function executeOnBeforeRenderHooks(
   pageContext: {
     _pageId: string
-    _pageMainFile: PageMainFile
-    _pageMainFileDefault: PageMainFileDefault
+    _pageIsomorphicFile: PageIsomorphicFile
+    _pageIsomorphicFileDefault: PageIsomorphicFileDefault
     _serverFiles: ServerFiles
   } & PageContextForRoute &
     PageContextPublic
@@ -175,10 +175,10 @@ async function executeOnBeforeRenderHooks(
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: null })
 
-  if (mainHooksExist()) {
-    const pageContextFromMain = await runOnBeforeRenderHooks(
-      pageContext._pageMainFile,
-      pageContext._pageMainFileDefault,
+  if (isomorphicHooksExist()) {
+    const pageContextFromIsomorphic = await runOnBeforeRenderHooks(
+      pageContext._pageIsomorphicFile,
+      pageContext._pageIsomorphicFileDefault,
       {
         ...pageContext,
         runServerOnBeforeRenderHooks: () => runServerOnBeforeRenderHooks(false)
@@ -186,14 +186,14 @@ async function executeOnBeforeRenderHooks(
     )
     assertUsageServerHooksCalled({
       hooksServer: getServerOnBeforeRenderHookFiles(pageContext),
-      hooksMain: [
-        pageContext._pageMainFile?.onBeforeRenderHook && pageContext._pageMainFile.filePath,
-        pageContext._pageMainFileDefault?.onBeforeRenderHook && pageContext._pageMainFileDefault.filePath
+      hooksIsomorphic: [
+        pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
+        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath
       ],
       serverHooksCalled,
       _pageId: pageContext._pageId
     })
-    objectAssign(pageContextAddendum, pageContextFromMain)
+    objectAssign(pageContextAddendum, pageContextFromIsomorphic)
     objectAssign(pageContextAddendum, { _comesDirectlyFromServer: false })
     return pageContextAddendum
   } else {
@@ -204,8 +204,8 @@ async function executeOnBeforeRenderHooks(
     return pageContextAddendum
   }
 
-  function mainHooksExist() {
-    return !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook
+  function isomorphicHooksExist() {
+    return !!pageContext._pageIsomorphicFile?.onBeforeRenderHook || !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
   }
 
   async function runServerOnBeforeRenderHooks(doNotReleasePageContext: boolean) {

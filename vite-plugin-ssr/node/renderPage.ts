@@ -29,7 +29,11 @@ import {
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
-import { loadPageMainFiles, PageMainFile, PageMainFileDefault } from '../shared/loadPageMainFiles'
+import {
+  loadPageIsomorphicFiles,
+  PageIsomorphicFile,
+  PageIsomorphicFileDefault
+} from '../shared/loadPageIsomorphicFiles'
 import {
   assertUsageServerHooksCalled,
   getOnBeforeRenderHook,
@@ -466,7 +470,9 @@ type PageServerFiles = {
 //*/
 
 async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllPageFiles; _isPreRendering: boolean }) {
-  const { Page, pageExports, pageMainFile, pageMainFileDefault } = await loadPageMainFiles(pageContext)
+  const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles(
+    pageContext
+  )
   const pageClientPath = getPageClientPath(pageContext)
 
   const { pageServerFile, pageServerFileDefault } = await loadPageServerFiles(pageContext)
@@ -474,8 +480,8 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
   const pageFiles = {
     Page,
     pageExports,
-    _pageMainFile: pageMainFile,
-    _pageMainFileDefault: pageMainFileDefault,
+    _pageIsomorphicFile: pageIsomorphicFile,
+    _pageIsomorphicFileDefault: pageIsomorphicFileDefault,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
     _pageClientPath: pageClientPath
@@ -491,9 +497,11 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const dependencies: string[] = [pageMainFile?.filePath, pageMainFileDefault?.filePath, pageClientPath].filter(
-    (p): p is string => !!p
-  )
+  const dependencies: string[] = [
+    pageIsomorphicFile?.filePath,
+    pageIsomorphicFileDefault?.filePath,
+    pageClientPath
+  ].filter((p): p is string => !!p)
   objectAssign(pageFiles, {
     _getPageAssets: async () => {
       const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
@@ -629,8 +637,8 @@ async function executeOnBeforeRenderHooks(
     _pageId: string
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
-    _pageMainFile: PageMainFile
-    _pageMainFileDefault: PageMainFileDefault
+    _pageIsomorphicFile: PageIsomorphicFile
+    _pageIsomorphicFileDefault: PageIsomorphicFileDefault
     _pageContextAlreadyProvidedByPrerenderHook?: true
     _isPageContextRequest: boolean
   } & PageContextPublic
@@ -641,10 +649,10 @@ async function executeOnBeforeRenderHooks(
 
   let serverHooksCalled: boolean = false
 
-  if (mainHooksExist() && !pageContext._isPageContextRequest) {
+  if (isomorphicHooksExist() && !pageContext._isPageContextRequest) {
     const pageContextAddendum = await runOnBeforeRenderHooks(
-      pageContext._pageMainFile,
-      pageContext._pageMainFileDefault,
+      pageContext._pageIsomorphicFile,
+      pageContext._pageIsomorphicFileDefault,
       {
         ...pageContext,
         runServerOnBeforeRenderHooks
@@ -656,9 +664,9 @@ async function executeOnBeforeRenderHooks(
         pageContext._pageServerFile?.onBeforeRenderHook && pageContext._pageServerFile.filePath,
         pageContext._pageServerFileDefault?.onBeforeRenderHook && pageContext._pageServerFileDefault.filePath
       ],
-      hooksMain: [
-        pageContext._pageMainFile?.onBeforeRenderHook && pageContext._pageMainFile.filePath,
-        pageContext._pageMainFileDefault?.onBeforeRenderHook && pageContext._pageMainFileDefault.filePath
+      hooksIsomorphic: [
+        pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
+        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath
       ],
       serverHooksCalled,
       _pageId: pageContext._pageId
@@ -672,8 +680,11 @@ async function executeOnBeforeRenderHooks(
 
   return undefined
 
-  function mainHooksExist() {
-    return !!pageContext._pageMainFile?.onBeforeRenderHook || !!pageContext._pageMainFileDefault?.onBeforeRenderHook
+  function isomorphicHooksExist() {
+    return (
+      !!pageContext._pageIsomorphicFile?.onBeforeRenderHook ||
+      !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
+    )
   }
 
   async function runServerOnBeforeRenderHooks() {
@@ -695,8 +706,8 @@ type LoadedPageFiles = {
   _getPageAssets: () => Promise<PageAssets>
   _pageServerFile: PageServerFile
   _pageServerFileDefault: PageServerFile
-  _pageMainFile: PageMainFile
-  _pageMainFileDefault: PageMainFileDefault
+  _pageIsomorphicFile: PageIsomorphicFile
+  _pageIsomorphicFileDefault: PageIsomorphicFileDefault
   _pageClientPath: string
   _passToClient: string[]
 }
