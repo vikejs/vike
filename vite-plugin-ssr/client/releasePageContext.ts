@@ -33,14 +33,14 @@ function releasePageContext<
 
   assert([true, false].includes(pageContext._comesDirectlyFromServer))
   const pageContextReadyForRelease = !pageContext._comesDirectlyFromServer
-    ? // Not possible to achieve `getAssertPassToClientProxy()` if some `onBeforeRender()` hook defined in `.page.js` was called. (We cannot infer what `pageContext` properties came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runServerOnBeforeRenderHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
+    ? // Not possible to achieve `getAssertPassToClientProxy()` if some `onBeforeRender()` hook defined in `.page.js` was called. (We cannot infer what `pageContext` properties came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runOnBeforeRenderServerHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
       pageContext
     : getAssertPassToClientProxyWithVueSupport(pageContext)
 
   return pageContextReadyForRelease
 }
 
-// Release `pageContext` for user consumption, when `const pageContext = await runServerOnBeforeRenderHooks()`.
+// Release `pageContext` for user consumption, when `const pageContext = await runOnBeforeRenderServerHooks()`.
 // A priori, there is no need to be able to make `pageContext` Vue reactive here.
 function releasePageContextInterim<T extends Record<string, unknown>>(
   pageContext: T,

@@ -76,7 +76,7 @@ async function getPageContext(
   const pageFiles = await loadPageFiles({ ...pageContext, ...pageContextAddendum })
   objectAssign(pageContextAddendum, pageFiles)
 
-  if (getServerOnBeforeRenderHookFiles({ ...pageContext, ...pageContextAddendum }).length === 0) {
+  if (getOnBeforeRenderServerHookFiles({ ...pageContext, ...pageContextAddendum }).length === 0) {
     objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: null, _comesDirectlyFromServer: false })
     return pageContextAddendum
   }
@@ -119,7 +119,7 @@ async function retrievePageContext(
   return pageContextFromServer
 }
 
-function getServerOnBeforeRenderHookFiles(pageContext: { _serverFiles: ServerFiles; _pageId: string }): string[] {
+function getOnBeforeRenderServerHookFiles(pageContext: { _serverFiles: ServerFiles; _pageId: string }): string[] {
   const hooksServer: string[] = []
   const serverFiles = pageContext._serverFiles
   const pageId = pageContext._pageId
@@ -171,6 +171,7 @@ async function executeOnBeforeRenderHooks(
     PageContextPublic
 ) {
   let serverHooksCalled: boolean = false
+  let skipServerHooks: boolean = false
 
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: null })
@@ -181,11 +182,12 @@ async function executeOnBeforeRenderHooks(
       pageContext._pageIsomorphicFileDefault,
       {
         ...pageContext,
-        runServerOnBeforeRenderHooks: () => runServerOnBeforeRenderHooks(false)
+        skipOnBeforeRenderServerHooks,
+        runOnBeforeRenderServerHooks: () => runOnBeforeRenderServerHooks(false)
       }
     )
     assertUsageServerHooksCalled({
-      hooksServer: getServerOnBeforeRenderHookFiles(pageContext),
+      hooksServer: getOnBeforeRenderServerHookFiles(pageContext),
       hooksIsomorphic: [
         pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
         pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath
@@ -197,7 +199,7 @@ async function executeOnBeforeRenderHooks(
     objectAssign(pageContextAddendum, { _comesDirectlyFromServer: false })
     return pageContextAddendum
   } else {
-    const result = await runServerOnBeforeRenderHooks(true)
+    const result = await runOnBeforeRenderServerHooks(true)
     assert(serverHooksCalled)
     objectAssign(pageContextAddendum, result.pageContext)
     objectAssign(pageContextAddendum, { _comesDirectlyFromServer: true })
@@ -208,15 +210,27 @@ async function executeOnBeforeRenderHooks(
     return !!pageContext._pageIsomorphicFile?.onBeforeRenderHook || !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
   }
 
-  async function runServerOnBeforeRenderHooks(doNotReleasePageContext: boolean) {
+  async function skipOnBeforeRenderServerHooks() {
     assertUsage(
       serverHooksCalled === false,
-      'You already called `pageContext.runServerOnBeforeRenderHooks()`; you cannot call it a second time.'
+      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.'
+    )
+    skipServerHooks = true
+  }
+
+  async function runOnBeforeRenderServerHooks(doNotPrepareForRelease: boolean) {
+    assertUsage(
+      skipServerHooks === false,
+      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.'
+    )
+    assertUsage(
+      serverHooksCalled === false,
+      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.'
     )
     serverHooksCalled = true
     const pageContextFromServer = await retrievePageContext(pageContext)
     objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: pageContextFromServer })
-    let pageContextReadyForRelease = !doNotReleasePageContext
+    let pageContextReadyForRelease = !doNotPrepareForRelease
       ? releasePageContextInterim(pageContextFromServer, pageContextAddendum)
       : pageContextFromServer
     return { pageContext: pageContextReadyForRelease }

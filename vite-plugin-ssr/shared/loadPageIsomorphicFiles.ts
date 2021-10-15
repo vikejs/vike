@@ -10,7 +10,7 @@ type PageIsomorphicFile = null | {
   filePath: string
   onBeforeRenderHook: null | OnBeforeRenderHook
   fileExports: {
-    skipDefaultOnBeforeRenderHook?: boolean
+    skipOnBeforeRenderDefaultHook?: boolean
   }
 }
 type PageIsomorphicFileDefault = null | {
@@ -38,7 +38,7 @@ async function loadPageIsomorphicFiles(pageContext: {
       const { filePath, loadFile } = pageFile
       const fileExports = await loadFile()
       const fileExportsTyped: {
-        skipDefaultOnBeforeRenderHook?: boolean
+        skipOnBeforeRenderDefaultHook?: boolean
       } = {}
 
       assertUsage(
@@ -50,12 +50,12 @@ async function loadPageIsomorphicFiles(pageContext: {
 
       const onBeforeRenderHook = getOnBeforeRenderHook(fileExports, filePath)
 
-      if (hasProp(fileExports, 'skipDefaultOnBeforeRenderHook')) {
+      if (hasProp(fileExports, 'skipOnBeforeRenderDefaultHook')) {
         assertUsage(
-          hasProp(fileExports, 'skipDefaultOnBeforeRenderHook', 'boolean'),
-          `${filePath} has \`export { skipDefaultOnBeforeRenderHook }\` but \`skipDefaultOnBeforeRenderHook\` should be a boolean.`
+          hasProp(fileExports, 'skipOnBeforeRenderDefaultHook', 'boolean'),
+          `${filePath} has \`export { skipOnBeforeRenderDefaultHook }\` but \`skipOnBeforeRenderDefaultHook\` should be a boolean.`
         )
-        fileExportsTyped.skipDefaultOnBeforeRenderHook = fileExports.skipDefaultOnBeforeRenderHook
+        fileExportsTyped.skipOnBeforeRenderDefaultHook = fileExports.skipOnBeforeRenderDefaultHook
       }
 
       const pageIsomorphicFile: PageIsomorphicFile = {

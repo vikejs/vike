@@ -52,51 +52,74 @@ function getOnBeforeRenderHook(
 async function runOnBeforeRenderHooks(
   pageFile: null | {
     onBeforeRenderHook: null | OnBeforeRenderHook
-    fileExports: { skipDefaultOnBeforeRenderHook?: boolean }
+    fileExports: { skipOnBeforeRenderDefaultHook?: boolean }
   },
   defaultFile: null | { filePath: string; onBeforeRenderHook: null | OnBeforeRenderHook },
-  pageContextOriginal: { _pageId: string } & Record<string, unknown>
+  pageContext: { _pageId: string } & Record<string, unknown>
 ): Promise<Record<string, unknown>> {
   assert(defaultFile === null || defaultFile.filePath.includes('_default'))
 
   let pageHookWasCalled: boolean = false
+  let skipHook: boolean = false
 
-  const pageContextAddendum = {}
+  const pageContextAddendum: Record<string, unknown> = {}
 
-  if (defaultFile?.onBeforeRenderHook && !pageFile?.fileExports.skipDefaultOnBeforeRenderHook) {
+  if (defaultFile?.onBeforeRenderHook && !pageFile?.fileExports.skipOnBeforeRenderDefaultHook) {
     const hookReturn = await defaultFile.onBeforeRenderHook.callHook({
-      ...pageContextOriginal,
-      runPageOnBeforeRenderHook
+      ...pageContext,
+      runOnBeforeRenderPageHook,
+      skipOnBeforeRenderPageHook
     })
     assert(isObject(hookReturn.pageContext))
     Object.assign(pageContextAddendum, hookReturn.pageContext)
     assertUsage(
-      !pageFile?.onBeforeRenderHook || pageHookWasCalled,
-      `The page \`${pageContextOriginal._pageId}\` has a \`onBeforeRender()\` hook defined in ${pageFile} as well as in ${defaultFile}. Either \`export const skipDefaultOnBeforeRenderHook = true\` in ${pageFile} or call \`const { pageContext: pageContextAddendum } = await pageContext.runPageOnBeforeRenderHook(pageContext)\` in the \`onBeforeRender()\` hook defined in ${defaultFile} — see https://vite-plugin-ssr.com/onBeforeRender`
+      !pageFile?.onBeforeRenderHook || pageHookWasCalled || skipHook,
+      [
+        `The page \`${pageContext._pageId}\` has a \`onBeforeRender()\` hook defined in ${pageFile} as well as in ${defaultFile}.`,
+        `Either \`export const skipOnBeforeRenderDefaultHook = true\` in ${pageFile}, or`,
+        'call `pageContext.skipOnBeforeRenderPageHook()` or `pageContext.runOnBeforeRenderPageHook(pageContext)`',
+        `in the \`onBeforeRender()\` hook defined in ${defaultFile} — see https://vite-plugin-ssr.com/onBeforeRender`
+      ].join(' ')
     )
   } else {
     if (pageFile?.onBeforeRenderHook) {
-      const hookReturn = await runPageOnBeforeRenderHook(pageContextOriginal)
+      const hookReturn = await runOnBeforeRenderPageHook(pageContext)
       assert(isObject(hookReturn.pageContext))
       Object.assign(pageContextAddendum, hookReturn.pageContext)
     }
   }
 
-  assert(!pageFile?.onBeforeRenderHook || pageHookWasCalled)
+  assert(!pageFile?.onBeforeRenderHook || pageHookWasCalled || skipHook)
 
   return pageContextAddendum
 
-  async function runPageOnBeforeRenderHook(pageContextProvided?: Record<string, unknown>) {
+  async function skipOnBeforeRenderPageHook() {
     assertUsage(
       pageHookWasCalled === false,
-      'You already called `pageContext.runPageOnBeforeRenderHook()`; you cannot call it a second time.'
+      'You cannot call `pageContext.skipOnBeforeRenderPageHook()` after having called `pageContext.runOnBeforeRenderPageHook()`.'
+    )
+    skipHook = true
+  }
+
+  async function runOnBeforeRenderPageHook(pageContextProvided: Record<string, unknown>) {
+    assertUsage(
+      pageContextProvided,
+      '[pageContext.runOnBeforeRenderPageHook(pageContext)] Missing argument `pageContext`.'
+    )
+    assertUsage(
+      pageHookWasCalled === false,
+      'You already called `pageContext.runOnBeforeRenderPageHook()`; you cannot call it a second time.'
+    )
+    assertUsage(
+      skipHook === false,
+      'You cannot call `pageContext.runOnBeforeRenderPageHook()` after having called `pageContext.skipOnBeforeRenderPageHook()`.'
     )
     pageHookWasCalled = true
     if (!pageFile?.onBeforeRenderHook) {
       return { pageContext: {} }
     }
     const { onBeforeRenderHook } = pageFile
-    const hookResult = await onBeforeRenderHook.callHook(pageContextProvided || pageContextOriginal)
+    const hookResult = await onBeforeRenderHook.callHook(pageContextProvided || pageContext)
     assert('pageContext' in hookResult)
     return hookResult
   }
@@ -125,8 +148,8 @@ function assertUsageServerHooksCalled(args: {
         hooksServer[0],
         hooksServer[1] ? ` and ${hooksServer[1]}` : null,
         '(`.page.server.js`).',
-        `Either \`export const skipServerOnBeforeRenderHooks = true\``,
-        `or call \`const { pageContext: pageContextAddendum } = await pageContext.runServerOnBeforeRenderHooks()\` in \`onBeforeRender()\` in`,
+        'Either call `pageContext.skipOnBeforeRenderServerHooks()`',
+        'or call `pageContext.runOnBeforeRenderServerHooks()` in the `onBeforeRender()` hook of',
         hooksIsomorphic[0],
         hooksIsomorphic[1] ? ` or ${hooksIsomorphic[1]}` : null,
         '— see https://vite-plugin-ssr.com/onBeforeRender'

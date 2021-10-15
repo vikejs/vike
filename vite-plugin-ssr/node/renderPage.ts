@@ -453,7 +453,7 @@ type PageServerFileProps = {
     doNotPrerender?: true
     setPageProps: never
     passToClient?: string[]
-    skipDefaultOnBeforeRenderHook?: boolean
+    skipOnBeforeRenderDefaultHook?: boolean
   }
 }
 type PageServerFile = null | PageServerFileProps
@@ -648,6 +648,7 @@ async function executeOnBeforeRenderHooks(
   }
 
   let serverHooksCalled: boolean = false
+  let skipServerHooks: boolean = false
 
   if (isomorphicHooksExist() && !pageContext._isPageContextRequest) {
     const pageContextAddendum = await runOnBeforeRenderHooks(
@@ -655,7 +656,8 @@ async function executeOnBeforeRenderHooks(
       pageContext._pageIsomorphicFileDefault,
       {
         ...pageContext,
-        runServerOnBeforeRenderHooks
+        skipOnBeforeRenderServerHooks,
+        runOnBeforeRenderServerHooks
       }
     )
     Object.assign(pageContext, pageContextAddendum)
@@ -672,7 +674,7 @@ async function executeOnBeforeRenderHooks(
       _pageId: pageContext._pageId
     })
   } else {
-    const { pageContext: pageContextAddendum } = await runServerOnBeforeRenderHooks()
+    const { pageContext: pageContextAddendum } = await runOnBeforeRenderServerHooks()
     Object.assign(pageContext, pageContextAddendum)
   }
 
@@ -687,10 +689,22 @@ async function executeOnBeforeRenderHooks(
     )
   }
 
-  async function runServerOnBeforeRenderHooks() {
+  async function skipOnBeforeRenderServerHooks() {
     assertUsage(
       serverHooksCalled === false,
-      'You already called `pageContext.runServerOnBeforeRenderHooks()`; you cannot call it a second time.'
+      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.'
+    )
+    skipServerHooks = true
+  }
+
+  async function runOnBeforeRenderServerHooks() {
+    assertUsage(
+      skipServerHooks === false,
+      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.'
+    )
+    assertUsage(
+      serverHooksCalled === false,
+      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.'
     )
     serverHooksCalled = true
     const pageContextAddendum = await runOnBeforeRenderHooks(
