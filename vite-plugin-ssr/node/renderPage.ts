@@ -678,8 +678,6 @@ async function executeOnBeforeRenderHooks(
     Object.assign(pageContext, pageContextAddendum)
   }
 
-  assert(serverHooksCalled)
-
   return undefined
 
   function isomorphicHooksExist() {

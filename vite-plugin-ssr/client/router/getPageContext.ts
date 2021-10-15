@@ -6,6 +6,7 @@ import {
   getFileUrl,
   hasProp,
   isPlainObject,
+  isObject,
   objectAssign,
   throwError
 } from '../../shared/utils'
@@ -76,12 +77,12 @@ async function getPageContext(
   const pageFiles = await loadPageFiles({ ...pageContext, ...pageContextAddendum })
   objectAssign(pageContextAddendum, pageFiles)
 
-  if (getOnBeforeRenderServerHookFiles({ ...pageContext, ...pageContextAddendum }).length === 0) {
-    objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: null, _comesDirectlyFromServer: false })
-    return pageContextAddendum
-  }
-
   const pageContextFromServer = await executeOnBeforeRenderHooks({ ...pageContext, ...pageContextAddendum })
+  assert(
+    pageContextFromServer._pageContextRetrievedFromServer === null ||
+      isObject(pageContextFromServer._pageContextRetrievedFromServer)
+  )
+  assert([true, false].includes(pageContextFromServer._comesDirectlyFromServer))
   objectAssign(pageContextAddendum, pageContextFromServer)
   return pageContextAddendum
 
@@ -198,6 +199,9 @@ async function executeOnBeforeRenderHooks(
     objectAssign(pageContextAddendum, pageContextFromIsomorphic)
     objectAssign(pageContextAddendum, { _comesDirectlyFromServer: false })
     return pageContextAddendum
+  } else if (!serverHooksExists()) {
+    objectAssign(pageContextAddendum, { _comesDirectlyFromServer: false })
+    return pageContextAddendum
   } else {
     const result = await runOnBeforeRenderServerHooks(true)
     assert(serverHooksCalled)
@@ -207,7 +211,13 @@ async function executeOnBeforeRenderHooks(
   }
 
   function isomorphicHooksExist() {
-    return !!pageContext._pageIsomorphicFile?.onBeforeRenderHook || !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
+    return (
+      !!pageContext._pageIsomorphicFile?.onBeforeRenderHook ||
+      !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
+    )
+  }
+  function serverHooksExists() {
+    return getOnBeforeRenderServerHookFiles({ ...pageContext, ...pageContextAddendum }).length > 0
   }
 
   async function skipOnBeforeRenderServerHooks() {
