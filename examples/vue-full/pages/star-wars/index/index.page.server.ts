@@ -1,12 +1,12 @@
 import fetch from 'node-fetch'
-import { filterMovieData } from './filterMovieData'
-import type { Movie, MovieDetails } from './types'
+import { filterMovieData } from '../filterMovieData'
+import type { Movie, MovieDetails } from '../types'
 
 export { onBeforeRender }
 export { prerender }
 
 async function onBeforeRender() {
-  const movies = await getStarWarsMovies()
+  const movies = await fetchStarWarsMovies()
   return {
     pageContext: {
       pageProps: {
@@ -20,7 +20,7 @@ async function onBeforeRender() {
   }
 }
 
-async function getStarWarsMovies(): Promise<MovieDetails[]> {
+async function fetchStarWarsMovies(): Promise<MovieDetails[]> {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
   let movies: MovieDetails[] = ((await response.json()) as any).results
   movies = movies.map((movie: MovieDetails, i: number) => ({
@@ -38,7 +38,7 @@ function filterMoviesData(movies: MovieDetails[]): Movie[] {
 }
 
 async function prerender() {
-  const movies = await getStarWarsMovies()
+  const movies = await fetchStarWarsMovies()
 
   return [
     {

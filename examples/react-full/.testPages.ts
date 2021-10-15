@@ -3,7 +3,7 @@ import {
   page,
   urlBase,
   fetchHtml,
-  autoRetry
+  autoRetry,
 } from "../../libframe/test/setup";
 import assert = require("assert");
 

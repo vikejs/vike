@@ -10,3 +10,6 @@
 <script lang="ts" setup>
 defineProps(['movie'])
 </script>
+<script lang="ts">
+export { onBeforeRender } from './onBeforeRender'
+</script>
