@@ -2,7 +2,7 @@
 
 
 * update path-to-regexp ([f997192](https://github.com/brillout/vite-plugin-ssr/commit/f997192c54bc5209102e6a01d9e57945ce5fe4bb))
-* support multiple `onBeforeRender()` hooks in `.page.js` and `.page.server.js` (#95, #153)
+* support multiple `onBeforeRender()` hooks in `.page.js` and `.page.server.js` ([#95](https://github.com/brillout/vite-plugin-ssr/issues/95), [#153](https://github.com/brillout/vite-plugin-ssr/issues/153))
 
 ### BREAKING CHANGES
 
