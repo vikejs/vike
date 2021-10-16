@@ -13,8 +13,7 @@ import {
   assertExports
 } from './utils'
 import { addComputedUrlProps } from './addComputedurlProps'
-// @ts-ignore
-import matchPath from '@brillout/path-to-regexp'
+import { matchPath } from './matchPath'
 
 export { route }
 export { loadPageRoutes }
@@ -240,7 +239,7 @@ function routeWith_pathToRegexp(
   urlPathname: string,
   routeString: string
 ): { matchValue: false | number; routeParams: Record<string, string> } {
-  const match = matchPath(urlPathname, { path: routeString, exact: true })
+  const match = matchPath({ path: routeString, caseSensitive: true }, urlPathname)
   if (!match) {
     return { matchValue: false, routeParams: {} }
   }

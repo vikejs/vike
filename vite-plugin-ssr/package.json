@@ -4,7 +4,6 @@
   "dependencies": {
     "@brillout/json-s": "^0.3.0",
     "@brillout/libassert": "^0.5.2",
-    "@brillout/path-to-regexp": "^0.3.1",
     "cac": "^6.7.3",
     "devalue": "^2.0.1",
     "es-module-lexer": "^0.9.2",

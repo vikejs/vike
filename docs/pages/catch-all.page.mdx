@@ -10,8 +10,10 @@ We can use [Route Strings & Route Functions](/route-strings-and-route-functions)
 //  `/product/42/reviews`
 //  `/product/1337/details`
 //  `/product/2048/some/deeply/nested/path`
-export default '/product/:param*`
+export default '/product/*`
 ```
+
+The value of the catch-all parameter is available at `pageContext.routeParams['*']`.
 
 To route all URLs to a single page:
 
@@ -21,7 +23,7 @@ To route all URLs to a single page:
 // We simply define a Route Function that always returns true
 export default () => true
 /* Or with a Route String:
-export default '/:params*'
+export default '/*'
 */
 ```
 
