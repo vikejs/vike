@@ -27,12 +27,9 @@
 
 ## Custom
 
-While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
+In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
  - `onBeforeRender()` and `render()` hooks.
     ```js
-    // *.page.server.js
-    // Environment: Node.js
-
     export function onBeforeRender() {
       return {
         pageContext: {
@@ -40,7 +37,8 @@ While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define 
         }
       }
     }
-
+    ```
+    ```js
     export function render() {
       return {
         documentHtml: escapeInject`<html>...`,
@@ -64,12 +62,10 @@ While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define 
     })
     ```
 
-By default only `pageContext.Page` and `pageContext.pageExports` are available in the browser;
-we use [`passToClient`](/passToClient) to make more `pageContext` available in the browser.
+## Access from browser
 
-The `pageContext` can be accessed at:
- - *[Node.js]* `export function onBeforeRender(pageContext)` (`*.page.server.js`)
- - *[Node.js]* `export function render(pageContext)` (`*.page.server.js`)
- - *[Node.js (& Browser)]* `export default function routeFunction(pageContext)` (`*.page.route.js`)
- - *[Browser]* `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
- - *[Browser]* `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
+Only `pageContext.Page` and `pageContext.pageExports` are available in the browser by default.
+
+When using Client Routing ([useClientRouter()](/useClientRouter)) the `pageContext.url*` are also available in the browser by default.
+
+We can make more `pageContext` available in the browser by using [`passToClient`](/passToClient).
