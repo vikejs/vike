@@ -10,8 +10,15 @@ function dev(): Plugin {
       ssr: { external: ['vite-plugin-ssr'] },
       optimizeDeps: {
         entries: ['**/*.page.*([a-zA-Z0-9])', '**/*.page.client.*([a-zA-Z0-9])'],
-        exclude: ['vite-plugin-ssr/client', 'vite-plugin-ssr/client/router'],
-        include: ['@brillout/libassert', '@brillout/json-s', '@brillout/path-to-regexp']
+        exclude: [
+          // We exclude the client code to support `import.meta.glob()`
+          'vite-plugin-ssr/client',
+          'vite-plugin-ssr/client/router',
+          // We cannot add these to `optimizeDeps.include` because of `pnpm`
+          '@brillout/libassert',
+          '@brillout/json-s',
+          '@brillout/path-to-regexp'
+        ]
       }
     })
   }

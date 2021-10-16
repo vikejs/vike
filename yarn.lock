@@ -364,20 +364,20 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@brillout/json-s@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@brillout/json-s/-/json-s-0.2.0.tgz#4ef2cc02803da43790bdff90a0b0a5762161ff6f"
-  integrity sha512-kYmNGXGrBXqF4rmIXDpQVUFK9af1DF38BjUXgEwnPk1bZv3dFVjn8iu4CgE+LP5KvMyyDWfGhQfIPuX+pc3jNg==
+"@brillout/json-s@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@brillout/json-s/-/json-s-0.3.0.tgz#eb6c9c43e77168507a5b4e9ab7a5025d5134b5ec"
+  integrity sha512-dEkJYER8dxHNZO5bQX6P8h5eU8CzePZtP6ioY7ojcFHy3wtfzVNkfdJ03yMAmyJOJTOXwdhOBQD96bqZEeF3Lg==
 
-"@brillout/libassert@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@brillout/libassert/-/libassert-0.4.2.tgz#e536e86edd4799796c95c436f05298c8ab1504f9"
-  integrity sha512-8B3gmpeOlwnrWQh5c1lxBIKeUs7dGAxTt8q5hjlNuFZdGsV+AByoD6oQRmvCOHcu7bEQW7lYRIN8gfAIwqvYUQ==
+"@brillout/libassert@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@brillout/libassert/-/libassert-0.5.2.tgz#692a80d9759485f157c7fb5333aa3e194d4a1d04"
+  integrity sha512-TG2GK3hOsQ9IOpnpOxP4PyZAs4UvYE43aonAlOXY3esr9BzXUV9cetpaYeMTH1lsuBesZo57/YdTNm+KpPX/zw==
 
-"@brillout/path-to-regexp@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@brillout/path-to-regexp/-/path-to-regexp-0.2.3.tgz#2e7333ddefd45506599b8cd27e2b41ca636893b9"
-  integrity sha512-+Q0F9Ni0Ux9ULQ+gTqddZNGYhnsEv8py1lsY35hkBTCwSTQDCt4iQe6chX5Q6zleu8PNQ7EGigKlRr/xmAWNnQ==
+"@brillout/path-to-regexp@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@brillout/path-to-regexp/-/path-to-regexp-0.3.1.tgz#35dcd85e2cae8b78d8020d2e476025df620a0da5"
+  integrity sha512-SCy32Lsjio3hpX2hyFH/hsuoIWaijGDrGnGiHdp+RWfclloOeWZJoDeWvd5PvzOiY8xr1W134q7Lcs40+1G44A==
   dependencies:
     path-to-regexp "^1.7.0"
 
