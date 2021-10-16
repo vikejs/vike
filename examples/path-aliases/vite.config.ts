@@ -1,4 +1,4 @@
-import reactRefresh from "@vitejs/plugin-react-refresh";
+import react from "@vitejs/plugin-react";
 import ssr from "vite-plugin-ssr/plugin";
 import { UserConfig } from "vite";
 
@@ -8,7 +8,7 @@ const config: UserConfig = {
       "~": __dirname,
     },
   },
-  plugins: [reactRefresh(), ssr()],
+  plugins: [react(), ssr()],
 };
 
 export default config;

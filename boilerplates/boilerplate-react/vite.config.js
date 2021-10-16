@@ -1,6 +1,6 @@
-import reactRefresh from "@vitejs/plugin-react-refresh";
+import react from "@vitejs/plugin-react";
 import ssr from "vite-plugin-ssr/plugin";
 
 export default {
-  plugins: [reactRefresh(), ssr()],
+  plugins: [react(), ssr()],
 };
