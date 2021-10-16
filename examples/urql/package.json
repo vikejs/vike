@@ -8,22 +8,22 @@
   },
   "dependencies": {
     "@types/express": "^4.17.13",
-    "@types/node": "^16.10.2",
-    "@types/react": "^17.0.27",
+    "@types/node": "^16.11.0",
+    "@types/react": "^17.0.30",
     "@types/react-dom": "^17.0.9",
     "@vitejs/plugin-react": "^1.0.4",
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
-    "graphql": "^15.6.0",
+    "graphql": "^15.6.1",
     "isomorphic-fetch": "^3.0.0",
     "node-fetch": "^3.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-ssr-prepass": "^1.4.0",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.3",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4",
     "urql": "^2.0.5",
-    "vite": "^2.6.2",
+    "vite": "^2.6.7",
     "vite-plugin-ssr": "0.3.11"
   }
 }
