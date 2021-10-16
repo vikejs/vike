@@ -1,3 +1,16 @@
+## [0.3.11](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.10...v0.3.11) (2021-10-16)
+
+
+* update path-to-regexp ([f997192](https://github.com/brillout/vite-plugin-ssr/commit/f997192c54bc5209102e6a01d9e57945ce5fe4bb))
+
+
+### BREAKING CHANGES
+
+* catch-all route is now `'/*'` instead of `'/:params*'`,
+see https://vite-plugin-ssr.com/catch-all
+
+
+
 ## [0.3.10](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.9...v0.3.10) (2021-10-09)
 
 
