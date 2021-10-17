@@ -3,7 +3,7 @@ import { escapeInject } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 
 export { passToClient }
 export { render }

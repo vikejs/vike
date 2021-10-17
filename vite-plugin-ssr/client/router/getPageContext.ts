@@ -20,7 +20,7 @@ import { PageIsomorphicFile, PageIsomorphicFileDefault } from '../../shared/load
 import { assertUsageServerHooksCalled, runOnBeforeRenderHooks } from '../../shared/onBeforeRenderHook'
 import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContextInterim } from '../releasePageContext'
-import { PageContextBuiltInClient } from '../../types'
+import { PageContextBuiltInClient } from './types'
 
 type PageContextPublic = PageContextBuiltInClient
 

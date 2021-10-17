@@ -1,8 +1,3 @@
-> ** TypeScript ** &mdash; we can import the type definitions of the built-in `pageContext` properties.
-> ```ts
-> import type {PageContextBuiltIn, PageContextBuiltInClient} from 'vite-plugin-ssr/types'
-> ```
-
 ## Built-in
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
@@ -62,9 +57,16 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
     })
     ```
 
+> If we use **TypeScript**:
+> ```ts
+> import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+> import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
+> import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
+> ```
+
 ## Access from browser
 
-Only `pageContext.Page` and `pageContext.pageExports` are available in the browser by default.
+By default, only `pageContext.Page`, `pageContext.pageExports`, and `pageContext.isHydration` are available in the browser.
 
 When using Client Routing ([useClientRouter()](/useClientRouter)) the `pageContext.url*` are also available in the browser by default.
 

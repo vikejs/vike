@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { useClientRouter } from "vite-plugin-ssr/client/router";
 import { PageWrapper } from "./PageWrapper";
 import { getPageTitle } from "./getPageTitle";
-import type { PageContextBuiltInClient } from "vite-plugin-ssr/types";
+import type { PageContextBuiltInClient } from "vite-plugin-ssr/client/router";
 import type { PageContext } from "./types";
 
 const { hydrationPromise } = useClientRouter({

@@ -4,7 +4,7 @@ import { escapeInject } from "vite-plugin-ssr";
 import { PageWrapper } from "./PageWrapper";
 import { getPageTitle } from "./getPageTitle";
 import type { PageContext } from "./types";
-import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
+import type { PageContextBuiltIn } from "vite-plugin-ssr";
 
 export { render };
 export { passToClient };

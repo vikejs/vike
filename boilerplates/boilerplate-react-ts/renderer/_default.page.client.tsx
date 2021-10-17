@@ -3,7 +3,7 @@ import React from "react";
 import { getPage } from "vite-plugin-ssr/client";
 import { PageWrapper } from "./PageWrapper";
 import type { PageContext } from "./types";
-import type { PageContextBuiltInClient } from "vite-plugin-ssr/types";
+import type { PageContextBuiltInClient } from "vite-plugin-ssr/client";
 
 hydrate();
 

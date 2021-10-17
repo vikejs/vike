@@ -1,6 +1,6 @@
 import { assert, assertUsage, isObject } from '../shared/utils'
 import { sortPageContext } from '../shared/sortPageContext'
-import { PageContextBuiltInClient } from '../types'
+import { PageContextBuiltInClient } from './types'
 
 // Release `pageContext` for user consumption. This is mostly about adding `assertPassToClient()`.
 export { releasePageContext }
