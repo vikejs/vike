@@ -60,6 +60,7 @@ function assert_pageAssets(pageAssets) {
     assert(a2.assetType === "script");
     assert(a2.mediaType === "text/javascript");
     assert(a2.preloadType === null);
+    assert(pageAssets[2] === undefined);
   } else {
     const a1 = pageAssets[0];
     assert(partRegex`/assets/index.page.${/[a-z0-9]+/}.css`.test(a1.src));
@@ -71,10 +72,17 @@ function assert_pageAssets(pageAssets) {
     assert(a2.assetType === "preload");
     assert(a2.mediaType === "text/javascript");
     assert(a2.preloadType === "script");
+    const isClientAsset = (src) => partRegex`/assets/renderer/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(src);
     const a3 = pageAssets[2];
-    assert(partRegex`/assets/renderer/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(a3.src));
-    assert(a3.assetType === "script");
+    assert(isClientAsset(a3.src));
+    assert(a3.assetType === "preload");
     assert(a3.mediaType === "text/javascript");
-    assert(a3.preloadType === null);
+    assert(a3.preloadType === 'script');
+    const a4 = pageAssets[3];
+    assert(isClientAsset(a4.src));
+    assert(a4.assetType === "script");
+    assert(a4.mediaType === "text/javascript");
+    assert(a4.preloadType === null);
+    assert(pageAssets[4] === undefined);
   }
 }
