@@ -246,6 +246,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'CSS-in-JS',
+    url: '/css-in-js'
+  },
+  {
+    level: 2,
     title: 'Boostrap (Vanilla JS)',
     url: '/bootstrap'
   },
