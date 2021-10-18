@@ -10,7 +10,7 @@ function getPageContextSerializedInHtml(): {
 } & Record<string, unknown> {
   assertUsage(
     '__vite_plugin_ssr__pageContext' in window,
-    'Client-side `pageContext` missing. Make sure to apply `injectAssets()` to the HTML strings you generate, see https://vite-plugin-ssr.com/injectAssets'
+    'Client-side `pageContext` missing. Make sure that `injectAssets()` is applied to the HTML, see https://vite-plugin-ssr.com/injectAssets'
   )
 
   const pageContext: Record<string, unknown> = {}

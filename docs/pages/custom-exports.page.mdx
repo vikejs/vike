@@ -1,12 +1,14 @@
 export const noHeading = true
 export const pageTitle = 'Custom Exports'
 
-Exports in `*.page.{server|route}.js` that are unknown to `vite-plugin-ssr` are forbidden:
+Our `*.page.{server|route}.js` files should not have exports that are unknown to `vite-plugin-ssr`.
+
+For example:
 
 ```js
 // *.page.{server|route}.js
 
-// This is forbidden because `someStuff` is an export that is unknown to `vite-plugin-ssr`
+// `someStuff` is an unknown export; `vite-plugin-ssr` will show a warning.
 export { someStuff }
 
 function someStuff() {
@@ -14,10 +16,10 @@ function someStuff() {
 }
 ```
 
-Instead, we define & export `someStuff` outside of `*.page.*`:
+Instead, we should define & export `someStuff` outside of `*.page.{server|route}.js`:
 
 ```diff
-// *.page.{server|route}.js
+  // *.page.{server|route}.js
 
 + import { someStuff } from './someStuff'
 
@@ -27,7 +29,7 @@ Instead, we define & export `someStuff` outside of `*.page.*`:
 -  // ...
 - }
 ```
-```js
+```diff
 + // someStuff.js
 +
 + export { someStuff }
@@ -37,8 +39,10 @@ Instead, we define & export `someStuff` outside of `*.page.*`:
 + }
 ```
 
+Note that `.page.js` files are allowed to have custom exports (because it enables features such as page-specific static meta data, e.g. [Markdown - `<head>`](https://vite-plugin-ssr.com/markdown#head)).
+
 > **Why?**
-> `vite-plugin-ssr` forbids unknown exports in order to improve code readability:
-> if someone unfamiliar with our code reads `export { someStuff }`,
+> `vite-plugin-ssr` forbids unknown exports in order to improve your app's code readability:
+> if someone unfamiliar with your code reads `export { someStuff }`,
 > then he'll be unsure whether `someStuff` has an effect on `vite-plugin-ssr` or not.
-> Forbidding custom exports makes code clearer, and thus easier to understand.
+> Forbidding custom exports makes your app's code clearer and thus easier to understand.

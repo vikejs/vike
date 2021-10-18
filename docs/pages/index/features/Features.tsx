@@ -21,12 +21,12 @@ function Features() {
           desc: (
             <>
               <p>
-                Control how your pages are rendered and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
-                <b>any tool</b> you want (Vuex/Redux/PullState, RPC or GraphQL, React/Vue Query, PWA, Service Workers,
+                Control how your pages are rendered, and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
+                <b>any tool</b> you want (Vuex/Redux/Storeon, RPC/REST/GraphQL, React/Vue Query, PWA, Service Workers,
                 other Vite plugins, ...).
               </p>
               <p>
-                Integrating tools is <b>simple</b> and <b>natural</b>.
+                <b>Manually integrate</b> tools in a <b>simple</b> and <b>natural</b> way.
               </p>
             </>
           ),
@@ -45,7 +45,7 @@ function Features() {
                 <b>i18n</b>, <b>HTML Streaming</b>.
               </p>
               <p>
-                <b>Client Routing</b> (faster page transitions) or <b>Server Routing</b> (simpler app architecture).
+                <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
               </p>
               <p>
                 Pages can be rendered with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
@@ -63,9 +63,13 @@ function Features() {
           desc: (
             <>
               <p>
-                With <code>vite-plugin-ssr</code> you integrate tools manually instead of using a plugin system.
+                With <code>vite-plugin-ssr</code> you integrate tools manually instead of using a plugin system; while
+                it means more work, it gives you a simpler and more sturdy foundation to build upon.
               </p>
-              <p>While it means more work, it gives you a simple & sturdy foundation to build upon.</p>
+              <p>
+                The clean cut between <code>vite-plugin-ssr</code> and your view framework (React/Vue/...) makes
+                reasoning about your app a lot easier.
+              </p>
             </>
           ),
           learnMore: (
@@ -76,9 +80,9 @@ function Features() {
                 less easy than just adding a Next.js/Nuxt plugin; getting started is often slower.
               </p>
               <p>
-                But plugin systems are complex, limiting, and quickly become counterproductive. You end up fighting the
-                plugin system and needing brittle workarounds to circumvent Next.js/Nuxt's black-box limiting nature.
-                The net result is a substantial loss in dev time and frustration.
+                But plugin systems are inherently complex and limiting; they quickly become counterproductive. You end
+                up fighting the plugin system and needing brittle workarounds to circumvent Next.js/Nuxt's black-box
+                limiting nature. The net result is a substantial loss in development time and massive frustration.
               </p>
               <p>
                 In contrast, <code>vite-plugin-ssr</code> gets out of your way and integrating a tool is simply a matter
@@ -90,14 +94,18 @@ function Features() {
               <h3>Stable foundation</h3>
               <p>
                 Plugin systems / frameworks need to constantly keep up with the ecosystem, whereas
-                do-one-thing-do-it-well tools tend to quickly stabilize. Actually, <code>vite-plugin-ssr</code> is
-                already stable: the <code>v1</code> release will most likley have no breaking changes with the current
-                version, and the goal will be to stay on <code>v1</code> for the foreseeable future.
+                do-one-thing-do-it-well tools can quickly stabilize. Actually, <code>vite-plugin-ssr</code> is already
+                stable: the <code>v1</code> release will most likley have no breaking change with the current
+                <code>v0.3.x</code> release, and the goal will be to stay on <code>v1</code> for the foreseeable future.
               </p>
+              <h3>Clean Cut</h3>
+              <code>vite-plugin-ssr</code> is completely agnostic; there is no conflation between{' '}
+              <code>vite-plugin-ssr</code> and your view framework (React/Vue/...). This makes reasoning about your app
+              a lot easier.
               <h3>More fun</h3>
               <p>
                 Last but not least, manual integration is more fun (and more insightful) than fighting some arbitrary
-                and idiosyncratic framework.
+                framework and idiosyncratic abstraction.
               </p>
             </>
           )
@@ -116,8 +124,8 @@ function Features() {
                 comp&shy;anies.
               </p>
               <p>
-                <b>Stable</b>: the <code>v1</code> release will most likely have no breaking changes with the current{' '}
-                <code>v0.3.x</code>.
+                <b>Stable</b>: the <code>v1</code> release will most likely have no breaking change with the current{' '}
+                <code>v0.3.x</code> release.
               </p>
             </>
           )
@@ -131,15 +139,15 @@ function Features() {
           desc: (
             <>
               <p>
-                Works with <b>any server environement</b> (Vercel, EC2 instance, AWS lambda, Firebase, Cloudflare
-                Workers, Express.js, Fastify, Hapi, ...).
+                Works with <b>any server environement</b> (Vercel, Cloudflare Workers, AWS EC2, AWS Lambda, Firebase,
+                Google Cloud, ...).
               </p>
               <p>
                 <b>Pre-render</b> your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
                 Pages, ...).
               </p>
               <p>
-                Fits very well <b>Cloudflare Workers</b>'s compute model.
+                Fits <b>Cloudflare Workers</b>'s small worker size requirement like a glove.
               </p>
             </>
           ),

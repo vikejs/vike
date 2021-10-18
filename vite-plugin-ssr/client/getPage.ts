@@ -16,6 +16,13 @@ async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuilt
   const pageFiles = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFiles)
 
+  if (pageContext._pageIsomorphicFile) {
+    assertWarning(
+      !pageContext._pageIsomorphicFile.fileExports['onBeforeRender'],
+      `You are using Server Routing but ${pageContext._pageId} has a \`onBeforeRender()\` hook defined in a \`.page.js\` file (${pageContext._pageIsomorphicFile.filePath}). This doesn't make sense and you should define \`onBeforeRender()\` in a \`.page.server.js\` file instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`
+    )
+  }
+
   assertPristineUrl()
 
   const pageContextReadyForRelease = releasePageContext(pageContext)

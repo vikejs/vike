@@ -1,0 +1,20 @@
+> In general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` instead of `.page.js`. (We elaborate below.)
+
+Usually, we define [`onBeforeRender()` hooks in `.page.server.js`](/onBeforeRender-server)
+but, if we use [Client Routing](/useClientRouter),
+then we can define `onBeforeRender()` in `.page.js` instead.
+
+When defined in `.page.server.js` the `onBeforeRender()` hook is always loaded & executed in Node.js,
+whereas if we define it in `.page.js` then `onBeforeRender()` is also loaded & executed in the browser:
+for the first page the user visits `onBeforeRender()` is called in Node.js,
+and for any subsequent page navigation `onBeforeRender()` is called in the browser.
+
+We need to make sure that `onBeforeRender()` is isomorphic: it needs to be able to run in Node.js as well as in the browser.
+That's why we recommend defining the `onBeforeRender()` hook in `.page.server.js` since it's easier to write code that only runs
+in Node.js than isomorphic code.
+That said, if we want to minimize requests made to our Node.js server, then we should define `onBeforeRender()` in `.page.js`.
+
+## Server Routing
+
+If we use [Server Routing](/SR-vs-CR#server-routing) we shouldn't define `onBeforeRender()` in `.page.js`
+(the browser loads `onBeforeRender()` but never calls it).

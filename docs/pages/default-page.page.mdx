@@ -1,10 +1,13 @@
-The `_default.page.{server|client|route}.js` files allow us to define hooks & settings in a global application-wide way.
+The `_default.page.*` files allow us to define hooks and settings that apply to all pages.
 
-They are not adjacent to any `.page.js` file: defining a `_default.page.js` is forbidden.
+For example, we can define the `render()` hook in `_default.page.server.js` in order to define how our pages are rendered to HTML.
 
-## `_default.page.{server|client}.js`
+## `_default.page.route.js`
 
-The hooks & settings we export in `_default.page.server.js` and `_default.page.client.js` apply as default to all pages.
+The `_default.page.route.js` can export special global hooks that allow us to control the routing process,
+see [_default.page.route.js](/_default.page.route.js).
+
+## Multiple defaults
 
 There can be several `_default.{server|client}.js` files:
 
@@ -21,7 +24,3 @@ admin-panel/pages/index.page.js
 
 The `marketing/_default.page.*` files apply as default to the `marketing/**/*.page.js` files, while
 the `admin-panel/_default.page.*` files apply as default to the `admin-panel/**/*.page.js` files.
-
-## `_default.page.route.js`
-
-The `_default.page.route.js` exports special hooks that allows us to control the routing process, more infos at [_default.page.route.js](/_default.page.route.js).

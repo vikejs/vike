@@ -1,11 +1,8 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-To fetch data:
-1. We create a `.page.server.js` file. (For a page `movies.page.js`, we create `movies.page.server.js`.)
-2. We `export function onBeforeRender () { /*...*/ }` in our newly created `.page.server.js`.
-3. (Optionally) We add new property names to `passToClient: string[]` in `_default.page.server.js`.
+## `onBeforeRender()`
 
-For example:
+The usual way to fetch data is to use the `onBeforeRender()` hook with `passToClient`.
 
 ```js
 // /pages/movies.page.server.js
@@ -47,6 +44,7 @@ export { render }
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
+  // We pass `pageProps` to `Page`
   const pageHtml = await renderToHtml(
     createElement(Page, pageProps)
   )
@@ -72,14 +70,17 @@ hydrate()
 
 async function hydrate() {
   const pageContext = await getPage()
+  // `Page` is also available in the browser
+  const { Page } = pageContext
+  // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
+  // available here in the browser.
+  const { Page, pageProps } = pageContext
   await hydrateToDom(
-    // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
-    // available here in the browser.
-    createElement(pageContext.Page, pageContext.pageProps),
+    createElement(Page, pageProps),
     document.getElementById('view-root')
   )
   /* JSX:
-  await hydrateToDom(<Page {...pageContext.pageProps} />, document.getElementById('view-root'))
+  await hydrateToDom(<Page {...pageProps} />, document.getElementById('view-root'))
   */
 }
 ```
@@ -89,7 +90,7 @@ async function hydrate() {
 
 export { Page }
 
-// In our `render()` and `hydrate()` functions above, we pass `pageContext.pageProps` to `Page`
+// In the `render()` and `hydrate()` functions above, we pass `pageContext.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
   // ...
@@ -99,13 +100,21 @@ function Page(pageProps) {
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root component `Page`.
 
-We could have defined `movies` directly as `pageContext.movies` instead of `pageContext.pageProps.movies`, but it's cumbersome:
-our render/hydrate function would then need to know what `pageContext` should be passed to the root component `Page`.
+## Client Routing
+
+Since `.page.server.js` files are loaded only in Node.js,
+data fetching is always exectued in Node.js.
+
+But, if we use [Client Routing](/useClientRouter),
+we can define `onBeforeRender()` in `.page.js` instead, in which case, `onBeforeRender()` is called in the browser instead of Node.js upon page navigation.
+We usually want to do this if we want to minimize requests made to our Node.js server.
+
+See [`export { onBeforeRender }` (`.page.js`)](/onBeforeRender-isomorphic).
 
 ## Stateful Component
 
 We can also fetch data by using a stateful component.
-But note that with this technique, the fetched data is not rendered to HTML.
+But note the fetched data is then not rendered to HTML.
 
 We usually need to make the route parameters available to the data-fetching stateful component:
 1. Make [`pageContext.routeParams`](/pageContext) available in the browser by adding it to `passToClient.push('routeParams')`.

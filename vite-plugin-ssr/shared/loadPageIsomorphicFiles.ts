@@ -11,6 +11,7 @@ type PageIsomorphicFile = null | {
   onBeforeRenderHook: null | OnBeforeRenderHook
   fileExports: {
     skipOnBeforeRenderDefaultHook?: boolean
+    onBeforeRender?: Function
   }
 }
 type PageIsomorphicFileDefault = null | {
