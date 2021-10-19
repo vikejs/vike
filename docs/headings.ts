@@ -420,7 +420,7 @@ export const headings: HeadingDefinition[] = [
     title: '`onBeforeRender()` hook (`.page.server.js`)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
-    url: '/onBeforeRender-server'
+    url: '/onBeforeRender'
   },
   {
     level: 2,
