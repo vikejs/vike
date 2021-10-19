@@ -4,7 +4,7 @@ For a simpler example, check out [/examples/react/](/examples/react/).
 
 Features:
  - Client Routing (+ usage of `navigate()`)
- - Data Fetching (server-side only fetching + isomorphic fetching)
+ - Data Fetching (server-side fetching + isomorphic fetching)
  - Pre-rendering (+ usage of the `prerender()` hook)
  - Route Function
  - TypeScript
