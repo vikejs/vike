@@ -78,7 +78,7 @@ async function runOnBeforeRenderHooks(
         `The page \`${pageContext._pageId}\` has a \`onBeforeRender()\` hook defined in ${pageFile} as well as in ${defaultFile}.`,
         `Either \`export const skipOnBeforeRenderDefaultHook = true\` in ${pageFile}, or`,
         'call `pageContext.skipOnBeforeRenderPageHook()` or `pageContext.runOnBeforeRenderPageHook(pageContext)`',
-        `in the \`onBeforeRender()\` hook defined in ${defaultFile} — see https://vite-plugin-ssr.com/multiple-onBeforeRender`
+        `in the \`onBeforeRender()\` hook defined in ${defaultFile} — see https://vite-plugin-ssr.com/onBeforeRender-multiple`
       ].join(' ')
     )
   } else {
@@ -152,7 +152,7 @@ function assertUsageServerHooksCalled(args: {
         'or call `pageContext.runOnBeforeRenderServerHooks()` in the `onBeforeRender()` hook of',
         hooksIsomorphic[0],
         hooksIsomorphic[1] ? ` or ${hooksIsomorphic[1]}` : null,
-        '— see https://vite-plugin-ssr.com/multiple-onBeforeRender'
+        '— see https://vite-plugin-ssr.com/onBeforeRender-multiple'
       ]
         .filter(Boolean)
         .join(' ')
