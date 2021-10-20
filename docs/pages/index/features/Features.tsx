@@ -68,7 +68,7 @@ function Features() {
               </p>
               <p>
                 The clean cut between <code>vite-plugin-ssr</code> and your view framework (React/Vue/...) makes
-                reasoning about your app a lot easier.
+                reasoning about your app easier.
               </p>
             </>
           ),
@@ -101,7 +101,7 @@ function Features() {
               <h3>Clean Cut</h3>
               <code>vite-plugin-ssr</code> is completely agnostic; there is no conflation between{' '}
               <code>vite-plugin-ssr</code> and your view framework (React/Vue/...). This makes reasoning about your app
-              a lot easier.
+              easier.
               <h3>More fun</h3>
               <p>
                 Last but not least, manual integration is more fun (and more insightful) than fighting some arbitrary
