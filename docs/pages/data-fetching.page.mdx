@@ -103,13 +103,12 @@ conveniently hold all props of the root component `Page`.
 ## Client Routing
 
 Since `.page.server.js` files are loaded only in Node.js,
-data fetching is always exectued in Node.js.
+our data fetching code is always exectued in Node.js.
 
 But, if we use [Client Routing](/useClientRouter),
-we can define `onBeforeRender()` in `.page.js` instead, in which case, `onBeforeRender()` is called in the browser instead of Node.js upon page navigation.
-We usually want to do this if we want to minimize requests made to our Node.js server.
+then we have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is called not only in Node.js but also in the browser (upon page navigation).
 
-See [`export { onBeforeRender }` (`.page.js`)](/onBeforeRender-isomorphic).
+In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing), but if we want to minimize requests made to our Node.js server then we may want to define `onBeforeRender()` in `.page.js` instead.
 
 ## Stateful Component
 

@@ -1,3 +1,5 @@
+import { RepoLink } from 'libframe-docs/components/RepoLink'
+
 The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see the [Data Fetching](/data-fetching) guide.
 
 Since `.page.server.js` is only loaded in Node.js, ORM/SQL database queries can be used.
@@ -28,9 +30,12 @@ We can also provide initial `pageContext` values at our server middlware (see [`
 which is where we usually pass information about the authenticated user
 (see [Authentication](/auth) guide).
 
+Examples:
+- <RepoLink path='/examples/react-full/pages/star-wars/index/index.page.server.ts' />
+- <RepoLink path='/examples/vue-full/pages/star-wars/index/index.page.server.ts' />
+
 ## Client Routing
 
 If we use [Client Routing](/useClientRouter),
-we can define the `onBeforeRender()` hook in `.page.js` instead of `.page.server.js`;
-the hook is then called not only in Node.js but also in the browser,
-see [`onBeforeRender()` hook (`.page.js`)](/onBeforeRender-isomorphic).
+we also have the option to define the [`onBeforeRender()` hook in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
+the hook is then called not only in Node.js but also in the browser.
