@@ -1,5 +1,5 @@
 import React from "react";
-import type { Movie } from "./types";
+import type { Movie } from "../types";
 
 export { Page };
 
