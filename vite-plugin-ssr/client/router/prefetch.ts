@@ -13,7 +13,7 @@ const prefetchLinksHandled = new Map<string, boolean>()
 
 async function prefetch(url: string) {
   const prefetchUrl = getPrefetchUrl(url)
-  if(!shouldPrefetch(prefetchUrl)) return
+  if (!shouldPrefetch(prefetchUrl)) return
   prefetchLinksHandled.set(prefetchUrl, true)
   const globalContext = await getGlobalContext()
   const pageContext = {
@@ -23,10 +23,10 @@ async function prefetch(url: string) {
   }
   addComputedUrlProps(pageContext)
   const routeContext = await route(pageContext)
-  if('pageContextAddendum' in routeContext) {
+  if ('pageContextAddendum' in routeContext) {
     const _pageId = routeContext.pageContextAddendum._pageId
-    if(_pageId) {
-      loadPageFiles({_pageId})
+    if (_pageId) {
+      loadPageFiles({ _pageId })
     }
   }
 }
@@ -37,14 +37,14 @@ function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
     const url = linkTag.getAttribute('href')
-    if(url && isNotNewTabLink(linkTag)) {
+    if (url && isNotNewTabLink(linkTag)) {
       const prefetchUrl = getPrefetchUrl(url)
-      if(!shouldPrefetch(prefetchUrl)) return
+      if (!shouldPrefetch(prefetchUrl)) return
       const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, linkTag)
-      if(prefetchOptionWithOverride) {
+      if (prefetchOptionWithOverride) {
         const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if(entry.isIntersecting) {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
               prefetch(url)
               observer.disconnect()
             }
@@ -60,13 +60,18 @@ function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
 
   function getPrefetchOverride(prefetchOption: boolean, linkTag: HTMLElement): boolean {
     const prefetchAttribute = linkTag.getAttribute('data-prefetch')
-    if(typeof prefetchAttribute === 'string') {
+    if (typeof prefetchAttribute === 'string') {
       const options = ['true', 'false']
-      assertUsage(options.includes(prefetchAttribute), `data-prefetch got invalid value: "${prefetchAttribute}", available options: ${options.map(v => `"${v}"`).join(', ')}`)
+      assertUsage(
+        options.includes(prefetchAttribute),
+        `data-prefetch got invalid value: "${prefetchAttribute}", available options: ${options
+          .map((v) => `"${v}"`)
+          .join(', ')}`
+      )
     }
-    if(prefetchAttribute === 'true') {
+    if (prefetchAttribute === 'true') {
       return true
-    } else if(prefetchAttribute === 'false') {
+    } else if (prefetchAttribute === 'false') {
       return false
     }
 
@@ -79,8 +84,8 @@ function getPrefetchUrl(url: string) {
 }
 
 function shouldPrefetch(prefetchUrl: string) {
-  if(isExternalLink(prefetchUrl)) return false
-  if(prefetchLinksHandled.has(prefetchUrl)) return false
+  if (isExternalLink(prefetchUrl)) return false
+  if (prefetchLinksHandled.has(prefetchUrl)) return false
 
   return true
 }
