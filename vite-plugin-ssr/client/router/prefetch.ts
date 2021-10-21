@@ -45,22 +45,18 @@ function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
             if(entry.isIntersecting) {
-              onVisible(url)
+              prefetch(url)
               observer.disconnect()
             }
           })
         })
         observer.observe(v)
       } else {
-        v.addEventListener('mouseover', () => onVisible(url))
-        v.addEventListener('touchstart', () => onVisible(url))
+        v.addEventListener('mouseover', () => prefetch(url))
+        v.addEventListener('touchstart', () => prefetch(url))
       }
     }
   })
-
-  function onVisible(url: string) {
-    prefetch(url)
-  }
 
   function getPrefetchOverride(prefetchOption: boolean, link: HTMLElement): boolean {
     const prefetchAttribute = link.getAttribute('data-prefetch')
