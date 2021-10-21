@@ -14,6 +14,9 @@ import { getPageContext } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
+import { addLinkPrefetch } from './prefetch'
+import { isNotNewTabLink } from './utils/isNotNewTabLink'
+import { isExternalLink } from './utils/isExternalLink'
 
 export { useClientRouter }
 export { navigate }
@@ -25,7 +28,8 @@ function useClientRouter({
   render,
   ensureHydration = false,
   onTransitionStart,
-  onTransitionEnd
+  onTransitionEnd,
+  prefetchLinks = true
 }: {
   // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
   // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
@@ -33,7 +37,8 @@ function useClientRouter({
   render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
-  ensureHydration?: boolean
+  ensureHydration?: boolean,
+  prefetchLinks?: boolean
 }): {
   hydrationPromise: Promise<void>
 } {
@@ -120,6 +125,7 @@ function useClientRouter({
     renderPromise = (async () => {
       const pageContextReadyForRelease = releasePageContext(pageContext)
       await render(pageContextReadyForRelease)
+      addLinkPrefetch(prefetchLinks, url)
     })()
     await renderPromise
     renderPromise = undefined
@@ -179,6 +185,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     if (!isNotNewTabLink(linkTag)) return
 
     const url = linkTag.getAttribute('href')
+
     if (!url) return
     if (isExternalLink(url)) return
     if (isHashLink(url)) return
@@ -189,18 +196,8 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     callback(url, { keepScrollPosition })
   }
 
-  function isExternalLink(url: string) {
-    return !url.startsWith('/') && !url.startsWith('.')
-  }
-
   function isHashLink(url: string) {
     return url.includes('#')
-  }
-
-  function isNotNewTabLink(linkTag: HTMLElement) {
-    const target = linkTag.getAttribute('target')
-    const rel = linkTag.getAttribute('rel')
-    return target !== '_blank' && target !== '_external' && rel !== 'external' && !linkTag.hasAttribute('download')
   }
 
   function isNormalLeftClick(ev: MouseEvent): boolean {

@@ -4,9 +4,11 @@
     "target": "ES2020",
     "module": "ES2020",
     "moduleResolution": "Node",
+    "outDir": "dist/esm/",
     // User-code
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "strict": true,
+    "types": ["vite/client"],
     // Full strictness
     "noUnusedLocals": true /* Enable error reporting when a local variables aren't read. */,
     "noUnusedParameters": true /* Raise an error when a function parameter isn't read */,
@@ -24,5 +26,6 @@
     "declarationMap": true,
     "stripInternal": true
   },
-  "exclude": ["./dist/"]
+  "exclude": ["./node_modules/", "./dist/"],
+  "include": ["./**/*"]
 }
