@@ -12,7 +12,6 @@ export { addLinkPrefetch, prefetch }
 const prefetchLinksHandled = new Map<string, boolean>()
 
 async function prefetch(url: string) {
-  //TODO enable only in production: if(import.meta.env.DEV) return
   const prefetchUrl = getPrefetchUrl(url)
   if(!shouldPrefetch(prefetchUrl)) return
   prefetchLinksHandled.set(prefetchUrl, true)
