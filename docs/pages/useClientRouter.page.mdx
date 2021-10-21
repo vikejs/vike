@@ -46,6 +46,11 @@ const { hydrationPromise } = useClientRouter({
   // If we use React, we leave `ensureHydration: false` for a slight performance boost.
   ensureHydration: true,
 
+  // Prefetch `<a>` links when they appear in the user's viewport.
+  // We can override individual links: `<a data-prefetch="true" href="/some-link" />`.
+  // Default value: `false`.
+  prefetch: true,
+
   // To create custom page transition animations
   onTransitionStart,
   onTransitionEnd
