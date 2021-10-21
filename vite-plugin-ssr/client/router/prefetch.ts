@@ -35,12 +35,12 @@ function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
   // no need to add listeners on current url links
   prefetchLinksHandled.set(getPrefetchUrl(currentUrl), true)
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
-  linkTags.forEach(async (v) => {
-    const url = v.getAttribute('href')
-    if(url && isNotNewTabLink(v)) {
+  linkTags.forEach(async (linkTag) => {
+    const url = linkTag.getAttribute('href')
+    if(url && isNotNewTabLink(linkTag)) {
       const prefetchUrl = getPrefetchUrl(url)
       if(!shouldPrefetch(prefetchUrl)) return
-      const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, v)
+      const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, linkTag)
       if(prefetchOptionWithOverride) {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach(entry => {
@@ -50,16 +50,16 @@ function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
             }
           })
         })
-        observer.observe(v)
+        observer.observe(linkTag)
       } else {
-        v.addEventListener('mouseover', () => prefetch(url))
-        v.addEventListener('touchstart', () => prefetch(url))
+        linkTag.addEventListener('mouseover', () => prefetch(url))
+        linkTag.addEventListener('touchstart', () => prefetch(url))
       }
     }
   })
 
-  function getPrefetchOverride(prefetchOption: boolean, link: HTMLElement): boolean {
-    const prefetchAttribute = link.getAttribute('data-prefetch')
+  function getPrefetchOverride(prefetchOption: boolean, linkTag: HTMLElement): boolean {
+    const prefetchAttribute = linkTag.getAttribute('data-prefetch')
     if(typeof prefetchAttribute === 'string') {
       const options = ['true', 'false']
       assertUsage(options.includes(prefetchAttribute), `data-prefetch got invalid value: "${prefetchAttribute}", available options: ${options.map(v => `"${v}"`).join(', ')}`)
