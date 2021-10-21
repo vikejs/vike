@@ -42,7 +42,7 @@ function Features() {
             <>
               <p>
                 <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
-                <b>i18n</b>, <b>HTML Streaming</b>.
+                <b>i18n</b>, <b>Link Prefetching</b>, <b>HTML Streaming</b>.
               </p>
               <p>
                 <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
