@@ -4,7 +4,7 @@ For a simpler example, check out [/examples/vue/](/examples/vue/).
 
 Features:
  - Client Routing (+ usage of `navigate()`)
- - Data Fetching
+ - Data Fetching (server-side fetching + isomorphic fetching)
  - Pre-rendering (+ usage of the `prerender()` hook)
  - Route Function
  - TypeScript

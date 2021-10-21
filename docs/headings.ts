@@ -246,6 +246,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'CSS-in-JS',
+    url: '/css-in-js'
+  },
+  {
+    level: 2,
     title: 'Boostrap (Vanilla JS)',
     url: '/bootstrap'
   },
@@ -380,13 +385,26 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: '`pageContext`',
+    url: '/pageContext'
+  },
+  {
+    level: 2,
     title: '`.page.js`',
     url: '/.page.js'
   },
   {
     level: 2,
-    title: '`pageContext`',
-    url: '/pageContext'
+    title: '`export { Page }`',
+    isListTitle: true,
+    url: '/Page'
+  },
+  {
+    level: 2,
+    title: '`onBeforeRender()` hook (`.page.js`)',
+    titleInNav: '`export { onBeforeRender }`',
+    isListTitle: true,
+    url: '/onBeforeRender-isomorphic'
   },
   {
     level: 4,
@@ -399,7 +417,7 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`onBeforeRender()` hook',
+    title: '`onBeforeRender()` hook (`.page.server.js`)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
     url: '/onBeforeRender'

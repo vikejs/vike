@@ -1,9 +1,24 @@
-import fetch from "node-fetch";
-import { filterMovieData } from "./filterMovieData";
-import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
-import type { MovieDetails } from "./types";
+import React from "react";
+import fetch from "cross-fetch";
+import { filterMovieData } from "../filterMovieData";
+import type { PageContextBuiltIn } from "vite-plugin-ssr";
+import type { MovieDetails } from "../types";
 
+export { Page };
 export { onBeforeRender };
+
+function Page({ movie }: { movie: MovieDetails }) {
+  return (
+    <>
+      <h1>{movie.title}</h1>
+      Release Date: {movie.release_date}
+      <br />
+      Director: {movie.director}
+      <br />
+      Producer: {movie.producer}
+    </>
+  );
+}
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const response = await fetch(

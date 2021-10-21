@@ -40,14 +40,14 @@ function build(): Plugin {
   }
 }
 
-function removeClientCode(isSsrBuild: boolean, id: string): void | { code: string; map: null } {
+function removeClientCode(isSsrBuild: boolean, id: string): void | { code: string; map: { mappings: '' } } {
   if (!isSsrBuild) {
     return
   }
   if (id.includes('.page.client.')) {
     return {
       code: `throw new Error('[vite-plugin-ssr][Wrong Usage] File ${id} should not be loaded in Node.js');`,
-      map: null
+      map: { mappings: '' }
     }
   }
 }

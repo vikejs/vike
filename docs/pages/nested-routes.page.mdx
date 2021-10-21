@@ -75,6 +75,6 @@ useClientRouter({
 We can then use `<a href="/product/42/reviews" keep-scroll-position />` / `navigate('/product/42/reviews', { keepScrollPosition: true })` to avoid the browser to scroll to the top upon navigation.
 
 Alternatively,
-we can use a Route String Wildcard (e.g. `/product/:params*`) and then use a routing library (Vue Router, React Router, ...) for that page,
+we can use a Route String [catch-all parameter](/catch-all) (e.g. `/product/*`) and then use a routing library (Vue Router, React Router, ...) for that page,
 but we recommend the aforementioned solution instead as it is simpler.
 

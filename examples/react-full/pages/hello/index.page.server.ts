@@ -1,4 +1,4 @@
-import type { PageContextBuiltIn } from "vite-plugin-ssr/types";
+import type { PageContextBuiltIn } from "vite-plugin-ssr";
 
 export { onBeforeRender };
 export { prerender };

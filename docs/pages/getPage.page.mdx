@@ -1,6 +1,6 @@
 Environment: `Browser`
 
-The `getPage()` function provides [`pageContext`](/pageContext) in the browser-side.
+The `getPage()` function allows us to access [`pageContext`](/pageContext) in the browser.
 
 ```js
 // *.page.client.js
@@ -19,5 +19,3 @@ async function hydrate() {
 The `pageContext` provided by `getPage()` is a subset of the `pageContext` defined on the server-side; to determine what `pageContext` is sent to the browser we use [`passToClient`](/passToClient).
 
 The `pageContext` is serialized and passed from the server to the browser with [`devalue`](https://github.com/Rich-Harris/devalue).
-
-In development `getPage()` dynamically lazy-loads the page, while in production the page is preloaded (with `<link rel="preload">`).

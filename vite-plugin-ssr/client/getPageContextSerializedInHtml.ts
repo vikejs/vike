@@ -6,11 +6,11 @@ export { getPageContextSerializedInHtml }
 function getPageContextSerializedInHtml(): {
   _pageId: string
   _pageContextRetrievedFromServer: Record<string, unknown>
-  _pageContextComesFromHtml: true
+  _comesDirectlyFromServer: true
 } & Record<string, unknown> {
   assertUsage(
     '__vite_plugin_ssr__pageContext' in window,
-    'Client-side `pageContext` missing. Make sure to apply `injectAssets()` to the HTML strings you generate, see https://vite-plugin-ssr.com/injectAssets'
+    'Client-side `pageContext` missing. Make sure that `injectAssets()` is applied to the HTML, see https://vite-plugin-ssr.com/injectAssets'
   )
 
   const pageContext: Record<string, unknown> = {}
@@ -22,7 +22,7 @@ function getPageContextSerializedInHtml(): {
 
   objectAssign(pageContext, {
     _pageContextRetrievedFromServer: { ...pageContext },
-    _pageContextComesFromHtml: true as const
+    _comesDirectlyFromServer: true as const
   })
 
   return pageContext

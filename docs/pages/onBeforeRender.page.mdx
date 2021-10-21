@@ -1,12 +1,8 @@
-The `onBeforeRender()` hook is usually used to provide further [`pageContext`](/pageContext) values.
+import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-We can also provide initial `pageContext` values at our server middlware (see [`createPageRenderer()`](/createPageRenderer))
-which is where we usually pass information about the authenticated user
-(see [Authentication](/auth) guide).
+The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see the [Data Fetching](/data-fetching) guide.
 
-The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see [Data Fetching](/data-fetching) guide.
-
-Since `onBeforeRender()` is always called in Node.js, ORM/SQL database queries can be used.
+Since `.page.server.js` is only loaded in Node.js, ORM/SQL database queries can be used.
 
 ```js
 // /pages/movies.page.server.js
@@ -29,3 +25,17 @@ async function onBeforeRender(pageContext){
   }
 }
 ```
+
+We can also provide initial `pageContext` values at our server middlware (see [`createPageRenderer()`](/createPageRenderer))
+which is where we usually pass information about the authenticated user
+(see [Authentication](/auth) guide).
+
+Examples:
+- <RepoLink path='/examples/react-full/pages/star-wars/index/index.page.server.ts' />
+- <RepoLink path='/examples/vue-full/pages/star-wars/index/index.page.server.ts' />
+
+## Client Routing
+
+If we use [Client Routing](/useClientRouter),
+we also have the option to define the [`onBeforeRender()` hook in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
+the hook is then called not only in Node.js but also in the browser.

@@ -1,9 +1,20 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-To deploy a `vite-plugin-ssr` app to Cloudflare Workers we load `dist/server/importBuild.js` in our worker code.
+## `importBuild.js`
+
+To be able to deploy a `vite-plugin-ssr` app to Cloudflare Workers, we need to load `dist/server/importBuild.js` in our worker code.
 
 > Cloudflare Workers needs the entire server file to be bundled into a single file; `dist/server/importBuild.js` helps bundlers discover the entire dependency tree.
 
-Examples:
+See examples below.
+
+## Dev Server
+
+We recommend using Vite with an Express.js dev server for lightning fast HMR & dev start,
+and for production to bundle your worker code with Cloudflare Workers's webpack bundler.
+See examples below.
+
+## Examples
+
  - React: <RepoLink path='/examples/cloudflare-workers/' />
  - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />

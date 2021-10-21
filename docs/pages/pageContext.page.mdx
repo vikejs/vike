@@ -1,8 +1,3 @@
-> ** TypeScript ** &mdash; we can import the type definitions of the built-in `pageContext` properties.
-> ```ts
-> import type {PageContextBuiltIn, PageContextBuiltInClient} from 'vite-plugin-ssr/types'
-> ```
-
 ## Built-in
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
@@ -27,12 +22,9 @@
 
 ## Custom
 
-While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
+In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
  - `onBeforeRender()` and `render()` hooks.
     ```js
-    // *.page.server.js
-    // Environment: Node.js
-
     export function onBeforeRender() {
       return {
         pageContext: {
@@ -40,7 +32,8 @@ While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define 
         }
       }
     }
-
+    ```
+    ```js
     export function render() {
       return {
         documentHtml: escapeInject`<html>...`,
@@ -64,12 +57,25 @@ While built-in `pageContext` values are set by `vite-plugin-ssr`, we can define 
     })
     ```
 
-By default only `pageContext.Page` and `pageContext.pageExports` are available in the browser;
-we use [`passToClient`](/passToClient) to make more `pageContext` available in the browser.
+## Access from browser
 
-The `pageContext` can be accessed at:
- - *[Node.js]* `export function onBeforeRender(pageContext)` (`*.page.server.js`)
- - *[Node.js]* `export function render(pageContext)` (`*.page.server.js`)
- - *[Node.js (& Browser)]* `export default function routeFunction(pageContext)` (`*.page.route.js`)
- - *[Browser]* `const pageContext = await getPage()` (`import { getPage } from 'vite-plugin-ssr/client'`)
- - *[Browser]* `useClientRouter({ render(pageContext) })` (`import { useClientRouter } from 'vite-plugin-ssr/client/router'`)
+By default, only `pageContext.Page`, `pageContext.pageExports`, and `pageContext.isHydration` are available in the browser.
+
+When using Client Routing ([useClientRouter()](/useClientRouter)) the `pageContext.url*` are also available in the browser by default.
+
+We can make more `pageContext` available in the browser by using [`passToClient`](/passToClient).
+
+## TypeScript
+
+TypeScript utility types:
+
+```ts
+// Server-side `pageContext` built-in values
+import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+
+// Client-side `pageContext` built-in values, when using Server Routing
+import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
+
+// Client-side `pageContext` built-in values, when using Client Routing
+import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
+```

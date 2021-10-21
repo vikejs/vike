@@ -17,8 +17,8 @@ async function render(pageContext) {
     ? pipeWebStream((writable) => {
         pipeToWebWritable(app, {}, writable);
       })
-    // We don't really need to use a stream for dev, but I do it for fun's sake :D.
-    // You should use `renderToString` instead of `pipeToNodeWritable` for dev.
+    // We don't really need to use a stream for dev, but we do it for fun's sake :-).
+    // For real apps, we should use `renderToString` instead of `pipeToNodeWritable` in dev.
     : pipeNodeStream((writable) => {
         pipeToNodeWritable(app, {}, writable);
       });

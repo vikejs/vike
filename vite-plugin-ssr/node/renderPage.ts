@@ -1,6 +1,13 @@
 import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
-import { AllPageFiles, getAllPageFiles, findPageFile, findDefaultFiles, findDefaultFile } from '../shared/getPageFiles'
+import {
+  AllPageFiles,
+  getAllPageFiles,
+  findPageFile,
+  findDefaultFiles,
+  findDefaultFile,
+  PageFile
+} from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { stringify } from '@brillout/json-s'
 import {
@@ -22,7 +29,17 @@ import {
 } from '../shared/utils'
 import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
-import { loadPageMainFiles, PageMainFile, PageMainFileDefault } from '../shared/loadPageMainFiles'
+import {
+  loadPageIsomorphicFiles,
+  PageIsomorphicFile,
+  PageIsomorphicFileDefault
+} from '../shared/loadPageIsomorphicFiles'
+import {
+  assertUsageServerHooksCalled,
+  getOnBeforeRenderHook,
+  OnBeforeRenderHook,
+  runOnBeforeRenderHooks
+} from '../shared/onBeforeRenderHook'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
   getStreamReadableNode,
@@ -120,10 +137,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   const pageFiles = await loadPageFiles(pageContext)
   objectAssign(pageContext, pageFiles)
 
-  const hookResult = await executeOnBeforeRenderHook(pageContext)
-  if ('hookError' in hookResult) {
-    return await render500Page<PageContextInit>(pageContextInit, hookResult.hookError)
-  }
+  await executeOnBeforeRenderHooks(pageContext)
 
   if (pageContext._isPageContextRequest) {
     const pageContextSerialized = serializePageContextClientSide(pageContext, 'json')
@@ -243,13 +257,14 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   objectAssign(pageContext, pageFiles)
 
   // We swallow hook errors; another error was already shown to the user in the `logError()` at the beginning of this function; the second error is likely the same than the first error anyways.
-  if ('_onBeforeRenderHookCalled' in pageContext) {
-    const hookResult = await executeOnBeforeRenderHook(pageContext)
-    if ('hookError' in hookResult) {
-      warnCouldNotRender500Page(hookResult)
-      return pageContext
-    }
+  await executeOnBeforeRenderHooks(pageContext)
+  /*
+  const hookResult = await executeOnBeforeRenderHooks(pageContext)
+  if ('hookError' in hookResult) {
+    warnCouldNotRender500Page(hookResult)
+    return pageContext
   }
+  */
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
     warnCouldNotRender500Page(renderHookResult)
@@ -346,13 +361,13 @@ async function prerenderPage(
 ) {
   assert(pageContext._isPreRendering === true)
 
+  objectAssign(pageContext, {
+    _isPageContextRequest: false
+  })
+
   addComputedUrlProps(pageContext)
 
-  const hookResult = await executeOnBeforeRenderHook(pageContext)
-  if ('hookError' in hookResult) {
-    throwPrerenderError(hookResult.hookError)
-    assert(false)
-  }
+  await executeOnBeforeRenderHooks(pageContext)
 
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
@@ -363,7 +378,7 @@ async function prerenderPage(
     renderHookResult.htmlRender !== null,
     "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
   )
-  assert(!('_isPageContextRequest' in pageContext))
+  assert(pageContext._isPageContextRequest === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
@@ -430,6 +445,7 @@ function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
 
 type PageServerFileProps = {
   filePath: string
+  onBeforeRenderHook: null | OnBeforeRenderHook
   fileExports: {
     render?: Function
     prerender?: Function
@@ -437,6 +453,7 @@ type PageServerFileProps = {
     doNotPrerender?: true
     setPageProps: never
     passToClient?: string[]
+    skipOnBeforeRenderDefaultHook?: boolean
   }
 }
 type PageServerFile = null | PageServerFileProps
@@ -452,38 +469,10 @@ type PageServerFiles = {
 }
 //*/
 
-function assert_pageServerFile(pageServerFile: {
-  filePath: string
-  fileExports: Record<string, unknown>
-}): asserts pageServerFile is PageServerFileProps {
-  if (pageServerFile === null) return
-
-  const { filePath, fileExports } = pageServerFile
-  assert(filePath)
-  assert(fileExports)
-
-  const render = fileExports['render']
-  assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
-
-  assertUsage(
-    !('onBeforeRender' in fileExports) || isCallable(fileExports['onBeforeRender']),
-    `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`
-  )
-
-  assertUsage(
-    !('passToClient' in fileExports) || hasProp(fileExports, 'passToClient', 'string[]'),
-    `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
-  )
-
-  const prerender = fileExports['prerender']
-  assertUsage(
-    !prerender || isCallable(prerender),
-    `The \`prerender()\` hook defined in ${filePath} should be a function.`
-  )
-}
-
 async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllPageFiles; _isPreRendering: boolean }) {
-  const { Page, pageExports, pageMainFile, pageMainFileDefault } = await loadPageMainFiles(pageContext)
+  const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles(
+    pageContext
+  )
   const pageClientPath = getPageClientPath(pageContext)
 
   const { pageServerFile, pageServerFileDefault } = await loadPageServerFiles(pageContext)
@@ -491,8 +480,8 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
   const pageFiles = {
     Page,
     pageExports,
-    _pageMainFile: pageMainFile,
-    _pageMainFileDefault: pageMainFileDefault,
+    _pageIsomorphicFile: pageIsomorphicFile,
+    _pageIsomorphicFileDefault: pageIsomorphicFileDefault,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
     _pageClientPath: pageClientPath
@@ -508,9 +497,11 @@ async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllP
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const dependencies: string[] = [pageMainFile?.filePath, pageMainFileDefault?.filePath, pageClientPath].filter(
-    (p): p is string => !!p
-  )
+  const dependencies: string[] = [
+    pageIsomorphicFile?.filePath,
+    pageIsomorphicFileDefault?.filePath,
+    pageClientPath
+  ].filter((p): p is string => !!p)
   objectAssign(pageFiles, {
     _getPageAssets: async () => {
       const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
@@ -542,33 +533,11 @@ async function loadPageServerFiles(pageContext: {
     'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
   )
 
-  const serverFile = findPageFile(serverFiles, pageId)
-  const serverFileDefault = findDefaultFile(serverFiles, pageId)
-  assert(serverFile || serverFileDefault)
-  const pageServerFile = !serverFile
-    ? null
-    : {
-        filePath: serverFile.filePath,
-        fileExports: await serverFile.loadFile()
-      }
-  if (pageServerFile) {
-    assertExportsOfServerPage(pageServerFile.fileExports, pageServerFile.filePath)
-  }
-  const pageServerFileDefault = !serverFileDefault
-    ? null
-    : {
-        filePath: serverFileDefault.filePath,
-        fileExports: await serverFileDefault.loadFile()
-      }
-  if (pageServerFileDefault) {
-    assertExportsOfServerPage(pageServerFileDefault.fileExports, pageServerFileDefault.filePath)
-  }
-  if (pageServerFile !== null) {
-    assert_pageServerFile(pageServerFile)
-  }
-  if (pageServerFileDefault !== null) {
-    assert_pageServerFile(pageServerFileDefault)
-  }
+  const [pageServerFile, pageServerFileDefault] = await Promise.all([
+    loadPageServerFile(findPageFile(serverFiles, pageId)),
+    loadPageServerFile(findDefaultFile(serverFiles, pageId))
+  ])
+  assert(pageServerFile || pageServerFileDefault)
   if (pageServerFile !== null) {
     return { pageServerFile, pageServerFileDefault }
   }
@@ -576,6 +545,45 @@ async function loadPageServerFiles(pageContext: {
     return { pageServerFile, pageServerFileDefault }
   }
   assert(false)
+
+  async function loadPageServerFile(serverFile: null | PageFile): Promise<null | PageServerFile> {
+    if (serverFile === null) {
+      return null
+    }
+    const fileExports = await serverFile.loadFile()
+    const { filePath } = serverFile
+    assertExportsOfServerPage(fileExports, filePath)
+    assert_pageServerFile(fileExports, filePath)
+    const onBeforeRenderHook = getOnBeforeRenderHook(fileExports, filePath)
+    return { filePath, fileExports, onBeforeRenderHook }
+  }
+
+  function assert_pageServerFile(
+    fileExports: Record<string, unknown>,
+    filePath: string
+  ): asserts fileExports is PageServerFileProps['fileExports'] {
+    assert(filePath)
+    assert(fileExports)
+
+    const render = fileExports['render']
+    assertUsage(!render || isCallable(render), `The \`render()\` hook defined in ${filePath} should be a function.`)
+
+    assertUsage(
+      !('onBeforeRender' in fileExports) || isCallable(fileExports['onBeforeRender']),
+      `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`
+    )
+
+    assertUsage(
+      !('passToClient' in fileExports) || hasProp(fileExports, 'passToClient', 'string[]'),
+      `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
+    )
+
+    const prerender = fileExports['prerender']
+    assertUsage(
+      !prerender || isCallable(prerender),
+      `The \`prerender()\` hook defined in ${filePath} should be a function.`
+    )
+  }
 }
 
 type OnBeforePrerenderHook = (globalContext: { _pageRoutes: PageRoutes }) => unknown
@@ -624,47 +632,94 @@ function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePat
   )
 }
 
-async function executeOnBeforeRenderHook(
+async function executeOnBeforeRenderHooks(
   pageContext: {
     _pageId: string
     _pageServerFile: PageServerFile
     _pageServerFileDefault: PageServerFile
-    _passToClient: string[]
+    _pageIsomorphicFile: PageIsomorphicFile
+    _pageIsomorphicFileDefault: PageIsomorphicFileDefault
     _pageContextAlreadyProvidedByPrerenderHook?: true
+    _isPageContextRequest: boolean
   } & PageContextPublic
-): Promise<{ hookError: unknown; hookName: string; hookFilePath: string } | {}> {
-  const onBeforeRender =
-    pageContext._pageServerFile?.fileExports.onBeforeRender ||
-    pageContext._pageServerFileDefault?.fileExports.onBeforeRender
-  if (onBeforeRender && !pageContext._pageContextAlreadyProvidedByPrerenderHook) {
-    const onBeforeRenderFilePath = pageContext._pageServerFile?.filePath || pageContext._pageServerFileDefault?.filePath
-    assert(onBeforeRenderFilePath)
-    preparePageContextNode(pageContext)
-
-    Object.assign(pageContext, {
-      _onBeforeRenderHookCalled: true
-    })
-
-    let hookReturn: unknown
-    try {
-      // We use a try-catch because the hook `onBeforeRender()` is user-defined and may throw an error.
-      hookReturn = await onBeforeRender(pageContext)
-    } catch (err) {
-      return { hookError: err, hookName: 'onBeforeRender', hookFilePath: onBeforeRenderFilePath }
-    }
-    assertHookResult(hookReturn, 'onBeforeRender', ['pageContext'] as const, onBeforeRenderFilePath)
-    Object.assign(pageContext, hookReturn?.pageContext)
+): Promise<void> {
+  if (pageContext._pageContextAlreadyProvidedByPrerenderHook) {
+    return
   }
 
-  return {}
+  let serverHooksCalled: boolean = false
+  let skipServerHooks: boolean = false
+
+  if (isomorphicHooksExist() && !pageContext._isPageContextRequest) {
+    const pageContextAddendum = await runOnBeforeRenderHooks(
+      pageContext._pageIsomorphicFile,
+      pageContext._pageIsomorphicFileDefault,
+      {
+        ...pageContext,
+        skipOnBeforeRenderServerHooks,
+        runOnBeforeRenderServerHooks
+      }
+    )
+    Object.assign(pageContext, pageContextAddendum)
+    assertUsageServerHooksCalled({
+      hooksServer: [
+        pageContext._pageServerFile?.onBeforeRenderHook && pageContext._pageServerFile.filePath,
+        pageContext._pageServerFileDefault?.onBeforeRenderHook && pageContext._pageServerFileDefault.filePath
+      ],
+      hooksIsomorphic: [
+        pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
+        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath
+      ],
+      serverHooksCalled,
+      _pageId: pageContext._pageId
+    })
+  } else {
+    const { pageContext: pageContextAddendum } = await runOnBeforeRenderServerHooks()
+    Object.assign(pageContext, pageContextAddendum)
+  }
+
+  return undefined
+
+  function isomorphicHooksExist() {
+    return (
+      !!pageContext._pageIsomorphicFile?.onBeforeRenderHook ||
+      !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
+    )
+  }
+
+  async function skipOnBeforeRenderServerHooks() {
+    assertUsage(
+      serverHooksCalled === false,
+      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.'
+    )
+    skipServerHooks = true
+  }
+
+  async function runOnBeforeRenderServerHooks() {
+    assertUsage(
+      skipServerHooks === false,
+      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.'
+    )
+    assertUsage(
+      serverHooksCalled === false,
+      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.'
+    )
+    serverHooksCalled = true
+    const pageContextAddendum = await runOnBeforeRenderHooks(
+      pageContext._pageServerFile,
+      pageContext._pageServerFileDefault,
+      pageContext
+    )
+    return { pageContext: pageContextAddendum }
+  }
 }
 
 type LoadedPageFiles = {
   _getPageAssets: () => Promise<PageAssets>
   _pageServerFile: PageServerFile
   _pageServerFileDefault: PageServerFile
-  _pageMainFile: PageMainFile
-  _pageMainFileDefault: PageMainFileDefault
+  _pageIsomorphicFile: PageIsomorphicFile
+  _pageIsomorphicFileDefault: PageIsomorphicFileDefault
   _pageClientPath: string
   _passToClient: string[]
 }

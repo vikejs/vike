@@ -11,7 +11,6 @@ import {
 import { navigationState } from '../navigationState'
 import { throttle } from '../../shared/utils/throttle'
 import { getPageContext } from './getPageContext'
-import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
@@ -25,8 +24,6 @@ export { navigate }
 setupNativeScrollRestoration()
 
 let isAlreadyCalled: boolean = false
-let isFirstPageRender: boolean = true
-
 function useClientRouter({
   render,
   ensureHydration = false,
@@ -76,14 +73,16 @@ function useClientRouter({
   return { hydrationPromise }
 
   async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
+    const callNumber = ++callCount
+    assert(callNumber >= 1)
+
     if (ensureHydration) {
-      if (callCount !== 0) {
+      if (callNumber > 1) {
         await hydrationPromise
       }
     }
-    const callNumber = ++callCount
 
-    if (!isFirstPageRender) {
+    if (callNumber > 1) {
       if (isTransitioning === false) {
         onTransitionStart()
         isTransitioning = true
@@ -97,6 +96,7 @@ function useClientRouter({
     }
     const pageContext = {
       url,
+      _isFirstRender: callNumber === 1,
       _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
       ...globalContext
     }
@@ -108,13 +108,6 @@ function useClientRouter({
       return
     }
     objectAssign(pageContext, pageContextAddendum)
-
-    const pageFiles = await loadPageFiles(pageContext)
-    if (callNumber !== callCount) {
-      // Abort since there is a newer call.
-      return
-    }
-    objectAssign(pageContext, pageFiles)
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -129,19 +122,15 @@ function useClientRouter({
     changeUrl(url)
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
-    const wasFirstPageRender = isFirstPageRender
     renderPromise = (async () => {
-      const isHydration = isFirstPageRender && pageContext._pageContextComesFromHtml
-      isFirstPageRender = false
-      objectAssign(pageContext, { isHydration })
-      const pageContextProxy = releasePageContext(pageContext)
-      await render(pageContextProxy)
+      const pageContextReadyForRelease = releasePageContext(pageContext)
+      await render(pageContextReadyForRelease)
       addLinkPrefetch(prefetchLinks, url)
     })()
     await renderPromise
     renderPromise = undefined
 
-    if (wasFirstPageRender) {
+    if (pageContext._isFirstRender) {
       resolveInitialPagePromise()
     } else if (callNumber === callCount) {
       onTransitionEnd()

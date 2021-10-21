@@ -1,7 +1,7 @@
-import fetch from 'node-fetch'
-import { filterMovieData } from './filterMovieData'
-import type { MovieDetails } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import fetch from 'cross-fetch'
+import { filterMovieData } from '../filterMovieData'
+import type { MovieDetails } from '../types'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 
 export { onBeforeRender }
 
