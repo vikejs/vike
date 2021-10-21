@@ -54,7 +54,7 @@ async function getAllPageFiles(): Promise<AllPageFiles> {
     const ssrEnv = getSsrEnv()
     if (
       !allPageFilesUnprocessed ||
-      // We reload glob imports in dev to make auto-reload works
+      // We reload all glob imports in dev to make auto-reload work
       !ssrEnv.isProduction
     ) {
       allPageFilesUnprocessed = (await asyncSetter()) as any
