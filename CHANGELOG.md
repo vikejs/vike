@@ -1,3 +1,17 @@
+## [0.3.13](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.12...v0.3.13) (2021-10-21)
+
+
+### Features
+
+* link prefetching ([9d93b46](https://github.com/brillout/vite-plugin-ssr/commit/9d93b46d5d7c5e22901c97f2d81b6c5b8255477a))
+
+
+### Reverts
+
+* Revert "[wip] make `pageContext` immutable" ([fc02ffa](https://github.com/brillout/vite-plugin-ssr/commit/fc02ffa778d539fb200c0bfbbb44e88499fd4f0f))
+
+
+
 ## [0.3.12](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.11...v0.3.12) (2021-10-17)
 
 
