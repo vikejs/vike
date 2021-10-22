@@ -1,10 +1,14 @@
 Example of deploying app to [Cloudflare Workers](https://workers.cloudflare.com/) with Vite + `vite-plugin-ssr` + React.
 
-Note how we load `dist/server/importBuild.js` in [worker/ssr.js](worker/ssr.js).
 
-Also see [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudflare-workers).
+### Docs
 
-To run it:
+See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudflare-workers).
+
+
+### Run
+
+To run the example:
 
 1. ```bash
     git clone git@github.com:brillout/vite-plugin-ssr
@@ -28,6 +32,14 @@ To run it:
    ```bash
    npm run deploy
    ```
+
+
+### `dist/server/importBuild.js`
+
+Note how we load [`dist/server/importBuild.js`](https://vite-plugin-ssr.com/importBuild.js) in [worker/ssr.js](worker/ssr.js).
+
+
+### Link
 
 To link with the `vite-plugin-ssr` source code:
 

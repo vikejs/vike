@@ -1,5 +1,5 @@
 import { createPageRenderer } from "vite-plugin-ssr";
-// We load `importBuild.js` so that the worker code can be bundled into a single file
+// `importBuild.js` enables us to bundle our worker code into a single file, see https://vite-plugin-ssr.com/cloudflare-workers and https://vite-plugin-ssr.com/importBuild.js
 import "../dist/server/importBuild.js";
 
 export { handleSsr };
