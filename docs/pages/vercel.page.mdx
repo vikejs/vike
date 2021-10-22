@@ -4,7 +4,7 @@ To deploy a `vite-plugin-ssr` app to Vercel:
  1. Load `dist/server/importBuild.js` in your Vercel serverless function.
     Example: <RepoLink path='/examples/vercel/api/render.js' />.
     > Behind the scenes, Vercel bundles your serverless function and therefore needs to know its entire dependency tree;
-    > [`dist/server/importBuild.js` enables](/importBuild) Vercel to discover the entire dependency tree of your serverless function.
+    > [`dist/server/importBuild.js` enables](/importBuild.js) Vercel to discover the entire dependency tree of your serverless function.
 
  2. Define your build script in `package.json#scripts['vercel-build']` instead of `package.json#scripts.build`.
     Example: <RepoLink path='/examples/vercel/package.json' />.
