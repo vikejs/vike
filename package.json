@@ -4,6 +4,9 @@
   "workspaces": [
     "vite-plugin-ssr/",
     "docs/",
+    "boilerplates/",
+    "boilerplates/*",
+    "examples/*",
     "libframe/test/",
     "libframe/docs/",
     "libframe/scripts/"

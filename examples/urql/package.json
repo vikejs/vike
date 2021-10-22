@@ -25,5 +25,8 @@
     "urql": "^2.0.5",
     "vite": "^2.6.7",
     "vite-plugin-ssr": "0.3.13"
-  }
+  },
+  "// Needed for Yarn workspaces": "",
+  "name": "example-urql",
+  "version": "0.0.0"
 }

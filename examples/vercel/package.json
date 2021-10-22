@@ -16,5 +16,8 @@
     "vite": "^2.3.6",
     "vite-plugin-ssr": "0.3.13",
     "vue": "^3.0.11"
-  }
+  },
+  "// Needed for Yarn workspaces": "",
+  "name": "example-vercel",
+  "version": "0.0.0"
 }

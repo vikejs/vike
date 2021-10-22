@@ -17,5 +17,8 @@
     "vite": "^2.3.6",
     "vite-plugin-solid": "^2.0.1",
     "vite-plugin-ssr": "0.3.13"
-  }
+  },
+  "// Needed for Yarn workspaces": "",
+  "name": "example-solid",
+  "version": "0.0.0"
 }
