@@ -1,12 +1,12 @@
 Example of deploying a Vite + `vite-plugin-ssr` app to [Vercel](https://vercel.com/).
 
 
-### Docs
+## Docs
 
 See [vite-plugin-ssr.com/vercel](https://vite-plugin-ssr.com/vercel).
 
 
-### Run
+## Run
 
 To run the example:
 
@@ -34,6 +34,6 @@ To deploy (Vercel's Git integration allows us to simply push to deploy):
   ```
 
 
-### `dist/server/importBuild.js`
+## `dist/server/importBuild.js`
 
 Note how we load [`dist/server/importBuild.js`](https://vite-plugin-ssr.com/importBuild.js) in [api/render.js](api/render.js).

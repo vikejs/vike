@@ -4,12 +4,12 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 We need to load `dist/server/importBuild.js` in our worker code. Example: <RepoLink path='/examples/cloudflare-workers/worker/ssr.js' />.
 
-> Cloudflare Workers needs our entire worker code to be bundled into a single file; [`dist/server/importBuild.js` enables us to do that](/importBuild.js).
+> Cloudflare Workers needs our entire worker code to be bundled into a single file, which [`dist/server/importBuild.js` enables us to do](/importBuild.js).
 
 ## Dev Server
 
 We recommend using Vite with an Express.js dev server for lightning fast HMR & dev start,
-and for production to bundle your worker code with Cloudflare Workers's webpack bundler.
+and for production to bundle the worker code with Cloudflare Workers's webpack bundler.
 See examples below.
 
 ## Examples
