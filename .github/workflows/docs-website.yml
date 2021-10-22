@@ -15,6 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Enable GitHub action to clone `libframe/` submobule
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
       - name: Install
         # `yarn install` will checkout the git submodule `libframe/`
         run: |
