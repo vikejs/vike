@@ -22,6 +22,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Enable GitHub action to clone `libframe/` submobule
+        run: git config --global url."https://github.com/".insteadOf "git@github.com:"
+
       - name: Set node version to ${{ matrix.node_version }}
         uses: actions/setup-node@v2
         with:
