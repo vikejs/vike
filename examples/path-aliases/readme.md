@@ -1,17 +1,18 @@
-Example of defining import path aliases with `vite-plugin-ssr`.
+Example of defining import path aliases for `vite-plugin-ssr` apps.
 
 We use:
- - Vite's `vite.config.js#resolve.alias` for Vite processed files (i.e. `**/*.page.*` files and their imports).
- - TypeScript's `tsconfig#compilerOptions.paths` for TypeScript's IntelliSense.
- - The npm module [`module-alias`](https://github.com/ilearnio/module-alias) and its `package.json#_moduleAliases` config for the server entry.
+ - [`vite.config.js#resolve.alias`](https://vitejs.dev/config/#resolve-alias) for files processed by Vite.
+   (All following files and their imports: `*.page.js`, `*.page.server.js`, `*.page.client.js`, `*.page.route.js`.)
+ - [`package.json#imports`](https://nodejs.org/api/packages.html#subpath-patterns) for Node.js files not processed by Vite.
+ - [`tsconfig.json#compilerOptions.paths`](https://www.typescriptlang.org/tsconfig#paths) for TypeScript.
 
-This means we define the alias `~` three times: at `vite.config.js`, `tsconfig.json` and `package.json`.
+This means we may need to define the alias `#app` at up to three different places.
 
-If we don't use TypeScript we can simply skip defining `tsconfig#compilerOptions.paths`.
+If we don't use TypeScript, we can skip defining `tsconfig.json#compilerOptions.paths`.
 
-If we don't plan to use path aliases for our server entry we can skip using `module-alias` and therefore skip defining `package.json#_moduleAliases`.
+If we don't plan to use path aliases for Node.js server code, we can skip defining `package.json#imports`.
 
-Examples:
+Path alias usage examples:
  - [pages/index.page.tsx](pages/index.page.tsx)
  - [server/index.ts](server/index.ts)
 

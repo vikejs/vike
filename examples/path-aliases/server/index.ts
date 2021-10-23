@@ -1,10 +1,8 @@
-// Note that the scripts `package.json#scripts` use `ts-node` which means that
-// node directly executes this file; Vite doesn't process this file. We use
-// the npm module `module-alias` to add path alias support for files that are
-// not processed by Vite such as this one. The path aliases for `module-alias`
-// are defined at `package.json#_moduleAliases`.
-import "module-alias/register";
-import { msg } from "~/server/msg";
+// Note that our scripts defined at `package.json#scripts` use `ts-node` which
+// means that Node.js directly executes this file; Vite doesn't process this file.
+// We use `package.json#imports` to define path aliases for Node.js files that are
+// not processed by Vite, such as this one.
+import { msg } from "#app/server/msg";
 
 import express from "express";
 import { createPageRenderer } from "vite-plugin-ssr";

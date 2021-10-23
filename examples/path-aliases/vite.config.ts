@@ -5,7 +5,7 @@ import { UserConfig } from "vite";
 const config: UserConfig = {
   resolve: {
     alias: {
-      "~": __dirname,
+      "#app": __dirname,
     },
   },
   plugins: [react(), ssr()],
