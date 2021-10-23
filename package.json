@@ -36,7 +36,7 @@
     "install:examples": "cd libframe/scripts/ && yarn install:examples",
     "// Fetch the libframe/ submodule so that its dependencies are installed as well": "",
     "preinstall": "yarn libframe:submodule",
-    "libframe:submodule": "bash -c '[[ `git submodule status libframe` == -* ]]' && git submodule update --init libframe/ && bash -c '[[ \"$OSTYPE\" != \"msys\" ]]' && REV=$(cd libframe/ && git rev-parse HEAD) && (cd libframe/ && git checkout master && git reset --hard $REV) || :",
+    "libframe:submodule": "bash -c '[[ `git submodule status libframe` == -* ]]' && git submodule update --init libframe/ && bash -c '[[ \"$OSTYPE\" != \"msys\" ]]' && REV=$(cd libframe/ && git rev-parse HEAD) && (cd libframe/ && git checkout master && git reset --hard $REV) || bash -c ':'",
     "========= Linkage": "",
     "// Symlink **/node_modules/vite-plugin-ssr/ to /vite-plugin-ssr/": "",
     "link-src": "cd libframe/scripts/ && yarn link-src",
