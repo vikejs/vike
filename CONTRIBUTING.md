@@ -91,9 +91,12 @@ yarn test
 # yarn test --skipTs
 ```
 
-To run only the tests of an example:
+To run only the tests of a single example/boilerplate:
 
 ```shell
+# Provide example/boilerplate path
 yarn test examples/some-example/
+# Or provide a substring of the path
+# yarn test some-examp
 ```
 
