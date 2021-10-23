@@ -23,7 +23,7 @@
     "// Run tests": "",
     "test": "cd libframe/test/ && yarn test",
     "// Run `$ yarn test:setup` before running `$ yarn test`": "",
-    "test:setup": "yarn clean && yarn install && yarn install:examples && yarn link-src && yarn build",
+    "test:setup": "yarn clean && yarn install && yarn build",
     "========= Dev": "",
     "// Develop vite-plugin-ssr [Node.js code]": "",
     "dev": "cd vite-plugin-ssr/ && yarn dev",
