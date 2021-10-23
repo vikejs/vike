@@ -1,19 +1,19 @@
 # Contribute to `vite-plugin-ssr`
 
-- [Requirements](#requirements)
+- [System Requirements](#system-requirements)
 - [Ceate new example](#create-new-example)
 - [Modify existing example](#modify-existing-example)
 - [Modify `vite-plugin-ssr`](#modify-vite-plugin-ssr)
 - [Run test suite](#run-test-suite)
 
 
-## Requirements
+## System Requirements
 
 These requirements are for *developing* the source code; you can use `vite-plugin-ssr` with Windows and Node.js `>= v12.19.0`.
 
 - Unix (e.g. macOS or Linux). (Windows may work but there are no guarantees.)
 - Node.js `>= v15.0.0`.
-- Yarn classic globally installed
+- [Yarn classic](https://classic.yarnpkg.com/). (You can install it with: `$ npm install --global yarn`.)
 
 ## Create new example
 
@@ -58,13 +58,19 @@ Run TypeScript in watch mode:
 
 ```shell
 yarn dev
+# Or when developing `vite-plugin-ssr`'s client-side code:
+# yarn dev:client
 ```
 
-You can now change the source code of `vite-plugin-ssr` (at `/vite-plugin-ssr/`) and try your modifications with one of the `/examples/*` or `/boilerplates/boilerplate-*`.
+You can now change the source code of `vite-plugin-ssr` (which lives at `/vite-plugin-ssr/`) and try your modifications with one of the `/examples/*` or `/boilerplates/boilerplate-*`.
 To start the example, follow the `README.md` instructions of the example.
 You may need to restart the example's Node.js server for your `vite-plugin-ssr` modifications to apply.
 
-Once you're done and before opening a pull request, run the test suite to ensure that your modifications don't break anything.
+Once you're done and before opening a Pull Request, run the test suite to ensure that your modifications don't break anything.
+If you are having problems running the test suite (e.g. machines with low memory may run out of memory),
+then open a Pull Request in
+[draft mode](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft)
+to let GitHub Actions run the test suite for you.
 
 
 ## Run test suite
@@ -81,6 +87,8 @@ To run all tests:
 
 ```shell
 yarn test
+# To skip TypeScript checking:
+# yarn test --skipTs
 ```
 
 To run only the tests of an example:
