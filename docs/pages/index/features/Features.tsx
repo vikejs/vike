@@ -95,13 +95,12 @@ function Features() {
               <p>
                 Plugin systems / frameworks need to constantly keep up with the ecosystem, whereas
                 do-one-thing-do-it-well tools can quickly stabilize. Actually, <code>vite-plugin-ssr</code> is already
-                stable: the <code>v1</code> release will most likley have no breaking change with the current
-                <code>v0.3.x</code> release, and the goal will be to stay on <code>v1</code> for the foreseeable future.
+                stable: the <code>v1</code> release will most likley have no breaking change with the current{' '}
+                <code>v0.3.x</code> releases, and the goal is to stay on <code>v1</code> for the foreseeable future.
               </p>
               <h3>Clean Cut</h3>
-              <code>vite-plugin-ssr</code> is completely agnostic; there is no conflation between{' '}
-              <code>vite-plugin-ssr</code> and your view framework (React/Vue/...). This makes reasoning about your app
-              easier.
+              <code>vite-plugin-ssr</code> is agnostic; there is no conflation between <code>vite-plugin-ssr</code> and
+              your view framework (React/Vue/...). This makes reasoning about your app easier.
               <h3>More fun</h3>
               <p>
                 Last but not least, manual integration is more fun (and more insightful) than fighting some arbitrary
@@ -120,12 +119,9 @@ function Features() {
             <>
               <p>
                 The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
-                against a heavy suite of <b>automated tests</b>, and it's <b>used in production</b> by many
-                comp&shy;anies.
-              </p>
-              <p>
-                <b>Stable</b>: the <code>v1</code> release will most likely have no breaking change with the current{' '}
-                <code>v0.3.x</code> release.
+                against a heavy suite of <b>automated tests</b>, it's <b>used in production</b> by many comp&shy;anies,
+                and it's <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the
+                current <code>v0.3.x</code> releases.
               </p>
             </>
           )
@@ -163,7 +159,9 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>Browser-side code splitting</b>: each page loads only the code it needs. Lighthouse score of 100%.
+                Browser-side: <b>Code Splitting</b> (each page loads only the code it needs), <b>Client Routing</b>{' '}
+                (pages loaded & rendered only on the browser-side upon page navigation), <b>Link Prefetching</b>{' '}
+                (preload preponderant links for instantaneous page navigation), <b>Lighthouse Score: 100%</b>.
               </p>
               <p>
                 <b>Fast Node.js cold start</b>: pages are lazy-loaded so that adding pages doesn't increase the cold
