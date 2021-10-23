@@ -37,7 +37,7 @@
     "// Fetch the libframe/ submodule so that its dependencies are installed as well": "",
     "preinstall": "yarn libframe:submodule",
     "libframe:submodule": "yarn test-windows && yarn libframe:submodule:fetch && yarn libframe:submodule:checkout",
-    "test-windows": "test true && echo b1 || echo b2",
+    "test-windows": "echo before && test \"a\" = \"a\" && echo b1 || echo b2 && test \"a\" = \"b\" && echo c1 || echo c2",
     "libframe:submodule:fetch": "bash -c '[[ `git submodule status libframe` == -* ]] && git submodule update --init libframe/ || :'",
     "libframe:submodule:checkout": "bash -c '[[ true && \"$OSTYPE\" != \"msys\" ]] && REV=$(cd libframe/ && git rev-parse HEAD) && (cd libframe/ && git checkout master && git reset --hard $REV) || :'",
     "========= Linkage": "",
