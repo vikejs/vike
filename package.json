@@ -34,7 +34,7 @@
     "========= Install": "",
     "// Fetch the libframe/ workspace so that its dependencies are installed as well": "",
     "preinstall": "yarn submodule:libframe",
-    "submodule:libframe": "bash -c '[[ `git submodule status libframe` == -* ]] && git submodule update --init libframe/ && REV=$(cd libframe/ && git rev-parse HEAD) && (cd libframe/ && git checkout master && git reset --hard $REV) || :'",
+    "submodule:libframe": "bash -c '[[ `git submodule status libframe` == -* ]] && git submodule update --init libframe/ && [[ \"$OSTYPE\" != \"msys\" ]] && REV=$(cd libframe/ && git rev-parse HEAD) && (cd libframe/ && git checkout master && git reset --hard $REV) || :'",
     "// Install dependencies of all examples and boilerplates": "",
     "install:examples": "cd libframe/scripts/ && yarn install:examples",
     "========= Linkage": "",
