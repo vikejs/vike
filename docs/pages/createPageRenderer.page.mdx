@@ -14,6 +14,7 @@ const { createPageRenderer } = require('vite-plugin-ssr')
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
 const base = '/'
+const outDir = `dist`
 
 startServer()
 
@@ -22,7 +23,7 @@ async function startServer() {
 
   let viteDevServer
   if (isProduction) {
-    app.use(express.static(`${root}/dist/client`))
+    app.use(express.static(`${root}/${outDir}/client`))
   } else {
     const vite = require('vite')
     viteDevServer = await vite.createServer({
@@ -32,7 +33,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
-  const renderPage = createPageRenderer({ viteDevServer, isProduction, root, base })
+  const renderPage = createPageRenderer({ viteDevServer, isProduction, root, outDir, base })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = { url }
@@ -50,6 +51,7 @@ async function startServer() {
 - `viteDevServer` is the Vite dev server.
 - `isProduction` is a boolean. When set to `true`, `vite-plugin-ssr` loads already-transpiled code from `dist/` instead of on-the-fly transpiling code.
 - `root` is the absolute path of our app's root directory. The `root` directory is usually the directory where `vite.config.js` lives. All our `.page.js` files need to be descendent of the `root` directory.
+- `outDir` is the build directory of your project. Default: `dist`.
 - `base` is the [Base URL](/base-url).
 - `pageContext.httpResponse` is `null` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
 - `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.

@@ -16,6 +16,10 @@ cli
     '--root <path>',
     '[string] root directory of your project (where `vite.config.js` and `dist/` live) (default: `process.cwd()`)'
   )
+  .option(
+    '--outDir <path>',
+    '[string] build directory of your project (default: `dist`)'
+  )
   .option('--client-router', 'serialize `pageContext` to JSON files for Client Routing')
   .option('--base <path>', '[string] public base path (default: /)')
   .option(
@@ -23,10 +27,10 @@ cli
     '[number] Number of jobs running in parallel. Default: `os.cpus().length`. Set to `1` to disable concurrency.'
   )
   .action(async (options) => {
-    const { partial, extraDir, clientRouter, base, parallel } = options
+    const { partial, extraDir, clientRouter, base, parallel, outDir } = options
     const root = options.root && resolve(options.root)
     const noExtraDir = !extraDir
-    await prerender({ partial, noExtraDir, clientRouter, base, root, parallel })
+    await prerender({ partial, noExtraDir, clientRouter, base, root, parallel, outDir })
   })
 
 // Listen to unknown commands

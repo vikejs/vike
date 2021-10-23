@@ -58,12 +58,14 @@ type PageContext = GlobalPrerenderingContext & {
 /**
  * Render your pages (e.g. for deploying to a static host).
  * @param partial Allow only a subset of pages to be pre-rendered.
- * @param root The root directory of your project (where `vite.config.js` and `dist/` live) (default: `process.cwd()`).
+ * @param root The root directory of your project (where `vite.config.js` and the output directory live) (default: `process.cwd()`).
+ * @param outDir The vite output directory of your project (default: `dist`).
  */
 async function prerender({
   partial = false,
   noExtraDir = false,
   root = process.cwd(),
+  outDir = 'dist',
   clientRouter = false,
   parallel = cpus().length,
   base
@@ -71,19 +73,21 @@ async function prerender({
   partial?: boolean
   noExtraDir?: boolean
   root?: string
+  outDir?: string
   clientRouter?: boolean
   base?: string
   parallel?: number
 } = {}) {
-  assertArguments(partial, noExtraDir, clientRouter, base, root, parallel)
+  assertArguments(partial, noExtraDir, clientRouter, base, root, outDir, parallel)
   console.log(`${cyan(`vite-plugin-ssr ${projectInfo.version}`)} ${green('pre-rendering HTML...')}`)
 
-  const pluginManifest = getPluginManifest(root)
+  const pluginManifest = getPluginManifest(root, outDir)
 
   process.env['NODE_ENV'] = 'production'
   setSsrEnv({
     isProduction: true,
     root,
+    outDir,
     viteDevServer: undefined,
     baseUrl: pluginManifest.base
   })
@@ -115,7 +119,7 @@ async function prerender({
 
   console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
 
-  await Promise.all(htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, doNotPrerenderList, concurrencyLimit)))
+  await Promise.all(htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit)))
 
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
 }
@@ -372,16 +376,17 @@ async function prerender404Page(htmlFiles: HtmlFile[], globalContext: GlobalPrer
 async function writeHtmlFile(
   { url, htmlString, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlFile,
   root: string,
+  outDir: string,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: pLimit.Limit
 ) {
   assert(url.startsWith('/'))
   assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
 
-  const writeJobs = [write(url, '.html', htmlString, root, doNotCreateExtraDirectory, concurrencyLimit)]
+  const writeJobs = [write(url, '.html', htmlString, root, outDir, doNotCreateExtraDirectory, concurrencyLimit)]
   if (pageContextSerialized !== null) {
     writeJobs.push(
-      write(url, '.pageContext.json', pageContextSerialized, root, doNotCreateExtraDirectory, concurrencyLimit)
+      write(url, '.pageContext.json', pageContextSerialized, root, outDir, doNotCreateExtraDirectory, concurrencyLimit)
     )
   }
   await Promise.all(writeJobs)
@@ -392,6 +397,7 @@ function write(
   fileExtension: '.html' | '.pageContext.json',
   fileContent: string,
   root: string,
+  outDir: string,
   doNotCreateExtraDirectory: boolean,
   concurrencyLimit: pLimit.Limit
 ) {
@@ -400,10 +406,10 @@ function write(
     assert(fileUrl.startsWith('/'))
     const filePathRelative = fileUrl.slice(1).split('/').join(sep)
     assert(!filePathRelative.startsWith(sep))
-    const filePath = join(root, 'dist', 'client', filePathRelative)
+    const filePath = join(root, outDir, 'client', filePathRelative)
     await mkdirp(dirname(filePath))
     await writeFile(filePath, fileContent)
-    console.log(`${gray(join('dist', 'client') + sep)}${blue(filePathRelative)}`)
+    console.log(`${gray(join(outDir, 'client') + sep)}${blue(filePathRelative)}`)
   })
 }
 
@@ -451,12 +457,12 @@ function normalizePrerenderResult(
   }
 }
 
-function getPluginManifest(root: string): {
+function getPluginManifest(root: string, outDir: string): {
   version: string
   base: string
   usesClientRouter: boolean
 } {
-  const pluginManifestPath = `${root}/dist/client/vite-plugin-ssr.json`
+  const pluginManifestPath = `${root}/${outDir}/client/vite-plugin-ssr.json`
   assertUsage(
     moduleExists(pluginManifestPath),
     "You are trying to run `$ vite-plugin-ssr prerender` but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before running the pre-rendering. (Following build manifest is missing: `" +
@@ -476,7 +482,7 @@ function getPluginManifest(root: string): {
 
   assertUsage(
     pluginManifest.version === projectInfo.version,
-    `Remove \`dist/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
+    `Remove \`${outDir}/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
   )
   return pluginManifest
 }
@@ -487,6 +493,7 @@ function assertArguments(
   clientRouter: unknown,
   base: unknown,
   root: unknown,
+  outDir: unknown,
   parallel: number
 ) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
@@ -495,5 +502,6 @@ function assertArguments(
   assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.')
   assertUsage(typeof root === 'string', '[prerender()] Option `root` should be a string.')
   assertUsage(isAbsolute(root), '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.')
+  assertUsage(typeof outDir === 'string', '[prerender()] Option `outDir` should be a string.')
   assertUsage(parallel, '[prerender()] Option `parallel` should be a number `>=1`.')
 }
