@@ -1,4 +1,4 @@
-import { assertWarning } from './utils'
+import { assertWarning } from '../utils'
 
 // Copied from https://github.com/remix-run/react-router/blob/34e25c1f0d20d083205469411eee0c5863748abf/packages/react-router/index.tsx#L1031
 

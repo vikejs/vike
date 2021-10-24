@@ -13,7 +13,8 @@ import {
   assertExports
 } from './utils'
 import { addComputedUrlProps } from './addComputedurlProps'
-import { matchPath } from './matchPath'
+import { pickWinner } from './route/pickWinner'
+import { resolveRouteString } from './route/resolveRouteString'
 
 export { route }
 export { loadPageRoutes }
@@ -95,7 +96,12 @@ async function route(
 
         // Route with Route String defined in `.page.route.js`
         if (hasProp(pageRouteFileExports, 'default', 'string')) {
-          const { matchValue, routeParams } = resolveRouteString(pageRouteFileExports, urlPathname, pageRouteFilePath)
+          const routeString = pageRouteFileExports.default
+          assertUsage(
+            routeString.startsWith('/'),
+            `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
+          )
+          const { matchValue, routeParams } = resolveRouteString(routeString, urlPathname)
           routeResults.push({ pageId, matchValue, routeParams })
         }
         // Route with Route Function defined in `.page.route.js`
@@ -220,42 +226,9 @@ function getErrorPageId(allPageIds: string[]): string | null {
   return null
 }
 
-function pickWinner<T extends { matchValue: boolean | number }>(routeResults: T[]): T | undefined {
-  const candidates = routeResults
-    .filter(({ matchValue }) => matchValue !== false)
-    .sort(
-      higherFirst(({ matchValue }) => {
-        assert(matchValue !== false)
-        return matchValue === true ? 0 : matchValue
-      })
-    )
-
-  const winner = candidates[0]
-
-  return winner
-}
-
-function routeWith_pathToRegexp(
-  urlPathname: string,
-  routeString: string
-): { matchValue: false | number; routeParams: Record<string, string> } {
-  const match = matchPath({ path: routeString, caseSensitive: true }, urlPathname)
-  if (!match) {
-    return { matchValue: false, routeParams: {} }
-  }
-
-  const routeParams: Record<string, string> = match.params || {}
-  assert(isPlainObject(routeParams))
-
-  // The less parameters the route has, the more specific it is, and the higher its prio should be.
-  // E.g. Static Route => most specific => highest prio.
-  const matchValue = -1 * Object.keys(routeParams).length
-
-  return { matchValue, routeParams }
-}
-
-function isStaticRoute(route: string): boolean {
-  const { matchValue, routeParams } = routeWith_pathToRegexp(route, route)
+function isStaticRoute(routeString: string): boolean {
+  const url = routeString
+  const { matchValue, routeParams } = resolveRouteString(routeString, url)
   return matchValue !== false && Object.keys(routeParams).length === 0
 }
 
@@ -365,15 +338,6 @@ function isDefaultPageFile(filePath: string): boolean {
   return true
 }
 
-function resolveRouteString(pageRouteFileExports: { default: string }, urlPathname: string, pageRouteFilePath: string) {
-  const routeString: string = pageRouteFileExports.default
-  assert(typeof pageRouteFilePath === 'string')
-  assertUsage(
-    routeString.startsWith('/'),
-    `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
-  )
-  return routeWith_pathToRegexp(urlPathname, routeString)
-}
 async function resolveRouteFunction(
   pageRouteFileExports: { default: Function; iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean },
   urlPathname: string,
