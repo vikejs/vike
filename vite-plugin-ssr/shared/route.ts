@@ -243,10 +243,14 @@ function routeWith_pathToRegexp(
   if (!match) {
     return { matchValue: false, routeParams: {} }
   }
-  // The longer the route string, the more likely is it specific
-  const matchValue = routeString.length
+
   const routeParams: Record<string, string> = match.params || {}
   assert(isPlainObject(routeParams))
+
+  // The less parameters the route has, the more specific it is, and the higher its prio should be.
+  // E.g. Static Route => most specific => highest prio.
+  const matchValue = -1 * Object.keys(routeParams).length
+
   return { matchValue, routeParams }
 }
 
