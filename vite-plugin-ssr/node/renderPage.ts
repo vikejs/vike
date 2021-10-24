@@ -88,8 +88,11 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 
   // *** Route ***
   const routeResult = await route(pageContext)
+  // TODO: remove unnecessary extra error handling?
   if ('hookError' in routeResult) {
-    return await render500Page<PageContextInit>(pageContextInit, routeResult.hookError)
+    const err = routeResult.hookError
+    logError(err)
+    return await render500Page(pageContextInit, routeResult.hookError)
   }
   objectAssign(pageContext, routeResult.pageContextAddendum)
 
@@ -148,8 +151,11 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 
   const renderHookResult = await executeRenderHook(pageContext)
 
+  // TODO: remove unnecessary extra error handling?
   if ('hookError' in renderHookResult) {
-    return await render500Page<PageContextInit>(pageContextInit, renderHookResult.hookError)
+    const err = renderHookResult.hookError
+    logError(err)
+    return await render500Page(pageContextInit, err)
   }
 
   if (renderHookResult === null) {
@@ -194,11 +200,11 @@ async function renderPageWithoutThrowing(
   try {
     return await renderPage.apply(null, args)
   } catch (err) {
+    logError(err)
     try {
       return await render500Page(pageContextInit, err)
     } catch (_err2) {
       // We swallow `_err2`; logging `err` should be enough; `_err2` is likely the same error than `err` anyways.
-      logError(err)
       const pageContext = {}
       objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, {
@@ -211,7 +217,7 @@ async function renderPageWithoutThrowing(
 }
 
 async function render500Page<PageContextInit extends { url: string }>(pageContextInit: PageContextInit, err: unknown) {
-  logError(err)
+  assert(hasAlreadyLogged(err))
 
   const pageContext = initializePageContext(pageContextInit)
   // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
@@ -1081,13 +1087,9 @@ function logError(err: unknown) {
     'Your source code threw a primitive value as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.'
   )
 
-  // Avoid logging error twice (which can happen when rendering the error page throws the same error)
-  {
-    const key = '_wasAlreadyConsoleLogged'
-    if (err[key]) {
-      return
-    }
-    err[key] = true
+  // Avoid logging error twice (not sure if this actually ever happens?)
+  if (hasAlreadyLogged(err)) {
+    return
   }
 
   viteErrorCleanup(err)
@@ -1102,6 +1104,16 @@ function viteAlreadyLoggedError(err: unknown) {
   if (viteDevServer) {
     return viteDevServer.config.logger.hasErrorLogged(err as Error)
   }
+  return false
+}
+
+function hasAlreadyLogged(err: unknown) {
+  assert(isObject(err))
+  const key = '_wasAlreadyConsoleLogged'
+  if (err[key]) {
+    return true
+  }
+  err[key] = true
   return false
 }
 
