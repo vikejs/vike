@@ -7,10 +7,15 @@
 * make catch-all route lower prio (fix [#178](https://github.com/brillout/vite-plugin-ssr/issues/178)) ([235e0dc](https://github.com/brillout/vite-plugin-ssr/commit/235e0dcd1151b8bc7ff3487f6887954bc1efcd05))
 
 
+### Features
+
+* make `outDir` configurable instead of always beeing `dist/` ([#177](https://github.com/brillout/vite-plugin-ssr/pull/177))
+
+
 ### BREAKING CHANGES
 
-* Route String priority algorithm changed. AFACIT there
-aren't any breaking change, but no guarentee here.
+* Route String priority algorithm changed. AFAICT there
+aren't any breaking change, but no guarantee here.
 
 
 
