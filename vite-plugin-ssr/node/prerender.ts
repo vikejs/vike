@@ -58,8 +58,8 @@ type PageContext = GlobalPrerenderingContext & {
 /**
  * Render your pages (e.g. for deploying to a static host).
  * @param partial Allow only a subset of pages to be pre-rendered.
- * @param root The root directory of your project (where `vite.config.js` and the output directory live) (default: `process.cwd()`).
- * @param outDir The vite output directory of your project (default: `dist`).
+ * @param root The root directory of your project (where `vite.config.js` live) (default: `process.cwd()`).
+ * @param outDir The build directory of your project (default: `dist`).
  */
 async function prerender({
   partial = false,

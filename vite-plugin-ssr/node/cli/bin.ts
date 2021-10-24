@@ -7,21 +7,21 @@ const cli = cac(projectInfo.name)
 
 cli
   .command('prerender')
-  .option('--partial', 'allow only a subset of pages to be pre-rendered')
+  .option('--partial', 'Allow only a subset of pages to be pre-rendered')
   .option(
     '--no-extra-dir',
     'Do not create a new directory for each page, e.g. generate `dist/client/about.html` instead of `dist/client/about/index.html`'
   )
   .option(
     '--root <path>',
-    '[string] root directory of your project (where `vite.config.js` and `dist/` live) (default: `process.cwd()`)'
+    '[string] The root directory of your project (where `vite.config.js` live) (default: `process.cwd()`)'
   )
   .option(
     '--outDir <path>',
-    '[string] build directory of your project (default: `dist`)'
+    '[string] The build directory of your project (default: `dist`)'
   )
-  .option('--client-router', 'serialize `pageContext` to JSON files for Client Routing')
-  .option('--base <path>', '[string] public base path (default: /)')
+  .option('--client-router', 'Serialize `pageContext` to JSON files for Client Routing')
+  .option('--base <path>', '[string] Public base path (default: /)')
   .option(
     '--parallel <numberOfJobs>',
     '[number] Number of jobs running in parallel. Default: `os.cpus().length`. Set to `1` to disable concurrency.'
