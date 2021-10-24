@@ -87,7 +87,7 @@ function getUrlParsed(url?: string): UrlParsed {
   const { origin, pathname, searchString, hashString } = getUrlParts(url)
 
   assert(searchString === '' || searchString.startsWith('?'))
-  const search = searchString === '' ? null : Object.fromEntries([...new URLSearchParams(searchString)])
+  const search = searchString === '' ? null : Object.fromEntries(Array.from(new URLSearchParams(searchString)))
 
   assert(hashString === '' || hashString.startsWith('#'))
   const hash = hashString === '' ? null : decodeURIComponent(hashString.slice(1))
