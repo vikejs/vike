@@ -32,18 +32,27 @@ function resolveRouteStringPrecedence(routeMatch1: RouteMatch, routeMatch2: Rout
     return 0
   }
 
-  // Return route with highest number of static paths begin first
+  // Return route with highest number of static path segments at beginning first
   {
-    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticPathBegin
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticSegmentsBeginning
     const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
     if (result !== 0) {
       return result
     }
   }
 
-  // Return route with most params first
+  // Return route with highest number of static path segments in total first
   {
-    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfParams
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticSegements
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      return result
+    }
+  }
+
+  // Return route with most parameter segements first
+  {
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfParameterSegments
     const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
     if (result !== 0) {
       return result
@@ -63,25 +72,22 @@ function resolveRouteStringPrecedence(routeMatch1: RouteMatch, routeMatch2: Rout
   return 0
 }
 function analyzeRouteString(routeString: string) {
-  const paths = routeString.split('/')
+  const pathSegments = routeString.split('/').filter((path) => path !== '' && path !== '*')
 
-  let numberOfStaticPathBegin = 0
-  for (const path of paths) {
-    if (path.startsWith(':')) {
+  const isStatic = (path: string) => !path.startsWith(':')
+
+  let numberOfStaticSegmentsBeginning = 0
+  for (const path of pathSegments) {
+    if (!isStatic(path)) {
       break
     }
-    if (path === '') {
-      continue
-    }
-    if (path === '*') {
-      continue
-    }
-    numberOfStaticPathBegin++
+    numberOfStaticSegmentsBeginning++
   }
 
-  const numberOfParams = paths.filter((path) => path.startsWith(':')).length
+  const numberOfStaticSegements = pathSegments.filter((p) => isStatic(p)).length
+  const numberOfParameterSegments = pathSegments.filter((p) => !isStatic(p)).length
 
   const isCatchAll = routeString.endsWith('*')
 
-  return { numberOfParams, numberOfStaticPathBegin, isCatchAll }
+  return { numberOfParameterSegments, numberOfStaticSegmentsBeginning, numberOfStaticSegements, isCatchAll }
 }

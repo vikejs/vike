@@ -6,22 +6,31 @@ test('route precedence - basic', () => {
     '/',
     '/about',
     '/about/team',
-    '/*',
-    '/:path',
-    '/:path/:subpath',
-    '/product/:productId',
-    '/news/:year/:slug'
+    '/about/:path',
+    '/about/*',
   ]
 
   ;[
     ['/', '/'],
     ['/about', '/about'],
     ['/about/team', '/about/team'],
-    ['/hello', '/:path'],
-    ['/hello/jon', '/:path/:subpath'],
+    ['/about/company', '/about/:path'],
+    ['/about/some/nested/path', '/about/*'],
+  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+})
+
+test('route precedence - catch-all', () => {
+  const routes = [
+    '/',
+    '/*',
+    '/hello/:name',
+  ]
+
+  ;[
+    ['/', '/'],
+    ['/hello', '/*'],
+    ['/hello/jon', '/hello/:name'],
     ['/hello/jon/snow', '/*'],
-    ['/product/42', '/product/:productId'],
-    ['/news/2021/introducing-ssr', '/news/:year/:slug']
   ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
 })
 
@@ -50,7 +59,8 @@ test('route precedence - advanced', () => {
     ['/hello/jon/snow', '/:path/:subpath/*'],
     ['/product/42', '/product/:productId'],
     ['/product/42/details', '/product/:productId/:view'],
-    ['/product/42/review/nested', '/product/*']
+    ['/product/42/review', '/product/:productId/review'],
+    ['/product/42/review/too-long', '/product/*'],
   ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
 })
 
