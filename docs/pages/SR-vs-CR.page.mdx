@@ -37,4 +37,4 @@ For example, as a startup that wants to deliver an MVP as quickly as possible, S
 We recommend using Client Routing only with a rationale, for example:
  - **Simple websites**. Such as a portfolio or landing/marketing website. Complexity is not an issue for simple websites and Client Routing gives a nice polished touch to the website.
  - **Highly polished apps**. For example Netflix's web app: Netflix aggressively pushes for delightful user experiences, and has the budget and man-power to do it. For entertainment apps, the highly polished user experience can be worth the added complexity.
- - Web apps that need to **maintain state across page changes**. For example Spotify: the currently listened song should not be interrupted on page change. Server Routing does not work for these kind of apps and we need to use Client Routing.
+ - Web apps that need to **preserve state across page changes**. For example Spotify: the currently listened song should not be interrupted on page change. Server Routing cannot preserve client-side state; we need Client Routing.
