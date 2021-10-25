@@ -1,3 +1,18 @@
+## [0.3.16](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.15...v0.3.16) (2021-10-25)
+
+
+### Bug Fixes
+
+* refactor route precedence algorithm ([8ce369b](https://github.com/brillout/vite-plugin-ssr/commit/8ce369b6460a49ab6e2b81fd414452f3bf756703))
+
+
+### BREAKING CHANGES
+
+* Route Functions should return `precedence` instead of
+`matchValue`, see https://vite-plugin-ssr.com/route-function
+
+
+
 ## [0.3.15](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.14...v0.3.15) (2021-10-24)
 
 
