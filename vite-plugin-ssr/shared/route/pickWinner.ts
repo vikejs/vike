@@ -1,16 +1,18 @@
-import { assert, higherFirst } from '../utils'
+import { higherFirst } from '../utils'
+import { resolveRouteStringPrecedence } from './resolveRouteString'
 
 export { pickWinner }
 
-function pickWinner<T extends { matchValue: boolean | number }>(routeResults: T[]): T | undefined {
+function pickWinner<T extends { precedence: number | null; routeString: string | null }>(
+  routeResults: T[]
+): T | undefined {
   const candidates = routeResults
-    .filter(({ matchValue }) => matchValue !== false)
     .sort(
-      higherFirst(({ matchValue }) => {
-        assert(matchValue !== false)
-        return matchValue === true ? 0 : matchValue
+      higherFirst(({ precedence }) => {
+        return precedence === null ? 0 : precedence
       })
     )
+    .sort(resolveRouteStringPrecedence)
 
   const winner = candidates[0]
 

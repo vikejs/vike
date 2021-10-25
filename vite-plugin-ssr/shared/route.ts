@@ -76,9 +76,10 @@ async function route(
   assert(urlPathname.startsWith('/'))
 
   const hookErrors: HookError[] = []
-  const routeResults: {
+  const routeMatches: {
     pageId: string
-    matchValue: boolean | number
+    routeString: null | string
+    precedence: null | number
     routeParams: Record<string, string>
   }[] = []
   await Promise.all(
@@ -101,30 +102,37 @@ async function route(
             routeString.startsWith('/'),
             `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
           )
-          const { matchValue, routeParams } = resolveRouteString(routeString, urlPathname)
-          routeResults.push({ pageId, matchValue, routeParams })
+          const { isMatch, routeParams } = resolveRouteString(routeString, urlPathname)
+          if( isMatch ) {
+            routeMatches.push({ pageId, precedence: null, routeString, routeParams })
+          }
         }
+
         // Route with Route Function defined in `.page.route.js`
         else if (hasProp(pageRouteFileExports, 'default', 'function')) {
-          const hookResult = await resolveRouteFunction(
+          const result = await resolveRouteFunction(
             pageRouteFileExports,
             urlPathname,
             pageContext,
             pageRouteFilePath
           )
-          if ('hookError' in hookResult) {
-            hookErrors.push(hookResult)
+          if ('hookError' in result) {
+            hookErrors.push(result)
             return
           }
-          const { matchValue, routeParams } = hookResult
-          routeResults.push({ pageId, matchValue, routeParams })
+          if( result.isMatch ) {
+            const { routeParams, precedence } = result
+            routeMatches.push({ pageId, routeString: null, precedence, routeParams })
+          }
         } else {
           assert(false)
         }
       }
 
-      const { matchValue, routeParams } = routeWith_filesystem(urlPathname, filesystemRoute)
-      routeResults.push({ pageId, matchValue, routeParams })
+      const { isMatch, routeParams } = resolveFilesystemRoute(urlPathname, filesystemRoute)
+      if( isMatch ) {
+        routeMatches.push({ pageId, precedence: null, routeString: null, routeParams })
+      }
     })
   )
 
@@ -132,7 +140,8 @@ async function route(
     return hookErrors[0]!
   }
 
-  const winner = pickWinner(routeResults)
+  // console.log('[Route Matches]:', JSON.stringify(routeMatches, null, 2))
+  const winner = pickWinner(routeMatches)
   // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
 
   if (!winner) {
@@ -228,22 +237,22 @@ function getErrorPageId(allPageIds: string[]): string | null {
 
 function isStaticRoute(routeString: string): boolean {
   const url = routeString
-  const { matchValue, routeParams } = resolveRouteString(routeString, url)
-  return matchValue !== false && Object.keys(routeParams).length === 0
+  const { isMatch, routeParams } = resolveRouteString(routeString, url)
+  return isMatch && Object.keys(routeParams).length === 0
 }
 
-function routeWith_filesystem(
+function resolveFilesystemRoute(
   urlPathname: string,
   filesystemRoute: string
-): { matchValue: boolean; routeParams: Record<string, string> } {
+): { isMatch: boolean; routeParams: Record<string, string> } {
   urlPathname = removeTrailingSlash(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'filesystemRoute:' + filesystemRoute)
   assert(urlPathname.startsWith('/'))
   assert(filesystemRoute.startsWith('/'))
   assert(!urlPathname.endsWith('/') || urlPathname === '/')
   assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
-  const matchValue = urlPathname === filesystemRoute
-  return { matchValue, routeParams: {} }
+  const isMatch = urlPathname === filesystemRoute
+  return { isMatch, routeParams: {} }
 }
 function removeTrailingSlash(url: string) {
   if (url === '/' || !url.endsWith('/')) {
@@ -344,9 +353,11 @@ async function resolveRouteFunction(
   pageContext: Record<string, unknown>,
   pageRouteFilePath: string
 ): Promise<
-  | { hookError: unknown; hookName: string; hookFilePath: string }
+  | { isMatch: false, hookError: unknown; hookName: string; hookFilePath: string }
+  | { isMatch: false }
   | {
-      matchValue: boolean | number
+      isMatch: true
+      precedence: number | null
       routeParams: Record<string, string>
     }
 > {
@@ -357,7 +368,7 @@ async function resolveRouteFunction(
   try {
     result = pageRouteFileExports.default({ url: urlPathname, pageContext })
   } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
+    return { isMatch: false, hookError, hookName, hookFilePath }
   }
   assertUsage(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
@@ -366,10 +377,13 @@ async function resolveRouteFunction(
   try {
     result = await result
   } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
+    return { isMatch: false, hookError, hookName, hookFilePath }
   }
-  if (result === true || result === false) {
-    result = { match: result }
+  if (result === false) {
+    return { isMatch: false }
+  }
+  if (result === true) {
+    result = {}
   }
   assertUsage(
     isPlainObject(result),
@@ -377,14 +391,14 @@ async function resolveRouteFunction(
       hasProp(result, 'constructor') ? result.constructor : result
     }\`.`
   )
-  if (!hasProp(result, 'match')) {
-    result['match'] = true
-  }
-  assert(hasProp(result, 'match'))
+  let precedence = null
+  if (hasProp(result, 'precedence')) {
+    precedence = result.precedence
   assertUsage(
-    typeof result.match === 'boolean' || typeof result.match === 'number',
-    `The \`match\` value returned by the Route Function ${pageRouteFilePath} should be a boolean or a number.`
+    typeof precedence === 'number',
+    `The \`precedence\` value returned by the Route Function ${pageRouteFilePath} should be a number.`
   )
+  }
   assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
   const routeParams: Record<string, string> = result.routeParams || {}
   Object.keys(result).forEach((key) => {
@@ -395,7 +409,8 @@ async function resolveRouteFunction(
   })
   assert(isPlainObject(routeParams))
   return {
-    matchValue: result.match,
+    isMatch: true,
+    precedence: null,
     routeParams
   }
 }

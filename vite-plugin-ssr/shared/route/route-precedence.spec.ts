@@ -1,0 +1,93 @@
+import { pickWinner } from './pickWinner'
+import { resolveRouteString } from './resolveRouteString'
+
+test('route precedence - basic', () => {
+  const routes = [
+    '/',
+    '/about',
+    '/about/team',
+    '/*',
+    '/:path',
+    '/:path/:subpath',
+    '/product/:productId',
+    '/news/:year/:slug'
+  ]
+
+  ;[
+    ['/', '/'],
+    ['/about', '/about'],
+    ['/about/team', '/about/team'],
+    ['/hello', '/:path'],
+    ['/hello/jon', '/:path/:subpath'],
+    ['/hello/jon/snow', '/*'],
+    ['/product/42', '/product/:productId'],
+    ['/news/2021/introducing-ssr', '/news/:year/:slug']
+  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+})
+
+test('route precedence - advanced', () => {
+  const routes = [
+    '/',
+    '/about',
+    '/about/team',
+    '/*',
+    '/:path',
+    '/:path/:subpath',
+    '/:path/:subpath/*',
+    '/:path/*',
+    '/product/:productId',
+    '/product/:productId/review',
+    '/product/:productId/:view',
+    '/product/*'
+  ]
+
+  ;[
+    ['/', '/'],
+    ['/about', '/about'],
+    ['/about/team', '/about/team'],
+    ['/hello', '/:path'],
+    ['/hello/jon', '/:path/:subpath'],
+    ['/hello/jon/snow', '/:path/:subpath/*'],
+    ['/product/42', '/product/:productId'],
+    ['/product/42/details', '/product/:productId/:view'],
+    ['/product/42/review/nested', '/product/*']
+  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+})
+
+test('route precedence - newspaper use case', () => {
+  const routes = [
+    '/', // homepage
+    '/*', // catch all generic pages at multiple levels
+    '/news', // news landing page
+    '/news/:page', // news paginated news results
+    '/news/:year/:slug', // news articles
+    '/news/press-releases/*', // press releases landing and paginated news pages (nested in /news)
+    '/news/press-releases/:year/:slug' // press releases (nested in /news)
+  ]
+
+  ;[
+    ['/', '/'],
+    ['/news', '/news'],
+    ['/news/1', '/news/:page'],
+    ['/news/2021/breaking-news', '/news/:year/:slug'],
+    ['/news/press-releases', '/news/press-releases/*'],
+    ['/news/press-releases/1', '/news/press-releases/*'],
+    ['/news/press-releases/2021/new-funding', '/news/press-releases/:year/:slug'],
+    ['/other', '/*']
+  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+})
+
+function testUrl(url: string, routeString: string, routes: string[]) {
+  const route = findRoute(url, routes)
+  expect(`${url} -> ${route}`).toBe(`${url} -> ${routeString}`)
+}
+
+function findRoute(url: string, routes: string[]): string | null {
+  const candidates = routes
+    .map((routeString) => {
+      const result = resolveRouteString(routeString, url)
+      return { ...result, routeString, precedence: null }
+    })
+    .filter(({ isMatch }) => isMatch)
+  return pickWinner(candidates)?.routeString || null
+}

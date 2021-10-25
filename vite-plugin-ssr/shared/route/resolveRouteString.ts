@@ -1,43 +1,87 @@
 import { matchPath } from './matchPath'
-import { assert, isPlainObject } from '../utils'
+import { assert, isPlainObject, higherFirst } from '../utils'
 
 export { resolveRouteString }
+export { resolveRouteStringPrecedence }
 
 function resolveRouteString(
   routeString: string,
   urlPathname: string
-): { matchValue: false | number; routeParams: Record<string, string> } {
+): { isMatch: boolean; routeParams: Record<string, string> } {
   const match = matchPath({ path: routeString, caseSensitive: true }, urlPathname)
   if (!match) {
-    return { matchValue: false, routeParams: {} }
+    return { isMatch: false, routeParams: {} }
   }
 
   const routeParams: Record<string, string> = match.params || {}
   assert(isPlainObject(routeParams))
 
-  const matchValue = getMatchValue(routeParams)
-
-  return { matchValue, routeParams }
+  return { isMatch: true, routeParams }
 }
 
-// See tests at `./routePrioritization.spec.ts`
-function getMatchValue(routeParams: Record<string, string>): number {
-  // The less parameters the route has, the more specific it is, and the higher its prio should be, for example:
-  //   URL                     matchValue
-  //   /                       -0
-  //   /some/static/route      -0
-  //   /:productId             -1
-  //   /:productId/reviews     -1
-  //   /:productId/:view       -2
-  let matchValue = -1 * Object.keys(routeParams).length
-
-  // For catch-all routes, it's the opposite, for example:
-  //   URL                     matchValue
-  //   /nested/*               -98
-  //   /*                      -99
-  if (routeParams['*']) {
-    matchValue = -100 - matchValue
+type RouteMatch = {
+  routeString: null | string
+}
+// -1 => routeMatch1 higher precedence
+// +1 => routeMatch2 higher precedence
+function resolveRouteStringPrecedence(routeMatch1: RouteMatch, routeMatch2: RouteMatch): 0 | -1 | 1 {
+  if (routeMatch2.routeString === null) {
+    return 0
+  }
+  if (routeMatch1.routeString === null) {
+    return 0
   }
 
-  return matchValue
+  // Return route with highest number of static paths begin first
+  {
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticPathBegin
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      return result
+    }
+  }
+
+  // Return route with most params first
+  {
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfParams
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      return result
+    }
+  }
+
+  // Return catch-all routes last
+  {
+    if (analyzeRouteString(routeMatch2.routeString).isCatchAll) {
+      return -1
+    }
+    if (analyzeRouteString(routeMatch1.routeString).isCatchAll) {
+      return 1
+    }
+  }
+
+  return 0
+}
+function analyzeRouteString(routeString: string) {
+  const paths = routeString.split('/')
+
+  let numberOfStaticPathBegin = 0
+  for (const path of paths) {
+    if (path.startsWith(':')) {
+      break
+    }
+    if (path === '') {
+      continue
+    }
+    if (path === '*') {
+      continue
+    }
+    numberOfStaticPathBegin++
+  }
+
+  const numberOfParams = paths.filter((path) => path.startsWith(':')).length
+
+  const isCatchAll = routeString.endsWith('*')
+
+  return { numberOfParams, numberOfStaticPathBegin, isCatchAll }
 }

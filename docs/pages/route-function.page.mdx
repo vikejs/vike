@@ -3,7 +3,7 @@ Route Functions give us full programmatic flexibility to define our routing logi
 ```js
 // /pages/film/admin.page.route.js
 
-export default (pageContext) => {
+export default pageContext => {
   // Route Functions allow us to implement advanced routing such as route guards.
   if (! pageContext.user.isAdmin) {
     return false
@@ -11,16 +11,21 @@ export default (pageContext) => {
   const { url } = pageContext
   // We can use RegExp or any JavaScript tool/library we want.
   if (! /\/film\/[0-9]+\/admin/.test(url)) {
-    return { match: false } // equivalent to `return false`
+    return false
   }
   filmId = url.split('/')[2]
   return {
-    match: true,
+    // Set the route matching priority
+    precedence: 10,
     // We make `filmId` available as `pageContext.routeParams.filmId`
     routeParams: { filmId }
   }
 }
 ```
 
-The `match` value can be a (negative) number which enables us to resolve route conflicts;
+Route Functions can return a `precedence` number to resolve route conflicts:
 the higher the number, the higher the priority.
+
+Route Strings and FileSystem Routing have a `precedence` number of `0`;
+if a Route Function returns a positive `precedence` number then it will take precedence over Route Strings and FileSystem Routing, and
+vice versa if it returns a negative `precedence` number.
