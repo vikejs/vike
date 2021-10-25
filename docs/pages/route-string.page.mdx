@@ -7,12 +7,36 @@ For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/fil
 export default '/film/:filmId'
 ```
 
-If the URL matches, the value of `filmId` is available at `pageContext.routeParams.filmId`.
+The value of `filmId` is available at `pageContext.routeParams.filmId`.
 
-We can implement [catch-all routes](/catch-all).
+## Multiple Parameters
 
-The precedence of Route Strings is showcased at [`precedence.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/master/vite-plugin-ssr/shared/route/precedence.spec.ts).
+We can define multiple parameters.
 
-For more advanced routing, we can use [Route Functions](/route-function) instead of Route Strings.
+```js
+// /pages/film.page.route.js
 
-`vite-plugin-ssr`'s Route String implementation is based on [React Router's `matchPath()`](https://reactrouter.com/web/api/matchPath).
+// Parameters available at:
+//  - `pageContext.routeParams.year`
+//  - `pageContext.routeParams.slug`
+export default '/news/:year/:slug'
+```
+
+## Catch-All
+
+We can use Route Strings to implement [catch-all routes](/catch-all).
+
+## Precedence
+
+The precedence of Route Strings is determined by specificity, for example:
+- Most specific `/about/team` first (matches only a single URL)
+- Less specific `/about/:path` second (also matches `/about/company`, `/about/vision`, ...)
+- Less specific `/about/*` third (also matches `/about/also/nested/path`)
+- Least specific `/*` last (matches all URLs)
+
+Further examples at [`precedence.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/master/vite-plugin-ssr/shared/route/precedence.spec.ts).
+
+## More
+
+For more advanced routing, we can use [Route Functions](/route-function) which are fundamentally more powerful than Route Strings.
+
