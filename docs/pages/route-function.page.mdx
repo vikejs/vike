@@ -3,6 +3,8 @@ Route Functions give us full programmatic flexibility to define our routing logi
 ```js
 // /pages/film/admin.page.route.js
 
+import partRegex from 'part-regex'
+
 export default pageContext => {
   // Route Functions allow us to implement advanced routing such as route guards.
   if (! pageContext.user.isAdmin) {
@@ -10,7 +12,7 @@ export default pageContext => {
   }
   const { url } = pageContext
   // We can use RegExp or any JavaScript tool/library we want.
-  if (! /\/film\/[0-9]+\/admin/.test(url)) {
+  if (!partRegex`/film/${/[0-9]+/}/admin`.test(url)) {
     return false
   }
   filmId = url.split('/')[2]
@@ -22,6 +24,8 @@ export default pageContext => {
   }
 }
 ```
+
+Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
 Route Functions can return a `precedence` number to resolve route conflicts:
 the higher the number, the higher the priority.

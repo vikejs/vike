@@ -9,8 +9,10 @@ export default '/film/:filmId'
 
 If the URL matches, the value of `filmId` is available at `pageContext.routeParams.filmId`.
 
-The syntax of Route Strings is based on [React Router's `matchPath()`](https://reactrouter.com/web/api/matchPath).
-
 We can implement [catch-all routes](/catch-all).
 
-The precedence of route strings is showcased at [`route-precedence.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/master/vite-plugin-ssr/shared/route/route-precedence.spec.ts).
+The precedence of Route Strings is showcased at [`precedence.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/master/vite-plugin-ssr/shared/route/precedence.spec.ts).
+
+For more advanced routing, we can use [Route Functions](/route-function) instead of Route Strings.
+
+`vite-plugin-ssr`'s Route String implementation is based on [React Router's `matchPath()`](https://reactrouter.com/web/api/matchPath).
