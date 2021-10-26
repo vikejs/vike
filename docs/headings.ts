@@ -77,6 +77,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Hydration Mismatch',
+    url: '/hydration-mismatch'
+  },
+  {
+    level: 2,
     title: '`.env` Files',
     url: '/.env-files'
   },

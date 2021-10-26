@@ -1,35 +1,14 @@
 export const noHeading = true
-export const pageTitle = 'Hydration'
+export const pageTitle = 'What is Hydration?'
 
-## What is hydration?
+When doing SSR our pages are rendered to HTML. But HTML alone is not sufficient to make a page interactive.
+For example, a page with zero browser-side JavaScript cannot be interactive (there are no JavaScript event handlers to react to user actions such as a click on a button).
 
-When using SSR our pages are rendered to HTML. But to make a page interactive HTML alone is not sufficient.
+To make our page interactive, in addition to render our page to HTML in Node.js, our view framework (Vue/React/...) also loads and renders the page in the browser. (It creates an internal representation of the page's elements and maps them to the DOM elements of the rendered HTML.)
 
-To make our page interactive, our view framework (Vue/React/...) renders the page a second time on the client-side. (Technically speaking: it renders the page into an internal representation and maps it to the DOM elements of the already rendered HTML.)
-
-This process is called *hydration*. (Informally speaking: hydration is what brings our page "alive".)
-
-If we were to have zero browser-side JavaScript (with `vite-plugin-ssr` we can do this by defining an empty `_default.page.client.js` file), then our page is not hydrated (since the client-side doesn't execute any JavaScript) and our page is not interactive.
+This process is called *hydration*. Informally speaking: it's what brings our page alive.
 
 Further reading:
  - [Vue Docs - Hydration](https://ssr.vuejs.org/guide/hydration.html)
  - [React Docs - `hydrate()`](https://reactjs.org/docs/react-dom.html#hydrate)
 
-## Hydration Mismatch
-
-As explained in the previous section, when using SSR, our view framework (React/Vue/...) renders our page twice:
- 1. A first time to HTML on the server-side.
- 2. A second time on the browser-side.
-
-A mismatch is when the rendered HTML is not the same then what is rendered a second time on the browser-side.
-
-## Suppress Hydration Mismatch Warning
-
-In general, we should avoid hydration mismatches by making sure that what is rendered on the client-side is the same than what is rendered to HTML on the server-side.
-
-But there are situations where mismatches are inevitable. To suppress hydration mismatch warnings:
- - React: [StackOverflow - Is there any way to avoid "Text content did not match" warning in SSR with React?](https://stackoverflow.com/questions/53959948/is-there-any-way-to-avoid-text-content-did-not-match-warning-in-ssr-with-react/68438131)
- - Vue: [StackOverflow - [Vue][SSR] Suppress hydration mismatch warning](https://stackoverflow.com/questions/68438016/vuessr-suppress-hydration-mismatch-warning/68438108)
-
-More infos about hydration mismatches:
- - [React Docs - `hydrate()`](https://reactjs.org/docs/react-dom.html#hydrate)

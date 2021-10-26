@@ -14,9 +14,6 @@ This also means that we have full control over the browser-side code. Not only c
 import { getPage } from 'vite-plugin-ssr/client'
 import { hydrate } from 'some-view-framework'
 
-// The browser side usually hdyrates the page — see https://vite-plugin-ssr.com/hydration
-// We can also partial/island hydrate, inject vanilla JavaScript event handlers, etc.
-
 hydrate()
 
 async function hydrate() {
@@ -25,3 +22,8 @@ async function hydrate() {
   await hydrate(Page)
 }
 ```
+
+The browser-side is mostly about [hydrating](/hydration) the page,
+but we can also do partial/island hydration,
+only inject a couple of event handlers,
+etc.
