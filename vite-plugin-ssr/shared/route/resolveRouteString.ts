@@ -3,6 +3,7 @@ import { assert, isPlainObject, higherFirst } from '../utils'
 
 export { resolveRouteString }
 export { resolveRouteStringPrecedence }
+export { isStaticRoute }
 
 function resolveRouteString(
   routeString: string,
@@ -20,15 +21,15 @@ function resolveRouteString(
 }
 
 type RouteMatch = {
-  routeString: null | string
+  routeString?: string
 }
 // -1 => routeMatch1 higher precedence
 // +1 => routeMatch2 higher precedence
 function resolveRouteStringPrecedence(routeMatch1: RouteMatch, routeMatch2: RouteMatch): 0 | -1 | 1 {
-  if (routeMatch2.routeString === null) {
+  if (!routeMatch2.routeString) {
     return 0
   }
-  if (routeMatch1.routeString === null) {
+  if (!routeMatch1.routeString) {
     return 0
   }
 
@@ -90,4 +91,10 @@ function analyzeRouteString(routeString: string) {
   const isCatchAll = routeString.endsWith('*')
 
   return { numberOfParameterSegments, numberOfStaticSegmentsBeginning, numberOfStaticSegements, isCatchAll }
+}
+
+function isStaticRoute(routeString: string): boolean {
+  const url = routeString
+  const { isMatch, routeParams } = resolveRouteString(routeString, url)
+  return isMatch && Object.keys(routeParams).length === 0
 }

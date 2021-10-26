@@ -17,7 +17,7 @@ export default pageContext => {
   }
   filmId = url.split('/')[2]
   return {
-    // Set the route matching priority
+    // To resolve routing conflicts
     precedence: 10,
     // We make `filmId` available as `pageContext.routeParams.filmId`
     routeParams: { filmId }
@@ -27,9 +27,18 @@ export default pageContext => {
 
 Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
-Route Functions can return a `precedence` number to resolve route conflicts:
-the higher the number, the higher the priority.
+### Precedence
 
-Route Strings and FileSystem Routing have a `precedence` number of `0`;
-if a Route Function returns a positive `precedence` number then it will take precedence over Route Strings and FileSystem Routing, and
-vice versa if it returns a negative `precedence` number.
+If the Route Function of two pages both return a truthy value for the same URL then we have a routing conflict:
+`vite-plugin-ssr` doesn't know which of the two pages should be rendered for that URL.
+
+To resolve route conflicts, Route Functions can return a `precedence` number:
+`vite-plugin-ssr` chooses the page with the Route Function that returned the highest `precedence` number.
+
+The precedence between Route Functions, Route Strings, and Filesystem Routing is:
+ 1. Route Function + positive `precedence` number
+ 2. Filesystem Routing
+ 3. Static Route String (Route Strings without any `:parameter` segment)
+ 4. Route Function + no `precedence` number
+ 5. Parameterized Route String
+ 6. Route Function + negative `precedence` number

@@ -13,7 +13,7 @@ import {
   assertExports
 } from './utils'
 import { addComputedUrlProps } from './addComputedurlProps'
-import { pickWinner } from './route/pickWinner'
+import { pickWinner, RouteType } from './route/pickWinner'
 import { resolveRouteString } from './route/resolveRouteString'
 
 export { route }
@@ -24,7 +24,7 @@ export type { PageContextForRoute }
 export { getAllPageIds }
 export { getErrorPageId }
 export { isErrorPage }
-export { isStaticRoute }
+export { isStaticRoute } from './route/resolveRouteString'
 
 type PageId = string
 
@@ -78,8 +78,9 @@ async function route(
   const hookErrors: HookError[] = []
   const routeMatches: {
     pageId: string
-    routeString: null | string
-    precedence: null | number
+    routeString?: string
+    precedence?: number | null
+    routeType: RouteType
     routeParams: Record<string, string>
   }[] = []
   await Promise.all(
@@ -103,26 +104,26 @@ async function route(
             `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
           )
           const { isMatch, routeParams } = resolveRouteString(routeString, urlPathname)
-          if( isMatch ) {
-            routeMatches.push({ pageId, precedence: null, routeString, routeParams })
+          if (isMatch) {
+            routeMatches.push({
+              pageId,
+              routeString,
+              routeParams,
+              routeType: 'STRING',
+            })
           }
         }
 
         // Route with Route Function defined in `.page.route.js`
         else if (hasProp(pageRouteFileExports, 'default', 'function')) {
-          const result = await resolveRouteFunction(
-            pageRouteFileExports,
-            urlPathname,
-            pageContext,
-            pageRouteFilePath
-          )
+          const result = await resolveRouteFunction(pageRouteFileExports, urlPathname, pageContext, pageRouteFilePath)
           if ('hookError' in result) {
             hookErrors.push(result)
             return
           }
-          if( result.isMatch ) {
+          if (result.isMatch) {
             const { routeParams, precedence } = result
-            routeMatches.push({ pageId, routeString: null, precedence, routeParams })
+            routeMatches.push({ pageId, precedence, routeParams, routeType: 'FUNCTION' })
           }
         } else {
           assert(false)
@@ -130,8 +131,8 @@ async function route(
       }
 
       const { isMatch, routeParams } = resolveFilesystemRoute(urlPathname, filesystemRoute)
-      if( isMatch ) {
-        routeMatches.push({ pageId, precedence: null, routeString: null, routeParams })
+      if (isMatch) {
+        routeMatches.push({ pageId, routeParams, routeType: 'FILESYSTEM' })
       }
     })
   )
@@ -233,12 +234,6 @@ function getErrorPageId(allPageIds: string[]): string | null {
     return errorPageId
   }
   return null
-}
-
-function isStaticRoute(routeString: string): boolean {
-  const url = routeString
-  const { isMatch, routeParams } = resolveRouteString(routeString, url)
-  return isMatch && Object.keys(routeParams).length === 0
 }
 
 function resolveFilesystemRoute(
@@ -353,7 +348,7 @@ async function resolveRouteFunction(
   pageContext: Record<string, unknown>,
   pageRouteFilePath: string
 ): Promise<
-  | { isMatch: false, hookError: unknown; hookName: string; hookFilePath: string }
+  | { isMatch: false; hookError: unknown; hookName: string; hookFilePath: string }
   | { isMatch: false }
   | {
       isMatch: true
@@ -394,10 +389,10 @@ async function resolveRouteFunction(
   let precedence = null
   if (hasProp(result, 'precedence')) {
     precedence = result.precedence
-  assertUsage(
-    typeof precedence === 'number',
-    `The \`precedence\` value returned by the Route Function ${pageRouteFilePath} should be a number.`
-  )
+    assertUsage(
+      typeof precedence === 'number',
+      `The \`precedence\` value returned by the Route Function ${pageRouteFilePath} should be a number.`
+    )
   }
   assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
   const routeParams: Record<string, string> = result.routeParams || {}

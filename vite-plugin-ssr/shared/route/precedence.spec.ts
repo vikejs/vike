@@ -2,35 +2,25 @@ import { pickWinner } from './pickWinner'
 import { resolveRouteString } from './resolveRouteString'
 
 test('route precedence - basic', () => {
-  const routes = [
-    '/',
-    '/about',
-    '/about/team',
-    '/about/:path',
-    '/about/*',
-  ]
+  const routes = ['/', '/about', '/about/team', '/about/:path', '/about/*']
 
   ;[
     ['/', '/'],
     ['/about', '/about'],
     ['/about/team', '/about/team'],
     ['/about/company', '/about/:path'],
-    ['/about/some/nested/path', '/about/*'],
+    ['/about/some/nested/path', '/about/*']
   ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
 })
 
 test('route precedence - catch-all', () => {
-  const routes = [
-    '/',
-    '/*',
-    '/hello/:name',
-  ]
+  const routes = ['/', '/*', '/hello/:name']
 
   ;[
     ['/', '/'],
     ['/hello', '/*'],
     ['/hello/jon', '/hello/:name'],
-    ['/hello/jon/snow', '/*'],
+    ['/hello/jon/snow', '/*']
   ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
 })
 
@@ -60,7 +50,7 @@ test('route precedence - advanced', () => {
     ['/product/42', '/product/:productId'],
     ['/product/42/details', '/product/:productId/:view'],
     ['/product/42/review', '/product/:productId/review'],
-    ['/product/42/review/too-long', '/product/*'],
+    ['/product/42/review/too-long', '/product/*']
   ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
 })
 
@@ -96,7 +86,7 @@ function findRoute(url: string, routes: string[]): string | null {
   const candidates = routes
     .map((routeString) => {
       const result = resolveRouteString(routeString, url)
-      return { ...result, routeString, precedence: null }
+      return { ...result, routeString, routeType: 'STRING' as const }
     })
     .filter(({ isMatch }) => isMatch)
   return pickWinner(candidates)?.routeString || null
