@@ -59,11 +59,23 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
 
 ## Access from browser
 
-By default, only `pageContext.Page`, `pageContext.pageExports`, and `pageContext.isHydration` are available in the browser.
+When using [Server Routing](/SR-vs-CR#server-routing), the following is available in the browser:
+ - `pageContext.Page`
+ - `pageContext.pageExports`
+ - `pageContext.isHydration`
 
-When using Client Routing ([useClientRouter()](/useClientRouter)) the `pageContext.url*` are also available in the browser by default.
+When using [Client Routing](/useClientRouter), the following is available in the browser:
+ - `pageContext.Page`
+ - `pageContext.pageExports`
+ - `pageContext.isHydration`
+ - `pageContext.routeParams`
+ - `pageContext.url`
+ - `pageContext.urlNormalized`
+ - `pageContext.urlPathname`
+ - `pageContext.urlParsed`
 
-We can make more `pageContext` available in the browser by using [`passToClient`](/passToClient).
+All other `pageContext` are only available in Node.js by default:
+we use [`passToClient`](/passToClient) to make more `pageContext` available in the browser.
 
 ## TypeScript
 
