@@ -38,7 +38,7 @@ To resolve route conflicts, Route Functions can return a `precedence` number:
 The precedence between Route Functions, Route Strings, and Filesystem Routing is:
  1. Route Function + positive `precedence` number
  2. Filesystem Routing
- 3. Static Route String (Route Strings without any `:parameter` segment)
+ 3. Route String Static (Route Strings without any `:parameter` segment)
  4. Route Function + no `precedence` number
- 5. Parameterized Route String
+ 5. Route String Parameterized
  6. Route Function + negative `precedence` number
