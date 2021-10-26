@@ -6,7 +6,7 @@
     "express": "^4.17.1",
     "typescript": "^4.4.4",
     "vite": "^2.6.7",
-    "vite-plugin-ssr": "0.3.17"
+    "vite-plugin-ssr": "0.3.18"
   },
   "// Needed for Yarn workspaces": "",
   "name": "example-html-fragments",
