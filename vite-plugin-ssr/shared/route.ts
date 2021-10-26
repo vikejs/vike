@@ -92,7 +92,12 @@ async function route(
           pageId
       )
 
-      if (pageRouteFile) {
+      if (!pageRouteFile) {
+        const { isMatch, routeParams } = resolveFilesystemRoute(urlPathname, filesystemRoute)
+        if (isMatch) {
+          routeMatches.push({ pageId, routeParams, routeType: 'FILESYSTEM' })
+        }
+      } else {
         const pageRouteFileExports = pageRouteFile.fileExports
         const pageRouteFilePath = pageRouteFile.filePath
 
@@ -109,7 +114,7 @@ async function route(
               pageId,
               routeString,
               routeParams,
-              routeType: 'STRING',
+              routeType: 'STRING'
             })
           }
         }
@@ -128,11 +133,6 @@ async function route(
         } else {
           assert(false)
         }
-      }
-
-      const { isMatch, routeParams } = resolveFilesystemRoute(urlPathname, filesystemRoute)
-      if (isMatch) {
-        routeMatches.push({ pageId, routeParams, routeType: 'FILESYSTEM' })
       }
     })
   )
