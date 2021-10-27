@@ -215,7 +215,7 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
-const pageInfoInjectionBegin = '<script id="page-context" type="application/json">'
+const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'
 function injectPageInfo(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
   // Escaping < should be enough for mitigating XSS and HTML parsing errors in
   // <script type="application/json">.
