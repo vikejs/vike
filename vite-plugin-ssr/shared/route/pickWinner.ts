@@ -10,9 +10,9 @@ type RouteMatches = {
   routeString?: string
   routeType: RouteType
 }
-function pickWinner<T extends RouteMatches>(routeResults: T[]): T | undefined {
+function pickWinner<T extends RouteMatches>(routeMatches: T[]): T | undefined {
   // prettier-ignore
-  const candidates = routeResults
+  const candidates = routeMatches
     .sort(resolveRouteStringPrecedence)
     // See https://vite-plugin-ssr.com/route-function#precedence
     .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FUNCTION' && !!routeMatch.precedence && routeMatch.precedence < 0))
