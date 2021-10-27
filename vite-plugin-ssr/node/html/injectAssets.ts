@@ -215,10 +215,13 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
   return '/' + file
 }
 
-const pageInfoInjectionBegin = '<script>window.__vite_plugin_ssr__pageContext'
+const pageInfoInjectionBegin = '<script id="page-context" type="application/json">'
 function injectPageInfo(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
-  const pageContextSerialized = serializePageContextClientSide(pageContext, 'inlineScript')
-  const injection = `${pageInfoInjectionBegin} = ${pageContextSerialized}</script>`
+  // Escaping < should be enough for mitigating XSS and HTML parsing errors in
+  // <script type="application/json">.
+  const pageContextSerialized = serializePageContextClientSide(pageContext)
+    .replaceAll("<", "\\u003c")
+  const injection = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
 }
 function injectPageInfoAlreadyDone(htmlString: string) {

@@ -1,7 +1,5 @@
 import { stringify } from '@brillout/json-s'
-import * as _devalue from 'devalue'
 import { assert, assertUsage, hasProp, isPlainObject } from '../shared/utils'
-const devalue = _devalue as any as (arg: unknown) => string
 
 export { serializePageContextClientSide }
 
@@ -9,8 +7,7 @@ type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
 
 function serializePageContextClientSide(
-  pageContext: { _pageId: string; _passToClient: string[] },
-  type: 'json' | 'inlineScript'
+  pageContext: { _pageId: string; _passToClient: string[] }
 ) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
   pageContext._passToClient.forEach((prop) => {
@@ -24,29 +21,11 @@ function serializePageContextClientSide(
   assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
 
-  assert(['json', 'inlineScript'].includes(type))
-  const serialize: (thing: unknown) => string = (() => {
-    if (type === 'json') {
-      return stringify
-    }
-    if (type === 'inlineScript') {
-      return devalue
-    }
-    assert(false)
-  })()
-  const serializerName = type === 'json' ? '@brillout/json-s' : 'devalue'
-  const serializerRepo =
-    type === 'json' ? 'https://github.com/brillout/json-s' : 'https://github.com/Rich-Harris/devalue'
+  const serialize: (thing: unknown) => string = stringify
+  const serializerName = '@brillout/json-s'
+  const serializerRepo = 'https://github.com/brillout/json-s'
 
-  const pageContextClientWrapper = (() => {
-    if (type === 'inlineScript') {
-      return pageContextClient
-    }
-    if (type === 'json') {
-      return { pageContext: pageContextClient }
-    }
-    assert(false)
-  })()
+  const pageContextClientWrapper = { pageContext: pageContextClient }
 
   try {
     pageContextSerialized = serialize(pageContextClientWrapper)
