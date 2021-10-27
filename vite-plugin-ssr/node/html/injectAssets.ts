@@ -218,9 +218,28 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'
 function injectPageInfo(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
   // Escaping < should be enough for mitigating XSS and HTML parsing errors in
-  // <script type="application/json">.
-  const pageContextSerialized = serializePageContextClientSide(pageContext)
-    .replaceAll("<", "\\u003c")
+  // <script type="application/json">. It prevents </script and <!-- from appearing in the script content.
+  //
+  // From 1: The easiest and safest way to avoid the rather strange restrictions
+  // described in this section is to always escape an ASCII case-insensitive match for "<!--" as "\x3C!--", "<script"
+  // as "\x3Cscript", and "</script" as "\x3C/script" when these sequences appear in literals in scripts (e.g. in
+  // strings, regular expressions, or comments), and to avoid writing code that uses such constructs in expressions.
+  // Doing so avoids the pitfalls that the restrictions in this section are prone to triggering: namely, that, for
+  // historical reasons, parsing of script blocks in HTML is a strange and exotic practice that acts unintuitively
+  // in the face of these sequences.
+  //
+  // (We can't use \x in JSON, so we use \u instead.)
+  //
+  // 1. https://html.spec.whatwg.org/multipage/scripting.html#restrictions-for-contents-of-script-elements
+  //
+  // See also:
+  //
+  // https://html.spec.whatwg.org/multipage/parsing.html#script-data-state
+  //
+  // https://mathiasbynens.be/notes/etago
+  //
+  // https://github.com/brillout/vite-plugin-ssr/pull/181/files#r737163997
+  const pageContextSerialized = serializePageContextClientSide(pageContext).replaceAll('<', '\\u003c')
   const injection = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
 }
