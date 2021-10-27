@@ -239,7 +239,7 @@ function injectPageInfo(htmlString: string, pageContext: { _pageId: string; _pas
   // https://mathiasbynens.be/notes/etago
   //
   // https://github.com/brillout/vite-plugin-ssr/pull/181/files#r737163997
-  const pageContextSerialized = serializePageContextClientSide(pageContext).replaceAll('<', '\\u003c')
+  const pageContextSerialized = serializePageContextClientSide(pageContext).replace(/</g, '\\u003c')
   const injection = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
   return injectEnd(htmlString, injection)
 }
