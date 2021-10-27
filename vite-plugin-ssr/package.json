@@ -5,7 +5,6 @@
     "@brillout/json-s": "^0.3.0",
     "@brillout/libassert": "^0.5.2",
     "cac": "^6.7.11",
-    "devalue": "^2.0.1",
     "es-module-lexer": "^0.9.3",
     "fast-glob": "^3.2.7",
     "kolorist": "^1.5.0",

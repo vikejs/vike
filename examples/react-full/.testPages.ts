@@ -43,7 +43,7 @@ function testPages(
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
     // Therefore only the serialized `pageContext` tell us the original HTML.
     expect(html.split("_pageId").length).toBe(2);
-    expect(html).toContain('_pageId:"\\u002Fpages\\u002Findex"');
+    expect(html).toContain('"_pageId":"/pages/index"');
   });
 
   test("supports route functions", async () => {

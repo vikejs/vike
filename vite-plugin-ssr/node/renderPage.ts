@@ -143,7 +143,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   await executeOnBeforeRenderHooks(pageContext)
 
   if (pageContext._isPageContextRequest) {
-    const pageContextSerialized = serializePageContextClientSide(pageContext, 'json')
+    const pageContextSerialized = serializePageContextClientSide(pageContext)
     const httpResponse = createHttpResponseObject(pageContextSerialized, { statusCode: 200, renderFilePath: null })
     objectAssign(pageContext, { httpResponse })
     return pageContext
@@ -390,7 +390,7 @@ async function prerenderPage(
   if (!pageContext._usesClientRouter) {
     return { documentHtml, pageContextSerialized: null }
   } else {
-    const pageContextSerialized = serializePageContextClientSide(pageContext, 'json')
+    const pageContextSerialized = serializePageContextClientSide(pageContext)
     return { documentHtml, pageContextSerialized }
   }
 }

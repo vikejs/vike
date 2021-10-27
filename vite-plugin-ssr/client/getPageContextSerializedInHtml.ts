@@ -1,3 +1,4 @@
+import { parse } from '@brillout/json-s'
 import { hasProp, objectAssign } from '../shared/utils'
 import { assert, assertUsage, throwError } from '../shared/utils/assert'
 
@@ -8,13 +9,13 @@ function getPageContextSerializedInHtml(): {
   _pageContextRetrievedFromServer: Record<string, unknown>
   _comesDirectlyFromServer: true
 } & Record<string, unknown> {
+  const pageContextJson = document.getElementById("page-context")?.textContent
   assertUsage(
-    '__vite_plugin_ssr__pageContext' in window,
+    pageContextJson,
     'Client-side `pageContext` missing. Make sure that `injectAssets()` is applied to the HTML, see https://vite-plugin-ssr.com/injectAssets'
   )
 
-  const pageContext: Record<string, unknown> = {}
-  Object.assign(pageContext, window.__vite_plugin_ssr__pageContext)
+  const pageContext: Record<string, unknown> = parse(pageContextJson!).pageContext
   assert(hasProp(pageContext, '_pageId', 'string'))
   if ('_serverSideErrorWhileStreaming' in pageContext) {
     throwError(`An error occurred on the server while rendering/streaming to HTML. Check your server logs.`)
@@ -26,10 +27,4 @@ function getPageContextSerializedInHtml(): {
   })
 
   return pageContext
-}
-
-declare global {
-  interface Window {
-    __vite_plugin_ssr__pageContext: Record<string, unknown>
-  }
 }
