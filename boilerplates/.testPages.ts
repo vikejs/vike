@@ -59,8 +59,13 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
   })
 
   test('active links', async () => {
-    expect(await page.$eval('a[href="/about"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgb(238, 238, 238)')
-    expect(await page.$eval('a[href="/"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+    // Not sure why `autoRetry()` is needed here; isn't the CSS loading already awaited for in the previous `test()` call?
+    await autoRetry(async () => {
+      expect(await page.$eval('a[href="/about"]', (e) => getComputedStyle(e).backgroundColor)).toBe(
+        'rgb(238, 238, 238)'
+      )
+      expect(await page.$eval('a[href="/"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+    })
   })
 
   test('error page', async () => {
