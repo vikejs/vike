@@ -1,6 +1,11 @@
 ## [0.3.19](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.18...v0.3.19) (2021-10-27)
 
 
+### Bug Fixes
+
+* improve CSP support ([#181](https://github.com/brillout/vite-plugin-ssr/pull/181))
+
+
 
 ## [0.3.18](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.17...v0.3.18) (2021-10-26)
 
