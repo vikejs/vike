@@ -101,10 +101,10 @@ function Features() {
               <h3>Clean Cut</h3>
               <code>vite-plugin-ssr</code> is agnostic; there is no conflation between <code>vite-plugin-ssr</code> and
               your view framework (React/Vue/...). This makes reasoning about your app easier.
-              <h3>More fun</h3>
+              <h3>Fun</h3>
               <p>
-                Last but not least, manual integration is more fun (and more insightful) than fighting some arbitrary
-                framework and idiosyncratic abstraction.
+                Last but not least, manual integration is fun & insightful, whereas fighting some arbitrary framework
+                and idiosyncratic abstraction is an annoying waste of time.
               </p>
             </>
           )
