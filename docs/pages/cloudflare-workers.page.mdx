@@ -1,5 +1,10 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
+## Examples
+
+ - React: <RepoLink path='/examples/cloudflare-workers/' />
+ - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
+
 ## `importBuild.js`
 
 We need to load `dist/server/importBuild.js` in our worker code. Example: <RepoLink path='/examples/cloudflare-workers/worker/ssr.js' />.
@@ -10,9 +15,16 @@ We need to load `dist/server/importBuild.js` in our worker code. Example: <RepoL
 
 We recommend using Vite with an Express.js dev server for lightning fast HMR & dev start,
 and for production to bundle the worker code with Cloudflare Workers's webpack bundler.
-See examples below.
+See examples.
 
-## Examples
+## Universal `fetch()`
 
- - React: <RepoLink path='/examples/cloudflare-workers/' />
- - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
+When using Node.js for dev and Cloudflare Workers for production, we then may need a `fetch()` function that works in both environments.
+
+But libraries such as `node-fetch` or `cross-fetch` usually don't work with Cloudflare Workers.
+
+What we can do is to define a `pageContext.fetch` which works in both environments.
+The trick is to add `fetch()` to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer) of both the Node.js dev server and the worker.
+
+Example:
+ - <RepoLink path='/examples/cloudflare-workers#universal-fetch' />
