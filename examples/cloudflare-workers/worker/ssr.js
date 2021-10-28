@@ -7,7 +7,7 @@ export { handleSsr };
 const renderPage = createPageRenderer({ isProduction: true });
 
 async function handleSsr(url) {
-  const pageContextInit = { url };
+  const pageContextInit = { url, fetch };
   const pageContext = await renderPage(pageContextInit);
   const { httpResponse } = pageContext;
   if (!httpResponse) {
