@@ -15,7 +15,7 @@ function PageLayout({ children }) {
             About
           </a>
           <a className="navitem" href="/star-wars">
-            StarWars
+            Star Wars
           </a>
         </Sidebar>
         <Content>{children}</Content>
