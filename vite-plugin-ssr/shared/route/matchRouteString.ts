@@ -4,7 +4,7 @@ import { assertWarning } from '../utils'
 
 // See https://reactrouter.com/web/api/matchPath
 
-export { matchPath }
+export { matchPath as matchRouteString }
 
 /**
  * Performs pattern matching on a URL pathname and returns information about

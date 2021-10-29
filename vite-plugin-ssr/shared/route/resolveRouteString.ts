@@ -1,4 +1,4 @@
-import { matchPath } from './matchPath'
+import { matchRouteString } from './matchRouteString'
 import { assert, isPlainObject, higherFirst } from '../utils'
 
 export { resolveRouteString }
@@ -9,7 +9,7 @@ function resolveRouteString(
   routeString: string,
   urlPathname: string
 ): { isMatch: boolean; routeParams: Record<string, string> } {
-  const match = matchPath({ path: routeString, caseSensitive: true }, urlPathname)
+  const match = matchRouteString({ path: routeString, caseSensitive: true }, urlPathname)
   if (!match) {
     return { isMatch: false, routeParams: {} }
   }
