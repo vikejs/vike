@@ -10,7 +10,7 @@ function resolveFilesystemRoute(
   return resolveAsStaticPath(filesystemRoute, urlPathname)
 }
 
-function resolveAsStaticPath(urlPathname: string, filesystemRoute: string) {
+function resolveAsStaticPath(filesystemRoute: string, urlPathname: string) {
   urlPathname = removeTrailingSlash(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'filesystemRoute:' + filesystemRoute)
   assert(urlPathname.startsWith('/'))
