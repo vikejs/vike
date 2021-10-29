@@ -1,10 +1,20 @@
-import { assertWarning } from '../utils'
+import { assert, assertWarning, isPlainObject } from '../utils'
 
-// Copied from https://github.com/remix-run/react-router/blob/34e25c1f0d20d083205469411eee0c5863748abf/packages/react-router/index.tsx#L1031
+export { matchRouteString }
+
+function matchRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
+  const match = matchPath({ path: routeString, caseSensitive: true }, urlPathname)
+  if (!match) {
+    return null
+  }
+  const routeParams = match.params
+  assert(isPlainObject(routeParams))
+  return { routeParams }
+}
+
+// `matchPath()` is copied from https://github.com/remix-run/react-router/blob/34e25c1f0d20d083205469411eee0c5863748abf/packages/react-router/index.tsx#L1031
 
 // See https://reactrouter.com/web/api/matchPath
-
-export { matchPath as matchRouteString }
 
 /**
  * Performs pattern matching on a URL pathname and returns information about

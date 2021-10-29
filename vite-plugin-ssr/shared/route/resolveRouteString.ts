@@ -1,23 +1,12 @@
 import { matchRouteString } from './matchRouteString'
-import { assert, isPlainObject, higherFirst } from '../utils'
+import { higherFirst } from '../utils'
 
 export { resolveRouteString }
 export { resolveRouteStringPrecedence }
 export { isStaticRoute }
 
-function resolveRouteString(
-  routeString: string,
-  urlPathname: string
-): { isMatch: boolean; routeParams: Record<string, string> } {
-  const match = matchRouteString({ path: routeString, caseSensitive: true }, urlPathname)
-  if (!match) {
-    return { isMatch: false, routeParams: {} }
-  }
-
-  const routeParams: Record<string, string> = match.params || {}
-  assert(isPlainObject(routeParams))
-
-  return { isMatch: true, routeParams }
+function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
+  return matchRouteString(routeString, urlPathname)
 }
 
 type RouteMatch = {
@@ -95,6 +84,6 @@ function analyzeRouteString(routeString: string) {
 
 function isStaticRoute(routeString: string): boolean {
   const url = routeString
-  const { isMatch, routeParams } = resolveRouteString(routeString, url)
-  return isMatch && Object.keys(routeParams).length === 0
+  const match = resolveRouteString(routeString, url)
+  return match !== null && Object.keys(match.routeParams).length === 0
 }

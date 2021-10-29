@@ -93,8 +93,9 @@ async function route(
       )
 
       if (!pageRouteFile) {
-        const { isMatch, routeParams } = resolveFilesystemRoute(urlPathname, filesystemRoute)
-        if (isMatch) {
+        const match = resolveFilesystemRoute(urlPathname, filesystemRoute)
+        if (match) {
+          const { routeParams } = match
           routeMatches.push({ pageId, routeParams, routeType: 'FILESYSTEM' })
         }
       } else {
@@ -108,8 +109,9 @@ async function route(
             routeString.startsWith('/'),
             `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
           )
-          const { isMatch, routeParams } = resolveRouteString(routeString, urlPathname)
-          if (isMatch) {
+          const match = resolveRouteString(routeString, urlPathname)
+          if (match) {
+            const { routeParams } = match
             routeMatches.push({
               pageId,
               routeString,
@@ -121,13 +123,13 @@ async function route(
 
         // Route with Route Function defined in `.page.route.js`
         else if (hasProp(pageRouteFileExports, 'default', 'function')) {
-          const result = await resolveRouteFunction(pageRouteFileExports, urlPathname, pageContext, pageRouteFilePath)
-          if ('hookError' in result) {
-            hookErrors.push(result)
+          const match = await resolveRouteFunction(pageRouteFileExports, urlPathname, pageContext, pageRouteFilePath)
+          if (match && 'hookError' in match) {
+            hookErrors.push(match)
             return
           }
-          if (result.isMatch) {
-            const { routeParams, precedence } = result
+          if (match) {
+            const { routeParams, precedence } = match
             routeMatches.push({ pageId, precedence, routeParams, routeType: 'FUNCTION' })
           }
         } else {
@@ -294,10 +296,9 @@ async function resolveRouteFunction(
   pageContext: Record<string, unknown>,
   pageRouteFilePath: string
 ): Promise<
-  | { isMatch: false; hookError: unknown; hookName: string; hookFilePath: string }
-  | { isMatch: false }
+  | { hookError: unknown; hookName: string; hookFilePath: string }
+  | null
   | {
-      isMatch: true
       precedence: number | null
       routeParams: Record<string, string>
     }
@@ -309,7 +310,7 @@ async function resolveRouteFunction(
   try {
     result = pageRouteFileExports.default({ url: urlPathname, pageContext })
   } catch (hookError) {
-    return { isMatch: false, hookError, hookName, hookFilePath }
+    return { hookError, hookName, hookFilePath }
   }
   assertUsage(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
@@ -318,10 +319,10 @@ async function resolveRouteFunction(
   try {
     result = await result
   } catch (hookError) {
-    return { isMatch: false, hookError, hookName, hookFilePath }
+    return { hookError, hookName, hookFilePath }
   }
   if (result === false) {
-    return { isMatch: false }
+    return null
   }
   if (result === true) {
     result = {}
@@ -350,7 +351,6 @@ async function resolveRouteFunction(
   })
   assert(isPlainObject(routeParams))
   return {
-    isMatch: true,
     precedence: null,
     routeParams
   }

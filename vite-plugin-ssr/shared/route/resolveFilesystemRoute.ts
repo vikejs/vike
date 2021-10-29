@@ -6,15 +6,21 @@ export { getFilesystemRoute }
 function resolveFilesystemRoute(
   urlPathname: string,
   filesystemRoute: string
-): { isMatch: boolean; routeParams: Record<string, string> } {
+): null | { routeParams: Record<string, string> } {
+  return resolveAsStaticPath(urlPathname, filesystemRoute)
+}
+
+function resolveAsStaticPath(urlPathname: string, filesystemRoute: string) {
   urlPathname = removeTrailingSlash(urlPathname)
   // console.log('[Route Candidate] url:' + urlPathname, 'filesystemRoute:' + filesystemRoute)
   assert(urlPathname.startsWith('/'))
   assert(filesystemRoute.startsWith('/'))
   assert(!urlPathname.endsWith('/') || urlPathname === '/')
   assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
-  const isMatch = urlPathname === filesystemRoute
-  return { isMatch, routeParams: {} }
+  if (urlPathname !== filesystemRoute) {
+    return null
+  }
+  return { routeParams: {} }
 }
 
 function removeTrailingSlash(url: string) {
@@ -31,30 +37,32 @@ function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string;
     .filter(({ rootPath }) => pageId.startsWith(rootPath))
     .sort(higherFirst(({ rootPath }) => rootPath.length))
   const root = filesystemRootsMatch[0]
-  let pageRoute = pageId
+  let filesystemRoute = pageId
   if (root) {
     const { rootPath, rootValue } = root
-    assert(pageRoute.startsWith(rootPath))
-    pageRoute = slice(pageRoute, rootPath.length, 0)
-    assert(pageRoute.startsWith('/'))
-    pageRoute = rootValue + (rootValue.endsWith('/') ? '' : '/') + slice(pageRoute, 1, 0)
+    assert(filesystemRoute.startsWith(rootPath))
+    filesystemRoute = slice(filesystemRoute, rootPath.length, 0)
+    assert(filesystemRoute.startsWith('/'))
+    filesystemRoute = rootValue + (rootValue.endsWith('/') ? '' : '/') + slice(filesystemRoute, 1, 0)
   }
 
   // Remove `pages/`, `index/, and `src/`, directories
-  pageRoute = pageRoute.split('/pages/').join('/')
-  pageRoute = pageRoute.split('/src/').join('/')
-  pageRoute = pageRoute.split('/index/').join('/')
+  filesystemRoute = filesystemRoute.split('/pages/').join('/')
+  filesystemRoute = filesystemRoute.split('/src/').join('/')
+  filesystemRoute = filesystemRoute.split('/index/').join('/')
 
   // Hanlde `/index.page.*` suffix
-  assert(!pageRoute.includes('.page.'))
-  if (pageRoute.endsWith('/index')) {
-    pageRoute = slice(pageRoute, 0, -'/index'.length)
+  assert(!filesystemRoute.includes('.page.'))
+  if (filesystemRoute.endsWith('/index')) {
+    filesystemRoute = slice(filesystemRoute, 0, -'/index'.length)
   }
 
-  if (pageRoute === '') {
-    pageRoute = '/'
+  if (filesystemRoute === '') {
+    filesystemRoute = '/'
   }
-  assert(pageRoute.startsWith('/'))
 
-  return pageRoute
+  assert(filesystemRoute.startsWith('/'))
+  assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
+
+  return filesystemRoute
 }
