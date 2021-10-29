@@ -2,6 +2,8 @@
   "scripts": {
     "// For increased dev speed we use an Express.js dev server instead of wrangler": "",
     "dev": "node ./dev-server",
+    "// Use miniflare to simulate Cloudflare Workers environment": "",
+    "dev:mini": "npm run build && miniflare --port 3000 worker/worker/script.js",
     "// Build and try the worker locally": "",
     "prod": "npm run build:vite && wrangler dev --port 3000",
     "// Build and deploy the worker to Cloudflare Workers": "",
@@ -20,6 +22,7 @@
     "@vue/compiler-sfc": "^3.2.12",
     "@vue/server-renderer": "^3.2.12",
     "express": "^4.17.1",
+    "miniflare": "^1.4.1",
     "vite": "2.5.10",
     "vite-plugin-ssr": "0.3.19",
     "vue": "^3.2.12",
