@@ -3,7 +3,7 @@
     "// For increased dev speed we use an Express.js dev server instead of wrangler": "",
     "dev": "node ./dev-server",
     "// Use miniflare to simulate Cloudflare Workers environment": "",
-    "dev:mini": "npm run build && miniflare --port 3000 worker/worker/script.js",
+    "dev:miniflare": "npm run build:vite && miniflare --port 3000 worker/worker/script.js",
     "// Build and try the worker locally": "",
     "prod": "npm run build:vite && wrangler dev --port 3000",
     "// Build and deploy the worker to Cloudflare Workers": "",

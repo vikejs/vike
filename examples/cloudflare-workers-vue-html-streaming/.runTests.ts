@@ -8,7 +8,7 @@ import {
 
 export { runTests };
 
-function runTests(cmd:  | "npm run dev" | "npm run prod" | "npm run dev:mini") {
+function runTests(cmd:  | "npm run dev" | "npm run prod" | "npm run dev:miniflare") {
   run(cmd);
 
   test("page content is rendered to HTML", async () => {
