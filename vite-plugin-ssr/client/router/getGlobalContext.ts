@@ -1,5 +1,6 @@
+import { determinePageIds } from '../../shared/determinePageIds'
 import { getAllPageFiles } from '../../shared/getPageFiles'
-import { getAllPageIds, loadPageRoutes } from '../../shared/route'
+import { loadPageRoutes } from '../../shared/route'
 import { assert, handleUrlOrigin, hasProp, objectAssign, PromiseType } from '../../shared/utils'
 
 export { getGlobalContext }
@@ -23,7 +24,7 @@ async function retrieveGlobalContext() {
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, { _allPageFiles: allPageFiles })
 
-  const allPageIds = await getAllPageIds(allPageFiles)
+  const allPageIds = await determinePageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(globalContext)

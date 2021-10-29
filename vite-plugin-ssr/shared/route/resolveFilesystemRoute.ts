@@ -4,10 +4,10 @@ export { resolveFilesystemRoute }
 export { getFilesystemRoute }
 
 function resolveFilesystemRoute(
-  urlPathname: string,
-  filesystemRoute: string
+  filesystemRoute: string,
+  urlPathname: string
 ): null | { routeParams: Record<string, string> } {
-  return resolveAsStaticPath(urlPathname, filesystemRoute)
+  return resolveAsStaticPath(filesystemRoute, urlPathname)
 }
 
 function resolveAsStaticPath(urlPathname: string, filesystemRoute: string) {

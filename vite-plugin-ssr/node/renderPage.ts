@@ -1,4 +1,4 @@
-import { getErrorPageId, getAllPageIds, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
+import { getErrorPageId, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import {
   AllPageFiles,
@@ -55,6 +55,7 @@ import {
 } from './html/stream'
 import { serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps } from '../shared/addComputedurlProps'
+import { determinePageIds } from '../shared/determinePageIds'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
@@ -247,7 +248,7 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     _allPageFiles: allPageFiles
   })
 
-  const allPageIds = await getAllPageIds(allPageFiles)
+  const allPageIds = await determinePageIds(allPageFiles)
   objectAssign(pageContext, { _allPageIds: allPageIds })
 
   const errorPageId = getErrorPageId(pageContext._allPageIds)
@@ -1056,7 +1057,7 @@ async function getGlobalContext() {
     _allPageFiles: allPageFiles
   })
 
-  const allPageIds = await getAllPageIds(allPageFiles)
+  const allPageIds = await determinePageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(globalContext)

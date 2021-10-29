@@ -1,32 +1,22 @@
-import { findDefaultFiles, findPageFile } from './getPageFiles'
-import type { AllPageFiles, PageFile } from './getPageFiles'
-import {
-  assert,
-  assertUsage,
-  slice,
-  hasProp,
-  isPlainObject,
-  isPromise,
-  objectAssign,
-  isObjectWithKeys,
-  assertExports
-} from './utils'
+import type { AllPageFiles } from './getPageFiles'
+import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps } from './addComputedurlProps'
 import { pickWinner, RouteType } from './route/pickWinner'
 import { resolveRouteString } from './route/resolveRouteString'
-import { getFilesystemRoute, resolveFilesystemRoute } from './route/resolveFilesystemRoute'
+import { resolveFilesystemRoute } from './route/resolveFilesystemRoute'
+import { resolveRouteFunction } from './route/resolveRouteFunction'
+import { callOnBeforeRouteHook, OnBeforeRouteHook } from './route/callOnBeforeRouteHook'
+import { PageRoutes } from './route/loadPageRoutes'
+import { isErrorPage } from './route/error-page'
 
 export { route }
-export { loadPageRoutes }
+export { loadPageRoutes } from './route/loadPageRoutes'
 export type { PageRoutes }
 export type { PageContextForRoute }
 
-export { getAllPageIds }
-export { getErrorPageId }
 export { isErrorPage }
+export { getErrorPageId } from './route/error-page'
 export { isStaticRoute } from './route/resolveRouteString'
-
-type PageId = string
 
 type PageContextForRoute = {
   url: string
@@ -93,7 +83,7 @@ async function route(
       )
 
       if (!pageRouteFile) {
-        const match = resolveFilesystemRoute(urlPathname, filesystemRoute)
+        const match = resolveFilesystemRoute(filesystemRoute, urlPathname)
         if (match) {
           const { routeParams } = match
           routeMatches.push({ pageId, routeParams, routeType: 'FILESYSTEM' })
@@ -164,333 +154,8 @@ async function route(
   return { pageContextAddendum }
 }
 
-async function callOnBeforeRouteHook(pageContext: {
-  url: string
-  _allPageIds: string[]
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: null | OnBeforeRouteHook
-}): Promise<
-  | {}
-  | { hookError: unknown; hookFilePath: string; hookName: string }
-  | { pageContextAddendum: Record<string, unknown> & { _pageId?: string | null; routeParams?: Record<string, string> } }
-> {
-  if (!pageContext._onBeforeRouteHook) {
-    return {}
-  }
-  let result: unknown
-  try {
-    result = await pageContext._onBeforeRouteHook.onBeforeRoute(pageContext)
-  } catch (hookError) {
-    const hookFilePath = pageContext._onBeforeRouteHook.filePath
-    const hookName = 'onBeforeRoute()'
-    return { hookError, hookName, hookFilePath }
-  }
-
-  const errPrefix = `The \`onBeforeRoute()\` hook exported by ${pageContext._onBeforeRouteHook.filePath}`
-
-  assertUsage(
-    result === null ||
-      result === undefined ||
-      (isObjectWithKeys(result, ['pageContext'] as const) && hasProp(result, 'pageContext')),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
-  )
-
-  if (result === null || result === undefined) {
-    return {}
-  }
-
-  assertUsage(
-    hasProp(result, 'pageContext', 'object'),
-    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`
-  )
-
-  if (hasProp(result.pageContext, '_pageId') && !hasProp(result.pageContext, '_pageId', 'null')) {
-    const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but \`_pageId\` should be`
-    assertUsage(hasProp(result.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
-    assertUsage(
-      pageContext._allPageIds.includes(result.pageContext._pageId),
-      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
-    )
-  }
-  if (hasProp(result.pageContext, 'routeParams')) {
-    assertRouteParams(
-      result.pageContext,
-      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
-    )
-  }
-
-  const pageContextAddendum = result.pageContext
-
-  return { pageContextAddendum }
-}
-
-function getErrorPageId(allPageIds: string[]): string | null {
-  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
-  assertUsage(
-    errorPageIds.length <= 1,
-    `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`
-  )
-  if (errorPageIds.length > 0) {
-    const errorPageId = errorPageIds[0]
-    assert(errorPageId)
-    return errorPageId
-  }
-  return null
-}
-
-/**
-  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
-*/
-async function getAllPageIds(allPageFiles: AllPageFiles): Promise<PageId[]> {
-  const pageFileIds = computePageIds(allPageFiles['.page'])
-  const pageClientFileIds = computePageIds(allPageFiles['.page.client'])
-  const pageServerFileIds = computePageIds(allPageFiles['.page.server'])
-
-  const allPageIds = unique([...pageFileIds, ...pageClientFileIds, ...pageServerFileIds])
-
-  allPageIds.forEach((pageId) => {
-    assertUsage(
-      pageFileIds.includes(pageId) || pageServerFileIds.includes(pageId),
-      `File missing. You need to create at least \`${pageId}.page.server.js\` or \`${pageId}.page.js\`.`
-    )
-    assertUsage(
-      pageFileIds.includes(pageId) || pageClientFileIds.includes(pageId),
-      `File missing. You need to create at least \`${pageId}.page.client.js\` or \`${pageId}.page.js\`.`
-    )
-  })
-
-  return allPageIds
-}
-function computePageIds(pageFiles: PageFile[]): string[] {
-  const fileIds = pageFiles
-    .map(({ filePath }) => filePath)
-    .filter((filePath) => !isDefaultPageFile(filePath))
-    .map(computePageId)
-  return fileIds
-}
-function computePageId(filePath: string): string {
-  const pageSuffix = '.page.'
-  const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
-  assert(!pageId.includes('\\'))
-  return pageId
-}
-function unique<T>(arr: T[]): T[] {
-  return Array.from(new Set(arr))
-}
-
-function isDefaultPageFile(filePath: string): boolean {
-  assert(!filePath.includes('\\'))
-  if (!filePath.includes('/_default')) {
-    return false
-  }
-  assertUsage(
-    filePath.includes('_default.page.client.') || filePath.includes('_default.page.server.'),
-    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
-  )
-  return true
-}
-
-async function resolveRouteFunction(
-  pageRouteFileExports: { default: Function; iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean },
-  urlPathname: string,
-  pageContext: Record<string, unknown>,
-  pageRouteFilePath: string
-): Promise<
-  | { hookError: unknown; hookName: string; hookFilePath: string }
-  | null
-  | {
-      precedence: number | null
-      routeParams: Record<string, string>
-    }
-> {
-  const hookFilePath = pageRouteFilePath
-  const hookName = 'route()'
-
-  let result: unknown
-  try {
-    result = pageRouteFileExports.default({ url: urlPathname, pageContext })
-  } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
-  }
-  assertUsage(
-    !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
-    `The Route Function ${pageRouteFilePath} returned a promise. Async Route Functions may significantly slow down your app: every time a page is rendered the Route Functions of *all* your pages are called and awaited for. A slow Route Function will slow down all your pages. If you still want to define an async Route Function then \`export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true\` in \`${pageRouteFilePath}\`.`
-  )
-  try {
-    result = await result
-  } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
-  }
-  if (result === false) {
-    return null
-  }
-  if (result === true) {
-    result = {}
-  }
-  assertUsage(
-    isPlainObject(result),
-    `The Route Function ${pageRouteFilePath} should return a boolean or a plain JavaScript object, instead it returns \`${
-      hasProp(result, 'constructor') ? result.constructor : result
-    }\`.`
-  )
-  let precedence = null
-  if (hasProp(result, 'precedence')) {
-    precedence = result.precedence
-    assertUsage(
-      typeof precedence === 'number',
-      `The \`precedence\` value returned by the Route Function ${pageRouteFilePath} should be a number.`
-    )
-  }
-  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
-  const routeParams: Record<string, string> = result.routeParams || {}
-  Object.keys(result).forEach((key) => {
-    assertUsage(
-      key === 'match' || key === 'routeParams',
-      `The Route Function ${pageRouteFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams'].`
-    )
-  })
-  assert(isPlainObject(routeParams))
-  return {
-    precedence: null,
-    routeParams
-  }
-}
-
-function assertRouteParams<T>(
-  result: T,
-  errPrefix: string
-): asserts result is T & { routeParams?: Record<string, string> } {
-  assert(errPrefix.endsWith(' should'))
-  if (!hasProp(result, 'routeParams')) {
-    return
-  }
-  assertUsage(isPlainObject(result.routeParams), `${errPrefix} be a plain JavaScript object.`)
-  assertUsage(
-    Object.values(result.routeParams).every((val) => typeof val === 'string'),
-    `${errPrefix} only hold string values.`
-  )
-}
-
-type RouteValue = string | Function
-
-type PageRoutes = {
-  pageId: string
-  pageRouteFile?: {
-    filePath: string
-    fileExports: PageRouteExports
-    routeValue: RouteValue
-  }
-  filesystemRoute: string
-}[]
-
-type OnBeforeRouteHook = {
-  filePath: string
-  onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
-}
-
-type PageRouteExports = {
-  default: RouteValue
-  iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean
-} & Record<string, unknown>
-async function loadPageRoutes(globalContext: {
-  _allPageFiles: AllPageFiles
-  _allPageIds: string[]
-}): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
-  let onBeforeRouteHook: null | OnBeforeRouteHook = null
-  const filesystemRoots: { rootPath: string; rootValue: string }[] = []
-  const defaultPageRouteFiles = findDefaultFiles(globalContext._allPageFiles['.page.route'])
-  await Promise.all(
-    defaultPageRouteFiles.map(async ({ filePath, loadFile }) => {
-      const fileExports = await loadFile()
-      assertExportsOfDefaulteRoutePage(fileExports, filePath)
-      if ('onBeforeRoute' in fileExports) {
-        assertUsage(
-          hasProp(fileExports, 'onBeforeRoute', 'function'),
-          `The \`onBeforeRoute\` export of \`${filePath}\` should be a function.`
-        )
-        const { onBeforeRoute } = fileExports
-        onBeforeRouteHook = { filePath, onBeforeRoute }
-      }
-      if ('filesystemRoutingRoot' in fileExports) {
-        assertUsage(
-          hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
-          `The \`filesystemRoutingRoot\` export of \`${filePath}\` should be a string.`
-        )
-        filesystemRoots.push({
-          rootPath: dirname(filePath),
-          rootValue: fileExports.filesystemRoutingRoot
-        })
-      }
-    })
-  )
-
-  const allPageIds = globalContext._allPageIds
-  const pageRoutes: PageRoutes = []
-  await Promise.all(
-    allPageIds
-      .filter((pageId) => !isErrorPage(pageId))
-      .map(async (pageId) => {
-        const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots)
-        assert(filesystemRoute.startsWith('/'))
-        assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
-        const pageRoute = {
-          pageId,
-          filesystemRoute
-        }
-
-        const pageRouteFile = findPageFile(globalContext._allPageFiles['.page.route'], pageId)
-        if (pageRouteFile) {
-          const { filePath, loadFile } = pageRouteFile
-          const fileExports = await loadFile()
-          assertExportsOfRoutePage(fileExports, filePath)
-          assertUsage('default' in fileExports, `${filePath} should have a default export.`)
-          assertUsage(
-            hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
-            `The default export of ${filePath} should be a string or a function.`
-          )
-          assertUsage(
-            !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
-              hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
-            `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`
-          )
-          const routeValue: RouteValue = fileExports.default
-          objectAssign(pageRoute, {
-            pageRouteFile: { filePath, fileExports, routeValue }
-          })
-          pageRoutes.push(pageRoute)
-        } else {
-          pageRoutes.push(pageRoute)
-        }
-      })
-  )
-
-  return { pageRoutes, onBeforeRouteHook }
-}
 
 function isReservedPageId(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_')
-}
-function isErrorPage(pageId: string): boolean {
-  assert(!pageId.includes('\\'))
-  return pageId.includes('/_error')
-}
-
-function dirname(filePath: string): string {
-  assert(filePath.startsWith('/'))
-  assert(!filePath.endsWith('/'))
-  const paths = filePath.split('/')
-  const dirPath = slice(paths, 0, -1).join('/')
-  assert(dirPath.startsWith('/'))
-  assert(!dirPath.endsWith('/') || dirPath === '/')
-  return dirPath
-}
-
-function assertExportsOfRoutePage(fileExports: Record<string, unknown>, filePath: string) {
-  assertExports(fileExports, filePath, ['default', 'iKnowThePerformanceRisksOfAsyncRouteFunctions'])
-}
-function assertExportsOfDefaulteRoutePage(fileExports: Record<string, unknown>, filePath: string) {
-  assertExports(fileExports, filePath, ['onBeforeRoute', 'filesystemRoutingRoot'], {
-    ['_onBeforeRoute']: 'onBeforeRoute'
-  })
 }
