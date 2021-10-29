@@ -5,12 +5,12 @@ const fs = require('fs')
 const path = require('path')
 const argv = require('minimist')(process.argv.slice(2))
 const { prompt } = require('enquirer')
-const { green, cyan, stripColors, bold } = require('kolorist')
+const { green, cyan, yellow, stripColors, bold } = require('kolorist')
 const { execSync } = require('child_process')
 
 const cwd = process.cwd()
 
-const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts')]
+const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts'), yellow('preact'), yellow('preact-ts')]
 
 const ignoreFiles = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
 
