@@ -3,7 +3,6 @@ import type { AllPageFiles, PageFile } from './getPageFiles'
 import {
   assert,
   assertUsage,
-  higherFirst,
   slice,
   hasProp,
   isPlainObject,
