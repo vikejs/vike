@@ -86,8 +86,11 @@ function findRoute(url: string, routes: string[]): string | null {
   const candidates = routes
     .map((routeString) => {
       const result = resolveRouteString(routeString, url)
+      if (result === null) {
+        return null
+      }
       return { ...result, routeString, routeType: 'STRING' as const }
     })
-    .filter(({ isMatch }) => isMatch)
+    .filter((match) => match)
   return pickWinner(candidates)?.routeString || null
 }
