@@ -1,10 +1,10 @@
-import { getPage } from 'vite-plugin-ssr/client'
-import { createApp } from './app'
+import { getPage } from "vite-plugin-ssr/client";
+import { createApp } from "./app";
 
-hydrate()
+hydrate();
 
 async function hydrate() {
-  const pageContext = await getPage()
-  const app = createApp(pageContext)
-  app.mount('#app')
+  const pageContext = await getPage();
+  const app = createApp(pageContext);
+  app.mount("#app");
 }

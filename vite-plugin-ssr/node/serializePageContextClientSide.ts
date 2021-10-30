@@ -6,9 +6,7 @@ export { serializePageContextClientSide }
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
 
-function serializePageContextClientSide(
-  pageContext: { _pageId: string; _passToClient: string[] }
-) {
+function serializePageContextClientSide(pageContext: { _pageId: string; _passToClient: string[] }) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
   pageContext._passToClient.forEach((prop) => {
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]

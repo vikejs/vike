@@ -16,10 +16,7 @@ cli
     '--root <path>',
     '[string] The root directory of your project (where `vite.config.js` live) (default: `process.cwd()`)'
   )
-  .option(
-    '--outDir <path>',
-    '[string] The build directory of your project (default: `dist`)'
-  )
+  .option('--outDir <path>', '[string] The build directory of your project (default: `dist`)')
   .option('--client-router', 'Serialize `pageContext` to JSON files for Client Routing')
   .option('--base <path>', '[string] Public base path (default: /)')
   .option(

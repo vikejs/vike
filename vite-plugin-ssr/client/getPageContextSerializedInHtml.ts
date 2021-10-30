@@ -9,7 +9,7 @@ function getPageContextSerializedInHtml(): {
   _pageContextRetrievedFromServer: Record<string, unknown>
   _comesDirectlyFromServer: true
 } & Record<string, unknown> {
-  const pageContextJson = document.getElementById("vite-plugin-ssr_pageContext")?.textContent
+  const pageContextJson = document.getElementById('vite-plugin-ssr_pageContext')?.textContent
   assertUsage(
     pageContextJson,
     'Client-side `pageContext` missing. Make sure that `injectAssets()` is applied to the HTML, see https://vite-plugin-ssr.com/injectAssets'

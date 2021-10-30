@@ -7,8 +7,8 @@ function Integration({ toolTypeName }: { toolTypeName: string }) {
   return (
     <>
       <p>
-        In principle, we can use <code>vite-plugin-ssr</code> with any {toolTypeName}. However, if you are
-        having difficulties integrating {toolTypeName.startsWith('a') ? 'an' : 'a'} {toolTypeName}, feel free to{' '}
+        In principle, we can use <code>vite-plugin-ssr</code> with any {toolTypeName}. However, if you are having
+        difficulties integrating {toolTypeName.startsWith('a') ? 'an' : 'a'} {toolTypeName}, feel free to{' '}
         <a href="https://discord.com/invite/qTq92FQzKb">join and ask our Discord</a> or{' '}
         <a href="https://github.com/brillout/vite-plugin-ssr/issues/new">open a GitHub ticket</a>.
       </p>

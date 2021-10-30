@@ -37,7 +37,7 @@ function useClientRouter({
   render: (pageContext: any) => Promise<void> | void
   onTransitionStart: () => void
   onTransitionEnd: () => void
-  ensureHydration?: boolean,
+  ensureHydration?: boolean
   prefetchLinks?: boolean
 }): {
   hydrationPromise: Promise<void>

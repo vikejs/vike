@@ -77,7 +77,7 @@ function assert_pageAssets(pageAssets) {
     assert(isClientAsset(a3.src));
     assert(a3.assetType === "preload");
     assert(a3.mediaType === "text/javascript");
-    assert(a3.preloadType === 'script');
+    assert(a3.preloadType === "script");
     const a4 = pageAssets[3];
     assert(isClientAsset(a4.src));
     assert(a4.assetType === "script");

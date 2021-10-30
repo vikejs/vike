@@ -61,10 +61,7 @@ function assertArguments(
     root === undefined || typeof root === 'string',
     '`createPageRenderer({ root })`: argument `root` should be a string.'
   )
-  assertUsage(
-    typeof outDir === 'string',
-    '`createPageRenderer({ outDir })`: argument `outDir` should be a string.'
-  )
+  assertUsage(typeof outDir === 'string', '`createPageRenderer({ outDir })`: argument `outDir` should be a string.')
   assertUsage(
     typeof baseUrl === 'string',
     '`createPageRenderer({ base })`: argument `base` should be a string or `undefined`.'

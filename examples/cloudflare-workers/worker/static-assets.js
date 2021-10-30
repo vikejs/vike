@@ -2,9 +2,7 @@
 // This code was provided by Cloudflare Workers
 // ********************************************
 
-import {
-  getAssetFromKV,
-} from "@cloudflare/kv-asset-handler";
+import { getAssetFromKV } from "@cloudflare/kv-asset-handler";
 
 export { handleStaticAssets };
 

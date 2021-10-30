@@ -3,7 +3,7 @@
 const express = require("express");
 const { createPageRenderer } = require("vite-plugin-ssr");
 const vite = require("vite");
-const fetch = require("cross-fetch")
+const fetch = require("cross-fetch");
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;
@@ -29,7 +29,7 @@ async function startServer() {
     const url = req.originalUrl;
     const pageContextInit = {
       url,
-      fetch
+      fetch,
     };
     const pageContext = await renderPage(pageContextInit);
     const { httpResponse } = pageContext;

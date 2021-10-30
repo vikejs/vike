@@ -119,7 +119,9 @@ async function prerender({
 
   console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
 
-  await Promise.all(htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit)))
+  await Promise.all(
+    htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit))
+  )
 
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
 }
@@ -457,7 +459,10 @@ function normalizePrerenderResult(
   }
 }
 
-function getPluginManifest(root: string, outDir: string): {
+function getPluginManifest(
+  root: string,
+  outDir: string
+): {
   version: string
   base: string
   usesClientRouter: boolean
