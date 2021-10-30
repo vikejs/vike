@@ -72,7 +72,10 @@ type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
   pageContextInit: PageContextInit
-): Promise<PageContextInit & (({ httpResponse: HttpResponse } & PageContextAdded) | { httpResponse: null })> {
+): Promise<
+  PageContextInit &
+    (({ httpResponse: HttpResponse } & PageContextAdded) | ({ httpResponse: null } & Partial<PageContextAdded>))
+> {
   assertArguments(...arguments)
 
   const pageContext = initializePageContext(pageContextInit)
