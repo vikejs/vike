@@ -6,6 +6,11 @@ function runTests(
   cmd: "npm run dev" | "npm run prod" | "npm run dev:miniflare",
   { hasStarWarsPage }: { hasStarWarsPage: boolean }
 ) {
+  if (isWindows()) {
+    test("SKIPED: Cloudflare Workers test don't work in Windows", () => {});
+    return;
+  }
+
   run(cmd);
 
   test("page content is rendered to HTML", async () => {
@@ -37,4 +42,8 @@ function runTests(
       expect(await page.textContent("body")).toContain("The Phantom Menace");
     });
   }
+}
+
+function isWindows() {
+  return process.platform === "win32";
 }
