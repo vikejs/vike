@@ -1,2 +1,2 @@
 import { runTests } from "./.runTests";
-runTests("npm run dev:miniflare");
+runTests("npm run dev:miniflare", { hasStarWarsPage: true });

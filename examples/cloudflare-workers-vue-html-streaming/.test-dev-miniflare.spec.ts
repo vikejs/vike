@@ -1,2 +1,2 @@
-import { runTests } from "./.runTests";
-runTests("npm run dev:miniflare");
+import { runTests } from "../cloudflare-workers/.runTests";
+runTests("npm run dev:miniflare", { hasStarWarsPage: false });
