@@ -6,8 +6,8 @@ function runTests(
   cmd: "npm run dev" | "npm run prod" | "npm run dev:miniflare",
   { hasStarWarsPage }: { hasStarWarsPage: boolean }
 ) {
-  if (isWindows()) {
-    test("SKIPED: Cloudflare Workers test don't work in Windows", () => {});
+  if (isWindows() && cmd === "npm run dev:miniflare") {
+    test("SKIPED: miniflare doesn't work with Windows", () => {});
     return;
   }
 
