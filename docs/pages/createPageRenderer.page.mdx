@@ -39,7 +39,8 @@ async function startServer() {
     const pageContextInit = { url }
     const pageContext = await renderPage(pageContextInit)
     if (!pageContext.httpResponse) return next()
-    res.status(pageContext.httpResponse.statusCode).send(pageContext.httpResponse.body)
+    const { body, statusCode, contentType } = httpResponse
+    res.status(statusCode).type(contentType).send(body)
   })
 
   const port = 3000
@@ -55,6 +56,7 @@ async function startServer() {
 - `base` is the [Base URL](/base-url).
 - `pageContext.httpResponse` is `null` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
 - `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
+- `pageContext.httpResponse.contentType` is either `text/html` or `application/json`. (The Content Type is `application/json` when [Client Routing](/useClientRouter) fetches the `pageContext` of the newly navigated page.)
 - `pageContext.httpResponse.body` is the HTML-sanitized string returned by the `render()` hook with added assets that `vite-plugin-ssr` automatically injected.
 
 Since `createPageRenderer()` and `renderPage()` are agnostic to Express.js, we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment such as Cloudflare Workers or Vercel.

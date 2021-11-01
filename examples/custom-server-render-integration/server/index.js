@@ -39,8 +39,8 @@ async function startServer() {
     console.log("Page Assets:", pageAssets);
     assert_pageAssets(pageAssets);
 
-    const { statusCode, body } = httpResponse;
-    res.status(statusCode).send(body);
+    const { body, statusCode, contentType } = httpResponse;
+    res.status(statusCode).type(contentType).send(body);
   });
 
   const port = 3000;

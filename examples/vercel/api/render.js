@@ -12,7 +12,7 @@ export default async (req, res) => {
   if (!httpResponse) {
     res.status(200).send('')
   } else {
-    const { body, statusCode } = httpResponse
-    res.status(statusCode).setHeader('content-type', 'text/html').send(body)
+    const { body, statusCode, contentType } = httpResponse
+    res.status(statusCode).setHeader('content-type', contentType).send(body)
   }
 }

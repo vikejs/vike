@@ -31,8 +31,8 @@ app.get('*', async (req, res, next) => {
   } else if (!pageContext.httpResponse) {
     return next()
   } else {
-    const { statusCode, body } = pageContext.httpResponse
-    res.status(statusCode).send(body)
+    const { body, statusCode, contentType } = httpResponse
+    res.status(statusCode).type(contentType).send(body)
   }
 })
 ```
