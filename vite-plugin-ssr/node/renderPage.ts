@@ -120,7 +120,8 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
           {
             statusCode: 200,
             renderFilePath: null
-          }
+          },
+          pageContext
         )
         objectAssign(pageContext, { httpResponse })
         return pageContext
@@ -148,7 +149,11 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 
   if (pageContext._isPageContextRequest) {
     const pageContextSerialized = serializePageContextClientSide(pageContext)
-    const httpResponse = createHttpResponseObject(pageContextSerialized, { statusCode: 200, renderFilePath: null })
+    const httpResponse = createHttpResponseObject(
+      pageContextSerialized,
+      { statusCode: 200, renderFilePath: null },
+      pageContext
+    )
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -167,7 +172,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     return pageContext
   } else {
     const { htmlRender, renderFilePath } = renderHookResult
-    const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath })
+    const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath }, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -241,7 +246,7 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     const body = stringify({
       serverSideError: true
     })
-    const httpResponse = createHttpResponseObject(body, { statusCode: 500, renderFilePath: null })
+    const httpResponse = createHttpResponseObject(body, { statusCode: 500, renderFilePath: null }, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -282,13 +287,16 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   }
 
   const { htmlRender, renderFilePath } = renderHookResult
-  const httpResponse = createHttpResponseObject(htmlRender, { statusCode: 500, renderFilePath })
+  const httpResponse = createHttpResponseObject(htmlRender, { statusCode: 500, renderFilePath }, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
 
+type StatusCode = 200 | 404 | 500
+type ContentType = 'application/json' | 'text/html'
 type HttpResponse = {
-  statusCode: 200 | 404 | 500
+  statusCode: StatusCode
+  contentType: ContentType
   body: string
   getBody: () => Promise<string>
   bodyNodeStream: StreamReadableNode
@@ -298,14 +306,18 @@ type HttpResponse = {
 }
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
-  { statusCode, renderFilePath }: { statusCode: 200 | 404 | 500; renderFilePath: null | string }
+  { statusCode, renderFilePath }: { statusCode: StatusCode; renderFilePath: null | string },
+  pageContext: { _isPageContextRequest: boolean }
 ): HttpResponse | null {
   if (htmlRender === null) {
     return null
   }
 
+  assert(!pageContext._isPageContextRequest || typeof htmlRender === 'string')
+
   return {
     statusCode,
+    contentType: pageContext._isPageContextRequest ? 'text/html' : 'application/json',
     get body() {
       if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
