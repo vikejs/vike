@@ -6,10 +6,9 @@ function runTests(
   cmd: "npm run dev" | "npm run prod" | "npm run dev:miniflare",
   { hasStarWarsPage }: { hasStarWarsPage: boolean }
 ) {
-  const isCloudflareWorker =
-    cmd === "npm run dev:miniflare" || cmd === "npm run prod";
+  const isWorker = cmd === "npm run dev:miniflare" || cmd === "npm run prod";
 
-  if (isWindows() && isCloudflareWorker) {
+  if (isWindows() && isWorker) {
     test("SKIPED: miniflare and wrangler don't work on Windows", () => {});
     return;
   }
@@ -22,7 +21,7 @@ function runTests(
     });
   }
 
-  run(cmd, { additionalTimeout: isCloudflareWorker ? 30 * 1000 : 0 });
+  run(cmd, { additionalTimeout: isWorker ? 30 * 1000 : 0 });
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml("/");

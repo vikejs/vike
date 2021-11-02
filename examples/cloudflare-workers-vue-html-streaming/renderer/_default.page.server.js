@@ -13,7 +13,7 @@ async function render(pageContext) {
   const app = createApp(pageContext);
 
   // While developing, we use Express.js instead of Cloudflare Workers.
-  const pipe = isCloudflareWorker()
+  const pipe = isWorker()
     ? pipeWebStream((writable) => {
         pipeToWebWritable(app, {}, writable);
       })
@@ -30,7 +30,7 @@ async function render(pageContext) {
       </body>
     </html>`;
 }
-function isCloudflareWorker() {
+function isWorker() {
   return (
     // `IS_CLOUDFLARE_WORKER` is set by `webpack.config.js`
     typeof IS_CLOUDFLARE_WORKER !== "undefined" && IS_CLOUDFLARE_WORKER === true
