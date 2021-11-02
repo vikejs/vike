@@ -317,7 +317,7 @@ function createHttpResponseObject(
 
   return {
     statusCode,
-    contentType: pageContext._isPageContextRequest ? 'text/html' : 'application/json',
+    contentType: pageContext._isPageContextRequest ? 'application/json' : 'text/html',
     get body() {
       if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
