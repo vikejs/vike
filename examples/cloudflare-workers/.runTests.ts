@@ -22,7 +22,7 @@ function runTests(
     });
   }
 
-  run(cmd, { additionalTimeout: 30 * 1000 });
+  run(cmd, { additionalTimeout: isCloudflareWorker ? 30 * 1000 : 0 });
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml("/");
