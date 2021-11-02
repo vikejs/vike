@@ -20,10 +20,10 @@ See examples.
 ## Bundling
 
 By default, we recommend using Cloudflare Workers's webpack bundler because it's the beaten path;
-using another bundler may cause subtle differences that may cause problems with Cloudflare Workers.
+using another bundler may cause subtle differences that may cause problems.
 
 That said, we can use any other bundler (esbuild, rollup, ...) to bundle our worker code;
-we just need to make sure to `import './path/to/dist/server/importBuild.js'` ([`importBuild.js`](#importbuild-js) works with any bundler).
+we just need to make sure to `import 'dist/server/importBuild.js'` ([`importBuild.js`](#importbuild-js) works with any bundler).
 
 ## Universal `fetch()`
 
