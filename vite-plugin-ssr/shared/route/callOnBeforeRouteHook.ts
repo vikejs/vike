@@ -1,3 +1,4 @@
+import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import { assertUsage, hasProp, isObjectWithKeys } from '../utils'
 import { PageRoutes } from './loadPageRoutes'
 import { assertRouteParams } from './resolveRouteFunction'
@@ -18,17 +19,24 @@ async function callOnBeforeRouteHook(pageContext: {
 }): Promise<
   | {}
   | { hookError: unknown; hookFilePath: string; hookName: string }
-  | { pageContextAddendum: Record<string, unknown> & { _pageId?: string | null; routeParams?: Record<string, string> } }
+  | {
+      pageContextProvidedByUser: Record<string, unknown> & {
+        _pageId?: string | null
+        routeParams?: Record<string, string>
+      }
+    }
 > {
   if (!pageContext._onBeforeRouteHook) {
     return {}
   }
+
+  const hookFilePath = pageContext._onBeforeRouteHook.filePath
+  const hookName = 'onBeforeRoute'
+
   let result: unknown
   try {
     result = await pageContext._onBeforeRouteHook.onBeforeRoute(pageContext)
   } catch (hookError) {
-    const hookFilePath = pageContext._onBeforeRouteHook.filePath
-    const hookName = 'onBeforeRoute()'
     return { hookError, hookName, hookFilePath }
   }
 
@@ -65,7 +73,7 @@ async function callOnBeforeRouteHook(pageContext: {
     )
   }
 
-  const pageContextAddendum = result.pageContext
-
-  return { pageContextAddendum }
+  const pageContextProvidedByUser = result.pageContext
+  assertPageContextProvidedByUser(pageContextProvidedByUser, { hookFilePath, hookName })
+  return { pageContextProvidedByUser }
 }

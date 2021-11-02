@@ -40,8 +40,8 @@ async function route(
   if ('hookError' in hookResult) {
     return hookResult
   }
-  if ('pageContextAddendum' in hookResult) {
-    objectAssign(pageContextAddendum, hookResult.pageContextAddendum)
+  if ('pageContextProvidedByUser' in hookResult) {
+    objectAssign(pageContextAddendum, hookResult.pageContextProvidedByUser)
     if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
       // We bypass `vite-plugin-ssr`'s routing
       if (!hasProp(pageContextAddendum, 'routeParams')) {

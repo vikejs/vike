@@ -56,6 +56,7 @@ import {
 import { serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps } from '../shared/addComputedurlProps'
 import { determinePageIds } from '../shared/determinePageIds'
+import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
@@ -786,19 +787,23 @@ async function executeRenderHook(
 
   preparePageContextNode(pageContext)
 
+  const hookName = 'render'
+
   let result: unknown
   try {
     // We use a try-catch because the `render()` hook is user-defined and may throw an error.
     result = await render(pageContext)
   } catch (hookError) {
-    return { hookError, hookName: 'render', hookFilePath: renderFilePath }
+    return { hookError, hookName, hookFilePath: renderFilePath }
   }
   if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
+    assertHookResult(result, hookName, ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
 
   if (hasProp(result, 'pageContext')) {
-    Object.assign(pageContext, result.pageContext)
+    const pageContextProvidedByUser = result.pageContext
+    assertPageContextProvidedByUser(pageContextProvidedByUser, { hookFilePath: renderFilePath, hookName })
+    Object.assign(pageContext, pageContextProvidedByUser)
   }
 
   const errPrefix = 'The `render()` hook exported by ' + renderFilePath
@@ -864,7 +869,7 @@ async function executeRenderHook(
   }
   const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   if (hasProp(htmlRender, 'hookError')) {
-    return { hookError: htmlRender.hookError, hookName: 'render', hookFilePath: renderFilePath }
+    return { hookError: htmlRender.hookError, hookName, hookFilePath: renderFilePath }
   }
   return { htmlRender, renderFilePath }
 }

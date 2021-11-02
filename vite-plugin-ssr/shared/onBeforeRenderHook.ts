@@ -1,4 +1,5 @@
-import { isObject, assert, assertUsage, hasProp, isCallable } from './utils'
+import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser'
+import { assert, assertUsage, hasProp, isCallable } from './utils'
 
 export { getOnBeforeRenderHook }
 export { runOnBeforeRenderHooks }
@@ -39,11 +40,12 @@ function getOnBeforeRenderHook(
         return { pageContext: {} }
       }
       assertUsage(
-        hasProp(hookReturn, 'pageContext', 'object'),
+        hasProp(hookReturn, 'pageContext'),
         `The \`onBeforeRender()\` hook exported by ${filePath} should return \`undefined\`, \`null\`, or \`{ pageContext: { /*...*/ }}\` (a JavaScript object with a single key \`pageContext\`).`
       )
-      const pageContextAddendum = hookReturn.pageContext
-      return { pageContext: pageContextAddendum }
+      const pageContextProvidedByUser = hookReturn.pageContext
+      assertPageContextProvidedByUser(pageContextProvidedByUser, { hookName: 'onBeforeRender', hookFilePath: filePath })
+      return { pageContext: pageContextProvidedByUser }
     }
   }
   return onBeforeRenderHook
@@ -71,7 +73,6 @@ async function runOnBeforeRenderHooks(
       runOnBeforeRenderPageHook,
       skipOnBeforeRenderPageHook
     })
-    assert(isObject(hookReturn.pageContext))
     Object.assign(pageContextAddendum, hookReturn.pageContext)
     if (pageFile?.onBeforeRenderHook) {
       assertUsage(
@@ -87,7 +88,6 @@ async function runOnBeforeRenderHooks(
   } else {
     if (pageFile?.onBeforeRenderHook) {
       const hookReturn = await runOnBeforeRenderPageHook(pageContext)
-      assert(isObject(hookReturn.pageContext))
       Object.assign(pageContextAddendum, hookReturn.pageContext)
     }
   }
@@ -121,10 +121,8 @@ async function runOnBeforeRenderHooks(
     if (!pageFile?.onBeforeRenderHook) {
       return { pageContext: {} }
     }
-    const { onBeforeRenderHook } = pageFile
-    const hookResult = await onBeforeRenderHook.callHook(pageContextProvided || pageContext)
-    assert('pageContext' in hookResult)
-    return hookResult
+    const hookReturn = await pageFile.onBeforeRenderHook.callHook(pageContextProvided || pageContext)
+    return hookReturn
   }
 }
 
