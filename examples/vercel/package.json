@@ -14,7 +14,7 @@
     "esbuild": "^0.12.15",
     "express": "^4.17.1",
     "vite": "^2.3.6",
-    "vite-plugin-ssr": "0.3.20",
+    "vite-plugin-ssr": "0.3.21",
     "vue": "^3.0.11"
   },
   "// Needed for Yarn workspaces": "",
