@@ -10,6 +10,7 @@ type MediaType = null | {
     | 'text/css'
     | 'image/jpeg'
     | 'image/png'
+    | 'image/webp'
     | 'image/gif'
     | 'image/svg+xml'
     | 'font/ttf'
@@ -31,6 +32,9 @@ function inferMediaType(href: string): MediaType {
   // Images
   if (href.endsWith('.png')) {
     return { preloadType: 'image', mediaType: 'image/png' }
+  }
+  if (href.endsWith('.webp')) {
+    return { preloadType: 'image', mediaType: 'image/webp' }
   }
   if (href.endsWith('.jpg') || href.endsWith('.jpeg')) {
     return { preloadType: 'image', mediaType: 'image/jpeg' }
