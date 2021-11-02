@@ -6,13 +6,14 @@ function runTests(
   cmd: "npm run dev" | "npm run prod" | "npm run dev:miniflare",
   { hasStarWarsPage }: { hasStarWarsPage: boolean }
 ) {
-  if (
-    isWindows() &&
-    (cmd === "npm run dev:miniflare" || cmd === "npm run prod")
-  ) {
-    test("SKIPED: miniflare/wrangler doesn't work with Windows", () => {});
+  const isCloudflareWorker =
+    cmd === "npm run dev:miniflare" || cmd === "npm run prod";
+
+  if (isWindows() && isCloudflareWorker) {
+    test("SKIPED: miniflare and wrangler don't work on Windows", () => {});
     return;
   }
+
   if (cmd === "npm run prod") {
     test("API keys", () => {
       const envVars = Object.keys(process.env);
@@ -21,7 +22,7 @@ function runTests(
     });
   }
 
-  run(cmd);
+  run(cmd, { additionalTimeout: 30 * 1000 });
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml("/");
