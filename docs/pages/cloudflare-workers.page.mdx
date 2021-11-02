@@ -19,12 +19,11 @@ See examples.
 
 ## Universal `fetch()`
 
-When using Node.js for dev and Cloudflare Workers for production, we then may need a `fetch()` function that works in both environments.
+When using Node.js for dev and Cloudflare Workers for production, we may need a `fetch()` function that works in both environments.
 
 But libraries such as `node-fetch` or `cross-fetch` usually don't work with Cloudflare Workers.
 
-What we can do is to define a `pageContext.fetch` which works in both environments.
-The trick is to add `fetch()` to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer) of both the Node.js dev server and the worker.
+What we can do is to define a fetch function at `pageContext.fetch` that works in all environments.
+The trick is to add a different `fetch()` implementation to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer).
 
-Example:
- - <RepoLink path='/examples/cloudflare-workers#universal-fetch' />
+See example at <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.

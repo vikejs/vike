@@ -43,9 +43,9 @@ Note how we load [`dist/server/importBuild.js`](https://vite-plugin-ssr.com/impo
 
 ## Universal `fetch()`
 
-Note how we define `pageContext.fetch` which works in both the dev Node.js server as well as the production worker on Cloudflare Workers.
+Note how we define a fetch function at `pageContext.fetch` which works in both the dev Node.js server as well as in the production worker.
 
-The trick is to add `fetch()` to `pageContextInit` in both [worker/ssr.js](worker/ssr.js) and [dev-server/index.js](dev-server/index.js).
+The trick is to add a different `fetch()` implementation to `pageContextInit` in [worker/ssr.js](worker/ssr.js) and [dev-server/index.js](dev-server/index.js).
 
 ## Link
 
