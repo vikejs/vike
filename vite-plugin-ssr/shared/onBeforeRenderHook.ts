@@ -51,6 +51,7 @@ function getOnBeforeRenderHook(
 
 async function runOnBeforeRenderHooks(
   pageFile: null | {
+    filePath: string
     onBeforeRenderHook: null | OnBeforeRenderHook
     fileExports: { skipOnBeforeRenderDefaultHook?: boolean }
   },
@@ -72,15 +73,17 @@ async function runOnBeforeRenderHooks(
     })
     assert(isObject(hookReturn.pageContext))
     Object.assign(pageContextAddendum, hookReturn.pageContext)
-    assertUsage(
-      !pageFile?.onBeforeRenderHook || pageHookWasCalled || skipHook,
-      [
-        `The page \`${pageContext._pageId}\` has a \`onBeforeRender()\` hook defined in ${pageFile} as well as in ${defaultFile}.`,
-        `Either \`export const skipOnBeforeRenderDefaultHook = true\` in ${pageFile}, or`,
-        'call `pageContext.skipOnBeforeRenderPageHook()` or `pageContext.runOnBeforeRenderPageHook(pageContext)`',
-        `in the \`onBeforeRender()\` hook defined in ${defaultFile} — see https://vite-plugin-ssr.com/onBeforeRender-multiple`
-      ].join(' ')
-    )
+    if (pageFile?.onBeforeRenderHook) {
+      assertUsage(
+        pageHookWasCalled || skipHook,
+        [
+          `The page \`${pageContext._pageId}\` has a \`onBeforeRender()\` hook defined in ${pageFile.filePath} as well as in ${defaultFile.filePath}.`,
+          `Either \`export const skipOnBeforeRenderDefaultHook = true\` in ${pageFile.filePath}, or`,
+          'call `pageContext.skipOnBeforeRenderPageHook()` or `pageContext.runOnBeforeRenderPageHook(pageContext)`',
+          `in the \`onBeforeRender()\` hook defined in ${defaultFile.filePath} — see https://vite-plugin-ssr.com/onBeforeRender-multiple`
+        ].join(' ')
+      )
+    }
   } else {
     if (pageFile?.onBeforeRenderHook) {
       const hookReturn = await runOnBeforeRenderPageHook(pageContext)

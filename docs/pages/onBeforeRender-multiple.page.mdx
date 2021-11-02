@@ -3,13 +3,13 @@ export const pageTitle = <>Multiple <code>onBeforeRender()</code> hooks</>
 
 > Support for multiple `onBeforeRender()` hooks is a beta feature; breaking changes may be introduced in minor version updates.
 
-When a page `some.page.js` is rendered, up to four different `onBeforeRender()` hooks can be called:
- - `export { onBeforeRender }` of `_default.page.js`
- - `export { onBeforeRender }` of `_default.page.server.js`
- - `export { onBeforeRender }` of `some.page.js`
- - `export { onBeforeRender }` of `some.page.server.js`
+For a page `some.page.js`, up to four different `onBeforeRender()` hooks can be defined:
+ - `export { onBeforeRender }` in `_default.page.js`
+ - `export { onBeforeRender }` in `_default.page.server.js`
+ - `export { onBeforeRender }` in `some.page.js`
+ - `export { onBeforeRender }` in `some.page.server.js`
 
-We have full control over the execution flow.
+We have full control over the order in which multiple `onBeforeRender()` hooks are executed.
 
 ## Server Hooks
 
