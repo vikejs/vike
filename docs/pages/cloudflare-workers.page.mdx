@@ -17,6 +17,14 @@ We recommend using Vite with an Express.js dev server for lightning fast HMR & d
 and for production to bundle the worker code with Cloudflare Workers's webpack bundler.
 See examples.
 
+## Bundling
+
+By default, we recommend using Cloudflare Workers's webpack bundler because it's the beaten path;
+using another bundler may cause subtle differences that may cause problems with Cloudflare Workers.
+
+That said, we can use any other bundler (esbuild, rollup, ...) to bundle our worker code;
+we just need to make sure to `import './path/to/dist/server/importBuild.js'` ([`importBuild.js`](#importbuild-js) works with any bundler).
+
 ## Universal `fetch()`
 
 When using Node.js for dev and Cloudflare Workers for production, we may need a `fetch()` function that works in both environments.
