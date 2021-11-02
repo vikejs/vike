@@ -13,7 +13,7 @@
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "vite": "^2.6.7",
-    "vite-plugin-ssr": "0.3.21",
+    "vite-plugin-ssr": "0.3.22",
     "vue": "^3.2.20"
   },
   "// Needed for Yarn workspaces": "",
