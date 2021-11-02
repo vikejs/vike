@@ -1,15 +1,22 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 We can use any routing library, such as Vue Router or React Router.
+
+Shallow integration (React/Vue Router supersedes `vite-plugin-ssr`'s built-in router):
  - <RepoLink path='/examples/vue-router/' />
  - <RepoLink path='/examples/react-router/' />
 
-That said,
-we recommend using `vite-plugin-ssr`'s built-in router instead:
-it's simpler and enough for the vast majority of apps.
+Deep integration (React/Vue Router works hand-in-hand with `vite-plugin-ssr`'s built-in router):
+ - Vue Router: [work-in-progress](https://github.com/brillout/vite-plugin-ssr/issues/9#issuecomment-937477110).
+ - React Router: should be possible using the [`onBeforeRoute()` hook](/onBeforeRoute).
+
+That said, we recommend using `vite-plugin-ssr`'s built-in router: it's fundamentally simpler.
+
+> When doing SSR, there is no need for a sophisticated routing library such as React Router or Vue Router.
 
 Note that `vite-plugin-ssr`'s built-in router supports:
  - [Nested Routes](/nested-routes)
- - [Client Routing](/useClientRouter)
+ - [Client-side Routing](/useClientRouter)
 
-So chances are that we don't need Vue Router nor React Router.
+> `vite-plugin-ssr`'s built-in router has no known limitations:
+> so far, any app and any feature have been able to be built with it.
