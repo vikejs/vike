@@ -1,6 +1,11 @@
 ## [0.3.22](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.21...v0.3.22) (2021-11-02)
 
 
+### Bug Fixes
+
+* Add webp to inferred types ([#195](https://github.com/brillout/vite-plugin-ssr/pull/195))
+
+
 
 ## [0.3.21](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.20...v0.3.21) (2021-11-02)
 
