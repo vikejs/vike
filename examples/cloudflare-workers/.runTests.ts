@@ -6,8 +6,11 @@ function runTests(
   cmd: "npm run dev" | "npm run prod" | "npm run dev:miniflare",
   { hasStarWarsPage }: { hasStarWarsPage: boolean }
 ) {
-  if (isWindows() && cmd === "npm run dev:miniflare") {
-    test("SKIPED: miniflare doesn't work with Windows", () => {});
+  if (
+    isWindows() &&
+    (cmd === "npm run dev:miniflare" || cmd === "npm run prod")
+  ) {
+    test("SKIPED: miniflare/wrangler doesn't work with Windows", () => {});
     return;
   }
   if (cmd === "npm run prod") {
