@@ -10,6 +10,13 @@ function runTests(
     test("SKIPED: miniflare doesn't work with Windows", () => {});
     return;
   }
+  if (cmd === "npm run prod") {
+    test("API keys", () => {
+      const envVars = Object.keys(process.env);
+      expect(envVars).toContain("CF_ACCOUNT_ID");
+      expect(envVars).toContain("CF_API_TOKEN");
+    });
+  }
 
   run(cmd);
 
