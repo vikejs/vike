@@ -131,10 +131,19 @@ async function retrievePageContext(
     _serverFiles: ServerFiles
   } & PageContextForRoute
 ): Promise<Record<string, unknown>> {
-  const response = await fetch(getFileUrl(pageContext.url, '.pageContext.json', true))
+  const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
+  const response = await fetch(pageContextUrl)
 
   // Static hosts return a 404
   assert(response.status !== 404)
+
+  {
+    const contentType = response.headers.get('content-type')
+    assertUsage(
+      contentType && contentType.includes('application/json'),
+      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`
+    )
+  }
 
   const responseText = await response.text()
   const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
