@@ -4,7 +4,7 @@ import { projectInfo } from './projectInfo'
 export { assert }
 export { assertUsage }
 export { assertWarning }
-export { throwError }
+export { getPluginError }
 
 const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.version}]`
 const internalErrorPrefix = `${errorPrefix}[Internal Failure]`
@@ -38,9 +38,9 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   throw usageError
 }
 
-function throwError(errorMessage: string) {
-  const usageError = newError(`${errorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
-  throw usageError
+function getPluginError(errorMessage: string) {
+  const pluginError = newError(`${errorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
+  return pluginError
 }
 
 function assertWarning(condition: unknown, errorMessage: string): void {

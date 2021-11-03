@@ -8,23 +8,32 @@ import {
   isPlainObject,
   isObject,
   objectAssign,
-  throwError
+  getPluginError,
+  PromiseType
 } from '../../shared/utils'
 import { parse } from '@brillout/json-s'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedurlProps'
 import { ServerFiles } from './getGlobalContext'
-import { PageContextForRoute, route } from '../../shared/route'
+import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
 import { PageIsomorphicFile, PageIsomorphicFileDefault } from '../../shared/loadPageIsomorphicFiles'
 import { assertUsageServerHooksCalled, runOnBeforeRenderHooks } from '../../shared/onBeforeRenderHook'
 import { loadPageFiles } from '../loadPageFiles'
 import { releasePageContextInterim } from '../releasePageContext'
 import { PageContextBuiltInClient } from './types'
 
-type PageContextPublic = PageContextBuiltInClient
-
 export { getPageContext }
+
+type PageContextPublic = PageContextBuiltInClient
+type PageContextAddendum = {
+  _pageId: string
+  _pageContextRetrievedFromServer: null | Record<string, unknown>
+  isHydration: boolean
+  _comesDirectlyFromServer: boolean
+  Page: unknown
+  pageExports: Record<string, unknown>
+} & Record<string, unknown>
 
 async function getPageContext(
   pageContext: {
@@ -33,63 +42,87 @@ async function getPageContext(
     _isFirstRender: boolean
   } & PageContextUrls &
     PageContextForRoute
-): Promise<
-  {
-    _pageId: string
-    _pageContextRetrievedFromServer: null | Record<string, unknown>
-    isHydration: boolean
-    _comesDirectlyFromServer: boolean
-    Page: unknown
-    pageExports: Record<string, unknown>
-  } & Record<string, unknown>
-> {
+): Promise<PageContextAddendum> {
   if (pageContext._isFirstRender && navigationState.isOriginalUrl(pageContext.url)) {
-    const pageContextAddendum = getPageContextSerializedInHtml()
-
-    deleteRedundantPageContext(pageContextAddendum)
-
-    const pageFiles = await loadPageFiles({ ...pageContext, ...pageContextAddendum })
-    objectAssign(pageContextAddendum, pageFiles)
-
-    objectAssign(pageContextAddendum, {
-      isHydration: true,
-      _comesDirectlyFromServer: true
-    })
-
+    const pageContextAddendum = await loadPageContextSerializedInHtml()
     return pageContextAddendum
   }
 
-  const routeResult = await route(pageContext)
-  if ('hookError' in routeResult) {
-    throw routeResult.hookError
-  }
-  if (routeResult.pageContextAddendum._pageId === null) {
-    handle404()
-    assert(false)
-  }
-  assert(hasProp(routeResult.pageContextAddendum, '_pageId', 'string'))
+  const pageContextFromRoute = await getPageContextFromRoute(pageContext)
+  const pageContextAddendum = await loadPageContextAfterRoute(pageContext, pageContextFromRoute)
+  return pageContextAddendum
+}
 
+async function loadPageContextSerializedInHtml() {
+  const pageContextAddendum = getPageContextSerializedInHtml()
+
+  deleteRedundantPageContext(pageContextAddendum)
+
+  const pageFiles = await loadPageFiles({ _pageId: pageContextAddendum._pageId })
+  objectAssign(pageContextAddendum, pageFiles)
+
+  objectAssign(pageContextAddendum, {
+    isHydration: true,
+    _comesDirectlyFromServer: true
+  })
+
+  return pageContextAddendum
+}
+
+async function loadPageContextAfterRoute(
+  pageContext: { _serverFiles: ServerFiles } & PageContextForRoute & PageContextUrls,
+  pageContextFromRoute: { _pageId: string; routeParams: Record<string, string> }
+): Promise<PageContextAddendum> {
   const pageContextAddendum = {
     isHydration: false
   }
-  objectAssign(pageContextAddendum, routeResult.pageContextAddendum)
+  objectAssign(pageContextAddendum, pageContextFromRoute)
 
-  const pageFiles = await loadPageFiles({ ...pageContext, ...pageContextAddendum })
+  const pageFiles = await loadPageFiles({ _pageId: pageContextFromRoute._pageId })
   objectAssign(pageContextAddendum, pageFiles)
 
-  const pageContextFromServer = await executeOnBeforeRenderHooks({ ...pageContext, ...pageContextAddendum })
-  assert(
-    pageContextFromServer._pageContextRetrievedFromServer === null ||
-      isObject(pageContextFromServer._pageContextRetrievedFromServer)
-  )
-  assert([true, false].includes(pageContextFromServer._comesDirectlyFromServer))
-  objectAssign(pageContextAddendum, pageContextFromServer)
-  return pageContextAddendum
-
-  function handle404() {
-    // We let the server show the 404 page
-    window.location.pathname = pageContext.url
+  let pageContextOnBeforeRenderHooks: PromiseType<ReturnType<typeof executeOnBeforeRenderHooks>>
+  try {
+    pageContextOnBeforeRenderHooks = await executeOnBeforeRenderHooks({
+      ...pageContext,
+      ...pageContextFromRoute,
+      ...pageContextAddendum
+    })
+  } catch (err) {
+    const pageContextFromRoute = handleError(pageContext, err)
+    const pageContextAddendum = await loadPageContextAfterRoute(pageContext, pageContextFromRoute)
+    return pageContextAddendum
   }
+  assert(
+    pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer === null ||
+      isObject(pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer)
+  )
+  assert([true, false].includes(pageContextOnBeforeRenderHooks._comesDirectlyFromServer))
+  objectAssign(pageContextAddendum, pageContextOnBeforeRenderHooks)
+  return pageContextAddendum
+}
+
+async function getPageContextFromRoute(
+  pageContext: PageContextForRoute
+): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
+  const routeResult = await route(pageContext)
+  if ('hookError' in routeResult) {
+    const pageContextFromRoute = handleError(pageContext, routeResult.hookError)
+    return pageContextFromRoute
+  }
+  const pageContextFromRoute = routeResult.pageContextAddendum
+  if (pageContextFromRoute._pageId === null) {
+    handle404(pageContext)
+    assert(false)
+  } else {
+    assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
+  }
+  return pageContextFromRoute
+}
+
+function handle404(pageContext: { url: string }) {
+  // We let the server show the 404 page; the server will show the 404 URL against the list of routes.
+  window.location.pathname = pageContext.url
 }
 
 async function retrievePageContext(
@@ -107,7 +140,9 @@ async function retrievePageContext(
   const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
   assert(!('pageContext404PageDoesNotExist' in responseObject))
   if ('serverSideError' in responseObject) {
-    throwError(`An error occurred on the server. Check your server logs.`)
+    throw getPluginError(
+      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
+    )
   }
 
   assert(hasProp(responseObject, 'pageContext'))
@@ -174,8 +209,8 @@ async function executeOnBeforeRenderHooks(
   let serverHooksCalled: boolean = false
   let skipServerHooks: boolean = false
 
-  const pageContextAddendum = {}
-  objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: null })
+  const pageContextOnBeforeRenderHooks = {}
+  objectAssign(pageContextOnBeforeRenderHooks, { _pageContextRetrievedFromServer: null })
 
   if (isomorphicHooksExist()) {
     const pageContextFromIsomorphic = await runOnBeforeRenderHooks(
@@ -196,18 +231,18 @@ async function executeOnBeforeRenderHooks(
       serverHooksCalled,
       _pageId: pageContext._pageId
     })
-    objectAssign(pageContextAddendum, pageContextFromIsomorphic)
-    objectAssign(pageContextAddendum, { _comesDirectlyFromServer: false })
-    return pageContextAddendum
+    objectAssign(pageContextOnBeforeRenderHooks, pageContextFromIsomorphic)
+    objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: false })
+    return pageContextOnBeforeRenderHooks
   } else if (!serverHooksExists()) {
-    objectAssign(pageContextAddendum, { _comesDirectlyFromServer: false })
-    return pageContextAddendum
+    objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: false })
+    return pageContextOnBeforeRenderHooks
   } else {
     const result = await runOnBeforeRenderServerHooks(true)
     assert(serverHooksCalled)
-    objectAssign(pageContextAddendum, result.pageContext)
-    objectAssign(pageContextAddendum, { _comesDirectlyFromServer: true })
-    return pageContextAddendum
+    objectAssign(pageContextOnBeforeRenderHooks, result.pageContext)
+    objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: true })
+    return pageContextOnBeforeRenderHooks
   }
 
   function isomorphicHooksExist() {
@@ -217,7 +252,7 @@ async function executeOnBeforeRenderHooks(
     )
   }
   function serverHooksExists() {
-    return getOnBeforeRenderServerHookFiles({ ...pageContext, ...pageContextAddendum }).length > 0
+    return getOnBeforeRenderServerHookFiles({ ...pageContext, ...pageContextOnBeforeRenderHooks }).length > 0
   }
 
   async function skipOnBeforeRenderServerHooks() {
@@ -239,10 +274,30 @@ async function executeOnBeforeRenderHooks(
     )
     serverHooksCalled = true
     const pageContextFromServer = await retrievePageContext(pageContext)
-    objectAssign(pageContextAddendum, { _pageContextRetrievedFromServer: pageContextFromServer })
+    objectAssign(pageContextOnBeforeRenderHooks, { _pageContextRetrievedFromServer: pageContextFromServer })
     let pageContextReadyForRelease = !doNotPrepareForRelease
-      ? releasePageContextInterim(pageContextFromServer, pageContextAddendum)
+      ? releasePageContextInterim(pageContextFromServer, pageContextOnBeforeRenderHooks)
       : pageContextFromServer
     return { pageContext: pageContextReadyForRelease }
   }
+}
+
+function handleError(
+  pageContext: {
+    _allPageIds: string[]
+  },
+  err: unknown
+) {
+  const errorPageId = getErrorPageId(pageContext._allPageIds)
+  if (!errorPageId) {
+    throw err
+  } else {
+    console.error(err)
+  }
+  const pageContextFromRoute = {
+    _pageId: errorPageId,
+    is404: false,
+    routeParams: {} as Record<string, string>
+  }
+  return pageContextFromRoute
 }
