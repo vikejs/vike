@@ -18,7 +18,7 @@ function assertPageContextProvidedByUser(
 
   assertUsage(
     !isWholePageContext(pageContextProvidedByUser),
-    `${errMessagePrefix} the whole \`pageContext\` object which is forbidden, see https://www.vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
+    `${errMessagePrefix} the whole \`pageContext\` object which is forbidden, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
   )
 }
 
