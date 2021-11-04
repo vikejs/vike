@@ -5,7 +5,7 @@ import { getGlobalContext } from './getGlobalContext'
 import { navigationState } from '../navigationState'
 import { loadPageFiles } from '../loadPageFiles'
 import { isExternalLink } from './utils/isExternalLink'
-import { isNotNewTabLink } from './utils/isNotNewTabLink'
+import { skipLink } from './utils/skipLink'
 
 export { addLinkPrefetchHandlers, prefetch }
 
@@ -48,9 +48,9 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
 
     const url = linkTag.getAttribute('href')
 
-    if (!url) return
-    if (!isNotNewTabLink(linkTag)) return
-    if (isExternalLink(url)) return
+    if (skipLink(linkTag)) return
+    assert(url) // `skipLink()` returns `true` otherwise
+
     if (isAlreadyPrefetched(url)) return
 
     let prefetchOptionWithOverride = getPrefetchAttribute(linkTag)

@@ -15,7 +15,7 @@ import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
-import { isNotNewTabLink } from './utils/isNotNewTabLink'
+import { skipLink } from './utils/skipLink'
 import { isExternalLink } from './utils/isExternalLink'
 
 export { useClientRouter }
@@ -182,12 +182,12 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 
     const linkTag = findLinkTag(ev.target as HTMLElement)
     if (!linkTag) return
-    if (!isNotNewTabLink(linkTag)) return
 
     const url = linkTag.getAttribute('href')
 
-    if (!url) return
-    if (isExternalLink(url)) return
+    if (skipLink(linkTag)) return
+    assert(url) // `skipLink()` returns `true` otherwise
+
     if (isHashLink(url)) return
 
     const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
