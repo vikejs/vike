@@ -1,4 +1,4 @@
-import { assertUsage } from '../../shared/utils'
+import { assert, assertUsage } from '../../shared/utils'
 import { route } from '../../shared/route'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
 import { getGlobalContext } from './getGlobalContext'
@@ -53,7 +53,12 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
     if (isExternalLink(url)) return
     if (isAlreadyPrefetched(url)) return
 
-    const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, linkTag)
+    let prefetchOptionWithOverride = getPrefetchAttribute(linkTag)
+    if (prefetchOptionWithOverride === null) {
+      prefetchOptionWithOverride = prefetchOption
+    }
+    assert([true, false].includes(prefetchOptionWithOverride))
+
     if (prefetchOptionWithOverride) {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -69,26 +74,6 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
       linkTag.addEventListener('touchstart', () => prefetch(url))
     }
   })
-
-  function getPrefetchOverride(prefetchOption: boolean, linkTag: HTMLElement): boolean {
-    const prefetchAttribute = linkTag.getAttribute('data-prefetch')
-    if (typeof prefetchAttribute === 'string') {
-      const options = ['true', 'false']
-      assertUsage(
-        options.includes(prefetchAttribute),
-        `data-prefetch got invalid value: "${prefetchAttribute}", available options: ${options
-          .map((v) => `"${v}"`)
-          .join(', ')}`
-      )
-    }
-    if (prefetchAttribute === 'true') {
-      return true
-    } else if (prefetchAttribute === 'false') {
-      return false
-    }
-
-    return prefetchOption
-  }
 }
 
 function isAlreadyPrefetched(url: string): boolean {
@@ -101,4 +86,20 @@ function markAsAlreadyPrefetched(url: string): void {
 }
 function getPrefetchUrl(url: string) {
   return url.split('?')[0]?.split('#')[0] || ''
+}
+
+function getPrefetchAttribute(linkTag: HTMLElement): boolean | null {
+  const prefetchAttribute = linkTag.getAttribute('data-prefetch')
+
+  if (prefetchAttribute === null) return null
+  assert(typeof prefetchAttribute === 'string')
+
+  if (prefetchAttribute === 'true') {
+    return true
+  }
+  if (prefetchAttribute === 'false') {
+    return false
+  }
+
+  assertUsage(false, `Wrong data-prefetch value: \`"${prefetchAttribute}"\`; it should be \`"true"\` or \`"false"\`.`)
 }
