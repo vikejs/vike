@@ -14,7 +14,7 @@ import { getPageContext } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
-import { addLinkPrefetch } from './prefetch'
+import { addLinkPrefetchHandlers } from './prefetch'
 import { isNotNewTabLink } from './utils/isNotNewTabLink'
 import { isExternalLink } from './utils/isExternalLink'
 
@@ -125,7 +125,7 @@ function useClientRouter({
     renderPromise = (async () => {
       const pageContextReadyForRelease = releasePageContext(pageContext)
       await render(pageContextReadyForRelease)
-      addLinkPrefetch(prefetchLinks, url)
+      addLinkPrefetchHandlers(prefetchLinks, url)
     })()
     await renderPromise
     renderPromise = undefined

@@ -7,14 +7,19 @@ import { loadPageFiles } from '../loadPageFiles'
 import { isExternalLink } from './utils/isExternalLink'
 import { isNotNewTabLink } from './utils/isNotNewTabLink'
 
-export { addLinkPrefetch, prefetch }
+export { addLinkPrefetchHandlers, prefetch }
 
-const prefetchLinksHandled = new Map<string, boolean>()
+const linkAlreadyPrefetched = new Map<string, true>()
 
-async function prefetch(url: string) {
-  const prefetchUrl = getPrefetchUrl(url)
-  if (!shouldPrefetch(prefetchUrl)) return
-  prefetchLinksHandled.set(prefetchUrl, true)
+async function prefetch(url: string): Promise<void> {
+  assertUsage(
+    !isExternalLink(url),
+    `You are trying to prefetch ${url} which is an external URL. This doesn't make sense since vite-plugin-ssr cannot prefetch external links.`
+  )
+
+  if (isAlreadyPrefetched(url)) return
+  markAsAlreadyPrefetched(url)
+
   const globalContext = await getGlobalContext()
   const pageContext = {
     url,
@@ -31,30 +36,33 @@ async function prefetch(url: string) {
   }
 }
 
-function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
-  // no need to add listeners on current url links
-  prefetchLinksHandled.set(getPrefetchUrl(currentUrl), true)
+function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
+  // Current URL is already prefetched
+  markAsAlreadyPrefetched(currentUrl)
+
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
     const url = linkTag.getAttribute('href')
-    if (url && isNotNewTabLink(linkTag)) {
-      const prefetchUrl = getPrefetchUrl(url)
-      if (!shouldPrefetch(prefetchUrl)) return
-      const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, linkTag)
-      if (prefetchOptionWithOverride) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              prefetch(url)
-              observer.disconnect()
-            }
-          })
+
+    if (!url) return
+    if (!isNotNewTabLink(linkTag)) return
+    if (isExternalLink(url)) return
+    if (isAlreadyPrefetched(url)) return
+
+    const prefetchOptionWithOverride = getPrefetchOverride(prefetchOption, linkTag)
+    if (prefetchOptionWithOverride) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            prefetch(url)
+            observer.disconnect()
+          }
         })
-        observer.observe(linkTag)
-      } else {
-        linkTag.addEventListener('mouseover', () => prefetch(url))
-        linkTag.addEventListener('touchstart', () => prefetch(url))
-      }
+      })
+      observer.observe(linkTag)
+    } else {
+      linkTag.addEventListener('mouseover', () => prefetch(url))
+      linkTag.addEventListener('touchstart', () => prefetch(url))
     }
   })
 
@@ -79,13 +87,14 @@ function addLinkPrefetch(prefetchOption: boolean, currentUrl: string) {
   }
 }
 
+function isAlreadyPrefetched(url: string): boolean {
+  const prefetchUrl = getPrefetchUrl(url)
+  return linkAlreadyPrefetched.has(prefetchUrl)
+}
+function markAsAlreadyPrefetched(url: string): void {
+  const prefetchUrl = getPrefetchUrl(url)
+  linkAlreadyPrefetched.set(prefetchUrl, true)
+}
 function getPrefetchUrl(url: string) {
   return url.split('?')[0]?.split('#')[0] || ''
-}
-
-function shouldPrefetch(prefetchUrl: string) {
-  if (isExternalLink(prefetchUrl)) return false
-  if (prefetchLinksHandled.has(prefetchUrl)) return false
-
-  return true
 }
