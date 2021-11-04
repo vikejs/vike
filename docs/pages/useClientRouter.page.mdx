@@ -72,16 +72,17 @@ function onTransitionEnd() {
 }
 ```
 
-We can keep using `<a href="/some-url">` links: link clicks are automatically intercepted.
-We can also use
-[`navigate()`](/navigate)
+We can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
+
+We can skip the Client Router by adding the `rel="external"` attribute, e.g. `<a rel="external" href="/some/url">The Client Router won't intercept me</a>`.
+
+We can use
+[`navigate('/some/url')`](/navigate)
 to programmatically navigate our user to a new page.
 
-By default, the Client-side Router scrolls to the top of the page on page change;
-we can use `<a keep-scroll-position />` / `navigate(url, { keepScrollPosition: true })`
+By default, the Client-side Router scrolls to the top of the page upon page change;
+we can use `<a keep-scroll-position />` / `navigate('/some/url', { keepScrollPosition: true })`
 if we want to preserve the scroll position instead. (Useful for [Nested Routes](/nested-routes).)
-
-`useClientRouter()` is fairly high-level, if you need lower-level control, then open a GitHub issue.
 
 Also see:
  - [What is hydration?](/hydration)
