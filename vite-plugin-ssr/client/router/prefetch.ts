@@ -10,6 +10,7 @@ import { isNotNewTabLink } from './utils/isNotNewTabLink'
 export { addLinkPrefetchHandlers, prefetch }
 
 const linkAlreadyPrefetched = new Map<string, true>()
+const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 
 async function prefetch(url: string): Promise<void> {
   assertUsage(
@@ -42,6 +43,9 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
+    if (linkPrefetchHandlerAdded.has(linkTag)) return
+    linkPrefetchHandlerAdded.set(linkTag, true)
+
     const url = linkTag.getAttribute('href')
 
     if (!url) return
