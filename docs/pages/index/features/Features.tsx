@@ -1,6 +1,7 @@
 import React from 'react'
 import { Emoji } from 'libframe-docs/utils/Emoji'
 import { FeatureList } from 'libframe-docs/landing-page/features/FeatureList'
+import { TextContactUs } from 'libframe-docs/components/TextContactUs'
 import Control from './Control.mdx'
 import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
@@ -239,6 +240,45 @@ function Features() {
               </p>
               <p>
                 GitHub and Discord <b>conversations are welcome</b>.
+              </p>
+            </>
+          ),
+          isSecondaryFeature: true
+        },
+        {
+          title: (
+            <>
+              <Emoji name="sparkling-heart" /> Fun
+            </>
+          ),
+          desc: (
+            <>
+              <p>
+                <code>vite-plugin-ssr</code> is simple, clear, and robust: no magic, no unexpected behavior, no
+                conflation, no (known) bugs, no (foreseeable) breaking changes.
+              </p>
+              <p>
+                <code>vite-plugin-ssr</code>'s meticulous focus to provide the best possible tool results in a tool that
+                is <i>fun</i>.
+              </p>
+            </>
+          ),
+          isSecondaryFeature: true
+        },
+        {
+          title: (
+            <>
+              <Emoji name="engine" /> Framework Engine
+            </>
+          ),
+          desc: (
+            <>
+              <p>
+                Use <code>vite-plugin-ssr</code> to <b>build frameworks</b>.
+              </p>
+              <p>
+                You want to build an <b>internal framework</b> for you company? Or you want to build a{' '}
+                <b>Next.js alternative</b>? Use <code>vite-plugin-ssr</code> to jump-start with a rock-solid foundation.
               </p>
             </>
           ),
