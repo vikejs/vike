@@ -51,6 +51,13 @@ function getUrlPathname(url?: string): string {
   url = retrieveUrl(url)
   const { pathname } = parseWithNewUrl(url)
   const urlPathname = pathname
+
+  // In principle, the URL pathname should bet the URL without origin, query string, and hash.
+  //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
+  if (url.startsWith('/')) {
+    assert(url === url.split('?')[0]!.split('#')[0])
+  }
+
   return urlPathname
 }
 

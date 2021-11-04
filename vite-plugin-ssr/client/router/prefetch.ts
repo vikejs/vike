@@ -1,4 +1,4 @@
-import { assert, assertUsage } from '../../shared/utils'
+import { assert, assertUsage, getUrlPathname } from '../../shared/utils'
 import { route } from '../../shared/route'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
 import { getGlobalContext } from './getGlobalContext'
@@ -85,7 +85,7 @@ function markAsAlreadyPrefetched(url: string): void {
   linkAlreadyPrefetched.set(prefetchUrl, true)
 }
 function getPrefetchUrl(url: string) {
-  return url.split('?')[0]?.split('#')[0] || ''
+  return getUrlPathname(url)
 }
 
 function getPrefetchAttribute(linkTag: HTMLElement): boolean | null {

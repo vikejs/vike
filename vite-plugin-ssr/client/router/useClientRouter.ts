@@ -4,6 +4,7 @@ import {
   assertWarning,
   getUrlFull,
   getUrlFullWithoutHash,
+  getUrlPathname,
   hasProp,
   isBrowser,
   objectAssign
@@ -72,6 +73,8 @@ function useClientRouter({
   return { hydrationPromise }
 
   async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
+    url = getUrlPathname(url)
+
     const callNumber = ++callCount
     assert(callNumber >= 1)
 
@@ -187,16 +190,10 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     if (skipLink(linkTag)) return
     assert(url) // `skipLink()` returns `true` otherwise
 
-    if (isHashLink(url)) return
-
     const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
 
     ev.preventDefault()
     callback(url, { keepScrollPosition })
-  }
-
-  function isHashLink(url: string) {
-    return url.includes('#')
   }
 
   function isNormalLeftClick(ev: MouseEvent): boolean {
