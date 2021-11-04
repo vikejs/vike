@@ -16,7 +16,6 @@ import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedurlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { skipLink } from './utils/skipLink'
-import { isExternalLink } from './utils/isExternalLink'
 
 export { useClientRouter }
 export { navigate }
