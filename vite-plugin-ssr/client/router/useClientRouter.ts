@@ -4,7 +4,6 @@ import {
   assertWarning,
   getUrlFull,
   getUrlFullWithoutHash,
-  getUrlPathname,
   hasProp,
   isBrowser,
   objectAssign
@@ -73,8 +72,6 @@ function useClientRouter({
   return { hydrationPromise }
 
   async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
-    url = getUrlPathname(url)
-
     const callNumber = ++callCount
     assert(callNumber >= 1)
 
