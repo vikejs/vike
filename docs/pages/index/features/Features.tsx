@@ -255,11 +255,11 @@ function Features() {
             <>
               <p>
                 <code>vite-plugin-ssr</code> is simple, clear, and robust: no magic, no unexpected behavior, no
-                conflation, no (known) bugs, no (foreseeable) breaking changes.
+                conflation, no bugs (known in <code>vite-plugin-ssr</code>'s source code), no breaking changes (as far
+                as we can see).
               </p>
               <p>
-                <code>vite-plugin-ssr</code>'s meticulous focus to provide the best possible tool results in a tool that
-                is <i>fun</i>.
+                With <code>vite-plugin-ssr</code> you are under control; it's addictively fun.
               </p>
             </>
           ),
