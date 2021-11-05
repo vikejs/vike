@@ -5,6 +5,7 @@ import { assert, assertUsage } from '../shared/utils/assert'
 import { normalize as pathNormalize } from 'path'
 import { assertBaseUrl } from './baseUrlHandling'
 import { importBuildWasCalled } from './importBuild'
+import type { ViteDevServer } from 'vite'
 
 export { createPageRenderer }
 export { createPageRendererWasCalled }
@@ -92,19 +93,32 @@ function assertArguments(
     )
   } else {
     assertUsage(root, '`createPageRenderer({ root })`: argument `root` is missing.')
+
     assertUsage(
       !!viteDevServer,
       '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` cannot be `undefined`.'
     )
+
+    const wrongViteDevServerValueError =
+      '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` should be `viteDevServer = await vite.createServer(/*...*/)`.'
     assertUsage(
       hasProp(viteDevServer, 'config') &&
         hasProp(viteDevServer.config, 'root') &&
         typeof viteDevServer.config.root === 'string',
-      '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` should be `viteDevServer = await vite.createServer(/*...*/)`.'
+      wrongViteDevServerValueError
     )
     assertUsage(
       pathNormalize(viteDevServer.config.root) === pathNormalize(root),
       '`createPageRenderer({ viteDevServer, root })`: wrong `root` value, make sure that `path.normalize(root) === path.normalize(viteDevServer.root)`.'
+    )
+
+    assertUsage(
+      hasProp(viteDevServer, 'config', 'object') && hasProp(viteDevServer.config, 'plugins', 'array'),
+      wrongViteDevServerValueError
+    )
+    assertUsage(
+      (viteDevServer as any as ViteDevServer).config.plugins.find((plugin) => plugin.name.startsWith('telefunc')),
+      "`vite-pugin-ssr`'s Vite plugin is not installed. Make to add it to your `vite.config.js`."
     )
   }
   assertUsage(args.length === 1, '`createPageRenderer()`: all arguments should be passed as a single argument object.')
