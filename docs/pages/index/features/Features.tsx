@@ -259,7 +259,7 @@ function Features() {
                 as we can see).
               </p>
               <p>
-                With <code>vite-plugin-ssr</code> you are under control; it's addictively fun.
+                With <code>vite-plugin-ssr</code>, you are under control; it's addictively fun.
               </p>
             </>
           ),
