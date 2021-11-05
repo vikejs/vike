@@ -1,10 +1,12 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-The `onBeforeRoute()` hook gives us full control over the routing process.
+The `onBeforeRoute()` hook gives us full control over the routing process and is usually used in order to:
+ - [Internationalize a pre-rendered app](/i18n#with-pre-rendering)
 
-For example, the hook can be used to [internationalize a pre-rendered app](/i18n#with-pre-rendering) or to [implement a custom router](https://github.com/brillout/vite-plugin-ssr/issues/140).
+We can also use it to:
+ - [Implement a custom router](https://github.com/brillout/vite-plugin-ssr/issues/140)
+
+> Using `onBeforeRoute()` for i18n is already used in production. **For any other use cases, open a GitHub ticket or reach out on Discord before starting to use `onBeforeRoute()`** (currently, `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities).
 
 Example:
 - <RepoLink path='/examples/i18n-prerender/renderer/_default.page.route.js' />
-
-If you want more information about the `onBeforeRoute()` hook, open a GitHub ticket or reach out on Discord.

@@ -3,7 +3,7 @@
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
- - **`pageContext.isHydration`**: *[only in the browser, and only when using `useClientRouter()` i.e. Client Routing]* boolean that is `true` when the page is already rendered to HTML. (When the page is already rendered to HTML we merely have to hydrate it. When doing SSR, it's `true` for the first page the user navigates to, and `false` when the user navigates to a new page.)
+ - **`pageContext.isHydration`**: *[Only in the browser, and only when using [Client Routing](/useClientRouter)]* boolean that is `true` if the current page is already rendered to HTML. (For most apps this means: `true` for the first page the user navigates to, and `false` for any when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
     const renderPage = createPageRenderer(/*...*/)
@@ -16,6 +16,7 @@
       /* ... */
     })
     ```
+    When using [Client Routing](/useClientRouter), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href` wihout the origin, or the `href` value of the clicked `<a href="/some/url">` link, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
  - **`pageContext.urlNormalized`**: same than `pageContext.url` but without URL Origin and Base URL. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`.)
  - **`pageContext.urlPathname`**: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
  - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
@@ -23,7 +24,7 @@
 ## Custom
 
 In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
- - `onBeforeRender()` and `render()` hooks.
+ - Hooks: [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
     ```js
     export function onBeforeRender() {
       return {
@@ -36,7 +37,7 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
     ```js
     export function render() {
       return {
-        documentHtml: escapeInject`<html>...`,
+        documentHtml: escapeInject`<html><!--...--></html>`,
         pageContext: {
           // We can define some custom `pageContext` here
         }
@@ -57,7 +58,7 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
     })
     ```
 
-## Access from browser
+## Browser
 
 When using [Server Routing](/SR-vs-CR#server-routing), the following is available in the browser:
  - `pageContext.Page`
@@ -83,7 +84,7 @@ TypeScript utility types:
 
 ```ts
 // Server-side `pageContext` built-in values
-import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 
 // Client-side `pageContext` built-in values, when using Server Routing
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
