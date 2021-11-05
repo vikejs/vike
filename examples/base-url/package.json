@@ -22,7 +22,7 @@
     "rimraf": "^3.0.2",
     "serve": "^12.0.1",
     "vite": "^2.6.7",
-    "vite-plugin-ssr": "0.3.25"
+    "vite-plugin-ssr": "0.3.26"
   },
   "// Needed for Yarn workspaces": "",
   "name": "example-base-url",
