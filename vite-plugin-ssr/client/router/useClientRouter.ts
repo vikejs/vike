@@ -19,8 +19,35 @@ import { skipLink } from './utils/skipLink'
 
 export { useClientRouter }
 export { navigate }
+export { disableClientRouter }
+export { restoreClientRouter }
 
 setupNativeScrollRestoration()
+
+let clientSideNavigationDisabled = false
+
+/**
+ * Disable client router.
+ *
+ * After calling this, clicking on links or calling navigate will use server
+ * routing, even if you have called useClientRouter.
+ *
+ * This is useful when e.g. you have detected that a new version of your
+ * application have been deployed, and you want the next page load to start
+ * fresh.
+ */
+function disableClientRouter() {
+  clientSideNavigationDisabled = true
+}
+
+/**
+ * Restore client side navigation.
+ *
+ * This reverses the effect of disableClientRouter.
+ */
+function restoreClientRouter() {
+  clientSideNavigationDisabled = false
+}
 
 let isAlreadyCalled: boolean = false
 function useClientRouter({
@@ -57,6 +84,10 @@ function useClientRouter({
     fetchAndRender(scrollTarget)
   })
   navigateFunction = async (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => {
+    if (clientSideNavigationDisabled) {
+      location.href = url
+      return
+    }
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
     await fetchAndRender(scrollTarget, url)
   }
@@ -177,7 +208,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
   // Code adapted from https://github.com/HenrikJoreteg/internal-nav-helper/blob/5199ec5448d0b0db7ec63cf76d88fa6cad878b7d/src/index.js#L11-L29
 
   function onClick(ev: MouseEvent) {
-    if (!isNormalLeftClick(ev)) return
+    if (!isNormalLeftClick(ev) || clientSideNavigationDisabled) return
 
     const linkTag = findLinkTag(ev.target as HTMLElement)
     if (!linkTag) return
