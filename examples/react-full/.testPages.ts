@@ -20,6 +20,11 @@ function testPages(
     expect(html).toContain("<h1>Welcome to <code>vite-plugin-ssr</code></h1>");
   });
 
+  test("link tags are correctly injected", async () => {
+    const html = await fetchHtml("/");
+    expect(html).toMatch(/<head>.*<title>.*<link.*<\/head>/s);
+  });
+
   test("page is rendered to the DOM and interactive", async () => {
     await page.goto(urlBase + "/");
     expect(await page.textContent("h1")).toBe("Welcome to vite-plugin-ssr");

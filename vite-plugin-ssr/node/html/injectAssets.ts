@@ -232,10 +232,11 @@ function injectScript(htmlString: string, script: PageAsset): string {
   return injectEnd(htmlString, injection)
 }
 
+const headClose = '</head>'
 function injectLinkTags(htmlString: string, linkTags: string[]): string {
   assert(linkTags.every((tag) => tag.startsWith('<') && tag.endsWith('>')))
   const injection = linkTags.join('')
-  return injectBegin(htmlString, injection)
+  return injectAtClosingTag(htmlString, headClose, injection)
 }
 
 const headOpen = /<head[^>]*>/
