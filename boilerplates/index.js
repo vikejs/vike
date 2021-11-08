@@ -8,15 +8,14 @@ const { prompt } = require('enquirer')
 const { green, cyan, stripColors, bold } = require('kolorist')
 const { execSync } = require('child_process')
 
-const cwd = process.cwd()
-
 const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts')]
-
-const ignoreFiles = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
-
-const renameFiles = {
+const IGNORE_FILES = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
+const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
+const RENAME_FILES = {
   _gitignore: '.gitignore'
 }
+
+const cwd = process.cwd()
 
 async function init() {
   let targetDir = argv._[0]
@@ -85,9 +84,14 @@ async function init() {
 
   const boilerplateDir = path.join(__dirname, `boilerplate-${boilerplate}`)
 
-  const write = (file, content) => {
-    const targetPath = renameFiles[file] ? path.join(root, renameFiles[file]) : path.join(root, file)
-    if (content) {
+  const write = (file) => {
+    const targetPath = RENAME_FILES[file] ? path.join(root, RENAME_FILES[file]) : path.join(root, file)
+    if (file === 'package.json') {
+      let content = JSON.parse(fs.readFileSync(path.join(boilerplateDir, file)).toString())
+      IGNORE_PACKAGE_JSON.forEach((key) => {
+        delete content[key]
+      })
+      content = JSON.stringify(content, null, 2)
       fs.writeFileSync(targetPath, content)
     } else {
       copy(path.join(boilerplateDir, file), targetPath)
@@ -95,7 +99,7 @@ async function init() {
   }
 
   const files = fs.readdirSync(boilerplateDir)
-  for (const file of files.filter((f) => !ignoreFiles.includes(f))) {
+  for (const file of files.filter((f) => !IGNORE_FILES.includes(f))) {
     write(file)
   }
 
