@@ -1,12 +1,19 @@
 import React from "react";
 import logo from "./logo.svg";
-import "./PageWrapper.css";
 import { PageContextProvider } from "./usePageContext";
+import type { PageContext } from "./types";
+import "./PageShell.css";
 import { Link } from "./Link";
 
-export { PageWrapper };
+export { PageShell };
 
-function PageWrapper({ pageContext, children }) {
+function PageShell({
+  children,
+  pageContext,
+}: {
+  children: React.ReactNode;
+  pageContext: PageContext;
+}) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
@@ -27,7 +34,7 @@ function PageWrapper({ pageContext, children }) {
   );
 }
 
-function Layout({ children }) {
+function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -41,7 +48,7 @@ function Layout({ children }) {
   );
 }
 
-function Sidebar({ children }) {
+function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
@@ -58,7 +65,7 @@ function Sidebar({ children }) {
   );
 }
 
-function Content({ children }) {
+function Content({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{

@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom";
 import React from "react";
 import { getPage } from "vite-plugin-ssr/client";
-import { PageWrapper } from "./PageWrapper";
+import { PageShell } from "./PageShell";
 import type { PageContext } from "./types";
 import type { PageContextBuiltInClient } from "vite-plugin-ssr/client";
 
@@ -13,9 +13,9 @@ async function hydrate() {
   const pageContext = await getPage<PageContextBuiltInClient & PageContext>();
   const { Page, pageProps } = pageContext;
   ReactDOM.hydrate(
-    <PageWrapper pageContext={pageContext}>
+    <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageWrapper>,
+    </PageShell>,
     document.getElementById("page-view")
   );
 }

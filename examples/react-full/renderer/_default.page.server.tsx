@@ -1,7 +1,7 @@
 import ReactDOMServer from "react-dom/server";
 import React from "react";
 import { escapeInject } from "vite-plugin-ssr";
-import { PageWrapper } from "./PageWrapper";
+import { PageShell } from "./PageShell";
 import { getPageTitle } from "./getPageTitle";
 import type { PageContext } from "./types";
 import type { PageContextBuiltIn } from "vite-plugin-ssr";
@@ -14,9 +14,9 @@ const passToClient = ["pageProps", "documentProps"];
 function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext;
   const stream = ReactDOMServer.renderToNodeStream(
-    <PageWrapper pageContext={pageContext}>
+    <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageWrapper>
+    </PageShell>
   );
 
   const title = getPageTitle(pageContext);

@@ -2,7 +2,7 @@ import ReactDOMServer from 'react-dom/server'
 import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Provider } from 'urql'
 import prepass from 'react-ssr-prepass'
 import React from 'react'
-import { PageWrapper } from './PageWrapper'
+import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr/types'
@@ -52,11 +52,11 @@ export async function onBeforeRender(pageContext: PageContextBuiltIn & PageConte
   )
   // After we can construct an initial html with renderToString as our cache is hydrated
   const pageHtml = ReactDOMServer.renderToString(
-    <PageWrapper pageContext={pageContext}>
+    <PageShell pageContext={pageContext}>
       <Provider value={client}>
         <Page {...pageProps} />
       </Provider>
-    </PageWrapper>
+    </PageShell>
   )
 
   const urqlState = ssr.extractData()

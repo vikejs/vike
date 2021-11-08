@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom'
 import React from 'react'
 import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Provider } from 'urql'
 import { getPage } from 'vite-plugin-ssr/client'
-import { PageWrapper } from './PageWrapper'
+import { PageShell } from './PageShell'
 import type { PageContext } from './types'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
 
@@ -22,11 +22,11 @@ async function hydrate() {
     ]
   })
   ReactDOM.hydrate(
-    <PageWrapper pageContext={pageContext}>
+    <PageShell pageContext={pageContext}>
       <Provider value={client}>
         <Page {...pageProps} />
       </Provider>
-    </PageWrapper>,
+    </PageShell>,
     document.getElementById('page-view')
   )
 }

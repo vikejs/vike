@@ -1,11 +1,11 @@
 import React from 'react'
-import './PageWrapper.css'
+import './PageShell.css'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
 
-export { PageWrapper }
+export { PageShell }
 
-function PageWrapper({ pageContext, children }) {
+function PageShell({ pageContext, children }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>

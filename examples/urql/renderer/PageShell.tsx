@@ -2,9 +2,9 @@ import React from 'react'
 import { PageContextProvider } from './usePageContext'
 import type { PageContext } from './types'
 
-export { PageWrapper }
+export { PageShell }
 
-function PageWrapper({ children, pageContext }: { children: React.ReactNode; pageContext: PageContext }) {
+function PageShell({ children, pageContext }: { children: React.ReactNode; pageContext: PageContext }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
