@@ -92,7 +92,7 @@ async function init() {
         delete content[key]
       })
       content = JSON.stringify(content, null, 2)
-      fs.writeFileSync(targetPath, content)
+      fs.writeFileSync(targetPath, content + '\n')
     } else {
       copy(path.join(boilerplateDir, file), targetPath)
     }
