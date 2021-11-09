@@ -1,4 +1,10 @@
-import { page, run, autoRetry, fetchHtml } from "../../libframe/test/setup";
+import {
+  page,
+  run,
+  autoRetry,
+  fetchHtml,
+  isGithubAction,
+} from "../../libframe/test/setup";
 
 export { runTests };
 
@@ -14,6 +20,10 @@ function runTests(
   }
 
   if (cmd === "npm run prod") {
+    if (!isGithubAction() || process.env["GIT_BRANCH"] !== "master") {
+      test("SKIPED: wrangler test is not run locally nor in Pull Requests", () => {});
+      return;
+    }
     test("API keys", () => {
       const envVars = Object.keys(process.env);
       expect(envVars).toContain("CF_ACCOUNT_ID");
