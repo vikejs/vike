@@ -31,7 +31,7 @@ function runTests(
     });
   }
 
-  run(cmd, { additionalTimeout: isWorker ? 60 * 1000 : 0 });
+  run(cmd, { additionalTimeout: isWorker ? 120 * 1000 : 0 });
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml("/");
