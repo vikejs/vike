@@ -20,7 +20,7 @@ function testPages(
     expect(html).toContain("<h1>Welcome to <code>vite-plugin-ssr</code></h1>");
   });
 
-  test("link tags are correctly injected", async () => {
+  test("link tags are inserted at the end of `<head>`", async () => {
     const html = await fetchHtml("/");
     expect(html).toMatch(/<head>.*<title>.*<link.*<\/head>/s);
   });
