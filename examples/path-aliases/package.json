@@ -1,6 +1,6 @@
 {
   "imports": {
-    "#app/*": "./*.ts"
+    "#root/*": "./*.ts"
   },
   "scripts": {
     "dev": "npm run server",

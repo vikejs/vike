@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "paths": {
-      "#app/*": ["./*"]
+      "#root/*": ["./*"]
     }
   },
   "ts-node": {

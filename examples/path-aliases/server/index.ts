@@ -2,7 +2,7 @@
 // means that Node.js directly executes this file; Vite doesn't process this file.
 // We use `package.json#imports` to define path aliases for Node.js files that are
 // not processed by Vite, such as this one.
-import { msg } from "#app/server/msg";
+import { msg } from "#root/server/msg";
 
 import express from "express";
 import { createPageRenderer } from "vite-plugin-ssr";

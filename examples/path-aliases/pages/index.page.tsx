@@ -1,6 +1,6 @@
-// This file is processed by Vite; the path alias `#app` is
+// This file is processed by Vite; the path alias `#root` is
 // defined in `vite.config.js#resolve.alias`.
-import { Counter } from "#app/components/Counter";
+import { Counter } from "#root/components/Counter";
 import React from "react";
 
 export { Page };

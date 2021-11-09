@@ -6,7 +6,7 @@ We use:
  - [`package.json#imports`](https://nodejs.org/api/packages.html#subpath-patterns) for Node.js files not processed by Vite.
  - [`tsconfig.json#compilerOptions.paths`](https://www.typescriptlang.org/tsconfig#paths) for TypeScript.
 
-This means we may need to define the alias `#app` at up to three different places.
+This means we may need to define the alias `#root` at up to three different places.
 
 If we don't use TypeScript, we can skip defining `tsconfig.json#compilerOptions.paths`.
 
