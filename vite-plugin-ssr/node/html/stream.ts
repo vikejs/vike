@@ -95,8 +95,7 @@ function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string>
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
   const writable = new Writable({
-    write(chunk, encoding, callback) {
-      assert(encoding === 'utf8')
+    write(chunk, _encoding, callback) {
       const s = chunk.toString()
       assert(typeof s === 'string')
       str += s
