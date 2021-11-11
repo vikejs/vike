@@ -1,15 +1,15 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
 import { prerender } from '../prerender'
-import { projectInfo } from '../../shared/utils'
+import { projectInfo, assertUsage } from '../../shared/utils'
 
 const cli = cac(projectInfo.name)
 
 cli
-  .command('prerender')
+  .command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOptions: true })
   .option('--partial', 'Allow only a subset of pages to be pre-rendered')
   .option(
-    '--no-extra-dir',
+    '--noExtraDir',
     'Do not create a new directory for each page, e.g. generate `dist/client/about.html` instead of `dist/client/about/index.html`'
   )
   .option(
@@ -17,22 +17,34 @@ cli
     '[string] The root directory of your project (where `vite.config.js` live) (default: `process.cwd()`)'
   )
   .option('--outDir <path>', '[string] The build directory of your project (default: `dist`)')
-  .option('--client-router', 'Serialize `pageContext` to JSON files for Client Routing')
   .option('--base <path>', '[string] Public base path (default: /)')
   .option(
     '--parallel <numberOfJobs>',
     '[number] Number of jobs running in parallel. Default: `os.cpus().length`. Set to `1` to disable concurrency.'
   )
   .action(async (options) => {
-    const { partial, extraDir, clientRouter, base, parallel, outDir } = options
+    assertOptions()
+    const { partial, noExtraDir, clientRouter, base, parallel, outDir } = options
     const root = options.root && resolve(options.root)
-    const noExtraDir = !extraDir
     await prerender({ partial, noExtraDir, clientRouter, base, root, parallel, outDir })
   })
 
+function assertOptions() {
+  // We use `rawOptions` because `cac` maps option names to camelCase
+  const rawOptions = process.argv.slice(3)
+  assertUsage(!rawOptions.includes('--no-extra-dir'), '`--no-extra-dir` has been renamed: use `--noExtraDir` instead.')
+  Object.values(rawOptions).forEach((option) => {
+    assertUsage(
+      !option.startsWith('--') ||
+        ['--root', '--partial', '--noExtraDir', '--clientRouter', '--base', '--parallel', '--outDir'].includes(option),
+      'Unknown option: ' + option
+    )
+  })
+}
+
 // Listen to unknown commands
 cli.on('command:*', () => {
-  console.error('Invalid command: %s', cli.args.join(' '))
+  assertUsage(false, 'Unknown command: ' + cli.args.join(' '))
 })
 
 cli.help()
