@@ -1,26 +1,33 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-> **What is pre-rendering?**
-> Pre-rendering means to render the HTML of all our pages at build-time:
-> normally, the HTML of a page is rendered at request-time
-> (when the user navigates to that page) but,
-> with pre-rendering, the HTML of a page is rendered at build-time instead.
->
-> Our app then consists only of static files (HTML, JS, CSS, images, ...)
-> that we can deploy to so-called "static hosts" such as [GitHub Pages](https://pages.github.com/), [Cloudflare Pages](https://pages.cloudflare.com/), or [Netlify](https://www.netlify.com/).
-> If we don't use pre-rendering, then we need to use a Node.js server to be able to render our pages' HTML at request-time.
+## What is pre-rendering?
+
+Pre-rendering means to render the HTML of all our pages at build-time.
+Normally, the HTML of a page is rendered at request-time
+(when the user navigates to that page). But,
+with pre-rendering, the HTML of a page is rendered at build-time instead (when we call `$ vite build`).
+
+Thanks to pre-rendering, we don't need a Node.js server: our app consists only of static assets (HTML, JS, CSS, images, ...)
+and we can deploy these static assets to a so-called "static host" such as [GitHub Pages](/github-pages), [Cloudflare Pages](/cloudflare-pages), or [Netlify](/netlify).
+If we don't use pre-rendering, then we need a Node.js server to be able to dynamically render our pages' HTML at request-time.
+
+## How to pre-render
 
 To pre-render our pages, we use the [CLI command `prerender`](/command-prerender) at the end of the build:
  - npm: `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`.
  - Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.
 
-After running `$ vite-plugin-ssr prerender`, all static assets are available at `dist/client/`
+The generated static assets are available at `dist/client/`.
 
-For pages with a parameterized route (e.g. `/movie/:movieId`), we have to use the [`prerender()` hook](/prerender) and provide a list of URLs that are to be pre-rendered.
+> The only difference between using [`$ vite-plugin-ssr prerender`](/command-prerender) and using [`createPageRenderer()`](/createPageRenderer) is *when* the HTML is rendered ([`render()`](/render)/`onBeforeRender()` hooks called at build-time VS request-time); client-side code is always executed at request-time in the user's browser.
+
+For pages with a parameterized route (e.g. `/movie/:movieId`), we have to use the [`prerender()` hook](/prerender) in order to provide a list of URLs that are to be pre-rendered.
 
 We can also use the `prerender()` hook to accelerate the pre-rendering process as it allows us to prefetch data for multiple pages at once.
 
 We can skip pre-rendering for certain pages by using [`.page.server.js#doNotPrerender`](/doNotPrerender).
+
+## Examples
 
 React Example:
  - <RepoLink path='/examples/react-full/package.json' /> (see npm scripts using the CLI command <code>$ vite-plugin-ssr prerender</code> and static serving <code>dist/client/</code>)
@@ -31,3 +38,15 @@ Vue Example:
  - <RepoLink path='/examples/vue-full/package.json' /> (see npm scripts using the CLI command <code>$ vite-plugin-ssr prerender</code> and static serving <code>dist/client/</code>)
  - <RepoLink path='/examples/vue-full/pages/hello/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)
  - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)
+
+## Should I pre-render?
+
+We should use pre-rendering whenever we can.
+Because pre-rendering removes the need for a Node.js server which makes deployement an order of magnitude easier (and it's also more performant as HTML isn't re-generated on every request).
+
+The problem is that pre-rendering cannot be used for every kind of website. So the question here is: for what kind of websites can pre-rendering be used?
+
+Pre-rendering cannot be used for websites that have highly dynamic content. For example, a social site such as Hacker News or Reddit has highly dynamic content: the content changes every time a user posts a new link or writes a new comment. For such highly dynamic content, we cannot use pre-rendering because the HTML is stuck at build-time and we cannot re-build the entire website every time there is new content.
+
+Pre-rendering works for websites with content that changes only few times a day. For example, `https://vite-plugin-ssr.com` is updated only occasionally, and we can re-build the entire `https://vite-plugin-ssr.com` website every time we change its content. Pre-rendering allows us to deploy `https://vite-plugin-ssr.com` to GitHub Pages which is an order of magnitude easier (and more performant) than using a Node.js server.
+
