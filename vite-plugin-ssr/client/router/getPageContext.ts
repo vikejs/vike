@@ -169,11 +169,11 @@ function getOnBeforeRenderServerHookFiles(pageContext: { _serverFiles: ServerFil
   const serverFiles = pageContext._serverFiles
   const pageId = pageContext._pageId
   const serverFileDefault = findDefaultFile(serverFiles, pageId)
-  if (serverFileDefault?.fileExports.exportsOnBeforeRender) {
+  if (serverFileDefault?.fileExports.hasExportOnBeforeRender) {
     hooksServer.push(serverFileDefault.filePath)
   }
   const serverFilePage = findPageFile(serverFiles, pageId)
-  if (serverFilePage?.fileExports.exportsOnBeforeRender) {
+  if (serverFilePage?.fileExports.hasExportOnBeforeRender) {
     hooksServer.push(serverFilePage.filePath)
   }
   return hooksServer

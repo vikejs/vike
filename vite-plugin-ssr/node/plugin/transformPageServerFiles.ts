@@ -16,9 +16,9 @@ function transformPageServerFiles(): Plugin {
       }
       await init
       const exports = parse(src)[1]
-      const exportsOnBeforeRender = exports.includes('onBeforeRender') ? 'true' : 'false'
+      const hasExportOnBeforeRender = exports.includes('onBeforeRender') ? 'true' : 'false'
       return {
-        code: `export const exportsOnBeforeRender = ${exportsOnBeforeRender};`,
+        code: `export const hasExportOnBeforeRender = ${hasExportOnBeforeRender};`,
         // Remove Source Map to save KBs
         //  - https://rollupjs.org/guide/en/#source-code-transformations
         map: { mappings: '' }

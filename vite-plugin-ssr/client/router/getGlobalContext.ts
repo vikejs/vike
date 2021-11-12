@@ -15,7 +15,7 @@ async function getGlobalContext() {
   return globalContext
 }
 
-type ServerFiles = { filePath: string; fileExports: { exportsOnBeforeRender: boolean } }[]
+type ServerFiles = { filePath: string; fileExports: { hasExportOnBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
   const globalContext = {
     _getUrlNormalized: (url: string) => getUrlNormalized(url)
@@ -34,7 +34,7 @@ async function retrieveGlobalContext() {
   await Promise.all(
     allPageFiles['.page.server'].map(async ({ filePath, loadFile }) => {
       const fileExports = await loadFile()
-      assert(hasProp(fileExports, 'exportsOnBeforeRender', 'boolean'))
+      assert(hasProp(fileExports, 'hasExportOnBeforeRender', 'boolean'))
       assert(Object.keys(fileExports).length === 1)
       serverFiles.push({ filePath, fileExports })
     })
