@@ -1,3 +1,38 @@
+## Auth Redirections
+
+Most URL redirections are about protecting URLs from unauthenticated users:
+if a user is not authenticated and goes to `/admin/panel` then we redirect him to `/login`.
+
+But, alternatively, we can use a Route Function instead of doing a URL redirection.
+
+```js
+// admin.page.route.js
+
+export const '/admin/panel'
+```
+
+```js
+// login.page.route.js
+
+export default pageContext => {
+  const userIsAuthenticated =  pageContext.user !== null
+  // If the user is authenticated and goes to `/admin/panel`, then we render the Admin Panel
+  if (userIsAuthenticated) {
+    return false
+  }
+  // If the user is not authenticated and goes to `/admin/panel`, then we render the Login Page
+  return {
+    // We override the Route String `/admin/panel` of `admin.page.route.js`.
+    // (Route Strings have a `precedence` value of `0`.)
+    precedence: 1
+  }
+}
+```
+
+After the user has successfully completed the Login Form rendered at `/admin/panel`, we can do a `window.location.reload()` so that `/admin/panel` renders the Admin Panel. This means that the user always stayed on `/admin/panel` during the entire authentication flow.
+
+That said, we can still perform a page redirection if we want. See sections below.
+
 ## Server-side
 
 We can perform a URL redirection by using `pageContext`:
