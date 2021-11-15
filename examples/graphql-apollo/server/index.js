@@ -6,7 +6,7 @@ const {
   createHttpLink,
   InMemoryCache,
 } = require("@apollo/client");
-const fetch = require("cross-fetch");
+const fetch = require("node-fetch");
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;

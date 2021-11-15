@@ -3,7 +3,7 @@
 const express = require("express");
 const { createPageRenderer } = require("vite-plugin-ssr");
 const vite = require("vite");
-const fetch = require("cross-fetch");
+const fetch = require("node-fetch");
 
 const isProduction = process.env.NODE_ENV === "production";
 const root = `${__dirname}/..`;
