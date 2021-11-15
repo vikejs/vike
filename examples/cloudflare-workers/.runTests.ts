@@ -35,7 +35,7 @@ function runTests(
   {
     const additionalTimeout = !isWorker
       ? 0
-      : (isGithubAction() && !isLinux() ? 2 : 1) * 120 * 1000;
+      : (isGithubAction() ? 2 : 1) * 120 * 1000;
     run(cmd, { additionalTimeout });
   }
 
