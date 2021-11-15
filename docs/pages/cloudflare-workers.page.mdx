@@ -5,17 +5,11 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
  - React: <RepoLink path='/examples/cloudflare-workers/' />
  - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
 
-## `importBuild.js`
-
-We need to load `dist/server/importBuild.js` in our worker code. Example: <RepoLink path='/examples/cloudflare-workers/worker/ssr.js' />.
-
-> Cloudflare Workers needs our entire worker code to be bundled into a single file, which [`dist/server/importBuild.js` enables us to do](/importBuild.js).
-
 ## Dev Server
 
 We recommend using Vite with an Express.js dev server for lightning fast HMR & dev start,
 and for production to bundle the worker code with Cloudflare Workers's webpack bundler.
-See examples.
+See examples above.
 
 ## Bundling
 
@@ -23,7 +17,15 @@ By default, we recommend using Cloudflare Workers's webpack bundler because it's
 using another bundler may cause subtle differences that may cause problems.
 
 That said, we can use any other bundler (esbuild, rollup, ...) to bundle our worker code;
-we just need to make sure to `import 'dist/server/importBuild.js'` ([`importBuild.js`](#importbuild-js) works with any bundler).
+we just need to make sure to `import 'dist/server/importBuild.js'`. (`importBuild.js` works with any bundler.)
+
+## `importBuild.js`
+
+Cloudflare Workers requires us to bundle our entire server/worker code into a single file.
+
+For bundlers to be able to discover & bundle the entire dependency tree, we need to use [`dist/server/importBuild.js`](/importBuild.js).
+
+Example: <RepoLink path='/examples/cloudflare-workers/worker/ssr.js' />.
 
 ## Universal `fetch()`
 
@@ -34,4 +36,4 @@ But libraries such as `node-fetch` or `cross-fetch` usually don't work with Clou
 What we can do is to define a fetch function at `pageContext.fetch` that works in all environments.
 The trick is to add a different `fetch()` implementation to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer).
 
-See example at <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.
+Example: <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.

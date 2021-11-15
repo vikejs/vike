@@ -28,4 +28,4 @@ That said, if we want to minimize requests made to our Node.js server, then we m
 ## Server Routing
 
 If we use [Server Routing](/SR-vs-CR#server-routing) we shouldn't define `onBeforeRender()` in `.page.js`
-(the browser loads `onBeforeRender()` but never calls it). We can only define [`onBeforeRender()` in `.page.server.js`](/onBeforeRender).
+(the browser loads `onBeforeRender()` but never calls it). We should always define [`onBeforeRender()` in `.page.server.js`](/onBeforeRender) instead.

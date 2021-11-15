@@ -3,15 +3,15 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 ## Agnostic Middleware
 
-From an architectural point of view, `vite-plugin-ssr` is just a server middleware that can be used in any server environment.
+From an architectural point of view, `vite-plugin-ssr` is just a server middleware. It's versatile and we can use it any server environment we want.
 
 <ServerMiddleware />
 
 ## Server Bundling
 
-To enable bundlers we load a special file `dist/server/importBuild.js`.
+Some deploy services, such as Cloudflare Workers, bundle the entire server-side code into a single file.
 
-> `dist/server/importBuild.js` helps bundlers discover the entire dependency tree.
+To enable server bundling we load a special file [`dist/server/importBuild.js`](/importBuild.js).
 
 Examples:
  - <RepoLink path='/examples/cloudflare-workers' /> &mdash; Cloudflare Workers needs the entire worker code to be bundled into a single file.
@@ -19,4 +19,4 @@ Examples:
 
 ## Conclusion
 
-We can integrate `vite-plugin-ssr` in any server environment we want.
+We can use `vite-plugin-ssr` with any deploy strategy/service we want.
