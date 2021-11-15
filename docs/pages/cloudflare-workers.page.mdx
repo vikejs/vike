@@ -8,7 +8,7 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 ## Dev Server
 
 We recommend to:
- - For dev, use an Express.js dev server with Vite's server middleware, for lightning fast HMR & dev start.
+ - For dev, use an Express.js server instead of a worker, for much faster HMR & dev start. (So we skip `wrangler` / `miniflare` / Cloudflare Workers altogether while developing our app. We still use `wrangler`/`miniflare` to develop the worker code integration.)
  - For production, bundle the worker code with Cloudflare Workers's webpack bundler.
 
 See examples above.
