@@ -7,8 +7,10 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 ## Dev Server
 
-We recommend using Vite with an Express.js dev server for lightning fast HMR & dev start,
-and for production to bundle the worker code with Cloudflare Workers's webpack bundler.
+We recommend to:
+ - For dev, use an Express.js dev server with Vite's server middleware, for lightning fast HMR & dev start.
+ - For production, bundle the worker code with Cloudflare Workers's webpack bundler.
+
 See examples above.
 
 ## Bundling
@@ -21,7 +23,7 @@ we just need to make sure to `import 'dist/server/importBuild.js'`. (`importBuil
 
 ## `importBuild.js`
 
-Cloudflare Workers requires us to bundle our entire server/worker code into a single file.
+Cloudflare Workers requires us to bundle our entire worker code into a single file.
 
 For bundlers to be able to discover & bundle the entire dependency tree, we need to use [`dist/server/importBuild.js`](/importBuild.js).
 

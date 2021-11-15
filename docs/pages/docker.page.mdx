@@ -2,6 +2,6 @@ From a Docker perspective, a `vite-plugin-ssr` app is just a Node.js server, so 
 
 If we want to use Docker for development as well, we need to:
  - Properly configure the HMR port.
- - We may need to use polling:
+ - We may need to configure [chockidar](https://github.com/paulmillr/chokidar) to use polling:
    - [vite.config.js#server.watch.usePolling](https://vitejs.dev/config/#server-watch), or
    - [StackOverflow - Chokidar isn't picking up file changes inside docker container](https://stackoverflow.com/questions/38318188/chokidar-isnt-picking-up-file-changes-inside-docker-container/69166925#69166925).
