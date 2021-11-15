@@ -4,6 +4,7 @@ import {
   autoRetry,
   fetchHtml,
   isGithubAction,
+  isLinux,
 } from "../../libframe/test/setup";
 
 export { runTests };
@@ -31,7 +32,12 @@ function runTests(
     });
   }
 
-  run(cmd, { additionalTimeout: isWorker ? 120 * 1000 : 0 });
+  {
+    const additionalTimeout = !isWorker
+      ? 0
+      : (isGithubAction() && !isLinux() ? 2 : 1) * 120 * 1000;
+    run(cmd, { additionalTimeout });
+  }
 
   test("page content is rendered to HTML", async () => {
     const html = await fetchHtml("/");
