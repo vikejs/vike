@@ -17,15 +17,43 @@ export default pageContext => {
   }
   filmId = url.split('/')[2]
   return {
-    // To resolve routing conflicts
-    precedence: 10,
     // We make `filmId` available as `pageContext.routeParams.filmId`
-    routeParams: { filmId }
+    routeParams: { filmId },
+    // To resolve routing conflicts, see "Precedence" section below.
+    precedence: 10,
   }
 }
 ```
 
 Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
+
+## All are always Run
+
+Upon each page request (i.e. upon each [`renderPage()`](/createPageRenderer) call),
+`vite-plugin-ssr` runs *all* our Route Functions.
+
+That's because we may have defined a Route Function with high precedence that overrides all other routes:
+
+```js
+
+// login.page.route.js
+
+export default pageContext => {
+  const userIsAuthenticated =  pageContext.user !== null
+  if (userIsAuthenticated) {
+    return false
+  }
+  // If the user is not authenticated, then we render the login page.
+  // This is a convenient trick to preserve the URL.
+  return {
+    // We override all routes by setting a high `precedence` value of `99`.
+    precedence: 99
+  }
+}
+```
+
+`vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes;
+that's why `vite-plugin-ssr` runs all Route Functions upon each page request.
 
 ## Precedence
 
