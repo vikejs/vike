@@ -58,8 +58,8 @@ async function resolveRouteFunction(
   const routeParams: Record<string, string> = result.routeParams || {}
   Object.keys(result).forEach((key) => {
     assertUsage(
-      key === 'match' || key === 'routeParams',
-      `The Route Function ${pageRouteFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams'].`
+      key === 'match' || key === 'routeParams' || key === 'precedence',
+      `The Route Function ${pageRouteFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams', 'precedence'].`
     )
   })
   assert(isPlainObject(routeParams))
