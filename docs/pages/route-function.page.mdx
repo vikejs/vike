@@ -27,7 +27,7 @@ export default pageContext => {
 
 Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
-## All are always Run
+## Always Run
 
 Upon each page request (i.e. upon each [`renderPage()`](/createPageRenderer) call),
 `vite-plugin-ssr` runs *all* our Route Functions.
@@ -44,16 +44,16 @@ export default pageContext => {
     return false
   }
   // If the user is not authenticated, then we render the login page.
-  // This is a convenient trick to preserve the URL.
+  // (This is a convenient trick to preserve the URL.)
   return {
-    // We override all routes by setting a high `precedence` value of `99`.
+    // We override all other routes by setting a high `precedence` value of `99`.
     precedence: 99
   }
 }
 ```
 
 `vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes;
-that's why `vite-plugin-ssr` runs all Route Functions upon each page request.
+that's why `vite-plugin-ssr` alawys runs all Route Functions upon each page request.
 
 ## Precedence
 
