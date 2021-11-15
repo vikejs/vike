@@ -72,6 +72,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Static Directory (`public/`)',
+    url: '/static-directory'
+  },
+  {
+    level: 2,
     title: 'HTML `<head>`',
     url: '/html-head'
   },
