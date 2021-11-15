@@ -375,6 +375,11 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Docker',
+    url: '/docker'
+  },
+  {
+    level: 2,
     title: 'Deploy',
     titleInNav: 'Other',
     url: '/deploy'
