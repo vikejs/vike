@@ -22,7 +22,7 @@ function inferMediaType(href: string): MediaType {
   assert(!href.startsWith('//'))
 
   // Basics
-  if (href.endsWith('.css')) {
+  if (href.match(/.*.(c|sa|sc|le)ss$/)) {
     return { mediaType: 'text/css', preloadType: 'style' }
   }
   if (href.endsWith('.js')) {
