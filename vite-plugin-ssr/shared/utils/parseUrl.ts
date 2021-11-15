@@ -9,6 +9,7 @@ export { getUrlPathname }
 export { getUrlParsed }
 export { getUrlParts }
 export { getUrlFullWithoutHash }
+export { isRelativeUrl }
 export type { UrlParsed }
 
 function handleUrlOrigin(url: string): { urlWithoutOrigin: string; urlOrigin: null | string } {
@@ -129,7 +130,7 @@ function parseWithNewUrl(url: string) {
   }
 }
 
-/* Tempting to also apply `cleanUrl()` on `pageContext.urlNormalized` but AFAICT no one needs this; `pageContext.urlParsed` is enough.
+/* Attempt to also apply `cleanUrl()` on `pageContext.urlNormalized` but AFAICT no one needs this; `pageContext.urlParsed` is enough.
  *
 function cleanUrl(url: string): string {
   return getUrlFromParsed(getUrlParsed(url))
@@ -156,3 +157,20 @@ function getUrlFromParsed(urlParsed: UrlParsed): string {
 }
 *
 */
+
+function isRelativeUrl(url: string): boolean {
+  if (hasOrigin(url)) {
+    return false
+  }
+  return !url.startsWith('/')
+}
+
+function hasOrigin(url: string): boolean {
+  try {
+    // `new URL(url)` cannot parse URLs that don't have an origin
+    new URL(url)
+    return true
+  } catch (_err) {
+    return false
+  }
+}

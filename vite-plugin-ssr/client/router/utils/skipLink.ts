@@ -1,3 +1,4 @@
+import { assertWarning, isRelativeUrl } from '../../../shared/utils'
 import { isExternalLink } from './isExternalLink'
 
 export { skipLink }
@@ -9,6 +10,13 @@ function skipLink(linkTag: HTMLElement): boolean {
   if (isExternalLink(url)) return true
   if (isNewTabLink(linkTag)) return true
   if (isHashUrl(url)) return true
+  if (isRelativeUrl(url)) {
+    assertWarning(
+      false,
+      `[Client Router] Skipping \`<a href="${url}">\` link because \`${url}\` is a relative URL. If you need support for relative URLs, create a new GitHub ticket.`
+    )
+    return true
+  }
 
   return false
 }
