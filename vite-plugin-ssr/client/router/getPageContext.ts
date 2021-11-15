@@ -112,8 +112,13 @@ async function getPageContextFromRoute(
   }
   const pageContextFromRoute = routeResult.pageContextAddendum
   if (pageContextFromRoute._pageId === null) {
-    handle404(pageContext)
-    assert(false)
+    setTimeout(() => {
+      handle404(pageContext)
+    }, 0)
+    assertUsage(
+      false,
+      `[404] Page ${pageContext.url} does not exist. (\`vite-plugin-ssr\` will now server-side route to \`${pageContext.url}\`.)`
+    )
   } else {
     assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
   }
