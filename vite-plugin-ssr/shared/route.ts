@@ -1,6 +1,7 @@
 import type { AllPageFiles } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps } from './addComputedurlProps'
+import type { GetUrlNormalized } from './addComputedurlProps'
 import { pickWinner, RouteType } from './route/pickWinner'
 import { resolveRouteString } from './route/resolveRouteString'
 import { resolveFilesystemRoute } from './route/resolveFilesystemRoute'
@@ -20,11 +21,12 @@ export { isStaticRoute } from './route/resolveRouteString'
 
 type PageContextForRoute = {
   url: string
+  _baseUrl: string
   _allPageIds: string[]
   _allPageFiles: AllPageFiles
   _pageRoutes: PageRoutes
   _onBeforeRouteHook: null | OnBeforeRouteHook
-  _getUrlNormalized: (url: string) => string
+  _getUrlNormalized: GetUrlNormalized
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
 async function route(

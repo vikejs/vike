@@ -1,9 +1,8 @@
 import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage, renderPageWithoutThrowing } from './renderPage'
-import { hasProp } from '../shared/utils'
+import { assertBaseUrl, hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { normalize as pathNormalize } from 'path'
-import { assertBaseUrl } from './baseUrlHandling'
 import { importBuildWasCalled } from './importBuild'
 import type { ViteDevServer } from 'vite'
 

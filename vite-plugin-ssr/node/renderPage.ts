@@ -25,9 +25,10 @@ import {
   compareString,
   assertExports,
   stringifyStringArray,
-  handleUrlOrigin
+  handleUrlOrigin,
+  analyzeBaseUrl,
+  assertBaseUrl
 } from '../shared/utils'
-import { analyzeBaseUrl } from './baseUrlHandling'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import {
   loadPageIsomorphicFiles,
@@ -79,17 +80,12 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 > {
   assertArguments(...arguments)
 
-  const pageContext = initializePageContext(pageContextInit)
+  const pageContext = await initializePageContext(pageContextInit)
 
   if ('httpResponse' in pageContext) {
     assert(pageContext.httpResponse === null)
     return pageContext
   }
-
-  const globalContext = await getGlobalContext()
-  objectAssign(pageContext, globalContext)
-
-  addComputedUrlProps(pageContext)
 
   // *** Route ***
   const routeResult = await route(pageContext)
@@ -179,7 +175,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   }
 }
 
-function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
+async function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
   const pageContext = {
     _isPreRendering: false as const,
     ...pageContextInit
@@ -190,7 +186,8 @@ function initializePageContext<PageContextInit extends { url: string }>(pageCont
     return pageContext
   }
 
-  const { isPageContextRequest, hasBaseUrl } = analyzeUrl(pageContext.url)
+  const baseUrl = getBaseUrl()
+  const { isPageContextRequest, hasBaseUrl } = analyzeUrl(pageContext.url, baseUrl)
   if (!hasBaseUrl) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
@@ -198,6 +195,11 @@ function initializePageContext<PageContextInit extends { url: string }>(pageCont
   objectAssign(pageContext, {
     _isPageContextRequest: isPageContextRequest
   })
+
+  const globalContext = await getGlobalContext()
+  objectAssign(pageContext, globalContext)
+
+  addComputedUrlProps(pageContext)
 
   return pageContext
 }
@@ -229,12 +231,9 @@ async function renderPageWithoutThrowing(
 async function render500Page<PageContextInit extends { url: string }>(pageContextInit: PageContextInit, err: unknown) {
   assert(hasAlreadyLogged(err))
 
-  const pageContext = initializePageContext(pageContextInit)
+  const pageContext = await initializePageContext(pageContextInit)
   // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
   assert(!('httpResponse' in pageContext))
-
-  objectAssign(pageContext, { _getUrlNormalized: (url: string) => getUrlNormalized(url) })
-  addComputedUrlProps(pageContext)
 
   objectAssign(pageContext, {
     is404: false,
@@ -251,14 +250,6 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
-
-  const allPageFiles = await getAllPageFiles()
-  objectAssign(pageContext, {
-    _allPageFiles: allPageFiles
-  })
-
-  const allPageIds = await determinePageIds(allPageFiles)
-  objectAssign(pageContext, { _allPageIds: allPageIds })
 
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (errorPageId === null) {
@@ -492,7 +483,12 @@ type PageServerFiles = {
 }
 //*/
 
-async function loadPageFiles(pageContext: { _pageId: string; _allPageFiles: AllPageFiles; _isPreRendering: boolean }) {
+async function loadPageFiles(pageContext: {
+  _pageId: string
+  _baseUrl: string
+  _allPageFiles: AllPageFiles
+  _isPreRendering: boolean
+}) {
   const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles(
     pageContext
   )
@@ -1041,12 +1037,15 @@ function isFileRequest(urlPathname: string) {
   return /^[a-z0-9]+$/.test(fileExtension)
 }
 
-function getUrlNormalized(url: string) {
-  const { urlNormalized } = analyzeUrl(url)
+function getUrlNormalized(url: string, baseUrl: string) {
+  const { urlNormalized } = analyzeUrl(url, baseUrl)
   return urlNormalized
 }
 
-function analyzeUrl(url: string): {
+function analyzeUrl(
+  url: string,
+  baseUrl: string
+): {
   urlNormalized: string
   isPageContextRequest: boolean
   hasBaseUrl: boolean
@@ -1056,7 +1055,7 @@ function analyzeUrl(url: string): {
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
   url = urlWithoutPageContextRequestSuffix
 
-  const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url)
+  const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url, baseUrl)
   url = urlWithoutBaseUrl
 
   url = handleUrlOrigin(url).urlWithoutOrigin
@@ -1069,8 +1068,11 @@ function analyzeUrl(url: string): {
 
 async function getGlobalContext() {
   const globalContext = {
-    _getUrlNormalized: (url: string) => getUrlNormalized(url)
+    _getUrlNormalized: (pageContext: { url: string; _baseUrl: string }) =>
+      getUrlNormalized(pageContext.url, pageContext._baseUrl),
+    _baseUrl: getBaseUrl()
   }
+  assertBaseUrl(globalContext._baseUrl)
 
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, {
@@ -1146,4 +1148,9 @@ function viteErrorCleanup(err: unknown) {
       viteDevServer.ssrFixStacktrace(err as Error)
     }
   }
+}
+
+function getBaseUrl(): string {
+  const { baseUrl } = getSsrEnv()
+  return baseUrl
 }

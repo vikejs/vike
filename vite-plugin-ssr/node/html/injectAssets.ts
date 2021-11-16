@@ -1,8 +1,16 @@
-import { assert, assertUsage, castProp, hasProp, higherFirst, normalizePath, slice } from '../../shared/utils'
+import {
+  assert,
+  assertUsage,
+  castProp,
+  hasProp,
+  higherFirst,
+  normalizePath,
+  prependBaseUrl,
+  slice
+} from '../../shared/utils'
 import { getPreloadUrls } from '../getPreloadTags'
 import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'
-import { prependBaseUrl } from '../baseUrlHandling'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
 import { AllPageFiles } from '../../shared/getPageFiles'
@@ -28,6 +36,7 @@ type PageAsset = {
 async function getPageAssets(
   pageContext: {
     _allPageFiles: AllPageFiles
+    _baseUrl: string
   },
   dependencies: string[],
   pageClientFilePath: string,
@@ -66,7 +75,7 @@ async function getPageAssets(
   })
 
   pageAssets = pageAssets.map((pageAsset) => {
-    pageAsset.src = prependBaseUrl(normalizePath(pageAsset.src))
+    pageAsset.src = prependBaseUrl(normalizePath(pageAsset.src), pageContext._baseUrl)
     return pageAsset
   })
 

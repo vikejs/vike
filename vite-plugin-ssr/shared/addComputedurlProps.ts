@@ -2,11 +2,17 @@ import { assert, getUrlPathname, getUrlParsed, UrlParsed, hasProp } from './util
 
 export { addComputedUrlProps }
 export type { PageContextUrls }
+export type { GetUrlNormalized }
 
+type GetUrlNormalized = (pageContext: { url: string; _baseUrl: string }) => string
 type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
 
 function addComputedUrlProps<
-  PageContext extends Record<string, unknown> & { url: string; _getUrlNormalized: (url: string) => string }
+  PageContext extends Record<string, unknown> & {
+    url: string
+    _baseUrl: string
+    _getUrlNormalized: GetUrlNormalized
+  }
 >(pageContext: PageContext): asserts pageContext is PageContext & PageContextUrls {
   if ('urlNormalized' in pageContext) {
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlNormalized')?.get === urlNormalizedGetter)
@@ -30,9 +36,9 @@ function addComputedUrlProps<
     })
   }
 }
-function urlNormalizedGetter(this: { url: string; _getUrlNormalized: (url: string) => string }) {
+function urlNormalizedGetter(this: { url: string; _baseUrl: string; _getUrlNormalized: GetUrlNormalized }) {
   assert(hasProp(this, 'url', 'string'))
-  const urlNormalized = this._getUrlNormalized(this.url)
+  const urlNormalized = this._getUrlNormalized(this)
   return urlNormalized
 }
 function urlPathnameGetter(this: { urlNormalized: string }) {

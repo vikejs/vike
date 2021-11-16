@@ -1,7 +1,15 @@
 import { determinePageIds } from '../../shared/determinePageIds'
 import { getAllPageFiles } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route'
-import { assert, handleUrlOrigin, hasProp, objectAssign, PromiseType } from '../../shared/utils'
+import {
+  analyzeBaseUrl,
+  assert,
+  assertBaseUrl,
+  handleUrlOrigin,
+  hasProp,
+  objectAssign,
+  PromiseType
+} from '../../shared/utils'
 
 export { getGlobalContext }
 export type { ServerFiles }
@@ -18,8 +26,11 @@ async function getGlobalContext() {
 type ServerFiles = { filePath: string; fileExports: { hasExportOnBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
   const globalContext = {
-    _getUrlNormalized: (url: string) => getUrlNormalized(url)
+    _getUrlNormalized: (pageContext: { url: string; _baseUrl: string }) =>
+      getUrlNormalized(pageContext.url, pageContext._baseUrl),
+    _baseUrl: import.meta.env.BASE_URL
   }
+  assertBaseUrl(globalContext._baseUrl)
 
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, { _allPageFiles: allPageFiles })
@@ -45,8 +56,13 @@ async function retrieveGlobalContext() {
   return globalContext
 }
 
-function getUrlNormalized(url: string) {
+function getUrlNormalized(url: string, baseUrl: string) {
   assert(url)
+
+  const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url, baseUrl)
+  assert(hasBaseUrl)
+  url = urlWithoutBaseUrl
+
   const urlNormalized = handleUrlOrigin(url).urlWithoutOrigin
   assert(urlNormalized.startsWith('/'))
   return urlNormalized

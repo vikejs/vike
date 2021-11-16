@@ -1,6 +1,4 @@
-import { addUrlOrigin, assert, assertUsage, handleUrlOrigin, slice } from '../shared/utils'
-
-import { getSsrEnv } from './ssrEnv'
+import { addUrlOrigin, assert, assertUsage, handleUrlOrigin, slice } from '../../shared/utils'
 
 export { analyzeBaseUrl }
 export { prependBaseUrl }
@@ -25,14 +23,15 @@ function assertBaseUrl(baseUrl: string, usageErrorMessagePrefix?: string) {
   )
 }
 
-function analyzeBaseUrl(url_: string) {
+function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: string; hasBaseUrl: boolean } {
+  assertBaseUrl(baseUrl)
+
   // Unmutable
   const urlPristine = url_
   // Mutable
   let url = url_
 
   assert(url.startsWith('/') || url.startsWith('http'))
-  const baseUrl = getBaseUrl()
   assert(baseUrl.startsWith('/') || baseUrl.startsWith('http'))
 
   if (baseUrl === '/') {
@@ -82,8 +81,8 @@ function analyzeBaseUrl(url_: string) {
   return { urlWithoutBaseUrl: url, hasBaseUrl: true }
 }
 
-function prependBaseUrl(url: string): string {
-  let baseUrl = getBaseUrl()
+function prependBaseUrl(url: string, baseUrl: string): string {
+  assertBaseUrl(baseUrl)
 
   // Probably safer to remove the origin; `prependBaseUrl()` is used when injecting static assets in HTML;
   // origin is useless in static asset URLs, while the origin causes trouble upon `https`/`http` mismatch.
@@ -99,10 +98,4 @@ function prependBaseUrl(url: string): string {
   assert(!baseUrl.endsWith('/'))
   assert(url.startsWith('/'))
   return `${baseUrl}${url}`
-}
-
-function getBaseUrl(): string {
-  const { baseUrl } = getSsrEnv()
-  assertBaseUrl(baseUrl)
-  return baseUrl
 }
