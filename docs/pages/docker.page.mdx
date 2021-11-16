@@ -1,10 +1,18 @@
 From a Docker perspective, a `vite-plugin-ssr` app is just a Node.js server, so we can use any Node.js server Docker configuration.
 
-If we want to use Docker for development as well, we need to properly configure Docker for the HMR port.
+If we want to use Docker for development as well, we need to properly configure Docker for the Vite's HMR port.
 
 If we use Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/), we need to to configure [`chockidar`](https://github.com/paulmillr/chokidar) to use polling. (Vite uses `chockidar`.)
 
-> "dev": "CHOKIDAR_USEPOLLING=true npm run server"
+```json
+// package.json
+
+{
+  "scripts": {
+    "dev": "CHOKIDAR_USEPOLLING=true npm run server"
+  ]
+}
+```
 
 Note that [it has been reported](https://discord.com/channels/815937377888632913/815937377888632916/910110118375489567) that [vite.config.js#server.watch.usePolling](https://vitejs.dev/config/#server-watch) doesn't work.
 
