@@ -127,13 +127,18 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Route Strings & Route Functions',
-    url: '/route-strings-and-route-functions'
+    title: 'Filesystem Routing',
+    url: '/filesystem-routing'
   },
   {
     level: 2,
-    title: 'Vue Router & React Router',
-    url: '/vue-router-and-react-router'
+    title: 'Route String',
+    url: '/route-string'
+  },
+  {
+    level: 2,
+    title: 'Route Function',
+    url: '/route-function'
   },
   {
     level: 2,
@@ -152,13 +157,18 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Catch-All Routes',
+    url: '/catch-all'
+  },
+  {
+    level: 2,
     title: 'Nested Routes',
     url: '/nested-routes'
   },
   {
     level: 2,
-    title: 'Catch-All Routes',
-    url: '/catch-all'
+    title: 'Vue Router & React Router',
+    url: '/vue-router-and-react-router'
   },
   {
     level: 1,
@@ -500,25 +510,8 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Filesystem Routing',
-    url: '/filesystem-routing'
-  },
-  {
-    level: 2,
     title: '`.page.route.js`',
     url: '/.page.route.js'
-  },
-  {
-    level: 2,
-    title: 'Route String',
-    isListTitle: true,
-    url: '/route-string'
-  },
-  {
-    level: 2,
-    title: 'Route Function',
-    isListTitle: true,
-    url: '/route-function'
   },
   {
     level: 2,

@@ -1,21 +1,83 @@
-import RouteStringsAndRouteFunctions from '../components/route-strings-and-route-functions.mdx'
-
 By default `vite-plugin-ssr` does:
- - Server Routing, but we can use Client Routing instead.
- - Filesystem Routing, but we can also use *Route Strings* and *Route Functions* to define advanced routes.
+ - *Server Routing*, but we can use *Client Routing* instead.
+ - *Filesystem Routing*, but we can also use *Route Strings* and *Route Functions*.
 
 ## Server Routing or Client Routing?
 
 `vite-plugin-ssr` hast first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
 
-The guide [Server Routing VS Client Routing](/SR-vs-CR) helps us choose which one to use.
+The [Routing > Server Routing VS Client Routing](/SR-vs-CR) guide helps us choose which one to use.
 
 ## React Router / Vue Router
 
-Instead of using React Router or Vue Router, we recommend only using `vite-plugin-ssr`'s built-in router.
+Instead of using React Router or Vue Router, we recommend to only use `vite-plugin-ssr`'s built-in router.
 
-That said, `vite-plugin-ssr` has support for both Vue Router and React Router, see the [Vue Router & React Router](/vue-router-and-react-router) guide.
+That said, `vite-plugin-ssr` has support for both Vue Router and React Router, see [Routing > Vue Router & React Router](/vue-router-and-react-router).
 
 ## Filesystem Routing VS Route Strings VS Route Functions
 
-<RouteStringsAndRouteFunctions />
+By default, `vite-plugin-ssr` does Filesystem Routing:
+
+```
+FILESYSTEM                  URL
+pages/index.page.js         /
+pages/about.page.js         /about
+pages/faq/index.page.js     /faq
+```
+
+For advanced routes we define so-called "Route Strings" and "Route Functions" in `.page.route.js` files.
+
+```js
+// /pages/product.page.route.js
+
+// This file defines the route of `/pages/product.page.js`
+
+// A Route String enables to easily define a parameterized route
+export default '/product/:productId'
+// `productId` is available at `pageContext.routeParams.productId`
+```
+
+```js
+// /pages/product-edit.page.route.js
+
+// This file defines the route of `/pages/product-edit.page.js`
+
+import partRegex from 'part-regex'
+
+// A Route Function enables full programmatic flexibility
+export default async (pageContext) => {
+  const { url } = pageContext
+  // Only URLs like `/product/[0-9]+/edit`
+  if (!partRegex`/product/${/[0-9]+/}/edit`.test(url)) {
+    return false
+  }
+
+  // Route Functions enable Route Guards.
+  // `pageContext.user` is defined in the server middleware, see https://vite-plugin-ssr.com/auth
+  if (!pageContext.user.isAdmin) {
+    return false
+  }
+
+  // Only if there is a product matching `productId`
+  const productId = url.split('/')[2]
+  const product = await db.fetchProduct(productId)
+  if (!product) {
+    return false
+  }
+
+  return {
+    // We make `product` available as `pageContext.routeParams.product` so we can
+    // access it anywhere, see https://vite-plugin-ssr.com/pageContext-anywhere
+    routeParams: {
+      product,
+    }
+  }
+}
+```
+
+Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
+
+See also:
+ - [Routing > Filesystem Routing](/filesystem-routing)
+ - [Routing > Route String](/route-string)
+ - [Routing > Route Function](/route-function)

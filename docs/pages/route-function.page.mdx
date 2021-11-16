@@ -61,7 +61,7 @@ that's why `vite-plugin-ssr` always runs all Route Functions upon each page requ
 If the route of two pages both match the same URL then we have a route conflict:
 `vite-plugin-ssr` cannot know which of the two pages should be rendered for that URL.
 
-Route conflicts are resolved by picking the first route in following order:
+Upon route conflicts, `vite-plugin-ssr` chooses the first route in following order:
  1. Route Function, returned high positive `precedence` number
  2. Route Function, returned low positive `precedence` number
  3. Filesystem Routing

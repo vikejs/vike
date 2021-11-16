@@ -28,13 +28,13 @@ We can use Route Strings to implement [catch-all routes](/catch-all).
 
 ## Precedence
 
-The precedence of Route Strings is determined by specificity, for example:
-- Most specific `/about/team` first (matches only a single URL)
-- Less specific `/about/:path` second (also matches `/about/company`, `/about/vision`, ...)
-- Less specific `/about/*` third (also matches `/about/also/nested/path`)
-- Least specific `/*` last (matches all URLs)
+Upon Route String conflicts, `vite-plugin-ssr` chooses the first route in following order:
+1. Most specific `/about/team` (matches only a single URL)
+1. Less specific `/about/:path` (also matches `/about/company`, `/about/vision`, ...)
+1. Less specific `/about/*` (also matches `/about/also/nested/path`)
+1. Least specific `/*` (matches all URLs)
 
-Further examples at [`precedence.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/master/vite-plugin-ssr/shared/route/precedence.spec.ts).
+Further examples can be found at [`precedence.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/master/vite-plugin-ssr/shared/route/precedence.spec.ts).
 
 ## More
 

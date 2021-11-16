@@ -1,4 +1,6 @@
-The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to change the base of Filesystem Routing.
+The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to change the URL root of Filesystem Routing.
+
+> **Do not change the base URL using `filesystemRoutingRoot`**, see the [Base URL](/base-url) guide instead.
 
 For example:
 
@@ -26,5 +28,3 @@ PROJECT FILES                                    URL
 ```
 
 `filesystemRoutingRoot` is especially useful for [domain-driven file structure](/file-structure#domain-driven).
-
-> Do not use `filesystemRoutingRoot` to change the base URL of your app, see the [Base URL](/base-url) guide instead.
