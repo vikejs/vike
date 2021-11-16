@@ -6,6 +6,7 @@ import {
   getUrlFullWithoutHash,
   hasProp,
   isBrowser,
+  isCallable,
   objectAssign
 } from '../../shared/utils'
 import { navigationState } from '../navigationState'
@@ -34,19 +35,22 @@ function useClientRouter({
   // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
   // render: (pageContext: Record<string, any>) => Promise<void> | void
   render: (pageContext: any) => Promise<void> | void
-  onTransitionStart: () => void
-  onTransitionEnd: () => void
+  onTransitionStart?: () => void
+  onTransitionEnd?: () => void
   ensureHydration?: boolean
   prefetchLinks?: boolean
 }): {
   hydrationPromise: Promise<void>
 } {
   assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
+  isAlreadyCalled = true
+  assertUsage(render, '[useClientRouter({render})]: Argument `render` is missing.')
+  assertUsage(isCallable(render), '[useClientRouter({render})]: Argument `render` should be a function.')
   assertWarning(
     !(isVueApp() && ensureHydration !== true),
     'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.'
   )
-  isAlreadyCalled = true
+
   autoSaveScrollPosition()
 
   onLinkClick((url: string, { keepScrollPosition }) => {
@@ -83,7 +87,9 @@ function useClientRouter({
 
     if (callNumber > 1) {
       if (isTransitioning === false) {
-        onTransitionStart()
+        if (onTransitionStart) {
+          onTransitionStart()
+        }
         isTransitioning = true
       }
     }
@@ -132,7 +138,9 @@ function useClientRouter({
     if (pageContext._isFirstRender) {
       resolveInitialPagePromise()
     } else if (callNumber === callCount) {
-      onTransitionEnd()
+      if (onTransitionEnd) {
+        onTransitionEnd()
+      }
       isTransitioning = false
     }
 
