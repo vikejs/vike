@@ -19,7 +19,7 @@ export default pageContext => {
   return {
     // We make `filmId` available as `pageContext.routeParams.filmId`
     routeParams: { filmId },
-    // To resolve routing conflicts, see "Precedence" section below.
+    // To resolve route conflicts, see "Precedence" section below.
     precedence: 10,
   }
 }
@@ -54,20 +54,101 @@ export default pageContext => {
 (FYI, this auth redirection trick is further explained at [Guides > Page Redirection > Auth Redirection](/page-redirection#auth-redirection).)
 
 `vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes;
-that's why `vite-plugin-ssr` alawys runs all Route Functions upon each page request.
+that's why `vite-plugin-ssr` always runs all Route Functions upon each page request.
 
 ## Precedence
 
-If the Route Function of two pages both return a truthy value for the same URL then we have a routing conflict:
-`vite-plugin-ssr` doesn't know which of the two pages should be rendered for that URL.
+If the route of two pages both match the same URL then we have a route conflict:
+`vite-plugin-ssr` cannot know which of the two pages should be rendered for that URL.
 
-To resolve route conflicts, Route Functions can return a `precedence` number:
-`vite-plugin-ssr` chooses the page with the Route Function that returned the highest `precedence` number.
+Route conflicts are resolved by picking the first route in following order:
+ 1. Route Function, returned high positive `precedence` number
+ 2. Route Function, returned low positive `precedence` number
+ 3. Filesystem Routing
+ 4. Route String, static (without `:param` segment, e.g. `/about/company`)
+ 5. Route Function, returned no `precedence` number
+ 6. Route String, parameterized (with `:param` segements, e.g. `/product/:productId` or `/product/*`)
+ 7. Route Function, returned low negative `precedence` number (e.g. `-1`)
+ 8. Route Function, returned high negative `precedence` number (e.g. `-99`)
 
-The precedence between Route Functions, Route Strings, and Filesystem Routing is:
- 1. Route Function + positive `precedence` number
- 2. Filesystem Routing
- 3. Route String Static (Route Strings without any `:parameter` segment)
- 4. Route Function + no `precedence` number
- 5. Route String Parameterized
- 6. Route Function + negative `precedence` number
+**Example (4) + (6) + (7)**:
+
+```js
+// product/item.page.route.js
+export default '/product/:productId'
+```
+```js
+// product/list.page.route.js
+export default '/product'
+```
+
+```js
+// product/catch-all.page.route.js
+export default pageContext => {
+  if (!pageContext.url.startsWith('/product/')) return false
+  return {
+    precedence: -1,
+    pageContext: {
+      // E.g. redirect `/product/wrong/url` to `/product`
+      redirectTo: '/product'
+    }
+  }
+}
+```
+
+```
+pageContext.url               MATCHES (ORDER)                            CHOSEN
+===============               ===============                            ======
+/product/42                   product/item.page.route.js      (6)        X
+                              product/catch-all.page.route.js (7)
+```
+```
+pageContext.url               MATCHES (ORDER)                            CHOSEN
+===============               ===============                            ======
+/product                      product/list.page.route.js      (4)        X
+                              product/catch-all.page.route.js (7)
+```
+```
+pageContext.url               MATCHES (ORDER)                            CHOSEN
+===============               ===============                            ======
+/product/wrong/url            product/catch-all.page.route.js (7)        X
+```
+
+4: Route String, static (without `:param` segment, e.g. `/about/company`)  
+6: Route String, parameterized (with `:param` segements, e.g. `/product/:productId` or `/product/*`)  
+7: Route Function, returned low negative `precedence` number (e.g. `-1`)  
+
+**Example (1) + (4)**:
+
+```js
+// admin.page.route.js
+export default '/admin'
+```
+```js
+// login.page.route.js
+
+export default pageContext => {
+  if( pageContext.user === null ) {
+    return {
+      precedence: 99
+    }
+  }
+  return false
+}
+```
+
+```
+pageContext.url       pageContext.user       MATCHES (ORDER)               CHOSEN
+===============       ================       ===============               ======
+/admin                null                   login.page.route.js (1)       X
+                                             admin.page.route.js (4)
+```
+```
+pageContext.url       pageContext.user       MATCHES (ORDER)               CHOSEN
+===============       ================       ===============               ======
+/admin                'brillout'             admin.page.route.js (4)       X
+```
+
+1: Route Function, returned high positive `precedence` number  
+4: Route String, static (without `:param` segment, e.g. `/about/company`)  
+
