@@ -1,5 +1,5 @@
 import { AllPageFiles, PageFile } from './getPageFiles'
-import { assert, assertUsage, slice } from './utils'
+import { assert, assertUsage, slice, unique } from './utils'
 
 export { determinePageIds }
 
@@ -38,9 +38,6 @@ function computePageId(filePath: string): string {
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
   assert(!pageId.includes('\\'))
   return pageId
-}
-function unique<T>(arr: T[]): T[] {
-  return Array.from(new Set(arr))
 }
 function isDefaultPageFile(filePath: string): boolean {
   assert(!filePath.includes('\\'))

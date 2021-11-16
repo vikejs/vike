@@ -1,4 +1,4 @@
-import { getErrorPageId, route, isErrorPage, loadPageRoutes, PageRoutes } from '../shared/route'
+import { getErrorPageId, route, loadPageRoutes, PageRoutes, isErrorPage } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import {
   AllPageFiles,
@@ -425,18 +425,6 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
   return prerenderPage(pageContext)
 }
 
-function getDefaultPassToClientProps(pageContext: { _pageId: string; pageProps?: Record<string, unknown> }): string[] {
-  const passToClient = []
-  if (isErrorPage(pageContext._pageId)) {
-    assert(hasProp(pageContext, 'is404', 'boolean'))
-    const pageProps = pageContext.pageProps || {}
-    pageProps['is404'] = pageProps['is404'] || pageContext.is404
-    pageContext.pageProps = pageProps
-    passToClient.push(...['pageProps', 'is404'])
-  }
-  return passToClient
-}
-
 type PageContextPublic = {
   url: string
   urlNormalized: string
@@ -445,6 +433,9 @@ type PageContextPublic = {
   routeParams: Record<string, string>
   Page: unknown
   pageExports: Record<string, unknown>
+  _pageId: string
+  is404?: boolean
+  pageProps?: Record<string, unknown>
 }
 function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
   assert(typeof pageContext.url === 'string')
@@ -454,7 +445,15 @@ function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
   assert(isPlainObject(pageContext.routeParams))
   assert('Page' in pageContext)
   assert(isObject(pageContext.pageExports))
+
   sortPageContext(pageContext)
+
+  if (isErrorPage(pageContext._pageId)) {
+    assert(hasProp(pageContext, 'is404', 'boolean'))
+    const pageProps = pageContext.pageProps || {}
+    pageProps['is404'] = pageProps['is404'] || pageContext.is404
+    pageContext.pageProps = pageProps
+  }
 }
 
 type PageServerFileProps = {
@@ -506,12 +505,8 @@ async function loadPageFiles(pageContext: {
     _pageClientPath: pageClientPath
   }
 
-  const passToClient: string[] = [
-    ...getDefaultPassToClientProps(pageContext),
-    ...(pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [])
-  ]
   objectAssign(pageFiles, {
-    _passToClient: passToClient
+    _passToClient: pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || []
   })
 
   const isPreRendering = pageContext._isPreRendering

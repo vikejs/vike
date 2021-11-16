@@ -1,14 +1,32 @@
 import { stringify } from '@brillout/json-s'
-import { assert, assertUsage, hasProp, isPlainObject } from '../shared/utils'
+import { isErrorPage } from '../shared/route'
+import { assert, assertUsage, hasProp, isPlainObject, unique } from '../shared/utils'
 
 export { serializePageContextClientSide }
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
 
-function serializePageContextClientSide(pageContext: { _pageId: string; _passToClient: string[] }) {
+function serializePageContextClientSide(pageContext: {
+  _pageId: string
+  _passToClient: string[]
+  is404?: boolean
+  pageProps?: Record<string, unknown>
+}) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
-  pageContext._passToClient.forEach((prop) => {
+
+  let passToClient = [...pageContext._passToClient]
+
+  if (isErrorPage(pageContext._pageId)) {
+    assert(hasProp(pageContext, 'is404', 'boolean'))
+    assert(hasProp(pageContext, 'pageProps'))
+    assert(hasProp(pageContext.pageProps, 'is404', 'boolean'))
+    passToClient.push(...['pageProps', 'is404'])
+  }
+
+  passToClient = unique(passToClient)
+
+  passToClient.forEach((prop) => {
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
   if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
@@ -28,7 +46,7 @@ function serializePageContextClientSide(pageContext: { _pageId: string; _passToC
   try {
     pageContextSerialized = serialize(pageContextClientWrapper)
   } catch (err) {
-    pageContext._passToClient.forEach((prop) => {
+    passToClient.forEach((prop) => {
       try {
         serialize((pageContext as Record<string, unknown>)[prop])
       } catch (err) {
