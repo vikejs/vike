@@ -26,7 +26,7 @@ function assertBaseUrl(baseUrl: string, usageErrorMessagePrefix?: string) {
 function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: string; hasBaseUrl: boolean } {
   assertBaseUrl(baseUrl)
 
-  // Unmutable
+  // Immutable
   const urlPristine = url_
   // Mutable
   let url = url_
@@ -56,11 +56,19 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
     assert(urlHasOrigin === baseUrlHasOrigin)
   }
 
-  if (!url.startsWith(baseUrl)) {
+  // Support `url === '/some-base-url' && baseUrl === '/some-base-url/'`
+  let baseUrlNormalized = baseUrl
+  if (baseUrl.endsWith('/') && url === slice(baseUrl, 0, -1)) {
+    baseUrlNormalized = slice(baseUrl, 0, -1)
+    assert(url === baseUrlNormalized)
+  }
+
+  if (!url.startsWith(baseUrlNormalized)) {
     return { urlWithoutBaseUrl: urlPristine, hasBaseUrl: false }
   }
   assert(url.startsWith('/') || url.startsWith('http'))
-  url = url.slice(baseUrl.length)
+  assert(url.startsWith(baseUrlNormalized))
+  url = url.slice(baseUrlNormalized.length)
   /* url can actually start with `httpsome-pathname`
   assert(!url.startsWith('http'))
   */
@@ -68,7 +76,6 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
   assert((handleUrlOrigin(url).urlOrigin===null))
   */
   if (!url.startsWith('/')) url = '/' + url
-  assert(url.startsWith('/'))
 
   if (urlOriginHasBeenRemoved) {
     assert(urlOrigin !== null)
@@ -78,6 +85,7 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
     assert(url.startsWith('http'))
   }
 
+  assert(url.startsWith('/') || url.startsWith('http'))
   return { urlWithoutBaseUrl: url, hasBaseUrl: true }
 }
 
