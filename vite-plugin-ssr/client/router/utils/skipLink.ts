@@ -1,4 +1,4 @@
-import { assertWarning, isRelativeUrl } from '../../../shared/utils'
+import { analyzeBaseUrl, assertBaseUrl, assertWarning, isRelativeUrl } from '../../../shared/utils'
 import { isExternalLink } from './isExternalLink'
 
 export { skipLink }
@@ -15,6 +15,9 @@ function skipLink(linkTag: HTMLElement): boolean {
       false,
       `[Client Router] Skipping \`<a href="${url}">\` link because \`${url}\` is a relative URL. If you need support for relative URLs, create a new GitHub ticket.`
     )
+    return true
+  }
+  if (!hasBaseUrl(url)) {
     return true
   }
 
@@ -35,4 +38,10 @@ function isHashUrl(url: string) {
     return true
   }
   return false
+}
+function hasBaseUrl(url: string): boolean {
+  const baseUrl = import.meta.env.BASE_URL
+  assertBaseUrl(baseUrl)
+  const { hasBaseUrl } = analyzeBaseUrl(url, baseUrl)
+  return hasBaseUrl
 }
