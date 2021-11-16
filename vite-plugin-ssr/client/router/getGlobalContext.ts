@@ -60,7 +60,7 @@ function getUrlNormalized(url: string, baseUrl: string) {
   assert(url)
 
   const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url, baseUrl)
-  assert(hasBaseUrl)
+  assert(hasBaseUrl, { url, baseUrl })
   url = urlWithoutBaseUrl
 
   const urlNormalized = handleUrlOrigin(url).urlWithoutOrigin
