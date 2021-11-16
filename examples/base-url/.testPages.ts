@@ -34,13 +34,17 @@ function testPages(
     });
   });
 
-  test("about page", async () => {
+  test("Client Routing", async () => {
     await page.click(`a[href="${addBaseUrl("/about")}"]`);
-    expect(await page.textContent("h1")).toBe("About");
     await autoRetry(async () => {
-      expect(await page.$eval("h1", (e) => getComputedStyle(e).color)).toBe(
-        "rgb(0, 128, 0)"
-      );
+      expect(await page.textContent("h1")).toBe("About");
     });
+
+    // Page was Client-side Routed; we check whether the HTML is from the first page before Client-side Routing
+    const html = await page.content();
+    // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
+    // Therefore only the serialized `pageContext` tell us the original HTML.
+    expect(html.split("_pageId").length).toBe(2);
+    expect(html).toContain('"_pageId":"/pages/index"');
   });
 }

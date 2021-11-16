@@ -43,7 +43,8 @@ function testPages(
       expect(await page.textContent("h1")).toBe("Star Wars Movies");
     });
     expect(await page.textContent("body")).toContain("The Phantom Menace");
-    // The HTML is from the first page before client-side routing
+
+    // Page was Client-side Routed; we check whether the HTML is from the first page before Client-side Routing
     const html = await page.content();
     // `page.content()` doesn't return the original HTML (it dumps the DOM to HTML).
     // Therefore only the serialized `pageContext` tell us the original HTML.
