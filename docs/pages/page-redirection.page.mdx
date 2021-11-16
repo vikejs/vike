@@ -1,9 +1,9 @@
 ## Auth Redirection
 
 Most URL redirections are about protecting URLs from unauthenticated users:
-if a user is not authenticated and goes to `/admin/panel` then we redirect him to `/login`.
+if a user is not authenticated and goes to `/admin/panel` then we redirect the user to `/login`.
 
-But, alternatively, we can use a Route Function instead of doing a URL redirection.
+Alternatively, we can use a Route Function instead of doing a URL redirection.
 
 ```js
 // admin.page.route.js
@@ -31,7 +31,7 @@ export default pageContext => {
 
 After the user has successfully completed the Login Form rendered at `/admin/panel`, we can do a `window.location.reload()` and `/admin/panel` will now render the Admin Panel. This means that the user always stays on `/admin/panel` during the entire authentication flow.
 
-That said, we can still perform a page redirection if we want. See sections below.
+However, we can still perform a page redirection if we want. See sections below.
 
 ## Server-side
 
@@ -149,8 +149,8 @@ useClientRouter({
 
 ## Hydration Mismatch
 
-If we use Client Routing we may end up with a [hydration mismatch](/hydration#hydration-mismatch).
+If we use Client Routing we may end up with a [hydration mismatch](/hydration-mismatch).
 
 To remove the hydration mismatch, we may need to redirect on both the client-side and server-side.
 
-There are situations when server-side redirection is not an option and we can only redirect on the client-side. In such case we can [suppress the hydration mismatch warning](/hydration#hydration-mismatch). Alternatively, we can also first hydrate the original page (before redirecting) and then redirect and render the new page.
+There are situations when server-side redirection is not an option and we can only redirect on the client-side. In such case we can [suppress the hydration mismatch warning](/hydration-mismatch#suppress-hydration-mismatch). Alternatively, we can also first hydrate the original page (before redirecting) and then redirect and render the new page.
