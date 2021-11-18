@@ -7,7 +7,7 @@ import {
   sep as pathSep,
   posix as pathPosix
 } from 'path'
-import { assert, isObject } from '../../shared/utils'
+import { assert, assertUsage, isObject } from '../../shared/utils'
 import * as glob from 'fast-glob'
 
 export { build }
@@ -97,7 +97,12 @@ function pathRelativeToRoot(filePath: string, config: UserConfig): string {
 
 function getRoot(config: UserConfig): string {
   let root = config.root || process.cwd()
-  assert(pathIsAbsolute(root))
+  assertUsage(
+    pathIsAbsolute(root),
+    // Looking at Vite's source code, Vite does seem to normalize `root`.
+    // But this doens't seem to be always the case, see https://github.com/brillout/vite-plugin-ssr/issues/208
+    'The `root` config in your `vite.config.js` should be an absolute path. (I.e. `/path/to/root` instead of `../path/to/root`.)'
+  )
   root = posixPath(root)
   return root
 }
