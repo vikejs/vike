@@ -4,7 +4,6 @@ import {
   autoRetry,
   fetchHtml,
   isGithubAction,
-  isLinux,
 } from "../../libframe/test/setup";
 
 export { runTests };
@@ -15,8 +14,8 @@ function runTests(
 ) {
   const isWorker = cmd === "npm run dev:miniflare" || cmd === "npm run prod";
 
-  if (isWindows() && isWorker) {
-    test("SKIPED: miniflare and wrangler don't work on Windows", () => {});
+  if ((isWindows() || isNode12()) && isWorker) {
+    test("SKIPED: miniflare and wrangler", () => {});
     return;
   }
 
@@ -72,4 +71,7 @@ function runTests(
 
 function isWindows() {
   return process.platform === "win32";
+}
+function isNode12() {
+  return process.version.startsWith("v12.");
 }
