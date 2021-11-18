@@ -65,8 +65,7 @@ function serializePageContextClientSide(pageContext: {
 }
 
 function addIs404ToPageProps(pageContext: { is404: boolean; pageProps?: Record<string, unknown> }) {
-  assert(hasProp(pageContext, 'pageProps'))
-  assert(hasProp(pageContext.pageProps, 'is404', 'boolean'))
+  assert(typeof pageContext.is404 === 'boolean')
   const pageProps = pageContext.pageProps || {}
   pageProps['is404'] = pageProps['is404'] || pageContext.is404
   pageContext.pageProps = pageProps
