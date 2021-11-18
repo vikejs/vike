@@ -437,7 +437,7 @@ type PageContextPublic = {
   is404?: boolean
   pageProps?: Record<string, unknown>
 }
-function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
+function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T) {
   assert(typeof pageContext.url === 'string')
   assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
@@ -774,7 +774,7 @@ async function executeRenderHook(
   )
   assert(renderFilePath)
 
-  preparePageContextNode(pageContext)
+  preparePageContextForRelease(pageContext)
 
   const hookName = 'render'
 
