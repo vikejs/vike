@@ -54,7 +54,7 @@ import {
   StreamWritableNode,
   StreamWritableWeb
 } from './html/stream'
-import { serializePageContextClientSide } from './serializePageContextClientSide'
+import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps } from '../shared/addComputedurlProps'
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
@@ -450,9 +450,7 @@ function preparePageContextNode<T extends PageContextPublic>(pageContext: T) {
 
   if (isErrorPage(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
-    const pageProps = pageContext.pageProps || {}
-    pageProps['is404'] = pageProps['is404'] || pageContext.is404
-    pageContext.pageProps = pageProps
+    addIs404ToPageProps(pageContext)
   }
 }
 

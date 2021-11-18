@@ -3,6 +3,7 @@ import { isErrorPage } from '../shared/route'
 import { assert, assertUsage, hasProp, isPlainObject, unique } from '../shared/utils'
 
 export { serializePageContextClientSide }
+export { addIs404ToPageProps }
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
@@ -19,8 +20,7 @@ function serializePageContextClientSide(pageContext: {
 
   if (isErrorPage(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
-    assert(hasProp(pageContext, 'pageProps'))
-    assert(hasProp(pageContext.pageProps, 'is404', 'boolean'))
+    addIs404ToPageProps(pageContext)
     passToClient.push(...['pageProps', 'is404'])
   }
 
@@ -62,4 +62,12 @@ function serializePageContextClientSide(pageContext: {
   }
 
   return pageContextSerialized
+}
+
+function addIs404ToPageProps(pageContext: { is404: boolean; pageProps?: Record<string, unknown> }) {
+  assert(hasProp(pageContext, 'pageProps'))
+  assert(hasProp(pageContext.pageProps, 'is404', 'boolean'))
+  const pageProps = pageContext.pageProps || {}
+  pageProps['is404'] = pageProps['is404'] || pageContext.is404
+  pageContext.pageProps = pageProps
 }
