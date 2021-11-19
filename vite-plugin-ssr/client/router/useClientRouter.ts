@@ -68,7 +68,7 @@ function useClientRouter({
   let resolveInitialPagePromise: () => void
   const hydrationPromise = new Promise<void>((resolve) => (resolveInitialPagePromise = resolve))
 
-  let callCount = 0
+  let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
   fetchAndRender('preserve-scroll')
@@ -76,11 +76,11 @@ function useClientRouter({
   return { hydrationPromise }
 
   async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
-    const callNumber = ++callCount
-    assert(callNumber >= 1)
+    const renderingNumber = ++renderingCounter
+    assert(renderingNumber >= 1)
 
     // Start transition before any await's
-    if (callNumber > 1) {
+    if (renderingNumber > 1) {
       if (isTransitioning === false) {
         if (onTransitionStart) {
           onTransitionStart()
@@ -90,27 +90,36 @@ function useClientRouter({
     }
 
     if (ensureHydration) {
-      if (callNumber > 1) {
+      if (renderingNumber > 1) {
         await hydrationPromise
       }
     }
 
+    const shouldAbort = () => {
+      // We should never abort the hydration if `ensureHydration: true`
+      if (ensureHydration && renderingNumber === 1) {
+        return false
+      }
+      // If there is a newer rendering, we should abort all previous renderings
+      if (renderingNumber !== renderingCounter) {
+        return true
+      }
+      return false
+    }
+
     const globalContext = await getGlobalContext()
-    if (callNumber !== callCount && (!ensureHydration || callNumber !== 1)) {
-      // Abort since there is a newer call and is not hydrating.
+    if (shouldAbort()) {
       return
     }
     const pageContext = {
       url,
-      _isFirstRender: callNumber === 1,
-      _noNavigationChangeYet: navigationState.noNavigationChangeYet,
+      _isFirstRender: renderingNumber === 1,
       ...globalContext
     }
     addComputedUrlProps(pageContext)
 
     const pageContextAddendum = await getPageContext(pageContext)
-    if (callNumber !== callCount && (!ensureHydration || callNumber !== 1)) {
-      // Abort since there is a newer call and is not hydrating.
+    if (shouldAbort()) {
       return
     }
     objectAssign(pageContext, pageContextAddendum)
@@ -120,8 +129,7 @@ function useClientRouter({
       // otherwise that previous render may finish after this one.
       await renderPromise
     }
-    if (callNumber !== callCount && (!ensureHydration || callNumber !== 1)) {
-      // Abort since there is a newer call and is not hydrating.
+    if (shouldAbort()) {
       return
     }
 
@@ -138,7 +146,7 @@ function useClientRouter({
 
     if (pageContext._isFirstRender) {
       resolveInitialPagePromise()
-    } else if (callNumber === callCount) {
+    } else if (renderingNumber === renderingCounter) {
       if (onTransitionEnd) {
         onTransitionEnd()
       }

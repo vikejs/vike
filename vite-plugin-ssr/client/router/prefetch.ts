@@ -24,7 +24,6 @@ async function prefetch(url: string): Promise<void> {
   const globalContext = await getGlobalContext()
   const pageContext = {
     url,
-    _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
     ...globalContext
   }
   addComputedUrlProps(pageContext)
