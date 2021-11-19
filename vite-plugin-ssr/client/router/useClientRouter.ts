@@ -79,12 +79,7 @@ function useClientRouter({
     const callNumber = ++callCount
     assert(callNumber >= 1)
 
-    if (ensureHydration) {
-      if (callNumber > 1) {
-        await hydrationPromise
-      }
-    }
-
+    // Start transition before any await's
     if (callNumber > 1) {
       if (isTransitioning === false) {
         if (onTransitionStart) {
@@ -94,22 +89,28 @@ function useClientRouter({
       }
     }
 
+    if (ensureHydration) {
+      if (callNumber > 1) {
+        await hydrationPromise
+      }
+    }
+
     const globalContext = await getGlobalContext()
-    if (callNumber !== callCount) {
-      // Abort since there is a newer call.
+    if (callNumber !== callCount && (!ensureHydration || callNumber !== 1)) {
+      // Abort since there is a newer call and is not hydrating.
       return
     }
     const pageContext = {
       url,
       _isFirstRender: callNumber === 1,
-      _noNavigationnChangeYet: navigationState.noNavigationChangeYet,
+      _noNavigationChangeYet: navigationState.noNavigationChangeYet,
       ...globalContext
     }
     addComputedUrlProps(pageContext)
 
     const pageContextAddendum = await getPageContext(pageContext)
-    if (callNumber !== callCount) {
-      // Abort since there is a newer call.
+    if (callNumber !== callCount && (!ensureHydration || callNumber !== 1)) {
+      // Abort since there is a newer call and is not hydrating.
       return
     }
     objectAssign(pageContext, pageContextAddendum)
@@ -119,8 +120,8 @@ function useClientRouter({
       // otherwise that previous render may finish after this one.
       await renderPromise
     }
-    if (callNumber !== callCount) {
-      // Abort since there is a newer call.
+    if (callNumber !== callCount && (!ensureHydration || callNumber !== 1)) {
+      // Abort since there is a newer call and is not hydrating.
       return
     }
 
