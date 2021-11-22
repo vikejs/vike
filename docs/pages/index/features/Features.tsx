@@ -1,7 +1,6 @@
 import React from 'react'
 import { Emoji } from 'libframe-docs/utils/Emoji'
 import { FeatureList } from 'libframe-docs/landing-page/features/FeatureList'
-import { TextContactUs } from 'libframe-docs/components/TextContactUs'
 import Control from './Control.mdx'
 import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
@@ -49,7 +48,7 @@ function Features() {
                 <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
               </p>
               <p>
-                Pages can be rendered with <b>SSR</b>, as <b>SPA</b>, or to <b>HTML-only</b>.
+                All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different mode.
               </p>
             </>
           ),

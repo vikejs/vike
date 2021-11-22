@@ -1,0 +1,113 @@
+For each page, we can choose:
+ - Whether the page is rendered to HTML.
+ - When the page is rendered to HTML.
+ - Whether the page is rendered(/hydrated) in the browser.
+
+In other words, we can use any render mode:
+ - SSR: the page is rendered to HTML and also rendered(/hydrated) in the browser-side.
+ - SSG (aka pre-rendering): the page is rendered to HTML at build-time.
+ - SPA (aka MPA): the page is not rendered to HTML; it's only rendered in the browser.
+ - HTML-only: the the page is rendered only to HTML; it's not rendered in the browser and has zero/minimal browser-side JavaScript.
+
+For example, we can render an admin panel as SPA while rendering marketing pages to HTML-only.
+
+> The `vite-plugin-ssr` boilerplates do SSR by default, which is a sensible default that works for most apps.
+> **Being aware of our options is important**:
+> choosing another render mode than SSR can play an important role in order to keep our app architecture simple and therefore leading to a substantial increase in development speed. It can also lead to substantial performance increase but for most apps SSR is performant enough and we should **spend time fine-tuning performance only if needed**.
+
+## HTML-only
+
+We can choose HTML-only for pages with no/few interactivity. (Technically speaking: if the page has no/few stateful components.)
+
+The page then has zero/little browser-side JavaScript.
+
+Examples:
+ - Blog
+ - Portfolio/homepage
+ - Marketing pages
+ - Software Documentation (e.g. `https://vite-plugin-ssr.com`)
+
+For the few bits of interactivity (such as an image carousel or a collapsible section),
+the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity. (Instead of loading & rendering the whole page and view framework in the browser).
+This what `https://vite-plugin-ssr.com` does: if you inspect the browser-side JavaScript of this page, you'll see only around 1-2KB of JavaScript.
+
+To render a page to HTML-only, we simply define an empty `.page.client.js`:
+
+```js
+// .page.client.js
+// Environment: Browser
+
+// We leave this empty; there is no browser-side JavaScript.
+
+// We can still include CSS
+import './path/to/some.css'
+```
+
+> We still need to import all static assets in `.page.client.js`, see [#171](https://github.com/brillout/vite-plugin-ssr/issues/171).
+
+## SSG
+
+Pre-rendering (aka SSG) means to render the page's HTML at build-time instead of request-time.
+
+We should use pre-rendering whenever we can, as it allows us to deploy our app to a Static Host.
+
+For example, `https://vite-plugin-ssr.com` is pre-rendered and deployed to [GitHub Pages](/github-pages).
+
+More infos at: [Guides > Pre-rendering](/pre-rendering).
+
+## Content- VS interactive-centric
+
+To decided between SSR and SPA, we need to discriminate between two types of apps:
+ - *Content-centric*: the value of the page is mostly about the content (e.g. a newspaper or a blog).
+ - *Interactive-centric*: the value of the page is mostly about interaction (e.g. a to-do list manager or an online image editor).
+
+## SPA
+
+SPA means that the page is only loaded & rendered in the browser.
+
+We can choose to render a page to SPA if:
+ - The page is (highly) interactive (otherwise we would render it to HTML-only).
+ - The page is not [content-centric](#content-vs-interactive-centric).
+
+More broadly, if we don't need SEO (e.g. the page doesn't need to appear on Google) nor mobile performance (e.g. users usually don't go to the page with a mobile device), then we should consider SPA. For example, an admin panel should be an SPA (even if it's content-centric).
+
+SPA has two major advantages:
+ - It doesn't enforce the usage of a production Node.js server. (Whereas SSR does.)
+ - The `.page.js` code doesn't need to be able to run in Node.js. (For example, SPA is the only option for libraries that don't work with SSR. Although, luckily, most libraries have support/workarounds for SSR.)
+
+To render a page as SPA, we simply render static HTML:
+
+```js
+// .page.server.js
+// Environment: Node.js
+
+import { escapeInject } from 'vite-plugin-ssr'
+
+export function render() {
+  // `div#app-root` is empty; the HTML is static.
+  return escapeInject`<html>
+    <head>
+      <title>My Website</title>
+    </head>
+    <body>
+      <div id="app-root"/>
+    </body>
+  </html>`
+}
+```
+
+## SSR
+
+SSR means that our page is rendered to HTML as well as as rendered(/hydrated) in the browser.
+
+It is the most powerful mode as it enables:
+ - Highly interactive UIs.
+ - SEO (the page needs to rank high on Google).
+ - Higher mobile performance.
+
+SSR considerably improves mobile performance, as the content rendered to HTML can already be shown to the user before the browser-side JavaScript starts loading on the user's mobile device.
+(Loading & executing JavaScript is usually very slow on mobile devices.)
+
+For example, SSR is needed for a social news website or interactive marketing pages. (They are interactive and need SEO and higher mobile performance.)
+
+For pages that are not [content-centric](#content-vs-interactive-centric) (e.g. a to-do list app), we should consider SPA instead of SSR.

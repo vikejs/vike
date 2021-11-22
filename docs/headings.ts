@@ -97,8 +97,9 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'SPA vs SSR vs HTML',
-    url: '/SPA-vs-SSR-vs-HTML'
+    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
+    titleInNav: 'SPA, SSR, SSG, HTML-only',
+    url: '/render-modes'
   },
   {
     level: 2,

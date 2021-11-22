@@ -1,46 +1,4 @@
-With `vite-plugin-ssr` we can create:
- - SSR pages
- - SPA pages (aka MPA)
- - HTML-first pages (zero/minimal browser-side JavaScript)
+export const noHeading = true
+export const pageTitle = 'SPA vs SSR vs HTML'
 
-For example, we can render an admin panel as SPA while rendering marketing pages to HTML-first.
-
-The rule of thumb is to render a page to:
- - HTML-first, if the page has no interactivity (technically speaking: if the page has no stateful component). Example: blog, portfolio/homepage, non-interactive marketing pages.
- - SPA, if the page has interactivity and doesn't need SEO (e.g. the page doesn't need to appear on Google). Example: admin panel, desktop-like web app.
- - SSR, if the page has interactivity and needs SEO (the page needs to rank high on Google). Example: social news website, interactive marketing pages.
-
-Also, if our page is often viewed on mobile devices, then SSR is important in order to quickly display content to our users before the entire JavaScript loads & executes (which is usually very slow on mobile).
-
-To render a page as SPA, we simply render HTML that is static:
-
-```js
-// .page.server.js
-// Environment: Node.js
-
-import { escapeInject } from 'vite-plugin-ssr'
-
-export function render() {
-  // `div#app-root` is empty; the HTML is static.
-  return escapeInject`<html>
-    <head>
-      <title>My Website</title>
-    </head>
-    <body>
-      <div id="app-root"/>
-    </body>
-  </html>`
-}
-```
-
-To render a page to HTML-only, we simply define an empty `.page.client.js`:
-
-```js
-// .page.client.js
-// Environment: Browser
-
-// We leave this empty; there is no browser-side JavaScript.
-
-// We can still include CSS
-import './path/to/some.css'
-```
+Page moved to [/render-modes](/render-modes).
