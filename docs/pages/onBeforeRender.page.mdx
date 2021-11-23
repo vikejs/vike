@@ -1,12 +1,14 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see the [Data Fetching](/data-fetching) guide.
+The `onBeforeRender()` hook is usually used together with [`passToClient`](/passToClient) to fetch data, see [Guides > Data Fetching](/data-fetching).
 
 Since `.page.server.js` is only loaded in Node.js, ORM/SQL database queries can be used.
 
 ```js
 // /pages/movies.page.server.js
 
+// Note how we use `node-fetch`; this file is only run in Node.js thus we don't need
+// to use an isomorphic (aka universal) implementation such as `cross-fetch`.
 import fetch from "node-fetch";
 
 export { onBeforeRender }
@@ -28,7 +30,7 @@ async function onBeforeRender(pageContext){
 
 We can also provide initial `pageContext` values at our server middlware (see [`createPageRenderer()`](/createPageRenderer))
 which is where we usually pass information about the authenticated user
-(see [Authentication](/auth) guide).
+(see [Guides > Authentication](/auth)).
 
 Examples:
 - <RepoLink path='/examples/react-full/pages/star-wars/index/index.page.server.ts' />
@@ -37,7 +39,7 @@ Examples:
 ## Client Routing
 
 If we use [Client Routing](/useClientRouter),
-we also have the option to define the [`onBeforeRender()` hook in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
+we also have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`;
 the hook is then called not only in Node.js but also in the browser.
 
 ## Multiple `onBeforeRender()`

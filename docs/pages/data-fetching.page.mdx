@@ -44,8 +44,8 @@ export { render }
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
-  // We pass `pageProps` to `Page`
   const pageHtml = await renderToHtml(
+    // We pass `pageProps` to `Page`
     createElement(Page, pageProps)
   )
   /* JSX:
@@ -76,6 +76,7 @@ async function hydrate() {
   // available here in the browser.
   const { Page, pageProps } = pageContext
   await hydrateToDom(
+    // We pass `pageProps` to `Page`
     createElement(Page, pageProps),
     document.getElementById('view-root')
   )
@@ -104,27 +105,29 @@ conveniently hold all props of the root component `Page`.
 
 Since `.page.server.js` files are loaded only in Node.js,
 our data fetching code is always exectued in Node.js.
+This makes writing data fetching code easier.
 
-But, if we use [Client Routing](/useClientRouter),
-then we have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is called not only in Node.js but also in the browser (upon page navigation).
+That said, if we use [Client Routing](/useClientRouter),
+then we also have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
 
 In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing), but if we want to minimize requests made to our Node.js server then we may want to define `onBeforeRender()` in `.page.js` instead.
 
 ## Stateful Component
 
-We can also fetch data by using a stateful component.
-But note the fetched data is then not rendered to HTML.
+Alternatively, we can fetch data by using a stateful component.
 
-We usually need to make the route parameters available to the data-fetching stateful component:
-1. Make [`pageContext.routeParams`](/pageContext) available in the browser by adding it to `passToClient.push('routeParams')`.
-2. [Pass `pageContext.routeParams` to the stateful component](/pageContext-anywhere).
+> Our fetched data is then not rendered to HTML, which may not be what we want.
+
+We usually need to make [`pageContext.routeParams`](/pageContext) available to our stateful data-fetching component:
+1. We make `pageContext.routeParams` available in the browser by adding it to [`passToClient`](/passToClient).
+2. We [make `pageContext.routeParams` accessible from all our components](/pageContext-anywhere).
 
 ## GraphQL
 
 When using GraphQL, e.g. with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/), we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in `onBeforeRender()`.
  - <RepoLink path='/examples/graphql-apollo/' />
 
-In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly a matter of following the official SSR guide of the tool we want to use:
+In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use:
  - [Apollo GraphQL - SSR Guide](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
  - [Relay - SSR](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
 
@@ -134,7 +137,7 @@ When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/), [Redux](ht
  - <RepoLink path='/examples/redux/' />
  - <RepoLink path='/examples/vuex/' />
 
-In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating a global store is mostly a matter of following the official SSR guide of the tool we want to use:
+In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use:
  - [Redux - SSR Guide](https://redux.js.org/recipes/server-rendering)
  - [Vuex - SSR Guide](https://ssr.vuejs.org/guide/data.html#data-store)
  - [PullState - SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)

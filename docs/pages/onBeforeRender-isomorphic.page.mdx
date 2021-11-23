@@ -4,11 +4,11 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 > Defining `onBeforeRender()` in `.page.js` only works when using Client Routing.
 
-Usually, we define [`onBeforeRender()` hooks in `.page.server.js`](/onBeforeRender)
+Usually, we define [`onBeforeRender()` in `.page.server.js`](/onBeforeRender)
 but, if we use [Client Routing](/useClientRouter),
-then we have the option to define `onBeforeRender()` in `.page.js` instead.
+then we also have the option to define `onBeforeRender()` in `.page.js` instead.
 
-When defined in `.page.server.js` the `onBeforeRender()` hook is always loaded & executed in Node.js,
+When defined in `.page.server.js` the `onBeforeRender()` hook is only loaded & executed in Node.js,
 whereas if we define it in `.page.js` then `onBeforeRender()` is also loaded & executed in the browser:
 for the first page the user visits `onBeforeRender()` is called in Node.js
 while for any subsequent page navigation `onBeforeRender()` is called in the browser.
@@ -19,11 +19,12 @@ Examples:
 
 ## Recommendation
 
-When defined in `.page.js`, we need to make sure that `onBeforeRender()` is isomorphic: it needs to be able to run in Node.js as well as in the browser.
-That's why, in general, we recommend defining the `onBeforeRender()` hook in `.page.server.js` since it's easier to write code that only runs
+When defined in `.page.js`, we need to ensure that our `onBeforeRender()` hook is isomorphic:
+it needs to be able to run in both Node.js and the browser.
+That's why, in general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` since it's easier to write code that only runs
 in Node.js.
 
-That said, if we want to minimize requests made to our Node.js server, then we may want to define `onBeforeRender()` in `.page.js`.
+That said, if we want to minimize requests made to our Node.js server, then we may want to define our `onBeforeRender()` hooks in `.page.js`.
 
 ## Server Routing
 
