@@ -17,15 +17,20 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   if (condition) {
     return
   }
-  const debugStr = !debugInfo
-    ? ''
-    : ` Debug info (this is for the \`${
-        projectInfo.projectName
-      }\` maintainers; you can ignore this): \`${JSON.stringify(debugInfo)}\`.`
+
+  const debugStr = (() => {
+    if (!debugInfo) {
+      return ''
+    }
+    const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : '`' + JSON.stringify(debugInfo) + '`'
+    return ` Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}.`
+  })()
+
   const internalError = newError(
-    `${internalErrorPrefix} You stumbled upon a bug in \`${projectInfo.projectName}\`'s source code (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new GitHub issue at ${projectInfo.githubRepository}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`,
+    `${internalErrorPrefix} You stumbled upon a bug in the source code of ${projectInfo.projectName} (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new GitHub issue at ${projectInfo.githubRepository}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`,
     numberOfStackTraceLinesToRemove,
   )
+
   throw internalError
 }
 
