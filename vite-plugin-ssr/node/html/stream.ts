@@ -72,7 +72,7 @@ function stringToStreamReadableWeb(str: string): StreamReadableWeb {
     start(controller) {
       controller.enqueue(encodeForWebStream(str))
       controller.close()
-    }
+    },
   })
   return readableStream
 }
@@ -104,7 +104,7 @@ function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string>
     final(callback) {
       resolve(str)
       callback()
-    }
+    },
   })
   streamPipeNode(writable)
   return promise
@@ -120,7 +120,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
     },
     close() {
       resolve(str)
-    }
+    },
   })
   streamPipeWeb(writable)
   return promise
@@ -178,17 +178,17 @@ async function manipulateStream<StreamType extends Stream>(
   {
     injectStringAtBegin,
     injectStringAtEnd,
-    onErrorWhileStreaming
+    onErrorWhileStreaming,
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
-  }
+  },
 ): Promise<StreamWrapper<StreamType>> {
   const getManipulationHandlers = ({
     writeData,
     closeStream,
-    getStream
+    getStream,
   }: {
     writeData: (chunk: string) => void
     closeStream: () => void
@@ -254,7 +254,7 @@ async function manipulateStream<StreamType extends Stream>(
       onData,
       onEnd,
       onError,
-      streamPromise
+      streamPromise,
     }
   }
 
@@ -286,7 +286,7 @@ async function manipulateStream<StreamType extends Stream>(
         checkType<StreamPipeNodeWrapped>(streamOriginal)
         const stream = pipeNodeWrapper as typeof streamOriginal
         return stream
-      }
+      },
     })
     let writableOriginal: StreamWritableNode
     let writableOriginalReady = false
@@ -302,7 +302,7 @@ async function manipulateStream<StreamType extends Stream>(
       async final(callback) {
         await onEnd()
         callback()
-      }
+      },
     })
     const streamPipeNode = getStreamPipeNode(streamOriginal)
     streamPipeNode(writableProxy)
@@ -337,7 +337,7 @@ async function manipulateStream<StreamType extends Stream>(
         checkType<StreamPipeWebWrapped>(streamOriginal)
         const stream = pipeWebWrapper as typeof streamOriginal
         return stream
-      }
+      },
     })
     let writerOriginal: WritableStreamDefaultWriter<any>
     let writableOriginalReady = false
@@ -360,7 +360,7 @@ async function manipulateStream<StreamType extends Stream>(
         },
         close() {
           onEnd()
-        }
+        },
       })
     } else {
       const { readable, writable } = new TransformStream()
@@ -386,7 +386,7 @@ async function manipulateStream<StreamType extends Stream>(
         checkType<StreamReadableWeb>(streamOriginal)
         const stream = readableWebWrapper as typeof streamOriginal
         return stream
-      }
+      },
     })
     let controller: ReadableStreamController<any>
     assertReadableStreamConstructor()
@@ -394,7 +394,7 @@ async function manipulateStream<StreamType extends Stream>(
       async start(controller_) {
         controller = controller_
         handleReadableWeb(readableWebOriginal, { onData, onError, onEnd })
-      }
+      },
     })
     return streamPromise
   }
@@ -418,7 +418,7 @@ async function manipulateStream<StreamType extends Stream>(
         checkType<StreamReadableNode>(streamOriginal)
         const stream = readableNodeWrapper as typeof streamOriginal
         return stream
-      }
+      },
     })
     readableNodeOriginal.on('data', async (chunk) => {
       onData(chunk)
@@ -437,7 +437,7 @@ async function manipulateStream<StreamType extends Stream>(
 
 async function handleReadableWeb(
   readable: ReadableStream,
-  { onData, onError, onEnd }: { onData: (chunk: string) => void; onError: (err: unknown) => void; onEnd: () => void }
+  { onData, onError, onEnd }: { onData: (chunk: string) => void; onError: (err: unknown) => void; onEnd: () => void },
 ) {
   const reader = readable.getReader()
   while (true) {
@@ -527,7 +527,7 @@ function assertReadableStreamConstructor() {
     // Error message copied from vue's `renderToWebStream()` implementation
     `ReadableStream constructor is not available in the global scope. ` +
       `If the target environment does support web streams, consider using ` +
-      `pipeToWebWritable() with an existing WritableStream instance instead.`
+      `pipeToWebWritable() with an existing WritableStream instance instead.`,
   )
 }
 

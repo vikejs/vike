@@ -18,8 +18,8 @@ async function hydrate() {
       cacheExchange,
       // We hydrate the page
       ssrExchange({ isClient: true, initialState: urqlState }),
-      fetchExchange
-    ]
+      fetchExchange,
+    ],
   })
   ReactDOM.hydrate(
     <PageShell pageContext={pageContext}>
@@ -27,6 +27,6 @@ async function hydrate() {
         <Page {...pageProps} />
       </Provider>
     </PageShell>,
-    document.getElementById('page-view')
+    document.getElementById('page-view'),
   )
 }

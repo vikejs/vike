@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
-export { Page };
+export { Page }
 
 function Page() {
-  return <>About page</>;
+  return <>About page</>
 }

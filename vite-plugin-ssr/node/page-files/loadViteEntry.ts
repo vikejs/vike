@@ -10,7 +10,7 @@ async function loadViteEntry({
   prodPath,
   isProduction,
   viteDevServer,
-  errorMessage
+  errorMessage,
 }: {
   devPath: string
   prodPath: string

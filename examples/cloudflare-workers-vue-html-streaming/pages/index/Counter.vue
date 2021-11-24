@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import { reactive } from "vue";
+import { reactive } from 'vue'
 export default {
   setup(props) {
-    const state = reactive({ count: 0 });
+    const state = reactive({ count: 0 })
     return {
       state,
-    };
+    }
   },
-};
+}
 </script>

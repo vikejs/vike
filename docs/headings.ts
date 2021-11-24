@@ -4,520 +4,520 @@ export const headings: HeadingDefinition[] = [
   {
     level: 1,
     title: 'Overview',
-    titleEmoji: 'compass'
+    titleEmoji: 'compass',
   },
   {
     level: 2,
     title: 'Introduction',
     titleDocument: 'vite-plugin-ssr',
-    url: '/'
+    url: '/',
   },
   {
     level: 2,
     title: 'Vue Tour',
-    url: '/vue-tour'
+    url: '/vue-tour',
   },
   {
     level: 2,
     title: 'React Tour',
-    url: '/react-tour'
+    url: '/react-tour',
   },
   {
     level: 1,
     title: 'Get Started',
-    titleEmoji: 'seedling'
+    titleEmoji: 'seedling',
   },
   {
     level: 2,
     title: 'Scaffold new app',
-    url: '/scaffold'
+    url: '/scaffold',
   },
   {
     level: 2,
     title: 'Add to existing app',
-    url: '/add'
+    url: '/add',
   },
   {
     level: 1,
     title: 'Guides',
-    titleEmoji: 'books'
+    titleEmoji: 'books',
   },
   {
     level: 4,
-    title: 'Basics'
+    title: 'Basics',
   },
   {
     level: 2,
     title: 'Routing',
-    url: '/routing'
+    url: '/routing',
   },
   {
     level: 2,
     title: 'Data Fetching',
-    url: '/data-fetching'
+    url: '/data-fetching',
   },
   {
     level: 2,
     title: 'Pre-rendering (SSG)',
-    url: '/pre-rendering'
+    url: '/pre-rendering',
   },
   {
     level: 2,
     title: 'Access `pageContext` anywhere',
-    url: '/pageContext-anywhere'
+    url: '/pageContext-anywhere',
   },
   {
     level: 4,
-    title: 'More'
+    title: 'More',
   },
   {
     level: 2,
     title: 'Static Directory (`public/`)',
-    url: '/static-directory'
+    url: '/static-directory',
   },
   {
     level: 2,
     title: 'HTML `<head>`',
-    url: '/html-head'
+    url: '/html-head',
   },
   {
     level: 2,
     title: 'Hydration Mismatch',
-    url: '/hydration-mismatch'
+    url: '/hydration-mismatch',
   },
   {
     level: 2,
     title: '`.env` Files',
-    url: '/.env-files'
+    url: '/.env-files',
   },
   {
     level: 2,
     title: 'Internationalization (i18n)',
-    url: '/i18n'
+    url: '/i18n',
   },
   {
     level: 2,
     title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
     titleInNav: 'SPA, SSR, SSG, HTML-only',
-    url: '/render-modes'
+    url: '/render-modes',
   },
   {
     level: 2,
     title: 'File Structure',
-    url: '/file-structure'
+    url: '/file-structure',
   },
   {
     level: 2,
     title: 'Paths Aliases',
-    url: '/path-aliases'
+    url: '/path-aliases',
   },
   {
     level: 2,
     title: 'HTML Streaming',
-    url: '/html-streaming'
+    url: '/html-streaming',
   },
   {
     level: 1,
     title: 'Routing',
-    titleEmoji: 'road-fork'
+    titleEmoji: 'road-fork',
   },
   {
     level: 2,
     title: 'Server Routing VS Client Routing',
-    url: '/SR-vs-CR'
+    url: '/SR-vs-CR',
   },
   {
     level: 2,
     title: 'Filesystem Routing',
-    url: '/filesystem-routing'
+    url: '/filesystem-routing',
   },
   {
     level: 2,
     title: 'Route String',
-    url: '/route-string'
+    url: '/route-string',
   },
   {
     level: 2,
     title: 'Route Function',
-    url: '/route-function'
+    url: '/route-function',
   },
   {
     level: 2,
     title: 'Active Links',
-    url: '/active-links'
+    url: '/active-links',
   },
   {
     level: 2,
     title: 'Page Redirection',
-    url: '/page-redirection'
+    url: '/page-redirection',
   },
   {
     level: 2,
     title: 'Base URL',
-    url: '/base-url'
+    url: '/base-url',
   },
   {
     level: 2,
     title: 'Catch-All Routes',
-    url: '/catch-all'
+    url: '/catch-all',
   },
   {
     level: 2,
     title: 'Nested Routes',
-    url: '/nested-routes'
+    url: '/nested-routes',
   },
   {
     level: 2,
     title: 'Vue Router & React Router',
-    url: '/vue-router-and-react-router'
+    url: '/vue-router-and-react-router',
   },
   {
     level: 1,
     title: 'Integration',
-    titleEmoji: 'plug'
+    titleEmoji: 'plug',
   },
   {
     level: 4,
-    title: 'Data Fetching'
+    title: 'Data Fetching',
   },
   {
     level: 2,
     title: 'urql (GraphQL)',
-    url: '/urql'
+    url: '/urql',
   },
   {
     level: 2,
     title: 'Apollo (GraphQL)',
-    url: '/apollo-graphql'
+    url: '/apollo-graphql',
   },
   {
     level: 2,
     title: 'Vue Query',
-    url: '/vue-query'
+    url: '/vue-query',
   },
   {
     level: 2,
     title: 'Relay',
-    url: '/relay'
+    url: '/relay',
   },
   {
     level: 2,
     title: 'Wildcard API',
-    url: '/wildcard-api'
+    url: '/wildcard-api',
   },
   {
     level: 2,
     titleInNav: 'Other',
     title: 'Data Fetching Tools',
-    url: '/data-fetching-tools'
+    url: '/data-fetching-tools',
   },
   {
     level: 4,
-    title: 'Data Store'
+    title: 'Data Store',
   },
   {
     level: 2,
     title: 'Vuex',
-    url: '/vuex'
+    url: '/vuex',
   },
   {
     level: 2,
     title: 'Redux',
-    url: '/redux'
+    url: '/redux',
   },
   {
     level: 2,
     title: 'PullState',
-    url: '/pullstate'
+    url: '/pullstate',
   },
   {
     level: 2,
     title: 'Data Store',
     titleInNav: 'Other',
-    url: '/data-store'
+    url: '/data-store',
   },
   {
     level: 4,
-    title: 'Authentication'
+    title: 'Authentication',
   },
   {
     level: 2,
     title: 'NextAuth.js',
-    url: '/nextauth'
+    url: '/nextauth',
   },
   {
     level: 2,
     title: 'Authentication',
     titleInNav: 'Other',
-    url: '/auth'
+    url: '/auth',
   },
   {
     level: 4,
-    title: 'CSS Frameworks'
+    title: 'CSS Frameworks',
   },
   {
     level: 2,
     title: 'Tailwind CSS / Windi CSS',
-    url: '/tailwind-css'
+    url: '/tailwind-css',
   },
   {
     level: 2,
     title: 'Vuetify',
-    url: '/vuetify'
+    url: '/vuetify',
   },
   {
     level: 2,
     title: 'CSS-in-JS',
-    url: '/css-in-js'
+    url: '/css-in-js',
   },
   {
     level: 2,
     title: 'Boostrap (Vanilla JS)',
-    url: '/bootstrap'
+    url: '/bootstrap',
   },
   {
     level: 2,
     title: 'Sass / Less / Stylus',
-    url: '/sass'
+    url: '/sass',
   },
   {
     level: 2,
     titleInNav: 'Other',
     title: 'CSS Frameworks',
-    url: '/css-frameworks'
+    url: '/css-frameworks',
   },
   {
     level: 4,
-    title: 'View Frameworks'
+    title: 'View Frameworks',
   },
   {
     level: 2,
     title: 'Svelte',
-    url: '/svelte'
+    url: '/svelte',
   },
   {
     level: 2,
     title: 'Preact',
-    url: '/preact'
+    url: '/preact',
   },
   {
     level: 2,
     title: 'Solid',
-    url: '/solid'
+    url: '/solid',
   },
   {
     level: 2,
     titleInNav: 'Other',
     title: 'View Frameworks',
-    url: '/view-frameworks'
+    url: '/view-frameworks',
   },
   {
     level: 4,
-    title: 'Other'
+    title: 'Other',
   },
   {
     level: 2,
     title: 'Markdown',
-    url: '/markdown'
+    url: '/markdown',
   },
   {
     level: 2,
     title: 'HTTPS',
-    url: '/https'
+    url: '/https',
   },
   {
     level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
-    url: '/integration'
+    url: '/integration',
   },
   {
     level: 1,
     title: 'Deploy',
-    titleEmoji: 'earth'
+    titleEmoji: 'earth',
   },
   {
     level: 4,
-    title: 'Static Hosts'
+    title: 'Static Hosts',
   },
   {
     level: 2,
     title: 'GitHub Pages',
-    url: '/github-pages'
+    url: '/github-pages',
   },
   {
     level: 2,
     title: 'Cloudflare Pages',
-    url: '/cloudflare-pages'
+    url: '/cloudflare-pages',
   },
   {
     level: 2,
     title: 'Netlify',
-    url: '/netlify'
+    url: '/netlify',
   },
   {
     level: 2,
     title: 'Static Hosts',
     titleInNav: 'Other',
-    url: '/static-hosts'
+    url: '/static-hosts',
   },
   {
     level: 4,
-    title: 'Serverless'
+    title: 'Serverless',
   },
   {
     level: 2,
     title: 'Cloudflare Workers',
-    url: '/cloudflare-workers'
+    url: '/cloudflare-workers',
   },
   {
     level: 2,
     title: 'Vercel',
-    url: '/vercel'
+    url: '/vercel',
   },
   {
     level: 2,
     title: 'AWS Lambda',
-    url: '/aws-lambda'
+    url: '/aws-lambda',
   },
   {
     level: 2,
     title: 'Firebase',
-    url: '/firebase'
+    url: '/firebase',
   },
   {
     level: 4,
-    title: 'Other'
+    title: 'Other',
   },
   {
     level: 2,
     title: 'Docker',
-    url: '/docker'
+    url: '/docker',
   },
   {
     level: 2,
     title: 'Deploy',
     titleInNav: 'Other',
-    url: '/deploy'
+    url: '/deploy',
   },
   {
     level: 1,
     title: 'API',
-    titleEmoji: 'gear'
+    titleEmoji: 'gear',
   },
   {
     level: 4,
-    title: 'Node.js & Browser'
+    title: 'Node.js & Browser',
   },
   {
     level: 2,
     title: '`pageContext`',
-    url: '/pageContext'
+    url: '/pageContext',
   },
   {
     level: 2,
     title: '`.page.js`',
-    url: '/.page.js'
+    url: '/.page.js',
   },
   {
     level: 2,
     title: '`export { Page }`',
     isListTitle: true,
-    url: '/Page'
+    url: '/Page',
   },
   {
     level: 2,
     title: '`onBeforeRender()` hook (`.page.js`)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
-    url: '/onBeforeRender-isomorphic'
+    url: '/onBeforeRender-isomorphic',
   },
   {
     level: 4,
-    title: 'Node.js'
+    title: 'Node.js',
   },
   {
     level: 2,
     title: '`.page.server.js`',
-    url: '/.page.server.js'
+    url: '/.page.server.js',
   },
   {
     level: 2,
     title: '`onBeforeRender()` hook (`.page.server.js`)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
-    url: '/onBeforeRender'
+    url: '/onBeforeRender',
   },
   {
     level: 2,
     title: '`passToClient`',
     titleInNav: '`export { passToClient }`',
     isListTitle: true,
-    url: '/passToClient'
+    url: '/passToClient',
   },
   {
     level: 2,
     title: '`render()` hook',
     titleInNav: '`export { render }`',
     isListTitle: true,
-    url: '/render'
+    url: '/render',
   },
   {
     level: 2,
     title: '`prerender()` hook',
     titleInNav: '`export { prerender }`',
     isListTitle: true,
-    url: '/prerender'
+    url: '/prerender',
   },
   {
     level: 2,
     title: '`doNotPrerender`',
     titleInNav: '`export { doNotPrerender }`',
     isListTitle: true,
-    url: '/doNotPrerender'
+    url: '/doNotPrerender',
   },
   {
     level: 2,
     title: '`escapeInject`',
-    url: '/escapeInject'
+    url: '/escapeInject',
   },
   {
     level: 4,
-    title: 'Browser'
+    title: 'Browser',
   },
   {
     level: 2,
     title: '`.page.client.js`',
-    url: '/.page.client.js'
+    url: '/.page.client.js',
   },
   {
     level: 2,
     title: '`getPage()`',
-    url: '/getPage'
+    url: '/getPage',
   },
   {
     level: 2,
     title: '`useClientRouter()`',
-    url: '/useClientRouter'
+    url: '/useClientRouter',
   },
   {
     level: 2,
     title: '`navigate()`',
-    url: '/navigate'
+    url: '/navigate',
   },
   {
     level: 4,
-    title: 'Routing'
+    title: 'Routing',
   },
   {
     level: 2,
     title: '`.page.route.js`',
-    url: '/.page.route.js'
+    url: '/.page.route.js',
   },
   {
     level: 2,
     title: '`_default.page.route.js`',
-    url: '/_default.page.route.js'
+    url: '/_default.page.route.js',
   },
   {
     level: 2,
@@ -525,7 +525,7 @@ export const headings: HeadingDefinition[] = [
     // titleInNav: '`export { filesystemRoutingRoot }`',
     // titleSize: '0.81em',
     isListTitle: true,
-    url: '/filesystemRoutingRoot'
+    url: '/filesystemRoutingRoot',
   },
   {
     level: 2,
@@ -533,43 +533,43 @@ export const headings: HeadingDefinition[] = [
     // titleInNav: '`export { onBeforeRoute }`',
     titleInNav: '`onBeforeRoute`',
     isListTitle: true,
-    url: '/onBeforeRoute'
+    url: '/onBeforeRoute',
   },
   {
     level: 4,
-    title: 'Special Pages'
+    title: 'Special Pages',
   },
   {
     level: 2,
     title: '`_default.page.*`',
-    url: '/default-page'
+    url: '/default-page',
   },
   {
     level: 2,
     title: '`_error.page.js`',
-    url: '/error-page'
+    url: '/error-page',
   },
   {
     level: 4,
-    title: 'Integration'
+    title: 'Integration',
   },
   {
     level: 2,
     title: '`createPageRenderer()`',
-    url: '/createPageRenderer'
+    url: '/createPageRenderer',
   },
   {
     level: 2,
     title: 'Vite Plugin',
-    url: '/vite-plugin'
+    url: '/vite-plugin',
   },
   {
     level: 4,
-    title: 'CLI'
+    title: 'CLI',
   },
   {
     level: 2,
     title: 'Command `prerender`',
-    url: '/command-prerender'
-  }
+    url: '/command-prerender',
+  },
 ]

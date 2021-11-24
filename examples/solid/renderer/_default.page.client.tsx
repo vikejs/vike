@@ -1,16 +1,16 @@
-import { hydrate, render } from "solid-js/web";
-import { useClientRouter } from "vite-plugin-ssr/client/router";
-import { PageLayout } from "./PageLayout";
+import { hydrate, render } from 'solid-js/web'
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+import { PageLayout } from './PageLayout'
 
-let dispose: () => void;
+let dispose: () => void
 
 const { hydrationPromise } = useClientRouter({
   render(pageContext) {
-    const content = document.getElementById("page-view");
-    const { Page, pageProps } = pageContext;
+    const content = document.getElementById('page-view')
+    const { Page, pageProps } = pageContext
 
     // Dispose to prevent duplicate pages when navigating.
-    if (dispose) dispose();
+    if (dispose) dispose()
 
     // Render the page
     if (pageContext.isHydration) {
@@ -22,8 +22,8 @@ const { hydrationPromise } = useClientRouter({
             <Page {...pageProps} />
           </PageLayout>
         ),
-        content!
-      );
+        content!,
+      )
     } else {
       // Render new page
       render(
@@ -32,21 +32,21 @@ const { hydrationPromise } = useClientRouter({
             <Page {...pageProps} />
           </PageLayout>
         ),
-        content!
-      );
+        content!,
+      )
     }
   },
   onTransitionStart,
   onTransitionEnd,
-});
+})
 
 hydrationPromise.then((s) => {
-  console.log("Hydration finished; page is now interactive.");
-});
+  console.log('Hydration finished; page is now interactive.')
+})
 
 function onTransitionStart() {
-  console.log("Page transition start");
+  console.log('Page transition start')
 }
 function onTransitionEnd() {
-  console.log("Page transition end");
+  console.log('Page transition end')
 }

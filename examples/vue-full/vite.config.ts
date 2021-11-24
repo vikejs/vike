@@ -6,12 +6,12 @@ import { UserConfig } from 'vite'
 const config: UserConfig = {
   plugins: [
     vue({
-      include: [/\.vue$/, /\.md$/]
+      include: [/\.vue$/, /\.md$/],
     }),
     md(),
-    ssr()
+    ssr(),
   ],
-  clearScreen: false
+  clearScreen: false,
 }
 
 export default config

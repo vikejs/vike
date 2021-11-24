@@ -19,7 +19,7 @@ function releasePageContext<
   T extends PageContextPublic & {
     _pageContextRetrievedFromServer: null | Record<string, unknown>
     _comesDirectlyFromServer: boolean
-  } & Record<string, unknown>
+  } & Record<string, unknown>,
 >(pageContext: T) {
   assert('Page' in pageContext)
   assert(isObject(pageContext.pageExports))
@@ -44,7 +44,7 @@ function releasePageContext<
 // A priori, there is no need to be able to make `pageContext` Vue reactive here.
 function releasePageContextInterim<T extends Record<string, unknown>>(
   pageContext: T,
-  pageContextRetrievedFromServer: Record<string, unknown>
+  pageContextRetrievedFromServer: Record<string, unknown>,
 ) {
   // For prettier `console.log(pageContext)`
   sortPageContext(pageContext)
@@ -56,14 +56,14 @@ function releasePageContextInterim<T extends Record<string, unknown>>(
 
 const JAVASCRIPT_BUILT_INS = [
   'then',
-  'toJSON' // Vue tries to access `toJSON`
+  'toJSON', // Vue tries to access `toJSON`
 ]
 const PASS_TO_CLIENT_BUILT_INS = ['_pageId', '_serverSideErrorWhileStreaming'] as const
 
 // Without Vue hanlding
 function getAssertPassToClientProxy<T extends Record<string, unknown>>(
   pageContext: T,
-  pageContextRetrievedFromServer: Record<string, unknown>
+  pageContextRetrievedFromServer: Record<string, unknown>,
 ) {
   return new Proxy(pageContext, { get })
 
@@ -82,7 +82,7 @@ function getAssertPassToClientProxy<T extends Record<string, unknown>>(
 // With Vue hanlding
 let disable: false | string = false
 function getAssertPassToClientProxyWithVueSupport<
-  T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> }
+  T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> },
 >(pageContext: T): T {
   return new Proxy(pageContext, { get })
 
@@ -114,7 +114,7 @@ function getAssertPassToClientProxyWithVueSupport<
 function assertPassToClient(
   pageContextRetrievedFromServer: null | Record<string, unknown>,
   prop: string,
-  isMissing: boolean
+  isMissing: boolean,
 ) {
   if (!isMissing) {
     return
@@ -124,7 +124,7 @@ function assertPassToClient(
     return
   }
   const passToClientInferred = Object.keys(pageContextRetrievedFromServer).filter(
-    (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop)
+    (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop),
   )
   assertUsage(
     false,
@@ -132,8 +132,8 @@ function assertPassToClient(
       `\`pageContext.${prop}\` is not available in the browser.`,
       `Make sure that \`passToClient.includes('${prop}')\`.`,
       `(Currently \`passToClient\` is \`[${passToClientInferred.map((prop) => `'${prop}'`).join(', ')}]\`.)`,
-      'More infos at https://vite-plugin-ssr.com/passToClient'
-    ].join(' ')
+      'More infos at https://vite-plugin-ssr.com/passToClient',
+    ].join(' '),
   )
 }
 

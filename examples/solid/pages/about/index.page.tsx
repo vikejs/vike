@@ -1,7 +1,7 @@
-import { Component } from "solid-js";
-import "./index.css";
+import { Component } from 'solid-js'
+import './index.css'
 
-export { Page };
+export { Page }
 
 const Page: Component = () => {
   return (
@@ -9,5 +9,5 @@ const Page: Component = () => {
       <h1>About</h1>
       <p>A colored page.</p>
     </>
-  );
-};
+  )
+}

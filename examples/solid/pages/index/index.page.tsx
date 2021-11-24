@@ -1,5 +1,5 @@
-import { Component } from "solid-js";
-import { Counter } from "./Counter";
+import { Component } from 'solid-js'
+import { Counter } from './Counter'
 
 const Page: Component = () => {
   return (
@@ -13,7 +13,7 @@ const Page: Component = () => {
         </li>
       </ul>
     </>
-  );
-};
+  )
+}
 
-export { Page };
+export { Page }

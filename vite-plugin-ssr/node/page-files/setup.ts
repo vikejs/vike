@@ -26,7 +26,7 @@ async function setPageFiles(): Promise<unknown> {
     prodPath,
     errorMessage,
     viteDevServer: ssrEnv.viteDevServer,
-    isProduction: ssrEnv.isProduction
+    isProduction: ssrEnv.isProduction,
   })
 
   const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles

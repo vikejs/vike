@@ -29,7 +29,7 @@ async function onBeforeRender(pageContext) {
   return {
     pageContext: {
       INITIAL_STATE,
-      appHtml
-    }
+      appHtml,
+    },
   }
 }

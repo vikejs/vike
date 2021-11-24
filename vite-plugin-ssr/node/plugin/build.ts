@@ -5,7 +5,7 @@ import {
   relative as pathRelative,
   basename as pathFilename,
   sep as pathSep,
-  posix as pathPosix
+  posix as pathPosix,
 } from 'path'
 import { assert, assertUsage, isObject } from '../../shared/utils'
 import * as glob from 'fast-glob'
@@ -21,22 +21,22 @@ function build(): Plugin {
       isSsrBuild = isSSR(config)
       const input = {
         ...entryPoints(config),
-        ...normalizeRollupInput(config.build?.rollupOptions?.input)
+        ...normalizeRollupInput(config.build?.rollupOptions?.input),
       }
       return {
         build: {
           outDir: getOutDir(config),
           manifest: true,
           rollupOptions: { input },
-          polyfillDynamicImport: false
+          polyfillDynamicImport: false,
         },
-        ssr: { external: ['vite-plugin-ssr'] }
+        ssr: { external: ['vite-plugin-ssr'] },
       }
     },
     transform: (_src, id) => {
       assert(isSsrBuild === true || isSsrBuild === false)
       return removeClientCode(isSsrBuild, id) || undefined
-    }
+    },
   }
 }
 
@@ -47,7 +47,7 @@ function removeClientCode(isSsrBuild: boolean, id: string): void | { code: strin
   if (id.includes('.page.client.')) {
     return {
       code: `throw new Error('[vite-plugin-ssr][Wrong Usage] File ${id} should not be loaded in Node.js');`,
-      map: { mappings: '' }
+      map: { mappings: '' },
     }
   }
 }
@@ -66,7 +66,7 @@ function serverEntryPoints(): Record<string, string> {
   assert(serverEntry.endsWith('.js'))
   const entryName = pathFilename(serverEntry).replace(/\.js$/, '')
   const entryPoints = {
-    [entryName]: serverEntry
+    [entryName]: serverEntry,
   }
   return entryPoints
 }
@@ -76,7 +76,7 @@ function browserEntryPoints(config: UserConfig): Record<string, string> {
   assert(pathIsAbsolute(root))
 
   const browserEntries = glob.sync(`${root}/**/*.page.client.*([a-zA-Z0-9])`, {
-    ignore: ['**/node_modules/**']
+    ignore: ['**/node_modules/**'],
   })
 
   const entryPoints: Record<string, string> = {}
@@ -101,7 +101,7 @@ function getRoot(config: UserConfig): string {
     pathIsAbsolute(root),
     // Looking at Vite's source code, Vite does seem to normalize `root`.
     // But this doens't seem to be always the case, see https://github.com/brillout/vite-plugin-ssr/issues/208
-    'The `root` config in your `vite.config.js` should be an absolute path. (I.e. `/path/to/root` instead of `../path/to/root`.)'
+    'The `root` config in your `vite.config.js` should be an absolute path. (I.e. `/path/to/root` instead of `../path/to/root`.)',
   )
   root = posixPath(root)
   return root

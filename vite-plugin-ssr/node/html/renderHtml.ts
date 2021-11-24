@@ -39,7 +39,7 @@ async function renderHtml(
   documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
   renderFilePath: string,
-  onErrorWhileStreaming: (err: unknown) => void
+  onErrorWhileStreaming: (err: unknown) => void,
 ): Promise<HtmlRender | { hookError: unknown }> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
@@ -50,7 +50,7 @@ async function renderHtml(
     const stream = documentHtml
     const result = await renderHtmlStream(stream, {
       pageContext,
-      onErrorWhileStreaming
+      onErrorWhileStreaming,
     })
     if ('errorBeforeFirstData' in result) {
       return { hookError: result.errorBeforeFirstData }
@@ -70,10 +70,10 @@ async function renderHtml(
       const result = await renderHtmlStream(render.stream, {
         injectString: {
           stringBegin: render.stringBegin,
-          stringEnd: render.stringEnd
+          stringEnd: render.stringEnd,
         },
         pageContext,
-        onErrorWhileStreaming
+        onErrorWhileStreaming,
       })
       if ('errorBeforeFirstData' in result) {
         return { hookError: result.errorBeforeFirstData }
@@ -93,15 +93,15 @@ async function renderHtmlStream(
   {
     injectString,
     pageContext,
-    onErrorWhileStreaming
+    onErrorWhileStreaming,
   }: {
     injectString?: { stringBegin: string; stringEnd: string }
     pageContext: PageContextInjectAssets
     onErrorWhileStreaming: (err: unknown) => void
-  }
+  },
 ) {
   const opts = {
-    onErrorWhileStreaming
+    onErrorWhileStreaming,
   }
   if (injectString) {
     let stringEndTransformed: string | null = null
@@ -112,7 +112,7 @@ async function renderHtmlStream(
         htmlWrapper = await injectAssetsBeforeRender(htmlWrapper, pageContext)
         assertUsage(
           htmlWrapper.includes(splitter),
-          "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution."
+          "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution.",
         )
         const [stringBegin, _stringEnd] = htmlWrapper.split(splitter)
         assert(_stringEnd !== undefined && stringBegin !== undefined)
@@ -125,7 +125,7 @@ async function renderHtmlStream(
         assert(stringEndTransformed !== null)
         stringEndTransformed = await injectAssetsAfterRender(stringEndTransformed, pageContext)
         return stringEndTransformed
-      }
+      },
     })
   }
   return await manipulateStream(streamOriginal, opts)
@@ -158,8 +158,8 @@ function escapeInject(
   return {
     [__template]: {
       templateStrings,
-      templateVariables: templateVariables as TemplateVariable[]
-    }
+      templateVariables: templateVariables as TemplateVariable[],
+    },
   }
 }
 const __escaped = Symbol('__escaped')
@@ -174,18 +174,18 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertUsage(
     !isPromise(arg),
-    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
+    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`,
   )
   assertUsage(
     typeof arg === 'string',
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`
+    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`,
   )
   return { [__escaped]: arg }
 }
 
 function renderTemplate(
   templateContent: TemplateContent,
-  renderFilePath: string
+  renderFilePath: string,
 ): { type: 'string'; value: string } | { type: 'stream'; stream: Stream; stringBegin: string; stringEnd: string } {
   let stringBegin = ''
   let stream: null | Stream = null
@@ -219,7 +219,7 @@ function renderTemplate(
       const render = renderTemplate(templateContentInner, renderFilePath)
       assertUsage(
         !(stream !== null && render.type === 'stream'),
-        `You are trying to eject two streams in your \`escapeInject\` template tag of your render() hook exported by ${renderFilePath}. Inject only one stream instead.`
+        `You are trying to eject two streams in your \`escapeInject\` template tag of your render() hook exported by ${renderFilePath}. Inject only one stream instead.`,
       )
       if (render.type === 'string') {
         addString(render.value)
@@ -249,7 +249,7 @@ function renderTemplate(
     assert(stringEnd === '')
     return {
       type: 'string',
-      value: stringBegin
+      value: stringBegin,
     }
   }
 
@@ -257,7 +257,7 @@ function renderTemplate(
     type: 'stream',
     stream,
     stringBegin,
-    stringEnd
+    stringEnd,
   }
 }
 

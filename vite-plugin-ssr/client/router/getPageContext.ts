@@ -9,7 +9,7 @@ import {
   isObject,
   objectAssign,
   getPluginError,
-  PromiseType
+  PromiseType,
 } from '../../shared/utils'
 import { parse } from '@brillout/json-s'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -41,7 +41,7 @@ async function getPageContext(
     _serverFiles: ServerFiles
     _isFirstRender: boolean
   } & PageContextUrls &
-    PageContextForRoute
+    PageContextForRoute,
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRender && navigationState.isOriginalUrl(pageContext.url)) {
     const pageContextAddendum = await loadPageContextSerializedInHtml()
@@ -63,7 +63,7 @@ async function loadPageContextSerializedInHtml() {
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
-    _comesDirectlyFromServer: true
+    _comesDirectlyFromServer: true,
   })
 
   return pageContextAddendum
@@ -71,10 +71,10 @@ async function loadPageContextSerializedInHtml() {
 
 async function loadPageContextAfterRoute(
   pageContext: { _serverFiles: ServerFiles } & PageContextForRoute & PageContextUrls,
-  pageContextFromRoute: { _pageId: string; routeParams: Record<string, string> }
+  pageContextFromRoute: { _pageId: string; routeParams: Record<string, string> },
 ): Promise<PageContextAddendum> {
   const pageContextAddendum = {
-    isHydration: false
+    isHydration: false,
   }
   objectAssign(pageContextAddendum, pageContextFromRoute)
 
@@ -86,7 +86,7 @@ async function loadPageContextAfterRoute(
     pageContextOnBeforeRenderHooks = await executeOnBeforeRenderHooks({
       ...pageContext,
       ...pageContextFromRoute,
-      ...pageContextAddendum
+      ...pageContextAddendum,
     })
   } catch (err) {
     const pageContextFromRoute = handleError(pageContext, err)
@@ -95,7 +95,7 @@ async function loadPageContextAfterRoute(
   }
   assert(
     pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer === null ||
-      isObject(pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer)
+      isObject(pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer),
   )
   assert([true, false].includes(pageContextOnBeforeRenderHooks._comesDirectlyFromServer))
   objectAssign(pageContextAddendum, pageContextOnBeforeRenderHooks)
@@ -103,7 +103,7 @@ async function loadPageContextAfterRoute(
 }
 
 async function getPageContextFromRoute(
-  pageContext: PageContextForRoute
+  pageContext: PageContextForRoute,
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
   if ('hookError' in routeResult) {
@@ -117,7 +117,7 @@ async function getPageContextFromRoute(
     }, 0)
     assertUsage(
       false,
-      `[404] Page ${pageContext.url} does not exist. (\`vite-plugin-ssr\` will now server-side route to \`${pageContext.url}\`.)`
+      `[404] Page ${pageContext.url} does not exist. (\`vite-plugin-ssr\` will now server-side route to \`${pageContext.url}\`.)`,
     )
   } else {
     assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
@@ -134,7 +134,7 @@ async function retrievePageContext(
   pageContext: {
     url: string
     _serverFiles: ServerFiles
-  } & PageContextForRoute
+  } & PageContextForRoute,
 ): Promise<Record<string, unknown>> {
   const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
   const response = await fetch(pageContextUrl)
@@ -146,7 +146,7 @@ async function retrievePageContext(
     const contentType = response.headers.get('content-type')
     assertUsage(
       contentType && contentType.includes('application/json'),
-      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`
+      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`,
     )
   }
 
@@ -155,7 +155,7 @@ async function retrievePageContext(
   assert(!('pageContext404PageDoesNotExist' in responseObject))
   if ('serverSideError' in responseObject) {
     throw getPluginError(
-      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
+      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.',
     )
   }
 
@@ -198,12 +198,12 @@ function deleteRedundantPageContext(pageContext: Record<string, unknown> & { [ke
         assert(prop.startsWith('url'))
         assertWarning(
           false,
-          `\`pageContext.${prop}\` is already available in the browser when using \`useClientRouter()\`; including \`${prop}\` in \`passToClient\` has no effect.`
+          `\`pageContext.${prop}\` is already available in the browser when using \`useClientRouter()\`; including \`${prop}\` in \`passToClient\` has no effect.`,
         )
       } else {
         assertWarning(
           false,
-          `\`pageContext.${prop}\` is a built-in that cannot be overriden; including \`${prop}\` in \`passToClient\` has no effect.`
+          `\`pageContext.${prop}\` is a built-in that cannot be overriden; including \`${prop}\` in \`passToClient\` has no effect.`,
         )
       }
       delete pageContext[prop]
@@ -218,7 +218,7 @@ async function executeOnBeforeRenderHooks(
     _pageIsomorphicFileDefault: PageIsomorphicFileDefault
     _serverFiles: ServerFiles
   } & PageContextForRoute &
-    PageContextPublic
+    PageContextPublic,
 ) {
   let serverHooksCalled: boolean = false
   let skipServerHooks: boolean = false
@@ -233,17 +233,17 @@ async function executeOnBeforeRenderHooks(
       {
         ...pageContext,
         skipOnBeforeRenderServerHooks,
-        runOnBeforeRenderServerHooks: () => runOnBeforeRenderServerHooks(false)
-      }
+        runOnBeforeRenderServerHooks: () => runOnBeforeRenderServerHooks(false),
+      },
     )
     assertUsageServerHooksCalled({
       hooksServer: getOnBeforeRenderServerHookFiles(pageContext),
       hooksIsomorphic: [
         pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
-        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath
+        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath,
       ],
       serverHooksCalled,
-      _pageId: pageContext._pageId
+      _pageId: pageContext._pageId,
     })
     objectAssign(pageContextOnBeforeRenderHooks, pageContextFromIsomorphic)
     objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: false })
@@ -272,7 +272,7 @@ async function executeOnBeforeRenderHooks(
   async function skipOnBeforeRenderServerHooks() {
     assertUsage(
       serverHooksCalled === false,
-      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.'
+      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.',
     )
     skipServerHooks = true
   }
@@ -280,11 +280,11 @@ async function executeOnBeforeRenderHooks(
   async function runOnBeforeRenderServerHooks(doNotPrepareForRelease: boolean) {
     assertUsage(
       skipServerHooks === false,
-      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.'
+      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.',
     )
     assertUsage(
       serverHooksCalled === false,
-      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.'
+      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.',
     )
     serverHooksCalled = true
     const pageContextFromServer = await retrievePageContext(pageContext)
@@ -300,7 +300,7 @@ function handleError(
   pageContext: {
     _allPageIds: string[]
   },
-  err: unknown
+  err: unknown,
 ) {
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (!errorPageId) {
@@ -311,7 +311,7 @@ function handleError(
   const pageContextFromRoute = {
     _pageId: errorPageId,
     is404: false,
-    routeParams: {} as Record<string, string>
+    routeParams: {} as Record<string, string>,
   }
   return pageContextFromRoute
 }

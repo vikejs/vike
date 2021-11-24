@@ -19,7 +19,7 @@ function TweetRow({ tweetId1, tweetId2 }: { tweetId1: string; tweetId2: string }
     width: `min(100%, 400px, max(300px, 50% - 10px))`,
     display: 'inline-block',
     verticalAlign: 'top',
-    overflow: 'hidden'
+    overflow: 'hidden',
   }
   return (
     <div style={{ display: 'flex', justifyContent: 'space-evenly', flexWrap: 'wrap', maxWidth: 900 }}>

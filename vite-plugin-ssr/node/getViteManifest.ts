@@ -46,7 +46,7 @@ function getViteManifest(): {
     clientManifest,
     serverManifest,
     clientManifestPath,
-    serverManifestPath
+    serverManifestPath,
   }
 }
 

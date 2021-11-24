@@ -8,7 +8,7 @@ import {
   handleUrlOrigin,
   hasProp,
   objectAssign,
-  PromiseType
+  PromiseType,
 } from '../../shared/utils'
 
 export { getGlobalContext }
@@ -28,7 +28,7 @@ async function retrieveGlobalContext() {
   const globalContext = {
     _getUrlNormalized: (pageContext: { url: string; _baseUrl: string }) =>
       getUrlNormalized(pageContext.url, pageContext._baseUrl),
-    _baseUrl: import.meta.env.BASE_URL
+    _baseUrl: import.meta.env.BASE_URL,
   }
   assertBaseUrl(globalContext._baseUrl)
 
@@ -48,7 +48,7 @@ async function retrieveGlobalContext() {
       assert(hasProp(fileExports, 'hasExportOnBeforeRender', 'boolean'))
       assert(Object.keys(fileExports).length === 1)
       serverFiles.push({ filePath, fileExports })
-    })
+    }),
   )
 
   objectAssign(globalContext, { _serverFiles: serverFiles })

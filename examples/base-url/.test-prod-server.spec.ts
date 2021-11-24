@@ -1,3 +1,3 @@
-import { testPages } from "./.testPages";
+import { testPages } from './.testPages'
 
-testPages("npm run prod:server");
+testPages('npm run prod:server')

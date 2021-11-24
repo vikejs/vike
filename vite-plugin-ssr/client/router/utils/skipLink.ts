@@ -13,7 +13,7 @@ function skipLink(linkTag: HTMLElement): boolean {
   if (isRelativeUrl(url)) {
     assertWarning(
       false,
-      `[Client Router] Skipping \`<a href="${url}">\` link because \`${url}\` is a relative URL. If you need support for relative URLs, create a new GitHub ticket.`
+      `[Client Router] Skipping \`<a href="${url}">\` link because \`${url}\` is a relative URL. If you need support for relative URLs, create a new GitHub ticket.`,
     )
     return true
   }

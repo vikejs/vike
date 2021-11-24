@@ -16,11 +16,11 @@ async function determinePageIds(allPageFiles: AllPageFiles): Promise<string[]> {
   allPageIds.forEach((pageId) => {
     assertUsage(
       pageFileIds.includes(pageId) || pageServerFileIds.includes(pageId),
-      `File missing. You need to create at least \`${pageId}.page.server.js\` or \`${pageId}.page.js\`.`
+      `File missing. You need to create at least \`${pageId}.page.server.js\` or \`${pageId}.page.js\`.`,
     )
     assertUsage(
       pageFileIds.includes(pageId) || pageClientFileIds.includes(pageId),
-      `File missing. You need to create at least \`${pageId}.page.client.js\` or \`${pageId}.page.js\`.`
+      `File missing. You need to create at least \`${pageId}.page.client.js\` or \`${pageId}.page.js\`.`,
     )
   })
 
@@ -46,7 +46,7 @@ function isDefaultPageFile(filePath: string): boolean {
   }
   assertUsage(
     filePath.includes('_default.page.client.') || filePath.includes('_default.page.server.'),
-    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`
+    `\`_default.*\` file should be either \`_default.page.client.*\` or \`_default.page.server.*\` but we got: ${filePath}`,
   )
   return true
 }

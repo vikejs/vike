@@ -21,9 +21,9 @@ function transformPageServerFiles(): Plugin {
         code: `export const hasExportOnBeforeRender = ${hasExportOnBeforeRender};`,
         // Remove Source Map to save KBs
         //  - https://rollupjs.org/guide/en/#source-code-transformations
-        map: { mappings: '' }
+        map: { mappings: '' },
       }
-    }
+    },
   } as Plugin
 }
 

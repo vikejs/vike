@@ -30,7 +30,7 @@ function Features() {
               </p>
             </>
           ),
-          learnMore: <Control />
+          learnMore: <Control />,
         },
         {
           title: (
@@ -48,11 +48,12 @@ function Features() {
                 <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
               </p>
               <p>
-                All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different mode.
+                All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different
+                mode.
               </p>
             </>
           ),
-          learnMore: <FullFleged />
+          learnMore: <FullFleged />,
         },
         {
           title: (
@@ -107,7 +108,7 @@ function Features() {
                 and idiosyncratic abstraction is an annoying waste of time.
               </p>
             </>
-          )
+          ),
         },
         {
           title: (
@@ -124,7 +125,7 @@ function Features() {
                 current <code>v0.3.x</code> releases.
               </p>
             </>
-          )
+          ),
         },
         {
           title: (
@@ -148,7 +149,7 @@ function Features() {
             </>
           ),
           learnMore: <DeployAnywhere />,
-          isSecondaryFeature: true
+          isSecondaryFeature: true,
         },
         {
           title: (
@@ -169,7 +170,7 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true
+          isSecondaryFeature: true,
         },
         {
           title: (
@@ -221,7 +222,7 @@ function Features() {
               <TweetsAboutScability />
             </>
           ),
-          isSecondaryFeature: true
+          isSecondaryFeature: true,
         },
         {
           title: (
@@ -242,7 +243,7 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true
+          isSecondaryFeature: true,
         },
         {
           title: (
@@ -262,7 +263,7 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true
+          isSecondaryFeature: true,
         },
         {
           title: (
@@ -281,8 +282,8 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true
-        }
+          isSecondaryFeature: true,
+        },
       ]}
     />
   )

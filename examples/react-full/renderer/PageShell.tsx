@@ -1,19 +1,13 @@
-import React from "react";
-import logo from "./logo.svg";
-import { PageContextProvider } from "./usePageContext";
-import "./PageShell.css";
-import { Link } from "./Link";
-import type { PageContext } from "./types";
+import React from 'react'
+import logo from './logo.svg'
+import { PageContextProvider } from './usePageContext'
+import './PageShell.css'
+import { Link } from './Link'
+import type { PageContext } from './types'
 
-export { PageShell };
+export { PageShell }
 
-function PageShell({
-  pageContext,
-  children,
-}: {
-  pageContext: PageContext;
-  children: React.ReactNode;
-}) {
+function PageShell({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
   return (
     <React.StrictMode>
       <PageContextProvider pageContext={pageContext}>
@@ -29,21 +23,21 @@ function PageShell({
         </Layout>
       </PageContextProvider>
     </React.StrictMode>
-  );
+  )
 }
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div
       style={{
-        display: "flex",
+        display: 'flex',
         maxWidth: 900,
-        margin: "auto",
+        margin: 'auto',
       }}
     >
       {children}
     </div>
-  );
+  )
 }
 
 function Sidebar({ children }: { children: React.ReactNode }) {
@@ -52,15 +46,15 @@ function Sidebar({ children }: { children: React.ReactNode }) {
       style={{
         padding: 20,
         flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        lineHeight: "1.8em",
-        borderRight: "2px solid #eee",
+        display: 'flex',
+        flexDirection: 'column',
+        lineHeight: '1.8em',
+        borderRight: '2px solid #eee',
       }}
     >
       {children}
     </div>
-  );
+  )
 }
 
 function Content({ children }: { children: React.ReactNode }) {
@@ -70,12 +64,12 @@ function Content({ children }: { children: React.ReactNode }) {
       style={{
         padding: 20,
         paddingBottom: 50,
-        minHeight: "100vh",
+        minHeight: '100vh',
       }}
     >
       {children}
     </div>
-  );
+  )
 }
 
 function Logo() {
@@ -90,5 +84,5 @@ function Logo() {
         <img src={logo} height={64} width={64} />
       </a>
     </div>
-  );
+  )
 }

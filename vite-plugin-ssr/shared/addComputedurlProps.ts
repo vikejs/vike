@@ -12,7 +12,7 @@ function addComputedUrlProps<
     url: string
     _baseUrl: string
     _getUrlNormalized: GetUrlNormalized
-  }
+  },
 >(pageContext: PageContext): asserts pageContext is PageContext & PageContextUrls {
   if ('urlNormalized' in pageContext) {
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlNormalized')?.get === urlNormalizedGetter)
@@ -22,17 +22,17 @@ function addComputedUrlProps<
     Object.defineProperty(pageContext, 'urlNormalized', {
       get: urlNormalizedGetter,
       enumerable: true,
-      configurable: true
+      configurable: true,
     })
     Object.defineProperty(pageContext, 'urlPathname', {
       get: urlPathnameGetter,
       enumerable: true,
-      configurable: true
+      configurable: true,
     })
     Object.defineProperty(pageContext, 'urlParsed', {
       get: urlParsedGetter,
       enumerable: true,
-      configurable: true
+      configurable: true,
     })
   }
 }

@@ -30,7 +30,7 @@ type PageContextForRoute = {
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
 async function route(
-  pageContext: PageContextForRoute
+  pageContext: PageContextForRoute,
 ): Promise<
   | HookError
   | { pageContextAddendum: { _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown> }
@@ -62,7 +62,7 @@ async function route(
   assert(allPageIds.length >= 0)
   assertUsage(
     allPageIds.length > 0,
-    'No `*.page.js` file found. You must create a `*.page.js` file, e.g. `pages/index.page.js` (or `pages/index.page.{jsx, tsx, vue, ...}`).'
+    'No `*.page.js` file found. You must create a `*.page.js` file, e.g. `pages/index.page.js` (or `pages/index.page.{jsx, tsx, vue, ...}`).',
   )
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
@@ -81,7 +81,7 @@ async function route(
       assertUsage(
         !isReservedPageId(pageId),
         "Only `_default.page.*` and `_error.page.*` files are allowed to include the special character `_` in their path. The following shouldn't include `_`: " +
-          pageId
+          pageId,
       )
 
       if (!pageRouteFile) {
@@ -99,7 +99,7 @@ async function route(
           const routeString = pageRouteFileExports.default
           assertUsage(
             routeString.startsWith('/'),
-            `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
+            `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`,
           )
           const match = resolveRouteString(routeString, urlPathname)
           if (match) {
@@ -108,7 +108,7 @@ async function route(
               pageId,
               routeString,
               routeParams,
-              routeType: 'STRING'
+              routeType: 'STRING',
             })
           }
         }
@@ -128,7 +128,7 @@ async function route(
           assert(false)
         }
       }
-    })
+    }),
   )
 
   if (hookErrors.length > 0) {
@@ -142,7 +142,7 @@ async function route(
   if (!winner) {
     objectAssign(pageContextAddendum, {
       _pageId: null,
-      routeParams: {}
+      routeParams: {},
     })
     return { pageContextAddendum }
   }
@@ -151,7 +151,7 @@ async function route(
   assert(isPlainObject(routeParams))
   objectAssign(pageContextAddendum, {
     _pageId: pageId,
-    routeParams
+    routeParams,
   })
   return { pageContextAddendum }
 }

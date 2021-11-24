@@ -72,7 +72,7 @@ async function getAllPageFiles(): Promise<AllPageFiles> {
     '.page': tranform(allPageFilesUnprocessed['.page']),
     '.page.route': tranform(allPageFilesUnprocessed['.page.route']),
     '.page.server': tranform(allPageFilesUnprocessed['.page.server']),
-    '.page.client': tranform(allPageFilesUnprocessed['.page.client'])
+    '.page.client': tranform(allPageFilesUnprocessed['.page.client']),
   }
 
   return allPageFiles
@@ -121,7 +121,7 @@ function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId:
     lowerFirst(({ filePath }) => {
       if (filePath.startsWith(pageId)) return -1
       return getPathDistance(pageId, filePath)
-    })
+    }),
   )
 
   return defautFiles[0] || null

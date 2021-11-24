@@ -9,25 +9,25 @@ function assertExports(
   filePath: string,
   exportNames: string[],
   renamedExports: Record<string, string> = {},
-  deprecatedExports: Record<string, string> = {}
+  deprecatedExports: Record<string, string> = {},
 ) {
   assert(isObject(fileExports))
   const unknownExports: string[] = []
   Object.keys(fileExports).forEach((exportName) => {
     assertUsage(
       !(exportName in deprecatedExports),
-      `Your ${filePath} exports \`${exportName}\` which has been deprecated in favor of \`${deprecatedExports[exportName]}\`. See \`CHANGELOG.md\`.`
+      `Your ${filePath} exports \`${exportName}\` which has been deprecated in favor of \`${deprecatedExports[exportName]}\`. See \`CHANGELOG.md\`.`,
     )
     assertUsage(
       !(exportName in renamedExports),
-      `Rename the export \`${exportName}\` to \`${renamedExports[exportName]}\` in ${filePath}`
+      `Rename the export \`${exportName}\` to \`${renamedExports[exportName]}\` in ${filePath}`,
     )
     if (!exportNames.includes(exportName)) {
       unknownExports.push(exportName)
     }
   })
   const errSuffix = `Only following exports are allowed: ${stringifyStringArray(
-    exportNames
+    exportNames,
   )}. See https://vite-plugin-ssr.com/custom-exports if you want to re-use code defined in ${filePath}.`
   if (unknownExports.length !== 0) {
     if (unknownExports.length === 1) {

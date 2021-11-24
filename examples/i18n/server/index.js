@@ -20,7 +20,7 @@ async function startServer() {
   } else {
     viteDevServer = await vite.createServer({
       root,
-      server: { middlewareMode: true }
+      server: { middlewareMode: true },
     })
     app.use(viteDevServer.middlewares)
   }
@@ -34,7 +34,7 @@ async function startServer() {
 
     const pageContextInit = {
       url,
-      locale
+      locale,
     }
 
     const pageContext = await renderPage(pageContextInit)

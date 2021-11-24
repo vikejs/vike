@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react'
 
-export { Page };
+export { Page }
 
 function Page({ is404 }: { is404: boolean }) {
   if (is404) {
@@ -9,13 +9,13 @@ function Page({ is404 }: { is404: boolean }) {
         <h1>404 Page Not Found</h1>
         <p>This page could not be found.</p>
       </>
-    );
+    )
   } else {
     return (
       <>
         <h1>500 Internal Server Error</h1>
         <p>Something went wrong.</p>
       </>
-    );
+    )
   }
 }

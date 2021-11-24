@@ -20,7 +20,7 @@ function plugin(): any {
     manifest(),
     importBuild(getImportBuildCode()),
     packageJsonFile(),
-    transformPageServerFiles()
+    transformPageServerFiles(),
   ]
   return plugins as any
 }
@@ -34,7 +34,7 @@ Object.defineProperty(plugin, 'apply', {
   get: () => {
     assertUsage(
       false,
-      'Make sure to instantiate the `ssr` plugin (`import ssr from "vite-plugin-ssr"`): include `ssr()` instead of `ssr` in the `plugins` list of your `vite.config.js`.'
+      'Make sure to instantiate the `ssr` plugin (`import ssr from "vite-plugin-ssr"`): include `ssr()` instead of `ssr` in the `plugins` list of your `vite.config.js`.',
     )
-  }
+  },
 })

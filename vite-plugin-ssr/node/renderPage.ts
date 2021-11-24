@@ -6,7 +6,7 @@ import {
   findPageFile,
   findDefaultFiles,
   findDefaultFile,
-  PageFile
+  PageFile,
 } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { stringify } from '@brillout/json-s'
@@ -27,19 +27,19 @@ import {
   stringifyStringArray,
   handleUrlOrigin,
   analyzeBaseUrl,
-  assertBaseUrl
+  assertBaseUrl,
 } from '../shared/utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import {
   loadPageIsomorphicFiles,
   PageIsomorphicFile,
-  PageIsomorphicFileDefault
+  PageIsomorphicFileDefault,
 } from '../shared/loadPageIsomorphicFiles'
 import {
   assertUsageServerHooksCalled,
   getOnBeforeRenderHook,
   OnBeforeRenderHook,
-  runOnBeforeRenderHooks
+  runOnBeforeRenderHooks,
 } from '../shared/onBeforeRenderHook'
 import { sortPageContext } from '../shared/sortPageContext'
 import {
@@ -52,7 +52,7 @@ import {
   StreamReadableNode,
   StreamReadableWeb,
   StreamWritableNode,
-  StreamWritableWeb
+  StreamWritableWeb,
 } from './html/stream'
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps } from '../shared/addComputedurlProps'
@@ -73,7 +73,7 @@ type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
-  pageContextInit: PageContextInit
+  pageContextInit: PageContextInit,
 ): Promise<
   PageContextInit &
     (({ httpResponse: HttpResponse } & PageContextAdded) | ({ httpResponse: null } & Partial<PageContextAdded>))
@@ -112,13 +112,13 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
       if (pageContext._isPageContextRequest) {
         const httpResponse = createHttpResponseObject(
           stringify({
-            pageContext404PageDoesNotExist: true
+            pageContext404PageDoesNotExist: true,
           }),
           {
             statusCode: 200,
-            renderFilePath: null
+            renderFilePath: null,
           },
-          pageContext
+          pageContext,
         )
         objectAssign(pageContext, { httpResponse })
         return pageContext
@@ -135,7 +135,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     }
     objectAssign(pageContext, {
       _pageId: errorPageId,
-      is404: true
+      is404: true,
     })
   }
 
@@ -149,7 +149,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     const httpResponse = createHttpResponseObject(
       pageContextSerialized,
       { statusCode: 200, renderFilePath: null },
-      pageContext
+      pageContext,
     )
     objectAssign(pageContext, { httpResponse })
     return pageContext
@@ -178,7 +178,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 async function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
   const pageContext = {
     _isPreRendering: false as const,
-    ...pageContextInit
+    ...pageContextInit,
   }
 
   if (pageContext.url.endsWith('/favicon.ico')) {
@@ -193,7 +193,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
     return pageContext
   }
   objectAssign(pageContext, {
-    _isPageContextRequest: isPageContextRequest
+    _isPageContextRequest: isPageContextRequest,
   })
 
   const globalContext = await getGlobalContext()
@@ -206,7 +206,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
 
 // `renderPageWithoutThrowing()` calls `renderPage()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPageWithoutThrowing(
-  pageContextInit: Parameters<typeof renderPage>[0]
+  pageContextInit: Parameters<typeof renderPage>[0],
 ): ReturnType<typeof renderPage> {
   const args = arguments as any as Parameters<typeof renderPageWithoutThrowing>
   try {
@@ -221,7 +221,7 @@ async function renderPageWithoutThrowing(
       objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, {
         httpResponse: null,
-        _err: _err2
+        _err: _err2,
       })
       return pageContext
     }
@@ -239,12 +239,12 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     is404: false,
     _err: err,
     httpResponse: null,
-    routeParams: {} as Record<string, string>
+    routeParams: {} as Record<string, string>,
   })
 
   if (pageContext._isPageContextRequest) {
     const body = stringify({
-      serverSideError: true
+      serverSideError: true,
     })
     const httpResponse = createHttpResponseObject(body, { statusCode: 500, renderFilePath: null }, pageContext)
     objectAssign(pageContext, { httpResponse })
@@ -257,7 +257,7 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     return pageContext
   }
   objectAssign(pageContext, {
-    _pageId: errorPageId
+    _pageId: errorPageId,
   })
 
   const pageFiles = await loadPageFiles(pageContext)
@@ -299,7 +299,7 @@ type HttpResponse = {
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
   { statusCode, renderFilePath }: { statusCode: StatusCode; renderFilePath: null | string },
-  pageContext: { _isPageContextRequest: boolean }
+  pageContext: { _isPageContextRequest: boolean },
 ): HttpResponse | null {
   if (htmlRender === null) {
     return null
@@ -317,7 +317,7 @@ function createHttpResponseObject(
           false,
           '`pageContext.httpResponse.body` is not available because your `render()` hook (' +
             renderFilePath +
-            ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming'
+            ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming',
         )
       }
       const body = htmlRender
@@ -332,7 +332,7 @@ function createHttpResponseObject(
       const nodeStream = getStreamReadableNode(htmlRender)
       assertUsage(
         nodeStream !== null,
-        '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming'
+        '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming',
       )
       return nodeStream
     },
@@ -341,7 +341,7 @@ function createHttpResponseObject(
       const webStream = getStreamReadableWeb(htmlRender)
       assertUsage(
         webStream !== null,
-        '`pageContext.httpResponse.bodyWebStream` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming'
+        '`pageContext.httpResponse.bodyWebStream` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming',
       )
       return webStream
     },
@@ -349,16 +349,16 @@ function createHttpResponseObject(
       const success = pipeToStreamWritableWeb(htmlRender, writable)
       assertUsage(
         success,
-        '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream Pipe, see https://vite-plugin-ssr.com/html-streaming'
+        '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream Pipe, see https://vite-plugin-ssr.com/html-streaming',
       )
     },
     bodyPipeToNodeWritable(writable: StreamWritableNode) {
       const success = pipeToStreamWritableNode(htmlRender, writable)
       assertUsage(
         success,
-        '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream Pipe, see https://vite-plugin-ssr.com/html-streaming'
+        '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream Pipe, see https://vite-plugin-ssr.com/html-streaming',
       )
-    }
+    },
   }
 }
 
@@ -371,12 +371,12 @@ async function prerenderPage(
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
   } & PageFiles &
-    GlobalContext
+    GlobalContext,
 ) {
   assert(pageContext._isPreRendering === true)
 
   objectAssign(pageContext, {
-    _isPageContextRequest: false
+    _isPageContextRequest: false,
   })
 
   addComputedUrlProps(pageContext)
@@ -390,7 +390,7 @@ async function prerenderPage(
   }
   assertUsage(
     renderHookResult.htmlRender !== null,
-    "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you."
+    "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you.",
   )
   assert(pageContext._isPageContextRequest === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
@@ -416,7 +416,7 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
     routeParams: {},
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
-    _usesClientRouter: false
+    _usesClientRouter: false,
   }
 
   const pageFiles = await loadPageFiles(pageContext)
@@ -487,7 +487,7 @@ async function loadPageFiles(pageContext: {
   _isPreRendering: boolean
 }) {
   const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles(
-    pageContext
+    pageContext,
   )
   const pageClientPath = getPageClientPath(pageContext)
 
@@ -500,11 +500,11 @@ async function loadPageFiles(pageContext: {
     _pageIsomorphicFileDefault: pageIsomorphicFileDefault,
     _pageServerFile: pageServerFile,
     _pageServerFileDefault: pageServerFileDefault,
-    _pageClientPath: pageClientPath
+    _pageClientPath: pageClientPath,
   }
 
   objectAssign(pageFiles, {
-    _passToClient: pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || []
+    _passToClient: pageServerFile?.fileExports.passToClient || pageServerFileDefault?.fileExports.passToClient || [],
   })
 
   const isPreRendering = pageContext._isPreRendering
@@ -512,13 +512,13 @@ async function loadPageFiles(pageContext: {
   const dependencies: string[] = [
     pageIsomorphicFile?.filePath,
     pageIsomorphicFileDefault?.filePath,
-    pageClientPath
+    pageClientPath,
   ].filter((p): p is string => !!p)
   objectAssign(pageFiles, {
     _getPageAssets: async () => {
       const pageAssets = await getPageAssets(pageContext, dependencies, pageClientPath, isPreRendering)
       return pageAssets
-    }
+    },
   })
   return pageFiles
 }
@@ -527,7 +527,7 @@ function getPageClientPath(pageContext: { _pageId: string; _allPageFiles: AllPag
   const pageClientFiles = allPageFiles['.page.client']
   assertUsage(
     pageClientFiles.length > 0,
-    'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.'
+    'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.',
   )
   const pageClientPath =
     findPageFile(pageClientFiles, pageId)?.filePath || findDefaultFile(pageClientFiles, pageId)?.filePath
@@ -542,12 +542,12 @@ async function loadPageServerFiles(pageContext: {
   let serverFiles = pageContext._allPageFiles['.page.server']
   assertUsage(
     serverFiles.length > 0,
-    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.'
+    'No `*.page.server.js` file found. Make sure to create one. You can create a `_default.page.server.js` which will apply as default to all your pages.',
   )
 
   const [pageServerFile, pageServerFileDefault] = await Promise.all([
     loadPageServerFile(findPageFile(serverFiles, pageId)),
-    loadPageServerFile(findDefaultFile(serverFiles, pageId))
+    loadPageServerFile(findDefaultFile(serverFiles, pageId)),
   ])
   assert(pageServerFile || pageServerFileDefault)
   if (pageServerFile !== null) {
@@ -572,7 +572,7 @@ async function loadPageServerFiles(pageContext: {
 
   function assert_pageServerFile(
     fileExports: Record<string, unknown>,
-    filePath: string
+    filePath: string,
   ): asserts fileExports is PageServerFileProps['fileExports'] {
     assert(filePath)
     assert(fileExports)
@@ -582,18 +582,18 @@ async function loadPageServerFiles(pageContext: {
 
     assertUsage(
       !('onBeforeRender' in fileExports) || isCallable(fileExports['onBeforeRender']),
-      `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`
+      `The \`onBeforeRender()\` hook defined in ${filePath} should be a function.`,
     )
 
     assertUsage(
       !('passToClient' in fileExports) || hasProp(fileExports, 'passToClient', 'string[]'),
-      `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`
+      `The \`passToClient_\` export defined in ${filePath} should be an array of strings.`,
     )
 
     const prerender = fileExports['prerender']
     assertUsage(
       !prerender || isCallable(prerender),
-      `The \`prerender()\` hook defined in ${filePath} should be a function.`
+      `The \`prerender()\` hook defined in ${filePath} should be a function.`,
     )
   }
 }
@@ -612,16 +612,16 @@ async function loadOnBeforePrerenderHook(globalContext: {
       if ('onBeforePrerender' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'onBeforePrerender', 'function'),
-          `The \`export { onBeforePrerender }\` in ${filePath} should be a function.`
+          `The \`export { onBeforePrerender }\` in ${filePath} should be a function.`,
         )
         assertUsage(
           onBeforePrerenderHook === null,
-          'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.'
+          'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.',
         )
         onBeforePrerenderHook = fileExports.onBeforePrerender
         hookFilePath = filePath
       }
-    })
+    }),
   )
   if (!onBeforePrerenderHook) {
     return null
@@ -636,11 +636,11 @@ function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePat
     filePath,
     ['render', 'onBeforeRender', 'passToClient', 'prerender', 'doNotPrerender', 'onBeforePrerender'],
     {
-      ['_onBeforePrerender']: 'onBeforePrerender'
+      ['_onBeforePrerender']: 'onBeforePrerender',
     },
     {
-      ['addPageContext']: 'onBeforeRender'
-    }
+      ['addPageContext']: 'onBeforeRender',
+    },
   )
 }
 
@@ -653,7 +653,7 @@ async function executeOnBeforeRenderHooks(
     _pageIsomorphicFileDefault: PageIsomorphicFileDefault
     _pageContextAlreadyProvidedByPrerenderHook?: true
     _isPageContextRequest: boolean
-  } & PageContextPublic
+  } & PageContextPublic,
 ): Promise<void> {
   if (pageContext._pageContextAlreadyProvidedByPrerenderHook) {
     return
@@ -669,21 +669,21 @@ async function executeOnBeforeRenderHooks(
       {
         ...pageContext,
         skipOnBeforeRenderServerHooks,
-        runOnBeforeRenderServerHooks
-      }
+        runOnBeforeRenderServerHooks,
+      },
     )
     Object.assign(pageContext, pageContextAddendum)
     assertUsageServerHooksCalled({
       hooksServer: [
         pageContext._pageServerFile?.onBeforeRenderHook && pageContext._pageServerFile.filePath,
-        pageContext._pageServerFileDefault?.onBeforeRenderHook && pageContext._pageServerFileDefault.filePath
+        pageContext._pageServerFileDefault?.onBeforeRenderHook && pageContext._pageServerFileDefault.filePath,
       ],
       hooksIsomorphic: [
         pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
-        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath
+        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath,
       ],
       serverHooksCalled,
-      _pageId: pageContext._pageId
+      _pageId: pageContext._pageId,
     })
   } else {
     const { pageContext: pageContextAddendum } = await runOnBeforeRenderServerHooks()
@@ -702,7 +702,7 @@ async function executeOnBeforeRenderHooks(
   async function skipOnBeforeRenderServerHooks() {
     assertUsage(
       serverHooksCalled === false,
-      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.'
+      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.',
     )
     skipServerHooks = true
   }
@@ -710,17 +710,17 @@ async function executeOnBeforeRenderHooks(
   async function runOnBeforeRenderServerHooks() {
     assertUsage(
       skipServerHooks === false,
-      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.'
+      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.',
     )
     assertUsage(
       serverHooksCalled === false,
-      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.'
+      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.',
     )
     serverHooksCalled = true
     const pageContextAddendum = await runOnBeforeRenderHooks(
       pageContext._pageServerFile,
       pageContext._pageServerFileDefault,
-      pageContext
+      pageContext,
     )
     return { pageContext: pageContextAddendum }
   }
@@ -740,7 +740,7 @@ async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
     _isPreRendering: boolean
-  } & LoadedPageFiles
+  } & LoadedPageFiles,
 ): Promise<
   | {
       renderFilePath: string
@@ -770,7 +770,7 @@ async function executeRenderHook(
   }
   assertUsage(
     render,
-    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.'
+    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.',
   )
   assert(renderFilePath)
 
@@ -798,7 +798,7 @@ async function executeRenderHook(
   const errPrefix = 'The `render()` hook exported by ' + renderFilePath
   const errSuffix = [
     "a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape('<p>Some HTML</p>')`",
-    ', see https://vite-plugin-ssr.com/escapeInject'
+    ', see https://vite-plugin-ssr.com/escapeInject',
   ].join(' ')
 
   let documentHtml: unknown
@@ -809,8 +809,8 @@ async function executeRenderHook(
         errPrefix,
         'returned a plain JavaScript string which is forbidden;',
         'instead, it should return',
-        errSuffix
-      ].join(' ')
+        errSuffix,
+      ].join(' '),
     )
     assertUsage(
       result === null || isDocumentHtml(result),
@@ -819,8 +819,8 @@ async function executeRenderHook(
         'should return `null`, a string `documentHtml`, or an object `{ documentHtml, pageContext }`',
         'where `pageContext` is `undefined` or an object holding additional `pageContext` values',
         'and `documentHtml` is',
-        errSuffix
-      ].join(' ')
+        errSuffix,
+      ].join(' '),
     )
     documentHtml = result
   } else {
@@ -833,12 +833,12 @@ async function executeRenderHook(
           errPrefix,
           'returned `{ documentHtml }`, but `documentHtml` is a plain JavaScript string which is forbidden;',
           '`documentHtml` should be',
-          errSuffix
-        ].join(' ')
+          errSuffix,
+        ].join(' '),
       )
       assertUsage(
         documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml),
-        [errPrefix, 'returned `{ documentHtml }`, but `documentHtml` should be', errSuffix].join(' ')
+        [errPrefix, 'returned `{ documentHtml }`, but `documentHtml` should be', errSuffix].join(' '),
       )
     }
   }
@@ -852,7 +852,7 @@ async function executeRenderHook(
   const onErrorWhileStreaming = (err: unknown) => {
     objectAssign(pageContext, {
       _err: err,
-      _serverSideErrorWhileStreaming: true
+      _serverSideErrorWhileStreaming: true,
     })
     logError(err)
   }
@@ -867,12 +867,12 @@ function assertHookResult<Keys extends readonly string[]>(
   hookResult: unknown,
   hookName: string,
   hookResultKeys: Keys,
-  hookFile: string
+  hookFile: string,
 ): asserts hookResult is undefined | null | { [key in Keys[number]]?: unknown } {
   const errPrefix = `The \`${hookName}()\` hook exported by ${hookFile}`
   assertUsage(
     hookResult === null || hookResult === undefined || isPlainObject(hookResult),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`
+    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`,
   )
   if (hookResult === undefined || hookResult === null) {
     return
@@ -883,7 +883,7 @@ function assertHookResult<Keys extends readonly string[]>(
 function assertKeys<Keys extends readonly string[]>(
   obj: Record<string, unknown>,
   keysExpected: Keys,
-  errPrefix: string
+  errPrefix: string,
 ): asserts obj is { [key in Keys[number]]?: unknown } {
   const keysUnknown: string[] = []
   const keys = Object.keys(obj)
@@ -899,8 +899,8 @@ function assertKeys<Keys extends readonly string[]>(
       'returned an object with unknown keys',
       stringifyStringArray(keysUnknown) + '.',
       'Only following keys are allowed:',
-      stringifyStringArray(keysExpected) + '.'
-    ].join(' ')
+      stringifyStringArray(keysExpected) + '.',
+    ].join(' '),
   )
 }
 
@@ -911,23 +911,23 @@ function assertArguments(...args: unknown[]) {
     isPlainObject(pageContext),
     `\`renderPage(pageContext)\`: argument \`pageContext\` should be a plain JavaScript object, but you passed a \`pageContext\` with \`pageContext.constructor === ${
       (pageContext as any).constructor
-    }\`.`
+    }\`.`,
   )
   assertUsage(
     hasProp(pageContext, 'url'),
-    '`renderPage(pageContext)`: The `pageContext` you passed is missing the property `pageContext.url`.'
+    '`renderPage(pageContext)`: The `pageContext` you passed is missing the property `pageContext.url`.',
   )
   assertUsage(
     typeof pageContext.url === 'string',
     '`renderPage(pageContext)`: `pageContext.url` should be a string but `typeof pageContext.url === "' +
       typeof pageContext.url +
-      '"`.'
+      '"`.',
   )
   assertUsage(
     pageContext.url.startsWith('/') || pageContext.url.startsWith('http'),
     '`renderPage(pageContext)`: `pageContext.url` should start with `/` (e.g. `/product/42`) or `http` (e.g. `http://example.org/product/42`) but `pageContext.url === "' +
       pageContext.url +
-      '"`.'
+      '"`.',
   )
   try {
     const { url } = pageContext
@@ -937,13 +937,13 @@ function assertArguments(...args: unknown[]) {
   } catch (err) {
     assertUsage(
       false,
-      '`renderPage(pageContext)`: `pageContext.url` should be a URL but `pageContext.url==="' + pageContext.url + '"`.'
+      '`renderPage(pageContext)`: `pageContext.url` should be a URL but `pageContext.url==="' + pageContext.url + '"`.',
     )
   }
   const len = args.length
   assertUsage(
     len === 1,
-    `\`renderPage(pageContext)\`: You passed ${len} arguments but \`renderPage()\` accepts only one argument.'`
+    `\`renderPage(pageContext)\`: You passed ${len} arguments but \`renderPage()\` accepts only one argument.'`,
   )
 }
 
@@ -952,7 +952,7 @@ function warnMissingErrorPage() {
   if (!isProduction) {
     assertWarning(
       false,
-      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)'
+      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
     )
   }
 }
@@ -960,7 +960,7 @@ function warnCouldNotRender500Page({ hookFilePath, hookName }: { hookFilePath: s
   assert(!hookName.endsWith('()'))
   assertWarning(
     false,
-    `The error page \`_error.page.js\` could be not rendered because your \`${hookName}()\` hook exported by ${hookFilePath} threw an error.`
+    `The error page \`_error.page.js\` could be not rendered because your \`${hookName}()\` hook exported by ${hookFilePath} threw an error.`,
   )
 }
 function warn404(pageContext: { urlPathname: string; _pageRoutes: PageRoutes }) {
@@ -968,7 +968,7 @@ function warn404(pageContext: { urlPathname: string; _pageRoutes: PageRoutes }) 
   const pageRoutes = pageContext._pageRoutes
   assertUsage(
     pageRoutes.length > 0,
-    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
+    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).',
   )
   const { urlPathname } = pageContext
   if (!isProduction && !isFileRequest(urlPathname)) {
@@ -976,8 +976,8 @@ function warn404(pageContext: { urlPathname: string; _pageRoutes: PageRoutes }) 
       false,
       [
         `URL \`${urlPathname}\` is not matching any of your ${pageRoutes.length} page routes (this warning is not shown in production):`,
-        ...getPagesAndRoutesInfo(pageRoutes)
-      ].join('\n')
+        ...getPagesAndRoutesInfo(pageRoutes),
+      ].join('\n'),
     )
   }
 }
@@ -1037,7 +1037,7 @@ function getUrlNormalized(url: string, baseUrl: string) {
 
 function analyzeUrl(
   url: string,
-  baseUrl: string
+  baseUrl: string,
 ): {
   urlNormalized: string
   isPageContextRequest: boolean
@@ -1063,13 +1063,13 @@ async function getGlobalContext() {
   const globalContext = {
     _getUrlNormalized: (pageContext: { url: string; _baseUrl: string }) =>
       getUrlNormalized(pageContext.url, pageContext._baseUrl),
-    _baseUrl: getBaseUrl()
+    _baseUrl: getBaseUrl(),
   }
   assertBaseUrl(globalContext._baseUrl)
 
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, {
-    _allPageFiles: allPageFiles
+    _allPageFiles: allPageFiles,
   })
 
   const allPageIds = await determinePageIds(allPageFiles)
@@ -1100,7 +1100,7 @@ function logError(err: unknown) {
 
   assertUsage(
     isObject(err),
-    'Your source code threw a primitive value as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.'
+    'Your source code threw a primitive value as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.',
   )
 
   // Avoid logging error twice (not sure if this actually ever happens?)

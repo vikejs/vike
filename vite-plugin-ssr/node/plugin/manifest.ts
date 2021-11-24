@@ -20,14 +20,14 @@ function manifest(): Plugin {
       const manifest = {
         version: projectInfo.projectVersion,
         usesClientRouter: includesClientSideRouter(bundle as any),
-        base
+        base,
       }
       this.emitFile({
         fileName: `vite-plugin-ssr.json`,
         type: 'asset',
-        source: JSON.stringify(manifest, null, 2)
+        source: JSON.stringify(manifest, null, 2),
       })
-    }
+    },
   } as Plugin
 }
 

@@ -1,1 +1,1 @@
-export const filesystemRoutingRoot = "/";
+export const filesystemRoutingRoot = '/'

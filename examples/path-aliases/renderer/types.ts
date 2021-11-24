@@ -1,4 +1,4 @@
-export type ReactComponent = () => JSX.Element;
+export type ReactComponent = () => JSX.Element
 export type PageContext = {
-  Page: ReactComponent;
-};
+  Page: ReactComponent
+}

@@ -7,7 +7,7 @@ import {
   hasProp,
   isBrowser,
   isCallable,
-  objectAssign
+  objectAssign,
 } from '../../shared/utils'
 import { navigationState } from '../navigationState'
 import { throttle } from '../../shared/utils/throttle'
@@ -29,7 +29,7 @@ function useClientRouter({
   ensureHydration = false,
   onTransitionStart,
   onTransitionEnd,
-  prefetchLinks = false
+  prefetchLinks = false,
 }: {
   // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
   // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
@@ -48,7 +48,7 @@ function useClientRouter({
   assertUsage(isCallable(render), '[useClientRouter({render})]: Argument `render` should be a function.')
   assertWarning(
     !(isVueApp() && ensureHydration !== true),
-    'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.'
+    'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.',
   )
 
   autoSaveScrollPosition()
@@ -114,7 +114,7 @@ function useClientRouter({
     const pageContext = {
       url,
       _isFirstRender: renderingNumber === 1,
-      ...globalContext
+      ...globalContext,
     }
     addComputedUrlProps(pageContext)
 
@@ -165,23 +165,23 @@ let navigateFunction:
 async function navigate(url: string, { keepScrollPosition = false } = {}): Promise<void> {
   assertUsage(
     isBrowser(),
-    '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
+    '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.',
   )
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',
-    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.'
+    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.',
   )
   assertUsage(
     typeof keepScrollPosition === 'boolean',
     '[navigate(url, { keepScrollPosition })] Argument `keepScrollPosition` should be a boolean (but we got `typeof keepScrollPosition === "' +
       typeof keepScrollPosition +
-      '"`.'
+      '"`.',
   )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
   assertUsage(
     navigateFunction,
-    '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.'
+    '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.',
   )
   await navigateFunction(url, { keepScrollPosition })
 }

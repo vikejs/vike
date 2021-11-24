@@ -1,21 +1,21 @@
-import ReactDOMServer from "react-dom/server";
-import React from "react";
-import { PageLayout } from "./PageLayout";
-import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
-import logoUrl from "./logo.svg";
+import ReactDOMServer from 'react-dom/server'
+import React from 'react'
+import { PageLayout } from './PageLayout'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import logoUrl from './logo.svg'
 
-export { render };
-export { passToClient };
+export { render }
+export { passToClient }
 
-const passToClient = ["pageProps"];
+const passToClient = ['pageProps']
 
 function render(pageContext) {
-  const { Page, pageProps } = pageContext;
+  const { Page, pageProps } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
       <Page {...pageProps} />
-    </PageLayout>
-  );
+    </PageLayout>,
+  )
 
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
@@ -28,5 +28,5 @@ function render(pageContext) {
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
-    </html>`;
+    </html>`
 }

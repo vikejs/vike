@@ -32,7 +32,7 @@ function HeaderTitle({ fontSize, marginLeft }: { fontSize: string; marginLeft: n
         borderRadius: 4,
         fontSize,
         padding: '2px 5px',
-        marginLeft
+        marginLeft,
       }}
     >
       {'vite-plugin-ssr'}

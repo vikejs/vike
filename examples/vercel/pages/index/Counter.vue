@@ -8,8 +8,8 @@ export default {
   setup(props) {
     const state = reactive({ count: 0 })
     return {
-      state
+      state,
     }
-  }
+  },
 }
 </script>

@@ -12,13 +12,13 @@ async function loadPageFiles(pageContext: { _pageId: string }) {
 
   const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles({
     ...pageContext,
-    ...pageFiles
+    ...pageFiles,
   })
   objectAssign(pageFiles, {
     Page,
     pageExports,
     _pageIsomorphicFile: pageIsomorphicFile,
-    _pageIsomorphicFileDefault: pageIsomorphicFileDefault
+    _pageIsomorphicFileDefault: pageIsomorphicFileDefault,
   })
 
   return pageFiles

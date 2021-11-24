@@ -10,12 +10,12 @@ function createRouter() {
     routes: [
       {
         path: '/',
-        component: () => import('./Home.vue')
+        component: () => import('./Home.vue'),
       },
       {
         path: '/about',
-        component: () => import('./About.vue')
-      }
-    ]
+        component: () => import('./About.vue'),
+      },
+    ],
   })
 }

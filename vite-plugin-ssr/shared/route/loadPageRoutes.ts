@@ -36,7 +36,7 @@ async function loadPageRoutes(globalContext: {
       if ('onBeforeRoute' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'onBeforeRoute', 'function'),
-          `The \`onBeforeRoute\` export of \`${filePath}\` should be a function.`
+          `The \`onBeforeRoute\` export of \`${filePath}\` should be a function.`,
         )
         const { onBeforeRoute } = fileExports
         onBeforeRouteHook = { filePath, onBeforeRoute }
@@ -44,14 +44,14 @@ async function loadPageRoutes(globalContext: {
       if ('filesystemRoutingRoot' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
-          `The \`filesystemRoutingRoot\` export of \`${filePath}\` should be a string.`
+          `The \`filesystemRoutingRoot\` export of \`${filePath}\` should be a string.`,
         )
         filesystemRoots.push({
           rootPath: dirname(filePath),
-          rootValue: fileExports.filesystemRoutingRoot
+          rootValue: fileExports.filesystemRoutingRoot,
         })
       }
-    })
+    }),
   )
 
   const allPageIds = globalContext._allPageIds
@@ -65,7 +65,7 @@ async function loadPageRoutes(globalContext: {
         assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
         const pageRoute = {
           pageId,
-          filesystemRoute
+          filesystemRoute,
         }
 
         const pageRouteFile = findPageFile(globalContext._allPageFiles['.page.route'], pageId)
@@ -76,22 +76,22 @@ async function loadPageRoutes(globalContext: {
           assertUsage('default' in fileExports, `${filePath} should have a default export.`)
           assertUsage(
             hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
-            `The default export of ${filePath} should be a string or a function.`
+            `The default export of ${filePath} should be a string or a function.`,
           )
           assertUsage(
             !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
               hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
-            `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`
+            `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`,
           )
           const routeValue: RouteValue = fileExports.default
           objectAssign(pageRoute, {
-            pageRouteFile: { filePath, fileExports, routeValue }
+            pageRouteFile: { filePath, fileExports, routeValue },
           })
           pageRoutes.push(pageRoute)
         } else {
           pageRoutes.push(pageRoute)
         }
-      })
+      }),
   )
 
   return { pageRoutes, onBeforeRouteHook }
@@ -102,7 +102,7 @@ function assertExportsOfRoutePage(fileExports: Record<string, unknown>, filePath
 }
 function assertExportsOfDefaulteRoutePage(fileExports: Record<string, unknown>, filePath: string) {
   assertExports(fileExports, filePath, ['onBeforeRoute', 'filesystemRoutingRoot'], {
-    ['_onBeforeRoute']: 'onBeforeRoute'
+    ['_onBeforeRoute']: 'onBeforeRoute',
   })
 }
 

@@ -4,7 +4,7 @@ export { isObjectWithKeys }
 
 function isObjectWithKeys<Keys extends readonly string[]>(
   obj: unknown,
-  keys: Keys
+  keys: Keys,
 ): obj is { [key in Keys[number]]?: unknown } {
   if (!isPlainObject(obj)) {
     return false

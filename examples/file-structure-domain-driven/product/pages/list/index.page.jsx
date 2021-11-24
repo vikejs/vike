@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react'
 
-export { Page };
+export { Page }
 
 function Page() {
   return (
@@ -18,5 +18,5 @@ function Page() {
         </li>
       </ul>
     </>
-  );
+  )
 }

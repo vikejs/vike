@@ -12,11 +12,11 @@ async function onBeforeRender() {
       pageProps: {
         // We remove data we don't need because we pass `pageContext.movies` to
         // the client; we want to minimize what is sent over the network.
-        movies: filterMoviesData(movies)
+        movies: filterMoviesData(movies),
       },
       // The page's <title>
-      documentProps: { title: getTitle(movies) }
-    }
+      documentProps: { title: getTitle(movies) },
+    },
   }
 }
 
@@ -25,7 +25,7 @@ async function fetchStarWarsMovies(): Promise<MovieDetails[]> {
   let movies: MovieDetails[] = ((await response.json()) as any).results
   movies = movies.map((movie: MovieDetails, i: number) => ({
     ...movie,
-    id: String(i + 1)
+    id: String(i + 1),
   }))
   return movies
 }
@@ -48,10 +48,10 @@ async function prerender() {
       // above in this file.
       pageContext: {
         pageProps: {
-          movies: filterMoviesData(movies)
+          movies: filterMoviesData(movies),
         },
-        documentProps: { title: getTitle(movies) }
-      }
+        documentProps: { title: getTitle(movies) },
+      },
     },
     ...movies.map((movie) => {
       const url = `/star-wars/${movie.id}`
@@ -63,12 +63,12 @@ async function prerender() {
         // only once (in this `prerender()` hook).
         pageContext: {
           pageProps: {
-            movie: filterMovieData(movie)
+            movie: filterMovieData(movie),
           },
-          documentProps: { title: movie.title }
-        }
+          documentProps: { title: movie.title },
+        },
       }
-    })
+    }),
   ]
 }
 

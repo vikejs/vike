@@ -1,9 +1,9 @@
-import React from "react";
-import { ApolloProvider } from "@apollo/client";
-import "./App.css";
+import React from 'react'
+import { ApolloProvider } from '@apollo/client'
+import './App.css'
 
-export default App;
+export default App
 
 function App({ apolloClient, children }) {
-  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>
 }

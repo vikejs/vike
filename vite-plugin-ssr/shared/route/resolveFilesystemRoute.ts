@@ -5,7 +5,7 @@ export { getFilesystemRoute }
 
 function resolveFilesystemRoute(
   filesystemRoute: string,
-  urlPathname: string
+  urlPathname: string,
 ): null | { routeParams: Record<string, string> } {
   return resolveAsStaticPath(filesystemRoute, urlPathname)
 }

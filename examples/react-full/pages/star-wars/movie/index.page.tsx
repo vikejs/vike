@@ -1,11 +1,11 @@
-import React from "react";
-import fetch from "cross-fetch";
-import { filterMovieData } from "../filterMovieData";
-import type { PageContextBuiltIn } from "vite-plugin-ssr";
-import type { MovieDetails } from "../types";
+import React from 'react'
+import fetch from 'cross-fetch'
+import { filterMovieData } from '../filterMovieData'
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { MovieDetails } from '../types'
 
-export { Page };
-export { onBeforeRender };
+export { Page }
+export { onBeforeRender }
 
 function Page({ movie }: { movie: MovieDetails }) {
   return (
@@ -17,20 +17,18 @@ function Page({ movie }: { movie: MovieDetails }) {
       <br />
       Producer: {movie.producer}
     </>
-  );
+  )
 }
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
-  const response = await fetch(
-    `https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`
-  );
-  let movie = (await response.json()) as MovieDetails;
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`)
+  let movie = (await response.json()) as MovieDetails
 
   // We remove data we don't need because we pass `pageContext.movie` to
   // the client; we want to minimize what is sent over the network.
-  movie = filterMovieData(movie);
+  movie = filterMovieData(movie)
 
-  const { title } = movie;
+  const { title } = movie
 
   return {
     pageContext: {
@@ -42,5 +40,5 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
         title,
       },
     },
-  };
+  }
 }

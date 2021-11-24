@@ -16,9 +16,9 @@ function dev(): Plugin {
           'vite-plugin-ssr/client/router',
           // We cannot add these to `optimizeDeps.include` because of `pnpm`
           '@brillout/libassert',
-          '@brillout/json-s'
-        ]
-      }
-    })
+          '@brillout/json-s',
+        ],
+      },
+    }),
   }
 }

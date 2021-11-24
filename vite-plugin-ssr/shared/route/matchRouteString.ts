@@ -49,7 +49,7 @@ function matchPath(pattern: PathPattern | string, pathname: string) {
     params,
     pathname: matchedPathname,
     pathnameBase,
-    pattern
+    pattern,
   }
 }
 
@@ -59,7 +59,7 @@ function compilePath(path: string, caseSensitive = false, end = true): [RegExp, 
     `Route path "${path}" will be treated as if it were ` +
       `"${path.replace(/\*$/, '/*')}" because the \`*\` character must ` +
       `always follow a \`/\` in the pattern. To get rid of this warning, ` +
-      `please change the route path to "${path.replace(/\*$/, '/*')}".`
+      `please change the route path to "${path.replace(/\*$/, '/*')}".`,
   )
 
   let paramNames: string[] = []
@@ -102,7 +102,7 @@ function safelyDecodeURIComponent(value: string, paramName: string) {
       false,
       `The value for the URL param "${paramName}" will not be decoded because` +
         ` the string "${value}" is a malformed URL segment. This is probably` +
-        ` due to a bad percent encoding (${error}).`
+        ` due to a bad percent encoding (${error}).`,
     )
 
     return value

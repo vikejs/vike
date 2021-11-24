@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "./Link";
-import logo from "./logo.svg";
-import "./PageLayout.css";
+import React from 'react'
+import { Link } from './Link'
+import logo from './logo.svg'
+import './PageLayout.css'
 
-export { PageLayout };
+export { PageLayout }
 
 function PageLayout({ children }) {
   return (
@@ -17,21 +17,21 @@ function PageLayout({ children }) {
         <Content>{children}</Content>
       </Layout>
     </React.StrictMode>
-  );
+  )
 }
 
 function Layout({ children }) {
   return (
     <div
       style={{
-        display: "flex",
+        display: 'flex',
         maxWidth: 900,
-        margin: "auto",
+        margin: 'auto',
       }}
     >
       {children}
     </div>
-  );
+  )
 }
 
 function Sidebar({ children }) {
@@ -40,15 +40,15 @@ function Sidebar({ children }) {
       style={{
         padding: 20,
         flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        lineHeight: "1.8em",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        lineHeight: '1.8em',
       }}
     >
       {children}
     </div>
-  );
+  )
 }
 
 function Content({ children }) {
@@ -57,13 +57,13 @@ function Content({ children }) {
       style={{
         padding: 20,
         paddingBottom: 50,
-        borderLeft: "2px solid #eee",
-        minHeight: "100vh",
+        borderLeft: '2px solid #eee',
+        minHeight: '100vh',
       }}
     >
       {children}
     </div>
-  );
+  )
 }
 
 function Logo() {
@@ -78,5 +78,5 @@ function Logo() {
         <img src={logo} height={64} width={64} />
       </Link>
     </div>
-  );
+  )
 }

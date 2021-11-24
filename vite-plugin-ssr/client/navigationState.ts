@@ -12,5 +12,5 @@ export const navigationState = {
   },
   isOriginalUrl(url: string) {
     return url === urlFullOriginal
-  }
+  },
 }

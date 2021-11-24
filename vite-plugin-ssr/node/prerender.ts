@@ -12,7 +12,7 @@ import {
   isPlainObject,
   projectInfo,
   objectAssign,
-  isObjectWithKeys
+  isObjectWithKeys,
 } from '../shared/utils'
 import { moduleExists } from '../shared/utils/moduleExists'
 import { setSsrEnv } from './ssrEnv'
@@ -23,7 +23,7 @@ import {
   loadOnBeforePrerenderHook,
   loadPageFiles,
   prerenderPage,
-  renderStatic404Page
+  renderStatic404Page,
 } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
 import * as pLimit from 'p-limit'
@@ -68,7 +68,7 @@ async function prerender({
   outDir = 'dist',
   clientRouter = false,
   parallel = cpus().length,
-  base
+  base,
 }: {
   partial?: boolean
   noExtraDir?: boolean
@@ -89,7 +89,7 @@ async function prerender({
     root,
     outDir,
     viteDevServer: undefined,
-    baseUrl: pluginManifest.base
+    baseUrl: pluginManifest.base,
   })
 
   const concurrencyLimit = pLimit(parallel)
@@ -98,7 +98,7 @@ async function prerender({
   objectAssign(globalContext, {
     _isPreRendering: true as const,
     _usesClientRouter: pluginManifest.usesClientRouter,
-    prerenderPageContexts: [] as PageContext[]
+    prerenderPageContexts: [] as PageContext[],
   })
 
   const doNotPrerenderList: DoNotPrerenderList = []
@@ -120,7 +120,7 @@ async function prerender({
   console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
 
   await Promise.all(
-    htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit))
+    htmlFiles.map((htmlFile) => writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit)),
   )
 
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
@@ -129,7 +129,7 @@ async function prerender({
 async function callPrerenderHooks(
   globalContext: GlobalPrerenderingContext,
   doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: pLimit.Limit,
 ) {
   // Render URLs returned by `prerender()` hooks
   await Promise.all(
@@ -139,7 +139,7 @@ async function callPrerenderHooks(
         concurrencyLimit(async () => {
           const pageFilesData = await loadPageFiles({
             ...globalContext,
-            _pageId: pageId
+            _pageId: pageId,
           })
           const pageServerFile = pageFilesData._pageServerFile
           if (!pageServerFile) return
@@ -170,32 +170,32 @@ async function callPrerenderHooks(
             assert(url.startsWith('/'))
             assert(pageContext === null || isPlainObject(pageContext))
             let pageContextFound: PageContext | undefined = globalContext.prerenderPageContexts.find(
-              (pageContext) => pageContext.url === url
+              (pageContext) => pageContext.url === url,
             )
             if (!pageContextFound) {
               pageContextFound = {
                 ...globalContext,
                 _prerenderSourceFile: prerenderSourceFile,
-                url
+                url,
               }
               globalContext.prerenderPageContexts.push(pageContextFound)
             }
             if (pageContext) {
               objectAssign(pageContextFound, {
                 _pageContextAlreadyProvidedByPrerenderHook: true,
-                ...pageContext
+                ...pageContext,
               })
             }
           })
-        })
-      )
+        }),
+      ),
   )
 }
 
 async function handlePagesWithStaticRoutes(
   globalContext: GlobalPrerenderingContext,
   doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: pLimit.Limit,
 ) {
   // Pre-render pages with a static route
   await Promise.all(
@@ -233,13 +233,13 @@ async function handlePagesWithStaticRoutes(
           _prerenderSourceFile: null,
           url,
           routeParams: {},
-          _pageId: pageId
+          _pageId: pageId,
         }
         objectAssign(pageContext, await loadPageFiles(pageContext))
 
         globalContext.prerenderPageContexts.push(pageContext)
-      })
-    )
+      }),
+    ),
   )
 }
 
@@ -260,12 +260,12 @@ async function callOnBeforePrerenderHook(globalContext: {
   const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${hookFilePath}\``
   assertUsage(
     isObjectWithKeys(result, ['globalContext'] as const) && hasProp(result, 'globalContext'),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ globalContext: { /* ... */ } }\`.`
+    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ globalContext: { /* ... */ } }\`.`,
   )
   const globalContextAddedum = result.globalContext
   assertUsage(
     isPlainObject(globalContextAddedum),
-    `${errPrefix} returned \`{ globalContext }\` but \`globalContext\` should be a plain JavaScript object.`
+    `${errPrefix} returned \`{ globalContext }\` but \`globalContext\` should be a plain JavaScript object.`,
   )
   objectAssign(globalContext, globalContextAddedum)
 }
@@ -275,7 +275,7 @@ async function routeAndPrerender(
   htmlFiles: HtmlFile[],
   prerenderPageIds: PrerenderedPageIds,
   concurrencyLimit: pLimit.Limit,
-  noExtraDir: boolean
+  noExtraDir: boolean,
 ) {
   // Route all URLs
   await Promise.all(
@@ -289,14 +289,14 @@ async function routeAndPrerender(
         }
         assert(
           hasProp(routeResult.pageContextAddendum, '_pageId', 'null') ||
-            hasProp(routeResult.pageContextAddendum, '_pageId', 'string')
+            hasProp(routeResult.pageContextAddendum, '_pageId', 'string'),
         )
         if (routeResult.pageContextAddendum._pageId === null) {
           // Is this assertion also true with a `onBeforeRoute()` hook?
           assert(prerenderSourceFile)
           assertUsage(
             false,
-            `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`
+            `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`,
           )
         }
 
@@ -306,7 +306,7 @@ async function routeAndPrerender(
 
         const pageFilesData = await loadPageFiles({
           ...globalContext,
-          _pageId: pageId
+          _pageId: pageId,
         })
         objectAssign(pageContext, pageFilesData)
 
@@ -316,17 +316,17 @@ async function routeAndPrerender(
           htmlString: documentHtml,
           pageContextSerialized,
           doNotCreateExtraDirectory: noExtraDir,
-          pageId
+          pageId,
         })
         prerenderPageIds[pageId] = pageContext
-      })
-    )
+      }),
+    ),
   )
 }
 
 function warnContradictoryNoPrerenderList(
   prerenderPageIds: Record<string, { url: string; _prerenderSourceFile: string | null }>,
-  doNotPrerenderList: DoNotPrerenderList
+  doNotPrerenderList: DoNotPrerenderList,
 ) {
   Object.entries(prerenderPageIds).forEach(([pageId, { url, _prerenderSourceFile }]) => {
     const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
@@ -334,7 +334,7 @@ function warnContradictoryNoPrerenderList(
       assert(_prerenderSourceFile)
       assertUsage(
         false,
-        `Your \`prerender()\` hook defined in ${_prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
+        `Your \`prerender()\` hook defined in ${_prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`,
       )
     }
   })
@@ -344,7 +344,7 @@ function warnMissingPages(
   prerenderPageIds: Record<string, unknown>,
   doNotPrerenderList: DoNotPrerenderList,
   globalContext: { _allPageIds: string[] },
-  partial: boolean
+  partial: boolean,
 ) {
   globalContext._allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
@@ -353,7 +353,7 @@ function warnMissingPages(
     .forEach((pageId) => {
       assertWarning(
         partial,
-        `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`
+        `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,
       )
     })
 }
@@ -369,7 +369,7 @@ async function prerender404Page(htmlFiles: HtmlFile[], globalContext: GlobalPrer
         htmlString: documentHtml,
         pageContextSerialized: null,
         doNotCreateExtraDirectory: true,
-        pageId: null
+        pageId: null,
       })
     }
   }
@@ -380,7 +380,7 @@ async function writeHtmlFile(
   root: string,
   outDir: string,
   doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: pLimit.Limit,
 ) {
   assert(url.startsWith('/'))
   assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
@@ -388,7 +388,7 @@ async function writeHtmlFile(
   const writeJobs = [write(url, '.html', htmlString, root, outDir, doNotCreateExtraDirectory, concurrencyLimit)]
   if (pageContextSerialized !== null) {
     writeJobs.push(
-      write(url, '.pageContext.json', pageContextSerialized, root, outDir, doNotCreateExtraDirectory, concurrencyLimit)
+      write(url, '.pageContext.json', pageContextSerialized, root, outDir, doNotCreateExtraDirectory, concurrencyLimit),
     )
   }
   await Promise.all(writeJobs)
@@ -401,7 +401,7 @@ function write(
   root: string,
   outDir: string,
   doNotCreateExtraDirectory: boolean,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: pLimit.Limit,
 ) {
   return concurrencyLimit(async () => {
     const fileUrl = getFileUrl(url, fileExtension, fileExtension === '.pageContext.json' || doNotCreateExtraDirectory)
@@ -421,7 +421,7 @@ function mkdirp(path: string): Promise<string | undefined> {
 
 function normalizePrerenderResult(
   prerenderResult: unknown,
-  prerenderSourceFile: string
+  prerenderSourceFile: string,
 ): { url: string; pageContext: null | Record<string, unknown> }[] {
   if (Array.isArray(prerenderResult)) {
     return prerenderResult.map(normalize)
@@ -439,11 +439,11 @@ function normalizePrerenderResult(
     assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
     assertUsage(
       hasProp(prerenderElement, 'url', 'string'),
-      `${errMsg1}: \`url\` should be a string (but we got \`typeof url === "${typeof prerenderElement.url}"\`).`
+      `${errMsg1}: \`url\` should be a string (but we got \`typeof url === "${typeof prerenderElement.url}"\`).`,
     )
     assertUsage(
       prerenderElement.url.startsWith('/'),
-      `${errMsg1}: the \`url\` with value \`${prerenderElement.url}\` doesn't start with \`/\`. Make sure each URL starts with \`/\`.`
+      `${errMsg1}: the \`url\` with value \`${prerenderElement.url}\` doesn't start with \`/\`. Make sure each URL starts with \`/\`.`,
     )
     Object.keys(prerenderElement).forEach((key) => {
       assertUsage(key === 'url' || key === 'pageContext', `${errMsg1}: unexpected object key \`${key}\` ${errMsg2}`)
@@ -453,7 +453,7 @@ function normalizePrerenderResult(
     }
     assertUsage(
       hasProp(prerenderElement, 'pageContext', 'object'),
-      `The \`prerender()\` hook exported by ${prerenderSourceFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
+      `The \`prerender()\` hook exported by ${prerenderSourceFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`,
     )
     return prerenderElement
   }
@@ -461,7 +461,7 @@ function normalizePrerenderResult(
 
 function getPluginManifest(
   root: string,
-  outDir: string
+  outDir: string,
 ): {
   version: string
   base: string
@@ -472,14 +472,14 @@ function getPluginManifest(
     moduleExists(pluginManifestPath),
     "You are trying to run `$ vite-plugin-ssr prerender` but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before running the pre-rendering. (Following build manifest is missing: `" +
       pluginManifestPath +
-      '`.)'
+      '`.)',
   )
 
   const manifestContent: unknown = require(pluginManifestPath)
   assert(hasProp(manifestContent, 'version', 'string'))
   assertUsage(
     manifestContent.version === projectInfo.projectVersion,
-    `Remove \`${outDir}/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with a different version \`vite-plugin-ssr@${manifestContent.version}\`.)`
+    `Remove \`${outDir}/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with a different version \`vite-plugin-ssr@${manifestContent.version}\`.)`,
   )
   assert(hasProp(manifestContent, 'base', 'string'))
   assert(hasProp(manifestContent, 'usesClientRouter', 'boolean'))
@@ -494,7 +494,7 @@ function assertArguments(
   base: unknown,
   root: unknown,
   outDir: unknown,
-  parallel: number
+  parallel: number,
 ) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
   assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')

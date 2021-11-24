@@ -18,7 +18,7 @@ export { handlePageContextRequestSuffix }
 function getFileUrl(
   url: string,
   fileExtension: '.html' | '.pageContext.json',
-  doNotCreateExtraDirectory: boolean
+  doNotCreateExtraDirectory: boolean,
 ): string {
   assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
   assert(url.startsWith('/'), { url })

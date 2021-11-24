@@ -1,1 +1,1 @@
-export default "/product/:productId";
+export default '/product/:productId'

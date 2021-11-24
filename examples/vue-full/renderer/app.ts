@@ -12,7 +12,7 @@ function createApp(pageContext: PageContext) {
   const PageWithWrapper = defineComponent({
     data: () => ({
       Page: markRaw(Page),
-      pageProps: markRaw(pageContext.pageProps || {})
+      pageProps: markRaw(pageContext.pageProps || {}),
     }),
     created() {
       rootComponent = this
@@ -24,10 +24,10 @@ function createApp(pageContext: PageContext) {
         {
           default: () => {
             return h(this.Page, this.pageProps)
-          }
-        }
+          },
+        },
       )
-    }
+    },
   })
 
   const app = createSSRApp(PageWithWrapper)
@@ -38,7 +38,7 @@ function createApp(pageContext: PageContext) {
       Object.assign(pageContextReactive, pageContext)
       rootComponent.Page = markRaw(pageContext.Page)
       rootComponent.pageProps = markRaw(pageContext.pageProps || {})
-    }
+    },
   })
 
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).

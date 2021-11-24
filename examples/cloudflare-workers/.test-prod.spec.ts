@@ -1,2 +1,2 @@
-import { runTests } from "./.runTests";
-runTests("npm run prod", { hasStarWarsPage: true });
+import { runTests } from './.runTests'
+runTests('npm run prod', { hasStarWarsPage: true })

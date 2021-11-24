@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react'
 
-export { Page };
+export { Page }
 
 function Page({ movies }) {
   return (
@@ -14,5 +14,5 @@ function Page({ movies }) {
         ))}
       </ol>
     </>
-  );
+  )
 }

@@ -27,9 +27,9 @@ function packageJsonFile(): Plugin {
       this.emitFile({
         fileName: `package.json`,
         type: 'asset',
-        source: getPackageJsonContent()
+        source: getPackageJsonContent(),
       })
-    }
+    },
   } as Plugin
 }
 

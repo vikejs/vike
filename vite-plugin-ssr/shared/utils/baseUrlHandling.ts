@@ -15,11 +15,11 @@ function assertBaseUrl(baseUrl: string, usageErrorMessagePrefix?: string) {
   }
   assertUsage(
     baseUrl.startsWith('/') || baseUrl.startsWith('http') || baseUrl.startsWith('./'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.'
+    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.',
   )
   assertUsage(
     !baseUrl.startsWith('./'),
-    'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.'
+    'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.',
   )
 }
 
@@ -46,7 +46,7 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
     let urlHasOrigin = urlOrigin !== null
     assertUsage(
       !baseUrlHasOrigin || urlHasOrigin,
-      `You provided a \`baseUrl\` (\`${baseUrl}\`) that contains a URL origin (\`${baseUrlOrigin!}\`) but the \`pageContext.url\` (\`${url}\`) you provided in your server middleware (\`const renderPage = createPageRenderer(/*...*/); renderPage(pageContext);\`) does not contain a URL origin. Either remove the URL origin from your \`baseUrl\` or make sure to always provide the URL origin in \`pageContext.url\`.`
+      `You provided a \`baseUrl\` (\`${baseUrl}\`) that contains a URL origin (\`${baseUrlOrigin!}\`) but the \`pageContext.url\` (\`${url}\`) you provided in your server middleware (\`const renderPage = createPageRenderer(/*...*/); renderPage(pageContext);\`) does not contain a URL origin. Either remove the URL origin from your \`baseUrl\` or make sure to always provide the URL origin in \`pageContext.url\`.`,
     )
     if (urlHasOrigin && !baseUrlHasOrigin) {
       urlOriginHasBeenRemoved = true

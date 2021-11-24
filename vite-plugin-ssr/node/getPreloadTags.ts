@@ -12,7 +12,7 @@ async function getPreloadUrls(
   },
   dependencies: string[],
   clientManifest: null | ViteManifest,
-  serverManifest: null | ViteManifest
+  serverManifest: null | ViteManifest,
 ): Promise<string[]> {
   const ssrEnv = getSsrEnv()
 
@@ -21,14 +21,14 @@ async function getPreloadUrls(
     const visitedModules = new Set<string>()
     const pageViewFiles: string[] = pageContext._allPageFiles['.page'].map(({ filePath }) => filePath)
     const skipPageViewFiles = pageViewFiles.filter(
-      (pageViewFile) => !dependencies.some((dep) => dep.includes(pageViewFile))
+      (pageViewFile) => !dependencies.some((dep) => dep.includes(pageViewFile)),
     )
     await Promise.all(
       dependencies.map(async (filePath) => {
         assert(filePath)
         const mod = await ssrEnv.viteDevServer.moduleGraph.getModuleByUrl(filePath)
         collectCss(mod, preloadUrls, visitedModules, skipPageViewFiles)
-      })
+      }),
     )
   } else {
     assert(clientManifest && serverManifest)
@@ -53,7 +53,7 @@ function collectAssets(
   preloadUrls: Set<string>,
   visistedAssets: Set<string>,
   manifest: ViteManifest,
-  onlyCollectStaticAssets: boolean
+  onlyCollectStaticAssets: boolean,
 ): void {
   if (visistedAssets.has(modulePath)) return
   visistedAssets.add(modulePath)
@@ -91,7 +91,7 @@ function collectCss(
   mod: ModuleNode | undefined,
   preloadUrls: Set<string>,
   visitedModules: Set<string>,
-  skipPageViewFiles: string[]
+  skipPageViewFiles: string[],
 ): void {
   if (!mod) return
   if (!mod.url) return

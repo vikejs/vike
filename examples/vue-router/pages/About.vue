@@ -7,9 +7,9 @@
 export default {
   async setup() {
     return {
-      msg: 'About'
+      msg: 'About',
     }
-  }
+  },
 }
 </script>
 

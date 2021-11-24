@@ -46,7 +46,7 @@ async function callOnBeforeRouteHook(pageContext: {
     result === null ||
       result === undefined ||
       (isObjectWithKeys(result, ['pageContext'] as const) && hasProp(result, 'pageContext')),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
+    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`,
   )
 
   if (result === null || result === undefined) {
@@ -55,7 +55,7 @@ async function callOnBeforeRouteHook(pageContext: {
 
   assertUsage(
     hasProp(result, 'pageContext', 'object'),
-    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`
+    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`,
   )
 
   if (hasProp(result.pageContext, '_pageId') && !hasProp(result.pageContext, '_pageId', 'null')) {
@@ -63,13 +63,13 @@ async function callOnBeforeRouteHook(pageContext: {
     assertUsage(hasProp(result.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
     assertUsage(
       pageContext._allPageIds.includes(result.pageContext._pageId),
-      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
+      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`,
     )
   }
   if (hasProp(result.pageContext, 'routeParams')) {
     assertRouteParams(
       result.pageContext,
-      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
+      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`,
     )
   }
 

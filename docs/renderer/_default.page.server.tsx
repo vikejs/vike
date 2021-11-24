@@ -11,5 +11,5 @@ setFrame({
   logoUrl,
   navHeaderMobile: <NavHeaderMobile />,
   navHeader: <NavHeader />,
-  headings
+  headings,
 })

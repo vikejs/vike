@@ -12,7 +12,7 @@ const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-
 const IGNORE_FILES = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
 const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
 const RENAME_FILES = {
-  _gitignore: '.gitignore'
+  _gitignore: '.gitignore',
 }
 
 const cwd = process.cwd()
@@ -27,7 +27,7 @@ async function init() {
       type: 'input',
       name: 'name',
       message: `Project name:`,
-      initial: 'vite-ssr-project'
+      initial: 'vite-ssr-project',
     })
     targetDir = name
   }
@@ -47,7 +47,7 @@ async function init() {
         type: 'confirm',
         name: 'yes',
         initial: 'Y',
-        message: `Target directory ${targetDir} is not empty.\n` + `Remove existing files and continue?`
+        message: `Target directory ${targetDir} is not empty.\n` + `Remove existing files and continue?`,
       })
       if (yes) {
         emptyDir(root)
@@ -77,7 +77,7 @@ async function init() {
       type: 'select',
       name: 't',
       message,
-      choices: BOILERPLATES
+      choices: BOILERPLATES,
     })
     boilerplate = stripColors(t)
   }
@@ -168,9 +168,9 @@ function initGitRepo(cwd) {
       '-c user.email="vite-plugin-ssr@brillout.com"',
       'commit',
       '--no-gpg-sign',
-      '--message="boilerplate Vite w/ vite-plugin-ssr"'
+      '--message="boilerplate Vite w/ vite-plugin-ssr"',
     ].join(' '),
-    { cwd }
+    { cwd },
   )
 }
 function isGitInstalled() {

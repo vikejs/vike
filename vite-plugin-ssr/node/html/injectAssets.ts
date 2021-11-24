@@ -6,7 +6,7 @@ import {
   higherFirst,
   normalizePath,
   prependBaseUrl,
-  slice
+  slice,
 } from '../../shared/utils'
 import { getPreloadUrls } from '../getPreloadTags'
 import { getSsrEnv } from '../ssrEnv'
@@ -40,7 +40,7 @@ async function getPageAssets(
   },
   dependencies: string[],
   pageClientFilePath: string,
-  isPreRendering: boolean
+  isPreRendering: boolean,
 ): Promise<PageAsset[]> {
   assert(dependencies.every((filePath) => isAbsolute(filePath)))
 
@@ -62,7 +62,7 @@ async function getPageAssets(
       src,
       assetType,
       mediaType,
-      preloadType
+      preloadType,
     }
   })
 
@@ -71,7 +71,7 @@ async function getPageAssets(
     src: scriptSrc,
     assetType: 'script',
     mediaType: 'text/javascript',
-    preloadType: null
+    preloadType: null,
   })
 
   pageAssets = pageAssets.map((pageAsset) => {
@@ -106,7 +106,7 @@ function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
       if (assetType === 'script') return priority - 2
 
       return priority
-    })
+    }),
   )
 }
 
@@ -123,7 +123,7 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
       clientManifestPath +
       '` and/or `' +
       serverManifestPath +
-      '`.)'
+      '`.)',
   )
   return { clientManifest, serverManifest }
 }
@@ -131,7 +131,7 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
   assertUsage(
     typeof htmlString === 'string',
-    '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'
+    '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.',
   )
   assertUsage(pageContext, '[injectAssets(htmlString, pageContext)]: Argument `pageContext` is missing.')
   const errMsg = (body: string) =>
@@ -198,7 +198,7 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
   // Inject pageContext__client
   assertUsage(
     !injectPageInfoAlreadyDone(htmlString),
-    'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).'
+    'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).',
   )
   htmlString = injectPageInfo(htmlString, pageContext)
   return htmlString

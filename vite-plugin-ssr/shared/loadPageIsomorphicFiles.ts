@@ -44,7 +44,7 @@ async function loadPageIsomorphicFiles(pageContext: {
 
       assertUsage(
         hasProp(fileExports, 'Page') || hasProp(fileExports, 'default'),
-        `${filePath} should have a \`export { Page }\` or \`export default\`.`
+        `${filePath} should have a \`export { Page }\` or \`export default\`.`,
       )
       pageExports = fileExports
       Page = pageExports['Page'] || pageExports['default']
@@ -54,7 +54,7 @@ async function loadPageIsomorphicFiles(pageContext: {
       if (hasProp(fileExports, 'skipOnBeforeRenderDefaultHook')) {
         assertUsage(
           hasProp(fileExports, 'skipOnBeforeRenderDefaultHook', 'boolean'),
-          `${filePath} has \`export { skipOnBeforeRenderDefaultHook }\` but \`skipOnBeforeRenderDefaultHook\` should be a boolean.`
+          `${filePath} has \`export { skipOnBeforeRenderDefaultHook }\` but \`skipOnBeforeRenderDefaultHook\` should be a boolean.`,
         )
         fileExportsTyped.skipOnBeforeRenderDefaultHook = fileExports.skipOnBeforeRenderDefaultHook
       }
@@ -62,7 +62,7 @@ async function loadPageIsomorphicFiles(pageContext: {
       const pageIsomorphicFile: PageIsomorphicFile = {
         filePath,
         onBeforeRenderHook,
-        fileExports: fileExportsTyped
+        fileExports: fileExportsTyped,
       }
       return pageIsomorphicFile
     })(),
@@ -77,10 +77,10 @@ async function loadPageIsomorphicFiles(pageContext: {
 
       const pageIsomorphicFileDefault: PageIsomorphicFileDefault = {
         filePath,
-        onBeforeRenderHook
+        onBeforeRenderHook,
       }
       return pageIsomorphicFileDefault
-    })()
+    })(),
   ])
 
   return { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault }

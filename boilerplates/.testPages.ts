@@ -21,16 +21,16 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
       const extRegexp = /[a-z]+/
       expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.css">`
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.css">`,
       )
       expect(html).toMatch(
-        partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`
+        partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`,
       )
       expect(html).toMatch(
-        partRegex`<script type="module" src="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`
+        partRegex`<script type="module" src="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`,
       )
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`,
       )
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     } else {
@@ -62,7 +62,7 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     // Not sure why `autoRetry()` is needed here; isn't the CSS loading already awaited for in the previous `test()` call?
     await autoRetry(async () => {
       expect(await page.$eval('a[href="/about"]', (e) => getComputedStyle(e).backgroundColor)).toBe(
-        'rgb(238, 238, 238)'
+        'rgb(238, 238, 238)',
       )
       expect(await page.$eval('a[href="/"]', (e) => getComputedStyle(e).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
     })
@@ -75,7 +75,7 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     expectBrowserError(
       (browserLog) =>
         browserLog.location.url === 'http://localhost:3000/does-not-exist' &&
-        browserLog.text === 'Failed to load resource: the server responded with a status of 404 (Not Found)'
+        browserLog.text === 'Failed to load resource: the server responded with a status of 404 (Not Found)',
     )
   })
 }
