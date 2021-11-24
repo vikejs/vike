@@ -1,4 +1,4 @@
-import { page, run, partRegex, autoRetry, fetchHtml, urlBase, expectBrowserError } from '../libframe/test/setup'
+import { page, run, partRegex, autoRetry, fetchHtml, urlBase } from '../libframe/test/setup'
 
 export { testPages }
 
@@ -72,10 +72,5 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     await page.goto(urlBase + '/does-not-exist')
     expect(await page.textContent('h1')).toBe('404 Page Not Found')
     expect(await page.textContent('p')).toBe('This page could not be found.')
-    expectBrowserError(
-      (browserLog) =>
-        browserLog.location.url === 'http://localhost:3000/does-not-exist' &&
-        browserLog.text === 'Failed to load resource: the server responded with a status of 404 (Not Found)',
-    )
   })
 }
