@@ -10,8 +10,8 @@ function Integration({ toolTypeName }: { toolTypeName: string }) {
       <p>
         In principle, we can use <code>vite-plugin-ssr</code> with any {toolTypeName}. However, if you are having
         difficulties integrating {toolTypeName.startsWith('a') ? 'an' : 'a'} {toolTypeName}, feel free to{' '}
-        <a href={`https://discord.com/invite/${projectInfo.discordInvite}`}>join and ask our Discord</a> or{' '}
-        <a href={projectInfo.githubRepository + '/issues/new'}>open a GitHub ticket</a>.
+        <a href={projectInfo.discordInvite}>join and ask our Discord</a> or{' '}
+        <a href={projectInfo.githubIssues}>open a GitHub ticket</a>.
       </p>
     </>
   )

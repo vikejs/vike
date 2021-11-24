@@ -10,7 +10,7 @@ Version history & breaking changes: [CHANGELOG.md](/CHANGELOG.md)
 
 Follow: [twitter.com/brillout](https://twitter.com/brillout)
 <br/>
-Chat: [Discord - `vite-plugin-ssr`](https://discord.gg/qTq92FQzKb)
+Chat: [Discord - `vite-plugin-ssr`](https://discord.com/invite/qTq92FQzKb)
 
 Have a question? Want a feature? A tool integration is not working?
 <a href="https://discord.com/invite/qTq92FQzKb">Join our Discord</a> or
