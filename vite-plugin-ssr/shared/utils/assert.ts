@@ -6,7 +6,7 @@ export { assertUsage }
 export { assertWarning }
 export { getPluginError }
 
-const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.version}]`
+const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
 const internalErrorPrefix = `${errorPrefix}[Internal Failure]`
 const usageErrorPrefix = `${errorPrefix}[Wrong Usage]`
 const warningPrefix = `${errorPrefix}[Warning]`
@@ -19,11 +19,11 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   }
   const debugStr = !debugInfo
     ? ''
-    : ` Debug info (this is for the \`${projectInfo.name}\` maintainers; you can ignore this): \`${JSON.stringify(
+    : ` Debug info (this is for the \`${projectInfo.projectName}\` maintainers; you can ignore this): \`${JSON.stringify(
         debugInfo
       )}\`.`
   const internalError = newError(
-    `${internalErrorPrefix} You stumbled upon a bug in \`${projectInfo.name}\`'s source code (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new GitHub issue at ${projectInfo.githubRepository}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`,
+    `${internalErrorPrefix} You stumbled upon a bug in \`${projectInfo.projectName}\`'s source code (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new GitHub issue at ${projectInfo.githubRepository}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`,
     numberOfStackTraceLinesToRemove
   )
   throw internalError

@@ -3,7 +3,7 @@ import { resolve } from 'path'
 import { prerender } from '../prerender'
 import { projectInfo, assertUsage } from '../../shared/utils'
 
-const cli = cac(projectInfo.name)
+const cli = cac(projectInfo.projectName)
 
 cli
   .command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOptions: true })
@@ -48,7 +48,7 @@ cli.on('command:*', () => {
 })
 
 cli.help()
-cli.version(projectInfo.version)
+cli.version(projectInfo.projectVersion)
 
 cli.parse(process.argv.length === 2 ? [...process.argv, '--help'] : process.argv)
 

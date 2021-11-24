@@ -79,7 +79,7 @@ async function prerender({
   parallel?: number
 } = {}) {
   assertArguments(partial, noExtraDir, clientRouter, base, root, outDir, parallel)
-  console.log(`${cyan(`vite-plugin-ssr ${projectInfo.version}`)} ${green('pre-rendering HTML...')}`)
+  console.log(`${cyan(`vite-plugin-ssr ${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
 
   const pluginManifest = getPluginManifest(root, outDir)
 
@@ -475,21 +475,16 @@ function getPluginManifest(
       '`.)'
   )
 
-  let manifestContent: unknown = require(pluginManifestPath)
-  assert(hasProp(manifestContent, 'version'))
-  assert(hasProp(manifestContent, 'base'))
-  assert(hasProp(manifestContent, 'usesClientRouter'))
-  const { base, usesClientRouter } = manifestContent
-  assert(typeof usesClientRouter === 'boolean')
-  assert(typeof base === 'string')
-
-  const pluginManifest = { version: projectInfo.version, base, usesClientRouter }
-
+  const manifestContent: unknown = require(pluginManifestPath)
+  assert(hasProp(manifestContent, 'version', 'string'))
   assertUsage(
-    pluginManifest.version === projectInfo.version,
-    `Remove \`${outDir}/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.version}\` but your build has been generated with a different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`
+    manifestContent.version === projectInfo.projectVersion,
+    `Remove \`${outDir}/\` and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with a different version \`vite-plugin-ssr@${manifestContent.version}\`.)`
   )
-  return pluginManifest
+  assert(hasProp(manifestContent, 'base', 'string'))
+  assert(hasProp(manifestContent, 'usesClientRouter', 'boolean'))
+
+  return manifestContent
 }
 
 function assertArguments(

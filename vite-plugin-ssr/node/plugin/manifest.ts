@@ -18,7 +18,7 @@ function manifest(): Plugin {
       assert(typeof base === 'string')
       assert(typeof ssr === 'boolean')
       const manifest = {
-        version: projectInfo.version,
+        version: projectInfo.projectVersion,
         usesClientRouter: includesClientSideRouter(bundle as any),
         base
       }
