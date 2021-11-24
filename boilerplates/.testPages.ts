@@ -74,8 +74,8 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
     expect(await page.textContent('p')).toBe('This page could not be found.')
     expectBrowserError(
       (browserLog) =>
-        browserLog.location.url === 'http://localhost:3000/does-not-exist' &&
-        browserLog.text === 'Failed to load resource: the server responded with a status of 404 (Not Found)',
+        browserLog.logText.includes('http://localhost:3000/does-not-exist') &&
+        browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)'),
     )
   })
 }
