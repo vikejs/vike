@@ -7,9 +7,7 @@ import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
 setFrame({
-  projectVersion: projectInfo.version,
-  projectName: projectInfo.name,
-  repo: projectInfo.githubRepository,
+  projectInfo,
   logoUrl,
   navHeaderMobile: <NavHeaderMobile />,
   navHeader: <NavHeader />,
