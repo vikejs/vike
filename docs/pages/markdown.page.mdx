@@ -15,7 +15,7 @@ Example:
 
 ## `<head>` (`pageContext.pageExports`)
 
-To set the `<head>` tags value of a markdown page, we can simply export the values:
+To set the `<head>` tags value of a markdown page, we can simply use `pageContext.pageExports`.
 
 ~~~js
 // some.page.md
@@ -36,7 +36,7 @@ This page is written in _Markdown_.
 import { escapeInject } from 'vite-plugin-ssr'
 
 export async function render(pageContext) {
-  // `pageContext.pageExports` holds the exports of the page's `.page.js` file
+  // `pageContext.pageExports` holds all exports of the page's `.page.js` file
   const { title, description } = pageContext.pageExports.documentProps
   return escapeInject`<html>
     <head>
@@ -68,9 +68,9 @@ description: Example of setting `<title>` and `<meta name="description">`
 This page is written in _Markdown_.
 ```
 
-> Make sure the markdown Vite plugin you use has frontmatter support.
+> Make sure the Vite markdown plugin you are using has frontmatter support.
 
-Markdown processors usually expose the frontmatter as an export,
+Markdown processors usually expose the frontmatter data as an export,
 which we can access at [`pageContext.pageExports`](/pageContext).
 
 ```js
@@ -79,7 +79,8 @@ which we can access at [`pageContext.pageExports`](/pageContext).
 import { escapeInject } from 'vite-plugin-ssr'
 
 export async function render(pageContext) {
-  // Check the name of the export that holds the frontmatter data
+  // Read the documentation of your Vite markdown plugin or of its underlying markdown
+  // processor to find the name of the export that holds the frontmatter data.
   const frontmatterExportName = 'nameOfTheFrontmatterExport'
   const frontmatter = pageContext.pageExports[frontmatterExportName]
   const { title, description } = frontmatter
