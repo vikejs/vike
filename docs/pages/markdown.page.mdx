@@ -52,7 +52,7 @@ Examples:
  - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
 
 
-We can also use a so-called *front matter* to define the page's metadata.
+Some markdown processors also have support for a so-called *frontmatter* to define the page's metadata.
 
 ```markdown
 ---
@@ -65,5 +65,7 @@ description: Example of setting `<title>` and `<meta name="description">`
 This page is written in _Markdown_.
 ```
 
-The front matter data is usually exported,
+> Make sure the markdown Vite plugin you use has support for frontmatter.
+
+Markdown processors usually expose the frontmatter as an export,
 which we can access at [`pageContext.pageExports`](/pageContext).
