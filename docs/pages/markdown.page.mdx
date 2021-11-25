@@ -13,12 +13,12 @@ Example:
  - <RepoLink path='/examples/react-full/pages/markdown.page.md' />
 
 
-## `<head>` with `pageContext.pageExports`
+## `<head>` (`pageContext.pageExports`)
 
 To set the `<head>` tags value of a markdown page, we can simply export the values:
 
 ~~~js
-// markdown.page.mdx
+// some.page.md
 
 export const documentProps = {
   title: 'A Markdown Page',
@@ -53,11 +53,11 @@ Examples:
  - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
 
 
-## `<head>` with frontmatter
+## `<head>` (frontmatter)
 
 Some markdown processors also have support for a so-called *frontmatter* to define the page's metadata.
 
-```markdown
+```
 ---
 title: A Markdown Page
 description: Example of setting `<title>` and `<meta name="description">`
@@ -68,7 +68,27 @@ description: Example of setting `<title>` and `<meta name="description">`
 This page is written in _Markdown_.
 ```
 
-> Make sure the markdown Vite plugin you use has support for frontmatter.
+> Make sure the markdown Vite plugin you use has frontmatter support.
 
 Markdown processors usually expose the frontmatter as an export,
 which we can access at [`pageContext.pageExports`](/pageContext).
+
+```js
+// _default.page.server.js
+
+import { escapeInject } from 'vite-plugin-ssr'
+
+export async function render(pageContext) {
+  // Check the name of the export that holds the frontmatter data
+  const frontmatterExportName = 'nameOfTheFrontmatterExport'
+  const frontmatter = pageContext.pageExports[frontmatterExportName]
+  const { title, description } = frontmatter
+  return escapeInject`<html>
+    <head>
+      <title>${title}</title>
+      <meta name="description" content="${description}">
+    </head>
+    <!-- ... -->
+  </html>`
+}
+```
