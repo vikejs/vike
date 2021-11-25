@@ -72,18 +72,24 @@ export const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: '`<head>`',
+    url: '/head',
+  },
+  {
+    level: 2,
     title: 'Static Directory (`public/`)',
     url: '/static-directory',
   },
   {
     level: 2,
-    title: 'HTML `<head>`',
-    url: '/html-head',
+    title: 'Hydration Mismatch',
+    url: '/hydration-mismatch',
   },
   {
     level: 2,
-    title: 'Hydration Mismatch',
-    url: '/hydration-mismatch',
+    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
+    titleInNav: 'SPA, SSR, SSG, HTML-only',
+    url: '/render-modes',
   },
   {
     level: 2,
@@ -94,12 +100,6 @@ export const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Internationalization (i18n)',
     url: '/i18n',
-  },
-  {
-    level: 2,
-    title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
-    titleInNav: 'SPA, SSR, SSG, HTML-only',
-    url: '/render-modes',
   },
   {
     level: 2,

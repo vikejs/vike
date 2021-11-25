@@ -1,19 +1,19 @@
 For each page, we can choose:
  - Whether the page is rendered to HTML.
- - When the page is rendered to HTML.
+ - When the page is rendered to HTML (render-time VS build-time).
  - Whether the page is rendered(/hydrated) in the browser.
 
 In other words, we can use any render mode:
- - SSR: the page is rendered to HTML and also rendered(/hydrated) in the browser-side.
+ - SSR: the page is rendered to HTML and also rendered (hydrated) in the browser-side. (The page is loaded both in Node.js and in the browser.)
+ - SPA (aka MPA): the page is not rendered to HTML; it's only rendered in the browser. (The page is loaded only in browser.)
+ - HTML-only: the page is rendered only to HTML; it's not rendered in the browser and has zero/minimal browser-side JavaScript. (The page is loaded only in Node.js.)
  - SSG (aka pre-rendering): the page is rendered to HTML at build-time.
- - SPA (aka MPA): the page is not rendered to HTML; it's only rendered in the browser.
- - HTML-only: the the page is rendered only to HTML; it's not rendered in the browser and has zero/minimal browser-side JavaScript.
 
 For example, we can render an admin panel as SPA while rendering marketing pages to HTML-only.
 
 > The `vite-plugin-ssr` boilerplates do SSR by default, which is a sensible default that works for most apps.
 > **Being aware of our options is important**:
-> choosing another render mode than SSR can play an important role in order to keep our app architecture simple and therefore leading to a substantial increase in development speed. It can also lead to substantial performance increase but for most apps SSR is performant enough and we should **spend time fine-tuning performance only if needed**.
+> choosing another render mode than SSR can play an important role in order to keep our app architecture simple and therefore leading to a substantial increase in development speed. It can also lead to a substantial performance increase but for most apps SSR is performant enough and we should **spend time fine-tuning performance only if needed**.
 
 ## HTML-only
 
@@ -28,8 +28,8 @@ Examples:
  - Software Documentation (e.g. `https://vite-plugin-ssr.com`)
 
 For the few bits of interactivity (such as an image carousel or a collapsible section),
-the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity. (Instead of loading & rendering the whole page and view framework in the browser).
-This what `https://vite-plugin-ssr.com` does: if you inspect the browser-side JavaScript of this page, you'll see only around 1-2KB of JavaScript.
+the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity. (Instead of loading the whole page and view framework in the browser, leading to a drastic reduction of browser-side JavaScript.)
+This what `https://vite-plugin-ssr.com` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
 
 To render a page to HTML-only, we simply define an empty `.page.client.js`:
 
@@ -45,7 +45,7 @@ import './path/to/some.css'
 
 > We still need to import all static assets in `.page.client.js`, see [#171](https://github.com/brillout/vite-plugin-ssr/issues/171).
 
-## SSG
+## SSG (aka pre-rendering)
 
 Pre-rendering (aka SSG) means to render the page's HTML at build-time instead of request-time.
 
@@ -106,8 +106,8 @@ It is the most powerful mode as it enables:
  - Higher mobile performance.
 
 SSR considerably improves mobile performance, as the content rendered to HTML can already be shown to the user before the browser-side JavaScript starts loading on the user's mobile device.
-(Loading & executing JavaScript is usually very slow on mobile devices.)
+(Loading & executing JavaScript is usually very slow on mobile.)
 
-For example, SSR is needed for a social news website or interactive marketing pages. (They are interactive and need SEO and higher mobile performance.)
+For example, social news websites need SSR. (They are highly interactive, while they need both SEO and higher mobile performance.)
 
 For pages that are not [content-centric](#content-vs-interactive-centric) (e.g. a to-do list app), we should consider SPA instead of SSR.
