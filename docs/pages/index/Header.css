@@ -69,12 +69,12 @@
     padding-top: 50px;
   }
   .header-separator-line {
-    padding-top: 25px;
+    padding-top: 15px;
     padding-bottom: 25px;
   }
   .header-separator-line.primary {
-    padding-top: 45px;
-    padding-bottom: 45px;
+    padding-top: 30px;
+    padding-bottom: 30px;
   }
   #header-logo {
     padding-bottom: 20px;
