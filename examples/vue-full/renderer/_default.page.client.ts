@@ -17,6 +17,7 @@ const { hydrationPromise } = useClientRouter({
   },
   // Vue needs the first render to be a hydration
   ensureHydration: true,
+  prefetchLinks: true,
   onTransitionStart,
   onTransitionEnd,
 })
