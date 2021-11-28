@@ -10,3 +10,9 @@ export type PageContextBuiltIn = {
     hash: null | string
   }
 }
+
+export interface DefinePageContext<PageContext extends {}, U extends {}> {
+  PageContext: PageContextBuiltIn & PageContext;
+  OnBeforeHook: (arg: PageContextBuiltIn & PageContext) =>
+    { pageContext?: { pageProps?: Record<string, unknown> } } & U;
+}

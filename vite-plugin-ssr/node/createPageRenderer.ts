@@ -15,9 +15,7 @@ function createPageRendererWasCalled() {
   return wasCalled
 }
 
-type RenderPage = typeof renderPage
-
-function createPageRenderer({
+function createPageRenderer<PageContextAdded extends {}>({
   viteDevServer,
   root,
   outDir = 'dist',
@@ -32,7 +30,7 @@ function createPageRenderer({
   outDir?: string
   isProduction?: boolean
   base?: string
-}): RenderPage {
+}): RenderPage<PageContextAdded> {
   assertUsage(
     !wasCalled,
     'You are trying to call `createPageRenderer()` a second time, but it should be called only once.',
@@ -43,7 +41,7 @@ function createPageRenderer({
   assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
-  return renderPageWithoutThrowing as RenderPage
+  return renderPageWithoutThrowing
 }
 
 function assertArguments(

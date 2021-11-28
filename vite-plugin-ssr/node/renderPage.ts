@@ -58,7 +58,7 @@ import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 
 export { renderPageWithoutThrowing }
-export type { renderPage }
+export type { renderPage, RenderPage }
 export { prerenderPage }
 export { renderStatic404Page }
 export { getGlobalContext }
@@ -70,12 +70,18 @@ export { throwPrerenderError }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
-async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
-  pageContextInit: PageContextInit,
-): Promise<
-  PageContextInit &
-    (({ httpResponse: HttpResponse } & PageContextAdded) | ({ httpResponse: null } & Partial<PageContextAdded>))
-> {
+interface RenderPage<PageContextAdded extends {}> {
+  <PageContextInit extends { url: string }>(
+    pageContextInit: PageContextInit,
+  ): Promise<
+    PageContextInit &
+      (({ httpResponse: HttpResponse } & PageContextAdded) | ({ httpResponse: null } & Partial<PageContextAdded>))
+  >
+}
+
+const renderPage: RenderPage<{}> = async function renderPage (
+  pageContextInit,
+) {
   assertArguments(...arguments)
 
   const pageContext = await initializePageContext(pageContextInit)
