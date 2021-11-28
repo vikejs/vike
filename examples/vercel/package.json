@@ -1,9 +1,7 @@
 {
   "scripts": {
-    "// We need to define a `build` script, otherwise Vercel ignores the static files living at `dist/client/`": "",
-    "build": "echo 'I will never be called because the `vercel-build` script supersedes me'",
-    "// We need to run the entire build in `vercel-build` instead of `build` so that Vercel keeps the `dist/` directory in production (Vercel discards all files generated during the `build` script.)": "",
-    "vercel-build": "vite build && vite build --ssr",
+    "build": "vite build && vite build --ssr",
+    "vercel-build": "./vercel/deploy.sh",
     "// For increased dev speed we use an Express.js dev server instead of `vercel dev`": "",
     "dev": "node ./dev-server"
   },

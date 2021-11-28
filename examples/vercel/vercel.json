@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/((?!assets/).*)",
-      "destination": "/api/render.js"
+      "source": "/view-source",
+      "destination": "https://github.com/vercel/vercel",
+      "permanent": false
     }
   ]
 }
