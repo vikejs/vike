@@ -468,6 +468,11 @@
   resolved "https://registry.yarnpkg.com/@brillout/libassert/-/libassert-0.5.2.tgz#692a80d9759485f157c7fb5333aa3e194d4a1d04"
   integrity sha512-TG2GK3hOsQ9IOpnpOxP4PyZAs4UvYE43aonAlOXY3esr9BzXUV9cetpaYeMTH1lsuBesZo57/YdTNm+KpPX/zw==
 
+"@brillout/submodule-fix@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@brillout/submodule-fix/-/submodule-fix-0.1.4.tgz#44c2839cc9e045d3c535265168c9cc518322af14"
+  integrity sha512-unGZ3jtVtiWLHdje2N41m/C5ZZY8PxjlVsFdqLFgB65pM3lkDaXRM6Pl5rTGGyjq1zPXJaG3GKdaN+KZ6mAi1A==
+
 "@cloudflare/kv-asset-handler@~0.1.2":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@cloudflare/kv-asset-handler/-/kv-asset-handler-0.1.3.tgz#3eaaf962b16c48a7189db5d5ac1c4dca4e2ed1a0"

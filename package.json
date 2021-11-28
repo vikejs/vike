@@ -31,10 +31,11 @@
     "========= Build": "",
     "// Build vite-plugin-ssr": "",
     "build": "cd vite-plugin-ssr/ && yarn build",
-    "========= Install": "",
-    "// Fetch the libframe/ submodule so that its dependencies are installed as well": "",
-    "preinstall": "yarn libframe:submodule",
-    "libframe:submodule": "bash -c '[[ `git submodule status libframe` == -* ]]' && git submodule update --init libframe/ && bash -c '[[ \"$OSTYPE\" != \"msys\" ]]' && REV=$(cd libframe/ && git rev-parse HEAD) && (cd libframe/ && git checkout master && git reset --hard $REV) || bash -c ':'",
+    "========= libframe/ submodule": "",
+    "preinstall": "yarn libframe:clone",
+    "postinstall": "yarn libframe:setup",
+    "libframe:clone": "bash -c '[[ `git submodule status libframe` == -* ]]' && git submodule update --init libframe/ || bash -c ':'",
+    "libframe:setup": "yarn submodule-fix libframe/",
     "========= Upgrade deps": "",
     "// Upgrade all dependencies of all `package.json` that have tests": "",
     "bump": "cd libframe/scripts/ && yarn bump",
@@ -43,5 +44,8 @@
     "========= Clean": "",
     "// Remove all generated files": "",
     "clean": "git clean -Xdf"
+  },
+  "dependencies": {
+    "@brillout/submodule-fix": "0.1.4"
   }
 }
