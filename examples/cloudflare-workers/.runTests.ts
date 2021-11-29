@@ -1,4 +1,5 @@
 import { page, run, autoRetry, fetchHtml, isGithubAction } from '../../libframe/test/setup'
+import * as assert from 'assert'
 
 export { runTests }
 
@@ -6,7 +7,9 @@ function runTests(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run dev:miniflare',
   { hasStarWarsPage }: { hasStarWarsPage: boolean },
 ) {
-  const isWorker = cmd === 'npm run dev:miniflare' || cmd === 'npm run prod'
+  const isMiniflare = cmd === 'npm run dev:miniflare'
+  const isWrangler = cmd === 'npm run prod'
+  const isWorker = isMiniflare || isWrangler
 
   if ((isWindows() || isNode12()) && isWorker) {
     test('SKIPED: miniflare and wrangler', () => {})
@@ -27,7 +30,19 @@ function runTests(
 
   {
     const additionalTimeout = !isWorker ? 0 : (isGithubAction() ? 2 : 1) * 120 * 1000
-    run(cmd, { additionalTimeout })
+    const serverIsReadyMessage = (() => {
+      if (isMiniflare) {
+        return 'Listening on :3000'
+      }
+      if (isWrangler) {
+        return 'Ignoring stale first change'
+      }
+      assert(!isWorker)
+      // Express.js dev server
+      return undefined
+    })()
+    const serverIsReadyDelay = isWorker ? 5000 : undefined
+    run(cmd, { additionalTimeout, serverIsReadyMessage, serverIsReadyDelay })
   }
 
   test('page content is rendered to HTML', async () => {
