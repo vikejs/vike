@@ -1,7 +1,7 @@
 import { getSsrEnv } from './ssrEnv'
 import { assert } from '../shared/utils'
 import { ViteManifest } from './getViteManifest'
-import { ModuleNode } from 'vite'
+import type { ModuleNode } from 'vite'
 import { AllPageFiles } from '../shared/getPageFiles'
 
 export { getPreloadUrls }

@@ -1,4 +1,4 @@
-import { Plugin, UserConfig } from 'vite'
+import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import {
   isAbsolute as pathIsAbsolute,

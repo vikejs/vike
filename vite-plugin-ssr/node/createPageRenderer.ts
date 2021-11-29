@@ -2,7 +2,7 @@ import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage, renderPageWithoutThrowing } from './renderPage'
 import { assertBaseUrl, hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
-import { normalize as pathNormalize } from 'path'
+import { resolve } from 'path'
 import { importBuildWasCalled } from './importBuild'
 import type { ViteDevServer } from 'vite'
 
@@ -106,10 +106,15 @@ function assertArguments(
         typeof viteDevServer.config.root === 'string',
       wrongViteDevServerValueError,
     )
-    assertUsage(
-      pathNormalize(viteDevServer.config.root) === pathNormalize(root),
-      '`createPageRenderer({ viteDevServer, root })`: wrong `root` value, make sure that `path.normalize(root) === path.normalize(viteDevServer.root)`.',
-    )
+    {
+      const rootVite = resolve(viteDevServer.config.root)
+      const rootResolved = resolve(root)
+      assertUsage(
+        rootVite === rootResolved,
+        '`createPageRenderer({ viteDevServer, root })`: wrong `root` value, make sure it matches `viteDevServer.config.root`. ' +
+          `The \`root\` you provided resolves to \`'${rootResolved}'\` while \`viteDevServer.config.root\` resolves to \`${rootVite}\`.`,
+      )
+    }
 
     assertUsage(
       hasProp(viteDevServer, 'config', 'object') && hasProp(viteDevServer.config, 'plugins', 'array'),

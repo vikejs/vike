@@ -1,4 +1,4 @@
-import { ViteDevServer } from 'vite'
+import type { ViteDevServer } from 'vite'
 import { assertBaseUrl } from '../shared/utils'
 
 export { setSsrEnv }
