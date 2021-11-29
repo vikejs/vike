@@ -1,0 +1,45 @@
+{
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "ts-node ./server",
+    "prod": "npm run build && npm run prod:serve",
+    "// Build for production": "",
+    "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
+    "build:clean": "rimraf dist/",
+    "build:vite": "vite build && vite build --ssr",
+    "build:prerender": "vite-plugin-ssr prerender",
+    "// Static serve for production": "",
+    "prod:serve": "serve dist/client/ --listen 3000"
+  },
+  "dependencies": {
+    "@mdx-js/mdx": "^1.6.22",
+    "@mdx-js/react": "^1.6.22",
+    "@types/express": "^4.17.13",
+    "@types/node": "^16.11.0",
+    "@types/node-fetch": "^2.5.12",
+    "@types/react": "^17.0.30",
+    "@types/react-dom": "^17.0.9",
+    "@vitejs/plugin-react": "^1.0.4",
+    "cookie-parser": "^1.4.6",
+    "cross-fetch": "^3.1.4",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "next-auth": "^3.29.0",
+    "node-fetch": "^2.6.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "serve": "^12.0.1",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.7",
+    "vite-plugin-mdx": "3.5.8",
+    "vite-plugin-ssr": "0.3.31"
+  },
+  "// Needed for Yarn workspaces": "",
+  "name": "example-telefunc-prisma-next-auth",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.2"
+  }
+}
