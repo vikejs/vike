@@ -46,6 +46,6 @@
     "clean": "git clean -Xdf"
   },
   "dependencies": {
-    "@brillout/submodule-init": "0.1.1"
+    "@brillout/submodule-init": "0.1.2"
   }
 }
