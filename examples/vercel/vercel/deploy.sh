@@ -15,10 +15,10 @@ mkdir .output
 mkdir -p .output/static
 cp -a dist/client/. .output/static
 
-# Step 5: Copy render function and rename it to index.js
-# If you are using typescript, you should transpile it to javascript
+# Step 5: Bundle render function with it's depdendencies to the single javascript file
+# If you are using typescript, simply replace extension with ".ts"
 mkdir -p .output/server/pages
-cp -a vercel/render.js .output/server/pages/index.js
+yarn ncc build vercel/render.js --minify --out .output/server/pages
 
 # Step 6: Make render function run on every request (catch all)
 cat > .output/routes-manifest.json << EOF
