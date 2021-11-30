@@ -1,12 +1,11 @@
 import { Todo } from '@prisma/client'
-import { Session } from 'next-auth'
 import React, { useEffect, useState } from 'react'
 import { deleteTodo, getTodos, toggleTodo } from '../telefunc/todo.telefunc'
 import NewTodo from './NewTodo'
 
 export { TodoList }
 
-function TodoItem({ refetch, ...todo }: Todo & { refetch: () => void; session: Session | null }) {
+function TodoItem({ refetch, ...todo }: Todo & { refetch: () => void }) {
   return (
     <li key={todo.id}>
       <h2>
@@ -35,11 +34,11 @@ function TodoItem({ refetch, ...todo }: Todo & { refetch: () => void; session: S
   )
 }
 
-function TodoList({ session }: { session: Session }) {
+function TodoList() {
   const [todoItems, setTodoItems] = useState<Todo[]>([])
 
   const fetch = async () => {
-    setTodoItems(await getTodos({ authorEmail: session.user!.email! }))
+    setTodoItems(await getTodos())
   }
 
   useEffect(() => {
@@ -49,11 +48,11 @@ function TodoList({ session }: { session: Session }) {
   return (
     <>
       <hr />
-      <NewTodo session={session} refetch={fetch} />
+      <NewTodo refetch={fetch} />
       <hr />
       <ul>
         {todoItems.map((todoItem, i) => (
-          <TodoItem session={session} key={i} refetch={fetch} {...todoItem} />
+          <TodoItem key={i} refetch={fetch} {...todoItem} />
         ))}
       </ul>
     </>
