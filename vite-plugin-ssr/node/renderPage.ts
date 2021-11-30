@@ -56,6 +56,7 @@ import { addIs404ToPageProps, serializePageContextClientSide } from './serialize
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
+import { VitePluginSsr } from './types'
 
 export { renderPageWithoutThrowing }
 export type { renderPage, RenderPage }
@@ -70,16 +71,17 @@ export { throwPrerenderError }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
-interface RenderPage<PageContextAdded extends {}> {
-  <PageContextInit extends { url: string }>(
+interface RenderPage<PageContextAddedIfSuccess extends {} = {}, PageContextAddedMaybe extends {} = {}> {
+  <PageContextInit extends VitePluginSsr.PageContextInit>(
     pageContextInit: PageContextInit,
   ): Promise<
-    PageContextInit &
-      (({ httpResponse: HttpResponse } & PageContextAdded) | ({ httpResponse: null } & Partial<PageContextAdded>))
+    PageContextInit & Partial<PageContextAddedMaybe> &
+      (({ httpResponse: HttpResponse } & PageContextAddedIfSuccess) |
+        ({ httpResponse: null } & Partial<PageContextAddedIfSuccess>))
   >
 }
 
-const renderPage: RenderPage<{}> = async function renderPage (
+const renderPage: RenderPage = async function renderPage (
   pageContextInit,
 ) {
   assertArguments(...arguments)
@@ -179,7 +181,7 @@ const renderPage: RenderPage<{}> = async function renderPage (
   }
 }
 
-async function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
+async function initializePageContext<PageContextInit extends VitePluginSsr.PageContextInit>(pageContextInit: PageContextInit) {
   const pageContext = {
     _isPreRendering: false as const,
     ...pageContextInit,
@@ -209,9 +211,9 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
 }
 
 // `renderPageWithoutThrowing()` calls `renderPage()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPageWithoutThrowing(
-  pageContextInit: Parameters<typeof renderPage>[0],
-): ReturnType<typeof renderPage> {
+async function renderPageWithoutThrowing<T>(
+  pageContextInit: Parameters<RenderPage<any>>[0],
+): ReturnType<RenderPage<T>> {
   const args = arguments as any as Parameters<typeof renderPageWithoutThrowing>
   try {
     return await renderPage.apply(null, args)
@@ -232,7 +234,7 @@ async function renderPageWithoutThrowing(
   }
 }
 
-async function render500Page<PageContextInit extends { url: string }>(pageContextInit: PageContextInit, err: unknown) {
+async function render500Page<PageContextInit extends VitePluginSsr.PageContextInit>(pageContextInit: PageContextInit, err: unknown) {
   assert(hasAlreadyLogged(err))
 
   const pageContext = await initializePageContext(pageContextInit)
