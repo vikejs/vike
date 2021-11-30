@@ -5,13 +5,14 @@ import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import { Session } from 'next-auth'
 
 export { render }
 export { passToClient }
 
-const passToClient = ['pageProps', 'documentProps']
+const passToClient = ['pageProps', 'documentProps', 'session']
 
-function render(pageContext: PageContextBuiltIn & PageContext) {
+function render(pageContext: PageContextBuiltIn & PageContext & { session: Session | null }) {
   const { Page, pageProps } = pageContext
   const stream = ReactDOMServer.renderToNodeStream(
     <PageShell pageContext={pageContext}>
