@@ -3,12 +3,8 @@ import { usePageContext } from './usePageContext'
 
 export { Link }
 
-function Link({ href, children }: { href: string; children: string }) {
+function Link(props: { href?: string; className?: string; children: React.ReactNode }) {
   const pageContext = usePageContext()
-  const className = ['navigation-link', pageContext.urlPathname === href && 'is-active'].filter(Boolean).join(' ')
-  return (
-    <a href={href} className={className}>
-      {children}
-    </a>
-  )
+  const className = [props.className, pageContext.urlPathname === props.href && 'is-active'].filter(Boolean).join(' ')
+  return <a {...props} className={className} />
 }
