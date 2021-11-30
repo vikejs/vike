@@ -1,9 +1,8 @@
-import { Session } from 'next-auth'
 import React from 'react'
 import { useState } from 'react'
 import { addTodo } from '../telefunc/todo.telefunc'
 
-export default function NewTodo({ refetch, session }: { refetch: () => void; session: Session }) {
+export default function NewTodo({ refetch }: { refetch: () => void }) {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
 
@@ -12,7 +11,7 @@ export default function NewTodo({ refetch, session }: { refetch: () => void; ses
       onSubmit={async (e) => {
         e.preventDefault()
         if (!title || !content) return
-        await addTodo({ title, content, author: session.user!.name!, authorEmail: session.user!.email! })
+        await addTodo({ title, content })
         setTitle('')
         setContent('')
         refetch()
