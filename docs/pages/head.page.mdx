@@ -241,9 +241,7 @@ Head libraries already sanitize the HTML `<head>`, this means we can skip `escap
 import { dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-view-framework'
 
-export { render }
-
-async function render(pageContext) {
+export async function render(pageContext) {
   return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
 }
 ```
