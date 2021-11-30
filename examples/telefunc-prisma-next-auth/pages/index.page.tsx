@@ -18,7 +18,7 @@ function Page() {
   return (
     <>
       <h1>{`Hola ${session.user!.name}`}</h1>
-      <TodoList session={session} />
+      <TodoList />
     </>
   )
 }
