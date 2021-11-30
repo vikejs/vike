@@ -16,7 +16,7 @@ export type PageContextBuiltIn = {
 
 // props defined here are always available in `render()` hook and
 // if `renderPage()` is successful also always available there.
-export interface PageContextOnBeforeRenderInternal {
+export interface OnBeforeRenderPageContextInternal {
   pageExports: {
     documentProps: {
       title: string
@@ -37,18 +37,11 @@ export declare namespace VitePluginSsr {
   // can be overriden
   export interface PageContextOnBeforeRender {}
 
-  // somewhat internal type
-  export interface GenericPageContext {
-    pageContext?: {
-      pageProps?: any
-    }
-  }
-
-  type OnBeforeHookReturnInternal<X extends GenericPageContext> =
-    Partial<PageContextOnBeforeRenderInternal> & Partial<PageContextOnBeforeRender> & X;
+  type OnBeforeHookReturnInternal<X> =
+    Partial<OnBeforeRenderPageContextInternal> & Partial<PageContextOnBeforeRender> & X;
 
   // OnBeforeHook return type extract for readability and reusability
-  export type OnBeforeHookReturn<X extends GenericPageContext> =
+  export type OnBeforeHookReturn<X> =
     OnBeforeHookReturnInternal<X> | Promise<OnBeforeHookReturnInternal<X>>;
 
   // OnBeforeRender pageContext have some internally computed props that we add
@@ -73,19 +66,20 @@ export declare namespace VitePluginSsr {
  * _key is used as type only, but since this helper as multiple generics, it's impossible to set one and let TS
  * infer the others. Passing key as a value and infering its type is a workaround for this issue.
  */
-export function withTypescript<K extends keyof WithTSMapping, H extends ReturnType<WithTSMapping[K]>>(_key: K, hook: H) {
+export function withTypescript<K extends keyof WithTSMapping, H extends WithTSMapping[K]>(_key: K, hook: H) {
   return hook;
 }
 
 export interface WithTSMapping {
-  // function-like syntax necessary to allow extends syntax
-  onBeforeRender: <X extends VitePluginSsr.GenericPageContext>() => VitePluginSsr.OnBeforeHook<X>
+  onBeforeRender: ReturnType<(<T>() => VitePluginSsr.OnBeforeHook<T>)>
+  render: (context: VitePluginSsr.OnBeforeRenderPageContext &
+    OnBeforeRenderPageContextInternal & Partial<VitePluginSsr.PageContextOnBeforeRender>) => any
 }
 
 /**
  * Util types to extract PageProps or PageComponent types (could be moved into namespace)
  */
-export type GetPagePropsInternal<T extends VitePluginSsr.GenericPageContext> = T extends {
+type GetPagePropsInternal<T> = T extends {
   pageContext?: {
     pageProps?: infer U
   }
