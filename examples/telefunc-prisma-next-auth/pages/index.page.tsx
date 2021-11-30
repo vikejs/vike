@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSession } from 'next-auth/client'
+import { TodoList } from '../components/TodoList'
 
 export { Page }
 
@@ -11,22 +12,13 @@ function Page() {
   }
 
   if (!session) {
-    return (
-      <>
-        <h1>Who are you?</h1>
-        <a href="/api/auth/signin">
-          <button>sign in</button>
-        </a>
-      </>
-    )
+    return <p>You are not logged in.</p>
   }
 
   return (
     <>
-      <h1>{`Hola ${session.user?.name}`}</h1>
-      <a href="/api/auth/signout">
-        <button>sign out</button>
-      </a>
+      <h1>{`Hola ${session.user!.name}`}</h1>
+      <TodoList session={session} />
     </>
   )
 }
