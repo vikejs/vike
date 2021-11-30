@@ -5,44 +5,28 @@ const prisma = new PrismaClient()
 
 export { addTodo, getTodos, toggleTodo, deleteTodo }
 
-async function getTodos({ authorEmail }: { authorEmail: string }) {
+async function getTodos() {
   const user = getUser()
 
   if (!user) {
     throw new Error('Not logged in')
   }
-  if (user.email !== authorEmail) {
-    throw new Error('Not authorized')
-  }
 
-  const todos = await prisma.todo.findMany({ where: { authorEmail } })
+  const todos = await prisma.todo.findMany({ where: { authorEmail: user.email! } })
   return todos
 }
 
-async function addTodo({
-  title,
-  content,
-  author,
-  authorEmail,
-}: {
-  title: string
-  content: string
-  author: string
-  authorEmail: string
-}) {
+async function addTodo({ title, content }: { title: string; content: string }) {
   const user = getUser()
 
   if (!user) {
     throw new Error('Not logged in')
-  }
-  if (user.email !== authorEmail) {
-    throw new Error('Not authorized')
   }
 
   await prisma.todo.create({
     data: {
-      author,
-      authorEmail,
+      author: user.name!,
+      authorEmail: user.email!,
       title,
       content,
       completed: false,
