@@ -227,9 +227,26 @@ useClientRouter({
 
 ## Libraries
 
-We can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet)
-but we should do so only if we have a rationale:
+We can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
+
+We should use such library only if we have a rationale:
 the aforementioned solutions are simpler and work for most use cases.
+
+Head libraries already sanitize the HTML `<head>`, this means we can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
+
+```js
+// _default.page.server.js
+// Environment: Node.js
+
+import { dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-view-framework'
+
+export { render }
+
+async function render(pageContext) {
+  return dangerouslySkipEscape(await renderToHtml(pageContext.Page))
+}
+```
 
 
 ## Markdown
