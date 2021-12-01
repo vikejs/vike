@@ -52,15 +52,17 @@ app.get("*", async (req, res, next) => {
   const { httpResponse } = pageContext
   if (!httpResponse) return next()
 
-  httpResponse.bodyNodeStream.pipe(res)
+  const stream = await httpResponse.getNodeStream()
+  stream.pipe(res)
 
   // Or with a pipe:
-  httpResponse.bodyPipeToNodeWritable(res)
+  httpResponse.pipeToNodeWritable(res)
 
   // Or with a Web Stream:
-  httpResponse.bodyWebStream.pipe(res)
+  const stream = await httpResponse.getWebStream()
+  stream.pipe(res)
   // Or:
-  httpResponse.bodyPipeToWebWritable(res)
+  httpResponse.pipeToWebWritable(res)
 
   // We can also convert the stream to a string by using `httpResponse.getBody()`
   const body = await httpResponse.getBody()

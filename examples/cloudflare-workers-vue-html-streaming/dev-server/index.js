@@ -32,7 +32,7 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
-    httpResponse.bodyPipeToNodeWritable(res)
+    httpResponse.pipeToNodeWritable(res)
   })
 
   const port = 3000

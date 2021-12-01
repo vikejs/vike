@@ -12,8 +12,8 @@
     "build": "npm run build:vite && npm run build:worker",
     "build:vite": "vite build && vite build --ssr",
     "build:worker": "wrangler build",
-    "// To sustain a vite-plugin-ssr dev link, we need to do this as Wrangler breaks links upon `$ wrangler dev`": "",
-    "// postinstall": "yarn link vite-plugin-ssr"
+    "// To sustain the vite-plugin-ssr dev link, we need to do this as Wrangler breaks links upon `$ wrangler dev`": "",
+    "// postinstall": "(cd ../../vite-plugin-ssr/ && yarn link) && yarn link vite-plugin-ssr"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.2.0",

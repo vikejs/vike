@@ -156,7 +156,7 @@ const headings: HeadingDefinition[] = [
   {
     level: 2,
     title: 'HTML Streaming',
-    url: '/html-streaming',
+    url: '/stream',
   },
   {
     level: 1,

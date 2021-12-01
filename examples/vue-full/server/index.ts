@@ -30,7 +30,8 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
-    const { bodyNodeStream: stream, statusCode, contentType } = httpResponse
+    const stream = await httpResponse.getNodeStream()
+    const { statusCode, contentType } = httpResponse
     res.status(statusCode).type(contentType)
     stream.pipe(res)
   })

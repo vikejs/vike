@@ -289,10 +289,10 @@ type HttpResponse = {
   contentType: ContentType
   body: string
   getBody: () => Promise<string>
-  bodyNodeStream: StreamReadableNode
-  bodyWebStream: StreamReadableWeb
-  bodyPipeToNodeWritable: StreamPipeNode
-  bodyPipeToWebWritable: StreamPipeWeb
+  getNodeStream: () => Promise<StreamReadableNode>
+  getWebStream: () => Promise<StreamReadableWeb>
+  pipeToNodeWritable: StreamPipeNode
+  pipeToWebWritable: StreamPipeWeb
 }
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
@@ -315,7 +315,7 @@ function createHttpResponseObject(
           false,
           '`pageContext.httpResponse.body` is not available because your `render()` hook (' +
             renderFilePath +
-            ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/html-streaming',
+            ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/stream',
         )
       }
       const body = htmlRender
@@ -325,36 +325,36 @@ function createHttpResponseObject(
       const body = await getHtmlString(htmlRender)
       return body
     },
-    get bodyNodeStream() {
+    async getNodeStream() {
       assert(htmlRender !== null)
-      const nodeStream = getStreamReadableNode(htmlRender)
+      const nodeStream = await getStreamReadableNode(htmlRender)
       assertUsage(
         nodeStream !== null,
-        '`pageContext.httpResponse.bodyNodeStream` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/html-streaming',
+        '`pageContext.httpResponse.getNodeStream()` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/stream',
       )
       return nodeStream
     },
-    get bodyWebStream() {
+    async getWebStream() {
       assert(htmlRender !== null)
-      const webStream = getStreamReadableWeb(htmlRender)
+      const webStream = await getStreamReadableWeb(htmlRender)
       assertUsage(
         webStream !== null,
-        '`pageContext.httpResponse.bodyWebStream` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/html-streaming',
+        '`pageContext.httpResponse.getWebStream()` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/stream',
       )
       return webStream
     },
-    bodyPipeToWebWritable(writable: StreamWritableWeb) {
+    pipeToWebWritable(writable: StreamWritableWeb) {
       const success = pipeToStreamWritableWeb(htmlRender, writable)
       assertUsage(
         success,
-        '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream Pipe, see https://vite-plugin-ssr.com/html-streaming',
+        '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream Pipe, see https://vite-plugin-ssr.com/stream',
       )
     },
-    bodyPipeToNodeWritable(writable: StreamWritableNode) {
+    pipeToNodeWritable(writable: StreamWritableNode) {
       const success = pipeToStreamWritableNode(htmlRender, writable)
       assertUsage(
         success,
-        '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream Pipe, see https://vite-plugin-ssr.com/html-streaming',
+        '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream Pipe, see https://vite-plugin-ssr.com/stream',
       )
     },
   }

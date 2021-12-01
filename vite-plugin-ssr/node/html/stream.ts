@@ -1,6 +1,9 @@
-import { Readable, Writable } from 'stream'
-import { assert, assertUsage, checkType, isObject } from '../../shared/utils'
+import { assert, assertUsage, checkType, isObject, hasProp } from '../../shared/utils'
 import { HtmlRender } from './renderHtml'
+// In order to support Cloudflare Workers, we cannot statically import the `stream` module.
+// Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
+import type { Readable as StreamReadableNode, Writable as StreamWritableNode } from 'stream'
+//import { streamNodeModuleGet as loadStreamNodeModule } from './stream/streamNodeModule'
 
 export { getStreamReadableNode }
 export { getStreamReadableWeb }
@@ -25,8 +28,8 @@ export { pipeNodeStream }
 
 type StreamReadableWeb = ReadableStream
 type StreamWritableWeb = WritableStream
-type StreamReadableNode = Readable
-type StreamWritableNode = Writable
+//type StreamReadableNode = typeof import('stream').Readable
+//type StreamWritableNode = typeof import('stream').Writable
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
 type Stream = StreamReadableWeb | StreamReadableNode | StreamPipeWebWrapped | StreamPipeNodeWrapped
@@ -37,10 +40,14 @@ function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
   return typeof ReadableStream !== 'undefined' && thing instanceof ReadableStream
 }
 function isStreamReadableNode(thing: unknown): thing is StreamReadableNode {
-  return thing instanceof Readable
+  if (isStreamReadableWeb(thing)) {
+    return false
+  }
+  // https://stackoverflow.com/questions/17009975/how-to-test-if-an-object-is-a-stream-in-nodejs/37022523#37022523
+  return hasProp(thing, 'read', 'function')
 }
 
-async function streamReadableNodeToString(readableNode: Readable): Promise<string> {
+async function streamReadableNodeToString(readableNode: StreamReadableNode): Promise<string> {
   // Copied from: https://stackoverflow.com/questions/10623798/how-do-i-read-the-contents-of-a-node-js-stream-into-a-string-variable/49428486#49428486
   const chunks: Buffer[] = []
   return new Promise((resolve, reject) => {
@@ -62,7 +69,8 @@ async function streamReadableWebToString(readableWeb: ReadableStream): Promise<s
   }
   return str
 }
-function stringToStreamReadableNode(str: string): StreamReadableNode {
+async function stringToStreamReadableNode(str: string): Promise<StreamReadableNode> {
+  const { Readable } = await loadStreamNodeModule()
   return Readable.from(str)
 }
 function stringToStreamReadableWeb(str: string): StreamReadableWeb {
@@ -90,10 +98,11 @@ function stringToStreamPipeWeb(str: string): StreamPipeWeb {
   }
 }
 
-function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string> {
+async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string> {
   let str: string = ''
   let resolve: (s: string) => void
   const promise = new Promise<string>((r) => (resolve = r))
+  const { Writable } = await loadStreamNodeModule()
   const writable = new Writable({
     write(chunk, _encoding, callback) {
       const s = chunk.toString()
@@ -126,7 +135,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
   return promise
 }
 
-function getStreamReadableNode(htmlRender: HtmlRender): null | StreamReadableNode {
+async function getStreamReadableNode(htmlRender: HtmlRender): Promise<null | StreamReadableNode> {
   if (typeof htmlRender === 'string') {
     return stringToStreamReadableNode(htmlRender)
   }
@@ -135,7 +144,7 @@ function getStreamReadableNode(htmlRender: HtmlRender): null | StreamReadableNod
   }
   return null
 }
-function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb {
+async function getStreamReadableWeb(htmlRender: HtmlRender): Promise<null | StreamReadableWeb> {
   if (typeof htmlRender === 'string') {
     return stringToStreamReadableWeb(htmlRender)
   }
@@ -294,6 +303,7 @@ async function manipulateStream<StreamType extends Stream>(
       writableOriginal = writable_
       writableOriginalReady = true
     })
+    const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
       async write(chunk, _encoding, callback) {
         await onData(chunk)
@@ -401,6 +411,7 @@ async function manipulateStream<StreamType extends Stream>(
 
   if (isStreamReadableNode(streamOriginal)) {
     const readableNodeOriginal: StreamReadableNode = streamOriginal
+    const { Readable } = await loadStreamNodeModule()
     // Vue doesn't always set the `read()` handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375
     if (readableNodeOriginal._read === Readable.prototype._read) {
       readableNodeOriginal._read = function () {}
@@ -512,10 +523,10 @@ async function streamToString(stream: Stream): Promise<string> {
     return await streamReadableNodeToString(stream)
   }
   if (isStreamPipeNode(stream)) {
-    return streamPipeNodeToString(getStreamPipeNode(stream))
+    return await streamPipeNodeToString(getStreamPipeNode(stream))
   }
   if (isStreamPipeWeb(stream)) {
-    return streamPipeWebToString(getStreamPipeWeb(stream))
+    return await streamPipeWebToString(getStreamPipeWeb(stream))
   }
   checkType<never>(stream)
   assert(false)
@@ -540,4 +551,14 @@ function encodeForWebStream(thing: unknown) {
     return encoder.encode(thing)
   }
   return thing
+}
+
+async function loadStreamNodeModule(): Promise<{
+  Readable: typeof StreamReadableNode
+  Writable: typeof StreamWritableNode
+}> {
+  // Eval to avoid bundlers to try to include the `stream` module
+  const streamModule = await eval(`import('stream')`)
+  const { Readable, Writable } = streamModule
+  return { Readable, Writable }
 }
