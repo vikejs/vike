@@ -1,5 +1,5 @@
 import { page, run, autoRetry, fetchHtml, isGithubAction } from '../../libframe/test/setup'
-import * as assert from 'assert'
+import  assert from 'assert'
 
 export { runTests }
 
