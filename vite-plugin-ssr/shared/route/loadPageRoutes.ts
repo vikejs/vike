@@ -110,7 +110,7 @@ function dirname(filePath: string): string {
   assert(filePath.startsWith('/'))
   assert(!filePath.endsWith('/'))
   const paths = filePath.split('/')
-  const dirPath = slice(paths, 0, -1).join('/')
+  const dirPath = slice(paths, 0, -1).join('/') || '/'
   assert(dirPath.startsWith('/'))
   assert(!dirPath.endsWith('/') || dirPath === '/')
   return dirPath
