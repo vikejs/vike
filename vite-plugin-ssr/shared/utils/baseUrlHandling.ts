@@ -3,6 +3,7 @@ import { addUrlOrigin, assert, assertUsage, handleUrlOrigin, slice } from '../..
 export { analyzeBaseUrl }
 export { prependBaseUrl }
 export { assertBaseUrl }
+export { noramlizeBaseUrl }
 
 // Possible Base URL values:
 // `base: '/some-nested-path/'`
@@ -98,12 +99,19 @@ function prependBaseUrl(url: string, baseUrl: string): string {
 
   if (baseUrl === '/') return url
 
-  if (baseUrl.endsWith('/')) {
-    baseUrl = slice(baseUrl, 0, -1)
-  }
+  const baseUrlNormalized = noramlizeBaseUrl(baseUrl)
 
-  // We can and should expect `baseUrl` to not contain `/` doublets. (We cannot expect url to not contain `/` doublets.)
-  assert(!baseUrl.endsWith('/'))
+  assert(!baseUrlNormalized.endsWith('/'))
   assert(url.startsWith('/'))
-  return `${baseUrl}${url}`
+  return `${baseUrlNormalized}${url}`
+}
+
+function noramlizeBaseUrl(baseUrl: string) {
+  let baseUrlNormalized = baseUrl
+  if (baseUrlNormalized.endsWith('/') && baseUrlNormalized !== '/') {
+    baseUrlNormalized = slice(baseUrlNormalized, 0, -1)
+  }
+  // We can and should expect `baseUrl` to not contain `/` doublets.
+  assert(!baseUrlNormalized.endsWith('/'))
+  return baseUrlNormalized
 }

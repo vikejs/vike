@@ -4,6 +4,7 @@ import {
   castProp,
   hasProp,
   higherFirst,
+  noramlizeBaseUrl,
   normalizePath,
   prependBaseUrl,
   slice,
@@ -210,6 +211,15 @@ async function applyViteHtmlTransform(htmlString: string, urlNormalized: string)
     return htmlString
   }
   htmlString = await ssrEnv.viteDevServer.transformIndexHtml(urlNormalized, htmlString)
+  htmlString = removeDuplicatedBaseUrl(htmlString, ssrEnv.baseUrl)
+  return htmlString
+}
+
+function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
+  // Proper fix is to add Vite option to skip this: https://github.com/vitejs/vite/blob/aaa26a32501c857d854e9d9daca2a88a9e086392/packages/vite/src/node/server/middlewares/indexHtml.ts#L62-L67
+  const baseUrlNormalized = noramlizeBaseUrl(baseUrl)
+  assert(!baseUrlNormalized.endsWith('/'))
+  htmlString = htmlString.split(baseUrlNormalized + baseUrlNormalized).join(baseUrlNormalized)
   return htmlString
 }
 
