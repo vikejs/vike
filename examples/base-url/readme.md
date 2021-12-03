@@ -15,7 +15,7 @@ Highlights:
  - Setting the `base` config in [vite.config.js](vite.config.js) as well as in [createPageRenderer](server/dev-server.js).
 
 It showcases:
- - Changing the Base URL in production. Without [pre-rendering](https://vite-plugin-ssr.com/pre-rendering) ([`package.json#scripts.prod:server`](package.json)) and with pre-rendering ([`package.json#scripts.prod:static`](package.json)).
+ - Changing the Base URL in production. Without [pre-rendering](https://vite-plugin-ssr.com/pre-rendering) ([`package.json#scripts.prod:server`](package.json)) or with pre-rendering ([`package.json#scripts.prod:static`](package.json)).
  - Also changing the Base URL in dev ([`package.json#scripts.dev:with-base-url`](package.json)) or not ([`package.json#scripts.dev:without-base-url`](package.json)).
 
 See also:
