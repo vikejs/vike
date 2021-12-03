@@ -1,8 +1,8 @@
-name: CI
+name: CI Discord Notification
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ['CI']
     types: [completed, created]
 
 jobs:
