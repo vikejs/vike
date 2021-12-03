@@ -97,9 +97,9 @@ function prependBaseUrl(url: string, baseUrl: string): string {
   // origin is useless in static asset URLs, while the origin causes trouble upon `https`/`http` mismatch.
   baseUrl = handleUrlOrigin(baseUrl).urlWithoutOrigin
 
-  if (baseUrl === '/') return url
-
   const baseUrlNormalized = noramlizeBaseUrl(baseUrl)
+
+  if (baseUrlNormalized === '/') return url
 
   assert(!baseUrlNormalized.endsWith('/'))
   assert(url.startsWith('/'))
@@ -112,6 +112,6 @@ function noramlizeBaseUrl(baseUrl: string) {
     baseUrlNormalized = slice(baseUrlNormalized, 0, -1)
   }
   // We can and should expect `baseUrl` to not contain `/` doublets.
-  assert(!baseUrlNormalized.endsWith('/'))
+  assert(!baseUrlNormalized.endsWith('/') || baseUrlNormalized === '')
   return baseUrlNormalized
 }
