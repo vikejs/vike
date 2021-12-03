@@ -6,7 +6,7 @@ import { ImportMeta } from 'libframe-docs/components/ImportMeta'
 
 To change the Base URL we:
 
-1. Add the `base` config to [`vite.config.js#base`](https://vitejs.dev/config/#base) and `createPageRenderer({ base })`. Example: <RepoLink path='/examples/base-url/vite.config.js' /> and <RepoLink path='/examples/base-url/server/index.js' />.
+1. Add the `base` config to [`vite.config.js#base`](https://vitejs.dev/config/#base) and `createPageRenderer({ base })`. Example: <RepoLink path='/examples/base-url/vite.config.js' /> and <RepoLink path='/examples/base-url/server/dev-server.js' />.
 
 2. Use the <ImportMeta prop='env.BASE_URL' /> value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
 
