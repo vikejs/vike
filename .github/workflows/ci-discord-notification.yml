@@ -19,7 +19,8 @@ jobs:
         env:
           CI_STATUS: ${{ github.event.workflow_run.conclusion }}
           REPO_NAME: ${{ github.event.repository.name }}
-          GIT_BRANCH: ${{ github.event.workflow_run.ref }}
+          GIT_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
         run: |
           curl \
             -i \
