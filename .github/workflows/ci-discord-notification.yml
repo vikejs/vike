@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed, created]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    name: 'CI Status - Discord Notification'
+    steps:
+      - name: Send Discord message
+        run: |
+          curl \
+            -i \
+            -H "Accept: application/json" \
+            -H "Content-Type:application/json" \
+            -X POST \
+            --data '{"content":"t33","username":"GitHub","avatar_url":"https://i.imgur.com/OOtUMJD.png"}' \
+            https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC

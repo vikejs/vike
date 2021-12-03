@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  test:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -36,9 +36,3 @@ jobs:
           GIT_BRANCH: ${{ github.ref_name }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
-
-      - name: Send Discord message
-        if: always()
-        uses: wei/curl@v1
-        with:
-          args: "-i -H 'Accept: application/json' -H 'Content-Type:application/json' -X POST https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC --data '{\"content\":\"t3\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}'"
