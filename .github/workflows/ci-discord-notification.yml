@@ -3,40 +3,24 @@ name: CI Discord Notification
 on:
   workflow_run:
     workflows: ['CI']
-    types: [completed]
+    # types: [completed]
+    types: [created]
 
 jobs:
-  on-failure:
-    if: ${{ github.event.workflow_run.conclusion != 'success' }}
+  notify:
+    # if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     name: 'CI Status - Discord Notification'
     steps:
       - name: Send Discord message
         env:
-          REPO_NAME: ${{ EVENT_PAYLOAD.repository.full_name }}
-          PR_ID: ${{ EVENT_PAYLOAD.pull_request.id }}
+          GIT_BRANCH: ${{ github.ref_name }}
+          EVENT: ${{ toJSON( github.event ) }}
         run: |
           curl \
             -i \
             -H "Accept: application/json" \
             -H "Content-Type:application/json" \
             -X POST \
-            --data '{"content":"CI Failure $REPO_NAME $PR_ID","username":"GitHub","avatar_url":"https://i.imgur.com/OOtUMJD.png"}' \
-            https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC
-  on-success:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
-    name: 'CI Status - Discord Notification'
-    steps:
-      - name: Send Discord message
-        env:
-          REPO_NAME: ${{ EVENT_PAYLOAD.repository.full_name }}
-          PR_ID: ${{ EVENT_PAYLOAD.pull_request.id }}
-        run: |
-          curl \
-            -i \
-            -H "Accept: application/json" \
-            -H "Content-Type:application/json" \
-            -X POST \
-            --data '{"content":"CI Success $REPO_NAME $PR_ID","username":"GitHub","avatar_url":"https://i.imgur.com/OOtUMJD.png"}' \
+            --data '{"content":"CI Failure $EVENT $GIT_BRANCH","username":"GitHub","avatar_url":"https://i.imgur.com/OOtUMJD.png"}' \
             https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC
