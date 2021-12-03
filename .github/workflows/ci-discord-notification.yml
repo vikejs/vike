@@ -11,11 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     name: 'CI Status - Discord Notification'
     steps:
+      - name: Inspect Event Object
+        env:
+          EVENT: ${{ toJSON( github.event ) }}
+        run: echo $EVENT
       - name: Send Discord message
         env:
-          GIT_BRANCH: ${{ github.ref }}
-          REPO_NAME: ${{ github.event.repository.name }}
           CI_STATUS: ${{ github.event.workflow_run.conclusion }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          GIT_BRANCH: ${{ github.event.workflow_run.ref }}
         run: |
           curl \
             -i \
