@@ -112,6 +112,6 @@ function noramlizeBaseUrl(baseUrl: string) {
     baseUrlNormalized = slice(baseUrlNormalized, 0, -1)
   }
   // We can and should expect `baseUrl` to not contain `/` doublets.
-  assert(!baseUrlNormalized.endsWith('/') || baseUrlNormalized === '')
+  assert(!baseUrlNormalized.endsWith('/') || baseUrlNormalized === '/')
   return baseUrlNormalized
 }
