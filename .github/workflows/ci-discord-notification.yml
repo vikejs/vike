@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Send Discord message
         env:
-          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_BRANCH: ${{ github.ref }}
           REPO_NAME: ${{ github.event.repository.name }}
           CI_STATUS: ${{ github.event.workflow_run.conclusion }}
         run: |
