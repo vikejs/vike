@@ -1,4 +1,4 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, DocLink } from 'libframe-docs/components'
 
 ## `onBeforeRender()`
 
@@ -100,6 +100,50 @@ function Page(pageProps) {
 
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
 conveniently hold all props of the root component `Page`.
+
+## Global Logic
+
+If we use the same data fetching logic for all/several pages we can factor out common code.
+
+```js
+// user.page.server.js
+import { fetchData } from './fetchData'
+export const onBeforeRender = pageContext => fetchData(pageContext, 'user')
+```
+
+```js
+// product.page.server.js
+import { fetchData } from './fetchData'
+export const onBeforeRender = pageContext => fetchData(pageContext, 'product')
+```
+
+** `onBeforeRender()` in `_default.page.server.js`**
+
+Alternatively, we can define our global logic in `_default.page.server.js`.
+
+```js
+// renderer/_default.page.server.js
+
+import { fetchData } from './fetchData'
+
+export const onBeforeRender = pageContext => {
+  const page = (
+    pageContext.url.startsWith('/user') && 'user' ||
+    pageContext.url.startsWith('/product') && 'product'
+  )
+  return fetchData(pageContext, page)
+}
+```
+
+** `onBeforeRender()` in `.page.server.js` and `_default.page.server.js`.**
+
+We can also define a `onBeforeRender()` hook in the page's `.page.server.js` file,
+while also defining a `onBeforeRender()` hook in `_default.page.server.js`.
+See <DocLink href="/onBeforeRender-multiple" />.
+
+**`onInit()`**
+
+There is work-in-progress to implement a new `onInit()` hook to initialize global data, see [#164](https://github.com/brillout/vite-plugin-ssr/issues/164).
 
 ## Client Routing
 
