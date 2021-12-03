@@ -42,7 +42,7 @@ function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string;
     const { rootPath, rootValue } = root
     assert(filesystemRoute.startsWith(rootPath))
     filesystemRoute = slice(filesystemRoute, rootPath.length, 0)
-    assert(filesystemRoute.startsWith('/'))
+    assert(filesystemRoute.startsWith('/'), { pageId, rootPath, rootValue })
     filesystemRoute = rootValue + (rootValue.endsWith('/') ? '' : '/') + slice(filesystemRoute, 1, 0)
   }
 
