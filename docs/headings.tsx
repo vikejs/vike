@@ -1,6 +1,40 @@
-import { HeadingDefinition } from 'libframe-docs/types'
+import React from 'react'
+import type { HeadingDefinition, HeadingWithoutLink } from 'libframe-docs/types'
 
-export const headings: HeadingDefinition[] = [
+export { headingsWithoutLink }
+export { headings }
+
+const headingsWithoutLink: HeadingWithoutLink[] = [
+  {
+    title: 'SPA vs SSR vs HTML',
+    url: '/SPA-vs-SSR-vs-HTML',
+  },
+  { title: 'Custom Exports', url: '/custom-exports' },
+  { title: 'HTML `<head>`', url: '/html-head' },
+  { title: 'What is Hydration?', url: '/hydration' },
+  { title: <code>dist/server/importBuild.js</code>, url: '/importBuild-dot-js' },
+  { title: <code>injectAssets()</code>, url: '/injectAssets' },
+  {
+    title: (
+      <>
+        Multiple <code>onBeforeRender()</code> hooks
+      </>
+    ),
+    url: '/onBeforeRender-multiple',
+  },
+  {
+    title: (
+      <>
+        Manipulating <code>pageContext</code>
+      </>
+    ),
+    url: '/pageContext-manipulation',
+  },
+  { title: 'SSR (Server Side Rendering)', url: '/ssr' },
+  { title: 'TypeScript', url: '/typescript' },
+]
+
+const headings: HeadingDefinition[] = [
   {
     level: 1,
     title: 'Overview',

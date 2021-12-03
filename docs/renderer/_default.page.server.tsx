@@ -1,6 +1,6 @@
 export * from 'libframe-docs/_default.page.server'
 import { setFrame } from 'libframe-docs/setFrame'
-import { headings } from '../headings'
+import { headings, headingsWithoutLink } from '../headings'
 import { projectInfo } from '../utils'
 import logoUrl from '../icons/vite-plugin-ssr.svg'
 import React from 'react'
@@ -12,4 +12,5 @@ setFrame({
   navHeaderMobile: <NavHeaderMobile />,
   navHeader: <NavHeader />,
   headings,
+  headingsWithoutLink,
 })
