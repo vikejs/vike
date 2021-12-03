@@ -41,4 +41,4 @@ jobs:
         if: always()
         uses: wei/curl@v1
         with:
-          args: -i -H "Accept: application/json" -H "Content-Type:application/json" -X POST https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC --data '{"content":"t3","username":"GitHub","avatar_url":"https://i.imgur.com/OOtUMJD.png"}'
+          args: "-i -H 'Accept: application/json' -H 'Content-Type:application/json' -X POST https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC --data '{\"content\":\"t3\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}'"
