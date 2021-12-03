@@ -1,5 +1,5 @@
 import React from 'react'
-import type { HeadingDefinition, HeadingWithoutLink } from 'libframe-docs/types'
+import type { HeadingDefinition, HeadingWithoutLink } from 'libframe-docs/headings'
 
 export { headingsWithoutLink }
 export { headings }
@@ -12,7 +12,7 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   { title: 'Custom Exports', url: '/custom-exports' },
   { title: 'HTML `<head>`', url: '/html-head' },
   { title: 'What is Hydration?', url: '/hydration' },
-  { title: <code>dist/server/importBuild.js</code>, url: '/importBuild-dot-js' },
+  { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
   { title: <code>injectAssets()</code>, url: '/injectAssets' },
   {
     title: (
