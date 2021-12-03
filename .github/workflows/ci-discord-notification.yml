@@ -14,12 +14,13 @@ jobs:
       - name: Send Discord message
         env:
           GIT_BRANCH: ${{ github.ref_name }}
-          EVENT: ${{ toJSON( github.event ) }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          CI_STATUS: ${{ github.event.workflow_run.conclusion }}
         run: |
           curl \
             -i \
             -H "Accept: application/json" \
             -H "Content-Type:application/json" \
             -X POST \
-            --data "{\"content\":\"CI Failure Fuck $GIT_BRANCH\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}" \
+            --data "{\"content\":\"CI $CI_STATUS $REPO_NAME $GIT_BRANCH\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}" \
             https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC
