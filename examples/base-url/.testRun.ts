@@ -1,19 +1,29 @@
-import { page, run, autoRetry, fetchHtml, urlBase } from '../../libframe/test/setup'
+import { page, run, autoRetry, fetchHtml, partRegex } from '../../libframe/test/setup'
 
-export { testPages }
+export { testRun }
 
-function testPages(cmd: 'npm run dev' | 'npm run prod:static' | 'npm run prod:server', isDev: boolean = false) {
-  const baseUrl = isDev ? '' : '/dist/client'
+function testRun(
+  cmd: 'npm run dev:without-base-url' | 'npm run dev:with-base-url' | 'npm run prod:static' | 'npm run prod:server',
+  { noBaseUrl }: { noBaseUrl?: true } = {},
+) {
+  const baseUrl = noBaseUrl ? '' : '/some/base-url'
   const addBaseUrl = (url: string) => baseUrl + url
+  const isDev = cmd.startsWith('npm run dev')
 
   run(cmd, { baseUrl })
 
-  test('page content is rendered to HTML', async () => {
+  test('URLs are correctly contain Base URL in HTML', async () => {
     const html = await fetchHtml(addBaseUrl('/'))
 
     expect(html).toContain('<h1>Welcome</h1>')
     expect(html).toContain(`<a href="${addBaseUrl('/')}">Home</a>`)
     expect(html).toContain(`<a href="${addBaseUrl('/about')}">About</a>`)
+    expect(html).toContain(`<link rel="manifest" href="${addBaseUrl('/manifest.json')}">`)
+    if (isDev) {
+      expect(html).toContain(`<link rel="icon" href="${addBaseUrl('/renderer/logo.svg')}" />`)
+    } else {
+      expect(html).toMatch(partRegex`<link rel="icon" href="${addBaseUrl('/assets/logo.')}${/[a-zA-Z0-9]+/}.svg" />`)
+    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {

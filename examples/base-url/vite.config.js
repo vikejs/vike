@@ -1,8 +1,6 @@
 import react from '@vitejs/plugin-react'
 import ssr from 'vite-plugin-ssr/plugin'
-
-const isProduction = process.env.NODE_ENV === 'production'
-const base = isProduction ? '/dist/client/' : '/'
+import { base } from './server/base.js'
 
 export default {
   plugins: [react(), ssr()],

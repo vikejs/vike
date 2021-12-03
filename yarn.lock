@@ -468,6 +468,11 @@
   resolved "https://registry.yarnpkg.com/@brillout/libassert/-/libassert-0.5.2.tgz#692a80d9759485f157c7fb5333aa3e194d4a1d04"
   integrity sha512-TG2GK3hOsQ9IOpnpOxP4PyZAs4UvYE43aonAlOXY3esr9BzXUV9cetpaYeMTH1lsuBesZo57/YdTNm+KpPX/zw==
 
+"@brillout/part-regex@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@brillout/part-regex/-/part-regex-0.1.2.tgz#5ce1fe1bf4ee7ff9049a37631b1b37198ac1890c"
+  integrity sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==
+
 "@brillout/submodule-init@0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@brillout/submodule-init/-/submodule-init-0.1.2.tgz#f5b185f2d5096d2ead714119664cfe011b708250"

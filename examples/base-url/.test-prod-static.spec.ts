@@ -1,3 +1,3 @@
-import { testPages } from './.testPages'
+import { testRun } from './.testRun'
 
-testPages('npm run prod:static')
+testRun('npm run prod:static')

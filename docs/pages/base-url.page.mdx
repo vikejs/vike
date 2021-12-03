@@ -6,45 +6,14 @@ import { ImportMeta } from 'libframe-docs/components/ImportMeta'
 
 To change the Base URL we:
 
-1. Set Vite's [`base` config](https://vitejs.dev/config/#base):
-   ```js
-   // vite.config.js
+1. Add the `base` config to [`vite.config.js#base`](https://vitejs.dev/config/#base) and `createPageRenderer({ base })`. Example: <RepoLink path='/examples/base-url/vite.config.js' /> and <RepoLink path='/examples/base-url/server/index.js' />.
 
-   const isProduction = process.env['NODE_ENV'] === 'production'
-   const base = isProduction ? '/some/base/url/' : '/'
+2. Use the <ImportMeta prop='env.BASE_URL' /> value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/component/Link.jsx' />.
 
-   export default {
-     base
-   };
-   ```
-
-2. Pass `base` to `createPageRenderer()`:
-   ```js
-   // server.js
-   const express = require('express')
-   const { createPageRenderer } = require('vite-plugin-ssr')
-   const vite = require('vite')
-
-   startServer()
-
-   async function startServer() {
-     const app = express()
-
-     const isProduction = process.env['NODE_ENV'] === 'production'
-     const base = isProduction ? '/some/base/url/' : '/'
-     const renderPage = createPageRenderer({ base, /* ... */ })
-
-     /* ... */
-   }
-   ```
-   We can skip this if we [pre-render](/pre-rendering) and don't use a Node.js server in production.
-
-3. Use the <ImportMeta prop='env.BASE_URL' /> value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL.
+3. Also use <ImportMeta prop='env.BASE_URL' /> when referencing Static Assets. Example: <RepoLink path='/examples/base-url/render/_default.page.server.jsx' />.
 
 Example:
- - <RepoLink path='/examples/base-url/renderer/Link.jsx' /> (see the <code>&lt;Link&gt;</code> component built on top of <ImportMeta prop='env.BASE_URL' />)
- - <RepoLink path='/examples/base-url/server/index.js' /> (see the <code>base</code> option passed to <code>vite</code> and <code>vite-plugin-ssr</code>)
- - <RepoLink path='/examples/base-url/package.json' /> (see the build scripts)
+ - <RepoLink path='/examples/base-url/' />
 
 We can set `base` to `'https://another-origin.example.org/'` (for cross-origin deployments) or to `'./'` (for embedded deployments at multiple paths).
 

@@ -1,0 +1,9 @@
+{
+  "manifest_version": 2,
+  "name": "Base URL Example",
+  "version": "0.0.0",
+  "short_name": "base-url",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff"
+}

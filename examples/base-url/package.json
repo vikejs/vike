@@ -1,17 +1,20 @@
 {
   "scripts": {
     "start": "npm run dev",
-    "dev": "node ./server",
-    "prod:static": "npm run build && npm run prod:serve:static",
+    "dev": "npm run dev:without-base-url",
+    "dev:with-base-url": "node ./server",
+    "dev:without-base-url": "cross-env SKIP_BASE_URL=yes node ./server",
+    "prod": "npm run prod:server",
     "prod:server": "npm run build && npm run prod:serve:server",
+    "prod:static": "npm run build && npm run build:prerender && npm run prod:serve:static",
     "// Build for production": "",
-    "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
+    "build": "npm run build:clean && npm run build:vite",
     "build:clean": "rimraf dist/",
     "build:vite": "vite build && vite build --ssr",
     "build:prerender": "vite-plugin-ssr prerender",
+    "// Production (static) server": "",
     "prod:serve:server": "cross-env NODE_ENV=production node ./server",
-    "// We purposely serve `./` instead of `dist/client/` to simulate a Base URL change": "",
-    "prod:serve:static": "serve ./ --listen 3000"
+    "prod:serve:static": "node ./server/static-server"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^1.0.4",
@@ -20,11 +23,11 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
-    "serve": "^12.0.1",
     "vite": "^2.6.7",
     "vite-plugin-ssr": "0.3.31"
   },
+  "type": "module",
   "// Needed for Yarn workspaces": "",
-  "name": "example-base-url",
+  "name": "example-base-url-dev",
   "version": "0.0.0"
 }

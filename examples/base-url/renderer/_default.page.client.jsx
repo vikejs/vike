@@ -1,15 +1,15 @@
 import ReactDOM from 'react-dom'
 import React from 'react'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
-import { PageLayout } from './PageLayout'
+import { PageShell } from './PageShell'
 
 useClientRouter({
   render(pageContext) {
     const { Page, pageProps } = pageContext
     const page = (
-      <PageLayout pageContext={pageContext}>
+      <PageShell pageContext={pageContext}>
         <Page {...pageProps} />
-      </PageLayout>
+      </PageShell>
     )
     const container = document.getElementById('page-view')
     if (pageContext.isHydration) {

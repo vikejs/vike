@@ -1,19 +1,20 @@
-const express = require('express')
-const { createPageRenderer } = require('vite-plugin-ssr')
-const vite = require('vite')
+import express from 'express'
+import vite from 'vite'
+import { createPageRenderer } from 'vite-plugin-ssr'
+import { createExpressApp } from './createExpressApp.js'
+import { base } from './base.js'
+import { root } from './root.js'
 
 const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
-const base = isProduction ? '/dist/client/' : '/'
 
 startServer()
 
 async function startServer() {
-  const app = express()
+  const { app, startApp } = createExpressApp({ base })
 
   let viteDevServer
   if (isProduction) {
-    app.use(base, express.static(`${root}/dist/client`))
+    app.use(express.static(`${root}/dist/client`))
   } else {
     viteDevServer = await vite.createServer({
       root,
@@ -23,10 +24,10 @@ async function startServer() {
   }
 
   const renderPage = createPageRenderer({
+    base,
     viteDevServer,
     isProduction,
     root,
-    base,
   })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
@@ -40,7 +41,5 @@ async function startServer() {
     res.status(statusCode).type(contentType).send(body)
   })
 
-  const port = 3000
-  app.listen(port)
-  console.log(`Server running at http://localhost:${port}${base}`)
+  startApp()
 }
