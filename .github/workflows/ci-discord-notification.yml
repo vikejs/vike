@@ -17,7 +17,7 @@ jobs:
           REPO_NAME: ${{ github.event.repository.name }}
           GIT_BRANCH: ${{ github.event.workflow_run.head_branch }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
-          WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
+          WORKFLOW_URL: ${{ github.event.workflow_run.conclusion == 'failure' && github.event.workflow_run.html_url || '' }}
         # Playground: https://gist.github.com/brillout/da1ab713bda6e3c0d2ad909c1a4e80f2
         run: |
           curl \
@@ -25,7 +25,7 @@ jobs:
             -H "Accept: application/json" \
             -H "Content-Type:application/json" \
             -X POST \
-            --data "{\"content\":\"$WORKFLOW_NAME $CI_STATUS $REPO_NAME $GIT_BRANCH $WORKFLOW_URL\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}" \
+            --data "{\"content\":\"$CI_STATUS $REPO_NAME $WORKFLOW_NAME $GIT_BRANCH $WORKFLOW_URL\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}" \
             https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC
       - name: Inspect Event Object
         env:
