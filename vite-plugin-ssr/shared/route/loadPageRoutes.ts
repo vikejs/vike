@@ -46,6 +46,10 @@ async function loadPageRoutes(globalContext: {
           hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
           `The \`filesystemRoutingRoot\` export of \`${filePath}\` should be a string.`,
         )
+        assertUsage(
+          hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
+          `The \`filesystemRoutingRoot\` export of \`${filePath}\` is \`'${fileExports.filesystemRoutingRoot}'\` but it should start with a leading slash \`/\`.`,
+        )
         filesystemRoots.push({
           rootPath: dirname(filePath),
           rootValue: fileExports.filesystemRoutingRoot,

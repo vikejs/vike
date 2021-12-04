@@ -37,14 +37,28 @@ function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string;
     .filter(({ rootPath }) => pageId.startsWith(rootPath))
     .sort(higherFirst(({ rootPath }) => rootPath.length))
   const root = filesystemRootsMatch[0]
-  let filesystemRoute = pageId
+
+  let filesystemRoute: string
   if (root) {
+    // Example values:
+    //  - `{"pageId":"/pages/index","rootPath":"/","rootValue":"/client_portal"}`
     const { rootPath, rootValue } = root
-    assert(filesystemRoute.startsWith(rootPath))
-    filesystemRoute = slice(filesystemRoute, rootPath.length, 0)
-    assert(filesystemRoute.startsWith('/'), { pageId, rootPath, rootValue })
+    const debugInfo = { pageId, rootPath, rootValue }
+    assert(rootValue.startsWith('/') && pageId.startsWith('/') && rootPath.startsWith('/'), debugInfo)
+    assert(pageId.startsWith(rootPath), debugInfo)
+    if (rootPath !== '/') {
+      assert(!rootPath.endsWith('/'), debugInfo)
+      filesystemRoute = slice(pageId, rootPath.length, 0)
+    } else {
+      filesystemRoute = pageId
+    }
+    assert(filesystemRoute.startsWith('/'), debugInfo)
     filesystemRoute = rootValue + (rootValue.endsWith('/') ? '' : '/') + slice(filesystemRoute, 1, 0)
+  } else {
+    filesystemRoute = pageId
   }
+
+  assert(filesystemRoute.startsWith('/'))
 
   // Remove `pages/`, `index/, and `src/`, directories
   filesystemRoute = filesystemRoute.split('/pages/').join('/')
