@@ -2,6 +2,7 @@ name: CI Discord Notification
 
 on:
   workflow_run:
+    workflows: ['CI', 'Docs']
     types: [completed]
 
 jobs:
