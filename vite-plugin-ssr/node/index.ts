@@ -9,10 +9,10 @@ export type {
   PageContextBuiltIn,
   OnBeforeRenderPageContextInternal,
   VitePluginSsr,
-  withTypescript,
   GetPageProps,
   GetPage,
 } from './types'
+export { withTypescript } from './types'
 
 import { importBuild } from './importBuild'
 

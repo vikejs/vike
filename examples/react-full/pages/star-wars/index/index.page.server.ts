@@ -1,11 +1,16 @@
 import fetch from 'node-fetch'
+import { withTypescript } from 'vite-plugin-ssr'
 import { filterMovieData } from '../filterMovieData'
 import type { Movie, MovieDetails } from '../types'
 
 export { onBeforeRender }
 export { prerender }
 
-async function onBeforeRender() {
+const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
+
+  // `documentProps?: { title: string }` is missing
+  pageContext.pageExports.documentProps?.title
+
   const movies = await getStarWarsMovies()
   return {
     pageContext: {
@@ -18,7 +23,7 @@ async function onBeforeRender() {
       documentProps: { title: getTitle(movies) },
     },
   }
-}
+})
 
 async function getStarWarsMovies(): Promise<MovieDetails[]> {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')
