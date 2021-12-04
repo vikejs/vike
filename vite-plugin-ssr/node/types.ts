@@ -1,9 +1,16 @@
 /**
  * Internal types
  */
+interface PageExportsInternal {
+  documentProps: {
+    title: string
+    description: string
+  }
+}
+
 export type PageContextBuiltIn = {
   Page: any
-  pageExports: Record<string, unknown>
+  pageExports: Record<string, unknown> & Partial<PageExportsInternal>
   routeParams: Record<string, string>
   url: string
   urlPathname: string
@@ -17,12 +24,7 @@ export type PageContextBuiltIn = {
 // props defined here are always available in `render()` hook and
 // if `renderPage()` is successful also always available there.
 export interface OnBeforeRenderPageContextInternal {
-  pageExports: {
-    documentProps: {
-      title: string
-      description: string
-    }
-  }
+  pageExports: PageExportsInternal
 }
 
 /**
@@ -37,19 +39,19 @@ export declare namespace VitePluginSsr {
   // can be overriden
   export interface PageContextOnBeforeRender {}
 
-  type OnBeforeHookReturnInternal<X> =
-    Partial<OnBeforeRenderPageContextInternal> & Partial<PageContextOnBeforeRender> & X;
+  type OnBeforeHookReturnInternal =
+    Partial<OnBeforeRenderPageContextInternal> & Partial<PageContextOnBeforeRender>;
 
   // OnBeforeHook return type extract for readability and reusability
-  export type OnBeforeHookReturn<X> =
-    OnBeforeHookReturnInternal<X> | Promise<OnBeforeHookReturnInternal<X>>;
+  export type OnBeforeHookReturn =
+    OnBeforeHookReturnInternal | Promise<OnBeforeHookReturnInternal>;
 
   // OnBeforeRender pageContext have some internally computed props that we add
-  export interface OnBeforeRenderPageContext extends PageContextBuiltIn, PageContextInit {}
+  export type OnBeforeRenderPageContext = PageContextBuiltIn & PageContextInit;
 
   // OnBeforeHook type
-  export interface OnBeforeHook<X> {
-    (context: OnBeforeRenderPageContext): OnBeforeHookReturn<X>
+  export interface OnBeforeHook {
+    (context: OnBeforeRenderPageContext): OnBeforeHookReturn
   }
 
   // util to easily create a functional Component
@@ -71,7 +73,7 @@ export function withTypescript<K extends keyof WithTSMapping, H extends WithTSMa
 }
 
 export interface WithTSMapping {
-  onBeforeRender: ReturnType<(<T>() => VitePluginSsr.OnBeforeHook<T>)>
+  onBeforeRender: VitePluginSsr.OnBeforeHook
   render: (context: VitePluginSsr.OnBeforeRenderPageContext &
     OnBeforeRenderPageContextInternal & Partial<VitePluginSsr.PageContextOnBeforeRender>) => any
 }
@@ -84,7 +86,6 @@ type GetPagePropsInternal<T> = T extends {
     pageProps?: infer U
   }
 } ? U : never;
-export type GetPageProps<T extends VitePluginSsr.OnBeforeHook<any>> = T extends VitePluginSsr.OnBeforeHook<infer U> ?
-  GetPagePropsInternal<U> : {};
-export type GetPage<T extends VitePluginSsr.OnBeforeHook<any>> = T extends VitePluginSsr.OnBeforeHook<infer U> ?
-  VitePluginSsr.Page<GetPagePropsInternal<U>> : {};
+type AwaitableReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer U> ? U : T;
+export type GetPageProps<T extends VitePluginSsr.OnBeforeHook> = GetPagePropsInternal<AwaitableReturnType<T>>;
+export type GetPage<T extends VitePluginSsr.OnBeforeHook> = VitePluginSsr.Page<GetPageProps<T>>;

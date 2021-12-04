@@ -2,13 +2,7 @@ import 'vite-plugin-ssr';
 
 declare module "vite-plugin-ssr" {
   namespace VitePluginSsr {
-    interface PageContextInit {
-      pageExports: {
-        documentProps?: {
-          title: string
-        }
-      }
-    }
+    interface PageContextInit {}
 
     // Is it possible to also support `pageContext` on the browser-side by doing something like the following?
     interface PassToClient {
@@ -16,8 +10,10 @@ declare module "vite-plugin-ssr" {
     }
 
     interface PageContextOnBeforeRender {
-      documentProps?: {
-        title: string
+      pageContext?: {
+        documentProps?: {
+          title: string
+        }
       }
     }
   }
