@@ -18,6 +18,7 @@ jobs:
           GIT_BRANCH: ${{ github.event.workflow_run.head_branch }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
           WORKFLOW_URL: ${{ github.event.workflow_run.html_url }}
+        # Playground: https://gist.github.com/brillout/da1ab713bda6e3c0d2ad909c1a4e80f2
         run: |
           curl \
             -i \
