@@ -1116,9 +1116,12 @@ function logError(err: unknown) {
 }
 
 function viteAlreadyLoggedError(err: unknown) {
-  const { viteDevServer } = getSsrEnv()
-  if (viteDevServer) {
-    return viteDevServer.config.logger.hasErrorLogged(err as Error)
+  const { viteDevServer, isProduction } = getSsrEnv()
+  if (isProduction) {
+    return false
+  }
+  if (viteDevServer && viteDevServer.config.logger.hasErrorLogged(err as Error)) {
+    return true
   }
   return false
 }
