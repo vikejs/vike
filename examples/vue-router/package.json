@@ -3,13 +3,13 @@
     "start": "node ./server"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^1.9.3",
-    "@vue/compiler-sfc": "^3.2.20",
-    "@vue/server-renderer": "^3.2.20",
+    "@vitejs/plugin-vue": "^1.10.1",
+    "@vue/compiler-sfc": "^3.2.24",
+    "@vue/server-renderer": "^3.2.24",
     "express": "^4.17.1",
-    "vite": "^2.6.7",
+    "vite": "^2.6.14",
     "vite-plugin-ssr": "0.3.34",
-    "vue": "^3.2.20",
+    "vue": "^3.2.24",
     "vue-router": "^4.0.5"
   },
   "// Needed for Yarn workspaces": "",

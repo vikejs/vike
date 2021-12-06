@@ -16,15 +16,15 @@
     "// postinstall": "yarn link vite-plugin-ssr"
   },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "~0.1.2",
-    "@cloudflare/wrangler": "^1.16.1",
-    "@vitejs/plugin-react": "^1.0.4",
+    "@cloudflare/kv-asset-handler": "~0.2.0",
+    "@cloudflare/wrangler": "^1.19.5",
+    "@vitejs/plugin-react": "^1.1.0",
     "express": "^4.17.1",
     "miniflare": "^1.4.1",
     "node-fetch": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "vite": "2.5.10",
+    "vite": "2.6.14",
     "vite-plugin-ssr": "0.3.34"
   },
   "// Needed for Yarn workspaces": "",

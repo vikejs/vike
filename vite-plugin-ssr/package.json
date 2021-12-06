@@ -4,7 +4,7 @@
   "dependencies": {
     "@brillout/json-s": "^0.3.0",
     "@brillout/libassert": "^0.5.2",
-    "cac": "^6.7.11",
+    "cac": "^6.7.12",
     "es-module-lexer": "^0.9.3",
     "fast-glob": "^3.2.7",
     "kolorist": "^1.5.0",
@@ -24,9 +24,9 @@
     "clean": "rm -rf dist/"
   },
   "devDependencies": {
-    "@types/node": "16.11.0",
-    "typescript": "^4.4.4",
-    "vite": "^2.6.7"
+    "@types/node": "16.11.11",
+    "typescript": "^4.5.2",
+    "vite": "^2.6.14"
   },
   "peerDependencies": {
     "vite": "^2.5.0"
