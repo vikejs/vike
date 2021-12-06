@@ -20,7 +20,7 @@ function assertBaseUrl(baseUrl: string, usageErrorMessagePrefix?: string) {
   )
   assertUsage(
     !baseUrl.startsWith('./'),
-    'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.',
+    usageErrorMessagePrefix + 'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.',
   )
 }
 
