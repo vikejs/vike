@@ -13,7 +13,8 @@ jobs:
     steps:
       - name: Send Discord message
         env:
-          CI_STATUS: ${{ github.event.workflow_run.conclusion == 'success' && '🟢' || '🔴' }}
+          # 🟢 has poor compatibility: https://www.unicompat.com/1F7E2
+          CI_STATUS: ${{ github.event.workflow_run.conclusion == 'success' && '💚' || '🔴' }}
           REPO_NAME: ${{ github.event.repository.name }}
           GIT_BRANCH: ${{ github.event.workflow_run.head_branch }}
           WORKFLOW_NAME: ${{ github.event.workflow_run.name }}
