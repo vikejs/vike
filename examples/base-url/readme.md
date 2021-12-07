@@ -12,7 +12,7 @@ npm run dev
 Highlights:
  - `<Link>` implementation using `import.meta.env.BASE_URL`: [components/Link.jsx](components/Link.jsx).
  - Static Assets in the HTML returned by the `render()` hook: [renderer/_default.page.server.jsx](renderer/_default.page.server.jsx).
- - Setting the `base` config in [vite.config.js](vite.config.js) as well as in [createPageRenderer](server/dev-server.js).
+ - Setting the `base` config in [vite.config.js](vite.config.js) as well as in [createPageRenderer](server/server.js).
 
 It showcases:
  - Changing the Base URL in production. Without [pre-rendering](https://vite-plugin-ssr.com/pre-rendering) ([`package.json#scripts.prod:server`](package.json)) or with pre-rendering ([`package.json#scripts.prod:static`](package.json)).

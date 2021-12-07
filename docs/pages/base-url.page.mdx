@@ -1,12 +1,12 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 import { ImportMeta } from 'libframe-docs/components/ImportMeta'
 
-> **What is the Base URL?** Changing the Base URL (aka Public Base Path) is about changing the URL root of our app.
-> For example, instead of deploying our app to `https://example.org/*` (i.e. `base: '/'`), we can set `base: '/some/base/url/'` and deploy our app to `https://example.org/some/base/url/*`.
+> **What is the Base URL?** Changing the Base URL (aka Public Base Path) is about changing the "URL pathname root" of our app.
+> For example, instead of deploying our app to `https://example.org/*` (base: `/`) we can deploy it to `https://example.org/some/base/url/*` (base: `/some/base/url/`).
 
 To change the Base URL we:
 
-1. Add the `base` config to [`vite.config.js#base`](https://vitejs.dev/config/#base) and `createPageRenderer({ base })`. Example: <RepoLink path='/examples/base-url/vite.config.js' /> and <RepoLink path='/examples/base-url/server/dev-server.js' />.
+1. Add the `base` config to both [`vite.config.js#base`](https://vitejs.dev/config/#base) and `createPageRenderer({ base })`. Example: <RepoLink path='/examples/base-url/vite.config.js' /> and <RepoLink path='/examples/base-url/server/server.js' />.
 
 2. Use the <ImportMeta prop='env.BASE_URL' /> value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
 
