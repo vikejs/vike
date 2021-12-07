@@ -16,7 +16,7 @@
     "// postinstall": "yarn link vite-plugin-ssr"
   },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "~0.1.2",
+    "@cloudflare/kv-asset-handler": "~0.2.0",
     "@cloudflare/wrangler": "^1.19.5",
     "@vitejs/plugin-vue": "^1.10.1",
     "@vue/compiler-sfc": "^3.2.24",
