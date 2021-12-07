@@ -1,6 +1,6 @@
 import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage, renderPageWithoutThrowing } from './renderPage'
-import { assertBaseUrl, hasProp } from '../shared/utils'
+import { assertUsageBaseUrl, hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { resolve } from 'path'
 import { importBuildWasCalled } from './importBuild'
@@ -66,7 +66,7 @@ function assertArguments(
     typeof baseUrl === 'string',
     '`createPageRenderer({ base })`: argument `base` should be a string or `undefined`.',
   )
-  assertBaseUrl(baseUrl, '`createPageRenderer({ base })`: ')
+  assertUsageBaseUrl(baseUrl, '`createPageRenderer({ base })`: ')
   assertUsage(
     isProduction === true || isProduction === false || isProduction === undefined,
     '`createPageRenderer({ isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.',

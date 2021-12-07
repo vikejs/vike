@@ -1,27 +1,32 @@
-import { addUrlOrigin, assert, assertUsage, handleUrlOrigin, slice } from '../../shared/utils'
+import { addUrlOrigin, handleUrlOrigin } from './parseUrl'
+import { slice } from './slice'
+import { assert, assertUsage } from './assert'
 
 export { analyzeBaseUrl }
 export { prependBaseUrl }
 export { assertBaseUrl }
+export { assertUsageBaseUrl }
 export { noramlizeBaseUrl }
 
 // Possible Base URL values:
 // `base: '/some-nested-path/'`
 // `base: 'http://another-origin.example.org/'`
 // `base: './'` (WIP: not supported yet)
-function assertBaseUrl(baseUrl: string, usageErrorMessagePrefix?: string) {
-  if (!usageErrorMessagePrefix) {
-    assert(baseUrl.startsWith('/') || baseUrl.startsWith('http'))
-    return
-  }
+function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
+  assertBaseUrl(baseUrl)
   assertUsage(
     baseUrl.startsWith('/') || baseUrl.startsWith('http') || baseUrl.startsWith('./'),
     usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.',
   )
   assertUsage(
     !baseUrl.startsWith('./'),
-    usageErrorMessagePrefix + 'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.',
+    usageErrorMessagePrefix +
+      'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.',
   )
+}
+
+function assertBaseUrl(baseUrl: string) {
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('http'))
 }
 
 function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: string; hasBaseUrl: boolean } {
