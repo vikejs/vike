@@ -27,7 +27,7 @@
     "typescript": "^4.5.2",
     "vite": "^2.6.14",
     "vite-plugin-md": "^0.11.4",
-    "vite-plugin-ssr": "0.3.34",
+    "vite-plugin-ssr": "0.3.35",
     "vue": "3.2.24"
   },
   "// Needed for Yarn workspaces": "",
