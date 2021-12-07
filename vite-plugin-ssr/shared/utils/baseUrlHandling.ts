@@ -1,4 +1,4 @@
-import { addUrlOrigin, handleUrlOrigin } from './parseUrl'
+import { addUrlOrigin, getUrlPathname, handleUrlOrigin } from './parseUrl'
 import { slice } from './slice'
 import { assert, assertUsage } from './assert'
 
@@ -64,9 +64,10 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
 
   // Support `url === '/some-base-url' && baseUrl === '/some-base-url/'`
   let baseUrlNormalized = baseUrl
-  if (baseUrl.endsWith('/') && url === slice(baseUrl, 0, -1)) {
+  let urlPathname = getUrlPathname(url)
+  if (baseUrl.endsWith('/') && urlPathname === slice(baseUrl, 0, -1)) {
     baseUrlNormalized = slice(baseUrl, 0, -1)
-    assert(url === baseUrlNormalized)
+    assert(urlPathname === baseUrlNormalized)
   }
 
   if (!url.startsWith(baseUrlNormalized)) {
