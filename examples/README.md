@@ -6,6 +6,7 @@ Integrations:
  - [`vite-plugin-ssr` + Svelte](https://github.com/aral/vite-plugin-ssr-svelte)
  - [`vite-plugin-ssr` + Vue Query](https://github.com/wobsoriano/vite-plugin-ssr-vue-query) - Showcases infinite scroll with SSR'd initial scroll view.
  - [`vite-plugin-ssr` + AWS Lambda (using The Serverless Framework)](https://github.com/jamesladd/aws-vite-ssr)
+ - [`vite-plugin-ssr` + Vuetify](https://github.com/jamesladd/aws-vite-ssr-vuetify)
 
 Boilerplates/Frameworks:
  - [Superfly](https://github.com/deckchairlabs/superfly) - Remix-inspired framework built on top of `vite-plugin-ssr`.
