@@ -27,14 +27,13 @@ We opt-in by using [`useClientRouter()`](/useClientRouter).
 ## Which one to choose?
 
 By default, we recommend Server Routing because it leads to a simpler app architecture.
-We should keep in mind that simpler app architecture => higher development speed => more features for our users. Do our users care more about features or about faster page transitions?
 
-For example, as a startup that wants to deliver an MVP as quickly as possible, Server Routing should be the default choice.
+We should keep in mind that simpler app architecture => higher development speed => more features for our users. For example, as a startup that wants to deliver an MVP as quickly as possible, Server Routing is a sensible default choice.
 
 > While frameworks such as Next.js and Nuxt make Client Routing seem easy at first,
 > it always comes with inherent complexity that makes developing Next.js/Nuxt apps more complex and slower.
 
-We recommend using Client Routing only with a rationale, for example:
+That said, following situations warrant the use of Client Routing:
  - **Simple websites**. Such as a portfolio or landing/marketing website. Complexity is not an issue for simple websites and Client Routing gives a nice polished touch to the website.
  - **Highly polished apps**. For example Netflix's web app: Netflix aggressively pushes for delightful user experiences, and has the budget and man-power to do it. For entertainment apps, the highly polished user experience can be worth the added complexity.
  - Web apps that need to **preserve state across page changes**. For example Spotify: the currently listened song should not be interrupted on page change. Server Routing cannot preserve client-side state; we need Client Routing.
