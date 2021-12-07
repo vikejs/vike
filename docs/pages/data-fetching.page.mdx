@@ -103,7 +103,7 @@ conveniently hold all props of the root component `Page`.
 
 ## Global Logic
 
-If we use the same data fetching logic for all/several pages we can factor out common code.
+If we use the same data fetching logic for all/several pages we can factor out the common code.
 
 ```js
 // user.page.server.js
@@ -122,7 +122,7 @@ export const onBeforeRender = pageContext => fetchData(pageContext, 'product')
 Alternatively, we can define our global logic in `_default.page.server.js`.
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/_default.page.server.js
 
 import { fetchData } from './fetchData'
 
