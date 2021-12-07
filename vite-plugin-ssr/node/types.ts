@@ -1,3 +1,7 @@
+type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};
+
 /**
  * Internal types
  */
@@ -10,7 +14,7 @@ interface PageExportsInternal {
 
 export type PageContextBuiltIn = {
   Page: any
-  pageExports: Record<string, unknown> & Partial<PageExportsInternal>
+  pageExports: Record<string, unknown> & DeepPartial<PageExportsInternal>
   routeParams: Record<string, string>
   url: string
   urlPathname: string
@@ -25,6 +29,7 @@ export type PageContextBuiltIn = {
 // if `renderPage()` is successful also always available there.
 export interface OnBeforeRenderPageContextInternal {
   pageExports: PageExportsInternal
+  pageContext?: DeepPartial<PageExportsInternal>
 }
 
 /**
@@ -37,10 +42,11 @@ export declare namespace VitePluginSsr {
   }
 
   // can be overriden
-  export interface PageContextOnBeforeRender {}
+  export interface OnBeforeRender {
+  }
 
   type OnBeforeHookReturnInternal =
-    Partial<OnBeforeRenderPageContextInternal> & Partial<PageContextOnBeforeRender>;
+    Partial<OnBeforeRenderPageContextInternal> & Partial<OnBeforeRender>;
 
   // OnBeforeHook return type extract for readability and reusability
   export type OnBeforeHookReturn =
@@ -75,7 +81,7 @@ export function withTypescript<K extends keyof WithTSMapping, H extends WithTSMa
 export interface WithTSMapping {
   onBeforeRender: VitePluginSsr.OnBeforeHook
   render: (context: VitePluginSsr.OnBeforeRenderPageContext &
-    OnBeforeRenderPageContextInternal & Partial<VitePluginSsr.PageContextOnBeforeRender>) => any
+    OnBeforeRenderPageContextInternal & Partial<VitePluginSsr.OnBeforeRender>) => any
 }
 
 /**

@@ -9,11 +9,9 @@ declare module "vite-plugin-ssr" {
       value: 'pageProps' | 'documentProps'
     }
 
-    interface PageContextOnBeforeRender {
+    interface OnBeforeRender {
       pageContext?: {
-        documentProps?: {
-          title: string
-        }
+        something: number,
       }
     }
   }

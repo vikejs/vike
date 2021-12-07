@@ -1,5 +1,5 @@
 import { SsrEnv, setSsrEnv } from './ssrEnv'
-import { renderPage, renderPageWithoutThrowing } from './renderPage'
+import { RenderPage, renderPageWithoutThrowing } from './renderPage'
 import { assertUsageBaseUrl, hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { resolve } from 'path'
@@ -31,7 +31,7 @@ function createPageRenderer({
   outDir?: string
   isProduction?: boolean
   base?: string
-}): RenderPage<OnBeforeRenderPageContextInternal, VitePluginSsr.PageContextOnBeforeRender> {
+}): RenderPage<OnBeforeRenderPageContextInternal, VitePluginSsr.OnBeforeRender> {
   assertUsage(
     !wasCalled,
     'You are trying to call `createPageRenderer()` a second time, but it should be called only once.',
@@ -42,7 +42,7 @@ function createPageRenderer({
   assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
-  return renderPageWithoutThrowing as RenderPage<OnBeforeRenderPageContextInternal, VitePluginSsr.PageContextOnBeforeRender>
+  return renderPageWithoutThrowing as RenderPage<OnBeforeRenderPageContextInternal, VitePluginSsr.OnBeforeRender>
 }
 
 function assertArguments(

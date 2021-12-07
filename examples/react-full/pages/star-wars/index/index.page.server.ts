@@ -21,6 +21,7 @@ const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
       },
       // The page's <title>
       documentProps: { title: getTitle(movies) },
+      something: 42
     },
   }
 })
