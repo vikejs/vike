@@ -7,7 +7,7 @@ export { injectAssets__public as _injectAssets } from './html/injectAssets'
 
 export type {
   PageContextBuiltIn,
-  OnBeforeRenderPageContextInternal,
+  OnBeforeRenderBuiltIn,
   VitePluginSsr,
   GetPageProps,
   GetPage,

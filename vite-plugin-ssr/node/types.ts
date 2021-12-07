@@ -27,7 +27,7 @@ export type PageContextBuiltIn = {
 
 // props defined here are always available in `render()` hook and
 // if `renderPage()` is successful also always available there.
-export interface OnBeforeRenderPageContextInternal {
+export interface OnBeforeRenderBuiltIn {
   pageExports: PageExportsInternal
   pageContext?: DeepPartial<PageExportsInternal>
 }
@@ -46,7 +46,7 @@ export declare namespace VitePluginSsr {
   }
 
   type OnBeforeHookReturnInternal =
-    Partial<OnBeforeRenderPageContextInternal> & Partial<OnBeforeRender>;
+    Partial<OnBeforeRenderBuiltIn> & Partial<OnBeforeRender>;
 
   // OnBeforeHook return type extract for readability and reusability
   export type OnBeforeHookReturn =
@@ -81,7 +81,7 @@ export function withTypescript<K extends keyof WithTSMapping, H extends WithTSMa
 export interface WithTSMapping {
   onBeforeRender: VitePluginSsr.OnBeforeHook
   render: (context: VitePluginSsr.OnBeforeRenderPageContext &
-    OnBeforeRenderPageContextInternal & Partial<VitePluginSsr.OnBeforeRender>) => any
+    OnBeforeRenderBuiltIn & Partial<VitePluginSsr.OnBeforeRender>) => any
 }
 
 /**
