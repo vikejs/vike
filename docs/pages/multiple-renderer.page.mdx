@@ -61,6 +61,6 @@ import initClient from '../../renderer/initClient.js'
 initClient({ installUserTracker: true })
 ```
 
-## Alternative: multiple `onBeforeRender()`
+## Alternative: `onBeforeRender()`
 
-If the difference is only about data fetching, having <Link href="/onBeforeRender-multiple" /> may be a simpler solution.
+If the difference is only about data fetching, using different `onBeforeRender()` hooks may be a simpler solution. See <Link href="/data-fetching#global-logic" />.
