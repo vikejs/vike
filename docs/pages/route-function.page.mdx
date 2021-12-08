@@ -97,20 +97,20 @@ export default pageContext => {
 ```
 
 ```
-pageContext.url               MATCHES (ORDER)                            CHOSEN
-===============               ===============                            ======
+URL                           MATCHES                                    CHOSEN
+==================            ===================================        ======
 /product/42                   product/item.page.route.js      (6)        X
                               product/catch-all.page.route.js (7)
 ```
 ```
-pageContext.url               MATCHES (ORDER)                            CHOSEN
-===============               ===============                            ======
+URL                           MATCHES                                    CHOSEN
+==================            ===================================        ======
 /product                      product/list.page.route.js      (4)        X
                               product/catch-all.page.route.js (7)
 ```
 ```
-pageContext.url               MATCHES (ORDER)                            CHOSEN
-===============               ===============                            ======
+URL                           MATCHES                                    CHOSEN
+==================            ===================================        ======
 /product/wrong/url            product/catch-all.page.route.js (7)        X
 ```
 
@@ -138,14 +138,14 @@ export default pageContext => {
 ```
 
 ```
-pageContext.url       pageContext.user       MATCHES (ORDER)               CHOSEN
-===============       ================       ===============               ======
+URL                   pageContext.user       MATCHES                       CHOSEN
+======                ================       =======================       ======
 /admin                null                   login.page.route.js (1)       X
                                              admin.page.route.js (4)
 ```
 ```
-pageContext.url       pageContext.user       MATCHES (ORDER)               CHOSEN
-===============       ================       ===============               ======
+URL                   pageContext.user       MATCHES                       CHOSEN
+======                ================       =======================       ======
 /admin                'brillout'             admin.page.route.js (4)       X
 ```
 

@@ -1,3 +1,5 @@
+import { Link } from 'libframe-docs/components'
+
 By default `vite-plugin-ssr` does:
  - *Server Routing*, but we can use *Client Routing* instead.
  - *Filesystem Routing*, but we can also use *Route Strings* and *Route Functions*.
@@ -6,13 +8,13 @@ By default `vite-plugin-ssr` does:
 
 `vite-plugin-ssr` has first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
 
-The [Routing > Server Routing VS Client Routing](/SR-vs-CR) guide helps us choose which one to use.
+<Link href="/SR-vs-CR" /> helps us choose which one to use.
 
 ## React Router / Vue Router
 
 Instead of using React Router or Vue Router, we recommend to only use `vite-plugin-ssr`'s built-in router.
 
-That said, `vite-plugin-ssr` has support for both Vue Router and React Router, see [Routing > Vue Router & React Router](/vue-router-and-react-router).
+That said, `vite-plugin-ssr` has support for both Vue Router and React Router, see <Link href="/vue-router-and-react-router" />.
 
 ## Filesystem Routing VS Route Strings VS Route Functions
 
@@ -78,6 +80,6 @@ export default async (pageContext) => {
 Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
 See also:
- - [Routing > Filesystem Routing](/filesystem-routing)
- - [Routing > Route String](/route-string)
- - [Routing > Route Function](/route-function)
+ - <Link href="/filesystem-routing" />
+ - <Link href="/route-string" />
+ - <Link href="/route-function" />
