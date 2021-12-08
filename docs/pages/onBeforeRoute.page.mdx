@@ -1,4 +1,4 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { Link } from 'libframe-docs/components'
 
 The `onBeforeRoute()` hook gives us full control over the routing process and is usually used in order to:
  - [Internationalize a pre-rendered app](/i18n#with-pre-rendering)
@@ -9,4 +9,4 @@ We can also use it to:
 > Using `onBeforeRoute()` for i18n is already used in production. **For any other use cases, open a GitHub ticket or reach out on Discord before starting to use `onBeforeRoute()`** (currently, `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities).
 
 Example:
-- <RepoLink path='/examples/i18n-prerender/renderer/_default.page.route.js' />
+- <Link href='/examples/i18n-prerender/renderer/_default.page.route.js' />
