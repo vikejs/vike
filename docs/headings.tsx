@@ -32,6 +32,14 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   },
   { title: 'SSR (Server Side Rendering)', url: '/ssr' },
   { title: 'TypeScript', url: '/typescript' },
+  {
+    title: (
+      <>
+        Multiple <code>renderer/</code>
+      </>
+    ),
+    url: '/multiple-renderer',
+  },
 ]
 
 const headings: HeadingDefinition[] = [

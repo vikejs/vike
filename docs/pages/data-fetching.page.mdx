@@ -1,4 +1,4 @@
-import { RepoLink, DocLink } from 'libframe-docs/components'
+import { RepoLink, Link } from 'libframe-docs/components'
 
 ## `onBeforeRender()`
 
@@ -135,11 +135,15 @@ export const onBeforeRender = pageContext => {
 }
 ```
 
+**Multiple `renderer/`**
+
+If the logic differs substantially, we may want to create <Link href="/multiple-renderer" />.
+
 ** `onBeforeRender()` in `.page.server.js` and `_default.page.server.js`.**
 
 We can also define a `onBeforeRender()` hook in the page's `.page.server.js` file,
 while also defining a `onBeforeRender()` hook in `_default.page.server.js`.
-See <DocLink href="/onBeforeRender-multiple" />.
+See <Link href="/onBeforeRender-multiple" />.
 
 **`onInit()`**
 

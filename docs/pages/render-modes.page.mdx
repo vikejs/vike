@@ -3,7 +3,7 @@ For each page, we can choose:
  - When the page is rendered to HTML (render-time VS build-time).
  - Whether the page is rendered(/hydrated) in the browser.
 
-In other words, we can use any render mode:
+In other words, a page can use any render mode:
  - SSR: the page is rendered to HTML and also rendered (hydrated) in the browser-side. (The page is loaded both in Node.js and in the browser.)
  - SPA (aka MPA): the page is not rendered to HTML; it's only rendered in the browser. (The page is loaded only in browser.)
  - HTML-only: the page is rendered only to HTML; it's not rendered in the browser and has zero/minimal browser-side JavaScript. (The page is loaded only in Node.js.)
@@ -12,12 +12,10 @@ In other words, we can use any render mode:
 For example, we can render an admin panel as SPA while rendering marketing pages to HTML-only.
 
 > The `vite-plugin-ssr` boilerplates do SSR by default, which is a sensible default that works for most apps.
-> **Being aware of our options is important**:
-> choosing another render mode than SSR can play an important role in order to keep our app architecture simple and therefore leading to a substantial increase in development speed. It can also lead to a substantial performance increase but for most apps SSR is performant enough and we should **spend time fine-tuning performance only if needed**.
 
 ## HTML-only
 
-We can choose HTML-only for pages with no/few interactivity. (Technically speaking: if the page has no/few stateful components.)
+We can choose HTML-only for pages with no/little interactivity. (Technically speaking: the page has no/few stateful components.)
 
 The page then has zero/little browser-side JavaScript.
 
@@ -28,8 +26,8 @@ Examples:
  - Software Documentation (e.g. `https://vite-plugin-ssr.com`)
 
 For the few bits of interactivity (such as an image carousel or a collapsible section),
-the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity. (Instead of loading the whole page and view framework in the browser, leading to a drastic reduction of browser-side JavaScript.)
-This what `https://vite-plugin-ssr.com` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
+the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity.
+This is what `https://vite-plugin-ssr.com` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
 
 To render a page to HTML-only, we simply define an empty `.page.client.js`:
 
@@ -53,27 +51,32 @@ We should use pre-rendering whenever we can, as it allows us to deploy our app t
 
 For example, `https://vite-plugin-ssr.com` is pre-rendered and deployed to [GitHub Pages](/github-pages).
 
-More infos at: [Guides > Pre-rendering](/pre-rendering).
+See [Guides > Pre-rendering](/pre-rendering).
 
 ## Content- VS interactive-centric
 
 To decided between SSR and SPA, we need to discriminate between two types of apps:
- - *Content-centric*: the value of the page is mostly about the content (e.g. a newspaper or a blog).
- - *Interactive-centric*: the value of the page is mostly about interaction (e.g. a to-do list manager or an online image editor).
+ - *Content-centric*: the value of the page is mostly about content (e.g. a newspaper or a blog).
+ - *Interactive-centric*: the value of the page is mostly about interaction (e.g. a to-do list app, an online image editor, or an admin-panel).
 
 ## SPA
 
 SPA means that the page is only loaded & rendered in the browser.
 
-We can choose to render a page to SPA if:
- - The page is (highly) interactive (otherwise we would render it to HTML-only).
- - The page is not [content-centric](#content-vs-interactive-centric).
+We usually render a page as SPA if:
+ - The page is (highly) interactive. (Otherwise we would render it to HTML-only.)
+ - The page is not [content-centric](#content-vs-interactive-centric). (Otherwise we would use SSR because of SEO.)
 
-More broadly, if we don't need SEO (e.g. the page doesn't need to appear on Google) nor mobile performance (e.g. users usually don't go to the page with a mobile device), then we should consider SPA. For example, an admin panel should be an SPA (even if it's content-centric).
+More broadly,
+if the page doesn't need SEO
+(e.g. an Admin Panel doesn't need to appear in Google searches)
+nor mobile performance
+(e.g. the user is expected to use the Admin Panel on a desktop device),
+then SPA is an option.
 
 SPA has two major advantages:
  - It doesn't enforce the usage of a production Node.js server. (Whereas SSR does.)
- - The `.page.js` code doesn't need to be able to run in Node.js. (For example, SPA is the only option for libraries that don't work with SSR. Although, luckily, most libraries have support/workarounds for SSR.)
+ - The `.page.js` file doesn't need to be able to run in Node.js. (For example, SPA is the only option for libraries that don't work with SSR. Although, luckily, most libraries have support/workarounds for SSR.)
 
 To render a page as SPA, we simply render static HTML:
 
@@ -98,16 +101,16 @@ export function render() {
 
 ## SSR
 
-SSR means that our page is rendered to HTML as well as as rendered(/hydrated) in the browser.
+SSR means that our page is rendered to HTML as well as as rendered (hydrated) in the browser.
 
-It is the most powerful mode as it enables:
+It is the most capable mode as it enables:
  - Highly interactive UIs.
- - SEO (the page needs to rank high on Google).
- - Higher mobile performance.
+ - SEO. (High ranking on Google.)
+ - Improved mobile performance.
 
-SSR considerably improves mobile performance, as the content rendered to HTML can already be shown to the user before the browser-side JavaScript starts loading on the user's mobile device.
+SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading.
 (Loading & executing JavaScript is usually very slow on mobile.)
 
-For example, social news websites need SSR. (They are highly interactive, while they need both SEO and higher mobile performance.)
+For example, social news websites need SSR. (They are interactive while needing both SEO and mobile performance.)
 
-For pages that are not [content-centric](#content-vs-interactive-centric) (e.g. a to-do list app), we should consider SPA instead of SSR.
+For pages that are not [content-centric](#content-vs-interactive-centric) (e.g. a to-do list app), we can consider SPA instead of SSR.
