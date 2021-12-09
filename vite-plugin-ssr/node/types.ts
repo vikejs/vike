@@ -95,6 +95,6 @@ type GetPagePropsInternal<T> = T extends {
     pageProps?: infer U
   }
 } ? U : never;
-type AwaitableReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer U> ? U : T;
+type AwaitableReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer U> ? U : ReturnType<T>;
 export type GetPageProps<T extends VitePluginSsr.OnBeforeHook> = GetPagePropsInternal<AwaitableReturnType<T>>;
 export type GetPage<T extends VitePluginSsr.OnBeforeHook> = VitePluginSsr.Page<GetPageProps<T>>;
