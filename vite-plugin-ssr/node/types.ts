@@ -33,8 +33,10 @@ export interface OnBeforeRenderBuiltIn {
  */
 export declare namespace VitePluginSsr {
   // can be overriden
-  export interface PageContextInit {
-    url: string
+  export interface OnInit {
+    pageContext: {
+      url: string
+    }
   }
 
   // can be overriden
@@ -49,7 +51,7 @@ export declare namespace VitePluginSsr {
     OnBeforeHookReturnInternal | Promise<OnBeforeHookReturnInternal>;
 
   // OnBeforeRender pageContext have some internally computed props that we add
-  export type OnBeforeRenderPageContext = PageContextBuiltIn & PageContextInit;
+  export type OnBeforeRenderPageContext = PageContextBuiltIn & OnInit['pageContext'];
 
   // OnBeforeHook type
   export interface OnBeforeHook {

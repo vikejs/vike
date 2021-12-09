@@ -72,7 +72,7 @@ type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 interface RenderPage<PageContextAddedIfSuccess extends {} = {}, PageContextAddedMaybe extends {} = {}> {
-  <PageContextInit extends VitePluginSsr.PageContextInit>(
+  <PageContextInit extends VitePluginSsr.OnInit['pageContext']>(
     pageContextInit: PageContextInit,
   ): Promise<
     PageContextInit & Partial<PageContextAddedMaybe> &
@@ -181,7 +181,7 @@ const renderPage: RenderPage = async function renderPage (
   }
 }
 
-async function initializePageContext<PageContextInit extends VitePluginSsr.PageContextInit>(pageContextInit: PageContextInit) {
+async function initializePageContext<PageContextInit extends VitePluginSsr.OnInit['pageContext']>(pageContextInit: PageContextInit) {
   const pageContext = {
     _isPreRendering: false as const,
     ...pageContextInit,
@@ -234,7 +234,7 @@ async function renderPageWithoutThrowing<T>(
   }
 }
 
-async function render500Page<PageContextInit extends VitePluginSsr.PageContextInit>(pageContextInit: PageContextInit, err: unknown) {
+async function render500Page<PageContextInit extends VitePluginSsr.OnInit['pageContext']>(pageContextInit: PageContextInit, err: unknown) {
   assert(hasAlreadyLogged(err))
 
   const pageContext = await initializePageContext(pageContextInit)
