@@ -1,14 +1,18 @@
 import fetch from 'node-fetch'
-import { withTypescript } from 'vite-plugin-ssr'
+import { withTypescript, GetPageProps } from 'vite-plugin-ssr'
 import { filterMovieData } from '../filterMovieData'
 import type { Movie, MovieDetails } from '../types'
 
 export { onBeforeRender }
 export { prerender }
+export type PageProps = GetPageProps<typeof onBeforeRender>
 
 const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
 
-  // `documentProps?: { title: string }` is missing
+  pageContext.url
+  pageContext.user.id
+  pageContext.user.name
+  pageContext.pageExports
   pageContext.pageExports.documentProps?.title
 
   const movies = await getStarWarsMovies()
