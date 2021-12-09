@@ -8,6 +8,12 @@ type DeepPartial<T> = {
 interface PageExportsInternal {
 }
 
+interface OnInitInternal {
+  pageContext: {
+    url: string
+  }
+}
+
 export type PageContextBuiltIn = {
   Page: any
   pageExports: Record<string, unknown> & DeepPartial<PageExportsInternal>
@@ -34,14 +40,13 @@ export interface OnBeforeRenderBuiltIn {
 export declare namespace VitePluginSsr {
   // can be overriden
   export interface OnInit {
-    pageContext: {
-      url: string
-    }
   }
 
   // can be overriden
   export interface OnBeforeRender {
   }
+
+  export type OnInitMerged = OnInitInternal & OnInit;
 
   type OnBeforeHookReturnInternal =
     Partial<OnBeforeRenderBuiltIn> & Partial<OnBeforeRender>;
@@ -51,7 +56,7 @@ export declare namespace VitePluginSsr {
     OnBeforeHookReturnInternal | Promise<OnBeforeHookReturnInternal>;
 
   // OnBeforeRender pageContext have some internally computed props that we add
-  export type OnBeforeRenderPageContext = PageContextBuiltIn & OnInit['pageContext'];
+  export type OnBeforeRenderPageContext = PageContextBuiltIn & OnInitMerged['pageContext'];
 
   // OnBeforeHook type
   export interface OnBeforeHook {
