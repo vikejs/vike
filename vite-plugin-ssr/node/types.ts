@@ -6,10 +6,6 @@ type DeepPartial<T> = {
  * Internal types
  */
 interface PageExportsInternal {
-  documentProps: {
-    title: string
-    description: string
-  }
 }
 
 export type PageContextBuiltIn = {
