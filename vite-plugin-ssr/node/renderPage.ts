@@ -56,7 +56,7 @@ import { addIs404ToPageProps, serializePageContextClientSide } from './serialize
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
-import { VitePluginSsr } from './types'
+import { OnInitInternal, VitePluginSsr } from './types'
 
 export { renderPageWithoutThrowing }
 export type { renderPage, RenderPage }
@@ -72,7 +72,7 @@ type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 interface RenderPage<PageContextAddedIfSuccess extends {} = {}, PageContextAddedMaybe extends {} = {}> {
-  <PageContextInit extends VitePluginSsr.OnInitMerged['pageContext']>(
+  <PageContextInit extends OnInitInternal['pageContext']>(
     pageContextInit: PageContextInit,
   ): Promise<
     PageContextInit & Partial<PageContextAddedMaybe> &

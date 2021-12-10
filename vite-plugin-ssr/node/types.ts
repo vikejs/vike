@@ -8,7 +8,7 @@ type DeepPartial<T> = {
 interface PageExportsInternal {
 }
 
-interface OnInitInternal {
+export interface OnInitInternal {
   pageContext: {
     url: string
   }
