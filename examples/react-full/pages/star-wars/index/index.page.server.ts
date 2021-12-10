@@ -10,8 +10,6 @@ export type PageProps = GetPageProps<typeof onBeforeRender>
 const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
 
   pageContext.url
-  pageContext.user.id
-  pageContext.user.name
   pageContext.pageExports
   pageContext.pageExports.documentProps?.title
 
@@ -25,8 +23,12 @@ const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
       },
       // The page's <title>
       documentProps: { title: getTitle(movies) },
-      something: 42
+      something: 42,
+      // TS does *not* complain, even though we didn't define `shouldNotExist`.
+      shouldNotExist: 1,
     },
+      // TS does *not* complain here either.
+    shouldNotExist: 1,
   }
 })
 
