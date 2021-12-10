@@ -9,23 +9,19 @@ export { getUrlPathname }
 export { getUrlParsed }
 export { getUrlParts }
 export { getUrlFullWithoutHash }
-export { isRelativeUrl }
 export type { UrlParsed }
 
 function handleUrlOrigin(url: string): { urlWithoutOrigin: string; urlOrigin: null | string } {
-  assert(url.startsWith('/') || url.startsWith('http'))
-  if (url.startsWith('/')) {
+  const urlOrigin = parseWithNewUrl(url).origin
+  if (!urlOrigin) {
     return { urlWithoutOrigin: url, urlOrigin: null }
-  } else {
-    const urlOrigin = parseWithNewUrl(url).origin
-    assert(urlOrigin !== '', { url })
-    assert(urlOrigin.startsWith('http'), { url })
-    assert(url.startsWith(urlOrigin), { url })
-    const urlWithoutOrigin = url.slice(urlOrigin.length)
-    assert(`${urlOrigin}${urlWithoutOrigin}` === url, { url })
-    assert(urlWithoutOrigin.startsWith('/'), { url })
-    return { urlWithoutOrigin, urlOrigin }
   }
+  assert(urlOrigin.startsWith('http'), { url })
+  assert(url.startsWith(urlOrigin), { url })
+  const urlWithoutOrigin = url.slice(urlOrigin.length)
+  assert(`${urlOrigin}${urlWithoutOrigin}` === url, { url })
+  assert(urlWithoutOrigin.startsWith('/'), { url })
+  return { urlWithoutOrigin, urlOrigin }
 }
 function addUrlOrigin(url: string, urlOrigin: string): string {
   assert(urlOrigin.startsWith('http'), { url, urlOrigin })
@@ -52,17 +48,15 @@ function getUrlPathname(url?: string): string {
   url = retrieveUrl(url)
   const { pathname } = parseWithNewUrl(url)
   const urlPathname = pathname
-
-  // The URL pathname should be the URL without origin, query string, and hash.
-  //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
-  if (urlPathname.startsWith('/')) {
-    assert(urlPathname === urlPathname.split('?')[0]!.split('#')[0])
-  }
-
   return urlPathname
 }
 
-function getUrlParts(url?: string): { origin: string; pathname: string; searchString: string; hashString: string } {
+function getUrlParts(url?: string): {
+  origin: string | null
+  pathname: string
+  searchString: string
+  hashString: string
+} {
   url = retrieveUrl(url)
 
   const [urlWithoutHash, ...hashList] = url.split('#')
@@ -74,17 +68,17 @@ function getUrlParts(url?: string): { origin: string; pathname: string; searchSt
   const searchString = ['', ...searchList].join('?')
 
   const { origin, pathname: pathnameFromNewUrl } = parseWithNewUrl(urlWithoutSearch)
-  assert(url.startsWith(origin), { url })
-  const pathname = urlWithoutSearch.slice(origin.length)
+  assert(origin === null || url.startsWith(origin), { url })
+  const pathname = urlWithoutSearch.slice((origin || '').length)
   assert(pathname === pathnameFromNewUrl, { url })
 
-  const urlRecreated = `${origin}${pathname}${searchString}${hashString}`
+  const urlRecreated = `${origin || ''}${pathname}${searchString}${hashString}`
   assert(url === urlRecreated, { urlRecreated, url })
   return { origin, pathname, searchString, hashString }
 }
 
 type UrlParsed = {
-  origin: string
+  origin: null | string
   pathname: string
   search: null | Record<string, string>
   hash: null | string
@@ -101,7 +95,7 @@ function getUrlParsed(url?: string): UrlParsed {
   const hash = hashString === '' ? null : decodeURIComponent(hashString.slice(1))
 
   assert(pathname.startsWith('/'))
-  assert(url.startsWith(`${origin}${pathname}`))
+  assert(url.startsWith(`${origin || ''}${pathname}`))
   return { origin, pathname, search, hash }
 }
 
@@ -119,15 +113,41 @@ function retrieveUrl(url: undefined | string) {
   return url
 }
 
-function parseWithNewUrl(url: string) {
+function parseWithNewUrl(url: string): { origin: string | null; pathname: string } {
+  let origin: string | null
+  let pathname: string
   try {
-    const { origin, pathname } = new URL(url)
-    return { origin, pathname }
+    // `new URL(url)` throws an error if `url` doesn't have an origin
+    const urlParsed = new URL(url)
+    origin = urlParsed.origin
+    pathname = urlParsed.pathname
   } catch (err) {
-    assert(url.startsWith('/'), { url })
-    const { pathname } = new URL('http://fake-origin.example.org' + url)
-    return { origin: '', pathname }
+    // `url` has no origin
+    origin = null
+    // In the browser, this is the Base URL of the current URL
+    const currentBase =
+      typeof window !== 'undefined' &&
+      // We need to access safely in case the user sets `window` in Node.js
+      window?.document?.baseURI
+    // We cannot resolve relative URLs in Node.js
+    assert(currentBase || !url.startsWith('.'))
+    // Is there any other kind of URLs that vite-plugin-ssr should support?
+    assert(currentBase || url.startsWith('/') || url.startsWith('?'))
+    const fakeBase = currentBase || 'http://fake-origin.example.org'
+    // Supports:
+    //  - `url === '/absolute/path'`
+    //  - `url === './relative/path'`
+    //  - `url === '?queryWithoutPath'`
+    const urlParsed = new URL(url, fakeBase)
+    pathname = urlParsed.pathname
   }
+
+  assert(pathname.startsWith('/'), { url, pathname })
+  // The URL pathname should be the URL without origin, query string, and hash.
+  //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
+  assert(pathname === pathname.split('?')[0]!.split('#')[0], { pathname })
+
+  return { origin, pathname }
 }
 
 /* Attempt to also apply `cleanUrl()` on `pageContext.urlNormalized` but AFAICT no one needs this; `pageContext.urlParsed` is enough.
@@ -157,20 +177,3 @@ function getUrlFromParsed(urlParsed: UrlParsed): string {
 }
 *
 */
-
-function isRelativeUrl(url: string): boolean {
-  if (hasOrigin(url)) {
-    return false
-  }
-  return !url.startsWith('/')
-}
-
-function hasOrigin(url: string): boolean {
-  try {
-    // `new URL(url)` cannot parse URLs that don't have an origin
-    new URL(url)
-    return true
-  } catch (_err) {
-    return false
-  }
-}

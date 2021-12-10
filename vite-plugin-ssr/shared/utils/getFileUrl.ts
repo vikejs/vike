@@ -55,9 +55,9 @@ function handlePageContextRequestSuffix(url: string): {
 
 function removePageContextUrlSuffix(url: string): string {
   let { origin, pathname, searchString, hashString } = getUrlParts(url)
-  assert(url === `${origin}${pathname}${searchString}${hashString}`, { url })
+  assert(url === `${origin || ''}${pathname}${searchString}${hashString}`, { url })
   assert(pathname.endsWith(pageContextUrlSuffix), { url })
   pathname = slice(pathname, 0, -1 * pageContextUrlSuffix.length)
   if (pathname === '/index') pathname = '/'
-  return `${origin}${pathname}${searchString}${hashString}`
+  return `${origin || ''}${pathname}${searchString}${hashString}`
 }
