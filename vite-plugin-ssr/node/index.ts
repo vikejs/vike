@@ -6,13 +6,11 @@ export { pipeWebStream, pipeNodeStream } from './html/stream'
 export { injectAssets__public as _injectAssets } from './html/injectAssets'
 
 export type {
-  PageContextBuiltIn,
-  OnBeforeRenderBuiltIn,
-  VitePluginSsr,
   GetPageProps,
   GetPage,
+  OnInitPageContext,
+  GetPageContext
 } from './types'
-export { withTypescript } from './types'
 
 import { importBuild } from './importBuild'
 

@@ -3,13 +3,13 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
 import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { GetPageContext } from 'vite-plugin-ssr'
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname']
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(pageContext: GetPageContext<PageContext>) {
   const app = createApp(pageContext)
   const appHtml = await renderToString(app)
 

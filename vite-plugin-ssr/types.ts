@@ -1,3 +1,3 @@
-// Legacy way of importing types: `import type { PageContextBuiltIn, PageContextBuiltInClient } from 'vite-plugin-ssr/types'`
-export type { PageContextBuiltIn } from './node/types'
+// Legacy way of importing types: `import type { BuiltInPageContext, PageContextBuiltInClient } from 'vite-plugin-ssr/types'`
+export type { BuiltInPageContext } from './node/types'
 export type { PageContextBuiltInClient } from './client/types'

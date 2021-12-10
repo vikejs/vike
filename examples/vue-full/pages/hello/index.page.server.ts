@@ -1,9 +1,9 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { GetPageContext } from 'vite-plugin-ssr'
 
 export { onBeforeRender }
 export { prerender }
 
-async function onBeforeRender(pageContext: PageContextBuiltIn) {
+async function onBeforeRender(pageContext: GetPageContext) {
   const { name } = pageContext.routeParams
   const pageProps = { name }
   return {

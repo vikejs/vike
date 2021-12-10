@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
-import { withTypescript, GetPageProps } from 'vite-plugin-ssr'
+import { GetPageProps, GetPageContext } from 'vite-plugin-ssr'
+import { PageContext } from '../../../renderer/types'
 import { filterMovieData } from '../filterMovieData'
 import type { Movie, MovieDetails } from '../types'
 
@@ -7,7 +8,7 @@ export { onBeforeRender }
 export { prerender }
 export type PageProps = GetPageProps<typeof onBeforeRender>
 
-const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
+const onBeforeRender = async (pageContext: GetPageContext<PageContext>) => {
 
   pageContext.url
   pageContext.pageExports
@@ -30,7 +31,7 @@ const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
       // TS does *not* complain here either.
     shouldNotExist: 1,
   }
-})
+}
 
 async function getStarWarsMovies(): Promise<MovieDetails[]> {
   const response = await fetch('https://star-wars.brillout.com/api/films.json')

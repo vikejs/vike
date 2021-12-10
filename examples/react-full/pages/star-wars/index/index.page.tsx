@@ -1,9 +1,9 @@
 import React from 'react'
-import type { Movie } from '../types'
+import type { PageProps } from './index.page.server'
 
 export { Page }
 
-function Page({ movies }: { movies: Movie[] }) {
+function Page({ movies }: PageProps) {
   return (
     <>
       <h1>Star Wars Movies</h1>

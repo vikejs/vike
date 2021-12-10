@@ -56,7 +56,7 @@ import { addIs404ToPageProps, serializePageContextClientSide } from './serialize
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
-import { OnInitInternal, VitePluginSsr } from './types'
+import { OnInitPageContext } from './types'
 
 export { renderPageWithoutThrowing }
 export type { renderPage, RenderPage }
@@ -71,11 +71,11 @@ export { throwPrerenderError }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
-interface RenderPage<PageContextAddedIfSuccess extends {} = {}, PageContextAddedMaybe extends {} = {}> {
-  <PageContextInit extends OnInitInternal['pageContext']>(
+interface RenderPage<PageContextAddedIfSuccess extends {} = {}> {
+  <PageContextInit extends OnInitPageContext>(
     pageContextInit: PageContextInit,
   ): Promise<
-    PageContextInit & Partial<PageContextAddedMaybe> &
+    PageContextInit &
       (({ httpResponse: HttpResponse } & PageContextAddedIfSuccess) |
         ({ httpResponse: null } & Partial<PageContextAddedIfSuccess>))
   >
@@ -181,7 +181,7 @@ const renderPage: RenderPage = async function renderPage (
   }
 }
 
-async function initializePageContext<PageContextInit extends VitePluginSsr.OnInitMerged['pageContext']>(pageContextInit: PageContextInit) {
+async function initializePageContext<PageContextInit extends OnInitPageContext>(pageContextInit: PageContextInit) {
   const pageContext = {
     _isPreRendering: false as const,
     ...pageContextInit,
@@ -234,7 +234,7 @@ async function renderPageWithoutThrowing<T>(
   }
 }
 
-async function render500Page<PageContextInit extends VitePluginSsr.OnInitMerged['pageContext']>(pageContextInit: PageContextInit, err: unknown) {
+async function render500Page<PageContextInit extends OnInitPageContext>(pageContextInit: PageContextInit, err: unknown) {
   assert(hasAlreadyLogged(err))
 
   const pageContext = await initializePageContext(pageContextInit)
