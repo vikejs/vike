@@ -11,7 +11,7 @@ const onBeforeRender = withTypescript('onBeforeRender', async (pageContext) => {
 
   pageContext.url
   pageContext.pageExports
-  pageContext.pageExports.documentProps?.title
+  pageContext.pageExports.documentProps
 
   const movies = await getStarWarsMovies()
   return {
