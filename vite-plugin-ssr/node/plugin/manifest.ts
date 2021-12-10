@@ -1,5 +1,6 @@
 import { Plugin } from 'vite'
 import { assert, normalizePath, projectInfo } from '../../shared/utils'
+import { isSSR_config } from './utils'
 
 export { manifest }
 
@@ -11,7 +12,7 @@ function manifest(): Plugin {
     apply: 'build',
     configResolved(config) {
       base = config.base
-      ssr = isSSR(config)
+      ssr = isSSR_config(config)
     },
     generateBundle(_, bundle) {
       if (ssr) return
@@ -42,8 +43,4 @@ function includesClientSideRouter(bundle: Record<string, { modules?: Record<stri
     }
   }
   return false
-}
-
-function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
-  return !!config?.build?.ssr
 }

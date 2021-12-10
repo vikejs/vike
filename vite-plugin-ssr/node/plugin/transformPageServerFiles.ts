@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import { init, parse } from 'es-module-lexer'
-import { assert, isObject } from '../../shared/utils'
+import { isSSR_options } from './utils'
 
 export { transformPageServerFiles }
 
@@ -8,7 +8,7 @@ function transformPageServerFiles(): Plugin {
   return {
     name: 'vite-plugin-ssr:transformPageServerFiles',
     async transform(src, id, options) {
-      if (isSSR(options)) {
+      if (isSSR_options(options)) {
         return
       }
       if (!/\.page\.server\.[a-zA-Z0-9]+$/.test(id)) {
@@ -25,18 +25,4 @@ function transformPageServerFiles(): Plugin {
       }
     },
   } as Plugin
-}
-
-// https://github.com/vitejs/vite/discussions/5109#discussioncomment-1450726
-function isSSR(options: undefined | boolean | { ssr?: boolean }): boolean {
-  if (options === undefined) {
-    return false
-  }
-  if (typeof options === 'boolean') {
-    return options
-  }
-  if (isObject(options)) {
-    return !!options.ssr
-  }
-  assert(false)
 }

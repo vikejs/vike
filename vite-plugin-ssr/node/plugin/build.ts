@@ -9,6 +9,7 @@ import {
 } from 'path'
 import { assert, assertUsage, isObject } from '../../shared/utils'
 import * as glob from 'fast-glob'
+import { isSSR_config } from './utils'
 
 export { build }
 
@@ -18,7 +19,7 @@ function build(): Plugin {
     name: 'vite-plugin-ssr:build',
     apply: 'build',
     config: (config) => {
-      isSsrBuild = isSSR(config)
+      isSsrBuild = isSSR_config(config)
       const input = {
         ...entryPoints(config),
         ...normalizeRollupInput(config.build?.rollupOptions?.input),
@@ -53,7 +54,7 @@ function removeClientCode(isSsrBuild: boolean, id: string): void | { code: strin
 }
 
 function entryPoints(config: UserConfig): Record<string, string> {
-  if (isSSR(config)) {
+  if (isSSR_config(config)) {
     return serverEntryPoints()
   } else {
     return browserEntryPoints(config)
@@ -117,10 +118,6 @@ function getOutDir(config: UserConfig): string {
 
 function posixPath(path: string): string {
   return path.split(pathSep).join(pathPosix.sep)
-}
-
-function isSSR(config: { build?: { ssr?: boolean | string } }): boolean {
-  return !!config?.build?.ssr
 }
 
 function normalizeRollupInput(input?: InputOption): Record<string, string> {

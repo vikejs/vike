@@ -9,7 +9,7 @@
 
 import type { Plugin } from 'vite'
 import { assert } from '../../shared/utils'
-import { isSSR } from './utils'
+import { isSSR_config } from './utils'
 
 export { packageJsonFile }
 
@@ -19,7 +19,7 @@ function packageJsonFile(): Plugin {
     name: 'vite-plugin-ssr:packageJsonFile',
     apply: 'build',
     configResolved(config) {
-      ssr = isSSR(config)
+      ssr = isSSR_config(config)
     },
     generateBundle() {
       assert(typeof ssr === 'boolean')
