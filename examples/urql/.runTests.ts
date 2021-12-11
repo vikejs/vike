@@ -1,4 +1,4 @@
-import { page, run, autoRetry, fetchHtml } from '../../libframe/test/setup'
+import { page, run, autoRetry, fetchHtml, urlBase } from '../../libframe/test/setup'
 
 export { runTests }
 
@@ -15,6 +15,7 @@ function runTests(cmd: 'npm run dev' | 'npm run prod') {
   })
 
   test('page is rendered to the DOM and interactive', async () => {
+    await page.goto(urlBase + '/')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {

@@ -6,12 +6,20 @@ export { testPages }
 function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm run prod') {
   run(cmd)
 
+  const isDev = cmd === 'npm run start'
+  const isProd = cmd === 'npm run prod'
+
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
   })
 
   test('link tags are inserted at the end of `<head>`', async () => {
+    if (isDev) {
+      // Not sure why this is needed; `vite-plugin-ssr` always (and has to) inject the assets
+      // after the `render()` hook has run and, therefore, after `Page` has been rendered.
+      await page.goto(urlBase + '/')
+    }
     const html = await fetchHtml('/')
     expect(html).toMatch(/<head>.*<title>.*<link.*<\/head>/s)
   })
@@ -52,7 +60,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     expect(await page.textContent('h1')).toContain('Hello')
     expect(await page.textContent('body')).toContain('Hi evan')
 
-    if (cmd !== 'npm run prod') {
+    if (!isProd) {
       await page.goto(urlBase + '/hello')
       expect(await page.textContent('body')).toContain('Hi anonymous')
       await page.goto(urlBase + '/hello/')

@@ -39,7 +39,7 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.click('a[href="/"]')
+    await page.goto(urlBase + '/')
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet

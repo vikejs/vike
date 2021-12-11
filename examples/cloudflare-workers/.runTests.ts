@@ -1,5 +1,5 @@
-import { page, run, autoRetry, fetchHtml, isGithubAction } from '../../libframe/test/setup'
-import  assert from 'assert'
+import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase } from '../../libframe/test/setup'
+import assert from 'assert'
 
 export { runTests }
 
@@ -51,6 +51,7 @@ function runTests(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
+    await page.goto(urlBase + '/')
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet

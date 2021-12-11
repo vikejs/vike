@@ -1,4 +1,4 @@
-import { page, run, autoRetry, fetchHtml, partRegex } from '../../libframe/test/setup'
+import { page, run, autoRetry, fetchHtml, partRegex, urlBase } from '../../libframe/test/setup'
 
 export { testRun }
 
@@ -10,7 +10,7 @@ function testRun(
   const addBaseUrl = (url: string) => baseUrl + url
   const isDev = cmd.startsWith('npm run dev')
 
-  run(cmd, { baseUrl })
+  run(cmd)
 
   test('URLs are correctly contain Base URL in HTML', async () => {
     const html = await fetchHtml(addBaseUrl('/'))
@@ -27,6 +27,7 @@ function testRun(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
+    await page.goto(urlBase + baseUrl)
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     await autoRetry(async () => {

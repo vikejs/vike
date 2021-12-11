@@ -1,4 +1,4 @@
-import { page, run, partRegex, autoRetry, fetchHtml } from '../../libframe/test/setup'
+import { page, run, partRegex, autoRetry, fetchHtml, urlBase } from '../../libframe/test/setup'
 
 export { runTests }
 
@@ -14,6 +14,7 @@ function runTests(cmd: 'npm run dev' | 'npm run prod') {
   })
 
   test('page is rendered to the DOM and interactive', async () => {
+    await page.goto(urlBase + '/')
     await page.click('a[href="/"]')
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
