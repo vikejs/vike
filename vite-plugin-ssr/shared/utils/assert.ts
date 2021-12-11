@@ -27,7 +27,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
   })()
 
   const internalError = newError(
-    `${internalErrorPrefix} You stumbled upon a bug in the source code of ${projectInfo.projectName} (an internal \`assert()\` failed). This should definitely not be happening, and you should create a new GitHub issue at ${projectInfo.githubRepository}/issues/new that includes this error stack (the error stack is usually enough to debug internal errors). Or reach out on Discord. A fix will be written promptly.${debugStr}`,
+    `${internalErrorPrefix} You stumbled upon a bug in the source code of ${projectInfo.projectName} (an internal assertion failed). This should not be happening: please reach out at ${projectInfo.githubRepository}/issues/new or ${projectInfo.discordInvite} and include this error stack (the error stack is usually enough to fix the problem). Please do reach out as it helps make ${projectInfo.projectName} more robust. A fix will be written promptly (usually under 24 hours).${debugStr}`,
     numberOfStackTraceLinesToRemove,
   )
 
