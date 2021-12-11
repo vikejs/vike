@@ -139,7 +139,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
     '[injectAssets(htmlString, pageContext)]: ' +
     body +
     '. Make sure that `pageContext` is the object that `vite-plugin-ssr` provided to your `render(pageContext)` hook.'
-  assertUsage(hasProp(pageContext, 'urlNormalized', 'string'), errMsg('`pageContext.urlNormalized` should be a string'))
+  assertUsage(hasProp(pageContext, 'urlPathname', 'string'), errMsg('`pageContext.urlPathname` should be a string'))
   assertUsage(hasProp(pageContext, '_pageId', 'string'), errMsg('`pageContext._pageId` should be a string'))
   assertUsage(hasProp(pageContext, '_getPageAssets'), errMsg('`pageContext._getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
@@ -151,7 +151,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
 }
 
 type PageContextInjectAssets = {
-  urlNormalized: string
+  urlPathname: string
   _getPageAssets: () => Promise<PageAssets>
   _pageId: string
   _pageClientPath: string
@@ -171,9 +171,9 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   htmlString = ensureHeadTagExistence(htmlString)
 
   // Inject Vite transformations
-  const { urlNormalized } = pageContext
-  assert(typeof urlNormalized === 'string')
-  htmlString = await applyViteHtmlTransform(htmlString, urlNormalized)
+  const { urlPathname } = pageContext
+  assert(typeof urlPathname === 'string' && urlPathname.startsWith('/'))
+  htmlString = await applyViteHtmlTransform(htmlString, urlPathname)
 
   const pageAssets = await pageContext._getPageAssets()
 
@@ -205,12 +205,12 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
   return htmlString
 }
 
-async function applyViteHtmlTransform(htmlString: string, urlNormalized: string): Promise<string> {
+async function applyViteHtmlTransform(htmlString: string, urlPathname: string): Promise<string> {
   const ssrEnv = getSsrEnv()
   if (ssrEnv.isProduction) {
     return htmlString
   }
-  htmlString = await ssrEnv.viteDevServer.transformIndexHtml(urlNormalized, htmlString)
+  htmlString = await ssrEnv.viteDevServer.transformIndexHtml(urlPathname, htmlString)
   htmlString = removeDuplicatedBaseUrl(htmlString, ssrEnv.baseUrl)
   return htmlString
 }

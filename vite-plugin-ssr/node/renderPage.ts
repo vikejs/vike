@@ -427,7 +427,6 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
 
 type PageContextPublic = {
   url: string
-  urlNormalized: string
   urlPathname: string
   urlParsed: UrlParsed
   routeParams: Record<string, string>
@@ -439,7 +438,6 @@ type PageContextPublic = {
 }
 function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T) {
   assert(typeof pageContext.url === 'string')
-  assert(typeof pageContext.urlNormalized === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
   assert(isPlainObject(pageContext.routeParams))

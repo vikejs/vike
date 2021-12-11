@@ -5,7 +5,7 @@ export type { PageContextUrls }
 export type { GetUrlNormalized }
 
 type GetUrlNormalized = (pageContext: { url: string; _baseUrl: string }) => string
-type PageContextUrls = { urlNormalized: string; urlPathname: string; urlParsed: UrlParsed }
+type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
 
 function addComputedUrlProps<
   PageContext extends Record<string, unknown> & {
@@ -14,16 +14,10 @@ function addComputedUrlProps<
     _getUrlNormalized: GetUrlNormalized
   },
 >(pageContext: PageContext): asserts pageContext is PageContext & PageContextUrls {
-  if ('urlNormalized' in pageContext) {
-    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlNormalized')?.get === urlNormalizedGetter)
+  if ('urlPathname' in pageContext) {
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlPathname')?.get === urlPathnameGetter)
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlParsed')?.get === urlParsedGetter)
   } else {
-    Object.defineProperty(pageContext, 'urlNormalized', {
-      get: urlNormalizedGetter,
-      enumerable: true,
-      configurable: true,
-    })
     Object.defineProperty(pageContext, 'urlPathname', {
       get: urlPathnameGetter,
       enumerable: true,
@@ -36,14 +30,18 @@ function addComputedUrlProps<
     })
   }
 }
-function urlNormalizedGetter(this: { url: string; _baseUrl: string; _getUrlNormalized: GetUrlNormalized }) {
-  assert(hasProp(this, 'url', 'string'))
-  const urlNormalized = this._getUrlNormalized(this)
+
+type PageContextUrlNormalized = { url: string; _baseUrl: string; _getUrlNormalized: GetUrlNormalized }
+function getUrlNormalized(that: PageContextUrlNormalized) {
+  assert(hasProp(that, 'url', 'string'))
+  const urlNormalized = that._getUrlNormalized(that)
   return urlNormalized
 }
-function urlPathnameGetter(this: { urlNormalized: string }) {
-  return getUrlPathname(this.urlNormalized)
+function urlPathnameGetter(this: PageContextUrlNormalized) {
+  const urlNormalized = getUrlNormalized(this)
+  return getUrlPathname(urlNormalized)
 }
-function urlParsedGetter(this: { urlNormalized: string }) {
-  return getUrlParsed(this.urlNormalized)
+function urlParsedGetter(this: PageContextUrlNormalized) {
+  const urlNormalized = getUrlNormalized(this)
+  return getUrlParsed(urlNormalized)
 }

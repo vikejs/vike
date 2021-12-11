@@ -184,7 +184,7 @@ function getOnBeforeRenderServerHookFiles(pageContext: { _serverFiles: ServerFil
   return hooksServer
 }
 
-const ALREADY_SET_BY_CLIENT_ROUTER = ['urlNormalized', 'urlPathname', 'urlParsed'] as const
+const ALREADY_SET_BY_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
 const ALREADY_SET_BY_CLIENT = ['Page', 'pageExports'] as const
 type DeletedKeys = typeof ALREADY_SET_BY_CLIENT[number] | typeof ALREADY_SET_BY_CLIENT_ROUTER[number]
 function deleteRedundantPageContext(pageContext: Record<string, unknown> & { [key in DeletedKeys]?: never }) {

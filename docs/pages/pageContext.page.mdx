@@ -17,9 +17,8 @@
     })
     ```
     When using [Client Routing](/useClientRouter), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href` wihout the origin, or the `href` value of the clicked `<a href="/some/url">` link, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
- - **`pageContext.urlNormalized`**: same than `pageContext.url` but without URL Origin and Base URL. (E.g. `pageContext.urlNormalized === '/product/42?details=yes#reviews'` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`.)
- - **`pageContext.urlPathname`**: the URL's pathname (after normalization). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
- - **`pageContext.urlParsed`**: `{ pathname, search, hash }`(after normalization). (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
+ - **`pageContext.urlPathname`**: the URL's pathname (without Base URL). (E.g. `/product/42` for `pageContext.url === 'https://example.org/some-base-url/product/42?details=yes#reviews'`).
+ - **`pageContext.urlParsed`**: `{ pathname, search, hash }`. (E.g. `{ pathname: 'product/42', search: { details: 'yes' }, hash: 'reviews' }`.)
 
 ## Custom
 
@@ -71,7 +70,6 @@ When using [Client Routing](/useClientRouter), the following is available in the
  - `pageContext.isHydration`
  - `pageContext.routeParams`
  - `pageContext.url`
- - `pageContext.urlNormalized`
  - `pageContext.urlPathname`
  - `pageContext.urlParsed`
 

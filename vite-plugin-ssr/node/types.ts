@@ -4,7 +4,6 @@ export type PageContextBuiltIn = {
   routeParams: Record<string, string>
   url: string
   urlPathname: string
-  urlNormalized: string
   urlParsed: {
     pathname: string
     search: null | Record<string, string>

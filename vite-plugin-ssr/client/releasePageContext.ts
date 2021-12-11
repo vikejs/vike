@@ -138,7 +138,7 @@ function assertPassToClient(
 }
 
 // Remove propery descriptor getters because they break Vue's reactivity.
-// E.g. resolve the `pageContext.urlNormalized` getter.
+// E.g. resolve the `pageContext.urlPathname` getter.
 function resolveGetters(pageContext: Record<string, unknown>) {
   Object.entries(pageContext).forEach(([key, val]) => {
     delete pageContext[key]
