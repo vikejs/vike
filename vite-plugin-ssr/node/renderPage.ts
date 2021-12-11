@@ -25,8 +25,7 @@ import {
   compareString,
   assertExports,
   stringifyStringArray,
-  handleUrlOrigin,
-  analyzeBaseUrl,
+  parseUrl,
   assertBaseUrl,
 } from '../shared/utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
@@ -1046,13 +1045,8 @@ function analyzeUrl(
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
   url = urlWithoutPageContextRequestSuffix
 
-  const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url, baseUrl)
-  url = urlWithoutBaseUrl
-
-  url = handleUrlOrigin(url).urlWithoutOrigin
-  assert(url.startsWith('/'))
-
-  const urlNormalized = url
+  const { pathnameWithoutBaseUrl, hasBaseUrl } = parseUrl(url, baseUrl)
+  const urlNormalized = pathnameWithoutBaseUrl
   assert(urlNormalized.startsWith('/'))
   return { urlNormalized, isPageContextRequest, hasBaseUrl }
 }

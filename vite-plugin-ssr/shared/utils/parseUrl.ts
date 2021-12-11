@@ -10,13 +10,12 @@ export { getUrlParsed }
 export { getUrlParts }
 export { getUrlFullWithoutHash }
 export type { UrlParsed }
+export { parseUrl }
 
-export { analyzeBaseUrl }
 export { prependBaseUrl }
 export { assertBaseUrl }
 export { assertUsageBaseUrl }
 export { noramlizeBaseUrl }
-
 
 function handleUrlOrigin(url: string): { urlWithoutOrigin: string; urlOrigin: null | string } {
   const urlOrigin = parseWithNewUrl(url).origin
@@ -66,21 +65,8 @@ function getUrlParts(url?: string): {
 } {
   url = retrieveUrl(url)
 
-  const [urlWithoutHash, ...hashList] = url.split('#')
-  assert(urlWithoutHash)
-  const hashString = ['', ...hashList].join('#')
-
-  const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutSearch)
-  const searchString = ['', ...searchList].join('?')
-
-  const { origin, pathname: pathnameFromNewUrl } = parseWithNewUrl(urlWithoutSearch)
-  assert(origin === null || url.startsWith(origin), { url })
-  const pathname = urlWithoutSearch.slice((origin || '').length)
-  assert(pathname === pathnameFromNewUrl, { url })
-
-  const urlRecreated = `${origin || ''}${pathname}${searchString}${hashString}`
-  assert(url === urlRecreated, { urlRecreated, url })
+  const { origin, pathnameWithoutBaseUrl, searchString, hashString } = parseUrl(url, '/')
+  const pathname = pathnameWithoutBaseUrl
   return { origin, pathname, searchString, hashString }
 }
 
@@ -93,17 +79,50 @@ type UrlParsed = {
 function getUrlParsed(url?: string): UrlParsed {
   url = retrieveUrl(url)
 
-  const { origin, pathname, searchString, hashString } = getUrlParts(url)
+  const { origin, pathnameWithoutBaseUrl, search, hash } = parseUrl(url, '/')
+  const pathname = pathnameWithoutBaseUrl
+  return { origin, pathname, search, hash }
+}
 
-  assert(searchString === '' || searchString.startsWith('?'))
-  const search = searchString === '' ? null : Object.fromEntries(Array.from(new URLSearchParams(searchString)))
-
+function parseUrl(
+  url: string,
+  baseUrl: string,
+): {
+  origin: null | string
+  pathnameWithoutBaseUrl: string
+  pathnameWithBaseUrl: string
+  hasBaseUrl: boolean
+  search: null | Record<string, string>
+  searchString: string
+  hash: null | string
+  hashString: string
+} {
+  const [urlWithoutHash, ...hashList] = url.split('#')
+  assert(urlWithoutHash)
+  const hashString = ['', ...hashList].join('#')
   assert(hashString === '' || hashString.startsWith('#'))
   const hash = hashString === '' ? null : decodeURIComponent(hashString.slice(1))
 
-  assert(pathname.startsWith('/'))
-  assert(url.startsWith(`${origin || ''}${pathname}`))
-  return { origin, pathname, search, hash }
+  const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
+  assert(urlWithoutSearch)
+  const searchString = ['', ...searchList].join('?')
+  assert(searchString === '' || searchString.startsWith('?'))
+  const search = searchString === '' ? null : Object.fromEntries(Array.from(new URLSearchParams(searchString)))
+
+  const { origin, pathname: pathnameWithBaseUrl } = parseWithNewUrl(urlWithoutSearch)
+  assert(origin === null || url.startsWith(origin), { url })
+  assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), { url })
+
+  const { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
+
+  {
+    const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString}${hashString}`
+    assert(url === urlRecreated, { urlRecreated, url })
+  }
+  assert(pathnameWithBaseUrl.startsWith('/'))
+  assert(url.startsWith(`${origin || ''}${pathnameWithBaseUrl}`))
+
+  return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
 }
 
 function getUrlFullWithoutHash(url?: string): string {
@@ -185,58 +204,40 @@ function getUrlFromParsed(urlParsed: UrlParsed): string {
 *
 */
 
-// Possible Base URL values:
-// `base: '/some-nested-path/'`
-// `base: 'http://another-origin.example.org/'`
-// `base: './'` (WIP: not supported yet)
 function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
+  assertUsage(
+    baseUrl.startsWith('/'),
+    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`.',
+  )
   assertBaseUrl(baseUrl)
-  assertUsage(
-    baseUrl.startsWith('/') || baseUrl.startsWith('http') || baseUrl.startsWith('./'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`, `./`, or `http`.',
-  )
-  assertUsage(
-    !baseUrl.startsWith('./'),
-    usageErrorMessagePrefix +
-      'Relative Base URLs are not supported yet (`baseUrl` that starts with `./`). Open a new GitHub ticket so we can discuss adding support for your use case.',
-  )
 }
 
 function assertBaseUrl(baseUrl: string) {
-  assert(baseUrl.startsWith('/') || baseUrl.startsWith('http'))
+  assert(baseUrl.startsWith('/'))
 }
 
-function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: string; hasBaseUrl: boolean } {
+function assertUrlPathname(urlPathname: string) {
+  assert(urlPathname.startsWith('/'))
+  assert(!urlPathname.includes('?'))
+  assert(!urlPathname.includes('#'))
+}
+
+function analyzeBaseUrl(
+  urlPathnameWithBase: string,
+  baseUrl: string,
+): { pathnameWithoutBaseUrl: string; hasBaseUrl: boolean } {
+  assertUrlPathname(urlPathnameWithBase)
   assertBaseUrl(baseUrl)
 
-  // Immutable
-  const urlPristine = url_
   // Mutable
-  let url = url_
+  let url = urlPathnameWithBase
 
-  assert(url.startsWith('/') || url.startsWith('http'))
-  assert(baseUrl.startsWith('/') || baseUrl.startsWith('http'))
+  assert(url.startsWith('/'))
+  assert(baseUrl.startsWith('/'))
 
   if (baseUrl === '/') {
-    return { urlWithoutBaseUrl: urlPristine, hasBaseUrl: true }
-  }
-
-  const { urlWithoutOrigin, urlOrigin } = handleUrlOrigin(url)
-  let urlOriginHasBeenRemoved = false
-  {
-    const baseUrlOrigin = handleUrlOrigin(baseUrl).urlOrigin
-    const baseUrlHasOrigin = baseUrlOrigin !== null
-    let urlHasOrigin = urlOrigin !== null
-    assertUsage(
-      !baseUrlHasOrigin || urlHasOrigin,
-      `You provided a \`baseUrl\` (\`${baseUrl}\`) that contains a URL origin (\`${baseUrlOrigin!}\`) but the \`pageContext.url\` (\`${url}\`) you provided in your server middleware (\`const renderPage = createPageRenderer(/*...*/); renderPage(pageContext);\`) does not contain a URL origin. Either remove the URL origin from your \`baseUrl\` or make sure to always provide the URL origin in \`pageContext.url\`.`,
-    )
-    if (urlHasOrigin && !baseUrlHasOrigin) {
-      urlOriginHasBeenRemoved = true
-      url = urlWithoutOrigin
-      urlHasOrigin = false
-    }
-    assert(urlHasOrigin === baseUrlHasOrigin)
+    const pathnameWithoutBaseUrl = urlPathnameWithBase
+    return { pathnameWithoutBaseUrl, hasBaseUrl: true }
   }
 
   // Support `url === '/some-base-url' && baseUrl === '/some-base-url/'`
@@ -248,7 +249,8 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
   }
 
   if (!url.startsWith(baseUrlNormalized)) {
-    return { urlWithoutBaseUrl: urlPristine, hasBaseUrl: false }
+    const pathnameWithoutBaseUrl = urlPathnameWithBase
+    return { pathnameWithoutBaseUrl, hasBaseUrl: false }
   }
   assert(url.startsWith('/') || url.startsWith('http'))
   assert(url.startsWith(baseUrlNormalized))
@@ -261,24 +263,12 @@ function analyzeBaseUrl(url_: string, baseUrl: string): { urlWithoutBaseUrl: str
   */
   if (!url.startsWith('/')) url = '/' + url
 
-  if (urlOriginHasBeenRemoved) {
-    assert(urlOrigin !== null)
-    assert(urlOrigin.startsWith('http'))
-    assert(url.startsWith('/'))
-    url = addUrlOrigin(url, urlOrigin)
-    assert(url.startsWith('http'))
-  }
-
-  assert(url.startsWith('/') || url.startsWith('http'))
-  return { urlWithoutBaseUrl: url, hasBaseUrl: true }
+  assert(url.startsWith('/'))
+  return { pathnameWithoutBaseUrl: url, hasBaseUrl: true }
 }
 
 function prependBaseUrl(url: string, baseUrl: string): string {
   assertBaseUrl(baseUrl)
-
-  // Probably safer to remove the origin; `prependBaseUrl()` is used when injecting static assets in HTML;
-  // origin is useless in static asset URLs, while the origin causes trouble upon `https`/`http` mismatch.
-  baseUrl = handleUrlOrigin(baseUrl).urlWithoutOrigin
 
   const baseUrlNormalized = noramlizeBaseUrl(baseUrl)
 

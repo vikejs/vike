@@ -2,10 +2,9 @@ import { determinePageIds } from '../../shared/determinePageIds'
 import { getAllPageFiles } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route'
 import {
-  analyzeBaseUrl,
+  parseUrl,
   assert,
   assertBaseUrl,
-  handleUrlOrigin,
   hasProp,
   objectAssign,
   PromiseType,
@@ -58,12 +57,9 @@ async function retrieveGlobalContext() {
 
 function getUrlNormalized(url: string, baseUrl: string) {
   assert(url)
-
-  const { urlWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(url, baseUrl)
+  const { pathnameWithoutBaseUrl, hasBaseUrl } = parseUrl(url, baseUrl)
   assert(hasBaseUrl, { url, baseUrl })
-  url = urlWithoutBaseUrl
-
-  const urlNormalized = handleUrlOrigin(url).urlWithoutOrigin
+  const urlNormalized = pathnameWithoutBaseUrl
   assert(urlNormalized.startsWith('/'))
   return urlNormalized
 }
