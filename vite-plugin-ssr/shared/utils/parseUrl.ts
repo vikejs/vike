@@ -60,14 +60,14 @@ function parseUrl(
 
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
-  assert(urlWithoutHash)
+  assert(urlWithoutHash !== undefined)
   const hashString = ['', ...hashList].join('#') || null
   assert(hashString === null || hashString.startsWith('#'))
   const hash = hashString === null ? '' : decodeURIComponent(hashString.slice(1))
 
   // Search
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutSearch)
+  assert(urlWithoutSearch !== undefined)
   const searchString = ['', ...searchList].join('?') || null
   assert(searchString === null || searchString.startsWith('?'))
   const search = Object.fromEntries(Array.from(new URLSearchParams(searchString || '')))

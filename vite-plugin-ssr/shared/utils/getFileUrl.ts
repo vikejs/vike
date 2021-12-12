@@ -21,9 +21,10 @@ function getFileUrl(
   doNotCreateExtraDirectory: boolean,
 ): string {
   assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
-  assert(url.startsWith('/'), { url })
   const { pathnameWithoutBaseUrl, searchString, hashString } = parseUrl(url, '/') // is Base URL missing?
-  assert(url === `${pathnameWithoutBaseUrl}${searchString || ''}${hashString || ''}`, { url })
+  if (url.startsWith('/')) {
+    assert(url === `${pathnameWithoutBaseUrl}${searchString || ''}${hashString || ''}`, { url })
+  }
 
   let pathnameModified = pathnameWithoutBaseUrl
   if (doNotCreateExtraDirectory) {
@@ -39,7 +40,8 @@ function getFileUrl(
     pathnameModified = pathnameModified + `${trailingSlash}index`
   }
 
-  return `${pathnameModified}${fileExtension}${searchString || ''}${hashString || ''}`
+  const fileUrl = `${pathnameModified}${fileExtension}${searchString || ''}${hashString || ''}`
+  return fileUrl
 }
 
 function handlePageContextRequestSuffix(url: string): {

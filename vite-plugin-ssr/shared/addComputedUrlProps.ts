@@ -41,7 +41,6 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
 type PageContextUrlSource = { url: string; _baseUrl: string; _parseUrl: null | typeof parseUrl }
 function getUrlParsed(pageContext: PageContextUrlSource) {
   const { url, _baseUrl: baseUrl, _parseUrl } = pageContext
-  assert(url.startsWith('/'))
   assert(baseUrl.startsWith('/'))
   assert(_parseUrl === null || isCallable(pageContext._parseUrl))
   if (_parseUrl === null) {
