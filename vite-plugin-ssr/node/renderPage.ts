@@ -19,7 +19,6 @@ import {
   handlePageContextRequestSuffix,
   isPlainObject,
   isObject,
-  UrlParsed,
   objectAssign,
   PromiseType,
   compareString,
@@ -54,7 +53,7 @@ import {
   StreamWritableWeb,
 } from './html/stream'
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
-import { addComputedUrlProps } from '../shared/addComputedurlProps'
+import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedurlProps'
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 
@@ -427,7 +426,7 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
 type PageContextPublic = {
   url: string
   urlPathname: string
-  urlParsed: UrlParsed
+  urlParsed: PageContextUrls['urlParsed']
   routeParams: Record<string, string>
   Page: unknown
   pageExports: Record<string, unknown>

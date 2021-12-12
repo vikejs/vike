@@ -1,9 +1,21 @@
-import { assert, parseUrl, UrlParsed, objectAssign, isCallable } from './utils'
+import { assert, parseUrl, objectAssign, isCallable } from './utils'
 
 export { addComputedUrlProps }
 export type { PageContextUrls }
 export type { PageContextUrlSource }
 
+// Copy paste from https://vite-plugin-ssr.com/pageContext
+type UrlParsed = {
+  origin: null | string
+  pathname: string
+  pathnameWithBaseUrl: string
+  pathnameWithoutBaseUrl?: never // We have renamed `pathnameWithoutBaseUrl` to `pathname` for users
+  hasBaseUrl: boolean
+  search: Record<string, string>
+  searchString: null | string
+  hash: string
+  hashString: null | string
+}
 type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
@@ -44,13 +56,7 @@ function urlPathnameGetter(this: PageContextUrlSource) {
   assert(urlPathname.startsWith('/'))
   return urlPathname
 }
-function urlParsedGetter(this: PageContextUrlSource): {
-  // Copy-pase of https://vite-plugin-ssr.com/pageContext
-  origin: null | string
-  pathname: string
-  search: null | Record<string, string>
-  hash: null | string
-} {
+function urlParsedGetter(this: PageContextUrlSource): UrlParsed {
   const urlParsedOriginal = getUrlParsed(this)
   const pathname = urlParsedOriginal.pathnameWithoutBaseUrl
   const urlParsed: Omit<typeof urlParsedOriginal, 'pathnameWithoutBaseUrl'> = urlParsedOriginal

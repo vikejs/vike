@@ -6,9 +6,7 @@ export { addUrlOrigin }
 
 export { getUrlFull }
 export { getUrlPathname }
-export { getUrlParsed }
 export { getUrlFullWithoutHash }
-export type { UrlParsed }
 export { parseUrl }
 
 export { prependBaseUrl }
@@ -54,20 +52,6 @@ function getUrlPathname(url?: string): string {
   const { pathname } = parseWithNewUrl(url)
   const urlPathname = pathname
   return urlPathname
-}
-
-type UrlParsed = {
-  origin: null | string
-  pathname: string
-  search: null | Record<string, string>
-  hash: null | string
-}
-function getUrlParsed(url?: string): UrlParsed {
-  url = retrieveUrl(url)
-
-  const { origin, pathnameWithoutBaseUrl, search, hash } = parseUrl(url, '/')
-  const pathname = pathnameWithoutBaseUrl
-  return { origin, pathname, search, hash }
 }
 
 function parseUrl(
