@@ -1,13 +1,7 @@
 import { determinePageIds } from '../../shared/determinePageIds'
 import { getAllPageFiles } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route'
-import {
-  assert,
-  assertBaseUrl,
-  hasProp,
-  objectAssign,
-  PromiseType,
-} from '../../shared/utils'
+import { assert, assertBaseUrl, hasProp, objectAssign, PromiseType } from '../../shared/utils'
 
 export { getGlobalContext }
 export type { ServerFiles }
