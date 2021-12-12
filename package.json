@@ -18,7 +18,7 @@
     "docs:build": "cd libframe/docs/ && yarn build",
     "========= Test": "",
     "// Run tests": "",
-    "test": "cd libframe/test/ && yarn test",
+    "test": "cd libframe/test/ && yarn test --bail",
     "// Run `$ yarn test:setup` before running `$ yarn test`": "",
     "test:setup": "yarn clean && yarn install && yarn build",
     "========= Dev": "",

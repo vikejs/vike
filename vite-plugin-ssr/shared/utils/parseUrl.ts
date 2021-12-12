@@ -45,7 +45,15 @@ function parseUrl(
   hash: string
   hashString: null | string
 } {
-  assert(url.startsWith('/'))
+  assert(
+    // These URLs should work out
+    url.startsWith('/') ||
+      url.startsWith('.') ||
+      url.startsWith('?') ||
+      // Not sure about these URLs, but should work in principle
+      url.startsWith('#') ||
+      url === '',
+  )
   assert(baseUrl.startsWith('/'))
 
   // Hash
@@ -64,14 +72,17 @@ function parseUrl(
 
   // Origin + pathname
   const { origin, pathname: pathnameWithBaseUrl } = parseWithNewUrl(urlWithoutSearch)
+  assert(pathnameWithBaseUrl.startsWith('/'))
   assert(origin === null || url.startsWith(origin), { url })
-  assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), { url })
+  if (url.startsWith('/')) {
+    assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), { url })
+  }
 
   // Base URL
   const { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
 
   // Assert result
-  {
+  if (url.startsWith('/')) {
     const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString || ''}${hashString || ''}`
     assert(url === urlRecreated, { urlRecreated, url })
   }
