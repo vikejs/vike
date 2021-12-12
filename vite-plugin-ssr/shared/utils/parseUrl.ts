@@ -1,9 +1,6 @@
 import { slice } from './slice'
 import { assert, assertUsage } from './assert'
 
-export { handleUrlOrigin }
-export { addUrlOrigin }
-
 export { getUrlFull }
 export { getUrlPathname }
 export { getUrlFullWithoutHash }
@@ -12,36 +9,18 @@ export { parseUrl }
 export { prependBaseUrl }
 export { assertBaseUrl }
 export { assertUsageBaseUrl }
-export { noramlizeBaseUrl }
-
-function handleUrlOrigin(url: string): { urlWithoutOrigin: string; urlOrigin: null | string } {
-  const urlOrigin = parseWithNewUrl(url).origin
-  if (!urlOrigin) {
-    return { urlWithoutOrigin: url, urlOrigin: null }
-  }
-  assert(urlOrigin.startsWith('http'), { url })
-  assert(url.startsWith(urlOrigin), { url })
-  const urlWithoutOrigin = url.slice(urlOrigin.length)
-  assert(`${urlOrigin}${urlWithoutOrigin}` === url, { url })
-  assert(urlWithoutOrigin.startsWith('/'), { url })
-  return { urlWithoutOrigin, urlOrigin }
-}
-function addUrlOrigin(url: string, urlOrigin: string): string {
-  assert(urlOrigin.startsWith('http'), { url, urlOrigin })
-  if (urlOrigin.endsWith('/')) {
-    urlOrigin = slice(urlOrigin, 0, -1)
-  }
-  assert(!urlOrigin.endsWith('/'), { url, urlOrigin })
-  assert(url.startsWith('/'), { url, urlOrigin })
-  return `${urlOrigin}${url}`
-}
+export { normalizeBaseUrl }
 
 /**
  Returns `${pathname}${search}${hash}`. (Basically removes the origin.)
 */
 function getUrlFull(url?: string): string {
   url = retrieveUrl(url)
-  return handleUrlOrigin(url).urlWithoutOrigin
+  const { origin, searchString, hashString, pathnameWithoutBaseUrl: pathname } = parseUrl(url, '/') // is Base URL missing?
+  const urlFull = `${pathname}${searchString || ''}${hashString || ''}`
+  const urlRecreated = `${origin || ''}${urlFull}`
+  assert(url === urlRecreated, { urlRecreated, url })
+  return urlFull
 }
 
 /**
@@ -49,8 +28,7 @@ function getUrlFull(url?: string): string {
 */
 function getUrlPathname(url?: string): string {
   url = retrieveUrl(url)
-  const { pathname } = parseWithNewUrl(url)
-  const urlPathname = pathname
+  const urlPathname = parseUrl(url, '/').pathnameWithoutBaseUrl // is Base URL missing?
   return urlPathname
 }
 
@@ -220,7 +198,7 @@ function analyzeBaseUrl(
 function prependBaseUrl(url: string, baseUrl: string): string {
   assertBaseUrl(baseUrl)
 
-  const baseUrlNormalized = noramlizeBaseUrl(baseUrl)
+  const baseUrlNormalized = normalizeBaseUrl(baseUrl)
 
   if (baseUrlNormalized === '/') return url
 
@@ -229,7 +207,7 @@ function prependBaseUrl(url: string, baseUrl: string): string {
   return `${baseUrlNormalized}${url}`
 }
 
-function noramlizeBaseUrl(baseUrl: string) {
+function normalizeBaseUrl(baseUrl: string) {
   let baseUrlNormalized = baseUrl
   if (baseUrlNormalized.endsWith('/') && baseUrlNormalized !== '/') {
     baseUrlNormalized = slice(baseUrlNormalized, 0, -1)
