@@ -1,4 +1,4 @@
-import { getUrlParts, getUrlPathname } from './parseUrl'
+import { parseUrl } from './parseUrl'
 import { assert } from './assert'
 import { slice } from './slice'
 const pageContextUrlSuffix = '.pageContext.json'
@@ -22,10 +22,10 @@ function getFileUrl(
 ): string {
   assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
   assert(url.startsWith('/'), { url })
-  const { pathname, searchString, hashString } = getUrlParts(url)
-  assert(url === `${pathname}${searchString}${hashString}`, { url })
+  const { pathnameWithoutBaseUrl, searchString, hashString } = parseUrl(url, '/') // is Base URL missing?
+  assert(url === `${pathnameWithoutBaseUrl}${searchString || ''}${hashString || ''}`, { url })
 
-  let pathnameModified = pathname
+  let pathnameModified = pathnameWithoutBaseUrl
   if (doNotCreateExtraDirectory) {
     if (pathnameModified.endsWith('/')) {
       pathnameModified = slice(pathnameModified, 0, -1)
@@ -35,29 +35,31 @@ function getFileUrl(
       pathnameModified = '/index'
     }
   } else {
-    const trailingSlash = pathname.endsWith('/') ? '' : '/'
+    const trailingSlash = pathnameWithoutBaseUrl.endsWith('/') ? '' : '/'
     pathnameModified = pathnameModified + `${trailingSlash}index`
   }
 
-  return `${pathnameModified}${fileExtension}${searchString}${hashString}`
+  return `${pathnameModified}${fileExtension}${searchString || ''}${hashString || ''}`
 }
 
 function handlePageContextRequestSuffix(url: string): {
   urlWithoutPageContextRequestSuffix: string
   isPageContextRequest: boolean
 } {
-  const urlPathname = getUrlPathname(url)
-  if (!urlPathname.endsWith(pageContextUrlSuffix)) {
+  const pathname = parseUrl(url, '/').pathnameWithoutBaseUrl // is Base URL missing?
+  if (!pathname.endsWith(pageContextUrlSuffix)) {
     return { urlWithoutPageContextRequestSuffix: url, isPageContextRequest: false }
   }
   return { urlWithoutPageContextRequestSuffix: removePageContextUrlSuffix(url), isPageContextRequest: true }
 }
 
 function removePageContextUrlSuffix(url: string): string {
-  let { origin, pathname, searchString, hashString } = getUrlParts(url)
-  assert(url === `${origin || ''}${pathname}${searchString}${hashString}`, { url })
+  const urlParsed = parseUrl(url, '/') // is Base URL missing?
+  const { origin, searchString, hashString } = urlParsed
+  let pathname = urlParsed.pathnameWithoutBaseUrl
+  assert(url === `${origin || ''}${pathname}${searchString || ''}${hashString || ''}`, { url })
   assert(pathname.endsWith(pageContextUrlSuffix), { url })
   pathname = slice(pathname, 0, -1 * pageContextUrlSuffix.length)
   if (pathname === '/index') pathname = '/'
-  return `${origin || ''}${pathname}${searchString}${hashString}`
+  return `${origin || ''}${pathname}${searchString || ''}${hashString || ''}`
 }

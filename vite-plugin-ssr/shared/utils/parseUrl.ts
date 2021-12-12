@@ -7,7 +7,6 @@ export { addUrlOrigin }
 export { getUrlFull }
 export { getUrlPathname }
 export { getUrlParsed }
-export { getUrlParts }
 export { getUrlFullWithoutHash }
 export type { UrlParsed }
 export { parseUrl }
@@ -57,19 +56,6 @@ function getUrlPathname(url?: string): string {
   return urlPathname
 }
 
-function getUrlParts(url?: string): {
-  origin: string | null
-  pathname: string
-  searchString: string
-  hashString: string
-} {
-  url = retrieveUrl(url)
-
-  const { origin, pathnameWithoutBaseUrl, searchString, hashString } = parseUrl(url, '/')
-  const pathname = pathnameWithoutBaseUrl
-  return { origin, pathname, searchString, hashString }
-}
-
 type UrlParsed = {
   origin: null | string
   pathname: string
@@ -92,10 +78,10 @@ function parseUrl(
   pathnameWithoutBaseUrl: string
   pathnameWithBaseUrl: string
   hasBaseUrl: boolean
-  search: null | Record<string, string>
-  searchString: string
-  hash: null | string
-  hashString: string
+  search: Record<string, string>
+  searchString: null | string
+  hash: string
+  hashString: null | string
 } {
   assert(url.startsWith('/'))
   assert(baseUrl.startsWith('/'))
@@ -103,16 +89,16 @@ function parseUrl(
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
   assert(urlWithoutHash)
-  const hashString = ['', ...hashList].join('#')
-  assert(hashString === '' || hashString.startsWith('#'))
-  const hash = hashString === '' ? null : decodeURIComponent(hashString.slice(1))
+  const hashString = ['', ...hashList].join('#') || null
+  assert(hashString === null || hashString.startsWith('#'))
+  const hash = hashString === null ? '' : decodeURIComponent(hashString.slice(1))
 
   // Search
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
   assert(urlWithoutSearch)
-  const searchString = ['', ...searchList].join('?')
-  assert(searchString === '' || searchString.startsWith('?'))
-  const search = searchString === '' ? null : Object.fromEntries(Array.from(new URLSearchParams(searchString)))
+  const searchString = ['', ...searchList].join('?') || null
+  assert(searchString === null || searchString.startsWith('?'))
+  const search = Object.fromEntries(Array.from(new URLSearchParams(searchString || '')))
 
   // Origin + pathname
   const { origin, pathname: pathnameWithBaseUrl } = parseWithNewUrl(urlWithoutSearch)
@@ -124,11 +110,11 @@ function parseUrl(
 
   // Assert result
   {
-    const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString}${hashString}`
+    const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString || ''}${hashString || ''}`
     assert(url === urlRecreated, { urlRecreated, url })
   }
   assert(pathnameWithBaseUrl.startsWith('/'))
-  assert(url.startsWith(`${origin || ''}${pathnameWithBaseUrl}`))
+  assert(pathnameWithoutBaseUrl.startsWith('/'))
 
   return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
 }
@@ -183,34 +169,6 @@ function parseWithNewUrl(url: string): { origin: string | null; pathname: string
 
   return { origin, pathname }
 }
-
-/* Attempt to also apply `cleanUrl()` on `pageContext.urlNormalized` but AFAICT no one needs this; `pageContext.urlParsed` is enough.
- *
-function cleanUrl(url: string): string {
-  return getUrlFromParsed(getUrlParsed(url))
-}
-
-function getUrlFromParsed(urlParsed: UrlParsed): string {
-  const { origin, pathname, search, hash } = urlParsed
-
-  const searchParams = new URLSearchParams('')
-  assert(Array.from(searchParams.keys()).length === 0)
-  Object.entries(search || {}).forEach(([key, val]) => {
-    searchParams.set(key, val)
-  })
-  const searchString = searchParams.toString()
-
-  assert(hash === null || !hash.startsWith('#'))
-  const hashString = hash === null ? '' : '#' + hash
-
-  assert(origin === '' || origin.startsWith('http'))
-  assert(pathname.startsWith('/'))
-  assert(searchString === '' || searchString.startsWith('?'))
-  assert(hashString === '' || hashString.startsWith('#'))
-  return `${origin}${pathname}${searchString}${hashString}`
-}
-*
-*/
 
 function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
   assertUsage(
