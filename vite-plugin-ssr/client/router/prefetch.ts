@@ -1,6 +1,6 @@
 import { assert, assertUsage, getUrlPathname } from '../../shared/utils'
 import { route } from '../../shared/route'
-import { addComputedUrlProps } from '../../shared/addComputedurlProps'
+import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { getGlobalContext } from './getGlobalContext'
 import { loadPageFiles } from '../loadPageFiles'
 import { isExternalLink } from './utils/isExternalLink'

@@ -14,7 +14,7 @@ import { throttle } from '../../shared/utils/throttle'
 import { getPageContext } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
-import { addComputedUrlProps } from '../../shared/addComputedurlProps'
+import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { skipLink } from './utils/skipLink'
 

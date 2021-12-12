@@ -14,7 +14,7 @@ import {
 import { parse } from '@brillout/json-s'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'
-import type { PageContextUrls } from '../../shared/addComputedurlProps'
+import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { ServerFiles } from './getGlobalContext'
 import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
 import { PageIsomorphicFile, PageIsomorphicFileDefault } from '../../shared/loadPageIsomorphicFiles'
