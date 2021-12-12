@@ -97,24 +97,32 @@ function parseUrl(
   hash: null | string
   hashString: string
 } {
+  assert(url.startsWith('/'))
+  assert(baseUrl.startsWith('/'))
+
+  // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
   assert(urlWithoutHash)
   const hashString = ['', ...hashList].join('#')
   assert(hashString === '' || hashString.startsWith('#'))
   const hash = hashString === '' ? null : decodeURIComponent(hashString.slice(1))
 
+  // Search
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
   assert(urlWithoutSearch)
   const searchString = ['', ...searchList].join('?')
   assert(searchString === '' || searchString.startsWith('?'))
   const search = searchString === '' ? null : Object.fromEntries(Array.from(new URLSearchParams(searchString)))
 
+  // Origin + pathname
   const { origin, pathname: pathnameWithBaseUrl } = parseWithNewUrl(urlWithoutSearch)
   assert(origin === null || url.startsWith(origin), { url })
   assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), { url })
 
+  // Base URL
   const { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
 
+  // Assert result
   {
     const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString}${hashString}`
     assert(url === urlRecreated, { urlRecreated, url })

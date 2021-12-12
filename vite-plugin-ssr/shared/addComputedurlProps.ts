@@ -1,19 +1,14 @@
-import { assert, getUrlPathname, getUrlParsed, UrlParsed, hasProp } from './utils'
+import { assert, parseUrl, UrlParsed, objectAssign, isCallable } from './utils'
 
 export { addComputedUrlProps }
 export type { PageContextUrls }
-export type { GetUrlNormalized }
+export type { PageContextUrlSource }
 
-type GetUrlNormalized = (pageContext: { url: string; _baseUrl: string }) => string
 type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
 
-function addComputedUrlProps<
-  PageContext extends Record<string, unknown> & {
-    url: string
-    _baseUrl: string
-    _getUrlNormalized: GetUrlNormalized
-  },
->(pageContext: PageContext): asserts pageContext is PageContext & PageContextUrls {
+function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
+  pageContext: PageContext,
+): asserts pageContext is PageContext & PageContextUrls {
   if ('urlPathname' in pageContext) {
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlPathname')?.get === urlPathnameGetter)
     assert(Object.getOwnPropertyDescriptor(pageContext, 'urlParsed')?.get === urlParsedGetter)
@@ -31,17 +26,37 @@ function addComputedUrlProps<
   }
 }
 
-type PageContextUrlNormalized = { url: string; _baseUrl: string; _getUrlNormalized: GetUrlNormalized }
-function getUrlNormalized(that: PageContextUrlNormalized) {
-  assert(hasProp(that, 'url', 'string'))
-  const urlNormalized = that._getUrlNormalized(that)
-  return urlNormalized
+type PageContextUrlSource = { url: string; _baseUrl: string; _parseUrl: null | typeof parseUrl }
+function getUrlParsed(pageContext: PageContextUrlSource) {
+  const { url, _baseUrl: baseUrl, _parseUrl } = pageContext
+  assert(url.startsWith('/'))
+  assert(baseUrl.startsWith('/'))
+  assert(_parseUrl === null || isCallable(pageContext._parseUrl))
+  if (_parseUrl === null) {
+    return parseUrl(url, baseUrl)
+  } else {
+    return _parseUrl(url, baseUrl)
+  }
 }
-function urlPathnameGetter(this: PageContextUrlNormalized) {
-  const urlNormalized = getUrlNormalized(this)
-  return getUrlPathname(urlNormalized)
+function urlPathnameGetter(this: PageContextUrlSource) {
+  const { pathnameWithoutBaseUrl } = getUrlParsed(this)
+  const urlPathname = pathnameWithoutBaseUrl
+  assert(urlPathname.startsWith('/'))
+  return urlPathname
 }
-function urlParsedGetter(this: PageContextUrlNormalized) {
-  const urlNormalized = getUrlNormalized(this)
-  return getUrlParsed(urlNormalized)
+function urlParsedGetter(this: PageContextUrlSource): {
+  // Copy-pase of https://vite-plugin-ssr.com/pageContext
+  origin: null | string
+  pathname: string
+  search: null | Record<string, string>
+  hash: null | string
+} {
+  const urlParsedOriginal = getUrlParsed(this)
+  const pathname = urlParsedOriginal.pathnameWithoutBaseUrl
+  const urlParsed: Omit<typeof urlParsedOriginal, 'pathnameWithoutBaseUrl'> = urlParsedOriginal
+  delete (urlParsed as Partial<typeof urlParsedOriginal>).pathnameWithoutBaseUrl
+  objectAssign(urlParsed, { pathname })
+  assert(urlParsed.pathname.startsWith('/'))
+  assert(!('pathnameWithoutBaseUrl' in urlParsed))
+  return urlParsed
 }

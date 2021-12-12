@@ -186,7 +186,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   }
 
   const baseUrl = getBaseUrl()
-  const { isPageContextRequest, hasBaseUrl } = analyzeUrl(pageContext.url, baseUrl)
+  const { isPageContextRequest, hasBaseUrl } = _parseUrl(pageContext.url, baseUrl)
   if (!hasBaseUrl) {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
@@ -1027,34 +1027,16 @@ function isFileRequest(urlPathname: string) {
   return /^[a-z0-9]+$/.test(fileExtension)
 }
 
-function getUrlNormalized(url: string, baseUrl: string) {
-  const { urlNormalized } = analyzeUrl(url, baseUrl)
-  return urlNormalized
-}
-
-function analyzeUrl(
-  url: string,
-  baseUrl: string,
-): {
-  urlNormalized: string
-  isPageContextRequest: boolean
-  hasBaseUrl: boolean
-} {
+function _parseUrl(url: string, baseUrl: string): ReturnType<typeof parseUrl> & { isPageContextRequest: boolean } {
   assert(url.startsWith('/') || url.startsWith('http'))
-
+  assert(baseUrl.startsWith('/'))
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
-  url = urlWithoutPageContextRequestSuffix
-
-  const { pathnameWithoutBaseUrl, hasBaseUrl } = parseUrl(url, baseUrl)
-  const urlNormalized = pathnameWithoutBaseUrl
-  assert(urlNormalized.startsWith('/'))
-  return { urlNormalized, isPageContextRequest, hasBaseUrl }
+  return { ...parseUrl(urlWithoutPageContextRequestSuffix, baseUrl), isPageContextRequest }
 }
 
 async function getGlobalContext() {
   const globalContext = {
-    _getUrlNormalized: (pageContext: { url: string; _baseUrl: string }) =>
-      getUrlNormalized(pageContext.url, pageContext._baseUrl),
+    _parseUrl,
     _baseUrl: getBaseUrl(),
   }
   assertBaseUrl(globalContext._baseUrl)
