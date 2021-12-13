@@ -22,7 +22,7 @@
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2",
     "vite": "^2.6.14",
-    "vite-plugin-ssr": "0.3.35"
+    "vite-plugin-ssr": "0.3.36"
   },
   "// Needed for Yarn workspaces": "",
   "name": "example-path-aliases",
