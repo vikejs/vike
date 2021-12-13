@@ -15,6 +15,9 @@
 
 ## [0.3.35](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.34...v0.3.35) (2021-12-07)
 
+
+### Bug Fixes
+
 * fix minor Base URL bug
 
 
