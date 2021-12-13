@@ -18,7 +18,7 @@
     ```
     When using [Client Routing](/useClientRouter), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href` wihout the origin, or the `href` value of the clicked `<a href="/some/url">` link, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
  - **`pageContext.urlPathname`**: the URL's pathname (without Base URL). (E.g. `/product/42` for `pageContext.url === 'https://example.com/some-base-url/product/42?details=yes#reviews'`).
- - **`pageContext.urlParsed`**: `{ origin: null|string, pathname: string, search: Record<string, string>, hash: string }` (e.g. `{ origin: 'https://example.com', pathname: '/product/42', search: { details: 'yes' }, hash: 'reviews' }`). Also note the other properties: `pathnameWithBaseUrl: string`, `hasBaseUrl: boolean`, `hashString: null|string`, `searchString: null|string`. If we want the ordered list of all search parameters we can do: `new URLSearchParams(pageContext.urlParsed.searchString || '')`.
+ - **`pageContext.urlParsed`**: `{ origin: null|string, pathname: string, search: Record<string,string>, hash: string }` (e.g. `{ origin: 'https://example.com', pathname: '/product/42', search: { details: 'yes' }, hash: 'reviews' }`). Also note the other properties `pathnameWithBaseUrl: string`, `hasBaseUrl: boolean`, `hashString: null|string`, and `searchString: null|string`. If we want the ordered list of all search parameters we can do: `new URLSearchParams(pageContext.urlParsed.searchString||'')`.
 
 ## Custom
 
