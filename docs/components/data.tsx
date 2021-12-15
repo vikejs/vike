@@ -19,15 +19,21 @@ function DataArchitecture({
   toolDocs: JSX.Element
   skipPassToClient?: true
 }) {
-  const recommendation = <ReadingRecommendation tour={true} links={['/data-fetching']}/>
-  return <>
-    { skipPassToClient && recommendation }
-    <DataRenderControl toolName={toolName} toolLink={toolLink} isGeneric={isGeneric} toolDocs={toolDocs} skipInfo={skipPassToClient}/>
-    { !skipPassToClient && recommendation }
-    { !skipPassToClient &&
-    <DataPassToClient toolType={toolType} isGenericDoc={isGeneric}/>
-    }
-  </>
+  const recommendation = <ReadingRecommendation tour={true} links={['/data-fetching']} />
+  return (
+    <>
+      {skipPassToClient && recommendation}
+      <DataRenderControl
+        toolName={toolName}
+        toolLink={toolLink}
+        isGeneric={isGeneric}
+        toolDocs={toolDocs}
+        skipInfo={skipPassToClient}
+      />
+      {!skipPassToClient && recommendation}
+      {!skipPassToClient && <DataPassToClient toolType={toolType} isGenericDoc={isGeneric} />}
+    </>
+  )
 }
 
 function DataRenderControl({
@@ -48,24 +54,26 @@ function DataRenderControl({
   assert(isGeneric === toolName.startsWith('any '), { isGeneric, toolName, toolLink })
   assert(isGeneric === !toolLink, { isGeneric, toolName, toolLink })
   const toolEl = toolLink ? <a href={toolLink}>{toolName}</a> : toolName
-  const content = <>
-    With <code>vite-plugin-ssr</code> we keep control over our app architecture; we can
-    integrate {toolEl}{isGeneric?' we want':''} simply by following its SSR docs.
-    { toolDocs && <ul><li>{toolDocs}</li></ul> }
-  </>
-    if( skipInfo ) {
-      return content
-    } else {
-  return (
-    <Info>{
-      content}
-    </Info>
+  const content = (
+    <>
+      With <code>vite-plugin-ssr</code> we keep control over our app architecture; we can integrate {toolEl}
+      {isGeneric ? ' we want' : ''} simply by following its SSR docs.
+      {toolDocs && (
+        <ul>
+          <li>{toolDocs}</li>
+        </ul>
+      )}
+    </>
   )
-    }
+  if (skipInfo) {
+    return content
+  } else {
+    return <Info>{content}</Info>
+  }
 }
 function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGenericDoc?: boolean }) {
   assert(toolType === 'data-store' || toolType === 'data-fetching')
-  assert(isGenericDoc === undefined || isGenericDoc === true || isGenericDoc===false)
+  assert(isGenericDoc === undefined || isGenericDoc === true || isGenericDoc === false)
   const dataName = toolType === 'data-store' ? 'state' : 'data'
   const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
   return (
