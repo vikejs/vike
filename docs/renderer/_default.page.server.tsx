@@ -9,6 +9,12 @@ import { NavHeader, NavHeaderMobile } from './NavHeader'
 setFrame({
   projectInfo,
   logoUrl,
+  // TODO: remove @ts-ignore once https://github.com/vikejs/libframe/pull/1 is merged
+  // @ts-ignore
+  algolia: {
+    apiKey: '7d2798346ba008ae4902b49b097b6e6a',
+    indexName: 'vite-pluginssr',
+  },
   navHeaderMobile: <NavHeaderMobile />,
   navHeader: <NavHeader />,
   headings,
