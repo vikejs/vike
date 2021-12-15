@@ -7,6 +7,7 @@ import { packageJsonFile } from './packageJsonFile'
 import { importBuild } from 'vite-plugin-import-build'
 import { getImportBuildCode } from './getImportBuildCode'
 import { transformPageServerFiles } from './transformPageServerFiles'
+import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 
 export default plugin
 export { plugin }
@@ -21,6 +22,7 @@ function plugin(): any {
     importBuild(getImportBuildCode()),
     packageJsonFile(),
     transformPageServerFiles(),
+    removeRequireHookPlugin(),
   ]
   return plugins as any
 }
