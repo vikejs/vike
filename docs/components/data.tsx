@@ -3,14 +3,24 @@ import { assert } from 'libframe-docs/utils'
 
 export { DataRenderControl, DataPassToClient }
 
-function DataRenderControl({ toolName, toolLink }: { toolName: string | JSX.Element; toolLink?: string }) {
+function DataRenderControl({
+  toolName,
+  toolLink,
+  isGeneric,
+}: {
+  toolName: string
+  toolLink?: string
+  isGeneric: boolean
+}) {
   assert(toolName)
   const toolEl = toolLink ? <a href={toolLink}>{toolName}</a> : toolName
+  assert(isGeneric === toolName.startsWith('any '))
+  assert(isGeneric === !toolLink)
   return (
-    <p>
-      With <code>vite-plugin-ssr</code> we keep control over our app architecture and how our pages are rendered. This
-      allows us to integrate {toolEl} simply by following its official SSR docs.
-    </p>
+    <blockquote>
+      With <code>vite-plugin-ssr</code> we keep control over app architecture;
+      {isGeneric ? 'usually, ' : ''}we can integrate {toolEl} simply by following its official SSR docs.
+    </blockquote>
   )
 }
 function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGenericDoc?: true }) {
