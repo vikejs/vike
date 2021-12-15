@@ -12,10 +12,11 @@ function DataRenderControl({
   toolLink?: string
   isGeneric: boolean
 }) {
+  assert([true, false].includes(isGeneric), { isGeneric, isGenericType: typeof isGeneric })
   assert(toolName)
+  assert(isGeneric === toolName.startsWith('any '), { isGeneric, toolName, toolLink })
+  assert(isGeneric === !toolLink, { isGeneric, toolName, toolLink })
   const toolEl = toolLink ? <a href={toolLink}>{toolName}</a> : toolName
-  assert(isGeneric === toolName.startsWith('any '))
-  assert(isGeneric === !toolLink)
   return (
     <blockquote>
       With <code>vite-plugin-ssr</code> we keep control over app architecture;
