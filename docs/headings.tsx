@@ -276,7 +276,7 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Data Store',
     titleInNav: 'Other',
-    url: '/data-store',
+    url: '/store',
   },
   {
     level: 4,
