@@ -1,6 +1,6 @@
 import React from 'react'
 import { assert } from 'libframe-docs/utils'
-import { P, Link, Info } from 'libframe-docs/components'
+import { P, Link, Info, ReadingRecommendation } from 'libframe-docs/components'
 
 export { DataArchitecture }
 
@@ -19,8 +19,11 @@ function DataArchitecture({
   toolDocs: JSX.Element
   skipPassToClient?: true
 }) {
+  const recommendation = <ReadingRecommendation tour={true} links={['/data-fetching']}/>
   return <>
+    { skipPassToClient && recommendation }
     <DataRenderControl toolName={toolName} toolLink={toolLink} isGeneric={isGeneric} toolDocs={toolDocs} skipInfo={skipPassToClient}/>
+    { !skipPassToClient && recommendation }
     { !skipPassToClient &&
     <DataPassToClient toolType={toolType} isGenericDoc={isGeneric}/>
     }
