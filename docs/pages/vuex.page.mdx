@@ -1,11 +1,14 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
-import { DataRenderControl, DataPassToClient } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName={'Vuex'} toolLink={'https://vuex.vuejs.org/'} isGeneric={false} />
-
-- [Vuex - SSR Guide](https://ssr.vuejs.org/guide/data.html#data-store)
-
-<DataPassToClient toolType="data-store" />
+<DataArchitecture
+  toolName={'Vuex'}
+  toolLink={'https://vuex.vuejs.org/'}
+  isGeneric={false}
+  toolType="data-store"
+  toolDocs={
+<a href="https://ssr.vuejs.org/guide/data.html#data-store">Vue - SSR - Data Store (Vuex)</a>  }
+/>
 
 Example:
 - <RepoLink path="/examples/vuex/" />

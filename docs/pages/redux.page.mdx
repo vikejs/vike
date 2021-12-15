@@ -1,11 +1,13 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
-import { DataRenderControl, DataPassToClient } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName={'Redux'} toolLink={'https://redux.js.org/'} isGeneric={false} />
-
-- [Redux - SSR Recipe](https://redux.js.org/recipes/server-rendering)
-
-<DataPassToClient toolType="data-store" />
+<DataArchitecture
+  toolName={'Redux'}
+  toolLink={'https://redux.js.org/'}
+  isGeneric={false}
+  toolDocs={<a href="https://redux.js.org/recipes/server-rendering">Redux - SSR Recipe</a>}
+  toolType="data-store"
+/>
 
 Example:
 - <RepoLink path='/examples/redux/' />

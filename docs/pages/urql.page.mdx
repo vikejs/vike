@@ -1,11 +1,13 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
-import { DataRenderControl, DataPassToClient } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName="urql" toolLink="https://formidable.com/open-source/urql/" isGeneric={false} />
-
-- [urql - Server-side rendering](https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/)
-
-<DataPassToClient toolType="data-fetching" />
+<DataArchitecture
+  toolName="urql"
+  toolLink="https://formidable.com/open-source/urql/"
+  isGeneric={false}
+  toolType="data-fetching"
+  toolDocs={<a href="https://formidable.com/open-source/urql/docs/advanced/server-side-rendering/">urql - Server-side rendering</a>}
+/>
 
 Example:
 - <RepoLink path="/examples/urql/" />

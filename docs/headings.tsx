@@ -224,11 +224,6 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'urql (GraphQL)',
-    url: '/urql',
-  },
-  {
-    level: 2,
     title: 'Apollo (GraphQL)',
     url: '/apollo-graphql',
   },
@@ -239,13 +234,18 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Relay',
+    title: 'Relay (GraphQL)',
     url: '/relay',
   },
   {
     level: 2,
-    title: 'Wildcard API',
+    title: 'Wildcard API (RPC)',
     url: '/wildcard-api',
+  },
+  {
+    level: 2,
+    title: 'urql (GraphQL)',
+    url: '/urql',
   },
   {
     level: 2,

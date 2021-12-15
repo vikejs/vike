@@ -1,5 +1,9 @@
-import { DataRenderControl } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName={'Wildcard API'} toolLink={'https://github.com/brillout/wildcard-api'} isGeneric={false} />
-
-- [Wildcard API - SSR](https://github.com/brillout/wildcard-api#ssr)
+<DataArchitecture
+  toolName={'Wildcard API'}
+  toolLink={'https://github.com/brillout/wildcard-api'}
+  isGeneric={false}
+  toolDocs={<a href="https://github.com/brillout/wildcard-api#ssr">Wildcard API - SSR</a>}
+  skipPassToClient={true}
+/>

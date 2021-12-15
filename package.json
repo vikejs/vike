@@ -12,10 +12,10 @@
   ],
   "scripts": {
     "========= Docs": "",
-    "// Develop website https://vite-plugin-ssr.com": "",
+    "// Develop https://vite-plugin-ssr.com": "",
     "docs": "cd libframe/docs/ && yarn dev",
-    "// Build website https://vite-plugin-ssr.com for production": "",
-    "docs:build": "cd libframe/docs/ && yarn build",
+    "// Simulate https://vite-plugin-ssr.com for production": "",
+    "docs:prod": "cd libframe/docs/ && yarn prod",
     "========= Test": "",
     "// Run tests": "",
     "test": "cd libframe/test/ && yarn test --bail",

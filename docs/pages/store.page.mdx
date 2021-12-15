@@ -1,9 +1,11 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
-import { DataRenderControl, DataPassToClient } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName={'any data store tool'} isGeneric={true} />
-
-<DataPassToClient toolType="data-store" isGenericDoc={true} />
+<DataArchitecture
+  toolName={'any data store tool'}
+  isGeneric={true}
+  toolType="data-store"
+/>
 
 Examples:
 - <RepoLink path="/examples/vuex/" />

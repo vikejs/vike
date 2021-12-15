@@ -1,11 +1,13 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
-import { DataRenderControl, DataPassToClient } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName={'Apollo GraphQL'} toolLink={'https://www.apollographql.com/'} isGeneric={false} />
-
-- [Apollo GraphQL - Server-side rendering](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
-
-<DataPassToClient toolType="data-fetching" />
+<DataArchitecture
+ toolName={'Apollo GraphQL'}
+ toolLink={'https://www.apollographql.com/'}
+ isGeneric={false}
+ toolType="data-fetching"
+ toolDocs={<a href="https://www.apollographql.com/docs/react/performance/server-side-rendering/">Apollo GraphQL - Server-side rendering</a>}
+/>
 
 Example:
 - <RepoLink path="/examples/graphql-apollo/" />

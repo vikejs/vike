@@ -1,53 +1,89 @@
 import React from 'react'
 import { assert } from 'libframe-docs/utils'
+import { P, Link, Info } from 'libframe-docs/components'
 
-export { DataRenderControl, DataPassToClient }
+export { DataArchitecture }
+
+function DataArchitecture({
+  toolName,
+  toolLink,
+  isGeneric,
+  toolType,
+  toolDocs,
+  skipPassToClient,
+}: {
+  toolName: string
+  toolLink?: string
+  isGeneric: boolean
+  toolType: string
+  toolDocs: JSX.Element
+  skipPassToClient?: true
+}) {
+  return <>
+    <DataRenderControl toolName={toolName} toolLink={toolLink} isGeneric={isGeneric} toolDocs={toolDocs} skipInfo={skipPassToClient}/>
+    { !skipPassToClient &&
+    <DataPassToClient toolType={toolType} isGenericDoc={isGeneric}/>
+    }
+  </>
+}
 
 function DataRenderControl({
   toolName,
   toolLink,
   isGeneric,
+  toolDocs,
+  skipInfo,
 }: {
   toolName: string
   toolLink?: string
   isGeneric: boolean
+  toolDocs: JSX.Element
+  skipInfo?: boolean
 }) {
   assert([true, false].includes(isGeneric), { isGeneric, isGenericType: typeof isGeneric })
   assert(toolName)
   assert(isGeneric === toolName.startsWith('any '), { isGeneric, toolName, toolLink })
   assert(isGeneric === !toolLink, { isGeneric, toolName, toolLink })
   const toolEl = toolLink ? <a href={toolLink}>{toolName}</a> : toolName
+  const content = <>
+    With <code>vite-plugin-ssr</code> we keep control over our app architecture; we can
+    integrate {toolEl}{isGeneric?' we want':''} simply by following its SSR docs.
+    { toolDocs && <ul><li>{toolDocs}</li></ul> }
+  </>
+    if( skipInfo ) {
+      return content
+    } else {
   return (
-    <blockquote>
-      With <code>vite-plugin-ssr</code> we keep control over app architecture;
-      {isGeneric ? 'usually, ' : ''}we can integrate {toolEl} simply by following its official SSR docs.
-    </blockquote>
+    <Info>{
+      content}
+    </Info>
   )
+    }
 }
-function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGenericDoc?: true }) {
+function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGenericDoc?: boolean }) {
   assert(toolType === 'data-store' || toolType === 'data-fetching')
-  let text = ''
-  if (isGenericDoc) {
-    text += 'Typically, the'
-  } else {
-    text += 'The'
-  }
-  text += ' '
-  if (toolType === 'data-store') {
-    text += 'initial state of the store is set'
-  } else {
-    text += 'initial data is fetched'
-  }
-  assert(isGenericDoc === undefined || isGenericDoc === true)
+  assert(isGenericDoc === undefined || isGenericDoc === true || isGenericDoc===false)
   const dataName = toolType === 'data-store' ? 'state' : 'data'
+  const pageContextName = toolType === 'data-store' ? 'initialStoreState' : 'initialData'
   return (
-    <p>
-      {text} on the server (its content is server-side rendered). This initial {dataName} is then passed onto the
-      browser for <a href="/hydration">hydration</a>; we can use{' '}
-      <a href="/passToClient">
-        <code>passToClient</code>
-      </a>{' '}
-      for that purpose.
-    </p>
+    <P>
+      On a high-level, {isGenericDoc ? 'an' : 'the'} SSR integration {isGenericDoc ? 'usually ' : ''}works like this:
+      <ol>
+        <li>
+          We {toolType === 'data-store' ? 'set the initial state of the store' : 'fetch the initial data'} on the
+          server-side. (We need to do it on the server-side if we want its content to be rendered to HTML.)
+        </li>
+        <li>
+          We make the initial {dataName} available as <code>pageContext.{pageContextName}</code>.
+        </li>
+        <li>
+          We make <code>pageContext.{pageContextName}</code> available on the browser-side by using{' '}
+          <Link href="/passToClient" text={<code>passToClient</code>} />.
+        </li>
+        <li>
+          We initialize the store on the browser-side using <code>pageContext.{pageContextName}</code>.
+        </li>
+      </ol>
+    </P>
   )
 }

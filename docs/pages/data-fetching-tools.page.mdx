@@ -1,9 +1,11 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
-import { DataRenderControl, DataPassToClient } from '../components/data'
+import { DataArchitecture } from '../components/data'
 
-<DataRenderControl toolName={'any data fetching tool'} isGeneric={true} />
-
-<DataPassToClient toolType="data-fetching" isGenericDoc={true}/>
+<DataArchitecture
+  toolName={'any data fetching tool'}
+  isGeneric={true}
+  toolType="data-fetching"
+/>
 
 Examples:
 - [github.com/wobsoriano/vite-plugin-ssr-vue-query](https://github.com/wobsoriano/vite-plugin-ssr-vue-query)
