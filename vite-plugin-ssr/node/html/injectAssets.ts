@@ -261,13 +261,13 @@ function injectLinkTags(htmlString: string, linkTags: string[]): string {
   return injectAtClosingTag(htmlString, headClose, injection)
 }
 
-const headOpen = /<head[^>]*>/
+const headOpen = /<head(>| [^>]*>)/
 function injectBegin(htmlString: string, injection: string): string {
   if (headOpen.test(htmlString)) {
     return injectAtOpeningTag(htmlString, headOpen, injection)
   }
 
-  const htmlBegin = /<html[^>]*>/
+  const htmlBegin = /<html(>| [^>]*>)/
   if (htmlBegin.test(htmlString)) {
     return injectAtOpeningTag(htmlString, htmlBegin, injection)
   }
