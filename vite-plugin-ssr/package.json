@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-ssr",
-  "version": "0.3.36",
+  "version": "0.3.37",
   "dependencies": {
     "@brillout/json-s": "^0.3.0",
     "@brillout/libassert": "^0.5.2",
@@ -65,5 +65,9 @@
   "description": "Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin",
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "license": "MIT",
-  "keywords": ["vite", "vite-plugin", "ssr"]
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "ssr"
+  ]
 }

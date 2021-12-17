@@ -1,3 +1,26 @@
+## [0.3.37](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.36...v0.3.37) (2021-12-17)
+
+
+### Bug Fixes
+
+* HTML tag detection regex ([d8c3846](https://github.com/brillout/vite-plugin-ssr/commit/d8c3846d1cab2df9fa24a28a9c1715eb78aae625))
+* load stream module dynamically only if needed ([beb589d](https://github.com/brillout/vite-plugin-ssr/commit/beb589d54ca02c3927b4be25b90b8a84e55e4e7a))
+* remove Vite's require hook plugin ([55270db](https://github.com/brillout/vite-plugin-ssr/commit/55270dbb80a825cb02bbcf88217ca88c2400b7c4))
+
+
+### BREAKING CHANGES
+
+* HTML Streaming changes.
+
+ - `httpResponse.bodyNodeStream` -> `httpResponse.getNodeStream()`
+ - `httpResponse.bodyWebStream` -> `httpResponse.getWebStream()`
+ - `httpResponse.bodyPipeToNodeWritable()` -> `httpResponse.pipeToNodeWritable()`
+ - `httpResponse.bodyPipeToWebWritable()` -> `httpResponse.pipeToWebWritable()`
+
+More infos at https://vite-plugin-ssr.com/stream
+
+
+
 ## [0.3.36](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.35...v0.3.36) (2021-12-13)
 
 
