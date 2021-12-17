@@ -1,9 +1,11 @@
+import { Link } from 'libframe-docs/components'
+
 ## Built-in
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
- - **`pageContext.isHydration`**: *[Only in the browser, and only when using [Client Routing](/useClientRouter)]* boolean that is `true` if the current page is already rendered to HTML. (For most apps this means: `true` for the first page the user navigates to, and `false` for any when the user navigates to a new page.)
+ - **`pageContext.isHydration`** [*Only when using [Client Routing](/useClientRouter) and only in the browser*]: boolean that is `true` if the current page is already rendered to HTML. (Usually: `true` for the first page the user navigates to and `false` when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
     const renderPage = createPageRenderer(/*...*/)
@@ -16,9 +18,37 @@
       /* ... */
     })
     ```
-    When using [Client Routing](/useClientRouter), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href` wihout the origin, or the `href` value of the clicked `<a href="/some/url">` link, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
- - **`pageContext.urlPathname`**: the URL's pathname (without Base URL). (E.g. `/product/42` for `pageContext.url === 'https://example.com/some-base-url/product/42?details=yes#reviews'`).
- - **`pageContext.urlParsed`**: `{ origin: null|string, pathname: string, search: Record<string,string>, hash: string }` (e.g. `{ origin: 'https://example.com', pathname: '/product/42', search: { details: 'yes' }, hash: 'reviews' }`). Also note the other properties `pathnameWithBaseUrl: string`, `hasBaseUrl: boolean`, `hashString: null|string`, and `searchString: null|string`. If we want the ordered list of all search parameters we can do: `new URLSearchParams(pageContext.urlParsed.searchString||'')`.
+    When using [Client Routing](/useClientRouter), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href`, or the `href` value of the `<a href="/some/url">` link the user clicked on, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
+ - **`pageContext.urlPathname`**: the URL's pathname. (E.g. `/product/42` if `pageContext.url === 'https://example.com/product/42?details=yes#reviews'`).
+ - **`pageContext.urlParsed`**: URL information:
+   ```ts
+   {
+     origin: null | string
+     pathname: string
+     search: Record<string, string>
+     hash: string
+   }
+   ```
+   For example:
+   ```js
+   // https://example.com/product/42?details=yes#reviews
+   {
+     origin: 'https://example.com',
+     pathname: '/product/42',
+     search: { details: 'yes' },
+     hash: 'reviews'
+   }
+   ```
+   It also provides lower-level infos (which you'll likely not need).
+   ```ts
+   {
+     pathnameWithBaseUrl: string
+     hasBaseUrl: boolean // (Almost always `true`)
+     searchString: null | string
+     hashString: null | string
+   }
+   ```
+   For example, if we want the ordered list of all search parameter values, we can use `new URLSearchParams(pageContext.urlParsed.searchString || '')`.
 
 ## Custom
 
@@ -52,7 +82,7 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
         url: req.url,
         // We can define some custom `pageContext` here
       }
-      const result = await renderPage(pageContextInit)
+      const pageContext = await renderPage(pageContextInit)
       /* ... */
     })
     ```
@@ -62,7 +92,6 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
 When using [Server Routing](/SR-vs-CR#server-routing), the following is available in the browser:
  - `pageContext.Page`
  - `pageContext.pageExports`
- - `pageContext.isHydration`
 
 When using [Client Routing](/useClientRouter), the following is available in the browser:
  - `pageContext.Page`

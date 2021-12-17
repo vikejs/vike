@@ -1,13 +1,10 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { Link } from 'libframe-docs/components'
 import TourRecommendation from '../components/TourRecommendation.mdx'
 
 <TourRecommendation />
 
 For advanced apps we recommend a domain-driven file structure with multiple `pages/` directories,
 while for basic apps we recommend a single `pages/` directory.
-
-- [Basic Apps](#basic-apps)
-- [Domain-driven](#domain-driven)
 
 ## Basic Apps
 
@@ -42,8 +39,8 @@ while for basic apps we recommend a single `pages/` directory.
 ```
 
 Examples:
-- <RepoLink path='/examples/react/' />
-- <RepoLink path='/examples/vue/' />
+- <Link href='/examples/react/' />
+- <Link href='/examples/vue/' />
 - The boilerplates ([`$ npm init vite-plugin-ssr@latest`](/scaffold))
 
 ## Domain-driven
@@ -104,6 +101,20 @@ PROJECT FILES                                    URL
 Same as for basic apps, we recommend creating a directory for each page,
 e.g. `/products/pages/index/index.page.js` instead of `/products/pages/index.page.js`.
 
+Example:
+ - <Link href='/examples/file-structure-domain-driven/' />
+
 See also:
-- [`_default.page.route.js#filesystemRoutingRoot`](/filesystemRoutingRoot)
-- Example: <RepoLink path='/examples/file-structure-domain-driven/' />
+- <Link href="/filesystemRoutingRoot" />
+
+## `src/pages/`
+
+We can embed all our project files in `src/`:
+
+```bash
+/src/pages/index/index.page.js # => URL: `/`
+/src/pages/about/index.page.js # => URL: `/about`
+```
+
+See also:
+ - <Link href="/filesystem-routing" />.

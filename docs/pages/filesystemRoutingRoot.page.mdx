@@ -1,15 +1,12 @@
+import { Link } from 'libframe-docs/components'
+
 The `export { filesystemRoutingRoot }` of `_default.page.route.js` allows us to change the URL root of Filesystem Routing.
 
-> **Do not change the base URL using `filesystemRoutingRoot`**, see the [Base URL](/base-url) guide instead.
+> **Do not use `filesystemRoutingRoot` to change the base URL**, see <Link href="/base-url" /> instead.
 
-For example:
+> `filesystemRoutingRoot` is usually used for [domain-driven file structure](/file-structure#domain-driven).
 
-```bash
-/marketing/pages/index/index.page.js # Landing page (URL: `/`)
-/marketing/pages/about/index.page.js # About page (URL: `/about`)
-/marketing/pages/jobs/index.page.js # Jobs page (URL: `/jobs`)
-/marketing/_default.page.route.js # Route to `/*` instead of `/marketing/*` (see below)
-```
+## Example
 
 ```js
 // /marketing/_default.page.route.js
@@ -18,7 +15,14 @@ For example:
 export const filesystemRoutingRoot = '/'
 ```
 
-Which results in following route table:
+```
+/marketing/_default.page.route.js
+/marketing/pages/index/index.page.js
+/marketing/pages/about/index.page.js
+/marketing/pages/jobs/index.page.js
+```
+
+Result:
 
 ```
 PROJECT FILES                                    URL
@@ -26,5 +30,3 @@ PROJECT FILES                                    URL
 /marketing/pages/about/index.page.js             /about
 /marketing/pages/jobs/index.page.js              /jobs
 ```
-
-`filesystemRoutingRoot` is usually used for [domain-driven file structure](/file-structure#domain-driven).
