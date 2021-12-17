@@ -2,34 +2,20 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 > HTML Streaming support is a beta feature; breaking changes may be introduced in minor version updates.
 
-```js
-// _deault.page.server.js
+## Basics
 
-import { escapeInject, pipeNodeStream, pipeWebStream } from 'vite-plugin-ssr'
-import {
-  renderToNodeStream,
-  renderToWebStream,
-  pipeToNodeWritable,
-  pipeToWebWritable
-} from 'some-view-framework' // E.g. Vue or React
+```js
+// renderer/_deault.page.server.js
+
+import { escapeInject } from 'vite-plugin-ssr'
+import { renderToStream } from 'some-view-framework' // React, Vue, ...
 
 export { render }
 
 async function render(pageContext) {
   const { Page } = pageContext
 
-  const stream = renderToNodeStream(Page)
-  // Or with a pipe:
-  const stream = pipeNodeStream(writable => {
-    pipeToNodeWritable(Page, writable)
-  })
-
-  // Or with a Web Stream:
-  const stream = renderToWebStream(Page)
-  // Or:
-  const stream = pipeWebStream(writable => {
-    pipeToWebWritable(Page, writable)
-  })
+  const stream = renderToStream(Page)
 
   return escapeInject`<!DOCTYPE html>
     <html>
@@ -49,34 +35,93 @@ app.get("*", async (req, res, next) => {
   const { httpResponse } = pageContext
   if (!httpResponse) return next()
 
+  // If `renderToStream()` returns a Node.js Stream:
   const stream = await httpResponse.getNodeStream()
-  stream.pipe(res)
-
-  // Or with a pipe:
-  httpResponse.pipeToNodeWritable(res)
-
-  // Or with a Web Stream:
+  // If `renderToStream()` returns a Web Stream:
   const stream = await httpResponse.getWebStream()
-  stream.pipe(res)
-  // Or:
-  httpResponse.pipeToWebWritable(res)
 
-  // We can also convert the stream to a string by using `httpResponse.getBody()`
-  const body = await httpResponse.getBody()
-  res.send(body)
-  /* Note that this won't work:
-  const { body } = httpResponse
-  res.send(body)
-  */
+  stream.pipe(res)
 })
 ```
 
-Streams API Docs:
- - [Node.js Streams](https://nodejs.org/api/stream.html)
- - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+## Examples & docs
 
 Examples:
  - With React's `renderToNodeStream()`: <RepoLink path='/examples/react-full/' />
  - With Vue's `renderToNodeStream()`: <RepoLink path='/examples/vue-full/' />
  - With Cloudflare Workers and Vue's `pipeToWebWritable()`: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
 
+Streams API Docs:
+ - [Node.js Streams](https://nodejs.org/api/stream.html)
+ - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+
+
+## Stream to string
+
+We can convert the stream to a string:
+
+```js
+  // If we provide a stream into our `render()` hook's `escapeInject`, we can
+  // still get a string.
+
+  /* This won't work: (a stream cannot be consumed synchronously)
+  const { body } = httpResponse
+  res.send(body)
+  */
+
+  // But we can do:
+  const body = await httpResponse.getBody()
+  assert(typeof body === 'string')
+  res.send(body)
+```
+
+## Stream pipes
+
+We can also use Stream pipes.
+
+```js
+// renderer/_deault.page.server.js
+
+import { escapeInject, pipeNodeStream, pipeWebStream } from 'vite-plugin-ssr'
+import {
+  pipeToNodeWritable,
+  pipeToWebWritable
+} from 'some-view-framework' // React, Vue, ...
+
+export { render }
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  // Node.js Stream
+  const streamPipe = pipeNodeStream(writable => {
+    pipeToNodeWritable(Page, writable)
+  })
+  // Web Stream
+  const streamPipe = pipeWebStream(writable => {
+    pipeToWebWritable(Page, writable)
+  })
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${streamPipe}</div>
+      </body>
+    </html>`
+}
+```
+```js
+// server.js
+
+app.get("*", async (req, res, next) => {
+  const pageContextInit = { url: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
+
+  // Node.js Stream
+  httpResponse.pipeToNodeWritable(res)
+  // Web Stream
+  httpResponse.pipeToWebWritable(res)
+})
+```
