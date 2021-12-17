@@ -51,7 +51,7 @@ Examples:
  - With Vue's `renderToNodeStream()`: <RepoLink path='/examples/vue-full/' />
  - With Cloudflare Workers and Vue's `pipeToWebWritable()`: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
 
-Streams API Docs:
+Stream Docs & API:
  - [Node.js Streams](https://nodejs.org/api/stream.html)
  - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
 
@@ -83,10 +83,7 @@ We can also use Stream pipes.
 // renderer/_deault.page.server.js
 
 import { escapeInject, pipeNodeStream, pipeWebStream } from 'vite-plugin-ssr'
-import {
-  pipeToNodeWritable,
-  pipeToWebWritable
-} from 'some-view-framework' // React, Vue, ...
+import { pipeToWritable } from 'some-view-framework' // React, Vue, ...
 
 export { render }
 
@@ -95,11 +92,13 @@ async function render(pageContext) {
 
   // Node.js Stream
   const streamPipe = pipeNodeStream(writable => {
-    pipeToNodeWritable(Page, writable)
+    // `writable` is a Node.js writable
+    pipeToWritable(Page, writable)
   })
   // Web Stream
   const streamPipe = pipeWebStream(writable => {
-    pipeToWebWritable(Page, writable)
+    // `writable` is a Web writable
+    pipeToWritable(Page, writable)
   })
 
   return escapeInject`<!DOCTYPE html>
