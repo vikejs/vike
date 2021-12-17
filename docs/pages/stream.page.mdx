@@ -2,8 +2,6 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 > HTML Streaming support is a beta feature; breaking changes may be introduced in minor version updates.
 
-HTML Streams have first-class support.
-
 ```js
 // _deault.page.server.js
 
@@ -21,7 +19,6 @@ async function render(pageContext) {
   const { Page } = pageContext
 
   const stream = renderToNodeStream(Page)
-
   // Or with a pipe:
   const stream = pipeNodeStream(writable => {
     pipeToNodeWritable(Page, writable)
