@@ -1,3 +1,12 @@
+## [0.3.38](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.37...v0.3.38) (2021-12-18)
+
+
+### Bug Fixes
+
+* make `noExternal: true` work with vite-plugin-ssr ([bacba9f](https://github.com/brillout/vite-plugin-ssr/commit/bacba9f8d5991242d466047bf38cc45e75d5d778))
+
+
+
 ## [0.3.37](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.36...v0.3.37) (2021-12-17)
 
 

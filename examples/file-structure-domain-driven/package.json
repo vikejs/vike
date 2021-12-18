@@ -18,7 +18,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "vite": "^2.7.2",
-    "vite-plugin-ssr": "0.3.37"
+    "vite-plugin-ssr": "0.3.38"
   },
   "// Needed for Yarn workspaces": "",
   "name": "example-file-structure-domain-driven",
