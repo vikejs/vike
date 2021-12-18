@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "========= Docs": "",
-    "// Develop https://vite-plugin-ssr.com": "",
+    "// Develop website https://vite-plugin-ssr.com": "",
     "docs": "cd libframe/docs/ && yarn dev",
     "// Build https://vite-plugin-ssr.com for production": "",
     "docs:build": "cd libframe/docs/ && yarn build",
@@ -24,7 +24,7 @@
     "// Run `$ yarn test:setup` before running `$ yarn test`": "",
     "test:setup": "yarn clean && yarn install && yarn build",
     "========= Dev": "",
-    "// Develop vite-plugin-ssr [Node.js code]": "",
+    "// Develop vite-plugin-ssr": "",
     "dev": "cd vite-plugin-ssr/ && yarn dev",
     "dev:cjs": "cd vite-plugin-ssr/ && yarn dev:cjs",
     "dev:esm": "cd vite-plugin-ssr/ && yarn dev:esm",
