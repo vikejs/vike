@@ -1,3 +1,12 @@
+## [0.3.39](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.38...v0.3.39) (2021-12-18)
+
+
+### Bug Fixes
+
+* add debug info for `setup.ts:14` bug ([edad4cc](https://github.com/brillout/vite-plugin-ssr/commit/edad4cce99eefae4e2db04a641914b9982b41e45))
+
+
+
 ## [0.3.38](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.37...v0.3.38) (2021-12-18)
 
 
