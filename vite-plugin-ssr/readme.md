@@ -1,1 +1,1 @@
-# Docs at [github.com/brillout/vite-ssr-plugin](https://vite-plugin-ssr.com).
+Docs at [vite-plugin-ssr.com](https://vite-plugin-ssr.com).

@@ -12,8 +12,9 @@
     "vite-plugin-import-build": "^0.1.2"
   },
   "scripts": {
-    "dev": "yarn tsc:watch:cjs",
-    "dev:client": "yarn tsc:watch:esm",
+    "dev": "yarn dev:cjs & yarn dev:esm",
+    "dev:cjs": "yarn tsc:watch:cjs",
+    "dev:esm": "yarn tsc:watch:esm",
     "build": "yarn clean && yarn tsc:cjs && yarn tsc:esm",
     "========= TypeScript": "",
     "tsc:esm": "tsc",

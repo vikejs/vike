@@ -31,7 +31,12 @@ function build(): Plugin {
           rollupOptions: { input },
           polyfillDynamicImport: false,
         },
+        //*
         ssr: { external: ['vite-plugin-ssr'] },
+        /*/
+        // Try Hydrogen's `noExternal: true` bundling strategy for Cloudflare Workers
+        ssr: { noExternal: true },
+        //*/
       }
     },
     transform: (_src, id) => {
