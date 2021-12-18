@@ -36,14 +36,18 @@
   },
   "main": "./dist/cjs/node/index.js",
   "module": "./dist/esm/node/index.js",
+  "// Not sure why the following configuration works; it seems like Node.js (https://nodejs.org/api/esm.html#resolver-algorithm) only considers `import` and `node` and always treats both as CJS because resolved filename doesn't end with `.mjs` and vite-plugin-ssr hasn't `type: 'module'` (https://2ality.com/2019/10/hybrid-npm-packages.html); so it seems like Node.js actually never imports the ESM version of vite-plugin-ssr. Vite interprets (lukeed/resolve.exports) `browser` as `esm`, even for Node.js dependencies.": "",
+  "// `browser` => Vite (github.com/lukeed/resolve.exports)": "",
+  "// `imports` => Node.js": "",
+  "// `node` => Vite & Node.js": "",
   "exports": {
     ".": {
-      "node": "./dist/cjs/node/index.js",
-      "import": "./dist/esm/node/index.js"
+      "browser": "./dist/esm/node/index.js",
+      "node": "./dist/cjs/node/index.js"
     },
     "./types": {
-      "node": "./dist/cjs/types.js",
-      "import": "./dist/esm/types.js"
+      "browser": "./dist/esm/types.js",
+      "node": "./dist/cjs/types.js"
     },
     "./client": {
       "browser": "./dist/esm/client/index.js"
@@ -53,6 +57,7 @@
       "node": "./dist/cjs/client/router/index.node.js"
     },
     "./cli": {
+      "browser": "./dist/esm/node/cli/index.js",
       "node": "./dist/cjs/node/cli/index.js"
     },
     "./plugin": {
