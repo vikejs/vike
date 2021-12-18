@@ -39,8 +39,7 @@
   "module": "./dist/esm/node/index.js",
   "// Not sure why the following configuration works; it seems like Node.js (https://nodejs.org/api/esm.html#resolver-algorithm) only considers `import` and `node` and always treats both as CJS because resolved filename doesn't end with `.mjs` and vite-plugin-ssr hasn't `type: 'module'` (https://2ality.com/2019/10/hybrid-npm-packages.html); so it seems like Node.js actually never imports the ESM version of vite-plugin-ssr. Vite interprets (lukeed/resolve.exports) `browser` as `esm`, even for Node.js dependencies.": "",
   "// `browser` => Vite (github.com/lukeed/resolve.exports)": "",
-  "// `imports` => Node.js": "",
-  "// `node` => Vite & Node.js": "",
+  "// `node` => Node.js & Vite": "",
   "exports": {
     ".": {
       "browser": "./dist/esm/node/index.js",
