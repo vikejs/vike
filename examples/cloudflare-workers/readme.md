@@ -21,7 +21,7 @@ To run the example:
 2. Create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
 
 3. ```bash
-   npm install
+   npm install # (do not use yarn, as yarn installs the entire monorepo)
    ```
    To develop (for increased dev speed we use an Express.js dev server instead of `wrangler`):
    ```bash

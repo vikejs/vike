@@ -24,7 +24,7 @@ To run the example:
 
 To develop (for increased dev speed we use an Express.js dev server instead of `vercel dev`):
 - ```bash
-  npm install
+  npm install # (do not use yarn, as yarn installs the entire monorepo)
   npm run dev
   ```
 
