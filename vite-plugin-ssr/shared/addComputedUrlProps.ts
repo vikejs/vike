@@ -18,7 +18,7 @@ type UrlParsed = {
 }
 type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
 
-function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
+function addComputedUrlProps<PageContext extends {} & PageContextUrlSource>(
   pageContext: PageContext,
 ): asserts pageContext is PageContext & PageContextUrls {
   if ('urlPathname' in pageContext) {

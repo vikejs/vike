@@ -77,7 +77,7 @@ interface RenderPage<PageContextAddedIfSuccess extends {} = {}> {
   ): Promise<
     PageContextInit &
       (({ httpResponse: HttpResponse } & PageContextAddedIfSuccess) |
-        ({ httpResponse: null } & Partial<PageContextAddedIfSuccess>))
+        ({ httpResponse?: null } & Partial<PageContextAddedIfSuccess>))
   >
 }
 
