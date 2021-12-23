@@ -1,10 +1,9 @@
+import { assert, assertUsage } from '../../shared/utils/assert'
+import { moduleExists } from '../../shared/utils/moduleExists'
 import { isAbsolute, resolve } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
-import { assert } from '../../shared/utils/assert'
 import { getSsrEnv } from '../ssrEnv'
 import { hasProp, projectInfo } from '../../shared/utils'
-import { moduleExists } from '../../shared/utils/moduleExists'
-import { loadViteEntry } from './loadViteEntry'
 
 setPageFilesAsync(setPageFiles)
 
@@ -22,13 +21,16 @@ async function setPageFiles(): Promise<unknown> {
   const errorMessage =
     'Make sure to run `vite build && vite build --ssr` before running your Node.js server with `createPageRenderer({ isProduction: true })`'
 
-  const moduleExports = await loadViteEntry({
-    devPath,
-    prodPath,
-    errorMessage,
-    viteDevServer: ssrEnv.viteDevServer,
-    isProduction: ssrEnv.isProduction,
-  })
+  let moduleExports: unknown
+  if (ssrEnv.isProduction) {
+    const prodPathResolved = resolve(prodPath)
+    assertUsage(moduleExists(prodPathResolved), `${errorMessage}. (Build file ${prodPathResolved} is missing.)`)
+    moduleExports = require_(prodPathResolved)
+  } else {
+    assert(ssrEnv.viteDevServer)
+    const devPathResolved = requireResolve(devPath)
+    moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(devPathResolved)
+  }
 
   const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles
   assert(pageFiles)
@@ -78,4 +80,15 @@ function assertEntry(viteEntryFile: string) {
       )}`,
     )
   }
+}
+
+function require_(modulePath: string): unknown {
+  // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
+  const req = require
+  return req(modulePath)
+}
+function requireResolve(modulePath: string): string {
+  // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
+  const req = require
+  return req.resolve(modulePath)
 }
