@@ -24,9 +24,9 @@ function isPageFilesSet() {
   return !!allPageFilesUnprocessed
 }
 
-let asyncSetter: () => Promise<unknown>
-function setPageFilesAsync(_asyncSetter: () => Promise<unknown>) {
-  asyncSetter = _asyncSetter
+let asyncGetter: () => Promise<unknown>
+function setPageFilesAsync(getter: () => Promise<unknown>) {
+  asyncGetter = getter
 }
 
 type PageFile = {
@@ -50,14 +50,14 @@ type AllPageFilesUnproccessed = Record<FileType, PageFileUnprocessed>
 type AllPageFiles = Record<FileType, PageFile[]>
 
 async function getAllPageFiles(): Promise<AllPageFiles> {
-  if (asyncSetter) {
+  if (asyncGetter) {
     const ssrEnv = getSsrEnv()
     if (
       !allPageFilesUnprocessed ||
       // We reload all glob imports in dev to make auto-reload work
       !ssrEnv.isProduction
     ) {
-      allPageFilesUnprocessed = (await asyncSetter()) as any
+      allPageFilesUnprocessed = (await asyncGetter()) as any
     }
     assert(hasProp(allPageFilesUnprocessed, '.page'))
   }
