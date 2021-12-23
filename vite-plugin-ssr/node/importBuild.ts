@@ -4,11 +4,11 @@ import { setPageFiles } from '../shared/getPageFiles'
 import { assertUsage } from '../shared/utils'
 
 export { importBuild }
-export { importBuildWasCalled }
+export { importBuildWasLoaded }
 
 let wasCalled = false
 
-function importBuildWasCalled() {
+function importBuildWasLoaded() {
   return wasCalled
 }
 

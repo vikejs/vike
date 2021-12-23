@@ -3,7 +3,7 @@ import { renderPage, renderPageWithoutThrowing } from './renderPage'
 import { assertUsageBaseUrl, hasProp } from '../shared/utils'
 import { assert, assertUsage } from '../shared/utils/assert'
 import { resolve } from 'path'
-import { importBuildWasCalled } from './importBuild'
+import { importBuildWasLoaded } from './importBuild'
 import type { ViteDevServer } from 'vite'
 
 export { createPageRenderer }
@@ -71,7 +71,7 @@ function assertArguments(
     isProduction === true || isProduction === false || isProduction === undefined,
     '`createPageRenderer({ isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.',
   )
-  if (importBuildWasCalled()) {
+  if (importBuildWasLoaded()) {
     assertUsage(
       isProduction,
       '`createPageRenderer({ isProduction })`: argument `isProduction` should be `true` if `dist/server/importBuild.js` is loaded. (You should load `dist/server/importBuild.js` only in production.)',
@@ -87,7 +87,7 @@ function assertArguments(
       '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is `true`, then `viteDevServer` should be `undefined`.',
     )
     assertUsage(
-      root || importBuildWasCalled(),
+      root || importBuildWasLoaded(),
       "`createPageRenderer({ root })`: argument `root` is missing. (Alternatively, if `root` doesn't exist because you are bundling your server code into a single file, then load `dist/server/importBuild.js`.)",
     )
   } else {
