@@ -1,3 +1,15 @@
+## [0.3.40](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.39...v0.3.40) (2021-12-23)
+
+
+### Bug Fixes
+
+* do not use `outDir` config for plugin `dist/` folder ([a7b2cc5](https://github.com/brillout/vite-plugin-ssr/commit/a7b2cc5def992d41c538d156bb914d3dd3878dcd))
+* improve error message when `importBuild.js` is missing (fix [#235](https://github.com/brillout/vite-plugin-ssr/issues/235)) ([4390d7f](https://github.com/brillout/vite-plugin-ssr/commit/4390d7f13885bed5ddeb3d9f2c34f314c0fe27fa))
+* replace direct eval with new Function ([9432d31](https://github.com/brillout/vite-plugin-ssr/commit/9432d31ed9f6e2519a76d61bfd2691495532c5a2))
+* support Cloudflare Pages workers ([950b470](https://github.com/brillout/vite-plugin-ssr/commit/950b470703522f1c9bb1946cfd3d565c96d12739))
+
+
+
 ## [0.3.39](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.38...v0.3.39) (2021-12-18)
 
 

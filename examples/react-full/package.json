@@ -31,7 +31,7 @@
     "typescript": "^4.5.4",
     "vite": "^2.7.2",
     "vite-plugin-mdx": "3.5.10",
-    "vite-plugin-ssr": "0.3.39"
+    "vite-plugin-ssr": "0.3.40"
   },
   "// Needed for Yarn workspaces": "",
   "name": "example-react-full",
