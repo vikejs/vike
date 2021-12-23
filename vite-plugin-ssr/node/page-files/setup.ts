@@ -15,7 +15,7 @@ async function setPageFiles(): Promise<unknown> {
   assertEntry(viteEntryFile)
   const userDist = `${ssrEnv.root}/${ssrEnv.outDir}`
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
-  const pluginDist = `../../../../${ssrEnv.outDir}`
+  const pluginDist = `../../../../dist`
   const prodPath = `${userDist}/server/${viteEntryFile}`
   const devPath = `${pluginDist}/esm/node/page-files/${viteEntryFile}`
 
