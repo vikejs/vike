@@ -1,3 +1,12 @@
+## [0.3.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.40...v0.3.41) (2021-12-24)
+
+
+### Features
+
+* add option `prerender({ onPagePrender })` ([b864664](https://github.com/brillout/vite-plugin-ssr/commit/b864664cca241ca6e14f09915d9ecbd581fd1ecb))
+
+
+
 ## [0.3.40](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.39...v0.3.40) (2021-12-23)
 
 
