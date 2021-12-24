@@ -394,10 +394,10 @@ async function prerenderPage(
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
   assert(typeof documentHtml === 'string')
   if (!pageContext._usesClientRouter) {
-    return { documentHtml, pageContextSerialized: null }
+    return { documentHtml, pageContextSerialized: null, pageContext }
   } else {
     const pageContextSerialized = serializePageContextClientSide(pageContext)
-    return { documentHtml, pageContextSerialized }
+    return { documentHtml, pageContextSerialized, pageContext }
   }
 }
 
