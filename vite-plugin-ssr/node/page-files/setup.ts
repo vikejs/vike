@@ -1,6 +1,6 @@
 import { assert, assertUsage } from '../../shared/utils/assert'
 import { moduleExists } from '../../shared/utils/moduleExists'
-import { resolve } from 'path'
+import { resolve, join } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
 import { hasProp } from '../../shared/utils'
@@ -25,7 +25,7 @@ async function setPageFiles(): Promise<unknown> {
   // assertEntry(viteEntryFile)
   const userDist = `${ssrEnv.root}/${ssrEnv.outDir}`
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
-  const pluginDist = `../../../../dist`
+  const pluginDist = join(__dirname, `../../../../dist`)
   const viteEntryPathProd = `${userDist}/server/${viteEntryFile}`
   const viteEntryPathDev = `${pluginDist}/esm/node/page-files/${viteEntryFile}`
 
