@@ -1,9 +1,13 @@
 import { assert, assertUsage } from '../../shared/utils/assert'
 import { moduleExists } from '../../shared/utils/moduleExists'
-import { isAbsolute, resolve } from 'path'
+import { resolve } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
-import { hasProp, projectInfo } from '../../shared/utils'
+import { hasProp } from '../../shared/utils'
+/*
+import { isAbsolute } from 'path'
+import { projectInfo } from '../../shared/utils'
+*/
 
 setPageFilesAsync(setPageFiles)
 
@@ -18,7 +22,7 @@ async function setPageFiles(): Promise<unknown> {
   )
 
   const viteEntryFile = 'pageFiles.js'
-  assertEntry(viteEntryFile)
+  // assertEntry(viteEntryFile)
   const userDist = `${ssrEnv.root}/${ssrEnv.outDir}`
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
   const pluginDist = `../../../../dist`
@@ -27,17 +31,18 @@ async function setPageFiles(): Promise<unknown> {
 
   let moduleExports: unknown
   if (ssrEnv.isProduction) {
-    const prodPathResolved = resolve(viteEntryPathProd)
+    const viteEntryResolved = resolve(viteEntryPathProd)
     assertUsage(
-      moduleExists(prodPathResolved),
+      moduleExists(viteEntryResolved),
       'Make sure to run `vite build && vite build --ssr` before running your Node.js server with `createPageRenderer({ isProduction: true })`' +
-        `. (Build file ${prodPathResolved} is missing.)`,
+        `. (Build file ${viteEntryResolved} is missing.)`,
     )
-    moduleExports = require_(prodPathResolved)
+    moduleExports = require_(viteEntryResolved)
   } else {
     assert(ssrEnv.viteDevServer)
-    const devPathResolved = requireResolve(viteEntryPathDev)
-    moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(devPathResolved)
+    const viteEntryResolved = resolve(viteEntryPathDev)
+    // const viteEntryResolved = requireResolve(viteEntryPathDev)
+    moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(viteEntryResolved)
   }
 
   const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles
@@ -46,6 +51,7 @@ async function setPageFiles(): Promise<unknown> {
   return pageFiles
 }
 
+/*
 function assertEntry(viteEntryFile: string) {
   let dir: string | undefined
   let viteEntryPath: string | undefined
@@ -89,16 +95,18 @@ function assertEntry(viteEntryFile: string) {
     )
   }
 }
+*/
 
 // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
 const req = require
 function require_(modulePath: string): unknown {
-  const req = require
   return req(modulePath)
 }
+/*
 function requireResolve(modulePath: string): string {
   return req.resolve(modulePath)
 }
+*/
 function isNodejs(): boolean {
   try {
     return __filename === require.resolve(__filename)
