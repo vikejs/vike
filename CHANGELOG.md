@@ -1,3 +1,12 @@
+## [0.3.42](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.41...v0.3.42) (2021-12-27)
+
+
+### Bug Fixes
+
+* attempt to fix the setup.ts bug ([0ae3499](https://github.com/brillout/vite-plugin-ssr/commit/0ae3499df2389389e2f1c49d0d2764b45858e5bb))
+
+
+
 ## [0.3.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.40...v0.3.41) (2021-12-24)
 
 
