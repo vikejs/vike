@@ -27,7 +27,7 @@ jobs:
             -H "Content-Type:application/json" \
             -X POST \
             --data "{\"content\":\"$CI_STATUS $REPO_NAME $WORKFLOW_NAME $GIT_BRANCH $WORKFLOW_URL\",\"username\":\"GitHub\",\"avatar_url\":\"https://i.imgur.com/OOtUMJD.png\"}" \
-            https://discord.com/api/webhooks/915965618350612481/JZDe_sBO3kCqUgkKNZ3OZ9q61d2LkW82ozTHoh8W8PV20r4E2y5B9ZpvtMccXP9i-6UC
+            https://discord.com/api/webhooks/925137940684865556/yC5NI-41d1exWQVX5umpECO2enRPQjb-zBmGBSAlDlCAWU4jRxmoT_PD923xkWJ_e0We
       - name: Inspect Event Object
         env:
           EVENT: ${{ toJSON( github.event ) }}
