@@ -54,6 +54,13 @@ const headings: HeadingDefinition[] = [
     titleDocument: 'vite-plugin-ssr',
     url: '/',
   },
+  /*
+  {
+    level: 2,
+    title: 'What is Server-side Rendering (SSR)?',
+    url: '/ssr',
+  },
+  */
   {
     level: 2,
     title: 'Vue Tour',
