@@ -14,7 +14,7 @@ setFrame({
   algolia: {
     // @ts-ignore
     appId: 'MUXG1ZE9F6',
-    apiKey: '7d2798346ba008ae4902b49b097b6e6a',
+    apiKey: '8d5986fca9ba9110bcbbfc51263de88b',
     indexName: 'vite-pluginssr',
   },
   navHeaderMobile: <NavHeaderMobile />,
