@@ -69,6 +69,13 @@ if we don't call
 `vite-plugin-ssr prerender`
 then no `prerender()` hook is ever called.
 
+> Providing `pageContext` in `prerender()` hooks
+> should only be used for making the pre-rendering build process faster and
+> we recommend against using `prerender()` for other purposes.
+> For example, we shouldn't provide `pageContext` in `prerender()` hooks that wouldn't otherwise exist;
+> instead, we make sure that our `onBeforeRender()` hooks return everything we need.
+> (Pre-rendering is only run for production; we should keep our app consistent between dev and prod.)
+
 Vue Example:
  - <RepoLink path='/examples/vue-full/package.json' /> (see the <code>build:prerender</code> script)
  - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see the <code>prerender()</code> hook)
