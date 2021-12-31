@@ -1,5 +1,8 @@
 import { RepoLink, Link } from 'libframe-docs/components'
 
+> We recommend taking the <Link text="React Tour" href="/react-tour" /> or <Link text="Vue Tour" href="/vue-tour" /> before reading this guide.
+> The tour explains what the `_default.page.*` files are about.
+
 ## `onBeforeRender()`
 
 The usual way to fetch data is to use a `onBeforeRender()` hook.
@@ -18,7 +21,7 @@ async function onBeforeRender(pageContext) {
   let movies = await response.json()
 
   // `movies` will be serialized and passed to the browser; we select only the data we
-  // need in order to minimize what is sent over the network.
+  // need in order to minimize what is sent to the browser.
   movies = movies.map(({ title, release_date }) => ({title, release_date}))
 
   // We make `movies` available as `pageContext.pageProps.movies`
@@ -99,7 +102,7 @@ function Page(pageProps) {
 ```
 
 Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
-conveniently hold all props of the root component `Page`.
+conveniently hold all props of the `Page`.
 
 ## Global Logic
 
@@ -137,7 +140,7 @@ export const onBeforeRender = pageContext => {
 
 **Multiple `renderer/`**
 
-If the logic differs substantially, we may want to create <Link href="/multiple-renderer" />.
+If the logic differs substantially, we may want to create <Link text={<>mutliple <code>renderer/</code> directories</>} href="/multiple-renderer" />.
 
 ** `onBeforeRender()` in `.page.server.js` and `_default.page.server.js`.**
 
@@ -151,20 +154,22 @@ There is work-in-progress to implement a new `onInit()` hook to initialize globa
 
 ## Client Routing
 
-Since `.page.server.js` files are loaded only in Node.js,
+The `.page.server.js` files are loaded only in Node.js;
 our data fetching code is always exectued in Node.js.
-This makes writing data fetching code easier.
+This is convenient as it makes writing data fetching code easier.
 
 That said, if we use [Client Routing](/useClientRouter),
-then we also have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
+then we the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
 
-In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing), but if we want to minimize requests made to our Node.js server then we may want to define `onBeforeRender()` in `.page.js` instead.
+In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing) but,
+if we want to minimize requests made to our Node.js server,
+then we may want to define `onBeforeRender()` in `.page.js` instead.
 
 ## Stateful Component
 
 Alternatively, we can fetch data by using a stateful component.
 
-> Our fetched data is then not rendered to HTML, which may not be what we want.
+> The fetched data is then not rendered to HTML, which may defeat the reason we use SSR in the first place.
 
 We usually need to make [`pageContext.routeParams`](/pageContext) available to our stateful data-fetching component:
 1. We make `pageContext.routeParams` available in the browser by adding it to [`passToClient`](/passToClient).
@@ -172,20 +177,23 @@ We usually need to make [`pageContext.routeParams`](/pageContext) available to o
 
 ## GraphQL
 
-When using GraphQL, e.g. with [Apollo GraphQL](https://www.apollographql.com/) or [Relay](https://relay.dev/), we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in `onBeforeRender()`.
- - <RepoLink path='/examples/graphql-apollo/' />
+When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in `onBeforeRender()`.
 
-In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use:
- - [Apollo GraphQL - SSR Guide](https://www.apollographql.com/docs/react/performance/server-side-rendering/)
- - [Relay - SSR](https://github.com/facebook/relay/issues/3468#issuecomment-824872147)
+In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use.
+
+See:
+ - <Link href="/apollo-graphql" />
+ - <Link href="/urql" />
+ - <Link href="/relay" />
 
 ## Store (Vuex/Redux...)
 
-When using a global store (e.g. with [Vuex](https://vuex.vuejs.org/), [Redux](https://redux.js.org/), or [PullState](https://lostpebble.github.io/pullstate/)), our components don't access the fetched data directly. Instead, our components access the store, while the fetched data determines the store state.
- - <RepoLink path='/examples/redux/' />
- - <RepoLink path='/examples/vuex/' />
+When using a global store ([Vuex](https://vuex.vuejs.org/), [Redux](https://redux.js.org/), [PullState](https://lostpebble.github.io/pullstate/), ...), our components don't access the fetched data directly. Instead, our components only access the store, while the fetched data merely determines the initial state of the store.
 
-In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use:
- - [Redux - SSR Guide](https://redux.js.org/recipes/server-rendering)
- - [Vuex - SSR Guide](https://ssr.vuejs.org/guide/data.html#data-store)
- - [PullState - SSR Example](https://lostpebble.github.io/pullstate/docs/quick-example-server-rendered)
+In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating a global store is mostly only a matter of following the official SSR guide of the tool we want to use.
+
+See:
+ - <Link href="/redux" />
+ - <Link href="/vuex" />
+ - <Link href="/pullstate" />
+

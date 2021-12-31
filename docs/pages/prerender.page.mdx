@@ -2,15 +2,15 @@ import { RepoLink, Link } from 'libframe-docs/components'
 
 > Check out <Link href="/pre-rendering" /> for an overview on how to pre-render `vite-plugin-ssr` apps.
 
-The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-we use `prerender()` hooks to provide the list of URLs (`/movie/1`, `/movie/2`, ...).
+We usually use the `prerender()` hook to provide the list of URLs of a parameterized route (e.g.
+`/movie/1` and `/movie/2` for `/movie/:id`).
 
 If we don't have any parameterized route,
-then we can prerender our app without defining any `prerender()` hook.
+then we can pre-render our app without defining any `prerender()` hook.
 
 Also,
-`prerender()` hooks enable us to provide the `pageContext` of several pages at once,
-which we can use to make pre-rendering build process faster.
+we can use `prerender()` hooks to provide the `pageContext` of pages in a way that makes
+the pre-rendering build process faster.
 
 ```js
 // /pages/movie.page.route.js
@@ -42,6 +42,7 @@ async function prerender() {
       /* We could also only return `url` and not provide `pageContext`. In that case
        * vite-plugin-ssr would call the `onBeforeRender()` hook. But that would be wasteful
        * since we already have all the data of all movies from our `await Movie.findAll()` call.
+       * Instead, we provide `pageContext` to make the pre-rendering build process faster.
        */
       // return { url }
     })
@@ -55,6 +56,8 @@ async function prerender() {
     url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/:movieId`
     pageContext: {
       pageProps: {
+        // We filter out the data we don't need in order to minimize what is sent to the browser.
+        // We explain this practice at https://vite-plugin-ssr.com/data-fetching
         movieList: movies.map(({id, title}) => ({id, title})
       }
     }
@@ -72,8 +75,8 @@ then no `prerender()` hook is ever called.
 > Providing `pageContext` in `prerender()` hooks
 > should only be used for making the pre-rendering build process faster and
 > we recommend against using `prerender()` for other purposes.
-> For example, we shouldn't provide `pageContext` in `prerender()` hooks that wouldn't otherwise exist;
-> instead, we make sure that our `onBeforeRender()` hooks return everything we need.
+> For example, we should avoid providing `pageContext` in `prerender()` hooks that wouldn't otherwise exist;
+> instead, we should make sure that our `onBeforeRender()` hooks provide all the `pageContext` we need.
 > (Pre-rendering is only run for production; we should keep our app consistent between dev and prod.)
 
 Vue Example:
