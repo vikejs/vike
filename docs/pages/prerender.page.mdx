@@ -1,15 +1,16 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, Link } from 'libframe-docs/components'
 
-> Check out the [Pre-rendering Guide](/pre-rendering) to get an overview about how to pre-render a `vite-plugin-ssr` app.
+> Check out <Link href="/pre-rendering" /> for an overview on how to pre-render `vite-plugin-ssr` apps.
 
 The `prerender()` hook enables parameterized routes (e.g. `/movie/:movieId`) to be pre-rendered:
-by defining the `prerender()` hook we provide the list of URLs (`/movie/1`, `/movie/2`, ...) and (optionally) the `pageContext` for each URL.
+we use `prerender()` hooks to provide the list of URLs (`/movie/1`, `/movie/2`, ...).
 
 If we don't have any parameterized route,
 then we can prerender our app without defining any `prerender()` hook.
-We can, however, still use the `prerender()` hook
-to increase the effeciency of pre-rendering as
-it enables us to fetch data for multiple pages at once.
+
+Also,
+`prerender()` hooks enable us to provide the `pageContext` of several pages at once,
+which we can use to make pre-rendering build process faster.
 
 ```js
 // /pages/movie.page.route.js
