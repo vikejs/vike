@@ -12,6 +12,8 @@ setFrame({
   // TODO: remove @ts-ignore once https://github.com/vikejs/libframe/pull/1 is merged
   // @ts-ignore
   algolia: {
+    // @ts-ignore
+    appId: 'MUXG1ZE9F6',
     apiKey: '7d2798346ba008ae4902b49b097b6e6a',
     indexName: 'vite-pluginssr',
   },
