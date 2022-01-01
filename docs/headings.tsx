@@ -166,6 +166,11 @@ const headings: HeadingDefinition[] = [
     url: '/stream',
   },
   {
+    level: 2,
+    title: 'API Routes',
+    url: '/api-routes',
+  },
+  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork',
