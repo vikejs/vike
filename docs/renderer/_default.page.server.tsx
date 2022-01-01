@@ -9,10 +9,7 @@ import { NavHeader, NavHeaderMobile } from './NavHeader'
 setFrame({
   projectInfo,
   logoUrl,
-  // TODO: remove @ts-ignore once https://github.com/vikejs/libframe/pull/1 is merged
-  // @ts-ignore
   algolia: {
-    // @ts-ignore
     appId: 'MUXG1ZE9F6',
     apiKey: '8d5986fca9ba9110bcbbfc51263de88b',
     indexName: 'vite-pluginssr',
