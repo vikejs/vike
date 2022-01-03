@@ -21,12 +21,11 @@ function Features() {
           desc: (
             <>
               <p>
-                Control how your pages are rendered, and use <b>any UI framework</b> (React, Vue, Svelte, ...) and{' '}
-                <b>any tool</b> you want (Vuex/Redux/Storeon, RPC/REST/GraphQL, React/Vue Query, PWA, Service Workers,
-                other Vite plugins, ...).
+                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want
+                (Vuex/Redux/Storeon, RPC/GraphQL/REST, React/Vue Query, PWA, Service Workers, other Vite plugins, ...).
               </p>
               <p>
-                <b>Manually integrate</b> tools in a <b>simple</b> and <b>natural</b> way.
+                With <code>vite-plugin-ssr</code>, you integrate tools manually and keep <b>architectural control</b>.
               </p>
             </>
           ),
@@ -35,25 +34,19 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="mechanical-arm" /> Full-fledged
+              <Emoji name="package" /> Zero-config
             </>
           ),
           desc: (
             <>
               <p>
-                <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
-                <b>i18n</b>, <b>Link Prefetching</b>, <b>HTML Streaming</b>.
+                <code>vite-plugin-ssr</code> gives you <b>control only where it matters</b>.
               </p>
               <p>
-                <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
-              </p>
-              <p>
-                All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different
-                mode.
+                Everything else <b>just works</b> without the need to configure/decide anything.
               </p>
             </>
           ),
-          learnMore: <FullFleged />,
         },
         {
           title: (
@@ -64,12 +57,12 @@ function Features() {
           desc: (
             <>
               <p>
-                With <code>vite-plugin-ssr</code> you integrate tools manually instead of using a plugin system; while
-                it means more work, it gives you a simpler and more sturdy foundation to build upon.
+                With <code>vite-plugin-ssr</code>, you integrate tools manually instead of using a plugin system. It
+                means more work, but you get a <b>fundamentally simpler & more stable foundation</b> to build upon.
               </p>
               <p>
-                The clean cut between <code>vite-plugin-ssr</code> and your UI framework (React/Vue/...) makes
-                reasoning about your app easier.
+                The clean cut between <code>vite-plugin-ssr</code> and your UI framework (React/Vue/...) makes reasoning
+                about your app easier.
               </p>
             </>
           ),
@@ -113,19 +106,25 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="gem-stone" /> Rock-solid
+              <Emoji name="mechanical-arm" /> Full-fledged
             </>
           ),
           desc: (
             <>
               <p>
-                The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
-                against a heavy suite of <b>automated tests</b>, it's <b>used in production</b> by many comp&shy;anies,
-                and it's <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the
-                current <code>v0.3.x</code> releases.
+                <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
+                <b>i18n</b>, <b>Link Prefetching</b>, <b>HTML Streaming</b>.
+              </p>
+              <p>
+                <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
+              </p>
+              <p>
+                All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different
+                mode.
               </p>
             </>
           ),
+          learnMore: <FullFleged />,
         },
         {
           title: (
@@ -149,28 +148,23 @@ function Features() {
             </>
           ),
           learnMore: <DeployAnywhere />,
-          isSecondaryFeature: true,
         },
         {
           title: (
             <>
-              <Emoji name="high-voltage" /> High-performance
+              <Emoji name="gem-stone" /> Rock-solid
             </>
           ),
           desc: (
             <>
               <p>
-                Browser-side: <b>Code Splitting</b> (each page loads only the code it needs), <b>Client Routing</b>{' '}
-                (pages loaded & rendered only on the browser-side upon page navigation), <b>Link Prefetching</b>{' '}
-                (preload preponderant links for instantaneous page navigation), <b>Lighthouse Score: 100%</b>.
-              </p>
-              <p>
-                <b>Fast Node.js cold start</b>: pages are lazy-loaded so that adding pages doesn't increase the cold
-                start of your serverless functions.
+                The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
+                against a heavy suite of <b>automated tests</b>, it's <b>used in production</b> by many comp&shy;anies,
+                and it's <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the
+                current <code>v0.3.x</code> releases.
               </p>
             </>
           ),
-          isSecondaryFeature: true,
         },
         {
           title: (
@@ -227,19 +221,19 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="red-heart" /> Craftmanship
+              <Emoji name="high-voltage" /> High-performance
             </>
           ),
           desc: (
             <>
               <p>
-                Crafted with <b>attention to details</b> and <b>care for simplicity</b>.
+                Browser-side: <b>Code Splitting</b> (each page loads only the code it needs), <b>Client Routing</b>{' '}
+                (pages loaded & rendered only on the browser-side upon page navigation), <b>Link Prefetching</b>{' '}
+                (preload preponderant links for instantaneous page navigation), <b>Lighthouse Score: 100%</b>.
               </p>
               <p>
-                <b>Upsteam contributions</b> to Vite and others.
-              </p>
-              <p>
-                GitHub and Discord <b>conversations are welcome</b>.
+                <b>Fast Node.js cold start</b>: pages are lazy-loaded so that adding pages doesn't increase the cold
+                start of your serverless functions.
               </p>
             </>
           ),
@@ -277,8 +271,29 @@ function Features() {
                 Use <code>vite-plugin-ssr</code> to <b>build frameworks</b>.
               </p>
               <p>
-                You want to build an <b>internal framework</b> for you company? Or you want to build a{' '}
+                You want to build an <b>internal framework</b> for your company? Or you want to build a{' '}
                 <b>Next.js alternative</b>? Use <code>vite-plugin-ssr</code> to jump-start with a rock-solid foundation.
+              </p>
+            </>
+          ),
+          isSecondaryFeature: true,
+        },
+        {
+          title: (
+            <>
+              <Emoji name="red-heart" /> Craftmanship
+            </>
+          ),
+          desc: (
+            <>
+              <p>
+                Crafted with <b>attention to details</b> and <b>care for simplicity</b>.
+              </p>
+              <p>
+                <b>Upsteam contributions</b> to Vite and others.
+              </p>
+              <p>
+                GitHub and Discord <b>conversations are welcome</b>.
               </p>
             </>
           ),

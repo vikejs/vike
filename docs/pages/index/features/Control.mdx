@@ -23,8 +23,8 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 // This can be any UI framework (React, Vue, Svelte, ...)
 import { renderToHtml } from 'my-favorite-view-framework'
 
+// You control how `Page` is rendered to HTML
 export async function render({ Page }) {
-  // You control how you render `Page` to HTML
   const pageHtml = await renderToHtml(Page)
   const title = 'My first vite-plugin-ssr app'
   return escapeInject`<!DOCTYPE html>
@@ -50,11 +50,11 @@ import { hydrateToDom } from 'my-favorite-view-framework'
 
 hydrate()
 
+// You control how `Page` is hydrated
 async function hydrate() {
   const { Page } = await getPage() // In production, `await getPage()` is preloaded
-  // You control how `Page` is hydrated
   await hydrateToDom(Page)
 }
 ```
 
-Not only can you use any tool you want, but integration is also simple: `vite-plugin-ssr` gets out of your way and you can simply follow the tool's official installation guide.
+This means you can use and integrate any tool you want simply by following the tool's official installation guide.
