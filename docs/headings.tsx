@@ -261,6 +261,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'gRPC (RPC)',
+    url: '/grpc',
+  },
+  {
+    level: 2,
     titleInNav: 'Other',
     title: 'Data Fetching Tools',
     url: '/data-fetching-tools',
