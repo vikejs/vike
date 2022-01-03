@@ -21,7 +21,7 @@ function Features() {
           desc: (
             <>
               <p>
-                Control how your pages are rendered, and use <b>any view framework</b> (React, Vue, Svelte, ...) and{' '}
+                Control how your pages are rendered, and use <b>any UI framework</b> (React, Vue, Svelte, ...) and{' '}
                 <b>any tool</b> you want (Vuex/Redux/Storeon, RPC/REST/GraphQL, React/Vue Query, PWA, Service Workers,
                 other Vite plugins, ...).
               </p>
@@ -68,7 +68,7 @@ function Features() {
                 it means more work, it gives you a simpler and more sturdy foundation to build upon.
               </p>
               <p>
-                The clean cut between <code>vite-plugin-ssr</code> and your view framework (React/Vue/...) makes
+                The clean cut between <code>vite-plugin-ssr</code> and your UI framework (React/Vue/...) makes
                 reasoning about your app easier.
               </p>
             </>
@@ -101,7 +101,7 @@ function Features() {
               </p>
               <h3>Clean Cut</h3>
               <code>vite-plugin-ssr</code> is agnostic; there is no conflation between <code>vite-plugin-ssr</code> and
-              your view framework (React/Vue/...). This makes reasoning about your app easier.
+              your UI framework (React/Vue/...). This makes reasoning about your app easier.
               <h3>Fun</h3>
               <p>
                 Last but not least, manual integration is fun & insightful, whereas fighting some arbitrary framework

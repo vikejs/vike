@@ -11,7 +11,7 @@ In fact, `vite-plugin-ssr` is already being used with a high variety of tools wi
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-// This can be any view framework (React, Vue, Svelte, ...)
+// This can be any UI framework (React, Vue, Svelte, ...)
 import renderToHtml from 'some-view-framework'
 
 export { render }
@@ -22,7 +22,7 @@ async function render(pageContext) {
   // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
 
-  // We have control over how we use our view framework to render our pages to HTML
+  // We have control over how we use our UI framework to render our pages to HTML
   const pageHtml = await renderToHtml(Page)
 
   // We have control over the entire HTML
@@ -56,7 +56,7 @@ async hydrate() {
 ```
 
 Since we control how our pages are render to HTML and hydrated, we can use:
-- Any view framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
+- Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
 - Any view library (Vuex, Redux, Relay, Apollo GraphQL, PullState, Recoil, Vue Router, React Router, ...)
 
 And, more importantly, integrating a view tool is simply a matter of following its official installation guide.
