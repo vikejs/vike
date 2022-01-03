@@ -1,0 +1,11 @@
+import { Link } from 'libframe-docs/components'
+
+A frequent problem with SSR is that some component libraries,
+such as [react-leaflet](https://github.com/PaulLeCam/react-leaflet) or [vue-leaflet](https://github.com/vue-leaflet/vue-leaflet),
+only work in the browser.
+
+Server-side rendering such components will crash our Node.js server.
+
+With `vite-plugin-ssr`, there are two ways to handle client-only components:
+ - We render our page as SPA, see <Link href="/render-modes" />.
+ - We render our page with SSR while we load & render such components only in the browser-side, see <Link href="/dynamic-import" />.

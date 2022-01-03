@@ -171,6 +171,16 @@ const headings: HeadingDefinition[] = [
     url: '/api-routes',
   },
   {
+    level: 2,
+    title: 'Client-only Components',
+    url: '/client-only-components',
+  },
+  {
+    level: 2,
+    title: 'Dynamic `import()`',
+    url: '/dynamic-import',
+  },
+  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork',
