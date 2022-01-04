@@ -156,6 +156,7 @@ type PageContextInjectAssets = {
   _pageId: string
   _pageClientPath: string
   _passToClient: string[]
+  _skipAssetInject?: true
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
   htmlString = await injectAssetsBeforeRender(htmlString, pageContext)
@@ -174,6 +175,10 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   const { urlPathname } = pageContext
   assert(typeof urlPathname === 'string' && urlPathname.startsWith('/'))
   htmlString = await applyViteHtmlTransform(htmlString, urlPathname)
+
+  if (pageContext._skipAssetInject) {
+    return htmlString
+  }
 
   const pageAssets = await pageContext._getPageAssets()
 
@@ -201,6 +206,9 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
     !injectPageInfoAlreadyDone(htmlString),
     'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).',
   )
+  if (pageContext._skipAssetInject) {
+    return htmlString
+  }
   htmlString = injectPageInfo(htmlString, pageContext)
   return htmlString
 }
