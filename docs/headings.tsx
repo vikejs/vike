@@ -30,7 +30,7 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     ),
     url: '/pageContext-manipulation',
   },
-  { title: 'SSR (Server Side Rendering)', url: '/ssr' },
+  { title: 'Server-Side Rendering (SSR)', url: '/ssr' },
   { title: 'TypeScript', url: '/typescript' },
   {
     title: (
