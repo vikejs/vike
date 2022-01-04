@@ -1,3 +1,12 @@
+## [0.3.43](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.42...v0.3.43) (2022-01-04)
+
+
+### Bug Fixes
+
+* enable improved SPA example ([f111fd5](https://github.com/brillout/vite-plugin-ssr/commit/f111fd594b0cdd2ef4a4bbdd3208a3395827e1d2))
+
+
+
 ## [0.3.42](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.41...v0.3.42) (2021-12-27)
 
 
