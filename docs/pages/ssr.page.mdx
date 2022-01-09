@@ -2,27 +2,52 @@ import { Link } from 'libframe-docs/components'
 
 ## What is SSR?
 
-Modern UI frameworks,
-such as React or Vue,
-are able to load, execute and render UI source code on the browser-side or server-side, or even both.
+Server Side Rendering (SSR) is the term used to describe the process by which the entirety of the *rendering* process is handled by the server that the request is being made to.
 
-The practice of loading & rendering the UI on the browser-side is commonly called *SPA* (or *MPA*).
+Rendering in this respects is where the server, once it receives the `request`. Begins to compile/create the entire webpage for that particular route. It then sends back the fully compiled page as the `response` for it to be read by client and projected on the screen.
 
-[SPA Demo](/spa-demo)
+This process of fully loading the html on the server first and sending it to the client results in some significant benefits; 
 
-[SSR Demo](/ssr-demo)
+- Faster Page Loads
+- Faster times to [First Paint](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#first_paint_and_first_contentful_paint), and increases to other [Page Core Vitals](https://web.dev/vitals/), 
+
+Having pages server rendered even reduces the amount of your own first-party JavaScript that is sent. This reduction of overall JS weight that needs to be executed means that users are often unlikely to be *waiting* for thread-blocking JavaScript tasks to be completed before they can *interact* with your site.
+
+Server side Rendering is best used when the routes are not known ahead of time, that is they are dynamic in the parameters of the `request.query` and equally the response is also dynamically generated. 
+
+However there is a primary drawback to using server-sided rendering. Given its dynamic nature of serving pages comes with some significant overheads. The simple truth is that more complex pages will inevitbly require more time for the server to render. This will often cause a slower [Time to First Byte](https://en.wikipedia.org/wiki/Time_to_first_byte), resulting in some delay between the page `request` being made and the `response` from the server.
 
 [HTML-only Demo](/html-only-demo)
 
-*Server-side Rendering (SSR)* essentially denotes the practice of loading & rendering the UI not only on the server-side but also on the browser-side.
 
-## Why SSR?
+## Modern UI frameworks,
 
-**Search Engines**
+UI frameworks such as React and Vue, are able to load execute and render UI source code either on the browser-side or server-side, and they are not exclusive to either. 
 
-**Other Crawlers (Facebook, Twitter, Algolia, ...)**
+The practice of loading & rendering the UI on the browser-side is commonly called Client-Side-Rendering (CSR), this practice has grown in its ubiquity due to the inception of these UI frameworks. Here the concept is slightly different. 
 
-**Performance**
+CSR is analogous to Single-Page-Applications (SPA), where the full application has been bundled into discrete JavaScript payloads, that is used to execute on the client, rendering or displaying its contents on the screen. 
 
-## When to use SSR?
+This means that all the rendering for each of the pages occurs directly in the browser, all the logic, data fetching, its templating to html and routing are handled all by the client rather than the server. 
 
+There are tradeoffs with this approach also, the most notible is the preformance impact on slower and lower end devices. Considerable impacts to the SEO rankings of the page, as having all the content hidden away in JavaScript prevents search engines and their crawlers from accurately indexing the site. 
+
+[SPA Demo](/spa-demo)
+
+
+
+
+
+## SSR or CSR, or both?
+
+Given the two approaches descibed so far, the inherit tradeoffs, any individual gains whether they be over performance, interactivity, SEO etc. are only beset by other inescapable tradeoffs. 
+
+In short the benefits of one method would help augment the deficits of the other, if such a holistic approach exists it could marry the two together.
+
+SSR has eveolved over the years from the old age of servers being used intesively to generate pages upon each and every request. To a point wher the process of dynamically creating pages have been refined and remastered. 
+
+What has been descibed as a "Universal Rendering" method, where it brings the two distinct rendering techniques together. 
+
+This is where the `request` for full page loads are handled by the server that renders out the SPA application out into static html, along with the JavaScript and data used for rendering the document on the client. This process known as *Hydration* lets the page on the client to pick off without to much of a distruptive user experience.
+
+[SSR Demo](/ssr-demo)
