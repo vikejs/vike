@@ -24,7 +24,7 @@
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
     "vite": "^2.7.2",
-    "vite-plugin-ssr": "0.3.43"
+    "vite-plugin-ssr": "0.3.44"
   },
   "type": "module",
   "// Needed for Yarn workspaces": "",

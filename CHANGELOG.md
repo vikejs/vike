@@ -1,3 +1,12 @@
+## [0.3.44](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.43...v0.3.44) (2022-01-12)
+
+
+### Features
+
+* expose SSR errors at `pageContext.errorWhileRendering` ([3a10f11](https://github.com/brillout/vite-plugin-ssr/commit/3a10f112ec52000ed507d8bf2b0874ef8f929ad0))
+
+
+
 ## [0.3.43](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.42...v0.3.43) (2022-01-04)
 
 
