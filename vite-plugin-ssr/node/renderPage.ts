@@ -73,8 +73,10 @@ type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
   pageContextInit: PageContextInit,
 ): Promise<
-  PageContextInit &
-    (({ httpResponse: HttpResponse } & PageContextAdded) | ({ httpResponse: null } & Partial<PageContextAdded>))
+  PageContextInit & { errorWhileRendering: unknown } & (
+      | ({ httpResponse: HttpResponse } & PageContextAdded)
+      | ({ httpResponse: null } & Partial<PageContextAdded>)
+    )
 > {
   assertArguments(...arguments)
 
@@ -101,9 +103,20 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     statusCode = 200
   } else {
     assert(pageContext._pageId === null)
+
+    if (!pageContext._isPageContextRequest) {
+      statusCode = 404
+    } else {
+      statusCode = 200
+    }
+
+    const errorWhileRendering = null
+
     if (!pageContext._isPageContextRequest) {
       warn404(pageContext)
     }
+
+    // No `_error.page.js` is defined
     const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (!errorPageId) {
       warnMissingErrorPage()
@@ -113,27 +126,25 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
             pageContext404PageDoesNotExist: true,
           }),
           {
-            statusCode: 200,
+            statusCode,
             renderFilePath: null,
           },
           pageContext,
         )
-        objectAssign(pageContext, { httpResponse })
+        objectAssign(pageContext, { httpResponse, errorWhileRendering })
         return pageContext
       } else {
         const httpResponse = null
-        objectAssign(pageContext, { httpResponse })
+        objectAssign(pageContext, { httpResponse, errorWhileRendering })
         return pageContext
       }
     }
-    if (!pageContext._isPageContextRequest) {
-      statusCode = 404
-    } else {
-      statusCode = 200
-    }
+
+    // Render 404 page
     objectAssign(pageContext, {
       _pageId: errorPageId,
       is404: true,
+      errorWhileRendering,
     })
   }
 
@@ -149,7 +160,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
       { statusCode: 200, renderFilePath: null },
       pageContext,
     )
-    objectAssign(pageContext, { httpResponse })
+    objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
     return pageContext
   }
 
@@ -163,12 +174,12 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   }
 
   if (renderHookResult === null) {
-    objectAssign(pageContext, { httpResponse: null })
+    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
   } else {
     const { htmlRender, renderFilePath } = renderHookResult
     const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath }, pageContext)
-    objectAssign(pageContext, { httpResponse })
+    objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
     return pageContext
   }
 }
@@ -180,14 +191,14 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   }
 
   if (pageContext.url.endsWith('/favicon.ico')) {
-    objectAssign(pageContext, { httpResponse: null })
+    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
   }
 
   const baseUrl = getBaseUrl()
   const { isPageContextRequest, hasBaseUrl } = _parseUrl(pageContext.url, baseUrl)
   if (!hasBaseUrl) {
-    objectAssign(pageContext, { httpResponse: null })
+    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
   }
   objectAssign(pageContext, {
@@ -213,13 +224,13 @@ async function renderPageWithoutThrowing(
     logError(err)
     try {
       return await render500Page(pageContextInit, err)
-    } catch (_err2) {
-      // We swallow `_err2`; logging `err` should be enough; `_err2` is likely the same error than `err` anyways.
+    } catch (err2) {
+      // We swallow `err2`; logging `err` should be enough; `err2` is likely the same error than `err` anyways.
       const pageContext = {}
       objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, {
         httpResponse: null,
-        _err: _err2,
+        errorWhileRendering: err,
       })
       return pageContext
     }
@@ -235,7 +246,7 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
 
   objectAssign(pageContext, {
     is404: false,
-    _err: err,
+    errorWhileRendering: err,
     httpResponse: null,
     routeParams: {} as Record<string, string>,
   })
@@ -847,7 +858,7 @@ async function executeRenderHook(
 
   const onErrorWhileStreaming = (err: unknown) => {
     objectAssign(pageContext, {
-      _err: err,
+      errorWhileRendering: err,
       _serverSideErrorWhileStreaming: true,
     })
     logError(err)
