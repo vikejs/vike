@@ -1,8 +1,8 @@
 import { autoRetry, fetchHtml, page, run, urlBase } from '../../libframe/test/setup'
 
-export { runTest }
+export { testRun }
 
-function runTest(npmScript: 'npm run dev' | 'npm run prod') {
+function testRun(npmScript: 'npm run dev' | 'npm run prod') {
   run(npmScript)
 
   test(`page is rendered to HTML [${npmScript}]`, async () => {

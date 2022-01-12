@@ -1,9 +1,9 @@
 import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase } from '../../libframe/test/setup'
 import assert from 'assert'
 
-export { runTests }
+export { testRun }
 
-function runTests(
+function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run dev:miniflare',
   { hasStarWarsPage }: { hasStarWarsPage: boolean },
 ) {

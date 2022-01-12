@@ -1,2 +1,2 @@
-import { runTests } from '../cloudflare-workers/.runTests'
-runTests('npm run prod', { hasStarWarsPage: false })
+import { testRun } from '../cloudflare-workers/.testRun'
+testRun('npm run prod', { hasStarWarsPage: false })

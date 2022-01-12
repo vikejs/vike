@@ -1,2 +1,2 @@
-import { runTests } from './.runTests'
-runTests('npm run prod')
+import { testRun } from './.testRun'
+testRun('npm run prod')

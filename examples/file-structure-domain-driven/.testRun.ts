@@ -1,8 +1,8 @@
 import { page, run, urlBase } from '../../libframe/test/setup'
 
-export { runTests }
+export { testRun }
 
-function runTests(cmd: 'npm run dev' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)
 
   test('Route String still works (1)', async () => {
