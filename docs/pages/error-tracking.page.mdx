@@ -5,7 +5,7 @@ We can track errors by using `pageContext.errorWhileRendering`:
 
 const { createPageRenderer } = require('vite-plugin-ssr')
 
-const renderPage = createPageRenderer(/* ... *)
+const renderPage = createPageRenderer(/* ... */)
 app.get('*', async (req, res, next) => {
   const pageContext = await renderPage({ url: req.url })
   // vite-plugin-ssr makes any error that occurs during server-side rendering
