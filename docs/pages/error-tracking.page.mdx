@@ -8,11 +8,12 @@ const { createPageRenderer } = require('vite-plugin-ssr')
 const renderPage = createPageRenderer(/* ... */)
 app.get('*', async (req, res, next) => {
   const pageContext = await renderPage({ url: req.url })
-  // vite-plugin-ssr makes any error that occurs during server-side rendering
-  // available at `pageContext.errorWhileRendering`.
+
+  // An error occured during server-side rendering
   if (pageContext.errorWhileRendering) {
     myErrorTracker(pageContext.errorWhileRendering)
   }
+
   // ...
 })
 ```
