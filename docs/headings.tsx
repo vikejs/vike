@@ -181,6 +181,11 @@ const headings: HeadingDefinition[] = [
     url: '/dynamic-import',
   },
   {
+    level: 2,
+    title: 'Error Tracking',
+    url: '/error-tracking',
+  },
+  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork',
