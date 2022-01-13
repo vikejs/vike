@@ -38,6 +38,12 @@ Vue Example:
  - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see usage of the <code>prerender()</code> hook)
 
 
+## Partial pre-rendering
+
+By default the command `$ vite-plugin-ssr prerender` pre-renders all our pages.
+To pre-render only some pages, we can use the <Link href="/command-prerender" text={<><code>partial</code> option</>} /> and <Link href="/doNotPrerender" text={<code>.page.server.js#doNotPrerender</code>} />
+
+
 ## SSG vs SSR
 
 The only difference between using `$ vite-plugin-ssr prerender` (SSG) and using [`renderPage()`](/createPageRenderer) (SSR) is when the HTML of pages are rendered:
