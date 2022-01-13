@@ -2,15 +2,42 @@ import { RepoLink, Link } from 'libframe-docs/components'
 
 > Check out <Link href="/pre-rendering" /> for an overview on how to pre-render `vite-plugin-ssr` apps.
 
-We usually use the `prerender()` hook to provide the list of URLs of a parameterized route (e.g.
-`/movie/1` and `/movie/2` for `/movie/:id`).
 
-If we don't have any parameterized route,
-then we can pre-render our app without defining any `prerender()` hook.
+## For providing URLs
 
-Also,
-we can use `prerender()` hooks to provide the `pageContext` of pages in a way that makes
-the pre-rendering build process faster.
+Most of the time, we use the `prerender()` hook in order to provide the URLs of parameterized routes.
+
+```js
+// /pages/movie.page.route.js
+// Environment: Node.js
+
+export default '/movie/:movieId`
+```
+```js
+// /pages/movie.page.server.js
+// Environment: Node.js
+
+export { prerender }
+
+async function prerender() {
+  const movies = await Movie.findAll()
+  const moviePageURLs = movies.map(movie => '/movie/' + movie.id)
+  return moviePageURLs
+}
+```
+
+> If we don't have any parameterized route,
+> then we can pre-render our app without defining any `prerender()` hook.
+
+> The `prerender()` hooks are called when we run the CLI command <Link href="/command-prerender" text={<code>$ vite-plugin-ssr prerender</code>} /> when building our app for production.
+> Thus, `prerender()` hooks are never called in development.
+
+
+## For providing `pageContext`
+
+If we have a high number of pages that are to be pre-rendered, then running the command <Link href="/command-prerender" text={<code>$ vite-plugin-ssr prerender</code>} /> may be slow.
+
+We can make it significantly faster by providing `pageContext` in `prerender()` hooks.
 
 ```js
 // /pages/movie.page.route.js
@@ -30,7 +57,7 @@ async function prerender() {
   const moviePages = (
     movies
     .map(movie => {
-      const url = `/movie/${movie.id}`
+      const url = '/movie/' + movie.id
       const pageProps = { movie }
       const pageContext = { pageProps }
       return {
@@ -42,7 +69,7 @@ async function prerender() {
       /* We could also only return `url` and not provide `pageContext`. In that case
        * vite-plugin-ssr would call the `onBeforeRender()` hook. But that would be wasteful
        * since we already have all the data of all movies from our `await Movie.findAll()` call.
-       * Instead, we provide `pageContext` to make the pre-rendering build process faster.
+       * Instead, we provide `pageContext` to make the pre-rendering build step faster.
        */
       // return { url }
     })
@@ -67,24 +94,25 @@ async function prerender() {
 }
 ```
 
-The `prerender()` hook is only used for pre-rendering:
-if we don't call
-`vite-plugin-ssr prerender`
-then no `prerender()` hook is ever called.
+Essentially, the `prerender()` hook allows us to prefetch data for multiple pages at once.
 
-> Providing `pageContext` in `prerender()` hooks
-> should only be used for making the pre-rendering build process faster and
-> we recommend against using `prerender()` for other purposes.
-> For example, we should avoid providing `pageContext` in `prerender()` hooks that wouldn't otherwise exist;
-> instead, we should make sure that our `onBeforeRender()` hooks provide all the `pageContext` we need.
-> (Pre-rendering is only run for production; we should keep our app consistent between dev and prod.)
+> <p><b>Providing <code>pageContext</code> in <code>prerender()</code> hooks should only be used for making the pre-rendering build step faster</b> and
+> we recommend against using <code>prerender()</code> hooks for other purposes.</p>
+>
+> For example, we should avoid providing additional `pageContext` in `prerender()` hooks that wouldn't otherwise exist.
+> Instead, we should make sure that our `onBeforeRender()` hooks provide all the `pageContext` we need.
+>
+> The reason being that `prerender()` hooks are never called in development and we should keep our app consistent between development and production.
 
-Vue Example:
- - <RepoLink path='/examples/vue-full/package.json' /> (see the <code>build:prerender</code> script)
- - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see the <code>prerender()</code> hook)
- - <RepoLink path='/examples/vue-full/pages/hello/index.page.server.ts' /> (see the <code>prerender()</code> hook)
+
+## Examples
 
 React Example:
  - <RepoLink path='/examples/react-full/package.json' /> (see the <code>build:prerender</code> script)
  - <RepoLink path='/examples/react-full/pages/star-wars/index.page.server.ts' /> (see the <code>prerender()</code> hook)
  - <RepoLink path='/examples/react-full/pages/hello/index.page.server.ts' /> (see the <code>prerender()</code> hook)
+
+Vue Example:
+ - <RepoLink path='/examples/vue-full/package.json' /> (see the <code>build:prerender</code> script)
+ - <RepoLink path='/examples/vue-full/pages/star-wars/index.page.server.ts' /> (see the <code>prerender()</code> hook)
+ - <RepoLink path='/examples/vue-full/pages/hello/index.page.server.ts' /> (see the <code>prerender()</code> hook)
