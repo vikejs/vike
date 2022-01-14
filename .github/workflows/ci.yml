@@ -28,7 +28,10 @@ jobs:
           node-version: ${{ matrix.node_version }}
 
       - name: Install & Build
-        run: yarn test:setup
+        run: yarn install --ignore-engines
+
+      - name: Build
+        run: yarn build
 
       - name: Run tests
         run: yarn test
