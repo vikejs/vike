@@ -22,7 +22,7 @@
     "@vue/compiler-sfc": "^3.2.26",
     "@vue/server-renderer": "^3.2.26",
     "express": "^4.17.2",
-    "miniflare": "^2.0.0",
+    "miniflare": "^1.4.1",
     "vite": "^2.7.12",
     "vite-plugin-ssr": "0.3.44",
     "vue": "^3.2.26",

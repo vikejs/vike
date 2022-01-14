@@ -20,7 +20,7 @@
     "@cloudflare/wrangler": "^1.19.7",
     "@vitejs/plugin-react": "^1.1.4",
     "express": "^4.17.2",
-    "miniflare": "^2.0.0",
+    "miniflare": "^1.4.1",
     "node-fetch": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
