@@ -6,8 +6,8 @@
     "@vitejs/plugin-vue": "^2.0.1",
     "@vue/compiler-sfc": "^3.2.26",
     "@vue/server-renderer": "^3.2.26",
-    "express": "^4.17.1",
-    "vite": "^2.7.2",
+    "express": "^4.17.2",
+    "vite": "^2.7.12",
     "vite-plugin-ssr": "0.3.44",
     "vue": "^3.2.26",
     "vuex": "^4.0.0"
