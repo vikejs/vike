@@ -129,14 +129,13 @@ function normalizeRollupInput(input?: InputOption): Record<string, string> {
   if (!input) {
     return {}
   }
-  /*
-  if (typeof input === "string") {
-    return { [input]: input };
+  // Usually `input` is an oject, but the user can set it as a `string` or `string[]`
+  if (typeof input === 'string') {
+    input = [input]
   }
   if (Array.isArray(input)) {
-    return Object.fromEntries(input.map((i) => [i, i]));
+    return Object.fromEntries(input.map((input) => [input, input]))
   }
-  */
   assert(isObject(input))
   return input
 }
