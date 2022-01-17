@@ -1,3 +1,12 @@
+## [0.3.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.44...v0.3.45) (2022-01-17)
+
+
+### Bug Fixes
+
+* allow user to define `rollupOptions.input` with a `string` or `string[]` ([d3f116d](https://github.com/brillout/vite-plugin-ssr/commit/d3f116ddcbdfdac2417179d8bf95360e97e8669f))
+
+
+
 ## [0.3.44](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.43...v0.3.44) (2022-01-12)
 
 

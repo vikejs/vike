@@ -16,7 +16,7 @@
     "typescript": "^4.3.2",
     "vite": "^2.7.2",
     "vite-plugin-solid": "^2.0.1",
-    "vite-plugin-ssr": "0.3.44"
+    "vite-plugin-ssr": "0.3.45"
   },
   "// Needed for Yarn workspaces": "",
   "name": "example-solid",
