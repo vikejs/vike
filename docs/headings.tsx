@@ -186,6 +186,11 @@ const headings: HeadingDefinition[] = [
     url: '/error-tracking',
   },
   {
+    level: 2,
+    title: 'Render as you Fetch',
+    url: '/render-as-you-fetch',
+  },
+  {
     level: 1,
     title: 'Routing',
     titleEmoji: 'road-fork',
