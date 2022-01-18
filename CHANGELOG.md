@@ -1,3 +1,12 @@
+## [0.3.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.45...v0.3.46) (2022-01-18)
+
+
+### Features
+
+* allow `render()` hook to return a `pageContext` promise ([44ef89d](https://github.com/brillout/vite-plugin-ssr/commit/44ef89d2eb03dc0ee0a26a3257f9ca6b72a4504f))
+
+
+
 ## [0.3.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.44...v0.3.45) (2022-01-17)
 
 
