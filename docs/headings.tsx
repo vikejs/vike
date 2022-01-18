@@ -6,6 +6,10 @@ export { headings }
 
 const headingsWithoutLink: HeadingWithoutLink[] = [
   {
+    title: 'HTML Streaming',
+    url: '/html-streaming',
+  },
+  {
     title: 'SPA vs SSR vs HTML',
     url: '/SPA-vs-SSR-vs-HTML',
   },
