@@ -209,7 +209,7 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
   if (pageContext._skipAssetInject) {
     return htmlString
   }
-  htmlString = injectPageInfo(htmlString, pageContext)
+  htmlString = injectPageContext(htmlString, pageContext)
   return htmlString
 }
 
@@ -247,10 +247,10 @@ function resolveScriptSrc(filePath: string, clientManifest: ViteManifest): strin
 }
 
 const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'
-function injectPageInfo(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
+function injectPageContext(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const injection = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
-  return injectEnd(htmlString, injection)
+  return injectAtHtmlEnd(htmlString, injection)
 }
 function injectPageInfoAlreadyDone(htmlString: string) {
   return htmlString.includes(pageInfoInjectionBegin)
@@ -259,7 +259,7 @@ function injectPageInfoAlreadyDone(htmlString: string) {
 function injectScript(htmlString: string, script: PageAsset): string {
   const isEsModule = true
   const injection = inferAssetTag(script, isEsModule)
-  return injectEnd(htmlString, injection)
+  return injectAtHtmlEnd(htmlString, injection)
 }
 
 const headClose = '</head>'
@@ -270,7 +270,7 @@ function injectLinkTags(htmlString: string, linkTags: string[]): string {
 }
 
 const headOpen = /<head(>| [^>]*>)/
-function injectBegin(htmlString: string, injection: string): string {
+function injectAtHtmlBegin(htmlString: string, injection: string): string {
   if (headOpen.test(htmlString)) {
     return injectAtOpeningTag(htmlString, headOpen, injection)
   }
@@ -288,7 +288,7 @@ function injectBegin(htmlString: string, injection: string): string {
   }
 }
 
-function injectEnd(htmlString: string, injection: string): string {
+function injectAtHtmlEnd(htmlString: string, injection: string): string {
   const bodyClose = '</body>'
   if (htmlString.includes(bodyClose)) {
     return injectAtClosingTag(htmlString, bodyClose, injection)
@@ -370,6 +370,6 @@ function ensureHeadTagExistence(htmlString: string): string {
   if (headOpen.test(htmlString)) {
     return htmlString
   }
-  htmlString = injectBegin(htmlString, '<head></head>')
+  htmlString = injectAtHtmlBegin(htmlString, '<head></head>')
   return htmlString
 }
