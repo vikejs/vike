@@ -125,8 +125,10 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
     expect(html).toContain(`<h1>404 Page Not Found</h1>${whitespace}This page could not be found.`)
   })
 
-  test('async pageContext', async () => {
-    const html = await fetchHtml('/')
-    expect(html).toContain('"someAsyncProps":42')
-  })
+  if (viewFramework === 'react') {
+    test('async pageContext', async () => {
+      const html = await fetchHtml('/')
+      expect(html).toContain('"someAsyncProps":42')
+    })
+  }
 }
