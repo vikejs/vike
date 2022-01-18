@@ -247,7 +247,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Data Fetching',
+    title: 'Data fetching',
   },
   {
     level: 2,
@@ -287,7 +287,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Data Store',
+    title: 'Data store',
   },
   {
     level: 2,
@@ -327,7 +327,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'CSS Frameworks',
+    title: 'CSS, styling, CSS frameworks',
   },
   {
     level: 2,
@@ -343,6 +343,12 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'CSS-in-JS',
     url: '/css-in-js',
+  },
+  {
+    level: 2,
+    title: '`styled-components`',
+    titleInNav: 'styled-components',
+    url: '/styled-components',
   },
   {
     level: 2,
@@ -362,7 +368,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'UI Frameworks',
+    title: 'UI frameworks',
   },
   {
     level: 2,
@@ -412,7 +418,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Static Hosts',
+    title: 'Static hosts',
   },
   {
     level: 2,
@@ -481,7 +487,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Node.js & Browser',
+    title: 'Node.js & browser',
   },
   {
     level: 2,
@@ -611,7 +617,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Special Pages',
+    title: 'Special pages',
   },
   {
     level: 2,

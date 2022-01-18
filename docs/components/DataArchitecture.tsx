@@ -1,8 +1,8 @@
+export { DataArchitecture }
+
 import React from 'react'
 import { assert } from 'libframe-docs/utils'
 import { P, Link, Info, ReadingRecommendation } from 'libframe-docs/components'
-
-export { DataArchitecture }
 
 function DataArchitecture({
   toolName,
@@ -15,7 +15,7 @@ function DataArchitecture({
   toolName: string
   toolLink?: string
   isGeneric: boolean
-  toolType: string
+  toolType: 'data-store' | 'data-fetching'
   toolDocs: JSX.Element
   skipPassToClient?: true
 }) {
@@ -31,7 +31,7 @@ function DataArchitecture({
         skipInfo={skipPassToClient}
       />
       {!skipPassToClient && recommendation}
-      {!skipPassToClient && <DataPassToClient toolType={toolType} isGenericDoc={isGeneric} />}
+      {!skipPassToClient && <DataPassToClient toolType={toolType} isGenericDoc={isGeneric} toolName={toolName} />}
     </>
   )
 }
@@ -71,7 +71,15 @@ function DataRenderControl({
     return <Info>{content}</Info>
   }
 }
-function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGenericDoc?: boolean }) {
+function DataPassToClient({
+  toolType,
+  isGenericDoc,
+  toolName,
+}: {
+  toolType: 'data-store' | 'data-fetching'
+  isGenericDoc?: boolean
+  toolName: string
+}) {
   assert(toolType === 'data-store' || toolType === 'data-fetching')
   assert(isGenericDoc === undefined || isGenericDoc === true || isGenericDoc === false)
   const dataName = toolType === 'data-store' ? 'state' : 'data'
@@ -82,17 +90,19 @@ function DataPassToClient({ toolType, isGenericDoc }: { toolType: string; isGene
       <ol>
         <li>
           We {toolType === 'data-store' ? 'set the initial state of the store' : 'fetch the initial data'} on the
-          server-side. (We need to do it on the server-side if we want its content to be rendered to HTML.)
+          server-side. (We need to do it on the server-side if we want the initial{' '}
+          {toolType === 'data-store' ? 'state' : 'data'} to be rendered to HTML.)
         </li>
         <li>
           We make the initial {dataName} available as <code>pageContext.{pageContextName}</code>.
         </li>
         <li>
-          We make <code>pageContext.{pageContextName}</code> available on the browser-side by using{' '}
-          <Link href="/passToClient" text={<code>passToClient</code>} />.
+          We make <code>pageContext.{pageContextName}</code> available on the browser-side by adding{' '}
+          <code>{`'${pageContextName}'`}</code> to <Link href="/passToClient" text={<code>passToClient</code>} />.
         </li>
         <li>
-          We initialize the store on the browser-side using <code>pageContext.{pageContextName}</code>.
+          We initialize {toolType === 'data-store' ? 'the store' : toolName} on the browser-side using{' '}
+          <code>pageContext.{pageContextName}</code>.
         </li>
       </ol>
     </P>

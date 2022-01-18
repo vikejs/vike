@@ -1,4 +1,6 @@
-Some CSS-in-JS tools can collect the styles of the rendered page, wich enables us to make the browser load styles before JavaScript.
+import { CSSinJSTool } from '../components'
+
+<CSSinJSTool prefix="Some CSS-in-JS tools allows us to" />
 
 ```jsx
 // renderer/_default.page.server.jsx
@@ -31,6 +33,3 @@ function render(pageContext) {
     </html>`;
 }
 ```
-
-Example:
- - [styled-components - SSR](https://styled-components.com/docs/advanced#server-side-rendering)
