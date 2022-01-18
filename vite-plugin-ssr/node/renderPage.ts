@@ -26,6 +26,7 @@ import {
   stringifyStringArray,
   parseUrl,
   assertBaseUrl,
+  isPromise,
 } from '../shared/utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import {
@@ -795,12 +796,19 @@ async function executeRenderHook(
   if (isObject(result) && !isDocumentHtml(result)) {
     assertHookResult(result, hookName, ['documentHtml', 'pageContext'] as const, renderFilePath)
   }
+  objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
 
+  let pageContextPromise: Promise<unknown> | null = null
   if (hasProp(result, 'pageContext')) {
     const pageContextProvidedByUser = result.pageContext
-    assertPageContextProvidedByUser(pageContextProvidedByUser, { hookFilePath: renderFilePath, hookName })
-    Object.assign(pageContext, pageContextProvidedByUser)
+    if (isPromise(pageContextProvidedByUser)) {
+      pageContextPromise = pageContextProvidedByUser
+    } else {
+      assertPageContextProvidedByUser(pageContextProvidedByUser, pageContext._renderHook)
+      Object.assign(pageContext, pageContextProvidedByUser)
+    }
   }
+  objectAssign(pageContext, { _pageContextProvidedByUserPromise: pageContextPromise })
 
   const errPrefix = 'The `render()` hook exported by ' + renderFilePath
   const errSuffix = [

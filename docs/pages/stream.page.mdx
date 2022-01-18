@@ -1,4 +1,4 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, Link } from 'libframe-docs/components'
 
 > HTML Streaming support is a beta feature; breaking changes may be introduced in minor version updates.
 
@@ -123,4 +123,47 @@ app.get("*", async (req, res, next) => {
   // Web Stream
   httpResponse.pipeToWebWritable(res)
 })
+```
+
+## Initial data after streaming
+
+Some data fetching tools, such as <Link href="/relay" text="Relay">Relay</Link>, provide the initial data only after the stream as ended.
+
+In such situations, we can return a `pageContext` promise in our `render()` hook:
+
+```js
+// renderer/_deault.page.server.js
+
+export { render }
+export { passToClient }
+
+import { escapeInject } from 'vite-plugin-ssr'
+import { renderToStream } from 'some-view-framework' // React, Vue, ...
+
+const passToClient = ['initialData']
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+
+  const pageContextPromise = (async () => {
+     return {
+       // Some `initialData` provided after the stream has ended
+       initialData,
+     }
+  })()
+
+  return {
+    documentHtml,
+    pageContext: pageContextPromise
+  }
+}
 ```

@@ -9,7 +9,7 @@ import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 export { render }
 export { passToClient }
 
-const passToClient = ['pageProps', 'documentProps']
+const passToClient = ['pageProps', 'documentProps', 'someAsyncProps']
 
 function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext
@@ -21,7 +21,7 @@ function render(pageContext: PageContextBuiltIn & PageContext) {
 
   const title = getPageTitle(pageContext)
 
-  return escapeInject`<!DOCTYPE html>
+  const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>
@@ -30,4 +30,14 @@ function render(pageContext: PageContextBuiltIn & PageContext) {
         <div id="page-view">${stream}</div>
       </body>
     </html>`
+
+  return {
+    documentHtml,
+    // We can return a `pageContext` promise
+    pageContext: (async () => {
+      return {
+        someAsyncProps: 42,
+      }
+    })(),
+  }
 }

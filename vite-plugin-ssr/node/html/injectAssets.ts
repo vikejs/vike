@@ -17,6 +17,7 @@ import { inferMediaType, MediaType } from './inferMediaType'
 import { AllPageFiles } from '../../shared/getPageFiles'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
+import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 
 export { injectAssets__public }
 export { injectAssets }
@@ -146,7 +147,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, '_pageClientPath', 'string'), errMsg('`pageContext._pageClientPath` is missing'))
   castProp<() => Promise<PageAssets>, typeof pageContext, '_getPageAssets'>(pageContext, '_getPageAssets')
   pageContext._getPageAssets
-  htmlString = await injectAssets(htmlString, pageContext)
+  htmlString = await injectAssets(htmlString, pageContext as any)
   return htmlString
 }
 
@@ -157,6 +158,8 @@ type PageContextInjectAssets = {
   _pageClientPath: string
   _passToClient: string[]
   _skipAssetInject?: true
+  _pageContextProvidedByUserPromise: Promise<unknown> | null
+  _renderHook: { hookFilePath: string; hookName: 'render' }
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
   htmlString = await injectAssetsBeforeRender(htmlString, pageContext)
@@ -206,6 +209,11 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
     !injectPageInfoAlreadyDone(htmlString),
     'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).',
   )
+  if (pageContext._pageContextProvidedByUserPromise !== null) {
+    const pageContextProvidedByUser = await pageContext._pageContextProvidedByUserPromise
+    assertPageContextProvidedByUser(pageContextProvidedByUser, pageContext._renderHook)
+    Object.assign(pageContext, pageContextProvidedByUser)
+  }
   if (pageContext._skipAssetInject) {
     return htmlString
   }
