@@ -399,7 +399,7 @@ async function prerenderPage(
   }
   assertUsage(
     renderHookResult.htmlRender !== null,
-    "Pre-rendering requires your `render()` hook to provide HTML. Open a GitHub issue if that's a problem for you.",
+    `Cannot pre-render \`${pageContext.url}\` because the \`render()\` hook exported by ${renderHookResult.renderFilePath} didn't return an HTML string.`,
   )
   assert(pageContext._isPageContextRequest === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
