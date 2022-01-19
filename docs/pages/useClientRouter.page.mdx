@@ -98,5 +98,4 @@ We can prefetch even more eagerly by setting `useClientRouter({ prefetchLinks: t
 
 We can override this option for individual links: `<a data-prefetch="false" href="/some-url" />`.
 
-> Only static assets are prefetched: the `pageContext` of links is not prefetched.
-> PR welcome to add an option to also prefetch `pageContext`.
+> Only static assets are prefetched; prefetching `pageContext` is work-in-progress, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
