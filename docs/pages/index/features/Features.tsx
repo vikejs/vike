@@ -57,8 +57,8 @@ function Features() {
           desc: (
             <>
               <p>
-                With <code>vite-plugin-ssr</code>, you integrate tools manually instead of using a plugin system. It
-                means more work, but you get a <b>fundamentally simpler & more stable foundation</b> to build upon.
+                With <code>vite-plugin-ssr</code>, you integrate tools manually instead of using a plugin system. While
+                it means more work, it gives you a <b>fundamentally simpler & more stable foundation</b> to build upon.
               </p>
               <p>
                 The clean cut between <code>vite-plugin-ssr</code> and your UI framework (React/Vue/...) makes reasoning
@@ -221,7 +221,7 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="high-voltage" /> High-performance
+              <Emoji name="high-voltage" /> Fast
             </>
           ),
           desc: (
@@ -253,7 +253,7 @@ function Features() {
                 as we can see).
               </p>
               <p>
-                With <code>vite-plugin-ssr</code>, you are under control; it's addictively fun.
+                With <code>vite-plugin-ssr</code>, <b>you are under control; it's addictively fun</b>.
               </p>
             </>
           ),
@@ -294,6 +294,22 @@ function Features() {
               </p>
               <p>
                 GitHub and Discord <b>conversations are welcome</b>.
+              </p>
+            </>
+          ),
+          isSecondaryFeature: true,
+        },
+        {
+          title: (
+            <>
+              <Emoji name="lab" /> Cutting Edge
+            </>
+          ),
+          desc: (
+            <>
+              <p>We often participate in RFCs.</p>
+              <p>
+                We are usually <b>among the first to support the latest</b> techniques.
               </p>
             </>
           ),
