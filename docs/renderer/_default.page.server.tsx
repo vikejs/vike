@@ -18,4 +18,5 @@ setFrame({
   navHeader: <NavHeader />,
   headings,
   headingsWithoutLink,
+  tagline: 'Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.',
 })
