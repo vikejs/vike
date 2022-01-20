@@ -307,9 +307,9 @@ function Features() {
           ),
           desc: (
             <>
-              <p>We often participate in RFCs.</p>
               <p>
-                We are usually <b>among the first to support the latest</b> techniques.
+                We regularly participate in RFCs and we are usually <b>among the first to support the latest</b>{' '}
+                techniques.
               </p>
             </>
           ),
