@@ -124,7 +124,7 @@ function assertArguments(
       (viteDevServer as any as ViteDevServer).config.plugins.find((plugin) =>
         plugin.name.startsWith('vite-plugin-ssr'),
       ),
-      "`vite-pugin-ssr`'s Vite plugin is not installed. Make sure to add it to your `vite.config.js`.",
+      "`vite-plugin-ssr`'s Vite plugin is not installed. Make sure to add it to your `vite.config.js`.",
     )
   }
   assertUsage(args.length === 1, '`createPageRenderer()`: all arguments should be passed as a single argument object.')
