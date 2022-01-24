@@ -60,9 +60,15 @@ function useClientRouter({
   onBrowserHistoryNavigation((scrollTarget) => {
     fetchAndRender(scrollTarget)
   })
-  navigateFunction = async (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => {
+  navigateFunction = async (
+    url: string,
+    {
+      keepScrollPosition,
+      doNotCreateNewHistoryEntry,
+    }: { keepScrollPosition: boolean; doNotCreateNewHistoryEntry: boolean },
+  ) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    await fetchAndRender(scrollTarget, url)
+    await fetchAndRender(scrollTarget, url, doNotCreateNewHistoryEntry)
   }
 
   let resolveInitialPagePromise: () => void
@@ -75,7 +81,11 @@ function useClientRouter({
 
   return { hydrationPromise }
 
-  async function fetchAndRender(scrollTarget: ScrollTarget, url: string = getUrlFull()): Promise<void> {
+  async function fetchAndRender(
+    scrollTarget: ScrollTarget,
+    url: string = getUrlFull(),
+    doNotCreateNewHistoryEntry = false,
+  ): Promise<void> {
     const renderingNumber = ++renderingCounter
     assert(renderingNumber >= 1)
 
@@ -133,7 +143,7 @@ function useClientRouter({
       return
     }
 
-    changeUrl(url)
+    changeUrl(url, doNotCreateNewHistoryEntry)
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
@@ -161,8 +171,17 @@ function useClientRouter({
 
 let navigateFunction:
   | undefined
-  | ((url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => Promise<void>)
-async function navigate(url: string, { keepScrollPosition = false } = {}): Promise<void> {
+  | ((
+      url: string,
+      {
+        keepScrollPosition,
+        doNotCreateNewHistoryEntry,
+      }: { keepScrollPosition: boolean; doNotCreateNewHistoryEntry: boolean },
+    ) => Promise<void>)
+async function navigate(
+  url: string,
+  { keepScrollPosition = false, doNotCreateNewHistoryEntry = false } = {},
+): Promise<void> {
   assertUsage(
     isBrowser(),
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.',
@@ -178,12 +197,18 @@ async function navigate(url: string, { keepScrollPosition = false } = {}): Promi
       typeof keepScrollPosition +
       '"`.',
   )
+  assertUsage(
+    typeof doNotCreateNewHistoryEntry === 'boolean',
+    '[navigate(url, { doNotCreateNewHistoryEntry })] Argument `doNotCreateNewHistoryEntry` should be a boolean (but we got `typeof keepScrollPosition === "' +
+      typeof doNotCreateNewHistoryEntry +
+      '"`.',
+  )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
   assertUsage(
     navigateFunction,
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.',
   )
-  await navigateFunction(url, { keepScrollPosition })
+  await navigateFunction(url, { keepScrollPosition, doNotCreateNewHistoryEntry })
 }
 
 function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
@@ -242,10 +267,14 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => 
   })
 }
 
-function changeUrl(url: string) {
+function changeUrl(url: string, doNotCreateNewHistoryEntry: boolean) {
   if (getUrlFull() === url) return
   browserNativeScrollRestoration_disable()
-  window.history.pushState(undefined, '', url)
+  if (!doNotCreateNewHistoryEntry) {
+    window.history.pushState(undefined, '', url)
+  } else {
+    window.history.replaceState(undefined, '', url)
+  }
   urlFullWithoutHash__previous = getUrlFullWithoutHash()
 }
 
