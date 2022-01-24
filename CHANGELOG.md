@@ -1,3 +1,12 @@
+## [0.3.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.46...v0.3.47) (2022-01-24)
+
+
+### Features
+
+* new `navigate()` option `doNotCreateNewHistoryEntry` ([59460fd](https://github.com/brillout/vite-plugin-ssr/commit/59460fdc2a6b678be92636f129e0707d8871ff4c))
+
+
+
 ## [0.3.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.45...v0.3.46) (2022-01-18)
 
 
