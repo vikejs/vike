@@ -64,11 +64,11 @@ function useClientRouter({
     url: string,
     {
       keepScrollPosition,
-      doNotCreateNewHistoryEntry,
-    }: { keepScrollPosition: boolean; doNotCreateNewHistoryEntry: boolean },
+      overwriteLastHistoryEntry,
+    }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
   ) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    await fetchAndRender(scrollTarget, url, doNotCreateNewHistoryEntry)
+    await fetchAndRender(scrollTarget, url, overwriteLastHistoryEntry)
   }
 
   let resolveInitialPagePromise: () => void
@@ -84,7 +84,7 @@ function useClientRouter({
   async function fetchAndRender(
     scrollTarget: ScrollTarget,
     url: string = getUrlFull(),
-    doNotCreateNewHistoryEntry = false,
+    overwriteLastHistoryEntry = false,
   ): Promise<void> {
     const renderingNumber = ++renderingCounter
     assert(renderingNumber >= 1)
@@ -143,7 +143,7 @@ function useClientRouter({
       return
     }
 
-    changeUrl(url, doNotCreateNewHistoryEntry)
+    changeUrl(url, overwriteLastHistoryEntry)
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
@@ -175,12 +175,12 @@ let navigateFunction:
       url: string,
       {
         keepScrollPosition,
-        doNotCreateNewHistoryEntry,
-      }: { keepScrollPosition: boolean; doNotCreateNewHistoryEntry: boolean },
+        overwriteLastHistoryEntry,
+      }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
     ) => Promise<void>)
 async function navigate(
   url: string,
-  { keepScrollPosition = false, doNotCreateNewHistoryEntry = false } = {},
+  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {},
 ): Promise<void> {
   assertUsage(
     isBrowser(),
@@ -198,9 +198,9 @@ async function navigate(
       '"`.',
   )
   assertUsage(
-    typeof doNotCreateNewHistoryEntry === 'boolean',
-    '[navigate(url, { doNotCreateNewHistoryEntry })] Argument `doNotCreateNewHistoryEntry` should be a boolean (but we got `typeof keepScrollPosition === "' +
-      typeof doNotCreateNewHistoryEntry +
+    typeof overwriteLastHistoryEntry === 'boolean',
+    '[navigate(url, { overwriteLastHistoryEntry })] Argument `overwriteLastHistoryEntry` should be a boolean (but we got `typeof keepScrollPosition === "' +
+      typeof overwriteLastHistoryEntry +
       '"`.',
   )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
@@ -208,7 +208,7 @@ async function navigate(
     navigateFunction,
     '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.',
   )
-  await navigateFunction(url, { keepScrollPosition, doNotCreateNewHistoryEntry })
+  await navigateFunction(url, { keepScrollPosition, overwriteLastHistoryEntry })
 }
 
 function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrollPosition: boolean }) => void) {
@@ -267,10 +267,10 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => 
   })
 }
 
-function changeUrl(url: string, doNotCreateNewHistoryEntry: boolean) {
+function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getUrlFull() === url) return
   browserNativeScrollRestoration_disable()
-  if (!doNotCreateNewHistoryEntry) {
+  if (!overwriteLastHistoryEntry) {
     window.history.pushState(undefined, '', url)
   } else {
     window.history.replaceState(undefined, '', url)
