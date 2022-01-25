@@ -1,3 +1,12 @@
+## [0.3.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.47...v0.3.48) (2022-01-25)
+
+
+### Bug Fixes
+
+* fix and rename `doNotCreateNewHistoryEntry` to `overwriteLastHistoryEntry` ([d3a4582](https://github.com/brillout/vite-plugin-ssr/commit/d3a458252e43e337769c17d03293201e5abf4e8c))
+
+
+
 ## [0.3.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.46...v0.3.47) (2022-01-24)
 
 
