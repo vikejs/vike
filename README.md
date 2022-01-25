@@ -8,9 +8,10 @@ Examples (community): [examples/README.md](https://github.com/brillout/vite-plug
 
 Version history & breaking changes: [CHANGELOG.md](/CHANGELOG.md)
 
-Follow: [twitter.com/brillout](https://twitter.com/brillout)
+Follow: [Twitter > @brillout](https://twitter.com/brillout)
 <br/>
-Chat: [Discord - `vite-plugin-ssr`](https://discord.com/invite/qTq92FQzKb)
+Chat: <a href="https://discord.com/invite/qTq92FQzKb">Discord > Vike Land<img src="/docs/icons/hash.svg" height="17" width="23" valign="text-bottom" alt="hash"/>vite-plugin-ssr</a>
+
 
 Have a question? Want a feature? A tool integration is not working?
 <a href="https://discord.com/invite/qTq92FQzKb">Join our Discord</a> or
