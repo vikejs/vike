@@ -13,7 +13,7 @@ function Page() {
       <HorizontalLine primary={true} />
       <Features />
       <HorizontalLine />
-      <ContactUs />
+      <ContactUs text="Have a question? Want a feature? A tool integration is not working?" />
       <MobileCallToAction />
       <div style={{ height: 70 }} />
     </>
