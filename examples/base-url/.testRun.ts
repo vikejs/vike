@@ -3,7 +3,7 @@ import { page, run, autoRetry, fetchHtml, partRegex, urlBase } from '../../libfr
 export { testRun }
 
 function testRun(
-  cmd: 'npm run dev:without-base-url' | 'npm run dev:with-base-url' | 'npm run prod:static' | 'npm run prod:server',
+  cmd: 'npm run dev' | 'npm run dev:base-url' | 'npm run prod:ssr' | 'npm run prod:ssg',
   { noBaseUrl }: { noBaseUrl?: true } = {},
 ) {
   const baseUrl = noBaseUrl ? '' : '/some/base-url'

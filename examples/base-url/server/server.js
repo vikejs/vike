@@ -2,7 +2,6 @@ import express from 'express'
 import vite from 'vite'
 import { createPageRenderer } from 'vite-plugin-ssr'
 import { createExpressApp } from './createExpressApp.js'
-import { base } from './base.js'
 import { root } from './root.js'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -10,7 +9,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 startServer()
 
 async function startServer() {
-  const { app, startApp } = createExpressApp({ base })
+  const { app, startApp } = createExpressApp()
 
   let viteDevServer
   if (isProduction) {
@@ -24,7 +23,7 @@ async function startServer() {
   }
 
   const renderPage = createPageRenderer({
-    base,
+    base: process.env.BASE_URL,
     viteDevServer,
     isProduction,
     root,

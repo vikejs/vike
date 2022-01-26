@@ -1,20 +1,26 @@
 {
   "scripts": {
-    "start": "npm run dev",
-    "dev": "npm run dev:without-base-url",
-    "dev:with-base-url": "node ./server",
-    "dev:without-base-url": "cross-env SKIP_BASE_URL=yes node ./server",
-    "prod": "npm run prod:server",
-    "prod:server": "npm run build && npm run prod:serve:server",
-    "prod:static": "npm run build && npm run build:prerender && npm run prod:serve:static",
-    "// Build for production": "",
-    "build": "npm run build:clean && npm run build:vite",
+    "// Development": "",
+    "dev": "node ./server",
+    "dev:base-url": "cross-env BASE_URL=/some/base-url/ node ./server",
+
+    "// Production": "",
+    "prod": "npm run prod:ssr",
+    "// With Server-Side Rendering:": "",
+    "prod:ssr": "npm run build && npm run serve:ssr",
+    "// With Pre-Rendering:": "",
+    "prod:ssg": "npm run build && npm run build:prerender && npm run serve:ssg",
+
+    "// Build": "",
+    "build": "npm run build:clean && npm run build:client && npm run build:server",
     "build:clean": "rimraf dist/",
-    "build:vite": "vite build && vite build --ssr",
+    "build:client": "cross-env BASE_URL=/some/base-url/ vite build",
+    "build:server": "cross-env BASE_URL=/some/base-url/ vite build --ssr",
     "build:prerender": "vite-plugin-ssr prerender",
+
     "// Production (static) server": "",
-    "prod:serve:server": "cross-env NODE_ENV=production node ./server",
-    "prod:serve:static": "node ./server/static-server"
+    "serve:ssr": "cross-env NODE_ENV=production BASE_URL=/some/base-url/ node ./server",
+    "serve:ssg": "cross-env NODE_ENV=production BASE_URL=/some/base-url/ node ./server/static-server"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^1.1.4",

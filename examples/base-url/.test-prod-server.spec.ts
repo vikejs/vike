@@ -1,3 +1,3 @@
 import { testRun } from './.testRun'
 
-testRun('npm run prod:server')
+testRun('npm run prod:ssr')
