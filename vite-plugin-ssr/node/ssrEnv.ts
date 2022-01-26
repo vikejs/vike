@@ -12,6 +12,7 @@ type SsrEnv =
       root: string
       outDir: string
       baseUrl: string
+      baseAssets: string | null
     }
   | {
       isProduction: true
@@ -19,6 +20,7 @@ type SsrEnv =
       root?: string | undefined
       outDir: string
       baseUrl: string
+      baseAssets: string | null
     }
 
 function getSsrEnv(): SsrEnv {

@@ -15,7 +15,17 @@ To change the Base URL we:
 Example:
  - <RepoLink path='/examples/base-url/' />
 
-We can set `base` to `'https://another-origin.example.org/'` (for cross-origin deployments) or to `'./'` (for embedded deployments at multiple paths).
 
-See also:
- - [Vite Docs - Public Base Path](https://vitejs.dev/guide/build.html#public-base-path)
+## CDN
+
+If we want to deploy our static assets to a CDN while server-side rendering our pages on a separate sever, then we need to change the base URL only of our static assets but not the base URL of our SSR server.
+
+We can use `createPageRenderer({ baseAssets: 'http://some-cdn.com/my-static-assets/' })` which will change the base URL only of our static assets.
+
+Example:
+ - <RepoLink path='/examples/base-url-cdn/' />
+
+
+## See Also
+
+- [Vite Docs - Public Base Path](https://vitejs.dev/guide/build.html#public-base-path)

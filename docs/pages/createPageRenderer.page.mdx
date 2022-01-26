@@ -15,6 +15,7 @@ const { createPageRenderer } = require('vite-plugin-ssr')
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
 const base = '/'
+const baseAssets = '/'
 const outDir = `dist`
 
 startServer()
@@ -34,7 +35,14 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
-  const renderPage = createPageRenderer({ viteDevServer, isProduction, root, outDir, base })
+  const renderPage = createPageRenderer({
+    viteDevServer,
+    isProduction,
+    root,
+    outDir,
+    base,
+    baseAssets
+  })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = { url }
@@ -55,6 +63,7 @@ async function startServer() {
 - `root` is the absolute path of our app's root directory. The `root` directory is usually the directory where `vite.config.js` lives. All our `.page.js` files need to be descendent of the `root` directory.
 - `outDir` is the build directory of your project. Default: `dist`.
 - `base` is the [Base URL](/base-url).
+- `baseAssets` is the [Base URL](/base-url) of our static assets.
 - `pageContext.httpResponse` is `null` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
 - `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
 - `pageContext.httpResponse.contentType` is either `text/html` or `application/json`. (The Content Type is `application/json` when [Client Routing](/useClientRouter) fetches the `pageContext` of the newly navigated page.)

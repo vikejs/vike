@@ -39,6 +39,7 @@ async function getPageAssets(
   pageContext: {
     _allPageFiles: AllPageFiles
     _baseUrl: string
+    _baseAssets: string | null
   },
   dependencies: string[],
   pageClientFilePath: string,
@@ -77,7 +78,8 @@ async function getPageAssets(
   })
 
   pageAssets = pageAssets.map((pageAsset) => {
-    pageAsset.src = prependBaseUrl(normalizePath(pageAsset.src), pageContext._baseUrl)
+    const baseUrlAssets = pageContext._baseAssets || pageContext._baseUrl
+    pageAsset.src = prependBaseUrl(normalizePath(pageAsset.src), baseUrlAssets)
     return pageAsset
   })
 

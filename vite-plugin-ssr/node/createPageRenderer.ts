@@ -23,6 +23,7 @@ function createPageRenderer({
   outDir = 'dist',
   isProduction,
   base = '/',
+  baseAssets = null,
 }: {
   viteDevServer?: unknown
   /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
@@ -32,6 +33,7 @@ function createPageRenderer({
   outDir?: string
   isProduction?: boolean
   base?: string
+  baseAssets?: string | null
 }): RenderPage {
   assertUsage(
     !wasCalled,
@@ -39,7 +41,7 @@ function createPageRenderer({
   )
   wasCalled = true
 
-  const ssrEnv = { viteDevServer, root, outDir, isProduction, baseUrl: base }
+  const ssrEnv = { viteDevServer, root, outDir, isProduction, baseUrl: base, baseAssets }
   assertArguments(ssrEnv, Array.from(arguments))
   setSsrEnv(ssrEnv)
 
@@ -53,18 +55,20 @@ function assertArguments(
     outDir?: unknown
     isProduction?: unknown
     baseUrl?: unknown
+    baseAssets?: unknown
   },
   args: unknown[],
 ): asserts ssrEnv is SsrEnv {
-  const { viteDevServer, root, outDir, isProduction, baseUrl } = ssrEnv
+  const { viteDevServer, root, outDir, isProduction, baseUrl, baseAssets } = ssrEnv
   assertUsage(
     root === undefined || typeof root === 'string',
     '`createPageRenderer({ root })`: argument `root` should be a string.',
   )
   assertUsage(typeof outDir === 'string', '`createPageRenderer({ outDir })`: argument `outDir` should be a string.')
+  assertUsage(typeof baseUrl === 'string', '`createPageRenderer({ base })`: argument `base` should be a string.')
   assertUsage(
-    typeof baseUrl === 'string',
-    '`createPageRenderer({ base })`: argument `base` should be a string or `undefined`.',
+    baseAssets === null || typeof baseAssets === 'string',
+    '`createPageRenderer({ baseAssets })`: argument `baseAssets` should be a string.',
   )
   assertUsageBaseUrl(baseUrl, '`createPageRenderer({ base })`: ')
   assertUsage(
@@ -131,7 +135,7 @@ function assertArguments(
   assert(typeof args[0] === 'object' && args[0] !== null)
   Object.keys(args[0]).forEach((argName) => {
     assertUsage(
-      ['viteDevServer', 'root', 'outDir', 'isProduction', 'base'].includes(argName),
+      ['viteDevServer', 'root', 'outDir', 'isProduction', 'base', 'baseAssets'].includes(argName),
       '`createPageRenderer()`: Unknown argument `' + argName + '`.',
     )
   })

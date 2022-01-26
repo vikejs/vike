@@ -491,6 +491,7 @@ type PageServerFiles = {
 async function loadPageFiles(pageContext: {
   _pageId: string
   _baseUrl: string
+  _baseAssets: string | null
   _allPageFiles: AllPageFiles
   _isPreRendering: boolean
 }) {
@@ -1056,6 +1057,7 @@ async function getGlobalContext() {
   const globalContext = {
     _parseUrl,
     _baseUrl: getBaseUrl(),
+    _baseAssets: getSsrEnv().baseAssets
   }
   assertBaseUrl(globalContext._baseUrl)
 

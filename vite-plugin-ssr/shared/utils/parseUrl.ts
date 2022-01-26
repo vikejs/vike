@@ -147,6 +147,11 @@ function parseWithNewUrl(url: string): { origin: string | null; pathname: string
 
 function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
   assertUsage(
+    !baseUrl.startsWith('http'),
+    usageErrorMessagePrefix +
+      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, https://vite-plugin-ssr/baseAssets',
+  )
+  assertUsage(
     baseUrl.startsWith('/'),
     usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`.',
   )
@@ -209,6 +214,13 @@ function analyzeBaseUrl(
 }
 
 function prependBaseUrl(url: string, baseUrl: string): string {
+  if (isBaseAssets(baseUrl)) {
+    const baseAssets = baseUrl
+    const baseAssetsNormalized = normalizeBaseAssets(baseAssets)
+    assert(!baseAssetsNormalized.endsWith('/'))
+    assert(url.startsWith('/'))
+    return `${baseAssetsNormalized}${url}`
+  }
   assertBaseUrl(baseUrl)
 
   const baseUrlNormalized = normalizeBaseUrl(baseUrl)
@@ -228,4 +240,19 @@ function normalizeBaseUrl(baseUrl: string) {
   // We can and should expect `baseUrl` to not contain `/` doublets.
   assert(!baseUrlNormalized.endsWith('/') || baseUrlNormalized === '/')
   return baseUrlNormalized
+}
+
+function isBaseAssets(base: string) {
+  if (base.startsWith('http')) {
+    return true
+  }
+  return false
+}
+function normalizeBaseAssets(baseAssets: string) {
+  let baseAssetsNormalized = baseAssets
+  if (baseAssetsNormalized.endsWith('/')) {
+    baseAssetsNormalized = slice(baseAssetsNormalized, 0, -1)
+  }
+  assert(!baseAssetsNormalized.endsWith('/'))
+  return baseAssetsNormalized
 }

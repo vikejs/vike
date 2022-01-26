@@ -1,4 +1,5 @@
 import { parseUrl, assertBaseUrl } from '../../../shared/utils'
+import { getBaseUrl } from './getBaseUrl'
 import { isExternalLink } from './isExternalLink'
 
 export { skipLink }
@@ -33,7 +34,7 @@ function isHashUrl(url: string) {
   return false
 }
 function hasBaseUrl(url: string): boolean {
-  const baseUrl = import.meta.env.BASE_URL
+  const baseUrl = getBaseUrl()
   assertBaseUrl(baseUrl)
   const { hasBaseUrl } = parseUrl(url, baseUrl)
   return hasBaseUrl

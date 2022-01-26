@@ -94,6 +94,7 @@ async function prerender({
     outDir,
     viteDevServer: undefined,
     baseUrl: '/',
+    baseAssets: null
   }
   setSsrEnv(ssrEnv)
 

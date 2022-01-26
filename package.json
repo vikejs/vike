@@ -20,7 +20,7 @@
     "docs:prod": "cd libframe/docs/ && yarn prod",
     "========= Test": "",
     "// Run tests": "",
-    "test": "cd libframe/test/ && yarn test --bail",
+    "test": "cd libframe/test/ && yarn test",
     "// Run `$ yarn test:setup` before running `$ yarn test`": "",
     "test:setup": "yarn clean && yarn install && yarn build",
     "========= Dev": "",

@@ -1,0 +1,32 @@
+{
+  "scripts": {
+    "start": "npm run prod",
+    "// Production": "",
+    "prod": "npm run build && npm run serve",
+    "// Build": "",
+    "build": "npm run build:clean && npm run build:client && npm run build:server",
+    "build:clean": "rimraf dist/",
+    "build:client": "vite build --base http://localhost:8080/cdn/",
+    "build:server": "vite build --ssr",
+    "// Server + CDN": "",
+    "serve": "concurrently \"npm run serve:cdn \" \"npm run serve:ssr\"",
+    "serve:ssr": "node ./server/ssr",
+    "serve:cdn": "node ./server/cdn"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^1.1.4",
+    "concurrently": "^7.0.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rimraf": "^3.0.2",
+    "vite": "^2.7.12",
+    "vite-plugin-ssr": "0.3.48"
+  },
+  "type": "module",
+  "// Needed for Yarn workspaces": "",
+  "name": "example_base-url-cdn",
+  "version": "0.0.0"
+}

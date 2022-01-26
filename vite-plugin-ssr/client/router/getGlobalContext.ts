@@ -2,6 +2,7 @@ import { determinePageIds } from '../../shared/determinePageIds'
 import { getAllPageFiles } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route'
 import { assert, assertBaseUrl, hasProp, objectAssign, PromiseType } from '../../shared/utils'
+import { getBaseUrl } from './utils/getBaseUrl'
 
 export { getGlobalContext }
 export type { ServerFiles }
@@ -19,7 +20,7 @@ type ServerFiles = { filePath: string; fileExports: { hasExportOnBeforeRender: b
 async function retrieveGlobalContext() {
   const globalContext = {
     _parseUrl: null,
-    _baseUrl: import.meta.env.BASE_URL,
+    _baseUrl: getBaseUrl(),
   }
   assertBaseUrl(globalContext._baseUrl)
 
