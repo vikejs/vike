@@ -3,21 +3,18 @@
     "// Development": "",
     "dev": "node ./server",
     "dev:base-url": "cross-env BASE_URL=/some/base-url/ node ./server",
-
     "// Production": "",
     "prod": "npm run prod:ssr",
     "// With Server-Side Rendering:": "",
     "prod:ssr": "npm run build && npm run serve:ssr",
     "// With Pre-Rendering:": "",
     "prod:ssg": "npm run build && npm run build:prerender && npm run serve:ssg",
-
     "// Build": "",
     "build": "npm run build:clean && npm run build:client && npm run build:server",
     "build:clean": "rimraf dist/",
     "build:client": "cross-env BASE_URL=/some/base-url/ vite build",
     "build:server": "cross-env BASE_URL=/some/base-url/ vite build --ssr",
     "build:prerender": "vite-plugin-ssr prerender",
-
     "// Production (static) server": "",
     "serve:ssr": "cross-env NODE_ENV=production BASE_URL=/some/base-url/ node ./server",
     "serve:ssg": "cross-env NODE_ENV=production BASE_URL=/some/base-url/ node ./server/static-server"
@@ -30,7 +27,7 @@
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
     "vite": "^2.7.12",
-    "vite-plugin-ssr": "0.3.48"
+    "vite-plugin-ssr": "0.3.49"
   },
   "type": "module",
   "// Needed for Yarn workspaces": "",

@@ -10,7 +10,7 @@
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "vite": "^2.7.12",
-    "vite-plugin-ssr": "0.3.48"
+    "vite-plugin-ssr": "0.3.49"
   },
   "type": "module",
   "// Needed for Yarn workspaces": "",

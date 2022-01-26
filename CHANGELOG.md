@@ -1,3 +1,12 @@
+## [0.3.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.48...v0.3.49) (2022-01-26)
+
+
+### Features
+
+* add `baseAssets` option; enable CDN deployments ([dac4841](https://github.com/brillout/vite-plugin-ssr/commit/dac484193fbbe6f2432b0e2ad35197bfba1e378a))
+
+
+
 ## [0.3.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.47...v0.3.48) (2022-01-25)
 
 
