@@ -135,7 +135,7 @@ function Features() {
           desc: (
             <>
               <p>
-                Works with <b>any server environement</b> (Vercel, Cloudflare Workers, AWS EC2, AWS Lambda, Firebase,
+                Works with <b>any server environment</b> (Vercel, Cloudflare Workers, AWS EC2, AWS Lambda, Firebase,
                 Google Cloud, ...).
               </p>
               <p>
