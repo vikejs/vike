@@ -149,7 +149,7 @@ function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '
   assertUsage(
     !baseUrl.startsWith('http'),
     usageErrorMessagePrefix +
-      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, https://vite-plugin-ssr/baseAssets',
+      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vite-plugin-ssr/base-url',
   )
   assertUsage(
     baseUrl.startsWith('/'),
