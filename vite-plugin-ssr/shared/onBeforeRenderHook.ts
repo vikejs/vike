@@ -44,7 +44,9 @@ function getOnBeforeRenderHook(
         `The \`onBeforeRender()\` hook exported by ${filePath} should return \`undefined\`, \`null\`, or \`{ pageContext: { /*...*/ }}\` (a JavaScript object with a single key \`pageContext\`).`,
       )
       const pageContextProvidedByUser = hookReturn.pageContext
-      assertPageContextProvidedByUser(pageContextProvidedByUser, { hookName: 'onBeforeRender', hookFilePath: filePath })
+      assertPageContextProvidedByUser(pageContextProvidedByUser, {
+        hook: { hookName: 'onBeforeRender', hookFilePath: filePath },
+      })
       return { pageContext: pageContextProvidedByUser }
     },
   }

@@ -27,6 +27,7 @@ export default pageContext => {
 
 Route Functions enable us to use any matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
+
 ## Always Run
 
 Upon each page request (i.e. upon each [`renderPage()`](/createPageRenderer) call),
@@ -53,6 +54,125 @@ export default pageContext => {
 > This authentication redirection trick is further explained at [Guides > Page Redirection > Auth Redirection](/page-redirection#auth-redirection).
 
 > `vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes; that's why `vite-plugin-ssr` always runs all Route Functions upon each page request.
+
+
+## Async
+
+Async route functions may significantly slow down our app: as we have seen in the previous section, every time a page is rendered the Route Functions of all our pages are called and awaited for.
+
+This means that a slow Route Function will slow down all our pages.
+
+By default, async route functions are forbidden, but we can enable them by setting `iKnowThePerformanceRisksOfAsyncRouteFunctions`.
+
+```js
+// *.page.route.js
+
+export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
+
+// We can now use an async Route Function
+export default async () => { /* ... */ }
+```
+
+Also, providing `pageContext` in route functions if forbidden (even for async route functions).
+
+```js
+// *.page.route.js
+
+export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
+
+// This is not possible and `vite-plugin-ssr` will complain
+export default async () => {
+  return {
+    pageContext: {
+      // Some additional `pageContext`
+    }
+  }
+}
+```
+
+Often, the motivation for using async route functions is to determine whether the URL exists:
+
+```js
+// user.page.route.js
+
+export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
+
+export default async pageContext => {
+  const { url } = pageContext
+
+  // Parse the URL
+  const urlParts = url.slice(1).split('/')
+
+  // Only URLs that start with `/user/:userId`
+  if (urlParts[0] !== 'user') return false
+  const userId = urlParts[1]
+  if (!userId) return false
+
+  // Only if there is a user matching `userId`
+  const user = await db.fetchUser(userId)
+  if (!user) {
+    return false
+  }
+
+  return {
+    routeParams: {
+      userId
+    },
+    // `vite-plugin-ssr` complains
+    pageContext: {
+      user
+    }
+  }
+}
+```
+
+Instead, we can `throw RenderErrorPage()` in our `onBeforeRender()` hook:
+
+```js
+// user.page.server.js
+
+export { onBeforeRender }
+
+import { RenderErrorPage } from 'vite-plugin-ssr'
+
+function onBeforeRender(pageContext) {
+  const { userId } = pageContext.routeParams
+
+  const user = await db.fetchUser(userId)
+
+  if (!user) {
+    // `vite-plugin-ssr` will render `_error.page.js`
+    throw RenderErrorPage({
+      pageContext: {
+        // We can provide some additional `pageContext` to use in `_error.page.js`
+        errorInfo: `User ${userId} doesn't exist`
+      }
+    })
+  }
+
+  // ...
+}
+```
+```js
+// user.page.route.js
+
+export default pageContext => {
+  const { url } = pageContext
+
+  const urlParts = url.slice(1).split('/')
+
+  if (urlParts[0] !== 'user') return false
+  const userId = urlParts[1]
+  if (!userId) return false
+
+  return {
+    routeParams: {
+      userId
+    }
+  }
+}
+```
+
 
 ## Precedence
 

@@ -9,7 +9,7 @@ import {
   PageFile,
 } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
-import { stringify } from '@brillout/json-s'
+import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
   assertUsage,
@@ -57,6 +57,7 @@ import { addIs404ToPageProps, serializePageContextClientSide } from './serialize
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
+import { isRenderErrorPage, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
@@ -94,7 +95,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   if ('hookError' in routeResult) {
     const err = routeResult.hookError
     logError(err)
-    return await render500Page(pageContextInit, routeResult.hookError)
+    return await renderErrorPage(pageContextInit, routeResult.hookError)
   }
   objectAssign(pageContext, routeResult.pageContextAddendum)
 
@@ -171,7 +172,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   if ('hookError' in renderHookResult) {
     const err = renderHookResult.hookError
     logError(err)
-    return await render500Page(pageContextInit, err)
+    return await renderErrorPage(pageContextInit, err)
   }
 
   if (renderHookResult === null) {
@@ -222,11 +223,26 @@ async function renderPageWithoutThrowing(
   try {
     return await renderPage.apply(null, args)
   } catch (err) {
-    logError(err)
+    assertError(err)
+    const skipLog = isRenderErrorPage(err)
+    if (!skipLog) {
+      logError(err)
+    } else {
+      setAlreadyLogged(err)
+    }
     try {
-      return await render500Page(pageContextInit, err)
+      const pageContextAddendum = {}
+      if (isRenderErrorPage(err)) {
+        objectAssign(pageContextAddendum, { is404: true })
+        objectAssign(pageContextAddendum, err.pageContext)
+      }
+      return await renderErrorPage(pageContextInit, err, pageContextAddendum)
     } catch (err2) {
+      assertError(err2)
       // We swallow `err2`; logging `err` should be enough; `err2` is likely the same error than `err` anyways.
+      if (skipLog) {
+        logError(err2)
+      }
       const pageContext = {}
       objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, {
@@ -238,7 +254,11 @@ async function renderPageWithoutThrowing(
   }
 }
 
-async function render500Page<PageContextInit extends { url: string }>(pageContextInit: PageContextInit, err: unknown) {
+async function renderErrorPage<PageContextInit extends { url: string }>(
+  pageContextInit: PageContextInit,
+  err: unknown,
+  pageContextAddendum?: Record<string, unknown>,
+) {
   assert(hasAlreadyLogged(err))
 
   const pageContext = await initializePageContext(pageContextInit)
@@ -252,11 +272,15 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
     routeParams: {} as Record<string, string>,
   })
 
+  objectAssign(pageContext, pageContextAddendum)
+
+  const statusCode = pageContext.is404 ? 404 : 500
+
   if (pageContext._isPageContextRequest) {
     const body = stringify({
       serverSideError: true,
     })
-    const httpResponse = createHttpResponseObject(body, { statusCode: 500, renderFilePath: null }, pageContext)
+    const httpResponse = createHttpResponseObject(body, { statusCode, renderFilePath: null }, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -278,20 +302,24 @@ async function render500Page<PageContextInit extends { url: string }>(pageContex
   /*
   const hookResult = await executeOnBeforeRenderHooks(pageContext)
   if ('hookError' in hookResult) {
-    warnCouldNotRender500Page(hookResult)
+    warnCouldNotRenderErrorPage(hookResult)
     return pageContext
   }
   */
   const renderHookResult = await executeRenderHook(pageContext)
   if ('hookError' in renderHookResult) {
-    warnCouldNotRender500Page(renderHookResult)
+    warnCouldNotRenderErrorPage(renderHookResult)
     return pageContext
   }
 
   const { htmlRender, renderFilePath } = renderHookResult
-  const httpResponse = createHttpResponseObject(htmlRender, { statusCode: 500, renderFilePath }, pageContext)
+  const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath }, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
+}
+
+function assertError(err: unknown) {
+  assertRenderErrorPageParentheses(err)
 }
 
 type StatusCode = 200 | 404 | 500
@@ -805,7 +833,7 @@ async function executeRenderHook(
     if (isPromise(pageContextProvidedByUser)) {
       pageContextPromise = pageContextProvidedByUser
     } else {
-      assertPageContextProvidedByUser(pageContextProvidedByUser, pageContext._renderHook)
+      assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
       Object.assign(pageContext, pageContextProvidedByUser)
     }
   }
@@ -866,11 +894,12 @@ async function executeRenderHook(
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
+    assertError(err)
+    logError(err)
     objectAssign(pageContext, {
       errorWhileRendering: err,
       _serverSideErrorWhileStreaming: true,
     })
-    logError(err)
   }
   const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   if (hasProp(htmlRender, 'hookError')) {
@@ -972,7 +1001,7 @@ function warnMissingErrorPage() {
     )
   }
 }
-function warnCouldNotRender500Page({ hookFilePath, hookName }: { hookFilePath: string; hookName: string }) {
+function warnCouldNotRenderErrorPage({ hookFilePath, hookName }: { hookFilePath: string; hookName: string }) {
   assert(!hookName.endsWith('()'))
   assertWarning(
     false,
@@ -1057,7 +1086,8 @@ async function getGlobalContext() {
   const globalContext = {
     _parseUrl,
     _baseUrl: getBaseUrl(),
-    _baseAssets: getSsrEnv().baseAssets
+    _baseAssets: getSsrEnv().baseAssets,
+    _objectCreatedByVitePluginSsr: true,
   }
   assertBaseUrl(globalContext._baseUrl)
 
@@ -1088,6 +1118,8 @@ function throwPrerenderError(err: unknown) {
   }
 }
 function logError(err: unknown) {
+  assertError(err)
+
   if (viteAlreadyLoggedError(err)) {
     return
   }
@@ -1107,6 +1139,7 @@ function logError(err: unknown) {
   // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
   const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
   console.error(errStr)
+  setAlreadyLogged(err)
 }
 
 function viteAlreadyLoggedError(err: unknown) {
@@ -1123,11 +1156,12 @@ function viteAlreadyLoggedError(err: unknown) {
 function hasAlreadyLogged(err: unknown) {
   assert(isObject(err))
   const key = '_wasAlreadyConsoleLogged'
-  if (err[key]) {
-    return true
-  }
+  return err[key] === true
+}
+function setAlreadyLogged(err: unknown) {
+  assert(isObject(err))
+  const key = '_wasAlreadyConsoleLogged'
   err[key] = true
-  return false
 }
 
 function viteErrorCleanup(err: unknown) {

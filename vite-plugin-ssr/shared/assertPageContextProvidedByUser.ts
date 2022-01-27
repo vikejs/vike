@@ -4,24 +4,27 @@ export { assertPageContextProvidedByUser }
 
 function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
-  hook: { hookFilePath: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' },
+  {
+    hook,
+    errorMessagePrefix,
+  }: {
+    hook?: { hookFilePath: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
+    errorMessagePrefix?: string
+  },
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
-  const { hookName, hookFilePath } = hook
-  assert(hookFilePath.startsWith('/'))
+  if (!errorMessagePrefix) {
+    assert(hook)
+    const { hookName, hookFilePath } = hook
+    assert(hookFilePath.startsWith('/'))
+    assert(!hookName.endsWith(')'))
+    errorMessagePrefix = `The \`pageContext\` provided by the \`${hookName}()\` hook (${hookFilePath})`
+  }
 
-  const errMessagePrefix = `The hook \`export { ${hookName} }\` of ${hookFilePath} returned`
+  assertUsage(isObject(pageContextProvidedByUser), `${errorMessagePrefix} should be an object.`)
 
   assertUsage(
-    isObject(pageContextProvidedByUser),
-    `${errMessagePrefix} \`{ pageContext }\` but \`pageContext\` should be an object.`,
+    !('_objectCreatedByVitePluginSsr' in pageContextProvidedByUser),
+    `${errorMessagePrefix} should not be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`,
   )
-
-  assertUsage(
-    !isWholePageContext(pageContextProvidedByUser),
-    `${errMessagePrefix} the whole \`pageContext\` object which is forbidden, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`,
-  )
-}
-
-function isWholePageContext(pageContextProvidedByUser: Record<string, unknown>) {
-  return '_pageId' in pageContextProvidedByUser
+  assert(!('_pageId' in pageContextProvidedByUser))
 }

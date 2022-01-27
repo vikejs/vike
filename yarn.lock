@@ -709,10 +709,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@brillout/json-s@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@brillout/json-s/-/json-s-0.4.0.tgz#dc0872d163d545500ab362ffb19c36e56e29f6db"
-  integrity sha512-Nl1F1HnrjhdfYk5VlCq0t3uPfXF9Y4/NIceXRshvh4vAfqydw1cxgW64wa+FO0HT6zMA4rUOamxfXNRDkyHkww==
+"@brillout/json-s@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@brillout/json-s/-/json-s-0.4.2.tgz#5fc2ba9304d8cc861e8dced4206ef40339d74563"
+  integrity sha512-x3Li3bvXqT9p1q4HB6qPmhWErj/5OZjtedKnSO0n4vYIVpY7L5nIG0xzKkznFWvyfmzOwMAI5b6xK1axUiU/eQ==
 
 "@brillout/libassert@^0.5.2":
   version "0.5.2"

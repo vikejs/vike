@@ -213,7 +213,7 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
   )
   if (pageContext._pageContextProvidedByUserPromise !== null) {
     const pageContextProvidedByUser = await pageContext._pageContextProvidedByUserPromise
-    assertPageContextProvidedByUser(pageContextProvidedByUser, pageContext._renderHook)
+    assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
     Object.assign(pageContext, pageContextProvidedByUser)
   }
   if (pageContext._skipAssetInject) {

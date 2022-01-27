@@ -1,4 +1,4 @@
-import { run, page, urlBase, fetchHtml, autoRetry } from '../../libframe/test/setup'
+import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError } from '../../libframe/test/setup'
 import assert = require('assert')
 
 export { testPages }
@@ -109,6 +109,7 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
       assert(false)
     }
   })
+
   test('markdown page DOM', async () => {
     await page.goto(urlBase + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
@@ -119,16 +120,34 @@ function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm r
       expect(await page.textContent('button')).toContain('Counter 1')
     })
   })
+
   test('test 404 page', async () => {
     const html = await fetchHtml('/doesNotExist')
-    const whitespace = viewFramework === 'vue' ? ' ' : ''
-    expect(html).toContain(`<h1>404 Page Not Found</h1>${whitespace}This page could not be found.`)
+    expect(html).toContain('<h1>404 Page Not Found</h1>')
+    expect(html).toContain('This page could not be found.')
   })
 
   if (viewFramework === 'react') {
     test('async pageContext', async () => {
       const html = await fetchHtml('/')
       expect(html).toContain('"someAsyncProps":42')
+    })
+  }
+
+  // In production, we pre-render all pages and thus `throw RenderErrorPage()` will never be called.
+  if (viewFramework === 'react' && isDev) {
+    test('throw RenderErrorPage', async () => {
+      await page.goto(urlBase + '/hello/bob')
+      expect(await page.textContent('h1')).toBe('404 Page Not Found')
+      expectBrowserError(
+        (browserLog) =>
+          browserLog.logText.includes('http://localhost:3000/hello/bob') &&
+          browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)'),
+      )
+      const txt = 'Unknown name: bob.'
+      expect(await page.textContent('body')).toContain(txt)
+      const html = await fetchHtml('/hello/bob')
+      expect(html).toContain(txt)
     })
   }
 }

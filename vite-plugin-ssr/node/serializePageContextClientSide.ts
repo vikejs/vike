@@ -1,4 +1,4 @@
-import { stringify } from '@brillout/json-s'
+import { stringify } from '@brillout/json-s/stringify'
 import { isErrorPage } from '../shared/route'
 import { assert, assertUsage, hasProp, isPlainObject, unique } from '../shared/utils'
 

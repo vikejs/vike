@@ -11,7 +11,7 @@ import {
   getPluginError,
   PromiseType,
 } from '../../shared/utils'
-import { parse } from '@brillout/json-s'
+import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'

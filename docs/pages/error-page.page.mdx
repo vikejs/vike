@@ -1,8 +1,36 @@
-The page `_error.page.js` is rendered when an error occurs:
- - When no page matches the URL (acting as a `404` page).
- - When a `.page.js` / `.page.server.js` / `.page.route.js` file throws an error (acting as a `500` page).
+import { Link } from 'libframe-docs/components'
 
-`vite-plugin-ssr` automatically sets `pageContext.pageProps.is404: boolean` which allows us to decided whether to show a `404` or `500` page.
-(Normally `pageContext.pageProps` is completely defined/controlled by you and `vite-plugin-ssr`'s source code doesn't know anything about `pageContext.pageProps` but this is the only exception.)
+The page `_error.page.js` is rendered when:
+ 1. None of our pages matches the URL (`404 Page Not Found`).
+ 2. One of our hooks (in `.page.js` / `.page.server.js` / `.page.route.js`) throws an error (`500 Internal Server Error`).
+ 3. One of our hooks executes <Link href="/route-function#async" text={<code>throw RenderErrorPage()</code>}></Link>.
 
-We can define `_error.page.js` like any other page and create `_error.page.client.js` and `_error.page.server.js`.
+For `1.` and `3.`, `vite-plugin-ssr` automatically sets the following:
+ - `pageContext.is404 === true`
+ - `pageContext.pageProps.is404 === true`
+
+> We can `throw RenderErrorPage({ pageContext: { is404: false }})` to have `pageContext.is404 === false` as well as `pageContext.pageProps.is404 === false`.
+
+For `2.`:
+ - `pageContext.is404 === false`
+ - `pageContext.pageProps.is404 === false`
+
+> Normally, the `vite-plugin-ssr` source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
+
+That way, we can use `pageContext.pageProps.is404` to decide what error message to show our user:
+
+```js
+// _error.page.js
+
+export { Page }
+
+function Page(pageProps) {
+  if (pageProps.is404) {
+    // UI component showing the user a message like "Page Not Found"
+  } else {
+    // UI component showing the user a message like "Our server is down, sincere apologies."
+  }
+}
+```
+
+We can define `_error.page.js` like any other page, for example with `_error.page.client.js` and `_error.page.server.js`.

@@ -27,7 +27,7 @@ async function resolveRouteFunction(
   }
   assertUsage(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
-    `The Route Function ${pageRouteFilePath} returned a promise. Async Route Functions may significantly slow down your app: every time a page is rendered the Route Functions of *all* your pages are called and awaited for. A slow Route Function will slow down all your pages. If you still want to define an async Route Function then \`export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true\` in \`${pageRouteFilePath}\`.`,
+    `The Route Function ${pageRouteFilePath} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`,
   )
   try {
     result = await result
@@ -46,6 +46,7 @@ async function resolveRouteFunction(
       hasProp(result, 'constructor') ? result.constructor : result
     }\`.`,
   )
+
   let precedence = null
   if (hasProp(result, 'precedence')) {
     precedence = result.precedence
@@ -54,15 +55,22 @@ async function resolveRouteFunction(
       `The \`precedence\` value returned by the Route Function ${pageRouteFilePath} should be a number.`,
     )
   }
+
+  assertUsage(
+    !('pageContext' in result),
+    'Providing `pageContext` in Route Functions is forbidden, see https://vite-plugin-ssr.com/route-function#async',
+  )
+
   assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
   const routeParams: Record<string, string> = result.routeParams || {}
+  assert(isPlainObject(routeParams))
   Object.keys(result).forEach((key) => {
     assertUsage(
       key === 'match' || key === 'routeParams' || key === 'precedence',
       `The Route Function ${pageRouteFilePath} returned an object with an unknown key \`{ ${key} }\`. Allowed keys: ['match', 'routeParams', 'precedence'].`,
     )
   })
-  assert(isPlainObject(routeParams))
+
   return {
     precedence: null,
     routeParams,

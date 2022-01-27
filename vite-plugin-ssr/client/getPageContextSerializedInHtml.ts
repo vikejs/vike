@@ -1,4 +1,4 @@
-import { parse } from '@brillout/json-s'
+import { parse } from '@brillout/json-s/parse'
 import { hasProp, objectAssign } from '../shared/utils'
 import { assert, assertUsage, getPluginError } from '../shared/utils/assert'
 

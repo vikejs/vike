@@ -74,6 +74,6 @@ async function callOnBeforeRouteHook(pageContext: {
   }
 
   const pageContextProvidedByUser = result.pageContext
-  assertPageContextProvidedByUser(pageContextProvidedByUser, { hookFilePath, hookName })
+  assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: { hookFilePath, hookName } })
   return { pageContextProvidedByUser }
 }
