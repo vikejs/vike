@@ -1,6 +1,29 @@
-From a Docker perspective, a `vite-plugin-ssr` app is just a Node.js server, so we can use any Node.js server Docker configuration.
+import { Link } from 'libframe-docs/components'
 
-If we want to use Docker for development as well, we need to properly configure Docker for the Vite's HMR port.
+In general, a `vite-plugin-ssr` app is just a Node.js server, so we can use any Node.js Docker container.
+
+## Build
+
+If we build our app in Docker, we may stumble upon out-of-memory errors.
+
+If we do, we check whether our Docker container has enough memory, and we may also need to set [Node.js' `--max-old-space-size`](https://nodejs.org/api/cli.html#--max-old-space-sizesize-in-megabytes).
+
+```json
+// package.json
+{
+  "scripts": {
+    "// We use Node.js' environment variable `NODE_OPTIONS` to increase memory size to 3GB": ""
+    "build": "NODE_OPTIONS=--max-old-space-size=3072 npm run build:run",
+    "build:run": "vite build && vite build --ssr"
+  }
+}
+```
+See also:
+   - <Link href="/debug" />
+
+## Dev
+
+If we want to use Docker for development as well, we need to properly configure Docker for Vite's HMR port.
 
 If we use Windows with [WSL](https://docs.microsoft.com/en-us/windows/wsl/), we need to to configure [`chockidar`](https://github.com/paulmillr/chokidar) to use polling. (Vite uses `chockidar`.)
 
