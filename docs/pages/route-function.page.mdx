@@ -25,7 +25,7 @@ export default pageContext => {
 }
 ```
 
-Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
+Route Functions enable us to use any matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
 ## Always Run
 
@@ -43,7 +43,6 @@ export default pageContext => {
     return false
   }
   // If the user is not authenticated, then we render the login page.
-  // (This is a convenient trick to preserve the URL.)
   return {
     // We override all other routes by setting a high `precedence` value of `99`.
     precedence: 99
@@ -51,15 +50,13 @@ export default pageContext => {
 }
 ```
 
-(FYI, this auth redirection trick is further explained at [Guides > Page Redirection > Auth Redirection](/page-redirection#auth-redirection).)
+> This authentication redirection trick is further explained at [Guides > Page Redirection > Auth Redirection](/page-redirection#auth-redirection).
 
-`vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes;
-that's why `vite-plugin-ssr` always runs all Route Functions upon each page request.
+> `vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes; that's why `vite-plugin-ssr` always runs all Route Functions upon each page request.
 
 ## Precedence
 
-If the route of two pages both match the same URL then we have a route conflict:
-`vite-plugin-ssr` cannot know which of the two pages should be rendered for that URL.
+If the route of two pages both match the same URL then we have a route conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
 
 Upon route conflicts, `vite-plugin-ssr` chooses the first route in following order:
  1. Route Function, returned high positive `precedence` number
