@@ -1,3 +1,18 @@
+## [0.3.50](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.49...v0.3.50) (2022-01-28)
+
+
+### Bug Fixes
+
+* fix 404 link ([1006387](https://github.com/brillout/vite-plugin-ssr/commit/10063874a8b4ae1f9ec5ba3187ae5b538e9defd4))
+* improve DX upon serialization failure ([d42911c](https://github.com/brillout/vite-plugin-ssr/commit/d42911ca0d4fd6c2bfae28ea4cb8846113102cbd))
+
+
+### Features
+
+* enable users to trigger error page by `throw RenderPageError({ pageContext: /* some additional context passed to _error.page.js */ })` ([8731c6e](https://github.com/brillout/vite-plugin-ssr/commit/8731c6e3a83ef014db4361a4b4f6a8dcb1bc6e87))
+
+
+
 ## [0.3.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.48...v0.3.49) (2022-01-26)
 
 
