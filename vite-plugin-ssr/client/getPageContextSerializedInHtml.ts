@@ -15,7 +15,9 @@ function getPageContextSerializedInHtml(): {
     'Client-side `pageContext` missing. Make sure that `injectAssets()` is applied to the HTML, see https://vite-plugin-ssr.com/injectAssets',
   )
 
-  const pageContext: Record<string, unknown> = parse(pageContextJson!).pageContext
+  const parseResult = parse(pageContextJson)
+  assert(hasProp(parseResult, 'pageContext', 'object'))
+  const { pageContext } = parseResult
   assert(hasProp(pageContext, '_pageId', 'string'))
   if ('_serverSideErrorWhileStreaming' in pageContext) {
     const err = getPluginError(

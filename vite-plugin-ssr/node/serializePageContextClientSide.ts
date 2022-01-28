@@ -37,23 +37,22 @@ function serializePageContextClientSide(pageContext: {
   assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
 
-  const serialize: (thing: unknown) => string = stringify
-  const serializerName = '@brillout/json-s'
-  const serializerRepo = 'https://github.com/brillout/json-s'
-
   const pageContextClientWrapper = { pageContext: pageContextClient }
 
   try {
-    pageContextSerialized = serialize(pageContextClientWrapper)
+    pageContextSerialized = stringify(pageContextClientWrapper, { forbidReactElements: true })
   } catch (err) {
     passToClient.forEach((prop) => {
+      const valueName = `pageContext['${prop}']`
       try {
-        serialize((pageContext as Record<string, unknown>)[prop])
+        stringify((pageContext as Record<string, unknown>)[prop], { forbidReactElements: true, valueName })
       } catch (err) {
-        console.error(err)
+        assert(hasProp(err, 'message', 'string'))
         assertUsage(
           false,
-          `\`pageContext['${prop}']\` can not be serialized, and it therefore cannot not passed to the client. Either remove \`'${prop}'\` from \`passToClient\` or make sure that \`pageContext['${prop}']\` is serializable. The \`${serializerName}\` serialization error is shown above (serialization is done with ${serializerRepo}).`,
+          `\`${valueName}\` cannot be serialized and, therefore, cannot be passed to the client. Make sure that \`${valueName}\` is serializable or remove \`'${prop}'\` from \`passToClient\`. Serialization error: ${lowercaseFirstLetter(
+            err.message,
+          )}`,
         )
       }
     })
@@ -69,4 +68,8 @@ function addIs404ToPageProps(pageContext: { is404: boolean; pageProps?: Record<s
   const pageProps = pageContext.pageProps || {}
   pageProps['is404'] = pageProps['is404'] || pageContext.is404
   pageContext.pageProps = pageProps
+}
+
+function lowercaseFirstLetter(str: string) {
+  return str.charAt(0).toLowerCase() + str.slice(1)
 }
