@@ -4,23 +4,14 @@ import { getDataFromTree } from '@apollo/client/react/ssr'
 import App from './App'
 
 export { render }
-export { onBeforeRender }
 export { passToClient }
 
 const passToClient = ['apolloIntialState']
 
-function render(pageContext) {
-  const { pageHtml } = pageContext
-  return escapeInject`<!DOCTYPE html>
-    <html>
-      <body>
-        <div id="page-content">${dangerouslySkipEscape(pageHtml)}</div>
-      </body>
-    </html>`
-}
-
-async function onBeforeRender(pageContext) {
+async function render(pageContext) {
   const { Page, apolloClient } = pageContext
+
+  // See https://www.apollographql.com/docs/react/performance/server-side-rendering/
   const tree = (
     <App apolloClient={apolloClient}>
       <Page />
@@ -28,9 +19,17 @@ async function onBeforeRender(pageContext) {
   )
   const pageHtml = await getDataFromTree(tree)
   const apolloIntialState = apolloClient.extract()
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-content">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+
   return {
+    documentHtml,
     pageContext: {
-      pageHtml,
       apolloIntialState,
     },
   }
