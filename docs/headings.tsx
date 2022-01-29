@@ -6,6 +6,10 @@ export { headings }
 
 const headingsWithoutLink: HeadingWithoutLink[] = [
   {
+    title: 'Server Routing VS Client Routing',
+    url: '/SR-vs-CR',
+  },
+  {
     title: 'HTML Streaming',
     url: '/html-streaming',
   },
@@ -207,7 +211,7 @@ const headings: HeadingDefinition[] = [
   {
     level: 2,
     title: 'Server Routing VS Client Routing',
-    url: '/SR-vs-CR',
+    url: '/server-routing-vs-client-routing',
   },
   {
     level: 2,

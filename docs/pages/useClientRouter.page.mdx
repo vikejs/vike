@@ -1,11 +1,36 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, Link } from 'libframe-docs/components'
 
-Environment: `Browser`
+## Overview
+
+Environment: `Browser`.
 
 By default `vite-plugin-ssr` does [Server Routing](/SR-vs-CR#server-routing).
 We can do [Client Routing](/SR-vs-CR#client-routing) instead by using `useClientRouter()` instead of [`getPage()`](/getPage).
 
 > In general, we recommend Server Routing, see [Server Routing VS Client Routing](/SR-vs-CR).
+
+```js
+// *.page.client.js
+// Environment: Browser
+
+import { useClientRouter } from 'vite-plugin-ssr/client/router'
+
+useClientRouter({
+  async render(pageContext) {
+    if (pageContext.isHydration) {
+      // We hydrate the first page
+      // ...
+    } else {
+      // We render a new page (when the user navigates)
+      // ...
+    }
+  }
+})
+```
+
+> If you don't know what hydration is, see <Link href="/hydration" />.
+
+## Examples
 
 React example:
  - <RepoLink path='/examples/react-full/renderer/_default.page.client.tsx' />
@@ -16,34 +41,34 @@ Vue example:
  - <RepoLink path='/examples/vue-full/renderer/app.ts' />
  - <RepoLink path='/examples/vue-full/pages/index.page.vue' /> (example of using <code>navigate()</code>)
 
-Example showcasing all `useClientRouter()`'s options:
+## Usage & Options
 
 ```js
 // _default.page.client.js
 // Environment: Browser
 
-import { render, hydrate } from 'some-view-framework'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
+import { render, hydrate } from 'some-view-framework'
 
 const { hydrationPromise } = useClientRouter({
   async render(pageContext) {
     // `pageContext.isHydration` is set by `vite-plugin-ssr` and is `true` when the page
     // is already rendered to HTML.
     if (pageContext.isHydration) {
-      // When we render the first page. (Since we do SSR, the first page is already
+      // We hydrate the first page. (Since we do SSR, the first page is already
       // rendered to HTML and we merely have to hydrate it.)
       await hydrate(pageContext.Page)
     } else {
-      // When the user navigates to a new page.
+      // We render a new page. (When the user navigates to a new page.)
       await render(pageContext.Page)
     }
   },
 
   // If `ensureHydration: true` then `vite-plugin-ssr` ensures that the first render is always
-  // a hydration. I.e. the first `render()` call is never interrupted — even if the user clicks
-  // on a link. Default value: `false`.
-  // If we use Vue, we set `ensureHydration: true` to avoid "Hydration Mismatch" errors.
-  // If we use React, we leave `ensureHydration: false` for a slight performance boost.
+  // a hydration. (In other words, the hydration process is never interrupted — even if the
+  // user clicks on a link before the hydration started. Default value: `false`.)
+  // If we use Vue, we need `ensureHydration: true` to avoid "Hydration Mismatch" errors.
+  // If we use React, we can leave `ensureHydration: false` for a slight performance improvement.
   ensureHydration: true,
 
   // See `Link prefetching` section below. Default value: `false`.
@@ -70,8 +95,8 @@ function onTransitionEnd() {
 }
 ```
 
-> Note that `pageContext` is completely discarded and loaded anew upon page navigation;
-> that's why the context object is called `pageContext` and not `appContext`.
+> Note that `pageContext` is completely discarded and created anew upon page navigation.
+> (That's why the context object is called `pageContext` &mdash; not `appContext`.)
 
 We can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
 
@@ -85,17 +110,14 @@ By default, the Client-side Router scrolls to the top of the page upon page chan
 we can use `<a keep-scroll-position />` / `navigate('/some/url', { keepScrollPosition: true })`
 if we want to preserve the scroll position instead. (Useful for [Nested Routes](/nested-routes).)
 
-Also see:
- - [What is hydration?](/hydration)
-
 ## Link prefetching
 
 By default,
-the static assets of a page `/some-url` are loaded as soon as the user hovers his mouse over a link `<a href="/some-url">`.
+when the user hovers his mouse over a link `<a href="/some-url">`, the static assets of the page `/some-url` are loaded.
 This means that static assets are often already loaded before even the user clicks on the link.
 
 We can prefetch even more eagerly by setting `useClientRouter({ prefetchLinks: true })`: the links are then prefetched as soon as they appear in the user's browser viewport.
 
-We can override this option for individual links: `<a data-prefetch="false" href="/some-url" />`.
+We can override the link prefetching behavior for individual links by setting `<a data-prefetch="false" href="/some-url" />`.
 
-> Only static assets are prefetched; prefetching `pageContext` is work-in-progress, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
+> Only the page's static assets are prefetched; the page's `pageContext` is currently not prefetched but it's a work-in-progress feature, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
