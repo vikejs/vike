@@ -3,7 +3,7 @@ import { moduleExists } from '../../shared/utils/moduleExists'
 import { resolve, join } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
-import { hasProp } from '../../shared/utils'
+import { hasProp, isBrowser } from '../../shared/utils'
 /*
 import { isAbsolute } from 'path'
 import { projectInfo } from '../../shared/utils'
@@ -14,11 +14,12 @@ setPageFilesAsync(setPageFiles)
 async function setPageFiles(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
 
+  assert(!isBrowser()) // Catched earlier by an `assertUsage()` call in `node/index.ts`
   assertUsage(
     isNodejs(),
     ssrEnv.isProduction
-      ? "You are running your `vite-plugin-ssr` app in a production environement that doesn't seem to be Node.js. You may need to load `importBuild.js`, see https://vite-plugin-ssr.com/importBuild.js"
-      : "You are trying to develop your `vite-plugin-ssr` app in an environement that doesn't seem to be Node.js. Is your dev setup using Node.js? Note that, for development, `vite-plugin-ssr` only supports Node.js. Contact the `vite-plugin-ssr` maintainers if you need to dev in another environement than Node.js.",
+      ? "You production environment doesn't seem to be a Node.js server; you need to load `importBuild.js`, see https://vite-plugin-ssr.com/importBuild.js"
+      : "Your development environment doesn't seem to be Node.js. If this is a production environment then make sure that `isProduction: true`.",
   )
 
   const viteEntryFile = 'pageFiles.js'
