@@ -7,11 +7,13 @@
     "server:prod": "cross-env NODE_ENV=production ts-node ./server"
   },
   "dependencies": {
+    "@types/compression": "^1.7.2",
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.8",
     "@vitejs/plugin-vue": "^2.0.1",
     "@vue/compiler-sfc": "^3.2.26",
     "@vue/server-renderer": "^3.2.26",
+    "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "express": "^4.17.2",
     "ts-node": "^10.4.0",
