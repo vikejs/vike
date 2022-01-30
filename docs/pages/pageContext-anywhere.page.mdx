@@ -1,8 +1,10 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, Link } from 'libframe-docs/components'
 
 By default `pageContext` is available:
  - only on the server-side, and
  - only at the root (Vue/React/...) component `Page`.
+
+But we can make `pageContext` available anywhere.
 
 ## Browser-side
 
@@ -82,7 +84,7 @@ Example:
  - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' /> (using <code>usePageContext()</code> to access <code>pageContext</code> from any Vue component)
  - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' /> (<code>setPageContext(app, pageContext)</code>)
 
-If we use [Client Routing](/SR-vs-CR), we make `pageContext` reactive:
+If we use <Link href="/client-routing" noBreadcrumb={true} />, we need to make `pageContext` reactive:
  - <RepoLink path='/examples/vue-full/renderer/app.ts' />
 
 ## Vue 3 - `globalProperties`
@@ -116,7 +118,7 @@ Example:
  - [/boilerplates/boilerplate-vue/renderer/Link.vue (@abff8de)](https://github.com/brillout/vite-plugin-ssr/blob/abff8debc4c7cd6ab11e99e757379e5237a6c18c/boilerplates/boilerplate-vue/renderer/Link.vue#L2)
    (accessing `pageContext` from any Vue component)
 
-If we use [Client Routing](/SR-vs-CR), we make `$pageContext` reactive:
+If we use <Link href="/client-routing" noBreadcrumb={true} />, we make `$pageContext` reactive:
  - [/examples/vue-full/renderer/app.ts (@aca560b)](https://github.com/brillout/vite-plugin-ssr/blob/aca560bd286b37524b4164555e5ab3f77e3688af/examples/vue-full/renderer/app.ts#L43-L47)
 
 ## Vue 2

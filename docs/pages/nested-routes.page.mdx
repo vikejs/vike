@@ -1,3 +1,5 @@
+import { Link } from 'libframe-docs/components'
+
 A nested route (aka sub route) is, essentially, when we have a route with multiple parameters,
 for example `/product/:productId/:productView`.
 
@@ -43,13 +45,14 @@ Usually, the sub route is used for navigating some (deeply) nested view:
 
 > If our sub routes don't need URLs (the Product Pricing page and the Product Reviews page share the same URL `/product/42`), then we can simply use a stateful component instead. (When the user clicks on a "pricing" link, the stateful component changes an internal state `productView` to `'pricing'` to switch to the pricing view.)
 
-By default,
-`vite-plugin-ssr` does [Server Routing](/SR-vs-CR),
-which means that when the user navigates from `/product/42/pricing` to `/product/42/reviews`,
-the old page `/product/42/pricing` is fully replaced with the new page `/product/42/reviews`,
-leading to a jittery experience.
+## Cient Rendering
 
-For smoother navigations, we can use [Client Routing](/useClientRouter).
+For smooth nested routes, we recommend using <Link href="/client-routing" noBreadcrumb={true} />.
+
+If we use <Link href="/server-routing" noBreadcrumb={true} />,
+when the user navigates from `/product/42/pricing` to `/product/42/reviews`,
+the old page `/product/42/pricing` is fully replaced with the new page `/product/42/reviews`
+leading to a jittery experience.
 
 ```js
 // product.page.client.js

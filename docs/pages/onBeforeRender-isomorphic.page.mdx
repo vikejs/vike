@@ -1,4 +1,4 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, Link } from 'libframe-docs/components'
 
 > In general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` instead of `.page.js`. (We elaborate below.)
 
@@ -28,5 +28,5 @@ That said, if we want to minimize requests made to our Node.js server, then we m
 
 ## Server Routing
 
-If we use [Server Routing](/SR-vs-CR#server-routing) we shouldn't define `onBeforeRender()` in `.page.js`
+If we use <Link href="/server-routing" noBreadcrumb={true} /> we shouldn't define `onBeforeRender()` in `.page.js`
 (the browser loads `onBeforeRender()` but never calls it). We should always define [`onBeforeRender()` in `.page.server.js`](/onBeforeRender) instead.
