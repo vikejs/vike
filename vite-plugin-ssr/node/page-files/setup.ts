@@ -110,7 +110,7 @@ function requireResolve(modulePath: string): string {
 */
 function isNodejs(): boolean {
   try {
-    return __filename === require.resolve(__filename)
+    return typeof process !== 'undefined' && process.release.name === 'node'
   } catch (_) {
     return false
   }
