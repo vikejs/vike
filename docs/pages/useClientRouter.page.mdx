@@ -4,10 +4,7 @@ import { RepoLink, Link, ReadingRecommendation } from 'libframe-docs/components'
 
 Environment: `Browser`.
 
-By default `vite-plugin-ssr` does [Server Routing](/SR-vs-CR#server-routing).
-We can do [Client Routing](/SR-vs-CR#client-routing) instead by using `useClientRouter()` instead of [`getPage()`](/getPage).
-
-> In general, we recommend Server Routing, see [Server Routing VS Client Routing](/SR-vs-CR).
+To achieve <Link text="Client-side Routing" href="/client-routing" noBreadcrumb={true} />, we use `useClientRouter()` (instead of <Link text={<code>getPage()</code>} href="/getPage" />).
 
 ```js
 // *.page.client.js
@@ -28,8 +25,7 @@ useClientRouter({
 })
 ```
 
-> If you don't know what hydration is, see <Link href="/hydration" />.
-
+> See also: <Link href="/hydration" />
 
 ## Examples
 
