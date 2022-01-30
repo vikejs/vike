@@ -90,8 +90,8 @@ function DataPassToClient({
       <ol>
         <li>
           We {toolType === 'data-store' ? 'set the initial state of the store' : 'fetch the initial data'} on the
-          server-side. (We need to do it on the server-side if we want the initial{' '}
-          {toolType === 'data-store' ? 'state' : 'data'} to be rendered to HTML.)
+          server-side. (We do it on the server-side so that the initial{' '}
+          {toolType === 'data-store' ? 'state' : 'data'} is rendered to HTML.)
         </li>
         <li>
           We make the initial {dataName} available as <code>pageContext.{pageContextName}</code>.

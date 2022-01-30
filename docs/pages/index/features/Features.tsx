@@ -116,7 +116,7 @@ function Features() {
                 <b>i18n</b>, <b>Link Prefetching</b>, <b>HTML Streaming</b>.
               </p>
               <p>
-                <b>Client Routing</b> (fast page transitions) or <b>Server Routing</b> (simple architecture).
+                <b>Client Routing</b> (fast page navigation) or <b>Server Routing</b> (simple architecture).
               </p>
               <p>
                 All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different

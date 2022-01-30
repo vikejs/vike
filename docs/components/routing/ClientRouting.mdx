@@ -1,0 +1,15 @@
+import { Link } from 'libframe-docs/components'
+
+*Client(-side) Routing* denotes the practice of implementing page navigation on the client-side:
+when the user navigates to a new page,
+instead of discarding the current page and requesting the HTML of the new page from our Node.js server,
+the client preserves the current page and renders the new page by manipulating the DOM of the page.
+
+Client Routing enables:
+- Faster page navigation.
+- Client-side state preserved across navigation.
+- Custom page transition animations.
+
+We further discuss these use cases at <Link href="/server-routing-vs-client-routing#which-one-to-choose" />.
+
+To achieve Client Routing we use <Link text={<code>useClientRouter()</code>} href="/useClientRouter" />.
