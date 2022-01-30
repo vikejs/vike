@@ -10,7 +10,7 @@ import { RepoLink, Link } from 'libframe-docs/components'
 export { render }
 
 import { escapeInject } from 'vite-plugin-ssr'
-import { renderToStream } from 'some-view-framework' // React, Vue, ...
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
 async function render(pageContext) {
   const { Page } = pageContext
@@ -85,7 +85,7 @@ We can also use Stream pipes.
 export { render }
 
 import { escapeInject, pipeNodeStream, pipeWebStream } from 'vite-plugin-ssr'
-import { pipeToWritable } from 'some-view-framework' // React, Vue, ...
+import { pipeToWritable } from 'some-ui-framework' // React, Vue, ...
 
 async function render(pageContext) {
   const { Page } = pageContext
@@ -138,7 +138,7 @@ export { render }
 export { passToClient }
 
 import { escapeInject } from 'vite-plugin-ssr'
-import { renderToStream } from 'some-view-framework' // React, Vue, ...
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
 
 const passToClient = ['initialData']
 

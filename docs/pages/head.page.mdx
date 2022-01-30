@@ -8,7 +8,7 @@ of our app in our [`render()` hook](/render).
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { renderToHtml } from 'some-view-framework'
+import { renderToHtml } from 'some-ui-framework'
 
 export { render }
 
@@ -48,7 +48,7 @@ export const documentProps = {
 // _default.page.server.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { renderToHtml } from 'some-view-framework'
+import { renderToHtml } from 'some-ui-framework'
 
 export { render }
 
@@ -119,7 +119,7 @@ function onBeforeRender(pageContext) {
 // _default.page.server.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { renderToHtml } from 'some-view-framework'
+import { renderToHtml } from 'some-ui-framework'
 
 export { render }
 
@@ -161,7 +161,7 @@ For example:
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import renderToHtml from 'some-view-framework'
+import renderToHtml from 'some-ui-framework'
 
 export async function render(pageContext) {
   // We use our UI framework to pass `pageContext.documentProps` to all components
@@ -239,7 +239,7 @@ Head libraries already sanitize the HTML `<head>`, this means we can skip `escap
 // Environment: Node.js
 
 import { dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { renderToHtml } from 'some-view-framework'
+import { renderToHtml } from 'some-ui-framework'
 
 export async function render(pageContext) {
   return dangerouslySkipEscape(await renderToHtml(pageContext.Page))

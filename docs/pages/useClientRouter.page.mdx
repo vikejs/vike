@@ -50,7 +50,7 @@ Vue example:
 // Environment: Browser
 
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
-import { render, hydrate } from 'some-view-framework'
+import { render, hydrate } from 'some-ui-framework'
 
 const { hydrationPromise } = useClientRouter({
   async render(pageContext) {
@@ -133,7 +133,7 @@ export { render }
 export { passToClient }
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { renderToHtml } from 'some-view-framework'
+import { renderToHtml } from 'some-ui-framework'
 import { getInitialState } from './getInitialState'
 
 const passToClient = ['initialState']

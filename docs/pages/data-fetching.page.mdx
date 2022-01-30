@@ -38,7 +38,7 @@ async function onBeforeRender(pageContext) {
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { renderToHtml, createElement } from 'some-view-framework'
+import { renderToHtml, createElement } from 'some-ui-framework'
 
 // We tell `vite-plugin-ssr` to make `pageContext.pageProps` available in the browser.
 export const passToClient = ['pageProps']
@@ -67,7 +67,7 @@ async function render(pageContext) {
 // Environment: Browser
 
 import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom, createElement } from 'some-view-framework'
+import { hydrateToDom, createElement } from 'some-ui-framework'
 
 hydrate()
 

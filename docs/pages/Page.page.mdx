@@ -20,7 +20,7 @@ function Page() {
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import renderToHtml from 'some-view-framework'
+import renderToHtml from 'some-ui-framework'
 
 export { render }
 
@@ -43,7 +43,7 @@ async function render(pageContext) {
 // Environment: Browser
 
 import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom } from 'some-view-framework'
+import { hydrateToDom } from 'some-ui-framework'
 
 hydrate()
 
