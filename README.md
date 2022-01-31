@@ -10,7 +10,7 @@ Version history & breaking changes: [CHANGELOG.md](/CHANGELOG.md)
 
 Follow: [Twitter > @brillout](https://twitter.com/brillout)
 <br/>
-Chat: <a href="https://discord.com/invite/qTq92FQzKb">Discord > Vike Land<img src="/docs/icons/hash.svg" height="17" width="23" valign="text-bottom" alt="hash"/>vite-plugin-ssr</a>
+Chat: <a href="https://discord.com/invite/qTq92FQzKb">Discord > Vike<img src="/docs/icons/hash.svg" height="17" width="23" valign="text-bottom" alt="hash"/>vite-plugin-ssr</a>
 
 
 Have a question? Want a feature? A tool integration is not working?
