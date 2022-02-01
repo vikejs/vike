@@ -1,3 +1,15 @@
+## [0.3.51](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.50...v0.3.51) (2022-02-01)
+
+
+### Bug Fixes
+
+* fix @brillout/json-s optimizeDeps entry ([4e45d08](https://github.com/brillout/vite-plugin-ssr/commit/4e45d084d05d3a473d7295143432493dcc50a248))
+* gracefully handle unexpected URL formats (fix [#252](https://github.com/brillout/vite-plugin-ssr/issues/252)) ([48ca1b1](https://github.com/brillout/vite-plugin-ssr/commit/48ca1b10ce9067e948425cbefc59072a206c000a))
+* improve DX around wrong environement ([4f705c4](https://github.com/brillout/vite-plugin-ssr/commit/4f705c4d3043479cefefebcb687abe3554da89f9))
+* use more robust Node.js env test ([7240263](https://github.com/brillout/vite-plugin-ssr/commit/724026366b41f811e9b20047419d17eda2a759e8))
+
+
+
 ## [0.3.50](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.49...v0.3.50) (2022-01-28)
 
 
