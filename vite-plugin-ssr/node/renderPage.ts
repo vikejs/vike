@@ -25,6 +25,7 @@ import {
   assertExports,
   stringifyStringArray,
   parseUrl,
+  isParsable,
   assertBaseUrl,
   isPromise,
 } from '../shared/utils'
@@ -192,7 +193,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
     ...pageContextInit,
   }
 
-  if (pageContext.url.endsWith('/favicon.ico')) {
+  if (pageContext.url.endsWith('/favicon.ico') || !isParsable(pageContext.url)) {
     objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
   }

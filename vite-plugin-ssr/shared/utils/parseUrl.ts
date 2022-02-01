@@ -5,6 +5,7 @@ export { getUrlFull }
 export { getUrlPathname }
 export { getUrlFullWithoutHash }
 export { parseUrl }
+export { isParsable }
 
 export { prependBaseUrl }
 export { assertBaseUrl }
@@ -32,6 +33,29 @@ function getUrlPathname(url?: string): string {
   return urlPathname
 }
 
+function isParsable(url: string): boolean {
+  // `parseUrl()` doesn't work with these URLs
+  if (url.startsWith('//')) {
+    return false
+  }
+
+  // `parseUrl()` works with these URLs
+  if (
+    url.startsWith('/') ||
+    url.startsWith('http') ||
+    url.startsWith('.') ||
+    url.startsWith('?') ||
+    // Less sure about `#some-hash` URLs, but should work in principle
+    url.startsWith('#') ||
+    url === ''
+  ) {
+    return true
+  }
+
+  // assertUsage(false, `Unexpected URL format ${url}`)
+  return false
+}
+
 function parseUrl(
   url: string,
   baseUrl: string,
@@ -45,18 +69,8 @@ function parseUrl(
   hash: string
   hashString: null | string
 } {
-  assert(
-    // These URLs should work out
-    url.startsWith('/') ||
-      url.startsWith('http') ||
-      url.startsWith('.') ||
-      url.startsWith('?') ||
-      // Not sure about these URLs, but should work in principle
-      url.startsWith('#') ||
-      url === '',
-    { url },
-  )
-  assert(baseUrl.startsWith('/'))
+  assert(isParsable(url), { url, baseUrl })
+  assert(baseUrl.startsWith('/'), { url, baseUrl })
 
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')

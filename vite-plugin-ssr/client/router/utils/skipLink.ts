@@ -1,4 +1,4 @@
-import { parseUrl, assertBaseUrl } from '../../../shared/utils'
+import { parseUrl, assertBaseUrl, isParsable } from '../../../shared/utils'
 import { getBaseUrl } from './getBaseUrl'
 import { isExternalLink } from './isExternalLink'
 
@@ -12,6 +12,9 @@ function skipLink(linkTag: HTMLElement): boolean {
   if (isNewTabLink(linkTag)) return true
   if (isHashUrl(url)) return true
   if (!hasBaseUrl(url)) {
+    return true
+  }
+  if (!isParsable(url)) {
     return true
   }
 
