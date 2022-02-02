@@ -2,7 +2,7 @@ import { autoRetry, page, run, urlBase } from '../../libframe/test/setup'
 
 export { testRun }
 
-function testRun(npmScript: 'npm run dev' | 'npm run prod') {
+function testRun(npmScript: 'npm run dev' | 'npm run prod' | 'npm run prod:static') {
   run(npmScript)
 
   test(`Counter succesfully imported [${npmScript}]`, async () => {
