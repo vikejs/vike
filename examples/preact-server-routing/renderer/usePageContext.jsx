@@ -1,7 +1,7 @@
 // `usePageContext` allows us to access `pageContext` in any React component.
 // More infos: https://vite-plugin-ssr.com/pageContext-anywhere
 
-import { createContext, FunctionalComponent } from 'preact'
+import { createContext } from 'preact'
 import { useContext } from 'preact/hooks'
 
 export { PageContextProvider }
