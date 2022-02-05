@@ -1,7 +1,7 @@
 // @ts-nocheck
-import express from 'express'
-import compression from 'compression'
-import { createPageRenderer } from 'vite-plugin-ssr'
+const express = require('express')
+const compression = require('compression')
+const { createPageRenderer } = require('vite-plugin-ssr')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`

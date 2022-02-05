@@ -11,7 +11,7 @@ const { hydrationPromise } = useClientRouter({
       </PageShell>
     )
     const container = document.querySelector('body')
-    console.log({ container, Page, pageProps })
+
     if (pageContext.isHydration && container) {
       hydrate(page, container)
     } else if (container) {
