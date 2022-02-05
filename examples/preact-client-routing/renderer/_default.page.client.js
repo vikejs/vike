@@ -1,13 +1,9 @@
-// @ts-nocheck 
 import { hydrate, render } from 'preact'
-import { getPage } from 'vite-plugin-ssr/client'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 import { PageShell } from './PageShell'
-import type { PageContext } from './types'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
 
 const { hydrationPromise } = useClientRouter({
-  render(pageContext: PageContextBuiltInClient & PageContext) {
+  render(pageContext) {
     const { Page, pageProps } = pageContext
     const page = (
       <PageShell pageContext={pageContext}>
@@ -33,17 +29,14 @@ hydrationPromise.then(() => {
 
 function onTransitionStart() {
   console.log('Page transition start')
-  document.querySelector('#page-content')!.classList.add('page-transition')
+  document.querySelector('#page-content').classList.add('page-transition')
 }
 function onTransitionEnd() {
   console.log('Page transition end')
-  document.querySelector('#page-content')!.classList.remove('page-transition')
+  document.querySelector('#page-content').classList.remove('page-transition')
 }
 
-function getPageTitle(pageContext: {
-  pageExports: { documentProps?: { title?: string } }
-  documentProps?: { title?: string }
-}): string {
+function getPageTitle(pageContext) {
   const title =
     // For static titles (defined in the `export { documentProps }` of the page's `.page.js`)
     (pageContext.pageExports.documentProps || {}).title ||

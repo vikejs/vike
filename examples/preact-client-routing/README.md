@@ -1,4 +1,4 @@
-# Typescript `preact` example with client-side routing
+# `preact` example with client-side routing
 
 To run it:
 

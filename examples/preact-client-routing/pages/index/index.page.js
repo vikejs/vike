@@ -1,4 +1,3 @@
-// @ts-nocheck 
 import { Counter } from './Counter'
 
 export { Page }

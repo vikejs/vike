@@ -1,4 +1,3 @@
-// @ts-nocheck 
 import "./index.css";
 
 export { Page };

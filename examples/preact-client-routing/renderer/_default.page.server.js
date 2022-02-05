@@ -1,16 +1,13 @@
-// @ts-nocheck 
 import renderToString from 'preact-render-to-string'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import logoUrl from './logo.svg'
-import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname', 'documentProps']
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = renderToString(
     <PageShell pageContext={pageContext}>
