@@ -1,7 +1,6 @@
-// @ts-nocheck 
-import "./index.css";
+import './index.css'
 
-export { Page };
+export { Page }
 
 function Page() {
   return (
@@ -9,5 +8,5 @@ function Page() {
       <h1>About</h1>
       <p>A colored page.</p>
     </>
-  );
+  )
 }

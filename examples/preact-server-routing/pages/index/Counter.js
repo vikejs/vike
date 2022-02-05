@@ -1,5 +1,4 @@
-// @ts-nocheck 
-import { useState } from "preact/hooks"
+import { useState } from 'preact/hooks'
 
 export { Counter }
 
