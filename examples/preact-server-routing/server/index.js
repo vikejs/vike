@@ -1,4 +1,4 @@
-// @ts-nocheck 
+// @ts-nocheck
 import express from 'express'
 import compression from 'compression'
 import { createPageRenderer } from 'vite-plugin-ssr'
