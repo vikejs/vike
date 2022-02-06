@@ -11,12 +11,10 @@ async function render() {
   const { Page, pageProps } = pageContext
   const body = document.querySelector('body')
 
-  if (body) {
-    hydrate(
-      <PageShell pageContext={pageContext}>
-        <Page {...pageProps} />
-      </PageShell>,
-      body,
-    )
-  }
+  hydrate(
+    <PageShell pageContext={pageContext}>
+      <Page {...pageProps} />
+    </PageShell>,
+    body,
+  )
 }

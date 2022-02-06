@@ -1,4 +1,3 @@
-// @ts-nocheck
 const express = require('express')
 const compression = require('compression')
 const { createPageRenderer } = require('vite-plugin-ssr')
