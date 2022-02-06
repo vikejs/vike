@@ -14,8 +14,5 @@
     "react-dom": "^17.0.2",
     "vite": "^2.7.12",
     "vite-plugin-ssr": "0.3.51"
-  },
-  "// Needed for Yarn workspaces": "",
-  "name": "example-custom-server-render-integration",
-  "version": "0.0.0"
+  }
 }

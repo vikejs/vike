@@ -10,7 +10,8 @@ const { execSync } = require('child_process')
 
 const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts')]
 const IGNORE_FILES = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
-const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
+//const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
+const IGNORE_PACKAGE_JSON = []
 const RENAME_FILES = {
   _gitignore: '.gitignore',
 }

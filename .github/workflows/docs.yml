@@ -15,14 +15,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 6
+
+      - name: Setup
+        run: pnpm run setup
+
       - name: Install
-        # `yarn install` will checkout the git submodule `libframe/`
-        run: |
-          yarn install
+        run: pnpm install
 
       - name: Build
-        run: |
-          yarn docs:build
+        run: pnpm run docs:build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4

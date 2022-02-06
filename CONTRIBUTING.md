@@ -1,102 +1,114 @@
 # Contribute to `vite-plugin-ssr`
 
-- [System Requirements](#system-requirements)
+- [System requirements](#system-requirements)
+- [Install & build](#install--build)
 - [Ceate new example](#create-new-example)
 - [Modify existing example](#modify-existing-example)
 - [Modify `vite-plugin-ssr`](#modify-vite-plugin-ssr)
 - [Run test suite](#run-test-suite)
 
+<br/>
 
-## System Requirements
-
-These requirements are for *developing* the source code; you can use `vite-plugin-ssr` with Windows and Node.js `>= v12.19.0`.
+## System requirements
 
 - Unix (e.g. macOS or Linux). (Windows may work but there are no guarantees.)
 - Node.js `>= v15.0.0`.
-- [Yarn classic](https://classic.yarnpkg.com/). (You can install it with: `$ npm install --global yarn`.)
+- [pnpm](https://pnpm.io/) `>= v6.21.0`. (To install it: `$ npm install -g pnpm`.)
 
-## Create new example
+> These requirements are for developing only; `vite-plugin-ssr` can be used with any package manager, Windows, and Node.js `>= v12.19.0`.
 
-New examples should be minimal and implement only what the example wants to showcase.
-Start off with `/examples/react/` or `/examples/vue/` as these are minimal demos.
-(Do not start off `/examples/react-full/` nor `/examples/vue-full/` as these are full-featured demos.)
+<br/>
 
-## Modify existing example
+## Install & build
 
-To run an example:
-
-```shell
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/some-example/
-```
-
-Then run `npm run start` or `npm run dev`, depending on the example.
-
-Note that the examples and boilerplates use npm, while the rest of the repository uses Yarn.
-
-Check whether the tests defined in `.test.spec.ts` are still valid and make changes accordingly.
-
-To run the example's tests:
-
-```shell
-cd path/to/vite-plugin-ssr/
-yarn test examples/some-example/
-```
-
-
-## Modify `vite-plugin-ssr`
-
-Prepare everything (install, build, and link):
+Install all dependencies of the entire monorepo:
 
 ```shell
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/
-yarn dev:setup
+pnpm run setup
+pnpm install
 ```
+
+> We need `pnpm run setup` for setting up the [`libframe/`](https://github.com/vikejs/libframe) submodule.
+
+Build the `vite-plugin-ssr` source code:
+
+```shell
+pnpm run build
+```
+
+<br/>
+
+## Create new example
+
+New examples should be minimal and implement only what you want to showcase.
+
+Start off with `/examples/react/` or `/examples/vue/` as these are minimal demos.
+
+> Do not start off `/examples/react-full/` nor `/examples/vue-full/` as these are full-featured demos.
+
+<br/>
+
+## Modify existing example
+
+Follow the instructions of [Install & Build](#install--build).
+
+> We do not follow the `README` instructions of the example, instead we install the entire monorepo in order to be able to run the example's test.
+
+To run the example:
+
+```shell
+cd examples/some-example/
+pnpm run dev
+# Or, depending on the example:
+pnpm run start
+```
+
+Check whether the tests defined in `examples/some-example/*.spec.ts` are still valid and make changes accordingly.
+
+To run the example's tests, follow the instructions of [Run test suite](#run-test-suite).
+
+<br/>
+
+## Modify `vite-plugin-ssr`
+
+Follow the instructions of [Install & Build](#install--build).
 
 Run TypeScript in watch mode:
 
 ```shell
-yarn dev
-# Or when developing `vite-plugin-ssr`'s client-side code:
-# yarn dev:client
+pnpm run dev
 ```
 
-You can now change the source code of `vite-plugin-ssr` (which lives at `/vite-plugin-ssr/`) and try your modifications with one of the `/examples/*` or `/boilerplates/boilerplate-*`.
-To start the example, follow the `README.md` instructions of the example.
+You can now change the source code of `vite-plugin-ssr` (`/vite-plugin-ssr/`) and try your modifications with one of the examples (`/examples/*`) or boilerplates (`/boilerplates/boilerplate-*`).
 You may need to restart the example's Node.js server for your `vite-plugin-ssr` modifications to apply.
 
-Once you're done and before opening a Pull Request, run the test suite to ensure that your modifications don't break anything.
-If you are having problems running the test suite (e.g. machines with low memory may run out of memory),
-then open a Pull Request in
+If you are having problems running the test suite (e.g. your machine has low memory),
+you can open a Pull Request in
 [draft mode](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/changing-the-stage-of-a-pull-request#converting-a-pull-request-to-a-draft)
 to let GitHub Actions run the test suite for you.
 
+<br/>
 
 ## Run test suite
 
-Prepare everything (install, build, and link):
-
-```shell
-git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/
-yarn test:setup
-```
+Follow the instructions of [Install & Build](#install--build).
 
 To run all tests:
 
 ```shell
-yarn test
-# To skip TypeScript checking:
-# yarn test --skipTs
+pnpm run test
+# To skip TypeScript type checking:
+pnpm run test --skipTs
 ```
 
 To run only the tests of a single example/boilerplate:
 
 ```shell
 # Provide example/boilerplate path
-yarn test examples/some-example/
+pnpm run test examples/some-example/
 # Or provide a substring of the path
-# yarn test some-examp
+pnpm run test ome-exampl
 ```
 

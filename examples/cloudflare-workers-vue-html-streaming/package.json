@@ -27,8 +27,5 @@
     "vite-plugin-ssr": "0.3.51",
     "vue": "^3.2.26",
     "webpack": "^4.46.0"
-  },
-  "// Needed for Yarn workspaces": "",
-  "name": "example-cloudflare-workers-vue-html-streaming",
-  "version": "0.0.0"
+  }
 }

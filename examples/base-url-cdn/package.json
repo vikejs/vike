@@ -25,8 +25,5 @@
     "vite": "^2.7.12",
     "vite-plugin-ssr": "0.3.51"
   },
-  "type": "module",
-  "// Needed for Yarn workspaces": "",
-  "name": "example_base-url-cdn",
-  "version": "0.0.0"
+  "type": "module"
 }

@@ -29,6 +29,6 @@ To deploy (Vercel's Git integration allows us to simply push to deploy):
 
 To develop (for increased dev speed we use an Express.js dev server instead of `vercel dev`):
 - ```bash
-  npm install # (do not use yarn, as yarn installs the entire monorepo)
+  npm install
   npm run dev
   ```

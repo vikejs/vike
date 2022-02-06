@@ -11,8 +11,5 @@
     "vite-plugin-ssr": "0.3.51",
     "vue": "^3.2.26",
     "vuex": "^4.0.0"
-  },
-  "// Needed for Yarn workspaces": "",
-  "name": "example-vuex",
-  "version": "0.0.0"
+  }
 }

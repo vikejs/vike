@@ -9,6 +9,6 @@ To run it:
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/react-router/
-npm install # (do not use yarn, as yarn installs the entire monorepo)
+npm install
 npm run start
 ```
