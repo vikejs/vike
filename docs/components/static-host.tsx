@@ -5,11 +5,17 @@ export { StaticHostDocOutro }
 
 function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }) {
   return (
-    <p>
-      By <a href="/pre-rendering">pre-rendering</a> our pages, we can remove the need for a Node.js server. We can then
-      deploy our app to any static host
-      {staticHostLink}.
-    </p>
+    <div>
+      <p>
+        By <a href="/pre-rendering">pre-rendering</a> our pages, we can remove the need for a Node.js server. We can then
+        deploy our app to any static host
+        {staticHostLink}.
+      </p>
+      <blockquote>
+      <p>
+        To do this simply run <code>$ npm run build:static</code> and deploy the directory <code>dist/client/</code> that contains all our static assets.
+      </p>
+    </div>
   )
 }
 function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: JSX.Element }) {
