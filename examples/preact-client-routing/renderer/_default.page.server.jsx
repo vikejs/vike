@@ -5,7 +5,7 @@ import logoUrl from './logo.svg'
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname', 'documentProps']
+export const passToClient = ['pageProps', 'documentProps']
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
