@@ -1,8 +1,11 @@
 import express from 'express'
+import vite from 'vite'
 import { createPageRenderer } from 'vite-plugin-ssr'
-import * as vite from 'vite'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = `${__dirname}/..`
 
 startServer()
