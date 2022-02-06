@@ -12,9 +12,9 @@ const { hydrationPromise } = useClientRouter({
     )
     const container = document.querySelector('body')
 
-    if (pageContext.isHydration && container) {
+    if (pageContext.isHydration) {
       hydrate(page, container)
-    } else if (container) {
+    } else {
       render(page, container)
     }
     document.title = getPageTitle(pageContext)
