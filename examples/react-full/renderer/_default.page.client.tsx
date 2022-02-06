@@ -6,6 +6,7 @@ import { getPageTitle } from './getPageTitle'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import type { PageContext } from './types'
 
+let root: ReactDOM.Root
 const { hydrationPromise } = useClientRouter({
   render(pageContext: PageContextBuiltInClient & PageContext) {
     const { Page, pageProps } = pageContext
@@ -14,11 +15,14 @@ const { hydrationPromise } = useClientRouter({
         <Page {...pageProps} />
       </PageShell>
     )
-    const container = document.getElementById('page-view')
+    const container = document.getElementById('page-view')!
     if (pageContext.isHydration) {
-      ReactDOM.hydrate(page, container)
+      root = ReactDOM.hydrateRoot(container, page)
     } else {
-      ReactDOM.render(page, container)
+      if (!root) {
+        root = ReactDOM.createRoot(container)
+      }
+      root.render(page)
     }
     document.title = getPageTitle(pageContext)
   },
