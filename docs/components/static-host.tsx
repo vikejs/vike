@@ -12,9 +12,10 @@ function StaticHostDocIntro({ staticHostLink }: { staticHostLink?: JSX.Element }
         {staticHostLink}.
       </p>
       <blockquote>
-      <p>
-        To do this simply run <code>$ npm run build:static</code> and deploy the directory <code>dist/client/</code> that contains all our static assets.
-      </p>
+        <p>
+          To do this simply run <code>$ npm run build:static</code> and deploy the directory <code>dist/client/</code> that contains all our static assets.
+        </p>
+      </blockquote>
     </div>
   )
 }
