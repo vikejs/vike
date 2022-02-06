@@ -51,7 +51,9 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
 
   test('about page', async () => {
     await page.click('a[href="/about"]')
-    expect(await page.textContent('h1')).toBe('About')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('About')
+    })
     // CSS is loaded only after being dynamically `import()`'d from JS
     await autoRetry(async () => {
       expect(await page.$eval('h1', (e) => getComputedStyle(e).color)).toBe('rgb(0, 128, 0)')
