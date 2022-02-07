@@ -32,12 +32,12 @@ function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: JSX.Element
       </ul>
       <blockquote>
         <p>
-          The build script <code>$ vite build && vite build --ssr && vite-plugin-ssr prerender</code> generates a
+          The build commands <code>$ vite build && vite build --ssr && vite-plugin-ssr prerender</code> generate a
           directory <code>dist/client/</code> that contains all our static assets.
         </p>
         <p>
           {' '}
-          We can then locally try our deploy with <a href="https://www.npmjs.com/package/serve">serve</a> by running{' '}
+          We can locally try our deploy with <a href="https://www.npmjs.com/package/serve">serve</a> by running{' '}
           <code>$ serve dist/client/</code>.
         </p>
       </blockquote>

@@ -5,6 +5,18 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
  - React: <RepoLink path='/examples/cloudflare-workers/' />
  - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
 
+## Cloudflare Pages & wrangler 2
+
+With [wrangler v2](https://github.com/cloudflare/wrangler2), we can deploy a Cloudflare Worker (server code) along Cloudflare Pages (static files).
+
+Example:
+ - [github.com/thetre97/vite-plugin-ssr-cloudflare-pages](https://github.com/thetre97/vite-plugin-ssr-cloudflare-pages).
+
+See also:
+ - [Wrangler 2.0 — a new developer experience for Cloudflare Workers](https://blog.cloudflare.com/wrangler-v2-beta/)
+ - [github.com/cloudflare/wrangler2](https://github.com/cloudflare/wrangler2)
+
+
 ## Dev Server
 
 We recommend to:
@@ -18,8 +30,7 @@ See examples above.
 By default, we recommend using Cloudflare Workers's webpack bundler because it's the beaten path;
 using another bundler may cause subtle differences that may cause problems.
 
-That said, we can use any other bundler (esbuild, rollup, ...) to bundle our worker code;
-we just need to make sure to `import 'dist/server/importBuild.js'`. (`importBuild.js` works with any bundler.)
+That said, we can use any other bundler (esbuild, rollup, ...) to bundle our worker code.
 
 ## `importBuild.js`
 
