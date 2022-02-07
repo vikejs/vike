@@ -208,7 +208,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Render as you Fetch',
+    title: 'Render-as-you-Fetch',
     url: '/render-as-you-fetch',
   },
   {
