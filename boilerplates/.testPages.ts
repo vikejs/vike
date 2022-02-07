@@ -2,7 +2,11 @@ import { page, run, partRegex, autoRetry, fetchHtml, urlBase, expectBrowserError
 
 export { testPages }
 
-function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | 'react') {
+function testPages(
+  cmd: 'npm run dev' | 'npm run prod',
+  viewFramework: 'vue' | 'react',
+  { skipTitleColorTest }: { skipTitleColorTest?: boolean } = {},
+) {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
@@ -52,11 +56,16 @@ function testPages(cmd: 'npm run dev' | 'npm run prod', viewFramework: 'vue' | '
   test('about page', async () => {
     await page.click('a[href="/about"]')
     await autoRetry(async () => {
-      expect(await page.textContent('h1')).toBe('About')
+      const title = await page.textContent('h1')
+      expect(title).toBe('About')
     })
     // CSS is loaded only after being dynamically `import()`'d from JS
     await autoRetry(async () => {
-      expect(await page.$eval('h1', (e) => getComputedStyle(e).color)).toBe('rgb(0, 128, 0)')
+      if (skipTitleColorTest) {
+        return
+      }
+      const titleColor = await page.$eval('h1', (e) => getComputedStyle(e).color)
+      expect(titleColor).toBe('rgb(0, 128, 0)')
     })
   })
 
