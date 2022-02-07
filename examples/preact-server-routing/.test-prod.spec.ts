@@ -1,2 +1,2 @@
-import { testPages } from '../../boilerplates/.testPages'
-testPages('npm run prod', 'react')
+import { testRun } from '../../boilerplates/.testRun'
+testRun('npm run prod', 'react')

@@ -1,8 +1,8 @@
 import { run, page, urlBase, fetchHtml, autoRetry } from '../../libframe/test/setup'
 
-export { testPages }
+export { testRun }
 
-function testPages(cmd: 'npm run dev' | 'npm run start' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run start' | 'npm run prod') {
   run(cmd)
 
   test('localized content is rendered to HTML', async () => {

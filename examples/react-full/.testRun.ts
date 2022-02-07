@@ -1,9 +1,9 @@
 import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError } from '../../libframe/test/setup'
 import assert = require('assert')
 
-export { testPages }
+export { testRun }
 
-function testPages(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm run prod') {
+function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm run prod') {
   run(cmd)
 
   const isDev = cmd === 'npm run start'

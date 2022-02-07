@@ -1,8 +1,8 @@
 import { page, run, partRegex, autoRetry, fetchHtml, urlBase, expectBrowserError } from '../libframe/test/setup'
 
-export { testPages }
+export { testRun }
 
-function testPages(
+function testRun(
   cmd: 'npm run dev' | 'npm run prod',
   viewFramework: 'vue' | 'react',
   { skipTitleColorTest }: { skipTitleColorTest?: boolean } = {},

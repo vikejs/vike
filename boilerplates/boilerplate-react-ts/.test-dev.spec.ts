@@ -1,2 +1,2 @@
-import { testPages } from '../.testPages'
-testPages('npm run dev', 'react')
+import { testRun } from '../.testRun'
+testRun('npm run dev', 'react')

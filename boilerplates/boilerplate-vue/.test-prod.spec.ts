@@ -1,2 +1,2 @@
-import { testPages } from '../.testPages'
-testPages('npm run prod', 'vue')
+import { testRun } from '../.testRun'
+testRun('npm run prod', 'vue')

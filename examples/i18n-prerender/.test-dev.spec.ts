@@ -1,2 +1,2 @@
-import { testPages } from '../i18n/.testPages'
-testPages('npm run dev')
+import { testRun } from '../i18n/.testRun'
+testRun('npm run dev')

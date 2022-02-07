@@ -1,2 +1,2 @@
-import { testPages } from '../react-full/.testPages'
-testPages('vue', 'npm run start')
+import { testRun } from '../react-full/.testRun'
+testRun('vue', 'npm run start')
