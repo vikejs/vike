@@ -7,6 +7,8 @@
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
+    "@babel/core": "^7.17.0",
+    "@babel/plugin-transform-react-jsx": "^7.16.7",
     "@preact/preset-vite": "^2.1.7",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
