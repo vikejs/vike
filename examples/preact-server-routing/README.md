@@ -1,10 +1,10 @@
-# Typescript `preact` example with server-side routing
+Example using `vite-plugin-ssr` with `preact` and [server-side routing](https://vite-plugin-ssr.com/server-routing).
 
 To run it:
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/preact-server-routing/
-npm install # (do not use yarn, as yarn installs the entire monorepo)
+npm install
 npm run dev
 ```
