@@ -1,2 +1,2 @@
 import { testRun } from '../.testRun'
-testRun('npm run prod', 'vue')
+testRun('npm run prod')

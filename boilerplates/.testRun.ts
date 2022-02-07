@@ -4,7 +4,6 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod',
-  viewFramework: 'vue' | 'react',
   { skipTitleColorTest }: { skipTitleColorTest?: boolean } = {},
 ) {
   run(cmd)

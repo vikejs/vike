@@ -1,2 +1,2 @@
 import { testRun } from '../../boilerplates/.testRun'
-testRun('npm run dev', 'react')
+testRun('npm run dev')
