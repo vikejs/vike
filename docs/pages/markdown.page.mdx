@@ -1,16 +1,26 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
-We can use `vite-plugin-ssr` with any Vite markdown plugin.
+We can use `vite-plugin-ssr` with any Vite/Rollup markdown plugin.
 
-For example, for Vue, we can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
+
+## Vue
+
+For Vue, we can use [`vite-plugin-md`](https://github.com/antfu/vite-plugin-md).
+
 Example:
  - <RepoLink path='/examples/vue-full/vite.config.ts' />
  - <RepoLink path='/examples/vue-full/pages/markdown.page.md' />
 
-For React, we can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
+
+## React
+
+For React and MDX v1 we can use [`vite-plugin-mdx`](https://github.com/brillout/vite-plugin-mdx).
+
+For MDX v2 we can use [`@mdx-js/rollup`](https://mdxjs.com/packages/rollup/).
+
 Example:
  - <RepoLink path='/examples/react-full/vite.config.ts' />
- - <RepoLink path='/examples/react-full/pages/markdown.page.md' />
+ - <RepoLink path='/examples/react-full/pages/markdown.page.mdx' />
 
 
 ## `<head>` (`pageContext.pageExports`)
