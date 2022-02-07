@@ -15,8 +15,5 @@
     "preact-render-to-string": "^5.1.19",
     "vite": "^2.7.12",
     "vite-plugin-ssr": "^0.3.51"
-  },
-  "// Needed for Yarn workspaces": "",
-  "name": "example_preact-server-routing",
-  "version": "0.0.0"
+  }
 }
