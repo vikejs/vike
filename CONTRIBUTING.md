@@ -82,7 +82,7 @@ pnpm run dev
 ```
 
 You can now change the source code of `vite-plugin-ssr` (`/vite-plugin-ssr/`) and try your modifications with one of the examples (`/examples/*`) or boilerplates (`/boilerplates/boilerplate-*`).
-You may need to restart the example's Node.js server for your `vite-plugin-ssr` modifications to apply.
+You may need to restart the example's Node.js server for your modifications to apply.
 
 If you are having problems running the test suite (e.g. your machine has low memory),
 you can open a Pull Request in
