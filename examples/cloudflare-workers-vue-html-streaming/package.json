@@ -24,7 +24,7 @@
     "express": "^4.17.2",
     "miniflare": "^1.4.1",
     "vite": "^2.7.12",
-    "vite-plugin-ssr": "0.3.52",
+    "vite-plugin-ssr": "0.3.53",
     "vue": "^3.2.26",
     "webpack": "^4.46.0"
   }

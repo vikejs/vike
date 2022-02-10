@@ -13,7 +13,7 @@
     "esbuild": "^0.13.12",
     "express": "^4.17.1",
     "vite": "^2.7.2",
-    "vite-plugin-ssr": "0.3.52",
+    "vite-plugin-ssr": "0.3.53",
     "vue": "^3.2.24"
   }
 }

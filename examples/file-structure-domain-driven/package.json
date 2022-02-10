@@ -20,6 +20,6 @@
     "rimraf": "^3.0.2",
     "serve": "^13.0.2",
     "vite": "^2.7.12",
-    "vite-plugin-ssr": "0.3.52"
+    "vite-plugin-ssr": "0.3.53"
   }
 }

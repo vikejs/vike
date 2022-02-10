@@ -1,3 +1,12 @@
+## [0.3.53](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.52...v0.3.53) (2022-02-10)
+
+
+### Bug Fixes
+
+* add TypeScript types to CLI JavaScript API ([b1d90c5](https://github.com/brillout/vite-plugin-ssr/commit/b1d90c54a6c13e92abc32a2c24111af1261666e6))
+
+
+
 ## [0.3.52](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.51...v0.3.52) (2022-02-10)
 
 
