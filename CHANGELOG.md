@@ -1,3 +1,12 @@
+## [0.3.52](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.51...v0.3.52) (2022-02-10)
+
+
+### Features
+
+* pass `globalContext` to `prerender()` hooks ([0f52a77](https://github.com/brillout/vite-plugin-ssr/commit/0f52a778691c2b27bdbe6a2ade4c153ad0d84372))
+
+
+
 ## [0.3.51](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.50...v0.3.51) (2022-02-01)
 
 
