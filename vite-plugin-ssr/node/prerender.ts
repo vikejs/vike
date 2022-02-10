@@ -155,10 +155,10 @@ async function callPrerenderHooks(
       .filter((pageId) => !isErrorPage(pageId))
       .map((pageId) =>
         concurrencyLimit(async () => {
-          const pageFilesData = await loadPageFiles({
-            ...globalContext,
-            _pageId: pageId,
-          })
+          const globalContextCopy = {}
+          objectAssign(globalContextCopy, globalContext)
+          objectAssign(globalContextCopy, { _pageId: pageId })
+          const pageFilesData = await loadPageFiles(globalContextCopy)
           const pageServerFile = pageFilesData._pageServerFile
           if (!pageServerFile) return
 
@@ -176,7 +176,7 @@ async function callPrerenderHooks(
 
           let prerenderResult: unknown
           try {
-            prerenderResult = await prerenderFunction()
+            prerenderResult = await prerenderFunction(globalContext)
           } catch (err) {
             throwPrerenderError(err)
             assert(false)
