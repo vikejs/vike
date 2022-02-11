@@ -7,8 +7,8 @@ export default class MyStack extends sst.Stack {
     // Create a HTTP API
     const api = new sst.Api(this, "Api", {
       routes: {
-        $default: new sst.Function(this, "TestFunc", {
-          handler: "src/lambda.handler",
+        $default: new sst.Function(this, "EntryPointFunc", {
+          handler: "src/entry.handler",
           bundle: {
             copyFiles: [
               { from: "dist/server", to: "./src" },
