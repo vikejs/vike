@@ -3,14 +3,14 @@
     "start": "node ./server"
   },
   "dependencies": {
-    "@apollo/client": "^3.5.7",
-    "@vitejs/plugin-react": "^1.1.4",
+    "@apollo/client": "^3.5.8",
+    "@vitejs/plugin-react": "^1.2.0",
     "express": "^4.17.2",
-    "graphql": "^16.2.0",
+    "graphql": "^16.3.0",
     "node-fetch": "^2.6.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "vite": "^2.7.12",
+    "vite": "^2.8.1",
     "vite-plugin-ssr": "0.3.53"
   }
 }

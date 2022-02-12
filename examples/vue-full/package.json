@@ -13,21 +13,21 @@
   },
   "dependencies": {
     "@types/express": "^4.17.13",
-    "@types/node": "^17.0.8",
+    "@types/node": "^17.0.17",
     "@types/node-fetch": "^2.5.12",
-    "@vitejs/plugin-vue": "^2.0.1",
-    "@vue/compiler-sfc": "3.2.26",
-    "@vue/server-renderer": "3.2.26",
-    "cross-fetch": "^3.1.4",
+    "@vitejs/plugin-vue": "^2.2.0",
+    "@vue/compiler-sfc": "3.2.31",
+    "@vue/server-renderer": "3.2.31",
+    "cross-fetch": "^3.1.5",
     "express": "^4.17.2",
     "node-fetch": "^2.6.1",
     "rimraf": "^3.0.2",
     "serve": "^13.0.2",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.4",
-    "vite": "^2.7.12",
-    "vite-plugin-md": "^0.11.7",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5",
+    "vite": "^2.8.1",
+    "vite-plugin-md": "^0.11.8",
     "vite-plugin-ssr": "0.3.53",
-    "vue": "3.2.26"
+    "vue": "3.2.31"
   }
 }
