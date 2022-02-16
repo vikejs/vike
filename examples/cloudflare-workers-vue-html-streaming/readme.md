@@ -10,31 +10,36 @@ Example of deploying to [Cloudflare Workers](https://workers.cloudflare.com/) wi
 See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudflare-workers).
 
 
-## Run
+## Run example
 
-To run the example:
-1. ```bash
-    git clone git@github.com:brillout/vite-plugin-ssr
-    cd vite-plugin-ssr/examples/cloudflare-workers-vue-html-streaming/
-    ```
+Setup:
+```bash
+git clone git@github.com:brillout/vite-plugin-ssr
+cd vite-plugin-ssr/examples/cloudflare-workers-vue-html-streaming/
+npm install
+```
 
-2. Create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
+To develop: (For increased development speed, we use an Express.js development server instead of a worker.)
+```bash
+npm run dev
+```
 
-3. ```bash
-   npm install
-   ```
-   To develop (for increased dev speed we use an Express.js dev server instead of `wrangler`):
-   ```bash
-   npm run dev
-   ```
-   To build and try the worker locally:
-   ```bash
-   npm run prod
-   ```
-   To build and deploy the worker to Cloudflare Workers:
-   ```bash
-   npm run deploy
-   ```
+To try the worker locally with miniflare: (No account needed.)
+```bash
+npm run preview
+```
+
+To be able to use `wrangler`, create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
+
+To try the worker locally with wrangler:
+```bash
+npm run preview:wrangler
+```
+
+To deploy the worker to Cloudflare:
+```bash
+npm run deploy
+```
 
 
 ## `dist/server/importBuild.js`

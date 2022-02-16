@@ -1,19 +1,17 @@
 {
   "scripts": {
-    "// For increased dev speed we use an Express.js dev server instead of wrangler": "",
-    "dev": "node ./dev-server",
-    "// Use miniflare to simulate Cloudflare Workers environment": "",
-    "dev:miniflare": "npm run build:vite && miniflare --port 3000 worker/worker/script.js",
-    "// Build and try the worker locally": "",
-    "prod": "npm run build:vite && wrangler dev --port 3000",
-    "// Build and deploy the worker to Cloudflare Workers": "",
+    "// Development server": "",
+    "dev": "node ./devServer",
+    "// Preview worker locally": "",
+    "preview:": "npm run preview:miniflare",
+    "preview:miniflare": "npm run build:vite && miniflare --port 3000 worker/worker/script.js",
+    "preview:wrangler": "npm run build:vite && wrangler dev --port 3000",
+    "// Deploy worker to Cloudflare": "",
     "deploy": "npm run build:vite && wrangler publish",
-    "// Build scripts": "",
+    "// Build": "",
     "build": "npm run build:vite && npm run build:worker",
     "build:vite": "vite build && vite build --ssr",
-    "build:worker": "wrangler build",
-    "// To sustain the vite-plugin-ssr dev link, we need to do this as Wrangler breaks links upon `$ wrangler dev`": "",
-    "// postinstall": "(cd ../../vite-plugin-ssr/ && yarn link) && yarn link vite-plugin-ssr"
+    "build:worker": "wrangler build"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.2.0",

@@ -4,11 +4,11 @@ import assert from 'assert'
 export { testRun }
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run prod' | 'npm run dev:miniflare',
+  cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
   { hasStarWarsPage }: { hasStarWarsPage: boolean },
 ) {
-  const isMiniflare = cmd === 'npm run dev:miniflare'
-  const isWrangler = cmd === 'npm run prod'
+  const isMiniflare = cmd === 'npm run preview:miniflare'
+  const isWrangler = cmd === 'npm run preview:wrangler'
   const isWorker = isMiniflare || isWrangler
 
   if ((isWindows() || isNode12()) && isWorker) {
@@ -16,7 +16,7 @@ function testRun(
     return
   }
 
-  if (cmd === 'npm run prod') {
+  if (isWrangler) {
     if (!isGithubAction() || process.env['GIT_BRANCH'] !== 'master') {
       test('SKIPED: wrangler test is not run locally nor in Pull Requests', () => {})
       return
