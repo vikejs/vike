@@ -1,7 +1,7 @@
 {
   "scripts": {
     "// Development server": "",
-    "dev": "node ./devServer",
+    "dev": "node ./dev-server",
     "// Preview worker locally": "",
     "preview:": "npm run preview:miniflare",
     "preview:miniflare": "npm run build:vite && miniflare --port 3000 worker/worker/script.js",
