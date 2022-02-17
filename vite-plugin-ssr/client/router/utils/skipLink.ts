@@ -8,6 +8,7 @@ function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
 
   if (url === null) return true
+  if (url === '') return true
   if (isExternalLink(url)) return true
   if (isNewTabLink(linkTag)) return true
   if (isHashUrl(url)) return true
