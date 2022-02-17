@@ -10,7 +10,7 @@ test('route precedence - basic', () => {
     ['/about/team', '/about/team'],
     ['/about/company', '/about/:path'],
     ['/about/some/nested/path', '/about/*'],
-  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+  ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
 test('route precedence - catch-all', () => {
@@ -21,7 +21,7 @@ test('route precedence - catch-all', () => {
     ['/hello', '/*'],
     ['/hello/jon', '/hello/:name'],
     ['/hello/jon/snow', '/*'],
-  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+  ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
 test('route precedence - advanced', () => {
@@ -51,7 +51,7 @@ test('route precedence - advanced', () => {
     ['/product/42/details', '/product/:productId/:view'],
     ['/product/42/review', '/product/:productId/review'],
     ['/product/42/review/too-long', '/product/*'],
-  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+  ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
 test('route precedence - newspaper use case', () => {
@@ -74,7 +74,7 @@ test('route precedence - newspaper use case', () => {
     ['/news/press-releases/1', '/news/press-releases/*'],
     ['/news/press-releases/2021/new-funding', '/news/press-releases/:year/:slug'],
     ['/other', '/*'],
-  ].forEach(([url, routeString]) => testUrl(url, routeString, routes))
+  ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
 function testUrl(url: string, routeString: string, routes: string[]) {
@@ -91,6 +91,6 @@ function findRoute(url: string, routes: string[]): string | null {
       }
       return { ...result, routeString, routeType: 'STRING' as const }
     })
-    .filter((match) => match)
+    .filter(<T>(match: T | null): match is T => match!==null)
   return pickWinner(candidates)?.routeString || null
 }
