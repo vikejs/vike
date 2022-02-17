@@ -148,7 +148,6 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   assertUsage(hasProp(pageContext, '_pageClientPath', 'string'), errMsg('`pageContext._pageClientPath` is missing'))
   castProp<() => Promise<PageAssets>, typeof pageContext, '_getPageAssets'>(pageContext, '_getPageAssets')
-  pageContext._getPageAssets
   htmlString = await injectAssets(htmlString, pageContext as any)
   return htmlString
 }
@@ -195,7 +194,14 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   htmlString = injectScript(htmlString, script)
 
   // Inject preload links
-  const preloadAssets = pageAssets.filter(({ assetType }) => assetType === 'preload' || assetType === 'style')
+  const preloadAssets = pageAssets
+    // prettier-ignore
+    .filter(({ assetType }) => assetType === 'preload' || assetType === 'style')
+  /* In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid style flashing.
+       - https://github.com/vitejs/vite/issues/2282
+       - https://github.com/brillout/vite-plugin-ssr/issues/261
+    .filter(({ assetType }) => !(assetType === 'style' && !ssrEnv.isProduction))
+  */
   const linkTags = preloadAssets.map((pageAsset) => {
     const isEsModule = pageAsset.preloadType === 'script'
     return inferAssetTag(pageAsset, isEsModule)
@@ -352,7 +358,7 @@ function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
     }
   }
   if (assetType === 'style') {
-    // CSS has utmost priority.
+    // CSS has highest priority.
     // Would there be any advantage of using a preload tag for a css file instead of loading it right away?
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
