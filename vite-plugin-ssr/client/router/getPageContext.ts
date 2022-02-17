@@ -8,7 +8,7 @@ import {
   isPlainObject,
   isObject,
   objectAssign,
-  getPluginError,
+  getProjectError,
   PromiseType,
 } from '../../shared/utils'
 import { parse } from '@brillout/json-s/parse'
@@ -154,7 +154,7 @@ async function retrievePageContext(
   const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
   assert(!('pageContext404PageDoesNotExist' in responseObject))
   if ('serverSideError' in responseObject) {
-    throw getPluginError(
+    throw getProjectError(
       '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.',
     )
   }

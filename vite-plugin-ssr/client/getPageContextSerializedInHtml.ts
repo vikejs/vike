@@ -1,6 +1,6 @@
 import { parse } from '@brillout/json-s/parse'
 import { hasProp, objectAssign } from '../shared/utils'
-import { assert, assertUsage, getPluginError } from '../shared/utils/assert'
+import { assert, assertUsage, getProjectError } from '../shared/utils/assert'
 
 export { getPageContextSerializedInHtml }
 
@@ -20,7 +20,7 @@ function getPageContextSerializedInHtml(): {
   const { pageContext } = parseResult
   assert(hasProp(pageContext, '_pageId', 'string'))
   if ('_serverSideErrorWhileStreaming' in pageContext) {
-    const err = getPluginError(
+    const err = getProjectError(
       `An error occurred on the server while rendering/streaming to HTML. Check your server logs.`,
     )
     throw err
