@@ -14,7 +14,7 @@
     "cross-env": "^7.0.3",
     "express": "^4.17.2",
     "vite": "^2.8.1",
-    "vite-plugin-ssr": "^0.3.53",
+    "vite-plugin-ssr": "^0.3.54",
     "vue": "^3.2.31"
   }
 }

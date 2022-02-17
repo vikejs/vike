@@ -21,6 +21,6 @@
     "ts-node": "^10.5.0",
     "typescript": "^4.5.5",
     "vite": "^2.8.1",
-    "vite-plugin-ssr": "^0.3.53"
+    "vite-plugin-ssr": "^0.3.54"
   }
 }

@@ -1,3 +1,13 @@
+## [0.3.54](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.53...v0.3.54) (2022-02-17)
+
+
+### Bug Fixes
+
+* improve internal failure message ([eaa1aba](https://github.com/brillout/vite-plugin-ssr/commit/eaa1ababa81a1a15748c178ebf27b4fb65f6d19e))
+* skip empty href links (fix [#263](https://github.com/brillout/vite-plugin-ssr/issues/263)) ([5568754](https://github.com/brillout/vite-plugin-ssr/commit/556875465b4d026f1c02df7d8182766f59f88c6f))
+
+
+
 ## [0.3.53](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.52...v0.3.53) (2022-02-10)
 
 
