@@ -1,3 +1,12 @@
+## [0.3.55](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.54...v0.3.55) (2022-02-18)
+
+
+### Bug Fixes
+
+* remove TS source files from npm package (fix [#265](https://github.com/brillout/vite-plugin-ssr/issues/265)) ([d15f134](https://github.com/brillout/vite-plugin-ssr/commit/d15f134c768ef7f244e65cdff1b88bada9f98a60))
+
+
+
 ## [0.3.54](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.53...v0.3.54) (2022-02-17)
 
 
