@@ -71,6 +71,8 @@
     "dist/",
     "cli.js",
     "cli.d.ts",
+    "client.d.ts",
+    "client/router.d.ts",
     "plugin.d.ts",
     "types.d.ts"
   ],
