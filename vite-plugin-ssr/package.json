@@ -67,6 +67,13 @@
       "node": "./dist/cjs/node/plugin/index.js"
     }
   },
+  "files": [
+    "dist/",
+    "cli.js",
+    "cli.d.ts",
+    "plugin.d.ts",
+    "types.d.ts"
+  ],
   "bin": {
     "vite-plugin-ssr": "./node/bin/vite-plugin-ssr.js"
   },

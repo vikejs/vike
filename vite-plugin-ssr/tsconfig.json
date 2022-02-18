@@ -20,10 +20,8 @@
     "noPropertyAccessFromIndexSignature": true /* Discriminate between accessing a field via “dot” (obj.key) or “index” (obj["key"]) */,
     // Dependencies
     "skipLibCheck": true,
-    // Source Maps
-    "sourceMap": true,
+    // Declaration files
     "declaration": true,
-    "declarationMap": true,
     "stripInternal": true
   },
   "exclude": ["./node_modules/", "./dist/", "**/*.spec.ts"],
