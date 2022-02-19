@@ -1,6 +1,4 @@
-// We do not `import { assertUsage } from './utils'` because otherwise Node.js loads browser-only code, such as `import.meta.env.BASE_URL` defined in `./utils/getBaseUrl.ts`,  and choke.
-import { assertUsage } from './utils/assert'
-import { isBrowser } from './utils/isBrowser'
+import { assertUsage, isBrowser } from '../utils'
 
 export { navigate }
 

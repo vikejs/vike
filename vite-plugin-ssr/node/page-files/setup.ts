@@ -22,13 +22,11 @@ async function setPageFiles(): Promise<unknown> {
       : "Your development environment doesn't seem to be Node.js. If this is a production environment then make sure that `isProduction: true`.",
   )
 
-  const viteEntryFile = 'pageFiles.js'
-  // assertEntry(viteEntryFile)
   const userDist = `${ssrEnv.root}/${ssrEnv.outDir}`
+  const viteEntryPathProd = `${userDist}/server/pageFiles.js`
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
-  const pluginDist = join(__dirname, `../../../../dist`)
-  const viteEntryPathProd = `${userDist}/server/${viteEntryFile}`
-  const viteEntryPathDev = `${pluginDist}/esm/node/page-files/${viteEntryFile}`
+  const pluginRoot = join(__dirname, `../../../..`)
+  const viteEntryPathDev = `${pluginRoot}/node/page-files/pageFiles.ts`
 
   let moduleExports: unknown
   if (ssrEnv.isProduction) {
@@ -51,52 +49,6 @@ async function setPageFiles(): Promise<unknown> {
   assert(hasProp(pageFiles, '.page'))
   return pageFiles
 }
-
-/*
-function assertEntry(viteEntryFile: string) {
-  let dir: string | undefined
-  let viteEntryPath: string | undefined
-  let viteEntryResolved: string | undefined
-  let requireTypeof: string | undefined
-  let requireConstructor: string | undefined
-  let requireResolveTypeof: string | undefined
-  let requireResolveConstructor: string | undefined
-  try {
-    dir = __dirname
-    assert(dir)
-    assert(isAbsolute(dir))
-    viteEntryPath = resolve(dir, viteEntryFile)
-    assert(isAbsolute(viteEntryPath))
-    requireTypeof = typeof require
-    requireConstructor = String(require.constructor)
-    requireResolveTypeof = typeof require.resolve
-    requireResolveConstructor = String(require.resolve.constructor)
-    const req = require
-    const res = req.resolve
-    viteEntryResolved = res(viteEntryPath)
-    assert(viteEntryResolved)
-    assert(isAbsolute(viteEntryResolved))
-    assert(moduleExists(`./${viteEntryFile}`, dir))
-  } catch (err) {
-    throw new Error(
-      `You stumbled upon a known bug. Please reach out at ${projectInfo.githubRepository}/issues/new or ${
-        projectInfo.discordInvite
-      } and include this message. Debug info (vite-plugin-ssr maintainer will use this to fix the bug): ${JSON.stringify(
-        {
-          dir,
-          viteEntryFile,
-          viteEntryPath,
-          viteEntryResolved,
-          requireTypeof,
-          requireConstructor,
-          requireResolveTypeof,
-          requireResolveConstructor,
-        },
-      )}`,
-    )
-  }
-}
-*/
 
 // `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
 const req = require
