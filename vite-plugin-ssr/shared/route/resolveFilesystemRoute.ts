@@ -1,4 +1,4 @@
-import { assert, higherFirst, slice } from '../../node/utils'
+import { assert, higherFirst, slice } from './utils'
 
 export { resolveFilesystemRoute }
 export { getFilesystemRoute }

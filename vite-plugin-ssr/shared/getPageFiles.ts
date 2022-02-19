@@ -1,5 +1,5 @@
 import { getSsrEnv } from '../node/ssrEnv'
-import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst } from '../node/utils'
+import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst } from './utils'
 
 export type { AllPageFiles }
 export type { PageFile }

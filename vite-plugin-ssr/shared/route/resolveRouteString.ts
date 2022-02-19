@@ -1,5 +1,5 @@
 import { matchRouteString } from './matchRouteString'
-import { higherFirst } from '../../node/utils'
+import { higherFirst } from './utils'
 
 export { resolveRouteString }
 export { resolveRouteStringPrecedence }

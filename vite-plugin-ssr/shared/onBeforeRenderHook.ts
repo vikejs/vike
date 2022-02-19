@@ -1,5 +1,5 @@
 import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser'
-import { assert, assertUsage, hasProp, isCallable } from '../node/utils'
+import { assert, assertUsage, hasProp, isCallable } from './utils'
 
 export { getOnBeforeRenderHook }
 export { runOnBeforeRenderHooks }

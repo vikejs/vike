@@ -1,5 +1,5 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertUsage, hasProp, isObjectWithKeys } from '../../node/utils'
+import { assertUsage, hasProp, isObjectWithKeys } from './utils'
 import { PageRoutes } from './loadPageRoutes'
 import { assertRouteParams } from './resolveRouteFunction'
 

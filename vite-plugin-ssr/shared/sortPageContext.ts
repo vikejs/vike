@@ -1,4 +1,4 @@
-import { compareString } from '../node/utils'
+import { compareString } from './utils'
 
 export { sortPageContext }
 

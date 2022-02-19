@@ -1,6 +1,6 @@
 import { AllPageFiles, findDefaultFile, findPageFile } from './getPageFiles'
 import { getOnBeforeRenderHook, OnBeforeRenderHook } from './onBeforeRenderHook'
-import { assertUsage, hasProp } from '../node/utils'
+import { assertUsage, hasProp } from './utils'
 
 export { loadPageIsomorphicFiles }
 export type { PageIsomorphicFile }
