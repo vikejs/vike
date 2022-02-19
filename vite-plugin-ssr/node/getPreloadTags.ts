@@ -1,5 +1,5 @@
 import { getSsrEnv } from './ssrEnv'
-import { assert } from '../shared/utils'
+import { assert } from './utils'
 import { ViteManifest } from './getViteManifest'
 import type { ModuleNode } from 'vite'
 import { AllPageFiles } from '../shared/getPageFiles'

@@ -1,5 +1,5 @@
 import { Plugin } from 'vite'
-import { assertUsage } from '../../shared/utils'
+import { assertUsage } from '../utils'
 import { build } from './build'
 import { dev } from './dev'
 import { manifest } from './manifest'

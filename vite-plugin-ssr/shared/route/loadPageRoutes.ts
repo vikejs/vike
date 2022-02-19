@@ -1,6 +1,6 @@
 import { AllPageFiles, findDefaultFiles, findPageFile } from '../getPageFiles'
 import { isErrorPage } from './error-page'
-import { assert, assertExports, assertUsage, hasProp, objectAssign, slice } from '../utils'
+import { assert, assertExports, assertUsage, hasProp, objectAssign, slice } from '../../node/utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { getFilesystemRoute } from './resolveFilesystemRoute'
 

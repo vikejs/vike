@@ -28,7 +28,7 @@ import {
   isParsable,
   assertBaseUrl,
   isPromise,
-} from '../shared/utils'
+} from './utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import {
   loadPageIsomorphicFiles,

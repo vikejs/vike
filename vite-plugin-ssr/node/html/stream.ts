@@ -1,4 +1,4 @@
-import { assert, assertUsage, checkType, isObject, hasProp } from '../../shared/utils'
+import { assert, assertUsage, checkType, isObject, hasProp } from '../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
 // Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.

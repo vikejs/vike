@@ -1,4 +1,4 @@
-import { assert, parseUrl, objectAssign, isCallable } from './utils'
+import { assert, parseUrl, objectAssign, isCallable } from '../node/utils'
 
 export { addComputedUrlProps }
 export type { PageContextUrls }

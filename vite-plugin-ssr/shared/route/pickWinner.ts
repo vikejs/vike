@@ -1,4 +1,4 @@
-import { makeFirst } from '../utils'
+import { makeFirst } from '../../node/utils'
 import { resolveRouteStringPrecedence, isStaticRoute } from './resolveRouteString'
 
 export { pickWinner }

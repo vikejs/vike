@@ -1,6 +1,5 @@
 import { parse } from '@brillout/json-s/parse'
-import { hasProp, objectAssign } from '../shared/utils'
-import { assert, assertUsage, getProjectError } from '../shared/utils/assert'
+import { hasProp, objectAssign, assert, assertUsage, getProjectError } from './utils'
 
 export { getPageContextSerializedInHtml }
 

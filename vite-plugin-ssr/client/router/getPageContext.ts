@@ -10,7 +10,7 @@ import {
   objectAssign,
   getProjectError,
   PromiseType,
-} from '../../shared/utils'
+} from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'

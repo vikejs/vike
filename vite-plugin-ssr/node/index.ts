@@ -8,7 +8,7 @@ export type { PageContextBuiltIn } from './types'
 
 import './page-files/setup'
 import { importBuild } from './importBuild'
-import { assertUsage, isBrowser } from '../shared/utils'
+import { assertUsage, isBrowser } from './utils'
 export const __private = { importBuild }
 
 assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')

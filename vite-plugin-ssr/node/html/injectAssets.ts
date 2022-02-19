@@ -8,7 +8,7 @@ import {
   normalizePath,
   prependBaseUrl,
   slice,
-} from '../../shared/utils'
+} from '../utils'
 import { getPreloadUrls } from '../getPreloadTags'
 import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'

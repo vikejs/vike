@@ -1,4 +1,4 @@
-import { parseUrl, assertBaseUrl, isParsable } from '../../../shared/utils'
+import { parseUrl, assertBaseUrl, isParsable } from './parseUrl'
 import { getBaseUrl } from './getBaseUrl'
 import { isExternalLink } from './isExternalLink'
 

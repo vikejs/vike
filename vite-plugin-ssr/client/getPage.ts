@@ -1,5 +1,4 @@
-import { checkType, getUrlPathname, objectAssign } from '../shared/utils'
-import { assertWarning } from '../shared/utils/assert'
+import { assertWarning, checkType, getUrlPathname, objectAssign } from './utils'
 import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { loadPageFiles } from './loadPageFiles'

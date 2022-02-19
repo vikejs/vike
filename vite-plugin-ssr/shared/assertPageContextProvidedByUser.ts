@@ -1,4 +1,4 @@
-import { assert, assertUsage, isObject } from './utils'
+import { assert, assertUsage, isObject } from '../node/utils'
 
 export { assertPageContextProvidedByUser }
 

@@ -1,4 +1,4 @@
-import { assert, assertUsage } from '../utils'
+import { assert, assertUsage } from '../../node/utils'
 
 export { getErrorPageId }
 export { isErrorPage }

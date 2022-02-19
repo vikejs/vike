@@ -11,7 +11,7 @@ import {
   projectInfo,
   objectAssign,
   isObjectWithKeys,
-} from '../shared/utils'
+} from './utils'
 import { setSsrEnv } from './ssrEnv'
 import {
   getGlobalContext,

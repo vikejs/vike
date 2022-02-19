@@ -1,5 +1,5 @@
 import type { AllPageFiles } from './getPageFiles'
-import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
+import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from '../node/utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
 import { pickWinner, RouteType } from './route/pickWinner'
 import { resolveRouteString } from './route/resolveRouteString'

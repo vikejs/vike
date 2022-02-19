@@ -7,7 +7,7 @@ import {
   sep as pathSep,
   posix as pathPosix,
 } from 'path'
-import { assert, assertUsage, isObject } from '../../shared/utils'
+import { assert, assertUsage, isObject } from '../utils'
 import * as glob from 'fast-glob'
 import { isSSR_config } from './utils'
 

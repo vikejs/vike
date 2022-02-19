@@ -1,4 +1,4 @@
-import { assert, assertUsage, hasProp, isPlainObject, isPromise } from '../utils'
+import { assert, assertUsage, hasProp, isPlainObject, isPromise } from '../../node/utils'
 
 export { resolveRouteFunction }
 export { assertRouteParams }

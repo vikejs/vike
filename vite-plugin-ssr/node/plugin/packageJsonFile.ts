@@ -8,7 +8,7 @@
  */
 
 import type { Plugin } from 'vite'
-import { assert } from '../../shared/utils'
+import { assert } from '../utils'
 import { isSSR_config } from './utils'
 
 export { packageJsonFile }

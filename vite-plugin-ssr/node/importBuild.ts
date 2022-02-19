@@ -1,7 +1,7 @@
 import { createPageRendererWasCalled } from './createPageRenderer'
 import { setViteManifest } from './getViteManifest'
 import { setPageFiles } from '../shared/getPageFiles'
-import { assertUsage } from '../shared/utils'
+import { assertUsage } from './utils'
 
 export { importBuild }
 export { importBuildWasLoaded }

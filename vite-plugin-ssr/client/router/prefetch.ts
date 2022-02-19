@@ -1,10 +1,9 @@
-import { assert, assertUsage, getUrlPathname } from '../../shared/utils'
+import { assert, assertUsage, getUrlPathname, skipLink } from './utils'
 import { route } from '../../shared/route'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { getGlobalContext } from './getGlobalContext'
 import { loadPageFiles } from '../loadPageFiles'
 import { isExternalLink } from './utils/isExternalLink'
-import { skipLink } from './utils/skipLink'
 
 export { addLinkPrefetchHandlers, prefetch }
 

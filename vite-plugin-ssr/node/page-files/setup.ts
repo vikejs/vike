@@ -1,12 +1,12 @@
-import { assert, assertUsage } from '../../shared/utils/assert'
-import { moduleExists } from '../../shared/utils/moduleExists'
+import { assert, assertUsage } from '../utils/assert'
+import { moduleExists } from '../utils/moduleExists'
 import { resolve, join } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
-import { hasProp, isBrowser } from '../../shared/utils'
+import { hasProp, isBrowser } from '../utils'
 /*
 import { isAbsolute } from 'path'
-import { projectInfo } from '../../shared/utils'
+import { projectInfo } from '../utils'
 */
 
 setPageFilesAsync(setPageFiles)

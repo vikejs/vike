@@ -1,4 +1,4 @@
-import { assert, assertUsage, checkType, hasProp, isPromise, objectAssign } from '../../shared/utils'
+import { assert, assertUsage, checkType, hasProp, isPromise, objectAssign } from '../utils'
 import { injectAssets, injectAssetsAfterRender, injectAssetsBeforeRender } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { manipulateStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'

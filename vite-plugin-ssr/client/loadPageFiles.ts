@@ -1,5 +1,5 @@
 import { loadPageIsomorphicFiles } from '../shared/loadPageIsomorphicFiles'
-import { objectAssign } from '../shared/utils'
+import { objectAssign } from './utils'
 import { getAllPageFiles } from '../shared/getPageFiles'
 
 export { loadPageFiles }

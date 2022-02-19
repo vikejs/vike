@@ -1,5 +1,5 @@
 import { AllPageFiles, PageFile } from './getPageFiles'
-import { assert, assertUsage, slice, unique } from './utils'
+import { assert, assertUsage, slice, unique } from '../node/utils'
 
 export { determinePageIds }
 

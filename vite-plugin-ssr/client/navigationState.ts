@@ -1,4 +1,4 @@
-import { getUrlFull } from '../shared/utils'
+import { getUrlFull } from './utils'
 
 const urlFullOriginal = getUrlFull()
 let navigationChanged = false

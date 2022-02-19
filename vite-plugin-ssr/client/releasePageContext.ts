@@ -1,4 +1,4 @@
-import { assert, assertUsage, isObject } from '../shared/utils'
+import { assert, assertUsage, isObject } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import { PageContextBuiltInClient } from './types'
 

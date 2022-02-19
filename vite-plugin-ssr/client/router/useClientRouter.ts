@@ -8,15 +8,15 @@ import {
   isBrowser,
   isCallable,
   objectAssign,
-} from '../../shared/utils'
+  throttle,
+  skipLink,
+} from './utils'
 import { navigationState } from '../navigationState'
-import { throttle } from '../../shared/utils/throttle'
 import { getPageContext } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
-import { skipLink } from './utils/skipLink'
 
 export { useClientRouter }
 export { navigate }

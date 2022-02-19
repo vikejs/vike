@@ -1,4 +1,4 @@
-import { assert, assertWarning, isPlainObject } from '../utils'
+import { assert, assertWarning, isPlainObject } from '../../node/utils'
 
 export { matchRouteString }
 
