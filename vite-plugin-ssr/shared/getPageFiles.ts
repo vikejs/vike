@@ -1,4 +1,3 @@
-import { getSsrEnv } from '../node/ssrEnv'
 import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst } from './utils'
 
 export type { AllPageFiles }
@@ -49,13 +48,12 @@ type AllPageFilesUnproccessed = Record<FileType, PageFileUnprocessed>
 
 type AllPageFiles = Record<FileType, PageFile[]>
 
-async function getAllPageFiles(): Promise<AllPageFiles> {
+async function getAllPageFiles(isProduction?: boolean): Promise<AllPageFiles> {
   if (asyncGetter) {
-    const ssrEnv = getSsrEnv()
     if (
       !allPageFilesUnprocessed ||
       // We reload all glob imports in dev to make auto-reload work
-      !ssrEnv.isProduction
+      !isProduction
     ) {
       allPageFilesUnprocessed = (await asyncGetter()) as any
     }

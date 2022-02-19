@@ -1084,15 +1084,16 @@ function _parseUrl(url: string, baseUrl: string): ReturnType<typeof parseUrl> & 
 }
 
 async function getGlobalContext() {
+  const ssrEnv = getSsrEnv()
   const globalContext = {
     _parseUrl,
     _baseUrl: getBaseUrl(),
-    _baseAssets: getSsrEnv().baseAssets,
+    _baseAssets: ssrEnv.baseAssets,
     _objectCreatedByVitePluginSsr: true,
   }
   assertBaseUrl(globalContext._baseUrl)
 
-  const allPageFiles = await getAllPageFiles()
+  const allPageFiles = await getAllPageFiles(ssrEnv.isProduction)
   objectAssign(globalContext, {
     _allPageFiles: allPageFiles,
   })
