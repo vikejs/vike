@@ -1,4 +1,4 @@
-import type { PageContextBuiltIn } from '../node/types'
+import type { PageContextBuiltIn } from '../shared/types'
 
 export type PageContextBuiltInClient = Partial<PageContextBuiltIn> &
   Pick<PageContextBuiltIn, 'Page' | 'pageExports'> & {
