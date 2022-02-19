@@ -55,9 +55,9 @@
     }
   },
   "files": [
-    "dist/",
+    "dist/cjs/",
+    "dist/esm/",
     "node/page-files/pageFiles.ts",
-    "cli.js",
     "cli.d.ts",
     "client.d.ts",
     "client/router.d.ts",
