@@ -6,6 +6,6 @@
     "express": "^4.17.2",
     "typescript": "^4.5.5",
     "vite": "^2.8.1",
-    "vite-plugin-ssr": "0.3.55"
+    "vite-plugin-ssr": "0.3.56"
   }
 }

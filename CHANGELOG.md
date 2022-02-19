@@ -1,3 +1,14 @@
+## [0.3.56](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.55...v0.3.56) (2022-02-19)
+
+
+### Bug Fixes
+
+* [bundle-size reduction] remove unused utils from client ([cb86e81](https://github.com/brillout/vite-plugin-ssr/commit/cb86e81f57a5e1d975a0104cd474dc2ff054057c))
+* [npm package size reduction] remove tests from npm package ([3ad6a6b](https://github.com/brillout/vite-plugin-ssr/commit/3ad6a6ba0cf9bea45444cc49c6db78fe9db51268))
+* [npm package size reduction] replace dual ESM+CJS transpiling with ([0157912](https://github.com/brillout/vite-plugin-ssr/commit/0157912aa72ae4b2a5d3c103ff2f65c27244522f))
+
+
+
 ## [0.3.55](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.54...v0.3.55) (2022-02-18)
 
 
