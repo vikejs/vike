@@ -2,6 +2,7 @@ import { resolve, join } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
 import { assert, assertUsage, hasProp, isBrowser, moduleExists } from '../utils'
+import { pathToFileURL } from 'url'
 /*
 import { isAbsolute } from 'path'
 import { projectInfo } from '../utils'
@@ -49,7 +50,7 @@ async function setPageFiles(): Promise<unknown> {
 }
 
 async function dynamicImport(filePath: string): Promise<unknown> {
-  return new Function('file', 'return import(file)')(filePath)
+  return new Function('file', 'return import(file)')(pathToFileURL(filePath).href)
 }
 
 /*
