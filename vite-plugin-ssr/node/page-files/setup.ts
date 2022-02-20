@@ -34,7 +34,7 @@ async function setPageFiles(): Promise<unknown> {
       'Make sure to run `vite build && vite build --ssr` before running your Node.js server with `createPageRenderer({ isProduction: true })`' +
         `. (Build file ${viteEntryResolved} is missing.)`,
     )
-    moduleExports = require_(viteEntryResolved)
+    moduleExports = await dynamicImport(viteEntryResolved)
   } else {
     assert(ssrEnv.viteDevServer)
     const viteEntryResolved = resolve(viteEntryPathDev)
@@ -48,11 +48,10 @@ async function setPageFiles(): Promise<unknown> {
   return pageFiles
 }
 
-// `req` instead of `require` so that Webpack doesn't do dynamic dependency analysis
-const req = require
-function require_(modulePath: string): unknown {
-  return req(modulePath)
+async function dynamicImport(filePath: string): Promise<unknown> {
+  return new Function('file', 'return import(file)')(filePath)
 }
+
 /*
 function requireResolve(modulePath: string): string {
   return req.resolve(modulePath)
