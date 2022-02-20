@@ -840,12 +840,15 @@ importers:
       '@brillout/libassert': ^0.5.4
       '@types/jest': ^27.4.1
       '@types/node': 17.0.19
+      '@types/resolve': ^1.20.1
       cac: ^6.7.12
       es-module-lexer: ^0.10.0
       fast-glob: ^3.2.11
       kolorist: ^1.5.1
       p-limit: ^3.1.0
+      resolve: ^1.22.0
       rollup: ^2.68.0
+      symlink-dir: ^5.0.1
       typescript: ^4.5.5
       vite: ^2.8.4
       vite-plugin-import-build: ^0.1.3
@@ -857,10 +860,13 @@ importers:
       fast-glob: 3.2.11
       kolorist: 1.5.1
       p-limit: 3.1.0
+      resolve: 1.22.0
+      symlink-dir: 5.0.1
       vite-plugin-import-build: 0.1.3
     devDependencies:
       '@types/jest': 27.4.1
       '@types/node': 17.0.19
+      '@types/resolve': 1.20.1
       rollup: 2.68.0
       typescript: 4.5.5
       vite: 2.8.4
@@ -2597,6 +2603,10 @@ packages:
       csstype: 3.0.10
     dev: false
 
+  /@types/resolve/1.20.1:
+    resolution: {integrity: sha512-Ku5+GPFa12S3W26Uwtw+xyrtIpaZsGYHH6zxNbZlstmlvMYSZRzOwzwsXbxlVUbHyUucctSyuFtu6bNxwYomIw==}
+    dev: true
+
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
     dev: false
@@ -3048,6 +3058,13 @@ packages:
 
   /@zeit/schemas/2.6.0:
     resolution: {integrity: sha512-uUrgZ8AxS+Lio0fZKAipJjAh415JyrOZowliZAzmnJSsf7piVL5w+G0+gFJ0KSu3QRhvui/7zuvpLz03YjXAhg==}
+    dev: false
+
+  /@zkochan/rimraf/2.1.2:
+    resolution: {integrity: sha512-Lc2oK51J6aQWcLWTloobJun5ZF41BbTDdLvE+aMcexoVWFoFqvZmnZoyXR2IZk6NJEVoZW8tjgtvQLfTsmRs2Q==}
+    engines: {node: '>=12.10'}
+    dependencies:
+      rimraf: 3.0.2
     dev: false
 
   /JSONStream/1.3.5:
@@ -3553,6 +3570,13 @@ packages:
     resolution: {integrity: sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=}
     dependencies:
       tweetnacl: 0.14.5
+    dev: false
+
+  /better-path-resolve/1.0.0:
+    resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
+    engines: {node: '>=4'}
+    dependencies:
+      is-windows: 1.0.2
     dev: false
 
   /big.js/5.2.2:
@@ -10903,6 +10927,13 @@ packages:
     dev: false
     optional: true
 
+  /rename-overwrite/4.0.2:
+    resolution: {integrity: sha512-L1sgBgagVgOgb1Z6QZr1yJgSMHI4SXQqAH0l/UbeyHnLKxECvKIlyVEmBo4BqsCAZGg0SBSyjCh68lis5PgC7g==}
+    engines: {node: '>=12.10'}
+    dependencies:
+      '@zkochan/rimraf': 2.1.2
+    dev: false
+
   /repeat-element/1.1.4:
     resolution: {integrity: sha512-LFiNfRcSu7KK3evMyYOuCzv3L10TW7yC1G2/+StMjK8Y6Vqd2MG7r/Qjw4ghtuCOjFvlnms/iMmLqpvW/ES/WQ==}
     engines: {node: '>=0.10.0'}
@@ -11813,6 +11844,15 @@ packages:
 
   /symbol-tree/3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
+    dev: false
+
+  /symlink-dir/5.0.1:
+    resolution: {integrity: sha512-MeXygPBopo8AmyObuCJIpXKT+mw54d2Kp6SBuxq0uXZGDkHwHDQExpSg5+TK8BA5kCGyktawu5DJG0QWYO6acw==}
+    engines: {node: '>=12.10'}
+    hasBin: true
+    dependencies:
+      better-path-resolve: 1.0.0
+      rename-overwrite: 4.0.2
     dev: false
 
   /tapable/1.1.3:

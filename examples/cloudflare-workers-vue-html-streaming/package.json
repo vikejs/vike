@@ -3,7 +3,7 @@
     "// Development server": "",
     "dev": "node ./dev-server",
     "// Preview worker locally": "",
-    "preview:": "npm run preview:miniflare",
+    "preview": "npm run preview:miniflare",
     "preview:miniflare": "npm run build:vite && miniflare --port 3000 worker/worker/script.js",
     "preview:wrangler": "npm run build:vite && wrangler dev --port 3000",
     "// Deploy worker to Cloudflare": "",

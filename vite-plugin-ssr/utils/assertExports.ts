@@ -31,7 +31,7 @@ function assertExports(
   )}. See https://vite-plugin-ssr.com/custom-exports if you want to re-use code defined in ${filePath}.`
   if (unknownExports.length !== 0) {
     if (unknownExports.length === 1) {
-      assertWarning(false, `Unknown exports ${stringifyStringArray(unknownExports)} in ${filePath}. ${errSuffix}`)
+      // assertWarning(false, `Unknown exports ${stringifyStringArray(unknownExports)} in ${filePath}. ${errSuffix}`)
     } else {
       assert(unknownExports.length >= 2)
       assertWarning(false, `Unknown export \`${unknownExports[0]}\` in ${filePath}. ${errSuffix}`)

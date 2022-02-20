@@ -1,4 +1,6 @@
-> Support for multiple `onBeforeRender()` hooks is a beta feature; breaking changes may be introduced in minor version updates.
+import { Note, Link } from 'libframe-docs/components'
+
+<Note type="error">Support for multiple `onBeforeRender()` hooks is deprecated. Use <Link href="data-fetching#global-logic" text="Custom Hooks"/> instead. Reach out on Discord or GitHub if you cannot replace your multiple `onBeforeRender()` hooks with one `onBeforeRender()` hook + Custom Hooks.</Note>
 
 While rendering a page `some.page.js`, up to four different `onBeforeRender()` hooks can be executed:
  - `export { onBeforeRender }` in `_default.page.js`

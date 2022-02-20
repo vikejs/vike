@@ -101,8 +101,7 @@ function Page(pageProps) {
 }
 ```
 
-Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's an object we create to
-conveniently hold all props of the `Page`.
+> Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all `Page` props at once.
 
 ## Global Logic
 
@@ -111,46 +110,73 @@ If we use the same data fetching logic for all/several pages we can factor out t
 ```js
 // user.page.server.js
 import { fetchData } from './fetchData'
-export const onBeforeRender = pageContext => fetchData(pageContext, 'user')
+export const onBeforeRender = pageContext => fetchData('user', ['firstName', 'lastName'])
 ```
 
 ```js
 // product.page.server.js
 import { fetchData } from './fetchData'
-export const onBeforeRender = pageContext => fetchData(pageContext, 'product')
+export const onBeforeRender = pageContext => fetchData('product', ['name', 'price'])
 ```
 
-** `onBeforeRender()` in `_default.page.server.js`**
+**Custom Exports**
 
-Alternatively, we can define our global logic in `_default.page.server.js`.
+For more convenience we can define `onBeforeRender()` in `_default.page.server.js` and use a *custom export*:
 
 ```js
-// /renderer/_default.page.server.js
+// user.page.server.js
+export const query = { modelName: 'user', select: ['firstName', 'lastName'] }
+```
 
+```js
+// product.page.server.js
+export const query = { modelName: 'product', select: ['name', 'price'] }
+```
+
+```js
+// renderer/_default.page.server.js
 import { fetchData } from './fetchData'
-
-export const onBeforeRender = pageContext => {
-  const page = (
-    pageContext.url.startsWith('/user') && 'user' ||
-    pageContext.url.startsWith('/product') && 'product'
-  )
-  return fetchData(pageContext, page)
+export const customExports = ['query']
+export const onBeforeRender = async pageContext => {
+   // Custom exports are available at `pageContext.exports`
+   const { modelName, select } = pageContext.exports.query
+   const data = await fetchData(modelName, select)
 }
 ```
 
+**Custom Hooks**
+
+We can also export a function:
+
+```js
+// user.page.server.js
+export const getQuery = pageContext => /* ... */
+```
+
+```js
+// product.page.server.js
+export const getQuery = pageContext => /* ... */
+```
+
+```js
+// renderer/_default.page.server.js
+import { fetchData } from './fetchData'
+export const customExports = ['getQuery']
+export const onBeforeRender = async pageContext => {
+   const { getQuery } = pageContext.exports
+   const query = getQuery(pageContext)
+   const data = await fetchData(query)
+}
+```
+
+Our custom export `getQuery()` is what we call a *custom hook*.
+
+By implementing multiple custom exports and hooks we can achieve great flexibility.
+
 **Multiple `renderer/`**
 
-If the logic differs substantially, we may want to create <Link text={<>mutliple <code>renderer/</code> directories</>} href="/multiple-renderer" />.
+If the logic differs substantially between two parts of our app, then we may want to create <Link text={<>mutliple <code>renderer/</code> directories</>} href="/multiple-renderer" />.
 
-** `onBeforeRender()` in `.page.server.js` and `_default.page.server.js`.**
-
-We can also define a `onBeforeRender()` hook in the page's `.page.server.js` file,
-while also defining a `onBeforeRender()` hook in `_default.page.server.js`.
-See <Link href="/onBeforeRender-multiple" />.
-
-**`onInit()`**
-
-There is work-in-progress to implement a new `onInit()` hook to initialize global data, see [#164](https://github.com/brillout/vite-plugin-ssr/issues/164).
 
 ## Client Routing
 
@@ -158,12 +184,13 @@ The `.page.server.js` files are loaded only in Node.js;
 our data fetching code is always exectued in Node.js.
 This is convenient as it makes writing data fetching code easier.
 
-That said, if we use [Client Routing](/useClientRouter),
+If we use [Client Routing](/useClientRouter),
 then we the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
 
 In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing) but,
 if we want to minimize requests made to our Node.js server,
 then we may want to define `onBeforeRender()` in `.page.js` instead.
+
 
 ## Stateful Component
 
@@ -175,6 +202,7 @@ We usually need to make [`pageContext.routeParams`](/pageContext) available to o
 1. We make `pageContext.routeParams` available in the browser by adding it to [`passToClient`](/passToClient).
 2. We [make `pageContext.routeParams` accessible from all our components](/pageContext-anywhere).
 
+
 ## GraphQL
 
 When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in `onBeforeRender()`.
@@ -185,6 +213,7 @@ See:
  - <Link href="/apollo-graphql" />
  - <Link href="/urql" />
  - <Link href="/relay" />
+
 
 ## Store (Vuex/Redux...)
 
