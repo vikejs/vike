@@ -27,7 +27,7 @@
     "typescript": "^4.5.5",
     "vite": "^2.8.1",
     "vite-plugin-md": "^0.11.8",
-    "vite-plugin-ssr": "0.3.57",
+    "vite-plugin-ssr": "0.3.58",
     "vue": "3.2.31"
   }
 }

@@ -1,3 +1,12 @@
+## [0.3.58](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.57...v0.3.58) (2022-02-20)
+
+
+### Bug Fixes
+
+* fix windows dynamic import path resolve ([c548f3e](https://github.com/brillout/vite-plugin-ssr/commit/c548f3ee4c336eaaeeff3f4a8f7dc12680ac5a7d))
+
+
+
 ## [0.3.57](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.56...v0.3.57) (2022-02-20)
 
 
