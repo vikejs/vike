@@ -2,13 +2,14 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
 Instead of using relative import paths,
 which are often cumbersome,
-we can use path aliases.
+we can use path aliases:
 
 ```diff
 - import { Counter } from '../../../../components/Counter'
-+ // `#root/` denotes our project's root directory
 + import { Counter } from `#root/components/Counter`
 ```
+
+where `#root/` denotes our project's root directory.
 
 We may need to define path aliases at up to three different places:
  - `vite.config.js#resolve.alias` (for files processed by Vite)

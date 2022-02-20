@@ -1,7 +1,7 @@
 import { resolve, join } from 'path'
 import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
-import { assert, assertUsage, hasProp, isBrowser, moduleExists } from '../utils'
+import { assert, assertUsage, isBrowser, moduleExists } from '../utils'
 import { pathToFileURL } from 'url'
 /*
 import { isAbsolute } from 'path'
@@ -45,7 +45,6 @@ async function setPageFiles(): Promise<unknown> {
 
   const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles
   assert(pageFiles)
-  assert(hasProp(pageFiles, '.page'))
   return pageFiles
 }
 

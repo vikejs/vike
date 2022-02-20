@@ -16,7 +16,8 @@ type PageIsomorphicFile = null | {
 }
 type PageIsomorphicFileDefault = null | {
   filePath: string
-  onBeforeRenderHook: OnBeforeRenderHook
+  fileExports: Record<string, unknown>
+  onBeforeRenderHook: null | OnBeforeRenderHook
 }
 
 async function loadPageIsomorphicFiles(pageContext: {
@@ -62,7 +63,7 @@ async function loadPageIsomorphicFiles(pageContext: {
       const pageIsomorphicFile: PageIsomorphicFile = {
         filePath,
         onBeforeRenderHook,
-        fileExports: fileExportsTyped,
+        fileExports: fileExports as typeof fileExportsTyped, // TODO
       }
       return pageIsomorphicFile
     })(),
@@ -73,10 +74,11 @@ async function loadPageIsomorphicFiles(pageContext: {
       }
       const { filePath, loadFile } = pageFile
       const fileExports = await loadFile()
-      const onBeforeRenderHook = getOnBeforeRenderHook(fileExports, filePath, true)
+      const onBeforeRenderHook = getOnBeforeRenderHook(fileExports, filePath)
 
       const pageIsomorphicFileDefault: PageIsomorphicFileDefault = {
         filePath,
+        fileExports,
         onBeforeRenderHook,
       }
       return pageIsomorphicFileDefault

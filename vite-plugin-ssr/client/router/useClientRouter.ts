@@ -147,6 +147,7 @@ function useClientRouter({
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
+      // @ts-ignore TODO
       const pageContextReadyForRelease = releasePageContext(pageContext)
       await render(pageContextReadyForRelease)
       addLinkPrefetchHandlers(prefetchLinks, url)

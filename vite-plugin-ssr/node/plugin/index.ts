@@ -8,16 +8,20 @@ import { importBuild } from 'vite-plugin-import-build'
 import { getImportBuildCode } from './getImportBuildCode'
 import { transformPageServerFiles } from './transformPageServerFiles'
 import { removeRequireHookPlugin } from './removeRequireHookPlugin'
+import { generateImportGlobs } from './generateImportGlobs'
+import { resolveConfig, Config } from './resolveConfig'
 
 export default plugin
 export { plugin }
 export { plugin as ssr }
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(): any {
+function plugin(config?: Config | Config[]): any {
+  const { getGlobRoots } = resolveConfig(config)
   const plugins: Plugin[] = [
+    generateImportGlobs(getGlobRoots),
     dev(),
-    build(),
+    build(getGlobRoots),
     manifest(),
     importBuild(getImportBuildCode()),
     packageJsonFile(),
