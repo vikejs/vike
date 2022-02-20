@@ -1,3 +1,13 @@
+## [0.3.57](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.56...v0.3.57) (2022-02-20)
+
+
+### Bug Fixes
+
+* support ESM module dist/server ([4499330](https://github.com/brillout/vite-plugin-ssr/commit/449933089f9d9708830b8b12e6a2413c48c32f90))
+* use `import()` instead of `require()` ([a7886be](https://github.com/brillout/vite-plugin-ssr/commit/a7886be09f642cff56434a86f8ce00d20860b625))
+
+
+
 ## [0.3.56](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.55...v0.3.56) (2022-02-19)
 
 
