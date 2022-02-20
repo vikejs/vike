@@ -24,7 +24,7 @@ async function setPageFiles(): Promise<unknown> {
   const viteEntryPathProd = `${userDist}/server/pageFiles.js`
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
   const pluginRoot = join(__dirname, `../../../..`)
-  const viteEntryPathDev = `${pluginRoot}/node/page-files/pageFiles.ts`
+  const viteEntryPathDev = `${pluginRoot}/dist/esm/node/page-files/pageFiles.js`
 
   let moduleExports: unknown
   if (ssrEnv.isProduction) {
