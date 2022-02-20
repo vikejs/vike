@@ -1,10 +1,12 @@
-import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst } from './utils'
+import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst, notNull } from './utils'
 
 export type { AllPageFiles }
 export type { PageFile }
 export { getAllPageFiles }
 export { findPageFile }
+export { findPageFiles }
 export { findDefaultFiles }
+export { findDefaultFilesSorted }
 export { findDefaultFile }
 
 export { setPageFiles }
@@ -16,6 +18,8 @@ assertNotAlreadyLoaded()
 let allPageFilesUnprocessed: AllPageFilesUnproccessed | undefined
 
 function setPageFiles(pageFiles: unknown) {
+  assert(hasProp(pageFiles, 'isOriginalFile'), 'Missing isOriginalFile')
+  assert(pageFiles.isOriginalFile === false, `\`isOriginalFile === ${pageFiles.isOriginalFile}\``)
   assert(hasProp(pageFiles, '.page'))
   allPageFilesUnprocessed = pageFiles as AllPageFilesUnproccessed
 }
@@ -37,6 +41,7 @@ type FileType = typeof fileTypes[number]
 type PageFileUnprocessed = Record<PageFile['filePath'], PageFile['loadFile']>
 //*
 type AllPageFilesUnproccessed = {
+  isOriginalFile: false
   '.page': PageFileUnprocessed
   '.page.server': PageFileUnprocessed
   '.page.route': PageFileUnprocessed
@@ -55,25 +60,27 @@ async function getAllPageFiles(isProduction?: boolean): Promise<AllPageFiles> {
       // We reload all glob imports in dev to make auto-reload work
       !isProduction
     ) {
-      allPageFilesUnprocessed = (await asyncGetter()) as any
+      const pageFiles = (await asyncGetter()) as unknown
+      setPageFiles(pageFiles)
     }
     assert(hasProp(allPageFilesUnprocessed, '.page'))
   }
   assert(hasProp(allPageFilesUnprocessed, '.page'))
 
-  const tranform = (pageFiles: PageFileUnprocessed): PageFile[] => {
-    return Object.entries(pageFiles).map(([filePath, loadFile]) => {
-      return { filePath, loadFile }
-    })
-  }
   const allPageFiles = {
-    '.page': tranform(allPageFilesUnprocessed['.page']),
-    '.page.route': tranform(allPageFilesUnprocessed['.page.route']),
-    '.page.server': tranform(allPageFilesUnprocessed['.page.server']),
-    '.page.client': tranform(allPageFilesUnprocessed['.page.client']),
+    '.page': processGlobResult(allPageFilesUnprocessed['.page']),
+    '.page.route': processGlobResult(allPageFilesUnprocessed['.page.route']),
+    '.page.server': processGlobResult(allPageFilesUnprocessed['.page.server']),
+    '.page.client': processGlobResult(allPageFilesUnprocessed['.page.client']),
   }
 
   return allPageFiles
+}
+
+function processGlobResult(pageFiles: PageFileUnprocessed): PageFile[] {
+  return Object.entries(pageFiles).map(([filePath, loadFile]) => {
+    return { filePath, loadFile }
+  })
 }
 
 function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
@@ -93,12 +100,32 @@ function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: st
   return pageFile
 }
 
+function findPageFiles<T extends { filePath: string }>(allPageFiles: T[], pageId: string): T[] {
+  const pageFiles = [findPageFile(allPageFiles, pageId), ...findDefaultFilesSorted(allPageFiles, pageId)].filter(
+    notNull,
+  )
+  return pageFiles
+}
+
 function findDefaultFiles<T extends { filePath: string }>(pageFiles: T[]): T[] {
   const defaultFiles = pageFiles.filter(({ filePath }) => {
     assert(filePath.startsWith('/'))
     assert(!filePath.includes('\\'))
     return filePath.includes('/_default')
   })
+
+  return defaultFiles
+}
+
+function findDefaultFilesSorted<T extends { filePath: string }>(pageFiles: T[], pageId: string): T[] {
+  const defaultFiles = findDefaultFiles(pageFiles)
+  // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
+  defaultFiles.sort(
+    lowerFirst(({ filePath }) => {
+      if (filePath.startsWith(pageId)) return -1
+      return getPathDistance(pageId, filePath)
+    }),
+  )
   return defaultFiles
 }
 
@@ -112,15 +139,6 @@ function assertNotAlreadyLoaded() {
 }
 
 function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
-  const defautFiles = findDefaultFiles(pageFiles)
-
-  // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
-  defautFiles.sort(
-    lowerFirst(({ filePath }) => {
-      if (filePath.startsWith(pageId)) return -1
-      return getPathDistance(pageId, filePath)
-    }),
-  )
-
-  return defautFiles[0] || null
+  const defaultFiles = findDefaultFilesSorted(pageFiles, pageId)
+  return defaultFiles[0] || null
 }

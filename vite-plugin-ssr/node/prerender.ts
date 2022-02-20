@@ -23,7 +23,7 @@ import {
   renderStatic404Page,
 } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
-import * as pLimit from 'p-limit'
+import pLimit from 'p-limit'
 import { cpus } from 'os'
 import { AllPageFiles } from '../shared/getPageFiles'
 import { getViteManifest } from './getViteManifest'

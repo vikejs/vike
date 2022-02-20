@@ -2,7 +2,9 @@
   "compilerOptions": {
     "declaration": true,
     "strict": true,
+    "esModuleInterop": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true
   }
 }

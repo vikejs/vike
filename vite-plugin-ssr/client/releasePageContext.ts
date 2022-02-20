@@ -22,6 +22,7 @@ function releasePageContext<
   } & Record<string, unknown>,
 >(pageContext: T) {
   assert('Page' in pageContext)
+  assert('exports' in pageContext)
   assert(isObject(pageContext.pageExports))
   assert([true, false].includes(pageContext.isHydration))
 

@@ -3,22 +3,21 @@ import { assert } from './utils'
 
 export { setViteManifest }
 export { getViteManifest }
-export { ViteManifest }
+export type { ViteManifest }
+export type { ViteManifestEntry }
 export type { PluginManifest }
 
-type ViteManifest = Record<
-  string,
-  {
-    src?: string
-    file: string
-    css?: string[]
-    assets?: string[]
-    isEntry?: boolean
-    isDynamicEntry?: boolean
-    imports?: string[]
-    dynamicImports?: string[]
-  }
->
+type ViteManifestEntry = {
+  src?: string
+  file: string
+  css?: string[]
+  assets?: string[]
+  isEntry?: boolean
+  isDynamicEntry?: boolean
+  imports?: string[]
+  dynamicImports?: string[]
+}
+type ViteManifest = Record<string, ViteManifestEntry>
 
 type PluginManifest = {
   version: string
