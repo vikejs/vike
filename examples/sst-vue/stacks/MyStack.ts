@@ -10,11 +10,6 @@ export default class MyStack extends sst.Stack {
         $default: new sst.Function(this, 'EntryPointFunc', {
           handler: 'src/entry.handler',
           bundle: {
-            copyFiles: [
-              { from: 'dist/server', to: './dist/server' },
-              { from: 'vue/pages', to: './vue/pages' },
-              { from: 'vue/renderer', to: './vue/renderer' },
-            ],
             commandHooks: {
               beforeInstall() {
                 return []
