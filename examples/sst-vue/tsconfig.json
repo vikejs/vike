@@ -1,4 +1,4 @@
 {
   "extends": "@tsconfig/node14",
-  "include": ["stacks", "src", "vue"]
+  "include": ["stacks", "src/**/*.ts"]
 }
