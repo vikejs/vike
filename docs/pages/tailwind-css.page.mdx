@@ -1,3 +1,5 @@
+import { Emoji } from 'libframe-docs/utils/Emoji'
+
 See Tailwind's [Vite Installation Guide](https://tailwindcss.com/docs/guides/vue-3-vite) (the installation steps are the same for React).
 
 ## Windi CSS
@@ -24,13 +26,16 @@ Alternatively, we can use [Windi CSS](https://github.com/windicss/windicss) for 
            // By default only `src/` is scanned
            dirs: ["pages"],
            // We only have to specify the file extensions we actually use.
-           fileExtensions: ["vue", "js", "ts", "jsx", "tsx", "html", "pug"]
+           fileExtensions: ["vue", "js", "ts", "jsx", "tsx"]
          }
        })
      ]
    }
    ```
-   > Alternatively, we can define these options in `windi.config.js`.
+
+   > <Emoji name="warning" /> Make sure that all your files are included in `scan.dirs`.
+
+   > These options can also be defined in `windi.config.js`.
 
 3. Import `virtual:windi.css` in `_default.page.client.js`.
    ```js
