@@ -155,6 +155,10 @@ function escapeInject(
   templateStrings: TemplateStrings,
   ...templateVariables: (TemplateVariable | StreamTypePatch)[]
 ): TemplateWrapped {
+  assertUsage(
+    templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
+    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject',
+  )
   return {
     [__template]: {
       templateStrings,
