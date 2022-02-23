@@ -61,7 +61,11 @@
     "client.d.ts",
     "client/router.d.ts",
     "plugin.d.ts",
-    "types.d.ts"
+    "types.d.ts",
+    "cli.js",
+    "client.js",
+    "client/router.js",
+    "plugin.js"
   ],
   "bin": {
     "vite-plugin-ssr": "./node/bin/vite-plugin-ssr.js"
