@@ -7,12 +7,12 @@
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^2.2.0",
+    "@vitejs/plugin-vue": "^2.2.2",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/server-renderer": "^3.2.31",
     "cross-env": "^7.0.3",
-    "express": "^4.17.2",
-    "vite": "^2.8.1",
+    "express": "^4.17.3",
+    "vite": "^2.8.4",
     "vite-plugin-ssr": "0.3.58",
     "vue": "^3.2.31"
   }

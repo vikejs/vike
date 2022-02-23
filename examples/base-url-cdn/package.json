@@ -18,11 +18,11 @@
     "concurrently": "^7.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
-    "express": "^4.17.2",
+    "express": "^4.17.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
-    "vite": "^2.8.1",
+    "vite": "^2.8.4",
     "vite-plugin-ssr": "0.3.58"
   },
   "type": "module"
