@@ -8,13 +8,11 @@ Alternatively, we can use [Windi CSS](https://github.com/windicss/windicss) for 
    ```shell
    npm install vite-plugin-windicss windicss
    ```
-   Or:
-   ```
-   yarn add vite-plugin-windicss windicss
-   ```
 
 2. Add `vite-plugin-windicss` to `vite.config.js`:
    ```js
+   // vite.config.js
+
    import ssr from "vite-plugin-ssr/plugin"
    import WindiCSS from "vite-plugin-windicss"
 
@@ -34,11 +32,15 @@ Alternatively, we can use [Windi CSS](https://github.com/windicss/windicss) for 
    ```
    > Alternatively, we can define these options in `windi.config.js`.
 
-3. Add WindiCSS to `_default.page.client.js`.
+3. Import `virtual:windi.css` in `_default.page.client.js`.
    ```js
+   // renderer/_default.page.client.js
+
    import 'virtual:windi.css'
+
+   // ...
    ```
 
-That's it.
-
-> More at [WindiCSS Vite Guide](https://windicss.org/integrations/vite.html).
+See also:
+ - Example of using `vite-plugin-ssr` with Windi CSS: [github.com/brillout/vite-plugin-ssr_windi-css](https://github.com/brillout/vite-plugin-ssr_windi-css).
+ - [WindiCSS Vite Guide](https://windicss.org/integrations/vite.html).
