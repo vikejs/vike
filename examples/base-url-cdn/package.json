@@ -23,7 +23,7 @@
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
     "vite": "^2.8.4",
-    "vite-plugin-ssr": "0.3.58"
+    "vite-plugin-ssr": "0.3.59"
   },
   "type": "module"
 }

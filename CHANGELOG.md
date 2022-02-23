@@ -1,3 +1,14 @@
+## [0.3.59](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.58...v0.3.59) (2022-02-23)
+
+
+### Bug Fixes
+
+* help eslint resolve modules (fix [#270](https://github.com/brillout/vite-plugin-ssr/issues/270)) ([14dfe7a](https://github.com/brillout/vite-plugin-ssr/commit/14dfe7ad91532ecf461417593da3037e58a35750))
+* improve bug error message ([#268](https://github.com/brillout/vite-plugin-ssr/issues/268)) ([a848d9d](https://github.com/brillout/vite-plugin-ssr/commit/a848d9d7f086a73b8f556480d9c1a9feb9f5b5b7))
+* improve error message upon wrong `escapeInject` usage (fix [#268](https://github.com/brillout/vite-plugin-ssr/issues/268)) ([9331aa8](https://github.com/brillout/vite-plugin-ssr/commit/9331aa8a34ca5ec4d36953ac0a742fe93e6e1b8a))
+
+
+
 ## [0.3.58](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.57...v0.3.58) (2022-02-20)
 
 
