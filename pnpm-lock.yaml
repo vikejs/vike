@@ -137,7 +137,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vite: ^2.7.13
+      vite: ^2.8.4
     dependencies:
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@types/node': 15.14.9
@@ -148,7 +148,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.5.5
-      vite: 2.7.13
+      vite: 2.8.4
 
   examples/base-url:
     specifiers:
@@ -541,7 +541,7 @@ importers:
       solid-js: ^1.1.0
       ts-node: ^9.1.1
       typescript: ^4.3.2
-      vite: ^2.7.2
+      vite: ^2.8.4
       vite-plugin-solid: ^2.0.1
       vite-plugin-ssr: 0.3.59
     dependencies:
@@ -552,7 +552,7 @@ importers:
       solid-js: 1.3.5
       ts-node: 9.1.1_typescript@4.5.5
       typescript: 4.5.5
-      vite: 2.7.13
+      vite: 2.8.4
       vite-plugin-solid: 2.2.5
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -604,17 +604,17 @@ importers:
       '@vue/server-renderer': ^3.2.24
       esbuild: ^0.13.12
       express: ^4.17.1
-      vite: ^2.7.2
+      vite: ^2.8.4
       vite-plugin-ssr: 0.3.59
       vue: ^3.2.24
     dependencies:
       '@vercel/ncc': 0.32.0
-      '@vitejs/plugin-vue': 1.10.2_vite@2.7.13
+      '@vitejs/plugin-vue': 1.10.2_vite@2.8.4
       '@vue/compiler-sfc': 3.2.29
       '@vue/server-renderer': 3.2.29_vue@3.2.29
       esbuild: 0.13.15
       express: 4.17.2
-      vite: 2.7.13
+      vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.29
 
@@ -733,7 +733,7 @@ importers:
       serve: ^11.3.2
       shiki: ^0.10.1
       typescript: ^4.5.4
-      vite: ^2.7.2
+      vite: ^2.8.4
       vite-plugin-mdx: ^3.5.6
       vite-plugin-ssr: '*'
     dependencies:
@@ -752,8 +752,8 @@ importers:
       serve: 11.3.2
       shiki: 0.10.1
       typescript: 4.5.5
-      vite: 2.7.13
-      vite-plugin-mdx: 3.5.10_@mdx-js+mdx@2.0.0+vite@2.7.13
+      vite: 2.8.4
+      vite-plugin-mdx: 3.5.10_@mdx-js+mdx@2.0.0+vite@2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   libframe/scripts:
@@ -2511,13 +2511,13 @@ packages:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-vue/1.10.2_vite@2.7.13:
+  /@vitejs/plugin-vue/1.10.2_vite@2.8.4:
     resolution: {integrity: sha512-/QJ0Z9qfhAFtKRY+r57ziY4BSbGUTGsPRMpB/Ron3QPwBZM4OZAZHdTa4a8PafCwU5DTatXG8TMDoP8z+oDqJw==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
     dependencies:
-      vite: 2.7.13
+      vite: 2.8.4
     dev: false
 
   /@vitejs/plugin-vue/2.2.2_vite@2.8.4+vue@3.2.31:
@@ -10544,28 +10544,12 @@ packages:
       inherits: 2.0.4
     dev: false
 
-  /rollup/2.67.0:
-    resolution: {integrity: sha512-W83AaERwvDiHwHEF/dfAfS3z1Be5wf7n+pO3ZAO5IQadCT2lBTr7WQ2MwZZe+nodbD+n3HtC4OCOAdsOPPcKZQ==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: false
-
-  /rollup/2.67.2:
-    resolution: {integrity: sha512-hoEiBWwZtf1QdK3jZIq59L0FJj4Fiv4RplCO4pvCRC86qsoFurWB4hKQIjoRf3WvJmk5UZ9b0y5ton+62fC7Tw==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.2
-
   /rollup/2.68.0:
     resolution: {integrity: sha512-XrMKOYK7oQcTio4wyTz466mucnd8LzkiZLozZ4Rz0zQD+HeX4nUK4B8GrTX/2EvN2/vBF/i2WnaXboPxo0JylA==}
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /run-parallel/1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -12102,7 +12086,7 @@ packages:
       vite: 2.8.4
     dev: false
 
-  /vite-plugin-mdx/3.5.10_@mdx-js+mdx@2.0.0+vite@2.7.13:
+  /vite-plugin-mdx/3.5.10_@mdx-js+mdx@2.0.0+vite@2.8.4:
     resolution: {integrity: sha512-tfGNRwkO23pln9EYqhbsOLEx9Qot5+enl+727gop7+HGEoC87+88hLRWGL+FU/It1Y0a5P3OAyDbTKKHX6tEJw==}
     peerDependencies:
       '@mdx-js/mdx': '*'
@@ -12113,7 +12097,7 @@ packages:
       esbuild: 0.13.8
       resolve: 1.22.0
       unified: 9.2.2
-      vite: 2.7.13
+      vite: 2.8.4
     dev: false
 
   /vite-plugin-solid/2.2.5:
@@ -12125,36 +12109,12 @@ packages:
       merge-anything: 5.0.2
       solid-js: 1.3.5
       solid-refresh: 0.4.0_solid-js@1.3.5
-      vite: 2.7.13
+      vite: 2.8.4
     transitivePeerDependencies:
       - less
       - sass
       - stylus
       - supports-color
-    dev: false
-
-  /vite/2.7.13:
-    resolution: {integrity: sha512-Mq8et7f3aK0SgSxjDNfOAimZGW9XryfHRa/uV0jseQSilg+KhYDSoNb9h1rknOy6SuMkvNDLKCYAYYUMCE+IgQ==}
-    engines: {node: '>=12.2.0'}
-    hasBin: true
-    peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-    dependencies:
-      esbuild: 0.13.15
-      postcss: 8.4.6
-      resolve: 1.22.0
-      rollup: 2.67.0
-    optionalDependencies:
-      fsevents: 2.3.2
     dev: false
 
   /vite/2.8.4:
@@ -12176,7 +12136,7 @@ packages:
       esbuild: 0.14.21
       postcss: 8.4.6
       resolve: 1.22.0
-      rollup: 2.67.2
+      rollup: 2.68.0
     optionalDependencies:
       fsevents: 2.3.2
 
