@@ -79,7 +79,7 @@ async function prerender({
   outDir?: string
   base?: string
   parallel?: number
-}) {
+} = {}) {
   assertArguments({ partial, noExtraDir, base, root, outDir, parallel })
   assert(base === undefined)
   if (!onPagePrerender) {
