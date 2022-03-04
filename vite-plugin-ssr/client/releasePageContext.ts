@@ -1,4 +1,4 @@
-import { assert, assertUsage, isObject } from './utils'
+import { assert, assertUsage, isObject, objectAssign } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import { PageContextBuiltInClient } from './types'
 
@@ -19,12 +19,17 @@ function releasePageContext<
   T extends PageContextPublic & {
     _pageContextRetrievedFromServer: null | Record<string, unknown>
     _comesDirectlyFromServer: boolean
+    pageExports: Record<string, unknown>
+    exports: Record<string, unknown>
   } & Record<string, unknown>,
 >(pageContext: T) {
-  assert('Page' in pageContext)
   assert('exports' in pageContext)
+  assert('pageExports' in pageContext)
   assert(isObject(pageContext.pageExports))
   assert([true, false].includes(pageContext.isHydration))
+
+  const Page = pageContext.exports.Page ?? pageContext.exports.default
+  objectAssign(pageContext, { Page })
 
   // For Vue's reactivity
   resolveGetters(pageContext)

@@ -1,3 +1,5 @@
+import { Link } from 'libframe-docs/components'
+
 ## App
 
 We define the `<head>` tags (e.g. `<title>` or `<meta name="description">`)
@@ -32,7 +34,7 @@ async function render(pageContext) {
 
 To define `<head>` tags (e.g. `<title>` or `<meta name="description">`)
 for a specific page,
-we can use [`pageContext.pageExports`](/pageContext).
+we can use <Link href="/exports" text="a Custom Export" />.
 
 ```js
 // about.page.js
@@ -51,10 +53,11 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }
+export const customExports = ['documentProps']
 
 async function render(pageContext) {
-  // We use `pageContext.pageExports.documentProps` which pages can statically define.
-  const documentProps = pageContext.pageExports.documentProps
+  // We use `pageContext.exports.documentProps` which pages can statically define.
+  const documentProps = pageContext.exports.documentProps
 
   // Defaults
   const title = documentProps.title || 'SpaceX'
@@ -249,5 +252,5 @@ export async function render(pageContext) {
 
 ## Markdown
 
-For pages defined with markdown, see [Integration > Markdown > `<head>` (`pageContext.pageExports`)](/markdown#head-pagecontext-pageexports).
+For pages defined with markdown, see [Integration > Markdown > `<head>` (`pageContext.exports`)](/markdown#head-pagecontext-exports).
 
