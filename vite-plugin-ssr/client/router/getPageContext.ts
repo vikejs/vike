@@ -13,7 +13,7 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { findDefaultFile, findPageFile } from '../../shared/getPageFiles'
+import { findDefaultFile, findPageFile, loadPageFiles2 } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { ServerFiles } from './getGlobalContext'
 import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
@@ -31,7 +31,6 @@ type PageContextAddendum = {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
   _comesDirectlyFromServer: boolean
-  Page: unknown
   pageExports: Record<string, unknown>
 } & Record<string, unknown>
 
@@ -45,6 +44,7 @@ async function getPageContext(
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRender && navigationState.isOriginalUrl(pageContext.url)) {
     const pageContextAddendum = await loadPageContextSerializedInHtml()
+    pageContextAddendum._pageId
     return pageContextAddendum
   }
 
@@ -58,8 +58,8 @@ async function loadPageContextSerializedInHtml() {
 
   deleteRedundantPageContext(pageContextAddendum)
 
-  const pageFiles = await loadPageFiles({ _pageId: pageContextAddendum._pageId })
-  objectAssign(pageContextAddendum, pageFiles)
+  const pageContextAddendum2 = await loadPageFiles2(pageContextAddendum._pageId, true)
+  objectAssign(pageContextAddendum, pageContextAddendum2)
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
@@ -80,6 +80,7 @@ async function loadPageContextAfterRoute(
 
   const pageFiles = await loadPageFiles({ _pageId: pageContextFromRoute._pageId })
   objectAssign(pageContextAddendum, pageFiles)
+  //console.log(2, await loadPageFiles2(pageContextAddendum, true))
 
   let pageContextOnBeforeRenderHooks: PromiseType<ReturnType<typeof executeOnBeforeRenderHooks>>
   try {

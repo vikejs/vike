@@ -1,4 +1,4 @@
-export { loadPageFilesNew }
+export { loadPageFiles2 }
 
 import { assertPosixPath } from '../utils/filesystemPathHandling'
 import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst, notNull } from './utils'
@@ -180,17 +180,13 @@ type PageFileLoaded = {
   isDefaultFile: boolean
 }
 type ExportName = string
-async function loadPageFilesNew(
-  pageContext: {
-    _allPageFiles: AllPageFiles
-    _pageId: string
-  },
-  isBrowserSide: boolean,
-) {
+async function loadPageFiles2(pageId: string, isBrowserSide: boolean) {
+  const pageFilesAll = await getAllPageFiles()
+
   const exports: Record<ExportName, unknown> = {}
   const exportsAll: Record<ExportName, (PageFileLoaded & { exportValue: unknown })[]> = {}
 
-  const pageFiles = findPageFiles2(pageContext._allPageFiles, pageContext._pageId, isBrowserSide)
+  const { pageFiles, mainPageFile } = findPageFiles2(pageFilesAll, pageId, isBrowserSide)
   const pageFilesLoaded: PageFileLoaded[] = await Promise.all(
     pageFiles.map(async (pageFile) => {
       const { filePath, loadFile, fileType, isDefaultFile } = pageFile
@@ -203,6 +199,7 @@ async function loadPageFilesNew(
       }
     }),
   )
+  const pageExports = pageFilesLoaded.find(({ filePath }) => filePath === mainPageFile?.filePath)?.fileExports ?? {}
 
   pageFilesLoaded.forEach((pageFile) => {
     Object.entries(pageFile.fileExports).forEach(([exportName, exportValue]) => {
@@ -215,7 +212,14 @@ async function loadPageFilesNew(
     })
   })
 
-  return { exports, exportsAll, pageFilesLoaded }
+  const pageContextAddendum = {
+    exports,
+    pageExports,
+    exportsAll,
+    _pageFilesLoaded: pageFilesLoaded,
+    _pageFilesAll: pageFilesAll,
+  }
+  return pageContextAddendum
 }
 
 type PageFile2 = {
@@ -225,18 +229,22 @@ type PageFile2 = {
   isDefaultFile: boolean
 }
 
-function findPageFiles2(allPageFiles: AllPageFiles, pageId: string, isBrowserSide: boolean): PageFile2[] {
+function findPageFiles2(
+  allPageFiles: AllPageFiles,
+  pageId: string,
+  isBrowserSide: boolean,
+): { pageFiles: PageFile2[]; mainPageFile: PageFile2 | null } {
   const fileTypeEnvSpecific = isBrowserSide ? ('.page.client' as const) : ('.page.server' as const)
   const defaultFiles = [
     ...findDefaultFiles2(allPageFiles, '.page'),
     ...findDefaultFiles2(allPageFiles, fileTypeEnvSpecific),
   ]
   defaultFiles.sort(defaultFilesSorter(fileTypeEnvSpecific, pageId))
-  return [
-    findPageFile2(allPageFiles, fileTypeEnvSpecific, pageId),
-    findPageFile2(allPageFiles, '.page', pageId),
-    ...defaultFiles,
-  ].filter(notNull)
+  const mainPageFile = findPageFile2(allPageFiles, '.page', pageId)
+  const pageFiles = [findPageFile2(allPageFiles, fileTypeEnvSpecific, pageId), mainPageFile, ...defaultFiles].filter(
+    notNull,
+  )
+  return { pageFiles, mainPageFile }
 }
 
 // -1 => element1 first

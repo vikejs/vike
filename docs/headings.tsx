@@ -6,6 +6,10 @@ export { headings }
 
 const headingsWithoutLink: HeadingWithoutLink[] = [
   {
+    title: 'Custom Exports & Custom Hooks',
+    url: '/exports',
+  },
+  {
     title: 'Client Routing',
     url: '/client-routing',
   },

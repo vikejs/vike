@@ -3,7 +3,7 @@ import { Link } from 'libframe-docs/components'
 ## Built-in
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
- - **`pageContext.pageExports`**: all exports of the page's `.page.js` file.
+ - **`pageContext.exports`**: See <Link href="/exports" />.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
  - **`pageContext.isHydration`** [*Only when using [Client Routing](/useClientRouter) and only in the browser*]: boolean that is `true` if the current page is already rendered to HTML. (Usually: `true` for the first page the user navigates to and `false` when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
@@ -92,11 +92,11 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
 
 When using <Link href="/server-routing" noBreadcrumb={true} />, the following is available in the browser:
  - `pageContext.Page`
- - `pageContext.pageExports`
+ - `pageContext.exports`
 
 When using <Link href="/client-routing" noBreadcrumb={true} />, the following is available in the browser:
  - `pageContext.Page`
- - `pageContext.pageExports`
+ - `pageContext.exports`
  - `pageContext.isHydration`
  - `pageContext.routeParams`
  - `pageContext.url`

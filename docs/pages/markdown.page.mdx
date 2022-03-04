@@ -1,4 +1,4 @@
-import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { RepoLink, Link } from 'libframe-docs/components'
 
 We can use `vite-plugin-ssr` with any Vite/Rollup markdown plugin.
 
@@ -23,10 +23,10 @@ Example:
  - <RepoLink path='/examples/react-full/pages/markdown.page.mdx' />
 
 
-## `<head>` (`pageContext.pageExports`)
+## `<head>` (`pageContext.exports`)
 
 To set the `<head>` tags value of a markdown page,
-we can simply use [`pageContext.pageExports`](/pageContext).
+we can use <Link href="/exports" text="a Custom Export" />.
 
 ~~~js
 // some.page.md
@@ -47,8 +47,8 @@ This page is written in _Markdown_.
 import { escapeInject } from 'vite-plugin-ssr'
 
 export async function render(pageContext) {
-  // `pageContext.pageExports` holds all exports of the page's `.page.js` file
-  const { title, description } = pageContext.pageExports.documentProps
+  // `pageContext.exports` holds all exports of the page's `.page.js` file
+  const { title, description } = pageContext.exports.documentProps
   return escapeInject`<html>
     <head>
       <title>${title}</title>
@@ -82,7 +82,8 @@ This page is written in _Markdown_.
 > Make sure the Vite markdown plugin you are using has frontmatter support.
 
 Markdown processors usually expose the frontmatter data as an export,
-which we can access at [`pageContext.pageExports`](/pageContext).
+which we can access at
+<Link href="/exports" text={<code>pageContext.exports</code>} />.
 
 ```js
 // _default.page.server.js
@@ -93,7 +94,7 @@ export async function render(pageContext) {
   // Read the documentation of your Vite markdown plugin or of its underlying markdown
   // processor to find the name of the export that holds the frontmatter data.
   const frontmatterExportName = 'nameOfTheFrontmatterExport'
-  const frontmatter = pageContext.pageExports[frontmatterExportName]
+  const frontmatter = pageContext.exports[frontmatterExportName]
   const { title, description } = frontmatter
   return escapeInject`<html>
     <head>
