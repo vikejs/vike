@@ -1,0 +1,109 @@
+The `pageContext.exports` is an object that holds the `export` values of:
+ - `**/*.page.js`
+ - `**/*.page.server.js` (only on the server-side)
+ - `**/*.page.client.js` (only on the browser-side)
+
+We can use `pageContext.exports` to implement custom exports and custom hooks. For example:
+
+```js
+// /pages/product/index.page.server.js
+// Environment: Node.js
+export const query = { modelName: 'Product', select: ['name, 'price'] }
+export const getDocumentTitle = data => data.name
+```
+
+```js
+// /pages/product/index.page.js
+// Environment: Browser + Node.js
+export { PageLayout } from '../../layouts/Responsive'
+export { Page }
+
+function Page(pageProps) {
+   return <>
+     <div>Product name: {pageProps.data.name}</div>
+     <div>Product price: {pageProps.data.price}</div>
+   </>
+}
+```
+
+```js
+// /pages/user/index.page.server.js
+// Environment: Node.js
+export const query = { modelName: 'User', select: ['firstName, 'lastName'] }
+export const getDocumentTitle = data => data.firstName + ' ' + data.lastName
+```
+
+```js
+// /pages/user/index.page.js
+// Environment: Browser + Node.js
+export { PageLayout } from '../../layouts/Desktop'
+export { Page }
+
+function Page(pageProps) {
+   return <>
+     <div>First name: {pageProps.data.firstName}</div>
+     <div>Last name: {pageProps.data.lastName}</div>
+   </>
+}
+```
+
+> Using such cusom export `PageLayout` is a common technique to implement multiple Layouts.
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+export { onBeforeRender }
+export { render }
+// We let `vite-plugin-ssr` know what our custom exports are:
+export const customExports = ['PageLayout', 'getDocumentTitle', 'query']
+// We let `vite-plugin-ssr` know what should be serialized & sent to the browser:
+export const passToClient = ['pageProps']
+
+async function onBeforeRender() {
+  const { query, getDocumentTitle } = pageContext.exports
+  const data = await fetchData(query)
+  const title = getDocumentTitle(data)
+  const pageProps = { data }
+  return { pageContext: { title, pageProps } }
+}
+
+async function render() {
+  const { title, pageProps } = pageContext
+  const { Page, PageLayout } = pageContext.exports
+  const bodyHtml = renderToHtml(<PageLayout><Page {...pageProps} /></PageLayout>)
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${title}</title>
+      </head>
+      <body>
+        <div id="root">${dangerouslySkipEscape(bodyHtml)}</div>
+      </body>
+    </html>`
+}
+```
+
+> `pageContext.Page` is just an alias for `pageContext.exports.Page ?? pageContext.exports.default`: in our example we have `pageContext.exports.Page === pageContext.Page`.
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { getPage } from 'vite-plugin-ssr/client'
+
+hydrate()
+
+async function hydrate() {
+  const pageContext = await getPage()
+  // Thanks to `passToClient = ['pageProps']`, `pageContext.pageProps` is
+  // available here in the browser as well.
+  const { pageProps } = pageContext
+  // Our `**/*.page.js` files are also loaded in the browser,
+  // thus `PageLayout` and `Page` are available here as well.
+  const { Page, PageLayout } = pageContext.exports
+  renderToDom(
+    <PageLayout><Page {...pageProps} /></PageLayout>,
+    document.getElementById("root")
+  )
+}
+```

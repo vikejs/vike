@@ -1,10 +1,12 @@
+import { Link } from 'libframe-docs/components'
+
 Environment: `Browser`, `Node.js`.<br/>
 [Ext Glob](https://github.com/micromatch/micromatch#extglobs): `/**/*.page.*([a-zA-Z0-9])`.
 
 A `.page.js` file can export the following:
 - `export { Page }` (or `export default`)
 - `export { onBeforeRender }`
-- Custom exports (which are available at `pageContext.pageExports`)
+- <Link href="/exports" />
 
 The `.page.js` file is isomorphic: it can run in the browser as well as in Node.js.
 
