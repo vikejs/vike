@@ -1,3 +1,6 @@
+export { loadPageFilesNew }
+
+import { assertPosixPath } from '../utils/filesystemPathHandling'
 import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst, notNull } from './utils'
 
 export type { AllPageFiles }
@@ -99,6 +102,22 @@ function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: st
   assert(pageFile)
   return pageFile
 }
+function findPageFile2(allPageFiles: AllPageFiles, fileType: FileType, pageId: string): PageFile2 | null {
+  const pageFiles = allPageFiles[fileType].filter(({ filePath }) => {
+    assertPosixPath(filePath)
+    assertPosixPath(pageId)
+    assert(filePath.startsWith('/'))
+    assert(pageId.startsWith('/'))
+    return filePath.startsWith(`${pageId}.page.`)
+  })
+  if (pageFiles.length === 0) {
+    return null
+  }
+  assertUsage(pageFiles.length === 1, 'Conflicting ' + pageFiles.map(({ filePath }) => filePath).join(' '))
+  const pageFile = pageFiles[0]
+  assert(pageFile)
+  return { ...pageFile, isDefaultFile: false, fileType }
+}
 
 function findPageFiles<T extends { filePath: string }>(allPageFiles: T[], pageId: string): T[] {
   const pageFiles = [findPageFile(allPageFiles, pageId), ...findDefaultFilesSorted(allPageFiles, pageId)].filter(
@@ -113,6 +132,17 @@ function findDefaultFiles<T extends { filePath: string }>(pageFiles: T[]): T[] {
     assert(!filePath.includes('\\'))
     return filePath.includes('/_default')
   })
+
+  return defaultFiles
+}
+function findDefaultFiles2(allPageFiles: AllPageFiles, fileType: FileType): PageFile2[] {
+  const defaultFiles = allPageFiles[fileType]
+    .filter(({ filePath }) => {
+      assert(filePath.startsWith('/'))
+      assert(!filePath.includes('\\'))
+      return filePath.includes('/_default')
+    })
+    .map((pageFile) => ({ ...pageFile, fileType, isDefaultFile: true }))
 
   return defaultFiles
 }
@@ -141,4 +171,91 @@ function assertNotAlreadyLoaded() {
 function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
   const defaultFiles = findDefaultFilesSorted(pageFiles, pageId)
   return defaultFiles[0] || null
+}
+
+type PageFileLoaded = {
+  filePath: string
+  fileExports: Record<string, unknown>
+  fileType: FileType
+  isDefaultFile: boolean
+}
+type ExportName = string
+async function loadPageFilesNew(
+  pageContext: {
+    _allPageFiles: AllPageFiles
+    _pageId: string
+  },
+  isBrowserSide: boolean,
+) {
+  const exports: Record<ExportName, unknown> = {}
+  const exportsAll: Record<ExportName, (PageFileLoaded & { exportValue: unknown })[]> = {}
+
+  const pageFiles = findPageFiles2(pageContext._allPageFiles, pageContext._pageId, isBrowserSide)
+  const pageFilesLoaded: PageFileLoaded[] = await Promise.all(
+    pageFiles.map(async (pageFile) => {
+      const { filePath, loadFile, fileType, isDefaultFile } = pageFile
+      const fileExports = await loadFile()
+      return {
+        filePath,
+        fileExports,
+        fileType,
+        isDefaultFile,
+      }
+    }),
+  )
+
+  pageFilesLoaded.forEach((pageFile) => {
+    Object.entries(pageFile.fileExports).forEach(([exportName, exportValue]) => {
+      exports[exportName] = exports[exportName] ?? exportValue
+      exportsAll[exportName] = exportsAll[exportName] ?? []
+      exportsAll[exportName]!.push({
+        ...pageFile,
+        exportValue,
+      })
+    })
+  })
+
+  return { exports, exportsAll, pageFilesLoaded }
+}
+
+type PageFile2 = {
+  filePath: string
+  loadFile: () => Promise<Record<string, unknown>>
+  fileType: FileType
+  isDefaultFile: boolean
+}
+
+function findPageFiles2(allPageFiles: AllPageFiles, pageId: string, isBrowserSide: boolean): PageFile2[] {
+  const fileTypeEnvSpecific = isBrowserSide ? ('.page.client' as const) : ('.page.server' as const)
+  const defaultFiles = [
+    ...findDefaultFiles2(allPageFiles, '.page'),
+    ...findDefaultFiles2(allPageFiles, fileTypeEnvSpecific),
+  ]
+  defaultFiles.sort(defaultFilesSorter(fileTypeEnvSpecific, pageId))
+  return [
+    findPageFile2(allPageFiles, fileTypeEnvSpecific, pageId),
+    findPageFile2(allPageFiles, '.page', pageId),
+    ...defaultFiles,
+  ].filter(notNull)
+}
+
+// -1 => element1 first
+// +1 => element2 first
+function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
+  return (e1: PageFile2, e2: PageFile2): 0 | 1 | -1 => {
+    const d1 = getPathDistance(pageId, e1.filePath)
+    const d2 = getPathDistance(pageId, e2.filePath)
+    if (d1 !== d2) {
+      return d1 < d2 ? -1 : 1
+    } else {
+      const isEnvSpecific1 = e1.fileType === fileTypeEnvSpecific
+      const isEnvSpecific2 = e1.fileType === fileTypeEnvSpecific
+      if (isEnvSpecific1 === isEnvSpecific2) {
+        return 0
+      }
+      if (isEnvSpecific1) return -1
+      if (isEnvSpecific2) return 1
+      assert(false)
+    }
+  }
 }
