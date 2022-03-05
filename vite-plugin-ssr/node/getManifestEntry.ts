@@ -17,6 +17,12 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
 // prettier-ignore
 function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
   assert(filePath.startsWith('/'))
+
+  if( filePath.startsWith(root) ) {
+    filePath = filePath.slice(root.length)
+    assert(filePath.startsWith('/'))
+  }
+
   filePath = filePath.slice(1)
   const manifestKey1 = filePath
   for (const manifest of manifests) {

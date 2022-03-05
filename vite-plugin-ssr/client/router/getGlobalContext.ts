@@ -1,10 +1,10 @@
 import { determinePageIds } from '../../shared/determinePageIds'
-import { getAllPageFiles } from '../../shared/getPageFiles'
+import { getAllPageFiles, loadPageFilesServer } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route'
-import { assert, assertBaseUrl, hasProp, objectAssign, PromiseType, getBaseUrl } from './utils'
+import { assertBaseUrl, objectAssign, PromiseType, getBaseUrl } from './utils'
 
 export { getGlobalContext }
-export type { ServerFiles }
+export type { PageFilesServer }
 
 let globalContext: PromiseType<ReturnType<typeof retrieveGlobalContext>>
 
@@ -15,7 +15,7 @@ async function getGlobalContext() {
   return globalContext
 }
 
-type ServerFiles = { filePath: string; fileExports: { hasExportOnBeforeRender: boolean } }[]
+type PageFilesServer = { filePath: string; fileExports: { hasExportOnBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
   const globalContext = {
     _parseUrl: null,
@@ -27,23 +27,18 @@ async function retrieveGlobalContext() {
   const allPageFiles = await getAllPageFiles()
   objectAssign(globalContext, { _allPageFiles: allPageFiles })
 
-  const allPageIds = await determinePageIds(allPageFiles)
+  const allPageIds = determinePageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
 
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(globalContext)
-  objectAssign(globalContext, { _pageRoutes: pageRoutes, _onBeforeRouteHook: onBeforeRouteHook })
-
-  const serverFiles: ServerFiles = []
-  await Promise.all(
-    allPageFiles['.page.server'].map(async ({ filePath, loadFile }) => {
-      const fileExports = await loadFile()
-      assert(hasProp(fileExports, 'hasExportOnBeforeRender', 'boolean'))
-      assert(Object.keys(fileExports).length === 1)
-      serverFiles.push({ filePath, fileExports })
-    }),
-  )
-
-  objectAssign(globalContext, { _serverFiles: serverFiles })
+  const [{ pageRoutes, onBeforeRouteHook }, pageFilesServer] = await Promise.all([
+    loadPageRoutes(globalContext),
+    loadPageFilesServer(allPageFiles),
+  ])
+  objectAssign(globalContext, {
+    _pageRoutes: pageRoutes,
+    _onBeforeRouteHook: onBeforeRouteHook,
+    _pageFilesServer: pageFilesServer,
+  })
 
   return globalContext
 }

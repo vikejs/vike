@@ -168,7 +168,8 @@ function useClientRouter() {
         hasProp(pageContext.exports, 'render', 'function'),
         'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should be a function',
       )
-      await pageContext.exports.render(pageContextReadyForRelease)
+      const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
+      assertUsage(hookResult===undefined, 'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should not return any value')
       addLinkPrefetchHandlers(!!pageContext.exports?.prefetchLinks, url)
     })()
     await renderPromise

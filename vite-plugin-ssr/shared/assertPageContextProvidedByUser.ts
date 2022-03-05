@@ -17,7 +17,7 @@ function assertPageContextProvidedByUser(
     const { hookName, hookFilePath } = hook
     assert(hookFilePath.startsWith('/'))
     assert(!hookName.endsWith(')'))
-    errorMessagePrefix = `The \`pageContext\` provided by the \`${hookName}()\` hook (${hookFilePath})`
+    errorMessagePrefix = `The \`pageContext\` provided by the \`export { ${hookName} }\` of ${hookFilePath}`
   }
 
   assertUsage(isObject(pageContextProvidedByUser), `${errorMessagePrefix} should be an object.`)
