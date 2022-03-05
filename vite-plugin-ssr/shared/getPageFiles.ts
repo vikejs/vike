@@ -1,4 +1,5 @@
 export { loadPageFiles2 }
+export type PageContextPageFiles = Awaited<ReturnType<typeof loadPageFiles2>>
 
 import { assertPosixPath } from '../utils/filesystemPathHandling'
 import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst, notNull } from './utils'
@@ -180,11 +181,12 @@ type PageFileLoaded = {
   isDefaultFile: boolean
 }
 type ExportName = string
+type ExportsAll = Record<ExportName, (PageFileLoaded & { exportValue: unknown })[]>
 async function loadPageFiles2(pageId: string, isBrowserSide: boolean) {
   const pageFilesAll = await getAllPageFiles()
 
   const exports: Record<ExportName, unknown> = {}
-  const exportsAll: Record<ExportName, (PageFileLoaded & { exportValue: unknown })[]> = {}
+  const exportsAll: ExportsAll = {}
 
   const { pageFiles, mainPageFile } = findPageFiles2(pageFilesAll, pageId, isBrowserSide)
   const pageFilesLoaded: PageFileLoaded[] = await Promise.all(

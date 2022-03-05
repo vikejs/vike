@@ -9,6 +9,7 @@ import {
   prependBaseUrl,
   slice,
   getRoot,
+  assertPosixPath,
 } from '../utils'
 import { getPreloadUrls } from '../getPreloadTags'
 import { getSsrEnv } from '../ssrEnv'
@@ -256,7 +257,17 @@ function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
 }
 
 function resolveSrcDev(filePath: string, root: string) {
-  assert(!filePath.includes('\\') && !root.includes('\\'), { filePath, root })
+  assertPosixPath(filePath)
+  assertPosixPath(root)
+  assert(!filePath.startsWith('/.') && !filePath.startsWith('.'))
+  assert(filePath.startsWith('/'))
+  if( filePath.startsWith(root) ) {
+    filePath = filePath.slice(root.length)
+    assert(filePath.startsWith('/'))
+    return filePath
+  }
+  return filePath
+  /*
   if (filePath.startsWith('/../')) {
     filePath = filePath.slice(1)
   }
@@ -272,6 +283,7 @@ function resolveSrcDev(filePath: string, root: string) {
     '/' +
     ['@fs', ...root.split('/').filter(Boolean).slice(0, -parentDepth), ...filePath.split('/')].filter(Boolean).join('/')
   return filePath
+  */
 }
 function resolveSrcProd(filePath: string, clientManifest: ViteManifest, root: string): string {
   const { manifestEntry } = getManifestEntry(filePath, [clientManifest], root, false)

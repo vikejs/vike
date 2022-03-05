@@ -61,6 +61,7 @@ import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlPr
 import { determinePageIds } from '../shared/determinePageIds'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPage, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
+import { addPageExportsDeprecationWarning } from '../shared/addPageExportsDeprecationWarning'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
@@ -491,6 +492,8 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
   }
+
+  addPageExportsDeprecationWarning(pageContext)
 }
 
 type PageServerFileProps = {
@@ -571,6 +574,11 @@ async function loadPageFiles(pageContext: {
   return pageFiles
 }
 function getPageClientFilePaths(pageContext: { _pageId: string; _allPageFiles: AllPageFiles }): string[] {
+  // Current directory: vite-plugin-ssr/dist/cjs/node/
+  let p = require.resolve('../../../dist/esm/client/router/entry.js')
+  console.log('p', p)
+  p = p.slice(process.cwd().length)
+  console.log('pp', p)
   const { _pageId: pageId, _allPageFiles: allPageFiles } = pageContext
   const pageClientFiles = allPageFiles['.page.client']
   assertUsage(

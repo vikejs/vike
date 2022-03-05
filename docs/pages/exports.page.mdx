@@ -50,12 +50,18 @@ function Page(pageProps) {
 > Using such cusom export `PageLayout` is a common technique to implement multiple Layouts.
 
 ```js
+// /renderer/_default.page.js
+// We let `vite-plugin-ssr` know about our isomorphic custom exports.
+export const customExports = ['PageLayout']
+```
+
+```js
 // /renderer/_default.page.server.js
 // Environment: Node.js
 export { onBeforeRender }
 export { render }
-// We let `vite-plugin-ssr` know what our custom exports are:
-export const customExports = ['PageLayout', 'getDocumentTitle', 'query']
+// We let `vite-plugin-ssr` know about our server-side custom exports.
+export const customExports = ['getDocumentTitle', 'query']
 // We let `vite-plugin-ssr` know what should be serialized & sent to the browser:
 export const passToClient = ['pageProps']
 
