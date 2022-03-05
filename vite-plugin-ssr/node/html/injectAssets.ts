@@ -261,13 +261,12 @@ function resolveSrcDev(filePath: string, root: string) {
   assertPosixPath(root)
   assert(!filePath.startsWith('/.') && !filePath.startsWith('.'))
   assert(filePath.startsWith('/'))
-  if( filePath.startsWith(root) ) {
-    filePath = filePath.slice(root.length)
-    assert(filePath.startsWith('/'))
-    return filePath
-  }
   return filePath
   /*
+  if( resolve(filePath).startsWith(resolve(root)) ) {
+    filePath = '/@fs' + filePath
+  }
+  return filePath
   if (filePath.startsWith('/../')) {
     filePath = filePath.slice(1)
   }

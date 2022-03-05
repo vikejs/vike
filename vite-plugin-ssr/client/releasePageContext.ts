@@ -17,12 +17,12 @@ type PageContextPublic = PageContextBuiltInClient
 // const pageContextReactive = reactive(pageContext)
 // ```
 function releasePageContext<
-  T extends PageContextPublic & {
+  T extends Omit<PageContextPublic, 'Page'> & {
     _pageContextRetrievedFromServer: null | Record<string, unknown>
     _comesDirectlyFromServer: boolean
     pageExports: Record<string, unknown>
     exports: Record<string, unknown>
-  } & Record<string, unknown>,
+  }
 >(pageContext: T) {
   assert('exports' in pageContext)
   assert('pageExports' in pageContext)
@@ -44,7 +44,7 @@ function releasePageContext<
   const pageContextReadyForRelease = !pageContext._comesDirectlyFromServer
     ? // Not possible to achieve `getAssertPassToClientProxy()` if some `onBeforeRender()` hook defined in `.page.js` was called. (We cannot infer what `pageContext` properties came from the server-side or from the client-side. Which is fine because the user will likely dig into why the property is missing in `const pageContext = await runOnBeforeRenderServerHooks()` anyways, which does support throwing the helpul `assertPassToClient()` error message.)
       pageContext
-    : getAssertPassToClientProxyWithVueSupport(pageContext)
+    : getProxy(pageContext)
 
   return pageContextReadyForRelease
 }
@@ -88,9 +88,9 @@ function getAssertPassToClientProxy<T extends Record<string, unknown>>(
   }
 }
 
-// With Vue hanlding
+// Hints the user to use `paassToClient` when accessing undefined `pageContext` props
 let disable: false | string = false
-function getAssertPassToClientProxyWithVueSupport<
+function getProxy<
   T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> },
 >(pageContext: T): T {
   return new Proxy(pageContext, { get })

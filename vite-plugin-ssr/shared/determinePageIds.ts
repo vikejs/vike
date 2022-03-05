@@ -6,7 +6,7 @@ export { determinePageIds }
 /**
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
-async function determinePageIds(allPageFiles: AllPageFiles): Promise<string[]> {
+function determinePageIds(allPageFiles: AllPageFiles): string[] {
   const pageFileIds = computePageIds(allPageFiles['.page'])
   const pageClientFileIds = computePageIds(allPageFiles['.page.client'])
   const pageServerFileIds = computePageIds(allPageFiles['.page.server'])

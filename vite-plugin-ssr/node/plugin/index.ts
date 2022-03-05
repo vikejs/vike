@@ -21,7 +21,7 @@ function plugin(config?: Config | Config[]): any {
   const plugins: Plugin[] = [
     generateImportGlobs(getGlobRoots),
     dev(),
-    build(getGlobRoots),
+    build(),
     manifest(),
     importBuild(getImportBuildCode()),
     packageJsonFile(),

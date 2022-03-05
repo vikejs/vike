@@ -6,26 +6,19 @@ import {
   getFileUrl,
   hasProp,
   isPlainObject,
-  isObject,
   objectAssign,
   getProjectError,
-  PromiseType,
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { findDefaultFile, findPageFile, loadPageFiles2, PageContextPageFiles } from '../../shared/getPageFiles'
+import { loadPageFiles2, PageContextPageFiles } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
-import { ServerFiles } from './getGlobalContext'
-import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
-import { PageIsomorphicFile, PageIsomorphicFileDefault } from '../../shared/loadPageIsomorphicFiles'
-import { assertUsageServerHooksCalled, runOnBeforeRenderHooks } from '../../shared/onBeforeRenderHook'
-import { loadPageFiles } from '../loadPageFiles'
-import { releasePageContextInterim } from '../releasePageContext'
-import { PageContextBuiltInClient } from './types'
+import { assertHookResult } from '../../shared/assertHookResult'
+import { PageContextForRoute, route } from '../../shared/route'
+import { releasePageContext } from '../releasePageContext'
 
 export { getPageContext }
 
-type PageContextPublic = PageContextBuiltInClient
 type PageContextAddendum = {
   _pageId: string
   _pageContextRetrievedFromServer: null | Record<string, unknown>
@@ -35,27 +28,24 @@ type PageContextAddendum = {
 
 async function getPageContext(
   pageContext: {
-    url: string
-    _serverFiles: ServerFiles
+    _pageFilesServer: { fileExports: Record<string, unknown> }[]
     _isFirstRender: boolean
   } & PageContextUrls &
     PageContextForRoute,
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRender && navigationState.isOriginalUrl(pageContext.url)) {
-    const pageContextAddendum = await loadPageContextSerializedInHtml()
-    pageContextAddendum._pageId
+    const pageContextAddendum = await getPageContextForFirstRender()
+    return pageContextAddendum
+  } else {
+    const pageContextAddendum = await getPageContextForPageNavigation(pageContext)
     return pageContextAddendum
   }
-
-  const pageContextFromRoute = await getPageContextFromRoute(pageContext)
-  const pageContextAddendum = await loadPageContextAfterRoute(pageContext, pageContextFromRoute)
-  return pageContextAddendum
 }
 
-async function loadPageContextSerializedInHtml() {
+async function getPageContextForFirstRender() {
   const pageContextAddendum = getPageContextSerializedInHtml()
 
-  deleteRedundantPageContext(pageContextAddendum)
+  removeBuiltInOverrides(pageContextAddendum)
 
   const pageContextAddendum2 = await loadPageFiles2(pageContextAddendum._pageId, true)
   objectAssign(pageContextAddendum, pageContextAddendum2)
@@ -68,38 +58,66 @@ async function loadPageContextSerializedInHtml() {
   return pageContextAddendum
 }
 
-async function loadPageContextAfterRoute(
-  pageContext: { _serverFiles: ServerFiles } & PageContextForRoute & PageContextUrls,
-  pageContextFromRoute: { _pageId: string; routeParams: Record<string, string> },
+async function getPageContextForPageNavigation(
+  pageContext: {
+    _pageFilesServer: { fileExports: Record<string, unknown> }[]
+  } & PageContextForRoute,
 ): Promise<PageContextAddendum> {
   const pageContextAddendum = {
     isHydration: false,
   }
-  objectAssign(pageContextAddendum, pageContextFromRoute)
+  objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
+  objectAssign(pageContextAddendum, await loadPageFiles2(pageContextAddendum._pageId, true))
+  objectAssign(pageContextAddendum, await onBeforeRenderExec({ ...pageContext, ...pageContextAddendum }))
+  assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
+  return pageContextAddendum
+}
 
-  const pageFiles = await loadPageFiles({ _pageId: pageContextFromRoute._pageId })
-  objectAssign(pageContextAddendum, pageFiles)
-  //console.log(2, await loadPageFiles2(pageContextAddendum, true))
-
-  let pageContextOnBeforeRenderHooks: PromiseType<ReturnType<typeof executeOnBeforeRenderHooks>>
-  try {
-    pageContextOnBeforeRenderHooks = await executeOnBeforeRenderHooks({
+async function onBeforeRenderExec(
+  pageContext: {
+    _pageFilesServer: { fileExports: Record<string, unknown> }[]
+    _pageId: string
+    url: string
+    isHydration: boolean
+  } & PageContextPageFiles,
+) {
+  // `export { onBeforeRender }` defined in `.page.client.js`
+  if (pageContext.exports.onBeforeRender) {
+    const hookFile = pageContext.exportsAll.onBeforeRender![0]!.filePath
+    assert(hookFile)
+    assertUsage(
+      hasProp(pageContext.exports, 'onBeforeRender', 'function'),
+      'The `export { onBeforeRender }` of ' + hookFile + ' should be a function',
+    )
+    const pageContextAddendum = {
+      _comesDirectlyFromServer: false,
+      _pageContextRetrievedFromServer: null,
+    }
+    const pageContextReadyForRelease = releasePageContext({
       ...pageContext,
-      ...pageContextFromRoute,
       ...pageContextAddendum,
     })
-  } catch (err) {
-    const pageContextFromRoute = handleError(pageContext, err)
-    const pageContextAddendum = await loadPageContextAfterRoute(pageContext, pageContextFromRoute)
+    const hookResult = await pageContext.exports.onBeforeRender(pageContextReadyForRelease)
+    assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hookFile)
+    const pageContextFromHook = hookResult?.pageContext
+    objectAssign(pageContextAddendum, pageContextFromHook)
     return pageContextAddendum
   }
-  assert(
-    pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer === null ||
-      isObject(pageContextOnBeforeRenderHooks._pageContextRetrievedFromServer),
-  )
-  assert([true, false].includes(pageContextOnBeforeRenderHooks._comesDirectlyFromServer))
-  objectAssign(pageContextAddendum, pageContextOnBeforeRenderHooks)
-  // @ts-ignore TODO
+
+  // `export { onBeforeRender }` defined in `.page.server.js`
+  else if (hasOnBeforeRenderServerSide(pageContext)) {
+    const pageContextFromServer = await retrievePageContextFromServer(pageContext)
+    const pageContextAddendum = {}
+    Object.assign(pageContextAddendum, pageContextFromServer)
+    objectAssign(pageContextAddendum, {
+      _comesDirectlyFromServer: true,
+      _pageContextRetrievedFromServer: pageContextFromServer,
+    })
+    return pageContextAddendum
+  }
+
+  // No `export { onBeforeRender }` defined
+  const pageContextAddendum = { _comesDirectlyFromServer: false, _pageContextRetrievedFromServer: null }
   return pageContextAddendum
 }
 
@@ -108,8 +126,7 @@ async function getPageContextFromRoute(
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
   if ('hookError' in routeResult) {
-    const pageContextFromRoute = handleError(pageContext, routeResult.hookError)
-    return pageContextFromRoute
+    throw routeResult.hookError
   }
   const pageContextFromRoute = routeResult.pageContextAddendum
   if (pageContextFromRoute._pageId === null) {
@@ -131,12 +148,14 @@ function handle404(pageContext: { url: string }) {
   window.location.pathname = pageContext.url
 }
 
-async function retrievePageContext(
-  pageContext: {
-    url: string
-    _serverFiles: ServerFiles
-  } & PageContextForRoute,
-): Promise<Record<string, unknown>> {
+function hasOnBeforeRenderServerSide(pageContext: { _pageFilesServer: { fileExports: Record<string, unknown> }[] }) {
+  return pageContext._pageFilesServer.some(({ fileExports }) => {
+    assert(hasProp(fileExports, 'hasExportOnBeforeRender', 'boolean'))
+    assert(Object.keys(fileExports).length === 1)
+    return fileExports.hasExportOnBeforeRender === true
+  })
+}
+async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
   const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
   const response = await fetch(pageContextUrl)
 
@@ -165,37 +184,22 @@ async function retrievePageContext(
   assert(isPlainObject(pageContextFromServer))
   assert(hasProp(pageContextFromServer, '_pageId', 'string'))
 
-  deleteRedundantPageContext(pageContextFromServer)
+  removeBuiltInOverrides(pageContextFromServer)
 
   return pageContextFromServer
 }
 
-function getOnBeforeRenderServerHookFiles(pageContext: { _serverFiles: ServerFiles; _pageId: string }): string[] {
-  const hooksServer: string[] = []
-  const serverFiles = pageContext._serverFiles
-  const pageId = pageContext._pageId
-  const serverFileDefault = findDefaultFile(serverFiles, pageId)
-  if (serverFileDefault?.fileExports.hasExportOnBeforeRender) {
-    hooksServer.push(serverFileDefault.filePath)
-  }
-  const serverFilePage = findPageFile(serverFiles, pageId)
-  if (serverFilePage?.fileExports.hasExportOnBeforeRender) {
-    hooksServer.push(serverFilePage.filePath)
-  }
-  return hooksServer
-}
-
-const ALREADY_SET_BY_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
-const ALREADY_SET_BY_CLIENT = ['Page', 'pageExports'] as const
-type DeletedKeys = typeof ALREADY_SET_BY_CLIENT[number] | typeof ALREADY_SET_BY_CLIENT_ROUTER[number]
-function deleteRedundantPageContext(pageContext: Record<string, unknown> & { [key in DeletedKeys]?: never }) {
-  const alreadySet = [...ALREADY_SET_BY_CLIENT, ...ALREADY_SET_BY_CLIENT_ROUTER]
+const BUILT_IN_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
+const BUILT_IN_CLIENT = ['Page', 'pageExports', 'exports'] as const
+type DeletedKeys = typeof BUILT_IN_CLIENT[number] | typeof BUILT_IN_CLIENT_ROUTER[number]
+function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in DeletedKeys]?: never }) {
+  const alreadySet = [...BUILT_IN_CLIENT, ...BUILT_IN_CLIENT_ROUTER]
   alreadySet.forEach((prop) => {
     if (prop in pageContext) {
-      // We need to cast `ALREADY_SET_BY_CLIENT` to `string[]`
+      // We need to cast `BUILT_IN_CLIENT` to `string[]`
       //  - https://stackoverflow.com/questions/56565528/typescript-const-assertions-how-to-use-array-prototype-includes
       //  - https://stackoverflow.com/questions/57646355/check-if-string-is-included-in-readonlyarray-in-typescript
-      if ((ALREADY_SET_BY_CLIENT_ROUTER as any as string[]).includes(prop)) {
+      if ((BUILT_IN_CLIENT_ROUTER as any as string[]).includes(prop)) {
         assert(prop.startsWith('url'))
         assertWarning(
           false,
@@ -210,109 +214,4 @@ function deleteRedundantPageContext(pageContext: Record<string, unknown> & { [ke
       delete pageContext[prop]
     }
   })
-}
-
-async function executeOnBeforeRenderHooks(
-  pageContext: {
-    _pageId: string
-    _pageIsomorphicFile: PageIsomorphicFile
-    _pageIsomorphicFileDefault: PageIsomorphicFileDefault
-    _serverFiles: ServerFiles
-  } & PageContextForRoute &
-    PageContextPublic,
-) {
-  let serverHooksCalled: boolean = false
-  let skipServerHooks: boolean = false
-
-  const pageContextOnBeforeRenderHooks = {}
-  objectAssign(pageContextOnBeforeRenderHooks, { _pageContextRetrievedFromServer: null })
-
-  if (isomorphicHooksExist()) {
-    const pageContextFromIsomorphic = await runOnBeforeRenderHooks(
-      pageContext._pageIsomorphicFile,
-      pageContext._pageIsomorphicFileDefault,
-      {
-        ...pageContext,
-        skipOnBeforeRenderServerHooks,
-        runOnBeforeRenderServerHooks: () => runOnBeforeRenderServerHooks(false),
-      },
-    )
-    assertUsageServerHooksCalled({
-      hooksServer: getOnBeforeRenderServerHookFiles(pageContext),
-      hooksIsomorphic: [
-        pageContext._pageIsomorphicFile?.onBeforeRenderHook && pageContext._pageIsomorphicFile.filePath,
-        pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook && pageContext._pageIsomorphicFileDefault.filePath,
-      ],
-      serverHooksCalled,
-      _pageId: pageContext._pageId,
-    })
-    objectAssign(pageContextOnBeforeRenderHooks, pageContextFromIsomorphic)
-    objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: false })
-    return pageContextOnBeforeRenderHooks
-  } else if (!serverHooksExists()) {
-    objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: false })
-    return pageContextOnBeforeRenderHooks
-  } else {
-    const result = await runOnBeforeRenderServerHooks(true)
-    assert(serverHooksCalled)
-    objectAssign(pageContextOnBeforeRenderHooks, result.pageContext)
-    objectAssign(pageContextOnBeforeRenderHooks, { _comesDirectlyFromServer: true })
-    return pageContextOnBeforeRenderHooks
-  }
-
-  function isomorphicHooksExist() {
-    return (
-      !!pageContext._pageIsomorphicFile?.onBeforeRenderHook ||
-      !!pageContext._pageIsomorphicFileDefault?.onBeforeRenderHook
-    )
-  }
-  function serverHooksExists() {
-    return getOnBeforeRenderServerHookFiles({ ...pageContext, ...pageContextOnBeforeRenderHooks }).length > 0
-  }
-
-  async function skipOnBeforeRenderServerHooks() {
-    assertUsage(
-      serverHooksCalled === false,
-      'You cannot call `pageContext.skipOnBeforeRenderServerHooks()` after having called `pageContext.runOnBeforeRenderServerHooks()`.',
-    )
-    skipServerHooks = true
-  }
-
-  async function runOnBeforeRenderServerHooks(doNotPrepareForRelease: boolean) {
-    assertUsage(
-      skipServerHooks === false,
-      'You cannot call `pageContext.runOnBeforeRenderServerHooks()` after having called `pageContext.skipOnBeforeRenderServerHooks()`.',
-    )
-    assertUsage(
-      serverHooksCalled === false,
-      'You already called `pageContext.runOnBeforeRenderServerHooks()`; you cannot call it a second time.',
-    )
-    serverHooksCalled = true
-    const pageContextFromServer = await retrievePageContext(pageContext)
-    objectAssign(pageContextOnBeforeRenderHooks, { _pageContextRetrievedFromServer: pageContextFromServer })
-    let pageContextReadyForRelease = !doNotPrepareForRelease
-      ? releasePageContextInterim(pageContextFromServer, pageContextOnBeforeRenderHooks)
-      : pageContextFromServer
-    return { pageContext: pageContextReadyForRelease }
-  }
-}
-
-function handleError(
-  pageContext: {
-    _allPageIds: string[]
-  },
-  err: unknown,
-) {
-  const errorPageId = getErrorPageId(pageContext._allPageIds)
-  if (!errorPageId) {
-    throw err
-  } else {
-    console.error(err)
-  }
-  const pageContextFromRoute = {
-    _pageId: errorPageId,
-    is404: false,
-    routeParams: {} as Record<string, string>,
-  }
-  return pageContextFromRoute
 }
