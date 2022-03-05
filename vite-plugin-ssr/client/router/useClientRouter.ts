@@ -1,12 +1,10 @@
 import {
   assert,
   assertUsage,
-  assertWarning,
   getUrlFull,
   getUrlFullWithoutHash,
   hasProp,
   isBrowser,
-  isCallable,
   objectAssign,
   throttle,
   skipLink,
@@ -17,14 +15,16 @@ import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
+import { detectHydrationSkipSupport } from './utils/detectHydrationSkipSupport'
 
 export { useClientRouter }
 export { navigate }
 
 setupNativeScrollRestoration()
 
-let isAlreadyCalled: boolean = false
-function useClientRouter({
+let onPageTransitionStart: Function | null
+/*
+  {
   render,
   ensureHydration = false,
   onTransitionStart,
@@ -39,18 +39,17 @@ function useClientRouter({
   onTransitionEnd?: () => void
   ensureHydration?: boolean
   prefetchLinks?: boolean
-}): {
+}
   hydrationPromise: Promise<void>
-} {
-  assertUsage(isAlreadyCalled === false, '`useClientRouter` can be called only once.')
-  isAlreadyCalled = true
   assertUsage(render, '[useClientRouter({render})]: Argument `render` is missing.')
   assertUsage(isCallable(render), '[useClientRouter({render})]: Argument `render` should be a function.')
   assertWarning(
     !(isVueApp() && ensureHydration !== true),
     'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.',
   )
+*/
 
+function useClientRouter() {
   autoSaveScrollPosition()
 
   onLinkClick((url: string, { keepScrollPosition }) => {
@@ -92,13 +91,14 @@ function useClientRouter({
     // Start transition before any await's
     if (renderingNumber > 1) {
       if (isTransitioning === false) {
-        if (onTransitionStart) {
-          onTransitionStart()
+        if (onPageTransitionStart) {
+          onPageTransitionStart()
         }
         isTransitioning = true
       }
     }
 
+    const ensureHydration = detectHydrationSkipSupport()
     if (ensureHydration) {
       if (renderingNumber > 1) {
         await hydrationPromise
@@ -133,6 +133,15 @@ function useClientRouter({
       return
     }
     objectAssign(pageContext, pageContextAddendum)
+    if ('onPageTransitionStart' in pageContext.exports) {
+      assertUsage(
+        hasProp(pageContext.exports, 'onPageTransitionStart', 'function'),
+        'The `export { onPageTransitionStart }` of ' +
+          pageContext.exportsAll.onPageTransitionStart![0]!.filePath +
+          ' should be a function.',
+      )
+      onPageTransitionStart = pageContext.exports.onPageTransitionStart
+    }
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -149,8 +158,18 @@ function useClientRouter({
     renderPromise = (async () => {
       // @ts-ignore TODO
       const pageContextReadyForRelease = releasePageContext(pageContext)
-      await render(pageContextReadyForRelease)
-      addLinkPrefetchHandlers(prefetchLinks, url)
+      assertUsage(
+        hasProp(pageContext.exports, 'render'),
+        'One of the following files should export a `render()` hook: ' +
+          pageContext._pageFilesLoaded.map((p) => p.filePath).join(', ') +
+          '.',
+      )
+      assertUsage(
+        hasProp(pageContext.exports, 'render', 'function'),
+        'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should be a function',
+      )
+      await pageContext.exports.render(pageContextReadyForRelease)
+      addLinkPrefetchHandlers(!!pageContext.exports?.prefetchLinks, url)
     })()
     await renderPromise
     renderPromise = undefined
@@ -158,8 +177,14 @@ function useClientRouter({
     if (pageContext._isFirstRender) {
       resolveInitialPagePromise()
     } else if (renderingNumber === renderingCounter) {
-      if (onTransitionEnd) {
-        onTransitionEnd()
+      if (pageContext.exports.onPageTransitionEnd) {
+        assertUsage(
+          hasProp(pageContext.exports, 'onPageTransitionEnd', 'function'),
+          'The `export { onPageTransitionEnd }` of ' +
+            pageContext.exportsAll.onPageTransitionEnd![0]!.filePath +
+            ' should be a function.',
+        )
+        pageContext.exports.onPageTransitionEnd()
       }
       isTransitioning = false
     }
@@ -363,10 +388,6 @@ function onPageShow(listener: () => void) {
       listener()
     }
   })
-}
-
-function isVueApp() {
-  return typeof window.__VUE__ !== 'undefined'
 }
 declare global {
   interface Window {

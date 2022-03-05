@@ -1,5 +1,6 @@
 import { assert, assertUsage, isObject, objectAssign } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
+import { addPageExportsDeprecationWarning } from '../shared/addPageExportsDeprecationWarning'
 import { PageContextBuiltInClient } from './types'
 
 // Release `pageContext` for user consumption. This is mostly about adding `assertPassToClient()`.
@@ -36,6 +37,8 @@ function releasePageContext<
 
   // For prettier `console.log(pageContext)`
   sortPageContext(pageContext)
+
+  addPageExportsDeprecationWarning(pageContext)
 
   assert([true, false].includes(pageContext._comesDirectlyFromServer))
   const pageContextReadyForRelease = !pageContext._comesDirectlyFromServer

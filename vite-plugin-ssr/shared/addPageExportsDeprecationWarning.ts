@@ -1,8 +1,8 @@
-export { deprecatePageExports }
+export { addPageExportsDeprecationWarning }
 
 import { assertWarning } from './utils'
 
-function deprecatePageExports(pageContext: { pageExports: Record<string, unknown> }) {
+function addPageExportsDeprecationWarning(pageContext: { pageExports: Record<string, unknown> }) {
   const { pageExports } = pageContext
   Object.defineProperty(pageContext, 'pageExports', {
     get() {
@@ -13,7 +13,6 @@ function deprecatePageExports(pageContext: { pageExports: Record<string, unknown
       return pageExports
     },
     enumerable: false,
-    writable: false,
     configurable: false,
   })
 }
