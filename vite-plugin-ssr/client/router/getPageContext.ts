@@ -13,7 +13,7 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { findDefaultFile, findPageFile, loadPageFiles2 } from '../../shared/getPageFiles'
+import { findDefaultFile, findPageFile, loadPageFiles2, PageContextPageFiles } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { ServerFiles } from './getGlobalContext'
 import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
@@ -31,8 +31,7 @@ type PageContextAddendum = {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
   _comesDirectlyFromServer: boolean
-  pageExports: Record<string, unknown>
-} & Record<string, unknown>
+} & PageContextPageFiles
 
 async function getPageContext(
   pageContext: {
@@ -100,6 +99,7 @@ async function loadPageContextAfterRoute(
   )
   assert([true, false].includes(pageContextOnBeforeRenderHooks._comesDirectlyFromServer))
   objectAssign(pageContextAddendum, pageContextOnBeforeRenderHooks)
+  // @ts-ignore TODO
   return pageContextAddendum
 }
 
