@@ -7,7 +7,6 @@ import {
   findDefaultFiles,
   findDefaultFilesSorted,
   PageFile,
-  findPageFiles,
 } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { stringify } from '@brillout/json-s/stringify'
@@ -24,7 +23,6 @@ import {
   PromiseType,
   compareString,
   assertExports,
-  stringifyStringArray,
   parseUrl,
   isParsable,
   assertBaseUrl,
@@ -44,6 +42,7 @@ import {
   runOnBeforeRenderHooks,
 } from '../shared/onBeforeRenderHook'
 import { sortPageContext } from '../shared/sortPageContext'
+import { assertHookResult, assertObjectKeys } from '../shared/assertHookResult'
 import {
   getStreamReadableNode,
   getStreamReadableWeb,
@@ -533,7 +532,7 @@ async function loadPageFiles(pageContext: {
   const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles(
     pageContext,
   )
-  const pageClientFilePaths = getPageClientFilePaths(pageContext)
+  const pageClientFilePaths = getPageClientFilePaths()
 
   const { pageServerFile, pageServerFileDefault, pageServerFiles } = await loadPageServerFiles(pageContext)
 
@@ -573,12 +572,17 @@ async function loadPageFiles(pageContext: {
   })
   return pageFiles
 }
-function getPageClientFilePaths(pageContext: { _pageId: string; _allPageFiles: AllPageFiles }): string[] {
+function getPageClientFilePaths(): string[] {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
+  return [require.resolve('../../../dist/esm/client/router/entry.js')]
+  /*
   let p = require.resolve('../../../dist/esm/client/router/entry.js')
   console.log('p', p)
-  p = p.slice(process.cwd().length)
+  //p = p.slice(process.cwd().length)
+  p = '/@fs' + p
   console.log('pp', p)
+  return [p]
+  /*
   const { _pageId: pageId, _allPageFiles: allPageFiles } = pageContext
   const pageClientFiles = allPageFiles['.page.client']
   assertUsage(
@@ -587,6 +591,7 @@ function getPageClientFilePaths(pageContext: { _pageId: string; _allPageFiles: A
   )
   const pageClientFilePaths = findPageFiles(pageClientFiles, pageId).map(p => p.filePath)
   return pageClientFilePaths
+  */
 }
 async function loadPageServerFiles(pageContext: {
   _pageId: string
@@ -882,7 +887,7 @@ async function executeRenderHook(
     )
     documentHtml = result
   } else {
-    assertKeys(result, ['documentHtml', 'pageContext'] as const, errPrefix)
+    assertObjectKeys(result, ['documentHtml', 'pageContext'] as const, errPrefix)
     if ('documentHtml' in result) {
       documentHtml = result.documentHtml
       assertUsage(
@@ -920,47 +925,6 @@ async function executeRenderHook(
     return { hookError: htmlRender.hookError, hookName, hookFilePath: renderFilePath }
   }
   return { htmlRender, renderFilePath }
-}
-
-function assertHookResult<Keys extends readonly string[]>(
-  hookResult: unknown,
-  hookName: string,
-  hookResultKeys: Keys,
-  hookFile: string,
-): asserts hookResult is undefined | null | { [key in Keys[number]]?: unknown } {
-  const errPrefix = `The \`${hookName}()\` hook exported by ${hookFile}`
-  assertUsage(
-    hookResult === null || hookResult === undefined || isPlainObject(hookResult),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`,
-  )
-  if (hookResult === undefined || hookResult === null) {
-    return
-  }
-  assertKeys(hookResult, hookResultKeys, errPrefix)
-}
-
-function assertKeys<Keys extends readonly string[]>(
-  obj: Record<string, unknown>,
-  keysExpected: Keys,
-  errPrefix: string,
-): asserts obj is { [key in Keys[number]]?: unknown } {
-  const keysUnknown: string[] = []
-  const keys = Object.keys(obj)
-  for (const key of keys) {
-    if (!keysExpected.includes(key)) {
-      keysUnknown.push(key)
-    }
-  }
-  assertUsage(
-    keysUnknown.length === 0,
-    [
-      errPrefix,
-      'returned an object with unknown keys',
-      stringifyStringArray(keysUnknown) + '.',
-      'Only following keys are allowed:',
-      stringifyStringArray(keysExpected) + '.',
-    ].join(' '),
-  )
 }
 
 function assertArguments(...args: unknown[]) {
@@ -1111,7 +1075,7 @@ async function getGlobalContext() {
     _allPageFiles: allPageFiles,
   })
 
-  const allPageIds = await determinePageIds(allPageFiles)
+  const allPageIds = determinePageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(globalContext)

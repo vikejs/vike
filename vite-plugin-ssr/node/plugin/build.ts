@@ -1,25 +1,20 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
-import { isAbsolute as pathIsAbsolute, relative as pathRelative, basename as pathFilename } from 'path'
+import {  basename } from 'path'
 import { assert, isObject } from '../utils'
-import * as glob from 'fast-glob'
 import { isSSR_config } from './utils'
-import { getRoot } from './utils/getRoot'
-import { getGlobPath } from './glob'
 
 export { build }
 
-function build(getGlobRoots: (root: string) => Promise<string[]>): Plugin {
+function build(): Plugin {
   let isSsrBuild: boolean | undefined
   return {
     name: 'vite-plugin-ssr:build',
     apply: 'build',
     async config(config) {
       isSsrBuild = isSSR_config(config)
-      const root = getRoot(config)
-      const globRoots = await getGlobRoots(root)
       const input = {
-        ...entryPoints(config, globRoots),
+        ...entryPoints(config),
         ...normalizeRollupInput(config.build?.rollupOptions?.input),
       }
       return {
@@ -56,11 +51,11 @@ function removeClientCode(isSsrBuild: boolean, id: string): void | { code: strin
   }
 }
 
-function entryPoints(config: UserConfig, globRoots: string[]): Record<string, string> {
+function entryPoints(config: UserConfig): Record<string, string> {
   if (isSSR_config(config)) {
     return serverEntryPoints()
   } else {
-    return browserEntryPoints(config, globRoots)
+    return browserEntryPoints()
   }
 }
 
@@ -74,45 +69,20 @@ function getPageFilesEntry(
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
   const filePath = require.resolve(`../../../../${filePathRelative}`)
   assert(filePath.endsWith('.js'))
-  const entryName = pathFilename(filePath).replace(/\.js$/, '')
+  const entryName = basename(filePath).replace(/\.js$/, '')
   const entryPoints = {
     [entryName]: filePath,
   }
   return entryPoints
 }
 
-function browserEntryPoints(config: UserConfig, globRoots: string[]): Record<string, string> {
-  const root = getRoot(config)
-  assert(pathIsAbsolute(root))
-
-  const browserEntries: string[] = []
-  globRoots.forEach((globRoot) => {
-    const globPath = getGlobPath(globRoot, 'page.client', root)
-    const ignore = globPath.includes('/node_modules/') ? [] : ['**/node_modules/**']
-    const entries = glob.sync(globPath, { ignore })
-    browserEntries.push(...entries)
-  })
-
-  const entryPoints: Record<string, string> = {}
-  for (const filePath of browserEntries) {
-    assert(pathIsAbsolute(filePath))
-    let outFilePath = pathRelativeToRoot(filePath, config)
-    outFilePath = outFilePath.split('../').join('_parent/')
-    entryPoints[outFilePath] = filePath
+function browserEntryPoints(): Record<string, string> {
+  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
+  const entryPoints = {
+    ['router/entry']: require.resolve(`../../../../dist/esm/client/router/entry.js`),
+    ['entry']: require.resolve(`../../../../dist/esm/client/entry.js`),
   }
-
-  /*
-  Object.assign(entryPoints, getPageFilesEntry('dist/esm/client/page-files/pageFiles.js'))
-  */
-
   return entryPoints
-}
-
-function pathRelativeToRoot(filePath: string, config: UserConfig): string {
-  assert(pathIsAbsolute(filePath))
-  const root = getRoot(config)
-  assert(pathIsAbsolute(root))
-  return pathRelative(root, filePath)
 }
 
 function getOutDir(config: UserConfig): string {
