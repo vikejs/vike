@@ -6,7 +6,7 @@ import { manifest } from './manifest'
 import { packageJsonFile } from './packageJsonFile'
 import { importBuild } from 'vite-plugin-import-build'
 import { getImportBuildCode } from './getImportBuildCode'
-import { transformPageServerFiles } from './transformPageServerFiles'
+import { transformCrossEnvFiles } from './transformCrossEnvFiles'
 import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
@@ -25,7 +25,7 @@ function plugin(config?: Config | Config[]): any {
     manifest(),
     importBuild(getImportBuildCode()),
     packageJsonFile(),
-    transformPageServerFiles(),
+    transformCrossEnvFiles(),
     removeRequireHookPlugin(),
   ]
   return plugins as any
