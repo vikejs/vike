@@ -18,14 +18,15 @@ function generateImportGlobs(getGlobRoots: (root: string) => Promise<string[]>):
 }
 
 function writeImportGlobs(globRoots: string[]) {
-  const fileContent = getFileContent(globRoots)
+  const fileContentClient = getFileContent(globRoots, true)
+  const fileContentServer = getFileContent(globRoots, false)
   // Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/generateImportGlobs.js
-  writeFileSync(require.resolve('../../../../dist/esm/node/page-files/pageFiles.js'), fileContent)
-  writeFileSync(require.resolve('../../../../dist/esm/client/page-files/pageFiles.js'), fileContent)
+  writeFileSync(require.resolve('../../../../dist/esm/node/page-files/pageFiles.js'), fileContentServer)
+  writeFileSync(require.resolve('../../../../dist/esm/client/page-files/pageFiles.js'), fileContentClient)
 }
 
-function getFileContent(globRoots: string[]) {
-  const fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
+function getFileContent(globRoots: string[], isForClientSide: boolean) {
+  let fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
 
 export { pageFiles }
 
@@ -42,6 +43,16 @@ const pageFiles = {
   '.page.route': pageRouteFiles,
 };
 `
+
+  if( !isForClientSide ) {
+    fileContent += '\n'
+    //fileContent += "const test = import.meta.globEager('"+getGlobPath('/', 'page.server')+"?raw');"
+    fileContent += "const test = import.meta.globEager('/**/*.page.server.ts');"
+    fileContent += '\n'
+    fileContent += 'console.log("test:", test);'
+    fileContent += '\n'
+  }
+
   return fileContent
 }
 
