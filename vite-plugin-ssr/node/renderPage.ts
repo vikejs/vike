@@ -574,7 +574,7 @@ async function loadPageFiles(pageContext: {
 }
 function getPageClientFilePaths(): string[] {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
-  return [require.resolve('../../../dist/esm/client/router/entry.js')]
+  return ['/@fs' + require.resolve('../../../dist/esm/client/router/entry.js')]
   /*
   let p = require.resolve('../../../dist/esm/client/router/entry.js')
   console.log('p', p)
@@ -816,7 +816,7 @@ async function executeRenderHook(
   assert(pageContext._pageServerFiles)
   let render
   let renderFilePath
-  for(const pageServerFile of pageContext._pageServerFiles) {
+  for (const pageServerFile of pageContext._pageServerFiles) {
     const pageRenderFunction = pageServerFile?.fileExports.render
     if (pageRenderFunction) {
       render = pageRenderFunction
