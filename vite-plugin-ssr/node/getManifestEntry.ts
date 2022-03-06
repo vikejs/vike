@@ -16,10 +16,10 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
 function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: true   ): ManifestEntryOptional
 // prettier-ignore
 function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
-  assert(root.startsWith('/'))
-  assert(filePath.startsWith('/'))
   assertPosixPath(root)
   assertPosixPath(filePath)
+  assert(root.startsWith('/'))
+  assert(filePath.startsWith('/'))
 
   const manifestKey = getManifestKey(filePath, root)
   for (const manifest of manifests) {
