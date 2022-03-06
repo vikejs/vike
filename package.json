@@ -10,7 +10,7 @@
     "docs:prod": "cd libframe/docs/ && pnpm run prod",
     "========= Test": "",
     "// Run tests": "",
-    "test": "cd libframe/test/ && pnpm run test --bail",
+    "test": "cd libframe/test/ && pnpm run test react-full",
     "// Run `$ pnpm test:setup` before running `$ pnpm test`": "",
     "test:setup": "pnpm run clean && pnpm install && pnpm run build",
     "========= Dev": "",
