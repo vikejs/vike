@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite'
 import { isSSR_options } from './utils'
 import { getExportNames } from './getExportNames'
+import {assert} from '../utils'
 
 export { transformCrossEnvFiles }
 
@@ -9,7 +10,8 @@ function transformCrossEnvFiles(): Plugin {
     name: 'vite-plugin-ssr:transformCrossEnvFiles',
     async transform(src, id, options) {
       const isSSR = isSSR_options(options)
-      if (!isCrossEnvFileType(id, isSSR)) {
+
+      if (!isCrossEnvFile(id, isSSR)) {
         return
       }
 
@@ -17,8 +19,10 @@ function transformCrossEnvFiles(): Plugin {
 
       let code
       if (isSSR) {
+        assert(id.includes('.page.client.'))
         code = getCodeForServer(exportNames)
       } else {
+        assert(id.includes('.page.server.'))
         code = getCodeForClient(exportNames)
       }
       code = code + '\n'
@@ -33,7 +37,7 @@ function transformCrossEnvFiles(): Plugin {
   } as Plugin
 }
 
-function isCrossEnvFileType(id: string, isSSR: boolean) {
+function isCrossEnvFile(id: string, isSSR: boolean) {
   if (isSSR) {
     return /\.page\.client\.[a-zA-Z0-9]+$/.test(id)
   } else {
@@ -41,12 +45,12 @@ function isCrossEnvFileType(id: string, isSSR: boolean) {
   }
 }
 
-function getCodeForClient(exportNames: readonly string[]) {
-  const code = `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`
+function getCodeForServer(exportNames: readonly string[]) {
+  const code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
   return code
 }
 
-function getCodeForServer(exportNames: readonly string[]) {
-  const code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
+function getCodeForClient(exportNames: readonly string[]) {
+  const code = `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`
   return code
 }
