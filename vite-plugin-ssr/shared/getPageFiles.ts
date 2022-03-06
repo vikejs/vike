@@ -2,8 +2,8 @@ export { loadPageFiles2 }
 export type PageContextPageFiles = Awaited<ReturnType<typeof loadPageFiles2>>
 export type { PageFileLoaded }
 
-export { loadPageFilesServer }
-export { findPageFilesServer }
+export { loadPageFilesServerAll }
+export { isPageFileForPageId }
 
 import { assertPosixPath } from '../utils/filesystemPathHandling'
 import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst, notNull } from './utils'
@@ -92,7 +92,7 @@ function processGlobResult(pageFiles: PageFileUnprocessed): PageFile[] {
 }
 
 function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
-  pageFiles = pageFiles.filter(p => isPageIdFile(p, pageId))
+  pageFiles = pageFiles.filter((p) => isPageIdFile(p, pageId))
   if (pageFiles.length === 0) {
     return null
   }
@@ -102,7 +102,7 @@ function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: st
   return pageFile
 }
 function findPageFile2(allPageFiles: AllPageFiles, fileType: FileType, pageId: string): PageFile2 | null {
-  const pageFiles = allPageFiles[fileType].filter(p => isPageIdFile(p, pageId))
+  const pageFiles = allPageFiles[fileType].filter((p) => isPageIdFile(p, pageId))
   if (pageFiles.length === 0) {
     return null
   }
@@ -256,15 +256,15 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
   }
 }
 
-async function loadPageFilesServer(allPageFiles: AllPageFiles) {
+async function loadPageFilesServerAll(allPageFiles: AllPageFiles) {
   const fileType = '.page.server'
-  const pageFilesServer = await Promise.all(
+  const pageFilesServerAll = await Promise.all(
     allPageFiles[fileType].map((p) => loadPageFile({ ...p, fileType, isDefaultFile: isDefaultFile(p) })),
   )
-  return pageFilesServer
+  return pageFilesServerAll
 }
-function findPageFilesServer(pageFilesServer: PageFile2[], pageId: string) {
-  return pageFilesServer.filter(p => isDefaultFile(p) || isPageIdFile(p, pageId))
+function isPageFileForPageId(pageFile: { filePath: string }, pageId: string) {
+  return isDefaultFile(pageFile) || isPageIdFile(pageFile, pageId)
 }
 
 async function loadPageFile(pageFile: PageFile2): Promise<PageFileLoaded> {

@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import { isSSR_options } from './utils'
 import { getExportNames } from './getExportNames'
-import {assert} from '../utils'
+import { assert } from '../utils'
 
 export { transformCrossEnvFiles }
 

@@ -11,7 +11,7 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { loadPageFiles2, PageContextPageFiles } from '../../shared/getPageFiles'
+import { loadPageFiles2, PageContextPageFiles, isPageFileForPageId } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
@@ -26,9 +26,14 @@ type PageContextAddendum = {
   _comesDirectlyFromServer: boolean
 } & PageContextPageFiles
 
+type PageFileServer = {
+  filePath: string
+  fileExports: Record<string, unknown>
+}
+
 async function getPageContext(
   pageContext: {
-    _pageFilesServer: { fileExports: Record<string, unknown> }[]
+    _pageFilesServerAll: PageFileServer[]
     _isFirstRender: boolean
   } & PageContextUrls &
     PageContextForRoute,
@@ -60,7 +65,7 @@ async function getPageContextForFirstRender() {
 
 async function getPageContextForPageNavigation(
   pageContext: {
-    _pageFilesServer: { fileExports: Record<string, unknown> }[]
+    _pageFilesServerAll: PageFileServer[]
   } & PageContextForRoute,
 ): Promise<PageContextAddendum> {
   const pageContextAddendum = {
@@ -75,7 +80,7 @@ async function getPageContextForPageNavigation(
 
 async function onBeforeRenderExec(
   pageContext: {
-    _pageFilesServer: { fileExports: Record<string, unknown> }[]
+    _pageFilesServerAll: PageFileServer[]
     _pageId: string
     url: string
     isHydration: boolean
@@ -148,12 +153,14 @@ function handle404(pageContext: { url: string }) {
   window.location.pathname = pageContext.url
 }
 
-function hasOnBeforeRenderServerSide(pageContext: { _pageFilesServer: { fileExports: Record<string, unknown> }[] }) {
-  return pageContext._pageFilesServer.some(({ fileExports }) => {
-    assert(hasProp(fileExports, 'hasExport_onBeforeRender', 'boolean'))
-    assert(Object.keys(fileExports).length === 1)
-    return fileExports.hasExport_onBeforeRender === true
-  })
+function hasOnBeforeRenderServerSide(pageContext: { _pageId: string; _pageFilesServerAll: PageFileServer[] }) {
+  return pageContext._pageFilesServerAll
+    .filter((pageFile) => isPageFileForPageId(pageFile, pageContext._pageId))
+    .some(({ fileExports }) => {
+      assert(hasProp(fileExports, 'hasExport_onBeforeRender', 'boolean'))
+      assert(Object.keys(fileExports).length === 1)
+      return fileExports.hasExport_onBeforeRender === true
+    })
 }
 async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
   const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
