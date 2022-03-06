@@ -150,9 +150,9 @@ function handle404(pageContext: { url: string }) {
 
 function hasOnBeforeRenderServerSide(pageContext: { _pageFilesServer: { fileExports: Record<string, unknown> }[] }) {
   return pageContext._pageFilesServer.some(({ fileExports }) => {
-    assert(hasProp(fileExports, 'hasExportOnBeforeRender', 'boolean'))
+    assert(hasProp(fileExports, 'hasExport_onBeforeRender', 'boolean'))
     assert(Object.keys(fileExports).length === 1)
-    return fileExports.hasExportOnBeforeRender === true
+    return fileExports.hasExport_onBeforeRender === true
   })
 }
 async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
