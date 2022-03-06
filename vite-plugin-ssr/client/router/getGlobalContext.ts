@@ -15,7 +15,7 @@ async function getGlobalContext() {
   return globalContext
 }
 
-type PageFilesServer = { filePath: string; fileExports: { hasExportOnBeforeRender: boolean } }[]
+type PageFilesServer = { filePath: string; fileExports: { hasExport_onBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
   const globalContext = {
     _parseUrl: null,
