@@ -49,6 +49,7 @@ What happens here is that `pageContext.milliseconds` will be set exactly once, s
 Common causes:
  - **Rendered content is actually different**. Make sure that your components render the same content in Node.js as well as in the browser.
  - **Browser cache**: While developing, make sure to disable your browser's cache to ensure that your browser doesn't load cached & outdated JavaScript.
+ - **Proxies**: If you use a proxy, make sure it doesn't apply problematic HTML transfomers. For example, if you use Cloudflare, you have to disable Cloudflare's automatic HTML minifier.
 
 With React:
  - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match.`. Make sure to use the latest React version.
