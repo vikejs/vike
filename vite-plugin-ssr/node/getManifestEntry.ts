@@ -1,6 +1,6 @@
 import { posix } from 'path'
 import type { ViteManifest, ViteManifestEntry } from './getViteManifest'
-import { assert, assertPosixPath } from './utils'
+import { assert, assertPosixPath, toPosixPath } from './utils'
 
 export { getManifestEntry }
 //export type { ManifestEntry }
@@ -18,8 +18,6 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
 function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
   assertPosixPath(root)
   assertPosixPath(filePath)
-  assert(root.startsWith('/'))
-  assert(filePath.startsWith('/'))
 
   const manifestKey = getManifestKey(filePath, root)
   for (const manifest of manifests) {
@@ -55,12 +53,16 @@ function getManifestKey(filePath: string, root: string) {
 
 function resolveSymlink(filePath: string, root: string) {
   const filePathAbsolute = filePath.startsWith('/@fs/')
-    ? filePath.slice('/@fs'.length)
-    : `/${[...root.split('/'), ...filePath.split('/')].filter(Boolean).join('/')}`
-  // Resolves symlinks
-  const filePathResolved = require.resolve(filePathAbsolute)
+    ? filePath.slice((isWindows() ? '/@fs/' : '/@fs').length)
+    : [...root.split('/'), ...filePath.split('/')].join('/')
+  // `require.resolve()` resolves symlinks
+  const filePathResolved = toPosixPath(require.resolve(filePathAbsolute))
   let filePathRelative = posix.relative(root, filePathResolved)
   assert(!filePathRelative.startsWith('/'))
   filePathRelative = '/' + filePathRelative
   return filePathRelative
+}
+
+function isWindows() {
+  return process.platform === 'win32'
 }

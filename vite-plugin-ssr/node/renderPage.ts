@@ -575,8 +575,11 @@ async function loadPageFiles(pageContext: {
 }
 function getPageClientFilePaths(): string[] {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
-  const entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
-  assert(entryPath.startsWith('/'))
+  let entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
+  if (!entryPath.startsWith('/')) {
+    assert(process.platform === 'win32')
+    entryPath = '/' + entryPath
+  }
   return ['/@fs' + entryPath]
   /*
   let p = require.resolve('../../../dist/esm/client/router/entry.js')
