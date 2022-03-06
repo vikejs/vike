@@ -28,6 +28,7 @@ import {
   assertBaseUrl,
   isPromise,
   notNull,
+  toPosixPath,
 } from './utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import {
@@ -574,7 +575,9 @@ async function loadPageFiles(pageContext: {
 }
 function getPageClientFilePaths(): string[] {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
-  return ['/@fs' + require.resolve('../../../dist/esm/client/router/entry.js')]
+  const entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
+  assert(entryPath.startsWith('/'))
+  return ['/@fs' + entryPath]
   /*
   let p = require.resolve('../../../dist/esm/client/router/entry.js')
   console.log('p', p)
