@@ -28,6 +28,8 @@ function getFileContent(globRoots: string[]) {
   const fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
 
 export { pageFiles }
+export { pageFilesMeta }
+export const isOriginalFile = false
 
 ${getGlobs('pageIsomorphicFiles', globRoots, 'page')}
 ${getGlobs('pageClientFiles', globRoots, 'page.client')}
@@ -41,6 +43,13 @@ const pageFiles = {
   '.page.server': pageServerFiles,
   '.page.route': pageRouteFiles,
 };
+
+const pageFilesMeta = {}
+
+  const f = import('/renderer/_default.page.client.tsx?meta');
+  console.log('f', f);
+  f.then(e => console.log('e', e));
+
 `
   return fileContent
 }
