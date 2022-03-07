@@ -1,9 +1,12 @@
 import type { Plugin } from 'vite'
 import { isSSR_options } from './utils'
 import { getExportNames } from './getExportNames'
-import { assert } from '../utils'
 
 export { transformCrossEnvFiles }
+
+const metaRE = /(\?|&)meta(?:&|$)/
+const clientFileRE = /\.page\.client\.[a-zA-Z0-9]+(\?|$)/
+const serverFileRE = /\.page\.server\.[a-zA-Z0-9]+(\?|$)/
 
 function transformCrossEnvFiles(): Plugin {
   return {
@@ -11,46 +14,47 @@ function transformCrossEnvFiles(): Plugin {
     async transform(src, id, options) {
       const isSSR = isSSR_options(options)
 
-      if (!isCrossEnvFile(id, isSSR)) {
-        return
-      }
-
-      const exportNames = await getExportNames(src)
-
-      let code
       if (isSSR) {
-        assert(id.includes('.page.client.'))
-        code = getCodeForServer(exportNames)
-      } else {
-        assert(id.includes('.page.server.'))
-        code = getCodeForClient(exportNames)
+        if (clientFileRE.test(id)) {
+          return await transform(
+            src,
+            (exportNames) => `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`,
+          )
+        }
       }
-      code = code + '\n'
 
-      return {
-        code,
-        // Remove Source Map to save KBs
-        //  - https://rollupjs.org/guide/en/#source-code-transformations
-        map: { mappings: '' },
+      if (!isSSR) {
+        if (serverFileRE.test(id)) {
+          return await transform(
+            src,
+            (exportNames) =>
+              `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`,
+          )
+        }
+        if (clientFileRE.test(id) && metaRE.test(id)) {
+          return await transform(src, (exportNames) =>
+            [
+              `export const hasExport_Page = ${exportNames.includes('Page') ? 'true' : 'false'};`,
+              `export const hasExport_default = ${exportNames.includes('default') ? 'true' : 'false'};`,
+              `export const hasExport_useClientRouter = ${exportNames.includes('useClientRouter') ? 'true' : 'false'};`,
+              `export const hasExport_overrideDefaults = ${
+                exportNames.includes('overrideDefaults') ? 'true' : 'false'
+              };`,
+            ].join('\n'),
+          )
+        }
       }
     },
   } as Plugin
 }
 
-function isCrossEnvFile(id: string, isSSR: boolean) {
-  if (isSSR) {
-    return /\.page\.client\.[a-zA-Z0-9]+$/.test(id)
-  } else {
-    return /\.page\.server\.[a-zA-Z0-9]+$/.test(id)
+async function transform(src: string, transformer: (exportNames: readonly string[]) => string) {
+  const exportNames = await getExportNames(src)
+  const code = transformer(exportNames) + '\n'
+  return {
+    code,
+    // Remove Source Map to save KBs
+    //  - https://rollupjs.org/guide/en/#source-code-transformations
+    map: { mappings: '' },
   }
-}
-
-function getCodeForServer(exportNames: readonly string[]) {
-  const code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
-  return code
-}
-
-function getCodeForClient(exportNames: readonly string[]) {
-  const code = `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`
-  return code
 }
