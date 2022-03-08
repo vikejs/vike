@@ -1,44 +1,146 @@
-export { loadPageFiles2 }
-export type PageContextPageFiles = Awaited<ReturnType<typeof loadPageFiles2>>
+export { loadPageFilesClientSide }
+export type PageContextPageFiles = Awaited<ReturnType<typeof loadPageFilesClientSide>>
 export type { PageFileLoaded }
+export type { PageFilesMetaServer }
+export { getPageIds }
 
-export { loadPageFilesServerAll }
+export { loadPageFilesServerMeta }
 export { isPageFileForPageId }
 
-import { assertPosixPath } from '../utils/filesystemPathHandling'
-import { assert, assertUsage, getPathDistance, hasProp, isBrowser, lowerFirst, notNull } from './utils'
+import {
+  assert,
+  assertUsage,
+  getPathDistance,
+  hasProp,
+  isBrowser,
+  isCallable,
+  isObject,
+  notNull,
+  assertPosixPath,
+  cast,
+  slice,
+  unique
+} from './utils'
 
 export type { AllPageFiles }
 export type { PageFile }
-export { getAllPageFiles }
 export { findPageFile }
-export { findPageFiles }
-export { findDefaultFiles }
-export { findDefaultFilesSorted }
 export { findDefaultFile }
 
-export { setPageFiles }
-export { setPageFilesAsync }
-export { isPageFilesSet }
+export { setPageFilesServerSide }
+export { setPageFilesClientSide }
+export { setPageFilesServerSideAsync }
 
 assertNotAlreadyLoaded()
 
-let allPageFilesUnprocessed: AllPageFilesUnproccessed | undefined
+let _pageFiles: PageFile3[] | undefined
+let _pageFilesGetter: () => Promise<void> | undefined
 
-function setPageFiles(pageFilesExports: unknown) {
+function setPageFilesServerSide(pageFilesExports: unknown) {
+  _pageFiles = format(pageFilesExports)
+}
+function setPageFilesServerSideAsync(getPageFilesExports: () => Promise<unknown>) {
+  _pageFilesGetter = async () => {
+    setPageFilesClientSide(await getPageFilesExports())
+  }
+}
+function setPageFilesClientSide(pageFilesExports: unknown) {
+  _pageFiles = format(pageFilesExports)
+}
+
+async function getPageFilesAllServerSide(pageContext: { _isProduction: boolean }) {
+  if (!_pageFiles) {
+    _pageFilesGetter
+  }
+  if (_pageFilesGetter) {
+    if (
+      !_pageFiles ||
+      // We reload all glob imports in dev to make auto-reload work
+      !pageContext._isProduction
+    ) {
+      await _pageFilesGetter()
+    }
+    assert(_pageFiles)
+  }
+  assert(_pageFiles)
+  return _pageFiles
+}
+
+function getPageFilesAllClientSide() {
+  assert(_pageFiles)
+  return _pageFiles
+}
+
+type PageFile3 = {
+  filePath: string
+  fileType: FileType
+  fileExports?: Record<string, unknown>
+  loadFileExports?: () => Promise<void>
+  meta?: Record<string, unknown>
+  loadMeta?: () => Promise<void>
+  isDefaultFile: boolean
+}
+
+function format(pageFilesExports: unknown) {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
-  assert(hasProp(pageFilesExports, 'pageFiles'))
+  assert(hasProp(pageFilesExports, 'pageFiles', 'object'))
+  assert(hasProp(pageFilesExports, 'pageFilesMeta', 'object'))
+  assert(hasProp(pageFilesExports, 'pageFilesMetaEager', 'object'))
   assert(hasProp(pageFilesExports.pageFiles, '.page'))
-  allPageFilesUnprocessed = pageFilesExports.pageFiles as AllPageFilesUnproccessed
-}
-function isPageFilesSet() {
-  return !!allPageFilesUnprocessed
-}
-
-let asyncGetter: () => Promise<unknown>
-function setPageFilesAsync(getter: () => Promise<unknown>) {
-  asyncGetter = getter
+  assert(hasProp(pageFilesExports.pageFiles, '.page.route'))
+  assert(hasProp(pageFilesExports.pageFiles, '.page.client') || hasProp(pageFilesExports.pageFiles, '.page.server'))
+  const pageFilesMap: Record<string, PageFile3> = {}
+  Object.entries(pageFilesExports.pageFiles).forEach(([fileType, files]) => {
+    cast<FileType>(fileType)
+    assert(fileTypes.includes(fileType))
+    assert(isObject(files))
+    Object.entries(files).forEach(([filePath, loadModule]) => {
+      assert(isCallable(loadModule))
+      cast<() => Promise<Record<string, unknown>>>(loadModule)
+      const pageFile: PageFile3 = (pageFilesMap[filePath] = {
+        filePath,
+        fileType,
+        isDefaultFile: isDefaultPageFile(filePath)
+      })
+      pageFile.loadFileExports = async () => {
+        pageFile.fileExports = await loadModule()
+      }
+    })
+  })
+  Object.entries(pageFilesExports.pageFilesMeta).forEach(([fileType, files]) => {
+    cast<FileType>(fileType)
+    assert(fileTypes.includes(fileType))
+    assert(isObject(files))
+    Object.entries(files).forEach(([filePath, loadModule]) => {
+      assert(isCallable(loadModule))
+      cast<() => Promise<Record<string, unknown>>>(loadModule)
+      const pageFile = (pageFilesMap[filePath] = pageFilesMap[filePath] ?? {
+        filePath,
+        fileType,
+        isDefaultFile: isDefaultPageFile(filePath)
+      })
+      pageFile.loadMeta = async () => {
+        pageFile.meta = await loadModule()
+      }
+    })
+  })
+  Object.entries(pageFilesExports.pageFilesMetaEager).forEach(([fileType, files]) => {
+    cast<FileType>(fileType)
+    assert(fileTypes.includes(fileType))
+    assert(isObject(files))
+    Object.entries(files).forEach(([filePath, moduleExports]) => {
+      assert(isObject(moduleExports))
+      const pageFile = (pageFilesMap[filePath] = pageFilesMap[filePath] ?? {
+        filePath,
+        fileType,
+        isDefaultFile: isDefaultPageFile(filePath)
+      })
+      pageFile.meta = moduleExports
+    })
+  })
+  const pageFiles = Object.values(pageFilesMap)
+  return pageFiles
 }
 
 type PageFile = {
@@ -47,49 +149,8 @@ type PageFile = {
 }
 const fileTypes = ['.page', '.page.server', '.page.route', '.page.client'] as const
 type FileType = typeof fileTypes[number]
-type PageFileUnprocessed = Record<PageFile['filePath'], PageFile['loadFile']>
-//*
-type AllPageFilesUnproccessed = {
-  '.page': PageFileUnprocessed
-  '.page.server': PageFileUnprocessed
-  '.page.route': PageFileUnprocessed
-  '.page.client': PageFileUnprocessed
-}
-/*/
-type AllPageFilesUnproccessed = Record<FileType, PageFileUnprocessed>
-//*/
 
 type AllPageFiles = Record<FileType, PageFile[]>
-
-async function getAllPageFiles(isProduction?: boolean): Promise<AllPageFiles> {
-  if (asyncGetter) {
-    if (
-      !allPageFilesUnprocessed ||
-      // We reload all glob imports in dev to make auto-reload work
-      !isProduction
-    ) {
-      const pageFilesExports = (await asyncGetter()) as unknown
-      setPageFiles(pageFilesExports)
-    }
-    assert(hasProp(allPageFilesUnprocessed, '.page'))
-  }
-  assert(hasProp(allPageFilesUnprocessed, '.page'))
-
-  const allPageFiles = {
-    '.page': processGlobResult(allPageFilesUnprocessed['.page']),
-    '.page.route': processGlobResult(allPageFilesUnprocessed['.page.route']),
-    '.page.server': processGlobResult(allPageFilesUnprocessed['.page.server']),
-    '.page.client': processGlobResult(allPageFilesUnprocessed['.page.client']),
-  }
-
-  return allPageFiles
-}
-
-function processGlobResult(pageFiles: PageFileUnprocessed): PageFile[] {
-  return Object.entries(pageFiles).map(([filePath, loadFile]) => {
-    return { filePath, loadFile }
-  })
-}
 
 function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
   pageFiles = pageFiles.filter((p) => isPageIdFile(p, pageId))
@@ -101,15 +162,15 @@ function findPageFile<T extends { filePath: string }>(pageFiles: T[], pageId: st
   assert(pageFile)
   return pageFile
 }
-function findPageFile2(allPageFiles: AllPageFiles, fileType: FileType, pageId: string): PageFile2 | null {
-  const pageFiles = allPageFiles[fileType].filter((p) => isPageIdFile(p, pageId))
+function findPageFile2(pageFilesAll: PageFile3[], fileType: FileType, pageId: string): PageFile3 | null {
+  const pageFiles = pageFilesAll.filter((p) => p.fileType===fileType && isPageIdFile(p, pageId))
   if (pageFiles.length === 0) {
     return null
   }
   assertUsage(pageFiles.length === 1, 'Conflicting ' + pageFiles.map(({ filePath }) => filePath).join(' '))
   const pageFile = pageFiles[0]
   assert(pageFile)
-  return { ...pageFile, isDefaultFile: false, fileType }
+  return pageFile
 }
 
 function isPageIdFile(pageFile: { filePath: string }, pageId: string): boolean {
@@ -121,39 +182,24 @@ function isPageIdFile(pageFile: { filePath: string }, pageId: string): boolean {
   return filePath.startsWith(`${pageId}.page.`)
 }
 
-function findPageFiles<T extends { filePath: string }>(allPageFiles: T[], pageId: string): T[] {
-  const pageFiles = [findPageFile(allPageFiles, pageId), ...findDefaultFilesSorted(allPageFiles, pageId)].filter(
-    notNull,
-  )
-  return pageFiles
-}
-
-function findDefaultFiles<T extends { filePath: string }>(pageFiles: T[]): T[] {
-  const defaultFiles = pageFiles.filter(isDefaultFile)
-  return defaultFiles
-}
+/*
 function isDefaultFile(pageFile: { filePath: string }): boolean {
   const { filePath } = pageFile
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
   return filePath.includes('/_default')
 }
-function findDefaultFiles2(allPageFiles: AllPageFiles, fileType: FileType): PageFile2[] {
-  const defaultFiles = allPageFiles[fileType]
-    .filter(isDefaultFile)
-    .map((pageFile) => ({ ...pageFile, fileType, isDefaultFile: true }))
-  return defaultFiles
+*/
+function isDefaultPageFile(filePath: string): boolean {
+  assertPosixPath(filePath)
+  assert(filePath.startsWith('/'))
+  return filePath.includes('/_default')
 }
-
-function findDefaultFilesSorted<T extends { filePath: string }>(pageFiles: T[], pageId: string): T[] {
-  const defaultFiles = findDefaultFiles(pageFiles)
-  // Sort `_default.page.server.js` files by filesystem proximity to pageId's `*.page.js` file
-  defaultFiles.sort(
-    lowerFirst(({ filePath }) => {
-      if (isPageIdFile({ filePath }, pageId)) return -1
-      return getPathDistance(pageId, filePath)
-    }),
-  )
+function findDefaultFiles2(pageFilesAll: PageFile3[], fileType: FileType): PageFile3[] {
+  const defaultFiles =
+  pageFilesAll
+    .filter(p => p.fileType===fileType && p.isDefaultFile)
+    .map((pageFile) => ({ ...pageFile, fileType, isDefaultFile: true }))
   return defaultFiles
 }
 
@@ -166,11 +212,6 @@ function assertNotAlreadyLoaded() {
   globalObject[alreadyLoaded] = true
 }
 
-function findDefaultFile<T extends { filePath: string }>(pageFiles: T[], pageId: string): T | null {
-  const defaultFiles = findDefaultFilesSorted(pageFiles, pageId)
-  return defaultFiles[0] || null
-}
-
 type PageFileLoaded = {
   filePath: string
   fileExports: Record<string, unknown>
@@ -178,23 +219,22 @@ type PageFileLoaded = {
   isDefaultFile: boolean
 }
 type ExportName = string
-type ExportsAll = Record<ExportName, (PageFileLoaded & { exportValue: unknown })[]>
-async function loadPageFiles2(pageId: string, isBrowserSide: boolean) {
-  const pageFilesAll = await getAllPageFiles()
+type ExportsAll = Record<ExportName, ({filePath: string, exportValue: unknown })[]>
+async function loadPageFilesClientSide(pageContext: { _pageId: string }) {
+  const pageFilesAll = getPageFilesAllClientSide()
 
+  const { pageFiles, mainPageFile } = findPageFiles2(pageFilesAll, pageContext._pageId, true)
+  await Promise.all(pageFiles.map(p => p.loadFileExports?.()))
+
+  const pageExports = pageFiles.find(({ filePath }) => filePath === mainPageFile?.filePath)?.fileExports ?? {}
   const exports: Record<ExportName, unknown> = {}
   const exportsAll: ExportsAll = {}
-
-  const { pageFiles, mainPageFile } = findPageFiles2(pageFilesAll, pageId, isBrowserSide)
-  const pageFilesLoaded: PageFileLoaded[] = await Promise.all(pageFiles.map(loadPageFile))
-  const pageExports = pageFilesLoaded.find(({ filePath }) => filePath === mainPageFile?.filePath)?.fileExports ?? {}
-
-  pageFilesLoaded.forEach((pageFile) => {
-    Object.entries(pageFile.fileExports).forEach(([exportName, exportValue]) => {
+  pageFiles.forEach((pageFile) => {
+    Object.entries(pageFile.fileExports??{}).forEach(([exportName, exportValue]) => {
       exports[exportName] = exports[exportName] ?? exportValue
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
-        ...pageFile,
+        filePath: pageFile.filePath,
         exportValue,
       })
     })
@@ -202,34 +242,27 @@ async function loadPageFiles2(pageId: string, isBrowserSide: boolean) {
 
   const pageContextAddendum = {
     exports,
-    pageExports,
     exportsAll,
-    _pageFilesLoaded: pageFilesLoaded,
+    pageExports,
+    _pageFilesLoaded: pageFiles,
     _pageFilesAll: pageFilesAll,
   }
   return pageContextAddendum
 }
 
-type PageFile2 = {
-  filePath: string
-  loadFile: () => Promise<Record<string, unknown>>
-  fileType: FileType
-  isDefaultFile: boolean
-}
-
 function findPageFiles2(
-  allPageFiles: AllPageFiles,
+  pageFilesAll: PageFile3[],
   pageId: string,
-  isBrowserSide: boolean,
-): { pageFiles: PageFile2[]; mainPageFile: PageFile2 | null } {
-  const fileTypeEnvSpecific = isBrowserSide ? ('.page.client' as const) : ('.page.server' as const)
+  isForClientSide: boolean,
+): { pageFiles: PageFile3[]; mainPageFile: PageFile3 | null } {
+  const fileTypeEnvSpecific = isForClientSide ? ('.page.client' as const) : ('.page.server' as const)
   const defaultFiles = [
-    ...findDefaultFiles2(allPageFiles, '.page'),
-    ...findDefaultFiles2(allPageFiles, fileTypeEnvSpecific),
+    ...pageFilesAll.filter(p => p.isDefaultFile && p.fileType==='.page'),
+    ...pageFilesAll.filter(p => p.isDefaultFile && p.fileType===fileTypeEnvSpecific),
   ]
   defaultFiles.sort(defaultFilesSorter(fileTypeEnvSpecific, pageId))
-  const mainPageFile = findPageFile2(allPageFiles, '.page', pageId)
-  const pageFiles = [findPageFile2(allPageFiles, fileTypeEnvSpecific, pageId), mainPageFile, ...defaultFiles].filter(
+  const mainPageFile = findPageFile2(pageFilesAll, '.page', pageId)
+  const pageFiles = [findPageFile2(pageFilesAll, fileTypeEnvSpecific, pageId), mainPageFile, ...defaultFiles].filter(
     notNull,
   )
   return { pageFiles, mainPageFile }
@@ -238,7 +271,8 @@ function findPageFiles2(
 // -1 => element1 first
 // +1 => element2 first
 function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
-  return (e1: PageFile2, e2: PageFile2): 0 | 1 | -1 => {
+  return (e1: PageFile3, e2: PageFile3): 0 | 1 | -1 => {
+    assert(e1.isDefaultFile && e2.isDefaultFile)
     const d1 = getPathDistance(pageId, e1.filePath)
     const d2 = getPathDistance(pageId, e2.filePath)
     if (d1 !== d2) {
@@ -256,24 +290,75 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
   }
 }
 
-async function loadPageFilesServerAll(allPageFiles: AllPageFiles) {
+async function loadPageFilesServerMeta() {
+  const pageFilesAll = getPageFilesAllClientSide()
   const fileType = '.page.server'
-  const pageFilesServerAll = await Promise.all(
+  await Promise.all(
     allPageFiles[fileType].map((p) => loadPageFile({ ...p, fileType, isDefaultFile: isDefaultFile(p) })),
   )
-  return pageFilesServerAll
+  return pageFilesServerMeta
 }
 function isPageFileForPageId(pageFile: { filePath: string }, pageId: string) {
   return isDefaultFile(pageFile) || isPageIdFile(pageFile, pageId)
 }
 
-async function loadPageFile(pageFile: PageFile2): Promise<PageFileLoaded> {
-  const { filePath, loadFile, fileType, isDefaultFile } = pageFile
-  const fileExports = await loadFile()
-  return {
-    filePath,
-    fileExports,
-    fileType,
-    isDefaultFile,
+async function loadPageFile(pageFile: PageFile3): Promise<PageFileLoaded> {
+  const { filePath, loadFileExports, fileType, isDefaultFile } = pageFile
+  const fileExports = await loadFileExports()
+}
+
+async function getPageIds(): string[] {
+  const pageFilesAll = getPageFilesAllClientSide()
+  determinePageIds
+}
+
+type PageFilesMetaServer = {
+  '.page.client': Record<string, { exportNames: string[] }>
+}
+
+
+export { determinePageIds }
+
+/**
+  Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
+*/
+function determinePageIds(allPageFiles: AllPageFiles): string[] {
+  const pageFileIds = computePageIds(allPageFiles['.page'])
+  const pageClientFileIds = computePageIds(allPageFiles['.page.client'])
+  const pageServerFileIds = computePageIds(allPageFiles['.page.server'])
+
+  const allPageIds = unique([...pageFileIds, ...pageClientFileIds, ...pageServerFileIds])
+
+  allPageIds.forEach((pageId) => {
+    assertUsage(
+      pageFileIds.includes(pageId) || pageServerFileIds.includes(pageId),
+      `File missing. You need to create at least \`${pageId}.page.server.js\` or \`${pageId}.page.js\`.`,
+    )
+    assertUsage(
+      pageFileIds.includes(pageId) || pageClientFileIds.includes(pageId),
+      `File missing. You need to create at least \`${pageId}.page.client.js\` or \`${pageId}.page.js\`.`,
+    )
+  })
+
+  return allPageIds
+}
+function computePageIds(pageFiles: PageFile[]): string[] {
+  const fileIds = pageFiles
+    .map(({ filePath }) => filePath)
+    .filter((filePath) => !isDefaultPageFile(filePath))
+    .map(computePageId)
+  return fileIds
+}
+function computePageId(filePath: string): string {
+  const pageSuffix = '.page.'
+  const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
+  assert(!pageId.includes('\\'))
+  return pageId
+}
+function isDefaultPageFile(filePath: string): boolean {
+  assert(!filePath.includes('\\'))
+  if (!filePath.includes('/_default')) {
+    return false
   }
+  return true
 }

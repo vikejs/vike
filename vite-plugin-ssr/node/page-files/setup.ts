@@ -1,5 +1,5 @@
 import { resolve, join } from 'path'
-import { setPageFilesAsync } from '../../shared/getPageFiles'
+import { setPageFilesServerSideAsync } from '../../shared/getPageFiles'
 import { getSsrEnv } from '../ssrEnv'
 import { assert, assertUsage, isBrowser, moduleExists } from '../utils'
 import { pathToFileURL } from 'url'
@@ -8,9 +8,9 @@ import { isAbsolute } from 'path'
 import { projectInfo } from '../utils'
 */
 
-setPageFilesAsync(setPageFiles)
+setPageFilesServerSideAsync(getPageFilesExports)
 
-async function setPageFiles(): Promise<unknown> {
+async function getPageFilesExports(): Promise<unknown> {
   const ssrEnv = getSsrEnv()
 
   assert(!isBrowser()) // Catched earlier by an `assertUsage()` call in `node/index.ts`

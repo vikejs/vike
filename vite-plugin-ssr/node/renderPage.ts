@@ -7,6 +7,8 @@ import {
   findDefaultFiles,
   findDefaultFilesSorted,
   PageFile,
+  PageFilesMetaServer,
+  loadPageFiles2,
 } from '../shared/getPageFiles'
 import { getSsrEnv } from './ssrEnv'
 import { stringify } from '@brillout/json-s/stringify'
@@ -529,11 +531,16 @@ async function loadPageFiles(pageContext: {
   _baseAssets: string | null
   _allPageFiles: AllPageFiles
   _isPreRendering: boolean
+  _pageFilesMeta: PageFilesMetaServer
 }) {
   const { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault } = await loadPageIsomorphicFiles(
     pageContext,
   )
-  const pageClientFilePaths = getPageClientFilePaths()
+
+  /*
+  const pageContextAddendum = await loadPageFiles2(pageContext._pageId, false)
+  const pageClientFilePaths = getPageClientFilePaths(pageContext)
+  */
 
   const { pageServerFile, pageServerFileDefault, pageServerFiles } = await loadPageServerFiles(pageContext)
 
@@ -573,9 +580,17 @@ async function loadPageFiles(pageContext: {
   })
   return pageFiles
 }
-function getPageClientFilePaths(): string[] {
+function getPageClientFilePaths(pageContext: { _pageFilesMeta: PageFilesMetaServer }): string[] {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
-  let entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
+  const usesClientRouter = Object.values(pageContext._pageFilesMeta['.page.client']).some(({ exportNames }) =>
+    exportNames.includes('usesClientRouter'),
+  )
+  let entryPath: string
+  if (usesClientRouter) {
+    entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
+  } else {
+    entryPath = toPosixPath(require.resolve('../../../dist/esm/client/entry.js'))
+  }
   if (!entryPath.startsWith('/')) {
     assert(process.platform === 'win32')
     entryPath = '/' + entryPath

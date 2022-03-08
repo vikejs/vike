@@ -158,18 +158,27 @@ function useClientRouter() {
     renderPromise = (async () => {
       // @ts-ignore TODO
       const pageContextReadyForRelease = releasePageContext(pageContext)
-      assertUsage(
-        hasProp(pageContext.exports, 'render'),
-        'One of the following files should export a `render()` hook: ' +
-          pageContext._pageFilesLoaded.map((p) => p.filePath).join(', ') +
-          '.',
-      )
+      if (!hasProp(pageContext.exports, 'render')) {
+        const pageFilesClient = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
+        let errMsg: string
+        if (pageFilesClient.length === 0) {
+          errMsg = 'No file `*.page.client.*` found for URL ' + pageContext.url
+        } else {
+          errMsg =
+            'One of the following files should export a `render()` hook: ' +
+            pageFilesClient.map((p) => p.filePath).join(' ')
+        }
+        assertUsage(false, errMsg)
+      }
       assertUsage(
         hasProp(pageContext.exports, 'render', 'function'),
         'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should be a function',
       )
       const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
-      assertUsage(hookResult===undefined, 'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should not return any value')
+      assertUsage(
+        hookResult === undefined,
+        'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should not return any value',
+      )
       addLinkPrefetchHandlers(!!pageContext.exports?.prefetchLinks, url)
     })()
     await renderPromise

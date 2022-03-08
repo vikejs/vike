@@ -1,6 +1,6 @@
 import { createPageRendererWasCalled } from './createPageRenderer'
 import { setViteManifest } from './getViteManifest'
-import { setPageFiles } from '../shared/getPageFiles'
+import { setPageFilesServerSide } from '../shared/getPageFiles'
 import { assertUsage } from './utils'
 
 export { importBuild }
@@ -31,7 +31,7 @@ function importBuild({
     createPageRendererWasCalled() === false,
     'You are trying to load `dist/server/importBuild.js` after calling `createPageRenderer()`. Make sure to load `dist/server/importBuild.js` before calling `createPageRenderer()` instead.',
   )
-  setPageFiles(pageFiles)
+  setPageFilesServerSide(pageFiles)
   setViteManifest({ clientManifest, serverManifest, pluginManifest })
   wasCalled = true
 }
