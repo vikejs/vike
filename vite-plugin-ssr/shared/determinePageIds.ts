@@ -1,32 +1,15 @@
-import { AllPageFiles, PageFile } from './getPageFiles'
-import { assert, assertUsage, slice, unique } from './utils'
+import { assert, slice, unique } from './utils'
 
 export { determinePageIds }
 
 /**
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
-function determinePageIds(allPageFiles: AllPageFiles): string[] {
-  const pageFileIds = computePageIds(allPageFiles['.page'])
-  const pageClientFileIds = computePageIds(allPageFiles['.page.client'])
-  const pageServerFileIds = computePageIds(allPageFiles['.page.server'])
-
-  const allPageIds = unique([...pageFileIds, ...pageClientFileIds, ...pageServerFileIds])
-
-  allPageIds.forEach((pageId) => {
-    assertUsage(
-      pageFileIds.includes(pageId) || pageServerFileIds.includes(pageId),
-      `File missing. You need to create at least \`${pageId}.page.server.js\` or \`${pageId}.page.js\`.`,
-    )
-    assertUsage(
-      pageFileIds.includes(pageId) || pageClientFileIds.includes(pageId),
-      `File missing. You need to create at least \`${pageId}.page.client.js\` or \`${pageId}.page.js\`.`,
-    )
-  })
-
+function determinePageIds(allPageFiles: { filePath: string; isDefaultFile: boolean }[]): string[] {
+  const allPageIds = unique(computePageIds(allPageFiles))
   return allPageIds
 }
-function computePageIds(pageFiles: PageFile[]): string[] {
+function computePageIds(pageFiles: { filePath: string }[]): string[] {
   const fileIds = pageFiles
     .map(({ filePath }) => filePath)
     .filter((filePath) => !isDefaultPageFile(filePath))

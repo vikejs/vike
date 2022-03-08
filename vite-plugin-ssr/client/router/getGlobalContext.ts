@@ -1,5 +1,4 @@
-import { determinePageIds } from '../../shared/determinePageIds'
-import { getAllPageFiles, loadPageFilesServerAll } from '../../shared/getPageFiles'
+import { loadPageFilesServerMeta, getPageIds } from '../../shared/getPageFiles'
 import { loadPageRoutes } from '../../shared/route'
 import { assertBaseUrl, objectAssign, PromiseType, getBaseUrl } from './utils'
 
@@ -21,11 +20,10 @@ async function retrieveGlobalContext() {
     _parseUrl: null,
     _baseUrl: getBaseUrl(),
     _objectCreatedByVitePluginSsr: true,
+    // @ts-ignore
+    _isProduction: import.meta.env.PROD,
   }
   assertBaseUrl(globalContext._baseUrl)
-
-  const allPageFiles = await getAllPageFiles()
-  objectAssign(globalContext, { _allPageFiles: allPageFiles })
 
   const allPageIds = determinePageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
@@ -37,7 +35,7 @@ async function retrieveGlobalContext() {
   objectAssign(globalContext, {
     _pageRoutes: pageRoutes,
     _onBeforeRouteHook: onBeforeRouteHook,
-    _pageFilesServerAll: pageFilesServerAll,
+    _pageFilesServerMeta: pageFilesServerAll,
   })
 
   return globalContext

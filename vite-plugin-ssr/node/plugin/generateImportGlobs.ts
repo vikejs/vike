@@ -4,54 +4,91 @@ import { writeFileSync } from 'fs'
 import type { Plugin } from 'vite'
 import { getRoot } from './utils/getRoot'
 import { getGlobPath } from './glob'
+import { assert } from '../utils'
 
 function generateImportGlobs(getGlobRoots: (root: string) => Promise<string[]>): Plugin {
   return {
     name: 'vite-plugin-ssr:generateImportGlobs',
-    enforce: 'pre',
-    async config(config) {
+    async configResolved(config) {
+      const { command } = config
+      assert(command === 'serve' || command === 'build')
+      const isBuild = command === 'build'
       const root = getRoot(config)
       const globRoots = await getGlobRoots(root)
-      writeImportGlobs(globRoots)
+      writeImportGlobs(globRoots, isBuild)
     },
   } as Plugin
 }
 
-function writeImportGlobs(globRoots: string[]) {
+function writeImportGlobs(globRoots: string[], isBuild: boolean) {
   // Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/generateImportGlobs.js
-  writeFileSync(require.resolve('../../../../dist/esm/node/page-files/pageFiles.js'), getFileContent(globRoots, false))
-  writeFileSync(require.resolve('../../../../dist/esm/client/page-files/pageFiles.js'), getFileContent(globRoots, true))
+  writeFileSync(
+    require.resolve('../../../../dist/esm/node/page-files/pageFiles.js'),
+    getFileContent(globRoots, isBuild, false),
+  )
+  writeFileSync(
+    require.resolve('../../../../dist/esm/client/page-files/pageFiles.js'),
+    getFileContent(globRoots, isBuild, true),
+  )
 }
 
-function getFileContent(globRoots: string[], isForClientSide: boolean) {
-  const fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
+function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: boolean) {
+  let fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
 
 export const pageFiles = {};
 export const pageFilesMeta = {};
+export const pageFilesMetaEager = {};
 export const isGeneratedFile = true;
 
-${getGlobs('pageIsomorphicFiles', globRoots, 'page', false)}
-${getGlobs('pageClientFiles', globRoots, 'page.client', !isForClientSide)}
-${!isForClientSide ? '' : getGlobs('pageClientFiles', globRoots, 'page.client', true, true)}
-${getGlobs('pageServerFiles', globRoots, 'page.server', isForClientSide)}
-${getGlobs('pageRouteFiles', globRoots, 'page.route', false)}
 `
+
+  fileContent += [
+    getGlobs(globRoots, isBuild, 'pageIsomorphicFiles', 'page', { isMeta: false }),
+    getGlobs(globRoots, isBuild, 'pageRouteFiles', 'page.route', { isMeta: false }),
+  ].join('\n')
+  if (isForClientSide) {
+    fileContent += [
+      getGlobs(globRoots, isBuild, 'pageClientFiles', 'page.client', { isMeta: false }),
+      getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
+      getGlobs(globRoots, isBuild, 'pageServerFilesMeta', 'page.server', { isMeta: true }),
+    ].join('\n')
+  } else {
+    fileContent += [
+      getGlobs(globRoots, isBuild, 'pageServerFiles', 'page.server', { isMeta: false }),
+      getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true }),
+    ].join('\n')
+  }
+
+  fileContent += '\n'
+
   return fileContent
 }
 
 function getGlobs(
-  varName: 'pageIsomorphicFiles' | 'pageClientFiles' | 'pageServerFiles' | 'pageRouteFiles',
   globRoots: string[],
+  isBuild: boolean,
+  varName: string,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  isMeta: boolean,
-  appendMetaModifier?: true,
+  { isMeta, appendMetaModifier }: { isMeta: boolean; appendMetaModifier?: true },
 ): string {
   // Waiting on Vite to implement custom modifier support
   {
     if (appendMetaModifier) {
       return ''
     }
-    isMeta = false
+  }
+
+  const isEager = isMeta && isBuild
+
+  let pageFilesVar: 'pageFiles' | 'pageFilesMeta' | 'pageFilesMetaEager'
+  if (!isMeta) {
+    pageFilesVar = 'pageFiles'
+  } else {
+    if (!isEager) {
+      pageFilesVar = 'pageFilesMeta'
+    } else {
+      pageFilesVar = 'pageFilesMetaEager'
+    }
   }
 
   const varNameLocals: string[] = []
@@ -59,10 +96,11 @@ function getGlobs(
     ...globRoots.map((globRoot, i) => {
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
-      const metaModifier = !appendMetaModifier ? '' : ", { as: 'meta' }"
-      return `const ${varNameLocal} = import.meta.glob('${getGlobPath(globRoot, fileSuffix)}'${metaModifier});`
+      const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
+      const mod = !appendMetaModifier ? '' : ", { as: 'meta' }"
+      return `const ${varNameLocal} = import.meta.glob${isEager ? 'Eager' : ''}(${globPath}${mod});`
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
-    `pageFiles${isMeta ? 'Meta' : ''}['.${fileSuffix}'] = ${varName}`,
+    `${pageFilesVar}}['.${fileSuffix}'] = ${varName}`,
   ].join('\n')
 }
