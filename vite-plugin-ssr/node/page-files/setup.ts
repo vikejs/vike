@@ -43,9 +43,9 @@ async function setPageFiles(): Promise<unknown> {
     moduleExports = await ssrEnv.viteDevServer.ssrLoadModule(viteEntryResolved)
   }
 
-  const pageFiles: unknown = (moduleExports as any).pageFiles || (moduleExports as any).default.pageFiles
-  assert(pageFiles)
-  return pageFiles
+  const pageFilesExports: unknown = (moduleExports as any).default || (moduleExports as any)
+  assert(pageFilesExports)
+  return pageFilesExports
 }
 
 async function dynamicImport(filePath: string): Promise<unknown> {
