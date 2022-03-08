@@ -1,3 +1,3 @@
 import { setPageFiles } from '../../shared/getPageFiles'
-import { pageFiles } from './pageFiles'
-setPageFiles(pageFiles)
+import * as pageFilesExports from './pageFiles'
+setPageFiles(pageFilesExports)
