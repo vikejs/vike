@@ -1,3 +1,3 @@
-export const pageFiles = {
-  isOriginalFile: true,
-}
+export const pageFiles = {}
+export const pageFilesMeta = {}
+export const isGeneratedFile = false
