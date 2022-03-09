@@ -40,7 +40,7 @@ async function renderHtml(
   pageContext: PageContextInjectAssets,
   renderFilePath: string,
   onErrorWhileStreaming: (err: unknown) => void,
-): Promise<HtmlRender | { hookError: unknown }> {
+): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
     htmlString = await injectAssets(htmlString, pageContext)
@@ -53,7 +53,7 @@ async function renderHtml(
       onErrorWhileStreaming,
     })
     if ('errorBeforeFirstData' in result) {
-      return { hookError: result.errorBeforeFirstData }
+      throw result.errorBeforeFirstData
     } else {
       return result.stream
     }
@@ -76,7 +76,7 @@ async function renderHtml(
         onErrorWhileStreaming,
       })
       if ('errorBeforeFirstData' in result) {
-        return { hookError: result.errorBeforeFirstData }
+        throw result.errorBeforeFirstData
       } else {
         return result.stream
       }

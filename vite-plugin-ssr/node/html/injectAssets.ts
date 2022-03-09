@@ -16,7 +16,6 @@ import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'
 import { isAbsolute } from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
-import { AllPageFiles } from '../../shared/getPageFiles'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
@@ -40,15 +39,14 @@ type PageAsset = {
 
 async function getPageAssets(
   pageContext: {
-    _allPageFiles: AllPageFiles
     _baseUrl: string
     _baseAssets: string | null
   },
-  dependencies: string[],
+  assetDependencies: string[],
   pageClientFilePaths: string[],
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
-  assert(dependencies.every((filePath) => isAbsolute(filePath)))
+  assert(assetDependencies.every((filePath) => isAbsolute(filePath)))
 
   const { isProduction = false } = getSsrEnv()
   const root = getRoot()
@@ -61,7 +59,7 @@ async function getPageAssets(
     serverManifest = manifests.serverManifest
   }
 
-  const preloadAssets: string[] = await getPreloadUrls(pageContext, dependencies, clientManifest, serverManifest)
+  const preloadAssets: string[] = await getPreloadUrls(assetDependencies, clientManifest, serverManifest)
 
   let pageAssets: PageAsset[] = preloadAssets.map((src) => {
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
