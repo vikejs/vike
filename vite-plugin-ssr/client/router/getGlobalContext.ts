@@ -1,6 +1,5 @@
-import { loadPageFilesServerMeta, getPageIds } from '../../shared/getPageFiles'
-import { loadPageRoutes } from '../../shared/route'
-import { assertBaseUrl, objectAssign, PromiseType, getBaseUrl } from './utils'
+import { getPageFilesAllClientSide } from '../../shared/getPageFiles'
+import { assertBaseUrl, PromiseType, getBaseUrl, objectAssign } from './utils'
 
 export { getGlobalContext }
 export type { PageFilesServer }
@@ -16,27 +15,19 @@ async function getGlobalContext() {
 
 type PageFilesServer = { filePath: string; fileExports: { hasExport_onBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
+  const baseUrl = getBaseUrl()
+  assertBaseUrl(baseUrl)
   const globalContext = {
     _parseUrl: null,
-    _baseUrl: getBaseUrl(),
+    _baseUrl: baseUrl,
     _objectCreatedByVitePluginSsr: true,
     // @ts-ignore
     _isProduction: import.meta.env.PROD,
   }
-  assertBaseUrl(globalContext._baseUrl)
-
-  const allPageIds = determinePageIds(allPageFiles)
-  objectAssign(globalContext, { _allPageIds: allPageIds })
-
-  const [{ pageRoutes, onBeforeRouteHook }, pageFilesServerAll] = await Promise.all([
-    loadPageRoutes(globalContext),
-    loadPageFilesServerAll(allPageFiles),
-  ])
+  const { pageFilesAll, allPageIds } = getPageFilesAllClientSide()
   objectAssign(globalContext, {
-    _pageRoutes: pageRoutes,
-    _onBeforeRouteHook: onBeforeRouteHook,
-    _pageFilesServerMeta: pageFilesServerAll,
+    _pageFilesAll: pageFilesAll,
+    _allPageIds: allPageIds,
   })
-
   return globalContext
 }

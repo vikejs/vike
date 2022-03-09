@@ -1,4 +1,4 @@
-import { AllPageFiles, findDefaultFiles, findPageFile } from '../getPageFiles'
+import { PageFile3 } from '../getPageFiles'
 import { isErrorPage } from './error-page'
 import { assert, assertExports, assertUsage, hasProp, objectAssign, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
@@ -22,16 +22,21 @@ type PageRoutes = {
 
 type RouteValue = string | Function
 
-async function loadPageRoutes(globalContext: {
-  _allPageFiles: AllPageFiles
+async function loadPageRoutes(pageContext: {
+  _pageFilesAll: PageFile3[]
   _allPageIds: string[]
 }): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   let onBeforeRouteHook: null | OnBeforeRouteHook = null
   const filesystemRoots: { rootPath: string; rootValue: string }[] = []
-  const defaultPageRouteFiles = findDefaultFiles(globalContext._allPageFiles['.page.route'])
+
   await Promise.all(
-    defaultPageRouteFiles.map(async ({ filePath, loadFile }) => {
-      const fileExports = await loadFile()
+    pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFileExports?.()),
+  )
+
+  pageContext._pageFilesAll
+    .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)
+    .map(async ({ filePath, fileExports }) => {
+      assert(fileExports)
       assertExportsOfDefaulteRoutePage(fileExports, filePath)
       if ('onBeforeRoute' in fileExports) {
         assertUsage(
@@ -55,48 +60,47 @@ async function loadPageRoutes(globalContext: {
           rootValue: fileExports.filesystemRoutingRoot,
         })
       }
-    }),
-  )
+    })
 
-  const allPageIds = globalContext._allPageIds
+  const allPageIds = pageContext._allPageIds
   const pageRoutes: PageRoutes = []
-  await Promise.all(
-    allPageIds
-      .filter((pageId) => !isErrorPage(pageId))
-      .map(async (pageId) => {
-        const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots)
-        assert(filesystemRoute.startsWith('/'))
-        assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
-        const pageRoute = {
-          pageId,
-          filesystemRoute,
-        }
+  allPageIds
+    .filter((pageId) => !isErrorPage(pageId))
+    .map(async (pageId) => {
+      const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots)
+      assert(filesystemRoute.startsWith('/'))
+      assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
+      const pageRoute = {
+        pageId,
+        filesystemRoute,
+      }
 
-        const pageRouteFile = findPageFile(globalContext._allPageFiles['.page.route'], pageId)
-        if (pageRouteFile) {
-          const { filePath, loadFile } = pageRouteFile
-          const fileExports = await loadFile()
-          assertExportsOfRoutePage(fileExports, filePath)
-          assertUsage('default' in fileExports, `${filePath} should have a default export.`)
-          assertUsage(
-            hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
-            `The default export of ${filePath} should be a string or a function.`,
-          )
-          assertUsage(
-            !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
-              hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
-            `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`,
-          )
-          const routeValue: RouteValue = fileExports.default
-          objectAssign(pageRoute, {
-            pageRouteFile: { filePath, fileExports, routeValue },
-          })
-          pageRoutes.push(pageRoute)
-        } else {
-          pageRoutes.push(pageRoute)
-        }
-      }),
-  )
+      const pageRouteFile = pageContext._pageFilesAll.find(
+        ({ fileType, pageId }) => pageId === pageId && fileType === '.page.route',
+      )
+      if (pageRouteFile) {
+        const { filePath, fileExports } = pageRouteFile
+        assert(fileExports)
+        assertExportsOfRoutePage(fileExports, filePath)
+        assertUsage('default' in fileExports, `${filePath} should have a default export.`)
+        assertUsage(
+          hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
+          `The default export of ${filePath} should be a string or a function.`,
+        )
+        assertUsage(
+          !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
+            hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
+          `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`,
+        )
+        const routeValue: RouteValue = fileExports.default
+        objectAssign(pageRoute, {
+          pageRouteFile: { filePath, fileExports, routeValue },
+        })
+        pageRoutes.push(pageRoute)
+      } else {
+        pageRoutes.push(pageRoute)
+      }
+    })
 
   return { pageRoutes, onBeforeRouteHook }
 }

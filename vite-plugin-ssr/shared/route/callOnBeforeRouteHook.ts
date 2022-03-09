@@ -1,6 +1,5 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
 import { assertUsage, hasProp, isObjectWithKeys } from './utils'
-import { PageRoutes } from './loadPageRoutes'
 import { assertRouteParams } from './resolveRouteFunction'
 
 export { callOnBeforeRouteHook }
@@ -11,11 +10,9 @@ type OnBeforeRouteHook = {
   onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
 }
 
-async function callOnBeforeRouteHook(pageContext: {
+async function callOnBeforeRouteHook(onBeforeRouteHook: OnBeforeRouteHook, pageContext: {
   url: string
   _allPageIds: string[]
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: null | OnBeforeRouteHook
 }): Promise<
   | {}
   | { hookError: unknown; hookFilePath: string; hookName: string }
@@ -26,21 +23,17 @@ async function callOnBeforeRouteHook(pageContext: {
       }
     }
 > {
-  if (!pageContext._onBeforeRouteHook) {
-    return {}
-  }
-
-  const hookFilePath = pageContext._onBeforeRouteHook.filePath
+  const hookFilePath = onBeforeRouteHook.filePath
   const hookName = 'onBeforeRoute'
 
   let result: unknown
   try {
-    result = await pageContext._onBeforeRouteHook.onBeforeRoute(pageContext)
+    result = await onBeforeRouteHook.onBeforeRoute(pageContext)
   } catch (hookError) {
     return { hookError, hookName, hookFilePath }
   }
 
-  const errPrefix = `The \`onBeforeRoute()\` hook exported by ${pageContext._onBeforeRouteHook.filePath}`
+  const errPrefix = `The \`onBeforeRoute()\` hook exported by ${onBeforeRouteHook.filePath}`
 
   assertUsage(
     result === null ||

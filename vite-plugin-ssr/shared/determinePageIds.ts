@@ -1,31 +1,26 @@
 import { assert, slice, unique } from './utils'
 
+// TODO: remove `determinePageIds`?
 export { determinePageIds }
+export { determinePageId }
 
 /**
   Returns the ID of all pages including `_error.page.*` but excluding `_default.page.*`.
 */
-function determinePageIds(allPageFiles: { filePath: string; isDefaultFile: boolean }[]): string[] {
+function determinePageIds(allPageFiles: { filePath: string; isDefaultPageFile: boolean }[]): string[] {
   const allPageIds = unique(computePageIds(allPageFiles))
   return allPageIds
 }
-function computePageIds(pageFiles: { filePath: string }[]): string[] {
+function computePageIds(pageFiles: { filePath: string; isDefaultPageFile: boolean }[]): string[] {
   const fileIds = pageFiles
+    .filter(({ isDefaultPageFile }) => !isDefaultPageFile)
     .map(({ filePath }) => filePath)
-    .filter((filePath) => !isDefaultPageFile(filePath))
-    .map(computePageId)
+    .map(determinePageId)
   return fileIds
 }
-function computePageId(filePath: string): string {
+function determinePageId(filePath: string): string {
   const pageSuffix = '.page.'
   const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
   assert(!pageId.includes('\\'))
   return pageId
-}
-function isDefaultPageFile(filePath: string): boolean {
-  assert(!filePath.includes('\\'))
-  if (!filePath.includes('/_default')) {
-    return false
-  }
-  return true
 }
