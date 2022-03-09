@@ -1,3 +1,4 @@
+/* TODO: remove this file
 import { AllPageFiles, findDefaultFile, findPageFile } from './getPageFiles'
 import { getOnBeforeRenderHook, OnBeforeRenderHook } from './onBeforeRenderHook'
 import { assertUsage, hasProp } from './utils'
@@ -87,3 +88,4 @@ async function loadPageIsomorphicFiles(pageContext: {
 
   return { Page, pageExports, pageIsomorphicFile, pageIsomorphicFileDefault }
 }
+//*/

@@ -1,6 +1,7 @@
-export { loadPageFilesClientSide }
+export { loadPageFiles2 }
 export { getPageFilesAllClientSide }
-export type PageContextPageFilesClientSide = Awaited<ReturnType<typeof loadPageFilesClientSide>>
+export { getPageFilesAllServerSide }
+export type PageContextExports = Awaited<ReturnType<typeof loadPageFiles2>>
 export type { PageFile3 }
 export { setPageFilesServerSide }
 export { setPageFilesClientSide }
@@ -8,7 +9,17 @@ export { setPageFilesServerSideAsync }
 
 import { isErrorPage } from './route'
 import { determinePageId, determinePageIds } from './determinePageIds'
-import { assert, getPathDistance, hasProp, isBrowser, isCallable, isObject, assertPosixPath, cast } from './utils'
+import {
+  assert,
+  getPathDistance,
+  hasProp,
+  isBrowser,
+  isCallable,
+  isObject,
+  assertPosixPath,
+  cast,
+  assertWarning,
+} from './utils'
 
 assertNotAlreadyLoaded()
 
@@ -41,22 +52,21 @@ function setPageFilesClientSide(pageFilesExports: unknown) {
   _pageFilesAll = format(pageFilesExports)
 }
 
-async function getPageFilesAllServerSide(pageContext: { _isProduction: boolean }) {
-  if (!_pageFilesAll) {
-    _pageFilesGetter
-  }
+async function getPageFilesAllServerSide(isProduction: boolean) {
   if (_pageFilesGetter) {
     if (
       !_pageFilesAll ||
       // We reload all glob imports in dev to make auto-reload work
-      !pageContext._isProduction
+      !isProduction
     ) {
       await _pageFilesGetter()
     }
     assert(_pageFilesAll)
   }
   assert(_pageFilesAll)
-  return _pageFilesAll
+  const pageFilesAll = _pageFilesAll
+  const allPageIds = determinePageIds(pageFilesAll)
+  return { pageFilesAll, allPageIds }
 }
 
 function getPageFilesAllClientSide() {
@@ -156,23 +166,22 @@ function isDefaultFilePath(filePath: string): boolean {
   return filePath.includes('/_default')
 }
 
-type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
-async function loadPageFilesClientSide(pageFilesAll: PageFile3[], pageId: string) {
-  const pageFiles = findPageFiles2(pageFilesAll, pageId, true)
+async function loadPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForClientSide: boolean) {
+  const pageFiles = findPageFiles2(pageFilesAll, pageId, isForClientSide)
   await Promise.all(pageFiles.map((p) => p.loadFileExports?.()))
 
-  const pageExports: Record<string, unknown> = {}
+  const pageExports = getObjectWithDeprecatedProxy()
   const exports: Record<string, unknown> = {}
-  const exportsAll: ExportsAll = {}
-  pageFiles.forEach((pageFile) => {
-    Object.entries(pageFile.fileExports ?? {}).forEach(([exportName, exportValue]) => {
+  const exportsAll: Record<string, { filePath: string; exportValue: unknown }[]> = {}
+  pageFiles.forEach(({ filePath, fileType, fileExports }) => {
+    Object.entries(fileExports ?? {}).forEach(([exportName, exportValue]) => {
       exports[exportName] = exports[exportName] ?? exportValue
-      if (pageFile.fileType === '.page') {
+      if (fileType === '.page') {
         pageExports[exportName] = pageExports[exportName] ?? exportValue
       }
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
-        filePath: pageFile.filePath,
+        filePath,
         exportValue,
       })
     })
@@ -180,8 +189,8 @@ async function loadPageFilesClientSide(pageFilesAll: PageFile3[], pageId: string
 
   const pageContextAddendum = {
     exports,
-    exportsAll,
     pageExports,
+    exportsAll,
   }
   return pageContextAddendum
 }
@@ -230,4 +239,23 @@ function assertNotAlreadyLoaded() {
   const globalObject: any = isBrowser() ? window : global
   assert(!globalObject[alreadyLoaded])
   globalObject[alreadyLoaded] = true
+}
+
+let deprecationAlreadyLogged = false
+function getObjectWithDeprecatedProxy(): Record<string, unknown> {
+  return new Proxy(
+    {},
+    {
+      get(...args) {
+        if (!deprecationAlreadyLogged) {
+          deprecationAlreadyLogged = true
+          assertWarning(
+            false,
+            '`pageContext.pageExports` is going to be deprecated in favor of `pageContext.exports`, see https://vite-plugin-ssr.com/exports',
+          )
+        }
+        return Reflect.get(...args)
+      },
+    },
+  )
 }

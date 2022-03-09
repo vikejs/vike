@@ -9,7 +9,7 @@ import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
 import { isErrorPage } from './route/error-page'
 
-export { route }
+export { route, loadPageRoutes }
 export type { PageRoutes }
 export type { PageContextForRoute }
 

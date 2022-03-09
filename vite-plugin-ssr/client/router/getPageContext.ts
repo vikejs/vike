@@ -8,13 +8,15 @@ import {
   isPlainObject,
   objectAssign,
   getProjectError,
+  isCallable,
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { loadPageFilesClientSide, PageContextPageFilesClientSide, PageFile3 } from '../../shared/getPageFiles'
+import { loadPageFiles2, PageContextExports, PageFile3 } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
+import {getHook} from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
 
 export { getPageContext }
@@ -24,7 +26,7 @@ type PageContextAddendum = {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
   _comesDirectlyFromServer: boolean
-} & PageContextPageFilesClientSide
+} & PageContextExports
 
 async function getPageContext(
   pageContext: {
@@ -46,7 +48,7 @@ async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile3
 
   removeBuiltInOverrides(pageContextAddendum)
 
-  const pageContextAddendum2 = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+  const pageContextAddendum2 = await loadPageFiles2(pageContext._pageFilesAll, pageContextAddendum._pageId, true)
   objectAssign(pageContextAddendum, pageContextAddendum2)
 
   objectAssign(pageContextAddendum, {
@@ -62,31 +64,24 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
-  objectAssign(
-    pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
-  )
-  objectAssign(pageContextAddendum, await onBeforeRenderExec({ ...pageContext, ...pageContextAddendum }))
+  objectAssign(pageContextAddendum, await loadPageFiles2(pageContext._pageFilesAll, pageContextAddendum._pageId, true))
+  objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
   return pageContextAddendum
 }
 
-async function onBeforeRenderExec(
+async function onBeforeRenderExecute(
   pageContext: {
     _pageId: string
     url: string
     isHydration: boolean
     _pageFilesAll: PageFile3[]
-  } & PageContextPageFilesClientSide,
+  } & PageContextExports,
 ) {
   // `export { onBeforeRender }` defined in `.page.client.js`
-  if (pageContext.exports.onBeforeRender) {
-    const hookFile = pageContext.exportsAll.onBeforeRender![0]!.filePath
-    assert(hookFile)
-    assertUsage(
-      hasProp(pageContext.exports, 'onBeforeRender', 'function'),
-      'The `export { onBeforeRender }` of ' + hookFile + ' should be a function',
-    )
+  const hook = getHook(pageContext, 'onBeforeRender')
+  if (hook) {
+    const onBeforeRender = hook.hook
     const pageContextAddendum = {
       _comesDirectlyFromServer: false,
       _pageContextRetrievedFromServer: null,
@@ -95,8 +90,8 @@ async function onBeforeRenderExec(
       ...pageContext,
       ...pageContextAddendum,
     })
-    const hookResult = await pageContext.exports.onBeforeRender(pageContextReadyForRelease)
-    assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hookFile)
+    const hookResult = await onBeforeRender(pageContextReadyForRelease)
+    assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.filePath)
     const pageContextFromHook = hookResult?.pageContext
     objectAssign(pageContextAddendum, pageContextFromHook)
     return pageContextAddendum
