@@ -35,8 +35,9 @@ function writeImportGlobs(globRoots: string[], isBuild: boolean) {
 function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: boolean) {
   let fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
 
-export const pageFiles = {};
-export const pageFilesMeta = {};
+export const pageFilesLazy = {};
+export const pageFilesEager = {};
+export const pageFilesMetaLazy = {};
 export const pageFilesMetaEager = {};
 export const isGeneratedFile = true;
 
@@ -80,12 +81,16 @@ function getGlobs(
 
   const isEager = isMeta && isBuild
 
-  let pageFilesVar: 'pageFiles' | 'pageFilesMeta' | 'pageFilesMetaEager'
+  let pageFilesVar: 'pageFilesLazy' | 'pageFilesEager' | 'pageFilesMetaLazy' | 'pageFilesMetaEager'
   if (!isMeta) {
-    pageFilesVar = 'pageFiles'
+    if (!isEager) {
+      pageFilesVar = 'pageFilesLazy'
+    } else {
+      pageFilesVar = 'pageFilesEager'
+    }
   } else {
     if (!isEager) {
-      pageFilesVar = 'pageFilesMeta'
+      pageFilesVar = 'pageFilesMetaLazy'
     } else {
       pageFilesVar = 'pageFilesMetaEager'
     }

@@ -1,16 +1,15 @@
-import type { AllPageFiles } from './getPageFiles'
+import type { PageFile3 } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
 import { pickWinner, RouteType } from './route/pickWinner'
 import { resolveRouteString } from './route/resolveRouteString'
 import { resolveFilesystemRoute } from './route/resolveFilesystemRoute'
 import { resolveRouteFunction } from './route/resolveRouteFunction'
-import { callOnBeforeRouteHook, OnBeforeRouteHook } from './route/callOnBeforeRouteHook'
-import { PageRoutes } from './route/loadPageRoutes'
+import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
+import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
 import { isErrorPage } from './route/error-page'
 
 export { route }
-export { loadPageRoutes } from './route/loadPageRoutes'
 export type { PageRoutes }
 export type { PageContextForRoute }
 
@@ -19,10 +18,8 @@ export { getErrorPageId } from './route/error-page'
 export { isStaticRoute } from './route/resolveRouteString'
 
 type PageContextForRoute = PageContextUrlSource & {
+  _pageFilesAll: PageFile3[]
   _allPageIds: string[]
-  _allPageFiles: AllPageFiles
-  _pageRoutes: PageRoutes
-  _onBeforeRouteHook: null | OnBeforeRouteHook
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
 async function route(
@@ -33,24 +30,28 @@ async function route(
 > {
   addComputedUrlProps(pageContext)
 
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext)
+
   const pageContextAddendum = {}
-  const hookResult = await callOnBeforeRouteHook(pageContext)
-  if ('hookError' in hookResult) {
-    return hookResult
-  }
-  if ('pageContextProvidedByUser' in hookResult) {
-    objectAssign(pageContextAddendum, hookResult.pageContextProvidedByUser)
-    if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
-      // We bypass `vite-plugin-ssr`'s routing
-      if (!hasProp(pageContextAddendum, 'routeParams')) {
-        objectAssign(pageContextAddendum, { routeParams: {} })
-      } else {
-        assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
-      }
-      return { pageContextAddendum }
+  if (onBeforeRouteHook) {
+    const hookResult = await callOnBeforeRouteHook(onBeforeRouteHook, pageContext)
+    if ('hookError' in hookResult) {
+      return hookResult
     }
-    // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
-    objectAssign(pageContext, pageContextAddendum)
+    if ('pageContextProvidedByUser' in hookResult) {
+      objectAssign(pageContextAddendum, hookResult.pageContextProvidedByUser)
+      if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
+        // We bypass `vite-plugin-ssr`'s routing
+        if (!hasProp(pageContextAddendum, 'routeParams')) {
+          objectAssign(pageContextAddendum, { routeParams: {} })
+        } else {
+          assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
+        }
+        return { pageContextAddendum }
+      }
+      // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
+      objectAssign(pageContext, pageContextAddendum)
+    }
   }
 
   // `vite-plugin-ssr`'s routing
@@ -72,13 +73,8 @@ async function route(
     routeParams: Record<string, string>
   }[] = []
   await Promise.all(
-    pageContext._pageRoutes.map(async (pageRoute): Promise<void> => {
+    pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, filesystemRoute, pageRouteFile } = pageRoute
-      assertUsage(
-        !isReservedPageId(pageId),
-        "Only `_default.page.*` and `_error.page.*` files are allowed to include the special character `_` in their path. The following shouldn't include `_`: " +
-          pageId,
-      )
 
       if (!pageRouteFile) {
         const match = resolveFilesystemRoute(filesystemRoute, urlPathname)
@@ -150,9 +146,4 @@ async function route(
     routeParams,
   })
   return { pageContextAddendum }
-}
-
-function isReservedPageId(pageId: string): boolean {
-  assert(!pageId.includes('\\'))
-  return pageId.includes('/_')
 }

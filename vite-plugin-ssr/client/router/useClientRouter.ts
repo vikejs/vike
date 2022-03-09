@@ -159,7 +159,9 @@ function useClientRouter() {
       // @ts-ignore TODO
       const pageContextReadyForRelease = releasePageContext(pageContext)
       if (!hasProp(pageContext.exports, 'render')) {
-        const pageFilesClient = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
+        const pageFilesClient = pageContext._pageFilesAll.filter(
+          (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+        )
         let errMsg: string
         if (pageFilesClient.length === 0) {
           errMsg = 'No file `*.page.client.*` found for URL ' + pageContext.url
