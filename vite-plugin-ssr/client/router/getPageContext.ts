@@ -11,7 +11,7 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { loadPageFilesClientSide, PageContextPageFiles, isPageFileForPageId } from '../../shared/getPageFiles'
+import { loadPageFilesClientSide, PageContextPageFilesClientSide, PageFile3 } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
@@ -24,35 +24,29 @@ type PageContextAddendum = {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
   _comesDirectlyFromServer: boolean
-} & PageContextPageFiles
-
-type PageFileServerMeta = {
-  filePath: string
-  meta: Record<string, unknown>
-}
+} & PageContextPageFilesClientSide
 
 async function getPageContext(
   pageContext: {
-    _pageFilesServerMeta: PageFileServerMeta[]
     _isFirstRender: boolean
   } & PageContextUrls &
     PageContextForRoute,
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRender && navigationState.isOriginalUrl(pageContext.url)) {
-    const pageContextAddendum = await getPageContextForFirstRender()
+    const pageContextAddendum = await getPageContextFirstRender(pageContext)
     return pageContextAddendum
   } else {
-    const pageContextAddendum = await getPageContextForPageNavigation(pageContext)
+    const pageContextAddendum = await getPageContextPageNavigation(pageContext)
     return pageContextAddendum
   }
 }
 
-async function getPageContextForFirstRender() {
+async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile3[] }) {
   const pageContextAddendum = getPageContextSerializedInHtml()
 
   removeBuiltInOverrides(pageContextAddendum)
 
-  const pageContextAddendum2 = await loadPageFilesClientSide(pageContextAddendum)
+  const pageContextAddendum2 = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
   objectAssign(pageContextAddendum, pageContextAddendum2)
 
   objectAssign(pageContextAddendum, {
@@ -63,16 +57,15 @@ async function getPageContextForFirstRender() {
   return pageContextAddendum
 }
 
-async function getPageContextForPageNavigation(
-  pageContext: {
-    _pageFilesServerMeta: PageFileServerMeta[]
-  } & PageContextForRoute,
-): Promise<PageContextAddendum> {
+async function getPageContextPageNavigation(pageContext: PageContextForRoute): Promise<PageContextAddendum> {
   const pageContextAddendum = {
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
-  objectAssign(pageContextAddendum, await loadPageFilesClientSide({ ...pageContext, ...pageContextAddendum }))
+  objectAssign(
+    pageContextAddendum,
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+  )
   objectAssign(pageContextAddendum, await onBeforeRenderExec({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
   return pageContextAddendum
@@ -80,11 +73,11 @@ async function getPageContextForPageNavigation(
 
 async function onBeforeRenderExec(
   pageContext: {
-    _pageFilesServerMeta: PageFileServerMeta[]
     _pageId: string
     url: string
     isHydration: boolean
-  } & PageContextPageFiles,
+    _pageFilesAll: PageFile3[]
+  } & PageContextPageFilesClientSide,
 ) {
   // `export { onBeforeRender }` defined in `.page.client.js`
   if (pageContext.exports.onBeforeRender) {
@@ -110,7 +103,7 @@ async function onBeforeRenderExec(
   }
 
   // `export { onBeforeRender }` defined in `.page.server.js`
-  else if (hasOnBeforeRenderServerSide(pageContext)) {
+  else if (await hasOnBeforeRenderServerSide(pageContext)) {
     const pageContextFromServer = await retrievePageContextFromServer(pageContext)
     const pageContextAddendum = {}
     Object.assign(pageContextAddendum, pageContextFromServer)
@@ -153,14 +146,19 @@ function handle404(pageContext: { url: string }) {
   window.location.pathname = pageContext.url
 }
 
-function hasOnBeforeRenderServerSide(pageContext: { _pageId: string; _pageFilesServerMeta: PageFileServerMeta[] }) {
-  return pageContext._pageFilesServerMeta
-    .filter((pageFile) => isPageFileForPageId(pageFile, pageContext._pageId))
-    .some(({ meta }) => {
-      assert(hasProp(meta, 'hasExport_onBeforeRender', 'boolean'))
-      assert(Object.keys(meta).length === 1)
-      return meta.hasExport_onBeforeRender === true
-    })
+async function hasOnBeforeRenderServerSide(pageContext: {
+  _pageId: string
+  _pageFilesAll: PageFile3[]
+}): Promise<boolean> {
+  const pageFilesServerMeta = pageContext._pageFilesAll.filter(
+    (p) => p.pageId === pageContext._pageId && p.filePath === '.page.server',
+  )
+  await Promise.all(pageFilesServerMeta.map((p) => p.loadMeta?.()))
+  return pageFilesServerMeta.some(({ meta }) => {
+    assert(hasProp(meta, 'hasExport_onBeforeRender', 'boolean'))
+    assert(Object.keys(meta).length === 1)
+    return meta.hasExport_onBeforeRender === true
+  })
 }
 async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
   const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)

@@ -1,4 +1,4 @@
-import { getErrorPageId, route, loadPageRoutes, PageRoutes, isErrorPage } from '../shared/route'
+import { getErrorPageId, route, PageRoutes, isErrorPage } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import {
   AllPageFiles,
@@ -1098,9 +1098,6 @@ async function getGlobalContext() {
 
   const allPageIds = determinePageIds(allPageFiles)
   objectAssign(globalContext, { _allPageIds: allPageIds })
-
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(globalContext)
-  objectAssign(globalContext, { _pageRoutes: pageRoutes, _onBeforeRouteHook: onBeforeRouteHook })
 
   return globalContext
 }

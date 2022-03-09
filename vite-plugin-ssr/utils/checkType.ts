@@ -1,3 +1,1 @@
-export { checkType }
-
-function checkType<Type>(_: Type) {}
+export function checkType<Type>(_: Type) {}
