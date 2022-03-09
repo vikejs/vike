@@ -1,12 +1,12 @@
 import { assertWarning, objectAssign } from './utils'
-import { getPageFilesAllClientSide, loadPageFilesClientSide } from '../shared/getPageFiles'
+import { getPageFilesAllClientSide, loadPageFiles2 } from '../shared/getPageFiles'
 
 export { loadPageFiles }
 
 async function loadPageFiles(pageContext: { _pageId: string }) {
   const pageContextAddendum = {}
   const { pageFilesAll } = getPageFilesAllClientSide()
-  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageFilesAll, pageContext._pageId))
+  objectAssign(pageContextAddendum, await loadPageFiles2(pageFilesAll, pageContext._pageId, true))
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
     .forEach((p) => {

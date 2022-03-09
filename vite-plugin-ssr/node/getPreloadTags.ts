@@ -2,16 +2,12 @@ import { getSsrEnv } from './ssrEnv'
 import { assert, getRoot } from './utils'
 import { ViteManifest } from './getViteManifest'
 import type { ModuleNode } from 'vite'
-import { AllPageFiles } from '../shared/getPageFiles'
 import { getManifestEntry } from './getManifestEntry'
 
 export { getPreloadUrls }
 
 async function getPreloadUrls(
-  pageContext: {
-    _allPageFiles: AllPageFiles
-  },
-  dependencies: string[],
+  assetDependencies: string[],
   clientManifest: null | ViteManifest,
   serverManifest: null | ViteManifest,
 ): Promise<string[]> {
@@ -21,21 +17,23 @@ async function getPreloadUrls(
   let preloadUrls = new Set<string>()
   if (!ssrEnv.isProduction) {
     const visitedModules = new Set<string>()
+    /*
     const pageViewFiles: string[] = pageContext._allPageFiles['.page'].map(({ filePath }) => filePath)
     const skipPageViewFiles = pageViewFiles.filter(
-      (pageViewFile) => !dependencies.some((dep) => dep.includes(pageViewFile)),
+      (pageViewFile) => !assetDependencies.some((dep) => dep.includes(pageViewFile)),
     )
+    */
     await Promise.all(
-      dependencies.map(async (filePath) => {
+      assetDependencies.map(async (filePath) => {
         assert(filePath)
         const mod = await ssrEnv.viteDevServer.moduleGraph.getModuleByUrl(filePath)
-        collectCss(mod, preloadUrls, visitedModules, skipPageViewFiles)
+        collectCss(mod, preloadUrls, visitedModules /*, skipPageViewFiles*/)
       }),
     )
   } else {
     assert(clientManifest && serverManifest)
     const visistedAssets = new Set<string>()
-    dependencies.forEach((filePath) => {
+    assetDependencies.forEach((filePath) => {
       const { manifestKey, manifest } = getManifestEntry(
         filePath,
         [
@@ -92,17 +90,17 @@ function collectCss(
   mod: ModuleNode | undefined,
   preloadUrls: Set<string>,
   visitedModules: Set<string>,
-  skipPageViewFiles: string[],
+  //skipPageViewFiles: string[],
 ): void {
   if (!mod) return
   if (!mod.url) return
-  if (skipPageViewFiles.some((pageViewFile) => mod.id && mod.id.includes(pageViewFile))) return
+  //if (skipPageViewFiles.some((pageViewFile) => mod.id && mod.id.includes(pageViewFile))) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
   if (mod.url.endsWith('.css') || (mod.id && /\?vue&type=style/.test(mod.id))) {
     preloadUrls.add(mod.url)
   }
   mod.importedModules.forEach((dep) => {
-    collectCss(dep, preloadUrls, visitedModules, skipPageViewFiles)
+    collectCss(dep, preloadUrls, visitedModules /*, skipPageViewFiles*/)
   })
 }

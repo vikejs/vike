@@ -50,7 +50,7 @@ export const isGeneratedFile = true;
   if (isForClientSide) {
     fileContent += [
       getGlobs(globRoots, isBuild, 'pageClientFiles', 'page.client', { isMeta: false }),
-      getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
+      // getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
       getGlobs(globRoots, isBuild, 'pageServerFilesMeta', 'page.server', { isMeta: true }),
     ].join('\n')
   } else {
@@ -72,8 +72,8 @@ function getGlobs(
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
   { isMeta, appendMetaModifier }: { isMeta: boolean; appendMetaModifier?: true },
 ): string {
-  // Waiting on Vite to implement custom modifier support
   {
+    // Waiting for Vite to implement custom modifier support
     if (appendMetaModifier) {
       return ''
     }
