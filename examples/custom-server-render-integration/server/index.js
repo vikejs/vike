@@ -67,18 +67,28 @@ function assert_pageAssets(pageAssets) {
     assert(a1.assetType === 'style')
     assert(a1.mediaType === 'text/css')
     assert(a1.preloadType === 'style')
-    const a2 = pageAssets[1]
-    assert(partRegex`/assets/vendor.${/[a-z0-9]+/}.js`.test(a2.src))
-    assert(a2.assetType === 'preload')
-    assert(a2.mediaType === 'text/javascript')
-    assert(a2.preloadType === 'script')
+
+    let a2 = pageAssets[1]
+    let a3 = pageAssets[2]
+    let a4 = pageAssets[3]
+    if (a4) {
+      // Vite 2.8
+      assert(pageAssets.length === 4)
+      assert(partRegex`/assets/vendor.${/[a-z0-9]+/}.js`.test(a2.src))
+      assert(a2.assetType === 'preload')
+      assert(a2.mediaType === 'text/javascript')
+      assert(a2.preloadType === 'script')
+    } else {
+      // Vite 2.9
+      assert(pageAssets.length === 3)
+      a4 = a3
+      a3 = a2
+    }
     const isClientAsset = (src) => partRegex`/assets/renderer/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(src)
-    const a3 = pageAssets[2]
     assert(isClientAsset(a3.src))
     assert(a3.assetType === 'preload')
     assert(a3.mediaType === 'text/javascript')
     assert(a3.preloadType === 'script')
-    const a4 = pageAssets[3]
     assert(isClientAsset(a4.src))
     assert(a4.assetType === 'script')
     assert(a4.mediaType === 'text/javascript')

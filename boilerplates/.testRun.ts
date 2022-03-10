@@ -2,10 +2,7 @@ import { page, run, partRegex, autoRetry, fetchHtml, urlBase, expectBrowserError
 
 export { testRun }
 
-function testRun(
-  cmd: 'npm run dev' | 'npm run prod',
-  { skipTitleColorTest }: { skipTitleColorTest?: boolean } = {},
-) {
+function testRun(cmd: 'npm run dev' | 'npm run prod', { skipTitleColorTest }: { skipTitleColorTest?: boolean } = {}) {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
@@ -32,9 +29,17 @@ function testRun(
       expect(html).toMatch(
         partRegex`<script type="module" src="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`,
       )
-      expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`,
-      )
+      try {
+        // Vite 2.8
+        expect(html).toMatch(
+          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`,
+        )
+      } catch (err) {
+        // Vite 2.9
+        expect(html).toMatch(
+          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`,
+        )
+      }
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     } else {
       expect(html).toContain('<script type="module" src="/@vite/client"></script>')
