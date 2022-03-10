@@ -46,21 +46,22 @@ export const isGeneratedFile = true;
   fileContent += [
     getGlobs(globRoots, isBuild, 'pageIsomorphicFiles', 'page', { isMeta: false }),
     getGlobs(globRoots, isBuild, 'pageRouteFiles', 'page.route', { isMeta: false }),
+    '',
   ].join('\n')
   if (isForClientSide) {
     fileContent += [
       getGlobs(globRoots, isBuild, 'pageClientFiles', 'page.client', { isMeta: false }),
       // getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
       getGlobs(globRoots, isBuild, 'pageServerFilesMeta', 'page.server', { isMeta: true }),
+      '',
     ].join('\n')
   } else {
     fileContent += [
       getGlobs(globRoots, isBuild, 'pageServerFiles', 'page.server', { isMeta: false }),
       getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true }),
+      '',
     ].join('\n')
   }
-
-  fileContent += '\n'
 
   return fileContent
 }
@@ -106,6 +107,6 @@ function getGlobs(
       return `const ${varNameLocal} = import.meta.glob${isEager ? 'Eager' : ''}(${globPath}${mod});`
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
-    `${pageFilesVar}}['.${fileSuffix}'] = ${varName}`,
+    `${pageFilesVar}['.${fileSuffix}'] = ${varName};`,
   ].join('\n')
 }

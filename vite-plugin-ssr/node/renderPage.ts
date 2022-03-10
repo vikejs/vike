@@ -15,6 +15,7 @@ import {
   getPageFilesAllServerSide,
   PageFile3,
   PageContextExports,
+  getStringUnion,
 } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
 import { getSsrEnv } from './ssrEnv'
@@ -22,7 +23,6 @@ import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
   assertUsage,
-  isCallable,
   assertWarning,
   hasProp,
   handlePageContextRequestSuffix,
@@ -30,12 +30,10 @@ import {
   isObject,
   objectAssign,
   PromiseType,
-  assertExports,
   parseUrl,
   isParsable,
   assertBaseUrl,
   isPromise,
-  notNull,
   toPosixPath,
 } from './utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
@@ -79,7 +77,6 @@ export { renderStatic404Page }
 export { getGlobalContext }
 export { loadPageFiles }
 export type { GlobalContext }
-export { loadOnBeforePrerenderHook }
 export { throwPrerenderError }
 
 type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
@@ -494,16 +491,7 @@ async function loadPageFiles(pageContext: {
   ])
 
   objectAssign(pageContextAddendum, {
-    _passToClient:
-      pageContextAddendum.exportsAll['passToClient']
-        ?.map((e) => {
-          assertUsage(
-            hasProp(e, 'exportValue', 'string[]'),
-            `\`export { passToClient }\` of ${e.filePath} should be an array of strings.`,
-          )
-          return e.exportValue
-        })
-        .flat() ?? [],
+    _passToClient: getStringUnion(pageContextAddendum.exportsAll, 'passToClient'),
   })
 
   objectAssign(pageContextAddendum, {
@@ -527,10 +515,10 @@ async function loadPageFiles(pageContext: {
 async function getPageClientFilePaths(pageFilesAll: PageFile3[], pageId: string): Promise<string[]> {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
   const pageFilesClient = pageFilesAll.filter(
-    (p) => (p.filePath === '.page.client' && p.isDefaultPageFile) || p.pageId === pageId,
+    (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
   )
-  await Promise.all(pageFilesClient.map((p) => p.loadMeta!()))
-  const usesClientRouter = pageFilesClient.some((p) => p.meta!.usesClientRouter)
+  await Promise.all(pageFilesClient.map((p) => p.loadMeta?.()))
+  const usesClientRouter = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('useClientRouting'))
   let entryPath: string
   if (usesClientRouter) {
     entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
@@ -542,69 +530,6 @@ async function getPageClientFilePaths(pageFilesAll: PageFile3[], pageId: string)
     entryPath = '/' + entryPath
   }
   return ['/@fs' + entryPath]
-  /*
-  let p = require.resolve('../../../dist/esm/client/router/entry.js')
-  console.log('p', p)
-  //p = p.slice(process.cwd().length)
-  p = '/@fs' + p
-  console.log('pp', p)
-  return [p]
-  /*
-  const { _pageId: pageId, _allPageFiles: allPageFiles } = pageContext
-  const pageClientFiles = allPageFiles['.page.client']
-  assertUsage(
-    pageClientFiles.length > 0,
-    'No `*.page.client.js` file found. Make sure to create one. You can create a `_default.page.client.js` which will apply as default to all your pages.',
-  )
-  const pageClientFilePaths = findPageFiles(pageClientFiles, pageId).map(p => p.filePath)
-  return pageClientFilePaths
-  */
-}
-
-type OnBeforePrerenderHook = (globalContext: { _pageRoutes: PageRoutes }) => unknown
-async function loadOnBeforePrerenderHook(globalContext: {
-  _allPageFiles: AllPageFiles
-}): Promise<null | { onBeforePrerenderHook: OnBeforePrerenderHook; hookFilePath: string }> {
-  const defautFiles = findDefaultFiles(globalContext._allPageFiles['.page.server'])
-  let onBeforePrerenderHook: OnBeforePrerenderHook | null = null
-  let hookFilePath: string | undefined = undefined
-  await Promise.all(
-    defautFiles.map(async ({ filePath, loadFile }) => {
-      const fileExports = await loadFile()
-      assertExportsOfServerPage(fileExports, filePath)
-      if ('onBeforePrerender' in fileExports) {
-        assertUsage(
-          hasProp(fileExports, 'onBeforePrerender', 'function'),
-          `The \`export { onBeforePrerender }\` in ${filePath} should be a function.`,
-        )
-        assertUsage(
-          onBeforePrerenderHook === null,
-          'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.',
-        )
-        onBeforePrerenderHook = fileExports.onBeforePrerender
-        hookFilePath = filePath
-      }
-    }),
-  )
-  if (!onBeforePrerenderHook) {
-    return null
-  }
-  assert(hookFilePath)
-  return { onBeforePrerenderHook, hookFilePath }
-}
-
-function assertExportsOfServerPage(fileExports: Record<string, unknown>, filePath: string) {
-  assertExports(
-    fileExports,
-    filePath,
-    ['render', 'onBeforeRender', 'passToClient', 'prerender', 'doNotPrerender', 'onBeforePrerender'],
-    {
-      ['_onBeforePrerender']: 'onBeforePrerender',
-    },
-    {
-      ['addPageContext']: 'onBeforeRender',
-    },
-  )
 }
 
 async function executeOnBeforeRenderHooks(
@@ -786,13 +711,6 @@ function warnMissingErrorPage() {
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
     )
   }
-}
-function warnCouldNotRenderErrorPage({ hookFilePath, hookName }: { hookFilePath: string; hookName: string }) {
-  assert(!hookName.endsWith('()'))
-  assertWarning(
-    false,
-    `The error page \`_error.page.js\` could be not rendered because your \`${hookName}()\` hook exported by ${hookFilePath} threw an error.`,
-  )
 }
 
 function _parseUrl(url: string, baseUrl: string): ReturnType<typeof parseUrl> & { isPageContextRequest: boolean } {
