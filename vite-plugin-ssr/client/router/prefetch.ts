@@ -2,8 +2,8 @@ import { assert, assertUsage, getUrlPathname, skipLink } from './utils'
 import { route } from '../../shared/route'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { getGlobalContext } from './getGlobalContext'
-import { loadPageFiles } from '../loadPageFiles'
 import { isExternalLink } from './utils/isExternalLink'
+import { loadPageFiles2 } from '../../shared/getPageFiles'
 
 export { addLinkPrefetchHandlers, prefetch }
 
@@ -27,9 +27,9 @@ async function prefetch(url: string): Promise<void> {
   addComputedUrlProps(pageContext)
   const routeContext = await route(pageContext)
   if ('pageContextAddendum' in routeContext) {
-    const _pageId = routeContext.pageContextAddendum._pageId
-    if (_pageId) {
-      loadPageFiles({ _pageId })
+    const pageId = routeContext.pageContextAddendum._pageId
+    if (pageId) {
+      await loadPageFiles2(globalContext._pageFilesAll, pageId, true)
     }
   }
 }

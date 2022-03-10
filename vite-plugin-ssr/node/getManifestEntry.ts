@@ -36,14 +36,14 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
     }
   }
 
-  assert(optional, { manifestKey, filePath, manifestKey_resolvedSymlink, filePath_resolvedSymlink, manifestLength: manifests.length })
+  assert(optional, { filePath, manifestKey, manifestKey_resolvedSymlink, filePath_resolvedSymlink, numberOfManifests: manifests.length })
   return { manifestKey: manifestKey_resolvedSymlink, manifest: null, manifestEntry: null }
 }
 
 function getManifestKey(filePath: string, root: string) {
   let manifestKey = filePath
   if (filePath.startsWith('/@fs/')) {
-    posix.relative(root, manifestKey.slice('/@fs'.length))
+    manifestKey = posix.relative(root, manifestKey.slice('/@fs'.length))
   }
   if (manifestKey.startsWith('/')) {
     manifestKey = manifestKey.slice(1)

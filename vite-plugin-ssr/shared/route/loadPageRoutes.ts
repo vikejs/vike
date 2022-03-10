@@ -1,6 +1,6 @@
 import { PageFile3 } from '../getPageFiles'
 import { isErrorPage } from './error-page'
-import { assert, assertExports, assertUsage, hasProp, objectAssign, slice } from './utils'
+import { assert, assertUsage, hasProp, objectAssign, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { getFilesystemRoute } from './resolveFilesystemRoute'
 
@@ -37,11 +37,10 @@ async function loadPageRoutes(pageContext: {
     .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)
     .map(async ({ filePath, fileExports }) => {
       assert(fileExports)
-      assertExportsOfDefaulteRoutePage(fileExports, filePath)
       if ('onBeforeRoute' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'onBeforeRoute', 'function'),
-          `The \`onBeforeRoute\` export of \`${filePath}\` should be a function.`,
+          `\`export { onBeforeRoute }\` of ${filePath} should be a function.`,
         )
         const { onBeforeRoute } = fileExports
         onBeforeRouteHook = { filePath, onBeforeRoute }
@@ -49,11 +48,11 @@ async function loadPageRoutes(pageContext: {
       if ('filesystemRoutingRoot' in fileExports) {
         assertUsage(
           hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
-          `The \`filesystemRoutingRoot\` export of \`${filePath}\` should be a string.`,
+          `\`export { filesystemRoutingRoot }\` of ${filePath} should be a string.`,
         )
         assertUsage(
           hasProp(fileExports, 'filesystemRoutingRoot', 'string'),
-          `The \`filesystemRoutingRoot\` export of \`${filePath}\` is \`'${fileExports.filesystemRoutingRoot}'\` but it should start with a leading slash \`/\`.`,
+          `\`export { filesystemRoutingRoot }\` of ${filePath} is \`'${fileExports.filesystemRoutingRoot}'\` but it should start with a leading slash \`/\`.`,
         )
         filesystemRoots.push({
           rootPath: dirname(filePath),
@@ -76,12 +75,11 @@ async function loadPageRoutes(pageContext: {
       }
 
       const pageRouteFile = pageContext._pageFilesAll.find(
-        ({ fileType, pageId }) => pageId === pageId && fileType === '.page.route',
+        (p) => p.pageId === pageId && p.fileType === '.page.route',
       )
       if (pageRouteFile) {
         const { filePath, fileExports } = pageRouteFile
         assert(fileExports)
-        assertExportsOfRoutePage(fileExports, filePath)
         assertUsage('default' in fileExports, `${filePath} should have a default export.`)
         assertUsage(
           hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
@@ -103,15 +101,6 @@ async function loadPageRoutes(pageContext: {
     })
 
   return { pageRoutes, onBeforeRouteHook }
-}
-
-function assertExportsOfRoutePage(fileExports: Record<string, unknown>, filePath: string) {
-  assertExports(fileExports, filePath, ['default', 'iKnowThePerformanceRisksOfAsyncRouteFunctions'])
-}
-function assertExportsOfDefaulteRoutePage(fileExports: Record<string, unknown>, filePath: string) {
-  assertExports(fileExports, filePath, ['onBeforeRoute', 'filesystemRoutingRoot'], {
-    ['_onBeforeRoute']: 'onBeforeRoute',
-  })
 }
 
 function dirname(filePath: string): string {

@@ -6,6 +6,7 @@ export type { PageFile3 }
 export { setPageFilesServerSide }
 export { setPageFilesClientSide }
 export { setPageFilesServerSideAsync }
+export { getStringUnion }
 
 import { isErrorPage } from './route'
 import { determinePageId, determinePageIds } from './determinePageIds'
@@ -19,6 +20,7 @@ import {
   assertPosixPath,
   cast,
   assertWarning,
+  assertUsage,
 } from './utils'
 
 assertNotAlreadyLoaded()
@@ -78,6 +80,7 @@ function getPageFilesAllClientSide() {
 
 function format(pageFilesExports: unknown) {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
+  assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
@@ -89,10 +92,6 @@ function format(pageFilesExports: unknown) {
   )
   assert(
     hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server'),
-  )
-  assert(
-    hasProp(pageFilesExports.pageFilesMetaLazy, '.page.client') ||
-      hasProp(pageFilesExports.pageFilesMetaLazy, '.page.server'),
   )
 
   const pageFilesMap: Record<string, PageFile3> = {}
@@ -166,18 +165,21 @@ function isDefaultFilePath(filePath: string): boolean {
   return filePath.includes('/_default')
 }
 
+type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
 async function loadPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForClientSide: boolean) {
   const pageFiles = findPageFiles2(pageFilesAll, pageId, isForClientSide)
   await Promise.all(pageFiles.map((p) => p.loadFileExports?.()))
 
-  const pageExports = getObjectWithDeprecatedProxy()
+  const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
-  const exportsAll: Record<string, { filePath: string; exportValue: unknown }[]> = {}
+  const exportsAll: ExportsAll = {}
   pageFiles.forEach(({ filePath, fileType, fileExports }) => {
     Object.entries(fileExports ?? {}).forEach(([exportName, exportValue]) => {
       exports[exportName] = exports[exportName] ?? exportValue
       if (fileType === '.page') {
-        pageExports[exportName] = pageExports[exportName] ?? exportValue
+        if (!(exportName in pageExports)) {
+          pageExports[exportName] = exportValue
+        }
       }
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
@@ -186,6 +188,11 @@ async function loadPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForCl
       })
     })
   })
+
+  {
+    const customExports = getStringUnion(exportsAll, 'customExports')
+    assertExports(pageFiles, customExports)
+  }
 
   const pageContextAddendum = {
     exports,
@@ -242,7 +249,7 @@ function assertNotAlreadyLoaded() {
 }
 
 let deprecationAlreadyLogged = false
-function getObjectWithDeprecatedProxy(): Record<string, unknown> {
+function createObjectWithDeprecationWarning(): Record<string, unknown> {
   return new Proxy(
     {},
     {
@@ -257,5 +264,75 @@ function getObjectWithDeprecatedProxy(): Record<string, unknown> {
         return Reflect.get(...args)
       },
     },
+  )
+}
+
+type Check = (p: PageFile3) => boolean
+const routeFile: Check = (p) => p.fileType === '.page.route'
+const clientFile: Check = (p) => p.fileType === '.page.client'
+const serverFile: Check = (p) => p.fileType === '.page.server'
+const defaultFile: Check = (p) => p.isDefaultPageFile
+const and: (c1: Check, c2: Check) => Check = (c1, c2) => (p) => c1(p) && c2(p)
+const or: (c1: Check, c2: Check) => Check = (c1, c2) => (p) => c1(p) || c2(p)
+const not: (c: Check) => Check = (c) => (p) => !c(p)
+const VPS_EXPORTS: Record<string, (p: PageFile3) => boolean> = {
+  // Everywhere (almost)
+  default: not(and(routeFile, defaultFile)),
+  // Isomorphic
+  render: or(clientFile, serverFile),
+  onBeforeRender: not(routeFile),
+  customExports: and(defaultFile, not(routeFile)), // It doesn't make sense to define a custom export from a `.page.js` file
+  // `some.page.route.js`
+  iKnowThePerformanceRisksOfAsyncRouteFunctions: and(routeFile, not(defaultFile)),
+  // `_default.page.route.js`
+  filesystemRoutingRoot: and(routeFile, defaultFile),
+  onBeforeRoute: and(routeFile, defaultFile),
+  // `some.page.js`
+  Page: and(not(defaultFile), not(routeFile)),
+  // `*.page.server.js`
+  prerender: serverFile,
+  passToClient: serverFile,
+  // `some.page.server.js`
+  doNotPrerender: and(serverFile, not(defaultFile)),
+  // `_default.page.server.js`
+  onBeforePrerender: and(serverFile, defaultFile),
+  // `*.page.client.js`
+  useClientRouting: clientFile,
+  onHydrationEnd: clientFile,
+  onPageTransitionStart: clientFile,
+  onPageTransitionEnd: clientFile,
+}
+
+function assertExports(pageFiles: PageFile3[], customExports: string[]) {
+  customExports.forEach((customExportName) => {
+    assertUsage(
+      !Object.keys(VPS_EXPORTS).includes(customExportName),
+      `\`export { customExports }\` contains \`${customExportName}\` which is forbidden because it is a vite-plugin-ssr export.`,
+    )
+  })
+  pageFiles.forEach((p) => {
+    Object.keys(p.fileExports ?? {}).forEach((exportName) => {
+      if (VPS_EXPORTS[exportName]?.(p)) {
+        return
+      }
+      assertUsage(
+        customExports.includes(exportName),
+        `Unknown \`export { ${exportName} }\` at ${p.filePath}, see https://vite-plugin-ssr/customExports`,
+      )
+    })
+  })
+}
+
+function getStringUnion(exportsAll: ExportsAll, propName: string): string[] {
+  return (
+    exportsAll[propName]
+      ?.map((e) => {
+        assertUsage(
+          hasProp(e, 'exportValue', 'string[]'),
+          `\`export { ${propName} }\` of ${e.filePath} should be an array of strings.`,
+        )
+        return e.exportValue
+      })
+      .flat() ?? []
   )
 }
