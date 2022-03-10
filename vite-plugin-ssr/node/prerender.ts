@@ -1,6 +1,6 @@
 import './page-files/setup'
 import { join, sep, dirname, isAbsolute } from 'path'
-import { isErrorPage, isStaticRoute, PageRoutes, route } from '../shared/route'
+import { isErrorPage, isStaticRoute, loadPageRoutes, route } from '../shared/route'
 import {
   assert,
   assertUsage,
@@ -11,13 +11,13 @@ import {
   projectInfo,
   objectAssign,
   isObjectWithKeys,
+  isCallable,
 } from './utils'
 import { setSsrEnv } from './ssrEnv'
 import {
   getGlobalContext,
   GlobalContext,
   throwPrerenderError,
-  loadOnBeforePrerenderHook,
   loadPageFiles,
   prerenderPage,
   renderStatic404Page,
@@ -25,7 +25,7 @@ import {
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
-import { AllPageFiles } from '../shared/getPageFiles'
+import { PageFile3 } from '../shared/getPageFiles'
 import { getViteManifest } from './getViteManifest'
 import type { PluginManifest } from './getViteManifest'
 
@@ -150,33 +150,26 @@ async function callPrerenderHooks(
   concurrencyLimit: pLimit.Limit,
 ) {
   // Render URLs returned by `prerender()` hooks
-  await Promise.all(
-    globalContext._allPageIds
-      .filter((pageId) => !isErrorPage(pageId))
-      .map((pageId) =>
+   await Promise.all(
+    globalContext._pageFilesAll
+     .filter(p => p.fileType==='.page.server')
+      .map((p) =>
         concurrencyLimit(async () => {
-          const globalContextCopy = {}
-          objectAssign(globalContextCopy, globalContext)
-          objectAssign(globalContextCopy, { _pageId: pageId })
-          const pageFilesData = await loadPageFiles(globalContextCopy)
-          const pageServerFile = pageFilesData._pageServerFile
-          if (!pageServerFile) return
-
-          const { fileExports, filePath } = pageServerFile
-
-          if (fileExports.doNotPrerender) {
-            doNotPrerenderList.push({ pageId, pageServerFilePath: filePath })
+          await p.loadFileExports?.()
+          if (p.fileExports?.doNotPrerender) {
+            doNotPrerenderList.push({ pageId: p.pageId, pageServerFilePath: p.filePath })
             return
           }
 
-          const prerenderFunction = fileExports.prerender
-          if (!prerenderFunction) return
-          const prerenderSourceFile = filePath
+          const prerender = p.fileExports?.prerender
+          if (!prerender) return
+          assertUsage(isCallable(prerender), `\`export { prerender }\` of ${p.filePath} should be a function.`)
+          const prerenderSourceFile = p.filePath
           assert(prerenderSourceFile)
 
           let prerenderResult: unknown
           try {
-            prerenderResult = await prerenderFunction(globalContext)
+            prerenderResult = await prerender()
           } catch (err) {
             throwPrerenderError(err)
             assert(false)
@@ -216,8 +209,9 @@ async function handlePagesWithStaticRoutes(
   concurrencyLimit: pLimit.Limit,
 ) {
   // Pre-render pages with a static route
+  const { pageRoutes} = await loadPageRoutes(globalContext)
   await Promise.all(
-    globalContext._pageRoutes.map((pageRoute) =>
+    pageRoutes.map((pageRoute) =>
       concurrencyLimit(async () => {
         const { pageId } = pageRoute
 
@@ -262,20 +256,31 @@ async function handlePagesWithStaticRoutes(
 }
 
 async function callOnBeforePrerenderHook(globalContext: {
-  _allPageFiles: AllPageFiles
+  _pageFilesAll: PageFile3[]
   prerenderPageContexts: PageContext[]
-  _pageRoutes: PageRoutes
 }) {
-  const hook = await loadOnBeforePrerenderHook(globalContext)
-  if (!hook) {
+  const pageFilesServerDefault = globalContext._pageFilesAll.filter(
+    (p) => p.fileType === '.page.server' && p.isDefaultPageFile,
+  )
+  await Promise.all(pageFilesServerDefault.map((p) => p.loadFileExports?.()))
+  const hooks = pageFilesServerDefault
+    .filter((p) => p.fileExports?.onBeforePrerender)
+    .map((p) => ({ filePath: p.filePath, onBeforePrerender: p.fileExports!.onBeforePrerender }))
+  if (hooks.length === 0) {
     return
   }
-  const { onBeforePrerenderHook, hookFilePath } = hook
-  const result = await onBeforePrerenderHook(globalContext)
+  assertUsage(
+    hooks.length === 1,
+    'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.',
+  )
+  const hook = hooks[0]!
+  const { onBeforePrerender, filePath } = hook
+  assertUsage(isCallable(onBeforePrerender), `\`export { onBeforePrerender }\` of ${filePath} should be a function.`)
+  const result = await onBeforePrerender(globalContext)
   if (result === null || result === undefined) {
     return
   }
-  const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${hookFilePath}\``
+  const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${filePath}\``
   assertUsage(
     isObjectWithKeys(result, ['globalContext'] as const) && hasProp(result, 'globalContext'),
     `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ globalContext: { /* ... */ } }\`.`,

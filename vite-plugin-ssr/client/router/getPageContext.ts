@@ -8,7 +8,6 @@ import {
   isPlainObject,
   objectAssign,
   getProjectError,
-  isCallable,
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -146,7 +145,7 @@ async function hasOnBeforeRenderServerSide(pageContext: {
   _pageFilesAll: PageFile3[]
 }): Promise<boolean> {
   const pageFilesServerMeta = pageContext._pageFilesAll.filter(
-    (p) => p.pageId === pageContext._pageId && p.filePath === '.page.server',
+    (p) => p.fileType === '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
   )
   await Promise.all(pageFilesServerMeta.map((p) => p.loadMeta?.()))
   return pageFilesServerMeta.some(({ meta }) => {

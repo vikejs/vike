@@ -30,6 +30,10 @@ const redirections = [
 const headingsWithoutLink: HeadingWithoutLink[] = [
   ...redirections,
   {
+    title: '`export { customExports }`',
+    url: '/customExports',
+  },
+  {
     title: 'Custom Exports & Custom Hooks',
     url: '/exports',
   },

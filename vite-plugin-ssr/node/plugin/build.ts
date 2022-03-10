@@ -1,18 +1,16 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
-import {  basename } from 'path'
+import { basename } from 'path'
 import { assert, isObject } from '../utils'
 import { isSSR_config } from './utils'
 
 export { build }
 
 function build(): Plugin {
-  let isSsrBuild: boolean | undefined
   return {
     name: 'vite-plugin-ssr:build',
     apply: 'build',
     async config(config) {
-      isSsrBuild = isSSR_config(config)
       const input = {
         ...entryPoints(config),
         ...normalizeRollupInput(config.build?.rollupOptions?.input),
@@ -32,22 +30,6 @@ function build(): Plugin {
         //*/
       }
     },
-    transform: (_src, id) => {
-      assert(isSsrBuild === true || isSsrBuild === false)
-      return removeClientCode(isSsrBuild, id) || undefined
-    },
-  }
-}
-
-function removeClientCode(isSsrBuild: boolean, id: string): void | { code: string; map: { mappings: '' } } {
-  if (!isSsrBuild) {
-    return
-  }
-  if (id.includes('.page.client.')) {
-    return {
-      code: `throw new Error('[vite-plugin-ssr][Wrong Usage] File ${id} should not be loaded in Node.js');`,
-      map: { mappings: '' },
-    }
   }
 }
 
