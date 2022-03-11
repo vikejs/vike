@@ -20,7 +20,8 @@ function getUrlFull(url?: string): string {
   const { origin, searchString, hashString, pathnameWithoutBaseUrl: pathname } = parseUrl(url, '/') // is Base URL missing?
   const urlFull = `${pathname}${searchString || ''}${hashString || ''}`
   const urlRecreated = `${origin || ''}${urlFull}`
-  assert(url === urlRecreated, { urlRecreated, url })
+  const urlDecoded = decodeURI(url)
+  assert(urlDecoded === urlRecreated, { url, urlRecreated, urlDecoded })
   return urlFull
 }
 
@@ -34,6 +35,8 @@ function getUrlPathname(url?: string): string {
 }
 
 function isParsable(url: string): boolean {
+  url = decodeURI(url)
+
   // `parseUrl()` doesn't work with these URLs
   if (url.startsWith('//')) {
     return false
@@ -69,6 +72,7 @@ function parseUrl(
   hash: string
   hashString: null | string
 } {
+  url = decodeURI(url)
   assert(isParsable(url), { url })
   assert(baseUrl.startsWith('/'), { url, baseUrl })
 
@@ -155,6 +159,9 @@ function parseWithNewUrl(url: string): { origin: string | null; pathname: string
     const urlParsed = new URL(url, fakeBase)
     pathname = urlParsed.pathname
   }
+
+  if (origin) origin = decodeURI(origin)
+  pathname = decodeURI(pathname)
 
   assert(pathname.startsWith('/'), { url, pathname })
   // The URL pathname should be the URL without origin, query string, and hash.

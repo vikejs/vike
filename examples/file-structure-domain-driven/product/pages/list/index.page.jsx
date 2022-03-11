@@ -8,13 +8,13 @@ function Page() {
       <div>Product list:</div>
       <ul>
         <li>
-          <a href="/product/7">Product 7</a>
+          <a href="/product/starship">Starship</a>
         </li>
         <li>
-          <a href="/product/42">Product 42</a>
+          <a href="/product/mac-studio">Mac Studio</a>
         </li>
         <li>
-          <a href="/product/1337">Product 1337</a>
+          <a href="/product/แจ็คเก็ตเดนิม">แจ็คเก็ตเดนิม</a>
         </li>
       </ul>
     </>

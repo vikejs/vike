@@ -1,5 +1,5 @@
 export { prerender }
 
 function prerender() {
-  return [{ url: '/product/7', url: '/product/42', url: '/product/1337' }]
+  return [{ url: '/product/starship', url: '/product/mac-studio', url: '/product/แจ็คเก็ตเดนิม' }]
 }
