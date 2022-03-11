@@ -4,21 +4,20 @@ import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
 import { getPageFilesAllClientSide, loadPageFiles } from '../shared/getPageFiles'
 
-export { getPage }
+export { getPageContext }
 
 const urlPathnameOriginal = getUrlPathname()
 
-async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuiltInClient & T> {
+async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
   objectAssign(pageContext, { isHydration: true })
 
-  objectAssign(pageContext, await loadPageFilesServer(pageContext))
+  objectAssign(pageContext, await loadPageFilesClient(pageContext._pageId))
 
   assertPristineUrl()
-
   const pageContextReadyForRelease = releasePageContext(pageContext)
   checkType<PageContextBuiltInClient>(pageContextReadyForRelease)
-  return pageContextReadyForRelease as any as PageContextBuiltInClient & T
+  return pageContextReadyForRelease
 }
 
 function assertPristineUrl() {
@@ -29,16 +28,19 @@ function assertPristineUrl() {
   )
 }
 
-async function loadPageFilesServer(pageContext: { _pageId: string }) {
+async function loadPageFilesClient(pageId: string) {
   const pageContextAddendum = {}
   const { pageFilesAll } = getPageFilesAllClientSide()
-  objectAssign(pageContextAddendum, await loadPageFiles(pageFilesAll, pageContext._pageId, true))
+  objectAssign(pageContextAddendum, {
+    _pageFilesAll: pageFilesAll,
+  })
+  objectAssign(pageContextAddendum, await loadPageFiles(pageFilesAll, pageId, true))
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
     .forEach((p) => {
       assertWarning(
         !p.fileExports?.onBeforeRender,
-        `${p.filePath} has \`export { onBeforeRender }\` which is (wastefully) loaded but not used on the client-side. You are using Server Routing you should therefore define \`onBeforeRender()\` in \`.page.server.js\` instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
+        `\`export { onBeforeRender }\` of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define \`onBeforeRender()\` in \`.page.server.js\` instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
       )
     })
   return pageContextAddendum
