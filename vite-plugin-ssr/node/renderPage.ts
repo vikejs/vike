@@ -1,19 +1,9 @@
 import { getErrorPageId, route, isErrorPage } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import {
-  /*
-  AllPageFiles,
-  getAllPageFiles,
-  findPageFile,
-  findDefaultFiles,
-  findDefaultFilesSorted,
-  PageFile,
-  PageFilesMetaServer,
-  loadPageFiles2,
-*/
-  loadPageFiles2,
+  loadPageFiles,
   getPageFilesAllServerSide,
-  PageFile3,
+  PageFile,
   PageContextExports,
   getStringUnion,
 } from '../shared/getPageFiles'
@@ -37,19 +27,6 @@ import {
   toPosixPath,
 } from './utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
-/*
-import {
-  loadPageIsomorphicFiles,
-  PageIsomorphicFile,
-  PageIsomorphicFileDefault,
-} from '../shared/loadPageIsomorphicFiles'
-import {
-  assertUsageServerHooksCalled,
-  getOnBeforeRenderHook,
-  OnBeforeRenderHook,
-  runOnBeforeRenderHooks,
-} from '../shared/onBeforeRenderHook'
-*/
 import { sortPageContext } from '../shared/sortPageContext'
 import { assertHookResult, assertObjectKeys } from '../shared/assertHookResult'
 import {
@@ -75,11 +52,11 @@ export type { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
 export { getGlobalContext }
-export { loadPageFiles }
+export { loadPageFilesServer }
 export type { GlobalContext }
 export { throwPrerenderError }
 
-type PageFiles = PromiseType<ReturnType<typeof loadPageFiles>>
+type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
@@ -157,7 +134,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     })
   }
 
-  const pageFiles = await loadPageFiles(pageContext)
+  const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
   await executeOnBeforeRenderHooks(pageContext)
@@ -294,7 +271,7 @@ async function renderErrorPage<PageContextInit extends { url: string }>(
     _pageId: errorPageId,
   })
 
-  const pageFiles = await loadPageFiles(pageContext)
+  const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
   await executeOnBeforeRenderHooks(pageContext)
@@ -441,7 +418,7 @@ async function renderStatic404Page(globalContext: GlobalContext & { _isPreRender
     _usesClientRouter: false,
   }
 
-  const pageFiles = await loadPageFiles(pageContext)
+  const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
   return prerenderPage(pageContext)
@@ -478,15 +455,15 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
   }
 }
 
-async function loadPageFiles(pageContext: {
+async function loadPageFilesServer(pageContext: {
   _pageId: string
   _baseUrl: string
   _baseAssets: string | null
-  _pageFilesAll: PageFile3[]
+  _pageFilesAll: PageFile[]
   _isPreRendering: boolean
 }) {
   const [pageContextAddendum, pageClientFilePaths] = await Promise.all([
-    loadPageFiles2(pageContext._pageFilesAll, pageContext._pageId, false),
+    loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
     getPageClientFilePaths(pageContext._pageFilesAll, pageContext._pageId),
   ])
 
@@ -512,7 +489,7 @@ async function loadPageFiles(pageContext: {
 
   return pageContextAddendum
 }
-async function getPageClientFilePaths(pageFilesAll: PageFile3[], pageId: string): Promise<string[]> {
+async function getPageClientFilePaths(pageFilesAll: PageFile[], pageId: string): Promise<string[]> {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
   const pageFilesClient = pageFilesAll.filter(
     (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
@@ -561,7 +538,7 @@ async function executeRenderHook(
     _isPreRendering: boolean
     _getPageAssets: () => Promise<PageAssets>
     _passToClient: string[]
-    _pageFilesAll: PageFile3[]
+    _pageFilesAll: PageFile[]
   },
 ): Promise<{
   renderFilePath: string

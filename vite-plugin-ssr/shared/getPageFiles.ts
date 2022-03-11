@@ -1,8 +1,8 @@
-export { loadPageFiles2 }
+export { loadPageFiles }
 export { getPageFilesAllClientSide }
 export { getPageFilesAllServerSide }
-export type PageContextExports = Awaited<ReturnType<typeof loadPageFiles2>>
-export type { PageFile3 }
+export type PageContextExports = Awaited<ReturnType<typeof loadPageFiles>>
+export type { PageFile }
 export { setPageFilesServerSide }
 export { setPageFilesClientSide }
 export { setPageFilesServerSideAsync }
@@ -27,7 +27,7 @@ assertNotAlreadyLoaded()
 
 const fileTypes = ['.page', '.page.server', '.page.route', '.page.client'] as const
 type FileType = typeof fileTypes[number]
-type PageFile3 = {
+type PageFile = {
   filePath: string
   fileType: FileType
   fileExports?: Record<string, unknown>
@@ -39,7 +39,7 @@ type PageFile3 = {
   pageId: string
 }
 
-let _pageFilesAll: PageFile3[] | undefined
+let _pageFilesAll: PageFile[] | undefined
 let _pageFilesGetter: () => Promise<void> | undefined
 
 function setPageFilesServerSide(pageFilesExports: unknown) {
@@ -94,7 +94,7 @@ function format(pageFilesExports: unknown) {
     hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server'),
   )
 
-  const pageFilesMap: Record<string, PageFile3> = {}
+  const pageFilesMap: Record<string, PageFile> = {}
   traverse(pageFilesExports.pageFilesLazy, pageFilesMap, (pageFile, globResult) => {
     const loadModule = globResult
     assertLoadModule(loadModule)
@@ -139,8 +139,8 @@ function assertModuleExports(globResult: unknown): asserts globResult is Record<
 }
 function traverse(
   globObject: Record<string, unknown>,
-  pageFilesMap: Record<string, PageFile3>,
-  visitor: (pageFile: PageFile3, globResult: unknown) => void,
+  pageFilesMap: Record<string, PageFile>,
+  visitor: (pageFile: PageFile, globResult: unknown) => void,
 ) {
   Object.entries(globObject).forEach(([fileType, globFiles]) => {
     cast<FileType>(fileType)
@@ -166,8 +166,8 @@ function isDefaultFilePath(filePath: string): boolean {
 }
 
 type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
-async function loadPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForClientSide: boolean) {
-  const pageFiles = findPageFiles2(pageFilesAll, pageId, isForClientSide)
+async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
+  const pageFiles = findPageFiles(pageFilesAll, pageId, isForClientSide)
   await Promise.all(pageFiles.map((p) => p.loadFileExports?.()))
 
   const pageExports = createObjectWithDeprecationWarning()
@@ -202,7 +202,7 @@ async function loadPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForCl
   return pageContextAddendum
 }
 
-function findPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForClientSide: boolean) {
+function findPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const fileTypeEnvSpecific = isForClientSide ? ('.page.client' as const) : ('.page.server' as const)
   const defaultFiles = [
     ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.fileType === '.page'),
@@ -220,7 +220,7 @@ function findPageFiles2(pageFilesAll: PageFile3[], pageId: string, isForClientSi
 // -1 => element1 first
 // +1 => element2 first
 function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
-  return (e1: PageFile3, e2: PageFile3): 0 | 1 | -1 => {
+  return (e1: PageFile, e2: PageFile): 0 | 1 | -1 => {
     assert(e1.isDefaultPageFile && e2.isDefaultPageFile)
     const d1 = getPathDistance(pageId, e1.filePath)
     const d2 = getPathDistance(pageId, e2.filePath)
@@ -267,7 +267,7 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
   )
 }
 
-type Check = (p: PageFile3) => boolean
+type Check = (p: PageFile) => boolean
 const routeFile: Check = (p) => p.fileType === '.page.route'
 const clientFile: Check = (p) => p.fileType === '.page.client'
 const serverFile: Check = (p) => p.fileType === '.page.server'
@@ -275,7 +275,7 @@ const defaultFile: Check = (p) => p.isDefaultPageFile
 const and: (c1: Check, c2: Check) => Check = (c1, c2) => (p) => c1(p) && c2(p)
 const or: (c1: Check, c2: Check) => Check = (c1, c2) => (p) => c1(p) || c2(p)
 const not: (c: Check) => Check = (c) => (p) => !c(p)
-const VPS_EXPORTS: Record<string, (p: PageFile3) => boolean> = {
+const VPS_EXPORTS: Record<string, (p: PageFile) => boolean> = {
   // Everywhere (almost)
   default: not(and(routeFile, defaultFile)),
   // Isomorphic
@@ -301,9 +301,10 @@ const VPS_EXPORTS: Record<string, (p: PageFile3) => boolean> = {
   onHydrationEnd: clientFile,
   onPageTransitionStart: clientFile,
   onPageTransitionEnd: clientFile,
+  prefetchLinks: clientFile,
 }
 
-function assertExports(pageFiles: PageFile3[], customExports: string[]) {
+function assertExports(pageFiles: PageFile[], customExports: string[]) {
   customExports.forEach((customExportName) => {
     assertUsage(
       !Object.keys(VPS_EXPORTS).includes(customExportName),

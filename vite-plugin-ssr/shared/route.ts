@@ -1,4 +1,4 @@
-import type { PageFile3 } from './getPageFiles'
+import type { PageFile } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
 import { pickWinner, RouteType } from './route/pickWinner'
@@ -18,7 +18,7 @@ export { getErrorPageId } from './route/error-page'
 export { isStaticRoute } from './route/resolveRouteString'
 
 type PageContextForRoute = PageContextUrlSource & {
-  _pageFilesAll: PageFile3[]
+  _pageFilesAll: PageFile[]
   _allPageIds: string[]
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
