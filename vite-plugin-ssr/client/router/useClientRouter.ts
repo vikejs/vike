@@ -16,6 +16,8 @@ import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { detectHydrationSkipSupport } from './utils/detectHydrationSkipSupport'
+import { assertRenderHook } from '../assertRenderHook'
+import { assertHook } from '../../shared/getHook'
 
 export { useClientRouter }
 export { navigate }
@@ -45,15 +47,12 @@ function useClientRouter() {
     await fetchAndRender(scrollTarget, url, overwriteLastHistoryEntry)
   }
 
-  let resolveInitialPagePromise: () => void
-  const hydrationPromise = new Promise<void>((resolve) => (resolveInitialPagePromise = resolve))
-
   let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
   fetchAndRender('preserve-scroll')
 
-  return { hydrationPromise }
+  return
 
   async function fetchAndRender(
     scrollTarget: ScrollTarget,
@@ -74,11 +73,6 @@ function useClientRouter() {
     }
 
     const ensureHydration = detectHydrationSkipSupport()
-    if (ensureHydration) {
-      if (renderingNumber > 1) {
-        await hydrationPromise
-      }
-    }
 
     const shouldAbort = () => {
       // We should never abort the hydration if `ensureHydration: true`
@@ -131,30 +125,12 @@ function useClientRouter() {
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      // @ts-ignore TODO
       const pageContextReadyForRelease = releasePageContext(pageContext)
-      if (!hasProp(pageContext.exports, 'render')) {
-        const pageFilesClient = pageContext._pageFilesAll.filter(
-          (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
-        )
-        let errMsg: string
-        if (pageFilesClient.length === 0) {
-          errMsg = 'No file `*.page.client.*` found for URL ' + pageContext.url
-        } else {
-          errMsg =
-            'One of the following files should export a `render()` hook: ' +
-            pageFilesClient.map((p) => p.filePath).join(' ')
-        }
-        assertUsage(false, errMsg)
-      }
-      assertUsage(
-        hasProp(pageContext.exports, 'render', 'function'),
-        'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should be a function',
-      )
+      assertRenderHook(pageContext)
       const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
       assertUsage(
         hookResult === undefined,
-        'The `export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should not return any value',
+        '`export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should not return any value',
       )
       addLinkPrefetchHandlers(!!pageContext.exports?.prefetchLinks, url)
     })()
@@ -162,7 +138,8 @@ function useClientRouter() {
     renderPromise = undefined
 
     if (pageContext._isFirstRender) {
-      resolveInitialPagePromise()
+      assertHook(pageContext, 'onHydrationEnd')
+      await pageContext.exports.onHydrationEnd?.(pageContext)
     } else if (renderingNumber === renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {
         assertUsage(

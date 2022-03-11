@@ -1,4 +1,5 @@
 export { getHook }
+export { assertHook }
 
 import { PageContextExports } from './getPageFiles'
 import { assert, assertUsage, isCallable } from './utils'
@@ -18,4 +19,11 @@ function getHook(
   assert(!hookName.endsWith(')'))
   assertUsage(isCallable(hook), `\`export { ${hookName} }\` of ${filePath} should be a function`)
   return { hook, filePath }
+}
+
+function assertHook<PC extends PageContextExports, HookName extends PropertyKey>(
+  pageContext: PC,
+  hookName: HookName,
+): asserts pageContext is PC & { exports: Record<HookName, Function | undefined> } {
+  getHook(pageContext, hookName as any)
 }

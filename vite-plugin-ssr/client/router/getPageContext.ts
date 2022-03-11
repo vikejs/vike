@@ -15,7 +15,7 @@ import { loadPageFiles, PageContextExports, PageFile } from '../../shared/getPag
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
-import {getHook} from '../../shared/getHook'
+import { getHook } from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
 
 export { getPageContext }
