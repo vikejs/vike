@@ -1,3 +1,14 @@
+## [0.3.60](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.59...v0.3.60) (2022-03-11)
+
+
+### Bug Fixes
+
+* allow `prerender()` to be called without any argument ([7eca89d](https://github.com/brillout/vite-plugin-ssr/commit/7eca89d5ba53bc28fa27a16c6b7e8ad34d9bdcf6))
+* forbid usage of older problematic Vite version ([1b04a99](https://github.com/brillout/vite-plugin-ssr/commit/1b04a99f100e763ff4e0929f97d40f03d745a7b9))
+* support unicode URLs ([443f7c6](https://github.com/brillout/vite-plugin-ssr/commit/443f7c646d7d1e9ccc73a36d0fc5b31c9f94bf14))
+
+
+
 ## [0.3.59](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.58...v0.3.59) (2022-02-23)
 
 
