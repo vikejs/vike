@@ -69,7 +69,7 @@ function parseUrl(
   hash: string
   hashString: null | string
 } {
-  assert(isParsable(url), { url, baseUrl })
+  assert(isParsable(url), { url })
   assert(baseUrl.startsWith('/'), { url, baseUrl })
 
   // Hash
@@ -81,17 +81,22 @@ function parseUrl(
 
   // Search
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutSearch !== undefined)
+  assert(urlWithoutSearch !== undefined, { url, urlWithoutSearch })
   const searchString = ['', ...searchList].join('?') || null
-  assert(searchString === null || searchString.startsWith('?'))
+  assert(searchString === null || searchString.startsWith('?'), { url, searchString })
   const search = Object.fromEntries(Array.from(new URLSearchParams(searchString || '')))
 
   // Origin + pathname
   const { origin, pathname: pathnameWithBaseUrl } = parseWithNewUrl(urlWithoutSearch)
-  assert(pathnameWithBaseUrl.startsWith('/'))
-  assert(origin === null || url.startsWith(origin), { url })
+  assert(pathnameWithBaseUrl.startsWith('/'), { url, pathnameWithBaseUrl })
+  assert(origin === null || url.startsWith(origin), { url, origin })
   if (url.startsWith('/')) {
-    assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), { url })
+    assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), {
+      url,
+      pathnameWithBaseUrl,
+      urlWithoutSearch,
+      origin,
+    })
   }
 
   // Base URL
@@ -100,10 +105,10 @@ function parseUrl(
   // Assert result
   if (url.startsWith('/') || url.startsWith('http')) {
     const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString || ''}${hashString || ''}`
-    assert(url === urlRecreated, { urlRecreated, url })
+    assert(url === urlRecreated, { url, urlRecreated })
   }
-  assert(pathnameWithBaseUrl.startsWith('/'))
-  assert(pathnameWithoutBaseUrl.startsWith('/'))
+  assert(pathnameWithBaseUrl.startsWith('/'), { url, pathnameWithBaseUrl })
+  assert(pathnameWithoutBaseUrl.startsWith('/'), { url, pathnameWithoutBaseUrl })
 
   return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
 }
