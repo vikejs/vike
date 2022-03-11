@@ -1,4 +1,4 @@
-import { PageFile3 } from '../getPageFiles'
+import { PageFile } from '../getPageFiles'
 import { isErrorPage } from './error-page'
 import { assert, assertUsage, hasProp, objectAssign, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
@@ -23,7 +23,7 @@ type PageRoutes = {
 type RouteValue = string | Function
 
 async function loadPageRoutes(pageContext: {
-  _pageFilesAll: PageFile3[]
+  _pageFilesAll: PageFile[]
   _allPageIds: string[]
 }): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   let onBeforeRouteHook: null | OnBeforeRouteHook = null

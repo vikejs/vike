@@ -2,7 +2,7 @@ import { assertWarning, checkType, getUrlPathname, objectAssign } from './utils'
 import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
-import { getPageFilesAllClientSide, loadPageFiles2 } from '../shared/getPageFiles'
+import { getPageFilesAllClientSide, loadPageFiles } from '../shared/getPageFiles'
 
 export { getPage }
 
@@ -12,7 +12,7 @@ async function getPage<T = PageContextBuiltInClient>(): Promise<PageContextBuilt
   const pageContext = getPageContextSerializedInHtml()
   objectAssign(pageContext, { isHydration: true })
 
-  objectAssign(pageContext, await loadPageFiles(pageContext))
+  objectAssign(pageContext, await loadPageFilesServer(pageContext))
 
   assertPristineUrl()
 
@@ -29,10 +29,10 @@ function assertPristineUrl() {
   )
 }
 
-async function loadPageFiles(pageContext: { _pageId: string }) {
+async function loadPageFilesServer(pageContext: { _pageId: string }) {
   const pageContextAddendum = {}
   const { pageFilesAll } = getPageFilesAllClientSide()
-  objectAssign(pageContextAddendum, await loadPageFiles2(pageFilesAll, pageContext._pageId, true))
+  objectAssign(pageContextAddendum, await loadPageFiles(pageFilesAll, pageContext._pageId, true))
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
     .forEach((p) => {

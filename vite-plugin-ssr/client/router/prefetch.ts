@@ -3,7 +3,7 @@ import { route } from '../../shared/route'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { getGlobalContext } from './getGlobalContext'
 import { isExternalLink } from './utils/isExternalLink'
-import { loadPageFiles2 } from '../../shared/getPageFiles'
+import { loadPageFiles } from '../../shared/getPageFiles'
 
 export { addLinkPrefetchHandlers, prefetch }
 
@@ -29,7 +29,7 @@ async function prefetch(url: string): Promise<void> {
   if ('pageContextAddendum' in routeContext) {
     const pageId = routeContext.pageContextAddendum._pageId
     if (pageId) {
-      await loadPageFiles2(globalContext._pageFilesAll, pageId, true)
+      await loadPageFiles(globalContext._pageFilesAll, pageId, true)
     }
   }
 }

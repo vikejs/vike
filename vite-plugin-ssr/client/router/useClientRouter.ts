@@ -23,31 +23,6 @@ export { navigate }
 setupNativeScrollRestoration()
 
 let onPageTransitionStart: Function | null
-/*
-  {
-  render,
-  ensureHydration = false,
-  onTransitionStart,
-  onTransitionEnd,
-  prefetchLinks = false,
-}: {
-  // Minimal reproduction: https://www.typescriptlang.org/play?target=5&ts=4.2.3#code/C4TwDgpgBAYgdlAvFAFAQwE4HMBcUDeA2gNYQh4DOwGAlnFgLp5pwgC+AlEgHxQBuAexoATALAAoCQBsIwKADM4eeBImKkqAQCMAVngBKEAMYCMwgDxVa9ADRQWIXgDICaPHACuAWy0QMnHgITOAoBGQA6KQEsFG0dcLQONgBuVUlxUEgoAHkNQxMzS2o6LDsHbglgqigBAEYDY1MLKxKy1mcCLXdvX38NfC6oACY2SoEQuQEhvFzkOqA
-  // render: (pageContext: { Page: any; isHydration: boolean, routeParams: Record<string, string } & Record<string, any>) => Promise<void> | void
-  // render: (pageContext: Record<string, any>) => Promise<void> | void
-  render: (pageContext: any) => Promise<void> | void
-  onTransitionStart?: () => void
-  onTransitionEnd?: () => void
-  ensureHydration?: boolean
-  prefetchLinks?: boolean
-}
-  hydrationPromise: Promise<void>
-  assertUsage(render, '[useClientRouter({render})]: Argument `render` is missing.')
-  assertUsage(isCallable(render), '[useClientRouter({render})]: Argument `render` should be a function.')
-  assertWarning(
-    !(isVueApp() && ensureHydration !== true),
-    'You seem to be using Vue.js; we strongly recommend using the option `useClientRouter({ensureHydration: true})` to avoid "Hydration mismatch" errors.',
-  )
-*/
 
 function useClientRouter() {
   autoSaveScrollPosition()

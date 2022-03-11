@@ -18,14 +18,14 @@ import {
   getGlobalContext,
   GlobalContext,
   throwPrerenderError,
-  loadPageFiles,
+  loadPageFilesServer,
   prerenderPage,
   renderStatic404Page,
 } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
-import { PageFile3 } from '../shared/getPageFiles'
+import { PageFile } from '../shared/getPageFiles'
 import { getViteManifest } from './getViteManifest'
 import type { PluginManifest } from './getViteManifest'
 
@@ -247,7 +247,7 @@ async function handlePagesWithStaticRoutes(
           routeParams: {},
           _pageId: pageId,
         }
-        objectAssign(pageContext, await loadPageFiles(pageContext))
+        objectAssign(pageContext, await loadPageFilesServer(pageContext))
 
         globalContext.prerenderPageContexts.push(pageContext)
       }),
@@ -256,7 +256,7 @@ async function handlePagesWithStaticRoutes(
 }
 
 async function callOnBeforePrerenderHook(globalContext: {
-  _pageFilesAll: PageFile3[]
+  _pageFilesAll: PageFile[]
   prerenderPageContexts: PageContext[]
 }) {
   const pageFilesServerDefault = globalContext._pageFilesAll.filter(
@@ -327,7 +327,7 @@ async function routeAndPrerender(
         objectAssign(pageContext, routeResult.pageContextAddendum)
         const { _pageId: pageId } = pageContext
 
-        const pageFilesData = await loadPageFiles({
+        const pageFilesData = await loadPageFilesServer({
           ...globalContext,
           _pageId: pageId,
         })

@@ -11,7 +11,7 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { loadPageFiles2, PageContextExports, PageFile3 } from '../../shared/getPageFiles'
+import { loadPageFiles, PageContextExports, PageFile } from '../../shared/getPageFiles'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
@@ -42,12 +42,12 @@ async function getPageContext(
   }
 }
 
-async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile3[] }) {
+async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[] }) {
   const pageContextAddendum = getPageContextSerializedInHtml()
 
   removeBuiltInOverrides(pageContextAddendum)
 
-  const pageContextAddendum2 = await loadPageFiles2(pageContext._pageFilesAll, pageContextAddendum._pageId, true)
+  const pageContextAddendum2 = await loadPageFiles(pageContext._pageFilesAll, pageContextAddendum._pageId, true)
   objectAssign(pageContextAddendum, pageContextAddendum2)
 
   objectAssign(pageContextAddendum, {
@@ -63,7 +63,7 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
-  objectAssign(pageContextAddendum, await loadPageFiles2(pageContext._pageFilesAll, pageContextAddendum._pageId, true))
+  objectAssign(pageContextAddendum, await loadPageFiles(pageContext._pageFilesAll, pageContextAddendum._pageId, true))
   objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
   return pageContextAddendum
@@ -74,7 +74,7 @@ async function onBeforeRenderExecute(
     _pageId: string
     url: string
     isHydration: boolean
-    _pageFilesAll: PageFile3[]
+    _pageFilesAll: PageFile[]
   } & PageContextExports,
 ) {
   // `export { onBeforeRender }` defined in `.page.client.js`
@@ -142,7 +142,7 @@ function handle404(pageContext: { url: string }) {
 
 async function hasOnBeforeRenderServerSide(pageContext: {
   _pageId: string
-  _pageFilesAll: PageFile3[]
+  _pageFilesAll: PageFile[]
 }): Promise<boolean> {
   const pageFilesServerMeta = pageContext._pageFilesAll.filter(
     (p) => p.fileType === '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
