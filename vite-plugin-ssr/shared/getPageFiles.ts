@@ -9,7 +9,6 @@ export { setPageFilesServerSideAsync }
 export { getStringUnion }
 
 import { isErrorPage } from './route'
-import { determinePageId, determinePageIds } from './determinePageIds'
 import {
   assert,
   getPathDistance,
@@ -21,6 +20,8 @@ import {
   cast,
   assertWarning,
   assertUsage,
+  slice,
+  unique,
 } from './utils'
 
 assertNotAlreadyLoaded()
@@ -336,4 +337,19 @@ function getStringUnion(exportsAll: ExportsAll, propName: string): string[] {
       })
       .flat() ?? []
   )
+}
+
+function determinePageIds(allPageFiles: { filePath: string; isDefaultPageFile: boolean }[]): string[] {
+  const fileIds = allPageFiles
+    .filter(({ isDefaultPageFile }) => !isDefaultPageFile)
+    .map(({ filePath }) => filePath)
+    .map(determinePageId)
+  const allPageIds = unique(fileIds)
+  return allPageIds
+}
+function determinePageId(filePath: string): string {
+  const pageSuffix = '.page.'
+  const pageId = slice(filePath.split(pageSuffix), 0, -1).join(pageSuffix)
+  assert(!pageId.includes('\\'))
+  return pageId
 }
