@@ -91,6 +91,6 @@ function findRoute(url: string, routes: string[]): string | null {
       }
       return { ...result, routeString, routeType: 'STRING' as const }
     })
-    .filter(<T>(match: T | null): match is T => match!==null)
+    .filter(<T>(match: T | null): match is T => match !== null)
   return pickWinner(candidates)?.routeString || null
 }
