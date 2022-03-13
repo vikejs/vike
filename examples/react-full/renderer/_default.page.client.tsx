@@ -13,22 +13,22 @@ export { onPageTransitionEnd }
 
 let root: ReactDOM.Root
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
-    const { Page, pageProps } = pageContext
-    const page = (
-      <PageShell pageContext={pageContext}>
-        <Page {...pageProps} />
-      </PageShell>
-    )
-    const container = document.getElementById('page-view')!
-    if (pageContext.isHydration) {
-      root = ReactDOM.hydrateRoot(container, page)
-    } else {
-      if (!root) {
-        root = ReactDOM.createRoot(container)
-      }
-      root.render(page)
+  const { Page, pageProps } = pageContext
+  const page = (
+    <PageShell pageContext={pageContext}>
+      <Page {...pageProps} />
+    </PageShell>
+  )
+  const container = document.getElementById('page-view')!
+  if (pageContext.isHydration) {
+    root = ReactDOM.hydrateRoot(container, page)
+  } else {
+    if (!root) {
+      root = ReactDOM.createRoot(container)
     }
-    document.title = getPageTitle(pageContext)
+    root.render(page)
+  }
+  document.title = getPageTitle(pageContext)
 }
 
 function onHydrationEnd() {
