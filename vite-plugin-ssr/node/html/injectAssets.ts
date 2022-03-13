@@ -10,8 +10,9 @@ import {
   slice,
   getRoot,
   assertPosixPath,
+  toPosixPath,
 } from '../utils'
-import { getPreloadUrls } from '../getPreloadTags'
+import { retrieveStyleAssets, retrieveProdAssets } from '../retrievePageAssets'
 import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'
 import { isAbsolute } from 'path'
@@ -42,45 +43,47 @@ async function getPageAssets(
     _baseUrl: string
     _baseAssets: string | null
   },
-  assetDependencies: string[],
-  pageClientFilePaths: string[],
+  pageDependencies: string[],
+  clientEntry: string,
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
-  assert(assetDependencies.every((filePath) => isAbsolute(filePath)))
+  pageDependencies.forEach((filePath) => {
+    assert(isAbsolute(filePath), { filePath })
+  })
 
-  const { isProduction = false } = getSsrEnv()
+  const { isProduction = false, viteDevServer } = getSsrEnv()
   const root = getRoot()
 
-  let clientManifest: null | ViteManifest = null
-  let serverManifest: null | ViteManifest = null
+  let assetUrls: string[]
+  let clientEntrySrc: string
   if (isPreRendering || isProduction) {
     const manifests = retrieveViteManifest(isPreRendering)
-    clientManifest = manifests.clientManifest
-    serverManifest = manifests.serverManifest
+    const clientManifest = manifests.clientManifest
+    const serverManifest = manifests.serverManifest
+
+    clientEntrySrc = resolveClientEntryProd(clientEntry, clientManifest!, root)
+    assetUrls = await retrieveProdAssets([clientEntry, ...pageDependencies], clientManifest, serverManifest, root)
+  } else {
+    assert(viteDevServer)
+    clientEntrySrc = resolveClientEntryDev(clientEntry, root)
+    assetUrls = await retrieveStyleAssets(pageDependencies, viteDevServer)
   }
 
-  const preloadAssets: string[] = await getPreloadUrls(assetDependencies, clientManifest, serverManifest)
-
-  let pageAssets: PageAsset[] = preloadAssets.map((src) => {
+  let pageAssets: PageAsset[] = []
+  pageAssets.push({
+    src: clientEntrySrc,
+    assetType: 'script',
+    mediaType: 'text/javascript',
+    preloadType: null,
+  })
+  assetUrls.forEach((src) => {
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
     const assetType = mediaType === 'text/css' ? 'style' : 'preload'
-    return {
+    pageAssets.push({
       src,
       assetType,
       mediaType,
       preloadType,
-    }
-  })
-
-  pageClientFilePaths.forEach((pageClientFilePath) => {
-    const scriptSrc = !isProduction
-      ? resolveSrcDev(pageClientFilePath, root)
-      : resolveSrcProd(pageClientFilePath, clientManifest!, root)
-    pageAssets.push({
-      src: scriptSrc,
-      assetType: 'script',
-      mediaType: 'text/javascript',
-      preloadType: null,
     })
   })
 
@@ -254,36 +257,23 @@ function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
   return htmlString
 }
 
-function resolveSrcDev(filePath: string, root: string) {
-  assertPosixPath(filePath)
+function resolveClientEntryDev(clientEntry: string, root: string) {
+  assert(clientEntry.startsWith('@@vite-plugin-ssr/'))
+  assertPosixPath(clientEntry)
   assertPosixPath(root)
-  assert(!filePath.startsWith('/.') && !filePath.startsWith('.'))
-  assert(filePath.startsWith('/'))
+  const req = require // Prevent webpack from bundling client code
+  const res = req.resolve
+  // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
+  let filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/', '../../../../')))
+  if (!filePath.startsWith('/')) {
+    assert(process.platform === 'win32')
+    filePath = '/' + filePath
+  }
+  filePath = '/@fs' + filePath
   return filePath
-  /*
-  if( resolve(filePath).startsWith(resolve(root)) ) {
-    filePath = '/@fs' + filePath
-  }
-  return filePath
-  if (filePath.startsWith('/../')) {
-    filePath = filePath.slice(1)
-  }
-  if (!filePath.startsWith('../')) {
-    return filePath
-  }
-  let parentDepth = 0
-  while (filePath.startsWith('../')) {
-    filePath = filePath.slice(3)
-    parentDepth++
-  }
-  filePath =
-    '/' +
-    ['@fs', ...root.split('/').filter(Boolean).slice(0, -parentDepth), ...filePath.split('/')].filter(Boolean).join('/')
-  return filePath
-  */
 }
-function resolveSrcProd(filePath: string, clientManifest: ViteManifest, root: string): string {
-  const { manifestEntry } = getManifestEntry(filePath, [clientManifest], root, false)
+function resolveClientEntryProd(clientEntry: string, clientManifest: ViteManifest, root: string): string {
+  const { manifestEntry } = getManifestEntry(clientEntry, [clientManifest], root, false)
   assert(manifestEntry.isEntry)
   let { file } = manifestEntry
   assert(!file.startsWith('/'))

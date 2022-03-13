@@ -61,8 +61,8 @@ function getPageFilesEntry(
 function browserEntryPoints(): Record<string, string> {
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
   const entryPoints = {
-    ['router/entry']: require.resolve(`../../../../dist/esm/client/router/entry.js`),
-    ['entry']: require.resolve(`../../../../dist/esm/client/entry.js`),
+    ['entry-client-routing']: require.resolve(`../../../../dist/esm/client/router/entry.js`),
+    ['entry-server-routing']: require.resolve(`../../../../dist/esm/client/entry.js`),
   }
   return entryPoints
 }

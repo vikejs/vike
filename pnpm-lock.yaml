@@ -496,7 +496,6 @@ importers:
       react-dom: ^18.0.0-rc.0
       rimraf: ^3.0.2
       serve: ^13.0.2
-      ts-node: ^10.5.0
       typescript: ^4.5.5
       vite: ^2.8.4
       vite-plugin-ssr: 0.3.64
@@ -515,7 +514,6 @@ importers:
       react-dom: 18.0.0-rc.0-next-fe905f152-20220107_e32785dbcafa2fde92a71a8f50f52ce6
       rimraf: 3.0.2
       serve: 13.0.2
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr

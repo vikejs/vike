@@ -43,19 +43,20 @@ function getViteManifest(): {
   const serverManifestPath = `${outDirPath}/server/manifest.json`
   const pluginManifestPath = `${outDirPath}/client/vite-plugin-ssr.json`
 
+  const req = require // Prevent Webpack's dynamic import analysis
   if (!clientManifest) {
     try {
-      clientManifest = require(clientManifestPath)
+      clientManifest = req(clientManifestPath)
     } catch (err) {}
   }
   if (!serverManifest) {
     try {
-      serverManifest = require(serverManifestPath)
+      serverManifest = req(serverManifestPath)
     } catch (err) {}
   }
   if (!pluginManifest) {
     try {
-      pluginManifest = require(pluginManifestPath)
+      pluginManifest = req(pluginManifestPath)
     } catch (err) {}
   }
 

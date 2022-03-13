@@ -72,9 +72,9 @@ function useClientRouter() {
       }
     }
 
-    const ensureHydration = detectHydrationSkipSupport()
-
     const shouldAbort = () => {
+      const ensureHydration = detectHydrationSkipSupport()
+
       // We should never abort the hydration if `ensureHydration: true`
       if (ensureHydration && renderingNumber === 1) {
         return false

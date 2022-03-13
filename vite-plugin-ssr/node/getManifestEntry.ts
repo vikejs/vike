@@ -1,6 +1,6 @@
 import { posix } from 'path'
 import type { ViteManifest, ViteManifestEntry } from './getViteManifest'
-import { assert, assertPosixPath, toPosixPath } from './utils'
+import { assert, assertPosixPath, toPosixPath, slice } from './utils'
 
 export { getManifestEntry }
 //export type { ManifestEntry }
@@ -18,6 +18,25 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
 function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
   assertPosixPath(root)
   assertPosixPath(filePath)
+
+  if( filePath.startsWith('@@vite-plugin-ssr/')) {
+    const manifestKeyEnd = slice(filePath, '@@vite-plugin-ssr'.length, 0)
+    let manifestEntry: ViteManifestEntry | null = null
+    let manifestKey: string | null = null
+    let manifest: ViteManifest | null = null
+    for( const manifest_ of manifests) {
+      for(const manifestKey_ in manifest_) {
+        if( manifestKey_.endsWith(manifestKeyEnd) ) {
+          assert(!manifestEntry, { filePath })
+          manifestEntry = manifest_[manifestKey_]!
+          manifestKey = manifestKey_
+          manifest = manifest_
+        }
+      }
+    }
+    assert(manifestEntry && manifest && manifestKey, { filePath })
+    return { manifestEntry, manifest, manifestKey }
+  }
 
   const manifestKey = getManifestKey(filePath, root)
   for (const manifest of manifests) {
@@ -56,7 +75,8 @@ function resolveSymlink(filePath: string, root: string) {
     ? filePath.slice((isWindows() ? '/@fs/' : '/@fs').length)
     : [...root.split('/'), ...filePath.split('/')].join('/')
   // `require.resolve()` resolves symlinks
-  const filePathResolved = toPosixPath(require.resolve(filePathAbsolute))
+  const req = require // Prevent Webpack's dynamic import analysis
+  const filePathResolved = toPosixPath(req.resolve(filePathAbsolute))
   let filePathRelative = posix.relative(root, filePathResolved)
   assert(!filePathRelative.startsWith('/'))
   filePathRelative = '/' + filePathRelative
