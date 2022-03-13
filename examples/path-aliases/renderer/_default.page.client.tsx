@@ -1,12 +1,10 @@
+export { render }
+
 import ReactDOM from 'react-dom'
 import React from 'react'
-import { getPage } from 'vite-plugin-ssr/client'
 import { PageContext } from './types'
 
-hydrate()
-
-async function hydrate() {
-  const pageContext: PageContext = await getPage()
+async function render(pageContext: PageContext) {
   const { Page } = pageContext
   ReactDOM.hydrate(<Page />, document.getElementById('page-view'))
 }
