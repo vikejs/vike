@@ -10,6 +10,7 @@ import { transformCrossEnvFiles } from './transformCrossEnvFiles'
 import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
+import { chunkFileNames } from './chunkFileNames'
 
 export default plugin
 export { plugin }
@@ -27,6 +28,7 @@ function plugin(config?: Config | Config[]): any {
     packageJsonFile(),
     transformCrossEnvFiles(),
     removeRequireHookPlugin(),
+    chunkFileNames(),
   ]
   return plugins as any
 }

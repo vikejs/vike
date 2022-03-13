@@ -24,7 +24,6 @@ import {
   isParsable,
   assertBaseUrl,
   isPromise,
-  toPosixPath,
 } from './utils'
 import { getPageAssets, PageAssets } from './html/injectAssets'
 import { sortPageContext } from '../shared/sortPageContext'
@@ -462,9 +461,9 @@ async function loadPageFilesServer(pageContext: {
   _pageFilesAll: PageFile[]
   _isPreRendering: boolean
 }) {
-  const [pageContextAddendum, pageClientFilePaths] = await Promise.all([
+  const [pageContextAddendum, clientEntry] = await Promise.all([
     loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
-    getPageClientFilePaths(pageContext._pageFilesAll, pageContext._pageId),
+    getClientEntry(pageContext._pageFilesAll, pageContext._pageId),
   ])
 
   objectAssign(pageContextAddendum, {
@@ -477,36 +476,30 @@ async function loadPageFilesServer(pageContext: {
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const assetDependencies = pageContext._pageFilesAll
+  const pageFilesClientPath = pageContext._pageFilesAll
     .filter((p) => p.fileType !== '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId))
     .map((p) => p.filePath)
+  const pageDependencies = pageFilesClientPath
   objectAssign(pageContextAddendum, {
     _getPageAssets: async () => {
-      const pageAssets = await getPageAssets(pageContext, assetDependencies, pageClientFilePaths, isPreRendering)
+      const pageAssets = await getPageAssets(pageContext, pageDependencies, clientEntry, isPreRendering)
       return pageAssets
     },
   })
 
   return pageContextAddendum
 }
-async function getPageClientFilePaths(pageFilesAll: PageFile[], pageId: string): Promise<string[]> {
+async function getClientEntry(pageFilesAll: PageFile[], pageId: string): Promise<string> {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
   const pageFilesClient = pageFilesAll.filter(
     (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
   )
   await Promise.all(pageFilesClient.map((p) => p.loadMeta?.()))
-  const usesClientRouter = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('useClientRouting'))
-  let entryPath: string
-  if (usesClientRouter) {
-    entryPath = toPosixPath(require.resolve('../../../dist/esm/client/router/entry.js'))
-  } else {
-    entryPath = toPosixPath(require.resolve('../../../dist/esm/client/entry.js'))
-  }
-  if (!entryPath.startsWith('/')) {
-    assert(process.platform === 'win32')
-    entryPath = '/' + entryPath
-  }
-  return ['/@fs' + entryPath]
+  const usesClientRouting = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('useClientRouting'))
+  const clientEntry = usesClientRouting
+    ? '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
+    : '@@vite-plugin-ssr/dist/esm/client/entry.js'
+  return clientEntry
 }
 
 async function executeOnBeforeRenderHooks(
