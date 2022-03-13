@@ -80,7 +80,7 @@ function getGlobs(
     }
   }
 
-  const isEager = isMeta && isBuild
+  const isEager = (isMeta || fileSuffix === 'page.route') && isBuild
 
   let pageFilesVar: 'pageFilesLazy' | 'pageFilesEager' | 'pageFilesMetaLazy' | 'pageFilesMetaEager'
   if (!isMeta) {
