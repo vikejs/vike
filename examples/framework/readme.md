@@ -4,9 +4,8 @@ To run it:
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/framework/
+cd vite-plugin-ssr/examples/framework/app/
 pnpm install # https://pnpm.io/
-cd app/
 pnpm run dev
 ```
 
