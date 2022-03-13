@@ -16,34 +16,32 @@ function testRun(cmd: 'npm run dev' | 'npm run prod', { skipTitleColorTest }: { 
   test('production asset preloading', async () => {
     const isProduction = cmd === 'npm run prod'
     const html = await fetchHtml('/')
-    if (isProduction) {
-      const hashRegexp = /[a-z0-9]+/
-      const extRegexp = /[a-z]+/
-      expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
-      expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.css">`,
-      )
-      expect(html).toMatch(
-        partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`,
-      )
-      expect(html).toMatch(
-        partRegex`<script type="module" src="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`,
-      )
-      try {
-        // Vite 2.8
-        expect(html).toMatch(
-          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/vendor.${hashRegexp}.js">`,
-        )
-      } catch (err) {
-        // Vite 2.9
-        expect(html).toMatch(
-          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/renderer/_default.page.client.${extRegexp}.${hashRegexp}.js">`,
-        )
-      }
-      expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
-    } else {
+
+    if (!isProduction) {
       expect(html).toContain('<script type="module" src="/@vite/client"></script>')
+      return
+    } else {
+      expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     }
+
+    const hashRegexp = /[a-z0-9]+/
+    expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
+    expect(html).toMatch(
+      partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+    )
+    expect(html).toMatch(
+      partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`,
+    )
+    try {
+      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js">`)
+      expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`)
+    } catch(err) {
+      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js">`)
+      expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`)
+    }
+    expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`)
+    expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`)
+    expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`)
   })
 
   test('page is rendered to the DOM and interactive', async () => {
