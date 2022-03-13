@@ -4,6 +4,7 @@ packages:
   - 'boilerplates/'
   - 'boilerplates/*'
   - 'examples/*'
+  - 'examples/framework/*'
   - 'libframe/test/'
   - 'libframe/docs/'
   - 'libframe/scripts/'

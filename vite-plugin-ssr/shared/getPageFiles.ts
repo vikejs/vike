@@ -317,7 +317,7 @@ function assertExports(pageFiles: PageFile[], customExports: string[]) {
       if (VPS_EXPORTS[exportName]?.(p)) {
         return
       }
-      assertUsage(
+      assertWarning(
         customExports.includes(exportName),
         `Unknown \`export { ${exportName} }\` at ${p.filePath}, see https://vite-plugin-ssr/customExports`,
       )
