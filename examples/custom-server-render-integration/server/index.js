@@ -49,6 +49,9 @@ async function startServer() {
 }
 
 function assert_pageAssets(pageAssets) {
+  assert(pageAssets[0].assetType)
+  assert(pageAssets[0].mediaType)
+
   if (!isProduction) {
     const a1 = pageAssets[0]
     assert(a1.src === '/pages/index.css')
@@ -56,43 +59,57 @@ function assert_pageAssets(pageAssets) {
     assert(a1.mediaType === 'text/css')
     assert(a1.preloadType === 'style')
     const a2 = pageAssets[1]
-    assert(a2.src === '/renderer/_default.page.client.jsx')
+    assert(a2.src.startsWith('/@fs/') && a2.src.endsWith('/vite-plugin-ssr/dist/esm/client/entry.js'))
     assert(a2.assetType === 'script')
     assert(a2.mediaType === 'text/javascript')
     assert(a2.preloadType === null)
     assert(pageAssets[2] === undefined)
   } else {
-    const a1 = pageAssets[0]
-    assert(partRegex`/assets/index.page.${/[a-z0-9]+/}.css`.test(a1.src))
-    assert(a1.assetType === 'style')
-    assert(a1.mediaType === 'text/css')
-    assert(a1.preloadType === 'style')
-
-    let a2 = pageAssets[1]
-    let a3 = pageAssets[2]
-    let a4 = pageAssets[3]
-    if (a4) {
-      // Vite 2.8
-      assert(pageAssets.length === 4)
-      assert(partRegex`/assets/vendor.${/[a-z0-9]+/}.js`.test(a2.src))
-      assert(a2.assetType === 'preload')
-      assert(a2.mediaType === 'text/javascript')
-      assert(a2.preloadType === 'script')
-    } else {
-      // Vite 2.9
-      assert(pageAssets.length === 3)
-      a4 = a3
-      a3 = a2
-    }
-    const isClientAsset = (src) => partRegex`/assets/renderer/_default.page.client.jsx.${/[a-z0-9]+/}.js`.test(src)
-    assert(isClientAsset(a3.src))
-    assert(a3.assetType === 'preload')
-    assert(a3.mediaType === 'text/javascript')
-    assert(a3.preloadType === 'script')
-    assert(isClientAsset(a4.src))
-    assert(a4.assetType === 'script')
-    assert(a4.mediaType === 'text/javascript')
-    assert(a4.preloadType === null)
-    assert(pageAssets[4] === undefined)
+    const hashRegex = /[a-z0-9]+/
+    assert(
+      pageAssets.find(
+        (a) =>
+          partRegex`/assets/entry-server-routing.${/[a-z0-9]+/}.js`.test(a.src) &&
+          a.assetType === 'script' &&
+          a.mediaType === 'text/javascript' &&
+          a.preloadType === null,
+      ),
+    )
+    assert(
+      pageAssets.find(
+        (a) =>
+          partRegex`/assets/entry-server-routing.${/[a-z0-9]+/}.js`.test(a.src) &&
+          a.assetType === 'preload' &&
+          a.mediaType === 'text/javascript' &&
+          a.preloadType === 'script',
+      ),
+    )
+    assert(
+      pageAssets.find(
+        (a) =>
+          partRegex`/assets/chunk-${/[a-z0-9]+/}.js`.test(a.src) &&
+          a.assetType === 'preload' &&
+          a.mediaType === 'text/javascript' &&
+          a.preloadType === 'script',
+      ),
+    )
+    assert(
+      pageAssets.find(
+        (a) =>
+          partRegex`/assets/index.page.${hashRegex}.css`.test(a.src) &&
+          a.assetType === 'style' &&
+          a.mediaType === 'text/css' &&
+          a.preloadType === 'style',
+      ),
+    )
+    assert(
+      pageAssets.find(
+        (a) =>
+          partRegex`/assets/_default.page.client.${/[a-z0-9]+/}.js`.test(a.src) &&
+          a.assetType === 'preload' &&
+          a.mediaType === 'text/javascript' &&
+          a.preloadType === 'script',
+      ),
+    )
   }
 }

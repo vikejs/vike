@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "npm run dev",
-    "dev": "ts-node ./server",
+    "dev": "node ./server",
     "prod": "npm run build && npm run prod:serve",
     "// Build for production": "",
     "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
@@ -26,7 +26,6 @@
     "react-dom": "^18.0.0-rc.0",
     "rimraf": "^3.0.2",
     "serve": "^13.0.2",
-    "ts-node": "^10.5.0",
     "typescript": "^4.5.5",
     "vite": "^2.8.4",
     "vite-plugin-ssr": "0.3.64"

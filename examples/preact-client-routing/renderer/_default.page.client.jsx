@@ -1,39 +1,24 @@
-import { hydrate, render } from 'preact'
-import { useClientRouter } from 'vite-plugin-ssr/client/router'
+export const clientRouting = true
+export { render }
+
+import { hydrate, render as render_ } from 'preact'
 import { PageShell } from './PageShell'
 
-const { hydrationPromise } = useClientRouter({
-  render(pageContext) {
-    const { Page, pageProps } = pageContext
-    const page = (
-      <PageShell pageContext={pageContext}>
-        <Page {...pageProps} />
-      </PageShell>
-    )
-    const container = document.querySelector('body')
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext
+  const page = (
+    <PageShell pageContext={pageContext}>
+      <Page {...pageProps} />
+    </PageShell>
+  )
+  const container = document.querySelector('body')
 
-    if (pageContext.isHydration) {
-      hydrate(page, container)
-    } else {
-      render(page, container)
-    }
-    document.title = getPageTitle(pageContext)
-  },
-  onTransitionStart,
-  onTransitionEnd,
-})
-
-hydrationPromise.then(() => {
-  console.log('Hydration finished; page is now interactive.')
-})
-
-function onTransitionStart() {
-  console.log('Page transition start')
-  document.querySelector('#page-content').classList.add('page-transition')
-}
-function onTransitionEnd() {
-  console.log('Page transition end')
-  document.querySelector('#page-content').classList.remove('page-transition')
+  if (pageContext.isHydration) {
+    hydrate(page, container)
+  } else {
+    render_(page, container)
+  }
+  document.title = getPageTitle(pageContext)
 }
 
 function getPageTitle(pageContext) {

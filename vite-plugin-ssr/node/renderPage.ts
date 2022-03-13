@@ -495,7 +495,7 @@ async function getClientEntry(pageFilesAll: PageFile[], pageId: string): Promise
     (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
   )
   await Promise.all(pageFilesClient.map((p) => p.loadMeta?.()))
-  const usesClientRouting = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('useClientRouting'))
+  const usesClientRouting = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('clientRouting'))
   const clientEntry = usesClientRouting
     ? '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
     : '@@vite-plugin-ssr/dist/esm/client/entry.js'
