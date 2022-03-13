@@ -12,13 +12,13 @@ export { onPageTransitionEnd }
 
 let app: ReturnType<typeof createApp>
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
-    if (!app) {
-      app = createApp(pageContext)
-      app.mount('#app')
-    } else {
-      app.changePage(pageContext)
-    }
-    document.title = getPageTitle(pageContext)
+  if (!app) {
+    app = createApp(pageContext)
+    app.mount('#app')
+  } else {
+    app.changePage(pageContext)
+  }
+  document.title = getPageTitle(pageContext)
 }
 
 function onHydrationEnd() {
@@ -32,5 +32,3 @@ function onPageTransitionEnd() {
   console.log('Page transition end')
   document.querySelector('.content')!.classList.remove('page-transition')
 }
-
-// Note that `ensureHydration` is not needed anymore
