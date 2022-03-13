@@ -298,7 +298,7 @@ const VPS_EXPORTS: Record<string, (p: PageFile) => boolean> = {
   // `_default.page.server.js`
   onBeforePrerender: and(serverFile, defaultFile),
   // `*.page.client.js`
-  useClientRouting: clientFile,
+  clientRouting: clientFile,
   onHydrationEnd: clientFile,
   onPageTransitionStart: clientFile,
   onPageTransitionEnd: clientFile,

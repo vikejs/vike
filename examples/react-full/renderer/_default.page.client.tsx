@@ -1,4 +1,4 @@
-export const useClientRouting = true
+export const clientRouting = true
 export { render }
 export { onHydrationEnd }
 export { onPageTransitionStart }

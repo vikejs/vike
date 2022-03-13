@@ -1,13 +1,11 @@
+export { render }
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { getPage } from 'vite-plugin-ssr/client'
 import { getStore } from './store'
 
-hydrate()
-
-async function hydrate() {
-  const pageContext = await getPage()
+async function render(pageContext) {
   const { Page } = pageContext
   const store = getStore(pageContext.PRELOADED_STATE)
   ReactDOM.hydrate(

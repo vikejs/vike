@@ -1,10 +1,8 @@
-import { getPage } from 'vite-plugin-ssr/client'
+export { render }
+
 import { createApp } from './app'
 
-hydrate()
-
-async function hydrate() {
-  const pageContext = await getPage()
+async function render(pageContext) {
   const { Page } = pageContext
   const { app, router } = createApp({ Page })
   await router.isReady()

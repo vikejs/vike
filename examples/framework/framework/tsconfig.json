@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/",
+    "strict": true,
+    "module": "CommonJS",
+    "target": "ES2017",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client"],
+    "jsx": "react",
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["./index.ts", "./vite-plugin-ssr.ts"]
+}

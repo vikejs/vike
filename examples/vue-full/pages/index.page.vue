@@ -6,7 +6,7 @@
     <li>Interactive. <Counter /></li>
   </ul>
   <p>
-    We use <code>useClientRouter()</code> to do Client Routing.
+    We <code>export const clientRouting = true</code> to enable Client Routing.
     <button @click="randomNavigation">Random Page</button>
   </p>
 </template>
