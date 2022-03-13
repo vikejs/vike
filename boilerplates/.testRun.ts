@@ -2,8 +2,14 @@ import { page, run, partRegex, autoRetry, fetchHtml, urlBase, expectBrowserError
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run prod', { skipTitleColorTest }: { skipTitleColorTest?: boolean } = {}) {
-  run(cmd)
+function testRun(
+  cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
+  {
+    skipTitleColorTest,
+    cwd,
+  }: { skipTitleColorTest?: boolean; cwd?: string } = {},
+) {
+  run(cmd, { cwd })
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
