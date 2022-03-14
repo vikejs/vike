@@ -1,6 +1,6 @@
 export { getRoot }
 
-import { assertUsage, toPosixPath } from '../../utils'
+import { assertUsage, toPosixPath } from '../utils'
 import { isAbsolute } from 'path'
 
 function getRoot(config: { root?: string }): string {

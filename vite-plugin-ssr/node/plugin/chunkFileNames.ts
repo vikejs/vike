@@ -1,6 +1,6 @@
 export { chunkFileNames }
 
-import { getRoot } from './utils'
+import { getRoot, assertPosixPath } from './utils'
 import type { PreRenderedChunk } from 'rollup'
 import type { Plugin, UserConfig } from 'vite'
 import { posix } from 'path'
@@ -33,7 +33,11 @@ function getChunkFileNames(root: string, chunkFileNames_original: ChunkFileNames
 
     const id = chunkInfo.facadeModuleId
 
-    if (!chunkInfo.isDynamicEntry || id?.includes('/node_modules/')) {
+    if (id) {
+      assertPosixPath(id)
+    }
+    assertPosixPath(root)
+    if (!chunkInfo.isDynamicEntry || !id || id.includes('/node_modules/') || !id.startsWith(root)) {
       chunkFileName ||= 'assets/chunk-[hash].js'
       return chunkFileName
     }
@@ -42,12 +46,10 @@ function getChunkFileNames(root: string, chunkFileNames_original: ChunkFileNames
 
     const { name } = chunkInfo
     if (name.startsWith('index.page.') || name === 'index.page') {
-      if (id) {
-        const chunkName = deduceChunkNameFromFilesystemRouting(id, root)
-        if (chunkName) {
-          chunkFileName = chunkFileName.replace('[name]', name.replace('index', chunkName))
-          return chunkFileName
-        }
+      const chunkName = deduceChunkNameFromFilesystemRouting(id, root)
+      if (chunkName) {
+        chunkFileName = chunkFileName.replace('[name]', name.replace('index', chunkName))
+        return chunkFileName
       }
     }
     return chunkFileName
