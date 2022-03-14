@@ -1,6 +1,6 @@
 import { existsSync } from 'fs'
-import { assertPosixPath, assertUsage, assert, toPosixPath } from '../utils'
-import { relative, dirname, join } from 'path'
+import { assertPosixPath, assertUsage, toPosixPath } from '../utils'
+import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
 
@@ -11,6 +11,7 @@ function resolveGlobConfig(includePageFiles: string[]) {
   let globPaths: string[]
   return getGlobRoots
   async function getGlobRoots(root: string) {
+    root = toPosixPath(root)
     if (!globPaths) {
       const entriesDefault = ['/']
       const entriesInclude = await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))
@@ -32,9 +33,9 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
   } catch (err) {
     assertUsage(false, `Cannot find \`${pkgName}\`. Did you install it?`)
   }
-  const pkgPath = toPosixPath(dirname(pkgJsonPath))
-  const pkgPathRelative = relative(root, pkgPath)
-  assert(!pkgPathRelative.startsWith('/'))
+  pkgJsonPath = toPosixPath(pkgJsonPath)
+  const pkgPath = path.posix.dirname(pkgJsonPath)
+  const pkgPathRelative = path.posix.relative(root, pkgPath)
   if (!pkgPathRelative.startsWith('.')) {
     const includePath = pkgPathRelative
     assertPosixPath(includePath)
@@ -42,8 +43,9 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
   }
   const includePath = `node_modules/${pkgName}`
   if (!existsSync(includePath)) {
-    const source = relative(process.cwd(), pkgPath)
-    const target = relative(process.cwd(), `${root}/${includePath}`)
+    const cwd = toPosixPath(process.cwd())
+    const source = path.posix.relative(cwd, pkgPath)
+    const target = path.posix.relative(cwd, `${root}/${includePath}`)
     await symlinkDir(source, target)
   }
   assertPosixPath(includePath)
@@ -74,7 +76,7 @@ function getGlobPath(
   assertPosixPath(globRoot)
   let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${fileExtention}`].filter(Boolean).join('/')
   if (root) {
-    globPath = toPosixPath(join(root, globPath))
+    globPath = toPosixPath(path.posix.join(root, globPath))
   } else {
     globPath = '/' + globPath
   }
