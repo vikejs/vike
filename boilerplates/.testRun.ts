@@ -4,10 +4,7 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
-  {
-    skipTitleColorTest,
-    cwd,
-  }: { skipTitleColorTest?: boolean; cwd?: string } = {},
+  { skipTitleColorTest, cwd }: { skipTitleColorTest?: boolean; cwd?: string } = {},
 ) {
   run(cmd, { cwd })
 
@@ -20,7 +17,7 @@ function testRun(
   })
 
   test('production asset preloading', async () => {
-    const isProduction = cmd === 'npm run prod'
+    const isProduction = cmd === 'npm run prod' || 'pnpm run prod'
     const html = await fetchHtml('/')
 
     if (!isProduction) {
@@ -40,14 +37,24 @@ function testRun(
     )
     try {
       expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js">`)
-      expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`)
-    } catch(err) {
+      expect(html).toMatch(
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`,
+      )
+    } catch (err) {
       expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js">`)
-      expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`)
+      expect(html).toMatch(
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`,
+      )
     }
-    expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`)
-    expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`)
-    expect(html).toMatch(partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`)
+    expect(html).toMatch(
+      partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
+    )
+    expect(html).toMatch(
+      partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`,
+    )
+    expect(html).toMatch(
+      partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`,
+    )
   })
 
   test('page is rendered to the DOM and interactive', async () => {
