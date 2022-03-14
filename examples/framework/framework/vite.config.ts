@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import ssr from "vite-plugin-ssr/plugin";
+import { UserConfig } from 'vite'
 
 export default {
   plugins: [
@@ -10,4 +11,7 @@ export default {
       },
     }),
   ],
-};
+  optimizeDeps: {
+    include: ['react', 'react-dom']
+  }
+} as UserConfig;

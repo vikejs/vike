@@ -6,7 +6,7 @@ import { existsSync } from 'fs'
 import { createPageRenderer } from 'vite-plugin-ssr'
 import { prerender } from 'vite-plugin-ssr/cli'
 
-const configFile = `${rootFramework}/vite.config.js`
+const configFile = `${rootFramework}/vite.config.ts`
 const rootUser = process.cwd()
 if (!existsSync(`${rootUser}/package.json`)) {
   throw new Error("The `framework` CLI should be called from your project's root directory.")
@@ -73,7 +73,7 @@ async function cmdBuild() {
       ssr: true
     }
   })
-  await prerender({})
+  await prerender()
 }
 
 async function cmdPreview() {
