@@ -13,7 +13,7 @@ jobs:
         node_version: [16]
         include:
           - os: macos-latest
-            node_version: 12
+            node_version: 17
           - os: windows-latest
             node_version: 14
       fail-fast: false
