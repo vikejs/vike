@@ -8,7 +8,8 @@ function testRun(
     skipTitleColorTest,
     cwd,
     noDefaultPageInUserCode,
-  }: { skipTitleColorTest?: boolean; cwd?: string; noDefaultPageInUserCode?: true } = {},
+    isPrerendered,
+  }: { skipTitleColorTest?: boolean; cwd?: string; noDefaultPageInUserCode?: true; isPrerendered?: true } = {},
 ) {
   run(cmd, { cwd })
 
@@ -21,45 +22,48 @@ function testRun(
   })
 
   test('production asset preloading', async () => {
-    const isProduction = cmd === 'npm run prod' || 'pnpm run prod'
+    const isProduction = cmd === 'npm run prod' || cmd === 'pnpm run prod'
     const html = await fetchHtml('/')
 
     if (!isProduction) {
       expect(html).toContain('<script type="module" src="/@vite/client"></script>')
-      return
     } else {
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
     }
 
-    const hashRegexp = /[a-z0-9]+/
-    expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
-    expect(html).toMatch(
-      partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`,
-    )
-    try {
-      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js">`)
+    if (isProduction) {
+      const hashRegexp = /[a-z0-9]+/
+      expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`,
+        partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`,
       )
-    } catch (err) {
-      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js">`)
+
+      try {
+        expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js">`)
+        expect(html).toMatch(
+          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`,
+        )
+      } catch (err) {
+        expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js">`)
+        expect(html).toMatch(
+          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`,
+        )
+      }
+
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`,
-      )
-    }
-    expect(html).toMatch(
-      partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`,
-    )
-    expect(html).toMatch(
-      partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`,
-    )
-    if (!noDefaultPageInUserCode) {
-      expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`,
       )
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`,
       )
+      if (!noDefaultPageInUserCode) {
+        expect(html).toMatch(
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+        )
+        expect(html).toMatch(
+          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
+        )
+      }
     }
   })
 
@@ -100,14 +104,16 @@ function testRun(
     })
   })
 
-  test('error page', async () => {
-    await page.goto(urlBase + '/does-not-exist')
-    expect(await page.textContent('h1')).toBe('404 Page Not Found')
-    expect(await page.textContent('p')).toBe('This page could not be found.')
-    expectBrowserError(
-      (browserLog) =>
-        browserLog.logText.includes('http://localhost:3000/does-not-exist') &&
-        browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)'),
-    )
-  })
+  if (!isPrerendered) {
+    test('error page', async () => {
+      await page.goto(urlBase + '/does-not-exist')
+      expect(await page.textContent('h1')).toBe('404 Page Not Found')
+      expect(await page.textContent('p')).toBe('This page could not be found.')
+      expectBrowserError(
+        (browserLog) =>
+          browserLog.logText.includes('http://localhost:3000/does-not-exist') &&
+          browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)'),
+      )
+    })
+  }
 }
