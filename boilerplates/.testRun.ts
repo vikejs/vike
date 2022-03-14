@@ -4,7 +4,11 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
-  { skipTitleColorTest, cwd }: { skipTitleColorTest?: boolean; cwd?: string } = {},
+  {
+    skipTitleColorTest,
+    cwd,
+    noDefaultPageInUserCode,
+  }: { skipTitleColorTest?: boolean; cwd?: string; noDefaultPageInUserCode?: true } = {},
 ) {
   run(cmd, { cwd })
 
@@ -30,9 +34,6 @@ function testRun(
     const hashRegexp = /[a-z0-9]+/
     expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
     expect(html).toMatch(
-      partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
-    )
-    expect(html).toMatch(
       partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`,
     )
     try {
@@ -47,14 +48,19 @@ function testRun(
       )
     }
     expect(html).toMatch(
-      partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
-    )
-    expect(html).toMatch(
       partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`,
     )
     expect(html).toMatch(
       partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`,
     )
+    if (!noDefaultPageInUserCode) {
+      expect(html).toMatch(
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+      )
+      expect(html).toMatch(
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
+      )
+    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {
