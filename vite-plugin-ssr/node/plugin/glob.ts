@@ -33,7 +33,6 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
     assertUsage(false, `Cannot find \`${pkgName}\`. Did you install it?`)
   }
   const pkgPath = toPosixPath(dirname(pkgJsonPath))
-  assert(pkgPath.startsWith('/'))
   const pkgPathRelative = relative(root, pkgPath)
   assert(!pkgPathRelative.startsWith('/'))
   if (!pkgPathRelative.startsWith('.')) {
@@ -43,8 +42,6 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
   }
   const includePath = `node_modules/${pkgName}`
   if (!existsSync(includePath)) {
-    assert(pkgPath.startsWith('/'))
-    assert(root.startsWith('/'))
     const source = relative(process.cwd(), pkgPath)
     const target = relative(process.cwd(), `${root}/${includePath}`)
     await symlinkDir(source, target)
