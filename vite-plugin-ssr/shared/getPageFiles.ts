@@ -305,6 +305,8 @@ const VPS_EXPORTS: Record<string, (p: PageFile) => boolean> = {
   prefetchLinks: clientFile,
 }
 
+const alreadyLoggedWarnings: string[] = []
+
 function assertExports(pageFiles: PageFile[], customExports: string[]) {
   customExports.forEach((customExportName) => {
     assertUsage(
@@ -317,10 +319,13 @@ function assertExports(pageFiles: PageFile[], customExports: string[]) {
       if (VPS_EXPORTS[exportName]?.(p)) {
         return
       }
-      assertWarning(
-        customExports.includes(exportName),
-        `Unknown \`export { ${exportName} }\` at ${p.filePath}, see https://vite-plugin-ssr/customExports`,
-      )
+      if (!alreadyLoggedWarnings.includes(exportName)) {
+        alreadyLoggedWarnings.push(exportName)
+        assertWarning(
+          customExports.includes(exportName),
+          `Unknown \`export { ${exportName} }\` at ${p.filePath}, see https://vite-plugin-ssr/customExports`,
+        )
+      }
     })
   })
 }
