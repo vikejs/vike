@@ -589,6 +589,24 @@ importers:
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/render-modes:
+    specifiers:
+      '@vitejs/plugin-react': ^1.2.0
+      cross-env: ^7.0.3
+      express: ^4.17.3
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      vite: ^2.8.4
+      vite-plugin-ssr: 0.3.60
+    dependencies:
+      '@vitejs/plugin-react': 1.2.0
+      cross-env: 7.0.3
+      express: 4.17.3
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      vite: 2.8.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/solid:
     specifiers:
       '@types/express': ^4.17.12

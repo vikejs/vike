@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "npm run server",
+    "prod": "npm run build && npm run server:prod",
+    "build": "vite build && vite build --ssr",
+    "server": "node ./server",
+    "server:prod": "cross-env NODE_ENV=production node ./server"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^1.2.0",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "vite": "^2.8.4",
+    "vite-plugin-ssr": "0.3.60"
+  }
+}

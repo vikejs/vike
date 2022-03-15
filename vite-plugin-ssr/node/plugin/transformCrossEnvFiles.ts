@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite'
-import { isSSR_options } from './utils'
+import { isSSR_options, assert } from './utils'
 import { getExportNames } from './getExportNames'
 
 export { transformCrossEnvFiles }
@@ -7,6 +7,7 @@ export { transformCrossEnvFiles }
 const metaRE = /(\?|&)meta(?:&|$)/
 const clientFileRE = /\.page\.client\.[a-zA-Z0-9]+(\?|$)/
 const serverFileRE = /\.page\.server\.[a-zA-Z0-9]+(\?|$)/
+const isomphFileRe = /\.page\.[a-zA-Z0-9]+(\?|$)/
 
 function transformCrossEnvFiles(): Plugin {
   return {
@@ -14,35 +15,37 @@ function transformCrossEnvFiles(): Plugin {
     async transform(src, id, options) {
       const isSSR = isSSR_options(options)
 
-      if (isSSR) {
-        if (clientFileRE.test(id)) {
-          return await transform(
-            src,
-            (exportNames) => `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`,
-          )
-        }
-      }
-
-      if (!isSSR) {
-        if (serverFileRE.test(id)) {
-          return await transform(
-            src,
-            (exportNames) =>
-              `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`,
-          )
-        }
-        if (clientFileRE.test(id) && metaRE.test(id)) {
+      if (metaRE.test(id)) {
+        if (!isSSR && (clientFileRE.test(id) || isomphFileRe.test(id))) {
           return await transform(src, (exportNames) =>
             [
               `export const hasExport_Page = ${exportNames.includes('Page') ? 'true' : 'false'};`,
               `export const hasExport_default = ${exportNames.includes('default') ? 'true' : 'false'};`,
-              `export const hasExport_useClientRouter = ${exportNames.includes('useClientRouter') ? 'true' : 'false'};`,
+              `export const hasExport_clientRouter = ${exportNames.includes('clientRouter') ? 'true' : 'false'};`,
+              /*
               `export const hasExport_overrideDefaults = ${
                 exportNames.includes('overrideDefaults') ? 'true' : 'false'
               };`,
+              */
             ].join('\n'),
           )
         }
+        assert(false, { id, isSSR })
+      }
+
+      if (isSSR && clientFileRE.test(id)) {
+        return await transform(
+          src,
+          (exportNames) => `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`,
+        )
+      }
+
+      if (!isSSR && serverFileRE.test(id)) {
+        return await transform(
+          src,
+          (exportNames) =>
+            `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`,
+        )
       }
     },
   } as Plugin
