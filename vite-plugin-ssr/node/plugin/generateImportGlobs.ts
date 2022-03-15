@@ -33,7 +33,24 @@ function writeImportGlobs(globRoots: string[], isBuild: boolean) {
 }
 
 function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: boolean) {
+  const importCode: string[] = []
+  const assignCode: string[] = []
+  if (isForClientSide) {
+    {
+      const [importCode_, assignCode_] = getVirtualImport('pageFilesClientMeta', '.page.client')
+      importCode.push(...importCode_)
+      assignCode.push(...assignCode_)
+    }
+    {
+      const [importCode_, assignCode_] = getVirtualImport('pageFilesIsomorphMeta', '.page')
+      importCode.push(...importCode_)
+      assignCode.push(...assignCode_)
+    }
+  }
+
   let fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
+
+${importCode.join('\n')}
 
 export const pageFilesLazy = {};
 export const pageFilesEager = {};
@@ -41,29 +58,41 @@ export const pageFilesMetaLazy = {};
 export const pageFilesMetaEager = {};
 export const isGeneratedFile = true;
 
+${assignCode.join('\n')}
+
 `
 
   fileContent += [
-    getGlobs(globRoots, isBuild, 'pageIsomorphicFiles', 'page', { isMeta: false }),
-    getGlobs(globRoots, isBuild, 'pageRouteFiles', 'page.route', { isMeta: false }),
+    getGlobs(globRoots, isBuild, 'pageFilesIsomorph', 'page', { isMeta: false }),
+    getGlobs(globRoots, isBuild, 'pageFilesRoute', 'page.route', { isMeta: false }),
     '',
   ].join('\n')
   if (isForClientSide) {
     fileContent += [
-      getGlobs(globRoots, isBuild, 'pageClientFiles', 'page.client', { isMeta: false }),
-      // getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
-      getGlobs(globRoots, isBuild, 'pageServerFilesMeta', 'page.server', { isMeta: true }),
+      getGlobs(globRoots, isBuild, 'pageFilesClient', 'page.client', { isMeta: false }),
+      // getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
+      getGlobs(globRoots, isBuild, 'pageFilesServerMeta', 'page.server', { isMeta: true }),
       '',
     ].join('\n')
   } else {
     fileContent += [
-      getGlobs(globRoots, isBuild, 'pageServerFiles', 'page.server', { isMeta: false }),
-      getGlobs(globRoots, isBuild, 'pageClientFilesMeta', 'page.client', { isMeta: true }),
+      getGlobs(globRoots, isBuild, 'pageFilesServer', 'page.server', { isMeta: false }),
+      getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.client', { isMeta: true }),
       '',
     ].join('\n')
   }
 
   return fileContent
+}
+
+function getVirtualImport(varName: string, fileSuffix: '.page.client' | '.page'): [string[], string[]] {
+  const pageFilesVar = 'pageFilesMetaEager'
+  const importCode = [
+    `import ${varName} from 'virtual:vite-plugin-ssr:pageFilesMeta:${fileSuffix}.js';`,
+    `console.log(${varName})`,
+  ]
+  const assignCode = [`${pageFilesVar}['${fileSuffix}'] = ${varName};`]
+  return [importCode, assignCode]
 }
 
 function getGlobs(

@@ -1,4 +1,4 @@
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { assertUsage } from '../utils'
 import { build } from './build'
 import { dev } from './dev'
@@ -11,6 +11,7 @@ import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
 import { chunkFileNames } from './chunkFileNames'
+import { virtualPageFilesMeta } from './virtualPageFilesMeta'
 
 export default plugin
 export { plugin }
@@ -29,6 +30,7 @@ function plugin(config?: Config | Config[]): any {
     transformCrossEnvFiles(),
     removeRequireHookPlugin(),
     chunkFileNames(),
+    virtualPageFilesMeta(getGlobRoots),
   ]
   return plugins as any
 }
