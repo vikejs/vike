@@ -461,10 +461,12 @@ async function loadPageFilesServer(pageContext: {
   _pageFilesAll: PageFile[]
   _isPreRendering: boolean
 }) {
-  const [pageContextAddendum, clientEntry] = await Promise.all([
+  const [pageContextAddendum] = await Promise.all([
     loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
-    getClientEntry(pageContext._pageFilesAll, pageContext._pageId),
+    loadPageFilesClientMeta(pageContext._pageFilesAll, pageContext._pageId),
   ])
+
+  const clientEntry = getClientEntry(pageContext._pageFilesAll, pageContext._pageId)
 
   objectAssign(pageContextAddendum, {
     _passToClient: getStringUnion(pageContextAddendum.exportsAll, 'passToClient'),
@@ -477,7 +479,11 @@ async function loadPageFilesServer(pageContext: {
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
   const pageFilesClientPath = pageContext._pageFilesAll
-    .filter((p) => p.fileType !== '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId))
+    .filter(
+      (p) =>
+        (p.fileType === '.page' || p.fileType === '.page.client') &&
+        (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+    )
     .map((p) => p.filePath)
   const pageDependencies = pageFilesClientPath
   objectAssign(pageContextAddendum, {
@@ -489,17 +495,24 @@ async function loadPageFilesServer(pageContext: {
 
   return pageContextAddendum
 }
-async function getClientEntry(pageFilesAll: PageFile[], pageId: string): Promise<string> {
+async function loadPageFilesClientMeta(pageFilesAll: PageFile[], pageId: string): Promise<void> {
   // Current directory: vite-plugin-ssr/dist/cjs/node/
-  const pageFilesClient = pageFilesAll.filter(
-    (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
-  )
+  const pageFilesClient = getPageFilesClient(pageFilesAll, pageId)
   await Promise.all(pageFilesClient.map((p) => p.loadMeta?.()))
+}
+function getClientEntry(pageFilesAll: PageFile[], pageId: string): string {
+  const pageFilesClient = getPageFilesClient(pageFilesAll, pageId)
   const usesClientRouting = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('clientRouting'))
   const clientEntry = usesClientRouting
     ? '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
     : '@@vite-plugin-ssr/dist/esm/client/entry.js'
   return clientEntry
+}
+function getPageFilesClient(pageFilesAll: PageFile[], pageId: string) {
+  const pageFilesClient = pageFilesAll.filter(
+    (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
+  )
+  return pageFilesClient
 }
 
 async function executeOnBeforeRenderHooks(
