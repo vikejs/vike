@@ -6,9 +6,8 @@ import { PageLayout } from './PageLayout'
 hydrate()
 
 async function hydrate() {
-  const pageContext = await getPage<any>()
+  const pageContext = await getPage()
   const { Page, pageProps } = pageContext
-
   ReactDOM.hydrate(
     <PageLayout>
       <Page {...pageProps} />

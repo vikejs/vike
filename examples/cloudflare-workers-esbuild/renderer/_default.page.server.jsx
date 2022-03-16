@@ -9,7 +9,7 @@ export { passToClient }
 // See https://vite-plugin-ssr.com/data-fetching
 const passToClient = ['pageProps']
 
-function render(pageContext: any) {
+function render(pageContext) {
   const { Page, pageProps } = pageContext
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>

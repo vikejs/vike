@@ -1,6 +1,6 @@
 export { onBeforeRender }
 
-async function onBeforeRender(pageContext: any) {
+async function onBeforeRender(pageContext) {
   const movies = await getStarWarsMovies(pageContext)
   return {
     pageContext: {
@@ -11,9 +11,9 @@ async function onBeforeRender(pageContext: any) {
   }
 }
 
-async function getStarWarsMovies(pageContext: any) {
+async function getStarWarsMovies(pageContext) {
   const response = await pageContext.fetch('https://star-wars.brillout.com/api/films.json')
-  let movies: any[] = (await response.json()).results
+  let movies = (await response.json()).results
   movies = movies.map((movie, i) => ({
     ...movie,
     id: String(i + 1),
@@ -21,7 +21,7 @@ async function getStarWarsMovies(pageContext: any) {
   return movies
 }
 
-function filterMoviesData(movies: any[]) {
+function filterMoviesData(movies) {
   return movies.map((movie) => {
     const { title, release_date, id } = movie
     return { title, release_date, id }
