@@ -3,7 +3,7 @@ export { virtualPageFilesMeta }
 import type { Plugin, ViteDevServer } from 'vite'
 import glob from 'fast-glob'
 import path from 'path'
-import { toPosixPath, assert } from './utils'
+import { toPosixPath, assert, assertPosixPath } from './utils'
 import { getGlobPath } from './glob'
 
 function virtualPageFilesMeta(getGlobRoots: (root: string) => Promise<string[]>) {
@@ -59,24 +59,27 @@ async function getSrc(
     globRoots.map(async (globRoot) => {
       const fileSuffix = (fileType === '.page.js' && 'page') || (fileType === '.page.client.js' && 'page.client')
       assert(fileSuffix)
-      const pattern = getGlobPath(globRoot, fileSuffix)
+      const globPath = getGlobPath(globRoot, fileSuffix)
+      assertPosixPath(globPath)
+      assertPosixPath(root)
+      let pattern = globPath
       assert(pattern.startsWith('/'), { pattern })
       patterns.push(pattern)
-      const ignore = /(^|\/)node_modules\//.test(pattern) ? [] : ['**/node_modules/**']
-      /*
-      const patternAbsolute = root + pattern
-      const filesFound = await glob(patternAbsolute, {
-        ignore,
+      const nodeModulesDir = '/node_modules/'
+      let patternBase = ''
+      if (pattern.includes(nodeModulesDir)) {
+        const patternParts = pattern.split(nodeModulesDir)
+        patternBase = patternParts.slice(0, -1).join(nodeModulesDir) + nodeModulesDir
+        pattern = '/' + patternParts[patternParts.length - 1]!
+      }
+      pattern = pattern.slice(1)
+      const cwd = path.posix.join(root, patternBase)
+      let filesFound = await glob(pattern, {
+        cwd,
+        ignore: [`**${nodeModulesDir}**`],
       })
-      /*/
-      const patternAbsolute = pattern.slice(1)
-      let filesFound = await glob(patternAbsolute, {
-        cwd: root,
-        ignore,
-      })
-      filesFound = filesFound.map((f) => root +'/'+ f)
-      //*/
-      // console.log('f', { pattern, patternAbsolute, ignore, root, filesFound })
+      filesFound = filesFound.map((f) => path.posix.join(cwd, f))
+      // console.log('f', { globPath, pattern, cwd, filesFound})
       files.push(...filesFound)
     }),
   )
