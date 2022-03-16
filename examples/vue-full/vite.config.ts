@@ -10,7 +10,7 @@ const config: UserConfig = {
     }),
     md({
       // https://github.com/antfu/vite-plugin-md/pull/53
-      include: [/\.md($|/, /\.md\?meta$/]
+      include: [/\.md$/, /\.md\?meta$/]
     }),
     ssr(),
   ],
