@@ -4,6 +4,7 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
  - React: <RepoLink path='/examples/cloudflare-workers/' />
  - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
+ - Esbuild: <RepoLink path='/examples/cloudflare-workers-esbuild/' />
 
 ## Cloudflare Pages & wrangler 2
 
@@ -50,3 +51,24 @@ What we can do is to define a fetch function at `pageContext.fetch` that works i
 The trick is to add a different `fetch()` implementation to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer).
 
 Example: <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.
+
+## Building with `esbuild`
+
+To make Cloudflare Workers builds running with [`esbuild`](https://esbuild.github.io/) you need to set some configuration options in the `esbuild` build. It's not possible to run it from the CLI as it needs the plugin [`@esbuild-plugins/node-modules-polyfill`](https://github.com/remorses/esbuild-plugins#esbuild-pluginsnode-modules-polyfill) to build successfully.
+
+```js
+import esbuild from 'esbuild'
+import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
+
+esbuild.build({
+  // necessary for a successful build:
+  plugins: [NodeModulesPolyfillPlugin()],
+  platform: 'browser',
+  conditions: ['node'],
+
+  // other esbuild options…
+})
+```
+
+
+
