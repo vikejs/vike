@@ -12,6 +12,7 @@ const isomphFileRe = /\.page\.[a-zA-Z0-9]+(\?|$)/
 function transformCrossEnvFiles(): Plugin {
   return {
     name: 'vite-plugin-ssr:transformCrossEnvFiles',
+    enforce: 'post',
     async transform(src, id, options) {
       const isSSR = isSSR_options(options)
 

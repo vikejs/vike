@@ -8,7 +8,10 @@ const config: UserConfig = {
     vue({
       include: [/\.vue$/, /\.md$/],
     }),
-    md(),
+    md({
+      // https://github.com/antfu/vite-plugin-md/pull/53
+      include: [/\.md($|/, /\.md\?meta$/]
+    }),
     ssr(),
   ],
   clearScreen: false,

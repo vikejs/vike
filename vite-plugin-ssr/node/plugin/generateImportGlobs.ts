@@ -36,6 +36,7 @@ function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: 
   const importCode: string[] = []
   const assignCode: string[] = []
   if (isForClientSide) {
+    //*
     {
       const [importCode_, assignCode_] = getVirtualImport('pageFilesClientMeta', '.page.client')
       importCode.push(...importCode_)
@@ -46,6 +47,7 @@ function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: 
       importCode.push(...importCode_)
       assignCode.push(...assignCode_)
     }
+    //*/
   }
 
   let fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
