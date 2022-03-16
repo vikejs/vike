@@ -1,0 +1,9 @@
+name = "vite-ssr-worker"
+type = "javascript"
+
+[build]
+command = "yarn build:worker"
+
+[site]
+bucket = "./dist/client"
+entry-point = "./worker"
