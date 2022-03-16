@@ -3,7 +3,7 @@ export { virtualPageFilesMeta }
 import type { Plugin, ViteDevServer } from 'vite'
 import glob from 'fast-glob'
 import path from 'path'
-import { toPosixPath, assert, assertPosixPath } from './utils'
+import { toPosixPath, assert, assertPosixPath, slice } from './utils'
 import { getGlobPath } from './glob'
 
 function virtualPageFilesMeta(getGlobRoots: (root: string) => Promise<string[]>) {
@@ -92,7 +92,8 @@ async function getSrc(
     const pathFromRoot = path.posix.relative(root, filePath)
     assert(!pathFromRoot.startsWith('/'))
     const varName = `pageFileMeta${i}`
-    importCode.push(`import * as ${varName} from '${filePath}?meta';`)
+    const fileExtension = slice(filePath.split('.'), -1, 0)
+    importCode.push(`import * as ${varName} from '${filePath}?meta&lang.${fileExtension}';`)
     assignCode.push(`  ['/${pathFromRoot}']: ${varName},`)
   })
 
