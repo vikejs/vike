@@ -4,7 +4,7 @@ import { RepoLink } from 'libframe-docs/components/RepoLink'
 
  - React: <RepoLink path='/examples/cloudflare-workers/' />
  - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
- - Esbuild: <RepoLink path='/examples/cloudflare-workers-esbuild/' />
+ - esbuild: <RepoLink path='/examples/cloudflare-workers-esbuild/' />
 
 ## Cloudflare Pages & wrangler 2
 
@@ -52,23 +52,27 @@ The trick is to add a different `fetch()` implementation to `pageContextInit` at
 
 Example: <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.
 
-## Building with `esbuild`
+## esbuild
 
-To make Cloudflare Workers builds running with [`esbuild`](https://esbuild.github.io/) you need to set some configuration options in the `esbuild` build. It's not possible to run it from the CLI as it needs the plugin [`@esbuild-plugins/node-modules-polyfill`](https://github.com/remorses/esbuild-plugins#esbuild-pluginsnode-modules-polyfill) to build successfully.
+For a faster build time, you can bundle your worker with [`esbuild`](https://esbuild.github.io/).
+
+It's not possible to run it from the CLI as it needs the plugin [`@esbuild-plugins/node-modules-polyfill`](https://github.com/remorses/esbuild-plugins#esbuild-pluginsnode-modules-polyfill). Create a build script instead:
 
 ```js
+// build-worker.js
+
 import esbuild from 'esbuild'
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
 
 esbuild.build({
-  // necessary for a successful build:
+  // Necessary for a successful build:
   plugins: [NodeModulesPolyfillPlugin()],
   platform: 'browser',
   conditions: ['node'],
 
-  // other esbuild options…
+  // Other esbuild options...
 })
 ```
 
-
+Example: <RepoLink path='/examples/cloudflare-workers-esbuild' />.
 
