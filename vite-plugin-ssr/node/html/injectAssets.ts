@@ -62,6 +62,7 @@ async function getPageAssets(
     const serverManifest = manifests.serverManifest
 
     clientEntrySrc = resolveClientEntryProd(clientEntry, clientManifest!, root)
+    console.log('pd',pageDependencies)
     assetUrls = await retrieveProdAssets([clientEntry, ...pageDependencies], clientManifest, serverManifest, root)
   } else {
     assert(viteDevServer)

@@ -48,7 +48,6 @@ function transformCrossEnvFiles(): Plugin {
         const exportNames = getExportNames(esModules)
 
         let code = ''
-        console.log('init', id)
         const extractStylesImports = getExtractStylesImports(esModules)
         code += extractStylesImports.join('\n')
 

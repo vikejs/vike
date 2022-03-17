@@ -10,7 +10,7 @@ import { transformCrossEnvFiles } from './transformCrossEnvFiles'
 import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
-import { chunkFileNames } from './chunkFileNames'
+import { distFileNames } from './distFileNames'
 import { virtualPageFilesMeta } from './virtualPageFilesMeta'
 
 export default plugin
@@ -29,7 +29,7 @@ function plugin(config?: Config | Config[]): any {
     packageJsonFile(),
     transformCrossEnvFiles(),
     removeRequireHookPlugin(),
-    chunkFileNames(),
+    distFileNames(),
     virtualPageFilesMeta(getGlobRoots),
   ]
   return plugins as any
