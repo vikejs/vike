@@ -1,4 +1,7 @@
-name = "vite-ssr-worker"
+name = "vite-plugin-ssr_worker-example"
+compatibility_date = "2021-09-29"
+account_id = ""
+workers_dev = true
 type = "javascript"
 
 [build]

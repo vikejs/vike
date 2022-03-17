@@ -1,9 +1,9 @@
-name = "vite-ssr-worker"
-type = "webpack"
+name = "vite-plugin-ssr_worker-example"
+compatibility_date = "2021-09-29"
 account_id = ""
 workers_dev = true
+type = "webpack"
 webpack_config = "./webpack.config.js"
-compatibility_date = "2021-09-29"
 
 [site]
 bucket = "./dist/client"
