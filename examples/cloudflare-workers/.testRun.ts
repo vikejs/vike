@@ -32,7 +32,7 @@ function testRun(
     const additionalTimeout = !isWorker ? 0 : (isGithubAction() ? 2 : 1) * 120 * 1000
     const serverIsReadyMessage = (() => {
       if (isMiniflare) {
-        return 'Listening on :3000'
+        return 'Listening on'
       }
       if (isWrangler) {
         return 'Ignoring stale first change'
