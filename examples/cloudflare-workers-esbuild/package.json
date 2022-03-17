@@ -1,5 +1,6 @@
 {
   "type": "module",
+  "main": "dist/worker.js",
   "scripts": {
     "// Development server": "",
     "dev": "node ./dev-server",

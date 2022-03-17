@@ -6,7 +6,9 @@ type = "javascript"
 
 [build]
 command = "yarn build:worker"
+[build.upload]
+format = "service-worker"
 
 [site]
 bucket = "./dist/client"
-entry-point = "./worker"
+entry-point = "."
