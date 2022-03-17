@@ -5,7 +5,7 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
-  { hasStarWarsPage, isCustomBuild }: { hasStarWarsPage?: true; isCustomBuild?: true },
+  { hasStarWarsPage, isCustomBuild }: { hasStarWarsPage: boolean; isCustomBuild?: true },
 ) {
   const isMiniflare = cmd === 'npm run preview:miniflare'
   const isWrangler = cmd === 'npm run preview:wrangler'
