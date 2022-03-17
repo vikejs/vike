@@ -168,8 +168,16 @@ function isDefaultFilePath(filePath: string): boolean {
 
 type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
 async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
-  const pageFiles = findPageFiles(pageFilesAll, pageId, isForClientSide)
-  await Promise.all(pageFiles.map((p) => p.loadFileExports?.()))
+  const pageFiles = findPageFilesToLoad(pageFilesAll, pageId, isForClientSide)
+  await Promise.all([
+    ...pageFiles.map((p) => p.loadFileExports?.()),
+    // Load CSS provided by `?extractStyles` transformer
+    ...(isForClientSide
+      ? pageFilesAll
+          .filter((p) => (p.isDefaultPageFile || p.pageId === pageId) && p.fileType === '.page.server')
+          .map((p) => p.loadMeta?.())
+      : []),
+  ])
 
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
@@ -203,11 +211,11 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
   return pageContextAddendum
 }
 
-function findPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
+function findPageFilesToLoad(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const fileTypeEnvSpecific = isForClientSide ? ('.page.client' as const) : ('.page.server' as const)
   const defaultFiles = [
-    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.fileType === '.page'),
     ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.fileType === fileTypeEnvSpecific),
+    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.fileType === '.page'),
   ]
   defaultFiles.sort(defaultFilesSorter(fileTypeEnvSpecific, pageId))
   const pageFiles = [
@@ -218,25 +226,46 @@ function findPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide
   return pageFiles
 }
 
-// -1 => element1 first
-// +1 => element2 first
 function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
+  const e1First = -1 as const
+  const e2First = +1 as const
+  const noOrder = 0 as const
   return (e1: PageFile, e2: PageFile): 0 | 1 | -1 => {
     assert(e1.isDefaultPageFile && e2.isDefaultPageFile)
-    const d1 = getPathDistance(pageId, e1.filePath)
-    const d2 = getPathDistance(pageId, e2.filePath)
-    if (d1 !== d2) {
-      return d1 < d2 ? -1 : 1
-    } else {
-      const isEnvSpecific1 = e1.fileType === fileTypeEnvSpecific
-      const isEnvSpecific2 = e1.fileType === fileTypeEnvSpecific
-      if (isEnvSpecific1 === isEnvSpecific2) {
-        return 0
+
+    {
+      const d1 = getPathDistance(pageId, e1.filePath)
+      const d2 = getPathDistance(pageId, e2.filePath)
+      if (d1 < d2) {
+        return e1First
       }
-      if (isEnvSpecific1) return -1
-      if (isEnvSpecific2) return 1
-      assert(false)
+      if (d2 < d1) {
+        return e2First
+      }
+      assert(d1 === d2)
     }
+
+    {
+      if (e1.fileType === fileTypeEnvSpecific && e2.fileType !== fileTypeEnvSpecific) {
+        return e1First
+      }
+      if (e2.fileType === fileTypeEnvSpecific && e1.fileType !== fileTypeEnvSpecific) {
+        return e2First
+      }
+    }
+
+    /*
+    {
+      if (e1.fileType === '.page' && e2.fileType !== '.page') {
+        return e2First
+      }
+      if (e2.fileType === '.page' && e1.fileType !== '.page') {
+        return e1First
+      }
+    }
+    */
+
+    return noOrder
   }
 }
 
