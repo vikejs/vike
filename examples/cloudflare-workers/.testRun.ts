@@ -5,20 +5,24 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
-  { hasStarWarsPage }: { hasStarWarsPage: boolean },
+  { hasStarWarsPage, isCustomBuild }: { hasStarWarsPage?: true; isCustomBuild?: true },
 ) {
   const isMiniflare = cmd === 'npm run preview:miniflare'
   const isWrangler = cmd === 'npm run preview:wrangler'
   const isWorker = isMiniflare || isWrangler
 
   if ((isWindows() || isNode12()) && isWorker) {
-    test('SKIPED: miniflare and wrangler', () => {})
+    const msg = 'SKIPED: miniflare and wrangler'
+    console.log(msg)
+    test(msg, () => {})
     return
   }
 
   if (isWrangler) {
     if (!isGithubAction() || process.env['GIT_BRANCH'] !== 'master') {
-      test('SKIPED: wrangler test is not run locally nor in Pull Requests', () => {})
+      const msg = 'SKIPED: wrangler test is not run locally nor in Pull Requests'
+      console.log(msg)
+      test(msg, () => {})
       return
     }
     test('API keys', () => {
@@ -31,7 +35,7 @@ function testRun(
   {
     const additionalTimeout = !isWorker ? 0 : (isGithubAction() ? 2 : 1) * 120 * 1000
     const serverIsReadyMessage = (() => {
-      if (isMiniflare) {
+      if (isMiniflare || isCustomBuild) {
         return 'Listening on'
       }
       if (isWrangler) {
