@@ -15,33 +15,27 @@ function transformCrossEnvFiles(): Plugin {
     name: 'vite-plugin-ssr:transformCrossEnvFiles',
     enforce: 'post',
     async transform(src, id, options) {
-      const isSSR = isSSR_options(options)
+      const isServerSide = isSSR_options(options)
+      const isClientSide = !isServerSide
 
       if (metaRE.test(id)) {
         const esModules = await parseEsModules(src)
 
-        if (!isSSR && (clientFileRE.test(id) || isomphFileRe.test(id))) {
-          let code = ''
-
-          const extractStylesImports = getExtractStylesImports(esModules)
-          code += extractStylesImports.join('\n')
-
+        if (isClientSide && (clientFileRE.test(id) || isomphFileRe.test(id))) {
           const exportNames = getExportNames(esModules)
-          code += '\n'
-          code += [
+          const code = [
             `export const hasExport_Page = ${exportNames.includes('Page') ? 'true' : 'false'};`,
             `export const hasExport_default = ${exportNames.includes('default') ? 'true' : 'false'};`,
             `export const hasExport_clientRouter = ${exportNames.includes('clientRouter') ? 'true' : 'false'};`,
             // `export const hasExport_overrideDefaults = ${exportNames.includes('overrideDefaults') ? 'true' : 'false'};`,
+            '',
           ].join('\n')
-
-          code += '\n'
           return removeSourceMap(code)
         }
-        assert(false, { id, isSSR })
+        assert(false, { id })
       }
 
-      if (isSSR && clientFileRE.test(id)) {
+      if (isServerSide && clientFileRE.test(id)) {
         const esModules = await parseEsModules(src)
         const exportNames = getExportNames(esModules)
         let code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
@@ -49,13 +43,22 @@ function transformCrossEnvFiles(): Plugin {
         return removeSourceMap(code)
       }
 
-      if (!isSSR && serverFileRE.test(id)) {
+      if (isClientSide && serverFileRE.test(id)) {
         const esModules = await parseEsModules(src)
         const exportNames = getExportNames(esModules)
-        const code = [
-          `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`,
+
+        let code = ''
+        console.log('init', id)
+        const extractStylesImports = getExtractStylesImports(esModules)
+        code += extractStylesImports.join('\n')
+
+        code += [
           '',
+          `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`,
         ].join('\n')
+
+        code += '\n'
+
         return removeSourceMap(code)
       }
     },

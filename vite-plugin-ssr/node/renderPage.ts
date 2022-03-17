@@ -478,14 +478,13 @@ async function loadPageFilesServer(pageContext: {
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const pageFilesClientPath = pageContext._pageFilesAll
+  const pageDependencies = pageContext._pageFilesAll
     .filter(
       (p) =>
-        (p.fileType === '.page' || p.fileType === '.page.client') &&
-        (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+        // (p.fileType === '.page' || p.fileType === '.page.client') &&
+        p.fileType !== '.page.route' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
     )
     .map((p) => p.filePath)
-  const pageDependencies = pageFilesClientPath
   objectAssign(pageContextAddendum, {
     _getPageAssets: async () => {
       const pageAssets = await getPageAssets(pageContext, pageDependencies, clientEntry, isPreRendering)
