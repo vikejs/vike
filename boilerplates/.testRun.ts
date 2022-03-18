@@ -57,9 +57,15 @@ function testRun(
         partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`,
       )
       if (!noDefaultPageInUserCode) {
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageShell.${hashRegexp}.css">`,
-        )
+        try {
+          expect(html).toMatch(
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageShell.${hashRegexp}.css">`,
+          )
+        } catch (err) {
+          expect(html).toMatch(
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+          )
+        }
         expect(html).toMatch(
           partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
         )
