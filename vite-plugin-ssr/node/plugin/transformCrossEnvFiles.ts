@@ -8,21 +8,26 @@ export { transformCrossEnvFiles }
 const metaRE = /(\?|&)meta(?:&|$)/
 const clientFileRE = /\.page\.client\.[a-zA-Z0-9]+(\?|$)/
 const serverFileRE = /\.page\.server\.[a-zA-Z0-9]+(\?|$)/
-const isomphFileRe = /\.page\.[a-zA-Z0-9]+(\?|$)/
+const isomphFileRE = /\.page\.[a-zA-Z0-9]+(\?|$)/
+const virtualFileRE = /^virtual\:/
 
 function transformCrossEnvFiles(): Plugin {
   return {
     name: 'vite-plugin-ssr:transformCrossEnvFiles',
     enforce: 'post',
     async transform(src, id, options) {
+      if (virtualFileRE.test(id)) {
+        return
+      }
+
       const isServerSide = isSSR_options(options)
       const isClientSide = !isServerSide
 
       if (metaRE.test(id)) {
         const esModules = await parseEsModules(src)
+        const exportNames = getExportNames(esModules)
 
-        if (isClientSide && (clientFileRE.test(id) || isomphFileRe.test(id))) {
-          const exportNames = getExportNames(esModules)
+        if (isClientSide && (clientFileRE.test(id) || isomphFileRE.test(id))) {
           const code = [
             `export const hasExport_Page = ${exportNames.includes('Page') ? 'true' : 'false'};`,
             `export const hasExport_default = ${exportNames.includes('default') ? 'true' : 'false'};`,
@@ -32,7 +37,15 @@ function transformCrossEnvFiles(): Plugin {
           ].join('\n')
           return removeSourceMap(code)
         }
-        assert(false, { id })
+
+        if (isClientSide && serverFileRE.test(id)) {
+          let code = ''
+          code = `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`
+          code += '\n'
+          return removeSourceMap(code)
+        }
+
+        assert(false, { id, isClientSide })
       }
 
       if (isServerSide && clientFileRE.test(id)) {
@@ -45,19 +58,9 @@ function transformCrossEnvFiles(): Plugin {
 
       if (isClientSide && serverFileRE.test(id)) {
         const esModules = await parseEsModules(src)
-        const exportNames = getExportNames(esModules)
-
-        let code = ''
         const extractStylesImports = getExtractStylesImports(esModules)
-        code += extractStylesImports.join('\n')
-
-        code += [
-          '',
-          `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`,
-        ].join('\n')
-
+        let code = extractStylesImports.join('\n')
         code += '\n'
-
         return removeSourceMap(code)
       }
     },

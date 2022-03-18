@@ -36,9 +36,13 @@ function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: 
   const importCode: string[] = []
   const assignCode: string[] = []
   if (isForClientSide) {
-    //*
     {
       const [importCode_, assignCode_] = getVirtualImport('pageFilesClientMeta', '.page.client')
+      importCode.push(...importCode_)
+      assignCode.push(...assignCode_)
+    }
+    {
+      const [importCode_, assignCode_] = getVirtualImport('pageFilesServerMeta', '.page.server')
       importCode.push(...importCode_)
       assignCode.push(...assignCode_)
     }
@@ -47,7 +51,6 @@ function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: 
       importCode.push(...importCode_)
       assignCode.push(...assignCode_)
     }
-    //*/
   }
 
   let fileContent = `// This file was generatead by \`node/plugin/generateImportGlobs.ts\`.
@@ -73,7 +76,8 @@ ${assignCode.join('\n')}
     fileContent += [
       getGlobs(globRoots, isBuild, 'pageFilesClient', 'page.client', { isMeta: false }),
       // getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
-      getGlobs(globRoots, isBuild, 'pageFilesServerMeta', 'page.server', { isMeta: true }),
+      // getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.server', { isMeta: true, appendMetaModifier: true }),
+      getGlobs(globRoots, isBuild, 'pageFilesServer', 'page.server', { isMeta: false }), // Will be processed by `?extractStyles` transformer
       '',
     ].join('\n')
   } else {
@@ -87,7 +91,7 @@ ${assignCode.join('\n')}
   return fileContent
 }
 
-function getVirtualImport(varName: string, fileSuffix: '.page.client' | '.page'): [string[], string[]] {
+function getVirtualImport(varName: string, fileSuffix: '.page.client' | '.page' | '.page.server'): [string[], string[]] {
   const pageFilesVar = 'pageFilesMetaEager'
   const importCode = [
     `import ${varName} from 'virtual:vite-plugin-ssr:pageFilesMeta:${fileSuffix}.js';`,
@@ -111,8 +115,7 @@ function getGlobs(
     }
   }
 
-  // const isEager = (isMeta || fileSuffix === 'page.route') && isBuild
-  const isEager = false
+  const isEager = (isMeta || fileSuffix === 'page.route') && isBuild
 
   let pageFilesVar: 'pageFilesLazy' | 'pageFilesEager' | 'pageFilesMetaLazy' | 'pageFilesMetaEager'
   if (!isMeta) {
