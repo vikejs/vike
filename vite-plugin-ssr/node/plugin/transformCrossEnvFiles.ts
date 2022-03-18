@@ -32,6 +32,7 @@ function transformCrossEnvFiles(): Plugin {
             `export const hasExport_Page = ${exportNames.includes('Page') ? 'true' : 'false'};`,
             `export const hasExport_default = ${exportNames.includes('default') ? 'true' : 'false'};`,
             `export const hasExport_clientRouter = ${exportNames.includes('clientRouter') ? 'true' : 'false'};`,
+            `export const hasExport_render = ${exportNames.includes('render') ? 'true' : 'false'};`,
             // `export const hasExport_overrideDefaults = ${exportNames.includes('overrideDefaults') ? 'true' : 'false'};`,
             '',
           ].join('\n')
@@ -58,7 +59,7 @@ function transformCrossEnvFiles(): Plugin {
 
       if (isClientSide && serverFileRE.test(id)) {
         const esModules = await parseEsModules(src)
-        const extractStylesImports = getExtractStylesImports(esModules)
+        const extractStylesImports = getExtractStylesImports(esModules, id)
         let code = extractStylesImports.join('\n')
         code += '\n'
         return removeSourceMap(code)

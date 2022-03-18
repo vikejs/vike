@@ -24,12 +24,14 @@ function distFileNames(): Plugin {
 type ChunkFileNames = string | ((chunkInfo: PreRenderedChunk) => string) | undefined
 type AssetFileNames = string | ((chunkInfo: PreRenderedAsset) => string) | undefined
 
-// Not sure why Rollup bundles the CSS of dynamic imports; is this a Rollup bug?
 const BLACK_LIST = ['assertRenderHook.css']
 function getAssetFileName(assetInfo: PreRenderedAsset, assetFileName: string | undefined): string {
+  assert(!BLACK_LIST.includes(assetInfo.name ?? ''))
+  /*
   if (assetInfo.name && BLACK_LIST.includes(assetInfo.name)) {
     assetFileName ??= 'assets/chunk-[hash][extname]'
   }
+  */
   assetFileName ??= 'assets/[name].[hash][extname]'
   return assetFileName
 }

@@ -11,34 +11,34 @@ type ManifestEntry         = { manifestKey: string; manifestEntry: ViteManifestE
 type ManifestEntryOptional = { manifestKey: string; manifestEntry: ViteManifestEntry | null; manifest: ViteManifest | null; }
 
 // prettier-ignore
-function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: false  ): ManifestEntry
+function getManifestEntry(id: string, manifests: ViteManifest[], root: string, optional: false  ): ManifestEntry
 // prettier-ignore
-function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: true   ): ManifestEntryOptional
+function getManifestEntry(id: string, manifests: ViteManifest[], root: string, optional: true   ): ManifestEntryOptional
 // prettier-ignore
-function getManifestEntry(filePath: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
+function getManifestEntry(id: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
   assertPosixPath(root)
-  assertPosixPath(filePath)
+  assertPosixPath(id)
 
-  if( filePath.startsWith('@@vite-plugin-ssr/')) {
-    const manifestKeyEnd = slice(filePath, '@@vite-plugin-ssr'.length, 0)
+  if( id.startsWith('@@vite-plugin-ssr/')) {
+    const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
     let manifestEntry: ViteManifestEntry | null = null
     let manifestKey: string | null = null
     let manifest: ViteManifest | null = null
     for( const manifest_ of manifests) {
       for(const manifestKey_ in manifest_) {
         if( manifestKey_.endsWith(manifestKeyEnd) ) {
-          assert(!manifestEntry, { filePath })
+          assert(!manifestEntry, { id })
           manifestEntry = manifest_[manifestKey_]!
           manifestKey = manifestKey_
           manifest = manifest_
         }
       }
     }
-    assert(manifestEntry && manifest && manifestKey, { filePath })
+    assert(manifestEntry && manifest && manifestKey, { id })
     return { manifestEntry, manifest, manifestKey }
   }
 
-  const manifestKey = getManifestKey(filePath, root)
+  const manifestKey = getManifestKey(id, root)
   for (const manifest of manifests) {
     let manifestEntry = manifest[manifestKey]
     if (manifestEntry) {
@@ -46,7 +46,7 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
     }
   }
 
-  const filePath_resolvedSymlink = resolveSymlink(filePath, root)
+  const filePath_resolvedSymlink = resolveSymlink(id, root)
   const manifestKey_resolvedSymlink = getManifestKey(filePath_resolvedSymlink, root)
   for (const manifest of manifests) {
     let manifestEntry = manifest[manifestKey_resolvedSymlink]
@@ -55,7 +55,7 @@ function getManifestEntry(filePath: string, manifests: ViteManifest[], root: str
     }
   }
 
-  assert(optional, { filePath, manifestKey, manifestKey_resolvedSymlink, filePath_resolvedSymlink, numberOfManifests: manifests.length })
+  assert(optional, { id, manifestKey, manifestKey_resolvedSymlink, filePath_resolvedSymlink, numberOfManifests: manifests.length })
   return { manifestKey: manifestKey_resolvedSymlink, manifest: null, manifestEntry: null }
 }
 
