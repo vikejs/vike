@@ -58,7 +58,7 @@ function testRun(
       )
       if (!noDefaultPageInUserCode) {
         expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageShell.${hashRegexp}.css">`,
         )
         expect(html).toMatch(
           partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
