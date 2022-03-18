@@ -12,10 +12,10 @@ import {
   assertPosixPath,
   toPosixPath,
 } from '../utils'
-import { retrieveStyleAssets, retrieveProdAssets } from '../retrievePageAssets'
+import { retrieveStyleAssets, retrieveProdAssets, ClientDependency } from '../retrievePageAssets'
 import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'
-import { isAbsolute } from 'path'
+import path from 'path'
 import { inferMediaType, MediaType } from './inferMediaType'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
@@ -43,39 +43,35 @@ async function getPageAssets(
     _baseUrl: string
     _baseAssets: string | null
   },
-  pageDependencies: string[],
-  clientEntry: string,
+  clientDependencies: ClientDependency[],
+  clientEntries: string[],
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
-  pageDependencies.forEach((filePath) => {
-    assert(isAbsolute(filePath), { filePath })
-  })
-
   const { isProduction = false, viteDevServer } = getSsrEnv()
   const root = getRoot()
 
   let assetUrls: string[]
-  let clientEntrySrc: string
+  let clientEntriesSrc: string[]
   if (isPreRendering || isProduction) {
     const manifests = retrieveViteManifest(isPreRendering)
     const clientManifest = manifests.clientManifest
-    const serverManifest = manifests.serverManifest
-
-    clientEntrySrc = resolveClientEntryProd(clientEntry, clientManifest!, root)
-    console.log('pd',pageDependencies)
-    assetUrls = await retrieveProdAssets([clientEntry, ...pageDependencies], clientManifest, serverManifest, root)
+    // const serverManifest = manifests.serverManifest
+    clientEntriesSrc = clientEntries && resolveClientEntriesProd(clientEntries, clientManifest!, root)
+    assetUrls = await retrieveProdAssets(clientDependencies, clientManifest, /*serverManifest,*/ root)
   } else {
     assert(viteDevServer)
-    clientEntrySrc = resolveClientEntryDev(clientEntry, root)
-    assetUrls = await retrieveStyleAssets(pageDependencies, viteDevServer)
+    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, root)
+    assetUrls = await retrieveStyleAssets(clientDependencies, viteDevServer)
   }
 
   let pageAssets: PageAsset[] = []
-  pageAssets.push({
-    src: clientEntrySrc,
-    assetType: 'script',
-    mediaType: 'text/javascript',
-    preloadType: null,
+  clientEntriesSrc.forEach((clientEntrySrc) => {
+    pageAssets.push({
+      src: clientEntrySrc,
+      assetType: 'script',
+      mediaType: 'text/javascript',
+      preloadType: null,
+    })
   })
   assetUrls.forEach((src) => {
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
@@ -258,27 +254,36 @@ function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
   return htmlString
 }
 
-function resolveClientEntryDev(clientEntry: string, root: string) {
-  assert(clientEntry.startsWith('@@vite-plugin-ssr/'))
-  assertPosixPath(clientEntry)
+function resolveClientEntriesDev(clientEntries: string[], root: string): string[] {
   assertPosixPath(root)
-  const req = require // Prevent webpack from bundling client code
-  const res = req.resolve
-  // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
-  let filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/', '../../../../')))
-  if (!filePath.startsWith('/')) {
-    assert(process.platform === 'win32')
-    filePath = '/' + filePath
-  }
-  filePath = '/@fs' + filePath
-  return filePath
+  return clientEntries.map((clientEntry) => {
+    assertPosixPath(clientEntry)
+    let filePath: string
+    if (!clientEntry.startsWith('@@vite-plugin-ssr/')) {
+      assert(path.posix.isAbsolute(clientEntry))
+      filePath = clientEntry
+    } else {
+      const req = require // Prevent webpack from bundling client code
+      const res = req.resolve
+      // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
+      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/', '../../../../')))
+    }
+    if (!filePath.startsWith('/')) {
+      assert(process.platform === 'win32')
+      filePath = '/' + filePath
+    }
+    filePath = '/@fs' + filePath
+    return filePath
+  })
 }
-function resolveClientEntryProd(clientEntry: string, clientManifest: ViteManifest, root: string): string {
-  const { manifestEntry } = getManifestEntry(clientEntry, [clientManifest], root, false)
-  assert(manifestEntry.isEntry)
-  let { file } = manifestEntry
-  assert(!file.startsWith('/'))
-  return '/' + file
+function resolveClientEntriesProd(clientEntries: string[], clientManifest: ViteManifest, root: string): string[] {
+  return clientEntries.map((clientEntry) => {
+    const { manifestEntry } = getManifestEntry(clientEntry, [clientManifest], root, false)
+    assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry)
+    let { file } = manifestEntry
+    assert(!file.startsWith('/'))
+    return '/' + file
+  })
 }
 
 const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'

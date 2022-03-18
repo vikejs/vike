@@ -17,15 +17,15 @@ function extractStylesPlugin(): Plugin {
       if (extractStylesRE.test(id)) {
         assert(!isSSR_options(options))
         const esModules = await parseEsModules(src)
-        const extractStylesImports = getExtractStylesImports(esModules)
+        const extractStylesImports = getExtractStylesImports(esModules, id)
         return extractStylesImports.join('\n')
       }
     },
   } as Plugin
 }
 
-function getExtractStylesImports(esModules: EsModules) {
-  return getAndTransformImportStatements(esModules, (idImportee) => {
+function getExtractStylesImports(esModules: EsModules, _id: string) {
+  const extractStylesImports = getAndTransformImportStatements(esModules, (idImportee) => {
     idImportee = `${idImportee}?extractStyles`
     const fileExtension = getFileExtension(idImportee)
     if (fileExtension) {
@@ -33,6 +33,8 @@ function getExtractStylesImports(esModules: EsModules) {
     }
     return idImportee
   })
+  // console.log(_id, extractStylesImports)
+  return extractStylesImports
 }
 
 function getAndTransformImportStatements(
@@ -45,6 +47,7 @@ function getAndTransformImportStatements(
   }
   const importStatments: string[] = []
   imports
+    // TODO support aliased imports
     .filter(
       ({ a, n }) =>
         // Remove assertions such as:

@@ -12,6 +12,7 @@ import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
 import { distFileNames } from './distFileNames'
 import { virtualPageFilesMeta } from './virtualPageFilesMeta'
+import { extractStylesPlugin } from './extractStyles'
 
 export default plugin
 export { plugin }
@@ -31,6 +32,7 @@ function plugin(config?: Config | Config[]): any {
     removeRequireHookPlugin(),
     distFileNames(),
     virtualPageFilesMeta(getGlobRoots),
+    extractStylesPlugin(),
   ]
   return plugins as any
 }

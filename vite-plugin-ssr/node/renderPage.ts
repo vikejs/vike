@@ -45,6 +45,7 @@ import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlPr
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPage, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
 import { warn404 } from './renderPage/warn404'
+import { ClientDependency } from './retrievePageAssets'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
@@ -466,7 +467,7 @@ async function loadPageFilesServer(pageContext: {
     loadPageFilesClientMeta(pageContext._pageFilesAll, pageContext._pageId),
   ])
 
-  const clientEntry = getClientEntry(pageContext._pageFilesAll, pageContext._pageId)
+  const { clientEntries, clientDependencies } = getClientEntries(pageContext._pageFilesAll, pageContext._pageId)
 
   objectAssign(pageContextAddendum, {
     _passToClient: getStringUnion(pageContextAddendum.exportsAll, 'passToClient'),
@@ -478,16 +479,19 @@ async function loadPageFilesServer(pageContext: {
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  const pageDependencies = pageContext._pageFilesAll
-    .filter(
-      (p) =>
-        // (p.fileType === '.page' || p.fileType === '.page.client') &&
-        p.fileType !== '.page.route' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
-    )
-    .map((p) => p.filePath)
+  clientDependencies.push(
+    ...pageContext._pageFilesAll
+      .filter(
+        (p) =>
+          // Add CSS assets
+          //  - `.page.server.js` files are transformed by `?extractStyles`
+          p.fileType === '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+      )
+      .map((p) => ({ id: p.filePath, onlyAssets: true })),
+  )
   objectAssign(pageContextAddendum, {
     _getPageAssets: async () => {
-      const pageAssets = await getPageAssets(pageContext, pageDependencies, clientEntry, isPreRendering)
+      const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries, isPreRendering)
       return pageAssets
     },
   })
@@ -495,23 +499,80 @@ async function loadPageFilesServer(pageContext: {
   return pageContextAddendum
 }
 async function loadPageFilesClientMeta(pageFilesAll: PageFile[], pageId: string): Promise<void> {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/
-  const pageFilesClient = getPageFilesClient(pageFilesAll, pageId)
-  await Promise.all(pageFilesClient.map((p) => p.loadMeta?.()))
-}
-function getClientEntry(pageFilesAll: PageFile[], pageId: string): string {
-  const pageFilesClient = getPageFilesClient(pageFilesAll, pageId)
-  const usesClientRouting = pageFilesClient.some((p) => (p.meta!.exportNames as string[]).includes('clientRouting'))
-  const clientEntry = usesClientRouting
-    ? '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
-    : '@@vite-plugin-ssr/dist/esm/client/entry.js'
-  return clientEntry
-}
-function getPageFilesClient(pageFilesAll: PageFile[], pageId: string) {
-  const pageFilesClient = pageFilesAll.filter(
-    (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId),
+  await Promise.all(
+    pageFilesAll
+      .filter((p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId))
+      .map((p) => p.loadMeta?.()),
   )
-  return pageFilesClient
+}
+function getClientEntries(
+  pageFilesAll: PageFile[],
+  pageId: string,
+): { clientEntries: string[]; clientDependencies: ClientDependency[] } {
+  const clientEntries: string[] = []
+  const pageFilesClient: PageFile[] = []
+  const clientDependencies: ClientDependency[] = []
+
+  // The `.page.client.js` files that should, potentially, be loaded in the browser
+  const pageFilesClientCandidates = pageFilesAll.filter(
+    (p) => (p.fileType === '.page.client' || p.fileType === '.page') && (p.isDefaultPageFile || p.pageId === pageId),
+  )
+
+  {
+    // Include all `.page.client.js` files that don't `export { render }`
+    //  - Also for HTML-only pages; allowing the user to add client-side JavaScript while skipping the heavy `render()` hook's dependencies.
+    const pageFilesClientNonRender = pageFilesClientCandidates.filter((p) => !getExportNames(p).includes('render'))
+    pageFilesClient.push(...pageFilesClientNonRender)
+  }
+
+  // Handle SPA & SSR client
+  {
+    const pageFilesClientExports = pageFilesClientCandidates.map(getExportNames).flat()
+    const hasPage = pageFilesClientExports.includes('Page') || pageFilesClientExports.includes('default')
+    const hasRender = pageFilesClientExports.includes('render')
+    if (hasRender && hasPage) {
+      // Add the `.page.client.js` file that has `export { render }`
+      //  - The filesystem-nearest one
+      //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
+      {
+        const pageFileClientRender = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('render'))[0]
+        assert(pageFileClientRender)
+        pageFilesClient.push(pageFileClientRender)
+      }
+      // Add the vps client entry
+      {
+        const usesClientRouting = pageFilesClient.some((p) => getExportNames(p).includes('clientRouting'))
+        const clientEntry = usesClientRouting
+          ? // $userRoot/dist/client/entry-client-routing.js
+            '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
+          : // $userRoot/dist/client/entry-server-routing.js
+            '@@vite-plugin-ssr/dist/esm/client/entry.js'
+        clientEntries.push(clientEntry)
+        clientDependencies.push({ id: clientEntry, onlyAssets: false })
+      }
+    } else {
+      // There is no vps client entry; we directly load the user's `.page.client.js` files
+      //  - There is no `render()` hook; so there is no need for `pageContext` (nor `pageContext.exports`).
+      clientEntries.push(...pageFilesClient.map((p) => p.filePath))
+    }
+  }
+
+  clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
+  return { clientEntries, clientDependencies }
+}
+
+function getExportNames(pageFile: PageFile): string[] {
+  if (pageFile.fileType === '.page.client') {
+    // We assume `pageFile.loadMeta()` was already called
+    assert(hasProp(pageFile.meta, 'exportNames', 'string[]'), pageFile.filePath)
+    return pageFile.meta.exportNames
+  }
+  if (pageFile.fileType === '.page') {
+    // We assume `pageFile.loadFileExports()` was already called
+    assert(pageFile.fileExports, pageFile.filePath)
+    return Object.keys(pageFile.fileExports)
+  }
+  assert(false)
 }
 
 async function executeOnBeforeRenderHooks(
