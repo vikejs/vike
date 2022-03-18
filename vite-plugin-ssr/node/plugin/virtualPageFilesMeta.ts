@@ -41,12 +41,12 @@ function getIdMatch(id: string) {
     return null
   }
   const fileType = id.slice(importNamePrefix.length)
-  assert(fileType === '.page.js' || fileType === '.page.client.js', { id, fileType })
+  assert(fileType === '.page.js' || fileType === '.page.client.js' || fileType === '.page.server.js', { id, fileType })
   return fileType
 }
 
 async function getSrc(
-  fileType: '.page.js' | '.page.client.js',
+  fileType: '.page.js' | '.page.client.js' | '.page.server.js',
   root: string,
   viteDevServer: ViteDevServer | null,
   id: string,
@@ -57,7 +57,10 @@ async function getSrc(
   const files: string[] = []
   await Promise.all(
     globRoots.map(async (globRoot) => {
-      const fileSuffix = (fileType === '.page.js' && 'page') || (fileType === '.page.client.js' && 'page.client')
+      const fileSuffix =
+        (fileType === '.page.js' && 'page') ||
+        (fileType === '.page.client.js' && 'page.client') ||
+        (fileType === '.page.server.js' && 'page.server')
       assert(fileSuffix)
       const globPath = getGlobPath(globRoot, fileSuffix)
       assertPosixPath(globPath)
