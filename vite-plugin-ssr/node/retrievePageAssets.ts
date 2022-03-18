@@ -1,24 +1,27 @@
+export { retrieveProdAssets }
+export { retrieveStyleAssets }
+export type { ClientDependency }
+
 import { assert } from './utils'
 import { ViteManifest } from './getViteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
 
-export { retrieveProdAssets }
-export { retrieveStyleAssets }
+type ClientDependency = {
+  // Can be:
+  //  - absolute path, or `
+  //  - `@vite-plugin-ssr/dist/...`.
+  id: string
+  onlyAssets: boolean
+}
 
-async function retrieveStyleAssets(pageDependencies: string[], viteDevServer: ViteDevServer) {
+async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()
   const assetUrls = new Set<string>()
-  /*
-  const pageViewFiles: string[] = pageContext._allPageFiles['.page'].map(({ filePath }) => filePath)
-  const skipPageViewFiles = pageViewFiles.filter(
-    (pageViewFile) => !pageDependencies.some((dep) => dep.includes(pageViewFile)),
-  )
-  */
   await Promise.all(
-    pageDependencies.map(async (filePath) => {
-      assert(filePath)
-      const mod = await viteDevServer.moduleGraph.getModuleByUrl(filePath)
+    clientDependencies.map(async ({ id }) => {
+      assert(id)
+      const mod = await viteDevServer.moduleGraph.getModuleByUrl(id)
       collectCss(mod, assetUrls, visitedModules /*, skipPageViewFiles*/)
     }),
   )
@@ -26,30 +29,19 @@ async function retrieveStyleAssets(pageDependencies: string[], viteDevServer: Vi
 }
 
 async function retrieveProdAssets(
-  pageDependencies: string[],
+  clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
-  serverManifest: ViteManifest,
+  // serverManifest: ViteManifest,
   root: string,
 ): Promise<string[]> {
   let assetUrls = new Set<string>()
-  assert(clientManifest && serverManifest)
+  assert(clientManifest)
   const visistedAssets = new Set<string>()
-  pageDependencies.forEach((filePath) => {
-    const { manifestKey, manifest } = getManifestEntry(
-      filePath,
-      [
-        /* We disable this for now; changes to Vite are required for this to work.
-          serverManifest,
-          */
-        clientManifest,
-      ],
-      root,
-      true,
-    )
+  clientDependencies.forEach(({ id, onlyAssets }) => {
+    const { manifestKey, manifest } = getManifestEntry(id, [clientManifest], root, true)
     // console.log('Manifest Entry', filePath, manifestKey, !!manifest)
     if (!manifest) return // `filePath` may be missing in the manifest; https://github.com/brillout/vite-plugin-ssr/issues/51
-    const onlyCollectStaticAssets = manifest === serverManifest
-    collectAssets(manifestKey, assetUrls, visistedAssets, manifest, onlyCollectStaticAssets)
+    collectAssets(manifestKey, assetUrls, visistedAssets, manifest, onlyAssets)
   })
 
   return Array.from(assetUrls)
@@ -73,15 +65,16 @@ function collectAssets(
   }
 
   const { imports = [], assets = [], css = [] } = manifestEntry
+
   for (const manifestKey of imports) {
     const importManifestEntry = manifest[manifestKey]
     assert(importManifestEntry)
     collectAssets(manifestKey, assetUrls, visistedAssets, manifest, onlyCollectStaticAssets)
   }
+
   for (const cssAsset of css) {
     assetUrls.add(`/${cssAsset}`)
   }
-
   for (const asset of assets) {
     assetUrls.add(`/${asset}`)
   }
