@@ -1,4 +1,4 @@
-import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase } from '../../libframe/test/setup'
+import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase, isMac } from '../../libframe/test/setup'
 import assert from 'assert'
 
 export { testRun }
@@ -12,7 +12,14 @@ function testRun(
   const isWorker = isMiniflare || isWrangler
 
   if ((isWindows() || isNode12()) && isWorker) {
-    const msg = 'SKIPPED: miniflare and wrangler'
+    const msg = 'SKIPPED miniflare and wrangler for windows.'
+    console.log(msg)
+    test(msg, () => {})
+    return
+  }
+
+  if (isWrangler && isMac()) {
+    const msg = 'SKIPPED wrangler for MacOS.'
     console.log(msg)
     test(msg, () => {})
     return
