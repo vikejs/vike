@@ -25,7 +25,8 @@ import {
   assertBaseUrl,
   isPromise,
 } from './utils'
-import { getPageAssets, PageAssets } from './html/injectAssets'
+import type { PageAsset } from './html/injectAssets'
+import { getPageAssets } from './renderPage/getPageAssets'
 import { sortPageContext } from '../shared/sortPageContext'
 import { assertHookResult, assertObjectKeys } from '../shared/assertHookResult'
 import {
@@ -602,7 +603,7 @@ async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
     _isPreRendering: boolean
-    _getPageAssets: () => Promise<PageAssets>
+    _getPageAssets: () => Promise<PageAsset[]>
     _passToClient: string[]
     _pageFilesAll: PageFile[]
   },
