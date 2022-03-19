@@ -8,7 +8,6 @@ import {
   normalizePath,
   prependBaseUrl,
   slice,
-  getRoot,
   assertPosixPath,
   toPosixPath,
 } from '../utils'
@@ -48,16 +47,14 @@ async function getPageAssets(
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
   const { isProduction = false, viteDevServer } = getSsrEnv()
-  const root = getRoot()
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isPreRendering || isProduction) {
     const manifests = retrieveViteManifest(isPreRendering)
     const clientManifest = manifests.clientManifest
-    // const serverManifest = manifests.serverManifest
-    clientEntriesSrc = clientEntries && resolveClientEntriesProd(clientEntries, clientManifest!, root)
-    assetUrls = await retrieveProdAssets(clientDependencies, clientManifest, /*serverManifest,*/ root)
+    clientEntriesSrc = clientEntries && resolveClientEntriesProd(clientEntries, clientManifest!)
+    assetUrls = await retrieveProdAssets(clientDependencies, clientManifest)
   } else {
     assert(viteDevServer)
     clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries)
@@ -275,9 +272,12 @@ function resolveClientEntriesDev(clientEntries: string[]): string[] {
     return filePath
   })
 }
-function resolveClientEntriesProd(clientEntries: string[], clientManifest: ViteManifest, root: string | null): string[] {
+function resolveClientEntriesProd(
+  clientEntries: string[],
+  clientManifest: ViteManifest,
+): string[] {
   return clientEntries.map((clientEntry) => {
-    const { manifestEntry } = getManifestEntry(clientEntry, [clientManifest], root, false)
+    const { manifestEntry } = getManifestEntry(clientEntry, clientManifest, false)
     assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry)
     let { file } = manifestEntry
     assert(!file.startsWith('/'))
