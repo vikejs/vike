@@ -55,7 +55,7 @@ function collectAssets(
   visistedAssets.add(manifestKey)
 
   const manifestEntry = manifest[manifestKey]
-  assert(manifestEntry)
+  assert(manifestEntry, { manifestKey })
   const { file } = manifestEntry
   if (!onlyCollectStaticAssets) {
     assetUrls.add(`/${file}`)
