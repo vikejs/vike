@@ -12,24 +12,28 @@ function testRun(
   const isWorker = isMiniflare || isWrangler
 
   if ((isWindows() || isNode12()) && isWorker) {
-    const msg = 'SKIPED: miniflare and wrangler'
+    const msg = 'SKIPPED: miniflare and wrangler'
     console.log(msg)
     test(msg, () => {})
     return
   }
 
   if (isWrangler) {
-    if (!isGithubAction() || process.env['GIT_BRANCH'] !== 'master') {
-      const msg = 'SKIPED: wrangler test is not run locally nor in Pull Requests'
+    /* TODO: differentiate between PR VS maintainer branch
+    if (isGithubAction() && process.env['GIT_BRANCH'] !== 'master') {
+      const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
       console.log(msg)
       test(msg, () => {})
       return
     }
-    test('API keys', () => {
-      const envVars = Object.keys(process.env)
-      expect(envVars).toContain('CF_ACCOUNT_ID')
-      expect(envVars).toContain('CF_API_TOKEN')
-    })
+    */
+    const envVars = Object.keys(process.env)
+    if (!envVars.includes('CF_ACCOUNT_ID') || !envVars.includes('CF_API_TOKEN')) {
+      const msg = 'SKIPPED: No Cloudflare Workers tokens provided.'
+      console.log(msg)
+      test(msg, () => {})
+      return
+    }
   }
 
   {
