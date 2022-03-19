@@ -3,48 +3,64 @@ import { assert, assertPosixPath, slice } from './utils'
 
 export { getManifestEntry }
 
-// prettier-ignore
-type ManifestEntry         = { manifestKey: string; manifestEntry: ViteManifestEntry        }
-// prettier-ignore
-type ManifestEntryOptional = { manifestKey: string; manifestEntry: ViteManifestEntry | null }
-
-// prettier-ignore
-function getManifestEntry(id: string, clientManifest: ViteManifest, optional: false  ): ManifestEntry
-// prettier-ignore
-function getManifestEntry(id: string, clientManifest: ViteManifest, optional: true   ): ManifestEntryOptional
-function getManifestEntry(id: string, clientManifest: ViteManifest, optional: boolean): ManifestEntryOptional {
+function getManifestEntry(
+  id: string,
+  clientManifest: ViteManifest,
+): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertPosixPath(id)
   assert(!id.startsWith('/@fs'), { id })
+  assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/'), { id })
 
   if (id.startsWith('@@vite-plugin-ssr/')) {
     const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
-    let manifestEntry: ViteManifestEntry | null = null
-    let manifestKey: string | null = null
-    for (const manifestKey_ in clientManifest) {
-      if (manifestKey_.endsWith(manifestKeyEnd)) {
-        assert(!manifestEntry, { id })
-        manifestEntry = clientManifest[manifestKey_]!
-        manifestKey = manifestKey_
-      }
-    }
+    const { manifestKey, manifestEntry } = find(manifestKeyEnd, clientManifest, id)
     assert(manifestEntry && manifestKey, { id })
     return { manifestEntry, manifestKey }
   }
 
-  const manifestKey = getManifestKey(id)
-  let manifestEntry = clientManifest[manifestKey]
-  if (manifestEntry) {
-    return { manifestEntry, manifestKey }
+  {
+    assert(id.startsWith('/'))
+    const manifestKey = id.slice(1)
+    let manifestEntry = clientManifest[manifestKey]
+    if (manifestEntry) {
+      return { manifestEntry, manifestKey }
+    }
   }
 
-  assert(optional, { id, manifestKey })
-  return { manifestKey, manifestEntry: null }
+  if (id.startsWith('/node_modules')) {
+    let manifestKeyEnd = id.slice('/node_modules'.length)
+    assert(manifestKeyEnd.startsWith('/'))
+    {
+      const { manifestEntry, manifestKey } = find(manifestKeyEnd, clientManifest, id)
+      if (manifestEntry) {
+        assert(manifestKey)
+        return { manifestEntry, manifestKey }
+      }
+    }
+    manifestKeyEnd = manifestKeyEnd.split('/').slice(1).join('/')
+    assert(manifestKeyEnd.startsWith('/'))
+    {
+      const { manifestEntry, manifestKey } = find(manifestKeyEnd, clientManifest, id)
+      if (manifestEntry) {
+        assert(manifestKey)
+        return { manifestEntry, manifestKey }
+      }
+    }
+  }
+
+  assert(false, { id })
 }
 
-function getManifestKey(filePath: string) {
-  let manifestKey = filePath
-  if (manifestKey.startsWith('/')) {
-    manifestKey = manifestKey.slice(1)
+function find(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
+  assert(manifestKeyEnd.startsWith('/'))
+  let manifestEntry: ViteManifestEntry | null = null
+  let manifestKey: string | null = null
+  for (const manifestKey_ in clientManifest) {
+    if (manifestKey_.endsWith(manifestKeyEnd)) {
+      assert(!manifestEntry, { id })
+      manifestEntry = clientManifest[manifestKey_]!
+      manifestKey = manifestKey_
+    }
   }
-  return manifestKey
+  return { manifestEntry, manifestKey }
 }
