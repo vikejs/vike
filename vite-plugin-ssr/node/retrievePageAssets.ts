@@ -36,8 +36,8 @@ async function retrieveProdAssets(
   assert(clientManifest)
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
-    const { manifestKey } = getManifestEntry(id, clientManifest, true)
-    if (!manifestKey) return // `filePath` may be missing in the manifest; https://github.com/brillout/vite-plugin-ssr/issues/51
+    const { manifestKey } = getManifestEntry(id, clientManifest)
+    // TODO check https://github.com/brillout/vite-plugin-ssr/issues/51
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
 
