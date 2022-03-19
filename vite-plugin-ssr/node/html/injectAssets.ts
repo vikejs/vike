@@ -60,7 +60,7 @@ async function getPageAssets(
     assetUrls = await retrieveProdAssets(clientDependencies, clientManifest, /*serverManifest,*/ root)
   } else {
     assert(viteDevServer)
-    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, root)
+    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries)
     assetUrls = await retrieveStyleAssets(clientDependencies, viteDevServer)
   }
 
@@ -254,8 +254,7 @@ function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
   return htmlString
 }
 
-function resolveClientEntriesDev(clientEntries: string[], root: string): string[] {
-  assertPosixPath(root)
+function resolveClientEntriesDev(clientEntries: string[]): string[] {
   return clientEntries.map((clientEntry) => {
     assertPosixPath(clientEntry)
     let filePath: string
@@ -276,7 +275,7 @@ function resolveClientEntriesDev(clientEntries: string[], root: string): string[
     return filePath
   })
 }
-function resolveClientEntriesProd(clientEntries: string[], clientManifest: ViteManifest, root: string): string[] {
+function resolveClientEntriesProd(clientEntries: string[], clientManifest: ViteManifest, root: string | null): string[] {
   return clientEntries.map((clientEntry) => {
     const { manifestEntry } = getManifestEntry(clientEntry, [clientManifest], root, false)
     assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry)

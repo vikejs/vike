@@ -32,7 +32,7 @@ async function retrieveProdAssets(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
   // serverManifest: ViteManifest,
-  root: string,
+  root: string | null,
 ): Promise<string[]> {
   let assetUrls = new Set<string>()
   assert(clientManifest)
