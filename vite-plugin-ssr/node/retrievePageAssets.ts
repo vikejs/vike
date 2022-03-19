@@ -22,7 +22,7 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
     clientDependencies.map(async ({ id }) => {
       assert(id)
       const mod = await viteDevServer.moduleGraph.getModuleByUrl(id)
-      collectCss(mod, assetUrls, visitedModules /*, skipPageViewFiles*/)
+      collectCss(mod, assetUrls, visitedModules)
     }),
   )
   return Array.from(assetUrls)
@@ -31,17 +31,14 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
 async function retrieveProdAssets(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
-  // serverManifest: ViteManifest,
-  root: string | null,
 ): Promise<string[]> {
   let assetUrls = new Set<string>()
   assert(clientManifest)
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
-    const { manifestKey, manifest } = getManifestEntry(id, [clientManifest], root, true)
-    // console.log('Manifest Entry', filePath, manifestKey, !!manifest)
-    if (!manifest) return // `filePath` may be missing in the manifest; https://github.com/brillout/vite-plugin-ssr/issues/51
-    collectAssets(manifestKey, assetUrls, visistedAssets, manifest, onlyAssets)
+    const { manifestKey } = getManifestEntry(id, clientManifest, true)
+    if (!manifestKey) return // `filePath` may be missing in the manifest; https://github.com/brillout/vite-plugin-ssr/issues/51
+    collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
 
   return Array.from(assetUrls)
@@ -84,17 +81,15 @@ function collectCss(
   mod: ModuleNode | undefined,
   styleUrls: Set<string>,
   visitedModules: Set<string>,
-  //skipPageViewFiles: string[],
 ): void {
   if (!mod) return
   if (!mod.url) return
-  //if (skipPageViewFiles.some((pageViewFile) => mod.id && mod.id.includes(pageViewFile))) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
   if (mod.url.endsWith('.css') || (mod.id && /\?vue&type=style/.test(mod.id))) {
     styleUrls.add(mod.url)
   }
   mod.importedModules.forEach((dep) => {
-    collectCss(dep, styleUrls, visitedModules /*, skipPageViewFiles*/)
+    collectCss(dep, styleUrls, visitedModules)
   })
 }
