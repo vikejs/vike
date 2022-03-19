@@ -1,7 +1,6 @@
 # Contribute to `vite-plugin-ssr`
 
 - [System requirements](#system-requirements)
-  - [Testing on Debian](#testing-on-debian)
 - [Install & build](#install--build)
 - [Ceate new example](#create-new-example)
 - [Modify existing example](#modify-existing-example)
@@ -17,64 +16,6 @@
 - [pnpm](https://pnpm.io/) `>= v6.21.0`. (To install it: `$ npm install -g pnpm`.)
 
 > These requirements are for developing only; `vite-plugin-ssr` can be used with any package manager, Windows, and Node.js `>= v12.19.0`.
-
-### Testing on Debian
-
-To run the test suite on Debian, additional dependencies are needed to install [playwright](https://github.com/microsoft/playwright).
-
-<details>
-  <summary>Click for details</summary>
-  
-  #### Installing playwright
-  
-  When running the test suite on Debian, playwright prompts to install its dependencies using:
-  
-  ```shell
-  npx playwright install-deps
-  ```
-  
-  According to the playwright's [system requirements](https://playwright.dev/docs/library#system-requirements), only Ubuntu is officially supported, so when running the command, it tries to install the required packages `libjpeg-turbo8` and `libicu66` with apt-get, which does not exist in the Debian sources list.
-  
-  #### Resolve missing dependencies
-  
-  To resolve the missing dependencies, you can:
-  
-  1. either follow the error messages and install all dependencies manually
-  2. add `non-free` sources to `sources.list` and install `libjpeg-turbo8` and `libicu66` manually
-
-  To add the `non-free` sources to `deb` and `deb-src`:
-
-  ```shell
-  sudo nano /etc/apt/sources.list
-
-  # add the sources
-
-  deb http://deb.debian.org/debian/ bullseye main non-free
-  deb-src http://deb.debian.org/debian/ bullseye main non-free
-
-  # update package information
-
-  sudo apt-get update
-  ```
-
-  Download the official Ubuntu `libjpeg-turbo8` and `libicu66` packages from [pkgs.org](https://pkgs.org/) using `wget`:
-
-  - [libjpeg-turbo8](https://pkgs.org/download/libjpeg-turbo8)
-  - [libicu66](https://pkgs.org/download/libicu66)
-
-  You should be able to install both packages, since the required dependencies will be resolved automatically through the non-free sources:
-
-  ```shell
-  wget <url-topackage>.deb
-  dpkg -i <package>.deb
-  ```
-
-  With all packages successfully installed, you can finally install `playwright`:
-
-  ```shell
-  npx playwright install-deps
-  ``` 
-</details>
 
 <br/>
 
@@ -154,6 +95,8 @@ to let GitHub Actions run the test suite for you.
 
 Follow the instructions of [Install & Build](#install--build).
 
+> On Debian, [these additional steps](https://github.com/brillout/vite-plugin-ssr/issues/283#issuecomment-1072974554) are required.
+
 To run all tests:
 
 ```shell
@@ -170,4 +113,3 @@ pnpm run test examples/some-example/
 # Or provide a substring of the path
 pnpm run test ome-exampl
 ```
-
