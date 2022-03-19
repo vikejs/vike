@@ -1,6 +1,6 @@
-import { posix } from 'path'
+// import { posix } from 'path'
 import type { ViteManifest, ViteManifestEntry } from './getViteManifest'
-import { assert, assertPosixPath, toPosixPath, slice } from './utils'
+import { assert, assertPosixPath, slice } from './utils'
 
 export { getManifestEntry }
 //export type { ManifestEntry }
@@ -11,13 +11,13 @@ type ManifestEntry         = { manifestKey: string; manifestEntry: ViteManifestE
 type ManifestEntryOptional = { manifestKey: string; manifestEntry: ViteManifestEntry | null; manifest: ViteManifest | null; }
 
 // prettier-ignore
-function getManifestEntry(id: string, manifests: ViteManifest[], root: string, optional: false  ): ManifestEntry
+function getManifestEntry(id: string, manifests: ViteManifest[], root: string | null, optional: false  ): ManifestEntry
 // prettier-ignore
-function getManifestEntry(id: string, manifests: ViteManifest[], root: string, optional: true   ): ManifestEntryOptional
+function getManifestEntry(id: string, manifests: ViteManifest[], root: string | null, optional: true   ): ManifestEntryOptional
 // prettier-ignore
-function getManifestEntry(id: string, manifests: ViteManifest[], root: string, optional: boolean): ManifestEntryOptional {
-  assertPosixPath(root)
+function getManifestEntry(id: string, manifests: ViteManifest[], root: string | null, optional: boolean): ManifestEntryOptional {
   assertPosixPath(id)
+  assert(!id.startsWith('/@fs'), { id })
 
   if( id.startsWith('@@vite-plugin-ssr/')) {
     const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
@@ -46,6 +46,7 @@ function getManifestEntry(id: string, manifests: ViteManifest[], root: string, o
     }
   }
 
+  /*
   const filePath_resolvedSymlink = resolveSymlink(id, root)
   const manifestKey_resolvedSymlink = getManifestKey(filePath_resolvedSymlink, root)
   for (const manifest of manifests) {
@@ -57,19 +58,25 @@ function getManifestEntry(id: string, manifests: ViteManifest[], root: string, o
 
   assert(optional, { id, manifestKey, manifestKey_resolvedSymlink, filePath_resolvedSymlink, numberOfManifests: manifests.length })
   return { manifestKey: manifestKey_resolvedSymlink, manifest: null, manifestEntry: null }
+  */
+  assert(optional, { id, manifestKey, numberOfManifests: manifests.length })
+  return { manifestKey, manifest: null, manifestEntry: null }
 }
 
-function getManifestKey(filePath: string, root: string) {
+function getManifestKey(filePath: string, _root: string | null) {
   let manifestKey = filePath
+  /*
   if (filePath.startsWith('/@fs/')) {
     manifestKey = posix.relative(root, manifestKey.slice('/@fs'.length))
   }
+  */
   if (manifestKey.startsWith('/')) {
     manifestKey = manifestKey.slice(1)
   }
   return manifestKey
 }
 
+/*
 function resolveSymlink(filePath: string, root: string) {
   const filePathAbsolute = filePath.startsWith('/@fs/')
     ? filePath.slice((isWindows() ? '/@fs/' : '/@fs').length)
@@ -86,3 +93,4 @@ function resolveSymlink(filePath: string, root: string) {
 function isWindows() {
   return process.platform === 'win32'
 }
+*/
