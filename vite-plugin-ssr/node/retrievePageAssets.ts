@@ -21,7 +21,11 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
       assert(id)
-      const mod = await viteDevServer.moduleGraph.getModuleByUrl(id)
+      const { moduleGraph } = viteDevServer
+      const [_, graphId] = await moduleGraph.resolveUrl(id)
+      assert(graphId, { id })
+      const mod = await moduleGraph.getModuleById(graphId)
+      assert(mod, { id })
       collectCss(mod, assetUrls, visitedModules)
     }),
   )
@@ -81,8 +85,8 @@ function collectAssets(
   }
 }
 
-function collectCss(mod: ModuleNode | undefined, styleUrls: Set<string>, visitedModules: Set<string>): void {
-  if (!mod) return
+function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>): void {
+  assert(mod)
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
