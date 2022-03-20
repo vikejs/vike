@@ -288,7 +288,7 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
           deprecationAlreadyLogged = true
           assertWarning(
             false,
-            '`pageContext.pageExports` is going to be deprecated in favor of `pageContext.exports`, see https://vite-plugin-ssr.com/exports',
+            '`pageContext.pageExports` is deprecated in favor of `pageContext.exports`, see https://vite-plugin-ssr.com/exports',
           )
         }
         return Reflect.get(...args)
@@ -352,7 +352,7 @@ function assertExports(pageFiles: PageFile[], customExports: string[]) {
         alreadyLoggedWarnings.push(exportName)
         assertWarning(
           customExports.includes(exportName),
-          `Unknown \`export { ${exportName} }\` at ${p.filePath}, see https://vite-plugin-ssr/customExports`,
+          `Unknown \`export { ${exportName} }\` at ${p.filePath}. See https://vite-plugin-ssr/customExports for removing this warning.`,
         )
       }
     })
