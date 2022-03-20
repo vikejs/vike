@@ -20,6 +20,7 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
   const assetUrls = new Set<string>()
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
+      if (id.startsWith('@@vite-plugin-ssr')) return // vps doesn't have any CSS
       assert(id)
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)
