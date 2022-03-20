@@ -747,9 +747,11 @@ function assertArguments(...args: unknown[]) {
   )
 }
 
+let wasAlreadyPrinted = false
 function warnMissingErrorPage() {
   const { isProduction } = getSsrEnv()
-  if (!isProduction) {
+  if (!isProduction && wasAlreadyPrinted) {
+    wasAlreadyPrinted = true
     assertWarning(
       false,
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
