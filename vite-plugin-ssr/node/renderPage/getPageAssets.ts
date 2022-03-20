@@ -18,7 +18,7 @@ async function getPageAssets(
   clientEntries: string[],
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
-  const { isProduction = false, viteDevServer } = getSsrEnv()
+  const { isProduction = false, viteDevServer, root } = getSsrEnv()
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
@@ -29,7 +29,8 @@ async function getPageAssets(
     assetUrls = await retrieveProdAssets(clientDependencies, clientManifest)
   } else {
     assert(viteDevServer)
-    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries)
+    assert(root)
+    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, root)
     assetUrls = await retrieveStyleAssets(clientDependencies, viteDevServer)
   }
 
@@ -108,13 +109,14 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
   return { clientManifest, serverManifest }
 }
 
-function resolveClientEntriesDev(clientEntries: string[]): string[] {
+function resolveClientEntriesDev(clientEntries: string[], root: string): string[] {
+  assertPosixPath(root)
   return clientEntries.map((clientEntry) => {
     assertPosixPath(clientEntry)
     let filePath: string
     if (!clientEntry.startsWith('@@vite-plugin-ssr/')) {
       assert(path.posix.isAbsolute(clientEntry))
-      filePath = clientEntry
+      filePath = path.posix.join(root, clientEntry)
     } else {
       const req = require // Prevent webpack from bundling client code
       const res = req.resolve
