@@ -2,7 +2,7 @@ export { retrieveProdAssets }
 export { retrieveStyleAssets }
 export type { ClientDependency }
 
-import { assert } from './utils'
+import { assert, assertWarning } from './utils'
 import { ViteManifest } from './getViteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
@@ -24,7 +24,7 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
       const { moduleGraph } = viteDevServer
       const [_, graphId] = await moduleGraph.resolveUrl(id)
       assert(graphId, { id })
-      const mod = await moduleGraph.getModuleById(graphId)
+      const mod = moduleGraph.getModuleById(graphId)
       assert(mod, { id })
       collectCss(mod, assetUrls, visitedModules)
     }),
@@ -41,6 +41,10 @@ async function retrieveProdAssets(
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
     const entry = getManifestEntry(id, clientManifest)
+    assertWarning(
+      entry,
+      "You stumbled upon a Rollup bug that is known to the vite-plugin-ssr maintainer. It's usually benign but it may cause problems. Feel free to reach out on GitHub or Discord.",
+    )
     if (!entry) {
       // Circumvent Rollup Bug, see https://github.com/brillout/vite-plugin-ssr/issues/51
       return

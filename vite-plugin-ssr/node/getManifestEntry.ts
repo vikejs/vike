@@ -37,8 +37,13 @@ function getManifestEntry(
         return { manifestEntry, manifestKey }
       }
     }
-    manifestKeyEnd = manifestKeyEnd.split('/').slice(1).join('/')
-    assert(manifestKeyEnd.startsWith('/'))
+    {
+      assert(manifestKeyEnd.startsWith('/'))
+      const dirS = manifestKeyEnd.split('/')
+      assert(dirS[0] === '')
+      manifestKeyEnd = '/' + dirS.slice(2).join('/')
+      assert(manifestKeyEnd.startsWith('/'), { id })
+    }
     {
       const { manifestEntry, manifestKey } = find(manifestKeyEnd, clientManifest, id)
       if (manifestEntry) {
@@ -53,14 +58,18 @@ function getManifestEntry(
 
 function find(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
   assert(manifestKeyEnd.startsWith('/'))
-  let manifestEntry: ViteManifestEntry | null = null
-  let manifestKey: string | null = null
-  for (const manifestKey_ in clientManifest) {
-    if (manifestKey_.endsWith(manifestKeyEnd)) {
-      assert(!manifestEntry, { id })
-      manifestEntry = clientManifest[manifestKey_]!
-      manifestKey = manifestKey_
+  const manifestKeys: string[] = []
+  for (const manifestKey in clientManifest) {
+    if (manifestKey.endsWith(manifestKeyEnd)) {
+      manifestKeys.push(manifestKey)
     }
   }
+  const manifestKeysRelative = manifestKeys.filter((k) => k.startsWith('../'))
+  assert(manifestKeysRelative.length <= 1, { id })
+  const manifestKey = manifestKeysRelative[0] ?? manifestKeys[0] ?? null
+  if (!manifestKey) {
+    return { manifestEntry: null, manifestKey: null }
+  }
+  const manifestEntry = clientManifest[manifestKey]!
   return { manifestEntry, manifestKey }
 }
