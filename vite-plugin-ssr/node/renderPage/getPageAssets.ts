@@ -110,7 +110,7 @@ function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteMa
 }
 
 function resolveClientEntriesDev(clientEntries: string[], root: string): string[] {
-  assertPosixPath(root)
+  root = toPosixPath(root)
   return clientEntries.map((clientEntry) => {
     assertPosixPath(clientEntry)
     let filePath: string
