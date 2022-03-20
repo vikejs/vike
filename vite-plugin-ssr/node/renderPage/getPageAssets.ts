@@ -131,7 +131,9 @@ function resolveClientEntriesDev(clientEntries: string[]): string[] {
 }
 function resolveClientEntriesProd(clientEntries: string[], clientManifest: ViteManifest): string[] {
   return clientEntries.map((clientEntry) => {
-    const { manifestEntry } = getManifestEntry(clientEntry, clientManifest)
+    const entry = getManifestEntry(clientEntry, clientManifest)
+    assert(entry)
+    const { manifestEntry } = entry
     assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry)
     let { file } = manifestEntry
     assert(!file.startsWith('/'))

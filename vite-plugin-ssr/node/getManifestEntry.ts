@@ -6,7 +6,7 @@ export { getManifestEntry }
 function getManifestEntry(
   id: string,
   clientManifest: ViteManifest,
-): { manifestKey: string; manifestEntry: ViteManifestEntry } {
+): null | { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertPosixPath(id)
   assert(!id.startsWith('/@fs'), { id })
   assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/'), { id })
@@ -48,7 +48,7 @@ function getManifestEntry(
     }
   }
 
-  assert(false, { id })
+  return null
 }
 
 function find(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
