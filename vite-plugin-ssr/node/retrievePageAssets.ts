@@ -36,8 +36,12 @@ async function retrieveProdAssets(
   assert(clientManifest)
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
-    const { manifestKey } = getManifestEntry(id, clientManifest)
-    // TODO check https://github.com/brillout/vite-plugin-ssr/issues/51
+    const entry = getManifestEntry(id, clientManifest)
+    if (!entry) {
+      // Circumvent Rollup Bug, see https://github.com/brillout/vite-plugin-ssr/issues/51
+      return
+    }
+    const { manifestKey } = entry
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
 
@@ -77,11 +81,7 @@ function collectAssets(
   }
 }
 
-function collectCss(
-  mod: ModuleNode | undefined,
-  styleUrls: Set<string>,
-  visitedModules: Set<string>,
-): void {
+function collectCss(mod: ModuleNode | undefined, styleUrls: Set<string>, visitedModules: Set<string>): void {
   if (!mod) return
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
