@@ -150,9 +150,9 @@ async function callPrerenderHooks(
   concurrencyLimit: pLimit.Limit,
 ) {
   // Render URLs returned by `prerender()` hooks
-   await Promise.all(
+  await Promise.all(
     globalContext._pageFilesAll
-     .filter(p => p.fileType==='.page.server')
+      .filter((p) => p.fileType === '.page.server')
       .map((p) =>
         concurrencyLimit(async () => {
           await p.loadFileExports?.()
@@ -209,7 +209,7 @@ async function handlePagesWithStaticRoutes(
   concurrencyLimit: pLimit.Limit,
 ) {
   // Pre-render pages with a static route
-  const { pageRoutes} = await loadPageRoutes(globalContext)
+  const { pageRoutes } = await loadPageRoutes(globalContext)
   await Promise.all(
     pageRoutes.map((pageRoute) =>
       concurrencyLimit(async () => {
@@ -378,6 +378,7 @@ function warnMissingPages(
       assertWarning(
         partial,
         `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,
+        { onlyOnce: true },
       )
     })
 }
@@ -555,7 +556,7 @@ function assertArguments({
 }) {
   assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
   assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')
-  assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.')
+  assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.', { onlyOnce: true })
   assertUsage(typeof root === 'string', '[prerender()] Option `root` should be a string.')
   assertUsage(isAbsolute(root), '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.')
   assertUsage(typeof outDir === 'string', '[prerender()] Option `outDir` should be a string.')

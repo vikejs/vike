@@ -60,6 +60,7 @@ function compilePath(path: string, caseSensitive = false, end = true): [RegExp, 
       `"${path.replace(/\*$/, '/*')}" because the \`*\` character must ` +
       `always follow a \`/\` in the pattern. To get rid of this warning, ` +
       `please change the route path to "${path.replace(/\*$/, '/*')}".`,
+    { onlyOnce: true },
   )
 
   let paramNames: string[] = []
@@ -103,6 +104,7 @@ function safelyDecodeURIComponent(value: string, paramName: string) {
       `The value for the URL param "${paramName}" will not be decoded because` +
         ` the string "${value}" is a malformed URL segment. This is probably` +
         ` due to a bad percent encoding (${error}).`,
+      { onlyOnce: true }
     )
 
     return value

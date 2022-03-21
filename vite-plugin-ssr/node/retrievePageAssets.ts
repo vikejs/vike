@@ -45,6 +45,7 @@ async function retrieveProdAssets(
     assertWarning(
       entry,
       "You stumbled upon a Rollup bug that is known to the vite-plugin-ssr maintainer. It's usually benign but it may cause problems. Feel free to reach out on GitHub or Discord.",
+      { onlyOnce: true },
     )
     if (!entry) {
       // Circumvent Rollup Bug, see https://github.com/brillout/vite-plugin-ssr/issues/51
