@@ -767,6 +767,7 @@ function warnMissingErrorPage() {
     assertWarning(
       false,
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
+      { onlyOnce: true },
     )
   }
 }

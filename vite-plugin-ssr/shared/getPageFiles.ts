@@ -278,19 +278,16 @@ function assertNotAlreadyLoaded() {
   globalObject[alreadyLoaded] = true
 }
 
-let deprecationAlreadyLogged = false
 function createObjectWithDeprecationWarning(): Record<string, unknown> {
   return new Proxy(
     {},
     {
       get(...args) {
-        if (!deprecationAlreadyLogged) {
-          deprecationAlreadyLogged = true
-          assertWarning(
-            false,
-            '`pageContext.pageExports` is deprecated in favor of `pageContext.exports`, see https://vite-plugin-ssr.com/exports',
-          )
-        }
+        assertWarning(
+          false,
+          '`pageContext.pageExports` is deprecated in favor of `pageContext.exports`, see https://vite-plugin-ssr.com/exports',
+          { onlyOnce: true },
+        )
         return Reflect.get(...args)
       },
     },
@@ -334,13 +331,11 @@ const VPS_EXPORTS: Record<string, (p: PageFile) => boolean> = {
   prefetchLinks: clientFile,
 }
 
-const alreadyLoggedWarnings: string[] = []
-
 function assertExports(pageFiles: PageFile[], customExports: string[]) {
   customExports.forEach((customExportName) => {
     assertUsage(
       !Object.keys(VPS_EXPORTS).includes(customExportName),
-      `\`export { customExports }\` contains \`${customExportName}\` which is forbidden because it is a vite-plugin-ssr export.`,
+      `\`export { customExports }\` contains \`${customExportName}\` which is forbidden because it is an '\export\` already used by vite-plugin-ssr.`,
     )
   })
   pageFiles.forEach((p) => {
@@ -348,13 +343,11 @@ function assertExports(pageFiles: PageFile[], customExports: string[]) {
       if (VPS_EXPORTS[exportName]?.(p)) {
         return
       }
-      if (!alreadyLoggedWarnings.includes(exportName)) {
-        alreadyLoggedWarnings.push(exportName)
-        assertWarning(
-          customExports.includes(exportName),
-          `Unknown \`export { ${exportName} }\` at ${p.filePath}. See https://vite-plugin-ssr/customExports to remove this warning.`,
-        )
-      }
+      assertWarning(
+        customExports.includes(exportName),
+        `Unknown \`export { ${exportName} }\` at ${p.filePath}. See https://vite-plugin-ssr/customExports to define custom exports.`,
+        { onlyOnce: `unkown-export-${exportName}` },
+      )
     })
   })
 }
