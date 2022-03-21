@@ -1,4 +1,4 @@
-import { assertWarning, checkType, getUrlPathname, objectAssign } from './utils'
+import { assertUsage, assertWarning, checkType, getUrlPathname, objectAssign } from './utils'
 import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
@@ -22,9 +22,9 @@ async function getPageContext() {
 
 function assertPristineUrl() {
   const urlPathnameCurrent = getUrlPathname()
-  assertWarning(
+  assertUsage(
     urlPathnameOriginal === urlPathnameCurrent,
-    `\`getPage()\` returned page information for URL \`${urlPathnameOriginal}\` instead of \`${urlPathnameCurrent}\`. If you want to be able to change the URL (e.g. with \`window.history.pushState\`) while using \`getPage()\`, then create a new GitHub issue.`,
+    `You changed the page's URL before the hydration finished (from \`${urlPathnameOriginal}\` to \`${urlPathnameCurrent}\`). Make sure that the hydration finished before changing the URL by using the \`onHydrationEnd()\` hook.`,
   )
 }
 
@@ -41,6 +41,7 @@ async function loadPageFilesClient(pageId: string) {
       assertWarning(
         !p.fileExports?.onBeforeRender,
         `\`export { onBeforeRender }\` of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define \`onBeforeRender()\` in \`.page.server.js\` instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
+        { onlyOnce: true },
       )
     })
   return pageContextAddendum

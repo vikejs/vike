@@ -24,6 +24,7 @@ async function warn404(pageContext: {
         `URL \`${urlPathname}\` is not matching any of your ${pageRoutes.length} page routes (this warning is not shown in production):`,
         ...getPagesAndRoutesInfo(pageRoutes),
       ].join('\n'),
+      { onlyOnce: false },
     )
   }
 }
