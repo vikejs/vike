@@ -490,7 +490,7 @@ async function loadPageFilesServer(pageContext: {
         (p) =>
           // Add CSS assets
           //  - `.page.server.js` files are transformed by `?extractStyles`
-          p.fileType === '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+          p.fileType === '.page.server' && p.isRelevant(pageContext._pageId),
       )
       .map((p) => ({ id: p.filePath, onlyAssets: true })),
   )
@@ -505,9 +505,7 @@ async function loadPageFilesServer(pageContext: {
 }
 async function loadPageFilesClientMeta(pageFilesAll: PageFile[], pageId: string): Promise<void> {
   await Promise.all(
-    pageFilesAll
-      .filter((p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageId))
-      .map((p) => p.loadMeta?.()),
+    pageFilesAll.filter((p) => p.fileType === '.page.client' && p.isRelevant(pageId)).map((p) => p.loadMeta?.()),
   )
 }
 function getClientEntries(
@@ -521,7 +519,7 @@ function getClientEntries(
 
   // The `.page.client.js`/`.page.js` files that should, potentially, be loaded in the browser
   const pageFilesClientCandidates = pageFilesAll.filter(
-    (p) => (p.fileType === '.page.client' || p.fileType === '.page') && (p.isDefaultPageFile || p.pageId === pageId),
+    (p) => (p.fileType === '.page.client' || p.fileType === '.page') && p.isRelevant(pageId),
   )
 
   {
@@ -577,6 +575,7 @@ function getClientEntries(
   }
 
   clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
+  // console.log(pageId, pageFilesClientCandidates, clientEntries, clientDependencies)
   return { clientEntries, clientDependencies, isHtmlOnly }
 }
 
