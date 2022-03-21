@@ -145,7 +145,7 @@ async function hasOnBeforeRenderServerSide(pageContext: {
   _pageFilesAll: PageFile[]
 }): Promise<boolean> {
   const pageFilesServerMeta = pageContext._pageFilesAll.filter(
-    (p) => p.fileType === '.page.server' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+    (p) => p.fileType === '.page.server' && p.isRelevant(pageContext._pageId),
   )
   await Promise.all(pageFilesServerMeta.map((p) => p.loadMeta?.()))
   return pageFilesServerMeta.some(({ meta }) => {
