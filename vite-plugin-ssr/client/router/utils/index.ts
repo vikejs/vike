@@ -1,6 +1,5 @@
 export * from './getBaseUrl'
 export * from './isExternalLink'
-export * from './skipLink'
 export * from './throttle'
 export * from '../../../utils/assert'
 export * from '../../../utils/hasProp'

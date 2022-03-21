@@ -1,9 +1,8 @@
-import { assert, assertUsage, getUrlPathname, skipLink } from './utils'
-import { route } from '../../shared/route'
-import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
-import { getGlobalContext } from './getGlobalContext'
+import { assert, assertUsage, getUrlPathname } from './utils'
 import { isExternalLink } from './utils/isExternalLink'
 import { loadPageFiles } from '../../shared/getPageFiles'
+import { skipLink } from './skipLink'
+import { getPageId } from './getPageId'
 
 export { addLinkPrefetchHandlers, prefetch }
 
@@ -19,18 +18,9 @@ async function prefetch(url: string): Promise<void> {
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
 
-  const globalContext = await getGlobalContext()
-  const pageContext = {
-    url,
-    ...globalContext,
-  }
-  addComputedUrlProps(pageContext)
-  const routeContext = await route(pageContext)
-  if ('pageContextAddendum' in routeContext) {
-    const pageId = routeContext.pageContextAddendum._pageId
-    if (pageId) {
-      await loadPageFiles(globalContext._pageFilesAll, pageId, true)
-    }
+  const { pageId, pageFilesAll } = await getPageId(url)
+  if (pageId) {
+    await loadPageFiles(pageFilesAll, pageId, true)
   }
 }
 
@@ -45,7 +35,7 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
 
     const url = linkTag.getAttribute('href')
 
-    if (skipLink(linkTag)) return
+    if (await skipLink(linkTag)) return
     assert(url) // `skipLink()` returns `true` otherwise
 
     if (isAlreadyPrefetched(url)) return

@@ -1,10 +1,9 @@
-import { parseUrl, assertBaseUrl, isParsable } from '../utils'
-import { getBaseUrl } from './getBaseUrl'
-import { isExternalLink } from './isExternalLink'
-
 export { skipLink }
 
-function skipLink(linkTag: HTMLElement): boolean {
+import { parseUrl, assertBaseUrl, isParsable, getBaseUrl, isExternalLink } from './utils'
+import { isClientSideRenderable } from './skipLink/isClientSideRenderable'
+
+async function skipLink(linkTag: HTMLElement): Promise<boolean> {
   const url = linkTag.getAttribute('href')
 
   if (url === null) return true
@@ -16,6 +15,9 @@ function skipLink(linkTag: HTMLElement): boolean {
     return true
   }
   if (!isParsable(url)) {
+    return true
+  }
+  if (!(await isClientSideRenderable(url))) {
     return true
   }
 
