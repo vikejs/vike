@@ -1,5 +1,5 @@
 import { parse } from '@brillout/json-s/parse'
-import { hasProp, objectAssign, assert, assertUsage, getProjectError } from './utils'
+import { hasProp, objectAssign, assert, getProjectError } from './utils'
 
 export { getPageContextSerializedInHtml }
 
@@ -9,10 +9,7 @@ function getPageContextSerializedInHtml(): {
   _comesDirectlyFromServer: true
 } {
   const pageContextJson = document.getElementById('vite-plugin-ssr_pageContext')?.textContent
-  assertUsage(
-    pageContextJson,
-    'Client-side `pageContext` missing. Make sure that `injectAssets()` is applied to the HTML, see https://vite-plugin-ssr.com/injectAssets',
-  )
+  assert(pageContextJson)
 
   const parseResult = parse(pageContextJson)
   assert(hasProp(parseResult, 'pageContext', 'object'))

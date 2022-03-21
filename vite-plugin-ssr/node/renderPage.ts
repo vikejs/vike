@@ -468,10 +468,14 @@ async function loadPageFilesServer(pageContext: {
     loadPageFilesClientMeta(pageContext._pageFilesAll, pageContext._pageId),
   ])
 
-  const { clientEntries, clientDependencies } = getClientEntries(pageContext._pageFilesAll, pageContext._pageId)
+  const { clientEntries, clientDependencies, isHtmlOnly } = getClientEntries(
+    pageContext._pageFilesAll,
+    pageContext._pageId,
+  )
 
   objectAssign(pageContextAddendum, {
     _passToClient: getStringUnion(pageContextAddendum.exportsAll, 'passToClient'),
+    _isHtmlOnly: isHtmlOnly,
   })
 
   objectAssign(pageContextAddendum, {
@@ -509,10 +513,11 @@ async function loadPageFilesClientMeta(pageFilesAll: PageFile[], pageId: string)
 function getClientEntries(
   pageFilesAll: PageFile[],
   pageId: string,
-): { clientEntries: string[]; clientDependencies: ClientDependency[] } {
+): { clientEntries: string[]; clientDependencies: ClientDependency[]; isHtmlOnly: boolean } {
   const clientEntries: string[] = []
   const pageFilesClient: PageFile[] = []
   const clientDependencies: ClientDependency[] = []
+  let isHtmlOnly: boolean
 
   // The `.page.client.js`/`.page.js` files that should, potentially, be loaded in the browser
   const pageFilesClientCandidates = pageFilesAll.filter(
@@ -534,6 +539,8 @@ function getClientEntries(
     const hasPage = pageFilesClientCandidates.some(hasPageExport)
     const hasRender = pageFilesClientCandidates.some((p) => getExportNames(p).includes('render'))
     if (hasRender && hasPage) {
+      isHtmlOnly = false
+
       // Add the `.page.client.js` file that has `export { render }`
       //  - The filesystem-nearest one
       //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
@@ -545,6 +552,7 @@ function getClientEntries(
         assert(pageFilePageExport)
         pageFilesClient.push(pageFilePageExport)
       }
+
       // Add the vps client entry
       {
         const usesClientRouting = pageFilesClient.some((p) => getExportNames(p).includes('clientRouting'))
@@ -557,6 +565,8 @@ function getClientEntries(
         clientDependencies.push({ id: clientEntry, onlyAssets: false })
       }
     } else {
+      isHtmlOnly = true
+
       // There is no vps client entry; we directly load the user's `.page.client.js` files
       //  - There is no `render()` hook; so there is no need for `pageContext` (nor `pageContext.exports`).
       clientEntries.push(...pageFilesClient.map((p) => p.filePath)) // Only includes page files that have no `export { render }` and no `export { Page }`/`export default`
@@ -567,7 +577,7 @@ function getClientEntries(
   }
 
   clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
-  return { clientEntries, clientDependencies }
+  return { clientEntries, clientDependencies, isHtmlOnly }
 }
 
 function getExportNames(pageFile: PageFile): string[] {
@@ -618,6 +628,7 @@ async function executeRenderHook(
     _getPageAssets: () => Promise<PageAsset[]>
     _passToClient: string[]
     _pageFilesAll: PageFile[]
+    _isHtmlOnly: boolean
   },
 ): Promise<{
   renderFilePath: string
