@@ -7,7 +7,6 @@ import {
   isBrowser,
   objectAssign,
   throttle,
-  skipLink,
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext } from './getPageContext'
@@ -18,6 +17,7 @@ import { addLinkPrefetchHandlers } from './prefetch'
 import { detectHydrationSkipSupport } from './utils/detectHydrationSkipSupport'
 import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
+import { skipLink } from './skipLink'
 
 export { useClientRouter }
 export { navigate }
@@ -208,7 +208,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 
   // Code adapted from https://github.com/HenrikJoreteg/internal-nav-helper/blob/5199ec5448d0b0db7ec63cf76d88fa6cad878b7d/src/index.js#L11-L29
 
-  function onClick(ev: MouseEvent) {
+  async function onClick(ev: MouseEvent) {
     if (!isNormalLeftClick(ev)) return
 
     const linkTag = findLinkTag(ev.target as HTMLElement)
@@ -216,7 +216,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 
     const url = linkTag.getAttribute('href')
 
-    if (skipLink(linkTag)) return
+    if (await skipLink(linkTag)) return
     assert(url) // `skipLink()` returns `true` otherwise
 
     const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
