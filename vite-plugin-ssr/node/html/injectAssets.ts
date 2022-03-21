@@ -1,4 +1,4 @@
-import { assert, assertUsage, castProp, hasProp, normalizeBaseUrl, slice } from '../utils'
+import { assert, assertUsage, assertWarning, castProp, hasProp, normalizeBaseUrl, slice } from '../utils'
 import { getSsrEnv } from '../ssrEnv'
 import type { MediaType } from './inferMediaType'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
@@ -20,6 +20,7 @@ type PageAsset = {
 }
 
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
+  assertWarning(false, '`_injectAssets()` is deprecated and will be removed.', { onlyOnce: true })
   assertUsage(
     typeof htmlString === 'string',
     '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.',
@@ -44,6 +45,7 @@ type PageContextInjectAssets = {
   _pageId: string
   _passToClient: string[]
   _skipAssetInject?: true
+  _isHtmlOnly: boolean
   _pageContextProvidedByUserPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
 }
@@ -109,7 +111,9 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
   if (pageContext._skipAssetInject) {
     return htmlString
   }
-  htmlString = injectPageContext(htmlString, pageContext)
+  if (!pageContext._isHtmlOnly) {
+    htmlString = injectPageContext(htmlString, pageContext)
+  }
   return htmlString
 }
 

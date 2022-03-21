@@ -91,12 +91,12 @@ ${assignCode.join('\n')}
   return fileContent
 }
 
-function getVirtualImport(varName: string, fileSuffix: '.page.client' | '.page' | '.page.server'): [string[], string[]] {
+function getVirtualImport(
+  varName: string,
+  fileSuffix: '.page.client' | '.page' | '.page.server',
+): [string[], string[]] {
   const pageFilesVar = 'pageFilesMetaEager'
-  const importCode = [
-    `import ${varName} from 'virtual:vite-plugin-ssr:pageFilesMeta:${fileSuffix}.js';`,
-    `console.log(${varName})`,
-  ]
+  const importCode = [`import ${varName} from 'virtual:vite-plugin-ssr:pageFilesMeta:${fileSuffix}.js';`]
   const assignCode = [`${pageFilesVar}['${fileSuffix}'] = ${varName};`]
   return [importCode, assignCode]
 }
