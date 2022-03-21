@@ -13,7 +13,7 @@ function assertRenderHook<
 >(pageContext: PC): asserts pageContext is PC & { exports: { render: Function } } {
   if (!hasProp(pageContext.exports, 'render')) {
     const pageFilesClient = pageContext._pageFilesAll.filter(
-      (p) => p.fileType === '.page.client' && (p.isDefaultPageFile || p.pageId === pageContext._pageId),
+      (p) => p.fileType === '.page.client' && p.isRelevant(pageContext._pageId),
     )
     let errMsg: string
     if (pageFilesClient.length === 0) {

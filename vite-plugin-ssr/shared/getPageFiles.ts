@@ -10,7 +10,6 @@ export { getStringUnion }
 
 import {
   assert,
-  getPathDistance,
   hasProp,
   isBrowser,
   isCallable,
@@ -20,6 +19,7 @@ import {
   assertWarning,
   assertUsage,
   unique,
+  slice,
 } from './utils'
 import { isErrorPage } from './route'
 import { determinePageId } from './determinePageId'
@@ -35,7 +35,9 @@ type PageFile = {
   loadFileExports?: () => Promise<void>
   meta?: Record<string, unknown>
   loadMeta?: () => Promise<void>
+  isRelevant: (pageId: string) => boolean
   isDefaultPageFile: boolean
+  isRendererPageFile: boolean
   isErrorPageFile: boolean
   pageId: string
 }
@@ -148,10 +150,16 @@ function traverse(
     assert(fileTypes.includes(fileType))
     assert(isObject(globFiles))
     Object.entries(globFiles).forEach(([filePath, globResult]) => {
+      const isRelevant = (pageId: string): boolean =>
+        pageFile.pageId === pageId ||
+        (pageFile.isDefaultPageFile &&
+          (pageFile.isRendererPageFile || isAncestorDefaultPage(pageId, pageFile.filePath)))
       const pageFile = (pageFilesMap[filePath] = pageFilesMap[filePath] ?? {
         filePath,
         fileType,
+        isRelevant,
         isDefaultPageFile: isDefaultFilePath(filePath),
+        isRendererPageFile: isRendererFilePath(filePath),
         isErrorPageFile: isErrorPage(filePath),
         pageId: determinePageId(filePath),
       })
@@ -165,6 +173,11 @@ function isDefaultFilePath(filePath: string): boolean {
   assert(filePath.startsWith('/'))
   return filePath.includes('/_default')
 }
+function isRendererFilePath(filePath: string): boolean {
+  assertPosixPath(filePath)
+  assert(filePath.startsWith('/'))
+  return filePath.includes('/renderer/')
+}
 
 type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
 async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
@@ -173,9 +186,7 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
     ...pageFiles.map((p) => p.loadFileExports?.()),
     // Load CSS provided by `?extractStyles` transformer
     ...(isForClientSide
-      ? pageFilesAll
-          .filter((p) => (p.isDefaultPageFile || p.pageId === pageId) && p.fileType === '.page.server')
-          .map((p) => p.loadMeta?.())
+      ? pageFilesAll.filter((p) => p.fileType === '.page.server' && p.isRelevant(pageId)).map((p) => p.loadMeta?.())
       : []),
   ])
 
@@ -214,8 +225,8 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
 function findPageFilesToLoad(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const fileTypeEnvSpecific = isForClientSide ? ('.page.client' as const) : ('.page.server' as const)
   const defaultFiles = [
-    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.fileType === fileTypeEnvSpecific),
-    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.fileType === '.page'),
+    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.isRelevant(pageId) && p.fileType === fileTypeEnvSpecific),
+    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.isRelevant(pageId) && p.fileType === '.page'),
   ]
   defaultFiles.sort(defaultFilesSorter(fileTypeEnvSpecific, pageId))
   const pageFiles = [
@@ -234,15 +245,27 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
     assert(e1.isDefaultPageFile && e2.isDefaultPageFile)
 
     {
-      const d1 = getPathDistance(pageId, e1.filePath)
-      const d2 = getPathDistance(pageId, e2.filePath)
-      if (d1 < d2) {
+      const e1_isRenderer = e1.isRendererPageFile
+      const e2_isRenderer = e2.isRendererPageFile
+      if (!e1_isRenderer && e2_isRenderer) {
         return e1First
       }
-      if (d2 < d1) {
+      if (!e2_isRenderer && !e1_isRenderer) {
         return e2First
       }
-      assert(d1 === d2)
+      assert(e1_isRenderer === e2_isRenderer)
+    }
+
+    {
+      const e1_distance = getPathDistance(pageId, e1.filePath)
+      const e2_distance = getPathDistance(pageId, e2.filePath)
+      if (e1_distance < e2_distance) {
+        return e1First
+      }
+      if (e2_distance < e1_distance) {
+        return e2First
+      }
+      assert(e1_distance === e2_distance)
     }
 
     {
@@ -373,4 +396,40 @@ function getAllPageIds(allPageFiles: { filePath: string; isDefaultPageFile: bool
     .map(determinePageId)
   const allPageIds = unique(fileIds)
   return allPageIds
+}
+
+function getPathDistance(pathA: string, pathB: string): number {
+  assertPosixPath(pathA)
+  assertPosixPath(pathB)
+  assert(pathA.startsWith('/'))
+  assert(pathB.startsWith('/'))
+
+  // Index of first different character
+  let idx = 0
+  for (; idx < pathA.length && idx < pathB.length; idx++) {
+    if (pathA[idx] !== pathB[idx]) break
+  }
+
+  const pathAWithoutCommon = pathA.slice(idx)
+  const pathBWithoutCommon = pathB.slice(idx)
+
+  const distanceA = pathAWithoutCommon.split('/').length
+  const distanceB = pathBWithoutCommon.split('/').length
+
+  const distance = distanceA + distanceB
+
+  return distance
+}
+
+function isAncestorDefaultPage(pageId: string, defaultPageFilePath: string) {
+  assertPosixPath(pageId)
+  assertPosixPath(defaultPageFilePath)
+  assert(pageId.startsWith('/'))
+  assert(defaultPageFilePath.startsWith('/'))
+  assert(!pageId.endsWith('/'))
+  assert(!defaultPageFilePath.endsWith('/'))
+  assert(isDefaultFilePath(defaultPageFilePath))
+
+  const defaultPageDir = slice(defaultPageFilePath.split('/'), 0, -1).join('/')
+  return pageId.startsWith(defaultPageDir)
 }
