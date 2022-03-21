@@ -28,21 +28,12 @@ function transformCrossEnvFiles(): Plugin {
         const exportNames = getExportNames(esModules)
 
         if (isClientSide && (clientFileRE.test(id) || isomphFileRE.test(id))) {
-          const code = [
-            `export const hasExport_Page = ${exportNames.includes('Page') ? 'true' : 'false'};`,
-            `export const hasExport_default = ${exportNames.includes('default') ? 'true' : 'false'};`,
-            `export const hasExport_clientRouter = ${exportNames.includes('clientRouter') ? 'true' : 'false'};`,
-            `export const hasExport_render = ${exportNames.includes('render') ? 'true' : 'false'};`,
-            // `export const hasExport_overrideDefaults = ${exportNames.includes('overrideDefaults') ? 'true' : 'false'};`,
-            '',
-          ].join('\n')
+          const code = getCode(exportNames)
           return removeSourceMap(code)
         }
 
         if (isClientSide && serverFileRE.test(id)) {
-          let code = ''
-          code = `export const hasExport_onBeforeRender = ${exportNames.includes('onBeforeRender') ? 'true' : 'false'};`
-          code += '\n'
+          const code = getCode(exportNames)
           return removeSourceMap(code)
         }
 
@@ -52,8 +43,7 @@ function transformCrossEnvFiles(): Plugin {
       if (isServerSide && clientFileRE.test(id)) {
         const esModules = await parseEsModules(src)
         const exportNames = getExportNames(esModules)
-        let code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
-        code += '\n'
+        const code = getCode(exportNames)
         return removeSourceMap(code)
       }
 
@@ -75,4 +65,10 @@ function removeSourceMap(code: string) {
     //  - https://rollupjs.org/guide/en/#source-code-transformations
     map: { mappings: '' },
   }
+}
+
+function getCode(exportNames: string[]) {
+  let code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
+  code += '\n'
+  return code
 }

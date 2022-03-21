@@ -8,6 +8,7 @@ import {
   getStringUnion,
 } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
+import { isHtmlOnlyPage, getExportNames, hasPageExport } from '../shared/pageFilesUtils'
 import { getSsrEnv } from './ssrEnv'
 import { stringify } from '@brillout/json-s/stringify'
 import {
@@ -515,12 +516,8 @@ function getClientEntries(
   const clientEntries: string[] = []
   const pageFilesClient: PageFile[] = []
   const clientDependencies: ClientDependency[] = []
-  let isHtmlOnly: boolean
 
-  // The `.page.client.js`/`.page.js` files that should, potentially, be loaded in the browser
-  const pageFilesClientCandidates = pageFilesAll.filter(
-    (p) => (p.fileType === '.page.client' || p.fileType === '.page') && p.isRelevant(pageId),
-  )
+  const { isHtmlOnly, pageFilesClientCandidates } = isHtmlOnlyPage(pageId, pageFilesAll)
 
   {
     // Include all `.page.client.js` files that don't `export { render }` nor `export { Page }`/`export default`
@@ -534,11 +531,7 @@ function getClientEntries(
 
   // Handle SPA & SSR client
   {
-    const hasPage = pageFilesClientCandidates.some(hasPageExport)
-    const hasRender = pageFilesClientCandidates.some((p) => getExportNames(p).includes('render'))
-    if (hasRender && hasPage) {
-      isHtmlOnly = false
-
+    if (!isHtmlOnly) {
       // Add the `.page.client.js` file that has `export { render }`
       //  - The filesystem-nearest one
       //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
@@ -563,8 +556,6 @@ function getClientEntries(
         clientDependencies.push({ id: clientEntry, onlyAssets: false })
       }
     } else {
-      isHtmlOnly = true
-
       // There is no vps client entry; we directly load the user's `.page.client.js` files
       //  - There is no `render()` hook; so there is no need for `pageContext` (nor `pageContext.exports`).
       clientEntries.push(...pageFilesClient.map((p) => p.filePath)) // Only includes page files that have no `export { render }` and no `export { Page }`/`export default`
@@ -577,24 +568,6 @@ function getClientEntries(
   clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
   // console.log(pageId, pageFilesClientCandidates, clientEntries, clientDependencies)
   return { clientEntries, clientDependencies, isHtmlOnly }
-}
-
-function getExportNames(pageFile: PageFile): string[] {
-  if (pageFile.fileType === '.page.client') {
-    // We assume `pageFile.loadMeta()` was already called
-    assert(hasProp(pageFile.meta, 'exportNames', 'string[]'), pageFile.filePath)
-    return pageFile.meta.exportNames
-  }
-  if (pageFile.fileType === '.page') {
-    // We assume `pageFile.loadFileExports()` was already called
-    assert(pageFile.fileExports, pageFile.filePath)
-    return Object.keys(pageFile.fileExports)
-  }
-  assert(false)
-}
-function hasPageExport(pageFile: PageFile): boolean {
-  const exportNames = getExportNames(pageFile)
-  return exportNames.includes('default') || exportNames.includes('Page')
 }
 
 async function executeOnBeforeRenderHooks(

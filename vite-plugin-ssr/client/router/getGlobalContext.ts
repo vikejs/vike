@@ -2,7 +2,6 @@ import { getPageFilesAllClientSide } from '../../shared/getPageFiles'
 import { assertBaseUrl, PromiseType, getBaseUrl, objectAssign } from './utils'
 
 export { getGlobalContext }
-export type { PageFilesServer }
 
 let globalContext: PromiseType<ReturnType<typeof retrieveGlobalContext>>
 
@@ -13,7 +12,6 @@ async function getGlobalContext() {
   return globalContext
 }
 
-type PageFilesServer = { filePath: string; fileExports: { hasExport_onBeforeRender: boolean } }[]
 async function retrieveGlobalContext() {
   const baseUrl = getBaseUrl()
   assertBaseUrl(baseUrl)
