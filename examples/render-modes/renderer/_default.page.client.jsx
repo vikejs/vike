@@ -1,17 +1,24 @@
 export { render }
+export const clientRouting = true
 
 import ReactDOM from 'react-dom'
-import React from 'react'
 import { PageLayout } from './PageLayout'
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
-  if( Page ) {
-  ReactDOM.hydrate(
+
+  const pageEl = (
     <PageLayout>
       <Page {...pageProps} />
-    </PageLayout>,
-    document.getElementById('page-view'),
+    </PageLayout>
   )
+
+  const reactContainer = document.getElementById('react-container')
+  if (reactContainer.innerHTML === '') {
+    // SPA
+    ReactDOM.render(pageEl, reactContainer)
+  } else {
+    // SSR
+    ReactDOM.hydrate(pageEl, reactContainer)
   }
 }

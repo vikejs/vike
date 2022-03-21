@@ -1,7 +1,7 @@
-import React from 'react'
-import './PageLayout.css'
-
 export { PageLayout }
+
+import './PageLayout.css'
+import React from 'react'
 
 function PageLayout({ children }) {
   return (
@@ -9,10 +9,19 @@ function PageLayout({ children }) {
       <Layout>
         <Sidebar>
           <a className="navitem" href="/">
-            Home
+            Overview
           </a>
-          <a className="navitem" href="/about">
-            About
+          <a className="navitem" href="/html-only">
+            HTML only
+          </a>
+          <a className="navitem" href="/spa">
+            SPA
+          </a>
+          <a className="navitem" href="/html-js">
+            HTML + JS
+          </a>
+          <a className="navitem" href="/ssr">
+            SSR
           </a>
         </Sidebar>
         <Content>{children}</Content>
