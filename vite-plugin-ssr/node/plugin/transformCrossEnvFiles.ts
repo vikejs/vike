@@ -28,12 +28,12 @@ function transformCrossEnvFiles(): Plugin {
         const exportNames = getExportNames(esModules)
 
         if (isClientSide && (clientFileRE.test(id) || isomphFileRE.test(id))) {
-          const code = getCode(exportNames)
+          const code = getCode(exportNames, isClientSide)
           return removeSourceMap(code)
         }
 
         if (isClientSide && serverFileRE.test(id)) {
-          const code = getCode(exportNames)
+          const code = getCode(exportNames, isClientSide)
           return removeSourceMap(code)
         }
 
@@ -43,7 +43,7 @@ function transformCrossEnvFiles(): Plugin {
       if (isServerSide && clientFileRE.test(id)) {
         const esModules = await parseEsModules(src)
         const exportNames = getExportNames(esModules)
-        const code = getCode(exportNames)
+        const code = getCode(exportNames, isClientSide)
         return removeSourceMap(code)
       }
 
@@ -67,8 +67,21 @@ function removeSourceMap(code: string) {
   }
 }
 
-function getCode(exportNames: string[]) {
-  let code = `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
+function getCode(exportNames: string[], isClientSide: boolean) {
+  let code = `export let exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
   code += '\n'
+  if (isClientSide) {
+    code += getHmrCode()
+  }
   return code
+}
+
+function getHmrCode() {
+  return [
+    'if (import.meta.hot) {',
+    '  import.meta.hot.accept((newModule) => {',
+    '    exportNames = newModule.exportNames',
+    '  })',
+    '}',
+  ].join('\n')
 }
