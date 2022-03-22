@@ -15,7 +15,7 @@ function Page() {
           <a href="/html-js">HTML + JS</a>. Rendered to HTML, some browser-side JavaScript.
         </li>
         <li>
-          <a href="/ssr">SSR</a>. Rendered to both HTML and the browser's DOM.
+          <a href="/ssr">SSR</a>. Rendered to HTML and hydrated in the browser.
         </li>
       </ul>
     </>
