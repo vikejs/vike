@@ -54,7 +54,7 @@ function assert_pageAssets(pageAssets) {
 
   if (!isProduction) {
     const a1 = pageAssets[0]
-    assert(a1.src === '/pages/index.css')
+    assert(a1.src === '/pages/index.css?direct')
     assert(a1.assetType === 'style')
     assert(a1.mediaType === 'text/css')
     assert(a1.preloadType === 'style')
