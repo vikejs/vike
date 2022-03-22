@@ -9,7 +9,7 @@ function PageLayout({ children }) {
       <Layout>
         <Sidebar>
           <a className="navitem" href="/">
-            Overview
+            <b>Render Modes</b>
           </a>
           <a className="navitem" href="/html-only">
             HTML only

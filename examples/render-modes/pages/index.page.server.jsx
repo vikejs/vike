@@ -18,6 +18,10 @@ function Page() {
           <a href="/ssr">SSR</a>. Rendered to HTML and hydrated in the browser.
         </li>
       </ul>
+      <p>
+        (SSG is achieved by running the <code>$ vite-plugin-ssr prerender</code> CLI, see{' '}
+        <a href="https://vite-plugin-ssr.com/pre-rendering">vite-plugin-ssr.com/pre-rendering</a>.)
+      </p>
     </>
   )
 }
