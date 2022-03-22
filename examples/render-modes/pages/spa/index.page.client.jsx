@@ -6,7 +6,7 @@ function Page() {
   return (
     <>
       <h1>SPA</h1>
-      This page is:
+      <p>This page is:</p>
       <ul>
         <li>Rendered only to the browser's DOM. (Not rendered to HTML.)</li>
         <li>
