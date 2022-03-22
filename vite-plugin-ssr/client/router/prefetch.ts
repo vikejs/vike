@@ -68,7 +68,7 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
       observer.observe(linkTag)
     } else {
       linkTag.addEventListener('mouseover', () => prefetch(url))
-      linkTag.addEventListener('touchstart', () => prefetch(url))
+      linkTag.addEventListener('touchstart', () => prefetch(url), {passive: true})
     }
   })
 }
