@@ -13,6 +13,7 @@ import { resolveConfig, Config } from './resolveConfig'
 import { distFileNames } from './distFileNames'
 import { virtualPageFilesMeta } from './virtualPageFilesMeta'
 import { extractStylesPlugin } from './extractStyles'
+import { misc } from './misc'
 
 export default plugin
 export { plugin }
@@ -33,6 +34,7 @@ function plugin(config?: Config | Config[]): any {
     distFileNames(),
     virtualPageFilesMeta(getGlobRoots),
     extractStylesPlugin(),
+    misc(),
   ]
   return plugins as any
 }
