@@ -6,7 +6,7 @@ function Page() {
   return (
     <>
       <h1>SSR</h1>
-      This page is:
+      <p>This page is:</p>
       <ul>
         <li>Rendered to HTML and hydrated in the browser.</li>
         <li>
