@@ -1,9 +1,10 @@
 export { extractStylesPlugin }
-export { getExtractStylesImports }
+export { getExtractStylesCode }
+export { extractStylesRE }
 
 import type { Plugin } from 'vite'
 import { parseEsModules, EsModules } from './parseEsModules'
-import { isSSR_options, assert, getFileExtension } from './utils'
+import { isSSR_options, assert, getFileExtension, removeSourceMap } from './utils'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 // Copied from `vite/packages/vite/src/node/plugins/css.ts`
@@ -16,12 +17,18 @@ function extractStylesPlugin(): Plugin {
     async transform(src, id, options) {
       if (extractStylesRE.test(id)) {
         assert(!isSSR_options(options))
-        const esModules = await parseEsModules(src)
-        const extractStylesImports = getExtractStylesImports(esModules, id)
-        return extractStylesImports.join('\n')
+        const code = await getExtractStylesCode(src, id)
+        return code
       }
     },
   } as Plugin
+}
+
+async function getExtractStylesCode(src: string, id: string) {
+  const esModules = await parseEsModules(src)
+  const extractStylesImports = getExtractStylesImports(esModules, id)
+  const code = extractStylesImports.join('\n')
+  return removeSourceMap(code)
 }
 
 function getExtractStylesImports(esModules: EsModules, _id: string) {

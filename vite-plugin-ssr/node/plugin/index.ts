@@ -12,7 +12,8 @@ import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
 import { distFileNames } from './distFileNames'
 import { virtualPageFilesMeta } from './virtualPageFilesMeta'
-import { extractStylesPlugin } from './extractStyles'
+import { extractStylesPlugin } from './extractStylesPlugin'
+import { extractExportNamesPlugin } from './extractExportNamesPlugin'
 import { misc } from './misc'
 
 export default plugin
@@ -34,6 +35,7 @@ function plugin(config?: Config | Config[]): any {
     distFileNames(),
     virtualPageFilesMeta(getGlobRoots),
     extractStylesPlugin(),
+    extractExportNamesPlugin(),
     misc(),
   ]
   return plugins as any
