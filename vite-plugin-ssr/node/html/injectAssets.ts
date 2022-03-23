@@ -1,9 +1,10 @@
-import { assert, assertUsage, assertWarning, castProp, hasProp, normalizeBaseUrl, slice } from '../utils'
+import { assert, assertUsage, assertWarning, castProp, hasProp, normalizeBaseUrl } from '../utils'
 import { getSsrEnv } from '../ssrEnv'
 import type { MediaType } from './inferMediaType'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
+import { createHtmlHeadIfMissing, injectHtmlSnippet } from './injectAssets/injectHtmlSnippet'
 
 export { injectAssets__public }
 export { injectAssets }
@@ -60,7 +61,7 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   assert(typeof htmlString === 'string')
 
   // Ensure existence of `<head>` (Vite's `transformIndexHtml()` is buggy when `<head>` is missing)
-  htmlString = ensureHeadTagExistence(htmlString)
+  htmlString = createHtmlHeadIfMissing(htmlString)
 
   // Inject Vite transformations
   const { urlPathname } = pageContext
@@ -89,10 +90,11 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
     .filter(({ assetType }) => !(assetType === 'style' && !ssrEnv.isProduction))
   */
   const linkTags = preloadAssets.map((pageAsset) => {
-    const isEsModule = pageAsset.preloadType === 'script'
-    return inferAssetTag(pageAsset, isEsModule)
+    return inferAssetTag(pageAsset)
   })
-  htmlString = injectLinkTags(htmlString, linkTags)
+  assert(linkTags.every((tag) => tag.startsWith('<') && tag.endsWith('>')))
+  const htmlSnippet = linkTags.join('')
+  htmlString = injectHtmlSnippet('HEAD_CLOSING', htmlSnippet, htmlString)
 
   return htmlString
 }
@@ -141,98 +143,23 @@ function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
 const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'
 function injectPageContext(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
-  const injection = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
-  return injectAtHtmlEnd(htmlString, injection)
+  const htmlSnippet = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
+  return injectHtmlSnippet('DOCUMENT_END', htmlString, htmlSnippet)
 }
 function injectPageInfoAlreadyDone(htmlString: string) {
   return htmlString.includes(pageInfoInjectionBegin)
 }
 
 function injectScript(htmlString: string, script: PageAsset): string {
-  const isEsModule = true
-  const injection = inferAssetTag(script, isEsModule)
-  return injectAtHtmlEnd(htmlString, injection)
+  const htmlSnippet = inferAssetTag(script)
+  return injectHtmlSnippet('DOCUMENT_END', htmlString, htmlSnippet)
 }
 
-const headClose = '</head>'
-function injectLinkTags(htmlString: string, linkTags: string[]): string {
-  assert(linkTags.every((tag) => tag.startsWith('<') && tag.endsWith('>')))
-  const injection = linkTags.join('')
-  return injectAtClosingTag(htmlString, headClose, injection)
-}
-
-const headOpen = /<head(>| [^>]*>)/
-function injectAtHtmlBegin(htmlString: string, injection: string): string {
-  if (headOpen.test(htmlString)) {
-    return injectAtOpeningTag(htmlString, headOpen, injection)
-  }
-
-  const htmlBegin = /<html(>| [^>]*>)/
-  if (htmlBegin.test(htmlString)) {
-    return injectAtOpeningTag(htmlString, htmlBegin, injection)
-  }
-
-  if (htmlString.toLowerCase().startsWith('<!doctype')) {
-    const lines = htmlString.split('\n')
-    return [...slice(lines, 0, 1), injection, ...slice(lines, 1, 0)].join('\n')
-  } else {
-    return injection + '\n' + htmlString
-  }
-}
-
-function injectAtHtmlEnd(htmlString: string, injection: string): string {
-  const bodyClose = '</body>'
-  if (htmlString.includes(bodyClose)) {
-    return injectAtClosingTag(htmlString, bodyClose, injection)
-  }
-
-  const htmlClose = '</html>'
-  if (htmlString.includes(htmlClose)) {
-    return injectAtClosingTag(htmlString, htmlClose, injection)
-  }
-
-  return htmlString + '\n' + injection
-}
-
-function injectAtOpeningTag(htmlString: string, openingTag: RegExp, injection: string): string {
-  const matches = htmlString.match(openingTag)
-  assert(matches && matches.length >= 1)
-  const tag = matches[0]
-  assert(tag)
-  const htmlParts = htmlString.split(tag)
-  assert(htmlParts.length >= 2)
-
-  // Insert `injection` after first `tag`
-  const before = slice(htmlParts, 0, 1)
-  const after = slice(htmlParts, 1, 0).join(tag)
-  return before + tag + injection + after
-}
-
-function injectAtClosingTag(htmlString: string, closingTag: string, injection: string): string {
-  assert(closingTag.startsWith('</'))
-  assert(closingTag.endsWith('>'))
-  assert(!closingTag.includes(' '))
-
-  const htmlParts = htmlString.split(closingTag)
-  assert(htmlParts.length >= 2)
-
-  // Insert `injection` before last `closingTag`
-  const before = slice(htmlParts, 0, -1).join(closingTag)
-  const after = slice(htmlParts, -1, 0)
-  return before + injection + closingTag + after
-}
-
-function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
+function inferAssetTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType, preloadType } = pageAsset
-  assert(isEsModule === false || assetType === 'script' || preloadType === 'script')
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    assert(isEsModule)
-    if (isEsModule) {
-      return `<script type="module" src="${src}"></script>`
-    } else {
-      return `<script src="${src}"></script>`
-    }
+    return `<script type="module" src="${src}"></script>`
   }
   if (assetType === 'style') {
     // CSS has highest priority.
@@ -246,24 +173,11 @@ function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
     }
     if (preloadType === 'script') {
       assert(mediaType === 'text/javascript')
-      assert(isEsModule)
-      if (isEsModule) {
-        return `<link rel="modulepreload" as="script" type="${mediaType}" href="${src}">`
-      } else {
-        return `<link rel="preload" as="script" type="${mediaType}" href="${src}">`
-      }
+      return `<link rel="modulepreload" as="script" type="${mediaType}" href="${src}">`
     }
     const attributeAs = !preloadType ? '' : ` as="${preloadType}"`
     const attributeType = !mediaType ? '' : ` type="${mediaType}"`
     return `<link rel="preload" href="${src}"${attributeAs}${attributeType}>`
   }
   assert(false)
-}
-
-function ensureHeadTagExistence(htmlString: string): string {
-  if (headOpen.test(htmlString)) {
-    return htmlString
-  }
-  htmlString = injectAtHtmlBegin(htmlString, '<head></head>')
-  return htmlString
 }
