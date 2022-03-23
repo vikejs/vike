@@ -227,6 +227,7 @@ function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
   assert(isEsModule === false || assetType === 'script' || preloadType === 'script')
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
+    assert(isEsModule)
     if (isEsModule) {
       return `<script type="module" src="${src}"></script>`
     } else {
@@ -245,6 +246,7 @@ function inferAssetTag(pageAsset: PageAsset, isEsModule: boolean): string {
     }
     if (preloadType === 'script') {
       assert(mediaType === 'text/javascript')
+      assert(isEsModule)
       if (isEsModule) {
         return `<link rel="modulepreload" as="script" type="${mediaType}" href="${src}">`
       } else {
