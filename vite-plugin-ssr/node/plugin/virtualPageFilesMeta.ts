@@ -97,7 +97,7 @@ async function getSrc(
     const varName = `pageFileMeta${i}`
     const fileExtension = getFileExtension(filePath)
     assert(fileExtension, { filePath })
-    importCode.push(`import * as ${varName} from '${filePath}?meta&lang.${fileExtension}';`)
+    importCode.push(`import * as ${varName} from '${filePath}?extractExportNames&lang.${fileExtension}';`)
     assignCode.push(`  ['/${pathFromRoot}']: ${varName},`)
   })
 
