@@ -74,27 +74,37 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
 
   const pageAssets = await pageContext._getPageAssets()
 
-  // Inject script
-  const scripts = pageAssets.filter(({ assetType }) => assetType === 'script')
-  scripts.forEach((script) => {
-    htmlString = injectScript(htmlString, script)
+  const htmlSnippets: {
+    htmlSnippet: string
+    position: 'DOCUMENT_END' | 'HEAD_CLOSING' | 'HEAD_OPENING'
+  }[] = []
+
+  pageAssets.forEach((pageAsset) => {
+    const { assetType } = pageAsset
+    if (assetType === 'script') {
+      const htmlSnippet = inferAssetTag(pageAsset)
+      htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
+    }
+    if (assetType === 'preload' || assetType === 'style') {
+      // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
+      //   - https://github.com/vitejs/vite/issues/2282
+      //   - https://github.com/brillout/vite-plugin-ssr/issues/261
+      const htmlSnippet = inferAssetTag(pageAsset)
+      htmlSnippets.push({ htmlSnippet, position: 'HEAD_CLOSING' })
+    }
   })
 
-  // Inject preload links
-  const preloadAssets = pageAssets
-    // prettier-ignore
-    .filter(({ assetType }) => assetType === 'preload' || assetType === 'style')
-  /* In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid style flashing.
-       - https://github.com/vitejs/vite/issues/2282
-       - https://github.com/brillout/vite-plugin-ssr/issues/261
-    .filter(({ assetType }) => !(assetType === 'style' && !ssrEnv.isProduction))
-  */
-  const linkTags = preloadAssets.map((pageAsset) => {
-    return inferAssetTag(pageAsset)
+  assert(htmlSnippets.every(({ htmlSnippet }) => htmlSnippet.startsWith('<') && htmlSnippet.endsWith('>')))
+  ;['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const].forEach((position) => {
+    htmlString = injectHtmlSnippet(
+      position,
+      htmlSnippets
+        .filter((h) => h.position === position)
+        .map((h) => h.htmlSnippet)
+        .join(''),
+      htmlString,
+    )
   })
-  assert(linkTags.every((tag) => tag.startsWith('<') && tag.endsWith('>')))
-  const htmlSnippet = linkTags.join('')
-  htmlString = injectHtmlSnippet('HEAD_CLOSING', htmlSnippet, htmlString)
 
   return htmlString
 }
@@ -144,15 +154,11 @@ const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="a
 function injectPageContext(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlSnippet = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
-  return injectHtmlSnippet('DOCUMENT_END', htmlString, htmlSnippet)
+  htmlString = injectHtmlSnippet('DOCUMENT_END', htmlSnippet, htmlString)
+  return htmlString
 }
 function injectPageInfoAlreadyDone(htmlString: string) {
   return htmlString.includes(pageInfoInjectionBegin)
-}
-
-function injectScript(htmlString: string, script: PageAsset): string {
-  const htmlSnippet = inferAssetTag(script)
-  return injectHtmlSnippet('DOCUMENT_END', htmlString, htmlSnippet)
 }
 
 function inferAssetTag(pageAsset: PageAsset): string {
