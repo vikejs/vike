@@ -87,8 +87,8 @@ function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
       priority--
 
       // JavaScript has lowest priority
-      if (preloadType === 'script') return priority - 1
-      if (assetType === 'script') return priority - 2
+      if (assetType === 'script') return priority - 1
+      if (preloadType === 'script') return priority - 2
 
       return priority
     }),

@@ -80,18 +80,30 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   }[] = []
 
   pageAssets.forEach((pageAsset) => {
-    const { assetType } = pageAsset
-    if (assetType === 'script') {
+    const { assetType, preloadType } = pageAsset
+    if (assetType === 'script' || (assetType === 'preload' && preloadType === 'script')) {
       const htmlSnippet = inferAssetTag(pageAsset)
       htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
+      return
     }
-    if (assetType === 'preload' || assetType === 'style') {
+    if (
+      assetType === 'style' ||
+      (assetType === 'preload' && preloadType === 'style') ||
+      (assetType === 'preload' && preloadType === 'font')
+    ) {
       // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
       //   - https://github.com/vitejs/vite/issues/2282
       //   - https://github.com/brillout/vite-plugin-ssr/issues/261
       const htmlSnippet = inferAssetTag(pageAsset)
-      htmlSnippets.push({ htmlSnippet, position: 'HEAD_CLOSING' })
+      htmlSnippets.push({ htmlSnippet, position: 'HEAD_OPENING' })
+      return
     }
+    if (assetType === 'preload') {
+      const htmlSnippet = inferAssetTag(pageAsset)
+      htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
+      return
+    }
+    assert(false, { assetType, preloadType })
   })
 
   assert(htmlSnippets.every(({ htmlSnippet }) => htmlSnippet.startsWith('<') && htmlSnippet.endsWith('>')))
