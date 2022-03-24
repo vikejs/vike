@@ -182,13 +182,7 @@ function isRendererFilePath(filePath: string): boolean {
 type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
 async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const pageFiles = findPageFilesToLoad(pageFilesAll, pageId, isForClientSide)
-  await Promise.all([
-    ...pageFiles.map((p) => p.loadFileExports?.()),
-    // Load CSS provided by `?extractStyles` transformer
-    ...(isForClientSide
-      ? pageFilesAll.filter((p) => p.fileType === '.page.server' && p.isRelevant(pageId)).map((p) => p.loadMeta?.())
-      : []),
-  ])
+  await Promise.all(pageFiles.map((p) => p.loadFileExports?.()))
 
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
