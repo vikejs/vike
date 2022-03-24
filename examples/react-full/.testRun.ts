@@ -14,16 +14,6 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run start' | 'npm run
     expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
   })
 
-  test('link tags are inserted at the end of `<head>`', async () => {
-    if (isDev) {
-      // Not sure why this is needed; `vite-plugin-ssr` always (and has to) inject the assets
-      // after the `render()` hook has run and, therefore, after `Page` has been rendered.
-      await page.goto(urlBase + '/')
-    }
-    const html = await fetchHtml('/')
-    expect(html).toMatch(/<head>.*<title>.*<link.*<\/head>/s)
-  })
-
   test('page is rendered to the DOM and interactive', async () => {
     await page.goto(urlBase + '/')
     expect(await page.textContent('h1')).toBe('Welcome to vite-plugin-ssr')
