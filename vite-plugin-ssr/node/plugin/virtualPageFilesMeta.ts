@@ -1,10 +1,13 @@
 export { virtualPageFilesMeta }
+export { virtualFileRE }
 
 import type { Plugin, ViteDevServer } from 'vite'
 import glob from 'fast-glob'
 import path from 'path'
 import { toPosixPath, assert, assertPosixPath, getFileExtension } from './utils'
 import { getGlobPath } from './glob'
+
+const virtualFileRE = /^virtual\:/
 
 function virtualPageFilesMeta(getGlobRoots: (root: string) => Promise<string[]>) {
   let root: string

@@ -1,13 +1,12 @@
 import type { Plugin } from 'vite'
 import { isSSR_options } from './utils'
-import { extractStylesRE, getExtractStylesCode } from './extractStylesPlugin'
+import { extractStylesRE} from './extractStylesPlugin'
 import { extractExportNamesRE, getExtractExportNamesCode } from './extractExportNamesPlugin'
+import { virtualFileRE } from './virtualPageFilesMeta'
 
 export { transformCrossEnvFiles }
 
 const clientFileRE = /\.page\.client\.[a-zA-Z0-9]+(\?|$)/
-const serverFileRE = /\.page\.server\.[a-zA-Z0-9]+(\?|$)/
-const virtualFileRE = /^virtual\:/
 
 function transformCrossEnvFiles(): Plugin {
   return {
@@ -23,11 +22,6 @@ function transformCrossEnvFiles(): Plugin {
 
       if (isServerSide && clientFileRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide)
-        return code
-      }
-
-      if (isClientSide && serverFileRE.test(id)) {
-        const code = await getExtractStylesCode(src, id)
         return code
       }
     },
