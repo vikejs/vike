@@ -1,17 +1,22 @@
+export { render }
+
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { PageContext } from './types'
-
-export { render }
+import { PageLayout } from './PageLayout'
+import type { PageContext } from '#root/types'
 
 function render(pageContext: PageContext) {
   const { Page } = pageContext
-  const pageViewHtml = ReactDOMServer.renderToString(<Page />)
+  const pageHtml = ReactDOMServer.renderToString(
+    <PageLayout>
+      <Page />
+    </PageLayout>,
+  )
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageViewHtml)}</div>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
 }
