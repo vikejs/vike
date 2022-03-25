@@ -34,7 +34,7 @@ function plugin(config?: Config | Config[]): any {
     removeRequireHookPlugin(),
     distFileNames(),
     virtualPageFilesMeta(getGlobRoots),
-    extractStylesPlugin(),
+    ...extractStylesPlugin(),
     extractExportNamesPlugin(),
     misc(),
   ]

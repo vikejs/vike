@@ -16,82 +16,84 @@ const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
 
 const isMatch = (id: string) => !virtualFileRE.test(id) && (serverPageFileRE.test(id) || extractStylesRE.test(id))
 
-function extractStylesPlugin(): Plugin {
+function extractStylesPlugin(): Plugin[] {
   let root: string
-  return {
-    name: 'vite-plugin-ssr:extractStyles',
-    // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
-    apply: 'build',
-    // We ensure this plugin to be run before:
-    //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
-    //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
-    enforce: 'pre',
-    async resolveId(source, importer, options) {
-      assert(root)
-      if (!importer || !isMatch(importer)) {
-        return
-      }
-      const isSSR = isSSR_options(options)
-      if (isSSR) {
-        return
-      }
-      const resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
+  return [
+    {
+      name: 'vite-plugin-ssr:extractStyles-1',
+      // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
+      apply: 'build',
+      // We ensure this plugin to be run before:
+      //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
+      //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
+      enforce: 'pre',
+      async resolveId(source, importer, options) {
+        assert(root)
+        if (!importer || !isMatch(importer)) {
+          return
+        }
+        const isSSR = isSSR_options(options)
+        if (isSSR) {
+          return
+        }
+        const resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
 
-      // If it cannot be resolved, just return it so that Rollup can display an error.
-      if (!resolution) return resolution
+        // If it cannot be resolved, just return it so that Rollup can display an error.
+        if (!resolution) return resolution
 
-      const { id } = resolution
+        const { id } = resolution
 
-      // Include CSS(/LESS/SCSS/...) files
-      if (cssLangs.test(id)) {
-        debug('INCLUDED', id, importer)
-        return resolution
-      }
+        // Include CSS(/LESS/SCSS/...) files
+        if (cssLangs.test(id)) {
+          debug('INCLUDED', id, importer)
+          return resolution
+        }
 
-      // If the import path is relative, we certainly want to include its CSS dependencies
-      // E.g. `import something from './some/relative/path'
-      if (source.startsWith('.')) {
+        // If the import path is relative, we certainly want to include its CSS dependencies
+        // E.g. `import something from './some/relative/path'
+        if (source.startsWith('.')) {
+          return transformedId(id, importer)
+        }
+
+        // If the import path resolves to a file in `node_modules/`, we can ignore that file:
+        //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
+        //  - Loading CSS from a library (living in `node_modules/`) in an non-directly is non-standard we can safely not support this case. (I'm not aware of any library that does this.)
+        assertPosixPath(id)
+        if (id.includes('/node_modules/')) {
+          return emptyModule(id, importer)
+        }
+        // When the library is symlinked, it doesn't live in a `node_modules/` directory but lives outside `root`.
+        assertPosixPath(root)
+        if (!id.startsWith(root)) {
+          return emptyModule(id, importer)
+        }
+
+        // All the above if-branches are skipped when the import path is an alias.
+        // E.g. `import something from './some/relative/path'
         return transformedId(id, importer)
-      }
-
-      // If the import path resolves to a file in `node_modules/`, we can ignore that file:
-      //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
-      //  - Loading CSS from a library (living in `node_modules/`) in an non-directly is non-standard we can safely not support this case. (I'm not aware of any library that does this.)
-      assertPosixPath(id)
-      if (id.includes('/node_modules/')) {
-        return emptyModule(id, importer)
-      }
-      // When the library is symlinked, it doesn't live in a `node_modules/` directory but lives outside `root`.
-      assertPosixPath(root)
-      if (!id.startsWith(root)) {
-        return emptyModule(id, importer)
-      }
-
-      // All the above if-branches are skipped when the import path is an alias.
-      // E.g. `import something from './some/relative/path'
-      return transformedId(id, importer)
+      },
+      async transform(src, id, options) {
+        if (!isMatch(id)) {
+          return
+        }
+        const isSSR = isSSR_options(options)
+        if (isSSR) {
+          return
+        }
+        const code = await extractImports(src)
+        return code
+      },
+      configResolved(config) {
+        root = config.root
+        assert(root)
+      },
+      load(id) {
+        if (id === EMPTY_MODULE_ID) {
+          return '// Erased by `vite-plugin-ssr:extractStyles`.'
+        }
+      },
     },
-    async transform(src, id, options) {
-      if (!isMatch(id)) {
-        return
-      }
-      const isSSR = isSSR_options(options)
-      if (isSSR) {
-        return
-      }
-      const code = await extractImports(src)
-      return code
-    },
-    configResolved(config) {
-      root = config.root
-      assert(root)
-    },
-    load(id) {
-      if (id === EMPTY_MODULE_ID) {
-        return '// Erased by `vite-plugin-ssr:extractStyles`.'
-      }
-    },
-  } as Plugin
+  ] as Plugin[]
 }
 
 function emptyModule(id: string, importer: string) {
