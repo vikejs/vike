@@ -72,6 +72,20 @@ function extractStylesPlugin(): Plugin[] {
         // E.g. `import something from './some/relative/path'
         return transformedId(id, importer)
       },
+      configResolved(config) {
+        root = config.root
+        assert(root)
+      },
+      load(id) {
+        if (id === EMPTY_MODULE_ID) {
+          return '// Erased by `vite-plugin-ssr:extractStyles`.'
+        }
+      },
+    },
+    {
+      name: 'vite-plugin-ssr:extractStyles-2',
+      apply: 'build',
+      enforce: 'post',
       async transform(src, id, options) {
         if (!isMatch(id)) {
           return
@@ -82,15 +96,6 @@ function extractStylesPlugin(): Plugin[] {
         }
         const code = await extractImports(src)
         return code
-      },
-      configResolved(config) {
-        root = config.root
-        assert(root)
-      },
-      load(id) {
-        if (id === EMPTY_MODULE_ID) {
-          return '// Erased by `vite-plugin-ssr:extractStyles`.'
-        }
       },
     },
   ] as Plugin[]
