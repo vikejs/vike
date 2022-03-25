@@ -2,9 +2,15 @@ export { render }
 
 import ReactDOM from 'react-dom'
 import React from 'react'
-import { PageContext } from './types'
+import { PageLayout } from './PageLayout'
+import type { PageContext } from '#root/types'
 
 async function render(pageContext: PageContext) {
   const { Page } = pageContext
-  ReactDOM.hydrate(<Page />, document.getElementById('page-view'))
+  ReactDOM.hydrate(
+    <PageLayout>
+      <Page />
+    </PageLayout>,
+    document.getElementById('page-view'),
+  )
 }
