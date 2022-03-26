@@ -2,6 +2,7 @@ export { extractStylesPlugin }
 export { extractStylesRE }
 
 // This plugin makes the client-side bundle include CSS imports that live in files loaded only on the server-side. (Needed for HTML-only pages, and React Server Components.)
+// We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=extractStyles pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 
 import type { Plugin } from 'vite'
 import { parseEsModules, EsModules } from './parseEsModules'
@@ -13,15 +14,40 @@ const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`)
 const serverPageFileRE = /\.page\.server\.[a-zA-Z0-9]+$/
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
-
 const isMatch = (id: string) => !virtualFileRE.test(id) && (serverPageFileRE.test(id) || extractStylesRE.test(id))
+const DEBUG = process.env.DEBUG?.includes('extractStyles')
 
 function extractStylesPlugin(): Plugin[] {
   let root: string
   return [
+    // Remove all JS from `.page.server.js` files and `?extractStyles` imports, so that only CSS remains
     {
       name: 'vite-plugin-ssr:extractStyles-1',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
+      apply: 'build',
+      enforce: 'post',
+      async transform(src, id, options) {
+        if (!isMatch(id)) {
+          return
+        }
+        const isSSR = isSSR_options(options)
+        if (isSSR) {
+          return
+        }
+        const esModules = await parseEsModules(src)
+        if (DEBUG) {
+          console.log('')
+          console.log('SOURCE TRANSFORMED (`transform()` hook)')
+          console.log('id: ' + id)
+        }
+        const imports = getImports(esModules)
+        const code = imports.join('\n')
+        return removeSourceMap(code)
+      },
+    },
+    // Recursively remove all JS. The neat thing about this appraoch is that it supports import path aliases set by `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
+    {
+      name: 'vite-plugin-ssr:extractStyles-2',
       apply: 'build',
       // We ensure this plugin to be run before:
       //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
@@ -72,6 +98,10 @@ function extractStylesPlugin(): Plugin[] {
         // E.g. `import something from './some/relative/path'
         return transformedId(id, importer)
       },
+    },
+    {
+      name: 'vite-plugin-ssr:extractStyles-3',
+      apply: 'build',
       configResolved(config) {
         root = config.root
         assert(root)
@@ -81,26 +111,6 @@ function extractStylesPlugin(): Plugin[] {
           return '// Erased by `vite-plugin-ssr:extractStyles`.'
         }
       },
-    },
-    {
-      name: 'vite-plugin-ssr:extractStyles-2',
-      apply: 'build',
-      enforce: 'post',
-      async transform(src, id, options) {
-        if (!isMatch(id)) {
-          return
-        }
-        const isSSR = isSSR_options(options)
-        if (isSSR) {
-          return
-        }
-        const code = await extractImports(src)
-        return code
-      },
-    },
-    {
-      name: 'vite-plugin-ssr:extractStyles-3',
-      apply: 'build',
       config() {
         if (DEBUG) {
           return { logLevel: 'silent' }
@@ -123,49 +133,44 @@ function transformedId(id: string, importer: string) {
   return `${id}?extractStyles&lang.${fileExtension}`
 }
 
-async function extractImports(src: string) {
-  const esModules = await parseEsModules(src)
-  const extractStylesImports = getAndTransformImportStatements(esModules)
-  const code = extractStylesImports.join('\n')
-  return removeSourceMap(code)
-}
-
-function getAndTransformImportStatements(esModules: EsModules): string[] {
-  const [imports] = esModules
-  if (!imports) {
+function getImports(esModules: EsModules): string[] {
+  const [importStatements] = esModules
+  if (!importStatements) {
     return []
   }
-  const importStatments: string[] = []
-  imports
+  const imports: string[] = []
+  importStatements
     .filter(
       ({ a, n }) =>
         // Remove assertions such as:
         //  - `import json from './json.json' assert { type: 'json' }`
         //  - `import('asdf', { assert: { type: 'json' }})
         a === -1 &&
-        // Remove modifiers such as `import logoUrl from './logo.svg?url'` or `'./logo.svg?raw'`.
-        n &&
-        !n?.includes('?'),
+        // I'm not sure why `n` can be `undefined`
+        n !== undefined,
     )
-    .forEach(({ n }) => {
-      assert(n)
-      const idImportee = n
-      importStatments.push(`import '${idImportee}';`)
+    .map(({ n }) => n!)
+    // Remove modifiers such as `import logoUrl from './logo.svg?url'` or `'./logo.svg?raw'`
+    .filter((importee) => !importee.includes('?'))
+    /* We cannot do this because of aliased imports
+    .filter((importee) => importee.startsWith('.'))
+    //*/
+    // It seems like we need to manually nuke `react`; it seems like the React runtime `@vitejs/react` injects is not picked up by our `resolveId` hook.
+    .filter((importee) => !/^react($|\/)/.test(importee))
+    .forEach((importee) => {
+      DEBUG && console.log('importee: ' + importee)
+      assert(importee)
+      imports.push(`import '${importee}';`)
     })
-  return importStatments
+  return imports
 }
 
-/*/
-const DEBUG = true
-/*/
-const DEBUG = false
-//*/
 function debug(operation: 'NUKED' | 'INCLUDED' | 'TRANSFORMED', id: string, importer: string) {
   if (!DEBUG) {
     return
   }
   console.log('')
-  console.log(operation)
+  console.log(`IMPORT ${operation} (\`resolveId()\` hook)`)
   console.log('id: ' + id)
   console.log('importer: ' + importer)
 }
