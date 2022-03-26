@@ -3,7 +3,7 @@ export { extractExportNamesPlugin }
 import type { Plugin } from 'vite'
 import { parseEsModules, getExportNames } from './parseEsModules'
 import { isSSR_options, removeSourceMap } from './utils'
-import { virtualFileRE } from './virtualPageFilesMeta'
+import { virtualFileRE } from './virtualPageFilesExportNames'
 
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const clientFileRE = /\.page\.client\.[a-zA-Z0-9]+(\?|$)/

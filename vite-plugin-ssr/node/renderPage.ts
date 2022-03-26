@@ -466,7 +466,7 @@ async function loadPageFilesServer(pageContext: {
 }) {
   const [pageContextAddendum] = await Promise.all([
     loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
-    loadPageFilesClientMeta(pageContext._pageFilesAll, pageContext._pageId),
+    loadPageFilesClientExportNames(pageContext._pageFilesAll, pageContext._pageId),
   ])
 
   const { clientEntries, clientDependencies, isHtmlOnly } = getClientEntries(
@@ -504,7 +504,7 @@ async function loadPageFilesServer(pageContext: {
 
   return pageContextAddendum
 }
-async function loadPageFilesClientMeta(pageFilesAll: PageFile[], pageId: string): Promise<void> {
+async function loadPageFilesClientExportNames(pageFilesAll: PageFile[], pageId: string): Promise<void> {
   await Promise.all(
     pageFilesAll.filter((p) => p.fileType === '.page.client' && p.isRelevant(pageId)).map((p) => p.loadExportNames?.()),
   )

@@ -10,7 +10,7 @@ import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
 import { distFileNames } from './distFileNames'
-import { virtualPageFilesMeta } from './virtualPageFilesMeta'
+import { virtualPageFilesExportNames } from './virtualPageFilesExportNames'
 import { extractStylesPlugin } from './extractStylesPlugin'
 import { extractExportNamesPlugin } from './extractExportNamesPlugin'
 import { misc } from './misc'
@@ -31,7 +31,7 @@ function plugin(config?: Config | Config[]): any {
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
-    virtualPageFilesMeta(getGlobRoots),
+    virtualPageFilesExportNames(getGlobRoots),
     ...extractStylesPlugin(),
     extractExportNamesPlugin(),
     misc(),

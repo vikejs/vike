@@ -87,8 +87,8 @@ function format(pageFilesExports: unknown) {
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
-  assert(hasProp(pageFilesExports, 'pageFilesMetaLazy', 'object'))
-  assert(hasProp(pageFilesExports, 'pageFilesMetaEager', 'object'))
+  assert(hasProp(pageFilesExports, 'pageFilesExportNamesLazy', 'object'))
+  assert(hasProp(pageFilesExports, 'pageFilesExportNamesEager', 'object'))
   assert(hasProp(pageFilesExports.pageFilesLazy, '.page'))
   assert(
     hasProp(pageFilesExports.pageFilesLazy, '.page.route') || hasProp(pageFilesExports.pageFilesEager, '.page.route'),
@@ -107,7 +107,7 @@ function format(pageFilesExports: unknown) {
       }
     }
   })
-  traverse(pageFilesExports.pageFilesMetaLazy, pageFilesMap, (pageFile, globResult) => {
+  traverse(pageFilesExports.pageFilesExportNamesLazy, pageFilesMap, (pageFile, globResult) => {
     const loadModule = globResult
     assertLoadModule(loadModule)
     pageFile.loadExportNames = async () => {
@@ -123,7 +123,7 @@ function format(pageFilesExports: unknown) {
     assert(isObject(moduleExports))
     pageFile.fileExports = moduleExports
   })
-  traverse(pageFilesExports.pageFilesMetaEager, pageFilesMap, (pageFile, globResult) => {
+  traverse(pageFilesExports.pageFilesExportNamesEager, pageFilesMap, (pageFile, globResult) => {
     const moduleExports = globResult
     assert(isObject(moduleExports))
     assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)

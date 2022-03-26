@@ -1,4 +1,4 @@
-export { virtualPageFilesMeta }
+export { virtualPageFilesExportNames }
 export { virtualFileRE }
 
 import type { Plugin, ViteDevServer } from 'vite'
@@ -9,7 +9,7 @@ import { getGlobPath } from './glob'
 
 const virtualFileRE = /^virtual\:/
 
-function virtualPageFilesMeta(getGlobRoots: (root: string) => Promise<string[]>) {
+function virtualPageFilesExportNames(getGlobRoots: (root: string) => Promise<string[]>) {
   let root: string
   let viteDevServer: ViteDevServer | null = null
   return {
@@ -39,7 +39,7 @@ function virtualPageFilesMeta(getGlobRoots: (root: string) => Promise<string[]>)
 }
 
 function getIdMatch(id: string) {
-  const importNamePrefix = 'virtual:vite-plugin-ssr:pageFilesMeta:'
+  const importNamePrefix = 'virtual:vite-plugin-ssr:pageFilesExportNames:'
   if (!id.startsWith(importNamePrefix)) {
     return null
   }
@@ -97,7 +97,7 @@ async function getSrc(
     assert(filePath.startsWith(root), { root, filePath })
     const pathFromRoot = path.posix.relative(root, filePath)
     assert(!pathFromRoot.startsWith('/'))
-    const varName = `pageFileMeta${i}`
+    const varName = `pageFileExportNames${i}`
     const fileExtension = getFileExtension(filePath)
     assert(fileExtension, { filePath })
     importCode.push(`import * as ${varName} from '${filePath}?extractExportNames&lang.${fileExtension}';`)
@@ -108,11 +108,11 @@ async function getSrc(
 
 ${importCode.join('\n')}
 
-const pageFilesMeta = {
+const pageFilesExportNames = {
 ${assignCode.join('\n')}
 };
 
-export default pageFilesMeta;
+export default pageFilesExportNames;
 `
 
   //*
