@@ -32,9 +32,9 @@ type PageFile = {
   filePath: string
   fileType: FileType
   fileExports?: Record<string, unknown>
-  loadFileExports?: () => Promise<void>
+  loadFile?: () => Promise<void>
   meta?: Record<string, unknown>
-  loadMeta?: () => Promise<void>
+  loadExportNames?: () => Promise<void>
   isRelevant: (pageId: string) => boolean
   isDefaultPageFile: boolean
   isRendererPageFile: boolean
@@ -101,7 +101,7 @@ function format(pageFilesExports: unknown) {
   traverse(pageFilesExports.pageFilesLazy, pageFilesMap, (pageFile, globResult) => {
     const loadModule = globResult
     assertLoadModule(loadModule)
-    pageFile.loadFileExports = async () => {
+    pageFile.loadFile = async () => {
       if (!('fileExports' in pageFile)) {
         pageFile.fileExports = await loadModule()
       }
@@ -110,7 +110,7 @@ function format(pageFilesExports: unknown) {
   traverse(pageFilesExports.pageFilesMetaLazy, pageFilesMap, (pageFile, globResult) => {
     const loadModule = globResult
     assertLoadModule(loadModule)
-    pageFile.loadMeta = async () => {
+    pageFile.loadExportNames = async () => {
       if (!('meta' in pageFile)) {
         pageFile.meta = await loadModule()
       }
@@ -182,7 +182,7 @@ function isRendererFilePath(filePath: string): boolean {
 type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
 async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const pageFiles = findPageFilesToLoad(pageFilesAll, pageId, isForClientSide)
-  await Promise.all(pageFiles.map((p) => p.loadFileExports?.()))
+  await Promise.all(pageFiles.map((p) => p.loadFile?.()))
 
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
