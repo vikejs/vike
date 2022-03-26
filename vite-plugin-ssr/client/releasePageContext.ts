@@ -21,7 +21,7 @@ function releasePageContext<
     _comesDirectlyFromServer: boolean
     pageExports: Record<string, unknown>
     exports: Record<string, unknown>
-  }
+  },
 >(pageContext: T) {
   assert('exports' in pageContext)
   assert('pageExports' in pageContext)

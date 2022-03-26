@@ -10,10 +10,13 @@ type OnBeforeRouteHook = {
   onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
 }
 
-async function callOnBeforeRouteHook(onBeforeRouteHook: OnBeforeRouteHook, pageContext: {
-  url: string
-  _allPageIds: string[]
-}): Promise<
+async function callOnBeforeRouteHook(
+  onBeforeRouteHook: OnBeforeRouteHook,
+  pageContext: {
+    url: string
+    _allPageIds: string[]
+  },
+): Promise<
   | {}
   | { hookError: unknown; hookFilePath: string; hookName: string }
   | {

@@ -1,9 +1,6 @@
 export { determinePageId }
 
-import {
-  slice,
-  assert,
-} from './utils'
+import { slice, assert } from './utils'
 
 function determinePageId(filePath: string): string {
   const pageSuffix = '.page.'

@@ -18,7 +18,7 @@ function extractExportNamesPlugin(): Plugin {
       }
       const isServerSide = isSSR_options(options)
       const isClientSide = !isServerSide
-      if (extractExportNamesRE.test(id) || isServerSide && clientFileRE.test(id)) {
+      if (extractExportNamesRE.test(id) || (isServerSide && clientFileRE.test(id))) {
         const code = await getExtractExportNamesCode(src, isClientSide)
         return code
       }
