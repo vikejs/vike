@@ -18,7 +18,7 @@ function isHtmlOnlyPage(pageId: string, pageFilesAll: PageFile[]) {
 
 function getExportNames(pageFile: PageFile): string[] {
   if (pageFile.fileType === '.page.client') {
-    // We assume `pageFile.loadMeta()` was already called
+    // We assume `pageFile.loadExportNames()` was already called
     assert(hasProp(pageFile.meta, 'exportNames', 'string[]'), pageFile.filePath)
     return pageFile.meta.exportNames
   }

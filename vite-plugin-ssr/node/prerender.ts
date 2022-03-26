@@ -155,7 +155,7 @@ async function callPrerenderHooks(
       .filter((p) => p.fileType === '.page.server')
       .map((p) =>
         concurrencyLimit(async () => {
-          await p.loadFileExports?.()
+          await p.loadFile?.()
           if (p.fileExports?.doNotPrerender) {
             doNotPrerenderList.push({ pageId: p.pageId, pageServerFilePath: p.filePath })
             return
@@ -262,7 +262,7 @@ async function callOnBeforePrerenderHook(globalContext: {
   const pageFilesServerDefault = globalContext._pageFilesAll.filter(
     (p) => p.fileType === '.page.server' && p.isDefaultPageFile,
   )
-  await Promise.all(pageFilesServerDefault.map((p) => p.loadFileExports?.()))
+  await Promise.all(pageFilesServerDefault.map((p) => p.loadFile?.()))
   const hooks = pageFilesServerDefault
     .filter((p) => p.fileExports?.onBeforePrerender)
     .map((p) => ({ filePath: p.filePath, onBeforePrerender: p.fileExports!.onBeforePrerender }))

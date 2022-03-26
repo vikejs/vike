@@ -30,7 +30,7 @@ async function loadPageRoutes(pageContext: {
   const filesystemRoots: { rootPath: string; rootValue: string }[] = []
 
   await Promise.all(
-    pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFileExports?.()),
+    pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()),
   )
 
   pageContext._pageFilesAll
