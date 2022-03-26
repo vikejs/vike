@@ -1,3 +1,3 @@
 export const pageFiles = {}
-export const pageFilesMeta = {}
+export const pageFilesExportNames = {}
 export const isGeneratedFile = false

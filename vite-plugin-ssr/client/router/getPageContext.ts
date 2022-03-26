@@ -144,11 +144,11 @@ async function hasOnBeforeRenderServerSide(pageContext: {
   _pageId: string
   _pageFilesAll: PageFile[]
 }): Promise<boolean> {
-  const pageFilesServerMeta = pageContext._pageFilesAll.filter(
+  const pageFilesServerExportNames = pageContext._pageFilesAll.filter(
     (p) => p.fileType === '.page.server' && p.isRelevant(pageContext._pageId),
   )
-  await Promise.all(pageFilesServerMeta.map((p) => p.loadExportNames?.()))
-  return pageFilesServerMeta.some(({ exportNames }) => {
+  await Promise.all(pageFilesServerExportNames.map((p) => p.loadExportNames?.()))
+  return pageFilesServerExportNames.some(({ exportNames }) => {
     assert(exportNames)
     return exportNames.includes('onBeforeRender')
   })

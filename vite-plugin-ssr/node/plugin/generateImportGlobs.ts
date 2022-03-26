@@ -37,17 +37,17 @@ function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: 
   const assignCode: string[] = []
   if (isForClientSide) {
     {
-      const [importCode_, assignCode_] = getVirtualImport('pageFilesClientMeta', '.page.client')
+      const [importCode_, assignCode_] = getVirtualImport('pageFilesClientExportNames', '.page.client')
       importCode.push(...importCode_)
       assignCode.push(...assignCode_)
     }
     {
-      const [importCode_, assignCode_] = getVirtualImport('pageFilesServerMeta', '.page.server')
+      const [importCode_, assignCode_] = getVirtualImport('pageFilesServerExportNames', '.page.server')
       importCode.push(...importCode_)
       assignCode.push(...assignCode_)
     }
     {
-      const [importCode_, assignCode_] = getVirtualImport('pageFilesIsomorphMeta', '.page')
+      const [importCode_, assignCode_] = getVirtualImport('pageFilesIsomorphExportNames', '.page')
       importCode.push(...importCode_)
       assignCode.push(...assignCode_)
     }
@@ -59,8 +59,8 @@ ${importCode.join('\n')}
 
 export const pageFilesLazy = {};
 export const pageFilesEager = {};
-export const pageFilesMetaLazy = {};
-export const pageFilesMetaEager = {};
+export const pageFilesExportNamesLazy = {};
+export const pageFilesExportNamesEager = {};
 export const isGeneratedFile = true;
 
 ${assignCode.join('\n')}
@@ -68,22 +68,22 @@ ${assignCode.join('\n')}
 `
 
   fileContent += [
-    getGlobs(globRoots, isBuild, 'pageFilesIsomorph', 'page', { isMeta: false }),
-    getGlobs(globRoots, isBuild, 'pageFilesRoute', 'page.route', { isMeta: false }),
+    getGlobs(globRoots, isBuild, 'pageFilesIsomorph', 'page', { isExportNames: false }),
+    getGlobs(globRoots, isBuild, 'pageFilesRoute', 'page.route', { isExportNames: false }),
     '',
   ].join('\n')
   if (isForClientSide) {
     fileContent += [
-      getGlobs(globRoots, isBuild, 'pageFilesClient', 'page.client', { isMeta: false }),
-      // getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.client', { isMeta: true, appendMetaModifier: true }),
-      // getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.server', { isMeta: true, appendMetaModifier: true }),
-      getGlobs(globRoots, isBuild, 'pageFilesServer', 'page.server', { isMeta: false }), // Will be processed by `?extractStyles` transformer
+      getGlobs(globRoots, isBuild, 'pageFilesClient', 'page.client', { isExportNames: false }),
+      // getGlobs(globRoots, isBuild, 'pageFilesClientExportNames', 'page.client', { isExportNames: true, appendExportNamesModifier: true }),
+      // getGlobs(globRoots, isBuild, 'pageFilesClientExportNames', 'page.server', { isExportNames: true, appendExportNamesModifier: true }),
+      getGlobs(globRoots, isBuild, 'pageFilesServer', 'page.server', { isExportNames: false }), // Will be processed by `?extractStyles` transformer
       '',
     ].join('\n')
   } else {
     fileContent += [
-      getGlobs(globRoots, isBuild, 'pageFilesServer', 'page.server', { isMeta: false }),
-      getGlobs(globRoots, isBuild, 'pageFilesClientMeta', 'page.client', { isMeta: true }),
+      getGlobs(globRoots, isBuild, 'pageFilesServer', 'page.server', { isExportNames: false }),
+      getGlobs(globRoots, isBuild, 'pageFilesClientExportNames', 'page.client', { isExportNames: true }),
       '',
     ].join('\n')
   }
@@ -95,8 +95,8 @@ function getVirtualImport(
   varName: string,
   fileSuffix: '.page.client' | '.page' | '.page.server',
 ): [string[], string[]] {
-  const pageFilesVar = 'pageFilesMetaEager'
-  const importCode = [`import ${varName} from 'virtual:vite-plugin-ssr:pageFilesMeta:${fileSuffix}.js';`]
+  const pageFilesVar = 'pageFilesExportNamesEager'
+  const importCode = [`import ${varName} from 'virtual:vite-plugin-ssr:pageFilesExportNames:${fileSuffix}.js';`]
   const assignCode = [`${pageFilesVar}['${fileSuffix}'] = ${varName};`]
   return [importCode, assignCode]
 }
@@ -106,19 +106,19 @@ function getGlobs(
   isBuild: boolean,
   varName: string,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  { isMeta, appendMetaModifier }: { isMeta: boolean; appendMetaModifier?: true },
+  { isExportNames, appendExportNamesModifier }: { isExportNames: boolean; appendExportNamesModifier?: true },
 ): string {
   {
     // Waiting for Vite to implement custom modifier support
-    if (appendMetaModifier) {
+    if (appendExportNamesModifier) {
       return ''
     }
   }
 
-  const isEager = (isMeta || fileSuffix === 'page.route') && isBuild
+  const isEager = (isExportNames || fileSuffix === 'page.route') && isBuild
 
-  let pageFilesVar: 'pageFilesLazy' | 'pageFilesEager' | 'pageFilesMetaLazy' | 'pageFilesMetaEager'
-  if (!isMeta) {
+  let pageFilesVar: 'pageFilesLazy' | 'pageFilesEager' | 'pageFilesExportNamesLazy' | 'pageFilesExportNamesEager'
+  if (!isExportNames) {
     if (!isEager) {
       pageFilesVar = 'pageFilesLazy'
     } else {
@@ -126,9 +126,9 @@ function getGlobs(
     }
   } else {
     if (!isEager) {
-      pageFilesVar = 'pageFilesMetaLazy'
+      pageFilesVar = 'pageFilesExportNamesLazy'
     } else {
-      pageFilesVar = 'pageFilesMetaEager'
+      pageFilesVar = 'pageFilesExportNamesEager'
     }
   }
 
@@ -138,7 +138,7 @@ function getGlobs(
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
       const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
-      const mod = !appendMetaModifier ? '' : ", { as: 'meta' }"
+      const mod = !appendExportNamesModifier ? '' : ", { as: 'meta' }"
       return `const ${varNameLocal} = import.meta.glob${isEager ? 'Eager' : ''}(${globPath}${mod});`
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,

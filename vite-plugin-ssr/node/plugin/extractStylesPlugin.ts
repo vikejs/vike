@@ -6,7 +6,7 @@ export { extractStylesPlugin }
 import type { Plugin } from 'vite'
 import { parseEsModules, EsModules } from './parseEsModules'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from './utils'
-import { virtualFileRE } from './virtualPageFilesMeta'
+import { virtualFileRE } from './virtualPageFilesExportNames'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
