@@ -5,11 +5,11 @@ export { testRun }
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
   {
-    skipTitleColorTest,
+    skipCssTest,
     cwd,
     noDefaultPageInUserCode,
     isPrerendered,
-  }: { skipTitleColorTest?: boolean; cwd?: string; noDefaultPageInUserCode?: true; isPrerendered?: true } = {},
+  }: { skipCssTest?: boolean; cwd?: string; noDefaultPageInUserCode?: true; isPrerendered?: true } = {},
 ) {
   run(cmd, { cwd })
 
@@ -92,11 +92,10 @@ function testRun(
     })
     // CSS is loaded only after being dynamically `import()`'d from JS
     await autoRetry(async () => {
-      if (skipTitleColorTest) {
+      if (skipCssTest) {
         return
       }
-      const titleColor = await page.$eval('h1', (e) => getComputedStyle(e).color)
-      expect(titleColor).toBe('rgb(0, 128, 0)')
+      expect(await page.$eval('code', (e) => getComputedStyle(e).backgroundColor)).toBe('rgb(234, 234, 234)')
     })
   })
 
