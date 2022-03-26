@@ -6,5 +6,5 @@ export default {
   resolve: {
     // Only needed for this example
     preserveSymlinks: true,
-  }
+  },
 }

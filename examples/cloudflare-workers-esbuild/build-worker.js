@@ -14,7 +14,7 @@ esbuild
     target: 'es2020',
     bundle: true,
     // Only neeeded for this example
-    preserveSymlinks: true
+    preserveSymlinks: true,
   })
   .then(() => console.log('Worker built successfully'))
   .catch((error) => console.error('Worker build failed', error))

@@ -20,5 +20,5 @@ const config = {
   headings,
   headingsWithoutLink,
   tagline: 'Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.',
-  titleNormalCase: false
+  titleNormalCase: false,
 } as Config

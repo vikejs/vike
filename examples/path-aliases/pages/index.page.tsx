@@ -6,5 +6,9 @@ import React from 'react'
 export { Page }
 
 function Page() {
-  return <p>Interactive: <Counter /></p>
+  return (
+    <p>
+      Interactive: <Counter />
+    </p>
+  )
 }

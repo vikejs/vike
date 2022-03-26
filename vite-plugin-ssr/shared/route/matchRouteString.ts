@@ -104,7 +104,7 @@ function safelyDecodeURIComponent(value: string, paramName: string) {
       `The value for the URL param "${paramName}" will not be decoded because` +
         ` the string "${value}" is a malformed URL segment. This is probably` +
         ` due to a bad percent encoding (${error}).`,
-      { onlyOnce: true }
+      { onlyOnce: true },
     )
 
     return value
