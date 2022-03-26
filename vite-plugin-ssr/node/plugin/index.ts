@@ -6,7 +6,6 @@ import { manifest } from './manifest'
 import { packageJsonFile } from './packageJsonFile'
 import { importBuild } from 'vite-plugin-import-build'
 import { getImportBuildCode } from './getImportBuildCode'
-import { transformCrossEnvFiles } from './transformCrossEnvFiles'
 import { removeRequireHookPlugin } from './removeRequireHookPlugin'
 import { generateImportGlobs } from './generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
@@ -30,7 +29,6 @@ function plugin(config?: Config | Config[]): any {
     manifest(),
     importBuild(getImportBuildCode()),
     packageJsonFile(),
-    transformCrossEnvFiles(),
     removeRequireHookPlugin(),
     distFileNames(),
     virtualPageFilesMeta(getGlobRoots),
