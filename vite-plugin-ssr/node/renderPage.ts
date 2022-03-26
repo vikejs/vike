@@ -506,7 +506,7 @@ async function loadPageFilesServer(pageContext: {
 }
 async function loadPageFilesClientMeta(pageFilesAll: PageFile[], pageId: string): Promise<void> {
   await Promise.all(
-    pageFilesAll.filter((p) => p.fileType === '.page.client' && p.isRelevant(pageId)).map((p) => p.loadMeta?.()),
+    pageFilesAll.filter((p) => p.fileType === '.page.client' && p.isRelevant(pageId)).map((p) => p.loadExportNames?.()),
   )
 }
 function getClientEntries(
