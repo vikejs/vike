@@ -1,5 +1,5 @@
-import react from "@vitejs/plugin-react";
-import ssr from "vite-plugin-ssr/plugin";
+import react from '@vitejs/plugin-react'
+import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
 export default {
@@ -7,11 +7,11 @@ export default {
     react(),
     ssr({
       pageFiles: {
-        include: ["framework"],
+        include: ['framework'],
       },
     }),
   ],
   optimizeDeps: {
-    include: ['react', 'react-dom']
-  }
-} as UserConfig;
+    include: ['react', 'react-dom'],
+  },
+} as UserConfig

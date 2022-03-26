@@ -1,5 +1,5 @@
 export type PageContext = {
-  Page: React.ComponentType,
+  Page: React.ComponentType
   pageProps: Record<string, unknown>
   exports: {
     favicon: string
