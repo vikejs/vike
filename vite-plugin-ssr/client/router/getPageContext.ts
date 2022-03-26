@@ -148,10 +148,9 @@ async function hasOnBeforeRenderServerSide(pageContext: {
     (p) => p.fileType === '.page.server' && p.isRelevant(pageContext._pageId),
   )
   await Promise.all(pageFilesServerMeta.map((p) => p.loadExportNames?.()))
-  return pageFilesServerMeta.some(({ meta }) => {
-    assert(hasProp(meta, 'exportNames', 'string[]'))
-    assert(Object.keys(meta).length === 1)
-    return meta.exportNames.includes('onBeforeRender')
+  return pageFilesServerMeta.some(({ exportNames }) => {
+    assert(exportNames)
+    return exportNames.includes('onBeforeRender')
   })
 }
 async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {

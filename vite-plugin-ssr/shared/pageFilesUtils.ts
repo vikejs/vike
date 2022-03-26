@@ -3,7 +3,7 @@ export { getExportNames }
 export { hasPageExport }
 
 import type { PageFile } from './getPageFiles'
-import { assert, hasProp } from './utils'
+import { assert } from './utils'
 
 function isHtmlOnlyPage(pageId: string, pageFilesAll: PageFile[]) {
   // The `.page.client.js`/`.page.js` files that should, potentially, be loaded in the browser
@@ -19,16 +19,15 @@ function isHtmlOnlyPage(pageId: string, pageFilesAll: PageFile[]) {
 function getExportNames(pageFile: PageFile): string[] {
   if (pageFile.fileType === '.page.client') {
     // We assume `pageFile.loadExportNames()` was already called
-    assert(hasProp(pageFile.meta, 'exportNames', 'string[]'), pageFile.filePath)
-    return pageFile.meta.exportNames
+    assert(pageFile.exportNames, pageFile.filePath)
+    return pageFile.exportNames
   }
   if (pageFile.fileType === '.page') {
     if (pageFile.fileExports) {
       return Object.keys(pageFile.fileExports)
     }
-    if (pageFile.meta) {
-      assert(hasProp(pageFile.meta, 'exportNames', 'string[]'), pageFile.filePath)
-      return pageFile.meta.exportNames
+    if (pageFile.exportNames) {
+      return pageFile.exportNames
     }
     assert(false, pageFile.filePath)
   }

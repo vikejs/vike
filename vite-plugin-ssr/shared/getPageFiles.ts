@@ -33,7 +33,7 @@ type PageFile = {
   fileType: FileType
   fileExports?: Record<string, unknown>
   loadFile?: () => Promise<void>
-  meta?: Record<string, unknown>
+  exportNames?: string[]
   loadExportNames?: () => Promise<void>
   isRelevant: (pageId: string) => boolean
   isDefaultPageFile: boolean
@@ -111,20 +111,23 @@ function format(pageFilesExports: unknown) {
     const loadModule = globResult
     assertLoadModule(loadModule)
     pageFile.loadExportNames = async () => {
-      if (!('meta' in pageFile)) {
-        pageFile.meta = await loadModule()
+      if (!('exportNames' in pageFile)) {
+        const moduleExports = await loadModule()
+        assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
+        pageFile.exportNames = moduleExports.exportNames
       }
     }
   })
   traverse(pageFilesExports.pageFilesEager, pageFilesMap, (pageFile, globResult) => {
     const moduleExports = globResult
-    assertModuleExports(moduleExports)
+    assert(isObject(moduleExports))
     pageFile.fileExports = moduleExports
   })
   traverse(pageFilesExports.pageFilesMetaEager, pageFilesMap, (pageFile, globResult) => {
     const moduleExports = globResult
-    assertModuleExports(moduleExports)
-    pageFile.meta = moduleExports
+    assert(isObject(moduleExports))
+    assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
+    pageFile.exportNames = moduleExports.exportNames
   })
 
   const pageFiles = Object.values(pageFilesMap)
@@ -136,9 +139,6 @@ function format(pageFilesExports: unknown) {
 }
 function assertLoadModule(globResult: unknown): asserts globResult is () => Promise<Record<string, unknown>> {
   assert(isCallable(globResult))
-}
-function assertModuleExports(globResult: unknown): asserts globResult is Record<string, unknown> {
-  assert(isObject(globResult))
 }
 function traverse(
   globObject: Record<string, unknown>,
