@@ -98,6 +98,15 @@ function extractStylesPlugin(): Plugin[] {
         return code
       },
     },
+    {
+      name: 'vite-plugin-ssr:extractStyles-3',
+      apply: 'build',
+      config() {
+        if (DEBUG) {
+          return { logLevel: 'silent' }
+        }
+      },
+    },
   ] as Plugin[]
 }
 
@@ -108,8 +117,7 @@ function emptyModule(id: string, importer: string) {
 function transformedId(id: string, importer: string) {
   const fileExtension = getFileExtension(id)
   if (!fileExtension) {
-    debug('NUKED', id, importer)
-    return EMPTY_MODULE_ID
+    return emptyModule(id, importer)
   }
   debug('TRANSFORMED', id, importer)
   return `${id}?extractStyles&lang.${fileExtension}`
