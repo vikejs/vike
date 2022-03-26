@@ -1,11 +1,13 @@
 <template>
   <h1>About</h1>
-  <p>A colored page.</p>
+  <p>Demo app using <code>vite-plugin-ssr</code>.</p>
 </template>
 
 <style>
-h1,
-p {
-  color: green;
+code {
+  font-family: monospace;
+  background-color: #eaeaea;
+  padding: 3px 5px;
+  border-radius: 4px;
 }
 </style>
