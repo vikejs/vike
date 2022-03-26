@@ -1,8 +1,7 @@
-export { extractStylesPlugin }
-export { extractStylesRE }
-
 // This plugin makes the client-side bundle include CSS imports that live in files loaded only on the server-side. (Needed for HTML-only pages, and React Server Components.)
 // We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=extractStyles pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
+
+export { extractStylesPlugin }
 
 import type { Plugin } from 'vite'
 import { parseEsModules, EsModules } from './parseEsModules'
@@ -10,11 +9,9 @@ import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPa
 import { virtualFileRE } from './virtualPageFilesMeta'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
-// Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
-const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`)
+const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
 const serverPageFileRE = /\.page\.server\.[a-zA-Z0-9]+$/
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
-const isMatch = (id: string) => !virtualFileRE.test(id) && (serverPageFileRE.test(id) || extractStylesRE.test(id))
 const DEBUG = process.env.DEBUG?.includes('extractStyles')
 
 function extractStylesPlugin(): Plugin[] {
@@ -27,13 +24,11 @@ function extractStylesPlugin(): Plugin[] {
       apply: 'build',
       enforce: 'post',
       async transform(src, id, options) {
-        if (!isMatch(id)) {
+        const isServerSide = isSSR_options(options)
+        if (!isTransformTarget(id, isServerSide)) {
           return
         }
-        const isSSR = isSSR_options(options)
-        if (isSSR) {
-          return
-        }
+        assert(!isServerSide)
         const esModules = await parseEsModules(src)
         if (DEBUG) {
           console.log('')
@@ -55,13 +50,15 @@ function extractStylesPlugin(): Plugin[] {
       enforce: 'pre',
       async resolveId(source, importer, options) {
         assert(root)
-        if (!importer || !isMatch(importer)) {
+        if (!importer) {
+          // We don't need to transform the ID of the `*.page.server.js` entries
           return
         }
-        const isSSR = isSSR_options(options)
-        if (isSSR) {
+        const isServerSide = isSSR_options(options)
+        if (!isTransformTarget(importer, isServerSide)) {
           return
         }
+        assert(!isServerSide)
         const resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
 
         // If it cannot be resolved, just return it so that Rollup can display an error.
@@ -120,6 +117,21 @@ function extractStylesPlugin(): Plugin[] {
   ] as Plugin[]
 }
 
+function isTransformTarget(id: string, isServerSide: boolean) {
+  if (virtualFileRE.test(id)) {
+    return false
+  }
+  if (extractStylesRE.test(id)) {
+    assert(!isServerSide)
+    return true
+  }
+  const isCrossEnv = !isServerSide && serverPageFileRE.test(id)
+  if (isCrossEnv) {
+    return true
+  }
+  return false
+}
+
 function emptyModule(id: string, importer: string) {
   debug('NUKED', id, importer)
   return EMPTY_MODULE_ID
@@ -155,7 +167,7 @@ function getImports(esModules: EsModules): string[] {
     /* We cannot do this because of aliased imports
     .filter((importee) => importee.startsWith('.'))
     //*/
-    // It seems like we need to manually nuke `react`; it seems like the React runtime `@vitejs/react` injects is not picked up by our `resolveId` hook.
+    // It seems like we need to manually nuke `react`; it seems that what the React runtime `@vitejs/react` injects is not picked up by our `resolveId` hook.
     .filter((importee) => !/^react($|\/)/.test(importee))
     .forEach((importee) => {
       DEBUG && console.log('importee: ' + importee)
