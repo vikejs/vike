@@ -1,36 +1,36 @@
 export { getPageAssets }
 
-import { assert, assertUsage, higherFirst, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
+import { assert, higherFirst, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
 import { retrieveStyleAssets, retrieveProdAssets, ClientDependency } from '../retrievePageAssets'
-import { getSsrEnv } from '../ssrEnv'
 import { getViteManifest, ViteManifest } from '../getViteManifest'
 import path from 'path'
 import { inferMediaType } from '../html/inferMediaType'
 import { PageAsset } from '../html/injectAssets'
 import { getManifestEntry } from '../getManifestEntry'
+import type { ViteDevServer } from 'vite'
 
 async function getPageAssets(
   pageContext: {
     _baseUrl: string
     _baseAssets: string | null
+    _isProduction: boolean
+    _viteDevServer: null | ViteDevServer
   },
   clientDependencies: ClientDependency[],
   clientEntries: string[],
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
-  const { isProduction = false, viteDevServer, root } = getSsrEnv()
-  const isDev = !isPreRendering && !isProduction
+  const isDev = !isPreRendering && !pageContext._isProduction
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isDev) {
+    const viteDevServer = pageContext._viteDevServer
     assert(viteDevServer)
-    assert(root)
-    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, root)
+    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, viteDevServer)
     assetUrls = await retrieveStyleAssets(clientDependencies, viteDevServer)
   } else {
-    const manifests = retrieveViteManifest(isPreRendering)
-    const clientManifest = manifests.clientManifest
+    const { clientManifest } = getViteManifest(isPreRendering)
     clientEntriesSrc = clientEntries && resolveClientEntriesProd(clientEntries, clientManifest!)
     assetUrls = await retrieveProdAssets(clientDependencies, clientManifest)
   }
@@ -95,25 +95,9 @@ function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
   )
 }
 
-function retrieveViteManifest(isPreRendering: boolean): { clientManifest: ViteManifest; serverManifest: ViteManifest } {
-  const { clientManifest, serverManifest, clientManifestPath, serverManifestPath } = getViteManifest()
-  const userOperation = isPreRendering
-    ? 'running `$ vite-plugin-ssr prerender`'
-    : 'running the server with `isProduction: true`'
-  assertUsage(
-    clientManifest && serverManifest,
-    'You are ' +
-      userOperation +
-      " but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before. (Following build manifest is missing: `" +
-      clientManifestPath +
-      '` and/or `' +
-      serverManifestPath +
-      '`.)',
-  )
-  return { clientManifest, serverManifest }
-}
-
-function resolveClientEntriesDev(clientEntries: string[], root: string): string[] {
+function resolveClientEntriesDev(clientEntries: string[], viteDevServer: ViteDevServer): string[] {
+  let root = viteDevServer.config.root
+  assert(root)
   root = toPosixPath(root)
   return clientEntries.map((clientEntry) => {
     assertPosixPath(clientEntry)

@@ -1,6 +1,6 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
-import { basename } from 'path'
+import path from 'path'
 import { assert, isObject, isSSR_config } from '../utils'
 
 export { build }
@@ -50,7 +50,7 @@ function getPageFilesEntry(
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const filePath = require.resolve(`../../../../../${filePathRelative}`)
   assert(filePath.endsWith('.js'))
-  const entryName = basename(filePath).replace(/\.js$/, '')
+  const entryName = path.basename(filePath).replace(/\.js$/, '')
   const entryPoints = {
     [entryName]: filePath,
   }
@@ -71,7 +71,8 @@ function getOutDir(config: UserConfig): string {
   if (!outDir) {
     outDir = 'dist'
   }
-  return config.build?.ssr ? `${outDir}/server` : `${outDir}/client`
+  outDir = path.posix.join(outDir, config.build?.ssr ? 'server' : 'client')
+  return outDir
 }
 
 function normalizeRollupInput(input?: InputOption): Record<string, string> {
