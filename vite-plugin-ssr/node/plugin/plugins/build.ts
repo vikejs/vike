@@ -47,8 +47,8 @@ function serverEntryPoints(): Record<string, string> {
 function getPageFilesEntry(
   filePathRelative: 'dist/esm/node/page-files/pageFiles.js' | 'dist/esm/client/page-files/pageFiles.js',
 ): Record<string, string> {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
-  const filePath = require.resolve(`../../../../${filePathRelative}`)
+  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
+  const filePath = require.resolve(`../../../../../${filePathRelative}`)
   assert(filePath.endsWith('.js'))
   const entryName = basename(filePath).replace(/\.js$/, '')
   const entryPoints = {
@@ -58,10 +58,10 @@ function getPageFilesEntry(
 }
 
 function browserEntryPoints(): Record<string, string> {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
+  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const entryPoints = {
-    ['entry-client-routing']: require.resolve(`../../../../dist/esm/client/router/entry.js`),
-    ['entry-server-routing']: require.resolve(`../../../../dist/esm/client/entry.js`),
+    ['entry-client-routing']: require.resolve(`../../../../../dist/esm/client/router/entry.js`),
+    ['entry-server-routing']: require.resolve(`../../../../../dist/esm/client/entry.js`),
   }
   return entryPoints
 }
