@@ -1,12 +1,11 @@
 export { distFileNames }
 
-import { getRoot, assertPosixPath } from './utils'
+import { getRoot, assertPosixPath, assert, isCallable } from '../utils'
 import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'
 import type { Plugin, UserConfig } from 'vite'
-import { posix } from 'path'
-import { assert, isCallable } from '../utils'
-import { determinePageId } from '../../shared/determinePageId'
-import { getFilesystemRoute } from '../../shared/route/resolveFilesystemRoute'
+import path from 'path'
+import { determinePageId } from '../../../shared/determinePageId'
+import { getFilesystemRoute } from '../../../shared/route/resolveFilesystemRoute'
 
 function distFileNames(): Plugin {
   return {
@@ -63,7 +62,7 @@ function getChunkFileName(root: string, chunkInfo: PreRenderedChunk, chunkFileNa
 
 function deduceChunkNameFromFilesystemRouting(id: string, root: string): string | null {
   assert(id?.startsWith(root), { id, root })
-  const pathRelative = posix.relative(root, id)
+  const pathRelative = path.posix.relative(root, id)
   assert(!pathRelative.startsWith('.') && !pathRelative.startsWith('/'), { id, root })
   const pageId = determinePageId('/' + pathRelative)
   const filesystemRoute = getFilesystemRoute(pageId, [])

@@ -1,11 +1,11 @@
+export { resolveGlobConfig }
+export { getGlobPath }
+
 import { existsSync } from 'fs'
-import { assertPosixPath, assertUsage, toPosixPath } from '../utils'
+import { assertPosixPath, assertUsage, toPosixPath } from './utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
-
-export { resolveGlobConfig }
-export { getGlobPath }
 
 function resolveGlobConfig(includePageFiles: string[]) {
   let globPaths: string[]

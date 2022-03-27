@@ -1,4 +1,4 @@
-import { assert, isObject } from '../../utils'
+import { assert, isObject } from '../utils'
 
 export { isSSR_config }
 export { isSSR_options }

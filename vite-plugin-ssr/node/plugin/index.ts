@@ -1,23 +1,23 @@
-import type { Plugin } from 'vite'
-import { assertUsage } from '../utils'
-import { build } from './build'
-import { dev } from './dev'
-import { manifest } from './manifest'
-import { packageJsonFile } from './packageJsonFile'
-import { importBuild } from 'vite-plugin-import-build'
-import { getImportBuildCode } from './getImportBuildCode'
-import { removeRequireHookPlugin } from './removeRequireHookPlugin'
-import { generateImportGlobs } from './generateImportGlobs'
-import { resolveConfig, Config } from './resolveConfig'
-import { distFileNames } from './distFileNames'
-import { virtualPageFilesExportNames } from './virtualPageFilesExportNames'
-import { extractStylesPlugin } from './extractStylesPlugin'
-import { extractExportNamesPlugin } from './extractExportNamesPlugin'
-import { misc } from './misc'
-
 export default plugin
 export { plugin }
 export { plugin as ssr }
+
+import type { Plugin } from 'vite'
+import { assertUsage } from './utils'
+import { build } from './plugins/build'
+import { dev } from './plugins/dev'
+import { manifest } from './plugins/manifest'
+import { packageJsonFile } from './plugins/packageJsonFile'
+import { importBuild } from 'vite-plugin-import-build'
+import { getImportBuildCode } from './plugins/getImportBuildCode'
+import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
+import { generateImportGlobs } from './plugins/generateImportGlobs'
+import { resolveConfig, Config } from './config'
+import { distFileNames } from './plugins/distFileNames'
+import { virtualPageFilesExportNames } from './plugins/virtualPageFilesExportNames'
+import { extractStylesPlugin } from './plugins/extractStylesPlugin'
+import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
+import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(config?: Config | Config[]): any {
@@ -34,7 +34,7 @@ function plugin(config?: Config | Config[]): any {
     virtualPageFilesExportNames(getGlobRoots),
     ...extractStylesPlugin(),
     extractExportNamesPlugin(),
-    misc(),
+    suppressRollupWarning(),
   ]
   return plugins as any
 }
@@ -43,6 +43,7 @@ function plugin(config?: Config | Config[]): any {
 // This lives at the end of the file to ensure it happens after all assignments to `exports`
 module.exports = Object.assign(exports.default, exports)
 
+// Error upon wrong usage
 Object.defineProperty(plugin, 'apply', {
   enumerable: true,
   get: () => {

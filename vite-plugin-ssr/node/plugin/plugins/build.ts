@@ -1,8 +1,7 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import { basename } from 'path'
-import { assert, isObject } from '../utils'
-import { isSSR_config } from './utils'
+import { assert, isObject, isSSR_config } from '../utils'
 
 export { build }
 
