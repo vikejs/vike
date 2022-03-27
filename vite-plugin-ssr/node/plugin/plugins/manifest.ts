@@ -32,8 +32,8 @@ function manifest(): Plugin {
 }
 
 function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/
-  const filePath = require.resolve('../../../../dist/esm/client/router/useClientRouter.js')
+  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
+  const filePath = require.resolve('../../../../../dist/esm/client/router/useClientRouter.js')
   for (const file of Object.keys(bundle)) {
     const bundleFile = bundle[file]
     assert(bundleFile)
