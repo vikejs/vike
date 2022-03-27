@@ -1,12 +1,6 @@
 import { getErrorPageId, route, isErrorPage } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
-import {
-  loadPageFiles,
-  getPageFilesAllServerSide,
-  PageFile,
-  PageContextExports,
-  getStringUnion,
-} from '../shared/getPageFiles'
+import { loadPageFiles, PageFile, PageContextExports, getStringUnion } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
 import { isHtmlOnlyPage, getExportNames, hasPageExport } from '../shared/pageFilesUtils'
 import { getSsrEnv } from './ssrEnv'
@@ -16,14 +10,11 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  handlePageContextRequestSuffix,
   isPlainObject,
   isObject,
   objectAssign,
   PromiseType,
-  parseUrl,
   isParsable,
-  assertBaseUrl,
   isPromise,
 } from './utils'
 import type { PageAsset } from './html/injectAssets'
@@ -48,18 +39,16 @@ import { assertPageContextProvidedByUser } from '../shared/assertPageContextProv
 import { isRenderErrorPage, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
 import { warn404 } from './renderPage/warn404'
 import { ClientDependency } from './retrievePageAssets'
+import { getGlobalContext, GlobalContext } from './globalContext'
 
 export { renderPageWithoutThrowing }
 export type { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
-export { getGlobalContext }
 export { loadPageFilesServer }
-export type { GlobalContext }
 export { throwPrerenderError }
 
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
-type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
   pageContextInit: PageContextInit,
@@ -176,8 +165,11 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
     return pageContext
   }
 
+  const globalContext = await getGlobalContext()
+  objectAssign(pageContext, globalContext)
+
   const baseUrl = getBaseUrl()
-  const { isPageContextRequest, hasBaseUrl } = _parseUrl(pageContext.url, baseUrl)
+  const { isPageContextRequest, hasBaseUrl } = globalContext._parseUrl(pageContext.url, baseUrl)
   if (!hasBaseUrl) {
     objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
@@ -185,9 +177,6 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   objectAssign(pageContext, {
     _isPageContextRequest: isPageContextRequest,
   })
-
-  const globalContext = await getGlobalContext()
-  objectAssign(pageContext, globalContext)
 
   addComputedUrlProps(pageContext)
 
@@ -753,40 +742,6 @@ function warnMissingErrorPage() {
       { onlyOnce: true },
     )
   }
-}
-
-function _parseUrl(url: string, baseUrl: string): ReturnType<typeof parseUrl> & { isPageContextRequest: boolean } {
-  assert(url.startsWith('/') || url.startsWith('http'))
-  assert(baseUrl.startsWith('/'))
-  const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
-  return { ...parseUrl(urlWithoutPageContextRequestSuffix, baseUrl), isPageContextRequest }
-}
-
-async function getGlobalContext() {
-  const ssrEnv = getSsrEnv()
-  const baseUrl = getBaseUrl()
-  assertBaseUrl(baseUrl)
-  const globalContext = {
-    _parseUrl,
-    _baseUrl: baseUrl,
-    _objectCreatedByVitePluginSsr: true,
-  }
-
-  objectAssign(globalContext, {
-    _isProduction: ssrEnv.isProduction,
-    _viteDevServer: ssrEnv.viteDevServer,
-    _root: ssrEnv.root,
-    _baseAssets: ssrEnv.baseAssets,
-    _outDir: ssrEnv.baseAssets,
-  })
-
-  const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(ssrEnv.isProduction)
-  objectAssign(globalContext, {
-    _pageFilesAll: pageFilesAll,
-    _allPageIds: allPageIds,
-  })
-
-  return globalContext
 }
 
 function throwPrerenderError(err: unknown) {
