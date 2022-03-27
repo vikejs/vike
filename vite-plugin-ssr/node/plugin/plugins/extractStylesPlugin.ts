@@ -4,8 +4,8 @@
 export { extractStylesPlugin }
 
 import type { Plugin } from 'vite'
-import { parseEsModules, EsModules } from './parseEsModules'
-import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from './utils'
+import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
+import { parseEsModules, EsModules } from '../parseEsModules'
 import { virtualFileRE } from './virtualPageFilesExportNames'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/

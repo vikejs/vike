@@ -4,8 +4,8 @@ export { virtualFileRE }
 import type { Plugin, ViteDevServer } from 'vite'
 import glob from 'fast-glob'
 import path from 'path'
-import { toPosixPath, assert, assertPosixPath, getFileExtension } from './utils'
-import { getGlobPath } from './glob'
+import { toPosixPath, assert, assertPosixPath, getFileExtension } from '../utils'
+import { getGlobPath } from '../glob'
 
 const virtualFileRE = /^virtual\:/
 

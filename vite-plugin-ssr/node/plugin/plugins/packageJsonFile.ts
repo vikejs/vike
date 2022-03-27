@@ -7,11 +7,10 @@
  * Reproduction: https://github.com/brillout/vite-plugin-ssr-server-import-syntax
  */
 
-import type { Plugin } from 'vite'
-import { assert } from '../utils'
-import { isSSR_config } from './utils'
-
 export { packageJsonFile }
+
+import type { Plugin } from 'vite'
+import { assert, isSSR_config } from '../utils'
 
 function packageJsonFile(): Plugin {
   let ssr: boolean

@@ -1,8 +1,7 @@
-import { Plugin } from 'vite'
-import { assert, normalizePath, projectInfo } from '../utils'
-import { isSSR_config } from './utils'
-
 export { manifest }
+
+import { Plugin } from 'vite'
+import { assert, normalizePath, projectInfo, isSSR_config } from '../utils'
 
 function manifest(): Plugin {
   let base: string
