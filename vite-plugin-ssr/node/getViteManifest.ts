@@ -1,11 +1,10 @@
-import { getSsrEnv } from './ssrEnv'
-import { assert } from './utils'
-
 export { setViteManifest }
 export { getViteManifest }
 export type { ViteManifest }
 export type { ViteManifestEntry }
 export type { PluginManifest }
+
+import { assert, assertUsage, isPlainObject, projectInfo } from './utils'
 
 type ViteManifestEntry = {
   src?: string
@@ -22,58 +21,47 @@ type ViteManifest = Record<string, ViteManifestEntry>
 type PluginManifest = {
   version: string
   base: string
+  baseAssets: string
   usesClientRouter: boolean
 }
 
-var clientManifest: null | ViteManifest = null
-var serverManifest: null | ViteManifest = null
-var pluginManifest: null | PluginManifest = null
-function getViteManifest(): {
-  clientManifest: null | ViteManifest
-  serverManifest: null | ViteManifest
-  pluginManifest: null | PluginManifest
-  clientManifestPath: string
-  serverManifestPath: string
-  pluginManifestPath: string
-  outDirPath: string
+let manifests: null | {
+  clientManifest: ViteManifest
+  serverManifest: ViteManifest
+  pluginManifest: PluginManifest
+} = null
+function getViteManifest(isPreRendering: boolean): {
+  clientManifest: ViteManifest
+  serverManifest: ViteManifest
+  pluginManifest: PluginManifest
 } {
-  const { root, outDir } = getSsrEnv()
-  const outDirPath = `${root}/${outDir}`
-  const clientManifestPath = `${outDirPath}/client/manifest.json`
-  const serverManifestPath = `${outDirPath}/server/manifest.json`
-  const pluginManifestPath = `${outDirPath}/client/vite-plugin-ssr.json`
-
-  const req = require // Prevent Webpack's dynamic import analysis
-  if (!clientManifest) {
-    try {
-      clientManifest = req(clientManifestPath)
-    } catch (err) {}
+  if (isPreRendering) {
+    assertUsage(
+      manifests,
+      "You are tyring to run `$ vite-plugin-ssr prerender` but your app isn't built yet. Make to sure to run `$ vite build && vite build --ssr` before pre-rendering.",
+    )
   }
-  if (!serverManifest) {
-    try {
-      serverManifest = req(serverManifestPath)
-    } catch (err) {}
-  }
-  if (!pluginManifest) {
-    try {
-      pluginManifest = req(pluginManifestPath)
-    } catch (err) {}
-  }
-
-  return {
-    clientManifest,
-    serverManifest,
-    clientManifestPath,
-    serverManifestPath,
-    pluginManifest,
-    pluginManifestPath,
-    outDirPath,
-  }
+  assert(manifests)
+  return manifests
 }
 
-function setViteManifest(manifests: { clientManifest: unknown; serverManifest: unknown; pluginManifest: unknown }) {
-  clientManifest = manifests.clientManifest as ViteManifest
-  serverManifest = manifests.serverManifest as ViteManifest
-  pluginManifest = manifests.pluginManifest as PluginManifest
-  assert(clientManifest && serverManifest && pluginManifest)
+function setViteManifest(manifests_: { clientManifest: unknown; serverManifest: unknown; pluginManifest: unknown }) {
+  assert(manifests_)
+  assertPluginManifest(manifests_.pluginManifest)
+  manifests = manifests_ as any
+  assert(manifests)
+  assert(manifests.clientManifest && manifests.serverManifest && manifests.pluginManifest)
+}
+
+function assertPluginManifest(pluginManifest: unknown) {
+  assert(isPlainObject(pluginManifest))
+  assert(typeof pluginManifest.base === 'string')
+  assert(pluginManifest.base.startsWith('/'))
+  assert(typeof pluginManifest.usesClientRouter === 'boolean')
+  assert(typeof pluginManifest.version === 'string')
+  assert(pluginManifest.baseAssets === null || typeof pluginManifest.baseAssets === 'string')
+  assertUsage(
+    pluginManifest.version === projectInfo.projectVersion,
+    `Re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with following different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`,
+  )
 }

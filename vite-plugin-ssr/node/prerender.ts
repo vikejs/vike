@@ -13,14 +13,12 @@ import {
   isObjectWithKeys,
   isCallable,
 } from './utils'
-import { setSsrEnv } from './ssrEnv'
-import { throwPrerenderError, loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
+import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
-import { PageFile } from '../shared/getPageFiles'
+import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getViteManifest } from './getViteManifest'
-import type { PluginManifest } from './getViteManifest'
 import { getGlobalContext, GlobalContext } from './globalContext'
 
 export { prerender }
@@ -38,9 +36,12 @@ type DoNotPrerenderList = { pageId: string; pageServerFilePath: string }[]
 type PrerenderedPageIds = Record<string, { url: string; _prerenderSourceFile: string | null }>
 
 type GlobalPrerenderingContext = GlobalContext & {
+  _allPageIds: string[]
+  _pageFilesAll: PageFile[]
   _isPreRendering: true
   _usesClientRouter: boolean
   prerenderPageContexts: PageContext[]
+  _urlProcessor: null
 }
 
 type PageContext = GlobalPrerenderingContext & {
@@ -82,30 +83,24 @@ async function prerender({
 
   setProductionEnvVar()
 
-  const ssrEnv = {
-    isProduction: true as const,
-    root,
-    outDir,
-    viteDevServer: undefined,
-    baseUrl: '/',
-    baseAssets: null,
-  }
-  setSsrEnv(ssrEnv)
-
-  const { pluginManifest, pluginManifestPath, outDirPath } = getViteManifest()
-  assertPluginManifest(pluginManifest, pluginManifestPath, outDirPath)
-
-  ssrEnv.baseUrl = pluginManifest.base
-  setSsrEnv(ssrEnv)
-
   const concurrencyLimit = pLimit(parallel)
 
-  const globalContext = await getGlobalContext()
+  const { pluginManifest } = getViteManifest(true)
+  const globalContext = getGlobalContext(true)
   objectAssign(globalContext, {
     _isPreRendering: true as const,
+    _urlProcessor: null,
     _usesClientRouter: pluginManifest.usesClientRouter,
     prerenderPageContexts: [] as PageContext[],
   })
+
+  {
+    const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(globalContext._isProduction)
+    objectAssign(globalContext, {
+      _pageFilesAll: pageFilesAll,
+      _allPageIds: allPageIds,
+    })
+  }
 
   objectAssign(globalContext, pageContextInit)
 
@@ -512,27 +507,6 @@ function normalizePrerenderResult(
   }
 }
 
-function assertPluginManifest(
-  pluginManifest: PluginManifest | null,
-  pluginManifestPath: string,
-  outDirPath: string,
-): asserts pluginManifest is PluginManifest {
-  assertUsage(
-    pluginManifest,
-    "You are trying to run `$ vite-plugin-ssr prerender` but you didn't build your app yet: make sure to run `$ vite build && vite build --ssr` before running the pre-rendering. (Following build manifest is missing: `" +
-      pluginManifestPath +
-      '`.)',
-  )
-
-  assert(typeof pluginManifest.version === 'string')
-  assertUsage(
-    pluginManifest.version === projectInfo.projectVersion,
-    `Remove ${outDirPath} and re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with following different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`,
-  )
-  assert(typeof pluginManifest.base === 'string')
-  assert(typeof pluginManifest.usesClientRouter === 'boolean')
-}
-
 function assertArguments({
   partial,
   noExtraDir,
@@ -562,4 +536,12 @@ function setProductionEnvVar() {
   const proc = process
   const { env } = proc
   env['NODE_ENV'] = 'production'
+}
+
+function throwPrerenderError(err: unknown) {
+  if (hasProp(err, 'stack')) {
+    throw err
+  } else {
+    throw new Error(err as any)
+  }
 }
