@@ -14,20 +14,14 @@ import {
   isCallable,
 } from './utils'
 import { setSsrEnv } from './ssrEnv'
-import {
-  getGlobalContext,
-  GlobalContext,
-  throwPrerenderError,
-  loadPageFilesServer,
-  prerenderPage,
-  renderStatic404Page,
-} from './renderPage'
+import { throwPrerenderError, loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
 import { PageFile } from '../shared/getPageFiles'
 import { getViteManifest } from './getViteManifest'
 import type { PluginManifest } from './getViteManifest'
+import { getGlobalContext, GlobalContext } from './globalContext'
 
 export { prerender }
 
