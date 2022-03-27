@@ -3,7 +3,7 @@ export { manifest }
 import { Plugin } from 'vite'
 import { assert, normalizePath, projectInfo, isSSR_config } from '../utils'
 
-function manifest(): Plugin {
+function manifest({ baseAssets }: { baseAssets: string | null }): Plugin {
   let base: string
   let ssr: boolean
   return {
@@ -21,6 +21,7 @@ function manifest(): Plugin {
         version: projectInfo.projectVersion,
         usesClientRouter: includesClientSideRouter(bundle as any),
         base,
+        baseAssets
       }
       this.emitFile({
         fileName: `vite-plugin-ssr.json`,

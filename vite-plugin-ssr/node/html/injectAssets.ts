@@ -1,10 +1,10 @@
 import { assert, assertUsage, assertWarning, castProp, hasProp, normalizeBaseUrl } from '../utils'
-import { getSsrEnv } from '../ssrEnv'
 import type { MediaType } from './inferMediaType'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { createHtmlHeadIfMissing, injectHtmlSnippet } from './injectAssets/injectHtmlSnippet'
+import type { ViteDevServer } from 'vite'
 
 export { injectAssets__public }
 export { injectAssets }
@@ -49,6 +49,9 @@ type PageContextInjectAssets = {
   _isHtmlOnly: boolean
   _pageContextProvidedByUserPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
+  _isProduction: boolean
+  _viteDevServer: null | ViteDevServer
+  _baseUrl: string
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
   htmlString = await injectAssetsBeforeRender(htmlString, pageContext)
@@ -66,7 +69,7 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
   // Inject Vite transformations
   const { urlPathname } = pageContext
   assert(typeof urlPathname === 'string' && urlPathname.startsWith('/'))
-  htmlString = await applyViteHtmlTransform(htmlString, urlPathname)
+  htmlString = await applyViteHtmlTransform(htmlString, urlPathname, pageContext)
 
   if (pageContext._skipAssetInject) {
     return htmlString
@@ -141,13 +144,17 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
   return htmlString
 }
 
-async function applyViteHtmlTransform(htmlString: string, urlPathname: string): Promise<string> {
-  const ssrEnv = getSsrEnv()
-  if (ssrEnv.isProduction) {
+async function applyViteHtmlTransform(
+  htmlString: string,
+  urlPathname: string,
+  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer, _baseUrl: string },
+): Promise<string> {
+  if (pageContext._isProduction) {
     return htmlString
   }
-  htmlString = await ssrEnv.viteDevServer.transformIndexHtml(urlPathname, htmlString)
-  htmlString = removeDuplicatedBaseUrl(htmlString, ssrEnv.baseUrl)
+  assert(pageContext._viteDevServer)
+  htmlString = await pageContext._viteDevServer.transformIndexHtml(urlPathname, htmlString)
+  htmlString = removeDuplicatedBaseUrl(htmlString, pageContext._baseUrl)
   return htmlString
 }
 

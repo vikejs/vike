@@ -8,26 +8,28 @@ import { build } from './plugins/build'
 import { dev } from './plugins/dev'
 import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
-import { importBuild } from 'vite-plugin-import-build'
-import { getImportBuildCode } from './plugins/getImportBuildCode'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
-import { resolveConfig, Config } from './config'
+import { resolveConfig, Config } from './resolveConfig'
 import { distFileNames } from './plugins/distFileNames'
 import { virtualPageFilesExportNames } from './plugins/virtualPageFilesExportNames'
 import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
+import { retrieveDevServer } from './plugins/retrieveDevServer'
+import { distLink, distLinkReset } from './plugins/distLink'
+import { setConfig } from '../globalContext'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(config?: Config | Config[]): any {
-  const { getGlobRoots } = resolveConfig(config)
+function plugin(config?: Config): any {
+  const { baseUrl, baseAssets, getGlobRoots } = resolveConfig(config)
+  setConfig({ baseUrl, baseAssets })
+  distLinkReset()
   const plugins: Plugin[] = [
     generateImportGlobs(getGlobRoots),
     dev(),
     build(),
-    manifest(),
-    importBuild(getImportBuildCode()),
+    manifest({ baseAssets }),
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
@@ -35,6 +37,8 @@ function plugin(config?: Config | Config[]): any {
     ...extractStylesPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),
+    retrieveDevServer(),
+    distLink(),
   ]
   return plugins as any
 }

@@ -1,9 +1,14 @@
 import { getErrorPageId, route, isErrorPage } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
-import { loadPageFiles, PageFile, PageContextExports, getStringUnion } from '../shared/getPageFiles'
+import {
+  loadPageFiles,
+  PageFile,
+  PageContextExports,
+  getStringUnion,
+  getPageFilesAllServerSide,
+} from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
 import { isHtmlOnlyPage, getExportNames, hasPageExport } from '../shared/pageFilesUtils'
-import { getSsrEnv } from './ssrEnv'
 import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
@@ -16,6 +21,8 @@ import {
   PromiseType,
   isParsable,
   isPromise,
+  handlePageContextRequestSuffix,
+  parseUrl,
 } from './utils'
 import type { PageAsset } from './html/injectAssets'
 import { getPageAssets } from './renderPage/getPageAssets'
@@ -40,17 +47,22 @@ import { isRenderErrorPage, assertRenderErrorPageParentheses } from './renderPag
 import { warn404 } from './renderPage/warn404'
 import { ClientDependency } from './retrievePageAssets'
 import { getGlobalContext, GlobalContext } from './globalContext'
+import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
+import type { ViteDevServer } from 'vite'
 
-export { renderPageWithoutThrowing }
-export type { renderPage }
+export { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
 export { loadPageFilesServer }
-export { throwPrerenderError }
 
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 
-async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
+type GlobalRenderingContext = GlobalContext & {
+  _allPageIds: string[]
+  _pageFilesAll: PageFile[]
+}
+
+async function renderPage_<PageContextAdded extends {}, PageContextInit extends { url: string }>(
   pageContextInit: PageContextInit,
 ): Promise<
   PageContextInit & { errorWhileRendering: unknown } & (
@@ -96,7 +108,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     // No `_error.page.js` is defined
     const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (!errorPageId) {
-      warnMissingErrorPage()
+      warnMissingErrorPage(pageContext)
       if (pageContext._isPageContextRequest) {
         const httpResponse = createHttpResponseObject(
           stringify({
@@ -165,31 +177,42 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
     return pageContext
   }
 
-  const globalContext = await getGlobalContext()
+  const globalContext = getGlobalContext(pageContext._isPreRendering)
   objectAssign(pageContext, globalContext)
 
-  const baseUrl = getBaseUrl()
-  const { isPageContextRequest, hasBaseUrl } = globalContext._parseUrl(pageContext.url, baseUrl)
-  if (!hasBaseUrl) {
-    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-    return pageContext
+  {
+    const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(globalContext._isProduction)
+    objectAssign(pageContext, {
+      _pageFilesAll: pageFilesAll,
+      _allPageIds: allPageIds,
+    })
   }
-  objectAssign(pageContext, {
-    _isPageContextRequest: isPageContextRequest,
-  })
+
+  {
+    const { url } = pageContext
+    assert(url.startsWith('/') || url.startsWith('http'))
+    const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
+    const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
+    if (!hasBaseUrl) {
+      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+      return pageContext
+    }
+    objectAssign(pageContext, {
+      _isPageContextRequest: isPageContextRequest,
+      _urlProcessor: (url: string) => handlePageContextRequestSuffix(url).urlWithoutPageContextRequestSuffix,
+    })
+  }
 
   addComputedUrlProps(pageContext)
 
   return pageContext
 }
 
-// `renderPageWithoutThrowing()` calls `renderPage()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPageWithoutThrowing(
-  pageContextInit: Parameters<typeof renderPage>[0],
-): ReturnType<typeof renderPage> {
-  const args = arguments as any as Parameters<typeof renderPageWithoutThrowing>
+// `renderPage()` calls `renderPage_()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+async function renderPage(pageContextInit: Parameters<typeof renderPage_>[0]): ReturnType<typeof renderPage_> {
+  const args = arguments as any as Parameters<typeof renderPage>
   try {
-    return await renderPage.apply(null, args)
+    return await renderPage_.apply(null, args)
   } catch (err) {
     assertError(err)
     const skipLog = isRenderErrorPage(err)
@@ -255,7 +278,7 @@ async function renderErrorPage<PageContextInit extends { url: string }>(
 
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (errorPageId === null) {
-    warnMissingErrorPage()
+    warnMissingErrorPage(pageContext)
     return pageContext
   }
   objectAssign(pageContext, {
@@ -365,12 +388,13 @@ async function prerenderPage(
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
   } & PageFiles &
-    GlobalContext,
+    GlobalRenderingContext,
 ) {
   assert(pageContext._isPreRendering === true)
 
   objectAssign(pageContext, {
     _isPageContextRequest: false,
+    _urlProcessor: null,
   })
 
   addComputedUrlProps(pageContext)
@@ -393,7 +417,7 @@ async function prerenderPage(
   }
 }
 
-async function renderStatic404Page(globalContext: GlobalContext & { _isPreRendering: true }) {
+async function renderStatic404Page(globalContext: GlobalRenderingContext & { _isPreRendering: true }) {
   const errorPageId = getErrorPageId(globalContext._allPageIds)
   if (!errorPageId) {
     return null
@@ -452,6 +476,8 @@ async function loadPageFilesServer(pageContext: {
   _baseAssets: string | null
   _pageFilesAll: PageFile[]
   _isPreRendering: boolean
+  _isProduction: boolean
+  _viteDevServer: null | ViteDevServer
 }) {
   const [pageContextAddendum] = await Promise.all([
     loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
@@ -590,6 +616,9 @@ async function executeRenderHook(
     _passToClient: string[]
     _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean
+    _isProduction: boolean
+    _viteDevServer: ViteDevServer | null
+    _baseUrl: string
   },
 ): Promise<{
   renderFilePath: string
@@ -731,11 +760,8 @@ function assertArguments(...args: unknown[]) {
   )
 }
 
-let wasAlreadyPrinted = false
-function warnMissingErrorPage() {
-  const { isProduction } = getSsrEnv()
-  if (!isProduction && wasAlreadyPrinted) {
-    wasAlreadyPrinted = true
+function warnMissingErrorPage(pageContext: { _isProduction: boolean }) {
+  if (!pageContext._isProduction) {
     assertWarning(
       false,
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
@@ -744,18 +770,6 @@ function warnMissingErrorPage() {
   }
 }
 
-function throwPrerenderError(err: unknown) {
-  // `err` originates from a user hook throwing; Vite is out of the equation here.
-  assert(viteAlreadyLoggedError(err) === false)
-
-  viteErrorCleanup(err)
-
-  if (hasProp(err, 'stack')) {
-    throw err
-  } else {
-    throw new Error(err as any)
-  }
-}
 function logError(err: unknown) {
   assertError(err)
 
@@ -781,17 +795,6 @@ function logError(err: unknown) {
   setAlreadyLogged(err)
 }
 
-function viteAlreadyLoggedError(err: unknown) {
-  const { viteDevServer, isProduction } = getSsrEnv()
-  if (isProduction) {
-    return false
-  }
-  if (viteDevServer && viteDevServer.config.logger.hasErrorLogged(err as Error)) {
-    return true
-  }
-  return false
-}
-
 function hasAlreadyLogged(err: unknown) {
   assert(isObject(err))
   const key = '_wasAlreadyConsoleLogged'
@@ -801,19 +804,4 @@ function setAlreadyLogged(err: unknown) {
   assert(isObject(err))
   const key = '_wasAlreadyConsoleLogged'
   err[key] = true
-}
-
-function viteErrorCleanup(err: unknown) {
-  const { viteDevServer } = getSsrEnv()
-  if (viteDevServer) {
-    if (hasProp(err, 'stack')) {
-      // Apply source maps
-      viteDevServer.ssrFixStacktrace(err as Error)
-    }
-  }
-}
-
-function getBaseUrl(): string {
-  const { baseUrl } = getSsrEnv()
-  return baseUrl
 }

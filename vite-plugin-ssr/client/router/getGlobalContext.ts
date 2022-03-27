@@ -16,7 +16,7 @@ async function retrieveGlobalContext() {
   const baseUrl = getBaseUrl()
   assertBaseUrl(baseUrl)
   const globalContext = {
-    _parseUrl: null,
+    _urlProcessor: null,
     _baseUrl: baseUrl,
     _objectCreatedByVitePluginSsr: true,
     // @ts-ignore
