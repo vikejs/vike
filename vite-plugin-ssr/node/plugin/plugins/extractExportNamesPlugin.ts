@@ -1,8 +1,8 @@
 export { extractExportNamesPlugin }
 
 import type { Plugin } from 'vite'
-import { parseEsModules, getExportNames } from './parseEsModules'
-import { isSSR_options, removeSourceMap } from './utils'
+import { isSSR_options, removeSourceMap } from '../utils'
+import { parseEsModules, getExportNames } from '../parseEsModules'
 import { virtualFileRE } from './virtualPageFilesExportNames'
 
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/

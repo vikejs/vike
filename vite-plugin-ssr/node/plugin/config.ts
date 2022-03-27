@@ -1,8 +1,8 @@
-import { toPosixPath } from '../utils'
-import { resolveGlobConfig } from './glob'
-
 export { resolveConfig }
 export type { Config }
+
+import { toPosixPath } from './utils'
+import { resolveGlobConfig } from './glob'
 
 type Config = { pageFiles?: { include: string[] } }
 

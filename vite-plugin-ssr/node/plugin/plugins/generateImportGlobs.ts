@@ -2,9 +2,8 @@ export { generateImportGlobs }
 
 import { writeFileSync } from 'fs'
 import type { Plugin } from 'vite'
-import { getRoot } from './utils/getRoot'
-import { getGlobPath } from './glob'
-import { assert } from '../utils'
+import { getRoot, assert } from '../utils'
+import { getGlobPath } from '../glob'
 
 function generateImportGlobs(getGlobRoots: (root: string) => Promise<string[]>): Plugin {
   return {
