@@ -3,11 +3,11 @@ export type { GlobalContext }
 export { setViteDevServer }
 export { getViteDevServer }
 export { setConfig }
-export { setDistLinkStatus }
 
 import { PromiseType, assertBaseUrl, assert, assertUsage, hasProp } from './utils'
 import type { ViteDevServer } from 'vite'
 import { getViteManifest } from './getViteManifest'
+import { loadDistEntries } from './plugin/plugins/distLink/loadDistEntries'
 
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
@@ -29,18 +29,13 @@ function setConfig(config_: Config) {
   assertBaseUrl(config.baseUrl)
 }
 
-let distLinkEstablished: null | boolean = null
-function setDistLinkStatus(distLinkEstablished_: boolean) {
-  distLinkEstablished = distLinkEstablished_
-}
-
-function getGlobalContext(isPreRendering: boolean) {
-  assert(distLinkEstablished !== null)
+async function getGlobalContext(isPreRendering: boolean) {
   assertProdEnv(viteDevServer)
 
   const isProduction = isPreRendering || viteDevServer === null
   if (isProduction) {
-    assertDistLink(isPreRendering)
+    await loadDistEntries()
+    // assertDistLink(isPreRendering)
     assert(viteDevServer === null)
     const { pluginManifest } = getViteManifest(isPreRendering)
     const { base: baseUrl, baseAssets } = pluginManifest
@@ -80,6 +75,7 @@ function getGlobalContext(isPreRendering: boolean) {
   return globalContext
 }
 
+/*
 function assertDistLink(isPreRendering: boolean) {
   // "Do not install vite-plugin-ssr after building your app. Instead, install your app's dependencies before building.",
   const errMsg = [
@@ -90,6 +86,7 @@ function assertDistLink(isPreRendering: boolean) {
   ].join(' ')
   assertUsage(distLinkEstablished, errMsg)
 }
+*/
 
 function assertProdEnv(viteDevServer: null | ViteDevServer) {
   assertUsage(

@@ -1,30 +1,15 @@
 //import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage } from './renderPage'
-import { assertUsageBaseUrl, hasProp } from './utils'
-import { assert, assertUsage } from './utils'
-import { resolve } from 'path'
+import { assertUsage, assertWarning } from './utils'
 //import { importBuildWasLoaded } from './importBuild'
-import type { ViteDevServer } from 'vite'
 
 export { createPageRenderer }
-export { createPageRendererWasCalled }
 
 let wasCalled = false
 
-function createPageRendererWasCalled() {
-  return wasCalled
-}
-
 type RenderPage = typeof renderPage
 
-function createPageRenderer({
-  viteDevServer,
-  root,
-  outDir = 'dist',
-  isProduction,
-  base = '/',
-  baseAssets = null,
-}: {
+function createPageRenderer(deprecated: {
   viteDevServer?: unknown
   /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
   viteDevServer?: ViteDevServer
@@ -41,13 +26,17 @@ function createPageRenderer({
   )
   wasCalled = true
 
-  const ssrEnv = { viteDevServer, root, outDir, isProduction, baseUrl: base, baseAssets }
-  assertArguments(ssrEnv, Array.from(arguments))
-  //setSsrEnv(ssrEnv)
+  const errMsg = 'createPageRenderer() is deprecated, see https://vite-plugin-ssr.com/createPageRenderer'
+  if ('base' in deprecated || 'baseAssets' in deprecated) {
+    assertUsage(false, errMsg)
+  } else {
+    assertWarning(false, errMsg, { onlyOnce: true })
+  }
 
   return renderPage
 }
 
+/*
 function assertArguments(
   ssrEnv: {
     viteDevServer?: unknown
@@ -58,7 +47,7 @@ function assertArguments(
     baseAssets?: unknown
   },
   args: unknown[],
-) /*: asserts ssrEnv is SsrEnv*/ {
+): asserts ssrEnv is SsrEnv {
   const { viteDevServer, root, outDir, isProduction, baseUrl, baseAssets } = ssrEnv
   assertUsage(
     root === undefined || typeof root === 'string',
@@ -75,7 +64,6 @@ function assertArguments(
     isProduction === true || isProduction === false || isProduction === undefined,
     '`createPageRenderer({ isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.',
   )
-  /*
   if (importBuildWasLoaded()) {
     assertUsage(
       isProduction,
@@ -86,18 +74,15 @@ function assertArguments(
       '`createPageRenderer({ root })`: argument `root` has no effect if `dist/server/importBuild.js` is loaded. Remove the `root` argument.',
     )
   }
-  */
   if (isProduction === true) {
     assertUsage(
       viteDevServer === undefined,
       '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is `true`, then `viteDevServer` should be `undefined`.',
     )
-    /*
     assertUsage(
       root || importBuildWasLoaded(),
       "`createPageRenderer({ root })`: argument `root` is missing. (Alternatively, if `root` doesn't exist because you are bundling your server code into a single file, then load `dist/server/importBuild.js`.)",
     )
-    */
   } else {
     assertUsage(root, '`createPageRenderer({ root })`: argument `root` is missing.')
 
@@ -107,7 +92,7 @@ function assertArguments(
     )
 
     const wrongViteDevServerValueError =
-      '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` should be `viteDevServer = await vite.createServer(/*...*/)`.'
+      '`createPageRenderer({ viteDevServer, isProduction })`: if `isProduction` is not `true`, then `viteDevServer` should be `viteDevServer = await vite.createServer()`.'
     assertUsage(
       hasProp(viteDevServer, 'config') &&
         hasProp(viteDevServer.config, 'root') &&
@@ -144,3 +129,4 @@ function assertArguments(
     )
   })
 }
+    */

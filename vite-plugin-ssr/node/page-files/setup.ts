@@ -1,4 +1,3 @@
-import '../plugin/plugins/distLink/loadDistLink'
 import { resolve, join } from 'path'
 import { setPageFilesServerSideAsync } from '../../shared/getPageFiles'
 import { assert } from '../utils'
