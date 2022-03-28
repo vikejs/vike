@@ -3,6 +3,7 @@ export { plugin }
 export { plugin as ssr }
 
 import type { Plugin } from 'vite'
+import GlobPlugin from 'vite-plugin-glob'
 import { assertUsage } from './utils'
 import { build } from './plugins/build'
 import { dev } from './plugins/dev'
@@ -36,6 +37,7 @@ function plugin(config?: Config): any {
     suppressRollupWarning(),
     retrieveDevServer(),
     ...distLink(),
+    GlobPlugin() as any,
   ]
   return plugins as any
 }
