@@ -3,12 +3,23 @@ export { distLink }
 import { writeFileSync } from 'fs'
 import path from 'path'
 import type { Plugin } from 'vite'
-import { assert, toPosixPath, isSSR_config, moduleExists, assertPosixPath } from '../../utils'
+import { assert, toPosixPath, isSSR_config, moduleExists, assertPosixPath, applyDev } from '../../utils'
 
 const { sourceDir, distEntriesFilePath } = getSourceDir()
 
+/*/
+const DEBUG = true
+/*/
+const DEBUG = false
+//*/
+
 function distLinkReset() {
-  writeFileSync(distEntriesFilePath, ['exports.distEntries = null;', ''].join('\n'))
+  const code = ['// Generated File.', '', 'exports.distEntries = null;', ''].join('\n')
+  if (DEBUG) {
+    console.log('RESET')
+    console.log(code)
+  }
+  writeFileSync(distEntriesFilePath, code)
 }
 
 function distLink(): Plugin[] {
@@ -18,7 +29,7 @@ function distLink(): Plugin[] {
   return [
     {
       name: 'vite-plugin-ssr:distLinkReset',
-      apply: 'serve',
+      apply: applyDev,
       configResolved() {
         distLinkReset()
       },
@@ -41,18 +52,22 @@ function distLink(): Plugin[] {
           return
         }
         const distPath = getDistPath()
-        writeFileSync(
-          distEntriesFilePath,
-          [
-            'exports.distEntries = {',
-            `  pageFiles: () => import('${path.posix.join(distPath, '/server/pageFiles.js')}'),`,
-            `  serverManifest: () => require('${path.posix.join(distPath, '/server/manifest.json')}'),`,
-            `  clientManifest: () => require('${path.posix.join(distPath, '/client/manifest.json')}'),`,
-            `  pluginManifest: () => require('${path.posix.join(distPath, '/client/vite-plugin-ssr.json')}'),`,
-            '};',
-            '',
-          ].join('\n'),
-        )
+        const code = [
+          '// Generated File.',
+          '',
+          'exports.distEntries = {',
+          `  pageFiles: () => import('${path.posix.join(distPath, '/server/pageFiles.js')}'),`,
+          `  serverManifest: () => require('${path.posix.join(distPath, '/server/manifest.json')}'),`,
+          `  clientManifest: () => require('${path.posix.join(distPath, '/client/manifest.json')}'),`,
+          `  pluginManifest: () => require('${path.posix.join(distPath, '/client/vite-plugin-ssr.json')}'),`,
+          '};',
+          '',
+        ].join('\n')
+        if (DEBUG) {
+          console.log('\nGEN\n')
+          console.log(code)
+        }
+        writeFileSync(distEntriesFilePath, code)
       },
     },
   ] as Plugin[]
@@ -64,7 +79,6 @@ function distLink(): Plugin[] {
     assertPosixPath(root)
     const rootRelative = path.posix.relative(sourceDir, root) // To `require()` an absolute path doesn't seem to work on Vercel
     const distPath = path.posix.join(rootRelative, path.posix.join(distServer, '..'))
-    // console.log({ sourceDir, root, distPath, rootRelative, distServer })
     return distPath
   }
 }

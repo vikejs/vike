@@ -1,11 +1,12 @@
-import type { Plugin } from 'vite'
-
 export { dev }
+
+import type { Plugin } from 'vite'
+import { applyDev } from '../utils'
 
 function dev(): Plugin {
   return {
     name: 'vite-plugin-ssr:dev',
-    apply: 'serve',
+    apply: applyDev,
     config: () => ({
       ssr: { external: ['vite-plugin-ssr'] },
       optimizeDeps: {
