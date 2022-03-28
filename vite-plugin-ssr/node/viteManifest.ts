@@ -19,8 +19,11 @@ type ViteManifest = Record<string, ViteManifestEntry>
 
 function assertViteManifest(manifest: unknown): asserts manifest is ViteManifest {
   assert(isPlainObject(manifest))
-  Object.values(manifest).forEach((entry) => {
-    assert(isPlainObject(entry))
-    assert(typeof entry.file === 'string')
-  })
+  Object.entries(manifest)
+    // circumvent esbuild bug: esbuild adds a `default` key to JSON upon `require('./some.json')`.
+    .filter(([key]) => key !== 'default')
+    .forEach(([_, entry]) => {
+      assert(isPlainObject(entry))
+      assert(typeof entry.file === 'string')
+    })
 }
