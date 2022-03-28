@@ -1,1 +1,1 @@
-export { distLink, distLinkReset } from './distLink/index'
+export { distLink } from './distLink/index'
