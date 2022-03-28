@@ -1,15 +1,15 @@
 export { getGlobalContext }
-export type { GlobalContext }
 export { setViteDevServer }
 export { getViteDevServer }
-export { setConfig }
+export type { GlobalContext }
 
-import { PromiseType, assertBaseUrl, assert, assertUsage, hasProp, objectAssign } from './utils'
+import { PromiseType, assert, assertUsage, hasProp, objectAssign } from './utils'
 import type { ViteDevServer } from 'vite'
 import { loadDistEntries } from './plugin/plugins/distLink/loadDistEntries'
 import { setPageFilesServerSide } from '../shared/getPageFiles'
 import { assertViteManifest } from './viteManifest'
 import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
+import { getRuntimeConfig, setRuntimeConfig } from './globalContext/runtimeConfig'
 
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
@@ -20,15 +20,6 @@ function setViteDevServer(viteDevServer_: ViteDevServer) {
 }
 function getViteDevServer() {
   return viteDevServer
-}
-type Config = {
-  baseUrl: string
-  baseAssets: string | null
-}
-let config: null | Config = null
-function setConfig(config_: Config) {
-  config = config_
-  assertBaseUrl(config.baseUrl)
 }
 
 async function getGlobalContext(isPreRendering: boolean) {
@@ -50,8 +41,7 @@ async function getGlobalContext(isPreRendering: boolean) {
       _manifestClient: clientManifest,
       _manifestPlugin: pluginManifest,
     })
-    const { base: baseUrl, baseAssets } = pluginManifest
-    setConfig({ baseUrl, baseAssets })
+    setRuntimeConfig(pluginManifest)
   } else {
     objectAssign(globalContext, {
       _isProduction: false as const,
@@ -59,13 +49,13 @@ async function getGlobalContext(isPreRendering: boolean) {
       _manifestPlugin: null,
     })
   }
-  assert(config)
 
+  const runtimeConfig = getRuntimeConfig()
   objectAssign(globalContext, {
-    _baseUrl: config.baseUrl,
-    _baseAssets: config.baseAssets,
+    _baseUrl: runtimeConfig.baseUrl,
+    _baseAssets: runtimeConfig.baseAssets,
     _viteDevServer: viteDevServer,
-    //_outDir: viteDevServer?.config.build.outDir ?? getPluginManifest().outDir)
+    //_outDir: viteDevServer?.runtimeConfig.build.outDir ?? getPluginManifest().outDir)
     _objectCreatedByVitePluginSsr: true,
   })
   /*

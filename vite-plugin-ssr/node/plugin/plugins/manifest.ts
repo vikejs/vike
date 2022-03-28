@@ -2,34 +2,48 @@ export { manifest }
 
 import { Plugin } from 'vite'
 import { assert, normalizePath, projectInfo, isSSR_config } from '../utils'
+import { assertPluginManifest } from './manifest/assertPluginManifest'
+import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 
-function manifest({ baseAssets }: { baseAssets: string | null }): Plugin {
-  let base: string
+function manifest(): Plugin[] {
   let ssr: boolean
-  return {
-    name: 'vite-plugin-ssr:manifest',
-    apply: 'build',
-    configResolved(config) {
-      base = config.base
-      ssr = isSSR_config(config)
+  let runtimeConfig: RuntimeConfig
+  return [
+    {
+      name: 'vite-plugin-ssr:runtimeConfig',
+      apply: 'serve',
+      configResolved(config) {
+        configResolved(config)
+        setRuntimeConfig(runtimeConfig)
+      },
     },
-    generateBundle(_, bundle) {
-      if (ssr) return
-      assert(typeof base === 'string')
-      assert(typeof ssr === 'boolean')
-      const manifest = {
-        version: projectInfo.projectVersion,
-        usesClientRouter: includesClientSideRouter(bundle as any),
-        base,
-        baseAssets,
-      }
-      this.emitFile({
-        fileName: `vite-plugin-ssr.json`,
-        type: 'asset',
-        source: JSON.stringify(manifest, null, 2),
-      })
+    {
+      name: 'vite-plugin-ssr:pluginManifest',
+      apply: 'build',
+      configResolved,
+      generateBundle(_, bundle) {
+        assert(typeof ssr === 'boolean')
+        assert(runtimeConfig)
+        if (ssr) return
+        const manifest = {
+          version: projectInfo.projectVersion,
+          usesClientRouter: includesClientSideRouter(bundle as any),
+          ...runtimeConfig,
+        }
+        assertPluginManifest(manifest)
+        this.emitFile({
+          fileName: `vite-plugin-ssr.json`,
+          type: 'asset',
+          source: JSON.stringify(manifest, null, 2),
+        })
+      },
     },
-  } as Plugin
+  ] as Plugin[]
+
+  function configResolved(config: Parameters<NonNullable<Plugin['configResolved']>>[0]) {
+    ssr = isSSR_config(config)
+    runtimeConfig = resolveRuntimeConfig(config)
+  }
 }
 
 function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {

@@ -1,6 +1,6 @@
 import express from 'express'
 import vite from 'vite'
-import { createPageRenderer } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr'
 import { createExpressApp } from './createExpressApp.js'
 import { root } from './root.js'
 
@@ -22,12 +22,6 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
-  const renderPage = createPageRenderer({
-    base: process.env.BASE_URL,
-    viteDevServer,
-    isProduction,
-    root,
-  })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = {
