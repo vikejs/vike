@@ -1,7 +1,8 @@
 export { manifest }
+export { assertPluginManifest }
 
 import { Plugin } from 'vite'
-import { assert, normalizePath, projectInfo, isSSR_config } from '../utils'
+import { assert, assertUsage, isPlainObject, normalizePath, projectInfo, isSSR_config } from '../utils'
 
 function manifest({ baseAssets }: { baseAssets: string | null }): Plugin {
   let base: string
@@ -21,7 +22,7 @@ function manifest({ baseAssets }: { baseAssets: string | null }): Plugin {
         version: projectInfo.projectVersion,
         usesClientRouter: includesClientSideRouter(bundle as any),
         base,
-        baseAssets
+        baseAssets,
       }
       this.emitFile({
         fileName: `vite-plugin-ssr.json`,
@@ -44,4 +45,23 @@ function includesClientSideRouter(bundle: Record<string, { modules?: Record<stri
     }
   }
   return false
+}
+
+type PluginManifest = {
+  version: string
+  base: string
+  baseAssets: string
+  usesClientRouter: boolean
+}
+function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
+  assert(isPlainObject(pluginManifest))
+  assert(typeof pluginManifest.base === 'string')
+  assert(pluginManifest.base.startsWith('/'))
+  assert(typeof pluginManifest.usesClientRouter === 'boolean')
+  assert(typeof pluginManifest.version === 'string')
+  assert(pluginManifest.baseAssets === null || typeof pluginManifest.baseAssets === 'string')
+  assertUsage(
+    pluginManifest.version === projectInfo.projectVersion,
+    `Re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with following different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`,
+  )
 }

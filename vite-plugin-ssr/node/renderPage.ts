@@ -49,6 +49,7 @@ import { ClientDependency } from './retrievePageAssets'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
+import { ViteManifest } from './viteManifest'
 
 export { renderPage }
 export { prerenderPage }
@@ -478,6 +479,7 @@ async function loadPageFilesServer(pageContext: {
   _isPreRendering: boolean
   _isProduction: boolean
   _viteDevServer: null | ViteDevServer
+  _manifestClient: null | ViteManifest
 }) {
   const [pageContextAddendum] = await Promise.all([
     loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
