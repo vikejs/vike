@@ -1,7 +1,7 @@
 export { manifest }
 
 import { Plugin } from 'vite'
-import { assert, normalizePath, projectInfo, isSSR_config } from '../utils'
+import { assert, normalizePath, projectInfo, isSSR_config, applyDev } from '../utils'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 
@@ -11,7 +11,7 @@ function manifest(): Plugin[] {
   return [
     {
       name: 'vite-plugin-ssr:runtimeConfig',
-      apply: 'serve',
+      apply: applyDev,
       configResolved(config) {
         configResolved(config)
         setRuntimeConfig(runtimeConfig)
