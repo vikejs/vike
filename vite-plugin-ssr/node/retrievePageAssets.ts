@@ -3,7 +3,7 @@ export { retrieveStyleAssets }
 export type { ClientDependency }
 
 import { assert, assertWarning } from './utils'
-import { ViteManifest } from './getViteManifest'
+import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
 

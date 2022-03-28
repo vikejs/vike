@@ -1,4 +1,4 @@
-import type { ViteManifest, ViteManifestEntry } from './getViteManifest'
+import type { ViteManifest, ViteManifestEntry } from './viteManifest'
 import { assert, assertPosixPath, slice } from './utils'
 
 export { getManifestEntry }
