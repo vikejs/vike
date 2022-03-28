@@ -1,5 +1,4 @@
 export { distLink }
-export { distLinkReset }
 
 import { writeFileSync } from 'fs'
 import path from 'path'
@@ -12,39 +11,51 @@ function distLinkReset() {
   writeFileSync(distEntriesFilePath, ['exports.distEntries = null;', ''].join('\n'))
 }
 
-function distLink(): Plugin {
+function distLink(): Plugin[] {
   let ssr: boolean
   let root: undefined | string
   let distServer: string
-  return {
-    name: 'vite-plugin-ssr:distLink',
-    apply: 'build',
-    configResolved(config) {
-      ssr = isSSR_config(config)
-      root = config.root ? toPosixPath(config.root) : toPosixPath(process.cwd())
-      distServer = config.build.outDir
-      assert(distServer)
+  return [
+    {
+      name: 'vite-plugin-ssr:distLinkReset',
+      apply: 'serve',
+      configResolved() {
+        distLinkReset()
+      },
     },
-    generateBundle() {
-      assert(typeof ssr === 'boolean')
-      if (!ssr) {
-        return
-      }
-      const distPath = getDistPath()
-      writeFileSync(
-        distEntriesFilePath,
-        [
-          'exports.distEntries = {',
-          `  pageFiles: () => import('${path.posix.join(distPath, '/server/pageFiles.js')}'),`,
-          `  serverManifest: () => require('${path.posix.join(distPath, '/server/manifest.json')}'),`,
-          `  clientManifest: () => require('${path.posix.join(distPath, '/client/manifest.json')}'),`,
-          `  pluginManifest: () => require('${path.posix.join(distPath, '/client/vite-plugin-ssr.json')}'),`,
-          '};',
-          '',
-        ].join('\n'),
-      )
+    {
+      name: 'vite-plugin-ssr:distLink',
+      apply: 'build',
+      configResolved(config) {
+        ssr = isSSR_config(config)
+        root = config.root ? toPosixPath(config.root) : toPosixPath(process.cwd())
+        distServer = config.build.outDir
+        assert(distServer)
+        if (ssr) {
+          distLinkReset()
+        }
+      },
+      generateBundle() {
+        assert(typeof ssr === 'boolean')
+        if (!ssr) {
+          return
+        }
+        const distPath = getDistPath()
+        writeFileSync(
+          distEntriesFilePath,
+          [
+            'exports.distEntries = {',
+            `  pageFiles: () => import('${path.posix.join(distPath, '/server/pageFiles.js')}'),`,
+            `  serverManifest: () => require('${path.posix.join(distPath, '/server/manifest.json')}'),`,
+            `  clientManifest: () => require('${path.posix.join(distPath, '/client/manifest.json')}'),`,
+            `  pluginManifest: () => require('${path.posix.join(distPath, '/client/vite-plugin-ssr.json')}'),`,
+            '};',
+            '',
+          ].join('\n'),
+        )
+      },
     },
-  } as Plugin
+  ] as Plugin[]
 
   function getDistPath() {
     assert(root)
@@ -64,4 +75,3 @@ function getSourceDir() {
   moduleExists(distEntriesFilePath)
   return { sourceDir, distEntriesFilePath }
 }
-
