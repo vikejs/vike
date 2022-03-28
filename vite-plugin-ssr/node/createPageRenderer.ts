@@ -26,11 +26,14 @@ function createPageRenderer(deprecated: {
   )
   wasCalled = true
 
-  const errMsg = 'createPageRenderer() is deprecated, see https://vite-plugin-ssr.com/createPageRenderer'
   if ('base' in deprecated || 'baseAssets' in deprecated) {
-    assertUsage(false, errMsg)
+    assertUsage(false, '`createPageRenderer()` is deprecated, see https://vite-plugin-ssr.com/createPageRenderer')
   } else {
-    assertWarning(false, errMsg, { onlyOnce: true })
+    assertWarning(
+      false,
+      '`createPageRenderer()` is not needed anymore. Remove `createPageRenderer()` to avoid this warning. More infos at https://vite-plugin-ssr.com/createPageRenderer',
+      { onlyOnce: true },
+    )
   }
 
   return renderPage

@@ -8,8 +8,8 @@ import { PromiseType, assertBaseUrl, assert, assertUsage, hasProp, objectAssign 
 import type { ViteDevServer } from 'vite'
 import { loadDistEntries } from './plugin/plugins/distLink/loadDistEntries'
 import { setPageFilesServerSide } from '../shared/getPageFiles'
-import {assertViteManifest} from './viteManifest'
-import {assertPluginManifest} from './plugin/plugins/manifest'
+import { assertViteManifest } from './viteManifest'
+import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
 
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
@@ -48,7 +48,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     objectAssign(globalContext, {
       _isProduction: true as const,
       _manifestClient: clientManifest,
-      _manifestPlugin: pluginManifest
+      _manifestPlugin: pluginManifest,
     })
     const { base: baseUrl, baseAssets } = pluginManifest
     setConfig({ baseUrl, baseAssets })
@@ -56,7 +56,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     objectAssign(globalContext, {
       _isProduction: false as const,
       _manifestClient: null,
-      _manifestPlugin: null
+      _manifestPlugin: null,
     })
   }
   assert(config)
