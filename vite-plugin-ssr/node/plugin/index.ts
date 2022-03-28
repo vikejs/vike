@@ -18,18 +18,16 @@ import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
 import { distLink, distLinkReset } from './plugins/distLink'
-import { setConfig } from '../globalContext'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(config?: Config): any {
-  const { baseUrl, baseAssets, getGlobRoots } = resolveConfig(config)
-  setConfig({ baseUrl, baseAssets })
+  const { getGlobRoots } = resolveConfig(config)
   distLinkReset()
   const plugins: Plugin[] = [
     generateImportGlobs(getGlobRoots),
     dev(),
     build(),
-    manifest({ baseAssets }),
+    ...manifest(),
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),

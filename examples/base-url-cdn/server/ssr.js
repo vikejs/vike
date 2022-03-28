@@ -1,14 +1,7 @@
 import express from 'express'
-import { createPageRenderer } from 'vite-plugin-ssr'
-import { root } from './root.js'
+import { renderPage } from 'vite-plugin-ssr'
 
 const app = express()
-
-const renderPage = createPageRenderer({
-  baseAssets: 'http://localhost:8080/cdn/',
-  isProduction: true,
-  root,
-})
 
 app.get('*', async (req, res, next) => {
   const url = req.originalUrl
