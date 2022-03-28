@@ -177,7 +177,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
     return pageContext
   }
 
-  const globalContext = getGlobalContext(pageContext._isPreRendering)
+  const globalContext = await getGlobalContext(pageContext._isPreRendering)
   objectAssign(pageContext, globalContext)
 
   {

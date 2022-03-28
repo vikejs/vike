@@ -85,13 +85,16 @@ async function prerender({
 
   const concurrencyLimit = pLimit(parallel)
 
-  const { pluginManifest } = getViteManifest(true)
-  const globalContext = getGlobalContext(true)
+  const globalContext = await getGlobalContext(true)
   objectAssign(globalContext, {
     _isPreRendering: true as const,
     _urlProcessor: null,
-    _usesClientRouter: pluginManifest.usesClientRouter,
     prerenderPageContexts: [] as PageContext[],
+  })
+
+  const { pluginManifest } = getViteManifest(true)
+  objectAssign(globalContext, {
+    _usesClientRouter: pluginManifest.usesClientRouter,
   })
 
   {
