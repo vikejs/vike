@@ -227,7 +227,7 @@ importers:
       esbuild: ^0.14.27
       express: ^4.17.3
       miniflare: ^2.3.0
-      node-fetch: ^3.2.3
+      node-fetch: ^2.6.1
       react: ^17.0.2
       react-dom: ^17.0.2
       vite: ^2.8.4
@@ -240,7 +240,7 @@ importers:
       esbuild: 0.14.27
       express: 4.17.3
       miniflare: 2.3.0
-      node-fetch: 3.2.3
+      node-fetch: 2.6.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       vite: 2.8.4
@@ -9566,15 +9566,6 @@ packages:
     dependencies:
       data-uri-to-buffer: 4.0.0
       fetch-blob: 3.1.4
-      formdata-polyfill: 4.0.10
-    dev: false
-
-  /node-fetch/3.2.3:
-    resolution: {integrity: sha512-AXP18u4pidSZ1xYXRDPY/8jdv3RAozIt/WLNR/MBGZAz+xjtlr90RvCnsvHQRiXyWliZF/CpytExp32UU67/SA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dependencies:
-      data-uri-to-buffer: 4.0.0
-      fetch-blob: 3.1.5
       formdata-polyfill: 4.0.10
     dev: false
 
