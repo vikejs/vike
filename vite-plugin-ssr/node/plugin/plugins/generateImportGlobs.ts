@@ -138,7 +138,8 @@ function getGlobs(
       varNameLocals.push(varNameLocal)
       const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
       const mod = !appendExportNamesModifier ? '' : ", { as: 'meta' }"
-      return `const ${varNameLocal} = import.meta.glob${isEager ? 'Eager' : ''}(${globPath}${mod});`
+      assert(!mod) // TODO
+      return `const ${varNameLocal} = import.meta.importGlob(${globPath}${mod}, {${isEager ? 'eager: true,' : ''}});`
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
     `${pageFilesVar}['.${fileSuffix}'] = ${varName};`,
