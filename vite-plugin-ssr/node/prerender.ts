@@ -18,7 +18,6 @@ import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
 import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
-import { getViteManifest } from './getViteManifest'
 import { getGlobalContext, GlobalContext } from './globalContext'
 
 export { prerender }
@@ -91,10 +90,9 @@ async function prerender({
     _urlProcessor: null,
     prerenderPageContexts: [] as PageContext[],
   })
-
-  const { pluginManifest } = getViteManifest(true)
+  assert(globalContext._isProduction)
   objectAssign(globalContext, {
-    _usesClientRouter: pluginManifest.usesClientRouter,
+    _usesClientRouter: globalContext._manifestPlugin.usesClientRouter,
   })
 
   {

@@ -2,7 +2,7 @@ export { getPageAssets }
 
 import { assert, higherFirst, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
 import { retrieveStyleAssets, retrieveProdAssets, ClientDependency } from '../retrievePageAssets'
-import { getViteManifest, ViteManifest } from '../getViteManifest'
+import type { ViteManifest } from '../viteManifest'
 import path from 'path'
 import { inferMediaType } from '../html/inferMediaType'
 import { PageAsset } from '../html/injectAssets'
@@ -15,6 +15,7 @@ async function getPageAssets(
     _baseAssets: string | null
     _isProduction: boolean
     _viteDevServer: null | ViteDevServer
+    _manifestClient: null | ViteManifest
   },
   clientDependencies: ClientDependency[],
   clientEntries: string[],
@@ -30,7 +31,8 @@ async function getPageAssets(
     clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, viteDevServer)
     assetUrls = await retrieveStyleAssets(clientDependencies, viteDevServer)
   } else {
-    const { clientManifest } = getViteManifest(isPreRendering)
+    const clientManifest = pageContext._manifestClient
+    assert(clientManifest)
     clientEntriesSrc = clientEntries && resolveClientEntriesProd(clientEntries, clientManifest!)
     assetUrls = await retrieveProdAssets(clientDependencies, clientManifest)
   }

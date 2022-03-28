@@ -4,10 +4,12 @@ export { setViteDevServer }
 export { getViteDevServer }
 export { setConfig }
 
-import { PromiseType, assertBaseUrl, assert, assertUsage, hasProp } from './utils'
+import { PromiseType, assertBaseUrl, assert, assertUsage, hasProp, objectAssign } from './utils'
 import type { ViteDevServer } from 'vite'
-import { getViteManifest } from './getViteManifest'
 import { loadDistEntries } from './plugin/plugins/distLink/loadDistEntries'
+import { setPageFilesServerSide } from '../shared/getPageFiles'
+import {assertViteManifest} from './viteManifest'
+import {assertPluginManifest} from './plugin/plugins/manifest'
 
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
@@ -32,25 +34,40 @@ function setConfig(config_: Config) {
 async function getGlobalContext(isPreRendering: boolean) {
   assertProdEnv(viteDevServer)
 
+  const globalContext = {}
+
   const isProduction = isPreRendering || viteDevServer === null
   if (isProduction) {
-    await loadDistEntries()
-    // assertDistLink(isPreRendering)
     assert(viteDevServer === null)
-    const { pluginManifest } = getViteManifest(isPreRendering)
+    const distEntries = await loadDistEntries()
+    assertDistEntries(distEntries, isPreRendering)
+    const { pageFiles, clientManifest, pluginManifest } = distEntries
+    assertViteManifest(clientManifest)
+    assertPluginManifest(pluginManifest)
+    setPageFilesServerSide(pageFiles)
+    objectAssign(globalContext, {
+      _isProduction: true as const,
+      _manifestClient: clientManifest,
+      _manifestPlugin: pluginManifest
+    })
     const { base: baseUrl, baseAssets } = pluginManifest
     setConfig({ baseUrl, baseAssets })
+  } else {
+    objectAssign(globalContext, {
+      _isProduction: false as const,
+      _manifestClient: null,
+      _manifestPlugin: null
+    })
   }
   assert(config)
 
-  const globalContext = {
+  objectAssign(globalContext, {
     _baseUrl: config.baseUrl,
     _baseAssets: config.baseAssets,
-    _isProduction: isProduction,
     _viteDevServer: viteDevServer,
     //_outDir: viteDevServer?.config.build.outDir ?? getPluginManifest().outDir)
     _objectCreatedByVitePluginSsr: true,
-  }
+  })
   /*
   if( !viteDevServer ) {
     return {
@@ -75,8 +92,7 @@ async function getGlobalContext(isPreRendering: boolean) {
   return globalContext
 }
 
-/*
-function assertDistLink(isPreRendering: boolean) {
+function assertDistEntries<T>(distEntries: T | null, isPreRendering: boolean): asserts distEntries is T {
   // "Do not install vite-plugin-ssr after building your app. Instead, install your app's dependencies before building.",
   const errMsg = [
     `You are tyring to run`,
@@ -84,9 +100,8 @@ function assertDistLink(isPreRendering: boolean) {
     "but your app isn't built yet. Run `$ vite build && vite build --ssr` before ",
     isPreRendering ? 'pre-rendering.' : 'running the server.',
   ].join(' ')
-  assertUsage(distLinkEstablished, errMsg)
+  assertUsage(distEntries, errMsg)
 }
-*/
 
 function assertProdEnv(viteDevServer: null | ViteDevServer) {
   assertUsage(

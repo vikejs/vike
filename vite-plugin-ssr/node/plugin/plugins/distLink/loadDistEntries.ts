@@ -1,15 +1,13 @@
 export { loadDistEntries }
 
 import { distEntries } from './distEntries'
-import { setViteManifest } from '../../../getViteManifest'
-import { setPageFilesServerSide } from '../../../../shared/getPageFiles'
 import { assert } from '../../utils'
 
 async function loadDistEntries() {
   // There is no `dist/` in development
   if (!distEntries) {
     assert(distEntries === null)
-    return
+    return null
   }
   const [pageFiles, clientManifest, serverManifest, pluginManifest] = await Promise.all([
     distEntries.pageFiles(),
@@ -17,6 +15,5 @@ async function loadDistEntries() {
     distEntries.serverManifest(),
     distEntries.pluginManifest(),
   ])
-  setPageFilesServerSide(pageFiles)
-  setViteManifest({ clientManifest, serverManifest, pluginManifest })
+  return { pageFiles, clientManifest, serverManifest, pluginManifest }
 }
