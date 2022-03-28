@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "main": "dist/worker.js",
   "scripts": {
     "// Development server": "",
@@ -13,7 +12,7 @@
     "// Build": "",
     "build": "npm run build:vite && npm run build:worker",
     "build:vite": "vite build && vite build --ssr",
-    "build:worker": "node ./build-worker.js"
+    "build:worker": "node ./build-worker.mjs"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.2.0",
