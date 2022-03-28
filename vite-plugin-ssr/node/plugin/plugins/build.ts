@@ -34,36 +34,21 @@ function build(): Plugin {
 
 function entryPoints(config: UserConfig): Record<string, string> {
   if (isSSR_config(config)) {
-    return serverEntryPoints()
+    return {
+      pageFiles: resolve('dist/esm/node/page-files/pageFiles.js'),
+      importBuild: resolve('dist/cjs/node/importBuild.js')
+    }
   } else {
-    return browserEntryPoints()
+    return {
+      ['entry-client-routing']: resolve(`dist/esm/client/router/entry.js`),
+      ['entry-server-routing']: resolve(`dist/esm/client/entry.js`),
+    }
   }
 }
 
-function serverEntryPoints(): Record<string, string> {
-  return getPageFilesEntry('dist/esm/node/page-files/pageFiles.js')
-}
-
-function getPageFilesEntry(
-  filePathRelative: 'dist/esm/node/page-files/pageFiles.js' | 'dist/esm/client/page-files/pageFiles.js',
-): Record<string, string> {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
-  const filePath = require.resolve(`../../../../../${filePathRelative}`)
-  assert(filePath.endsWith('.js'))
-  const entryName = path.basename(filePath).replace(/\.js$/, '')
-  const entryPoints = {
-    [entryName]: filePath,
-  }
-  return entryPoints
-}
-
-function browserEntryPoints(): Record<string, string> {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
-  const entryPoints = {
-    ['entry-client-routing']: require.resolve(`../../../../../dist/esm/client/router/entry.js`),
-    ['entry-server-routing']: require.resolve(`../../../../../dist/esm/client/entry.js`),
-  }
-  return entryPoints
+function resolve(filePath: string) {
+  assert(filePath.startsWith('dist/'))
+  return require.resolve(`../../../../../${filePath}`)
 }
 
 function getOutDir(config: UserConfig): string {
