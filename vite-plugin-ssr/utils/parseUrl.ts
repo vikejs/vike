@@ -72,8 +72,8 @@ function parseUrl(
   hash: string
   hashString: null | string
 } {
-  url = decodeURI(url)
   assert(isParsable(url), { url })
+  url = decodeURI(url)
   assert(baseUrl.startsWith('/'), { url, baseUrl })
 
   // Hash
