@@ -1,6 +1,11 @@
 ## [0.3.61](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.60...v0.3.61) (2022-03-30)
 
 
+### Bug Fixes
+
+* Fix duplicate decodeURI logic ([#291](https://github.com/brillout/vite-plugin-ssr/pull/291))
+
+
 
 ## [0.3.60](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.59...v0.3.60) (2022-03-11)
 
