@@ -1,11 +1,12 @@
-export { retrieveProdAssets }
-export { retrieveStyleAssets }
+export { retrieveAssetsProd }
+export { retrieveAssetsDev }
 export type { ClientDependency }
 
-import { assert, assertWarning } from './utils'
+import { assert } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
+import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin'
 
 type ClientDependency = {
   // Can be:
@@ -15,7 +16,7 @@ type ClientDependency = {
   onlyAssets: boolean
 }
 
-async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
+async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()
   const assetUrls = new Set<string>()
   await Promise.all(
@@ -38,7 +39,7 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
   return Array.from(assetUrls)
 }
 
-async function retrieveProdAssets(
+async function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
 ): Promise<string[]> {
@@ -46,7 +47,16 @@ async function retrieveProdAssets(
   assert(clientManifest)
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
+    assert(!onlyAssets || id.includes('.page.server.'))
+    if (onlyAssets) {
+      id = extractStylesAddQuery(id)
+    }
     const entry = getManifestEntry(id, clientManifest)
+    assert(
+      entry,
+      'You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord.',
+    )
+    /*
     assertWarning(
       entry,
       "You stumbled upon a Rollup bug that is known to the vite-plugin-ssr maintainer. It's usually benign but it may cause problems. Feel free to reach out on GitHub or Discord.",
@@ -56,6 +66,7 @@ async function retrieveProdAssets(
       // Circumvent Rollup Bug, see https://github.com/brillout/vite-plugin-ssr/issues/51
       return
     }
+    */
     const { manifestKey } = entry
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
