@@ -13,7 +13,6 @@ import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
 import { resolveConfig, Config } from './resolveConfig'
 import { distFileNames } from './plugins/distFileNames'
-import { virtualPageFilesExportNames } from './plugins/virtualPageFilesExportNames'
 import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
@@ -31,7 +30,6 @@ function plugin(config?: Config): any {
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
-    virtualPageFilesExportNames(getGlobRoots),
     ...extractStylesPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),

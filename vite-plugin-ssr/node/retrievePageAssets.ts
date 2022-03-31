@@ -26,6 +26,11 @@ async function retrieveStyleAssets(clientDependencies: ClientDependency[], viteD
       const [_, graphId] = await moduleGraph.resolveUrl(id)
       assert(graphId, { id })
       const mod = moduleGraph.getModuleById(graphId)
+      if (!mod) {
+        // `moduleGraph` is missing `.page.client.js` files on the very first render
+        assert(id.includes('.page.client.'), { id })
+        return
+      }
       assert(mod, { id })
       collectCss(mod, assetUrls, visitedModules)
     }),
