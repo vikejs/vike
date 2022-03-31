@@ -1,7 +1,7 @@
 import { assert, assertUsage, getUrlPathname } from './utils'
 import { isExternalLink } from './utils/isExternalLink'
 import { loadPageFiles } from '../../shared/getPageFiles'
-import { skipLink } from './skipLink'
+import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 
 export { addLinkPrefetchHandlers, prefetch }
@@ -35,8 +35,9 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
 
     const url = linkTag.getAttribute('href')
 
-    if (await skipLink(linkTag)) return
-    assert(url) // `skipLink()` returns `true` otherwise
+    if (skipLink(linkTag)) return
+    assert(url)
+    if (!(await isClientSideRenderable(url))) return
 
     if (isAlreadyPrefetched(url)) return
 
@@ -58,7 +59,7 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
       observer.observe(linkTag)
     } else {
       linkTag.addEventListener('mouseover', () => prefetch(url))
-      linkTag.addEventListener('touchstart', () => prefetch(url), {passive: true})
+      linkTag.addEventListener('touchstart', () => prefetch(url), { passive: true })
     }
   })
 }
