@@ -17,7 +17,7 @@ import { addLinkPrefetchHandlers } from './prefetch'
 import { detectHydrationSkipSupport } from './utils/detectHydrationSkipSupport'
 import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
-import { skipLink } from './skipLink'
+import { isClientSideRenderable, skipLink } from './skipLink'
 
 export { useClientRouter }
 export { navigate }
@@ -216,12 +216,16 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 
     const url = linkTag.getAttribute('href')
 
-    if (await skipLink(linkTag)) return
-    assert(url) // `skipLink()` returns `true` otherwise
+    if (skipLink(linkTag)) return
+    assert(url)
+    ev.preventDefault()
+    if (!(await isClientSideRenderable(url))) {
+      window.location.href = url
+      return
+    }
 
     const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
 
-    ev.preventDefault()
     callback(url, { keepScrollPosition })
   }
 
