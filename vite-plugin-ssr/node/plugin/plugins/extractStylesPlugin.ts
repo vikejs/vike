@@ -2,6 +2,8 @@
 // We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=extractStyles pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 
 export { extractStylesPlugin }
+export { extractStylesRE }
+export { extractStylesAddQuery }
 
 import type { Plugin } from 'vite'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
@@ -133,6 +135,12 @@ function transformedId(id: string, importer: string) {
     return emptyModule(id, importer)
   }
   debug('TRANSFORMED', id, importer)
+  return extractStylesAddQuery(id)
+}
+
+function extractStylesAddQuery(id: string) {
+  const fileExtension = getFileExtension(id)
+  assert(fileExtension)
   return `${id}?extractStyles&lang.${fileExtension}`
 }
 

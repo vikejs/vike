@@ -6,6 +6,7 @@ import type { Plugin, UserConfig } from 'vite'
 import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
 import { getFilesystemRoute } from '../../../shared/route/resolveFilesystemRoute'
+import { extractStylesRE } from './extractStylesPlugin'
 
 function distFileNames(): Plugin {
   return {
@@ -31,6 +32,14 @@ function getAssetFileName(assetInfo: PreRenderedAsset, assetFileName: string | u
     assetFileName ??= 'assets/chunk-[hash][extname]'
   }
   */
+
+  // dist/client/assets/index.page.server.jsx_extractStyles_lang.e4e33422.css
+  // => dist/client/assets/index.page.server.e4e33422.css
+  if (assetInfo.name?.endsWith('_extractStyles_lang.css')) {
+    const nameBase = assetInfo.name.split('.').slice(0, -2).join('.')
+    assetFileName ??= `assets/${nameBase}.[hash][extname]`
+  }
+
   assetFileName ??= 'assets/[name].[hash][extname]'
   return assetFileName
 }
@@ -42,7 +51,14 @@ function getChunkFileName(root: string, chunkInfo: PreRenderedChunk, chunkFileNa
     assertPosixPath(id)
   }
   assertPosixPath(root)
-  if (!chunkInfo.isDynamicEntry || !id || id.includes('/node_modules/') || !id.startsWith(root)) {
+
+  if (
+    !chunkInfo.isDynamicEntry ||
+    !id ||
+    id.includes('/node_modules/') ||
+    !id.startsWith(root) ||
+    (id.includes('.page.server.') && extractStylesRE.test(id))
+  ) {
     chunkFileName ??= 'assets/chunk-[hash].js'
     return chunkFileName
   }
