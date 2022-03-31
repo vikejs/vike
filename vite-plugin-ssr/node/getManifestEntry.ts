@@ -13,7 +13,7 @@ function getManifestEntry(
 
   if (id.startsWith('@@vite-plugin-ssr/')) {
     const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
-    const { manifestKey, manifestEntry } = find(manifestKeyEnd, clientManifest, id)
+    const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
     assert(manifestEntry && manifestKey, { id })
     return { manifestEntry, manifestKey }
   }
@@ -31,7 +31,7 @@ function getManifestEntry(
     let manifestKeyEnd = id.slice('/node_modules'.length)
     assert(manifestKeyEnd.startsWith('/'))
     {
-      const { manifestEntry, manifestKey } = find(manifestKeyEnd, clientManifest, id)
+      const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
       if (manifestEntry) {
         assert(manifestKey)
         return { manifestEntry, manifestKey }
@@ -45,7 +45,7 @@ function getManifestEntry(
       assert(manifestKeyEnd.startsWith('/'), { id })
     }
     {
-      const { manifestEntry, manifestKey } = find(manifestKeyEnd, clientManifest, id)
+      const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
       if (manifestEntry) {
         assert(manifestKey)
         return { manifestEntry, manifestKey }
@@ -56,7 +56,7 @@ function getManifestEntry(
   return null
 }
 
-function find(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
+function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
   assert(manifestKeyEnd.startsWith('/'))
   const manifestKeys: string[] = []
   for (const manifestKey in clientManifest) {
