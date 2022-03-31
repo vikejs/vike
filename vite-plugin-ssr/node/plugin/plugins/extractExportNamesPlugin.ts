@@ -3,22 +3,16 @@ export { extractExportNamesPlugin }
 import type { Plugin } from 'vite'
 import { isSSR_options, removeSourceMap } from '../utils'
 import { parseEsModules, getExportNames } from '../parseEsModules'
-import { virtualFileRE } from './virtualPageFilesExportNames'
 
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
-const clientFileRE = /\.page\.client\.[a-zA-Z0-9]+(\?|$)/
 
 function extractExportNamesPlugin(): Plugin {
   return {
     name: 'vite-plugin-ssr:extractExportNames',
     enforce: 'post',
     async transform(src, id, options) {
-      if (virtualFileRE.test(id)) {
-        return
-      }
-      const isServerSide = isSSR_options(options)
-      const isClientSide = !isServerSide
-      if (extractExportNamesRE.test(id) || (isServerSide && clientFileRE.test(id))) {
+      const isClientSide = !isSSR_options(options)
+      if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide)
         return code
       }

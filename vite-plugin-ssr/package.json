@@ -17,6 +17,7 @@
   "scripts": {
     "build": "rm -rf dist/ && tsc --build && pnpm run tsc:tests",
     "dev": "pnpm run dev:fast",
+    "dev:node": "pnpm run tsc:watch:node",
     "// `dev:fast` and `dev:slow` achieve the same, but `dev:fast` is much faster": "",
     "dev:slow": "tsc --build --watch",
     "dev:fast": "pnpm run tsc:watch:node & pnpm run tsc:watch:client",

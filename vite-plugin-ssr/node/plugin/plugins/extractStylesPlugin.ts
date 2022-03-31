@@ -6,11 +6,9 @@ export { extractStylesPlugin }
 import type { Plugin } from 'vite'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
 import { parseEsModules, EsModules } from '../parseEsModules'
-import { virtualFileRE } from './virtualPageFilesExportNames'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
-const serverPageFileRE = /\.page\.server\.[a-zA-Z0-9]+$/
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
 const DEBUG = process.env.DEBUG?.includes('extractStyles')
 
@@ -118,15 +116,8 @@ function extractStylesPlugin(): Plugin[] {
 }
 
 function isTransformTarget(id: string, isServerSide: boolean) {
-  if (virtualFileRE.test(id)) {
-    return false
-  }
   if (extractStylesRE.test(id)) {
     assert(!isServerSide)
-    return true
-  }
-  const isCrossEnv = !isServerSide && serverPageFileRE.test(id)
-  if (isCrossEnv) {
     return true
   }
   return false
