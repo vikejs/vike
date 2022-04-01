@@ -8,6 +8,7 @@ export { extractStylesAddQuery }
 import type { Plugin } from 'vite'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
 import { parseEsModules, EsModules } from '../parseEsModules'
+import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
@@ -147,12 +148,6 @@ function transformedId(id: string, importer: string) {
   }
   debug('TRANSFORMED', id, importer)
   return extractStylesAddQuery(id)
-}
-
-function extractStylesAddQuery(id: string) {
-  const fileExtension = getFileExtension(id)
-  assert(fileExtension)
-  return `${id}?extractStyles&lang.${fileExtension}`
 }
 
 function getImports(esModules: EsModules): string[] {
