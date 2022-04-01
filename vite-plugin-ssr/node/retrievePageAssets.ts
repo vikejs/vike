@@ -2,7 +2,7 @@ export { retrieveAssetsProd }
 export { retrieveAssetsDev }
 export type { ClientDependency }
 
-import { assert } from './utils'
+import { assert, assertUsage } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
@@ -52,7 +52,7 @@ async function retrieveAssetsProd(
       id = extractStylesAddQuery(id)
     }
     const entry = getManifestEntry(id, clientManifest)
-    assert(
+    assertUsage(
       entry,
       'You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord.',
     )
