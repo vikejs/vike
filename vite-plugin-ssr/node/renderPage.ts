@@ -534,14 +534,14 @@ function getClientEntries(
   const pageFilesClient: PageFile[] = []
   const clientDependencies: ClientDependency[] = []
 
-  const { isHtmlOnly, pageFilesClientCandidates } = isHtmlOnlyPage(pageId, pageFilesAll)
+  const { isHtmlOnly, pageFilesClientCandidates } = isHtmlOnlyPage(pageId, pageFilesAll, false)
 
   {
     // Include all `.page.client.js` files that don't `export { render }` nor `export { Page }`/`export default`
     //  - Also for HTML-only pages; allowing the user to add client-side JavaScript while skipping the heavy `render()` hook's dependencies.
     //  - We only include page files with `export { Page }`/`export default` if we have a `render()` hook.
     const pageFilesClientNonRender = pageFilesClientCandidates.filter(
-      (p) => !getExportNames(p).includes('render') && !hasPageExport(p),
+      (p) => !getExportNames(p, false).includes('render') && !hasPageExport(p, false),
     )
     pageFilesClient.push(...pageFilesClientNonRender)
   }
@@ -553,17 +553,17 @@ function getClientEntries(
       //  - The filesystem-nearest one
       //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
       {
-        const pageFileRender = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('render'))[0]
+        const pageFileRender = pageFilesClientCandidates.filter((p) => getExportNames(p, false).includes('render'))[0]
         assert(pageFileRender)
         pageFilesClient.push(pageFileRender)
-        const pageFilePageExport = pageFilesClientCandidates.filter((p) => hasPageExport(p))[0]
+        const pageFilePageExport = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))[0]
         assert(pageFilePageExport)
         pageFilesClient.push(pageFilePageExport)
       }
 
       // Add the vps client entry
       {
-        const usesClientRouting = pageFilesClient.some((p) => getExportNames(p).includes('clientRouting'))
+        const usesClientRouting = pageFilesClient.some((p) => getExportNames(p, false).includes('clientRouting'))
         const clientEntry = usesClientRouting
           ? // $userRoot/dist/client/entry-client-routing.js
             '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
@@ -577,7 +577,7 @@ function getClientEntries(
       //  - There is no `render()` hook; so there is no need for `pageContext` (nor `pageContext.exports`).
       clientEntries.push(...pageFilesClient.map((p) => p.filePath)) // Only includes page files that have no `export { render }` and no `export { Page }`/`export default`
       // Add CSS/assets of pages files that `export { Page }`/`export default`
-      const pageFilesPageExport = pageFilesClientCandidates.filter(hasPageExport)
+      const pageFilesPageExport = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))
       clientDependencies.push(...pageFilesPageExport.map((p) => ({ id: p.filePath, onlyAssets: true })))
     }
   }

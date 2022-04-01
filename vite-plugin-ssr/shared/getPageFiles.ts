@@ -362,7 +362,7 @@ function assertExports(pageFiles: PageFile[], customExports: string[]) {
       }
       assertWarning(
         customExports.includes(exportName),
-        `Unknown \`export { ${exportName} }\` at ${p.filePath}. See https://vite-plugin-ssr/customExports to define custom exports.`,
+        `Unknown \`export { ${exportName} }\` at ${p.filePath}. See https://vite-plugin-ssr/customExports if you want to define a custom export.`,
         { onlyOnce: `unkown-export-${exportName}` },
       )
     })
