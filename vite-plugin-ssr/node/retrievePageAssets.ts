@@ -54,7 +54,7 @@ async function retrieveAssetsProd(
     const entry = getManifestEntry(id, clientManifest)
     assertUsage(
       entry,
-      'You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord.',
+      `You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord. (The entry ${id} is missing in the manifest.)`,
     )
     /*
     assertWarning(

@@ -900,7 +900,7 @@ importers:
       symlink-dir: ^5.0.1
       typescript: ^4.5.5
       vite: ^2.8.4
-      vite-plugin-glob: ^0.2.0
+      vite-plugin-glob: ^0.2.3
       vite-plugin-import-build: ^0.1.3
     dependencies:
       '@brillout/json-s': 0.4.3
@@ -912,7 +912,7 @@ importers:
       p-limit: 3.1.0
       resolve: 1.22.0
       symlink-dir: 5.0.1
-      vite-plugin-glob: 0.2.0
+      vite-plugin-glob: 0.2.3
       vite-plugin-import-build: 0.1.3
     devDependencies:
       '@types/jest': 27.4.1
@@ -12717,9 +12717,10 @@ packages:
       vfile-message: 3.1.0
     dev: false
 
-  /vite-plugin-glob/0.2.0:
-    resolution: {integrity: sha512-NWeeh3WAOkGptwhaXnyAzDNHVayu2ubmfFhmiFM/w/iYpkbskzU1V9/SxXWZhdw/5MJa3nV8ja82PI8uHJzb8Q==}
+  /vite-plugin-glob/0.2.3:
+    resolution: {integrity: sha512-Evw60wZ7/v848pscuNnDvICMPzDpPMeyPR0S4wRyG6XdRho1Bk6KKWe6nj5mlb8IXmTlQDNW4nrlp6zARvPZAA==}
     dependencies:
+      acorn: 8.7.0
       fast-glob: 3.2.11
       magic-string: 0.26.1
       micromatch: 4.0.5
