@@ -13,7 +13,7 @@ async function isClientSideRenderable(url: string): Promise<boolean> {
       .filter((p) => (p.fileType === '.page' || p.fileType === '.page.client') && p.isRelevant(pageId))
       .map((p) => p.loadExportNames?.()),
   )
-  const { isHtmlOnly } = isHtmlOnlyPage(pageId, pageFilesAll)
+  const { isHtmlOnly } = isHtmlOnlyPage(pageId, pageFilesAll, true)
   if (isHtmlOnly) {
     return false
   }

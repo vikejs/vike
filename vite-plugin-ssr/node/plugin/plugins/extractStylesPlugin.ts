@@ -114,6 +114,17 @@ function extractStylesPlugin(): Plugin[] {
         }
       },
     },
+    /* Not needed since there are no `?extractStyles` modules in dev
+    {
+      name: 'vite-plugin-ssr:extractStyles-3',
+      apply: applyDev,
+      enforce: 'pre',
+      handleHotUpdate({ modules }) {
+        // Remove `?extractStyles` modules from HMR context
+        return modules.filter(({ id }) => !id || !extractStylesRE.test(id))
+      },
+    },
+    */
   ] as Plugin[]
 }
 
