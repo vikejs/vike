@@ -30,10 +30,10 @@ async function getExtractExportNamesCode(src: string, isClientSide: boolean) {
 function getCode(exportNames: string[], isClientSide: boolean) {
   let code = ''
   code += '\n'
-  code += `export let exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
+  code += `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
   if (isClientSide) {
     code += '\n'
-    code += 'if (import.meta.hot) import.meta.hot.accept((mod) =>{exportNames=mod.exportNames});'
+    code += `if (import.meta.hot) import.meta.hot.accept((mod) => { exportNames.length=0; exportNames.push(...mod.exportNames); });`
   }
   return code
 }
