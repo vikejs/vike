@@ -6,7 +6,7 @@ import { assert } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
-import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin'
+import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin/extractStylesAddQuery'
 
 type ClientDependency = {
   // Can be:
