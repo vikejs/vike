@@ -8,6 +8,7 @@ export { RenderErrorPage } from './renderPage/RenderErrorPage'
 export type { PageContextBuiltIn } from './types'
 
 import './page-files/setup'
+import '../shared/assertSingleVersion'
 import { assertUsage, isBrowser } from './utils'
 
 assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
