@@ -481,7 +481,7 @@ function isStream(something: unknown): something is Stream {
   return false
 }
 
-const __streamPipeWeb = Symbol('__streamPipeWeb')
+const __streamPipeWeb = '__streamPipeWeb'
 type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
   return { [__streamPipeWeb]: pipe }
@@ -498,7 +498,7 @@ function isStreamPipeWeb(something: unknown): something is StreamPipeWebWrapped 
   return isObject(something) && __streamPipeWeb in something
 }
 
-const __streamPipeNode = Symbol('__streamPipeNode')
+const __streamPipeNode = '__streamPipeNode'
 type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   return { [__streamPipeNode]: pipe }
