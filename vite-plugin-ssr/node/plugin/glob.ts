@@ -1,7 +1,7 @@
 export { resolveGlobConfig }
 export { getGlobPath }
 
-import { existsSync } from 'fs'
+import fs from 'fs'
 import { assertPosixPath, assertUsage, toPosixPath } from './utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
@@ -34,18 +34,26 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
     assertUsage(false, `Cannot find \`${pkgName}\`. Did you install it?`)
   }
   pkgJsonPath = toPosixPath(pkgJsonPath)
-  const pkgPath = path.posix.dirname(pkgJsonPath)
-  const pkgPathRelative = path.posix.relative(root, pkgPath)
+  // const pkgJson: { ['vite-plugin-ssr']?: { pageFilesDir?: string } } = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'))
+  const pkgRoot = path.posix.dirname(pkgJsonPath)
+  // let pageFilesDir = pkgJson['vite-plugin-ssr']?.pageFilesDir ?? ''
+  const pageFilesDir = ''
+  const pkgPathRelative = path.posix.relative(root, pkgRoot)
   if (!pkgPathRelative.startsWith('.')) {
-    const includePath = pkgPathRelative
+    const includePath = path.posix.join(pkgPathRelative, pageFilesDir)
     assertPosixPath(includePath)
     return includePath
   }
-  const includePath = `node_modules/${pkgName}`
-  if (!existsSync(includePath)) {
-    const cwd = toPosixPath(process.cwd())
-    const source = path.posix.relative(cwd, pkgPath)
+  const includePath = path.posix.join('node_modules', pkgName, pageFilesDir)
+  if (!fs.existsSync(includePath)) {
+    // const cwd = toPosixPath(process.cwd())
+    const cwd = root
+    const source = path.posix.relative(cwd, pkgRoot)
     const target = path.posix.relative(cwd, `${root}/${includePath}`)
+    assertUsage(
+      !target.startsWith(source),
+      'Your file structure is not supported. Contact the vite-plugin-ssr maintainer on GitHub / Discord.',
+    )
     await symlinkDir(source, target)
   }
   assertPosixPath(includePath)
