@@ -633,11 +633,13 @@ importers:
       '@types/react': ^17.0.39
       '@types/react-dom': ^17.0.11
       typescript: ^4.5.5
+      vite-plugin-ssr: 0.3.61
     devDependencies:
       '@types/node': 17.0.23
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.11
       typescript: 4.5.5
+      vite-plugin-ssr: link:../../../vite-plugin-ssr
 
   examples/solid:
     specifiers:
