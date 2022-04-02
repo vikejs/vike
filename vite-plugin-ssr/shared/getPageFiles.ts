@@ -244,7 +244,7 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
       if (!e1_isRenderer && e2_isRenderer) {
         return e1First
       }
-      if (!e2_isRenderer && !e1_isRenderer) {
+      if (!e2_isRenderer && e1_isRenderer) {
         return e2First
       }
       assert(e1_isRenderer === e2_isRenderer)
