@@ -4,7 +4,7 @@ export { assertRenderErrorPageParentheses }
 
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { assertUsage, objectAssign } from '../utils'
-const stamp = Symbol('isRenderErrorPage')
+const stamp = '__isRenderErrorPage'
 
 function isRenderErrorPage(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
   assertRenderErrorPageParentheses(thing)
