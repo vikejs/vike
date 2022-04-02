@@ -166,7 +166,7 @@ function escapeInject(
     },
   }
 }
-const __escaped = Symbol('__escaped')
+const __escaped = '__escaped'
 type EscapedString = { [__escaped]: string }
 function dangerouslySkipEscape(alreadyEscapedString: string): EscapedString {
   return _dangerouslySkipEscape(alreadyEscapedString)
