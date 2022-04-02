@@ -11,4 +11,4 @@ pnpm run dev
 
 Note that `framework` doesn't need any build step and can be published to npm as-is.
 
-> It's not the most common but still a conventional practice to publish source files such as `.ts` or `.vue` to npm (e.g. SvelteKit and Hydrogen also ship source files to npm.) The trick here is that `vite-plugin-ssr` adds the `framework`'s `.page.js` files to Vite's crawl paths.
+> It's not the most common but still a conventional practice to publish source files such as `.ts` or `.vue` to npm (e.g. SvelteKit and Hydrogen ship source files to npm.) The trick here is that `vite-plugin-ssr` adds the `framework`'s `.page.js` files to Vite's crawl paths.
