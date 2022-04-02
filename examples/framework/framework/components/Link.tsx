@@ -3,8 +3,10 @@ import { usePageContext } from '../hooks/usePageContext'
 
 export { Link }
 
-function Link(props: any) {
-  const pageContext = usePageContext() as any
+type AnchorProps = React.AnchorHTMLAttributes<HTMLAnchorElement>
+
+function Link(props: AnchorProps) {
+  const pageContext = usePageContext()
   const className = [props.className, pageContext.urlPathname === props.href && 'is-active'].filter(Boolean).join(' ')
   return <a {...props} className={className} />
 }

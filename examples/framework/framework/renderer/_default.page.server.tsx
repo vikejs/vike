@@ -5,7 +5,7 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-import { PageContext } from './types'
+import { PageContext } from '../types'
 
 async function render(pageContext: PageContext) {
   const { Page, pageProps } = pageContext
@@ -29,8 +29,5 @@ async function render(pageContext: PageContext) {
 
   return {
     documentHtml,
-    pageContext: {
-      // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-    },
   }
 }
