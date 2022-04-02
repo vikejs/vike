@@ -16,7 +16,7 @@ export type { HtmlRender }
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
 
-const __template = Symbol('__template')
+const __template = '__template'
 type TemplateStrings = TemplateStringsArray
 type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
 type TemplateWrapped = {
