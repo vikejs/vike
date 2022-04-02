@@ -655,8 +655,8 @@ async function executeRenderHook(
 
   const errPrefix = 'The `render()` hook exported by ' + renderFilePath
   const errSuffix = [
-    "a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape('<p>Some HTML</p>')`",
-    ', see https://vite-plugin-ssr.com/escapeInject',
+    "a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape()`,",
+    'see https://vite-plugin-ssr.com/escapeInject',
   ].join(' ')
 
   let documentHtml: unknown
