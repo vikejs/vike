@@ -11,7 +11,7 @@ async function getPageFilesExports(): Promise<unknown> {
 
   // Current directory: vite-plugin-ssr/dist/cjs/node/page-files/
   const pluginRoot = join(__dirname, `../../../..`)
-  const viteEntryPathDev = `${pluginRoot}/dist/esm/node/page-files/pageFiles.js`
+  const viteEntryPathDev = `${pluginRoot}/dist/esm/node/page-files/pageFiles-node.js`
   const viteEntryResolved = resolve(viteEntryPathDev)
   const moduleExports = await viteDevServer.ssrLoadModule(viteEntryResolved)
 

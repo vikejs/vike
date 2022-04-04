@@ -35,7 +35,7 @@ function build(): Plugin {
 function entryPoints(config: UserConfig): Record<string, string> {
   if (isSSR_config(config)) {
     return {
-      pageFiles: resolve('dist/esm/node/page-files/pageFiles.js'),
+      pageFiles: resolve('dist/esm/node/page-files/pageFiles-node.js'),
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
