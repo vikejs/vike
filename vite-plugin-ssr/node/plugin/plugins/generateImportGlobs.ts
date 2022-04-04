@@ -22,11 +22,11 @@ function generateImportGlobs(getGlobRoots: (root: string) => Promise<string[]>):
 function writeImportGlobs(globRoots: string[], isBuild: boolean) {
   // Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js
   writeFileSync(
-    require.resolve('../../../../../dist/esm/node/page-files/pageFiles.js'),
+    require.resolve('../../../../../dist/esm/node/page-files/pageFiles-node.js'),
     getFileContent(globRoots, isBuild, false),
   )
   writeFileSync(
-    require.resolve('../../../../../dist/esm/client/page-files/pageFiles.js'),
+    require.resolve('../../../../../dist/esm/client/page-files/pageFiles-client.js'),
     getFileContent(globRoots, isBuild, true),
   )
 }
