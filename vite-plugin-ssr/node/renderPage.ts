@@ -39,6 +39,9 @@ import {
   StreamReadableWeb,
   StreamWritableNode,
   StreamWritableWeb,
+  isStream,
+  getStreamName,
+  inferStreamName,
 } from './html/stream'
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
@@ -331,12 +334,7 @@ function createHttpResponseObject(
     get body() {
       if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
-        assertUsage(
-          false,
-          '`pageContext.httpResponse.body` is not available because your `render()` hook (' +
-            renderFilePath +
-            ') provides an HTML stream. Use `const body = await pageContext.httpResponse.getBody()` instead, see https://vite-plugin-ssr.com/stream',
-        )
+        assertUsage(false, errMsg('body', 'Use `const body = await pageContext.httpResponse.getBody()` instead.'))
       }
       const body = htmlRender
       return body
@@ -346,37 +344,35 @@ function createHttpResponseObject(
       return body
     },
     async getNodeStream() {
-      assert(htmlRender !== null)
       const nodeStream = await getStreamReadableNode(htmlRender)
-      assertUsage(
-        nodeStream !== null,
-        '`pageContext.httpResponse.getNodeStream()` is not available: make sure your `render()` hook provides a Node.js Stream, see https://vite-plugin-ssr.com/stream',
-      )
+      assertUsage(nodeStream !== null, errMsg('getNodeStream()', fixMsg('readable', 'node')))
       return nodeStream
     },
     async getWebStream() {
-      assert(htmlRender !== null)
       const webStream = await getStreamReadableWeb(htmlRender)
-      assertUsage(
-        webStream !== null,
-        '`pageContext.httpResponse.getWebStream()` is not available: make sure your `render()` hook provides a Web Stream, see https://vite-plugin-ssr.com/stream',
-      )
+      assertUsage(webStream !== null, errMsg('getWebStream()', fixMsg('readable', 'web')))
       return webStream
     },
     pipeToWebWritable(writable: StreamWritableWeb) {
       const success = pipeToStreamWritableWeb(htmlRender, writable)
-      assertUsage(
-        success,
-        '`pageContext.httpResponse.pipeToWebWritable` is not available: make sure your `render()` hook provides a Web Stream Pipe, see https://vite-plugin-ssr.com/stream',
-      )
+      assertUsage(success, errMsg('pipeToWebWritable()', fixMsg('pipe', 'web')))
     },
     pipeToNodeWritable(writable: StreamWritableNode) {
       const success = pipeToStreamWritableNode(htmlRender, writable)
-      assertUsage(
-        success,
-        '`pageContext.httpResponse.pipeToNodeWritable` is not available: make sure your `render()` hook provides a Node.js Stream Pipe, see https://vite-plugin-ssr.com/stream',
-      )
+      assertUsage(success, errMsg('pipeToNodeWritable()', fixMsg('pipe', 'node')))
     },
+  }
+
+  function errMsg(method: string, fixMsg: string) {
+    assert(typeof htmlRender === 'string' || isStream(htmlRender))
+    let htmlTypeName = 'an HTML string'
+    if (isStream(htmlRender)) {
+      htmlTypeName = inferStreamName(htmlRender)
+    }
+    return `\`pageContext.httpResponse.${method}\` is not available because your \`render()\` hook (${renderFilePath}) provides ${htmlTypeName}. ${fixMsg}. See https://vite-plugin-ssr.com/stream`
+  }
+  function fixMsg(type: 'pipe' | 'readable', standard: 'web' | 'node') {
+    return `Make sure your \`render()\` hook provides ${getStreamName(type, standard)} instead.`
   }
 }
 
@@ -655,7 +651,7 @@ async function executeRenderHook(
 
   const errPrefix = 'The `render()` hook exported by ' + renderFilePath
   const errSuffix = [
-    "a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape()`,",
+    'a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape()`,',
     'see https://vite-plugin-ssr.com/escapeInject',
   ].join(' ')
 
@@ -716,6 +712,7 @@ async function executeRenderHook(
     })
   }
   const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
+  assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }
 }
 
