@@ -26,7 +26,7 @@ function createPageRenderer(deprecated: {
   )
   wasCalled = true
 
-  if ('base' in deprecated || 'baseAssets' in deprecated) {
+  if ('baseAssets' in deprecated) {
     assertUsage(false, '`createPageRenderer()` is deprecated, see https://vite-plugin-ssr.com/createPageRenderer')
   } else {
     assertWarning(
