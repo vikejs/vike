@@ -26,12 +26,10 @@ type AssetFileNames = string | ((chunkInfo: PreRenderedAsset) => string) | undef
 
 const BLACK_LIST = ['assertRenderHook.css']
 function getAssetFileName(assetInfo: PreRenderedAsset, assetFileName: string | undefined): string {
-  assert(!BLACK_LIST.includes(assetInfo.name ?? ''))
-  /*
+  // Not sure when/why this happens
   if (assetInfo.name && BLACK_LIST.includes(assetInfo.name)) {
     assetFileName ??= 'assets/chunk-[hash][extname]'
   }
-  */
 
   // dist/client/assets/index.page.server.jsx_extractStyles_lang.e4e33422.css
   // => dist/client/assets/index.page.server.e4e33422.css
