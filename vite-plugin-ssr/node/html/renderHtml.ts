@@ -1,4 +1,4 @@
-import { assert, assertUsage, checkType, hasProp, isPromise, objectAssign } from '../utils'
+import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
 import { injectAssets, injectAssetsAfterRender, injectAssetsBeforeRender } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { manipulateStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
@@ -242,8 +242,27 @@ function renderTemplate(
       continue
     }
 
+    const getErrMsg = (typeText: string, end: string) => {
+      const n = parseInt(i)
+      const nth: string = (n === 0 && '1st') || (n === 1 && '2nd') || (n === 2 && '3rd') || `${n}-th`
+      return `Each HTML variable should be a string, but the ${nth} HTML variable is ${typeText} (see \`render()\` hook of ${renderFilePath}).${end}`
+    }
+    if (templateVar === undefined || templateVar === null) {
+      assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { onlyOnce: false })
+      addString('')
+      continue
+    }
+
+    {
+      const varType = typeof templateVar
+      const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
+        ? ''
+        : ' (See https://vite-plugin-ssr.com/stream for HTML streaming.)'
+      assertUsage(varType === 'string', getErrMsg(`\`typeof htmlVar === "${varType}"\``, streamNote))
+    }
+
     // Escape untrusted template variable
-    addString(escapeHtml(toString(templateVar)))
+    addString(escapeHtml(templateVar))
   }
 
   assert(templateStrings.length === templateVariables.length + 1)
@@ -263,13 +282,6 @@ function renderTemplate(
     stringBegin,
     stringEnd,
   }
-}
-
-function toString(val: unknown): string {
-  if (val === null || val === undefined) {
-    return ''
-  }
-  return String(val)
 }
 
 function escapeHtml(unsafeString: string): string {
