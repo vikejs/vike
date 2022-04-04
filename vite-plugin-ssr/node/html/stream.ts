@@ -12,6 +12,8 @@ export { pipeToStreamWritableWeb }
 export { manipulateStream }
 export { isStream }
 export { streamToString }
+export { getStreamName }
+export { inferStreamName }
 
 export type { Stream }
 export type { StreamTypePatch }
@@ -565,4 +567,31 @@ async function loadStreamNodeModule(): Promise<{
 
 function dynamicImport(modulePath: string): Promise<Record<string, unknown>> {
   return new Function('modulePath', 'return import(modulePath)')(modulePath)
+}
+
+function getStreamName(type: 'pipe' | 'readable', standard: 'web' | 'node') {
+  const standardName = (standard === 'web' && 'Web') || (standard === 'node' && 'Node.js')
+  assert(standardName)
+  if (type === 'readable') {
+    return `a Readable ${standardName} Stream`
+  }
+  if (type === 'pipe') {
+    return `a ${standardName} Stream Pipe`
+  }
+  assert(false)
+}
+function inferStreamName(stream: Stream) {
+  if (isStreamReadableWeb(stream)) {
+    return getStreamName('readable', 'web')
+  }
+  if (isStreamReadableNode(stream)) {
+    return getStreamName('readable', 'node')
+  }
+  if (isStreamPipeNode(stream)) {
+    return getStreamName('pipe', 'node')
+  }
+  if (isStreamPipeWeb(stream)) {
+    return getStreamName('pipe', 'web')
+  }
+  assert(false)
 }

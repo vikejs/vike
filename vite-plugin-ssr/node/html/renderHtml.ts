@@ -128,7 +128,9 @@ async function renderHtmlStream(
       },
     })
   }
-  return await manipulateStream(streamOriginal, opts)
+  const result = await manipulateStream(streamOriginal, opts)
+  assert('errorBeforeFirstData' in result || isStream(result.stream))
+  return result
 }
 
 function isTemplateWrapped(something: unknown): something is TemplateWrapped {
