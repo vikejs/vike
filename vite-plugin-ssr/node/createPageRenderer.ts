@@ -9,7 +9,7 @@ let wasCalled = false
 
 type RenderPage = typeof renderPage
 
-function createPageRenderer(deprecated: {
+function createPageRenderer(_deprecated: {
   viteDevServer?: unknown
   /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
   viteDevServer?: ViteDevServer
@@ -26,15 +26,11 @@ function createPageRenderer(deprecated: {
   )
   wasCalled = true
 
-  if ('baseAssets' in deprecated) {
-    assertUsage(false, '`createPageRenderer()` is deprecated, see https://vite-plugin-ssr.com/createPageRenderer')
-  } else {
-    assertWarning(
-      false,
-      '`createPageRenderer()` is not needed anymore. Remove `createPageRenderer()` to avoid this warning. More infos at https://vite-plugin-ssr.com/createPageRenderer',
-      { onlyOnce: true },
-    )
-  }
+  assertWarning(
+    false,
+    '`createPageRenderer()` is not needed anymore. Remove `createPageRenderer()` to avoid this warning. More infos at https://vite-plugin-ssr.com/createPageRenderer',
+    { onlyOnce: true },
+  )
 
   return renderPage
 }
