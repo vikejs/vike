@@ -7,26 +7,12 @@ const cli = cac(projectInfo.projectName)
 
 cli
   .command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOptions: true })
-  .option('--partial', 'Allow only a subset of pages to be pre-rendered')
-  .option(
-    '--noExtraDir',
-    'Do not create a new directory for each page, e.g. generate `dist/client/about.html` instead of `dist/client/about/index.html`',
-  )
-  .option(
-    '--root <path>',
-    '[string] The root directory of your project (where `vite.config.js` live) (default: `process.cwd()`)',
-  )
-  .option('--outDir <path>', '[string] The build directory of your project (default: `dist`)')
-  .option('--base <path>', '[string] Public base path (default: /)')
-  .option(
-    '--parallel <numberOfJobs>',
-    '[number] Number of jobs running in parallel. Default: `os.cpus().length`. Set to `1` to disable concurrency.',
-  )
+  .option('--configFile <path>', '[string] Path to `vite.config.js`.')
   .action(async (options) => {
     assertOptions()
-    const { partial, noExtraDir, base, parallel, outDir } = options
+    const { partial, noExtraDir, base, parallel, outDir, configFile } = options
     const root = options.root && resolve(options.root)
-    await prerender({ partial, noExtraDir, base, root, parallel, outDir })
+    await prerender({ partial, noExtraDir, base, root, parallel, outDir, configFile })
   })
 
 function assertOptions() {
@@ -36,7 +22,16 @@ function assertOptions() {
   Object.values(rawOptions).forEach((option) => {
     assertUsage(
       !option.startsWith('--') ||
-        ['--root', '--partial', '--noExtraDir', '--clientRouter', '--base', '--parallel', '--outDir'].includes(option),
+        [
+          '--root',
+          '--partial',
+          '--noExtraDir',
+          '--clientRouter',
+          '--base',
+          '--parallel',
+          '--outDir',
+          '--configFile',
+        ].includes(option),
       'Unknown option: ' + option,
     )
   })
