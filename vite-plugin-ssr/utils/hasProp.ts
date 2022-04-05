@@ -17,6 +17,8 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'function'): obj is ObjectType & Record<PropName, (...args: any[]) => unknown>;
 // prettier-ignore
+function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'undefined'): obj is ObjectType & Record<PropName, undefined>;
+// prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: 'null'): obj is ObjectType & Record<PropName, null>;
 // prettier-ignore
 function hasProp<ObjectType, PropName extends PropertyKey, Enum>(obj: ObjectType, prop: PropName, type: Enum[]): obj is ObjectType & Record<PropName, Enum>;
@@ -46,6 +48,9 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
   }
   if( type === 'null') {
     return propValue===null
+  }
+  if( type === 'undefined') {
+    return propValue===undefined
   }
   return typeof propValue === type;
 }
