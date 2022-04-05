@@ -1,24 +1,34 @@
-export { resolveGlobConfig }
-export { getGlobPath }
+export { getGlobRoots }
 
 import fs from 'fs'
-import { assertPosixPath, assertUsage, toPosixPath, assert } from './utils'
+import { assertUsage, toPosixPath, assert, getRoot } from '../../utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
 
-function resolveGlobConfig(includePageFiles: string[]) {
-  let globPaths: string[]
-  return getGlobRoots
-  async function getGlobRoots(root: string) {
-    root = toPosixPath(root)
-    if (!globPaths) {
-      const entriesDefault = ['/']
-      const entriesInclude = await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))
-      globPaths = [...entriesDefault, ...entriesInclude]
-    }
-    return globPaths
+async function getGlobRoots(config: { root: string; vitePluginSsr: { pageFiles?: { include?: string[] } } }) {
+  const root = getRoot(config)
+  const includePageFiles = resolveConfig(config.vitePluginSsr.pageFiles)
+  const entriesDefault = ['/']
+  const entriesInclude = await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))
+  const globRoots = [...entriesDefault, ...entriesInclude]
+  return globRoots
+}
+
+function resolveConfig(pageFiles?: { include?: string[] }) {
+  const includePageFiles: string[] = []
+  if (pageFiles?.include) {
+    includePageFiles.push(...pageFiles.include.map(normalizeIncludePaths))
   }
+  return includePageFiles
+}
+
+function normalizeIncludePaths(includePath: string): string {
+  includePath = toPosixPath(includePath)
+  if (includePath.endsWith('/')) {
+    includePath = includePath.slice(0, -1)
+  }
+  return includePath
 }
 
 async function createIncludePath(pkgName: string, root: string): Promise<string> {
@@ -93,22 +103,4 @@ function resolvePackageJson(pkgName: string, { preserveSymlinks, root }: Resolve
   }
   pkgJsonPath = toPosixPath(pkgJsonPath)
   return pkgJsonPath
-}
-
-function getGlobPath(
-  globRoot: string,
-  fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  root?: string,
-): string {
-  // Vite uses `fast-glob` which resolves globs with micromatch: https://github.com/micromatch/micromatch
-  // Pattern `*([a-zA-Z0-9])` is an Extglob: https://github.com/micromatch/micromatch#extglobs
-  const fileExtention = '*([a-zA-Z0-9])'
-  assertPosixPath(globRoot)
-  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${fileExtention}`].filter(Boolean).join('/')
-  if (root) {
-    globPath = toPosixPath(path.posix.join(root, globPath))
-  } else {
-    globPath = '/' + globPath
-  }
-  return globPath
 }

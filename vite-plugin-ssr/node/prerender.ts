@@ -19,6 +19,8 @@ import pLimit from 'p-limit'
 import { cpus } from 'os'
 import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
+import { resolveConfig } from 'vite'
+import { assertVitePluginSsrConfig } from './plugin/plugins/config/VitePluginSsrConfig'
 
 export { prerender }
 
@@ -39,6 +41,7 @@ type GlobalPrerenderingContext = GlobalContext & {
   _pageFilesAll: PageFile[]
   _isPreRendering: true
   _usesClientRouter: boolean
+  _noExtraDir: boolean
   prerenderPageContexts: PageContext[]
   _urlProcessor: null
 }
@@ -56,31 +59,56 @@ type PageContext = GlobalPrerenderingContext & {
  * @param outDir The build directory of your project (default: `dist`).
  */
 async function prerender({
-  onPagePrerender = null,
-  pageContextInit = {},
-  partial = false,
-  noExtraDir = false,
-  root = process.cwd(),
-  outDir = 'dist',
-  parallel = cpus().length || 1,
-  base,
+  onPagePrerender,
+  pageContextInit,
+  configFile,
+  ...deprecatedOptions
 }: {
-  onPagePrerender?: Function | null
+  onPagePrerender?: Function
   pageContextInit?: Record<string, unknown>
+  configFile?: string
+  /** @deprecated */
   partial?: boolean
+  /** @deprecated */
   noExtraDir?: boolean
+  /** @deprecated */
   root?: string
+  /** @deprecated */
   outDir?: string
+  /** @deprecated */
   base?: string
+  /** @deprecated */
   parallel?: number
 } = {}) {
-  assertArguments({ partial, noExtraDir, base, root, outDir, parallel })
-  assert(base === undefined)
-  if (!onPagePrerender) {
+  checkOutdatedOptions(deprecatedOptions)
+
+  const logLevel = !!onPagePrerender ? 'warn' : 'info'
+
+  if (logLevel === 'info') {
     console.log(`${cyan(`vite-plugin-ssr ${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
   }
 
   setProductionEnvVar()
+
+  const viteConfig = await resolveConfig({ configFile }, 'build', 'production')
+  const {
+    root,
+    build: { outDir },
+  } = viteConfig
+  assertUsage(
+    viteConfig.configFile,
+    `Could not find \`vite.config.js\` at ${root}. Use the option \`prerender({ configFile: 'path/to/vite.config.js' })\`.`,
+  )
+  assertUsage(
+    viteConfig.plugins.some((p) => p.name?.startsWith('vite-plugin-ssr')),
+    `The \`vite.config.js\` (${viteConfig.configFile}) does not contain vite-plugin-ssr. Make sure to add vite-plugin-ssr to \`vite.config.js\` or, if you have more than one \`vite.config.js\`, use the option \`prerender({ configFile: 'path/to/vite.config.js' })\` to select the right \`vite.config.js\`.`,
+  )
+  assertVitePluginSsrConfig(viteConfig)
+  const {
+    partial = false,
+    noExtraDir = false,
+    parallel = cpus().length || 1,
+  } = viteConfig.vitePluginSsr?.prerender ?? {}
 
   const concurrencyLimit = pLimit(parallel)
 
@@ -88,6 +116,8 @@ async function prerender({
   objectAssign(globalContext, {
     _isPreRendering: true as const,
     _urlProcessor: null,
+    _noExtraDir: noExtraDir ?? false,
+    _root: root,
     prerenderPageContexts: [] as PageContext[],
   })
   assert(globalContext._isProduction)
@@ -115,19 +145,19 @@ async function prerender({
 
   const prerenderPageIds: PrerenderedPageIds = {}
   const htmlFiles: HtmlFile[] = []
-  await routeAndPrerender(globalContext, htmlFiles, prerenderPageIds, concurrencyLimit, noExtraDir)
+  await routeAndPrerender(globalContext, htmlFiles, prerenderPageIds, concurrencyLimit)
 
   warnContradictoryNoPrerenderList(prerenderPageIds, doNotPrerenderList)
 
   await prerender404Page(htmlFiles, globalContext)
 
-  if (!onPagePrerender) {
+  if (logLevel === 'info') {
     console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
   }
 
   await Promise.all(
     htmlFiles.map((htmlFile) =>
-      writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit, onPagePrerender),
+      writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit, onPagePrerender, logLevel),
     ),
   )
 
@@ -288,7 +318,6 @@ async function routeAndPrerender(
   htmlFiles: HtmlFile[],
   prerenderPageIds: PrerenderedPageIds,
   concurrencyLimit: pLimit.Limit,
-  noExtraDir: boolean,
 ) {
   // Route all URLs
   await Promise.all(
@@ -329,7 +358,7 @@ async function routeAndPrerender(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: noExtraDir,
+          doNotCreateExtraDirectory: globalContext._noExtraDir,
           pageId,
         })
         prerenderPageIds[pageId] = pageContext
@@ -397,7 +426,8 @@ async function writeHtmlFile(
   outDir: string,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: pLimit.Limit,
-  onPagePrerender: Function | null,
+  onPagePrerender: Function | undefined,
+  logLevel: 'warn' | 'info',
 ) {
   assert(url.startsWith('/'))
   assert(!doNotPrerenderList.find((p) => p.pageId === pageId))
@@ -413,6 +443,7 @@ async function writeHtmlFile(
       doNotCreateExtraDirectory,
       concurrencyLimit,
       onPagePrerender,
+      logLevel,
     ),
   ]
   if (pageContextSerialized !== null) {
@@ -427,6 +458,7 @@ async function writeHtmlFile(
         doNotCreateExtraDirectory,
         concurrencyLimit,
         onPagePrerender,
+        logLevel,
       ),
     )
   }
@@ -442,14 +474,16 @@ function write(
   outDir: string,
   doNotCreateExtraDirectory: boolean,
   concurrencyLimit: pLimit.Limit,
-  onPagePrerender: Function | null,
+  onPagePrerender: Function | undefined,
+  logLevel: 'info' | 'warn',
 ) {
   return concurrencyLimit(async () => {
     const fileUrl = getFileUrl(url, fileExtension, fileExtension === '.pageContext.json' || doNotCreateExtraDirectory)
     assert(fileUrl.startsWith('/'))
     const filePathRelative = fileUrl.slice(1).split('/').join(sep)
     assert(!filePathRelative.startsWith(sep))
-    const filePath = join(root, outDir, 'client', filePathRelative)
+    assert(outDir && !outDir.includes('dist/server'), { outDir })
+    const filePath = join(root, outDir, filePathRelative)
     if (onPagePrerender) {
       objectAssign(pageContext, {
         _prerenderResult: {
@@ -463,7 +497,13 @@ function write(
       const { writeFile, mkdir } = promises
       await mkdir(dirname(filePath), { recursive: true })
       await writeFile(filePath, fileContent)
-      console.log(`${gray(join(outDir, 'client') + sep)}${blue(filePathRelative)}`)
+      if (logLevel === 'info') {
+        let dirLog = outDir
+        if (!dirLog.endsWith(sep)) {
+          dirLog = dirLog + sep
+        }
+        console.log(`${gray(dirLog)}${blue(filePathRelative)}`)
+      }
     }
   })
 }
@@ -508,28 +548,49 @@ function normalizePrerenderResult(
   }
 }
 
-function assertArguments({
-  partial,
-  noExtraDir,
-  base,
-  root,
-  outDir,
-  parallel,
-}: {
-  partial: unknown
-  noExtraDir: unknown
-  base: unknown
-  root: unknown
-  outDir: unknown
-  parallel: number
+function checkOutdatedOptions(options: {
+  partial?: unknown
+  noExtraDir?: unknown
+  base?: unknown
+  root?: unknown
+  outDir?: unknown
+  parallel?: number
 }) {
-  assertUsage(partial === true || partial === false, '[prerender()] Option `partial` should be a boolean.')
-  assertUsage(noExtraDir === true || noExtraDir === false, '[prerender()] Option `noExtraDir` should be a boolean.')
-  assertWarning(base === undefined, '[prerender()] Option `base` is deprecated and has no-effect.', { onlyOnce: true })
-  assertUsage(typeof root === 'string', '[prerender()] Option `root` should be a string.')
-  assertUsage(isAbsolute(root), '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.')
-  assertUsage(typeof outDir === 'string', '[prerender()] Option `outDir` should be a string.')
-  assertUsage(parallel, `[prerender()] Option \`parallel\` should be a number \`>=1\` but we got \`${parallel}\`.`)
+  ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
+    assertUsage(
+      options[prop] === undefined,
+      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/config`,
+    )
+  })
+  ;(['base', 'root', 'outDir'] as const).forEach((prop) => {
+    assertWarning(
+      options[prop] === undefined,
+      `[prerender()] Option \`${prop}\` is deprecated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
+      {
+        onlyOnce: true,
+      },
+    )
+  })
+
+  const { partial, noExtraDir, root, outDir, parallel } = options
+  assertUsage(
+    partial === undefined || partial === true || partial === false,
+    '[prerender()] Option `partial` should be a boolean.',
+  )
+  assertUsage(
+    noExtraDir === undefined || noExtraDir === true || noExtraDir === false,
+    '[prerender()] Option `noExtraDir` should be a boolean.',
+  )
+  assertUsage(root === undefined || typeof root === 'string', '[prerender()] Option `root` should be a string.')
+  assertUsage(
+    root === undefined || isAbsolute(root),
+    '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.',
+  )
+  assertUsage(outDir === undefined || typeof outDir === 'string', '[prerender()] Option `outDir` should be a string.')
+  assertUsage(
+    parallel === undefined || parallel,
+    `[prerender()] Option \`parallel\` should be a number \`>=1\` but we got \`${parallel}\`.`,
+  )
 }
 
 function setProductionEnvVar() {

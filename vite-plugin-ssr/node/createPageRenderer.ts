@@ -1,14 +1,13 @@
 //import { SsrEnv, setSsrEnv } from './ssrEnv'
 import { renderPage } from './renderPage'
-import { assertUsage, assertWarning } from './utils'
+import { assertWarning } from './utils'
 //import { importBuildWasLoaded } from './importBuild'
 
 export { createPageRenderer }
 
-let wasCalled = false
-
 type RenderPage = typeof renderPage
 
+/** @deprecated */
 function createPageRenderer(_deprecated: {
   viteDevServer?: unknown
   /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
@@ -20,18 +19,11 @@ function createPageRenderer(_deprecated: {
   base?: string
   baseAssets?: string | null
 }): RenderPage {
-  assertUsage(
-    !wasCalled,
-    'You are trying to call `createPageRenderer()` a second time, but it should be called only once.',
-  )
-  wasCalled = true
-
   assertWarning(
     false,
-    '`createPageRenderer()` is not needed anymore. Remove `createPageRenderer()` to avoid this warning. More infos at https://vite-plugin-ssr.com/createPageRenderer',
+    "`createPageRenderer()` is not needed anymore (vite-plugin-ssr now automatically determines the options). To avoid this warning, replace `const renderPage = createPageRenderer(/*...*/)` with the drop-in replacement `import { renderPage } from 'vite-plugin-ssr'`.",
     { onlyOnce: true },
   )
-
   return renderPage
 }
 

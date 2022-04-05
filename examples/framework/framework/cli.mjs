@@ -33,8 +33,8 @@ async function cmdDev() {
     plugins: [renderPlugin()],
     server: {
       port: 3000,
-      host: true
-    }
+      host: true,
+    },
   })
   await server.listen()
   server.printUrls()
@@ -57,23 +57,23 @@ function renderPlugin() {
           res.setHeader('Content-Type', contentType).end(body)
         })
       }
-    }
+    },
   }
 }
 
 async function cmdBuild() {
   await build({
     configFile,
-    root: rootUser
+    root: rootUser,
   })
   await build({
     configFile,
     root: rootUser,
     build: {
-      ssr: true
-    }
+      ssr: true,
+    },
   })
-  await prerender()
+  await prerender({ configFile })
 }
 
 async function cmdPreview() {
@@ -84,12 +84,12 @@ async function cmdPreview() {
     configFile,
     root: rootUser,
     build: {
-      outDir: 'dist/client'
+      outDir: 'dist/client',
     },
     preview: {
       host: true,
-      port: 3000
-    }
+      port: 3000,
+    },
   })
   previewServer.printUrls()
 }

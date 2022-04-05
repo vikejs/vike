@@ -2,18 +2,20 @@ export { generateImportGlobs }
 
 import { writeFileSync } from 'fs'
 import type { Plugin } from 'vite'
-import { getRoot, assert } from '../utils'
-import { getGlobPath } from '../glob'
+import { assert } from '../utils'
+import { getGlobPath } from './generateImportGlobs/getGlobPath'
+import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
+import { assertVitePluginSsrConfig } from './config/VitePluginSsrConfig'
 
-function generateImportGlobs(getGlobRoots: (root: string) => Promise<string[]>): Plugin {
+function generateImportGlobs(): Plugin {
   return {
     name: 'vite-plugin-ssr:generateImportGlobs',
     async configResolved(config) {
       const { command } = config
       assert(command === 'serve' || command === 'build')
       const isBuild = command === 'build'
-      const root = getRoot(config)
-      const globRoots = await getGlobRoots(root)
+      assertVitePluginSsrConfig(config)
+      const globRoots = await getGlobRoots(config)
       writeImportGlobs(globRoots, isBuild)
     },
   } as Plugin

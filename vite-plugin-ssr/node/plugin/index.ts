@@ -11,19 +11,20 @@ import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
-import { resolveConfig, Config } from './resolveConfig'
+import { setVitePluginSsrConfig } from './plugins/config'
 import { distFileNames } from './plugins/distFileNames'
 import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
 import { distLink } from './plugins/distLink'
+import type { VitePluginSsrConfig } from './plugins/config/VitePluginSsrConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(config?: Config): any {
-  const { getGlobRoots } = resolveConfig(config)
+function plugin(vitePluginSsrConfig?: VitePluginSsrConfig): any {
   const plugins: Plugin[] = [
-    generateImportGlobs(getGlobRoots),
+    setVitePluginSsrConfig(vitePluginSsrConfig),
+    generateImportGlobs(),
     dev(),
     build(),
     ...manifest(),
