@@ -207,7 +207,7 @@ function renderTemplate(
   }
 
   const { templateStrings, templateVariables } = templateContent
-  for (const i in templateVariables) {
+  for (let i = 0; i < templateVariables.length; i++) {
     addString(templateStrings[i]!)
     const templateVar = templateVariables[i]
 
@@ -245,8 +245,7 @@ function renderTemplate(
     }
 
     const getErrMsg = (typeText: string, end: string) => {
-      const n = parseInt(i)
-      const nth: string = (n === 0 && '1st') || (n === 1 && '2nd') || (n === 2 && '3rd') || `${n}-th`
+      const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
       return `Each HTML variable should be a string, but the ${nth} HTML variable is ${typeText} (see \`render()\` hook of ${renderFilePath}).${end}`
     }
     if (templateVar === undefined || templateVar === null) {
