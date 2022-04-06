@@ -5,7 +5,7 @@ export type { GlobalContext }
 
 import { PromiseType, assert, assertUsage, hasProp, objectAssign } from './utils'
 import type { ViteDevServer } from 'vite'
-import { loadDistEntries } from './plugin/plugins/distLink/loadDistEntries'
+import { loadDistEntries } from './plugin/plugins/distLink/distEntries'
 import { setPageFiles } from '../shared/getPageFiles'
 import { assertViteManifest } from './viteManifest'
 import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
