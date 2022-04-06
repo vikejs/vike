@@ -6,7 +6,7 @@ export type { GlobalContext }
 import { PromiseType, assert, assertUsage, hasProp, objectAssign } from './utils'
 import type { ViteDevServer } from 'vite'
 import { loadDistEntries } from './plugin/plugins/distLink/loadDistEntries'
-import { setPageFilesServerSide } from '../shared/getPageFiles'
+import { setPageFiles } from '../shared/getPageFiles'
 import { assertViteManifest } from './viteManifest'
 import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
 import { getRuntimeConfig, setRuntimeConfig } from './globalContext/runtimeConfig'
@@ -35,7 +35,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     const { pageFiles, clientManifest, pluginManifest } = distEntries
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)
-    setPageFilesServerSide(pageFiles)
+    setPageFiles(pageFiles)
     objectAssign(globalContext, {
       _isProduction: true as const,
       _manifestClient: clientManifest,
