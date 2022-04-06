@@ -1,3 +1,4 @@
 import { setPageFilesClientSide } from '../../shared/getPageFiles'
-import * as pageFilesExports from './pageFiles-client'
+// @ts-ignore
+import * as pageFilesExports from 'virtual:vite-plugin-ssr:pageFiles:client'
 setPageFilesClientSide(pageFilesExports)

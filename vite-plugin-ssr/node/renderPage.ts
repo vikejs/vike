@@ -617,6 +617,7 @@ async function executeRenderHook(
     _isProduction: boolean
     _viteDevServer: ViteDevServer | null
     _baseUrl: string
+    _loadedPageFiles: string[]
   },
 ): Promise<{
   renderFilePath: string
@@ -625,7 +626,9 @@ async function executeRenderHook(
   const hook = getHook(pageContext, 'render')
   assertUsage(
     hook,
-    'No `render()` hook found. Make sure to define a `*.page.server.js` file with `export function render() { /*...*/ }`. You can also `export { render }` in `_default.page.server.js` which will be the default `render()` hook of all your pages.',
+    `No \`render()\` hook found. See https://vite-plugin-ssr.com/render for more information. These are the loaded pages and none of them \`export { render }\`:\n${pageContext._loadedPageFiles
+      .map((f) => `  ${f}`)
+      .join('\n')}`,
   )
   const render = hook.hook
   const renderFilePath = hook.filePath

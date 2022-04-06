@@ -35,7 +35,8 @@ function build(): Plugin {
 function entryPoints(config: UserConfig): Record<string, string> {
   if (isSSR_config(config)) {
     return {
-      pageFiles: resolve('dist/esm/node/page-files/pageFiles-node.js'),
+      //pageFiles: resolve('dist/esm/node/page-files/pageFiles-node.js'),
+      pageFiles: 'virtual:vite-plugin-ssr:pageFiles:server',
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
