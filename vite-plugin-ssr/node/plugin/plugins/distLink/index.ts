@@ -57,7 +57,7 @@ function distLink(): Plugin[] {
           console.log('\nGEN\n')
           console.log(code)
         }
-        const fileName = 'importBuild.js'
+        const fileName = 'importBuild.cjs'
         this.emitFile({
           fileName,
           type: 'asset',
