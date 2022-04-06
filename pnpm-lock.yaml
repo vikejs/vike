@@ -833,6 +833,7 @@ importers:
   libframe/test:
     specifiers:
       '@brillout/part-regex': ^0.1.2
+      '@pinia/testing': 0.0.10
       '@types/jest': ^27.4.0
       '@types/node': ^15.6.1
       '@types/node-fetch': ^2.5.12
@@ -846,6 +847,7 @@ importers:
       typescript: ^4.5.4
     dependencies:
       '@brillout/part-regex': 0.1.2
+      '@pinia/testing': 0.0.10
       '@types/jest': 27.4.0
       '@types/node': 15.14.9
       '@types/node-fetch': 2.5.12
@@ -2253,6 +2255,17 @@ packages:
       pvtsutils: 1.2.1
       tslib: 2.3.1
       webcrypto-core: 1.4.0
+    dev: false
+
+  /@pinia/testing/0.0.10:
+    resolution: {integrity: sha512-xr7b9MkEEnHwmGAwC/BRlQ16YaNEugyyez6zULLaqfvmXls/jQ29/khdd4+g9hdXOlKoEfM4RW2WfzBtS52gQw==}
+    peerDependencies:
+      pinia: ~2.0.12
+    dependencies:
+      vue-demi: 0.12.5
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
     dev: false
 
   /@preact/preset-vite/2.1.7_698d816b37024fcdfcf21e366e54063a:
@@ -12544,6 +12557,19 @@ packages:
 
   /vscode-textmate/5.2.0:
     resolution: {integrity: sha512-Uw5ooOQxRASHgu6C7GVvUxisKXfSgW4oFlO+aa+PAkgmH89O3CXxEEzNRNtHSqtXFTl0nAC1uYj0GMSH27uwtQ==}
+    dev: false
+
+  /vue-demi/0.12.5:
+    resolution: {integrity: sha512-BREuTgTYlUr0zw0EZn3hnhC3I6gPWv+Kwh4MCih6QcAeaTlaIX0DwOVN0wHej7hSvDPecz4jygy/idsgKfW58Q==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
     dev: false
 
   /vue-demi/0.12.5_vue@3.2.31:

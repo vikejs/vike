@@ -7,6 +7,7 @@
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
+    "@pinia/testing": "0.0.10",
     "@vitejs/plugin-vue": "^2.2.2",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/server-renderer": "^3.2.31",
