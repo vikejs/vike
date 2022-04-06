@@ -1,7 +1,10 @@
 export { loadPageFiles }
 export { getPageFilesAllClientSide }
 export { getPageFilesAllServerSide }
-export type PageContextExports = Awaited<ReturnType<typeof loadPageFiles>>
+export type PageContextExports = Pick<
+  Awaited<ReturnType<typeof loadPageFiles>>,
+  'exports' | 'exportsAll' | 'pageExports'
+>
 export type { PageFile }
 export { setPageFilesServerSide }
 export { setPageFilesClientSide }
@@ -212,6 +215,7 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
     exports,
     pageExports,
     exportsAll,
+    _loadedPageFiles: pageFiles.map((p) => p.filePath),
   }
   return pageContextAddendum
 }
