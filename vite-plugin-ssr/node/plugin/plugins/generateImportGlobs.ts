@@ -1,39 +1,47 @@
 export { generateImportGlobs }
 
-import { writeFileSync } from 'fs'
-import type { Plugin } from 'vite'
-import { assert } from '../utils'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { assert, isSSR_options } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { assertVitePluginSsrConfig } from './config/VitePluginSsrConfig'
 
+const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
+
 function generateImportGlobs(): Plugin {
+  let config: ResolvedConfig
   return {
-    name: 'vite-plugin-ssr:generateImportGlobs',
-    async configResolved(config) {
-      const { command } = config
-      assert(command === 'serve' || command === 'build')
-      const isBuild = command === 'build'
-      assertVitePluginSsrConfig(config)
-      const globRoots = await getGlobRoots(config)
-      writeImportGlobs(globRoots, isBuild)
+    name: 'vite-plugin-ssr:virtualModulePageFiles',
+    async configResolved(config_) {
+      config = config_
+    },
+    resolveId(id) {
+      if (moduleIds.includes(id)) {
+        return id
+      }
+    },
+    async load(id, options) {
+      if (moduleIds.includes(id)) {
+        const isForClientSide = id === moduleIds[1]
+        assert(isForClientSide === !isSSR_options(options))
+        const code = await getCode(config, isForClientSide)
+        return code
+      }
     },
   } as Plugin
 }
 
-function writeImportGlobs(globRoots: string[], isBuild: boolean) {
-  // Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js
-  writeFileSync(
-    require.resolve('../../../../../dist/esm/node/page-files/pageFiles-node.js'),
-    getFileContent(globRoots, isBuild, false),
-  )
-  writeFileSync(
-    require.resolve('../../../../../dist/esm/client/page-files/pageFiles-client.js'),
-    getFileContent(globRoots, isBuild, true),
-  )
+async function getCode(config: ResolvedConfig, isForClientSide: boolean) {
+  const { command } = config
+  assert(command === 'serve' || command === 'build')
+  const isBuild = command === 'build'
+  assertVitePluginSsrConfig(config)
+  const globRoots = await getGlobRoots(config)
+  const content = getContent(globRoots, isBuild, isForClientSide)
+  return content
 }
 
-function getFileContent(globRoots: string[], isBuild: boolean, isForClientSide: boolean) {
+function getContent(globRoots: string[], isBuild: boolean, isForClientSide: boolean) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
 export const pageFilesLazy = {};
