@@ -7,6 +7,9 @@ export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
 export type { PageContextBuiltIn } from './types'
 
+import { setDistEntries } from './plugin/plugins/distLink/distEntries'
+export const __internals = { setDistEntries }
+
 import './page-files/setup'
 import '../shared/assertSingleVersion'
 import { assertUsage, isBrowser } from './utils'

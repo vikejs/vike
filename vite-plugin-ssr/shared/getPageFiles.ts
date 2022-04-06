@@ -57,15 +57,13 @@ function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
 }
 
 async function getPageFilesAllServerSide(isProduction: boolean) {
-  if (_pageFilesGetter) {
-    if (
-      !_pageFilesAll ||
-      // We reload all glob imports in dev to make auto-reload work
-      !isProduction
-    ) {
-      await _pageFilesGetter()
-    }
-    assert(_pageFilesAll)
+  assert(_pageFilesGetter)
+  if (
+    !_pageFilesAll ||
+    // We reload all glob imports in dev to make auto-reload work
+    !isProduction
+  ) {
+    await _pageFilesGetter()
   }
   assert(_pageFilesAll)
   const pageFilesAll = _pageFilesAll
@@ -74,6 +72,7 @@ async function getPageFilesAllServerSide(isProduction: boolean) {
 }
 
 function getPageFilesAllClientSide() {
+  assert(!_pageFilesGetter)
   assert(_pageFilesAll)
   const pageFilesAll = _pageFilesAll
   const allPageIds = getAllPageIds(pageFilesAll)
