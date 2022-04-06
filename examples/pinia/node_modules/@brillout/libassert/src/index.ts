@@ -1,0 +1,1 @@
+export { newError } from "./newError";

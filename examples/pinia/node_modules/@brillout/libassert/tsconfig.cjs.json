@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist/cjs/",
+    "target": "ES2017",
+    "module": "CommonJS"
+  }
+}

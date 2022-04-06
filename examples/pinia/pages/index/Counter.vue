@@ -5,8 +5,7 @@ const counterStore = useCounterStore();
 
 <template>
   <div>
-    <h1>Counter page</h1>
-		<h2>Count is: {{ counterStore.countValue }}</h2>
+		<h2>Counter {{ counterStore.countValue }}</h2>
 		<button @click.prevent="counterStore.increment()" class="btn" type="button">Increment</button>
 		<button @click.prevent="counterStore.decrement()" class="btn" type="button">Decrement</button>
   </div>

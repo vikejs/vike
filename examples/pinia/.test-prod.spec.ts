@@ -1,2 +1,2 @@
-import { testRun } from '../../boilerplates/.testRun'
+import { testRun } from '../.testRun'
 testRun('npm run prod')

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    // Output
+    "outDir": "./dist/",
+    "target": "ES2017",
+    "module": "CommonJS",
+    // User-code
+    "strict": true,
+    // Dependencies
+    "skipLibCheck": true,
+    // Source Maps
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "stripInternal": true
+  }
+}
