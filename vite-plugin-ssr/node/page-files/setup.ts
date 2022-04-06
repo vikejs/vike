@@ -1,8 +1,8 @@
-import { setPageFilesServerSideAsync } from '../../shared/getPageFiles'
+import { setPageFilesAsync } from '../../shared/getPageFiles'
 import { assert } from '../utils'
 import { getViteDevServer } from '../globalContext'
 
-setPageFilesServerSideAsync(getPageFilesExports)
+setPageFilesAsync(getPageFilesExports)
 
 async function getPageFilesExports(): Promise<unknown> {
   const viteDevServer = getViteDevServer()

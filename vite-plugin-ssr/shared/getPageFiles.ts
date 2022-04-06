@@ -6,9 +6,8 @@ export type PageContextExports = Pick<
   'exports' | 'exportsAll' | 'pageExports'
 >
 export type { PageFile }
-export { setPageFilesServerSide }
-export { setPageFilesClientSide }
-export { setPageFilesServerSideAsync }
+export { setPageFiles }
+export { setPageFilesAsync }
 export { getStringUnion }
 
 import {
@@ -48,16 +47,13 @@ type PageFile = {
 let _pageFilesAll: PageFile[] | undefined
 let _pageFilesGetter: () => Promise<void> | undefined
 
-function setPageFilesServerSide(pageFilesExports: unknown) {
+function setPageFiles(pageFilesExports: unknown) {
   _pageFilesAll = format(pageFilesExports)
 }
-function setPageFilesServerSideAsync(getPageFilesExports: () => Promise<unknown>) {
+function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   _pageFilesGetter = async () => {
-    setPageFilesClientSide(await getPageFilesExports())
+    setPageFiles(await getPageFilesExports())
   }
-}
-function setPageFilesClientSide(pageFilesExports: unknown) {
-  _pageFilesAll = format(pageFilesExports)
 }
 
 async function getPageFilesAllServerSide(isProduction: boolean) {
