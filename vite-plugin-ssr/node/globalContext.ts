@@ -30,7 +30,11 @@ async function getGlobalContext(isPreRendering: boolean) {
   const isProduction = isPreRendering || viteDevServer === null
   if (isProduction) {
     assert(viteDevServer === null)
-    const distEntries = await loadDistEntries()
+    const distEntries = await loadDistEntries({
+      // TODO
+      root: process.cwd(),
+      outDir: 'dist/'
+    })
     assertDistEntries(distEntries, isPreRendering)
     const { pageFiles, clientManifest, pluginManifest } = distEntries
     assertViteManifest(clientManifest)
