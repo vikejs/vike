@@ -1,7 +1,8 @@
 export { loadDistEntries }
 export { setDistEntries }
 
-import { assert } from '../../utils'
+import { assert, assertUsage } from '../../utils'
+import { load } from 'vite-plugin-dist-importer/load'
 
 let distEntries: DistEntries = null
 
@@ -17,10 +18,7 @@ function setDistEntries(distEntries_: DistEntries) {
 }
 
 async function loadDistEntries() {
-  // We lazily load `importer.js` after its code was generated
-  require('./importer')
-
-  // TODO
+  load({ assert, assertUsage })
   assert(distEntries)
 
   const [pageFiles, clientManifest, serverManifest, pluginManifest] = await Promise.all([
