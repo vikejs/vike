@@ -17,8 +17,8 @@ function setDistEntries(distEntries_: DistEntries) {
   distEntries = distEntries_
 }
 
-async function loadDistEntries() {
-  load({ assert, assertUsage })
+async function loadDistEntries({ root, outDir }: { root: string; outDir: string }) {
+  load({ assert, assertUsage, root, outDir })
   assert(distEntries)
 
   const [pageFiles, clientManifest, serverManifest, pluginManifest] = await Promise.all([
