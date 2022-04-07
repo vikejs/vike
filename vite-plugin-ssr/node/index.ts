@@ -7,7 +7,7 @@ export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
 export type { PageContextBuiltIn } from './types'
 
-import { setDistEntries } from './plugin/plugins/distLink/distEntries'
+import { setDistEntries } from './plugin/plugins/distEntries/loadDistEntries'
 export const __internals = { setDistEntries }
 
 import './page-files/setup'

@@ -17,7 +17,7 @@ import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
-import { distLink } from './plugins/distLink'
+import { distEntriesPlugin } from './plugins/distEntries'
 import type { VitePluginSsrConfig } from './plugins/config/VitePluginSsrConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
@@ -35,7 +35,7 @@ function plugin(vitePluginSsrConfig?: VitePluginSsrConfig): any {
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     retrieveDevServer(),
-    ...distLink(),
+    distEntriesPlugin(),
     GlobPlugin() as any,
   ]
   return plugins as any
