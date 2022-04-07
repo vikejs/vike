@@ -281,7 +281,7 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="red-heart" /> Craftmanship
+              <Emoji name="red-heart" /> Craftsmanship
             </>
           ),
           desc: (
