@@ -1,5 +1,5 @@
 import './page-files/setup'
-import { join, sep, dirname, isAbsolute } from 'path'
+import path, { join, sep, dirname, isAbsolute } from 'path'
 import { isErrorPage, isStaticRoute, loadPageRoutes, route } from '../shared/route'
 import {
   assert,
@@ -52,12 +52,6 @@ type PageContext = GlobalPrerenderingContext & {
   _pageContextAlreadyProvidedByPrerenderHook?: true
 }
 
-/**
- * Render your pages (e.g. for deploying to a static host).
- * @param partial Allow only a subset of pages to be pre-rendered.
- * @param root The root directory of your project (where `vite.config.js` live) (default: `process.cwd()`).
- * @param outDir The build directory of your project (default: `dist`).
- */
 async function prerender({
   onPagePrerender,
   pageContextInit,
@@ -68,11 +62,11 @@ async function prerender({
   pageContextInit?: Record<string, unknown>
   configFile?: string
   /** @deprecated */
+  root?: string
+  /** @deprecated */
   partial?: boolean
   /** @deprecated */
   noExtraDir?: boolean
-  /** @deprecated */
-  root?: string
   /** @deprecated */
   outDir?: string
   /** @deprecated */
@@ -90,18 +84,16 @@ async function prerender({
 
   setProductionEnvVar()
 
-  const viteConfig = await resolveConfig({ configFile }, 'build', 'production')
-  const {
-    root,
-    build: { outDir },
-  } = viteConfig
+  const viteConfig = await resolveConfig({ configFile }, 'vite-plugin-ssr prerender' as any, 'production')
+  const outDir = 'dist/' // TODO
+  const { root } = viteConfig
   assertUsage(
     viteConfig.configFile,
     `Could not find \`vite.config.js\` at ${root}. Use the option \`prerender({ configFile: 'path/to/vite.config.js' })\`.`,
   )
   assertUsage(
     viteConfig.plugins.some((p) => p.name?.startsWith('vite-plugin-ssr')),
-    `The \`vite.config.js\` (${viteConfig.configFile}) does not contain vite-plugin-ssr. Make sure to add vite-plugin-ssr to \`vite.config.js\` or, if you have more than one \`vite.config.js\`, use the option \`prerender({ configFile: 'path/to/vite.config.js' })\` to select the right \`vite.config.js\`.`,
+    `The \`vite.config.js\` (${viteConfig.configFile}) does not contain vite-plugin-ssr. Make sure to add vite-plugin-ssr to \`vite.config.js\`, or, if you have more than one \`vite.config.js\`, use the option \`prerender({ configFile: 'path/to/vite.config.js' })\` to select the right \`vite.config.js\`.`,
   )
   assertVitePluginSsrConfig(viteConfig)
   const {
@@ -482,8 +474,10 @@ function write(
     assert(fileUrl.startsWith('/'))
     const filePathRelative = fileUrl.slice(1).split('/').join(sep)
     assert(!filePathRelative.startsWith(sep))
-    assert(outDir && !outDir.includes('dist/server'), { outDir })
-    const filePath = join(root, outDir, filePathRelative)
+    assert(outDir && !outDir.includes('\\'), { outDir })
+    const outDirPath = outDir.split('/')
+    assert(!outDirPath.includes('server') && !outDirPath.includes('client'), { outDir })
+    const filePath = join(root, outDir, 'client', filePathRelative)
     if (onPagePrerender) {
       objectAssign(pageContext, {
         _prerenderResult: {
@@ -498,11 +492,7 @@ function write(
       await mkdir(dirname(filePath), { recursive: true })
       await writeFile(filePath, fileContent)
       if (logLevel === 'info') {
-        let dirLog = outDir
-        if (!dirLog.endsWith(sep)) {
-          dirLog = dirLog + sep
-        }
-        console.log(`${gray(dirLog)}${blue(filePathRelative)}`)
+        console.log(`${gray(path.posix.join(outDir, 'client/'))}${blue(filePathRelative)}`)
       }
     }
   })
