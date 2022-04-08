@@ -100,11 +100,12 @@ async function prerender(
     `The \`vite.config.js\` (${viteConfig.configFile}) does not contain vite-plugin-ssr. Make sure to add vite-plugin-ssr to \`vite.config.js\`, or, if you have more than one \`vite.config.js\`, use the option \`prerender({ configFile: 'path/to/vite.config.js' })\` to select the right \`vite.config.js\`.`,
   )
   assertVitePluginSsrConfig(viteConfig)
+  const prerenderConfig = viteConfig.vitePluginSsr?.prerender
   const {
     partial = false,
     noExtraDir = false,
     parallel = cpus().length || 1,
-  } = viteConfig.vitePluginSsr?.prerender ?? {}
+  } = typeof prerenderConfig === 'object' ? prerenderConfig : {}
 
   const concurrencyLimit = pLimit(parallel)
 

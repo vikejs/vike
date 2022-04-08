@@ -1,27 +1,32 @@
-import { assertUsage, hasProp } from '../utils'
+import { assertUsage, hasProp, isObject } from '../utils'
 
 export type { PrerenderConfig }
 export { getPrerenderConfig }
 
-type PrerenderConfig = {
-  partial?: boolean
-  noExtraDir?: boolean
-  parallel?: number
-}
+type PrerenderConfig =
+  | boolean
+  | {
+      partial?: boolean
+      noExtraDir?: boolean
+      parallel?: number
+    }
 
-function getPrerenderConfig(vitePluginSsrConfig: Record<string, unknown>) {
+function getPrerenderConfig(vitePluginSsrConfig: Record<string, unknown>): PrerenderConfig {
+  if (vitePluginSsrConfig.prerender === undefined) {
+    return false
+  }
+  assertUsage(
+    hasProp(vitePluginSsrConfig, 'prerender', 'object') || hasProp(vitePluginSsrConfig, 'prerender', 'boolean'),
+    '[vite.config.js][`ssr({ prerender })`] `prerender` should be a boolean or an object',
+  )
+  if (!isObject(vitePluginSsrConfig.prerender)) {
+    return vitePluginSsrConfig.prerender
+  }
   const prerenderConfig: PrerenderConfig = {
     partial: undefined,
     noExtraDir: undefined,
     parallel: undefined,
   }
-  if (vitePluginSsrConfig.prerender === undefined) {
-    return prerenderConfig
-  }
-  assertUsage(
-    hasProp(vitePluginSsrConfig, 'prerender', 'object'),
-    '[vite.config.js][`ssr({ prerender })`] `prerender` should be an object',
-  )
   const { prerender } = vitePluginSsrConfig
   if (prerender.partial !== undefined) {
     assertUsage(
