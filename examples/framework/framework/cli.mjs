@@ -1,16 +1,12 @@
 #!/usr/bin/env node
 
 import { createServer, build, preview } from 'vite'
-import { rootFramework } from './utils.mjs'
+import { rootFramework, rootApp } from './utils.mjs'
 import { existsSync } from 'fs'
-import { createPageRenderer } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr'
 import { prerender } from 'vite-plugin-ssr/cli'
 
 const configFile = `${rootFramework}/vite.config.ts`
-const rootUser = process.cwd()
-if (!existsSync(`${rootUser}/package.json`)) {
-  throw new Error("The `framework` CLI should be called from your project's root directory.")
-}
 const command = process.argv[2]
 if (!command) {
   throw new Error('Missing command.')
@@ -29,7 +25,6 @@ if (command === 'dev') {
 async function cmdDev() {
   const server = await createServer({
     configFile,
-    root: rootUser,
     plugins: [renderPlugin()],
     server: {
       port: 3000,
@@ -44,7 +39,6 @@ function renderPlugin() {
   return {
     name: 'framework:renderPlugin',
     configureServer(server) {
-      const renderPage = createPageRenderer({ viteDevServer: server, root: rootUser, isProduction: false })
       return () => {
         server.middlewares.use(async (req, res, next) => {
           const url = req.originalUrl
@@ -64,11 +58,9 @@ function renderPlugin() {
 async function cmdBuild() {
   await build({
     configFile,
-    root: rootUser,
   })
   await build({
     configFile,
-    root: rootUser,
     build: {
       ssr: true,
     },
@@ -77,12 +69,11 @@ async function cmdBuild() {
 }
 
 async function cmdPreview() {
-  if (!existsSync(`${rootUser}/dist/client/index.html`)) {
+  if (!existsSync(`${rootApp}/dist/client/index.html`)) {
     throw new Error('Call `build` before calling `preview`.')
   }
   const previewServer = await preview({
     configFile,
-    root: rootUser,
     build: {
       outDir: 'dist/client',
     },
