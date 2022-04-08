@@ -8,6 +8,7 @@ import { getPageFilesConfig, PageFilesConfig } from '../generateImportGlobs/page
 type VitePluginSsrConfig = {
   pageFiles?: PageFilesConfig
   prerender?: PrerenderConfig
+  disableBuildChaining?: boolean
 }
 
 function assertVitePluginSsrConfig<T extends Record<string, unknown>>(
@@ -23,4 +24,6 @@ function assertVitePluginSsrConfig<T extends Record<string, unknown>>(
   assert(hasProp(vitePluginSsr, 'pageFiles', 'object'))
   const pageFilesConfig = getPageFilesConfig(vitePluginSsr)
   checkType<PageFilesConfig>(pageFilesConfig)
+
+  assert(hasProp(vitePluginSsr, 'disableBuildChaining', 'boolean'))
 }
