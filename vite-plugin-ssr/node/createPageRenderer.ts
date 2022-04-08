@@ -7,7 +7,7 @@ export { createPageRenderer }
 
 type RenderPage = typeof renderPage
 
-/** @deprecated */
+/** @deprecated `createPageRenderer()` is not needed anymore (vite-plugin-ssr now automatically determines the options). To avoid a warning, replace `const renderPage = createPageRenderer(...);` with the drop-in replacement `import { renderPage } from 'vite-plugin-ssr';` */
 function createPageRenderer(_deprecated: {
   viteDevServer?: unknown
   /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
@@ -21,7 +21,7 @@ function createPageRenderer(_deprecated: {
 }): RenderPage {
   assertWarning(
     false,
-    "`createPageRenderer()` is not needed anymore (vite-plugin-ssr now automatically determines the options). To avoid this warning, replace `const renderPage = createPageRenderer(/*...*/)` with the drop-in replacement `import { renderPage } from 'vite-plugin-ssr'`.",
+    "`createPageRenderer()` is not needed anymore (vite-plugin-ssr now automatically determines the options). To avoid this warning, replace `const renderPage = createPageRenderer(/*...*/);` with the drop-in replacement `import { renderPage } from 'vite-plugin-ssr';`",
     { onlyOnce: true },
   )
   return renderPage
