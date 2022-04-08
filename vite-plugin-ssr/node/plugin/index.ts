@@ -6,6 +6,7 @@ import type { Plugin } from 'vite'
 import GlobPlugin from '@brillout/vite-plugin-glob'
 import { assertUsage } from './utils'
 import { buildConfig } from './plugins/buildConfig'
+import { chainBuildSteps } from './plugins/chainBuildSteps'
 import { devConfig } from './plugins/devConfig'
 import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
@@ -27,6 +28,7 @@ function plugin(vitePluginSsrConfig?: VitePluginSsrConfig): any {
     generateImportGlobs(),
     devConfig(),
     buildConfig(),
+    chainBuildSteps(),
     ...manifest(),
     packageJsonFile(),
     removeRequireHookPlugin(),
