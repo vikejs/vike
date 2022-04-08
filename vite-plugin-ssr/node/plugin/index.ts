@@ -5,8 +5,8 @@ export { plugin as ssr }
 import type { Plugin } from 'vite'
 import GlobPlugin from '@brillout/vite-plugin-glob'
 import { assertUsage } from './utils'
-import { build } from './plugins/build'
-import { dev } from './plugins/dev'
+import { buildConfig } from './plugins/buildConfig'
+import { devConfig } from './plugins/devConfig'
 import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
@@ -25,8 +25,8 @@ function plugin(vitePluginSsrConfig?: VitePluginSsrConfig): any {
   const plugins: Plugin[] = [
     setVitePluginSsrConfig(vitePluginSsrConfig),
     generateImportGlobs(),
-    dev(),
-    build(),
+    devConfig(),
+    buildConfig(),
     ...manifest(),
     packageJsonFile(),
     removeRequireHookPlugin(),

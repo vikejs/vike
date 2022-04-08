@@ -1,11 +1,11 @@
-export { dev }
+export { devConfig }
 
 import type { Plugin } from 'vite'
 import { applyDev } from '../utils'
 
-function dev(): Plugin {
+function devConfig(): Plugin {
   return {
-    name: 'vite-plugin-ssr:dev',
+    name: 'vite-plugin-ssr:devConfig',
     apply: applyDev,
     config: () => ({
       ssr: { external: ['vite-plugin-ssr'] },
