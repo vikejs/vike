@@ -18,16 +18,16 @@ function chainBuildSteps(): Plugin {
     },
     async writeBundle() {
       assertVitePluginSsrConfig(config)
-      if (!isViteCli) {
+      if (config.vitePluginSsr.disableBuildChaining) {
         return
       }
+      const { configFile, root } = config
       if (!config.build?.ssr) {
-        await build({ build: { ssr: true } })
+        await build({ build: { ssr: true }, configFile, root })
       } else {
         if (config.vitePluginSsr.prerender) {
-          const { configFile } = config
           assert(configFile)
-          prerender({ configFile })
+          await prerender({ configFile, root })
         }
       }
     },
