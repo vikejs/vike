@@ -52,28 +52,32 @@ type PageContext = GlobalPrerenderingContext & {
   _pageContextAlreadyProvidedByPrerenderHook?: true
 }
 
-async function prerender({
-  onPagePrerender,
-  pageContextInit,
-  configFile,
-  ...deprecatedOptions
-}: {
-  onPagePrerender?: Function
-  pageContextInit?: Record<string, unknown>
-  configFile?: string
-  /** @deprecated */
-  root?: string
-  /** @deprecated */
-  partial?: boolean
-  /** @deprecated */
-  noExtraDir?: boolean
-  /** @deprecated */
-  outDir?: string
-  /** @deprecated */
-  base?: string
-  /** @deprecated */
-  parallel?: number
-} = {}) {
+async function prerender(
+  options: {
+    onPagePrerender?: Function
+    pageContextInit?: Record<string, unknown>
+    /**
+     * Project root directory. Must be an absolute path.
+     * @default process.cwd()
+     */
+    root?: string
+    configFile?: string
+    // ==================
+    // === Deprecated ===
+    // ==================
+    /** @deprecated Define `partial` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    partial?: boolean
+    /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    noExtraDir?: boolean
+    /** @deprecated Define `outDir` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    outDir?: string
+    /** @deprecated Define `base` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    base?: string
+    /** @deprecated Define `parallel` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    parallel?: number
+  } = {},
+) {
+  const { onPagePrerender, pageContextInit, configFile, root: root_, ...deprecatedOptions } = options
   checkOutdatedOptions(deprecatedOptions)
 
   const logLevel = !!onPagePrerender ? 'warn' : 'info'
@@ -84,7 +88,7 @@ async function prerender({
 
   setProductionEnvVar()
 
-  const viteConfig = await resolveConfig({ configFile }, 'vite-plugin-ssr prerender' as any, 'production')
+  const viteConfig = await resolveConfig({ configFile, root: root_ }, 'vite-plugin-ssr prerender' as any, 'production')
   const outDir = 'dist/' // TODO
   const { root } = viteConfig
   assertUsage(
@@ -552,7 +556,7 @@ function checkOutdatedOptions(options: {
       `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/config`,
     )
   })
-  ;(['base', 'root', 'outDir'] as const).forEach((prop) => {
+  ;(['base', 'outDir'] as const).forEach((prop) => {
     assertWarning(
       options[prop] === undefined,
       `[prerender()] Option \`${prop}\` is deprecated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
