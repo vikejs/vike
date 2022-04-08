@@ -2,7 +2,6 @@ export { assertVitePluginSsrConfig }
 export type { VitePluginSsrConfig }
 
 import { assert, hasProp, checkType } from '../../../utils'
-
 import { PrerenderConfig, getPrerenderConfig } from '../../../prerender/prerenderConfig'
 import { getPageFilesConfig, PageFilesConfig } from '../generateImportGlobs/pageFilesConfig'
 
@@ -17,7 +16,7 @@ function assertVitePluginSsrConfig<T extends Record<string, unknown>>(
   assert(hasProp(viteConfig, 'vitePluginSsr', 'object'))
   const { vitePluginSsr } = viteConfig
 
-  assert(hasProp(vitePluginSsr, 'prerender', 'object'))
+  assert(hasProp(vitePluginSsr, 'prerender', 'object') || hasProp(vitePluginSsr, 'prerender', 'boolean'))
   const prerenderConfig = getPrerenderConfig(vitePluginSsr)
   checkType<PrerenderConfig>(prerenderConfig)
 

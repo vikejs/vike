@@ -2,7 +2,6 @@ import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import path from 'path'
 import { assert, isObject, isSSR_config } from '../utils'
-//import { build } from 'vite'
 
 export { buildConfig }
 
@@ -37,7 +36,7 @@ function entryPoints(config: UserConfig): Record<string, string> {
   if (isSSR_config(config)) {
     return {
       pageFiles: 'virtual:vite-plugin-ssr:pageFiles:server',
-      importBuild: resolve('dist/cjs/node/importBuild.js'),
+      importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
     return {
