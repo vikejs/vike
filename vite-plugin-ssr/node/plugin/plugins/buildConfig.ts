@@ -4,6 +4,7 @@ import path from 'path'
 import { assert, isObject, isSSR_config } from '../utils'
 
 export { buildConfig }
+export { getOutDir }
 
 function buildConfig(): Plugin {
   return {
@@ -36,7 +37,7 @@ function entryPoints(config: UserConfig): Record<string, string> {
   if (isSSR_config(config)) {
     return {
       pageFiles: 'virtual:vite-plugin-ssr:pageFiles:server',
-      importBuild: resolve('dist/cjs/node/importBuild.js')
+      importBuild: resolve('dist/cjs/node/importBuild.js'),
     }
   } else {
     return {
