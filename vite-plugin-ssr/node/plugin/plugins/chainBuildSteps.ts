@@ -1,7 +1,7 @@
 export { chainBuildSteps }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, toPosixPath } from '../utils'
+import { assert, assertWarning, isViteCliCall } from '../utils'
 import { prerender } from '../../prerender'
 import { assertViteConfig } from './config/assertConfig'
 
@@ -33,9 +33,7 @@ function chainBuildSteps(): Plugin {
 }
 
 function skip() {
-  const { argv } = process
-  const isViteCli = argv.includes('build') && argv.some((a) => toPosixPath(a).endsWith('/bin/vite.js'))
-  if (isViteCli && argv.includes('--ssr')) {
+  if (isViteCliCall({ command: 'build', ssr: true })) {
     assertWarning(
       false,
       'The `$ vite build --ssr` CLI call is deprecated; it is now superfluous and has no effect (`$ vite build` now also builds the server-side code). Drop `$ vite build --ssr` to remove this warning. ',
