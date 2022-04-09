@@ -64,9 +64,6 @@ async function cmdPreview() {
   }
   const previewServer = await preview({
     configFile,
-    build: {
-      outDir: 'dist/client',
-    },
     preview: {
       host: true,
       port: 3000,
