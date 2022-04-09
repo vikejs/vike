@@ -2,16 +2,17 @@
 // See https://vite-plugin-ssr.com/pageContext-anywhere
 
 import { inject } from 'vue'
-import type { App } from 'vue'
+import type { App, InjectionKey } from 'vue'
 import { PageContext } from './types'
 
 export { usePageContext }
 export { setPageContext }
 
-const key = Symbol()
+const key: InjectionKey<PageContext> = Symbol()
 
 function usePageContext() {
   const pageContext = inject(key)
+  if (!pageContext) throw new Error("setPageContext() not called in parent")
   return pageContext
 }
 
