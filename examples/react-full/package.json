@@ -4,10 +4,7 @@
     "dev": "node ./server",
     "prod": "npm run build && npm run prod:serve",
     "// Build for production": "",
-    "build": "npm run build:clean && npm run build:vite && npm run build:prerender",
-    "build:clean": "rimraf dist/",
-    "build:vite": "vite build && vite build --ssr",
-    "build:prerender": "vite-plugin-ssr prerender",
+    "build": "vite build",
     "// Static serve for production": "",
     "prod:serve": "serve dist/client/ --listen 3000"
   },

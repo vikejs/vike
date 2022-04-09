@@ -4,7 +4,6 @@ import { createServer, build, preview } from 'vite'
 import { rootFramework, rootApp } from './utils.mjs'
 import { existsSync } from 'fs'
 import { renderPage } from 'vite-plugin-ssr'
-import { prerender } from 'vite-plugin-ssr/cli'
 
 const configFile = `${rootFramework}/vite.config.ts`
 const command = process.argv[2]
@@ -56,16 +55,7 @@ function renderPlugin() {
 }
 
 async function cmdBuild() {
-  await build({
-    configFile,
-  })
-  await build({
-    configFile,
-    build: {
-      ssr: true,
-    },
-  })
-  await prerender({ configFile })
+  await build({ configFile })
 }
 
 async function cmdPreview() {

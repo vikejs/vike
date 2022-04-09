@@ -12,6 +12,7 @@ export default {
       pageFiles: {
         include: ['framework'],
       },
+      prerender: true,
     }),
   ],
   optimizeDeps: {
