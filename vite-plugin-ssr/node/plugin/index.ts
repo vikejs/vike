@@ -1,6 +1,7 @@
 export default plugin
 export { plugin }
 export { plugin as ssr }
+export type ConfigVps = { vitePluginSsr: VpsConfig }
 
 import type { Plugin } from 'vite'
 import GlobPlugin from '@brillout/vite-plugin-glob'
@@ -12,19 +13,18 @@ import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
-import { setVitePluginSsrConfig } from './plugins/config'
+import { setVitePluginSsrConfig, VpsConfig } from './plugins/config'
 import { distFileNames } from './plugins/distFileNames'
 import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
 import { distEntriesPlugin } from './plugins/distEntries'
-import type { VitePluginSsrConfig } from './plugins/config/VitePluginSsrConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vitePluginSsrConfig?: VitePluginSsrConfig): any {
+function plugin(vpsConfig?: VpsConfig): any {
   const plugins: Plugin[] = [
-    setVitePluginSsrConfig(vitePluginSsrConfig),
+    setVitePluginSsrConfig(vpsConfig),
     generateImportGlobs(),
     devConfig(),
     buildConfig(),
