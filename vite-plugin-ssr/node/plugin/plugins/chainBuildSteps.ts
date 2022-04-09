@@ -3,9 +3,7 @@ export { chainBuildSteps }
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertWarning, toPosixPath } from '../utils'
 import { prerender } from '../../prerender'
-import { assertVitePluginSsrConfig } from './config/VitePluginSsrConfig'
-const { argv } = process
-const isViteCli = argv.includes('build') && argv.some((a) => toPosixPath(a).endsWith('/bin/vite.js'))
+import { assertViteConfig } from './config/assertViteConfig'
 
 function chainBuildSteps(): Plugin {
   skip()
@@ -17,7 +15,7 @@ function chainBuildSteps(): Plugin {
       config = config_
     },
     async writeBundle() {
-      assertVitePluginSsrConfig(config)
+      assertViteConfig(config)
       if (config.vitePluginSsr.disableBuildChaining) {
         return
       }
@@ -35,6 +33,8 @@ function chainBuildSteps(): Plugin {
 }
 
 function skip() {
+  const { argv } = process
+  const isViteCli = argv.includes('build') && argv.some((a) => toPosixPath(a).endsWith('/bin/vite.js'))
   if (isViteCli && argv.includes('--ssr')) {
     assertWarning(
       false,

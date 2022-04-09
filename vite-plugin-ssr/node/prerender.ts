@@ -20,7 +20,7 @@ import { cpus } from 'os'
 import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
-import { assertVitePluginSsrConfig } from './plugin/plugins/config/VitePluginSsrConfig'
+import { assertViteConfig } from './plugin/plugins/config/assertViteConfig'
 
 export { prerender }
 
@@ -99,7 +99,7 @@ async function prerender(
     viteConfig.plugins.some((p) => p.name?.startsWith('vite-plugin-ssr')),
     `The \`vite.config.js\` (${viteConfig.configFile}) does not contain vite-plugin-ssr. Make sure to add vite-plugin-ssr to \`vite.config.js\`, or, if you have more than one \`vite.config.js\`, use the option \`prerender({ configFile: 'path/to/vite.config.js' })\` to select the right \`vite.config.js\`.`,
   )
-  assertVitePluginSsrConfig(viteConfig)
+  assertViteConfig(viteConfig)
   const prerenderConfig = viteConfig.vitePluginSsr?.prerender
   const {
     partial = false,
