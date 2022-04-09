@@ -1,8 +1,8 @@
 export { setVitePluginSsrConfig }
-export type { VpsConfig } from './config/assertViteConfig'
+export type { VpsConfig } from './config/assertConfig'
 
 import type { Plugin } from 'vite'
-import { assertAndMergeUserInput } from './config/assertViteConfig'
+import { assertAndMergeUserInput } from './config/assertConfig'
 
 function setVitePluginSsrConfig(vpsConfig: unknown) {
   return {

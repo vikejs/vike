@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, isSSR_options } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
-import { assertViteConfig } from './config/assertViteConfig'
+import { assertViteConfig } from './config/assertConfig'
 
 const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
 
