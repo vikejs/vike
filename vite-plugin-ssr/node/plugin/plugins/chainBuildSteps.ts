@@ -3,7 +3,7 @@ export { chainBuildSteps }
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertWarning, toPosixPath } from '../utils'
 import { prerender } from '../../prerender'
-import { assertViteConfig } from './config/assertViteConfig'
+import { assertViteConfig } from './config/assertConfig'
 
 function chainBuildSteps(): Plugin {
   skip()
