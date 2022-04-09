@@ -57,17 +57,9 @@ function assertVpsConfig(
   assertPageFilesConfig(vitePluginSsr)
   assertPrerenderConfig(vitePluginSsr)
 
-  type T1 = VpsConfig
-  type T2 = typeof vitePluginSsr
-  ;(t: T1) => ((_: T2) => {})(t)
-  ;(t: T2) => ((_: T1) => {})(t)
-  ;(t: DeepRequired<T2>) => ((_: DeepRequired<T1>) => {})(t)
-  ;(t: DeepRequired<T1>) => ((_: DeepRequired<T2>) => {})(t)
-
   return
 
-  type PrerenderConfig = Pick<VpsConfig, 'prerender'>
-  function assertPrerenderConfig(vitePluginSsr: Record<string, unknown>): asserts vitePluginSsr is PrerenderConfig {
+  function assertPrerenderConfig(vitePluginSsr: Record<string, unknown>): asserts vitePluginSsr is Pick<VpsConfig, 'prerender'>{
     assertInput(
       'prerender',
       'should be an object or a boolean',
@@ -96,8 +88,7 @@ function assertVpsConfig(
     }
   }
 
-  type PageFilesConfig = Pick<VpsConfig, 'pageFiles'>
-  function assertPageFilesConfig(vitePluginSsr: Record<string, unknown>): asserts vitePluginSsr is PageFilesConfig {
+  function assertPageFilesConfig(vitePluginSsr: Record<string, unknown>): asserts vitePluginSsr is Pick<VpsConfig, 'pageFiles'> {
     assertInput(
       'pageFiles',
       'should be an object (or undefined)',
@@ -131,5 +122,3 @@ function assertViteConfig<T extends Record<string, unknown>>(
   const { vitePluginSsr } = viteConfig
   assertVpsConfig(vitePluginSsr, null)
 }
-
-type DeepRequired<T> = Required<T> & { [K in keyof T]: NonNullable<DeepRequired<T[K]>> }
