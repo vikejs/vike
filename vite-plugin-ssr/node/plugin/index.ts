@@ -7,6 +7,7 @@ import type { Plugin } from 'vite'
 import GlobPlugin from '@brillout/vite-plugin-glob'
 import { assertUsage } from './utils'
 import { buildConfig } from './plugins/buildConfig'
+import { previewConfig } from './plugins/previewConfig'
 import { chainBuildSteps } from './plugins/chainBuildSteps'
 import { devConfig } from './plugins/devConfig'
 import { manifest } from './plugins/manifest'
@@ -28,6 +29,7 @@ function plugin(vpsConfig?: VpsConfig): any {
     generateImportGlobs(),
     devConfig(),
     buildConfig(),
+    previewConfig(),
     chainBuildSteps(),
     ...manifest(),
     packageJsonFile(),
