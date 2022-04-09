@@ -12,7 +12,7 @@
     "p-limit": "^3.1.0",
     "resolve": "^1.22.0",
     "symlink-dir": "^5.0.1",
-    "vite-plugin-dist-importer": "^0.1.4"
+    "vite-plugin-dist-importer": "^0.1.5"
   },
   "scripts": {
     "build": "rm -rf dist/ && tsc --build && pnpm run tsc:tests",
