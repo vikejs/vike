@@ -44,8 +44,8 @@
       "browser": "./dist/esm/client/index.js"
     },
     "./client/router": {
-      "browser": "./dist/esm/client/router/index.js",
-      "node": "./dist/cjs/node/client/router.js"
+      "node": "./dist/cjs/node/client/router.js",
+      "browser": "./dist/esm/client/router/index.js"
     },
     "./cli": {
       "node": "./dist/cjs/node/cli/index.js"
