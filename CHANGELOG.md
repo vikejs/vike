@@ -4,7 +4,6 @@
 ### Bug Fixes
 
 * help esbuild resolve `navigate()` server-side import (fix [#301](https://github.com/brillout/vite-plugin-ssr/issues/301)) ([a03a392](https://github.com/brillout/vite-plugin-ssr/commit/a03a3921a8a4c0b9981c4ae42c6b21bd57bbdd21))
-* typo on craftsmanship ([b8b5522](https://github.com/brillout/vite-plugin-ssr/commit/b8b5522c14e2c13880d8693238da900220c0cb25))
 
 
 
