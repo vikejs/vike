@@ -20,7 +20,7 @@ import { cpus } from 'os'
 import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
-import { assertViteConfig } from './plugin/plugins/config/assertViteConfig'
+import { assertViteConfig } from './plugin/plugins/config/assertConfig'
 
 export { prerender }
 
