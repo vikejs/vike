@@ -28,7 +28,7 @@ function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop
 function hasProp<ObjectType, PropName extends PropertyKey>(obj: ObjectType, prop: PropName, type: string | string[] = 'unknown'): boolean {
   const propExists = typeof obj === 'object' && obj !== null && prop in obj
   if( !propExists ){
-    return false
+    return type === 'undefined'
   }
   if( type === 'unknown' ) {
     return true

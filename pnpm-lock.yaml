@@ -933,7 +933,7 @@ importers:
       resolve: ^1.22.0
       rollup: ^2.68.0
       symlink-dir: ^5.0.1
-      typescript: ^4.5.5
+      typescript: 4.6.3
       vite: ^2.8.4
       vite-plugin-dist-importer: ^0.1.4
     dependencies:
@@ -953,7 +953,7 @@ importers:
       '@types/node': 17.0.19
       '@types/resolve': 1.20.1
       rollup: 2.68.0
-      typescript: 4.5.5
+      typescript: 4.6.3
       vite: 2.8.4
 
 packages:
@@ -12371,6 +12371,12 @@ packages:
     resolution: {integrity: sha512-TCTIul70LyWe6IJWT8QSYeA54WQe8EjQFU4wY52Fasj5UKx88LNYKCgBEHcOMOrFF1rKGbD8v/xcNWVUq9SymA==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+
+  /typescript/4.6.3:
+    resolution: {integrity: sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
 
   /typeson-registry/1.0.0-alpha.39:
     resolution: {integrity: sha512-NeGDEquhw+yfwNhguLPcZ9Oj0fzbADiX4R0WxvoY8nGhy98IbzQy1sezjoEFWOywOboj/DWehI+/aUlRVrJnnw==}
