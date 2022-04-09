@@ -16,17 +16,21 @@ type VpsConfig = {
   disableBuildChaining?: boolean
 }
 
-function assertAndMergeUserInput(fromUserConfig: unknown, fromViteConfig: unknown): VpsConfig {
-  assertVpsConfig(fromUserConfig, (prop: string) => `[vite.config.js][\`ssr({ ${prop} })\`] \`${prop}\``)
-  assertVpsConfig(fromViteConfig, (prop: string) => `vite.config.js#vitePluginSsr.${prop}`)
+function assertAndMergeUserInput(fromPluginOptions: unknown, fromViteConfig: unknown): VpsConfig {
+  assertVpsConfig(
+    fromPluginOptions,
+    (configName: string, configNameInObject: string) =>
+      `[vite.config.js][\`ssr({ ${configNameInObject} })\`] \`${configName}\``,
+  )
+  assertVpsConfig(fromViteConfig, (configName: string) => `vite.config.js#vitePluginSsr.${configName}`)
   const vitePluginSsr: VpsConfig = {}
 
   vitePluginSsr.disableBuildChaining =
-    fromUserConfig.disableBuildChaining ?? fromViteConfig.disableBuildChaining ?? false
+    fromPluginOptions.disableBuildChaining ?? fromViteConfig.disableBuildChaining ?? false
 
   vitePluginSsr.prerender = false
-  if (fromUserConfig.prerender || fromViteConfig.prerender) {
-    const prerenderUserOptions = typeof fromUserConfig.prerender === 'boolean' ? {} : fromUserConfig.prerender ?? {}
+  if (fromPluginOptions.prerender || fromViteConfig.prerender) {
+    const prerenderUserOptions = typeof fromPluginOptions.prerender === 'boolean' ? {} : fromPluginOptions.prerender ?? {}
     const prerenderViteConfig = typeof fromViteConfig.prerender === 'boolean' ? {} : fromViteConfig.prerender ?? {}
     vitePluginSsr.prerender = {
       partial: prerenderUserOptions.partial ?? prerenderViteConfig.partial ?? false,
@@ -36,7 +40,7 @@ function assertAndMergeUserInput(fromUserConfig: unknown, fromViteConfig: unknow
   }
 
   vitePluginSsr.pageFiles = {
-    include: [...(fromUserConfig.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
+    include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
   }
 
   assertVpsConfig(vitePluginSsr, null)
@@ -45,10 +49,10 @@ function assertAndMergeUserInput(fromUserConfig: unknown, fromViteConfig: unknow
 
 function assertVpsConfig(
   vitePluginSsr: unknown,
-  userInputFormat: null | ((prop: string) => string),
+  userInputFormat: null | ((configName: string, configNameInObject: string) => string),
 ): asserts vitePluginSsr is VpsConfig {
   assert(isObject(vitePluginSsr))
-  assertInput(
+  assertConfig(
     'disableBuildChaining',
     'should be a boolean (or undefined)',
     hasProp(vitePluginSsr, 'disableBuildChaining', 'boolean') ||
@@ -59,8 +63,10 @@ function assertVpsConfig(
 
   return
 
-  function assertPrerenderConfig(vitePluginSsr: Record<string, unknown>): asserts vitePluginSsr is Pick<VpsConfig, 'prerender'>{
-    assertInput(
+  function assertPrerenderConfig(
+    vitePluginSsr: Record<string, unknown>,
+  ): asserts vitePluginSsr is Pick<VpsConfig, 'prerender'> {
+    assertConfig(
       'prerender',
       'should be an object or a boolean',
       hasProp(vitePluginSsr, 'prerender', 'object') ||
@@ -70,17 +76,17 @@ function assertVpsConfig(
 
     const prerender = vitePluginSsr.prerender ?? {}
     if (prerender && typeof prerender !== 'boolean') {
-      assertInput(
+      assertConfig(
         'prerender.partial',
         'should be a boolean (or undefined)',
         hasProp(prerender, 'partial', 'undefined') || hasProp(prerender, 'partial', 'boolean'),
       )
-      assertInput(
+      assertConfig(
         'prerender.noExtraDir',
         'should be a boolean (or undefined)',
         hasProp(prerender, 'noExtraDir', 'undefined') || hasProp(prerender, 'noExtraDir', 'boolean'),
       )
-      assertInput(
+      assertConfig(
         'prerender.parallel',
         'should be a number (or undefined)',
         hasProp(prerender, 'parallel', 'undefined') || hasProp(prerender, 'parallel', 'number'),
@@ -88,8 +94,10 @@ function assertVpsConfig(
     }
   }
 
-  function assertPageFilesConfig(vitePluginSsr: Record<string, unknown>): asserts vitePluginSsr is Pick<VpsConfig, 'pageFiles'> {
-    assertInput(
+  function assertPageFilesConfig(
+    vitePluginSsr: Record<string, unknown>,
+  ): asserts vitePluginSsr is Pick<VpsConfig, 'pageFiles'> {
+    assertConfig(
       'pageFiles',
       'should be an object (or undefined)',
       hasProp(vitePluginSsr, 'pageFiles', 'undefined') || hasProp(vitePluginSsr, 'pageFiles', 'object'),
@@ -98,7 +106,7 @@ function assertVpsConfig(
       return
     }
     if (vitePluginSsr.pageFiles?.include !== undefined) {
-      assertInput(
+      assertConfig(
         'pageFiles.include',
         'should be a string array (or undefined)',
         hasProp(vitePluginSsr.pageFiles, 'include', 'string[]'),
@@ -106,11 +114,14 @@ function assertVpsConfig(
     }
   }
 
-  function assertInput(prop: string, errMsg: string, condition: boolean): asserts condition {
+  function assertConfig(configName: string, errMsg: string, condition: boolean): asserts condition {
     if (!userInputFormat) {
       assert(condition)
     } else {
-      assertUsage(condition, `${userInputFormat(prop)} ${errMsg}`)
+      const configPath = configName.split('.')
+      assert(configPath.length <= 2)
+      const configNameInObject = configPath.length === 2 ? `${configPath[0]}: { ${configPath[1]} }` : configName
+      assertUsage(condition, `${userInputFormat(configName, configNameInObject)} ${errMsg}`)
     }
   }
 }
