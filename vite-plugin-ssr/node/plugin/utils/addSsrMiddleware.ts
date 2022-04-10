@@ -13,7 +13,8 @@ function addSsrMiddleware(middlewares: ConnectServer) {
       const pageContextInit = { url }
       const pageContext = await renderPage(pageContextInit)
       if (!pageContext.httpResponse) return next()
-      const { body, statusCode, contentType } = pageContext.httpResponse
+      const body = await pageContext.httpResponse.getBody()
+      const { statusCode, contentType } = pageContext.httpResponse
       res.setHeader('Content-Type', contentType)
       res.statusCode = statusCode
       res.end(body)
