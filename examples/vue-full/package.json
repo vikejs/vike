@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "start": "npm run dev",
     "dev": "ts-node ./server",
     "prod": "npm run build && npm run prod:serve",
     "// Build for production": "",

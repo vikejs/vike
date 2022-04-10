@@ -3,7 +3,7 @@ import mdx from '@mdx-js/rollup'
 import ssr from 'vite-plugin-ssr/plugin'
 import { UserConfig } from 'vite'
 
-const config: UserConfig = {
+export default {
   plugins: [
     react(),
     mdx(),
@@ -18,6 +18,15 @@ const config: UserConfig = {
     },
   },
   optimizeDeps: { include: ['react/jsx-runtime.js'] },
-}
+  ...serverConfig(),
+} as UserConfig
 
-export default config
+function serverConfig() {
+  const port = 3000
+  // Needed for vite-plugin-ssr's CI
+  const host = process.env.CI && process.platform === 'darwin'
+  return {
+    preview: { port, host },
+    server: { port, host },
+  }
+}
