@@ -41,6 +41,11 @@
     "========= Only allow pnpm; forbid yarn & npm": "",
     "preinstall": "npx only-allow pnpm"
   },
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:@brillout/vite@2.9.2-pre-release.0"
+    }
+  },
   "dependencies": {
     "@brillout/submodule-init": "0.1.2"
   }

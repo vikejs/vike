@@ -1,5 +1,8 @@
 lockfileVersion: 5.3
 
+overrides:
+  vite: npm:@brillout/vite@2.9.2-pre-release.0
+
 importers:
 
   .:
@@ -26,8 +29,8 @@ importers:
       express: ^4.17.3
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
-      vite-plugin-ssr: ^0.3.64
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
+      vite-plugin-ssr: ^0.3.62
     dependencies:
       '@vitejs/plugin-react': 1.2.0
       compression: 1.7.4
@@ -35,7 +38,7 @@ importers:
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-react-ts:
@@ -53,7 +56,7 @@ importers:
       react-dom: ^17.0.2
       ts-node: ^10.5.0
       typescript: ^4.5.5
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: ^0.3.64
     dependencies:
       '@types/compression': 1.7.2
@@ -69,7 +72,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-vue:
@@ -80,17 +83,17 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.17.3
-      vite: ^2.8.4
-      vite-plugin-ssr: ^0.3.64
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
+      vite-plugin-ssr: ^0.3.62
       vue: ^3.2.31
     dependencies:
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.17.3
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
 
@@ -107,14 +110,14 @@ importers:
       express: ^4.17.3
       ts-node: ^10.5.0
       typescript: ^4.5.5
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: ^0.3.64
       vue: ^3.2.31
     dependencies:
       '@types/compression': 1.7.2
       '@types/express': 4.17.13
       '@types/node': 17.0.19
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       compression: 1.7.4
@@ -122,7 +125,7 @@ importers:
       express: 4.17.3
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
 
@@ -137,7 +140,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
     dependencies:
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@types/node': 15.14.9
@@ -148,7 +151,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.5.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
 
   examples/base-url:
     specifiers:
@@ -158,7 +161,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       rimraf: ^3.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -167,7 +170,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       rimraf: 3.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/base-url-cdn:
@@ -180,7 +183,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       rimraf: ^3.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -191,7 +194,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       rimraf: 3.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/cloudflare-workers:
@@ -204,7 +207,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -215,7 +218,7 @@ importers:
       node-fetch: 2.6.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/cloudflare-workers-esbuild:
@@ -230,7 +233,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -243,7 +246,7 @@ importers:
       node-fetch: 2.6.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/cloudflare-workers-vue-html-streaming:
@@ -255,19 +258,19 @@ importers:
       '@vue/server-renderer': ^3.2.31
       express: ^4.17.3
       miniflare: ^1.4.1
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
       vue: ^3.2.31
       webpack: ^4.46.0
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@cloudflare/wrangler': 1.19.8
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       express: 4.17.3
       miniflare: 1.4.1
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
       webpack: 4.46.0
@@ -279,7 +282,7 @@ importers:
       express: ^4.17.3
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -287,7 +290,7 @@ importers:
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/file-structure-domain-driven:
@@ -299,7 +302,7 @@ importers:
       react-dom: ^17.0.2
       rimraf: ^3.0.2
       serve: ^13.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -309,7 +312,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       rimraf: 3.0.2
       serve: 13.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/framework/app:
@@ -330,13 +333,13 @@ importers:
       '@vitejs/plugin-react': ^1.2.0
       express: ^4.17.3
       typescript: ^4.5.5
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.62
     dependencies:
       '@vitejs/plugin-react': 1.2.0
       express: 4.17.3
-      vite: 2.8.4
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-ssr: 0.3.62_00ec064805a6a4b126c47c3d72edd816
     devDependencies:
       '@types/node': 17.0.23
       '@types/react': 17.0.39
@@ -352,7 +355,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@apollo/client': 3.5.9_graphql@16.3.0+react@17.0.2
@@ -362,19 +365,19 @@ importers:
       node-fetch: 2.6.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/html-fragments:
     specifiers:
       express: ^4.17.3
       typescript: ^4.5.5
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       express: 4.17.3
       typescript: 4.5.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n:
@@ -383,14 +386,14 @@ importers:
       express: ^4.17.3
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n-prerender:
@@ -401,7 +404,7 @@ importers:
       react-dom: ^17.0.2
       rimraf: ^3.0.2
       serve: ^13.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -410,7 +413,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       rimraf: 3.0.2
       serve: 13.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/path-aliases:
@@ -427,7 +430,7 @@ importers:
       serve: ^13.0.2
       ts-node: ^10.5.0
       typescript: ^4.5.5
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@types/express': 4.17.13
@@ -442,7 +445,7 @@ importers:
       serve: 13.0.2
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/preact-client-routing:
@@ -455,18 +458,18 @@ importers:
       express: ^4.17.3
       preact: ^10.6.6
       preact-render-to-string: ^5.1.20
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@babel/core': 7.17.5
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
-      '@preact/preset-vite': 2.1.7_698d816b37024fcdfcf21e366e54063a
+      '@preact/preset-vite': 2.1.7_a4382d17f17046dd9031eaa815b6a658
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.17.3
       preact: 10.6.6
       preact-render-to-string: 5.1.20_preact@10.6.6
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/preact-server-routing:
@@ -479,18 +482,18 @@ importers:
       express: ^4.17.3
       preact: ^10.6.6
       preact-render-to-string: ^5.1.20
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@babel/core': 7.17.5
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
-      '@preact/preset-vite': 2.1.7_698d816b37024fcdfcf21e366e54063a
+      '@preact/preset-vite': 2.1.7_a4382d17f17046dd9031eaa815b6a658
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.17.3
       preact: 10.6.6
       preact-render-to-string: 5.1.20_preact@10.6.6
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react:
@@ -500,7 +503,7 @@ importers:
       express: ^4.17.3
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -508,7 +511,7 @@ importers:
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-full:
@@ -528,11 +531,11 @@ importers:
       rimraf: ^3.0.2
       serve: ^13.0.2
       typescript: ^4.5.5
-      vite: ^2.8.4
-      vite-plugin-ssr: 0.3.64
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
+      vite-plugin-ssr: 0.3.62
     dependencies:
       '@mdx-js/mdx': 2.0.0
-      '@mdx-js/react': 2.0.0_e32785dbcafa2fde92a71a8f50f52ce6
+      '@mdx-js/react': 2.0.0_react@18.0.0
       '@mdx-js/rollup': 2.0.0
       '@types/express': 4.17.13
       '@types/node': 17.0.19
@@ -541,13 +544,13 @@ importers:
       cross-fetch: 3.1.5
       express: 4.17.3
       node-fetch: 2.6.7
-      react: 18.0.0-rc.0-next-fe905f152-20220107
-      react-dom: 18.0.0-rc.0-next-fe905f152-20220107_e32785dbcafa2fde92a71a8f50f52ce6
+      react: 18.0.0
+      react-dom: 18.0.0_react@18.0.0
       rimraf: 3.0.2
       serve: 13.0.2
       typescript: 4.5.5
-      vite: 2.8.4
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-ssr: 0.3.62_00ec064805a6a4b126c47c3d72edd816
 
   examples/react-router:
     specifiers:
@@ -557,7 +560,7 @@ importers:
       react-dom: ^17.0.2
       react-router: ^5.2.1
       react-router-dom: ^5.3.0
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -566,7 +569,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/redux:
@@ -577,7 +580,7 @@ importers:
       react-dom: ^17.0.2
       react-redux: ^7.2.6
       redux: ^4.1.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -586,7 +589,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
       redux: 4.1.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/render-modes:
@@ -596,7 +599,7 @@ importers:
       express: ^4.17.3
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.62
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -604,8 +607,8 @@ importers:
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.8.4
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-ssr: 0.3.62_00ec064805a6a4b126c47c3d72edd816
 
   examples/renderer/app:
     specifiers:
@@ -615,7 +618,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       renderer: link:../renderer
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.62
     dependencies:
       '@vitejs/plugin-react': 1.2.0
@@ -624,8 +627,8 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       renderer: link:../renderer
-      vite: 2.8.4
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-ssr: 0.3.62_00ec064805a6a4b126c47c3d72edd816
 
   examples/renderer/renderer:
     specifiers:
@@ -639,7 +642,7 @@ importers:
       '@types/react': 17.0.39
       '@types/react-dom': 17.0.11
       typescript: 4.5.5
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
+      vite-plugin-ssr: 0.3.62
 
   examples/solid:
     specifiers:
@@ -650,7 +653,7 @@ importers:
       solid-js: ^1.1.0
       ts-node: ^9.1.1
       typescript: ^4.3.2
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-solid: ^2.0.1
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -661,7 +664,7 @@ importers:
       solid-js: 1.3.5
       ts-node: 9.1.1_typescript@4.5.5
       typescript: 4.5.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-solid: 2.2.5
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -683,7 +686,7 @@ importers:
       ts-node: ^10.5.0
       typescript: ^4.5.5
       urql: ^2.1.3
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@types/express': 4.17.13
@@ -702,7 +705,7 @@ importers:
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
       urql: 2.1.3_graphql@16.3.0+react@17.0.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/vercel:
@@ -713,17 +716,17 @@ importers:
       '@vue/server-renderer': ^3.2.24
       esbuild: ^0.13.12
       express: ^4.17.1
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
       vue: ^3.2.24
     dependencies:
       '@vercel/ncc': 0.32.0
-      '@vitejs/plugin-vue': 1.10.2_vite@2.8.4
+      '@vitejs/plugin-vue': 1.10.2_00ec064805a6a4b126c47c3d72edd816
       '@vue/compiler-sfc': 3.2.29
       '@vue/server-renderer': 3.2.29_vue@3.2.29
       esbuild: 0.13.15
       express: 4.17.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.29
 
@@ -734,16 +737,16 @@ importers:
       '@vue/server-renderer': ^3.2.31
       cross-env: ^7.0.3
       express: ^4.17.3
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
       vue: ^3.2.31
     dependencies:
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       cross-env: 7.0.3
       express: 4.17.3
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
 
@@ -762,15 +765,15 @@ importers:
       serve: ^13.0.2
       ts-node: ^10.5.0
       typescript: ^4.5.5
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-md: ^0.11.8
-      vite-plugin-ssr: 0.3.64
+      vite-plugin-ssr: 0.3.62
       vue: 3.2.31
     dependencies:
       '@types/express': 4.17.13
       '@types/node': 17.0.19
       '@types/node-fetch': 2.5.12
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       cross-fetch: 3.1.5
@@ -780,9 +783,9 @@ importers:
       serve: 13.0.2
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
-      vite: 2.8.4
-      vite-plugin-md: 0.11.8_vite@2.8.4
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-md: 0.11.8_00ec064805a6a4b126c47c3d72edd816
+      vite-plugin-ssr: 0.3.62_00ec064805a6a4b126c47c3d72edd816
       vue: 3.2.31
 
   examples/vue-router:
@@ -791,16 +794,16 @@ importers:
       '@vue/compiler-sfc': ^3.2.31
       '@vue/server-renderer': ^3.2.31
       express: ^4.17.3
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
       vue: ^3.2.31
       vue-router: ^4.0.12
     dependencies:
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       express: 4.17.3
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
       vue-router: 4.0.12_vue@3.2.31
@@ -811,16 +814,16 @@ importers:
       '@vue/compiler-sfc': ^3.2.31
       '@vue/server-renderer': ^3.2.31
       express: ^4.17.3
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
       vue: ^3.2.31
       vuex: ^4.0.2
     dependencies:
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vitejs/plugin-vue': 2.2.2_344c0dae3b6a69586decbe20b438df6b
       '@vue/compiler-sfc': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       express: 4.17.3
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
       vuex: 4.0.2_vue@3.2.31
@@ -843,7 +846,7 @@ importers:
       shiki: ^0.10.1
       twemoji: ^13.1.0
       typescript: ^4.5.4
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-mdx: ^3.5.6
       vite-plugin-ssr: '*'
     dependencies:
@@ -863,8 +866,8 @@ importers:
       shiki: 0.10.1
       twemoji: 13.1.0
       typescript: 4.5.5
-      vite: 2.8.4
-      vite-plugin-mdx: 3.5.10_@mdx-js+mdx@2.0.0+vite@2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-mdx: 3.5.10_5f2ef0dae419b868826d6586dfdd4c5a
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   libframe/scripts:
@@ -898,7 +901,6 @@ importers:
       kolorist: ^1.4.1
       node-fetch: ^2.6.1
       playwright-chromium: ^1.11.1
-      strip-ansi: ^6.0.1
       ts-jest: ^27.1.3
       ts-node: ^9.1.1
       typescript: ^4.5.4
@@ -912,7 +914,6 @@ importers:
       kolorist: 1.5.1
       node-fetch: 2.6.7
       playwright-chromium: 1.18.1
-      strip-ansi: 6.0.1
       ts-jest: 27.1.3_1e2406a8ca2ae3dc934d01f9ee2aebbb
       ts-node: 9.1.1_typescript@4.5.5
       typescript: 4.5.5
@@ -933,7 +934,7 @@ importers:
       rollup: ^2.68.0
       symlink-dir: ^5.0.1
       typescript: 4.6.3
-      vite: ^2.8.4
+      vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-dist-importer: ^0.1.5
       vite-plugin-glob: ^0.2.6
     dependencies:
@@ -946,7 +947,7 @@ importers:
       p-limit: 3.1.0
       resolve: 1.22.0
       symlink-dir: 5.0.1
-      vite-plugin-dist-importer: 0.1.5
+      vite-plugin-dist-importer: 0.1.8
       vite-plugin-glob: 0.2.6
     devDependencies:
       '@types/jest': 27.4.1
@@ -954,7 +955,7 @@ importers:
       '@types/resolve': 1.20.1
       rollup: 2.68.0
       typescript: 4.6.3
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
 
 packages:
 
@@ -1686,11 +1687,9 @@ packages:
 
   /@brillout/json-s/0.4.3:
     resolution: {integrity: sha512-JIQTfsEh+c5mpk4QeliioqO+CtE5PM80GEzCfbD8ZUbPmnwqMaDXoFxrZM+Io1Fi/DyBEFDXKa2FgqJm6dSNrQ==}
-    dev: false
 
   /@brillout/libassert/0.5.4:
     resolution: {integrity: sha512-ayIUIOFM98wqgMnCquDlzENRBLmJ82hsKnosaaG2U4+ijUVwi1E2LzD0TwhAC8G7vBqp0BbT172mfTXBVMIw5A==}
-    dev: false
 
   /@brillout/part-regex/0.1.2:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
@@ -1700,6 +1699,29 @@ packages:
     resolution: {integrity: sha512-rfmmKGvFQkwnPFnr2bMwqvXBQa52bw24iuZgPOWrueHziTm7fHThnsb/p22EC+mLFEPhPeGj/A8A4CrFgfA80Q==}
     hasBin: true
     dev: false
+
+  /@brillout/vite/2.9.2-pre-release.0:
+    resolution: {integrity: sha512-v3XggIO3xNE6ROjMoEL3YpRlJvSjr9EuMKzYUbIwvmE1tdyYnnxP0VVH3BMu5gQyTrgNk/IwJfpubEcuXOA+oQ==}
+    engines: {node: '>=12.2.0'}
+    hasBin: true
+    peerDependencies:
+      less: '*'
+      sass: '*'
+      stylus: '*'
+    peerDependenciesMeta:
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+    dependencies:
+      esbuild: 0.14.27
+      postcss: 8.4.12
+      resolve: 1.22.0
+      rollup: 2.68.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   /@cloudflare/kv-asset-handler/0.2.0:
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
@@ -2031,16 +2053,6 @@ packages:
       react: 17.0.2
     dev: false
 
-  /@mdx-js/react/2.0.0_e32785dbcafa2fde92a71a8f50f52ce6:
-    resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
-    peerDependencies:
-      react: '>=16'
-    dependencies:
-      '@types/mdx': 2.0.1
-      '@types/react': 17.0.39
-      react: 18.0.0-rc.0-next-fe905f152-20220107
-    dev: false
-
   /@mdx-js/react/2.0.0_react@17.0.2:
     resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
     peerDependencies:
@@ -2049,6 +2061,16 @@ packages:
       '@types/mdx': 2.0.1
       '@types/react': 17.0.39
       react: 17.0.2
+    dev: false
+
+  /@mdx-js/react/2.0.0_react@18.0.0:
+    resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@types/mdx': 2.0.1
+      '@types/react': 17.0.39
+      react: 18.0.0
     dev: false
 
   /@mdx-js/rollup/2.0.0:
@@ -2223,12 +2245,10 @@ packages:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
       run-parallel: 1.2.0
-    dev: false
 
   /@nodelib/fs.stat/2.0.5:
     resolution: {integrity: sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A==}
     engines: {node: '>= 8'}
-    dev: false
 
   /@nodelib/fs.walk/1.2.8:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
@@ -2236,7 +2256,6 @@ packages:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
-    dev: false
 
   /@npmcli/fs/1.1.0:
     resolution: {integrity: sha512-VhP1qZLXcrXRIaPoqb4YA55JQxLNF3jNR4T55IdOJa3+IFJKNYHtPvtXx8slmeMavj37vCzCfrqQM1vWLsYKLA==}
@@ -2322,7 +2341,7 @@ packages:
       webcrypto-core: 1.4.0
     dev: false
 
-  /@preact/preset-vite/2.1.7_698d816b37024fcdfcf21e366e54063a:
+  /@preact/preset-vite/2.1.7_a4382d17f17046dd9031eaa815b6a658:
     resolution: {integrity: sha512-/Ii+aN1Jm8TK5YzDVrj5UOVRZ91F2Nik1P3FbmZyQ5VJAg1ZCkOBBkmLrz9YhiMbbGl+U35yaZNUDMcO8Xlp2g==}
     peerDependencies:
       '@babel/core': 7.x
@@ -2330,13 +2349,13 @@ packages:
     dependencies:
       '@babel/core': 7.17.5
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
-      '@prefresh/vite': 2.2.6_preact@10.6.6+vite@2.8.4
+      '@prefresh/vite': 2.2.6_109c4cd591ab370702ff735aee60bb8c
       '@rollup/pluginutils': 4.1.2
       babel-plugin-transform-hook-names: 1.0.2_@babel+core@7.17.5
       debug: 4.3.3
       kolorist: 1.5.1
       resolve: 1.22.0
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -2358,7 +2377,7 @@ packages:
     resolution: {integrity: sha512-MUhT5m2XNN5NsZl4GnpuvlzLo6VSTa/+wBfBd3fiWUvHGhv0GF9hnA1pd//v0uJaKwUnVRQ1hYElxCV7DtYsCQ==}
     dev: false
 
-  /@prefresh/vite/2.2.6_preact@10.6.6+vite@2.8.4:
+  /@prefresh/vite/2.2.6_109c4cd591ab370702ff735aee60bb8c:
     resolution: {integrity: sha512-Q5i15C27NanIPzimkvBuzImebCxeQS6p8OyyH2QpNKS/HGsm7WpnyCzgMkIsidnmMHY59qllKwF01TWpq9IeGA==}
     peerDependencies:
       preact: ^10.4.0
@@ -2370,7 +2389,7 @@ packages:
       '@prefresh/utils': 1.1.1
       '@rollup/pluginutils': 4.1.2
       preact: 10.6.6
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2790,23 +2809,23 @@ packages:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-vue/1.10.2_vite@2.8.4:
+  /@vitejs/plugin-vue/1.10.2_00ec064805a6a4b126c47c3d72edd816:
     resolution: {integrity: sha512-/QJ0Z9qfhAFtKRY+r57ziY4BSbGUTGsPRMpB/Ron3QPwBZM4OZAZHdTa4a8PafCwU5DTatXG8TMDoP8z+oDqJw==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
     dependencies:
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
     dev: false
 
-  /@vitejs/plugin-vue/2.2.2_vite@2.8.4+vue@3.2.31:
+  /@vitejs/plugin-vue/2.2.2_344c0dae3b6a69586decbe20b438df6b:
     resolution: {integrity: sha512-3C0s45VOwIFEDU+2ownJOpb0zD5fnjXWaHVOLID2R1mYOlAx3doNBFnNbVjaZvpke/L7IdPJXjpyYpXZToDKig==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
       vue: ^3.2.25
     dependencies:
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
       vue: 3.2.31
     dev: false
 
@@ -3786,7 +3805,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       fill-range: 7.0.1
-    dev: false
 
   /brorand/1.1.0:
     resolution: {integrity: sha1-EsJe/kCkXjwyPrhnWgoM5XsiNx8=}
@@ -3929,7 +3947,6 @@ packages:
   /cac/6.7.12:
     resolution: {integrity: sha512-rM7E2ygtMkJqD9c7WnFU6fruFcN3xe4FM5yUmgxhZzIKJk4uHl9U/fhwdajGFQbQuv43FAUo1Fe8gX/oIKDeSA==}
     engines: {node: '>=8'}
-    dev: false
 
   /cacache/12.0.4:
     resolution: {integrity: sha512-a0tMB40oefvuInr4Cwb3GerbL9xTj1D5yg0T5xrjGCGyfvbxseIXX7BAO/u/hIXdafzOI5JC3wDwHyf24buOAQ==}
@@ -5193,7 +5210,6 @@ packages:
 
   /es-module-lexer/0.10.0:
     resolution: {integrity: sha512-0fHYovx7ETE13wPL8zG/V+ElEgSeSwsgRVOvNZ+g/Y/2YyJq75+IEY4ZBr59vUZ3Voci1jBIktwpj8oODaWa+g==}
-    dev: false
 
   /es6-error/4.1.1:
     resolution: {integrity: sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==}
@@ -5205,7 +5221,6 @@ packages:
     cpu: [x64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-android-arm64/0.13.15:
@@ -5224,21 +5239,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-android-arm64/0.14.21:
-    resolution: {integrity: sha512-Bqgld1TY0wZv8TqiQmVxQFgYzz8ZmyzT7clXBDZFkOOdRybzsnj8AZuK1pwcLVA7Ya6XncHgJqIao7NFd3s0RQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [android]
-    requiresBuild: true
-    optional: true
-
   /esbuild-android-arm64/0.14.27:
     resolution: {integrity: sha512-E8Ktwwa6vX8q7QeJmg8yepBYXaee50OdQS3BFtEHKrzbV45H4foMOeEE7uqdjGQZFBap5VAqo7pvjlyA92wznQ==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [android]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-darwin-64/0.13.15:
@@ -5257,21 +5263,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-darwin-64/0.14.21:
-    resolution: {integrity: sha512-j+Eg+e13djzyYINVvAbOo2/zvZ2DivuJJTaBrJnJHSD7kUNuGHRkHoSfFjbI80KHkn091w350wdmXDNSgRjfYQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    optional: true
-
   /esbuild-darwin-64/0.14.27:
     resolution: {integrity: sha512-czw/kXl/1ZdenPWfw9jDc5iuIYxqUxgQ/Q+hRd4/3udyGGVI31r29LCViN2bAJgGvQkqyLGVcG03PJPEXQ5i2g==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-darwin-arm64/0.13.15:
@@ -5290,21 +5287,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-darwin-arm64/0.14.21:
-    resolution: {integrity: sha512-nDNTKWDPI0RuoPj5BhcSB2z5EmZJJAyRtZLIjyXSqSpAyoB8eyAKXl4lB8U2P78Fnh4Lh1le/fmpewXE04JhBQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    optional: true
-
   /esbuild-darwin-arm64/0.14.27:
     resolution: {integrity: sha512-BEsv2U2U4o672oV8+xpXNxN9bgqRCtddQC6WBh4YhXKDcSZcdNh7+6nS+DM2vu7qWIWNA4JbRG24LUUYXysimQ==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-freebsd-64/0.13.15:
@@ -5323,21 +5311,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-freebsd-64/0.14.21:
-    resolution: {integrity: sha512-zIurkCHXhxELiDZtLGiexi8t8onQc2LtuE+S7457H/pP0g0MLRKMrsn/IN4LDkNe6lvBjuoZZi2OfelOHn831g==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
-    optional: true
-
   /esbuild-freebsd-64/0.14.27:
     resolution: {integrity: sha512-7FeiFPGBo+ga+kOkDxtPmdPZdayrSzsV9pmfHxcyLKxu+3oTcajeZlOO1y9HW+t5aFZPiv7czOHM4KNd0tNwCA==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [freebsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-freebsd-arm64/0.13.15:
@@ -5356,21 +5335,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-freebsd-arm64/0.14.21:
-    resolution: {integrity: sha512-wdxMmkJfbwcN+q85MpeUEamVZ40FNsBa9mPq8tAszDn8TRT2HoJvVRADPIIBa9SWWwlDChIMjkDKAnS3KS/sPA==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [freebsd]
-    requiresBuild: true
-    optional: true
-
   /esbuild-freebsd-arm64/0.14.27:
     resolution: {integrity: sha512-8CK3++foRZJluOWXpllG5zwAVlxtv36NpHfsbWS7TYlD8S+QruXltKlXToc/5ZNzBK++l6rvRKELu/puCLc7jA==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-32/0.13.15:
@@ -5389,21 +5359,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-linux-32/0.14.21:
-    resolution: {integrity: sha512-fmxvyzOPPh2xiEHojpCeIQP6pXcoKsWbz3ryDDIKLOsk4xp3GbpHIEAWP0xTeuhEbendmvBDVKbAVv3PnODXLg==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-32/0.14.27:
     resolution: {integrity: sha512-qhNYIcT+EsYSBClZ5QhLzFzV5iVsP1YsITqblSaztr3+ZJUI+GoK8aXHyzKd7/CKKuK93cxEMJPpfi1dfsOfdw==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-64/0.13.15:
@@ -5422,21 +5383,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-linux-64/0.14.21:
-    resolution: {integrity: sha512-edZyNOv1ql+kpmlzdqzzDjRQYls+tSyi4QFi+PdBhATJFUqHsnNELWA9vMSzAaInPOEaVUTA5Ml28XFChcy4DA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-64/0.14.27:
     resolution: {integrity: sha512-ESjck9+EsHoTaKWlFKJpPZRN26uiav5gkI16RuI8WBxUdLrrAlYuYSndxxKgEn1csd968BX/8yQZATYf/9+/qg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-arm/0.13.15:
@@ -5455,21 +5407,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-linux-arm/0.14.21:
-    resolution: {integrity: sha512-aSU5pUueK6afqmLQsbU+QcFBT62L+4G9hHMJDHWfxgid6hzhSmfRH9U/f+ymvxsSTr/HFRU4y7ox8ZyhlVl98w==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-arm/0.14.27:
     resolution: {integrity: sha512-JnnmgUBdqLQO9hoNZQqNHFWlNpSX82vzB3rYuCJMhtkuaWQEmQz6Lec1UIxJdC38ifEghNTBsF9bbe8dFilnCw==}
     engines: {node: '>=12'}
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-arm64/0.13.15:
@@ -5488,21 +5431,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-linux-arm64/0.14.21:
-    resolution: {integrity: sha512-t5qxRkq4zdQC0zXpzSB2bTtfLgOvR0C6BXYaRE/6/k8/4SrkZcTZBeNu+xGvwCU4b5dU9ST9pwIWkK6T1grS8g==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-arm64/0.14.27:
     resolution: {integrity: sha512-no6Mi17eV2tHlJnqBHRLekpZ2/VYx+NfGxKcBE/2xOMYwctsanCaXxw4zapvNrGE9X38vefVXLz6YCF8b1EHiQ==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-mips64le/0.13.15:
@@ -5521,21 +5455,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-linux-mips64le/0.14.21:
-    resolution: {integrity: sha512-jLZLQGCNlUsmIHtGqNvBs3zN+7a4D9ckf0JZ+jQTwHdZJ1SgV9mAjbB980OFo66LoY+WeM7t3WEnq3FjI1zw4A==}
-    engines: {node: '>=12'}
-    cpu: [mips64el]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-mips64le/0.14.27:
     resolution: {integrity: sha512-NolWP2uOvIJpbwpsDbwfeExZOY1bZNlWE/kVfkzLMsSgqeVcl5YMen/cedRe9mKnpfLli+i0uSp7N+fkKNU27A==}
     engines: {node: '>=12'}
     cpu: [mips64el]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-linux-ppc64le/0.13.15:
@@ -5554,27 +5479,10 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-linux-ppc64le/0.14.21:
-    resolution: {integrity: sha512-4TWxpK391en2UBUw6GSrukToTDu6lL9vkm3Ll40HrI08WG3qcnJu7bl8e1+GzelDsiw1QmfAY/nNvJ6iaHRpCQ==}
-    engines: {node: '>=12'}
-    cpu: [ppc64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-ppc64le/0.14.27:
     resolution: {integrity: sha512-/7dTjDvXMdRKmsSxKXeWyonuGgblnYDn0MI1xDC7J1VQXny8k1qgNp6VmrlsawwnsymSUUiThhkJsI+rx0taNA==}
     engines: {node: '>=12'}
     cpu: [ppc64]
-    os: [linux]
-    requiresBuild: true
-    dev: false
-    optional: true
-
-  /esbuild-linux-riscv64/0.14.21:
-    resolution: {integrity: sha512-fElngqOaOfTsF+u+oetDLHsPG74vB2ZaGZUqmGefAJn3a5z9Z2pNa4WpVbbKgHpaAAy5tWM1m1sbGohj6Ki6+Q==}
-    engines: {node: '>=12'}
-    cpu: [riscv64]
     os: [linux]
     requiresBuild: true
     optional: true
@@ -5585,15 +5493,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: false
-    optional: true
-
-  /esbuild-linux-s390x/0.14.21:
-    resolution: {integrity: sha512-brleZ6R5fYv0qQ7ZBwenQmP6i9TdvJCB092c/3D3pTLQHBGHJb5zWgKxOeS7bdHzmLy6a6W7GbFk6QKpjyD6QA==}
-    engines: {node: '>=12'}
-    cpu: [s390x]
-    os: [linux]
-    requiresBuild: true
     optional: true
 
   /esbuild-linux-s390x/0.14.27:
@@ -5602,7 +5501,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-netbsd-64/0.13.15:
@@ -5621,21 +5519,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-netbsd-64/0.14.21:
-    resolution: {integrity: sha512-nCEgsLCQ8RoFWVV8pVI+kX66ICwbPP/M9vEa0NJGIEB/Vs5sVGMqkf67oln90XNSkbc0bPBDuo4G6FxlF7PN8g==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [netbsd]
-    requiresBuild: true
-    optional: true
-
   /esbuild-netbsd-64/0.14.27:
     resolution: {integrity: sha512-h3mAld69SrO1VoaMpYl3a5FNdGRE/Nqc+E8VtHOag4tyBwhCQXxtvDDOAKOUQexBGca0IuR6UayQ4ntSX5ij1Q==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [netbsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-openbsd-64/0.13.15:
@@ -5654,21 +5543,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-openbsd-64/0.14.21:
-    resolution: {integrity: sha512-h9zLMyVD0T73MDTVYIb/qUTokwI6EJH9O6wESuTNq6+XpMSr6C5aYZ4fvFKdNELW+Xsod+yDS2hV2JTUAbFrLA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [openbsd]
-    requiresBuild: true
-    optional: true
-
   /esbuild-openbsd-64/0.14.27:
     resolution: {integrity: sha512-xwSje6qIZaDHXWoPpIgvL+7fC6WeubHHv18tusLYMwL+Z6bEa4Pbfs5IWDtQdHkArtfxEkIZz77944z8MgDxGw==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [openbsd]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-sunos-64/0.13.15:
@@ -5687,21 +5567,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-sunos-64/0.14.21:
-    resolution: {integrity: sha512-Kl+7Cot32qd9oqpLdB1tEGXEkjBlijrIxMJ0+vlDFaqsODutif25on0IZlFxEBtL2Gosd4p5WCV1U7UskNQfXA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [sunos]
-    requiresBuild: true
-    optional: true
-
   /esbuild-sunos-64/0.14.27:
     resolution: {integrity: sha512-/nBVpWIDjYiyMhuqIqbXXsxBc58cBVH9uztAOIfWShStxq9BNBik92oPQPJ57nzWXRNKQUEFWr4Q98utDWz7jg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [sunos]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-windows-32/0.13.15:
@@ -5720,21 +5591,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-windows-32/0.14.21:
-    resolution: {integrity: sha512-V7vnTq67xPBUCk/9UtlolmQ798Ecjdr1ZoI1vcSgw7M82aSSt0eZdP6bh5KAFZU8pxDcx3qoHyWQfHYr11f22A==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
   /esbuild-windows-32/0.14.27:
     resolution: {integrity: sha512-Q9/zEjhZJ4trtWhFWIZvS/7RUzzi8rvkoaS9oiizkHTTKd8UxFwn/Mm2OywsAfYymgUYm8+y2b+BKTNEFxUekw==}
     engines: {node: '>=12'}
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-windows-64/0.13.15:
@@ -5753,21 +5615,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-windows-64/0.14.21:
-    resolution: {integrity: sha512-kDgHjKOHwjfJDCyRGELzVxiP/RBJBTA+wyspf78MTTJQkyPuxH2vChReNdWc+dU2S4gIZFHMdP1Qrl/k22ZmaA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
   /esbuild-windows-64/0.14.27:
     resolution: {integrity: sha512-b3y3vTSl5aEhWHK66ngtiS/c6byLf6y/ZBvODH1YkBM+MGtVL6jN38FdHUsZasCz9gFwYs/lJMVY9u7GL6wfYg==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild-windows-arm64/0.13.15:
@@ -5786,21 +5639,12 @@ packages:
     dev: false
     optional: true
 
-  /esbuild-windows-arm64/0.14.21:
-    resolution: {integrity: sha512-8Sbo0zpzgwWrwjQYLmHF78f7E2xg5Ve63bjB2ng3V2aManilnnTGaliq2snYg+NOX60+hEvJHRdVnuIAHW0lVw==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
   /esbuild-windows-arm64/0.14.27:
     resolution: {integrity: sha512-I/reTxr6TFMcR5qbIkwRGvldMIaiBu2+MP0LlD7sOlNXrfqIl9uNjsuxFPGEG4IRomjfQ5q8WT+xlF/ySVkqKg==}
     engines: {node: '>=12'}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /esbuild/0.13.15:
@@ -5851,32 +5695,6 @@ packages:
       esbuild-windows-arm64: 0.13.8
     dev: false
 
-  /esbuild/0.14.21:
-    resolution: {integrity: sha512-7WEoNMBJdLN993dr9h0CpFHPRc3yFZD+EAVY9lg6syJJ12gc5fHq8d75QRExuhnMkT2DaRiIKFThRvDWP+fO+A==}
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    optionalDependencies:
-      esbuild-android-arm64: 0.14.21
-      esbuild-darwin-64: 0.14.21
-      esbuild-darwin-arm64: 0.14.21
-      esbuild-freebsd-64: 0.14.21
-      esbuild-freebsd-arm64: 0.14.21
-      esbuild-linux-32: 0.14.21
-      esbuild-linux-64: 0.14.21
-      esbuild-linux-arm: 0.14.21
-      esbuild-linux-arm64: 0.14.21
-      esbuild-linux-mips64le: 0.14.21
-      esbuild-linux-ppc64le: 0.14.21
-      esbuild-linux-riscv64: 0.14.21
-      esbuild-linux-s390x: 0.14.21
-      esbuild-netbsd-64: 0.14.21
-      esbuild-openbsd-64: 0.14.21
-      esbuild-sunos-64: 0.14.21
-      esbuild-windows-32: 0.14.21
-      esbuild-windows-64: 0.14.21
-      esbuild-windows-arm64: 0.14.21
-
   /esbuild/0.14.27:
     resolution: {integrity: sha512-MZQt5SywZS3hA9fXnMhR22dv0oPGh6QtjJRIYbgL1AeqAoQZE+Qn5ppGYQAoHv/vq827flj4tIJ79Mrdiwk46Q==}
     engines: {node: '>=12'}
@@ -5903,7 +5721,6 @@ packages:
       esbuild-windows-32: 0.14.27
       esbuild-windows-64: 0.14.27
       esbuild-windows-arm64: 0.14.27
-    dev: false
 
   /escalade/3.1.1:
     resolution: {integrity: sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==}
@@ -6280,8 +6097,7 @@ packages:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.4
-    dev: false
+      micromatch: 4.0.5
 
   /fast-json-stable-stringify/2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
@@ -6305,7 +6121,6 @@ packages:
     resolution: {integrity: sha512-YpkpUnK8od0o1hmeSc7UUs/eB/vIPWJYjKck2QKIzAf71Vm1AAQ3EbuZB3g2JIy+pg+ERD0vqI79KyZiB2e2Nw==}
     dependencies:
       reusify: 1.0.4
-    dev: false
 
   /fb-watchman/2.0.1:
     resolution: {integrity: sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==}
@@ -6360,7 +6175,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       to-regex-range: 5.0.1
-    dev: false
 
   /finalhandler/1.1.2:
     resolution: {integrity: sha512-aAWcW57uxVNrQZqFXjITpW3sIUQmHGG3qSb9mUah9MgMC4NeWhNOlNjXEYq3HjRAvL6arUviZGGJsBg6z0zsWA==}
@@ -6731,7 +6545,6 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       is-glob: 4.0.3
-    dev: false
 
   /glob/7.2.0:
     resolution: {integrity: sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==}
@@ -7343,7 +7156,6 @@ packages:
   /is-extglob/2.1.1:
     resolution: {integrity: sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=}
     engines: {node: '>=0.10.0'}
-    dev: false
 
   /is-fullwidth-code-point/1.0.0:
     resolution: {integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs=}
@@ -7380,7 +7192,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       is-extglob: 2.1.1
-    dev: false
 
   /is-hexadecimal/2.0.1:
     resolution: {integrity: sha512-DgZQp241c8oO6cA1SbTEWiXeoxV42vlcJxgH+B3hi1AiqqKruZR3ZGF8In3fj4+/y/7rHvlOZLZtgJ/4ttYGZg==}
@@ -7413,7 +7224,6 @@ packages:
   /is-number/7.0.0:
     resolution: {integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==}
     engines: {node: '>=0.12.0'}
-    dev: false
 
   /is-obj/2.0.0:
     resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
@@ -8341,7 +8151,6 @@ packages:
 
   /kolorist/1.5.1:
     resolution: {integrity: sha512-lxpCM3HTvquGxKGzHeknB/sUjuVoUElLlfYnXZT73K8geR9jQbroGlSCFBax9/0mpGoD3kzcMLnOlGQPJJNyqQ==}
-    dev: false
 
   /latest-version/5.1.0:
     resolution: {integrity: sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==}
@@ -8839,7 +8648,6 @@ packages:
   /merge2/1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
-    dev: false
 
   /methods/1.1.2:
     resolution: {integrity: sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=}
@@ -9209,7 +9017,6 @@ packages:
     dependencies:
       braces: 3.0.2
       picomatch: 2.3.1
-    dev: false
 
   /miller-rabin/4.0.1:
     resolution: {integrity: sha512-115fLhvZVqWwHPbClyntxEVfVDfl9DLLTuJvq3g2O/Oxi8AiNouAHvDSzHS0viUJc+V5vm3eq91Xwqn9dp4jRA==}
@@ -9548,6 +9355,12 @@ packages:
 
   /nanoid/3.2.0:
     resolution: {integrity: sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+    dev: false
+
+  /nanoid/3.3.2:
+    resolution: {integrity: sha512-CuHBogktKwpm5g2sRgv83jEy2ijFzBwMoYA60orPDR7ynsLijJDqgsi4RDGj3OJpy3Ieb+LYwiRmIOGyytgITA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -10018,7 +9831,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       yocto-queue: 0.1.0
-    dev: false
 
   /p-locate/2.0.0:
     resolution: {integrity: sha1-IKAQOyIqcMj9OcwuWAaA893l7EM=}
@@ -10306,7 +10118,6 @@ packages:
   /picomatch/2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
-    dev: false
 
   /pify/2.3.0:
     resolution: {integrity: sha1-7RQaasBDqEnqWISY59yosVMw6Qw=}
@@ -10392,6 +10203,14 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /postcss/8.4.12:
+    resolution: {integrity: sha512-lg6eITwYe9v6Hr5CncVbK70SoioNQIq81nsaG86ev5hAidQvmOeETBqs7jm43K2F5/Ley3ytDtriImV6TpNiSg==}
+    engines: {node: ^10 || ^12 || >=14}
+    dependencies:
+      nanoid: 3.3.2
+      picocolors: 1.0.0
+      source-map-js: 1.0.2
+
   /postcss/8.4.6:
     resolution: {integrity: sha512-OovjwIzs9Te46vlEx7+uXB0PLijpwjXGKXjVGGPIGubGpq7uh5Xgf6D6FiJ/SzJMBosHDp6a2hiXOS97iBXcaA==}
     engines: {node: ^10 || ^12 || >=14}
@@ -10399,6 +10218,7 @@ packages:
       nanoid: 3.2.0
       picocolors: 1.0.0
       source-map-js: 1.0.2
+    dev: false
 
   /preact-render-to-string/5.1.20_preact@10.6.6:
     resolution: {integrity: sha512-ivh2oOGzth0o7XqbatWUQ81WQGoJwSqDKP5z917SoqTWYCAr7dlBzMv3SAMTAu3Gr5g47BJwrvyO44H2Y10ubg==}
@@ -10617,7 +10437,6 @@ packages:
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-    dev: false
 
   /quick-lru/4.0.1:
     resolution: {integrity: sha512-ARhCpm70fzdcvNQfPoy49IaanKkTlRWF2JMzqhcJbhSFRZv7nPTvZJdcY7301IPmvW+/p0RgIWnQDLJxifsQ7g==}
@@ -10699,15 +10518,14 @@ packages:
       scheduler: 0.20.2
     dev: false
 
-  /react-dom/18.0.0-rc.0-next-fe905f152-20220107_e32785dbcafa2fde92a71a8f50f52ce6:
-    resolution: {integrity: sha512-tl+6q+8h9Vj7r4iI1jYQfLp4oHLC+f7tenqlYBw9eOyJ/SXJXzZ0Mp7QG1LYkK+oapO3vlj5I7ddnbnf8bcDJQ==}
+  /react-dom/18.0.0_react@18.0.0:
+    resolution: {integrity: sha512-XqX7uzmFo0pUceWFCt7Gff6IyIMzFUn7QMZrbrQfGxtaxXZIcGQzoNpRLE3fQLnS4XzLLPMZX2T9TRcSrasicw==}
     peerDependencies:
-      react: 18.0.0-rc.0-next-fe905f152-20220107
+      react: ^18.0.0
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
-      react: 18.0.0-rc.0-next-fe905f152-20220107
-      scheduler: 0.21.0-rc.0-next-fe905f152-20220107
+      react: 18.0.0
+      scheduler: 0.21.0
     dev: false
 
   /react-is/16.13.1:
@@ -10793,12 +10611,11 @@ packages:
       object-assign: 4.1.1
     dev: false
 
-  /react/18.0.0-rc.0-next-fe905f152-20220107:
-    resolution: {integrity: sha512-eePjzo6pCiwk9iDRYG0Hn5F0p9e7dlLGIys/eeLUCxByHP90rsXg/H/842S6ggBgarcfvRtDu8cAU7kxfLC4MA==}
+  /react/18.0.0:
+    resolution: {integrity: sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A==}
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
     dev: false
 
   /read-package-json-fast/2.0.3:
@@ -11140,7 +10957,6 @@ packages:
   /reusify/1.0.4:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
-    dev: false
 
   /rimraf/2.7.1:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
@@ -11195,7 +11011,6 @@ packages:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
     dependencies:
       queue-microtask: 1.2.3
-    dev: false
 
   /run-queue/1.0.3:
     resolution: {integrity: sha1-6Eg5bwV9Ij8kOGkkYY4laUFh7Ec=}
@@ -11255,11 +11070,10 @@ packages:
       object-assign: 4.1.1
     dev: false
 
-  /scheduler/0.21.0-rc.0-next-fe905f152-20220107:
-    resolution: {integrity: sha512-+sY0WajWdMjoxbmHM8P6P1FKGw8sSVKKG/HthqTFQFPxVGbKLmV1BiFPaVF9gOyQWqmnLYSXJMN+4Bs5ZygsTw==}
+  /scheduler/0.21.0:
+    resolution: {integrity: sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==}
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
     dev: false
 
   /schema-utils/1.0.0:
@@ -12106,7 +11920,6 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
-    dev: false
 
   /to-regex/3.0.2:
     resolution: {integrity: sha512-FWtleNAtZ/Ki2qtqej2CXTOayOH9bHDQF+Q48VpWyDXjbYxA4Yz8iDB31zXOBUlOHHKidDbqGVrTUvQMPmBGBw==}
@@ -12757,8 +12570,8 @@ packages:
       vfile-message: 3.1.0
     dev: false
 
-  /vite-plugin-dist-importer/0.1.5:
-    resolution: {integrity: sha512-mofnuFRNEYQq7X6xB3e2Rivs7CXyVheLeI9RR3ZzxUTqMnI+fkWCnJt1BCCY0uEcJmqjs5xZNXE3lGJtSDL64w==}
+  /vite-plugin-dist-importer/0.1.8:
+    resolution: {integrity: sha512-QDUlwEA/ZF24m1KU16F5sFDpiFPQGoOhHHTiALdj/nDZOr84V14+Bvbw3/ITCq3aAq5pvLYNc2OrIKp+o8yp4w==}
     dev: false
 
   /vite-plugin-glob/0.2.6:
@@ -12771,7 +12584,10 @@ packages:
       ufo: 0.8.3
     dev: false
 
-  /vite-plugin-md/0.11.8_vite@2.8.4:
+  /vite-plugin-import-build/0.1.3:
+    resolution: {integrity: sha512-N4oRY6Mv5l1qVODcAw1W6Xw1hiW9y8uVs6vqBy0dCTayCu5/7IRmUmjpc+wrBdSS2b/cZYkLX/xHgFyjXlaXtg==}
+
+  /vite-plugin-md/0.11.8_00ec064805a6a4b126c47c3d72edd816:
     resolution: {integrity: sha512-eFk4Ox8IKuT+7benAcwLvGcYt/T4We2UDmQmxvCrhABJpQSbh44MitD1Wu6w733VKgSZAO7wd8IuoA20yXkXVQ==}
     peerDependencies:
       vite: ^2.0.0
@@ -12781,10 +12597,10 @@ packages:
       '@types/markdown-it': 12.2.3
       gray-matter: 4.0.3
       markdown-it: 12.3.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
     dev: false
 
-  /vite-plugin-mdx/3.5.10_@mdx-js+mdx@2.0.0+vite@2.8.4:
+  /vite-plugin-mdx/3.5.10_5f2ef0dae419b868826d6586dfdd4c5a:
     resolution: {integrity: sha512-tfGNRwkO23pln9EYqhbsOLEx9Qot5+enl+727gop7+HGEoC87+88hLRWGL+FU/It1Y0a5P3OAyDbTKKHX6tEJw==}
     peerDependencies:
       '@mdx-js/mdx': '*'
@@ -12795,7 +12611,7 @@ packages:
       esbuild: 0.13.8
       resolve: 1.22.0
       unified: 9.2.2
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
     dev: false
 
   /vite-plugin-solid/2.2.5:
@@ -12807,7 +12623,7 @@ packages:
       merge-anything: 5.0.2
       solid-js: 1.3.5
       solid-refresh: 0.4.0_solid-js@1.3.5
-      vite: 2.8.4
+      vite: /@brillout/vite/2.9.2-pre-release.0
     transitivePeerDependencies:
       - less
       - sass
@@ -12815,28 +12631,40 @@ packages:
       - supports-color
     dev: false
 
-  /vite/2.8.4:
-    resolution: {integrity: sha512-GwtOkkaT2LDI82uWZKcrpRQxP5tymLnC7hVHHqNkhFNknYr0hJUlDLfhVRgngJvAy3RwypkDCWtTKn1BjO96Dw==}
-    engines: {node: '>=12.2.0'}
+  /vite-plugin-ssr/0.3.62:
+    resolution: {integrity: sha512-z+27d8ZlcMmwmOccH6OZ5QQpIvj7C9zFvlRmDc2QnK9wWWkfNtBtSYJPrVNgssXEUHQcht4FEkJgkwAPssoFzQ==}
+    engines: {node: '>=12.19.0'}
     hasBin: true
     peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
+      vite: ^2.8.4
     dependencies:
-      esbuild: 0.14.21
-      postcss: 8.4.6
-      resolve: 1.22.0
-      rollup: 2.68.0
-    optionalDependencies:
-      fsevents: 2.3.2
+      '@brillout/json-s': 0.4.3
+      '@brillout/libassert': 0.5.4
+      cac: 6.7.12
+      es-module-lexer: 0.10.0
+      fast-glob: 3.2.11
+      kolorist: 1.5.1
+      p-limit: 3.1.0
+      vite-plugin-import-build: 0.1.3
+    dev: true
+
+  /vite-plugin-ssr/0.3.62_00ec064805a6a4b126c47c3d72edd816:
+    resolution: {integrity: sha512-z+27d8ZlcMmwmOccH6OZ5QQpIvj7C9zFvlRmDc2QnK9wWWkfNtBtSYJPrVNgssXEUHQcht4FEkJgkwAPssoFzQ==}
+    engines: {node: '>=12.19.0'}
+    hasBin: true
+    peerDependencies:
+      vite: ^2.8.4
+    dependencies:
+      '@brillout/json-s': 0.4.3
+      '@brillout/libassert': 0.5.4
+      cac: 6.7.12
+      es-module-lexer: 0.10.0
+      fast-glob: 3.2.11
+      kolorist: 1.5.1
+      p-limit: 3.1.0
+      vite: /@brillout/vite/2.9.2-pre-release.0
+      vite-plugin-import-build: 0.1.3
+    dev: false
 
   /vm-browserify/1.1.2:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==}
@@ -13273,7 +13101,6 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-    dev: false
 
   /youch/2.2.2:
     resolution: {integrity: sha512-/FaCeG3GkuJwaMR34GHVg0l8jCbafZLHiFowSjqLlqhC6OMyf2tPJBu8UirF7/NI9X/R5ai4QfEKUCOxMAGxZQ==}
