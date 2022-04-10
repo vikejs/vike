@@ -27,7 +27,7 @@ function plugin(vpsConfig?: VpsConfig): any {
   const plugins: Plugin[] = [
     setVitePluginSsrConfig(vpsConfig),
     generateImportGlobs(),
-    devConfig(),
+    ...devConfig(),
     buildConfig(),
     previewConfig(),
     chainBuildSteps(),

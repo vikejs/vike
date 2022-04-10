@@ -2,7 +2,7 @@ import { toPosixPath } from '../utils'
 
 export { isViteCliCall }
 
-function isViteCliCall({ command, ssr }: { command: 'build' | 'dev'; ssr?: true }) {
+function isViteCliCall({ command, ssr }: { command: 'build' | 'dev' | 'preview'; ssr?: true }) {
   const { argv } = process
   if (!argv.some((a) => toPosixPath(a).endsWith('/bin/vite.js'))) {
     return false
