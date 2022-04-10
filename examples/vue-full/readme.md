@@ -20,5 +20,5 @@ To run it:
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/vue-full/
 npm install
-npm run start
+npm run dev
 ```
