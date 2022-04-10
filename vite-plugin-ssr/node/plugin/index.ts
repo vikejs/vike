@@ -4,7 +4,7 @@ export { plugin as ssr }
 export type ConfigVps = { vitePluginSsr: VpsConfig }
 
 import type { Plugin } from 'vite'
-import GlobPlugin from '@brillout/vite-plugin-glob'
+import GlobPlugin from 'vite-plugin-glob'
 import { assertUsage } from './utils'
 import { buildConfig } from './plugins/buildConfig'
 import { previewConfig } from './plugins/previewConfig'
