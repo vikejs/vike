@@ -7,14 +7,23 @@ function getOutDirs(outDir: string, { prerenderConfig }: { prerenderConfig?: tru
   assertPosixPath(outDir)
   let outDirRoot: string
   if (prerenderConfig) {
-    assert(!outDir.endsWith('/client') && !outDir.endsWith('/server'), { outDir })
+    assertIsRoot(outDir)
     outDirRoot = outDir
   } else {
-    assert(outDir.endsWith('/client') || outDir.endsWith('/server'), { outDir })
+    assertIsNotRoot(outDir)
     assert('/client'.length === '/server'.length)
     outDirRoot = outDir.slice(0, -1 * '/client'.length)
   }
   const outDirClient = `${outDirRoot}/client`
   const outDirServer = `${outDirRoot}/server`
   return { outDirRoot, outDirClient, outDirServer }
+}
+
+function assertIsRoot(outDir: string) {
+  const p = outDir.split('/').filter(Boolean)
+  const dir = p[p.length - 1]
+  assert(dir !== 'client' && dir !== 'server', { outDir })
+}
+function assertIsNotRoot(outDir: string) {
+  assert(outDir.endsWith('/client') || outDir.endsWith('/server'), { outDir })
 }
