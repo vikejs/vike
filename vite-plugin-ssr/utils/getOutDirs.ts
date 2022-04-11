@@ -1,5 +1,5 @@
-import { assertPosixPath } from '../../utils'
-import { assert } from '../utils'
+import { assert } from './assert'
+import { assertPosixPath } from './filesystemPathHandling'
 
 export { getOutDirs }
 
