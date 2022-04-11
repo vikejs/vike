@@ -12,6 +12,7 @@ import {
   objectAssign,
   isObjectWithKeys,
   isCallable,
+  getOutDirs,
 } from './utils'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -89,7 +90,7 @@ async function prerender(
   setProductionEnvVar()
 
   const viteConfig = await resolveConfig({ configFile, root: root_ }, 'vite-plugin-ssr prerender' as any, 'production')
-  const outDirRoot = 'dist/' // TODO
+  const { outDirRoot } = getOutDirs(viteConfig.build.outDir)
   const { root } = viteConfig
   assertUsage(
     viteConfig.configFile,
