@@ -9,7 +9,7 @@ function chainBuildSteps(): Plugin {
   skip()
   let config: ResolvedConfig
   return {
-    name: 'vite-plugin-ssr:buildConfig',
+    name: 'vite-plugin-ssr:chainBuildSteps',
     apply: 'build',
     configResolved(config_) {
       config = config_
@@ -36,7 +36,7 @@ function skip() {
   if (isViteCliCall({ command: 'build', ssr: true })) {
     assertWarning(
       false,
-      'The `$ vite build --ssr` CLI call is deprecated; it is now superfluous and has no effect (`$ vite build` now also builds the server-side code). Drop `$ vite build --ssr` to remove this warning. ',
+      'The `$ vite build --ssr` CLI call is deprecated; it is now superfluous and has no effect (`$ vite build` now also builds the server-side code). Drop `$ vite build --ssr` to remove this warning.',
       { onlyOnce: true },
     )
     process.exit(0)
