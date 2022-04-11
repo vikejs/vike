@@ -21,7 +21,7 @@ function toPosixPath(path: string) {
 }
 
 function assertPosixPath(path: string) {
-  assert(!path.includes(sepWin32), `Wrongly formatted path: ${path}`)
+  assert(path && !path.includes(sepWin32), `Wrongly formatted path: ${path}`)
 }
 
 function toSystemPath(path: string) {
