@@ -85,7 +85,6 @@ async function renderPage_<PageContextAdded extends {}, PageContextInit extends 
 
   // *** Route ***
   const routeResult = await route(pageContext)
-  // TODO: remove unnecessary extra error handling?
   if ('hookError' in routeResult) {
     const err = routeResult.hookError
     logError(err)
