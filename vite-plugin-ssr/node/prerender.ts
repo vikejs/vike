@@ -89,7 +89,7 @@ async function prerender(
   setProductionEnvVar()
 
   const viteConfig = await resolveConfig({ configFile, root: root_ }, 'vite-plugin-ssr prerender' as any, 'production')
-  const outDir = 'dist/' // TODO
+  const outDirRoot = 'dist/' // TODO
   const { root } = viteConfig
   assertUsage(
     viteConfig.configFile,
@@ -154,7 +154,7 @@ async function prerender(
 
   await Promise.all(
     htmlFiles.map((htmlFile) =>
-      writeHtmlFile(htmlFile, root, outDir, doNotPrerenderList, concurrencyLimit, onPagePrerender, logLevel),
+      writeHtmlFile(htmlFile, root, outDirRoot, doNotPrerenderList, concurrencyLimit, onPagePrerender, logLevel),
     ),
   )
 
@@ -420,7 +420,7 @@ async function prerender404Page(htmlFiles: HtmlFile[], globalContext: GlobalPrer
 async function writeHtmlFile(
   { url, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlFile,
   root: string,
-  outDir: string,
+  outDirRoot: string,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: pLimit.Limit,
   onPagePrerender: Function | undefined,
@@ -436,7 +436,7 @@ async function writeHtmlFile(
       '.html',
       htmlString,
       root,
-      outDir,
+      outDirRoot,
       doNotCreateExtraDirectory,
       concurrencyLimit,
       onPagePrerender,
@@ -451,7 +451,7 @@ async function writeHtmlFile(
         '.pageContext.json',
         pageContextSerialized,
         root,
-        outDir,
+        outDirRoot,
         doNotCreateExtraDirectory,
         concurrencyLimit,
         onPagePrerender,
@@ -468,7 +468,7 @@ function write(
   fileExtension: '.html' | '.pageContext.json',
   fileContent: string,
   root: string,
-  outDir: string,
+  outDirRoot: string,
   doNotCreateExtraDirectory: boolean,
   concurrencyLimit: pLimit.Limit,
   onPagePrerender: Function | undefined,
@@ -479,10 +479,8 @@ function write(
     assert(fileUrl.startsWith('/'))
     const filePathRelative = fileUrl.slice(1).split('/').join(sep)
     assert(!filePathRelative.startsWith(sep))
-    assert(outDir && !outDir.includes('\\'), { outDir })
-    const outDirPath = outDir.split('/')
-    assert(!outDirPath.includes('server') && !outDirPath.includes('client'), { outDir })
-    const filePath = join(root, outDir, 'client', filePathRelative)
+    assert(!outDirRoot.includes('\\'))
+    const filePath = join(root, outDirRoot, 'client', filePathRelative)
     if (onPagePrerender) {
       objectAssign(pageContext, {
         _prerenderResult: {
@@ -497,7 +495,7 @@ function write(
       await mkdir(dirname(filePath), { recursive: true })
       await writeFile(filePath, fileContent)
       if (logLevel === 'info') {
-        console.log(`${gray(path.posix.join(outDir, 'client/'))}${blue(filePathRelative)}`)
+        console.log(`${gray(path.posix.join(outDirRoot, 'client/'))}${blue(filePathRelative)}`)
       }
     }
   })
