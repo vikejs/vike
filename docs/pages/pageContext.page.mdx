@@ -27,6 +27,8 @@ import { Link } from 'libframe-docs/components'
      pathname: string
      search: Record<string, string>
      hash: string
+     searchString: null | string
+     hashString: null | string
    }
    ```
    For example:
@@ -36,19 +38,12 @@ import { Link } from 'libframe-docs/components'
      origin: 'https://example.com',
      pathname: '/product/42',
      search: { details: 'yes' },
-     hash: 'reviews'
+     hash: 'reviews',
+     searchString: '?details=yes',
+     hashString: '#reviews'
    }
    ```
-   It also provides lower-level infos (which you'll likely not need).
-   ```ts
-   {
-     pathnameWithBaseUrl: string
-     hasBaseUrl: boolean // (Almost always `true`)
-     searchString: null | string
-     hashString: null | string
-   }
-   ```
-   For example, if we want the ordered list of all search parameter values, we can use `new URLSearchParams(pageContext.urlParsed.searchString || '')`.
+   To get all search values we can use `new URLSearchParams(pageContext.urlParsed.searchString || '')`.
 
 ## Custom
 
