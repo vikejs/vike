@@ -2,7 +2,7 @@ export { loadDistEntries }
 export { setDistEntries }
 
 import { assert, assertUsage } from '../../utils'
-import { load } from 'vite-plugin-dist-importer/load'
+import { loadDistEntries as loadDistEntries_ } from 'vite-plugin-dist-importer/loadDistEntries'
 
 let distEntries: DistEntries = null
 
@@ -17,9 +17,11 @@ function setDistEntries(distEntries_: DistEntries) {
   distEntries = distEntries_
 }
 
-async function loadDistEntries({ distPath }: { distPath: null | { root: string; outDir: string } }) {
-  load({ assert, assertUsage, distPath })
-  assert(distEntries)
+async function loadDistEntries() {
+  if (!distEntries) {
+    loadDistEntries_({ assert, assertUsage, importBuildDocLink: 'https://vite-plugin-ssr.com/importBuild' })
+    assert(distEntries)
+  }
 
   const [pageFiles, clientManifest, serverManifest, pluginManifest] = await Promise.all([
     distEntries.pageFiles(),
