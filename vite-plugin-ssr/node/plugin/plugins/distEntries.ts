@@ -1,10 +1,10 @@
 export { distEntriesPlugin }
 
 import type { Plugin } from 'vite'
-import distImporter from 'vite-plugin-dist-importer'
+import { distImporter } from 'vite-plugin-dist-importer'
+import { projectInfo } from '../utils'
 
 const importerCode = [
-  "// https://vite-plugin-ssr.com/importDist",
   "const { __internals: { setDistEntries } } = require('vite-plugin-ssr');",
   'setDistEntries({',
   "  pageFiles: () => import('./pageFiles.js'),",
@@ -16,5 +16,8 @@ const importerCode = [
 ].join('\n')
 
 function distEntriesPlugin(): Plugin {
-  return distImporter({ importerCode, projectName: 'vite-plugin-ssr' })
+  return distImporter({
+    importerCode,
+    projectName: projectInfo.projectName,
+  })
 }
