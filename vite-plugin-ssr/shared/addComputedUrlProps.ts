@@ -1,4 +1,4 @@
-import { assert, parseUrl, objectAssign, isCallable } from './utils'
+import { assert, parseUrl, isCallable } from './utils'
 
 export { addComputedUrlProps }
 export type { PageContextUrls }
@@ -8,12 +8,9 @@ export type { PageContextUrlSource }
 type UrlParsed = {
   origin: null | string
   pathname: string
-  pathnameWithBaseUrl: string
-  pathnameWithoutBaseUrl?: never // We have renamed `pathnameWithoutBaseUrl` to `pathname` for users
-  hasBaseUrl: boolean
   search: Record<string, string>
-  searchString: null | string
   hash: string
+  searchString: null | string
   hashString: null | string
 }
 type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
@@ -54,13 +51,9 @@ function urlPathnameGetter(this: PageContextUrlSource) {
   assert(urlPathname.startsWith('/'))
   return urlPathname
 }
-function urlParsedGetter(this: PageContextUrlSource): UrlParsed {
+function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
-  const pathname = urlParsedOriginal.pathnameWithoutBaseUrl
-  const urlParsed: Omit<typeof urlParsedOriginal, 'pathnameWithoutBaseUrl'> = urlParsedOriginal
-  delete (urlParsed as Partial<typeof urlParsedOriginal>).pathnameWithoutBaseUrl
-  objectAssign(urlParsed, { pathname })
-  assert(urlParsed.pathname.startsWith('/'))
-  assert(!('pathnameWithoutBaseUrl' in urlParsed))
+  const { origin, pathnameWithoutBaseUrl: pathname, search, hash, searchString, hashString } = urlParsedOriginal
+  const urlParsed: UrlParsed = { origin, pathname, search, hash, searchString, hashString }
   return urlParsed
 }
