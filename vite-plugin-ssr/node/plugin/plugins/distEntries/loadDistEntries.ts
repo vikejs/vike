@@ -9,7 +9,6 @@ let distEntries: DistEntries = null
 type DistEntries = null | {
   pageFiles: () => Promise<Record<string, unknown>>
   clientManifest: () => Promise<Record<string, unknown>>
-  serverManifest: () => Promise<Record<string, unknown>>
   pluginManifest: () => Promise<Record<string, unknown>>
 }
 
@@ -23,11 +22,10 @@ async function loadDistEntries() {
     assert(distEntries)
   }
 
-  const [pageFiles, clientManifest, serverManifest, pluginManifest] = await Promise.all([
+  const [pageFiles, clientManifest, pluginManifest] = await Promise.all([
     distEntries.pageFiles(),
     distEntries.clientManifest(),
-    distEntries.serverManifest(),
     distEntries.pluginManifest(),
   ])
-  return { pageFiles, clientManifest, serverManifest, pluginManifest }
+  return { pageFiles, clientManifest, pluginManifest }
 }
