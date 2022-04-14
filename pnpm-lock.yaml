@@ -923,7 +923,7 @@ importers:
       symlink-dir: ^5.0.1
       typescript: 4.6.3
       vite: npm:@brillout/vite@2.9.2-pre-release.0
-      vite-plugin-dist-importer: ^0.1.7
+      vite-plugin-dist-importer: ^0.1.8
       vite-plugin-glob: ^0.2.6
     dependencies:
       '@brillout/json-s': 0.4.3
@@ -935,7 +935,7 @@ importers:
       p-limit: 3.1.0
       resolve: 1.22.0
       symlink-dir: 5.0.1
-      vite-plugin-dist-importer: 0.1.7
+      vite-plugin-dist-importer: 0.1.8
       vite-plugin-glob: 0.2.6
     devDependencies:
       '@types/jest': 27.4.1
@@ -12558,8 +12558,8 @@ packages:
       vfile-message: 3.1.0
     dev: false
 
-  /vite-plugin-dist-importer/0.1.7:
-    resolution: {integrity: sha512-0dC+aaj62WWkQLNRpTsXyGNTvlpwk3/ySBzNiMRwJ6ehFJCicMmKN6iDgvtVrF3j6N6ryYLLtf1VqT1/x0EywA==}
+  /vite-plugin-dist-importer/0.1.8:
+    resolution: {integrity: sha512-QDUlwEA/ZF24m1KU16F5sFDpiFPQGoOhHHTiALdj/nDZOr84V14+Bvbw3/ITCq3aAq5pvLYNc2OrIKp+o8yp4w==}
     dev: false
 
   /vite-plugin-glob/0.2.6:
