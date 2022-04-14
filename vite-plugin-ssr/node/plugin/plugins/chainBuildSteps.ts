@@ -5,8 +5,10 @@ import { assert, assertWarning, isViteCliCall } from '../utils'
 import { prerender } from '../../prerender'
 import { assertViteConfig } from './config/assertConfig'
 
+const triggedByChainBuildSteps = '__triggedByChainBuildSteps'
+
 function chainBuildSteps(): Plugin {
-  skip()
+  skip1()
   let config: ResolvedConfig
   return {
     name: 'vite-plugin-ssr:chainBuildSteps',
@@ -21,8 +23,11 @@ function chainBuildSteps(): Plugin {
       }
       const { configFile, root } = config
       if (!config.build?.ssr) {
-        await build({ build: { ssr: true }, configFile, root })
+        await build({ build: { ssr: true }, configFile, root, [triggedByChainBuildSteps as any]: true })
       } else {
+        if (!(config as any)[triggedByChainBuildSteps]) {
+          skip2()
+        }
         if (config.vitePluginSsr.prerender) {
           assert(configFile)
           await prerender({ configFile, root })
@@ -32,13 +37,21 @@ function chainBuildSteps(): Plugin {
   }
 }
 
-function skip() {
+function skip1() {
   if (isViteCliCall({ command: 'build', ssr: true })) {
     assertWarning(
       false,
-      'The `$ vite build --ssr` CLI call is deprecated; it is now superfluous and has no effect (`$ vite build` now also builds the server-side code). Drop `$ vite build --ssr` to remove this warning.',
+      'The `$ vite build --ssr` CLI call is deprecated; it is now superfluous and has no effect (`$ vite build` now also builds server-side code). Drop `$ vite build --ssr` to remove this warning.',
       { onlyOnce: true },
     )
     process.exit(0)
   }
+}
+function skip2() {
+  assertWarning(
+    false,
+    'The `build({ build: { ssr: true } })` call is deprecated; it is now superfluous and has no effect (`build()` now also builds server-side code). Drop `build({ build: { ssr: true } })` to remove this warning.',
+    { onlyOnce: true },
+  )
+  process.exit(0)
 }
