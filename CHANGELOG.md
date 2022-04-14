@@ -1,3 +1,12 @@
+## [0.3.63](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.62...v0.3.63) (2022-04-14)
+
+
+### Bug Fixes
+
+* client-side routing unicode navigate (fix [#307](https://github.com/brillout/vite-plugin-ssr/issues/307)) ([fba7e77](https://github.com/brillout/vite-plugin-ssr/commit/fba7e777135f5b2fea061cc35150c344bdbc6b31))
+
+
+
 ## [0.3.62](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.61...v0.3.62) (2022-04-09)
 
 
