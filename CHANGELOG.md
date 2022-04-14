@@ -1,3 +1,12 @@
+## [0.3.64](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.63...v0.3.64) (2022-04-14)
+
+
+### Bug Fixes
+
+* remove console.log() ([32848a7](https://github.com/brillout/vite-plugin-ssr/commit/32848a79a2fedc7ae9b1ee53f3c843c4203ad311))
+
+
+
 ## [0.3.63](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.62...v0.3.63) (2022-04-14)
 
 
