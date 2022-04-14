@@ -59,7 +59,6 @@ function removePageContextUrlSuffix(url: string): string {
   const urlParsed = parseUrl(url, '/') // is Base URL missing?
   const { origin, searchString, hashString } = urlParsed
   let pathname = urlParsed.pathnameWithoutBaseUrl
-  console.log(urlParsed)
   // TODO:
   //  - Re-ensure the uncommented assert, and this time directly in `parseUrl()`
   //    - (It's already there but post `decodeURI()`)
