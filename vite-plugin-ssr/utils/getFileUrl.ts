@@ -59,7 +59,15 @@ function removePageContextUrlSuffix(url: string): string {
   const urlParsed = parseUrl(url, '/') // is Base URL missing?
   const { origin, searchString, hashString } = urlParsed
   let pathname = urlParsed.pathnameWithoutBaseUrl
-  assert(url === `${origin || ''}${pathname}${searchString || ''}${hashString || ''}`, { url })
+  console.log(urlParsed)
+  // TODO:
+  //  - Re-ensure the uncommented assert, and this time directly in `parseUrl()`
+  //    - (It's already there but post `decodeURI()`)
+  //  - Use `decodeURI` only for `urlParsed.search`, not for `urlParsed.searchString`
+  //  - Use `decodeURI` at `renderPage()`
+  //    - It seems like the browser calls `encodeURI()`, which we should decode ASAP, i.e. at the beginning of `renderPage()`
+  //       - E.g. `navigate('/foo?key=あ')`
+  // assert(url === `${origin || ''}${pathname}${searchString || ''}${hashString || ''}`, { url })
   assert(pathname.endsWith(pageContextUrlSuffix), { url })
   pathname = slice(pathname, 0, -1 * pageContextUrlSuffix.length)
   if (pathname === '/index') pathname = '/'
