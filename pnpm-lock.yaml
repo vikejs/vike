@@ -499,14 +499,14 @@ importers:
   examples/react:
     specifiers:
       '@vitejs/plugin-react': ^1.2.0
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      react: ^18.0.0
+      react-dom: ^18.0.0
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.0.0
+      react-dom: 18.0.0_react@18.0.0
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
