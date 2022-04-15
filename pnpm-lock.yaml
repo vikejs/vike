@@ -39,7 +39,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       vite: /@brillout/vite/2.9.2-pre-release.0
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite-plugin-ssr: 0.3.64_00ec064805a6a4b126c47c3d72edd816
 
   boilerplates/boilerplate-react-ts:
     specifiers:
@@ -73,7 +73,7 @@ importers:
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
       vite: /@brillout/vite/2.9.2-pre-release.0
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite-plugin-ssr: 0.3.64_00ec064805a6a4b126c47c3d72edd816
 
   boilerplates/boilerplate-vue:
     specifiers:
@@ -94,7 +94,7 @@ importers:
       cross-env: 7.0.3
       express: 4.17.3
       vite: /@brillout/vite/2.9.2-pre-release.0
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite-plugin-ssr: 0.3.64_00ec064805a6a4b126c47c3d72edd816
       vue: 3.2.31
 
   boilerplates/boilerplate-vue-ts:
@@ -126,7 +126,7 @@ importers:
       ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
       typescript: 4.5.5
       vite: /@brillout/vite/2.9.2-pre-release.0
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite-plugin-ssr: 0.3.64_00ec064805a6a4b126c47c3d72edd816
       vue: 3.2.31
 
   docs:
@@ -205,8 +205,8 @@ importers:
       express: ^4.17.3
       miniflare: ^1.4.1
       node-fetch: ^2.6.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      react: ^18.0.0
+      react-dom: ^18.0.0
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -216,8 +216,8 @@ importers:
       express: 4.17.3
       miniflare: 1.4.1
       node-fetch: 2.6.7
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.0.0
+      react-dom: 18.0.0_react@18.0.0
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -520,8 +520,8 @@ importers:
       '@types/node-fetch': ^2.5.12
       '@vitejs/plugin-react': ^1.2.0
       node-fetch: ^2.6.1
-      react: ^18.0.0-rc.0
-      react-dom: ^18.0.0-rc.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
       typescript: ^4.5.5
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
@@ -856,7 +856,7 @@ importers:
       typescript: 4.5.5
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-mdx: 3.5.10_5f2ef0dae419b868826d6586dfdd4c5a
-      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vite-plugin-ssr: 0.3.64_00ec064805a6a4b126c47c3d72edd816
 
   libframe/scripts:
     specifiers:

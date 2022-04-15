@@ -1,11 +1,11 @@
-// We use a normal Express server for development
-
-const express = require('express')
-const { renderPage } = require('vite-plugin-ssr')
-const vite = require('vite')
-const fetch = require('node-fetch')
+import express from 'express'
+import vite from 'vite'
+import { renderPage } from 'vite-plugin-ssr'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = `${__dirname}/..`
 
 startServer()
@@ -28,17 +28,18 @@ async function startServer() {
     const url = req.originalUrl
     const pageContextInit = {
       url,
-      fetch,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
     const { statusCode, contentType } = httpResponse
-    res.status(statusCode)
-    res.type(contentType)
-    httpResponse.pipeToNodeWritable(res)
-    //const stream = await httpResponse.getNodeStream()
-    //stream.pipe(res)
+    res.status(statusCode).type(contentType)
+    const body = httpResponse.body
+    res.end(body)
+    /*
+    const stream = await httpResponse.getNodeStream()
+    stream.pipe(res)
+    */
   })
 
   const port = 3000

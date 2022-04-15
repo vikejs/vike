@@ -312,7 +312,7 @@ type HttpResponse = {
   body: string
   getBody: () => Promise<string>
   getNodeStream: () => Promise<StreamReadableNode>
-  getWebStream: () => Promise<StreamReadableWeb>
+  getWebStream: () => StreamReadableWeb
   pipeToNodeWritable: StreamPipeNode
   pipeToWebWritable: StreamPipeWeb
 }
@@ -347,8 +347,8 @@ function createHttpResponseObject(
       assertUsage(nodeStream !== null, errMsg('getNodeStream()', fixMsg('readable', 'node')))
       return nodeStream
     },
-    async getWebStream() {
-      const webStream = await getStreamReadableWeb(htmlRender)
+    getWebStream() {
+      const webStream = getStreamReadableWeb(htmlRender)
       assertUsage(webStream !== null, errMsg('getWebStream()', fixMsg('readable', 'web')))
       return webStream
     },
@@ -360,6 +360,10 @@ function createHttpResponseObject(
       const success = pipeToStreamWritableNode(htmlRender, writable)
       assertUsage(success, errMsg('pipeToNodeWritable()', fixMsg('pipe', 'node')))
     },
+    /*
+    pipe(writable: StreamWritableNode | StreamWritableWeb) {
+    }
+    */
   }
 
   function errMsg(method: string, fixMsg: string) {

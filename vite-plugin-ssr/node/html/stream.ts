@@ -1,4 +1,4 @@
-import { assert, assertUsage, checkType, isObject, hasProp } from '../utils'
+import { assert, assertUsage, checkType, isObject, hasProp, objectAssign } from '../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
 // Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
@@ -27,6 +27,7 @@ export type { StreamPipeNode }
 // Public: consumed by vite-plugin-ssr users
 export { pipeWebStream }
 export { pipeNodeStream }
+export { pipeStream }
 
 type StreamReadableWeb = ReadableStream
 type StreamWritableWeb = WritableStream
@@ -34,6 +35,7 @@ type StreamWritableWeb = WritableStream
 //type StreamWritableNode = typeof import('stream').Writable
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
+type StreamPipe = (writable: StreamWritableNode | StreamWritableWeb) => void
 type Stream = StreamReadableWeb | StreamReadableNode | StreamPipeWebWrapped | StreamPipeNodeWrapped
 // `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
 type StreamTypePatch = NodeJS.ReadableStream
@@ -45,6 +47,10 @@ function isStreamReadableNode(thing: unknown): thing is StreamReadableNode {
   if (isStreamReadableWeb(thing)) {
     return false
   }
+  /*
+  console.log(thing)
+  console.log(hasProp(thing, 'read', 'function'))
+  */
   // https://stackoverflow.com/questions/17009975/how-to-test-if-an-object-is-a-stream-in-nodejs/37022523#37022523
   return hasProp(thing, 'read', 'function')
 }
@@ -146,7 +152,7 @@ async function getStreamReadableNode(htmlRender: HtmlRender): Promise<null | Str
   }
   return null
 }
-async function getStreamReadableWeb(htmlRender: HtmlRender): Promise<null | StreamReadableWeb> {
+function getStreamReadableWeb(htmlRender: HtmlRender): null | StreamReadableWeb {
   if (typeof htmlRender === 'string') {
     return stringToStreamReadableWeb(htmlRender)
   }
@@ -271,19 +277,24 @@ async function manipulateStream<StreamType extends Stream>(
 
   if (isStreamPipeNode(streamOriginal)) {
     const buffer: string[] = []
+    const flushBuffer = () => {
+      assert(writableOriginalReady)
+      assert(writableOriginal)
+      if (buffer.length === 0) return
+      buffer.forEach((c) => {
+        writableOriginal.write(c)
+      })
+      buffer.length = 0
+    }
     const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         if (!writableOriginalReady) {
+          // console.log('buffer: '+chunk)
           buffer.push(chunk)
         } else {
-          const write = (c: unknown) => {
-            writableOriginal.write(c)
-          }
-          if (buffer.length !== 0) {
-            buffer.forEach((c) => write(c))
-            buffer.length = 0
-          }
-          write(chunk)
+          flushBuffer()
+          // console.log('write: '+chunk)
+          writableOriginal.write(chunk)
         }
       },
       closeStream() {
@@ -299,11 +310,12 @@ async function manipulateStream<StreamType extends Stream>(
         return stream
       },
     })
-    let writableOriginal: StreamWritableNode
+    let writableOriginal: StreamWritableNode & { flush?: () => void }
     let writableOriginalReady = false
     const pipeNodeWrapper = pipeNodeStream((writable_: StreamWritableNode) => {
       writableOriginal = writable_
       writableOriginalReady = true
+      flushBuffer()
     })
     const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
@@ -316,6 +328,21 @@ async function manipulateStream<StreamType extends Stream>(
         callback()
       },
     })
+
+    // Forward the flush() command to avoid GZIP buffering
+    //   - https://github.com/reactwg/react-18/discussions/114
+    //   - https://github.com/reactwg/react-18/discussions/110
+    //   - https://github.com/facebook/react/blob/main/packages/react-server/src/ReactServerStreamConfigNode.js#L27-L35
+    //   - Only needed for Node Streams: Web Streams do not support GZIP flushing.
+    objectAssign(writableProxy, {
+      flush() {
+        if (writableOriginalReady && typeof writableOriginal.flush === 'function') {
+          writableOriginal.flush()
+        }
+      },
+    })
+    assert(typeof writableProxy.flush === 'function')
+
     const streamPipeNode = getStreamPipeNode(streamOriginal)
     streamPipeNode(writableProxy)
     return streamPromise
@@ -476,6 +503,7 @@ function isStream(something: unknown): something is Stream {
     isStreamReadableNode(something) ||
     isStreamPipeNode(something) ||
     isStreamPipeWeb(something)
+    //isStreamPipe(something)
   ) {
     checkType<Stream>(something)
     return true
@@ -516,6 +544,25 @@ function getStreamPipeNode(thing: unknown): null | StreamPipeNode {
 function isStreamPipeNode(something: unknown): something is StreamPipeNodeWrapped {
   return isObject(something) && __streamPipeNode in something
 }
+
+const __streamPipe = '__streamPipe'
+type StreamPipeWrapped = { [__streamPipe]: StreamPipe }
+function pipeStream(pipe: StreamPipe): StreamPipeWrapped {
+  return { [__streamPipe]: pipe }
+}
+/*
+function getStreamPipe(thing: StreamPipeWrapped): StreamPipe
+function getStreamPipe(thing: unknown): null | StreamPipe
+function getStreamPipe(thing: unknown): null | StreamPipe {
+  if (isStreamPipe(thing)) {
+    return thing[__streamPipe]
+  }
+  return null
+}
+function isStreamPipe(something: unknown): something is StreamPipeWrapped {
+  return isObject(something) && __streamPipe in something
+}
+*/
 
 async function streamToString(stream: Stream): Promise<string> {
   if (isStreamReadableWeb(stream)) {
