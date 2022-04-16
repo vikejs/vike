@@ -7,12 +7,12 @@ import { SsrDataProvider } from './useSsrData'
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
-  const root = ReactDOM.createRoot(document.getElementById('page-view'))
-  root.render(
+  ReactDOM.hydrateRoot(
+    document.getElementById('page-view'),
     <SsrDataProvider>
-    <PageLayout>
-      <Page {...pageProps} />
-    </PageLayout>
-    </SsrDataProvider>
+      <PageLayout>
+        <Page {...pageProps} />
+      </PageLayout>
+    </SsrDataProvider>,
   )
 }
