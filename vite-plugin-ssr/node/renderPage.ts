@@ -782,10 +782,13 @@ function logError(err: unknown) {
     return
   }
 
-  assertUsage(
-    isObject(err),
-    'Your source code threw a primitive value as error (this should never happen). Contact the `vite-plugin-ssr` maintainer to get help.',
-  )
+  if (!isObject(err)) {
+    console.error('[vite-plugin-ssr] The non-object value thrown as error is:', err)
+    assertUsage(
+      false,
+      "Your source code threw a non-object value as error. For example: `throw 'some-string'`. Make sure to `throw new Error('some-string')` instead. The non-object error value is printed above. Feel free to contact `vite-plugin-ssr` maintainers to get help.",
+    )
+  }
 
   // Avoid logging error twice (not sure if this actually ever happens?)
   if (hasAlreadyLogged(err)) {
