@@ -31,7 +31,6 @@ function LazyComponent() {
         setTimeout(() => resolve('Hello ' + Math.random()), 5000)
       }),
   )
-  console.log('val: ' + val)
   return <p>{val}, I was lazy</p>
 }
 
@@ -41,22 +40,19 @@ function useAsync(asyncFn: () => Promise<unknown>) {
   const id: string = useId()
   const { get, set } = useSsrData<AsyncData>()
   const data = get(id)
-  console.log('id: ', id)
-  console.log('data: ', data)
+  // console.log('id: ', id)
+  // console.log('data: ', data)
   if (data?.progress === 'DONE') {
     return data.value
   }
   if (data?.progress === 'NOT_STARTED') {
     throw new Error('Only one `useAsync()` hook can be used per component')
   }
-  set(id, { progress: 'NOT_STARTED' })
+  //set(id, { progress: 'NOT_STARTED' })
 
   let promise = asyncFn()
-  console.log('THROW')
   throw (async () => {
-    console.log('PROMISE start')
     const value = await promise
-    console.log('PROMISE resolve')
     set(id, { progress: 'DONE', value })
   })()
   //throw new Error('Something unexpected happened ' + JSON.stringify(state))
