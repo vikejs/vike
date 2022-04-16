@@ -3,8 +3,8 @@ import { escapeInject, pipeNodeStream } from 'vite-plugin-ssr'
 // @ts-expect-error
 import { renderToPipeableStream } from 'react-dom/server'
 import { PageLayout } from './PageLayout'
-import { ssrDataBuffer, SsrDataProvider } from './useSsrData'
-import { ErrorBoundary } from 'react-error-boundary'
+import { getSsrDataBuffer, SsrDataProvider } from './useSsrData'
+//import { ErrorBoundary } from 'react-error-boundary'
 import { Writable } from 'stream'
 
 export { render }
@@ -79,18 +79,7 @@ function renderToStream(element: React.ReactNode) {
   })
 
   const onBeforeWrite = () => {
-    /*
-    const scriptInjections = ssrDataBuffer.map(({key, val}) => (
-    ))
-    */
-    if (ssrDataBuffer.length === 0) {
-      return null
-    }
-    const htmlInjection = `<script class="react-streaming_ssr-data" type="application/json">${JSON.stringify(
-      ssrDataBuffer,
-    )}</script>`
-    ssrDataBuffer.length = 0
-    return htmlInjection
+    return getSsrDataBuffer()
   }
   pipe = getPipeWrapper(pipe, onBeforeWrite)
   return promise
