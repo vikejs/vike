@@ -1,16 +1,12 @@
-import React, { Suspense, useState, useId } from 'react'
+import React, { Suspense, useId } from 'react'
 import { Counter } from './Counter'
 import { useSsrData } from '../../renderer/useSsrData'
 
 export { Page }
 
 function Page() {
-  const id = useId()
-  console.log('useId: '+id)
-  //console.log('id1: ' + useId())
   return (
     <>
-    <span>{id}</span>
       <h1>Welcome</h1>
       This page is:
       <ul>
@@ -19,20 +15,14 @@ function Page() {
           Interactive. <Counter />
         </li>
       </ul>
-    {/*
       <Suspense fallback={<p>Loading...</p>}>
         <LazyComponent />
       </Suspense>
-     */}
     </>
   )
 }
 
 function LazyComponent() {
-  //console.log('id2: ' + useId())
-  //const [count, setCount] = useState(0);
-  //setCount(count+1);
-  //console.log(count)
   const val = useAsync(
     () =>
       new Promise((resolve) => {
@@ -44,11 +34,14 @@ function LazyComponent() {
 }
 
 function useAsync(asyncFn) {
-  let state = useSsrData()
-  state.progress = state.progress || 'NOT_STARTED'
+  const id = useId()
+  const ssrData = useSsrData()
+  const state = ssrData[id] = ssrData[id] ?? { progress: 'NOT_STARTED' }
   let setState = s => {
+    // const state = ssrData[id] = ssrData[id] ?? {}
     Object.assign(state, s);
   }
+  console.log('id: ', id)
   console.log('state: ',state)
 
   const { progress } = state
