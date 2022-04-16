@@ -25,35 +25,22 @@ function Page() {
 }
 
 function LazyComponent() {
+  // console.log('LazyComponent')
   const val = useAsync(
     () =>
       new Promise((resolve) => {
-        setTimeout(() => resolve('Hello ' + Math.random()), 5000)
+        setTimeout(() => resolve('Hello ' + Math.random()), 1000)
       }),
   )
+  // console.log('val: ',val)
   return <p>{val}, I was lazy</p>
 }
 
-type AsyncData = { progress: 'NOT_STARTED' } | { progress: 'DONE'; value: unknown }
-
 function useAsync(asyncFn: () => Promise<unknown>) {
   const id: string = useId()
-  const { get, set } = useSsrData<AsyncData>()
-  const data = get(id)
-  // console.log('id: ', id)
-  // console.log('data: ', data)
-  if (data?.progress === 'DONE') {
-    return data.value
-  }
-  if (data?.progress === 'NOT_STARTED') {
-    throw new Error('Only one `useAsync()` hook can be used per component')
-  }
-  //set(id, { progress: 'NOT_STARTED' })
-
-  let promise = asyncFn()
-  throw (async () => {
-    const value = await promise
-    set(id, { progress: 'DONE', value })
-  })()
-  //throw new Error('Something unexpected happened ' + JSON.stringify(state))
+  // TODO: throw new Error('Only one `useAsync()` hook can be used per component')
+  return useSsrData(id, async() => {
+    const value = await asyncFn()
+    return value
+  })
 }
