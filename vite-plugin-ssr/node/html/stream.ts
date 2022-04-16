@@ -606,7 +606,6 @@ async function loadStreamNodeModule(): Promise<{
   Readable: typeof StreamReadableNode
   Writable: typeof StreamWritableNode
 }> {
-  // Eval to avoid bundlers to try to include the `stream` module
   const streamModule = await dynamicImport('stream')
   const { Readable, Writable } = streamModule as any
   return { Readable, Writable }
