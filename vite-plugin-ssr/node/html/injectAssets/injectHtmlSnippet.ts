@@ -7,6 +7,7 @@ function injectHtmlSnippet(
   position: 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END',
   htmlSnippet: string,
   htmlString: string,
+  streamInjectHtml: null | ((chunk: string) => void),
 ): string {
   if (position === 'HEAD_OPENING') {
     assert(tagOpeningExists('head', htmlString))
@@ -19,6 +20,10 @@ function injectHtmlSnippet(
     return htmlString
   }
   if (position === 'DOCUMENT_END') {
+    if (streamInjectHtml) {
+      streamInjectHtml(htmlSnippet)
+      return htmlString
+    }
     if (tagClosingExists('body', htmlString)) {
       return injectAtClosingTag('body', htmlString, htmlSnippet)
     }

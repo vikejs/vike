@@ -126,7 +126,7 @@ async function renderHtmlStream(
     console.log(2)
         const splitter = '<span>__VITE_PLUGIN_SSR__SPLITTER__</span>'
         let htmlWrapper = injectString.stringBegin + splitter + injectString.stringEnd
-        //htmlWrapper = await applyViteHtmlTransform(htmlWrapper, pageContext)
+        htmlWrapper = await applyViteHtmlTransform(htmlWrapper, pageContext)
         assertUsage(
           htmlWrapper.includes(splitter),
           "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution.",
@@ -145,7 +145,7 @@ async function renderHtmlStream(
       },
       injectStringAtEnd: async () => {
         assert(stringEndTransformed !== null)
-        stringEndTransformed = await injectAssetsAfterRender(stringEndTransformed, pageContext)
+        // stringEndTransformed = await injectAssetsAfterRender(stringEndTransformed, pageContext)
         return stringEndTransformed
       },
     })
