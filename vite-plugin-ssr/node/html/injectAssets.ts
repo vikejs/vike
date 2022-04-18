@@ -56,7 +56,7 @@ type PageContextInjectAssets = {
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
   htmlString = await injectAssetsBeforeRender(htmlString, pageContext, null)
-  htmlString = await injectAssetsAfterRender(htmlString, pageContext)
+  htmlString = await injectAssetsAfterRender(htmlString, pageContext, null)
   htmlString = await applyViteHtmlTransform(htmlString, pageContext)
   return htmlString
 }
@@ -75,6 +75,8 @@ async function injectAssetsBeforeRender(
   if (pageContext._skipAssetInject) {
     return htmlString
   }
+
+  htmlString = await injectAssetsAfterRender(htmlString, pageContext, streamInjectHtml)
 
   const pageAssets = await pageContext._getPageAssets()
 
@@ -116,18 +118,13 @@ async function injectAssetsBeforeRender(
       .filter((h) => h.position === position)
       .map((h) => h.htmlSnippet)
       .join('')
-    if (position === 'DOCUMENT_END' && streamInjectHtml) {
-      console.log('streamInjectHtml()')
-      streamInjectHtml(htmlInjection)
-      return
-    }
-    htmlString = injectHtmlSnippet(position, htmlInjection, htmlString)
+    htmlString = injectHtmlSnippet(position, htmlInjection, htmlString, streamInjectHtml)
   })
 
   return htmlString
 }
 
-async function injectAssetsAfterRender(htmlString: string, pageContext: PageContextInjectAssets) {
+async function injectAssetsAfterRender(htmlString: string, pageContext: PageContextInjectAssets, streamInjectHtml: null | ((chunk: string) => void)) {
   // Inject pageContext__client
   assertUsage(
     !injectPageInfoAlreadyDone(htmlString),
@@ -138,12 +135,10 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
     assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
     Object.assign(pageContext, pageContextProvidedByUser)
   }
-  if (pageContext._skipAssetInject) {
+  if (pageContext._skipAssetInject || pageContext._isHtmlOnly) {
     return htmlString
   }
-  if (!pageContext._isHtmlOnly) {
-    htmlString = injectPageContext(htmlString, pageContext)
-  }
+  htmlString = injectPageContext(htmlString, pageContext, streamInjectHtml)
   return htmlString
 }
 
@@ -174,10 +169,10 @@ function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
 }
 
 const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'
-function injectPageContext(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }): string {
+function injectPageContext(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }, streamInjectHtml: null | ((chunk: string) => void)): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlSnippet = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
-  htmlString = injectHtmlSnippet('DOCUMENT_END', htmlSnippet, htmlString)
+  htmlString = injectHtmlSnippet('DOCUMENT_END', htmlSnippet, htmlString, streamInjectHtml)
   return htmlString
 }
 function injectPageInfoAlreadyDone(htmlString: string) {
