@@ -10,6 +10,7 @@ export { injectAssets__public }
 export { injectAssets }
 export { injectAssetsBeforeRender }
 export { injectAssetsAfterRender }
+export { applyViteHtmlTransform }
 export type { PageContextInjectAssets }
 export { PageAsset }
 
@@ -54,22 +55,18 @@ type PageContextInjectAssets = {
   _baseUrl: string
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
-  htmlString = await injectAssetsBeforeRender(htmlString, pageContext)
+  htmlString = await injectAssetsBeforeRender(htmlString, pageContext, null)
   htmlString = await injectAssetsAfterRender(htmlString, pageContext)
+  htmlString = await applyViteHtmlTransform(htmlString, pageContext)
   return htmlString
 }
 
-async function injectAssetsBeforeRender(htmlString: string, pageContext: PageContextInjectAssets) {
+async function injectAssetsBeforeRender(htmlString: string, pageContext: PageContextInjectAssets, streamInjectionBuffer: null | string[]) {
   assert(htmlString)
   assert(typeof htmlString === 'string')
 
   // Ensure existence of `<head>` (Vite's `transformIndexHtml()` is buggy when `<head>` is missing)
   htmlString = createHtmlHeadIfMissing(htmlString)
-
-  // Inject Vite transformations
-  const { urlPathname } = pageContext
-  assert(typeof urlPathname === 'string' && urlPathname.startsWith('/'))
-  htmlString = await applyViteHtmlTransform(htmlString, urlPathname, pageContext)
 
   if (pageContext._skipAssetInject) {
     return htmlString
@@ -111,12 +108,14 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
 
   assert(htmlSnippets.every(({ htmlSnippet }) => htmlSnippet.startsWith('<') && htmlSnippet.endsWith('>')))
   ;['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const].forEach((position) => {
+    const htmlInjection = htmlSnippets.filter((h) => h.position === position).map((h) => h.htmlSnippet).join('')
+    if( position === 'DOCUMENT_END' && streamInjectionBuffer ) {
+      streamInjectionBuffer.push(htmlInjection)
+      return
+    }
     htmlString = injectHtmlSnippet(
       position,
-      htmlSnippets
-        .filter((h) => h.position === position)
-        .map((h) => h.htmlSnippet)
-        .join(''),
+      htmlInjection,
       htmlString,
     )
   })
@@ -146,13 +145,14 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
 
 async function applyViteHtmlTransform(
   htmlString: string,
-  urlPathname: string,
-  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer, _baseUrl: string },
+  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer, _baseUrl: string, urlPathname: string },
 ): Promise<string> {
   if (pageContext._isProduction) {
     return htmlString
   }
   assert(pageContext._viteDevServer)
+  const { urlPathname } = pageContext
+  assert(typeof urlPathname === 'string' && urlPathname.startsWith('/'))
   htmlString = await pageContext._viteDevServer.transformIndexHtml(urlPathname, htmlString)
   htmlString = removeDuplicatedBaseUrl(htmlString, pageContext._baseUrl)
   return htmlString
