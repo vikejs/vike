@@ -29,7 +29,7 @@ function LazyComponent() {
   const val = useAsync(
     () =>
       new Promise((resolve) => {
-        setTimeout(() => resolve('Hello ' + Math.random()), 1000)
+        setTimeout(() => resolve('Hello ' + Math.random()), 5 * 1000)
       }),
   )
   // console.log('val: ',val)

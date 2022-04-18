@@ -61,7 +61,11 @@ async function injectAssets(htmlString: string, pageContext: PageContextInjectAs
   return htmlString
 }
 
-async function injectAssetsBeforeRender(htmlString: string, pageContext: PageContextInjectAssets, streamInjectionBuffer: null | string[]) {
+async function injectAssetsBeforeRender(
+  htmlString: string,
+  pageContext: PageContextInjectAssets,
+  streamInjectHtml: null | ((htmlChunk: string) => void),
+) {
   assert(htmlString)
   assert(typeof htmlString === 'string')
 
@@ -108,16 +112,16 @@ async function injectAssetsBeforeRender(htmlString: string, pageContext: PageCon
 
   assert(htmlSnippets.every(({ htmlSnippet }) => htmlSnippet.startsWith('<') && htmlSnippet.endsWith('>')))
   ;['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const].forEach((position) => {
-    const htmlInjection = htmlSnippets.filter((h) => h.position === position).map((h) => h.htmlSnippet).join('')
-    if( position === 'DOCUMENT_END' && streamInjectionBuffer ) {
-      streamInjectionBuffer.push(htmlInjection)
+    const htmlInjection = htmlSnippets
+      .filter((h) => h.position === position)
+      .map((h) => h.htmlSnippet)
+      .join('')
+    if (position === 'DOCUMENT_END' && streamInjectHtml) {
+      console.log('streamInjectHtml()')
+      streamInjectHtml(htmlInjection)
       return
     }
-    htmlString = injectHtmlSnippet(
-      position,
-      htmlInjection,
-      htmlString,
-    )
+    htmlString = injectHtmlSnippet(position, htmlInjection, htmlString)
   })
 
   return htmlString
@@ -145,7 +149,7 @@ async function injectAssetsAfterRender(htmlString: string, pageContext: PageCont
 
 async function applyViteHtmlTransform(
   htmlString: string,
-  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer, _baseUrl: string, urlPathname: string },
+  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer; _baseUrl: string; urlPathname: string },
 ): Promise<string> {
   if (pageContext._isProduction) {
     return htmlString
