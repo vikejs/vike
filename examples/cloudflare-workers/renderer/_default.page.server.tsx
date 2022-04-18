@@ -65,14 +65,15 @@ function renderToStream(element: React.ReactNode) {
 
   element = <SsrDataProvider>{element}</SsrDataProvider>
 
+  const __SHELL_DELIMITER = '__SHELL_DELIMITER'
+
   let { pipe }: any = renderToPipeableStream(element, {
-    bootstrapScriptContent: 'window.BOOT ? BOOT() : (window.LOADED = true)',
+    bootstrapScriptContent: '__SHELL_DELIMITER',
     //bootstrapScripts: ['bootstrap-chunk.js'],
     onAllReady() {
       resolve()
     },
     onShellReady() {
-      console.log('shellIsReady')
       shellIsReady = true
       if (!isBot || seoStrategy === 'speed') {
         resolve()
@@ -82,29 +83,50 @@ function renderToStream(element: React.ReactNode) {
     onError,
   })
 
+  let beginAcc: null | string = ''
   const onBeforeWrite = () => {
-    if( !shellIsReady ) return null
-    const htmlInjection = [getSsrDataBuffer(), ...injectionBuffer].filter(Boolean).join('')
+    if (!shellIsReady) return null
+    const chunks: string[] = []
+    chunks.push(getSsrDataBuffer(), ...injectionBuffer)
+    const htmlInjection = chunks.filter(Boolean).join('')
     injectionBuffer.length = 0
     return htmlInjection
   }
-  pipe = getPipeWrapper(pipe, onBeforeWrite)
-  const injectionBuffer = pipe.injectionBuffer = []
+  pipe = getPipeWrapper(pipe, (write, chunk) => {
+    if (beginAcc !== null) {
+      beginAcc += chunk
+      const delimiter_token = `<script>${__SHELL_DELIMITER}</script>`
+      if (beginAcc.includes(delimiter_token)) {
+        beginAcc = beginAcc.replace(delimiter_token, '')
+        write(beginAcc)
+        beginAcc = null
+      }
+      return
+    }
+    const htmlInjection = onBeforeWrite()
+    htmlInjection && write(htmlInjection)
+    write(chunk)
+  })
+  const injectionBuffer = (pipe.injectionBuffer = [])
   return promise
 }
 
-function getPipeWrapper(pipe: (writable: Writable) => void, onBeforeWrite: () => null | string) {
+function getPipeWrapper(
+  pipe: (writable: Writable) => void,
+  onWrite: (write: (chunkMod: string) => void, chunk: string) => void,
+) {
   const pipeWrapper = (writable: Writable) => {
     //const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
-      async write(chunk, ...rest) {
-        console.log('write: ', String(chunk))
-        const htmlInjection = onBeforeWrite()
-        htmlInjection && writable.write(htmlInjection)
-        //chunks.forEach((chunk) => writable.write(chunk))
-        writable.write(chunk, ...rest)
+      write(chunk: unknown, _encoding, callback) {
+        const write = (chunkMod: string) => {
+          // console.log('write: '+chunkMod)
+          writable.write(chunkMod)
+        }
+        onWrite(write, String(chunk))
+        callback()
       },
-      async final(callback) {
+      final(callback) {
         writable.end()
         callback()
       },
