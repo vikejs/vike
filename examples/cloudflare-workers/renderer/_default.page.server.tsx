@@ -20,9 +20,9 @@ async function render(pageContext: any) {
     </ErrorBoundary>,
    * */
   const stream: any = await renderToStream(
-      <PageLayout>
-        <Page {...pageProps} />
-      </PageLayout>
+    <PageLayout>
+      <Page {...pageProps} />
+    </PageLayout>,
   )
 
   return escapeInject`<!DOCTYPE html>
@@ -61,6 +61,8 @@ function renderToStream(element: React.ReactNode) {
     reject(err)
   }
 
+  let shellIsReady = false
+
   element = <SsrDataProvider>{element}</SsrDataProvider>
 
   let { pipe }: any = renderToPipeableStream(element, {
@@ -70,6 +72,8 @@ function renderToStream(element: React.ReactNode) {
       resolve()
     },
     onShellReady() {
+      console.log('shellIsReady')
+      shellIsReady = true
       if (!isBot || seoStrategy === 'speed') {
         resolve()
       }
@@ -79,9 +83,13 @@ function renderToStream(element: React.ReactNode) {
   })
 
   const onBeforeWrite = () => {
-    return getSsrDataBuffer()
+    if( !shellIsReady ) return null
+    const htmlInjection = [getSsrDataBuffer(), ...injectionBuffer].filter(Boolean).join('')
+    injectionBuffer.length = 0
+    return htmlInjection
   }
   pipe = getPipeWrapper(pipe, onBeforeWrite)
+  const injectionBuffer = pipe.injectionBuffer = []
   return promise
 }
 
@@ -90,8 +98,9 @@ function getPipeWrapper(pipe: (writable: Writable) => void, onBeforeWrite: () =>
     //const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
       async write(chunk, ...rest) {
-        const onBeforeChunk = onBeforeWrite()
-        onBeforeChunk && writable.write(onBeforeChunk)
+        console.log('write: ', String(chunk))
+        const htmlInjection = onBeforeWrite()
+        htmlInjection && writable.write(htmlInjection)
         //chunks.forEach((chunk) => writable.write(chunk))
         writable.write(chunk, ...rest)
       },
@@ -118,4 +127,3 @@ function Error({ error }) {
     </div>
   )
 }
-
