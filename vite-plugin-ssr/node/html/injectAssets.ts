@@ -184,7 +184,7 @@ function inferAssetTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType, preloadType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    return `<script type="module" src="${src}"></script>`
+    return `<script type="module" src="${src}" async></script>`
   }
   if (assetType === 'style') {
     // CSS has highest priority.
