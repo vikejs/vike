@@ -513,8 +513,13 @@ async function loadPageFilesServer(pageContext: {
   )
   objectAssign(pageContextAddendum, {
     _getPageAssets: async () => {
-      const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries, isPreRendering)
-      return pageAssets
+      if ('_pageAssets' in pageContext) {
+        return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
+      } else {
+        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries, isPreRendering)
+        objectAssign(pageContext, { _pageAssets: pageAssets })
+        return pageContext._pageAssets
+      }
     },
   })
 

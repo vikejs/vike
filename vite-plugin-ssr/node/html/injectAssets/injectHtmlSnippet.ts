@@ -1,14 +1,19 @@
 export { injectHtmlSnippet }
+export { injectHtmlSnippets }
 export { createHtmlHeadIfMissing }
 
 import { assert, slice } from '../../utils'
 
+type Position = 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END' | 'STREAM'
+const positions = ['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
+
 function injectHtmlSnippet(
-  position: 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END',
-  htmlSnippet: string,
+  position: Position,
+  htmlSnippet: string | (() => string),
   htmlString: string,
   streamInjectHtml: null | ((chunk: string) => void),
 ): string {
+  htmlSnippet = get(htmlSnippet)
   if (position === 'HEAD_OPENING') {
     assert(tagOpeningExists('head', htmlString))
     htmlString = injectAtOpeningTag('head', htmlString, htmlSnippet)
@@ -20,10 +25,6 @@ function injectHtmlSnippet(
     return htmlString
   }
   if (position === 'DOCUMENT_END') {
-    if (streamInjectHtml) {
-      streamInjectHtml(htmlSnippet)
-      return htmlString
-    }
     if (tagClosingExists('body', htmlString)) {
       return injectAtClosingTag('body', htmlString, htmlSnippet)
     }
@@ -34,7 +35,34 @@ function injectHtmlSnippet(
 
     return htmlString + '\n' + htmlSnippet
   }
+  if (position === 'STREAM') {
+    assert(streamInjectHtml)
+    streamInjectHtml(htmlSnippet)
+    return htmlString
+  }
   assert(false)
+}
+
+function injectHtmlSnippets(
+  htmlString: string,
+  htmlSnippets: {
+    htmlSnippet: string | (() => string)
+    position: Position
+  }[],
+  streamInjectHtml: null | ((chunk: string) => void),
+): string {
+  positions.forEach((position) => {
+    const chunks: string[] = htmlSnippets.filter((h) => h.position === position).map((h) => get(h.htmlSnippet))
+    if (chunks.length > 0) {
+      const htmlInjection = chunks.join('')
+      htmlString = injectHtmlSnippet(position, htmlInjection, htmlString, streamInjectHtml)
+    }
+  })
+  return htmlString
+}
+
+function get(htmlSnippet: string | (() => string)) {
+  return typeof htmlSnippet !== 'string' ? htmlSnippet() : htmlSnippet
 }
 
 function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: string, htmlSnippet: string): string {

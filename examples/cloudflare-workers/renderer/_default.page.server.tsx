@@ -102,7 +102,7 @@ function getPipeWrapper(
   onWrite: (write: (chunkMod: string) => void, chunk: string) => void,
 ) {
   const pipeWrapper = (writable: Writable) => {
-    console.log('pipe() call')
+    // console.log('pipe() call')
     //const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
       write(chunk: unknown, _encoding, callback) {
