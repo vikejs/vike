@@ -1,16 +1,16 @@
-import { assert, assertUsage, assertWarning, castProp, hasProp, normalizeBaseUrl } from '../utils'
+import { assert, assertUsage, assertWarning, castProp, hasProp } from '../utils'
 import type { MediaType } from './inferMediaType'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
-import { createHtmlHeadIfMissing, injectHtmlSnippet } from './injectAssets/injectHtmlSnippet'
+import { createHtmlHeadIfMissing, injectHtmlSnippets } from './injectAssets/injectHtmlSnippet'
 import type { ViteDevServer } from 'vite'
+import { inferAssetTag } from './injectAssets/infertAssetTag'
+import { addViteDevScripts } from './injectAssets/addViteDevScripts'
 
 export { injectAssets__public }
 export { injectAssets }
-export { injectAssetsBeforeRender }
-export { injectAssetsAfterRender }
-export { applyViteHtmlTransform }
+export { injectAssetsToStream }
 export type { PageContextInjectAssets }
 export { PageAsset }
 
@@ -46,7 +46,6 @@ type PageContextInjectAssets = {
   _getPageAssets: () => Promise<PageAsset[]>
   _pageId: string
   _passToClient: string[]
-  _skipAssetInject?: true
   _isHtmlOnly: boolean
   _pageContextProvidedByUserPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
@@ -55,43 +54,112 @@ type PageContextInjectAssets = {
   _baseUrl: string
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
-  htmlString = await injectAssetsBeforeRender(htmlString, pageContext, null)
-  htmlString = await injectAssetsAfterRender(htmlString, pageContext, null)
-  htmlString = await applyViteHtmlTransform(htmlString, pageContext)
+  const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, null)
+  htmlString = await injectAtStreamBegin(htmlString)
+  htmlString = await injectAtStreamEnd(htmlString)
   return htmlString
 }
 
-async function injectAssetsBeforeRender(
-  htmlString: string,
+function injectAssetsToStream(
   pageContext: PageContextInjectAssets,
   streamInjectHtml: null | ((htmlChunk: string) => void),
 ) {
-  assert(htmlString)
-  assert(typeof htmlString === 'string')
+  let htmlSnippets: HtmlSnippet[]
 
-  // Ensure existence of `<head>` (Vite's `transformIndexHtml()` is buggy when `<head>` is missing)
-  htmlString = createHtmlHeadIfMissing(htmlString)
-
-  if (pageContext._skipAssetInject) {
-    return htmlString
+  return {
+    injectAtStreamBegin,
+    injectAtStreamEnd,
   }
 
-  htmlString = await injectAssetsAfterRender(htmlString, pageContext, streamInjectHtml)
+  async function injectAtStreamBegin(htmlBegin: string) {
+    assert([true, false].includes(pageContext._isHtmlOnly))
+    const injectJavaScript = !pageContext._isHtmlOnly
 
+    assert(pageContext._pageContextProvidedByUserPromise === null || pageContext._pageContextProvidedByUserPromise)
+    const injectJavaScriptDuringStream =
+      injectJavaScript && pageContext._pageContextProvidedByUserPromise === null && !!streamInjectHtml
+
+    htmlSnippets = await getHtmlSnippets(pageContext, { injectJavaScript, injectJavaScriptDuringStream })
+    const htmlSnippetsAtBegin = htmlSnippets.filter((snippet) => snippet.position !== 'DOCUMENT_END')
+
+    // Ensure existence of `<head>`
+    htmlBegin = createHtmlHeadIfMissing(htmlBegin)
+
+    htmlBegin = injectHtmlSnippets(htmlBegin, htmlSnippetsAtBegin, streamInjectHtml)
+
+    return htmlBegin
+  }
+
+  async function injectAtStreamEnd(htmlEnd: string) {
+    await loadAsyncPageContext(pageContext)
+    const htmlSnippetsAtEnd = htmlSnippets.filter((snippet) => snippet.position === 'DOCUMENT_END')
+    htmlEnd = injectHtmlSnippets(htmlEnd, htmlSnippetsAtEnd, null)
+    return htmlEnd
+  }
+}
+
+// https://vite-plugin-ssr.com/stream#initial-data-after-streaming
+async function loadAsyncPageContext(pageContext: {
+  _pageContextProvidedByUserPromise: null | Promise<unknown>
+  _renderHook: { hookFilePath: string; hookName: 'render' }
+}) {
+  if (pageContext._pageContextProvidedByUserPromise !== null) {
+    const pageContextProvidedByUser = await pageContext._pageContextProvidedByUserPromise
+    assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
+    Object.assign(pageContext, pageContextProvidedByUser)
+  }
+}
+
+type HtmlSnippet = {
+  htmlSnippet: string | (() => string)
+  position: 'HEAD_CLOSING' | 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
+}
+async function getHtmlSnippets(
+  pageContext: PageContextInjectAssets,
+  {
+    injectJavaScript,
+    injectJavaScriptDuringStream,
+  }: {
+    injectJavaScriptDuringStream: boolean
+    injectJavaScript: boolean
+  },
+) {
   const pageAssets = await pageContext._getPageAssets()
 
-  const htmlSnippets: {
-    htmlSnippet: string
-    position: 'DOCUMENT_END' | 'HEAD_CLOSING' | 'HEAD_OPENING'
-  }[] = []
+  const htmlSnippets: HtmlSnippet[] = []
 
-  pageAssets.forEach((pageAsset) => {
+  const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'DOCUMENT_END'
+
+  // Serialized pageContext
+  if (injectJavaScript) {
+    htmlSnippets.push({
+      // Needs to be called after `loadAsyncPageContext()`
+      htmlSnippet: () => getPageContextTag(pageContext),
+      position: positionJs,
+    })
+  }
+
+  for (const pageAsset of pageAssets) {
     const { assetType, preloadType } = pageAsset
-    if (assetType === 'script' || (assetType === 'preload' && preloadType === 'script')) {
-      const htmlSnippet = inferAssetTag(pageAsset)
-      htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
-      return
+
+    // JavaScript tags
+    if (assetType === 'script') {
+      let htmlSnippet = inferAssetTag(pageAsset)
+      htmlSnippet = await addViteDevScripts(htmlSnippet, pageContext)
+      if (injectJavaScript) {
+        htmlSnippets.push({ htmlSnippet, position: positionJs })
+      }
+      continue
     }
+    if (assetType === 'preload' && preloadType === 'script') {
+      const htmlSnippet = inferAssetTag(pageAsset)
+      if (injectJavaScript) {
+        htmlSnippets.push({ htmlSnippet, position: positionJs })
+      }
+      continue
+    }
+
+    // Style tags
     if (
       assetType === 'style' ||
       (assetType === 'preload' && preloadType === 'style') ||
@@ -102,106 +170,25 @@ async function injectAssetsBeforeRender(
       //   - https://github.com/brillout/vite-plugin-ssr/issues/261
       const htmlSnippet = inferAssetTag(pageAsset)
       htmlSnippets.push({ htmlSnippet, position: 'HEAD_OPENING' })
-      return
+      continue
     }
-    if (assetType === 'preload') {
+
+    // Misc tags
+    //  - Image and unknown preload tags
+    if (assetType === 'preload' && preloadType !== 'script') {
       const htmlSnippet = inferAssetTag(pageAsset)
       htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
-      return
+      continue
     }
+
     assert(false, { assetType, preloadType })
-  })
+  }
 
-  assert(htmlSnippets.every(({ htmlSnippet }) => htmlSnippet.startsWith('<') && htmlSnippet.endsWith('>')))
-  ;['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const].forEach((position) => {
-    const htmlInjection = htmlSnippets
-      .filter((h) => h.position === position)
-      .map((h) => h.htmlSnippet)
-      .join('')
-    htmlString = injectHtmlSnippet(position, htmlInjection, htmlString, streamInjectHtml)
-  })
-
-  return htmlString
+  return htmlSnippets
 }
 
-async function injectAssetsAfterRender(htmlString: string, pageContext: PageContextInjectAssets, streamInjectHtml: null | ((chunk: string) => void)) {
-  // Inject pageContext__client
-  assertUsage(
-    !injectPageInfoAlreadyDone(htmlString),
-    'Assets are being injected twice into your HTML. Make sure to remove your superfluous `injectAssets()` call (`vite-plugin-ssr` already automatically calls `injectAssets()`).',
-  )
-  if (pageContext._pageContextProvidedByUserPromise !== null) {
-    const pageContextProvidedByUser = await pageContext._pageContextProvidedByUserPromise
-    assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
-    Object.assign(pageContext, pageContextProvidedByUser)
-  }
-  if (pageContext._skipAssetInject || pageContext._isHtmlOnly) {
-    return htmlString
-  }
-  htmlString = injectPageContext(htmlString, pageContext, streamInjectHtml)
-  return htmlString
-}
-
-async function applyViteHtmlTransform(
-  htmlString: string,
-  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer; _baseUrl: string; urlPathname: string },
-): Promise<string> {
-  if (pageContext._isProduction) {
-    return htmlString
-  }
-  assert(pageContext._viteDevServer)
-  const { urlPathname } = pageContext
-  assert(typeof urlPathname === 'string' && urlPathname.startsWith('/'))
-  htmlString = await pageContext._viteDevServer.transformIndexHtml(urlPathname, htmlString)
-  htmlString = removeDuplicatedBaseUrl(htmlString, pageContext._baseUrl)
-  return htmlString
-}
-
-function removeDuplicatedBaseUrl(htmlString: string, baseUrl: string): string {
-  // Proper fix is to add Vite option to skip this: https://github.com/vitejs/vite/blob/aaa26a32501c857d854e9d9daca2a88a9e086392/packages/vite/src/node/server/middlewares/indexHtml.ts#L62-L67
-  const baseUrlNormalized = normalizeBaseUrl(baseUrl)
-  if (baseUrlNormalized === '/') {
-    return htmlString
-  }
-  assert(!baseUrlNormalized.endsWith('/'))
-  htmlString = htmlString.split(baseUrlNormalized + baseUrlNormalized).join(baseUrlNormalized)
-  return htmlString
-}
-
-const pageInfoInjectionBegin = '<script id="vite-plugin-ssr_pageContext" type="application/json">'
-function injectPageContext(htmlString: string, pageContext: { _pageId: string; _passToClient: string[] }, streamInjectHtml: null | ((chunk: string) => void)): string {
+function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[] }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
-  const htmlSnippet = `${pageInfoInjectionBegin}${pageContextSerialized}</script>`
-  htmlString = injectHtmlSnippet('DOCUMENT_END', htmlSnippet, htmlString, streamInjectHtml)
-  return htmlString
-}
-function injectPageInfoAlreadyDone(htmlString: string) {
-  return htmlString.includes(pageInfoInjectionBegin)
-}
-
-function inferAssetTag(pageAsset: PageAsset): string {
-  const { src, assetType, mediaType, preloadType } = pageAsset
-  if (assetType === 'script') {
-    assert(mediaType === 'text/javascript')
-    return `<script type="module" src="${src}" async></script>`
-  }
-  if (assetType === 'style') {
-    // CSS has highest priority.
-    // Would there be any advantage of using a preload tag for a css file instead of loading it right away?
-    return `<link rel="stylesheet" type="text/css" href="${src}">`
-  }
-  if (assetType === 'preload') {
-    if (preloadType === 'font') {
-      // `crossorigin` is needed for fonts, see https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload#cors-enabled_fetches
-      return `<link rel="preload" as="font" crossorigin type="${mediaType}" href="${src}">`
-    }
-    if (preloadType === 'script') {
-      assert(mediaType === 'text/javascript')
-      return `<link rel="modulepreload" as="script" type="${mediaType}" href="${src}">`
-    }
-    const attributeAs = !preloadType ? '' : ` as="${preloadType}"`
-    const attributeType = !mediaType ? '' : ` type="${mediaType}"`
-    return `<link rel="preload" href="${src}"${attributeAs}${attributeType}>`
-  }
-  assert(false)
+  const htmlSnippet = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
+  return htmlSnippet
 }
