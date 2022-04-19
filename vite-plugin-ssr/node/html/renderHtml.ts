@@ -1,5 +1,5 @@
 import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
-import { injectAssets, injectAssetsAfterRender, injectAssetsBeforeRender, applyViteHtmlTransform } from './injectAssets'
+import { injectAssets, injectAssetsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { manipulateStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 
@@ -89,7 +89,7 @@ async function renderHtml(
 }
 
 async function renderHtmlStream(
-  streamOriginal: Stream & { injectionBuffer?: string[] } ,
+  streamOriginal: Stream & { injectionBuffer?: string[] },
   {
     injectString,
     pageContext,
@@ -104,49 +104,16 @@ async function renderHtmlStream(
     onErrorWhileStreaming,
   }
   if (injectString) {
-    let stringEndTransformed: string | null = null
-    console.log(1)
+    // TODO
+    // @ts-ignore
+    const injectHtml = streamOriginal?.__streamPipeNode?.injectHtml
+    const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectHtml)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
-        /*
-        const splitter = '<span>__VITE_PLUGIN_SSR__SPLITTER__</span>'
-        let htmlWrapper = injectString.stringBegin + splitter + injectString.stringEnd
-        htmlWrapper = await injectAssetsBeforeRender(htmlWrapper, pageContext)
-        assertUsage(
-          htmlWrapper.includes(splitter),
-          "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution.",
-        )
-        const [stringBegin, _stringEnd] = htmlWrapper.split(splitter)
-        assert(_stringEnd !== undefined && stringBegin !== undefined)
-        assert(stringEndTransformed === null)
-        stringEndTransformed = _stringEnd
-        assert(stringEndTransformed !== null)
-        return stringBegin
-        */
-    console.log(2)
-        const splitter = '<span>__VITE_PLUGIN_SSR__SPLITTER__</span>'
-        let htmlWrapper = injectString.stringBegin + splitter + injectString.stringEnd
-        htmlWrapper = await applyViteHtmlTransform(htmlWrapper, pageContext)
-        assertUsage(
-          htmlWrapper.includes(splitter),
-          "You are using an HTML transformer that conflicts with vite-plugin-ssr's HTML streaming support. Open a new GitHub ticket so we can discuss a solution.",
-        )
-        let [stringBegin, stringEnd] = htmlWrapper.split(splitter)
-        assert(stringEnd !== undefined && stringBegin !== undefined)
-        // @ts-ignore
-        const stm = streamOriginal.__streamPipeNode
-        const { injectHtml } = stm
-    console.log(3)
-        stringBegin = await injectAssetsBeforeRender(stringBegin, pageContext, injectHtml)
-        assert(stringEndTransformed === null)
-        stringEndTransformed = injectString.stringEnd
-        assert(stringEndTransformed !== null)
-        return stringBegin
+        return await injectAtStreamBegin(injectString.stringBegin)
       },
       injectStringAtEnd: async () => {
-        assert(stringEndTransformed !== null)
-        // stringEndTransformed = await injectAssetsAfterRender(stringEndTransformed, pageContext)
-        return stringEndTransformed
+        return await injectAtStreamEnd(injectString.stringEnd)
       },
     })
   }
