@@ -12,15 +12,12 @@ export { passToClient }
 const passToClient = ['pageProps', 'documentProps', 'someAsyncProps']
 
 function render(pageContext: PageContextBuiltIn & PageContext) {
-  /*
   const { Page, pageProps } = pageContext
-  const stream = ReactDOMServer.renderToString(
+  const stream = ReactDOMServer.renderToNodeStream(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>,
   )
-  */
-  const stream = 'test'
 
   const title = getPageTitle(pageContext)
 

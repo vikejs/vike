@@ -1,7 +1,7 @@
 // We use a normal Express server for development
 
 const express = require('express')
-const { renderPage } = require('vite-plugin-ssr')
+const { createPageRenderer } = require('vite-plugin-ssr')
 const vite = require('vite')
 const fetch = require('node-fetch')
 
@@ -24,6 +24,7 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
+  const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = {
@@ -33,12 +34,8 @@ async function startServer() {
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
-    const { statusCode, contentType } = httpResponse
-    res.status(statusCode)
-    res.type(contentType)
-    httpResponse.pipeToNodeWritable(res)
-    //const stream = await httpResponse.getNodeStream()
-    //stream.pipe(res)
+    const { body, statusCode, contentType } = httpResponse
+    res.status(statusCode).type(contentType).send(body)
   })
 
   const port = 3000
