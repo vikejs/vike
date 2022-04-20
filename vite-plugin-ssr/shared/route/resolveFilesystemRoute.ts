@@ -24,11 +24,16 @@ function resolveAsStaticPath(filesystemRoute: string, urlPathname: string) {
 }
 
 function removeTrailingSlash(url: string) {
-  if (url === '/' || !url.endsWith('/')) {
+  if (!url.endsWith('/')) {
     return url
-  } else {
-    return slice(url, 0, -1)
   }
+  while (url.endsWith('/')) {
+    url = slice(url, 0, -1)
+  }
+  if (url === '') {
+    return '/'
+  }
+  return url
 }
 
 function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string; rootValue: string }[]): string {
