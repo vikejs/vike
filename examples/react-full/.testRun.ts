@@ -11,7 +11,13 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<h1>Welcome to <!-- --><code>vite-plugin-ssr</code></h1>')
+    try {
+      // Vue
+      expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
+    } catch {
+      // React
+      expect(html).toContain('<h1>Welcome to <!-- --><code>vite-plugin-ssr</code></h1>')
+    }
   })
 
   test('page is rendered to the DOM and interactive', async () => {
@@ -89,7 +95,13 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
-    expect(html).toContain('This page is written in <em>Markdown</em>')
+    try {
+      // Vue
+      expect(html).toContain('This page is written in <em>Markdown</em>')
+    } catch {
+      // React
+      expect(html).toContain('This page is written in <!-- --><em>Markdown</em>')
+    }
     expect(html).toContain('<title>Some Markdown Page</title>')
     if (viewFramework === 'react') {
       expect(html).toContain('<button>Counter <!-- -->0</button>')
