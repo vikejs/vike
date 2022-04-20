@@ -1,47 +1,32 @@
-import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError, partRegex } from '../../libframe/test/setup'
-import assert = require('assert')
+import { run, page, urlBase, fetchHtml, autoRetry, partRegex } from '../../libframe/test/setup'
 
 export { testRun }
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)
 
-  const isDev = cmd === 'npm run dev'
   const isProd = cmd === 'npm run prod'
 
   const hash = /[a-z0-9]+/
   const path = /[^\>]+/
 
   test('HTML-only', async () => {
-    {
-      const html = await fetchHtml('/html-only')
-      expect(html).toContain('This page has zero browser-side JavaScript.')
-      expect(html).toContain('As shown by the green text, CSS can be loaded')
-      expect(html).toContain('<h1>')
-
-      {
-        expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
-        const viteImport = 'import "/@vite/client"'
-        if (!isProd) {
-          expect(html).toContain(viteImport)
-        } else {
-          expect(html).not.toContain(viteImport)
-        }
-      }
-
-      if (isProd) {
-        expect(html).not.toContain('<script')
-        expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
-        expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
-        )
-      } else {
-        expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
-        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
-        expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
-      }
+    const html = await fetchHtml('/html-only')
+    expect(html).toContain('This page has zero browser-side JavaScript.')
+    expect(html).toContain('As shown by the green text, CSS can be loaded')
+    expect(html).toContain('<h1>')
+    expect(html).not.toContain('@vite/client')
+    if (isProd) {
+      expect(html).not.toContain('<script')
+      expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
+      expect(html).toMatch(
+        partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
+      )
+    } else {
+      expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
+      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
+      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }
-
     await page.goto(urlBase + '/html-only')
     await testColor('green')
   })
@@ -64,7 +49,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       const html = await fetchHtml('/html-js')
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isProd) {
-        expect(html).toMatch(partRegex`<script type="module" src="/assets/_default.page.client.${hash}.js">`)
+        expect(html).toMatch(partRegex`<script type="module" src="/assets/_default.page.client.${hash}.js" async>`)
       } else {
         expect(html).toMatch(partRegex`import "/@fs/${path}/pages/html-js/_default.page.client.js"`)
       }
@@ -106,7 +91,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   }
   function testClientRouting(html: string) {
     if (isProd) {
-      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js">`)
+      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js" async>`)
     } else {
       expect(html).toMatch(
         partRegex`import "/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js"`,
