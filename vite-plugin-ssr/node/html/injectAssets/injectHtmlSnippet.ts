@@ -11,7 +11,7 @@ function injectHtmlSnippet(
   position: Position,
   htmlSnippet: string | (() => string),
   htmlString: string,
-  streamInjectHtml: null | ((chunk: string) => void),
+  injectToStream: null | ((chunk: string) => void),
 ): string {
   htmlSnippet = get(htmlSnippet)
   if (position === 'HEAD_OPENING') {
@@ -36,8 +36,8 @@ function injectHtmlSnippet(
     return htmlString + '\n' + htmlSnippet
   }
   if (position === 'STREAM') {
-    assert(streamInjectHtml)
-    streamInjectHtml(htmlSnippet)
+    assert(injectToStream)
+    injectToStream(htmlSnippet)
     return htmlString
   }
   assert(false)
@@ -49,13 +49,13 @@ function injectHtmlSnippets(
     htmlSnippet: string | (() => string)
     position: Position
   }[],
-  streamInjectHtml: null | ((chunk: string) => void),
+  injectToStream: null | ((chunk: string) => void),
 ): string {
   positions.forEach((position) => {
     const chunks: string[] = htmlSnippets.filter((h) => h.position === position).map((h) => get(h.htmlSnippet))
     if (chunks.length > 0) {
       const htmlInjection = chunks.join('')
-      htmlString = injectHtmlSnippet(position, htmlInjection, htmlString, streamInjectHtml)
+      htmlString = injectHtmlSnippet(position, htmlInjection, htmlString, injectToStream)
     }
   })
   return htmlString

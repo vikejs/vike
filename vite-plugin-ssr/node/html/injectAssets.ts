@@ -62,7 +62,7 @@ async function injectAssets(htmlString: string, pageContext: PageContextInjectAs
 
 function injectAssetsToStream(
   pageContext: PageContextInjectAssets,
-  streamInjectHtml: null | ((htmlChunk: string) => void),
+  injectToStream: null | ((htmlChunk: string) => void),
 ) {
   let htmlSnippets: HtmlSnippet[]
 
@@ -77,7 +77,7 @@ function injectAssetsToStream(
 
     assert(pageContext._pageContextProvidedByUserPromise === null || pageContext._pageContextProvidedByUserPromise)
     const injectJavaScriptDuringStream =
-      injectJavaScript && pageContext._pageContextProvidedByUserPromise === null && !!streamInjectHtml
+      injectJavaScript && pageContext._pageContextProvidedByUserPromise === null && !!injectToStream
 
     htmlSnippets = await getHtmlSnippets(pageContext, { injectJavaScript, injectJavaScriptDuringStream })
     const htmlSnippetsAtBegin = htmlSnippets.filter((snippet) => snippet.position !== 'DOCUMENT_END')
@@ -85,7 +85,7 @@ function injectAssetsToStream(
     // Ensure existence of `<head>`
     htmlBegin = createHtmlHeadIfMissing(htmlBegin)
 
-    htmlBegin = injectHtmlSnippets(htmlBegin, htmlSnippetsAtBegin, streamInjectHtml)
+    htmlBegin = injectHtmlSnippets(htmlBegin, htmlSnippetsAtBegin, injectToStream)
 
     return htmlBegin
   }

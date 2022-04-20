@@ -106,8 +106,8 @@ async function renderHtmlStream(
   if (injectString) {
     // TODO
     // @ts-ignore
-    const injectHtml = streamOriginal?.__streamPipeNode?.injectHtml
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectHtml)
+    const injectToStream = streamOriginal?.__streamPipeNode?.injectToStream
+    const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.stringBegin)
