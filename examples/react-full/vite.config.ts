@@ -11,13 +11,7 @@ export default {
       prerender: true,
     }),
   ],
-  resolve: {
-    alias: {
-      // Needed for MDX, see https://github.com/mdx-js/mdx/discussions/1794#discussioncomment-1581513
-      'react/jsx-runtime': 'react/jsx-runtime.js',
-    },
-  },
-  optimizeDeps: { include: ['react/jsx-runtime.js'] },
+  optimizeDeps: { include: ['react/jsx-runtime'] },
   ...serverConfig(),
 } as UserConfig
 

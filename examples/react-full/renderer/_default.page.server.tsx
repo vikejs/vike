@@ -1,6 +1,6 @@
-import ReactDOMServer from 'react-dom/server'
+import { renderToPipeableStream } from 'react-dom/server'
 import React from 'react'
-import { escapeInject } from 'vite-plugin-ssr'
+import { escapeInject, pipeNodeStream } from 'vite-plugin-ssr'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
 import type { PageContext } from './types'
@@ -13,7 +13,7 @@ const passToClient = ['pageProps', 'documentProps', 'someAsyncProps']
 
 function render(pageContext: PageContextBuiltIn & PageContext) {
   const { Page, pageProps } = pageContext
-  const stream = ReactDOMServer.renderToNodeStream(
+  const stream = renderToPipeableStream(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>,
@@ -27,7 +27,7 @@ function render(pageContext: PageContextBuiltIn & PageContext) {
         <title>${title}</title>
       </head>
       <body>
-        <div id="page-view">${stream}</div>
+        <div id="page-view">${pipeNodeStream(stream.pipe)}</div>
       </body>
     </html>`
 
