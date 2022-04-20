@@ -1,5 +1,4 @@
 import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError } from '../../libframe/test/setup'
-import assert = require('assert')
 
 export { testRun }
 
@@ -11,12 +10,10 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    try {
-      // Vue
-      expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
-    } catch {
-      // React
+    if (viewFramework === 'react') {
       expect(html).toContain('<h1>Welcome to <!-- --><code>vite-plugin-ssr</code></h1>')
+    } else {
+      expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
     }
   })
 
@@ -95,20 +92,16 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
-    try {
-      // Vue
-      expect(html).toContain('This page is written in <em>Markdown</em>')
-    } catch {
-      // React
-      expect(html).toContain('This page is written in <!-- --><em>Markdown</em>')
-    }
     expect(html).toContain('<title>Some Markdown Page</title>')
     if (viewFramework === 'react') {
-      expect(html).toContain('<button>Counter <!-- -->0</button>')
-    } else if (viewFramework === 'vue') {
-      expect(html).toContain('<button>Counter 0</button>')
+      expect(html).toContain('This page is written in <!-- --><em>Markdown</em>')
     } else {
-      assert(false)
+      expect(html).toContain('This page is written in <em>Markdown</em>')
+    }
+    if (viewFramework === 'react') {
+      expect(html).toContain('<button>Counter <!-- -->0<!-- --></button>')
+    } else {
+      expect(html).toContain('<button>Counter 0</button>')
     }
   })
 
@@ -123,7 +116,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     })
   })
 
-  /* Does not work with `$ vite preview`, see https://github.com/vitejs/vite/pull/7665
+  /* TODO - Does not work with `$ vite preview`, see https://github.com/vitejs/vite/pull/7665
   test('test 404 page', async () => {
     const html = await fetchHtml('/doesNotExist')
     expect(html).toContain('<h1>404 Page Not Found</h1>')

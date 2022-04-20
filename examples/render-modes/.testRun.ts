@@ -15,7 +15,6 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     expect(html).toContain('This page has zero browser-side JavaScript.')
     expect(html).toContain('As shown by the green text, CSS can be loaded')
     expect(html).toContain('<h1>')
-    expect(html).not.toContain('@vite/client')
     if (isProd) {
       expect(html).not.toContain('<script')
       expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
@@ -23,6 +22,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
         partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
       )
     } else {
+      expect(html).toContain('<script')
+      expect(html).toContain('@vite/client')
       expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
