@@ -4,10 +4,16 @@ import type { ViteDevServer } from 'vite'
 import { assert, assertUsage } from '../../utils'
 import { parseScripts } from './parseScripts'
 
-async function addViteDevScripts(
-  scriptTag: string,
-  pageContext: { _isProduction: boolean; _viteDevServer: null | ViteDevServer; _baseUrl: string; urlPathname: string },
-): Promise<string> {
+type PageContext = {
+  _isProduction: boolean
+  _viteDevServer: null | ViteDevServer
+  _baseUrl: string
+  urlPathname: string
+}
+
+async function addViteDevScripts(scriptTag: string, pageContext: PageContext): Promise<string>
+async function addViteDevScripts(scriptTag: null | string, pageContext: PageContext): Promise<null | string>
+async function addViteDevScripts(scriptTag: null | string, pageContext: PageContext): Promise<null | string> {
   if (pageContext._isProduction) {
     return scriptTag
   }
@@ -27,8 +33,9 @@ async function addViteDevScripts(
   )
   const viteHead = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
   assert(viteHead.includes('script'), { viteHead })
-  const scriptTags = viteHead + scriptTag
+  const scriptTags = viteHead + (scriptTag ?? '')
   scriptTag = mergeScriptTags(scriptTags)
+  assert(scriptTag)
   return scriptTag
 }
 
