@@ -16,7 +16,7 @@
     "react-dom": "^18.0.0-rc.0",
     "typescript": "^4.5.5",
     "vite": "^2.8.4",
-    "vite-plugin-ssr": "0.3.62"
+    "vite-plugin-ssr": "0.3.64"
   },
   "type": "module"
 }
