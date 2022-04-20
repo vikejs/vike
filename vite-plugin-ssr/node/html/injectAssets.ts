@@ -73,13 +73,12 @@ function injectAssetsToStream(
 
   async function injectAtStreamBegin(htmlBegin: string) {
     assert([true, false].includes(pageContext._isHtmlOnly))
-    const injectJavaScript = !pageContext._isHtmlOnly
+    const isHtmlOnly = pageContext._isHtmlOnly
 
     assert(pageContext._pageContextProvidedByUserPromise === null || pageContext._pageContextProvidedByUserPromise)
-    const injectJavaScriptDuringStream =
-      injectJavaScript && pageContext._pageContextProvidedByUserPromise === null && !!injectToStream
+    const injectJavaScriptDuringStream = pageContext._pageContextProvidedByUserPromise === null && !!injectToStream
 
-    htmlSnippets = await getHtmlSnippets(pageContext, { injectJavaScript, injectJavaScriptDuringStream })
+    htmlSnippets = await getHtmlSnippets(pageContext, { isHtmlOnly, injectJavaScriptDuringStream })
     const htmlSnippetsAtBegin = htmlSnippets.filter((snippet) => snippet.position !== 'DOCUMENT_END')
 
     // Ensure existence of `<head>`
@@ -117,11 +116,11 @@ type HtmlSnippet = {
 async function getHtmlSnippets(
   pageContext: PageContextInjectAssets,
   {
-    injectJavaScript,
+    isHtmlOnly,
     injectJavaScriptDuringStream,
   }: {
     injectJavaScriptDuringStream: boolean
-    injectJavaScript: boolean
+    isHtmlOnly: boolean
   },
 ) {
   const pageAssets = await pageContext._getPageAssets()
@@ -131,10 +130,18 @@ async function getHtmlSnippets(
   const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'DOCUMENT_END'
 
   // Serialized pageContext
-  if (injectJavaScript) {
+  if (!isHtmlOnly) {
     htmlSnippets.push({
       // Needs to be called after `loadAsyncPageContext()`
       htmlSnippet: () => getPageContextTag(pageContext),
+      position: positionJs,
+    })
+  }
+
+  const jsScript = await findJsScript(pageAssets, pageContext)
+  if (jsScript) {
+    htmlSnippets.push({
+      htmlSnippet: jsScript,
       position: positionJs,
     })
   }
@@ -144,16 +151,12 @@ async function getHtmlSnippets(
 
     // JavaScript tags
     if (assetType === 'script') {
-      let htmlSnippet = inferAssetTag(pageAsset)
-      htmlSnippet = await addViteDevScripts(htmlSnippet, pageContext)
-      if (injectJavaScript) {
-        htmlSnippets.push({ htmlSnippet, position: positionJs })
-      }
+      // Already included with `findJsScript()`
       continue
     }
     if (assetType === 'preload' && preloadType === 'script') {
       const htmlSnippet = inferAssetTag(pageAsset)
-      if (injectJavaScript) {
+      if (!isHtmlOnly) {
         htmlSnippets.push({ htmlSnippet, position: positionJs })
       }
       continue
@@ -185,6 +188,22 @@ async function getHtmlSnippets(
   }
 
   return htmlSnippets
+}
+
+async function findJsScript(pageAssets: PageAsset[], pageContext: PageContextInjectAssets): Promise<null | string> {
+  let jsAsset: null | PageAsset = null
+  pageAssets.forEach((pageAsset) => {
+    if (pageAsset.assetType === 'script') {
+      assert(!jsAsset)
+      jsAsset = pageAsset
+    }
+  })
+  if (!jsAsset) {
+    return await addViteDevScripts(null, pageContext)
+  }
+  let scriptTag = inferAssetTag(jsAsset)
+  scriptTag = await addViteDevScripts(scriptTag, pageContext)
+  return scriptTag
 }
 
 function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[] }): string {
