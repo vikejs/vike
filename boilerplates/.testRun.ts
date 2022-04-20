@@ -25,10 +25,14 @@ function testRun(
     const isProduction = cmd === 'npm run prod' || cmd === 'pnpm run prod'
     const html = await fetchHtml('/')
 
-    if (!isProduction) {
-      expect(html).toContain('<script type="module" src="/@vite/client"></script>')
-    } else {
+    {
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
+      const viteImport = 'import "/@vite/client"'
+      if (!isProduction) {
+        expect(html).toContain(viteImport)
+      } else {
+        expect(html).not.toContain(viteImport)
+      }
     }
 
     if (isProduction) {
@@ -39,12 +43,16 @@ function testRun(
       )
 
       try {
-        expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js">`)
+        expect(html).toMatch(
+          partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js" async>`,
+        )
         expect(html).toMatch(
           partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`,
         )
       } catch (err) {
-        expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js">`)
+        expect(html).toMatch(
+          partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js" async>`,
+        )
         expect(html).toMatch(
           partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`,
         )

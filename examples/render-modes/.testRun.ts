@@ -18,6 +18,17 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(html).toContain('This page has zero browser-side JavaScript.')
       expect(html).toContain('As shown by the green text, CSS can be loaded')
       expect(html).toContain('<h1>')
+
+      {
+        expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
+        const viteImport = 'import "/@vite/client"'
+        if (!isProd) {
+          expect(html).toContain(viteImport)
+        } else {
+          expect(html).not.toContain(viteImport)
+        }
+      }
+
       if (isProd) {
         expect(html).not.toContain('<script')
         expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
@@ -25,7 +36,6 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
           partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
         )
       } else {
-        expect(html).toContain('<script type="module" src="/@vite/client"></script>')
         expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
         expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
@@ -56,7 +66,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       if (isProd) {
         expect(html).toMatch(partRegex`<script type="module" src="/assets/_default.page.client.${hash}.js">`)
       } else {
-        expect(html).toMatch(partRegex`<script type="module" src="/@fs/${path}/pages/html-js/_default.page.client.js">`)
+        expect(html).toMatch(partRegex`import "/@fs/${path}/pages/html-js/_default.page.client.js"`)
       }
     }
 
@@ -99,7 +109,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js">`)
     } else {
       expect(html).toMatch(
-        partRegex`<script type="module" src="/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js">`,
+        partRegex`import "/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js"`,
       )
     }
   }
