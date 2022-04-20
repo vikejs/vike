@@ -91,7 +91,7 @@ function renderToStream(element: React.ReactNode) {
     write(chunk)
   })
   const injectionBuffer = []
-  ;(wrapper.pipeWrapper as any).injectHtml = (htmlChunk: string) => {
+  ;(wrapper.pipeWrapper as any).injectToStream = (htmlChunk: string) => {
     wrapper.pipeWrite(htmlChunk)
   }
   return promise
