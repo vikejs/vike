@@ -4,7 +4,6 @@ import { escapeInject, pipeNodeStream } from 'vite-plugin-ssr'
 import { renderToPipeableStream } from 'react-dom/server'
 import { PageLayout } from './PageLayout'
 import { getSsrDataBuffer, SsrDataProvider } from './useSsrData'
-//import { ErrorBoundary } from 'react-error-boundary'
 import { Writable } from 'stream'
 
 export { render }
@@ -15,10 +14,6 @@ const passToClient = ['pageProps']
 
 async function render(pageContext: any) {
   const { Page, pageProps } = pageContext
-  /*
-    <ErrorBoundary FallbackComponent={Error}>
-    </ErrorBoundary>,
-   * */
   const stream: any = await renderToStream(
     <PageLayout>
       <Page {...pageProps} />
