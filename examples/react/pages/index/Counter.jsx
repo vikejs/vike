@@ -1,14 +1,12 @@
-import React, { useState, useId } from 'react'
+import React, { useState } from 'react'
 
 export { Counter }
 
 function Counter() {
-  const id = useId()
-  console.log('id: '+id)
   const [count, setCount] = useState(0)
   return (
     <button type="button" onClick={() => setCount((count) => count + 1)}>
-    {id} Counter {count}
+      Counter {count}
     </button>
   )
 }
