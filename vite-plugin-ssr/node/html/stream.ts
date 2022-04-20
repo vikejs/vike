@@ -280,12 +280,17 @@ async function manipulateStream<StreamType extends Stream>(
     const flushBuffer = () => {
       assert(writableOriginalReady)
       assert(writableOriginal)
-      if (buffer.length === 0) return
-      buffer.forEach((c) => {
-        writableOriginal.write(c)
-      })
-      buffer.length = 0
+      if (buffer.length !== 0) {
+        buffer.forEach((c) => {
+          writableOriginal.write(c)
+        })
+        buffer.length = 0
+      }
+      if (streamEnded) {
+        writableOriginal.end()
+      }
     }
+    let streamEnded = false
     const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         if (!writableOriginalReady) {
@@ -298,9 +303,11 @@ async function manipulateStream<StreamType extends Stream>(
         }
       },
       closeStream() {
+        streamEnded = true
         if (!writableOriginalReady) {
           return
         }
+        assert(buffer.length === 0)
         writableOriginal.end()
       },
       getStream() {
@@ -350,25 +357,37 @@ async function manipulateStream<StreamType extends Stream>(
 
   if (isStreamPipeWeb(streamOriginal)) {
     const buffer: string[] = []
+    const flushBuffer = () => {
+      assert(writableOriginalReady)
+      assert(writerOriginal)
+      if (buffer.length !== 0) {
+        buffer.forEach((c) => write(c))
+        buffer.length = 0
+      }
+      if (streamEnded) {
+        writerOriginal.close()
+      }
+    }
+    const write = (c: unknown) => {
+      assert(writableOriginalReady)
+      writerOriginal.write(encodeForWebStream(c))
+    }
+    let streamEnded = false
     const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         if (!writableOriginalReady) {
           buffer.push(chunk)
         } else {
-          const write = (c: unknown) => {
-            writerOriginal.write(encodeForWebStream(c))
-          }
-          if (buffer.length !== 0) {
-            buffer.forEach((c) => write(c))
-            buffer.length = 0
-          }
+          flushBuffer()
           write(chunk)
         }
       },
       closeStream() {
+        streamEnded = true
         if (!writableOriginalReady) {
           return
         }
+        assert(buffer.length === 0)
         writerOriginal.close()
       },
       getStream() {
@@ -383,12 +402,13 @@ async function manipulateStream<StreamType extends Stream>(
     const pipeWebWrapper = pipeWebStream((writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       ;(async () => {
-        // CloudFlare workers do not implement `ready` property
+        // CloudFlare Workers does not implement `ready` property
         //  - https://github.com/vuejs/vue-next/issues/4287
         try {
           await writerOriginal.ready
         } catch (e: any) {}
         writableOriginalReady = true
+        flushBuffer()
       })()
     })
     let writableProxy: WritableStream
