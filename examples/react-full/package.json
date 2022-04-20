@@ -12,8 +12,8 @@
     "@types/node-fetch": "^2.5.12",
     "@vitejs/plugin-react": "^1.2.0",
     "node-fetch": "^2.6.1",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.0.0-rc.0",
+    "react-dom": "^18.0.0-rc.0",
     "typescript": "^4.5.5",
     "vite": "^2.8.4",
     "vite-plugin-ssr": "0.3.64"

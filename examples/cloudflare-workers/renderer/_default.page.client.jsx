@@ -1,18 +1,15 @@
 export { render }
 
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom'
 import React from 'react'
 import { PageLayout } from './PageLayout'
-import { SsrDataProvider } from './useSsrData'
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
-  ReactDOM.hydrateRoot(
+  ReactDOM.hydrate(
+    <PageLayout>
+      <Page {...pageProps} />
+    </PageLayout>,
     document.getElementById('page-view'),
-    <SsrDataProvider>
-      <PageLayout>
-        <Page {...pageProps} />
-      </PageLayout>
-    </SsrDataProvider>,
   )
 }
