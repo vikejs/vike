@@ -450,7 +450,7 @@ async function manipulateStream<StreamType extends Stream>(
     let controller: ReadableStreamController<any>
     assertReadableStreamConstructor()
     const readableWebWrapper = new ReadableStream({
-      async start(controller_) {
+      start(controller_) {
         controller = controller_
         handleReadableWeb(readableWebOriginal, { onData, onError, onEnd })
       },
