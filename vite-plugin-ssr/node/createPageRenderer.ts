@@ -21,7 +21,7 @@ function createPageRenderer(_deprecated: {
 }): RenderPage {
   assertWarning(
     false,
-    "`createPageRenderer()` is not needed anymore (vite-plugin-ssr now automatically determines the options). To avoid this warning, replace `const renderPage = createPageRenderer(/*...*/);` with the drop-in replacement `import { renderPage } from 'vite-plugin-ssr';`",
+    "`createPageRenderer()` is not needed anymore (vite-plugin-ssr now automatically determines the options). To remove this warning, replace `const renderPage = createPageRenderer(/*...*/);` with the drop-in replacement `import { renderPage } from 'vite-plugin-ssr';`",
     { onlyOnce: true },
   )
   return renderPage
