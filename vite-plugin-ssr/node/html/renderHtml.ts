@@ -233,10 +233,18 @@ function renderTemplate(
       continue
     }
 
-    const getErrMsg = (typeText: string, end: string) => {
+    const getErrMsg = (typeText: string, end: null | string) => {
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return `Each HTML variable should be a string, but the ${nth} HTML variable is ${typeText}, see \`render()\` hook of ${renderFilePath}.${end}`
+      return [
+        `Each HTML variable should be a string (or a stream), but the ${nth} HTML variable is ${typeText}, see \`render()\` hook of ${renderFilePath}.`,
+        end,
+      ]
+        .filter(Boolean)
+        .join(' ')
     }
+
+    assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
+
     if (templateVar === undefined || templateVar === null) {
       assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { onlyOnce: false })
       addString('')
@@ -246,8 +254,8 @@ function renderTemplate(
     {
       const varType = typeof templateVar
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
-        ? ''
-        : ' (See https://vite-plugin-ssr.com/stream for HTML streaming.)'
+        ? null
+        : '(See https://vite-plugin-ssr.com/stream for HTML streaming.)'
       assertUsage(varType === 'string', getErrMsg(`\`typeof htmlVar === "${varType}"\``, streamNote))
     }
 
