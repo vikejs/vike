@@ -6,6 +6,7 @@ export { extractStylesRE }
 export { extractStylesAddQuery }
 
 import type { Plugin } from 'vite'
+import type { ResolvedId } from 'rollup'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
 import { parseEsModules, EsModules } from '../parseEsModules'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
@@ -60,10 +61,14 @@ function extractStylesPlugin(): Plugin[] {
           return
         }
         assert(!isServerSide)
-        const resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
 
-        // If it cannot be resolved, just return it so that Rollup can display an error.
-        if (!resolution) return resolution
+        let resolution: null | ResolvedId = null
+        try {
+          resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
+        } catch {}
+
+        // Sometimes Rollup fails to resolve. If it fails to resolve, we assume the dependency to be an npm package and we skip it. (AFAICT, Rollup should always be able to resolve local dependencies.)
+        if (!resolution) return emptyModule(source, importer)
 
         const { id } = resolution
 
