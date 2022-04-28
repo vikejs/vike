@@ -5,7 +5,7 @@ workers_dev = true
 type = "javascript"
 
 [build]
-command = "yarn build:worker"
+command = "pnpm build:worker"
 [build.upload]
 format = "service-worker"
 

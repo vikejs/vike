@@ -1,6 +1,6 @@
-import ReactDOMServer from 'react-dom/server'
 import React from 'react'
-import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { renderToStream } from 'react-streaming/server'
+import { escapeInject } from 'vite-plugin-ssr'
 import { PageLayout } from './PageLayout'
 
 export { render }
@@ -9,18 +9,19 @@ export { passToClient }
 // See https://vite-plugin-ssr.com/data-fetching
 const passToClient = ['pageProps']
 
-function render(pageContext) {
+async function render(pageContext: any) {
   const { Page, pageProps } = pageContext
-  const pageHtml = ReactDOMServer.renderToString(
-    <PageLayout>
+  const stream = await renderToStream(
+    <PageLayout pageContext={pageContext}>
       <Page {...pageProps} />
     </PageLayout>,
+    { userAgent: pageContext.userAgent }
   )
 
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${stream}</div>
       </body>
     </html>`
 }
