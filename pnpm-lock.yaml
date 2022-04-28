@@ -526,6 +526,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.0.0
       react-dom: ^18.0.0
+      react-streaming: ^0.1.9
       typescript: ^4.5.5
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
@@ -542,6 +543,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
+      react-streaming: 0.1.9_react-dom@18.0.0+react@18.0.0
       typescript: 4.5.5
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -10884,6 +10886,18 @@ packages:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 17.0.2
+    dev: false
+
+  /react-streaming/0.1.9_react-dom@18.0.0+react@18.0.0:
+    resolution: {integrity: sha512-Wz3f8eRz3mwsoE0eBDvk47r+WmtQ/YLKPmN3gJ1CxIRYUzLvdoN0fLxjsbVm1+AffWDYbl9MGadBT0ICEVhwAQ==}
+    peerDependencies:
+      react: '>=18'
+      react-dom: '>=18'
+    dependencies:
+      '@brillout/json-s': 0.4.5
+      isbot-fast: 1.2.0
+      react: 18.0.0
+      react-dom: 18.0.0_react@18.0.0
     dev: false
 
   /react-streaming/0.1.9_react-dom@18.1.0+react@18.1.0:
