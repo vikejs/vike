@@ -1,7 +1,7 @@
-import React from 'react'
-import { Counter } from './Counter'
-
 export { Page }
+
+import React from 'react'
+import { Counter } from '../components/Counter'
 
 function Page() {
   return (

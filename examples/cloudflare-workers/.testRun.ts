@@ -87,7 +87,15 @@ function testRun(
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Star Wars Movies')
       })
-      expect(await page.textContent('body')).toContain('The Phantom Menace')
+      const testContent = async () => {
+        expect(await page.textContent('body')).toContain('The Phantom Menace')
+      }
+      try {
+        await testContent()
+      } catch {
+        expect(await page.textContent('body')).toContain('Loading...')
+        await autoRetry(testContent)
+      }
     })
   }
 }
