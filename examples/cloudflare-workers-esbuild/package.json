@@ -19,12 +19,13 @@
     "@cloudflare/wrangler": "^1.19.8",
     "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
     "@vitejs/plugin-react": "^1.2.0",
-    "express": "^4.17.3",
     "esbuild": "^0.14.27",
+    "express": "^4.17.3",
     "miniflare": "^2.3.0",
     "node-fetch": "^2.6.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-streaming": "^0.1.9",
     "vite": "^2.8.4",
     "vite-plugin-ssr": "0.3.64"
   }
