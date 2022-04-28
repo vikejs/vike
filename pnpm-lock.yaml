@@ -233,7 +233,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.1.9
+      react-streaming: ^0.1.10
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -247,7 +247,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.1.9_react-dom@18.1.0+react@18.1.0
+      react-streaming: 0.1.10_react-dom@18.1.0+react@18.1.0
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -503,14 +503,14 @@ importers:
       '@vitejs/plugin-react': ^1.2.0
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.1.9
+      react-streaming: ^0.1.10
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.1.9_react-dom@18.1.0+react@18.1.0
+      react-streaming: 0.1.10_react-dom@18.1.0+react@18.1.0
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -528,7 +528,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.0.0
       react-dom: ^18.0.0
-      react-streaming: ^0.1.9
+      react-streaming: ^0.1.10
       typescript: ^4.5.5
       vite: npm:@brillout/vite@2.9.2-pre-release.0
       vite-plugin-ssr: 0.3.64
@@ -545,7 +545,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
-      react-streaming: 0.1.9_react-dom@18.0.0+react@18.0.0
+      react-streaming: 0.1.10_react-dom@18.0.0+react@18.0.0
       typescript: 4.5.5
       vite: /@brillout/vite/2.9.2-pre-release.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -10890,8 +10890,8 @@ packages:
       react: 17.0.2
     dev: false
 
-  /react-streaming/0.1.9_react-dom@18.0.0+react@18.0.0:
-    resolution: {integrity: sha512-Wz3f8eRz3mwsoE0eBDvk47r+WmtQ/YLKPmN3gJ1CxIRYUzLvdoN0fLxjsbVm1+AffWDYbl9MGadBT0ICEVhwAQ==}
+  /react-streaming/0.1.10_react-dom@18.0.0+react@18.0.0:
+    resolution: {integrity: sha512-Ag58uTx+zlI9c0NWWQqa3uovtJ1Q0UJK0LZc+b1JWfQdKISgWDS1lr2ZzTWPMT4lG58if/N+KYIgjcDRfvjv3w==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -10902,8 +10902,8 @@ packages:
       react-dom: 18.0.0_react@18.0.0
     dev: false
 
-  /react-streaming/0.1.9_react-dom@18.1.0+react@18.1.0:
-    resolution: {integrity: sha512-Wz3f8eRz3mwsoE0eBDvk47r+WmtQ/YLKPmN3gJ1CxIRYUzLvdoN0fLxjsbVm1+AffWDYbl9MGadBT0ICEVhwAQ==}
+  /react-streaming/0.1.10_react-dom@18.1.0+react@18.1.0:
+    resolution: {integrity: sha512-Ag58uTx+zlI9c0NWWQqa3uovtJ1Q0UJK0LZc+b1JWfQdKISgWDS1lr2ZzTWPMT4lG58if/N+KYIgjcDRfvjv3w==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
