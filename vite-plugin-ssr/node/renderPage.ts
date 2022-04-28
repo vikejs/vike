@@ -42,6 +42,8 @@ import {
   isStream,
   getStreamName,
   inferStreamName,
+  isStreamWritableWeb,
+  isStreamWritableNode,
 } from './html/stream'
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
@@ -315,6 +317,7 @@ type HttpResponse = {
   getWebStream: () => StreamReadableWeb
   pipeToNodeWritable: StreamPipeNode
   pipeToWebWritable: StreamPipeWeb
+  pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
 }
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
@@ -354,28 +357,55 @@ function createHttpResponseObject(
     },
     pipeToWebWritable(writable: StreamWritableWeb) {
       const success = pipeToStreamWritableWeb(htmlRender, writable)
-      assertUsage(success, errMsg('pipeToWebWritable()', fixMsg('pipe', 'web')))
+      assertUsage(success, errMsg('pipeToWebWritable()'))
     },
     pipeToNodeWritable(writable: StreamWritableNode) {
       const success = pipeToStreamWritableNode(htmlRender, writable)
-      assertUsage(success, errMsg('pipeToNodeWritable()', fixMsg('pipe', 'node')))
+      assertUsage(success, errMsg('pipeToNodeWritable()'))
     },
-    /*
     pipe(writable: StreamWritableNode | StreamWritableWeb) {
-    }
-    */
+      if (isStreamWritableWeb(writable)) {
+        const success = pipeToStreamWritableWeb(htmlRender, writable)
+        assertUsage(success, errMsg('pipe()'))
+        return
+      }
+      if (isStreamWritableNode(writable)) {
+        const success = pipeToStreamWritableNode(htmlRender, writable)
+        assertUsage(success, errMsg('pipe()'))
+        return
+      }
+      assertUsage(
+        false,
+        `The object \`writable\` passed to \`pageContext.httpResponse.pipe(writable)\` doesn't seem to be ${getStreamName(
+          'writable',
+          'web',
+        )} nor ${getStreamName('writable', 'node')}.`,
+      )
+    },
   }
 
-  function errMsg(method: string, fixMsg: string) {
-    assert(typeof htmlRender === 'string' || isStream(htmlRender))
-    let htmlTypeName = 'an HTML string'
-    if (isStream(htmlRender)) {
-      htmlTypeName = inferStreamName(htmlRender)
+  function errMsg(method: string, fixMsg?: string) {
+    let htmlRenderName: string
+    if (typeof htmlRender === 'string') {
+      htmlRenderName = 'an HTML string'
+    } else if (isStream(htmlRender)) {
+      htmlRenderName = inferStreamName(htmlRender)
+    } else {
+      assert(false)
     }
-    return `\`pageContext.httpResponse.${method}\` is not available because your \`render()\` hook (${renderFilePath}) provides ${htmlTypeName}. ${fixMsg}. See https://vite-plugin-ssr.com/stream`
+    assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
+    return [
+      `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook (${renderFilePath}) provides ${htmlRenderName}`,
+      fixMsg,
+      'See https://vite-plugin-ssr.com/stream',
+    ]
+      .filter(Boolean)
+      .join('. ')
   }
   function fixMsg(type: 'pipe' | 'readable', standard: 'web' | 'node') {
-    return `Make sure your \`render()\` hook provides ${getStreamName(type, standard)} instead.`
+    const streamName = getStreamName(type, standard)
+    assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
+    return `Make sure your \`render()\` hook provides ${streamName} instead`
   }
 }
 

@@ -1,19 +1,30 @@
-import { assert, assertUsage, checkType, isObject, hasProp, objectAssign } from '../utils'
+import { assert, assertUsage, checkType, isObject, hasProp, objectAssign, capitalizeFirstLetter } from '../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
 // Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
 import type { Readable as StreamReadableNode, Writable as StreamWritableNode } from 'stream'
+import {
+  getStreamFromReactStreaming,
+  isStreamReactStreaming,
+  StreamReactStreaming,
+  streamReactStreamingToString,
+} from './stream/react-streaming'
 //import { streamNodeModuleGet as loadStreamNodeModule } from './stream/streamNodeModule'
 
 export { getStreamReadableNode }
 export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
-export { manipulateStream }
+export { processStream }
 export { isStream }
 export { streamToString }
 export { getStreamName }
 export { inferStreamName }
+
+export { streamReadableWebToString }
+export { streamPipeNodeToString }
+export { isStreamWritableWeb }
+export { isStreamWritableNode }
 
 export type { Stream }
 export type { StreamTypePatch }
@@ -36,23 +47,34 @@ type StreamWritableWeb = WritableStream
 type StreamPipeWeb = (writable: StreamWritableWeb) => void
 type StreamPipeNode = (writable: StreamWritableNode) => void
 type StreamPipe = (writable: StreamWritableNode | StreamWritableWeb) => void
-type Stream = StreamReadableWeb | StreamReadableNode | StreamPipeWebWrapped | StreamPipeNodeWrapped
+type Stream =
+  | StreamReadableWeb
+  | StreamReadableNode
+  | StreamPipeWebWrapped
+  | StreamPipeNodeWrapped
+  | StreamReactStreaming
 // `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
 type StreamTypePatch = NodeJS.ReadableStream
 
 function isStreamReadableWeb(thing: unknown): thing is StreamReadableWeb {
   return typeof ReadableStream !== 'undefined' && thing instanceof ReadableStream
 }
+function isStreamWritableWeb(thing: unknown): thing is StreamWritableWeb {
+  return typeof WritableStream !== 'undefined' && thing instanceof WritableStream
+}
 function isStreamReadableNode(thing: unknown): thing is StreamReadableNode {
   if (isStreamReadableWeb(thing)) {
     return false
   }
-  /*
-  console.log(thing)
-  console.log(hasProp(thing, 'read', 'function'))
-  */
   // https://stackoverflow.com/questions/17009975/how-to-test-if-an-object-is-a-stream-in-nodejs/37022523#37022523
   return hasProp(thing, 'read', 'function')
+}
+function isStreamWritableNode(thing: unknown): thing is StreamWritableNode {
+  if (isStreamWritableWeb(thing)) {
+    return false
+  }
+  // https://stackoverflow.com/questions/17009975/how-to-test-if-an-object-is-a-stream-in-nodejs/37022523#37022523
+  return hasProp(thing, 'write', 'function')
 }
 
 async function streamReadableNodeToString(readableNode: StreamReadableNode): Promise<string> {
@@ -190,7 +212,7 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
 }
 
 type StreamWrapper<StreamType> = { stream: StreamType } | { errorBeforeFirstData: unknown }
-async function manipulateStream<StreamType extends Stream>(
+async function processStream<StreamType extends Stream>(
   streamOriginal: StreamType,
   {
     injectStringAtBegin,
@@ -273,6 +295,11 @@ async function manipulateStream<StreamType extends Stream>(
       onError,
       streamPromise,
     }
+  }
+
+  if (isStreamReactStreaming(streamOriginal)) {
+    const stream = getStreamFromReactStreaming(streamOriginal)
+    ;(streamOriginal as Stream) = stream
   }
 
   if (isStreamPipeNode(streamOriginal)) {
@@ -522,7 +549,8 @@ function isStream(something: unknown): something is Stream {
     isStreamReadableWeb(something) ||
     isStreamReadableNode(something) ||
     isStreamPipeNode(something) ||
-    isStreamPipeWeb(something)
+    isStreamPipeWeb(something) ||
+    isStreamReactStreaming(something)
     //isStreamPipe(something)
   ) {
     checkType<Stream>(something)
@@ -597,6 +625,9 @@ async function streamToString(stream: Stream): Promise<string> {
   if (isStreamPipeWeb(stream)) {
     return await streamPipeWebToString(getStreamPipeWeb(stream))
   }
+  if (isStreamReactStreaming(stream)) {
+    return await streamReactStreamingToString(stream)
+  }
   checkType<never>(stream)
   assert(false)
 }
@@ -635,17 +666,21 @@ function dynamicImport(modulePath: string): Promise<Record<string, unknown>> {
   return new Function('modulePath', 'return import(modulePath)')(modulePath)
 }
 
-function getStreamName(type: 'pipe' | 'readable', standard: 'web' | 'node') {
-  const standardName = (standard === 'web' && 'Web') || (standard === 'node' && 'Node.js')
-  assert(standardName)
-  if (type === 'readable') {
-    return `a Readable ${standardName} Stream`
+function getStreamName(type: 'pipe' | 'readable' | 'writable', standard: 'web' | 'node') {
+  let standardName = capitalizeFirstLetter(standard)
+  if (standardName === 'Node') {
+    standardName = 'Node.js'
+  }
+  const typeName = capitalizeFirstLetter(type)
+  if (type !== 'pipe') {
+    return `a ${typeName} ${standardName} Stream`
   }
   if (type === 'pipe') {
     return `a ${standardName} Stream Pipe`
   }
   assert(false)
 }
+
 function inferStreamName(stream: Stream) {
   if (isStreamReadableWeb(stream)) {
     return getStreamName('readable', 'web')
@@ -659,5 +694,9 @@ function inferStreamName(stream: Stream) {
   if (isStreamPipeWeb(stream)) {
     return getStreamName('pipe', 'web')
   }
+  if (isStreamReactStreaming(stream)) {
+    return 'the stream object provided by `react-streaming`'
+  }
+  checkType<never>(stream)
   assert(false)
 }
