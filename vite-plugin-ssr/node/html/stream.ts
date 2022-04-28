@@ -131,7 +131,11 @@ function stringToStreamPipeWeb(str: string): StreamPipeWeb {
 async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string> {
   let str: string = ''
   let resolve: (s: string) => void
-  const promise = new Promise<string>((r) => (resolve = r))
+  let reject: (err: unknown) => void
+  const promise = new Promise<string>((resolve_, reject_) => {
+    resolve = resolve_
+    reject = reject_
+  })
   const { Writable } = await loadStreamNodeModule()
   const writable = new Writable({
     write(chunk, _encoding, callback) {
@@ -143,6 +147,9 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
     final(callback) {
       resolve(str)
       callback()
+    },
+    destroy(err) {
+      reject(err)
     },
   })
   streamPipeNode(writable)
@@ -318,7 +325,7 @@ async function processStream<StreamType extends Stream>(
       }
     }
     let streamEnded = false
-    const { onData, onEnd, /*onError,*/ streamPromise } = getManipulationHandlers({
+    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         if (!writableOriginalReady) {
           // console.log('buffer: '+chunk)
@@ -361,6 +368,9 @@ async function processStream<StreamType extends Stream>(
         await onEnd()
         callback()
       },
+      async destroy(err) {
+        await onError(err)
+      }
     })
 
     // Forward the flush() command to avoid GZIP buffering
