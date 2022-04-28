@@ -1,7 +1,8 @@
 import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
 import { injectAssets, injectAssetsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
-import { manipulateStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
+import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
+import { isStreamReactStreaming } from './stream/react-streaming'
 
 // Public
 export { escapeInject }
@@ -104,9 +105,10 @@ async function renderHtmlStream(
     onErrorWhileStreaming,
   }
   if (injectString) {
-    // TODO
-    // @ts-ignore
-    const injectToStream = streamOriginal?.__streamPipeNode?.injectToStream
+    let injectToStream: null | ((chunk: string) => void) = null
+    if (isStreamReactStreaming(streamOriginal)) {
+      injectToStream = streamOriginal.injectToStream
+    }
     const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
@@ -117,7 +119,7 @@ async function renderHtmlStream(
       },
     })
   }
-  const result = await manipulateStream(streamOriginal, opts)
+  const result = await processStream(streamOriginal, opts)
   assert('errorBeforeFirstData' in result || isStream(result.stream))
   return result
 }
