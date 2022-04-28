@@ -224,7 +224,7 @@ importers:
   examples/cloudflare-workers-esbuild:
     specifiers:
       '@cloudflare/kv-asset-handler': ~0.2.0
-      '@cloudflare/wrangler': ^1.19.8
+      '@cloudflare/wrangler': ^1.19.12
       '@esbuild-plugins/node-modules-polyfill': ^0.1.4
       '@vitejs/plugin-react': ^1.2.0
       esbuild: ^0.14.27
@@ -238,7 +238,7 @@ importers:
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
-      '@cloudflare/wrangler': 1.19.8
+      '@cloudflare/wrangler': 1.19.12
       '@esbuild-plugins/node-modules-polyfill': 0.1.4_esbuild@0.14.27
       '@vitejs/plugin-react': 1.2.0
       esbuild: 0.14.27
@@ -1935,6 +1935,18 @@ packages:
 
   /@cloudflare/workers-types/2.2.2:
     resolution: {integrity: sha512-kaMn2rueJ0PL1TYVGknTCh0X0x0d9G+FNXAFep7/4uqecEZoQb/63o6rOmMuiqI09zLuHV6xhKRXinokV/MY9A==}
+    dev: false
+
+  /@cloudflare/wrangler/1.19.12:
+    resolution: {integrity: sha512-ALuQDzJetYGqzNuIa3KY8S8X9rvZjIh5uEY3nK31jV/EmBamiiSJn4XIdPuSn65FaEmmZem78OJIWFyu80OIuA==}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      axios: 0.21.4
+      rimraf: 3.0.2
+      tar: 6.1.11
+    transitivePeerDependencies:
+      - debug
     dev: false
 
   /@cloudflare/wrangler/1.19.8:
