@@ -818,11 +818,12 @@ function logError(err: unknown) {
   }
 
   if (!isObject(err)) {
-    console.error('[vite-plugin-ssr] The non-object value thrown as error is:', err)
-    assertUsage(
+    console.warn('[vite-plugin-ssr] The thrown value is:')
+    console.warn(err)
+    assertWarning(
       false,
-      "Your source code threw a non-object value as error. For example: `throw 'some-string'`. Make sure to `throw new Error('some-string')` instead. The non-object error value is printed above. Feel free to contact `vite-plugin-ssr` maintainers to get help.",
-    )
+      "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
+     { onlyOnce: false })
   }
 
   // Avoid logging error twice (not sure if this actually ever happens?)
