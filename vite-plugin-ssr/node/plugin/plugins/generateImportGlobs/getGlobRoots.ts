@@ -52,7 +52,7 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
     return includePath
   }
 
-  const includePath = path.posix.join('node_modules', pkgName, pageFilesDir)
+  const includePath = path.posix.join('node_modules', '.vite-plugin-ssr', pkgName, pageFilesDir)
   if (!fs.existsSync(includePath)) {
     const sourceAbsolute = crawlRoot
     const targetAbsolute = `${root}/${includePath}`
