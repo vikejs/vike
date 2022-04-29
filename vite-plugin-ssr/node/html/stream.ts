@@ -247,6 +247,15 @@ async function processStream<StreamType extends Stream>(
     let resolve: (result: StreamWrapper<StreamType>) => void
     const streamPromise = new Promise<StreamWrapper<StreamType>>((r) => (resolve = r))
 
+    let streamEnded = false
+    const close = () => {
+      if (streamEnded) {
+        return
+      }
+      streamEnded = true
+      closeStream()
+    }
+
     let resolved = false
     const write = (chunk: string) => {
       writeData(chunk)
@@ -278,6 +287,10 @@ async function processStream<StreamType extends Stream>(
       write(chunk)
     }
     const onEnd = async () => {
+      if( streamEnded ) {
+        return
+      }
+
       // If empty stream: the stream ends before any data was written, but we still need to ensure that we inject `stringBegin`
       await ensureStringBegin()
 
@@ -286,11 +299,11 @@ async function processStream<StreamType extends Stream>(
         write(stringEnd)
       }
 
-      closeStream()
+      close()
     }
     const onError = async (err: unknown) => {
       if (resolved === false) {
-        closeStream()
+        close()
         // Stream has not begun yet, which means that we have sent no HTML to the browser, and we can gracefully abort the stream.
         resolve({ errorBeforeFirstData: err })
       } else {
