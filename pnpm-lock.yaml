@@ -225,9 +225,8 @@ importers:
     specifiers:
       '@cloudflare/kv-asset-handler': ~0.2.0
       '@cloudflare/wrangler': ^1.19.12
-      '@esbuild-plugins/node-modules-polyfill': ^0.1.4
       '@vitejs/plugin-react': ^1.2.0
-      esbuild: ^0.14.27
+      build-worker: 0.1.1
       express: ^4.17.3
       miniflare: ^2.3.0
       node-fetch: ^2.6.1
@@ -239,9 +238,8 @@ importers:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@cloudflare/wrangler': 1.19.12
-      '@esbuild-plugins/node-modules-polyfill': 0.1.4_esbuild@0.14.27
       '@vitejs/plugin-react': 1.2.0
-      esbuild: 0.14.27
+      build-worker: 0.1.1
       express: 4.17.3
       miniflare: 2.3.0
       node-fetch: 2.6.7
@@ -4170,6 +4168,14 @@ packages:
       base64-js: 1.5.1
       ieee754: 1.2.1
       isarray: 1.0.0
+    dev: false
+
+  /build-worker/0.1.1:
+    resolution: {integrity: sha512-tbh/mnbrRmdgAu7S13WX+evuXJOOAyhJ6F3R12I/4pfe8d809CIszrBHILDNmBIJMIN7Rv+p70BNHsWWUjSJnQ==}
+    hasBin: true
+    dependencies:
+      '@esbuild-plugins/node-modules-polyfill': 0.1.4_esbuild@0.14.27
+      esbuild: 0.14.27
     dev: false
 
   /builtin-status-codes/3.0.0:

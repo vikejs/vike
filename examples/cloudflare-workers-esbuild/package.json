@@ -12,14 +12,13 @@
     "// Build": "",
     "build": "npm run build:vite && npm run build:worker",
     "build:vite": "vite build && vite build --ssr",
-    "build:worker": "node ./build-worker.mjs"
+    "build:worker": "build-worker --entry worker/index.js --out dist/worker.js"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.2.0",
     "@cloudflare/wrangler": "^1.19.12",
-    "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
     "@vitejs/plugin-react": "^1.2.0",
-    "esbuild": "^0.14.27",
+    "build-worker": "0.1.1",
     "express": "^4.17.3",
     "miniflare": "^2.3.0",
     "node-fetch": "^2.6.1",
