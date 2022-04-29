@@ -130,10 +130,10 @@ function stringToStreamPipeWeb(str: string): StreamPipeWeb {
 
 async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<string> {
   let str: string = ''
-  let resolve: (s: string) => void
+  let resolve: () => void
   let reject: (err: unknown) => void
   const promise = new Promise<string>((resolve_, reject_) => {
-    resolve = resolve_
+    resolve = () => resolve_(str)
     reject = reject_
   })
   const { Writable } = await loadStreamNodeModule()
@@ -145,11 +145,15 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
       callback()
     },
     final(callback) {
-      resolve(str)
+      resolve()
       callback()
     },
     destroy(err) {
-      reject(err)
+      if (err) {
+        reject(err)
+      } else {
+        resolve()
+      }
     },
   })
   streamPipeNode(writable)
@@ -369,8 +373,12 @@ async function processStream<StreamType extends Stream>(
         callback()
       },
       async destroy(err) {
-        await onError(err)
-      }
+        if (err) {
+          await onError(err)
+        } else {
+          await onEnd()
+        }
+      },
     })
 
     // Forward the flush() command to avoid GZIP buffering
