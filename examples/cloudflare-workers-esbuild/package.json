@@ -20,7 +20,7 @@
     "@vitejs/plugin-react": "^1.2.0",
     "build-worker": "0.1.1",
     "express": "^4.17.3",
-    "miniflare": "^2.3.0",
+    "miniflare": "^2.4.0",
     "node-fetch": "^2.6.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
