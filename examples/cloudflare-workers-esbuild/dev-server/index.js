@@ -32,7 +32,7 @@ async function startServer() {
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
     res.type(httpResponse.contentType).status(httpResponse.statusCode)
-    httpResponse.pipeToNodeWritable(res)
+    httpResponse.pipe(res)
   })
 
   const port = 3000
