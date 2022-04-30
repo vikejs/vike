@@ -1,51 +1,51 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 
+
 ## Examples
 
  - React: <RepoLink path='/examples/cloudflare-workers/' />
- - Vue + HTML streaming: <RepoLink path='/examples/cloudflare-workers-vue-html-streaming/' />
- - esbuild: <RepoLink path='/examples/cloudflare-workers-esbuild/' />
+ - Vue: <RepoLink path='/examples/cloudflare-workers-vue/' />
 
-## Cloudflare Pages & wrangler 2
-
-With [wrangler v2](https://github.com/cloudflare/wrangler2), we can deploy a Cloudflare Worker (server code) along Cloudflare Pages (static files).
-
-Example:
- - [github.com/thetre97/vite-plugin-ssr-cloudflare-pages](https://github.com/thetre97/vite-plugin-ssr-cloudflare-pages).
- - [github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo](https://github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo)
-     - Returns SSR with streaming and uses esbuild 
-
-See also:
- - [Wrangler 2.0 — a new developer experience for Cloudflare Workers](https://blog.cloudflare.com/wrangler-v2-beta/)
- - [github.com/cloudflare/wrangler2](https://github.com/cloudflare/wrangler2)
-
-
-## Dev Server
-
-We recommend to:
- - For dev, use an Express.js server instead of a worker, for much faster HMR & dev start. (So we skip `wrangler` / `miniflare` / Cloudflare Workers altogether while developing our app. We still use `wrangler`/`miniflare` to develop the worker code integration.)
- - For production, bundle the worker code with Cloudflare Workers's webpack bundler.
-
-See examples above.
 
 ## Bundling
 
-By default, we recommend using Cloudflare Workers's webpack bundler because it's the beaten path;
-using another bundler may cause subtle differences that may cause problems.
+Cloudflare Workers requires your entire worker code to be bundled into a single file.
 
-That said, we can use any other bundler (esbuild, rollup, ...) to bundle our worker code.
+> Cloudflare uses the term "worker code" to denote server code that is run on its edge infrastructure.
 
-## `importBuild.js`
+We recommend using [`build-worker`](https://github.com/brillout/build-worker) (which uses [esbuild](https://esbuild.github.io/)) instead of wrangler to bundle your worker code.
 
-Cloudflare Workers requires us to bundle our entire worker code into a single file.
+> Wrangler v1 uses webpack v4 which is outdated and has many problems (e.g. it doesn't work with Node.js >=18).
+>
+> Wrangler v2 uses esbuild but it's not production ready.
 
-For bundlers to be able to discover & bundle the entire dependency tree, we need to use [`dist/server/importBuild.js`](/importBuild.js).
 
-Example: <RepoLink path='/examples/cloudflare-workers/worker/ssr.js' />.
+## Cloudflare Pages
+
+With [wrangler v2](https://github.com/cloudflare/wrangler2), we can deploy server code (with Cloudflare Workers) along static files (with Cloudflare Pages).
+
+Example:
+ - [github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo](https://github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo)
+
+See also:
+ - [Wrangler 2.0 — a new developer experience for Cloudflare Workers](https://blog.cloudflare.com/wrangler-v2-beta/)
+
+
+## Development
+
+For developing your app, we recommend, whenever possible, to use Express.js instead of wrangler. Leading to a significantly faster development experience.
+
+This means:
+ - Skip `wrangler` / `miniflare` / Cloudflare Workers altogether while developing your app.
+ - Use `wrangler` (or `miniflare`) to preview your worker.
+ - Use `wrangler` to deploy your worker to Cloudflare Workers.
+
+See the setup of the [examples](#examples).
+
 
 ## Universal `fetch()`
 
-When using Node.js for dev and Cloudflare Workers for production, we may need a `fetch()` function that works in both environments.
+When using Node.js for development and Cloudflare Workers for production, we may need a `fetch()` function that works in both environments.
 
 But libraries such as `node-fetch` or `cross-fetch` usually don't work with Cloudflare Workers.
 
@@ -53,28 +53,3 @@ What we can do is to define a fetch function at `pageContext.fetch` that works i
 The trick is to add a different `fetch()` implementation to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer).
 
 Example: <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.
-
-## esbuild
-
-For a faster build time, you can bundle your worker with [`esbuild`](https://esbuild.github.io/).
-
-It's not possible to run it from the CLI as it needs the plugin [`@esbuild-plugins/node-modules-polyfill`](https://github.com/remorses/esbuild-plugins#esbuild-pluginsnode-modules-polyfill). Create a build script instead:
-
-```js
-// build-worker.js
-
-import esbuild from 'esbuild'
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill'
-
-esbuild.build({
-  // Necessary for a successful build:
-  plugins: [NodeModulesPolyfillPlugin()],
-  platform: 'browser',
-  conditions: ['node'],
-
-  // Other esbuild options...
-})
-```
-
-Example: <RepoLink path='/examples/cloudflare-workers-esbuild' />.
-
