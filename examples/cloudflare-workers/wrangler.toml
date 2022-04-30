@@ -2,9 +2,14 @@ name = "vite-plugin-ssr_worker-example"
 compatibility_date = "2021-09-29"
 account_id = ""
 workers_dev = true
-type = "webpack"
-webpack_config = "./webpack.config.js"
+type = "javascript"
+compatibility_flags = ["streams_enable_constructors"]
+
+[build]
+command = "pnpm build:worker"
+[build.upload]
+format = "service-worker"
 
 [site]
 bucket = "./dist/client"
-entry-point = "./worker"
+entry-point = "."

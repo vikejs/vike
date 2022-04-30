@@ -1,25 +1,28 @@
 import React from 'react'
 import './PageLayout.css'
+import { PageContextProvider } from './usePageContext'
 
 export { PageLayout }
 
-function PageLayout({ children }) {
+function PageLayout({ pageContext, children }) {
   return (
     <React.StrictMode>
-      <Layout>
-        <Sidebar>
-          <a className="navitem" href="/">
-            Home
-          </a>
-          <a className="navitem" href="/about">
-            About
-          </a>
-          <a className="navitem" href="/star-wars">
-            Star Wars
-          </a>
-        </Sidebar>
-        <Content>{children}</Content>
-      </Layout>
+      <PageContextProvider pageContext={pageContext}>
+        <Layout>
+          <Sidebar>
+            <a className="navitem" href="/">
+              Home
+            </a>
+            <a className="navitem" href="/about">
+              About
+            </a>
+            <a className="navitem" href="/star-wars">
+              Star Wars
+            </a>
+          </Sidebar>
+          <Content>{children}</Content>
+        </Layout>
+      </PageContextProvider>
     </React.StrictMode>
   )
 }
