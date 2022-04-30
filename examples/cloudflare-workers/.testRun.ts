@@ -5,7 +5,7 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
-  { hasStarWarsPage, usesCustomBundler }: { hasStarWarsPage: boolean; usesCustomBundler?: true },
+  { hasStarWarsPage }: { hasStarWarsPage: boolean },
 ) {
   const isMiniflare = cmd === 'npm run preview:miniflare'
   const isWrangler = cmd === 'npm run preview:wrangler'
@@ -53,11 +53,8 @@ function testRun(
   {
     const additionalTimeout = !isWorker ? 0 : (isGithubAction() ? 2 : 1) * 120 * 1000
     const serverIsReadyMessage = (() => {
-      if (isMiniflare || (isWrangler && usesCustomBundler)) {
+      if (isMiniflare || isWrangler) {
         return 'Listening on'
-      }
-      if (isWrangler) {
-        return 'Ignoring stale first change'
       }
       assert(!isWorker)
       // Express.js dev server
