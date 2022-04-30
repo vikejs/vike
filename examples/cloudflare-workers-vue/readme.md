@@ -15,7 +15,7 @@ See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudfl
 Setup:
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/cloudflare-workers-vue-html-streaming/
+cd vite-plugin-ssr/examples/cloudflare-workers-vue/
 npm install
 ```
 
@@ -29,19 +29,14 @@ To try the worker locally with miniflare: (No account needed.)
 npm run preview
 ```
 
-To be able to use `wrangler`, create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
-
 To try the worker locally with wrangler:
 ```bash
 npm run preview:wrangler
 ```
 
+> To be able to use `wrangler`, you'll need to create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
+
 To deploy the worker to Cloudflare:
 ```bash
 npm run deploy
 ```
-
-
-## `dist/server/importBuild.js`
-
-Note how we load [`dist/server/importBuild.js`](https://vite-plugin-ssr.com/importBuild.js) in [worker/ssr.js](worker/ssr.js).
