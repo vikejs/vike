@@ -8,9 +8,10 @@ env:
 on:
   push:
   pull_request:
+    types: [opened, reopened] # Avoid GitHub Actions being run twice
 
 jobs:
-  matrixJob:
+  prepare:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -18,15 +19,17 @@ jobs:
       with:
         node-version: 18
     - id: getMatrix
-      run: echo "::set-output name=matrix::$(node ./.github/workflows/ci/getMatrix.mjs)"
+      run: |
+        matrix=`node ./.github/workflows/ci/getMatrix.mjs`
+        echo "::set-output name=matrix::$matrix"
     - run: echo ${{ steps.getMatrix.outputs.matrix }}
     outputs:
       matrix: ${{ steps.getMatrix.outputs.matrix }}
 
   test:
-    needs: matrixJob
+    needs: prepare
     strategy:
-      matrix: ${{fromJson(needs.matrixJob.outputs.matrix)}}
+      matrix: ${{fromJson(needs.prepare.outputs.matrix)}}
       fail-fast: false
     env:
       TEST_FILES: ${{ matrix.TEST_FILES }}
