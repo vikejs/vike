@@ -32,7 +32,7 @@ jobs:
     env:
       SINGLE_TEST: ${{ matrix.SINGLE_TEST }}
     runs-on: ${{ matrix.os }}
-    name: '${{ matrix.SINGLE_TEST }} - ${{ matrix.os }} - Node.js ${{ matrix.node_version }}'
+    name: '${{ matrix.name }}'
 
     steps:
       - name: Checkout
