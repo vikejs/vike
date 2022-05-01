@@ -10,7 +10,9 @@
     "docs:prod": "cd libframe/docs/ && pnpm run prod",
     "========= Test": "",
     "// Run tests": "",
-    "test": "cd libframe/test/ && pnpm run test",
+    "test": "pnpm run test:units && pnpm run test:e2e",
+    "test:units": "vitest run",
+    "test:e2e": "cd libframe/test/ && pnpm run test",
     "// Run `$ pnpm test:setup` before running `$ pnpm test`": "",
     "test:setup": "pnpm run clean && pnpm install && pnpm run build",
     "========= Dev": "",
@@ -47,7 +49,8 @@
       "vite": "npm:@brillout/vite@2.9.2-pre-release.0"
     }
   },
-  "dependencies": {
-    "@brillout/submodule-init": "0.1.2"
+  "devDependencies": {
+    "@brillout/submodule-init": "0.1.2",
+    "vitest": "^0.10.0"
   }
 }

@@ -15,15 +15,14 @@
     "vite-plugin-glob": "^0.2.6"
   },
   "scripts": {
-    "build": "rm -rf dist/ && tsc --build && pnpm run tsc:tests",
+    "build": "rm -rf dist/ && tsc --build",
     "dev": "pnpm run dev:fast",
     "dev:node": "pnpm run tsc:watch:node",
     "// `dev:fast` and `dev:slow` achieve the same, but `dev:fast` is much faster": "",
     "dev:slow": "tsc --build --watch",
     "dev:fast": "pnpm run tsc:watch:node & pnpm run tsc:watch:client",
     "tsc:watch:node": "tsc --incremental --watch --project ./node/tsconfig.json",
-    "tsc:watch:client": "tsc --incremental --watch --project ./client/tsconfig.json",
-    "tsc:tests": "tsc --project ./tsconfig.tests.json"
+    "tsc:watch:client": "tsc --incremental --watch --project ./client/tsconfig.json"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
