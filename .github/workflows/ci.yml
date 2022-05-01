@@ -29,7 +29,7 @@ jobs:
       matrix: ${{fromJson(needs.matrixJob.outputs.matrix)}}
       fail-fast: false
     env:
-      SINGLE_TEST: ${{ matrix.SINGLE_TEST }}
+      TEST_FILES: ${{ matrix.TEST_FILES }}
     runs-on: ${{ matrix.os }}
     name: '${{ matrix.name }}'
 
