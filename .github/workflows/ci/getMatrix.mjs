@@ -1,12 +1,14 @@
 import { cmd } from './utils.mjs'
 import assert from 'assert'
-const testRE = /\/__tests__\/.*|(\.|\/)(test|spec)\.[jt]sx?$/ // https://jestjs.io/docs/configuration#testregex-string--arraystring
+const testRE = /(\.|\/)(test|spec)\./
+const testCmdDefault = 'pnpm run test:e2e'
+
+/** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup)[] } MatrixEntry */
 
 const root = cmd('git rev-parse --show-toplevel')
 const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
 /** @type string[] */
 const testFiles = projectFiles.filter((file) => testRE.test(file))
-
 /** @typedef {{os: string, node_version: string}} Setup */
 /** @type Setup[] */
 const setups = [
@@ -32,7 +34,7 @@ const setupCloudflareWebpack = {
   node_version: '17',
 }
 
-/** @type Record<string, { testFiles: string[], setups: Setup[] }> */
+/** @type Record<string, { testFiles: string[], setups: Setup[], testCmd?: string }> */
 const testJobs = {
   TypeScript: {
     testFiles: ['TYPESCRIPT'],
@@ -57,38 +59,43 @@ const testJobs = {
   'Unit Tests': {
     testFiles: [],
     setups,
+    testCmd: 'pnpm run test:units',
   },
 }
 
 testFiles.forEach((testFile) => {
-  /** @type string */
-  let category
-  if (testFile.startsWith('boilerplates/')) {
-    category = 'Boilerplates'
-  } else if (testFile.startsWith('examples/')) {
-    if (!testFile.includes('cloudflare')) {
-      category = 'Examples'
-    } else {
-      if (testFile.includes('webpack')) {
-        category = 'Cloudflare + webpack'
-      } else {
-        category = 'Cloudflare + esbuild'
-      }
-    }
-  } else {
-    assert(testFile.startsWith('vite-plugin-ssr/'))
-    category = 'Unit Tests'
-  }
-  assert(category in testJobs, category)
+  const category = getCategory(testFile)
+  assert(category in testJobs, "Following category doesn't exist: " + category)
   testJobs[category].testFiles.push(testFile)
 })
 
-/** @typedef { ({ name: string, TEST_FILES: string } & Setup)[] } MatrixEntry */
+/** @type { (testFile: string) => string } */
+function getCategory(testFile) {
+  if (testFile.includes('.spec.')) {
+    return 'Unit Tests'
+  }
+  if (testFile.startsWith('boilerplates/')) {
+    return 'Boilerplates'
+  }
+  if (testFile.startsWith('examples/')) {
+    if (testFile.includes('cloudflare')) {
+      if (testFile.includes('webpack')) {
+        return 'Cloudflare + webpack'
+      } else {
+        return 'Cloudflare + esbuild'
+      }
+    }
+    return 'Examples'
+  }
+  assert(false, 'Cannot find category for test file: ' + testFile)
+}
+
 /** @type MatrixEntry */
 const matrix = []
-Object.entries(testJobs).map(([name, { testFiles, setups }]) => {
+Object.entries(testJobs).map(([name, { testFiles, setups, testCmd }]) => {
   setups.forEach((setup) => {
     matrix.push({
+      testCmd: testCmd ?? testCmdDefault,
       name: name + getSetupName(setup),
       TEST_FILES: testFiles.join(' '),
       ...setup,

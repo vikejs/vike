@@ -58,7 +58,7 @@ jobs:
         run: pnpm run build
 
       - name: Run tests
-        run: pnpm run test
+        run: ${{ matrix.testCmd }}
         env:
           GIT_BRANCH: ${{ github.ref_name }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}

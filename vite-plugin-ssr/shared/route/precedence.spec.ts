@@ -1,7 +1,9 @@
 import { pickWinner } from './pickWinner'
 import { resolveRouteString } from './resolveRouteString'
+import { expect, describe, it } from 'vitest'
 
-test('route precedence - basic', () => {
+describe('precedence', () => {
+it('route precedence - basic', () => {
   const routes = ['/', '/about', '/about/team', '/about/:path', '/about/*']
 
   ;[
@@ -13,7 +15,7 @@ test('route precedence - basic', () => {
   ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
-test('route precedence - catch-all', () => {
+it('route precedence - catch-all', () => {
   const routes = ['/', '/*', '/hello/:name']
 
   ;[
@@ -24,7 +26,7 @@ test('route precedence - catch-all', () => {
   ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
-test('route precedence - advanced', () => {
+it('route precedence - advanced', () => {
   const routes = [
     '/',
     '/about',
@@ -54,7 +56,7 @@ test('route precedence - advanced', () => {
   ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
 })
 
-test('route precedence - newspaper use case', () => {
+it('route precedence - newspaper use case', () => {
   const routes = [
     '/', // homepage
     '/*', // catch all generic pages at multiple levels
@@ -94,3 +96,4 @@ function findRoute(url: string, routes: string[]): string | null {
     .filter(<T>(match: T | null): match is T => match !== null)
   return pickWinner(candidates)?.routeString || null
 }
+})
