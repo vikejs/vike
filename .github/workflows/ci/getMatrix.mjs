@@ -29,11 +29,17 @@ const setupFast = {
 const matrix = [
   {
     setupName: 'TypeScript Types',
-    SINGLE_TEST: 'TYPESCRIPT',
+    TEST_FILES: 'TYPESCRIPT',
+    ...setupFast,
+  },
+  {
+    setupName: 'Examples',
+    TEST_FILES: ['examples/urql/.test-prod.spec.ts', 'examples/render-modes/.test-prod.spec.ts', 'examples/vue-full/.test-dev.spec.ts'].join(' '),
     ...setupFast,
   },
 ]
 
+/*
 testFiles.forEach((testFile) => {
   setups.forEach((setup) => {
     const { os, node_version } = setup
@@ -47,6 +53,7 @@ testFiles.forEach((testFile) => {
     })
   })
 })
+*/
 
 /*
 console.log(JSON.stringify(matrix, null, 2))
