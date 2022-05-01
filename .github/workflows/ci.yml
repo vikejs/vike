@@ -12,6 +12,8 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    env:
+      SINGLE_TEST: ./examples/vuex/.test.spec.ts
     strategy:
       matrix:
         os: [ubuntu-latest]
