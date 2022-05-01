@@ -1,11 +1,15 @@
-import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase, isMac } from '../../libframe/test/setup'
-import assert from 'assert'
+import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase, urlBaseChange, isMac } from '../../libframe/test/setup'
+
+// Node.js 18's fetch implementation fails to resolve `localhost`.
+//  - Seems to happen only for wrangler
+//  - https://github.com/nodejs/undici/issues/1248
+urlBaseChange('http://127.0.0.1:3000')
 
 export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
-  { hasStarWarsPage }: { hasStarWarsPage: boolean },
+  { hasStarWarsPage, isWebpack }: { hasStarWarsPage: boolean, isWebpack?: true },
 ) {
   const isMiniflare = cmd === 'npm run preview:miniflare'
   const isWrangler = cmd === 'npm run preview:wrangler'
@@ -53,14 +57,16 @@ function testRun(
   {
     const additionalTimeout = !isWorker ? 0 : (isGithubAction() ? 2 : 1) * 120 * 1000
     const serverIsReadyMessage = (() => {
-      if (isMiniflare || isWrangler) {
+      if (isWrangler && isWebpack) {
+        return 'Ignoring stale first change'
+      }
+      if (isWorker) {
         return 'Listening on'
       }
-      assert(!isWorker)
       // Express.js dev server
       return undefined
     })()
-    const serverIsReadyDelay = isWorker ? 5000 : undefined
+    const serverIsReadyDelay = isWorker ? 5 * 1000 : undefined
     run(cmd, { additionalTimeout, serverIsReadyMessage, serverIsReadyDelay })
   }
 

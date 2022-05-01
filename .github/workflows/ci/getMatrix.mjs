@@ -35,7 +35,7 @@ const setupWorst = {
 }
 const setupCloudflareWebpack = {
   os: 'ubuntu-latest',
-  node_version: '17',
+  node_version: '16',
 }
 
 /** @type Record<string, { testFiles: null | string[], setups: Setup[], testCmd: string }> */
