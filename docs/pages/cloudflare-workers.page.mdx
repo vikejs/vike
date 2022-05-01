@@ -15,10 +15,13 @@ Cloudflare Workers requires your entire worker code to be bundled into a single 
 
 We recommend using [`build-worker`](https://github.com/brillout/build-worker) (which uses [esbuild](https://esbuild.github.io/)) instead of wrangler to bundle your worker code.
 
-> Wrangler v1 uses webpack v4 which is outdated and has many problems (e.g. it doesn't work with Node.js >=18).
->
+> Wrangler v1 uses webpack v4 which is outdated and has many problems.
+> <br/>
 > Wrangler v2 uses esbuild but it's not production ready.
 
+The bundle size of your worker should not exceed **1MB**, but your can request sizes of up to 100MB and beyond:
+ - [Cloudflare Workers > Larger Scripts](https://www.cloudflare.com/larger-scripts-on-workers-early-access/)
+ - [Cloudflare Workers > Limits > Script Size] https://developers.cloudflare.com/workers/platform/limits/#script-size
 
 ## Cloudflare Pages
 
