@@ -1,7 +1,7 @@
 import { cmd } from './utils.mjs'
 import assert from 'assert'
 const testRE = /(\.|\/)(test|spec)\./
-const testCmdDefault = 'pnpm run test:e2e'
+const testCmdE2e = 'pnpm run test:e2e'
 
 /** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup)[] } MatrixEntry */
 
@@ -29,44 +29,60 @@ const setupFast = {
   os: 'ubuntu-latest',
   node_version: '18',
 }
+const setupWorst = {
+  os: 'windows-latest',
+  node_version: '13',
+}
 const setupCloudflareWebpack = {
   os: 'ubuntu-latest',
   node_version: '17',
 }
 
-/** @type Record<string, { testFiles: string[], setups: Setup[], testCmd?: string }> */
+/** @type Record<string, { testFiles: null | string[], setups: Setup[], testCmd: string }> */
 const testJobs = {
-  TypeScript: {
-    testFiles: ['TYPESCRIPT'],
-    setups: [setupFast],
+  // Unit tests
+  'Unit Tests': {
+    testFiles: [],
+    setups: [setupWorst],
+    testCmd: 'pnpm run test:units',
   },
+
+  // Check all types
+  TypeScript: {
+    testFiles: null,
+    setups: [setupFast],
+    testCmd: 'pnpm run test:types',
+  },
+
+  // E2e tests
   Examples: {
     testFiles: [],
     setups,
+    testCmd: testCmdE2e,
   },
   Boilerplates: {
     testFiles: [],
     setups: [setupFast],
+    testCmd: testCmdE2e,
   },
   'Cloudflare + esbuild': {
     testFiles: [],
     setups: [setupFast],
+    testCmd: testCmdE2e,
   },
   'Cloudflare + webpack': {
     testFiles: [],
     setups: [setupCloudflareWebpack],
-  },
-  'Unit Tests': {
-    testFiles: [],
-    setups,
-    testCmd: 'pnpm run test:units',
+    testCmd: testCmdE2e,
   },
 }
 
 testFiles.forEach((testFile) => {
   const category = getCategory(testFile)
   assert(category in testJobs, "Following category doesn't exist: " + category)
-  testJobs[category].testFiles.push(testFile)
+  const job = testJobs[category]
+  assert(job.testFiles)
+  job.testFiles.push(testFile)
 })
 
 /** @type { (testFile: string) => string } */
@@ -95,9 +111,9 @@ const matrix = []
 Object.entries(testJobs).map(([name, { testFiles, setups, testCmd }]) => {
   setups.forEach((setup) => {
     matrix.push({
-      testCmd: testCmd ?? testCmdDefault,
-      name: name + getSetupName(setup),
-      TEST_FILES: testFiles.join(' '),
+      testCmd,
+      name: name + getJobName(setup),
+      TEST_FILES: (testFiles ?? []).join(' '),
       ...setup,
     })
   })
@@ -111,7 +127,7 @@ console.log(`{"include":${JSON.stringify(matrix)}}`)
 //*/
 
 /** @type { (setup: Setup) => string } */
-function getSetupName(setup) {
+function getJobName(setup) {
   const { os, node_version } = setup
   let osName
   if (os === 'ubuntu-latest') {
@@ -123,6 +139,6 @@ function getSetupName(setup) {
   if (os === 'windows-latest') {
     osName = 'Win'
   }
-  const setupName = `, ${osName}, Node.js ${node_version}`
+  const setupName = ` - ${osName} - Node.js ${node_version}`
   return setupName
 }
