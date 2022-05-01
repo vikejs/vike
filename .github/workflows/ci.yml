@@ -10,21 +10,30 @@ on:
   pull_request:
 
 jobs:
+  matrixJob:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - run: npm install --global zx
+    - id: getMatrix
+      run: echo "::set-output name=matrix::$(zx ./.github/workflows/ci/getMatrix.mjs)"
+    - run: echo ${{ steps.getMatrix.outputs.matrix }}
+    outputs:
+      matrix: ${{ steps.getMatrix.outputs.matrix }}
+
   test:
-    runs-on: ${{ matrix.os }}
-    env:
-      SINGLE_TEST: ./examples/vuex/.test.spec.ts
+    needs: matrixJob
     strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node_version: [16]
-        include:
-          - os: macos-latest
-            node_version: 17
-          - os: windows-latest
-            node_version: 14
+      matrix: ${{fromJson(needs.matrixJob.outputs.matrix)}}
       fail-fast: false
-    name: 'Test on node-${{ matrix.node_version }}, ${{ matrix.os }}'
+    env:
+      SINGLE_TEST: ${{ matrix.SINGLE_TEST }}
+    runs-on: ${{ matrix.os }}
+    name: '${{ matrix.SINGLE_TEST }} - ${{ matrix.os }} - Node.js ${{ matrix.node_version }}'
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
