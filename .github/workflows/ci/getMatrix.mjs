@@ -70,9 +70,9 @@ testFiles.forEach((testFile) => {
       category = 'Examples'
     } else {
       if (testFile.includes('webpack')) {
-        category = 'Cloudflare + esbuild'
-      } else {
         category = 'Cloudflare + webpack'
+      } else {
+        category = 'Cloudflare + esbuild'
       }
     }
   } else {
