@@ -33,7 +33,7 @@
     "vite": "^2.9.7"
   },
   "peerDependencies": {
-    "vite": "^2.9.7"
+    "vite": ">=2.9.6"
   },
   "engines": {
     "node": ">=12.19.0"
