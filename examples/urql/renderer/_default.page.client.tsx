@@ -1,7 +1,7 @@
 export { render }
 
-import ReactDOM from 'react-dom'
 import React from 'react'
+import { hydrateRoot } from 'react-dom/client'
 import { createClient, ssrExchange, dedupExchange, cacheExchange, fetchExchange, Provider } from 'urql'
 import { PageShell } from './PageShell'
 import type { PageContext } from './types'
@@ -19,12 +19,12 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
       fetchExchange,
     ],
   })
-  ReactDOM.hydrate(
+  hydrateRoot(
+    document.getElementById('page-view')!,
     <PageShell pageContext={pageContext}>
       <Provider value={client}>
         <Page {...pageProps} />
       </Provider>
     </PageShell>,
-    document.getElementById('page-view'),
   )
 }

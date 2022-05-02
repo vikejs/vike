@@ -1,15 +1,15 @@
 export { render }
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { hydrateRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 
 async function render(pageContext) {
   const { Page } = pageContext
-  ReactDOM.hydrate(
+  hydrateRoot(
+    document.getElementById('react-root'),
     <BrowserRouter>
       <Page {...pageContext.pageProps} />
     </BrowserRouter>,
-    document.getElementById('react-root'),
   )
 }
