@@ -29,11 +29,11 @@ type PageContextAddendum = {
 
 async function getPageContext(
   pageContext: {
-    _isFirstRender: boolean
+    _isFirstRenderAttempt: boolean
   } & PageContextUrls &
     PageContextForRoute,
 ): Promise<PageContextAddendum> {
-  if (pageContext._isFirstRender && navigationState.isOriginalUrl(pageContext.url)) {
+  if (pageContext._isFirstRenderAttempt && navigationState.isOriginalUrl(pageContext.url)) {
     const pageContextAddendum = await getPageContextFirstRender(pageContext)
     return pageContextAddendum
   } else {

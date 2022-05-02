@@ -92,7 +92,7 @@ function useClientRouter() {
     }
     const pageContext = {
       url,
-      _isFirstRender: renderingNumber === 1,
+      _isFirstRenderAttempt: renderingNumber === 1,
       ...globalContext,
     }
     addComputedUrlProps(pageContext)
@@ -137,7 +137,7 @@ function useClientRouter() {
     await renderPromise
     renderPromise = undefined
 
-    if (pageContext._isFirstRender) {
+    if (pageContext._isFirstRenderAttempt) {
       assertHook(pageContext, 'onHydrationEnd')
       await pageContext.exports.onHydrationEnd?.(pageContext)
     } else if (renderingNumber === renderingCounter) {
