@@ -12,12 +12,12 @@ export default {
     }),
   ],
   optimizeDeps: { include: ['react/jsx-runtime'] },
-  ...serverConfig(),
+  ...ci(),
 } as UserConfig
 
-function serverConfig() {
+// Only needed for vite-plugin-ssr's CI
+function ci() {
   const port = 3000
-  // Needed for vite-plugin-ssr's CI
   const host = process.env.CI && process.platform === 'darwin'
   return {
     preview: { port, host },

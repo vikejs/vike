@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "vite dev",
-    "prod": "vite build && vite preview"
+    "dev": "vite",
+    "preview": "vite build && vite preview"
   },
   "dependencies": {
     "@mdx-js/mdx": "^2.0.0",
