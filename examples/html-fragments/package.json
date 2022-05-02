@@ -3,9 +3,9 @@
     "start": "node ./server"
   },
   "dependencies": {
-    "express": "^4.17.3",
-    "typescript": "^4.5.5",
-    "vite": "^2.8.4",
+    "express": "^4.18.1",
+    "typescript": "^4.6.4",
+    "vite": "^2.9.7",
     "vite-plugin-ssr": "0.3.64"
   }
 }
