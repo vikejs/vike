@@ -3,6 +3,7 @@
     "strict": true,
     "noImplicitAny": true,
     "checkJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   }
 }

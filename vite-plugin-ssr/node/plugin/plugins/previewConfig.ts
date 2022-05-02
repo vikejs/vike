@@ -20,6 +20,7 @@ function previewConfig(): Plugin {
     configResolved(config_) {
       config = config_
     },
+    // @ts-expect-error
     configurePreviewServer(server) {
       assertDist()
       assertViteConfig(config)
