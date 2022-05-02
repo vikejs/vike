@@ -90,7 +90,7 @@ async function prerender(
   setProductionEnvVar()
 
   const viteConfig = await resolveConfig({ configFile, root: root_ }, 'vite-plugin-ssr prerender' as any, 'production')
-  const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { prerenderConfig: true })
+  const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
   const { root } = viteConfig
   assertUsage(
     viteConfig.configFile,

@@ -1,29 +1,42 @@
+import type { UserConfig } from 'vite'
+import { isSSR_config } from '../node/plugin/utils'
 import { assert } from './assert'
 import { assertPosixPath } from './filesystemPathHandling'
 
 export { getOutDirs }
+export { getOutDir }
 
-function getOutDirs(outDir: string, { prerenderConfig }: { prerenderConfig?: true } = {}) {
+function getOutDir(config: UserConfig): string {
+  const outDir = config.build?.outDir || 'dist'
+  const { outDirClient, outDirServer } = getOutDirs(outDir, { isRoot: true })
+  if (isSSR_config(config)) {
+    return outDirServer
+  } else {
+    return outDirClient
+  }
+}
+
+function getOutDirs(outDir: string, options: { isRoot?: true } = {}) {
   assertPosixPath(outDir)
   let outDirRoot: string
-  if (prerenderConfig) {
-    assertIsRoot(outDir)
-    outDirRoot = outDir
-  } else {
-    assertIsNotRoot(outDir)
+  if (isNotRoot(outDir)) {
+    assert(!options.isRoot, { outDir })
     assert('/client'.length === '/server'.length)
     outDirRoot = outDir.slice(0, -1 * '/client'.length)
+  } else {
+    outDirRoot = outDir
   }
+  assert(isRoot(outDirRoot), { outDir, options })
   const outDirClient = `${outDirRoot}/client`
   const outDirServer = `${outDirRoot}/server`
   return { outDirRoot, outDirClient, outDirServer }
 }
 
-function assertIsRoot(outDir: string) {
+function isRoot(outDir: string) {
   const p = outDir.split('/').filter(Boolean)
   const dir = p[p.length - 1]
-  assert(dir !== 'client' && dir !== 'server', { outDir })
+  return dir !== 'client' && dir !== 'server'
 }
-function assertIsNotRoot(outDir: string) {
-  assert(outDir.endsWith('/client') || outDir.endsWith('/server'), { outDir })
+function isNotRoot(outDir: string) {
+  return outDir.endsWith('/client') || outDir.endsWith('/server')
 }
