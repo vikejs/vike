@@ -31,7 +31,7 @@ const setupFast = {
 }
 const setupWorst = {
   os: 'windows-latest',
-  node_version: '13',
+  node_version: '14',
 }
 const setupCloudflareWebpack = {
   os: 'ubuntu-latest',
