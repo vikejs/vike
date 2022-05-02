@@ -664,7 +664,7 @@ async function executeRenderHook(
   const hook = getHook(pageContext, 'render')
   assertUsage(
     hook,
-    `No \`render()\` hook found. See https://vite-plugin-ssr.com/render for more information. These are the loaded pages and none of them \`export { render }\`:\n${pageContext._loadedPageFiles
+    `No \`render()\` hook found. See https://vite-plugin-ssr.com/render for more information. Loaded pages (none of them \`export { render }\`):\n${pageContext._loadedPageFiles
       .map((f) => `  ${f}`)
       .join('\n')}`,
   )
