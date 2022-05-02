@@ -1,10 +1,8 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
-import path from 'path'
-import { assert, isObject, isSSR_config } from '../utils'
+import { assert, getOutDir, isObject, isSSR_config } from '../utils'
 
 export { buildConfig }
-export { getOutDir }
 
 function buildConfig(): Plugin {
   return {
@@ -50,15 +48,6 @@ function entryPoints(config: UserConfig): Record<string, string> {
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
   return require.resolve(`../../../../../${filePath}`)
-}
-
-function getOutDir(config: UserConfig): string {
-  let outDir = config.build?.outDir
-  if (!outDir) {
-    outDir = 'dist'
-  }
-  outDir = path.posix.join(outDir, config.build?.ssr ? 'server' : 'client')
-  return outDir
 }
 
 function normalizeRollupInput(input?: InputOption): Record<string, string> {
