@@ -16,6 +16,6 @@ export default {
     }),
   ],
   optimizeDeps: {
-    include: ['react', 'react-dom'],
+    include: ['react', 'react-dom/client'],
   },
 } as UserConfig
