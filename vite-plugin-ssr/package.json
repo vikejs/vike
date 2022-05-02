@@ -41,6 +41,7 @@
   "main": "./dist/cjs/node/index.js",
   "exports": {
     ".": {
+      "worker": "./dist/cjs/node/index.js",
       "node": "./dist/cjs/node/index.js",
       "browser": "./dist/esm/client/node.js"
     },
@@ -48,6 +49,7 @@
       "browser": "./dist/esm/client/index.js"
     },
     "./client/router": {
+      "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
       "browser": "./dist/esm/client/router/index.js"
     },
