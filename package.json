@@ -47,6 +47,6 @@
   },
   "devDependencies": {
     "@brillout/submodule-init": "0.1.2",
-    "vitest": "^0.10.0"
+    "vitest": "^0.10.1"
   }
 }
