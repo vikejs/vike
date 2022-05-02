@@ -1,5 +1,5 @@
-import ReactDOM from 'react-dom'
 import React from 'react'
+import { hydrateRoot } from 'react-dom/client'
 import { PageShell } from './PageShell'
 import type { PageContext } from './types'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
@@ -8,11 +8,11 @@ export { render }
 
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   const { Page, pageProps } = pageContext
-  ReactDOM.hydrate(
+  hydrateRoot(
+    document.getElementById('page-view')!,
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>,
-    document.getElementById('page-view'),
   )
 }
 

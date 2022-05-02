@@ -1,9 +1,9 @@
 export { render }
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { hydrateRoot } from 'react-dom/client'
 
 async function render(pageContext) {
   const { Page } = pageContext
-  ReactDOM.hydrate(<Page />, document.getElementById('react-root'))
+  hydrateRoot(document.getElementById('react-root'), <Page />)
 }
