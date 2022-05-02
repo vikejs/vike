@@ -503,6 +503,7 @@ importers:
   examples/react:
     specifiers:
       '@vitejs/plugin-react': ^1.2.0
+      cross-env: ^7.0.3
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.1.10
@@ -510,6 +511,7 @@ importers:
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.2.0
+      cross-env: 7.0.3
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.1.10_react-dom@18.1.0+react@18.1.0
@@ -4017,7 +4019,7 @@ packages:
     dependencies:
       ansi-align: 2.0.0
       camelcase: 4.1.0
-      chalk: 2.4.1
+      chalk: 2.4.2
       cli-boxes: 1.0.0
       string-width: 2.1.1
       term-size: 1.2.0
