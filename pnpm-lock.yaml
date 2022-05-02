@@ -14,7 +14,7 @@ importers:
     specifiers:
       enquirer: ^2.3.6
       kolorist: ^1.5.1
-      minimist: ^1.2.5
+      minimist: ^1.2.6
     dependencies:
       enquirer: 2.3.6
       kolorist: 1.5.1
@@ -22,21 +22,21 @@ importers:
 
   boilerplates/boilerplate-react:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       compression: ^1.7.4
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      vite: ^2.8.4
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      vite: ^2.9.7
       vite-plugin-ssr: ^0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -44,31 +44,31 @@ importers:
     specifiers:
       '@types/compression': ^1.7.2
       '@types/express': ^4.17.13
-      '@types/node': ^17.0.19
-      '@types/react': ^17.0.39
-      '@types/react-dom': ^17.0.11
-      '@vitejs/plugin-react': ^1.2.0
+      '@types/node': ^17.0.31
+      '@types/react': ^18.0.8
+      '@types/react-dom': ^18.0.3
+      '@vitejs/plugin-react': ^1.3.2
       compression: ^1.7.4
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      ts-node: ^10.5.0
-      typescript: ^4.5.5
-      vite: ^2.8.4
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      ts-node: ^10.7.0
+      typescript: ^4.6.4
+      vite: ^2.9.7
       vite-plugin-ssr: ^0.3.64
     dependencies:
       '@types/compression': 1.7.2
       '@types/express': 4.17.13
       '@types/node': 17.0.31
-      '@types/react': 17.0.44
-      '@types/react-dom': 17.0.16
+      '@types/react': 18.0.8
+      '@types/react-dom': 18.0.3
       '@vitejs/plugin-react': 1.3.2
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       ts-node: 10.7.0_5f3e12794cebfbf3197131903b74d233
       typescript: 4.6.4
       vite: 2.9.7
@@ -76,15 +76,15 @@ importers:
 
   boilerplates/boilerplate-vue:
     specifiers:
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': ^3.2.31
-      '@vue/server-renderer': ^3.2.31
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
       compression: ^1.7.4
       cross-env: ^7.0.3
-      express: ^4.17.3
-      vite: ^2.8.4
+      express: ^4.18.1
+      vite: ^2.9.7
       vite-plugin-ssr: ^0.3.64
-      vue: ^3.2.31
+      vue: ^3.2.33
     dependencies:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
@@ -100,18 +100,18 @@ importers:
     specifiers:
       '@types/compression': ^1.7.2
       '@types/express': ^4.17.13
-      '@types/node': ^17.0.19
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': ^3.2.31
-      '@vue/server-renderer': ^3.2.31
+      '@types/node': ^17.0.31
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
       compression: ^1.7.4
       cross-env: ^7.0.3
-      express: ^4.17.3
-      ts-node: ^10.5.0
-      typescript: ^4.5.5
-      vite: ^2.8.4
+      express: ^4.18.1
+      ts-node: ^10.7.0
+      typescript: ^4.6.4
+      vite: ^2.9.7
       vite-plugin-ssr: ^0.3.64
-      vue: ^3.2.31
+      vue: ^3.2.33
     dependencies:
       '@types/compression': 1.7.2
       '@types/express': 4.17.13
@@ -154,35 +154,35 @@ importers:
 
   examples/base-url:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
       rimraf: ^3.0.2
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/base-url-cdn:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
-      concurrently: ^7.0.0
+      '@vitejs/plugin-react': ^1.3.2
+      concurrently: ^7.1.0
       cors: ^2.8.5
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
       rimraf: ^3.0.2
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -190,8 +190,8 @@ importers:
       cors: 2.8.5
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -200,15 +200,15 @@ importers:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
       '@cloudflare/wrangler': ^1.19.12
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       build-worker: ^0.1.3
-      express: ^4.17.3
+      express: ^4.18.1
       miniflare: ^2.4.0
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.1
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -228,15 +228,15 @@ importers:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
       '@cloudflare/wrangler': ^1.19.12
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': ^3.2.31
-      '@vue/server-renderer': ^3.2.31
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
       build-worker: ^0.1.3
-      express: ^4.17.3
+      express: ^4.18.1
       miniflare: ^2.4.0
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
-      vue: ^3.2.31
+      vue: ^3.2.33
       webpack: ^4.46.0
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -255,14 +255,14 @@ importers:
   examples/cloudflare-workers-webpack:
     specifiers:
       '@cloudflare/kv-asset-handler': ~0.2.0
-      '@cloudflare/wrangler': ^1.19.8
-      '@vitejs/plugin-react': ^1.2.0
-      express: ^4.17.3
+      '@cloudflare/wrangler': ^1.19.12
+      '@vitejs/plugin-react': ^1.3.2
+      express: ^4.18.1
       miniflare: ^1.4.1
       node-fetch: ^2.6.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      vite: ^2.8.4
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -271,46 +271,46 @@ importers:
       express: 4.18.1
       miniflare: 1.4.1
       node-fetch: 2.6.7
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/custom-server-render-integration:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      vite: ^2.8.4
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/file-structure-domain-driven:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
       rimraf: ^3.0.2
       serve: ^13.0.2
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
       serve: 13.0.2
       vite: 2.9.7
@@ -349,31 +349,31 @@ importers:
 
   examples/graphql-apollo:
     specifiers:
-      '@apollo/client': ^3.5.9
-      '@vitejs/plugin-react': ^1.2.0
-      express: ^4.17.3
-      graphql: ^16.3.0
+      '@apollo/client': ^3.6.1
+      '@vitejs/plugin-react': ^1.3.2
+      express: ^4.18.1
+      graphql: ^16.4.0
       node-fetch: ^2.6.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      vite: ^2.8.4
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
-      '@apollo/client': 3.6.1_graphql@16.4.0+react@17.0.2
+      '@apollo/client': 3.6.1_graphql@16.4.0+react@18.1.0
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
       graphql: 16.4.0
       node-fetch: 2.6.7
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/html-fragments:
     specifiers:
-      express: ^4.17.3
-      typescript: ^4.5.5
-      vite: ^2.8.4
+      express: ^4.18.1
+      typescript: ^4.6.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       express: 4.18.1
@@ -383,35 +383,35 @@ importers:
 
   examples/i18n:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      vite: ^2.8.4
+      '@vitejs/plugin-react': ^1.3.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n-prerender:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      '@vitejs/plugin-react': ^1.3.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
       rimraf: ^3.0.2
       serve: ^13.0.2
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
       serve: 13.0.2
       vite: 2.9.7
@@ -420,29 +420,29 @@ importers:
   examples/path-aliases:
     specifiers:
       '@types/express': ^4.17.13
-      '@types/node': ^17.0.19
-      '@types/react': ^17.0.39
-      '@types/react-dom': ^17.0.11
-      '@vitejs/plugin-react': ^1.2.0
+      '@types/node': ^17.0.31
+      '@types/react': ^18.0.8
+      '@types/react-dom': ^18.0.3
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
       serve: ^13.0.2
-      ts-node: ^10.5.0
-      typescript: ^4.5.5
-      vite: ^2.8.4
+      ts-node: ^10.7.0
+      typescript: ^4.6.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@types/express': 4.17.13
       '@types/node': 17.0.31
-      '@types/react': 17.0.44
-      '@types/react-dom': 17.0.16
+      '@types/react': 18.0.8
+      '@types/react-dom': 18.0.3
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       serve: 13.0.2
       ts-node: 10.7.0_5f3e12794cebfbf3197131903b74d233
       typescript: 4.6.4
@@ -451,15 +451,15 @@ importers:
 
   examples/preact-client-routing:
     specifiers:
-      '@babel/core': ^7.17.5
+      '@babel/core': ^7.17.10
       '@babel/plugin-transform-react-jsx': ^7.17.3
-      '@preact/preset-vite': ^2.1.7
+      '@preact/preset-vite': ^2.2.0
       compression: ^1.7.4
       cross-env: ^7.0.3
-      express: ^4.17.3
-      preact: ^10.6.6
-      preact-render-to-string: ^5.1.20
-      vite: ^2.8.4
+      express: ^4.18.1
+      preact: ^10.7.1
+      preact-render-to-string: ^5.2.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@babel/core': 7.17.10
@@ -475,15 +475,15 @@ importers:
 
   examples/preact-server-routing:
     specifiers:
-      '@babel/core': ^7.17.5
+      '@babel/core': ^7.17.10
       '@babel/plugin-transform-react-jsx': ^7.17.3
-      '@preact/preset-vite': ^2.1.7
+      '@preact/preset-vite': ^2.2.0
       compression: ^1.7.4
       cross-env: ^7.0.3
-      express: ^4.17.3
-      preact: ^10.6.6
-      preact-render-to-string: ^5.1.20
-      vite: ^2.8.4
+      express: ^4.18.1
+      preact: ^10.7.1
+      preact-render-to-string: ^5.2.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@babel/core': 7.17.10
@@ -499,12 +499,12 @@ importers:
 
   examples/react:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.1
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -517,21 +517,21 @@ importers:
 
   examples/react-full:
     specifiers:
-      '@mdx-js/mdx': ^2.0.0
-      '@mdx-js/react': ^2.0.0
-      '@mdx-js/rollup': ^2.0.0
+      '@mdx-js/mdx': ^2.1.1
+      '@mdx-js/react': ^2.1.1
+      '@mdx-js/rollup': ^2.1.1
       '@types/express': ^4.17.13
-      '@types/node': ^17.0.19
+      '@types/node': ^17.0.31
       '@types/node-fetch': ^2.5.12
-      '@types/react': ^18.0.5
-      '@types/react-dom': ^18.0.1
-      '@vitejs/plugin-react': ^1.3.1
+      '@types/react': ^18.0.8
+      '@types/react-dom': ^18.0.3
+      '@vitejs/plugin-react': ^1.3.2
       node-fetch: ^2.6.1
-      react: ^18.0.0
-      react-dom: ^18.0.0
+      react: ^18.1.0
+      react-dom: ^18.1.0
       react-streaming: ^0.2.1
-      typescript: ^4.5.5
-      vite: ^2.9.5
+      typescript: ^4.6.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@mdx-js/mdx': 2.1.1
@@ -553,59 +553,59 @@ importers:
 
   examples/react-router:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      '@vitejs/plugin-react': ^1.3.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
       react-router: ^5.2.1
       react-router-dom: ^5.3.0
-      vite: ^2.8.4
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-router: 5.3.1_react@17.0.2
-      react-router-dom: 5.3.1_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      react-router: 5.3.1_react@18.1.0
+      react-router-dom: 5.3.1_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/redux:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      react-redux: ^7.2.6
-      redux: ^4.1.2
-      vite: ^2.8.4
+      '@vitejs/plugin-react': ^1.3.2
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      react-redux: ^8.0.1
+      redux: ^4.2.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-redux: 7.2.8_react-dom@17.0.2+react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      react-redux: 8.0.1_ca3e0723e220fb48be45674a97b9266b
       redux: 4.2.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/render-modes:
     specifiers:
-      '@vitejs/plugin-react': ^1.2.0
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
-      express: ^4.17.3
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      vite: ^2.8.4
+      express: ^4.18.1
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       express: 4.18.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -670,40 +670,40 @@ importers:
   examples/urql:
     specifiers:
       '@types/express': ^4.17.13
-      '@types/node': ^17.0.19
-      '@types/react': ^17.0.39
-      '@types/react-dom': ^17.0.11
-      '@vitejs/plugin-react': ^1.2.0
+      '@types/node': ^17.0.31
+      '@types/react': ^18.0.8
+      '@types/react-dom': ^18.0.3
+      '@vitejs/plugin-react': ^1.3.2
       cross-env: ^7.0.3
-      express: ^4.17.3
-      graphql: ^16.3.0
+      express: ^4.18.1
+      graphql: ^16.4.0
       isomorphic-fetch: ^3.0.0
       node-fetch: ^3.0.0
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      react: ^18.1.0
+      react-dom: ^18.1.0
       react-ssr-prepass: ^1.5.0
-      ts-node: ^10.5.0
-      typescript: ^4.5.5
-      urql: ^2.1.3
-      vite: ^2.8.4
+      ts-node: ^10.7.0
+      typescript: ^4.6.4
+      urql: ^2.2.0
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@types/express': 4.17.13
       '@types/node': 17.0.31
-      '@types/react': 17.0.44
-      '@types/react-dom': 17.0.16
+      '@types/react': 18.0.8
+      '@types/react-dom': 18.0.3
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       express: 4.18.1
       graphql: 16.4.0
       isomorphic-fetch: 3.0.0
       node-fetch: 3.2.4
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-ssr-prepass: 1.5.0_react@17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      react-ssr-prepass: 1.5.0_react@18.1.0
       ts-node: 10.7.0_5f3e12794cebfbf3197131903b74d233
       typescript: 4.6.4
-      urql: 2.2.0_graphql@16.4.0+react@17.0.2
+      urql: 2.2.0_graphql@16.4.0+react@18.1.0
       vite: 2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -731,14 +731,14 @@ importers:
 
   examples/vue:
     specifiers:
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': ^3.2.31
-      '@vue/server-renderer': ^3.2.31
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
       cross-env: ^7.0.3
-      express: ^4.17.3
-      vite: ^2.8.4
+      express: ^4.18.1
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
-      vue: ^3.2.31
+      vue: ^3.2.33
     dependencies:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
@@ -752,29 +752,29 @@ importers:
   examples/vue-full:
     specifiers:
       '@types/express': ^4.17.13
-      '@types/node': ^17.0.19
+      '@types/node': ^17.0.31
       '@types/node-fetch': ^2.5.12
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': 3.2.31
-      '@vue/server-renderer': 3.2.31
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': 3.2.33
+      '@vue/server-renderer': 3.2.33
       cross-fetch: ^3.1.5
-      express: ^4.17.3
+      express: ^4.18.1
       node-fetch: ^2.6.1
       rimraf: ^3.0.2
       serve: ^13.0.2
-      ts-node: ^10.5.0
-      typescript: ^4.5.5
-      vite: ^2.8.4
-      vite-plugin-md: ^0.11.8
+      ts-node: ^10.7.0
+      typescript: ^4.6.4
+      vite: ^2.9.7
+      vite-plugin-md: ^0.13.0
       vite-plugin-ssr: 0.3.64
-      vue: 3.2.31
+      vue: 3.2.33
     dependencies:
       '@types/express': 4.17.13
       '@types/node': 17.0.31
       '@types/node-fetch': 2.6.1
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.31
-      '@vue/compiler-sfc': 3.2.31
-      '@vue/server-renderer': 3.2.31_vue@3.2.31
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.33
+      '@vue/compiler-sfc': 3.2.33
+      '@vue/server-renderer': 3.2.33_vue@3.2.33
       cross-fetch: 3.1.5
       express: 4.18.1
       node-fetch: 2.6.7
@@ -783,20 +783,20 @@ importers:
       ts-node: 10.7.0_5f3e12794cebfbf3197131903b74d233
       typescript: 4.6.4
       vite: 2.9.7
-      vite-plugin-md: 0.11.9_vite@2.9.7
+      vite-plugin-md: 0.13.0_vite@2.9.7
       vite-plugin-ssr: link:../../vite-plugin-ssr
-      vue: 3.2.31
+      vue: 3.2.33
 
   examples/vue-router:
     specifiers:
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': ^3.2.31
-      '@vue/server-renderer': ^3.2.31
-      express: ^4.17.3
-      vite: ^2.8.4
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
+      express: ^4.18.1
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
-      vue: ^3.2.31
-      vue-router: ^4.0.12
+      vue: ^3.2.33
+      vue-router: ^4.0.14
     dependencies:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
@@ -809,13 +809,13 @@ importers:
 
   examples/vuex:
     specifiers:
-      '@vitejs/plugin-vue': ^2.2.2
-      '@vue/compiler-sfc': ^3.2.31
-      '@vue/server-renderer': ^3.2.31
-      express: ^4.17.3
-      vite: ^2.8.4
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
+      express: ^4.18.1
+      vite: ^2.9.7
       vite-plugin-ssr: 0.3.64
-      vue: ^3.2.31
+      vue: ^3.2.33
       vuex: ^4.0.2
     dependencies:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.7+vue@3.2.33
@@ -921,21 +921,21 @@ importers:
 
   vite-plugin-ssr:
     specifiers:
-      '@brillout/json-s': ^0.4.3
+      '@brillout/json-s': ^0.4.5
       '@brillout/libassert': ^0.5.4
       '@types/jest': ^27.4.1
-      '@types/node': 17.0.19
-      '@types/resolve': ^1.20.1
+      '@types/node': 17.0.31
+      '@types/resolve': ^1.20.2
       cac: ^6.7.12
-      es-module-lexer: ^0.10.0
+      es-module-lexer: ^0.10.5
       fast-glob: ^3.2.11
       kolorist: ^1.5.1
       p-limit: ^3.1.0
       resolve: ^1.22.0
-      rollup: ^2.68.0
+      rollup: ^2.71.1
       symlink-dir: ^5.0.1
-      typescript: 4.6.3
-      vite: ^2.8.4
+      typescript: 4.6.4
+      vite: ^2.9.7
       vite-plugin-dist-importer: ^0.1.8
       vite-plugin-glob: ^0.2.6
     dependencies:
@@ -952,10 +952,10 @@ importers:
       vite-plugin-glob: 0.2.6
     devDependencies:
       '@types/jest': 27.4.1
-      '@types/node': 17.0.19
+      '@types/node': 17.0.31
       '@types/resolve': 1.20.2
       rollup: 2.71.1
-      typescript: 4.6.3
+      typescript: 4.6.4
       vite: 2.9.7
 
 packages:
@@ -977,7 +977,7 @@ packages:
     resolution: {integrity: sha512-8Afo0+xvYe1K8Wm4xHTymfTkpzy36aaqDvhXIayUwl+mecMG9Xzl3XjXa6swG6Bk8FBeQ646RyvmsYt6+2Be9g==}
     dev: false
 
-  /@apollo/client/3.6.1_graphql@16.4.0+react@17.0.2:
+  /@apollo/client/3.6.1_graphql@16.4.0+react@18.1.0:
     resolution: {integrity: sha512-WGC7n2IS7GIbCCfVvu58Qncmj6qUBYbI/DxPVHGffDuY5y5l+OI2YIr5UXyR8+G9Ly1d6iYbX6l6l+Rw6F6gHA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -1001,11 +1001,11 @@ packages:
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.8.1
-      react: 17.0.2
+      react: 18.1.0
       symbol-observable: 4.0.0
       ts-invariant: 0.10.1
       tslib: 2.4.0
-      use-sync-external-store: 1.1.0_react@17.0.2
+      use-sync-external-store: 1.1.0_react@18.1.0
       zen-observable-ts: 1.2.3
     dev: false
 
@@ -2438,10 +2438,6 @@ packages:
     resolution: {integrity: sha512-qjd88DrCxupx/kJD5yQgZdcYKZKSIGBVDIBE1/LTGcNm3d2Np/jxojkdePDdfnBHJc5W7vSMpbJ1aB7p/Py69A==}
     dev: false
 
-  /@types/node/17.0.19:
-    resolution: {integrity: sha512-PfeQhvcMR4cPFVuYfBN4ifG7p9c+Dlh3yUZR6k+5yQK7wX3gDgVxBly4/WkBRs9x4dmcy1TVl08SY67wwtEvmA==}
-    dev: true
-
   /@types/node/17.0.31:
     resolution: {integrity: sha512-AR0x5HbXGqkEx9CadRH3EBYx/VkiUgZIhP4wvPn/+5KIsgpNoyFaRlVe0Zlx9gRtg8fA06a9tskE2MSN7TcG4Q==}
 
@@ -2473,15 +2469,6 @@ packages:
     resolution: {integrity: sha512-1RRW9kst+67gveJRYPxGmVy8eVJ05O43hg77G2j5m76/RFJtMbcfAs2viQ2UNsvvDg8F7OfQZx8qQcl6ymygaQ==}
     dependencies:
       '@types/react': 18.0.8
-    dev: false
-
-  /@types/react-redux/7.1.24:
-    resolution: {integrity: sha512-7FkurKcS1k0FHZEtdbbgN8Oc6b+stGSfZYjQGicofJ0j4U0qIn/jaSvnP2pLwZKiai3/17xqqxkkrxTgN8UNbQ==}
-    dependencies:
-      '@types/hoist-non-react-statics': 3.3.1
-      '@types/react': 18.0.8
-      hoist-non-react-statics: 3.3.2
-      redux: 4.2.0
     dev: false
 
   /@types/react/17.0.44:
@@ -2527,6 +2514,10 @@ packages:
 
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
+    dev: false
+
+  /@types/use-sync-external-store/0.0.3:
+    resolution: {integrity: sha512-EwmlvuaxPNej9+T4v5AuBPJa2x2UOJVdjCtDHgcDqitUeOtjnJKJ+apYjVcAoBEMjKW1VVFGZLUb5+qqa09XFA==}
     dev: false
 
   /@types/wait-on/5.3.1:
@@ -2593,17 +2584,6 @@ packages:
       vite: 2.9.7
     dev: false
 
-  /@vitejs/plugin-vue/2.3.1_vite@2.9.7+vue@3.2.31:
-    resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      vite: ^2.5.10
-      vue: ^3.2.25
-    dependencies:
-      vite: 2.9.7
-      vue: 3.2.31
-    dev: false
-
   /@vitejs/plugin-vue/2.3.1_vite@2.9.7+vue@3.2.33:
     resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
     engines: {node: '>=12.0.0'}
@@ -2615,15 +2595,6 @@ packages:
       vue: 3.2.33
     dev: false
 
-  /@vue/compiler-core/3.2.31:
-    resolution: {integrity: sha512-aKno00qoA4o+V/kR6i/pE+aP+esng5siNAVQ422TkBNM6qA4veXiZbSe8OTXHXquEi/f6Akc+nLfB4JGfe4/WQ==}
-    dependencies:
-      '@babel/parser': 7.17.10
-      '@vue/shared': 3.2.31
-      estree-walker: 2.0.2
-      source-map: 0.6.1
-    dev: false
-
   /@vue/compiler-core/3.2.33:
     resolution: {integrity: sha512-AAmr52ji3Zhk7IKIuigX2osWWsb2nQE5xsdFYjdnmtQ4gymmqXbjLvkSE174+fF3A3kstYrTgGkqgOEbsdLDpw==}
     dependencies:
@@ -2633,33 +2604,11 @@ packages:
       source-map: 0.6.1
     dev: false
 
-  /@vue/compiler-dom/3.2.31:
-    resolution: {integrity: sha512-60zIlFfzIDf3u91cqfqy9KhCKIJgPeqxgveH2L+87RcGU/alT6BRrk5JtUso0OibH3O7NXuNOQ0cDc9beT0wrg==}
-    dependencies:
-      '@vue/compiler-core': 3.2.31
-      '@vue/shared': 3.2.31
-    dev: false
-
   /@vue/compiler-dom/3.2.33:
     resolution: {integrity: sha512-GhiG1C8X98Xz9QUX/RlA6/kgPBWJkjq0Rq6//5XTAGSYrTMBgcLpP9+CnlUg1TFxnnCVughAG+KZl28XJqw8uQ==}
     dependencies:
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
-    dev: false
-
-  /@vue/compiler-sfc/3.2.31:
-    resolution: {integrity: sha512-748adc9msSPGzXgibHiO6T7RWgfnDcVQD+VVwYgSsyyY8Ans64tALHZANrKtOzvkwznV/F4H7OAod/jIlp/dkQ==}
-    dependencies:
-      '@babel/parser': 7.17.10
-      '@vue/compiler-core': 3.2.31
-      '@vue/compiler-dom': 3.2.31
-      '@vue/compiler-ssr': 3.2.31
-      '@vue/reactivity-transform': 3.2.31
-      '@vue/shared': 3.2.31
-      estree-walker: 2.0.2
-      magic-string: 0.25.9
-      postcss: 8.4.13
-      source-map: 0.6.1
     dev: false
 
   /@vue/compiler-sfc/3.2.33:
@@ -2677,13 +2626,6 @@ packages:
       source-map: 0.6.1
     dev: false
 
-  /@vue/compiler-ssr/3.2.31:
-    resolution: {integrity: sha512-mjN0rqig+A8TVDnsGPYJM5dpbjlXeHUm2oZHZwGyMYiGT/F4fhJf/cXy8QpjnLQK4Y9Et4GWzHn9PS8AHUnSkw==}
-    dependencies:
-      '@vue/compiler-dom': 3.2.31
-      '@vue/shared': 3.2.31
-    dev: false
-
   /@vue/compiler-ssr/3.2.33:
     resolution: {integrity: sha512-XQh1Xdk3VquDpXsnoCd7JnMoWec9CfAzQDQsaMcSU79OrrO2PNR0ErlIjm/mGq3GmBfkQjzZACV+7GhfRB8xMQ==}
     dependencies:
@@ -2693,16 +2635,6 @@ packages:
 
   /@vue/devtools-api/6.1.4:
     resolution: {integrity: sha512-IiA0SvDrJEgXvVxjNkHPFfDx6SXw0b/TUkqMcDZWNg9fnCAHbTpoo59YfJ9QLFkwa3raau5vSlRVzMSLDnfdtQ==}
-    dev: false
-
-  /@vue/reactivity-transform/3.2.31:
-    resolution: {integrity: sha512-uS4l4z/W7wXdI+Va5pgVxBJ345wyGFKvpPYtdSgvfJfX/x2Ymm6ophQlXXB6acqGHtXuBqNyyO3zVp9b1r0MOA==}
-    dependencies:
-      '@babel/parser': 7.17.10
-      '@vue/compiler-core': 3.2.31
-      '@vue/shared': 3.2.31
-      estree-walker: 2.0.2
-      magic-string: 0.25.9
     dev: false
 
   /@vue/reactivity-transform/3.2.33:
@@ -2715,23 +2647,10 @@ packages:
       magic-string: 0.25.9
     dev: false
 
-  /@vue/reactivity/3.2.31:
-    resolution: {integrity: sha512-HVr0l211gbhpEKYr2hYe7hRsV91uIVGFYNHj73njbARVGHQvIojkImKMaZNDdoDZOIkMsBc9a1sMqR+WZwfSCw==}
-    dependencies:
-      '@vue/shared': 3.2.31
-    dev: false
-
   /@vue/reactivity/3.2.33:
     resolution: {integrity: sha512-62Sq0mp9/0bLmDuxuLD5CIaMG2susFAGARLuZ/5jkU1FCf9EDbwUuF+BO8Ub3Rbodx0ziIecM/NsmyjardBxfQ==}
     dependencies:
       '@vue/shared': 3.2.33
-    dev: false
-
-  /@vue/runtime-core/3.2.31:
-    resolution: {integrity: sha512-Kcog5XmSY7VHFEMuk4+Gap8gUssYMZ2+w+cmGI6OpZWYOEIcbE0TPzzPHi+8XTzAgx1w/ZxDFcXhZeXN5eKWsA==}
-    dependencies:
-      '@vue/reactivity': 3.2.31
-      '@vue/shared': 3.2.31
     dev: false
 
   /@vue/runtime-core/3.2.33:
@@ -2739,14 +2658,6 @@ packages:
     dependencies:
       '@vue/reactivity': 3.2.33
       '@vue/shared': 3.2.33
-    dev: false
-
-  /@vue/runtime-dom/3.2.31:
-    resolution: {integrity: sha512-N+o0sICVLScUjfLG7u9u5XCjvmsexAiPt17GNnaWHJUfsKed5e85/A3SWgKxzlxx2SW/Hw7RQxzxbXez9PtY3g==}
-    dependencies:
-      '@vue/runtime-core': 3.2.31
-      '@vue/shared': 3.2.31
-      csstype: 2.6.20
     dev: false
 
   /@vue/runtime-dom/3.2.33:
@@ -2757,16 +2668,6 @@ packages:
       csstype: 2.6.20
     dev: false
 
-  /@vue/server-renderer/3.2.31_vue@3.2.31:
-    resolution: {integrity: sha512-8CN3Zj2HyR2LQQBHZ61HexF5NReqngLT3oahyiVRfSSvak+oAvVmu8iNLSu6XR77Ili2AOpnAt1y8ywjjqtmkg==}
-    peerDependencies:
-      vue: 3.2.31
-    dependencies:
-      '@vue/compiler-ssr': 3.2.31
-      '@vue/shared': 3.2.31
-      vue: 3.2.31
-    dev: false
-
   /@vue/server-renderer/3.2.33_vue@3.2.33:
     resolution: {integrity: sha512-4jpJHRD4ORv8PlbYi+/MfP8ec1okz6rybe36MdpkDrGIdEItHEUyaHSKvz+ptNEyQpALmmVfRteHkU9F8vxOew==}
     peerDependencies:
@@ -2775,10 +2676,6 @@ packages:
       '@vue/compiler-ssr': 3.2.33
       '@vue/shared': 3.2.33
       vue: 3.2.33
-    dev: false
-
-  /@vue/shared/3.2.31:
-    resolution: {integrity: sha512-ymN2pj6zEjiKJZbrf98UM2pfDd6F2H7ksKw7NDt/ZZ1fh5Ei39X5tABugtT03ZRlWd9imccoK0hE8hpjpU7irQ==}
     dev: false
 
   /@vue/shared/3.2.33:
@@ -5017,8 +4914,9 @@ packages:
       ansi-colors: 4.1.1
     dev: false
 
-  /entities/2.1.0:
-    resolution: {integrity: sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==}
+  /entities/3.0.1:
+    resolution: {integrity: sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q==}
+    engines: {node: '>=0.12'}
     dev: false
 
   /env-paths/2.2.1:
@@ -8015,8 +7913,8 @@ packages:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
     dev: false
 
-  /linkify-it/3.0.3:
-    resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
+  /linkify-it/4.0.1:
+    resolution: {integrity: sha512-C7bfi1UZmoj8+PQx22XyeXCuBlokoyWQL5pWSP+EI6nzRylyThouddufc2c1NDIcP9k5agmN9fLpA7VNJfIiqw==}
     dependencies:
       uc.micro: 1.0.6
     dev: false
@@ -8244,13 +8142,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /markdown-it/12.3.2:
-    resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
+  /markdown-it/13.0.0:
+    resolution: {integrity: sha512-WArlIpVFvVwb8t3wgJuOsbMLhNWlzuQM7H2qXmuUEnBtXRqKjLjwFUMbZOyJgHygVZSjvcLR4EcXcRilqMavrA==}
     hasBin: true
     dependencies:
       argparse: 2.0.1
-      entities: 2.1.0
-      linkify-it: 3.0.3
+      entities: 3.0.1
+      linkify-it: 4.0.1
       mdurl: 1.0.1
       uc.micro: 1.0.6
     dev: false
@@ -8934,7 +8832,7 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
-  /mini-create-react-context/0.4.1_prop-types@15.8.1+react@17.0.2:
+  /mini-create-react-context/0.4.1_prop-types@15.8.1+react@18.1.0:
     resolution: {integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ==}
     peerDependencies:
       prop-types: ^15.0.0
@@ -8942,7 +8840,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.9
       prop-types: 15.8.1
-      react: 17.0.2
+      react: 18.1.0
       tiny-warning: 1.0.3
     dev: false
 
@@ -10377,26 +10275,40 @@ packages:
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
-  /react-redux/7.2.8_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-6+uDjhs3PSIclqoCk0kd6iX74gzrGc3W5zcAjbrFgEdIjRSQObdIwfx80unTkVUYvbQ95Y8Av3OvFHq1w5EOUw==}
+  /react-is/18.1.0:
+    resolution: {integrity: sha512-Fl7FuabXsJnV5Q1qIOQwx/sagGF18kogb4gpfcG4gjLBWO0WDiiz1ko/ExayuxE7InyQkBLkxRFG5oxY6Uu3Kg==}
+    dev: false
+
+  /react-redux/8.0.1_ca3e0723e220fb48be45674a97b9266b:
+    resolution: {integrity: sha512-LMZMsPY4DYdZfLJgd7i79n5Kps5N9XVLCJJeWAaPYTV+Eah2zTuBjTxKtNEbjiyitbq80/eIkm55CYSLqAub3w==}
     peerDependencies:
-      react: ^16.8.3 || ^17 || ^18
-      react-dom: '*'
-      react-native: '*'
+      '@types/react': ^16.8 || ^17.0 || ^18.0
+      '@types/react-dom': ^16.8 || ^17.0 || ^18.0
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+      react-native: '>=0.59'
+      redux: ^4
     peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
       react-dom:
         optional: true
       react-native:
         optional: true
+      redux:
+        optional: true
     dependencies:
       '@babel/runtime': 7.17.9
-      '@types/react-redux': 7.1.24
+      '@types/hoist-non-react-statics': 3.3.1
+      '@types/use-sync-external-store': 0.0.3
       hoist-non-react-statics: 3.3.2
-      loose-envify: 1.4.0
-      prop-types: 15.8.1
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-is: 17.0.2
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      react-is: 18.1.0
+      redux: 4.2.0
+      use-sync-external-store: 1.1.0_react@18.1.0
     dev: false
 
   /react-refresh/0.13.0:
@@ -10404,7 +10316,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /react-router-dom/5.3.1_react@17.0.2:
+  /react-router-dom/5.3.1_react@18.1.0:
     resolution: {integrity: sha512-f0pj/gMAbv9e8gahTmCEY20oFhxhrmHwYeIwH5EO5xu0qme+wXtsdB8YfUOAZzUz4VaXmb58m3ceiLtjMhqYmQ==}
     peerDependencies:
       react: '>=15'
@@ -10413,13 +10325,13 @@ packages:
       history: 4.10.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 17.0.2
-      react-router: 5.3.1_react@17.0.2
+      react: 18.1.0
+      react-router: 5.3.1_react@18.1.0
       tiny-invariant: 1.2.0
       tiny-warning: 1.0.3
     dev: false
 
-  /react-router/5.3.1_react@17.0.2:
+  /react-router/5.3.1_react@18.1.0:
     resolution: {integrity: sha512-v+zwjqb7bakqgF+wMVKlAPTca/cEmPOvQ9zt7gpSNyPXau1+0qvuYZ5BWzzNDP1y6s15zDwgb9rPN63+SIniRQ==}
     peerDependencies:
       react: '>=15'
@@ -10428,21 +10340,21 @@ packages:
       history: 4.10.1
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
-      mini-create-react-context: 0.4.1_prop-types@15.8.1+react@17.0.2
+      mini-create-react-context: 0.4.1_prop-types@15.8.1+react@18.1.0
       path-to-regexp: 1.8.0
       prop-types: 15.8.1
-      react: 17.0.2
+      react: 18.1.0
       react-is: 16.13.1
       tiny-invariant: 1.2.0
       tiny-warning: 1.0.3
     dev: false
 
-  /react-ssr-prepass/1.5.0_react@17.0.2:
+  /react-ssr-prepass/1.5.0_react@18.1.0:
     resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 17.0.2
+      react: 18.1.0
     dev: false
 
   /react-streaming/0.2.1_react-dom@18.1.0+react@18.1.0:
@@ -12057,12 +11969,6 @@ packages:
     resolution: {integrity: sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=}
     dev: false
 
-  /typescript/4.6.3:
-    resolution: {integrity: sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
   /typescript/4.6.4:
     resolution: {integrity: sha512-9ia/jWHIEbo49HfjrLGfKbZSuWo9iTMwXO+Ca3pRsSpbsMbc7/IU8NKdCZVRRBafVPGnoJeFL76ZOAA84I9fEg==}
     engines: {node: '>=4.2.0'}
@@ -12310,7 +12216,7 @@ packages:
       querystring: 0.2.0
     dev: false
 
-  /urql/2.2.0_graphql@16.4.0+react@17.0.2:
+  /urql/2.2.0_graphql@16.4.0+react@18.1.0:
     resolution: {integrity: sha512-36wnWqDrpXqhwT5r2/qRSZXhb7Y4sXA0nLlYEd3uLgvfIdOA8kUaPdfTujzfrvfCcfiVVFxhzqVAhc8r17NMwQ==}
     peerDependencies:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -12318,16 +12224,16 @@ packages:
     dependencies:
       '@urql/core': 2.4.4_graphql@16.4.0
       graphql: 16.4.0
-      react: 17.0.2
+      react: 18.1.0
       wonka: 4.0.15
     dev: false
 
-  /use-sync-external-store/1.1.0_react@17.0.2:
+  /use-sync-external-store/1.1.0_react@18.1.0:
     resolution: {integrity: sha512-SEnieB2FPKEVne66NpXPd1Np4R1lTNKfjuy3XdIoPQKYBAFdzbzSZlSn1KJZUiihQLQC5Znot4SBz1EOTBwQAQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      react: 17.0.2
+      react: 18.1.0
     dev: false
 
   /use/3.1.1:
@@ -12479,16 +12385,17 @@ packages:
       ufo: 0.8.3
     dev: false
 
-  /vite-plugin-md/0.11.9_vite@2.9.7:
-    resolution: {integrity: sha512-0uD2BPIct3FbEA1hAm56hlrBByEn542HTsS/FoWf33lJIgijVBDDV6FE12ud0SHS6sculITKliF2ntog2kiHmQ==}
+  /vite-plugin-md/0.13.0_vite@2.9.7:
+    resolution: {integrity: sha512-srW6j3otbHxFaTushal6fWxrjrlyA553biB0S1Bpm2DhWL1hP4a/snjpi+5AyDVaQodMmA4Oe2hIW1IjyKa0hQ==}
     peerDependencies:
       vite: ^2.0.0
     dependencies:
       '@antfu/utils': 0.5.1
       '@rollup/pluginutils': 4.2.1
       '@types/markdown-it': 12.2.3
+      '@vue/runtime-core': 3.2.33
       gray-matter: 4.0.3
-      markdown-it: 12.3.2
+      markdown-it: 13.0.0
       vite: 2.9.7
     dev: false
 
@@ -12597,16 +12504,6 @@ packages:
     dependencies:
       '@vue/devtools-api': 6.1.4
       vue: 3.2.33
-    dev: false
-
-  /vue/3.2.31:
-    resolution: {integrity: sha512-odT3W2tcffTiQCy57nOT93INw1auq5lYLLYtWpPYQQYQOOdHiqFct9Xhna6GJ+pJQaF67yZABraH47oywkJgFw==}
-    dependencies:
-      '@vue/compiler-dom': 3.2.31
-      '@vue/compiler-sfc': 3.2.31
-      '@vue/runtime-dom': 3.2.31
-      '@vue/server-renderer': 3.2.31_vue@3.2.31
-      '@vue/shared': 3.2.31
     dev: false
 
   /vue/3.2.33:
