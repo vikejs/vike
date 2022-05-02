@@ -13,6 +13,7 @@ import {
   isObjectWithKeys,
   isCallable,
   getOutDirs,
+  loadModuleAtRuntime,
 } from './utils'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -88,6 +89,8 @@ async function prerender(
   }
 
   setProductionEnvVar()
+
+  disableReactStreaming()
 
   const viteConfig = await resolveConfig({ configFile, root: root_ }, 'vite-plugin-ssr prerender' as any, 'production')
   const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
@@ -600,4 +603,15 @@ function throwPrerenderError(err: unknown) {
   } else {
     throw new Error(err as any)
   }
+}
+
+function disableReactStreaming() {
+  let mod: any
+  try {
+    mod = loadModuleAtRuntime('react-streaming/server')
+  } catch {
+    return
+  }
+  const { disable } = mod
+  disable()
 }

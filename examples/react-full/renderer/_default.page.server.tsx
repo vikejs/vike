@@ -13,11 +13,13 @@ const passToClient = ['pageProps', 'documentProps', 'someAsyncProps']
 
 async function render(pageContext: PageContextBuiltIn & PageContext & { userAgent: string }) {
   const { Page, pageProps } = pageContext
+
+  // This app is pre-rendered; streaming is useless.
+  // We use renderToStream() for the sake of demonstration.
   const stream = await renderToStream(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
-    { disabled: true }
+    </PageShell>
   )
 
   const title = getPageTitle(pageContext)
