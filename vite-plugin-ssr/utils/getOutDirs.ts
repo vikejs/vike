@@ -7,8 +7,8 @@ export { getOutDirs }
 export { getOutDir }
 
 function getOutDir(config: UserConfig): string {
-  const outDir = config.build?.outDir || 'dist'
-  const { outDirClient, outDirServer } = getOutDirs(outDir, { isRoot: true })
+  const outDirRoot = config.build?.outDir || 'dist'
+  const { outDirClient, outDirServer } = getOutDirs(outDirRoot, { isRoot: true })
   if (isSSR_config(config)) {
     return outDirServer
   } else {
