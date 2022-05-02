@@ -2,11 +2,11 @@ import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError } from '..
 
 export { testRun }
 
-function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run prod') {
+function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run prod' | 'npm run preview') {
   run(cmd)
 
   const isDev = cmd === 'npm run dev'
-  const isProd = cmd === 'npm run prod'
+  const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')

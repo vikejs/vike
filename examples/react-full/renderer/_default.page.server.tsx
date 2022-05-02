@@ -17,7 +17,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext & { userAgen
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>,
-    { userAgent: pageContext.userAgent }
+    { disabled: true }
   )
 
   const title = getPageTitle(pageContext)
