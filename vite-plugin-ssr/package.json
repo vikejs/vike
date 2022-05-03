@@ -2,8 +2,8 @@
   "name": "vite-plugin-ssr",
   "version": "0.3.64",
   "dependencies": {
-    "@brillout/json-s": "^0.4.5",
-    "@brillout/libassert": "^0.5.4",
+    "@brillout/json-s": "^0.4.6",
+    "@brillout/libassert": "^0.5.5",
     "cac": "^6.7.12",
     "es-module-lexer": "^0.10.5",
     "fast-glob": "^3.2.11",
