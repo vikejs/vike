@@ -921,8 +921,8 @@ importers:
 
   vite-plugin-ssr:
     specifiers:
-      '@brillout/json-s': ^0.4.5
-      '@brillout/libassert': ^0.5.4
+      '@brillout/json-s': ^0.4.6
+      '@brillout/libassert': ^0.5.5
       '@types/jest': ^27.4.1
       '@types/node': 17.0.31
       '@types/resolve': ^1.20.2
@@ -939,8 +939,8 @@ importers:
       vite-plugin-dist-importer: ^0.1.8
       vite-plugin-glob: ^0.2.6
     dependencies:
-      '@brillout/json-s': 0.4.5
-      '@brillout/libassert': 0.5.4
+      '@brillout/json-s': 0.4.6
+      '@brillout/libassert': 0.5.5
       cac: 6.7.12
       es-module-lexer: 0.10.5
       fast-glob: 3.2.11
@@ -1472,8 +1472,12 @@ packages:
     resolution: {integrity: sha512-hiB4LVW4aFoxvJg//93/B1IlnVfVG15RnRFug+mAaCeM7LZzlQV4anAM4y4VzMVPShUCdbx208tnnb8N4I8dvg==}
     dev: false
 
-  /@brillout/libassert/0.5.4:
-    resolution: {integrity: sha512-ayIUIOFM98wqgMnCquDlzENRBLmJ82hsKnosaaG2U4+ijUVwi1E2LzD0TwhAC8G7vBqp0BbT172mfTXBVMIw5A==}
+  /@brillout/json-s/0.4.6:
+    resolution: {integrity: sha512-mDgMMNFSKyN9Fy0G4yQTcWwQ1BXUE65D3i3RXPX44xD5AuIU4QQDQBi+DKiEDCS6L6nEa2frC2lCUa/ob700Aw==}
+    dev: false
+
+  /@brillout/libassert/0.5.5:
+    resolution: {integrity: sha512-GohLlIu361SMQZzzcu4izLG7Tafc4L5cYTmYt+Gy5tihQFA8ifY0+bsaaIJQQaPUHLbFU/ygZoMmxTqW7Bukcg==}
     dev: false
 
   /@brillout/part-regex/0.1.2:
