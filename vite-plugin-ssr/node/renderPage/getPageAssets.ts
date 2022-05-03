@@ -18,34 +18,34 @@ async function getPageAssets(
     _manifestClient: null | ViteManifest
   },
   clientDependencies: ClientDependency[],
-  clientEntries: string[],
+  clientEntry: string | null,
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
   const isDev = !isPreRendering && !pageContext._isProduction
 
   let assetUrls: string[]
-  let clientEntriesSrc: string[]
+  let clientEntrySrc: null | string
   if (isDev) {
     const viteDevServer = pageContext._viteDevServer
     assert(viteDevServer)
-    clientEntriesSrc = clientEntries && resolveClientEntriesDev(clientEntries, viteDevServer)
+    clientEntrySrc = clientEntry && resolveClientEntriesDev(clientEntry, viteDevServer)
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
     const clientManifest = pageContext._manifestClient
     assert(clientManifest)
-    clientEntriesSrc = clientEntries && resolveClientEntriesProd(clientEntries, clientManifest!)
+    clientEntrySrc = clientEntry && resolveClientEntriesProd(clientEntry, clientManifest!)
     assetUrls = await retrieveAssetsProd(clientDependencies, clientManifest)
   }
 
   let pageAssets: PageAsset[] = []
-  clientEntriesSrc.forEach((clientEntrySrc) => {
+  if (clientEntrySrc) {
     pageAssets.push({
       src: clientEntrySrc,
       assetType: 'script',
       mediaType: 'text/javascript',
       preloadType: null,
     })
-  })
+  }
   assetUrls.forEach((src) => {
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
     const assetType = mediaType === 'text/css' ? 'style' : 'preload'
@@ -97,38 +97,35 @@ function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
   )
 }
 
-function resolveClientEntriesDev(clientEntries: string[], viteDevServer: ViteDevServer): string[] {
+function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): string {
   let root = viteDevServer.config.root
   assert(root)
   root = toPosixPath(root)
-  return clientEntries.map((clientEntry) => {
-    assertPosixPath(clientEntry)
-    let filePath: string
-    if (!clientEntry.startsWith('@@vite-plugin-ssr/')) {
-      assert(path.posix.isAbsolute(clientEntry))
-      filePath = path.posix.join(root, clientEntry)
-    } else {
-      const req = require // Prevent webpack from bundling client code
-      const res = req.resolve
-      // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
-      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/', '../../../../')))
-    }
-    if (!filePath.startsWith('/')) {
-      assert(process.platform === 'win32')
-      filePath = '/' + filePath
-    }
-    filePath = '/@fs' + filePath
-    return filePath
-  })
+
+  assertPosixPath(clientEntry)
+  let filePath: string
+  if (!clientEntry.startsWith('@@vite-plugin-ssr/')) {
+    assert(path.posix.isAbsolute(clientEntry))
+    filePath = path.posix.join(root, clientEntry)
+  } else {
+    const req = require // Prevent webpack from bundling client code
+    const res = req.resolve
+    // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
+    filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/', '../../../../')))
+  }
+  if (!filePath.startsWith('/')) {
+    assert(process.platform === 'win32')
+    filePath = '/' + filePath
+  }
+  filePath = '/@fs' + filePath
+  return filePath
 }
-function resolveClientEntriesProd(clientEntries: string[], clientManifest: ViteManifest): string[] {
-  return clientEntries.map((clientEntry) => {
-    const entry = getManifestEntry(clientEntry, clientManifest)
-    assert(entry)
-    const { manifestEntry } = entry
-    assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry)
-    let { file } = manifestEntry
-    assert(!file.startsWith('/'))
-    return '/' + file
-  })
+function resolveClientEntriesProd(clientEntry: string, clientManifest: ViteManifest): string {
+  const entry = getManifestEntry(clientEntry, clientManifest)
+  assert(entry)
+  const { manifestEntry } = entry
+  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry)
+  let { file } = manifestEntry
+  assert(!file.startsWith('/'))
+  return '/' + file
 }

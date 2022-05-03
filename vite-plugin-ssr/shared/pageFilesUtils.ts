@@ -5,8 +5,9 @@ export { hasPageExport }
 import type { PageFile } from './getPageFiles'
 import { assert } from './utils'
 
+// Returns true for pages that don't have a `render()` hook, or don't have a `Page` export
 function isHtmlOnlyPage(pageId: string, pageFilesAll: PageFile[], isClientSide: boolean) {
-  // The `.page.client.js`/`.page.js` files that should, potentially, be loaded in the browser
+  // All `.page.client.js` and .page.js` files relevant to `pageId`
   const pageFilesClientCandidates = pageFilesAll.filter(
     (p) => (p.fileType === '.page.client' || p.fileType === '.page') && p.isRelevant(pageId),
   )
