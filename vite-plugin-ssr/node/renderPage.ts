@@ -515,7 +515,7 @@ async function loadPageFilesServer(pageContext: {
     loadPageFilesClientExportNames(pageContext._pageFilesAll, pageContext._pageId),
   ])
 
-  const { clientEntries, clientDependencies, isHtmlOnly } = getClientEntries(
+  const { clientEntry, clientDependencies, isHtmlOnly } = getClientEntries(
     pageContext._pageFilesAll,
     pageContext._pageId,
   )
@@ -546,7 +546,7 @@ async function loadPageFilesServer(pageContext: {
       if ('_pageAssets' in pageContext) {
         return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
       } else {
-        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries, isPreRendering)
+        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntry, isPreRendering)
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
       }
@@ -563,62 +563,81 @@ async function loadPageFilesClientExportNames(pageFilesAll: PageFile[], pageId: 
 function getClientEntries(
   pageFilesAll: PageFile[],
   pageId: string,
-): { clientEntries: string[]; clientDependencies: ClientDependency[]; isHtmlOnly: boolean } {
-  const clientEntries: string[] = []
+): { clientEntry: null | string; clientDependencies: ClientDependency[]; isHtmlOnly: boolean } {
+  let clientEntry: null | string = null
   const pageFilesClient: PageFile[] = []
   const clientDependencies: ClientDependency[] = []
 
   const { isHtmlOnly, pageFilesClientCandidates } = isHtmlOnlyPage(pageId, pageFilesAll, false)
 
-  {
-    // Include all `.page.client.js` files that don't `export { render }` nor `export { Page }`/`export default`
-    //  - Also for HTML-only pages; allowing the user to add client-side JavaScript while skipping the heavy `render()` hook's dependencies.
-    //  - We only include page files with `export { Page }`/`export default` if we have a `render()` hook.
-    const pageFilesClientNonRender = pageFilesClientCandidates.filter(
-      (p) => !getExportNames(p, false).includes('render') && !hasPageExport(p, false),
-    )
-    pageFilesClient.push(...pageFilesClientNonRender)
-  }
+  // Handle SPA & SSR pages.
+  if (!isHtmlOnly) {
+    // Pick aAdd the `.page.client.js` file that has `export { render }`
+    //  - The filesystem-nearest one
+    //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
 
-  // Handle SPA & SSR client
-  {
-    if (!isHtmlOnly) {
-      // Add the `.page.client.js` file that has `export { render }`
-      //  - The filesystem-nearest one
-      //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
-      {
-        const pageFileRender = pageFilesClientCandidates.filter((p) => getExportNames(p, false).includes('render'))[0]
-        assert(pageFileRender)
-        pageFilesClient.push(pageFileRender)
-        const pageFilePageExport = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))[0]
-        assert(pageFilePageExport)
-        pageFilesClient.push(pageFilePageExport)
-      }
+    // Pick one page file that exports `render()`
+    {
+      const candidates = pageFilesClientCandidates.filter((p) => getExportNames(p, false).includes('render'))
+      const pageFile = candidates[0] // The filesystem-nearest one
+      assert(pageFile) // because `isHtmlOnly===false`
+      pageFilesClient.push(pageFile)
+    }
 
-      // Add the vps client entry
-      {
-        const usesClientRouting = pageFilesClient.some((p) => getExportNames(p, false).includes('clientRouting'))
-        const clientEntry = usesClientRouting
-          ? // $userRoot/dist/client/entry-client-routing.js
-            '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
-          : // $userRoot/dist/client/entry-server-routing.js
-            '@@vite-plugin-ssr/dist/esm/client/entry.js'
-        clientEntries.push(clientEntry)
-        clientDependencies.push({ id: clientEntry, onlyAssets: false })
-      }
-    } else {
-      // There is no vps client entry; we directly load the user's `.page.client.js` files
-      //  - There is no `render()` hook; so there is no need for `pageContext` (nor `pageContext.exports`).
-      clientEntries.push(...pageFilesClient.map((p) => p.filePath)) // Only includes page files that have no `export { render }` and no `export { Page }`/`export default`
-      // Add CSS/assets of pages files that `export { Page }`/`export default`
-      const pageFilesPageExport = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))
-      clientDependencies.push(...pageFilesPageExport.map((p) => ({ id: p.filePath, onlyAssets: true })))
+    // Pick one page file that exports `Page`
+    {
+      const candidates = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))
+      const pageFile = candidates[0] // The filesystem-nearest one
+      assert(pageFile) // because `isHtmlOnly===false`
+      pageFilesClient.push(pageFile)
+    }
+
+    // Pick all page files that don't export `render()` nor `Page`
+    {
+      const pageFiles = pageFilesClientCandidates.filter(
+        (p) => !getExportNames(p, false).includes('render') && !hasPageExport(p, false),
+      )
+      pageFilesClient.push(...pageFiles)
+    }
+
+    clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
+
+    // Add the vps client entry
+    {
+      const usesClientRouting = pageFilesClient.some((p) => getExportNames(p, false).includes('clientRouting'))
+      clientEntry = usesClientRouting
+        ? // $userRoot/dist/client/entry-client-routing.js
+          '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
+        : // $userRoot/dist/client/entry-server-routing.js
+          '@@vite-plugin-ssr/dist/esm/client/entry.js'
+      clientDependencies.push({ id: clientEntry, onlyAssets: false })
     }
   }
 
-  clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
-  // console.log(pageId, pageFilesClientCandidates, clientEntries, clientDependencies)
-  return { clientEntries, clientDependencies, isHtmlOnly }
+  // Handle HTML-only pages.
+  if (isHtmlOnly) {
+    // There is no vps client entry; we directly load `.page.client.js` / `.page.js` instead.
+    //  - There is no `render()` hook.
+    //  - Since there is no `render()` hook we skip page files that export `Page`.
+    const entryCandidates = pageFilesClientCandidates.filter((p) => {
+      assert(!getExportNames(p, false).includes('render'))
+      return !hasPageExport(p, false)
+    })
+    const entry = entryCandidates[0] // Pick the filesystem-nearest one
+    if (entry) {
+      clientEntry = entry.filePath
+      clientDependencies.push({ id: clientEntry, onlyAssets: false })
+    }
+    // Add CSS & assets of `.page.js` file that export `Page`
+    const pageFile = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))[0]
+    if (pageFile) {
+      clientDependencies.push({ id: pageFile.filePath, onlyAssets: true })
+    }
+  }
+
+  // console.log(pageId, pageFilesClientCandidates, clientEntry, clientDependencies)
+
+  return { clientEntry, clientDependencies, isHtmlOnly }
 }
 
 async function executeOnBeforeRenderHooks(
@@ -823,7 +842,8 @@ function logError(err: unknown) {
     assertWarning(
       false,
       "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
-     { onlyOnce: false })
+      { onlyOnce: false },
+    )
   }
 
   // Avoid logging error twice (not sure if this actually ever happens?)
