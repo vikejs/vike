@@ -615,11 +615,20 @@ function getClientEntries(
   }
 
   // Handle HTML-only pages.
+  //  - Missing: `render()` and/or `Page`
   if (isHtmlOnly) {
+    let pageFiles = pageFilesClientCandidates
+
+    // If it is `render` that is missing, we (eventually) remove page files that export `Page`
+    // If it is `Page` that is missing, we (eventually) remove page files that export `render`
+    pageFiles = pageFilesClientCandidates.filter(
+      (p) => !getExportNames(p, false).includes('render') && !hasPageExport(p, false),
+    )
+
     // There is no vps client entry; we directly load `.page.client.js` / `.page.js` instead.
     //  - There is no `render()` hook.
     //  - Since there is no `render()` hook we skip page files that export `Page`.
-    const entryCandidates = pageFilesClientCandidates.filter((p) => {
+    const entryCandidates = pageFiles.filter((p) => {
       assert(!getExportNames(p, false).includes('render'))
       return !hasPageExport(p, false)
     })
@@ -628,7 +637,8 @@ function getClientEntries(
       clientEntry = entry.filePath
       clientDependencies.push({ id: clientEntry, onlyAssets: false })
     }
-    // Add CSS & assets of `.page.js` file that export `Page`
+    // We don't load the `.page.js` file that export `Page`, but
+    // we add its CSS and assets.
     const pageFile = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))[0]
     if (pageFile) {
       clientDependencies.push({ id: pageFile.filePath, onlyAssets: true })
