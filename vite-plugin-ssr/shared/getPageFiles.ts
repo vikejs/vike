@@ -218,7 +218,8 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
         let isDefaultExport = exportName === 'default'
 
         if (isDefaultExport) {
-          if (isVueSFC(exportValue)) {
+          if (filePath.endsWith('.vue')) {
+            // Vue SFC exports the Vue component as `export default`
             exportName = 'Page'
           } else {
             assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
@@ -423,22 +424,4 @@ function isAncestorDefaultPage(pageId: string, defaultPageFilePath: string) {
 
   const defaultPageDir = slice(defaultPageFilePath.split('/'), 0, -1).join('/')
   return pageId.startsWith(defaultPageDir)
-}
-
-function isVueSFC(defaultExport: unknown): boolean {
-  if (!isObject(defaultExport)) {
-    return false
-  }
-  // console.log(defaultExport, Object.keys(defaultExport), defaultExport.constructor)
-  // Only works in dev
-  if (hasProp(defaultExport, '__file', 'string') && defaultExport.__file.endsWith('.vue')) {
-    return true
-  }
-  if (hasProp(defaultExport, 'ssrRender', 'function')) {
-    return true
-  }
-  if (hasProp(defaultExport, '__ssrInlineRender')) {
-    return true
-  }
-  return false
 }
