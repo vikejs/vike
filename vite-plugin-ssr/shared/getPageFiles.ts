@@ -218,8 +218,8 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
         let isDefaultExport = exportName === 'default'
 
         if (isDefaultExport) {
-          if (filePath.endsWith('.vue')) {
-            // Vue SFC exports the Vue component as `export default`
+          if (!isJavaScriptFile(filePath)) {
+            // `.vue` and `.md` files
             exportName = 'Page'
           } else {
             assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
@@ -270,6 +270,15 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
     _loadedPageFiles: pageFiles.map((p) => p.filePath),
   }
   return pageContextAddendum
+}
+
+function isJavaScriptFile(filePath: string) {
+  // `.mjs`
+  // `.cjs`
+  // `.js`
+  // `.tsx`
+  // ...
+  return /\.(c|m)?(j|t)sx?$/.test(filePath)
 }
 
 function findPageFilesToLoad(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
