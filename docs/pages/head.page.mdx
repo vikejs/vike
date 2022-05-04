@@ -53,7 +53,6 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-ui-framework'
 
 export { render }
-export const customExports = ['documentProps']
 
 async function render(pageContext) {
   // We use `pageContext.exports.documentProps` which pages can statically define.

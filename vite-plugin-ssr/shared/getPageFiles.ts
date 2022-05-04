@@ -201,11 +201,6 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
     })
   })
 
-  {
-    const customExports = getStringUnion(exportsAll, 'customExports')
-    assertExports(pageFiles, customExports)
-  }
-
   const pageContextAddendum = {
     exports,
     pageExports,
@@ -308,64 +303,6 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
       },
     },
   )
-}
-
-type Check = (p: PageFile) => boolean
-const routeFile: Check = (p) => p.fileType === '.page.route'
-const clientFile: Check = (p) => p.fileType === '.page.client'
-const serverFile: Check = (p) => p.fileType === '.page.server'
-const defaultFile: Check = (p) => p.isDefaultPageFile
-const and: (c1: Check, c2: Check) => Check = (c1, c2) => (p) => c1(p) && c2(p)
-const or: (c1: Check, c2: Check) => Check = (c1, c2) => (p) => c1(p) || c2(p)
-const not: (c: Check) => Check = (c) => (p) => !c(p)
-const VPS_EXPORTS: Record<string, (p: PageFile) => boolean> = {
-  // Everywhere (almost)
-  default: not(and(routeFile, defaultFile)),
-  // Isomorphic
-  render: or(clientFile, serverFile),
-  onBeforeRender: not(routeFile),
-  customExports: and(defaultFile, not(routeFile)), // It doesn't make sense to define a custom export from a `.page.js` file
-  // `some.page.route.js`
-  iKnowThePerformanceRisksOfAsyncRouteFunctions: and(routeFile, not(defaultFile)),
-  // `_default.page.route.js`
-  filesystemRoutingRoot: and(routeFile, defaultFile),
-  onBeforeRoute: and(routeFile, defaultFile),
-  // `some.page.js`
-  Page: and(not(defaultFile), not(routeFile)),
-  // `*.page.server.js`
-  prerender: serverFile,
-  passToClient: serverFile,
-  // `some.page.server.js`
-  doNotPrerender: and(serverFile, not(defaultFile)),
-  // `_default.page.server.js`
-  onBeforePrerender: and(serverFile, defaultFile),
-  // `*.page.client.js`
-  clientRouting: clientFile,
-  onHydrationEnd: clientFile,
-  onPageTransitionStart: clientFile,
-  onPageTransitionEnd: clientFile,
-  prefetchLinks: clientFile,
-}
-
-function assertExports(pageFiles: PageFile[], customExports: string[]) {
-  customExports.forEach((customExportName) => {
-    assertUsage(
-      !Object.keys(VPS_EXPORTS).includes(customExportName),
-      `\`export { customExports }\` contains \`${customExportName}\` which is forbidden because it is an '\export\` already used by vite-plugin-ssr.`,
-    )
-  })
-  pageFiles.forEach((p) => {
-    Object.keys(p.fileExports ?? {}).forEach((exportName) => {
-      if (VPS_EXPORTS[exportName]?.(p)) {
-        return
-      }
-      assertWarning(
-        customExports.includes(exportName),
-        `Unknown \`export { ${exportName} }\` at ${p.filePath}. See https://vite-plugin-ssr/customExports if you want to define a custom export.`,
-        { onlyOnce: `unkown-export-${exportName}` },
-      )
-    })
-  })
 }
 
 function getStringUnion(exportsAll: ExportsAll, propName: string): string[] {

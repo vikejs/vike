@@ -30,10 +30,6 @@ const redirections = [
 const headingsWithoutLink: HeadingWithoutLink[] = [
   ...redirections,
   {
-    title: '`export { customExports }`',
-    url: '/customExports',
-  },
-  {
     title: 'Custom Exports & Custom Hooks',
     url: '/exports',
   },
@@ -45,7 +41,6 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     title: 'Server Routing',
     url: '/server-routing',
   },
-  { title: 'Custom Exports', url: '/custom-exports' },
   { title: 'What is Hydration?', url: '/hydration' },
   { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
   { title: <code>injectAssets()</code>, url: '/injectAssets' },
