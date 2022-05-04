@@ -28,7 +28,7 @@ function releasePageContext<
   assert(isObject(pageContext.pageExports))
   assert([true, false].includes(pageContext.isHydration))
 
-  const Page = pageContext.exports.Page ?? pageContext.exports.default
+  const Page = pageContext.exports.Page
   objectAssign(pageContext, { Page })
 
   // For Vue's reactivity
