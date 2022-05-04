@@ -9,7 +9,7 @@ import {
   ExportsAll,
 } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
-import { isHtmlOnlyPage, getExportNames, hasPageExport } from '../shared/pageFilesUtils'
+import { isHtmlOnlyPage, getExportNames_serverSide as getExportNames } from '../shared/pageFilesUtils'
 import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
@@ -527,7 +527,7 @@ async function loadPageFilesServer(pageContext: {
   })
 
   objectAssign(pageContextAddendum, {
-    Page: pageContextAddendum.exports.Page ?? pageContextAddendum.exports.default ?? null,
+    Page: pageContextAddendum.exports.Page,
   })
 
   const isPreRendering = pageContext._isPreRendering
@@ -579,7 +579,7 @@ function getClientEntries(
 
     // Pick one page file that exports `render()`
     {
-      const candidates = pageFilesClientCandidates.filter((p) => getExportNames(p, false).includes('render'))
+      const candidates = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('render'))
       const pageFile = candidates[0] // The filesystem-nearest one
       assert(pageFile) // because `isHtmlOnly===false`
       pageFilesClient.push(pageFile)
@@ -587,7 +587,7 @@ function getClientEntries(
 
     // Pick one page file that exports `Page`
     {
-      const candidates = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))
+      const candidates = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('Page'))
       const pageFile = candidates[0] // The filesystem-nearest one
       assert(pageFile) // because `isHtmlOnly===false`
       pageFilesClient.push(pageFile)
@@ -596,7 +596,7 @@ function getClientEntries(
     // Pick all page files that don't export `render()` nor `Page`
     {
       const pageFiles = pageFilesClientCandidates.filter(
-        (p) => !getExportNames(p, false).includes('render') && !hasPageExport(p, false),
+        (p) => !getExportNames(p).includes('render') && !getExportNames(p).includes('Page'),
       )
       pageFilesClient.push(...pageFiles)
     }
@@ -605,7 +605,7 @@ function getClientEntries(
 
     // Add the vps client entry
     {
-      const usesClientRouting = pageFilesClient.some((p) => getExportNames(p, false).includes('clientRouting'))
+      const usesClientRouting = pageFilesClient.some((p) => getExportNames(p).includes('clientRouting'))
       clientEntry = usesClientRouting
         ? // $userRoot/dist/client/entry-client-routing.js
           '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
@@ -623,15 +623,15 @@ function getClientEntries(
     // If it is `render` that is missing, we (eventually) remove page files that export `Page`
     // If it is `Page` that is missing, we (eventually) remove page files that export `render`
     pageFiles = pageFilesClientCandidates.filter(
-      (p) => !getExportNames(p, false).includes('render') && !hasPageExport(p, false),
+      (p) => !getExportNames(p).includes('render') && !getExportNames(p).includes('Page'),
     )
 
     // There is no vps client entry; we directly load `.page.client.js` / `.page.js` instead.
     //  - There is no `render()` hook.
     //  - Since there is no `render()` hook we skip page files that export `Page`.
     const entryCandidates = pageFiles.filter((p) => {
-      assert(!getExportNames(p, false).includes('render'))
-      return !hasPageExport(p, false)
+      assert(!getExportNames(p).includes('render'))
+      return !getExportNames(p).includes('Page')
     })
     const entry = entryCandidates[0] // Pick the filesystem-nearest one
     if (entry) {
@@ -640,7 +640,7 @@ function getClientEntries(
     }
     // We don't load the `.page.js` file that export `Page`, but
     // we add its CSS and assets.
-    const pageFile = pageFilesClientCandidates.filter((p) => hasPageExport(p, false))[0]
+    const pageFile = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('Page'))[0]
     if (pageFile) {
       clientDependencies.push({ id: pageFile.filePath, onlyAssets: true })
     }
