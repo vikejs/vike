@@ -106,7 +106,7 @@ function useClientRouter() {
       assertUsage(
         hasProp(pageContext.exports, 'onPageTransitionStart', 'function'),
         'The `export { onPageTransitionStart }` of ' +
-          pageContext.exportsAll.onPageTransitionStart![0]!.filePath +
+          pageContext.exportsAll.onPageTransitionStart![0]!._filePath +
           ' should be a function.',
       )
       onPageTransitionStart = pageContext.exports.onPageTransitionStart
@@ -130,7 +130,7 @@ function useClientRouter() {
       const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
       assertUsage(
         hookResult === undefined,
-        '`export { render }` of ' + pageContext.exportsAll.render![0]!.filePath + ' should not return any value',
+        '`export { render }` of ' + pageContext.exportsAll.render![0]!._filePath + ' should not return any value',
       )
       addLinkPrefetchHandlers(!!pageContext.exports?.prefetchLinks, url)
     })()
@@ -145,7 +145,7 @@ function useClientRouter() {
         assertUsage(
           hasProp(pageContext.exports, 'onPageTransitionEnd', 'function'),
           'The `export { onPageTransitionEnd }` of ' +
-            pageContext.exportsAll.onPageTransitionEnd![0]!.filePath +
+            pageContext.exportsAll.onPageTransitionEnd![0]!._filePath +
             ' should be a function.',
         )
         pageContext.exports.onPageTransitionEnd()

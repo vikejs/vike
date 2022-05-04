@@ -14,7 +14,7 @@ function getHook(
   const hook = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hook)
-  const { filePath } = file
+  const filePath = file._filePath
   assert(filePath)
   assert(!hookName.endsWith(')'))
   assertUsage(isCallable(hook), `\`export { ${hookName} }\` of ${filePath} should be a function`)
