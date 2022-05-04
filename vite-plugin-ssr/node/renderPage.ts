@@ -4,7 +4,7 @@ import {
   loadPageFiles,
   PageFile,
   PageContextExports,
-  getStringUnion,
+  getExportUnion,
   getPageFilesAllServerSide,
   ExportsAll,
 } from '../shared/getPageFiles'
@@ -522,7 +522,7 @@ async function loadPageFilesServer(pageContext: {
   )
 
   objectAssign(pageContextAddendum, {
-    _passToClient: getStringUnion(pageContextAddendum.exportsAll, 'passToClient'),
+    _passToClient: getExportUnion(pageContextAddendum.exportsAll, 'passToClient'),
     _isHtmlOnly: isHtmlOnly,
   })
 
