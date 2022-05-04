@@ -213,7 +213,7 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
 
   pageFiles.forEach(({ filePath, fileType, fileExports }) => {
     Object.entries(fileExports ?? {})
-      .sort(makeLast(([exportName]) => exportName === 'default'))
+      .sort(makeLast(([exportName]) => exportName === 'default')) // `export { bla }` should override `export default { bla }`
       .forEach(([exportName, exportValue]) => {
         let isDefaultExport = exportName === 'default'
 
@@ -222,10 +222,10 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
             exportName = 'Page'
           } else {
             assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
-            Object.entries(exportValue).forEach(([exportNameDefault, exportValueDefault]) => {
+            Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
               addExport({
-                exportName: exportNameDefault,
-                exportValue: exportValueDefault,
+                exportName: defaultExportName,
+                exportValue: defaultExportValue,
                 filePath,
                 fileType,
                 isDefaultExport,
@@ -429,12 +429,16 @@ function isVueSFC(defaultExport: unknown): boolean {
   if (!isObject(defaultExport)) {
     return false
   }
-  const test1 = hasProp(defaultExport, 'ssrRender', 'function') && defaultExport.ssrRender.name === '_sfc_ssrRender'
-  const test2 = hasProp(defaultExport, '__file', 'string') && defaultExport.__file.endsWith('.vue')
-  assertWarning(
-    test1 === test2,
-    'Please reach out to vite-plugin-ssr maintainers (an internal heuristic needs update).',
-    { onlyOnce: true },
-  )
-  return test1 || test2
+  // console.log(defaultExport, Object.keys(defaultExport), defaultExport.constructor)
+  // Only works in dev
+  if (hasProp(defaultExport, '__file', 'string') && defaultExport.__file.endsWith('.vue')) {
+    return true
+  }
+  if (hasProp(defaultExport, 'ssrRender', 'function')) {
+    return true
+  }
+  if (hasProp(defaultExport, '__ssrInlineRender')) {
+    return true
+  }
+  return false
 }
