@@ -1,0 +1,33 @@
+We strongly recommend to regularly update vite-plugin-ssr to the latest version.
+
+This covers only breaking changes between semver major updates.
+
+See [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md) for bug fixes and new features between minor updates.
+
+## 0.4
+
+**Breaking**
+
+ - All apps: Use `export { render }` in `.page.client.js` instead of `useClientRouter()` (Client Routing) / `getPage()` (Server Routing).
+ - If you use pre-render options: they are now defined in `vite.config.js`.
+ - If you define your page root component over `export default Page`: define them with `export { Page }` instead.
+
+These are the only three strictly required changes.
+
+**Non-breaking**
+
+The other changes are non-breaking and you can simply follow the warnings to progressively update to the 0.4 interface.
+
+
+### `export { render }` in `.page.client.js`
+
+TODO
+
+### Pre-render options in `vite.config.js`
+
+TODO
+
+### `export default Page`
+
+TODO
+
