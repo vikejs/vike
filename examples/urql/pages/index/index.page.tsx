@@ -11,7 +11,7 @@ const POKEMONS_QUERY = gql`
   }
 `
 
-const Home = () => {
+const Page = () => {
   const [result] = useQuery({ query: POKEMONS_QUERY })
 
   const { data, fetching, error } = result
@@ -36,4 +36,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export { Page }

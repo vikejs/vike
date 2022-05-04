@@ -6,6 +6,7 @@ export type PageContextExports = Pick<
   'exports' | 'exportsAll' | 'pageExports'
 >
 export type { PageFile }
+export type { ExportsAll }
 export { setPageFiles }
 export { setPageFilesAsync }
 export { getStringUnion }
@@ -22,6 +23,7 @@ import {
   assertUsage,
   unique,
   slice,
+  makeLast,
 } from './utils'
 import { isErrorPage } from './route'
 import { determinePageId } from './determinePageId'
@@ -177,30 +179,89 @@ function isRendererFilePath(filePath: string): boolean {
   return filePath.includes('/renderer/')
 }
 
-type ExportsAll = Record<string, { filePath: string; exportValue: unknown }[]>
+type ExportsAll = Record<
+  string,
+  { exportValue: unknown; filePath: string; _fileType: FileType; _isDefaultExport: boolean }[]
+>
 async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const pageFiles = findPageFilesToLoad(pageFilesAll, pageId, isForClientSide)
   await Promise.all(pageFiles.map((p) => p.loadFile?.()))
 
+  const exportsAll: ExportsAll = {}
+  const addExport = ({
+    exportName,
+    exportValue,
+    filePath,
+    fileType,
+    isDefaultExport,
+  }: {
+    exportName: string
+    exportValue: unknown
+    fileType: FileType
+    filePath: string
+    isDefaultExport: boolean
+  }) => {
+    assert(exportName !== 'default')
+    exportsAll[exportName] = exportsAll[exportName] ?? []
+    exportsAll[exportName]!.push({
+      exportValue,
+      filePath: filePath,
+      _fileType: fileType,
+      _isDefaultExport: isDefaultExport,
+    })
+  }
+
+  pageFiles.forEach(({ filePath, fileType, fileExports }) => {
+    Object.entries(fileExports ?? {})
+      .sort(makeLast(([exportName]) => exportName === 'default'))
+      .forEach(([exportName, exportValue]) => {
+        let isDefaultExport = exportName === 'default'
+
+        if (isDefaultExport) {
+          if (isVueSFC(exportValue)) {
+            exportName = 'Page'
+          } else {
+            assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
+            Object.entries(exportValue).forEach(([exportNameDefault, exportValueDefault]) => {
+              addExport({
+                exportName: exportNameDefault,
+                exportValue: exportValueDefault,
+                filePath,
+                fileType,
+                isDefaultExport,
+              })
+            })
+            return
+          }
+        }
+
+        addExport({
+          exportName,
+          exportValue,
+          filePath,
+          fileType,
+          isDefaultExport,
+        })
+      })
+  })
+
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
-  const exportsAll: ExportsAll = {}
-  pageFiles.forEach(({ filePath, fileType, fileExports }) => {
-    Object.entries(fileExports ?? {}).forEach(([exportName, exportValue]) => {
+  Object.entries(exportsAll).forEach(([exportName, values]) => {
+    values.forEach(({ exportValue, _fileType, _isDefaultExport }) => {
       exports[exportName] = exports[exportName] ?? exportValue
-      if (fileType === '.page') {
+
+      // Legacy `pageContext.pageExports`
+      if (_fileType === '.page' && !_isDefaultExport) {
         if (!(exportName in pageExports)) {
           pageExports[exportName] = exportValue
         }
       }
-      exportsAll[exportName] = exportsAll[exportName] ?? []
-      exportsAll[exportName]!.push({
-        filePath,
-        exportValue,
-      })
     })
   })
 
+  assert(!('default' in exports))
+  assert(!('default' in exportsAll))
   const pageContextAddendum = {
     exports,
     pageExports,
@@ -362,4 +423,18 @@ function isAncestorDefaultPage(pageId: string, defaultPageFilePath: string) {
 
   const defaultPageDir = slice(defaultPageFilePath.split('/'), 0, -1).join('/')
   return pageId.startsWith(defaultPageDir)
+}
+
+function isVueSFC(defaultExport: unknown): boolean {
+  if (!isObject(defaultExport)) {
+    return false
+  }
+  const test1 = hasProp(defaultExport, 'ssrRender', 'function') && defaultExport.ssrRender.name === '_sfc_ssrRender'
+  const test2 = hasProp(defaultExport, '__file', 'string') && defaultExport.__file.endsWith('.vue')
+  assertWarning(
+    test1 === test2,
+    'Please reach out to vite-plugin-ssr maintainers (an internal heuristic needs update).',
+    { onlyOnce: true },
+  )
+  return test1 || test2
 }

@@ -3,6 +3,7 @@ import { assert } from './assert'
 export { higherFirst }
 export { lowerFirst }
 export { makeFirst }
+export { makeLast }
 
 // -1 => element1 first
 // +1 => element2 first
@@ -45,4 +46,8 @@ function makeFirst<T>(getValue: (element: T) => boolean): (element1: T, element2
     }
     assert(false)
   }
+}
+
+function makeLast<T>(getValue: (element: T) => boolean) {
+  return makeFirst((element: T) => !getValue(element))
 }

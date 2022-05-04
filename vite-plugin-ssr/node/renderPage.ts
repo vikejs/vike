@@ -6,6 +6,7 @@ import {
   PageContextExports,
   getStringUnion,
   getPageFilesAllServerSide,
+  ExportsAll,
 } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
 import { isHtmlOnlyPage, getExportNames, hasPageExport } from '../shared/pageFilesUtils'
@@ -477,7 +478,7 @@ type PageContextPublic = {
   Page: unknown
   pageExports: Record<string, unknown>
   exports: Record<string, unknown>
-  exportsAll: Record<string, { filePath: string; exportValue: unknown }[]>
+  exportsAll: ExportsAll
   _pageId: string
   is404?: boolean
   pageProps?: Record<string, unknown>

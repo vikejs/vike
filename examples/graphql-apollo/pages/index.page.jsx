@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
-export default IndexPage
+export { Page }
 
-function IndexPage() {
+function Page() {
   const { data } = useQuery(gql`
     {
       countries {
