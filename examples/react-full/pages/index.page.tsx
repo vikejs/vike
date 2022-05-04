@@ -2,9 +2,9 @@ import React from 'react'
 import { navigate } from 'vite-plugin-ssr/client/router'
 import { Counter } from '../components/Counter'
 
-export default IndexPage
+export default { Page }
 
-function IndexPage() {
+function Page() {
   return (
     <>
       <h1>
