@@ -136,7 +136,6 @@ export const query = { modelName: 'product', select: ['name', 'price'] }
 ```js
 // renderer/_default.page.server.js
 import { fetchData } from './fetchData'
-export const customExports = ['query']
 export const onBeforeRender = async pageContext => {
    // Custom exports are available at `pageContext.exports`
    const { modelName, select } = pageContext.exports.query
@@ -161,7 +160,6 @@ export const getQuery = pageContext => /* ... */
 ```js
 // renderer/_default.page.server.js
 import { fetchData } from './fetchData'
-export const customExports = ['getQuery']
 export const onBeforeRender = async pageContext => {
    const { getQuery } = pageContext.exports
    const query = getQuery(pageContext)
