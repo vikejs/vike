@@ -3,18 +3,51 @@ import { toPosixPath } from '../utils'
 export { isViteCliCall }
 
 function isViteCliCall({ command, ssr }: { command: 'build' | 'dev' | 'preview'; ssr?: true }) {
-  const { argv } = process
-  if (!argv.some((a) => toPosixPath(a).endsWith('/bin/vite.js'))) {
+  const { isViteCli, viteCliCommand, viteCliOptions } = analyzise()
+
+  if (!isViteCli) {
     return false
   }
-  if (ssr && !argv.includes('--ssr')) {
+
+  if (ssr && !viteCliOptions.includes('--ssr')) {
     return false
   }
-  if (!argv.includes(command)) {
-    if (command === 'dev') {
-      return argv.includes('serve')
+
+  if (command === 'dev') {
+    if (!['dev', 'serve', ''].includes(viteCliCommand)) {
+      return false
     }
-    return false
+  } else {
+    if (command !== viteCliCommand) {
+      return false
+    }
   }
+
   return true
+}
+
+function analyzise() {
+  const { argv } = process
+
+  const viteCliOptions: string[] = []
+  let viteCliCommand: string = ''
+
+  let isViteCli = false
+  for (const arg of argv) {
+    if (isViteCli) {
+      if (arg.startsWith('-')) {
+        viteCliOptions.push(arg)
+      } else {
+        if (viteCliOptions.length === 0) {
+          viteCliCommand = arg
+        }
+      }
+    } else {
+      if (toPosixPath(arg).endsWith('/bin/vite.js')) {
+        isViteCli = true
+      }
+    }
+  }
+
+  return { isViteCli, viteCliOptions, viteCliCommand }
 }
