@@ -8,7 +8,7 @@ import { FileType, PageFile } from './types'
 
 type ExportsAll = Record<
   string,
-  { exportValue: unknown; filePath: string; _fileType: FileType; _isDefaultExport: boolean }[]
+  { exportValue: unknown; _filePath: string; _fileType: FileType; _isDefaultExport: boolean }[]
 >
 type PageContextExports = {
   exportsAll: ExportsAll
@@ -35,7 +35,7 @@ function getExports(pageFiles: PageFile[]): PageContextExports {
     exportsAll[exportName] = exportsAll[exportName] ?? []
     exportsAll[exportName]!.push({
       exportValue,
-      filePath: filePath,
+      _filePath: filePath,
       _fileType: fileType,
       _isDefaultExport: isDefaultExport,
     })
@@ -132,7 +132,7 @@ function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
       ?.map((e) => {
         assertUsage(
           hasProp(e, 'exportValue', 'string[]'),
-          `\`export { ${propName} }\` of ${e.filePath} should be an array of strings.`,
+          `\`export { ${propName} }\` of ${e._filePath} should be an array of strings.`,
         )
         return e.exportValue
       })
