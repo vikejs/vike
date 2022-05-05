@@ -84,7 +84,7 @@ function traverse(
         fileType,
         isRelevant,
         isDefaultPageFile: isDefaultFilePath(filePath),
-        isRendererPageFile: isRendererFilePath(filePath),
+        isRendererPageFile: isDefaultFilePath(filePath) && isRendererFilePath(filePath),
         isErrorPageFile: isErrorPage(filePath),
         pageId: determinePageId(filePath),
       })
