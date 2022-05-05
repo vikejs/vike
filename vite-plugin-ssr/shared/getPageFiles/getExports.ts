@@ -4,11 +4,11 @@ export type { ExportsAll }
 export type { PageContextExports }
 
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast } from '../utils'
-import { FileType, PageFile } from './types'
+import type { FileType, PageFile } from './types'
 
 type ExportsAll = Record<
   string,
-  { exportValue: unknown; _filePath: string; _fileType: FileType; _isDefaultExport: boolean }[]
+  { exportValue: unknown; _filePath: string; _fileType: FileType; _isFromDefaultExport: boolean }[]
 >
 type PageContextExports = {
   exportsAll: ExportsAll
@@ -18,72 +18,29 @@ type PageContextExports = {
 
 function getExports(pageFiles: PageFile[]): PageContextExports {
   const exportsAll: ExportsAll = {}
-  const addExport = ({
-    exportName,
-    exportValue,
-    filePath,
-    fileType,
-    isDefaultExport,
-  }: {
-    exportName: string
-    exportValue: unknown
-    fileType: FileType
-    filePath: string
-    isDefaultExport: boolean
-  }) => {
-    assert(exportName !== 'default')
-    exportsAll[exportName] = exportsAll[exportName] ?? []
-    exportsAll[exportName]!.push({
-      exportValue,
-      _filePath: filePath,
-      _fileType: fileType,
-      _isDefaultExport: isDefaultExport,
-    })
-  }
 
-  pageFiles.forEach(({ filePath, fileType, fileExports }) => {
-    Object.entries(fileExports ?? {})
-      .sort(makeLast(([exportName]) => exportName === 'default')) // `export { bla }` should override `export default { bla }`
-      .forEach(([exportName, exportValue]) => {
-        let isDefaultExport = exportName === 'default'
-
-        if (isDefaultExport) {
-          if (!isJavaScriptFile(filePath)) {
-            // `.vue` and `.md` files
-            exportName = 'Page'
-          } else {
-            assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
-            Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
-              addExport({
-                exportName: defaultExportName,
-                exportValue: defaultExportValue,
-                filePath,
-                fileType,
-                isDefaultExport,
-              })
-            })
-            return
-          }
-        }
-
-        addExport({
-          exportName,
-          exportValue,
-          filePath,
-          fileType,
-          isDefaultExport,
-        })
+  pageFiles.forEach((pageFile) => {
+    const exportValues = getExportValues(pageFile)
+    exportValues.forEach(({ exportName, exportValue, isFromDefaultExport }) => {
+      assert(exportName !== 'default')
+      exportsAll[exportName] = exportsAll[exportName] ?? []
+      exportsAll[exportName]!.push({
+        exportValue,
+        _filePath: pageFile.filePath,
+        _fileType: pageFile.fileType,
+        _isFromDefaultExport: isFromDefaultExport,
       })
+    })
   })
 
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}
   Object.entries(exportsAll).forEach(([exportName, values]) => {
-    values.forEach(({ exportValue, _fileType, _isDefaultExport }) => {
+    values.forEach(({ exportValue, _fileType, _isFromDefaultExport }) => {
       exports[exportName] = exports[exportName] ?? exportValue
 
       // Legacy `pageContext.pageExports`
-      if (_fileType === '.page' && !_isDefaultExport) {
+      if (_fileType === '.page' && !_isFromDefaultExport) {
         if (!(exportName in pageExports)) {
           pageExports[exportName] = exportValue
         }
@@ -99,6 +56,48 @@ function getExports(pageFiles: PageFile[]): PageContextExports {
     exportsAll,
     pageExports,
   }
+}
+
+function getExportValues(pageFile: PageFile) {
+  const { filePath, fileExports } = pageFile
+  assert(fileExports) // assume pageFile.loadFile() was called
+
+  const exportValues: {
+    exportName: string
+    exportValue: unknown
+    isFromDefaultExport: boolean
+  }[] = []
+
+  Object.entries(fileExports)
+    .sort(makeLast(([exportName]) => exportName === 'default')) // `export { bla }` should override `export default { bla }`
+    .forEach(([exportName, exportValue]) => {
+      let isFromDefaultExport = exportName === 'default'
+
+      if (isFromDefaultExport) {
+        if (!isJavaScriptFile(filePath)) {
+          // `.vue` and `.md` files
+          exportName = 'Page'
+        } else {
+          assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
+          Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
+            exportValues.push({
+              exportName: defaultExportName,
+              exportValue: defaultExportValue,
+              isFromDefaultExport,
+            })
+          })
+          return
+        }
+      }
+
+      exportValues.push({
+        exportName,
+        exportValue,
+        isFromDefaultExport,
+      })
+    })
+
+  return exportValues
 }
 
 function isJavaScriptFile(filePath: string) {

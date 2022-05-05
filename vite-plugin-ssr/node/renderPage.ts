@@ -9,7 +9,7 @@ import {
   ExportsAll,
 } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
-import { isHtmlOnlyPage, getExportNames_serverSide as getExportNames } from '../shared/pageFilesUtils'
+import { loadPageFilesClientExportNames, getExportNames_serverSide as getExportNames } from '../shared/getPageFiles/loadPageFilesClientExportNames'
 import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
@@ -511,19 +511,25 @@ async function loadPageFilesServer(pageContext: {
   _viteDevServer: null | ViteDevServer
   _manifestClient: null | ViteManifest
 }) {
-  const [pageContextAddendum] = await Promise.all([
-    loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
-    loadPageFilesClientExportNames(pageContext._pageFilesAll, pageContext._pageId),
-  ])
+  const pageContextAddendum = {}
+  {
+    const [pageContextAddendum1, pageContextAddendum2] = await Promise.all([
+      loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
+      loadPageFilesClientExportNames(pageContext._pageFilesAll, pageContext._pageId, false),
+    ])
+    objectAssign(pageContextAddendum, pageContextAddendum1)
+    objectAssign(pageContextAddendum, pageContextAddendum2)
+  }
 
-  const { clientEntry, clientDependencies, isHtmlOnly } = getClientEntries(
+  const { clientEntry, clientDependencies } = determineClientEntry(
     pageContext._pageFilesAll,
     pageContext._pageId,
+    pageContextAddendum._pageFilesClientSide,
+    pageContextAddendum._isHtmlOnly,
   )
 
   objectAssign(pageContextAddendum, {
     _passToClient: getExportUnion(pageContextAddendum.exportsAll, 'passToClient'),
-    _isHtmlOnly: isHtmlOnly,
   })
 
   objectAssign(pageContextAddendum, {
@@ -532,16 +538,6 @@ async function loadPageFilesServer(pageContext: {
 
   const isPreRendering = pageContext._isPreRendering
   assert([true, false].includes(isPreRendering))
-  clientDependencies.push(
-    ...pageContext._pageFilesAll
-      .filter(
-        (p) =>
-          // Add CSS assets
-          //  - `.page.server.js` files are transformed by `?extractStyles`
-          p.fileType === '.page.server' && p.isRelevant(pageContext._pageId),
-      )
-      .map((p) => ({ id: p.filePath, onlyAssets: true })),
-  )
   objectAssign(pageContextAddendum, {
     _getPageAssets: async () => {
       if ('_pageAssets' in pageContext) {
@@ -556,20 +552,15 @@ async function loadPageFilesServer(pageContext: {
 
   return pageContextAddendum
 }
-async function loadPageFilesClientExportNames(pageFilesAll: PageFile[], pageId: string): Promise<void> {
-  await Promise.all(
-    pageFilesAll.filter((p) => p.fileType === '.page.client' && p.isRelevant(pageId)).map((p) => p.loadExportNames?.()),
-  )
-}
-function getClientEntries(
+function determineClientEntry(
   pageFilesAll: PageFile[],
   pageId: string,
-): { clientEntry: null | string; clientDependencies: ClientDependency[]; isHtmlOnly: boolean } {
+  pageFilesClientCandidates: PageFile[],
+  isHtmlOnly: boolean,
+): { clientEntry: null | string; clientDependencies: ClientDependency[] } {
   let clientEntry: null | string = null
   const pageFilesClient: PageFile[] = []
   const clientDependencies: ClientDependency[] = []
-
-  const { isHtmlOnly, pageFilesClientCandidates } = isHtmlOnlyPage(pageId, pageFilesAll, false)
 
   // Handle SPA & SSR pages.
   if (!isHtmlOnly) {
@@ -648,7 +639,18 @@ function getClientEntries(
 
   // console.log(pageId, pageFilesClientCandidates, clientEntry, clientDependencies)
 
-  return { clientEntry, clientDependencies, isHtmlOnly }
+  clientDependencies.push(
+    ...pageFilesAll
+      .filter(
+        (p) =>
+          // Add CSS assets
+          //  - `.page.server.js` files are transformed by `?extractStyles`
+          p.fileType === '.page.server' && p.isRelevant(pageId),
+      )
+      .map((p) => ({ id: p.filePath, onlyAssets: true })),
+  )
+
+  return { clientEntry, clientDependencies }
 }
 
 async function executeOnBeforeRenderHooks(
