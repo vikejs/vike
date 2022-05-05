@@ -1,6 +1,6 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { StaticRouter } from 'react-router'
+import { StaticRouter } from 'react-router-dom/server'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 
 export { render }
