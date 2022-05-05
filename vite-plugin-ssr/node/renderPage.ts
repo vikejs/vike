@@ -9,7 +9,7 @@ import {
   ExportsAll,
 } from '../shared/getPageFiles'
 import { getHook } from '../shared/getHook'
-import { loadPageFilesClientExportNames, getExportNames_serverSide as getExportNames } from '../shared/getPageFiles/loadPageFilesClientExportNames'
+import { loadPageFilesClientExportNames } from '../shared/getPageFiles/loadPageFilesClientExportNames'
 import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
@@ -521,12 +521,7 @@ async function loadPageFilesServer(pageContext: {
     objectAssign(pageContextAddendum, pageContextAddendum2)
   }
 
-  const { clientEntry, clientDependencies } = determineClientEntry(
-    pageContext._pageFilesAll,
-    pageContext._pageId,
-    pageContextAddendum._pageFilesClientSide,
-    pageContextAddendum._isHtmlOnly,
-  )
+  const { clientEntry, clientDependencies } = determineClientEntry(pageContextAddendum)
 
   objectAssign(pageContextAddendum, {
     _passToClient: getExportUnion(pageContextAddendum.exportsAll, 'passToClient'),
@@ -552,51 +547,30 @@ async function loadPageFilesServer(pageContext: {
 
   return pageContextAddendum
 }
-function determineClientEntry(
-  pageFilesAll: PageFile[],
-  pageId: string,
-  pageFilesClientCandidates: PageFile[],
-  isHtmlOnly: boolean,
-): { clientEntry: null | string; clientDependencies: ClientDependency[] } {
+function determineClientEntry(pageContext: {
+  _pageFilesClientSide: PageFile[]
+  _pageFilesServerSide: PageFile[]
+  _isHtmlOnly: boolean
+}): { clientEntry: null | string; clientDependencies: ClientDependency[] } {
   let clientEntry: null | string = null
-  const pageFilesClient: PageFile[] = []
+
+  const pageFilesClientSide = pageContext._pageFilesClientSide
+  const pageFilesServerSideOnly = pageContext._pageFilesServerSide.filter((p) => !pageFilesClientSide.includes(p))
+
   const clientDependencies: ClientDependency[] = []
+  clientDependencies.push(...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false })))
+  clientDependencies.push(...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true }))) // CSS & assets
 
   // Handle SPA & SSR pages.
-  if (!isHtmlOnly) {
-    // Pick aAdd the `.page.client.js` file that has `export { render }`
-    //  - The filesystem-nearest one
-    //  - This means automatic override: only one `render()` hook is loaded and all other `.page.client.js` are dismissed
-
-    // Pick one page file that exports `render()`
-    {
-      const candidates = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('render'))
-      const pageFile = candidates[0] // The filesystem-nearest one
-      assert(pageFile) // because `isHtmlOnly===false`
-      pageFilesClient.push(pageFile)
+  if (pageContext._isHtmlOnly) {
+    if (pageFilesClientSide[0]) {
+      assert(pageFilesClientSide.length === 1)
+      clientEntry = pageFilesClientSide[0].filePath
     }
-
-    // Pick one page file that exports `Page`
-    {
-      const candidates = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('Page'))
-      const pageFile = candidates[0] // The filesystem-nearest one
-      assert(pageFile) // because `isHtmlOnly===false`
-      pageFilesClient.push(pageFile)
-    }
-
-    // Pick all page files that don't export `render()` nor `Page`
-    {
-      const pageFiles = pageFilesClientCandidates.filter(
-        (p) => !getExportNames(p).includes('render') && !getExportNames(p).includes('Page'),
-      )
-      pageFilesClient.push(...pageFiles)
-    }
-
-    clientDependencies.push(...pageFilesClient.map((p) => ({ id: p.filePath, onlyAssets: false })))
-
+  } else {
     // Add the vps client entry
     {
-      const usesClientRouting = pageFilesClient.some((p) => getExportNames(p).includes('clientRouting'))
+      const usesClientRouting = pageFilesClientSide.some((p) => definesClientRouting(p))
       clientEntry = usesClientRouting
         ? // $userRoot/dist/client/entry-client-routing.js
           '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
@@ -606,51 +580,19 @@ function determineClientEntry(
     }
   }
 
-  // Handle HTML-only pages.
-  //  - Missing: `render()` and/or `Page`
-  if (isHtmlOnly) {
-    let pageFiles = pageFilesClientCandidates
-
-    // If it is `render` that is missing, we (eventually) remove page files that export `Page`
-    // If it is `Page` that is missing, we (eventually) remove page files that export `render`
-    pageFiles = pageFilesClientCandidates.filter(
-      (p) => !getExportNames(p).includes('render') && !getExportNames(p).includes('Page'),
-    )
-
-    // There is no vps client entry; we directly load `.page.client.js` / `.page.js` instead.
-    //  - There is no `render()` hook.
-    //  - Since there is no `render()` hook we skip page files that export `Page`.
-    const entryCandidates = pageFiles.filter((p) => {
-      assert(!getExportNames(p).includes('render'))
-      return !getExportNames(p).includes('Page')
-    })
-    const entry = entryCandidates[0] // Pick the filesystem-nearest one
-    if (entry) {
-      clientEntry = entry.filePath
-      clientDependencies.push({ id: clientEntry, onlyAssets: false })
-    }
-    // We don't load the `.page.js` file that export `Page`, but
-    // we add its CSS and assets.
-    const pageFile = pageFilesClientCandidates.filter((p) => getExportNames(p).includes('Page'))[0]
-    if (pageFile) {
-      clientDependencies.push({ id: pageFile.filePath, onlyAssets: true })
-    }
-  }
-
-  // console.log(pageId, pageFilesClientCandidates, clientEntry, clientDependencies)
-
-  clientDependencies.push(
-    ...pageFilesAll
-      .filter(
-        (p) =>
-          // Add CSS assets
-          //  - `.page.server.js` files are transformed by `?extractStyles`
-          p.fileType === '.page.server' && p.isRelevant(pageId),
-      )
-      .map((p) => ({ id: p.filePath, onlyAssets: true })),
-  )
-
+  // console.log(pageContext._pageFilesClientSide, pageContext._pageFilesServerSide, clientDependencies, clientEntry)
   return { clientEntry, clientDependencies }
+}
+
+function definesClientRouting(pageFile: PageFile): boolean {
+  const clientRouting = 'clientRouting'
+  if (pageFile.exportNames) {
+    return pageFile.exportNames.includes(clientRouting)
+  }
+  if (pageFile.fileExports) {
+    return Object.keys(pageFile.fileExports).includes(clientRouting)
+  }
+  assert(false)
 }
 
 async function executeOnBeforeRenderHooks(
