@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, Route } from 'react-router-dom'
+import { Link, Route, Routes } from 'react-router-dom'
 
 export { Page }
 
@@ -21,8 +21,10 @@ function Page() {
         </li>
       </ul>
       <hr />
-      <Route exact path="/" component={Home} />
-      <Route path="/about" component={About} />
+      <Routes>
+        <Route exact path="/" element={<Home/>} />
+        <Route path="/about" element={<About/>} />
+      </Routes>
     </>
   )
 }
