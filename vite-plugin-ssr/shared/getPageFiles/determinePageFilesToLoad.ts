@@ -1,30 +1,56 @@
 export { determinePageFilesToLoad }
 
 import type { FileType, PageFile } from './types'
-import { assert, assertPosixPath } from '../utils'
+import { assert, assertPosixPath, isNotNullish } from '../utils'
 
-function determinePageFilesToLoad(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
-  const fileTypeEnvSpecific = isForClientSide ? ('.page.client' as const) : ('.page.server' as const)
-  const defaultFiles = [
-    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.isRelevant(pageId) && p.fileType === fileTypeEnvSpecific),
-    ...pageFilesAll.filter((p) => p.isDefaultPageFile && p.isRelevant(pageId) && p.fileType === '.page'),
-  ]
-  defaultFiles.sort(defaultFilesSorter(fileTypeEnvSpecific, pageId))
+function determinePageFilesToLoad(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean): PageFile[] {
+  const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
+
+  const sorter = defaultFilesSorter(fileTypeEnv, pageId)
+
+  const pageFilesRelevant = pageFilesAll.filter(p => p.isRelevant(pageId))
+
+  const getRendererFile = (fileType: FileType) => pageFilesRelevant.filter((p) => p.isRendererPageFile && p.fileType === fileType).sort(sorter)[0]
+  const getPageIdFile = (fileType: FileType) => {
+    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.fileType === fileType)
+    assert(files.length<=1)
+    const pageIdFile = files[0]
+    assert(pageIdFile===undefined || !pageIdFile.isDefaultPageFile)
+    return files[0]
+  }
+
+  // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
+  // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`, so `determinePageFilesToLoad()` is a misnommer and should be named `determinePageFilesThatCanBeLoaded()` for HTML-only pages.
+  const defaultFilesNonRenderer = pageFilesRelevant.filter((p) => p.isDefaultPageFile && !p.isRendererPageFile && p.fileType === fileTypeEnv || p.fileType==='.page')
+  defaultFilesNonRenderer.sort(sorter)
+
+  // A page can have only one renderer. In other words: Multiple `renderer/` overwrite each other.
+  const rendererFileEnv = getRendererFile(fileTypeEnv)
+  const rendererFileIso = getRendererFile('.page')
+
+  const pageIdFileEnv = getPageIdFile(fileTypeEnv)
+  const pageIdFileIso = getPageIdFile('.page')
+
+  // Ordered by `pageContext.exports` precendence
   const pageFiles = [
-    ...pageFilesAll.filter((p) => p.pageId === pageId && p.fileType === fileTypeEnvSpecific),
-    ...pageFilesAll.filter((p) => p.pageId === pageId && p.fileType === '.page'),
-    ...defaultFiles,
-  ]
+    pageIdFileEnv,
+    pageIdFileIso,
+    ...defaultFilesNonRenderer,
+    rendererFileEnv,
+    rendererFileIso,
+  ].filter(isNotNullish)
+
   return pageFiles
 }
 
-function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
+function defaultFilesSorter(fileTypeEnv: FileType, pageId: string) {
   const e1First = -1 as const
   const e2First = +1 as const
   const noOrder = 0 as const
   return (e1: PageFile, e2: PageFile): 0 | 1 | -1 => {
     assert(e1.isDefaultPageFile && e2.isDefaultPageFile)
 
+    // Non-renderer `_default.page.*` before `renderer/**/_default.page.*`
     {
       const e1_isRenderer = e1.isRendererPageFile
       const e2_isRenderer = e2.isRendererPageFile
@@ -37,6 +63,7 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
       assert(e1_isRenderer === e2_isRenderer)
     }
 
+    // Filesystem nearest first
     {
       const e1_distance = getPathDistance(pageId, e1.filePath)
       const e2_distance = getPathDistance(pageId, e2.filePath)
@@ -49,16 +76,18 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
       assert(e1_distance === e2_distance)
     }
 
+    // `.page.server.js`/`.page.client.js` before `.page.js`
     {
-      if (e1.fileType === fileTypeEnvSpecific && e2.fileType !== fileTypeEnvSpecific) {
+      if (e1.fileType === fileTypeEnv && e2.fileType !== fileTypeEnv) {
         return e1First
       }
-      if (e2.fileType === fileTypeEnvSpecific && e1.fileType !== fileTypeEnvSpecific) {
+      if (e2.fileType === fileTypeEnv && e1.fileType !== fileTypeEnv) {
         return e2First
       }
     }
 
-    /*
+    // Probably useless since `e1.fileType`/`e2.fileType` is always either `fileTypeEnv` or `.page.js`
+    // But to be clear that `.page.js` always comes after `.page.server.js`/`.page.client.js`
     {
       if (e1.fileType === '.page' && e2.fileType !== '.page') {
         return e2First
@@ -67,7 +96,6 @@ function defaultFilesSorter(fileTypeEnvSpecific: FileType, pageId: string) {
         return e1First
       }
     }
-    */
 
     return noOrder
   }
