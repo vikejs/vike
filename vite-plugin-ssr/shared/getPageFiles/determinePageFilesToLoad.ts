@@ -3,25 +3,41 @@ export { determinePageFilesToLoad }
 import type { FileType, PageFile } from './types'
 import { assert, assertPosixPath, isNotNullish } from '../utils'
 
-function determinePageFilesToLoad(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean): PageFile[] {
-  const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
+function determinePageFilesToLoad(
+  pageFilesAll: PageFile[],
+  pageId: string,
+): { pageFilesClientSide: PageFile[]; pageFilesServerSide: PageFile[]; isHtmlOnly: boolean } {
+  const clientSide = determinePageFilesToLoadFor(pageFilesAll, pageId, true)
+  const serverSide = determinePageFilesToLoadFor(pageFilesAll, pageId, false)
+  assert(clientSide.isHtmlOnly === serverSide.isHtmlOnly)
+  const { isHtmlOnly } = clientSide
+  const pageFilesClientSide = clientSide.pageFiles
+  const pageFilesServerSide = serverSide.pageFiles
+  return { pageFilesClientSide, pageFilesServerSide, isHtmlOnly }
+}
 
+function determinePageFilesToLoadFor(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean) {
+  const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
+  const isHtmlOnly = determineIsHtmlOnly(pageFilesAll, pageId)
   const sorter = defaultFilesSorter(fileTypeEnv, pageId)
 
-  const pageFilesRelevant = pageFilesAll.filter(p => p.isRelevant(pageId))
+  const pageFilesRelevant = pageFilesAll.filter((p) => p.isRelevant(pageId))
 
-  const getRendererFile = (fileType: FileType) => pageFilesRelevant.filter((p) => p.isRendererPageFile && p.fileType === fileType).sort(sorter)[0]
+  const getRendererFile = (fileType: FileType) =>
+    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.fileType === fileType).sort(sorter)[0]
   const getPageIdFile = (fileType: FileType) => {
     const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.fileType === fileType)
-    assert(files.length<=1)
+    assert(files.length <= 1)
     const pageIdFile = files[0]
-    assert(pageIdFile===undefined || !pageIdFile.isDefaultPageFile)
+    assert(pageIdFile === undefined || !pageIdFile.isDefaultPageFile)
     return files[0]
   }
 
   // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
   // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`, so `determinePageFilesToLoad()` is a misnommer and should be named `determinePageFilesThatCanBeLoaded()` for HTML-only pages.
-  const defaultFilesNonRenderer = pageFilesRelevant.filter((p) => p.isDefaultPageFile && !p.isRendererPageFile && p.fileType === fileTypeEnv || p.fileType==='.page')
+  const defaultFilesNonRenderer = pageFilesRelevant.filter(
+    (p) => (p.isDefaultPageFile && !p.isRendererPageFile && p.fileType === fileTypeEnv) || p.fileType === '.page',
+  )
   defaultFilesNonRenderer.sort(sorter)
 
   // A page can have only one renderer. In other words: Multiple `renderer/` overwrite each other.
@@ -32,15 +48,28 @@ function determinePageFilesToLoad(pageFilesAll: PageFile[], pageId: string, forC
   const pageIdFileIso = getPageIdFile('.page')
 
   // Ordered by `pageContext.exports` precendence
-  const pageFiles = [
-    pageIdFileEnv,
-    pageIdFileIso,
-    ...defaultFilesNonRenderer,
-    rendererFileEnv,
-    rendererFileIso,
-  ].filter(isNotNullish)
+  let pageFiles = [pageIdFileEnv, pageIdFileIso, ...defaultFilesNonRenderer, rendererFileEnv, rendererFileIso].filter(
+    isNotNullish,
+  )
 
-  return pageFiles
+  // HTML-only pages load a single `.page.client.js` representing the whole client-side
+  if (forClientSide && isHtmlOnly) {
+    pageFiles = pageFiles.filter((p) => p.fileType === '.page.client' && !p.isRendererPageFile)
+    pageFiles = [pageFiles[0]].filter(isNotNullish)
+  }
+
+  return { isHtmlOnly, pageFiles }
+}
+
+function determineIsHtmlOnly(pageFilesAll: PageFile[], pageId: string) {
+  let isHtmlOnly = false
+  if (
+    !pageFilesAll.some((p) => p.pageId === pageId && p.fileType === '.page') &&
+    pageFilesAll.some((p) => p.pageId === pageId && p.fileType === '.page.server')
+  ) {
+    isHtmlOnly = true
+  }
+  return isHtmlOnly
 }
 
 function defaultFilesSorter(fileTypeEnv: FileType, pageId: string) {
