@@ -36,7 +36,7 @@ function determinePageFilesToLoadFor(pageFilesAll: PageFile[], pageId: string, f
   // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
   // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`, so `determinePageFilesToLoad()` is a misnommer and should be named `determinePageFilesThatCanBeLoaded()` for HTML-only pages.
   const defaultFilesNonRenderer = pageFilesRelevant.filter(
-    (p) => (p.isDefaultPageFile && !p.isRendererPageFile && p.fileType === fileTypeEnv) || p.fileType === '.page',
+    (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.fileType === fileTypeEnv || p.fileType === '.page'),
   )
   defaultFilesNonRenderer.sort(sorter)
 
