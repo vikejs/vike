@@ -80,6 +80,7 @@ function getExportValues(pageFile: PageFile) {
         } else {
           assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
           Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
+            assertAllowedDefaultExport(defaultExportName, filePath)
             exportValues.push({
               exportName: defaultExportName,
               exportValue: defaultExportValue,
@@ -96,6 +97,10 @@ function getExportValues(pageFile: PageFile) {
         isFromDefaultExport,
       })
     })
+
+  exportValues.forEach(({ exportName, isFromDefaultExport }) => {
+    assert(!(isFromDefaultExport && forbiddenDefaultExport.includes(exportName)))
+  })
 
   return exportValues
 }
@@ -136,5 +141,14 @@ function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
         return e.exportValue
       })
       .flat() ?? []
+  )
+}
+
+// Forbid `export default { render }`, because only `export { render }` can be statically analyzed by `es-module-lexer`.
+const forbiddenDefaultExport = ['render', 'clientRouting']
+function assertAllowedDefaultExport(defaultExportName: string, filePath: string) {
+  assertUsage(
+    !forbiddenDefaultExport.includes(defaultExportName),
+    `${filePath}\` has export default { ${defaultExportName} }\` which is forbidden, do \`export { ${defaultExportName} }\` instead.`,
   )
 }
