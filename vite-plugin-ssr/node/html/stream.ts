@@ -1,4 +1,13 @@
-import { assert, assertUsage, checkType, isObject, hasProp, objectAssign, capitalizeFirstLetter } from '../utils'
+import {
+  assert,
+  assertUsage,
+  checkType,
+  isObject,
+  hasProp,
+  objectAssign,
+  capitalizeFirstLetter,
+  assertWarning,
+} from '../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
 // Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
@@ -38,6 +47,7 @@ export type { StreamPipeNode }
 // Public: consumed by vite-plugin-ssr users
 export { pipeWebStream }
 export { pipeNodeStream }
+export { stampStreamPipe }
 export { pipeStream }
 
 type StreamReadableWeb = ReadableStream
@@ -287,7 +297,7 @@ async function processStream<StreamType extends Stream>(
       write(chunk)
     }
     const onEnd = async () => {
-      if( streamEnded ) {
+      if (streamEnded) {
         return
       }
 
@@ -593,35 +603,86 @@ function isStream(something: unknown): something is Stream {
 const __streamPipeWeb = '__streamPipeWeb'
 type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
+  assertWarning(
+    false,
+    'pipeWebStream() is outdated, use stampStreamPipe() instead. See https://vite-plugin-ssr.com/stream',
+    { onlyOnce: true },
+  )
   return { [__streamPipeWeb]: pipe }
 }
 function getStreamPipeWeb(thing: StreamPipeWebWrapped): StreamPipeWeb
 function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb
 function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb {
-  if (isStreamPipeWeb(thing)) {
+  if (!isStreamPipeWeb(thing)) {
+    return null
+  }
+  if (hasProp(thing, 'isWebStreamPipe')) {
+    // `stampStreamPipe()`
+    return thing as unknown as StreamPipeWeb
+  } else {
+    // `pipeWebStream()`
     return thing[__streamPipeWeb]
   }
-  return null
 }
 function isStreamPipeWeb(something: unknown): something is StreamPipeWebWrapped {
-  return isObject(something) && __streamPipeWeb in something
+  // `pipeWebStream()`
+  if (isObject(something) && __streamPipeWeb in something) {
+    return true
+  }
+  // `stampStreamPipe()`
+  if (hasProp(something, 'isWebStreamPipe')) {
+    return true
+  }
+  return false
 }
 
 const __streamPipeNode = '__streamPipeNode'
 type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
+  assertWarning(
+    false,
+    'pipeNodeStream() is outdated, use stampStreamPipe() instead. See https://vite-plugin-ssr.com/stream',
+    { onlyOnce: true },
+  )
   return { [__streamPipeNode]: pipe }
 }
 function getStreamPipeNode(thing: StreamPipeNodeWrapped): StreamPipeNode
 function getStreamPipeNode(thing: unknown): null | StreamPipeNode
 function getStreamPipeNode(thing: unknown): null | StreamPipeNode {
-  if (isStreamPipeNode(thing)) {
+  if (!isStreamPipeNode(thing)) {
+    return null
+  }
+  if (hasProp(thing, 'isNodeStreamPipe')) {
+    // `stampStreamPipe()`
+    return thing as unknown as StreamPipeNode
+  } else {
+    // `pipeNodeStream()`
     return thing[__streamPipeNode]
   }
-  return null
 }
 function isStreamPipeNode(something: unknown): something is StreamPipeNodeWrapped {
-  return isObject(something) && __streamPipeNode in something
+  // `pipeNodeStream()`
+  if (isObject(something) && __streamPipeNode in something) {
+    return true
+  }
+  // `stampStreamPipe()`
+  if (hasProp(something, 'isNodeStreamPipe')) {
+    return true
+  }
+  return false
+}
+
+function stampStreamPipe(pipe: StreamPipeNode | StreamPipeWeb, opts: { pipeType: 'web' | 'node' }) {
+  assertUsage(opts, 'stampStreamPipe(pipe, { pipeType }): argument `pipeType` is missing.)')
+  assertUsage(
+    ['web', 'node'].includes(opts.pipeType),
+    "stampStreamPipe(pipe, { pipeType }): argument `pipeType` should be either 'web' or 'node'.",
+  )
+  if (opts.pipeType === 'node') {
+    Object.assign(pipe, { isNodeStreamPipe: true })
+  } else {
+    Object.assign(pipe, { isWebStreamPipe: true })
+  }
 }
 
 const __streamPipe = '__streamPipe'
