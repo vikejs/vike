@@ -6,12 +6,11 @@ function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
   {
     skipCssTest,
-    cwd,
     noDefaultPageInUserCode,
     isPrerendered,
-  }: { skipCssTest?: boolean; cwd?: string; noDefaultPageInUserCode?: true; isPrerendered?: true } = {},
+  }: { skipCssTest?: boolean; noDefaultPageInUserCode?: true; isPrerendered?: true } = {},
 ) {
-  run(cmd, { cwd })
+  run(cmd)
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
