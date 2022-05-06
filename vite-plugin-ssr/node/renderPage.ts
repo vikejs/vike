@@ -314,11 +314,13 @@ type HttpResponse = {
   contentType: ContentType
   body: string
   getBody: () => Promise<string>
+  getReadableWebStream: () => StreamReadableWeb
+  pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
+  // outdated
   getNodeStream: () => Promise<StreamReadableNode>
   getWebStream: () => StreamReadableWeb
   pipeToNodeWritable: StreamPipeNode
   pipeToWebWritable: StreamPipeWeb
-  pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
 }
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
@@ -330,6 +332,8 @@ function createHttpResponseObject(
   }
 
   assert(!pageContext._isPageContextRequest || typeof htmlRender === 'string')
+
+  const streamDocs = 'https://vite-plugin-ssr.com/stream'
 
   return {
     statusCode,
@@ -347,20 +351,49 @@ function createHttpResponseObject(
       return body
     },
     async getNodeStream() {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.pipe()` instead. See ' +
+          streamDocs,
+        { onlyOnce: true },
+      )
       const nodeStream = await getStreamReadableNode(htmlRender)
       assertUsage(nodeStream !== null, errMsg('getNodeStream()', fixMsg('readable', 'node')))
       return nodeStream
     },
     getWebStream() {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.getWebStream(res)` is outdated, use `pageContext.httpResponse.getReadableWebStream(res)` instead. See ' +
+          streamDocs,
+        { onlyOnce: true },
+      )
       const webStream = getStreamReadableWeb(htmlRender)
       assertUsage(webStream !== null, errMsg('getWebStream()', fixMsg('readable', 'web')))
       return webStream
     },
+    getReadableWebStream() {
+      const webStream = getStreamReadableWeb(htmlRender)
+      assertUsage(webStream !== null, errMsg('getReadableWebStream()', fixMsg('readable', 'web')))
+      return webStream
+    },
     pipeToWebWritable(writable: StreamWritableWeb) {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.pipeToWebWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. See ' +
+          streamDocs,
+        { onlyOnce: true },
+      )
       const success = pipeToStreamWritableWeb(htmlRender, writable)
       assertUsage(success, errMsg('pipeToWebWritable()'))
     },
     pipeToNodeWritable(writable: StreamWritableNode) {
+      assertWarning(
+        false,
+        '`pageContext.httpResponse.pipeToNodeWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. See ' +
+          streamDocs,
+        { onlyOnce: true },
+      )
       const success = pipeToStreamWritableNode(htmlRender, writable)
       assertUsage(success, errMsg('pipeToNodeWritable()'))
     },
@@ -377,7 +410,7 @@ function createHttpResponseObject(
       }
       assertUsage(
         false,
-        `The object \`writable\` passed to \`pageContext.httpResponse.pipe(writable)\` doesn't seem to be ${getStreamName(
+        `The argument \`writable\` passed to \`pageContext.httpResponse.pipe(writable)\` doesn't seem to be ${getStreamName(
           'writable',
           'web',
         )} nor ${getStreamName('writable', 'node')}.`,
@@ -398,7 +431,7 @@ function createHttpResponseObject(
     return [
       `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook (${renderFilePath}) provides ${htmlRenderName}`,
       fixMsg,
-      'See https://vite-plugin-ssr.com/stream',
+      `See ${streamDocs}`,
     ]
       .filter(Boolean)
       .join('. ')
