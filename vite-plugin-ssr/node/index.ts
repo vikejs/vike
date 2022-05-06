@@ -1,7 +1,7 @@
 export { renderPage } from './renderPage'
 export { createPageRenderer } from './createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
-export { pipeWebStream, pipeNodeStream, pipeStream } from './html/stream'
+export { pipeWebStream, pipeNodeStream, pipeStream, stampStreamPipe } from './html/stream'
 export { injectAssets__public as _injectAssets } from './html/injectAssets'
 export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
