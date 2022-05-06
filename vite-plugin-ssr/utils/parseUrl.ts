@@ -74,7 +74,7 @@ function parseUrl(
 } {
   assert(isParsable(url), { url })
   url = decodeURI(url)
-  assert(baseUrl.startsWith('/'), { url, baseUrl })
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'), { url, baseUrl })
 
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
@@ -185,7 +185,7 @@ function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '
 }
 
 function assertBaseUrl(baseUrl: string) {
-  assert(baseUrl.startsWith('/'))
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'))
 }
 
 function assertUrlPathname(urlPathname: string) {
@@ -205,7 +205,7 @@ function analyzeBaseUrl(
   let url = urlPathnameWithBase
 
   assert(url.startsWith('/'))
-  assert(baseUrl.startsWith('/'))
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'))
 
   if (baseUrl === '/') {
     const pathnameWithoutBaseUrl = urlPathnameWithBase
