@@ -7,6 +7,7 @@ import {
   objectAssign,
   capitalizeFirstLetter,
   assertWarning,
+  isCallable,
 } from '../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
@@ -617,7 +618,7 @@ function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb {
   if (!isStreamPipeWeb(thing)) {
     return null
   }
-  if (hasProp(thing, 'isWebStreamPipe')) {
+  if (isCallable(thing) && 'isWebStreamPipe' in thing) {
     // `stampStreamPipe()`
     return thing as unknown as StreamPipeWeb
   } else {
@@ -625,13 +626,13 @@ function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb {
     return thing[__streamPipeWeb]
   }
 }
-function isStreamPipeWeb(something: unknown): something is StreamPipeWebWrapped {
+function isStreamPipeWeb(thing: unknown): thing is StreamPipeWebWrapped {
   // `pipeWebStream()`
-  if (isObject(something) && __streamPipeWeb in something) {
+  if (isObject(thing) && __streamPipeWeb in thing) {
     return true
   }
   // `stampStreamPipe()`
-  if (hasProp(something, 'isWebStreamPipe')) {
+  if (isCallable(thing) && 'isWebStreamPipe' in thing) {
     return true
   }
   return false
@@ -653,7 +654,7 @@ function getStreamPipeNode(thing: unknown): null | StreamPipeNode {
   if (!isStreamPipeNode(thing)) {
     return null
   }
-  if (hasProp(thing, 'isNodeStreamPipe')) {
+  if (isCallable(thing) && 'isNodeStreamPipe' in thing) {
     // `stampStreamPipe()`
     return thing as unknown as StreamPipeNode
   } else {
@@ -661,13 +662,13 @@ function getStreamPipeNode(thing: unknown): null | StreamPipeNode {
     return thing[__streamPipeNode]
   }
 }
-function isStreamPipeNode(something: unknown): something is StreamPipeNodeWrapped {
+function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped {
   // `pipeNodeStream()`
-  if (isObject(something) && __streamPipeNode in something) {
+  if (isObject(thing) && __streamPipeNode in thing) {
     return true
   }
   // `stampStreamPipe()`
-  if (hasProp(something, 'isNodeStreamPipe')) {
+  if (isCallable(thing) && 'isNodeStreamPipe' in thing) {
     return true
   }
   return false
