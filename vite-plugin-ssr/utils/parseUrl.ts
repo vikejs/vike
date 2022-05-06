@@ -74,7 +74,7 @@ function parseUrl(
 } {
   assert(isParsable(url), { url })
   url = decodeURI(url)
-  assert(baseUrl.startsWith('/'), { url, baseUrl })
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'), { url, baseUrl })
 
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
@@ -178,14 +178,14 @@ function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '
       '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vite-plugin-ssr/base-url',
   )
   assertUsage(
-    baseUrl.startsWith('/'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`.',
+    baseUrl.startsWith('/') || baseUrl.startsWith('./'),
+    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/` or `./`.',
   )
   assertBaseUrl(baseUrl)
 }
 
 function assertBaseUrl(baseUrl: string) {
-  assert(baseUrl.startsWith('/'))
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'))
 }
 
 function assertUrlPathname(urlPathname: string) {
@@ -205,7 +205,7 @@ function analyzeBaseUrl(
   let url = urlPathnameWithBase
 
   assert(url.startsWith('/'))
-  assert(baseUrl.startsWith('/'))
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'))
 
   if (baseUrl === '/') {
     const pathnameWithoutBaseUrl = urlPathnameWithBase

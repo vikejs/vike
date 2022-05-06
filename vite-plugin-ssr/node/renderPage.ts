@@ -1078,7 +1078,7 @@ function isFileRequest(urlPathname: string) {
 
 function _parseUrl(url: string, baseUrl: string): ReturnType<typeof parseUrl> & { isPageContextRequest: boolean } {
   assert(url.startsWith('/') || url.startsWith('http'))
-  assert(baseUrl.startsWith('/'))
+  assert(baseUrl.startsWith('/') || baseUrl.startsWith('.'))
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
   return { ...parseUrl(urlWithoutPageContextRequestSuffix, baseUrl), isPageContextRequest }
 }
