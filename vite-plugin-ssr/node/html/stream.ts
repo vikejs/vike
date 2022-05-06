@@ -375,7 +375,7 @@ async function processStream<StreamType extends Stream>(
         writableOriginal.end()
       },
       getStream() {
-        checkType<StreamPipeNodeWrapped>(pipeNodeWrapper)
+        checkType<StreamPipeNode>(pipeNodeWrapper)
         checkType<StreamPipeNodeWrapped>(streamOriginal)
         const stream = pipeNodeWrapper as typeof streamOriginal
         return stream
@@ -383,11 +383,12 @@ async function processStream<StreamType extends Stream>(
     })
     let writableOriginal: StreamWritableNode & { flush?: () => void }
     let writableOriginalReady = false
-    const pipeNodeWrapper = pipeNodeStream((writable_: StreamWritableNode) => {
+    const pipeNodeWrapper = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       writableOriginalReady = true
       flushBuffer()
-    })
+    }
+    stampStreamPipe(pipeNodeWrapper, { pipeType: 'node' })
     const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
       async write(chunk, _encoding, callback) {
@@ -462,7 +463,7 @@ async function processStream<StreamType extends Stream>(
         writerOriginal.close()
       },
       getStream() {
-        checkType<StreamPipeWebWrapped>(pipeWebWrapper)
+        checkType<StreamPipeWeb>(pipeWebWrapper)
         checkType<StreamPipeWebWrapped>(streamOriginal)
         const stream = pipeWebWrapper as typeof streamOriginal
         return stream
@@ -470,7 +471,7 @@ async function processStream<StreamType extends Stream>(
     })
     let writerOriginal: WritableStreamDefaultWriter<any>
     let writableOriginalReady = false
-    const pipeWebWrapper = pipeWebStream((writableOriginal: StreamWritableWeb) => {
+    const pipeWebWrapper = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
       ;(async () => {
         // CloudFlare Workers does not implement `ready` property
@@ -481,7 +482,8 @@ async function processStream<StreamType extends Stream>(
         writableOriginalReady = true
         flushBuffer()
       })()
-    })
+    }
+    stampStreamPipe(pipeWebWrapper, { pipeType: 'web' })
     let writableProxy: WritableStream
     if (typeof ReadableStream !== 'function') {
       writableProxy = new WritableStream({
