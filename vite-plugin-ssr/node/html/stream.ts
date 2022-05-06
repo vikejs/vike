@@ -60,8 +60,10 @@ type StreamPipe = (writable: StreamWritableNode | StreamWritableWeb) => void
 type Stream =
   | StreamReadableWeb
   | StreamReadableNode
-  | StreamPipeWebWrapped
-  | StreamPipeNodeWrapped
+  | StreamPipeWebWrapped // pipeWebStream()
+  | StreamPipeWeb // stampStreamPipe()
+  | StreamPipeNodeWrapped // pipeNodeStream()
+  | StreamPipeNode // stampStreamPipe()
   | StreamReactStreaming
 // `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
 type StreamTypePatch = NodeJS.ReadableStream
@@ -592,7 +594,6 @@ function isStream(something: unknown): something is Stream {
     isStreamPipeNode(something) ||
     isStreamPipeWeb(something) ||
     isStreamReactStreaming(something)
-    //isStreamPipe(something)
   ) {
     checkType<Stream>(something)
     return true
@@ -690,19 +691,6 @@ type StreamPipeWrapped = { [__streamPipe]: StreamPipe }
 function pipeStream(pipe: StreamPipe): StreamPipeWrapped {
   return { [__streamPipe]: pipe }
 }
-/*
-function getStreamPipe(thing: StreamPipeWrapped): StreamPipe
-function getStreamPipe(thing: unknown): null | StreamPipe
-function getStreamPipe(thing: unknown): null | StreamPipe {
-  if (isStreamPipe(thing)) {
-    return thing[__streamPipe]
-  }
-  return null
-}
-function isStreamPipe(something: unknown): something is StreamPipeWrapped {
-  return isObject(something) && __streamPipe in something
-}
-*/
 
 async function streamToString(stream: Stream): Promise<string> {
   if (isStreamReadableWeb(stream)) {
@@ -720,7 +708,6 @@ async function streamToString(stream: Stream): Promise<string> {
   if (isStreamReactStreaming(stream)) {
     return await streamReactStreamingToString(stream)
   }
-  checkType<never>(stream)
   assert(false)
 }
 
@@ -789,6 +776,5 @@ function inferStreamName(stream: Stream) {
   if (isStreamReactStreaming(stream)) {
     return 'the stream object provided by `react-streaming`'
   }
-  checkType<never>(stream)
   assert(false)
 }
