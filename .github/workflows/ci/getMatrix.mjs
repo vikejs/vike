@@ -70,7 +70,7 @@ const testJobs = {
     testFiles: [],
     setups: [{
       os: 'ubuntu-latest',
-      node_version: '14',
+      node_version: '16',
     }],
     testCmd: testCmdE2e,
   },
@@ -78,7 +78,7 @@ const testJobs = {
     testFiles: [],
     setups: [{
       os: 'ubuntu-latest',
-      node_version: '14',
+      node_version: '16',
     }],
     testCmd: testCmdE2e,
   },
