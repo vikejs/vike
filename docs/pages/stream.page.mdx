@@ -1,6 +1,18 @@
 import { RepoLink, Link } from 'libframe-docs/components'
 
-> HTML Streaming support is a beta feature; breaking changes may be introduced in minor version updates.
+
+## Examples & docs
+
+Examples:
+ - With React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
+ - With React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers/' />
+ - With Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full/' />
+ - With Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue' />
+
+Stream Docs & API:
+ - [Node.js Streams](https://nodejs.org/api/stream.html)
+ - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+
 
 ## Basics
 
@@ -26,35 +38,51 @@ async function render(pageContext) {
 }
 ```
 
+Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
+
 ```js
 // server.js
+
+import { renderPage } from 'vite-plugin-ssr'
 
 app.get("*", async (req, res, next) => {
   const pageContextInit = { url: req.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
   if (!httpResponse) return next()
-
-  // If `renderToStream()` returns a Node.js Stream:
-  const stream = await httpResponse.getNodeStream()
-  // If `renderToStream()` returns a Web Stream:
-  const stream = await httpResponse.getWebStream()
-
-  stream.pipe(res)
+  // `httpResponse.pipe()` works with Node.js Streams as well as Web Streams.
+  httpResponse.pipe(res)
 })
 ```
 
-## Examples & docs
+Edge platforms (e.g. Cloudflare Workers):
 
-Examples:
- - With React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
- - With React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers/' />
- - With Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full/' />
- - With Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue' />
+```js
+// worker.js
 
-Stream Docs & API:
- - [Node.js Streams](https://nodejs.org/api/stream.html)
- - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+import { renderPage } from 'vite-plugin-ssr'
+
+addEventListener('fetch', (event) => {
+  event.respondWith(handleFetchEvent(event))
+})
+
+async function handleFetchEvent(event) {
+  const pageContextInit = { url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) {
+    return null
+  } else {
+    // `httpResponse.getReadableWebStream()` only works for Web Streams
+    const readable = httpResponse.getReadableWebStream()
+    const { statusCode, contentType } = httpResponse
+    return new Response(readable, {
+      headers: { 'content-type': contentType },
+      status: statusCode,
+    })
+  }
+}
+```
 
 
 ## Stream to string
@@ -62,69 +90,99 @@ Stream Docs & API:
 We can convert the stream to a string:
 
 ```js
-  // If we provide a stream into our `render()` hook's `escapeInject`, we can
-  // still get a string.
+/* This won't work: (a stream cannot be consumed synchronously)
+const { body } = httpResponse
+res.send(body)
+*/
 
-  /* This won't work: (a stream cannot be consumed synchronously)
-  const { body } = httpResponse
-  res.send(body)
-  */
-
-  // But we can do:
-  const body = await httpResponse.getBody()
-  assert(typeof body === 'string')
-  res.send(body)
+// But we can do:
+const body = await httpResponse.getBody()
+assert(typeof body === 'string')
+res.send(body)
 ```
 
 ## Stream pipes
 
-We can also use Stream pipes.
+To be able to use stream pipes, we need to use `stampStreamPipe()`:
 
 ```js
 // renderer/_deault.page.server.js
 
 export { render }
 
-import { escapeInject, pipeNodeStream, pipeWebStream } from 'vite-plugin-ssr'
-import { pipeToWritable } from 'some-ui-framework' // React, Vue, ...
+import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
+import { escapeInject, stampStreamPipe } from 'vite-plugin-ssr'
 
 async function render(pageContext) {
   const { Page } = pageContext
 
-  // Node.js Stream
-  const streamPipe = pipeNodeStream(writable => {
-    // `writable` is a Node.js writable
-    pipeToWritable(Page, writable)
-  })
-  // Web Stream
-  const streamPipe = pipeWebStream(writable => {
-    // `writable` is a Web writable
-    pipeToWritable(Page, writable)
+  const pipe = renderToStreamPipe(Page)
+
+  stampStreamPipe(pipe, {
+    // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
+    pipeType: 'web',
+    // If `pipe(writable)` expects `writable` to be a Writable Web Stream
+    pipeType: 'node'
   })
 
   return escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${streamPipe}</div>
+        <div id="page-view">${pipe}</div>
       </body>
     </html>`
 }
 ```
+
+For Node.js:
+
 ```js
 // server.js
 
-app.get("*", async (req, res, next) => {
-  const pageContextInit = { url: req.url }
-  const pageContext = await renderPage(pageContextInit)
-  const { httpResponse } = pageContext
-  if (!httpResponse) return next()
-
-  // Node.js Stream
-  httpResponse.pipeToNodeWritable(res)
-  // Web Stream
-  httpResponse.pipeToWebWritable(res)
-})
+const pageContext = await renderPage(pageContextInit)
+const { httpResponse } = pageContext
+// We can use `httpResponse.pipe()` as usual
+httpResponse.pipe(res)
 ```
+
+For Edge platforms that need a readable stream, such as Cloudflare Workers, we can use `new TransformStream()`:
+
+```js
+// worker.js
+
+const { readable, writable } = new TransformStream()
+httpResponse.pipe(writable)
+const resp = new Response(readable)
+```
+
+For some UI frameworks, such as Vue, we need a pipe wrapper:
+
+```js
+// renderer/_deault.page.server.js
+
+import { pipePageToWritable } from 'some-ui-framework'
+import { stampStreamPipe, escapeInject } from 'vite-plugin-ssr'
+
+export function render(pageContext) {
+  const { Page } = pageContext
+
+  // We use a pipe wrapper so that `pipePageToWritable()` can access `Page`
+  const pipeWrapper = (writable) => {
+    pipePageToWritable(Page, writable)
+  }
+  stampStreamPipe(pipeWrapper, { pipeType })
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${pipeWrapper}</div>
+      </body>
+    </html>`
+}
+```
+
+See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, and using `new TransformStream()` for Cloudflare Workers.
+
 
 ## Initial data after streaming
 
