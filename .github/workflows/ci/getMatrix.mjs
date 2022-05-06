@@ -1,5 +1,8 @@
 import { cmd } from './utils.mjs'
 import assert from 'assert'
+import path from 'path'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
 const testRE = /(\.|\/)(test|spec)\./
 const testCmdE2e = 'pnpm run test:e2e'
 
@@ -7,72 +10,76 @@ const testCmdE2e = 'pnpm run test:e2e'
 
 const root = cmd('git rev-parse --show-toplevel')
 const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
+
 /** @type string[] */
 const testFiles = projectFiles.filter((file) => testRE.test(file))
 /** @typedef {{os: string, node_version: string}} Setup */
 /** @type Setup[] */
-const setups = [
+const setupExamples = [
   {
     os: 'ubuntu-latest',
     node_version: '16',
-  },
-  {
-    os: 'macos-latest',
-    node_version: '17',
   },
   {
     os: 'windows-latest',
     node_version: '14',
   },
 ]
-const setupFast = {
-  os: 'ubuntu-latest',
-  node_version: '18',
-}
-const setupWorst = {
-  os: 'windows-latest',
-  node_version: '14',
-}
-const setupCloudflareWebpack = {
-  os: 'ubuntu-latest',
-  node_version: '16',
-}
-
 /** @type Record<string, { testFiles: null | string[], setups: Setup[], testCmd: string }> */
 const testJobs = {
   // Unit tests
   'Unit Tests': {
     testFiles: [],
-    setups: [setupWorst],
+    setups: [{
+      os: 'windows-latest',
+      node_version: '14',
+    }],
     testCmd: 'pnpm run test:units',
   },
 
   // Check all types
   TypeScript: {
     testFiles: null,
-    setups: [setupFast],
+    setups: [{
+  os: 'ubuntu-latest',
+  node_version: '18',
+    }],
     testCmd: 'pnpm run test:types',
   },
 
   // E2e tests
-  Examples: {
+  'Examples React': {
     testFiles: [],
-    setups,
+    setups: setupExamples,
+    testCmd: testCmdE2e,
+  },
+  'Examples Vue/Others': {
+    testFiles: [],
+    setups: setupExamples,
     testCmd: testCmdE2e,
   },
   Boilerplates: {
     testFiles: [],
-    setups: [setupFast],
+    setups: [{
+      os: 'macos-latest',
+      node_version: '17',
+    }],
     testCmd: testCmdE2e,
   },
   'Cloudflare + esbuild': {
     testFiles: [],
-    setups: [setupFast],
+    setups: [{
+      os: 'ubuntu-latest',
+      node_version: '14',
+    }],
     testCmd: testCmdE2e,
   },
   'Cloudflare + webpack': {
     testFiles: [],
-    setups: [setupCloudflareWebpack],
+    setups: [{
+      os: 'ubuntu-latest',
+      node_version: '14',
+    }],
     testCmd: testCmdE2e,
   },
 }
@@ -101,9 +108,21 @@ function getCategory(testFile) {
         return 'Cloudflare + esbuild'
       }
     }
-    return 'Examples'
+    if (isReactExample(testFile)) {
+      return 'Examples React'
+    } else {
+      return 'Examples Vue/Others'
+    }
   }
   assert(false, 'Cannot find category for test file: ' + testFile)
+}
+
+/** @type { (testFile: string) => boolean } */
+function isReactExample(testFile) {
+  const pkgJsonFile = path.join(root, path.dirname(testFile), './package.json')
+  // await import(pkgJsonFile, { assert: { type: 'json'}})
+  const pkgJson = require(pkgJsonFile)
+  return !!pkgJson.dependencies['react']
 }
 
 /** @type MatrixEntry */
