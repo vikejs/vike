@@ -6,6 +6,7 @@ For SemVer minor changes, see: [CHANGELOG.md](https://github.com/brillout/vite-p
 
 **Breaking**
 
+ 1. Update Vite to `>=2.9.6`. (Vite-plugin-ssr doesn't work with older versions.)
  1. Both `useClientRouter()` (Client Routing) and `getPage()` (Server Routing) are deprecated. Use `export { render }` in `.page.client.js` instead.
  2. If you use pre-render options or base URL options: they are now defined in `vite.config.js`.
  3. If you do `export default Page`: do `export { Page }` instead.
