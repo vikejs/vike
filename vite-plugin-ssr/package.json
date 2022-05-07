@@ -25,6 +25,7 @@
     "tsc:watch:client": "tsc --incremental --watch --project ./client/tsconfig.json"
   },
   "devDependencies": {
+    "@brillout/part-regex": "^0.1.2",
     "@types/jest": "^27.4.1",
     "@types/node": "17.0.31",
     "@types/resolve": "^1.20.2",
