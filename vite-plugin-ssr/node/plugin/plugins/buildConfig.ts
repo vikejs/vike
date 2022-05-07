@@ -18,6 +18,7 @@ function buildConfig(): Plugin {
           outDir: getOutDir(config),
           manifest: !isSSR_config(config),
           rollupOptions: { input },
+          // @ts-ignore
           polyfillDynamicImport: false,
         },
         //*
