@@ -26,5 +26,8 @@ function assertPageContextProvidedByUser(
     !('_objectCreatedByVitePluginSsr' in pageContextProvidedByUser),
     `${errorMessagePrefix} should not be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`,
   )
+  // In principle, it's possible to use `onBeforeRoute()` to overwrite and define the whole routing.
+  // But, I don't know whether that's a thing we want to allow. Beyond deep integration with Vue Router or React Router, is there a use case for this?
+  // If you want this, hit me up on GitHub/Discord.
   assert(!('_pageId' in pageContextProvidedByUser))
 }
