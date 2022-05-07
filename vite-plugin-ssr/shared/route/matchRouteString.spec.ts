@@ -47,4 +47,16 @@ describe('matchRouteString', () => {
     expect(matchRouteString('/a/*', '/b/c')).toEqual(null)
     expect(matchRouteString('/a/*/c', '/a/b/c')).toEqual(null) // TODO
   })
+
+  it('special characters', () => {
+    expect(matchRouteString('/:p', '/\\')).toEqual({ routeParams: { p: '\\' } })
+    expect(matchRouteString('/a/:p', '/a/\\')).toEqual({ routeParams: { p: '\\' } })
+    expect(matchRouteString('/a/:p', '/a/b')).toEqual({ routeParams: { p: 'b' } })
+    expect(matchRouteString('/a/:p', '/a\\b')).toEqual(null)
+
+    expect(matchRouteString('/:p', '/!(')).toEqual({ routeParams: { p: '!(' } })
+    expect(matchRouteString('/*', '/!(')).toEqual({ routeParams: { '*': '!(' } })
+    expect(matchRouteString('/:p', '/¥')).toEqual({ routeParams: { p: '¥' } })
+    expect(matchRouteString('/*', '/¥')).toEqual({ routeParams: { '*': '¥' } })
+  })
 })
