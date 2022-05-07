@@ -926,6 +926,7 @@ importers:
     specifiers:
       '@brillout/json-s': ^0.4.6
       '@brillout/libassert': ^0.5.5
+      '@brillout/part-regex': ^0.1.2
       '@types/jest': ^27.4.1
       '@types/node': 17.0.31
       '@types/resolve': ^1.20.2
@@ -954,6 +955,7 @@ importers:
       vite-plugin-dist-importer: 0.1.8
       vite-plugin-glob: 0.2.6
     devDependencies:
+      '@brillout/part-regex': 0.1.2
       '@types/jest': 27.4.1
       '@types/node': 17.0.31
       '@types/resolve': 1.20.2
@@ -1481,7 +1483,6 @@ packages:
 
   /@brillout/part-regex/0.1.2:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
-    dev: false
 
   /@brillout/submodule-init/0.1.2:
     resolution: {integrity: sha512-rfmmKGvFQkwnPFnr2bMwqvXBQa52bw24iuZgPOWrueHziTm7fHThnsb/p22EC+mLFEPhPeGj/A8A4CrFgfA80Q==}

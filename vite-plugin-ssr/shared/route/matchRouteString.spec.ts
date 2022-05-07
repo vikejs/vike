@@ -1,11 +1,21 @@
 import { matchRouteString } from './matchRouteString'
 import { expect, describe, it } from 'vitest'
+import partRegex from '@brillout/part-regex'
 
 describe('matchRouteString', () => {
   it('basics', () => {
     expect(matchRouteString('/a', '/b')).toEqual(null)
     expect(matchRouteString('/a', '/a')).toEqual({ routeParams: {} })
     expect(matchRouteString('/', '/')).toEqual({ routeParams: {} })
+
+    expectError(
+      () => matchRouteString('', '/a/b/c'),
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`\`: route strings should start with a leading slash \`/\`.`,
+    )
+    expectError(
+      () => matchRouteString('a', '/a/b/c'),
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`a\`: route strings should start with a leading slash \`/\`.`,
+    )
   })
 
   it('parameterized routes', () => {
@@ -50,7 +60,15 @@ describe('matchRouteString', () => {
     expect(matchRouteString('/a/*', '/a/b')).toEqual({ routeParams: { '*': 'b' } })
     expect(matchRouteString('/a/*', '/a/b/c/d')).toEqual({ routeParams: { '*': 'b/c/d' } })
     expect(matchRouteString('/a/*', '/b/c')).toEqual(null)
-    expect(matchRouteString('/a/*/c', '/a/b/c')).toEqual(null) // TODO
+
+    expectError(
+      () => matchRouteString('/a/*/c/*', '/a/b/c'),
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`/a/*/c/*\`: route strings are not allowed to contain more than one glob character \`*\`.`,
+    )
+    expectError(
+      () => matchRouteString('/a/*/c', '/a/b/c'),
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`/a/*/c\`: make sure your route string ends with the glob character \`*\`.`,
+    )
   })
 
   it('special characters', () => {
@@ -65,3 +83,15 @@ describe('matchRouteString', () => {
     expect(matchRouteString('/*', '/¥')).toEqual({ routeParams: { '*': '¥' } })
   })
 })
+
+function expectError(fn: Function, errRegex: RegExp) {
+  {
+    let err: Error | undefined
+    try {
+      fn()
+    } catch (err_) {
+      err = err_
+    }
+    expect(err?.message).toMatch(errRegex)
+  }
+}
