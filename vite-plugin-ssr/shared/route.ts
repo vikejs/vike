@@ -22,11 +22,15 @@ type PageContextForRoute = PageContextUrlSource & {
   _allPageIds: string[]
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
-async function route(
-  pageContext: PageContextForRoute,
-): Promise<
+async function route(pageContext: PageContextForRoute): Promise<
   | HookError
-  | { pageContextAddendum: { _pageId: string | null; routeParams: Record<string, string> } & Record<string, unknown> }
+  | {
+      pageContextAddendum: {
+        _pageId: string | null
+        routeParams: Record<string, string>
+        _routingProvidedByOnBeforeRouteHook: boolean
+      } & Record<string, unknown>
+    }
 > {
   addComputedUrlProps(pageContext)
 
@@ -47,12 +51,16 @@ async function route(
         } else {
           assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
         }
+        objectAssign(pageContextAddendum, { _routingProvidedByOnBeforeRouteHook: true })
         return { pageContextAddendum }
       }
       // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
       objectAssign(pageContext, pageContextAddendum)
     }
   }
+  objectAssign(pageContextAddendum, {
+    _routingProvidedByOnBeforeRouteHook: false,
+  })
 
   // `vite-plugin-ssr`'s routing
   const allPageIds = pageContext._allPageIds

@@ -36,7 +36,7 @@ type HtmlFile = {
 }
 
 type DoNotPrerenderList = { pageId: string; pageServerFilePath: string }[]
-type PrerenderedPageIds = Record<string, { url: string; _prerenderSourceFile: string | null }>
+type PrerenderedPageIds = Record<string, { url: string; _prerenderHookFile: string | null }>
 
 type GlobalPrerenderingContext = GlobalContext & {
   _allPageIds: string[]
@@ -50,7 +50,7 @@ type GlobalPrerenderingContext = GlobalContext & {
 
 type PageContext = GlobalPrerenderingContext & {
   url: string
-  _prerenderSourceFile: string | null
+  _prerenderHookFile: string | null
   _pageContextAlreadyProvidedByPrerenderHook?: true
 }
 
@@ -185,8 +185,8 @@ async function callPrerenderHooks(
           const prerender = p.fileExports?.prerender
           if (!prerender) return
           assertUsage(isCallable(prerender), `\`export { prerender }\` of ${p.filePath} should be a function.`)
-          const prerenderSourceFile = p.filePath
-          assert(prerenderSourceFile)
+          const prerenderHookFile = p.filePath
+          assert(prerenderHookFile)
 
           let prerenderResult: unknown
           try {
@@ -195,7 +195,7 @@ async function callPrerenderHooks(
             throwPrerenderError(err)
             assert(false)
           }
-          const result = normalizePrerenderResult(prerenderResult, prerenderSourceFile)
+          const result = normalizePrerenderResult(prerenderResult, prerenderHookFile)
 
           result.forEach(({ url, pageContext }) => {
             assert(typeof url === 'string')
@@ -207,7 +207,7 @@ async function callPrerenderHooks(
             if (!pageContextFound) {
               pageContextFound = {
                 ...globalContext,
-                _prerenderSourceFile: prerenderSourceFile,
+                _prerenderHookFile: prerenderHookFile,
                 url,
               }
               globalContext.prerenderPageContexts.push(pageContextFound)
@@ -263,7 +263,7 @@ async function handlePagesWithStaticRoutes(
 
         const pageContext = {
           ...globalContext,
-          _prerenderSourceFile: null,
+          _prerenderHookFile: null,
           url,
           routeParams: {},
           _pageId: pageId,
@@ -324,7 +324,7 @@ async function routeAndPrerender(
   await Promise.all(
     globalContext.prerenderPageContexts.map((pageContext) =>
       concurrencyLimit(async () => {
-        const { url, _prerenderSourceFile: prerenderSourceFile } = pageContext
+        const { url, _prerenderHookFile: prerenderHookFile } = pageContext
         const routeResult = await route(pageContext)
         if ('hookError' in routeResult) {
           throwPrerenderError(routeResult.hookError)
@@ -335,12 +335,18 @@ async function routeAndPrerender(
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string'),
         )
         if (routeResult.pageContextAddendum._pageId === null) {
-          // Is this assertion also true with a `onBeforeRoute()` hook?
-          assert(prerenderSourceFile)
-          assertUsage(
-            false,
-            `Your \`prerender()\` hook defined in \`${prerenderSourceFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`,
-          )
+          if (prerenderHookFile===null) {
+            // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
+            assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
+            // Abort since the URL doesn't correspond to any page
+            return;
+          } else {
+            assert(prerenderHookFile)
+            assertUsage(
+              false,
+              `Your \`prerender()\` hook defined in \`${prerenderHookFile}\ returns an URL \`${url}\` that doesn't match any page route. Make sure the URLs your return in your \`prerender()\` hooks always match the URL of a page.`,
+            )
+          }
         }
 
         assert(routeResult.pageContextAddendum._pageId)
@@ -369,16 +375,16 @@ async function routeAndPrerender(
 }
 
 function warnContradictoryNoPrerenderList(
-  prerenderPageIds: Record<string, { url: string; _prerenderSourceFile: string | null }>,
+  prerenderPageIds: Record<string, { url: string; _prerenderHookFile: string | null }>,
   doNotPrerenderList: DoNotPrerenderList,
 ) {
-  Object.entries(prerenderPageIds).forEach(([pageId, { url, _prerenderSourceFile }]) => {
+  Object.entries(prerenderPageIds).forEach(([pageId, { url, _prerenderHookFile }]) => {
     const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
     if (doNotPrerenderListHit) {
-      assert(_prerenderSourceFile)
+      assert(_prerenderHookFile)
       assertUsage(
         false,
-        `Your \`prerender()\` hook defined in ${_prerenderSourceFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`,
+        `Your \`prerender()\` hook defined in ${_prerenderHookFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`,
       )
     }
   })
@@ -507,7 +513,7 @@ function write(
 
 function normalizePrerenderResult(
   prerenderResult: unknown,
-  prerenderSourceFile: string,
+  prerenderHookFile: string,
 ): { url: string; pageContext: null | Record<string, unknown> }[] {
   if (Array.isArray(prerenderResult)) {
     return prerenderResult.map(normalize)
@@ -518,7 +524,7 @@ function normalizePrerenderResult(
   function normalize(prerenderElement: unknown): { url: string; pageContext: null | Record<string, unknown> } {
     if (typeof prerenderElement === 'string') return { url: prerenderElement, pageContext: null }
 
-    const errMsg1 = `The \`prerender()\` hook defined in \`${prerenderSourceFile}\` returned an invalid value`
+    const errMsg1 = `The \`prerender()\` hook defined in \`${prerenderHookFile}\` returned an invalid value`
     const errMsg2 =
       'Make sure your `prerender()` hook returns an object `{ url, pageContext }` or an array of such objects.'
     assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
@@ -539,7 +545,7 @@ function normalizePrerenderResult(
     }
     assertUsage(
       hasProp(prerenderElement, 'pageContext', 'object'),
-      `The \`prerender()\` hook exported by ${prerenderSourceFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`,
+      `The \`prerender()\` hook exported by ${prerenderHookFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`,
     )
     return prerenderElement
   }

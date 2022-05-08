@@ -1,4 +1,4 @@
-import { assert, assertUsage, isObject } from './utils'
+import { assert, assertUsage, assertWarning, isObject } from './utils'
 
 export { assertPageContextProvidedByUser }
 
@@ -28,6 +28,5 @@ function assertPageContextProvidedByUser(
   )
   // In principle, it's possible to use `onBeforeRoute()` to overwrite and define the whole routing.
   // But, I don't know whether that's a thing we want to allow. Beyond deep integration with Vue Router or React Router, is there a use case for this?
-  // If you want this, hit me up on GitHub/Discord.
-  assert(!('_pageId' in pageContextProvidedByUser))
+  assertWarning(!('_pageId' in pageContextProvidedByUser), "You are using `onBeforeRoute()` to overwrite the vite-plugin-ssr routing. This is experimental: make sure to contact a vite-plugin-ssr maintainer before using this.", { onlyOnce: true })
 }
