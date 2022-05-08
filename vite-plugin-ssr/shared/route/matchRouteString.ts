@@ -1,5 +1,6 @@
 export { matchRouteString }
 
+import { assertWarning } from '../utils'
 import { assert, assertUsage } from './utils'
 
 function matchRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
@@ -27,7 +28,12 @@ function matchRouteString(routeString: string, urlPathname: string): null | { ro
     if (routeDir === '*') {
       routeParams['*'] = urlParts.slice(Math.max(1, i)).join('/')
       return { routeParams }
-    } else if (routeDir?.startsWith(':')) {
+    } else if (routeDir?.startsWith(':') || routeDir?.startsWith('@')) {
+      assertWarning(
+        !routeDir.startsWith(':'),
+        `Outdated route string \`${routeString}\`, use \`${routeString.split(':').join('@')}\` instead.`,
+        { onlyOnce: true },
+      )
       if (!urlDir) {
         return null
       }
