@@ -1,4 +1,5 @@
 export { matchRouteString }
+export { isParameterizedFilesystemRoute }
 
 import { assertWarning } from '../utils'
 import { assert, assertUsage } from './utils'
@@ -46,6 +47,10 @@ function matchRouteString(routeString: string, urlPathname: string): null | { ro
   }
 
   return { routeParams }
+}
+
+function isParameterizedFilesystemRoute(filesystemRoute: string): boolean {
+  return filesystemRoute.includes('@')
 }
 
 function assertGlob(routeString: string) {

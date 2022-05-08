@@ -23,6 +23,7 @@ import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { assertViteConfig } from './plugin/plugins/config/assertConfig'
+import { isParameterizedFilesystemRoute } from '../shared/route/matchRouteString'
 
 export { prerender }
 
@@ -252,6 +253,10 @@ async function handlePagesWithStaticRoutes(
           }
         } else {
           url = pageRoute.filesystemRoute
+          if (isParameterizedFilesystemRoute(url)) {
+            // Abort since URLs of Parameterized Filesystem Routes can't be deduced
+            return
+          }
         }
         assert(url.startsWith('/'))
 
@@ -335,7 +340,7 @@ async function routeAndPrerender(
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string'),
         )
         if (routeResult.pageContextAddendum._pageId === null) {
-          if (prerenderHookFile===null) {
+          if (prerenderHookFile === null) {
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
             assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
             // Abort since the URL doesn't correspond to any page

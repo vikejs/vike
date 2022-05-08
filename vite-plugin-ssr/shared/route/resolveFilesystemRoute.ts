@@ -1,3 +1,4 @@
+import { isParameterizedFilesystemRoute, matchRouteString } from './matchRouteString'
 import { assert, higherFirst, slice } from './utils'
 
 export { resolveFilesystemRoute }
@@ -7,7 +8,11 @@ function resolveFilesystemRoute(
   filesystemRoute: string,
   urlPathname: string,
 ): null | { routeParams: Record<string, string> } {
-  return resolveAsStaticPath(filesystemRoute, urlPathname)
+  if (isParameterizedFilesystemRoute(filesystemRoute)) {
+    return matchRouteString(filesystemRoute, urlPathname)
+  } else {
+    return resolveAsStaticPath(filesystemRoute, urlPathname)
+  }
 }
 
 function resolveAsStaticPath(filesystemRoute: string, urlPathname: string) {
