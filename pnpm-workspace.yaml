@@ -1,6 +1,7 @@
 packages:
   - 'vite-plugin-ssr/'
   - 'docs/'
+  - 'test/'
   - 'boilerplates/'
   - 'boilerplates/*'
   - 'examples/*'
