@@ -324,10 +324,12 @@ importers:
       framework: link:../framework
       react: ^18.1.0
       react-dom: ^18.1.0
+      vite-plugin-ssr: '*'
     dependencies:
       framework: link:../framework
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+      vite-plugin-ssr: link:../../../vite-plugin-ssr
 
   examples/framework/framework:
     specifiers:
