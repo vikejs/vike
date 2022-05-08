@@ -1,8 +1,8 @@
 import React from 'react'
 import fetch from 'cross-fetch'
-import { filterMovieData } from '../filterMovieData'
+import { filterMovieData } from './filterMovieData'
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
-import type { MovieDetails } from '../types'
+import type { MovieDetails } from './types'
 
 export { Page }
 export { onBeforeRender }
@@ -21,7 +21,7 @@ function Page({ movie }: { movie: MovieDetails }) {
 }
 
 async function onBeforeRender(pageContext: PageContextBuiltIn) {
-  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams.movieId}.json`)
+  const response = await fetch(`https://star-wars.brillout.com/api/films/${pageContext.routeParams.id}.json`)
   let movie = (await response.json()) as MovieDetails
 
   // We remove data we don't need because we pass `pageContext.movie` to
