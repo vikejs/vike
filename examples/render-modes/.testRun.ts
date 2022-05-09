@@ -7,7 +7,7 @@ import {
   partRegex,
   editFile,
   editFileRevert,
-  sleep
+  sleep,
 } from '../../libframe/test/setup'
 import assert from 'assert'
 
@@ -89,9 +89,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
           expect(await page.textContent('h1')).toBe('SPA')
         })
       }
-      // TODO: Fix JavaScript HMR for SPAs
-      expect(await page.textContent('button')).toContain('Counter 0')
-      await clickCounter()
+      // Ensure JavaScript was HMR'd
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('green')
@@ -101,7 +99,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
         editFileRevert()
         await testColor('green')
       }
-      // CSS HMR
+      // Ensure CSS was HMR'd
       expect(await page.textContent('button')).toContain('Counter 1')
     })
   }
@@ -167,6 +165,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
           expect(await page.textContent('h1')).toBe('SSR')
         })
       }
+      // Ensure HMR instead of page reload
+      expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('blue')
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
@@ -175,7 +175,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
         editFileRevert()
         await testColor('blue')
       }
-      // HMR instead of page reload
+      // Ensure HMR instead of page reload
       expect(await page.textContent('button')).toContain('Counter 1')
     })
   }
