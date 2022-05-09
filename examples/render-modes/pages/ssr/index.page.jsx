@@ -1,6 +1,7 @@
 export { Page }
 
 import { Counter } from './Counter'
+import './index.css'
 
 function Page() {
   return (
@@ -13,6 +14,7 @@ function Page() {
           Interactive. <Counter />
         </li>
       </ul>
+      <p className="colored ssr">Blue text.</p>
     </>
   )
 }

@@ -8,6 +8,7 @@ import {
   editFile,
   editFileRevert,
 } from '../../libframe/test/setup'
+import assert from 'assert'
 
 export { testRun }
 
@@ -21,9 +22,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
   test('HTML-only', async () => {
     const html = await fetchHtml('/html-only')
+    expect(html).toContain('<h1>HTML-only</h1>')
     expect(html).toContain('This page has zero browser-side JavaScript.')
-    expect(html).toContain('As shown by the green text, CSS can be loaded')
-    expect(html).toContain('<h1>')
     if (isProd) {
       expect(html).not.toContain('<script')
       expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
@@ -38,20 +38,22 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }
     await page.goto(urlBase + '/html-only')
-    await testColor('green')
+    await testColor('orange')
   })
   if (!isProd) {
     test('HTML-only - HMR', async () => {
-      await testColor('green')
+      await testColor('orange')
       // HMR works for CSS
-      editFile('./pages/html-only/index.css', (s) => s.replace('green', 'blue'))
-      await testColor('blue')
+      editFile('./pages/html-only/index.css', (s) => s.replace('orange', 'gray'))
+      await testColor('gray')
       editFileRevert()
-      await testColor('green')
+      await testColor('orange')
       expect(await page.textContent('h1')).toBe('HTML-only')
-      editFile('./pages/html-only/index.page.server.jsx', (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
-      // No HMR for JavaScript
-       await page.waitForNavigation()
+      editFile('./pages/html-only/index.page.server.jsx', (s) =>
+        s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'),
+      )
+      // No HMR for HTML-only
+      await page.waitForNavigation()
       // But auto reload works
       expect(await page.textContent('h1')).toBe('HTML-only !')
       editFileRevert()
@@ -67,7 +69,6 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     }
 
     await page.goto(urlBase + '/spa')
-    await testColor('black')
     await testCounter()
   })
   if (!isProd) {
@@ -96,9 +97,27 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     }
 
     await page.goto(urlBase + '/html-js')
-    await testColor('black')
     await testCounter()
   })
+  /*
+  if (!isProd) {
+    test('HTML + JS - HMR', async () => {
+      await testColor('green')
+      // HMR works for CSS
+      editFile('./pages/html-js/index.css', (s) => s.replace('green', 'blue'))
+      await testColor('blue')
+      editFileRevert()
+      await testColor('green')
+      expect(await page.textContent('h1')).toBe('HTML-only')
+      editFile('./pages/html-only/index.page.server.jsx', (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
+      // No HMR for HTML-only
+       await page.waitForNavigation()
+      // But auto reload works
+      expect(await page.textContent('h1')).toBe('HTML-only !')
+      editFileRevert()
+    })
+  }
+  */
 
   test('SSR', async () => {
     {
@@ -108,20 +127,19 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     }
 
     await page.goto(urlBase + '/ssr')
-    await testColor('black')
     await testCounter()
   })
 
   return
 
-  async function testColor(color: 'black' | 'green' | 'blue') {
-    const greenAmount = color === 'green' ? '128' : '0'
-    const blueAmount = color === 'blue' ? '255' : '0'
+  async function testColor(color: Color) {
     await autoRetry(async () => {
-      const titleColor = await page.$eval('h1', (e) => getComputedStyle(e).color)
-      expect(titleColor).toBe(`rgb(0, ${greenAmount}, ${blueAmount})`)
+      const node = await page.$('.colored')
+      expect(node).not.toBe(null)
+      assert(node !== null)
+      const titleColor = await page.evaluate((node) => getComputedStyle(node).color, node)
+      expect(titleColor).toBe(getColorRgb(color))
     })
-    expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, ${greenAmount}, ${blueAmount})`)
   }
   async function testCounter() {
     expect(await page.textContent('button')).toContain('Counter 0')
@@ -139,4 +157,32 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       )
     }
   }
+}
+
+type Color = 'black' | 'green' | 'blue' | 'gray' | 'red' | 'orange'
+function getColorRgb(color: Color) {
+  let rgbRed = 0
+  let rgbGreen = 0
+  let rgbBlue = 0
+  if (color === 'green') {
+    rgbGreen = 128
+  }
+  if (color === 'red') {
+    rgbRed = 255
+  }
+  if (color === 'blue') {
+    rgbBlue = 255
+  }
+  if (color === 'orange') {
+    rgbRed = 255
+    rgbGreen = 165
+    rgbBlue = 0
+  }
+  if (color === 'gray') {
+    rgbRed = 128
+    rgbGreen = 128
+    rgbBlue = 128
+  }
+  const rgb = `rgb(${String(rgbRed)}, ${String(rgbGreen)}, ${String(rgbBlue)})`
+  return rgb
 }
