@@ -1,4 +1,5 @@
 import { run, page, urlBase, fetchHtml, autoRetry, partRegex } from '../../libframe/test/setup'
+import fs from 'fs'
 
 export { testRun }
 
@@ -44,6 +45,19 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await testColor('black')
     await testCounter()
   })
+  if (!isProd) {
+    test('SPA - HMR', async () => {
+      expect(await page.textContent('h1')).toBe('SPA')
+      editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('SPA', 'SPA !'))
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('SPA !')
+      })
+      editFileRevertAll()
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('SPA')
+      })
+    })
+  }
 
   test('HTML + JS', async () => {
     {
@@ -99,4 +113,21 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       )
     }
   }
+}
+
+const filesContentOriginal: Record<string, string> = {}
+function editFile(filePathRelative: string, replacer: (fileContent: string) => string) {
+  const filePath = require.resolve(filePathRelative)
+  let fileContent = fs.readFileSync(filePath, 'utf8')
+  if (!(filePath in filesContentOriginal)) {
+    filesContentOriginal[filePath] = fileContent
+  }
+  fileContent = replacer(fileContent)
+  fs.writeFileSync(filePath, fileContent)
+}
+function editFileRevertAll() {
+  Object.entries(filesContentOriginal).forEach(([filePath, fileContent]) => {
+    fs.writeFileSync(filePath, fileContent)
+    delete filesContentOriginal[filePath]
+  })
 }
