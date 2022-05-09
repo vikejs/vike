@@ -97,7 +97,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
         await testColor('green')
         editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
         await testColor('gray')
-        await sleep(10) // Avoid race condition
+        await sleep(100) // Avoid race condition
         editFileRevert()
         await testColor('green')
       }
@@ -171,7 +171,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
         await testColor('blue')
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
         await testColor('gray')
-        await sleep(10) // Avoid race condition
+        await sleep(100) // Avoid race condition
         editFileRevert()
         await testColor('blue')
       }
