@@ -34,6 +34,10 @@ function getCode(exportNames: string[], isClientSide: boolean) {
   if (isClientSide) {
     code += '\n'
     code += `if (import.meta.hot) import.meta.hot.accept((mod) => { exportNames.length=0; exportNames.push(...mod.exportNames); });`
+  } else {
+    // Ensure Vite considers the module as `isSelfAccepting`. (Needed because Vite's module graph erroneously conflates the Vite server-side modules with their client-side counterparts.)
+    code += '\n'
+    code += 'if(false){import.meta.hot.accept(()=>{})};'
   }
   return code
 }
