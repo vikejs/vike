@@ -1,4 +1,13 @@
-import { run, page, urlBase, fetchHtml, autoRetry, partRegex, editFile, editFileRevert } from '../../libframe/test/setup'
+import {
+  run,
+  page,
+  urlBase,
+  fetchHtml,
+  autoRetry,
+  partRegex,
+  editFile,
+  editFileRevert,
+} from '../../libframe/test/setup'
 
 export { testRun }
 
@@ -31,6 +40,21 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await page.goto(urlBase + '/html-only')
     await testColor('green')
   })
+  if (!isProd) {
+    test('HTML-only - HMR', async () => {
+      await testColor('green')
+      // HMR works for CSS
+      editFile('./pages/html-only/index.css', (s) => s.replace('green', 'blue'))
+      await testColor('blue')
+      editFileRevert()
+      await testColor('green')
+      /*
+      expect(await page.textContent('h1')).toBe('HTML-only')
+      editFile('./pages/html-only/index.css', (s) => s.replace('HTML-only', 'blue'))
+      // No HMR for JavaScript
+    // */
+    })
+  }
 
   test('SPA', async () => {
     {
@@ -88,13 +112,14 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
   return
 
-  async function testColor(color: 'black' | 'green') {
-    const greenAmount = (color === 'black' && '0') || (color === 'green' && '128')
+  async function testColor(color: 'black' | 'green' | 'blue') {
+    const greenAmount = color === 'green' ? '128' : '0'
+    const blueAmount = color === 'blue' ? '255' : '0'
     await autoRetry(async () => {
       const titleColor = await page.$eval('h1', (e) => getComputedStyle(e).color)
-      expect(titleColor).toBe(`rgb(0, ${greenAmount}, 0)`)
+      expect(titleColor).toBe(`rgb(0, ${greenAmount}, ${blueAmount})`)
     })
-    expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, ${greenAmount}, 0)`)
+    expect(await page.$eval('p', (e) => getComputedStyle(e).color)).toBe(`rgb(0, ${greenAmount}, ${blueAmount})`)
   }
   async function testCounter() {
     expect(await page.textContent('button')).toContain('Counter 0')
