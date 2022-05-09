@@ -15,8 +15,19 @@ function testRun(
   const isWrangler = cmd === 'npm run preview:wrangler'
   const isWorker = isMiniflare || isWrangler
 
-  if (isMiniflare || isWrangler) {
-    const msg = "SKIPPED: miniflare and wrangler don't work anymore"
+  // `pnpm exec playwright install` breaks wrangler installation: Miniflare says `You have not installed wrangler`.
+  //  - `pnpm install -w @cloudflare/wrangler` doesn't help
+  //  - Miniflare cannot use wrangler's webpack bundler
+  if (isMiniflare && isWebpack) {
+    const msg = 'SKIPPED miniflare + webpack.'
+    console.log(msg)
+    test(msg, () => {})
+    return
+  }
+
+  // Skip wrangler until static assets serving is reliable again
+  if (isWrangler) {
+    const msg = 'SKIPPED wrangler.'
     console.log(msg)
     test(msg, () => {})
     return
