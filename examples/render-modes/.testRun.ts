@@ -42,21 +42,24 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   })
   if (!isProd) {
     test('HTML-only - HMR', async () => {
-      await testColor('orange')
-      // HMR works for CSS
-      editFile('./pages/html-only/index.css', (s) => s.replace('orange', 'gray'))
-      await testColor('gray')
-      editFileRevert()
-      await testColor('orange')
-      expect(await page.textContent('h1')).toBe('HTML-only')
-      editFile('./pages/html-only/index.page.server.jsx', (s) =>
-        s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'),
-      )
-      // No HMR for HTML-only
-      await page.waitForNavigation()
-      // But auto reload works
-      expect(await page.textContent('h1')).toBe('HTML-only !')
-      editFileRevert()
+      {
+        expect(await page.textContent('h1')).toBe('HTML-only')
+        editFile('./pages/html-only/index.page.server.jsx', (s) =>
+          s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'),
+        )
+        // No HMR for HTML-only
+        await page.waitForNavigation()
+        // But auto reload works
+        expect(await page.textContent('h1')).toBe('HTML-only !')
+        editFileRevert()
+      }
+      {
+        await testColor('orange')
+        editFile('./pages/html-only/index.css', (s) => s.replace('color: orange', 'color: gray'))
+        await testColor('gray')
+        editFileRevert()
+        await testColor('orange')
+      }
     })
   }
 
@@ -69,19 +72,35 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     }
 
     await page.goto(urlBase + '/spa')
-    await testCounter()
+    await clickCounter()
   })
   if (!isProd) {
     test('SPA - HMR', async () => {
-      expect(await page.textContent('h1')).toBe('SPA')
-      editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
-      await autoRetry(async () => {
-        expect(await page.textContent('h1')).toBe('SPA !')
-      })
-      editFileRevert()
-      await autoRetry(async () => {
+      expect(await page.textContent('button')).toContain('Counter 1')
+      {
         expect(await page.textContent('h1')).toBe('SPA')
-      })
+        editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
+        await autoRetry(async () => {
+          expect(await page.textContent('h1')).toBe('SPA !')
+        })
+        editFileRevert()
+        await autoRetry(async () => {
+          expect(await page.textContent('h1')).toBe('SPA')
+        })
+      }
+      // TODO: Fix JavaScript HMR for SPAs
+      expect(await page.textContent('button')).toContain('Counter 0')
+      await clickCounter()
+      expect(await page.textContent('button')).toContain('Counter 1')
+      {
+        await testColor('green')
+        editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
+        await testColor('gray')
+        editFileRevert()
+        await testColor('green')
+      }
+      // CSS HMR
+      expect(await page.textContent('button')).toContain('Counter 1')
     })
   }
 
@@ -97,27 +116,30 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     }
 
     await page.goto(urlBase + '/html-js')
-    await testCounter()
+    await clickCounter()
   })
-  /*
   if (!isProd) {
     test('HTML + JS - HMR', async () => {
-      await testColor('green')
-      // HMR works for CSS
-      editFile('./pages/html-js/index.css', (s) => s.replace('green', 'blue'))
-      await testColor('blue')
-      editFileRevert()
-      await testColor('green')
-      expect(await page.textContent('h1')).toBe('HTML-only')
-      editFile('./pages/html-only/index.page.server.jsx', (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
-      // No HMR for HTML-only
-       await page.waitForNavigation()
-      // But auto reload works
-      expect(await page.textContent('h1')).toBe('HTML-only !')
-      editFileRevert()
+      {
+        expect(await page.textContent('h1')).toBe('HTML + JS')
+        editFile('./pages/html-js/index.page.server.jsx', (s) =>
+          s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'),
+        )
+        // No HMR for HTML + JS
+        await page.waitForNavigation()
+        // But auto reload works
+        expect(await page.textContent('h1')).toBe('HTML + JS !')
+        editFileRevert()
+      }
+      {
+        await testColor('red')
+        editFile('./pages/html-js/index.css', (s) => s.replace('color: red', 'color: gray'))
+        await testColor('gray')
+        editFileRevert()
+        await testColor('red')
+      }
     })
   }
-  */
 
   test('SSR', async () => {
     {
@@ -127,8 +149,33 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     }
 
     await page.goto(urlBase + '/ssr')
-    await testCounter()
+    await clickCounter()
   })
+  if (!isProd) {
+    test('SSR - HMR', async () => {
+      expect(await page.textContent('button')).toContain('Counter 1')
+      {
+        expect(await page.textContent('h1')).toBe('SSR')
+        editFile('./pages/ssr/index.page.jsx', (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
+        await autoRetry(async () => {
+          expect(await page.textContent('h1')).toBe('SSR !')
+        })
+        editFileRevert()
+        await autoRetry(async () => {
+          expect(await page.textContent('h1')).toBe('SSR')
+        })
+      }
+      {
+        await testColor('blue')
+        editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
+        await testColor('gray')
+        editFileRevert()
+        await testColor('blue')
+      }
+      // HMR instead of page reload
+      expect(await page.textContent('button')).toContain('Counter 1')
+    })
+  }
 
   return
 
@@ -141,7 +188,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(titleColor).toBe(getColorRgb(color))
     })
   }
-  async function testCounter() {
+  async function clickCounter() {
     expect(await page.textContent('button')).toContain('Counter 0')
     await autoRetry(async () => {
       await page.click('button')
