@@ -897,11 +897,9 @@ importers:
   libframe/test:
     specifiers:
       '@brillout/part-regex': ^0.1.2
-      '@types/callsite': ^1.0.31
       '@types/jest': ^27.4.0
       '@types/node': ^15.6.1
       '@types/node-fetch': ^2.5.12
-      callsite: ^1.0.0
       jest: ^27.5.1
       jest-playwright-preset: ^1.7.0
       kolorist: ^1.4.1
@@ -913,11 +911,9 @@ importers:
       typescript: ^4.5.4
     dependencies:
       '@brillout/part-regex': 0.1.2
-      '@types/callsite': 1.0.31
       '@types/jest': 27.4.1
       '@types/node': 15.14.9
       '@types/node-fetch': 2.6.1
-      callsite: 1.0.0
       jest: 27.5.1_ts-node@9.1.1
       jest-playwright-preset: 1.7.0_jest@27.5.1
       kolorist: 1.5.1
@@ -2288,10 +2284,6 @@ packages:
     dependencies:
       '@types/connect': 3.4.35
       '@types/node': 17.0.31
-    dev: false
-
-  /@types/callsite/1.0.31:
-    resolution: {integrity: sha512-jrKmIHhuZVGUpOR1s4TgY9BTt/Eh9CFCjHVZ2FsrKmHSo3J/vpl6EpK08SfMLrX2IY1ZEFA+BPRTJQGg4xIHsA==}
     dev: false
 
   /@types/chai-subset/1.3.3:
@@ -3701,10 +3693,6 @@ packages:
     dependencies:
       function-bind: 1.1.1
       get-intrinsic: 1.1.1
-    dev: false
-
-  /callsite/1.0.0:
-    resolution: {integrity: sha1-KAOY5dZkvXQDi28JBRU+borxvCA=}
     dev: false
 
   /callsites/3.1.0:
