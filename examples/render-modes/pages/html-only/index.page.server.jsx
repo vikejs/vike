@@ -11,7 +11,8 @@ function Page() {
       </p>
       <p>This page has zero browser-side JavaScript. (In development, Vite's HMR client is loaded.)</p>
       <p>
-        As shown by the green text, CSS can be loaded in <code>.page.server.js</code> files.
+        As shown by this <span className="colored">orange text</span>, CSS can be loaded in <code>.page.server.js</code>{' '}
+        files.
       </p>
       <p>
         If needed, we can add a little bit of browser-side JavaScipt to implement bits of interactivity, see{' '}
