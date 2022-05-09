@@ -48,11 +48,13 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       await testColor('blue')
       editFileRevert()
       await testColor('green')
-      /*
       expect(await page.textContent('h1')).toBe('HTML-only')
-      editFile('./pages/html-only/index.css', (s) => s.replace('HTML-only', 'blue'))
+      editFile('./pages/html-only/index.page.server.jsx', (s) => s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'))
       // No HMR for JavaScript
-    // */
+       await page.waitForNavigation()
+      // But auto reload works
+      expect(await page.textContent('h1')).toBe('HTML-only !')
+      editFileRevert()
     })
   }
 
@@ -71,7 +73,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   if (!isProd) {
     test('SPA - HMR', async () => {
       expect(await page.textContent('h1')).toBe('SPA')
-      editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('SPA', 'SPA !'))
+      editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('SPA !')
       })
