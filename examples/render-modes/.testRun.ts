@@ -1,5 +1,4 @@
-import { run, page, urlBase, fetchHtml, autoRetry, partRegex } from '../../libframe/test/setup'
-import fs from 'fs'
+import { run, page, urlBase, fetchHtml, autoRetry, partRegex, editFile, editFileRevert } from '../../libframe/test/setup'
 
 export { testRun }
 
@@ -52,7 +51,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('SPA !')
       })
-      editFileRevertAll()
+      editFileRevert()
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('SPA')
       })
@@ -113,21 +112,4 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       )
     }
   }
-}
-
-const filesContentOriginal: Record<string, string> = {}
-function editFile(filePathRelative: string, replacer: (fileContent: string) => string) {
-  const filePath = require.resolve(filePathRelative)
-  let fileContent = fs.readFileSync(filePath, 'utf8')
-  if (!(filePath in filesContentOriginal)) {
-    filesContentOriginal[filePath] = fileContent
-  }
-  fileContent = replacer(fileContent)
-  fs.writeFileSync(filePath, fileContent)
-}
-function editFileRevertAll() {
-  Object.entries(filesContentOriginal).forEach(([filePath, fileContent]) => {
-    fs.writeFileSync(filePath, fileContent)
-    delete filesContentOriginal[filePath]
-  })
 }
