@@ -1,2 +1,2 @@
 import { testRun } from '../../../boilerplates/.testRun'
-testRun('pnpm run dev', { noDefaultPageInUserCode: true })
+testRun('pnpm run dev', { noDefaultPageInUserCode: true, uiFramewok: 'react' })

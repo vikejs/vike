@@ -1,6 +1,17 @@
-import { page, run, partRegex, autoRetry, fetchHtml, urlBase, expectBrowserError } from '../libframe/test/setup'
-
 export { testRun }
+
+import {
+  page,
+  run,
+  partRegex,
+  autoRetry,
+  fetchHtml,
+  urlBase,
+  expectBrowserError,
+  editFile,
+  editFileRevert,
+} from '../libframe/test/setup'
+import assert from 'assert'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
@@ -8,9 +19,20 @@ function testRun(
     skipCssTest,
     noDefaultPageInUserCode,
     isPrerendered,
-  }: { skipCssTest?: boolean; noDefaultPageInUserCode?: true; isPrerendered?: true } = {},
+    uiFramewok,
+    lang,
+  }: {
+    skipCssTest?: boolean
+    noDefaultPageInUserCode?: true
+    isPrerendered?: true
+    uiFramewok: 'react' | 'vue' | 'preact'
+    lang?: 'ts'
+  },
 ) {
   run(cmd)
+
+  const isProduction = cmd === 'npm run prod' || cmd === 'pnpm run prod'
+  const isDev = !isProduction
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -21,7 +43,6 @@ function testRun(
   })
 
   test('production asset preloading', async () => {
-    const isProduction = cmd === 'npm run prod' || cmd === 'pnpm run prod'
     const html = await fetchHtml('/')
 
     {
@@ -90,6 +111,32 @@ function testRun(
       expect(await page.textContent('button')).toContain('Counter 1')
     })
   })
+
+  if (isDev && (uiFramewok === 'react' || uiFramewok === 'vue')) {
+    test('HMR', async () => {
+      const file = (() => {
+        if (uiFramewok === 'vue') {
+          return './pages/index/index.page.vue'
+        }
+        if (uiFramewok === 'react') {
+          if (lang === 'ts') {
+            return './pages/index/index.page.tsx'
+          } else {
+            return './pages/index/index.page.jsx'
+          }
+        }
+        assert(false)
+      })()
+      expect(await page.textContent('button')).toContain('Counter 1')
+      expect(await page.textContent('h1')).toBe('Welcome')
+      editFile(file, (s) => s.replace('Welcome', 'Welcome !'))
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('Welcome !')
+      })
+      editFileRevert()
+      expect(await page.textContent('button')).toContain('Counter 1')
+    })
+  }
 
   test('about page', async () => {
     await page.click('a[href="/about"]')
