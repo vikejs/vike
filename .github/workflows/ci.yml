@@ -55,7 +55,9 @@ jobs:
         run: pnpm run setup
 
       - name: Install
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm exec playwright install
 
       - name: Build
         run: pnpm run build
