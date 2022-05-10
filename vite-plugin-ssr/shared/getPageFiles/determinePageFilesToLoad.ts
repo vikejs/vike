@@ -7,8 +7,8 @@ function determinePageFilesToLoad(
   pageFilesAll: PageFile[],
   pageId: string,
 ): { pageFilesClientSide: PageFile[]; pageFilesServerSide: PageFile[]; isHtmlOnly: boolean } {
-  const clientSide = determinePageFilesToLoadFor(pageFilesAll, pageId, true)
-  const serverSide = determinePageFilesToLoadFor(pageFilesAll, pageId, false)
+  const clientSide = determinePageFilesToLoadForClientSide(pageFilesAll, pageId)
+  const serverSide = determinePageFilesToLoadForServerSide(pageFilesAll, pageId)
   assert(clientSide.isHtmlOnly === serverSide.isHtmlOnly)
   const { isHtmlOnly } = clientSide
   const pageFilesClientSide = clientSide.pageFiles
@@ -16,7 +16,13 @@ function determinePageFilesToLoad(
   return { pageFilesClientSide, pageFilesServerSide, isHtmlOnly }
 }
 
-function determinePageFilesToLoadFor(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean) {
+function determinePageFilesToLoadForClientSide(pageFilesAll: PageFile[], pageId: string) {
+  return determine(pageFilesAll, pageId, true)
+}
+function determinePageFilesToLoadForServerSide(pageFilesAll: PageFile[], pageId: string) {
+  return determine(pageFilesAll, pageId, false)
+}
+function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean) {
   const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
   const isHtmlOnly = determineIsHtmlOnly(pageFilesAll, pageId)
   const sorter = defaultFilesSorter(fileTypeEnv, pageId)
