@@ -1,5 +1,5 @@
 import React from 'react'
-import logoUrl from '../icons/vite-plugin-ssr.svg'
+import logoUrl from './icons/vite-plugin-ssr.svg'
 
 export { NavHeader }
 export { NavHeaderMobile }

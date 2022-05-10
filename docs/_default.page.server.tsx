@@ -1,9 +1,9 @@
 export { config }
 
 import type { Config } from 'libframe-docs'
-import { headings, headingsWithoutLink } from '../headings'
-import { projectInfo } from '../utils'
-import faviconUrl from '../icons/vite-plugin-ssr.svg'
+import { headings, headingsWithoutLink } from './headings'
+import { projectInfo } from './utils'
+import faviconUrl from './icons/vite-plugin-ssr.svg'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
