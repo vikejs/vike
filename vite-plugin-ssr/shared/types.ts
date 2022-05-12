@@ -5,6 +5,6 @@ export type PageContextBuiltIn = {
   routeParams: Record<string, string>
   exports: Record<string, unknown>
   url: string
-  /** @deprecated */
+  // Outdated
   pageExports: Record<string, unknown>
 } & PageContextUrls
