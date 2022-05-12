@@ -260,12 +260,12 @@ async function processStream<StreamType extends Stream>(
     let resolve: (result: StreamWrapper<StreamType>) => void
     const streamPromise = new Promise<StreamWrapper<StreamType>>((r) => (resolve = r))
 
-    let streamEnded = false
+    let streamClosed = false
     const close = () => {
-      if (streamEnded) {
+      if (streamClosed) {
         return
       }
-      streamEnded = true
+      streamClosed = true
       closeStream()
     }
 
@@ -299,10 +299,12 @@ async function processStream<StreamType extends Stream>(
 
       write(chunk)
     }
+    let streamEnded = false
     const onEnd = async () => {
       if (streamEnded) {
         return
       }
+      streamEnded = true
 
       // If empty stream: the stream ends before any data was written, but we still need to ensure that we inject `stringBegin`
       await ensureStringBegin()
