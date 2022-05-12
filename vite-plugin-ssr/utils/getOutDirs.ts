@@ -1,5 +1,5 @@
 import type { UserConfig } from 'vite'
-import { isSSR_config } from '../node/plugin/utils'
+import { isSSR_config } from './isSSR'
 import { assert } from './assert'
 import { assertPosixPath } from './filesystemPathHandling'
 
