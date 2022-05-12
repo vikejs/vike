@@ -18,7 +18,7 @@ async function handleFetchEvent(event) {
   const { url } = event.request
   if (!isAssetUrl(url)) {
     const userAgent = event.request.headers.get('User-Agent')
-    console.log('ua',userAgent)
+    console.log('ua', userAgent)
     const response = await handleSsr(url, userAgent)
     if (response !== null) return response
   }

@@ -1,4 +1,13 @@
-import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase, urlBaseChange, isMac } from '../../libframe/test/setup'
+import {
+  page,
+  run,
+  autoRetry,
+  fetchHtml,
+  isGithubAction,
+  urlBase,
+  urlBaseChange,
+  isMac,
+} from '../../libframe/test/setup'
 
 // Node.js 18's fetch implementation fails to resolve `localhost`.
 //  - Seems to happen only for wrangler
@@ -9,7 +18,7 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
-  { hasStarWarsPage, isWebpack }: { hasStarWarsPage: boolean, isWebpack?: true },
+  { hasStarWarsPage, isWebpack }: { hasStarWarsPage: boolean; isWebpack?: true },
 ) {
   const isMiniflare = cmd === 'npm run preview:miniflare'
   const isWrangler = cmd === 'npm run preview:wrangler'

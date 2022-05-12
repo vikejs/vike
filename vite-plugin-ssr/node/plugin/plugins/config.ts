@@ -9,7 +9,7 @@ function setVitePluginSsrConfig(vpsConfig: unknown) {
     name: 'vite-plugin-ssr:setVitePluginSsrConfig',
     enforce: 'pre',
     config(config) {
-      const vitePluginSsr = assertAndMergeUserInput(vpsConfig ?? {}, (config as any).vitePluginSsr as unknown ?? {})
+      const vitePluginSsr = assertAndMergeUserInput(vpsConfig ?? {}, ((config as any).vitePluginSsr as unknown) ?? {})
       return { vitePluginSsr }
     },
   } as Plugin

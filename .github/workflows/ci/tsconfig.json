@@ -4,7 +4,7 @@
     "noImplicitAny": true,
     "checkJs": true,
     "esModuleInterop": true,
-    "module":"ESNext",
+    "module": "ESNext",
     "skipLibCheck": true
   }
 }
