@@ -11,7 +11,7 @@
     "cross-env": "^7.0.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-streaming": "^0.2.3",
+    "react-streaming": "^0.2.5",
     "vite": "^2.9.7",
     "vite-plugin-ssr": "0.3.64"
   },

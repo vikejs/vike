@@ -210,7 +210,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.3
+      react-streaming: ^0.2.5
       vite: npm:@brillout/vite@2.9.8-preview-fix
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -223,7 +223,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.3_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.5_ef5jwxihqo6n7gxfmzogljlgcm
       vite: /@brillout/vite/2.9.8-preview-fix
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -508,7 +508,7 @@ importers:
       cross-env: ^7.0.3
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.3
+      react-streaming: ^0.2.5
       vite: npm:@brillout/vite@2.9.8-preview-fix
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -516,7 +516,7 @@ importers:
       cross-env: 7.0.3
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.3_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.5_ef5jwxihqo6n7gxfmzogljlgcm
       vite: /@brillout/vite/2.9.8-preview-fix
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -534,7 +534,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.3
+      react-streaming: ^0.2.5
       typescript: ^4.6.4
       vite: npm:@brillout/vite@2.9.8-preview-fix
       vite-plugin-ssr: 0.3.64
@@ -551,7 +551,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.3_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.5_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
       vite: /@brillout/vite/2.9.8-preview-fix
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -937,12 +937,12 @@ importers:
       '@brillout/json-s': ^0.4.6
       '@brillout/libassert': ^0.5.5
       '@brillout/part-regex': ^0.1.2
-      '@types/debug': ^4.1.7
+      '@types/debug': 4.1.7
       '@types/jest': ^27.4.1
       '@types/node': 17.0.31
       '@types/resolve': ^1.20.2
       cac: ^6.7.12
-      debug: ^4.3.4
+      debug: 4.3.4
       es-module-lexer: ^0.10.5
       fast-glob: ^3.2.11
       kolorist: ^1.5.1
@@ -2087,10 +2087,12 @@ packages:
       lru-cache: 6.0.0
       mkdirp: 1.0.4
       npm-pick-manifest: 6.1.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       promise-retry: 2.0.1
       semver: 7.3.7
       which: 2.0.2
+    transitivePeerDependencies:
+      - bluebird
     dev: false
 
   /@npmcli/installed-package-contents/1.0.7:
@@ -2391,6 +2393,12 @@ packages:
       jest-matcher-utils: 27.5.1
       pretty-format: 27.5.1
 
+  /@types/keyv/3.1.4:
+    resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
+    dependencies:
+      '@types/node': 17.0.31
+    dev: false
+
   /@types/linkify-it/3.0.2:
     resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
     dev: false
@@ -2489,6 +2497,12 @@ packages:
   /@types/resolve/1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
     dev: true
+
+  /@types/responselike/1.0.0:
+    resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
+    dependencies:
+      '@types/node': 17.0.31
+    dev: false
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
@@ -3653,11 +3667,13 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.11
       unique-filename: 1.1.1
+    transitivePeerDependencies:
+      - bluebird
     dev: false
 
   /cache-base/1.0.1:
@@ -6254,6 +6270,8 @@ packages:
     dependencies:
       '@sindresorhus/is': 0.14.0
       '@szmarczak/http-timer': 1.1.2
+      '@types/keyv': 3.1.4
+      '@types/responselike': 1.0.0
       cacheable-request: 6.1.0
       decompress-response: 3.3.0
       duplexer3: 0.1.4
@@ -8005,6 +8023,7 @@ packages:
       socks-proxy-agent: 6.2.0
       ssri: 8.0.1
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9151,6 +9170,7 @@ packages:
       spawn-please: 1.0.0
       update-notifier: 5.1.0
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9205,6 +9225,7 @@ packages:
       minizlib: 2.1.2
       npm-package-arg: 8.1.5
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9493,6 +9514,7 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9839,10 +9861,6 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /promise-inflight/1.0.1:
-    resolution: {integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM=}
-    dev: false
-
   /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM=}
     peerDependencies:
@@ -10156,16 +10174,19 @@ packages:
       react: 18.1.0
     dev: false
 
-  /react-streaming/0.2.3_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-mfSwXfUYZxkyfxfhAdH5qgtBoKMjAy/Txu1VuB4Ttnq2vWAznos3OOvT2fN2m/QIBL332owxgzy32C4Jtq9GsQ==}
+  /react-streaming/0.2.5_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-u5A1ytP2hH4VGkVjwyZHYT7vtBwoxZ6htkDf6OIAd4JJEIgOPp7xdw6FWPjV7pY3v8fxEFsYGR2sNS826nX80g==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
       '@brillout/json-s': 0.4.6
+      debug: 4.3.4
       isbot-fast: 1.2.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /react/17.0.2:
