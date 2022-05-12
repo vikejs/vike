@@ -1,13 +1,14 @@
 export { getPageAssets }
 
 import { assert, higherFirst, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
-import { retrieveAssetsDev, retrieveAssetsProd, ClientDependency } from '../retrievePageAssets'
+import { retrieveAssetsDev, retrieveAssetsProd } from '../retrievePageAssets'
 import type { ViteManifest } from '../viteManifest'
 import path from 'path'
 import { inferMediaType } from '../html/inferMediaType'
 import { PageAsset } from '../html/injectAssets'
 import { getManifestEntry } from '../getManifestEntry'
 import type { ViteDevServer } from 'vite'
+import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
 async function getPageAssets(
   pageContext: {

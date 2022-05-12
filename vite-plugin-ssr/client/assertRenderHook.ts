@@ -1,6 +1,7 @@
 import { assertUsage, hasProp } from './utils'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { assertHook } from '../shared/getHook'
+import { getRelevantPageFiles } from '../shared/getPageFiles/getRelevantPageFiles'
 
 export { assertRenderHook }
 
@@ -11,20 +12,20 @@ function assertRenderHook<
     _pageId: string
   } & PageContextExports,
 >(pageContext: PC): asserts pageContext is PC & { exports: { render: Function } } {
-  if (!hasProp(pageContext.exports, 'render')) {
-    const pageFilesClient = pageContext._pageFilesAll.filter(
-      (p) => p.fileType === '.page.client' && p.isRelevant(pageContext._pageId),
-    )
+  if (hasProp(pageContext.exports, 'render')) {
+    assertHook(pageContext, 'render')
+  } else {
+    const { pageFilesClientSide } = getRelevantPageFiles(pageContext._pageFilesAll, pageContext._pageId)
+    const pageFilesClientSideOnly = pageFilesClientSide.filter((p) => p.fileType === '.page.client')
     let errMsg: string
-    if (pageFilesClient.length === 0) {
+    if (pageFilesClientSideOnly.length === 0) {
       const url = pageContext.url ?? window.location.href
       errMsg = 'No file `*.page.client.*` found for URL ' + url
     } else {
       errMsg =
         'One of the following files should export a `render()` hook: ' +
-        pageFilesClient.map((p) => p.filePath).join(' ')
+        pageFilesClientSideOnly.map((p) => p.filePath).join(' ')
     }
     assertUsage(false, errMsg)
   }
-  assertHook(pageContext, 'render')
 }

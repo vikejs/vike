@@ -1,20 +1,12 @@
 export { retrieveAssetsProd }
 export { retrieveAssetsDev }
-export type { ClientDependency }
 
 import { assert, assertUsage } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
 import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin/extractStylesAddQuery'
-
-type ClientDependency = {
-  // Can be:
-  //  - absolute path, or `
-  //  - `@vite-plugin-ssr/dist/...`.
-  id: string
-  onlyAssets: boolean
-}
+import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()

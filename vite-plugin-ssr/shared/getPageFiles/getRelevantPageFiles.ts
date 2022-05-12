@@ -1,19 +1,15 @@
-export { determinePageFilesToLoad }
+export { getRelevantPageFiles }
 
 import type { FileType, PageFile } from './types'
 import { assert, assertPosixPath, isNotNullish } from '../utils'
 
-function determinePageFilesToLoad(
+function getRelevantPageFiles(
   pageFilesAll: PageFile[],
   pageId: string,
-): { pageFilesClientSide: PageFile[]; pageFilesServerSide: PageFile[]; isHtmlOnly: boolean } {
-  const clientSide = determinePageFilesToLoadForClientSide(pageFilesAll, pageId)
-  const serverSide = determinePageFilesToLoadForServerSide(pageFilesAll, pageId)
-  assert(clientSide.isHtmlOnly === serverSide.isHtmlOnly)
-  const { isHtmlOnly } = clientSide
-  const pageFilesClientSide = clientSide.pageFiles
-  const pageFilesServerSide = serverSide.pageFiles
-  return { pageFilesClientSide, pageFilesServerSide, isHtmlOnly }
+): { pageFilesClientSide: PageFile[]; pageFilesServerSide: PageFile[] } {
+  const pageFilesClientSide = determinePageFilesToLoadForClientSide(pageFilesAll, pageId)
+  const pageFilesServerSide = determinePageFilesToLoadForServerSide(pageFilesAll, pageId)
+  return { pageFilesClientSide, pageFilesServerSide }
 }
 
 function determinePageFilesToLoadForClientSide(pageFilesAll: PageFile[], pageId: string) {
@@ -24,7 +20,6 @@ function determinePageFilesToLoadForServerSide(pageFilesAll: PageFile[], pageId:
 }
 function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean) {
   const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
-  const isHtmlOnly = determineIsHtmlOnly(pageFilesAll, pageId)
   const sorter = defaultFilesSorter(fileTypeEnv, pageId)
 
   const pageFilesRelevant = pageFilesAll.filter((p) => p.isRelevant(pageId))
@@ -40,7 +35,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
   }
 
   // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
-  // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`, so `determinePageFilesToLoad()` is a misnommer and should be named `determinePageFilesThatCanBeLoaded()` for HTML-only pages.
+  // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`.
   const defaultFilesNonRenderer = pageFilesRelevant.filter(
     (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.fileType === fileTypeEnv || p.fileType === '.page'),
   )
@@ -58,24 +53,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
     isNotNullish,
   )
 
-  // HTML-only pages load a single `.page.client.js` representing the whole client-side
-  if (forClientSide && isHtmlOnly) {
-    pageFiles = pageFiles.filter((p) => p.fileType === '.page.client' && !p.isRendererPageFile)
-    pageFiles = [pageFiles[0]].filter(isNotNullish)
-  }
-
-  return { isHtmlOnly, pageFiles }
-}
-
-function determineIsHtmlOnly(pageFilesAll: PageFile[], pageId: string) {
-  let isHtmlOnly = false
-  if (
-    !pageFilesAll.some((p) => p.pageId === pageId && p.fileType === '.page') &&
-    pageFilesAll.some((p) => p.pageId === pageId && p.fileType === '.page.server')
-  ) {
-    isHtmlOnly = true
-  }
-  return isHtmlOnly
+  return pageFiles
 }
 
 function defaultFilesSorter(fileTypeEnv: FileType, pageId: string) {
