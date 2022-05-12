@@ -12,6 +12,7 @@ import {
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { loadPageFiles, PageContextExports, PageFile } from '../../shared/getPageFiles'
+import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
@@ -97,7 +98,9 @@ async function onBeforeRenderExecute(
   }
 
   // `export { onBeforeRender }` defined in `.page.server.js`
-  else if (await hasOnBeforeRenderServerSide(pageContext)) {
+  else if (
+    (await analyzePageServerSide(pageContext._pageFilesAll, pageContext._pageId)).hasOnBeforeRenderServerSideOnlyHook
+  ) {
     const pageContextFromServer = await retrievePageContextFromServer(pageContext)
     const pageContextAddendum = {}
     Object.assign(pageContextAddendum, pageContextFromServer)
@@ -140,19 +143,6 @@ function handle404(pageContext: { url: string }) {
   window.location.pathname = pageContext.url
 }
 
-async function hasOnBeforeRenderServerSide(pageContext: {
-  _pageId: string
-  _pageFilesAll: PageFile[]
-}): Promise<boolean> {
-  const pageFilesServerExportNames = pageContext._pageFilesAll.filter(
-    (p) => p.fileType === '.page.server' && p.isRelevant(pageContext._pageId),
-  )
-  await Promise.all(pageFilesServerExportNames.map((p) => p.loadExportNames?.()))
-  return pageFilesServerExportNames.some(({ exportNames }) => {
-    assert(exportNames)
-    return exportNames.includes('onBeforeRender')
-  })
-}
 async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
   const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
   const response = await fetch(pageContextUrl)

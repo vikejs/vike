@@ -8,8 +8,9 @@ import {
   getPageFilesAllServerSide,
   ExportsAll,
 } from '../shared/getPageFiles'
+import { analyzePageClientSide } from '../shared/getPageFiles/analyzePageClientSide'
+import { loadPageExportNames } from '../shared/getPageFiles/loadPageExportNames'
 import { getHook } from '../shared/getHook'
-import { loadPageFilesClientExportNames } from '../shared/getPageFiles/loadPageFilesClientExportNames'
 import { stringify } from '@brillout/json-s/stringify'
 import {
   assert,
@@ -55,7 +56,6 @@ import { getGlobalContext, GlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
 import { ViteManifest } from './viteManifest'
-import { determineClientEntry } from './renderPage/determineClientEntry'
 
 export { renderPage }
 export { prerenderPage }
@@ -544,17 +544,17 @@ async function loadPageFilesServer(pageContext: {
   _viteDevServer: null | ViteDevServer
   _manifestClient: null | ViteManifest
 }) {
-  const pageContextAddendum = {}
-  {
-    const [pageContextAddendum1, pageContextAddendum2] = await Promise.all([
-      loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
-      loadPageFilesClientExportNames(pageContext._pageFilesAll, pageContext._pageId, false),
-    ])
-    objectAssign(pageContextAddendum, pageContextAddendum1)
-    objectAssign(pageContextAddendum, pageContextAddendum2)
-  }
-
-  const { clientEntry, clientDependencies } = determineClientEntry(pageContextAddendum)
+  const [pageContextAddendum] = await Promise.all([
+    loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
+    loadPageExportNames(pageContext._pageFilesAll, pageContext._pageId, { skipPageSharedFiles: true }),
+  ])
+  const { isHtmlOnly, clientEntry, clientDependencies } = analyzePageClientSide(
+    pageContext._pageFilesAll,
+    pageContext._pageId,
+  )
+  objectAssign(pageContextAddendum, {
+    _isHtmlOnly: isHtmlOnly,
+  })
 
   objectAssign(pageContextAddendum, {
     _passToClient: getExportUnion(pageContextAddendum.exportsAll, 'passToClient'),
