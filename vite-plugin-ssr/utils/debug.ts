@@ -7,8 +7,8 @@ function createDebugger(
   namespace: `vps:${string}`,
   options: { onlyWhenFocused?: true | string } = {},
 ): debug.Debugger['log'] {
-  const FILTER = getEnv('VPS_DEBUG_FILTER') || getEnv('DEBUG_FILTER')
   const DEBUG = getEnv('DEBUG')
+  const DEBUG_FILTER = getEnv('VPS_DEBUG_FILTER') || getEnv('DEBUG_FILTER')
 
   const log = debug(namespace)
 
@@ -16,7 +16,7 @@ function createDebugger(
   const focus = typeof onlyWhenFocused === 'string' ? onlyWhenFocused : namespace
 
   return (msg: string, ...args: any[]) => {
-    if (FILTER && !msg.includes(FILTER)) {
+    if (DEBUG_FILTER && !msg.includes(DEBUG_FILTER)) {
       return
     }
     if (onlyWhenFocused && !DEBUG?.includes(focus)) {
