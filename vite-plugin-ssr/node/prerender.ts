@@ -344,7 +344,7 @@ async function routeAndPrerender(
             // `prerenderHookFile` is `null` when the URL was deduced by the Filesytem Routing of `.page.js` files. The `onBeforeRoute()` can override Filesystem Routing; it is therefore expected that the deduced URL may not match any page.
             assert(routeResult.pageContextAddendum._routingProvidedByOnBeforeRouteHook)
             // Abort since the URL doesn't correspond to any page
-            return;
+            return
           } else {
             assert(prerenderHookFile)
             assertUsage(

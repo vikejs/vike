@@ -20,7 +20,7 @@ function createPageRenderer(_deprecated: {
 }): RenderPage {
   assertWarning(
     false,
-    "`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vite-plugin-ssr.com/renderPage",
+    '`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vite-plugin-ssr.com/renderPage',
     { onlyOnce: true },
   )
   return renderPage

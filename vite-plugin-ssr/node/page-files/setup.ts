@@ -15,7 +15,7 @@ async function getPageFilesExports(): Promise<unknown> {
   //const pageFilesExports = await distAutoImporterDisabled()
   assertUsage(
     false,
-    "Could not load page files. Make sure to import `importBuild.js`. See https://vite-plugin-ssr.com/importBuild.js for more information.",
+    'Could not load page files. Make sure to import `importBuild.js`. See https://vite-plugin-ssr.com/importBuild.js for more information.',
   )
 }
 

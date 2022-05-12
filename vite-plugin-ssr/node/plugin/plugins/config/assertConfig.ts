@@ -19,7 +19,8 @@ type VpsConfig = {
 function assertAndMergeUserInput(fromPluginOptions: unknown, fromViteConfig: unknown): VpsConfig {
   assertVpsConfig(
     fromPluginOptions,
-    ({ configPathInObject, configProp }) => `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``,
+    ({ configPathInObject, configProp }) =>
+      `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``,
   )
   assertVpsConfig(fromViteConfig, ({ configPath }) => `vite.config.js#vitePluginSsr.${configPath}`)
   const vitePluginSsr: VpsConfig = {}

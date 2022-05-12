@@ -15,7 +15,7 @@ async function render(pageContext: any) {
     <PageLayout pageContext={pageContext}>
       <Page {...pageProps} />
     </PageLayout>,
-    { userAgent: pageContext.userAgent }
+    { userAgent: pageContext.userAgent },
   )
 
   return escapeInject`<!DOCTYPE html>
