@@ -640,15 +640,15 @@ async function executeRenderHook(
 
   let pageContextPromise: Promise<unknown> | null = null
   if (hasProp(result, 'pageContext')) {
-    const pageContextProvidedByUser = result.pageContext
-    if (isPromise(pageContextProvidedByUser)) {
-      pageContextPromise = pageContextProvidedByUser
+    const pageContextProvidedByRenderHook = result.pageContext
+    if (isPromise(pageContextProvidedByRenderHook)) {
+      pageContextPromise = pageContextProvidedByRenderHook
     } else {
-      assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
-      Object.assign(pageContext, pageContextProvidedByUser)
+      assertPageContextProvidedByUser(pageContextProvidedByRenderHook, { hook: pageContext._renderHook })
+      Object.assign(pageContext, pageContextProvidedByRenderHook)
     }
   }
-  objectAssign(pageContext, { _pageContextProvidedByUserPromise: pageContextPromise })
+  objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
 
   const errPrefix = 'The `render()` hook exported by ' + renderFilePath
   const errSuffix = [

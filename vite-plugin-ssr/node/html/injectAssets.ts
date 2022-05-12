@@ -47,7 +47,7 @@ type PageContextInjectAssets = {
   _pageId: string
   _passToClient: string[]
   _isHtmlOnly: boolean
-  _pageContextProvidedByUserPromise: Promise<unknown> | null
+  _pageContextPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
   _isProduction: boolean
   _viteDevServer: null | ViteDevServer
@@ -75,8 +75,8 @@ function injectAssetsToStream(
     assert([true, false].includes(pageContext._isHtmlOnly))
     const isHtmlOnly = pageContext._isHtmlOnly
 
-    assert(pageContext._pageContextProvidedByUserPromise === null || pageContext._pageContextProvidedByUserPromise)
-    const injectJavaScriptDuringStream = pageContext._pageContextProvidedByUserPromise === null && !!injectToStream
+    assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
+    const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
 
     htmlSnippets = await getHtmlSnippets(pageContext, { isHtmlOnly, injectJavaScriptDuringStream })
     const htmlSnippetsAtBegin = htmlSnippets.filter((snippet) => snippet.position !== 'DOCUMENT_END')
@@ -90,7 +90,7 @@ function injectAssetsToStream(
   }
 
   async function injectAtStreamEnd(htmlEnd: string) {
-    await loadAsyncPageContext(pageContext)
+    await resolvePageContextPromise(pageContext)
     const htmlSnippetsAtEnd = htmlSnippets.filter((snippet) => snippet.position === 'DOCUMENT_END')
     htmlEnd = injectHtmlSnippets(htmlEnd, htmlSnippetsAtEnd, null)
     return htmlEnd
@@ -98,12 +98,12 @@ function injectAssetsToStream(
 }
 
 // https://vite-plugin-ssr.com/stream#initial-data-after-streaming
-async function loadAsyncPageContext(pageContext: {
-  _pageContextProvidedByUserPromise: null | Promise<unknown>
+async function resolvePageContextPromise(pageContext: {
+  _pageContextPromise: null | Promise<unknown>
   _renderHook: { hookFilePath: string; hookName: 'render' }
 }) {
-  if (pageContext._pageContextProvidedByUserPromise !== null) {
-    const pageContextProvidedByUser = await pageContext._pageContextProvidedByUserPromise
+  if (pageContext._pageContextPromise !== null) {
+    const pageContextProvidedByUser = await pageContext._pageContextPromise
     assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
     Object.assign(pageContext, pageContextProvidedByUser)
   }
@@ -132,7 +132,7 @@ async function getHtmlSnippets(
   // Serialized pageContext
   if (!isHtmlOnly) {
     htmlSnippets.push({
-      // Needs to be called after `loadAsyncPageContext()`
+      // Needs to be called after `resolvePageContextPromise()`
       htmlSnippet: () => getPageContextTag(pageContext),
       position: positionJs,
     })
