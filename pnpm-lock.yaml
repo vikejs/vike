@@ -210,7 +210,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.5
+      react-streaming: ^0.2.6
       vite: npm:@brillout/vite@2.9.8-preview-fix
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -223,7 +223,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.5_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
       vite: /@brillout/vite/2.9.8-preview-fix
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -508,7 +508,7 @@ importers:
       cross-env: ^7.0.3
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.5
+      react-streaming: ^0.2.6
       vite: npm:@brillout/vite@2.9.8-preview-fix
       vite-plugin-ssr: 0.3.64
     dependencies:
@@ -516,7 +516,7 @@ importers:
       cross-env: 7.0.3
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.5_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
       vite: /@brillout/vite/2.9.8-preview-fix
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -534,7 +534,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.5
+      react-streaming: ^0.2.6
       typescript: ^4.6.4
       vite: npm:@brillout/vite@2.9.8-preview-fix
       vite-plugin-ssr: 0.3.64
@@ -551,7 +551,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.5_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
       vite: /@brillout/vite/2.9.8-preview-fix
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -10172,8 +10172,8 @@ packages:
       react: 18.1.0
     dev: false
 
-  /react-streaming/0.2.5_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-u5A1ytP2hH4VGkVjwyZHYT7vtBwoxZ6htkDf6OIAd4JJEIgOPp7xdw6FWPjV7pY3v8fxEFsYGR2sNS826nX80g==}
+  /react-streaming/0.2.6_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-ZdzZMyCIuFA65kViYbfNfTDJKmYTkBKQ2SnP3QuMSTFEJZ/E9pvOedXrhYsNBNr/jejqiulUtzbwQ63ITxcoVQ==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
