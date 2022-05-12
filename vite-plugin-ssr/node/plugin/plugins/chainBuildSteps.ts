@@ -41,7 +41,7 @@ function skip1() {
   if (isViteCliCall({ command: 'build', ssr: true })) {
     assertWarning(
       false,
-      'The `$ vite build --ssr` CLI call is deprecated; it is now superfluous and has no effect (`$ vite build` now also builds server-side code). Drop `$ vite build --ssr` to remove this warning.',
+      'The `$ vite build --ssr` CLI call is outdated; it is now superfluous and has no effect (`$ vite build` now also builds server-side code). Drop `$ vite build --ssr` to remove this warning.',
       { onlyOnce: true },
     )
     process.exit(0)
@@ -50,7 +50,7 @@ function skip1() {
 function skip2() {
   assertWarning(
     false,
-    'The `build({ build: { ssr: true } })` call is deprecated; it is now superfluous and has no effect (`build()` now also builds server-side code). Drop `build({ build: { ssr: true } })` to remove this warning.',
+    'The `build({ build: { ssr: true } })` call is outdated; it is now superfluous and has no effect (`build()` now also builds server-side code). Drop `build({ build: { ssr: true } })` to remove this warning.',
     { onlyOnce: true },
   )
   process.exit(0)

@@ -65,19 +65,16 @@ async function prerender(
      */
     root?: string
     configFile?: string
-    // ==================
-    // === Deprecated ===
-    // ==================
     /** @deprecated Define `partial` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
     partial?: boolean
     /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
     noExtraDir?: boolean
-    /** @deprecated Define `outDir` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
-    outDir?: string
-    /** @deprecated Define `base` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
-    base?: string
     /** @deprecated Define `parallel` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
     parallel?: number
+    // Outdated
+    outDir?: string
+    // Outdated
+    base?: string
   } = {},
 ) {
   const { onPagePrerender, pageContextInit, configFile, root: root_, ...deprecatedOptions } = options
@@ -573,7 +570,7 @@ function checkOutdatedOptions(options: {
   ;(['base', 'outDir'] as const).forEach((prop) => {
     assertWarning(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is deprecated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
+      `[prerender()] Option \`${prop}\` is outdated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
       {
         onlyOnce: true,
       },
