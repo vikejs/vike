@@ -1,17 +1,20 @@
 export { createDebugger }
 
 import debug from 'debug'
-const FILTER = process.env.VPS_DEBUG_FILTER || process.env.DEBUG_FILTER
-const DEBUG = process.env.DEBUG
+import { getEnv } from './getEnv'
 
 function createDebugger(
   namespace: `vps:${string}`,
-  options: { onlyWhenFocused?: true | string } = {}
+  options: { onlyWhenFocused?: true | string } = {},
 ): debug.Debugger['log'] {
+  const FILTER = getEnv('VPS_DEBUG_FILTER') || getEnv('DEBUG_FILTER')
+  const DEBUG = getEnv('DEBUG')
+
   const log = debug(namespace)
+
   const { onlyWhenFocused } = options
-  const focus =
-    typeof onlyWhenFocused === 'string' ? onlyWhenFocused : namespace
+  const focus = typeof onlyWhenFocused === 'string' ? onlyWhenFocused : namespace
+
   return (msg: string, ...args: any[]) => {
     if (FILTER && !msg.includes(FILTER)) {
       return
