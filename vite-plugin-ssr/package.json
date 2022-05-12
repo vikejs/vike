@@ -5,6 +5,7 @@
     "@brillout/json-s": "^0.4.6",
     "@brillout/libassert": "^0.5.5",
     "cac": "^6.7.12",
+    "debug": "4.3.4",
     "es-module-lexer": "^0.10.5",
     "fast-glob": "^3.2.11",
     "kolorist": "^1.5.1",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
+    "@types/debug": "4.1.7",
     "@types/jest": "^27.4.1",
     "@types/node": "17.0.31",
     "@types/resolve": "^1.20.2",

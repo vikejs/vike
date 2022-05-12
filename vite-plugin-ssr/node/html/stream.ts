@@ -1,26 +1,3 @@
-import {
-  assert,
-  assertUsage,
-  checkType,
-  isObject,
-  hasProp,
-  objectAssign,
-  capitalizeFirstLetter,
-  assertWarning,
-  isCallable,
-} from '../utils'
-import { HtmlRender } from './renderHtml'
-// In order to support Cloudflare Workers, we cannot statically import the `stream` module.
-// Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
-import type { Readable as StreamReadableNode, Writable as StreamWritableNode } from 'stream'
-import {
-  getStreamFromReactStreaming,
-  isStreamReactStreaming,
-  StreamReactStreaming,
-  streamReactStreamingToString,
-} from './stream/react-streaming'
-//import { streamNodeModuleGet as loadStreamNodeModule } from './stream/streamNodeModule'
-
 export { getStreamReadableNode }
 export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
@@ -50,6 +27,32 @@ export { pipeWebStream }
 export { pipeNodeStream }
 export { stampStreamPipe }
 export { pipeStream }
+
+import {
+  assert,
+  assertUsage,
+  checkType,
+  isObject,
+  hasProp,
+  objectAssign,
+  capitalizeFirstLetter,
+  assertWarning,
+  isCallable,
+  createDebugger
+} from '../utils'
+import { HtmlRender } from './renderHtml'
+// In order to support Cloudflare Workers, we cannot statically import the `stream` module.
+// Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
+import type { Readable as StreamReadableNode, Writable as StreamWritableNode } from 'stream'
+import {
+  getStreamFromReactStreaming,
+  isStreamReactStreaming,
+  StreamReactStreaming,
+  streamReactStreamingToString,
+} from './stream/react-streaming'
+//import { streamNodeModuleGet as loadStreamNodeModule } from './stream/streamNodeModule'
+
+const debug = createDebugger('vps:stream')
 
 type StreamReadableWeb = ReadableStream
 type StreamWritableWeb = WritableStream
@@ -282,10 +285,14 @@ async function processStream<StreamType extends Stream>(
       let promise: Promise<void> | null = null
       return async () => {
         if (promise === null) {
+          debug('stream begin')
           promise = new Promise<void>(async (resolve) => {
             if (injectStringAtBegin) {
               const stringBegin = await injectStringAtBegin()
               write(stringBegin)
+              debug('vps begin injection written')
+            } else {
+              debug('no vps begin injection')
             }
             resolve()
           })
@@ -298,6 +305,7 @@ async function processStream<StreamType extends Stream>(
       await ensureStringBegin()
 
       write(chunk)
+      debug('data written')
     }
     let streamEnded = false
     const onEnd = async () => {
@@ -305,6 +313,7 @@ async function processStream<StreamType extends Stream>(
         return
       }
       streamEnded = true
+      debug('user stream ended')
 
       // If empty stream: the stream ends before any data was written, but we still need to ensure that we inject `stringBegin`
       await ensureStringBegin()
@@ -312,9 +321,13 @@ async function processStream<StreamType extends Stream>(
       if (injectStringAtEnd) {
         const stringEnd = await injectStringAtEnd()
         write(stringEnd)
+        debug('vps end injection written')
+      } else {
+        debug('no vps end injection')
       }
 
       close()
+      debug('vps wrapper stream ended')
     }
     const onError = async (err: unknown) => {
       if (resolved === false) {
@@ -337,11 +350,13 @@ async function processStream<StreamType extends Stream>(
   }
 
   if (isStreamReactStreaming(streamOriginal)) {
+    debug('render() hook returned `react-streaming` result')
     const stream = getStreamFromReactStreaming(streamOriginal)
     ;(streamOriginal as Stream) = stream
   }
 
   if (isStreamPipeNode(streamOriginal)) {
+    debug('render() hook returned Node.js Stream Pipe')
     const buffer: string[] = []
     const flushBuffer = () => {
       assert(writableOriginalReady)
@@ -430,6 +445,7 @@ async function processStream<StreamType extends Stream>(
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
+    debug('render() hook returned Web Stream Pipe')
     const buffer: string[] = []
     const flushBuffer = () => {
       assert(writableOriginalReady)
@@ -507,6 +523,7 @@ async function processStream<StreamType extends Stream>(
   }
 
   if (isStreamReadableWeb(streamOriginal)) {
+    debug('render() hook returned Web Readable')
     const readableWebOriginal: StreamReadableWeb = streamOriginal
     const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
@@ -534,6 +551,7 @@ async function processStream<StreamType extends Stream>(
   }
 
   if (isStreamReadableNode(streamOriginal)) {
+    debug('render() hook returned Node.js Readable')
     const readableNodeOriginal: StreamReadableNode = streamOriginal
     const { Readable } = await loadStreamNodeModule()
     // Vue doesn't always set the `read()` handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375

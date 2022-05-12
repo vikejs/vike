@@ -937,10 +937,12 @@ importers:
       '@brillout/json-s': ^0.4.6
       '@brillout/libassert': ^0.5.5
       '@brillout/part-regex': ^0.1.2
+      '@types/debug': ^4.1.7
       '@types/jest': ^27.4.1
       '@types/node': 17.0.31
       '@types/resolve': ^1.20.2
       cac: ^6.7.12
+      debug: ^4.3.4
       es-module-lexer: ^0.10.5
       fast-glob: ^3.2.11
       kolorist: ^1.5.1
@@ -956,6 +958,7 @@ importers:
       '@brillout/json-s': 0.4.6
       '@brillout/libassert': 0.5.5
       cac: 6.7.12
+      debug: 4.3.4
       es-module-lexer: 0.10.5
       fast-glob: 3.2.11
       kolorist: 1.5.1
@@ -966,6 +969,7 @@ importers:
       vite-plugin-glob: 0.2.6
     devDependencies:
       '@brillout/part-regex': 0.1.2
+      '@types/debug': 4.1.7
       '@types/jest': 27.4.1
       '@types/node': 17.0.31
       '@types/resolve': 1.20.2
@@ -2314,7 +2318,6 @@ packages:
     resolution: {integrity: sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==}
     dependencies:
       '@types/ms': 0.7.31
-    dev: false
 
   /@types/estree-jsx/0.0.1:
     resolution: {integrity: sha512-gcLAYiMfQklDCPjQegGn0TBAn9it05ISEsEhlKQUddIk7o2XDokOcTN7HBO8tznM0D9dGezvHEfRZBfZf6me0A==}
@@ -2423,7 +2426,6 @@ packages:
 
   /@types/ms/0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
-    dev: false
 
   /@types/node-fetch/2.6.1:
     resolution: {integrity: sha512-oMqjURCaxoSIsHSr1E47QHzbmzNR5rK8McHuNb11BOM9cHcIK3Avy0s/b2JlXHoQGTYS3NsvWzV1M0iK7l0wbA==}
