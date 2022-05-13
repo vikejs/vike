@@ -14,5 +14,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": ["**/*.d.ts", "**/*.spec.ts"]
+  "exclude": ["**/*.d.ts", "**/*.spec.ts", "**/node_modules", "**/.*/"]
 }
