@@ -25,6 +25,7 @@ import {
   isPromise,
   handlePageContextRequestSuffix,
   parseUrl,
+  createDebugger,
 } from './utils'
 import type { PageAsset } from './html/injectAssets'
 import { getPageAssets } from './renderPage/getPageAssets'
@@ -56,6 +57,7 @@ import { getGlobalContext, GlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
 import { ViteManifest } from './viteManifest'
+import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
 export { renderPage }
 export { prerenderPage }
@@ -544,33 +546,30 @@ async function loadPageFilesServer(pageContext: {
   _viteDevServer: null | ViteDevServer
   _manifestClient: null | ViteManifest
 }) {
-  const [pageContextAddendum] = await Promise.all([
+  const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
     loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
     loadPageExportNames(pageContext._pageFilesAll, pageContext._pageId, { skipPageSharedFiles: true }),
   ])
-  const { isHtmlOnly, clientEntry, clientDependencies } = analyzePageClientSide(
-    pageContext._pageFilesAll,
-    pageContext._pageId,
-  )
+  const { isHtmlOnly, clientEntry, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
+    analyzePageClientSide(pageContext._pageFilesAll, pageContext._pageId)
+  const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
+    exports,
+    exportsAll,
+    pageExports,
+    Page: exports.Page,
     _isHtmlOnly: isHtmlOnly,
+    _passToClient: getExportUnion(exportsAll, 'passToClient'),
+    _pageFilePathsLoaded: pageFilesLoaded.map((p) => p.filePath),
   })
 
-  objectAssign(pageContextAddendum, {
-    _passToClient: getExportUnion(pageContextAddendum.exportsAll, 'passToClient'),
-  })
-
-  objectAssign(pageContextAddendum, {
-    Page: pageContextAddendum.exports.Page,
-  })
-
-  const isPreRendering = pageContext._isPreRendering
-  assert([true, false].includes(isPreRendering))
   objectAssign(pageContextAddendum, {
     _getPageAssets: async () => {
       if ('_pageAssets' in pageContext) {
         return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
       } else {
+        const isPreRendering = pageContext._isPreRendering
+        assert([true, false].includes(isPreRendering))
         const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntry, isPreRendering)
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
@@ -578,7 +577,64 @@ async function loadPageFilesServer(pageContext: {
     },
   })
 
+  {
+    const pageFilesAll = pageContext._pageFilesAll
+    const pageId = pageContext._pageId
+    debug({
+      pageFilesAll,
+      pageId,
+      pageFilesLoaded,
+      pageFilesClientSide,
+      pageFilesServerSide,
+      clientEntry,
+      clientDependencies,
+    })
+  }
+
   return pageContextAddendum
+}
+
+function debug({
+  pageFilesAll,
+  pageFilesLoaded,
+  pageId,
+  pageFilesServerSide,
+  pageFilesClientSide,
+  clientEntry,
+  clientDependencies,
+}: {
+  pageFilesAll: PageFile[]
+  pageFilesLoaded: PageFile[]
+  pageFilesClientSide: PageFile[]
+  pageFilesServerSide: PageFile[]
+  pageId: string
+  clientEntry: null | string
+  clientDependencies: ClientDependency[]
+}) {
+  const debug = createDebugger('vps:pageFiles')
+  const padding = '   - '
+  const s = (pageFiles: PageFile[]) =>
+    '\n' +
+    pageFiles
+      .map((p) => p.filePath)
+      .sort()
+      .reverse()
+      .map((s) => padding + s)
+      .join('\n')
+  debug('All:', s(pageFilesAll))
+  debug('pageId:', pageId)
+  debug('Server-side:', s(pageFilesLoaded))
+  assert(samePageFiles(pageFilesLoaded, pageFilesServerSide))
+  debug('Client-side:', s(pageFilesClientSide))
+  debug('Client entry:', clientEntry)
+  debug('Client dependencies:', '\n' + clientDependencies.map((c) => padding + JSON.stringify(c)).join('\n'))
+}
+
+function samePageFiles(pageFiles1: PageFile[], pageFiles2: PageFile[]) {
+  return (
+    pageFiles1.every((p1) => pageFiles2.some((p2) => p2.filePath === p1.filePath)) &&
+    pageFiles2.every((p2) => pageFiles1.some((p1) => p1.filePath === p2.filePath))
+  )
 }
 
 async function executeOnBeforeRenderHooks(
@@ -615,7 +671,7 @@ async function executeRenderHook(
     _isProduction: boolean
     _viteDevServer: ViteDevServer | null
     _baseUrl: string
-    _loadedPageFiles: string[]
+    _pageFilePathsLoaded: string[]
   },
 ): Promise<{
   renderFilePath: string
@@ -624,7 +680,7 @@ async function executeRenderHook(
   const hook = getHook(pageContext, 'render')
   assertUsage(
     hook,
-    `No \`render()\` hook found. See https://vite-plugin-ssr.com/render for more information. Loaded pages (none of them \`export { render }\`):\n${pageContext._loadedPageFiles
+    `No \`render()\` hook found. See https://vite-plugin-ssr.com/render for more information. Loaded pages (none of them \`export { render }\`):\n${pageContext._pageFilePathsLoaded
       .map((f) => `  ${f}`)
       .join('\n')}`,
   )

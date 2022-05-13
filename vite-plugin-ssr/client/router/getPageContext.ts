@@ -45,16 +45,25 @@ async function getPageContext(
 
 async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[] }) {
   const pageContextAddendum = getPageContextSerializedInHtml()
-
   removeBuiltInOverrides(pageContextAddendum)
-
-  const pageContextAddendum2 = await loadPageFiles(pageContext._pageFilesAll, pageContextAddendum._pageId, true)
-  objectAssign(pageContextAddendum, pageContextAddendum2)
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
     _comesDirectlyFromServer: true,
   })
+
+  {
+    const { exports, exportsAll, pageExports } = await loadPageFiles(
+      pageContext._pageFilesAll,
+      pageContextAddendum._pageId,
+      true,
+    )
+    objectAssign(pageContextAddendum, {
+      exports,
+      exportsAll,
+      pageExports,
+    })
+  }
 
   return pageContextAddendum
 }
