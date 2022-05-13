@@ -14,5 +14,5 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
     isHtmlOnly,
     isClientRouting,
   })
-  return { isHtmlOnly, isClientRouting, clientEntry, clientDependencies }
+  return { isHtmlOnly, isClientRouting, clientEntry, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }

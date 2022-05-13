@@ -6,14 +6,13 @@ import type { PageFile } from './types'
 
 async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClientSide: boolean) {
   const { pageFilesClientSide, pageFilesServerSide } = getRelevantPageFiles(pageFilesAll, pageId)
-  const pageFiles = isForClientSide ? pageFilesClientSide : pageFilesServerSide
-  await Promise.all(pageFiles.map((p) => p.loadFile?.()))
-  const { exports, exportsAll, pageExports } = getExports(pageFiles)
-  const pageContextAddendum = {
+  const pageFilesLoaded = isForClientSide ? pageFilesClientSide : pageFilesServerSide
+  await Promise.all(pageFilesLoaded.map((p) => p.loadFile?.()))
+  const { exports, exportsAll, pageExports } = getExports(pageFilesLoaded)
+  return {
     exports,
     exportsAll,
     pageExports,
-    _loadedPageFiles: pageFiles.map((p) => p.filePath),
+    pageFilesLoaded,
   }
-  return pageContextAddendum
 }
