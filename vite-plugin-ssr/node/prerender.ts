@@ -357,6 +357,7 @@ async function routeAndPrerender(
 
         const pageFilesData = await loadPageFilesServer({
           ...globalContext,
+          url,
           _pageId: pageId,
         })
         objectAssign(pageContext, pageFilesData)

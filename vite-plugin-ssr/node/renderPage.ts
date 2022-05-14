@@ -536,6 +536,7 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
 }
 
 async function loadPageFilesServer(pageContext: {
+  url: string
   _pageId: string
   _baseUrl: string
   _baseAssets: string | null
@@ -579,9 +580,10 @@ async function loadPageFilesServer(pageContext: {
   {
     const pageFilesAll = pageContext._pageFilesAll
     const pageId = pageContext._pageId
-    debug({
-      pageFilesAll,
+    debugPageFiles({
+      url: pageContext.url,
       pageId,
+      pageFilesAll,
       pageFilesLoaded,
       pageFilesClientSide,
       pageFilesServerSide,
@@ -593,20 +595,22 @@ async function loadPageFilesServer(pageContext: {
   return pageContextAddendum
 }
 
-function debug({
+function debugPageFiles({
+  url,
+  pageId,
   pageFilesAll,
   pageFilesLoaded,
-  pageId,
   pageFilesServerSide,
   pageFilesClientSide,
   clientEntries,
   clientDependencies,
 }: {
+  url: string
+  pageId: string
   pageFilesAll: PageFile[]
   pageFilesLoaded: PageFile[]
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
-  pageId: string
   clientEntries: string[]
   clientDependencies: ClientDependency[]
 }) {
@@ -620,13 +624,16 @@ function debug({
       .reverse()
       .map((s) => padding + s)
       .join('\n')
-  debug('All:', s(pageFilesAll))
-  debug('pageId:', pageId)
-  debug('Server-side:', s(pageFilesLoaded))
+  debug('All page files:', s(pageFilesAll))
+  debug(`[${url}] pageId:`, pageId)
+  debug(`[${url}] Server-side page files:`, s(pageFilesLoaded))
   assert(samePageFiles(pageFilesLoaded, pageFilesServerSide))
-  debug('Client-side:', s(pageFilesClientSide))
-  debug('Client entries:', '\n' + clientEntries.map((e) => padding + e).join('\n'))
-  debug('Client dependencies:', '\n' + clientDependencies.map((c) => padding + JSON.stringify(c)).join('\n'))
+  debug(`[${url}] Client-side page files:`, s(pageFilesClientSide))
+  debug(`[${url}] Client-side entries:`, '\n' + clientEntries.map((e) => padding + e).join('\n'))
+  debug(
+    `[${url}] Client-side dependencies:`,
+    '\n' + clientDependencies.map((c) => padding + JSON.stringify(c)).join('\n'),
+  )
 }
 
 function samePageFiles(pageFiles1: PageFile[], pageFiles2: PageFile[]) {
