@@ -1,4 +1,5 @@
-export { loadPageFiles }
+export { loadPageFilesClientSide }
+export { loadPageFilesServerSide }
 
 import { getExports } from './getExports'
 import { getRelevantPageFiles } from './getRelevantPageFiles'
@@ -15,4 +16,11 @@ async function loadPageFiles(pageFilesAll: PageFile[], pageId: string, isForClie
     pageExports,
     pageFilesLoaded,
   }
+}
+
+async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
+  return loadPageFiles(pageFilesAll, pageId, false)
+}
+async function loadPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
+  return loadPageFiles(pageFilesAll, pageId, true)
 }

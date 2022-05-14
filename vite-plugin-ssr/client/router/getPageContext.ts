@@ -11,13 +11,14 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { loadPageFiles, PageContextExports, PageFile } from '../../shared/getPageFiles'
+import { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getHook } from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
+import { loadPageFilesClientSide } from '../../shared/getPageFiles/loadPageFiles'
 
 export { getPageContext }
 
@@ -26,6 +27,7 @@ type PageContextAddendum = {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
   isHydration: boolean
   _comesDirectlyFromServer: boolean
+  _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
 async function getPageContext(
@@ -53,15 +55,15 @@ async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[
   })
 
   {
-    const { exports, exportsAll, pageExports } = await loadPageFiles(
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = await loadPageFilesClientSide(
       pageContext._pageFilesAll,
       pageContextAddendum._pageId,
-      true,
     )
     objectAssign(pageContextAddendum, {
       exports,
       exportsAll,
       pageExports,
+      _pageFilesLoaded: pageFilesLoaded,
     })
   }
 
@@ -73,7 +75,18 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
-  objectAssign(pageContextAddendum, await loadPageFiles(pageContext._pageFilesAll, pageContextAddendum._pageId, true))
+  {
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = await loadPageFilesClientSide(
+      pageContext._pageFilesAll,
+      pageContextAddendum._pageId,
+    )
+    objectAssign(pageContextAddendum, {
+      exports,
+      exportsAll,
+      pageExports,
+      _pageFilesLoaded: pageFilesLoaded,
+    })
+  }
   objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
   return pageContextAddendum

@@ -1,15 +1,13 @@
 import { getErrorPageId, route, isErrorPage } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import {
-  loadPageFiles,
   PageFile,
   PageContextExports,
   getExportUnion,
   getPageFilesAllServerSide,
   ExportsAll,
 } from '../shared/getPageFiles'
-import { analyzePageClientSide } from '../shared/getPageFiles/analyzePageClientSide'
-import { loadPageExportNames } from '../shared/getPageFiles/loadPageExportNames'
+import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
 import { getHook } from '../shared/getHook'
 import { stringify } from '@brillout/json-s/stringify'
 import {
@@ -58,6 +56,7 @@ import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
 import { ViteManifest } from './viteManifest'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import { loadPageFilesServerSide } from '../shared/getPageFiles/loadPageFiles'
 
 export { renderPage }
 export { prerenderPage }
@@ -547,8 +546,8 @@ async function loadPageFilesServer(pageContext: {
   _manifestClient: null | ViteManifest
 }) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
-    loadPageFiles(pageContext._pageFilesAll, pageContext._pageId, false),
-    loadPageExportNames(pageContext._pageFilesAll, pageContext._pageId, { skipPageSharedFiles: true }),
+    loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
+    analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true }),
   ])
   const { isHtmlOnly, clientEntry, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePageClientSide(pageContext._pageFilesAll, pageContext._pageId)

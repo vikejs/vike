@@ -1,6 +1,6 @@
 import { assert, assertUsage, getUrlPathname } from './utils'
 import { isExternalLink } from './utils/isExternalLink'
-import { loadPageFiles } from '../../shared/getPageFiles'
+import { loadPageFilesClientSide } from '../../shared/getPageFiles/loadPageFiles'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 
@@ -20,7 +20,7 @@ async function prefetch(url: string): Promise<void> {
 
   const { pageId, pageFilesAll } = await getPageId(url)
   if (pageId) {
-    await loadPageFiles(pageFilesAll, pageId, true)
+    await loadPageFilesClientSide(pageFilesAll, pageId)
   }
 }
 
