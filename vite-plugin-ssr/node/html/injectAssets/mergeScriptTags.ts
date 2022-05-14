@@ -24,9 +24,14 @@ function mergeScriptTags(scriptTagsHtml: string): string {
     }
   })
 
-  assert(scriptsModuleContent.length > 0, { scriptTagsHtml })
-  const scriptsModule = `<script type="module" async>\n${scriptsModuleContent.join('\n')}\n</script>`
-  return scriptsModule + scriptsES5
+  let scriptTag = ''
+  if (scriptsModuleContent.length > 0) {
+    scriptTag += `<script type="module" async>\n${scriptsModuleContent.join('\n')}\n</script>`
+  }
+  if (scriptsES5) {
+    scriptTag += scriptsES5
+  }
+  return scriptTag
 }
 function parseScripts(htmlString: string) {
   const scripts: { isModule: boolean; innerHtml: string; outerHtml: string; src: null | string }[] = []
