@@ -1,17 +1,15 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
 import { Link } from 'libframe-docs/components'
 
-pageContext-anywhere
-
 > **What are active links?** It's the practice of visually highlighting the current page in the navigation.
 > For example, this page is called "Active Links" and it is highlighted with a gray background in the navigation on the left of this website.
 > The link is said to be "active".
 
 To implement active links:
  - We create a new component `<Link>`.
- - We make [`pageContext.urlPathname`](/pageContext) available to our new `<Link>` component. See <Link href="/pageContext-anywhere"/>.
+ - We make [`pageContext.urlPathname`](/pageContext) available to our new component `<Link>`. See <Link href="/pageContext-anywhere"/>.
 
-Our `<Link>` component checks whether `const isActive = a.href === pageContext.urlPathname` and adds a CSS class `<a class="is-active">` accordingly.
+Our `<Link>` component checks whether `const isActive = a.href === pageContext.urlPathname` and sets a CSS class accordingly `<a class="is-active">`.
 
 React example:
  - <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' />
@@ -19,5 +17,5 @@ React example:
 Vue example:
  - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' />
 
-> If we use SSR, then we cannot use `window.location.pathname` because it's not available when our page is rendered on the server-side.
-> If <Link text="render our page as SPA" href="/render-modes" />, then we can use `window.location.pathname` instead of `pageContext.urlPathname`.
+> We cannot use `window.location.pathname` if we use SSR, because it's not available when our page is rendered on the server-side.
+> If we <Link text="render our page as SPA" href="/render-modes" />, then we can use `window.location.pathname` instead of `pageContext.urlPathname`.
