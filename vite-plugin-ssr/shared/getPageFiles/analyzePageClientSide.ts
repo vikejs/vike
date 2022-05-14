@@ -7,18 +7,25 @@ import { getPageFilesClientSide } from './analyzePageClientSide/getPageFilesClie
 import { getPageFilesServerSide } from './analyzePageServerSide/getPageFilesServerSide'
 import type { PageFile } from './types'
 import { assert } from '../utils'
+import { getExportNames } from './analyzePageClientSide/getExportNames'
 
 function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
-  const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
+  let pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const { isHtmlOnly, isClientRouting } = analyzeExports({ pageFilesClientSide, pageFilesServerSide, pageId })
-  const { clientEntry, clientDependencies } = determineClientEntry({
+
+  // HTML-only pages do not need any client-side `render()` hook. For apps that have both HTML-only and SSR/SPA pages, we skip the `.page.client.js` file that defines `render()` for HTML-only pages.
+  if (isHtmlOnly) {
+    pageFilesClientSide = pageFilesClientSide.filter((p) => !getExportNames(p).includes('render'))
+  }
+
+  const { clientEntries, clientDependencies } = determineClientEntry({
     pageFilesClientSide,
     pageFilesServerSide,
     isHtmlOnly,
     isClientRouting,
   })
-  return { isHtmlOnly, isClientRouting, clientEntry, clientDependencies, pageFilesClientSide, pageFilesServerSide }
+  return { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }
 
 async function analyzePageClientSideInit(

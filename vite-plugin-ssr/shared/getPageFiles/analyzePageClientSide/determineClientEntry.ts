@@ -14,8 +14,8 @@ function determineClientEntry({
   pageFilesServerSide: PageFile[]
   isHtmlOnly: boolean
   isClientRouting: boolean
-}): { clientEntry: null | string; clientDependencies: ClientDependency[] } {
-  let clientEntry: null | string = null
+}): { clientEntries: string[]; clientDependencies: ClientDependency[] } {
+  let clientEntries: string[] = []
 
   const pageFilesServerSideOnly = pageFilesServerSide.filter((p) => !pageFilesClientSide.includes(p))
 
@@ -34,18 +34,19 @@ function determineClientEntry({
     if (pageFilesClientSide[0]) {
       assert(pageFilesClientSide.length === 1)
       // The cient entry is a single client-side page file
-      clientEntry = pageFilesClientSide[0].filePath
+      clientEntries.push(pageFilesClientSide[0].filePath)
     }
   } else {
     // Add the vps client entry
-    clientEntry = isClientRouting
+    const clientEntry = isClientRouting
       ? // $userRoot/dist/client/entry-client-routing.js
         '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
       : // $userRoot/dist/client/entry-server-routing.js
         '@@vite-plugin-ssr/dist/esm/client/entry.js'
     clientDependencies.push({ id: clientEntry, onlyAssets: false })
+    clientEntries = [clientEntry]
   }
 
   // console.log(pageFilesClientSide, pageFilesServerSide, clientDependencies, clientEntry)
-  return { clientEntry, clientDependencies }
+  return { clientEntries, clientDependencies }
 }

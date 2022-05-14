@@ -1,4 +1,4 @@
-export { parseScripts }
+export { mergeScriptTags }
 
 import { assert } from '../../utils'
 
@@ -6,6 +6,28 @@ const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
 const typeRE = /\btype\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
 
+function mergeScriptTags(scriptTagsHtml: string): string {
+  let scriptsES5 = ''
+  const scriptsModuleContent: string[] = []
+
+  const scripts = parseScripts(scriptTagsHtml)
+  scripts.forEach(({ src, isModule, innerHtml, outerHtml }) => {
+    if (!isModule) {
+      scriptsES5 += outerHtml
+    } else {
+      if (src) {
+        scriptsModuleContent.push(`import ${JSON.stringify(src)};`)
+      } else if (innerHtml.trim()) {
+        innerHtml = innerHtml.split('\n').filter(Boolean).join('\n')
+        scriptsModuleContent.push(innerHtml)
+      }
+    }
+  })
+
+  assert(scriptsModuleContent.length > 0, { scriptTagsHtml })
+  const scriptsModule = `<script type="module" async>\n${scriptsModuleContent.join('\n')}\n</script>`
+  return scriptsModule + scriptsES5
+}
 function parseScripts(htmlString: string) {
   const scripts: { isModule: boolean; innerHtml: string; outerHtml: string; src: null | string }[] = []
   let match: RegExpExecArray | null
