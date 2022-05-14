@@ -14,13 +14,14 @@ export default pageContext => {
   const isUserAuthenticated =  pageContext.user !== null
   if (!isUserAuthenticated) {
     return {
-      // We use a high precedence to override all other routes.
-      // This means unauthenticated users will always see the Login Page `login.page.js`
+      // We use a high precedence to override all other routes. This means that unauthenticated
+      // users always see the Login Page `login.page.js` (no matter the url). For example, if
+      // the user is unauthenticated and goes to `/admin`, then he'll see the Login Page.
       precedence: 999
     }
   } else {
-    // If the user is authenticated then do not show the Login Page.
-    // E.g. if the user goes to `/admin`, then show the Admin Page.
+    // If the user is authenticated then do not show the Login Page. For example, if the
+    // user is authenticated and goes to `/admin`, then he'll see the Admin Page.
     return false
   }
 }
@@ -31,13 +32,13 @@ See <Link href="/route-function#precedence" />.
 After the user successfully logs in, we can reload the page with `window.location.reload()` (<Link href="/server-routing"  noBreadcrumb={true} />) or <Link text={<code>navigte(window.location.pathname)</code>} href="/navigate" /> (<Link href="/client-routing" noBreadcrumb={true} />).
 
 This approach preserves the URL during the entire login flow:
- 1. Unauthenticated user goes to URL `/admin` and see the Login Page. (URL is `/admin`.)
- 2. The users fills the sign in form and successfully logs in. (URL is still `/admin`.)
- 3. The page is reloaded and the user now sees the Admin Page. (URL is still `/admin`.)
+ 1. Unauthenticated user goes to URL `/admin` and sees the Login Page. (URL is `/admin`.)
+ 2. User fills the sign-in form and successfully logs in. (URL is still `/admin`.)
+ 3. Page is reloaded and the user now sees the Admin Page. (URL is still `/admin`.)
 
 This works for all URLs: the original intention of the user is preserved and there is no need for a complex URL restoration mechanism.
 
-We can also perform a page redirection instead of using this approach. See sections below.
+Instead of using this approach, we can also use the more traditional approach of performing a page redirection. See sections below.
 
 
 ## Server-side

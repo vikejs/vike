@@ -214,21 +214,21 @@ export default pageContext => {
 ```
 
 ```
-URL                           MATCHES                                    CHOSEN
+URL                           MATCHES                                    WINNER
 ==================            ===================================        ======
-/product/42                   product/item.page.route.js      (6)        X
+/product/42                   product/item.page.route.js      (6)        ⬅️
                               product/catch-all.page.route.js (7)
 ```
 ```
-URL                           MATCHES                                    CHOSEN
+URL                           MATCHES                                    WINNER
 ==================            ===================================        ======
-/product                      product/list.page.route.js      (4)        X
+/product                      product/list.page.route.js      (4)        ⬅️
                               product/catch-all.page.route.js (7)
 ```
 ```
-URL                           MATCHES                                    CHOSEN
+URL                           MATCHES                                    WINNER
 ==================            ===================================        ======
-/product/wrong/url            product/catch-all.page.route.js (7)        X
+/product/wrong/url            product/catch-all.page.route.js (7)        ⬅️
 ```
 
 4: Route String, static (without `:param` segment, e.g. `/about/company`)  
@@ -255,15 +255,15 @@ export default pageContext => {
 ```
 
 ```
-URL                   pageContext.user       MATCHES                       CHOSEN
+URL                   pageContext.user       MATCHES                       WINNER
 ======                ================       =======================       ======
-/admin                null                   login.page.route.js (1)       X
+/admin                null                   login.page.route.js (1)       ⬅️
                                              admin.page.route.js (4)
 ```
 ```
-URL                   pageContext.user       MATCHES                       CHOSEN
+URL                   pageContext.user       MATCHES                       WINNER
 ======                ================       =======================       ======
-/admin                'brillout'             admin.page.route.js (4)       X
+/admin                'brillout'             admin.page.route.js (4)       ⬅️
 ```
 
 1: Route Function, returned high positive `precedence` number  
