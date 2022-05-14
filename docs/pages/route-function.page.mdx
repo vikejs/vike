@@ -179,12 +179,12 @@ export default pageContext => {
 If the route of two pages both match the same URL then we have a route conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
 
 Upon route conflicts, `vite-plugin-ssr` chooses the first route in following order:
- 1. Route Function, returned high positive `precedence` number
- 2. Route Function, returned low positive `precedence` number
+ 1. Route Function, returned high positive `precedence` number (e.g. `99`)
+ 2. Route Function, returned low positive `precedence` number (e.g. `1`)
  3. Filesystem Routing
- 4. Route String, static (without `:param` segment, e.g. `/about/company`)
- 5. Route Function, returned no `precedence` number
- 6. Route String, parameterized (with `:param` segements, e.g. `/product/:productId` or `/product/*`)
+ 4. Route String, static (i.e. without `:param` segment, e.g. `/about/company`)
+ 5. Route Function, returned no `precedence` number (or `0`)
+ 6. Route String, parameterized (i.e. with `:param` segement, e.g. `/product/:productId` or `/product/*`)
  7. Route Function, returned low negative `precedence` number (e.g. `-1`)
  8. Route Function, returned high negative `precedence` number (e.g. `-99`)
 
