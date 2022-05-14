@@ -1,14 +1,17 @@
 import { RepoLink } from 'libframe-docs/components/RepoLink'
+import { Link } from 'libframe-docs/components'
 
-> **What are active links?** It's the practice of visually highlighting the currently selected page in the navigation.
-> For example, we can see this page `Active Links` highlighted in gray in the navigation on the left of this website; the link in the navigation pointing to this page is said to be "active".
+pageContext-anywhere
 
-To implement active links we:
- - Implement a custom `<Link>` component.
- - Make [`pageContext.urlPathname`](/pageContext) available to the `<Link>` component, see [Access `pageContext` anywhere](/pageContext-anywhere).
+> **What are active links?** It's the practice of visually highlighting the current page in the navigation.
+> For example, this page is called "Active Links" and it is highlighted with a gray background in the navigation on the left of this website.
+> The link is said to be "active".
 
-Our `<Link>` component can then check whether the link is active with `const isActive = a.href === pageContext.urlPathname`
-and add a CSS class `<a class="is-active">` accordingly.
+To implement active links:
+ - We create a new component `<Link>`.
+ - We make [`pageContext.urlPathname`](/pageContext) available to our new `<Link>` component. See <Link href="/pageContext-anywhere"/>.
+
+Our `<Link>` component checks whether `const isActive = a.href === pageContext.urlPathname` and adds a CSS class `<a class="is-active">` accordingly.
 
 React example:
  - <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' />
@@ -16,5 +19,5 @@ React example:
 Vue example:
  - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' />
 
-> Unless we [render our page as SPA](/SPA-vs-SSR-vs-HTML)
-> we cannot use `window.location.pathname` as it's not available while our page is rendered on the server-side.
+> If we use SSR, then we cannot use `window.location.pathname` because it's not available when our page is rendered on the server-side.
+> If <Link text="render our page as SPA" href="/render-modes" />, then we can use `window.location.pathname` instead of `pageContext.urlPathname`.
