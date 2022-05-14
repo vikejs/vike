@@ -7,32 +7,44 @@ const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
 const typeRE = /\btype\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
 
 function mergeScriptTags(scriptTagsHtml: string): string {
-  let scriptsES5 = ''
-  const scriptsModuleContent: string[] = []
+  let scriptTag = ''
 
   const scripts = parseScripts(scriptTagsHtml)
-  scripts.forEach(({ src, isModule, innerHtml, outerHtml }) => {
-    if (!isModule) {
-      scriptsES5 += outerHtml
+
+  // We need to merge module scripts to ensure execution order
+  {
+    const scriptsModule = scripts.filter(({ isModule }) => isModule)
+    if (scriptsModule.length === 1) {
+      scriptTag += scriptsModule[0]!.outerHtml
     } else {
-      if (src) {
-        scriptsModuleContent.push(`import ${JSON.stringify(src)};`)
-      } else if (innerHtml.trim()) {
-        innerHtml = innerHtml.split('\n').filter(Boolean).join('\n')
-        scriptsModuleContent.push(innerHtml)
+      const contents: string[] = []
+      scriptsModule.forEach(({ src, innerHtml }) => {
+        const hasInnerHtml = !!innerHtml.trim()
+        if (src) {
+          assert(!hasInnerHtml)
+          contents.push(`import ${JSON.stringify(src)};`)
+        } else if (hasInnerHtml) {
+          innerHtml = innerHtml.split('\n').filter(Boolean).join('\n')
+          contents.push(innerHtml)
+        }
+      })
+      if (contents.length > 0) {
+        scriptTag += `<script type="module" async>\n${contents.join('\n')}\n</script>`
       }
     }
-  })
+  }
 
-  let scriptTag = ''
-  if (scriptsModuleContent.length > 0) {
-    scriptTag += `<script type="module" async>\n${scriptsModuleContent.join('\n')}\n</script>`
+  // We don't need to merge ES5 scripts
+  {
+    const scriptsES5 = scripts.filter(({ isModule }) => !isModule)
+    scriptsES5.forEach(({ outerHtml }) => {
+      scriptTag += outerHtml
+    })
   }
-  if (scriptsES5) {
-    scriptTag += scriptsES5
-  }
+
   return scriptTag
 }
+
 function parseScripts(htmlString: string) {
   const scripts: { isModule: boolean; innerHtml: string; outerHtml: string; src: null | string }[] = []
   let match: RegExpExecArray | null
