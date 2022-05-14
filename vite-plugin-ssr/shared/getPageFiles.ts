@@ -1,6 +1,3 @@
-// Main export
-export { loadPageFiles } from './getPageFiles/loadPageFiles'
-
 // Types
 export type { PageFile } from './getPageFiles/types'
 export type { ExportsAll, PageContextExports } from './getPageFiles/getExports'

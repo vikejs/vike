@@ -2,7 +2,8 @@ import { assertUsage, assertWarning, checkType, getUrlPathname, objectAssign } f
 import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
-import { getPageFilesAllClientSide, loadPageFiles } from '../shared/getPageFiles'
+import { getPageFilesAllClientSide } from '../shared/getPageFiles'
+import { loadPageFilesClientSide } from '../shared/getPageFiles/loadPageFiles'
 
 export { getPageContext }
 
@@ -34,7 +35,15 @@ async function loadPageFilesClient(pageId: string) {
   objectAssign(pageContextAddendum, {
     _pageFilesAll: pageFilesAll,
   })
-  objectAssign(pageContextAddendum, await loadPageFiles(pageFilesAll, pageId, true))
+  {
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = await loadPageFilesClientSide(pageFilesAll, pageId)
+    objectAssign(pageContextAddendum, {
+      exports,
+      exportsAll,
+      pageExports,
+      _pageFilesLoaded: pageFilesLoaded,
+    })
+  }
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
     .forEach((p) => {
