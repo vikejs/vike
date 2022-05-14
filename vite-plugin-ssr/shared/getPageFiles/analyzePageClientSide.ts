@@ -14,9 +14,11 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const { isHtmlOnly, isClientRouting } = analyzeExports({ pageFilesClientSide, pageFilesServerSide, pageId })
 
-  // HTML-only pages do not need any client-side `render()` hook. For apps that have both HTML-only and SSR/SPA pages, we skip the `.page.client.js` file that defines `render()` for HTML-only pages.
   if (isHtmlOnly) {
-    pageFilesClientSide = pageFilesClientSide.filter((p) => !getExportNames(p).includes('render'))
+    // HTML-only pages do not need any client-side `render()` hook. For apps that have both HTML-only and SSR/SPA pages, we skip the `.page.client.js` file that defines `render()` for HTML-only pages.
+    pageFilesClientSide = pageFilesClientSide.filter(
+      (p) => p.fileType === '.page.client' && !getExportNames(p).includes('render'),
+    )
   }
 
   const { clientEntries, clientDependencies } = determineClientEntry({
