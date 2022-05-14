@@ -625,13 +625,13 @@ function debugPageFiles({
       .map((s) => padding + s)
       .join('\n')
   debug('All page files:', s(pageFilesAll))
-  debug(`[${url}] pageId:`, pageId)
-  debug(`[${url}] Server-side page files:`, s(pageFilesLoaded))
+  debug(`pageId for URL \`${url}\`:`, pageId)
+  debug(`Server-side page files for URL \`${url}\`:`, s(pageFilesLoaded))
   assert(samePageFiles(pageFilesLoaded, pageFilesServerSide))
-  debug(`[${url}] Client-side page files:`, s(pageFilesClientSide))
-  debug(`[${url}] Client-side entries:`, '\n' + clientEntries.map((e) => padding + e).join('\n'))
+  debug(`Client-side page files for URL \`${url}\`:`, s(pageFilesClientSide))
+  debug(`Client-side entries for URL \`${url}\`:`, '\n' + clientEntries.map((e) => padding + e).join('\n'))
   debug(
-    `[${url}] Client-side dependencies:`,
+    `Client-side dependencies for URL \`${url}\`:`,
     '\n' + clientDependencies.map((c) => padding + JSON.stringify(c)).join('\n'),
   )
 }
