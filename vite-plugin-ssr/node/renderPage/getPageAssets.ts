@@ -19,34 +19,34 @@ async function getPageAssets(
     _manifestClient: null | ViteManifest
   },
   clientDependencies: ClientDependency[],
-  clientEntry: string | null,
+  clientEntries: string[],
   isPreRendering: boolean,
 ): Promise<PageAsset[]> {
   const isDev = !isPreRendering && !pageContext._isProduction
 
   let assetUrls: string[]
-  let clientEntrySrc: null | string
+  let clientEntriesSrc: string[]
   if (isDev) {
     const viteDevServer = pageContext._viteDevServer
     assert(viteDevServer)
-    clientEntrySrc = clientEntry && resolveClientEntriesDev(clientEntry, viteDevServer)
+    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
     const clientManifest = pageContext._manifestClient
     assert(clientManifest)
-    clientEntrySrc = clientEntry && resolveClientEntriesProd(clientEntry, clientManifest!)
+    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, clientManifest!))
     assetUrls = await retrieveAssetsProd(clientDependencies, clientManifest)
   }
 
   let pageAssets: PageAsset[] = []
-  if (clientEntrySrc) {
+  clientEntriesSrc.forEach((clientEntrySrc) => {
     pageAssets.push({
       src: clientEntrySrc,
       assetType: 'script',
       mediaType: 'text/javascript',
       preloadType: null,
     })
-  }
+  })
   assetUrls.forEach((src) => {
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
     const assetType = mediaType === 'text/css' ? 'style' : 'preload'

@@ -549,7 +549,7 @@ async function loadPageFilesServer(pageContext: {
     loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true }),
   ])
-  const { isHtmlOnly, clientEntry, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
+  const { isHtmlOnly, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePageClientSide(pageContext._pageFilesAll, pageContext._pageId)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
@@ -569,7 +569,7 @@ async function loadPageFilesServer(pageContext: {
       } else {
         const isPreRendering = pageContext._isPreRendering
         assert([true, false].includes(isPreRendering))
-        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntry, isPreRendering)
+        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries, isPreRendering)
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
       }
@@ -585,7 +585,7 @@ async function loadPageFilesServer(pageContext: {
       pageFilesLoaded,
       pageFilesClientSide,
       pageFilesServerSide,
-      clientEntry,
+      clientEntries,
       clientDependencies,
     })
   }
@@ -599,7 +599,7 @@ function debug({
   pageId,
   pageFilesServerSide,
   pageFilesClientSide,
-  clientEntry,
+  clientEntries,
   clientDependencies,
 }: {
   pageFilesAll: PageFile[]
@@ -607,7 +607,7 @@ function debug({
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
   pageId: string
-  clientEntry: null | string
+  clientEntries: string[]
   clientDependencies: ClientDependency[]
 }) {
   const debug = createDebugger('vps:pageFiles')
@@ -625,7 +625,7 @@ function debug({
   debug('Server-side:', s(pageFilesLoaded))
   assert(samePageFiles(pageFilesLoaded, pageFilesServerSide))
   debug('Client-side:', s(pageFilesClientSide))
-  debug('Client entry:', clientEntry)
+  debug('Client entries:', '\n' + clientEntries.map((e) => padding + e).join('\n'))
   debug('Client dependencies:', '\n' + clientDependencies.map((c) => padding + JSON.stringify(c)).join('\n'))
 }
 

@@ -6,7 +6,8 @@ import { assertPageContextProvidedByUser } from '../../shared/assertPageContextP
 import { createHtmlHeadIfMissing, injectHtmlSnippets } from './injectAssets/injectHtmlSnippet'
 import type { ViteDevServer } from 'vite'
 import { inferAssetTag } from './injectAssets/infertAssetTag'
-import { addViteDevScripts } from './injectAssets/addViteDevScripts'
+import { getViteDevScripts } from './injectAssets/getViteDevScripts'
+import { mergeScriptTags } from './injectAssets/mergeScriptTags'
 
 export { injectAssets__public }
 export { injectAssets }
@@ -138,7 +139,7 @@ async function getHtmlSnippets(
     })
   }
 
-  const jsScript = await findJsScript(pageAssets, pageContext)
+  const jsScript = await getMergedScriptTag(pageAssets, pageContext)
   if (jsScript) {
     htmlSnippets.push({
       htmlSnippet: jsScript,
@@ -151,7 +152,7 @@ async function getHtmlSnippets(
 
     // JavaScript tags
     if (assetType === 'script') {
-      // Already included with `findJsScript()`
+      // Already included with `getMergedScriptTag()`
       continue
     }
     if (assetType === 'preload' && preloadType === 'script') {
@@ -190,19 +191,14 @@ async function getHtmlSnippets(
   return htmlSnippets
 }
 
-async function findJsScript(pageAssets: PageAsset[], pageContext: PageContextInjectAssets): Promise<null | string> {
-  let jsAsset: null | PageAsset = null
-  pageAssets.forEach((pageAsset) => {
-    if (pageAsset.assetType === 'script') {
-      assert(!jsAsset)
-      jsAsset = pageAsset
-    }
-  })
-  if (!jsAsset) {
-    return await addViteDevScripts(null, pageContext)
-  }
-  let scriptTag = inferAssetTag(jsAsset)
-  scriptTag = await addViteDevScripts(scriptTag, pageContext)
+async function getMergedScriptTag(
+  pageAssets: PageAsset[],
+  pageContext: PageContextInjectAssets,
+): Promise<null | string> {
+  const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.assetType === 'script')
+  const viteScripts = await getViteDevScripts(pageContext)
+  const scriptTagsHtml = `${viteScripts}${scriptAssets.map(inferAssetTag).join('')}`
+  const scriptTag = mergeScriptTags(scriptTagsHtml)
   return scriptTag
 }
 
