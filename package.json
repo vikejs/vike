@@ -11,7 +11,7 @@
     "========= Test": "",
     "// Run tests": "",
     "test": "pnpm run test:units && pnpm run test:e2e && pnpm run test:types",
-    "test:units": "vitest run",
+    "test:units": "vitest",
     "test:e2e": "cd libframe/test/ && pnpm run test:jest",
     "test:types": "cd libframe/test/ && pnpm run test:types",
     "// Run `$ pnpm test:setup` before running `$ pnpm test`": "",
