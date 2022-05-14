@@ -1,14 +1,16 @@
 export { analyzePageClientSide }
 export { analyzePageClientSideInit }
 
-import type { PageFile } from './types'
-import { getRelevantPageFiles } from './getRelevantPageFiles'
 import { analyzeExports } from './analyzePageClientSide/analyzeExports'
 import { determineClientEntry } from './analyzePageClientSide/determineClientEntry'
+import { getPageFilesClientSide } from './analyzePageClientSide/getPageFilesClientSide'
+import { getPageFilesServerSide } from './analyzePageServerSide/getPageFilesServerSide'
+import type { PageFile } from './types'
 import { assert } from '../utils'
 
 function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
-  const { pageFilesClientSide, pageFilesServerSide } = getRelevantPageFiles(pageFilesAll, pageId)
+  const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
+  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const { isHtmlOnly, isClientRouting } = analyzeExports({ pageFilesClientSide, pageFilesServerSide, pageId })
   const { clientEntry, clientDependencies } = determineClientEntry({
     pageFilesClientSide,
@@ -24,7 +26,7 @@ async function analyzePageClientSideInit(
   pageId: string,
   { sharedPageFilesAlreadyLoaded }: { sharedPageFilesAlreadyLoaded: boolean },
 ) {
-  const { pageFilesClientSide } = getRelevantPageFiles(pageFilesAll, pageId)
+  const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
 
   await Promise.all(
     pageFilesClientSide.map(async (p) => {

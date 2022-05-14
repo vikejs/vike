@@ -56,7 +56,7 @@ import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
 import { ViteManifest } from './viteManifest'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
-import { loadPageFilesServerSide } from '../shared/getPageFiles/loadPageFiles'
+import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 
 export { renderPage }
 export { prerenderPage }

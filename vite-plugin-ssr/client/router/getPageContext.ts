@@ -18,7 +18,7 @@ import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getHook } from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
-import { loadPageFilesClientSide } from '../../shared/getPageFiles/loadPageFiles'
+import { loadPageFilesClientSide } from '../../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
 
 export { getPageContext }
 

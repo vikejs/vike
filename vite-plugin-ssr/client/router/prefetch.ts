@@ -1,6 +1,6 @@
 import { assert, assertUsage, getUrlPathname } from './utils'
 import { isExternalLink } from './utils/isExternalLink'
-import { loadPageFilesClientSide } from '../../shared/getPageFiles/loadPageFiles'
+import { loadPageFilesClientSide } from '../../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 
