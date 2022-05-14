@@ -14,9 +14,7 @@ describe('renderPage()', () => {
       expect(statusCode).toBe(200)
       expect(contentType).toBe('text/html')
       expect(body).toBe(
-        `<html><head></head><body>hello<script type=\"module\" async>
-import \"/@vite/client\";
-</script></body></html>`,
+        `<html><head></head><body>hello<script type=\"module\" src=\"/@vite/client\"></script></body></html>`,
       )
     }
     /*
