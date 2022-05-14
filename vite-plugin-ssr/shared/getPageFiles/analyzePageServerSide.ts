@@ -2,10 +2,10 @@ export { analyzePageServerSide }
 
 import type { PageFile } from './types'
 import { assert } from '../utils'
-import { getRelevantPageFiles } from './getRelevantPageFiles'
+import { getPageFilesServerSide } from './analyzePageServerSide/getPageFilesServerSide'
 
 async function analyzePageServerSide(pageFilesAll: PageFile[], pageId: string) {
-  const { pageFilesServerSide } = getRelevantPageFiles(pageFilesAll, pageId)
+  const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageFilesServerSideOnly = pageFilesServerSide.filter((p) => p.fileType === '.page.server')
   await Promise.all(
     pageFilesServerSideOnly.map(async (p) => {

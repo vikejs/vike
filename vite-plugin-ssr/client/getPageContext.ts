@@ -3,7 +3,7 @@ import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
 import { getPageFilesAllClientSide } from '../shared/getPageFiles'
-import { loadPageFilesClientSide } from '../shared/getPageFiles/loadPageFiles'
+import { loadPageFilesClientSide } from '../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
 
 export { getPageContext }
 

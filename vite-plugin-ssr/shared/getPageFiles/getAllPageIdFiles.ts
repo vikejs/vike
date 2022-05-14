@@ -1,21 +1,13 @@
-export { getRelevantPageFiles }
+export { getAllPageIdFilesClientSide }
+export { getAllPageIdFilesServerSide }
 
 import type { FileType, PageFile } from './types'
 import { assert, assertPosixPath, isNotNullish } from '../utils'
 
-function getRelevantPageFiles(
-  pageFilesAll: PageFile[],
-  pageId: string,
-): { pageFilesClientSide: PageFile[]; pageFilesServerSide: PageFile[] } {
-  const pageFilesClientSide = determinePageFilesToLoadForClientSide(pageFilesAll, pageId)
-  const pageFilesServerSide = determinePageFilesToLoadForServerSide(pageFilesAll, pageId)
-  return { pageFilesClientSide, pageFilesServerSide }
-}
-
-function determinePageFilesToLoadForClientSide(pageFilesAll: PageFile[], pageId: string) {
+function getAllPageIdFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, true)
 }
-function determinePageFilesToLoadForServerSide(pageFilesAll: PageFile[], pageId: string) {
+function getAllPageIdFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, false)
 }
 function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean) {
