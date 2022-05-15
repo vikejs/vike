@@ -10,6 +10,7 @@ import {
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
 import { getHook } from '../shared/getHook'
 import { stringify } from '@brillout/json-s/stringify'
+import pc from 'picocolors'
 import {
   assert,
   assertUsage,
@@ -24,6 +25,7 @@ import {
   handlePageContextRequestSuffix,
   parseUrl,
   createDebugger,
+  makeFirst,
 } from './utils'
 import type { PageAsset } from './html/injectAssets'
 import { getPageAssets } from './renderPage/getPageAssets'
@@ -550,7 +552,7 @@ async function loadPageFilesServer(pageContext: {
     loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true }),
   ])
-  const { isHtmlOnly, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
+  const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
     analyzePageClientSide(pageContext._pageFilesAll, pageContext._pageId)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
@@ -583,6 +585,8 @@ async function loadPageFilesServer(pageContext: {
     debugPageFiles({
       url: pageContext.url,
       pageId,
+      isHtmlOnly,
+      isClientRouting,
       pageFilesAll,
       pageFilesLoaded,
       pageFilesClientSide,
@@ -598,6 +602,8 @@ async function loadPageFilesServer(pageContext: {
 function debugPageFiles({
   url,
   pageId,
+  isHtmlOnly,
+  isClientRouting,
   pageFilesAll,
   pageFilesLoaded,
   pageFilesServerSide,
@@ -607,6 +613,8 @@ function debugPageFiles({
 }: {
   url: string
   pageId: string
+  isHtmlOnly: boolean
+  isClientRouting: boolean
   pageFilesAll: PageFile[]
   pageFilesLoaded: PageFile[]
   pageFilesClientSide: PageFile[]
@@ -616,24 +624,50 @@ function debugPageFiles({
 }) {
   const debug = createDebugger('vps:pageFiles')
   const padding = '   - '
-  const s = (pageFiles: PageFile[]) =>
-    '\n' +
-    pageFiles
-      .map((p) => p.filePath)
-      .sort()
-      .reverse()
-      .map((s) => padding + s)
-      .join('\n')
-  debug('All page files:', s(pageFilesAll))
-  debug(`pageId for URL \`${url}\`:`, pageId)
-  debug(`Server-side page files for URL \`${url}\`:`, s(pageFilesLoaded))
+
+  debug('All page files:', printPageFiles(pageFilesAll, true))
+  debug(`URL:`, url)
+  debug(`pageId:`, pageId)
+  debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
+  debug(`Routing type:`, !isHtmlOnly && isClientRouting ? 'Client Routing' : 'Server Routing')
+  debug('Server-side page files:', printPageFiles(pageFilesLoaded))
   assert(samePageFiles(pageFilesLoaded, pageFilesServerSide))
-  debug(`Client-side page files for URL \`${url}\`:`, s(pageFilesClientSide))
-  debug(`Client-side entries for URL \`${url}\`:`, '\n' + clientEntries.map((e) => padding + e).join('\n'))
+  debug('Client-side page files:', printPageFiles(pageFilesClientSide))
   debug(
-    `Client-side dependencies for URL \`${url}\`:`,
-    '\n' + clientDependencies.map((c) => padding + JSON.stringify(c)).join('\n'),
+    'Client-side entries:',
+    printEntries(clientEntries, (entry) => entry),
   )
+  debug(
+    'Client-side dependencies:',
+    printEntries(clientDependencies, (entry) => JSON.stringify(entry)),
+  )
+
+  return
+
+  function printPageFiles(pageFiles: PageFile[], genericPageFilesLast = false) {
+    if (pageFiles.length === 0) {
+      return 'None'
+    }
+    return (
+      '\n' +
+      pageFiles
+        .sort((p1, p2) => p1.filePath.localeCompare(p2.filePath))
+        .sort(makeFirst((p) => (p.isRendererPageFile ? !genericPageFilesLast : null)))
+        .sort(makeFirst((p) => (p.isDefaultPageFile ? !genericPageFilesLast : null)))
+        .map((p) => p.filePath)
+        .map((s) => s.split('_default.page.').join(`${pc.blue('_default')}.page.`))
+        .map((s) => s.split('/renderer/').join(`/${pc.red('renderer')}/`))
+        .map((s) => padding + s)
+        .join('\n')
+    )
+  }
+
+  function printEntries<T>(list: T[], str: (entry: T) => string) {
+    if (list.length === 0) {
+      return 'None'
+    }
+    return '\n' + list.map((entry) => padding + str(entry)).join('\n')
+  }
 }
 
 function samePageFiles(pageFiles1: PageFile[], pageFiles2: PageFile[]) {

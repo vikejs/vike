@@ -10,6 +10,7 @@
     // Composite setttings
     "composite": true,
     "rootDir": "./",
+    "noEmitOnError": false,
     // Misc
     "esModuleInterop": true,
     "skipLibCheck": true

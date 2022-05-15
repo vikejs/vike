@@ -29,25 +29,32 @@ function lowerFirst<T>(getValue: (element: T) => number): (element1: T, element2
   }
 }
 
-function makeFirst<T>(getValue: (element: T) => boolean): (element1: T, element2: T) => 0 | 1 | -1 {
+function makeFirst<T>(getValue: (element: T) => boolean | null): (element1: T, element2: T) => 0 | 1 | -1 {
   return (element1: T, element2: T) => {
     const val1 = getValue(element1)
     const val2 = getValue(element2)
-    assert([true, false].includes(val1))
-    assert([true, false].includes(val2))
+    assert([true, false, null].includes(val1))
+    assert([true, false, null].includes(val2))
     if (val1 === val2) {
       return 0
     }
-    if (val1) {
+    if (val1 === true || val2 === false) {
       return -1 // element1 first
     }
-    if (val2) {
+    if (val2 === true || val1 === false) {
       return 1 // element2 first
     }
     assert(false)
   }
 }
 
-function makeLast<T>(getValue: (element: T) => boolean) {
-  return makeFirst((element: T) => !getValue(element))
+function makeLast<T>(getValue: (element: T) => boolean | null) {
+  return makeFirst((element: T) => {
+    const val = getValue(element)
+    if (val === null) {
+      return null
+    } else {
+      return !val
+    }
+  })
 }
