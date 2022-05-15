@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@brillout/submodule-init": "0.1.2",
-    "vitest": "^0.10.1"
+    "vitest": "^0.12.6"
   },
   "pnpm": {
     "overrides": {

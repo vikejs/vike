@@ -8,10 +8,10 @@ importers:
   .:
     specifiers:
       '@brillout/submodule-init': 0.1.2
-      vitest: ^0.10.1
+      vitest: ^0.12.6
     devDependencies:
       '@brillout/submodule-init': 0.1.2
-      vitest: 0.10.1
+      vitest: 0.12.6
 
   boilerplates:
     specifiers:
@@ -12183,8 +12183,8 @@ packages:
       - supports-color
     dev: false
 
-  /vitest/0.10.1:
-    resolution: {integrity: sha512-jFNObjJ48WnfJzxpopJOrd7ZnRCE3OGgE2KSQ1AGmKxNPTgadMCLx81GBrIcxIjuz2E/8qmGBPtC5VH01ihl7A==}
+  /vitest/0.12.6:
+    resolution: {integrity: sha512-YWbCTv0XKBuBw5YtuW/iufuguoi8QhGpYyi2g57Oo7akpscMkkWTAaZGgY0ux1oJJtO/pc/8GFt0EF32WFBUUQ==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
