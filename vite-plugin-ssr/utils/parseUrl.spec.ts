@@ -27,7 +27,29 @@ describe('parseUrl', () => {
     expect(parseUrl('/base', '/base')).toEqual({
       ...resultBase,
       pathnameWithBaseUrl: '/base',
-      pathnameWithoutBaseUrl: '/',
+    })
+    expect(parseUrl('/base/', '/base')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/base/',
+    })
+    expect(parseUrl('/base', '/base/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/base',
+    })
+    expect(parseUrl('https://example.org/base', '/base')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/base',
+      origin: 'https://example.org',
+    })
+    expect(parseUrl('https://example.org/base/', '/base')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/base/',
+      origin: 'https://example.org',
+    })
+    expect(parseUrl('https://example.org/base', '/base/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/base',
+      origin: 'https://example.org',
     })
     expect(parseUrl('/base/hello', '/base')).toEqual({
       ...resultBase,

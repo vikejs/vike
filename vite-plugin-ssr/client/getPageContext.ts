@@ -1,4 +1,4 @@
-import { assertUsage, assertWarning, checkType, getUrlPathname, objectAssign } from './utils'
+import { assertUsage, assertWarning, checkType, getCurrentUrl, objectAssign } from './utils'
 import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
@@ -7,7 +7,7 @@ import { loadPageFilesClientSide } from '../shared/getPageFiles/analyzePageClien
 
 export { getPageContext }
 
-const urlPathnameOriginal = getUrlPathname()
+const urlOriginal = getCurrentUrl({ withoutHash: true })
 
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
@@ -22,10 +22,10 @@ async function getPageContext() {
 }
 
 function assertPristineUrl() {
-  const urlPathnameCurrent = getUrlPathname()
+  const urlCurrent = getCurrentUrl({ withoutHash: true })
   assertUsage(
-    urlPathnameOriginal === urlPathnameCurrent,
-    `You changed the page's URL before the hydration finished (from \`${urlPathnameOriginal}\` to \`${urlPathnameCurrent}\`). Make sure that the hydration finished before changing the URL by using the \`onHydrationEnd()\` hook.`,
+    urlOriginal === urlCurrent,
+    `URL manipulated before hydration finished (\`${urlOriginal}\` to \`${urlCurrent}\`). Ensure the hydration finishes with \`onHydrationEnd()\` before manipulating the URL.`,
   )
 }
 

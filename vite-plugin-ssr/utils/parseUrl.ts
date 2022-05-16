@@ -1,7 +1,6 @@
 import { slice } from './slice'
 import { assert, assertUsage } from './assert'
 
-export { getUrlPathname }
 export { parseUrl }
 export { isParsable }
 
@@ -9,15 +8,6 @@ export { prependBaseUrl }
 export { assertBaseUrl }
 export { assertUsageBaseUrl }
 export { normalizeBaseUrl }
-
-/**
- Returns `${pathname}`
-*/
-function getUrlPathname(url?: string): string {
-  url = retrieveUrl(url)
-  const urlPathname = parseUrl(url, '/').pathnameWithoutBaseUrl // is Base URL missing?
-  return urlPathname
-}
 
 function isParsable(url: string): boolean {
   // `parseUrl()` doesn't work with these URLs
@@ -92,13 +82,6 @@ function parseUrl(
   assert(pathnameWithBaseUrl.startsWith('/'))
   assert(pathnameWithoutBaseUrl.startsWith('/'))
   return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
-}
-
-function retrieveUrl(url: undefined | string) {
-  if (!url) {
-    url = window.location.href
-  }
-  return url
 }
 
 function parseWithNewUrl(url: string) {
@@ -179,9 +162,9 @@ function analyzeBaseUrl(
   assertBaseUrl(baseUrl)
 
   // Mutable
-  let url = urlPathnameWithBase
+  let urlPathname = urlPathnameWithBase
 
-  assert(url.startsWith('/'))
+  assert(urlPathname.startsWith('/'))
   assert(baseUrl.startsWith('/'))
 
   if (baseUrl === '/') {
@@ -191,29 +174,22 @@ function analyzeBaseUrl(
 
   // Support `url === '/some-base-url' && baseUrl === '/some-base-url/'`
   let baseUrlNormalized = baseUrl
-  let urlPathname = getUrlPathname(url)
   if (baseUrl.endsWith('/') && urlPathname === slice(baseUrl, 0, -1)) {
     baseUrlNormalized = slice(baseUrl, 0, -1)
     assert(urlPathname === baseUrlNormalized)
   }
 
-  if (!url.startsWith(baseUrlNormalized)) {
+  if (!urlPathname.startsWith(baseUrlNormalized)) {
     const pathnameWithoutBaseUrl = urlPathnameWithBase
     return { pathnameWithoutBaseUrl, hasBaseUrl: false }
   }
-  assert(url.startsWith('/') || url.startsWith('http'))
-  assert(url.startsWith(baseUrlNormalized))
-  url = url.slice(baseUrlNormalized.length)
-  /* url can actually start with `httpsome-pathname`
-  assert(!url.startsWith('http'))
-  */
-  /* `handleUrlOrigin('some-pathname-without-leading-slash')` fails
-  assert((handleUrlOrigin(url).urlOrigin===null))
-  */
-  if (!url.startsWith('/')) url = '/' + url
+  assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
+  assert(urlPathname.startsWith(baseUrlNormalized))
+  urlPathname = urlPathname.slice(baseUrlNormalized.length)
+  if (!urlPathname.startsWith('/')) urlPathname = '/' + urlPathname
 
-  assert(url.startsWith('/'))
-  return { pathnameWithoutBaseUrl: url, hasBaseUrl: true }
+  assert(urlPathname.startsWith('/'))
+  return { pathnameWithoutBaseUrl: urlPathname, hasBaseUrl: true }
 }
 
 function prependBaseUrl(url: string, baseUrl: string): string {
