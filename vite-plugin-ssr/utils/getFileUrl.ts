@@ -25,12 +25,12 @@ function getFileUrl(
   doNotCreateExtraDirectory: boolean,
 ): string {
   assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
-  const { pathnameWithBaseUrl, searchString, hashString } = parseUrl(url, baseUrl)
+  const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseUrl)
   if (url.startsWith('/')) {
-    assert(url === `${pathnameWithBaseUrl}${searchString || ''}${hashString || ''}`, { url })
+    assert(url === `${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
   }
 
-  let pathnameModified = pathnameWithBaseUrl
+  let pathnameModified = pathnameOriginal
   if (doNotCreateExtraDirectory) {
     if (pathnameModified.endsWith('/')) {
       pathnameModified = slice(pathnameModified, 0, -1)
@@ -40,11 +40,11 @@ function getFileUrl(
       pathnameModified = '/index'
     }
   } else {
-    const trailingSlash = pathnameWithBaseUrl.endsWith('/') ? '' : '/'
+    const trailingSlash = pathnameOriginal.endsWith('/') ? '' : '/'
     pathnameModified = pathnameModified + `${trailingSlash}index`
   }
 
-  const fileUrl = `${pathnameModified}${fileExtension}${searchString || ''}${hashString || ''}`
+  const fileUrl = `${pathnameModified}${fileExtension}${searchOriginal || ''}${hashOriginal || ''}`
   return fileUrl
 }
 
@@ -59,19 +59,19 @@ function handlePageContextRequestSuffix(url: string): {
 }
 
 function hasSuffix(url: string) {
-  const { pathnameWithBaseUrl, pathnameWithoutBaseUrl } = parseUrl(url, baseUrl)
-  assert(pathnameWithBaseUrl.endsWith(suffix) === pathnameWithoutBaseUrl.endsWith(suffix), { url })
-  return pathnameWithBaseUrl.endsWith(suffix)
+  const { pathnameOriginal, pathname } = parseUrl(url, baseUrl)
+  assert(pathnameOriginal.endsWith(suffix) === pathname.endsWith(suffix), { url })
+  return pathnameOriginal.endsWith(suffix)
 }
 
 function removePageContextUrlSuffix(url: string): string {
   const urlParsed = parseUrl(url, baseUrl)
-  const { origin, searchString, hashString } = urlParsed
-  // We cannot use `urlParsed.pathnameWithoutBaseUrl` because it would break the `urlParsed.pathnameWithBaseUrl` value of subsequent `parseUrl()` calls.
-  let pathname = urlParsed.pathnameWithBaseUrl
+  const { origin, searchOriginal, hashOriginal } = urlParsed
+  // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
+  let pathname = urlParsed.pathnameOriginal
   assert(pathname.endsWith(suffix))
-  assert(url === `${origin || ''}${pathname}${searchString || ''}${hashString || ''}`, { url })
+  assert(url === `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`, { url })
   pathname = slice(pathname, 0, -1 * suffix.length)
   if (pathname === '/index') pathname = '/'
-  return `${origin || ''}${pathname}${searchString || ''}${hashString || ''}`
+  return `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`
 }

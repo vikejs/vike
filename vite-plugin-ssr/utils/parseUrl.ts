@@ -26,13 +26,13 @@ function parseUrl(
   baseUrl: string,
 ): {
   origin: null | string
-  pathnameWithoutBaseUrl: string
-  pathnameWithBaseUrl: string
+  pathname: string
+  pathnameOriginal: string
   hasBaseUrl: boolean
   search: Record<string, string>
-  searchString: null | string
+  searchOriginal: null | string
   hash: string
-  hashString: null | string
+  hashOriginal: null | string
 } {
   assert(isParsable(url), { url })
   assert(baseUrl.startsWith('/'), { url, baseUrl })
@@ -40,16 +40,16 @@ function parseUrl(
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
   assert(urlWithoutHash !== undefined)
-  const hashString = ['', ...hashList].join('#') || null
-  assert(hashString === null || hashString.startsWith('#'))
-  const hash = hashString === null ? '' : decodeSafe(hashString.slice(1))
+  const hashOriginal = ['', ...hashList].join('#') || null
+  assert(hashOriginal === null || hashOriginal.startsWith('#'))
+  const hash = hashOriginal === null ? '' : decodeSafe(hashOriginal.slice(1))
 
   // Search
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
   assert(urlWithoutSearch !== undefined)
-  const searchString = ['', ...searchList].join('?') || null
-  assert(searchString === null || searchString.startsWith('?'), { url, searchString })
-  const search = Object.fromEntries(Array.from(new URLSearchParams(searchString || '')))
+  const searchOriginal = ['', ...searchList].join('?') || null
+  assert(searchOriginal === null || searchOriginal.startsWith('?'), { url, searchOriginal })
+  const search = Object.fromEntries(Array.from(new URLSearchParams(searchOriginal || '')))
 
   // Origin + pathname
   const { origin, pathnameResolved } = parseWithNewUrl(url, baseUrl)
@@ -60,24 +60,24 @@ function parseUrl(
   // `pathnameOriginal`
   const pathnameOriginal = urlWithoutSearch.slice((origin || '').length)
   {
-    const urlRecreated = `${origin || ''}${pathnameOriginal}${searchString || ''}${hashString || ''}`
+    const urlRecreated = `${origin || ''}${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`
     assert(url === urlRecreated, { url, urlRecreated })
   }
 
   // Base URL
-  let { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameResolved, baseUrl)
-  pathnameWithoutBaseUrl = decodePathname(pathnameWithoutBaseUrl)
+  let { pathname, hasBaseUrl } = analyzeBaseUrl(pathnameResolved, baseUrl)
+  pathname = decodePathname(pathname)
 
-  assert(pathnameWithoutBaseUrl.startsWith('/'))
+  assert(pathname.startsWith('/'))
   return {
     origin,
-    pathnameWithoutBaseUrl,
-    pathnameWithBaseUrl: pathnameOriginal,
+    pathname,
+    pathnameOriginal: pathnameOriginal,
     hasBaseUrl,
     search,
-    searchString,
+    searchOriginal,
     hash,
-    hashString,
+    hashOriginal,
   }
 }
 function decodeSafe(urlComponent: string): string {
@@ -161,7 +161,7 @@ function assertUrlPathname(urlPathname: string) {
 function analyzeBaseUrl(
   urlPathnameWithBase: string,
   baseUrl: string,
-): { pathnameWithoutBaseUrl: string; hasBaseUrl: boolean } {
+): { pathname: string; hasBaseUrl: boolean } {
   assertUrlPathname(urlPathnameWithBase)
   assertBaseUrl(baseUrl)
 
@@ -172,8 +172,8 @@ function analyzeBaseUrl(
   assert(baseUrl.startsWith('/'))
 
   if (baseUrl === '/') {
-    const pathnameWithoutBaseUrl = urlPathnameWithBase
-    return { pathnameWithoutBaseUrl, hasBaseUrl: true }
+    const pathname = urlPathnameWithBase
+    return { pathname, hasBaseUrl: true }
   }
 
   // Support `url === '/some-base-url' && baseUrl === '/some-base-url/'`
@@ -184,8 +184,8 @@ function analyzeBaseUrl(
   }
 
   if (!urlPathname.startsWith(baseUrlNormalized)) {
-    const pathnameWithoutBaseUrl = urlPathnameWithBase
-    return { pathnameWithoutBaseUrl, hasBaseUrl: false }
+    const pathname = urlPathnameWithBase
+    return { pathname, hasBaseUrl: false }
   }
   assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
   assert(urlPathname.startsWith(baseUrlNormalized))
@@ -193,7 +193,7 @@ function analyzeBaseUrl(
   if (!urlPathname.startsWith('/')) urlPathname = '/' + urlPathname
 
   assert(urlPathname.startsWith('/'))
-  return { pathnameWithoutBaseUrl: urlPathname, hasBaseUrl: true }
+  return { pathname: urlPathname, hasBaseUrl: true }
 }
 
 function prependBaseUrl(url: string, baseUrl: string): string {
