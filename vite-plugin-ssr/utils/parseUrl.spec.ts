@@ -10,6 +10,7 @@ const resultBase = {
   hashOriginal: null,
   origin: null,
   search: {},
+  searchAll: {},
   searchOriginal: null,
 }
 
@@ -121,6 +122,7 @@ describe('parseUrl', () => {
     expect(parseUrl('/?q=apples', '/')).toEqual({
       ...resultBase,
       search: { q: 'apples' },
+      searchAll: { q: ['apples'] },
       searchOriginal: '?q=apples',
     })
     expect(parseUrl('/shop?fruits=apples&candies=chocolate,lolipop', '/')).toEqual({
@@ -128,6 +130,7 @@ describe('parseUrl', () => {
       pathnameOriginal: '/shop',
       pathname: '/shop',
       search: { fruits: 'apples', candies: 'chocolate,lolipop' },
+      searchAll: { fruits: ['apples'], candies: ['chocolate,lolipop'] },
       searchOriginal: '?fruits=apples&candies=chocolate,lolipop',
     })
     const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
@@ -139,6 +142,7 @@ describe('parseUrl', () => {
       pathnameOriginal: '/shop',
       pathname: '/',
       search: { fruit: 'bannanas', candy: 'lolipop' },
+      searchAll: { fruit: ['apples', 'bannanas'], candy: ['chocolate', 'lolipop'] },
       searchOriginal: searchQuery,
     })
   })
@@ -183,12 +187,14 @@ describe('parseUrl', () => {
       expect(parseUrl('/?section=@reviews', '/')).toEqual({
         ...resultBase,
         search: { section: '@reviews' },
+        searchAll: { section: ['@reviews'] },
         searchOriginal: '?section=@reviews',
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/?section=%40reviews`, '/')).toEqual({
         ...resultBase,
         search: { section: '@reviews' },
+        searchAll: { section: ['@reviews'] },
         searchOriginal: '?section=%40reviews',
       })
     }
@@ -283,6 +289,7 @@ describe('parseUrl', () => {
       ...resultBase,
       pathnameOriginal: '',
       search: { a: 'b' },
+      searchAll: { a: ['b'] },
       searchOriginal: '?a=b',
     })
     expect(parseUrl('#a', '/')).toEqual({

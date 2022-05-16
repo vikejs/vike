@@ -24,7 +24,7 @@ function determineClientEntry({
 
   // Handle SPA & SSR pages.
   if (isHtmlOnly) {
-    clientEntries = pageFilesClientSide.map(p => p.filePath)
+    clientEntries = pageFilesClientSide.map((p) => p.filePath)
   } else {
     // Add the vps client entry
     const clientEntry = isClientRouting

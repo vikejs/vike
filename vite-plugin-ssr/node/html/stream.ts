@@ -38,7 +38,7 @@ import {
   capitalizeFirstLetter,
   assertWarning,
   isCallable,
-  createDebugger
+  createDebugger,
 } from '../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
