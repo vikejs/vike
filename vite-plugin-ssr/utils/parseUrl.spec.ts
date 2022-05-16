@@ -57,6 +57,10 @@ describe('parseUrl', () => {
       ...resultBase,
       origin: 'http://example.org',
     })
+    expect(parseUrl('http://example.org', '/')).toEqual({
+      ...resultBase,
+      origin: 'http://example.org',
+    })
     expect(parseUrl('http://example.org/base/hello', '/base')).toEqual({
       ...resultBase,
       pathnameWithBaseUrl: '/base/hello',
@@ -103,13 +107,78 @@ describe('parseUrl', () => {
       search: { fruits: 'apples', candies: 'chocolate,lolipop' },
       searchString: '?fruits=apples&candies=chocolate,lolipop',
     })
-    expect(parseUrl('/shop?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop', '/shop')).toEqual({
+    const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
+    const searchParams = new URLSearchParams(parseUrl(`/shop${searchQuery}`, '/').searchString)
+    expect(searchParams.getAll('fruit')).toEqual(['apples', 'bannanas'])
+    expect(searchParams.getAll('candy')).toEqual(['chocolate', 'lolipop'])
+    expect(parseUrl(`/shop${searchQuery}`, '/shop')).toEqual({
       ...resultBase,
       pathnameWithBaseUrl: '/shop',
       pathnameWithoutBaseUrl: '/',
       search: { fruit: 'bannanas', candy: 'lolipop' },
-      searchString: '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop',
+      searchString: searchQuery,
     })
+  })
+
+  it('decoding', () => {
+    // Pathname
+    {
+      const result = {
+        ...resultBase,
+        pathnameWithBaseUrl: '/user/@rom',
+        pathnameWithoutBaseUrl: '/user/@rom',
+      }
+      expect(parseUrl('/user/@rom', '/')).toEqual(result)
+      assert(encodeURIComponent('@') === '%40')
+      expect(parseUrl('/user/%40rom', '/')).toEqual(result)
+    }
+
+    // Hash
+    {
+      expect(parseUrl('/#@reviews', '/')).toEqual({
+        ...resultBase,
+        hash: '@reviews',
+        hashString: '#@reviews',
+      })
+      assert(encodeURIComponent('@') === '%40')
+      expect(parseUrl(`/#%40reviews`, '/')).toEqual({
+        ...resultBase,
+        hash: '@reviews',
+        hashString: '#%40reviews',
+      })
+    }
+    // Search
+    {
+      expect(parseUrl('/?section=@reviews', '/')).toEqual({
+        ...resultBase,
+        search: { section: '@reviews' },
+        searchString: '?section=@reviews',
+      })
+      assert(encodeURIComponent('@') === '%40')
+      expect(parseUrl(`/?section=%40reviews`, '/')).toEqual({
+        ...resultBase,
+        search: { section: '@reviews' },
+        searchString: '?section=%40reviews',
+      })
+    }
+
+    // #291
+    {
+      try {
+        decodeURI(decodeURI(encodeURI('%')))
+        assert(false)
+      } catch (err) {
+        assert(err.message === 'URI malformed')
+      }
+      const result = {
+        ...resultBase,
+        pathnameWithBaseUrl: '/user/%rom',
+        pathnameWithoutBaseUrl: '/user/%rom',
+      }
+      assert(encodeURIComponent('%') === '%25')
+      expect(parseUrl('/user/%25rom', '/')).toEqual(result)
+      expect(parseUrl('/user/%rom', '/')).toEqual(result)
+    }
   })
 
   it('edge cases', () => {
@@ -119,14 +188,16 @@ describe('parseUrl', () => {
       pathnameWithoutBaseUrl: '/product/แจ็คเก็ตเดนิม',
     })
 
-    /*
+    assert(new URL(`/user/${encodeURIComponent('@')}fatih`, 'https://example.org').pathname === '/user/%40fatih')
+
     // `new URL()` removes white spaces
     assert(decodeURI('%20') === ' ')
-    expect(parseUrl('/product/car %20 %20 ', '/')).toEqual({
+    expect(parseUrl('/product/car ', '/')).toEqual({
       ...resultBase,
       pathnameWithBaseUrl: '/product/car',
       pathnameWithoutBaseUrl: '/product/car',
     })
+    /*
 
     expect(new URL('https://example.org/a ').pathname).toEqual({})
 
