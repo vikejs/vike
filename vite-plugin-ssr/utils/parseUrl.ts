@@ -30,6 +30,7 @@ function parseUrl(
   pathnameOriginal: string
   hasBaseUrl: boolean
   search: Record<string, string>
+  searchAll: Record<string, string[]>
   searchOriginal: null | string
   hash: string
   hashOriginal: null | string
@@ -49,7 +50,12 @@ function parseUrl(
   assert(urlWithoutSearch !== undefined)
   const searchOriginal = ['', ...searchList].join('?') || null
   assert(searchOriginal === null || searchOriginal.startsWith('?'), { url, searchOriginal })
-  const search = Object.fromEntries(Array.from(new URLSearchParams(searchOriginal || '')))
+  const search: Record<string, string> = {}
+  const searchAll: Record<string, string[]> = {}
+  Array.from(new URLSearchParams(searchOriginal || '')).forEach(([key, val]) => {
+    search[key] = val
+    searchAll[key] = [...(searchAll[key] || []), val]
+  })
 
   // Origin + pathname
   const { origin, pathnameResolved } = parseWithNewUrl(url, baseUrl)
@@ -75,6 +81,7 @@ function parseUrl(
     pathnameOriginal: pathnameOriginal,
     hasBaseUrl,
     search,
+    searchAll,
     searchOriginal,
     hash,
     hashOriginal,
@@ -158,10 +165,7 @@ function assertUrlPathname(urlPathname: string) {
   assert(!urlPathname.includes('#'))
 }
 
-function analyzeBaseUrl(
-  urlPathnameWithBase: string,
-  baseUrl: string,
-): { pathname: string; hasBaseUrl: boolean } {
+function analyzeBaseUrl(urlPathnameWithBase: string, baseUrl: string): { pathname: string; hasBaseUrl: boolean } {
   assertUrlPathname(urlPathnameWithBase)
   assertBaseUrl(baseUrl)
 

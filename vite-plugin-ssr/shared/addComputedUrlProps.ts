@@ -10,6 +10,7 @@ type UrlParsed = {
   pathname: string
   pathnameOriginal: string
   search: Record<string, string>
+  searchAll: Record<string, string[]>
   searchOriginal: null | string
   searchString: null | string // outdated
   hash: string
@@ -56,12 +57,14 @@ function urlPathnameGetter(this: PageContextUrlSource) {
 }
 function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
-  const { origin, pathname, pathnameOriginal, search, searchOriginal, hash, hashOriginal } = urlParsedOriginal
+  const { origin, pathname, pathnameOriginal, search, searchAll, searchOriginal, hash, hashOriginal } =
+    urlParsedOriginal
   const urlParsed: UrlParsed = {
     origin,
     pathname,
     pathnameOriginal,
     search,
+    searchAll,
     searchOriginal,
     hash,
     hashOriginal,
