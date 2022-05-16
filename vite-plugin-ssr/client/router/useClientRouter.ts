@@ -1,13 +1,4 @@
-import {
-  assert,
-  assertUsage,
-  getUrlFull,
-  getUrlFullWithoutHash,
-  hasProp,
-  isBrowser,
-  objectAssign,
-  throttle,
-} from './utils'
+import { assert, assertUsage, getCurrentUrl, hasProp, isBrowser, objectAssign, throttle } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
@@ -56,7 +47,7 @@ function useClientRouter() {
 
   async function fetchAndRender(
     scrollTarget: ScrollTarget,
-    url: string = getUrlFull(),
+    url: string = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
   ): Promise<void> {
     const renderingNumber = ++renderingCounter
@@ -245,15 +236,15 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
   }
 }
 
-let urlFullWithoutHash__previous = getUrlFullWithoutHash()
+let urlWithoutHash__previous = getCurrentUrl({ withoutHash: true })
 function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => void) {
   window.addEventListener('popstate', (ev) => {
     // Skip hash changes
-    const urlFullWithoutHash__current = getUrlFullWithoutHash()
-    if (urlFullWithoutHash__current == urlFullWithoutHash__previous) {
+    const urlWithoutHash__current = getCurrentUrl({ withoutHash: true })
+    if (urlWithoutHash__current == urlWithoutHash__previous) {
       return
     }
-    urlFullWithoutHash__previous = urlFullWithoutHash__current
+    urlWithoutHash__previous = urlWithoutHash__current
 
     const scrollPosition = getScrollPositionFromHistory(ev.state)
     const scrollTarget = scrollPosition || 'scroll-to-top-or-hash'
@@ -262,14 +253,14 @@ function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => 
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
-  if (getUrlFull() === url) return
+  if (getCurrentUrl() === url) return
   browserNativeScrollRestoration_disable()
   if (!overwriteLastHistoryEntry) {
     window.history.pushState(undefined, '', url)
   } else {
     window.history.replaceState(undefined, '', url)
   }
-  urlFullWithoutHash__previous = getUrlFullWithoutHash()
+  urlWithoutHash__previous = getCurrentUrl({ withoutHash: true })
 }
 
 type ScrollPosition = { x: number; y: number }

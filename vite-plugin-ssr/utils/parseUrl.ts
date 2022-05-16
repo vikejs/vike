@@ -1,9 +1,7 @@
 import { slice } from './slice'
 import { assert, assertUsage } from './assert'
 
-export { getUrlFull }
 export { getUrlPathname }
-export { getUrlFullWithoutHash }
 export { parseUrl }
 export { isParsable }
 
@@ -11,19 +9,6 @@ export { prependBaseUrl }
 export { assertBaseUrl }
 export { assertUsageBaseUrl }
 export { normalizeBaseUrl }
-
-/**
- Returns `${pathname}${search}${hash}`. (Basically removes the origin.)
-*/
-function getUrlFull(url?: string): string {
-  url = retrieveUrl(url)
-  const { origin, searchString, hashString, pathnameWithoutBaseUrl: pathname } = parseUrl(url, '/') // is Base URL missing?
-  const urlFull = `${pathname}${searchString || ''}${hashString || ''}`
-  const urlRecreated = `${origin || ''}${urlFull}`
-  const urlDecoded = decodeURI(url)
-  assert(urlDecoded === urlRecreated, { url, urlRecreated, urlDecoded })
-  return urlFull
-}
 
 /**
  Returns `${pathname}`
@@ -107,13 +92,6 @@ function parseUrl(
   assert(pathnameWithBaseUrl.startsWith('/'))
   assert(pathnameWithoutBaseUrl.startsWith('/'))
   return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
-}
-
-function getUrlFullWithoutHash(url?: string): string {
-  const urlFull = getUrlFull(url)
-  const urlFullWithoutHash = urlFull.split('#')[0]
-  assert(urlFullWithoutHash)
-  return urlFullWithoutHash
 }
 
 function retrieveUrl(url: undefined | string) {
