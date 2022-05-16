@@ -11,19 +11,14 @@ export { normalizeBaseUrl }
 
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
-  if (
+  return (
     url.startsWith('/') ||
     url.startsWith('http') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
     url.startsWith('#') ||
     url === ''
-  ) {
-    return true
-  }
-
-  // assertUsage(false, `Unexpected URL format ${url}`)
-  return false
+  )
 }
 
 function parseUrl(
@@ -117,17 +112,18 @@ function parseWithNewUrl(url: string, baseUrl: string) {
     // `url` has no origin
     origin = null
     // In the browser, this is the Base URL of the current URL
-    const currentBase =
+    let base =
       typeof window !== 'undefined' &&
       // We need to access safely in case the user sets `window` in Node.js
       window?.document?.baseURI
-    const fakeBase = currentBase || 'http://fake.example.org' + baseUrl
-    // Supports:
+    base ||= 'http://fake.example.org' + baseUrl
+    // `new Url()` supports:
     //  - `url === '/absolute/path'`
     //  - `url === './relative/path'`
     //  - `url === '?queryWithoutPath'`
     //  - `url === '''`
-    const urlParsed = new URL(url, fakeBase)
+    // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
+    const urlParsed = new URL(url, base)
     pathnameResolved = urlParsed.pathname
   }
 
