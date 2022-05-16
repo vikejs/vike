@@ -35,8 +35,6 @@ function getUrlPathname(url?: string): string {
 }
 
 function isParsable(url: string): boolean {
-  url = decodeURI(url)
-
   // `parseUrl()` doesn't work with these URLs
   if (url.startsWith('//')) {
     return false
@@ -73,7 +71,6 @@ function parseUrl(
   hashString: null | string
 } {
   assert(isParsable(url), { url })
-  url = decodeURI(url)
   assert(baseUrl.startsWith('/'), { url, baseUrl })
 
   // Hash
@@ -81,39 +78,34 @@ function parseUrl(
   assert(urlWithoutHash !== undefined)
   const hashString = ['', ...hashList].join('#') || null
   assert(hashString === null || hashString.startsWith('#'))
-  const hash = hashString === null ? '' : decodeURIComponent(hashString.slice(1))
+  const hash = hashString === null ? '' : decodeSafe(hashString.slice(1))
 
   // Search
   const [urlWithoutSearch, ...searchList] = urlWithoutHash.split('?')
-  assert(urlWithoutSearch !== undefined, { url, urlWithoutSearch })
+  assert(urlWithoutSearch !== undefined)
   const searchString = ['', ...searchList].join('?') || null
   assert(searchString === null || searchString.startsWith('?'), { url, searchString })
   const search = Object.fromEntries(Array.from(new URLSearchParams(searchString || '')))
 
   // Origin + pathname
-  const { origin, pathname: pathnameWithBaseUrl } = parseWithNewUrl(urlWithoutSearch)
+  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch)
+  assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
+  const pathnameWithBaseUrl = decodeSafe(pathnameResolved)
   assert(pathnameWithBaseUrl.startsWith('/'), { url, pathnameWithBaseUrl })
   assert(origin === null || url.startsWith(origin), { url, origin })
-  if (url.startsWith('/')) {
-    assert(pathnameWithBaseUrl === urlWithoutSearch.slice((origin || '').length), {
-      url,
-      pathnameWithBaseUrl,
-      urlWithoutSearch,
-      origin,
-    })
+
+  // `pathnameOriginal`
+  const pathnameOriginal = urlWithoutSearch.slice((origin || '').length)
+  {
+    const urlRecreated = `${origin || ''}${pathnameOriginal}${searchString || ''}${hashString || ''}`
+    assert(url === urlRecreated, { url, urlRecreated })
   }
 
   // Base URL
   const { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
 
-  // Assert result
-  if (url.startsWith('/') || url.startsWith('http')) {
-    const urlRecreated = `${origin || ''}${pathnameWithBaseUrl}${searchString || ''}${hashString || ''}`
-    assert(url === urlRecreated, { url, urlRecreated })
-  }
-  assert(pathnameWithBaseUrl.startsWith('/'), { url, pathnameWithBaseUrl })
-  assert(pathnameWithoutBaseUrl.startsWith('/'), { url, pathnameWithoutBaseUrl })
-
+  assert(pathnameWithBaseUrl.startsWith('/'))
+  assert(pathnameWithoutBaseUrl.startsWith('/'))
   return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
 }
 
@@ -131,14 +123,14 @@ function retrieveUrl(url: undefined | string) {
   return url
 }
 
-function parseWithNewUrl(url: string): { origin: string | null; pathname: string } {
+function parseWithNewUrl(url: string) {
   let origin: string | null
-  let pathname: string
+  let pathnameResolved: string
   try {
     // `new URL(url)` throws an error if `url` doesn't have an origin
     const urlParsed = new URL(url)
     origin = urlParsed.origin
-    pathname = urlParsed.pathname
+    pathnameResolved = urlParsed.pathname
   } catch (err) {
     // `url` has no origin
     origin = null
@@ -157,18 +149,25 @@ function parseWithNewUrl(url: string): { origin: string | null; pathname: string
     //  - `url === './relative/path'`
     //  - `url === '?queryWithoutPath'`
     const urlParsed = new URL(url, fakeBase)
-    pathname = urlParsed.pathname
+    pathnameResolved = urlParsed.pathname
   }
 
-  if (origin) origin = decodeURI(origin)
-  pathname = decodeURI(pathname)
-
-  assert(pathname.startsWith('/'), { url, pathname })
+  assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
   // The URL pathname should be the URL without origin, query string, and hash.
   //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
-  assert(pathname === pathname.split('?')[0]!.split('#')[0], { pathname })
+  assert(pathnameResolved === pathnameResolved.split('?')[0]!.split('#')[0])
 
-  return { origin, pathname }
+  return { origin, pathnameResolved }
+}
+
+function decodeSafe(urlComponent: string): string {
+  try {
+    return decodeURIComponent(urlComponent)
+  } catch {}
+  try {
+    return decodeURI(urlComponent)
+  } catch {}
+  return urlComponent
 }
 
 function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
