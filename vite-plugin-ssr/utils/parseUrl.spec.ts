@@ -145,14 +145,17 @@ describe('parseUrl', () => {
   it('decoding', () => {
     // Pathname
     {
-      const result = {
+      expect(parseUrl('/user/@rom', '/')).toEqual({
         ...resultBase,
         pathnameWithBaseUrl: '/user/@rom',
         pathnameWithoutBaseUrl: '/user/@rom',
-      }
-      expect(parseUrl('/user/@rom', '/')).toEqual(result)
+      })
       assert(encodeURIComponent('@') === '%40')
-      expect(parseUrl('/user/%40rom', '/')).toEqual(result)
+      expect(parseUrl('/user/%40rom', '/')).toEqual({
+        ...resultBase,
+        pathnameWithBaseUrl: '/user/%40rom',
+        pathnameWithoutBaseUrl: '/user/@rom',
+      })
     }
 
     // Hash
@@ -192,21 +195,25 @@ describe('parseUrl', () => {
       } catch (err) {
         assert(err.message === 'URI malformed')
       }
-      const result = {
+      assert(encodeURIComponent('%') === '%25')
+      expect(parseUrl('/user/%25rom', '/')).toEqual({
+        ...resultBase,
+        pathnameWithBaseUrl: '/user/%25rom',
+        pathnameWithoutBaseUrl: '/user/%rom',
+      })
+      expect(parseUrl('/user/%rom', '/')).toEqual({
         ...resultBase,
         pathnameWithBaseUrl: '/user/%rom',
         pathnameWithoutBaseUrl: '/user/%rom',
-      }
-      assert(encodeURIComponent('%') === '%25')
-      expect(parseUrl('/user/%25rom', '/')).toEqual(result)
-      expect(parseUrl('/user/%rom', '/')).toEqual(result)
+      })
     }
   })
 
   it('edge cases', () => {
     expect(parseUrl('/product/แจ็คเก็ตเดนิม', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/product/แจ็คเก็ตเดนิม',
+      pathnameWithBaseUrl:
+        '/product/%E0%B9%81%E0%B8%88%E0%B9%87%E0%B8%84%E0%B9%80%E0%B8%81%E0%B9%87%E0%B8%95%E0%B9%80%E0%B8%94%E0%B8%99%E0%B8%B4%E0%B8%A1',
       pathnameWithoutBaseUrl: '/product/แจ็คเก็ตเดนิม',
     })
 

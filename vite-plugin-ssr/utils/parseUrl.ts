@@ -65,7 +65,7 @@ function parseUrl(
   // Origin + pathname
   const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch)
   assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
-  const pathnameWithBaseUrl = decodeSafe(pathnameResolved)
+  const pathnameWithBaseUrl = pathnameResolved
   assert(pathnameWithBaseUrl.startsWith('/'), { url, pathnameWithBaseUrl })
   assert(origin === null || url.startsWith(origin), { url, origin })
 
@@ -77,13 +77,22 @@ function parseUrl(
   }
 
   // Base URL
-  const { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
+  let { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
+  pathnameWithoutBaseUrl = decodeSafe(pathnameWithoutBaseUrl)
 
   assert(pathnameWithBaseUrl.startsWith('/'))
   assert(pathnameWithoutBaseUrl.startsWith('/'))
   return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
 }
-
+function decodeSafe(urlComponent: string): string {
+  try {
+    return decodeURIComponent(urlComponent)
+  } catch {}
+  try {
+    return decodeURI(urlComponent)
+  } catch {}
+  return urlComponent
+}
 function parseWithNewUrl(url: string) {
   let origin: string | null
   let pathnameResolved: string
@@ -119,16 +128,6 @@ function parseWithNewUrl(url: string) {
   assert(pathnameResolved === pathnameResolved.split('?')[0]!.split('#')[0])
 
   return { origin, pathnameResolved }
-}
-
-function decodeSafe(urlComponent: string): string {
-  try {
-    return decodeURIComponent(urlComponent)
-  } catch {}
-  try {
-    return decodeURI(urlComponent)
-  } catch {}
-  return urlComponent
 }
 
 function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
