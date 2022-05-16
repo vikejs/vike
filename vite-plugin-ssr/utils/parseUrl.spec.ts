@@ -81,6 +81,7 @@ describe('parseUrl', () => {
     })
     expect(parseUrl('http://example.org', '/')).toEqual({
       ...resultBase,
+      pathnameWithBaseUrl: '',
       origin: 'http://example.org',
     })
     expect(parseUrl('http://example.org/base/hello', '/base')).toEqual({
@@ -156,6 +157,11 @@ describe('parseUrl', () => {
         pathnameWithBaseUrl: '/user/%40rom',
         pathnameWithoutBaseUrl: '/user/@rom',
       })
+      expect(parseUrl(`/r${encodeURIComponent('/')}om`, '/')).toEqual({
+        ...resultBase,
+        pathnameWithBaseUrl: '/r%2Fom',
+        pathnameWithoutBaseUrl: '/r%2Fom',
+      })
     }
 
     // Hash
@@ -210,31 +216,42 @@ describe('parseUrl', () => {
   })
 
   it('edge cases', () => {
+    expect(parseUrl('/product/ö', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/product/ö',
+      pathnameWithoutBaseUrl: '/product/ö',
+    })
+    expect(parseUrl('/product/%C3%B6', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/product/%C3%B6',
+      pathnameWithoutBaseUrl: '/product/ö',
+    })
     expect(parseUrl('/product/แจ็คเก็ตเดนิม', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl:
-        '/product/%E0%B9%81%E0%B8%88%E0%B9%87%E0%B8%84%E0%B9%80%E0%B8%81%E0%B9%87%E0%B8%95%E0%B9%80%E0%B8%94%E0%B8%99%E0%B8%B4%E0%B8%A1',
+      pathnameWithBaseUrl: '/product/แจ็คเก็ตเดนิม',
       pathnameWithoutBaseUrl: '/product/แจ็คเก็ตเดนิม',
     })
 
-    assert(new URL(`/user/${encodeURIComponent('@')}fatih`, 'https://example.org').pathname === '/user/%40fatih')
-
-    // `new URL()` removes white spaces
-    assert(decodeURI('%20') === ' ')
+    // #322
+    assert(encodeURIComponent(' ') === '%20')
     expect(parseUrl('/product/car ', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/product/car',
+      pathnameWithBaseUrl: '/product/car ',
       pathnameWithoutBaseUrl: '/product/car',
     })
-    /*
 
-    expect(new URL('https://example.org/a ').pathname).toEqual({})
-
-    const base = `/a${encodeURIComponent('#')}`
-    expect(parseUrl(`${base}/b/${encodeURIComponent('?')}c`, base)).toEqual({
+    assert(encodeURIComponent('#') === '%23')
+    assert(encodeURIComponent('?') === '%3F')
+    expect(parseUrl('/a%23/b%3Fc', '/a%23')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: `${base}/b`,
-      pathnameWithoutBaseUrl: '/b',
+      pathnameWithBaseUrl: '/a%23/b%3Fc',
+      pathnameWithoutBaseUrl: '/b?c',
+    })
+    /* Bug, this doesn't work:
+    expect(parseUrl('/a%23/b%3Fc', '/a#')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/a%23/b%3Fc',
+      pathnameWithoutBaseUrl: '/b?c',
     })
     */
   })

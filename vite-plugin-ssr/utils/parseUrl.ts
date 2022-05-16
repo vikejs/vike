@@ -65,8 +65,7 @@ function parseUrl(
   // Origin + pathname
   const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch)
   assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
-  const pathnameWithBaseUrl = pathnameResolved
-  assert(pathnameWithBaseUrl.startsWith('/'), { url, pathnameWithBaseUrl })
+  assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
   assert(origin === null || url.startsWith(origin), { url, origin })
 
   // `pathnameOriginal`
@@ -77,12 +76,20 @@ function parseUrl(
   }
 
   // Base URL
-  let { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameWithBaseUrl, baseUrl)
-  pathnameWithoutBaseUrl = decodeSafe(pathnameWithoutBaseUrl)
+  let { pathnameWithoutBaseUrl, hasBaseUrl } = analyzeBaseUrl(pathnameResolved, baseUrl)
+  pathnameWithoutBaseUrl = decodePathname(pathnameWithoutBaseUrl)
 
-  assert(pathnameWithBaseUrl.startsWith('/'))
   assert(pathnameWithoutBaseUrl.startsWith('/'))
-  return { origin, pathnameWithoutBaseUrl, pathnameWithBaseUrl, hasBaseUrl, search, searchString, hash, hashString }
+  return {
+    origin,
+    pathnameWithoutBaseUrl,
+    pathnameWithBaseUrl: pathnameOriginal,
+    hasBaseUrl,
+    search,
+    searchString,
+    hash,
+    hashString,
+  }
 }
 function decodeSafe(urlComponent: string): string {
   try {
@@ -92,6 +99,12 @@ function decodeSafe(urlComponent: string): string {
     return decodeURI(urlComponent)
   } catch {}
   return urlComponent
+}
+function decodePathname(urlPathname: string) {
+  return urlPathname
+    .split('/')
+    .map((dir) => decodeSafe(dir).split('/').join('%2F'))
+    .join('/')
 }
 function parseWithNewUrl(url: string) {
   let origin: string | null
