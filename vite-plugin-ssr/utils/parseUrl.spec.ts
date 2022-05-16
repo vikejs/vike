@@ -254,5 +254,71 @@ describe('parseUrl', () => {
       pathnameWithoutBaseUrl: '/b?c',
     })
     */
+
+    expect(parseUrl('/a//b', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '/a//b',
+      pathnameWithoutBaseUrl: '/a//b',
+    })
+    expect(parseUrl('http://example.org//', '/')).toEqual({
+      ...resultBase,
+      origin: 'http://example.org',
+      pathnameWithBaseUrl: '//',
+      pathnameWithoutBaseUrl: '//',
+    })
+    expect(parseUrl('//', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '//',
+      pathnameWithoutBaseUrl: '//',
+    })
+    expect(parseUrl('///', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '///',
+      pathnameWithoutBaseUrl: '///',
+    })
+  })
+
+  it('missing pathname', () => {
+    expect(parseUrl('?a=b', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '',
+      search: { a: 'b' },
+      searchString: '?a=b',
+    })
+    expect(parseUrl('#a', '/')).toEqual({
+      ...resultBase,
+      hash: 'a',
+      hashString: '#a',
+      pathnameWithBaseUrl: '',
+    })
+    expect(parseUrl('', '/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '',
+      pathnameWithoutBaseUrl: '/',
+    })
+    expect(parseUrl('', '/base')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '',
+      pathnameWithoutBaseUrl: '/',
+    })
+  })
+  it('relative paths', () => {
+    expect(parseUrl('.', '/b1/b2/')).toEqual({
+      ...resultBase,
+      pathnameWithBaseUrl: '.',
+      pathnameWithoutBaseUrl: '/',
+    })
+    expect(parseUrl('..', '/b1/b2/')).toEqual({
+      ...resultBase,
+      hasBaseUrl: false,
+      pathnameWithBaseUrl: '..',
+      pathnameWithoutBaseUrl: '/b1/',
+    })
+  })
+  expect(parseUrl('../../', '/b1/b2/')).toEqual({
+    ...resultBase,
+    hasBaseUrl: false,
+    pathnameWithBaseUrl: '../../',
+    pathnameWithoutBaseUrl: '/',
   })
 })
