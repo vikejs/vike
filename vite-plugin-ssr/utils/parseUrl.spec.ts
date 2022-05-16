@@ -3,9 +3,9 @@ import { expect, describe, it } from 'vitest'
 import assert from 'assert'
 
 const resultBase = {
+  hasBaseUrl: true,
   pathnameOriginal: '/',
   pathname: '/',
-  hasBaseUrl: true,
   hash: '',
   hashOriginal: null,
   origin: null,
