@@ -116,7 +116,7 @@ function parseWithNewUrl(url: string, baseUrl: string) {
       typeof window !== 'undefined' &&
       // We need to access safely in case the user sets `window` in Node.js
       window?.document?.baseURI
-    base ||= 'http://fake.example.org' + baseUrl
+    base = base || 'http://fake.example.org' + baseUrl
     // `new Url()` supports:
     //  - `url === '/absolute/path'`
     //  - `url === './relative/path'`
