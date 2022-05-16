@@ -1,6 +1,6 @@
-import { getUrlFull } from './utils'
+import { getCurrentUrl } from './utils'
 
-const urlFullOriginal = getUrlFull()
+const urlOriginal = getCurrentUrl()
 let navigationChanged = false
 
 export const navigationState = {
@@ -8,9 +8,9 @@ export const navigationState = {
     navigationChanged = true
   },
   get noNavigationChangeYet() {
-    return !navigationChanged && this.isOriginalUrl(getUrlFull())
+    return !navigationChanged && this.isOriginalUrl(getCurrentUrl())
   },
   isOriginalUrl(url: string) {
-    return url === urlFullOriginal
+    return url === urlOriginal
   },
 }
