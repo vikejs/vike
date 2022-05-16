@@ -3,14 +3,14 @@ import { expect, describe, it } from 'vitest'
 import assert from 'assert'
 
 const resultBase = {
-  pathnameWithBaseUrl: '/',
-  pathnameWithoutBaseUrl: '/',
+  pathnameOriginal: '/',
+  pathname: '/',
   hasBaseUrl: true,
   hash: '',
-  hashString: null,
+  hashOriginal: null,
   origin: null,
   search: {},
-  searchString: null,
+  searchOriginal: null,
 }
 
 describe('parseUrl', () => {
@@ -18,55 +18,55 @@ describe('parseUrl', () => {
     expect(parseUrl('/', '/')).toEqual(resultBase)
     expect(parseUrl('/hello', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/hello',
-      pathnameWithoutBaseUrl: '/hello',
+      pathnameOriginal: '/hello',
+      pathname: '/hello',
     })
   })
 
   it('Base URL', () => {
     expect(parseUrl('/base', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base',
+      pathnameOriginal: '/base',
     })
     expect(parseUrl('/base/', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base/',
+      pathnameOriginal: '/base/',
     })
     expect(parseUrl('/base', '/base/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base',
+      pathnameOriginal: '/base',
     })
     expect(parseUrl('https://example.org/base', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base',
+      pathnameOriginal: '/base',
       origin: 'https://example.org',
     })
     expect(parseUrl('https://example.org/base/', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base/',
+      pathnameOriginal: '/base/',
       origin: 'https://example.org',
     })
     expect(parseUrl('https://example.org/base', '/base/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base',
+      pathnameOriginal: '/base',
       origin: 'https://example.org',
     })
     expect(parseUrl('/base/hello', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base/hello',
-      pathnameWithoutBaseUrl: '/hello',
+      pathnameOriginal: '/base/hello',
+      pathname: '/hello',
     })
     expect(parseUrl('/hello', '/base')).toEqual({
       ...resultBase,
       hasBaseUrl: false,
-      pathnameWithBaseUrl: '/hello',
-      pathnameWithoutBaseUrl: '/hello',
+      pathnameOriginal: '/hello',
+      pathname: '/hello',
     })
     expect(parseUrl('/base/hello', '/base/nested')).toEqual({
       ...resultBase,
       hasBaseUrl: false,
-      pathnameWithBaseUrl: '/base/hello',
-      pathnameWithoutBaseUrl: '/base/hello',
+      pathnameOriginal: '/base/hello',
+      pathname: '/base/hello',
     })
   })
 
@@ -81,13 +81,13 @@ describe('parseUrl', () => {
     })
     expect(parseUrl('http://example.org', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '',
+      pathnameOriginal: '',
       origin: 'http://example.org',
     })
     expect(parseUrl('http://example.org/base/hello', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/base/hello',
-      pathnameWithoutBaseUrl: '/hello',
+      pathnameOriginal: '/base/hello',
+      pathname: '/hello',
       origin: 'http://example.org',
     })
   })
@@ -96,24 +96,24 @@ describe('parseUrl', () => {
     expect(parseUrl('/#reviews', '/')).toEqual({
       ...resultBase,
       hash: 'reviews',
-      hashString: '#reviews',
+      hashOriginal: '#reviews',
     })
     expect(parseUrl('/#', '/')).toEqual({
       ...resultBase,
       hash: '',
-      hashString: '#',
+      hashOriginal: '#',
     })
     expect(parseUrl('/', '/')).toEqual({
       ...resultBase,
       hash: '',
-      hashString: null,
+      hashOriginal: null,
     })
     expect(parseUrl('/a/b#', '/a/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/a/b',
-      pathnameWithoutBaseUrl: '/b',
+      pathnameOriginal: '/a/b',
+      pathname: '/b',
       hash: '',
-      hashString: '#',
+      hashOriginal: '#',
     })
   })
 
@@ -121,25 +121,25 @@ describe('parseUrl', () => {
     expect(parseUrl('/?q=apples', '/')).toEqual({
       ...resultBase,
       search: { q: 'apples' },
-      searchString: '?q=apples',
+      searchOriginal: '?q=apples',
     })
     expect(parseUrl('/shop?fruits=apples&candies=chocolate,lolipop', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/shop',
-      pathnameWithoutBaseUrl: '/shop',
+      pathnameOriginal: '/shop',
+      pathname: '/shop',
       search: { fruits: 'apples', candies: 'chocolate,lolipop' },
-      searchString: '?fruits=apples&candies=chocolate,lolipop',
+      searchOriginal: '?fruits=apples&candies=chocolate,lolipop',
     })
     const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
-    const searchParams = new URLSearchParams(parseUrl(`/shop${searchQuery}`, '/').searchString)
+    const searchParams = new URLSearchParams(parseUrl(`/shop${searchQuery}`, '/').searchOriginal)
     expect(searchParams.getAll('fruit')).toEqual(['apples', 'bannanas'])
     expect(searchParams.getAll('candy')).toEqual(['chocolate', 'lolipop'])
     expect(parseUrl(`/shop${searchQuery}`, '/shop')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/shop',
-      pathnameWithoutBaseUrl: '/',
+      pathnameOriginal: '/shop',
+      pathname: '/',
       search: { fruit: 'bannanas', candy: 'lolipop' },
-      searchString: searchQuery,
+      searchOriginal: searchQuery,
     })
   })
 
@@ -148,19 +148,19 @@ describe('parseUrl', () => {
     {
       expect(parseUrl('/user/@rom', '/')).toEqual({
         ...resultBase,
-        pathnameWithBaseUrl: '/user/@rom',
-        pathnameWithoutBaseUrl: '/user/@rom',
+        pathnameOriginal: '/user/@rom',
+        pathname: '/user/@rom',
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl('/user/%40rom', '/')).toEqual({
         ...resultBase,
-        pathnameWithBaseUrl: '/user/%40rom',
-        pathnameWithoutBaseUrl: '/user/@rom',
+        pathnameOriginal: '/user/%40rom',
+        pathname: '/user/@rom',
       })
       expect(parseUrl(`/r${encodeURIComponent('/')}om`, '/')).toEqual({
         ...resultBase,
-        pathnameWithBaseUrl: '/r%2Fom',
-        pathnameWithoutBaseUrl: '/r%2Fom',
+        pathnameOriginal: '/r%2Fom',
+        pathname: '/r%2Fom',
       })
     }
 
@@ -169,13 +169,13 @@ describe('parseUrl', () => {
       expect(parseUrl('/#@reviews', '/')).toEqual({
         ...resultBase,
         hash: '@reviews',
-        hashString: '#@reviews',
+        hashOriginal: '#@reviews',
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/#%40reviews`, '/')).toEqual({
         ...resultBase,
         hash: '@reviews',
-        hashString: '#%40reviews',
+        hashOriginal: '#%40reviews',
       })
     }
     // Search
@@ -183,13 +183,13 @@ describe('parseUrl', () => {
       expect(parseUrl('/?section=@reviews', '/')).toEqual({
         ...resultBase,
         search: { section: '@reviews' },
-        searchString: '?section=@reviews',
+        searchOriginal: '?section=@reviews',
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/?section=%40reviews`, '/')).toEqual({
         ...resultBase,
         search: { section: '@reviews' },
-        searchString: '?section=%40reviews',
+        searchOriginal: '?section=%40reviews',
       })
     }
 
@@ -204,13 +204,13 @@ describe('parseUrl', () => {
       assert(encodeURIComponent('%') === '%25')
       expect(parseUrl('/user/%25rom', '/')).toEqual({
         ...resultBase,
-        pathnameWithBaseUrl: '/user/%25rom',
-        pathnameWithoutBaseUrl: '/user/%rom',
+        pathnameOriginal: '/user/%25rom',
+        pathname: '/user/%rom',
       })
       expect(parseUrl('/user/%rom', '/')).toEqual({
         ...resultBase,
-        pathnameWithBaseUrl: '/user/%rom',
-        pathnameWithoutBaseUrl: '/user/%rom',
+        pathnameOriginal: '/user/%rom',
+        pathname: '/user/%rom',
       })
     }
   })
@@ -218,107 +218,107 @@ describe('parseUrl', () => {
   it('edge cases', () => {
     expect(parseUrl('/product/ö', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/product/ö',
-      pathnameWithoutBaseUrl: '/product/ö',
+      pathnameOriginal: '/product/ö',
+      pathname: '/product/ö',
     })
     expect(parseUrl('/product/%C3%B6', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/product/%C3%B6',
-      pathnameWithoutBaseUrl: '/product/ö',
+      pathnameOriginal: '/product/%C3%B6',
+      pathname: '/product/ö',
     })
     expect(parseUrl('/product/แจ็คเก็ตเดนิม', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/product/แจ็คเก็ตเดนิม',
-      pathnameWithoutBaseUrl: '/product/แจ็คเก็ตเดนิม',
+      pathnameOriginal: '/product/แจ็คเก็ตเดนิม',
+      pathname: '/product/แจ็คเก็ตเดนิม',
     })
 
     // #322
     assert(encodeURIComponent(' ') === '%20')
     expect(parseUrl('/product/car ', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/product/car ',
-      pathnameWithoutBaseUrl: '/product/car',
+      pathnameOriginal: '/product/car ',
+      pathname: '/product/car',
     })
 
     assert(encodeURIComponent('#') === '%23')
     assert(encodeURIComponent('?') === '%3F')
     expect(parseUrl('/a%23/b%3Fc', '/a%23')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/a%23/b%3Fc',
-      pathnameWithoutBaseUrl: '/b?c',
+      pathnameOriginal: '/a%23/b%3Fc',
+      pathname: '/b?c',
     })
     /* Bug, this doesn't work:
     expect(parseUrl('/a%23/b%3Fc', '/a#')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/a%23/b%3Fc',
-      pathnameWithoutBaseUrl: '/b?c',
+      pathnameOriginal: '/a%23/b%3Fc',
+      pathname: '/b?c',
     })
     */
 
     expect(parseUrl('/a//b', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '/a//b',
-      pathnameWithoutBaseUrl: '/a//b',
+      pathnameOriginal: '/a//b',
+      pathname: '/a//b',
     })
     expect(parseUrl('http://example.org//', '/')).toEqual({
       ...resultBase,
       origin: 'http://example.org',
-      pathnameWithBaseUrl: '//',
-      pathnameWithoutBaseUrl: '//',
+      pathnameOriginal: '//',
+      pathname: '//',
     })
     expect(parseUrl('//', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '//',
-      pathnameWithoutBaseUrl: '//',
+      pathnameOriginal: '//',
+      pathname: '//',
     })
     expect(parseUrl('///', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '///',
-      pathnameWithoutBaseUrl: '///',
+      pathnameOriginal: '///',
+      pathname: '///',
     })
   })
 
   it('missing pathname', () => {
     expect(parseUrl('?a=b', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '',
+      pathnameOriginal: '',
       search: { a: 'b' },
-      searchString: '?a=b',
+      searchOriginal: '?a=b',
     })
     expect(parseUrl('#a', '/')).toEqual({
       ...resultBase,
       hash: 'a',
-      hashString: '#a',
-      pathnameWithBaseUrl: '',
+      hashOriginal: '#a',
+      pathnameOriginal: '',
     })
     expect(parseUrl('', '/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '',
-      pathnameWithoutBaseUrl: '/',
+      pathnameOriginal: '',
+      pathname: '/',
     })
     expect(parseUrl('', '/base')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '',
-      pathnameWithoutBaseUrl: '/',
+      pathnameOriginal: '',
+      pathname: '/',
     })
   })
   it('relative paths', () => {
     expect(parseUrl('.', '/b1/b2/')).toEqual({
       ...resultBase,
-      pathnameWithBaseUrl: '.',
-      pathnameWithoutBaseUrl: '/',
+      pathnameOriginal: '.',
+      pathname: '/',
     })
     expect(parseUrl('..', '/b1/b2/')).toEqual({
       ...resultBase,
       hasBaseUrl: false,
-      pathnameWithBaseUrl: '..',
-      pathnameWithoutBaseUrl: '/b1/',
+      pathnameOriginal: '..',
+      pathname: '/b1/',
     })
   })
   expect(parseUrl('../../', '/b1/b2/')).toEqual({
     ...resultBase,
     hasBaseUrl: false,
-    pathnameWithBaseUrl: '../../',
-    pathnameWithoutBaseUrl: '/',
+    pathnameOriginal: '../../',
+    pathname: '/',
   })
 })

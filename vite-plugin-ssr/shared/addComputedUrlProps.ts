@@ -10,8 +10,8 @@ type UrlParsed = {
   pathname: string
   search: Record<string, string>
   hash: string
-  searchString: null | string
-  hashString: null | string
+  searchOriginal: null | string
+  hashOriginal: null | string
 }
 type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
 
@@ -46,14 +46,14 @@ function getUrlParsed(pageContext: PageContextUrlSource) {
   return parseUrl(url, baseUrl)
 }
 function urlPathnameGetter(this: PageContextUrlSource) {
-  const { pathnameWithoutBaseUrl } = getUrlParsed(this)
-  const urlPathname = pathnameWithoutBaseUrl
+  const { pathname } = getUrlParsed(this)
+  const urlPathname = pathname
   assert(urlPathname.startsWith('/'))
   return urlPathname
 }
 function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
-  const { origin, pathnameWithoutBaseUrl: pathname, search, hash, searchString, hashString } = urlParsedOriginal
-  const urlParsed: UrlParsed = { origin, pathname, search, hash, searchString, hashString }
+  const { origin, pathname: pathname, search, hash, searchOriginal, hashOriginal } = urlParsedOriginal
+  const urlParsed: UrlParsed = { origin, pathname, search, hash, searchOriginal, hashOriginal }
   return urlParsed
 }
