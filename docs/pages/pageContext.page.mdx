@@ -25,25 +25,28 @@ import { Link } from 'libframe-docs/components'
    {
      origin: null | string
      pathname: string
+     pathnameOriginal: string
      search: Record<string, string>
+     searchAll: Record<string, string[]>
+     searchOriginal: null | string
      hash: string
-     searchString: null | string
-     hashString: null | string
+     hashOriginal: null | string
    }
    ```
    For example:
    ```js
-   // https://example.com/product/42?details=yes#reviews
+   // https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
    {
      origin: 'https://example.com',
-     pathname: '/product/42',
-     search: { details: 'yes' },
-     hash: 'reviews',
-     searchString: '?details=yes',
-     hashString: '#reviews'
+     pathname: '/hello/sébastien', // Without Base URL
+     pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
+     search: { fruit: 'orânge' },
+     searchAll: { fruit: ['âpple', 'orânge'] },
+     searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
+     hash: 'âge',
+     hashOriginal: '#%C3%A2ge'
    }
    ```
-   To get all search values we can use `new URLSearchParams(pageContext.urlParsed.searchString || '')`.
 
 ## Custom
 

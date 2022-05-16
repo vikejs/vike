@@ -182,6 +182,7 @@ describe('parseUrl', () => {
         hashOriginal: '#%40reviews',
       })
     }
+
     // Search
     {
       expect(parseUrl('/?section=@reviews', '/')).toEqual({
@@ -309,6 +310,7 @@ describe('parseUrl', () => {
       pathname: '/',
     })
   })
+
   it('relative paths', () => {
     expect(parseUrl('.', '/b1/b2/')).toEqual({
       ...resultBase,
@@ -327,5 +329,24 @@ describe('parseUrl', () => {
     hasBaseUrl: false,
     pathnameOriginal: '../../',
     pathname: '/',
+  })
+
+  it('doc example', () => {
+    expect(
+      parseUrl(
+        'https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
+        '/some-base-url',
+      ),
+    ).toEqual({
+      hasBaseUrl: true,
+      origin: 'https://example.com',
+      pathname: '/hello/sébastien',
+      pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
+      search: { fruit: 'orânge' },
+      searchAll: { fruit: ['âpple', 'orânge'] },
+      searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
+      hash: 'âge',
+      hashOriginal: '#%C3%A2ge',
+    })
   })
 })
