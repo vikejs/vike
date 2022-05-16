@@ -10,18 +10,12 @@ export { assertUsageBaseUrl }
 export { normalizeBaseUrl }
 
 function isParsable(url: string): boolean {
-  // `parseUrl()` doesn't work with these URLs
-  if (url.startsWith('//')) {
-    return false
-  }
-
   // `parseUrl()` works with these URLs
   if (
     url.startsWith('/') ||
     url.startsWith('http') ||
     url.startsWith('.') ||
     url.startsWith('?') ||
-    // Less sure about `#some-hash` URLs, but should work in principle
     url.startsWith('#') ||
     url === ''
   ) {
@@ -63,7 +57,7 @@ function parseUrl(
   const search = Object.fromEntries(Array.from(new URLSearchParams(searchString || '')))
 
   // Origin + pathname
-  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch)
+  const { origin, pathnameResolved } = parseWithNewUrl(url, baseUrl)
   assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
   assert(origin === null || url.startsWith(origin), { url, origin })
@@ -106,7 +100,12 @@ function decodePathname(urlPathname: string) {
     .map((dir) => decodeSafe(dir).split('/').join('%2F'))
     .join('/')
 }
-function parseWithNewUrl(url: string) {
+function parseWithNewUrl(url: string, baseUrl: string) {
+  // `new URL('//', 'https://example.org')` throws `ERR_INVALID_URL`
+  if (url.startsWith('//')) {
+    return { origin: null, pathnameResolved: url }
+  }
+
   let origin: string | null
   let pathnameResolved: string
   try {
@@ -122,15 +121,12 @@ function parseWithNewUrl(url: string) {
       typeof window !== 'undefined' &&
       // We need to access safely in case the user sets `window` in Node.js
       window?.document?.baseURI
-    // We cannot resolve relative URLs in Node.js
-    assert(currentBase || !url.startsWith('.'))
-    // Is there any other kind of URLs that vite-plugin-ssr should support?
-    assert(currentBase || url.startsWith('/') || url.startsWith('?'))
-    const fakeBase = currentBase || 'http://fake-origin.example.org'
+    const fakeBase = currentBase || 'http://fake.example.org' + baseUrl
     // Supports:
     //  - `url === '/absolute/path'`
     //  - `url === './relative/path'`
     //  - `url === '?queryWithoutPath'`
+    //  - `url === '''`
     const urlParsed = new URL(url, fakeBase)
     pathnameResolved = urlParsed.pathname
   }
