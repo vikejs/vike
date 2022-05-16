@@ -1,6 +1,7 @@
 export * from './getBaseUrl'
 export * from './isExternalLink'
 export * from './throttle'
+export * from './getUrlPathname'
 export * from '../../utils/getCurrentUrl'
 export * from '../../../utils/assert'
 export * from '../../../utils/hasProp'
