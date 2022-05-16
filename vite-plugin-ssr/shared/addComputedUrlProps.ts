@@ -1,4 +1,4 @@
-import { assert, parseUrl, isCallable } from './utils'
+import { assert, parseUrl, isCallable, assertWarning } from './utils'
 
 export { addComputedUrlProps }
 export type { PageContextUrls }
@@ -8,10 +8,13 @@ export type { PageContextUrlSource }
 type UrlParsed = {
   origin: null | string
   pathname: string
+  pathnameOriginal: string
   search: Record<string, string>
-  hash: string
   searchOriginal: null | string
+  searchString: null | string // outdated
+  hash: string
   hashOriginal: null | string
+  hashString: null | string // outdated
 }
 type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
 
@@ -53,7 +56,31 @@ function urlPathnameGetter(this: PageContextUrlSource) {
 }
 function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
-  const { origin, pathname: pathname, search, hash, searchOriginal, hashOriginal } = urlParsedOriginal
-  const urlParsed: UrlParsed = { origin, pathname, search, hash, searchOriginal, hashOriginal }
+  const { origin, pathname, pathnameOriginal, search, searchOriginal, hash, hashOriginal } = urlParsedOriginal
+  const urlParsed: UrlParsed = {
+    origin,
+    pathname,
+    pathnameOriginal,
+    search,
+    searchOriginal,
+    hash,
+    hashOriginal,
+    get hashString() {
+      assertWarning(
+        false,
+        '`pageContext.urlParsed.hashString` has been renamed to `pageContext.urlParsed.hashOriginal`',
+        { onlyOnce: true },
+      )
+      return hashOriginal
+    },
+    get searchString() {
+      assertWarning(
+        false,
+        '`pageContext.urlParsed.hashString` has been renamed to `pageContext.urlParsed.hashOriginal`',
+        { onlyOnce: true },
+      )
+      return searchOriginal
+    },
+  }
   return urlParsed
 }
