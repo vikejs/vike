@@ -314,7 +314,7 @@ function getScrollPositionFromHistory(historyState: unknown = window.history.sta
 
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
-  window.addEventListener('scroll', throttle(saveScrollPosition, 100), { passive: true })
+  window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
   onPageHide(saveScrollPosition)
 }
 function saveScrollPosition() {
