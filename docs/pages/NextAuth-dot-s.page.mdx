@@ -1,5 +1,23 @@
-NextAuth.js also works with Vite + `vite-plugin-ssr`. Example:
+import { Link } from 'libframe-docs/components'
+
+NextAuth.js can be used with Vite + `vite-plugin-ssr`.
+
+## Example
+
  - [github.com/s-kris/vite-ssr-next-auth](https://github.com/s-kris/vite-ssr-next-auth)
 
-See also:
- - [Integration - Authentication - Other](/auth)
+## `process.env.NEXTAUTH_*`
+
+To access environment variables on the client-side, such as `process.env.NEXTAUTH_URL`, we can use
+[`vite.config.js#define`](https://vitejs.dev/config/#define)
+or
+[`vite.config.js#envPrefix`](https://vitejs.dev/config/#envprefix).
+
+> ⚠️ Do not add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.
+
+> You can use `process.env` as usual for server (e.g. Express.js) code. (Server code is not processed by Vite.)
+
+## See Also
+
+- [Vite > Config > Environment Variables](https://vitejs.dev/config/#environment-variables)
+- <Link href="/auth" />
