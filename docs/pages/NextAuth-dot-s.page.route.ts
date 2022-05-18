@@ -1,1 +1,1 @@
-export default '/nextauth'
+export default '/NextAuth.js'

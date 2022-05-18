@@ -343,7 +343,7 @@ const headings: HeadingDefinition[] = [
   {
     level: 2,
     title: 'NextAuth.js',
-    url: '/nextauth',
+    url: '/NextAuth.js',
   },
   {
     level: 2,

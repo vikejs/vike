@@ -13,9 +13,9 @@ To access environment variables on the client-side, such as `process.env.NEXTAUT
 or
 [`vite.config.js#envPrefix`](https://vitejs.dev/config/#envprefix).
 
-> ⚠️ Do not add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.
+> Do not add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.
 
-> You can use `process.env` as usual for server (e.g. Express.js) code. (Server code is not processed by Vite.)
+> You can use `process.env` as usual for server (e.g. Express.js) code. (Since server code is not processed by Vite.)
 
 ## See Also
 
