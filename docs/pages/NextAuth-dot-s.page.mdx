@@ -15,17 +15,21 @@ or
 
 > Do not add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.
 
+See also:
+- [Vite > Config > Environment Variables](https://vitejs.dev/config/#environment-variables)
+
 > You can use `process.env` as usual for server (e.g. Express.js) code. (Since server code is not processed by Vite.)
+
 
 ## Fetch polyfill for `getSession()`
 
-In order to use NextAuth.js's [`getSession()`](https://next-auth.js.org/getting-started/client#getsession) on the server-side, you'll need to install a fetch polyfill globally.
+In order to use NextAuth.js's [`getSession()`](https://next-auth.js.org/getting-started/client#getsession) on the server-side, you'll need to globally install a fetch polyfill.
 
 > If you use `getSession()` only on the client-side, then you don't need this.
 
 > [Node v18 has native `fetch()` support](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental) and a polyfill may not be needed anymore. (To be tested.)
 
-We can for example use [`node-fetch` to patch the `global` object](https://github.com/node-fetch/node-fetch#providing-global-access):
+We can for example use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
 
 ```js
 // server.js
@@ -46,5 +50,4 @@ if (!globalThis.fetch) {
 
 ## See Also
 
-- [Vite > Config > Environment Variables](https://vitejs.dev/config/#environment-variables)
 - <Link href="/auth" />
