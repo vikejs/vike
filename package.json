@@ -51,7 +51,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite": "npm:@brillout/vite@2.9.8-preview-fix"
+      "vite": "npm:@brillout/vite@3.0.0-alpha.1"
     }
   }
 }
