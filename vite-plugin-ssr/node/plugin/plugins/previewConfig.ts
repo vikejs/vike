@@ -19,6 +19,12 @@ function previewConfig(): Plugin {
     },
     configResolved(config_) {
       config = config_
+      // @ts-ignore
+      config.preview ??= {}
+      config.preview.port ??= 3000
+      if (process.env.CI && process.platform === 'darwin') {
+        config.preview.host ??= true
+      }
     },
     configurePreviewServer(server) {
       assertDist()
