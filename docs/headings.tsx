@@ -4,19 +4,7 @@ import type { HeadingDefinition, HeadingWithoutLink } from 'libframe-docs/headin
 export { headingsWithoutLink }
 export { headings }
 
-const headingsWithoutLink: HeadingWithoutLink[] = [
-  {
-    title: 'Client Routing',
-    url: '/client-routing',
-  },
-  {
-    title: 'Server Routing',
-    url: '/server-routing',
-  },
-  {
-    title: 'Server Routing VS Client Routing',
-    url: '/SR-vs-CR',
-  },
+const redirections = [
   {
     title: 'HTML Streaming',
     url: '/html-streaming',
@@ -25,8 +13,31 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     title: 'SPA vs SSR vs HTML',
     url: '/SPA-vs-SSR-vs-HTML',
   },
+  {
+    title: 'NextAuth.js',
+    url: '/nexauth',
+  },
+  {
+    title: 'HTML `<head>`',
+    url: '/html-head',
+  },
+  {
+    title: 'Server Routing VS Client Routing',
+    url: '/SR-vs-CR',
+  },
+]
+
+const headingsWithoutLink: HeadingWithoutLink[] = [
+  ...redirections,
+  {
+    title: 'Client Routing',
+    url: '/client-routing',
+  },
+  {
+    title: 'Server Routing',
+    url: '/server-routing',
+  },
   { title: 'Custom Exports', url: '/custom-exports' },
-  { title: 'HTML `<head>`', url: '/html-head' },
   { title: 'What is Hydration?', url: '/hydration' },
   { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
   { title: <code>injectAssets()</code>, url: '/injectAssets' },
