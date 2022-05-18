@@ -10,6 +10,7 @@
 export { packageJsonFile }
 
 import type { Plugin } from 'vite'
+import type { ModuleFormat } from 'rollup'
 import { assert, isSSR_config } from '../utils'
 
 function packageJsonFile(): Plugin {
@@ -46,7 +47,7 @@ function getPackageJsonContent(isEsmOutput: true | null): string {
 }
 
 function getIsEsmOutput(config: {
-  build: { rollupOptions: { output?: { format?: string } | { format?: string }[] } }
+  build: { rollupOptions: { output?: { format?: ModuleFormat } | { format?: ModuleFormat }[] } }
 }): true | null {
   const { output } = config.build.rollupOptions
   if (!output) {
@@ -55,9 +56,20 @@ function getIsEsmOutput(config: {
   if (Array.isArray(output)) {
     return null
   } else {
-    if (output.format === 'es') {
+    const { format } = output
+    if (format === 'es' || format === 'esm' || format === 'module') {
       return true
     }
+    assert(
+      format === undefined ||
+        format === 'amd' ||
+        format === 'cjs' ||
+        format === 'iife' ||
+        format === 'system' ||
+        format === 'umd' ||
+        format === 'commonjs' ||
+        format === 'systemjs',
+    )
   }
   return null
 }
