@@ -2,7 +2,7 @@ export { getGlobPath }
 
 import { assertPosixPath, toPosixPath } from '../../utils'
 import path from 'path'
-import { pageFileExtensionExtGlob } from './pageFileExtensionExtGlob'
+import { pageFileExtensions } from './pageFileExtensions'
 
 function getGlobPath(
   globRoot: string,
@@ -10,7 +10,7 @@ function getGlobPath(
   root?: string,
 ): string {
   assertPosixPath(globRoot)
-  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${pageFileExtensionExtGlob}`].filter(Boolean).join('/')
+  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${pageFileExtensions}`].filter(Boolean).join('/')
   if (root) {
     globPath = toPosixPath(path.posix.join(root, globPath))
   } else {

@@ -2,7 +2,7 @@ export { devConfig }
 
 import type { Plugin } from 'vite'
 import { apply, addSsrMiddleware } from '../utils'
-import { pageFileExtensionExtGlob } from './generateImportGlobs/pageFileExtensionExtGlob'
+import { pageFileExtensions } from './generateImportGlobs/pageFileExtensions'
 
 function devConfig(): Plugin[] {
   return [
@@ -12,7 +12,7 @@ function devConfig(): Plugin[] {
       config: () => ({
         ssr: { external: ['vite-plugin-ssr'] },
         optimizeDeps: {
-          entries: [`**/*.page.${pageFileExtensionExtGlob}`, `**/*.page.client.${pageFileExtensionExtGlob}`],
+          entries: [`**/*.page.${pageFileExtensions}`, `**/*.page.client.${pageFileExtensions}`],
           exclude: [
             // We exclude the client code to support `import.meta.glob()`
             'vite-plugin-ssr/client',
