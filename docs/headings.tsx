@@ -15,7 +15,7 @@ const redirections = [
   },
   {
     title: 'NextAuth.js',
-    url: '/nexauth',
+    url: '/nextauth',
   },
   {
     title: 'HTML `<head>`',
