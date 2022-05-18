@@ -25,11 +25,9 @@ See also:
 
 In order to use NextAuth.js's [`getSession()`](https://next-auth.js.org/getting-started/client#getsession) on the server-side, we need to globally install a fetch polyfill.
 
-> If we use `getSession()` only on the client-side, then we don't need this.
+> A polyfill is not needed if we use `getSession()` only on the client-side, or if we use Node v18 which [natively supports `fetch()`](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental).
 
-> [Node v18 has native `fetch()` support](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental) and a polyfill not needed.
-
-We can for example use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
+We can use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
 
 ```js
 // server.js
