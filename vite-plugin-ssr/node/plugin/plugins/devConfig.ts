@@ -28,7 +28,7 @@ function devConfig(): Plugin[] {
     },
     {
       name: 'vite-plugin-ssr:dev:ssr-middleware',
-      apply: apply('dev', { middlewareMode: false, isViteCli: true }),
+      apply: apply('dev', { skipMiddlewareMode: true, onlyViteCli: true }),
       configureServer(server) {
         return addSsrMiddleware(server.middlewares)
       },
