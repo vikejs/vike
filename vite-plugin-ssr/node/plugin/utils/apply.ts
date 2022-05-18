@@ -6,23 +6,23 @@ import { isViteCliCall } from './isViteCliCall'
 
 function apply(
   when: 'dev' | 'preview',
-  { middlewareMode, isViteCli }: { middlewareMode?: false; isViteCli?: true } = {},
+  { skipMiddlewareMode, onlyViteCli }: { skipMiddlewareMode?: true; onlyViteCli?: true } = {},
 ) {
   return (config: UserConfig, { command, mode }: { command: string; mode: string }): boolean => {
     assert(command)
     assert(mode)
 
-    if (isViteCli && !isViteCliCall({ command: when })) {
+    if (onlyViteCli && !isViteCliCall({ command: when })) {
       return false
     }
 
     if (when === 'dev') {
-      if (middlewareMode === false && config?.server?.middlewareMode) {
+      if (skipMiddlewareMode === true && config?.server?.middlewareMode) {
         return false
       }
       return command === 'serve' && mode === 'development'
     }
-    assert(middlewareMode === undefined)
+    assert(skipMiddlewareMode === undefined)
 
     if (when === 'preview') {
       return command === 'serve' && mode === 'production'
