@@ -1,15 +1,16 @@
-import { isParameterizedFilesystemRoute, matchRouteString } from './matchRouteString'
+import { PARAM_TOKEN_NEW, resolveRouteString } from './resolveRouteString'
 import { assert, higherFirst, slice } from './utils'
 
 export { resolveFilesystemRoute }
 export { getFilesystemRoute }
+export { isParameterizedFilesystemRoute }
 
 function resolveFilesystemRoute(
   filesystemRoute: string,
   urlPathname: string,
 ): null | { routeParams: Record<string, string> } {
   if (isParameterizedFilesystemRoute(filesystemRoute)) {
-    return matchRouteString(filesystemRoute, urlPathname)
+    return resolveRouteString(filesystemRoute, urlPathname)
   } else {
     return resolveAsStaticPath(filesystemRoute, urlPathname)
   }
@@ -89,4 +90,8 @@ function getFilesystemRoute(pageId: string, filesystemRoots: { rootPath: string;
   assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
 
   return filesystemRoute
+}
+
+function isParameterizedFilesystemRoute(filesystemRoute: string): boolean {
+  return filesystemRoute.includes(PARAM_TOKEN_NEW)
 }

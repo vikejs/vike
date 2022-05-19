@@ -1,7 +1,7 @@
 import type { PageFile } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
-import { pickWinner, RouteType } from './route/pickWinner'
+import { resolvePrecendence, RouteType } from './route/resolvePrecedence'
 import { resolveRouteString } from './route/resolveRouteString'
 import { resolveFilesystemRoute } from './route/resolveFilesystemRoute'
 import { resolveRouteFunction } from './route/resolveRouteFunction'
@@ -15,7 +15,8 @@ export type { PageContextForRoute }
 
 export { isErrorPage }
 export { getErrorPageId } from './route/error-page'
-export { isStaticRoute } from './route/resolveRouteString'
+export { isStaticRouteString } from './route/resolveRouteString'
+export { isParameterizedFilesystemRoute } from './route/resolveFilesystemRoute'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
@@ -136,7 +137,7 @@ async function route(pageContext: PageContextForRoute): Promise<
   }
 
   // console.log('[Route Matches]:', JSON.stringify(routeMatches, null, 2))
-  const winner = pickWinner(routeMatches)
+  const winner = resolvePrecendence(routeMatches)
   // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
 
   if (!winner) {

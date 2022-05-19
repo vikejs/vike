@@ -1,0 +1,82 @@
+export { resolvePrecendence }
+export type { RouteType }
+// export type { RouteMatch }
+
+import { analyzeRouteString } from './resolveRouteString'
+import { higherFirst } from './utils'
+import { makeFirst } from './utils'
+import { isStaticRouteString } from './resolveRouteString'
+
+type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
+type RouteMatch = {
+  precedence?: number | null
+  routeString?: string
+  routeType: RouteType
+}
+
+function resolvePrecendence<T extends RouteMatch>(routeMatches: T[]): T | undefined {
+  // prettier-ignore
+  const candidates = routeMatches
+    .sort(sortPrecendence)
+    // See https://vite-plugin-ssr.com/route-function#precedence
+    .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FUNCTION' && !!routeMatch.precedence && routeMatch.precedence < 0))
+    .sort(makeFirst((routeMatch) => routeMatch.routeType === 'STRING'   && isStaticRouteString(routeMatch.routeString!) === false))
+    .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FUNCTION' && !routeMatch.precedence))
+    .sort(makeFirst((routeMatch) => routeMatch.routeType === 'STRING'   && isStaticRouteString(routeMatch.routeString!) === true))
+    .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FILESYSTEM'))
+    .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FUNCTION' && !!routeMatch.precedence && routeMatch.precedence > 0))
+
+  const winner = candidates[0]
+
+  return winner
+}
+
+// -1 => routeMatch1 higher precedence
+// +1 => routeMatch2 higher precedence
+function sortPrecendence(routeMatch1: RouteMatch, routeMatch2: RouteMatch): 0 | -1 | 1 {
+  if (!routeMatch2.routeString) {
+    return 0
+  }
+  if (!routeMatch1.routeString) {
+    return 0
+  }
+
+  // Return route with highest number of static path segments at beginning first
+  {
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticSegmentsBeginning
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      return result
+    }
+  }
+
+  // Return route with highest number of static path segments in total first
+  {
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfStaticSegements
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      return result
+    }
+  }
+
+  // Return route with most parameter segements first
+  {
+    const getValue = (routeString: string) => analyzeRouteString(routeString).numberOfParameterSegments
+    const result = higherFirst(getValue)(routeMatch1.routeString, routeMatch2.routeString)
+    if (result !== 0) {
+      return result
+    }
+  }
+
+  // Return catch-all routes last
+  {
+    if (analyzeRouteString(routeMatch2.routeString).isCatchAll) {
+      return -1
+    }
+    if (analyzeRouteString(routeMatch1.routeString).isCatchAll) {
+      return 1
+    }
+  }
+
+  return 0
+}
