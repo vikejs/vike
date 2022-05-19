@@ -1,4 +1,4 @@
-import { getErrorPageId, route, isErrorPage } from '../shared/route'
+import { getErrorPageId, route, isErrorPage, RouteMatches } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import {
   PageFile,
@@ -74,27 +74,31 @@ type GlobalRenderingContext = GlobalContext & {
 
 async function renderPage_<PageContextAdded extends {}, PageContextInit extends { url: string }>(
   pageContextInit: PageContextInit,
+  pageContext: {},
 ): Promise<
   PageContextInit & { errorWhileRendering: unknown } & (
       | ({ httpResponse: HttpResponse } & PageContextAdded)
       | ({ httpResponse: null } & Partial<PageContextAdded>)
     )
 > {
-  assertArguments(...arguments)
-
-  const pageContext = await initializePageContext(pageContextInit)
+  {
+    const pageContextInitAddendum = await initializePageContext(pageContextInit)
+    objectAssign(pageContext, pageContextInitAddendum)
+  }
 
   if ('httpResponse' in pageContext) {
     assert(pageContext.httpResponse === null)
     return pageContext
   }
 
+  addComputedUrlProps(pageContext)
+
   // *** Route ***
   const routeResult = await route(pageContext)
   if ('hookError' in routeResult) {
     const err = routeResult.hookError
     logError(err)
-    return await renderErrorPage(pageContextInit, routeResult.hookError)
+    return await renderErrorPage({ pageContextInit, err: routeResult.hookError, pageContextOfError: pageContext })
   }
   objectAssign(pageContext, routeResult.pageContextAddendum)
 
@@ -176,52 +180,52 @@ async function renderPage_<PageContextAdded extends {}, PageContextInit extends 
 }
 
 async function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
-  const pageContext = {
+  const pageContextAddendum = {
     _isPreRendering: false as const,
     ...pageContextInit,
   }
 
-  if (pageContext.url.endsWith('/favicon.ico') || !isParsable(pageContext.url)) {
-    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-    return pageContext
+  if (pageContextAddendum.url.endsWith('/favicon.ico') || !isParsable(pageContextAddendum.url)) {
+    objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
+    return pageContextAddendum
   }
 
-  const globalContext = await getGlobalContext(pageContext._isPreRendering)
-  objectAssign(pageContext, globalContext)
+  const globalContext = await getGlobalContext(pageContextAddendum._isPreRendering)
+  objectAssign(pageContextAddendum, globalContext)
 
   {
     const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(globalContext._isProduction)
-    objectAssign(pageContext, {
+    objectAssign(pageContextAddendum, {
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds,
     })
   }
 
   {
-    const { url } = pageContext
+    const { url } = pageContextAddendum
     assert(url.startsWith('/') || url.startsWith('http'))
     const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
     const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
     if (!hasBaseUrl) {
-      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-      return pageContext
+      objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
+      return pageContextAddendum
     }
-    objectAssign(pageContext, {
+    objectAssign(pageContextAddendum, {
       _isPageContextRequest: isPageContextRequest,
       _urlProcessor: (url: string) => handlePageContextRequestSuffix(url).urlWithoutPageContextRequestSuffix,
     })
   }
 
-  addComputedUrlProps(pageContext)
-
-  return pageContext
+  return pageContextAddendum
 }
 
 // `renderPage()` calls `renderPage_()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage(pageContextInit: Parameters<typeof renderPage_>[0]): ReturnType<typeof renderPage_> {
-  const args = arguments as any as Parameters<typeof renderPage>
+  assertArguments(...arguments)
+
+  const pageContextOfError = {}
   try {
-    return await renderPage_.apply(null, args)
+    return await renderPage_(pageContextInit, pageContextOfError)
   } catch (err) {
     assertError(err)
     const skipLog = isRenderErrorPage(err)
@@ -236,7 +240,7 @@ async function renderPage(pageContextInit: Parameters<typeof renderPage_>[0]): R
         objectAssign(pageContextAddendum, { is404: true })
         objectAssign(pageContextAddendum, err.pageContext)
       }
-      return await renderErrorPage(pageContextInit, err, pageContextAddendum)
+      return await renderErrorPage({ pageContextInit, err, pageContextAddendum, pageContextOfError })
     } catch (err2) {
       assertError(err2)
       // We swallow `err2`; logging `err` should be enough; `err2` is likely the same error than `err` anyways.
@@ -254,16 +258,28 @@ async function renderPage(pageContextInit: Parameters<typeof renderPage_>[0]): R
   }
 }
 
-async function renderErrorPage<PageContextInit extends { url: string }>(
-  pageContextInit: PageContextInit,
-  err: unknown,
-  pageContextAddendum?: Record<string, unknown>,
-) {
+async function renderErrorPage<PageContextInit extends { url: string }>({
+  pageContextInit,
+  err,
+  pageContextAddendum,
+  pageContextOfError,
+}: {
+  pageContextInit: PageContextInit
+  err: unknown
+  pageContextAddendum?: Record<string, unknown>
+  pageContextOfError: Record<string, unknown>
+}) {
   assert(hasAlreadyLogged(err))
 
-  const pageContext = await initializePageContext(pageContextInit)
-  // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
-  assert(!('httpResponse' in pageContext))
+  const pageContext = {}
+  {
+    const pageContextInitAddendum = await initializePageContext(pageContextInit)
+    objectAssign(pageContext, pageContextInitAddendum)
+    // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
+    assert(!('httpResponse' in pageContext))
+  }
+
+  addComputedUrlProps(pageContext)
 
   objectAssign(pageContext, {
     is404: false,
@@ -292,6 +308,9 @@ async function renderErrorPage<PageContextInit extends { url: string }>(
   }
   objectAssign(pageContext, {
     _pageId: errorPageId,
+  })
+  objectAssign(pageContext, {
+    _routeMatches: (pageContextOfError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
   })
 
   const pageFiles = await loadPageFilesServer(pageContext)
@@ -498,6 +517,7 @@ async function renderStatic404Page(globalContext: GlobalRenderingContext & { _is
     url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
+    _routeMatches: [],
   }
 
   const pageFiles = await loadPageFilesServer(pageContext)
@@ -537,17 +557,19 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
   }
 }
 
-async function loadPageFilesServer(pageContext: {
-  url: string
-  _pageId: string
-  _baseUrl: string
-  _baseAssets: string | null
-  _pageFilesAll: PageFile[]
-  _isPreRendering: boolean
-  _isProduction: boolean
-  _viteDevServer: null | ViteDevServer
-  _manifestClient: null | ViteManifest
-}) {
+async function loadPageFilesServer(
+  pageContext: {
+    url: string
+    _pageId: string
+    _baseUrl: string
+    _baseAssets: string | null
+    _pageFilesAll: PageFile[]
+    _isPreRendering: boolean
+    _isProduction: boolean
+    _viteDevServer: null | ViteDevServer
+    _manifestClient: null | ViteManifest
+  } & PageContextDebug,
+) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
     loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true }),
@@ -580,14 +602,10 @@ async function loadPageFilesServer(pageContext: {
   })
 
   {
-    const pageFilesAll = pageContext._pageFilesAll
-    const pageId = pageContext._pageId
     debugPageFiles({
-      url: pageContext.url,
-      pageId,
+      pageContext,
       isHtmlOnly,
       isClientRouting,
-      pageFilesAll,
       pageFilesLoaded,
       pageFilesClientSide,
       pageFilesServerSide,
@@ -599,23 +617,26 @@ async function loadPageFilesServer(pageContext: {
   return pageContextAddendum
 }
 
+type PageContextDebug = {
+  _routeMatches: 'ROUTE_ERROR' | RouteMatches
+}
 function debugPageFiles({
-  url,
-  pageId,
+  pageContext,
   isHtmlOnly,
   isClientRouting,
-  pageFilesAll,
   pageFilesLoaded,
   pageFilesServerSide,
   pageFilesClientSide,
   clientEntries,
   clientDependencies,
 }: {
-  url: string
-  pageId: string
+  pageContext: {
+    url: string
+    _pageId: string
+    _pageFilesAll: PageFile[]
+  } & PageContextDebug
   isHtmlOnly: boolean
   isClientRouting: boolean
-  pageFilesAll: PageFile[]
   pageFilesLoaded: PageFile[]
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
@@ -625,9 +646,10 @@ function debugPageFiles({
   const debug = createDebugger('vps:pageFiles')
   const padding = '   - '
 
-  debug('All page files:', printPageFiles(pageFilesAll, true))
-  debug(`URL:`, url)
-  debug(`pageId:`, pageId)
+  debug('All page files:', printPageFiles(pageContext._pageFilesAll, true))
+  debug(`URL:`, pageContext.url)
+  debug(`Routing:`, printRouteMatches(pageContext._routeMatches))
+  debug(`pageId:`, pageContext._pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
   debug(`Routing type:`, !isHtmlOnly && isClientRouting ? 'Client Routing' : 'Server Routing')
   debug('Server-side page files:', printPageFiles(pageFilesLoaded))
@@ -644,7 +666,17 @@ function debugPageFiles({
 
   return
 
-  function printPageFiles(pageFiles: PageFile[], genericPageFilesLast = false) {
+  function printRouteMatches(routeMatches: PageContextDebug['_routeMatches']): string {
+    if (routeMatches === 'ROUTE_ERROR') {
+      return 'Routing Failed'
+    }
+    if (routeMatches === 'CUSTOM_ROUTE') {
+      return 'Custom Routing'
+    }
+    return printEntries(routeMatches, (entry) => JSON.stringify(entry))
+  }
+
+  function printPageFiles(pageFiles: PageFile[], genericPageFilesLast = false): string {
     if (pageFiles.length === 0) {
       return 'None'
     }

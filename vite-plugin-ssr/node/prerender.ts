@@ -268,12 +268,21 @@ async function handlePagesWithStaticRoutes(
           return
         }
 
+        const routeParams = {}
         const pageContext = {
           ...globalContext,
           _prerenderHookFile: null,
           url,
-          routeParams: {},
+          routeParams,
           _pageId: pageId,
+          _routeMatches: [
+            {
+              pageId,
+              routeType: pageRoute.pageRouteFile ? ('STRING' as const) : ('FILESYSTEM' as const),
+              routeString: url,
+              routeParams,
+            },
+          ],
         }
         objectAssign(pageContext, await loadPageFilesServer(pageContext))
 
@@ -364,6 +373,7 @@ async function routeAndPrerender(
           ...globalContext,
           url,
           _pageId: pageId,
+          _routeMatches: pageContext._routeMatches,
         })
         objectAssign(pageContext, pageFilesData)
 

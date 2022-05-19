@@ -10,8 +10,7 @@ import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
 import { isErrorPage } from './route/error-page'
 
 export { route, loadPageRoutes }
-export type { PageRoutes }
-export type { PageContextForRoute }
+export type { PageRoutes, PageContextForRoute, RouteMatches }
 
 export { isErrorPage }
 export { getErrorPageId } from './route/error-page'
@@ -23,6 +22,15 @@ type PageContextForRoute = PageContextUrlSource & {
   _allPageIds: string[]
 }
 type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
+type RouteMatch = {
+  pageId: string
+  routeString?: string
+  precedence?: number | null
+  routeType: RouteType
+  routeParams: Record<string, string>
+}
+type RouteMatches = 'CUSTOM_ROUTE' | RouteMatch[]
+
 async function route(pageContext: PageContextForRoute): Promise<
   | HookError
   | {
@@ -30,6 +38,7 @@ async function route(pageContext: PageContextForRoute): Promise<
         _pageId: string | null
         routeParams: Record<string, string>
         _routingProvidedByOnBeforeRouteHook: boolean
+        _routeMatches: RouteMatches
       } & Record<string, unknown>
     }
 > {
@@ -52,7 +61,10 @@ async function route(pageContext: PageContextForRoute): Promise<
         } else {
           assert(hasProp(pageContextAddendum, 'routeParams', 'object'))
         }
-        objectAssign(pageContextAddendum, { _routingProvidedByOnBeforeRouteHook: true })
+        objectAssign(pageContextAddendum, {
+          _routingProvidedByOnBeforeRouteHook: true,
+          _routeMatches: 'CUSTOM_ROUTE' as const,
+        })
         return { pageContextAddendum }
       }
       // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
@@ -74,13 +86,7 @@ async function route(pageContext: PageContextForRoute): Promise<
   assert(urlPathname.startsWith('/'))
 
   const hookErrors: HookError[] = []
-  const routeMatches: {
-    pageId: string
-    routeString?: string
-    precedence?: number | null
-    routeType: RouteType
-    routeParams: Record<string, string>
-  }[] = []
+  const routeMatches: RouteMatch[] = []
   await Promise.all(
     pageRoutes.map(async (pageRoute): Promise<void> => {
       const { pageId, filesystemRoute, pageRouteFile } = pageRoute
@@ -136,9 +142,10 @@ async function route(pageContext: PageContextForRoute): Promise<
     return hookErrors[0]!
   }
 
-  // console.log('[Route Matches]:', JSON.stringify(routeMatches, null, 2))
-  const winner = resolvePrecendence(routeMatches)
-  // console.log('[Route Match]:', `[${urlPathname}]: ${winner && winner.pageId}`)
+  resolvePrecendence(routeMatches)
+  const winner = routeMatches[0]
+
+  objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
 
   if (!winner) {
     objectAssign(pageContextAddendum, {
