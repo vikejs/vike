@@ -1,6 +1,12 @@
 import './page-files/setup'
 import path, { join, sep, dirname, isAbsolute } from 'path'
-import { isErrorPage, isStaticRoute, loadPageRoutes, route } from '../shared/route'
+import {
+  isErrorPage,
+  isStaticRouteString,
+  loadPageRoutes,
+  route,
+  isParameterizedFilesystemRoute,
+} from '../shared/route'
 import {
   assert,
   assertUsage,
@@ -23,7 +29,6 @@ import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { assertViteConfig } from './plugin/plugins/config/assertConfig'
-import { isParameterizedFilesystemRoute } from '../shared/route/matchRouteString'
 
 export { prerender }
 
@@ -241,7 +246,7 @@ async function handlePagesWithStaticRoutes(
         let url: string
         if (pageRoute.pageRouteFile) {
           const { routeValue } = pageRoute.pageRouteFile
-          if (typeof routeValue === 'string' && isStaticRoute(routeValue)) {
+          if (typeof routeValue === 'string' && isStaticRouteString(routeValue)) {
             assert(routeValue.startsWith('/'))
             url = routeValue
           } else {
