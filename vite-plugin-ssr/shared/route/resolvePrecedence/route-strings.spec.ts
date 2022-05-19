@@ -94,6 +94,7 @@ describe('Route Strings Precedence', () => {
         return { ...result, routeString, routeType: 'STRING' as const }
       })
       .filter(<T>(match: T | null): match is T => match !== null)
-    return resolvePrecendence(candidates)?.routeString || null
+    resolvePrecendence(candidates)
+    return candidates[0]?.routeString || null
   }
 })
