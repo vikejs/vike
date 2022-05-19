@@ -79,7 +79,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
     get searchString() {
       assertWarning(
         false,
-        '`pageContext.urlParsed.hashString` has been renamed to `pageContext.urlParsed.hashOriginal`',
+        '`pageContext.urlParsed.searchString` has been renamed to `pageContext.urlParsed.searchOriginal`',
         { onlyOnce: true },
       )
       return searchOriginal
