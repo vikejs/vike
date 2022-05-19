@@ -1,3 +1,6 @@
+export { useClientRouter }
+export { navigate }
+
 import { assert, assertUsage, getCurrentUrl, hasProp, isBrowser, objectAssign, throttle } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext } from './getPageContext'
@@ -9,9 +12,7 @@ import { detectHydrationSkipSupport } from './utils/detectHydrationSkipSupport'
 import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
-
-export { useClientRouter }
-export { navigate }
+const navigateFnKey = '__vite_plugin_ssr__navigate'
 
 setupNativeScrollRestoration()
 
@@ -27,7 +28,7 @@ function useClientRouter() {
   onBrowserHistoryNavigation((scrollTarget) => {
     fetchAndRender(scrollTarget)
   })
-  navigateFunction = async (
+  globalThis[navigateFnKey] = async (
     url: string,
     {
       keepScrollPosition,
@@ -150,15 +151,6 @@ function useClientRouter() {
   }
 }
 
-let navigateFunction:
-  | undefined
-  | ((
-      url: string,
-      {
-        keepScrollPosition,
-        overwriteLastHistoryEntry,
-      }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
-    ) => Promise<void>)
 async function navigate(
   url: string,
   { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {},
@@ -185,6 +177,7 @@ async function navigate(
       '"`.',
   )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
+  const navigateFunction = globalThis[navigateFnKey]
   assert(navigateFunction)
   await navigateFunction(url, { keepScrollPosition, overwriteLastHistoryEntry })
 }
@@ -346,7 +339,13 @@ function onPageShow(listener: () => void) {
   })
 }
 declare global {
-  interface Window {
-    __VUE__?: true
-  }
+  var __vite_plugin_ssr__navigate:
+    | undefined
+    | ((
+        url: string,
+        {
+          keepScrollPosition,
+          overwriteLastHistoryEntry,
+        }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
+      ) => Promise<void>)
 }
