@@ -1,16 +1,31 @@
-## Vite
+## vite-plugin-ssr
 
-To enable Vite's debug logs, we set the environment variable `DEBUG` to `vite:*`.
+To enable the `vite-plugin-ssr` debug logs, set the environment variable `DEBUG` to `vps:*`.
+
+For example,
+to figure out why your app is `404`'ing,
+or to understand how `vite-plugin-ssr` thinks of your app,
+set `DEBUG=vps:pageFiles`.
 
 ```shell
-$ DEBUG=vite* npm run dev
+# All debug logs
+$ DEBUG=vps:* npm run dev
+# Page files debug logs
+$ DEBUG=vps:pageFiles npm run dev
+# HTTP streaming debug logs
+$ DEBUG=vps:stream npm run dev
 ```
-> If you want the same functionality for `vite-plugin-ssr`, upvote and/or comment the feature request [#249](https://github.com/brillout/vite-plugin-ssr/issues/249).
 
-We recommend directly inspecting Vite's built source code in `node_modules/vite/`, for example by injecting `console.log()` calls to bisect down the bug.
+> If you want more debug logs, add a comment at [#249](https://github.com/brillout/vite-plugin-ssr/issues/249).
 
-> It may sound scary to dig into Vite's source code, but it's often a faster (and a more interesting) way to find the root cause of problems. Vite's source code is well written and pleasurable to read. It also get's you closer to actually being able to fix the problem. If you open a Vite PR, feel free to reach out to the `vite-plugin-ssr` maintainers to get your PR merged quicker.
+## Vite
 
-## `vite-plugin-ssr`
+To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
 
-Reach out to the `vite-plugin-ssr` maintainers if you believe to have found a bug that has its root cause in `vite-plugin-ssr`'s source code.
+```shell
+$ DEBUG=vite:* npm run dev
+```
+
+In case you stumbled upon a Vite bug, we recommend to directly inspect Vite's built source code at `node_modules/vite/`, for example by injecting `console.log()` calls to bisect down the bug.
+
+> It may sound scary to dig into Vite's source code, but it's actually often a faster (and a more interesting ;-)) way to find the root cause of problems. Vite's source code is well written and pleasurable to read. It also get's you closer to actually being able to fix the problem and, if you open a Vite PR, feel free to reach out to the `vite-plugin-ssr` maintainers to get your PR merged quicker.
