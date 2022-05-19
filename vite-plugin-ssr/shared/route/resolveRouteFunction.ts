@@ -72,7 +72,7 @@ async function resolveRouteFunction(
   })
 
   return {
-    precedence: null,
+    precedence,
     routeParams,
   }
 }

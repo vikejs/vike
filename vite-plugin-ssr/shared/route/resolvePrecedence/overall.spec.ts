@@ -41,10 +41,20 @@ const routeFunctions = [...routeFunctionsLowerPrio, routeFunctionHighPrio, route
 describe('routing - resolvePrecendence', () => {
   it('basics', () => {
     expect(resolvePrecendence([routeFilesystem])).toBe(routeFilesystem)
+
+    expect(resolvePrecendence([routeStringParam, routeStringStatic])).toBe(routeStringStatic)
+    expect(resolvePrecendence([routeFunction, routeStringStatic])).toBe(routeStringStatic)
+    expect(resolvePrecendence([routeFunction, routeStringParam])).toBe(routeFunction)
+
+    expect(resolvePrecendence([...routeFunctionsLowerPrio, ...routeStrings])).toBe(routeStringStatic)
+    expect(resolvePrecendence([...routeFunctionsLowerPrio, routeStringParam])).toBe(routeFunction)
+    expect(resolvePrecendence([routeFunctionLowPrio, routeStringParam])).toBe(routeStringParam)
+
+    expect(resolvePrecendence([routeFunction, routeFilesystem])).toBe(routeFilesystem)
+    expect(resolvePrecendence([routeFunctionHighPrio, routeFilesystem])).toBe(routeFunctionHighPrio)
     expect(resolvePrecendence([...routeFunctionsLowerPrio, ...routeStrings, routeFilesystem])).toBe(routeFilesystem)
-    expect(resolvePrecendence([...routeFunctionsLowerPrio, ...routeStrings])).toBe(routeStringStatic)
-    expect(resolvePrecendence([...routeFunctionsLowerPrio, ...routeStrings])).toBe(routeStringStatic)
-    //expect(resolvePrecendence([...routeFunctions, ...routeStrings, routeFilesystem])).toBe(routeFunctionHighestPrio)
-    expect(resolvePrecendence([...routeFunctions, ...routeStrings, routeFilesystem])).toBe(routeFunctionHighPrio)
+
+    expect(resolvePrecendence([routeFunctionHighPrio, routeFunctionLowPrio])).toBe(routeFunctionHighPrio)
+    expect(resolvePrecendence([...routeFunctions, ...routeStrings, routeFilesystem])).toBe(routeFunctionHighestPrio)
   })
 })

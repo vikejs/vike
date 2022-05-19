@@ -17,7 +17,7 @@ type RouteMatch = {
 function resolvePrecendence<T extends RouteMatch>(routeMatches: T[]): T | undefined {
   // prettier-ignore
   const candidates = routeMatches
-    .sort(sortPrecendence)
+    .sort(sortMatches)
     // See https://vite-plugin-ssr.com/route-function#precedence
     .sort(makeFirst((routeMatch) => routeMatch.routeType === 'FUNCTION' && !!routeMatch.precedence && routeMatch.precedence < 0))
     .sort(makeFirst((routeMatch) => routeMatch.routeType === 'STRING'   && isStaticRouteString(routeMatch.routeString!) === false))
@@ -33,7 +33,15 @@ function resolvePrecendence<T extends RouteMatch>(routeMatches: T[]): T | undefi
 
 // -1 => routeMatch1 higher precedence
 // +1 => routeMatch2 higher precedence
-function sortPrecendence(routeMatch1: RouteMatch, routeMatch2: RouteMatch): 0 | -1 | 1 {
+function sortMatches(routeMatch1: RouteMatch, routeMatch2: RouteMatch): 0 | -1 | 1 {
+  {
+    const precedence1 = routeMatch1.precedence ?? 0
+    const precedence2 = routeMatch2.precedence ?? 0
+    if (precedence1 !== precedence2) {
+      return precedence1 > precedence2 ? -1 : 1
+    }
+  }
+
   if (!routeMatch2.routeString) {
     return 0
   }
