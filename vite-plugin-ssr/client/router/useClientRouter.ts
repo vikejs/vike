@@ -185,10 +185,7 @@ async function navigate(
       '"`.',
   )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
-  assertUsage(
-    navigateFunction,
-    '[navigate()] You need to call `useClientRouter()` before being able to use `navigate()`.',
-  )
+  assert(navigateFunction)
   await navigateFunction(url, { keepScrollPosition, overwriteLastHistoryEntry })
 }
 
