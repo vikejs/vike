@@ -673,7 +673,7 @@ function debugPageFiles({
     if (routeMatches === 'CUSTOM_ROUTE') {
       return 'Custom Routing'
     }
-    return printEntries(routeMatches, (entry) => JSON.stringify(entry))
+    return printEntries(routeMatches, (entry) => JSON.stringify(entry), 'No match')
   }
 
   function printPageFiles(pageFiles: PageFile[], genericPageFilesLast = false): string {
@@ -694,9 +694,9 @@ function debugPageFiles({
     )
   }
 
-  function printEntries<T>(list: T[], str: (entry: T) => string) {
+  function printEntries<T>(list: T[], str: (entry: T) => string, emptyText: string = 'None') {
     if (list.length === 0) {
-      return 'None'
+      return emptyText
     }
     return '\n' + list.map((entry) => padding + str(entry)).join('\n')
   }
