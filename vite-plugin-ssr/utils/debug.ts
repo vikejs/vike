@@ -1,6 +1,9 @@
 export { createDebugger }
 
 import debug from 'debug'
+import { assert } from './assert'
+import { isBrowser } from './isBrowser'
+assert(!isBrowser()) // Ensure the npm package `debug` to not be included in client-side bundles
 
 function createDebugger(
   namespace: `vps:${string}`,
