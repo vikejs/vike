@@ -1,6 +1,14 @@
 import { RepoLink, Link } from 'libframe-docs/components'
 
-Prepare your `vite-plugin-ssr` app like following:
+## vite-plugin-vercel
+
+We can use [`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel) to deploy to Vercel.
+
+> `vite-plugin-vercel` is in Beta.
+
+## Manual
+
+We can also manually setup Vercel:
 
  1. Load `dist/server/importBuild.js` in your Vercel serverless function.
     Example: <RepoLink path='/examples/vercel/vercel/render.js' />.
@@ -19,6 +27,10 @@ While/after adding your Git repository to Vercel, set the following in Vercel's 
  1. Set `FRAMEWORK PRESET` to `Other`.
 
  2. Add a new environment variable named `ENABLE_FILE_SYSTEM_API` and set its value to `1`.
+
+## ISR
+
+We can use Vercel's [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/next.js/incremental-static-regeneration) by using [vite-plugin-vercel](https://github.com/magne4000/vite-plugin-vercel) which has ISR support.
 
 ## See also
 
