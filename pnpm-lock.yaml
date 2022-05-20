@@ -935,7 +935,7 @@ importers:
   vite-plugin-ssr:
     specifiers:
       '@brillout/json-s': ^0.4.6
-      '@brillout/libassert': ^0.5.5
+      '@brillout/libassert': 0.5.6
       '@brillout/part-regex': ^0.1.2
       '@types/debug': 4.1.7
       '@types/jest': ^27.4.1
@@ -956,7 +956,7 @@ importers:
       vite-plugin-glob: ^0.2.6
     dependencies:
       '@brillout/json-s': 0.4.6
-      '@brillout/libassert': 0.5.5
+      '@brillout/libassert': 0.5.6
       cac: 6.7.12
       debug: 4.3.4
       es-module-lexer: 0.10.5
@@ -1493,8 +1493,8 @@ packages:
     resolution: {integrity: sha512-mDgMMNFSKyN9Fy0G4yQTcWwQ1BXUE65D3i3RXPX44xD5AuIU4QQDQBi+DKiEDCS6L6nEa2frC2lCUa/ob700Aw==}
     dev: false
 
-  /@brillout/libassert/0.5.5:
-    resolution: {integrity: sha512-GohLlIu361SMQZzzcu4izLG7Tafc4L5cYTmYt+Gy5tihQFA8ifY0+bsaaIJQQaPUHLbFU/ygZoMmxTqW7Bukcg==}
+  /@brillout/libassert/0.5.6:
+    resolution: {integrity: sha512-v4YHjJg58TGndI4WVlqqP8q5cjXupQ7Paj1XY5xgbpqYPA16Gs6/pvC8WkyYGcYVEQeps1QVGFz8NKU6t0Bj3w==}
     dev: false
 
   /@brillout/part-regex/0.1.2:
