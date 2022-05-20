@@ -40,7 +40,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
       return { routeParams }
     } else if (routeDir && (routeDir.startsWith(PARAM_TOKEN_NEW) || routeDir.startsWith(PARAM_TOKEN_OLD))) {
       assertWarning(
-        !routeDir.startsWith(PARAM_TOKEN_NEW),
+        !routeDir.startsWith(PARAM_TOKEN_OLD),
         `Outdated route string \`${routeString}\`, use \`${routeString
           .split(PARAM_TOKEN_OLD)
           .join(PARAM_TOKEN_NEW)}\` instead.`,
