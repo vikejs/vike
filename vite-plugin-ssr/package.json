@@ -3,7 +3,7 @@
   "version": "0.3.64",
   "dependencies": {
     "@brillout/json-s": "^0.4.6",
-    "@brillout/libassert": "0.5.6",
+    "@brillout/libassert": "^0.5.8",
     "cac": "^6.7.12",
     "debug": "4.3.4",
     "es-module-lexer": "^0.10.5",
