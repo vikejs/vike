@@ -7,23 +7,64 @@ export { createPageRenderer }
 
 type RenderPage = typeof renderPage
 
-function createPageRenderer(_deprecated: {
+type Options = {
   viteDevServer?: unknown
-  /* Conflicting `ViteDevServer` type definitions upon different Vite versions installed
-  viteDevServer?: ViteDevServer
-  */
   root?: string
   outDir?: string
   isProduction?: boolean
   base?: string
   baseAssets?: string | null
-}): RenderPage {
+}
+function createPageRenderer(options: Options): RenderPage {
+  showWarnings(options)
+  return renderPage
+}
+
+function showWarnings(options: Options) {
   assertWarning(
     false,
     '`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vite-plugin-ssr.com/renderPage',
     { onlyOnce: true },
   )
-  return renderPage
+
+  const { viteDevServer, root, outDir, isProduction, base, baseAssets } = options
+
+  {
+    const opts = [
+      viteDevServer !== undefined && 'viteDevServer',
+      root !== undefined && 'root',
+      outDir !== undefined && 'outDir',
+      isProduction !== undefined && 'isProduction',
+    ].filter(notFalse)
+    assertWarning(
+      opts.length === 0,
+      `The options ${str(
+        opts,
+      )} you passed to \`createPageRenderer()\` have no effect anymore: they are now automatically determined.`,
+      { onlyOnce: true },
+    )
+  }
+  {
+    const opts = [base !== undefined && 'base', baseAssets !== undefined && 'baseAssets'].filter(notFalse)
+    assertWarning(
+      opts.length === 0,
+      `The options ${str(
+        opts,
+      )} you passed to \`createPageRenderer()\` have no effect. See https://vite-plugin-ssr.com/migration`,
+      { onlyOnce: true },
+    )
+  }
+}
+
+function str(opts: string[]): string {
+  return opts
+    .map((opt) => '`' + opt + '`')
+    .join(', ')
+    .replace(/,(?=[^,]*$)/, ' and')
+}
+
+function notFalse(val: false | string): val is string {
+  return val !== false
 }
 
 /*
