@@ -1,0 +1,42 @@
+Migration Guides for SemVer majors.
+
+For SemVer minor changes, see: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md).
+
+## 0.4
+
+**Non-breaking**
+
+Most changes are non-breaking: follow the warnings to (progressively, at your own pace) update to the new 0.4 interface.
+
+**Breaking**
+
+ 1. Use Vite `>=2.9.6`.
+ 1. Deprecated: `useClientRouter()` (Client Routing) and `getPage()` (Server Routing).
+ 1. Base URL option defined only in `vite.config.js`.
+ 1. Pre-render options defined in `vite.config.js`.
+ 1. Deprecated: `export default Page`. (Use `export { Page }` instead.)
+
+### Deprecated: `useClientRouter()`
+
+If you use Client Routing:
+
+```diff
+// renderer/_default.page.client.js
+
+```
+
+TODO: mention all options e.g. `onHydrationEnd`, `onBeforeTransition`
+
+### Deprecated: `getPage()`
+
+If you use Server Routing:
+
+### Base URL option
+
+### Pre-render options
+
+### Deprecated: `export default Page`
+
+Instead of `export default Page`, do `export { Page }`.
+
+> Single File Components (`.vue`, `.svelte`, ...) still work.
