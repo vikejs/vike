@@ -21,10 +21,12 @@ import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
 import { distEntriesPlugin } from './plugins/distEntries'
+import { commonConfig } from './plugins/commonConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vpsConfig?: VpsConfig): any {
   const plugins: Plugin[] = [
+    commonConfig(),
     setVitePluginSsrConfig(vpsConfig),
     generateImportGlobs(),
     ...devConfig(),
