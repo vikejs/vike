@@ -7,7 +7,7 @@ import { pageFileExtensions } from './generateImportGlobs/pageFileExtensions'
 function devConfig(): Plugin[] {
   return [
     {
-      name: 'vite-plugin-ssr:dev:config',
+      name: 'vite-plugin-ssr:devConfig',
       apply: apply('dev'),
       config: () => ({
         ssr: { external: ['vite-plugin-ssr'] },
