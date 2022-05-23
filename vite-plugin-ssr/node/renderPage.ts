@@ -363,7 +363,7 @@ function createHttpResponseObject(
     get body() {
       if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
-        assertUsage(false, errMsg('body', 'Use `const body = await pageContext.httpResponse.getBody()` instead.'))
+        assertUsage(false, errMsg('body', 'Use `const body = await pageContext.httpResponse.getBody()` instead'))
       }
       const body = htmlRender
       return body
@@ -450,6 +450,7 @@ function createHttpResponseObject(
       assert(false)
     }
     assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
+    assert(!fixMsg || !fixMsg.endsWith('.'))
     return [
       `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook (${renderFilePath}) provides ${htmlRenderName}`,
       fixMsg,
