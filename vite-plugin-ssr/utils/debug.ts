@@ -1,4 +1,5 @@
 export { createDebugger }
+export type { Debug }
 
 import debug from 'debug'
 import { assert } from './assert'
@@ -9,36 +10,41 @@ assert(!isBrowser()) // Ensure the npm package `debug` to not be included in cli
 // @ts-ignore
 globalThis.__vite_plugin_ssr_createDebugger = createDebugger
 
-function createDebugger(
-  namespace: `vps:${string}`,
-  options: { onlyWhenFocused?: true | string } = {},
-): debug.Debugger['log'] {
+type Debug = ReturnType<typeof createDebugger>
+
+function createDebugger(namespace: `vps:${string}`) {
   let DEBUG: undefined | string
-  let DEBUG_FILTER: undefined | string
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
     DEBUG = process.env.DEBUG
   } catch {}
-  try {
-    DEBUG_FILTER = process.env.DEBUG_FILTER_VPS
-  } catch {}
-  try {
-    DEBUG_FILTER ||= process.env.DEBUG_FILTER
-  } catch {}
 
   const log = debug(namespace)
 
-  const { onlyWhenFocused } = options
-  const focus = typeof onlyWhenFocused === 'string' ? onlyWhenFocused : namespace
-
-  return (msg: string, ...args: any[]) => {
-    if (DEBUG_FILTER && !msg.includes(DEBUG_FILTER)) {
+  return (name: string, msg?: unknown, options?: { noneMsg?: string }) => {
+    if (!DEBUG?.includes(namespace)) {
       return
     }
-    if (onlyWhenFocused && !DEBUG?.includes(focus)) {
-      return
-    }
-    log(msg, ...args)
+    const msgStr = msg && str(msg, options ?? {})
+    log(name, msgStr)
   }
+}
+
+function str(msg: unknown, { noneMsg = 'None' }): string {
+  const padding = '   - '
+  let msgStr: string
+  const str = (thing: unknown): string => padding + (typeof thing === 'string' ? thing : JSON.stringify(thing))
+  if (typeof msg !== 'string') {
+    msgStr = str(msg)
+  } else if (Array.isArray(msg)) {
+    if (msg.length === 0) {
+      msgStr = noneMsg
+    } else {
+      msgStr = '\n' + msg.map(str).join('\n')
+    }
+  } else {
+    msgStr = str(msg)
+  }
+  return msgStr
 }

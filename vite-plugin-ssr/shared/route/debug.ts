@@ -1,10 +1,9 @@
 export { debug }
-export { debugPrintList }
 
-import type { createDebugger } from '../../utils/debug'
+import type { createDebugger, Debug } from '../../utils/debug'
 
 var _debug: undefined | typeof debug
-function debug(...args: string[]) {
+function debug(...args: Parameters<Debug>) {
   if (!_debug) {
     // We use this trick instead of `import { createDebugger } from '../../utils/debug` in order to ensure that the `debug` mechanism is only loaded on the server-side
     _debug = (
@@ -14,10 +13,4 @@ function debug(...args: string[]) {
   if (_debug) {
     _debug(...args)
   }
-}
-function debugPrintList(list: unknown[]) {
-  if (list.length === 0) {
-    return 'None'
-  }
-  return '\n' + list.map((r) => '  - ' + JSON.stringify(r)).join('\n')
 }
