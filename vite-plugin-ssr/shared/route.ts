@@ -8,6 +8,7 @@ import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
 import { isErrorPage } from './route/error-page'
+import { debug, debugPrintList } from './route/debug'
 
 export { route, loadPageRoutes }
 export type { PageRoutes, PageContextForRoute, RouteMatches }
@@ -45,6 +46,7 @@ async function route(pageContext: PageContextForRoute): Promise<
   addComputedUrlProps(pageContext)
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext)
+  debug('Pages Routes: ', debugPrintList(pageRoutes))
 
   const pageContextAddendum = {}
   if (onBeforeRouteHook) {
@@ -144,6 +146,8 @@ async function route(pageContext: PageContextForRoute): Promise<
 
   resolvePrecendence(routeMatches)
   const winner = routeMatches[0]
+
+  debug(`Routing matches for URL \`${urlPathname}\` (in precedence order): `, debugPrintList(routeMatches))
 
   objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
 
