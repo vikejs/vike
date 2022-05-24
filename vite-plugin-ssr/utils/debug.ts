@@ -5,6 +5,10 @@ import { assert } from './assert'
 import { isBrowser } from './isBrowser'
 assert(!isBrowser()) // Ensure the npm package `debug` to not be included in client-side bundles
 
+// For `route.ts`: it's isomorphic and should not load `debug` on the client-side, instead it uses `debug()` only on the server-side.
+// @ts-ignore
+globalThis.__vite_plugin_ssr_createDebugger = createDebugger
+
 function createDebugger(
   namespace: `vps:${string}`,
   options: { onlyWhenFocused?: true | string } = {},
