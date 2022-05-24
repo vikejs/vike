@@ -649,32 +649,26 @@ function debugPageFiles({
 
   debug('All page files:', printPageFiles(pageContext._pageFilesAll, true))
   debug(`URL:`, pageContext.url)
-  debug(`Routing:`, printRouteMatches(pageContext._routeMatches))
+  debug(`Routing:`, printRouteMatches(pageContext._routeMatches), { noneMsg: 'No match' })
   debug(`pageId:`, pageContext._pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
   debug(`Routing type:`, !isHtmlOnly && isClientRouting ? 'Client Routing' : 'Server Routing')
   debug('Server-side page files:', printPageFiles(pageFilesLoaded))
   assert(samePageFiles(pageFilesLoaded, pageFilesServerSide))
   debug('Client-side page files:', printPageFiles(pageFilesClientSide))
-  debug(
-    'Client-side entries:',
-    printEntries(clientEntries, (entry) => entry),
-  )
-  debug(
-    'Client-side dependencies:',
-    printEntries(clientDependencies, (entry) => JSON.stringify(entry)),
-  )
+  debug('Client-side entries:', clientEntries)
+  debug('Client-side dependencies:', clientDependencies)
 
   return
 
-  function printRouteMatches(routeMatches: PageContextDebug['_routeMatches']): string {
+  function printRouteMatches(routeMatches: PageContextDebug['_routeMatches']) {
     if (routeMatches === 'ROUTE_ERROR') {
       return 'Routing Failed'
     }
     if (routeMatches === 'CUSTOM_ROUTE') {
       return 'Custom Routing'
     }
-    return printEntries(routeMatches, (entry) => JSON.stringify(entry), 'No match')
+    return routeMatches
   }
 
   function printPageFiles(pageFiles: PageFile[], genericPageFilesLast = false): string {
@@ -693,13 +687,6 @@ function debugPageFiles({
         .map((s) => padding + s)
         .join('\n')
     )
-  }
-
-  function printEntries<T>(list: T[], str: (entry: T) => string, emptyText: string = 'None') {
-    if (list.length === 0) {
-      return emptyText
-    }
-    return '\n' + list.map((entry) => padding + str(entry)).join('\n')
   }
 }
 
