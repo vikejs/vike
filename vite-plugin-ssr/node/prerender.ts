@@ -111,10 +111,12 @@ async function prerender(
   const {
     partial = false,
     noExtraDir = false,
-    parallel = cpus().length || 1,
+    parallel = true,
   } = typeof prerenderConfig === 'object' ? prerenderConfig : {}
 
-  const concurrencyLimit = pLimit(parallel)
+  const concurrencyLimit = pLimit(
+    parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel,
+  )
 
   const globalContext = await getGlobalContext(true)
   objectAssign(globalContext, {
