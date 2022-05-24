@@ -33,7 +33,7 @@ async function loadPageRoutes(pageContext: {
 
   pageContext._pageFilesAll
     .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)
-    .map(async ({ filePath, fileExports }) => {
+    .forEach(({ filePath, fileExports }) => {
       assert(fileExports)
       if ('onBeforeRoute' in fileExports) {
         assertUsage(
@@ -64,7 +64,7 @@ async function loadPageRoutes(pageContext: {
 
   const allPageIdsWithFilesystemRoute = allPageIds
     .filter((pageId) => !isErrorPage(pageId))
-    .filter(async (pageId) => {
+    .filter((pageId) => {
       const pageRouteFile = pageContext._pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
       if (!pageRouteFile) {
         return true
