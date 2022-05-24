@@ -1,40 +1,8 @@
 export { assertViteConfig }
-export { assertAndMergeUserInput }
+export { assertVpsConfig }
 
 import { assert, assertUsage, hasProp, isObject } from '../../../utils'
 import { VpsConfig } from './VpsConfig'
-
-function assertAndMergeUserInput(fromPluginOptions: unknown, fromViteConfig: unknown): VpsConfig {
-  assertVpsConfig(
-    fromPluginOptions,
-    ({ configPathInObject, configProp }) =>
-      `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``,
-  )
-  assertVpsConfig(fromViteConfig, ({ configPath }) => `vite.config.js#vitePluginSsr.${configPath}`)
-  const vitePluginSsr: VpsConfig = {}
-
-  vitePluginSsr.disableBuildChaining =
-    fromPluginOptions.disableBuildChaining ?? fromViteConfig.disableBuildChaining ?? false
-
-  vitePluginSsr.prerender = false
-  if (fromPluginOptions.prerender || fromViteConfig.prerender) {
-    const prerenderUserOptions =
-      typeof fromPluginOptions.prerender === 'boolean' ? {} : fromPluginOptions.prerender ?? {}
-    const prerenderViteConfig = typeof fromViteConfig.prerender === 'boolean' ? {} : fromViteConfig.prerender ?? {}
-    vitePluginSsr.prerender = {
-      partial: prerenderUserOptions.partial ?? prerenderViteConfig.partial ?? false,
-      noExtraDir: prerenderUserOptions.noExtraDir ?? prerenderViteConfig.noExtraDir ?? false,
-      parallel: prerenderUserOptions.parallel ?? prerenderViteConfig.parallel ?? undefined,
-    }
-  }
-
-  vitePluginSsr.pageFiles = {
-    include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
-  }
-
-  assertVpsConfig(vitePluginSsr, null)
-  return vitePluginSsr
-}
 
 function assertVpsConfig(
   vitePluginSsr: unknown,
@@ -119,9 +87,7 @@ function assertVpsConfig(
   }
 }
 
-function assertViteConfig<T extends Record<string, unknown>>(
-  viteConfig: T,
-): asserts viteConfig is T & { vitePluginSsr: VpsConfig } {
+function assertViteConfig<T>(viteConfig: T): asserts viteConfig is T & { vitePluginSsr: VpsConfig } {
   assert(hasProp(viteConfig, 'vitePluginSsr', 'object'))
   const { vitePluginSsr } = viteConfig
   assertVpsConfig(vitePluginSsr, null)
