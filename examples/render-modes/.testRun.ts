@@ -94,8 +94,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       {
         await testColor('green')
         editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
+        await sleep(100)
         await testColor('gray')
-        await sleep(100) // Avoid race condition
         editFileRevert()
         await testColor('green')
       }
@@ -160,6 +160,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
+        await sleep(100)
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR')
@@ -170,8 +171,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       {
         await testColor('blue')
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
+        await sleep(100)
         await testColor('gray')
-        await sleep(100) // Avoid race condition
         editFileRevert()
         await testColor('blue')
       }
@@ -187,7 +188,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       const node = await page.$('.colored')
       expect(node).not.toBe(null)
       assert(node !== null)
-      const titleColor = await page.evaluate((node) => getComputedStyle(node).color, node)
+      const titleColor = await page.evaluate((node: Element) => getComputedStyle(node).color, node)
       expect(titleColor).toBe(getColorRgb(color))
     })
   }
