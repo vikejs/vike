@@ -171,9 +171,10 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       {
         await testColor('blue')
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
-        await sleep(100)
         await testColor('gray')
+        await sleep(100)
         editFileRevert()
+        await sleep(100)
         await testColor('blue')
       }
       // Ensure HMR instead of page reload
