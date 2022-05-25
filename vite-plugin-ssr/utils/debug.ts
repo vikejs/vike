@@ -4,6 +4,7 @@ export type { Debug }
 import debug from 'debug'
 import { assert } from './assert'
 import { isBrowser } from './isBrowser'
+import { isCallable } from './isCallable'
 assert(!isBrowser()) // Ensure the npm package `debug` to not be included in client-side bundles
 
 export const debugGlob = createDebugger('vps:glob')
@@ -28,12 +29,12 @@ function createDebugger(namespace: `vps:${string}`) {
     if (!DEBUG?.includes(namespace)) {
       return
     }
-    const msgStr = msg && str(msg, options ?? {})
+    const msgStr = msg && strMsg(msg, options ?? {})
     log(name, msgStr)
   }
 }
 
-function str(msg: unknown, { noneMsg = 'None' }): string {
+function strMsg(msg: unknown, { noneMsg = 'None' }: { noneMsg?: string }): string {
   if (typeof msg === 'string') {
     return msg
   }
@@ -41,11 +42,30 @@ function str(msg: unknown, { noneMsg = 'None' }): string {
     if (msg.length === 0) {
       return noneMsg
     }
-    return '\n' + msg.map(strLine).join('\n')
+    return '\n' + msg.map((entry) => strEntry(entry)).join('\n')
   }
-  return strLine(msg)
+  return strEntry(msg)
 }
 
-function strLine(entry: unknown) {
-  return '   - ' + (typeof entry === 'string' ? entry : JSON.stringify(entry))
+const padding1 = '   - '
+const padding2 = '     '
+function strEntry(entry: unknown) {
+  return padding1 + (typeof entry === 'string' ? entry : strObj(entry))
+}
+
+function strObj(obj: unknown, newLines = false) {
+  let str: string
+  if (newLines) {
+    str = JSON.stringify(obj, replacer, 2)
+    str = str.split('\n').join('\n' + padding2)
+  } else {
+    str = JSON.stringify(obj, replacer, undefined)
+  }
+  return str
+  function replacer(this: Record<string, unknown>, _key: string, value: unknown) {
+    if (isCallable(value)) {
+      return value.toString().split(/\s+/).join(' ')
+    }
+    return value
+  }
 }

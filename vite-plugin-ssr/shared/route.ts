@@ -46,7 +46,17 @@ async function route(pageContext: PageContextForRoute): Promise<
   addComputedUrlProps(pageContext)
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext)
-  debug('Pages Routes: ', pageRoutes)
+  debug(
+    'Pages routes:',
+    pageRoutes.map((pageRoute) => ({
+      pageId: pageRoute.pageId,
+      filesystemRoute: pageRoute.filesystemRoute,
+      pageRouteFile: pageRoute.pageRouteFile && {
+        filePath: pageRoute.pageRouteFile.filePath,
+        routeValue: pageRoute.pageRouteFile.routeValue,
+      },
+    })),
+  )
 
   const pageContextAddendum = {}
   if (onBeforeRouteHook) {
@@ -147,7 +157,7 @@ async function route(pageContext: PageContextForRoute): Promise<
   resolvePrecendence(routeMatches)
   const winner = routeMatches[0]
 
-  debug(`Routing matches for URL \`${urlPathname}\` (in precedence order): `, routeMatches)
+  debug(`Route matches for URL \`${urlPathname}\` (in precedence order):`, routeMatches)
 
   objectAssign(pageContextAddendum, { _routeMatches: routeMatches })
 
