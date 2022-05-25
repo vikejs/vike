@@ -1,7 +1,7 @@
 export { DataArchitecture }
 
 import React from 'react'
-import { assert } from 'libframe-docs/utils'
+import { assert } from 'vikepress'
 import { P, Link, Info, ReadingRecommendation } from 'vikepress'
 
 function DataArchitecture({

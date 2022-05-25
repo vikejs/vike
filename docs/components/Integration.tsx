@@ -1,7 +1,7 @@
 export { Integration }
 
 import React from 'react'
-import { assert } from 'libframe-docs/utils'
+import { assert } from 'vikepress'
 import { Invitation } from './Invitation'
 
 function Integration({ toolTypeName }: { toolTypeName: string }) {
