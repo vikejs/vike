@@ -1,5 +1,5 @@
 import { setPageFilesAsync } from '../../shared/getPageFiles'
-import { assert, assertUsage } from '../utils'
+import { assert, assertUsage, debugGlob } from '../utils'
 import { getViteDevServer } from '../globalContext'
 //import { pathToFileURL } from 'url'
 import { ViteDevServer } from 'vite'
@@ -10,6 +10,7 @@ async function getPageFilesExports(): Promise<unknown> {
   const viteDevServer = getViteDevServer()
   if (viteDevServer) {
     const pageFilesExports = await dev(viteDevServer)
+    debugGlob('Page files found: ', pageFilesExports)
     return pageFilesExports
   }
   //const pageFilesExports = await distAutoImporterDisabled()

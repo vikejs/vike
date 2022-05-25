@@ -5,6 +5,7 @@ import { assert, isSSR_options } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { assertViteConfig } from './config/assertConfig'
+import { debugGlob } from '../../utils'
 
 const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
 
@@ -37,7 +38,9 @@ async function getCode(config: ResolvedConfig, isForClientSide: boolean) {
   const isBuild = command === 'build'
   assertViteConfig(config)
   const globRoots = await getGlobRoots(config)
+  debugGlob('Glob roots: ', globRoots)
   const content = getContent(globRoots, isBuild, isForClientSide)
+  debugGlob('Glob imports: ', content)
   return content
 }
 
