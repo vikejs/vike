@@ -3,6 +3,7 @@ export { devConfig }
 import type { Plugin } from 'vite'
 import { apply, addSsrMiddleware } from '../utils'
 import { pageFileExtensions } from './generateImportGlobs/pageFileExtensions'
+import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 
 function devConfig(): Plugin[] {
   return [
@@ -25,6 +26,15 @@ function devConfig(): Plugin[] {
           ],
         },
       }),
+      async configResolved(config) {
+        const globRoots = await getGlobRoots(config)
+        const fsAllow = config.server.fs.allow
+        globRoots
+          .filter(({ pkgName }) => pkgName)
+          .forEach(({ pkgRootResolved }) => {
+            fsAllow.push(pkgRootResolved)
+          })
+      },
     },
     {
       name: 'vite-plugin-ssr:dev:ssr-middleware',

@@ -1,10 +1,9 @@
 export { generateImportGlobs }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, isSSR_options } from '../utils'
+import { assert, isSSR_options, isNotNullish } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
-import { assertViteConfig } from './config/assertConfig'
 import { debugGlob } from '../../utils'
 
 const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
@@ -36,15 +35,15 @@ async function getCode(config: ResolvedConfig, isForClientSide: boolean) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
   const isBuild = command === 'build'
-  assertViteConfig(config)
   const globRoots = await getGlobRoots(config)
   debugGlob('Glob roots: ', globRoots)
-  const content = getContent(globRoots, isBuild, isForClientSide)
+  const includePaths = globRoots.map((g) => g.includePath)
+  const content = getContent(includePaths.filter(isNotNullish), isBuild, isForClientSide)
   debugGlob('Glob imports: ', content)
   return content
 }
 
-function getContent(globRoots: string[], isBuild: boolean, isForClientSide: boolean) {
+function getContent(includePaths: string[], isBuild: boolean, isForClientSide: boolean) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
 export const pageFilesLazy = {};
@@ -56,19 +55,19 @@ export const isGeneratedFile = true;
 
 `
 
-  fileContent += [getGlobs(globRoots, isBuild, 'page'), getGlobs(globRoots, isBuild, 'page.route'), ''].join('\n')
+  fileContent += [getGlobs(includePaths, isBuild, 'page'), getGlobs(includePaths, isBuild, 'page.route'), ''].join('\n')
   if (isForClientSide) {
     fileContent += [
-      getGlobs(globRoots, isBuild, 'page.client'),
-      getGlobs(globRoots, isBuild, 'page.client', 'extractExportNames'),
-      getGlobs(globRoots, isBuild, 'page.server', 'extractExportNames'),
-      getGlobs(globRoots, isBuild, 'page', 'extractExportNames'),
-      getGlobs(globRoots, isBuild, 'page.server', 'extractStyles'),
+      getGlobs(includePaths, isBuild, 'page.client'),
+      getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
+      getGlobs(includePaths, isBuild, 'page.server', 'extractExportNames'),
+      getGlobs(includePaths, isBuild, 'page', 'extractExportNames'),
+      getGlobs(includePaths, isBuild, 'page.server', 'extractStyles'),
     ].join('\n')
   } else {
     fileContent += [
-      getGlobs(globRoots, isBuild, 'page.server'),
-      getGlobs(globRoots, isBuild, 'page.client', 'extractExportNames'),
+      getGlobs(includePaths, isBuild, 'page.server'),
+      getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
     ].join('\n')
   }
 
@@ -76,7 +75,7 @@ export const isGeneratedFile = true;
 }
 
 function getGlobs(
-  globRoots: string[],
+  includePaths: string[],
   isBuild: boolean,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
   query: 'extractExportNames' | 'extractStyles' | '' = '',
@@ -116,7 +115,7 @@ function getGlobs(
 
   const varNameLocals: string[] = []
   return [
-    ...globRoots.map((globRoot, i) => {
+    ...includePaths.map((globRoot, i) => {
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
       const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
