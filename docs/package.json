@@ -9,12 +9,11 @@
     "@types/react": "^17.0.9",
     "@types/react-dom": "^17.0.6",
     "balloon-css": "^1.2.0",
-    "libframe-docs": "workspace:*",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "typescript": "^4.3.2",
-    "vite": "^2.8.4",
-    "vikepress": "^0.0.2"
+    "vikepress": "^0.0.4",
+    "vite": "^2.8.4"
   },
   "type": "module"
 }
