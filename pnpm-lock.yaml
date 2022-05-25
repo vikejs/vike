@@ -143,7 +143,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vikepress: ^0.0.2
+      vikepress: ^0.0.4
       vite: npm:@brillout/vite@3.0.0-pr-8217.1
     dependencies:
       '@mdx-js/react': 1.6.22_react@17.0.2
@@ -155,7 +155,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.6.4
-      vikepress: 0.0.2
+      vikepress: 0.0.4
       vite: /@brillout/vite/3.0.0-pr-8217.1
 
   examples/base-url:
@@ -12136,8 +12136,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.2:
-    resolution: {integrity: sha512-Z82cEiIQxGY4oc4BjYT6oR0I1yqTZZHQrmyMm+tiuT+87WjO7WznWpm8W6UG0lkmkoXTH1jywarVkFhTHBxQEQ==}
+  /vikepress/0.0.4:
+    resolution: {integrity: sha512-OKx5NjV7M6yBzUYDuxH74yiP3DV31yB334S8C5XiZep9Bd5ZbD64ez3lxI6dKqD/EH3w8ozjgLdy6feDIJvicg==}
     hasBin: true
     dependencies:
       '@mdx-js/mdx': 2.1.1
