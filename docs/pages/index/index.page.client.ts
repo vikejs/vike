@@ -1,3 +1,2 @@
-import 'libframe-docs/renderer/_default.page.client'
-import 'libframe-docs/landing-page/features/FeatureList.client'
+import 'vikepress/client/initFeatureList'
 import './ScaffoldCallToAction.client'
