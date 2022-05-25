@@ -9,6 +9,7 @@ function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): 
 
   const vitePluginSsr: VpsConfig = {
     disableBuildChaining: fromPluginOptions.disableBuildChaining ?? fromViteConfig.disableBuildChaining ?? false,
+    buildOnlyPageFiles: fromPluginOptions.buildOnlyPageFiles ?? fromViteConfig.buildOnlyPageFiles ?? false,
     pageFiles: {
       include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
     },

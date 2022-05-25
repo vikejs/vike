@@ -1,6 +1,7 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import { assert, getOutDir, isObject, isSSR_config } from '../utils'
+import { assertViteConfig } from './config/assertConfig'
 
 export { buildConfig }
 
@@ -9,15 +10,11 @@ function buildConfig(): Plugin {
     name: 'vite-plugin-ssr:buildConfig',
     apply: 'build',
     async config(config) {
-      const input = {
-        ...entryPoints(config),
-        ...normalizeRollupInput(config.build?.rollupOptions?.input),
-      }
       return {
         build: {
           outDir: getOutDir(config),
           manifest: !isSSR_config(config),
-          rollupOptions: { input },
+          rollupOptions: resolveRollupOptions(config),
           // @ts-ignore
           polyfillDynamicImport: false,
         },
@@ -29,7 +26,46 @@ function buildConfig(): Plugin {
         //*/
       }
     },
+    configResolved(c) {
+      c.build.rollupOptions.output = {
+        file: '/home/romuuu/.prog/files/code/vikepress/dist/client/pageFiles.js',
+        //exports: 'named' as const
+    }
+    }
   }
+}
+
+function resolveRollupOptions(config: UserConfig) {
+  assertViteConfig(config)
+  if (config.vitePluginSsr.buildOnlyPageFiles) {
+    return {
+      /*
+      input: {
+        pageFiles: isSSR_config(config)
+          ? 'virtual:vite-plugin-ssr:pageFiles:server'
+          : 'virtual:vite-plugin-ssr:pageFiles:client',
+      },
+      */
+      input:  'virtual:vite-plugin-ssr:pageFiles:client',
+      output: {
+        file: '/home/romuuu/.prog/files/code/vikepress/dist/client/pageFiles.js',
+        //exports: 'named' as const
+        /*
+      external: ['pageFilesLazy'],
+        format: 'iife' as const,
+        name: 'MyBundle',
+        globals: {
+          pageFilesLazy: 'pageFilesLazy',
+        },
+        */
+      },
+    }
+  }
+  const input = {
+    ...entryPoints(config),
+    ...normalizeRollupInput(config.build?.rollupOptions?.input),
+  }
+  return { input }
 }
 
 function entryPoints(config: UserConfig): Record<string, string> {
