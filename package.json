@@ -51,7 +51,8 @@
   },
   "pnpm": {
     "overrides": {
-      "vite": "npm:@brillout/vite@3.0.0-pr-8217.1"
+      "vite": "npm:@brillout/vite@3.0.0-pr-8217.1",
+      "vite-plugin-ssr": "link:./vite-plugin-ssr/"
     }
   }
 }
