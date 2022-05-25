@@ -21,7 +21,7 @@ async function warn404(pageContext: {
     assertWarning(
       false,
       [
-        `URL \`${urlPathname}\` is not matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing and set the environment variable \`DEBUG=vps:routing\` for more information. This warning is not shown in production. Your page routes:`,
+        `URL \`${urlPathname}\` is not matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing for more information. This warning is not shown in production. Your page routes:`,
         ...getPagesAndRoutesInfo(pageRoutes),
       ].join('\n'),
       { onlyOnce: false },
