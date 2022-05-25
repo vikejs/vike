@@ -1,5 +1,5 @@
 import React from 'react'
-import type { HeadingDefinition, HeadingWithoutLink } from 'libframe-docs/headings'
+import type { HeadingDefinition, HeadingWithoutLink } from 'vikepress'
 
 export { headingsWithoutLink }
 export { headings }

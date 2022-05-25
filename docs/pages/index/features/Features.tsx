@@ -1,5 +1,5 @@
 import React from 'react'
-import { Emoji } from 'libframe-docs/utils/Emoji'
+import { Emoji } from 'vikepress'
 import { FeatureList } from 'vikepress'
 import Control from './Control.mdx'
 import FullFleged from './FullFledged.mdx'
