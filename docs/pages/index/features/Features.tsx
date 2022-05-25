@@ -1,6 +1,6 @@
 import React from 'react'
 import { Emoji } from 'libframe-docs/utils/Emoji'
-import { FeatureList } from 'libframe-docs/landing-page/features/FeatureList'
+import { FeatureList } from 'vikepress'
 import Control from './Control.mdx'
 import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'

@@ -1,8 +1,8 @@
 import React from 'react'
 import { Header, MobileCallToAction } from './Header'
 import { Features } from './features/Features'
-import { ContactUs } from 'libframe-docs/landing-page/ContactUs'
-import { HorizontalLine } from 'libframe-docs/landing-page/HorizontalLine'
+import { ContactUs } from 'vikepress'
+import { HorizontalLine } from 'vikepress'
 
 export { Page }
 
