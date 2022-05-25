@@ -43,6 +43,11 @@ type VpsConfig = {
    * @internal
    * Do not use without having talked to a vite-plugin-ssr maintainer.
    */
+  buildOnlyPageFiles?: boolean
+  /**
+   * @internal
+   * Do not use without having talked to a vite-plugin-ssr maintainer.
+   */
   disableBuildChaining?: boolean
 }
 

@@ -18,7 +18,7 @@ function chainBuildSteps(): Plugin {
     },
     async writeBundle() {
       assertViteConfig(config)
-      if (config.vitePluginSsr.disableBuildChaining) {
+      if (config.vitePluginSsr.disableBuildChaining || 1) {
         return
       }
       const { configFile, root } = config
@@ -28,7 +28,7 @@ function chainBuildSteps(): Plugin {
         if (!(config as any)[triggedByChainBuildSteps]) {
           skip2()
         }
-        if (config.vitePluginSsr.prerender) {
+        if (config.vitePluginSsr.prerender && !config.vitePluginSsr.buildOnlyPageFiles) {
           assert(configFile)
           await prerender({ configFile, root })
         }
