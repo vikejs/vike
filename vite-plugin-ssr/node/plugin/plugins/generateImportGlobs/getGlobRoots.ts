@@ -1,16 +1,19 @@
 export { getGlobRoots }
 
 import fs from 'fs'
-import { assertUsage, toPosixPath, assert, getRoot } from '../../utils'
+import { assertUsage, assertPosixPath, toPosixPath, assert, getRoot } from '../../utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
+import { isNotNullish } from '../../../../utils/isNotNullish'
 
 async function getGlobRoots(config: { root: string; vitePluginSsr: { pageFiles?: { include?: string[] } } }) {
   const root = getRoot(config)
   const includePageFiles = resolveConfig(config.vitePluginSsr.pageFiles)
   const entriesDefault = ['/']
-  const entriesInclude = await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))
+  const entriesInclude = (
+    await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))
+  ).filter(isNotNullish)
   const globRoots = [...entriesDefault, ...entriesInclude]
   return globRoots
 }
@@ -31,7 +34,7 @@ function normalizeIncludePaths(includePath: string): string {
   return includePath
 }
 
-async function createIncludePath(pkgName: string, root: string): Promise<string> {
+async function createIncludePath(pkgName: string, root: string): Promise<string | null> {
   assertUsage(
     isNpmName(pkgName),
     `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`,
@@ -39,6 +42,16 @@ async function createIncludePath(pkgName: string, root: string): Promise<string>
   const { pkgJson, pkgRoot } = resolvePackage(pkgName, { preserveSymlinks: true, root })
   const pageFilesDir = pkgJson['vite-plugin-ssr']?.pageFilesDir ?? ''
   const pkgRootResolved = resolvePackageRoot(pkgName, { preserveSymlinks: false, root })
+
+  {
+    assertPosixPath(root)
+    assertPosixPath(pkgRootResolved)
+    const appRootToPkgRoot = path.posix.relative(root, pkgRoot)
+    const appRootIncludedInPkgRoot = !appRootToPkgRoot.startsWith('..')
+    if (appRootIncludedInPkgRoot) {
+      return null
+    }
+  }
 
   const crawlRoot = path.posix.join(pkgRootResolved, pageFilesDir)
   assertUsage(
