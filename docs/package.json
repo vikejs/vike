@@ -1,8 +1,7 @@
 {
   "scripts": {
-    "dev": "cd ../libframe/docs/ && pnpm run dev",
-    "prod": "cd ../libframe/docs/ && pnpm run prod",
-    "build": "cd ../libframe/docs/ && pnpm run build"
+    "dev": "vikepress dev",
+    "preview": "vikepress preview"
   },
   "dependencies": {
     "@mdx-js/react": "1.6.22",
@@ -14,7 +13,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "typescript": "^4.3.2",
-    "vite": "^2.8.4"
+    "vite": "^2.8.4",
+    "vikepress": "^0.0.2"
   },
   "type": "module"
 }
