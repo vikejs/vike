@@ -46,8 +46,7 @@ async function createIncludePath(pkgName: string, root: string): Promise<string 
   {
     assertPosixPath(root)
     assertPosixPath(pkgRootResolved)
-    const appRootToPkgRoot = path.posix.relative(root, pkgRoot)
-    const appRootIncludedInPkgRoot = !appRootToPkgRoot.startsWith('..')
+    const appRootIncludedInPkgRoot = root.startsWith(pkgRootResolved)
     if (appRootIncludedInPkgRoot) {
       return null
     }
