@@ -2,7 +2,7 @@ export { DataArchitecture }
 
 import React from 'react'
 import { assert } from 'libframe-docs/utils'
-import { P, Link, Info, ReadingRecommendation } from 'libframe-docs/components'
+import { P, Link, Info, ReadingRecommendation } from 'vikepress'
 
 function DataArchitecture({
   toolName,
