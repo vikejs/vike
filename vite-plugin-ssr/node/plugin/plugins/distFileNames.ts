@@ -7,7 +7,6 @@ import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
 import { getFilesystemRoute } from '../../../shared/route/resolveFilesystemRoute'
 import { extractStylesRE } from './extractStylesPlugin'
-import { assertViteConfig } from './config/assertConfig'
 
 function distFileNames(): Plugin {
   return {
@@ -16,18 +15,8 @@ function distFileNames(): Plugin {
     enforce: 'post',
     async configResolved(config) {
       const root = getRoot(config)
-      assertViteConfig(config)
-      if (config.vitePluginSsr.buildOnlyPageFiles) {
-        return
-        /*
-        setChunkFileNames(config, root, () => '[name].js')
-        setAssetFileNames(config, () => '[name][extname]')
-        config.build.rollupOptions.output = { entryFileNames: '[name].js' }
-        */
-      } else {
-        setChunkFileNames(config, root, getChunkFileName)
-        setAssetFileNames(config, getAssetFileName)
-      }
+      setChunkFileNames(config, root, getChunkFileName)
+      setAssetFileNames(config, getAssetFileName)
     },
   }
 }
