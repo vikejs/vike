@@ -34,19 +34,18 @@ function createDebugger(namespace: `vps:${string}`) {
 }
 
 function str(msg: unknown, { noneMsg = 'None' }): string {
-  const padding = '   - '
-  let msgStr: string
-  const str = (thing: unknown): string => padding + (typeof thing === 'string' ? thing : JSON.stringify(thing))
-  if (typeof msg !== 'string') {
-    msgStr = str(msg)
-  } else if (Array.isArray(msg)) {
-    if (msg.length === 0) {
-      msgStr = noneMsg
-    } else {
-      msgStr = '\n' + msg.map(str).join('\n')
-    }
-  } else {
-    msgStr = str(msg)
+  if (typeof msg === 'string') {
+    return msg
   }
-  return msgStr
+  if (Array.isArray(msg)) {
+    if (msg.length === 0) {
+      return noneMsg
+    }
+    return '\n' + msg.map(strLine).join('\n')
+  }
+  return strLine(msg)
+}
+
+function strLine(entry: unknown) {
+  return '   - ' + (typeof entry === 'string' ? entry : JSON.stringify(entry))
 }
