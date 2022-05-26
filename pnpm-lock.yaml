@@ -136,24 +136,24 @@ importers:
     specifiers:
       '@mdx-js/react': 1.6.22
       '@types/node': ^15.12.1
-      '@types/react': ^17.0.9
+      '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
       balloon-css: ^1.2.0
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vikepress: ^0.0.6
+      vikepress: ^0.0.7
       vite: npm:@brillout/vite@3.0.0-pr-8217.1
     dependencies:
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@types/node': 15.14.9
-      '@types/react': 17.0.44
+      '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
       balloon-css: 1.2.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.6.4
-      vikepress: 0.0.6
+      vikepress: 0.0.7
       vite: /@brillout/vite/3.0.0-pr-8217.1
 
   examples/base-url:
@@ -2472,7 +2472,7 @@ packages:
   /@types/react-dom/17.0.16:
     resolution: {integrity: sha512-DWcXf8EbMrO/gWnQU7Z88Ws/p16qxGpPyjTKTpmBSFKeE+HveVubqGO1CVK7FrwlWD5MuOcvh8gtd0/XO38NdQ==}
     dependencies:
-      '@types/react': 17.0.44
+      '@types/react': 17.0.45
     dev: false
 
   /@types/react-dom/18.0.3:
@@ -2488,12 +2488,20 @@ packages:
       csstype: 3.0.11
     dev: false
 
+  /@types/react/17.0.45:
+    resolution: {integrity: sha512-YfhQ22Lah2e3CHPsb93tRwIGNiSwkuz1/blk4e6QrWS0jQzCSNbGLtOEYhPg02W0yGTTmpajp7dCTbBAMN3qsg==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.2
+      csstype: 3.1.0
+    dev: false
+
   /@types/react/18.0.8:
     resolution: {integrity: sha512-+j2hk9BzCOrrOSJASi5XiOyBbERk9jG5O73Ya4M0env5Ixi6vUNli4qy994AINcEF+1IEHISYFfIT4zwr++LKw==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
-      csstype: 3.0.11
+      csstype: 3.1.0
 
   /@types/resolve/1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -4512,6 +4520,10 @@ packages:
 
   /csstype/3.0.11:
     resolution: {integrity: sha512-sa6P2wJ+CAbgyy4KFssIb/JNMLxFvKF1pCYCSXS8ZMuqZnMsrxqI2E5sPyoTpxoPU/gVZMzr2zjOfg8GIZOMsw==}
+    dev: false
+
+  /csstype/3.1.0:
+    resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
 
   /cwd/0.10.0:
     resolution: {integrity: sha1-FyQAaUBXwioTsM8WFix+S3p/5Wc=}
@@ -12134,8 +12146,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.6:
-    resolution: {integrity: sha512-7A2U1Tl123C+09V/Da5olZOgdPWHSOuU54W4G+ADlBgOBtqSKEska1riQsj9bSEosfYMaZPXbTO4h4Ujk5I5eg==}
+  /vikepress/0.0.7:
+    resolution: {integrity: sha512-p8W/VYsH+nIL2nbaMvUxWsC40R6EIuG0oJZo54gs7KKl0+c0c76u+avJlKp+ijdZXQsgctJUWWPKIjV0Tm4+Qw==}
     hasBin: true
     dependencies:
       '@mdx-js/mdx': 2.1.1
