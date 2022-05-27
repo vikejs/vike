@@ -39,15 +39,17 @@ async function retrieveAssetsProd(
   assert(clientManifest)
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
-    assert(!onlyAssets || id.includes('.page.server.'))
-    if (onlyAssets) {
+    if (onlyAssets && id.includes('.page.server.')) {
       id = extractStylesAddQuery(id)
     }
     const entry = getManifestEntry(id, clientManifest)
-    assertUsage(
-      entry,
-      `You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord. (The entry ${id} is missing in the manifest.)`,
-    )
+    if (!entry) {
+      console.log(clientManifest)
+      assertUsage(
+        entry,
+        `You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord. (The entry ${id} is missing in the client manifest which is printed above.)`,
+      )
+    }
     /*
     assertWarning(
       entry,
