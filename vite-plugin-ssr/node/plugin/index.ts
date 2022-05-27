@@ -42,9 +42,11 @@ function plugin(vpsConfig?: VpsConfig): any {
     suppressRollupWarning(),
     retrieveDevServer(),
     distEntriesPlugin(),
-    GlobPlugin() as any,
+    GlobPlugin({
+      restoreQueryExtension: true,
+    }),
   ]
-  return plugins as any
+  return plugins
 }
 
 // Enable `const ssr = require('vite-plugin-ssr/plugin')`
