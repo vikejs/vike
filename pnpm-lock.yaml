@@ -954,7 +954,7 @@ importers:
       typescript: 4.6.4
       vite: npm:@brillout/vite@3.0.0-pr-8217.1
       vite-plugin-dist-importer: ^0.1.9
-      vite-plugin-glob: ^0.3.2
+      vite-plugin-glob: 0.2.8
     dependencies:
       '@brillout/json-s': 0.4.6
       '@brillout/libassert': 0.5.8
@@ -967,7 +967,7 @@ importers:
       resolve: 1.22.0
       symlink-dir: 5.0.1
       vite-plugin-dist-importer: 0.1.9
-      vite-plugin-glob: 0.3.2
+      vite-plugin-glob: 0.2.8
     devDependencies:
       '@brillout/part-regex': 0.1.2
       '@types/debug': 4.1.7
@@ -12175,8 +12175,8 @@ packages:
     resolution: {integrity: sha512-b6H9/Rdj/TSMtPpBdVLxuDT3rmCVmuim3NdfUX71PS25AZNPL+DyTR1k2hPW+1XdeSt8ajgdG9udpSx1X5vUVg==}
     dev: false
 
-  /vite-plugin-glob/0.3.2:
-    resolution: {integrity: sha512-RoOm67e9eQ7bbWfnVbErjMcqnWCLjNtLy/fhOu8eqWbNi8Pz4T/co2j8uF9v2/P6KaGz02+4jFL83lDCAZ5StQ==}
+  /vite-plugin-glob/0.2.8:
+    resolution: {integrity: sha512-Xs9rlEdDW33yfs72Iugu/y3H0AK48DkldM8t5i+LAlXF3GaKA9oFerWZih7qp5cibg4JI99wnMSYHcj/awP7Eg==}
     dependencies:
       acorn: 8.7.1
       fast-glob: 3.2.11
