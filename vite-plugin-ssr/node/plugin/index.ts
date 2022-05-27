@@ -43,6 +43,7 @@ function plugin(vpsConfig?: VpsConfig): any {
     retrieveDevServer(),
     distEntriesPlugin(),
     GlobPlugin({
+      // @ts-expect-error
       restoreQueryExtension: true,
     }),
   ]
