@@ -13,7 +13,7 @@
     "resolve": "^1.22.0",
     "symlink-dir": "^5.0.1",
     "vite-plugin-dist-importer": "^0.1.9",
-    "vite-plugin-glob": "^0.2.6"
+    "vite-plugin-glob": "^0.3.2"
   },
   "scripts": {
     "build": "rm -rf dist/ && tsc -b",
