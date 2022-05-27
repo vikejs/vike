@@ -1,4 +1,5 @@
 export { createDebugger }
+export { isDebugEnabled }
 export type { Debug }
 
 import debug from 'debug'
@@ -15,23 +16,29 @@ globalThis.__vite_plugin_ssr_createDebugger = createDebugger
 
 type Debug = ReturnType<typeof createDebugger>
 
-function createDebugger(namespace: `vps:${string}`) {
+type Namespace = `vps:${string}`
+
+function createDebugger(namespace: Namespace) {
+  const log = debug(namespace)
+  return (name: string, msg?: unknown, options?: { noneMsg?: string }) => {
+    if (!isDebugEnabled(namespace)) return
+    const msgStr = msg && strMsg(msg, options ?? {})
+    if (msgStr) {
+      log(name, msgStr)
+    } else {
+      log(name)
+    }
+  }
+}
+
+function isDebugEnabled(namespace: Namespace) {
   let DEBUG: undefined | string
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
     DEBUG = process.env.DEBUG
   } catch {}
-
-  const log = debug(namespace)
-
-  return (name: string, msg?: unknown, options?: { noneMsg?: string }) => {
-    if (!DEBUG?.includes(namespace)) {
-      return
-    }
-    const msgStr = msg && strMsg(msg, options ?? {})
-    log(name, msgStr)
-  }
+  return DEBUG?.includes(namespace)
 }
 
 function strMsg(msg: unknown, { noneMsg = 'None' }: { noneMsg?: string }): string {

@@ -10,11 +10,15 @@ import type { ResolvedId } from 'rollup'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
 import { parseEsModules, EsModules } from '../parseEsModules'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
+import { createDebugger, isDebugEnabled } from '../../utils'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
-const DEBUG = process.env.DEBUG?.includes('extractStyles')
+
+const debugNamespace = 'vps:extractStyles'
+const debug = createDebugger(debugNamespace)
+const debugEnabled = isDebugEnabled(debugNamespace)
 
 function extractStylesPlugin(): Plugin[] {
   let root: string
@@ -32,10 +36,9 @@ function extractStylesPlugin(): Plugin[] {
         }
         assert(!isServerSide)
         const esModules = await parseEsModules(src)
-        if (DEBUG) {
-          console.log('')
-          console.log('SOURCE TRANSFORMED (`transform()` hook)')
-          console.log('id: ' + id)
+        debug(`source transformed: ${id}`)
+        if( id.includes('getConfig') ) {
+          console.log(id, src)
         }
         const imports = getImports(esModules)
         const code = imports.join('\n')
@@ -74,7 +77,7 @@ function extractStylesPlugin(): Plugin[] {
 
         // Include CSS(/LESS/SCSS/...) files
         if (cssLangs.test(id)) {
-          debug('INCLUDED', id, importer)
+          debugOperation('INCLUDED', id, importer)
           return resolution
         }
 
@@ -115,7 +118,7 @@ function extractStylesPlugin(): Plugin[] {
         }
       },
       config() {
-        if (DEBUG) {
+        if (debugEnabled) {
           return { logLevel: 'silent' }
         }
       },
@@ -143,7 +146,7 @@ function isTransformTarget(id: string, isServerSide: boolean) {
 }
 
 function emptyModule(id: string, importer: string) {
-  debug('NUKED', id, importer)
+  debugOperation('NUKED', id, importer)
   return EMPTY_MODULE_ID
 }
 function transformedId(id: string, importer: string) {
@@ -151,7 +154,7 @@ function transformedId(id: string, importer: string) {
   if (!fileExtension) {
     return emptyModule(id, importer)
   }
-  debug('TRANSFORMED', id, importer)
+  debugOperation('TRANSFORMED', id, importer)
   return extractStylesAddQuery(id)
 }
 
@@ -161,38 +164,41 @@ function getImports(esModules: EsModules): string[] {
     return []
   }
   const imports: string[] = []
-  importStatements
-    .filter(
-      ({ a, n }) =>
-        // Remove assertions such as:
-        //  - `import json from './json.json' assert { type: 'json' }`
-        //  - `import('asdf', { assert: { type: 'json' }})
-        a === -1 &&
-        // I'm not sure why `n` can be `undefined`
-        n !== undefined,
-    )
-    .map(({ n }) => n!)
+  importStatements.forEach(({ a, n }) => {
+    // I don't know why `n` can be `undefined`
+    if (n === undefined) return
+    const importName = n
+    let skipImport = false
+
+    // Remove assertions such as:
+    //  - `import json from './json.json' assert { type: 'json' }`
+    //  - `import('asdf', { assert: { type: 'json' }})
+    if (a !== -1) {
+      skipImport = true
+    }
     // Remove modifiers such as `import logoUrl from './logo.svg?url'` or `'./logo.svg?raw'`
-    .filter((importee) => !importee.includes('?'))
+    if (importName.includes('?')) {
+      skipImport = true
+    }
     /* We cannot do this because of aliased imports
-    .filter((importee) => importee.startsWith('.'))
+    if (!importName.startsWith('.')) {
+      skipImport = true
+    }
     //*/
     // It seems like we need to manually nuke `react`; it seems that what the React runtime `@vitejs/react` injects is not picked up by our `resolveId` hook.
-    .filter((importee) => !/^react($|\/)/.test(importee))
-    .forEach((importee) => {
-      DEBUG && console.log('importee: ' + importee)
-      assert(importee)
-      imports.push(`import '${importee}';`)
-    })
+    if (/^react($|\/)/.test(importName)) {
+      skipImport = true
+    }
+
+    if (!skipImport) {
+      imports.push(`import '${importName}';`)
+    }
+
+    debug(`import ${skipImport ? 'SKIPPED' : 'INCLUDED'} : ${importName}`)
+  })
   return imports
 }
 
-function debug(operation: 'NUKED' | 'INCLUDED' | 'TRANSFORMED', id: string, importer: string) {
-  if (!DEBUG) {
-    return
-  }
-  console.log('')
-  console.log(`IMPORT ${operation} (\`resolveId()\` hook)`)
-  console.log('id: ' + id)
-  console.log('importer: ' + importer)
+function debugOperation(operation: 'NUKED' | 'INCLUDED' | 'TRANSFORMED', id: string, importer: string) {
+  debug(`import ${operation}: ${id} (importer: ${importer})`)
 }
