@@ -56,7 +56,8 @@ function getIsEsmOutput(config: {
   if (Array.isArray(output)) {
     return null
   } else {
-    if (output.format === 'es') {
+    const { format } = output
+    if (format === 'es' || format === 'esm' || format === 'module') {
       return true
     }
   }
