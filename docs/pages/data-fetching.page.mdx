@@ -159,7 +159,7 @@ our data fetching code is always executed in Node.js.
 This is convenient as it makes writing data fetching code easier.
 
 That said, if we use [Client Routing](/useClientRouter),
-then we use the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
+then we have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
 
 In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing) but,
 if we want to minimize requests made to our Node.js server,
