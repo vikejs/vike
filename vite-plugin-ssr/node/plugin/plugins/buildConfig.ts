@@ -48,6 +48,7 @@ function entryPoints(config: UserConfig): Record<string, string> {
 
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
+  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   return require.resolve(`../../../../../${filePath}`)
 }
 

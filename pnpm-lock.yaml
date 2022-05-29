@@ -911,7 +911,7 @@ importers:
       symlink-dir: ^5.0.1
       typescript: 4.6.4
       vite: npm:@brillout/vite@3.0.0-pr-8217.1
-      vite-plugin-dist-importer: ^0.1.9
+      vite-plugin-dist-importer: ^0.2.0
       vite-plugin-glob: 0.2.8
     dependencies:
       '@brillout/json-s': 0.4.6
@@ -924,7 +924,7 @@ importers:
       picocolors: 1.0.0
       resolve: 1.22.0
       symlink-dir: 5.0.1
-      vite-plugin-dist-importer: 0.1.9
+      vite-plugin-dist-importer: 0.2.0
       vite-plugin-glob: 0.2.8
     devDependencies:
       '@brillout/part-regex': 0.1.2
@@ -11758,8 +11758,8 @@ packages:
       - supports-color
     dev: false
 
-  /vite-plugin-dist-importer/0.1.9:
-    resolution: {integrity: sha512-b6H9/Rdj/TSMtPpBdVLxuDT3rmCVmuim3NdfUX71PS25AZNPL+DyTR1k2hPW+1XdeSt8ajgdG9udpSx1X5vUVg==}
+  /vite-plugin-dist-importer/0.2.0:
+    resolution: {integrity: sha512-zPCLbIN/5Qi0MRopXiY2opUoCsAPnbSmWTzXL0bNkwrEIwUZ4Xd09+ITk3mmyacVRaqaQJFcrTw+VUhX0i1DIw==}
     dev: false
 
   /vite-plugin-glob/0.2.8:
