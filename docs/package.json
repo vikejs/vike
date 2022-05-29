@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "vikepress dev",
-    "preview": "vikepress preview"
+    "preview": "vikepress build && vikepress preview"
   },
   "dependencies": {
     "@mdx-js/react": "1.6.22",
@@ -12,7 +12,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "typescript": "^4.3.2",
-    "vikepress": "^0.0.7",
+    "vikepress": "^0.0.10",
     "vite": "^2.8.4"
   },
   "type": "module"
