@@ -37,9 +37,6 @@ function extractStylesPlugin(): Plugin[] {
         assert(!isServerSide)
         const esModules = await parseEsModules(src)
         debug(`source transformed: ${id}`)
-        if( id.includes('getConfig') ) {
-          console.log(id, src)
-        }
         const imports = getImports(esModules)
         const code = imports.join('\n')
         return removeSourceMap(code)
