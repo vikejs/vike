@@ -41,7 +41,7 @@ function plugin(vpsConfig?: VpsConfig): any {
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     retrieveDevServer(),
-    distEntriesPlugin(),
+    ...distEntriesPlugin(),
     GlobPlugin({
       // @ts-expect-error
       restoreQueryExtension: true,
