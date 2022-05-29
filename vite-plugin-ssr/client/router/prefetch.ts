@@ -3,6 +3,7 @@ import { isExternalLink } from './utils/isExternalLink'
 import { loadPageFilesClientSide } from '../../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
+import { disableClientRouting } from './useClientRouter'
 
 export { addLinkPrefetchHandlers, prefetch }
 
@@ -20,7 +21,12 @@ async function prefetch(url: string): Promise<void> {
 
   const { pageId, pageFilesAll } = await getPageId(url)
   if (pageId) {
-    await loadPageFilesClientSide(pageFilesAll, pageId)
+    try {
+      await loadPageFilesClientSide(pageFilesAll, pageId)
+    } catch (err) {
+      disableClientRouting()
+      throw err
+    }
   }
 }
 

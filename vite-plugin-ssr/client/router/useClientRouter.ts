@@ -1,7 +1,17 @@
 export { useClientRouter }
 export { navigate }
+export { disableClientRouting }
 
-import { assert, assertUsage, getCurrentUrl, hasProp, isBrowser, objectAssign, throttle } from './utils'
+import {
+  assert,
+  assertUsage,
+  getCurrentUrl,
+  hasProp,
+  isBrowser,
+  objectAssign,
+  serverSideRouteTo,
+  throttle,
+} from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
@@ -17,6 +27,11 @@ const navigateFnKey = '__vite_plugin_ssr__navigate'
 setupNativeScrollRestoration()
 
 let onPageTransitionStart: Function | null
+
+let disabled = false
+function disableClientRouting() {
+  disabled = true
+}
 
 function useClientRouter() {
   autoSaveScrollPosition()
@@ -51,6 +66,10 @@ function useClientRouter() {
     url: string = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
   ): Promise<void> {
+    if (disabled) {
+      serverSideRouteTo(url)
+    }
+
     const renderingNumber = ++renderingCounter
     assert(renderingNumber >= 1)
 
@@ -201,7 +220,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     assert(url)
     ev.preventDefault()
     if (!(await isClientSideRenderable(url))) {
-      window.location.href = url
+      serverSideRouteTo(url)
       return
     }
 
