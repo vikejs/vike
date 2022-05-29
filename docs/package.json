@@ -15,5 +15,8 @@
     "vikepress": "^0.0.10",
     "vite": "^2.8.4"
   },
+  "devDependencies": {
+    "vite-plugin-ssr": "^0.3.64"
+  },
   "type": "module"
 }

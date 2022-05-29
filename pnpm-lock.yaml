@@ -144,6 +144,7 @@ importers:
       typescript: ^4.3.2
       vikepress: ^0.0.10
       vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
       '@mdx-js/react': 1.6.22_react@17.0.2
       '@types/node': 15.14.9
@@ -155,6 +156,8 @@ importers:
       typescript: 4.6.4
       vikepress: 0.0.10
       vite: /@brillout/vite/3.0.0-pr-8217.1
+    devDependencies:
+      vite-plugin-ssr: link:../vite-plugin-ssr
 
   examples/base-url:
     specifiers:
