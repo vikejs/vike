@@ -8,6 +8,7 @@ import {
   isPlainObject,
   objectAssign,
   getProjectError,
+  serverSideRouteTo,
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -75,11 +76,16 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
+
   {
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = await loadPageFilesClientSide(
-      pageContext._pageFilesAll,
-      pageContextAddendum._pageId,
-    )
+    let loadResult: Awaited<ReturnType<typeof loadPageFilesClientSide>>
+    try {
+      loadResult = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+    } catch (err) {
+      serverSideRouteTo(pageContext.url)
+      throw err
+    }
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = loadResult
     objectAssign(pageContextAddendum, {
       exports,
       exportsAll,
@@ -87,8 +93,10 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
       _pageFilesLoaded: pageFilesLoaded,
     })
   }
+
   objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
+
   return pageContextAddendum
 }
 
