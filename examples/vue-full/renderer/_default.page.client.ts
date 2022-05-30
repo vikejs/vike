@@ -4,7 +4,7 @@ import type { PageContext } from './types'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 
 export const clientRouting = true
-export const prefetchLinks = true
+export const prefetchStaticAssets = { when: 'VIEWPORT' }
 export { render }
 export { onHydrationEnd }
 export { onPageTransitionStart }
