@@ -2,8 +2,7 @@ export { distEntriesPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { distImporter } from 'vite-plugin-dist-importer'
-import { getOutDirs, projectInfo, toPosixPath } from '../utils'
-import path from 'path'
+import { getOutDirs, projectInfo, pathRelative, pathJoin } from '../utils'
 
 function distEntriesPlugin(): Plugin[] {
   let config: ResolvedConfig
@@ -25,7 +24,8 @@ function getImporterCode(config: ResolvedConfig) {
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const importPathAbsolute = require.resolve(`../../../../../dist/cjs/node/plugin/plugins/distEntries/loadDistEntries`)
   const { outDirServer } = getOutDirs(config.build.outDir)
-  const importPath = path.posix.relative(toPosixPath(outDirServer), toPosixPath(importPathAbsolute))
+  const outDirServerAbsolute = pathJoin(config.root, outDirServer)
+  const importPath = pathRelative(outDirServerAbsolute, importPathAbsolute)
   const importerCode = [
     `const { setDistEntries } = require('${importPath}');`,
     'setDistEntries({',
