@@ -77,5 +77,5 @@ function assertInfo(condition: unknown, errorMessage: string): void {
   if (condition) {
     return
   }
-  console.warn(`${infoPrefix} ${errorMessage}`)
+  console.log(`${infoPrefix} ${errorMessage}`)
 }
