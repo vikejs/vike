@@ -1,3 +1,5 @@
+import { Link } from 'vikepress'
+
 Migration Guides for SemVer majors.
 
 For SemVer minor changes, see: [CHANGELOG.md](https://github.com/brillout/vite-plugin-ssr/blob/master/CHANGELOG.md).
@@ -25,7 +27,19 @@ If you use Client Routing:
 
 ```
 
-TODO: mention all options e.g. `onHydrationEnd`, `onBeforeTransition`
+All `useClientRouter()` options are now exports:
+
+```js
+// renderer/_default.page.client.js
+
+export { render }
+export { onHydrationEnd }
+export { onPageTransitionStart }
+export { onPageTransitionEnd }
+export { prefetchStaticAssets } // (instead of `prefetchLinks`)
+```
+
+See <Link href="/.page.client.js" />.
 
 ### Deprecated: `getPage()`
 

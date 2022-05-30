@@ -230,11 +230,13 @@ useClientRouter({
 ## Link prefetching
 
 By default,
-when the user hovers his mouse over a link `<a href="/some-url">`, the static assets of the page `/some-url` are loaded.
+the static assets of `/some-url` are loaded as soon as the user hovers the mouse over a link `<a href="/some-url">`.
 This means that static assets are often already loaded before even the user clicks on the link.
 
-We can prefetch even more eagerly by setting `useClientRouter({ prefetchLinks: true })`: the links are then prefetched as soon as they appear in the user's browser viewport.
+We can prefetch even more eagerly by using viewport prefetching: the links are then prefetched as soon as they appear in the user's browser viewport. To enable viewport prefetching, set `useClientRouter({ prefetchLinks: true })`:
+
+> Viewport prefetching is disabled in development. (Because it would make Vite transpile all preloaded pages and thus siginficantly slow down development.)
 
 We can override the link prefetching behavior for individual links by setting `<a data-prefetch="false" href="/some-url" />`.
 
-> Only the page's static assets are prefetched; the page's `pageContext` is currently not prefetched but it's a work-in-progress feature, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
+> Only the page's static assets are prefetched; the page's `pageContext` is currently not prefetched, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).

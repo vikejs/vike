@@ -1,13 +1,14 @@
-import { assert, assertUsage, getUrlPathname } from './utils'
+export { addLinkPrefetchHandlers, prefetch }
+
+import { assert, assertUsage } from './utils'
 import { isExternalLink } from './utils/isExternalLink'
 import { loadPageFilesClientSide } from '../../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 import { disableClientRouting } from './useClientRouter'
+import { getPrefetchConfig } from './prefetch/getPrefetchConfig'
+import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched'
 
-export { addLinkPrefetchHandlers, prefetch }
-
-const linkAlreadyPrefetched = new Map<string, true>()
 const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 
 async function prefetch(url: string): Promise<void> {
@@ -30,9 +31,13 @@ async function prefetch(url: string): Promise<void> {
   }
 }
 
-function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
+function addLinkPrefetchHandlers(pageContext: {
+  exports: Record<string, unknown>
+  _isProduction: boolean
+  url: string
+}) {
   // Current URL is already prefetched
-  markAsAlreadyPrefetched(currentUrl)
+  markAsAlreadyPrefetched(pageContext.url)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {
@@ -47,13 +52,14 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
 
     if (isAlreadyPrefetched(url)) return
 
-    let prefetchOptionWithOverride = getPrefetchAttribute(linkTag)
-    if (prefetchOptionWithOverride === null) {
-      prefetchOptionWithOverride = prefetchOption
-    }
-    assert([true, false].includes(prefetchOptionWithOverride))
+    const prefetchConfig = getPrefetchConfig(pageContext, linkTag)
 
-    if (prefetchOptionWithOverride) {
+    if (!prefetchConfig.prefetchStaticAssets) {
+      return
+    } else if (prefetchConfig.prefetchStaticAssets.when === 'HOVER') {
+      linkTag.addEventListener('mouseover', () => prefetch(url))
+      linkTag.addEventListener('touchstart', () => prefetch(url), { passive: true })
+    } else if (prefetchConfig.prefetchStaticAssets.when === 'VIEWPORT') {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -63,37 +69,6 @@ function addLinkPrefetchHandlers(prefetchOption: boolean, currentUrl: string) {
         })
       })
       observer.observe(linkTag)
-    } else {
-      linkTag.addEventListener('mouseover', () => prefetch(url))
-      linkTag.addEventListener('touchstart', () => prefetch(url), { passive: true })
     }
   })
-}
-
-function isAlreadyPrefetched(url: string): boolean {
-  const prefetchUrl = getPrefetchUrl(url)
-  return linkAlreadyPrefetched.has(prefetchUrl)
-}
-function markAsAlreadyPrefetched(url: string): void {
-  const prefetchUrl = getPrefetchUrl(url)
-  linkAlreadyPrefetched.set(prefetchUrl, true)
-}
-function getPrefetchUrl(url: string) {
-  return getUrlPathname(url)
-}
-
-function getPrefetchAttribute(linkTag: HTMLElement): boolean | null {
-  const prefetchAttribute = linkTag.getAttribute('data-prefetch')
-
-  if (prefetchAttribute === null) return null
-  assert(typeof prefetchAttribute === 'string')
-
-  if (prefetchAttribute === 'true') {
-    return true
-  }
-  if (prefetchAttribute === 'false') {
-    return false
-  }
-
-  assertUsage(false, `Wrong data-prefetch value: \`"${prefetchAttribute}"\`; it should be \`"true"\` or \`"false"\`.`)
 }
