@@ -18,13 +18,25 @@ function chainBuildSteps(): Plugin {
     },
     async writeBundle() {
       assertViteConfig(config)
+
       if (config.vitePluginSsr.disableBuildChaining) {
         return
       }
+
       const { configFile, root } = config
-      if (!config.build?.ssr) {
-        await build({ build: { ssr: true }, configFile, root, [triggedByChainBuildSteps as any]: true })
-      } else {
+      const isSSR = !!config.build?.ssr
+
+      if (!isSSR) {
+        const configSSR = {
+          build: { ssr: true },
+          configFile,
+          root,
+          [triggedByChainBuildSteps as any]: true,
+        }
+        await build(configSSR)
+      }
+
+      if (isSSR) {
         if (!(config as any)[triggedByChainBuildSteps]) {
           skip2()
         }
