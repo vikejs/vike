@@ -1,7 +1,7 @@
 export default plugin
 export { plugin }
 export { plugin as ssr }
-export type ConfigVps = { vitePluginSsr: VpsConfig }
+export type { ConfigVps } from './plugins/config'
 
 import type { Plugin } from 'vite'
 import GlobPlugin from 'vite-plugin-glob'

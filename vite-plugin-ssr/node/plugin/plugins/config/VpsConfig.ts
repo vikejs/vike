@@ -1,4 +1,5 @@
 export type { VpsConfig }
+export type ConfigVps = { vitePluginSsr: VpsConfig }
 
 type VpsConfig = {
   /**
@@ -45,4 +46,3 @@ type VpsConfig = {
    */
   disableBuildChaining?: boolean
 }
-
