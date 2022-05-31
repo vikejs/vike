@@ -72,15 +72,10 @@ type GlobalRenderingContext = GlobalContext & {
   _pageFilesAll: PageFile[]
 }
 
-async function renderPage_<PageContextAdded extends {}, PageContextInit extends { url: string }>(
-  pageContextInit: PageContextInit,
+async function renderPage_(
+  pageContextInit: { url: string },
   pageContext: {},
-): Promise<
-  PageContextInit & { errorWhileRendering: unknown } & (
-      | ({ httpResponse: HttpResponse } & PageContextAdded)
-      | ({ httpResponse: null } & Partial<PageContextAdded>)
-    )
-> {
+): Promise<{ url: string; httpResponse: null | HttpResponse; errorWhileRendering: null | unknown }> {
   {
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -220,7 +215,14 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
 }
 
 // `renderPage()` calls `renderPage_()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPage(pageContextInit: Parameters<typeof renderPage_>[0]): ReturnType<typeof renderPage_> {
+async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
+  pageContextInit: PageContextInit,
+): Promise<
+  PageContextInit & { errorWhileRendering: null | unknown } & (
+      | ({ httpResponse: HttpResponse } & PageContextAdded)
+      | ({ httpResponse: null } & Partial<PageContextAdded>)
+    )
+> {
   assertArguments(...arguments)
 
   const pageContextOfError = {}
