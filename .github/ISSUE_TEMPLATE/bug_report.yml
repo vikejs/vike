@@ -10,7 +10,7 @@ body:
     id: bug-description
     attributes:
       label: Description
-      description: Describe the bug. Optional: the error stack is usually enough.
+      description: "Describe the bug. Optional: the error stack is usually enough."
     validations:
       required: true
   - type: input
