@@ -1,10 +1,10 @@
-name: "🔧 Bug Report"
-description: Report a problem integrating with a tool.
-labels: ["Integration :wrench:"]
+name: "Bug Report"
+description: Report a bug.
+labels: ["Bug :boom:"]
 body:
   - type: textarea
     attributes:
       label: Description
-      description: "Describe the problem. For example: I want to use vite-plugin-ssr with tool X but it's not possible because of [problem]."
+      description: "Describe your feature request. For example: as a developer using vite-plugin-ssr I want [goal / wish] so that [benefit]."
     validations:
       required: true
