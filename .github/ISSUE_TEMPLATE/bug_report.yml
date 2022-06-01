@@ -8,3 +8,9 @@ body:
       description: "Describe your feature request. For example: as a developer using vite-plugin-ssr I want [goal / wish] so that [benefit]."
     validations:
       required: true
+  - type: textarea
+    attributes:
+      label: Description 2
+      description: "bla"
+    validations:
+      required: true
