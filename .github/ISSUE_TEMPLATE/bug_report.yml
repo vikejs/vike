@@ -1,33 +1,12 @@
-name: "Bug Report"
+name: ":boom: Bug Report"
 description: Report a bug.
 labels: ["Bug :boom:"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to fill out this bug report!
   - type: textarea
-    id: bug-description
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is. If you intend to submit a PR for this issue, tell us in the description. Thanks!
-      placeholder: Bug description
-    validations:
-      required: true
-  - type: input
-    id: reproduction
-    attributes:
-      label: Reproduction
-      description: Please provide a link via [vite.new](https://vite.new/) or a link to a repo that can reproduce the problem you ran into. A [minimal reproduction](https://stackoverflow.com/help/minimal-reproducible-example) is required. If a report is vague (e.g. just a generic error message) and has no reproduction, it will receive a "need reproduction" label. If no reproduction is provided after 3 days, it will be auto-closed.
-      placeholder: Reproduction
-    validations:
-      required: true
+      label: Description
+      description: Describe the bug. Optional: the error stack is usually enough.
   - type: textarea
-    id: system-info
     attributes:
-      label: System Info
-      description: Output of `npx envinfo --system --npmPackages '{vite,@vitejs/*}' --binaries --browsers`
-      render: shell
-      placeholder: System, Binaries, Browsers
-    validations:
-      required: true
+      label: Error Stack
+      description: Bugs usually throw an error. Paste the full error stack here.
