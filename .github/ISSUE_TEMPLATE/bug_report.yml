@@ -1,16 +1,10 @@
-name: "Bug Report"
-description: Report a bug.
-labels: ["Bug :boom:"]
+name: "🔧 Bug Report"
+description: Report a problem integrating with a tool.
+labels: ["Integration :wrench:"]
 body:
   - type: textarea
-    id: description
     attributes:
       label: Description
-      placeholder: Describe the bug. Optional: the error stack is usually enough.
-  - type: textarea
-    id: error-stack
-    attributes:
-      label: Error Stack
-      placeholder: Bugs usually throw an error. Paste the full error stack here.
+      description: "Describe the problem. For example: I want to use vite-plugin-ssr with tool X but it's not possible because of [problem]."
     validations:
       required: true
