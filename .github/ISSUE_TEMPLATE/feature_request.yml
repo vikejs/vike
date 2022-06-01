@@ -1,0 +1,9 @@
+name: "✨ Feature Request"
+labels: ["Enhancement :sparkles:"]
+body:
+  - type: textarea
+    attributes:
+      label: Feature Request
+      description: "As a developer using vite-plugin-ssr I want [goal / wish] so that [benefit]."
+    validations:
+      required: true

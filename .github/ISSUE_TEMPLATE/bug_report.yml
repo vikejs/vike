@@ -1,0 +1,11 @@
+name: ":boom: Bug Report"
+labels: ["Bug :boom:"]
+body:
+  - type: textarea
+    attributes:
+      label: Bug Description
+      placeholder: Describe the bug. Optional: the error stack is usually enough.
+  - type: textarea
+    attributes:
+      label: Error Stack
+      placeholder: Bugs usually throw an error. Paste the full error stack here.
