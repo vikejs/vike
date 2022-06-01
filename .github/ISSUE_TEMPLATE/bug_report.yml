@@ -1,10 +1,10 @@
 name: ":boom: Bug Report"
-description: ""
+description: " "
 labels: ["Bug :boom:"]
 body:
   - type: textarea
     attributes:
-      label: Bug Description
+      label: Description
       placeholder: Describe the bug. Optional: the error stack is usually enough.
   - type: textarea
     attributes:
