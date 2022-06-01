@@ -12,3 +12,5 @@ body:
     attributes:
       label: Error Stack
       placeholder: Bugs usually throw an error. Paste the full error stack here.
+    validations:
+      required: true

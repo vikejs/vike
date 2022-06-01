@@ -1,5 +1,5 @@
 name: "🔧 Tool Integration Problem"
-description: " "
+description: Report a problem integrating with a tool.
 labels: ["Integration :wrench:"]
 body:
   - type: textarea
