@@ -1,4 +1,4 @@
-name: ":boom: Bug Report"
+name: "💥 Bug Report"
 description: Report a bug.
 labels: ["Bug :boom:"]
 body:
@@ -6,8 +6,6 @@ body:
     attributes:
       label: Description
       description: "Describe the bug. Optional: the error stack is usually enough."
-    validations:
-      required: true
   - type: textarea
     attributes:
       label: Error Stack
