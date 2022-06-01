@@ -1,5 +1,4 @@
 name: "✨ Feature Request"
-description: Fill a feature request.
 labels: ["Enhancement :sparkles:"]
 body:
   - type: textarea
