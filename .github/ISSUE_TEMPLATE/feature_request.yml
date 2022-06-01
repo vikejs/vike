@@ -5,6 +5,6 @@ body:
   - type: textarea
     attributes:
       label: Description
-      description: "Describe your feature request. For example: \"As a developer using vite-plugin-ssr, I want [goal / wish] so that [benefit].\"."
+      description: "Describe your feature request. For example: \"As a developer using vite-plugin-ssr, I want [goal / wish] so that [benefit]\"."
     validations:
       required: true
