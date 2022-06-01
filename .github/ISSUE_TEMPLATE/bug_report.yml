@@ -1,4 +1,5 @@
 name: ":boom: Bug Report"
+description: ""
 labels: ["Bug :boom:"]
 body:
   - type: textarea
