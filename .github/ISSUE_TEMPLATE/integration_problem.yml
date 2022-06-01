@@ -5,6 +5,6 @@ body:
   - type: textarea
     attributes:
       label: Description
-      description: "Describe the problem. For example: I want to use vite-plugin-ssr with tool X but it's not possible because of [problem]."
+      description: "Describe the problem. For example: \"I want to use vite-plugin-ssr with tool X, but it's not possible because of [problem].\"."
     validations:
       required: true
