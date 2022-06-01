@@ -3,10 +3,12 @@ description: Report a bug.
 labels: ["Bug :boom:"]
 body:
   - type: textarea
+    id: description
     attributes:
       label: Description
       placeholder: Describe the bug. Optional: the error stack is usually enough.
   - type: textarea
+    id: error-stack
     attributes:
       label: Error Stack
       placeholder: Bugs usually throw an error. Paste the full error stack here.
