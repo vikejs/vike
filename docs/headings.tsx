@@ -498,7 +498,7 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Cloudflare Workers',
     url: '/cloudflare-workers',
-    sectionTitles: ['Cloudflare Pages & wrangler 2'],
+    sectionTitles: ['Cloudflare Pages'],
   },
   {
     level: 2,
