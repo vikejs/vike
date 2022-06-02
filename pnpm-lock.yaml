@@ -142,7 +142,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vikepress: ^0.0.10
+      vikepress: ^0.0.13
       vite: npm:@brillout/vite@3.0.0-pr-8217.1
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
@@ -154,7 +154,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.6.4
-      vikepress: 0.0.10
+      vikepress: 0.0.13
       vite: /@brillout/vite/3.0.0-pr-8217.1
     devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
@@ -6508,7 +6508,7 @@ packages:
     dev: false
 
   /is-extglob/2.1.1:
-    resolution: {integrity: sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=}
+    resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -7423,7 +7423,7 @@ packages:
     dev: false
 
   /jsonfile/4.0.0:
-    resolution: {integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss=}
+    resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
     optionalDependencies:
       graceful-fs: 4.2.10
     dev: false
@@ -10021,8 +10021,8 @@ packages:
       rc: 1.2.8
     dev: false
 
-  /rehype-pretty-code/0.2.5_shiki@0.10.1:
-    resolution: {integrity: sha512-Gm7EquFGiM8ucJ2neHKzSmV5Nb1b6dBQlTEXyWbGUZZQF5sJc5RI8yw2v9C1swomqyINil4vk5T6jNOkbHtEDA==}
+  /rehype-pretty-code/0.2.4_shiki@0.10.1:
+    resolution: {integrity: sha512-vbqwIa4cNwRaVur9caUw/b0jOQR88Svrs9c9RaQoogvbBxs5X9bWrSe5oFypaRTTq2cpZ45YzJQ7UUPO76LMKA==}
     engines: {node: ^12.16.0 || >=13.2.0}
     peerDependencies:
       shiki: '*'
@@ -11735,8 +11735,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.10:
-    resolution: {integrity: sha512-U+ipYtnwYbF7Xqa5I97v3E1CHc5ZTFY6z61b+WaACihAcCxorJWUXePP/hjyoAF/EjQ7Al8GwRLG/1Ev45wx6A==}
+  /vikepress/0.0.13:
+    resolution: {integrity: sha512-C7HVXF53f2ehDVmK/LwJ2zN8APry59ExsPpE3sPUIEYW+zYxxwNrC3auBOhCCyGD+0NaVUiEd1m3yko6ITGhhg==}
     hasBin: true
     dependencies:
       '@mdx-js/mdx': 2.1.1
@@ -11746,7 +11746,7 @@ packages:
       express: 4.18.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      rehype-pretty-code: 0.2.5_shiki@0.10.1
+      rehype-pretty-code: 0.2.4_shiki@0.10.1
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
