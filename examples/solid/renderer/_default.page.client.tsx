@@ -26,7 +26,7 @@ const { hydrationPromise } = useClientRouter({
       )
     } else {
       // Render new page
-      render(
+      dispose = render(
         () => (
           <PageLayout>
             <Page {...pageProps} />
