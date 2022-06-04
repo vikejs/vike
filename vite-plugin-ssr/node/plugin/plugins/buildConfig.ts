@@ -13,7 +13,7 @@ function buildConfig(): Plugin {
         ...entryPoints(config),
         ...normalizeRollupInput(config.build?.rollupOptions?.input),
       }
-      return {
+      const configMod: UserConfig = {
         build: {
           outDir: getOutDir(config),
           manifest: !isSSR_config(config),
@@ -28,6 +28,10 @@ function buildConfig(): Plugin {
         ssr: { noExternal: true },
         //*/
       }
+      if (isSSR_config(config)) {
+        configMod.publicDir = false
+      }
+      return configMod
     },
   }
 }
