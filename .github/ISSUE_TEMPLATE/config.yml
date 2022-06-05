@@ -3,6 +3,3 @@ contact_links:
   - name: Discord Chat
     url: https://discord.com/invite/dSDMGGJZQy
     about: Ask questions and discuss with other vite-plugin-sssr users in real time.
-  - name: Questions & Discussions
-    url: https://github.com/brillout/vite-plugin-ssr/discussions
-    about: Use GitHub discussions for message-board style questions and discussions.
