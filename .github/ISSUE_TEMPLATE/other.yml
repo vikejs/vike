@@ -5,13 +5,18 @@ body:
   - type: markdown
     attributes:
       value: |
-        :red_circle: **Bad**: "We have this error coming from tool X, can you help?" Ask tool X instead of asking us. Only ask us if you believe your problem to be related to vite-plugin-ssr.
-        <br/>
-        :green_circle: **Good**: "We have this error coming from a vite-plugin-ssr." Post the full stack trace, so we can start fixing the error right away :-).
-        <br/>
-        :red_circle: **Bad**: "Our app is broken and we don't know why, can you help?" We won't help with problems unrelated to vite-plugin-ssr. Again, only ask us if you have evidence that your problem is related to vite-plugin-ssr.
-        <br/>
-        :red_circle: **Bad**: "We are using an old version of vite-plugin-ssr and it doesn't work." Make sure to use the latest version. The problem may have already been fixed.
+        > How can we use vite-plugin-ssr to achieve our use case?
+        
+        :green_circle: **Good**: We are more than happy to discuss use cases.
+        > I don't understand the docs about X. Can you help?
+        
+        :green_circle: **Good**: If the docs fail at explaining, that's on us. We are happy to help and we'll improve the docs.
+        > We have this error/problem with tool X, can you help?
+        
+        :red_circle: **Bad**: Ask tool X instead of asking us. Only ask us if you believe your problem to be related to vite-plugin-ssr.
+        > Our app is broken and we don't know why, can you help?
+        
+        :red_circle: **Bad**: We won't help with problems unrelated to vite-plugin-ssr. Only ask us if you have evidence that your problem is related to vite-plugin-ssr.
   - type: textarea
     attributes:
       label: Question / Discussion
