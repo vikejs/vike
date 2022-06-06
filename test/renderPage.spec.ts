@@ -1,5 +1,5 @@
 import { renderPage } from 'vite-plugin-ssr'
-import vite from 'vite'
+import { createServer } from 'vite'
 import { expect, describe, it, beforeAll } from 'vitest'
 
 beforeAll(async () => {
@@ -27,7 +27,7 @@ describe('renderPage()', () => {
 })
 
 async function createDevServer() {
-  await vite.createServer({
+  await createServer({
     root: __dirname,
     server: { middlewareMode: 'ssr' },
   })
