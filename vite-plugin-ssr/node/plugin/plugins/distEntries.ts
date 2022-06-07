@@ -3,7 +3,8 @@ export { distEntriesPlugin }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { NormalizedOutputOptions, OutputBundle } from 'rollup'
 import { distImporter } from 'vite-plugin-dist-importer'
-import { getOutDirs, projectInfo, pathRelative, pathJoin, assert } from '../utils'
+import { getOutDirs, projectInfo, pathRelative, pathJoin } from '../utils'
+import { analyzeRollupConfig } from '../utils/analyzeRollupConfig'
 
 function distEntriesPlugin(): Plugin[] {
   let config: ResolvedConfig
@@ -28,12 +29,7 @@ function getImporterCode(config: ResolvedConfig, rollup: { options: NormalizedOu
   const { outDirServer } = getOutDirs(config.build.outDir)
   const outDirServerAbsolute = pathJoin(config.root, outDirServer)
   const importPath = pathRelative(outDirServerAbsolute, importPathAbsolute)
-  const fileExt = getFileExt(rollup)
-  const pageFilesOutput = `pageFiles.${fileExt}`
-  {
-    const bundleFiles = Object.keys(rollup.bundle)
-    assert(bundleFiles.includes(pageFilesOutput))
-  }
+  const { pageFilesOutput } = analyzeRollupConfig(rollup, config)
   const importerCode = [
     `const { setDistEntries } = require('${importPath}');`,
     'setDistEntries({',
@@ -44,10 +40,4 @@ function getImporterCode(config: ResolvedConfig, rollup: { options: NormalizedOu
     '',
   ].join('\n')
   return importerCode
-}
-
-function getFileExt(rollup: { options: NormalizedOutputOptions; bundle: OutputBundle }): 'js' | 'mjs' {
-  const { entryFileNames } = rollup.options
-  const fileExt = typeof entryFileNames === 'string' && entryFileNames.endsWith('.mjs') ? 'mjs' : 'js'
-  return fileExt
 }
