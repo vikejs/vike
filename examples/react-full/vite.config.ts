@@ -11,5 +11,5 @@ export default {
       prerender: true,
     }),
   ],
-  optimizeDeps: { include: ['react/jsx-runtime'] },
+  optimizeDeps: { include: ['react/jsx-runtime', 'cross-fetch'] },
 } as UserConfig
