@@ -31,6 +31,13 @@ function testRun(
 ) {
   run(cmd)
 
+  if (uiFramewok === 'preact') {
+    const msg = 'SKIPPED preact until it supports Vite 3.'
+    console.log(msg)
+    test(msg, () => {})
+    return
+  }
+
   const isProduction = cmd === 'npm run prod' || cmd === 'pnpm run prod'
   const isDev = !isProduction
 
