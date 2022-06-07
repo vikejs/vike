@@ -12,6 +12,7 @@ const config: UserConfig = {
     ssr(),
   ],
   clearScreen: false,
+  optimizeDeps: { include: ['cross-fetch'] },
   // Neeed if using an ESM-only library. This is not the case of this example and it's, in general, a rare case. But such situation will increasingly occur as ESM-only libraries emerge.
   build: {
     rollupOptions: {
