@@ -15,6 +15,9 @@ export default {
       prerender: true,
     }),
   ],
+  ssr: {
+    noExternal: ['framework'],
+  },
   optimizeDeps: {
     include: ['react', 'react-dom/client'],
   },

@@ -10,6 +10,9 @@ export default {
       },
     }),
   ],
+  ssr: {
+    noExternal: ['renderer'],
+  },
   optimizeDeps: {
     include: ['react', 'react-dom/client'],
   },
