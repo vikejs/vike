@@ -22,6 +22,7 @@ function buildConfig(): Plugin {
           polyfillDynamicImport: false,
         },
         //*
+        // @ts-ignore
         ssr: { external: ['vite-plugin-ssr'] },
         /*/
         // Try Hydrogen's `noExternal: true` bundling strategy for Cloudflare Workers
