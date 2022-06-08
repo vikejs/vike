@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 overrides:
-  vite: npm:@brillout/vite@3.0.0-pr-8217.1
+  vite: 2.9.10
   vite-plugin-ssr: link:./vite-plugin-ssr/
 
 importers:
@@ -32,7 +32,7 @@ importers:
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -41,7 +41,7 @@ importers:
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-react-ts:
@@ -59,7 +59,7 @@ importers:
       react-dom: ^18.1.0
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/compression': 1.7.2
@@ -75,7 +75,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-vue:
@@ -86,17 +86,17 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -113,14 +113,14 @@ importers:
       express: ^4.18.1
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
       '@types/compression': 1.7.2
       '@types/express': 4.17.13
       '@types/node': 17.0.31
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       compression: 1.7.4
@@ -128,7 +128,7 @@ importers:
       express: 4.18.1
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -143,7 +143,7 @@ importers:
       react-dom: ^17.0.2
       typescript: ^4.3.2
       vikepress: ^0.0.13
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
       '@mdx-js/react': 1.6.22_react@17.0.2
@@ -155,7 +155,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.6.4
       vikepress: 0.0.13
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
 
@@ -167,7 +167,7 @@ importers:
       react: ^18.1.0
       react-dom: ^18.1.0
       rimraf: ^3.0.2
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -176,7 +176,7 @@ importers:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/base-url-cdn:
@@ -189,7 +189,7 @@ importers:
       react: ^18.1.0
       react-dom: ^18.1.0
       rimraf: ^3.0.2
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -200,7 +200,7 @@ importers:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/cloudflare-workers:
@@ -215,7 +215,7 @@ importers:
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.6
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -228,7 +228,7 @@ importers:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/cloudflare-workers-vue:
@@ -241,20 +241,20 @@ importers:
       build-worker: ^0.2.0
       express: ^4.18.1
       miniflare: ^2.4.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       webpack: ^4.46.0
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@cloudflare/wrangler': 1.19.12
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       build-worker: 0.2.0
       express: 4.18.1
       miniflare: 2.4.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
       webpack: 4.46.0
@@ -269,7 +269,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
@@ -280,7 +280,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/custom-server-render-integration:
@@ -290,7 +290,7 @@ importers:
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -298,7 +298,7 @@ importers:
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/file-structure-domain-driven:
@@ -310,7 +310,7 @@ importers:
       react-dom: ^18.1.0
       rimraf: ^3.0.2
       serve: ^13.0.2
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -320,7 +320,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
       serve: 13.0.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/framework/app:
@@ -343,12 +343,12 @@ importers:
       '@vitejs/plugin-react': ^1.3.2
       express: ^4.18.1
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../../vite-plugin-ssr
     devDependencies:
       '@types/node': 17.0.31
@@ -365,7 +365,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@apollo/client': 3.5.9_6pwes3crpusd7o5ywwgereue4e
@@ -375,19 +375,19 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/html-fragments:
     specifiers:
       express: ^4.18.1
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       express: 4.18.1
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n:
@@ -396,14 +396,14 @@ importers:
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n-prerender:
@@ -414,7 +414,7 @@ importers:
       react-dom: ^18.1.0
       rimraf: ^3.0.2
       serve: ^13.0.2
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -423,7 +423,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       rimraf: 3.0.2
       serve: 13.0.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/path-aliases:
@@ -440,7 +440,7 @@ importers:
       serve: ^13.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/express': 4.17.13
@@ -455,7 +455,7 @@ importers:
       serve: 13.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/preact-client-routing:
@@ -468,18 +468,18 @@ importers:
       express: ^4.18.1
       preact: ^10.7.3
       preact-render-to-string: ^5.2.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
-      '@preact/preset-vite': 2.2.0_sf36i7lcykrn2hoig7xspctdki
+      '@preact/preset-vite': 2.2.0_wfa2gyciv4ygtwzx67nhsydgce
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
       preact: 10.7.3
       preact-render-to-string: 5.2.0_preact@10.7.3
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/preact-server-routing:
@@ -492,18 +492,18 @@ importers:
       express: ^4.18.1
       preact: ^10.7.1
       preact-render-to-string: ^5.2.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
-      '@preact/preset-vite': 2.2.0_csxl75frbvschf5oqskrrcpdxe
+      '@preact/preset-vite': 2.2.0_au3m7lpfiu4fjk65c7cteazumi
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
       preact: 10.7.1
       preact-render-to-string: 5.2.0_preact@10.7.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react:
@@ -513,7 +513,7 @@ importers:
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.6
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -521,7 +521,7 @@ importers:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-17:
@@ -530,14 +530,14 @@ importers:
       cross-env: ^7.0.3
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
       cross-env: 7.0.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-full:
@@ -556,7 +556,7 @@ importers:
       react-dom: ^18.1.0
       react-streaming: ^0.2.6
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@mdx-js/mdx': 2.1.1
@@ -573,7 +573,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-router:
@@ -584,7 +584,7 @@ importers:
       react-dom: ^18.1.0
       react-router: ^6.3.0
       react-router-dom: ^6.3.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -593,7 +593,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       react-router: 6.3.0_react@18.1.0
       react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/redux:
@@ -604,7 +604,7 @@ importers:
       react-dom: ^18.1.0
       react-redux: ^8.0.1
       redux: ^4.2.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -613,7 +613,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       react-redux: 8.0.1_zi7aoi7ced5urpsfm5fjpojgnm
       redux: 4.2.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/render-modes:
@@ -623,7 +623,7 @@ importers:
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -631,7 +631,7 @@ importers:
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/renderer/app:
@@ -642,7 +642,7 @@ importers:
       react: ^18.1.0
       react-dom: ^18.1.0
       renderer: link:../renderer
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
@@ -651,7 +651,7 @@ importers:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       renderer: link:../renderer
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../../vite-plugin-ssr
 
   examples/renderer/renderer:
@@ -677,7 +677,7 @@ importers:
       solid-js: ^1.1.0
       ts-node: ^9.1.1
       typescript: ^4.3.2
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-solid: ^2.0.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -688,7 +688,7 @@ importers:
       solid-js: 1.3.17
       ts-node: 9.1.1_typescript@4.6.4
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-solid: 2.2.6
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -710,7 +710,7 @@ importers:
       ts-node: ^10.7.0
       typescript: ^4.6.4
       urql: ^2.2.0
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/express': 4.17.13
@@ -729,7 +729,7 @@ importers:
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
       urql: 2.2.0_cxfcglayresyyxxylwnor5zopi
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/vercel:
@@ -740,17 +740,17 @@ importers:
       '@vue/server-renderer': ^3.2.24
       esbuild: ^0.13.12
       express: ^4.17.1
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.24
     dependencies:
       '@vercel/ncc': 0.32.0
-      '@vitejs/plugin-vue': 1.10.2_6dqu5d672njqrkoh2m2izbt32m
+      '@vitejs/plugin-vue': 1.10.2_vite@2.9.10
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       esbuild: 0.13.15
       express: 4.18.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -761,16 +761,16 @@ importers:
       '@vue/server-renderer': ^3.2.33
       cross-env: ^7.0.3
       express: ^4.18.1
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       cross-env: 7.0.3
       express: 4.18.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -789,7 +789,7 @@ importers:
       serve: ^13.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-md: ^0.11.8
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
@@ -797,7 +797,7 @@ importers:
       '@types/express': 4.17.13
       '@types/node': 17.0.31
       '@types/node-fetch': 2.6.1
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       cross-fetch: 3.1.5
@@ -807,8 +807,8 @@ importers:
       serve: 13.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
-      vite-plugin-md: 0.11.9_6dqu5d672njqrkoh2m2izbt32m
+      vite: 2.9.10
+      vite-plugin-md: 0.11.9_vite@2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -818,16 +818,16 @@ importers:
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
       express: ^4.18.1
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       vue-router: ^4.0.14
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       express: 4.18.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
       vue-router: 4.0.14_vue@3.2.33
@@ -838,16 +838,16 @@ importers:
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
       express: ^4.18.1
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       vuex: ^4.0.2
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_bceci7dbwzywjns5zvu2llrzeq
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       express: 4.18.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
       vuex: 4.0.2_vue@3.2.33
@@ -904,10 +904,10 @@ importers:
 
   test:
     specifiers:
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-ssr: link:../vite-plugin-ssr
 
   vite-plugin-ssr:
@@ -929,7 +929,7 @@ importers:
       rollup: ^2.71.1
       symlink-dir: ^5.0.1
       typescript: 4.6.4
-      vite: npm:@brillout/vite@3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-dist-importer: ^0.2.1
       vite-plugin-glob: 0.2.8
     dependencies:
@@ -953,7 +953,7 @@ importers:
       '@types/resolve': 1.20.2
       rollup: 2.71.1
       typescript: 4.6.4
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
 
 packages:
 
@@ -1477,29 +1477,6 @@ packages:
     resolution: {integrity: sha512-rfmmKGvFQkwnPFnr2bMwqvXBQa52bw24iuZgPOWrueHziTm7fHThnsb/p22EC+mLFEPhPeGj/A8A4CrFgfA80Q==}
     hasBin: true
     dev: true
-
-  /@brillout/vite/3.0.0-pr-8217.1:
-    resolution: {integrity: sha512-4PzzQ1RCjuZKEa5uBJF9KkXI56/ivF48P3WJnnU6WtNFT3+2ooF5/8etBDKghYZbtE6keKBvtK21tR0dkaxVMg==}
-    engines: {node: '>=14.6.0'}
-    hasBin: true
-    peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-    dependencies:
-      esbuild: 0.14.38
-      postcss: 8.4.13
-      resolve: 1.22.0
-      rollup: 2.73.0
-    optionalDependencies:
-      fsevents: 2.3.2
 
   /@cloudflare/kv-asset-handler/0.2.0:
     resolution: {integrity: sha512-MVbXLbTcAotOPUj0pAMhVtJ+3/kFkwJqc5qNOleOZTv6QkZZABDMS21dSrSlVswEHwrpWC03e4fWytjqKvuE2A==}
@@ -2104,7 +2081,7 @@ packages:
       read-package-json-fast: 2.0.3
     dev: false
 
-  /@preact/preset-vite/2.2.0_csxl75frbvschf5oqskrrcpdxe:
+  /@preact/preset-vite/2.2.0_au3m7lpfiu4fjk65c7cteazumi:
     resolution: {integrity: sha512-xOtPzyVSPphUF/tRnzjxkCR/ovbCS6O25ekdCw5MGKcaAkb6PDRo50tS1x2n0+O9qL7Z/qrHJKpyCVn29A4iMg==}
     peerDependencies:
       '@babel/core': 7.x
@@ -2113,19 +2090,19 @@ packages:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
       '@babel/plugin-transform-react-jsx-development': 7.16.7_@babel+core@7.17.10
-      '@prefresh/vite': 2.2.8_b6rgilw6xffwg2tc2fhccirvx4
+      '@prefresh/vite': 2.2.8_preact@10.7.1+vite@2.9.10
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2_@babel+core@7.17.10
       debug: 4.3.4
       kolorist: 1.5.1
       resolve: 1.22.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     transitivePeerDependencies:
       - preact
       - supports-color
     dev: false
 
-  /@preact/preset-vite/2.2.0_sf36i7lcykrn2hoig7xspctdki:
+  /@preact/preset-vite/2.2.0_wfa2gyciv4ygtwzx67nhsydgce:
     resolution: {integrity: sha512-xOtPzyVSPphUF/tRnzjxkCR/ovbCS6O25ekdCw5MGKcaAkb6PDRo50tS1x2n0+O9qL7Z/qrHJKpyCVn29A4iMg==}
     peerDependencies:
       '@babel/core': 7.x
@@ -2134,13 +2111,13 @@ packages:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
       '@babel/plugin-transform-react-jsx-development': 7.16.7_@babel+core@7.17.10
-      '@prefresh/vite': 2.2.8_r243dnakm3yku4nwiqgh4jzyui
+      '@prefresh/vite': 2.2.8_preact@10.7.3+vite@2.9.10
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2_@babel+core@7.17.10
       debug: 4.3.4
       kolorist: 1.5.1
       resolve: 1.22.0
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -2170,7 +2147,7 @@ packages:
     resolution: {integrity: sha512-Mb9abhJTOV4yCfkXrMrcgFiFT7MfNOw8sDa+XyZBdq/Ai2p4Zyxqsb3EgHLOEdHpMj6J9aiZ54W8H6FTam1u+A==}
     dev: false
 
-  /@prefresh/vite/2.2.8_b6rgilw6xffwg2tc2fhccirvx4:
+  /@prefresh/vite/2.2.8_preact@10.7.1+vite@2.9.10:
     resolution: {integrity: sha512-yGGa+PKPYPTzMlxgQ8aBgxw9K69I8X4iQ0E6KOcIvls96WKqKLLOYZW9SUgCve446jpUXvc9udviPBZjCeZIIQ==}
     peerDependencies:
       preact: ^10.4.0
@@ -2182,12 +2159,12 @@ packages:
       '@prefresh/utils': 1.1.3
       '@rollup/pluginutils': 4.2.1
       preact: 10.7.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@prefresh/vite/2.2.8_r243dnakm3yku4nwiqgh4jzyui:
+  /@prefresh/vite/2.2.8_preact@10.7.3+vite@2.9.10:
     resolution: {integrity: sha512-yGGa+PKPYPTzMlxgQ8aBgxw9K69I8X4iQ0E6KOcIvls96WKqKLLOYZW9SUgCve446jpUXvc9udviPBZjCeZIIQ==}
     peerDependencies:
       preact: ^10.4.0
@@ -2199,7 +2176,7 @@ packages:
       '@prefresh/utils': 1.1.3
       '@rollup/pluginutils': 4.2.1
       preact: 10.7.3
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2608,23 +2585,23 @@ packages:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-vue/1.10.2_6dqu5d672njqrkoh2m2izbt32m:
+  /@vitejs/plugin-vue/1.10.2_vite@2.9.10:
     resolution: {integrity: sha512-/QJ0Z9qfhAFtKRY+r57ziY4BSbGUTGsPRMpB/Ron3QPwBZM4OZAZHdTa4a8PafCwU5DTatXG8TMDoP8z+oDqJw==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
     dependencies:
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     dev: false
 
-  /@vitejs/plugin-vue/2.3.1_bceci7dbwzywjns5zvu2llrzeq:
+  /@vitejs/plugin-vue/2.3.1_vite@2.9.10+vue@3.2.33:
     resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       vite: ^2.5.10
       vue: ^3.2.25
     dependencies:
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vue: 3.2.33
     dev: false
 
@@ -11825,7 +11802,7 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
       vite-plugin-glob: 0.2.8
       vite-plugin-ssr: link:vite-plugin-ssr
     transitivePeerDependencies:
@@ -11850,7 +11827,7 @@ packages:
       ufo: 0.8.3
     dev: false
 
-  /vite-plugin-md/0.11.9_6dqu5d672njqrkoh2m2izbt32m:
+  /vite-plugin-md/0.11.9_vite@2.9.10:
     resolution: {integrity: sha512-0uD2BPIct3FbEA1hAm56hlrBByEn542HTsS/FoWf33lJIgijVBDDV6FE12ud0SHS6sculITKliF2ntog2kiHmQ==}
     peerDependencies:
       vite: ^2.0.0
@@ -11860,7 +11837,7 @@ packages:
       '@types/markdown-it': 12.2.3
       gray-matter: 4.0.3
       markdown-it: 12.3.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     dev: false
 
   /vite-plugin-solid/2.2.6:
@@ -11872,13 +11849,36 @@ packages:
       merge-anything: 5.0.2
       solid-js: 1.3.17
       solid-refresh: 0.4.0_solid-js@1.3.17
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     transitivePeerDependencies:
       - less
       - sass
       - stylus
       - supports-color
     dev: false
+
+  /vite/2.9.10:
+    resolution: {integrity: sha512-TwZRuSMYjpTurLqXspct+HZE7ONiW9d+wSWgvADGxhDPPyoIcNywY+RX4ng+QpK30DCa1l/oZgi2PLZDibhzbQ==}
+    engines: {node: '>=12.2.0'}
+    hasBin: true
+    peerDependencies:
+      less: '*'
+      sass: '*'
+      stylus: '*'
+    peerDependenciesMeta:
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+    dependencies:
+      esbuild: 0.14.38
+      postcss: 8.4.13
+      resolve: 1.22.0
+      rollup: 2.73.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   /vitest/0.12.6:
     resolution: {integrity: sha512-YWbCTv0XKBuBw5YtuW/iufuguoi8QhGpYyi2g57Oo7akpscMkkWTAaZGgY0ux1oJJtO/pc/8GFt0EF32WFBUUQ==}
@@ -11905,7 +11905,7 @@ packages:
       local-pkg: 0.4.1
       tinypool: 0.1.3
       tinyspy: 0.3.2
-      vite: /@brillout/vite/3.0.0-pr-8217.1
+      vite: 2.9.10
     transitivePeerDependencies:
       - less
       - sass
