@@ -31,8 +31,9 @@ function testRun(
 ) {
   run(cmd)
 
-  if (uiFramewok === 'preact') {
-    const msg = 'SKIPPED preact until it supports Vite 3.'
+  if (uiFramewok === 'preact' && cmd.endsWith('prod')) {
+    // https://github.com/preactjs/preact/issues/3558
+    const msg = 'SKIPPED preact prod until it supports Vite 3.'
     console.log(msg)
     test(msg, () => {})
     return

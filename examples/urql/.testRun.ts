@@ -6,6 +6,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)
 
   if (cmd === 'npm run prod') {
+    // https://github.com/FormidableLabs/urql/issues/2484
     const msg = 'SKIPPED urql production test until it supports Vite 3.'
     console.log(msg)
     test(msg, () => {})
