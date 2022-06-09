@@ -1,6 +1,7 @@
 {
   "scripts": {
     "dev": "vikepress dev",
+    "build": "vikepress build",
     "preview": "vikepress build && vikepress preview"
   },
   "dependencies": {
