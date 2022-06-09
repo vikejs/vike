@@ -18,8 +18,13 @@ function setDistEntries(distEntries_: DistEntries) {
 
 async function loadDistEntries() {
   if (!distEntries) {
-    loadDistEntries_({ assert, assertUsage, importBuildDocLink: 'https://vite-plugin-ssr.com/importBuild' })
-    assert(distEntries)
+    const { success, entryFile, importBuildFileName } = await loadDistEntries_()
+    assert(importBuildFileName)
+    assertUsage(
+      success,
+      `Cannot find production build. Make sure to import \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`,
+    )
+    assert(distEntries, { entryFile })
   }
 
   const [pageFiles, clientManifest, pluginManifest] = await Promise.all([
