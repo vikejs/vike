@@ -142,7 +142,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vikepress: ^0.0.15
+      vikepress: ^0.0.16
       vite: 2.9.10
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
@@ -154,7 +154,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.6.4
-      vikepress: 0.0.15
+      vikepress: 0.0.16
       vite: 2.9.10
     devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
@@ -11787,8 +11787,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.15:
-    resolution: {integrity: sha512-HlxNsBfVBnvLGCW2JaaATT8QEdlNQ22Im95o4FFfTLxcG2Pr2rQFCjRwpR3dsseO1N5DEGQzJheBF3ZlE00WEQ==}
+  /vikepress/0.0.16:
+    resolution: {integrity: sha512-u/zeTeoTH/+IbiOSVqudU4mfao44ginSF+/Cp3jju2AER+ZZsk2aX/uhBkP7CIAbopQCGrZ+dZRo71nrBpSVvg==}
     hasBin: true
     dependencies:
       '@mdx-js/mdx': 2.1.1
