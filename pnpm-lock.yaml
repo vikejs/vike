@@ -142,7 +142,7 @@ importers:
       react: ^17.0.2
       react-dom: ^17.0.2
       typescript: ^4.3.2
-      vikepress: ^0.0.14
+      vikepress: ^0.0.15
       vite: 2.9.10
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
@@ -154,7 +154,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       typescript: 4.6.4
-      vikepress: 0.0.14
+      vikepress: 0.0.15
       vite: 2.9.10
     devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
@@ -7974,7 +7974,7 @@ packages:
     dev: false
 
   /mdurl/1.0.1:
-    resolution: {integrity: sha1-/oWy7HWlkDfyrf7BAP1sYBdhFS4=}
+    resolution: {integrity: sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==}
     dev: false
 
   /media-typer/0.3.0:
@@ -10071,8 +10071,8 @@ packages:
       rc: 1.2.8
     dev: false
 
-  /rehype-pretty-code/0.2.4_shiki@0.10.1:
-    resolution: {integrity: sha512-vbqwIa4cNwRaVur9caUw/b0jOQR88Svrs9c9RaQoogvbBxs5X9bWrSe5oFypaRTTq2cpZ45YzJQ7UUPO76LMKA==}
+  /rehype-pretty-code/0.3.2_shiki@0.10.1:
+    resolution: {integrity: sha512-G7JZDlbaw22QqjuaQ46c+fkQhXC/AD9nMQO3bbnj86jD54uv1QcpyUtSd/elp49vRafM/wZI1XPrOvca0LTt/Q==}
     engines: {node: ^12.16.0 || >=13.2.0}
     peerDependencies:
       shiki: '*'
@@ -11785,8 +11785,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.14:
-    resolution: {integrity: sha512-20zb9SxlPdYk590c5QhjZowQ124xIRGFmLr6Wtp9iy4g3WXeX1WGaB3hBmg1LmQObcj0aTk6fMCHpDkGqPNQTw==}
+  /vikepress/0.0.15:
+    resolution: {integrity: sha512-HlxNsBfVBnvLGCW2JaaATT8QEdlNQ22Im95o4FFfTLxcG2Pr2rQFCjRwpR3dsseO1N5DEGQzJheBF3ZlE00WEQ==}
     hasBin: true
     dependencies:
       '@mdx-js/mdx': 2.1.1
@@ -11796,7 +11796,7 @@ packages:
       express: 4.18.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      rehype-pretty-code: 0.2.4_shiki@0.10.1
+      rehype-pretty-code: 0.3.2_shiki@0.10.1
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
