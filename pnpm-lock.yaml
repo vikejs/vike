@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 importers:
 
@@ -67,7 +67,7 @@ importers:
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
+      ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -120,7 +120,7 @@ importers:
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.17.3
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
+      ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -324,7 +324,7 @@ importers:
       vite: ^2.8.4
       vite-plugin-ssr: 0.3.64
     dependencies:
-      '@apollo/client': 3.5.9_graphql@16.3.0+react@17.0.2
+      '@apollo/client': 3.5.9_eezpjbykne3wf4abbjcil75ihq
       '@vitejs/plugin-react': 1.2.0
       express: 4.17.3
       graphql: 16.3.0
@@ -409,7 +409,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       serve: 13.0.2
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
+      ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -429,7 +429,7 @@ importers:
     dependencies:
       '@babel/core': 7.17.5
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
-      '@preact/preset-vite': 2.1.7_698d816b37024fcdfcf21e366e54063a
+      '@preact/preset-vite': 2.1.7_nggyc2zxajh437hsdy3g4vaghi
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.17.3
@@ -453,7 +453,7 @@ importers:
     dependencies:
       '@babel/core': 7.17.5
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.5
-      '@preact/preset-vite': 2.1.7_698d816b37024fcdfcf21e366e54063a
+      '@preact/preset-vite': 2.1.7_nggyc2zxajh437hsdy3g4vaghi
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.17.3
@@ -502,7 +502,7 @@ importers:
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@mdx-js/mdx': 2.0.0
-      '@mdx-js/react': 2.0.0_e32785dbcafa2fde92a71a8f50f52ce6
+      '@mdx-js/react': 2.0.0_4mtylw6k7ix55evhdkhvb5jm4y
       '@mdx-js/rollup': 2.0.0
       '@types/express': 4.17.13
       '@types/node': 17.0.19
@@ -512,10 +512,10 @@ importers:
       express: 4.17.3
       node-fetch: 2.6.7
       react: 18.0.0-rc.0-next-fe905f152-20220107
-      react-dom: 18.0.0-rc.0-next-fe905f152-20220107_e32785dbcafa2fde92a71a8f50f52ce6
+      react-dom: 18.0.0-rc.0-next-fe905f152-20220107_4mtylw6k7ix55evhdkhvb5jm4y
       rimraf: 3.0.2
       serve: 13.0.2
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
+      ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -536,7 +536,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-router: 6.3.0_react@17.0.2
-      react-router-dom: 6.3.0_react-dom@17.0.2+react@17.0.2
+      react-router-dom: 6.3.0_sfoxds7t5ydpegc3knd667wn6m
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -555,7 +555,7 @@ importers:
       express: 4.17.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
+      react-redux: 7.2.6_sfoxds7t5ydpegc3knd667wn6m
       redux: 4.1.2
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -618,9 +618,9 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-ssr-prepass: 1.5.0_react@17.0.2
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
+      ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
       typescript: 4.5.5
-      urql: 2.1.3_graphql@16.3.0+react@17.0.2
+      urql: 2.1.3_eezpjbykne3wf4abbjcil75ihq
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -697,10 +697,40 @@ importers:
       node-fetch: 2.6.7
       rimraf: 3.0.2
       serve: 13.0.2
-      ts-node: 10.5.0_003c8a6da24af261bf8b8ce51aec1adf
+      ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-md: 0.11.8_vite@2.8.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.31
+
+  examples/vue-graphql-apollo:
+    specifiers:
+      '@apollo/client': ^3.5.8
+      '@vitejs/plugin-vue': ^2.0.1
+      '@vue/apollo-composable': ^4.0.0-alpha.16
+      '@vue/compiler-sfc': ^3.2.26
+      '@vue/server-renderer': ^3.2.26
+      compression: ^1.7.4
+      cross-env: ^7.0.3
+      cross-fetch: ^3.1.5
+      express: ^4.17.2
+      react: ^17.0.2
+      vite: ^2.7.12
+      vite-plugin-ssr: ^0.3.51
+      vue: ^3.2.26
+    dependencies:
+      '@apollo/client': 3.5.9_react@17.0.2
+      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vue/apollo-composable': 4.0.0-alpha.17_mof2kk6mwqfb4woa6vb4i6pzxu
+      '@vue/compiler-sfc': 3.2.31
+      '@vue/server-renderer': 3.2.31_vue@3.2.31
+      compression: 1.7.4
+      cross-env: 7.0.3
+      cross-fetch: 3.1.5
+      express: 4.17.3
+      react: 17.0.2
+      vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
 
@@ -783,7 +813,7 @@ importers:
       twemoji: 13.1.0
       typescript: 4.5.5
       vite: 2.8.4
-      vite-plugin-mdx: 3.5.10_@mdx-js+mdx@2.0.0+vite@2.8.4
+      vite-plugin-mdx: 3.5.10_p5zckwea5dbiw3d6gnyruevblq
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   libframe/scripts:
@@ -830,7 +860,7 @@ importers:
       kolorist: 1.5.1
       node-fetch: 2.6.7
       playwright-chromium: 1.18.1
-      ts-jest: 27.1.3_1e2406a8ca2ae3dc934d01f9ee2aebbb
+      ts-jest: 27.1.3_dysankgkflr5ze2nah464kxlxm
       ts-node: 9.1.1_typescript@4.5.5
       typescript: 4.5.5
 
@@ -890,7 +920,7 @@ packages:
     resolution: {integrity: sha512-MrAQ/MrPSxbh1bBrmwJjORfJymw4IqSHFBXqvxaga3ZdDM+/zokYF8DjyJpSjY2QmpmgQrajDUBJOWrYeARfzA==}
     dev: false
 
-  /@apollo/client/3.5.9_graphql@16.3.0+react@17.0.2:
+  /@apollo/client/3.5.9_eezpjbykne3wf4abbjcil75ihq:
     resolution: {integrity: sha512-Qq3OE3GpyPG2fYXBzi1n4QXcKZ11c6jHdrXK2Kkn9SD+vUymSrllXsldqnKUK9tslxKqkKzNrkCXkLv7PxwfSQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -908,6 +938,33 @@ packages:
       '@wry/trie': 0.3.1
       graphql: 16.3.0
       graphql-tag: 2.12.6_graphql@16.3.0
+      hoist-non-react-statics: 3.3.2
+      optimism: 0.16.1
+      prop-types: 15.8.1
+      react: 17.0.2
+      symbol-observable: 4.0.0
+      ts-invariant: 0.9.4
+      tslib: 2.3.1
+      zen-observable-ts: 1.2.3
+    dev: false
+
+  /@apollo/client/3.5.9_react@17.0.2:
+    resolution: {integrity: sha512-Qq3OE3GpyPG2fYXBzi1n4QXcKZ11c6jHdrXK2Kkn9SD+vUymSrllXsldqnKUK9tslxKqkKzNrkCXkLv7PxwfSQ==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      react: ^16.8.0 || ^17.0.0
+      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      subscriptions-transport-ws:
+        optional: true
+    dependencies:
+      '@graphql-typed-document-node/core': 3.1.1
+      '@wry/context': 0.6.1
+      '@wry/equality': 0.5.2
+      '@wry/trie': 0.3.1
+      graphql-tag: 2.12.6
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.8.1
@@ -1232,12 +1289,16 @@ packages:
     resolution: {integrity: sha512-VKXSCQx5D8S04ej+Dqsr1CzYvvWgf20jIw2D+YhQCrIlr2UZGaDds23Y0xg75/skOxpLCRpUZvk/1EAVkGoDOw==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.0
     dev: false
 
   /@babel/parser/7.17.3:
     resolution: {integrity: sha512-7yJPvPV+ESz2IUTPbOL+YkIGyCqOyNIzdguKQuJGnH7bg1WTIifuM21YqokFt/THWh1AkCRn9IgoykTRCBVpzA==}
     engines: {node: '>=6.0.0'}
     hasBin: true
+    dependencies:
+      '@babel/types': 7.17.0
     dev: false
 
   /@babel/plugin-syntax-async-generators/7.8.4_@babel+core@7.17.2:
@@ -1658,6 +1719,12 @@ packages:
     resolution: {integrity: sha512-82cpyJyKRoQoRi+14ibCeGPu0CwypgtBAdBhq1WfvagpCZNKqwXbKwXllYSMG91DhmG4jt9gN8eP6lGOtozuaw==}
     dev: false
 
+  /@graphql-typed-document-node/core/3.1.1:
+    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dev: false
+
   /@graphql-typed-document-node/core/3.1.1_graphql@16.3.0:
     resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
     peerDependencies:
@@ -1940,7 +2007,7 @@ packages:
       react: 17.0.2
     dev: false
 
-  /@mdx-js/react/2.0.0_e32785dbcafa2fde92a71a8f50f52ce6:
+  /@mdx-js/react/2.0.0_4mtylw6k7ix55evhdkhvb5jm4y:
     resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
     peerDependencies:
       react: '>=16'
@@ -2162,10 +2229,12 @@ packages:
       lru-cache: 6.0.0
       mkdirp: 1.0.4
       npm-pick-manifest: 6.1.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       promise-retry: 2.0.1
       semver: 7.3.5
       which: 2.0.2
+    transitivePeerDependencies:
+      - bluebird
     dev: false
 
   /@npmcli/installed-package-contents/1.0.7:
@@ -2231,7 +2300,7 @@ packages:
       webcrypto-core: 1.4.0
     dev: false
 
-  /@preact/preset-vite/2.1.7_698d816b37024fcdfcf21e366e54063a:
+  /@preact/preset-vite/2.1.7_nggyc2zxajh437hsdy3g4vaghi:
     resolution: {integrity: sha512-/Ii+aN1Jm8TK5YzDVrj5UOVRZ91F2Nik1P3FbmZyQ5VJAg1ZCkOBBkmLrz9YhiMbbGl+U35yaZNUDMcO8Xlp2g==}
     peerDependencies:
       '@babel/core': 7.x
@@ -2499,6 +2568,12 @@ packages:
       pretty-format: 27.5.1
     dev: true
 
+  /@types/keyv/3.1.4:
+    resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
+    dependencies:
+      '@types/node': 17.0.19
+    dev: false
+
   /@types/linkify-it/3.0.2:
     resolution: {integrity: sha512-HZQYqbiFVWufzCwexrvh694SOim8z2d+xJl5UNamcvQFejLY/2YUtzXHYi3cHdI7PMlS8ejH2slRAOJQ32aNbA==}
     dev: false
@@ -2595,6 +2670,12 @@ packages:
       '@types/prop-types': 15.7.4
       '@types/scheduler': 0.16.2
       csstype: 3.0.10
+    dev: false
+
+  /@types/responselike/1.0.0:
+    resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
+    dependencies:
+      '@types/node': 17.0.19
     dev: false
 
   /@types/scheduler/0.16.2:
@@ -2713,6 +2794,26 @@ packages:
     dependencies:
       vite: 2.8.4
       vue: 3.2.31
+    dev: false
+
+  /@vue/apollo-composable/4.0.0-alpha.17_mof2kk6mwqfb4woa6vb4i6pzxu:
+    resolution: {integrity: sha512-Wsx73CSEbk4EqlpxV+5S4u0gZH4V4oCqy6Q0IS8JR7Wn8PjrM8mIKNL1JtRErUOzkQHgVHbBftzDMt0Fi39QFA==}
+    peerDependencies:
+      '@apollo/client': ^3.4.13
+      '@vue/composition-api': ^1.0.0
+      graphql: '>=15'
+      vue: ^2.6.0 || ^3.1.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      '@apollo/client': 3.5.9_react@17.0.2
+      throttle-debounce: 3.0.1
+      ts-essentials: 9.1.2
+      vue: 3.2.31
+      vue-demi: 0.12.5_vue@3.2.31
+    transitivePeerDependencies:
+      - typescript
     dev: false
 
   /@vue/compiler-core/3.2.29:
@@ -3243,6 +3344,8 @@ packages:
     dependencies:
       micromatch: 3.1.10
       normalize-path: 2.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
     optional: true
 
@@ -3604,6 +3707,8 @@ packages:
       qs: 6.9.6
       raw-body: 2.4.2
       type-is: 1.6.18
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /body-parser/1.19.2:
@@ -3620,6 +3725,8 @@ packages:
       qs: 6.9.7
       raw-body: 2.4.3
       type-is: 1.6.18
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /boxen/1.3.0:
@@ -3670,6 +3777,8 @@ packages:
       snapdragon-node: 2.1.1
       split-string: 3.1.0
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /braces/3.0.2:
@@ -3835,7 +3944,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.5
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -3859,11 +3968,13 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.11
       unique-filename: 1.1.1
+    transitivePeerDependencies:
+      - bluebird
     dev: false
 
   /cache-base/1.0.1:
@@ -4008,6 +4119,8 @@ packages:
       upath: 1.2.0
     optionalDependencies:
       fsevents: 1.2.13
+    transitivePeerDependencies:
+      - supports-color
     dev: false
     optional: true
 
@@ -4286,6 +4399,8 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /compression/1.7.4:
@@ -4299,6 +4414,8 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /concat-map/0.0.1:
@@ -4761,6 +4878,11 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
     dev: false
@@ -6009,6 +6131,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /expand-tilde/1.2.2:
@@ -6066,6 +6190,8 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /express/4.17.3:
@@ -6102,6 +6228,8 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /extend-shallow/2.0.1:
@@ -6135,6 +6263,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /extract-zip/2.0.1:
@@ -6265,6 +6395,8 @@ packages:
       parseurl: 1.3.3
       statuses: 1.5.0
       unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /find-cache-dir/2.1.0:
@@ -6684,6 +6816,8 @@ packages:
     dependencies:
       '@sindresorhus/is': 0.14.0
       '@szmarczak/http-timer': 1.1.2
+      '@types/keyv': 3.1.4
+      '@types/responselike': 1.0.0
       cacheable-request: 6.1.0
       decompress-response: 3.3.0
       duplexer3: 0.1.4
@@ -6697,6 +6831,15 @@ packages:
 
   /graceful-fs/4.2.9:
     resolution: {integrity: sha512-NtNxqUcXgpW2iMrfqSfR73Glt39K+BLwWsPs94yR63v45T0Wbej7eRmL5cWfwEgqXnmjQp3zaJTshdRW/qC2ZQ==}
+    dev: false
+
+  /graphql-tag/2.12.6:
+    resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      tslib: 2.3.1
     dev: false
 
   /graphql-tag/2.12.6_graphql@16.3.0:
@@ -8433,6 +8576,7 @@ packages:
       socks-proxy-agent: 6.1.1
       ssri: 8.0.1
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9069,6 +9213,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /micromatch/4.0.4:
@@ -9422,6 +9568,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /natural-compare/1.4.0:
@@ -9639,6 +9787,7 @@ packages:
       spawn-please: 1.0.0
       update-notifier: 5.1.0
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9693,6 +9842,7 @@ packages:
       minizlib: 2.1.2
       npm-package-arg: 8.1.5
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -9987,6 +10137,7 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: false
 
@@ -10315,8 +10466,15 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /promise-inflight/1.0.1:
+  /promise-inflight/1.0.1_bluebird@3.7.2:
     resolution: {integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM=}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: false
 
   /promise-retry/2.0.1:
@@ -10558,7 +10716,7 @@ packages:
       scheduler: 0.20.2
     dev: false
 
-  /react-dom/18.0.0-rc.0-next-fe905f152-20220107_e32785dbcafa2fde92a71a8f50f52ce6:
+  /react-dom/18.0.0-rc.0-next-fe905f152-20220107_4mtylw6k7ix55evhdkhvb5jm4y:
     resolution: {integrity: sha512-tl+6q+8h9Vj7r4iI1jYQfLp4oHLC+f7tenqlYBw9eOyJ/SXJXzZ0Mp7QG1LYkK+oapO3vlj5I7ddnbnf8bcDJQ==}
     peerDependencies:
       react: 18.0.0-rc.0-next-fe905f152-20220107
@@ -10576,7 +10734,7 @@ packages:
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
-  /react-redux/7.2.6_react-dom@17.0.2+react@17.0.2:
+  /react-redux/7.2.6_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-10RPdsz0UUrRL1NZE0ejTkucnclYSgXp5q+tB5SWx2qeG2ZJQJyymgAhwKy73yiL/13btfB6fPr+rgbMAaZIAQ==}
     peerDependencies:
       react: ^16.8.3 || ^17
@@ -10603,7 +10761,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
-  /react-router-dom/6.3.0_react-dom@17.0.2+react@17.0.2:
+  /react-router-dom/6.3.0_sfoxds7t5ydpegc3knd667wn6m:
     resolution: {integrity: sha512-uaJj7LKytRxZNQV8+RbzJWnJ8K2nPsOOEuX7aQstlMZKQT0164C+X2w6bnkqU3sjtLvpd5ojrezAyfZ1+0sStw==}
     peerDependencies:
       react: '>=16.8'
@@ -10720,6 +10878,8 @@ packages:
       graceful-fs: 4.2.9
       micromatch: 3.1.10
       readable-stream: 2.3.7
+    transitivePeerDependencies:
+      - supports-color
     dev: false
     optional: true
 
@@ -11179,6 +11339,8 @@ packages:
       on-finished: 2.3.0
       range-parser: 1.2.1
       statuses: 1.5.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /serialize-javascript/4.0.0:
@@ -11208,6 +11370,8 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.17.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /serve/11.3.2:
@@ -11223,6 +11387,8 @@ packages:
       compression: 1.7.3
       serve-handler: 6.1.3
       update-check: 1.5.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /serve/13.0.2:
@@ -11238,6 +11404,8 @@ packages:
       compression: 1.7.3
       serve-handler: 6.1.3
       update-check: 1.5.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /set-blocking/2.0.0:
@@ -11352,6 +11520,8 @@ packages:
       source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /socks-proxy-agent/6.1.1:
@@ -11840,6 +12010,7 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
+      acorn: 8.7.0
       commander: 2.20.3
       source-map: 0.6.1
       source-map-support: 0.5.21
@@ -11861,6 +12032,11 @@ packages:
 
   /throat/6.0.1:
     resolution: {integrity: sha512-8hmiGIJMDlwjg7dlJ4yKGLK8EsYqKgPWbG3b4wjJddKNwc7N7Dpn08Df4szr/sZdMVeOstrdYSsqzX6BYbcB+w==}
+    dev: false
+
+  /throttle-debounce/3.0.1:
+    resolution: {integrity: sha512-dTEWWNu6JmeVXY0ZYoPuH5cRIwc0MeGbJwah9KUNYSJwommQpCzTySTpEe8Gs1J23aeWEuAobe4Ag7EHVt/LOg==}
+    engines: {node: '>=10'}
     dev: false
 
   /through/2.3.8:
@@ -11994,6 +12170,12 @@ packages:
       utf8-byte-length: 1.0.4
     dev: false
 
+  /ts-essentials/9.1.2:
+    resolution: {integrity: sha512-EaSmXsAhEiirrTY1Oaa7TSpei9dzuCuFPmjKRJRPamERYtfaGS8/KpOSbjergLz/Y76/aZlV9i/krgzsuWEBbg==}
+    peerDependencies:
+      typescript: '>=4.1.0'
+    dev: false
+
   /ts-invariant/0.9.4:
     resolution: {integrity: sha512-63jtX/ZSwnUNi/WhXjnK8kz4cHHpYS60AnmA6ixz17l7E12a5puCWFlNpkne5Rl0J8TBPVHpGjsj4fxs8ObVLQ==}
     engines: {node: '>=8'}
@@ -12001,7 +12183,7 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /ts-jest/27.1.3_1e2406a8ca2ae3dc934d01f9ee2aebbb:
+  /ts-jest/27.1.3_dysankgkflr5ze2nah464kxlxm:
     resolution: {integrity: sha512-6Nlura7s6uM9BVUAoqLH7JHyMXjz8gluryjpPXxr3IxZdAXnU6FhjvVLHFtfd1vsE1p8zD1OJfskkc0jhTSnkA==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
@@ -12035,7 +12217,7 @@ packages:
       yargs-parser: 20.2.9
     dev: false
 
-  /ts-node/10.5.0_003c8a6da24af261bf8b8ce51aec1adf:
+  /ts-node/10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234:
     resolution: {integrity: sha512-6kEJKwVxAJ35W4akuiysfKwKmjkbYxwQMTBaAxo9KKAx/Yd26mPUyhGz3ji+EsJoAgrLqVsYHNuuYwQe22lbtw==}
     hasBin: true
     peerDependencies:
@@ -12417,7 +12599,7 @@ packages:
       querystring: 0.2.0
     dev: false
 
-  /urql/2.1.3_graphql@16.3.0+react@17.0.2:
+  /urql/2.1.3_eezpjbykne3wf4abbjcil75ihq:
     resolution: {integrity: sha512-S6GaKM7NJLed25L2qdZxaWFjWggXQHrneEVEe47+ZTQWxmfyV05STMl6DhtnZqb6n1wdT/KUljHkggz0kiE3NA==}
     peerDependencies:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -12579,7 +12761,7 @@ packages:
       vite: 2.8.4
     dev: false
 
-  /vite-plugin-mdx/3.5.10_@mdx-js+mdx@2.0.0+vite@2.8.4:
+  /vite-plugin-mdx/3.5.10_p5zckwea5dbiw3d6gnyruevblq:
     resolution: {integrity: sha512-tfGNRwkO23pln9EYqhbsOLEx9Qot5+enl+727gop7+HGEoC87+88hLRWGL+FU/It1Y0a5P3OAyDbTKKHX6tEJw==}
     peerDependencies:
       '@mdx-js/mdx': '*'
@@ -12643,6 +12825,21 @@ packages:
 
   /vscode-textmate/5.2.0:
     resolution: {integrity: sha512-Uw5ooOQxRASHgu6C7GVvUxisKXfSgW4oFlO+aa+PAkgmH89O3CXxEEzNRNtHSqtXFTl0nAC1uYj0GMSH27uwtQ==}
+    dev: false
+
+  /vue-demi/0.12.5_vue@3.2.31:
+    resolution: {integrity: sha512-BREuTgTYlUr0zw0EZn3hnhC3I6gPWv+Kwh4MCih6QcAeaTlaIX0DwOVN0wHej7hSvDPecz4jygy/idsgKfW58Q==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.2.31
     dev: false
 
   /vue-router/4.0.12_vue@3.2.31:
@@ -12733,6 +12930,8 @@ packages:
     requiresBuild: true
     dependencies:
       chokidar: 2.1.8
+    transitivePeerDependencies:
+      - supports-color
     dev: false
     optional: true
 
@@ -12744,6 +12943,8 @@ packages:
     optionalDependencies:
       chokidar: 3.5.3
       watchpack-chokidar2: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /web-streams-polyfill/3.2.0:
@@ -12818,6 +13019,8 @@ packages:
       terser-webpack-plugin: 1.4.5_webpack@4.46.0
       watchpack: 1.7.5
       webpack-sources: 1.4.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /whatwg-encoding/1.0.5:

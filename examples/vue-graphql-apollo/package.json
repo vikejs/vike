@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "dev": "npm run server",
+    "prod": "npm run build && npm run server:prod",
+    "build": "vite build && vite build --ssr",
+    "server": "node ./server",
+    "server:prod": "cross-env NODE_ENV=production node ./server"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.5.8",
+    "@vitejs/plugin-vue": "^2.0.1",
+    "@vue/apollo-composable": "^4.0.0-alpha.16",
+    "@vue/compiler-sfc": "^3.2.26",
+    "@vue/server-renderer": "^3.2.26",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "cross-fetch": "^3.1.5",
+    "express": "^4.17.2",
+    "react": "^17.0.2",
+    "vite": "^2.7.12",
+    "vite-plugin-ssr": "^0.3.51",
+    "vue": "^3.2.26"
+  }
+}
