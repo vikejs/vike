@@ -742,9 +742,14 @@ async function executeRenderHook(
   const hook = getHook(pageContext, 'render')
   assertUsage(
     hook,
-    `No \`render()\` hook found. See https://vite-plugin-ssr.com/render for more information. Loaded pages (none of them \`export { render }\`):\n${pageContext._pageFilePathsLoaded
-      .map((f) => `  ${f}`)
-      .join('\n')}`,
+    [
+      'No server-side `render()` hook found.',
+      'See https://vite-plugin-ssr.com/render-modes for more information.',
+      [
+        'Loaded server-side page files (none of them `export { render }`):',
+        ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`),
+      ].join('\n'),
+    ].join(' '),
   )
   const render = hook.hook
   const renderFilePath = hook.filePath
