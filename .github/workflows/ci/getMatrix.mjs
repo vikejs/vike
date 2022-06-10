@@ -139,6 +139,7 @@ function isReactExample(testFile) {
 /** @type MatrixEntry */
 const matrix = []
 Object.entries(testJobs).map(([name, { testFiles, setups, testCmd }]) => {
+  if( !name.includes('https')) return;
   setups.forEach((setup) => {
     matrix.push({
       testCmd,
