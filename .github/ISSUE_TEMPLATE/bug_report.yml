@@ -2,6 +2,18 @@ name: "💥 Bug Report"
 description: Report a bug.
 labels: ["Bug :boom:"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        > We have this error/problem with tool X, can you help?
+        
+        :red_circle: **Bad**: Ask tool X instead of asking us. Only ask us if you believe your problem to be related to vite-plugin-ssr.
+        > Our app is broken and we don't know why, can you help?
+        
+        :red_circle: **Bad**: We won't help with problems unrelated to vite-plugin-ssr. Only ask us if you have evidence that your problem is related to vite-plugin-ssr.
+        > We have this error originating from vite-plugin-ssr.
+        
+        :green_circle: **Good**: Post the full stack trace, so we can start fixing the error right away :-).
   - type: textarea
     attributes:
       label: Description
