@@ -55,11 +55,10 @@ function testRun(
 
     {
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
-      const viteImport = 'import "/@vite/client"'
       if (!isProduction) {
-        expect(html).toContain(viteImport)
+        expect(html).toContain('import("/@vite/client");')
       } else {
-        expect(html).not.toContain(viteImport)
+        expect(html).not.toContain('/@vite/client')
       }
     }
 
