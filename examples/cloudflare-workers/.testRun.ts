@@ -11,6 +11,13 @@ function testRun(
   const isWrangler = cmd === 'npm run preview:wrangler'
   const isWorker = isMiniflare || isWrangler
 
+  if (isMiniflare) {
+    const msg = "SKIPED: miniflare doesn't work anymore"
+    console.log(msg)
+    test(msg, () => {})
+    return
+  }
+
   if ((isWindows() || isNode12()) && isWorker) {
     const msg = 'SKIPED: miniflare and wrangler'
     console.log(msg)
