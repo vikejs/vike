@@ -3,11 +3,10 @@ import { autoRetry, fetchHtml, page, run, urlBase } from '../../libframe/test/se
 testRun()
 
 function testRun() {
-    run('npm run start')
+  run('npm run start')
 
-    test('page is rendered to HTML', async () => {
-        const html = await fetchHtml('/')
-        expect(html).toContain('<div> Name character: Rick Sanchez</div>')
-    })
-
+  test('page is rendered to HTML', async () => {
+    const html = await fetchHtml('/')
+    expect(html).toContain('<div> Name character: Rick Sanchez</div>')
+  })
 }

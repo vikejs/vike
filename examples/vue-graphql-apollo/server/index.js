@@ -5,7 +5,7 @@ const { createPageRenderer } = require('vite-plugin-ssr')
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
 const fetch = require('cross-fetch')
-const {ApolloClient, createHttpLink, InMemoryCache} = require("@apollo/client");
+const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client')
 startServer()
 
 async function startServer() {
@@ -31,7 +31,8 @@ async function startServer() {
     const url = req.originalUrl
     const apolloClient = makeApolloClient()
     const pageContextInit = {
-      url, apolloClient
+      url,
+      apolloClient,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
@@ -45,9 +46,8 @@ async function startServer() {
   console.log(`Server running at http://localhost:${port}`)
 }
 
-
 function makeApolloClient() {
-  console.log("create apolloClient")
+  console.log('create apolloClient')
   const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
