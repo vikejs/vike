@@ -1,14 +1,10 @@
-import { getPage } from 'vite-plugin-ssr/client'
+export { render }
+
 import { createApp } from './app'
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import fetch from 'cross-fetch'
 
-hydrate()
-
-async function hydrate() {
-  // We do Server Routing, but we can also do Client Routing by using `useClientRouter()`
-  // instead of `getPage()`, see https://vite-plugin-ssr.com/useClientRouter
-  const pageContext = await getPage()
+function render(pageContext) {
   const defaultClient = new ApolloClient({
     link: new HttpLink({ uri: 'https://rickandmortyapi.com/graphql', fetch }),
     cache: new InMemoryCache().restore(pageContext.apolloInitialState),
