@@ -334,6 +334,34 @@ importers:
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/graphql-apollo-vue:
+    specifiers:
+      '@apollo/client': ^3.5.8
+      '@vitejs/plugin-vue': ^2.0.1
+      '@vue/apollo-composable': ^4.0.0-alpha.16
+      '@vue/compiler-sfc': ^3.2.26
+      '@vue/server-renderer': ^3.2.26
+      compression: ^1.7.4
+      cross-env: ^7.0.3
+      cross-fetch: ^3.1.5
+      express: ^4.17.2
+      vite: ^2.7.12
+      vite-plugin-ssr: 0.3.64
+      vue: ^3.2.26
+    dependencies:
+      '@apollo/client': 3.5.9
+      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vue/apollo-composable': 4.0.0-alpha.17_mof2kk6mwqfb4woa6vb4i6pzxu
+      '@vue/compiler-sfc': 3.2.31
+      '@vue/server-renderer': 3.2.31_vue@3.2.31
+      compression: 1.7.4
+      cross-env: 7.0.3
+      cross-fetch: 3.1.5
+      express: 4.17.3
+      vite: 2.8.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.31
+
   examples/html-fragments:
     specifiers:
       express: ^4.17.3
@@ -701,34 +729,6 @@ importers:
       typescript: 4.5.5
       vite: 2.8.4
       vite-plugin-md: 0.11.8_vite@2.8.4
-      vite-plugin-ssr: link:../../vite-plugin-ssr
-      vue: 3.2.31
-
-  examples/vue-graphql-apollo:
-    specifiers:
-      '@apollo/client': ^3.5.8
-      '@vitejs/plugin-vue': ^2.0.1
-      '@vue/apollo-composable': ^4.0.0-alpha.16
-      '@vue/compiler-sfc': ^3.2.26
-      '@vue/server-renderer': ^3.2.26
-      compression: ^1.7.4
-      cross-env: ^7.0.3
-      cross-fetch: ^3.1.5
-      express: ^4.17.2
-      vite: ^2.7.12
-      vite-plugin-ssr: 0.3.64
-      vue: ^3.2.26
-    dependencies:
-      '@apollo/client': 3.5.9
-      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
-      '@vue/apollo-composable': 4.0.0-alpha.17_mof2kk6mwqfb4woa6vb4i6pzxu
-      '@vue/compiler-sfc': 3.2.31
-      '@vue/server-renderer': 3.2.31_vue@3.2.31
-      compression: 1.7.4
-      cross-env: 7.0.3
-      cross-fetch: 3.1.5
-      express: 4.17.3
-      vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
 
