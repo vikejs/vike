@@ -715,12 +715,11 @@ importers:
       cross-env: ^7.0.3
       cross-fetch: ^3.1.5
       express: ^4.17.2
-      react: ^17.0.2
       vite: ^2.7.12
-      vite-plugin-ssr: ^0.3.51
+      vite-plugin-ssr: 0.3.64
       vue: ^3.2.26
     dependencies:
-      '@apollo/client': 3.5.9_react@17.0.2
+      '@apollo/client': 3.5.9
       '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
       '@vue/apollo-composable': 4.0.0-alpha.17_mof2kk6mwqfb4woa6vb4i6pzxu
       '@vue/compiler-sfc': 3.2.31
@@ -729,7 +728,6 @@ importers:
       cross-env: 7.0.3
       cross-fetch: 3.1.5
       express: 4.17.3
-      react: 17.0.2
       vite: 2.8.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
@@ -920,6 +918,32 @@ packages:
     resolution: {integrity: sha512-MrAQ/MrPSxbh1bBrmwJjORfJymw4IqSHFBXqvxaga3ZdDM+/zokYF8DjyJpSjY2QmpmgQrajDUBJOWrYeARfzA==}
     dev: false
 
+  /@apollo/client/3.5.9:
+    resolution: {integrity: sha512-Qq3OE3GpyPG2fYXBzi1n4QXcKZ11c6jHdrXK2Kkn9SD+vUymSrllXsldqnKUK9tslxKqkKzNrkCXkLv7PxwfSQ==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      react: ^16.8.0 || ^17.0.0
+      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      subscriptions-transport-ws:
+        optional: true
+    dependencies:
+      '@graphql-typed-document-node/core': 3.1.1
+      '@wry/context': 0.6.1
+      '@wry/equality': 0.5.2
+      '@wry/trie': 0.3.1
+      graphql-tag: 2.12.6
+      hoist-non-react-statics: 3.3.2
+      optimism: 0.16.1
+      prop-types: 15.8.1
+      symbol-observable: 4.0.0
+      ts-invariant: 0.9.4
+      tslib: 2.3.1
+      zen-observable-ts: 1.2.3
+    dev: false
+
   /@apollo/client/3.5.9_eezpjbykne3wf4abbjcil75ihq:
     resolution: {integrity: sha512-Qq3OE3GpyPG2fYXBzi1n4QXcKZ11c6jHdrXK2Kkn9SD+vUymSrllXsldqnKUK9tslxKqkKzNrkCXkLv7PxwfSQ==}
     peerDependencies:
@@ -938,33 +962,6 @@ packages:
       '@wry/trie': 0.3.1
       graphql: 16.3.0
       graphql-tag: 2.12.6_graphql@16.3.0
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.16.1
-      prop-types: 15.8.1
-      react: 17.0.2
-      symbol-observable: 4.0.0
-      ts-invariant: 0.9.4
-      tslib: 2.3.1
-      zen-observable-ts: 1.2.3
-    dev: false
-
-  /@apollo/client/3.5.9_react@17.0.2:
-    resolution: {integrity: sha512-Qq3OE3GpyPG2fYXBzi1n4QXcKZ11c6jHdrXK2Kkn9SD+vUymSrllXsldqnKUK9tslxKqkKzNrkCXkLv7PxwfSQ==}
-    peerDependencies:
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-      react: ^16.8.0 || ^17.0.0
-      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
-    peerDependenciesMeta:
-      react:
-        optional: true
-      subscriptions-transport-ws:
-        optional: true
-    dependencies:
-      '@graphql-typed-document-node/core': 3.1.1
-      '@wry/context': 0.6.1
-      '@wry/equality': 0.5.2
-      '@wry/trie': 0.3.1
-      graphql-tag: 2.12.6
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.8.1
@@ -2807,7 +2804,7 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      '@apollo/client': 3.5.9_react@17.0.2
+      '@apollo/client': 3.5.9
       throttle-debounce: 3.0.1
       ts-essentials: 9.1.2
       vue: 3.2.31
