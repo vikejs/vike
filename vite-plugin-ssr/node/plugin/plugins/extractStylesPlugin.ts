@@ -5,12 +5,14 @@ export { extractStylesPlugin }
 export { extractStylesRE }
 export { extractStylesAddQuery }
 
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedId } from 'rollup'
 import { isSSR_options, assert, getFileExtension, removeSourceMap, assertPosixPath } from '../utils'
 import { parseEsModules, EsModules } from '../parseEsModules'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { createDebugger, isDebugEnabled } from '../../utils'
+import { assertViteConfig } from './config/assertConfig'
+import type { ConfigVps } from './config'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
@@ -21,7 +23,7 @@ const debug = createDebugger(debugNamespace)
 const debugEnabled = isDebugEnabled(debugNamespace)
 
 function extractStylesPlugin(): Plugin[] {
-  let root: string
+  let config: ResolvedConfig & ConfigVps
   return [
     // Remove all JS from `.page.server.js` files and `?extractStyles` imports, so that only CSS remains
     {
@@ -51,7 +53,6 @@ function extractStylesPlugin(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        assert(root)
         if (!importer) {
           // We don't need to transform the ID of the `*.page.server.js` entries
           return
@@ -84,6 +85,15 @@ function extractStylesPlugin(): Plugin[] {
           return transformedId(id, importer)
         }
 
+        // Inlcude the CSS of dependencies listed in `includeCSS`
+        if (
+          (config.vitePluginSsr.includeCSS || []).some(
+            (dependency) => source === dependency || source.startsWith(dependency + '/'),
+          )
+        ) {
+          return transformedId(id, importer)
+        }
+
         // If the import path resolves to a file in `node_modules/`, we can ignore that file:
         //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
         //  - Loading CSS from a library (living in `node_modules/`) in an non-directly is non-standard we can safely not support this case. (I'm not aware of any library that does this.)
@@ -92,8 +102,8 @@ function extractStylesPlugin(): Plugin[] {
           return emptyModule(id, importer)
         }
         // When the library is symlinked, it doesn't live in a `node_modules/` directory but lives outside `root`.
-        assertPosixPath(root)
-        if (!id.startsWith(root)) {
+        assertPosixPath(config.root)
+        if (!id.startsWith(config.root)) {
           return emptyModule(id, importer)
         }
 
@@ -105,9 +115,9 @@ function extractStylesPlugin(): Plugin[] {
     {
       name: 'vite-plugin-ssr:extractStyles-3',
       apply: 'build',
-      configResolved(config) {
-        root = config.root
-        assert(root)
+      configResolved(config_) {
+        assertViteConfig(config_)
+        config = config_
       },
       load(id) {
         if (id === EMPTY_MODULE_ID) {

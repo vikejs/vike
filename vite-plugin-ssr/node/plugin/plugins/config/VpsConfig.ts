@@ -45,4 +45,9 @@ type VpsConfig = {
    * Do not use without having talked to a vite-plugin-ssr maintainer.
    */
   disableBuildChaining?: boolean
+  /**
+   * @internal
+   * Do not use without having talked to a vite-plugin-ssr maintainer.
+   */
+  includeCSS?: string[]
 }
