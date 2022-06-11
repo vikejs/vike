@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Welcome to vue3-apollo example</h1>
+    <h1>Welcome to Vue 3 Apollo example</h1>
     <div>Name character: {{ result.character.name }}</div>
   </div>
 </template>
