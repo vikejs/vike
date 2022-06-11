@@ -2,7 +2,7 @@ export { assertViteConfig }
 export { assertVpsConfig }
 
 import { assert, assertUsage, hasProp, isObject } from '../../../utils'
-import { VpsConfig } from './VpsConfig'
+import { VpsConfig, ConfigVps } from './VpsConfig'
 
 function assertVpsConfig(
   vitePluginSsr: unknown,
@@ -17,6 +17,11 @@ function assertVpsConfig(
   )
   assertPageFilesConfig(vitePluginSsr)
   assertPrerenderConfig(vitePluginSsr)
+  assertConfig(
+    'includeCSS',
+    'should be an array of strings',
+    hasProp(vitePluginSsr, 'includeCSS', 'string[]') || hasProp(vitePluginSsr, 'includeCSS', 'undefined'),
+  )
 
   return
 
@@ -87,8 +92,8 @@ function assertVpsConfig(
   }
 }
 
-function assertViteConfig<T>(viteConfig: T): asserts viteConfig is T & { vitePluginSsr: VpsConfig } {
-  assert(hasProp(viteConfig, 'vitePluginSsr', 'object'))
-  const { vitePluginSsr } = viteConfig
+function assertViteConfig<T>(config: T): asserts config is T & ConfigVps {
+  assert(hasProp(config, 'vitePluginSsr', 'object'))
+  const { vitePluginSsr } = config
   assertVpsConfig(vitePluginSsr, null)
 }

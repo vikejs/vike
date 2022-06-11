@@ -13,6 +13,7 @@ function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): 
       include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
     },
     prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
+    includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],
   }
 
   assertVpsConfig(vitePluginSsr, null)
