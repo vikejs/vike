@@ -74,9 +74,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
     await page.goto(urlBase + '/spa')
     await clickCounter()
-  })
-  if (!isProd) {
-    test('SPA - HMR', async () => {
+
+    if (!isProd) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SPA')
@@ -101,8 +100,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       }
       // Ensure CSS was HMR'd
       expect(await page.textContent('button')).toContain('Counter 1')
-    })
-  }
+    }
+  })
 
   test('HTML + JS', async () => {
     {
@@ -111,7 +110,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       if (isProd) {
         expect(html).toMatch(partRegex`<script type="module" src="/assets/_default.page.client.${hash}.js" async>`)
       } else {
-        expect(html).toMatch(partRegex`import "/@fs/${path}/pages/html-js/_default.page.client.js"`)
+        expect(html).toMatch(partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`)
       }
     }
 
@@ -150,9 +149,9 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
     await page.goto(urlBase + '/ssr')
     await clickCounter()
-  })
-  if (!isProd) {
-    test('SSR - HMR', async () => {
+    expect(await page.textContent('button')).toContain('Counter 1')
+
+    if (!isProd) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
@@ -179,8 +178,8 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       }
       // Ensure HMR instead of page reload
       expect(await page.textContent('button')).toContain('Counter 1')
-    })
-  }
+    }
+  })
 
   return
 
@@ -205,7 +204,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js" async>`)
     } else {
       expect(html).toMatch(
-        partRegex`import "/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js"`,
+        partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js");`,
       )
     }
   }
