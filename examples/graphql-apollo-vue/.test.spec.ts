@@ -7,6 +7,6 @@ function testRun() {
 
   test('page is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<div> Name character: Rick Sanchez</div>')
+    expect(html).toContain('<div>Name character: Rick Sanchez</div>')
   })
 }
