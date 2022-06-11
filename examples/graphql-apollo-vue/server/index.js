@@ -47,7 +47,6 @@ async function startServer() {
 }
 
 function makeApolloClient() {
-  console.log('create apolloClient')
   const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
