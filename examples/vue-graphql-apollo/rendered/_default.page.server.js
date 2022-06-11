@@ -4,16 +4,17 @@ import { createApp } from './app'
 import logoUrl from './logo.svg'
 
 export { render }
+export { onBeforeRender }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname','apolloIntialState' ]
+export const passToClient = ['pageProps', 'urlPathname', 'apolloIntialState']
 
 async function render(pageContext) {
-  const {appHtml} = pageContext
-  const apolloIntialState = pageContext.apolloClient.extract()
   // See https://vite-plugin-ssr.com/head
   const { documentProps } = pageContext
   const title = (documentProps && documentProps.title) || 'Vite SSR app'
   const desc = (documentProps && documentProps.description) || 'App using Vite + vite-plugin-ssr'
+
+  const { appHtml } = pageContext
 
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html lang="en">
@@ -32,20 +33,19 @@ async function render(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      apolloIntialState
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
     },
   }
 }
 
-export {onBeforeRender}
-async function onBeforeRender(pageContext){
+async function onBeforeRender(pageContext) {
   const app = createApp(pageContext, pageContext.apolloClient)
+  const apolloIntialState = pageContext.apolloClient.extract()
   const appHtml = await renderToString(app)
-  return{
-    pageContext:{
-      appHtml
-    }
+  return {
+    pageContext: {
+      apolloIntialState,
+      appHtml,
+    },
   }
-
 }
