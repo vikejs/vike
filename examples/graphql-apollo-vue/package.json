@@ -3,7 +3,7 @@
     "dev": "npm run server",
     "prod": "npm run build && npm run server:prod",
     "build": "vite build && vite build --ssr",
-    "start": "node ./server",    
+    "server": "node ./server",
     "server:prod": "cross-env NODE_ENV=production node ./server"
   },
   "dependencies": {
