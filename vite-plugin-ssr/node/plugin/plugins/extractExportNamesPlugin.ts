@@ -1,4 +1,5 @@
 export { extractExportNamesPlugin }
+export { isUsingClientRouter }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { isSSR_options, removeSourceMap } from '../utils'
@@ -28,6 +29,9 @@ function extractExportNamesPlugin(): Plugin {
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
   const esModules = await parseEsModules(src)
   const exportNames = getExportNames(esModules)
+  if (isClientSide) {
+    checkIfClientRouting(exportNames)
+  }
   const code = getCode(exportNames, isClientSide, isProduction)
   return removeSourceMap(code)
 }
@@ -55,4 +59,14 @@ function injectHmr(code: string, isClientSide: boolean, isProduction: boolean) {
   }
 
   return code
+}
+
+var usesClientRouter: undefined | true
+function checkIfClientRouting(exportNames: string[]) {
+  if (exportNames.includes('clientRouting')) {
+    usesClientRouter = true
+  }
+}
+function isUsingClientRouter(): boolean {
+  return usesClientRouter === true
 }

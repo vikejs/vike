@@ -1,9 +1,10 @@
 export { manifest }
 
 import { Plugin } from 'vite'
-import { assert, normalizePath, projectInfo, isSSR_config, apply } from '../utils'
+import { assert, projectInfo, isSSR_config, apply } from '../utils'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
+import { isUsingClientRouter } from './extractExportNamesPlugin'
 
 function manifest(): Plugin[] {
   let ssr: boolean
@@ -21,13 +22,13 @@ function manifest(): Plugin[] {
       name: 'vite-plugin-ssr:pluginManifest',
       apply: 'build',
       configResolved,
-      generateBundle(_, bundle) {
+      generateBundle() {
         assert(typeof ssr === 'boolean')
         assert(runtimeConfig)
         if (ssr) return
         const manifest = {
           version: projectInfo.projectVersion,
-          usesClientRouter: includesClientSideRouter(bundle as any),
+          usesClientRouter: isUsingClientRouter(),
           ...runtimeConfig,
         }
         assertPluginManifest(manifest)
@@ -44,18 +45,4 @@ function manifest(): Plugin[] {
     ssr = isSSR_config(config)
     runtimeConfig = resolveRuntimeConfig(config)
   }
-}
-
-function includesClientSideRouter(bundle: Record<string, { modules?: Record<string, unknown> }>) {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
-  const filePath = require.resolve('../../../../../dist/esm/client/router/useClientRouter.js')
-  for (const file of Object.keys(bundle)) {
-    const bundleFile = bundle[file]
-    assert(bundleFile)
-    const modules = bundleFile.modules || {}
-    if (filePath in modules || normalizePath(filePath) in modules) {
-      return true
-    }
-  }
-  return false
 }
