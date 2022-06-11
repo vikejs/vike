@@ -11,8 +11,8 @@ function testRun(
   const isWrangler = cmd === 'npm run preview:wrangler'
   const isWorker = isMiniflare || isWrangler
 
-  if (isMiniflare) {
-    const msg = "SKIPED: miniflare doesn't work anymore"
+  if (isMiniflare || isWrangler) {
+    const msg = "SKIPPED: miniflare and wrangler don't work anymore"
     console.log(msg)
     test(msg, () => {})
     return
