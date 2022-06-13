@@ -29,6 +29,7 @@ import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { assertViteConfig } from './plugin/plugins/config/assertConfig'
+import type { InlineConfig } from 'vite'
 
 export { prerender }
 
@@ -62,13 +63,37 @@ type PageContext = GlobalPrerenderingContext & {
 
 async function prerender(
   options: {
-    onPagePrerender?: Function
+    /** Initial `pageContext` values */
     pageContextInit?: Record<string, unknown>
     /**
-     * Project root directory. Must be an absolute path.
-     * @default process.cwd()
+     * The Vite config.
+     *
+     * We recommend to either omit this option or set it to `prerender({ viteConfig: { root }})`: the `vite.config.js` file living at `root` will be loaded.
+     *
+     * Alternatively you can:
+     *  - Set `prerender({ viteConfig: { configFile: require.resolve('./path/to/vite.config.js') }})`.
+     *  - Not load any `vite.config.js` file and, instead, use `prerender({ viteConfig: { configFile: false, plugins: [/*...*] }})` to define the entire Vite config.
+     *
+     * You can also use `prerender({ viteConfig })` to load a `vite.config.js` file while overriding parts of the Vite config.
+     *
+     * See https://vitejs.dev/guide/api-javascript.html#inlineconfig for more information.
+     *
+     * @default { root: process.cwd() }
+     *
      */
+    viteConfig?: InlineConfig
+    /**
+     * @internal
+     * Do not use without having talked to a vite-plugin-ssr maintainer.
+     */
+    onPagePrerender?: Function
+
+    // ===============================
+    // ==== Deprecated / outdated ====
+    // ===============================
+    /** @deprecated Define `prerender({ viteConfig: { root }})` instead. */
     root?: string
+    /** @deprecated Define `prerender({ viteConfig: { configFile }})` instead. */
     configFile?: string
     /** @deprecated Define `partial` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
     partial?: boolean
@@ -93,22 +118,12 @@ async function prerender(
 
   disableReactStreaming()
 
-  const viteConfig = await resolveConfig(
-    { configFile: options.configFile, root: options.root },
-    'vite-plugin-ssr prerender' as any,
-    'production',
-  )
+  const viteConfig = await resolveConfig(options.viteConfig || {}, 'vite-plugin-ssr prerender' as any, 'production')
+  assertLoadedConfig(viteConfig, options)
+  assertViteConfig(viteConfig)
+
   const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
   const { root } = viteConfig
-  assertUsage(
-    viteConfig.configFile,
-    `Could not find \`vite.config.js\` at ${root}. Use the option \`prerender({ configFile: 'path/to/vite.config.js' })\`.`,
-  )
-  assertUsage(
-    viteConfig.plugins.some((p) => p.name?.startsWith('vite-plugin-ssr')),
-    `The \`vite.config.js\` (${viteConfig.configFile}) does not contain vite-plugin-ssr. Make sure to add vite-plugin-ssr to \`vite.config.js\`, or, if you have more than one \`vite.config.js\`, use the option \`prerender({ configFile: 'path/to/vite.config.js' })\` to select the right \`vite.config.js\`.`,
-  )
-  assertViteConfig(viteConfig)
   const prerenderConfig = viteConfig.vitePluginSsr?.prerender
   const {
     partial = false,
@@ -586,9 +601,18 @@ function checkOutdatedOptions(options: {
   noExtraDir?: unknown
   base?: unknown
   root?: unknown
+  configFile?: unknown
   outDir?: unknown
   parallel?: number
 }) {
+  assertUsage(
+    options.root === undefined,
+    'Option `prerender({ root })` deprecated: set `prerender({ viteConfig: { root }})` instead.',
+  )
+  assertUsage(
+    options.configFile === undefined,
+    'Option `prerender({ configFile })` deprecated: set `prerender({ viteConfig: { configFile }})` instead.',
+  )
   ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
     assertUsage(
       options[prop] === undefined,
@@ -650,4 +674,26 @@ function disableReactStreaming() {
   }
   const { disable } = mod
   disable()
+}
+
+function assertLoadedConfig(
+  viteConfig: { plugins: readonly { name: string }[]; configFile?: string },
+  options: { viteConfig?: InlineConfig },
+) {
+  if (viteConfig.plugins.some((p) => p.name.startsWith('vite-plugin-ssr'))) {
+    return
+  }
+  const { configFile } = viteConfig
+  if (configFile) {
+    assertUsage(false, `${configFile} is missing vite-plugin-ssr. Add vite-plugin-ssr to \`${configFile}\`.`)
+  } else {
+    if (!options.viteConfig) {
+      assertUsage(
+        false,
+        `[prerender()] No \`vite.config.js\` file found at \`${process.cwd()}\`. Use the option \`prerender({ viteConfig })\`.`,
+      )
+    } else {
+      assertUsage(false, '[prerender()] The Vite config `prerender({ viteConfig })` is missing vite-plugin-ssr.')
+    }
+  }
 }
