@@ -520,8 +520,8 @@ importers:
       cross-fetch: ^3.1.5
       express: ^4.17.3
       node-fetch: ^2.6.1
-      react: ^18.0.0-rc.0
-      react-dom: ^18.0.0-rc.0
+      react: 18.0.0-rc.0
+      react-dom: 18.0.0-rc.0
       rimraf: ^3.0.2
       serve: ^13.0.2
       ts-node: ^10.5.0
@@ -530,7 +530,7 @@ importers:
       vite-plugin-ssr: 0.3.64
     dependencies:
       '@mdx-js/mdx': 2.0.0
-      '@mdx-js/react': 2.0.0_4mtylw6k7ix55evhdkhvb5jm4y
+      '@mdx-js/react': 2.0.0_react@18.0.0-rc.0
       '@mdx-js/rollup': 2.0.0
       '@types/express': 4.17.13
       '@types/node': 17.0.19
@@ -539,8 +539,8 @@ importers:
       cross-fetch: 3.1.5
       express: 4.17.3
       node-fetch: 2.6.7
-      react: 18.0.0-rc.0-next-fe905f152-20220107
-      react-dom: 18.0.0-rc.0-next-fe905f152-20220107_4mtylw6k7ix55evhdkhvb5jm4y
+      react: 18.0.0-rc.0
+      react-dom: 18.0.0-rc.0_react@18.0.0-rc.0
       rimraf: 3.0.2
       serve: 13.0.2
       ts-node: 10.5.0_aa6iu3ncjlzgdp4lrtsrv3a234
@@ -2004,16 +2004,6 @@ packages:
       react: 17.0.2
     dev: false
 
-  /@mdx-js/react/2.0.0_4mtylw6k7ix55evhdkhvb5jm4y:
-    resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
-    peerDependencies:
-      react: '>=16'
-    dependencies:
-      '@types/mdx': 2.0.1
-      '@types/react': 17.0.39
-      react: 18.0.0-rc.0-next-fe905f152-20220107
-    dev: false
-
   /@mdx-js/react/2.0.0_react@17.0.2:
     resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
     peerDependencies:
@@ -2022,6 +2012,16 @@ packages:
       '@types/mdx': 2.0.1
       '@types/react': 17.0.39
       react: 17.0.2
+    dev: false
+
+  /@mdx-js/react/2.0.0_react@18.0.0-rc.0:
+    resolution: {integrity: sha512-icpMd43xqORnHSVRwALZv3ELN3IS7VS3BL+FyH2FFergQPSQ21FX0lN+OMIs0X+3dGY1L0DLhBCkMfPO+yDG7Q==}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@types/mdx': 2.0.1
+      '@types/react': 17.0.39
+      react: 18.0.0-rc.0
     dev: false
 
   /@mdx-js/rollup/2.0.0:
@@ -9916,7 +9916,7 @@ packages:
     dev: false
 
   /object-assign/4.1.1:
-    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=}
+    resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -10713,14 +10713,14 @@ packages:
       scheduler: 0.20.2
     dev: false
 
-  /react-dom/18.0.0-rc.0-next-fe905f152-20220107_4mtylw6k7ix55evhdkhvb5jm4y:
-    resolution: {integrity: sha512-tl+6q+8h9Vj7r4iI1jYQfLp4oHLC+f7tenqlYBw9eOyJ/SXJXzZ0Mp7QG1LYkK+oapO3vlj5I7ddnbnf8bcDJQ==}
+  /react-dom/18.0.0-rc.0_react@18.0.0-rc.0:
+    resolution: {integrity: sha512-tdD1n0svTndHBQvVAq/f2Kx7FgQ30CpSLp87/neQKAHPW5WtdgW1sBSwmFAcMQOrmstTuP0M+zRlH86f9kMX/A==}
     peerDependencies:
-      react: 18.0.0-rc.0-next-fe905f152-20220107
+      react: ^18.0.0-rc.0
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-      react: 18.0.0-rc.0-next-fe905f152-20220107
+      react: 18.0.0-rc.0
       scheduler: 0.21.0-rc.0-next-fe905f152-20220107
     dev: false
 
@@ -10795,8 +10795,8 @@ packages:
       object-assign: 4.1.1
     dev: false
 
-  /react/18.0.0-rc.0-next-fe905f152-20220107:
-    resolution: {integrity: sha512-eePjzo6pCiwk9iDRYG0Hn5F0p9e7dlLGIys/eeLUCxByHP90rsXg/H/842S6ggBgarcfvRtDu8cAU7kxfLC4MA==}
+  /react/18.0.0-rc.0:
+    resolution: {integrity: sha512-PawosMBgF8k5Nlc3++ibzjFqPvo1XKv80MNtVYqz3abHHB2w3IpU65sSdSmBd2ooCwVhcp9b1vkx/twqhakNtA==}
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
