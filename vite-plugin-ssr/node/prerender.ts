@@ -82,11 +82,9 @@ async function prerender(
     base?: string
   } = {},
 ) {
-  const { onPagePrerender, pageContextInit, configFile, root: root_, ...deprecatedOptions } = options
-  checkOutdatedOptions(deprecatedOptions)
+  checkOutdatedOptions(options)
 
-  const logLevel = !!onPagePrerender ? 'warn' : 'info'
-
+  const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
     console.log(`${cyan(`vite-plugin-ssr ${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
   }
@@ -95,7 +93,11 @@ async function prerender(
 
   disableReactStreaming()
 
-  const viteConfig = await resolveConfig({ configFile, root: root_ }, 'vite-plugin-ssr prerender' as any, 'production')
+  const viteConfig = await resolveConfig(
+    { configFile: options.configFile, root: options.root },
+    'vite-plugin-ssr prerender' as any,
+    'production',
+  )
   const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
   const { root } = viteConfig
   assertUsage(
@@ -139,7 +141,7 @@ async function prerender(
     })
   }
 
-  objectAssign(globalContext, pageContextInit)
+  objectAssign(globalContext, options.pageContextInit)
 
   const doNotPrerenderList: DoNotPrerenderList = []
 
@@ -163,7 +165,15 @@ async function prerender(
 
   await Promise.all(
     htmlFiles.map((htmlFile) =>
-      writeHtmlFile(htmlFile, root, outDirRoot, doNotPrerenderList, concurrencyLimit, onPagePrerender, logLevel),
+      writeHtmlFile(
+        htmlFile,
+        root,
+        outDirRoot,
+        doNotPrerenderList,
+        concurrencyLimit,
+        options.onPagePrerender,
+        logLevel,
+      ),
     ),
   )
 
