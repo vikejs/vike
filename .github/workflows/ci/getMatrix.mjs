@@ -3,7 +3,7 @@ import assert from 'assert'
 import path from 'path'
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
-const testRE = /(\.|\/)(test|spec)\./
+const testRE = /\.(test|spec)\./
 const testCmdE2e = 'pnpm run test:e2e'
 
 /** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup)[] } MatrixEntry */
