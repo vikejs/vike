@@ -188,7 +188,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       const node = await page.$('.colored')
       expect(node).not.toBe(null)
       assert(node !== null)
-      const titleColor = await page.evaluate((node: Element) => getComputedStyle(node).color, node)
+      const titleColor = await page.evaluate((node) => getComputedStyle(node).color, node)
       expect(titleColor).toBe(getColorRgb(color))
     })
   }
