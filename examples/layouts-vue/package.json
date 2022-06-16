@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "preview": "vite build && vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^2.3.1",
+    "@vue/compiler-sfc": "^3.2.33",
+    "@vue/server-renderer": "^3.2.33",
+    "vite": "^2.9.7",
+    "vite-plugin-ssr": "0.3.64",
+    "vue": "^3.2.33"
+  },
+  "type": "module"
+}

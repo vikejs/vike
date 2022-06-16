@@ -468,6 +468,22 @@ importers:
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/layouts-vue:
+    specifiers:
+      '@vitejs/plugin-vue': ^2.3.1
+      '@vue/compiler-sfc': ^3.2.33
+      '@vue/server-renderer': ^3.2.33
+      vite: 2.9.10
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: ^3.2.33
+    dependencies:
+      '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
+      '@vue/compiler-sfc': 3.2.33
+      '@vue/server-renderer': 3.2.33_vue@3.2.33
+      vite: 2.9.10
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.33
+
   examples/path-aliases:
     specifiers:
       '@types/express': ^4.17.13
@@ -11273,7 +11289,7 @@ packages:
     dev: false
 
   /to-fast-properties/2.0.0:
-    resolution: {integrity: sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=}
+    resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
     dev: false
 
