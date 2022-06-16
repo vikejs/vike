@@ -2,7 +2,7 @@ import { page, run, autoRetry, urlBase } from '../../libframe/test/setup'
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'npm run dev' | 'npm run preview', uiFrameworkRoot: 'react-root' | 'app' = 'react-root') {
   run(cmd)
 
   test('landing page', async () => {
@@ -66,8 +66,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toBe('Counter 1')
     }
   })
-}
 
-async function testLayoutWidth(width: 700 | 900) {
-  expect(await page.$eval('#react-root > div', (e) => getComputedStyle(e).width)).toBe(width + 'px')
+  async function testLayoutWidth(width: 700 | 900) {
+    expect(await page.$eval(`#${uiFrameworkRoot} > div`, (e) => getComputedStyle(e).width)).toBe(width + 'px')
+  }
 }
