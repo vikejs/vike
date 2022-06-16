@@ -2,6 +2,7 @@ export { Layout }
 
 import './Layout.css'
 import { LayoutDefault } from '../../renderer/LayoutDefault'
+import { Counter } from './Counter'
 
 function Layout({ children }) {
   return (
@@ -14,6 +15,9 @@ function Layout({ children }) {
             <br />
             With the nested layout <code>/pages/starship/Layout.jsx</code>.
           </b>
+        </p>
+        <p>
+          Outer layout is preserved during nested layout navigation: <Counter />
         </p>
         <div className="sub-navigation">
           <a href="/starship/">Overview</a> <a href="/starship/reviews">Reviews</a>{' '}
