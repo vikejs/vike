@@ -7,7 +7,7 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageShell } from './PageShell'
 
 // See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ['pageProps']
+const passToClient = ['pageProps', 'routeParams']
 
 async function render(pageContext) {
   const { Page, pageProps } = pageContext
