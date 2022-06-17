@@ -1,0 +1,194 @@
+import { RepoLink, Link } from 'vikepress'
+
+> **What are layouts?**
+> Apps often have different layouts:
+> for example, a landing page usually has a different layout than an admin panel.
+> We want to be able to define different layouts for different pages.
+
+## The simple way
+
+A simple way to have different layouts is to import and use the right layout for each page:
+
+```jsx
+// /pages/index.page.js
+
+export { Page }
+
+import { LayoutDefault } from '../layouts/LayoutDefault'
+
+function Page() {
+  return <>
+    <LayoutDefault>
+      {/* ... */}
+    </LayoutDefault>
+  </>
+}
+```
+
+```jsx
+// /pages/admin.page.js
+
+export { Page }
+
+import { LayoutDashboard } from '../layouts/LayoutDashboard'
+
+function Page() {
+  return <>
+    <LayoutDashboard>
+      {/* ... */}
+    </LayoutDashboard>
+  </>
+}
+```
+
+
+## `pageContext.exports.Layout`
+
+Alternatively, we can use <Link href="/exports" text={<code>pageContext.exports</code>} />
+to implement a custom export. This provides a similar DX than some UI frameworks.
+
+> In general, we recommend [the simple way](#the-simple-way).
+> Only use a custom export if you are confident that this is what you want.
+
+```js
+// /pages/admin.page.js
+
+// Set `pageContext.exports.Layout` to `LayoutDashboard`
+export { LayoutDashboard as Layout } from '../layouts/LayoutDashboard'
+export { Page }
+
+function Page() {
+  // ...
+}
+```
+
+Our renderer can then access `pageContext.exports.Layout` and render it accordningly:
+
+```js
+// /renderer/_default.page.{server|client}.js
+
+export { render }
+
+import { LayoutDefault } from '../layouts/LayoutDefault'
+
+function render() {
+  const Layout = pageContext.exports.Layout || LayoutDefault
+  const Page = pageContext.exports.Page
+  // We render `<Layout><Page/></Layout>`
+  // ...
+}
+```
+
+```js
+// /pages/index.page.js
+
+// We don't need to `export { Layout }` because the landing page uses `<LayoutDefault>`
+export { Page }
+
+function Page() {
+  // As usual
+  // ...
+}
+```
+
+We can use `_default.page.js` to set the layout for several pages at once:
+
+```js
+// /pages/product/_default.page.js
+
+// Set the Layout for all `/pages/product/**/*.page.js`
+export { LayoutProduct as Layout } from '../../layouts/LayoutProduct'
+```
+
+Which fits well <Link text="Domain-driven file structure" href='/file-structure#domain-driven' />.
+
+Examples:
+ - <RepoLink path="/examples/layouts-react/" />
+ - <RepoLink path="/examples/layouts-vue/" />
+
+
+## Nested Layouts
+
+> **What are nested layouts?** A nested layout is, essentially, when a page has a route with multiple parameters.
+>
+> For example `/product/:productId/:productView`.
+> ```
+> URL                        productId     productView
+> /product/1337              1337          null
+> /product/1337/pricing      1337          pricing
+> /product/42/reviews        42            reviews
+> ```
+> ```
+> /product/42/pricing                   /product/42/reviews
+> +------------------+                  +-----------------+
+> | Product          |                  | Product         |
+> | +--------------+ |                  | +-------------+ |
+> | | Pricing      | |  +------------>  | | Reviews     | |
+> | |              | |                  | |             | |
+> | +--------------+ |                  | +-------------+ |
+> +------------------+                  +-----------------+
+> ```
+
+A simple way to implement a nested layout is to use a Route Function:
+
+```js
+// /pages/product/index.page.route.js
+
+export default (pageContext) => {
+  let [baseRoute, innerRoute] = pageContext.url.split('/').filter(Boolean)
+  if (baseRoute !== 'product') {
+    return false
+  }
+  innerRoute = innerRoute || 'overview'
+  if (!['overview', 'reviews', 'pricing'].includes(innerRoute)) {
+    return false
+  }
+  return { routeParams: { innerRoute } }
+}
+```
+
+```jsx
+// /pages/product/index.page.js
+
+export { Page }
+
+import { usePageContext } from '../../renderer/usePageContext'
+
+function Page() {
+  const pageContext = usePageContext()
+  const { innerRoute } = pageContext.routeParams
+  const innerView = innerRoute === 'overview' ?
+      <Overview/> :
+      innerRoute === 'reviews' ?
+        <Reviews/> :
+        <Pricing/>
+  return <>
+     {/* ... */}
+       {/* Somewhere deep */ }
+       { innerView }
+     {/* ... */}
+  </>
+}
+```
+
+> `usePageContext()` allows us to access `pageContext` in any component, see <Link href="/pageContext-anywhere" noBreadcrumb={true} />.
+
+> If our nested layout doesn't need to be persisted/assigned by a URL (e.g. the "Product Pricing" page and the "Product Reviews" page share the same URL `/product/42`), then we can simply use a stateful component instead of a Route Function.
+
+
+For smooth nested layout navigation, we recommend using <Link href="/client-routing" noBreadcrumb={true} />.
+
+```js
+// pages/product/index.page.client.js
+
+// We can omit this if our app already uses Client Routing.
+export const clientRouting = true
+```
+
+We use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/product/42/reviews', { keepScrollPosition: true })`) to avoid the browser to scroll to the top.
+
+Examples (see the `/starship` page):
+ - <RepoLink path="/examples/layouts-react/" />
+ - <RepoLink path="/examples/layouts-vue/" />
+
+> Alternatively,  for a similar DX than some UI frameworks, we can use a custom export. But we recommend against it: using a Route Function is simpler and works for the vast majority of cases.

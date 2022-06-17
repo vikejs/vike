@@ -170,6 +170,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Layouts',
+    url: '/layouts',
+  },
+  {
+    level: 2,
     title: 'Render Modes (SPA, SSR, SSG, HTML-only)',
     titleInNav: 'SPA, SSR, SSG, HTML-only',
     url: '/render-modes',
@@ -273,11 +278,6 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Catch-All Routes',
     url: '/catch-all',
-  },
-  {
-    level: 2,
-    title: 'Nested Routes',
-    url: '/nested-routes',
   },
   {
     level: 2,
