@@ -5,7 +5,7 @@ import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 
-const passToClient = ['pageProps']
+const passToClient = ['pageProps', 'routeParams']
 
 async function render(pageContext) {
   const app = createApp(pageContext)
