@@ -1,5 +1,6 @@
 import { createSSRApp, defineComponent, h, markRaw, reactive } from 'vue'
 import LayoutDefault from './LayoutDefault.vue'
+import { setPageContext } from './usePageContext'
 
 export { createApp }
 
@@ -42,6 +43,9 @@ function createApp(pageContext) {
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).
   // We therefore use a reactive pageContext.
   const pageContextReactive = reactive(pageContext)
+
+  // Make `pageContext` accessible from any Vue component
+  setPageContext(app, pageContextReactive)
 
   return app
 }
