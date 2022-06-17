@@ -1,19 +1,11 @@
 export default (pageContext) => {
-  let [path1, path2] = pageContext.url.split('/').filter(Boolean)
-  path2 = path2 || ''
-  if (path1 === 'starship') {
-    let innerRoute
-    if (path2 === '') {
-      innerRoute = 'overview'
-    }
-    for (const innerRoute_ of ['reviews', 'spec']) {
-      if (path2 === innerRoute_) {
-        innerRoute = innerRoute_
-      }
-    }
-    if (innerRoute) {
-      return { routeParams: { innerRoute } }
-    }
+  let [base, innerRoute] = pageContext.url.split('/').filter(Boolean)
+  if (base !== 'starship') {
+    return false
   }
-  return false
+  innerRoute = innerRoute || 'overview'
+  if (!['overview', 'reviews', 'spec'].includes(innerRoute)) {
+    return false
+  }
+  return { routeParams: { innerRoute } }
 }
