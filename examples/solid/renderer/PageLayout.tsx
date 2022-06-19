@@ -1,10 +1,24 @@
-import { Component } from 'solid-js'
+import { Accessor, Component } from 'solid-js'
 import logo from './logo.svg'
 import './PageLayout.css'
 
 export { PageLayout }
 
-const PageLayout: Component = (props) => {
+export interface Route {
+  Page: Component
+  pageProps: Record<string, unknown>
+}
+
+interface Props {
+  route: Accessor<Route | null>
+}
+
+const PageLayout: Component<Props> = (props) => {
+  const renderedRoute = () => {
+    const { Page, pageProps } = props.route() ?? {}
+    return Page && <Page {...pageProps} />
+  }
+
   return (
     <Layout>
       <Sidebar>
@@ -16,7 +30,7 @@ const PageLayout: Component = (props) => {
           About
         </a>
       </Sidebar>
-      <Content>{props.children}</Content>
+      <Content>{renderedRoute()}</Content>
     </Layout>
   )
 }
