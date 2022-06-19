@@ -1,5 +1,5 @@
 import { createSignal } from 'solid-js'
-import { hydrate, render } from 'solid-js/web'
+import { hydrate } from 'solid-js/web'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
 import { PageLayout, type Route } from './PageLayout'
 
@@ -21,7 +21,7 @@ const { hydrationPromise } = useClientRouter({
       // Render the page.
       // This is the first page rendering; the page has been rendered to HTML
       // and we now make it interactive.
-      hydrate(() => <PageLayout route={route} />, content!)
+      hydrate(() => <PageLayout route={() => route()} />, content!)
       layoutReady = true
     }
   },
