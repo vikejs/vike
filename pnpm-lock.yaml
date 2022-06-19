@@ -732,6 +732,26 @@ importers:
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.31
 
+  examples/vue-pinia:
+    specifiers:
+      '@vitejs/plugin-vue': ^2.2.2
+      '@vue/compiler-sfc': ^3.2.31
+      '@vue/server-renderer': ^3.2.31
+      express: ^4.17.3
+      pinia: ^2.0.14
+      vite: ^2.8.4
+      vite-plugin-ssr: 0.3.64
+      vue: ^3.2.31
+    dependencies:
+      '@vitejs/plugin-vue': 2.2.2_vite@2.8.4+vue@3.2.31
+      '@vue/compiler-sfc': 3.2.31
+      '@vue/server-renderer': 3.2.31_vue@3.2.31
+      express: 4.17.3
+      pinia: 2.0.14_vue@3.2.31
+      vite: 2.8.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+      vue: 3.2.31
+
   examples/vue-router:
     specifiers:
       '@vitejs/plugin-vue': ^2.2.2
@@ -2891,6 +2911,10 @@ packages:
 
   /@vue/devtools-api/6.0.0-beta.21.1:
     resolution: {integrity: sha512-FqC4s3pm35qGVeXRGOjTsRzlkJjrBLriDS9YXbflHLsfA9FrcKzIyWnLXoNm+/7930E8rRakXuAc2QkC50swAw==}
+    dev: false
+
+  /@vue/devtools-api/6.1.4:
+    resolution: {integrity: sha512-IiA0SvDrJEgXvVxjNkHPFfDx6SXw0b/TUkqMcDZWNg9fnCAHbTpoo59YfJ9QLFkwa3raau5vSlRVzMSLDnfdtQ==}
     dev: false
 
   /@vue/reactivity-transform/3.2.29:
@@ -10328,6 +10352,23 @@ packages:
   /pify/4.0.1:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
+    dev: false
+
+  /pinia/2.0.14_vue@3.2.31:
+    resolution: {integrity: sha512-0nPuZR4TetT/WcLN+feMSjWJku3SQU7dBbXC6uw+R6FLQJCsg+/0pzXyD82T1FmAYe0lsx+jnEDQ1BLgkRKlxA==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.1.4
+      vue: 3.2.31
+      vue-demi: 0.12.5_vue@3.2.31
     dev: false
 
   /pirates/4.0.5:
