@@ -1,4 +1,7 @@
-Example of using `vite-plugin-ssr` with Vue, client routing and Pinia.
+Example of using `vite-plugin-ssr` with:
+ - Vue
+ - [Pinia](https://pinia.vuejs.org/)
+ - [Client Routing](https://vite-plugin-ssr.com/client-routing)
 
 To run it:
 
