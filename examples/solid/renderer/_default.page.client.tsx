@@ -1,39 +1,28 @@
-import { hydrate, render } from 'solid-js/web'
+import { createSignal } from 'solid-js'
+import { hydrate } from 'solid-js/web'
 import { useClientRouter } from 'vite-plugin-ssr/client/router'
-import { PageLayout } from './PageLayout'
+import { PageLayout, type Route } from './PageLayout'
 
-let dispose: () => void
+let layoutReady = false
+
+// Central signal to track the current active route.
+const [route, setRoute] = createSignal<Route | null>(null)
 
 const { hydrationPromise } = useClientRouter({
   render(pageContext) {
     const content = document.getElementById('page-view')
     const { Page, pageProps } = pageContext
 
-    // Dispose to prevent duplicate pages when navigating.
-    if (dispose) dispose()
+    // Set the new route.
+    setRoute({ Page, pageProps })
 
-    // Render the page
-    if (pageContext.isHydration) {
+    // If haven't rendered the layout yet, do so now.
+    if (!layoutReady) {
+      // Render the page.
       // This is the first page rendering; the page has been rendered to HTML
       // and we now make it interactive.
-      dispose = hydrate(
-        () => (
-          <PageLayout>
-            <Page {...pageProps} />
-          </PageLayout>
-        ),
-        content!,
-      )
-    } else {
-      // Render new page
-      dispose = render(
-        () => (
-          <PageLayout>
-            <Page {...pageProps} />
-          </PageLayout>
-        ),
-        content!,
-      )
+      hydrate(() => <PageLayout route={() => route()} />, content!)
+      layoutReady = true
     }
   },
   onTransitionStart,
