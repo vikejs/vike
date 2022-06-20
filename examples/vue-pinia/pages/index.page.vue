@@ -1,8 +1,7 @@
 <template>
   <h1>Pinia Example</h1>
-  <h2>Counter that keeps its state on navigation</h2>
-  <pre>{{ count }}</pre>
-  <button type="button" @click="counterStore.increment">Increment Count</button>
+  <span>Counter that keeps its state on navigation</span>:
+  <button type="button" @click="counterStore.increment">Counter {{ count }}</button>
   <h2>To-do List</h2>
   <ul>
     <li v-for="item in todoList" :key="item.id">
