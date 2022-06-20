@@ -19,10 +19,10 @@ async function render(pageContext) {
 }
 
 async function onBeforeRender(pageContext) {
-  const { Page, routeParams } = pageContext
-  const { app, store } = createApp({ Page, routeParams })
-
   const { pageContext: addendum } = await pageContext.runOnBeforeRenderPageHook(pageContext)
+
+  Object.assign(pageContext, addendum)
+  const { app, store } = createApp(pageContext)
 
   const stream = renderToNodeStream(app)
 
