@@ -14,18 +14,21 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import { onServerPrefetch } from 'vue'
+import { onServerPrefetch, onMounted } from 'vue'
 import { useCounter } from '../stores/useCounter'
 import { useTodos } from '../stores/useTodos'
-
-onServerPrefetch(async () => {
-  const todosStore = useTodos()
-  await todosStore.fetchTodoList()
-})
 
 const { todoList } = storeToRefs(useTodos())
 
 const counterStore = useCounter()
 
 const { count } = storeToRefs(counterStore)
+
+const loadTodos = async () => {
+  const todosStore = useTodos()
+  await todosStore.fetchTodoList()
+}
+
+onServerPrefetch(loadTodos)
+onMounted(loadTodos)
 </script>
