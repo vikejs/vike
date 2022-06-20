@@ -13,9 +13,7 @@ const props = defineProps(['todoId'])
 
 onServerPrefetch(async () => {
   const todosStore = useTodos()
-  if (todosStore.todoList.length === 0) {
-    await todosStore.fetchTodoList()
-  }
+  await todosStore.fetchTodoList()
 })
 const todosStore = useTodos()
 
