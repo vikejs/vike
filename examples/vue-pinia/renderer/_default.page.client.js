@@ -2,7 +2,7 @@ import { useClientRouter } from 'vite-plugin-ssr/client/router'
 import { createApp } from './app'
 
 let app
-const { hydrationPromise } = useClientRouter({
+useClientRouter({
   render(pageContext) {
     if (!app) {
       const instance = createApp(pageContext)
@@ -14,19 +14,5 @@ const { hydrationPromise } = useClientRouter({
     }
   },
   // Vue needs the first render to be a hydration
-  ensureHydration: true,
-  prefetchLinks: true,
-  onTransitionStart,
-  onTransitionEnd,
+  ensureHydration: true
 })
-
-hydrationPromise.then(() => {
-  console.log('Hydration finished; page is now interactive.')
-})
-
-function onTransitionStart() {
-  console.log('Page transition start')
-}
-function onTransitionEnd() {
-  console.log('Page transition end')
-}
