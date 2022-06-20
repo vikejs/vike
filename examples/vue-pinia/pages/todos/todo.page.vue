@@ -1,6 +1,6 @@
 <template>
   <h1>To-do</h1>
-  <span>{{ todo?.text }}</span>
+  <span>{{ text }}</span>
   <br />
   <a href="/">Back</a>
 </template>
@@ -17,5 +17,9 @@ onServerPrefetch(async () => {
 })
 const todosStore = useTodos()
 
-const todo = computed(() => todosStore.todoById(parseInt(props.todoId)))
+const text = computed(() => {
+  const todo = todosStore.todoById(parseInt(props.todoId))
+  console.log('todo.text', todo?.text)
+  return todo?.text
+})
 </script>
