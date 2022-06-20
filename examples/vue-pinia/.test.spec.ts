@@ -16,12 +16,15 @@ function testRun() {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Pinia Example</h1>')
     expect(html).toContain('<h2>To-do List</h2>')
+    expect(html).toContain(
+      '"todos":{"todoList":[{"id":0,"text":"Buy milk"},{"id":1,"text":"Buy chocolate"}]}',
+    )
     expect(html).toContain('Buy milk')
     expect(html).toContain('Buy chocolate')
-    expect(html).toContain('Counter 0')
     expect(html).toContain(
-      '"INITIAL_STATE":{"todos":{"todoList":[{"id":0,"text":"Buy milk"},{"id":1,"text":"Buy chocolate"}]},"counter":{"count":0}}',
+      '"counter":{"count":0}',
     )
+    expect(html).toContain('Counter 0')
   })
 
   test('client-side', async () => {
