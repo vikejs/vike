@@ -6,28 +6,20 @@
 </template>
 
 <script setup>
-import { onServerPrefetch, ref, onMounted } from 'vue'
+import { onServerPrefetch, ref, onMounted, computed } from 'vue'
 import { usePageContext } from '../../renderer/usePageContext'
 import { useTodos } from '../../stores/useTodos'
 
-const props = defineProps(['todoId'])
+const todosStore = useTodos()
 
-const todo = ref()
+const pageContext = usePageContext()
+const todoId = parseInt(pageContext.routeParams.todoId)
 
-const loadTodo = async (id) => {
-  const idNum = parseInt(id)
-  const todosStore = useTodos()
-  await todosStore.fetchTodoById(idNum)
-  todo.value = todosStore.todoById(idNum)
+const todo = computed(() => todosStore.todoById(todoId))
+
+const loadTodo = async () => {
+  await todosStore.fetchTodoById(todoId)
 }
-
-onServerPrefetch(async () => {
-  // for this to work we need to pass routeParams (or whatever else we may need) to createApp in _default.page.server.js
-  const { routeParams } = usePageContext()
-  await loadTodo(routeParams.todoId)
-})
-
-onMounted(async () => {
-  await loadTodo(props.todoId)
-})
+onServerPrefetch(loadTodo)
+onMounted(loadTodo)
 </script>
