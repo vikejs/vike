@@ -1,10 +1,10 @@
-import { renderToNodeStream } from '@vue/server-renderer'
-import { escapeInject } from 'vite-plugin-ssr'
-import { createApp } from './app'
-
 export { render }
 export { onBeforeRender }
 export { passToClient }
+
+import { renderToNodeStream } from '@vue/server-renderer'
+import { escapeInject } from 'vite-plugin-ssr'
+import { createApp } from './app'
 
 const passToClient = ['INITIAL_STATE', 'pageProps', 'routeParams']
 

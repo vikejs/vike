@@ -23,6 +23,7 @@ const { count } = storeToRefs(counterStore)
 
 const todosStore = useTodos()
 const { todoList } = storeToRefs(todosStore)
+
 const loadTodos = async () => {
   await todosStore.fetchTodoList()
 }

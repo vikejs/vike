@@ -10,10 +10,10 @@ import { onServerPrefetch, ref, onMounted, computed } from 'vue'
 import { usePageContext } from '../../renderer/usePageContext'
 import { useTodos } from '../../stores/useTodos'
 
-const todosStore = useTodos()
-
 const pageContext = usePageContext()
 const todoId = parseInt(pageContext.routeParams.todoId)
+
+const todosStore = useTodos()
 
 const todo = computed(() => todosStore.todoById(todoId))
 
