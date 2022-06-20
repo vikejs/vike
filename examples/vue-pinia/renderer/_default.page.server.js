@@ -6,7 +6,7 @@ export { render }
 export { onBeforeRender }
 export { passToClient }
 
-const passToClient = ['INITIAL_STATE', 'pageProps']
+const passToClient = ['INITIAL_STATE', 'pageProps', 'routeParams']
 
 async function render(pageContext) {
   const { stream } = pageContext
@@ -19,9 +19,6 @@ async function render(pageContext) {
 }
 
 async function onBeforeRender(pageContext) {
-  const { pageContext: addendum } = await pageContext.runOnBeforeRenderPageHook(pageContext)
-
-  Object.assign(pageContext, addendum)
   const { app, store } = createApp(pageContext)
 
   const stream = renderToNodeStream(app)
@@ -31,7 +28,6 @@ async function onBeforeRender(pageContext) {
   return {
     pageContext: {
       INITIAL_STATE,
-      ...addendum,
       stream,
     },
   }
