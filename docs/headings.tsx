@@ -338,6 +338,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Pinia',
+    url: '/pinia',
+  },
+  {
+    level: 2,
     title: 'PullState',
     url: '/pullstate',
   },
