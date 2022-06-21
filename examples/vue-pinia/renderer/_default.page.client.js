@@ -7,7 +7,7 @@ useClientRouter({
     if (!app) {
       const instance = createApp(pageContext)
       app = instance.app
-      instance.store.state.value = pageContext.INITIAL_STATE
+      instance.store.state.value = pageContext.initialStoreState
       app.mount('#app')
     } else {
       app.changePage(pageContext)

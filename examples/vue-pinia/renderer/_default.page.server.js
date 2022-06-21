@@ -6,7 +6,7 @@ import { renderToNodeStream } from '@vue/server-renderer'
 import { escapeInject } from 'vite-plugin-ssr'
 import { createApp } from './app'
 
-const passToClient = ['INITIAL_STATE', 'pageProps', 'routeParams']
+const passToClient = ['initialStoreState', 'pageProps', 'routeParams']
 
 async function render(pageContext) {
   const { stream } = pageContext
@@ -23,11 +23,11 @@ async function onBeforeRender(pageContext) {
 
   const stream = renderToNodeStream(app)
 
-  const INITIAL_STATE = store.state.value
+  const initialStoreState = store.state.value
 
   return {
     pageContext: {
-      INITIAL_STATE,
+      initialStoreState,
       stream,
     },
   }
