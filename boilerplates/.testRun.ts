@@ -177,7 +177,7 @@ function testRun(
       expect(await page.textContent('p')).toBe('This page could not be found.')
       expectBrowserError(
         (browserLog) =>
-          browserLog.logText.includes('http://localhost:3000/does-not-exist') &&
+          partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(browserLog.logText) &&
           browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)'),
       )
     })
