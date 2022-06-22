@@ -33,7 +33,12 @@ function getAssetFileName(assetInfo: PreRenderedAsset, assetFileName: string | u
 
   // dist/client/assets/index.page.server.jsx_extractStyles_lang.e4e33422.css
   // => dist/client/assets/index.page.server.e4e33422.css
-  if (assetInfo.name?.endsWith('_extractStyles_lang.css')) {
+  if (
+    // Vite 2
+    assetInfo.name?.endsWith('_extractStyles_lang.css') ||
+    // Vite 3
+    assetInfo.name?.endsWith('?extractStyles&lang.css')
+  ) {
     const nameBase = assetInfo.name.split('.').slice(0, -2).join('.')
     assetFileName ??= `assets/${nameBase}.[hash][extname]`
   }
