@@ -28,9 +28,17 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     if (isProd) {
       expect(html).not.toContain('<script')
       expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
-      expect(html).toMatch(
-        partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
-      )
+      try {
+        // Vite 2
+        expect(html).toMatch(
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
+        )
+      } catch (err) {
+        // Vite 3
+        expect(html).toMatch(
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/pages/html-only/index.page.server.${hash}.css">`,
+        )
+      }
     } else {
       expect(html).toContain('<script')
       expect(html).toContain('@vite/client')
