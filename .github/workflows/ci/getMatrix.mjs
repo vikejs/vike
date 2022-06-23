@@ -8,9 +8,6 @@ const args = process.argv
 
 const root = cmd('git rev-parse --show-toplevel')
 const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
-const testRE = /\.(test|spec)\./
-/** @type string[] */
-const testFiles = projectFiles.filter((file) => testRE.test(file))
 
 export { getMatrix }
 if (args.includes('--ci')) cli()
@@ -19,7 +16,15 @@ if (args.includes('--ci')) cli()
 /** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } TestJob */
 /** @typedef {{os: string, node_version: string}} Setup */
 
-function getTestJobs() {
+function getTestFiles() {
+  const testRE = /\.(test|spec)\./
+  /** @type string[] */
+  const testFiles = projectFiles.filter((file) => testRE.test(file))
+  return testFiles
+}
+
+/** @type { (testFiles: string[]) => TestJob[] } */
+function getTestJobs(testFiles) {
   /** @type { TestJob[] } */
   const testJobs = [
     // Unit tests
@@ -37,7 +42,7 @@ function getTestJobs() {
     {
       name: 'Examples React',
       testCmd: 'pnpm run test:e2e',
-      testFiles: findExamples({ react: true }),
+      testFiles: findExamples(testFiles, { react: true }),
       setups: [
         {
           os: 'ubuntu-latest',
@@ -51,7 +56,7 @@ function getTestJobs() {
     },
     {
       name: 'Examples Vue/Others',
-      testFiles: findExamples({ react: false }),
+      testFiles: findExamples(testFiles, { react: false }),
       setups: [
         {
           os: 'ubuntu-latest',
@@ -77,7 +82,7 @@ function getTestJobs() {
     },
     {
       name: 'Cloudflare + esbuild',
-      testFiles: findExamples({ cloudflare: 'esbuild' }),
+      testFiles: findExamples(testFiles, { cloudflare: 'esbuild' }),
       setups: [
         {
           os: 'ubuntu-latest',
@@ -89,7 +94,7 @@ function getTestJobs() {
     {
       name: 'Cloudflare + webpack',
       testCmd: 'pnpm run test:e2e',
-      testFiles: findExamples({ cloudflare: 'webpack' }),
+      testFiles: findExamples(testFiles, { cloudflare: 'webpack' }),
       setups: [
         {
           os: 'ubuntu-latest',
@@ -112,8 +117,8 @@ function getTestJobs() {
   return testJobs
 }
 
-/** @type { (args: {react?: boolean, cloudflare?: 'webpack' | 'esbuild'}) => string[] } */
-function findExamples({ react, cloudflare }) {
+/** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: 'webpack' | 'esbuild'}) => string[] } */
+function findExamples(testFiles, { react, cloudflare }) {
   return testFiles.filter((testFile) => {
     if (!testFile.startsWith('examples/')) {
       return false
@@ -146,11 +151,21 @@ function isReactExample(testFile) {
   return !!pkgJson.dependencies['react']
 }
 
-/** @type { () => MatrixEntry[] } */
-function getMatrix() {
-  const testJobs = getTestJobs()
+/** @type { (args: {isMatrixTest?: true }) => MatrixEntry[] } */
+function getMatrix({ isMatrixTest } = {}) {
+  let testFiles = getTestFiles()
 
-  assertCategories(testJobs)
+  const focus = !isMatrixTest && getFocus()
+  if (focus) {
+    testFiles = focusFilter(testFiles, focus)
+  }
+
+  let testJobs = getTestJobs(testFiles)
+  if (focus) {
+    testJobs = testJobs.filter((job) => job.testFiles && job.testFiles.length >= 1)
+  }
+
+  assertJobs(testFiles, testJobs)
 
   /** @type MatrixEntry[] */
   const matrix = []
@@ -168,8 +183,23 @@ function getMatrix() {
   return matrix
 }
 
-/** @type { (matrix: TestJob[]) => void } */
-function assertCategories(testJobs) {
+/** @type { (testFiles: string[], focus: string) => string[] } */
+function focusFilter(testFiles, focus) {
+  const focusDir = path.dirname(focus)
+  testFiles = testFiles.filter((f) => f.startsWith(focusDir))
+  return testFiles
+}
+function getFocus() {
+  const focusFiles = projectFiles.filter((file) => file.endsWith('/focus'))
+  if (focusFiles.length === 0) {
+    return false
+  }
+  assert(focusFiles.length === 1, 'There cannot be only one `focus` file but found multiple: ' + focusFiles.join(' '))
+  return focusFiles[0]
+}
+
+/** @type { (testFiles: string[], testJobs: TestJob[]) => void } */
+function assertJobs(testFiles, testJobs) {
   testFiles.forEach((testFile) => {
     const jobs = testJobs.filter((job) => job.testFiles?.includes(testFile))
     assert(jobs.length > 0, `Test ${testFile} is missing in categories.`)

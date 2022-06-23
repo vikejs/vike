@@ -3,7 +3,7 @@ import { expect, describe, it } from 'vitest'
 
 describe('getMatrix()', () => {
   it('basics', () => {
-    const matrix = getMatrix()
+    const matrix = getMatrix({ isMatrixTest: true })
     expect(matrix).toMatchInlineSnapshot(`
       [
         {
