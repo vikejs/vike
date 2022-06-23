@@ -8,23 +8,52 @@ For SemVer minor changes, see: [CHANGELOG.md](https://github.com/brillout/vite-p
 
 **Non-breaking**
 
-Most changes are non-breaking: follow the warnings to (progressively, at your own pace) update to the new 0.4 interface.
+Most changes are non-breaking: follow the warnings to progressively update to the new 0.4 interface.
 
 **Breaking**
 
- 1. Use Vite `>=2.9.6`.
- 1. Deprecated: `useClientRouter()` (Client Routing) and `getPage()` (Server Routing).
- 1. Base URL option defined only in `vite.config.js`.
- 1. Pre-render options defined in `vite.config.js`.
- 1. Deprecated: `export default Page`. (Use `export { Page }` instead.)
+ 1. Use Vite `>=2.9.10`.
+ 1. Deprecated: `getPage()` (Server Routing)
+ 1. Deprecated: `useClientRouter()` (Client Routing)
+ 1. Base URL options `base` and `baseAsset` are now defined as `vite.config.js#base`.
+ 1. Pre-render options are now defined in `vite.config.js`.
+ 1. `export default Page` is deprecated: use `export { Page }` instead.
 
-### Deprecated: `useClientRouter()`
+### `getPage()`
+
+If you use Server Routing:
+
+```diff
+  // /renderer/_default.page.client.js
+
+- import { getPage } from 'vite-plugin-ssr/client'
++ export { render }
+
+- const pageContext = await getPage()
++ async function render(pageContext) {
++   /* ... */
++ }
+```
+
+### `useClientRouter()`
 
 If you use Client Routing:
 
 ```diff
-// renderer/_default.page.client.js
+  // renderer/_default.page.client.js
 
+- import { useClientRouter } from 'vite-plugin-ssr/client'
++ export { render }
++ export const clientRouting = true
+
+- useClientRouter({
+-   render: (pageContext) => {
+-     /* ... */
+-   }
+- })
++ async function render(pageContext) {
++   /* ... */
++ }
 ```
 
 All `useClientRouter()` options are now exports:
@@ -39,18 +68,67 @@ export { onPageTransitionEnd }
 export { prefetchStaticAssets } // (instead of `prefetchLinks`)
 ```
 
-See <Link href="/.page.client.js" />.
+### Base
 
-### Deprecated: `getPage()`
+```diff
+- import { createPageRenderer } from 'vite-plugin-ssr'
++ import { renderPage } from 'vite-plugin-ssr'
 
-If you use Server Routing:
+- const renderPage = createPageRenderer({ base })
+  const pageContext = await renderPage({ url })
+```
 
-### Base URL option
+```js
+// vite.config.js
+
+export default {
+  base: '/some/base/url/'
+  // If you used `baseAsset`:
+  base: 'https://cdn.example.org/'
+}
+```
+
+> With 0.3, we define `base`/`baseAsset` in both `createPageRenderer()` and `vite.config.js`. With 0.4, we define it only in `vite.config.js`.
 
 ### Pre-render options
 
-### Deprecated: `export default Page`
 
-Instead of `export default Page`, do `export { Page }`.
+```diff
+- $ vite-plugin-ssr prerender --partial -- noExtraDir --root src/ --outDir build/ --parallel 1
++ $ vite-plugin-ssr prerender
+```
+```diff
+  // vite.config.js
+  import { ssr } from 'vite-plugin-ssr/plugin'
+
+  export config {
++   root: 'src/',
++   build: {
++     outDir: 'build/
++   },
+    plugins: [
+      ssr({
++       prerender: {
++         partial: true,
++         noExtraDir: true,
++         parallel: 1 // Can be `number` or `boolean`
++       }
+      })
+    ]
+  }
+```
+
+### `export default Page`
+
+```diff
+  // /pages/index.page.js
+
+- export default Page
++ export { Page }
+
+  function Page() {
+    /* ... */
+  }
+```
 
 > Single File Components (`.vue`, `.svelte`, ...) still work.
