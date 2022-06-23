@@ -3,168 +3,158 @@ import assert from 'assert'
 import path from 'path'
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url)
-const testRE = /\.(test|spec)\./
-const testCmdE2e = 'pnpm run test:e2e'
+
 const args = process.argv
 
+const root = cmd('git rev-parse --show-toplevel')
+const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
+const testRE = /\.(test|spec)\./
+/** @type string[] */
+const testFiles = projectFiles.filter((file) => testRE.test(file))
+
 export { getMatrix }
+if (args.includes('--ci')) cli()
 
-if (args.includes('--ci')) {
-  const matrix = getMatrix()
-  if (args.includes('--debug')) {
-    console.log(JSON.stringify(matrix, null, 2))
-    console.log(matrix.length)
-  } else {
-    console.log(`{"include":${JSON.stringify(matrix)}}`)
-  }
-}
-
-/** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup)[] } MatrixEntry */
+/** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup) } MatrixEntry */
+/** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } TestJob */
 /** @typedef {{os: string, node_version: string}} Setup */
 
-function getMatrix() {
-  const root = cmd('git rev-parse --show-toplevel')
-  const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
-
-  /** @type string[] */
-  const testFiles = projectFiles.filter((file) => testRE.test(file))
-  /** @type Setup[] */
-  const setupExamples = [
-    {
-      os: 'ubuntu-latest',
-      node_version: '16',
-    },
-    {
-      os: 'windows-latest',
-      node_version: '14',
-    },
-  ]
-  /** @type Record<string, { testFiles: null | string[], setups: Setup[], testCmd: string }> */
-  const testJobs = {
+function getTestJobs() {
+  /** @type { TestJob[] } */
+  const testJobs = [
     // Unit tests
-    'Unit Tests': {
-      testFiles: [],
+    {
+      name: 'Unit Tests',
+      testCmd: 'pnpm run test:units',
+      testFiles: testFiles.filter((f) => f.includes('.spec.')),
+      setups: [{ os: 'windows-latest', node_version: '14' }],
+    },
+    {
+      name: 'TypeScript',
+      testCmd: 'pnpm run test:types',
+      setups: [{ os: 'ubuntu-latest', node_version: '18' }],
+    },
+    {
+      name: 'Examples React',
+      testCmd: 'pnpm run test:e2e',
+      testFiles: findExamples({ react: true }),
       setups: [
+        {
+          os: 'ubuntu-latest',
+          node_version: '16',
+        },
         {
           os: 'windows-latest',
           node_version: '14',
         },
       ],
-      testCmd: 'pnpm run test:units',
     },
-
-    // Check all types
-    TypeScript: {
-      testFiles: null,
+    {
+      name: 'Examples Vue/Others',
+      testFiles: findExamples({ react: false }),
       setups: [
         {
           os: 'ubuntu-latest',
-          node_version: '18',
+          node_version: '16',
+        },
+        {
+          os: 'windows-latest',
+          node_version: '14',
         },
       ],
-      testCmd: 'pnpm run test:types',
+      testCmd: 'pnpm run test:e2e',
     },
-
-    // E2e tests
-    'Examples React': {
-      testFiles: [],
-      setups: setupExamples,
-      testCmd: testCmdE2e,
-    },
-    'Examples Vue/Others': {
-      testFiles: [],
-      setups: setupExamples,
-      testCmd: testCmdE2e,
-    },
-    Boilerplates: {
-      testFiles: [],
+    {
+      name: 'Boilerplates',
+      testCmd: 'pnpm run test:e2e',
+      testFiles: testFiles.filter((f) => f.startsWith('boilerplates/')),
       setups: [
         {
           os: 'macos-latest',
           node_version: '17',
         },
       ],
-      testCmd: testCmdE2e,
     },
-    'Cloudflare + esbuild': {
-      testFiles: [],
+    {
+      name: 'Cloudflare + esbuild',
+      testFiles: findExamples({ cloudflare: 'esbuild' }),
       setups: [
         {
           os: 'ubuntu-latest',
           node_version: '16',
         },
       ],
-      testCmd: testCmdE2e,
+      testCmd: 'pnpm run test:e2e',
     },
-    'Cloudflare + webpack': {
-      testFiles: [],
+    {
+      name: 'Cloudflare + webpack',
+      testCmd: 'pnpm run test:e2e',
+      testFiles: findExamples({ cloudflare: 'webpack' }),
       setups: [
         {
           os: 'ubuntu-latest',
           node_version: '16',
         },
       ],
-      testCmd: testCmdE2e,
     },
-    'https://vite-plugin-ssr.com': {
-      testFiles: [],
+    {
+      name: 'https://vite-plugin-ssr.com',
+      testCmd: 'pnpm run test:e2e',
+      testFiles: testFiles.filter((f) => f.startsWith('docs/')),
       setups: [
         {
           os: 'ubuntu-latest',
           node_version: '17',
         },
       ],
-      testCmd: testCmdE2e,
     },
-  }
+  ]
+  return testJobs
+}
 
-  testFiles.forEach((testFile) => {
-    const category = getCategory(testFile)
-    assert(category in testJobs, "Following category doesn't exist: " + category)
-    const job = testJobs[category]
-    assert(job.testFiles)
-    job.testFiles.push(testFile)
-  })
+/** @type { (args: {react?: boolean, cloudflare?: 'webpack' | 'esbuild'}) => string[] } */
+function findExamples({ react, cloudflare }) {
+  return testFiles.filter((testFile) => {
+    if (!testFile.startsWith('examples/')) {
+      return false
+    }
 
-  /** @type { (testFile: string) => string } */
-  function getCategory(testFile) {
-    if (testFile.includes('.spec.')) {
-      return 'Unit Tests'
-    }
-    if (testFile.startsWith('boilerplates/')) {
-      return 'Boilerplates'
-    }
-    if (testFile.startsWith('docs/')) {
-      return 'https://vite-plugin-ssr.com'
-    }
-    if (testFile.startsWith('examples/')) {
-      if (testFile.includes('cloudflare')) {
-        if (testFile.includes('webpack')) {
-          return 'Cloudflare + webpack'
-        } else {
-          return 'Cloudflare + esbuild'
-        }
+    if (testFile.includes('cloudflare')) {
+      if (!cloudflare) {
+        return false
       }
-      if (isReactExample(testFile)) {
-        return 'Examples React'
+      if (testFile.includes('webpack')) {
+        return cloudflare === 'webpack'
       } else {
-        return 'Examples Vue/Others'
+        return cloudflare === 'esbuild'
       }
     }
-    assert(false, 'Cannot find category for test file: ' + testFile)
-  }
 
-  /** @type { (testFile: string) => boolean } */
-  function isReactExample(testFile) {
-    const pkgJsonFile = path.join(root, path.dirname(testFile), './package.json')
-    // await import(pkgJsonFile, { assert: { type: 'json'}})
-    const pkgJson = require(pkgJsonFile)
-    return !!pkgJson.dependencies['react']
-  }
+    if (isReactExample(testFile)) {
+      return react === true
+    } else {
+      return react === false
+    }
+  })
+}
 
-  /** @type MatrixEntry */
+/** @type { (testFile: string) => boolean } */
+function isReactExample(testFile) {
+  const pkgJsonFile = path.join(root, path.dirname(testFile), './package.json')
+  // await import(pkgJsonFile, { assert: { type: 'json'}})
+  const pkgJson = require(pkgJsonFile)
+  return !!pkgJson.dependencies['react']
+}
+
+/** @type { () => MatrixEntry[] } */
+function getMatrix() {
+  const testJobs = getTestJobs()
+
+  assertCategories(testJobs)
+
+  /** @type MatrixEntry[] */
   const matrix = []
-  Object.entries(testJobs).map(([name, { testFiles, setups, testCmd }]) => {
+  testJobs.forEach(({ name, testFiles, setups, testCmd }) => {
     setups.forEach((setup) => {
       matrix.push({
         testCmd,
@@ -176,6 +166,28 @@ function getMatrix() {
   })
 
   return matrix
+}
+
+/** @type { (matrix: TestJob[]) => void } */
+function assertCategories(testJobs) {
+  testFiles.forEach((testFile) => {
+    const jobs = testJobs.filter((job) => job.testFiles?.includes(testFile))
+    assert(jobs.length > 0, `Test ${testFile} is missing in categories.`)
+    assert(
+      jobs.length <= 1,
+      `Test ${testFile} is multiple categories: ${jobs.map((j) => '`' + j.name + '`').join(' ')}.`,
+    )
+  })
+}
+
+function cli() {
+  const matrix = getMatrix()
+  if (args.includes('--debug')) {
+    console.log(JSON.stringify(matrix, null, 2))
+    console.log(matrix.length)
+  } else {
+    console.log(`{"include":${JSON.stringify(matrix)}}`)
+  }
 }
 
 /** @type { (setup: Setup) => string } */
