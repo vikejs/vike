@@ -323,39 +323,6 @@ importers:
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
-  examples/framework/app:
-    specifiers:
-      framework: link:../framework
-      react: ^18.1.0
-      react-dom: ^18.1.0
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-    dependencies:
-      framework: link:../framework
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-
-  examples/framework/framework:
-    specifiers:
-      '@types/node': ^17.0.31
-      '@types/react': ^18.0.8
-      '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': ^1.3.2
-      express: ^4.18.1
-      typescript: ^4.6.4
-      vite: 2.9.10
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-    dependencies:
-      '@vitejs/plugin-react': 1.3.2
-      express: 4.18.1
-      vite: 2.9.10
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-    devDependencies:
-      '@types/node': 17.0.31
-      '@types/react': 18.0.8
-      '@types/react-dom': 18.0.3
-      typescript: 4.6.4
-
   examples/graphql-apollo:
     specifiers:
       '@apollo/client': 3.5.9
@@ -691,40 +658,6 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
-
-  examples/renderer/app:
-    specifiers:
-      '@vitejs/plugin-react': ^1.3.2
-      cross-env: ^7.0.3
-      express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
-      renderer: link:../renderer
-      vite: 2.9.10
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-    dependencies:
-      '@vitejs/plugin-react': 1.3.2
-      cross-env: 7.0.3
-      express: 4.18.1
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      renderer: link:../renderer
-      vite: 2.9.10
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-
-  examples/renderer/renderer:
-    specifiers:
-      '@types/node': ^17.0.31
-      '@types/react': ^18.0.8
-      '@types/react-dom': ^18.0.3
-      typescript: ^4.6.4
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
-    devDependencies:
-      '@types/node': 17.0.31
-      '@types/react': 18.0.8
-      '@types/react-dom': 18.0.3
-      typescript: 4.6.4
-      vite-plugin-ssr: link:../../../vite-plugin-ssr
 
   examples/solid:
     specifiers:
@@ -2537,6 +2470,7 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
+    dev: false
 
   /@types/qs/6.9.7:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
@@ -2556,6 +2490,7 @@ packages:
     resolution: {integrity: sha512-1RRW9kst+67gveJRYPxGmVy8eVJ05O43hg77G2j5m76/RFJtMbcfAs2viQ2UNsvvDg8F7OfQZx8qQcl6ymygaQ==}
     dependencies:
       '@types/react': 18.0.8
+    dev: false
 
   /@types/react/17.0.45:
     resolution: {integrity: sha512-YfhQ22Lah2e3CHPsb93tRwIGNiSwkuz1/blk4e6QrWS0jQzCSNbGLtOEYhPg02W0yGTTmpajp7dCTbBAMN3qsg==}
@@ -2571,6 +2506,7 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.0
+    dev: false
 
   /@types/resolve/1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -2584,6 +2520,7 @@ packages:
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+    dev: false
 
   /@types/semver/7.3.9:
     resolution: {integrity: sha512-L/TMpyURfBkf+o/526Zb6kd/tchUP3iBDEPjqjb+U2MAJhVRxxrmr2fwpe08E7QsV7YLcpq0tUaQ9O9x97ZIxQ==}
@@ -4546,6 +4483,7 @@ packages:
 
   /csstype/3.1.0:
     resolution: {integrity: sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA==}
+    dev: false
 
   /cwd/0.10.0:
     resolution: {integrity: sha1-FyQAaUBXwioTsM8WFix+S3p/5Wc=}
