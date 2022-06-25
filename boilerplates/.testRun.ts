@@ -89,7 +89,10 @@ function testRun(
         partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`,
       )
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/index.page.${hashRegexp}.js">`,
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/pages/index/index.page.${hashRegexp}.js">`,
+      )
+      expect(html).not.toMatch(
+        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/pages/about/index.page.${hashRegexp}.js">`,
       )
       if (!noDefaultPageInUserCode) {
         try {
@@ -98,11 +101,11 @@ function testRun(
           )
         } catch (err) {
           expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+            partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${hashRegexp}.css">`,
           )
         }
         expect(html).toMatch(
-          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/_default.page.client.${hashRegexp}.js">`,
+          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/renderer/_default.page.client.${hashRegexp}.js">`,
         )
       }
     }

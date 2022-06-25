@@ -96,7 +96,16 @@ function assert_pageAssets(pageAssets) {
     assert(
       pageAssets.find(
         (a) =>
-          partRegex`/assets/index.page.${hashRegex}.css`.test(a.src) &&
+          partRegex`/assets/pages/index.page.${hashRegex}.js`.test(a.src) &&
+          a.assetType === 'preload' &&
+          a.mediaType === 'text/javascript' &&
+          a.preloadType === 'script',
+      ),
+    )
+    assert(
+      pageAssets.find(
+        (a) =>
+          partRegex`/assets/pages/index.page.${hashRegex}.css`.test(a.src) &&
           a.assetType === 'style' &&
           a.mediaType === 'text/css' &&
           a.preloadType === 'style',
@@ -105,7 +114,7 @@ function assert_pageAssets(pageAssets) {
     assert(
       pageAssets.find(
         (a) =>
-          partRegex`/assets/_default.page.client.${/[a-z0-9]+/}.js`.test(a.src) &&
+          partRegex`/assets/renderer/_default.page.client.${/[a-z0-9]+/}.js`.test(a.src) &&
           a.assetType === 'preload' &&
           a.mediaType === 'text/javascript' &&
           a.preloadType === 'script',
