@@ -1,8 +1,8 @@
 export { distFileNames }
 
-import { getRoot, assertPosixPath, assert, isCallable } from '../utils'
+import { assertPosixPath, assert, isCallable } from '../utils'
 import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'
-import type { Plugin, UserConfig } from 'vite'
+import type { Plugin, UserConfig, ResolvedConfig } from 'vite'
 import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
 import { getFilesystemRoute } from '../../../shared/route/resolveFilesystemRoute'
@@ -14,8 +14,7 @@ function distFileNames(): Plugin {
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {
-      const root = getRoot(config)
-      setChunkFileNames(config, root, getChunkFileName)
+      setChunkFileNames(config, getChunkFileName)
       setAssetFileNames(config, getAssetFileName)
     },
   }
@@ -91,10 +90,11 @@ function deduceChunkNameFromFilesystemRouting(id: string, root: string): string 
 }
 
 function setChunkFileNames(
-  config: { build: UserConfig['build'] },
-  root: string,
+  config: { build: UserConfig['build']; root: ResolvedConfig['root'] },
   getChunkFileName: (root: string, chunkInfo: PreRenderedChunk, chunkFileName: string | undefined) => string,
 ): void {
+  const { root } = config
+  assertPosixPath(root)
   if (!config?.build?.rollupOptions?.output) {
     config.build ??= {}
     config.build.rollupOptions ??= {}
