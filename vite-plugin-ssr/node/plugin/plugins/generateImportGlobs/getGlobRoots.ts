@@ -1,7 +1,7 @@
 export { getGlobRoots }
 
 import fs from 'fs'
-import { assertUsage, assertPosixPath, toPosixPath, assert, getRoot } from '../../utils'
+import { assertUsage, assertPosixPath, toPosixPath, assert } from '../../utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
@@ -17,7 +17,8 @@ type GlobRoot = {
 
 async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
   assertViteConfig(config)
-  const root = getRoot(config)
+  const { root } = config
+  assertPosixPath(root)
   const includePageFiles = resolveConfig(config.vitePluginSsr.pageFiles)
   const globRoots: GlobRoot[] = [
     {
