@@ -1,6 +1,7 @@
-import type { Plugin, UserConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import { assert, getOutDir, isObject, isSSR_config } from '../utils'
+import { modifyResolvedConfig } from '../utils/modifyResolvedConfig'
 
 export { buildConfig }
 
@@ -8,16 +9,18 @@ function buildConfig(): Plugin {
   return {
     name: 'vite-plugin-ssr:buildConfig',
     apply: 'build',
-    async config(config) {
+    async configResolved(config) {
       const input = {
         ...entryPoints(config),
-        ...normalizeRollupInput(config.build?.rollupOptions?.input),
+        ...normalizeRollupInput(config.build.rollupOptions.input),
       }
+      modifyResolvedConfig(config, { build: { rollupOptions: { input } } })
+    },
+    async config(config) {
       const configMod: UserConfig = {
         build: {
           outDir: getOutDir(config),
           manifest: !isSSR_config(config),
-          rollupOptions: { input },
           // @ts-ignore
           polyfillDynamicImport: false,
         },
@@ -37,7 +40,7 @@ function buildConfig(): Plugin {
   }
 }
 
-function entryPoints(config: UserConfig): Record<string, string> {
+function entryPoints(config: ResolvedConfig): Record<string, string> {
   if (isSSR_config(config)) {
     return {
       pageFiles: 'virtual:vite-plugin-ssr:pageFiles:server',
