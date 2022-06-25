@@ -116,7 +116,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       const html = await fetchHtml('/html-js')
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isProd) {
-        expect(html).toMatch(partRegex`<script type="module" src="/assets/_default.page.client.${hash}.js" async>`)
+        expect(html).toMatch(partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" async>`)
       } else {
         expect(html).toMatch(partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`)
       }

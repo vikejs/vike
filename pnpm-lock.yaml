@@ -913,6 +913,7 @@ importers:
       cac: ^6.7.12
       debug: 4.3.4
       es-module-lexer: ^0.10.5
+      fast-glob: ^3.2.11
       kolorist: ^1.5.1
       p-limit: ^3.1.0
       picocolors: ^1.0.0
@@ -929,6 +930,7 @@ importers:
       cac: 6.7.12
       debug: 4.3.4
       es-module-lexer: 0.10.5
+      fast-glob: 3.2.11
       kolorist: 1.5.1
       p-limit: 3.1.0
       picocolors: 1.0.0
