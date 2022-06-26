@@ -99,10 +99,18 @@ function testRun(
           expect(html).toMatch(
             partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageShell.${hashRegexp}.css">`,
           )
-        } catch (err) {
-          expect(html).toMatch(
-            partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${hashRegexp}.css">`,
-          )
+        } catch {
+          try {
+            // Vite 2
+            expect(html).toMatch(
+              partRegex`<link rel="stylesheet" type="text/css" href="/assets/renderer/_default.page.client.${hashRegexp}.css">`,
+            )
+          } catch {
+            // Vite 3 (not sure why it differs from Vite 2)
+            expect(html).toMatch(
+              partRegex`<link rel="stylesheet" type="text/css" href="/assets/_default.page.client.${hashRegexp}.css">`,
+            )
+          }
         }
         expect(html).toMatch(
           partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/renderer/_default.page.client.${hashRegexp}.js">`,
