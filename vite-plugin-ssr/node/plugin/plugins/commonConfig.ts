@@ -6,7 +6,7 @@ function commonConfig(): Plugin {
   return {
     name: 'vite-plugin-ssr:commonConfig',
     // @ts-ignore
-    config: () => ({ spa: false }),
+    config: () => ({ appType: 'custom' }),
     configResolved(config) {
       setDefaultPort(config)
       workaroundCI(config)
