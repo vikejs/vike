@@ -53,17 +53,25 @@ function assert_pageAssets(pageAssets) {
   assert(pageAssets[0].mediaType)
 
   if (!isProduction) {
-    const a1 = pageAssets[0]
-    assert(a1.src === '/pages/index.css?direct')
-    assert(a1.assetType === 'style')
-    assert(a1.mediaType === 'text/css')
-    assert(a1.preloadType === 'style')
-    const a2 = pageAssets[1]
-    assert(a2.src.startsWith('/@fs/') && a2.src.endsWith('/vite-plugin-ssr/dist/esm/client/entry.js'))
-    assert(a2.assetType === 'script')
-    assert(a2.mediaType === 'text/javascript')
-    assert(a2.preloadType === null)
-    assert(pageAssets[2] === undefined)
+    assert(
+      pageAssets.find(
+        (a) =>
+          a.src === '/pages/index.css?direct' &&
+          a.assetType === 'style' &&
+          a.mediaType === 'text/css' &&
+          a.preloadType === 'style',
+      ),
+    )
+    assert(
+      pageAssets.find(
+        (a) =>
+          a.src.startsWith('/@fs/') &&
+          a.src.endsWith('/vite-plugin-ssr/dist/esm/client/entry.js') &&
+          a.assetType === 'script' &&
+          a.mediaType === 'text/javascript' &&
+          a.preloadType === null,
+      ),
+    )
   } else {
     const hashRegex = /[a-z0-9]+/
     assert(
@@ -105,7 +113,10 @@ function assert_pageAssets(pageAssets) {
     assert(
       pageAssets.find(
         (a) =>
-          partRegex`/assets/pages/index.page.${hashRegex}.css`.test(a.src) &&
+          // Vite 2
+          (partRegex`/assets/pages/index.page.${hashRegex}.css`.test(a.src) ||
+            // Vite 3
+            partRegex`/assets/index.page.${hashRegex}.css`.test(a.src)) &&
           a.assetType === 'style' &&
           a.mediaType === 'text/css' &&
           a.preloadType === 'style',

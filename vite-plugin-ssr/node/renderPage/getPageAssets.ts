@@ -29,6 +29,14 @@ async function getPageAssets(
   if (isDev) {
     const viteDevServer = pageContext._viteDevServer
     assert(viteDevServer)
+    clientDependencies.forEach((clientDep) => {
+      if (!clientDep.onlyAssets) {
+        const entry = clientDep.id
+        if (!clientEntries.includes(entry)) {
+          clientEntries.unshift(entry + '?import')
+        }
+      }
+    })
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
@@ -102,6 +110,17 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
   let root = viteDevServer.config.root
   assert(root)
   root = toPosixPath(root)
+
+  // The `?import` suffix is needed for MDX to be transpiled:
+  //   - Not transpiled: `/pages/markdown.page.mdx`
+  //   - Transpiled: `/pages/markdown.page.mdx?import`
+  // But `?import` doesn't work with `/@fs/`:
+  //   - Not transpiled: /@fs/home/runner/work/vite-plugin-ssr/vite-plugin-ssr/examples/react-full/pages/markdown.page.mdx
+  //   - Not transpiled: /@fs/home/runner/work/vite-plugin-ssr/vite-plugin-ssr/examples/react-full/pages/markdown.page.mdx?import
+  if (clientEntry.endsWith('?import')) {
+    assert(clientEntry.startsWith('/'))
+    return clientEntry
+  }
 
   assertPosixPath(clientEntry)
   let filePath: string
