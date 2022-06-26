@@ -9,6 +9,7 @@ import {
   objectAssign,
   getProjectError,
   serverSideRouteTo,
+  assertInfo,
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -82,8 +83,13 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
     try {
       loadResult = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
     } catch (err) {
+      console.log(err)
+      assertInfo(
+        false,
+        `Server-side redirecting to ${pageContext.url} because there seem to be a new deploy. See the error above.`,
+      )
       serverSideRouteTo(pageContext.url)
-      throw err
+      throw new Error('New Deploy')
     }
     const { exports, exportsAll, pageExports, pageFilesLoaded } = loadResult
     objectAssign(pageContextAddendum, {
