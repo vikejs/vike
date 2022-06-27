@@ -38,7 +38,7 @@ export async function onBeforeRender(pageContext: PageContextBuiltIn & PageConte
 
   const ssr = ssrExchange({ initialState: undefined })
   const client = createClient({
-    url: 'https://trygql.formidable.dev/graphql/basic-pokedex',
+    url: 'https://countries.trevorblades.com',
     exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange],
     suspense: true,
     fetch,

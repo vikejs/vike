@@ -15,9 +15,9 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
   test('urql content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<h1>Pokemons</h1>')
-    expect(html).toContain('Bulbasaur')
-    expect(html).toContain('Blastoise')
+    expect(html).toContain('<h1>Countries</h1>')
+    expect(html).toContain('France')
+    expect(html).toContain('Germany')
     expect(html).toContain('<h1>Counter</h1>')
     expect(html).toContain('<button>Counter <!-- -->0</button>')
   })

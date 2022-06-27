@@ -10,7 +10,7 @@ import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
   const { Page, pageProps, urqlState } = pageContext
   const client = createClient({
-    url: 'https://trygql.formidable.dev/graphql/basic-pokedex',
+    url: 'https://countries.trevorblades.com',
     exchanges: [
       dedupExchange,
       cacheExchange,
