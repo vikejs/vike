@@ -214,7 +214,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.6
+      react-streaming: ^0.2.14
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -227,7 +227,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.14_ef5jwxihqo6n7gxfmzogljlgcm
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -537,7 +537,7 @@ importers:
       cross-env: ^7.0.3
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.6
+      react-streaming: ^0.2.14
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -545,7 +545,7 @@ importers:
       cross-env: 7.0.3
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.14_ef5jwxihqo6n7gxfmzogljlgcm
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -579,7 +579,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.6
+      react-streaming: ^0.2.14
       typescript: ^4.6.4
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -596,7 +596,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.6_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.2.14_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -9965,8 +9965,8 @@ packages:
       react: 18.1.0
     dev: false
 
-  /react-streaming/0.2.6_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-ZdzZMyCIuFA65kViYbfNfTDJKmYTkBKQ2SnP3QuMSTFEJZ/E9pvOedXrhYsNBNr/jejqiulUtzbwQ63ITxcoVQ==}
+  /react-streaming/0.2.14_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-r3DgQnaCe35DwkmxQC0B4xudLCiRYj8sRtqrPugbD1RcKP4i+0GenpUG+ZJCXClXgtsAHL6YTc14bj7JGHyP6g==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
