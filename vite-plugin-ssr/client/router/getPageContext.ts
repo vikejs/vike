@@ -53,7 +53,9 @@ async function getPageContext(
   }
 }
 
-async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[] }): Promise<{ pageContextAddendum: PageContextAddendum }> {
+async function getPageContextFirstRender(pageContext: {
+  _pageFilesAll: PageFile[]
+}): Promise<{ pageContextAddendum: PageContextAddendum }> {
   const pageContextAddendum = getPageContextSerializedInHtml()
   removeBuiltInOverrides(pageContextAddendum)
 
