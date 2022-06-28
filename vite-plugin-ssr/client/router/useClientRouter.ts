@@ -32,7 +32,10 @@ let onPageTransitionStart: Function | null
 let disabled = false
 function disableClientRouting() {
   disabled = true
-  assertInfo(false, `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`)
+  assertInfo(
+    false,
+    `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`,
+  )
 }
 
 function useClientRouter() {
