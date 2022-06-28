@@ -1,11 +1,10 @@
-export { injectHtmlSnippet }
 export { injectHtmlSnippets }
 export { createHtmlHeadIfMissing }
 
 import { assert, slice } from '../../utils'
 
 type Position = 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END' | 'STREAM'
-const positions = ['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
+const POSITIONS = ['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
 
 function injectHtmlSnippet(
   position: Position,
@@ -13,7 +12,7 @@ function injectHtmlSnippet(
   htmlString: string,
   injectToStream: null | ((chunk: string) => void),
 ): string {
-  htmlSnippet = get(htmlSnippet)
+  htmlSnippet = getHtmlSnippet(htmlSnippet)
   if (position === 'HEAD_OPENING') {
     assert(tagOpeningExists('head', htmlString))
     htmlString = injectAtOpeningTag('head', htmlString, htmlSnippet)
@@ -43,25 +42,41 @@ function injectHtmlSnippet(
   assert(false)
 }
 
+type Snippet = {
+  htmlSnippet: string | (() => string)
+  position: Position
+}
 function injectHtmlSnippets(
   htmlString: string,
-  htmlSnippets: {
-    htmlSnippet: string | (() => string)
-    position: Position
-  }[],
+  snippets: Snippet[],
   injectToStream: null | ((chunk: string) => void),
 ): string {
-  positions.forEach((position) => {
-    const chunks: string[] = htmlSnippets.filter((h) => h.position === position).map((h) => get(h.htmlSnippet))
-    if (chunks.length > 0) {
-      const htmlInjection = chunks.join('')
-      htmlString = injectHtmlSnippet(position, htmlInjection, htmlString, injectToStream)
-    }
+  const snippetsBundled = bundleSnippets(snippets)
+  snippetsBundled.forEach((snippet) => {
+    htmlString = injectHtmlSnippet(snippet.position, snippet.htmlSnippet, htmlString, injectToStream)
   })
   return htmlString
 }
 
-function get(htmlSnippet: string | (() => string)) {
+// Is this really needed?
+function bundleSnippets(snippets: Snippet[]): Snippet[] {
+  const snippetsBundled: Snippet[] = []
+  POSITIONS.forEach((position) => {
+    const htmlSnippets: string[] = snippets
+      .filter((h) => h.position === position)
+      .map((h) => getHtmlSnippet(h.htmlSnippet))
+    if (htmlSnippets.length > 0) {
+      const htmlSnippetsBundled = htmlSnippets.join('')
+      snippetsBundled.push({
+        htmlSnippet: htmlSnippetsBundled,
+        position,
+      })
+    }
+  })
+  return snippetsBundled
+}
+
+function getHtmlSnippet(htmlSnippet: string | (() => string)) {
   return typeof htmlSnippet !== 'string' ? htmlSnippet() : htmlSnippet
 }
 
