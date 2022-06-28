@@ -3,7 +3,7 @@ import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
 import { getPageFilesAllClientSide } from '../shared/getPageFiles'
-import { loadPageFilesClientSide } from '../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
+import { loadPageFilesClientSide } from './loadPageFilesClientSide'
 
 export { getPageContext }
 
@@ -36,7 +36,13 @@ async function loadPageFilesClient(pageId: string) {
     _pageFilesAll: pageFilesAll,
   })
   {
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = await loadPageFilesClientSide(pageFilesAll, pageId)
+    const result = await loadPageFilesClientSide(pageFilesAll, pageId)
+    if ('errorFetchingStaticAssets' in result) {
+      // This may happen if the frontend was newly deployed during hydration.
+      // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+      throw result.err
+    }
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = result.pageContextAddendum
     objectAssign(pageContextAddendum, {
       exports,
       exportsAll,

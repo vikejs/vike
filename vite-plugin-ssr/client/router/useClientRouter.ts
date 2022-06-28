@@ -19,6 +19,7 @@ import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { detectHydrationSkipSupport } from './utils/detectHydrationSkipSupport'
+import { assertInfo } from './utils'
 import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
@@ -31,6 +32,7 @@ let onPageTransitionStart: Function | null
 let disabled = false
 function disableClientRouting() {
   disabled = true
+  assertInfo(false, `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`)
 }
 
 function useClientRouter() {
@@ -68,6 +70,7 @@ function useClientRouter() {
   ): Promise<void> {
     if (disabled) {
       serverSideRouteTo(url)
+      return
     }
 
     const renderingNumber = ++renderingCounter
@@ -108,7 +111,11 @@ function useClientRouter() {
     }
     addComputedUrlProps(pageContext)
 
-    const pageContextAddendum = await getPageContext(pageContext)
+    const result = await getPageContext(pageContext)
+    if ('errorFetchingStaticAssets' in result) {
+      return
+    }
+    const { pageContextAddendum } = result
     if (shouldAbort()) {
       return
     }
