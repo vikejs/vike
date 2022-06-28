@@ -34,6 +34,16 @@ function testRun(
     return
   }
 
+  // Miniflare crashes with `ELIFECYCLE  Command failed with exit code 1.`, without any error message nor stack trace.
+  // This commit breaks miniflare: https://github.com/brillout/vite-plugin-ssr/tree/de0fc8ea9cb6881241fb488e957747a60a955118
+  // Miniflare works with the previous commit: https://github.com/brillout/vite-plugin-ssr/tree/f4d8f9bbca70b6e0729bb85f0961c960788e49c1
+  if (isMiniflare && !isWebpack) {
+    const msg = 'SKIPPED miniflare + esbuild.'
+    console.log(msg)
+    test(msg, () => {})
+    return
+  }
+
   // Skip wrangler until static assets serving is reliable again
   if (isWrangler) {
     const msg = 'SKIPPED wrangler.'

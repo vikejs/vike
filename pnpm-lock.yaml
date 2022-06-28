@@ -210,7 +210,7 @@ importers:
       '@vitejs/plugin-react': ^1.3.2
       build-worker: ^0.2.0
       express: ^4.18.1
-      miniflare: ^2.4.0
+      miniflare: ^2.5.1
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
@@ -223,7 +223,7 @@ importers:
       '@vitejs/plugin-react': 1.3.2
       build-worker: 0.2.0
       express: 4.18.1
-      miniflare: 2.4.0
+      miniflare: 2.5.1
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
@@ -1885,11 +1885,29 @@ packages:
       undici: 4.13.0
     dev: false
 
+  /@miniflare/cache/2.5.1:
+    resolution: {integrity: sha512-qH5PC4zb7mHdQHlcaOuP0KUXuRbNSuB/HU7gpoeplV8J6CgNJGceVmQCZVZLycgDKZtAlhyGE1gkpJmeW7GCyw==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/core': 2.5.1
+      '@miniflare/shared': 2.5.1
+      http-cache-semantics: 4.1.0
+      undici: 5.5.1
+    dev: false
+
   /@miniflare/cli-parser/2.4.0:
     resolution: {integrity: sha512-Xr5lO8f+oIr9r/b2dfo0on1p0MNN+pkwRHWoY5ACSnp9FaGnwm/g71DM7AajIQPIk0TpRsSVNDx8Ygj1LPT+sQ==}
     engines: {node: '>=16.7'}
     dependencies:
       '@miniflare/shared': 2.4.0
+      kleur: 4.1.4
+    dev: false
+
+  /@miniflare/cli-parser/2.5.1:
+    resolution: {integrity: sha512-itlMDe9jwO806mkNkg3G70QYoG9YQHW6V10AF9L5b8J4LYt/V78uCEJSwNnCpL7zfKrScRPtDfXZxhrFzMXiUw==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/shared': 2.5.1
       kleur: 4.1.4
     dev: false
 
@@ -1907,6 +1925,21 @@ packages:
       undici: 4.13.0
     dev: false
 
+  /@miniflare/core/2.5.1:
+    resolution: {integrity: sha512-0oEBLV5AM3xxs6TS+7/fn4MSGNBfhUFVv41R8uc72H1a89+kBfRoz+xYI2RnJ3Yo+we66UgU3fXdG+R2KyESlQ==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@iarna/toml': 2.2.5
+      '@miniflare/shared': 2.5.1
+      '@miniflare/watcher': 2.5.1
+      busboy: 1.6.0
+      dotenv: 10.0.0
+      kleur: 4.1.4
+      set-cookie-parser: 2.4.8
+      undici: 5.5.1
+      urlpattern-polyfill: 4.0.3
+    dev: false
+
   /@miniflare/durable-objects/2.4.0:
     resolution: {integrity: sha512-VVLaUXXcAQcYE/3YmDLTacZf5OzR8bib6q1T9NqVb0uK5sLMQqyHvQdsG5rMqs7iyxfJxyZ0bL2OW9XGALOkoQ==}
     engines: {node: '>=16.7'}
@@ -1917,6 +1950,16 @@ packages:
       undici: 4.13.0
     dev: false
 
+  /@miniflare/durable-objects/2.5.1:
+    resolution: {integrity: sha512-AZEGSA9LMA6vBzwADAzr81RBSWYlMfa/cDHnHaFL31w4mQwMUcqXOvemoqe6sTSq1KI0TTtvYbxPt0Lui8tEPw==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/core': 2.5.1
+      '@miniflare/shared': 2.5.1
+      '@miniflare/storage-memory': 2.5.1
+      undici: 5.5.1
+    dev: false
+
   /@miniflare/html-rewriter/2.4.0:
     resolution: {integrity: sha512-ZG8819N7LelDD+8+Ss5FZpVyQQq/V2igod0qE68JK4he/w4/yn57Rk6Efb49y15HoHAXl2RpCCsnCyIow/Xjug==}
     engines: {node: '>=16.7'}
@@ -1925,6 +1968,16 @@ packages:
       '@miniflare/shared': 2.4.0
       html-rewriter-wasm: 0.4.1
       undici: 4.13.0
+    dev: false
+
+  /@miniflare/html-rewriter/2.5.1:
+    resolution: {integrity: sha512-fdO1qme8ukucejRz5yXJN/F4B9qEDRbBLPOEG94zwx8bHGGIo5VX15+J6oHubhjifLwzNuvOcg16Bu5dyR1KxQ==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/core': 2.5.1
+      '@miniflare/shared': 2.5.1
+      html-rewriter-wasm: 0.4.1
+      undici: 5.5.1
     dev: false
 
   /@miniflare/http-server/2.4.0:
@@ -1944,6 +1997,23 @@ packages:
       - utf-8-validate
     dev: false
 
+  /@miniflare/http-server/2.5.1:
+    resolution: {integrity: sha512-K+VoBU0LN8/oku/JWLEyX8wrp9fiaTC8/dosbY/6VWizyIrgQze16uD21GnK5+NBtbCAtLRryS5dZ3PnhiTR1w==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/core': 2.5.1
+      '@miniflare/shared': 2.5.1
+      '@miniflare/web-sockets': 2.5.1
+      kleur: 4.1.4
+      selfsigned: 2.0.1
+      undici: 5.5.1
+      ws: 8.6.0
+      youch: 2.2.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
   /@miniflare/kv/2.4.0:
     resolution: {integrity: sha512-1UW7f1386xR6EDEXNZOR1TpFwQfRRSxUPqD6m/U0WprlsbM0cIYGz+AUeaVbkFf8lfE2MeXCUrjbWsLOvsnw3g==}
     engines: {node: '>=16.7'}
@@ -1951,11 +2021,25 @@ packages:
       '@miniflare/shared': 2.4.0
     dev: false
 
+  /@miniflare/kv/2.5.1:
+    resolution: {integrity: sha512-ODTUqI7on3egHluBpFHifO0a9QFQUZscciASWKxGOt8VDp1vp0vIfU9ykQZrdZYFVeSKNVlUNqNQx+NMYZ6gIg==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/shared': 2.5.1
+    dev: false
+
   /@miniflare/runner-vm/2.4.0:
     resolution: {integrity: sha512-7sdwBYzXQTwYeR3tTvQ+vJfzc7BXwqR8AUPK9l5gvCtg+Geq9sMslr5SikIJpgcvbYqKDjvC9DQEPJ3sqr9cSQ==}
     engines: {node: '>=16.7'}
     dependencies:
       '@miniflare/shared': 2.4.0
+    dev: false
+
+  /@miniflare/runner-vm/2.5.1:
+    resolution: {integrity: sha512-7U7BPgzaikwWkAMonlmyy4lDpW1H7mqHFr7NdK9kA6BbXZ2GY6uro69QsGw0c4Y/vyKBodKiqXAq53iGdM3Kug==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/shared': 2.5.1
     dev: false
 
   /@miniflare/scheduler/2.4.0:
@@ -1967,8 +2051,25 @@ packages:
       cron-schedule: 3.0.6
     dev: false
 
+  /@miniflare/scheduler/2.5.1:
+    resolution: {integrity: sha512-ybho5Kg3Cfl4E0JleKAbiv/RTA+/PVqH6Y/PuCH2oowSM7qeAvFkrwiRvxtN7BuAl+5lsGyVxFe4gL+weXohEw==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/core': 2.5.1
+      '@miniflare/shared': 2.5.1
+      cron-schedule: 3.0.6
+    dev: false
+
   /@miniflare/shared/2.4.0:
     resolution: {integrity: sha512-lPQFzBUVGNQ93gQ/dliToWnO0OqAgsD3/902Pd/IixVSRwRj3BTnYv2dHMUKZcODBPrhnbqZeqcPWdBLzEx8uw==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      ignore: 5.2.0
+      kleur: 4.1.4
+    dev: false
+
+  /@miniflare/shared/2.5.1:
+    resolution: {integrity: sha512-DObgqbFml3qetIBtZa8fNqkBqUH9XtI6rdrWtTYVrx0rzKsd5PDf6gdMoxy7v1rr9zBAipKJxrcBqlEgjPl53Q==}
     engines: {node: '>=16.7'}
     dependencies:
       ignore: 5.2.0
@@ -1984,12 +2085,29 @@ packages:
       '@miniflare/storage-file': 2.4.0
     dev: false
 
+  /@miniflare/sites/2.5.1:
+    resolution: {integrity: sha512-7V/fAzR50LYgMcOfoCaoppqBCjagBpGWFbZgMyJi/Hj4oVlSIzxo+424hzdjitNzikCpv+AryF9tXfy9j6qiOg==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/kv': 2.5.1
+      '@miniflare/shared': 2.5.1
+      '@miniflare/storage-file': 2.5.1
+    dev: false
+
   /@miniflare/storage-file/2.4.0:
     resolution: {integrity: sha512-f1AUMz8xps/4VhNJMb8JeCevZFeU4pg2lIWmC11gG4xeq2nibTPBi6Qtx594Le7ZKij/tF6rRsoNfGau2Q5gdw==}
     engines: {node: '>=16.7'}
     dependencies:
       '@miniflare/shared': 2.4.0
       '@miniflare/storage-memory': 2.4.0
+    dev: false
+
+  /@miniflare/storage-file/2.5.1:
+    resolution: {integrity: sha512-o12KFXgc1M0nHD98mrA/IqwBsJ6KYLWH9NaTwqLhxhpGz/KSo5kWb7z/vrz2I/Rk2XR/gHSYQm2XR9XE6IJCdA==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/shared': 2.5.1
+      '@miniflare/storage-memory': 2.5.1
     dev: false
 
   /@miniflare/storage-memory/2.4.0:
@@ -1999,11 +2117,25 @@ packages:
       '@miniflare/shared': 2.4.0
     dev: false
 
+  /@miniflare/storage-memory/2.5.1:
+    resolution: {integrity: sha512-LIdBEFcwY7yLCeowO34p5bajRsvU1XuQjXIqcgfiCVt1+qa3D0seELTpW1NSFEJzxulVtu/KsScEug9GipEt7A==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/shared': 2.5.1
+    dev: false
+
   /@miniflare/watcher/2.4.0:
     resolution: {integrity: sha512-gDQRUxwOjmctvowyd4Hcdy3fjxz3ERKzirp6TvA3AWUohKZk3IhwGlaA8aCwbdP+ELYQlG5wK44AfLSGi956fg==}
     engines: {node: '>=16.7'}
     dependencies:
       '@miniflare/shared': 2.4.0
+    dev: false
+
+  /@miniflare/watcher/2.5.1:
+    resolution: {integrity: sha512-8oOdgWA7CZ7uIAwbjqSrhDnuQXRJqd9e3yDHsMa91E/jkC/GDmlt5SJh6VEMlNDtBGWd661IpVErZf7injI52w==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/shared': 2.5.1
     dev: false
 
   /@miniflare/web-sockets/2.4.0:
@@ -2013,6 +2145,19 @@ packages:
       '@miniflare/core': 2.4.0
       '@miniflare/shared': 2.4.0
       undici: 4.13.0
+      ws: 8.6.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
+  /@miniflare/web-sockets/2.5.1:
+    resolution: {integrity: sha512-GyXHoDAI5LDF87rmD+d0cSoN7Xs2pCYjSyUR6Vf6exkS4CN6F/Rtr8vIM5+om9kRkS6qxAyOYjWeEqBOjLm/og==}
+    engines: {node: '>=16.7'}
+    dependencies:
+      '@miniflare/core': 2.5.1
+      '@miniflare/shared': 2.5.1
+      undici: 5.5.1
       ws: 8.6.0
     transitivePeerDependencies:
       - bufferutil
@@ -3613,6 +3758,13 @@ packages:
     engines: {node: '>=4.5.0'}
     dependencies:
       dicer: 0.3.0
+    dev: false
+
+  /busboy/1.6.0:
+    resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
+    engines: {node: '>=10.16.0'}
+    dependencies:
+      streamsearch: 1.1.0
     dev: false
 
   /bytes/3.0.0:
@@ -8550,6 +8702,45 @@ packages:
       - utf-8-validate
     dev: false
 
+  /miniflare/2.5.1:
+    resolution: {integrity: sha512-PT56C/j7U6n7WDxnIUHu0d8EY/gedPRsta2b+LsrIHGZPSkxAcPzf2DgbbPU7obv0C4hT9H0GL1fWpWtr2SbDQ==}
+    engines: {node: '>=16.7'}
+    hasBin: true
+    peerDependencies:
+      '@miniflare/storage-redis': 2.5.1
+      cron-schedule: ^3.0.4
+      ioredis: ^4.27.9
+    peerDependenciesMeta:
+      '@miniflare/storage-redis':
+        optional: true
+      cron-schedule:
+        optional: true
+      ioredis:
+        optional: true
+    dependencies:
+      '@miniflare/cache': 2.5.1
+      '@miniflare/cli-parser': 2.5.1
+      '@miniflare/core': 2.5.1
+      '@miniflare/durable-objects': 2.5.1
+      '@miniflare/html-rewriter': 2.5.1
+      '@miniflare/http-server': 2.5.1
+      '@miniflare/kv': 2.5.1
+      '@miniflare/runner-vm': 2.5.1
+      '@miniflare/scheduler': 2.5.1
+      '@miniflare/shared': 2.5.1
+      '@miniflare/sites': 2.5.1
+      '@miniflare/storage-file': 2.5.1
+      '@miniflare/storage-memory': 2.5.1
+      '@miniflare/web-sockets': 2.5.1
+      kleur: 4.1.4
+      semiver: 1.1.0
+      source-map-support: 0.5.21
+      undici: 5.5.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
+
   /minimalistic-assert/1.0.1:
     resolution: {integrity: sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A==}
     dev: false
@@ -10964,6 +11155,11 @@ packages:
     engines: {node: '>=0.8.0'}
     dev: false
 
+  /streamsearch/1.1.0:
+    resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
   /string-length/4.0.2:
     resolution: {integrity: sha512-+l6rNN5fYHNhZZy41RXsYptCjA2Igmq4EG7kZAYFQI1E1VTXarr6ZPXBg6eq7Y6eK4FEhY6AJlyuFIb/v/S0VQ==}
     engines: {node: '>=10'}
@@ -11555,6 +11751,11 @@ packages:
     engines: {node: '>=12.18'}
     dev: false
 
+  /undici/5.5.1:
+    resolution: {integrity: sha512-MEvryPLf18HvlCbLSzCW0U00IMftKGI5udnjrQbC5D4P0Hodwffhv+iGfWuJwg16Y/TK11ZFK8i+BPVW2z/eAw==}
+    engines: {node: '>=12.18'}
+    dev: false
+
   /unified/10.1.2:
     resolution: {integrity: sha512-pUSWAi/RAnVy1Pif2kAoeWNBa3JVrx0MId2LASj8G+7AiHWoKZNTomq6LG326T68U7/e263X6fTdcXIy7XnF7Q==}
     dependencies:
@@ -11739,6 +11940,10 @@ packages:
     dependencies:
       punycode: 1.3.2
       querystring: 0.2.0
+    dev: false
+
+  /urlpattern-polyfill/4.0.3:
+    resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
     dev: false
 
   /urql/2.2.0_cxfcglayresyyxxylwnor5zopi:
