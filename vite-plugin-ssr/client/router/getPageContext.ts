@@ -9,7 +9,6 @@ import {
   objectAssign,
   getProjectError,
   serverSideRouteTo,
-  assertInfo,
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -20,7 +19,8 @@ import { assertHookResult } from '../../shared/assertHookResult'
 import { PageContextForRoute, route } from '../../shared/route'
 import { getHook } from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
-import { loadPageFilesClientSide } from '../../shared/getPageFiles/analyzePageClientSide/loadPageFilesClientSide'
+import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
+import { disableClientRouting } from './useClientRouter'
 
 export { getPageContext }
 
@@ -32,22 +32,28 @@ type PageContextAddendum = {
   _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
+type Result =
+  | {
+      errorFetchingStaticAssets: true
+    }
+  | {
+      pageContextAddendum: PageContextAddendum
+    }
+
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
   } & PageContextUrls &
     PageContextForRoute,
-): Promise<PageContextAddendum> {
+): Promise<Result> {
   if (pageContext._isFirstRenderAttempt && navigationState.isOriginalUrl(pageContext.url)) {
-    const pageContextAddendum = await getPageContextFirstRender(pageContext)
-    return pageContextAddendum
+    return getPageContextFirstRender(pageContext)
   } else {
-    const pageContextAddendum = await getPageContextPageNavigation(pageContext)
-    return pageContextAddendum
+    return getPageContextUponNavigation(pageContext)
   }
 }
 
-async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[] }) {
+async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[] }): Promise<{ pageContextAddendum: PageContextAddendum }> {
   const pageContextAddendum = getPageContextSerializedInHtml()
   removeBuiltInOverrides(pageContextAddendum)
 
@@ -57,10 +63,14 @@ async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[
   })
 
   {
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = await loadPageFilesClientSide(
-      pageContext._pageFilesAll,
-      pageContextAddendum._pageId,
-    )
+    const result = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+    if ('errorFetchingStaticAssets' in result) {
+      disableClientRouting()
+      // This may happen if the frontend was newly deployed during hydration.
+      // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+      throw result.err
+    }
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = result.pageContextAddendum
     objectAssign(pageContextAddendum, {
       exports,
       exportsAll,
@@ -69,29 +79,23 @@ async function getPageContextFirstRender(pageContext: { _pageFilesAll: PageFile[
     })
   }
 
-  return pageContextAddendum
+  return { pageContextAddendum }
 }
 
-async function getPageContextPageNavigation(pageContext: PageContextForRoute): Promise<PageContextAddendum> {
+async function getPageContextUponNavigation(pageContext: PageContextForRoute): Promise<Result> {
   const pageContextAddendum = {
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
 
   {
-    let loadResult: Awaited<ReturnType<typeof loadPageFilesClientSide>>
-    try {
-      loadResult = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
-    } catch (err) {
-      console.log(err)
-      assertInfo(
-        false,
-        `Server-side redirecting to ${pageContext.url} because there seem to be a new deploy. See the error above.`,
-      )
+    const result = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+    if ('errorFetchingStaticAssets' in result) {
+      disableClientRouting()
       serverSideRouteTo(pageContext.url)
-      throw new Error('New Deploy')
+      return { errorFetchingStaticAssets: true }
     }
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = loadResult
+    const { exports, exportsAll, pageExports, pageFilesLoaded } = result.pageContextAddendum
     objectAssign(pageContextAddendum, {
       exports,
       exportsAll,
@@ -103,7 +107,7 @@ async function getPageContextPageNavigation(pageContext: PageContextForRoute): P
   objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
 
-  return pageContextAddendum
+  return { pageContextAddendum }
 }
 
 async function onBeforeRenderExecute(
