@@ -1,7 +1,20 @@
 import { getMatrix } from './getMatrix.mjs'
 import { expect, describe, it } from 'vitest'
 
+//*/
+const SKIP = true
+/*/
+const SKIP = false
+//*/
+
 describe('getMatrix()', () => {
+  // We only use this `getMatrix()` test for developing the getMatrix() function. (Because, otherwise, the fixture down below would need to be updated everytime there is a new/(re)moved test file.)
+  if (SKIP) {
+    const msg = 'SKIPPED getMatrix() test'
+    it(msg, () => {})
+    return
+  }
+
   it('basics', () => {
     const matrix = getMatrix({ isMatrixTest: true })
     expect(matrix).toMatchInlineSnapshot(`
@@ -35,14 +48,14 @@ describe('getMatrix()', () => {
           "testCmd": "pnpm run test:e2e",
         },
         {
-          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.prod.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.prod.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.prod.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.prod.test.ts examples/vuex/.test.ts",
+          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.prod.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.prod.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.prod.test.ts examples/vue-pinia/.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.prod.test.ts examples/vuex/.test.ts",
           "name": "Examples Vue/Others - Ubuntu - Node.js 16",
           "node_version": "16",
           "os": "ubuntu-latest",
           "testCmd": "pnpm run test:e2e",
         },
         {
-          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.prod.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.prod.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.prod.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.prod.test.ts examples/vuex/.test.ts",
+          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.prod.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.prod.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.prod.test.ts examples/vue-pinia/.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.prod.test.ts examples/vuex/.test.ts",
           "name": "Examples Vue/Others - Win - Node.js 14",
           "node_version": "14",
           "os": "windows-latest",
