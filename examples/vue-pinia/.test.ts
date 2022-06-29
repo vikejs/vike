@@ -3,13 +3,6 @@ import { fetchHtml, run, page, urlBase, autoRetry } from '../../libframe/test/se
 testRun()
 
 function testRun() {
-  if (isNode12()) {
-    const msg = 'SKIPPED: Node 12'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
-
   run('npm run start')
 
   test('server-side', async () => {
@@ -55,8 +48,4 @@ function testRun() {
     })
     expect(await page.textContent('button')).toContain('Counter 1')
   })
-}
-
-function isNode12() {
-  return process.version.startsWith('v12.')
 }
