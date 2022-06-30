@@ -5,7 +5,7 @@ import { apply, addSsrMiddleware } from '../utils'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { pageFileExtensions } from './generateImportGlobs/pageFileExtensions'
 import * as vite from 'vite'
-const version = (vite as { version?: string }).version || '2.?.?'
+const viteVersion = (vite as { version?: string }).version || '2.?.?'
 
 function devConfig(): Plugin[] {
   return [
@@ -16,7 +16,7 @@ function devConfig(): Plugin[] {
         ssr: { external: ['vite-plugin-ssr'] },
         optimizeDeps: {
           entries:
-            !process.env.CI || !version.startsWith('2.')
+            !process.env.CI || !viteVersion.startsWith('2.')
               ? undefined
               : [`**/*.page.${pageFileExtensions}`, `**/*.page.client.${pageFileExtensions}`],
           exclude: [
