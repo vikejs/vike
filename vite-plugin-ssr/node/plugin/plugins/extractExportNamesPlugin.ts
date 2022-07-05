@@ -2,8 +2,7 @@ export { extractExportNamesPlugin }
 export { isUsingClientRouter }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { isSSR_options, removeSourceMap } from '../utils'
-import { parseEsModules, getExportNames } from '../parseEsModules'
+import { isSSR_options, removeSourceMap, getExportNames } from '../utils'
 
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 
@@ -27,8 +26,7 @@ function extractExportNamesPlugin(): Plugin {
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
-  const esModules = await parseEsModules(src)
-  const exportNames = getExportNames(esModules)
+  const exportNames = await getExportNames(src)
   if (isClientSide) {
     checkIfClientRouting(exportNames)
   }
