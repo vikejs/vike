@@ -1,9 +1,8 @@
 export { devConfig }
 
 import type { Plugin } from 'vite'
-import { apply, addSsrMiddleware } from '../utils'
+import { apply, addSsrMiddleware, javascriptFileExtensions } from '../utils'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
-import { pageFileExtensions } from './generateImportGlobs/pageFileExtensions'
 import * as vite from 'vite'
 const viteVersion = (vite as { version?: string }).version || '2.?.?'
 
@@ -18,7 +17,7 @@ function devConfig(): Plugin[] {
           entries:
             !process.env.CI || !viteVersion.startsWith('2.')
               ? undefined
-              : [`**/*.page.${pageFileExtensions}`, `**/*.page.client.${pageFileExtensions}`],
+              : [`**/*.page.${javascriptFileExtensions}`, `**/*.page.client.${javascriptFileExtensions}`],
           exclude: [
             // We exclude the client code to support `import.meta.glob()`
             'vite-plugin-ssr/client',
