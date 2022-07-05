@@ -13,6 +13,8 @@ import {
   getFileExtension,
   removeSourceMap,
   assertPosixPath,
+  isJavascriptFile,
+  isAsset,
   getImportStatements,
   ImportStatement,
 } from '../utils'
@@ -79,7 +81,8 @@ function extractStylesPlugin(): Plugin[] {
 
         // Include:
         //  - CSS(/LESS/SCSS/...) files
-        if (cssLangs.test(id)) {
+        //  - Asset files (`.svg`, `.pdf`, ...)
+        if (cssLangs.test(id) || isAsset(id)) {
           debugOperation('INCLUDED', id, importer)
           return resolution
         }
@@ -109,6 +112,11 @@ function extractStylesPlugin(): Plugin[] {
         // When a library is symlinked, it lives outside `root`.
         assertPosixPath(config.root)
         if (!id.startsWith(config.root)) {
+          return emptyModule(id, importer)
+        }
+
+        // If the resolved file doesn't end with a JavaScript file extension, we remove it.
+        if (!isJavascriptFile(id)) {
           return emptyModule(id, importer)
         }
 
