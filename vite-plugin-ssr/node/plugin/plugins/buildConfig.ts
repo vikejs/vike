@@ -1,8 +1,7 @@
 import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
-import { assert, getOutDir, isObject, isSSR_config } from '../utils'
+import { assert, getOutDir, isObject, isSSR_config, javascriptFileExtensions } from '../utils'
 import { modifyResolvedConfig } from '../utils/modifyResolvedConfig'
-import { pageFileExtensions } from './generateImportGlobs/pageFileExtensions'
 import path from 'path'
 import glob from 'fast-glob'
 
@@ -47,7 +46,7 @@ async function entryPoints(config: ResolvedConfig): Promise<Record<string, strin
   const ssr = isSSR_config(config)
   const cwd = config.root
   const pageFiles = await glob(
-    [`**/*.page.${pageFileExtensions}`, `**/*.page.${ssr ? 'server' : 'client'}.${pageFileExtensions}`],
+    [`**/*.page.${javascriptFileExtensions}`, `**/*.page.${ssr ? 'server' : 'client'}.${javascriptFileExtensions}`],
     { ignore: ['**/node_modules/**'], cwd },
   )
   const pageFilesObject: Record<string, string> = {}
