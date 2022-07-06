@@ -1,5 +1,6 @@
 export { extractExportNamesPlugin }
 export { isUsingClientRouter }
+export { extractExportNamesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { isSSR_options, removeSourceMap, getExportNames } from '../utils'
