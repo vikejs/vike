@@ -22,6 +22,12 @@ function assertVpsConfig(
     'should be an array of strings',
     hasProp(vitePluginSsr, 'includeCSS', 'string[]') || hasProp(vitePluginSsr, 'includeCSS', 'undefined'),
   )
+  assertConfig(
+    'includeAssetsImportedByServer',
+    'should be a boolean (or undefined)',
+    hasProp(vitePluginSsr, 'includeAssetsImportedByServer', 'boolean') ||
+      hasProp(vitePluginSsr, 'includeAssetsImportedByServer', 'undefined'),
+  )
 
   return
 

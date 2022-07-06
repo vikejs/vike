@@ -5,14 +5,19 @@ import { assert, isSSR_options, isNotNullish } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
+import type { ConfigVps } from './config/VpsConfig'
+import { assertViteConfig } from './config/assertConfig'
 
 const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
 
+type Config = ResolvedConfig & ConfigVps
+
 function generateImportGlobs(): Plugin {
-  let config: ResolvedConfig
+  let config: Config
   return {
     name: 'vite-plugin-ssr:virtualModulePageFiles',
     async configResolved(config_) {
+      assertViteConfig(config_)
       config = config_
     },
     resolveId(id) {
@@ -31,19 +36,29 @@ function generateImportGlobs(): Plugin {
   } as Plugin
 }
 
-async function getCode(config: ResolvedConfig, isForClientSide: boolean) {
+async function getCode(config: Config, isForClientSide: boolean) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
   const isBuild = command === 'build'
   const globRoots = await getGlobRoots(config)
   debugGlob('Glob roots: ', globRoots)
   const includePaths = globRoots.map((g) => g.includePath)
-  const content = getContent(includePaths.filter(isNotNullish), isBuild, isForClientSide)
+  const content = getContent(
+    includePaths.filter(isNotNullish),
+    isBuild,
+    isForClientSide,
+    config.vitePluginSsr.includeAssetsImportedByServer,
+  )
   debugGlob('Glob imports: ', content)
   return content
 }
 
-function getContent(includePaths: string[], isBuild: boolean, isForClientSide: boolean) {
+function getContent(
+  includePaths: string[],
+  isBuild: boolean,
+  isForClientSide: boolean,
+  includeAssetsImportedByServer: undefined | boolean,
+) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
 export const pageFilesLazy = {};
@@ -62,8 +77,10 @@ export const isGeneratedFile = true;
       getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
       getGlobs(includePaths, isBuild, 'page.server', 'extractExportNames'),
       getGlobs(includePaths, isBuild, 'page', 'extractExportNames'),
-      getGlobs(includePaths, isBuild, 'page.server', 'extractStyles'),
     ].join('\n')
+    if (includeAssetsImportedByServer) {
+      fileContent += getGlobs(includePaths, isBuild, 'page.server', 'extractStyles')
+    }
   } else {
     fileContent += [
       getGlobs(includePaths, isBuild, 'page.server'),
