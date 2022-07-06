@@ -8,7 +8,12 @@ const config: UserConfig = {
       '#root': __dirname,
     },
   },
-  plugins: [react(), ssr()],
+  plugins: [
+    react(),
+    ssr({
+      includeAssetsImportedByServer: true,
+    }),
+  ],
 }
 
 export default config
