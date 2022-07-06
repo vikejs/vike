@@ -165,7 +165,9 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
+        await sleep(100) // Not sure if it helps make the test less flaky?
         editFile('./pages/ssr/index.page.jsx', (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
+        await sleep(100) // Not sure if it helps make the test less flaky?
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
