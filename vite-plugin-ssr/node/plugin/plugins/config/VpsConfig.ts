@@ -50,4 +50,12 @@ type VpsConfig = {
    * Do not use without having talked to a vite-plugin-ssr maintainer.
    */
   includeCSS?: string[]
+  /**
+   * Add assets (CSS, images, etc.) imported by server-side code to the client-side build.
+   *
+   * Useful for HTML-only pages, see https://vite-plugin-ssr/render-modes#html-only
+   *
+   * @experimental
+   */
+  includeAssetsImportedByServer?: boolean
 }
