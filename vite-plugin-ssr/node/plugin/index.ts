@@ -1,7 +1,6 @@
 export default plugin
 export { plugin }
 export { plugin as ssr }
-export type { ConfigVps } from './plugins/config'
 
 import type { Plugin } from 'vite'
 import GlobPlugin from 'vite-plugin-glob'
@@ -14,7 +13,8 @@ import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
-import { setVitePluginSsrConfig, VpsConfig } from './plugins/config'
+import { setVitePluginSsrConfig } from './plugins/config'
+import type { ConfigVpsUser } from './plugins/config/ConfigVps'
 import { distFileNames } from './plugins/distFileNames'
 import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
@@ -24,7 +24,7 @@ import { distEntriesPlugin } from './plugins/distEntries'
 import { commonConfig } from './plugins/commonConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vpsConfig?: VpsConfig): any {
+function plugin(vpsConfig?: ConfigVpsUser): any {
   const plugins: Plugin[] = [
     commonConfig(),
     setVitePluginSsrConfig(vpsConfig),

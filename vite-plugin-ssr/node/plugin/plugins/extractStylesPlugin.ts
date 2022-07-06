@@ -20,7 +20,7 @@ import {
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { createDebugger, isDebugEnabled } from '../../utils'
 import { assertViteConfig } from './config/assertConfig'
-import type { ConfigVps } from './config'
+import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
@@ -31,8 +31,10 @@ const debugNamespace = 'vps:extractStyles'
 const debug = createDebugger(debugNamespace)
 const debugEnabled = isDebugEnabled(debugNamespace)
 
+type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
+
 function extractStylesPlugin(): Plugin[] {
-  let config: ResolvedConfig & ConfigVps
+  let config: Config
   return [
     // Remove all JS from `.page.server.js` files and `?extractStyles` imports, so that only CSS remains
     {
@@ -110,7 +112,7 @@ function extractStylesPlugin(): Plugin[] {
 
         // If the dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
         if (
-          (config.vitePluginSsr.includeCSS || []).some(
+          (config.vitePluginSsr.includeCSS).some(
             /* Should also work:
             (dependency) =>
               source === dependency ||

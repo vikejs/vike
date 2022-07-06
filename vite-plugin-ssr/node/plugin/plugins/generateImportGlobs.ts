@@ -5,12 +5,12 @@ import { assert, isSSR_options, isNotNullish } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
-import type { ConfigVps } from './config/VpsConfig'
+import type { ConfigVpsResolved } from './config/ConfigVps'
 import { assertViteConfig } from './config/assertConfig'
 
 const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
 
-type Config = ResolvedConfig & ConfigVps
+type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
 
 function generateImportGlobs(): Plugin {
   let config: Config
