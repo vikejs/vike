@@ -15,9 +15,15 @@ function devConfig(): Plugin[] {
         ssr: { external: ['vite-plugin-ssr'] },
         optimizeDeps: {
           entries:
-            !process.env.CI || !viteVersion.startsWith('2.')
-              ? undefined
-              : [`**/*.page.${javascriptFileExtensions}`, `**/*.page.client.${javascriptFileExtensions}`],
+            process.env.CI && viteVersion.startsWith('2.')
+              ? [`**/*.page.${javascriptFileExtensions}`, `**/*.page.client.${javascriptFileExtensions}`]
+              : // Ideally we should use `fast-glob` to determine the index page files
+                [
+                  `/pages/index.page.${javascriptFileExtensions}`,
+                  `/pages/index.page.client.${javascriptFileExtensions}`,
+                  `/pages/index/index.page.${javascriptFileExtensions}`,
+                  `/pages/index/index.page.client.${javascriptFileExtensions}`,
+                ],
           exclude: [
             // We exclude the client code to support `import.meta.glob()`
             'vite-plugin-ssr/client',
