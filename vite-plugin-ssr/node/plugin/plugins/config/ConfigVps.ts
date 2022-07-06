@@ -1,7 +1,20 @@
-export type { VpsConfig }
-export type ConfigVps = { vitePluginSsr: VpsConfig }
+export type { ConfigVpsUser }
+export type { ConfigVpsResolved }
+//export type ConfigVps = { vitePluginSsr: VpsConfig }
 
-type VpsConfig = {
+type ConfigVpsResolved = {
+  prerender: false | {
+    noExtraDir: boolean,
+    parallel: boolean | number
+    partial: boolean
+  },
+  pageFiles: { include: string[] },
+  disableBuildChaining: boolean,
+  includeCSS: string[],
+  includeAssetsImportedByServer: boolean
+}
+
+type ConfigVpsUser = {
   /**
    * Whether your pages are pre-rendered to HTML.
    *

@@ -4,12 +4,14 @@ import { build, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertWarning, isSSR_config, isViteCliCall } from '../utils'
 import { prerender } from '../../prerender'
 import { assertViteConfig } from './config/assertConfig'
-import type { ConfigVps } from './config/VpsConfig'
+import type { ConfigVpsResolved } from './config/ConfigVps'
 
 const triggedByChain = '__triggedByChain'
 
+type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
+
 function chainBuildSteps(): Plugin {
-  let config: ResolvedConfig & ConfigVps
+  let config: Config
   return {
     name: 'vite-plugin-ssr:chainBuildSteps',
     apply: 'build',
@@ -43,7 +45,7 @@ function chainBuildSteps(): Plugin {
   }
 }
 
-function abortSSRBuild(config: ResolvedConfig & ConfigVps) {
+function abortSSRBuild(config: Config) {
   if (config.vitePluginSsr.disableBuildChaining) {
     return
   }

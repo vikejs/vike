@@ -2,12 +2,12 @@ export { assertViteConfig }
 export { assertVpsConfig }
 
 import { assert, assertUsage, hasProp, isObject } from '../../../utils'
-import { VpsConfig, ConfigVps } from './VpsConfig'
+import { ConfigVpsResolved } from './ConfigVps'
 
 function assertVpsConfig(
   vitePluginSsr: unknown,
   userInputFormat: null | ((args: { configPath: string; configPathInObject: string; configProp: string }) => string),
-): asserts vitePluginSsr is VpsConfig {
+): asserts vitePluginSsr is ConfigVpsResolved {
   assert(isObject(vitePluginSsr))
   assertConfig(
     'disableBuildChaining',
@@ -33,7 +33,7 @@ function assertVpsConfig(
 
   function assertPrerenderConfig(
     vitePluginSsr: Record<string, unknown>,
-  ): asserts vitePluginSsr is Pick<VpsConfig, 'prerender'> {
+  ): asserts vitePluginSsr is Pick<ConfigVpsResolved, 'prerender'> {
     assertConfig(
       'prerender',
       'should be an object or a boolean (or undefined)',
@@ -66,7 +66,7 @@ function assertVpsConfig(
 
   function assertPageFilesConfig(
     vitePluginSsr: Record<string, unknown>,
-  ): asserts vitePluginSsr is Pick<VpsConfig, 'pageFiles'> {
+  ): asserts vitePluginSsr is Pick<ConfigVpsResolved, 'pageFiles'> {
     assertConfig(
       'pageFiles',
       'should be an object (or undefined)',
@@ -98,7 +98,7 @@ function assertVpsConfig(
   }
 }
 
-function assertViteConfig<T>(config: T): asserts config is T & ConfigVps {
+function assertViteConfig<T>(config: T): asserts config is T & { vitePluginSsr: ConfigVpsResolved } {
   assert(hasProp(config, 'vitePluginSsr', 'object'))
   const { vitePluginSsr } = config
   assertVpsConfig(vitePluginSsr, null)

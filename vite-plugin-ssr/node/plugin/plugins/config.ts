@@ -1,5 +1,4 @@
 export { setVitePluginSsrConfig }
-export type { VpsConfig, ConfigVps } from './config/VpsConfig'
 
 import type { Plugin } from 'vite'
 import { resolveVpsConfig } from './config/resolveVpsConfig'

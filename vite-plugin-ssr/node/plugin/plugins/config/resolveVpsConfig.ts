@@ -1,13 +1,13 @@
 export { resolveVpsConfig }
 
 import { assertVpsConfig } from './assertConfig'
-import type { VpsConfig } from './VpsConfig'
+import type { ConfigVpsResolved, ConfigVpsUser } from './ConfigVps'
 
-function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): VpsConfig {
+function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): ConfigVpsResolved {
   assertUserInputFromPluginOptions(fromPluginOptions)
   assertUserInputFromViteConfig(fromViteConfig)
 
-  const vitePluginSsr: VpsConfig = {
+  const vitePluginSsr: ConfigVpsResolved = {
     disableBuildChaining: fromPluginOptions.disableBuildChaining ?? fromViteConfig.disableBuildChaining ?? false,
     pageFiles: {
       include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
@@ -21,8 +21,8 @@ function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): 
   return vitePluginSsr
 }
 
-function resolvePrerenderOptions(fromPluginOptions: VpsConfig, fromViteConfig: VpsConfig) {
-  let prerender: VpsConfig['prerender'] = false
+function resolvePrerenderOptions(fromPluginOptions: ConfigVpsUser, fromViteConfig: ConfigVpsUser) {
+  let prerender: ConfigVpsResolved['prerender'] = false
 
   if (fromPluginOptions.prerender || fromViteConfig.prerender) {
     const prerenderUserOptions =
@@ -31,19 +31,19 @@ function resolvePrerenderOptions(fromPluginOptions: VpsConfig, fromViteConfig: V
     prerender = {
       partial: prerenderUserOptions.partial ?? prerenderViteConfig.partial ?? false,
       noExtraDir: prerenderUserOptions.noExtraDir ?? prerenderViteConfig.noExtraDir ?? false,
-      parallel: prerenderUserOptions.parallel ?? prerenderViteConfig.parallel ?? undefined,
+      parallel: prerenderUserOptions.parallel ?? prerenderViteConfig.parallel ?? true,
     }
   }
   return prerender
 }
 
-function assertUserInputFromPluginOptions(fromPluginOptions: unknown): asserts fromPluginOptions is VpsConfig {
+function assertUserInputFromPluginOptions(fromPluginOptions: unknown): asserts fromPluginOptions is ConfigVpsUser {
   assertVpsConfig(
     fromPluginOptions,
     ({ configPathInObject, configProp }) =>
       `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``,
   )
 }
-function assertUserInputFromViteConfig(fromViteConfig: unknown): asserts fromViteConfig is VpsConfig {
+function assertUserInputFromViteConfig(fromViteConfig: unknown): asserts fromViteConfig is ConfigVpsUser {
   assertVpsConfig(fromViteConfig, ({ configPath }) => `vite.config.js#vitePluginSsr.${configPath}`)
 }
