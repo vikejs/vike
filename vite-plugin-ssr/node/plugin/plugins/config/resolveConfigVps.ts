@@ -14,7 +14,7 @@ function resolveConfigVps(fromPluginOptions: unknown, fromViteConfig: unknown): 
     },
     prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
     includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],
-    includeAssetsImportedByServer: fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? false,
+    includeAssetsImportedByServer: fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? true,
   }
 
   assertConfigVpsResolved({ vitePluginSsr })
