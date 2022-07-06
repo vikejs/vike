@@ -7,7 +7,7 @@ import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
 import { isNotNullish } from '../../../../utils/isNotNullish'
 import type { ResolvedConfig } from 'vite'
-import { assertViteConfig } from '../config/assertConfig'
+import { assertConfigVpsResolved } from '../config/assertConfigVps'
 
 type GlobRoot = {
   pkgName: null | string
@@ -16,7 +16,7 @@ type GlobRoot = {
 }
 
 async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
-  assertViteConfig(config)
+  assertConfigVpsResolved(config)
   const { root } = config
   assertPosixPath(root)
   const includePageFiles = resolveConfig(config.vitePluginSsr.pageFiles)

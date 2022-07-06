@@ -1,9 +1,9 @@
-export { resolveVpsConfig }
+export { resolveConfigVps }
 
-import { assertVpsConfig } from './assertConfig'
+import { assertConfigVpsUser, assertConfigVpsResolved } from './assertConfigVps'
 import type { ConfigVpsResolved, ConfigVpsUser } from './ConfigVps'
 
-function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): ConfigVpsResolved {
+function resolveConfigVps(fromPluginOptions: unknown, fromViteConfig: unknown): ConfigVpsResolved {
   assertUserInputFromPluginOptions(fromPluginOptions)
   assertUserInputFromViteConfig(fromViteConfig)
 
@@ -17,7 +17,7 @@ function resolveVpsConfig(fromPluginOptions: unknown, fromViteConfig: unknown): 
     includeAssetsImportedByServer: fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? false,
   }
 
-  assertVpsConfig(vitePluginSsr, null)
+  assertConfigVpsResolved({ vitePluginSsr })
   return vitePluginSsr
 }
 
@@ -38,12 +38,12 @@ function resolvePrerenderOptions(fromPluginOptions: ConfigVpsUser, fromViteConfi
 }
 
 function assertUserInputFromPluginOptions(fromPluginOptions: unknown): asserts fromPluginOptions is ConfigVpsUser {
-  assertVpsConfig(
+  assertConfigVpsUser(
     fromPluginOptions,
     ({ configPathInObject, configProp }) =>
       `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``,
   )
 }
 function assertUserInputFromViteConfig(fromViteConfig: unknown): asserts fromViteConfig is ConfigVpsUser {
-  assertVpsConfig(fromViteConfig, ({ configPath }) => `vite.config.js#vitePluginSsr.${configPath}`)
+  assertConfigVpsUser(fromViteConfig, ({ configPath }) => `vite.config.js#vitePluginSsr.${configPath}`)
 }

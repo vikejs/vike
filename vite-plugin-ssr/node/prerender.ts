@@ -28,7 +28,7 @@ import { cpus } from 'os'
 import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
-import { assertViteConfig } from './plugin/plugins/config/assertConfig'
+import { assertConfigVpsResolved } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
 
 export { prerender }
@@ -120,7 +120,7 @@ async function prerender(
 
   const viteConfig = await resolveConfig(options.viteConfig || {}, 'vite-plugin-ssr prerender' as any, 'production')
   assertLoadedConfig(viteConfig, options)
-  assertViteConfig(viteConfig)
+  assertConfigVpsResolved(viteConfig)
 
   const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
   const { root } = viteConfig

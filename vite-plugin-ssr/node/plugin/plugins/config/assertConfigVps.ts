@@ -1,10 +1,10 @@
-export { assertViteConfig }
-export { assertVpsConfig }
+export { assertConfigVpsResolved }
+export { assertConfigVpsUser }
 
 import { assert, assertUsage, hasProp, isObject } from '../../../utils'
 import { ConfigVpsResolved } from './ConfigVps'
 
-function assertVpsConfig(
+function assertConfigVpsUser(
   vitePluginSsr: unknown,
   userInputFormat: null | ((args: { configPath: string; configPathInObject: string; configProp: string }) => string),
 ): asserts vitePluginSsr is ConfigVpsResolved {
@@ -98,8 +98,8 @@ function assertVpsConfig(
   }
 }
 
-function assertViteConfig<T>(config: T): asserts config is T & { vitePluginSsr: ConfigVpsResolved } {
+function assertConfigVpsResolved<T>(config: T): asserts config is T & { vitePluginSsr: ConfigVpsResolved } {
   assert(hasProp(config, 'vitePluginSsr', 'object'))
   const { vitePluginSsr } = config
-  assertVpsConfig(vitePluginSsr, null)
+  assertConfigVpsUser(vitePluginSsr, null) // Internal assert
 }

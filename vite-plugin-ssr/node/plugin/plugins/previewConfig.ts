@@ -2,7 +2,7 @@ export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { apply, addSsrMiddleware, assertPosixPath, assertUsage, getOutDirs, getOutDir } from '../utils'
-import { assertViteConfig } from './config/assertConfig'
+import { assertConfigVpsResolved } from './config/assertConfigVps'
 import fs from 'fs'
 
 function previewConfig(): Plugin {
@@ -22,7 +22,7 @@ function previewConfig(): Plugin {
     },
     configurePreviewServer(server) {
       assertDist()
-      assertViteConfig(config)
+      assertConfigVpsResolved(config)
       if (!config.vitePluginSsr.prerender) {
         return addSsrMiddleware(server.middlewares)
       }
