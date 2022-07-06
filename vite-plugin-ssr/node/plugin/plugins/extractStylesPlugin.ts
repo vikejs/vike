@@ -22,6 +22,7 @@ import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQue
 import { createDebugger, isDebugEnabled } from '../../utils'
 import { assertViteConfig } from './config/assertConfig'
 import type { ConfigVps } from './config'
+import { extractExportNamesRE } from './extractExportNamesPlugin'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
@@ -60,24 +61,37 @@ function extractStylesPlugin(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        if (!importer) {
-          // We don't need to transform the ID of the `*.page.server.js` entries
+        if (isSSR_options(options)) {
+          // When building for the server, there should never be a `?extractStyles` query
+          assert(!extractStylesRE.test(source))
+          assert(importer === undefined || !extractStylesRE.test(importer))
           return
         }
+        if (!importer) {
+          return
+        }
+        if (source.includes('.page.server.')) {
+          // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
+          assert(extractStylesRE.test(source) || extractExportNamesRE.test(source))
+          assert(importer === 'virtual:vite-plugin-ssr:pageFiles:client')
+        } else {
+          // All other `?extractStyles` queries are appended when this `resolveId()` hook returns `appendExtractStylesQuery()`
+          assert(!extractStylesRE.test(source), { source })
+        }
+
         if (!extractStylesRE.test(importer)) {
           return
         }
-        assert(!isSSR_options(options))
 
         let resolution: null | ResolvedId = null
         try {
           resolution = await this.resolve(source, importer, { skipSelf: true, ...options })
         } catch {}
 
-        // Sometimes Rollup fails to resolve. If it fails to resolve, we assume the dependency to be an npm package and we skip it. (AFAICT, Rollup should always be able to resolve local dependencies.)
+        // Sometimes Rollup fails to resolve. If it fails to resolve, we assume the dependency to be an npm package and we skip it. (I guess Rollup should always be able to resolve local dependencies?)
         if (!resolution) return emptyModule(source, importer)
 
-        const { id, external } = resolution
+        const { id: file, external } = resolution
 
         // Nothing is externalized when building for the client-side
         assert(external === false)
@@ -85,15 +99,15 @@ function extractStylesPlugin(): Plugin[] {
         // Include:
         //  - CSS(/LESS/SCSS/...) files
         //  - Asset files (`.svg`, `.pdf`, ...)
-        if (cssLangs.test(id) || isAsset(id)) {
-          debugOperation('INCLUDED', id, importer)
+        if (cssLangs.test(file) || isAsset(file)) {
+          debugOperation('INCLUDED', file, importer)
           return resolution
         }
 
         // If the import path is relative, we certainly want to include its CSS dependencies
         // E.g. `import something from './some/relative/path'
         if (source.startsWith('.')) {
-          return transformedId(id, importer)
+          return appendExtractStylesQuery(file, importer)
         }
 
         // If a dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
@@ -102,29 +116,29 @@ function extractStylesPlugin(): Plugin[] {
             (dependency) => source === dependency || source.startsWith(dependency + '/'),
           )
         ) {
-          return transformedId(id, importer)
+          return appendExtractStylesQuery(file, importer)
         }
 
         // If the import path resolves to a file in `node_modules/`, we ignore that file:
         //  - Direct CSS dependencies are included though, such as `import 'bootstrap/theme/dark.css'`. (Because the above if-branch for CSS files will add the file.)
         //  - Loading CSS from a library (living in `node_modules/`) in a non-direct way is non-standard; we can safely not support this case. (I'm not aware of any library that does this.)
-        assertPosixPath(id)
-        if (id.includes('/node_modules/')) {
-          return emptyModule(id, importer)
+        assertPosixPath(file)
+        if (file.includes('/node_modules/')) {
+          return emptyModule(file, importer)
         }
         // When a library is symlinked, it lives outside `root`.
         assertPosixPath(config.root)
-        if (!id.startsWith(config.root)) {
-          return emptyModule(id, importer)
+        if (!file.startsWith(config.root)) {
+          return emptyModule(file, importer)
         }
 
         // If the resolved file doesn't end with a JavaScript file extension, we remove it.
-        if (!isJavascriptFile(id)) {
-          return emptyModule(id, importer)
+        if (!isJavascriptFile(file)) {
+          return emptyModule(file, importer)
         }
 
         // If the import path is an alias (e.g. `import '@app/some/relative/path'`) then all the above if-branches are skipped. We include it.
-        return transformedId(id, importer)
+        return appendExtractStylesQuery(file, importer)
       },
     },
     {
@@ -159,17 +173,17 @@ function extractStylesPlugin(): Plugin[] {
   ] as Plugin[]
 }
 
-function emptyModule(id: string, importer: string) {
-  debugOperation('NUKED', id, importer)
+function emptyModule(file: string, importer: string) {
+  debugOperation('NUKED', file, importer)
   return EMPTY_MODULE_ID
 }
-function transformedId(id: string, importer: string) {
-  const fileExtension = getFileExtension(id)
+function appendExtractStylesQuery(file: string, importer: string) {
+  const fileExtension = getFileExtension(file)
   if (!fileExtension) {
-    return emptyModule(id, importer)
+    return emptyModule(file, importer)
   }
-  debugOperation('TRANSFORMED', id, importer)
-  return extractStylesAddQuery(id)
+  debugOperation('TRANSFORMED', file, importer)
+  return extractStylesAddQuery(file)
 }
 
 function getImportedModules(importStatements: ImportStatement[]): string[] {
