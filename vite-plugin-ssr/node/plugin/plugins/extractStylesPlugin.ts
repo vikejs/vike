@@ -77,7 +77,10 @@ function extractStylesPlugin(): Plugin[] {
         // Sometimes Rollup fails to resolve. If it fails to resolve, we assume the dependency to be an npm package and we skip it. (AFAICT, Rollup should always be able to resolve local dependencies.)
         if (!resolution) return emptyModule(source, importer)
 
-        const { id } = resolution
+        const { id, external } = resolution
+
+        // Nothing is externalized when building for the client-side
+        assert(external === false)
 
         // Include:
         //  - CSS(/LESS/SCSS/...) files
