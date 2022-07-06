@@ -1,10 +1,11 @@
 export { manifest }
 
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import { assert, projectInfo, isSSR_config, apply } from '../utils'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
+import { assertConfigVpsResolved } from './config/assertConfigVps'
 
 function manifest(): Plugin[] {
   let ssr: boolean
@@ -41,7 +42,8 @@ function manifest(): Plugin[] {
     },
   ] as Plugin[]
 
-  function configResolved(config: Parameters<NonNullable<Plugin['configResolved']>>[0]) {
+  function configResolved(config: ResolvedConfig) {
+    assertConfigVpsResolved(config)
     ssr = isSSR_config(config)
     runtimeConfig = resolveRuntimeConfig(config)
   }

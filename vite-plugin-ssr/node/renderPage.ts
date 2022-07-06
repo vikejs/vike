@@ -571,6 +571,7 @@ async function loadPageFilesServer(
     _isProduction: boolean
     _viteDevServer: null | ViteDevServer
     _manifestClient: null | ViteManifest
+    _includeAssetsImportedByServer: boolean
   } & PageContextDebug,
 ) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([

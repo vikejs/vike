@@ -55,6 +55,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     _baseUrl: runtimeConfig.baseUrl,
     _baseAssets: runtimeConfig.baseAssets,
     _viteDevServer: viteDevServer,
+    _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
     //_outDir: viteDevServer?.runtimeConfig.build.outDir ?? getPluginManifest().outDir)
     _objectCreatedByVitePluginSsr: true,
   })
