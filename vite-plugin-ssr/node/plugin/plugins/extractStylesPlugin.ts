@@ -10,7 +10,6 @@ import type { ResolvedId } from 'rollup'
 import {
   isSSR_options,
   assert,
-  getFileExtension,
   removeSourceMap,
   assertPosixPath,
   isJavascriptFile,
@@ -104,16 +103,24 @@ function extractStylesPlugin(): Plugin[] {
           return resolution
         }
 
-        // If the import path is relative, we certainly want to include its CSS dependencies
-        // E.g. `import something from './some/relative/path'
-        if (source.startsWith('.')) {
-          return appendExtractStylesQuery(file, importer)
+        // If the resolved file doesn't end with a JavaScript file extension, we remove it.
+        if (!isJavascriptFile(file)) {
+          return emptyModule(file, importer)
         }
 
-        // If a dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
+        // If the dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
         if (
           (config.vitePluginSsr.includeCSS || []).some(
-            (dependency) => source === dependency || source.startsWith(dependency + '/'),
+            /* Should also work:
+            (dependency) =>
+              source === dependency ||
+              source.startsWith(dependency + '/') ||
+              // Include relative imports. (This only works for dependencies because user may use import path aliases.)
+              source.startsWith('.'),
+            /*/
+            (dependency) =>
+              file.includes('node_modules/' + dependency + '/') || file.includes('node_modules\\' + dependency + '\\'),
+            //*/
           )
         ) {
           return appendExtractStylesQuery(file, importer)
@@ -132,12 +139,6 @@ function extractStylesPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the resolved file doesn't end with a JavaScript file extension, we remove it.
-        if (!isJavascriptFile(file)) {
-          return emptyModule(file, importer)
-        }
-
-        // If the import path is an alias (e.g. `import '@app/some/relative/path'`) then all the above if-branches are skipped. We include it.
         return appendExtractStylesQuery(file, importer)
       },
     },
@@ -178,10 +179,6 @@ function emptyModule(file: string, importer: string) {
   return EMPTY_MODULE_ID
 }
 function appendExtractStylesQuery(file: string, importer: string) {
-  const fileExtension = getFileExtension(file)
-  if (!fileExtension) {
-    return emptyModule(file, importer)
-  }
   debugOperation('TRANSFORMED', file, importer)
   return extractStylesAddQuery(file)
 }
