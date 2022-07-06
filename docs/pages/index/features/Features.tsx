@@ -5,6 +5,8 @@ import Control from './Control.mdx'
 import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
 import { TweetsAboutScability } from './TweetsAboutScability'
+import { ViteLogo } from './ViteLogo'
+import { RollupLogo } from './RollupLogo'
 
 export { Features }
 
@@ -21,8 +23,8 @@ function Features() {
           desc: (
             <>
               <p>
-                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want
-                (Vuex/Redux/Storeon, RPC/GraphQL/REST, React/Vue Query, PWA, Service Workers, other Vite plugins, ...).
+                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want (Vuex, Redux,
+                RPC/GraphQL/REST, React/Vue Query, PWA, Service Workers, Vite plugins, ...).
               </p>
               <p>
                 With <code>vite-plugin-ssr</code>, you integrate tools manually and keep <b>architectural control</b>.
@@ -57,8 +59,8 @@ function Features() {
           desc: (
             <>
               <p>
-                With <code>vite-plugin-ssr</code>, you integrate tools manually instead of using a plugin system. While
-                it means more work, it gives you a <b>fundamentally simpler & more stable foundation</b> to build upon.
+                With <code>vite-plugin-ssr</code> you integrate tools manually; while it means more work, it gives you a{' '}
+                <b>fundamentally simpler & more stable foundation</b> to build upon.
               </p>
               <p>
                 The clean cut between <code>vite-plugin-ssr</code> and your UI framework (React/Vue/...) makes reasoning
@@ -112,7 +114,7 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b> (<b>SSG</b>), <b>HMR</b>,{' '}
+                <b>Filesystem Routing</b>, <b>Data fetching</b>, <b>Pre-rendering</b>, <b>Layouts</b>, <b>HMR</b>,{' '}
                 <b>i18n</b>, <b>Link Prefetching</b>, <b>HTML Streaming</b>.
               </p>
               <p>
@@ -135,12 +137,12 @@ function Features() {
           desc: (
             <>
               <p>
-                Works with <b>any server environment</b> (Vercel, Cloudflare Workers, AWS EC2, AWS Lambda, Firebase,
-                Google Cloud, ...).
+                <b>Works anywhere</b> (Vercel Serverless/Edge/ISR, Cloudflare Workers, AWS EC2/Lambda, Firebase, Google
+                Cloud, ...).
               </p>
               <p>
-                <b>Pre-render</b> your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare
-                Pages, ...).
+                Pre-render your app and deploy it to <b>any static host</b> (Netlify, GitHub Pages, Cloudflare Pages,
+                ...).
               </p>
               <p>
                 Fits <b>Cloudflare Workers</b>'s small worker size requirement like a glove.
@@ -159,9 +161,9 @@ function Features() {
             <>
               <p>
                 The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
-                against a heavy suite of <b>automated tests</b>, it's <b>used in production</b> by many comp&shy;anies,
-                and it's <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the
-                current <code>v0.3.x</code> releases.
+                against a heavy suite of <b>tests</b>, it's <b>used in production</b> by many comp&shy;anies and is{' '}
+                <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the current{' '}
+                <code>v0.4.x</code> releases.
               </p>
             </>
           ),
@@ -175,7 +177,8 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>DX that scales</b> to hundreds of kLOCs &mdash; HMR & dev start stays fast.
+                <b>DX that scales</b> to hundreds of kLOCs: HMR & dev start that stays fast, powered by Vite{' '}
+                <ViteLogo />.
               </p>
               <p>
                 <b>Architectural flexibility that scales</b> from small hobby projects to large-scale enterprise
@@ -227,17 +230,34 @@ function Features() {
           desc: (
             <>
               <p>
-                Browser-side: <b>Code Splitting</b> (each page loads only the code it needs), <b>Client Routing</b>{' '}
-                (pages loaded & rendered only on the browser-side upon page navigation), <b>Link Prefetching</b>{' '}
-                (preload preponderant links for instantaneous page navigation), <b>Lighthouse Score: 100%</b>.
+                State-of-the-art performance with: <b>Code Splitting</b>, <b>Client Routing</b>, <b>Link Prefetching</b>
+                , and <b>fast cold starts</b>.
               </p>
-              <p>
-                <b>Fast Node.js cold start</b>: pages are lazy-loaded so that adding pages doesn't increase the cold
-                start of your serverless functions.
-              </p>
+              <p>Lighthouse Score: 100%.</p>
             </>
           ),
           isSecondaryFeature: true,
+          learnMore: (
+            <>
+              <h3>Code Splitting</h3>
+              <p>
+                The browser-side of each page loads only the code it needs, while sharing common chunks for optimal
+                cacheability. Powered by Rollup <RollupLogo />.
+              </p>
+              <h3>Client Routing</h3>
+              <p>
+                Upon page navigation, instead of loading and rendering the next page on both the server-side and
+                browser-side, it is loaded & rendered only on the browser-side.
+              </p>
+              <h3>Link Prefeching</h3>
+              <p>You can preload links for instantaneous page navigation.</p>
+              <h3>Fast cold starts</h3>
+              <p>
+                On the server-side, pages are as well lazy-loaded: adding pages doesn't increase the cold start of your
+                (serverless) deployment.
+              </p>
+            </>
+          ),
         },
         {
           title: (
