@@ -17,6 +17,7 @@ async function getPageAssets(
     _isProduction: boolean
     _viteDevServer: null | ViteDevServer
     _manifestClient: null | ViteManifest
+    _includeAssetsImportedByServer: boolean
   },
   clientDependencies: ClientDependency[],
   clientEntries: string[],
@@ -43,7 +44,7 @@ async function getPageAssets(
     const clientManifest = pageContext._manifestClient
     assert(clientManifest)
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, clientManifest!))
-    assetUrls = await retrieveAssetsProd(clientDependencies, clientManifest)
+    assetUrls = await retrieveAssetsProd(clientDependencies, clientManifest, pageContext._includeAssetsImportedByServer)
   }
 
   let pageAssets: PageAsset[] = []

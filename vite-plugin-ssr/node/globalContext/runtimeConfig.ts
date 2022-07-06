@@ -8,22 +8,26 @@ export type { RuntimeConfig }
 type RuntimeConfig = {
   baseUrl: string
   baseAssets: string | null
+  includeAssetsImportedByServer: boolean
 }
 let runtimeConfig: null | RuntimeConfig = null
 function setRuntimeConfig(runtimeConfig_: RuntimeConfig) {
   assert(runtimeConfig_)
   runtimeConfig = runtimeConfig_
+  assert(typeof runtimeConfig.includeAssetsImportedByServer === 'boolean')
   assertBaseUrl(runtimeConfig.baseUrl)
 }
 function getRuntimeConfig() {
   assert(runtimeConfig)
   return runtimeConfig
 }
-function resolveRuntimeConfig(viteConfig: { base: string }) {
+function resolveRuntimeConfig(viteConfig: { base: string; vitePluginSsr: { includeAssetsImportedByServer: boolean } }) {
   const { baseUrl, baseAssets } = resolveBase(viteConfig.base)
+  const { includeAssetsImportedByServer } = viteConfig.vitePluginSsr
   const runtimeConfig = {
     baseUrl,
     baseAssets,
+    includeAssetsImportedByServer,
   }
   return runtimeConfig
 }

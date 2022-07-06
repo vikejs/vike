@@ -34,12 +34,16 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
 async function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
+  includeAssetsImportedByServer: boolean,
 ): Promise<string[]> {
   let assetUrls = new Set<string>()
   assert(clientManifest)
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
     if (onlyAssets && id.includes('.page.server.')) {
+      if (!includeAssetsImportedByServer) {
+        return
+      }
       id = extractStylesAddQuery(id)
     }
     const entry = getManifestEntry(id, clientManifest)
