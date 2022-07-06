@@ -6,7 +6,7 @@ import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
 import type { ConfigVpsResolved } from './config/ConfigVps'
-import { assertViteConfig } from './config/assertConfig'
+import { assertConfigVpsResolved } from './config/assertConfigVps'
 
 const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
 
@@ -17,7 +17,7 @@ function generateImportGlobs(): Plugin {
   return {
     name: 'vite-plugin-ssr:virtualModulePageFiles',
     async configResolved(config_) {
-      assertViteConfig(config_)
+      assertConfigVpsResolved(config_)
       config = config_
     },
     resolveId(id) {

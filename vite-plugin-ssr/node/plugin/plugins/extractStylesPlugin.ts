@@ -19,7 +19,7 @@ import {
 } from '../utils'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { createDebugger, isDebugEnabled } from '../../utils'
-import { assertViteConfig } from './config/assertConfig'
+import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'
 
@@ -112,7 +112,7 @@ function extractStylesPlugin(): Plugin[] {
 
         // If the dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
         if (
-          (config.vitePluginSsr.includeCSS).some(
+          config.vitePluginSsr.includeCSS.some(
             /* Should also work:
             (dependency) =>
               source === dependency ||
@@ -148,7 +148,7 @@ function extractStylesPlugin(): Plugin[] {
       name: 'vite-plugin-ssr:extractStyles-3',
       apply: 'build',
       configResolved(config_) {
-        assertViteConfig(config_)
+        assertConfigVpsResolved(config_)
         config = config_
       },
       load(id) {
