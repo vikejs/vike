@@ -13,7 +13,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain(
-      '<meta name="description" content="Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin." />',
+      '<meta name="description" content="Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin." />',
     )
     expect(html).toContain('integrate tools manually')
     expect(html).toMatch(partRegex`<h2>${/[^\/]+/}Control</h2>`)
@@ -22,7 +22,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('Learn more collapsible', async () => {
     await page.goto(urlBase + '/')
-    const text = 'you keep control over how your pages are rendered'
+    const text = 'you control how your pages are rendered'
     const selector = `p:has-text("${text}")`
     await page.waitForSelector(selector, { state: 'hidden' })
     await page.locator('h2:has-text("Control")').click()
