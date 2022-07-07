@@ -23,8 +23,8 @@ function Features() {
           desc: (
             <>
               <p>
-                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want (any frontend library, web
-                technology, deploy environment, Vite plugin, ...).
+                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want (any frontend
+                library, web technology, deploy environment, Vite plugin, ...).
               </p>
               <p>
                 With <code>vite-plugin-ssr</code>, you integrate tools manually and keep <b>architectural control</b>.
@@ -165,9 +165,9 @@ function Features() {
             <>
               <p>
                 The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
-                against a heavy suite of <b>tests</b>, it's <b>used in production</b> by many comp&shy;anies and is{' '}
-                <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the current{' '}
-                <code>v0.4.x</code> releases.
+                against a heavy suite of <b>automated tests</b>, it's <b>used in production</b> by many comp&shy;anies
+                and is <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the
+                current <code>v0.4.x</code> releases.
               </p>
             </>
           ),
@@ -194,17 +194,19 @@ function Features() {
             <>
               <h3>Lazy-transpiling</h3>
               <p>
-                One of Vite's foundational novelty is lazy-transpiling during development: instead of transpiling your
-                entire codebase before starting developing, Vite only transpiles the loaded code. For example, if you
-                define 100 pages and then open one page in the browser, then only the code for that one page is
-                transpiled and the code for all the other 99 pages are left untouched.
+                One of Vite's foundational novelty is lazy-transpiled development: instead of transpiling your entire
+                codebase before starting developing, Vite transpiles only loaded code.
               </p>
               <p>
-                Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast HMR & dev
-                start.
+                For example, if you define 100 pages and then open a page in the browser, then only the code for that
+                one page is transpiled while the code for all other 99 pages is left untouched.
               </p>
-              <h3>No black box, no plugin system</h3>
-              <p>At scale, Next.js/Nuxt's black-box nature and its plugin system become painfully limiting.</p>
+              <p>
+                Thanks to lazy-transpiling, you can scale to a (very) large codebase while keeping fast HMR &
+                development start.
+              </p>
+              <h3>No black box</h3>
+              <p>At scale, Next.js/Nuxt's black-box nature become painfully limiting.</p>
               <p>
                 In contrast, <code>vite-plugin-ssr</code> is transparent: you keep control over both the server- and
                 browser-side.
@@ -236,8 +238,8 @@ function Features() {
           desc: (
             <>
               <p>
-                State-of-the-art performance with: <b>Code Splitting</b>, <b>Client Routing</b>, <b>Link Prefetching</b>
-                , and <b>fast cold starts</b>.
+                State-of-the-art performance with <b>Code Splitting</b>, <b>Client Routing</b>, <b>Link Prefetching</b>,
+                and <b>fast cold starts</b>.
               </p>
               <p>Lighthouse Score: 100%.</p>
             </>
@@ -247,15 +249,15 @@ function Features() {
             <>
               <h3>Code Splitting</h3>
               <p>
-                The browser-side of each page loads only the code it needs, while sharing common chunks for optimal
-                cacheability. Powered by Rollup <RollupLogo />.
+                The browser-side of each page loads only the code it needs, while sharing common chunks between pages
+                for optimal cacheability. Powered by Rollup <RollupLogo />.
               </p>
               <h3>Client Routing</h3>
               <p>
                 Upon page navigation, instead of loading and rendering the next page on both the server-side and
-                browser-side, it is loaded & rendered only on the browser-side.
+                browser-side, the next page is loaded & rendered only on the browser-side.
               </p>
-              <h3>Link Prefeching</h3>
+              <h3>Link Prefetching</h3>
               <p>You can preload links for instantaneous page navigation.</p>
               <h3>Fast cold starts</h3>
               <p>
