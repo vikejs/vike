@@ -438,7 +438,7 @@ const headings: HeadingDefinition[] = [
     level: 2,
     titleInNav: 'Other',
     title: 'UI Frameworks',
-    url: '/view-frameworks',
+    url: '/ui-framework',
   },
   {
     level: 4,

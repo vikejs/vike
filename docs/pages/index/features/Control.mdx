@@ -1,13 +1,13 @@
-With `vite-plugin-ssr` you keep control over how your pages are rendered.
+With `vite-plugin-ssr`, you control how your pages are rendered:
 
 ```jsx
 // /pages/about.page.js
-// Environment: Node.js, Browser
+// Environment: Browser & Node.js
 
-export { Page }
+// vite-plugin-ssr uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
 
-// `Page` can be anything you want such as a React/Vue/Svelte/... component
-function Page() {
+// `Page` can be anything you want — typically a React/Vue/Svelte/... component.
+export function Page() {
   return <>
     <h1>About</h1>
     <p>This is our first vite-plugin-ssr app.</p>
@@ -15,13 +15,12 @@ function Page() {
 }
 ```
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-
 // This can be any UI framework (React, Vue, Svelte, ...)
-import { renderToHtml } from 'my-favorite-view-framework'
+import { renderToHtml } from 'my-favorite-ui-framework'
 
 // You control how `Page` is rendered to HTML
 export async function render({ Page }) {
@@ -39,22 +38,15 @@ export async function render({ Page }) {
 }
 ```
 ```js
-// _default.page.client.js
+// /renderer/_default.page.client.js
 // Environment: Browser
 
-import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom } from 'my-favorite-view-framework'
-
-// This file defines the *entire* browser-side code.
-// If you leave this file empty then there is zero browser-side JavaScript.
-
-hydrate()
+import { hydrateToDom } from 'my-favorite-ui-framework'
 
 // You control how `Page` is hydrated
-async function hydrate() {
-  const { Page } = await getPage() // In production, `await getPage()` is preloaded
+export async function render({ Page }) {
   await hydrateToDom(Page)
 }
 ```
 
-This means you can use and integrate any tool you want simply by following the tool's official installation guide.
+This level control means you can use and integrate any tool you want.
