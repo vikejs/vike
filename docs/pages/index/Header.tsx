@@ -35,7 +35,7 @@ function LeftSide() {
           <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vite-plugin-ssr</code>
         </h1>
       </div>
-      <p id="header-tagline">Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
+      <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
     </div>
   )
 }

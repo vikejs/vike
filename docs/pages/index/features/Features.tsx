@@ -23,8 +23,8 @@ function Features() {
           desc: (
             <>
               <p>
-                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want (Vuex, Redux,
-                RPC/GraphQL/REST, React/Vue Query, PWA, Service Workers, Vite plugins, ...).
+                Use <b>any UI framework</b> (React, Vue, Svelte, Solid, ...) and <b>any tool</b> you want (any frontend library, web
+                technology, deploy environment, Vite plugin, ...).
               </p>
               <p>
                 With <code>vite-plugin-ssr</code>, you integrate tools manually and keep <b>architectural control</b>.
@@ -45,7 +45,7 @@ function Features() {
                 <code>vite-plugin-ssr</code> gives you <b>control only where it matters</b>.
               </p>
               <p>
-                Everything else <b>just works</b> without the need to configure/decide anything.
+                Everything else <b>just works</b> without the need to configure anything.
               </p>
             </>
           ),
@@ -73,35 +73,39 @@ function Features() {
               <h3>Less easy, but simpler</h3>
               <p>
                 With <code>vite-plugin-ssr</code> you integrate tools yourself. This usually means more work and it's
-                less easy than just adding a Next.js/Nuxt plugin; getting started is often slower.
+                less easy; getting started is often slower.
               </p>
               <p>
-                But plugin systems are inherently complex and limiting; they quickly become counterproductive. You end
-                up fighting the plugin system and needing brittle workarounds to circumvent Next.js/Nuxt's black-box
-                limiting nature. The net result is a substantial loss in development time and massive frustration.
+                But the black box nature of frameworks like Next.js/Nuxt is limiting and, at best, requires brittle
+                workarounds. In the end, you waste time fighting the framework.
               </p>
               <p>
-                In contrast, <code>vite-plugin-ssr</code> gets out of your way and integrating a tool is simply a matter
-                of following the tool's official installation guide.
+                In contrast, <code>vite-plugin-ssr</code> is transparent: it gets out of your way and integrating tools
+                is simply a matter of following the tool's official installation guide.
               </p>
               <p>
-                In a nutshell: <code>vite-plugin-ssr</code> is less easy but simpler.
+                In a nutshell: <code>vite-plugin-ssr</code> is less easy, but simpler.
               </p>
               <h3>Stable foundation</h3>
               <p>
-                Plugin systems / frameworks need to constantly keep up with the ecosystem, whereas
-                do-one-thing-do-it-well tools can quickly stabilize. Actually, <code>vite-plugin-ssr</code> is already
-                stable: the <code>v1</code> release will most likley have no breaking change with the current{' '}
-                <code>v0.3.x</code> releases, and the goal is to stay on <code>v1</code> for the foreseeable future.
+                Frameworks need to constantly keep up with the ecosystem, whereas do-one-thing-do-it-well tools can
+                quickly stabilize.
               </p>
-              <h3>Clean Cut</h3>
-              <code>vite-plugin-ssr</code> is agnostic; there is no conflation between <code>vite-plugin-ssr</code> and
-              your UI framework (React/Vue/...). This makes reasoning about your app easier.
-              <h3>Fun</h3>
               <p>
-                Last but not least, manual integration is fun & insightful, whereas fighting some arbitrary framework
-                and idiosyncratic abstraction is an annoying waste of time.
+                Actually, <code>vite-plugin-ssr</code> is already stable: the <code>v1</code> release will most likley
+                have no breaking change with the current <code>v0.4.x</code> releases.
               </p>
+              <p>
+                The goal is then to stay on <code>v1</code> for the foreseeable future, while continuously improving
+                performance and occasionally adding features.
+              </p>
+              <h3>Clean cut</h3>
+              <p>
+                There is no conflation between <code>vite-plugin-ssr</code> and your UI framework (React/Vue/...). This
+                makes reasoning about your app a lot easier.
+              </p>
+              <h3>Fun</h3>
+              <p>Last but not least, manual integration is fun & insightful whereas fighting a framework is pesky.</p>
             </>
           ),
         },
@@ -137,7 +141,7 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>Works anywhere</b> (Vercel Serverless/Edge/ISR, Cloudflare Workers, AWS EC2/Lambda, Firebase, Google
+                <b>Deploy anywhere</b> (Vercel Serverless/Edge/ISR, Cloudflare Workers, AWS EC2/Lambda, Firebase, Google
                 Cloud, ...).
               </p>
               <p>
@@ -190,8 +194,10 @@ function Features() {
             <>
               <h3>Lazy-transpiling</h3>
               <p>
-                One of Vite's foundational novelty is lazy-transpiling: only executed code is transpiled. If you define
-                ten pages but load only one page in the browser, then only the code for that page is transpiled.
+                One of Vite's foundational novelty is lazy-transpiling during development: instead of transpiling your
+                entire codebase before starting developing, Vite only transpiles the loaded code. For example, if you
+                define 100 pages and then open one page in the browser, then only the code for that one page is
+                transpiled and the code for all the other 99 pages are left untouched.
               </p>
               <p>
                 Thanks to lazy-transpiling, you can scale to (very) large source code while keeping fast HMR & dev

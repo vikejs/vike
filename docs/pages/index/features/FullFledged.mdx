@@ -2,8 +2,9 @@ import { ViteLogo } from './ViteLogo'
 
 ### Fast HMR
 
-Blazing fast Hot Module Replacement powered by Vite <ViteLogo />. It
-stays fast as you scale (thanks to Vite's novel lazy-transpiling approach).
+Blazing fast Hot Module Replacement powered by Vite <ViteLogo />.
+
+HMR stays fast as you scale thanks to Vite's novel lazy-transpiling approach.
 
 ### Routing
 
@@ -18,7 +19,7 @@ pages/faq/index.page.js     /faq
 You can also use so-called *Route Strings* and *Route Functions*.
 ```js
 // Route String — for parameterized routes
-export default '/movie/:movieId'
+export default '/movie/@movieId'
 
 // Route Function — for full flexibility
 export default ({ url, ...pageContext }) => url==='/admin' && pageContext.isAdmin
@@ -37,9 +38,7 @@ For each page, you can choose between:
  - SPA: the page is not rendered to HTML; it's only loaded & rendered in the browser.
  - HTML-only: the page is rendered only to HTML with zero/minimal browser-side JavaScript.
 
-For example,
-you can render an admin panel as an SPA,
-while rendering marketing pages only to HTML
-with zero browser-side JavaScript.
+For example, you can render an admin panel as an SPA while rendering marketing pages only to HTML with zero browser-side JavaScript.
 
-`https://vite-plugin-ssr.com` is HTML-only and loads only few KBs of JavaScript (implementing the few bits of interactivity such as the collapsibility of this `LEARN MORE` section).
+This very website, `https://vite-plugin-ssr.com`, is HTML-only and loads only few KBs of JavaScript (which implements the few bits of interactivity such as
+the collapsible `LEARN MORE` sections of this page).

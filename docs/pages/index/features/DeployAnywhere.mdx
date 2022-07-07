@@ -4,7 +4,7 @@ import ServerMiddleware from './ServerMiddleware.mdx'
 
 ### It's just a middleware
 
-From an architectural point of view, `vite-plugin-ssr` is just a server middleware.
+From the server-side point of view, `vite-plugin-ssr` is just a server middleware.
 
 <ServerMiddleware />
 
@@ -20,5 +20,5 @@ You can also pre-render your app to remove the need for a production Node.js ser
 Thanks to `vite-plugin-ssr`'s lean architecture, your app is much less limited by Cloudflare Workers's 1MB bundle size limit.
 
 Also, `vite-plugin-ssr` has been designed with first-class Cloudflare Workers support in mind, for example:
- - For development you can use Vite with an Express.js dev server for lightning fast HMR & dev start, and for production you can bundle your worker code with Cloudflare Workers's webpack bundler.
- - `vite-plugin-ssr` is the first SSR tool to work with Cloudflare Workers's support for HTML Streaming
+ - For development, you can use Vite with an Express.js dev server for lightning fast HMR & dev start, and, for production, you can bundle your worker code with Cloudflare Workers's `wrangler` bundler.
+ - `vite-plugin-ssr` works with Cloudflare Workers's HTML Streaming support.
