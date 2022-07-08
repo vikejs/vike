@@ -51,7 +51,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite": "2.9.10",
+      "vite": "2.9.14",
       "vite-plugin-ssr": "link:./vite-plugin-ssr/"
     }
   }
