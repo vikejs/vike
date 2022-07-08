@@ -520,7 +520,6 @@ importers:
   examples/react:
     specifiers:
       '@vitejs/plugin-react': ^1.3.2
-      cross-env: ^7.0.3
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
@@ -528,7 +527,6 @@ importers:
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
-      cross-env: 7.0.3
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.15_ef5jwxihqo6n7gxfmzogljlgcm
@@ -610,7 +608,6 @@ importers:
   examples/redux:
     specifiers:
       '@vitejs/plugin-react': ^1.3.2
-      express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-redux: ^8.0.1
@@ -619,7 +616,6 @@ importers:
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
-      express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-redux: 8.0.1_zi7aoi7ced5urpsfm5fjpojgnm
@@ -630,16 +626,12 @@ importers:
   examples/render-modes:
     specifiers:
       '@vitejs/plugin-react': ^1.3.2
-      cross-env: ^7.0.3
-      express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 1.3.2
-      cross-env: 7.0.3
-      express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       vite: 2.9.10
@@ -736,8 +728,6 @@ importers:
       '@vitejs/plugin-vue': ^2.3.1
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      cross-env: ^7.0.3
-      express: ^4.18.1
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
@@ -745,44 +735,32 @@ importers:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      cross-env: 7.0.3
-      express: 4.18.1
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
   examples/vue-full:
     specifiers:
-      '@types/express': ^4.17.13
       '@types/node': ^17.0.31
       '@types/node-fetch': ^2.5.12
       '@vitejs/plugin-vue': ^2.3.1
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33
       cross-fetch: ^3.1.5
-      express: ^4.18.1
       node-fetch: ^2.6.1
-      rimraf: ^3.0.2
-      serve: ^13.0.2
-      ts-node: ^10.7.0
       typescript: ^4.6.4
       vite: 2.9.10
       vite-plugin-md: ^0.11.8
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
     dependencies:
-      '@types/express': 4.17.13
       '@types/node': 17.0.31
       '@types/node-fetch': 2.6.1
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       cross-fetch: 3.1.5
-      express: 4.18.1
       node-fetch: 2.6.7
-      rimraf: 3.0.2
-      serve: 13.0.2
-      ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
       vite: 2.9.10
       vite-plugin-md: 0.11.9_vite@2.9.10
@@ -794,7 +772,6 @@ importers:
       '@vitejs/plugin-vue': ^2.3.3
       '@vue/compiler-sfc': ^3.2.31
       '@vue/server-renderer': ^3.2.37
-      express: ^4.17.3
       pinia: ^2.0.14
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -803,7 +780,6 @@ importers:
       '@vitejs/plugin-vue': 2.3.3_vite@2.9.10+vue@3.2.37
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.37_vue@3.2.37
-      express: 4.18.1
       pinia: 2.0.14_vue@3.2.37
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -834,7 +810,6 @@ importers:
       '@vitejs/plugin-vue': ^2.3.1
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      express: ^4.18.1
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
@@ -843,7 +818,6 @@ importers:
       '@vitejs/plugin-vue': 2.3.1_vite@2.9.10+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      express: 4.18.1
       vite: 2.9.10
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33

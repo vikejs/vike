@@ -1,12 +1,11 @@
 {
   "scripts": {
-    "start": "node ./server"
+    "start": "vite"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^2.3.3",
     "@vue/compiler-sfc": "^3.2.31",
     "@vue/server-renderer": "^3.2.37",
-    "express": "^4.17.3",
     "pinia": "^2.0.14",
     "vite": "^2.8.4",
     "vite-plugin-ssr": "0.3.64",
