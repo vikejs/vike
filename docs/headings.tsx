@@ -30,8 +30,8 @@ const redirections = [
 const headingsWithoutLink: HeadingWithoutLink[] = [
   ...redirections,
   {
-    title: 'Migration',
-    url: '/migration',
+    title: 'Migration 0.4',
+    url: '/migration-0.4',
   },
   {
     title: 'Custom Exports & Custom Hooks',
