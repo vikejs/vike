@@ -2,9 +2,7 @@ import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { PageShell } from './PageShell'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
-// Assets deployed to a CDN:
-//  - logo.svg
-//  - manifest.json
+// Vite automatically injects the Base URL to `logoUrl`.
 import logoUrl from './logo.svg'
 
 export { render }
@@ -20,8 +18,7 @@ function render(pageContext) {
     </PageShell>,
   )
 
-  // Vite automatically injects the Base URL to `logoUrl`.
-  // We can also manually inject the Base URL:
+  // For assets living `public/`, we need to manually inject the Base URL:
   const manifestUrl = import.meta.env.BASE_URL + 'manifest.json'
 
   return escapeInject`<!DOCTYPE html>
