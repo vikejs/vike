@@ -6,7 +6,7 @@
     "dev": "npm run server:dev",
     "prod": "npm run build && npm run server:prod",
     "prod:static": "npm run build && npm run build:prerender && npm run server:static",
-    "build": "vite build && vite build --ssr",
+    "build": "vite build",
     "build:prerender": "vite-plugin-ssr prerender",
     "server:dev": "ts-node ./server",
     "server:prod": "cross-env NODE_ENV=production ts-node ./server",

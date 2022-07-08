@@ -18,8 +18,8 @@ If we don't use pre-rendering, then we need a Node.js production server (or a No
 ## How to pre-render
 
 To pre-render our pages, we use the CLI command <Link href="/command-prerender" text={<code>$ vite-plugin-ssr prerender</code>} /> after having run `$ vite build`.
- - npm: `$ npx vite build && npx vite build --ssr && npx vite-plugin-ssr prerender`.
- - Yarn: `$ yarn vite build && yarn vite build --ssr && yarn vite-plugin-ssr prerender`.
+ - npm: `$ npx vite build && npx vite-plugin-ssr prerender`.
+ - Yarn: `$ yarn vite build && yarn vite-plugin-ssr prerender`.
 
 The generated static assets are then available at `dist/client/`.
 

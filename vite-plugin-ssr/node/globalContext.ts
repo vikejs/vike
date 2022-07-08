@@ -88,7 +88,7 @@ function assertDistEntries<T>(distEntries: T | null, isPreRendering: boolean): a
   const errMsg = [
     `You are tyring to run`,
     isPreRendering ? '`$ vite-plugin-ssr prerender`' : 'the server for production',
-    "but your app isn't built yet. Run `$ vite build && vite build --ssr` before ",
+    "but your app isn't built yet. Run `$ vite build` before ",
     isPreRendering ? 'pre-rendering.' : 'running the server.',
   ].join(' ')
   assertUsage(distEntries, errMsg)

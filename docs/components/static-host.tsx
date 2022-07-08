@@ -32,8 +32,8 @@ function StaticHostDocOutro({ baseUrlAddendum }: { baseUrlAddendum?: JSX.Element
       </ul>
       <blockquote>
         <p>
-          The build commands <code>$ vite build && vite build --ssr && vite-plugin-ssr prerender</code> generates a
-          directory <code>dist/client/</code> that contains all our static assets.
+          The <code>$ vite build</code> command generates a directory <code>dist/client/</code> that contains all our
+          static assets.
         </p>
         <p>
           {' '}
