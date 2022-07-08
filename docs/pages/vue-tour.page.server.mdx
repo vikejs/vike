@@ -1,6 +1,6 @@
 import { ScaffoldCallToActionTour } from './index/ScaffoldCallToAction'
 
-## Basics
+## Routing
 
 Similarly to Nuxt,
 we define a new page by creating a new `.page.vue` file.
@@ -13,20 +13,16 @@ we define a new page by creating a new `.page.vue` file.
   This page is rendered to HTML and interactive: <Counter />
 </template>
 
-<script>
+<script setup>
 import Counter from '../components/Counter.vue'
-export default { components: { Counter } }
 </script>
 ```
-
-
-## Routing
 
 By default, `vite-plugin-ssr` does Filesystem Routing.
 ```
 FILESYSTEM                  URL
-pages/index.page.vue        /
-pages/about.page.vue        /about
+/pages/index.page.vue        /
+/pages/about.page.vue        /about
 ```
 
 We can also define a page's route with a *Route String* (for parameterized routes such as `/movies/@id`) or a *Route Function* (for full programmatic flexibility).
@@ -47,7 +43,7 @@ export default pageContext => pageContext.url === '/'
 
 ## Render Control
 
-Unlike Nuxt, we define how our pages are rendered.
+Unlike Nuxt, we control how our pages are rendered.
 
 ```js
 // /renderer/_default.page.server.js
@@ -97,21 +93,20 @@ async function render(pageContext) {
 }
 ```
 
-> You may see `import { createSSRApp, h } from 'vue'` for the first time
+> You may see `import { createSSRApp, h } from 'vue'` for the first time,
 > but every SSR app actually uses `createSSRApp` and `h`.
 >
 > Nuxt abstracts this away from us and gives us a slightly faster getting started. But this also means that we
 > lose control over a central piece of our app architecture and
-> we'll eventually lose much more time circumventing Nuxt's limiting black box as we scale.
+> we'll eventually lose more time circumventing Nuxt's limiting black box.
 
-The `render()` hooks in `/renderer/_default.page.server.jsx` and `/renderer/_default.page.client.jsx` gives us full control over our pages are rendered.
 This control enables us to *easily* and *naturally* integrate any tool we want (Vuex, GraphQL, Service Worker, ...).
 
-There are four suffixes:
- - `.page.js`: exports the page's root Vue component.
- - `.page.client.js`: exports page hooks (always run in the browser).
- - `.page.server.js`: exports page hooks (always run in Node.js).
- - `.page.route.js`: exports the page's Route String or Route Function.
+There are four page file suffixes:
+ - `.page.js`: runs in the browser as well as in Node.js
+ - `.page.client.js`: runs only in the browser
+ - `.page.server.js`: runs only in Node.js
+ - `.page.route.js`: defines the page's Route String or Route Function.
 
 Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
 we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.server.js` which apply as default for all pages.
