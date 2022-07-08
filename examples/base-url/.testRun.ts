@@ -3,12 +3,12 @@ import { page, run, autoRetry, fetchHtml, partRegex, urlBase } from '../../libfr
 export { testRun }
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run dev:base-url' | 'npm run prod:ssr' | 'npm run prod:ssg' | 'npm run start',
+  cmd: 'npm run dev' | 'npm run start' | 'npm run preview',
   { base = '/', baseAssets }: { base?: '/' | '/some/base-url/'; baseAssets?: 'http://localhost:8080/cdn/' } = {},
 ) {
   const addBaseHtml = (url: string) => base.slice(0, -1) + url
   const addBaseAssets = (url: string) => (baseAssets ?? base).slice(0, -1) + url
-  const isDev = cmd.startsWith('npm run dev')
+  const isDev = cmd === 'npm run dev'
 
   run(cmd)
 
@@ -27,7 +27,7 @@ function testRun(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + addBaseHtml('/').slice(0, -1))
+    await page.goto(urlBase + addBaseHtml('/'))
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     await autoRetry(async () => {
