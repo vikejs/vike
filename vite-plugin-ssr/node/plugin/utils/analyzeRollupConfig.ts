@@ -1,10 +1,13 @@
 export { analyzeRollupConfig }
 
-import type { NormalizedOutputOptions, OutputBundle } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import { isSSR_config } from '../../../utils/isSSR'
 import { assert } from '../utils'
 
+// Subset of: `import type { NormalizedOutputOptions } from 'rollup'` (to avoid mismatch upon different Rollup versions)
+type NormalizedOutputOptions = { entryFileNames: string | ((chunkInfo: any) => string); format: string }
+// Subset of: `import type { OutputBundle } from 'rollup'` (to avoid mismatch upon different Rollup versions)
+type OutputBundle = Record<string, unknown>
 type RollupResolved = {
   options: NormalizedOutputOptions
   bundle: OutputBundle
