@@ -3,7 +3,7 @@ import { RepoLink } from 'vikepress'
 
 ## Examples
 
- - React: <RepoLink path='/examples/cloudflare-workers/' />
+ - React: <RepoLink path='/examples/cloudflare-workers-react/' />
  - Vue: <RepoLink path='/examples/cloudflare-workers-vue/' />
 
 
@@ -55,4 +55,4 @@ But libraries such as `node-fetch` or `cross-fetch` usually don't work with Clou
 What we can do is to define a fetch function at `pageContext.fetch` that works in all environments.
 The trick is to add a different `fetch()` implementation to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer).
 
-Example: <RepoLink path='/examples/cloudflare-workers#universal-fetch' />.
+Example: <RepoLink path='/examples/cloudflare-workers-react#universal-fetch' />.

@@ -15,7 +15,7 @@ See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudfl
 Setup:
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
-cd vite-plugin-ssr/examples/cloudflare-workers/
+cd vite-plugin-ssr/examples/cloudflare-workers-react/
 npm install
 ```
 
