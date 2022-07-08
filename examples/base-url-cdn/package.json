@@ -1,8 +1,6 @@
 {
   "scripts": {
-    "start": "npm run prod",
-    "// Production": "",
-    "prod": "npm run build && npm run serve",
+    "start": "npm run build && npm run serve",
     "// Build": "",
     "build": "vite build",
     "// Server + CDN": "",
@@ -18,7 +16,6 @@
     "express": "^4.18.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "rimraf": "^3.0.2",
     "vite": "^2.9.7",
     "vite-plugin-ssr": "0.3.64"
   },
