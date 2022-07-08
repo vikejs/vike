@@ -1,29 +1,38 @@
 import { RepoLink } from 'vikepress'
 import { ImportMeta } from 'vikepress'
 
-> **What is the Base URL?** Changing the Base URL (aka Public Base Path) is about changing the "URL pathname root" of our app.
-> For example, instead of deploying our app to `https://example.org/*` (base: `/`) we can change the Base URL and deploy it to `https://example.org/some/base/url/*` (base: `/some/base/url/`).
+> **What is the Base URL?** Changing the Base URL (aka "Public Base Path") is about changing the URL pathname root from `/` to `/some/base/url/`:
+> for example, instead of deploying our app to `https://example.org/*` (the Base URL is `/`) we can change the Base URL to `/some/base/url/` and deploy it to `https://example.org/some/base/url/*` instead.
 
 To change the Base URL we:
 
-1. Add the `base` config to both [`vite.config.js#base`](https://vitejs.dev/config/#base) and `createPageRenderer({ base })`. Example: <RepoLink path='/examples/base-url/vite.config.js' /> and <RepoLink path='/examples/base-url/server/server.js' />.
+1. Set [`vite.config.js#base`](https://vitejs.dev/config/#base).
+   ```js
+   // vite.config.js
+   export default {
+     base: '/some/base/url/'
+   }
+   ```
+1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
+1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
 
-2. Use the <ImportMeta prop='env.BASE_URL' /> value [injected by Vite](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
-
-3. Use <ImportMeta prop='env.BASE_URL' /> when referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
-
-Example:
- - <RepoLink path='/examples/base-url/' />
+Example: <RepoLink path='/examples/base-url/' />.
 
 
 ## CDN
 
-If we want to deploy our static assets to a CDN while server-side rendering our pages on a separate sever, then we need to change the base URL only of our static assets but not the base URL of our SSR server.
+If we want to deploy our static assets to a CDN, then we set the `vite.config.js#base` value to the assets' CDN URL root.
 
-We can use `createPageRenderer({ baseAssets: 'http://some-cdn.com/my-static-assets/' })` which will change the base URL only of our static assets.
+```js
+// vite.config.js
+export default {
+  base: 'https://cdn.example.org/my-website-assets/'
+}
+```
 
-Example:
- - <RepoLink path='/examples/base-url-cdn/' />
+> If `vite.config.js#base` is an absolute URL (a URL that starts with `http://` or `https://`), then `vite-plugin-ssr` applies the Base URL only to our assets (and not to our page URLs). Because using a CDN means that we server-side render our pages on a separate sever with a different URL.
+
+Example: <RepoLink path='/examples/base-url-cdn/' />.
 
 
 ## See also
