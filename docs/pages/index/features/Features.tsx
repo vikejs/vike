@@ -76,8 +76,8 @@ function Features() {
                 less easy; getting started is often slower.
               </p>
               <p>
-                But the black box nature of frameworks like Next.js/Nuxt is limiting and, at best, requires brittle
-                workarounds. In the end, you waste time fighting the framework.
+                But the black box nature of frameworks like Next.js/Nuxt is limiting and requires brittle workarounds.
+                In the end, you waste time fighting the framework.
               </p>
               <p>
                 In contrast, <code>vite-plugin-ssr</code> is transparent: it gets out of your way and integrating tools
@@ -105,7 +105,9 @@ function Features() {
                 makes reasoning about your app a lot easier.
               </p>
               <h3>Fun</h3>
-              <p>Last but not least, manual integration is fun & insightful whereas fighting a framework is pesky.</p>
+              <p>
+                Last but not least, manual integration is fun & insightful. (Whereas fighting a framework is pesky.)
+              </p>
             </>
           ),
         },
@@ -220,7 +222,7 @@ function Features() {
               </h3>
               <p>
                 At (very) large scale, you can progressively replace <code>vite-plugin-ssr</code> with Vite's native SSR
-                API which is low-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial
+                API which is lower-level and highly flexible. If you're Netflix and perfecting UX leads to a substantial
                 revenue increase, then <code>vite-plugin-ssr</code> and Vite's native SSR API are what you are looking
                 for.
               </p>
@@ -239,7 +241,7 @@ function Features() {
             <>
               <p>
                 State-of-the-art performance with <b>Code Splitting</b>, <b>Client Routing</b>, <b>Link Prefetching</b>,
-                and <b>fast cold starts</b>.
+                and <b>Fast Cold Starts</b>.
               </p>
               <p>Lighthouse Score: 100%.</p>
             </>
@@ -259,7 +261,7 @@ function Features() {
               </p>
               <h3>Link Prefetching</h3>
               <p>You can preload links for instantaneous page navigation.</p>
-              <h3>Fast cold starts</h3>
+              <h3>Fast Cold Starts</h3>
               <p>
                 On the server-side, pages are as well lazy-loaded: adding pages doesn't increase the cold start of your
                 (serverless) deployment.
