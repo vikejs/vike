@@ -13,7 +13,7 @@
     "cross-fetch": "^3.1.5",
     "node-fetch": "^2.6.1",
     "typescript": "^4.6.4",
-    "vite": "^2.9.7",
+    "vite": "^2.9.14",
     "vite-plugin-md": "^0.11.8",
     "vite-plugin-ssr": "0.3.64",
     "vue": "3.2.33"

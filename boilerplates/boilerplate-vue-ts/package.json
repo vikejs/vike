@@ -18,7 +18,7 @@
     "express": "^4.18.1",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4",
-    "vite": "^2.9.7",
+    "vite": "^2.9.14",
     "vite-plugin-ssr": "^0.3.64",
     "vue": "^3.2.33"
   }
