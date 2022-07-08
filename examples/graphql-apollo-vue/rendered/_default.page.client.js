@@ -11,7 +11,7 @@ async function hydrate() {
   const pageContext = await getPage()
   const defaultClient = new ApolloClient({
     link: new HttpLink({ uri: 'https://rickandmortyapi.com/graphql', fetch }),
-    cache: new InMemoryCache().restore(pageContext.apolloIntialState),
+    cache: new InMemoryCache().restore(pageContext.apolloInitialState),
     connectToDevTools: true,
   })
 

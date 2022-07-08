@@ -6,7 +6,7 @@ import logoUrl from './logo.svg'
 export { render }
 export { onBeforeRender }
 // See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ['pageProps', 'urlPathname', 'apolloIntialState']
+export const passToClient = ['pageProps', 'urlPathname', 'apolloInitialState']
 
 async function render(pageContext) {
   // See https://vite-plugin-ssr.com/head
@@ -40,11 +40,11 @@ async function render(pageContext) {
 
 async function onBeforeRender(pageContext) {
   const app = createApp(pageContext, pageContext.apolloClient)
-  const apolloIntialState = pageContext.apolloClient.extract()
   const appHtml = await renderToString(app)
+  const apolloInitialState = pageContext.apolloClient.extract()
   return {
     pageContext: {
-      apolloIntialState,
+      apolloInitialState,
       appHtml,
     },
   }
