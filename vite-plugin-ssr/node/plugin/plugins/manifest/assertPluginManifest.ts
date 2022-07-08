@@ -22,6 +22,6 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   )
   assertUsage(
     pluginManifest.version === projectInfo.projectVersion,
-    `Re-build your app \`$ vite build && vite build --ssr && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with following different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`,
+    `Re-build your app \`$ vite build && vite-plugin-ssr prerender\`. (You are using \`vite-plugin-ssr@${projectInfo.projectVersion}\` but your build has been generated with following different version \`vite-plugin-ssr@${pluginManifest.version}\`.)`,
   )
 }

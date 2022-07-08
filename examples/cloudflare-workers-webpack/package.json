@@ -10,7 +10,7 @@
     "deploy": "npm run build:vite && wrangler publish",
     "// Build": "",
     "build": "npm run build:vite && npm run build:worker",
-    "build:vite": "vite build && vite build --ssr",
+    "build:vite": "vite build",
     "build:worker": "wrangler build"
   },
   "dependencies": {
