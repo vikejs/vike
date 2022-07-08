@@ -1,2 +1,2 @@
 import { testRun } from '../i18n/.testRun'
-testRun('npm run prod')
+testRun('npm run preview')

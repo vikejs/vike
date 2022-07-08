@@ -20,6 +20,9 @@ function render(pageContext) {
 
   return escapeInject`<!DOCTYPE html>
     <html>
+      <head>
+        <meta charset="UTF-8" />
+      </head>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
