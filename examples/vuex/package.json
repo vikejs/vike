@@ -6,7 +6,7 @@
     "@vitejs/plugin-vue": "^2.3.1",
     "@vue/compiler-sfc": "^3.2.33",
     "@vue/server-renderer": "^3.2.33",
-    "vite": "^2.9.7",
+    "vite": "^2.9.14",
     "vite-plugin-ssr": "0.3.64",
     "vue": "^3.2.33",
     "vuex": "^4.0.2"
