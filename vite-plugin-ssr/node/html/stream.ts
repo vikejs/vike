@@ -217,12 +217,16 @@ function pipeToStreamWritableWeb(htmlRender: HtmlRender, writable: StreamWritabl
     streamPipeWeb(writable)
     return true
   }
-  const streamPipeWeb = getStreamPipeWeb(htmlRender)
-  if (streamPipeWeb === null) {
-    return false
+  if (isStreamReadableWeb(htmlRender)) {
+    htmlRender.pipeTo(writable)
+    return true
   }
-  streamPipeWeb(writable)
-  return true
+  const streamPipeWeb = getStreamPipeWeb(htmlRender)
+  if (streamPipeWeb) {
+    streamPipeWeb(writable)
+    return true
+  }
+  return false
 }
 function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritableNode): boolean {
   if (typeof htmlRender === 'string') {
@@ -230,12 +234,16 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
     streamPipeNode(writable)
     return true
   }
-  const streamPipeNode = getStreamPipeNode(htmlRender)
-  if (streamPipeNode === null) {
-    return false
+  if (isStreamReadableNode(htmlRender)) {
+    htmlRender.pipe(writable)
+    return true
   }
-  streamPipeNode(writable)
-  return true
+  const streamPipeNode = getStreamPipeNode(htmlRender)
+  if (streamPipeNode) {
+    streamPipeNode(writable)
+    return true
+  }
+  return false
 }
 
 type StreamWrapper<StreamType> = { stream: StreamType } | { errorBeforeFirstData: unknown }
