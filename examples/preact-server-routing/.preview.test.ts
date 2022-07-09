@@ -1,2 +1,2 @@
 import { testRun } from '../../boilerplates/.testRun'
-testRun('npm run prod', { uiFramewok: 'preact' })
+testRun('npm run preview', { uiFramewok: 'preact' })
