@@ -118,7 +118,7 @@ async function prerender(
 
   disableReactStreaming()
 
-  const viteConfig = await resolveConfig(options.viteConfig || {}, 'vite-plugin-ssr prerender' as any, 'production')
+  const viteConfig = await resolveConfig(options.viteConfig || {}, 'vite-plugin-ssr pre-rendering' as any, 'production')
   assertLoadedConfig(viteConfig, options)
   assertConfigVpsResolved(viteConfig)
 
