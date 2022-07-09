@@ -21,7 +21,7 @@ function chainBuildSteps(): Plugin {
       abortSSRBuild(config)
     },
     async writeBundle() {
-      if (config.vitePluginSsr.disableBuildChaining) {
+      if (config.vitePluginSsr.disableAutoBuild) {
         return
       }
 
@@ -51,7 +51,7 @@ function chainBuildSteps(): Plugin {
 }
 
 function abortSSRBuild(config: Config) {
-  if (config.vitePluginSsr.disableBuildChaining) {
+  if (config.vitePluginSsr.disableAutoBuild) {
     return
   }
   // CLI
