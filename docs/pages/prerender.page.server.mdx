@@ -1,7 +1,6 @@
 import { RepoLink, Link } from 'vikepress'
 
-> Check out <Link href="/pre-rendering" /> for an overview on how to pre-render `vite-plugin-ssr` apps.
-
+> See <Link href="/pre-rendering" /> for an overview of how to pre-render your app.
 
 ## For providing URLs
 
@@ -29,15 +28,15 @@ async function prerender() {
 > If we don't have any parameterized route,
 > then we can pre-render our app without defining any `prerender()` hook.
 
-> The `prerender()` hooks are called when we run the CLI command <Link href="/command-prerender" text={<code>$ vite-plugin-ssr prerender</code>} /> when building our app for production.
-> Thus, `prerender()` hooks are never called in development.
+> The `prerender()` hooks are called when we run <code>$ vite build</code>.
+> (The `prerender()` hooks are never called in development.)
 
 
 ## For providing `pageContext`
 
-If we have a high number of pages that are to be pre-rendered, then running the command <Link href="/command-prerender" text={<code>$ vite-plugin-ssr prerender</code>} /> may be slow.
+If we have a high number of pages that are to be pre-rendered, then running the command <code>$ vite build</code> may become slow.
 
-We can make it significantly faster by providing `pageContext` in `prerender()` hooks.
+We can make it significantly faster by providing the `pageContext` of pages in `prerender()` hooks.
 
 ```js
 // /pages/movie.page.route.js

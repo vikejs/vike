@@ -78,6 +78,18 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     ),
     url: '/multiple-renderer',
   },
+  {
+    title: '`createPageRenderer()`',
+    url: '/createPageRenderer',
+  },
+  {
+    title: 'Command `prerender`',
+    url: '/command-prerender',
+  },
+  {
+    title: 'Vite Plugin',
+    url: '/vite-plugin',
+  },
 ]
 
 const headings: HeadingDefinition[] = [
@@ -541,12 +553,25 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Node.js & browser',
+    title: 'Core',
   },
   {
     level: 2,
     title: '`pageContext`',
     url: '/pageContext',
+  },
+  {
+    level: 4,
+    title: 'Global Config',
+  },
+  {
+    level: 2,
+    title: '`prerender` (config)',
+    url: '/prerender-config',
+  },
+  {
+    level: 4,
+    title: 'Node.js & browser',
   },
   {
     level: 2,
@@ -616,6 +641,16 @@ const headings: HeadingDefinition[] = [
     url: '/escapeInject',
   },
   {
+    level: 2,
+    title: '`renderPage()`',
+    url: '/renderPage',
+  },
+  {
+    level: 2,
+    title: '`prerender()` (programmatic run)',
+    url: '/prerender-programmatic',
+  },
+  {
     level: 4,
     title: 'Browser',
   },
@@ -682,28 +717,5 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: '`_error.page.js`',
     url: '/error-page',
-  },
-  {
-    level: 4,
-    title: 'Integration',
-  },
-  {
-    level: 2,
-    title: '`createPageRenderer()`',
-    url: '/createPageRenderer',
-  },
-  {
-    level: 2,
-    title: 'Vite Plugin',
-    url: '/vite-plugin',
-  },
-  {
-    level: 4,
-    title: 'CLI',
-  },
-  {
-    level: 2,
-    title: 'Command `prerender`',
-    url: '/command-prerender',
   },
 ]

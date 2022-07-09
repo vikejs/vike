@@ -1,18 +1,3 @@
-> Check out the [Pre-rendering Guide](/pre-rendering) to for an overview of how to pre-render a `vite-plugin-ssr` app.
+import { Note, Link } from 'vikepress'
 
-The `prerender` command executes pre-rendering.
-
-It can be called:
- - As CLI command: `$ npx vite-plugin-ssr prerender` / `$ yarn vite-plugin-ssr prerender`.
- - As JavaScript API: `import { prerender } from 'vite-plugin-ssr/cli`.
-
-Options:
- - `partial`: Allow only a subset of pages to be pre-rendered. (Pages with a parameterized route cannot be pre-rendered without `prerender()` hook; the `--partial` option suppresses the warning telling you about pages not being pre-rendered.)
- - `noExtraDir`: Do not create a new directory for each page, e.g. generate `dist/client/about.html` instead of `dist/client/about/index.html`.
- - `root`: The root directory of your project (where `vite.config.js` and `dist/` live). Default: `process.cwd()`.
- - `outDir`: The build directoy of your project. Default: `dist`.
- - `parallel`: Number of concurrenlty running jobs. Default: [`os.cpus().length`](https://nodejs.org/api/os.html#os_os_cpus). Set to `1` to disable concurrency.
-
-Options are passed like this:
- - CLI: `$ vite-plugin-ssr prerender --partial --noExtraDir --root path/to/root --parallel 1`
- - API: `prerender({ partial: true, noExtraDir: true, root: 'path/to/root', parallel: 1 })`
+<Note type="warning">`$ vite-plugin-ssr prerender` is deprecated, see <Link href="/pre-rendering" />.</Note>

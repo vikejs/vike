@@ -27,13 +27,15 @@ type ConfigVpsUser = {
     | boolean
     | {
         /**
-         * If `true` then pre-rendering generates `some-path.html` instead of `some-path/index.html`.
+         * Do not create a new directory for each HTML file.
+         *
+         * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
          *
          * @default false
          */
         noExtraDir?: boolean
         /**
-         * Number of concurrent pre-rendering jobs.
+         * Number of concurrent pre-render jobs.
          *
          * Set to `false` to disable concurrency.
          *
@@ -43,15 +45,13 @@ type ConfigVpsUser = {
         /**
          * Allow only some of your pages to be pre-rendered.
          *
-         * If `false`, then vite-plugin-ssr displays a warning when some pages are not pre-rendered.
-         *
-         * This setting doesn't affect the pre-rendering process: setting it to `true` only suppresses the warning.
-         *
+         * This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of your pages cannot be pre-rendered.
+
          * @default false
          */
         partial?: boolean
         /**
-         * Disable the automatic initiation of the pre-rendering process when runnign `$ vite build`.
+         * Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *
