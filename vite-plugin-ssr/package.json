@@ -60,6 +60,9 @@
     "./cli": {
       "node": "./dist/cjs/node/cli/index.js"
     },
+    "./prerender": {
+      "node": "./dist/cjs/node/prerender.js"
+    },
     "./plugin": {
       "node": "./dist/cjs/node/plugin/index.js"
     }
