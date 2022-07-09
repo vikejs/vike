@@ -12,6 +12,8 @@ import {
   editFileRevert,
 } from '../libframe/test/setup'
 import assert from 'assert'
+import * as vite from 'vite'
+const viteVersion = (vite as { version?: string }).version || '2.?.?'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
@@ -31,7 +33,7 @@ function testRun(
 ) {
   run(cmd)
 
-  if (uiFramewok === 'preact' && cmd.endsWith('prod')) {
+  if (uiFramewok === 'preact' && cmd.endsWith('prod') && viteVersion.startsWith('3')) {
     // https://github.com/preactjs/preact/issues/3558
     const msg = 'SKIPPED preact prod until it supports Vite 3.'
     console.log(msg)
