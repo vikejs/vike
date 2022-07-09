@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node ./server"
+    "dev": "node ./server"
   },
   "dependencies": {
     "@apollo/client": "3.5.9",

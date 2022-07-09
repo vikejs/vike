@@ -3,7 +3,7 @@ import { autoRetry, fetchHtml, page, run, urlBase } from '../../libframe/test/se
 testRun()
 
 function testRun() {
-  run('npm run start')
+  run('npm run dev')
 
   test('page is rendered to HTML', async () => {
     const html = await fetchHtml('/')

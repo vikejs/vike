@@ -4,10 +4,10 @@ import { page, run, autoRetry, fetchHtml, urlBase } from '../../libframe/test/se
 import * as vite from 'vite'
 const viteVersion = (vite as { version?: string }).version || '2.?.?'
 
-function testRun(cmd: 'npm run dev' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
 
-  if (cmd === 'npm run prod' && viteVersion.startsWith('3')) {
+  if (cmd === 'npm run preview' && viteVersion.startsWith('3')) {
     // https://github.com/FormidableLabs/urql/issues/2484
     const msg = 'SKIPPED urql production test until it supports Vite 3.'
     console.log(msg)
