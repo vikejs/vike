@@ -38,7 +38,12 @@ function chainBuildSteps(): Plugin {
         await build(configSSR)
       }
 
-      if (isSSR && isTriggedByChain(config) && config.vitePluginSsr.prerender) {
+      if (
+        isSSR &&
+        isTriggedByChain(config) &&
+        config.vitePluginSsr.prerender &&
+        !config.vitePluginSsr.prerender.disableAutoRun
+      ) {
         await prerender({ viteConfig: { configFile, root } })
       }
     },
