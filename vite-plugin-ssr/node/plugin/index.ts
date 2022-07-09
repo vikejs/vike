@@ -7,7 +7,7 @@ import GlobPlugin from 'vite-plugin-glob'
 import { assertUsage } from './utils'
 import { buildConfig } from './plugins/buildConfig'
 import { previewConfig } from './plugins/previewConfig'
-import { chainBuildSteps } from './plugins/chainBuildSteps'
+import { autoBuild } from './plugins/autoBuild'
 import { devConfig } from './plugins/devConfig'
 import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
@@ -32,7 +32,7 @@ function plugin(vpsConfig?: ConfigVpsUser): any {
     ...devConfig(),
     buildConfig(),
     previewConfig(),
-    chainBuildSteps(),
+    autoBuild(),
     ...manifest(),
     packageJsonFile(),
     removeRequireHookPlugin(),
