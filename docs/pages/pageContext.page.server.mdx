@@ -15,7 +15,6 @@ It has built-in properties and we can extend it with custom properties.
  - **`pageContext.isHydration`** [*Only when using [Client Routing](/useClientRouter) and only in the browser*]: boolean that is `true` if the current page is already rendered to HTML. (Usually: `true` for the first page the user navigates to and `false` when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
-    const renderPage = createPageRenderer(/*...*/)
     // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContextInit = {}
@@ -80,7 +79,6 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
     ```
  - Server middleware.
     ```js
-    const renderPage = createPageRenderer(/*...*/)
     // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContextInit = {

@@ -1,4 +1,4 @@
-import { RepoLink } from 'vikepress'
+import { RepoLink, Link } from 'vikepress'
 
 
 ## Examples
@@ -53,6 +53,6 @@ When using Node.js for development and Cloudflare Workers for production, we may
 But libraries such as `node-fetch` or `cross-fetch` usually don't work with Cloudflare Workers.
 
 What we can do is to define a fetch function at `pageContext.fetch` that works in all environments.
-The trick is to add a different `fetch()` implementation to `pageContextInit` at [`renderPage(pageContextInit)`](createPageRenderer).
+The trick is to add a different `fetch()` implementation to `pageContextInit` at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
 
 Example: <RepoLink path='/examples/cloudflare-workers-react#universal-fetch' />.
