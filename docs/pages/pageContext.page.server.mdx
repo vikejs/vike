@@ -1,5 +1,12 @@
 import { Link } from 'vikepress'
 
+The `pageContext` is at the core of `vite-plugin-ssr`: it holds all the information about the page that is currently being rendered.
+
+> Note that `pageContext` is completely discarded and created anew when a new page is rendered.
+> That's why it's called *page*Context (and not *app*Context).
+
+It has built-in properties and we can extend it with custom properties.
+
 ## Built-in
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.

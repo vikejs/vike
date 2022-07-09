@@ -30,7 +30,7 @@ Route Functions enable us to use any matching utility we want, such as [partRege
 
 ## Always Run
 
-Upon each page request (i.e. upon each [`renderPage()`](/createPageRenderer) call),
+Upon each page request (i.e. upon each [`renderPage()`](/renderPage) call),
 `vite-plugin-ssr` runs *all* our Route Functions.
 
 That's because we may have defined a Route Function with high precedence that overrides all other routes:
