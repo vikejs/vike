@@ -103,7 +103,7 @@ res.send(body)
 
 ## Stream pipes
 
-To be able to use stream pipes, we need to use `stampStreamPipe()`:
+To be able to use stream pipes, we need to use `stampPipe()`:
 
 ```js
 // renderer/_deault.page.server.js
@@ -111,19 +111,17 @@ To be able to use stream pipes, we need to use `stampStreamPipe()`:
 export { render }
 
 import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
-import { escapeInject, stampStreamPipe } from 'vite-plugin-ssr'
+import { escapeInject, stampPipe } from 'vite-plugin-ssr'
 
 async function render(pageContext) {
   const { Page } = pageContext
 
   const pipe = renderToStreamPipe(Page)
 
-  stampStreamPipe(pipe, {
-    // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
-    pipeType: 'web',
-    // If `pipe(writable)` expects `writable` to be a Writable Web Stream
-    pipeType: 'node'
-  })
+  // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
+  stampPipe(pipe, 'web-stream')
+  // If `pipe(writable)` expects `writable` to be a Writable Web Stream
+  stampPipe(pipe, 'node-stream')
 
   return escapeInject`<!DOCTYPE html>
     <html>
@@ -161,7 +159,7 @@ For some UI frameworks, such as Vue, we need a pipe wrapper:
 // renderer/_deault.page.server.js
 
 import { pipePageToWritable } from 'some-ui-framework'
-import { stampStreamPipe, escapeInject } from 'vite-plugin-ssr'
+import { stampPipe, escapeInject } from 'vite-plugin-ssr'
 
 export function render(pageContext) {
   const { Page } = pageContext
@@ -170,7 +168,7 @@ export function render(pageContext) {
   const pipeWrapper = (writable) => {
     pipePageToWritable(Page, writable)
   }
-  stampStreamPipe(pipeWrapper, { pipeType })
+  stampPipe(pipeWrapper, 'node-stream')
 
   return escapeInject`<!DOCTYPE html>
     <html>
