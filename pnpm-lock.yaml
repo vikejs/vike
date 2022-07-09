@@ -638,23 +638,15 @@ importers:
 
   examples/solid:
     specifiers:
-      '@types/express': ^4.17.12
       '@types/node': ^15.12.1
-      cross-env: ^7.0.3
-      express: ^4.17.1
       solid-js: ^1.1.0
-      ts-node: ^9.1.1
       typescript: ^4.3.2
       vite: ^2.9.14
       vite-plugin-solid: ^2.0.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@types/express': 4.17.13
       '@types/node': 15.14.9
-      cross-env: 7.0.3
-      express: 4.18.1
       solid-js: 1.3.17
-      ts-node: 9.1.1_typescript@4.6.4
       typescript: 4.6.4
       vite: 2.9.14
       vite-plugin-solid: 2.2.6
