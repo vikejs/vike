@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node ./server"
+    "dev": "node ./server"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^1.3.2",

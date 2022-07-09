@@ -3,7 +3,7 @@ import { page, run, autoRetry, fetchHtml, partRegex, urlBase } from '../../libfr
 export { testRun }
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run start' | 'npm run preview',
+  cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
   { base = '/', baseAssets }: { base?: '/' | '/some/base-url/'; baseAssets?: 'http://localhost:8080/cdn/' } = {},
 ) {
   const addBaseHtml = (url: string) => base.slice(0, -1) + url

@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "vite"
+    "dev": "vite"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^1.3.2",
