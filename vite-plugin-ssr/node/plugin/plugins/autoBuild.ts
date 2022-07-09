@@ -1,4 +1,4 @@
-export { chainBuildSteps }
+export { autoBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertWarning, isSSR_config, isViteCliCall } from '../utils'
@@ -6,14 +6,14 @@ import { prerender } from '../../prerender'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 
-const triggedByChain = '__triggedByChain'
+const triggedByAutoBuild = '__triggedByAutoBuild'
 
 type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
 
-function chainBuildSteps(): Plugin {
+function autoBuild(): Plugin {
   let config: Config
   return {
-    name: 'vite-plugin-ssr:chainBuildSteps',
+    name: 'vite-plugin-ssr:autoBuild',
     apply: 'build',
     configResolved(config_) {
       assertConfigVpsResolved(config_)
@@ -33,14 +33,14 @@ function chainBuildSteps(): Plugin {
           build: { ssr: true },
           configFile,
           root,
-          [triggedByChain as any]: true,
+          [triggedByAutoBuild as any]: true,
         }
         await build(configSSR)
       }
 
       if (
         isSSR &&
-        isTriggedByChain(config) &&
+        isTriggedByAutoBuild(config) &&
         config.vitePluginSsr.prerender &&
         !config.vitePluginSsr.prerender.disableAutoRun
       ) {
@@ -60,14 +60,14 @@ function abortSSRBuild(config: Config) {
     assert(false)
   }
   // API
-  if (isSSR_config(config) && !isTriggedByChain(config)) {
+  if (isSSR_config(config) && !isTriggedByAutoBuild(config)) {
     abortAPI()
     assert(false)
   }
 }
 
-function isTriggedByChain(config: Record<string, unknown>) {
-  return !!config[triggedByChain]
+function isTriggedByAutoBuild(config: Record<string, unknown>) {
+  return !!config[triggedByAutoBuild]
 }
 
 function abortCLI() {
