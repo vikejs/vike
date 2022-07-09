@@ -2,7 +2,7 @@ import { page, run, partRegex, autoRetry, fetchHtml, urlBase } from '../../libfr
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {

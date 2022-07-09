@@ -1,6 +1,6 @@
 import { run, fetchHtml } from '../../libframe/test/setup'
 
-run('npm run start')
+run('npm run dev')
 
 test('HTML Fragments', async () => {
   const html = await fetchHtml('/')

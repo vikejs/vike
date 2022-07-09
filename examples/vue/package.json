@@ -2,7 +2,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prod": "vite build && vite preview"
+    "preview": "vite build && vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^2.3.1",

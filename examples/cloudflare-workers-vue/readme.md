@@ -19,7 +19,7 @@ cd vite-plugin-ssr/examples/cloudflare-workers-vue/
 npm install
 ```
 
-To develop: (For increased development speed, we use an Express.js development server instead of a worker.)
+To develop: (For increased development speed, we use Vite's dev server instead of a worker.)
 ```bash
 npm run dev
 ```

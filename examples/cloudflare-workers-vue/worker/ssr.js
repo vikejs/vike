@@ -1,8 +1,6 @@
-import { createPageRenderer } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr'
 
 export { handleSsr }
-
-const renderPage = createPageRenderer({ isProduction: true })
 
 async function handleSsr(url) {
   const pageContextInit = { url }

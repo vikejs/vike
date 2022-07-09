@@ -1,6 +1,6 @@
 import { autoRetry, fetchHtml, page, run, urlBase } from '../../libframe/test/setup'
 
-run('npm run start')
+run('npm run dev')
 
 test('page content is rendered to HTML', async () => {
   const htmlHome = await fetchHtml('/')

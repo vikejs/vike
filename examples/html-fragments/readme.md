@@ -4,5 +4,5 @@ Example of using [HTML fragments](https://vite-plugin-ssr.com/escapeInject#html-
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/html-fragments/
 npm install
-npm run start
+npm run dev
 ```
