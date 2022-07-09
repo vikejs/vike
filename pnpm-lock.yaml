@@ -31,6 +31,7 @@ importers:
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
+      sirv: ^2.0.2
       vite: ^2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -40,6 +41,7 @@ importers:
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+      sirv: 2.0.2
       vite: 2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -56,6 +58,7 @@ importers:
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
+      sirv: ^2.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
       vite: ^2.9.14
@@ -72,6 +75,7 @@ importers:
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
+      sirv: 2.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
       vite: 2.9.14
@@ -85,6 +89,7 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
+      sirv: ^2.0.2
       vite: ^2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
@@ -95,6 +100,7 @@ importers:
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
+      sirv: 2.0.2
       vite: 2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
@@ -110,6 +116,7 @@ importers:
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
+      sirv: ^2.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
       vite: ^2.9.14
@@ -125,6 +132,7 @@ importers:
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
+      sirv: 2.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
       vite: 2.9.14
@@ -2168,6 +2176,10 @@ packages:
       '@npmcli/promise-spawn': 1.3.2
       node-gyp: 7.1.2
       read-package-json-fast: 2.0.3
+    dev: false
+
+  /@polka/url/1.0.0-next.21:
+    resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: false
 
   /@preact/preset-vite/2.2.0_33hnemtu5xczg7z3kbfm3mvpfq:
@@ -8914,6 +8926,11 @@ packages:
     engines: {node: '>=4'}
     dev: false
 
+  /mrmime/1.0.1:
+    resolution: {integrity: sha512-hzzEagAgDyoU1Q6yg5uI+AorQgdvMCur3FcKf7NhMKWsaYg+RnbTyHRa/9IlLF9rf455MOCtcqqrQQ83pPP7Uw==}
+    engines: {node: '>=10'}
+    dev: false
+
   /ms/2.0.0:
     resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: false
@@ -10900,6 +10917,15 @@ packages:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
     dev: false
 
+  /sirv/2.0.2:
+    resolution: {integrity: sha512-4Qog6aE29nIjAOKe/wowFTxOdmbEZKb+3tsLljaBRzJwtqto0BChD2zzH0LhgCSXiI+V7X+Y45v14wBZQ1TK3w==}
+    engines: {node: '>= 10'}
+    dependencies:
+      '@polka/url': 1.0.0-next.21
+      mrmime: 1.0.1
+      totalist: 3.0.0
+    dev: false
+
   /sisteransi/1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
     dev: false
@@ -11547,6 +11573,11 @@ packages:
   /toidentifier/1.0.1:
     resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==}
     engines: {node: '>=0.6'}
+    dev: false
+
+  /totalist/3.0.0:
+    resolution: {integrity: sha512-eM+pCBxXO/njtF7vdFsHuqb+ElbxqtI4r5EAvk6grfAFyJ6IvWlSkfZ5T9ozC6xWw3Fj1fGoSmrl0gUs46JVIw==}
+    engines: {node: '>=6'}
     dev: false
 
   /tough-cookie/2.5.0:
