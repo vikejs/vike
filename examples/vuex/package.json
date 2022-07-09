@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "vite"
+    "dev": "vite"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^2.3.1",

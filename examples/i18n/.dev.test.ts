@@ -1,2 +1,2 @@
 import { testRun } from './.testRun'
-testRun('npm run start')
+testRun('npm run dev')

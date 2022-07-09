@@ -4,7 +4,7 @@ Example of deploying static assets to a CDN.
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/base-url-cdn/
 npm install
-npm run dev
+npm run start
 ```
 
 Highlights:

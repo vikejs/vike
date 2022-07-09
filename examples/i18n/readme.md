@@ -8,5 +8,5 @@ If you pre-render your app, then have a look at [/examples/i18n-prerender/](/exa
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/i18n/
 npm install
-npm run start
+npm run dev
 ```
