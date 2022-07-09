@@ -1,6 +1,6 @@
 import { pipeToWebWritable, pipeToNodeWritable } from '@vue/server-renderer'
 
-import { escapeInject, stampStreamPipe } from 'vite-plugin-ssr'
+import { escapeInject, stampPipe } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import type { Writable } from 'stream'
 
@@ -23,7 +23,7 @@ async function render(pageContext: any) {
       (writable: Writable) => {
         pipeToNodeWritable(app, {}, writable)
       }
-  stampStreamPipe(pipe, { pipeType: isWorker() ? 'web' : 'node' })
+  stampPipe(pipe, isWorker() ? 'web-stream' : 'node-stream')
 
   return escapeInject`<!DOCTYPE html>
     <html>

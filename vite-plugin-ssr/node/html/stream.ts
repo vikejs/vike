@@ -25,7 +25,7 @@ export type { StreamPipeNode }
 // Public: consumed by vite-plugin-ssr users
 export { pipeWebStream }
 export { pipeNodeStream }
-export { stampStreamPipe }
+export { stampPipe }
 export { pipeStream }
 
 import {
@@ -65,9 +65,9 @@ type Stream =
   | StreamReadableWeb
   | StreamReadableNode
   | StreamPipeWebWrapped // pipeWebStream()
-  | StreamPipeWeb // stampStreamPipe()
+  | StreamPipeWeb // stampPipe()
   | StreamPipeNodeWrapped // pipeNodeStream()
-  | StreamPipeNode // stampStreamPipe()
+  | StreamPipeNode // stampPipe()
   | StreamReactStreaming
 // `ReactDOMServer.renderToNodeStream()` returns a `NodeJS.ReadableStream` which differs from `Stream.Readable`
 type StreamTypePatch = NodeJS.ReadableStream
@@ -413,7 +413,7 @@ async function processStream<StreamType extends Stream>(
       writableOriginalReady = true
       flushBuffer()
     }
-    stampStreamPipe(pipeNodeWrapper, { pipeType: 'node' })
+    stampPipe(pipeNodeWrapper, 'node-stream')
     const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
       async write(chunk, _encoding, callback) {
@@ -509,7 +509,7 @@ async function processStream<StreamType extends Stream>(
         flushBuffer()
       })()
     }
-    stampStreamPipe(pipeWebWrapper, { pipeType: 'web' })
+    stampPipe(pipeWebWrapper, 'web-stream')
     let writableProxy: WritableStream
     if (typeof ReadableStream !== 'function') {
       writableProxy = new WritableStream({
@@ -635,11 +635,9 @@ function isStream(something: unknown): something is Stream {
 const __streamPipeWeb = '__streamPipeWeb'
 type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
-  assertWarning(
-    false,
-    'pipeWebStream() is outdated, use stampStreamPipe() instead. See https://vite-plugin-ssr.com/stream',
-    { onlyOnce: true },
-  )
+  assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream', {
+    onlyOnce: true,
+  })
   return { [__streamPipeWeb]: pipe }
 }
 function getStreamPipeWeb(thing: StreamPipeWebWrapped): StreamPipeWeb
@@ -649,7 +647,7 @@ function getStreamPipeWeb(thing: unknown): null | StreamPipeWeb {
     return null
   }
   if (isCallable(thing) && 'isWebStreamPipe' in thing) {
-    // `stampStreamPipe()`
+    // `stampPipe()`
     return thing as unknown as StreamPipeWeb
   } else {
     // `pipeWebStream()`
@@ -661,7 +659,7 @@ function isStreamPipeWeb(thing: unknown): thing is StreamPipeWebWrapped {
   if (isObject(thing) && __streamPipeWeb in thing) {
     return true
   }
-  // `stampStreamPipe()`
+  // `stampPipe()`
   if (isCallable(thing) && 'isWebStreamPipe' in thing) {
     return true
   }
@@ -673,7 +671,7 @@ type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   assertWarning(
     false,
-    'pipeNodeStream() is outdated, use stampStreamPipe() instead. See https://vite-plugin-ssr.com/stream',
+    'pipeNodeStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream',
     { onlyOnce: true },
   )
   return { [__streamPipeNode]: pipe }
@@ -685,7 +683,7 @@ function getStreamPipeNode(thing: unknown): null | StreamPipeNode {
     return null
   }
   if (isCallable(thing) && 'isNodeStreamPipe' in thing) {
-    // `stampStreamPipe()`
+    // `stampPipe()`
     return thing as unknown as StreamPipeNode
   } else {
     // `pipeNodeStream()`
@@ -697,20 +695,20 @@ function isStreamPipeNode(thing: unknown): thing is StreamPipeNodeWrapped {
   if (isObject(thing) && __streamPipeNode in thing) {
     return true
   }
-  // `stampStreamPipe()`
+  // `stampPipe()`
   if (isCallable(thing) && 'isNodeStreamPipe' in thing) {
     return true
   }
   return false
 }
 
-function stampStreamPipe(pipe: StreamPipeNode | StreamPipeWeb, opts: { pipeType: 'web' | 'node' }) {
-  assertUsage(opts, 'stampStreamPipe(pipe, { pipeType }): argument `pipeType` is missing.)')
+function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' | 'node-stream') {
+  assertUsage(pipeType, 'stampPipe(pipe, pipeType): argument `pipeType` is missing.)')
   assertUsage(
-    ['web', 'node'].includes(opts.pipeType),
-    "stampStreamPipe(pipe, { pipeType }): argument `pipeType` should be either 'web' or 'node'.",
+    ['web-stream', 'node-stream'].includes(pipeType),
+    "stampPipe(pipe, pipeType): argument `pipeType` should be either 'web-stream' or 'node-stream'.",
   )
-  if (opts.pipeType === 'node') {
+  if (pipeType === 'node-stream') {
     Object.assign(pipe, { isNodeStreamPipe: true })
   } else {
     Object.assign(pipe, { isWebStreamPipe: true })
