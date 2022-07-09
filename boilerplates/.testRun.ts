@@ -16,7 +16,7 @@ import * as vite from 'vite'
 const viteVersion = (vite as { version?: string }).version || '2.?.?'
 
 function testRun(
-  cmd: 'npm run dev' | 'npm run prod' | 'pnpm run dev' | 'pnpm run prod',
+  cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
   {
     skipCssTest,
     noDefaultPageInUserCode,
@@ -33,16 +33,16 @@ function testRun(
 ) {
   run(cmd)
 
-  if (uiFramewok === 'preact' && cmd.endsWith('prod') && viteVersion.startsWith('3')) {
+  const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
+  const isDev = !isProd
+
+  if (uiFramewok === 'preact' && isProd && viteVersion.startsWith('3')) {
     // https://github.com/preactjs/preact/issues/3558
     const msg = 'SKIPPED preact prod until it supports Vite 3.'
     console.log(msg)
     test(msg, () => {})
     return
   }
-
-  const isProduction = cmd === 'npm run prod' || cmd === 'pnpm run prod'
-  const isDev = !isProduction
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
@@ -57,14 +57,14 @@ function testRun(
 
     {
       expect(html).not.toContain('<script type="module" src="/@vite/client"></script>')
-      if (!isProduction) {
+      if (!isProd) {
         expect(html).toContain('import("/@vite/client");')
       } else {
         expect(html).not.toContain('/@vite/client')
       }
     }
 
-    if (isProduction) {
+    if (isProd) {
       const hashRegexp = /[a-z0-9]+/
       expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
       expect(html).toMatch(

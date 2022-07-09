@@ -13,10 +13,10 @@ import assert from 'assert'
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
 
-  const isProd = cmd === 'npm run prod'
+  const isPreview = cmd === 'npm run preview'
 
   const hash = /[a-z0-9]+/
   const path = /[^\>]+/
@@ -25,7 +25,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     const html = await fetchHtml('/html-only')
     expect(html).toContain('<h1>HTML-only</h1>')
     expect(html).toContain('This page has zero browser-side JavaScript.')
-    if (isProd) {
+    if (isPreview) {
       expect(html).not.toContain('<script')
       expect(html).toMatch(partRegex`<link rel="stylesheet" type="text/css" href="/assets/PageLayout.${hash}.css">`)
       try {
@@ -49,7 +49,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await page.goto(urlBase + '/html-only')
     await testColor('orange')
   })
-  if (!isProd) {
+  if (!isPreview) {
     test('HTML-only - HMR', async () => {
       {
         expect(await page.textContent('h1')).toBe('HTML-only')
@@ -83,7 +83,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await page.goto(urlBase + '/spa')
     await clickCounter()
 
-    if (!isProd) {
+    if (!isPreview) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SPA')
@@ -115,7 +115,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     {
       const html = await fetchHtml('/html-js')
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
-      if (isProd) {
+      if (isPreview) {
         expect(html).toMatch(
           partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" async>`,
         )
@@ -127,7 +127,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await page.goto(urlBase + '/html-js')
     await clickCounter()
   })
-  if (!isProd) {
+  if (!isPreview) {
     test('HTML + JS - HMR', async () => {
       {
         expect(await page.textContent('h1')).toBe('HTML + JS')
@@ -161,7 +161,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     await clickCounter()
     expect(await page.textContent('button')).toContain('Counter 1')
 
-    if (!isProd) {
+    if (!isPreview) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
@@ -212,7 +212,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
     })
   }
   function testClientRouting(html: string) {
-    if (isProd) {
+    if (isPreview) {
       expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js" async>`)
     } else {
       expect(html).toMatch(
