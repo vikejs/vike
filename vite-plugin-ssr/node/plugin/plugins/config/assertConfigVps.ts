@@ -61,6 +61,11 @@ function assertConfigVpsUser(
           hasProp(prerender, 'parallel', 'boolean') ||
           hasProp(prerender, 'parallel', 'number'),
       )
+      assertConfig(
+        'prerender.disableAutoRun',
+        'should be a boolean (or undefined)',
+        hasProp(prerender, 'disableAutoRun', 'undefined') || hasProp(prerender, 'disableAutoRun', 'boolean'),
+      )
     }
   }
 
@@ -101,5 +106,6 @@ function assertConfigVpsUser(
 function assertConfigVpsResolved<T>(config: T): asserts config is T & { vitePluginSsr: ConfigVpsResolved } {
   assert(hasProp(config, 'vitePluginSsr', 'object'))
   const { vitePluginSsr } = config
-  assertConfigVpsUser(vitePluginSsr, null) // Internal assert
+  // Internal assertion
+  assertConfigVpsUser(vitePluginSsr, null)
 }

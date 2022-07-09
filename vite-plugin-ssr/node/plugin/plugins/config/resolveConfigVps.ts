@@ -14,7 +14,8 @@ function resolveConfigVps(fromPluginOptions: unknown, fromViteConfig: unknown): 
     },
     prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
     includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],
-    includeAssetsImportedByServer: fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? true,
+    includeAssetsImportedByServer:
+      fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? true,
   }
 
   assertConfigVpsResolved({ vitePluginSsr })
@@ -32,6 +33,7 @@ function resolvePrerenderOptions(fromPluginOptions: ConfigVpsUser, fromViteConfi
       partial: prerenderUserOptions.partial ?? prerenderViteConfig.partial ?? false,
       noExtraDir: prerenderUserOptions.noExtraDir ?? prerenderViteConfig.noExtraDir ?? false,
       parallel: prerenderUserOptions.parallel ?? prerenderViteConfig.parallel ?? true,
+      disableAutoRun: prerenderUserOptions.disableAutoRun ?? prerenderViteConfig.disableAutoRun ?? false,
     }
   }
   return prerender

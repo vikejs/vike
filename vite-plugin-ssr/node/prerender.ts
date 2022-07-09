@@ -68,13 +68,15 @@ async function prerender(
     /**
      * The Vite config.
      *
+     * This is optional and, if omitted, then Vite will automatically load your `vite.config.js`.
+     *
      * We recommend to either omit this option or set it to `prerender({ viteConfig: { root }})`: the `vite.config.js` file living at `root` will be loaded.
      *
      * Alternatively you can:
      *  - Set `prerender({ viteConfig: { configFile: require.resolve('./path/to/vite.config.js') }})`.
-     *  - Not load any `vite.config.js` file and, instead, use `prerender({ viteConfig: { configFile: false, plugins: [/*...*] }})` to define the entire Vite config.
+     *  - Not load any `vite.config.js` file and, instead, use `prerender({ viteConfig: { configFile: false, ...myViteConfig }})` to programmatically define the entire Vite config.
      *
-     * You can also use `prerender({ viteConfig })` to load a `vite.config.js` file while overriding parts of the Vite config.
+     * You can also load a `vite.config.js` file while overriding parts of the Vite config.
      *
      * See https://vitejs.dev/guide/api-javascript.html#inlineconfig for more information.
      *

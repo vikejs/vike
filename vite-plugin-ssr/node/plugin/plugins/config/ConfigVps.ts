@@ -3,14 +3,17 @@ export type { ConfigVpsResolved }
 //export type ConfigVps = { vitePluginSsr: VpsConfig }
 
 type ConfigVpsResolved = {
-  prerender: false | {
-    noExtraDir: boolean,
-    parallel: boolean | number
-    partial: boolean
-  },
-  pageFiles: { include: string[] },
-  disableBuildChaining: boolean,
-  includeCSS: string[],
+  prerender:
+    | false
+    | {
+        noExtraDir: boolean
+        parallel: boolean | number
+        partial: boolean
+        disableAutoRun: boolean
+      }
+  pageFiles: { include: string[] }
+  disableBuildChaining: boolean
+  includeCSS: string[]
   includeAssetsImportedByServer: boolean
 }
 
@@ -47,6 +50,16 @@ type ConfigVpsUser = {
          * @default false
          */
         partial?: boolean
+        /**
+         * Disable the automatic initiation of the pre-rendering process when runnign `$ vite build`.
+         *
+         * Use this if you want to programmatically initiate the pre-rendering process instead.
+         *
+         * See https://vite-plugin-ssr.com/prerender-call
+         *
+         * @default false
+         */
+        disableAutoRun?: boolean
       }
   /**
    * @internal
