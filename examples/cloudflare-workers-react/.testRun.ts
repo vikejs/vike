@@ -1,3 +1,5 @@
+export { testRun }
+
 import {
   page,
   run,
@@ -13,8 +15,6 @@ import {
 //  - Seems to happen only for wrangler
 //  - https://github.com/nodejs/undici/issues/1248
 urlBaseChange('http://127.0.0.1:3000')
-
-export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
