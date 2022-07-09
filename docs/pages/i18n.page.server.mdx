@@ -5,8 +5,6 @@ import { RepoLink } from 'vikepress'
 Without [pre-rendering](/pre-rendering), we can simply determine the locale at the `vite-plugin-ssr` server middleware:
 
 ```js
-const renderPage = createPageRenderer(/* ... */)
-
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {
   let { url } = req

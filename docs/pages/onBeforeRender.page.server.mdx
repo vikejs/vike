@@ -28,8 +28,8 @@ async function onBeforeRender(pageContext){
 }
 ```
 
-We can also provide initial `pageContext` values at our server middlware (see [`createPageRenderer()`](/createPageRenderer))
-which is where we usually pass information about the authenticated user
+We can also provide initial `pageContext` values at our server middlware with <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+This is where we usually pass information about the authenticated user
 (see <Link href="/auth" />).
 
 Examples:

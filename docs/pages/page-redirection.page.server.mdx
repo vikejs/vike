@@ -65,7 +65,6 @@ export function render() {
 ```js
 // server.js
 
-const renderPage = createPageRenderer(/*...*/)
 app.get('*', async (req, res, next) => {
   const pageContextInit = { url: req.url }
   const pageContext = await renderPage(pageContextInit)

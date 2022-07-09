@@ -3,8 +3,6 @@ import { Integration } from '../components/Integration'
 We can add information about the authenticated user to `pageContext` at the server middlware:
 
 ```js
-const renderPage = createPageRenderer(/* ... */)
-
 // `vite-plugin-ssr` server middleware
 app.get('*', async (req, res) => {
   // Authentication middlewares (e.g. Passport.js or Grant) provide information

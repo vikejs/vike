@@ -692,7 +692,6 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: '`filesystemRoutingRoot`',
     titleInNav: '`export { filesystemRoutingRoot }`',
-    titleSize: '0.81em',
     isListTitle: true,
     url: '/filesystemRoutingRoot',
   },
