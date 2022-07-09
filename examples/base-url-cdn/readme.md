@@ -1,7 +1,5 @@
 Example of deploying static assets to a CDN.
 
-To run it:
-
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/base-url-cdn/

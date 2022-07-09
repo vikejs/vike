@@ -2,7 +2,7 @@ import { page, run, urlBase, autoRetry } from '../../libframe/test/setup'
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run prod') {
+function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
 
   test('Route strings', async () => {
