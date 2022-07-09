@@ -5,7 +5,7 @@
 import { msg } from '#root/server/msg'
 
 import express from 'express'
-import { createPageRenderer } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr'
 
 console.log(msg)
 
@@ -17,19 +17,19 @@ startServer()
 async function startServer() {
   const app = express()
 
-  let viteDevServer
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = require('vite')
-    viteDevServer = await vite.createServer({
-      root,
-      server: { middlewareMode: 'ssr' },
-    })
-    app.use(viteDevServer.middlewares)
+    const vite = await import('vite')
+    const viteDevMiddleware = (
+      await vite.createServer({
+        root,
+        server: { middlewareMode: 'ssr' },
+      })
+    ).middlewares
+    app.use(viteDevMiddleware)
   }
 
-  const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = {

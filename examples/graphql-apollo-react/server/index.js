@@ -1,6 +1,5 @@
 const express = require('express')
-const { createPageRenderer } = require('vite-plugin-ssr')
-const vite = require('vite')
+const { renderPage } = require('vite-plugin-ssr')
 const { ApolloClient, createHttpLink, InMemoryCache } = require('@apollo/client')
 const fetch = require('node-fetch')
 
@@ -12,18 +11,19 @@ startServer()
 async function startServer() {
   const app = express()
 
-  let viteDevServer
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
-    viteDevServer = await vite.createServer({
-      root,
-      server: { middlewareMode: 'ssr' },
-    })
-    app.use(viteDevServer.middlewares)
+    const vite = require('vite')
+    const viteDevMiddleware = (
+      await vite.createServer({
+        root,
+        server: { middlewareMode: 'ssr' },
+      })
+    ).middlewares
+    app.use(viteDevMiddleware)
   }
 
-  const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
 

@@ -1,5 +1,5 @@
 import express from 'express'
-import { createPageRenderer } from 'vite-plugin-ssr'
+import { renderPage } from 'vite-plugin-ssr'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { extractLocale } from '../locales/index.js'
@@ -13,19 +13,19 @@ startServer()
 async function startServer() {
   const app = express()
 
-  let viteDevServer
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`))
   } else {
     const vite = await import('vite')
-    viteDevServer = await vite.createServer({
-      root,
-      server: { middlewareMode: 'ssr' },
-    })
-    app.use(viteDevServer.middlewares)
+    const viteDevMiddleware = (
+      await vite.createServer({
+        root,
+        server: { middlewareMode: 'ssr' },
+      })
+    ).middlewares
+    app.use(viteDevMiddleware)
   }
 
-  const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
     let url = req.originalUrl
 

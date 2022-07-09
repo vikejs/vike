@@ -1,5 +1,5 @@
 const express = require('express')
-const { createPageRenderer } = require('vite-plugin-ssr')
+const { renderPage } = require('vite-plugin-ssr')
 const vite = require('vite')
 const assert = require('assert')
 const { partRegex } = require('../utils/partRegex')
@@ -23,7 +23,6 @@ async function startServer() {
     app.use(viteDevServer.middlewares)
   }
 
-  const renderPage = createPageRenderer({ viteDevServer, isProduction, root })
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
     const pageContextInit = {

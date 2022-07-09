@@ -1,12 +1,6 @@
 Example of deploying a Vite + `vite-plugin-ssr` app to [Vercel](https://vercel.com/).
 
-
-## Docs
-
 See [vite-plugin-ssr.com/vercel](https://vite-plugin-ssr.com/vercel).
-
-
-## Run
 
 To run the example:
 
@@ -27,7 +21,7 @@ To deploy (Vercel's Git integration allows us to simply push to deploy):
   git push
   ```
 
-To develop (for increased dev speed we use an Express.js dev server instead of `vercel dev`):
+To develop (for increased dev speed we use Vite's dev server):
 - ```bash
   npm install
   npm run dev
