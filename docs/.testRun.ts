@@ -54,8 +54,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     testWidth(layout.html, 1280)
     testWidth(layout.body, 1280)
     testWidth(layout.page, 1280)
-    testWidth(layout.left, 300)
-    testWidth(layout.right, 980)
+    testWidth(layout.left, 302)
+    testWidth(layout.right, 978)
 
     return
 
