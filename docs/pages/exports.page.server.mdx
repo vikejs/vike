@@ -87,12 +87,9 @@ async function render() {
 // /renderer/_default.page.client.js
 // Environment: Browser
 
-import { getPage } from 'vite-plugin-ssr/client'
+export { render }
 
-hydrate()
-
-async function hydrate() {
-  const pageContext = await getPage()
+async function render(pageContext) {
   // Thanks to `passToClient = ['pageProps']`, `pageContext.pageProps` is
   // available here in the browser as well.
   const { pageProps } = pageContext

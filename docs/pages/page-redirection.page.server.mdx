@@ -46,7 +46,8 @@ Instead of using this approach, we can also use the more traditional approach of
 We can perform a URL redirection by using `pageContext`:
 
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
+// Environment: Node.js
 
 export function render() {
   if (someCondition) {
@@ -104,7 +105,8 @@ async function onBeforeRender(pageContext) {
 }
 ```
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
+// Environment: Node.js
 
 export { render }
 
@@ -128,30 +130,28 @@ function render(pageContext) {
 If we use <Link href="/client-routing" noBreadcrumb={true} />, then we can also redirect on the client-side.
 
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
 
 // We make `pageContext.redirectTo` available to the browser for client-side redirection
 export const passToClient = [/*...*/, 'redirectTo']
 ```
 ```js
-// _default.page.client.js
+// /renderer/_default.page.client.js
 // Environment: Browser
 
-import { useClientRouter, navigate } from 'vite-plugin-ssr/client/router'
+export { render }
 
-useClientRouter({
-  render(pageContext) {
-    const { redirectTo } = pageContext
-    if (redirectTo) {
-      navigate(redirectTo)
-      return
-    }
-
-    // The usual stuff
-    // ...
+render(pageContext) {
+  const { redirectTo } = pageContext
+  if (redirectTo) {
+    navigate(redirectTo)
+    return
   }
-})
+
+  // The usual stuff
+  // ...
+}
 ```
 
 ## Hydration Mismatch

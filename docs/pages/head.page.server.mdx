@@ -6,7 +6,7 @@ We define the `<head>` tags (e.g. `<title>` or `<meta name="description">`)
 of our app in our [`render()` hook](/render).
 
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
@@ -47,7 +47,8 @@ export const documentProps = {
 }
 ```
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
+// Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-ui-framework'
@@ -118,7 +119,8 @@ function onBeforeRender(pageContext) {
 }
 ```
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
+// Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-ui-framework'
@@ -159,7 +161,7 @@ To define `<head>` tags by some deeply nested view (React/Vue/...) component:
 For example:
 
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
@@ -206,24 +208,24 @@ documentProps.description = 'Me too.'
 If we use Client Routing, we need to make sure to update `document.title` upon page change:
 
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
+// Environment: Node.js
 
 // We make `pageContext.documentProps` available in the browser.
 export const passToClient = ['documentProps', 'pageProps']
 ```
 ```js
-// _default.page.client.js
+// /renderer/_default.page.client.js
+// Environment: Browser
 
-import { useClientRouter } from 'vite-plugin-ssr/client/router'
+export { render }
 
-useClientRouter({
-  render(pageContext) {
-    if( ! pageContext.isHydration ) {
-      document.title = pageContext.documentProps.title
-    }
-    // ...
+render(pageContext) {
+  if (!pageContext.isHydration) {
+    document.title = pageContext.documentProps.title
   }
-})
+  // ...
+}
 ```
 
 
@@ -237,7 +239,7 @@ the aforementioned solutions are simpler and work for most use cases.
 Head libraries already sanitize the HTML `<head>`, this means we can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.
 
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
 
 import { dangerouslySkipEscape } from 'vite-plugin-ssr'

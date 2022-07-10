@@ -69,9 +69,8 @@ export { render }
 export { onHydrationEnd }
 export { onPageTransitionStart }
 export { onPageTransitionEnd }
-export { prefetchStaticAssets } // (instead of `prefetchLinks`)
+export const prefetchStaticAssets = { when: 'VIEWPORT' } // (instead of `prefetchLinks`)
 ```
-
 
 ## Pre-render CLI
 

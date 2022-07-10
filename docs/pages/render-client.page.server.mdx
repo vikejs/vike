@@ -1,6 +1,6 @@
 import { Link } from 'vikepress'
 
-The client-side `render()` hook is exported in `.page.client.js` (usually `/renderer/_default.page.client.js`) and defines how a page is rendered/<Link text="hydrated" href="/hydration" /> on the browser-side.
+The client-side `render()` hook exported in `*.page.client.js` files (usually `/renderer/_default.page.client.js`) defines how a page is rendered/<Link text="hydrated" href="/hydration" /> on the browser-side.
 
 ```js
 // *.page.client.js
@@ -21,7 +21,11 @@ async function render(pageContext) {
 }
 ```
 
-Where `Page` is the <Link text={<>page's <code>{'export { Page }'}</code></>} href="/Page" />.
+Where:
+ - `Page` is the <Link text={<>page's <code>{'export { Page }'}</code></>} href="/Page" />.
+ - `pageContext` is a subset of the `pageContext` defined on the server-side.
+
+We use [`passToClient`](/passToClient) to determine what subset of `pageContext` is sent to the browser.
 
 
 ## MPA vs SSR
@@ -37,4 +41,4 @@ See <Link href='/render-modes' />.
 
 If we `export { render }` in `/pages/star-wars.page.client.js` then we define how `/pages/star-wars.page.js` is rendered while overriding `/renderer/_default.page.client.js`.
 
-Defining multiple `render()` hooks with multiple `_default.page.*` files enables us to define different rendering for different pages. See <Link href='/multiple-renderer' />.
+And, defining multiple `render()` hooks, with multiple `_default.page.*` files, enables us to define different rendering for different pages. See <Link href='/multiple-renderer' />.
