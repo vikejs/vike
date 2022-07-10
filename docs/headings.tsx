@@ -90,6 +90,10 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     title: 'Vite Plugin',
     url: '/vite-plugin',
   },
+  {
+    title: 'Content- VS interactive-centric',
+    url: '/content-vs-interactive',
+  },
 ]
 
 const headings: HeadingDefinition[] = [
@@ -562,12 +566,17 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Global Config',
+    title: 'Global config',
   },
   {
     level: 2,
     title: '`prerender` (config)',
     url: '/prerender-config',
+  },
+  {
+    level: 2,
+    title: '`includeAssetsImportedByServer`',
+    url: '/includeAssetsImportedByServer',
   },
   {
     level: 4,
@@ -637,6 +646,13 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: '`Page` (server-side)',
+    titleInNav: '`export { Page }`',
+    isListTitle: true,
+    url: '/Page-server',
+  },
+  {
+    level: 2,
     title: '`escapeInject`',
     url: '/escapeInject',
   },
@@ -658,6 +674,27 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: '`.page.client.js`',
     url: '/.page.client.js',
+  },
+  {
+    level: 2,
+    title: '`render()` hook (client-side)',
+    titleInNav: '`export { render }`',
+    isListTitle: true,
+    url: '/render-client',
+  },
+  {
+    level: 2,
+    title: '`clientRouting`',
+    titleInNav: '`export { clientRouting }`',
+    isListTitle: true,
+    url: '/clientRouting',
+  },
+  {
+    level: 2,
+    title: '`Page` (client-side)',
+    titleInNav: '`export { Page }`',
+    isListTitle: true,
+    url: '/Page-client',
   },
   {
     level: 2,

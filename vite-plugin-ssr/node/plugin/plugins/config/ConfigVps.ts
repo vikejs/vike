@@ -77,7 +77,7 @@ type ConfigVpsUser = {
    */
   includeCSS?: string[]
   /**
-   * Add assets (CSS, images, etc.) imported by server-side code to the client-side build.
+   * Add support for importing assets (CSS, images, etc.) from server-side code.
    *
    * Useful for HTML-only pages, see https://vite-plugin-ssr/render-modes#html-only
    *
