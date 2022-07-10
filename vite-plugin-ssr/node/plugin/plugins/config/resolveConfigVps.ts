@@ -8,7 +8,7 @@ function resolveConfigVps(fromPluginOptions: unknown, fromViteConfig: unknown): 
   assertUserInputFromViteConfig(fromViteConfig)
 
   const vitePluginSsr: ConfigVpsResolved = {
-    disableAutoBuild: fromPluginOptions.disableAutoBuild ?? fromViteConfig.disableAutoBuild ?? false,
+    disableAutoFullBuild: fromPluginOptions.disableAutoFullBuild ?? fromViteConfig.disableAutoFullBuild ?? false,
     pageFiles: {
       include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
     },
