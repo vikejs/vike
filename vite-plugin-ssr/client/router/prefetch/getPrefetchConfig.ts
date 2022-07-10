@@ -1,6 +1,6 @@
 export { getPrefetchConfig }
 
-import { assert, assertUsage, assertInfo, assertWarning } from '../utils'
+import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '../utils'
 
 type PageContextPrefetch = {
   exports: Record<string, unknown>
@@ -28,7 +28,6 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
   let prefetchAttribute = getPrefetchAttribute(linkTag)
   let prefetchStaticAssets = ((): false | { when: 'HOVER' | 'VIEWPORT' } => {
     if (prefetchAttribute !== null) {
-      assertWarning(prefetchAttribute === null, 'The `data-prefetch` attribute is outdated.', { onlyOnce: true })
       if (prefetchAttribute === true) {
         return { when: 'VIEWPORT' }
       } else {
@@ -43,10 +42,20 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
     }
 
     if ('prefetchStaticAssets' in pageContext.exports) {
-      if (pageContext.exports.prefetchStaticAssets === false) {
+      const { prefetchStaticAssets } = pageContext.exports
+      if (prefetchStaticAssets === false) {
         return false
       }
-      return pageContext.exports.prefetchStaticAssets as { when: 'HOVER' | 'VIEWPORT' }
+      const wrongUsageMsg =
+        "`prefetchStaticAssets` should be either `false`, `{ when: 'VIEWPORT' }`, or `{ when: 'HOVER' }`"
+      assertUsage(isPlainObject(prefetchStaticAssets), wrongUsageMsg)
+      const keys = Object.keys(prefetchStaticAssets)
+      assertUsage(keys.length === 1 && keys[0] === 'when', wrongUsageMsg)
+      const { when } = prefetchStaticAssets
+      if (when === 'HOVER' || when === 'VIEWPORT') {
+        return { when }
+      }
+      assertUsage(false, wrongUsageMsg)
     }
 
     return { when: 'HOVER' }
@@ -64,7 +73,8 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
 }
 
 function getPrefetchAttribute(linkTag: HTMLElement): boolean | null {
-  const prefetchAttribute = linkTag.getAttribute('data-prefetch')
+  let prefetchAttribute = linkTag.getAttribute('data-prefetch')
+  assertWarning(prefetchAttribute === null, 'The `data-prefetch` attribute is outdated.', { onlyOnce: true })
 
   if (prefetchAttribute === null) return null
   assert(typeof prefetchAttribute === 'string')
