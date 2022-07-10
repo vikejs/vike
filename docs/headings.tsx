@@ -25,6 +25,10 @@ const redirections = [
     title: 'Server Routing VS Client Routing',
     url: '/SR-vs-CR',
   },
+  {
+    title: 'Render-as-you-Fetch',
+    url: '/render-as-you-fetch',
+  },
 ]
 
 const headingsWithoutLink: HeadingWithoutLink[] = [
@@ -250,11 +254,6 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Debug',
     url: '/debug',
-  },
-  {
-    level: 2,
-    title: 'Render-as-you-Fetch',
-    url: '/render-as-you-fetch',
   },
   {
     level: 1,
