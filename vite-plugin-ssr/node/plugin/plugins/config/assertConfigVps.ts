@@ -10,9 +10,10 @@ function assertConfigVpsUser(
 ): asserts vitePluginSsr is ConfigVpsResolved {
   assert(isObject(vitePluginSsr))
   assertConfig(
-    'disableAutoBuild',
+    'disableAutoFullBuild',
     'should be a boolean (or undefined)',
-    hasProp(vitePluginSsr, 'disableAutoBuild', 'boolean') || hasProp(vitePluginSsr, 'disableAutoBuild', 'undefined'),
+    hasProp(vitePluginSsr, 'disableAutoFullBuild', 'boolean') ||
+      hasProp(vitePluginSsr, 'disableAutoFullBuild', 'undefined'),
   )
   assertPageFilesConfig(vitePluginSsr)
   assertPrerenderConfig(vitePluginSsr)

@@ -1,4 +1,4 @@
-export { autoBuild }
+export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assert, assertWarning, isSSR_config, isViteCliCall } from '../utils'
@@ -6,14 +6,14 @@ import { prerender } from '../../prerender'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 
-const triggedByAutoBuild = '__triggedByAutoBuild'
+const triggedByAutoFullBuild = '__triggedByAutoFullBuild'
 
 type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
 
-function autoBuild(): Plugin {
+function autoFullBuild(): Plugin {
   let config: Config
   return {
-    name: 'vite-plugin-ssr:autoBuild',
+    name: 'vite-plugin-ssr:autoFullBuild',
     apply: 'build',
     configResolved(config_) {
       assertConfigVpsResolved(config_)
@@ -21,7 +21,7 @@ function autoBuild(): Plugin {
       abortSSRBuild(config)
     },
     async writeBundle() {
-      if (config.vitePluginSsr.disableAutoBuild) {
+      if (config.vitePluginSsr.disableAutoFullBuild) {
         return
       }
 
@@ -33,14 +33,14 @@ function autoBuild(): Plugin {
           build: { ssr: true },
           configFile,
           root,
-          [triggedByAutoBuild as any]: true,
+          [triggedByAutoFullBuild as any]: true,
         }
         await build(configSSR)
       }
 
       if (
         isSSR &&
-        isTriggedByAutoBuild(config) &&
+        istriggedByAutoFullBuild(config) &&
         config.vitePluginSsr.prerender &&
         !config.vitePluginSsr.prerender.disableAutoRun
       ) {
@@ -51,7 +51,7 @@ function autoBuild(): Plugin {
 }
 
 function abortSSRBuild(config: Config) {
-  if (config.vitePluginSsr.disableAutoBuild) {
+  if (config.vitePluginSsr.disableAutoFullBuild) {
     return
   }
   // CLI
@@ -60,14 +60,14 @@ function abortSSRBuild(config: Config) {
     assert(false)
   }
   // API
-  if (isSSR_config(config) && !isTriggedByAutoBuild(config)) {
+  if (isSSR_config(config) && !istriggedByAutoFullBuild(config)) {
     abortAPI()
     assert(false)
   }
 }
 
-function isTriggedByAutoBuild(config: Record<string, unknown>) {
-  return !!config[triggedByAutoBuild]
+function istriggedByAutoFullBuild(config: Record<string, unknown>) {
+  return !!config[triggedByAutoFullBuild]
 }
 
 function abortCLI() {

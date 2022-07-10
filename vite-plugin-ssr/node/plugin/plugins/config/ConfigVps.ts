@@ -12,7 +12,7 @@ type ConfigVpsResolved = {
         disableAutoRun: boolean
       }
   pageFiles: { include: string[] }
-  disableAutoBuild: boolean
+  disableAutoFullBuild: boolean
   includeCSS: string[]
   includeAssetsImportedByServer: boolean
 }
@@ -70,7 +70,7 @@ type ConfigVpsUser = {
    * @internal
    * Do not use without having talked to a vite-plugin-ssr maintainer.
    */
-  disableAutoBuild?: boolean
+  disableAutoFullBuild?: boolean
   /**
    * @internal
    * Do not use without having talked to a vite-plugin-ssr maintainer.
