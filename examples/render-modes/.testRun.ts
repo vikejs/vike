@@ -87,7 +87,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SPA')
+        await sleep(100) // Not sure if it helps make the test less flaky?
         editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
+        await sleep(100) // Not sure if it helps make the test less flaky?
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA !')
         })
