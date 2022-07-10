@@ -1,9 +1,9 @@
 import { Link } from 'vikepress'
 
-## App
+The `<head>` tags (e.g. `<title>` or `<meta name="description">`)
+are defined by our [server-side `render()` hook](/render).
 
-We define the `<head>` tags (e.g. `<title>` or `<meta name="description">`)
-of our app in our [`render()` hook](/render).
+> We can also define `<head>` tags on a page-by-page basis and on a component-by-component basis, see sections below.
 
 ```js
 // /renderer/_default.page.server.js
@@ -30,16 +30,14 @@ async function render(pageContext) {
 ```
 
 
-## Page — static
+## By page (static)
 
-To define `<head>` tags (e.g. `<title>` or `<meta name="description">`)
-for a specific page,
-we can use <Link href="/exports" text="a Custom Export" />.
+To define `<head>` tags for a specific page, we can use a <Link href="/exports" text="Custom Export" />.
 
 ```js
-// about.page.js
+// /pages/about.page.js
 
-// We statically export/determine `<head>` tags
+// Custom Export
 export const documentProps = {
   // This title and description will override the defaults
   title: 'About SpaceX',
@@ -56,8 +54,8 @@ import { renderToHtml } from 'some-ui-framework'
 export { render }
 
 async function render(pageContext) {
-  // We use `pageContext.exports.documentProps` which pages can statically define.
-  const documentProps = pageContext.exports.documentProps
+  // Our custom export is available here as `pageContext.exports.documentProps`
+  const { documentProps } = pageContext.exports
 
   // Defaults
   const title = documentProps.title || 'SpaceX'
@@ -78,43 +76,25 @@ async function render(pageContext) {
 ```
 
 
-## Page — dynamic
+## By page (dynamic)
 
-To define `<head>` tags (e.g. `<title>` or `<meta name="description">`)
-that are dynamic (i.e. determined at run-time),
-we can use the [`onBeforeRender()` hook](/onBeforeRender).
+To define `<head>` tags that are dynamic (determined at run-time),
+we can also use a <Link href="/exports" text="Custom Export" />.
 
 ```js
-// rocket.page.route.js
-
+// /pages/rocket.page.route.js
 export const '/rocket/:rocketSlug'
 ```
 ```js
-// rocket.page.server.js
+// /pages/rocket.page.js
 
-export { onBeforeRender }
+// Custom Export
+export { getDocumentProps }
 
-function onBeforeRender(pageContext) {
-  const documentProps = (() => {
-    const shipName = pageContext.routeParams.rocketSlug
-    if (shipName==='starship') {
-      return {
-        title: 'Starship',
-        description: 'Starship: deliver payload to Mars'
-      }
-    }
-    if (shipName==='falcon') {
-      return {
-        title: 'Falcon 9',
-        description: 'Falcon 9: deliver payload to Low Earth Orbit'
-      }
-    }
-  })()
-
+function getDocumentProps(pageProps) {
   return {
-    pageContext: {
-      documentProps
-    }
+    title: pageProps.product.name,
+    description: pageProps.product.description
   }
 }
 ```
@@ -122,19 +102,20 @@ function onBeforeRender(pageContext) {
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
+export { render }
+
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { renderToHtml } from 'some-ui-framework'
 
-export { render }
-
 async function render(pageContext) {
-  // We use `pageContext.documentProps` which pages can dynamically
-  // define in their `onBeforeRender()` hook.
-  const documentProps = pageContext.documentProps
+  // `pageProps` is provided by our data fetching mechanism, see the "Data Fetching" Guide.
+  const { Page, pageProps } = pageContext
 
-  // Defaults
-  const title = documentProps.title || 'SpaceX'
-  const description = documentProps.description || 'We deliver payload to space.'
+  // Our custom export is available as `pageContext.exports.getDocumentProps`
+  const { getDocumentProps } = pageContext.exports
+
+  // `getDocumentProps()` can use the fetched data to provide the page's meta data
+  const { title, description } = getDocumentProps(pageProps)
 
   return escapeInject`<html>
     <head>
@@ -151,7 +132,7 @@ async function render(pageContext) {
 ```
 
 
-## View Component
+## By component
 
 To define `<head>` tags by some deeply nested view (React/Vue/...) component:
  1. We add `documentProps` to [`passToClient`](/passToClient).
@@ -205,7 +186,7 @@ documentProps.description = 'Me too.'
 
 ## Client Routing
 
-If we use Client Routing, we need to make sure to update `document.title` upon page change:
+If we use Client Routing, we need to make sure to update `document.title` upon page navigation:
 
 ```js
 // /renderer/_default.page.server.js
@@ -220,8 +201,9 @@ export const passToClient = ['documentProps', 'pageProps']
 
 export { render }
 
-render(pageContext) {
+function render(pageContext) {
   if (!pageContext.isHydration) {
+    // Page navigation — we update the website's title
     document.title = pageContext.documentProps.title
   }
   // ...
@@ -233,7 +215,7 @@ render(pageContext) {
 
 We can also use libraries such as [@vueuse/head](https://github.com/vueuse/head) or [react-helmet](https://github.com/nfl/react-helmet).
 
-We should use such library only if we have a rationale:
+We recommend to use such library only if you have a rationale:
 the aforementioned solutions are simpler and work for most use cases.
 
 Head libraries already sanitize the HTML `<head>`, this means we can skip `escapeInject` and wrap the overall result with `dangerouslySkipEscape()`.

@@ -142,7 +142,7 @@ export const passToClient = [/*...*/, 'redirectTo']
 
 export { render }
 
-render(pageContext) {
+function render(pageContext) {
   const { redirectTo } = pageContext
   if (redirectTo) {
     navigate(redirectTo)
