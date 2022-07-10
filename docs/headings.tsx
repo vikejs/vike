@@ -579,6 +579,11 @@ const headings: HeadingDefinition[] = [
     url: '/includeAssetsImportedByServer',
   },
   {
+    level: 2,
+    title: '`disableAutoFullBuild`',
+    url: '/disableAutoFullBuild',
+  },
+  {
     level: 4,
     title: 'Node.js & browser',
   },
@@ -653,13 +658,13 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`escapeInject`',
-    url: '/escapeInject',
+    title: '`renderPage()`',
+    url: '/renderPage',
   },
   {
     level: 2,
-    title: '`renderPage()`',
-    url: '/renderPage',
+    title: '`escapeInject`',
+    url: '/escapeInject',
   },
   {
     level: 2,

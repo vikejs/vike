@@ -67,8 +67,11 @@ type ConfigVpsUser = {
    */
   pageFiles?: { include?: string[] }
   /**
-   * @internal
-   * Do not use without having talked to a vite-plugin-ssr maintainer.
+   * Set to `true` to disable the automatic chaining of all the build steps.
+   *
+   * See https://vite-plugin-ssr.com/disableAutoFullBuild
+   *
+   * @default false
    */
   disableAutoFullBuild?: boolean
   /**
