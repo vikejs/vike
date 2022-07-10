@@ -26,7 +26,10 @@ jobs:
       - name: Install
         run: pnpm install
 
-      - name: Build
+      - name: Build vite-plugin-ssr
+        run: pnpm run build
+
+      - name: Build docs
         run: pnpm run docs:build
 
       - name: Deploy
