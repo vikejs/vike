@@ -20,13 +20,9 @@ const passToClient = [
 // *.page.client.js
 // Environment: Browser
 
-import { getPage } from 'vite-plugin-ssr/client'
+export { render }
 
-hydrate()
-
-async function hydrate() {
-  const pageContext = await getPage()
-
+async function render(pageContext) {
   // Thanks to `passToClient`, these `pageContext` are available here in the browser
   pageContext.pageProps
   pageContext.routeParams
@@ -35,27 +31,6 @@ async function hydrate() {
 
   /* ... */
 }
-```
-
-Or when using Client Routing:
-
-```js
-// *.page.client.js
-// Environment: Browser
-
-import { useClientRouter } from 'vite-plugin-ssr/client/router'
-
-useClientRouter({
-  render(pageContext) {
-    // Thanks to `passToClient`, these `pageContext` are available here in the browser
-    pageContext.pageProps
-    pageContext.routeParams
-    pageContext.user.id
-    pageContext.user.name
-
-    /* ... */
-  }
-})
 ```
 
 `passToClient` is usually used together with the `onBeforeRender()` hook to fetch data:

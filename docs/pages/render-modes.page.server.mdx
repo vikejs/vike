@@ -136,7 +136,7 @@ export async function render(pageContext) {
   if (
     // SPA pages don't have any hydration steps
     rootDomElement.innerHTML === '' ||
-    // Page navigation of SSR pages also need to be fully rendered
+    // Page navigation of SSR pages also need to be fully rendered (if we use Client Routing)
     !pageContext.isHydration
   ) {
     await renderToDom(rootDomElement, Page)

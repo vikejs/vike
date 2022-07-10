@@ -3,7 +3,7 @@ A `.page.js` file has `export { Page }` (or `export default Page`) which represe
 `vite-plugin-ssr` doesn't do anything with `Page` and just makes it available at `pageContext.Page`:
 
 ```js
-// hello.page.js
+// /pages/hello.page.js
 // Environment: Browser, Node.js
 
 export { Page }
@@ -16,13 +16,13 @@ function Page() {
 ```
 
 ```js
-// renderer/_default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
+
+export { render }
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import renderToHtml from 'some-ui-framework'
-
-export { render }
 
 async function render(pageContext) {
   // `Page` is available at `pageContext.Page`
@@ -39,18 +39,16 @@ async function render(pageContext) {
 }
 ```
 ```js
-// renderer/_default.page.client.js
+// /renderer/_default.page.client.js
 // Environment: Browser
 
-import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom } from 'some-ui-framework'
+export { render }
 
-hydrate()
+import { hydrateDom } from 'some-ui-framework'
 
-async function hydrate() {
-  const pageContext = await getPage()
+async function render(pageContext) {
   // `pageContext.Page` is also available in the browser.
   const { Page } = pageContext
-  await hydrateToDom(Page, document.getElementById('root'))
+  await hydrateDom(Page, document.getElementById('root'))
 }
 ```

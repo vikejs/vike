@@ -41,11 +41,11 @@ export async function render({ Page }) {
 // /renderer/_default.page.client.js
 // Environment: Browser
 
-import { hydrateToDom } from 'my-favorite-ui-framework'
+import { hydrateDom } from 'my-favorite-ui-framework'
 
 // You control how `Page` is hydrated
 export async function render({ Page }) {
-  await hydrateToDom(Page)
+  await hydrateDom(Page)
 }
 ```
 

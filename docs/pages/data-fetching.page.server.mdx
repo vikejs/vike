@@ -34,7 +34,7 @@ async function onBeforeRender(pageContext) {
 }
 ```
 ```js
-// _default.page.server.js
+// /renderer/_default.page.server.js
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
@@ -63,28 +63,26 @@ async function render(pageContext) {
 }
 ```
 ```js
-// _default.page.client.js
+// /renderer/_default.page.client.js
 // Environment: Browser
 
-import { getPage } from 'vite-plugin-ssr/client'
-import { hydrateToDom, createElement } from 'some-ui-framework'
+export { render }
 
-hydrate()
+import { hydrateDom, createElement } from 'some-ui-framework'
 
-async function hydrate() {
-  const pageContext = await getPage()
+async function render(pageContext) {
   // `Page` is also available in the browser
   const { Page } = pageContext
   // Thanks to `passToClient = ['pageProps']` our `pageContext.pageProps` is
   // available here in the browser.
   const { Page, pageProps } = pageContext
-  await hydrateToDom(
+  await hydrateDom(
     // We pass `pageProps` to `Page`
     createElement(Page, pageProps),
     document.getElementById('view-root')
   )
   /* JSX:
-  await hydrateToDom(<Page {...pageProps} />, document.getElementById('view-root'))
+  await hydrateDom(<Page {...pageProps} />, document.getElementById('view-root'))
   */
 }
 ```
@@ -94,7 +92,7 @@ async function hydrate() {
 
 export { Page }
 
-// In the `render()` and `hydrate()` functions above, we pass `pageContext.pageProps` to `Page`
+// In the `render()` functions above, we pass `pageContext.pageProps` to `Page`
 function Page(pageProps) {
   const { movies } = pageProps
   // ...
@@ -182,7 +180,7 @@ The `.page.server.js` files are loaded only in Node.js;
 our data fetching code is always executed in Node.js.
 This is convenient as it makes writing data fetching code easier.
 
-If we use [Client Routing](/useClientRouter),
+If we use [Client Routing](/clientRouting),
 then we have the option to define [`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic) instead of `.page.server.js`. In that case, `onBeforeRender()` is not only called in Node.js but also in the browser (upon page navigation).
 
 In general, [we recommend defining `onBeforeRender()` in `.page.server.js`](/onBeforeRender-isomorphic#recommendation) (even when using Client Routing) but,

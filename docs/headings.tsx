@@ -611,6 +611,13 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: '`Page` (server-side)',
+    titleInNav: '`export { Page }`',
+    isListTitle: true,
+    url: '/Page-server',
+  },
+  {
+    level: 2,
     title: '`onBeforeRender()` hook (`.page.server.js`)',
     titleInNav: '`export { onBeforeRender }`',
     isListTitle: true,
@@ -646,13 +653,6 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`Page` (server-side)',
-    titleInNav: '`export { Page }`',
-    isListTitle: true,
-    url: '/Page-server',
-  },
-  {
-    level: 2,
     title: '`escapeInject`',
     url: '/escapeInject',
   },
@@ -677,6 +677,13 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: '`Page` (client-side)',
+    titleInNav: '`export { Page }`',
+    isListTitle: true,
+    url: '/Page-client',
+  },
+  {
+    level: 2,
     title: '`render()` hook (client-side)',
     titleInNav: '`export { render }`',
     isListTitle: true,
@@ -688,23 +695,6 @@ const headings: HeadingDefinition[] = [
     titleInNav: '`export { clientRouting }`',
     isListTitle: true,
     url: '/clientRouting',
-  },
-  {
-    level: 2,
-    title: '`Page` (client-side)',
-    titleInNav: '`export { Page }`',
-    isListTitle: true,
-    url: '/Page-client',
-  },
-  {
-    level: 2,
-    title: '`getPage()`',
-    url: '/getPage',
-  },
-  {
-    level: 2,
-    title: '`useClientRouter()`',
-    url: '/useClientRouter',
   },
   {
     level: 2,
