@@ -38,10 +38,6 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     url: '/migration-0.4',
   },
   {
-    title: 'Custom Exports & Custom Hooks',
-    url: '/exports',
-  },
-  {
     title: 'Client Routing',
     url: '/client-routing',
   },
@@ -213,6 +209,11 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'File Structure',
     url: '/file-structure',
+  },
+  {
+    level: 2,
+    title: 'Custom Exports/Hooks',
+    url: '/exports',
   },
   {
     level: 2,
