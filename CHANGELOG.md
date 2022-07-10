@@ -1,6 +1,11 @@
 # [0.4.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.64...v0.4.0) (2022-07-10)
 
 
+### BREAKING CHANGES
+
+See [vite-plugin-ssr.com/migration-0.4](https://vite-plugin-ssr.com/migration-0.4) for how to migrate from `0.3` to `0.4`.
+
+
 ### Bug Fixes
 
 * add routing debug logs ([dfdb208](https://github.com/brillout/vite-plugin-ssr/commit/dfdb2081187d5e5f8a4872ad07fea67a693ce49d))
@@ -58,12 +63,6 @@
 * only add page entries to `optimizeDeps.entries` if CI ([8e10dae](https://github.com/brillout/vite-plugin-ssr/commit/8e10dae2c2b4517981ded3ead148db9aeaeadc8a))
 * resolve dynamic imports early ([a9da5a2](https://github.com/brillout/vite-plugin-ssr/commit/a9da5a2d968411a17ff40e3ac4fb1737ba7e00c7))
 * scan index page on dev start ([4f82f03](https://github.com/brillout/vite-plugin-ssr/commit/4f82f035a9def4580d9a28f2e6cea928fdf764b5))
-
-
-### Reverts
-
-* "only test pinia" ([6596032](https://github.com/brillout/vite-plugin-ssr/commit/6596032e8ab442842c9cf862afced1e667cb8e2c))
-* [extractStyles] set includeAssetsImportedByServer default to true during beta ([5d9b1f7](https://github.com/brillout/vite-plugin-ssr/commit/5d9b1f7d2dc809937cef6f9aaf55fc75b70daf0f))
 
 
 
