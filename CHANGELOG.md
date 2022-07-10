@@ -1,3 +1,72 @@
+# [0.4.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.64...v0.4.0) (2022-07-10)
+
+
+### Bug Fixes
+
+* add routing debug logs ([dfdb208](https://github.com/brillout/vite-plugin-ssr/commit/dfdb2081187d5e5f8a4872ad07fea67a693ce49d))
+* add support for `$ vite preview` command ([c8ca4b8](https://github.com/brillout/vite-plugin-ssr/commit/c8ca4b8ed09eeba2becb7b0bb6b815a9800974cc))
+* add support for ReScript ([a040fe7](https://github.com/brillout/vite-plugin-ssr/commit/a040fe7e56ea34ab2aee2951d91e626abd870bcf))
+* add worker exports to `package.json#exports` for Cloudflare Workers ([954fe02](https://github.com/brillout/vite-plugin-ssr/commit/954fe02c13e103210499508e1736bef3044615ec))
+* assert HTML variables ([254cf54](https://github.com/brillout/vite-plugin-ssr/commit/254cf549292a7b523dbad4f4f66c92e195c5b8d2))
+* do not append ?extractStyles to asset imports for image Vite plugins (fix [#353](https://github.com/brillout/vite-plugin-ssr/issues/353)) ([1b937e2](https://github.com/brillout/vite-plugin-ssr/commit/1b937e28c656515e4d7c15791745a9a6c77dde49))
+* do not copy static assets to `dist/server/` ([7e33664](https://github.com/brillout/vite-plugin-ssr/commit/7e336640ab859be358e35da4ea6d800a96bd3984))
+* ensure HMR preamble code to be executed before client entries ([f4ff28b](https://github.com/brillout/vite-plugin-ssr/commit/f4ff28bc01ea2b81a354e3974749b5fe1eca253a))
+* ensure Rollup generates an entry for each page file (fix [#350](https://github.com/brillout/vite-plugin-ssr/issues/350)) ([e659e26](https://github.com/brillout/vite-plugin-ssr/commit/e659e2643d4002f01113c1bd7b7ce926d077d8eb))
+* ensure stream end handler is called once ([768c383](https://github.com/brillout/vite-plugin-ssr/commit/768c38328cc4544232968abee591e04870c9b5e5))
+* ensure stream is always flushed ([5770d9f](https://github.com/brillout/vite-plugin-ssr/commit/5770d9fa8a845c16e137f7f4d37bc45fa4d3c8cf))
+* fix styling in development for browser back/fwd buttons ([d3d4190](https://github.com/brillout/vite-plugin-ssr/commit/d3d4190b16b1179578df9d04acb3d3d56a70830d))
+* handle destroyed Node.js writable proxy ([6488300](https://github.com/brillout/vite-plugin-ssr/commit/6488300cc1f4e5418ae178efa46ceef421f70995))
+* handle URLs with several trailing slahes ([#310](https://github.com/brillout/vite-plugin-ssr/issues/310)) ([551b020](https://github.com/brillout/vite-plugin-ssr/commit/551b0207d0b3440ed60f92f337e5c97fdc18552f))
+* improve asset naming ([8791d66](https://github.com/brillout/vite-plugin-ssr/commit/8791d6643da73c7624329386dda73123d3e59c6f))
+* improve debug logs ([978a7c2](https://github.com/brillout/vite-plugin-ssr/commit/978a7c28f37ba59bcb81d8113a403a5ad240b9f7))
+* improve error message upon multiple versions loaded ([6bb206e](https://github.com/brillout/vite-plugin-ssr/commit/6bb206eef570b22647a4161eb64137a9921d8e0b))
+* improve error message upon wrong streaming setup ([baf8c88](https://github.com/brillout/vite-plugin-ssr/commit/baf8c8802e0e66c224486e6232ceebc5a9e21f2f))
+* improve filesystem routing when `pages/` is (deeply) nested ([858dde4](https://github.com/brillout/vite-plugin-ssr/commit/858dde4498947432d7bf91ba5345ef29ccbe939b))
+* improve prefetch config ([f4b4cc7](https://github.com/brillout/vite-plugin-ssr/commit/f4b4cc7945355b32ed7188cdcb6f84e6f22a6051))
+* improve stream error handling ([d4835c0](https://github.com/brillout/vite-plugin-ssr/commit/d4835c06b31c23688b7a97ac095059e44b9cf834))
+* improve wrong usage error message ([2d3132d](https://github.com/brillout/vite-plugin-ssr/commit/2d3132db0ed1e8f4d17e4d7b079c17f7d5dc84c8))
+* increase scroll listener throttle timeout ([#46](https://github.com/brillout/vite-plugin-ssr/issues/46)) ([ab36ac3](https://github.com/brillout/vite-plugin-ssr/commit/ab36ac3d44569bb3bf77d5115f28c8ece891c9b5))
+* isolate framework pageFiles symlink directory ([6e2d6f1](https://github.com/brillout/vite-plugin-ssr/commit/6e2d6f18e91dc7efd16a185588d91ad45b44c837))
+* make `$ vite dev` and `$ vite preview` support HTML streaming ([9a59360](https://github.com/brillout/vite-plugin-ssr/commit/9a593608be34c0e7323751f484c4c2815ef29634))
+* make `httpResponse.pipe()` work with Readable Streams ([558f87a](https://github.com/brillout/vite-plugin-ssr/commit/558f87a72548576d3def017ad3bee3c13f69b35d))
+* make `navigate()` cross-bundle safe ([68a9e7a](https://github.com/brillout/vite-plugin-ssr/commit/68a9e7a6cc28936c29ef1ed1cb6997d63f107244))
+* make vps resilient against array prototype extensions ([2d09e75](https://github.com/brillout/vite-plugin-ssr/commit/2d09e75b0ce992c3342de6f9b4969771389b73b2))
+* only add vps dev middleware for Vite's CLI ([b0c3974](https://github.com/brillout/vite-plugin-ssr/commit/b0c3974f15a4508f99e6d22dedbf4e1b8f6c6d5e))
+* route precendence ([e2bfd5d](https://github.com/brillout/vite-plugin-ssr/commit/e2bfd5d13aa1846c5e6fd68a574ab4c43c5f47b9))
+* support `$ vite dev` command ([4ca3e39](https://github.com/brillout/vite-plugin-ssr/commit/4ca3e39f75da0482f2050f3ab73e7f649d1752dd))
+* support `vite preview` command for SSG ([a7c602a](https://github.com/brillout/vite-plugin-ssr/commit/a7c602a84d263dd9db84afc6bb59310f6cbf9cc3))
+* support rollup format synonyms ([1a7d4f7](https://github.com/brillout/vite-plugin-ssr/commit/1a7d4f7d65a5ec3aec354b1411a2f8cdc09f9e6b))
+* swallow expected errors upon new frontend deploy ([34d800f](https://github.com/brillout/vite-plugin-ssr/commit/34d800f12aed3411c40ca5c1f9f744a206b5a0d2))
+* switch to server-routing if asset fail to load upon new deploy ([#292](https://github.com/brillout/vite-plugin-ssr/issues/292)) ([1f837d5](https://github.com/brillout/vite-plugin-ssr/commit/1f837d5cb8d8239d043227b4a832f3bbe461a6cd))
+* throw normalized client-side error upon new deploy handling ([e0163a8](https://github.com/brillout/vite-plugin-ssr/commit/e0163a80f1293306a48e6d9f5c46414335f3783a))
+* tolerate multiple vps instances ([74b8eb2](https://github.com/brillout/vite-plugin-ssr/commit/74b8eb20e270a1412af8452cb95ccfc9eb623720))
+* treat `Object.ceate(null)` as plain JavaScript object ([c9eb387](https://github.com/brillout/vite-plugin-ssr/commit/c9eb387ff2f878ee949441f4f1235ab9461e6d17))
+* update pageContext.urlParsed type ([12261ac](https://github.com/brillout/vite-plugin-ssr/commit/12261ac06341b5a3db985d8ee2aa80df43d58291))
+
+
+### Features
+
+* enable overwriting default routing with onBeforeRoute() ([46b9e19](https://github.com/brillout/vite-plugin-ssr/commit/46b9e19386367419cc881307c326df5b5fa8b54c))
+* pageContext.urlParsed.searchAll ([94ee761](https://github.com/brillout/vite-plugin-ssr/commit/94ee7611283a933b4d05fbf043d8bc2166e80992))
+* Parameterized Filesystem Routing ([416a94e](https://github.com/brillout/vite-plugin-ssr/commit/416a94e238557271d4e93cf713e05f8a1ff44336))
+* support export default (fix [#314](https://github.com/brillout/vite-plugin-ssr/issues/314)) ([f653b68](https://github.com/brillout/vite-plugin-ssr/commit/f653b68b7d957f4c0139a22394988e576deaf05d))
+
+
+### Performance Improvements
+
+* ensure scripts to be loaded last ([b921e60](https://github.com/brillout/vite-plugin-ssr/commit/b921e606f0a11f7f6a5ffbbc962b940d669b006b))
+* only add page entries to `optimizeDeps.entries` if CI ([8e10dae](https://github.com/brillout/vite-plugin-ssr/commit/8e10dae2c2b4517981ded3ead148db9aeaeadc8a))
+* resolve dynamic imports early ([a9da5a2](https://github.com/brillout/vite-plugin-ssr/commit/a9da5a2d968411a17ff40e3ac4fb1737ba7e00c7))
+* scan index page on dev start ([4f82f03](https://github.com/brillout/vite-plugin-ssr/commit/4f82f035a9def4580d9a28f2e6cea928fdf764b5))
+
+
+### Reverts
+
+* "only test pinia" ([6596032](https://github.com/brillout/vite-plugin-ssr/commit/6596032e8ab442842c9cf862afced1e667cb8e2c))
+* [extractStyles] set includeAssetsImportedByServer default to true during beta ([5d9b1f7](https://github.com/brillout/vite-plugin-ssr/commit/5d9b1f7d2dc809937cef6f9aaf55fc75b70daf0f))
+
+
+
 ## [0.3.64](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.63...v0.3.64) (2022-04-14)
 
 

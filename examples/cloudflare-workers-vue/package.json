@@ -24,7 +24,7 @@
     "build-worker": "^0.2.0",
     "miniflare": "^2.4.0",
     "vite": "^2.9.14",
-    "vite-plugin-ssr": "0.3.64",
+    "vite-plugin-ssr": "0.4.0",
     "vue": "^3.2.33",
     "webpack": "^4.46.0"
   }
