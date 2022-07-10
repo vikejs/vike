@@ -10,7 +10,7 @@ Most of the time, we use the `prerender()` hook in order to provide the URLs of 
 // /pages/movie.page.route.js
 // Environment: Node.js
 
-export default '/movie/:movieId`
+export default '/movie/@movieId`
 ```
 ```js
 // /pages/movie.page.server.js
@@ -42,7 +42,7 @@ We can make it significantly faster by providing the `pageContext` of pages in `
 // /pages/movie.page.route.js
 // Environment: Node.js
 
-export default '/movie/:movieId`
+export default '/movie/@movieId`
 ```
 ```js
 // /pages/movie.page.server.js
@@ -79,7 +79,7 @@ async function prerender() {
   // Here we provide the `pageContext` of the `/movies` page since
   // we already have the data.
   const movieListPage = {
-    url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/:movieId`
+    url: '/movies', // Note how the URL `/movies` isn't part of the page's route `/movie/@movieId`
     pageContext: {
       pageProps: {
         // We filter out the data we don't need in order to minimize what is sent to the browser.

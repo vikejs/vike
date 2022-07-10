@@ -1,1 +1,1 @@
-export default '/star-wars/:movieId'
+export default '/star-wars/@movieId'

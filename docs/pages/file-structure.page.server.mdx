@@ -82,7 +82,7 @@ export const filesystemRoutingRoot = '/'
 
 // We can use a Route String (or Route Function) to define parameterized routes
 // and/or to override Filesystem Routing.
-export default '/product/:productId'
+export default '/product/@productId'
 ```
 
 Resulting route table:
@@ -95,7 +95,7 @@ PROJECT FILES                                    URL
 /auth/pages/signup/index.page.js                 /auth/signup
 /auth/pages/login/index.page.js                  /auth/login
 /products/pages/index/index.page.js              /products
-/products/pages/product/index.page.js            /product/:productId
+/products/pages/product/index.page.js            /product/@productId
 ```
 
 Same as for basic apps, we recommend creating a directory for each page,

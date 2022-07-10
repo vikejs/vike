@@ -10,7 +10,7 @@ It has built-in properties and we can extend it with custom properties.
 ## Built-in
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
- - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/:movieId`.)
+ - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
  - **`pageContext.isHydration`** [*Only when using [Client Routing](/clientRouting) and only in the browser*]: boolean that is `true` if the current page is already rendered to HTML. (Usually: `true` for the first page the user navigates to and `false` when the user navigates to a new page.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js

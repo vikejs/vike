@@ -37,7 +37,7 @@ This setting doesn't affect the pre-rendering process: it merely suppresses the 
 
 > `vite-plugin-ssr` shows a warning that a page cannot be pre-rendered when:
 > - The page has a parameterized route
->   (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/:movieId`, or a <Link text="Route Function" href="/route-function" />).
+>   (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />).
 > - When there isn't any <Link text={<><code>prerender()</code> hook</>} href="prerender" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 
 

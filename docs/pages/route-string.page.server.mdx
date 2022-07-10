@@ -4,7 +4,7 @@ For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/fil
 // /pages/film.page.route.js
 
 // Match URLs `/film/1`, `/film/2`, ...
-export default '/film/:filmId'
+export default '/film/@filmId'
 ```
 
 The value of `filmId` is available at `pageContext.routeParams.filmId`.
@@ -19,7 +19,7 @@ We can define multiple parameters.
 // Parameters available at:
 //  - `pageContext.routeParams.year`
 //  - `pageContext.routeParams.slug`
-export default '/news/:year/:slug'
+export default '/news/@year/@slug'
 ```
 
 ## Catch-All
@@ -30,7 +30,7 @@ We can use Route Strings to implement [catch-all routes](/catch-all).
 
 Upon Route String conflicts, `vite-plugin-ssr` chooses the first route in following order:
 1. Most specific `/about/team` (matches only a single URL)
-1. Less specific `/about/:path` (also matches `/about/company`, `/about/vision`, ...)
+1. Less specific `/about/@path` (also matches `/about/company`, `/about/vision`, ...)
 1. Less specific `/about/*` (also matches `/about/also/nested/path`)
 1. Least specific `/*` (matches all URLs)
 

@@ -103,7 +103,7 @@ export default async pageContext => {
   // Parse the URL
   const urlParts = url.slice(1).split('/')
 
-  // Only URLs that start with `/user/:userId`
+  // Only URLs that start with `/user/@userId`
   if (urlParts[0] !== 'user') return false
   const userId = urlParts[1]
   if (!userId) return false
@@ -184,7 +184,7 @@ Upon route conflicts, `vite-plugin-ssr` chooses the first route in following ord
  3. Filesystem Routing
  4. Route String, static (i.e. without `:param` segment, e.g. `/about/company`)
  5. Route Function, returned no `precedence` number (or `0`)
- 6. Route String, parameterized (i.e. with `:param` segement, e.g. `/product/:productId` or `/product/*`)
+ 6. Route String, parameterized (i.e. with `:param` segement, e.g. `/product/@productId` or `/product/*`)
  7. Route Function, returned low negative `precedence` number (e.g. `-1`)
  8. Route Function, returned high negative `precedence` number (e.g. `-99`)
 
@@ -192,7 +192,7 @@ Upon route conflicts, `vite-plugin-ssr` chooses the first route in following ord
 
 ```js
 // product/item.page.route.js
-export default '/product/:productId'
+export default '/product/@productId'
 ```
 ```js
 // product/list.page.route.js
@@ -232,7 +232,7 @@ URL                           MATCHES                                    WINNER
 ```
 
 4: Route String, static (without `:param` segment, e.g. `/about/company`)  
-6: Route String, parameterized (with `:param` segements, e.g. `/product/:productId` or `/product/*`)  
+6: Route String, parameterized (with `:param` segements, e.g. `/product/@productId` or `/product/*`)  
 7: Route Function, returned low negative `precedence` number (e.g. `-1`)  
 
 **Example (1) + (4)**:

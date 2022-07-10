@@ -1,1 +1,1 @@
-export default '/todos/:todoId'
+export default '/todos/@todoId'

@@ -4,24 +4,24 @@ import { expect, describe, it } from 'vitest'
 
 describe('Route Strings Precedence', () => {
   it('basics', () => {
-    const routes = ['/', '/about', '/about/team', '/about/:path', '/about/*']
+    const routes = ['/', '/about', '/about/team', '/about/@path', '/about/*']
 
     ;[
       ['/', '/'],
       ['/about', '/about'],
       ['/about/team', '/about/team'],
-      ['/about/company', '/about/:path'],
+      ['/about/company', '/about/@path'],
       ['/about/some/nested/path', '/about/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
 
   it('catch-all', () => {
-    const routes = ['/', '/*', '/hello/:name']
+    const routes = ['/', '/*', '/hello/@name']
 
     ;[
       ['/', '/'],
       ['/hello', '/*'],
-      ['/hello/jon', '/hello/:name'],
+      ['/hello/jon', '/hello/@name'],
       ['/hello/jon/snow', '/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
@@ -32,13 +32,13 @@ describe('Route Strings Precedence', () => {
       '/about',
       '/about/team',
       '/*',
-      '/:path',
-      '/:path/:subpath',
-      '/:path/:subpath/*',
-      '/:path/*',
-      '/product/:productId',
-      '/product/:productId/review',
-      '/product/:productId/:view',
+      '/@path',
+      '/@path/@subpath',
+      '/@path/@subpath/*',
+      '/@path/*',
+      '/product/@productId',
+      '/product/@productId/review',
+      '/product/@productId/@view',
       '/product/*',
     ]
 
@@ -46,12 +46,12 @@ describe('Route Strings Precedence', () => {
       ['/', '/'],
       ['/about', '/about'],
       ['/about/team', '/about/team'],
-      ['/hello', '/:path'],
-      ['/hello/jon', '/:path/:subpath'],
-      ['/hello/jon/snow', '/:path/:subpath/*'],
-      ['/product/42', '/product/:productId'],
-      ['/product/42/details', '/product/:productId/:view'],
-      ['/product/42/review', '/product/:productId/review'],
+      ['/hello', '/@path'],
+      ['/hello/jon', '/@path/@subpath'],
+      ['/hello/jon/snow', '/@path/@subpath/*'],
+      ['/product/42', '/product/@productId'],
+      ['/product/42/details', '/product/@productId/@view'],
+      ['/product/42/review', '/product/@productId/review'],
       ['/product/42/review/too-long', '/product/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
@@ -61,20 +61,20 @@ describe('Route Strings Precedence', () => {
       '/', // homepage
       '/*', // catch all generic pages at multiple levels
       '/news', // news landing page
-      '/news/:page', // news paginated news results
-      '/news/:year/:slug', // news articles
+      '/news/@page', // news paginated news results
+      '/news/@year/@slug', // news articles
       '/news/press-releases/*', // press releases landing and paginated news pages (nested in /news)
-      '/news/press-releases/:year/:slug', // press releases (nested in /news)
+      '/news/press-releases/@year/@slug', // press releases (nested in /news)
     ]
 
     ;[
       ['/', '/'],
       ['/news', '/news'],
-      ['/news/1', '/news/:page'],
-      ['/news/2021/breaking-news', '/news/:year/:slug'],
+      ['/news/1', '/news/@page'],
+      ['/news/2021/breaking-news', '/news/@year/@slug'],
       ['/news/press-releases', '/news/press-releases/*'],
       ['/news/press-releases/1', '/news/press-releases/*'],
-      ['/news/press-releases/2021/new-funding', '/news/press-releases/:year/:slug'],
+      ['/news/press-releases/2021/new-funding', '/news/press-releases/@year/@slug'],
       ['/other', '/*'],
     ].forEach(([url, routeString]) => testUrl(url!, routeString!, routes))
   })
