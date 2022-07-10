@@ -2,12 +2,12 @@ import { RepoLink, Link } from 'vikepress'
 
 > **What are layouts?**
 > Apps often have different layouts:
-> for example, a landing page usually has a different layout than an admin panel.
-> We want to be able to define different layouts for different pages.
+> for example a landing page usually has a different layout than an admin panel.
+> *Layouts* are about defining different layouts for different pages.
 
 ## The simple way
 
-A simple way to have different layouts is to import and use the right layout for each page:
+Import and use the right layout for each page:
 
 ```jsx
 // /pages/index.page.js
@@ -42,13 +42,9 @@ function Page() {
 ```
 
 
-## `pageContext.exports.Layout`
+## Custom Export
 
-Alternatively, we can use <Link href="/exports" text={<code>pageContext.exports</code>} />
-to implement a custom export. This provides a similar DX than some UI frameworks.
-
-> In general, we recommend [the simple way](#the-simple-way).
-> Only use a custom export if you are confident that this is what you want.
+Alternatively, we can use a <Link href="/exports" text="Custom Export" />.
 
 ```js
 // /pages/admin.page.js
@@ -73,7 +69,7 @@ import { LayoutDefault } from '../layouts/LayoutDefault'
 
 function render() {
   const Layout = pageContext.exports.Layout || LayoutDefault
-  const Page = pageContext.exports.Page
+  const { Page } = pageContext
   // We render `<Layout><Page/></Layout>`
   // ...
 }
@@ -128,6 +124,8 @@ Examples:
 > | +--------------+ |                  | +-------------+ |
 > +------------------+                  +-----------------+
 > ```
+
+> For a DX similar to Next.js's new Layout RFC or Remix, see [#346](https://github.com/brillout/vite-plugin-ssr/issues/346).
 
 A simple way to implement a nested layout is to use a Route Function:
 
@@ -190,5 +188,3 @@ We use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/p
 Examples (see the `/starship` page):
  - <RepoLink path="/examples/layouts-react/" />
  - <RepoLink path="/examples/layouts-vue/" />
-
-> Alternatively,  for a similar DX than some UI frameworks, we can use a custom export. But we recommend against it: using a Route Function is simpler and works for the vast majority of cases.
