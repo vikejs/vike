@@ -1,3 +1,5 @@
+import { Link, RepoLink } from 'vikepress'
+
 For each page, we can choose:
  - Whether the page is rendered to HTML.
  - When the page is rendered to HTML (render-time VS build-time).
@@ -12,6 +14,173 @@ In other words, a page can use any render mode:
 For example, we can render an admin panel as SPA while rendering marketing pages to HTML-only.
 
 > The `vite-plugin-ssr` boilerplates do SSR by default, which is a sensible default that works for most apps.
+
+
+## SPA
+
+SPA means that the page is only loaded & rendered in the browser.
+
+We usually render a page as SPA if:
+ - The page is (highly) interactive. (Otherwise we would render it to HTML-only.)
+ - The page is not <Link text="content centric" href="/content-vs-interactive" />. (Otherwise we would use SSR because of SEO.)
+
+More broadly,
+if the page doesn't need SEO
+(e.g. an Admin Panel doesn't need to appear in Google searches)
+nor mobile performance
+(e.g. the user is expected to use the Admin Panel on a desktop device),
+then SPA is an option.
+
+SPA has two major advantages:
+ - It doesn't enforce the usage of a production Node.js server. (Whereas SSR does.)
+ - The `.page.js` file doesn't need to be able to run in Node.js. (For example, SPA is the only option for libraries that don't work with SSR. Although, luckily, most libraries have support/workarounds for SSR.)
+
+To render a page as SPA:
+ 1. We `export { Page }` in `.page.client.js` instead of `.page.js`.
+ 1. We adapt our `render()` hooks.
+
+```js
+// /pages/about.page.client.js
+// Environment: Browser
+
+// Usually `Page` is defined in `*.page.js` but for an SPA page
+// we define `Page` in `*.page.client.js` instead.
+export { Page }
+
+function Page() {
+  return <>
+    <h1>SPA page</h1>
+    <p>
+      This page is rendered only on the browser-side. (It isn't rendered to HTML.)
+    </p>
+  </>
+}
+```
+
+Example:
+ - <RepoLink path="/examples/render-modes/pages/spa/index.page.client.jsx" />
+
+If we only have SPA pages, we adapt our `render()` hooks like this:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject } from 'vite-plugin-ssr'
+
+export function render() {
+  // `div#root` is empty; the HTML is static.
+  return escapeInject`<html>
+    <body>
+      <div id="root"></div>
+    </body>
+  </html>`
+}
+```
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { renderToDom } from 'some-ui-framework'
+
+export { render }
+
+async function render(pageContext) {
+  const { Page } = pageContext
+  // UI frameworks usually have two methods, such as `renderToDom()` and `hydrateDom()`.
+  // Note how we use `renderToDom()` and not `hydrateDom()`.
+  await renderToDom(document.getElementById('root'), Page)
+}
+```
+
+> See <Link href="/hydration" /> for understanding the difference between "rendering to the DOM" and "hydrating the DOM".
+
+If we have both SPA and SSR pages, we adapt our `render()` hooks like this:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-ui-framework'
+
+export function render(pageContext) {
+  let pageHtml = ''
+  if (pageContext.Page) {
+    // For SSR pages
+    pageHtml = renderToHtml(pageContext.Page)
+  }
+  // `div#root` is empty for SPA pages
+  return escapeInject`<html>
+    <body>
+      <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
+    </body>
+  </html>`
+}
+```
+
+> SPA pages `export { Page }` in `.page.client.js` which means that `pageContext.Page` only exists on the browser-side (because `*.page.client.js` files are only loaded in the browser). Thus `pageContext.Page` is `undefined` in Node.js.
+>
+> SSR pages, in contrast, `export { Page }` in `.page.js` which means that `pageContext.Page` always exists (since `*.page.js` files are loaded in Node.js as well as in the browser).
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+export async function render(pageContext) {
+  const { Page } = pageContext
+  const rootDomElement = document.getElementById('root')
+  if (
+    // SPA pages don't have any hydration steps
+    rootDomElement.innerHTML === '' ||
+    // Page navigation of SSR pages also need to be fully rendered
+    !pageContext.isHydration
+  ) {
+    await renderToDom(rootDomElement, Page)
+  } else {
+    // The first render of SSR pages is a hydration
+    await renderToDom(Page)
+  }
+}
+```
+
+Example:
+ - <RepoLink path="/examples/render-modes/renderer/_default.page.server.jsx" />
+ - <RepoLink path="/examples/render-modes/renderer/_default.page.client.jsx" />
+ - <RepoLink path="/examples/render-modes/pages/spa/index.page.client.jsx" />
+ - <RepoLink path="/examples/render-modes/pages/ssr/index.page.jsx" />
+
+
+## SSR
+
+SSR means that our page is rendered to HTML as well as as rendered (hydrated) in the browser.
+
+It is the most capable mode as it enables:
+ - Highly interactive UIs.
+ - SEO. (High ranking on Google.)
+ - Improved mobile performance.
+
+SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading.
+(Loading & executing JavaScript is usually very slow on mobile.)
+
+For example, social news websites need SSR. (They are interactive while needing both SEO and mobile performance.)
+
+For pages that are not <Link text="content centric" href="/content-vs-interactive" /> (e.g. a to-do list app), we can consider SPA instead of SSR.
+
+
+## SSG (aka pre-rendering)
+
+Pre-rendering (aka SSG) means to render the page's HTML at build-time instead of request-time.
+
+We should use pre-rendering whenever we can, as it allows us to deploy our app to a Static Host.
+
+For example, `https://vite-plugin-ssr.com` is pre-rendered and deployed to [GitHub Pages](/github-pages).
+
+See [Guides > Pre-rendering](/pre-rendering).
+
 
 ## HTML-only
 
@@ -29,88 +198,40 @@ For the few bits of interactivity (such as an image carousel or a collapsible se
 the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity.
 This is what `https://vite-plugin-ssr.com` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
 
-To render a page to HTML-only, we simply define an empty `.page.client.js`:
+To render a page to HTML-only:
+
+ 1. We `export { Page }` in `.page.server.js` instead of `.page.js`.
+ 1. We set <Link text={<code>includeAssetsImportedByServer</code>} href="/includeAssetsImportedByServer" /> to `true`.
+
 
 ```js
-// .page.client.js
+// /pages/about.page.server.js
 // Environment: Browser
 
-// We leave this empty; there is no browser-side JavaScript.
+// Usually `Page` is defined in `*.page.js` but for HTML-only we
+// define `Page` in `*.page.server.js` instead.
+export { Page }
 
-// We can still include CSS
-import './path/to/some.css'
-```
-
-> We still need to import all static assets in `.page.client.js`, see [#171](https://github.com/brillout/vite-plugin-ssr/issues/171).
-
-## SSG (aka pre-rendering)
-
-Pre-rendering (aka SSG) means to render the page's HTML at build-time instead of request-time.
-
-We should use pre-rendering whenever we can, as it allows us to deploy our app to a Static Host.
-
-For example, `https://vite-plugin-ssr.com` is pre-rendered and deployed to [GitHub Pages](/github-pages).
-
-See [Guides > Pre-rendering](/pre-rendering).
-
-## Content- VS interactive-centric
-
-To decided between SSR and SPA, we need to discriminate between two types of apps:
- - *Content-centric*: the value of the page is mostly about content (e.g. a newspaper or a blog).
- - *Interactive-centric*: the value of the page is mostly about interaction (e.g. a to-do list app, an online image editor, or an admin-panel).
-
-## SPA
-
-SPA means that the page is only loaded & rendered in the browser.
-
-We usually render a page as SPA if:
- - The page is (highly) interactive. (Otherwise we would render it to HTML-only.)
- - The page is not [content-centric](#content-vs-interactive-centric). (Otherwise we would use SSR because of SEO.)
-
-More broadly,
-if the page doesn't need SEO
-(e.g. an Admin Panel doesn't need to appear in Google searches)
-nor mobile performance
-(e.g. the user is expected to use the Admin Panel on a desktop device),
-then SPA is an option.
-
-SPA has two major advantages:
- - It doesn't enforce the usage of a production Node.js server. (Whereas SSR does.)
- - The `.page.js` file doesn't need to be able to run in Node.js. (For example, SPA is the only option for libraries that don't work with SSR. Although, luckily, most libraries have support/workarounds for SSR.)
-
-To render a page as SPA, we simply render static HTML:
-
-```js
-// .page.server.js
-// Environment: Node.js
-
-import { escapeInject } from 'vite-plugin-ssr'
-
-export function render() {
-  // `div#app-root` is empty; the HTML is static.
-  return escapeInject`<html>
-    <head>
-      <title>My Website</title>
-    </head>
-    <body>
-      <div id="app-root"/>
-    </body>
-  </html>`
+function Page() {
+  return <>
+    <h1>HTML-only page</h1>
+    <p>
+      This page is rendered only to HTML. (It's not loaded/rendered in the browser-side.)
+    </p>
+  </>
 }
 ```
 
-## SSR
+```js
+// vite.config.js
 
-SSR means that our page is rendered to HTML as well as as rendered (hydrated) in the browser.
+import { ssr } from 'vite-plugin-ssr/plugin'
 
-It is the most capable mode as it enables:
- - Highly interactive UIs.
- - SEO. (High ranking on Google.)
- - Improved mobile performance.
-
-SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading.
-(Loading & executing JavaScript is usually very slow on mobile.)
-
-For example, social news websites need SSR. (They are interactive while needing both SEO and mobile performance.)
-
-For pages that are not [content-centric](#content-vs-interactive-centric) (e.g. a to-do list app), we can consider SPA instead of SSR.
+export default {
+  plugins: [
+    ssr({
+      includeAssetsImportedByServer: true
+    })
+  ]
+}
+```

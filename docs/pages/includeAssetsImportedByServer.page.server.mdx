@@ -1,0 +1,37 @@
+import { Link, Note } from 'vikepress'
+
+<Note type='warning'>This config is experimental and its behavior may change in any `vite-plugin-ssr` minor version update.</Note>
+
+Setting `includeAssetsImportedByServer` to `true` adds support for importing assets (CSS, images, etc.) from server-side code.
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      includeAssetsImportedByServer: true
+    })
+  ]
+}
+```
+
+```js
+// /pages/about.page.server.js
+// Environment: Node.js
+
+// This file is only loaded in Node.js (it's a `*.page.server.js` file).
+// We can still import CSS. (It will be included to the client-side.)
+import './about/some-style.css'
+
+// Same for other static assets such as images, fonts, etc.
+import imageUrl from './about/some-image.svg'
+
+export function Page() {
+  /* ... */
+}
+```
+
+> `about.page.server.js` is a HTML-only page, see <Link href="/render-modes#html-only" />.
