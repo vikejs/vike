@@ -29,7 +29,7 @@ export default pageContext => {
 
 See <Link href="/route-function#precedence" />.
 
-After the user successfully logs in, we reload the page with `window.location.reload()` (<Link href="/server-routing"  noBreadcrumb={true} />) or <Link text={<code>navigte(window.location.pathname)</code>} href="/navigate" /> (<Link href="/client-routing" noBreadcrumb={true} />).
+After the user successfully logs in, we reload the page with `window.location.reload()` (<Link href="/server-routing"  noBreadcrumb={true} />) or <Link text={<code>navigate(window.location.pathname)</code>} href="/navigate" /> (<Link href="/client-routing" noBreadcrumb={true} />).
 
 This approach preserves the URL during the entire login flow:
  1. Unauthenticated user goes to URL `/admin` and sees the Login Page. (URL is `/admin`.)
