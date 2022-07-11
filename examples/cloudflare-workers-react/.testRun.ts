@@ -68,7 +68,7 @@ function testRun(
 
   if (isWrangler) {
     /* TODO: differentiate between PR VS maintainer branch
-    if (isGithubAction() && process.env['GIT_BRANCH'] !== 'master') {
+    if (isGithubAction() && process.env['GIT_BRANCH'] !== 'main') {
       const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
       console.log(msg)
       test(msg, () => {})
