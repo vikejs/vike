@@ -1,13 +1,18 @@
 import React from 'react'
 import './Header.css'
-import iconPlugin from '../../icons/vite-plugin-ssr.svg'
-import iconReact from '../../icons/react.svg'
-import iconVue from '../../icons/vue.svg'
+import iconPlugin from '../../images/icons/vite-plugin-ssr.svg'
+import iconReact from '../../images/icons/react.svg'
+import iconVue from '../../images/icons/vue.svg'
 import { HorizontalLine } from 'vikepress'
 import { CallToActionDescription, ScaffoldCallToAction } from './ScaffoldCallToAction'
 
 export { Header }
 export { MobileCallToAction }
+
+// For `/banner`
+export { Logo }
+export { Title }
+//export { Tagline }
 
 function Header() {
   return (
@@ -20,6 +25,16 @@ function Header() {
   )
 }
 
+function Logo() {
+  return <img src={iconPlugin} />
+}
+function Title() {
+  return <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vite-plugin-ssr</code>
+}
+function Tagline() {
+  return <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
+}
+
 function LeftSide() {
   return (
     <div id="header-left-side">
@@ -30,12 +45,12 @@ function LeftSide() {
           alignItems: 'center',
         }}
       >
-        <img src={iconPlugin} />
+        <Logo />
         <h1>
-          <code style={{ display: 'inline-block', padding: '0.17em 0.6em', borderRadius: 5 }}>vite-plugin-ssr</code>
+          <Title />
         </h1>
       </div>
-      <p id="header-tagline">Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.</p>
+      <Tagline />
     </div>
   )
 }

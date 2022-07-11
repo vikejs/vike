@@ -1,11 +1,12 @@
 import type { Config } from 'vikepress'
 import { headings, headingsWithoutLink } from './headings'
 import { projectInfo } from './utils'
-import faviconUrl from './icons/vite-plugin-ssr.svg'
+import faviconUrl from './images/icons/vite-plugin-ssr.svg'
+import bannerUrl from './images/banner.png'
 import React from 'react'
 import { NavHeader, NavHeaderMobile } from './NavHeader'
 
-export default {
+const config: Config = {
   projectInfo,
   faviconUrl,
   algolia: {
@@ -19,4 +20,7 @@ export default {
   headingsWithoutLink,
   tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
   titleNormalCase: false,
-} as Config
+  bannerUrl,
+  websiteUrl: 'https://vite-plugin-ssr.com/',
+}
+export default config

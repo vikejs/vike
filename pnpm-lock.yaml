@@ -149,7 +149,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ^4.3.2
-      vikepress: ^0.0.27
+      vikepress: ^0.0.29
       vite: ^2.9.14
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
@@ -161,7 +161,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       typescript: 4.6.4
-      vikepress: 0.0.27_biqbaboplfbrettd7655fr4n2y
+      vikepress: 0.0.29_biqbaboplfbrettd7655fr4n2y
       vite: 2.9.14
     devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
@@ -12161,8 +12161,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.27_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-4Cu4N3IaxYjzTLjyetSyKZl/gvc/n6wcMMJfaPJRlLV0E0RKANo2AHKCcw48x3i2p2Ie8rvaNqLCAwdiedc0Ew==}
+  /vikepress/0.0.29_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-rrUQQtwxJ8EA9aTV/nh9nEW/pKLit0fPxu+/uHSnbGVouu6C/C5m7p09P7f+Js0lCtwMZh5mVAP4ZQn0fdXInQ==}
     hasBin: true
     peerDependencies:
       react: '18'
