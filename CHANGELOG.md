@@ -1,3 +1,12 @@
+## [0.4.2](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.1...v0.4.2) (2022-07-11)
+
+
+### Bug Fixes
+
+* update URLs to https://vite-plugin-ssr.com docs ([2fc1a3a](https://github.com/brillout/vite-plugin-ssr/commit/2fc1a3a7199e9bf319847ea3cd581edd4e681d1e))
+
+
+
 ## [0.4.1](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.0...v0.4.1) (2022-07-11)
 
 
