@@ -16,10 +16,10 @@ export default {
 }
 ```
 
-Running `$ vite build` executes the following three build steps:
- 1. The client-side is build (`dist/client/`).
- 1. The server-side is build (`dist/server/`).
- 1. The pre-rendering of HTML files (if <Link text="pre-rendering is enabled" href="/pre-rendering" />).
+Running `$ vite build` executes three build steps:
+ 1. Client-side build (`dist/client/`).
+ 1. Server-side build (`dist/server/`).
+ 1. Pre-rendering (if <Link text="pre-rendering is enabled" href="/pre-rendering" />).
 
 When setting `disableAutoFullBuild` to `true` then only step `1` is executed. To run the full build, we then have to:
 

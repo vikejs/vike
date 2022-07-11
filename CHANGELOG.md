@@ -19,6 +19,7 @@
 
 # [0.4.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.64...v0.4.0) (2022-07-10)
 
+List of new features at [this Twitter Thread](https://twitter.com/brillout/status/1546478670860140544).
 
 ### BREAKING CHANGES
 
