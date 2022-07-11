@@ -1,6 +1,6 @@
 Normally, the `dist/server/` files are automatically loaded.
 
-But, in some (rare) situations, the mechanism used by `vite-plugin-ssr` doesn't work and we want to manually load `dist/server/` files instead:
+But, in some (rare) situations, the mechanism used by `vite-plugin-ssr` doesn't work and we need to manually load the `dist/server/` files:
 
 ```js
 // server.js
@@ -12,4 +12,4 @@ require('./path/to/dist/server/importBuild.cjs')
 */
 ```
 
-> If you have problems loading `dist/server/` files, feel free to reach out to the `vite-plugin-ssr` maintainers.
+> Reach out to the `vite-plugin-ssr` maintainers if you have problems importing `dist/server/importBuild.cjs`.

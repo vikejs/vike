@@ -1,10 +1,59 @@
 `pageContext.exports` holds the `export` values of:
- - The current page's `.page.js` file (on the server-side and on the browser-side).
- - The current page's `.page.server.js` file (only on the server-side).
- - The current page's `.page.client.js` file (only on the browser-side).
+ - The current page's `.page.js`/`.page.server.js`/`.page.client.js` files.
  - The `_default.page.*` files.
 
-`pageContext.exports` enables us to implement custom exports/hooks.
+For example:
+
+```js
+// /pages/countries.page.js
+// Environment: Node.js & Browser
+
+export const title = 'Earth Countries'
+```
+```js
+// /pages/countries.page.server.js
+// Environment: Node.js
+
+export const dataUrl = 'https://restcountries.com/v3.1/all'
+```
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { onBeforeRender }
+
+import fetch from 'node-fetch'
+
+async function onBeforeRender(pageContext) {
+  const response = await fetch(pageContext.exports.dataUrl)
+  // ...
+}
+
+function render(pageContext) {
+   const titleTag = `<title>${pageContext.exports.title}</title>`
+   // ...
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export const clientRouting = true
+export { render }
+
+function render(pageContext) {
+  if (!pageContext.isHydration) {
+    // Update the website's title upon page navigation.
+    document.title = pageContext.exports.title
+  }
+  // ...
+}
+```
+> Note how `pageContext.exports.title` is available in both Node.js and the browser: that's because `export { title }` is defined in a `.page.js` file which is loaded in Node.js as well as in the browser.
+>
+> Whereas `pageContext.exports.dataUrl` isn't available in the browser: `.page.server.js` files are loaded only in Node.js.
+
+We call this technique *Custom Exports* / *Custom Hooks*.
 
 
 ## Example: Page Layout

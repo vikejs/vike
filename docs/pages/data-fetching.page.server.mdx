@@ -1,7 +1,7 @@
 import { RepoLink, Link } from 'vikepress'
 
 > We recommend taking the <Link text="React Tour" href="/react-tour" /> or <Link text="Vue Tour" href="/vue-tour" /> before reading this guide.
-> The tour explains what the `_default.page.*` files are about.
+> The tour explains what the files `/renderer/_default.page.*` are about.
 
 ## `onBeforeRender()`
 
@@ -11,13 +11,13 @@ The usual way to fetch data is to use a `onBeforeRender()` hook.
 // /pages/movies.page.server.js
 // Environment: Node.js
 
-import fetch from "node-fetch";
+import fetch from 'node-fetch'
 
 export { onBeforeRender }
 
 async function onBeforeRender(pageContext) {
   // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
-  const response = await fetch("https://movies.example.org/api")
+  const response = await fetch('https://movies.example.org/api')
   let movies = await response.json()
 
   // `movies` will be serialized and passed to the browser; we select only the data we
@@ -101,9 +101,9 @@ function Page(pageProps) {
 
 > Note that `vite-plugin-ssr` doesn't know anything about `pageProps`: it's just an object we create in order to conveniently pass all the page's props at once.
 
-## Custom Exports/Hooks
+## Custom Exports
 
-For more convenience we can define `onBeforeRender()` in `_default.page.server.js` and use a <Link text="Custom Export" href="/exports" />.
+For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` once in `/renderer/_default.page.server.js` while using a <Link text="Custom Export" href="/exports" />.
 
 For example:
 
@@ -126,15 +126,13 @@ export { onBeforeRender }
 import { runQuery } from 'some-sql-engine'
 
 async function onBeforeRender(pageContext) {
-  // The export values above are available at `pageContext.exports.query`
+  // Our `query` export values are available at `pageContext.exports.query`
   const { query } = pageContext.exports
   const data = await runQuery(query)
   const pageProps = { data }
   return { pageContext: { pageProps } }
 }
 ```
-
-> If the logic differs substantially between two parts of our app, we can also create <Link text={<>mutliple <code>renderer/</code> directories</>} href="/multiple-renderer" />.
 
 
 ## Client Routing
