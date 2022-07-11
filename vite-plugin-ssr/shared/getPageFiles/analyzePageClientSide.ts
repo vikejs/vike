@@ -19,6 +19,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
     pageFilesClientSide = pageFilesClientSide.filter(
       (p) => p.fileType === '.page.client' && !getExportNames(p).includes('render'),
     )
+    pageFilesClientSide = removeOverridenPageFiles(pageFilesClientSide)
   }
 
   const { clientEntries, clientDependencies } = determineClientEntry({
@@ -58,4 +59,17 @@ async function analyzePageClientSideInit(
       */
     }),
   )
+}
+
+// [WIP] Just an experiment needed by https://vite-plugin-ssr.com/banner
+//  - Not sure I want to make something like a public API: the CSS of `_default.page.server.js` are still loaded -> weird DX.
+function removeOverridenPageFiles(pageFilesClientSide: PageFile[]) {
+  const pageFilesClientSide_: PageFile[] = []
+  for (const p of pageFilesClientSide) {
+    pageFilesClientSide_.push(p)
+    if (getExportNames(p).includes('overrideDefaultPages')) {
+      break
+    }
+  }
+  return pageFilesClientSide_
 }
