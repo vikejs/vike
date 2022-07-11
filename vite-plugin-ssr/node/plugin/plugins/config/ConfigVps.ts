@@ -55,7 +55,7 @@ type ConfigVpsUser = {
          *
          * Use this if you want to programmatically initiate the pre-rendering process instead.
          *
-         * See https://vite-plugin-ssr.com/prerender-call
+         * See https://vite-plugin-ssr.com/prerender-programmatic
          *
          * @default false
          */
@@ -82,7 +82,7 @@ type ConfigVpsUser = {
   /**
    * Add support for importing assets (CSS, images, etc.) from server-side code.
    *
-   * Useful for HTML-only pages, see https://vite-plugin-ssr/render-modes#html-only
+   * Useful for HTML-only pages, see https://vite-plugin-ssr.com/render-modes#html-only
    *
    * @experimental
    */

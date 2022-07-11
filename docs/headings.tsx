@@ -51,6 +51,7 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   },
   { title: 'What is Hydration?', url: '/hydration' },
   { title: <code>dist/server/importBuild.js</code>, url: '/importBuild.js' },
+  { title: <code>importBuild.cjs</code>, url: '/importBuild.cjs' },
   { title: <code>injectAssets()</code>, url: '/injectAssets' },
   {
     title: (
@@ -571,7 +572,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`prerender` (config)',
+    title: '`prerender` config',
     url: '/prerender-config',
   },
   {
@@ -669,7 +670,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: '`prerender()` (programmatic run)',
+    title: '`prerender()` programmatic',
     url: '/prerender-programmatic',
   },
   {

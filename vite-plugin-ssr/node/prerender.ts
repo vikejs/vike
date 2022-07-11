@@ -97,11 +97,11 @@ async function prerender(
     root?: string
     /** @deprecated Define `prerender({ viteConfig: { configFile }})` instead. */
     configFile?: string
-    /** @deprecated Define `partial` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    /** @deprecated Define `partial` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
     partial?: boolean
-    /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    /** @deprecated Define `noExtraDir` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
     noExtraDir?: boolean
-    /** @deprecated Define `parallel` in vite.config.js instead, see https://vite-plugin-ssr.com/config */
+    /** @deprecated Define `parallel` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
     parallel?: number
     // Outdated
     outDir?: string
@@ -618,7 +618,7 @@ function checkOutdatedOptions(options: {
   ;(['noExtraDir', 'partial', 'parallel'] as const).forEach((prop) => {
     assertUsage(
       options[prop] === undefined,
-      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/config`,
+      `[prerender()] Option \`${prop}\` is deprecated. Define \`${prop}\` in \`vite.config.js\` instead. See https://vite-plugin-ssr.com/prerender-config`,
     )
   })
   ;(['base', 'outDir'] as const).forEach((prop) => {

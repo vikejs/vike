@@ -11,7 +11,7 @@ cli
   .action(async (options) => {
     assertWarning(
       false,
-      'The `$ vite-plugin-ssr prerender` CLI is outdated. Set the `vite.config.js` option `prerender` instead. See https://vite-plugin-ssr.com/prerender for more information.',
+      'The `$ vite-plugin-ssr prerender` CLI is outdated. Set the `vite.config.js` option `prerender` instead. See https://vite-plugin-ssr.com/prerender-config for more information.',
       { onlyOnce: true },
     )
     assertOptions()

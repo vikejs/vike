@@ -1,5 +1,5 @@
 import { setPageFilesAsync } from '../../shared/getPageFiles'
-import { assert, assertUsage, debugGlob } from '../utils'
+import { assert, debugGlob } from '../utils'
 import { getViteDevServer } from '../globalContext'
 //import { pathToFileURL } from 'url'
 import { ViteDevServer } from 'vite'
@@ -14,10 +14,7 @@ async function getPageFilesExports(): Promise<unknown> {
     return pageFilesExports
   }
   //const pageFilesExports = await distAutoImporterDisabled()
-  assertUsage(
-    false,
-    'Could not load page files. Make sure to import `importBuild.js`. See https://vite-plugin-ssr.com/importBuild.js for more information.',
-  )
+  assert(false)
 }
 
 async function dev(viteDevServer: ViteDevServer) {

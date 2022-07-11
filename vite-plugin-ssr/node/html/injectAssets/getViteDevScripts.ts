@@ -22,7 +22,7 @@ async function getViteDevScripts(pageContext: PageContext): Promise<string> {
   fakeHtml = await pageContext._viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
-    'Vite plugins that minify the HTML are not supported by vite-plugin-ssr, see https://vite-plugin-ssr.com/html-minifiers',
+    'Vite plugins that minify the HTML are not supported by vite-plugin-ssr, see https://github.com/brillout/vite-plugin-ssr/issues/224',
   )
   assertUsage(
     fakeHtml.startsWith(fakeHtmlBegin) && fakeHtml.endsWith(fakeHtmlEnd),

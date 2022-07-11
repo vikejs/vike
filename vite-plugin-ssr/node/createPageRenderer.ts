@@ -50,7 +50,7 @@ function showWarnings(options: Options) {
       opts.length === 0,
       `The options ${str(
         opts,
-      )} you passed to \`createPageRenderer()\` have no effect. See https://vite-plugin-ssr.com/migration`,
+      )} you passed to \`createPageRenderer()\` have no effect. See https://vite-plugin-ssr.com/migration-0.4`,
       { onlyOnce: true },
     )
   }
