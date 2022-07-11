@@ -15,17 +15,19 @@ function inferAssetTag(pageAsset: PageAsset): string {
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
   if (assetType === 'preload') {
+    const isCrossOrigin = src.startsWith('http://') || src.startsWith('https://')
+    const attributeCrossorigin = !isCrossOrigin ? '' : ' crossorigin'
     if (preloadType === 'font') {
       // `crossorigin` is needed for fonts, see https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload#cors-enabled_fetches
-      return `<link rel="preload" as="font" crossorigin type="${mediaType}" href="${src}">`
+      return `<link rel="preload" as="font" crossorigin type="${mediaType}" href="${src}"${attributeCrossorigin}>`
     }
     if (preloadType === 'script') {
       assert(mediaType === 'text/javascript')
-      return `<link rel="modulepreload" as="script" type="${mediaType}" href="${src}">`
+      return `<link rel="modulepreload" as="script" type="${mediaType}" href="${src}"${attributeCrossorigin}>`
     }
     const attributeAs = !preloadType ? '' : ` as="${preloadType}"`
     const attributeType = !mediaType ? '' : ` type="${mediaType}"`
-    return `<link rel="preload" href="${src}"${attributeAs}${attributeType}>`
+    return `<link rel="preload" href="${src}"${attributeAs}${attributeType}${attributeCrossorigin}>`
   }
   assert(false)
 }
