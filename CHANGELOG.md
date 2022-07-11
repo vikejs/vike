@@ -1,3 +1,13 @@
+## [0.4.1](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.0...v0.4.1) (2022-07-11)
+
+
+### Bug Fixes
+
+* add crossorigin attribute to preload link with absolute src (fix [#355](https://github.com/brillout/vite-plugin-ssr/issues/355)) ([2c4ed4b](https://github.com/brillout/vite-plugin-ssr/commit/2c4ed4b5f5c9b04da43903fcf654f209c107d7af))
+* route precedence for new param token `@` ([f83aa57](https://github.com/brillout/vite-plugin-ssr/commit/f83aa57c2928afc6cdcd666e9e9d0d13912f0740))
+
+
+
 # [0.4.0](https://github.com/brillout/vite-plugin-ssr/compare/v0.3.64...v0.4.0) (2022-07-10)
 
 
