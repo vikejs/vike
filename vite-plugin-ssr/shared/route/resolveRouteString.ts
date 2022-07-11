@@ -38,7 +38,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
     if (routeDir === '*') {
       routeParams['*'] = urlParts.slice(Math.max(1, i)).join('/')
       return { routeParams }
-    } else if (routeDir && (routeDir.startsWith(PARAM_TOKEN_NEW) || routeDir.startsWith(PARAM_TOKEN_OLD))) {
+    } else if (routeDir && isParameterized(routeDir)) {
       assertWarning(
         !routeDir.startsWith(PARAM_TOKEN_OLD),
         `Outdated route string \`${routeString}\`, use \`${routeString
@@ -74,22 +74,24 @@ function assertGlob(routeString: string) {
 function analyzeRouteString(routeString: string) {
   const pathSegments = routeString.split('/').filter((path) => path !== '' && path !== '*')
 
-  const isStatic = (path: string) => !path.startsWith(':')
-
   let numberOfStaticSegmentsBeginning = 0
   for (const path of pathSegments) {
-    if (!isStatic(path)) {
+    if (isParameterized(path)) {
       break
     }
     numberOfStaticSegmentsBeginning++
   }
 
-  const numberOfStaticSegements = pathSegments.filter((p) => isStatic(p)).length
-  const numberOfParameterSegments = pathSegments.filter((p) => !isStatic(p)).length
+  const numberOfStaticSegements = pathSegments.filter((p) => !isParameterized(p)).length
+  const numberOfParameterSegments = pathSegments.filter((p) => isParameterized(p)).length
 
   const isCatchAll = routeString.endsWith('*')
 
   return { numberOfParameterSegments, numberOfStaticSegmentsBeginning, numberOfStaticSegements, isCatchAll }
+}
+
+function isParameterized(routeSegment: string) {
+  return routeSegment.startsWith(PARAM_TOKEN_NEW) || routeSegment.startsWith(PARAM_TOKEN_OLD)
 }
 
 function isStaticRouteString(routeString: string): boolean {
