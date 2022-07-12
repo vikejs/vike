@@ -102,10 +102,13 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('green')
+        await sleep(100) // Not sure if it helps make the test less flaky?
         editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
         await sleep(100)
         await testColor('gray')
+        await sleep(100) // Not sure if it helps make the test less flaky?
         editFileRevert()
+        await sleep(100) // Not sure if it helps make the test less flaky?
         await testColor('green')
       }
       // Ensure CSS was HMR'd
