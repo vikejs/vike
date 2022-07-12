@@ -11,7 +11,7 @@
     "@vue/server-renderer": "^3.2.24",
     "esbuild": "^0.13.12",
     "vite": "^2.9.14",
-    "vite-plugin-ssr": "0.4.3",
+    "vite-plugin-ssr": "0.4.4",
     "vue": "^3.2.24"
   }
 }

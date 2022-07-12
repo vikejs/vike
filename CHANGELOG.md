@@ -1,3 +1,12 @@
+## [0.4.4](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.3...v0.4.4) (2022-07-12)
+
+
+### Bug Fixes
+
+* workaround Vite 3 ping bug vitejs/vite[#9051](https://github.com/brillout/vite-plugin-ssr/issues/9051) ([0140b51](https://github.com/brillout/vite-plugin-ssr/commit/0140b5107ddc95767331daa16f7ee87ea5673793))
+
+
+
 ## [0.4.3](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.2...v0.4.3) (2022-07-12)
 
 
