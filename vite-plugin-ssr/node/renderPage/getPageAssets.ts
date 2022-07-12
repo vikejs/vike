@@ -30,14 +30,6 @@ async function getPageAssets(
   if (isDev) {
     const viteDevServer = pageContext._viteDevServer
     assert(viteDevServer)
-    clientDependencies.forEach((clientDep) => {
-      if (!clientDep.onlyAssets) {
-        const entry = clientDep.id
-        if (!clientEntries.includes(entry)) {
-          clientEntries.unshift(entry + '?import')
-        }
-      }
-    })
     clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
