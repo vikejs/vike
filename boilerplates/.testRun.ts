@@ -12,8 +12,7 @@ import {
   editFileRevert,
 } from '../libframe/test/setup'
 import assert from 'assert'
-import * as vite from 'vite'
-const viteVersion = (vite as { version?: string }).version || '2.?.?'
+const viteVersion = '3.?.?'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
