@@ -43,7 +43,13 @@ function analyzise() {
         }
       }
     } else {
-      if (toPosixPath(arg).endsWith('/bin/vite.js')) {
+      const a = toPosixPath(arg)
+      if (
+        // pnpm
+        a.endsWith('/bin/vite.js') ||
+        // npm
+        a.endsWith('/.bin/vite')
+      ) {
         isViteCli = true
       }
     }
