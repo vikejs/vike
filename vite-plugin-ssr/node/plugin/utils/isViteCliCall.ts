@@ -47,7 +47,7 @@ function analyzise() {
       if (
         // pnpm
         a.endsWith('/bin/vite.js') ||
-        // npm
+        // npm & yarn
         a.endsWith('/.bin/vite')
       ) {
         isViteCli = true
