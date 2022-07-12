@@ -1,3 +1,12 @@
+## [0.4.3](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.2...v0.4.3) (2022-07-12)
+
+
+### Bug Fixes
+
+* client entry loaded twice (fix [#362](https://github.com/brillout/vite-plugin-ssr/issues/362)) ([031f47c](https://github.com/brillout/vite-plugin-ssr/commit/031f47ccfaf20b0cae8e55161b9fb79f7432f569))
+
+
+
 ## [0.4.2](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.1...v0.4.2) (2022-07-11)
 
 
