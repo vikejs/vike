@@ -180,9 +180,12 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
     ...pageContextInit,
   }
 
-  if (pageContextAddendum.url.endsWith('/favicon.ico') || !isParsable(pageContextAddendum.url)) {
-    objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
-    return pageContextAddendum
+  {
+    const { url } = pageContextAddendum
+    if (url.endsWith('/__vite_ping') || url.endsWith('/favicon.ico') || !isParsable(url)) {
+      objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
+      return pageContextAddendum
+    }
   }
 
   const globalContext = await getGlobalContext(pageContextAddendum._isPreRendering)
