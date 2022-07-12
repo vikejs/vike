@@ -112,8 +112,8 @@ async function init() {
   if (root !== cwd) {
     console.log(cmd(`  cd ${path.relative(cwd, root)}/`))
   }
-  console.log(`  ${cmd('npm install')} (or ${cmd('yarn install')})`)
-  console.log(`  ${cmd('npm run dev')} (or ${cmd('yarn dev')})`)
+  console.log(`  ${cmd('npm install')} (/ ${cmd('pnpm install')} / ${cmd('yarn install')})`)
+  console.log(`  ${cmd('npm run dev')} (/ ${cmd('pnpm run dev')} / ${cmd('yarn dev')})`)
   console.log()
 }
 
