@@ -1,3 +1,12 @@
+## [0.4.5](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.4...v0.4.5) (2022-07-12)
+
+
+### Bug Fixes
+
+* Vite CLI for npm (fix [#363](https://github.com/brillout/vite-plugin-ssr/issues/363)) ([13b00b5](https://github.com/brillout/vite-plugin-ssr/commit/13b00b508b9d9a4e354a6b7ae677ffdca10af75e))
+
+
+
 ## [0.4.4](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.3...v0.4.4) (2022-07-12)
 
 
