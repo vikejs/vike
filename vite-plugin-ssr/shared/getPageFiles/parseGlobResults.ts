@@ -75,22 +75,50 @@ function traverse(
     assert(fileTypes.includes(fileType))
     assert(isObject(globFiles))
     Object.entries(globFiles).forEach(([filePath, globResult]) => {
-      const isRelevant = (pageId: string): boolean =>
-        pageFile.pageId === pageId ||
-        (pageFile.isDefaultPageFile &&
-          (pageFile.isRendererPageFile || isAncestorDefaultPage(pageId, pageFile.filePath)))
-      const pageFile = (pageFilesMap[filePath] = pageFilesMap[filePath] ?? {
-        filePath,
-        fileType,
-        isRelevant,
-        isDefaultPageFile: isDefaultFilePath(filePath),
-        isRendererPageFile: isDefaultFilePath(filePath) && isRendererFilePath(filePath),
-        isErrorPageFile: isErrorPage(filePath),
-        pageId: determinePageId(filePath),
-      })
+      const pageFile = (pageFilesMap[filePath] = pageFilesMap[filePath] ?? getPageFileObject(filePath))
+      assert(pageFile.fileType === fileType)
       visitor(pageFile, globResult)
     })
   })
+}
+
+function getPageFileObject(filePath: string): PageFile {
+  const isRelevant = (pageId: string): boolean =>
+    pageFile.pageId === pageId ||
+    (pageFile.isDefaultPageFile && (pageFile.isRendererPageFile || isAncestorDefaultPage(pageId, pageFile.filePath)))
+  const fileType = determineFileType(filePath)
+  const pageFile = {
+    filePath,
+    fileType,
+    isRelevant,
+    isDefaultPageFile: isDefaultFilePath(filePath),
+    isRendererPageFile: isDefaultFilePath(filePath) && isRendererFilePath(filePath),
+    isErrorPageFile: isErrorPage(filePath),
+    pageId: determinePageId(filePath),
+  }
+  return pageFile
+}
+
+function determineFileType(filePath: string): FileType {
+  assertPosixPath(filePath)
+  const fileName = filePath.split('/').slice(-1)[0]!
+  const fileNameSegments = fileName.split('.')
+  const suffix1 = fileNameSegments.slice(-3)[0]
+  const suffix2 = fileNameSegments.slice(-2)[0]
+  if (suffix2 === 'page') {
+    return '.page'
+  }
+  assert(suffix1 === 'page', { filePath })
+  if (suffix2 === 'server') {
+    return '.page.server'
+  }
+  if (suffix2 === 'client') {
+    return '.page.client'
+  }
+  if (suffix2 === 'route') {
+    return '.page.route'
+  }
+  assert(false, { filePath })
 }
 
 function isDefaultFilePath(filePath: string): boolean {
