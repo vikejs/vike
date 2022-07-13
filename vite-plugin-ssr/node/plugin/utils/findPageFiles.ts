@@ -2,15 +2,15 @@ export { findPageFiles }
 
 import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
-import { javascriptFileExtensions, isSSR_config } from '../utils'
+import { javascriptFileExtensions } from '../utils'
 import { assertWarning, toPosixPath } from '../../utils'
+import { FileType } from '../../../shared/getPageFiles/types'
 
-async function findPageFiles(config: ResolvedConfig): Promise<string[]> {
-  const ssr = isSSR_config(config)
+async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Promise<string[]> {
   const cwd = config.root
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
-    [`**/*.page.${javascriptFileExtensions}`, `**/*.page.${ssr ? 'server' : 'client'}.${javascriptFileExtensions}`],
+    fileTypes.map((fileType) => `**/*${fileType}.${javascriptFileExtensions}`),
     { ignore: ['**/node_modules/**'], cwd },
   )
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))

@@ -5,6 +5,7 @@ import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, getFilesystemRoute } from './resolveFilesystemRoute'
 
 export { loadPageRoutes }
+export { findPageRouteFile }
 export type { PageRoutes }
 
 type PageRoutes = ({ pageId: string } & (
@@ -65,7 +66,7 @@ async function loadPageRoutes(pageContext: {
   const allPageIdsWithFilesystemRoute = allPageIds
     .filter((pageId) => !isErrorPage(pageId))
     .filter((pageId) => {
-      const pageRouteFile = pageContext._pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
+      const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
       if (!pageRouteFile) {
         return true
       }
@@ -105,6 +106,10 @@ async function loadPageRoutes(pageContext: {
   })
 
   return { pageRoutes, onBeforeRouteHook }
+}
+
+function findPageRouteFile(pageId: string, pageFilesAll: PageFile[]) {
+  return pageFilesAll.find((p) => p.pageId === pageId && p.fileType === '.page.route')
 }
 
 function dirname(filePath: string): string {
