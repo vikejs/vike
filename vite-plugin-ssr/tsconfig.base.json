@@ -2,8 +2,6 @@
   "compilerOptions": {
     // Strictness
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noUncheckedIndexedAccess": true,
     // Output
     "declaration": true,
