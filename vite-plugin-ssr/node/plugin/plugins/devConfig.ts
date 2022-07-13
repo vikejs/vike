@@ -1,7 +1,8 @@
 export { devConfig }
 
-import type { Plugin, ResolvedConfig } from 'vite'
-import { apply, addSsrMiddleware, findPageFiles, isSSR_config, assert } from '../utils'
+import type { Plugin } from 'vite'
+import { apply, addSsrMiddleware, assert } from '../utils'
+import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 
 function devConfig(): Plugin[] {
@@ -44,11 +45,4 @@ function devConfig(): Plugin[] {
       },
     },
   ]
-}
-
-async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> {
-  const ssr = isSSR_config(config)
-  assert(ssr === false) // In dev, `build.ssr` is always `false`
-  const pageFiles = (await findPageFiles(config)).map(p => p.filePathAbsolue)
-  return pageFiles
 }
