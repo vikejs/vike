@@ -22,8 +22,9 @@ function parseGlobResults(pageFilesExports: unknown) {
   )
 
   const pageFilesMap: Record<string, PageFile> = {}
-  traverse(pageFilesExports.pageFilesLazy, pageFilesMap, (pageFile, globResult) => {
-    const loadModule = globResult
+  parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
+    pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
+    const loadModule = globValue
     assertLoadModule(loadModule)
     pageFile.loadFile = async () => {
       if (!('fileExports' in pageFile)) {
@@ -31,8 +32,9 @@ function parseGlobResults(pageFilesExports: unknown) {
       }
     }
   })
-  traverse(pageFilesExports.pageFilesExportNamesLazy, pageFilesMap, (pageFile, globResult) => {
-    const loadModule = globResult
+  parseGlobResult(pageFilesExports.pageFilesExportNamesLazy).forEach(({ filePath, pageFile, globValue }) => {
+    pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
+    const loadModule = globValue
     assertLoadModule(loadModule)
     pageFile.loadExportNames = async () => {
       if (!('exportNames' in pageFile)) {
@@ -42,13 +44,15 @@ function parseGlobResults(pageFilesExports: unknown) {
       }
     }
   })
-  traverse(pageFilesExports.pageFilesEager, pageFilesMap, (pageFile, globResult) => {
-    const moduleExports = globResult
+  parseGlobResult(pageFilesExports.pageFilesEager).forEach(({ filePath, pageFile, globValue }) => {
+    pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
+    const moduleExports = globValue
     assert(isObject(moduleExports))
     pageFile.fileExports = moduleExports
   })
-  traverse(pageFilesExports.pageFilesExportNamesEager, pageFilesMap, (pageFile, globResult) => {
-    const moduleExports = globResult
+  parseGlobResult(pageFilesExports.pageFilesExportNamesEager).forEach(({ filePath, pageFile, globValue }) => {
+    pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
+    const moduleExports = globValue
     assert(isObject(moduleExports))
     assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
     pageFile.exportNames = moduleExports.exportNames
@@ -62,24 +66,20 @@ function parseGlobResults(pageFilesExports: unknown) {
   return pageFiles
 }
 
-function assertLoadModule(globResult: unknown): asserts globResult is () => Promise<Record<string, unknown>> {
-  assert(isCallable(globResult))
-}
-function traverse(
-  globObject: Record<string, unknown>,
-  pageFilesMap: Record<string, PageFile>,
-  visitor: (pageFile: PageFile, globResult: unknown) => void,
-) {
+type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]
+function parseGlobResult(globObject: Record<string, unknown>): GlobResult {
+  const ret: GlobResult = []
   Object.entries(globObject).forEach(([fileType, globFiles]) => {
     cast<FileType>(fileType)
     assert(fileTypes.includes(fileType))
     assert(isObject(globFiles))
-    Object.entries(globFiles).forEach(([filePath, globResult]) => {
-      const pageFile = (pageFilesMap[filePath] = pageFilesMap[filePath] ?? getPageFileObject(filePath))
+    Object.entries(globFiles).forEach(([filePath, globValue]) => {
+      const pageFile = getPageFileObject(filePath)
       assert(pageFile.fileType === fileType)
-      visitor(pageFile, globResult)
+      ret.push({ filePath, pageFile, globValue })
     })
   })
+  return ret
 }
 
 function getPageFileObject(filePath: string): PageFile {
@@ -97,6 +97,10 @@ function getPageFileObject(filePath: string): PageFile {
     pageId: determinePageId(filePath),
   }
   return pageFile
+}
+
+function assertLoadModule(globValue: unknown): asserts globValue is () => Promise<Record<string, unknown>> {
+  assert(isCallable(globValue))
 }
 
 function determineFileType(filePath: string): FileType {
