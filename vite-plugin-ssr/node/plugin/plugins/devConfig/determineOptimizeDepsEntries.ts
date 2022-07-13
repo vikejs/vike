@@ -4,8 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import { getPageFileObject } from '../../../../shared/getPageFiles/getPageFileObject'
 import { getFilesystemRoute } from '../../../../shared/route/resolveFilesystemRoute'
 import { findPageRouteFile } from '../../../../shared/route/loadPageRoutes'
-import { findPageFiles, toPosixPath } from '../../utils'
-import fs from 'fs'
+import { findPageFiles, makeFilePathAbsolute } from '../../utils'
 
 async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> {
   const pageFilesAll = (await findPageFiles(config, ['.page', '.page.client', '.page.route'])).map((p) =>
@@ -30,14 +29,6 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<str
   }
   pageFiles = pageFiles.slice(0, 10)
 
-  let entries = pageFiles.map(({ filePath }) => filePath)
-  entries = [writeScanTargetProxyFile(entries)]
+  const entries = pageFiles.map(({ filePath }) => makeFilePathAbsolute(filePath, config))
   return entries
-}
-
-function writeScanTargetProxyFile(entries: string[]): string {
-  const fileContent = entries.map((p) => `import '${p}';`).join('\n') + '\n'
-  const filePath = `${__dirname}/scanTargetProxyFile.js`
-  fs.writeFileSync(filePath, fileContent, 'utf8')
-  return toPosixPath(filePath)
 }
