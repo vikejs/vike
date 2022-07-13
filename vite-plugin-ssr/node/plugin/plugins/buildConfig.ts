@@ -1,7 +1,7 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import type { ResolvedConfig } from 'vite'
-import { assert, getOutDir, isObject, isSSR_config } from '../utils'
+import { assert, getOutDir, isObject, isSSR_config, makeFilePathAbsolute } from '../utils'
 import { modifyResolvedConfig } from '../utils/modifyResolvedConfig'
 import { findPageFiles } from '../utils/findPageFiles'
 
@@ -45,7 +45,7 @@ function buildConfig(): Plugin {
 async function entryPoints(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFiles = await findPageFiles(config)
   const pageFilesObject: Record<string, string> = {}
-  pageFiles.forEach((p) => (pageFilesObject[removeFileExtention(p.filePathRelative)] = p.filePathAbsolue))
+  pageFiles.forEach((p) => (pageFilesObject[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))
   if (isSSR_config(config)) {
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
