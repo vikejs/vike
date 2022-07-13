@@ -10,7 +10,7 @@ function getAllPageIdFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
 function getAllPageIdFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, false)
 }
-function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean) {
+function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean): PageFile[] {
   const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
   const sorter = defaultFilesSorter(fileTypeEnv, pageId)
 

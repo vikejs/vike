@@ -1,7 +1,7 @@
 export { devConfig }
 
-import type { Plugin } from 'vite'
-import { apply, addSsrMiddleware, javascriptFileExtensions } from '../utils'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { apply, addSsrMiddleware, findPageFiles, isSSR_config, assert } from '../utils'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 
 function devConfig(): Plugin[] {
@@ -12,7 +12,6 @@ function devConfig(): Plugin[] {
       config: () => ({
         ssr: { external: ['vite-plugin-ssr'] },
         optimizeDeps: {
-          entries: [`**/*.page.${javascriptFileExtensions}`, `**/*.page.client.${javascriptFileExtensions}`],
           exclude: [
             // We exclude the client code to support `import.meta.glob()`
             'vite-plugin-ssr/client',
@@ -26,6 +25,8 @@ function devConfig(): Plugin[] {
         },
       }),
       async configResolved(config) {
+        assert(config.optimizeDeps.entries === undefined)
+        config.optimizeDeps.entries = await determineOptimizeDepsEntries(config)
         const globRoots = await getGlobRoots(config)
         const fsAllow = config.server.fs.allow
         globRoots
@@ -43,4 +44,11 @@ function devConfig(): Plugin[] {
       },
     },
   ]
+}
+
+async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> {
+  const ssr = isSSR_config(config)
+  assert(ssr === false) // In dev, `build.ssr` is always `false`
+  const pageFiles = (await findPageFiles(config)).map(p => p.filePathAbsolue)
+  return pageFiles
 }

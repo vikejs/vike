@@ -1,9 +1,9 @@
-import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
-import { assert, getOutDir, isObject, isSSR_config, javascriptFileExtensions } from '../utils'
+import type { ResolvedConfig } from 'vite'
+import { assert, getOutDir, isObject, isSSR_config } from '../utils'
 import { modifyResolvedConfig } from '../utils/modifyResolvedConfig'
-import path from 'path'
-import glob from 'fast-glob'
+import { findPageFiles } from '../utils/findPageFiles'
 
 export { buildConfig }
 
@@ -43,17 +43,10 @@ function buildConfig(): Plugin {
 }
 
 async function entryPoints(config: ResolvedConfig): Promise<Record<string, string>> {
-  const ssr = isSSR_config(config)
-  const cwd = config.root
-  const pageFiles = await glob(
-    [`**/*.page.${javascriptFileExtensions}`, `**/*.page.${ssr ? 'server' : 'client'}.${javascriptFileExtensions}`],
-    { ignore: ['**/node_modules/**'], cwd },
-  )
+  const pageFiles = await findPageFiles(config)
   const pageFilesObject: Record<string, string> = {}
-  pageFiles.forEach(
-    (pageFile) => (pageFilesObject[removeFileExtention(pageFile)] = require.resolve(path.join(cwd, pageFile))),
-  )
-  if (ssr) {
+  pageFiles.forEach((p) => (pageFilesObject[removeFileExtention(p.filePathRelative)] = p.filePathAbsolue))
+  if (isSSR_config(config)) {
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
       // ...pageFilesObject,
