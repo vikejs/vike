@@ -50,7 +50,6 @@ function removeTrailingSlash(url: string) {
 function getFilesystemRoute(
   pageId: string,
   filesystemRoots: FilesystemRoot[],
-  allPageIdsWithFilesystemRoute: string[],
 ): string {
   // Handle Filesystem Routing Root
   const filesystemRootsMatch = filesystemRoots
@@ -75,7 +74,7 @@ function getFilesystemRoute(
     assert(filesystemRoute.startsWith('/'), debugInfo)
     filesystemRoute = routeRoot + (routeRoot.endsWith('/') ? '' : '/') + slice(filesystemRoute, 1, 0)
   } else {
-    filesystemRoute = removeCommonDirectoy(pageId, allPageIdsWithFilesystemRoute)
+    filesystemRoute = pageId
   }
 
   assert(filesystemRoute.startsWith('/'))
@@ -105,44 +104,4 @@ function getFilesystemRoute(
 
 function isParameterizedFilesystemRoute(filesystemRoute: string): boolean {
   return filesystemRoute.includes(PARAM_TOKEN_NEW)
-}
-
-function removeCommonDirectoy(pageId: string, pageIds: string[]) {
-  assert(pageIds.includes(pageId))
-  pageIds.forEach((pageId) => {
-    assert(!pageId.includes('\\'))
-    assert(pageId.startsWith('/'))
-  })
-
-  if (pageIds.length === 1) {
-    const dirs = pageId.split('/')
-    let filesystemRoute = dirs.slice(dirs.indexOf('pages')).join('/')
-    if (!filesystemRoute.startsWith('/')) {
-      filesystemRoute = '/' + filesystemRoute
-    }
-    return filesystemRoute
-  }
-
-  const dirs = pageIds[0]!.split('/')
-  const commonDirs: string[] = []
-  for (const i in dirs) {
-    const dir = dirs[i]!
-    if (dir === 'pages') {
-      break
-    }
-    if (pageIds.some((pageId) => pageId.split('/')[i] !== dir)) {
-      break
-    }
-    commonDirs.push(dir)
-  }
-  const commonDir = commonDirs.join('/')
-  assert(!commonDir.endsWith('/'))
-  assert(pageId.startsWith(commonDir))
-
-  let filesystemRoute = pageId.slice(commonDir.length)
-  if (!filesystemRoute.startsWith('/')) {
-    filesystemRoute = '/' + filesystemRoute
-  }
-
-  return filesystemRoute
 }

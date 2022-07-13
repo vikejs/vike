@@ -94,7 +94,7 @@ async function loadPageRoutes(pageContext: {
     })
 
   allPageIdsWithFilesystemRoute.forEach((pageId) => {
-    const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots, allPageIdsWithFilesystemRoute)
+    const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots)
     assert(filesystemRoute.startsWith('/'))
     assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
     pageRoutes.push({

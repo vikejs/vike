@@ -83,7 +83,7 @@ function deduceChunkNameFromFilesystemRouting(id: string, root: string): string 
   const pathRelative = path.posix.relative(root, id)
   assert(!pathRelative.startsWith('.') && !pathRelative.startsWith('/'), { id, root })
   const pageId = determinePageId('/' + pathRelative)
-  const filesystemRoute = getFilesystemRoute(pageId, [], [pageId])
+  const filesystemRoute = getFilesystemRoute(pageId, [])
   const dirS = filesystemRoute.split('/')
   const pageFileName = dirS[dirS.length - 1]
   return pageFileName ?? null
