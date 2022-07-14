@@ -186,7 +186,9 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('blue')
+        await sleep(100) // Not sure if it helps make the test less flaky?
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
+        await sleep(100) // Not sure if it helps make the test less flaky?
         await testColor('gray')
         await sleep(100)
         editFileRevert()
