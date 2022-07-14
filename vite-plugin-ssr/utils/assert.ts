@@ -56,7 +56,7 @@ function getProjectError(errorMessage: string) {
   return pluginError
 }
 
-let loggedWarnings: Set<string> = new Set()
+let alreadyLogged: Set<string> = new Set()
 function assertWarning(
   condition: unknown,
   errorMessage: string,
@@ -68,10 +68,10 @@ function assertWarning(
   const msg = `${warningPrefix} ${errorMessage}`
   if (onlyOnce) {
     const key = onlyOnce === true ? msg : onlyOnce
-    if (loggedWarnings.has(key)) {
+    if (alreadyLogged.has(key)) {
       return
     } else {
-      loggedWarnings.add(key)
+      alreadyLogged.add(key)
     }
   }
   if (showStackTrace) {
@@ -81,9 +81,16 @@ function assertWarning(
   }
 }
 
-function assertInfo(condition: unknown, errorMessage: string): void {
+function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean }): void {
   if (condition) {
     return
   }
-  console.log(`${infoPrefix} ${errorMessage}`)
+  const msg = `${infoPrefix} ${errorMessage}`
+  const key = msg
+  if (alreadyLogged.has(key)) {
+    return
+  } else {
+    alreadyLogged.add(key)
+  }
+  console.log(msg)
 }

@@ -35,6 +35,7 @@ function disableClientRouting() {
   assertInfo(
     false,
     `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`,
+    { onlyOnce: true },
   )
 }
 
