@@ -1,3 +1,19 @@
+## [0.4.6](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.5...v0.4.6) (2022-07-14)
+
+
+### Bug Fixes
+
+* add page files to optimizeDeps.entries ([3c5fa83](https://github.com/brillout/vite-plugin-ssr/commit/3c5fa83aff61ff7528ba837274449aaf5e6b4a69))
+* make fs logic simpler ([2d83b67](https://github.com/brillout/vite-plugin-ssr/commit/2d83b678d95bfc7f1ec353e50283ce9f5bd0c418))
+
+
+### Performance Improvements
+
+* improve page files to be scanned by Vite ([31f4c01](https://github.com/brillout/vite-plugin-ssr/commit/31f4c01555e003a4ffd278b7d8ffd37aacecf039))
+* prevent Vite from scanning too many page files ([2772814](https://github.com/brillout/vite-plugin-ssr/commit/277281448edef026e666837089817acbba639960))
+
+
+
 ## [0.4.5](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.4...v0.4.5) (2022-07-12)
 
 
