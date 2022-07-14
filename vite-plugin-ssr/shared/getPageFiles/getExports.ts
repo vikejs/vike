@@ -3,7 +3,7 @@ export { getExports }
 export type { ExportsAll }
 export type { PageContextExports }
 
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast } from '../utils'
+import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
 import type { FileType, PageFile } from './types'
 
 type ExportsAll = Record<
@@ -119,11 +119,14 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
     {},
     {
       get(...args) {
-        assertWarning(
-          false,
-          '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vite-plugin-ssr.com/exports',
-          { onlyOnce: true, showStackTrace: true },
-        )
+        // We only show the warning in Node.js because when using Client Routing Vue integration uses `Object.assign(pageContextReactive, pageContext)` which will wrongully trigger the warning. There is no cross-browser way to catch whether the property accessor was initiated by an `Object.assign()` call.
+        if (!isBrowser()) {
+          assertWarning(
+            false,
+            '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vite-plugin-ssr.com/exports',
+            { onlyOnce: true, showStackTrace: true },
+          )
+        }
         return Reflect.get(...args)
       },
     },
