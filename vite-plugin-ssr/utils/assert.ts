@@ -57,7 +57,11 @@ function getProjectError(errorMessage: string) {
 }
 
 let loggedWarnings: Set<string> = new Set()
-function assertWarning(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean | string }): void {
+function assertWarning(
+  condition: unknown,
+  errorMessage: string,
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true },
+): void {
   if (condition) {
     return
   }
@@ -70,7 +74,11 @@ function assertWarning(condition: unknown, errorMessage: string, { onlyOnce }: {
       loggedWarnings.add(key)
     }
   }
-  console.warn(msg)
+  if (showStackTrace) {
+    console.warn(new Error(msg))
+  } else {
+    console.warn(msg)
+  }
 }
 
 function assertInfo(condition: unknown, errorMessage: string): void {

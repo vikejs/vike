@@ -122,7 +122,7 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
         assertWarning(
           false,
           '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vite-plugin-ssr.com/exports',
-          { onlyOnce: true },
+          { onlyOnce: true, showStackTrace: true },
         )
         return Reflect.get(...args)
       },
