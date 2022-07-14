@@ -36,7 +36,7 @@ This approach preserves the URL during the entire login flow:
  2. User fills the sign-in form and successfully logs in. (URL is still `/admin`.)
  3. Page is reloaded and the user now sees the Admin Page. (URL is still `/admin`.)
 
-This works for all URLs: the original intention of the user is preserved and there is no need for a complex URL restoration mechanism.
+The original intention of the user is preserved and there is no need for some complex URL restoration mechanism.
 
 Instead of using this approach, we can also use the more traditional approach of performing a page redirection. See sections below.
 
@@ -140,9 +140,9 @@ export const passToClient = [/*...*/, 'redirectTo']
 // /renderer/_default.page.client.js
 // Environment: Browser
 
-export { render }
+import { navigate } from "vite-plugin-ssr/client/router";
 
-function render(pageContext) {
+export function render(pageContext) {
   const { redirectTo } = pageContext
   if (redirectTo) {
     navigate(redirectTo)
