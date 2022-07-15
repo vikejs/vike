@@ -1,3 +1,17 @@
+## [0.4.7](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.6...v0.4.7) (2022-07-15)
+
+
+### Bug Fixes
+
+* `prerender()` types ([a53c492](https://github.com/brillout/vite-plugin-ssr/commit/a53c492ffcd990cf3c38e348a1b9d193328ff92d))
+* avoid false warnings of outdated pageContext.pageExports usage ([905f830](https://github.com/brillout/vite-plugin-ssr/commit/905f83019a6483a1662152ad0f02da1bc548e692))
+* do not load route files when using server routing ([0891002](https://github.com/brillout/vite-plugin-ssr/commit/0891002055a51b7976cb9a380c5dbc9e09448e66))
+* eslint `prerender()` ([f8f12b5](https://github.com/brillout/vite-plugin-ssr/commit/f8f12b5a074ccc59595395eea8538be9b8b577bd))
+* show stack trace upon outdated pageExports usage ([641f7d3](https://github.com/brillout/vite-plugin-ssr/commit/641f7d320f5cc132ad2e8efc993c9a484235ef3b))
+* show viewport prefetching dev info only once ([dae2e98](https://github.com/brillout/vite-plugin-ssr/commit/dae2e98c287c481081a1933cdffe32ad46d8b8fc))
+
+
+
 ## [0.4.6](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.5...v0.4.6) (2022-07-14)
 
 
