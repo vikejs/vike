@@ -1,28 +1,21 @@
-// We use a normal Express server for development
+// We use a Express.js server for development
 
 const express = require('express')
 const { renderPage } = require('vite-plugin-ssr')
 const vite = require('vite')
 const fetch = require('node-fetch')
 
-const isProduction = process.env.NODE_ENV === 'production'
-const root = `${__dirname}/..`
-
 startServer()
 
 async function startServer() {
   const app = express()
 
-  let viteDevServer
-  if (isProduction) {
-    app.use(express.static(`${root}/dist/client`))
-  } else {
-    viteDevServer = await vite.createServer({
-      root,
+  const viteDevMiddleware = (
+    await vite.createServer({
       server: { middlewareMode: 'ssr' },
     })
-    app.use(viteDevServer.middlewares)
-  }
+  ).middlewares
+  app.use(viteDevMiddleware)
 
   app.get('*', async (req, res, next) => {
     const url = req.originalUrl
