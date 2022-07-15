@@ -7,8 +7,8 @@ export { extractStylesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedId } from 'rollup'
-import { isSSR_options, assert, assertPosixPath, isAsset, getImportStatements, ImportStatement } from '../utils'
-import { removeSourceMap, isJavascriptFile } from '../helpers'
+import { isSSR_options, assert, assertPosixPath, isAsset } from '../utils'
+import { removeSourceMap, isJavascriptFile, getImportStatements, ImportStatement } from '../helpers'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { createDebugger, isDebugEnabled } from '../../utils'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
