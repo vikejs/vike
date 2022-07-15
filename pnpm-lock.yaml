@@ -202,7 +202,7 @@ importers:
       vite: 2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
-  examples/cloudflare-workers-react:
+  examples/cloudflare-workers-react-full:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
       '@cloudflare/wrangler': ^1.19.12
