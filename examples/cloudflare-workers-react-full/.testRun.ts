@@ -1,103 +1,47 @@
 export { testRun }
 
-import {
-  page,
-  run,
-  autoRetry,
-  fetchHtml,
-  isGithubAction,
-  urlBase,
-  urlBaseChange,
-  isMac,
-} from '../../libframe/test/setup'
+import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase } from '../../libframe/test/setup'
 
 // Node.js 18's fetch implementation fails to resolve `localhost`.
 //  - Seems to happen only for wrangler
 //  - https://github.com/nodejs/undici/issues/1248
-urlBaseChange('http://127.0.0.1:3000')
+// urlBaseChange('http://127.0.0.1:3000')
 
-function testRun(
-  cmd: 'npm run dev' | 'npm run preview:miniflare' | 'npm run preview:wrangler',
-  { hasStarWarsPage, isWebpack }: { hasStarWarsPage: boolean; isWebpack?: true },
-) {
-  const isMiniflare = cmd === 'npm run preview:miniflare'
-  const isWrangler = cmd === 'npm run preview:wrangler'
-  const isWorker = isMiniflare || isWrangler
-
-  // `pnpm exec playwright install` breaks wrangler installation: Miniflare says `You have not installed wrangler`.
-  //  - `pnpm install -w @cloudflare/wrangler` doesn't help
-  //  - Miniflare cannot use wrangler's webpack bundler
-  if (isMiniflare && isWebpack) {
-    const msg = 'SKIPPED miniflare + webpack.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
-
-  // Miniflare crashes with `ELIFECYCLE  Command failed with exit code 1.`, without any error message nor stack trace.
-  // This commit breaks miniflare: https://github.com/brillout/vite-plugin-ssr/tree/de0fc8ea9cb6881241fb488e957747a60a955118
-  // Miniflare works with the previous commit: https://github.com/brillout/vite-plugin-ssr/tree/f4d8f9bbca70b6e0729bb85f0961c960788e49c1
-  if (isMiniflare && !isWebpack) {
-    const msg = 'SKIPPED miniflare + esbuild.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
-
-  // Skip wrangler until static assets serving is reliable again
-  if (isWrangler) {
-    const msg = 'SKIPPED wrangler.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
-
-  if ((isWindows() || isNode12()) && isWorker) {
-    const msg = 'SKIPPED miniflare and wrangler for windows.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
-
-  if (isWrangler && isMac()) {
-    const msg = 'SKIPPED wrangler for MacOS.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
+function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
+  const isWrangler = cmd === 'npm run preview'
 
   if (isWrangler) {
-    /* TODO: differentiate between PR VS maintainer branch
-    if (isGithubAction() && process.env['GIT_BRANCH'] !== 'main') {
-      const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
+    /*
+     * To avoid the CF access token to be leaked, we should uncomment this and differentiate between PR VS maintainer branch.
+     * Low priority because the keys were created with a free-tier dummy account.
+     */
+    // if (isGithubAction() && process.env['GIT_BRANCH'] !== 'main') {
+    //   const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
+    //   console.log(msg)
+    //   test(msg, () => {})
+    //   return
+    // }
+    /*
+    const envVars = Object.keys(process.env)
+    if (!envVars.includes('CF_ACCOUNT_ID') || !envVars.includes('CF_API_TOKEN')) {
+      const msg = 'SKIPPED: Cloudflare Workers tokens not provided.'
       console.log(msg)
       test(msg, () => {})
       return
     }
     */
-    const envVars = Object.keys(process.env)
-    if (!envVars.includes('CF_ACCOUNT_ID') || !envVars.includes('CF_API_TOKEN')) {
-      const msg = 'SKIPPED: No Cloudflare Workers tokens provided.'
-      console.log(msg)
-      test(msg, () => {})
-      return
-    }
   }
 
   {
-    const additionalTimeout = !isWorker ? 0 : (isGithubAction() ? 2 : 1) * 120 * 1000
+    const additionalTimeout = !isWrangler ? 0 : (isGithubAction() ? 2 : 1) * 10 * 1000
     const serverIsReadyMessage = (() => {
-      if (isWrangler && isWebpack) {
-        return 'Ignoring stale first change'
+      if (isWrangler) {
+        return 'Listening at http://localhost:3000'
       }
-      if (isWorker) {
-        return 'Listening on'
-      }
-      // Express.js dev server
+      // Vite/Express.js dev server
       return undefined
     })()
-    const serverIsReadyDelay = isWorker ? 5 * 1000 : undefined
-    run(cmd, { additionalTimeout, serverIsReadyMessage, serverIsReadyDelay })
+    run(cmd, { additionalTimeout, serverIsReadyMessage })
   }
 
   test('page content is rendered to HTML', async () => {
@@ -138,11 +82,4 @@ function testRun(
       }
     })
   }
-}
-
-function isWindows() {
-  return process.platform === 'win32'
-}
-function isNode12() {
-  return process.version.startsWith('v12.')
 }
