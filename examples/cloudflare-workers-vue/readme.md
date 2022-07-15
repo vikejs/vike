@@ -1,4 +1,4 @@
-Example of deploying to [Cloudflare Workers](https://workers.cloudflare.com/) with:
+[Cloudflare Workers](https://workers.cloudflare.com/) with:
  - Vite
  - `vite-plugin-ssr`
  - Vue
