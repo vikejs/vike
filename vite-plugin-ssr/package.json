@@ -78,6 +78,7 @@
     "client/router.d.ts",
     "plugin.js",
     "plugin.d.ts",
+    "prerender.js",
     "prerender.d.ts",
     "types.d.ts"
   ],
