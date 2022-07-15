@@ -1,3 +1,12 @@
+## [0.4.9](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.8...v0.4.9) (2022-07-15)
+
+
+### Bug Fixes
+
+* ensure that plugin helpers are not loaded by server-side runtime ([48714f3](https://github.com/brillout/vite-plugin-ssr/commit/48714f36360e001c34d826b1d315f114182ce32a))
+
+
+
 ## [0.4.8](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.7...v0.4.8) (2022-07-15)
 
 

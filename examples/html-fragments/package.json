@@ -5,6 +5,6 @@
   "dependencies": {
     "typescript": "^4.6.4",
     "vite": "^2.9.14",
-    "vite-plugin-ssr": "0.4.8"
+    "vite-plugin-ssr": "0.4.9"
   }
 }
