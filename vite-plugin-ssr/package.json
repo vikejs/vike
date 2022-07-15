@@ -74,6 +74,7 @@
     "client.d.ts",
     "client/router.d.ts",
     "plugin.d.ts",
+    "prerender.d.ts",
     "types.d.ts",
     "cli.js",
     "client.js",
