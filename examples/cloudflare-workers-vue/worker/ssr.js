@@ -10,7 +10,7 @@ async function handleSsr(url) {
     return null
   } else {
     const { readable, writable } = new TransformStream()
-    httpResponse.pipeToWebWritable(writable)
+    httpResponse.pipe(writable)
     return new Response(readable)
   }
 }
