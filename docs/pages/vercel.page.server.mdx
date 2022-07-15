@@ -16,6 +16,15 @@ Example: [github.com/brillout/vite-plugin-ssr_vercel](https://github.com/brillou
 Using such API Route is the recommended way. API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's File System API and Build Output API are fast moving targets with frequent breaking changes.) Once we setup our server-side rendering API Route, we can safely expect it to work for the foreseeable future.
 
 
+## Build Output API
+
+An alternative method for deploying our app to Vercel is via the [Build Output API](https://vercel.com/docs/build-output-api/v3).
+
+Example: [github.com/brillout/vite-plugin-ssr#examples/vercel-via-build-output-api](https://github.com/brillout/vite-plugin-ssr/tree/main/examples/vercel-via-build-output-api).
+
+You may want to use this method if you're looking for a bit more flexibility and configuration options when deploying your project to Vercel.
+
+
 ## vite-plugin-vercel
 
 For a zero-config integration with [ISR](https://vercel.com/docs/concepts/next.js/incremental-static-regeneration) support, we can use [`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel).

@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "vercel-build": "./vercel/build.sh"
+  },
+  "dependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "@vitejs/plugin-vue": "^1.10.1",
+    "@vue/compiler-sfc": "^3.2.24",
+    "@vue/server-renderer": "^3.2.24",
+    "vite": "^2.9.14",
+    "vite-plugin-ssr": "0.4.5",
+    "vue": "^3.2.24"
+  }
+}

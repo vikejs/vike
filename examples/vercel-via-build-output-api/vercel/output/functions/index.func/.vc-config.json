@@ -1,0 +1,6 @@
+{
+  "runtime": "nodejs14.x",
+  "handler": "index.js",
+  "launcherType": "Nodejs",
+  "shouldAddHelpers": true
+}
