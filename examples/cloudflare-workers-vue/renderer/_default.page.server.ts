@@ -32,10 +32,12 @@ async function render(pageContext: any) {
       </body>
     </html>`
 }
+
+// https://github.com/cloudflare/wrangler2/issues/1481
+// https://community.cloudflare.com/t/how-to-detect-the-cloudflare-worker-runtime/293715
 function isWorker() {
   return (
-    // `IS_CLOUDFLARE_WORKER` is set by `build-worker`
     // @ts-ignore
-    typeof IS_CLOUDFLARE_WORKER !== 'undefined' && IS_CLOUDFLARE_WORKER === true
+    typeof WebSocketPair !== 'undefined' || typeof caches !== 'undefined'
   )
 }
