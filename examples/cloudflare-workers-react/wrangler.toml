@@ -1,0 +1,11 @@
+main="./worker/index.js"
+name = "vite-plugin-ssr_worker-example"
+compatibility_date = "2021-09-29"
+workers_dev = true
+node_compat = true
+
+[site]
+bucket = "./dist/client"
+
+[dev]
+port = 3000
