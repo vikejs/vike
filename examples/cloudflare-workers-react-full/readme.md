@@ -11,7 +11,7 @@
 See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudflare-workers).
 
 
-## Run example
+## Run
 
 Setup:
 ```bash
