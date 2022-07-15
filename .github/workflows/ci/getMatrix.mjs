@@ -81,8 +81,8 @@ function getTestJobs(testFiles) {
       ],
     },
     {
-      name: 'Cloudflare + esbuild',
-      testFiles: findExamples(testFiles, { cloudflare: 'esbuild' }),
+      name: 'Cloudflare',
+      testFiles: findExamples(testFiles, { cloudflare: true }),
       setups: [
         {
           os: 'ubuntu-latest',
@@ -90,17 +90,6 @@ function getTestJobs(testFiles) {
         },
       ],
       testCmd: 'pnpm run test:e2e',
-    },
-    {
-      name: 'Cloudflare + webpack',
-      testCmd: 'pnpm run test:e2e',
-      testFiles: findExamples(testFiles, { cloudflare: 'webpack' }),
-      setups: [
-        {
-          os: 'ubuntu-latest',
-          node_version: '16',
-        },
-      ],
     },
     {
       name: 'https://vite-plugin-ssr.com',
@@ -117,7 +106,7 @@ function getTestJobs(testFiles) {
   return testJobs
 }
 
-/** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: 'webpack' | 'esbuild'}) => string[] } */
+/** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: true}) => string[] } */
 function findExamples(testFiles, { react, cloudflare }) {
   return testFiles.filter((testFile) => {
     if (!testFile.startsWith('examples/')) {
@@ -125,14 +114,7 @@ function findExamples(testFiles, { react, cloudflare }) {
     }
 
     if (testFile.includes('cloudflare')) {
-      if (!cloudflare) {
-        return false
-      }
-      if (testFile.includes('webpack')) {
-        return cloudflare === 'webpack'
-      } else {
-        return cloudflare === 'esbuild'
-      }
+      return cloudflare === true
     }
 
     if (isReactExample(testFile)) {
