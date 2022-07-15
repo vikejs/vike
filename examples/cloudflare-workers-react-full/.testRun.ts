@@ -21,7 +21,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     //   test(msg, () => {})
     //   return
     // }
-    /*
     const envVars = Object.keys(process.env)
     if (!envVars.includes('CF_ACCOUNT_ID') || !envVars.includes('CF_API_TOKEN')) {
       const msg = 'SKIPPED: Cloudflare Workers tokens not provided.'
@@ -29,7 +28,6 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
       test(msg, () => {})
       return
     }
-    */
   }
 
   {
