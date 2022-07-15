@@ -43,6 +43,6 @@ npm run deploy
 
 ## Universal `fetch()`
 
-Note how we define a fetch function at `pageContext.fetch` that works in development as well as in the production worker.
+Note how we define a fetch function at `pageContext.fetch` that works for development as well as for the production worker.
 
-The trick is to provide a different `fetch()` implementation at [worker/ssr.js](worker/ssr.ts) and [dev-server/index.js](dev-server/index.js).
+The trick is to provide a different `fetch()` implementation at [worker/ssr.ts](worker/ssr.ts) and [dev-server/index.js](dev-server/index.js).
