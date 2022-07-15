@@ -70,16 +70,16 @@
   "files": [
     "dist/cjs/",
     "dist/esm/",
+    "cli.js",
     "cli.d.ts",
+    "client.js",
     "client.d.ts",
+    "client/router.js",
     "client/router.d.ts",
+    "plugin.js",
     "plugin.d.ts",
     "prerender.d.ts",
-    "types.d.ts",
-    "cli.js",
-    "client.js",
-    "client/router.js",
-    "plugin.js"
+    "types.d.ts"
   ],
   "bin": {
     "vite-plugin-ssr": "./node/bin/vite-plugin-ssr.js"
