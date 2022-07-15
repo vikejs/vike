@@ -85,7 +85,7 @@
   "bin": {
     "vite-plugin-ssr": "./node/bin/vite-plugin-ssr.js"
   },
-  "description": "Like Next.js / Nuxt but as do-one-thing-do-it-well Vite plugin",
+  "description": "Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.",
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "license": "MIT",
   "keywords": [
