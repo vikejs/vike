@@ -18,17 +18,21 @@ cd vite-plugin-ssr/examples/cloudflare-workers-vue/
 npm install
 ```
 
-Develop: (For increased development speed, we use Vite's development server instead of a worker.)
+Develop:
+
+> For increased development speed, we use Vite's development server instead of a worker.
+
 ```bash
 npm run dev
 ```
 
 Preview the worker locally:
+
+> You'll need to login/create a Cloudflare account.
+
 ```bash
 npm run preview
 ```
-
-> You'll need to login/create a Cloudflare account.
 
 Deploy the worker to Cloudflare:
 ```bash
