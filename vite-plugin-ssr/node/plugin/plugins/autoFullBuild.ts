@@ -1,7 +1,8 @@
 export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, isSSR_config, isViteCliCall } from '../utils'
+import { assert, assertWarning, isSSR_config } from '../utils'
+import { isViteCliCall } from '../helpers'
 import { prerender } from '../../prerender'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'

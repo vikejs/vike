@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { NormalizedOutputOptions, OutputBundle } from 'rollup'
 import { distImporter } from 'vite-plugin-dist-importer'
 import { getOutDirs, projectInfo, pathRelative, pathJoin } from '../utils'
-import { analyzeRollupConfig } from '../utils/analyzeRollupConfig'
+import { analyzeRollupConfig } from '../helpers'
 
 function distEntriesPlugin(): Plugin[] {
   let config: ResolvedConfig

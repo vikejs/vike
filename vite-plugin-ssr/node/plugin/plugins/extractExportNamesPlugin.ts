@@ -3,7 +3,8 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { isSSR_options, removeSourceMap, getExportNames } from '../utils'
+import { isSSR_options, getExportNames } from '../utils'
+import { removeSourceMap } from '../helpers'
 
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 

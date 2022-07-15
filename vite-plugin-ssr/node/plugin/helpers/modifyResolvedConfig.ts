@@ -1,7 +1,7 @@
 export { modifyResolvedConfig }
 export type { ResolvedConfigModifications }
 
-import { ResolvedConfig } from 'vite'
+import type { ResolvedConfig } from 'vite'
 
 type ResolvedConfigModifications = {
   build?: {

@@ -1,7 +1,8 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { apply, addSsrMiddleware, assertPosixPath, assertUsage, getOutDirs, getOutDir } from '../utils'
+import { assertPosixPath, assertUsage, getOutDirs, getOutDir } from '../utils'
+import { apply, addSsrMiddleware } from '../helpers'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import fs from 'fs'
 

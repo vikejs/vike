@@ -1,7 +1,8 @@
 export { devConfig }
 
 import type { Plugin } from 'vite'
-import { apply, addSsrMiddleware, assert } from '../utils'
+import { assert } from '../utils'
+import { apply, addSsrMiddleware } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 

@@ -1,11 +1,10 @@
 export { getGlobRoots }
 
 import fs from 'fs'
-import { assertUsage, assertPosixPath, toPosixPath, assert } from '../../utils'
+import { assertUsage, assertPosixPath, toPosixPath, assert, isNotNullish } from '../../utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
-import { isNotNullish } from '../../../../utils/isNotNullish'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigVpsResolved } from '../config/assertConfigVps'
 

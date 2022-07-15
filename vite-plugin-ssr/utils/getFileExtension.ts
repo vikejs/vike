@@ -1,5 +1,6 @@
 export { getFileExtension }
-import { slice } from '../utils'
+
+import { slice } from './slice'
 
 function getFileExtension(id: string) {
   const fileName = slice(id.split('/'), -1, 0)[0]

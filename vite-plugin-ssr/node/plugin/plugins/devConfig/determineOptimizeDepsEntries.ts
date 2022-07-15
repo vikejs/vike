@@ -4,7 +4,8 @@ import type { ResolvedConfig } from 'vite'
 import { getPageFileObject } from '../../../../shared/getPageFiles/getPageFileObject'
 import { getFilesystemRoute } from '../../../../shared/route/resolveFilesystemRoute'
 import { findPageRouteFile } from '../../../../shared/route/loadPageRoutes'
-import { findPageFiles, makeFilePathAbsolute } from '../../utils'
+import { findPageFiles } from '../../helpers'
+import { makeFilePathAbsolute } from '../../utils'
 
 async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> {
   const pageFilesAll = (await findPageFiles(config, ['.page', '.page.client', '.page.route'])).map((p) =>

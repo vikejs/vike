@@ -1,6 +1,6 @@
 export { getUrlPathname }
 
-import { parseUrl } from '../../utils'
+import { parseUrl } from './parseUrl'
 
 function getUrlPathname(url: string): string {
   const urlPathname = parseUrl(url, '/').pathname

@@ -1,6 +1,7 @@
 export { getGlobPath }
 
-import { assertPosixPath, toPosixPath, javascriptFileExtensions } from '../../utils'
+import { assertPosixPath, toPosixPath } from '../../utils'
+import { javascriptFileExtensions } from '../../helpers'
 import path from 'path'
 
 function getGlobPath(

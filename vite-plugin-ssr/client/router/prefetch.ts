@@ -1,7 +1,6 @@
 export { addLinkPrefetchHandlers, prefetch }
 
-import { assert, assertUsage } from './utils'
-import { isExternalLink } from './utils/isExternalLink'
+import { assert, assertUsage, isExternalLink } from './utils'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'

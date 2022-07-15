@@ -11,7 +11,7 @@ export { packageJsonFile }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { isSSR_config } from '../utils'
-import { analyzeRollupConfig } from '../utils/analyzeRollupConfig'
+import { analyzeRollupConfig } from '../helpers'
 
 function packageJsonFile(): Plugin {
   let config: ResolvedConfig

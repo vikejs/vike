@@ -2,8 +2,7 @@ import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import { assert, getOutDir, isObject, isSSR_config, makeFilePathAbsolute } from '../utils'
-import { modifyResolvedConfig } from '../utils/modifyResolvedConfig'
-import { findPageFiles } from '../utils/findPageFiles'
+import { modifyResolvedConfig, findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 
 export { buildConfig }
