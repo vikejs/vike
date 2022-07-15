@@ -4,6 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import { assert, getOutDir, isObject, isSSR_config, makeFilePathAbsolute } from '../utils'
 import { modifyResolvedConfig } from '../utils/modifyResolvedConfig'
 import { findPageFiles } from '../utils/findPageFiles'
+import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 
 export { buildConfig }
 
@@ -51,7 +52,7 @@ async function entryPoints(config: ResolvedConfig): Promise<Record<string, strin
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
       // ...pageFilesObject,
-      pageFiles: 'virtual:vite-plugin-ssr:pageFiles:server',
+      pageFiles: virtualModuleIdPageFilesServer,
       importBuild: resolve('dist/cjs/node/importBuild.js'),
     }
   } else {

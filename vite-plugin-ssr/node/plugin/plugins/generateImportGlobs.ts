@@ -7,8 +7,12 @@ import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
+import {
+  virtualModuleIdPageFilesClient,
+  virtualModuleIdPageFilesServer,
+} from './generateImportGlobs/virtualModuleIdPageFiles'
 
-const moduleIds = ['virtual:vite-plugin-ssr:pageFiles:server', 'virtual:vite-plugin-ssr:pageFiles:client']
+const virtualModuleIds = [virtualModuleIdPageFilesServer, virtualModuleIdPageFilesClient]
 
 type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
 
@@ -21,13 +25,13 @@ function generateImportGlobs(): Plugin {
       config = config_
     },
     resolveId(id) {
-      if (moduleIds.includes(id)) {
+      if (virtualModuleIds.includes(id)) {
         return id
       }
     },
     async load(id, options) {
-      if (moduleIds.includes(id)) {
-        const isForClientSide = id === moduleIds[1]
+      if (virtualModuleIds.includes(id)) {
+        const isForClientSide = id === virtualModuleIds[1]
         assert(isForClientSide === !isSSR_options(options))
         const code = await getCode(config, isForClientSide)
         return code

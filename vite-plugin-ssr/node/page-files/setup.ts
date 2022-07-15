@@ -3,6 +3,7 @@ import { assert, debugGlob } from '../utils'
 import { getViteDevServer } from '../globalContext'
 //import { pathToFileURL } from 'url'
 import { ViteDevServer } from 'vite'
+import { virtualModuleIdPageFilesServer } from '../plugin/plugins/generateImportGlobs/virtualModuleIdPageFiles'
 
 setPageFilesAsync(getPageFilesExports)
 
@@ -19,7 +20,7 @@ async function getPageFilesExports(): Promise<unknown> {
 
 async function dev(viteDevServer: ViteDevServer) {
   assert(viteDevServer)
-  const moduleExports = await viteDevServer.ssrLoadModule('virtual:vite-plugin-ssr:pageFiles:server')
+  const moduleExports = await viteDevServer.ssrLoadModule(virtualModuleIdPageFilesServer)
   const pageFilesExports: unknown = (moduleExports as any).default || (moduleExports as any)
   assert(pageFilesExports)
   return pageFilesExports
