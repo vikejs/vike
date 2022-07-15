@@ -12,26 +12,25 @@ See [vite-plugin-ssr.com/cloudflare-workers](https://vite-plugin-ssr.com/cloudfl
 
 ## Run
 
-Setup:
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/examples/cloudflare-workers-vue/
 npm install
 ```
 
-To develop: (For increased development speed, we use Vite's development server instead of a worker.)
+Develop: (For increased development speed, we use Vite's development server instead of a worker.)
 ```bash
 npm run dev
 ```
 
-To preview the worker locally:
+Preview the worker locally:
 ```bash
 npm run preview
 ```
 
 > You'll need to login/create a Cloudflare account.
 
-To deploy the worker to Cloudflare:
+Deploy the worker to Cloudflare:
 ```bash
 npm run deploy
 ```
