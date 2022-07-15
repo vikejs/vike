@@ -1,3 +1,14 @@
+## [0.4.8](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.7...v0.4.8) (2022-07-15)
+
+
+### Bug Fixes
+
+* add `node_modules/vite-plugin-ssr` to `fs.allow` list ([86b1173](https://github.com/brillout/vite-plugin-ssr/commit/86b11734c49f24ac27371d7f8992fae4e42c9edf))
+* do not import `es-module-lexer` from server-side runtime ([7420876](https://github.com/brillout/vite-plugin-ssr/commit/74208764de0dee4a7f36952a6029d5bec007c70e))
+* do not import `fast-glob` from server-side runtime ([0fabc6d](https://github.com/brillout/vite-plugin-ssr/commit/0fabc6d2b5ca5eae0bc0103ecd5600db84da0b16))
+
+
+
 ## [0.4.7](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.6...v0.4.7) (2022-07-15)
 
 
