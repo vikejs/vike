@@ -19,22 +19,17 @@ cd vite-plugin-ssr/examples/cloudflare-workers-vue/
 npm install
 ```
 
-To develop: (For increased development speed, we use Vite's dev server instead of a worker.)
+To develop: (For increased development speed, we use Vite's development server instead of a worker.)
 ```bash
 npm run dev
 ```
 
-To try the worker locally with miniflare: (No account needed.)
+To preview the worker locally:
 ```bash
 npm run preview
 ```
 
-To try the worker locally with wrangler:
-```bash
-npm run preview:wrangler
-```
-
-> To be able to use `wrangler`, you'll need to create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
+> You'll need to login/create a Cloudflare account.
 
 To deploy the worker to Cloudflare:
 ```bash

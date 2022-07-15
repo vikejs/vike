@@ -3,6 +3,7 @@ Example of deploying to [Cloudflare Workers](https://workers.cloudflare.com/) wi
  - `vite-plugin-ssr`
  - React
  - [`react-streaming`](https://github.com/brillout/react-streaming)
+ - Universal `fetch()`
 
 
 ## Docs
@@ -24,17 +25,12 @@ To develop: (For increased development speed, we use an Express.js development s
 npm run dev
 ```
 
-To try the worker locally with miniflare: (No account needed.)
+To preview the worker locally:
 ```bash
 npm run preview
 ```
 
-To try the worker locally with wrangler:
-```bash
-npm run preview:wrangler
-```
-
-> To be able to use `wrangler`, you'll need to create a Cloudflare account and paste your account id in `wrangler.toml#account_id`.
+> You'll need to login/create a Cloudflare account.
 
 To deploy the worker to Cloudflare:
 ```bash
@@ -44,6 +40,6 @@ npm run deploy
 
 ## Universal `fetch()`
 
-Note how we define a fetch function at `pageContext.fetch` which works in both the development Node.js server as well as in the production worker.
+Note how we define a fetch function at `pageContext.fetch` that works in development as well as in the production worker.
 
-The trick is to add a different `fetch()` implementation to `pageContextInit` at [worker/ssr.js](worker/ssr.js) and [dev-server/index.js](dev-server/index.js).
+The trick is to provide a different `fetch()` implementation at [worker/ssr.js](worker/ssr.js) and [dev-server/index.js](dev-server/index.js).

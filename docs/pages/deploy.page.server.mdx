@@ -1,22 +1,5 @@
 import ServerMiddleware from './index/features/ServerMiddleware.mdx'
-import { RepoLink } from 'vikepress'
-
-## Agnostic Middleware
 
 From the server-side point of view, `vite-plugin-ssr` is just a server middleware. It's versatile and we can use it any server environment we want.
 
 <ServerMiddleware />
-
-## Server Bundling
-
-Some deploy services, such as Cloudflare Workers, bundle the entire server-side code into a single file.
-
-To enable server bundling we load a special file [`dist/server/importBuild.js`](/importBuild.js).
-
-Examples:
- - <RepoLink path='/examples/cloudflare-workers-react-full' /> &mdash; Cloudflare Workers needs the entire worker code to be bundled into a single file.
- - <RepoLink path='/examples/vercel' /> &mdash; Vercel bundles our serverless functions behind the scenes.
-
-## Conclusion
-
-We can use `vite-plugin-ssr` with any deploy strategy/service we want.
