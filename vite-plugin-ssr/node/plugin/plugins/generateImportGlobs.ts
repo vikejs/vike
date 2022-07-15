@@ -8,11 +8,16 @@ import { debugGlob } from '../../utils'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import {
-  virtualModuleIdPageFilesClient,
+  virtualModuleIdPageFilesClientSR,
+  virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer,
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 
-const virtualModuleIds = [virtualModuleIdPageFilesServer, virtualModuleIdPageFilesClient]
+const virtualModuleIds = [
+  virtualModuleIdPageFilesServer,
+  virtualModuleIdPageFilesClientSR,
+  virtualModuleIdPageFilesClientCR,
+]
 
 type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
 
@@ -31,16 +36,17 @@ function generateImportGlobs(): Plugin {
     },
     async load(id, options) {
       if (virtualModuleIds.includes(id)) {
-        const isForClientSide = id === virtualModuleIds[1]
+        const isForClientSide = id !== virtualModuleIdPageFilesServer
         assert(isForClientSide === !isSSR_options(options))
-        const code = await getCode(config, isForClientSide)
+        const isClientRouting = id === virtualModuleIdPageFilesClientCR
+        const code = await getCode(config, isForClientSide, isClientRouting)
         return code
       }
     },
   } as Plugin
 }
 
-async function getCode(config: Config, isForClientSide: boolean) {
+async function getCode(config: Config, isForClientSide: boolean, isClientRouting: boolean) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
   const isBuild = command === 'build'
@@ -51,6 +57,7 @@ async function getCode(config: Config, isForClientSide: boolean) {
     includePaths.filter(isNotNullish),
     isBuild,
     isForClientSide,
+    isClientRouting,
     config.vitePluginSsr.includeAssetsImportedByServer,
   )
   debugGlob('Glob imports: ', content)
@@ -61,6 +68,7 @@ function getContent(
   includePaths: string[],
   isBuild: boolean,
   isForClientSide: boolean,
+  isClientRouting: boolean,
   includeAssetsImportedByServer: undefined | boolean,
 ) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
@@ -74,7 +82,12 @@ export const isGeneratedFile = true;
 
 `
 
-  fileContent += [getGlobs(includePaths, isBuild, 'page'), getGlobs(includePaths, isBuild, 'page.route'), ''].join('\n')
+  fileContent += getGlobs(includePaths, isBuild, 'page')
+  if (!isForClientSide || isClientRouting) {
+    fileContent += '\n' + getGlobs(includePaths, isBuild, 'page.route')
+  }
+  fileContent += '\n'
+
   if (isForClientSide) {
     fileContent += [
       getGlobs(includePaths, isBuild, 'page.client'),

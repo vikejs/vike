@@ -1,4 +1,4 @@
-import './page-files/setup'
+import './pageFiles'
 import '../shared/assertSingleVersion'
 import { getPageContext } from './getPageContext'
 import { assertRenderHook } from './assertRenderHook'

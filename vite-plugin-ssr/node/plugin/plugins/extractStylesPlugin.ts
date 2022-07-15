@@ -22,7 +22,10 @@ import { createDebugger, isDebugEnabled } from '../../utils'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'
-import { virtualModuleIdPageFilesClient } from './generateImportGlobs/virtualModuleIdPageFiles'
+import {
+  virtualModuleIdPageFilesClientSR,
+  virtualModuleIdPageFilesClientCR,
+} from './generateImportGlobs/virtualModuleIdPageFiles'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
@@ -75,7 +78,7 @@ function extractStylesPlugin(): Plugin[] {
         if (source.includes('.page.server.')) {
           // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
           assert(extractStylesRE.test(source) || extractExportNamesRE.test(source))
-          assert(importer === virtualModuleIdPageFilesClient)
+          assert(importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR)
         } else {
           // All other `?extractStyles` queries are appended when this `resolveId()` hook returns `appendExtractStylesQuery()`
           assert(!extractStylesRE.test(source), { source })
