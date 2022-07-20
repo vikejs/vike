@@ -382,7 +382,7 @@ function createHttpResponseObject(
         false,
         '`pageContext.httpResponse.getNodeStream()` is outdated, use `pageContext.httpResponse.pipe()` instead. See ' +
           streamDocs,
-        { onlyOnce: true },
+        { onlyOnce: true, showStackTrace: true },
       )
       const nodeStream = await getStreamReadableNode(htmlRender)
       assertUsage(nodeStream !== null, errMsg('getNodeStream()', fixMsg('readable', 'node')))
@@ -393,7 +393,7 @@ function createHttpResponseObject(
         false,
         '`pageContext.httpResponse.getWebStream(res)` is outdated, use `pageContext.httpResponse.getReadableWebStream(res)` instead. See ' +
           streamDocs,
-        { onlyOnce: true },
+        { onlyOnce: true, showStackTrace: true },
       )
       const webStream = getStreamReadableWeb(htmlRender)
       assertUsage(webStream !== null, errMsg('getWebStream()', fixMsg('readable', 'web')))
@@ -409,7 +409,7 @@ function createHttpResponseObject(
         false,
         '`pageContext.httpResponse.pipeToWebWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. See ' +
           streamDocs,
-        { onlyOnce: true },
+        { onlyOnce: true, showStackTrace: true },
       )
       const success = pipeToStreamWritableWeb(htmlRender, writable)
       assertUsage(success, errMsg('pipeToWebWritable()'))
@@ -419,7 +419,7 @@ function createHttpResponseObject(
         false,
         '`pageContext.httpResponse.pipeToNodeWritable(res)` is outdated, use `pageContext.httpResponse.pipe(res)` instead. See ' +
           streamDocs,
-        { onlyOnce: true },
+        { onlyOnce: true, showStackTrace: true },
       )
       const success = pipeToStreamWritableNode(htmlRender, writable)
       assertUsage(success, errMsg('pipeToNodeWritable()'))

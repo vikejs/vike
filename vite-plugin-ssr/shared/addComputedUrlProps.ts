@@ -72,7 +72,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       assertWarning(
         false,
         '`pageContext.urlParsed.hashString` has been renamed to `pageContext.urlParsed.hashOriginal`',
-        { onlyOnce: true },
+        { onlyOnce: true, showStackTrace: true },
       )
       return hashOriginal
     },
@@ -80,7 +80,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       assertWarning(
         false,
         '`pageContext.urlParsed.searchString` has been renamed to `pageContext.urlParsed.searchOriginal`',
-        { onlyOnce: true },
+        { onlyOnce: true, showStackTrace: true },
       )
       return searchOriginal
     },

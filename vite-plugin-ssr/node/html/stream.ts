@@ -637,6 +637,7 @@ type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
   assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream', {
     onlyOnce: true,
+    showStackTrace: true,
   })
   return { [__streamPipeWeb]: pipe }
 }
@@ -672,7 +673,7 @@ function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   assertWarning(
     false,
     'pipeNodeStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream',
-    { onlyOnce: true },
+    { onlyOnce: true, showStackTrace: true },
   )
   return { [__streamPipeNode]: pipe }
 }

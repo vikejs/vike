@@ -23,7 +23,7 @@ type PageAsset = {
 }
 
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
-  assertWarning(false, '`_injectAssets()` is deprecated and will be removed.', { onlyOnce: true })
+  assertWarning(false, '`_injectAssets()` is deprecated and will be removed.', { onlyOnce: true, showStackTrace: true })
   assertUsage(
     typeof htmlString === 'string',
     '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.',

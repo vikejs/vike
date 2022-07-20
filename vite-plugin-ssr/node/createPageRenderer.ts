@@ -24,7 +24,7 @@ function showWarnings(options: Options) {
   assertWarning(
     false,
     '`createPageRenderer()` is outdated, use `renderPage()` instead. See https://vite-plugin-ssr.com/renderPage',
-    { onlyOnce: true },
+    { onlyOnce: true, showStackTrace: true },
   )
 
   const { viteDevServer, root, outDir, isProduction, base, baseAssets } = options

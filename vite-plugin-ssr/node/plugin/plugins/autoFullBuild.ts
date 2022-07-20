@@ -83,7 +83,7 @@ function abortAPI() {
   assertWarning(
     false,
     'The Vite API call `await build({ build: { ssr: true } })` is outdated. It has no effect and is superfluous. Use only the Vite API call `await build()` (without `build.ssr`) instead, as it now also builds server-side code.',
-    { onlyOnce: true },
+    { onlyOnce: true, showStackTrace: true },
   )
   process.exit(0)
 }
