@@ -1,3 +1,13 @@
+## [0.4.10](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.9...v0.4.10) (2022-07-20)
+
+
+### Bug Fixes
+
+* show the stack trace for warnings with a direct call stack from the user ([f5c22d4](https://github.com/brillout/vite-plugin-ssr/commit/f5c22d4cee29c62ca38070df77bf2c4c11c735fc))
+* treat `_default/` directories as empty for filesytem routing `_default.page.*` files ([da9af6e](https://github.com/brillout/vite-plugin-ssr/commit/da9af6e615d6377f14e2364f80e25cb0a002e778))
+
+
+
 ## [0.4.9](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.8...v0.4.9) (2022-07-15)
 
 

@@ -17,7 +17,7 @@
     "cross-fetch": "^3.1.5",
     "express": "^4.18.1",
     "vite": "^3.0.2",
-    "vite-plugin-ssr": "0.4.9",
+    "vite-plugin-ssr": "0.4.10",
     "vue": "^3.2.27"
   }
 }
