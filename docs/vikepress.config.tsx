@@ -20,6 +20,7 @@ const config: Config = {
   tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
   titleNormalCase: false,
   bannerUrl: 'https://vite-plugin-ssr.com/banner.png',
+  twitterHandle: '@brillout',
   websiteUrl: 'https://vite-plugin-ssr.com/',
 }
 export default config

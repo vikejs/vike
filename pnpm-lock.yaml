@@ -149,7 +149,7 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ^4.3.2
-      vikepress: ^0.0.29
+      vikepress: ^0.0.30
       vite: ^2.9.14
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
@@ -161,7 +161,7 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       typescript: 4.6.4
-      vikepress: 0.0.29_biqbaboplfbrettd7655fr4n2y
+      vikepress: 0.0.30_biqbaboplfbrettd7655fr4n2y
       vite: 2.9.14
     devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
@@ -7028,13 +7028,6 @@ packages:
       sourcemap-codec: 1.4.8
     dev: false
 
-  /magic-string/0.26.1:
-    resolution: {integrity: sha512-ndThHmvgtieXe8J/VGPjG+Apu7v7ItcD5mhEIvOscWjPF/ccOiLxHaSuCAS2G+3x4GKsAbT8u7zdyamupui8Tg==}
-    engines: {node: '>=12'}
-    dependencies:
-      sourcemap-codec: 1.4.8
-    dev: false
-
   /magic-string/0.26.2:
     resolution: {integrity: sha512-NzzlXpclt5zAbmo6h6jNc8zl2gNRGHvmsZW4IvZhTC4W7k4OlLP+S5YLussa/r3ixNT66KOQfNORlXHSOy/X4A==}
     engines: {node: '>=12'}
@@ -10565,8 +10558,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.29_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-rrUQQtwxJ8EA9aTV/nh9nEW/pKLit0fPxu+/uHSnbGVouu6C/C5m7p09P7f+Js0lCtwMZh5mVAP4ZQn0fdXInQ==}
+  /vikepress/0.0.30_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-gZI8T+vKoOSZlTSB1VExkM5Pbv/Qdnx4VHaeDLWLAIQ8nwTqY7uZUPRN4w8gHykKjh5HF87TgagmAF03sixfbQ==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -10603,7 +10596,7 @@ packages:
     dependencies:
       acorn: 8.7.1
       fast-glob: 3.2.11
-      magic-string: 0.26.1
+      magic-string: 0.26.2
       micromatch: 4.0.5
       ufo: 0.8.3
     dev: false
