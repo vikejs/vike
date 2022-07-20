@@ -478,6 +478,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'hapi',
+    url: '/hapi',
+  },
+  {
+    level: 2,
     title: 'Other Integrations',
     titleInNav: 'Other',
     url: '/integration',
