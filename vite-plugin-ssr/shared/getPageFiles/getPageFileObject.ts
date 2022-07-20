@@ -65,6 +65,8 @@ function isAncestorDefaultPage(pageId: string, defaultPageFilePath: string) {
   assert(!defaultPageFilePath.endsWith('/'))
   assert(isDefaultFilePath(defaultPageFilePath))
 
-  const defaultPageDir = slice(defaultPageFilePath.split('/'), 0, -1).join('/')
+  const defaultPageDir = slice(defaultPageFilePath.split('/'), 0, -1)
+    .filter((filePathSegment) => filePathSegment !== '_default')
+    .join('/')
   return pageId.startsWith(defaultPageDir)
 }
