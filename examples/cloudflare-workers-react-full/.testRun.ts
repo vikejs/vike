@@ -11,16 +11,14 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   const isWrangler = cmd === 'npm run preview'
 
   if (isWrangler) {
-    /*
-     * To avoid the CF access token to be leaked, we should uncomment this and differentiate between PR VS maintainer branch.
-     * Low priority because the keys were created with a free-tier dummy account.
-     */
-    // if (isGithubAction() && process.env['GIT_BRANCH'] !== 'main') {
-    //   const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
-    //   console.log(msg)
-    //   test(msg, () => {})
-    //   return
-    // }
+    // GitHub Actions doesn't make secrets available to Pull Requests.
+    //  - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
+    if (isGithubAction() && process.env['GIT_BRANCH'] !== 'main') {
+      const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
+      console.log(msg)
+      test(msg, () => {})
+      return
+    }
     const envVars = Object.keys(process.env)
     if (!envVars.includes('CF_ACCOUNT_ID') || !envVars.includes('CF_API_TOKEN')) {
       const msg = 'SKIPPED: Cloudflare Workers tokens not provided.'
