@@ -7,9 +7,11 @@ importers:
 
   .:
     specifiers:
+      '@brillout/deplink': 0.0.2
       '@brillout/submodule-init': 0.1.2
       vitest: ^0.14.1
     devDependencies:
+      '@brillout/deplink': 0.0.2
       '@brillout/submodule-init': 0.1.2
       vitest: 0.14.1
 
@@ -1638,6 +1640,11 @@ packages:
   /@bcoe/v8-coverage/0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
+
+  /@brillout/deplink/0.0.2:
+    resolution: {integrity: sha512-IgdRlQAxOhpsKt6q8WFQyd1adFKUP3bbpjDhdAEJA/+ytfNIX65OLGcpl+2U5wXEu9od3FQq3mBCClQCK1CSVg==}
+    hasBin: true
+    dev: true
 
   /@brillout/json-s/0.4.6:
     resolution: {integrity: sha512-mDgMMNFSKyN9Fy0G4yQTcWwQ1BXUE65D3i3RXPX44xD5AuIU4QQDQBi+DKiEDCS6L6nEa2frC2lCUa/ob700Aw==}
