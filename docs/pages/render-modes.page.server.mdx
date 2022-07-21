@@ -78,6 +78,9 @@ export function render() {
 }
 ```
 
+> Note that the server-side `render()` hook is still called in order to generate the static HTML of our SPA page.
+> For production, if we only have SPA pages, then we may want to <Link text="pre-render" href="/pre-rendering" /> the static HTML of our SPA pages at build-time.
+
 ```js
 // /renderer/_default.page.client.js
 // Environment: Browser
@@ -179,7 +182,7 @@ We should use pre-rendering whenever we can, as it allows us to deploy our app t
 
 For example, `https://vite-plugin-ssr.com` is pre-rendered and deployed to [GitHub Pages](/github-pages).
 
-See [Guides > Pre-rendering](/pre-rendering).
+See <Link href="/pre-rendering" />.
 
 
 ## HTML-only
