@@ -66,17 +66,10 @@
     "./plugin": {
       "node": "./dist/cjs/node/plugin/index.js"
     },
-    "./shared/route": {
-      "worker": "./dist/cjs/shared/route.js",
-      "node": "./dist/cjs/shared/route.js",
-      "browser": "./dist/esm/client/node.js"
+    "./__internal": {
+      "node": "./dist/cjs/__internal.js"
     },
-    "./shared/getPageFiles": {
-      "worker": "./dist/cjs/shared/getPageFiles.js",
-      "node": "./dist/cjs/shared/getPageFiles.js",
-      "browser": "./dist/esm/client/getPageFiles.js"
-    },
-    "./page-files/setup": {
+    "./__internal/setup": {
       "node": "./dist/cjs/node/page-files/setup.js"
     }
   },

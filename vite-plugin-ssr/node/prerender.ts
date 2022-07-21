@@ -30,6 +30,7 @@ import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { assertConfigVpsResolved } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
+import { setProductionEnvVar } from '../shared/setProduction'
 
 export { prerender }
 
@@ -650,13 +651,6 @@ function checkOutdatedOptions(options: {
     parallel === undefined || parallel,
     `[prerender()] Option \`parallel\` should be a number \`>=1\` but we got \`${parallel}\`.`,
   )
-}
-
-function setProductionEnvVar() {
-  // The statement `process.env['NODE_ENV'] = 'production'` chokes webpack v4 (which Cloudflare Workers uses)
-  const proc = process
-  const { env } = proc
-  env['NODE_ENV'] = 'production'
 }
 
 function throwPrerenderError(err: unknown) {
