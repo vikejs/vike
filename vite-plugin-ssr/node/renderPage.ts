@@ -928,12 +928,12 @@ function logError(err: unknown) {
 }
 
 function hasAlreadyLogged(err: unknown) {
-  assert(isObject(err))
+  if (!isObject(err)) return false
   const key = '_wasAlreadyConsoleLogged'
   return err[key] === true
 }
 function setAlreadyLogged(err: unknown) {
-  assert(isObject(err))
+  if (!isObject(err)) return
   const key = '_wasAlreadyConsoleLogged'
   err[key] = true
 }
