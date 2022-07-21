@@ -7,7 +7,6 @@ packages:
   - 'examples/*'
   - 'examples/framework/*'
   - 'examples/renderer/*'
-  - '!**/deps/**'
   - 'libframe/test/'
   - 'libframe/docs/'
   - 'libframe/scripts/'
