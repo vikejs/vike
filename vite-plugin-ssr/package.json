@@ -67,7 +67,7 @@
       "node": "./dist/cjs/node/plugin/index.js"
     },
     "./__internal": {
-      "node": "./dist/cjs/__internal.js"
+      "node": "./dist/cjs/__internal/index.js"
     },
     "./__internal/setup": {
       "node": "./dist/cjs/node/page-files/setup.js"
@@ -86,6 +86,8 @@
     "plugin.d.ts",
     "prerender.js",
     "prerender.d.ts",
+    "__internal.js",
+    "__internal.d.ts",
     "types.d.ts"
   ],
   "bin": {
