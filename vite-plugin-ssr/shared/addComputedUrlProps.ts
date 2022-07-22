@@ -85,5 +85,12 @@ function urlParsedGetter(this: PageContextUrlSource) {
       return searchOriginal
     },
   }
+  makeNonEnumerable(urlParsed, 'hashString')
+  makeNonEnumerable(urlParsed, 'searchString')
   return urlParsed
+}
+
+function makeNonEnumerable(obj: Object, prop: string) {
+  const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
+  Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
 }
