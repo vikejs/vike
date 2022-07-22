@@ -88,6 +88,8 @@
     "prerender.d.ts",
     "__internal.js",
     "__internal.d.ts",
+    "__internal/setup.js",
+    "__internal/setup.d.ts",
     "types.d.ts"
   ],
   "bin": {
