@@ -45,7 +45,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', uiFrameworkRoot: 'react
     }
     {
       await page.click('a[href="/starship/reviews"]')
-      let text: string
+      let text!: string | null
       await autoRetry(async () => {
         text = await page.textContent('body')
         expect(text).toContain(textReviews)
@@ -56,7 +56,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', uiFrameworkRoot: 'react
     }
     {
       await page.click('a[href="/starship/spec"]')
-      let text: string
+      let text!: string | null
       await autoRetry(async () => {
         text = await page.textContent('body')
         expect(text).toContain(textTechSpec)
