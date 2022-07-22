@@ -1,3 +1,13 @@
+## [0.4.11](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.10...v0.4.11) (2022-07-22)
+
+
+### Bug Fixes
+
+* assertion when user throws non-object error ([7bad325](https://github.com/brillout/vite-plugin-ssr/commit/7bad325b3246fb45d9374293f2bcf01cb8ccc3ad))
+* improve err msg upon production build not found ([9aaa254](https://github.com/brillout/vite-plugin-ssr/commit/9aaa254c28aea9cec8c5357db1591a51cb12a21d))
+
+
+
 ## [0.4.10](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.9...v0.4.10) (2022-07-20)
 
 
