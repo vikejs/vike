@@ -1,8 +1,7 @@
 export { render }
 
 import { createApp } from './app'
-import apolloClient from '@apollo/client'
-const { ApolloClient, InMemoryCache, HttpLink } = apolloClient
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 import fetch from 'cross-fetch'
 
 function render(pageContext) {

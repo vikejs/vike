@@ -2,8 +2,7 @@ export { render }
 
 import React from 'react'
 import { hydrateRoot } from 'react-dom/client'
-import apolloClient from '@apollo/client'
-const { ApolloClient, InMemoryCache } = apolloClient
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 import App from './App'
 
 async function render(pageContext) {
