@@ -304,6 +304,7 @@ importers:
     specifiers:
       '@apollo/client': ^3.6.9
       '@vitejs/plugin-react': ^2.0.0
+      cross-env: ^7.0.3
       express: ^4.18.1
       graphql: ^16.5.0
       node-fetch: ^2.6.1
@@ -314,6 +315,7 @@ importers:
     dependencies:
       '@apollo/client': 3.6.9_phmus7xcbidy3raesi6r6zwaqe
       '@vitejs/plugin-react': 2.0.0_vite@3.0.2
+      cross-env: 7.0.3
       express: 4.18.1
       graphql: 16.5.0
       node-fetch: 2.6.7
