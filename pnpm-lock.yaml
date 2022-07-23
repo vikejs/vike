@@ -628,7 +628,7 @@ importers:
       react-dom: ^18.1.0
       react-ssr-prepass: ^1.5.0
       typescript: ^4.6.4
-      urql: ^2.2.0
+      urql: ^2.2.3
       vite: ^2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -642,7 +642,7 @@ importers:
       react-dom: 18.1.0_react@18.1.0
       react-ssr-prepass: 1.5.0_react@18.1.0
       typescript: 4.6.4
-      urql: 2.2.0_cxfcglayresyyxxylwnor5zopi
+      urql: 2.2.3_cxfcglayresyyxxylwnor5zopi
       vite: 2.9.14
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -2760,8 +2760,8 @@ packages:
     dev: false
     optional: true
 
-  /@urql/core/2.4.4_graphql@16.4.0:
-    resolution: {integrity: sha512-TD+OS7jG1Ts6QkpU0TZ85i/vu40r71GF0QQFDhnWFtgkHcNwnpkIwWBMa72AR3j2imBTPpk61e/xb39uM/t37A==}
+  /@urql/core/2.6.1_graphql@16.4.0:
+    resolution: {integrity: sha512-gYrEHy3tViJhwIhauK6MIf2Qp09QTsgNHZRd0n71rS+hF6gdwjspf1oKljl4m25+272cJF7fPjBUGmjaiEr7Kg==}
     peerDependencies:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dependencies:
@@ -10453,13 +10453,13 @@ packages:
     resolution: {integrity: sha512-DOE84vZT2fEcl9gqCUTcnAw5ZY5Id55ikUcziSUntuEFL3pRvavg5kwDmTEUJkeCHInTlV/HexFomgYnzO5kdQ==}
     dev: false
 
-  /urql/2.2.0_cxfcglayresyyxxylwnor5zopi:
-    resolution: {integrity: sha512-36wnWqDrpXqhwT5r2/qRSZXhb7Y4sXA0nLlYEd3uLgvfIdOA8kUaPdfTujzfrvfCcfiVVFxhzqVAhc8r17NMwQ==}
+  /urql/2.2.3_cxfcglayresyyxxylwnor5zopi:
+    resolution: {integrity: sha512-XMkSYJKW9s4ZlbSuxcUz3fTBIykOn0sGileRXQeyZpaRBXJPVz5saSY05k7jdefNxShZtTI+/nr7PYUWQertfg==}
     peerDependencies:
       graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
       react: '>= 16.8.0'
     dependencies:
-      '@urql/core': 2.4.4_graphql@16.4.0
+      '@urql/core': 2.6.1_graphql@16.4.0
       graphql: 16.4.0
       react: 18.1.0
       wonka: 4.0.15

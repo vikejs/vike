@@ -1,18 +1,9 @@
 export { testRun }
 
 import { page, run, autoRetry, fetchHtml, urlBase } from '../../libframe/test/setup'
-const viteVersion = '3.?.?'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
-
-  if (cmd === 'npm run preview' && viteVersion.startsWith('3')) {
-    // https://github.com/FormidableLabs/urql/issues/2484
-    const msg = 'SKIPPED urql production test until it supports Vite 3.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
 
   test('urql content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
