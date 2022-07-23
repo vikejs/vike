@@ -11,21 +11,24 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   const isWrangler = cmd === 'npm run preview'
 
   if (isWrangler) {
-    // GitHub Actions doesn't make secrets available to Pull Requests.
-    //  - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
     if (isGithubAction() && process.env['GIT_BRANCH'] !== 'main') {
-      const msg = 'SKIPPED: wrangler tests are not run in Pull Requests'
+      // Cloudflare tokens not available in Pull Requests:
+      //  - GitHub Actions doesn't make secrets available to Pull Requests.
+      //    - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
+      const envVars = Object.keys(process.env)
+      expect(envVars).not.toContain('CF_ACCOUNT_ID')
+      expect(envVars).not.toContain('CF_API_TOKEN')
+      const msg = 'SKIPPED: wrangler tests cannot be run in Pull Requests.'
       console.log(msg)
       test(msg, () => {})
       return
     }
+  }
+
+  if (isWrangler) {
     const envVars = Object.keys(process.env)
-    if (!envVars.includes('CF_ACCOUNT_ID') || !envVars.includes('CF_API_TOKEN')) {
-      const msg = 'SKIPPED: Cloudflare Workers tokens not provided.'
-      console.log(msg)
-      test(msg, () => {})
-      return
-    }
+    expect(envVars).toContain('CF_ACCOUNT_ID')
+    expect(envVars).toContain('CF_API_TOKEN')
   }
 
   {
