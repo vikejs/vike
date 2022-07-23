@@ -6,8 +6,10 @@
 </template>
 
 <script>
-import { gql } from '@apollo/client'
+import apolloClient from '@apollo/client'
+const { gql } = apolloClient
 import { useQuery, useResult } from '@vue/apollo-composable'
+
 const getChar = gql`
   query {
     character(id: 1) {

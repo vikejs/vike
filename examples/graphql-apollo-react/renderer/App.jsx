@@ -1,5 +1,6 @@
 import React from 'react'
-import { ApolloProvider } from '@apollo/client'
+import apolloClient from '@apollo/client'
+const { ApolloProvider } = apolloClient
 import './App.css'
 
 export default App
