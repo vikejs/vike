@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import apolloClient from '@apollo/client'
+const { gql, useQuery } = apolloClient
 
 export { Page }
 
