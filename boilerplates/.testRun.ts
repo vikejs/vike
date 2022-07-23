@@ -12,7 +12,6 @@ import {
   editFileRevert,
 } from '../libframe/test/setup'
 import assert from 'assert'
-const viteVersion = '3.?.?'
 
 function testRun(
   cmd: 'npm run dev' | 'npm run prod' | 'npm run preview',
@@ -34,14 +33,6 @@ function testRun(
 
   const isProd = cmd === 'npm run prod' || cmd === 'npm run preview'
   const isDev = !isProd
-
-  if (uiFramewok === 'preact' && isProd && viteVersion.startsWith('3')) {
-    // https://github.com/preactjs/preact/issues/3558
-    const msg = 'SKIPPED preact prod until it supports Vite 3.'
-    console.log(msg)
-    test(msg, () => {})
-    return
-  }
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
