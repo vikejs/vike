@@ -19,5 +19,19 @@
     "vite": "^3.0.2",
     "vite-plugin-ssr": "0.4.11",
     "vue": "^3.2.27"
+  },
+  "pnpm": {
+    "packageExtensions": {
+      "@apollo/client": {
+        "peerDependencies": {
+          "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+        },
+        "peerDependenciesMeta": {
+          "react-dom": {
+            "optional": true
+          }
+        }
+      }
+    }
   }
 }
