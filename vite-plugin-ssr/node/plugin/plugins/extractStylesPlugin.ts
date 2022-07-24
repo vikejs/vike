@@ -43,10 +43,10 @@ function extractStylesPlugin(): Plugin[] {
           return
         }
         assert(!isSSR_options(options))
-        const imports = await getImportStatements(src)
-        debug(`source transformed: ${id}`)
-        const moduleNames = getImportedModules(imports)
+        const importStatements = await getImportStatements(src)
+        const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
+        debugTransformResult(id, code, importStatements)
         return removeSourceMap(code)
       },
     },
@@ -219,4 +219,32 @@ function analyzeImport(importStatement: ImportStatement): { moduleName: string |
 
 function debugOperation(operation: 'NUKED' | 'INCLUDED' | 'TRANSFORMED', id: string, importer: string) {
   debug(`import ${operation}: ${id} (importer: ${importer})`)
+}
+
+function stringifyImportStatements(importStatements: ImportStatement[]) {
+  const importsStr: string[] = importStatements.map((importStatement) => {
+    const { a: assertion, n } = importStatement
+
+    // `n` is `undefined` for dynamic imports with variable, e.g. `import(moduleName)`
+    if (n === undefined) return 'import(...)'
+
+    let importStr = `import '${n}'`
+
+    if (assertion !== -1) {
+      importStr += ' assert { ... }'
+    }
+
+    return importStr
+  })
+  return importsStr
+}
+
+function debugTransformResult(id: string, code: string, importStatements: ImportStatement[]) {
+  debug(
+    `source TRANSFORMED: ${id} (CODE: \`${code.split('\n').join(' ')}\`, IMPORTS: ${stringifyImportStatements(
+      importStatements,
+    )
+      .map((s) => `\`${s}\``)
+      .join(', ')})`,
+  )
 }
