@@ -47,6 +47,9 @@ function determineFileType(filePath: string): FileType {
 function isDefaultFilePath(filePath: string): boolean {
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
+  if (isErrorPage(filePath)) {
+    return false
+  }
   return filePath.includes('/_default')
 }
 
