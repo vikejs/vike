@@ -11,7 +11,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   const isWrangler = cmd === 'npm run preview'
 
   if (isGithubAction()) {
-    const repository = process.env['GIT_REPOSITORY']
+    const repository = process.env['GITHUB_REPOSITORY']
     expect(repository).toBeTruthy()
     // GitHub Actions doesn't make secrets available to Pull Requests.
     // - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4

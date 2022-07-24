@@ -63,7 +63,5 @@ jobs:
       - name: Run tests
         run: ${{ matrix.testCmd }}
         env:
-          GIT_REPOSITORY: ${{ github.repository }}
-          GIT_BRANCH: ${{ github.ref_name }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
