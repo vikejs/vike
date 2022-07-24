@@ -3,8 +3,6 @@ lockfileVersion: 5.4
 overrides:
   vite-plugin-ssr: link:./vite-plugin-ssr/
 
-packageExtensionsChecksum: f050d50401848e89704474c6985d439e
-
 importers:
 
   .:
@@ -312,7 +310,7 @@ importers:
       vite: ^3.0.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@apollo/client': 3.6.9_phmus7xcbidy3raesi6r6zwaqe
+      '@apollo/client': 3.6.9_aez2jvt6lsvokp3l4ousdbdxf4
       '@vitejs/plugin-react': 2.0.0_vite@3.0.2
       express: 4.18.1
       graphql: 16.5.0
@@ -871,14 +869,11 @@ packages:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
       subscriptions-transport-ws: ^0.9.0 || ^0.11.0
     peerDependenciesMeta:
       graphql-ws:
         optional: true
       react:
-        optional: true
-      react-dom:
         optional: true
       subscriptions-transport-ws:
         optional: true
@@ -897,20 +892,17 @@ packages:
       zen-observable-ts: 1.2.5
     dev: false
 
-  /@apollo/client/3.6.9_phmus7xcbidy3raesi6r6zwaqe:
+  /@apollo/client/3.6.9_aez2jvt6lsvokp3l4ousdbdxf4:
     resolution: {integrity: sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
       subscriptions-transport-ws: ^0.9.0 || ^0.11.0
     peerDependenciesMeta:
       graphql-ws:
         optional: true
       react:
-        optional: true
-      react-dom:
         optional: true
       subscriptions-transport-ws:
         optional: true
@@ -925,7 +917,6 @@ packages:
       optimism: 0.16.1
       prop-types: 15.8.1
       react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
       symbol-observable: 4.0.0
       ts-invariant: 0.10.3
       tslib: 2.4.0
