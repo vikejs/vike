@@ -87,12 +87,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SPA')
-        await sleep(100) // Not sure if it helps make the test less flaky?
+        await sleep(200)
         editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
-        await sleep(100) // Not sure if it helps make the test less flaky?
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA !')
         })
+        await sleep(200)
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA')
@@ -102,10 +102,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('green')
-        await sleep(200) // Not sure if it helps make the test less flaky?
+        await sleep(200)
         editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
         await testColor('gray')
-        await sleep(100) // Not sure if it helps make the test less flaky?
+        await sleep(200)
         editFileRevert()
         await testColor('green')
       }
@@ -168,13 +168,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
-        await sleep(100) // Not sure if it helps make the test less flaky?
+        await sleep(200)
         editFile('./pages/ssr/index.page.jsx', (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
-        await sleep(100) // Not sure if it helps make the test less flaky?
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
-        await sleep(100)
+        await sleep(200)
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR')
@@ -184,10 +183,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('blue')
-        await sleep(100) // Not sure if it helps make the test less flaky?
+        await sleep(200)
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
         await testColor('gray')
-        await sleep(100)
+        await sleep(200)
         editFileRevert()
         await testColor('blue')
       }
