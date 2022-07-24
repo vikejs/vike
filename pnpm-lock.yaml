@@ -333,19 +333,21 @@ importers:
       cross-env: ^7.0.3
       cross-fetch: ^3.1.5
       express: ^4.18.1
+      graphql: ^16.5.0
       vite: ^3.0.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.27
     dependencies:
-      '@apollo/client': 3.6.9
+      '@apollo/client': 3.6.9_graphql@16.5.0
       '@vitejs/plugin-vue': 3.0.1_vite@3.0.2+vue@3.2.37
-      '@vue/apollo-composable': 4.0.0-alpha.19_dfamusr62newrbayvnuofk7pzi
+      '@vue/apollo-composable': 4.0.0-alpha.19_evl73agsd2l2vqwzmhm3tuflgi
       '@vue/compiler-sfc': 3.2.37
       '@vue/server-renderer': 3.2.37_vue@3.2.37
       compression: 1.7.4
       cross-env: 7.0.3
       cross-fetch: 3.1.5
       express: 4.18.1
+      graphql: 16.5.0
       vite: 3.0.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.37
@@ -865,7 +867,7 @@ packages:
     resolution: {integrity: sha512-8Afo0+xvYe1K8Wm4xHTymfTkpzy36aaqDvhXIayUwl+mecMG9Xzl3XjXa6swG6Bk8FBeQ646RyvmsYt6+2Be9g==}
     dev: false
 
-  /@apollo/client/3.6.9:
+  /@apollo/client/3.6.9_graphql@16.5.0:
     resolution: {integrity: sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
@@ -883,11 +885,12 @@ packages:
       subscriptions-transport-ws:
         optional: true
     dependencies:
-      '@graphql-typed-document-node/core': 3.1.1
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.5.0
       '@wry/context': 0.6.1
       '@wry/equality': 0.5.2
       '@wry/trie': 0.3.1
-      graphql-tag: 2.12.6
+      graphql: 16.5.0
+      graphql-tag: 2.12.6_graphql@16.5.0
       hoist-non-react-statics: 3.3.2
       optimism: 0.16.1
       prop-types: 15.8.1
@@ -1738,12 +1741,6 @@ packages:
 
   /@gar/promisify/1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
-    dev: false
-
-  /@graphql-typed-document-node/core/3.1.1:
-    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
     dev: false
 
   /@graphql-typed-document-node/core/3.1.1_graphql@16.4.0:
@@ -2827,7 +2824,7 @@ packages:
       vue: 3.2.37
     dev: false
 
-  /@vue/apollo-composable/4.0.0-alpha.19_dfamusr62newrbayvnuofk7pzi:
+  /@vue/apollo-composable/4.0.0-alpha.19_evl73agsd2l2vqwzmhm3tuflgi:
     resolution: {integrity: sha512-bxFjzV/j8j3kzWcG4iX8z4JnidTKjQytmVL2tJWRdjeKZbfZDV9nVr/XBVPP75+iR5ckZe6EKinDKkjnYFKhlg==}
     peerDependencies:
       '@apollo/client': ^3.4.13
@@ -2838,7 +2835,8 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      '@apollo/client': 3.6.9
+      '@apollo/client': 3.6.9_graphql@16.5.0
+      graphql: 16.5.0
       throttle-debounce: 3.0.1
       ts-essentials: 9.1.2
       vue: 3.2.37
@@ -5577,15 +5575,6 @@ packages:
 
   /graceful-fs/4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
-    dev: false
-
-  /graphql-tag/2.12.6:
-    resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      tslib: 2.4.0
     dev: false
 
   /graphql-tag/2.12.6_graphql@16.5.0:
