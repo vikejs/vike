@@ -44,6 +44,7 @@ function extractStylesPlugin(): Plugin[] {
         if (!extractStylesRE.test(id)) {
           return
         }
+        assert(config.vitePluginSsr.includeAssetsImportedByServer)
         assert(!isSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -66,16 +67,23 @@ function extractStylesPlugin(): Plugin[] {
           assert(importer === undefined || !extractStylesRE.test(importer))
           return
         }
+
+        // We don't need to consider the entry modules
         if (!importer) {
           return
         }
+
+        if (!extractStylesRE.test(importer)) {
+          return
+        }
+        assert(config.vitePluginSsr.includeAssetsImportedByServer)
+
         if (source.includes('.page.server.')) {
+          // For a Vue SFC `.page.server.vue`:
+          //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
+          //  - importer: `.page.server.vue?extractStyles&lang.vue`
+          const isVueSFC = source.includes('?vue&')
           // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
-          const isVueSFC =
-            // For a Vue SFC `.page.server.vue`:
-            //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
-            //  - importer: `.page.server.vue?extractStyles&lang.vue`
-            source.includes('?vue&') && extractStylesRE.test(importer)
           assert(extractStylesRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
           assert(
             importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC,
@@ -83,10 +91,6 @@ function extractStylesPlugin(): Plugin[] {
         } else {
           // All other `?extractStyles` queries are appended when this `resolveId()` hook returns `appendExtractStylesQuery()`
           assert(!extractStylesRE.test(source), { source })
-        }
-
-        if (!extractStylesRE.test(importer)) {
-          return
         }
 
         let resolution: null | ResolvedId = null
