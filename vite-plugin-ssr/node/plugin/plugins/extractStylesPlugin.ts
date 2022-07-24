@@ -20,6 +20,8 @@ import {
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
+const rawRE = /(\?|&)raw(?:&|$)/
+const urlRE = /(\?|&)url(?:&|$)/
 const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
 
@@ -69,8 +71,15 @@ function extractStylesPlugin(): Plugin[] {
         }
         if (source.includes('.page.server.')) {
           // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
-          assert(extractStylesRE.test(source) || extractExportNamesRE.test(source))
-          assert(importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR)
+          const isVueSFC =
+            // For a Vue SFC `.page.server.vue`:
+            //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
+            //  - importer: `.page.server.vue?extractStyles&lang.vue`
+            source.includes('?vue&') && extractStylesRE.test(importer)
+          assert(extractStylesRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
+          assert(
+            importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC,
+          )
         } else {
           // All other `?extractStyles` queries are appended when this `resolveId()` hook returns `appendExtractStylesQuery()`
           assert(!extractStylesRE.test(source), { source })
@@ -198,8 +207,12 @@ function analyzeImport(importStatement: ImportStatement): { moduleName: string |
     return { moduleName, skip: true }
   }
 
-  // Remove modifiers such as `import logoUrl from './logo.svg?url'` or `'./logo.svg?raw'`
-  if (moduleName.includes('?')) {
+  if (
+    // Remove imports such as `import logoUrl from './logo.svg?url'`
+    rawRE.test(moduleName) ||
+    // Remove imports such as `import logoUrl from './logo.svg?raw'`
+    urlRE.test(moduleName)
+  ) {
     return { moduleName, skip: true }
   }
 
