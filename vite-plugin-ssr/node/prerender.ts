@@ -334,20 +334,32 @@ async function callOnBeforePrerenderHook(globalContext: {
     if (!p.exportNames.includes('onBeforePrerender')) {
       return false
     }
-    assert(p.fileType === '.page.server' && p.isDefaultPageFile)
+    assertUsage(
+      p.fileType !== '.page.client',
+      `Your page file ${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in a \`.page.server.js\` or \`.page.js\` file.`,
+    )
+    assertUsage(
+      p.isDefaultPageFile,
+      `Your page file ${p.filePath} has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in \`_defaut.page.\` files.`,
+    )
     return true
   })
-  await Promise.all(pageFilesWithOnBeforePrerenderHook.map((p) => p.loadFile?.()))
-  const hooks = pageFilesWithOnBeforePrerenderHook
-    .filter((p) => p.fileExports?.onBeforePrerender)
-    .map((p) => ({ filePath: p.filePath, onBeforePrerender: p.fileExports!.onBeforePrerender }))
-  if (hooks.length === 0) {
+  if (pageFilesWithOnBeforePrerenderHook.length === 0) {
     return
   }
   assertUsage(
-    hooks.length === 1,
+    pageFilesWithOnBeforePrerenderHook.length === 1,
     'There can be only one `onBeforePrerender()` hook. If you need to be able to define several, open a new GitHub issue.',
   )
+  await Promise.all(pageFilesWithOnBeforePrerenderHook.map((p) => p.loadFile?.()))
+  const hooks = pageFilesWithOnBeforePrerenderHook.map((p) => {
+    assert(p.fileExports)
+    const { onBeforePrerender } = p.fileExports
+    assert(onBeforePrerender)
+    const { filePath } = p
+    return { filePath, onBeforePrerender }
+  })
+  assert(hooks.length === 1)
   const hook = hooks[0]!
   const { onBeforePrerender, filePath } = hook
   assertUsage(isCallable(onBeforePrerender), `\`export { onBeforePrerender }\` of ${filePath} should be a function.`)
