@@ -13,11 +13,12 @@
 * make `includeAssetsImportedByServer: false` work ([099bc10](https://github.com/brillout/vite-plugin-ssr/commit/099bc10b5877a656d19e3300795250fca4624133))
 * make `includeAssetsImportedByServer` work for Vue SFCs (fix [#376](https://github.com/brillout/vite-plugin-ssr/issues/376)) ([f4c57fb](https://github.com/brillout/vite-plugin-ssr/commit/f4c57fb90d5e8d939a9f4edcdac0604a070ed1cc))
 * set `includeAssetsImportedByServer` to `false` by default ([d8aa9a5](https://github.com/brillout/vite-plugin-ssr/commit/d8aa9a5f5ba1212bb714003771c1694d2d0f8e87))
+* improve error messages ([611bb45](https://github.com/brillout/vite-plugin-ssr/commit/611bb45445cf75f00ce97393985808917163f825))
 
 
 ### Performance Improvements
 
-* load less page files while pre-rendering, fix: improve error messages ([611bb45](https://github.com/brillout/vite-plugin-ssr/commit/611bb45445cf75f00ce97393985808917163f825))
+* load less page files while pre-rendering ([611bb45](https://github.com/brillout/vite-plugin-ssr/commit/611bb45445cf75f00ce97393985808917163f825))
 * use `PageFile[exportNames]` while pre-rendering, in order to avoid unecessary loading of page files ([#373](https://github.com/brillout/vite-plugin-ssr/issues/373), [#378](https://github.com/brillout/vite-plugin-ssr/issues/378)) ([00db4f9](https://github.com/brillout/vite-plugin-ssr/commit/00db4f9c8db8b39ea71a28ab7990ce76e14c6fcb))
 
 
