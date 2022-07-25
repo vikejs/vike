@@ -53,13 +53,7 @@ async function getCode(config: Config, isForClientSide: boolean, isClientRouting
   const globRoots = await getGlobRoots(config)
   debugGlob('Glob roots: ', globRoots)
   const includePaths = globRoots.map((g) => g.includePath)
-  const content = getContent(
-    includePaths.filter(isNotNullish),
-    isBuild,
-    isForClientSide,
-    isClientRouting,
-    config.vitePluginSsr.includeAssetsImportedByServer,
-  )
+  const content = getContent(includePaths.filter(isNotNullish), isBuild, isForClientSide, isClientRouting, config)
   debugGlob('Glob imports: ', content)
   return content
 }
@@ -69,7 +63,7 @@ function getContent(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  includeAssetsImportedByServer: undefined | boolean,
+  config: Config,
 ) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
@@ -95,7 +89,7 @@ export const isGeneratedFile = true;
       getGlobs(includePaths, isBuild, 'page.server', 'extractExportNames'),
       getGlobs(includePaths, isBuild, 'page', 'extractExportNames'),
     ].join('\n')
-    if (includeAssetsImportedByServer) {
+    if (config.vitePluginSsr.includeAssetsImportedByServer) {
       fileContent += getGlobs(includePaths, isBuild, 'page.server', 'extractStyles')
     }
   } else {
@@ -103,6 +97,13 @@ export const isGeneratedFile = true;
       getGlobs(includePaths, isBuild, 'page.server'),
       getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
     ].join('\n')
+    if (isBuild && config.vitePluginSsr.prerender) {
+      // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
+      fileContent += [
+        getGlobs(includePaths, true, 'page', 'extractExportNames'),
+        getGlobs(includePaths, true, 'page.server', 'extractExportNames'),
+      ].join('\n')
+    }
   }
 
   return fileContent

@@ -326,11 +326,19 @@ async function callOnBeforePrerenderHook(globalContext: {
   _pageFilesAll: PageFile[]
   prerenderPageContexts: PageContext[]
 }) {
-  const pageFilesServerDefault = globalContext._pageFilesAll.filter(
-    (p) => p.fileType === '.page.server' && p.isDefaultPageFile,
-  )
-  await Promise.all(pageFilesServerDefault.map((p) => p.loadFile?.()))
-  const hooks = pageFilesServerDefault
+  const pageFilesWithOnBeforePrerenderHook = globalContext._pageFilesAll.filter((p) => {
+    if (!p.exportNames) {
+      assert(p.fileType === '.page.route')
+      return false
+    }
+    if (!p.exportNames.includes('onBeforePrerender')) {
+      return false
+    }
+    assert(p.fileType === '.page.server' && p.isDefaultPageFile)
+    return true
+  })
+  await Promise.all(pageFilesWithOnBeforePrerenderHook.map((p) => p.loadFile?.()))
+  const hooks = pageFilesWithOnBeforePrerenderHook
     .filter((p) => p.fileExports?.onBeforePrerender)
     .map((p) => ({ filePath: p.filePath, onBeforePrerender: p.fileExports!.onBeforePrerender }))
   if (hooks.length === 0) {
