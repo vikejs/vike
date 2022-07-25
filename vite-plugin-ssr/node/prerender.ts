@@ -63,6 +63,9 @@ type PageContext = GlobalPrerenderingContext & {
   _pageContextAlreadyProvidedByPrerenderHook?: true
 }
 
+const wrongViteConfigErrorMessage =
+  'Your Vite config should enable pre-rendering (e.g. `ssr({ prerender: true })`), see https://vite-plugin-ssr.com/prerender-config'
+
 async function prerender(
   options: {
     /** Initial `pageContext` values */
@@ -129,10 +132,7 @@ async function prerender(
   const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
   const { root } = viteConfig
   const prerenderConfig = viteConfig.vitePluginSsr?.prerender
-  assertUsage(
-    prerenderConfig !== false,
-    'Your Vite config should enable pre-rendering (e.g. `ssr({ prerender: true })`), see https://vite-plugin-ssr.com/prerender-config',
-  )
+  assertUsage(prerenderConfig !== false, wrongViteConfigErrorMessage)
   assert(isObject(prerenderConfig))
   const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig
 
@@ -159,6 +159,7 @@ async function prerender(
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds,
     })
+    globalContext._pageFilesAll.forEach(assertExportNames)
   }
 
   objectAssign(globalContext, options.pageContextInit)
@@ -204,8 +205,8 @@ async function prerender(
 
 function collectDoNoPrerenderList(globalContext: GlobalPrerenderingContext, doNotPrerenderList: DoNotPrerenderList) {
   globalContext._pageFilesAll.forEach((p) => {
+    assertExportNames(p)
     if (!p.exportNames) {
-      assert(p.fileType === '.page.route')
       return
     }
     if (!p.exportNames.includes('doNotPrerender')) {
@@ -215,13 +216,18 @@ function collectDoNoPrerenderList(globalContext: GlobalPrerenderingContext, doNo
   })
 }
 
+function assertExportNames(pageFile: PageFile) {
+  const { exportNames, fileType } = pageFile
+  assert(exportNames || fileType === '.page.route', wrongViteConfigErrorMessage)
+}
+
 async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, concurrencyLimit: pLimit.Limit) {
   // Render URLs returned by `prerender()` hooks
   await Promise.all(
     globalContext._pageFilesAll
       .filter((p) => {
+        assertExportNames(p)
         if (!p.exportNames) {
-          assert(p.fileType === '.page.route')
           return false
         }
         if (!p.exportNames.includes('prerender')) {
@@ -349,8 +355,8 @@ async function callOnBeforePrerenderHook(globalContext: {
   prerenderPageContexts: PageContext[]
 }) {
   const pageFilesWithOnBeforePrerenderHook = globalContext._pageFilesAll.filter((p) => {
+    assertExportNames(p)
     if (!p.exportNames) {
-      assert(p.fileType === '.page.route')
       return false
     }
     if (!p.exportNames.includes('onBeforePrerender')) {
