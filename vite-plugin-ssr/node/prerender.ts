@@ -131,7 +131,7 @@ async function prerender(
   const prerenderConfig = viteConfig.vitePluginSsr?.prerender
   assertUsage(
     prerenderConfig !== false,
-    'Your Vite config should enable pre-rendering (e.g. `ssr({ prerender: true })`), see https://vite-plugin-ssr.com/prerender-config.',
+    'Your Vite config should enable pre-rendering (e.g. `ssr({ prerender: true })`), see https://vite-plugin-ssr.com/prerender-config',
   )
   assert(isObject(prerenderConfig))
   const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig
