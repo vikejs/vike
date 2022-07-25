@@ -20,6 +20,7 @@ import {
   isCallable,
   getOutDirs,
   loadModuleAtRuntime,
+  isObject,
 } from './utils'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -128,11 +129,12 @@ async function prerender(
   const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
   const { root } = viteConfig
   const prerenderConfig = viteConfig.vitePluginSsr?.prerender
-  const {
-    partial = false,
-    noExtraDir = false,
-    parallel = true,
-  } = typeof prerenderConfig === 'object' ? prerenderConfig : {}
+  assertUsage(
+    prerenderConfig !== false,
+    'Your Vite config should enable pre-rendering (e.g. `ssr({ prerender: true })`), see https://vite-plugin-ssr.com/prerender-config.',
+  )
+  assert(isObject(prerenderConfig))
+  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel,
