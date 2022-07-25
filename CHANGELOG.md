@@ -1,3 +1,27 @@
+## [0.4.12](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.11...v0.4.12) (2022-07-25)
+
+
+### Bug Fixes
+
+* add export resolvers for TS ([c995bfc](https://github.com/brillout/vite-plugin-ssr/commit/c995bfccf7a5ab2f723db62c740da93531c8443a))
+* allow `_error.page.js` to be defined in `_default/` (fix [#374](https://github.com/brillout/vite-plugin-ssr/issues/374)) ([556b4b6](https://github.com/brillout/vite-plugin-ssr/commit/556b4b6ae4d7f0318e498759a0340c4c49f9610c))
+* allow `export { doNotPrerender }` to be defined in `.page.js` and `.page.client.js` (fix [#378](https://github.com/brillout/vite-plugin-ssr/issues/378)) ([409b625](https://github.com/brillout/vite-plugin-ssr/commit/409b6253ae494ab1f95c9172c30161a2696244d9))
+* explain user wrong usage instead of failing upon wrong export values ([dd6e94e](https://github.com/brillout/vite-plugin-ssr/commit/dd6e94e1bc3aefdc5fbfee9342cf60144dfc005e))
+* false positive of using `pageContext.urlParsed.[hashString|searchString]` (fix [#377](https://github.com/brillout/vite-plugin-ssr/issues/377)) ([c129b9e](https://github.com/brillout/vite-plugin-ssr/commit/c129b9ed7e619455078baff073bd51b86ca12563))
+* improve DEBUG=vps:extractStyles flag ([#376](https://github.com/brillout/vite-plugin-ssr/issues/376)) ([5301336](https://github.com/brillout/vite-plugin-ssr/commit/5301336a7e0cb5e52e8b045e23edda40f5d25829))
+* improve error message upon wrong `onBeforePrerender()` hook usage ([f533bda](https://github.com/brillout/vite-plugin-ssr/commit/f533bda90688e82c68c4cdfdafa2ee146382b4c1))
+* make `includeAssetsImportedByServer: false` work ([099bc10](https://github.com/brillout/vite-plugin-ssr/commit/099bc10b5877a656d19e3300795250fca4624133))
+* make `includeAssetsImportedByServer` work for Vue SFCs (fix [#376](https://github.com/brillout/vite-plugin-ssr/issues/376)) ([f4c57fb](https://github.com/brillout/vite-plugin-ssr/commit/f4c57fb90d5e8d939a9f4edcdac0604a070ed1cc))
+* set `includeAssetsImportedByServer` to `false` by default ([d8aa9a5](https://github.com/brillout/vite-plugin-ssr/commit/d8aa9a5f5ba1212bb714003771c1694d2d0f8e87))
+
+
+### Performance Improvements
+
+* load less page files while pre-rendering, fix: improve error messages ([611bb45](https://github.com/brillout/vite-plugin-ssr/commit/611bb45445cf75f00ce97393985808917163f825))
+* use `PageFile[exportNames]` while pre-rendering, in order to avoid unecessary loading of page files ([#373](https://github.com/brillout/vite-plugin-ssr/issues/373), [#378](https://github.com/brillout/vite-plugin-ssr/issues/378)) ([00db4f9](https://github.com/brillout/vite-plugin-ssr/commit/00db4f9c8db8b39ea71a28ab7990ce76e14c6fcb))
+
+
+
 ## [0.4.11](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.10...v0.4.11) (2022-07-22)
 
 
