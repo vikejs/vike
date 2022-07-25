@@ -43,7 +43,7 @@ type HtmlFile = {
   pageId: string | null
 }
 
-type DoNotPrerenderList = { pageId: string; pageServerFilePath: string }[]
+type DoNotPrerenderList = { pageId: string; pageFilePath: string }[]
 type PrerenderedPageIds = Record<string, { url: string; _prerenderHookFile: string | null }>
 
 type GlobalPrerenderingContext = GlobalContext & {
@@ -163,7 +163,9 @@ async function prerender(
 
   const doNotPrerenderList: DoNotPrerenderList = []
 
-  await callPrerenderHooks(globalContext, doNotPrerenderList, concurrencyLimit)
+  collectDoNoPrerenderList(globalContext, doNotPrerenderList)
+
+  await callPrerenderHooks(globalContext, concurrencyLimit)
 
   await handlePagesWithStaticRoutes(globalContext, doNotPrerenderList, concurrencyLimit)
 
@@ -198,11 +200,20 @@ async function prerender(
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
 }
 
-async function callPrerenderHooks(
-  globalContext: GlobalPrerenderingContext,
-  doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit,
-) {
+function collectDoNoPrerenderList(globalContext: GlobalPrerenderingContext, doNotPrerenderList: DoNotPrerenderList) {
+  globalContext._pageFilesAll.forEach((p) => {
+    if (!p.exportNames) {
+      assert(p.fileType === '.page.route')
+      return
+    }
+    if (!p.exportNames.includes('doNotPrerender')) {
+      return
+    }
+    doNotPrerenderList.push({ pageId: p.pageId, pageFilePath: p.filePath })
+  })
+}
+
+async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, concurrencyLimit: pLimit.Limit) {
   // Render URLs returned by `prerender()` hooks
   await Promise.all(
     globalContext._pageFilesAll
@@ -223,10 +234,6 @@ async function callPrerenderHooks(
       .map((p) =>
         concurrencyLimit(async () => {
           await p.loadFile?.()
-          if (p.fileExports?.doNotPrerender) {
-            doNotPrerenderList.push({ pageId: p.pageId, pageServerFilePath: p.filePath })
-            return
-          }
 
           const prerender = p.fileExports?.prerender
           if (!prerender) return
@@ -465,7 +472,7 @@ function warnContradictoryNoPrerenderList(
       assert(_prerenderHookFile)
       assertUsage(
         false,
-        `Your \`prerender()\` hook defined in ${_prerenderHookFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageServerFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`,
+        `Your \`prerender()\` hook defined in ${_prerenderHookFile} returns the URL \`${url}\` which matches the page with \`${doNotPrerenderListHit?.pageFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`,
       )
     }
   })
