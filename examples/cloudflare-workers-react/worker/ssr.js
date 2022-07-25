@@ -12,7 +12,7 @@ async function handleSsr(url) {
     const { body, statusCode, contentType } = httpResponse
     return new Response(body, {
       headers: { 'content-type': contentType },
-      status: statusCode
+      status: statusCode,
     })
   }
 }

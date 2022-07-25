@@ -18,8 +18,7 @@ async function getPagesAndRoutes() {
   setProductionEnvVar()
   await getGlobalContext(true)
 
-  const { pageFilesAll, allPageIds } =
-    await getPageFilesAllServerSide(true)
+  const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(true)
 
   const { pageRoutes } = await loadPageRoutes({
     _pageFilesAll: pageFilesAll,

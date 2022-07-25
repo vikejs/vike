@@ -47,10 +47,7 @@ function removeTrailingSlash(url: string) {
   return url
 }
 
-function getFilesystemRoute(
-  pageId: string,
-  filesystemRoots: FilesystemRoot[],
-): string {
+function getFilesystemRoute(pageId: string, filesystemRoots: FilesystemRoot[]): string {
   // Handle Filesystem Routing Root
   const filesystemRootsMatch = filesystemRoots
     .filter(({ filesystemRoot }) => pageId.startsWith(filesystemRoot))

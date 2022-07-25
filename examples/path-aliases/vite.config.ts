@@ -12,7 +12,7 @@ const config: UserConfig = {
     react(),
     ssr({
       includeAssetsImportedByServer: true,
-      prerender: true
+      prerender: true,
     }),
   ],
 }
