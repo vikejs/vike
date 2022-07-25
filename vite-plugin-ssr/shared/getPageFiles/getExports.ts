@@ -4,6 +4,7 @@ export type { ExportsAll }
 export type { PageContextExports }
 
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
+import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType, PageFile } from './types'
 
 type ExportsAll = Record<
@@ -80,7 +81,7 @@ function getExportValues(pageFile: PageFile) {
         } else {
           assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
           Object.entries(exportValue).forEach(([defaultExportName, defaultExportValue]) => {
-            assertAllowedDefaultExport(defaultExportName, filePath)
+            assertDefaultExports(defaultExportName, filePath)
             exportValues.push({
               exportName: defaultExportName,
               exportValue: defaultExportValue,
@@ -99,7 +100,7 @@ function getExportValues(pageFile: PageFile) {
     })
 
   exportValues.forEach(({ exportName, isFromDefaultExport }) => {
-    assert(!(isFromDefaultExport && forbiddenDefaultExport.includes(exportName)))
+    assert(!(isFromDefaultExport && forbiddenDefaultExports.includes(exportName)))
   })
 
   return exportValues
@@ -144,14 +145,5 @@ function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
         return e.exportValue
       })
       .flat() ?? []
-  )
-}
-
-// Forbid `export default { render }`, because only `export { render }` can be statically analyzed by `es-module-lexer`.
-const forbiddenDefaultExport = ['render', 'clientRouting']
-function assertAllowedDefaultExport(defaultExportName: string, filePath: string) {
-  assertUsage(
-    !forbiddenDefaultExport.includes(defaultExportName),
-    `${filePath}\` has export default { ${defaultExportName} }\` which is forbidden, do \`export { ${defaultExportName} }\` instead.`,
   )
 }

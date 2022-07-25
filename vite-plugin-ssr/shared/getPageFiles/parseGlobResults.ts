@@ -1,6 +1,7 @@
 export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast } from '../utils'
+import { assertExportValues } from './assertExports'
 import { getPageFileObject } from './getPageFileObject'
 import { FileType, fileTypes, PageFile } from './types'
 
@@ -25,6 +26,7 @@ function parseGlobResults(pageFilesExports: unknown) {
     pageFile.loadFile = async () => {
       if (!('fileExports' in pageFile)) {
         pageFile.fileExports = await loadModule()
+        assertExportValues(pageFile)
       }
     }
   })
