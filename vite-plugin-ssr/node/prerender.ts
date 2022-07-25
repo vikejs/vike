@@ -206,7 +206,20 @@ async function callPrerenderHooks(
   // Render URLs returned by `prerender()` hooks
   await Promise.all(
     globalContext._pageFilesAll
-      .filter((p) => p.fileType === '.page.server')
+      .filter((p) => {
+        if (!p.exportNames) {
+          assert(p.fileType === '.page.route')
+          return false
+        }
+        if (!p.exportNames.includes('prerender')) {
+          return false
+        }
+        assertUsage(
+          p.fileType === '.page.server',
+          `${p.filePath} (which is a \`${p.fileType}.js\` file) has \`export { prerender }\`, but the \`prerender()\` hook is only allowed in \`.page.server.js\` files.`,
+        )
+        return true
+      })
       .map((p) =>
         concurrencyLimit(async () => {
           await p.loadFile?.()
@@ -336,11 +349,11 @@ async function callOnBeforePrerenderHook(globalContext: {
     }
     assertUsage(
       p.fileType !== '.page.client',
-      `Your page file ${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in a \`.page.server.js\` or \`.page.js\` file.`,
+      `${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in a \`.page.server.js\` or \`.page.js\` file.`,
     )
     assertUsage(
       p.isDefaultPageFile,
-      `Your page file ${p.filePath} has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in \`_defaut.page.\` files.`,
+      `${p.filePath} has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in \`_defaut.page.\` files.`,
     )
     return true
   })
