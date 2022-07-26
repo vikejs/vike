@@ -216,15 +216,15 @@ async function collectDoNoPrerenderList(
       })
       .map((p) =>
         concurrencyLimit(async () => {
-          const { loadFile, fileExports, filePath } = p
-          assert(loadFile)
-          await loadFile()
+          assert(p.loadFile)
+          await p.loadFile()
+          const { fileExports } = p
           assert(fileExports)
           assert(hasProp(fileExports, 'doNotPrerender'))
           const { doNotPrerender } = fileExports
           assertUsage(
             doNotPrerender === true || doNotPrerender === false,
-            `The \`export { doNotPrerender }\` value of ${filePath} should be \`true\` or \`false\``,
+            `The \`export { doNotPrerender }\` value of ${p.filePath} should be \`true\` or \`false\``,
           )
           if (doNotPrerender) {
             doNotPrerenderList.push({ pageId: p.pageId, pageFilePath: p.filePath })
