@@ -810,6 +810,7 @@ importers:
 
   vite-plugin-ssr:
     specifiers:
+      '@brillout/debug': ^0.1.1
       '@brillout/json-s': ^0.4.6
       '@brillout/libassert': ^0.5.8
       '@brillout/part-regex': ^0.1.2
@@ -830,6 +831,7 @@ importers:
       vite-plugin-dist-importer: ^0.3.2
       vite-plugin-glob: 0.2.8
     dependencies:
+      '@brillout/debug': 0.1.1
       '@brillout/json-s': 0.4.6
       '@brillout/libassert': 0.5.8
       cac: 6.7.12
@@ -1678,6 +1680,10 @@ packages:
 
   /@bcoe/v8-coverage/0.2.3:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
+    dev: false
+
+  /@brillout/debug/0.1.1:
+    resolution: {integrity: sha512-8eswfYbIoRp1Uz0i50Fztk6z207YRY+rxNL0nkvZ1qYPUx2wxsFQr3J1agmmXXgoahsy/HFqhyApsSuaq8DHgw==}
     dev: false
 
   /@brillout/dev-my-dep/0.0.8:

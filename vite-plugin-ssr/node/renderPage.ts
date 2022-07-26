@@ -24,9 +24,9 @@ import {
   isPromise,
   handlePageContextRequestSuffix,
   parseUrl,
-  createDebugger,
   makeFirst,
 } from './utils'
+import { createDebugger } from '@brillout/debug'
 import type { PageAsset } from './html/injectAssets'
 import { getPageAssets } from './renderPage/getPageAssets'
 import { sortPageContext } from '../shared/sortPageContext'

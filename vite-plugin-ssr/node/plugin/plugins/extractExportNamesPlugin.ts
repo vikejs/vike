@@ -5,7 +5,7 @@ export { extractExportNamesRE }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, getFileExtension, isSSR_options } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
-import { createDebugger, isDebugEnabled } from '../../utils'
+import { createDebugger, isDebugEnabled } from '@brillout/debug'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debugNamespace = 'vps:extractExportNames'
 const debug = createDebugger(debugNamespace)

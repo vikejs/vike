@@ -38,8 +38,8 @@ import {
   capitalizeFirstLetter,
   assertWarning,
   isCallable,
-  createDebugger,
 } from '../utils'
+import { createDebugger } from '@brillout/debug'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
 // Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.
