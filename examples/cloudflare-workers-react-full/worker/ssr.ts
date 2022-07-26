@@ -14,7 +14,7 @@ async function handleSsr(url: string, userAgent: string) {
     return null
   } else {
     const { statusCode, contentType } = httpResponse
-    const stream = httpResponse.getWebStream()
+    const stream = httpResponse.getReadableWebStream()
     return new Response(stream, {
       headers: { 'content-type': contentType },
       status: statusCode,
