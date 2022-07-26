@@ -37,18 +37,20 @@ function extractExportNamesPlugin(): Plugin {
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
-  const { exportNames } = await getExportNames(src)
+  const { exportNames, hasReExports } = await getExportNames(src)
   if (isClientSide) {
     checkIfClientRouting(exportNames)
   }
-  const code = getCode(exportNames, isClientSide, isProduction)
+  const code = getCode(exportNames, hasReExports, isClientSide, isProduction)
   return removeSourceMap(code)
 }
 
-function getCode(exportNames: string[], isClientSide: boolean, isProduction: boolean) {
+function getCode(exportNames: string[], hasReExports: boolean, isClientSide: boolean, isProduction: boolean) {
   let code = ''
   code += '\n'
   code += `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
+  code += '\n'
+  code += `export const hasReExports = ${JSON.stringify(hasReExports)};`
   code = injectHmr(code, isClientSide, isProduction)
   return code
 }
