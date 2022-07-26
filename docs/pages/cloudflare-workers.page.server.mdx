@@ -7,6 +7,8 @@ import { RepoLink, Link, Note } from 'vikepress'
  - React + SSR Streaming: <RepoLink path='/examples/cloudflare-workers-react-full/' />
  - Vue: <RepoLink path='/examples/cloudflare-workers-vue/' />
 
+> The examples set `wrangler.toml#node_compat` to `true` which makes wrangler show a warning (`[WARNING] Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.`) but we can safely ignore it (the only Node.js shims used are all robust).
+
 
 ## Basics
 

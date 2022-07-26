@@ -46,3 +46,7 @@ npm run deploy
 Note how we define a fetch function at `pageContext.fetch` that is universal: it works for development as well as for the production worker.
 
 The trick is to provide a different `fetch()` implementation at [worker/ssr.ts](worker/ssr.ts) and [dev-server/index.js](dev-server/index.js).
+
+## Node.js shim warning
+
+The example sets `wrangler.toml#node_compat` to `true` which makes wrangler show a warning (`[WARNING] Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.`) but we can safely ignore it (the only Node.js shims used are all robust).
