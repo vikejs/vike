@@ -10,7 +10,6 @@ type PageFile = {
   fileExports?: Record<string, unknown>
   loadFile?: () => Promise<void>
   exportNames?: string[]
-  hasReExports?: boolean
   loadExportNames?: () => Promise<void>
   isRelevant: (pageId: string) => boolean
   isDefaultPageFile: boolean

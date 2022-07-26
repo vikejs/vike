@@ -60,9 +60,6 @@ function getCode(exportNames: string[], wildcardReExports: string[], isClientSid
     ...reExportVarNames.map((varName) => `...${varName}`),
   ].join(', ')}];`
 
-  code += '\n'
-  code += `export const hasReExports = ${JSON.stringify(wildcardReExports.length > 0)};`
-
   code = injectHmr(code, isClientSide, isProduction)
 
   return code
