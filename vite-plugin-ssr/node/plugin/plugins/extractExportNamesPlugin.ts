@@ -3,7 +3,7 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { isSSR_options } from '../utils'
+import { assert, getFileExtension, isSSR_options } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
 import { createDebugger, isDebugEnabled } from '../../utils'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
@@ -37,22 +37,47 @@ function extractExportNamesPlugin(): Plugin {
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
-  const { exportNames, hasReExports } = await getExportNames(src)
+  const { exportNames, wildcardReExports } = await getExportNames(src)
   if (isClientSide) {
     checkIfClientRouting(exportNames)
   }
-  const code = getCode(exportNames, hasReExports, isClientSide, isProduction)
+  const code = getCode(exportNames, wildcardReExports, isClientSide, isProduction)
   return removeSourceMap(code)
 }
 
-function getCode(exportNames: string[], hasReExports: boolean, isClientSide: boolean, isProduction: boolean) {
+function getCode(exportNames: string[], wildcardReExports: string[], isClientSide: boolean, isProduction: boolean) {
   let code = ''
+  const reExportVarNames = wildcardReExports.map((reExportedModuleName, i) => {
+    const varName = `m${i}`
+    code += `import { exportNames as ${varName} } from '${addQuery(reExportedModuleName)}'`
+    code += '\n'
+    return varName
+  })
+
   code += '\n'
-  code += `export const exportNames = [${exportNames.map((n) => JSON.stringify(n)).join(', ')}];`
+  code += `export const exportNames = [${[
+    ...exportNames.map((n) => JSON.stringify(n)),
+    ...reExportVarNames.map((varName) => `...${varName}`),
+  ].join(', ')}];`
+
   code += '\n'
-  code += `export const hasReExports = ${JSON.stringify(hasReExports)};`
+  code += `export const hasReExports = ${JSON.stringify(wildcardReExports.length > 0)};`
+
   code = injectHmr(code, isClientSide, isProduction)
+
   return code
+}
+
+function addQuery(moduleName: string) {
+  if (moduleName.includes('?')) {
+    assert(moduleName.split('?').length === 2)
+    moduleName = moduleName.replace('?', '?extractExportNames&')
+  } else {
+    const fileExtension = getFileExtension(moduleName)
+    assert(fileExtension)
+    moduleName = `${moduleName}?extractExportNames&lang.${fileExtension}`
+  }
+  return moduleName
 }
 
 function injectHmr(code: string, isClientSide: boolean, isProduction: boolean) {

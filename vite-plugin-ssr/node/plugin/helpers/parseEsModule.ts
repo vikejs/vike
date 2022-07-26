@@ -8,7 +8,7 @@ import { assert } from '../utils'
 type ParseResult = ReturnType<typeof parse>
 type ImportStatement = ParseResult[0][0]
 
-async function getExportNames(src: string): Promise<{ hasReExports: boolean; exportNames: string[] }> {
+async function getExportNames(src: string): Promise<{ exportNames: string[]; wildcardReExports: string[] }> {
   const parseResult = await parseEsModule(src)
   const [imports, exports] = parseResult
 
@@ -17,17 +17,17 @@ async function getExportNames(src: string): Promise<{ hasReExports: boolean; exp
   // This seems to be the only way to detect re-exports
   //  - https://github.com/brillout/es-module-lexer_tests
   //  - https://github.com/vitejs/vite/blob/8469bf0a5e38cbf08ec28e598ab155d339edc442/packages/vite/src/node/optimizer/index.ts#L978-L981
-  const hasReExports = imports.some(({ n, ss, se }) => {
+  const wildcardReExports: string[] = []
+  imports.forEach(({ n, ss, se }) => {
     const exp = src.slice(ss, se)
     if (/export\s+\*\s+from/.test(exp)) {
       // `n` is `undefined` for dynamic imports with variable, e.g. `import(moduleName)`
       assert(n)
-      return true
+      wildcardReExports.push(n)
     }
-    return false
   })
 
-  return { hasReExports, exportNames }
+  return { wildcardReExports, exportNames }
 }
 
 async function getImportStatements(src: string): Promise<ImportStatement[]> {
