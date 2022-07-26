@@ -5,8 +5,11 @@ export { extractExportNamesRE }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { isSSR_options } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
-
+import { createDebugger, isDebugEnabled } from '../../utils'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
+const debugNamespace = 'vps:extractExportNames'
+const debug = createDebugger(debugNamespace)
+const debugEnabled = isDebugEnabled(debugNamespace)
 
 function extractExportNamesPlugin(): Plugin {
   let config: ResolvedConfig
@@ -18,11 +21,17 @@ function extractExportNamesPlugin(): Plugin {
       const isClientSide = !isSSR_options(options)
       if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide, isProduction)
+        debug('id:', id, '\nresult:\n' + code.code.trim(), '\nsrc:\n' + src.trim())
         return code
       }
     },
     configResolved(config_) {
       config = config_
+    },
+    config() {
+      if (debugEnabled) {
+        return { logLevel: 'silent' }
+      }
     },
   } as Plugin
 }
