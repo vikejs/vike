@@ -15,10 +15,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     expect(repository).toBeTruthy()
     // GitHub Actions doesn't make secrets available to Pull Requests.
     // - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
-    if (!process.env['CF_ACCOUNT_ID']) {
+    if (!process.env['CLOUDFLARE_ACCOUNT_ID']) {
       expect(repository).not.toBe('brillout/vite-plugin-ssr')
-      expect(process.env['CF_ACCOUNT_ID']).toBeFalsy()
-      expect(process.env['CF_API_TOKEN']).toBeFalsy()
+      expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeFalsy()
+      expect(process.env['CLOUDFLARE_API_TOKEN']).toBeFalsy()
       if (isWrangler) {
         const msg = 'SKIPPED: wrangler tests cannot be run in Pull Requests.'
         console.log(msg)
@@ -27,8 +27,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
       }
     } else {
       expect(repository).toBe('brillout/vite-plugin-ssr')
-      expect(process.env['CF_ACCOUNT_ID']).toBeTruthy()
-      expect(process.env['CF_API_TOKEN']).toBeTruthy()
+      expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeTruthy()
+      expect(process.env['CLOUDFLARE_API_TOKEN']).toBeTruthy()
     }
   }
 
