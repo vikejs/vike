@@ -5,7 +5,7 @@ export { forbiddenDefaultExports }
 import { assert, assertUsage } from '../utils'
 import type { PageFile } from './types'
 
-const enforceTrue = ['clientRouting', 'doNotPrerender']
+const enforceTrue = ['clientRouting']
 function assertExportValues(pageFile: PageFile) {
   enforceTrue.forEach((exportName) => {
     assert(pageFile.fileExports)

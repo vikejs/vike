@@ -166,7 +166,7 @@ async function prerender(
 
   const doNotPrerenderList: DoNotPrerenderList = []
 
-  collectDoNoPrerenderList(globalContext, doNotPrerenderList)
+  await collectDoNoPrerenderList(globalContext, doNotPrerenderList, concurrencyLimit)
 
   await callPrerenderHooks(globalContext, concurrencyLimit)
 
@@ -203,17 +203,35 @@ async function prerender(
   warnMissingPages(prerenderPageIds, doNotPrerenderList, globalContext, partial)
 }
 
-function collectDoNoPrerenderList(globalContext: GlobalPrerenderingContext, doNotPrerenderList: DoNotPrerenderList) {
-  globalContext._pageFilesAll.forEach((p) => {
-    assertExportNames(p)
-    if (!p.exportNames) {
-      return
-    }
-    if (!p.exportNames.includes('doNotPrerender')) {
-      return
-    }
-    doNotPrerenderList.push({ pageId: p.pageId, pageFilePath: p.filePath })
-  })
+async function collectDoNoPrerenderList(
+  globalContext: GlobalPrerenderingContext,
+  doNotPrerenderList: DoNotPrerenderList,
+  concurrencyLimit: pLimit.Limit,
+) {
+  await Promise.all(
+    globalContext._pageFilesAll
+      .filter((p) => {
+        assertExportNames(p)
+        return p.exportNames?.includes('doNotPrerender')
+      })
+      .map((p) =>
+        concurrencyLimit(async () => {
+          const { loadFile, fileExports, filePath } = p
+          assert(loadFile)
+          await loadFile()
+          assert(fileExports)
+          assert(hasProp(fileExports, 'doNotPrerender'))
+          const { doNotPrerender } = fileExports
+          assertUsage(
+            doNotPrerender === true || doNotPrerender === false,
+            `The \`export { doNotPrerender }\` value of ${filePath} should be \`true\` or \`false\``,
+          )
+          if (doNotPrerender) {
+            doNotPrerenderList.push({ pageId: p.pageId, pageFilePath: p.filePath })
+          }
+        }),
+      ),
+  )
 }
 
 function assertExportNames(pageFile: PageFile) {
