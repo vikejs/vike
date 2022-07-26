@@ -650,12 +650,12 @@ function debugPageFiles({
   clientEntries: string[]
   clientDependencies: ClientDependency[]
 }) {
-  const debug = createDebugger('vps:pageFiles')
+  const debug = createDebugger('vps:pageFiles', { serialization: { emptyArray: 'None' } })
   const padding = '   - '
 
   debug('All page files:', printPageFiles(pageContext._pageFilesAll, true))
   debug(`URL:`, pageContext.url)
-  debug(`Routing:`, printRouteMatches(pageContext._routeMatches), { noneMsg: 'No match' })
+  debug.options({ serialization: { emptyArray: 'No match' } })(`Routing:`, printRouteMatches(pageContext._routeMatches))
   debug(`pageId:`, pageContext._pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
   debug(`Routing type:`, !isHtmlOnly && isClientRouting ? 'Client Routing' : 'Server Routing')

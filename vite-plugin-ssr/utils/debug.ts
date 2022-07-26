@@ -2,10 +2,10 @@ export { createDebugger }
 export { isDebugEnabled }
 export type { Debug }
 
-import debug from 'debug'
 import { assert } from './assert'
 import { isBrowser } from './isBrowser'
 import { isCallable } from './isCallable'
+import { objectAssign } from './objectAssign'
 assert(!isBrowser()) // Ensure the npm package `debug` to not be included in client-side bundles
 
 export const debugGlob = createDebugger('vps:glob')
@@ -18,17 +18,23 @@ type Debug = ReturnType<typeof createDebugger>
 
 type Namespace = `vps:${string}`
 
-function createDebugger(namespace: Namespace) {
-  const log = debug(namespace)
-  return (name: string, msg?: unknown, options?: { noneMsg?: string }) => {
-    if (!isDebugEnabled(namespace)) return
-    const msgStr = msg && strMsg(msg, options ?? {})
-    if (msgStr) {
-      log(name, msgStr)
-    } else {
-      log(name)
+type Options = {
+  serialization?: {
+    emptyArray?: string
+  }
+}
+
+function createDebugger(namespace: Namespace, optionsGlobal?: Options) {
+  const debugWithOptions = (options: Options) => {
+    return (...msgs: unknown[]) => {
+      if (!isDebugEnabled(namespace)) return
+      const msgsStr = msgs.map((msg) => strMsg(msg, { ...optionsGlobal, ...options }))
+      console.log('\x1b[1m%s\x1b[0m', namespace, ...msgsStr)
     }
   }
+  const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
+  objectAssign(debug, { options: debugWithOptions })
+  return debug
 }
 
 function isDebugEnabled(namespace: Namespace) {
@@ -41,13 +47,13 @@ function isDebugEnabled(namespace: Namespace) {
   return DEBUG?.includes(namespace)
 }
 
-function strMsg(msg: unknown, { noneMsg = 'None' }: { noneMsg?: string }): string {
+function strMsg(msg: unknown, options: Options): string {
   if (typeof msg === 'string') {
     return msg
   }
   if (Array.isArray(msg)) {
     if (msg.length === 0) {
-      return noneMsg
+      return options.serialization?.emptyArray ?? '[]'
     }
     return '\n' + msg.map((entry) => strEntry(entry)).join('\n')
   }
