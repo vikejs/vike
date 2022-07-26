@@ -10,6 +10,7 @@ import {
   expectBrowserError,
   editFile,
   editFileRevert,
+  sleep,
 } from '../libframe/test/setup'
 import assert from 'assert'
 
@@ -139,10 +140,12 @@ function testRun(
       })()
       expect(await page.textContent('button')).toContain('Counter 1')
       expect(await page.textContent('h1')).toBe('Welcome')
+      await sleep(200)
       editFile(file, (s) => s.replace('Welcome', 'Welcome !'))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Welcome !')
       })
+      await sleep(200)
       editFileRevert()
       expect(await page.textContent('button')).toContain('Counter 1')
     })
