@@ -1,4 +1,4 @@
-import { getPageFilesAllClientSide } from '../../shared/getPageFiles'
+import { getPageFilesAll } from '../../shared/getPageFiles'
 import { assertBaseUrl, PromiseType, getBaseUrl, objectAssign } from './utils'
 
 export { getGlobalContext }
@@ -22,7 +22,7 @@ async function retrieveGlobalContext() {
     // @ts-ignore
     _isProduction: import.meta.env.PROD,
   }
-  const { pageFilesAll, allPageIds } = getPageFilesAllClientSide()
+  const { pageFilesAll, allPageIds } = await getPageFilesAll(true)
   objectAssign(globalContext, {
     _pageFilesAll: pageFilesAll,
     _allPageIds: allPageIds,

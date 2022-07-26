@@ -2,7 +2,7 @@ import { assertUsage, assertWarning, checkType, getCurrentUrl, objectAssign } fr
 import type { PageContextBuiltInClient } from './types'
 import { releasePageContext } from './releasePageContext'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
-import { getPageFilesAllClientSide } from '../shared/getPageFiles'
+import { getPageFilesAll } from '../shared/getPageFiles'
 import { loadPageFilesClientSide } from './loadPageFilesClientSide'
 
 export { getPageContext }
@@ -31,7 +31,7 @@ function assertPristineUrl() {
 
 async function loadPageFilesClient(pageId: string) {
   const pageContextAddendum = {}
-  const { pageFilesAll } = getPageFilesAllClientSide()
+  const { pageFilesAll } = await getPageFilesAll(true)
   objectAssign(pageContextAddendum, {
     _pageFilesAll: pageFilesAll,
   })

@@ -1,12 +1,6 @@
 import { getErrorPageId, route, isErrorPage, RouteMatches } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
-import {
-  PageFile,
-  PageContextExports,
-  getExportUnion,
-  getPageFilesAllServerSide,
-  ExportsAll,
-} from '../shared/getPageFiles'
+import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
 import { getHook } from '../shared/getHook'
 import { stringify } from '@brillout/json-s/stringify'
@@ -192,7 +186,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   objectAssign(pageContextAddendum, globalContext)
 
   {
-    const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(globalContext._isProduction)
+    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext._isProduction)
     objectAssign(pageContextAddendum, {
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds,

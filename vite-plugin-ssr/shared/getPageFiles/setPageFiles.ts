@@ -1,7 +1,6 @@
 export { setPageFiles }
 export { setPageFilesAsync }
-export { getPageFilesAllServerSide }
-export { getPageFilesAllClientSide }
+export { getPageFilesAll }
 
 import { assert, isBrowser, unique } from '../utils'
 import { determinePageId } from '../determinePageId'
@@ -22,23 +21,24 @@ function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   }
 }
 
-async function getPageFilesAllServerSide(isProduction: boolean) {
-  assert(_pageFilesGetter)
-  if (
-    !_pageFilesAll ||
-    // We reload all glob imports in dev to make auto-reload work
-    !isProduction
-  ) {
-    await _pageFilesGetter()
+async function getPageFilesAll(
+  isClientSide: boolean,
+  isProduction?: boolean,
+): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[] }> {
+  if (isClientSide) {
+    assert(!_pageFilesGetter)
+    assert(isProduction === undefined)
+  } else {
+    assert(_pageFilesGetter)
+    assert(typeof isProduction === 'boolean')
+    if (
+      !_pageFilesAll ||
+      // We reload all glob imports in dev to make auto-reload work
+      !isProduction
+    ) {
+      await _pageFilesGetter()
+    }
   }
-  assert(_pageFilesAll)
-  const pageFilesAll = _pageFilesAll
-  const allPageIds = getAllPageIds(pageFilesAll)
-  return { pageFilesAll, allPageIds }
-}
-
-function getPageFilesAllClientSide() {
-  assert(!_pageFilesGetter)
   assert(_pageFilesAll)
   const pageFilesAll = _pageFilesAll
   const allPageIds = getAllPageIds(pageFilesAll)

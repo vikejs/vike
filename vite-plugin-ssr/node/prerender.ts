@@ -26,7 +26,7 @@ import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './rende
 import { blue, green, gray, cyan } from 'kolorist'
 import pLimit from 'p-limit'
 import { cpus } from 'os'
-import { getPageFilesAllServerSide, PageFile } from '../shared/getPageFiles'
+import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { assertConfigVpsResolved } from './plugin/plugins/config/assertConfigVps'
@@ -154,7 +154,7 @@ async function prerender(
   })
 
   {
-    const { pageFilesAll, allPageIds } = await getPageFilesAllServerSide(globalContext._isProduction)
+    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext._isProduction)
     objectAssign(globalContext, {
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds,

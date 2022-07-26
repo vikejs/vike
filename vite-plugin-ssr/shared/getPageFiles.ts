@@ -5,8 +5,7 @@ export type { ExportsAll, PageContextExports } from './getPageFiles/getExports'
 // Utils
 export { getExportUnion } from './getPageFiles/getExports'
 
-export { getPageFilesAllClientSide } from './getPageFiles/setPageFiles'
-export { getPageFilesAllServerSide } from './getPageFiles/setPageFiles'
+export { getPageFilesAll } from './getPageFiles/setPageFiles'
 export { setPageFiles } from './getPageFiles/setPageFiles'
 export { setPageFilesAsync } from './getPageFiles/setPageFiles'
 export { getPageFilesClientSide } from './getPageFiles/analyzePageClientSide/getPageFilesClientSide'
