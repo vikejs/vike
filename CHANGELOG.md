@@ -1,3 +1,25 @@
+## [0.4.13](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.12...v0.4.13) (2022-07-26)
+
+
+### Bug Fixes
+
+* forbiden re-exports in page files ([6bd30c8](https://github.com/brillout/vite-plugin-ssr/commit/6bd30c89a635eee84f092a6743ff1acb2b7298b7))
+* further improve error message upon wrong Vite config while using pre-rendering ([#380](https://github.com/brillout/vite-plugin-ssr/issues/380)) ([013cb92](https://github.com/brillout/vite-plugin-ssr/commit/013cb929725102678a45a53a308cd39136b0e838))
+* improve error message upon `prerender()` API usage with wrong Vite config (fix [#380](https://github.com/brillout/vite-plugin-ssr/issues/380)) ([4084c5a](https://github.com/brillout/vite-plugin-ssr/commit/4084c5aad2925a994cf4eeae0441dfa33a163fb2))
+* remove wildcard re-export wrong usage assertion ([db3c015](https://github.com/brillout/vite-plugin-ssr/commit/db3c0150b12661cb211422d6a6124fe680aacc8e))
+* remove wrong assertion (fix [#383](https://github.com/brillout/vite-plugin-ssr/issues/383)) ([928e12e](https://github.com/brillout/vite-plugin-ssr/commit/928e12e82debc8d09f3fbfa5db9f8afc6089e008))
+* support dynamic `doNotPrerender` values (fix [#382](https://github.com/brillout/vite-plugin-ssr/issues/382)) ([8a5b9a4](https://github.com/brillout/vite-plugin-ssr/commit/8a5b9a4af63c773bb38427be9985d95e05c33df2))
+* support wildcard re-exports (fix [#381](https://github.com/brillout/vite-plugin-ssr/issues/381)) ([64dc9a9](https://github.com/brillout/vite-plugin-ssr/commit/64dc9a9025d40061cf6f9151ba92789e163b731e))
+* tell user to not define `doNotPrerender` in `.page.client.js` files ([5863a99](https://github.com/brillout/vite-plugin-ssr/commit/5863a997257972ae1588c83d42303e68a77c2a1e))
+* use custom debug implemention instead of `debug` npm package ([b4bdf62](https://github.com/brillout/vite-plugin-ssr/commit/b4bdf624451af7816e50ccd7c74f4cf0e661735a))
+
+
+### Features
+
+* allow `doNotPrerender` to be defined in `_default.page.` files (close [#373](https://github.com/brillout/vite-plugin-ssr/issues/373)) ([33f6119](https://github.com/brillout/vite-plugin-ssr/commit/33f61195249f8f90a73e7f65dcb185b6e92eaebb))
+
+
+
 ## [0.4.12](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.11...v0.4.12) (2022-07-25)
 
 
