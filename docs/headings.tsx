@@ -534,6 +534,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Netlify Functions',
+    url: '/netlify-functions',
+  },
+  {
+    level: 2,
     title: 'AWS Lambda',
     url: '/aws-lambda',
   },
