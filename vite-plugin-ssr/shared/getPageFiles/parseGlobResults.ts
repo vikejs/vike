@@ -1,7 +1,7 @@
 export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast } from '../utils'
-import { assertExportValues } from './assertExports'
+import { assertExportValues, assertNoReExports } from './assertExports'
 import { getPageFileObject } from './getPageFileObject'
 import { FileType, fileTypes, PageFile } from './types'
 
@@ -38,7 +38,10 @@ function parseGlobResults(pageFilesExports: unknown) {
       if (!('exportNames' in pageFile)) {
         const moduleExports = await loadModule()
         assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
+        assert(hasProp(moduleExports, 'hasReExports', 'boolean'), pageFile.filePath)
         pageFile.exportNames = moduleExports.exportNames
+        pageFile.hasReExports = moduleExports.hasReExports
+        assertNoReExports(pageFile)
       }
     }
   })
