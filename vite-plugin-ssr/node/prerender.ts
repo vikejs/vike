@@ -212,7 +212,12 @@ async function collectDoNoPrerenderList(
     globalContext._pageFilesAll
       .filter((p) => {
         assertExportNames(p)
-        return p.exportNames?.includes('doNotPrerender')
+        if (!p.exportNames?.includes('doNotPrerender')) return false
+        assertUsage(
+          p.fileType !== '.page.client',
+          `${p.filePath} (which is a \`.page.client.js\` file) has \`export { doNotPrerender }\` but it is only allowed in \`.page.server.js\` or \`.page.js\` files`,
+        )
+        return true
       })
       .map((p) =>
         concurrencyLimit(async () => {
@@ -245,15 +250,10 @@ async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, conc
     globalContext._pageFilesAll
       .filter((p) => {
         assertExportNames(p)
-        if (!p.exportNames) {
-          return false
-        }
-        if (!p.exportNames.includes('prerender')) {
-          return false
-        }
+        if (!p.exportNames?.includes('prerender')) return false
         assertUsage(
           p.fileType === '.page.server',
-          `${p.filePath} (which is a \`${p.fileType}.js\` file) has \`export { prerender }\`, but the \`prerender()\` hook is only allowed in \`.page.server.js\` files.`,
+          `${p.filePath} (which is a \`${p.fileType}.js\` file) has \`export { prerender }\` but it is only allowed in \`.page.server.js\` files`,
         )
         return true
       })
@@ -374,19 +374,14 @@ async function callOnBeforePrerenderHook(globalContext: {
 }) {
   const pageFilesWithOnBeforePrerenderHook = globalContext._pageFilesAll.filter((p) => {
     assertExportNames(p)
-    if (!p.exportNames) {
-      return false
-    }
-    if (!p.exportNames.includes('onBeforePrerender')) {
-      return false
-    }
+    if (!p.exportNames?.includes('onBeforePrerender')) return false
     assertUsage(
       p.fileType !== '.page.client',
-      `${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in a \`.page.server.js\` or \`.page.js\` file.`,
+      `${p.filePath} (which is a \`.page.client.js\` file) has \`export { onBeforePrerender }\` but it is only allowed in \`.page.server.js\` or \`.page.js\` files`,
     )
     assertUsage(
       p.isDefaultPageFile,
-      `${p.filePath} has \`export { onBeforePrerender }\`, but the \`onBeforePrerender()\` hook is only allowed in \`_defaut.page.\` files.`,
+      `${p.filePath} has \`export { onBeforePrerender }\` but it is only allowed in \`_defaut.page.\` files`,
     )
     return true
   })
