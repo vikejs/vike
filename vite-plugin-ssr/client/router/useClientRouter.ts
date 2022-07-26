@@ -153,7 +153,6 @@ function useClientRouter() {
         hookResult === undefined,
         '`export { render }` of ' + pageContext.exportsAll.render![0]!._filePath + ' should not return any value',
       )
-      assert(pageContext.url === url)
       addLinkPrefetchHandlers(pageContext)
     })()
     await renderPromise
