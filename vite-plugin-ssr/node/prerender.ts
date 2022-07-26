@@ -32,6 +32,7 @@ import { resolveConfig } from 'vite'
 import { assertConfigVpsResolved } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
 import { setProductionEnvVar } from '../shared/setProduction'
+import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
 
 export { prerender }
 
@@ -165,7 +166,6 @@ async function prerender(
   objectAssign(globalContext, options.pageContextInit)
 
   const doNotPrerenderList: DoNotPrerenderList = []
-
   await collectDoNoPrerenderList(globalContext, doNotPrerenderList, concurrencyLimit)
 
   await callPrerenderHooks(globalContext, concurrencyLimit)
@@ -223,20 +223,30 @@ async function collectDoNoPrerenderList(
         concurrencyLimit(async () => {
           assert(p.loadFile)
           await p.loadFile()
-          const { fileExports } = p
-          assert(fileExports)
-          assert(hasProp(fileExports, 'doNotPrerender'))
-          const { doNotPrerender } = fileExports
-          assertUsage(
-            doNotPrerender === true || doNotPrerender === false,
-            `The \`export { doNotPrerender }\` value of ${p.filePath} should be \`true\` or \`false\``,
-          )
-          if (doNotPrerender) {
-            doNotPrerenderList.push({ pageId: p.pageId, pageFilePath: p.filePath })
-          }
         }),
       ),
   )
+  globalContext._allPageIds.forEach((pageId) => {
+    const pageFilesServerSide = getPageFilesServerSide(globalContext._pageFilesAll, pageId)
+    for (const p of pageFilesServerSide) {
+      if (!p.exportNames?.includes('doNotPrerender')) continue
+      const { fileExports } = p
+      assert(fileExports)
+      assert(hasProp(fileExports, 'doNotPrerender'))
+      const { doNotPrerender } = fileExports
+      assertUsage(
+        doNotPrerender === true || doNotPrerender === false,
+        `The \`export { doNotPrerender }\` value of ${p.filePath} should be \`true\` or \`false\``,
+      )
+      if (!doNotPrerender) {
+        // Do pre-render `pageId`
+        return
+      } else {
+        // Don't pre-render `pageId`
+        doNotPrerenderList.push({ pageId, pageFilePath: p.filePath })
+      }
+    }
+  })
 }
 
 function assertExportNames(pageFile: PageFile) {
