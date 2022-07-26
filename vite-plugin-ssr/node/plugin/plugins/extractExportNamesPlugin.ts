@@ -28,7 +28,7 @@ function extractExportNamesPlugin(): Plugin {
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
-  const exportNames = await getExportNames(src)
+  const { exportNames } = await getExportNames(src)
   if (isClientSide) {
     checkIfClientRouting(exportNames)
   }
