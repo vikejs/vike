@@ -5,8 +5,9 @@ for example different <Link text="Render Modes" href="/render-modes" />,
 then we may want to define multiple `renderer/`.
 
 ```bash
-# Marketing Pages
-
+# =====================
+# == Marketing Pages ==
+# =====================
 marketing/pages/index.page.js # /
 marketing/pages/about.page.js # /about
 marketing/pages/jobs.page.js # /jobs
@@ -15,8 +16,9 @@ marketing/renderer/_default.page.server.js
 marketing/renderer/_default.page.client.js
 marketing/renderer/_default.page.route.js # (Route to `/*` instead of `/marketing/*`.)
 
-# Admin Panel
-
+# =================
+# == Admin Panel ==
+# =================
 admin-panel/pages/index.page.js
 # Render Admin Panel as SPA
 admin-panel/renderer/_default.page.server.js
@@ -43,24 +45,6 @@ pages/product/@productId.page.js
 pages/product/index.page.js
 ```
 
-We can then factor out the common code:
+## Alternative: Custom Hooks
 
-```js
-// renderer/_default.page.client.ts
-
-import initClient from './initClient.js'
-
-initClient()
-```
-
-```js
-// pages/product/_default.page.client.ts
-
-import initClient from '../../renderer/initClient.js'
-
-initClient({ installUserTracker: true })
-```
-
-## Alternative: `onBeforeRender()`
-
-If the difference is only about data fetching, using different `onBeforeRender()` hooks may be a simpler solution. See <Link href="/data-fetching#global-logic" />.
+If the difference is only about data fetching, then using <Link text="Custom Hooks/Exports" href="/data-fetching#custom-exports" /> may be a simpler solution.
