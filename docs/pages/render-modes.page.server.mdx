@@ -135,17 +135,20 @@ import { renderToDom, hydrateDom } from 'some-ui-framework'
 
 export async function render(pageContext) {
   const { Page } = pageContext
-  const rootDomElement = document.getElementById('root')
+  const root = document.getElementById('root')
   if (
-    // SPA pages don't have any hydration steps
-    rootDomElement.innerHTML === '' ||
-    // Page navigation of SSR pages also need to be fully rendered (if we use Client Routing)
+    // We detect SPAs by using the fact that `innerHTML === ''` for the first render of an SPA
+    root.innerHTML === '' ||
+    // Upon Client Routing page navigation, vite-plugin-ssr sets `pageContext.isHydration`
+    // to `false`.
     !pageContext.isHydration
   ) {
-    await renderToDom(rootDomElement, Page)
+    // - SPA pages don't have any hydration steps: they need to be fully rendered.
+    // - Page navigation of SSR pages also need to be fully rendered (if we use Client Routing)
+    await renderToDom(root, Page)
   } else {
-    // The first render of SSR pages is a hydration
-    await renderToDom(Page)
+    // The first render of SSR pages is merely a hydration (instead of a full render)
+    await hydrateDom(root, Page)
   }
 }
 ```
