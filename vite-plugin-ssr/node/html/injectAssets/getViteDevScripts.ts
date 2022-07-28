@@ -21,6 +21,10 @@ async function getViteDevScripts(pageContext: PageContext): Promise<string> {
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
   fakeHtml = await pageContext._viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
+    !fakeHtml.includes('vite-plugin-pwa'),
+    'The HTML transformer of `vite-plugin-pwa` cannot be applied. Manually add `<link rel="manifest" href="/manifest.webmanifest">` instead. More infos at https://github.com/brillout/vite-plugin-ssr/issues/224',
+  )
+  assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
     'Vite plugins that minify the HTML are not supported by vite-plugin-ssr, see https://github.com/brillout/vite-plugin-ssr/issues/224',
   )
