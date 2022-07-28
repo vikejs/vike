@@ -11,6 +11,8 @@ export type PageContextBuiltIn = {
   exportsAll: Record<string, { exportValue: unknown }[]>
   /** The URL of the current page */
   url: string
+  /** If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Server Error`, see https://vite-plugin-ssr.com/error-page */
+  is404?: boolean
   /** Outdated, do not use */
   pageExports: Record<string, unknown>
 } & PageContextUrls
