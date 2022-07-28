@@ -611,13 +611,14 @@ function write(
     assert(!outDirRoot.includes('\\'))
     const filePath = join(root, outDirRoot, 'client', filePathRelative)
     if (onPagePrerender) {
-      objectAssign(pageContext, {
+      const prerenderPageContext = {}
+      objectAssign(prerenderPageContext, pageContext, {
         _prerenderResult: {
           filePath,
           fileContent,
         },
       })
-      await onPagePrerender(pageContext)
+      await onPagePrerender(prerenderPageContext)
     } else {
       const { promises } = require('fs')
       const { writeFile, mkdir } = promises
