@@ -28,8 +28,7 @@ function devConfig(): Plugin[] {
         },
       }),
       async configResolved(config) {
-        assert(config.optimizeDeps.entries === undefined)
-        config.optimizeDeps.entries = await determineOptimizeDepsEntries(config)
+        addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
         await determineFsAllowList(config)
       },
     },
@@ -41,6 +40,23 @@ function devConfig(): Plugin[] {
       },
     },
   ]
+}
+
+function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
+  const total = []
+
+  const val = config.optimizeDeps.entries
+  if (typeof val === 'string') {
+    total.push(val)
+  } else if (Array.isArray(val)) {
+    total.push(...val)
+  } else {
+    assert(val === undefined)
+  }
+
+  total.push(...entries)
+
+  config.optimizeDeps.entries = total
 }
 
 async function determineFsAllowList(config: ResolvedConfig) {
