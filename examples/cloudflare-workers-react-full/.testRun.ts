@@ -11,16 +11,24 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
   const isWrangler = cmd === 'npm run preview'
 
   if (isGithubAction()) {
-    const repository = process.env['GITHUB_REPOSITORY']
-    expect(repository).toBeTruthy()
+    const repository = process.env['GIT_REPOSITORY']
+    // `GIT_REPOSITORY` is not set when run by Vite's ecosystem CI
+    const isViteEcosystemCI = repository === undefined
     // GitHub Actions doesn't make secrets available to Pull Requests.
     // - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
     if (!process.env['CLOUDFLARE_ACCOUNT_ID']) {
-      expect(repository).not.toBe('brillout/vite-plugin-ssr')
+      try {
+        expect(repository).not.toBe('brillout/vite-plugin-ssr')
+      } catch {
+        expect(isViteEcosystemCI).toBe(true)
+        expect(process.env['GITHUB_REPOSITORY']).toBe('brillout/vite-plugin-ssr')
+      }
       expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeFalsy()
       expect(process.env['CLOUDFLARE_API_TOKEN']).toBeFalsy()
       if (isWrangler) {
-        const msg = 'SKIPPED: wrangler tests cannot be run in Pull Requests.'
+        const msg = `SKIPPED: wrangler tests cannot be run in ${
+          isViteEcosystemCI ? "Vite's ecosystem CI" : 'Pull Requests'
+        }.`
         console.log(msg)
         test(msg, () => {})
         return
