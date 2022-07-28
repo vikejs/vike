@@ -1,4 +1,4 @@
-import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError } from '../../libframe/test/setup'
+import { run, page, urlBase, fetchHtml, autoRetry, expectBrowserError, sleep } from '../../libframe/test/setup'
 
 export { testRun }
 
@@ -79,6 +79,10 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     expect(text).toContain('Revenge of the Sith')
     expect(text).toContain('The Phantom Menace')
 
+    if (viewFramework === 'vue') {
+      // Attempt to make `examples/vue-full/.dev.test.ts` less flaky: it some times throws a "Hydration Mismatch" error (I don't know why).
+      await sleep(1000)
+    }
     await page.click('a[href="/star-wars/4"]')
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('The Phantom Menace')
