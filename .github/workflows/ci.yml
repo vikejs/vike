@@ -8,7 +8,6 @@ env:
 on:
   push:
   pull_request:
-    types: [opened, reopened] # Avoid GitHub Actions being run twice
 
 jobs:
   prepare:
