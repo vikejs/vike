@@ -17,7 +17,7 @@
     "vite-plugin-glob": "0.2.8"
   },
   "scripts": {
-    "build": "rm -rf dist/ && tsc -b",
+    "build": "rimraf dist/ && tsc -b",
     "dev": "pnpm run dev:slow",
     "dev:node": "pnpm run tsc:watch:node",
     "// `dev:fast` and `dev:slow` achieve the same, but `dev:fast` is much faster": "",
@@ -33,6 +33,7 @@
     "@types/resolve": "^1.20.2",
     "rollup": "^2.71.1",
     "typescript": "4.6.4",
+    "rimraf": "^3.0.2",
     "vite": "^2.9.14"
   },
   "peerDependencies": {
@@ -89,7 +90,8 @@
     "__internal.d.ts",
     "__internal/setup.js",
     "__internal/setup.d.ts",
-    "types.d.ts"
+    "types.d.ts",
+    "!*.map"
   ],
   "bin": {
     "vite-plugin-ssr": "./node/bin/vite-plugin-ssr.js"
