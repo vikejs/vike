@@ -612,7 +612,8 @@ function write(
     const filePath = join(root, outDirRoot, 'client', filePathRelative)
     if (onPagePrerender) {
       const prerenderPageContext = {}
-      objectAssign(prerenderPageContext, pageContext, {
+      objectAssign(prerenderPageContext, pageContext)
+      objectAssign(prerenderPageContext, {
         _prerenderResult: {
           filePath,
           fileContent,

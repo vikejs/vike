@@ -1,9 +1,9 @@
 export { objectAssign }
 
 // Same as `Object.assign()` but with type inference
-function objectAssign<Obj extends object, ObjAddendum, T extends any[]>(
+function objectAssign<Obj extends object, ObjAddendum>(
   obj: Obj,
-  ...objAddendum: [ObjAddendum, ...T]
-): asserts obj is Obj & ObjAddendum & ([] extends T ? {} : T[number]) {
-  Object.assign(obj, ...objAddendum)
+  objAddendum: ObjAddendum,
+): asserts obj is Obj & ObjAddendum {
+  Object.assign(obj, objAddendum)
 }
