@@ -6,18 +6,33 @@ export type { PageContextUrlSource }
 
 // Copy paste from https://vite-plugin-ssr.com/pageContext
 type UrlParsed = {
+  /** The URL origin, e.g. `https://example.com` of `https://example.com/product/42?details=yes#reviews` */
   origin: null | string
+  /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   pathname: string
+  /** URL pathname including the Base URL, e.g. `/some-base-url/product/42` of `https://example.com/some-base-url/product/42` (whereas `pageContext.urlParsed.pathname` is `/product/42`) */
   pathnameOriginal: string
+  /** The URL search parameters, e.g. `{ details: 'yes' }` for `https://example.com/product/42?details=yes#reviews` */
   search: Record<string, string>
+  /** The URL search parameters array, e.g. `{ fruit: ['apple', 'orange'] }` for `https://example.com?fruit=apple&fruit=orange` **/
   searchAll: Record<string, string[]>
+  /** The URL search parameterer string, e.g. `?details=yes` of `https://example.com/product/42?details=yes#reviews` */
   searchOriginal: null | string
-  searchString: null | string // outdated
+  /** Outdated, do not use */
+  searchString: null | string
+  /** The URL hash, e.g. `reviews` of `https://example.com/product/42?details=yes#reviews` */
   hash: string
+  /** The URL hash string, e.g. `#reviews` of `https://example.com/product/42?details=yes#reviews` */
   hashOriginal: null | string
-  hashString: null | string // outdated
+  /** Outdated, do not use */
+  hashString: null | string
 }
-type PageContextUrls = { urlPathname: string; urlParsed: UrlParsed }
+type PageContextUrls = {
+  /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
+  urlPathname: string;
+  /** Parsed information about the current URL */
+  urlParsed: UrlParsed
+}
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
   pageContext: PageContext,
