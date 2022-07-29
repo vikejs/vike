@@ -20,5 +20,6 @@ body:
       description: "Describe the bug. Optional: the error stack is usually enough."
   - type: textarea
     attributes:
+      render: shell
       label: Error Stack
       description: Bugs usually throw an error. Paste the full error stack here.
