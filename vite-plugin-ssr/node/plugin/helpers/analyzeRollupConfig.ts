@@ -1,7 +1,7 @@
 export { analyzeRollupConfig }
 
 import type { ResolvedConfig } from 'vite'
-import { assert, isSSR_config } from '../utils'
+import { assert, assertPosixPath, assertUsage, isSSR_config } from '../utils'
 
 // Subset of: `import type { NormalizedOutputOptions } from 'rollup'` (to avoid mismatch upon different Rollup versions)
 type NormalizedOutputOptions = { entryFileNames: string | ((chunkInfo: any) => string); format: string }
@@ -20,7 +20,13 @@ function analyzeRollupConfig(rollupResolved: RollupResolved, config: ResolvedCon
   const pageFilesOutput = `pageFiles.${fileExt}`
   {
     const bundleFiles = Object.keys(rollupResolved.bundle)
-    assert(bundleFiles.includes(pageFilesOutput))
+    const { outDir } = config.build
+    assertPosixPath(outDir)
+    assert(outDir.endsWith('/server'), { outDir })
+    assertUsage(
+      bundleFiles.includes(pageFilesOutput),
+      `\`${outDir}/${pageFilesOutput}\` is missing: make sure your Rollup config doesn't change the filename \`${pageFilesOutput}\``,
+    )
   }
   return { isEsm, pageFilesOutput }
 }
