@@ -22,7 +22,7 @@ async function getViteDevScripts(pageContext: PageContext): Promise<string> {
   fakeHtml = await pageContext._viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
-    'The HTML transformer of `vite-plugin-pwa` cannot be applied. Manually add `<link rel="manifest" href="/manifest.webmanifest">` instead. More infos at https://github.com/brillout/vite-plugin-ssr/issues/224',
+    'The HTML transformer of `vite-plugin-pwa` cannot be applied, see workaround at https://github.com/brillout/vite-plugin-ssr/issues/388#issuecomment-1199280084',
   )
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
