@@ -1,20 +1,19 @@
 ## vite-plugin-ssr
 
-To enable the `vite-plugin-ssr` debug logs, set the environment variable `DEBUG` to `vps:*`.
-
-For example,
-to figure out why your app is `404`'ing,
-or to understand how `vite-plugin-ssr` thinks of your app,
-set `DEBUG=vps:pageFiles`.
+To use `vite-plugin-ssr`'s debug logs:
 
 ```shell
-# All debug logs
-$ DEBUG=vps:* npm run dev
-# Page files debug logs
-$ DEBUG=vps:pageFiles npm run dev
-# HTTP streaming debug logs
-$ DEBUG=vps:stream npm run dev
+# Inspect the routing
+DEBUG=vps:routing npm run dev
+# Insepct what `.page.js` files are found and how they are treated
+DEBUG=vps:pageFiles npm run dev
+# Insepct HTTP Streaming
+DEBUG=vps:stream npm run dev
 ```
+
+> These debug logs allow you to understand how `vite-plugin-ssr` thinks of your app. For example, to figure out why your app is `404`'ing, you can use `vps:routing` and `vps:pageFiles`.
+
+There are also `vps:glob` / `vps:extractStyles` / `vps:extractExportNames` but these are meant for vite-plugin-ssr maintainers.
 
 > If you want more debug logs, add a comment at [#249](https://github.com/brillout/vite-plugin-ssr/issues/249).
 
