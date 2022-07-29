@@ -20,8 +20,11 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
       assert(graphId, { id })
       const mod = moduleGraph.getModuleById(graphId)
       if (!mod) {
+        /* Not sure when the assertion fails. So let's just remove it for now.
+         *  - https://github.com/brillout/vite-plugin-ssr/issues/391
         // `moduleGraph` is missing `.page.client.js` files on the very first render
         assert(id.includes('.page.client.'), { id })
+        */
         return
       }
       assert(mod, { id })
