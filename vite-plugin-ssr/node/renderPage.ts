@@ -85,6 +85,7 @@ async function renderPage_(pageContextInit: { url: string }, pageContext: {}): P
   const is404 = hasProp(pageContext, '_pageId', 'string') ? null : true
   objectAssign(pageContext, { is404 })
 
+  objectAssign(pageContext, { errorWhileRendering: null })
   return renderPageContext(pageContext)
 }
 
@@ -96,40 +97,27 @@ async function renderPageContext(
     _allPageIds: string[]
     is404: null | boolean
     routeParams: Record<string, string>
+    errorWhileRendering: null | Error
   } & PageContextUrls &
     PageContext_loadPageFilesServer,
 ): Promise<RenderResult> {
-  if (pageContext.is404) {
-    assert(pageContext._pageId === null)
-    warn404(pageContext)
+  if (pageContext.is404) warn404(pageContext)
 
+  if (pageContext.is404 || pageContext.errorWhileRendering) {
+    assert(pageContext._pageId === null)
     const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (errorPageId) {
-      objectAssign(pageContext, {
-        _pageId: errorPageId,
-      })
+      objectAssign(pageContext, { _pageId: errorPageId })
     } else {
       // The user hasn't define a `_error.page.js`
-      objectAssign(pageContext, {
-        _pageId: null,
-      })
-      warnMissingErrorPage(pageContext)
-      if (pageContext._isPageContextRequest) {
-        const httpResponse = createHttpResponseObject(
-          stringify({
-            pageContext404PageDoesNotExist: true,
-          }),
-          null,
-          pageContext,
-        )
-        objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
-        return pageContext
-      } else {
-        objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-        return pageContext
-      }
+      objectAssign(pageContext, { _pageId: null })
+      return handleErrorWithoutErrorPage(pageContext)
     }
   }
+
+  // We now resolved `pageContext._pageId`. It can either be the:
+  //  - ID of the page matching the routing, or the
+  //  - ID of the error page `_error.page.js`.
   assert(hasProp(pageContext, '_pageId', 'string'))
 
   const pageFiles = await loadPageFilesServer(pageContext)
@@ -138,21 +126,44 @@ async function renderPageContext(
   await executeOnBeforeRenderHooks(pageContext)
 
   if (pageContext._isPageContextRequest) {
-    const pageContextSerialized = serializePageContextClientSide(pageContext)
-    const httpResponse = createHttpResponseObject(pageContextSerialized, null, pageContext)
-    objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
+    const body: string = serializePageContextClientSide(pageContext)
+    const httpResponse = createHttpResponseObject(body, null, pageContext)
+    objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 
   const renderHookResult = await executeRenderHook(pageContext)
 
   if (renderHookResult.htmlRender === null) {
-    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+    objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
     const { htmlRender, renderFilePath } = renderHookResult
     const httpResponse = createHttpResponseObject(htmlRender, renderFilePath, pageContext)
-    objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
+    objectAssign(pageContext, { httpResponse })
+    return pageContext
+  }
+}
+
+function handleErrorWithoutErrorPage(pageContext: {
+  _isPageContextRequest: boolean
+  errorWhileRendering: null | Error
+  is404: null | boolean
+  _pageId: null
+  url: string
+  _isProduction: boolean
+}): RenderResult {
+  assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
+  assert(pageContext.errorWhileRendering || pageContext.is404)
+
+  warnMissingErrorPage(pageContext)
+
+  if (!pageContext._isPageContextRequest) {
+    objectAssign(pageContext, { httpResponse: null })
+    return pageContext
+  } else {
+    const httpResponse = createHttpResponseObject(stringify({ serverSideError: true }), null, pageContext)
+    objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 }
@@ -223,12 +234,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
       setAlreadyLogged(err)
     }
     try {
-      const pageContextAddendum = {}
-      if (isRenderErrorPageException(err)) {
-        objectAssign(pageContextAddendum, { is404: true })
-        objectAssign(pageContextAddendum, err.pageContext)
-      }
-      return await renderErrorPage({ pageContextInit, err, pageContextAddendum, pageContextOfError })
+      return await renderErrorPage({ pageContextInit, err, pageContextOfError })
     } catch (err2) {
       assertError(err2)
       // We swallow `err2`; logging `err` should be enough; `err2` is likely the same error than `err` anyways.
@@ -249,12 +255,10 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 async function renderErrorPage<PageContextInit extends { url: string }>({
   pageContextInit,
   err,
-  pageContextAddendum,
   pageContextOfError,
 }: {
   pageContextInit: PageContextInit
   err: unknown
-  pageContextAddendum?: Record<string, unknown>
   pageContextOfError: Record<string, unknown>
 }) {
   assert(hasAlreadyLogged(err))
@@ -271,48 +275,20 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
 
   objectAssign(pageContext, {
     is404: false,
-    errorWhileRendering: err,
-    httpResponse: null,
+    _pageId: null,
+    errorWhileRendering: err as Error,
     routeParams: {} as Record<string, string>,
   })
+  if (isRenderErrorPageException(err)) {
+    objectAssign(pageContext, { is404: true })
+    objectAssign(pageContext, err.pageContext)
+  }
 
   objectAssign(pageContext, {
     _routeMatches: (pageContextOfError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
   })
 
-  objectAssign(pageContext, pageContextAddendum)
-
-  const errorPageId = getErrorPageId(pageContext._allPageIds)
-  if (errorPageId === null) {
-    objectAssign(pageContext, {
-      _pageId: null,
-    })
-    warnMissingErrorPage(pageContext)
-    return pageContext
-  }
-  objectAssign(pageContext, {
-    _pageId: errorPageId,
-  })
-
-  if (pageContext._isPageContextRequest) {
-    const body = stringify({
-      serverSideError: true,
-    })
-    const httpResponse = createHttpResponseObject(body, null, pageContext)
-    objectAssign(pageContext, { httpResponse })
-    return pageContext
-  }
-
-  const pageFiles = await loadPageFilesServer(pageContext)
-  objectAssign(pageContext, pageFiles)
-
-  await executeOnBeforeRenderHooks(pageContext)
-  const renderHookResult = await executeRenderHook(pageContext)
-
-  const { htmlRender, renderFilePath } = renderHookResult
-  const httpResponse = createHttpResponseObject(htmlRender, renderFilePath, pageContext)
-  objectAssign(pageContext, { httpResponse })
-  return pageContext
+  return renderPageContext(pageContext)
 }
 
 function assertError(err: unknown) {
@@ -337,7 +313,12 @@ type HttpResponse = {
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
   renderFilePath: null | string,
-  pageContext: { _isPageContextRequest: boolean; _pageId: null | string; is404: null | boolean },
+  pageContext: {
+    _isPageContextRequest: boolean
+    _pageId: null | string
+    is404: null | boolean
+    errorWhileRendering: null | Error
+  },
 ): HttpResponse | null {
   if (htmlRender === null) {
     return null
@@ -346,6 +327,9 @@ function createHttpResponseObject(
   let statusCode: StatusCode
   {
     const isError = !pageContext._pageId || isErrorPageId(pageContext._pageId)
+    if (pageContext.errorWhileRendering) {
+      assert(isError)
+    }
     if (!isError) {
       assert(pageContext.is404 === null)
       statusCode = 200

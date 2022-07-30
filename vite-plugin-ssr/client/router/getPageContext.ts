@@ -186,9 +186,6 @@ async function retrievePageContextFromServer(pageContext: { url: string }): Prom
   const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
   const response = await fetch(pageContextUrl)
 
-  // Static hosts return a 404
-  assert(response.status !== 404)
-
   {
     const contentType = response.headers.get('content-type')
     assertUsage(
@@ -199,7 +196,6 @@ async function retrievePageContextFromServer(pageContext: { url: string }): Prom
 
   const responseText = await response.text()
   const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
-  assert(!('pageContext404PageDoesNotExist' in responseObject))
   if ('serverSideError' in responseObject) {
     throw getProjectError(
       '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.',
