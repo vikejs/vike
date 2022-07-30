@@ -8,6 +8,8 @@ import { getManifestEntry } from './getManifestEntry'
 import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin/extractStylesAddQuery'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
+const cssFileRE = /\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\?)/
+
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()
   const assetUrls = new Set<string>()
@@ -113,7 +115,7 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
-  if (mod.url.endsWith('.css') || (mod.id && /\?vue&type=style/.test(mod.id))) {
+  if (cssFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))) {
     styleUrls.add(mod.url)
   }
   mod.importedModules.forEach((dep) => {
