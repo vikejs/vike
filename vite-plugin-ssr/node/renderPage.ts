@@ -45,7 +45,7 @@ import {
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
-import { isRenderErrorPageException, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
+import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { warn404 } from './renderPage/warn404'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
@@ -325,7 +325,7 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
 }
 
 function assertError(err: unknown) {
-  assertRenderErrorPageParentheses(err)
+  assertRenderErrorPageExceptionUsage(err)
 }
 
 type StatusCode = 200 | 404 | 500

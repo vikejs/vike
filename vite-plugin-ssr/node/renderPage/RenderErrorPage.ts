@@ -1,13 +1,13 @@
 export { isRenderErrorPageException }
 export { RenderErrorPage }
-export { assertRenderErrorPageParentheses }
+export { assertRenderErrorPageExceptionUsage }
 
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { assertUsage, objectAssign } from '../utils'
-const stamp = '__isRenderErrorPage'
+const stamp = '__isRenderErrorPageException'
 
 function isRenderErrorPageException(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
-  assertRenderErrorPageParentheses(thing)
+  assertRenderErrorPageExceptionUsage(thing)
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
 
@@ -29,7 +29,7 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
   return err
 }
 
-function assertRenderErrorPageParentheses(err: unknown) {
+function assertRenderErrorPageExceptionUsage(err: unknown) {
   assertUsage(
     err !== RenderErrorPage,
     'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.',
