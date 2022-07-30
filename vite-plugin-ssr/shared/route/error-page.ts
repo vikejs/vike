@@ -1,10 +1,10 @@
 import { assert, assertUsage } from './utils'
 
 export { getErrorPageId }
-export { isErrorPage }
+export { isErrorPageId }
 
 function getErrorPageId(allPageIds: string[]): string | null {
-  const errorPageIds = allPageIds.filter((pageId) => isErrorPage(pageId))
+  const errorPageIds = allPageIds.filter((pageId) => isErrorPageId(pageId))
   assertUsage(
     errorPageIds.length <= 1,
     `Only one \`_error.page.js\` is allowed. Found several: ${errorPageIds.join(' ')}`,
@@ -17,7 +17,7 @@ function getErrorPageId(allPageIds: string[]): string | null {
   return null
 }
 
-function isErrorPage(pageId: string): boolean {
+function isErrorPageId(pageId: string): boolean {
   assert(!pageId.includes('\\'))
   return pageId.includes('/_error')
 }

@@ -1,5 +1,5 @@
 import { PageFile } from '../getPageFiles'
-import { isErrorPage } from './error-page'
+import { isErrorPageId } from './error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, getFilesystemRoute } from './resolveFilesystemRoute'
@@ -64,7 +64,7 @@ async function loadPageRoutes(pageContext: {
   const pageRoutes: PageRoutes = []
 
   const allPageIdsWithFilesystemRoute = allPageIds
-    .filter((pageId) => !isErrorPage(pageId))
+    .filter((pageId) => !isErrorPageId(pageId))
     .filter((pageId) => {
       const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
       if (!pageRouteFile) {

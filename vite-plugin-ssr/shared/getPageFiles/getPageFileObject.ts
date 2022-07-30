@@ -1,7 +1,7 @@
 export { getPageFileObject }
 
 import { determinePageId } from '../determinePageId'
-import { isErrorPage } from '../route'
+import { isErrorPageId } from '../route'
 import { assert, assertPosixPath, slice } from '../utils'
 import type { FileType, PageFile } from './types'
 
@@ -16,7 +16,7 @@ function getPageFileObject(filePath: string): PageFile {
     isRelevant,
     isDefaultPageFile: isDefaultFilePath(filePath),
     isRendererPageFile: isDefaultFilePath(filePath) && isRendererFilePath(filePath),
-    isErrorPageFile: isErrorPage(filePath),
+    isErrorPageFile: isErrorPageId(filePath),
     pageId: determinePageId(filePath),
   }
   return pageFile
@@ -47,7 +47,7 @@ function determineFileType(filePath: string): FileType {
 function isDefaultFilePath(filePath: string): boolean {
   assertPosixPath(filePath)
   assert(filePath.startsWith('/'))
-  if (isErrorPage(filePath)) {
+  if (isErrorPageId(filePath)) {
     return false
   }
   return filePath.includes('/_default')

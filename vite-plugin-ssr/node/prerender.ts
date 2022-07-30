@@ -1,7 +1,7 @@
 import './page-files/setup'
 import path, { join, sep, dirname, isAbsolute } from 'path'
 import {
-  isErrorPage,
+  isErrorPageId,
   isStaticRouteString,
   loadPageRoutes,
   route,
@@ -510,7 +510,7 @@ function warnMissingPages(
   globalContext._allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
-    .filter((pageId) => !isErrorPage(pageId))
+    .filter((pageId) => !isErrorPageId(pageId))
     .forEach((pageId) => {
       assertWarning(
         partial,

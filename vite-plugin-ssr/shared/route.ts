@@ -7,13 +7,13 @@ import { resolveFilesystemRoute } from './route/resolveFilesystemRoute'
 import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
-import { isErrorPage } from './route/error-page'
+import { isErrorPageId } from './route/error-page'
 import { debug } from './route/debug'
 
 export { route, loadPageRoutes }
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
-export { isErrorPage }
+export { isErrorPageId }
 export { getErrorPageId } from './route/error-page'
 export { isStaticRouteString } from './route/resolveRouteString'
 export { isParameterizedFilesystemRoute } from './route/resolveFilesystemRoute'

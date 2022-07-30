@@ -1,4 +1,4 @@
-import { getErrorPageId, route, isErrorPage, RouteMatches } from '../shared/route'
+import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
 import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
 import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
@@ -347,7 +347,7 @@ function createHttpResponseObject(
 
   let statusCode: StatusCode
   {
-    const isError = !pageContext._pageId || isErrorPage(pageContext._pageId)
+    const isError = !pageContext._pageId || isErrorPageId(pageContext._pageId)
     if (!isError) {
       assert(pageContext.is404 === null)
       statusCode = 200
@@ -558,7 +558,7 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
 
   sortPageContext(pageContext)
 
-  if (isErrorPage(pageContext._pageId)) {
+  if (isErrorPageId(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
   }
