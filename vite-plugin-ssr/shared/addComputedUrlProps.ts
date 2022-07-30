@@ -29,7 +29,7 @@ type UrlParsed = {
 }
 type PageContextUrls = {
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
-  urlPathname: string;
+  urlPathname: string
   /** Parsed information about the current URL */
   urlParsed: UrlParsed
 }
