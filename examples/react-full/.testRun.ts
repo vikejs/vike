@@ -120,13 +120,11 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     })
   })
 
-  /* TODO - Does not work with `$ vite preview`, see https://github.com/vitejs/vite/pull/7665
   test('test 404 page', async () => {
     const html = await fetchHtml('/doesNotExist')
     expect(html).toContain('<h1>404 Page Not Found</h1>')
     expect(html).toContain('This page could not be found.')
   })
-  //*/
 
   if (viewFramework === 'react') {
     test('async pageContext', async () => {

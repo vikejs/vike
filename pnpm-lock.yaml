@@ -538,7 +538,7 @@ importers:
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
       typescript: ^4.6.4
-      vite: ^3.0.2
+      vite: ^3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@mdx-js/mdx': 2.1.1
@@ -549,13 +549,13 @@ importers:
       '@types/node-fetch': 2.6.1
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.3
-      '@vitejs/plugin-react': 2.0.0_vite@3.0.2
+      '@vitejs/plugin-react': 2.0.0_vite@3.0.4
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.15_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
-      vite: 3.0.2
+      vite: 3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-router:
@@ -678,21 +678,21 @@ importers:
       cross-fetch: ^3.1.5
       node-fetch: ^2.6.1
       typescript: ^4.6.4
-      vite: ^2.9.14
+      vite: ^3.0.4
       vite-plugin-md: ^0.11.8
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
     dependencies:
       '@types/node': 17.0.31
       '@types/node-fetch': 2.6.1
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 2.3.1_vite@3.0.4+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       cross-fetch: 3.1.5
       node-fetch: 2.6.7
       typescript: 4.6.4
-      vite: 2.9.14
-      vite-plugin-md: 0.11.9_vite@2.9.14
+      vite: 3.0.4
+      vite-plugin-md: 0.11.9_vite@3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -2799,6 +2799,24 @@ packages:
       - supports-color
     dev: false
 
+  /@vitejs/plugin-react/2.0.0_vite@3.0.4:
+    resolution: {integrity: sha512-zHkRR+X4zqEPNBbKV2FvWSxK7Q6crjMBVIAYroSU8Nbb4M3E5x4qOiLoqJBHtXgr27kfednXjkwr3lr8jS6Wrw==}
+    engines: {node: '>=14.18.0'}
+    peerDependencies:
+      vite: ^3.0.0
+    dependencies:
+      '@babel/core': 7.18.9
+      '@babel/plugin-transform-react-jsx': 7.18.6_@babel+core@7.18.9
+      '@babel/plugin-transform-react-jsx-development': 7.18.6_@babel+core@7.18.9
+      '@babel/plugin-transform-react-jsx-self': 7.18.6_@babel+core@7.18.9
+      '@babel/plugin-transform-react-jsx-source': 7.18.6_@babel+core@7.18.9
+      magic-string: 0.26.2
+      react-refresh: 0.14.0
+      vite: 3.0.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@vitejs/plugin-vue/2.3.1_vite@2.9.14+vue@3.2.33:
     resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
     engines: {node: '>=12.0.0'}
@@ -2807,6 +2825,17 @@ packages:
       vue: ^3.2.25
     dependencies:
       vite: 2.9.14
+      vue: 3.2.33
+    dev: false
+
+  /@vitejs/plugin-vue/2.3.1_vite@3.0.4+vue@3.2.33:
+    resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      vite: ^2.5.10
+      vue: ^3.2.25
+    dependencies:
+      vite: 3.0.4
       vue: 3.2.33
     dev: false
 
@@ -10573,7 +10602,7 @@ packages:
       ufo: 0.8.3
     dev: false
 
-  /vite-plugin-md/0.11.9_vite@2.9.14:
+  /vite-plugin-md/0.11.9_vite@3.0.4:
     resolution: {integrity: sha512-0uD2BPIct3FbEA1hAm56hlrBByEn542HTsS/FoWf33lJIgijVBDDV6FE12ud0SHS6sculITKliF2ntog2kiHmQ==}
     peerDependencies:
       vite: ^2.0.0
@@ -10583,7 +10612,7 @@ packages:
       '@types/markdown-it': 12.2.3
       gray-matter: 4.0.3
       markdown-it: 12.3.2
-      vite: 2.9.14
+      vite: 3.0.4
     dev: false
 
   /vite-plugin-solid/2.2.6:
@@ -10628,6 +10657,33 @@ packages:
 
   /vite/3.0.2:
     resolution: {integrity: sha512-TAqydxW/w0U5AoL5AsD9DApTvGb2iNbGs3sN4u2VdT1GFkQVUfgUldt+t08TZgi23uIauh1TUOQJALduo9GXqw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.14.47
+      postcss: 8.4.14
+      resolve: 1.22.1
+      rollup: 2.77.0
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
+
+  /vite/3.0.4:
+    resolution: {integrity: sha512-NU304nqnBeOx2MkQnskBQxVsa0pRAH5FphokTGmyy8M3oxbvw7qAXts2GORxs+h/2vKsD+osMhZ7An6yK6F1dA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:

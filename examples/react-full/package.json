@@ -19,7 +19,7 @@
     "react-dom": "^18.1.0",
     "react-streaming": "^0.2.15",
     "typescript": "^4.6.4",
-    "vite": "^3.0.2",
+    "vite": "^3.0.4",
     "vite-plugin-ssr": "0.4.13"
   },
   "type": "module"
