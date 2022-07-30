@@ -232,6 +232,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   } catch (err) {
     assertError(err)
     const skipLog = isRenderErrorPageException(err)
+    const firstErrorWasNotLogged = skipLog
     if (!skipLog) {
       logError(err)
     } else {
@@ -241,8 +242,8 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
       return await renderErrorPage({ pageContextInit, err, pageContextOfError })
     } catch (err2) {
       assertError(err2)
-      // We swallow `err2`; logging `err` should be enough; `err2` is likely the same error than `err` anyways.
-      if (skipLog) {
+      const isSameError = (err as any)?.message === (err2 as any)?.message
+      if (!isSameError || firstErrorWasNotLogged) {
         logError(err2)
       }
       const pageContext = {}
