@@ -85,9 +85,7 @@ async function renderPage_(
   // *** Route ***
   const routeResult = await route(pageContext)
   if ('hookError' in routeResult) {
-    const err = routeResult.hookError
-    logError(err)
-    return await renderErrorPage({ pageContextInit, err: routeResult.hookError, pageContextOfError: pageContext })
+    throw routeResult.hookError
   }
   objectAssign(pageContext, routeResult.pageContextAddendum)
 
