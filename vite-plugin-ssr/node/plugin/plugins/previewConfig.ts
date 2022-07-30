@@ -22,10 +22,12 @@ function previewConfig(): Plugin {
       config = config_
     },
     configurePreviewServer(server) {
-      assertDist()
-      assertConfigVpsResolved(config)
-      if (!config.vitePluginSsr.prerender) {
-        return addSsrMiddleware(server.middlewares)
+      return () => {
+        assertDist()
+        assertConfigVpsResolved(config)
+        if (!config.vitePluginSsr.prerender) {
+          addSsrMiddleware(server.middlewares)
+        }
       }
     },
   }
