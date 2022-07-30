@@ -45,7 +45,7 @@ import {
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
 import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
-import { isRenderErrorPage, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
+import { isRenderErrorPageException, assertRenderErrorPageParentheses } from './renderPage/RenderErrorPage'
 import { warn404 } from './renderPage/warn404'
 import { getGlobalContext, GlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
@@ -227,7 +227,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     return await renderPage_(pageContextInit, pageContextOfError)
   } catch (err) {
     assertError(err)
-    const skipLog = isRenderErrorPage(err)
+    const skipLog = isRenderErrorPageException(err)
     if (!skipLog) {
       logError(err)
     } else {
@@ -235,7 +235,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     }
     try {
       const pageContextAddendum = {}
-      if (isRenderErrorPage(err)) {
+      if (isRenderErrorPageException(err)) {
         objectAssign(pageContextAddendum, { is404: true })
         objectAssign(pageContextAddendum, err.pageContext)
       }

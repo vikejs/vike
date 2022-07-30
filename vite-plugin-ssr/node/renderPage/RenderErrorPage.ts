@@ -1,4 +1,4 @@
-export { isRenderErrorPage }
+export { isRenderErrorPageException }
 export { RenderErrorPage }
 export { assertRenderErrorPageParentheses }
 
@@ -6,7 +6,7 @@ import { assertPageContextProvidedByUser } from '../../shared/assertPageContextP
 import { assertUsage, objectAssign } from '../utils'
 const stamp = '__isRenderErrorPage'
 
-function isRenderErrorPage(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
+function isRenderErrorPageException(thing: unknown): thing is { pageContext?: Record<string, unknown> } {
   assertRenderErrorPageParentheses(thing)
   return typeof thing === 'object' && thing !== null && stamp in thing
 }
