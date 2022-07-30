@@ -276,6 +276,10 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
     routeParams: {} as Record<string, string>,
   })
 
+  objectAssign(pageContext, {
+    _routeMatches: (pageContextOfError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
+  })
+
   objectAssign(pageContext, pageContextAddendum)
 
   const errorPageId = getErrorPageId(pageContext._allPageIds)
@@ -298,10 +302,6 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
-
-  objectAssign(pageContext, {
-    _routeMatches: (pageContextOfError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
-  })
 
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
