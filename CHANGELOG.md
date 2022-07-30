@@ -1,3 +1,28 @@
+## [0.4.14](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.13...v0.4.14) (2022-07-30)
+
+
+### Bug Fixes
+
+* add `exportsAll` to `PageContextBuiltIn` ([06b0c6c](https://github.com/brillout/vite-plugin-ssr/commit/06b0c6cda4f094515f2a3dec00e9faa16a7dc5bd))
+* add `is404` to `pageContext` docs and `PageContextBuiltIn` ([bcb2ab5](https://github.com/brillout/vite-plugin-ssr/commit/bcb2ab53a5d2609e636db8c51da2189f98b559f2))
+* add JSDoc annotations to `PageContextBuiltIn` ([62dcc0e](https://github.com/brillout/vite-plugin-ssr/commit/62dcc0e7c1e4aa9e21e8c7cedc5aba41220d72be))
+* add support for server-side rendered preprocessed stylesheets (PostCSS, SASS, ...) ([6d30acf](https://github.com/brillout/vite-plugin-ssr/commit/6d30acf433ed8b5f5564b2d21528f8fd9f6b94c6))
+* improve `vite-plugin-pwa` error message ([#388](https://github.com/brillout/vite-plugin-ssr/issues/388)) ([6e6f872](https://github.com/brillout/vite-plugin-ssr/commit/6e6f8729c2e08b61fb39b8b74416aae5147a7855))
+* improve error message upon wrong base value (fix [#394](https://github.com/brillout/vite-plugin-ssr/issues/394)) ([7671cfa](https://github.com/brillout/vite-plugin-ssr/commit/7671cfa1aa45a6b151106fc7f7b3dce347ec81d5))
+* improve error message upon wrong outDir value (fix [#392](https://github.com/brillout/vite-plugin-ssr/issues/392)) ([f2df3fe](https://github.com/brillout/vite-plugin-ssr/commit/f2df3fe3df62f4f498177f2ff5a04cc11b685882))
+* improve error message upon wrong Rollup config ([998e9f6](https://github.com/brillout/vite-plugin-ssr/commit/998e9f69c29fb5bd9a1bc43a5e62c4483c67907b))
+* improve error message when trying to apply 's HTML transformer (fix [#388](https://github.com/brillout/vite-plugin-ssr/issues/388)) ([2ab98c9](https://github.com/brillout/vite-plugin-ssr/commit/2ab98c93eb65b716ce61b55ca78cc20537b00736))
+* make onPagePrerender pageContext concurrent safe ([ba11709](https://github.com/brillout/vite-plugin-ssr/commit/ba11709cbfc70272ac66f0f8a66f826c73083965))
+* make React detection heuristic more robust ([dfe45d3](https://github.com/brillout/vite-plugin-ssr/commit/dfe45d30955ef560d6a6a757c1d222249e872f4f))
+* remove problematic assertion (fix [#391](https://github.com/brillout/vite-plugin-ssr/issues/391)) ([9500fe3](https://github.com/brillout/vite-plugin-ssr/commit/9500fe3a010358a591abede4a16458d24e621d9d))
+* render error page on the client-side (fix [#393](https://github.com/brillout/vite-plugin-ssr/issues/393)) ([9f2dfb7](https://github.com/brillout/vite-plugin-ssr/commit/9f2dfb745dd54685be7c933c640793472472216f))
+* show second error if it's not the same as first one ([859678d](https://github.com/brillout/vite-plugin-ssr/commit/859678da0eaf026210380bdab9803efe1f7375c8))
+* stop erasing previous `optimizeDeps.entries` (fix [#386](https://github.com/brillout/vite-plugin-ssr/issues/386)) ([255e788](https://github.com/brillout/vite-plugin-ssr/commit/255e788f1f27a5c91e632337524acc2e8e734dcb))
+* stop executing `onBeforeRender()` hook upon rendering the error page ([f992343](https://github.com/brillout/vite-plugin-ssr/commit/f992343cdbaebb313ba852a125db3acb2f2e49e0))
+* support 404 for `$ vite preview` + SSG ([28f8e02](https://github.com/brillout/vite-plugin-ssr/commit/28f8e02e8425f3b30efa53da99a058a320d09b1f))
+
+
+
 ## [0.4.13](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.12...v0.4.13) (2022-07-26)
 
 
