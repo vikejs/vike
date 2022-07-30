@@ -1,4 +1,5 @@
 import { assert, assertBaseUrl } from '../utils'
+import { assertBaseRuntime, assertBaseConfig } from './runtimeConfig/assertBase'
 
 export { getRuntimeConfig }
 export { setRuntimeConfig }
@@ -13,12 +14,14 @@ type RuntimeConfig = {
 let runtimeConfig: null | RuntimeConfig = null
 function setRuntimeConfig(runtimeConfig_: RuntimeConfig) {
   assert(runtimeConfig_)
+  assertBaseRuntime(runtimeConfig_)
   runtimeConfig = runtimeConfig_
   assert(typeof runtimeConfig.includeAssetsImportedByServer === 'boolean')
   assertBaseUrl(runtimeConfig.baseUrl)
 }
 function getRuntimeConfig() {
   assert(runtimeConfig)
+  assertBaseRuntime(runtimeConfig)
   return runtimeConfig
 }
 function resolveRuntimeConfig(viteConfig: { base: string; vitePluginSsr: { includeAssetsImportedByServer: boolean } }) {
@@ -32,6 +35,7 @@ function resolveRuntimeConfig(viteConfig: { base: string; vitePluginSsr: { inclu
   return runtimeConfig
 }
 function resolveBase(base: string) {
+  assertBaseConfig(base)
   let baseUrl = '/'
   let baseAssets = null
   assert(base)

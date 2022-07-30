@@ -1,5 +1,6 @@
 export { assertPluginManifest }
 
+import { assertBaseUrlValue } from '../../../globalContext/runtimeConfig/assertBase'
 import { assert, assertUsage, isPlainObject, projectInfo } from '../../utils'
 
 type PluginManifest = {
@@ -12,7 +13,7 @@ type PluginManifest = {
 function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
   assert(isPlainObject(pluginManifest))
   assert(typeof pluginManifest.baseUrl === 'string')
-  assert(pluginManifest.baseUrl.startsWith('/'))
+  assertBaseUrlValue(pluginManifest.baseUrl)
   assert(typeof pluginManifest.usesClientRouter === 'boolean')
   assert(typeof pluginManifest.version === 'string')
   assert(typeof pluginManifest.includeAssetsImportedByServer === 'boolean')
