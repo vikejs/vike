@@ -1,6 +1,7 @@
 export { Page }
 
-import './index.css'
+import './colored.css'
+import colored2 from './colored2.module.scss'
 
 function Page() {
   return (
@@ -11,7 +12,8 @@ function Page() {
       </p>
       <p>This page has zero browser-side JavaScript. (In development, Vite's HMR client is loaded.)</p>
       <p>
-        As shown by this <span className="colored">orange text</span>, CSS can be loaded in <code>.page.server.js</code>{' '}
+        As shown by this <span className="colored">orange text</span>, and this
+        <span className={colored2.colored2}> blue text</span>, CSS  can be loaded in <code>.page.server.js</code>{' '}
         files.
       </p>
       <p>
