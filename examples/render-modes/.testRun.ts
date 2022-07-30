@@ -44,8 +44,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(html).toContain('@vite/client')
       expect(html).toContain('import RefreshRuntime from "/@react-refresh"')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
-      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/colored.css?direct">')
-      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/colored2.module.scss?direct">')
+      expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }
     await page.goto(urlBase + '/html-only')
     await testColor('orange')
@@ -65,7 +64,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       }
       {
         await testColor('orange')
-        editFile('./pages/html-only/colored.css', (s) => s.replace('color: orange', 'color: gray'))
+        editFile('./pages/html-only/index.css', (s) => s.replace('color: orange', 'color: gray'))
         await testColor('gray')
         editFileRevert()
         await testColor('orange')
