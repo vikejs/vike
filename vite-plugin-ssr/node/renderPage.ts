@@ -119,9 +119,7 @@ async function renderPageContext(
           stringify({
             pageContext404PageDoesNotExist: true,
           }),
-          {
-            renderFilePath: null,
-          },
+          null,
           pageContext,
         )
         objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
@@ -141,7 +139,7 @@ async function renderPageContext(
 
   if (pageContext._isPageContextRequest) {
     const pageContextSerialized = serializePageContextClientSide(pageContext)
-    const httpResponse = createHttpResponseObject(pageContextSerialized, { renderFilePath: null }, pageContext)
+    const httpResponse = createHttpResponseObject(pageContextSerialized, null, pageContext)
     objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
     return pageContext
   }
@@ -153,7 +151,7 @@ async function renderPageContext(
     return pageContext
   } else {
     const { htmlRender, renderFilePath } = renderHookResult
-    const httpResponse = createHttpResponseObject(htmlRender, { renderFilePath }, pageContext)
+    const httpResponse = createHttpResponseObject(htmlRender, renderFilePath, pageContext)
     objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
     return pageContext
   }
@@ -296,7 +294,7 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
     const body = stringify({
       serverSideError: true,
     })
-    const httpResponse = createHttpResponseObject(body, { renderFilePath: null }, pageContext)
+    const httpResponse = createHttpResponseObject(body, null, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -312,7 +310,7 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
   const renderHookResult = await executeRenderHook(pageContext)
 
   const { htmlRender, renderFilePath } = renderHookResult
-  const httpResponse = createHttpResponseObject(htmlRender, { renderFilePath }, pageContext)
+  const httpResponse = createHttpResponseObject(htmlRender, renderFilePath, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
@@ -338,7 +336,7 @@ type HttpResponse = {
 }
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
-  { renderFilePath }: { renderFilePath: null | string },
+  renderFilePath: null | string,
   pageContext: { _isPageContextRequest: boolean; _pageId: null | string; is404: null | boolean },
 ): HttpResponse | null {
   if (htmlRender === null) {
