@@ -437,9 +437,6 @@ async function routeAndPrerender(
       concurrencyLimit(async () => {
         const { url, _prerenderHookFile: prerenderHookFile } = pageContext
         const routeResult = await route(pageContext)
-        if ('hookError' in routeResult) {
-          throw routeResult.hookError
-        }
         assert(
           hasProp(routeResult.pageContextAddendum, '_pageId', 'null') ||
             hasProp(routeResult.pageContextAddendum, '_pageId', 'string'),

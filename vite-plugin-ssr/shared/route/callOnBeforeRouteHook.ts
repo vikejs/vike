@@ -18,7 +18,6 @@ async function callOnBeforeRouteHook(
   },
 ): Promise<
   | {}
-  | { hookError: unknown; hookFilePath: string; hookName: string }
   | {
       pageContextProvidedByUser: Record<string, unknown> & {
         _pageId?: string | null
@@ -29,12 +28,7 @@ async function callOnBeforeRouteHook(
   const hookFilePath = onBeforeRouteHook.filePath
   const hookName = 'onBeforeRoute'
 
-  let result: unknown
-  try {
-    result = await onBeforeRouteHook.onBeforeRoute(pageContext)
-  } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
-  }
+  const result: unknown = await onBeforeRouteHook.onBeforeRoute(pageContext)
 
   const errPrefix = `The \`onBeforeRoute()\` hook exported by ${onBeforeRouteHook.filePath}`
 

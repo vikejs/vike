@@ -22,7 +22,6 @@ type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
   _allPageIds: string[]
 }
-type HookError = { hookError: unknown; hookName: string; hookFilePath: string }
 type RouteMatch = {
   pageId: string
   routeString?: string
@@ -32,17 +31,14 @@ type RouteMatch = {
 }
 type RouteMatches = 'CUSTOM_ROUTE' | RouteMatch[]
 
-async function route(pageContext: PageContextForRoute): Promise<
-  | HookError
-  | {
-      pageContextAddendum: {
-        _pageId: string | null
-        routeParams: Record<string, string>
-        _routingProvidedByOnBeforeRouteHook: boolean
-        _routeMatches: RouteMatches
-      } & Record<string, unknown>
-    }
-> {
+async function route(pageContext: PageContextForRoute): Promise<{
+  pageContextAddendum: {
+    _pageId: string | null
+    routeParams: Record<string, string>
+    _routingProvidedByOnBeforeRouteHook: boolean
+    _routeMatches: RouteMatches
+  } & Record<string, unknown>
+}> {
   addComputedUrlProps(pageContext)
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext)
@@ -61,9 +57,6 @@ async function route(pageContext: PageContextForRoute): Promise<
   const pageContextAddendum = {}
   if (onBeforeRouteHook) {
     const hookResult = await callOnBeforeRouteHook(onBeforeRouteHook, pageContext)
-    if ('hookError' in hookResult) {
-      return hookResult
-    }
     if ('pageContextProvidedByUser' in hookResult) {
       objectAssign(pageContextAddendum, hookResult.pageContextProvidedByUser)
       if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
@@ -97,7 +90,6 @@ async function route(pageContext: PageContextForRoute): Promise<
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
 
-  const hookErrors: HookError[] = []
   const routeMatches: RouteMatch[] = []
   await Promise.all(
     pageRoutes.map(async (pageRoute): Promise<void> => {
@@ -135,10 +127,6 @@ async function route(pageContext: PageContextForRoute): Promise<
         // Route with Route Function defined in `.page.route.js`
         else if (hasProp(pageRouteFileExports, 'default', 'function')) {
           const match = await resolveRouteFunction(pageRouteFileExports, urlPathname, pageContext, pageRouteFilePath)
-          if (match && 'hookError' in match) {
-            hookErrors.push(match)
-            return
-          }
           if (match) {
             const { routeParams, precedence } = match
             routeMatches.push({ pageId, precedence, routeParams, routeType: 'FUNCTION' })
@@ -149,10 +137,6 @@ async function route(pageContext: PageContextForRoute): Promise<
       }
     }),
   )
-
-  if (hookErrors.length > 0) {
-    return hookErrors[0]!
-  }
 
   resolvePrecendence(routeMatches)
   const winner = routeMatches[0]

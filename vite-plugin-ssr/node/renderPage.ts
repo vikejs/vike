@@ -84,9 +84,6 @@ async function renderPage_(
 
   // *** Route ***
   const routeResult = await route(pageContext)
-  if ('hookError' in routeResult) {
-    throw routeResult.hookError
-  }
   objectAssign(pageContext, routeResult.pageContextAddendum)
 
   // *** Handle 404 ***

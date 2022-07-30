@@ -8,32 +8,16 @@ async function resolveRouteFunction(
   urlPathname: string,
   pageContext: Record<string, unknown>,
   pageRouteFilePath: string,
-): Promise<
-  | { hookError: unknown; hookName: string; hookFilePath: string }
-  | null
-  | {
-      precedence: number | null
-      routeParams: Record<string, string>
-    }
-> {
-  const hookFilePath = pageRouteFilePath
-  const hookName = 'route()'
-
-  let result: unknown
-  try {
-    result = pageRouteFileExports.default({ url: urlPathname, pageContext })
-  } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
-  }
+): Promise<null | {
+  precedence: number | null
+  routeParams: Record<string, string>
+}> {
+  let result: unknown = pageRouteFileExports.default({ url: urlPathname, pageContext })
   assertUsage(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
     `The Route Function ${pageRouteFilePath} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`,
   )
-  try {
-    result = await result
-  } catch (hookError) {
-    return { hookError, hookName, hookFilePath }
-  }
+  await result
   if (result === false) {
     return null
   }

@@ -162,9 +162,6 @@ async function getPageContextFromRoute(
   pageContext: PageContextForRoute,
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
-  if ('hookError' in routeResult) {
-    throw routeResult.hookError
-  }
   const pageContextFromRoute = routeResult.pageContextAddendum
   if (pageContextFromRoute._pageId === null) {
     setTimeout(() => {
