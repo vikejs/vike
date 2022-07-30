@@ -2,7 +2,6 @@ import { navigationState } from '../navigationState'
 import {
   assert,
   assertUsage,
-  assertWarning,
   getFileUrl,
   hasProp,
   isPlainObject,
@@ -21,6 +20,7 @@ import { getHook } from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { disableClientRouting } from './useClientRouter'
+import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 
 export { getPageContext }
 
@@ -210,33 +210,4 @@ async function retrievePageContextFromServer(pageContext: { url: string }): Prom
   removeBuiltInOverrides(pageContextFromServer)
 
   return pageContextFromServer
-}
-
-const BUILT_IN_CLIENT_ROUTER = ['urlPathname', 'urlParsed'] as const
-const BUILT_IN_CLIENT = ['Page', 'pageExports', 'exports'] as const
-type DeletedKeys = typeof BUILT_IN_CLIENT[number] | typeof BUILT_IN_CLIENT_ROUTER[number]
-function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in DeletedKeys]?: never }) {
-  const alreadySet = [...BUILT_IN_CLIENT, ...BUILT_IN_CLIENT_ROUTER]
-  alreadySet.forEach((prop) => {
-    if (prop in pageContext) {
-      // We need to cast `BUILT_IN_CLIENT` to `string[]`
-      //  - https://stackoverflow.com/questions/56565528/typescript-const-assertions-how-to-use-array-prototype-includes
-      //  - https://stackoverflow.com/questions/57646355/check-if-string-is-included-in-readonlyarray-in-typescript
-      if ((BUILT_IN_CLIENT_ROUTER as any as string[]).includes(prop)) {
-        assert(prop.startsWith('url'))
-        assertWarning(
-          false,
-          `\`pageContext.${prop}\` is already available in the browser when using \`useClientRouter()\`; including \`${prop}\` in \`passToClient\` has no effect.`,
-          { onlyOnce: true },
-        )
-      } else {
-        assertWarning(
-          false,
-          `\`pageContext.${prop}\` is a built-in that cannot be overriden; including \`${prop}\` in \`passToClient\` has no effect.`,
-          { onlyOnce: true },
-        )
-      }
-      delete pageContext[prop]
-    }
-  })
 }
