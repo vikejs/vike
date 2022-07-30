@@ -1,14 +1,15 @@
 import type { UserConfig } from 'vite'
 import { isSSR_config } from './isSSR'
-import { assert } from './assert'
+import { assert, assertUsage } from './assert'
 import { assertPosixPath } from './filesystemPathHandling'
 
 export { getOutDirs }
 export { getOutDir }
 
 function getOutDir(config: UserConfig): string {
-  const outDirRoot = config.build?.outDir || 'dist'
-  const { outDirClient, outDirServer } = getOutDirs(outDirRoot, { isRoot: true })
+  const outDir = config.build?.outDir || 'dist'
+  assertIsNotAbsolute(outDir)
+  const { outDirClient, outDirServer } = getOutDirs(outDir, { isRoot: true })
   if (isSSR_config(config)) {
     return outDirServer
   } else {
@@ -39,4 +40,15 @@ function isRoot(outDir: string) {
 }
 function isNotRoot(outDir: string) {
   return outDir.endsWith('/client') || outDir.endsWith('/server')
+}
+
+function assertIsNotAbsolute(outDir: string) {
+  assertUsage(
+    firstSegment(outDir) !== firstSegment(process.cwd()),
+    "vite.config.js#build.outDir is not allowed to be an absolute path, e.g. set its value to 'build/' instead of `path.join(__dirname, 'build/')`",
+  )
+}
+
+function firstSegment(p: string) {
+  return p.split(/\/|\\/).filter(Boolean)[0]
 }
