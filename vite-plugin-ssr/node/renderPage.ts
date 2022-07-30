@@ -103,7 +103,9 @@ async function renderPageContext(
 ): Promise<RenderResult> {
   if (pageContext.is404) warn404(pageContext)
 
-  if (pageContext.is404 || pageContext.errorWhileRendering) {
+  const isError = pageContext.is404 || pageContext.errorWhileRendering
+
+  if (isError) {
     assert(pageContext._pageId === null)
     const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (errorPageId) {
@@ -123,7 +125,9 @@ async function renderPageContext(
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
-  await executeOnBeforeRenderHooks(pageContext)
+  if (!isError) {
+    await executeOnBeforeRenderHooks(pageContext)
+  }
 
   if (pageContext._isPageContextRequest) {
     const body: string = serializePageContextClientSide(pageContext)
