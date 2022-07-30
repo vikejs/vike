@@ -130,6 +130,9 @@ async function renderPageContext(
   }
 
   if (pageContext._isPageContextRequest) {
+    if (isError) {
+      objectAssign(pageContext, { _isError: true })
+    }
     const body: string = serializePageContextClientSide(pageContext)
     const httpResponse = createHttpResponseObject(body, null, pageContext)
     objectAssign(pageContext, { httpResponse })

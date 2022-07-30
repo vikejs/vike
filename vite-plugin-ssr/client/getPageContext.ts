@@ -35,21 +35,9 @@ async function loadPageFilesClient(pageId: string) {
   objectAssign(pageContextAddendum, {
     _pageFilesAll: pageFilesAll,
   })
-  {
-    const result = await loadPageFilesClientSide(pageFilesAll, pageId)
-    if ('errorFetchingStaticAssets' in result) {
-      // This may happen if the frontend was newly deployed during hydration.
-      // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
-      throw result.err
-    }
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = result.pageContextAddendum
-    objectAssign(pageContextAddendum, {
-      exports,
-      exportsAll,
-      pageExports,
-      _pageFilesLoaded: pageFilesLoaded,
-    })
-  }
+
+  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageFilesAll, pageId))
+
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')
     .forEach((p) => {
@@ -59,5 +47,6 @@ async function loadPageFilesClient(pageId: string) {
         { onlyOnce: true },
       )
     })
+
   return pageContextAddendum
 }

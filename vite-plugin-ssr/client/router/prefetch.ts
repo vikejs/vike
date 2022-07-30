@@ -1,7 +1,7 @@
 export { addLinkPrefetchHandlers, prefetch }
 
 import { assert, assertUsage, isExternalLink } from './utils'
-import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
+import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 import { getPrefetchConfig } from './prefetch/getPrefetchConfig'
@@ -21,9 +21,12 @@ async function prefetch(url: string): Promise<void> {
 
   const { pageId, pageFilesAll } = await getPageId(url)
   if (pageId) {
-    const result = await loadPageFilesClientSide(pageFilesAll, pageId)
-    if ('errorFetchingStaticAssets' in result) {
-      disableClientRouting()
+    try {
+      await loadPageFilesClientSide(pageFilesAll, pageId)
+    } catch (err) {
+      if (isErrorFetchingStaticAssets(err)) {
+        disableClientRouting()
+      }
     }
   }
 }

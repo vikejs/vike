@@ -13,6 +13,7 @@ function serializePageContextClientSide(pageContext: {
   _passToClient: string[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
+  _isError?: true
 }) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }
 
@@ -21,7 +22,7 @@ function serializePageContextClientSide(pageContext: {
   if (isErrorPageId(pageContext._pageId)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
-    passToClient.push(...['pageProps', 'is404'])
+    passToClient.push(...['pageProps', 'is404', '_isError'])
   }
 
   passToClient = unique(passToClient)

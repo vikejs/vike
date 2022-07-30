@@ -13,15 +13,16 @@ import {
   throttle,
 } from './utils'
 import { navigationState } from '../navigationState'
-import { getPageContext } from './getPageContext'
+import { getPageContext, getPageContextErrorPage } from './getPageContext'
 import { releasePageContext } from '../releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
-import { assertInfo, detectHydrationSkipSupport } from './utils'
+import { assertInfo, detectHydrationSkipSupport, PromiseType } from './utils'
 import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
+import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 const navigateFnKey = '__vite_plugin_ssr__navigate'
 
 setupNativeScrollRestoration()
@@ -107,18 +108,47 @@ function useClientRouter() {
     if (shouldAbort()) {
       return
     }
+    const isFirstRenderAttempt = renderingNumber === 1
     const pageContext = {
       url,
-      _isFirstRenderAttempt: renderingNumber === 1,
+      _isFirstRenderAttempt: isFirstRenderAttempt,
       ...globalContext,
     }
     addComputedUrlProps(pageContext)
 
-    const result = await getPageContext(pageContext)
-    if ('errorFetchingStaticAssets' in result) {
-      return
+    let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>>
+    try {
+      pageContextAddendum = await getPageContext(pageContext)
+    } catch (err: unknown) {
+      if (checkIfAbort(err, pageContext)) return
+
+      console.error(err)
+
+      try {
+        pageContextAddendum = await getPageContextErrorPage(pageContext)
+      } catch (err2: unknown) {
+        // - When user hasn't defined a `_error.page.js` file
+        // - Some unpexected vite-plugin-ssr internal error
+
+        if (checkIfAbort(err2, pageContext)) return
+
+        if (!isFirstRenderAttempt) {
+          setTimeout(() => {
+            // We let the server show the 404 page
+            window.location.pathname = url
+          }, 0)
+        }
+
+        const isSameError = (err as any)?.message === (err2 as any)?.message
+        if (!isSameError) {
+          throw err2
+        } else {
+          // Abort
+          return
+        }
+      }
     }
-    const { pageContextAddendum } = result
+
     if (shouldAbort()) {
       return
     }
@@ -148,6 +178,7 @@ function useClientRouter() {
     renderPromise = (async () => {
       const pageContextReadyForRelease = releasePageContext(pageContext)
       assertRenderHook(pageContext)
+      // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
       const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
       assertUsage(
         hookResult === undefined,
@@ -377,4 +408,35 @@ declare global {
           overwriteLastHistoryEntry,
         }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
       ) => Promise<void>)
+}
+
+function checkIfAbort(err: unknown, pageContext: { url: string; _isFirstRenderAttempt: boolean }): boolean {
+  if ((err as any)?._abortRendering) return true
+
+  if (handleErrorFetchingStaticAssets(err, pageContext)) {
+    return true
+  }
+
+  return false
+}
+
+function handleErrorFetchingStaticAssets(
+  err: unknown,
+  pageContext: { url: string; _isFirstRenderAttempt: boolean },
+): boolean {
+  if (!isErrorFetchingStaticAssets(err)) {
+    return false
+  }
+
+  disableClientRouting()
+
+  if (pageContext._isFirstRenderAttempt) {
+    // This may happen if the frontend was newly deployed during hydration.
+    // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
+    throw err
+  }
+
+  serverSideRouteTo(pageContext.url)
+
+  return true
 }

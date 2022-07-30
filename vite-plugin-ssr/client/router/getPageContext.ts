@@ -15,14 +15,14 @@ import { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
-import { PageContextForRoute, route } from '../../shared/route'
+import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
 import { getHook } from '../../shared/getHook'
 import { releasePageContext } from '../releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
-import { disableClientRouting } from './useClientRouter'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 
 export { getPageContext }
+export { getPageContextErrorPage }
 
 type PageContextAddendum = {
   _pageId: string
@@ -32,30 +32,26 @@ type PageContextAddendum = {
   _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
-type Result =
-  | {
-      errorFetchingStaticAssets: true
-    }
-  | {
-      pageContextAddendum: PageContextAddendum
-    }
-
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
   } & PageContextUrls &
     PageContextForRoute,
-): Promise<Result> {
+): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isOriginalUrl(pageContext.url)) {
+    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     return getPageContextFirstRender(pageContext)
   } else {
+    assert(hasProp(pageContext, '_isFirstRenderAttempt', 'false'))
     return getPageContextUponNavigation(pageContext)
   }
 }
 
 async function getPageContextFirstRender(pageContext: {
   _pageFilesAll: PageFile[]
-}): Promise<{ pageContextAddendum: PageContextAddendum }> {
+  _isFirstRenderAttempt: true
+  url: string
+}): Promise<PageContextAddendum> {
   const pageContextAddendum = getPageContextSerializedInHtml()
   removeBuiltInOverrides(pageContextAddendum)
 
@@ -64,52 +60,69 @@ async function getPageContextFirstRender(pageContext: {
     _comesDirectlyFromServer: true,
   })
 
-  {
-    const result = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
-    if ('errorFetchingStaticAssets' in result) {
-      disableClientRouting()
-      // This may happen if the frontend was newly deployed during hydration.
-      // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
-      throw result.err
-    }
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = result.pageContextAddendum
-    objectAssign(pageContextAddendum, {
-      exports,
-      exportsAll,
-      pageExports,
-      _pageFilesLoaded: pageFilesLoaded,
-    })
-  }
+  objectAssign(
+    pageContextAddendum,
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+  )
 
-  return { pageContextAddendum }
+  return pageContextAddendum
 }
 
-async function getPageContextUponNavigation(pageContext: PageContextForRoute): Promise<Result> {
+async function getPageContextErrorPage(pageContext: {
+  url: string
+  _allPageIds: string[]
+  _isFirstRenderAttempt: boolean
+  _pageFilesAll: PageFile[]
+}): Promise<PageContextAddendum> {
+  const errorPageId = getErrorPageId(pageContext._allPageIds)
+  if (!errorPageId) {
+    throw new Error('No error page')
+  }
+  const pageContextAddendum = {
+    isHydration: false,
+    _pageId: errorPageId,
+    _pageContextRetrievedFromServer: null,
+    _comesDirectlyFromServer: false,
+  }
+
+  objectAssign(
+    pageContextAddendum,
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+  )
+
+  return pageContextAddendum
+}
+
+async function getPageContextUponNavigation(
+  pageContext: PageContextForRoute & { _isFirstRenderAttempt: false },
+): Promise<PageContextAddendum> {
   const pageContextAddendum = {
     isHydration: false,
   }
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
 
-  {
-    const result = await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
-    if ('errorFetchingStaticAssets' in result) {
-      disableClientRouting()
-      serverSideRouteTo(pageContext.url)
-      return { errorFetchingStaticAssets: true }
-    }
-    const { exports, exportsAll, pageExports, pageFilesLoaded } = result.pageContextAddendum
-    objectAssign(pageContextAddendum, {
-      exports,
-      exportsAll,
-      pageExports,
-      _pageFilesLoaded: pageFilesLoaded,
-    })
-  }
+  objectAssign(
+    pageContextAddendum,
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+  )
 
   objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
   assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
 
-  return { pageContextAddendum }
+  if (pageContextAddendum['_isError'] === true) {
+    assert(hasProp(pageContextAddendum, 'is404', 'boolean'))
+    assert(hasProp(pageContextAddendum, 'pageProps', 'object'))
+    assert(hasProp(pageContextAddendum.pageProps, 'is404', 'boolean'))
+    objectAssign(pageContextAddendum, {
+      _pageId: getErrorPageId(pageContext._allPageIds),
+    })
+    objectAssign(
+      pageContextAddendum,
+      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+    )
+  }
+
+  return pageContextAddendum
 }
 
 async function onBeforeRenderExecute(
@@ -119,7 +132,12 @@ async function onBeforeRenderExecute(
     isHydration: boolean
     _pageFilesAll: PageFile[]
   } & PageContextExports,
-) {
+): Promise<
+  { _comesDirectlyFromServer: boolean; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<
+    string,
+    unknown
+  >
+> {
   // `export { onBeforeRender }` defined in `.page.client.js`
   const hook = getHook(pageContext, 'onBeforeRender')
   if (hook) {
@@ -163,23 +181,11 @@ async function getPageContextFromRoute(
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
   const pageContextFromRoute = routeResult.pageContextAddendum
-  if (pageContextFromRoute._pageId === null) {
-    setTimeout(() => {
-      handle404(pageContext)
-    }, 0)
-    assertUsage(
-      false,
-      `[404] Page ${pageContext.url} does not exist. (\`vite-plugin-ssr\` will now server-side route to \`${pageContext.url}\`.)`,
-    )
-  } else {
-    assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
+  if (!pageContextFromRoute._pageId) {
+    throw new Error('No routing match')
   }
+  assert(hasProp(pageContextFromRoute, '_pageId', 'string'))
   return pageContextFromRoute
-}
-
-function handle404(pageContext: { url: string }) {
-  // We let the server show the 404 page; the server will show the 404 URL against the list of routes.
-  window.location.pathname = pageContext.url
 }
 
 async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
@@ -188,8 +194,18 @@ async function retrievePageContextFromServer(pageContext: { url: string }): Prom
 
   {
     const contentType = response.headers.get('content-type')
+    const isRightContentType = contentType && contentType.includes('application/json')
+
+    // Static hosts + page doesn't exist
+    if (!isRightContentType && response.status === 404) {
+      serverSideRouteTo(pageContext.url)
+      const err = new Error("Page doesn't exist")
+      Object.assign(err, { _abortRendering: true })
+      throw err
+    }
+
     assertUsage(
-      contentType && contentType.includes('application/json'),
+      isRightContentType,
       `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`,
     )
   }
