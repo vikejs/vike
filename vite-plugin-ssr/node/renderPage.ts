@@ -59,17 +59,14 @@ export { prerenderPage }
 export { renderStatic404Page }
 export { loadPageFilesServer }
 
-type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
-
 type GlobalRenderingContext = GlobalContext & {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
 }
 
-async function renderPage_(
-  pageContextInit: { url: string },
-  pageContext: {},
-): Promise<{ url: string; httpResponse: null | HttpResponse; errorWhileRendering: null | unknown }> {
+type RenderResult = { url: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
+
+async function renderPage_(pageContextInit: { url: string }, pageContext: {}): Promise<RenderResult> {
   {
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -85,26 +82,23 @@ async function renderPage_(
   // *** Route ***
   const routeResult = await route(pageContext)
   objectAssign(pageContext, routeResult.pageContextAddendum)
+  const is404 = hasProp(pageContext, '_pageId', 'string') ? null : true
+  objectAssign(pageContext, { is404 })
 
-  // *** Handle 404 ***
-  let statusCode: 200 | 404
-  if (hasProp(pageContext, '_pageId', 'string')) {
-    statusCode = 200
-  } else {
+  if (is404) {
     assert(pageContext._pageId === null)
     warn404(pageContext)
 
-    if (!pageContext._isPageContextRequest) {
-      statusCode = 404
-    } else {
-      statusCode = 200
-    }
-
-    const errorWhileRendering = null
-
     // No `_error.page.js` is defined
     const errorPageId = getErrorPageId(pageContext._allPageIds)
-    if (!errorPageId) {
+    if (errorPageId) {
+      objectAssign(pageContext, {
+        _pageId: errorPageId,
+      })
+    } else {
+      objectAssign(pageContext, {
+        _pageId: null,
+      })
       warnMissingErrorPage(pageContext)
       if (pageContext._isPageContextRequest) {
         const httpResponse = createHttpResponseObject(
@@ -112,28 +106,33 @@ async function renderPage_(
             pageContext404PageDoesNotExist: true,
           }),
           {
-            statusCode,
             renderFilePath: null,
           },
           pageContext,
         )
-        objectAssign(pageContext, { httpResponse, errorWhileRendering })
+        objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
         return pageContext
       } else {
-        const httpResponse = null
-        objectAssign(pageContext, { httpResponse, errorWhileRendering })
+        objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
         return pageContext
       }
     }
-
-    // Render 404 page
-    objectAssign(pageContext, {
-      _pageId: errorPageId,
-      is404: true,
-      errorWhileRendering,
-    })
   }
+  assert(hasProp(pageContext, '_pageId', 'string'))
 
+  return renderPageContext(pageContext)
+}
+
+async function renderPageContext(
+  pageContext: {
+    _pageId: string
+    _pageContextAlreadyProvidedByPrerenderHook?: true
+    _isPageContextRequest: boolean
+    is404: null | boolean
+    routeParams: Record<string, string>
+  } & PageContextUrls &
+    PageContext_loadPageFilesServer,
+): Promise<RenderResult> {
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
@@ -141,11 +140,7 @@ async function renderPage_(
 
   if (pageContext._isPageContextRequest) {
     const pageContextSerialized = serializePageContextClientSide(pageContext)
-    const httpResponse = createHttpResponseObject(
-      pageContextSerialized,
-      { statusCode: 200, renderFilePath: null },
-      pageContext,
-    )
+    const httpResponse = createHttpResponseObject(pageContextSerialized, { renderFilePath: null }, pageContext)
     objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
     return pageContext
   }
@@ -157,7 +152,7 @@ async function renderPage_(
     return pageContext
   } else {
     const { htmlRender, renderFilePath } = renderHookResult
-    const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath }, pageContext)
+    const httpResponse = createHttpResponseObject(htmlRender, { renderFilePath }, pageContext)
     objectAssign(pageContext, { httpResponse, errorWhileRendering: null })
     return pageContext
   }
@@ -284,25 +279,27 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
 
   objectAssign(pageContext, pageContextAddendum)
 
-  const statusCode = pageContext.is404 ? 404 : 500
-
-  if (pageContext._isPageContextRequest) {
-    const body = stringify({
-      serverSideError: true,
-    })
-    const httpResponse = createHttpResponseObject(body, { statusCode, renderFilePath: null }, pageContext)
-    objectAssign(pageContext, { httpResponse })
-    return pageContext
-  }
-
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (errorPageId === null) {
+    objectAssign(pageContext, {
+      _pageId: null,
+    })
     warnMissingErrorPage(pageContext)
     return pageContext
   }
   objectAssign(pageContext, {
     _pageId: errorPageId,
   })
+
+  if (pageContext._isPageContextRequest) {
+    const body = stringify({
+      serverSideError: true,
+    })
+    const httpResponse = createHttpResponseObject(body, { renderFilePath: null }, pageContext)
+    objectAssign(pageContext, { httpResponse })
+    return pageContext
+  }
+
   objectAssign(pageContext, {
     _routeMatches: (pageContextOfError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
   })
@@ -314,7 +311,7 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
   const renderHookResult = await executeRenderHook(pageContext)
 
   const { htmlRender, renderFilePath } = renderHookResult
-  const httpResponse = createHttpResponseObject(htmlRender, { statusCode, renderFilePath }, pageContext)
+  const httpResponse = createHttpResponseObject(htmlRender, { renderFilePath }, pageContext)
   objectAssign(pageContext, { httpResponse })
   return pageContext
 }
@@ -340,13 +337,26 @@ type HttpResponse = {
 }
 function createHttpResponseObject(
   htmlRender: null | HtmlRender,
-  { statusCode, renderFilePath }: { statusCode: StatusCode; renderFilePath: null | string },
-  pageContext: { _isPageContextRequest: boolean },
+  { renderFilePath }: { renderFilePath: null | string },
+  pageContext: { _isPageContextRequest: boolean; _pageId: null | string; is404: null | boolean },
 ): HttpResponse | null {
   if (htmlRender === null) {
     return null
   }
 
+  let statusCode: StatusCode
+  {
+    const isError = !pageContext._pageId || isErrorPage(pageContext._pageId)
+    if (!isError) {
+      assert(pageContext.is404 === null)
+      statusCode = 200
+    } else {
+      assert(pageContext.is404 === true || pageContext.is404 === false)
+      statusCode = pageContext.is404 ? 404 : 500
+    }
+  }
+
+  // The `.pageContext.json` HTTP request's body is generated by `@brillout/json-s` thus always a string
   assert(!pageContext._isPageContextRequest || typeof htmlRender === 'string')
 
   const streamDocs = 'https://vite-plugin-ssr.com/stream'
@@ -468,6 +478,7 @@ async function prerenderPage(
     _pageId: string
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
+    is404: null | boolean
   } & PageFiles &
     GlobalRenderingContext,
 ) {
@@ -531,7 +542,7 @@ type PageContextPublic = {
   exports: Record<string, unknown>
   exportsAll: ExportsAll
   _pageId: string
-  is404?: boolean
+  is404: null | boolean
   pageProps?: Record<string, unknown>
 }
 function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T) {
@@ -552,20 +563,20 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
   }
 }
 
-async function loadPageFilesServer(
-  pageContext: {
-    url: string
-    _pageId: string
-    _baseUrl: string
-    _baseAssets: string | null
-    _pageFilesAll: PageFile[]
-    _isPreRendering: boolean
-    _isProduction: boolean
-    _viteDevServer: null | ViteDevServer
-    _manifestClient: null | ViteManifest
-    _includeAssetsImportedByServer: boolean
-  } & PageContextDebug,
-) {
+type PageContext_loadPageFilesServer = {
+  url: string
+  _pageId: string
+  _baseUrl: string
+  _baseAssets: string | null
+  _pageFilesAll: PageFile[]
+  _isPreRendering: boolean
+  _isProduction: boolean
+  _viteDevServer: null | ViteDevServer
+  _manifestClient: null | ViteManifest
+  _includeAssetsImportedByServer: boolean
+} & PageContextDebug
+type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
+async function loadPageFilesServer(pageContext: PageContext_loadPageFilesServer) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
     loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true }),

@@ -468,6 +468,8 @@ async function routeAndPrerender(
         })
         objectAssign(pageContext, pageFilesData)
 
+        objectAssign(pageContext, { is404: null })
+
         const { documentHtml, pageContextSerialized } = await prerenderPage(pageContext)
         htmlFiles.push({
           url,

@@ -11,7 +11,7 @@ type PageContextClient = { _pageId: string } & Record<string, unknown>
 function serializePageContextClientSide(pageContext: {
   _pageId: string
   _passToClient: string[]
-  is404?: boolean
+  is404: null | boolean
   pageProps?: Record<string, unknown>
 }) {
   const pageContextClient: PageContextClient = { _pageId: pageContext._pageId }

@@ -53,6 +53,7 @@ type PageContextInjectAssets = {
   _isProduction: boolean
   _viteDevServer: null | ViteDevServer
   _baseUrl: string
+  is404: null | boolean
 }
 async function injectAssets(htmlString: string, pageContext: PageContextInjectAssets): Promise<string> {
   const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, null)
@@ -202,7 +203,7 @@ async function getMergedScriptTag(
   return scriptTag
 }
 
-function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[] }): string {
+function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[]; is404: null | boolean }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlSnippet = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
   return htmlSnippet
