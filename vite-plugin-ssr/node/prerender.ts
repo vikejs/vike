@@ -277,13 +277,7 @@ async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, conc
           const prerenderHookFile = p.filePath
           assert(prerenderHookFile)
 
-          let prerenderResult: unknown
-          try {
-            prerenderResult = await prerender()
-          } catch (err) {
-            throwPrerenderError(err)
-            assert(false)
-          }
+          const prerenderResult: unknown = await prerender()
           const result = normalizePrerenderResult(prerenderResult, prerenderHookFile)
 
           result.forEach(({ url, pageContext }) => {
@@ -444,8 +438,7 @@ async function routeAndPrerender(
         const { url, _prerenderHookFile: prerenderHookFile } = pageContext
         const routeResult = await route(pageContext)
         if ('hookError' in routeResult) {
-          throwPrerenderError(routeResult.hookError)
-          assert(false)
+          throw routeResult.hookError
         }
         assert(
           hasProp(routeResult.pageContextAddendum, '_pageId', 'null') ||
@@ -724,14 +717,6 @@ function checkOutdatedOptions(options: {
     parallel === undefined || parallel,
     `[prerender()] Option \`parallel\` should be a number \`>=1\` but we got \`${parallel}\`.`,
   )
-}
-
-function throwPrerenderError(err: unknown) {
-  if (hasProp(err, 'stack')) {
-    throw err
-  } else {
-    throw new Error(err as any)
-  }
 }
 
 function disableReactStreaming() {
