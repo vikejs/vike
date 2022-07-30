@@ -85,17 +85,31 @@ async function renderPage_(pageContextInit: { url: string }, pageContext: {}): P
   const is404 = hasProp(pageContext, '_pageId', 'string') ? null : true
   objectAssign(pageContext, { is404 })
 
-  if (is404) {
+  return renderPageContext(pageContext)
+}
+
+async function renderPageContext(
+  pageContext: {
+    _pageId: null | string
+    _pageContextAlreadyProvidedByPrerenderHook?: true
+    _isPageContextRequest: boolean
+    _allPageIds: string[]
+    is404: null | boolean
+    routeParams: Record<string, string>
+  } & PageContextUrls &
+    PageContext_loadPageFilesServer,
+): Promise<RenderResult> {
+  if (pageContext.is404) {
     assert(pageContext._pageId === null)
     warn404(pageContext)
 
-    // No `_error.page.js` is defined
     const errorPageId = getErrorPageId(pageContext._allPageIds)
     if (errorPageId) {
       objectAssign(pageContext, {
         _pageId: errorPageId,
       })
     } else {
+      // The user hasn't define a `_error.page.js`
       objectAssign(pageContext, {
         _pageId: null,
       })
@@ -120,19 +134,6 @@ async function renderPage_(pageContextInit: { url: string }, pageContext: {}): P
   }
   assert(hasProp(pageContext, '_pageId', 'string'))
 
-  return renderPageContext(pageContext)
-}
-
-async function renderPageContext(
-  pageContext: {
-    _pageId: string
-    _pageContextAlreadyProvidedByPrerenderHook?: true
-    _isPageContextRequest: boolean
-    is404: null | boolean
-    routeParams: Record<string, string>
-  } & PageContextUrls &
-    PageContext_loadPageFilesServer,
-): Promise<RenderResult> {
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
 
@@ -565,7 +566,6 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
 
 type PageContext_loadPageFilesServer = {
   url: string
-  _pageId: string
   _baseUrl: string
   _baseAssets: string | null
   _pageFilesAll: PageFile[]
@@ -576,7 +576,7 @@ type PageContext_loadPageFilesServer = {
   _includeAssetsImportedByServer: boolean
 } & PageContextDebug
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
-async function loadPageFilesServer(pageContext: PageContext_loadPageFilesServer) {
+async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
     loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true }),
