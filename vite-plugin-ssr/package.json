@@ -90,8 +90,7 @@
     "__internal.d.ts",
     "__internal/setup.js",
     "__internal/setup.d.ts",
-    "types.d.ts",
-    "!*.map"
+    "types.d.ts"
   ],
   "bin": {
     "vite-plugin-ssr": "./node/bin/vite-plugin-ssr.js"

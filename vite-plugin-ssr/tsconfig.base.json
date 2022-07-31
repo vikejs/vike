@@ -11,9 +11,7 @@
     "noEmitOnError": false,
     // Misc
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    // SourceMap
-    "sourceMap": true
+    "skipLibCheck": true
   },
   "exclude": ["**/*.d.ts", "**/*.spec.ts", "**/node_modules", "**/.*/"]
 }
