@@ -13,7 +13,7 @@
     "react-dom": "^18.1.0",
     "react-streaming": "^0.2.15",
     "vite": "^2.9.14",
-    "vite-plugin-ssr": "0.4.15",
+    "vite-plugin-ssr": "0.4.16",
     "wrangler": "^2.0.21"
   }
 }

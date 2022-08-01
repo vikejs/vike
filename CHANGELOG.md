@@ -1,3 +1,18 @@
+## [0.4.16](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.15...v0.4.16) (2022-08-01)
+
+
+### Bug Fixes
+
+* improve `onBeforeRender()` hook handling upon error ([5838c18](https://github.com/brillout/vite-plugin-ssr/commit/5838c18361472e7a42c772a168ecef8b03d0c468))
+* support `build.assetsDir` (fix [#397](https://github.com/brillout/vite-plugin-ssr/issues/397)) ([6909c8a](https://github.com/brillout/vite-plugin-ssr/commit/6909c8a730dce4923d6c9a941c58bddf38eb3f55))
+
+
+### Features
+
+* `pageContext.eagerStreaming` (fix [#396](https://github.com/brillout/vite-plugin-ssr/issues/396)) ([7fd58e8](https://github.com/brillout/vite-plugin-ssr/commit/7fd58e81d6f931534f319ad12e137ee21be37aed))
+
+
+
 ## [0.4.15](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.14...v0.4.15) (2022-07-31)
 
 ### Bug Fixes
