@@ -92,12 +92,9 @@ function Features() {
                 quickly stabilize.
               </p>
               <p>
-                Actually, <code>vite-plugin-ssr</code> is already stable: the <code>v1</code> release will most likley
-                have no breaking change with the current <code>v0.4.x</code> releases.
-              </p>
-              <p>
-                The goal is then to stay on <code>v1</code> for the foreseeable future, while continuously improving
-                performance and occasionally adding features.
+                Actually, <code>vite-plugin-ssr</code> is already stable: breaking changes are only about improving the
+                design of <code>vite-plugin-ssr</code>. This means that you can expect your integrations to keep working
+                in the future.
               </p>
               <h3>Clean cut</h3>
               <p>
@@ -167,9 +164,8 @@ function Features() {
             <>
               <p>
                 The source code of <code>vite-plugin-ssr</code> has <b>no known bug</b>, every release is assailed
-                against a heavy suite of <b>automated tests</b>, it's <b>used in production</b> by many comp&shy;anies
-                and is <b>stable</b>: the <code>v1</code> release will most likely have no breaking change with the
-                current <code>v0.4.x</code> releases.
+                against a heavy suite of <b>automated tests</b>, and it's <b>used in production</b> by many
+                comp&shy;anies.
               </p>
             </>
           ),
@@ -279,8 +275,7 @@ function Features() {
             <>
               <p>
                 <code>vite-plugin-ssr</code> is simple, clear, and robust: no magic, no unexpected behavior, no
-                conflation, no bugs (known in <code>vite-plugin-ssr</code>'s source code), no breaking changes (as far
-                as we can see).
+                conflation, no bugs (known in <code>vite-plugin-ssr</code>'s source code).
               </p>
               <p>
                 With <code>vite-plugin-ssr</code>, <b>you are under control; it's addictively fun</b>.
