@@ -87,7 +87,7 @@ async function handleFetchEvent(event) {
 
 ## `pageContext.enableEagerStreaming`
 
-By default, the HTML template we provided in the `render()` hook isn't immediately written to the stream: instead, `vite-plugin-ssr` awaits for your UI framework to start writing to the stream.
+By default, the HTML template, we provide in our `render()` hook, isn't immediately written to the stream: instead, `vite-plugin-ssr` awaits for our UI framework to start writing to the stream.
 
 ```js
 import { renderToStream } from 'some-ui-framework' // React, Vue, ...
