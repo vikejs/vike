@@ -9,7 +9,7 @@
 
 ### Features
 
-* `pageContext.eagerStreaming` (fix [#396](https://github.com/brillout/vite-plugin-ssr/issues/396)) ([7fd58e8](https://github.com/brillout/vite-plugin-ssr/commit/7fd58e81d6f931534f319ad12e137ee21be37aed))
+* `pageContext.enableEagerStreaming` (fix [#396](https://github.com/brillout/vite-plugin-ssr/issues/396)) ([7fd58e8](https://github.com/brillout/vite-plugin-ssr/commit/7fd58e81d6f931534f319ad12e137ee21be37aed))
 
 
 
