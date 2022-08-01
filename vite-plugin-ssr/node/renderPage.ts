@@ -19,6 +19,7 @@ import {
   handlePageContextRequestSuffix,
   parseUrl,
   makeFirst,
+  isSameErrorMessage,
 } from './utils'
 import { createDebugger } from '@brillout/debug'
 import type { PageAsset } from './html/injectAssets'
@@ -127,6 +128,12 @@ async function renderPageContext(
 
   if (!isError) {
     await executeOnBeforeRenderHooks(pageContext)
+  } else {
+    try {
+      await executeOnBeforeRenderHooks(pageContext)
+    } catch (err) {
+      logErrorIfDifferentFromOriginal(err, pageContext.errorWhileRendering)
+    }
   }
 
   if (pageContext._isPageContextRequest) {
@@ -229,48 +236,34 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
 > {
   assertArguments(...arguments)
 
-  const pageContextOfError = {}
+  const pageContextOfOriginalError = {}
   try {
-    return await renderPage_(pageContextInit, pageContextOfError)
-  } catch (err) {
-    assertError(err)
-    const skipLog = isRenderErrorPageException(err)
-    const firstErrorWasNotLogged = skipLog
-    if (!skipLog) {
-      logError(err)
-    } else {
-      setAlreadyLogged(err)
+    return await renderPage_(pageContextInit, pageContextOfOriginalError)
+  } catch (errOriginal) {
+    assertError(errOriginal)
+    if (!isRenderErrorPageException(errOriginal)) {
+      logError(errOriginal)
     }
     try {
-      return await renderErrorPage({ pageContextInit, err, pageContextOfError })
-    } catch (err2) {
-      assertError(err2)
-      const isSameError = (err as any)?.message === (err2 as any)?.message
-      if (!isSameError || firstErrorWasNotLogged) {
-        logError(err2)
-      }
+      return await renderErrorPage(pageContextInit, errOriginal, pageContextOfOriginalError)
+    } catch (err) {
+      logErrorIfDifferentFromOriginal(err, errOriginal)
       const pageContext = {}
       objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, {
         httpResponse: null,
-        errorWhileRendering: err,
+        errorWhileRendering: errOriginal,
       })
       return pageContext
     }
   }
 }
 
-async function renderErrorPage<PageContextInit extends { url: string }>({
-  pageContextInit,
-  err,
-  pageContextOfError,
-}: {
-  pageContextInit: PageContextInit
-  err: unknown
-  pageContextOfError: Record<string, unknown>
-}) {
-  assert(hasAlreadyLogged(err))
-
+async function renderErrorPage<PageContextInit extends { url: string }>(
+  pageContextInit: PageContextInit,
+  errOriginal: unknown,
+  pageContextOfOriginalError: Record<string, unknown>,
+) {
   const pageContext = {}
   {
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
@@ -284,16 +277,16 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
   objectAssign(pageContext, {
     is404: false,
     _pageId: null,
-    errorWhileRendering: err as Error,
+    errorWhileRendering: errOriginal as Error,
     routeParams: {} as Record<string, string>,
   })
-  if (isRenderErrorPageException(err)) {
+  if (isRenderErrorPageException(errOriginal)) {
     objectAssign(pageContext, { is404: true })
-    objectAssign(pageContext, err.pageContext)
+    objectAssign(pageContext, errOriginal.pageContext)
   }
 
   objectAssign(pageContext, {
-    _routeMatches: (pageContextOfError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
+    _routeMatches: (pageContextOfOriginalError as PageContextDebug)._routeMatches || 'ROUTE_ERROR',
   })
 
   return renderPageContext(pageContext)
@@ -301,6 +294,15 @@ async function renderErrorPage<PageContextInit extends { url: string }>({
 
 function assertError(err: unknown) {
   assertRenderErrorPageExceptionUsage(err)
+  if (!isObject(err)) {
+    console.warn('[vite-plugin-ssr] The thrown value is:')
+    console.warn(err)
+    assertWarning(
+      false,
+      "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
+      { onlyOnce: false },
+    )
+  }
 }
 
 type StatusCode = 200 | 404 | 500
@@ -894,16 +896,6 @@ function logError(err: unknown) {
     return
   }
 
-  if (!isObject(err)) {
-    console.warn('[vite-plugin-ssr] The thrown value is:')
-    console.warn(err)
-    assertWarning(
-      false,
-      "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
-      { onlyOnce: false },
-    )
-  }
-
   // Avoid logging error twice (not sure if this actually ever happens?)
   if (hasAlreadyLogged(err)) {
     return
@@ -915,6 +907,13 @@ function logError(err: unknown) {
   const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
   console.error(errStr)
   setAlreadyLogged(err)
+}
+
+function logErrorIfDifferentFromOriginal(err: unknown, errOriginal: unknown) {
+  assertError(err)
+  if (!isSameErrorMessage(errOriginal, err) || !hasAlreadyLogged(errOriginal)) {
+    logError(err)
+  }
 }
 
 function hasAlreadyLogged(err: unknown) {

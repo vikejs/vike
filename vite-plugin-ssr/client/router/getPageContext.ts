@@ -96,9 +96,10 @@ async function getPageContextErrorPage(pageContext: {
 async function getPageContextUponNavigation(
   pageContext: PageContextForRoute & { _isFirstRenderAttempt: false },
 ): Promise<PageContextAddendum> {
-  const pageContextAddendum = {
+  let pageContextAddendum = {}
+  objectAssign(pageContextAddendum, {
     isHydration: false,
-  }
+  })
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
 
   objectAssign(
@@ -106,23 +107,34 @@ async function getPageContextUponNavigation(
     await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
   )
 
-  objectAssign(pageContextAddendum, await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum }))
-  assert([true, false].includes(pageContextAddendum._comesDirectlyFromServer))
+  const pageContextFromHook = await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum })
+  assert([true, false].includes(pageContextFromHook._comesDirectlyFromServer))
+  if (!pageContextFromHook['_isError']) {
+    objectAssign(pageContextAddendum, pageContextFromHook)
+    return pageContextAddendum
+  } else {
+    pageContextAddendum = {}
 
-  if (pageContextAddendum['_isError'] === true) {
-    assert(hasProp(pageContextAddendum, 'is404', 'boolean'))
-    assert(hasProp(pageContextAddendum, 'pageProps', 'object'))
-    assert(hasProp(pageContextAddendum.pageProps, 'is404', 'boolean'))
+    assert(pageContextFromHook._comesDirectlyFromServer === true)
+    assert(hasProp(pageContextFromHook, 'is404', 'boolean'))
+    assert(hasProp(pageContextFromHook, 'pageProps', 'object'))
+    assert(hasProp(pageContextFromHook.pageProps, 'is404', 'boolean'))
+    // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
+    assert(!('serverSideError' in pageContextFromHook))
+    const errorPageId = getErrorPageId(pageContext._allPageIds)
+    assert(errorPageId)
+
     objectAssign(pageContextAddendum, {
-      _pageId: getErrorPageId(pageContext._allPageIds),
+      isHydration: false,
+      _pageId: errorPageId,
     })
+    objectAssign(pageContextAddendum, pageContextFromHook)
     objectAssign(
       pageContextAddendum,
       await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
     )
+    return pageContextAddendum
   }
-
-  return pageContextAddendum
 }
 
 async function onBeforeRenderExecute(
@@ -138,7 +150,7 @@ async function onBeforeRenderExecute(
     unknown
   >
 > {
-  // `export { onBeforeRender }` defined in `.page.client.js`
+  // `export { onBeforeRender }` defined in `.page.client.js` or `.page.js`
   const hook = getHook(pageContext, 'onBeforeRender')
   if (hook) {
     const onBeforeRender = hook.hook

@@ -8,6 +8,7 @@ import {
   getCurrentUrl,
   hasProp,
   isBrowser,
+  isSameErrorMessage,
   objectAssign,
   serverSideRouteTo,
   throttle,
@@ -139,8 +140,7 @@ function useClientRouter() {
           }, 0)
         }
 
-        const isSameError = (err as any)?.message === (err2 as any)?.message
-        if (!isSameError) {
+        if (!isSameErrorMessage(err, err2)) {
           throw err2
         } else {
           // Abort
