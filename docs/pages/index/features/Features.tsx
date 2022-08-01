@@ -93,7 +93,7 @@ function Features() {
               </p>
               <p>
                 Actually, <code>vite-plugin-ssr</code> is already stable: breaking changes are only about improving the
-                design of <code>vite-plugin-ssr</code>. This means that you can expect your integrations to keep working
+                design of <code>vite-plugin-ssr</code> which means that you can expect your integrations to keep working
                 in the future.
               </p>
               <h3>Clean cut</h3>
@@ -103,7 +103,8 @@ function Features() {
               </p>
               <h3>Fun</h3>
               <p>
-                Last but not least, manual integration is fun & insightful. (Whereas fighting a framework is pesky.)
+                Last but not least, manual integration is fun & insightful! (Whereas fighting a framework is unnecessary
+                & pesky.)
               </p>
             </>
           ),
