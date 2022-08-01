@@ -253,10 +253,12 @@ async function processStream<StreamType extends Stream>(
     injectStringAtBegin,
     injectStringAtEnd,
     onErrorWhileStreaming,
+    enableEagerStreaming,
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
+    enableEagerStreaming?: boolean
   },
 ): Promise<StreamWrapper<StreamType>> {
   const getManipulationHandlers = ({
@@ -280,16 +282,16 @@ async function processStream<StreamType extends Stream>(
       closeStream()
     }
 
-    let resolved = false
+    let streamStarted = false
     const write = (chunk: string) => {
       writeData(chunk)
-      if (resolved === false) {
+      if (streamStarted === false) {
         resolve({ stream: getStream() })
-        resolved = true
+        streamStarted = true
       }
     }
 
-    const ensureStringBegin = (() => {
+    const streamBegin = (() => {
       let promise: Promise<void> | null = null
       return async () => {
         if (promise === null) {
@@ -310,11 +312,18 @@ async function processStream<StreamType extends Stream>(
     })()
 
     const onData = async (chunk: string) => {
-      await ensureStringBegin()
+      await streamBegin()
 
       write(chunk)
       debug('data written')
     }
+
+    const onBegin = () => {
+      if (enableEagerStreaming) {
+        streamBegin()
+      }
+    }
+
     let streamEnded = false
     const onEnd = async () => {
       if (streamEnded) {
@@ -324,7 +333,7 @@ async function processStream<StreamType extends Stream>(
       debug('user stream ended')
 
       // If empty stream: the stream ends before any data was written, but we still need to ensure that we inject `stringBegin`
-      await ensureStringBegin()
+      await streamBegin()
 
       if (injectStringAtEnd) {
         const stringEnd = await injectStringAtEnd()
@@ -338,7 +347,7 @@ async function processStream<StreamType extends Stream>(
       debug('vps wrapper stream ended')
     }
     const onError = async (err: unknown) => {
-      if (resolved === false) {
+      if (streamStarted === false) {
         close()
         // Stream has not begun yet, which means that we have sent no HTML to the browser, and we can gracefully abort the stream.
         resolve({ errorBeforeFirstData: err })
@@ -351,6 +360,7 @@ async function processStream<StreamType extends Stream>(
 
     return {
       onData,
+      onBegin,
       onEnd,
       onError,
       streamPromise,
@@ -380,7 +390,7 @@ async function processStream<StreamType extends Stream>(
       }
     }
     let streamEnded = false
-    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
+    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         if (!writableOriginalReady) {
           // console.log('buffer: '+chunk)
@@ -406,6 +416,7 @@ async function processStream<StreamType extends Stream>(
         return stream
       },
     })
+    onBegin()
     let writableOriginal: StreamWritableNode & { flush?: () => void }
     let writableOriginalReady = false
     const pipeNodeWrapper = (writable_: StreamWritableNode) => {
@@ -471,7 +482,7 @@ async function processStream<StreamType extends Stream>(
       writerOriginal.write(encodeForWebStream(c))
     }
     let streamEnded = false
-    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
+    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         if (!writableOriginalReady) {
           buffer.push(chunk)
@@ -495,6 +506,7 @@ async function processStream<StreamType extends Stream>(
         return stream
       },
     })
+    onBegin()
     let writerOriginal: WritableStreamDefaultWriter<any>
     let writableOriginalReady = false
     const pipeWebWrapper = (writableOriginal: StreamWritableWeb) => {
@@ -533,7 +545,7 @@ async function processStream<StreamType extends Stream>(
   if (isStreamReadableWeb(streamOriginal)) {
     debug('render() hook returned Web Readable')
     const readableWebOriginal: StreamReadableWeb = streamOriginal
-    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
+    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         controller.enqueue(encodeForWebStream(chunk))
       },
@@ -547,6 +559,7 @@ async function processStream<StreamType extends Stream>(
         return stream
       },
     })
+    onBegin()
     let controller: ReadableStreamController<any>
     assertReadableStreamConstructor()
     const readableWebWrapper = new ReadableStream({
@@ -567,7 +580,7 @@ async function processStream<StreamType extends Stream>(
       readableNodeOriginal._read = function () {}
     }
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
-    const { onData, onEnd, onError, streamPromise } = getManipulationHandlers({
+    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
       writeData(chunk: string) {
         readableNodeWrapper.push(chunk)
       },
@@ -581,6 +594,7 @@ async function processStream<StreamType extends Stream>(
         return stream
       },
     })
+    onBegin()
     readableNodeOriginal.on('data', async (chunk) => {
       onData(chunk)
     })

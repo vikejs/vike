@@ -85,6 +85,56 @@ async function handleFetchEvent(event) {
 ```
 
 
+## `pageContext.enableEagerStreaming`
+
+By default, the HTML template we provided in the `render()` hook isn't immediately written to the stream: instead, `vite-plugin-ssr` awaits for your UI framework to start writing to the stream.
+
+```js
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  // The HTML template (e.g. `<title>`) isn't immediately written to the stream.
+  // Instead, vite-plugin-ssr awaits for `stream` to start.
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+}
+```
+
+If we set `pageContext.enableEagerStreaming` to `true` then `vite-plugin-ssr` starts writing the HTML template right away.
+
+```js
+async function render(pageContext) {
+  // The HTML template (e.g. `<title>`) is immediately written to the stream
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <div id="page-view">${renderToStream(pageContext.Page)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      enableEagerStreaming: true
+    }
+  }
+}
+```
+
 ## Stream to string
 
 We can convert the stream to a string:

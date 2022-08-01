@@ -73,7 +73,7 @@ function injectAssetsToStream(
     injectAtStreamEnd,
   }
 
-  async function injectAtStreamBegin(htmlBegin: string) {
+  async function injectAtStreamBegin(htmlBegin: string): Promise<string> {
     assert([true, false].includes(pageContext._isHtmlOnly))
     const isHtmlOnly = pageContext._isHtmlOnly
 
@@ -91,7 +91,7 @@ function injectAssetsToStream(
     return htmlBegin
   }
 
-  async function injectAtStreamEnd(htmlEnd: string) {
+  async function injectAtStreamEnd(htmlEnd: string): Promise<string> {
     await resolvePageContextPromise(pageContext)
     const htmlSnippetsAtEnd = htmlSnippets.filter((snippet) => snippet.position === 'DOCUMENT_END')
     htmlEnd = injectHtmlSnippets(htmlEnd, htmlSnippetsAtEnd, null)

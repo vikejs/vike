@@ -97,12 +97,13 @@ async function renderHtmlStream(
     onErrorWhileStreaming,
   }: {
     injectString?: { stringBegin: string; stringEnd: string }
-    pageContext: PageContextInjectAssets
+    pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean }
     onErrorWhileStreaming: (err: unknown) => void
   },
 ) {
   const opts = {
     onErrorWhileStreaming,
+    enableEagerStreaming: pageContext.enableEagerStreaming,
   }
   if (injectString) {
     let injectToStream: null | ((chunk: string) => void) = null
