@@ -1,8 +1,8 @@
 export { distFileNames }
 
-import { assertPosixPath, assert, isCallable } from '../utils'
+import { assertPosixPath, assert, isCallable, assertUsage } from '../utils'
 import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'
-import type { Plugin, UserConfig, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
 import { getFilesystemRoute } from '../../../shared/route/resolveFilesystemRoute'
@@ -24,10 +24,16 @@ type ChunkFileNames = string | ((chunkInfo: PreRenderedChunk) => string) | undef
 type AssetFileNames = string | ((chunkInfo: PreRenderedAsset) => string) | undefined
 
 const BLACK_LIST = ['assertRenderHook.css']
-function getAssetFileName(assetInfo: PreRenderedAsset, assetFileName: string | undefined): string {
+function getAssetFileName(
+  assetInfo: PreRenderedAsset,
+  assetFileName: string | undefined,
+  config: ResolvedConfig,
+): string {
+  const assetsDir = getAssetsDir(config)
+
   // Not sure when/why this happens
   if (assetInfo.name && BLACK_LIST.includes(assetInfo.name)) {
-    assetFileName ??= 'assets/chunk-[hash][extname]'
+    assetFileName ??= `${assetsDir}/chunk-[hash][extname]`
   }
 
   // dist/client/assets/index.page.server.jsx_extractStyles_lang.e4e33422.css
@@ -39,14 +45,18 @@ function getAssetFileName(assetInfo: PreRenderedAsset, assetFileName: string | u
     assetInfo.name?.endsWith('?extractStyles&lang.css')
   ) {
     const nameBase = assetInfo.name.split('.').slice(0, -2).join('.')
-    assetFileName ??= `assets/${nameBase}.[hash][extname]`
+    assetFileName ??= `${assetsDir}/${nameBase}.[hash][extname]`
   }
 
-  assetFileName ??= 'assets/[name].[hash][extname]'
+  assetFileName ??= `${assetsDir}/[name].[hash][extname]`
   return assetFileName
 }
 
-function getChunkFileName(root: string, chunkInfo: PreRenderedChunk, chunkFileName: string | undefined) {
+function getChunkFileName(chunkInfo: PreRenderedChunk, chunkFileName: string | undefined, config: ResolvedConfig) {
+  const { root } = config
+  assertPosixPath(root)
+  const assetsDir = getAssetsDir(config)
+
   const id = chunkInfo.facadeModuleId
 
   if (id) {
@@ -61,11 +71,11 @@ function getChunkFileName(root: string, chunkInfo: PreRenderedChunk, chunkFileNa
     !id.startsWith(root) ||
     (id.includes('.page.server.') && extractStylesRE.test(id))
   ) {
-    chunkFileName ??= 'assets/chunk-[hash].js'
+    chunkFileName ??= `${assetsDir}/chunk-[hash].js`
     return chunkFileName
   }
 
-  chunkFileName ??= 'assets/[name].[hash].js'
+  chunkFileName ??= `${assetsDir}/[name].[hash].js`
 
   const { name } = chunkInfo
   if (name.startsWith('index.page.') || name === 'index.page') {
@@ -90,48 +100,48 @@ function deduceChunkNameFromFilesystemRouting(id: string, root: string): string 
 }
 
 function setChunkFileNames(
-  config: { build: UserConfig['build']; root: ResolvedConfig['root'] },
-  getChunkFileName: (root: string, chunkInfo: PreRenderedChunk, chunkFileName: string | undefined) => string,
+  config: ResolvedConfig,
+  getChunkFileName: (chunkInfo: PreRenderedChunk, chunkFileName: string | undefined, config: ResolvedConfig) => string,
 ): void {
-  const { root } = config
-  assertPosixPath(root)
   if (!config?.build?.rollupOptions?.output) {
+    // @ts-expect-error `ResolvedConfig['build']` is `readonly`
     config.build ??= {}
     config.build.rollupOptions ??= {}
     config.build.rollupOptions.output = {
-      chunkFileNames: (chunkInfo: PreRenderedChunk) => getChunkFileName(root, chunkInfo, undefined),
+      chunkFileNames: (chunkInfo: PreRenderedChunk) => getChunkFileName(chunkInfo, undefined, config),
     }
   } else if (!Array.isArray(config.build.rollupOptions.output)) {
     const chunkFileNames_original = config.build.rollupOptions.output.chunkFileNames
     config.build.rollupOptions.output.chunkFileNames = (chunkInfo: PreRenderedChunk) =>
-      getChunkFileName(root, chunkInfo, resolveChunkFileNames(chunkFileNames_original, chunkInfo))
+      getChunkFileName(chunkInfo, resolveChunkFileNames(chunkFileNames_original, chunkInfo), config)
   } else {
     config.build.rollupOptions.output.map((output) => {
       const chunkFileNames_original = output.chunkFileNames
       output.chunkFileNames = (chunkInfo: PreRenderedChunk) =>
-        getChunkFileName(root, chunkInfo, resolveChunkFileNames(chunkFileNames_original, chunkInfo))
+        getChunkFileName(chunkInfo, resolveChunkFileNames(chunkFileNames_original, chunkInfo), config)
     })
   }
 }
 function setAssetFileNames(
-  config: { build: UserConfig['build'] },
-  getAssetFileName: (chunkInfo: PreRenderedAsset, chunkFileName: string | undefined) => string,
+  config: ResolvedConfig,
+  getAssetFileName: (chunkInfo: PreRenderedAsset, chunkFileName: string | undefined, config: ResolvedConfig) => string,
 ): void {
   if (!config?.build?.rollupOptions?.output) {
+    // @ts-expect-error `ResolvedConfig['build']` is `readonly`
     config.build ??= {}
     config.build.rollupOptions ??= {}
     config.build.rollupOptions.output = {
-      assetFileNames: (chunkInfo: PreRenderedAsset) => getAssetFileName(chunkInfo, undefined),
+      assetFileNames: (chunkInfo: PreRenderedAsset) => getAssetFileName(chunkInfo, undefined, config),
     }
   } else if (!Array.isArray(config.build.rollupOptions.output)) {
     const chunkFileNames_original = config.build.rollupOptions.output.assetFileNames
     config.build.rollupOptions.output.assetFileNames = (chunkInfo: PreRenderedAsset) =>
-      getAssetFileName(chunkInfo, resolveAssetFileNames(chunkFileNames_original, chunkInfo))
+      getAssetFileName(chunkInfo, resolveAssetFileNames(chunkFileNames_original, chunkInfo), config)
   } else {
     config.build.rollupOptions.output.map((output) => {
       const chunkFileNames_original = output.assetFileNames
       output.assetFileNames = (chunkInfo: PreRenderedAsset) =>
-        getAssetFileName(chunkInfo, resolveAssetFileNames(chunkFileNames_original, chunkInfo))
+        getAssetFileName(chunkInfo, resolveAssetFileNames(chunkFileNames_original, chunkInfo), config)
     })
   }
 }
@@ -164,4 +174,11 @@ function resolveAssetFileNames(chunkFileNames: AssetFileNames, chunkInfo: PreRen
     return chunkFileName
   }
   assert(false)
+}
+
+function getAssetsDir(config: ResolvedConfig) {
+  let { assetsDir } = config.build
+  assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
+  assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
+  return assetsDir
 }
