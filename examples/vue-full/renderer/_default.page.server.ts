@@ -16,7 +16,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
 
   const title = getPageTitle(pageContext)
 
-  return escapeInject`<!DOCTYPE html>
+  const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>${title}</title>
@@ -25,4 +25,11 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
         <div id="app">${stream}</div>
       </body>
     </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      enableEagerStreaming: true,
+    },
+  }
 }

@@ -23,12 +23,19 @@ async function render(pageContext: any) {
       }
   stampPipe(pipe, isWorker() ? 'web-stream' : 'node-stream')
 
-  return escapeInject`<!DOCTYPE html>
+  const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <body>
         <div id="app">${pipe}</div>
       </body>
     </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      enableEagerStreaming: true,
+    },
+  }
 }
 
 // https://github.com/cloudflare/wrangler2/issues/1481

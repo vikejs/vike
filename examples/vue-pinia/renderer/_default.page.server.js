@@ -10,12 +10,20 @@ const passToClient = ['initialStoreState', 'pageProps', 'routeParams']
 
 async function render(pageContext) {
   const { stream } = pageContext
-  return escapeInject`<!DOCTYPE html>
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <body>
         <div id="app">${stream}</div>
       </body>
     </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      enableEagerStreaming: true,
+    },
+  }
 }
 
 async function onBeforeRender(pageContext) {
