@@ -52,6 +52,7 @@ async function getPageAssets(
     const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
     const assetType = mediaType === 'text/css' ? 'style' : 'preload'
     if (isDev && mediaType === 'text/css') {
+      // https://github.com/brillout/vite-plugin-ssr/issues/401
       src = src + '?direct'
     }
     pageAssets.push({
