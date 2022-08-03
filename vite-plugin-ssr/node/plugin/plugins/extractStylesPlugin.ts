@@ -7,7 +7,7 @@ export { extractStylesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedId } from 'rollup'
-import { isSSR_options, assert, assertPosixPath, isAsset } from '../utils'
+import { isSSR_options, assert, assertPosixPath, isAsset, styleFileRE } from '../utils'
 import { removeSourceMap, isJavascriptFile, getImportStatements, ImportStatement } from '../helpers'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { createDebugger, isDebugEnabled } from '@brillout/debug'
@@ -22,7 +22,6 @@ import {
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
-const cssLangs = new RegExp(`\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`) // Copied from https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/css.ts#L90-L91
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
 
 const debugNamespace = 'vps:extractStyles'
@@ -109,7 +108,7 @@ function extractStylesPlugin(): Plugin[] {
         // Include:
         //  - CSS(/LESS/SCSS/...) files
         //  - Asset files (`.svg`, `.pdf`, ...)
-        if (cssLangs.test(file) || isAsset(file)) {
+        if (styleFileRE.test(file) || isAsset(file)) {
           debugOperation('INCLUDED', file, importer)
           return resolution
         }

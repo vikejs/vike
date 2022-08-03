@@ -1,14 +1,12 @@
 export { retrieveAssetsProd }
 export { retrieveAssetsDev }
 
-import { assert, assertUsage } from './utils'
+import { assert, assertUsage, styleFileRE } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
 import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin/extractStylesAddQuery'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
-
-const cssFileRE = /\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\?)/
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()
@@ -115,7 +113,7 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
-  if (cssFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))) {
+  if (styleFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))) {
     styleUrls.add(mod.url)
   }
   mod.importedModules.forEach((dep) => {

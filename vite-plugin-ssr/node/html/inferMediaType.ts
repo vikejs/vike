@@ -1,9 +1,7 @@
-import { assert } from '../utils'
+import { assert, styleFileRE } from '../utils'
 
 export { inferMediaType }
 export { MediaType }
-
-const cssFileRE = /\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\?)/
 
 type MediaType = null | {
   preloadType: 'image' | 'script' | 'font' | 'style'
@@ -24,7 +22,7 @@ function inferMediaType(href: string): MediaType {
   assert(!href.startsWith('//'))
 
   // Basics
-  if (cssFileRE.test(href)) {
+  if (styleFileRE.test(href)) {
     return { mediaType: 'text/css', preloadType: 'style' }
   }
   if (href.endsWith('.js')) {
