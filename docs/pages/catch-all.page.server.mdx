@@ -15,6 +15,9 @@ export default '/product/*'
 
 The value of the catch-all is available at `pageContext.routeParams['*']`.
 
+> The difference between `/product/*` and `/product/@productId` is that the former includes nested paths whereas the latter doesn't.
+> For example `/product/42/details` matches `/product/*` but doesn't match `/product/@productId`.
+
 To route all URLs to a single page:
 
 ```js
