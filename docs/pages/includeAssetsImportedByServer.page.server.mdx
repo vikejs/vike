@@ -2,15 +2,15 @@ import { Link, Note } from 'vikepress'
 
 <Note type='warning'>This config is experimental and its behavior may change in any `vite-plugin-ssr` minor version update.</Note>
 
-By default, static assets (CSS, images, ...) cannot be imported by server-side only code:
+By default, static assets (CSS, images, ...) cannot be imported by server-side-only code. For example:
 
 ```js
 // /**/*.page.server.js
 // Environment: Node.js
 
-// This file is *only* loaded in Node.js
+// This file is loaded *only* in Node.js
 
-// This CSS file is ignored.
+// This CSS file is ignored
 import './some-style.css'
 
 // Same for other static assets such as images, fonts, etc.
@@ -20,8 +20,7 @@ import imageUrl from './some-image.svg'
 console.log(imageUrl)
 ```
 
-We can use `includeAssetsImportedByServer` to add support for importing assets from server-side only code:
-
+But we can set `includeAssetsImportedByServer` to `true` which enables static assets to be imported from server-side-only code, like in the example above.
 
 ```js
 // vite.config.js
