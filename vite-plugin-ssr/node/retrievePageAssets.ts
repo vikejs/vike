@@ -108,15 +108,19 @@ function collectAssets(
   }
 }
 
-function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>): void {
+function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>, importer?: ModuleNode): void {
   assert(mod)
   if (!mod.url) return
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
-  if (styleFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))) {
+  if (isStyle(mod) && (!importer || !isStyle(importer))) {
     styleUrls.add(mod.url)
   }
   mod.importedModules.forEach((dep) => {
-    collectCss(dep, styleUrls, visitedModules)
+    collectCss(dep, styleUrls, visitedModules, mod)
   })
+}
+
+function isStyle(mod: ModuleNode) {
+  return styleFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))
 }
