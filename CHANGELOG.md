@@ -1,3 +1,12 @@
+## [0.4.17](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.16...v0.4.17) (2022-08-03)
+
+
+### Bug Fixes
+
+* only inject CSS root import to HTML (fix [#400](https://github.com/brillout/vite-plugin-ssr/issues/400), fix [#398](https://github.com/brillout/vite-plugin-ssr/issues/398)) ([84ea940](https://github.com/brillout/vite-plugin-ssr/commit/84ea94087ee0b744ee880a0f9d37777d172766f7))
+
+
+
 ## [0.4.16](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.15...v0.4.16) (2022-08-01)
 
 
