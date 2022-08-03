@@ -108,6 +108,8 @@ function collectAssets(
   }
 }
 
+// Collect the CSS to be injected to the HTML to avoid FLOUC
+//  - We only collect the root import: https://github.com/brillout/vite-plugin-ssr/issues/400
 function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set<string>, importer?: ModuleNode): void {
   assert(mod)
   if (!mod.url) return
