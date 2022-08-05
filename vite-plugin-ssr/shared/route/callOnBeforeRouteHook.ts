@@ -56,6 +56,13 @@ async function callOnBeforeRouteHook(
     )
   }
 
+  if (hasProp(hookReturn.pageContext, 'url')) {
+    assertUsage(
+      hasProp(hookReturn.pageContext, 'url', 'string'),
+      `${errPrefix} returned \`{ pageContext: { url } }\` but \`url\` should be a string`,
+    )
+  }
+
   assertPageContextProvidedByUser(hookReturn.pageContext, {
     hook: { hookFilePath: onBeforeRouteHook.filePath, hookName: 'onBeforeRoute' },
   })
