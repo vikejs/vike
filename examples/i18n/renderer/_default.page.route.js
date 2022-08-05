@@ -1,6 +1,6 @@
-import { extractLocale } from '../locales'
-
 export { onBeforeRoute }
+
+import { extractLocale } from '../locales'
 
 function onBeforeRoute(pageContext) {
   let { url } = pageContext

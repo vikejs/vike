@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
-
 export { PageContextProvider }
 export { usePageContext }
+
+import React, { useContext } from 'react'
 
 const Context = React.createContext(undefined)
 

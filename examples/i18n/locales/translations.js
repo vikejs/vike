@@ -31,20 +31,12 @@ export const translations = {
     'de-DE': 'Zähler',
     'fr-FR': 'Compteur',
   },
+  Movies: {
+    'de-DE': 'Filme',
+    'fr-FR': 'Les Films',
+  },
   'Another page': {
     'de-DE': 'Eine andere Seite',
     'fr-FR': 'Une autre page',
-  },
-  '': {
-    'de-DE': '',
-    'fr-FR': '',
-  },
-  '': {
-    'de-DE': '',
-    'fr-FR': '',
-  },
-  '': {
-    'de-DE': '',
-    'fr-FR': '',
   },
 }

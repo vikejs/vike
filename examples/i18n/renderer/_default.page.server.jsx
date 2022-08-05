@@ -1,10 +1,12 @@
+export { render }
+export { passToClient }
+export { onBeforePrerender }
+
 import ReactDOMServer from 'react-dom/server'
 import React from 'react'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageShell } from './PageShell'
-
-export { render }
-export { passToClient }
+import { localeDefault, locales } from '../locales'
 
 const passToClient = ['pageProps', 'locale']
 
@@ -18,8 +20,36 @@ function render(pageContext) {
 
   return escapeInject`<!DOCTYPE html>
     <html>
+      <head>
+        <meta charset="UTF-8" />
+      </head>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
       </body>
     </html>`
+}
+
+// We only need this for pre-rendered apps
+function onBeforePrerender(globalContext) {
+  const prerenderPageContexts = []
+  globalContext.prerenderPageContexts.forEach((pageContext) => {
+    prerenderPageContexts.push({
+      ...pageContext,
+      locale: localeDefault,
+    })
+    locales
+      .filter((locale) => locale !== localeDefault)
+      .forEach((locale) => {
+        prerenderPageContexts.push({
+          ...pageContext,
+          url: `/${locale}${pageContext.url}`,
+          locale,
+        })
+      })
+  })
+  return {
+    globalContext: {
+      prerenderPageContexts,
+    },
+  }
 }

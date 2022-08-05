@@ -1,9 +1,9 @@
+export { PageShell }
+
 import React from 'react'
 import './PageShell.css'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
-
-export { PageShell }
 
 function PageShell({ pageContext, children }) {
   return (
@@ -16,6 +16,9 @@ function PageShell({ pageContext, children }) {
             </Link>
             <Link className="navitem" href="/about">
               About
+            </Link>
+            <Link className="navitem" href="/movies">
+              Movies
             </Link>
           </Sidebar>
           <Content>{children}</Content>

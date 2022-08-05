@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { locales } from '../../locales'
-import { Link } from '../../renderer/Link'
-import { LocaleText } from '../../renderer/LocaleText'
-
 export { Page }
+
+import React, { useState } from 'react'
+import { locales } from '../locales'
+import { Link } from '../renderer/Link'
+import { LocaleText } from '../renderer/LocaleText'
 
 function Page() {
   return (

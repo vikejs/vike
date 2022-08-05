@@ -1,7 +1,7 @@
-import React from 'react'
-import { LocaleText } from '../../renderer/LocaleText'
-
 export { Page }
+
+import React from 'react'
+import { LocaleText } from '../renderer/LocaleText'
 
 function Page() {
   return (

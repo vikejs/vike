@@ -1,11 +1,6 @@
-import { translations } from './translations'
 export { extractLocale }
-export { translate }
-export { locales }
-export { localeDefault }
 
-const locales = ['en-US', 'de-DE', 'fr-FR']
-const localeDefault = locales[0]
+import { locales, localeDefault } from './locales'
 
 function extractLocale(url) {
   const urlPaths = url.split('/')
@@ -23,11 +18,4 @@ function extractLocale(url) {
   }
 
   return { locale, urlWithoutLocale }
-}
-
-function translate(text, locale) {
-  if (locale === localeDefault) {
-    return text
-  }
-  return translations[text][locale]
 }

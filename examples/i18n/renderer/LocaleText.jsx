@@ -1,8 +1,8 @@
+export { LocaleText }
+
 import React from 'react'
 import { usePageContext } from './usePageContext'
 import { translate } from '../locales'
-
-export { LocaleText }
 
 function LocaleText({ children }) {
   const pageContext = usePageContext()

@@ -1,8 +1,6 @@
-Example of an internationalized (i18n) `vite-plugin-ssr` app.
+Example of internationalizing (i18n) a `vite-plugin-ssr` app.
 
-Note how the locale is extracted in `server/index.js`.
-
-If you pre-render your app, then have a look at [/examples/i18n-prerender/](/examples/i18n-prerender/) instead.
+See [Guides > Internationalization (i18n)](https://vite-plugin-ssr.com/i18n).
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

@@ -22,12 +22,31 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Compteur 1')
     })
 
+    // Client routing
+    await page.click('a[href="/de-DE/"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('button')).toContain('Zähler 1')
+    })
+    await page.click('a[href="/fr-FR/"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('button')).toContain('Compteur 1')
+    })
+
     // Localized routing
     expect(await page.$('a[href="/about"]')).toBeNull()
     expect(await page.$('a[href="/fr-FR/about"]')).not.toBeNull()
     await page.click('a[href="/fr-FR/about"]')
-    expect(await page.textContent('h1')).toBe('Bonjour')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Bonjour')
+    })
     expect(await page.textContent('body')).toContain('Une autre page')
+
+    // Data fetching
+    await page.click('a[href="/fr-FR/movies"]')
+    await autoRetry(async () => {
+      expect(await page.textContent('h1')).toBe('Star Wars Les Films')
+    })
+    expect(await page.textContent('body')).toContain('Return of the Jedi')
   })
 
   test('default locale', async () => {
