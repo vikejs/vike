@@ -53,9 +53,9 @@ const obj = new MyClass()
 console.log(obj) // MyClass { prop: 42 }
 console.log(obj instanceof MyClass) // true
 
-// On the browser-side, after `vite-plugin-ssr` / `brillout/json-s` (de)-serialized `obj`:
+// On the browser-side, after `vite-plugin-ssr` / `brillout/json-s` (de)-serialized `obj`
 console.log(obj) // { prop: 42 }
 console.log(obj instanceof MyClass) // false
 ```
 
-See [`brillout/json-s` - Support user-defined classes (#3)](https://github.com/brillout/json-s/issues/3) if you need your classes to be preserved upon serialization.
+See [brillout/json-s - #3 Support user-defined classes](https://github.com/brillout/json-s/issues/3).
