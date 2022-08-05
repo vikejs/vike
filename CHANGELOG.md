@@ -1,3 +1,16 @@
+## [0.4.18](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.17...v0.4.18) (2022-08-05)
+
+
+### Bug Fixes
+
+* don't swallow unexpected error upon prefetching ([0e05293](https://github.com/brillout/vite-plugin-ssr/commit/0e0529347cec4dfca868768763a49795a4bc45ca))
+* improve error message upon duplicated page files ([32bbdfd](https://github.com/brillout/vite-plugin-ssr/commit/32bbdfdbcf294aae3458b02c9fb4a59958d757eb))
+* improve error message upon failure fetching static assets ([1d134a7](https://github.com/brillout/vite-plugin-ssr/commit/1d134a7c168dc3e58bfe95b7550c7b123a39df5e))
+* improve error message upon wrong provided `pageContext.url` value in `onBeforeRoute()` ([cb50a55](https://github.com/brillout/vite-plugin-ssr/commit/cb50a556e055d3091470bc9cd6c9f5b8c911e607))
+* upon `onBeforeRoute()` overwriting `pageContext.url`, preserve and use original URL for `.pageContex.json` requests ([b9cca1b](https://github.com/brillout/vite-plugin-ssr/commit/b9cca1bd2247217350d51f733f31e80fe11248d1))
+
+
+
 ## [0.4.17](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.16...v0.4.17) (2022-08-03)
 
 
