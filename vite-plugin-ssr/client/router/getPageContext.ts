@@ -38,7 +38,7 @@ async function getPageContext(
   } & PageContextUrls &
     PageContextForRoute,
 ): Promise<PageContextAddendum> {
-  if (pageContext._isFirstRenderAttempt && navigationState.isOriginalUrl(pageContext.url)) {
+  if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.url)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     return getPageContextFirstRender(pageContext)
   } else {

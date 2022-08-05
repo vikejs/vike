@@ -56,9 +56,9 @@ async function route(pageContext: PageContextForRoute): Promise<{
 
   const pageContextAddendum = {}
   if (onBeforeRouteHook) {
-    const hookResult = await callOnBeforeRouteHook(onBeforeRouteHook, pageContext)
-    if ('pageContextProvidedByUser' in hookResult) {
-      objectAssign(pageContextAddendum, hookResult.pageContextProvidedByUser)
+    const pageContextAddendumHook = await callOnBeforeRouteHook(onBeforeRouteHook, pageContext)
+    if (pageContextAddendumHook) {
+      objectAssign(pageContextAddendum, pageContextAddendumHook)
       if (hasProp(pageContextAddendum, '_pageId', 'string') || hasProp(pageContextAddendum, '_pageId', 'null')) {
         // We bypass `vite-plugin-ssr`'s routing
         if (!hasProp(pageContextAddendum, 'routeParams')) {

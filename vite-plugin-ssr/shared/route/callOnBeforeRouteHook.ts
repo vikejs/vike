@@ -1,5 +1,5 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertUsage, hasProp, isObjectWithKeys } from './utils'
+import { assertUsage, hasProp, isObjectWithKeys, objectAssign } from './utils'
 import { assertRouteParams } from './resolveRouteFunction'
 
 export { callOnBeforeRouteHook }
@@ -16,54 +16,52 @@ async function callOnBeforeRouteHook(
     url: string
     _allPageIds: string[]
   },
-): Promise<
-  | {}
-  | {
-      pageContextProvidedByUser: Record<string, unknown> & {
-        _pageId?: string | null
-        routeParams?: Record<string, string>
-      }
-    }
-> {
-  const hookFilePath = onBeforeRouteHook.filePath
-  const hookName = 'onBeforeRoute'
-
-  const result: unknown = await onBeforeRouteHook.onBeforeRoute(pageContext)
+): Promise<null | {
+  url?: string
+  _pageId?: string | null
+  routeParams?: Record<string, string>
+}> {
+  const hookReturn: unknown = await onBeforeRouteHook.onBeforeRoute(pageContext)
 
   const errPrefix = `The \`onBeforeRoute()\` hook exported by ${onBeforeRouteHook.filePath}`
 
   assertUsage(
-    result === null ||
-      result === undefined ||
-      (isObjectWithKeys(result, ['pageContext'] as const) && hasProp(result, 'pageContext')),
+    hookReturn === null ||
+      hookReturn === undefined ||
+      (isObjectWithKeys(hookReturn, ['pageContext'] as const) && hasProp(hookReturn, 'pageContext')),
     `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`,
   )
 
-  if (result === null || result === undefined) {
-    return {}
+  if (hookReturn === null || hookReturn === undefined) {
+    return null
   }
 
   assertUsage(
-    hasProp(result, 'pageContext', 'object'),
+    hasProp(hookReturn, 'pageContext', 'object'),
     `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`,
   )
 
-  if (hasProp(result.pageContext, '_pageId') && !hasProp(result.pageContext, '_pageId', 'null')) {
+  if (hasProp(hookReturn.pageContext, '_pageId') && !hasProp(hookReturn.pageContext, '_pageId', 'null')) {
     const errPrefix2 = `${errPrefix} returned \`{ pageContext: { _pageId } }\` but \`_pageId\` should be`
-    assertUsage(hasProp(result.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
+    assertUsage(hasProp(hookReturn.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
     assertUsage(
-      pageContext._allPageIds.includes(result.pageContext._pageId),
+      pageContext._allPageIds.includes(hookReturn.pageContext._pageId),
       `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`,
     )
   }
-  if (hasProp(result.pageContext, 'routeParams')) {
+  if (hasProp(hookReturn.pageContext, 'routeParams')) {
     assertRouteParams(
-      result.pageContext,
+      hookReturn.pageContext,
       `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`,
     )
   }
 
-  const pageContextProvidedByUser = result.pageContext
-  assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: { hookFilePath, hookName } })
-  return { pageContextProvidedByUser }
+  assertPageContextProvidedByUser(hookReturn.pageContext, {
+    hook: { hookFilePath: onBeforeRouteHook.filePath, hookName: 'onBeforeRoute' },
+  })
+
+  const pageContextAddendumHook = {}
+  objectAssign(pageContextAddendumHook, hookReturn.pageContext)
+
+  return pageContextAddendumHook
 }

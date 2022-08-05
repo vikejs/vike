@@ -7,7 +7,7 @@ import { loadPageFilesClientSide } from './loadPageFilesClientSide'
 
 export { getPageContext }
 
-const urlOriginal = getCurrentUrl({ withoutHash: true })
+const urlFirst = getCurrentUrl({ withoutHash: true })
 
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
@@ -24,8 +24,8 @@ async function getPageContext() {
 function assertPristineUrl() {
   const urlCurrent = getCurrentUrl({ withoutHash: true })
   assertUsage(
-    urlOriginal === urlCurrent,
-    `URL manipulated before hydration finished (\`${urlOriginal}\` to \`${urlCurrent}\`). Ensure the hydration finishes with \`onHydrationEnd()\` before manipulating the URL.`,
+    urlFirst === urlCurrent,
+    `URL manipulated before hydration finished (\`${urlFirst}\` to \`${urlCurrent}\`). Ensure the hydration finishes with \`onHydrationEnd()\` before manipulating the URL.`,
   )
 }
 
