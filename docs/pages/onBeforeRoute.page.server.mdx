@@ -1,12 +1,12 @@
-import { Link } from 'vikepress'
+import { Link, Note } from 'vikepress'
 
-The `onBeforeRoute()` hook gives us full control over the routing process and is usually used in order to:
- - [Internationalize a pre-rendered app](/i18n#with-pre-rendering)
+The `onBeforeRoute()` hook provides full control over routing.
 
-We can also use it to:
- - [Implement a custom router](https://github.com/brillout/vite-plugin-ssr/issues/140)
+It is usually used for [internationalization](/i18n).
 
-> Using `onBeforeRoute()` for i18n is already used in production. **For any other use cases, open a GitHub ticket or reach out on Discord before starting to use `onBeforeRoute()`** (currently, `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities).
+We can also use it to [implement a custom router](https://github.com/brillout/vite-plugin-ssr/issues/140).
+
+<Note type="warning">For use cases other than i18n, open a GitHub ticket or reach out on Discord before starting to use `onBeforeRoute()`: `onBeforeRoute()` is purposely limited but the limitations can be lifted in order to unlock new capabilities.</Note>
 
 Example:
-- <Link href='/examples/i18n-prerender/renderer/_default.page.route.js' />
+- <Link href='/examples/i18n/renderer/_default.page.route.js' />
