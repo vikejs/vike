@@ -1,6 +1,6 @@
 import { RepoLink, Link } from 'vikepress'
 
-We can internationalize (i18n) a `vite-plugin-ssr` app by using the <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+We can internationalize (i18n) a `vite-plugin-ssr` app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
 
 ```js
 // /renderer/_default.page.route.js
@@ -36,11 +36,11 @@ function extractLocale(url) {
 }
 ```
 
-Upon rendering a page, the `onBeforeRoute()` is the first hook that `vite-plugin-ssr` calls. This means that `vite-plugin-ssr`, and the rest of our app, doesn't have to deal with localized URLs anymore, and our code can simply use `pageContext.locale` instead.
+Upon rendering a page, `onBeforeRoute()` is the first hook that `vite-plugin-ssr` calls. This means that `vite-plugin-ssr` and the rest of our app doesn't have to deal with localized URLs anymore and can use `pageContext.locale` instead.
 
 > See <Link href="/pageContext-anywhere" /> for being able to access `pageContext.locale` in any React/Vue component.
 
-This technique works with any kinds of localized URLs:
+This technique also works with:
 
 - `Accept-Language: fr` headers
 - `?lang=fr` query parameters
