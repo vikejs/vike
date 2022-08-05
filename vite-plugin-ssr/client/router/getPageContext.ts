@@ -200,8 +200,11 @@ async function getPageContextFromRoute(
   return pageContextFromRoute
 }
 
-async function retrievePageContextFromServer(pageContext: { url: string }): Promise<Record<string, unknown>> {
-  const pageContextUrl = getFileUrl(pageContext.url, '.pageContext.json', true)
+async function retrievePageContextFromServer(pageContext: {
+  url: string
+  _urlOriginal?: string
+}): Promise<Record<string, unknown>> {
+  const pageContextUrl = getFileUrl(pageContext._urlOriginal ?? pageContext.url, '.pageContext.json', true)
   const response = await fetch(pageContextUrl)
 
   {

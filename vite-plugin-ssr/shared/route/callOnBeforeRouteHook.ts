@@ -18,6 +18,7 @@ async function callOnBeforeRouteHook(
   },
 ): Promise<null | {
   url?: string
+  _urlOriginal?: string
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
@@ -56,18 +57,20 @@ async function callOnBeforeRouteHook(
     )
   }
 
+  const pageContextAddendumHook = {}
+
   if (hasProp(hookReturn.pageContext, 'url')) {
     assertUsage(
       hasProp(hookReturn.pageContext, 'url', 'string'),
       `${errPrefix} returned \`{ pageContext: { url } }\` but \`url\` should be a string`,
     )
+    objectAssign(pageContextAddendumHook, { _urlOriginal: pageContext.url })
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {
     hook: { hookFilePath: onBeforeRouteHook.filePath, hookName: 'onBeforeRoute' },
   })
 
-  const pageContextAddendumHook = {}
   objectAssign(pageContextAddendumHook, hookReturn.pageContext)
 
   return pageContextAddendumHook
