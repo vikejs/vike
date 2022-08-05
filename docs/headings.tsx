@@ -407,6 +407,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Windi CSS',
+    url: '/windi-css',
+  },
+  {
+    level: 2,
     title: 'Vuetify',
     url: '/vuetify',
   },
