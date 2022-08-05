@@ -53,7 +53,7 @@ const obj = new MyClass()
 console.log(obj) // MyClass { prop: 42 }
 console.log(obj instanceof MyClass) // true
 
-// On the browser-side, after `vite-plugin-ssr` / `brillout/json-s` (de)-serialized `obj`
+// On the browser-side, after `vite-plugin-ssr` / `brillout/json-s` (de)serialized `obj`
 console.log(obj) // { prop: 42 }
 console.log(obj instanceof MyClass) // false
 ```
