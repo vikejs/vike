@@ -36,7 +36,7 @@ function extractLocale(url) {
 }
 ```
 
-Upon rendering a page, the `onBeforeRoute()` is the first hook that vite-plugin-ssr calls. This means that vite-plugin-ssr, and the rest of our app, doesn't have to deal with localized URLs anymore, and our code can simply use `pageContext.locale` instead.
+Upon rendering a page, the `onBeforeRoute()` is the first hook that `vite-plugin-ssr` calls. This means that `vite-plugin-ssr`, and the rest of our app, doesn't have to deal with localized URLs anymore, and our code can simply use `pageContext.locale` instead.
 
 > See <Link href="/pageContext-anywhere" /> for being able to access `pageContext.locale` in any React/Vue component.
 
