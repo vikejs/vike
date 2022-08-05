@@ -3,14 +3,17 @@ import { getPageFilesClientSide, getExports, PageFile } from '../shared/getPageF
 export { loadPageFilesClientSide }
 export { isErrorFetchingStaticAssets }
 
-const fetchErr = 'Cannot fetch static assets'
+const stamp = '__whileFetchingAssets'
 
 async function loadPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   try {
     await Promise.all(pageFilesClientSide.map((p) => p.loadFile?.()))
   } catch (err: any) {
-    throw new Error(fetchErr)
+    if (err) {
+      Object.assign(err, { [stamp]: true })
+    }
+    throw err
   }
   const { exports, exportsAll, pageExports } = getExports(pageFilesClientSide)
   const pageContextAddendum = {
@@ -23,5 +26,8 @@ async function loadPageFilesClientSide(pageFilesAll: PageFile[], pageId: string)
 }
 
 function isErrorFetchingStaticAssets(err: unknown) {
-  return (err as any)?.message === 'Cannot fetch static assets'
+  if (!err) {
+    return false
+  }
+  return (err as any)[stamp] === true
 }
