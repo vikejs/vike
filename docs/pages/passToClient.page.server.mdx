@@ -39,9 +39,9 @@ data is fetched in `async onBeforeRender()` and then made available to the brows
 Serialization is done with [`json-s`](https://github.com/brillout/json-s).
 
 
-## Custom Classes
+## User-defined classes
 
-Custom classes are lost during serialization:
+User-defined classes are lost during serialization:
 
 ```js
 class MyClass {
@@ -58,4 +58,4 @@ console.log(obj) // { prop: 42 }
 console.log(obj instanceof MyClass) // false
 ```
 
-See [brillout/json-s#3](https://github.com/brillout/json-s/issues/3) if you need your custom classes to be preserved upon serialization.
+See [`brillout/json-s` - Support user-defined classes (#3)](https://github.com/brillout/json-s/issues/3) if you need your classes to be preserved upon serialization.
