@@ -2,7 +2,7 @@ export { getAllPageIdFilesClientSide }
 export { getAllPageIdFilesServerSide }
 
 import type { FileType, PageFile } from './types'
-import { assert, assertPosixPath, isNotNullish } from '../utils'
+import { assert, assertUsage, assertPosixPath, isNotNullish } from '../utils'
 
 function getAllPageIdFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, true)
@@ -20,7 +20,10 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
     pageFilesRelevant.filter((p) => p.isRendererPageFile && p.fileType === fileType).sort(sorter)[0]
   const getPageIdFile = (fileType: FileType) => {
     const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.fileType === fileType)
-    assert(files.length <= 1)
+    assertUsage(
+      files.length <= 1,
+      `Merge the following files into a single file: ${files.map((p) => p.filePath).join(' ')}`,
+    )
     const pageIdFile = files[0]
     assert(pageIdFile === undefined || !pageIdFile.isDefaultPageFile)
     return files[0]
