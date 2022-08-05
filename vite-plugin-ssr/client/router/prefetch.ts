@@ -26,6 +26,8 @@ async function prefetch(url: string): Promise<void> {
     } catch (err) {
       if (isErrorFetchingStaticAssets(err)) {
         disableClientRouting()
+      } else {
+        throw err
       }
     }
   }
