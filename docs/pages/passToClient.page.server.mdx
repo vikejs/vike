@@ -33,7 +33,7 @@ async function render(pageContext) {
 }
 ```
 
-`passToClient` is usually used together with the `onBeforeRender()` hook to fetch data:
+`passToClient` is usually used together with the `onBeforeRender()` hook:
 data is fetched in `async onBeforeRender()` and then made available to the browser with `passToClient`, see [Data Fetching](/data-fetching).
 
 Serialization is done with [`json-s`](https://github.com/brillout/json-s).
