@@ -95,6 +95,10 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
     title: 'Content- VS interactive-centric',
     url: '/content-vs-interactive',
   },
+  {
+    title: 'SPA vs SSR (and more)',
+    url: '/SPA-vs-SSR',
+  },
 ]
 
 const headings: HeadingDefinition[] = [
