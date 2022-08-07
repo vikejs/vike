@@ -114,23 +114,7 @@ we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.s
 The last two files we created are actually `/renderer/_default.page.client.js` and `/renderer/_default.page.server.js`,
 which means that we can now create a new page just by defining a new `.page.vue` file (the `.page.route.js` file is optional).
 
-The `_default` files can be overridden. For example, we can create a page with a different browser-side code than our other pages.
-
-```js
-// /pages/about.page.client.js
-
-// This file is empty which means that the `/about` page has zero browser-side JavaScript.
-```
-```vue
-<!-- /pages/about.page.vue -->
-
-<template>
-  This page is only rendered to HTML.
-</template>
-```
-
-By also overriding the `render()` hook we can
-even render a page with a completely different UI framework, e.g. React or another Vue version (for progressive Vue version upgrade).
+The `_default` files can be overridden. For example, we can overriding the `render()` hook for rendering some of our pages with a completely different UI framework such as React.
 
 
 ## Data Fetching

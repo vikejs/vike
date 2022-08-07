@@ -109,25 +109,7 @@ we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.s
 The last two files we created are actually `/renderer/_default.page.client.jsx` and `/renderer/_default.page.server.jsx`,
 which means that we can now create a new page just by defining a new `.page.jsx` file (the `.page.route.js` file is optional).
 
-The `_default` files can be overridden. For example, we can create a page with a different browser-side code than our other pages.
-
-```js
-// /pages/about.page.client.js
-
-// This file is empty which means that the `/about` page has zero browser-side JavaScript.
-```
-```jsx
-// /pages/about.page.jsx
-
-export { Page };
-
-function Page() {
-  return <>This page is only rendered to HTML.</>;
-}
-```
-
-By also overriding the `render()` hook we can
-even render a page with a completely different UI framework, e.g. Vue or another React version (for progressive React version upgrade).
+The `_default` files can be overridden. For example, we can overriding the `render()` hook for rendering some of our pages with a completely different UI framework such as Vue.
 
 
 ## Data Fetching
