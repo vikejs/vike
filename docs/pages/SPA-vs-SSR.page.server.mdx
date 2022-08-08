@@ -1,7 +1,7 @@
 import { Link, RepoLink } from 'vikepress'
 
 Modern UI frameworks (React/Vue/...) enable a wide range of render modes:
- - SPA (aka MPA)
+ - SPA
  - SSR
  - Pre-rendering (aka SSG)
  - HTML-only
@@ -15,7 +15,7 @@ We compare these render modes with each other and explain which render mode shou
 
 Technically and precisely speaking, the difference between each render mode is the following.
  - **SSR**: the page is rendered twice. It's rendered to HTML on the server-side as well as rendered (hydrated) on the browser-side. (The page is loaded both in Node.js and in the browser.)
- - **SPA** (aka MPA): the page is only rendered in the browser. The page's content is not rendered to HTML. (The page is loaded only in the browser.)
+ - **SPA**: the page is only rendered in the browser. The page's content is not rendered to HTML. (The page is loaded only in the browser.)
  - **HTML-only**: the page is rendered only on the server-side (to HTML). It's not rendered in the browser and has zero/minimal browser-side JavaScript. (The page is loaded only in Node.js.)
  - **Pre-rendering** (aka SSG): the page is rendered to HTML at build-time (instead of request-time).
 
@@ -83,13 +83,6 @@ The advantage of HTML-only is that the page has no/little browser-side JavaScrip
 For the few bits of interactivity (such as an image carousel or a collapsible section),
 the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity.
 This is what `https://vite-plugin-ssr.com` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
-
-
-## MPA
-
-MPA is more or less the same than SPA. In the context of `vite-plugin-ssr`, we use both terms interchangeably.
-
-> MPA denotes "Multiple Page App" while SPA denotes "Single Page App". So the only difference is that SPA apps only have one page, which is a distinction that doesn't make much sense (especially in the context of `vite-plugin-ssr`).
 
 
 ## SSG

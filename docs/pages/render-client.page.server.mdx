@@ -13,7 +13,7 @@ export { render }
 async function render(pageContext) {
   const { Page } = pageContext
 
-  // SPA/MPA:
+  // SPA:
   await renderToDom(Page)
 
   // SSR:
@@ -28,11 +28,11 @@ Where:
 We use [`passToClient`](/passToClient) to determine what subset of `pageContext` is sent to the browser.
 
 
-## MPA vs SSR
+## SPA vs SSR
 
 When implementing SSR, the cient-side `render()` hook works in tandem with the <Link text={<>server-side <code>render()</code> hook</>} href="/render" />: the server-side `render()` hook renders the page to HTML and the client-side `render()` hook <Link text="hydrates" href="/hydration" /> the HTML.
 
-When implementing an MPA, then the client-side `render()` hook is solely responsible for rendering the page. (There is still a server-side `render()` hook but it only renders the HTML shell; it doens't render `pageContext.Page` to HTML.)
+When implementing an SPA, then the client-side `render()` hook is solely responsible for rendering the page. (There is still a server-side `render()` hook but it only renders the HTML shell; it doens't render `pageContext.Page` to HTML.)
 
 See <Link href='/render-modes' />.
 
