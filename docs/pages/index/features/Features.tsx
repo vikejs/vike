@@ -125,8 +125,8 @@ function Features() {
                 <b>Client Routing</b> (fast page navigation) or <b>Server Routing</b> (simple architecture).
               </p>
               <p>
-                All render modes: <b>SSR</b>, <b>SPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a different
-                mode.
+                All render modes: <b>SSR</b>, <b>SPA</b>, <b>MPA</b>, <b>SSG</b>, <b>HTML-only</b>. Each page can use a
+                different mode.
               </p>
             </>
           ),
