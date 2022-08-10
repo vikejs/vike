@@ -32,11 +32,16 @@ type PageContextAddendum = {
   _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
+type PageContextPassThrough = {
+  isBackwardNavigation: boolean | null
+}
+
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
   } & PageContextUrls &
-    PageContextForRoute,
+    PageContextForRoute &
+    PageContextPassThrough,
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.url)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
@@ -94,7 +99,7 @@ async function getPageContextErrorPage(pageContext: {
 }
 
 async function getPageContextUponNavigation(
-  pageContext: PageContextForRoute & { _isFirstRenderAttempt: false },
+  pageContext: PageContextForRoute & { _isFirstRenderAttempt: false } & PageContextPassThrough,
 ): Promise<PageContextAddendum> {
   let pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
@@ -143,7 +148,8 @@ async function onBeforeRenderExecute(
     url: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
-  } & PageContextExports,
+  } & PageContextExports &
+    PageContextPassThrough,
 ): Promise<
   { _comesDirectlyFromServer: boolean; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<
     string,

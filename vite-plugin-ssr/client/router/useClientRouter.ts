@@ -24,11 +24,14 @@ import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
+import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 const navigateFnKey = '__vite_plugin_ssr__navigate'
 
 setupNativeScrollRestoration()
 
-let onPageTransitionStart: Function | null
+initHistoryState()
+
+let onPageTransitionStart: Function | undefined
 
 let disabled = false
 function disableClientRouting() {
@@ -45,10 +48,10 @@ function useClientRouter() {
 
   onLinkClick((url: string, { keepScrollPosition }) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    fetchAndRender(scrollTarget, url)
+    fetchAndRender({ scrollTarget, url, isBackwardNavigation: false })
   })
-  onBrowserHistoryNavigation((scrollTarget) => {
-    fetchAndRender(scrollTarget)
+  onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
+    fetchAndRender({ scrollTarget, isBackwardNavigation })
   })
   globalThis[navigateFnKey] = async (
     url: string,
@@ -58,24 +61,35 @@ function useClientRouter() {
     }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
   ) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    await fetchAndRender(scrollTarget, url, overwriteLastHistoryEntry)
+    await fetchAndRender({ scrollTarget, url, overwriteLastHistoryEntry, isBackwardNavigation: false })
   }
 
   let renderingCounter = 0
   let renderPromise: Promise<void> | undefined
   let isTransitioning: boolean = false
-  fetchAndRender('preserve-scroll')
+  fetchAndRender({ scrollTarget: 'preserve-scroll', isBackwardNavigation: null })
 
   return
 
-  async function fetchAndRender(
-    scrollTarget: ScrollTarget,
-    url: string = getCurrentUrl(),
+  async function fetchAndRender({
+    scrollTarget,
+    url = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
-  ): Promise<void> {
+    isBackwardNavigation,
+  }: {
+    scrollTarget: ScrollTarget
+    url?: string
+    overwriteLastHistoryEntry?: boolean
+    isBackwardNavigation: boolean | null
+  }): Promise<void> {
     if (disabled) {
       serverSideRouteTo(url)
       return
+    }
+
+    const pageContext = {
+      url,
+      isBackwardNavigation,
     }
 
     const renderingNumber = ++renderingCounter
@@ -84,9 +98,7 @@ function useClientRouter() {
     // Start transition before any await's
     if (renderingNumber > 1) {
       if (isTransitioning === false) {
-        if (onPageTransitionStart) {
-          onPageTransitionStart()
-        }
+        onPageTransitionStart?.(pageContext)
         isTransitioning = true
       }
     }
@@ -110,11 +122,10 @@ function useClientRouter() {
       return
     }
     const isFirstRenderAttempt = renderingNumber === 1
-    const pageContext = {
-      url,
+    objectAssign(pageContext, {
       _isFirstRenderAttempt: isFirstRenderAttempt,
-      ...globalContext,
-    }
+    })
+    objectAssign(pageContext, globalContext)
     addComputedUrlProps(pageContext)
 
     let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>>
@@ -153,15 +164,8 @@ function useClientRouter() {
       return
     }
     objectAssign(pageContext, pageContextAddendum)
-    if ('onPageTransitionStart' in pageContext.exports) {
-      assertUsage(
-        hasProp(pageContext.exports, 'onPageTransitionStart', 'function'),
-        'The `export { onPageTransitionStart }` of ' +
-          pageContext.exportsAll.onPageTransitionStart![0]!._filePath +
-          ' should be a function.',
-      )
-      onPageTransitionStart = pageContext.exports.onPageTransitionStart
-    }
+    assertHook(pageContext, 'onPageTransitionStart')
+    onPageTransitionStart = pageContext.exports.onPageTransitionStart
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -194,13 +198,8 @@ function useClientRouter() {
       await pageContext.exports.onHydrationEnd?.(pageContext)
     } else if (renderingNumber === renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {
-        assertUsage(
-          hasProp(pageContext.exports, 'onPageTransitionEnd', 'function'),
-          'The `export { onPageTransitionEnd }` of ' +
-            pageContext.exportsAll.onPageTransitionEnd![0]!._filePath +
-            ' should be a function.',
-        )
-        pageContext.exports.onPageTransitionEnd()
+        assertHook(pageContext, 'onPageTransitionEnd')
+        pageContext.exports.onPageTransitionEnd(pageContext)
       }
       isTransitioning = false
     }
@@ -286,38 +285,47 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
   }
 }
 
-let urlWithoutHash__previous = getCurrentUrl({ withoutHash: true })
-function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget) => void) {
+let previousState = getState()
+function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget, isBackwardNavigation: boolean) => void) {
   window.addEventListener('popstate', (ev) => {
+    const { historyState, urlWithoutHash } = getState()
+
+    // The History API doens't provide the previous state (the popped state)
+    // https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
+    assert(historyState === ev.state)
+
     // Skip hash changes
-    const urlWithoutHash__current = getCurrentUrl({ withoutHash: true })
-    if (urlWithoutHash__current == urlWithoutHash__previous) {
+    if (urlWithoutHash === previousState.urlWithoutHash) {
       return
     }
-    urlWithoutHash__previous = urlWithoutHash__current
 
-    const scrollPosition = getScrollPositionFromHistory(ev.state)
+    const isBackwardNavigation = historyState.timestamp < previousState.historyState.timestamp
+
+    previousState = {
+      urlWithoutHash,
+      historyState,
+    }
+
+    const scrollPosition = historyState.scrollPosition
     const scrollTarget = scrollPosition || 'scroll-to-top-or-hash'
-    callback(scrollTarget)
+    callback(scrollTarget, isBackwardNavigation)
   })
 }
 
 function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   browserNativeScrollRestoration_disable()
-  if (!overwriteLastHistoryEntry) {
-    window.history.pushState(undefined, '', url)
-  } else {
-    window.history.replaceState(undefined, '', url)
-  }
-  urlWithoutHash__previous = getCurrentUrl({ withoutHash: true })
+  pushHistory(url, overwriteLastHistoryEntry)
+  previousState = getState()
 }
 
-type ScrollPosition = { x: number; y: number }
-function getScrollPosition(): ScrollPosition {
-  const scrollPosition = { x: window.scrollX, y: window.scrollY }
-  return scrollPosition
+function getState() {
+  return {
+    urlWithoutHash: getCurrentUrl({ withoutHash: true }),
+    historyState: getHistoryState(),
+  }
 }
+
 type ScrollTarget = ScrollPosition | 'scroll-to-top-or-hash' | 'preserve-scroll'
 function setScrollPosition(scrollTarget: ScrollTarget): void {
   if (scrollTarget === 'preserve-scroll') {
@@ -343,19 +351,10 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
   window.scrollTo(x, y)
 }
 
-function getScrollPositionFromHistory(historyState: unknown = window.history.state) {
-  return hasProp(historyState, 'scrollPosition') ? (historyState.scrollPosition as ScrollPosition) : null
-}
-
 function autoSaveScrollPosition() {
   // Safari cannot handle more than 100 `history.replaceState()` calls within 30 seconds (https://github.com/brillout/vite-plugin-ssr/issues/46)
   window.addEventListener('scroll', throttle(saveScrollPosition, Math.ceil(1000 / 3)), { passive: true })
   onPageHide(saveScrollPosition)
-}
-function saveScrollPosition() {
-  // Save scroll position
-  const scrollPosition = getScrollPosition()
-  window.history.replaceState({ scrollPosition }, '')
 }
 
 function getUrlHash(): string | null {

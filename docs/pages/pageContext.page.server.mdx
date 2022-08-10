@@ -11,7 +11,6 @@ It has built-in properties and we can extend it with custom properties.
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
- - **`pageContext.isHydration`**: whether the current page is already rendered to HTML. (Usually `true` for the first page the user navigates to, and `false` if the user navigates to a new page when using Client Routing.)
  - **`pageContext.url`**: The `url` we passed at the server middleware.
     ```js
     // Server middleware
@@ -54,6 +53,8 @@ It has built-in properties and we can extend it with custom properties.
    ```
  - **`pageContext.exports`**: See <Link href="/exports" />.
  - **`pageContext.exportsAll`**: Same as `pageContext.exports` but cumulative.
+ - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. (Usually `true` for the first page the user navigates to, and `false` if the user navigates to a new page when using Client Routing.)
+ - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
  - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Server Error`, see <Link href="/error-page" />.
 
 ## Custom
@@ -103,6 +104,7 @@ When using <Link href="/client-routing" noBreadcrumb={true} />, the following is
  - `pageContext.Page`
  - `pageContext.exports`
  - `pageContext.isHydration`
+ - `pageContext.isBackwardNavigation`
  - `pageContext.routeParams`
  - `pageContext.url`
  - `pageContext.urlPathname`
