@@ -6,8 +6,8 @@ export type PageContext = {
   urlPathname: string
   exports: {
     documentProps?: {
-      title?: string;
-      description?: string;
+      title?: string
+      description?: string
     }
   }
 }
