@@ -11,6 +11,6 @@
     "preact": "^10.10.0",
     "preact-render-to-string": "^5.2.1",
     "vite": "^2.9.14",
-    "vite-plugin-ssr": "0.4.18"
+    "vite-plugin-ssr": "0.4.19"
   }
 }

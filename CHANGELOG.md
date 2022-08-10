@@ -1,3 +1,17 @@
+## [0.4.19](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.18...v0.4.19) (2022-08-10)
+
+
+### Bug Fixes
+
+* improve TypeScripts types ([02c4089](https://github.com/brillout/vite-plugin-ssr/commit/02c408933a6262891703075dfc4da07a8ca728ef))
+
+
+### Features
+
+* implement `pageContext.isBackwardNavigation` ([510501b](https://github.com/brillout/vite-plugin-ssr/commit/510501b5d2757bc6e2be191ee07ce3d70c7b6797))
+
+
+
 ## [0.4.18](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.17...v0.4.18) (2022-08-05)
 
 
