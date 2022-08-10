@@ -17,7 +17,7 @@ import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
 import { getHook } from '../../shared/getHook'
-import { releasePageContext } from '../releasePageContext'
+import { releasePageContext } from './releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 
@@ -32,16 +32,15 @@ type PageContextAddendum = {
   _pageFilesLoaded: PageFile[]
 } & PageContextExports
 
-type PageContextPassThrough = {
-  isBackwardNavigation: boolean | null
-}
+type PageContextPassThrough = PageContextUrls &
+  PageContextForRoute & {
+    isBackwardNavigation: boolean | null
+  }
 
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
-  } & PageContextUrls &
-    PageContextForRoute &
-    PageContextPassThrough,
+  } & PageContextPassThrough,
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.url)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
@@ -99,7 +98,7 @@ async function getPageContextErrorPage(pageContext: {
 }
 
 async function getPageContextUponNavigation(
-  pageContext: PageContextForRoute & { _isFirstRenderAttempt: false } & PageContextPassThrough,
+  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough,
 ): Promise<PageContextAddendum> {
   let pageContextAddendum = {}
   objectAssign(pageContextAddendum, {

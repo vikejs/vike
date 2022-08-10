@@ -6,7 +6,6 @@ import {
   assert,
   assertUsage,
   getCurrentUrl,
-  hasProp,
   isBrowser,
   isSameErrorMessage,
   objectAssign,
@@ -15,7 +14,7 @@ import {
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
-import { releasePageContext } from '../releasePageContext'
+import { releasePageContext } from './releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
