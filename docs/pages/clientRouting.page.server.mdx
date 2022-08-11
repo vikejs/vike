@@ -151,9 +151,6 @@ async function render(pageContext) {
   if (pageContext.isHydration) {
     // `pageContext.initialState` is available here
     initClientSide(pageContext.initialState)
-    // If we don't set `ensureHydration: true`, then this if-block may never
-    // be called. (The first page rendering and the hydration may otherwise
-    // be interrupted as explained in the `Usage & Options` section.)
   } else {
     // Note that `pageContext.initialState` is not available here,
     // since our `render()` hook is only called for the first page.

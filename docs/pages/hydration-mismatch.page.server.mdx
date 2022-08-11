@@ -54,9 +54,6 @@ Common causes:
 With React:
  - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match.`. Make sure to use the latest React version.
 
-With Vue:
- - When using Client Routing, make sure to **use the [`ensureHydration: true`](/clientRouting) option** because Vue always needs the first render to be a hydration. (In other words, the first render should never be interrupted: a client-side routing trigged by the user clicking on a link should await hydration before proceeding instead of interrupting the hydration process.)
-
 ## Suppress Hydration Mismatch
 
 There are situations when mismatches are inevitable. To suppress hydration mismatch warnings:
