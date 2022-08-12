@@ -1,3 +1,14 @@
+## [0.4.20](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.19...v0.4.20) (2022-08-12)
+
+
+### Bug Fixes
+
+* fix types for react streaming ([432d1a7](https://github.com/brillout/vite-plugin-ssr/commit/432d1a78b9f8c96c42b6b8d57658cb842b0b265d))
+* further tolerate vite-plugin-ssr being loaded twice ([8038fbe](https://github.com/brillout/vite-plugin-ssr/commit/8038fbe917cfc96b4d0e204ddf40171f32da9640))
+* stop injecting into stream when streaming is disabled ([#416](https://github.com/brillout/vite-plugin-ssr/issues/416)) ([a8e1519](https://github.com/brillout/vite-plugin-ssr/commit/a8e15193314deb0d9cfc3576a1a6c7e75d15e7f3))
+
+
+
 ## [0.4.19](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.18...v0.4.19) (2022-08-10)
 
 
