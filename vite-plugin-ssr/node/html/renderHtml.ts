@@ -107,7 +107,7 @@ async function renderHtmlStream(
   }
   if (injectString) {
     let injectToStream: null | ((chunk: string) => void) = null
-    if (isStreamReactStreaming(streamOriginal)) {
+    if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
       injectToStream = streamOriginal.injectToStream
     }
     const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectToStream)

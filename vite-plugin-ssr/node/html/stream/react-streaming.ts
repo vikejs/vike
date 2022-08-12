@@ -13,7 +13,11 @@ import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, S
 // const { pipe, readable, injectToStream } = await renderToStream()`
 // ```
 type StreamReactStreaming =
-  | { injectToStream: (chunk: string) => void } & (
+  | {
+      injectToStream: (chunk: string) => void
+      // Is `undefined` for older `react-streaming` versions
+      disabled: undefined | boolean
+    } & (
       | {
           pipe: (writable: StreamWritableNode) => void
           readable: null
