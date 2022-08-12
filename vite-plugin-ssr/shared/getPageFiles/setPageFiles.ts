@@ -2,7 +2,7 @@ export { setPageFiles }
 export { setPageFilesAsync }
 export { getPageFilesAll }
 
-import { assert, isBrowser, unique } from '../utils'
+import { assert, unique } from '../utils'
 import { determinePageId } from '../determinePageId'
 import type { PageFile } from './types'
 import { parseGlobResults } from './parseGlobResults'
@@ -48,10 +48,11 @@ async function getPageFilesAll(
 function assertNotAlreadyLoaded() {
   // The functionality of this file will fail if it's loaded more than
   // once; we assert that it's loaded only once.
-  const alreadyLoaded = Symbol()
-  const globalObject: any = isBrowser() ? window : global
-  assert(!globalObject[alreadyLoaded])
-  globalObject[alreadyLoaded] = true
+  assert(globalThis.__vite_plugin_ssr__setPageFiles_loaded === undefined)
+  globalThis.__vite_plugin_ssr__setPageFiles_loaded = true
+}
+declare global {
+  var __vite_plugin_ssr__setPageFiles_loaded: undefined | true
 }
 
 function getAllPageIds(allPageFiles: { filePath: string; isDefaultPageFile: boolean }[]): string[] {

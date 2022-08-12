@@ -24,7 +24,6 @@ import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
-const navigateFnKey = '__vite_plugin_ssr__navigate'
 
 setupNativeScrollRestoration()
 
@@ -52,7 +51,7 @@ function useClientRouter() {
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
     fetchAndRender({ scrollTarget, isBackwardNavigation })
   })
-  globalThis[navigateFnKey] = async (
+  globalThis.__vite_plugin_ssr__navigate = async (
     url: string,
     {
       keepScrollPosition,
@@ -235,7 +234,7 @@ async function navigate(
       '"`.',
   )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
-  const navigateFunction = globalThis[navigateFnKey]
+  const navigateFunction = globalThis.__vite_plugin_ssr__navigate
   assert(navigateFunction)
   await navigateFunction(url, { keepScrollPosition, overwriteLastHistoryEntry })
 }
