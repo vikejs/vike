@@ -15,8 +15,8 @@ import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, S
 type StreamReactStreaming =
   | {
       injectToStream: (chunk: string) => void
-      // Is `undefined` for older `react-streaming` versions
-      disabled: undefined | boolean
+      // Older `react-streaming` versions do not define `disabled`
+      disabled?: boolean
     } & (
       | {
           pipe: (writable: StreamWritableNode) => void
