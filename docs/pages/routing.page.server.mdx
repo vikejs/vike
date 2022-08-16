@@ -21,23 +21,26 @@ That said, `vite-plugin-ssr` has support for both Vue Router and React Router, s
 By default, `vite-plugin-ssr` does Filesystem Routing:
 
 ```
-FILESYSTEM                  URL
-pages/index.page.js         /
-pages/about.page.js         /about
-pages/faq/index.page.js     /faq
+FILESYSTEM                        URL
+pages/index.page.js               /
+pages/about.page.js               /about
+pages/faq/index.page.js           /faq
+pages/movie/@id/index.page.js     /movie/1, /movie/2, /movie/3, ...
 ```
 
-For advanced routes we define so-called "Route Strings" and "Route Functions" in `.page.route.js` files.
+We can also define so-called "Route Strings" and "Route Functions" in `.page.route.js` files.
 
 ```js
 // /pages/product.page.route.js
 
 // This file defines the route of `/pages/product.page.js`
 
-// A Route String enables to easily define a parameterized route
+// Route String
 export default '/product/@productId'
 // `productId` is available at `pageContext.routeParams.productId`
 ```
+
+We can use a Route Function to implement all kinds of advanced routing.
 
 ```js
 // /pages/product-edit.page.route.js
