@@ -311,6 +311,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Routing Precedence',
+    url: '/routing-precedence',
+  },
+  {
+    level: 2,
     title: 'Vue Router & React Router',
     url: '/vue-router-and-react-router',
   },

@@ -1,3 +1,5 @@
+import { Link } from 'vikepress'
+
 Route Functions give us full programmatic flexibility to define our routing logic.
 
 ```js
@@ -179,96 +181,5 @@ export default pageContext => {
 
 ## Precedence
 
-If the route of two pages both match the same URL then we have a route conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
-
-Upon route conflicts, `vite-plugin-ssr` chooses the first route in following order:
- 1. Route Function, returned high positive `precedence` number (e.g. `99`)
- 2. Route Function, returned low positive `precedence` number (e.g. `1`)
- 3. Filesystem Routing
- 4. Route String, static (i.e. without `:param` segment, e.g. `/about/company`)
- 5. Route Function, returned no `precedence` number (or `0`)
- 6. Route String, parameterized (i.e. with `:param` segement, e.g. `/product/@productId` or `/product/*`)
- 7. Route Function, returned low negative `precedence` number (e.g. `-1`)
- 8. Route Function, returned high negative `precedence` number (e.g. `-99`)
-
-**Example (4) + (6) + (7)**:
-
-```js
-// product/item.page.route.js
-export default '/product/@productId'
-```
-```js
-// product/list.page.route.js
-export default '/product'
-```
-
-```js
-// product/catch-all.page.route.js
-export default pageContext => {
-  if (!pageContext.url.startsWith('/product/')) return false
-  return {
-    precedence: -1,
-    pageContext: {
-      // E.g. redirect `/product/wrong/url` to `/product`
-      redirectTo: '/product'
-    }
-  }
-}
-```
-
-```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product/42                   product/item.page.route.js      (6)        ⬅️
-                              product/catch-all.page.route.js (7)
-```
-```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product                      product/list.page.route.js      (4)        ⬅️
-                              product/catch-all.page.route.js (7)
-```
-```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product/wrong/url            product/catch-all.page.route.js (7)        ⬅️
-```
-
-4: Route String, static (without `:param` segment, e.g. `/about/company`)  
-6: Route String, parameterized (with `:param` segements, e.g. `/product/@productId` or `/product/*`)  
-7: Route Function, returned low negative `precedence` number (e.g. `-1`)  
-
-**Example (1) + (4)**:
-
-```js
-// admin.page.route.js
-export default '/admin'
-```
-```js
-// login.page.route.js
-
-export default pageContext => {
-  if( pageContext.user === null ) {
-    return {
-      precedence: 99
-    }
-  }
-  return false
-}
-```
-
-```
-URL                   pageContext.user       MATCHES                       WINNER
-======                ================       =======================       ======
-/admin                null                   login.page.route.js (1)       ⬅️
-                                             admin.page.route.js (4)
-```
-```
-URL                   pageContext.user       MATCHES                       WINNER
-======                ================       =======================       ======
-/admin                'brillout'             admin.page.route.js (4)       ⬅️
-```
-
-1: Route Function, returned high positive `precedence` number  
-4: Route String, static (without `:param` segment, e.g. `/about/company`)  
+Route Functions can return a `precedence` number to resolve route conflicts, see <Link href="/routing-precedence" />.
 
