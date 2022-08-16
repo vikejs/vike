@@ -32,10 +32,9 @@ Route Functions enable us to use any matching utility we want, such as [partRege
 
 ## Always Run
 
-Upon each page request (i.e. upon each [`renderPage()`](/renderPage) call),
-`vite-plugin-ssr` runs *all* our Route Functions.
+Everytime a page is rendered (i.e. upon each [`renderPage()`](/renderPage) call), `vite-plugin-ssr` executes *all* Route Functions.
 
-That's because we may have defined a Route Function with high precedence that overrides all other routes:
+That's because `vite-plugin-ssr` cannot predict whether a Route Function will return a high precedence number overriding all other routes. For example:
 
 ```js
 // login.page.route.js
@@ -54,8 +53,6 @@ export default pageContext => {
 ```
 
 > This authentication redirection trick is further explained at [Guides > Page Redirection > Auth Redirection](/page-redirection#auth-redirection).
-
-> `vite-plugin-ssr` cannot know whether a Route Function with a high precedence will override all other routes; that's why `vite-plugin-ssr` always runs all Route Functions upon each page request.
 
 
 ## Async
