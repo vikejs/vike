@@ -3,11 +3,11 @@ By default `vite-plugin-ssr` does Filesystem Routing: the URL of a page is deter
 ```bash
 FILESYSTEM                        URL
 pages/about.page.js               /about
-# Filesystem Routing maps `index` to the empty string
+# `index` is mapped to the empty string
 pages/index/index.page.js         /
-# Filesystem Routing is case sensitive
+# Case sensitive
 pages/HELLO.page.js               /HELLO
-# Parameterized Filesystem Routing
+# Parameterized
 pages/movie/@id.page.js           /movie/1, /movie/2, /movie/3, ...
 ```
 

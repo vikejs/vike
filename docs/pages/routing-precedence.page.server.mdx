@@ -1,6 +1,6 @@
 If the route of two pages both match the same URL then we have a route conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
 
-Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific, for example:
+Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific. For example:
 
 1. `/about/team` (most specific: it matches only a single URL)
 1. `/about/@path` (less specific: it also matches `/about/company`, `/about/vision`, ...)
@@ -9,7 +9,7 @@ Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most
 
 > More examples at [`resolvePrecedence/route-strings.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/shared/route/resolvePrecedence/route-strings.spec.ts).
 
-Upon routing conflicts between Filesystem Routing, Route Strings and Route Functions, `vite-plugin-ssr` chooses the first route in following order:
+Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `vite-plugin-ssr` chooses the first route in following order:
 
 1. Route Function, returned high positive `precedence` number (e.g. `99`)
 1. Route Function, returned low positive `precedence` number (e.g. `1`)
