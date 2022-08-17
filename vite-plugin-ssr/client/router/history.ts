@@ -1,43 +1,41 @@
 export { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition }
 
-import { assertUsage, hasProp, isPlainObject } from './utils'
+import { assert, hasProp, isObject } from './utils'
 
 // No way found to add TypeScript types to `history.state`: https://github.com/microsoft/TypeScript/issues/36178
 type HistoryState = {
-  timestamp: number
-  scrollPosition: null | ScrollPosition
+  timestamp?: number
+  scrollPosition?: null | ScrollPosition
 }
 type ScrollPosition = { x: number; y: number }
 
-// Ensure `window.history.state` to always be `HistoryState`
+// Fill missing state information.
+//  - The very first render => `history.state` is uninitialized (`null`).
+//  - The vite-plugin-ssr app runs `location.hash = '#section'` => `history.state` is uninitialized (`null`).
+//  - The user clicks on an anchor link `<a href="#section">Section</a>` => `history.state` is uninitialized (`null`).
+//  - `history.state` set by an old vite-plugin-ssr version => state information may be incomplete. (E.g. `state.timestamp` was introduced for `pageContext.isBackwardNavigation` in `0.4.19`.)
 function initHistoryState() {
-  const state = getInitState()
-  assertState(state)
-  replaceHistoryState(state)
-}
-
-function getInitState(): HistoryState {
-  let timestamp = getTimestamp()
-  let scrollPosition = getScrollPosition()
-  let state: Partial<HistoryState> = window.history.state
-  // The very first `window.history.state` is `undefined` (before we invoked `initHistoryState()`)
+  let state: HistoryState = window.history.state
   if (!state) {
     state = {}
   }
-  // `window.history.state` set by an old vite-plugin-ssr version may miss `timestamp`
+  let hasModifications = false
   if (!('timestamp' in state)) {
-    state.timestamp = timestamp
+    hasModifications = true
+    state.timestamp = getTimestamp()
   }
-  // `window.history.state` set by an old vite-plugin-ssr version may miss `scrollPosition`
   if (!('scrollPosition' in state)) {
-    state.scrollPosition = scrollPosition
+    hasModifications = true
+    state.scrollPosition = getScrollPosition()
   }
   assertState(state)
-  return state
+  if (hasModifications) {
+    replaceHistoryState(state)
+  }
 }
 
 function getHistoryState(): HistoryState {
-  const state: unknown = window.history.state
+  const state: unknown = window.history.state || {}
   assertState(state)
   return state
 }
@@ -66,20 +64,18 @@ function pushHistory(url: string, overwriteLastHistoryEntry: boolean) {
 }
 
 function assertState(state: unknown): asserts state is HistoryState {
-  const msg =
-    'Manipulating `window.history.state` is forbidden (only vite-plugin-ssr is allowed to). Does one of your library try to manipulate it?'
-  assertUsage(isPlainObject(state), msg)
-  assertUsage('timestamp' in state, msg)
-  assertUsage('scrollPosition' in state, msg)
-  assertUsage(Object.keys(state).length === 2, msg)
+  assert(isObject(state))
 
-  const { timestamp } = state
-  assertUsage(typeof timestamp === 'number', msg)
+  if ('timestamp' in state) {
+    const { timestamp } = state
+    assert(typeof timestamp === 'number')
+  }
 
-  const { scrollPosition } = state
-  if (scrollPosition !== null) {
-    assertUsage(hasProp(scrollPosition, 'x', 'number') && hasProp(scrollPosition, 'y', 'number'), msg)
-    assertUsage(Object.keys(scrollPosition).length === 2, msg)
+  if ('scrollPosition' in state) {
+    const { scrollPosition } = state
+    if (scrollPosition !== null) {
+      assert(hasProp(scrollPosition, 'x', 'number') && hasProp(scrollPosition, 'y', 'number'))
+    }
   }
 }
 function replaceHistoryState(state: HistoryState, url?: string) {

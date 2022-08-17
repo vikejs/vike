@@ -285,29 +285,50 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 }
 
 let previousState = getState()
-function onBrowserHistoryNavigation(callback: (scrollPosition: ScrollTarget, isBackwardNavigation: boolean) => void) {
-  window.addEventListener('popstate', (ev) => {
-    const { historyState, urlWithoutHash } = getState()
+function onBrowserHistoryNavigation(
+  callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void,
+) {
+  // The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless:
+  //  - The History API doesn't provide the previous state (the popped state): https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
+  window.addEventListener('popstate', () => {
+    const currentState = getState()
 
-    // The History API doens't provide the previous state (the popped state)
-    // https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
-    assert(historyState === ev.state)
+    const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
 
-    // Skip hash changes
-    if (urlWithoutHash === previousState.urlWithoutHash) {
-      return
+    const isHashNavigation = currentState.urlWithoutHash === previousState.urlWithoutHash
+
+    const isBackwardNavigation =
+      !currentState.historyState.timestamp || !previousState.historyState.timestamp
+        ? null
+        : currentState.historyState.timestamp < previousState.historyState.timestamp
+
+    previousState = currentState
+
+    if (isHashNavigation) {
+      // - `history.state` is uninitialized (`null`) when:
+      //   - The vite-plugin-ssr app runs `window.location.hash = '#section'`.
+      //   - The user clicks on an anchor link `<a href="#section">Section</a>`. (Because vite-plugin-ssr's `onLinkClick()` handler skips hash links.)
+      // - `history.state` is `null` when uninitialized: https://developer.mozilla.org/en-US/docs/Web/API/History/state
+      // - Alternatively, we completely take over hash navigation and reproduce the browser's native behavior upon hash navigation.
+      //   - Problem: we cannot intercept `window.location.hash = '#section'`. (Or maybe we can with the `hashchange` event?)
+      //   - Other potential problem: would there be a conflict when the user wants to override the browser's default behavior? E.g. for smooth scrolling, or when using hashes for saving states of some fancy animations.
+      // - Another alternative: we use the browser's scroll restoration mechanism (see `browserNativeScrollRestoration_enable()` below).
+      //   - Problem: not clear when to call `browserNativeScrollRestoration_disable()`/`browserNativeScrollRestoration_enable()`
+      //   - Other potential problem are inconsistencies between browsers: specification says that setting `window.history.scrollRestoration` only affects the current entry in the session history. But this seems to contradict what folks saying.
+      //     - Specification: https://html.spec.whatwg.org/multipage/history.html#the-history-interface
+      //     - https://stackoverflow.com/questions/70188241/history-scrollrestoration-manual-doesnt-prevent-safari-from-restoring-scrol
+      if (window.history.state === null) {
+        // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we save it with `initHistoryState()`.
+        initHistoryState()
+        previousState = getState()
+      } else {
+        // If `history.state !== null` then it means that `popstate` was triggered by the user clicking on his browser's forward/backward history button.
+        setScrollPosition(scrollTarget)
+      }
+    } else {
+      // Fetch & render new page
+      callback(scrollTarget, isBackwardNavigation)
     }
-
-    const isBackwardNavigation = historyState.timestamp < previousState.historyState.timestamp
-
-    previousState = {
-      urlWithoutHash,
-      historyState,
-    }
-
-    const scrollPosition = historyState.scrollPosition
-    const scrollTarget = scrollPosition || 'scroll-to-top-or-hash'
-    callback(scrollTarget, isBackwardNavigation)
   })
 }
 
@@ -333,7 +354,7 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
   let scrollPosition: ScrollPosition
   if (scrollTarget === 'scroll-to-top-or-hash') {
     const hash = getUrlHash()
-    // We mirror the browser's native behavior
+    // We replicate the browser's native behavior
     if (hash && hash !== 'top') {
       const hashTarget = document.getElementById(hash) || document.getElementsByName(hash)[0]
       if (hashTarget) {
