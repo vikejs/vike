@@ -1,4 +1,5 @@
-import { assertUsage, projectInfo } from './utils'
+import { assertUsage } from '../utils/assert'
+import { projectInfo } from '../utils/projectInfo'
 
 const { projectVersion } = projectInfo
 

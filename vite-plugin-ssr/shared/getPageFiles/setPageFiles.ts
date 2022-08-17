@@ -7,8 +7,6 @@ import { determinePageId } from '../determinePageId'
 import type { PageFile } from './types'
 import { parseGlobResults } from './parseGlobResults'
 
-assertNotAlreadyLoaded()
-
 let _pageFilesAll: PageFile[] | undefined
 let _pageFilesGetter: () => Promise<void> | undefined
 
@@ -45,12 +43,6 @@ async function getPageFilesAll(
   return { pageFilesAll, allPageIds }
 }
 
-function assertNotAlreadyLoaded() {
-  // The functionality of this file will fail if it's loaded more than
-  // once; we assert that it's loaded only once.
-  assert(globalThis.__vite_plugin_ssr__setPageFiles_loaded === undefined)
-  globalThis.__vite_plugin_ssr__setPageFiles_loaded = true
-}
 declare global {
   var __vite_plugin_ssr__setPageFiles_loaded: undefined | true
 }
