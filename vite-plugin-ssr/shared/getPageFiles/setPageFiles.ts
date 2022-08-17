@@ -7,14 +7,16 @@ import { determinePageId } from '../determinePageId'
 import type { PageFile } from './types'
 import { parseGlobResults } from './parseGlobResults'
 
-let _pageFilesAll: PageFile[] | undefined
-let _pageFilesGetter: () => Promise<void> | undefined
+const pageFiles = (globalThis.__vite_plugin_ssr__pageFiles = globalThis.__vite_plugin_ssr__pageFiles || {
+  pageFilesAll: undefined,
+  pageFilesGetter: undefined,
+})
 
 function setPageFiles(pageFilesExports: unknown) {
-  _pageFilesAll = parseGlobResults(pageFilesExports)
+  pageFiles.pageFilesAll = parseGlobResults(pageFilesExports)
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
-  _pageFilesGetter = async () => {
+  pageFiles.pageFilesGetter = async () => {
     setPageFiles(await getPageFilesExports())
   }
 }
@@ -24,27 +26,23 @@ async function getPageFilesAll(
   isProduction?: boolean,
 ): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[] }> {
   if (isClientSide) {
-    assert(!_pageFilesGetter)
+    assert(!pageFiles.pageFilesGetter)
     assert(isProduction === undefined)
   } else {
-    assert(_pageFilesGetter)
+    assert(pageFiles.pageFilesGetter)
     assert(typeof isProduction === 'boolean')
     if (
-      !_pageFilesAll ||
+      !pageFiles.pageFilesAll ||
       // We reload all glob imports in dev to make auto-reload work
       !isProduction
     ) {
-      await _pageFilesGetter()
+      await pageFiles.pageFilesGetter()
     }
   }
-  assert(_pageFilesAll)
-  const pageFilesAll = _pageFilesAll
+  assert(pageFiles.pageFilesAll)
+  const pageFilesAll = pageFiles.pageFilesAll
   const allPageIds = getAllPageIds(pageFilesAll)
   return { pageFilesAll, allPageIds }
-}
-
-declare global {
-  var __vite_plugin_ssr__setPageFiles_loaded: undefined | true
 }
 
 function getAllPageIds(allPageFiles: { filePath: string; isDefaultPageFile: boolean }[]): string[] {
@@ -54,4 +52,11 @@ function getAllPageIds(allPageFiles: { filePath: string; isDefaultPageFile: bool
     .map(determinePageId)
   const allPageIds = unique(fileIds)
   return allPageIds
+}
+
+declare global {
+  var __vite_plugin_ssr__pageFiles: {
+    pageFilesAll: PageFile[] | undefined
+    pageFilesGetter: () => Promise<void> | undefined
+  }
 }
