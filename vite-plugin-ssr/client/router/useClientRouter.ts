@@ -11,6 +11,7 @@ import {
   objectAssign,
   serverSideRouteTo,
   throttle,
+  sleep,
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
@@ -345,8 +346,43 @@ function setScrollPosition(scrollTarget: ScrollTarget): void {
     assert('x' in scrollTarget && 'y' in scrollTarget)
     scrollPosition = scrollTarget
   }
-  const { x, y } = scrollPosition
-  window.scrollTo(x, y)
+  setScroll(scrollPosition)
+}
+
+/** Change the browser's scoll position, in a way that works during a repaint. */
+function setScroll(scrollPosition: ScrollPosition) {
+  const scroll = () => window.scrollTo(scrollPosition.x, scrollPosition.y)
+  const done = () => window.scrollX === scrollPosition.x && window.scrollY === scrollPosition.y
+
+  // In principle, this `done()` call should force the repaint to be finished. But that doesn't seem to be the case with `Firefox 97.0.1`.
+  if (done()) return
+
+  scroll()
+
+  // Because `done()` doesn't seem to always force the repaint to be finished, we potentially need to retry again.
+  if (done()) return
+  requestAnimationFrame(() => {
+    scroll()
+    if (done()) return
+
+    setTimeout(async () => {
+      scroll()
+      if (done()) return
+
+      // In principle, `requestAnimationFrame() -> setTimeout(, 0)` should be enough.
+      //  - https://stackoverflow.com/questions/61281139/waiting-for-repaint-in-javascript
+      //  - But it's not enough for `Firefox 97.0.1`.
+      //  - The following strategy is very agressive. It doesn't need to be that aggressive for Firefox. But we do it to be safe.
+      const start = new Date().getTime()
+      while (true) {
+        await sleep(10)
+        scroll()
+        if (done()) return
+        const millisecondsElapsed = new Date().getTime() - start
+        if (millisecondsElapsed > 100) return
+      }
+    }, 0)
+  })
 }
 
 function autoSaveScrollPosition() {
