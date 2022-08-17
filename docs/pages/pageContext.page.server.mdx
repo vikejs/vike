@@ -23,7 +23,7 @@ It has built-in properties and we can extend it with custom properties.
     })
     ```
     When using [Client Routing](/clientRouting), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href`, or the `href` value of the `<a href="/some/url">` link the user clicked on, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
- - **`pageContext.urlPathname`**: the URL's pathname. (E.g. `/product/42` if `pageContext.url === 'https://example.com/product/42?details=yes#reviews'`).
+ - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
  - **`pageContext.urlParsed`**: URL information:
    ```ts
    {
