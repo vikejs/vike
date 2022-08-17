@@ -28,7 +28,7 @@ pages/faq/index.page.js           /faq
 pages/movie/@id/index.page.js     /movie/1, /movie/2, /movie/3, ...
 ```
 
-We can also define so-called "Route Strings" and "Route Functions" in `.page.route.js` files.
+We can also define so-called "Route Strings" and "Route Functions".
 
 ```js
 // /pages/product.page.route.js
@@ -37,50 +37,29 @@ We can also define so-called "Route Strings" and "Route Functions" in `.page.rou
 
 // Route String
 export default '/product/@productId'
-// `productId` is available at `pageContext.routeParams.productId`
 ```
 
-We can use a Route Function to implement all kinds of advanced routing.
+> The parameter `productId` is available at `pageContext.routeParams.productId`.
+
+Route Functions give us full programmatic flexibility to implement advanced routing logic, for example route guards:
 
 ```js
-// /pages/product-edit.page.route.js
+// /pages/product/edit.page.route.js
 
-// This file defines the route of `/pages/product-edit.page.js`
+// This file defines the route of `/pages/product/edit.page.js`
 
-import partRegex from 'part-regex'
+import { resolveRoute } from 'vite-plugin-ssr/routing'
 
-// A Route Function enables full programmatic flexibility
 export default async (pageContext) => {
-  const { url } = pageContext
-  // Only URLs like `/product/[0-9]+/edit`
-  if (!partRegex`/product/${/[0-9]+/}/edit`.test(url)) {
-    return false
-  }
-
-  // Route Functions enable Route Guards.
-  // `pageContext.user` is defined in the server middleware, see https://vite-plugin-ssr.com/auth
+  // Ensure that `/product/@id/edit` can be accessed only by admins
   if (!pageContext.user.isAdmin) {
     return false
   }
 
-  // Only if there is a product matching `productId`
-  const productId = url.split('/')[2]
-  const product = await db.fetchProduct(productId)
-  if (!product) {
-    return false
-  }
-
-  return {
-    // We make `product` available as `pageContext.routeParams.product` so we can
-    // access it anywhere, see https://vite-plugin-ssr.com/pageContext-anywhere
-    routeParams: {
-      product,
-    }
-  }
+  // We can use vite-plugin-ssr's Route String resolver
+  return resolveRoute('/product/@id/edit', pageContext.urlPathname)
 }
 ```
-
-Route Functions enable us to use any string matching utility we want, such as [partRegex](https://github.com/brillout/part-regex).
 
 See also:
  - <Link href="/filesystem-routing" />

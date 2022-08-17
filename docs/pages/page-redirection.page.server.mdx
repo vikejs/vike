@@ -8,22 +8,26 @@ if a user is not authenticated and goes to `/admin` then we redirect the user to
 With vite-plugin-ssr, instead of doing a URL redirection, we can use a Route Function:
 
 ```js
-// pages/login.page.route.js
+// /pages/login.page.route.js
+
+// Route Function to render the login page to non-authenticated users, regardless of the URL.
 
 export default pageContext => {
-  const isUserAuthenticated =  pageContext.user !== null
-  if (!isUserAuthenticated) {
-    return {
-      // We use a high precedence to override all other routes. This means that unauthenticated
-      // users always see the Login Page `login.page.js` (no matter the url). For example, if
-      // the user is unauthenticated and goes to `/admin`, then he'll see the Login Page.
-      precedence: 999
-    }
-  } else {
-    // If the user is authenticated then do not show the Login Page. For example, if the
-    // user is authenticated and goes to `/admin`, then he'll see the Admin Page.
+  // Only render the login page to non-authenticated users
+  if (userIsLoggedIn(pageContext)) {
     return false
   }
+
+  return {
+    // We use a high precedence number of `99` to override all other routes.
+    // This means that non-authenticated users always see the login page,
+    // regardless of the URL.
+    precedence: 99
+  }
+}
+
+function userIsLoggedIn(pageContext) {
+  return pageContext.user !== null
 }
 ```
 

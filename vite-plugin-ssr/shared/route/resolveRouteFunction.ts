@@ -1,8 +1,8 @@
-import { assertURLs, PageContextUrls, PageContextUrlSource } from '../addComputedUrlProps'
-import { assert, assertUsage, hasProp, isPlainObject, isPromise } from './utils'
-
 export { resolveRouteFunction }
 export { assertRouteParams }
+
+import { assertURLs, PageContextUrls, PageContextUrlSource } from '../addComputedUrlProps'
+import { assert, assertUsage, hasProp, isPlainObject, isPromise } from './utils'
 
 async function resolveRouteFunction(
   pageRouteFileExports: { default: Function; iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean },
@@ -32,8 +32,19 @@ async function resolveRouteFunction(
     }\`.`,
   )
 
+  if ('match' in result) {
+    const { match } = result
+    assertUsage(
+      typeof match === 'boolean',
+      `The \`match\` value returned by the Route Function ${pageRouteFilePath} should be a boolean.`,
+    )
+    if (!match) {
+      return null
+    }
+  }
+
   let precedence = null
-  if (hasProp(result, 'precedence')) {
+  if ('precedence' in result) {
     precedence = result.precedence
     assertUsage(
       typeof precedence === 'number',
@@ -41,13 +52,14 @@ async function resolveRouteFunction(
     )
   }
 
+  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
+  const routeParams: Record<string, string> = result.routeParams || {}
+
   assertUsage(
     !('pageContext' in result),
     'Providing `pageContext` in Route Functions is forbidden, see https://vite-plugin-ssr.com/route-function#async',
   )
 
-  assertRouteParams(result, `The \`routeParams\` object returned by the Route Function ${pageRouteFilePath} should`)
-  const routeParams: Record<string, string> = result.routeParams || {}
   assert(isPlainObject(routeParams))
   Object.keys(result).forEach((key) => {
     assertUsage(

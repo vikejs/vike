@@ -1,0 +1,1 @@
+export { resolveRoute } from './resolveRoute'

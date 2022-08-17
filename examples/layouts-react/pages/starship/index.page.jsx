@@ -5,7 +5,7 @@ import { usePageContext } from '../../renderer/usePageContext'
 
 function Page() {
   const pageContext = usePageContext()
-  const { innerRoute } = pageContext.routeParams
+  const { view } = pageContext.routeParams
   return (
     <>
       <h1>Starship 🚀</h1>
@@ -27,7 +27,7 @@ function Page() {
         <Link href="/starship/spec">Tech Spec</Link>
       </div>
       <div style={{ marginTop: 20, border: '1px solid black', padding: '10px 40px' }}>
-        <InnerView innerRoute={innerRoute} />
+        <InnerView view={view} />
       </div>
       <br />
       <p>
@@ -43,14 +43,14 @@ function Link(props) {
   return <a keep-scroll-position="" style={{ marginRight: 10, ...props.style }} {...props} />
 }
 
-function InnerView({ innerRoute } = { innerRoute: 'overview' | 'reviews' | 'spec' }) {
-  if (innerRoute === 'overview') {
+function InnerView({ view } = { view: 'overview' | 'reviews' | 'spec' }) {
+  if (view === 'overview') {
     return <Overview />
   }
-  if (innerRoute === 'reviews') {
+  if (view === 'reviews') {
     return <Reviews />
   }
-  if (innerRoute === 'spec') {
+  if (view === 'spec') {
     return <Spec />
   }
 }

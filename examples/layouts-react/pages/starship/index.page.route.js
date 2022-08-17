@@ -1,11 +1,12 @@
+import { resolveRoute } from 'vite-plugin-ssr/routing'
+
 export default (pageContext) => {
-  let [base, innerRoute] = pageContext.url.split('/').filter(Boolean)
-  if (base !== 'starship') {
+  if (pageContext.urlPathname === '/starship' || pageContext.urlPathname === '/starship/') {
+    return { routeParams: { view: 'overview' } }
+  }
+  const result = resolveRoute('/starship/@view', pageContext.urlPathname)
+  if (!['reviews', 'spec'].includes(result.routeParams.view)) {
     return false
   }
-  innerRoute = innerRoute || 'overview'
-  if (!['overview', 'reviews', 'spec'].includes(innerRoute)) {
-    return false
-  }
-  return { routeParams: { innerRoute } }
+  return result
 }

@@ -137,16 +137,31 @@ a way to implement a nested layout is to use a Route Function:
 ```js
 // /pages/product/index.page.route.js
 
+import { resolveRoute } from 'vite-plugin-ssr/routing'
+
 export default (pageContext) => {
-  let [baseRoute, innerRoute] = pageContext.url.split('/').filter(Boolean)
-  if (baseRoute !== 'product') {
-    return false
+  {
+    const result = resolveRoute('/product/@id', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'overview'
+      return result
+    }
   }
-  innerRoute = innerRoute || 'overview'
-  if (!['overview', 'reviews', 'pricing'].includes(innerRoute)) {
-    return false
+  {
+    const result = resolveRoute('/product/@id/reviews', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'reviews'
+      return result
+    }
   }
-  return { routeParams: { innerRoute } }
+  {
+    const result = resolveRoute('/product/@id/pricing', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'pricing'
+      return result
+    }
+  }
+  return false
 }
 ```
 
@@ -159,10 +174,10 @@ import { usePageContext } from '../../renderer/usePageContext'
 
 function Page() {
   const pageContext = usePageContext()
-  const { innerRoute } = pageContext.routeParams
-  const innerView = innerRoute === 'overview' ?
+  const { view } = pageContext.routeParams
+  const innerView = view === 'overview' ?
       <Overview/> :
-      innerRoute === 'reviews' ?
+      view === 'reviews' ?
         <Reviews/> :
         <Pricing/>
   return <>

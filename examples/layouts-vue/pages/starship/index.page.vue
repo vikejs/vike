@@ -16,9 +16,9 @@
     <a keep-scroll-position href="/starship/spec">Tech Spec</a>
   </div>
   <div style="margin-top: 20px; border: 1px solid black; padding: 10px 50px">
-    <Overview v-if="pageContext.routeParams.innerRoute === 'overview'" />
-    <Reviews v-if="pageContext.routeParams.innerRoute === 'reviews'" />
-    <Spec v-if="pageContext.routeParams.innerRoute === 'spec'" />
+    <Overview v-if="pageContext.routeParams.view === 'overview'" />
+    <Reviews v-if="pageContext.routeParams.view === 'reviews'" />
+    <Spec v-if="pageContext.routeParams.view === 'spec'" />
   </div>
   <br />
   <p>

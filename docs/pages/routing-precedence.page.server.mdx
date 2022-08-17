@@ -1,4 +1,4 @@
-If the route of two pages both match the same URL then we have a route conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
+If the route of two pages both match the same URL then we have a routing conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
 
 Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific. For example:
 
@@ -34,7 +34,7 @@ export default '/product'
 ```js
 // product/catch-all.page.route.js
 export default pageContext => {
-  if (!pageContext.url.startsWith('/product/')) return false
+  if (!pageContext.urlPathname.startsWith('/product/')) return false
   return {
     precedence: -1,
     pageContext: {

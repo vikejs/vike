@@ -57,6 +57,11 @@
       "node": "./dist/cjs/node/client/router.js",
       "browser": "./dist/esm/client/router/index.js"
     },
+    "./routing": {
+      "worker": "./dist/cjs/shared/route/routing.js",
+      "node": "./dist/cjs/shared/route/routing.js",
+      "browser": "./dist/esm/shared/route/routing.js"
+    },
     "./cli": {
       "node": "./dist/cjs/node/cli/index.js"
     },
@@ -82,6 +87,8 @@
     "client.d.ts",
     "client/router.js",
     "client/router.d.ts",
+    "routing.js",
+    "routing.d.ts",
     "plugin.js",
     "plugin.d.ts",
     "prerender.js",

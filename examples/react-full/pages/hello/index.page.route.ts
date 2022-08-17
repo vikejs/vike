@@ -1,12 +1,10 @@
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import { resolveRoute } from 'vite-plugin-ssr/routing'
 
-// Route Functions give us full flexibility.
-// This is a route similar to `/hello/@name` but with details impossible to achieve with a route string.
-export default (pageContext: PageContextBuiltIn) => {
-  const { url } = pageContext
-  if (!url.startsWith('/hello')) {
-    return false
+// We use a Route Function to implement advanced routing logic
+export default (pageContext: { urlPathname: string }) => {
+  if (pageContext.urlPathname === '/hello' || pageContext.urlPathname === '/hello/') {
+    const name = 'anonymous'
+    return { routeParams: { name } }
   }
-  const name = url.split('/')[2] || 'anonymous'
-  return { routeParams: { name } }
+  return resolveRoute('/hello/@name', pageContext.urlPathname)
 }

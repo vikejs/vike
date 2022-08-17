@@ -41,7 +41,7 @@ Route Functions enable all kinds of catch-all behavior.
 
 export default async pageContext => {
   // Parse the URL
-  const urlParts = pageContext.url.slice(1).split('/')
+  const urlParts = pageContext.urlPathname.slice(1).split('/')
 
   // Only URLs that start with `/product/*`
   if (urlParts[0] !== 'product') {
