@@ -1,6 +1,7 @@
-import { assert, parseUrl, isCallable, assertWarning } from './utils'
+import { assert, parseUrl, isCallable, assertWarning, isPlainObject } from './utils'
 
 export { addComputedUrlProps }
+export { assertURLs }
 export type { PageContextUrls }
 export type { PageContextUrlSource }
 
@@ -113,4 +114,11 @@ function urlParsedGetter(this: PageContextUrlSource) {
 function makeNonEnumerable(obj: Object, prop: string) {
   const descriptor = Object.getOwnPropertyDescriptor(obj, prop)
   Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
+}
+
+function assertURLs(pageContext: { url: string } & PageContextUrls) {
+  assert(typeof pageContext.url === 'string')
+  assert(typeof pageContext.urlPathname === 'string')
+  assert(isPlainObject(pageContext.urlParsed))
+  assert(pageContext.urlPathname === pageContext.urlParsed.pathname)
 }

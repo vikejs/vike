@@ -44,7 +44,7 @@ import {
   isStreamWritableNode,
 } from './html/stream'
 import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
-import { addComputedUrlProps, PageContextUrls } from '../shared/addComputedUrlProps'
+import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { warn404 } from './renderPage/warn404'
@@ -539,9 +539,8 @@ type PageContextPublic = {
   pageProps?: Record<string, unknown>
 }
 function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T) {
-  assert(typeof pageContext.url === 'string')
-  assert(typeof pageContext.urlPathname === 'string')
-  assert(isPlainObject(pageContext.urlParsed))
+  assertURLs(pageContext)
+
   assert(isPlainObject(pageContext.routeParams))
   assert('Page' in pageContext)
   assert(isObject(pageContext.pageExports))
