@@ -19,6 +19,7 @@ function devConfig(): Plugin[] {
             // We exclude the client code to support `import.meta.glob()`
             'vite-plugin-ssr/client',
             'vite-plugin-ssr/client/router',
+            'vite-plugin-ssr/routing',
             // We cannot add these to `optimizeDeps.include` because of `pnpm`
             '@brillout/libassert',
             '@brillout/json-s',
