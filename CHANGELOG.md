@@ -1,3 +1,21 @@
+## [0.4.21](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.20...v0.4.21) (2022-08-18)
+
+
+### Bug Fixes
+
+* further tolerate vite-plugin-ssr being loaded twice ([da02463](https://github.com/brillout/vite-plugin-ssr/commit/da02463c8d227467c35642f20ff3f594dcf5575e))
+* improve error message upon vite-plugin-ssr being included twice in bundle ([58427f5](https://github.com/brillout/vite-plugin-ssr/commit/58427f5320be5518eb9cc795b9c95b71d6f98515))
+* improve scroll restoration for Firefox ([fd70fad](https://github.com/brillout/vite-plugin-ssr/commit/fd70fadb0bcea8d922f961f1c88713994e0aaf34))
+* pass entire pageContext to Route Functions ([a596b59](https://github.com/brillout/vite-plugin-ssr/commit/a596b590bc67ab7909684edcbcdccde90784684b))
+* re-support & improve hash navigation (fix [#418](https://github.com/brillout/vite-plugin-ssr/issues/418)) ([88b9da0](https://github.com/brillout/vite-plugin-ssr/commit/88b9da0b96c3103eaa6152dbb58ebff943b6ee70))
+
+
+### Features
+
+* impl `resolveRoute` (close [#370](https://github.com/brillout/vite-plugin-ssr/issues/370)) ([15104af](https://github.com/brillout/vite-plugin-ssr/commit/15104af9bd12686b49d6cc11be4cec579029cb9b))
+
+
+
 ## [0.4.20](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.19...v0.4.20) (2022-08-12)
 
 
