@@ -62,11 +62,7 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
   })()
 
   if (prefetchStaticAssets && prefetchStaticAssets.when === 'VIEWPORT' && !pageContext._isProduction) {
-    assertInfo(
-      false,
-      'Viewport prefetching is disabled in development, see https://vite-plugin-ssr.com/clientRouting',
-      { onlyOnce: true },
-    )
+    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = { when: 'HOVER' }
   }
 

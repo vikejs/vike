@@ -4,7 +4,9 @@ export { setDistEntries }
 import { assert, assertUsage } from '../../utils'
 import { loadDistEntries as loadDistEntries_ } from 'vite-plugin-dist-importer/loadDistEntries'
 
-const distEntries = globalThis.__vite_plugin_ssr__distEntries = globalThis.__vite_plugin_ssr__distEntries || { value: null }
+const distEntries = (globalThis.__vite_plugin_ssr__distEntries = globalThis.__vite_plugin_ssr__distEntries || {
+  value: null,
+})
 
 type DistEntries = null | {
   pageFiles: () => Promise<Record<string, unknown>>
@@ -38,7 +40,7 @@ async function loadDistEntries() {
 declare global {
   var __vite_plugin_ssr__distEntries:
     | undefined
-    | ({
-      value: DistEntries
-    })
+    | {
+        value: DistEntries
+      }
 }
