@@ -1,3 +1,12 @@
+## [0.4.22](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.21...v0.4.22) (2022-08-18)
+
+
+### Bug Fixes
+
+* add module `vite-plugin-ssr/routing` to `optimizeDeps.exclude` ([3585d9e](https://github.com/brillout/vite-plugin-ssr/commit/3585d9eb483408e1af87495fd8316a3f68b777d6))
+
+
+
 ## [0.4.21](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.20...v0.4.21) (2022-08-18)
 
 
