@@ -189,7 +189,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   }
 
   {
-    const { url } = pageContextAddendum
+    const { url } = pageContextInit
     if (url.endsWith('/__vite_ping') || url.endsWith('/favicon.ico') || !isParsable(url)) {
       objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
       return pageContextAddendum
@@ -208,7 +208,7 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   }
 
   {
-    const { url } = pageContextAddendum
+    const { url } = pageContextInit
     assert(url.startsWith('/') || url.startsWith('http'))
     const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
     const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
