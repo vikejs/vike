@@ -35,12 +35,9 @@ Allow only some of our pages to be pre-rendered.
 
 This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of our pages cannot be pre-rendered.
 
-> As explained in <Link href="/pre-rendering" />, if we don't pre-render all pages, then we need a production server. By using, [`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel#usage-with-vite-plugin-ssr), we can still statically deploy our pre-rendered pages while using a production server for non-pre-rendered pages.
+> As explained in <Link href="/pre-rendering" />, if we don't pre-render all pages, then we need a production server. By using <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, we can still statically deploy our pre-rendered pages while using a production server for our non-pre-rendered pages.
 
-> `vite-plugin-ssr` shows a warning that a page cannot be pre-rendered when:
-> - The page has a parameterized route
->   (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />).
-> - When there isn't any <Link text={<><code>prerender()</code> hook</>} href="prerender" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
+> `vite-plugin-ssr` shows a warning that a page cannot be pre-rendered, when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />), and there isn't any <Link text={<><code>prerender()</code> hook</>} href="prerender" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
 
 
 ## `noExtraDir`
