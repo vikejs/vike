@@ -42,7 +42,7 @@ async function getPageContext(
     _isFirstRenderAttempt: boolean
   } & PageContextPassThrough,
 ): Promise<PageContextAddendum> {
-  if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.url)) {
+  if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
     return getPageContextFirstRender(pageContext)
   } else {
@@ -54,7 +54,7 @@ async function getPageContext(
 async function getPageContextFirstRender(pageContext: {
   _pageFilesAll: PageFile[]
   _isFirstRenderAttempt: true
-  url: string
+  urlOriginal: string
 }): Promise<PageContextAddendum> {
   const pageContextAddendum = getPageContextSerializedInHtml()
   removeBuiltInOverrides(pageContextAddendum)
@@ -73,7 +73,7 @@ async function getPageContextFirstRender(pageContext: {
 }
 
 async function getPageContextErrorPage(pageContext: {
-  url: string
+  urlOriginal: string
   _allPageIds: string[]
   _isFirstRenderAttempt: boolean
   _pageFilesAll: PageFile[]
@@ -144,7 +144,7 @@ async function getPageContextUponNavigation(
 async function onBeforeRenderExecute(
   pageContext: {
     _pageId: string
-    url: string
+    urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
   } & PageContextExports &
@@ -206,10 +206,10 @@ async function getPageContextFromRoute(
 }
 
 async function retrievePageContextFromServer(pageContext: {
-  url: string
-  _urlOriginal?: string
+  urlOriginal: string
+  _urlPristine?: string
 }): Promise<Record<string, unknown>> {
-  const pageContextUrl = getFileUrl(pageContext._urlOriginal ?? pageContext.url, '.pageContext.json', true)
+  const pageContextUrl = getFileUrl(pageContext._urlPristine ?? pageContext.urlOriginal, '.pageContext.json', true)
   const response = await fetch(pageContextUrl)
 
   {
@@ -218,7 +218,7 @@ async function retrievePageContextFromServer(pageContext: {
 
     // Static hosts + page doesn't exist
     if (!isRightContentType && response.status === 404) {
-      serverSideRouteTo(pageContext.url)
+      serverSideRouteTo(pageContext.urlOriginal)
       const err = new Error("Page doesn't exist")
       Object.assign(err, { _abortRendering: true })
       throw err

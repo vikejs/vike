@@ -6,6 +6,14 @@ export { headings }
 
 const redirections = [
   {
+    title: (
+      <>
+        Migration <code>0.4</code>
+      </>
+    ),
+    url: '/migration-0.4',
+  },
+  {
     title: 'HTML Streaming',
     url: '/html-streaming',
   },
@@ -40,10 +48,22 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   {
     title: (
       <>
+        Migration <code>0.4.23</code>
+      </>
+    ),
+    url: '/migration/0.4.23',
+  },
+  {
+    title: (
+      <>
         Migration <code>0.4</code>
       </>
     ),
-    url: '/migration-0.4',
+    url: '/migration/0.4',
+  },
+  {
+    title: 'Migrations',
+    url: '/migration',
   },
   {
     title: 'Client Routing',

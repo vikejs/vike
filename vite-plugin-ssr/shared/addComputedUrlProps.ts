@@ -1,4 +1,4 @@
-import { assert, parseUrl, isCallable, assertWarning, isPlainObject } from './utils'
+import { assert, parseUrl, isCallable, assertWarning, isPlainObject, hasPropertyGetter } from './utils'
 
 export { addComputedUrlProps }
 export { assertURLs }
@@ -29,6 +29,10 @@ type UrlParsed = {
   hashString: null | string
 }
 type PageContextUrls = {
+  /** Outdated. Don't use. */
+  url: string
+  /** The URL of the HTTP request */
+  urlOriginal: string
   /** The URL pathname, e.g. `/product/42` of `https://example.com/product/42?details=yes#reviews` */
   urlPathname: string
   /** Parsed information about the current URL */
@@ -38,15 +42,28 @@ type PageContextUrls = {
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
   pageContext: PageContext,
 ): asserts pageContext is PageContext & PageContextUrls {
+  assert(pageContext.urlOriginal)
   if ('urlPathname' in pageContext) {
-    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlPathname')?.get === urlPathnameGetter)
-    assert(Object.getOwnPropertyDescriptor(pageContext, 'urlParsed')?.get === urlParsedGetter)
+    assert(hasPropertyGetter(pageContext, 'urlPathname'))
   } else {
     Object.defineProperty(pageContext, 'urlPathname', {
       get: urlPathnameGetter,
       enumerable: true,
       configurable: true,
     })
+  }
+  if ('url' in pageContext) {
+    assert(hasPropertyGetter(pageContext, 'url'))
+  } else {
+    Object.defineProperty(pageContext, 'url', {
+      get: urlGetter,
+      enumerable: false,
+      configurable: true,
+    })
+  }
+  if ('urlParsed' in pageContext) {
+    assert(hasPropertyGetter(pageContext, 'urlParsed'))
+  } else {
     Object.defineProperty(pageContext, 'urlParsed', {
       get: urlParsedGetter,
       enumerable: true,
@@ -56,12 +73,12 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
 }
 
 type PageContextUrlSource = {
-  url: string
+  urlOriginal: string
   _baseUrl: string
   _urlProcessor: null | ((url: string) => string)
 }
 function getUrlParsed(pageContext: PageContextUrlSource) {
-  let { url } = pageContext
+  let url = pageContext.urlOriginal
   const { _baseUrl: baseUrl, _urlProcessor: urlProcessor } = pageContext
   assert(baseUrl.startsWith('/'))
   assert(urlProcessor === null || isCallable(urlProcessor))
@@ -75,6 +92,14 @@ function urlPathnameGetter(this: PageContextUrlSource) {
   const urlPathname = pathname
   assert(urlPathname.startsWith('/'))
   return urlPathname
+}
+function urlGetter(this: PageContextUrlSource) {
+  assertWarning(
+    false,
+    '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+    { onlyOnce: true, showStackTrace: true },
+  )
+  return urlPathnameGetter.call(this)
 }
 function urlParsedGetter(this: PageContextUrlSource) {
   const urlParsedOriginal = getUrlParsed(this)
@@ -116,8 +141,8 @@ function makeNonEnumerable(obj: Object, prop: string) {
   Object.defineProperty(obj, prop, { ...descriptor, enumerable: false })
 }
 
-function assertURLs(pageContext: { url: string } & PageContextUrls) {
-  assert(typeof pageContext.url === 'string')
+function assertURLs(pageContext: { urlOriginal: string } & PageContextUrls) {
+  assert(typeof pageContext.urlOriginal === 'string')
   assert(typeof pageContext.urlPathname === 'string')
   assert(isPlainObject(pageContext.urlParsed))
   assert(pageContext.urlPathname === pageContext.urlParsed.pathname)

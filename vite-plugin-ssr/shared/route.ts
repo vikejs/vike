@@ -72,7 +72,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
         })
         return { pageContextAddendum }
       }
-      // We already assign so that `pageContext.url === pageContextAddendum.url`; enabling the `onBeforeRoute()` hook to mutate `pageContext.url` before routing.
+      // We already assign so that `pageContext.urlOriginal === pageContextAddendum.urlOriginal`; enabling the `onBeforeRoute()` hook to mutate `pageContext.urlOriginal` before routing.
       objectAssign(pageContext, pageContextAddendum)
     }
   }

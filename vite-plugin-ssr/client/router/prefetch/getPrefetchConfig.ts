@@ -5,7 +5,7 @@ import { assert, assertUsage, assertInfo, assertWarning, isPlainObject } from '.
 type PageContextPrefetch = {
   exports: Record<string, unknown>
   _isProduction: boolean
-  url: string
+  urlOriginal: string
 }
 
 type PrefetchConfig = {

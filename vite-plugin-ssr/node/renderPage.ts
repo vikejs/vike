@@ -65,9 +65,9 @@ type GlobalRenderingContext = GlobalContext & {
   _pageFilesAll: PageFile[]
 }
 
-type RenderResult = { url: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
+type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 
-async function renderPage_(pageContextInit: { url: string }, pageContext: {}): Promise<RenderResult> {
+async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext: {}): Promise<RenderResult> {
   {
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -164,7 +164,7 @@ function handleErrorWithoutErrorPage(pageContext: {
   errorWhileRendering: null | Error
   is404: null | boolean
   _pageId: null
-  url: string
+  urlOriginal: string
   _isProduction: boolean
 }): RenderResult {
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
@@ -182,18 +182,18 @@ function handleErrorWithoutErrorPage(pageContext: {
   }
 }
 
-async function initializePageContext<PageContextInit extends { url: string }>(pageContextInit: PageContextInit) {
+async function initializePageContext(pageContextInit: { urlOriginal: string }) {
+  const { urlOriginal } = pageContextInit
+  assert(urlOriginal)
+
   const pageContextAddendum = {
     _isPreRendering: false as const,
     ...pageContextInit,
   }
 
-  {
-    const { url } = pageContextInit
-    if (url.endsWith('/__vite_ping') || url.endsWith('/favicon.ico') || !isParsable(url)) {
-      objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
-      return pageContextAddendum
-    }
+  if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
+    objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
+    return pageContextAddendum
   }
 
   const globalContext = await getGlobalContext(pageContextAddendum._isPreRendering)
@@ -208,9 +208,8 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
   }
 
   {
-    const { url } = pageContextInit
-    assert(url.startsWith('/') || url.startsWith('http'))
-    const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(url)
+    assert(urlOriginal.startsWith('/') || urlOriginal.startsWith('http'))
+    const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(urlOriginal)
     const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
     if (!hasBaseUrl) {
       objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
@@ -226,7 +225,15 @@ async function initializePageContext<PageContextInit extends { url: string }>(pa
 }
 
 // `renderPage()` calls `renderPage_()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
-async function renderPage<PageContextAdded extends {}, PageContextInit extends { url: string }>(
+async function renderPage<
+  PageContextAdded extends {},
+  PageContextInit extends {
+    /** Outdated, do not use */
+    url?: string
+    /** The URL of the HTTP request */
+    urlOriginal?: string
+  },
+>(
   pageContextInit: PageContextInit,
 ): Promise<
   PageContextInit & { errorWhileRendering: null | unknown } & (
@@ -235,6 +242,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
     )
 > {
   assertArguments(...arguments)
+  assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
 
   const pageContextOfOriginalError = {}
   try {
@@ -259,7 +267,7 @@ async function renderPage<PageContextAdded extends {}, PageContextInit extends {
   }
 }
 
-async function renderErrorPage<PageContextInit extends { url: string }>(
+async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   pageContextInit: PageContextInit,
   errOriginal: unknown,
   pageContextOfOriginalError: Record<string, unknown>,
@@ -465,7 +473,7 @@ function createHttpResponseObject(
 
 async function prerenderPage(
   pageContext: {
-    url: string
+    urlOriginal: string
     routeParams: Record<string, string>
     _isPreRendering: true
     _pageId: string
@@ -489,7 +497,7 @@ async function prerenderPage(
   const renderHookResult = await executeRenderHook(pageContext)
   assertUsage(
     renderHookResult.htmlRender !== null,
-    `Cannot pre-render \`${pageContext.url}\` because the \`render()\` hook exported by ${renderHookResult.renderFilePath} didn't return an HTML string.`,
+    `Cannot pre-render \`${pageContext.urlOriginal}\` because the \`render()\` hook exported by ${renderHookResult.renderFilePath} didn't return an HTML string.`,
   )
   assert(pageContext._isPageContextRequest === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
@@ -513,7 +521,7 @@ async function renderStatic404Page(globalContext: GlobalRenderingContext & { _is
     _pageId: errorPageId,
     is404: true,
     routeParams: {},
-    url: '/fake-404-url', // A `url` is needed for `applyViteHtmlTransform`
+    urlOriginal: '/fake-404-url', // A URL is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
     _routeMatches: [],
@@ -526,7 +534,8 @@ async function renderStatic404Page(globalContext: GlobalRenderingContext & { _is
 }
 
 type PageContextPublic = {
-  url: string
+  urlOriginal: string
+  url: string // outdated
   urlPathname: string
   urlParsed: PageContextUrls['urlParsed']
   routeParams: Record<string, string>
@@ -556,7 +565,7 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
 }
 
 type PageContext_loadPageFilesServer = {
-  url: string
+  urlOriginal: string
   _baseUrl: string
   _baseAssets: string | null
   _pageFilesAll: PageFile[]
@@ -629,7 +638,7 @@ function debugPageFiles({
   clientDependencies,
 }: {
   pageContext: {
-    url: string
+    urlOriginal: string
     _pageId: string
     _pageFilesAll: PageFile[]
   } & PageContextDebug
@@ -645,7 +654,7 @@ function debugPageFiles({
   const padding = '   - '
 
   debug('All page files:', printPageFiles(pageContext._pageFilesAll, true))
-  debug(`URL:`, pageContext.url)
+  debug(`URL:`, pageContext.urlOriginal)
   debug.options({ serialization: { emptyArray: 'No match' } })(`Routing:`, printRouteMatches(pageContext._routeMatches))
   debug(`pageId:`, pageContext._pageId)
   debug('Page type:', isHtmlOnly ? 'HTML-only' : 'SSR/SPA')
@@ -836,46 +845,64 @@ async function executeRenderHook(
 }
 
 function assertArguments(...args: unknown[]) {
-  const pageContext = args[0]
-  assertUsage(pageContext, '`renderPage(pageContext)`: argument `pageContext` is missing.')
+  const prefix = '[renderPage(pageContextInit)]'
+
+  const pageContextInit = args[0]
+  assertUsage(pageContextInit, prefix + ' argument `pageContextInit` is missing')
+  const len = args.length
+  assertUsage(len === 1, `${prefix} You passed ${len} arguments but \`renderPage()\` accepts only one argument.'`)
+
   assertUsage(
-    isPlainObject(pageContext),
-    `\`renderPage(pageContext)\`: argument \`pageContext\` should be a plain JavaScript object, but you passed a \`pageContext\` with \`pageContext.constructor === ${
-      (pageContext as any).constructor
-    }\`.`,
+    isPlainObject(pageContextInit),
+    `${prefix} \`pageContextInit\` should be a plain JavaScript object, but \`pageContextInit.constructor === ${
+      (pageContextInit as any).constructor
+    }\``,
+  )
+
+  if ('url' in pageContextInit) {
+    assertWarning(
+      false,
+      '`pageContext.url` has been renamed to `pageContext.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+      { onlyOnce: true },
+    )
+    pageContextInit.urlOriginal = pageContextInit.url
+    delete pageContextInit.url
+  }
+  assert(!('url' in pageContextInit))
+
+  assertUsage(
+    hasProp(pageContextInit, 'urlOriginal'),
+    prefix + ' `pageContextInit` is missing the property `pageContextInit.urlOriginal`',
   )
   assertUsage(
-    hasProp(pageContext, 'url'),
-    '`renderPage(pageContext)`: The `pageContext` you passed is missing the property `pageContext.url`.',
-  )
-  assertUsage(
-    typeof pageContext.url === 'string',
-    '`renderPage(pageContext)`: `pageContext.url` should be a string but `typeof pageContext.url === "' +
-      typeof pageContext.url +
+    typeof pageContextInit.urlOriginal === 'string',
+    prefix +
+      ' `pageContextInit.urlOriginal` should be a string but `typeof pageContextInit.urlOriginal === "' +
+      typeof pageContextInit.urlOriginal +
       '"`.',
   )
   assertUsage(
-    pageContext.url.startsWith('/') || pageContext.url.startsWith('http'),
-    '`renderPage(pageContext)`: `pageContext.url` should start with `/` (e.g. `/product/42`) or `http` (e.g. `http://example.org/product/42`) but `pageContext.url === "' +
-      pageContext.url +
-      '"`.',
+    pageContextInit.urlOriginal.startsWith('/') || pageContextInit.urlOriginal.startsWith('http'),
+    prefix +
+      ' `pageContextInit.urlOriginal` should start with `/` (e.g. `/product/42`) or `http` (e.g. `http://example.org/product/42`) but `pageContextInit.urlOriginal === "' +
+      pageContextInit.urlOriginal +
+      '"`',
   )
+
   try {
-    const { url } = pageContext
-    const urlWithOrigin = url.startsWith('http') ? url : 'http://fake-origin.example.org' + url
-    // `new URL()` conveniently throws if URL is not an URL
+    const { urlOriginal } = pageContextInit
+    const urlWithOrigin = urlOriginal.startsWith('http') ? urlOriginal : 'http://fake-origin.example.org' + urlOriginal
+    // We use `new URL()` to validate the URL. (`new URL(url)` throws an error if `url` isn't a valid URL.)
     new URL(urlWithOrigin)
   } catch (err) {
     assertUsage(
       false,
-      '`renderPage(pageContext)`: `pageContext.url` should be a URL but `pageContext.url==="' + pageContext.url + '"`.',
+      prefix +
+        ' `pageContextInit.urlOriginal` should be a URL but `pageContextInit.urlOriginal==="' +
+        pageContextInit.urlOriginal +
+        '"`.',
     )
   }
-  const len = args.length
-  assertUsage(
-    len === 1,
-    `\`renderPage(pageContext)\`: You passed ${len} arguments but \`renderPage()\` accepts only one argument.'`,
-  )
 }
 
 function warnMissingErrorPage(pageContext: { _isProduction: boolean }) {

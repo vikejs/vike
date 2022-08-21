@@ -87,7 +87,7 @@ function useClientRouter() {
     }
 
     const pageContext = {
-      url,
+      urlOriginal: url,
       isBackwardNavigation,
     }
 
@@ -464,7 +464,7 @@ declare global {
       ) => Promise<void>)
 }
 
-function checkIfAbort(err: unknown, pageContext: { url: string; _isFirstRenderAttempt: boolean }): boolean {
+function checkIfAbort(err: unknown, pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }): boolean {
   if ((err as any)?._abortRendering) return true
 
   if (handleErrorFetchingStaticAssets(err, pageContext)) {
@@ -476,7 +476,7 @@ function checkIfAbort(err: unknown, pageContext: { url: string; _isFirstRenderAt
 
 function handleErrorFetchingStaticAssets(
   err: unknown,
-  pageContext: { url: string; _isFirstRenderAttempt: boolean },
+  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean },
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false
@@ -490,7 +490,7 @@ function handleErrorFetchingStaticAssets(
     throw err
   }
 
-  serverSideRouteTo(pageContext.url)
+  serverSideRouteTo(pageContext.urlOriginal)
 
   return true
 }

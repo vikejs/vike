@@ -7,7 +7,7 @@ export { assertRenderHook }
 function assertRenderHook<
   PC extends {
     _pageFilesLoaded: PageFile[]
-    url?: string
+    urlOriginal?: string
     _pageId: string
   } & PageContextExports,
 >(pageContext: PC): asserts pageContext is PC & { exports: { render: Function } } {
@@ -17,7 +17,7 @@ function assertRenderHook<
     const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
     let errMsg: string
     if (pageClientsFilesLoaded.length === 0) {
-      const url = pageContext.url ?? window.location.href
+      const url = pageContext.urlOriginal ?? window.location.href
       errMsg = 'No file `*.page.client.*` found for URL ' + url
     } else {
       errMsg =

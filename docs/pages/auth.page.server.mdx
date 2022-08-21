@@ -13,12 +13,12 @@ app.get('*', async (req, res) => {
   const user = await authProviderApi.getUser(req.headers)
   */
 
-  const pageContext = {
+  const pageContextInit = {
     url: req.url,
-    // We make logged-in user information available to pages as `pageContext.user`
+    // We make logged-in user information available to pages as `pageContextInit.user`
     user
   }
-  const result = await renderPage(pageContext)
+  const result = await renderPage(pageContextInit)
 
   /* ... */
 })

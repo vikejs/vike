@@ -10,7 +10,7 @@ function addSsrMiddleware(middlewares: ConnectServer) {
     const url = req.originalUrl || req.url
     if (!url) return next()
     const userAgent = req.headers['user-agent']
-    const pageContextInit = { url, userAgent }
+    const pageContextInit = { urlOriginal: url, userAgent }
     const pageContext = await renderPage(pageContextInit)
     if (!pageContext.httpResponse) return next()
     const { statusCode, contentType } = pageContext.httpResponse

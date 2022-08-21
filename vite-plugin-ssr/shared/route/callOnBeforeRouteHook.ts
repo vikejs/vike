@@ -1,5 +1,5 @@
 import { assertPageContextProvidedByUser } from '../assertPageContextProvidedByUser'
-import { assertUsage, hasProp, isObjectWithKeys, objectAssign } from './utils'
+import { assertUsage, hasProp, isObjectWithKeys, objectAssign, assertWarning } from './utils'
 import { assertRouteParams } from './resolveRouteFunction'
 
 export { callOnBeforeRouteHook }
@@ -7,18 +7,18 @@ export type { OnBeforeRouteHook }
 
 type OnBeforeRouteHook = {
   filePath: string
-  onBeforeRoute: (pageContext: { url: string } & Record<string, unknown>) => unknown
+  onBeforeRoute: (pageContext: { urlOriginal: string } & Record<string, unknown>) => unknown
 }
 
 async function callOnBeforeRouteHook(
   onBeforeRouteHook: OnBeforeRouteHook,
   pageContext: {
-    url: string
+    urlOriginal: string
     _allPageIds: string[]
   },
 ): Promise<null | {
-  url?: string
-  _urlOriginal?: string
+  urlOriginal?: string
+  _urlPristine?: string
   _pageId?: string | null
   routeParams?: Record<string, string>
 }> {
@@ -60,11 +60,20 @@ async function callOnBeforeRouteHook(
   const pageContextAddendumHook = {}
 
   if (hasProp(hookReturn.pageContext, 'url')) {
-    assertUsage(
-      hasProp(hookReturn.pageContext, 'url', 'string'),
-      `${errPrefix} returned \`{ pageContext: { url } }\` but \`url\` should be a string`,
+    assertWarning(
+      false,
+      `${errPrefix} returned \`{ pageContext: { url } }\` but \`pageContext.url\` has been renamed to \`pageContext.urlOriginal\`. Return \`{ pageContext: { urlOriginal } }\` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)`,
+      { onlyOnce: true },
     )
-    objectAssign(pageContextAddendumHook, { _urlOriginal: pageContext.url })
+    hookReturn.pageContext.urlOriginal = hookReturn.pageContext.url
+    delete hookReturn.pageContext.url
+  }
+  if (hasProp(hookReturn.pageContext, 'urlOriginal')) {
+    assertUsage(
+      hasProp(hookReturn.pageContext, 'urlOriginal', 'string'),
+      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but \`urlOriginal\` should be a string`,
+    )
+    objectAssign(pageContextAddendumHook, { _urlPristine: pageContext.urlOriginal })
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {

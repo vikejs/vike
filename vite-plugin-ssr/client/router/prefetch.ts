@@ -36,10 +36,10 @@ async function prefetch(url: string): Promise<void> {
 function addLinkPrefetchHandlers(pageContext: {
   exports: Record<string, unknown>
   _isProduction: boolean
-  url: string
+  urlOriginal: string
 }) {
   // Current URL is already prefetched
-  markAsAlreadyPrefetched(pageContext.url)
+  markAsAlreadyPrefetched(pageContext.urlOriginal)
 
   const linkTags = [...document.getElementsByTagName('A')] as HTMLElement[]
   linkTags.forEach(async (linkTag) => {

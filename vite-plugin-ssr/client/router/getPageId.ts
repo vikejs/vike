@@ -7,7 +7,7 @@ export { getPageId }
 async function getPageId(url: string) {
   const globalContext = await getGlobalContext()
   const pageContext = {
-    url,
+    urlOriginal: url,
     ...globalContext,
   }
   const pageFilesAll = globalContext._pageFilesAll
