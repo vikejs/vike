@@ -1,3 +1,12 @@
+## [0.4.23](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.22...v0.4.23) (2022-08-21)
+
+
+### Bug Fixes
+
+* rename `pageContext.url` to `pageContext.urlOriginal` ([b2e7ff0](https://github.com/brillout/vite-plugin-ssr/commit/b2e7ff0dad2a1d60c83ac4a59a0b4101a8e8d39a))
+
+
+
 ## [0.4.22](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.21...v0.4.22) (2022-08-18)
 
 
