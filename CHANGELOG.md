@@ -1,3 +1,14 @@
+## [0.4.25](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.24...v0.4.25) (2022-08-22)
+
+
+### Bug Fixes
+
+* improve 404 logging during dev ([522f8cc](https://github.com/brillout/vite-plugin-ssr/commit/522f8ccc7ae32beb56299bc7f59b0355fc4f2c03))
+* improve React detection heuristic ([#423](https://github.com/brillout/vite-plugin-ssr/issues/423)) ([bbd39c6](https://github.com/brillout/vite-plugin-ssr/commit/bbd39c644e9433075cb5685479c03857fd50e310))
+* skip 404 warning upon `RenderErrorPage` error ([45fd93f](https://github.com/brillout/vite-plugin-ssr/commit/45fd93fcee08c1e87486592c360d86a859558305))
+
+
+
 ## [0.4.24](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.23...v0.4.24) (2022-08-22)
 
 
