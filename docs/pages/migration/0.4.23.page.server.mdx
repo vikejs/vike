@@ -2,16 +2,16 @@ import { Link } from 'vikepress'
 
 `0.4.23` renames `pageContext.url` to `pageContext.urlOriginal`.
 
-> This is a soft breaking change: the `0.4.22` interface is still supported, i.e. most apps should work without any change.
+> This is a soft breaking change: the `0.4.22` interface is still supported, i.e. most apps should still work without any change.
 
 Most notable relevant places:
 
-- [`renderPage()`: provide `pageContext.urlOriginal` instead of `pageContext.url`](#renderpage)
-- [Route Functions: use `pageContext.urlPathname` instead of `pageContext.url`](#route-functions)
-- [If using `onBeforeRoute()`: use and provide `pageContext.urlOriginal` instead of `pageContext.url`](#onbeforeroute)
-- [If using `onBeforePrerender()`: use and provide `pageContext.urlOriginal` instead of `pageContext.url`](#onbeforeprerender)
+- [`renderPage()`: provide `pageContext.urlOriginal` instead of `pageContext.url`.](#renderpage)
+- [Route Functions: use `pageContext.urlPathname` instead of `pageContext.url`.](#route-functions)
+- [If using `onBeforeRoute()`: use and provide `pageContext.urlOriginal` instead of `pageContext.url`.](#onbeforeroute)
+- [If using `onBeforePrerender()`: use and provide `pageContext.urlOriginal` instead of `pageContext.url`.](#onbeforeprerender)
 
-> The `onBeforeRoute()` and `onBeforePrerender()` hooks are usually only used for <Link href="/i18n" />.
+> The `onBeforeRoute()` and `onBeforePrerender()` hooks are usually only used for i18n, see <Link href="/i18n" />.
 
 ## `renderPage()`
 
@@ -67,7 +67,7 @@ Most notable relevant places:
 
 ## `onBeforePrerender()`
 
-```js
+```diff
   // /renderer/_default.page.server.js
 
   export function onBeforePrerender(globalContext) {
