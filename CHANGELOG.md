@@ -4,6 +4,7 @@
 ### Bug Fixes
 
 * rename `pageContext.url` to `pageContext.urlOriginal` ([b2e7ff0](https://github.com/brillout/vite-plugin-ssr/commit/b2e7ff0dad2a1d60c83ac4a59a0b4101a8e8d39a))
+  > This fix contains a soft breaking change, see [vite-plugin-ssr.com/migration/0.4.23](https://vite-plugin-ssr.com/migration/0.4.23).
 
 
 
@@ -297,7 +298,7 @@
 
 ### BREAKING CHANGES
 
-See [vite-plugin-ssr.com/migration-0.4](https://vite-plugin-ssr.com/migration-0.4) for how to migrate from `0.3` to `0.4`.
+See [vite-plugin-ssr.com/migration/0.4](https://vite-plugin-ssr.com/migration/0.4) for how to migrate from `0.3` to `0.4`.
 
 
 ### Features
