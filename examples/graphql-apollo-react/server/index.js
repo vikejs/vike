@@ -25,14 +25,15 @@ async function startServer() {
   }
 
   app.get('*', async (req, res, next) => {
-    const url = req.originalUrl
-
     // It's important to create an entirely new instance of Apollo Client for each request.
     // Otherwise, our response to a request might include sensitive cached query results
     // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
     const apolloClient = makeApolloClient()
 
-    const pageContextInit = { url, apolloClient }
+    const pageContextInit = {
+      urlOriginal: req.originalUrl,
+      apolloClient,
+    }
     const pageContext = await renderPage(pageContextInit)
 
     const { httpResponse } = pageContext

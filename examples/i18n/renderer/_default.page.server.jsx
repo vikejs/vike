@@ -42,7 +42,7 @@ function onBeforePrerender(globalContext) {
       .forEach((locale) => {
         prerenderPageContexts.push({
           ...pageContext,
-          url: `/${locale}${pageContext.url}`,
+          urlOriginal: `/${locale}${pageContext.urlOriginal}`,
           locale,
         })
       })

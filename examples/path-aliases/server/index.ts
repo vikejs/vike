@@ -31,9 +31,8 @@ async function startServer() {
   }
 
   app.get('*', async (req, res, next) => {
-    const url = req.originalUrl
     const pageContextInit = {
-      url,
+      urlOriginal: req.originalUrl,
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext

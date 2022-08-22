@@ -3,10 +3,10 @@ export { onBeforeRoute }
 import { extractLocale } from '../locales'
 
 function onBeforeRoute(pageContext) {
-  let { url } = pageContext
+  let urlMod = pageContext.urlOriginal
 
-  const { urlWithoutLocale, locale } = extractLocale(url)
-  url = urlWithoutLocale
+  const { urlWithoutLocale, locale } = extractLocale(urlMod)
+  urlMod = urlWithoutLocale
 
   return {
     pageContext: {
@@ -15,7 +15,7 @@ function onBeforeRoute(pageContext) {
       // to access `pageContext.locale` in any React/Vue component.
       locale,
       // We overwrite the original URL
-      url,
+      urlOriginal: urlMod,
     },
   }
 }

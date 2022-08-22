@@ -27,10 +27,9 @@ async function startServer() {
   }
 
   app.get('*', async (req, res, next) => {
-    const url = req.originalUrl
     const apolloClient = makeApolloClient()
     const pageContextInit = {
-      url,
+      urlOriginal: req.originalUrl,
       apolloClient,
     }
     const pageContext = await renderPage(pageContextInit)

@@ -3,7 +3,9 @@ import { renderPage } from 'vite-plugin-ssr'
 export { handleSsr }
 
 async function handleSsr(url) {
-  const pageContextInit = { url }
+  const pageContextInit = {
+    urlOriginal: url,
+  }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
   if (!httpResponse) {

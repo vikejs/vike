@@ -4,8 +4,10 @@ import { renderPage } from 'vite-plugin-ssr'
 const app = express()
 
 app.get('*', async (req, res, next) => {
-  const url = req.originalUrl
-  const pageContext = await renderPage({ url })
+  const pageContextInit = {
+    urlOriginal: req.originalUrl,
+  }
+  const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
   if (!httpResponse) return next()
   const { body, statusCode, contentType } = httpResponse

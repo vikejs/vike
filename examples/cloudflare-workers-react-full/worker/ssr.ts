@@ -4,7 +4,7 @@ export { handleSsr }
 
 async function handleSsr(url: string, userAgent: string) {
   const pageContextInit = {
-    url,
+    urlOriginal: url,
     fetch: (...args: Parameters<typeof fetch>) => fetch(...args),
     userAgent,
   }
