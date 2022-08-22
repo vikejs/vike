@@ -18,7 +18,7 @@ async function resolveRouteFunction(
     !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
     `The Route Function ${pageRouteFilePath} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`,
   )
-  await result
+  result = await result
   if (result === false) {
     return null
   }
