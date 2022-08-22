@@ -24,8 +24,8 @@ function isReactApp() {
   }
   assertWarning(
     isReact1 && isReact2 && isReact3,
-    'An internal heuristic needs to be updated, please reach out to a vite-plugin-ssr maintainer.',
-    { onlyOnce: true, showStackTrace: true },
+    'An internal heuristic needs to be updated, see https://github.com/brillout/vite-plugin-ssr/issues/423',
+    { onlyOnce: true },
   )
   return true
 }
