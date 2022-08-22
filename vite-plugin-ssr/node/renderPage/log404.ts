@@ -2,9 +2,9 @@ import { PageFile } from '../../shared/getPageFiles'
 import { PageRoutes, loadPageRoutes } from '../../shared/route'
 import { assert, assertUsage, assertWarning, compareString } from '../utils'
 
-export { warn404 }
+export { log404 }
 
-async function warn404(pageContext: {
+async function log404(pageContext: {
   urlPathname: string
   _pageFilesAll: PageFile[]
   _allPageIds: string[]
