@@ -1,3 +1,12 @@
+## [0.4.24](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.23...v0.4.24) (2022-08-22)
+
+
+### Bug Fixes
+
+* Async Route Functions (fix [#425](https://github.com/brillout/vite-plugin-ssr/issues/425)) ([2ba489f](https://github.com/brillout/vite-plugin-ssr/commit/2ba489fb44b78a4d649c8e5e733f130404d5ba7f))
+
+
+
 ## [0.4.23](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.22...v0.4.23) (2022-08-21)
 
 
