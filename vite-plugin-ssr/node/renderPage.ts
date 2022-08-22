@@ -102,7 +102,7 @@ async function renderPageContext(
   } & PageContextUrls &
     PageContext_loadPageFilesServer,
 ): Promise<RenderResult> {
-  if (pageContext.is404) warn404(pageContext)
+  if (pageContext.is404 && !isRenderErrorPageException(pageContext.errorWhileRendering)) warn404(pageContext)
 
   const isError = pageContext.is404 || pageContext.errorWhileRendering
 
