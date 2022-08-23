@@ -1,10 +1,8 @@
 export { distEntriesPlugin }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { NormalizedOutputOptions, OutputBundle } from 'rollup'
-import { distImporter } from 'vite-plugin-dist-importer'
+import { importBuildPlugin } from 'vite-plugin-import-build/plugin'
 import { getOutDirs, projectInfo, pathRelative, pathJoin } from '../utils'
-import { analyzeRollupConfig } from '../helpers'
 
 function distEntriesPlugin(): Plugin[] {
   let config: ResolvedConfig
@@ -16,24 +14,26 @@ function distEntriesPlugin(): Plugin[] {
         config = config_
       }
     },
-    distImporter({
-      getImporterCode: ({ rollup }) => getImporterCode(config, rollup),
-      projectName: projectInfo.projectName
+    importBuildPlugin({
+      getImporterCode: ({ findBuildEntry }) => {
+        const pageFilesEntry = findBuildEntry('pageFiles')
+        return getImporterCode(config, pageFilesEntry)
+      },
+      libraryName: projectInfo.projectName
     })
   ]
 }
 
-function getImporterCode(config: ResolvedConfig, rollup: { options: NormalizedOutputOptions; bundle: OutputBundle }) {
+function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const importPathAbsolute = require.resolve(`../../../../../dist/cjs/node/plugin/plugins/distEntries/loadDistEntries`)
   const { outDirServer } = getOutDirs(config.build.outDir)
   const outDirServerAbsolute = pathJoin(config.root, outDirServer)
   const importPath = pathRelative(outDirServerAbsolute, importPathAbsolute)
-  const { pageFilesOutput } = analyzeRollupConfig(rollup, config)
   const importerCode = [
     `const { setDistEntries } = require('${importPath}');`,
     'setDistEntries({',
-    `  pageFiles: () => import('./${pageFilesOutput}'),`,
+    `  pageFiles: () => import('./${pageFilesEntry}'),`,
     "  clientManifest: () => require('../client/manifest.json'),",
     "  pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
     '});',
