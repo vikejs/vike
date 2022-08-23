@@ -1,3 +1,12 @@
+## [0.4.26](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.25...v0.4.26) (2022-08-23)
+
+
+### Bug Fixes
+
+* use latest vite-plugin-import-build version ([4a2d3ea](https://github.com/brillout/vite-plugin-ssr/commit/4a2d3ea00c3c250f04e90381d6820db989799eef))
+
+
+
 ## [0.4.25](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.24...v0.4.25) (2022-08-22)
 
 
