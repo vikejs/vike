@@ -6,7 +6,7 @@ globalThis.__vite_plugin_ssr__codeId = globalThis.__vite_plugin_ssr__codeId || c
 assertWarning(
   codeId === globalThis.__vite_plugin_ssr__codeId,
   'vite-plugin-ssr is included twice in your bundle, which should be avoided in order reduce KBs loaded by the browser',
-  { onlyOnce: true },
+  { onlyOnce: true }
 )
 
 declare global {

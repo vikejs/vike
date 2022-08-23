@@ -22,15 +22,15 @@ async function getViteDevScripts(pageContext: PageContext): Promise<string> {
   fakeHtml = await pageContext._viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
-    'The HTML transformer of `vite-plugin-pwa` cannot be applied, see workaround at https://github.com/brillout/vite-plugin-ssr/issues/388#issuecomment-1199280084',
+    'The HTML transformer of `vite-plugin-pwa` cannot be applied, see workaround at https://github.com/brillout/vite-plugin-ssr/issues/388#issuecomment-1199280084'
   )
   assertUsage(
     !fakeHtml.startsWith(fakeHtmlBegin.replace(' ', '')),
-    'Vite plugins that minify the HTML are not supported by vite-plugin-ssr, see https://github.com/brillout/vite-plugin-ssr/issues/224',
+    'Vite plugins that minify the HTML are not supported by vite-plugin-ssr, see https://github.com/brillout/vite-plugin-ssr/issues/224'
   )
   assertUsage(
     fakeHtml.startsWith(fakeHtmlBegin) && fakeHtml.endsWith(fakeHtmlEnd),
-    'You are using a Vite Plugin that transforms the HTML in a way that conflicts with vite-plugin-ssr. Create a new GitHub ticket to discuss a solution.',
+    'You are using a Vite Plugin that transforms the HTML in a way that conflicts with vite-plugin-ssr. Create a new GitHub ticket to discuss a solution.'
   )
   const viteInjection = fakeHtml.slice(fakeHtmlBegin.length, -1 * fakeHtmlEnd.length)
   assert(viteInjection.includes('script'), { viteInjection })

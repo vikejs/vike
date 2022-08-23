@@ -8,7 +8,7 @@ async function getPageId(url: string) {
   const globalContext = await getGlobalContext()
   const pageContext = {
     urlOriginal: url,
-    ...globalContext,
+    ...globalContext
   }
   const pageFilesAll = globalContext._pageFilesAll
   addComputedUrlProps(pageContext)

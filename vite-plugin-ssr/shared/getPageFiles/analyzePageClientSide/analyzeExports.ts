@@ -7,7 +7,7 @@ import { assertUsage } from '../../utils'
 function analyzeExports({
   pageFilesClientSide,
   pageFilesServerSide,
-  pageId,
+  pageId
 }: {
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]
@@ -37,9 +37,9 @@ function analyzeExports({
         'See https://vite-plugin-ssr.com/render-modes for more information.',
         [
           'Loaded client-side page files (none of them `export { render }`):',
-          ...pageFilesClientSide.map((p, i) => ` (${i + 1}): ${p.filePath}`),
-        ].join('\n'),
-      ].join(' '),
+          ...pageFilesClientSide.map((p, i) => ` (${i + 1}): ${p.filePath}`)
+        ].join('\n')
+      ].join(' ')
     )
   }
 

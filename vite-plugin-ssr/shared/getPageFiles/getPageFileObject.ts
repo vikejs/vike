@@ -17,7 +17,7 @@ function getPageFileObject(filePath: string): PageFile {
     isDefaultPageFile: isDefaultFilePath(filePath),
     isRendererPageFile: isDefaultFilePath(filePath) && isRendererFilePath(filePath),
     isErrorPageFile: isErrorPageId(filePath),
-    pageId: determinePageId(filePath),
+    pageId: determinePageId(filePath)
   }
   return pageFile
 }

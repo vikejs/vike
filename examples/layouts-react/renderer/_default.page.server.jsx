@@ -15,7 +15,7 @@ async function render(pageContext) {
   const pageHtml = renderToString(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 
   return escapeInject`<!DOCTYPE html>

@@ -19,7 +19,7 @@ async function log404(pageContext: {
     assertInfo(
       false,
       `\`throw RenderErrorPage()\` was thrown while rendering URL \`${urlPathname}\`. (This info isn't shown in production.)`,
-      { onlyOnce: false },
+      { onlyOnce: false }
     )
     return
   }
@@ -27,16 +27,16 @@ async function log404(pageContext: {
   const { pageRoutes } = await loadPageRoutes(pageContext)
   assertUsage(
     pageRoutes.length > 0,
-    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).',
+    'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
   )
   if (!pageContext._isProduction && !isFileRequest(urlPathname) && !pageContext._isPageContextRequest) {
     assertInfo(
       false,
       [
         `URL \`${urlPathname}\` isn't matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing and/or set the environment variable \`DEBUG=vps:routing\` for more information. (This info isn't shown in production.) Your page routes:`,
-        ...getPagesAndRoutesInfo(pageRoutes),
+        ...getPagesAndRoutesInfo(pageRoutes)
       ].join('\n'),
-      { onlyOnce: false },
+      { onlyOnce: false }
     )
   }
 }

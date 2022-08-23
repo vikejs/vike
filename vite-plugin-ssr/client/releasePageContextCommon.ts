@@ -48,14 +48,14 @@ function releasePageContextCommon<T extends PageContextRelease>(pageContext: T) 
 
 const JAVASCRIPT_BUILT_INS = [
   'then',
-  'toJSON', // Vue tries to access `toJSON`
+  'toJSON' // Vue tries to access `toJSON`
 ]
 const PASS_TO_CLIENT_BUILT_INS = ['_pageId', '_serverSideErrorWhileStreaming'] as const
 
 // Hints the user to use `paassToClient` when accessing undefined `pageContext` props
 let disable: false | string = false
 function getProxy<
-  T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> },
+  T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> }
 >(pageContext: T): T {
   return new Proxy(pageContext, { get })
 
@@ -87,7 +87,7 @@ function getProxy<
 function assertPassToClient(
   pageContextRetrievedFromServer: null | Record<string, unknown>,
   prop: string,
-  isMissing: boolean,
+  isMissing: boolean
 ) {
   if (!isMissing) {
     return
@@ -97,7 +97,7 @@ function assertPassToClient(
     return
   }
   const passToClientInferred = Object.keys(pageContextRetrievedFromServer).filter(
-    (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop),
+    (prop) => !(PASS_TO_CLIENT_BUILT_INS as any as string[]).includes(prop)
   )
   assertUsage(
     false,
@@ -105,8 +105,8 @@ function assertPassToClient(
       `\`pageContext.${prop}\` is not available in the browser.`,
       `Make sure that \`passToClient.includes('${prop}')\`.`,
       `(Currently \`passToClient\` is \`[${passToClientInferred.map((prop) => `'${prop}'`).join(', ')}]\`.)`,
-      'More infos at https://vite-plugin-ssr.com/passToClient',
-    ].join(' '),
+      'More infos at https://vite-plugin-ssr.com/passToClient'
+    ].join(' ')
   )
 }
 

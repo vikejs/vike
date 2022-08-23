@@ -27,7 +27,7 @@ async function onBeforeRender(pageContext) {
   const pageHtml = renderToString(
     <Provider store={store}>
       <Page />
-    </Provider>,
+    </Provider>
   )
 
   // Grab the initial state from our Redux store
@@ -36,7 +36,7 @@ async function onBeforeRender(pageContext) {
   return {
     pageContext: {
       PRELOADED_STATE,
-      pageHtml,
-    },
+      pageHtml
+    }
   }
 }

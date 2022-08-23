@@ -15,8 +15,8 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
   const pageProps = { name }
   return {
     pageContext: {
-      pageProps,
-    },
+      pageProps
+    }
   }
 }
 

@@ -60,7 +60,7 @@ function Code(props) {
     backgroundColor: '#eaeaea',
     padding: '1px 4px',
     borderRadius: '3px',
-    ...props.style,
+    ...props.style
   }
   return <code {...props} style={style} />
 }

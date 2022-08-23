@@ -5,7 +5,7 @@ export { getManifestEntry }
 
 function getManifestEntry(
   id: string,
-  clientManifest: ViteManifest,
+  clientManifest: ViteManifest
 ): null | { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertPosixPath(id)
   assert(!id.startsWith('/@fs'), { id })

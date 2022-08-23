@@ -6,7 +6,7 @@ import { assert, assertUsage, isCallable } from './utils'
 
 function getHook(
   pageContext: PageContextExports,
-  hookName: 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute',
+  hookName: 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute'
 ): null | { hook: Function; filePath: string } {
   if (!(hookName in pageContext.exports)) {
     return null
@@ -23,7 +23,7 @@ function getHook(
 
 function assertHook<PC extends PageContextExports, HookName extends PropertyKey>(
   pageContext: PC,
-  hookName: HookName,
+  hookName: HookName
 ): asserts pageContext is PC & { exports: Record<HookName, Function | undefined> } {
   getHook(pageContext, hookName as any)
 }

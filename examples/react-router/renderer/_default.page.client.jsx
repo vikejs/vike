@@ -10,6 +10,6 @@ async function render(pageContext) {
     document.getElementById('react-root'),
     <BrowserRouter>
       <Page {...pageContext.pageProps} />
-    </BrowserRouter>,
+    </BrowserRouter>
   )
 }

@@ -21,6 +21,6 @@ export default {
   setup() {
     const { result } = useQuery(getChar)
     return { result }
-  },
+  }
 }
 </script>

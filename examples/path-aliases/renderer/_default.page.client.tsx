@@ -11,6 +11,6 @@ async function render(pageContext: PageContext) {
     document.getElementById('page-view')!,
     <PageLayout>
       <Page />
-    </PageLayout>,
+    </PageLayout>
   )
 }

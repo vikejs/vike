@@ -37,7 +37,7 @@ import {
   objectAssign,
   capitalizeFirstLetter,
   assertWarning,
-  isCallable,
+  isCallable
 } from '../utils'
 import { createDebugger } from '@brillout/debug'
 import { HtmlRender } from './renderHtml'
@@ -48,7 +48,7 @@ import {
   getStreamFromReactStreaming,
   isStreamReactStreaming,
   StreamReactStreaming,
-  streamReactStreamingToString,
+  streamReactStreamingToString
 } from './stream/react-streaming'
 //import { streamNodeModuleGet as loadStreamNodeModule } from './stream/streamNodeModule'
 
@@ -126,7 +126,7 @@ function stringToStreamReadableWeb(str: string): StreamReadableWeb {
     start(controller) {
       controller.enqueue(encodeForWebStream(str))
       controller.close()
-    },
+    }
   })
   return readableStream
 }
@@ -170,7 +170,7 @@ async function streamPipeNodeToString(streamPipeNode: StreamPipeNode): Promise<s
       } else {
         resolve()
       }
-    },
+    }
   })
   streamPipeNode(writable)
   return promise
@@ -186,7 +186,7 @@ function streamPipeWebToString(streamPipeWeb: StreamPipeWeb): Promise<string> {
     },
     close() {
       resolve(str)
-    },
+    }
   })
   streamPipeWeb(writable)
   return promise
@@ -253,18 +253,18 @@ async function processStream<StreamType extends Stream>(
     injectStringAtBegin,
     injectStringAtEnd,
     onErrorWhileStreaming,
-    enableEagerStreaming,
+    enableEagerStreaming
   }: {
     injectStringAtBegin?: () => Promise<string>
     injectStringAtEnd?: () => Promise<string>
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
-  },
+  }
 ): Promise<StreamWrapper<StreamType>> {
   const getManipulationHandlers = ({
     writeData,
     closeStream,
-    getStream,
+    getStream
   }: {
     writeData: (chunk: string) => void
     closeStream: () => void
@@ -363,7 +363,7 @@ async function processStream<StreamType extends Stream>(
       onBegin,
       onEnd,
       onError,
-      streamPromise,
+      streamPromise
     }
   }
 
@@ -414,7 +414,7 @@ async function processStream<StreamType extends Stream>(
         checkType<StreamPipeNodeWrapped>(streamOriginal)
         const stream = pipeNodeWrapper as typeof streamOriginal
         return stream
-      },
+      }
     })
     onBegin()
     let writableOriginal: StreamWritableNode & { flush?: () => void }
@@ -441,7 +441,7 @@ async function processStream<StreamType extends Stream>(
         } else {
           await onEnd()
         }
-      },
+      }
     })
 
     // Forward the flush() command to avoid GZIP buffering
@@ -454,7 +454,7 @@ async function processStream<StreamType extends Stream>(
         if (writableOriginalReady && typeof writableOriginal.flush === 'function') {
           writableOriginal.flush()
         }
-      },
+      }
     })
     assert(typeof writableProxy.flush === 'function')
 
@@ -504,7 +504,7 @@ async function processStream<StreamType extends Stream>(
         checkType<StreamPipeWebWrapped>(streamOriginal)
         const stream = pipeWebWrapper as typeof streamOriginal
         return stream
-      },
+      }
     })
     onBegin()
     let writerOriginal: WritableStreamDefaultWriter<any>
@@ -530,7 +530,7 @@ async function processStream<StreamType extends Stream>(
         },
         close() {
           onEnd()
-        },
+        }
       })
     } else {
       const { readable, writable } = new TransformStream()
@@ -557,7 +557,7 @@ async function processStream<StreamType extends Stream>(
         checkType<StreamReadableWeb>(streamOriginal)
         const stream = readableWebWrapper as typeof streamOriginal
         return stream
-      },
+      }
     })
     onBegin()
     let controller: ReadableStreamController<any>
@@ -566,7 +566,7 @@ async function processStream<StreamType extends Stream>(
       start(controller_) {
         controller = controller_
         handleReadableWeb(readableWebOriginal, { onData, onError, onEnd })
-      },
+      }
     })
     return streamPromise
   }
@@ -592,7 +592,7 @@ async function processStream<StreamType extends Stream>(
         checkType<StreamReadableNode>(streamOriginal)
         const stream = readableNodeWrapper as typeof streamOriginal
         return stream
-      },
+      }
     })
     onBegin()
     readableNodeOriginal.on('data', async (chunk) => {
@@ -612,7 +612,7 @@ async function processStream<StreamType extends Stream>(
 
 async function handleReadableWeb(
   readable: ReadableStream,
-  { onData, onError, onEnd }: { onData: (chunk: string) => void; onError: (err: unknown) => void; onEnd: () => void },
+  { onData, onError, onEnd }: { onData: (chunk: string) => void; onError: (err: unknown) => void; onEnd: () => void }
 ) {
   const reader = readable.getReader()
   while (true) {
@@ -651,7 +651,7 @@ type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
   assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream', {
     onlyOnce: true,
-    showStackTrace: true,
+    showStackTrace: true
   })
   return { [__streamPipeWeb]: pipe }
 }
@@ -687,7 +687,7 @@ function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   assertWarning(
     false,
     'pipeNodeStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream',
-    { onlyOnce: true, showStackTrace: true },
+    { onlyOnce: true, showStackTrace: true }
   )
   return { [__streamPipeNode]: pipe }
 }
@@ -721,7 +721,7 @@ function stampPipe(pipe: StreamPipeNode | StreamPipeWeb, pipeType: 'web-stream' 
   assertUsage(pipeType, 'stampPipe(pipe, pipeType): argument `pipeType` is missing.)')
   assertUsage(
     ['web-stream', 'node-stream'].includes(pipeType),
-    "stampPipe(pipe, pipeType): argument `pipeType` should be either 'web-stream' or 'node-stream'.",
+    "stampPipe(pipe, pipeType): argument `pipeType` should be either 'web-stream' or 'node-stream'."
   )
   if (pipeType === 'node-stream') {
     Object.assign(pipe, { isNodeStreamPipe: true })
@@ -761,7 +761,7 @@ function assertReadableStreamConstructor() {
     // Error message copied from vue's `renderToWebStream()` implementation
     `ReadableStream constructor is not available in the global scope. ` +
       `If the target environment does support web streams, consider using ` +
-      `pipeToWebWritable() with an existing WritableStream instance instead.`,
+      `pipeToWebWritable() with an existing WritableStream instance instead.`
   )
 }
 

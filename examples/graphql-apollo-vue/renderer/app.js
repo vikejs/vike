@@ -17,10 +17,10 @@ function createApp(pageContext, apolloClient) {
         {
           default() {
             return h(Page, pageProps || {})
-          },
-        },
+          }
+        }
       )
-    },
+    }
   }
 
   const app = createSSRApp(PageWithLayout)

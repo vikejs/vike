@@ -13,7 +13,7 @@ const linkPrefetchHandlerAdded = new Map<HTMLElement, true>()
 async function prefetch(url: string): Promise<void> {
   assertUsage(
     !isExternalLink(url),
-    `You are trying to prefetch ${url} which is an external URL. This doesn't make sense since vite-plugin-ssr cannot prefetch external links.`,
+    `You are trying to prefetch ${url} which is an external URL. This doesn't make sense since vite-plugin-ssr cannot prefetch external links.`
   )
 
   if (isAlreadyPrefetched(url)) return

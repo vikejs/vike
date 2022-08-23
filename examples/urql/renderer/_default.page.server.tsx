@@ -41,14 +41,14 @@ export async function onBeforeRender(pageContext: PageContextBuiltIn & PageConte
     url: 'https://countries.trevorblades.com',
     exchanges: [dedupExchange, cacheExchange, ssr, fetchExchange],
     suspense: true,
-    fetch,
+    fetch
   })
 
   // This is the first pass, due to suspense: true it will work with prepass and populate the initial cache
   await prepass(
     <Provider value={client}>
       <Page {...pageProps} />
-    </Provider>,
+    </Provider>
   )
   // After we can construct an initial html with renderToString as our cache is hydrated
   const pageHtml = ReactDOMServer.renderToString(
@@ -56,7 +56,7 @@ export async function onBeforeRender(pageContext: PageContextBuiltIn & PageConte
       <Provider value={client}>
         <Page {...pageProps} />
       </Provider>
-    </PageShell>,
+    </PageShell>
   )
 
   const urqlState = ssr.extractData()
@@ -64,7 +64,7 @@ export async function onBeforeRender(pageContext: PageContextBuiltIn & PageConte
   return {
     pageContext: {
       pageHtml,
-      urqlState,
-    },
+      urqlState
+    }
   }
 }

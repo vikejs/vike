@@ -17,7 +17,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
   if (isHtmlOnly) {
     // HTML-only pages do not need any client-side `render()` hook. For apps that have both HTML-only and SSR/SPA pages, we skip the `.page.client.js` file that defines `render()` for HTML-only pages.
     pageFilesClientSide = pageFilesClientSide.filter(
-      (p) => p.fileType === '.page.client' && !getExportNames(p).includes('render'),
+      (p) => p.fileType === '.page.client' && !getExportNames(p).includes('render')
     )
     pageFilesClientSide = removeOverridenPageFiles(pageFilesClientSide)
   }
@@ -26,7 +26,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
     pageFilesClientSide,
     pageFilesServerSide,
     isHtmlOnly,
-    isClientRouting,
+    isClientRouting
   })
   return { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide }
 }
@@ -34,7 +34,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
 async function analyzePageClientSideInit(
   pageFilesAll: PageFile[],
   pageId: string,
-  { sharedPageFilesAlreadyLoaded }: { sharedPageFilesAlreadyLoaded: boolean },
+  { sharedPageFilesAlreadyLoaded }: { sharedPageFilesAlreadyLoaded: boolean }
 ) {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
 
@@ -57,7 +57,7 @@ async function analyzePageClientSideInit(
         return Object.keys(pageFile.fileExports).includes(clientRouting)
       }
       */
-    }),
+    })
   )
 }
 

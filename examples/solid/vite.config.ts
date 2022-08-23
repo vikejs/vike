@@ -6,8 +6,8 @@ const config: UserConfig = {
   plugins: [solidPlugin({ ssr: true }), ssr()],
   build: {
     // @ts-ignore
-    polyfillDynamicImport: false,
-  },
+    polyfillDynamicImport: false
+  }
 }
 
 export default config

@@ -26,7 +26,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertWarning(false, '`_injectAssets()` is deprecated and will be removed.', { onlyOnce: true, showStackTrace: true })
   assertUsage(
     typeof htmlString === 'string',
-    '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.',
+    '[injectAssets(htmlString, pageContext)]: Argument `htmlString` should be a string.'
   )
   assertUsage(pageContext, '[injectAssets(htmlString, pageContext)]: Argument `pageContext` is missing.')
   const errMsg = (body: string) =>
@@ -64,13 +64,13 @@ async function injectAssets(htmlString: string, pageContext: PageContextInjectAs
 
 function injectAssetsToStream(
   pageContext: PageContextInjectAssets,
-  injectToStream: null | ((htmlChunk: string) => void),
+  injectToStream: null | ((htmlChunk: string) => void)
 ) {
   let htmlSnippets: HtmlSnippet[]
 
   return {
     injectAtStreamBegin,
-    injectAtStreamEnd,
+    injectAtStreamEnd
   }
 
   async function injectAtStreamBegin(htmlBegin: string): Promise<string> {
@@ -119,11 +119,11 @@ async function getHtmlSnippets(
   pageContext: PageContextInjectAssets,
   {
     isHtmlOnly,
-    injectJavaScriptDuringStream,
+    injectJavaScriptDuringStream
   }: {
     injectJavaScriptDuringStream: boolean
     isHtmlOnly: boolean
-  },
+  }
 ) {
   const pageAssets = await pageContext._getPageAssets()
 
@@ -136,7 +136,7 @@ async function getHtmlSnippets(
     htmlSnippets.push({
       // Needs to be called after `resolvePageContextPromise()`
       htmlSnippet: () => getPageContextTag(pageContext),
-      position: positionJs,
+      position: positionJs
     })
   }
 
@@ -144,7 +144,7 @@ async function getHtmlSnippets(
   if (jsScript) {
     htmlSnippets.push({
       htmlSnippet: jsScript,
-      position: positionJs,
+      position: positionJs
     })
   }
 
@@ -194,7 +194,7 @@ async function getHtmlSnippets(
 
 async function getMergedScriptTag(
   pageAssets: PageAsset[],
-  pageContext: PageContextInjectAssets,
+  pageContext: PageContextInjectAssets
 ): Promise<null | string> {
   const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts(pageContext)

@@ -12,7 +12,7 @@ function createApp(pageContext) {
     data: () => ({
       Page: markRaw(Page),
       pageProps: markRaw(pageContext.pageProps || {}),
-      Layout: markRaw(pageContext.exports.Layout || LayoutDefault),
+      Layout: markRaw(pageContext.exports.Layout || LayoutDefault)
     }),
     created() {
       rootComponent = this
@@ -24,10 +24,10 @@ function createApp(pageContext) {
         {
           default: () => {
             return h(this.Page, this.pageProps)
-          },
-        },
+          }
+        }
       )
-    },
+    }
   })
 
   const app = createSSRApp(PageWithWrapper)

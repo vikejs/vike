@@ -15,7 +15,7 @@ function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 
   // For assets living `public/`, we need to manually inject the Base URL:

@@ -10,7 +10,7 @@ function commonConfig(): Plugin {
     configResolved(config) {
       setDefaultPort(config)
       workaroundCI(config)
-    },
+    }
   }
 }
 

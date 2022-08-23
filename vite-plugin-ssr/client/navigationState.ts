@@ -12,5 +12,5 @@ export const navigationState = {
   },
   isFirstUrl(url: string) {
     return url === urlFirst
-  },
+  }
 }

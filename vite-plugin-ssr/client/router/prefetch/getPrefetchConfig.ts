@@ -21,7 +21,7 @@ function getPrefetchConfig(pageContext: PageContextPrefetch, linkTag: HTMLElemen
   const prefetchStaticAssets = getStaticAssetsConfig(pageContext, linkTag)
   return {
     prefetchPageContext: false, // https://github.com/brillout/vite-plugin-ssr/issues/246
-    prefetchStaticAssets,
+    prefetchStaticAssets
   }
 }
 function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLElement) {
@@ -37,7 +37,7 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
     if ('prefetchLinks' in pageContext.exports) {
       assertUsage(
         prefetchAttribute === null,
-        '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.',
+        '`export { prefetchLinks }` is deprecated, use `export { prefetchStaticAssets }` instead.'
       )
     }
 

@@ -12,13 +12,13 @@ async function render(pageContext) {
     document.getElementById('page-content'),
     <App apolloClient={apolloClient}>
       <Page />
-    </App>,
+    </App>
   )
 }
 
 function makeApolloClient(apolloIntialState) {
   return new ApolloClient({
     uri: 'https://countries.trevorblades.com',
-    cache: new InMemoryCache().restore(apolloIntialState),
+    cache: new InMemoryCache().restore(apolloIntialState)
   })
 }

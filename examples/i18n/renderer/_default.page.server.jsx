@@ -15,7 +15,7 @@ function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 
   return escapeInject`<!DOCTYPE html>
@@ -35,7 +35,7 @@ function onBeforePrerender(globalContext) {
   globalContext.prerenderPageContexts.forEach((pageContext) => {
     prerenderPageContexts.push({
       ...pageContext,
-      locale: localeDefault,
+      locale: localeDefault
     })
     locales
       .filter((locale) => locale !== localeDefault)
@@ -43,13 +43,13 @@ function onBeforePrerender(globalContext) {
         prerenderPageContexts.push({
           ...pageContext,
           urlOriginal: `/${locale}${pageContext.urlOriginal}`,
-          locale,
+          locale
         })
       })
   })
   return {
     globalContext: {
-      prerenderPageContexts,
-    },
+      prerenderPageContexts
+    }
   }
 }

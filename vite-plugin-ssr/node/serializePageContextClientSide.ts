@@ -52,8 +52,8 @@ function serializePageContextClientSide(pageContext: {
         assertUsage(
           false,
           `\`${valueName}\` cannot be serialized and, therefore, cannot be passed to the client. Make sure that \`${valueName}\` is serializable or remove \`'${prop}'\` from \`passToClient\`. Serialization error: ${lowercaseFirstLetter(
-            err.message,
-          )}`,
+            err.message
+          )}`
         )
       }
     })

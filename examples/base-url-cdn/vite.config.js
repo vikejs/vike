@@ -3,5 +3,5 @@ import ssr from 'vite-plugin-ssr/plugin'
 
 export default {
   plugins: [react(), ssr()],
-  base: 'http://localhost:8080/cdn/',
+  base: 'http://localhost:8080/cdn/'
 }

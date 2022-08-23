@@ -5,16 +5,16 @@ import { UserConfig } from 'vite'
 const config: UserConfig = {
   resolve: {
     alias: {
-      '#root': __dirname,
-    },
+      '#root': __dirname
+    }
   },
   plugins: [
     react(),
     ssr({
       includeAssetsImportedByServer: true,
-      prerender: true,
-    }),
-  ],
+      prerender: true
+    })
+  ]
 }
 
 export default config

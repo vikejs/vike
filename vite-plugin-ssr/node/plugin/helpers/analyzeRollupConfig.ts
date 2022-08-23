@@ -25,7 +25,7 @@ function analyzeRollupConfig(rollupResolved: RollupResolved, config: ResolvedCon
     assert(outDir.endsWith('/server'), { outDir })
     assertUsage(
       bundleFiles.includes(pageFilesOutput),
-      `\`${outDir}/${pageFilesOutput}\` is missing: make sure your Rollup config doesn't change the filename \`${pageFilesOutput}\``,
+      `\`${outDir}/${pageFilesOutput}\` is missing: make sure your Rollup config doesn't change the filename \`${pageFilesOutput}\``
     )
   }
   return { isEsm, pageFilesOutput }
@@ -46,7 +46,7 @@ function isEsmFormat(rollupResolved: RollupResolved): boolean {
       format === 'es' ||
       format === 'iife' ||
       format === 'system' ||
-      format === 'umd',
+      format === 'umd'
   )
   return format === 'es'
 }

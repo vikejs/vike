@@ -10,13 +10,13 @@ import { assertConfigVpsResolved } from './config/assertConfigVps'
 import {
   virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesClientCR,
-  virtualModuleIdPageFilesServer,
+  virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 
 const virtualModuleIds = [
   virtualModuleIdPageFilesServer,
   virtualModuleIdPageFilesClientSR,
-  virtualModuleIdPageFilesClientCR,
+  virtualModuleIdPageFilesClientCR
 ]
 
 type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
@@ -42,7 +42,7 @@ function generateImportGlobs(): Plugin {
         const code = await getCode(config, isForClientSide, isClientRouting)
         return code
       }
-    },
+    }
   } as Plugin
 }
 
@@ -63,7 +63,7 @@ function getContent(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  config: Config,
+  config: Config
 ) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
@@ -87,7 +87,7 @@ export const isGeneratedFile = true;
       getGlobs(includePaths, isBuild, 'page.client'),
       getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
       getGlobs(includePaths, isBuild, 'page.server', 'extractExportNames'),
-      getGlobs(includePaths, isBuild, 'page', 'extractExportNames'),
+      getGlobs(includePaths, isBuild, 'page', 'extractExportNames')
     ].join('\n')
     if (config.vitePluginSsr.includeAssetsImportedByServer) {
       fileContent += getGlobs(includePaths, isBuild, 'page.server', 'extractStyles')
@@ -95,13 +95,13 @@ export const isGeneratedFile = true;
   } else {
     fileContent += [
       getGlobs(includePaths, isBuild, 'page.server'),
-      getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
+      getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames')
     ].join('\n')
     if (isBuild && config.vitePluginSsr.prerender) {
       // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
       fileContent += [
         getGlobs(includePaths, true, 'page', 'extractExportNames'),
-        getGlobs(includePaths, true, 'page.server', 'extractExportNames'),
+        getGlobs(includePaths, true, 'page.server', 'extractExportNames')
       ].join('\n')
     }
   }
@@ -113,7 +113,7 @@ function getGlobs(
   includePaths: string[],
   isBuild: boolean,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  query: 'extractExportNames' | 'extractStyles' | '' = '',
+  query: 'extractExportNames' | 'extractStyles' | '' = ''
 ): string {
   const isEager = isBuild && (query === 'extractExportNames' || fileSuffix === 'page.route')
 
@@ -159,6 +159,6 @@ function getGlobs(
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
     `${pageFilesVar}['.${fileSuffix}'] = ${varName};`,
-    '',
+    ''
   ].join('\n')
 }

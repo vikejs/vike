@@ -12,6 +12,6 @@ async function render(pageContext) {
     document.getElementById('react-root'),
     <Provider store={store}>
       <Page />
-    </Provider>,
+    </Provider>
   )
 }

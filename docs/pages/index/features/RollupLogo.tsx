@@ -13,7 +13,7 @@ function RollupLogo() {
         marginRight: 4,
         marginLeft: 1,
         position: 'relative',
-        top: -1,
+        top: -1
       }}
     />
   )

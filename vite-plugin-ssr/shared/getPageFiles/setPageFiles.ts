@@ -9,7 +9,7 @@ import { parseGlobResults } from './parseGlobResults'
 
 const pageFiles = (globalThis.__vite_plugin_ssr__pageFiles = globalThis.__vite_plugin_ssr__pageFiles || {
   pageFilesAll: undefined,
-  pageFilesGetter: undefined,
+  pageFilesGetter: undefined
 })
 
 function setPageFiles(pageFilesExports: unknown) {
@@ -23,7 +23,7 @@ function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
 
 async function getPageFilesAll(
   isClientSide: boolean,
-  isProduction?: boolean,
+  isProduction?: boolean
 ): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[] }> {
   if (isClientSide) {
     assert(!pageFiles.pageFilesGetter)

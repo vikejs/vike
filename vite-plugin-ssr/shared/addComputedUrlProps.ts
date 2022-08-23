@@ -40,7 +40,7 @@ type PageContextUrls = {
 }
 
 function addComputedUrlProps<PageContext extends Record<string, unknown> & PageContextUrlSource>(
-  pageContext: PageContext,
+  pageContext: PageContext
 ): asserts pageContext is PageContext & PageContextUrls {
   assert(pageContext.urlOriginal)
   if ('urlPathname' in pageContext) {
@@ -49,7 +49,7 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
     Object.defineProperty(pageContext, 'urlPathname', {
       get: urlPathnameGetter,
       enumerable: true,
-      configurable: true,
+      configurable: true
     })
   }
   if ('url' in pageContext) {
@@ -58,7 +58,7 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
     Object.defineProperty(pageContext, 'url', {
       get: urlGetter,
       enumerable: false,
-      configurable: true,
+      configurable: true
     })
   }
   if ('urlParsed' in pageContext) {
@@ -67,7 +67,7 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
     Object.defineProperty(pageContext, 'urlParsed', {
       get: urlParsedGetter,
       enumerable: true,
-      configurable: true,
+      configurable: true
     })
   }
 }
@@ -97,7 +97,7 @@ function urlGetter(this: PageContextUrlSource) {
   assertWarning(
     false,
     '`pageContext.url` is outdated. Use `pageContext.urlPathname`, `pageContext.urlParsed`, or `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
-    { onlyOnce: true, showStackTrace: true },
+    { onlyOnce: true, showStackTrace: true }
   )
   return urlPathnameGetter.call(this)
 }
@@ -118,7 +118,7 @@ function urlParsedGetter(this: PageContextUrlSource) {
       assertWarning(
         false,
         '`pageContext.urlParsed.hashString` has been renamed to `pageContext.urlParsed.hashOriginal`',
-        { onlyOnce: true, showStackTrace: true },
+        { onlyOnce: true, showStackTrace: true }
       )
       return hashOriginal
     },
@@ -126,10 +126,10 @@ function urlParsedGetter(this: PageContextUrlSource) {
       assertWarning(
         false,
         '`pageContext.urlParsed.searchString` has been renamed to `pageContext.urlParsed.searchOriginal`',
-        { onlyOnce: true, showStackTrace: true },
+        { onlyOnce: true, showStackTrace: true }
       )
       return searchOriginal
-    },
+    }
   }
   makeNonEnumerable(urlParsed, 'hashString')
   makeNonEnumerable(urlParsed, 'searchString')

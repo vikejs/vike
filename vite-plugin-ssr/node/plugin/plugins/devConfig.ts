@@ -24,14 +24,14 @@ function devConfig(): Plugin[] {
             '@brillout/libassert',
             '@brillout/json-s',
             '@brillout/json-s/parse',
-            '@brillout/json-s/stringify',
-          ],
-        },
+            '@brillout/json-s/stringify'
+          ]
+        }
       }),
       async configResolved(config) {
         addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
         await determineFsAllowList(config)
-      },
+      }
     },
     {
       name: 'vite-plugin-ssr:dev:ssr-middleware',
@@ -40,8 +40,8 @@ function devConfig(): Plugin[] {
         return () => {
           addSsrMiddleware(server.middlewares)
         }
-      },
-    },
+      }
+    }
   ]
 }
 

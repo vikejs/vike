@@ -21,7 +21,7 @@ async function getPageAssets(
   },
   clientDependencies: ClientDependency[],
   clientEntries: string[],
-  isPreRendering: boolean,
+  isPreRendering: boolean
 ): Promise<PageAsset[]> {
   const isDev = !isPreRendering && !pageContext._isProduction
 
@@ -45,7 +45,7 @@ async function getPageAssets(
       src: clientEntrySrc,
       assetType: 'script',
       mediaType: 'text/javascript',
-      preloadType: null,
+      preloadType: null
     })
   })
   assetUrls.forEach((src) => {
@@ -59,7 +59,7 @@ async function getPageAssets(
       src,
       assetType,
       mediaType,
-      preloadType,
+      preloadType
     })
   })
 
@@ -96,7 +96,7 @@ function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
       if (preloadType === 'script') return priority - 2
 
       return priority
-    }),
+    })
   )
 }
 

@@ -5,7 +5,7 @@ import { assert, assertUsage } from '../../utils'
 import { loadDistEntries as loadDistEntries_ } from 'vite-plugin-dist-importer/loadDistEntries'
 
 const distEntries = (globalThis.__vite_plugin_ssr__distEntries = globalThis.__vite_plugin_ssr__distEntries || {
-  value: null,
+  value: null
 })
 
 type DistEntries = null | {
@@ -24,7 +24,7 @@ async function loadDistEntries() {
     assert(importBuildFileName)
     assertUsage(
       success,
-      `Cannot find production build. Did you to run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`,
+      `Cannot find production build. Did you to run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`
     )
     assert(distEntries.value, { entryFile })
   }
@@ -32,7 +32,7 @@ async function loadDistEntries() {
   const [pageFiles, clientManifest, pluginManifest] = await Promise.all([
     distEntries.value.pageFiles(),
     distEntries.value.clientManifest(),
-    distEntries.value.pluginManifest(),
+    distEntries.value.pluginManifest()
   ])
   return { pageFiles, clientManifest, pluginManifest }
 }

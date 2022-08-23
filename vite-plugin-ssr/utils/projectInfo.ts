@@ -5,5 +5,5 @@ export const projectInfo = {
   projectVersion: PROJECT_VERSION,
   npmPackageName: 'vite-plugin-ssr' as const,
   githubRepository: 'https://github.com/brillout/vite-plugin-ssr' as const,
-  discordInviteToolChannel: 'https://discord.com/invite/qTq92FQzKb' as const,
+  discordInviteToolChannel: 'https://discord.com/invite/qTq92FQzKb' as const
 }

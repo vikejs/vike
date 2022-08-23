@@ -40,7 +40,7 @@ async function renderHtml(
   documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
   renderFilePath: string,
-  onErrorWhileStreaming: (err: unknown) => void,
+  onErrorWhileStreaming: (err: unknown) => void
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
@@ -51,7 +51,7 @@ async function renderHtml(
     const stream = documentHtml
     const result = await renderHtmlStream(stream, {
       pageContext,
-      onErrorWhileStreaming,
+      onErrorWhileStreaming
     })
     if ('errorBeforeFirstData' in result) {
       throw result.errorBeforeFirstData
@@ -71,10 +71,10 @@ async function renderHtml(
       const result = await renderHtmlStream(render.stream, {
         injectString: {
           stringBegin: render.stringBegin,
-          stringEnd: render.stringEnd,
+          stringEnd: render.stringEnd
         },
         pageContext,
-        onErrorWhileStreaming,
+        onErrorWhileStreaming
       })
       if ('errorBeforeFirstData' in result) {
         throw result.errorBeforeFirstData
@@ -94,16 +94,16 @@ async function renderHtmlStream(
   {
     injectString,
     pageContext,
-    onErrorWhileStreaming,
+    onErrorWhileStreaming
   }: {
     injectString?: { stringBegin: string; stringEnd: string }
     pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean }
     onErrorWhileStreaming: (err: unknown) => void
-  },
+  }
 ) {
   const opts = {
     onErrorWhileStreaming,
-    enableEagerStreaming: pageContext.enableEagerStreaming,
+    enableEagerStreaming: pageContext.enableEagerStreaming
   }
   if (injectString) {
     let injectToStream: null | ((chunk: string) => void) = null
@@ -117,7 +117,7 @@ async function renderHtmlStream(
       },
       injectStringAtEnd: async () => {
         return await injectAtStreamEnd(injectString.stringEnd)
-      },
+      }
     })
   }
   const result = await processStream(streamOriginal, opts)
@@ -151,13 +151,13 @@ function escapeInject(
 ): TemplateWrapped {
   assertUsage(
     templateStrings.length === templateVariables.length + 1 && templateStrings.every((str) => typeof str === 'string'),
-    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject',
+    'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject'
   )
   return {
     [__template]: {
       templateStrings,
-      templateVariables: templateVariables as TemplateVariable[],
-    },
+      templateVariables: templateVariables as TemplateVariable[]
+    }
   }
 }
 const __escaped = '__escaped'
@@ -172,18 +172,18 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   }
   assertUsage(
     !isPromise(arg),
-    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`,
+    `[dangerouslySkipEscape(str)] Argument \`str\` is a promise. It should be a string instead. Make sure to \`await str\`.`
   )
   assertUsage(
     typeof arg === 'string',
-    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`,
+    `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`
   )
   return { [__escaped]: arg }
 }
 
 function renderTemplate(
   templateContent: TemplateContent,
-  renderFilePath: string,
+  renderFilePath: string
 ): { type: 'string'; value: string } | { type: 'stream'; stream: Stream; stringBegin: string; stringEnd: string } {
   let stringBegin = ''
   let stream: null | Stream = null
@@ -217,7 +217,7 @@ function renderTemplate(
       const render = renderTemplate(templateContentInner, renderFilePath)
       assertUsage(
         !(stream !== null && render.type === 'stream'),
-        `You are trying to eject two streams in your \`escapeInject\` template tag of your render() hook exported by ${renderFilePath}. Inject only one stream instead.`,
+        `You are trying to eject two streams in your \`escapeInject\` template tag of your render() hook exported by ${renderFilePath}. Inject only one stream instead.`
       )
       if (render.type === 'string') {
         addString(render.value)
@@ -240,7 +240,7 @@ function renderTemplate(
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
       return [
         `Each HTML variable should be a string (or a stream), but the ${nth} HTML variable is ${typeText}, see \`render()\` hook of ${renderFilePath}.`,
-        end,
+        end
       ]
         .filter(Boolean)
         .join(' ')
@@ -273,7 +273,7 @@ function renderTemplate(
     assert(stringEnd === '')
     return {
       type: 'string',
-      value: stringBegin,
+      value: stringBegin
     }
   }
 
@@ -281,7 +281,7 @@ function renderTemplate(
     type: 'stream',
     stream,
     stringBegin,
-    stringEnd,
+    stringEnd
   }
 }
 

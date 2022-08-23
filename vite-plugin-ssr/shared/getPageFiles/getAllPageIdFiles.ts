@@ -22,7 +22,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
     const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.fileType === fileType)
     assertUsage(
       files.length <= 1,
-      `Merge the following files into a single file: ${files.map((p) => p.filePath).join(' ')}`,
+      `Merge the following files into a single file: ${files.map((p) => p.filePath).join(' ')}`
     )
     const pageIdFile = files[0]
     assert(pageIdFile === undefined || !pageIdFile.isDefaultPageFile)
@@ -32,7 +32,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
   // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
   // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`.
   const defaultFilesNonRenderer = pageFilesRelevant.filter(
-    (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.fileType === fileTypeEnv || p.fileType === '.page'),
+    (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.fileType === fileTypeEnv || p.fileType === '.page')
   )
   defaultFilesNonRenderer.sort(sorter)
 
@@ -45,7 +45,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
 
   // Ordered by `pageContext.exports` precendence
   let pageFiles = [pageIdFileEnv, pageIdFileIso, ...defaultFilesNonRenderer, rendererFileEnv, rendererFileIso].filter(
-    isNotNullish,
+    isNotNullish
   )
 
   return pageFiles

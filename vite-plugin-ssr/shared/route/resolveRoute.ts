@@ -5,7 +5,7 @@ import { resolveRouteString } from './resolveRouteString'
 
 function resolveRoute(
   routeString: string,
-  urlPathname: string,
+  urlPathname: string
 ): { match: boolean; routeParams: Record<string, string> } {
   const errMsg = (propName: 'routeString' | 'urlPathname', msg = 'a non-empty string') =>
     `[resolveRoute(routeString, urlPathname)] \`${propName}\` should be ` + msg
@@ -15,6 +15,6 @@ function resolveRoute(
   const result = resolveRouteString(routeString, urlPathname)
   return {
     match: !!result,
-    routeParams: result?.routeParams ?? {},
+    routeParams: result?.routeParams ?? {}
   }
 }

@@ -18,14 +18,14 @@ async function startServer() {
   } else {
     viteDevServer = await vite.createServer({
       root,
-      server: { middlewareMode: 'ssr' },
+      server: { middlewareMode: 'ssr' }
     })
     app.use(viteDevServer.middlewares)
   }
 
   app.get('*', async (req, res, next) => {
     const pageContextInit = {
-      urlOriginal: req.originalUrl,
+      urlOriginal: req.originalUrl
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
@@ -57,8 +57,8 @@ function assert_pageAssets(pageAssets) {
           a.src === '/pages/index.css?direct' &&
           a.assetType === 'style' &&
           a.mediaType === 'text/css' &&
-          a.preloadType === 'style',
-      ),
+          a.preloadType === 'style'
+      )
     )
     assert(
       pageAssets.find(
@@ -67,8 +67,8 @@ function assert_pageAssets(pageAssets) {
           a.src.endsWith('/vite-plugin-ssr/dist/esm/client/entry.js') &&
           a.assetType === 'script' &&
           a.mediaType === 'text/javascript' &&
-          a.preloadType === null,
-      ),
+          a.preloadType === null
+      )
     )
   } else {
     const hashRegex = /[a-z0-9]+/
@@ -78,8 +78,8 @@ function assert_pageAssets(pageAssets) {
           partRegex`/assets/entry-server-routing.${/[a-z0-9]+/}.js`.test(a.src) &&
           a.assetType === 'script' &&
           a.mediaType === 'text/javascript' &&
-          a.preloadType === null,
-      ),
+          a.preloadType === null
+      )
     )
     assert(
       pageAssets.find(
@@ -87,8 +87,8 @@ function assert_pageAssets(pageAssets) {
           partRegex`/assets/entry-server-routing.${/[a-z0-9]+/}.js`.test(a.src) &&
           a.assetType === 'preload' &&
           a.mediaType === 'text/javascript' &&
-          a.preloadType === 'script',
-      ),
+          a.preloadType === 'script'
+      )
     )
     assert(
       pageAssets.find(
@@ -96,8 +96,8 @@ function assert_pageAssets(pageAssets) {
           partRegex`/assets/chunk-${/[a-z0-9]+/}.js`.test(a.src) &&
           a.assetType === 'preload' &&
           a.mediaType === 'text/javascript' &&
-          a.preloadType === 'script',
-      ),
+          a.preloadType === 'script'
+      )
     )
     assert(
       pageAssets.find(
@@ -105,8 +105,8 @@ function assert_pageAssets(pageAssets) {
           partRegex`/assets/pages/index.page.${hashRegex}.js`.test(a.src) &&
           a.assetType === 'preload' &&
           a.mediaType === 'text/javascript' &&
-          a.preloadType === 'script',
-      ),
+          a.preloadType === 'script'
+      )
     )
     assert(
       pageAssets.find(
@@ -117,8 +117,8 @@ function assert_pageAssets(pageAssets) {
             partRegex`/assets/index.page.${hashRegex}.css`.test(a.src)) &&
           a.assetType === 'style' &&
           a.mediaType === 'text/css' &&
-          a.preloadType === 'style',
-      ),
+          a.preloadType === 'style'
+      )
     )
     assert(
       pageAssets.find(
@@ -126,8 +126,8 @@ function assert_pageAssets(pageAssets) {
           partRegex`/assets/renderer/_default.page.client.${/[a-z0-9]+/}.js`.test(a.src) &&
           a.assetType === 'preload' &&
           a.mediaType === 'text/javascript' &&
-          a.preloadType === 'script',
-      ),
+          a.preloadType === 'script'
+      )
     )
   }
 }

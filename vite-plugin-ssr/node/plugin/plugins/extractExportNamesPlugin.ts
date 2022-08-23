@@ -32,7 +32,7 @@ function extractExportNamesPlugin(): Plugin {
       if (debugEnabled) {
         return { logLevel: 'silent' }
       }
-    },
+    }
   } as Plugin
 }
 
@@ -57,7 +57,7 @@ function getCode(exportNames: string[], wildcardReExports: string[], isClientSid
   code += '\n'
   code += `export const exportNames = [${[
     ...exportNames.map((n) => JSON.stringify(n)),
-    ...reExportVarNames.map((varName) => `...${varName}`),
+    ...reExportVarNames.map((varName) => `...${varName}`)
   ].join(', ')}];`
 
   code = injectHmr(code, isClientSide, isProduction)

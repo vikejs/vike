@@ -14,6 +14,6 @@ function removeRequireHookPlugin(): Plugin {
       const pluginsMod = config.plugins.filter((plugin) => plugin.name !== 'vite:ssr-require-hook')
       // @ts-ignore
       config.plugins = pluginsMod
-    },
+    }
   }
 }

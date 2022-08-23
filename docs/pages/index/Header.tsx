@@ -42,7 +42,7 @@ function LeftSide() {
         id="header-logo"
         style={{
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'center'
         }}
       >
         <Logo />
@@ -80,7 +80,7 @@ function TourCallToAction({ style }: { style?: React.CSSProperties }) {
           gridTemplateColumns: 'repeat(2, 1fr)',
           marginTop: 0,
           gridGap: 10,
-          height: 50,
+          height: 50
         }}
       >
         <CallToAction href="/vue-tour" text="Vue Tour" icon={iconVue} />
@@ -102,7 +102,7 @@ function CallToAction({ href, text, icon }: { href: string; text: string; icon: 
           padding: 0,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'center'
         }}
       >
         <img src={icon} style={{ height: 30, marginRight: 5 }} />

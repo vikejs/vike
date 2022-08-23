@@ -23,7 +23,7 @@ function isParsable(url: string): boolean {
 
 function parseUrl(
   url: string,
-  baseUrl: string,
+  baseUrl: string
 ): {
   origin: null | string
   pathname: string
@@ -84,7 +84,7 @@ function parseUrl(
     searchAll,
     searchOriginal,
     hash,
-    hashOriginal,
+    hashOriginal
   }
 }
 function decodeSafe(urlComponent: string): string {
@@ -146,11 +146,11 @@ function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '
   assertUsage(
     !baseUrl.startsWith('http'),
     usageErrorMessagePrefix +
-      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vite-plugin-ssr.com/base-url',
+      '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vite-plugin-ssr.com/base-url'
   )
   assertUsage(
     baseUrl.startsWith('/'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`.',
+    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`.'
   )
   assertBaseUrl(baseUrl)
 }

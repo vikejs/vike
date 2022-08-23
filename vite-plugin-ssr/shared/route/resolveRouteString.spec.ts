@@ -10,11 +10,11 @@ describe('resolveRouteString', () => {
 
     expectError(
       () => resolveRouteString('', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`\` (empty string): route strings should start with a leading slash \`/\` (or be \`*\`).`,
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`\` (empty string): route strings should start with a leading slash \`/\` (or be \`*\`).`
     )
     expectError(
       () => resolveRouteString('a', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`a\`: route strings should start with a leading slash \`/\` (or be \`*\`).`,
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`a\`: route strings should start with a leading slash \`/\` (or be \`*\`).`
     )
   })
 
@@ -63,11 +63,11 @@ describe('resolveRouteString', () => {
 
     expectError(
       () => resolveRouteString('/a/*/c/*', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`/a/*/c/*\`: route strings are not allowed to contain more than one glob character \`*\`.`,
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`/a/*/c/*\`: route strings are not allowed to contain more than one glob character \`*\`.`
     )
     expectError(
       () => resolveRouteString('/a/*/c', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`/a/*/c\`: make sure your route string ends with the glob character \`*\`.`,
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`/a/*/c\`: make sure your route string ends with the glob character \`*\`.`
     )
   })
 

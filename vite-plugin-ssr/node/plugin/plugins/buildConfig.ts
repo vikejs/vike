@@ -14,7 +14,7 @@ function buildConfig(): Plugin {
     async configResolved(config) {
       const input = {
         ...(await entryPoints(config)),
-        ...normalizeRollupInput(config.build.rollupOptions.input),
+        ...normalizeRollupInput(config.build.rollupOptions.input)
       }
       modifyResolvedConfig(config, { build: { rollupOptions: { input } } })
     },
@@ -24,11 +24,11 @@ function buildConfig(): Plugin {
           outDir: getOutDir(config),
           manifest: !isSSR_config(config),
           // @ts-ignore
-          polyfillDynamicImport: false,
+          polyfillDynamicImport: false
         },
         //*
         // @ts-ignore
-        ssr: { external: ['vite-plugin-ssr'] },
+        ssr: { external: ['vite-plugin-ssr'] }
         /*/
         // Try Hydrogen's `noExternal: true` bundling strategy for Cloudflare Workers
         ssr: { noExternal: true },
@@ -38,7 +38,7 @@ function buildConfig(): Plugin {
         configMod.publicDir = false
       }
       return configMod
-    },
+    }
   }
 }
 
@@ -52,14 +52,14 @@ async function entryPoints(config: ResolvedConfig): Promise<Record<string, strin
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
       // ...pageFilesObject,
       pageFiles: virtualModuleIdPageFilesServer,
-      importBuild: resolve('dist/cjs/node/importBuild.js'),
+      importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
     return {
       // #350
       ...pageFilesObject,
       ['entry-client-routing']: resolve(`dist/esm/client/router/entry.js`),
-      ['entry-server-routing']: resolve(`dist/esm/client/entry.js`),
+      ['entry-server-routing']: resolve(`dist/esm/client/entry.js`)
     }
   }
 }

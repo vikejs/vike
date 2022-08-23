@@ -8,7 +8,7 @@ exec('git submodule status libframe', { cwd: `${__dirname}/..` }, (err, stdout, 
       '',
       '❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗',
       '❗❗❗ SETUP MISSING: run `pnpm run setup` before running `pnpm install`. ❗❗❗',
-      '❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗',
+      '❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗❗'
     ].join('\n')
     console.log(errMsg)
     process.exit(1)

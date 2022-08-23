@@ -13,6 +13,6 @@ async function render(pageContext) {
       <PageLayout pageContext={pageContext}>
         <Page {...pageProps} />
       </PageLayout>
-    </ReactStreaming>,
+    </ReactStreaming>
   )
 }

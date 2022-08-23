@@ -22,12 +22,12 @@ async function getPagesAndRoutes() {
 
   const { pageRoutes } = await loadPageRoutes({
     _pageFilesAll: pageFilesAll,
-    _allPageIds: allPageIds,
+    _allPageIds: allPageIds
   })
 
   return {
     pageRoutes,
     pageFilesAll,
-    allPageIds,
+    allPageIds
   }
 }

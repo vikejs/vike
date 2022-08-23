@@ -13,7 +13,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain(
-      '<meta name="description" content="Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin." />',
+      '<meta name="description" content="Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin." />'
     )
     expect(html).toContain('integrate tools manually')
     expect(html).toMatch(partRegex`<h2>${/[^\/]+/}Control</h2>`)
@@ -38,13 +38,13 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
         body: getWidths(document.body),
         page: getWidths(document.querySelector('#page-view')),
         left: getWidths(document.querySelector('#navigation-wrapper')),
-        right: getWidths(document.querySelector('#page-wrapper')),
+        right: getWidths(document.querySelector('#page-wrapper'))
       }
       function getWidths(elem: Element | null): Widths {
         if (!elem) throw new Error('Elem missing')
         return {
           clientWidth: elem.clientWidth,
-          scrollWidth: elem.scrollWidth,
+          scrollWidth: elem.scrollWidth
         }
       }
     })

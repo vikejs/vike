@@ -17,14 +17,14 @@ function getPageContextSerializedInHtml(): {
   assert(hasProp(pageContext, '_pageId', 'string'))
   if ('_serverSideErrorWhileStreaming' in pageContext) {
     const err = getProjectError(
-      `An error occurred on the server while rendering/streaming to HTML. Check your server logs.`,
+      `An error occurred on the server while rendering/streaming to HTML. Check your server logs.`
     )
     throw err
   }
 
   objectAssign(pageContext, {
     _pageContextRetrievedFromServer: { ...pageContext },
-    _comesDirectlyFromServer: true as const,
+    _comesDirectlyFromServer: true as const
   })
 
   return pageContext

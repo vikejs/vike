@@ -6,7 +6,7 @@ import { isViteCliCall } from './isViteCliCall'
 
 function apply(
   when: 'dev' | 'preview',
-  { skipMiddlewareMode, onlyViteCli }: { skipMiddlewareMode?: true; onlyViteCli?: true } = {},
+  { skipMiddlewareMode, onlyViteCli }: { skipMiddlewareMode?: true; onlyViteCli?: true } = {}
 ) {
   return (config: UserConfig, { command, mode }: { command: string; mode: string }): boolean => {
     assert(command)

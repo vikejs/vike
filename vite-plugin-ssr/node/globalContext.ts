@@ -39,14 +39,14 @@ async function getGlobalContext(isPreRendering: boolean) {
     objectAssign(globalContext, {
       _isProduction: true as const,
       _manifestClient: clientManifest,
-      _manifestPlugin: pluginManifest,
+      _manifestPlugin: pluginManifest
     })
     setRuntimeConfig(pluginManifest)
   } else {
     objectAssign(globalContext, {
       _isProduction: false as const,
       _manifestClient: null,
-      _manifestPlugin: null,
+      _manifestPlugin: null
     })
   }
 
@@ -57,7 +57,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     _viteDevServer: viteDevServer,
     _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
     //_outDir: viteDevServer?.runtimeConfig.build.outDir ?? getPluginManifest().outDir)
-    _objectCreatedByVitePluginSsr: true,
+    _objectCreatedByVitePluginSsr: true
   })
   /*
   if( !viteDevServer ) {
@@ -89,7 +89,7 @@ function assertDistEntries<T>(distEntries: T | null, isPreRendering: boolean): a
     `You are tyring to run`,
     isPreRendering ? '`$ vite-plugin-ssr prerender`' : 'the server for production',
     "but your app isn't built yet. Run `$ vite build` before ",
-    isPreRendering ? 'pre-rendering.' : 'running the server.',
+    isPreRendering ? 'pre-rendering.' : 'running the server.'
   ].join(' ')
   assertUsage(distEntries, errMsg)
 }
@@ -97,7 +97,7 @@ function assertDistEntries<T>(distEntries: T | null, isPreRendering: boolean): a
 function assertProdEnv(viteDevServer: null | ViteDevServer) {
   assertUsage(
     !(isProdEnv() && viteDevServer),
-    "You created a Vite dev server with `createServer()` (`import { createServer } from 'vite'`) while setting `process.env.NODE_ENV` to `production`. This is contradictory: for production skip `createServer()`, and for development do not set `process.env.NODE_ENV` to `production`.",
+    "You created a Vite dev server with `createServer()` (`import { createServer } from 'vite'`) while setting `process.env.NODE_ENV` to `production`. This is contradictory: for production skip `createServer()`, and for development do not set `process.env.NODE_ENV` to `production`."
   )
 }
 function isProdEnv() {

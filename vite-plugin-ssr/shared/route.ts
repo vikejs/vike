@@ -49,9 +49,9 @@ async function route(pageContext: PageContextForRoute): Promise<{
       filesystemRoute: pageRoute.filesystemRoute,
       pageRouteFile: pageRoute.pageRouteFile && {
         filePath: pageRoute.pageRouteFile.filePath,
-        routeValue: pageRoute.pageRouteFile.routeValue,
-      },
-    })),
+        routeValue: pageRoute.pageRouteFile.routeValue
+      }
+    }))
   )
 
   const pageContextAddendum = {}
@@ -68,7 +68,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
         }
         objectAssign(pageContextAddendum, {
           _routingProvidedByOnBeforeRouteHook: true,
-          _routeMatches: 'CUSTOM_ROUTE' as const,
+          _routeMatches: 'CUSTOM_ROUTE' as const
         })
         return { pageContextAddendum }
       }
@@ -77,7 +77,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
     }
   }
   objectAssign(pageContextAddendum, {
-    _routingProvidedByOnBeforeRouteHook: false,
+    _routingProvidedByOnBeforeRouteHook: false
   })
 
   // `vite-plugin-ssr`'s routing
@@ -85,7 +85,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   assert(allPageIds.length >= 0)
   assertUsage(
     allPageIds.length > 0,
-    'No `*.page.js` file found. You must create a `*.page.js` file, e.g. `pages/index.page.js` (or `pages/index.page.{jsx, tsx, vue, ...}`).',
+    'No `*.page.js` file found. You must create a `*.page.js` file, e.g. `pages/index.page.js` (or `pages/index.page.{jsx, tsx, vue, ...}`).'
   )
   const { urlPathname } = pageContext
   assert(urlPathname.startsWith('/'))
@@ -110,7 +110,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
           const routeString = pageRouteFileExports.default
           assertUsage(
             routeString.startsWith('/'),
-            `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`,
+            `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
           )
           const match = resolveRouteString(routeString, urlPathname)
           if (match) {
@@ -119,7 +119,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
               pageId,
               routeString,
               routeParams,
-              routeType: 'STRING',
+              routeType: 'STRING'
             })
           }
         }
@@ -135,7 +135,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
           assert(false)
         }
       }
-    }),
+    })
   )
 
   resolvePrecendence(routeMatches)
@@ -148,7 +148,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   if (!winner) {
     objectAssign(pageContextAddendum, {
       _pageId: null,
-      routeParams: {},
+      routeParams: {}
     })
     return { pageContextAddendum }
   }
@@ -157,7 +157,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   assert(isPlainObject(routeParams))
   objectAssign(pageContextAddendum, {
     _pageId: pageId,
-    routeParams,
+    routeParams
   })
   return { pageContextAddendum }
 }

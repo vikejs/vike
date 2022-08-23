@@ -16,7 +16,7 @@ import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'
 import {
   virtualModuleIdPageFilesClientSR,
-  virtualModuleIdPageFilesClientCR,
+  virtualModuleIdPageFilesClientCR
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 
 const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
@@ -50,7 +50,7 @@ function extractStylesPlugin(): Plugin[] {
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
         debugTransformResult(id, code, importStatements)
         return removeSourceMap(code)
-      },
+      }
     },
     {
       name: 'vite-plugin-ssr:extractStyles-2',
@@ -85,7 +85,7 @@ function extractStylesPlugin(): Plugin[] {
           // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
           assert(extractStylesRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
           assert(
-            importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC,
+            importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC
           )
         } else {
           // All other `?extractStyles` queries are appended when this `resolveId()` hook returns `appendExtractStylesQuery()`
@@ -129,7 +129,7 @@ function extractStylesPlugin(): Plugin[] {
               source.startsWith('.'),
             /*/
             (dependency) =>
-              file.includes('node_modules/' + dependency + '/') || file.includes('node_modules\\' + dependency + '\\'),
+              file.includes('node_modules/' + dependency + '/') || file.includes('node_modules\\' + dependency + '\\')
             //*/
           )
         ) {
@@ -150,7 +150,7 @@ function extractStylesPlugin(): Plugin[] {
         }
 
         return appendExtractStylesQuery(file, importer)
-      },
+      }
     },
     {
       name: 'vite-plugin-ssr:extractStyles-3',
@@ -168,8 +168,8 @@ function extractStylesPlugin(): Plugin[] {
         if (debugEnabled) {
           return { logLevel: 'silent' }
         }
-      },
-    },
+      }
+    }
   ] as Plugin[]
 }
 
@@ -258,9 +258,9 @@ function stringifyImportStatements(importStatements: ImportStatement[]) {
 function debugTransformResult(id: string, code: string, importStatements: ImportStatement[]) {
   debug(
     `source TRANSFORMED: ${id} (CODE: \`${code.split('\n').join(' ')}\`, IMPORTS: ${stringifyImportStatements(
-      importStatements,
+      importStatements
     )
       .map((s) => `\`${s}\``)
-      .join(', ')})`,
+      .join(', ')})`
   )
 }

@@ -18,7 +18,7 @@ function manifest(): Plugin[] {
       configResolved(config) {
         configResolved(config)
         setRuntimeConfig(runtimeConfig)
-      },
+      }
     },
     {
       name: 'vite-plugin-ssr:pluginManifest',
@@ -31,16 +31,16 @@ function manifest(): Plugin[] {
         const manifest = {
           version: projectInfo.projectVersion,
           usesClientRouter: isUsingClientRouter(),
-          ...runtimeConfig,
+          ...runtimeConfig
         }
         assertPluginManifest(manifest)
         this.emitFile({
           fileName: `vite-plugin-ssr.json`,
           type: 'asset',
-          source: JSON.stringify(manifest, null, 2),
+          source: JSON.stringify(manifest, null, 2)
         })
-      },
-    },
+      }
+    }
   ] as Plugin[]
 
   function configResolved(config: ResolvedConfig) {

@@ -15,7 +15,7 @@ async function callOnBeforeRouteHook(
   pageContext: {
     urlOriginal: string
     _allPageIds: string[]
-  },
+  }
 ): Promise<null | {
   urlOriginal?: string
   _urlPristine?: string
@@ -30,7 +30,7 @@ async function callOnBeforeRouteHook(
     hookReturn === null ||
       hookReturn === undefined ||
       (isObjectWithKeys(hookReturn, ['pageContext'] as const) && hasProp(hookReturn, 'pageContext')),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`,
+    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ pageContext: { /* ... */ } }\`.`
   )
 
   if (hookReturn === null || hookReturn === undefined) {
@@ -39,7 +39,7 @@ async function callOnBeforeRouteHook(
 
   assertUsage(
     hasProp(hookReturn, 'pageContext', 'object'),
-    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`,
+    `${errPrefix} returned \`{ pageContext }\` but \`pageContext\` should be a plain JavaScript object.`
   )
 
   if (hasProp(hookReturn.pageContext, '_pageId') && !hasProp(hookReturn.pageContext, '_pageId', 'null')) {
@@ -47,13 +47,13 @@ async function callOnBeforeRouteHook(
     assertUsage(hasProp(hookReturn.pageContext, '_pageId', 'string'), `${errPrefix2} a string or \`null\``)
     assertUsage(
       pageContext._allPageIds.includes(hookReturn.pageContext._pageId),
-      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`,
+      `${errPrefix2} one of following values: \`[${pageContext._allPageIds.map((s) => `'${s}'`).join(', ')}]\`.`
     )
   }
   if (hasProp(hookReturn.pageContext, 'routeParams')) {
     assertRouteParams(
       hookReturn.pageContext,
-      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`,
+      `${errPrefix} returned \`{ pageContext: { routeParams } }\` but \`routeParams\` should`
     )
   }
 
@@ -63,7 +63,7 @@ async function callOnBeforeRouteHook(
     assertWarning(
       false,
       `${errPrefix} returned \`{ pageContext: { url } }\` but \`pageContext.url\` has been renamed to \`pageContext.urlOriginal\`. Return \`{ pageContext: { urlOriginal } }\` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)`,
-      { onlyOnce: true },
+      { onlyOnce: true }
     )
     hookReturn.pageContext.urlOriginal = hookReturn.pageContext.url
     delete hookReturn.pageContext.url
@@ -71,13 +71,13 @@ async function callOnBeforeRouteHook(
   if (hasProp(hookReturn.pageContext, 'urlOriginal')) {
     assertUsage(
       hasProp(hookReturn.pageContext, 'urlOriginal', 'string'),
-      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but \`urlOriginal\` should be a string`,
+      `${errPrefix} returned \`{ pageContext: { urlOriginal } }\` but \`urlOriginal\` should be a string`
     )
     objectAssign(pageContextAddendumHook, { _urlPristine: pageContext.urlOriginal })
   }
 
   assertPageContextProvidedByUser(hookReturn.pageContext, {
-    hook: { hookFilePath: onBeforeRouteHook.filePath, hookName: 'onBeforeRoute' },
+    hook: { hookFilePath: onBeforeRouteHook.filePath, hookName: 'onBeforeRoute' }
   })
 
   objectAssign(pageContextAddendumHook, hookReturn.pageContext)

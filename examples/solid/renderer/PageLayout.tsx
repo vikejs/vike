@@ -41,7 +41,7 @@ const Layout: Component = (props) => {
       style={{
         display: 'flex',
         'max-width': '900px',
-        margin: 'auto',
+        margin: 'auto'
       }}
     >
       {props.children}
@@ -58,7 +58,7 @@ const Sidebar: Component = (props) => {
         display: 'flex',
         'flex-direction': 'column',
         'align-items': 'center',
-        'line-height': '1.8em',
+        'line-height': '1.8em'
       }}
     >
       {props.children}
@@ -73,7 +73,7 @@ const Content: Component = (props) => {
         padding: '20px',
         'padding-bottom': '50px',
         'border-left': '2px solid #eee',
-        'min-height': '100vh',
+        'min-height': '100vh'
       }}
     >
       {props.children}
@@ -86,7 +86,7 @@ const Logo: Component = () => {
     <div
       style={{
         'margin-top': '20px',
-        'margin-bottom': '10px',
+        'margin-bottom': '10px'
       }}
     >
       <a href="/">

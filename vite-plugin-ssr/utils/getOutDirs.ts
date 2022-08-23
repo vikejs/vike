@@ -45,7 +45,7 @@ function isNotRoot(outDir: string) {
 function assertIsNotAbsolute(outDir: string) {
   assertUsage(
     firstSegment(outDir) !== firstSegment(process.cwd()),
-    "vite.config.js#build.outDir is not allowed to be an absolute path, e.g. set its value to 'build/' instead of `path.join(__dirname, 'build/')`",
+    "vite.config.js#build.outDir is not allowed to be an absolute path, e.g. set its value to 'build/' instead of `path.join(__dirname, 'build/')`"
   )
 }
 

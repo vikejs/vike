@@ -12,7 +12,7 @@ function assertBaseRuntime(runtimeConfig: RuntimeConfig) {
   assertUsage(
     baseUrl.startsWith('/') &&
       (baseAssets === null || baseAssets.startsWith('http://') || baseAssets.startsWith('https://')),
-    errMsg,
+    errMsg
   )
 }
 

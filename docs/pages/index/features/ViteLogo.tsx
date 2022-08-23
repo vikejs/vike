@@ -12,7 +12,7 @@ function ViteLogo() {
         verticalAlign: 'middle',
         position: 'relative',
         left: -1,
-        top: -2,
+        top: -2
       }}
     />
   )

@@ -29,7 +29,7 @@ function getExports(pageFiles: PageFile[]): PageContextExports {
         exportValue,
         _filePath: pageFile.filePath,
         _fileType: pageFile.fileType,
-        _isFromDefaultExport: isFromDefaultExport,
+        _isFromDefaultExport: isFromDefaultExport
       })
     })
   })
@@ -55,7 +55,7 @@ function getExports(pageFiles: PageFile[]): PageContextExports {
   return {
     exports,
     exportsAll,
-    pageExports,
+    pageExports
   }
 }
 
@@ -85,7 +85,7 @@ function getExportValues(pageFile: PageFile) {
             exportValues.push({
               exportName: defaultExportName,
               exportValue: defaultExportValue,
-              isFromDefaultExport,
+              isFromDefaultExport
             })
           })
           return
@@ -95,7 +95,7 @@ function getExportValues(pageFile: PageFile) {
       exportValues.push({
         exportName,
         exportValue,
-        isFromDefaultExport,
+        isFromDefaultExport
       })
     })
 
@@ -125,12 +125,12 @@ function createObjectWithDeprecationWarning(): Record<string, unknown> {
           assertWarning(
             false,
             '`pageContext.pageExports` is outdated. Use `pageContext.exports` instead, see https://vite-plugin-ssr.com/exports',
-            { onlyOnce: true, showStackTrace: true },
+            { onlyOnce: true, showStackTrace: true }
           )
         }
         return Reflect.get(...args)
-      },
-    },
+      }
+    }
   )
 }
 
@@ -140,7 +140,7 @@ function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
       ?.map((e) => {
         assertUsage(
           hasProp(e, 'exportValue', 'string[]'),
-          `\`export { ${propName} }\` of ${e._filePath} should be an array of strings.`,
+          `\`export { ${propName} }\` of ${e._filePath} should be an array of strings.`
         )
         return e.exportValue
       })

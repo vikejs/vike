@@ -10,7 +10,7 @@ function DataArchitecture({
   isGeneric,
   toolType,
   toolDocs,
-  skipPassToClient,
+  skipPassToClient
 }: {
   toolName: string
   toolLink?: string
@@ -41,7 +41,7 @@ function DataRenderControl({
   toolLink,
   isGeneric,
   toolDocs,
-  skipInfo,
+  skipInfo
 }: {
   toolName: string
   toolLink?: string
@@ -74,7 +74,7 @@ function DataRenderControl({
 function DataPassToClient({
   toolType,
   isGenericDoc,
-  toolName,
+  toolName
 }: {
   toolType: 'data-store' | 'data-fetching'
   isGenericDoc?: boolean

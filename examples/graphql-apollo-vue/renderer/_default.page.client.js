@@ -8,7 +8,7 @@ function render(pageContext) {
   const defaultClient = new ApolloClient({
     link: new HttpLink({ uri: 'https://rickandmortyapi.com/graphql', fetch }),
     cache: new InMemoryCache().restore(pageContext.apolloInitialState),
-    connectToDevTools: true,
+    connectToDevTools: true
   })
 
   const app = createApp(pageContext, defaultClient)

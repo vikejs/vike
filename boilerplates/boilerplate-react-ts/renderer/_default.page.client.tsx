@@ -12,7 +12,7 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
     document.getElementById('page-view')!,
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 }
 

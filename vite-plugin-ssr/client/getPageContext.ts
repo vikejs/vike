@@ -25,7 +25,7 @@ function assertPristineUrl() {
   const urlCurrent = getCurrentUrl({ withoutHash: true })
   assertUsage(
     urlFirst === urlCurrent,
-    `URL manipulated before hydration finished (\`${urlFirst}\` to \`${urlCurrent}\`). Ensure the hydration finishes with \`onHydrationEnd()\` before manipulating the URL.`,
+    `URL manipulated before hydration finished (\`${urlFirst}\` to \`${urlCurrent}\`). Ensure the hydration finishes with \`onHydrationEnd()\` before manipulating the URL.`
   )
 }
 
@@ -33,7 +33,7 @@ async function loadPageFilesClient(pageId: string) {
   const pageContextAddendum = {}
   const { pageFilesAll } = await getPageFilesAll(true)
   objectAssign(pageContextAddendum, {
-    _pageFilesAll: pageFilesAll,
+    _pageFilesAll: pageFilesAll
   })
 
   objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageFilesAll, pageId))
@@ -44,7 +44,7 @@ async function loadPageFilesClient(pageId: string) {
       assertWarning(
         !p.fileExports?.onBeforeRender,
         `\`export { onBeforeRender }\` of ${p.filePath} is loaded in the browser but never executed (because you are using Server-side Routing). In order to reduce the size of you browser-side JavaScript, define \`onBeforeRender()\` in \`.page.server.js\` instead. See https://vite-plugin-ssr.com/onBeforeRender-isomorphic#server-routing`,
-        { onlyOnce: true },
+        { onlyOnce: true }
       )
     })
 

@@ -20,7 +20,7 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
     </PageShell>,
     // We don't need streaming for a pre-rendered app.
     // (We still use react-streaming to enable <Suspsense>.)
-    { disable: true },
+    { disable: true }
   )
 
   const title = getPageTitle(pageContext)
@@ -40,8 +40,8 @@ async function render(pageContext: PageContextBuiltIn & PageContext) {
     // We can return a `pageContext` promise
     pageContext: (async () => {
       return {
-        someAsyncProps: 42,
+        someAsyncProps: 42
       }
-    })(),
+    })()
   }
 }

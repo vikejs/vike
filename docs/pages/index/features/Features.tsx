@@ -31,7 +31,7 @@ function Features() {
               </p>
             </>
           ),
-          learnMore: <Control />,
+          learnMore: <Control />
         },
         {
           title: (
@@ -48,7 +48,7 @@ function Features() {
                 Everything else <b>just works</b> without the need to configure anything.
               </p>
             </>
-          ),
+          )
         },
         {
           title: (
@@ -107,7 +107,7 @@ function Features() {
                 & pesky.)
               </p>
             </>
-          ),
+          )
         },
         {
           title: (
@@ -130,7 +130,7 @@ function Features() {
               </p>
             </>
           ),
-          learnMore: <FullFleged />,
+          learnMore: <FullFleged />
         },
         {
           title: (
@@ -153,7 +153,7 @@ function Features() {
               </p>
             </>
           ),
-          learnMore: <DeployAnywhere />,
+          learnMore: <DeployAnywhere />
         },
         {
           title: (
@@ -169,7 +169,7 @@ function Features() {
                 comp&shy;anies.
               </p>
             </>
-          ),
+          )
         },
         {
           title: (
@@ -226,7 +226,7 @@ function Features() {
               <TweetsAboutScability />
             </>
           ),
-          isSecondaryFeature: true,
+          isSecondaryFeature: true
         },
         {
           title: (
@@ -264,7 +264,7 @@ function Features() {
                 (serverless) deployment.
               </p>
             </>
-          ),
+          )
         },
         {
           title: (
@@ -283,7 +283,7 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true,
+          isSecondaryFeature: true
         },
         {
           title: (
@@ -302,7 +302,7 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true,
+          isSecondaryFeature: true
         },
         {
           title: (
@@ -323,7 +323,7 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true,
+          isSecondaryFeature: true
         },
         {
           title: (
@@ -339,8 +339,8 @@ function Features() {
               </p>
             </>
           ),
-          isSecondaryFeature: true,
-        },
+          isSecondaryFeature: true
+        }
       ]}
     />
   )

@@ -30,7 +30,7 @@ const Layout = function ({ children }) {
       style={{
         display: 'flex',
         maxWidth: 900,
-        margin: 'auto',
+        margin: 'auto'
       }}
     >
       {children}
@@ -47,7 +47,7 @@ const Sidebar = function ({ children }) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        lineHeight: '1.8em',
+        lineHeight: '1.8em'
       }}
     >
       {children}
@@ -63,7 +63,7 @@ const Content = function ({ children }) {
         padding: 20,
         paddingBottom: 50,
         borderLeft: '2px solid #eee',
-        minHeight: '100vh',
+        minHeight: '100vh'
       }}
     >
       {children}
@@ -76,7 +76,7 @@ function Logo() {
     <div
       style={{
         marginTop: 20,
-        marginBottom: 10,
+        marginBottom: 10
       }}
     >
       <a href="/">

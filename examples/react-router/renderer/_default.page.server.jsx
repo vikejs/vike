@@ -13,7 +13,7 @@ async function render(pageContext) {
   const pageHtml = renderToString(
     <StaticRouter location={url}>
       <Page {...pageProps} />
-    </StaticRouter>,
+    </StaticRouter>
   )
   return escapeInject`<!DOCTYPE html>
     <html>

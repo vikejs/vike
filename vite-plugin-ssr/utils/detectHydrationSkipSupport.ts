@@ -31,7 +31,7 @@ function isReactApp() {
     assertWarning(
       condition,
       'An internal heuristic needs to be updated, see https://github.com/brillout/vite-plugin-ssr/issues/423',
-      { onlyOnce: true },
+      { onlyOnce: true }
     )
   }
 

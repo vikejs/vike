@@ -9,14 +9,14 @@ function createApp(pageContext) {
   const app = createSSRApp({
     data: () => ({
       Page: markRaw(pageContext.Page),
-      pageProps: markRaw(pageContext.pageProps || {}),
+      pageProps: markRaw(pageContext.pageProps || {})
     }),
     render() {
       return h(this.Page, this.pageProps)
     },
     created() {
       rootComponent = this
-    },
+    }
   })
 
   const store = createPinia()
@@ -28,7 +28,7 @@ function createApp(pageContext) {
       Object.assign(pageContextReactive, pageContext)
       rootComponent.Page = markRaw(pageContext.Page)
       rootComponent.pageProps = markRaw(pageContext.pageProps || {})
-    },
+    }
   })
 
   // When doing Client Routing, we mutate pageContext (see usage of `app.changePage()` in `_default.page.client.js`).

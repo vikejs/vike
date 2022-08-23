@@ -20,12 +20,12 @@ async function retrieveGlobalContext() {
     _baseUrl: baseUrl,
     _objectCreatedByVitePluginSsr: true,
     // @ts-ignore
-    _isProduction: import.meta.env.PROD,
+    _isProduction: import.meta.env.PROD
   }
   const { pageFilesAll, allPageIds } = await getPageFilesAll(true)
   objectAssign(globalContext, {
     _pageFilesAll: pageFilesAll,
-    _allPageIds: allPageIds,
+    _allPageIds: allPageIds
   })
   return globalContext
 }

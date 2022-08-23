@@ -34,7 +34,7 @@ function autoFullBuild(): Plugin {
           build: { ssr: true },
           configFile,
           root,
-          [triggedByAutoFullBuild as any]: true,
+          [triggedByAutoFullBuild as any]: true
         }
         await build(configSSR)
       }
@@ -47,7 +47,7 @@ function autoFullBuild(): Plugin {
       ) {
         await prerender({ viteConfig: { configFile, root } })
       }
-    },
+    }
   }
 }
 
@@ -75,7 +75,7 @@ function abortCLI() {
   assertWarning(
     false,
     'The CLI call `$ vite build --ssr` is outdated. It has no effect and is superfluous. Use only the CLI call `$ vite build` instead (it now also builds the server-side code).',
-    { onlyOnce: true },
+    { onlyOnce: true }
   )
   process.exit(0)
 }
@@ -83,7 +83,7 @@ function abortAPI() {
   assertWarning(
     false,
     'The Vite API call `await build({ build: { ssr: true } })` is outdated. It has no effect and is superfluous. Use only the Vite API call `await build()` (without `build.ssr`) instead, as it now also builds server-side code.',
-    { onlyOnce: true, showStackTrace: true },
+    { onlyOnce: true, showStackTrace: true }
   )
   process.exit(0)
 }

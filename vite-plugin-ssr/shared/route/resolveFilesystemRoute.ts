@@ -13,7 +13,7 @@ type FilesystemRoot = {
 
 function resolveFilesystemRoute(
   filesystemRoute: string,
-  urlPathname: string,
+  urlPathname: string
 ): null | { routeParams: Record<string, string> } {
   if (isParameterizedFilesystemRoute(filesystemRoute)) {
     return resolveRouteString(filesystemRoute, urlPathname)

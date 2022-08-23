@@ -9,5 +9,5 @@ const version: string = (globalThis[key] = globalThis[key] = projectVersion)
 
 assertUsage(
   version === projectVersion,
-  `Multiple versions \`vite-pluging-ssr@${version}\` and \`vite-pluging-ssr@${projectVersion}\` loaded. Make sure to load the same version.`,
+  `Multiple versions \`vite-pluging-ssr@${version}\` and \`vite-pluging-ssr@${projectVersion}\` loaded. Make sure to load the same version.`
 )

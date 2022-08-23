@@ -15,7 +15,7 @@ function parseGlobResults(pageFilesExports: unknown) {
   assert(hasProp(pageFilesExports, 'pageFilesExportNamesEager', 'object'))
   assert(hasProp(pageFilesExports.pageFilesLazy, '.page'))
   assert(
-    hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server'),
+    hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server')
   )
 
   const pageFilesMap: Record<string, PageFile> = {}

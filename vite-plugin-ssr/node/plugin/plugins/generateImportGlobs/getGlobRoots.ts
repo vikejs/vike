@@ -23,9 +23,9 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
     {
       pkgName: null,
       pkgRootResolved: root,
-      includePath: '/',
+      includePath: '/'
     },
-    ...(await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))).filter(isNotNullish),
+    ...(await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))).filter(isNotNullish)
   ]
   return globRoots
 }
@@ -48,11 +48,11 @@ function normalizeIncludePaths(includePath: string): string {
 
 async function createIncludePath(
   pkgName: string,
-  root: string,
+  root: string
 ): Promise<{ pkgName: string; pkgRootResolved: string; includePath: string | null }> {
   assertUsage(
     isNpmName(pkgName),
-    `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`,
+    `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`
   )
   const { pkgJson, pkgRoot } = resolvePackage(pkgName, { preserveSymlinks: true, root })
   const pageFilesDir = pkgJson['vite-plugin-ssr']?.pageFilesDir ?? ''
@@ -70,7 +70,7 @@ async function createIncludePath(
   const crawlRoot = path.posix.join(pkgRootResolved, pageFilesDir)
   assertUsage(
     !root.startsWith(crawlRoot),
-    `The page files include path ${crawlRoot} is a parent of the app's root ${root}. You need to use/change the \`pageFilesDir\` options. Contact the vite-plugin-ssr maintainer on GitHub / Discord for more information.`,
+    `The page files include path ${crawlRoot} is a parent of the app's root ${root}. You need to use/change the \`pageFilesDir\` options. Contact the vite-plugin-ssr maintainer on GitHub / Discord for more information.`
   )
 
   const pkgRootRelative = path.posix.relative(root, pkgRoot)

@@ -13,7 +13,7 @@ async function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 
   // See https://vite-plugin-ssr.com/head
@@ -39,6 +39,6 @@ async function render(pageContext) {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-    },
+    }
   }
 }

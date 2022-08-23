@@ -21,8 +21,8 @@ async function render(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      enableEagerStreaming: true,
-    },
+      enableEagerStreaming: true
+    }
   }
 }
 
@@ -36,7 +36,7 @@ async function onBeforeRender(pageContext) {
   return {
     pageContext: {
       initialStoreState,
-      stream,
-    },
+      stream
+    }
   }
 }

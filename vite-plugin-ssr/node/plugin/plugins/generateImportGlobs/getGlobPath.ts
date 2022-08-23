@@ -7,7 +7,7 @@ import path from 'path'
 function getGlobPath(
   globRoot: string,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  root?: string,
+  root?: string
 ): string {
   assertPosixPath(globRoot)
   let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${javascriptFileExtensions}`].filter(Boolean).join('/')

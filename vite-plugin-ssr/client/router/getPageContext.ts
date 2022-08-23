@@ -7,7 +7,7 @@ import {
   isPlainObject,
   objectAssign,
   getProjectError,
-  serverSideRouteTo,
+  serverSideRouteTo
 } from './utils'
 import { parse } from '@brillout/json-s/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
@@ -40,7 +40,7 @@ type PageContextPassThrough = PageContextUrls &
 async function getPageContext(
   pageContext: {
     _isFirstRenderAttempt: boolean
-  } & PageContextPassThrough,
+  } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   if (pageContext._isFirstRenderAttempt && navigationState.isFirstUrl(pageContext.urlOriginal)) {
     assert(hasProp(pageContext, '_isFirstRenderAttempt', 'true'))
@@ -61,12 +61,12 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(pageContextAddendum, {
     isHydration: true,
-    _comesDirectlyFromServer: true,
+    _comesDirectlyFromServer: true
   })
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
   )
 
   return pageContextAddendum
@@ -86,29 +86,29 @@ async function getPageContextErrorPage(pageContext: {
     isHydration: false,
     _pageId: errorPageId,
     _pageContextRetrievedFromServer: null,
-    _comesDirectlyFromServer: false,
+    _comesDirectlyFromServer: false
   }
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
   )
 
   return pageContextAddendum
 }
 
 async function getPageContextUponNavigation(
-  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough,
+  pageContext: { _isFirstRenderAttempt: false } & PageContextPassThrough
 ): Promise<PageContextAddendum> {
   let pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
-    isHydration: false,
+    isHydration: false
   })
   objectAssign(pageContextAddendum, await getPageContextFromRoute(pageContext))
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
   )
 
   const pageContextFromHook = await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum })
@@ -130,12 +130,12 @@ async function getPageContextUponNavigation(
 
     objectAssign(pageContextAddendum, {
       isHydration: false,
-      _pageId: errorPageId,
+      _pageId: errorPageId
     })
     objectAssign(pageContextAddendum, pageContextFromHook)
     objectAssign(
       pageContextAddendum,
-      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId),
+      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
     )
     return pageContextAddendum
   }
@@ -148,7 +148,7 @@ async function onBeforeRenderExecute(
     isHydration: boolean
     _pageFilesAll: PageFile[]
   } & PageContextExports &
-    PageContextPassThrough,
+    PageContextPassThrough
 ): Promise<
   { _comesDirectlyFromServer: boolean; _pageContextRetrievedFromServer: null | Record<string, unknown> } & Record<
     string,
@@ -161,11 +161,11 @@ async function onBeforeRenderExecute(
     const onBeforeRender = hook.hook
     const pageContextAddendum = {
       _comesDirectlyFromServer: false,
-      _pageContextRetrievedFromServer: null,
+      _pageContextRetrievedFromServer: null
     }
     const pageContextReadyForRelease = releasePageContext({
       ...pageContext,
-      ...pageContextAddendum,
+      ...pageContextAddendum
     })
     const hookResult = await onBeforeRender(pageContextReadyForRelease)
     assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.filePath)
@@ -183,7 +183,7 @@ async function onBeforeRenderExecute(
     Object.assign(pageContextAddendum, pageContextFromServer)
     objectAssign(pageContextAddendum, {
       _comesDirectlyFromServer: true,
-      _pageContextRetrievedFromServer: pageContextFromServer,
+      _pageContextRetrievedFromServer: pageContextFromServer
     })
     return pageContextAddendum
   }
@@ -194,7 +194,7 @@ async function onBeforeRenderExecute(
 }
 
 async function getPageContextFromRoute(
-  pageContext: PageContextForRoute,
+  pageContext: PageContextForRoute
 ): Promise<{ _pageId: string; routeParams: Record<string, string> }> {
   const routeResult = await route(pageContext)
   const pageContextFromRoute = routeResult.pageContextAddendum
@@ -226,7 +226,7 @@ async function retrievePageContextFromServer(pageContext: {
 
     assertUsage(
       isRightContentType,
-      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`,
+      `Wrong HTTP Response Header \`content-type\` value for URL ${pageContextUrl} (it should be \`application/json\` but we got \`${contentType}\`). Make sure to use \`pageContext.httpResponse.contentType\`, see https://github.com/brillout/vite-plugin-ssr/issues/191`
     )
   }
 
@@ -234,7 +234,7 @@ async function retrievePageContextFromServer(pageContext: {
   const responseObject = parse(responseText) as { pageContext: Record<string, unknown> } | { serverSideError: true }
   if ('serverSideError' in responseObject) {
     throw getProjectError(
-      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.',
+      '`pageContext` could not be fetched from the server as an error occurred on the server; check your server logs.'
     )
   }
 

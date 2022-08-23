@@ -11,7 +11,7 @@ function render(pageContext: PageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
       <Page />
-    </PageLayout>,
+    </PageLayout>
   )
   return escapeInject`<!DOCTYPE html>
     <html>

@@ -13,7 +13,7 @@ function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageLayout>
       <Page routeParams={routeParams} />
-    </PageLayout>,
+    </PageLayout>
   )
 
   return escapeInject`<!DOCTYPE html>

@@ -6,7 +6,7 @@ function createStore() {
   const store = Vuex.createStore({
     state() {
       return {
-        todoList: [],
+        todoList: []
       }
     },
 
@@ -15,22 +15,22 @@ function createStore() {
         const todoList = [
           {
             id: 0,
-            text: 'Buy milk',
+            text: 'Buy milk'
           },
           {
             id: 1,
-            text: 'Buy chocolate',
-          },
+            text: 'Buy chocolate'
+          }
         ]
         return commit('setTodoList', todoList)
-      },
+      }
     },
 
     mutations: {
       setTodoList(state, todoList) {
         state.todoList = todoList
-      },
-    },
+      }
+    }
   })
 
   return store

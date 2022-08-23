@@ -10,7 +10,7 @@ function injectHtmlSnippet(
   position: Position,
   htmlSnippet: string | (() => string),
   htmlString: string,
-  injectToStream: null | ((chunk: string) => void),
+  injectToStream: null | ((chunk: string) => void)
 ): string {
   htmlSnippet = getHtmlSnippet(htmlSnippet)
   if (position === 'HEAD_OPENING') {
@@ -49,7 +49,7 @@ type Snippet = {
 function injectHtmlSnippets(
   htmlString: string,
   snippets: Snippet[],
-  injectToStream: null | ((chunk: string) => void),
+  injectToStream: null | ((chunk: string) => void)
 ): string {
   const snippetsBundled = bundleSnippets(snippets)
   snippetsBundled.forEach((snippet) => {
@@ -69,7 +69,7 @@ function bundleSnippets(snippets: Snippet[]): Snippet[] {
       const htmlSnippetsBundled = htmlSnippets.join('')
       snippetsBundled.push({
         htmlSnippet: htmlSnippetsBundled,
-        position,
+        position
       })
     }
   })

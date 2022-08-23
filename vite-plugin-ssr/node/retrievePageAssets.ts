@@ -29,7 +29,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
       }
       assert(mod, { id })
       collectCss(mod, assetUrls, visitedModules)
-    }),
+    })
   )
   return Array.from(assetUrls)
 }
@@ -37,7 +37,7 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
 async function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean,
+  includeAssetsImportedByServer: boolean
 ): Promise<string[]> {
   let assetUrls = new Set<string>()
   assert(clientManifest)
@@ -54,7 +54,7 @@ async function retrieveAssetsProd(
       console.log(clientManifest)
       assertUsage(
         entry,
-        `You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord. (The entry ${id} is missing in the client manifest which is printed above.)`,
+        `You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord. (The entry ${id} is missing in the client manifest which is printed above.)`
       )
     }
     /*
@@ -80,7 +80,7 @@ function collectAssets(
   assetUrls: Set<string>,
   visistedAssets: Set<string>,
   manifest: ViteManifest,
-  onlyCollectStaticAssets: boolean,
+  onlyCollectStaticAssets: boolean
 ): void {
   if (visistedAssets.has(manifestKey)) return
   visistedAssets.add(manifestKey)

@@ -22,7 +22,7 @@ const baseUrl = '/'
 function getFileUrl(
   url: string,
   fileExtension: '.html' | '.pageContext.json',
-  doNotCreateExtraDirectory: boolean,
+  doNotCreateExtraDirectory: boolean
 ): string {
   assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
   const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseUrl)

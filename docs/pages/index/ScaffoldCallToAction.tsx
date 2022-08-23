@@ -41,7 +41,7 @@ function ScaffoldCallToAction() {
             borderRadius: 5,
             display: 'inline-block',
             color: 'black',
-            cursor: 'pointer',
+            cursor: 'pointer'
           }}
         >
           <span style={{ color: '#bbb' }}>$</span> npm init vite-plugin-ssr
@@ -53,7 +53,7 @@ function ScaffoldCallToAction() {
 
 function CallToActionDescription({
   children,
-  style,
+  style
 }: {
   style?: React.CSSProperties
   children: (string | JSX.Element)[]

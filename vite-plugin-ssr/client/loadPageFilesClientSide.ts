@@ -20,7 +20,7 @@ async function loadPageFilesClientSide(pageFilesAll: PageFile[], pageId: string)
     exports,
     exportsAll,
     pageExports,
-    _pageFilesLoaded: pageFilesClientSide,
+    _pageFilesLoaded: pageFilesClientSide
   }
   return pageContextAddendum
 }

@@ -20,7 +20,7 @@ async function startServer() {
     const viteDevMiddleware = (
       await vite.createServer({
         root,
-        server: { middlewareMode: true },
+        server: { middlewareMode: true }
       })
     ).middlewares
     app.use(viteDevMiddleware)
@@ -30,7 +30,7 @@ async function startServer() {
     const apolloClient = makeApolloClient()
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      apolloClient,
+      apolloClient
     }
     const pageContext = await renderPage(pageContextInit)
     const { httpResponse } = pageContext
@@ -49,9 +49,9 @@ function makeApolloClient() {
     ssrMode: true,
     link: createHttpLink({
       uri: 'https://rickandmortyapi.com/graphql',
-      fetch,
+      fetch
     }),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache()
   })
   return apolloClient
 }

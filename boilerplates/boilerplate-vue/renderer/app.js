@@ -14,10 +14,10 @@ function createApp(pageContext) {
         {
           default() {
             return h(Page, pageProps || {})
-          },
-        },
+          }
+        }
       )
-    },
+    }
   }
 
   const app = createSSRApp(PageWithLayout)

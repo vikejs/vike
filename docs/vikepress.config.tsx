@@ -11,7 +11,7 @@ const config: Config = {
   algolia: {
     appId: 'MUXG1ZE9F6',
     apiKey: '8d5986fca9ba9110bcbbfc51263de88b',
-    indexName: 'vite-pluginssr',
+    indexName: 'vite-pluginssr'
   },
   navHeaderMobile: <NavHeaderMobile />,
   navHeader: <NavHeader />,
@@ -21,6 +21,6 @@ const config: Config = {
   titleNormalCase: false,
   bannerUrl: 'https://vite-plugin-ssr.com/banner.png',
   twitterHandle: '@brillout',
-  websiteUrl: 'https://vite-plugin-ssr.com/',
+  websiteUrl: 'https://vite-plugin-ssr.com/'
 }
 export default config

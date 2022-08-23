@@ -13,7 +13,7 @@ export default {
   computed: {
     todoList() {
       return this.$store.state.todoList
-    },
-  },
+    }
+  }
 }
 </script>

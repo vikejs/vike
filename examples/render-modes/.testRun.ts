@@ -7,7 +7,7 @@ import {
   partRegex,
   editFile,
   editFileRevert,
-  sleep,
+  sleep
 } from '../../libframe/test/setup'
 import assert from 'assert'
 
@@ -31,12 +31,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       try {
         // Vite 2
         expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`,
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/index.page.server.${hash}.css">`
         )
       } catch (err) {
         // Vite 3
         expect(html).toMatch(
-          partRegex`<link rel="stylesheet" type="text/css" href="/assets/pages/html-only/index.page.server.${hash}.css">`,
+          partRegex`<link rel="stylesheet" type="text/css" href="/assets/pages/html-only/index.page.server.${hash}.css">`
         )
       }
     } else {
@@ -54,7 +54,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       {
         expect(await page.textContent('h1')).toBe('HTML-only')
         editFile('./pages/html-only/index.page.server.jsx', (s) =>
-          s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>'),
+          s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>')
         )
         // No HMR for HTML-only
         await page.waitForNavigation()
@@ -120,7 +120,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isPreview) {
         expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" async>`,
+          partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" async>`
         )
       } else {
         expect(html).toMatch(partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`)
@@ -135,7 +135,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       {
         expect(await page.textContent('h1')).toBe('HTML + JS')
         editFile('./pages/html-js/index.page.server.jsx', (s) =>
-          s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>'),
+          s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>')
         )
         // No HMR for HTML + JS
         await page.waitForNavigation()
@@ -218,7 +218,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js" async>`)
     } else {
       expect(html).toMatch(
-        partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js");`,
+        partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js");`
       )
     }
   }

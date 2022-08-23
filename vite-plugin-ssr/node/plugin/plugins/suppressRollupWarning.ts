@@ -21,6 +21,6 @@ function suppressRollupWarning(): Plugin {
           warn(warning)
         }
       }
-    },
+    }
   }
 }

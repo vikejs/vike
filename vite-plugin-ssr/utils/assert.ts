@@ -34,9 +34,9 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
       `Reach out at ${projectInfo.githubRepository}/issues/new or ${projectInfo.discordInviteToolChannel} and include this error stack (the error stack is usually enough to fix the problem).`,
       'A maintainer will fix the bug (usually under 24 hours).',
       `Do not hesitate to reach out as it makes ${projectInfo.projectName} more robust.`,
-      debugStr,
+      debugStr
     ].join(' '),
-    numberOfStackTraceLinesToRemove,
+    numberOfStackTraceLinesToRemove
   )
 
   throw internalError
@@ -60,7 +60,7 @@ let alreadyLogged: Set<string> = new Set()
 function assertWarning(
   condition: unknown,
   errorMessage: string,
-  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true },
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: true }
 ): void {
   if (condition) {
     return

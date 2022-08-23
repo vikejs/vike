@@ -30,7 +30,7 @@ function resolveRuntimeConfig(viteConfig: { base: string; vitePluginSsr: { inclu
   const runtimeConfig = {
     baseUrl,
     baseAssets,
-    includeAssetsImportedByServer,
+    includeAssetsImportedByServer
   }
   return runtimeConfig
 }
@@ -46,6 +46,6 @@ function resolveBase(base: string) {
   }
   return {
     baseUrl,
-    baseAssets,
+    baseAssets
   }
 }

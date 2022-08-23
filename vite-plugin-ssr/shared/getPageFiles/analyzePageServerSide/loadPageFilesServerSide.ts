@@ -12,6 +12,6 @@ async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageId: string)
     exports,
     exportsAll,
     pageExports,
-    pageFilesLoaded: pageFilesServerSide,
+    pageFilesLoaded: pageFilesServerSide
   }
 }

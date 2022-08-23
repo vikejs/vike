@@ -19,11 +19,11 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
     const that: unknown = this
     assertUsage(
       !(typeof that === 'object' && that?.constructor === RenderErrorPage),
-      'Do not use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`.',
+      'Do not use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`.'
     )
   }
   assertPageContextProvidedByUser(pageContext, {
-    errorMessagePrefix: 'The `pageContext` provided in `RenderErrorPage({ pageContext })`',
+    errorMessagePrefix: 'The `pageContext` provided in `RenderErrorPage({ pageContext })`'
   })
 
   const err = new Error('RenderErrorPage')
@@ -34,6 +34,6 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
 function assertRenderErrorPageExceptionUsage(err: unknown) {
   assertUsage(
     err !== RenderErrorPage,
-    'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.',
+    'Missing parentheses `()` in `throw RenderErrorPage`: it should be `throw RenderErrorPage()`.'
   )
 }

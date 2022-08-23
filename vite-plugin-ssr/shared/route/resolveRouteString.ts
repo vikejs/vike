@@ -14,7 +14,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
     routeString === '*' || routeString.startsWith('/'),
     `Invalid route string \`${routeString}\`${
       routeString === '' ? ' (empty string)' : ''
-    }: route strings should start with a leading slash \`/\` (or be \`*\`).`,
+    }: route strings should start with a leading slash \`/\` (or be \`*\`).`
   )
   assert(urlPathname.startsWith('/'))
 
@@ -42,7 +42,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
         `Outdated route string \`${routeString}\`, use \`${routeString
           .split(PARAM_TOKEN_OLD)
           .join(PARAM_TOKEN_NEW)}\` instead.`,
-        { onlyOnce: true },
+        { onlyOnce: true }
       )
       if (!urlSegment) {
         return null
@@ -62,11 +62,11 @@ function assertGlob(routeString: string) {
   const numberOfGlobChars = routeString.split('*').length - 1
   assertUsage(
     numberOfGlobChars <= 1,
-    `Invalid route string \`${routeString}\`: route strings are not allowed to contain more than one glob character \`*\`.`,
+    `Invalid route string \`${routeString}\`: route strings are not allowed to contain more than one glob character \`*\`.`
   )
   assertUsage(
     numberOfGlobChars === 0 || (numberOfGlobChars === 1 && routeString.endsWith('*')),
-    `Invalid route string \`${routeString}\`: make sure your route string ends with the glob character \`*\`.`,
+    `Invalid route string \`${routeString}\`: make sure your route string ends with the glob character \`*\`.`
   )
 }
 function analyzeRouteString(routeString: string) {

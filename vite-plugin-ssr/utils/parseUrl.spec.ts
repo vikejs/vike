@@ -11,7 +11,7 @@ const resultBase = {
   origin: null,
   search: {},
   searchAll: {},
-  searchOriginal: null,
+  searchOriginal: null
 }
 
 describe('parseUrl', () => {
@@ -20,76 +20,76 @@ describe('parseUrl', () => {
     expect(parseUrl('/hello', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/hello',
-      pathname: '/hello',
+      pathname: '/hello'
     })
   })
 
   it('Base URL', () => {
     expect(parseUrl('/base', '/base')).toEqual({
       ...resultBase,
-      pathnameOriginal: '/base',
+      pathnameOriginal: '/base'
     })
     expect(parseUrl('/base/', '/base')).toEqual({
       ...resultBase,
-      pathnameOriginal: '/base/',
+      pathnameOriginal: '/base/'
     })
     expect(parseUrl('/base', '/base/')).toEqual({
       ...resultBase,
-      pathnameOriginal: '/base',
+      pathnameOriginal: '/base'
     })
     expect(parseUrl('https://example.org/base', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '/base',
-      origin: 'https://example.org',
+      origin: 'https://example.org'
     })
     expect(parseUrl('https://example.org/base/', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '/base/',
-      origin: 'https://example.org',
+      origin: 'https://example.org'
     })
     expect(parseUrl('https://example.org/base', '/base/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/base',
-      origin: 'https://example.org',
+      origin: 'https://example.org'
     })
     expect(parseUrl('/base/hello', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '/base/hello',
-      pathname: '/hello',
+      pathname: '/hello'
     })
     expect(parseUrl('/hello', '/base')).toEqual({
       ...resultBase,
       hasBaseUrl: false,
       pathnameOriginal: '/hello',
-      pathname: '/hello',
+      pathname: '/hello'
     })
     expect(parseUrl('/base/hello', '/base/nested')).toEqual({
       ...resultBase,
       hasBaseUrl: false,
       pathnameOriginal: '/base/hello',
-      pathname: '/base/hello',
+      pathname: '/base/hello'
     })
   })
 
   it('origin', () => {
     expect(parseUrl('https://example.org/', '/')).toEqual({
       ...resultBase,
-      origin: 'https://example.org',
+      origin: 'https://example.org'
     })
     expect(parseUrl('http://example.org/', '/')).toEqual({
       ...resultBase,
-      origin: 'http://example.org',
+      origin: 'http://example.org'
     })
     expect(parseUrl('http://example.org', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '',
-      origin: 'http://example.org',
+      origin: 'http://example.org'
     })
     expect(parseUrl('http://example.org/base/hello', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '/base/hello',
       pathname: '/hello',
-      origin: 'http://example.org',
+      origin: 'http://example.org'
     })
   })
 
@@ -97,24 +97,24 @@ describe('parseUrl', () => {
     expect(parseUrl('/#reviews', '/')).toEqual({
       ...resultBase,
       hash: 'reviews',
-      hashOriginal: '#reviews',
+      hashOriginal: '#reviews'
     })
     expect(parseUrl('/#', '/')).toEqual({
       ...resultBase,
       hash: '',
-      hashOriginal: '#',
+      hashOriginal: '#'
     })
     expect(parseUrl('/', '/')).toEqual({
       ...resultBase,
       hash: '',
-      hashOriginal: null,
+      hashOriginal: null
     })
     expect(parseUrl('/a/b#', '/a/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/a/b',
       pathname: '/b',
       hash: '',
-      hashOriginal: '#',
+      hashOriginal: '#'
     })
   })
 
@@ -123,7 +123,7 @@ describe('parseUrl', () => {
       ...resultBase,
       search: { q: 'apples' },
       searchAll: { q: ['apples'] },
-      searchOriginal: '?q=apples',
+      searchOriginal: '?q=apples'
     })
     expect(parseUrl('/shop?fruits=apples&candies=chocolate,lolipop', '/')).toEqual({
       ...resultBase,
@@ -131,7 +131,7 @@ describe('parseUrl', () => {
       pathname: '/shop',
       search: { fruits: 'apples', candies: 'chocolate,lolipop' },
       searchAll: { fruits: ['apples'], candies: ['chocolate,lolipop'] },
-      searchOriginal: '?fruits=apples&candies=chocolate,lolipop',
+      searchOriginal: '?fruits=apples&candies=chocolate,lolipop'
     })
     const searchQuery = '?fruit=apples&fruit=bannanas&candy=chocolate&candy=lolipop'
     const searchParams = new URLSearchParams(parseUrl(`/shop${searchQuery}`, '/').searchOriginal)
@@ -143,7 +143,7 @@ describe('parseUrl', () => {
       pathname: '/',
       search: { fruit: 'bannanas', candy: 'lolipop' },
       searchAll: { fruit: ['apples', 'bannanas'], candy: ['chocolate', 'lolipop'] },
-      searchOriginal: searchQuery,
+      searchOriginal: searchQuery
     })
   })
 
@@ -153,18 +153,18 @@ describe('parseUrl', () => {
       expect(parseUrl('/user/@rom', '/')).toEqual({
         ...resultBase,
         pathnameOriginal: '/user/@rom',
-        pathname: '/user/@rom',
+        pathname: '/user/@rom'
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl('/user/%40rom', '/')).toEqual({
         ...resultBase,
         pathnameOriginal: '/user/%40rom',
-        pathname: '/user/@rom',
+        pathname: '/user/@rom'
       })
       expect(parseUrl(`/r${encodeURIComponent('/')}om`, '/')).toEqual({
         ...resultBase,
         pathnameOriginal: '/r%2Fom',
-        pathname: '/r%2Fom',
+        pathname: '/r%2Fom'
       })
     }
 
@@ -173,13 +173,13 @@ describe('parseUrl', () => {
       expect(parseUrl('/#@reviews', '/')).toEqual({
         ...resultBase,
         hash: '@reviews',
-        hashOriginal: '#@reviews',
+        hashOriginal: '#@reviews'
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/#%40reviews`, '/')).toEqual({
         ...resultBase,
         hash: '@reviews',
-        hashOriginal: '#%40reviews',
+        hashOriginal: '#%40reviews'
       })
     }
 
@@ -189,14 +189,14 @@ describe('parseUrl', () => {
         ...resultBase,
         search: { section: '@reviews' },
         searchAll: { section: ['@reviews'] },
-        searchOriginal: '?section=@reviews',
+        searchOriginal: '?section=@reviews'
       })
       assert(encodeURIComponent('@') === '%40')
       expect(parseUrl(`/?section=%40reviews`, '/')).toEqual({
         ...resultBase,
         search: { section: '@reviews' },
         searchAll: { section: ['@reviews'] },
-        searchOriginal: '?section=%40reviews',
+        searchOriginal: '?section=%40reviews'
       })
     }
 
@@ -212,12 +212,12 @@ describe('parseUrl', () => {
       expect(parseUrl('/user/%25rom', '/')).toEqual({
         ...resultBase,
         pathnameOriginal: '/user/%25rom',
-        pathname: '/user/%rom',
+        pathname: '/user/%rom'
       })
       expect(parseUrl('/user/%rom', '/')).toEqual({
         ...resultBase,
         pathnameOriginal: '/user/%rom',
-        pathname: '/user/%rom',
+        pathname: '/user/%rom'
       })
     }
   })
@@ -226,17 +226,17 @@ describe('parseUrl', () => {
     expect(parseUrl('/product/ö', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/product/ö',
-      pathname: '/product/ö',
+      pathname: '/product/ö'
     })
     expect(parseUrl('/product/%C3%B6', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/product/%C3%B6',
-      pathname: '/product/ö',
+      pathname: '/product/ö'
     })
     expect(parseUrl('/product/แจ็คเก็ตเดนิม', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/product/แจ็คเก็ตเดนิม',
-      pathname: '/product/แจ็คเก็ตเดนิม',
+      pathname: '/product/แจ็คเก็ตเดนิม'
     })
 
     // #322
@@ -244,7 +244,7 @@ describe('parseUrl', () => {
     expect(parseUrl('/product/car ', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/product/car ',
-      pathname: '/product/car',
+      pathname: '/product/car'
     })
 
     assert(encodeURIComponent('#') === '%23')
@@ -252,7 +252,7 @@ describe('parseUrl', () => {
     expect(parseUrl('/a%23/b%3Fc', '/a%23')).toEqual({
       ...resultBase,
       pathnameOriginal: '/a%23/b%3Fc',
-      pathname: '/b?c',
+      pathname: '/b?c'
     })
     /* Bug, this doesn't work:
     expect(parseUrl('/a%23/b%3Fc', '/a#')).toEqual({
@@ -265,23 +265,23 @@ describe('parseUrl', () => {
     expect(parseUrl('/a//b', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '/a//b',
-      pathname: '/a//b',
+      pathname: '/a//b'
     })
     expect(parseUrl('http://example.org//', '/')).toEqual({
       ...resultBase,
       origin: 'http://example.org',
       pathnameOriginal: '//',
-      pathname: '//',
+      pathname: '//'
     })
     expect(parseUrl('//', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '//',
-      pathname: '//',
+      pathname: '//'
     })
     expect(parseUrl('///', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '///',
-      pathname: '///',
+      pathname: '///'
     })
   })
 
@@ -291,23 +291,23 @@ describe('parseUrl', () => {
       pathnameOriginal: '',
       search: { a: 'b' },
       searchAll: { a: ['b'] },
-      searchOriginal: '?a=b',
+      searchOriginal: '?a=b'
     })
     expect(parseUrl('#a', '/')).toEqual({
       ...resultBase,
       hash: 'a',
       hashOriginal: '#a',
-      pathnameOriginal: '',
+      pathnameOriginal: ''
     })
     expect(parseUrl('', '/')).toEqual({
       ...resultBase,
       pathnameOriginal: '',
-      pathname: '/',
+      pathname: '/'
     })
     expect(parseUrl('', '/base')).toEqual({
       ...resultBase,
       pathnameOriginal: '',
-      pathname: '/',
+      pathname: '/'
     })
   })
 
@@ -315,28 +315,28 @@ describe('parseUrl', () => {
     expect(parseUrl('.', '/b1/b2/')).toEqual({
       ...resultBase,
       pathnameOriginal: '.',
-      pathname: '/',
+      pathname: '/'
     })
     expect(parseUrl('..', '/b1/b2/')).toEqual({
       ...resultBase,
       hasBaseUrl: false,
       pathnameOriginal: '..',
-      pathname: '/b1/',
+      pathname: '/b1/'
     })
   })
   expect(parseUrl('../../', '/b1/b2/')).toEqual({
     ...resultBase,
     hasBaseUrl: false,
     pathnameOriginal: '../../',
-    pathname: '/',
+    pathname: '/'
   })
 
   it('doc example', () => {
     expect(
       parseUrl(
         'https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge',
-        '/some-base-url',
-      ),
+        '/some-base-url'
+      )
     ).toEqual({
       hasBaseUrl: true,
       origin: 'https://example.com',
@@ -346,7 +346,7 @@ describe('parseUrl', () => {
       searchAll: { fruit: ['âpple', 'orânge'] },
       searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
       hash: 'âge',
-      hashOriginal: '#%C3%A2ge',
+      hashOriginal: '#%C3%A2ge'
     })
   })
 })

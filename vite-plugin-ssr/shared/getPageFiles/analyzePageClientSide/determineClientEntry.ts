@@ -7,7 +7,7 @@ function determineClientEntry({
   pageFilesClientSide,
   pageFilesServerSide,
   isHtmlOnly,
-  isClientRouting,
+  isClientRouting
 }: {
   pageFilesClientSide: PageFile[]
   pageFilesServerSide: PageFile[]

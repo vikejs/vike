@@ -16,7 +16,7 @@ function distFileNames(): Plugin {
     async configResolved(config) {
       setChunkFileNames(config, getChunkFileName)
       setAssetFileNames(config, getAssetFileName)
-    },
+    }
   }
 }
 
@@ -27,7 +27,7 @@ const BLACK_LIST = ['assertRenderHook.css']
 function getAssetFileName(
   assetInfo: PreRenderedAsset,
   assetFileName: string | undefined,
-  config: ResolvedConfig,
+  config: ResolvedConfig
 ): string {
   const assetsDir = getAssetsDir(config)
 
@@ -101,14 +101,14 @@ function deduceChunkNameFromFilesystemRouting(id: string, root: string): string 
 
 function setChunkFileNames(
   config: ResolvedConfig,
-  getChunkFileName: (chunkInfo: PreRenderedChunk, chunkFileName: string | undefined, config: ResolvedConfig) => string,
+  getChunkFileName: (chunkInfo: PreRenderedChunk, chunkFileName: string | undefined, config: ResolvedConfig) => string
 ): void {
   if (!config?.build?.rollupOptions?.output) {
     // @ts-expect-error `ResolvedConfig['build']` is `readonly`
     config.build ??= {}
     config.build.rollupOptions ??= {}
     config.build.rollupOptions.output = {
-      chunkFileNames: (chunkInfo: PreRenderedChunk) => getChunkFileName(chunkInfo, undefined, config),
+      chunkFileNames: (chunkInfo: PreRenderedChunk) => getChunkFileName(chunkInfo, undefined, config)
     }
   } else if (!Array.isArray(config.build.rollupOptions.output)) {
     const chunkFileNames_original = config.build.rollupOptions.output.chunkFileNames
@@ -124,14 +124,14 @@ function setChunkFileNames(
 }
 function setAssetFileNames(
   config: ResolvedConfig,
-  getAssetFileName: (chunkInfo: PreRenderedAsset, chunkFileName: string | undefined, config: ResolvedConfig) => string,
+  getAssetFileName: (chunkInfo: PreRenderedAsset, chunkFileName: string | undefined, config: ResolvedConfig) => string
 ): void {
   if (!config?.build?.rollupOptions?.output) {
     // @ts-expect-error `ResolvedConfig['build']` is `readonly`
     config.build ??= {}
     config.build.rollupOptions ??= {}
     config.build.rollupOptions.output = {
-      assetFileNames: (chunkInfo: PreRenderedAsset) => getAssetFileName(chunkInfo, undefined, config),
+      assetFileNames: (chunkInfo: PreRenderedAsset) => getAssetFileName(chunkInfo, undefined, config)
     }
   } else if (!Array.isArray(config.build.rollupOptions.output)) {
     const chunkFileNames_original = config.build.rollupOptions.output.assetFileNames

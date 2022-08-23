@@ -8,13 +8,13 @@ function assertHookResult<Keys extends readonly string[]>(
   hookResult: unknown,
   hookName: 'onBeforeRender' | 'render',
   hookResultKeys: Keys,
-  hookFile: string,
+  hookFile: string
 ): asserts hookResult is undefined | null | { [key in Keys[number]]?: unknown } {
   assert(!hookName.endsWith(')'))
   const errPrefix = `The \`export { ${hookName} }\` of ${hookFile}`
   assertUsage(
     hookResult === null || hookResult === undefined || isPlainObject(hookResult),
-    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`,
+    `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`
   )
   if (hookResult === undefined || hookResult === null) {
     return
@@ -28,7 +28,7 @@ function assertHookResult<Keys extends readonly string[]>(
 function assertObjectKeys<Keys extends readonly string[]>(
   obj: Record<string, unknown>,
   keysExpected: Keys,
-  errPrefix: string,
+  errPrefix: string
 ): asserts obj is { [key in Keys[number]]?: unknown } {
   const keysUnknown: string[] = []
   const keys = Object.keys(obj)
@@ -44,7 +44,7 @@ function assertObjectKeys<Keys extends readonly string[]>(
       'returned an object with unknown keys',
       stringifyStringArray(keysUnknown) + '.',
       'Only following keys are allowed:',
-      stringifyStringArray(keysExpected) + '.',
-    ].join(' '),
+      stringifyStringArray(keysExpected) + '.'
+    ].join(' ')
   )
 }

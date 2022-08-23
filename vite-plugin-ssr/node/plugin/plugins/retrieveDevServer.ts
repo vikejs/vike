@@ -8,6 +8,6 @@ function retrieveDevServer(): Plugin {
     name: 'vite-plugin-ssr:retrieveDevServer',
     configureServer(viteDevServer) {
       setViteDevServer(viteDevServer)
-    },
+    }
   } as Plugin
 }

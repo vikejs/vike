@@ -34,7 +34,7 @@ async function render(pageContext) {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-    },
+    }
   }
 }
 
@@ -45,7 +45,7 @@ async function onBeforeRender(pageContext) {
   return {
     pageContext: {
       apolloInitialState,
-      appHtml,
-    },
+      appHtml
+    }
   }
 }

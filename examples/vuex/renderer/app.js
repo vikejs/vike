@@ -5,7 +5,7 @@ export { createApp }
 
 function createApp({ Page }) {
   const app = createSSRApp({
-    render: () => h(Page),
+    render: () => h(Page)
   })
   const store = createStore()
   app.use(store)

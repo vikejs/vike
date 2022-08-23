@@ -10,12 +10,12 @@ function resolveConfigVps(fromPluginOptions: unknown, fromViteConfig: unknown): 
   const vitePluginSsr: ConfigVpsResolved = {
     disableAutoFullBuild: fromPluginOptions.disableAutoFullBuild ?? fromViteConfig.disableAutoFullBuild ?? false,
     pageFiles: {
-      include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
+      include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])]
     },
     prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
     includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],
     includeAssetsImportedByServer:
-      fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? false,
+      fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? false
   }
 
   assertConfigVpsResolved({ vitePluginSsr })
@@ -33,7 +33,7 @@ function resolvePrerenderOptions(fromPluginOptions: ConfigVpsUser, fromViteConfi
       partial: prerenderUserOptions.partial ?? prerenderViteConfig.partial ?? false,
       noExtraDir: prerenderUserOptions.noExtraDir ?? prerenderViteConfig.noExtraDir ?? false,
       parallel: prerenderUserOptions.parallel ?? prerenderViteConfig.parallel ?? true,
-      disableAutoRun: prerenderUserOptions.disableAutoRun ?? prerenderViteConfig.disableAutoRun ?? false,
+      disableAutoRun: prerenderUserOptions.disableAutoRun ?? prerenderViteConfig.disableAutoRun ?? false
     }
   }
   return prerender
@@ -43,7 +43,7 @@ function assertUserInputFromPluginOptions(fromPluginOptions: unknown): asserts f
   assertConfigVpsUser(
     fromPluginOptions,
     ({ configPathInObject, configProp }) =>
-      `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``,
+      `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``
   )
 }
 function assertUserInputFromViteConfig(fromViteConfig: unknown): asserts fromViteConfig is ConfigVpsUser {

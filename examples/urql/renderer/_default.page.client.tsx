@@ -16,8 +16,8 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
       cacheExchange,
       // We hydrate the page
       ssrExchange({ isClient: true, initialState: urqlState }),
-      fetchExchange,
-    ],
+      fetchExchange
+    ]
   })
   hydrateRoot(
     document.getElementById('page-view')!,
@@ -25,6 +25,6 @@ async function render(pageContext: PageContextBuiltInClient & PageContext) {
       <Provider value={client}>
         <Page {...pageProps} />
       </Provider>
-    </PageShell>,
+    </PageShell>
   )
 }

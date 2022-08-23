@@ -17,7 +17,7 @@ function render(pageContext) {
   const pageHtml = ReactDOMServer.renderToString(
     <PageShell>
       <Page {...pageProps} />
-    </PageShell>,
+    </PageShell>
   )
 
   // Vite automatically injects the Base URL to `logoUrl`.

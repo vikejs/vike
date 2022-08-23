@@ -11,7 +11,7 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Pro
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
     fileTypes.map((fileType) => `**/*${fileType}.${javascriptFileExtensions}`),
-    { ignore: ['**/node_modules/**'], cwd },
+    { ignore: ['**/node_modules/**'], cwd }
   )
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))
   const time = new Date().getTime() - timeBase
@@ -19,8 +19,8 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Pro
     time < 2 * 1000,
     `Finding your page files \`**/*.page.*\` took more than two seconds (${time}ms). Reach out to the vite-plugin-ssr maintainers.`,
     {
-      onlyOnce: 'slow-page-files-search',
-    },
+      onlyOnce: 'slow-page-files-search'
+    }
   )
   return pageFiles
 }

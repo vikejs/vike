@@ -10,6 +10,6 @@ function setVitePluginSsrConfig(vpsConfig: unknown) {
     config(config) {
       const vitePluginSsr = resolveConfigVps(vpsConfig ?? {}, ((config as any).vitePluginSsr as unknown) ?? {})
       return { vitePluginSsr }
-    },
+    }
   } as Plugin
 }

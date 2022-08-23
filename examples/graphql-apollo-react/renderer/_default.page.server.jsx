@@ -30,7 +30,7 @@ async function render(pageContext) {
   return {
     documentHtml,
     pageContext: {
-      apolloIntialState,
-    },
+      apolloIntialState
+    }
   }
 }

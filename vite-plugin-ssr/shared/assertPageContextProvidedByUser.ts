@@ -6,11 +6,11 @@ function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
     hook,
-    errorMessagePrefix,
+    errorMessagePrefix
   }: {
     hook?: { hookFilePath: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
     errorMessagePrefix?: string
-  },
+  }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (!errorMessagePrefix) {
     assert(hook)
@@ -24,13 +24,13 @@ function assertPageContextProvidedByUser(
 
   assertUsage(
     !('_objectCreatedByVitePluginSsr' in pageContextProvidedByUser),
-    `${errorMessagePrefix} should not be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`,
+    `${errorMessagePrefix} should not be the whole \`pageContext\` object, see https://vite-plugin-ssr.com/pageContext-manipulation#do-not-return-entire-pagecontext`
   )
   // In principle, it's possible to use `onBeforeRoute()` to override and define the whole routing.
   // Is that a good idea to allow users to do this? Beyond deep integration with Vue Router or React Router, is there a use case for this?
   assertWarning(
     !('_pageId' in pageContextProvidedByUser),
     'You are using `onBeforeRoute()` to override vite-plugin-ssr routing. This is experimental: make sure to contact a vite-plugin-ssr maintainer before using this.',
-    { onlyOnce: true },
+    { onlyOnce: true }
   )
 }

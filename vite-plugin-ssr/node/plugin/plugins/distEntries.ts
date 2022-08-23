@@ -14,12 +14,12 @@ function distEntriesPlugin(): Plugin[] {
       enforce: 'post',
       configResolved(config_) {
         config = config_
-      },
+      }
     },
     distImporter({
       getImporterCode: ({ rollup }) => getImporterCode(config, rollup),
-      projectName: projectInfo.projectName,
-    }),
+      projectName: projectInfo.projectName
+    })
   ]
 }
 
@@ -37,7 +37,7 @@ function getImporterCode(config: ResolvedConfig, rollup: { options: NormalizedOu
     "  clientManifest: () => require('../client/manifest.json'),",
     "  pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
     '});',
-    '',
+    ''
   ].join('\n')
   return importerCode
 }

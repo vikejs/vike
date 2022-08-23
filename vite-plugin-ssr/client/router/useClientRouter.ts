@@ -11,7 +11,7 @@ import {
   objectAssign,
   serverSideRouteTo,
   throttle,
-  sleep,
+  sleep
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
@@ -38,7 +38,7 @@ function disableClientRouting() {
   assertInfo(
     false,
     `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`,
-    { onlyOnce: true },
+    { onlyOnce: true }
   )
 }
 
@@ -56,8 +56,8 @@ function useClientRouter() {
     url: string,
     {
       keepScrollPosition,
-      overwriteLastHistoryEntry,
-    }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
+      overwriteLastHistoryEntry
+    }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean }
   ) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
     await fetchAndRender({ scrollTarget, url, overwriteLastHistoryEntry, isBackwardNavigation: false })
@@ -74,7 +74,7 @@ function useClientRouter() {
     scrollTarget,
     url = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
-    isBackwardNavigation,
+    isBackwardNavigation
   }: {
     scrollTarget: ScrollTarget
     url?: string
@@ -88,7 +88,7 @@ function useClientRouter() {
 
     const pageContext = {
       urlOriginal: url,
-      isBackwardNavigation,
+      isBackwardNavigation
     }
 
     const renderingNumber = ++renderingCounter
@@ -122,7 +122,7 @@ function useClientRouter() {
     }
     const isFirstRenderAttempt = renderingNumber === 1
     objectAssign(pageContext, {
-      _isFirstRenderAttempt: isFirstRenderAttempt,
+      _isFirstRenderAttempt: isFirstRenderAttempt
     })
     objectAssign(pageContext, globalContext)
     addComputedUrlProps(pageContext)
@@ -185,7 +185,7 @@ function useClientRouter() {
       const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
       assertUsage(
         hookResult === undefined,
-        '`export { render }` of ' + pageContext.exportsAll.render![0]!._filePath + ' should not return any value',
+        '`export { render }` of ' + pageContext.exportsAll.render![0]!._filePath + ' should not return any value'
       )
       addLinkPrefetchHandlers(pageContext)
     })()
@@ -211,28 +211,28 @@ function useClientRouter() {
 
 async function navigate(
   url: string,
-  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {},
+  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
 ): Promise<void> {
   assertUsage(
     isBrowser(),
-    '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.',
+    '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
   )
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
     typeof url === 'string',
-    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.',
+    '[navigate(url)] Argument `url` should be a string (but we got `typeof url === "' + typeof url + '"`.'
   )
   assertUsage(
     typeof keepScrollPosition === 'boolean',
     '[navigate(url, { keepScrollPosition })] Argument `keepScrollPosition` should be a boolean (but we got `typeof keepScrollPosition === "' +
       typeof keepScrollPosition +
-      '"`.',
+      '"`.'
   )
   assertUsage(
     typeof overwriteLastHistoryEntry === 'boolean',
     '[navigate(url, { overwriteLastHistoryEntry })] Argument `overwriteLastHistoryEntry` should be a boolean (but we got `typeof keepScrollPosition === "' +
       typeof overwriteLastHistoryEntry +
-      '"`.',
+      '"`.'
   )
   assertUsage(url.startsWith('/'), '[navigate(url)] Argument `url` should start with a leading `/`.')
   const navigateFunction = globalThis.__vite_plugin_ssr__navigate
@@ -286,7 +286,7 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
 
 let previousState = getState()
 function onBrowserHistoryNavigation(
-  callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void,
+  callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void
 ) {
   // The `event` of `window.addEventListener('popstate', (event) => /*...*/)` is useless:
   //  - The History API doesn't provide the previous state (the popped state): https://stackoverflow.com/questions/48055323/is-history-state-always-the-same-as-popstate-event-state
@@ -342,7 +342,7 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
 function getState() {
   return {
     urlWithoutHash: getCurrentUrl({ withoutHash: true }),
-    historyState: getHistoryState(),
+    historyState: getHistoryState()
   }
 }
 
@@ -459,8 +459,8 @@ declare global {
         url: string,
         {
           keepScrollPosition,
-          overwriteLastHistoryEntry,
-        }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean },
+          overwriteLastHistoryEntry
+        }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean }
       ) => Promise<void>)
 }
 
@@ -476,7 +476,7 @@ function checkIfAbort(err: unknown, pageContext: { urlOriginal: string; _isFirst
 
 function handleErrorFetchingStaticAssets(
   err: unknown,
-  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean },
+  pageContext: { urlOriginal: string; _isFirstRenderAttempt: boolean }
 ): boolean {
   if (!isErrorFetchingStaticAssets(err)) {
     return false

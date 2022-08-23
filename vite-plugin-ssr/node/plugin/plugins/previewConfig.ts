@@ -17,8 +17,8 @@ function previewConfig(): Plugin {
     config(config) {
       return {
         build: {
-          outDir: getOutDir(config),
-        },
+          outDir: getOutDir(config)
+        }
       }
     },
     configResolved(config_) {
@@ -33,11 +33,11 @@ function previewConfig(): Plugin {
         }
         addStatic404Middleware(server.middlewares)
       }
-    },
+    }
   }
   function assertDist() {
     const {
-      build: { outDir },
+      build: { outDir }
     } = config
     assertPosixPath(outDir)
     let { outDirRoot, outDirClient, outDirServer } = getOutDirs(outDir)
@@ -45,13 +45,13 @@ function previewConfig(): Plugin {
     if (!outDirRoot.endsWith('/')) outDirRoot = outDirRoot + '/'
     assertUsage(
       fs.existsSync(outDirClient) && fs.existsSync(outDirServer),
-      `Cannot run \`$ vite preview\`: your app wasn't built yet (the build directory \`${outDirRoot}\` is missing). Make sure to run \`$ vite build\` before running \`$ vite preview\`.`,
+      `Cannot run \`$ vite preview\`: your app wasn't built yet (the build directory \`${outDirRoot}\` is missing). Make sure to run \`$ vite build\` before running \`$ vite preview\`.`
     )
   }
 
   function addStatic404Middleware(middlewares: ConnectServer) {
     const {
-      build: { outDir },
+      build: { outDir }
     } = config
     const { outDirClient } = getOutDirs(outDir)
     middlewares.use(config.base, (_, res, next) => {

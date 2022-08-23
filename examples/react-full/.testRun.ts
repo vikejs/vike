@@ -141,7 +141,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
       expectBrowserError(
         (browserLog) =>
           browserLog.logText.includes('http://localhost:3000/hello/bob') &&
-          browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)'),
+          browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
       )
       const txt = 'Unknown name: bob.'
       expect(await page.textContent('body')).toContain(txt)
