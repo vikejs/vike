@@ -9,11 +9,11 @@ importers:
 
   .:
     specifiers:
-      '@brillout/dev-my-dep': 0.0.8
+      '@brillout/dev-my-dep': 0.0.9
       '@brillout/submodule-init': 0.1.2
       vitest: ^0.14.1
     devDependencies:
-      '@brillout/dev-my-dep': 0.0.8
+      '@brillout/dev-my-dep': 0.0.9
       '@brillout/submodule-init': 0.1.2
       vitest: 0.14.1
 
@@ -1672,8 +1672,8 @@ packages:
     resolution: {integrity: sha512-8eswfYbIoRp1Uz0i50Fztk6z207YRY+rxNL0nkvZ1qYPUx2wxsFQr3J1agmmXXgoahsy/HFqhyApsSuaq8DHgw==}
     dev: false
 
-  /@brillout/dev-my-dep/0.0.8:
-    resolution: {integrity: sha512-AbREFJVHgSnmSbUT0I64S3uU6wBx1FWlsL2CIsvjI4lnpMqOhwpm4YObqVjNS2U6vjyB4bD7xYrk1+pvk7U+MQ==}
+  /@brillout/dev-my-dep/0.0.9:
+    resolution: {integrity: sha512-x1/qCMGwE0wCARtnqYIPBbDxwtYUmum0sDQyohR0LwCGvPR3V3GAWzBNUYVnu2rcsJ/mKidYBlQkFeyYB3n9Kw==}
     hasBin: true
     dev: true
 
