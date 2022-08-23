@@ -2,7 +2,7 @@ export { loadDistEntries }
 export { setDistEntries }
 
 import { assert, assertUsage } from '../../utils'
-import { loadDistEntries as loadDistEntries_ } from 'vite-plugin-dist-importer/loadDistEntries'
+import { loadImportBuildFile, importBuildFileName } from 'vite-plugin-import-build/loadImportBuildFile'
 
 const distEntries = (globalThis.__vite_plugin_ssr__distEntries = globalThis.__vite_plugin_ssr__distEntries || {
   value: null
@@ -20,8 +20,7 @@ function setDistEntries(distEntries_: DistEntries) {
 
 async function loadDistEntries() {
   if (!distEntries.value) {
-    const { success, entryFile, importBuildFileName } = await loadDistEntries_()
-    assert(importBuildFileName)
+    const { success, entryFile } = await loadImportBuildFile()
     assertUsage(
       success,
       `Cannot find production build. Did you to run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`
