@@ -45,9 +45,9 @@ This technique also works with:
 - `?lang=fr` query parameters
 - `domain.fr` domain TLDs
 - `Accept-Language: fr-FR` headers
-   > The `Accept-Language` can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, we can use the technique described in this page. We can perform the redirection by using our server (e.g. Express.js), independently of vite-plugin-ssr.
+   > The `Accept-Language` can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, we can use the technique described in this page. We can perform the redirection by using our server (e.g. Express.js) independently of vite-plugin-ssr.
 
-   > Note that using the `Accept-Language` header to show different languages for the same URL is considered bad practice for both SEO and UX reasons. It's recommended to use `Accept-Language` only to redirect the user.
+   > Using the `Accept-Language` header to show different languages for the same URL is considered bad practice for both SEO and UX reasons. It's recommended to use `Accept-Language` only to redirect the user.
 
 
 ## Example
