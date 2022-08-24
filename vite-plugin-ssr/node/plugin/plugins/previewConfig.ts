@@ -1,7 +1,7 @@
 export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assertPosixPath, assertUsage, getOutDirs, getOutDir } from '../utils'
+import { assertUsage, getOutDirs, determineOutDir } from '../utils'
 import { apply, addSsrMiddleware } from '../helpers'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import fs from 'fs'
@@ -17,7 +17,7 @@ function previewConfig(): Plugin {
     config(config) {
       return {
         build: {
-          outDir: getOutDir(config)
+          outDir: determineOutDir(config)
         }
       }
     },
@@ -36,26 +36,19 @@ function previewConfig(): Plugin {
     }
   }
   function assertDist() {
-    const {
-      build: { outDir }
-    } = config
-    assertPosixPath(outDir)
-    let { outDirRoot, outDirClient, outDirServer } = getOutDirs(outDir)
-    assertPosixPath(outDirRoot)
-    if (!outDirRoot.endsWith('/')) outDirRoot = outDirRoot + '/'
-    assertUsage(
-      fs.existsSync(outDirClient) && fs.existsSync(outDirServer),
-      `Cannot run \`$ vite preview\`: your app wasn't built yet (the build directory \`${outDirRoot}\` is missing). Make sure to run \`$ vite build\` before running \`$ vite preview\`.`
-    )
+    let { outDirRoot, outDirClient, outDirServer } = getOutDirs(config)
+    ;[outDirRoot, outDirClient, outDirServer].forEach((outDirAny) => {
+      assertUsage(
+        fs.existsSync(outDirAny),
+        `Cannot run \`$ vite preview\`: your app isn't built (the build directory ${outDirAny} is missing). Make sure to run \`$ vite build\` before running \`$ vite preview\`.`
+      )
+    })
   }
 
   function addStatic404Middleware(middlewares: ConnectServer) {
-    const {
-      build: { outDir }
-    } = config
-    const { outDirClient } = getOutDirs(outDir)
+    const { outDirClient } = getOutDirs(config)
     middlewares.use(config.base, (_, res, next) => {
-      const file = path.join(outDirClient, './404.html')
+      const file = path.posix.join(outDirClient, './404.html')
       if (fs.existsSync(file)) {
         res.statusCode = 404
         res.end(fs.readFileSync(file))

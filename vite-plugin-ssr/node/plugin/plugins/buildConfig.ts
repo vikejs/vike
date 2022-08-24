@@ -1,7 +1,7 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import type { ResolvedConfig } from 'vite'
-import { assert, getOutDir, isObject, isSSR_config, makeFilePathAbsolute } from '../utils'
+import { assert, determineOutDir, isObject, isSSR_config, makeFilePathAbsolute } from '../utils'
 import { modifyResolvedConfig, findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 
@@ -21,7 +21,7 @@ function buildConfig(): Plugin {
     config(config) {
       const configMod: UserConfig = {
         build: {
-          outDir: getOutDir(config),
+          outDir: determineOutDir(config),
           manifest: !isSSR_config(config),
           // @ts-ignore
           polyfillDynamicImport: false

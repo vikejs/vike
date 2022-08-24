@@ -26,13 +26,12 @@ function distEntriesPlugin(): Plugin[] {
 }
 
 function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const importPathAbsolute = toPosixPath(
-    require.resolve(`../../../../../dist/cjs/node/plugin/plugins/distEntries/loadDistEntries`)
+    // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/distEntries.js
+    require.resolve(`../../../../../dist/cjs/node/plugin/plugins/distEntries/loadDistEntries.js`)
   )
-  const { outDirServer } = getOutDirs(config.build.outDir)
-  const outDirServerAbsolute = path.posix.join(config.root, outDirServer)
-  const importPath = path.posix.relative(outDirServerAbsolute, importPathAbsolute)
+  const { outDirServer } = getOutDirs(config)
+  const importPath = path.posix.relative(outDirServer, importPathAbsolute)
   const importerCode = [
     `const { setDistEntries } = require('${importPath}');`,
     'setDistEntries({',

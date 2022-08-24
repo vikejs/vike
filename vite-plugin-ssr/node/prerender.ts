@@ -1,5 +1,5 @@
 import './page-files/setup'
-import path, { join, sep, dirname, isAbsolute } from 'path'
+import path from 'path'
 import {
   isErrorPageId,
   isStaticRouteString,
@@ -18,10 +18,11 @@ import {
   objectAssign,
   isObjectWithKeys,
   isCallable,
-  getOutDirs,
+  getOutDirs_prerender,
   loadModuleAtRuntime,
   isObject,
-  hasPropertyGetter
+  hasPropertyGetter,
+  assertPosixPath
 } from './utils'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
@@ -131,7 +132,7 @@ async function prerender(
   assertLoadedConfig(viteConfig, options)
   assertConfigVpsResolved(viteConfig)
 
-  const { outDirRoot } = getOutDirs(viteConfig.build.outDir, { isRoot: true })
+  const { outDirClient } = getOutDirs_prerender(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = viteConfig.vitePluginSsr?.prerender
   assertUsage(prerenderConfig !== false, wrongViteConfigErrorMessage)
@@ -189,7 +190,15 @@ async function prerender(
 
   await Promise.all(
     htmlFiles.map((htmlFile) =>
-      writeHtmlFile(htmlFile, root, outDirRoot, doNotPrerenderList, concurrencyLimit, options.onPagePrerender, logLevel)
+      writeHtmlFile(
+        htmlFile,
+        root,
+        outDirClient,
+        doNotPrerenderList,
+        concurrencyLimit,
+        options.onPagePrerender,
+        logLevel
+      )
     )
   )
 
@@ -579,7 +588,7 @@ async function prerender404Page(htmlFiles: HtmlFile[], globalContext: GlobalPrer
 async function writeHtmlFile(
   { urlOriginal, pageContext, htmlString, pageContextSerialized, doNotCreateExtraDirectory, pageId }: HtmlFile,
   root: string,
-  outDirRoot: string,
+  outDirClient: string,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: pLimit.Limit,
   onPagePrerender: Function | undefined,
@@ -595,7 +604,7 @@ async function writeHtmlFile(
       '.html',
       htmlString,
       root,
-      outDirRoot,
+      outDirClient,
       doNotCreateExtraDirectory,
       concurrencyLimit,
       onPagePrerender,
@@ -610,7 +619,7 @@ async function writeHtmlFile(
         '.pageContext.json',
         pageContextSerialized,
         root,
-        outDirRoot,
+        outDirClient,
         doNotCreateExtraDirectory,
         concurrencyLimit,
         onPagePrerender,
@@ -627,7 +636,7 @@ function write(
   fileExtension: '.html' | '.pageContext.json',
   fileContent: string,
   root: string,
-  outDirRoot: string,
+  outDirClient: string,
   doNotCreateExtraDirectory: boolean,
   concurrencyLimit: pLimit.Limit,
   onPagePrerender: Function | undefined,
@@ -639,11 +648,13 @@ function write(
       fileExtension,
       fileExtension === '.pageContext.json' || doNotCreateExtraDirectory
     )
+    assertPosixPath(fileUrl)
     assert(fileUrl.startsWith('/'))
-    const filePathRelative = fileUrl.slice(1).split('/').join(sep)
-    assert(!filePathRelative.startsWith(sep))
-    assert(!outDirRoot.includes('\\'))
-    const filePath = join(root, outDirRoot, 'client', filePathRelative)
+    const filePathRelative = fileUrl.slice(1)
+    assert(!filePathRelative.startsWith('/'))
+    assertPosixPath(outDirClient)
+    assertPosixPath(filePathRelative)
+    const filePath = path.posix.join(outDirClient, filePathRelative)
     if (onPagePrerender) {
       const prerenderPageContext = {}
       objectAssign(prerenderPageContext, pageContext)
@@ -657,10 +668,16 @@ function write(
     } else {
       const { promises } = require('fs')
       const { writeFile, mkdir } = promises
-      await mkdir(dirname(filePath), { recursive: true })
+      await mkdir(path.posix.dirname(filePath), { recursive: true })
       await writeFile(filePath, fileContent)
       if (logLevel === 'info') {
-        console.log(`${gray(path.posix.join(outDirRoot, 'client/'))}${blue(filePathRelative)}`)
+        assertPosixPath(root)
+        assertPosixPath(outDirClient)
+        let outDirClientRelative = path.posix.relative(root, outDirClient)
+        if (!outDirClientRelative.endsWith('/')) {
+          outDirClientRelative = outDirClientRelative + '/'
+        }
+        console.log(`${gray(outDirClientRelative)}${blue(filePathRelative)}`)
       }
     }
   })
@@ -738,26 +755,6 @@ function checkOutdatedOptions(options: {
       }
     )
   })
-
-  const { partial, noExtraDir, root, outDir, parallel } = options
-  assertUsage(
-    partial === undefined || partial === true || partial === false,
-    '[prerender()] Option `partial` should be a boolean.'
-  )
-  assertUsage(
-    noExtraDir === undefined || noExtraDir === true || noExtraDir === false,
-    '[prerender()] Option `noExtraDir` should be a boolean.'
-  )
-  assertUsage(root === undefined || typeof root === 'string', '[prerender()] Option `root` should be a string.')
-  assertUsage(
-    root === undefined || isAbsolute(root),
-    '[prerender()] The path `root` is not absolute. Make sure to provide an absolute path.'
-  )
-  assertUsage(outDir === undefined || typeof outDir === 'string', '[prerender()] Option `outDir` should be a string.')
-  assertUsage(
-    parallel === undefined || parallel,
-    `[prerender()] Option \`parallel\` should be a number \`>=1\` but we got \`${parallel}\`.`
-  )
 }
 
 function disableReactStreaming() {

@@ -1,15 +1,48 @@
-import type { UserConfig } from 'vite'
+import type { UserConfig, ResolvedConfig } from 'vite'
 import { isSSR_config } from './isSSR'
-import { assert, assertUsage } from './assert'
+import { assert } from './assert'
 import { assertPosixPath } from './filesystemPathHandling'
+import path from 'path'
 
 export { getOutDirs }
-export { getOutDir }
+export { getOutDirs_prerender }
+export { determineOutDir }
 
-function getOutDir(config: UserConfig): string {
-  const outDir = config.build?.outDir || 'dist'
-  assertIsNotAbsolute(outDir)
-  const { outDirClient, outDirServer } = getOutDirs(outDir, { isRoot: true })
+type OutDirs = {
+  /** Absolute path to `outDir` */
+  outDirRoot: string
+  /** Absolute path to `${outDir}/client` */
+  outDirClient: string
+  /** Absolute path to `${outDir}/server` */
+  outDirServer: string
+}
+
+function getOutDirs(config: ResolvedConfig): OutDirs {
+  const outDir = config.build.outDir
+  assertPosixPath(outDir)
+  assertIsNotOutDirRoot(outDir)
+  assertConfig(config)
+  assert('/client'.length === '/server'.length)
+  let outDirRoot = outDir.slice(0, -1 * '/client'.length)
+  return getAllOutDirs(outDirRoot, config.root)
+}
+function getOutDirs_prerender(config: ResolvedConfig): OutDirs {
+  const outDirRoot = config.build.outDir
+  assertPosixPath(outDirRoot)
+  assertIsOutDirRoot(outDirRoot)
+  return getAllOutDirs(outDirRoot, config.root)
+}
+
+/** Appends `client/` or `server/` to `config.build.outDir` */
+function determineOutDir(config: UserConfig): string {
+  let outDirRoot = config.build?.outDir || 'dist'
+  assertPosixPath(outDirRoot)
+  // If using Telefunc + vite-plugin-ssr then `config.build.outDir` may already be set
+  if (!isOutDirRoot(outDirRoot)) {
+    assertConfig(config)
+    return outDirRoot
+  }
+  const { outDirClient, outDirServer } = declineOutDirs(outDirRoot)
   if (isSSR_config(config)) {
     return outDirServer
   } else {
@@ -17,38 +50,71 @@ function getOutDir(config: UserConfig): string {
   }
 }
 
-function getOutDirs(outDir: string, options: { isRoot?: true } = {}) {
-  assertPosixPath(outDir)
-  let outDirRoot: string
-  if (isNotRoot(outDir)) {
-    assert(!options.isRoot, { outDir })
-    assert('/client'.length === '/server'.length)
-    outDirRoot = outDir.slice(0, -1 * '/client'.length)
-  } else {
-    outDirRoot = outDir
+function getAllOutDirs(outDirRoot: string, root: string) {
+  if (!outDirIsAbsolutePath(outDirRoot)) {
+    assertPosixPath(outDirRoot)
+    assertPosixPath(root)
+    outDirRoot = path.posix.join(root, outDirRoot)
   }
-  assert(isRoot(outDirRoot), { outDir, options })
-  const outDirClient = `${outDirRoot}/client`
-  const outDirServer = `${outDirRoot}/server`
+
+  let { outDirClient, outDirServer } = declineOutDirs(outDirRoot)
+  outDirRoot = outDirRoot + '/'
+  outDirClient = outDirClient + '/'
+  outDirServer = outDirServer + '/'
+
+  assertNormalization(outDirRoot)
+  assertNormalization(outDirClient)
+  assertNormalization(outDirServer)
+
   return { outDirRoot, outDirClient, outDirServer }
 }
 
-function isRoot(outDir: string) {
+function assertNormalization(outDirAny: string) {
+  assertPosixPath(outDirAny)
+  assert(outDirIsAbsolutePath(outDirAny))
+  assert(outDirAny.endsWith('/'))
+  assert(!outDirAny.endsWith('//'))
+}
+
+function declineOutDirs(outDirRoot: string) {
+  assertIsOutDirRoot(outDirRoot)
+  assertPosixPath(outDirRoot)
+  const outDirClient = path.posix.join(outDirRoot, 'client')
+  const outDirServer = path.posix.join(outDirRoot, 'server')
+  assertIsNotOutDirRoot(outDirClient)
+  assertIsNotOutDirRoot(outDirServer)
+  return { outDirClient, outDirServer }
+}
+
+function assertIsOutDirRoot(outDir: string) {
+  assert(isOutDirRoot(outDir))
+}
+function isOutDirRoot(outDir: string) {
   const p = outDir.split('/').filter(Boolean)
-  const dir = p[p.length - 1]
-  return dir !== 'client' && dir !== 'server'
+  const lastDir = p[p.length - 1]
+  return lastDir !== 'client' && lastDir !== 'server'
 }
-function isNotRoot(outDir: string) {
-  return outDir.endsWith('/client') || outDir.endsWith('/server')
-}
-
-function assertIsNotAbsolute(outDir: string) {
-  assertUsage(
-    firstSegment(outDir) !== firstSegment(process.cwd()),
-    "vite.config.js#build.outDir is not allowed to be an absolute path, e.g. set its value to 'build/' instead of `path.join(__dirname, 'build/')`"
-  )
+function assertIsNotOutDirRoot(outDir: string) {
+  assert(outDir.endsWith('/client') || outDir.endsWith('/server'))
 }
 
-function firstSegment(p: string) {
-  return p.split(/\/|\\/).filter(Boolean)[0]
+function assertConfig(config: UserConfig | ResolvedConfig) {
+  const outDir = config.build?.outDir
+  assert(outDir)
+  assertIsNotOutDirRoot(outDir)
+  if (isSSR_config(config)) {
+    assert(outDir.endsWith('/server'))
+  } else {
+    assert(outDir.endsWith('/client'))
+  }
+}
+
+function outDirIsAbsolutePath(outDir: string) {
+  // There doesn't seem to be a better alternative to determine whether `outDir` is an aboslute path
+  //  - Very unlikely that `outDir`'s first dir macthes the filesystem's first dir
+  return getFirstDir(outDir) === getFirstDir(process.cwd())
+}
+function getFirstDir(p: string) {
+  const firstDir = p.split(/\/|\\/).filter(Boolean)[0]
+  return firstDir
 }
