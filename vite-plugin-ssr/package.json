@@ -34,7 +34,7 @@
     "rollup": "^2.71.1",
     "typescript": "4.6.4",
     "rimraf": "^3.0.2",
-    "vite": "^2.9.14"
+    "vite": "^3.0.9"
   },
   "peerDependencies": {
     "vite": ">=2.9.10"

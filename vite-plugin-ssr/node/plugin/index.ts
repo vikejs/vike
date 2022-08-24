@@ -45,7 +45,7 @@ function plugin(vpsConfig?: ConfigVpsUser): any {
     GlobPlugin({
       // @ts-expect-error
       restoreQueryExtension: true
-    })
+    }) as any
   ]
   return plugins
 }

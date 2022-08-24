@@ -5,7 +5,6 @@ import type { Plugin, ResolvedConfig } from 'vite'
 function commonConfig(): Plugin {
   return {
     name: 'vite-plugin-ssr:commonConfig',
-    // @ts-ignore
     config: () => ({ appType: 'custom' }),
     configResolved(config) {
       setDefaultPort(config)
