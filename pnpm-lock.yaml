@@ -167,7 +167,6 @@ importers:
       typescript: 4.6.4
       vikepress: 0.0.36_biqbaboplfbrettd7655fr4n2y
       vite: 2.9.14
-    devDependencies:
       vite-plugin-ssr: link:../vite-plugin-ssr
 
   examples/base-url:
