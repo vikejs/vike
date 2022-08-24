@@ -31,11 +31,13 @@ export default {
 
 Pre-render configuration: <Link href="/prerender-config" />.
 
-Once enabled, our pages' HTML are rendered when we run `$ vite build` and the generated static assets are available at `dist/client/`.
+Once enabled, our pages' HTML are rendered when we run `$ vite build` and the generated HTML files are available at `dist/client/`.
 
 For a page with a parameterized route (e.g. `/movie/@movieId`), we have to use the [`prerender()` hook](/prerender) in order to provide the list of URLs that are to be pre-rendered. The `prerender()` hook can also be used to accelerate the pre-rendering process.
 
 By default, all pages are pre-rendered. To pre-render only some pages, we can use the <Link href="/prerender-config#partial" text={<><code>partial</code> option</>} /> with <Link href="/doNotPrerender" text={<code>.page.server.js#doNotPrerender</code>} />.
+
+If we pre-render all our pages, then we can use Vite's CLI (`$ vite dev`, `$ vite build`, and `$ vite preview`) instead of a server. See linked examples below.
 
 We can programmatically invoke the pre-rendering process, see <Link href="/prerender-programmatic" />.
 
