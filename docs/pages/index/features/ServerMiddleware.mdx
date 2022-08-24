@@ -5,7 +5,7 @@ import { renderPage } from 'vite-plugin-ssr'
 app.get('*', async (req, res) => {
   // `renderPage()` can also be used in serverless environments such as
   // Cloudflare Workers and Vercel
-  const { httpResponse } = await renderPage({ url: req.url })
+  const { httpResponse } = await renderPage({ urlOriginal: req.url })
   res.send(httpResponse.body)
 })
 ```

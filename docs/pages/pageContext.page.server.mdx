@@ -11,18 +11,23 @@ It has built-in properties and we can extend it with custom properties.
 
  - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
  - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
- - **`pageContext.url`**: The `url` we passed at the server middleware.
+ - **`pageContext.urlOriginal`**: the current URL.
+
+   On the server-side, `pageContext.urlOriginal` is the value we passed at the server middleware:
     ```js
     // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContextInit = {}
-      // `pageContext.url` is defined here
-      pageContextInit.url = req.url
+      // `pageContext.urlOriginal` is defined here
+      pageContextInit.urlOriginal = req.url
       const result = await renderPage(pageContextInit)
       /* ... */
     })
     ```
-    When using [Client Routing](/clientRouting), the value of `pageContext.url` in the browser is the current URL. (Either `window.location.href`, or the `href` value of the `<a href="/some/url">` link the user clicked on, or the value passed to `navigate('/some/url')`, or the URL of the browser's back/forward history navigation.)
+
+    On the client-side, when using <Link text="Server Routing" href="/server-routing-vs-client-routing" />, the `pageContext.urlOriginal` value is `undefined` (unless we use [`passToClient`](/passToClient)).
+
+    On the client-side, when using [Client Routing](/clientRouting), the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
  - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
  - **`pageContext.urlParsed`**: URL information:
    ```ts
@@ -37,6 +42,7 @@ It has built-in properties and we can extend it with custom properties.
      hashOriginal: null | string
    }
    ```
+
    For example:
    ```js
    // https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
@@ -60,7 +66,7 @@ It has built-in properties and we can extend it with custom properties.
 ## Custom
 
 In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
- - Hooks: [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
+ - Hooks [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
     ```js
     export function onBeforeRender() {
       return {
@@ -85,7 +91,7 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
     // Server middleware
     app.get('*', async (req, res, next) => {
       const pageContextInit = {
-        url: req.url,
+        urlOriginal: req.url,
         // We can define some custom `pageContext` here
       }
       const pageContext = await renderPage(pageContextInit)
@@ -95,23 +101,22 @@ In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we ca
 
 ## Browser
 
+While some `pageContext` values are also available on the client-side, most values are only available in Node.js and we have to use [`passToClient`](/passToClient) to make them available in the browser.
 
-When using <Link href="/server-routing" noBreadcrumb={true} />, the following is available in the browser:
+When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
  - `pageContext.exports`
 
-When using <Link href="/client-routing" noBreadcrumb={true} />, the following is available in the browser:
+When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
  - `pageContext.Page`
  - `pageContext.exports`
  - `pageContext.isHydration`
  - `pageContext.isBackwardNavigation`
  - `pageContext.routeParams`
- - `pageContext.url`
+ - `pageContext.urlOriginal`
  - `pageContext.urlPathname`
  - `pageContext.urlParsed`
 
-All other `pageContext` are only available in Node.js by default:
-we use [`passToClient`](/passToClient) to make more `pageContext` available in the browser.
 
 ## TypeScript
 

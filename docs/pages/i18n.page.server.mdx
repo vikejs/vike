@@ -8,13 +8,13 @@ We can internationalize (i18n) a `vite-plugin-ssr` app by using a <Link text={<>
 export { onBeforeRoute }
 
 function onBeforeRoute(pageContext) {
-  const { urlWithoutLocale, locale } = extractLocale(pageContext.url)
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
   return {
     pageContext: {
       // We make `locale` available as `pageContext.locale`
       locale,
-      // We overwrite `pageContext.url`
-      url: urlWithoutLocale
+      // We overwrite `pageContext.urlOriginal`
+      urlOriginal: urlWithoutLocale
     }
   }
 }
@@ -76,7 +76,7 @@ function onBeforePrerender(globalContext) {
       .forEach((locale) => {
         prerenderPageContexts.push({
           ...pageContext,
-          url: `/${locale}${pageContext.url}`,
+          urlOriginal: `/${locale}${pageContext.urlOriginal}`,
           locale
         })
       })

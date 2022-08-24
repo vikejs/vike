@@ -46,7 +46,7 @@ Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
 import { renderPage } from 'vite-plugin-ssr'
 
 app.get("*", async (req, res, next) => {
-  const pageContextInit = { url: req.url }
+  const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
   if (!httpResponse) return next()
@@ -67,7 +67,7 @@ addEventListener('fetch', (event) => {
 })
 
 async function handleFetchEvent(event) {
-  const pageContextInit = { url }
+  const pageContextInit = { urlOriginal: event.request.url }
   const pageContext = await renderPage(pageContextInit)
   const { httpResponse } = pageContext
   if (!httpResponse) {

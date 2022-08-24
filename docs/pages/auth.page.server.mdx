@@ -14,7 +14,7 @@ app.get('*', async (req, res) => {
   */
 
   const pageContextInit = {
-    url: req.url,
+    urlOriginal: req.url,
     // We make logged-in user information available to pages as `pageContextInit.user`
     user
   }

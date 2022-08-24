@@ -71,7 +71,7 @@ export function render() {
 // server.js
 
 app.get('*', async (req, res, next) => {
-  const pageContextInit = { url: req.url }
+  const pageContextInit = { urlOriginal: req.url }
   const pageContext = await renderPage(pageContextInit)
   if (pageContext.redirectTo) {
     res.redirect(307, '/movie/add')

@@ -23,7 +23,7 @@ You can also use so-called *Route Strings* and *Route Functions*.
 export default '/movie/@id'
 
 // Route Function — for full flexibility
-export default ({ url, ...pageContext }) => url==='/admin' && pageContext.isAdmin
+export default pageContext => pageContext.urlPathname === '/admin' && pageContext.isAdmin
 ```
 
 You can choose between:

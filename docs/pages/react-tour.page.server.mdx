@@ -38,7 +38,7 @@ We can also define a page's route with a *Route String* (for parameterized route
 // knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.jsx`.
 
 // Route Function
-export default pageContext => pageContext.url === '/';
+export default pageContext => pageContext.urlPathname === '/';
 
 // If we don't create a `.page.route.js` file then vite-plugin-ssr does Filesystem Routing
 ```
