@@ -1,45 +1,47 @@
-export { loadDistEntries }
-export { setDistEntries }
+export { loadBuild }
+export { setBuildGetters }
 
 import { assert, assertUsage } from '../../utils'
 import { loadImportBuildFile, importBuildFileName } from 'vite-plugin-import-build/loadImportBuildFile'
 
-const distEntries = (globalThis.__vite_plugin_ssr__distEntries = globalThis.__vite_plugin_ssr__distEntries || {
-  value: null
+const buildGetters = (globalThis.__vite_plugin_ssr__buildGetters = globalThis.__vite_plugin_ssr__buildGetters || {
+  getters: null
 })
 
-type DistEntries = null | {
+type BuildGetters = null | {
   pageFiles: () => Promise<Record<string, unknown>>
   clientManifest: () => Promise<Record<string, unknown>>
   pluginManifest: () => Promise<Record<string, unknown>>
 }
 
-function setDistEntries(distEntries_: DistEntries) {
-  distEntries.value = distEntries_
+function setBuildGetters(getters: BuildGetters) {
+  buildGetters.getters = getters
 }
 
-async function loadDistEntries() {
-  if (!distEntries.value) {
+async function loadBuild() {
+  if (!buildGetters.getters) {
     const { success, entryFile } = await loadImportBuildFile()
     assertUsage(
       success,
       `Cannot find production build. Did you to run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`
     )
-    assert(distEntries.value, { entryFile })
+    assert(buildGetters.getters, { entryFile })
   }
 
   const [pageFiles, clientManifest, pluginManifest] = await Promise.all([
-    distEntries.value.pageFiles(),
-    distEntries.value.clientManifest(),
-    distEntries.value.pluginManifest()
+    buildGetters.getters.pageFiles(),
+    buildGetters.getters.clientManifest(),
+    buildGetters.getters.pluginManifest()
   ])
-  return { pageFiles, clientManifest, pluginManifest }
+
+  const buildEntries = { pageFiles, clientManifest, pluginManifest }
+  return buildEntries
 }
 
 declare global {
-  var __vite_plugin_ssr__distEntries:
+  var __vite_plugin_ssr__buildGetters:
     | undefined
     | {
-        value: DistEntries
+        getters: BuildGetters
       }
 }

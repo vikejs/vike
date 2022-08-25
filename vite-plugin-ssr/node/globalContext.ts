@@ -5,7 +5,7 @@ export type { GlobalContext }
 
 import { PromiseType, assert, assertUsage, hasProp, objectAssign } from './utils'
 import type { ViteDevServer } from 'vite'
-import { loadDistEntries } from './plugin/plugins/distEntries/loadDistEntries'
+import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
 import { assertViteManifest } from './viteManifest'
 import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
@@ -30,9 +30,9 @@ async function getGlobalContext(isPreRendering: boolean) {
   const isProduction = isPreRendering || viteDevServer === null
   if (isProduction) {
     assert(viteDevServer === null)
-    const distEntries = await loadDistEntries()
-    assertDistEntries(distEntries, isPreRendering)
-    const { pageFiles, clientManifest, pluginManifest } = distEntries
+    const buildEntries = await loadBuild()
+    assertBuildEntries(buildEntries, isPreRendering)
+    const { pageFiles, clientManifest, pluginManifest } = buildEntries
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)
     setPageFiles(pageFiles)
@@ -83,7 +83,7 @@ async function getGlobalContext(isPreRendering: boolean) {
   return globalContext
 }
 
-function assertDistEntries<T>(distEntries: T | null, isPreRendering: boolean): asserts distEntries is T {
+function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
   // "Do not install vite-plugin-ssr after building your app. Instead, install your app's dependencies before building.",
   const errMsg = [
     `You are tyring to run`,
@@ -91,7 +91,7 @@ function assertDistEntries<T>(distEntries: T | null, isPreRendering: boolean): a
     "but your app isn't built yet. Run `$ vite build` before ",
     isPreRendering ? 'pre-rendering.' : 'running the server.'
   ].join(' ')
-  assertUsage(distEntries, errMsg)
+  assertUsage(buildEntries, errMsg)
 }
 
 function assertProdEnv(viteDevServer: null | ViteDevServer) {

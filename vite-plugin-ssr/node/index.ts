@@ -7,8 +7,8 @@ export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
 export type { PageContextBuiltIn } from './types'
 
-import { setDistEntries } from './plugin/plugins/distEntries/loadDistEntries'
-export const __internals = { setDistEntries }
+import { setBuildGetters } from './plugin/plugins/importBuild/loadBuild'
+export const __internals = { setBuildGetters }
 
 import './page-files/setup'
 import '../shared/assertSingleVersion'

@@ -20,7 +20,7 @@ import { extractStylesPlugin } from './plugins/extractStylesPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
-import { distEntriesPlugin } from './plugins/distEntries'
+import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
@@ -41,7 +41,7 @@ function plugin(vpsConfig?: ConfigVpsUser): any {
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     retrieveDevServer(),
-    ...distEntriesPlugin(),
+    ...importBuild(),
     GlobPlugin({
       // @ts-expect-error
       restoreQueryExtension: true
