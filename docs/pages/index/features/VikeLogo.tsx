@@ -1,9 +1,9 @@
-export { ViteLogo }
+export { VikeLogo }
 
 import React from 'react'
-import logo from './vite.svg'
+import logo from './vike.png'
 
-function ViteLogo() {
+function VikeLogo() {
   return (
     <img
       src={logo}
@@ -11,8 +11,9 @@ function ViteLogo() {
         height: '1.4em',
         verticalAlign: 'middle',
         position: 'relative',
-        left: -1,
-        top: -2
+        left: 0,
+        top: 0,
+        paddingRight: 2
       }}
     />
   )

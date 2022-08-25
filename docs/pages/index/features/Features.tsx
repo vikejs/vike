@@ -6,6 +6,7 @@ import FullFleged from './FullFledged.mdx'
 import DeployAnywhere from './DeployAnywhere.mdx'
 import { TweetsAboutScability } from './TweetsAboutScability'
 import { ViteLogo } from './ViteLogo'
+import { VikeLogo } from './VikeLogo'
 import { RollupLogo } from './RollupLogo'
 
 export { Features }
@@ -288,17 +289,18 @@ function Features() {
         {
           title: (
             <>
-              <Emoji name="engine" /> Framework Engine
+              <VikeLogo /> Build Your Own Framework
             </>
           ),
           desc: (
             <>
               <p>
-                Use <code>vite-plugin-ssr</code> to <b>build frameworks</b>.
+                Use <code>vite-plugin-ssr</code> to <a href="https://vike.land/">Build Your Own Framework</a>. Hundreds
+                of lines of code are enough to build your own Next.js / Nuxt.
               </p>
               <p>
-                You want to build an <b>internal framework</b> for your company? Or you want to build a{' '}
-                <b>Next.js alternative</b>? Use <code>vite-plugin-ssr</code> to jump-start with a rock-solid foundation.
+                Build <b>internal company frameworks</b> to scale your teams, or <b>enhance your product</b> to delight
+                your users with a bespoke framework, or just <b>keep architectural control</b>.
               </p>
             </>
           ),

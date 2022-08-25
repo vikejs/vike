@@ -1,12 +1,12 @@
 export { RollupLogo }
 
 import React from 'react'
-import rollupLogo from './rollup.svg'
+import logo from './rollup.svg'
 
 function RollupLogo() {
   return (
     <img
-      src={rollupLogo}
+      src={logo}
       style={{
         height: '1.2em',
         verticalAlign: 'middle',
