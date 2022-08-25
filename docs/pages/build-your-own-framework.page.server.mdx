@@ -2,14 +2,16 @@ import { Note, Link } from 'vikepress'
 
 <Note type="warning">This documentation is work-in-progress. ETA ~1 month. Reach out to the vite-plugin-ssr maintainer if you're interested in this.</Note>
 
-A vite-plugin-ssr framework uses the same interface as a regular vite-plugin-ssr app: the only difference is that some page files (e.g. <Link text={<><code>/renderer/_default.page.server.js</code></>} href="/default-page" />) live in `app/node_modules/framework/` instead of `app/`.
+With vite-plugin-ssr, you can create your own Next.js / Nuxt with only hundreds of lines of code.
 
-Your framework can include more functionnality beyond vite-plugin-ssr such as a custom server, a CLI, deployment, etc.
+Vite-plugin-ssr frameworks use the same interface as regular vite-plugin-ssr apps: the only difference is that some page files (e.g. <Link text={<><code>/renderer/_default.page.server.js</code></>} href="/default-page" />) live in `app/node_modules/framework/` instead of `app/`.
+
+Your framework can include more functionnality beyond vite-plugin-ssr, such as a custom server, a CLI, deployment, etc.
 
 
 ## Basics
 
-A basic vite-plugin-ssr framework provides the renderer so that the user doesn't have to implement it:
+A basic vite-plugin-ssr framework provides a renderer so that the user doesn't have to implement one:
 
 ```bash
 # Renderer implemented by the framework
@@ -21,7 +23,7 @@ pages/index.page.js
 pages/about.page.js
 ```
 
-The framework takes care of the UI framework (React, Vue, ...) integration: all the framework's users have left to do is to define UI components and `/pages/**/*.page.js` files.
+In other words, the framework takes care of the UI framework (React, Vue, ...) integration: all the framework's users have left to do is to define UI components and `/pages/**/*.page.js` files.
 
 > **Progressively build your framework**. We recommend to build your framework progressively by first implementing a normal vanilla vite-plugin-ssr app (i.e. without any framework). Once you're satisfied with the architecture of your vanilla vite-plugin-ssr app, you start creating your own framework (e.g. by moving `renderer/` to your newly created framework).
 
@@ -30,7 +32,7 @@ The framework takes care of the UI framework (React, Vue, ...) integration: all 
 
 ## More
 
-A vite-plugin-ssr framework is just a framework that includes page files. Beyond that, there is nothing special about vite-plugin-ssr frameworks and you can include anything you want to your framework, such as a custom server (e.g. Express.js), a CLI, deployment (e.g. Cloudflare Workers), error tracking (e.g. Sentry), etc.
+A vite-plugin-ssr framework is a framework that includes page files. Beyond that, there is nothing special about vite-plugin-ssr frameworks and you can include anything you want to your framework, such as a custom server (e.g. Express.js), a CLI, deployment (e.g. Cloudflare Workers), error tracking (e.g. Sentry), etc.
 
 So that, all your framework's users have left to do is: define UI components, and define data models (if your framework has a database).
 

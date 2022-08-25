@@ -42,10 +42,6 @@ const redirections = [
 const headingsWithoutLink: HeadingWithoutLink[] = [
   ...redirections,
   {
-    title: 'Build Your Own Framework',
-    url: '/build-your-own-framework'
-  },
-  {
     title: (
       <>
         Migration <code>0.4.23</code>
@@ -283,6 +279,11 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Debug',
     url: '/debug'
+  },
+  {
+    level: 2,
+    title: 'Build Your Own Framework',
+    url: '/build-your-own-framework'
   },
   {
     level: 1,

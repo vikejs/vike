@@ -2,13 +2,13 @@ import { Link } from 'vikepress'
 
 The `_default.page.*` files allow us to define hooks and settings that apply to all pages.
 
-For example, we can define <Link text={<>the <code>render()</code> hook</>} href="/render" /> in `_default.page.server.js` in order to define how our pages are rendered to HTML.
+For example, we usually define a <Link text={<><code>render()</code> hook</>} href="/render" /> in `_default.page.server.js` in order to define how our pages are rendered to HTML.
 
 ```js
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
-// This `render()` hook applies to all pages
+// This `render()` hook applies to all our pages
 export async function render(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
