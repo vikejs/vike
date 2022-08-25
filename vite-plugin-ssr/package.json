@@ -5,7 +5,7 @@
     "@brillout/debug": "^0.1.1",
     "@brillout/json-s": "^0.4.6",
     "@brillout/libassert": "^0.5.8",
-    "@brillout/vite-plus": "^0.0.3",
+    "@brillout/vite-plus": "^0.0.4",
     "cac": "^6.7.12",
     "es-module-lexer": "^0.10.5",
     "fast-glob": "^3.2.11",
