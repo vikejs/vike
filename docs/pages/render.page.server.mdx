@@ -1,7 +1,7 @@
 The `render()` hook defines how a page is rendered to HTML.
 
 ```js
-// *.page.server.js
+// /**/*.page.server.js (usually /renderer/_default.page.server.js)
 // Environment: Node.js
 
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
@@ -32,4 +32,4 @@ async function render(pageContext){
 }
 ```
 
-`Page` is the `export { Page }` (or `export default`) of the page's `.page.js` file.
+> `pageContext.Page` is the `export { Page }` of the page's `.page.js` file.
