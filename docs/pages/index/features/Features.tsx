@@ -299,8 +299,8 @@ function Features() {
                 of lines of code are enough to build your own Next.js / Nuxt.
               </p>
               <p>
-                Build <b>internal company frameworks</b> to scale your teams, or <b>enhance your product</b> to delight
-                your users with a bespoke framework, or just <b>keep architectural control</b>.
+                Build <b>internal company frameworks</b> to scale your teams, or <b>enhance your product</b> with a
+                bespoke framework to delight your users, or just <b>keep architectural control</b>.
               </p>
             </>
           ),
