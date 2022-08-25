@@ -2,7 +2,7 @@ export { loadBuild }
 export { setBuildGetters }
 
 import { assert, assertUsage } from '../../utils'
-import { loadImportBuildFile, importBuildFileName } from 'vite-plugin-import-build/loadImportBuildFile'
+import { loadBuild as loadBuild_, importBuildFileName } from '@brillout/vite-plus/importBuild/loadBuild'
 
 const buildGetters = (globalThis.__vite_plugin_ssr__buildGetters = globalThis.__vite_plugin_ssr__buildGetters || {
   getters: null
@@ -20,7 +20,7 @@ function setBuildGetters(getters: BuildGetters) {
 
 async function loadBuild() {
   if (!buildGetters.getters) {
-    const { success, entryFile } = await loadImportBuildFile()
+    const { success, entryFile } = await loadBuild_()
     assertUsage(
       success,
       `Cannot find production build. Did you to run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`

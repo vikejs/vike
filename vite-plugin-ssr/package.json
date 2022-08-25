@@ -5,6 +5,7 @@
     "@brillout/debug": "^0.1.1",
     "@brillout/json-s": "^0.4.6",
     "@brillout/libassert": "^0.5.8",
+    "@brillout/vite-plus": "^0.0.3",
     "cac": "^6.7.12",
     "es-module-lexer": "^0.10.5",
     "fast-glob": "^3.2.11",
@@ -13,7 +14,6 @@
     "picocolors": "^1.0.0",
     "resolve": "^1.22.0",
     "symlink-dir": "^5.0.1",
-    "vite-plugin-import-build": "^0.2.3",
     "vite-plugin-glob": "0.2.8"
   },
   "scripts": {
