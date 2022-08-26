@@ -7,10 +7,17 @@ export { extractStylesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedId } from 'rollup'
-import { viteIsSSR_options, assert, assertPosixPath, isAsset, styleFileRE } from '../utils'
+import {
+  viteIsSSR_options,
+  assert,
+  assertPosixPath,
+  isAsset,
+  styleFileRE,
+  createDebugger,
+  isDebugEnabled
+} from '../utils'
 import { removeSourceMap, isJavascriptFile, getImportStatements, ImportStatement } from '../helpers'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
-import { createDebugger, isDebugEnabled } from '@brillout/debug'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'

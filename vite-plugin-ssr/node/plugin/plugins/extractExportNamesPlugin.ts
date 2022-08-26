@@ -3,9 +3,8 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, getFileExtension, viteIsSSR_options } from '../utils'
+import { assert, getFileExtension, viteIsSSR_options, createDebugger, isDebugEnabled } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
-import { createDebugger, isDebugEnabled } from '@brillout/debug'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debugNamespace = 'vps:extractExportNames'
 const debug = createDebugger(debugNamespace)

@@ -1,2 +1,2 @@
-import { createDebugger } from '@brillout/debug'
+import { createDebugger } from './debug'
 export const debugGlob = createDebugger('vps:glob')
