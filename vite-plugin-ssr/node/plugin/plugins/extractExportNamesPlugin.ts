@@ -3,7 +3,7 @@ export { isUsingClientRouter }
 export { extractExportNamesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, getFileExtension, isSSR_options } from '../utils'
+import { assert, getFileExtension, viteIsSSR_options } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
 import { createDebugger, isDebugEnabled } from '@brillout/debug'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
@@ -18,7 +18,7 @@ function extractExportNamesPlugin(): Plugin {
     enforce: 'post',
     async transform(src, id, options) {
       const { isProduction } = config
-      const isClientSide = !isSSR_options(options)
+      const isClientSide = !viteIsSSR_options(options)
       if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide, isProduction)
         debug('id:', id, '\nresult:\n' + code.code.trim(), '\nsrc:\n' + src.trim())

@@ -1,7 +1,7 @@
 export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
-import { assert, projectInfo, isSSR_config } from '../utils'
+import { assert, projectInfo, viteIsSSR } from '../utils'
 import { apply } from '../helpers'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
@@ -45,7 +45,7 @@ function manifest(): Plugin[] {
 
   function configResolved(config: ResolvedConfig) {
     assertConfigVpsResolved(config)
-    ssr = isSSR_config(config)
+    ssr = viteIsSSR(config)
     runtimeConfig = resolveRuntimeConfig(config)
   }
 }

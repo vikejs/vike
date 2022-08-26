@@ -4,7 +4,7 @@
 export * from '../../node/utils'
 
 // Utils only needed by `plugin/*`
-export * from '../../utils/isSSR'
+export * from '../../utils/viteIsSSR'
 export * from '../../utils/isNotNullish'
 export * from '../../utils/isAsset'
 export * from '../../utils/getFileExtension'

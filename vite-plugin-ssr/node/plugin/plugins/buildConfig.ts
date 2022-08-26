@@ -1,7 +1,7 @@
 import type { Plugin, UserConfig } from 'vite'
 import type { InputOption } from 'rollup'
 import type { ResolvedConfig } from 'vite'
-import { assert, determineOutDir, isObject, isSSR_config, makeFilePathAbsolute } from '../utils'
+import { assert, determineOutDir, isObject, viteIsSSR, makeFilePathAbsolute } from '../utils'
 import { modifyResolvedConfig, findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 
@@ -22,7 +22,7 @@ function buildConfig(): Plugin {
       const configMod: UserConfig = {
         build: {
           outDir: determineOutDir(config),
-          manifest: !isSSR_config(config),
+          manifest: !viteIsSSR(config),
           // @ts-ignore
           polyfillDynamicImport: false
         },
@@ -34,7 +34,7 @@ function buildConfig(): Plugin {
         ssr: { noExternal: true },
         //*/
       }
-      if (isSSR_config(config)) {
+      if (viteIsSSR(config)) {
         configMod.publicDir = false
       }
       return configMod
@@ -43,7 +43,7 @@ function buildConfig(): Plugin {
 }
 
 async function entryPoints(config: ResolvedConfig): Promise<Record<string, string>> {
-  const ssr = isSSR_config(config)
+  const ssr = viteIsSSR(config)
   const pageFiles = await findPageFiles(config, ssr ? ['.page', '.page.server'] : ['.page', '.page.client'])
   const pageFilesObject: Record<string, string> = {}
   pageFiles.forEach((p) => (pageFilesObject[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))

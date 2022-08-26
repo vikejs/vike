@@ -1,7 +1,7 @@
 export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
-import { assert, assertWarning, isSSR_config } from '../utils'
+import { assert, assertWarning, viteIsSSR } from '../utils'
 import { isViteCliCall } from '../helpers'
 import { prerender } from '../../prerender'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
@@ -27,7 +27,7 @@ function autoFullBuild(): Plugin {
       }
 
       const { configFile, root } = config
-      const isSSR = isSSR_config(config)
+      const isSSR = viteIsSSR(config)
 
       if (!isSSR) {
         const configSSR = {
@@ -61,7 +61,7 @@ function abortSSRBuild(config: Config) {
     assert(false)
   }
   // API
-  if (isSSR_config(config) && !istriggedByAutoFullBuild(config)) {
+  if (viteIsSSR(config) && !istriggedByAutoFullBuild(config)) {
     abortAPI()
     assert(false)
   }

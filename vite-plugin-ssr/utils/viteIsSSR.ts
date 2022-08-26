@@ -1,16 +1,16 @@
 import { assert } from './assert'
 import { isObject } from './isObject'
 
-export { isSSR_config }
-export { isSSR_options }
+export { viteIsSSR }
+export { viteIsSSR_options }
 
-function isSSR_config(config: { build?: { ssr?: boolean | string } }): boolean {
+function viteIsSSR(config: { build?: { ssr?: boolean | string } }): boolean {
   return !!config?.build?.ssr
 }
 
 type Options = undefined | boolean | { ssr?: boolean }
 // https://github.com/vitejs/vite/discussions/5109#discussioncomment-1450726
-function isSSR_options(options: Options): boolean {
+function viteIsSSR_options(options: Options): boolean {
   if (options === undefined) {
     return false
   }

@@ -1,7 +1,7 @@
 export { generateImportGlobs }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, isSSR_options, isNotNullish } from '../utils'
+import { assert, viteIsSSR_options, isNotNullish } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
@@ -37,7 +37,7 @@ function generateImportGlobs(): Plugin {
     async load(id, options) {
       if (virtualModuleIds.includes(id)) {
         const isForClientSide = id !== virtualModuleIdPageFilesServer
-        assert(isForClientSide === !isSSR_options(options))
+        assert(isForClientSide === !viteIsSSR_options(options))
         const isClientRouting = id === virtualModuleIdPageFilesClientCR
         const code = await getCode(config, isForClientSide, isClientRouting)
         return code

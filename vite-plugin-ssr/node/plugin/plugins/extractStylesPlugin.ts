@@ -7,7 +7,7 @@ export { extractStylesRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedId } from 'rollup'
-import { isSSR_options, assert, assertPosixPath, isAsset, styleFileRE } from '../utils'
+import { viteIsSSR_options, assert, assertPosixPath, isAsset, styleFileRE } from '../utils'
 import { removeSourceMap, isJavascriptFile, getImportStatements, ImportStatement } from '../helpers'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { createDebugger, isDebugEnabled } from '@brillout/debug'
@@ -44,7 +44,7 @@ function extractStylesPlugin(): Plugin[] {
           return
         }
         assert(config.vitePluginSsr.includeAssetsImportedByServer)
-        assert(!isSSR_options(options))
+        assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
         const code = moduleNames.map((moduleName) => `import '${moduleName}';`).join('\n')
@@ -60,7 +60,7 @@ function extractStylesPlugin(): Plugin[] {
       //  - Vite's `vite:resolve` plugin; https://github.com/vitejs/vite/blob/d649daba7682791178b711d9a3e44a6b5d00990c/packages/vite/src/node/plugins/resolve.ts#L105
       enforce: 'pre',
       async resolveId(source, importer, options) {
-        if (isSSR_options(options)) {
+        if (viteIsSSR_options(options)) {
           // When building for the server, there should never be a `?extractStyles` query
           assert(!extractStylesRE.test(source))
           assert(importer === undefined || !extractStylesRE.test(importer))
