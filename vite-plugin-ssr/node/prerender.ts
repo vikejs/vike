@@ -24,9 +24,9 @@ import {
   hasPropertyGetter,
   assertPosixPath
 } from './utils'
+import { pLimit, PLimit } from '../utils/pLimit'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'kolorist'
-import pLimit from 'p-limit'
 import { cpus } from 'os'
 import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
@@ -208,7 +208,7 @@ async function prerender(
 async function collectDoNoPrerenderList(
   globalContext: GlobalPrerenderingContext,
   doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: PLimit
 ) {
   await Promise.all(
     globalContext._pageFilesAll
@@ -256,7 +256,7 @@ function assertExportNames(pageFile: PageFile) {
   assert(exportNames || fileType === '.page.route', wrongViteConfigErrorMessage)
 }
 
-async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, concurrencyLimit: pLimit.Limit) {
+async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, concurrencyLimit: PLimit) {
   // Render URLs returned by `prerender()` hooks
   await Promise.all(
     globalContext._pageFilesAll
@@ -312,7 +312,7 @@ async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, conc
 async function handlePagesWithStaticRoutes(
   globalContext: GlobalPrerenderingContext,
   doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: PLimit
 ) {
   // Pre-render pages with a static route
   const { pageRoutes } = await loadPageRoutes(globalContext)
@@ -475,7 +475,7 @@ async function routeAndPrerender(
   globalContext: GlobalPrerenderingContext & { prerenderPageContexts: PageContext[] },
   htmlFiles: HtmlFile[],
   prerenderPageIds: PrerenderedPageIds,
-  concurrencyLimit: pLimit.Limit
+  concurrencyLimit: PLimit
 ) {
   // Route all URLs
   await Promise.all(
@@ -590,7 +590,7 @@ async function writeHtmlFile(
   root: string,
   outDirClient: string,
   doNotPrerenderList: DoNotPrerenderList,
-  concurrencyLimit: pLimit.Limit,
+  concurrencyLimit: PLimit,
   onPagePrerender: Function | undefined,
   logLevel: 'warn' | 'info'
 ) {
@@ -638,7 +638,7 @@ function write(
   root: string,
   outDirClient: string,
   doNotCreateExtraDirectory: boolean,
-  concurrencyLimit: pLimit.Limit,
+  concurrencyLimit: PLimit,
   onPagePrerender: Function | undefined,
   logLevel: 'info' | 'warn'
 ) {
