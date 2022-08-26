@@ -1,11 +1,11 @@
-import { newError } from '@brillout/libassert'
-import { projectInfo } from './projectInfo'
-
 export { assert }
 export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
+
+import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
+import { projectInfo } from './projectInfo'
 
 const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
 const internalErrorPrefix = `${errorPrefix}[Bug]`
@@ -28,7 +28,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     return `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}.`
   })()
 
-  const internalError = newError(
+  const internalError = createErrorWithCleanStackTrace(
     [
       `${internalErrorPrefix} You stumbled upon a bug in ${projectInfo.projectName}'s source code.`,
       `Reach out at ${projectInfo.githubRepository}/issues/new or ${projectInfo.discordInviteToolChannel} and include this error stack (the error stack is usually enough to fix the problem).`,
@@ -47,12 +47,15 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
     return
   }
   const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
-  const usageError = newError(`${usageErrorPrefix}${whiteSpace}${errorMessage}`, numberOfStackTraceLinesToRemove)
+  const usageError = createErrorWithCleanStackTrace(
+    `${usageErrorPrefix}${whiteSpace}${errorMessage}`,
+    numberOfStackTraceLinesToRemove
+  )
   throw usageError
 }
 
 function getProjectError(errorMessage: string) {
-  const pluginError = newError(`${errorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
+  const pluginError = createErrorWithCleanStackTrace(`${errorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
   return pluginError
 }
 
@@ -86,11 +89,13 @@ function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { on
     return
   }
   const msg = `${infoPrefix} ${errorMessage}`
-  const key = msg
-  if (alreadyLogged.has(key)) {
-    return
-  } else {
-    alreadyLogged.add(key)
+  if (onlyOnce) {
+    const key = msg
+    if (alreadyLogged.has(key)) {
+      return
+    } else {
+      alreadyLogged.add(key)
+    }
   }
   console.log(msg)
 }
