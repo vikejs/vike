@@ -1,7 +1,7 @@
 export { importBuild }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { importBuildPlugin } from 'vite-plugin-import-build/plugin'
+import { importBuild as importBuild_ } from '@brillout/vite-plugin-import-build/plugin'
 import { getOutDirs, projectInfo, toPosixPath } from '../../utils'
 import path from 'path'
 
@@ -15,7 +15,7 @@ function importBuild(): Plugin[] {
         config = config_
       }
     },
-    importBuildPlugin({
+    importBuild_({
       getImporterCode: ({ findBuildEntry }) => {
         const pageFilesEntry = findBuildEntry('pageFiles')
         return getImporterCode(config, pageFilesEntry)
