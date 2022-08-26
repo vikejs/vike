@@ -797,7 +797,7 @@ importers:
       '@brillout/json-s': ^0.4.6
       '@brillout/libassert': ^0.5.8
       '@brillout/part-regex': ^0.1.2
-      '@brillout/vite-plus': ^0.0.4
+      '@brillout/vite-plus': ^0.0.3
       '@types/jest': ^27.4.1
       '@types/node': 17.0.31
       '@types/resolve': ^1.20.2
@@ -818,7 +818,7 @@ importers:
       '@brillout/debug': 0.1.1
       '@brillout/json-s': 0.4.6
       '@brillout/libassert': 0.5.8
-      '@brillout/vite-plus': 0.0.4
+      '@brillout/vite-plus': 0.0.3
       cac: 6.7.12
       es-module-lexer: 0.10.5
       fast-glob: 3.2.11
@@ -1692,8 +1692,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@brillout/vite-plus/0.0.4:
-    resolution: {integrity: sha512-VGbXWQjsKL5O/1lvNssCqW9204GsP5Mc53OivE0I6/qkC+L5F9w+pR0n5MYwqfQbnAkehfWPwxr9vT+nDlNRyg==}
+  /@brillout/vite-plus/0.0.3:
+    resolution: {integrity: sha512-7Z5mdXazRbvcUNpE+CY0LQpVF4P9YBVxddIPgR3Ut7HcNyWCpTwGIcXihNfwWHT8ssMAc2DBKv8Ehd6DYhtOIw==}
     dev: false
 
   /@cloudflare/kv-asset-handler/0.2.0:
