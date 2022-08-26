@@ -1,3 +1,20 @@
+## [0.4.27](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.26...v0.4.27) (2022-08-26)
+
+
+### Bug Fixes
+
+* improve `config.build.outDir` handling ([d6415f8](https://github.com/brillout/vite-plugin-ssr/commit/d6415f8de80e0b8b942d55edb7f473f58612c342))
+* track instances for improved debuggability ([6d24934](https://github.com/brillout/vite-plugin-ssr/commit/6d249347210c75ecc5f9b7ae9273419b517b82fe))
+* update vite-plugin-import-build ([8856f94](https://github.com/brillout/vite-plugin-ssr/commit/8856f94aab7f4361e03574e230df93fe323f534c))
+
+
+### Reverts
+
+* Revert "start using @brillout/vite-plus" ([03d0b0f](https://github.com/brillout/vite-plugin-ssr/commit/03d0b0fbb793c67c2e6ba0da8f6b23b7e8804fd0))
+* Revert "update @brillout/vite-plus" ([5a9cdc5](https://github.com/brillout/vite-plugin-ssr/commit/5a9cdc5c4889acced311358c2900a2485728d947))
+
+
+
 ## [0.4.26](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.25...v0.4.26) (2022-08-23)
 
 
