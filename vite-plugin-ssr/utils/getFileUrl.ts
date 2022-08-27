@@ -24,7 +24,10 @@ function getFileUrl(
   fileExtension: '.html' | '.pageContext.json',
   doNotCreateExtraDirectory: boolean
 ): string {
-  assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true)
+  assert(fileExtension !== '.pageContext.json' || doNotCreateExtraDirectory === true, {
+    fileExtension,
+    doNotCreateExtraDirectory
+  })
   const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseUrl)
   if (url.startsWith('/')) {
     assert(url === `${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
@@ -35,7 +38,7 @@ function getFileUrl(
     if (pathnameModified.endsWith('/')) {
       pathnameModified = slice(pathnameModified, 0, -1)
     }
-    assert(!pathnameModified.endsWith('/'))
+    assert(!pathnameModified.endsWith('/'), { url, pathnameModified })
     if (pathnameModified === '') {
       pathnameModified = '/index'
     }
@@ -69,7 +72,7 @@ function removePageContextUrlSuffix(url: string): string {
   const { origin, searchOriginal, hashOriginal } = urlParsed
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   let pathname = urlParsed.pathnameOriginal
-  assert(pathname.endsWith(suffix))
+  assert(pathname.endsWith(suffix), { url, pathname })
   assert(url === `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`, { url })
   pathname = slice(pathname, 0, -1 * suffix.length)
   if (pathname === '/index') pathname = '/'
