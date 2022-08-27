@@ -3,7 +3,7 @@ export { getExports }
 export type { ExportsAll }
 export type { PageContextExports }
 
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
+import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, isJavaScriptFile } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType, PageFile } from './types'
 
@@ -104,15 +104,6 @@ function getExportValues(pageFile: PageFile) {
   })
 
   return exportValues
-}
-
-function isJavaScriptFile(filePath: string) {
-  // `.mjs`
-  // `.cjs`
-  // `.js`
-  // `.tsx`
-  // ...
-  return /\.(c|m)?(j|t)sx?$/.test(filePath)
 }
 
 function createObjectWithDeprecationWarning(): Record<string, unknown> {

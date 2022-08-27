@@ -1,7 +1,6 @@
 export { getGlobPath }
 
-import { assertPosixPath, toPosixPath } from '../../utils'
-import { javascriptFileExtensions } from '../../helpers'
+import { assertPosixPath, toPosixPath, scriptFileExtensions } from '../../utils'
 import path from 'path'
 
 function getGlobPath(
@@ -10,7 +9,7 @@ function getGlobPath(
   root?: string
 ): string {
   assertPosixPath(globRoot)
-  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${javascriptFileExtensions}`].filter(Boolean).join('/')
+  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${scriptFileExtensions}`].filter(Boolean).join('/')
   if (root) {
     globPath = toPosixPath(path.posix.join(root, globPath))
   } else {

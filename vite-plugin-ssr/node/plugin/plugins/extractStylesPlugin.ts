@@ -14,9 +14,10 @@ import {
   isAsset,
   styleFileRE,
   createDebugger,
-  isDebugEnabled
+  isDebugEnabled,
+  isScriptFile
 } from '../utils'
-import { removeSourceMap, isJavascriptFile, getImportStatements, ImportStatement } from '../helpers'
+import { removeSourceMap, getImportStatements, ImportStatement } from '../helpers'
 import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
@@ -121,7 +122,7 @@ function extractStylesPlugin(): Plugin[] {
         }
 
         // If the resolved file doesn't end with a JavaScript file extension, we remove it.
-        if (!isJavascriptFile(file)) {
+        if (!isScriptFile(file)) {
           return emptyModule(file, importer)
         }
 
