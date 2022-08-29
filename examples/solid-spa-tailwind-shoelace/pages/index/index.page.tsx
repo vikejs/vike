@@ -1,12 +1,11 @@
-import { Counter } from "./Counter";
+import { Counter } from './Counter'
 
 export function Page() {
   return (
     <>
-      <h1 class="text-xl font-bold">About</h1>
-      <sl-badge>v1.0</sl-badge>
-      <p class="my-2">Solid JS SPA + Tailwind + Shoelace</p>
+      <h1>About</h1>
+      <p>Solid JS SPA</p>
       <Counter></Counter>
     </>
-  );
+  )
 }
