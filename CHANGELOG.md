@@ -1,3 +1,13 @@
+## [0.4.28](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.27...v0.4.28) (2022-08-29)
+
+
+### Bug Fixes
+
+* improve `getFileUrl()` assertions ([4799316](https://github.com/brillout/vite-plugin-ssr/commit/4799316bba2ec8e3fe6edb0cbae6d6fb8aa43d24))
+* update react detection heuristic ([#423](https://github.com/brillout/vite-plugin-ssr/issues/423)) ([931a8e9](https://github.com/brillout/vite-plugin-ssr/commit/931a8e95e8d56130be3c3e5488b33b60d7c3d8b2))
+
+
+
 ## [0.4.27](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.26...v0.4.27) (2022-08-26)
 
 
