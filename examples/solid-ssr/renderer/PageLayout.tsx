@@ -1,4 +1,4 @@
-import { Accessor, Component } from 'solid-js'
+import type { Accessor, JSX, Component } from 'solid-js'
 import logo from './logo.svg'
 import './PageLayout.css'
 
@@ -11,6 +11,9 @@ export interface Route {
 
 interface Props {
   route: Accessor<Route | null>
+}
+interface Children {
+  children: JSX.Element
 }
 
 const PageLayout: Component<Props> = (props) => {
@@ -35,7 +38,7 @@ const PageLayout: Component<Props> = (props) => {
   )
 }
 
-const Layout: Component = (props) => {
+const Layout: Component<Children> = (props) => {
   return (
     <div
       style={{
@@ -49,7 +52,7 @@ const Layout: Component = (props) => {
   )
 }
 
-const Sidebar: Component = (props) => {
+const Sidebar: Component<Children> = (props) => {
   return (
     <div
       style={{
@@ -66,7 +69,7 @@ const Sidebar: Component = (props) => {
   )
 }
 
-const Content: Component = (props) => {
+const Content: Component<Children> = (props) => {
   return (
     <div
       style={{
