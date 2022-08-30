@@ -128,18 +128,21 @@ function extractStylesPlugin(): Plugin[] {
 
         // If the dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
         if (
-          config.vitePluginSsr.includeCSS.some(
-            /* Should also work:
-            (dependency) =>
-              source === dependency ||
-              source.startsWith(dependency + '/') ||
-              // Include relative imports. (This only works for dependencies because user may use import path aliases.)
-              source.startsWith('.'),
-            /*/
-            (dependency) =>
-              file.includes('node_modules/' + dependency + '/') || file.includes('node_modules\\' + dependency + '\\')
-            //*/
-          )
+          config.vitePluginSsr.includeCSS.some((depName) => {
+            const check1 =
+              source === depName ||
+              source.startsWith(depName + '/') ||
+              // Include relative imports within modules of `depName`. (This only works for dependencies: user may use import path aliases.)
+              source.startsWith('.')
+            // This doesn't work for linked dependencies
+            const check2 =
+              file.includes('node_modules/' + depName + '/') || file.includes('node_modules\\' + depName + '\\')
+            if (check1) {
+              return true
+            }
+            assert(!check2)
+            return false
+          })
         ) {
           return appendExtractStylesQuery(file, importer)
         }
