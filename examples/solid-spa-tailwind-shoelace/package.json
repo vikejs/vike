@@ -1,19 +1,13 @@
 {
-  "name": "solid-spa",
-  "version": "0.0.0",
-  "description": "",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview"
   },
-  "license": "MIT",
-  "devDependencies": {
+  "dependencies": {
+    "solid-js": "^1.4.7",
     "vite": "^3.0.0",
     "vite-plugin-solid": "^2.3.0",
-    "vite-plugin-ssr": "^0.4.27"
-  },
-  "dependencies": {
-    "solid-js": "^1.4.7"
+    "vite-plugin-ssr": "0.4.29"
   }
 }

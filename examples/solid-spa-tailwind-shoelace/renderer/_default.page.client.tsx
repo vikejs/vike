@@ -1,8 +1,9 @@
+export { render }
+
 import { render as solidRender } from 'solid-js/web'
-import { PageContext } from './types'
+import type { PageContextClient } from './types'
 
-export async function render(pageContext: PageContext) {
+async function render(pageContext: PageContextClient) {
   const { Page } = pageContext
-
   return solidRender(() => <Page />, document.getElementById('root') as HTMLElement)
 }

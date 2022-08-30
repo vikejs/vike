@@ -1,10 +1,10 @@
-import { escapeInject } from "vite-plugin-ssr";
-import { PageContext } from "./types";
+export { render }
 
-// Running in SPA. Hence, the server just responds with HTML that
-// contains the <div id="root"> that is used by ./_default.page.client.tsx
-// to render the app.
-export function render(pageContext: PageContext) {
+import { escapeInject } from "vite-plugin-ssr";
+import type { PageContextServer } from './types'
+
+// SPA mode: the HTML is static with an empty <div id="root">, see https://vite-plugin-ssr.com/render-modes#spa
+function render(pageContext: PageContextServer) {
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
       <head>

@@ -1,12 +1,9 @@
+import type { PageContextBuiltInClient } from "vite-plugin-ssr/client";
 import type { PageContextBuiltIn } from "vite-plugin-ssr";
-import { Component } from "solid-js";
-
-/**
- * PageContext used by the renderer.
- *
- * vite-plugin-ssr is framework agnostic. Hence, `Page` is defined as `any`.
- * Ommiting "Page" and re-defining it as SolidJS component.
- */
-export type PageContext = Omit<PageContextBuiltIn, "Page"> & {
+import type { Component } from "solid-js";
+export type PageContextClient = Omit<PageContextBuiltInClient, "Page"> & {
+  Page: Component;
+};
+export type PageContextServer = Omit<PageContextBuiltIn, "Page"> & {
   Page: Component;
 };
