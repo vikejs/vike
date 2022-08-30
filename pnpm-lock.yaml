@@ -593,28 +593,28 @@ importers:
 
   examples/solid-spa:
     specifiers:
-      solid-js: ^1.4.7
-      typescript: ^4.6.4
-      vite: ^3.0.0
+      solid-js: ^1.5.2
+      typescript: ^4.8.2
+      vite: ^3.0.9
       vite-plugin-solid: ^2.3.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       solid-js: 1.5.2
-      typescript: 4.6.4
+      typescript: 4.8.2
       vite: 3.0.9
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/solid-ssr:
     specifiers:
-      solid-js: ^1.1.0
-      typescript: ^4.3.2
+      solid-js: ^1.5.2
+      typescript: ^4.8.2
       vite: ^3.0.9
-      vite-plugin-solid: ^2.0.1
+      vite-plugin-solid: ^2.3.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       solid-js: 1.5.2
-      typescript: 4.6.4
+      typescript: 4.8.2
       vite: 3.0.9
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -10078,6 +10078,12 @@ packages:
     resolution: {integrity: sha512-9ia/jWHIEbo49HfjrLGfKbZSuWo9iTMwXO+Ca3pRsSpbsMbc7/IU8NKdCZVRRBafVPGnoJeFL76ZOAA84I9fEg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+
+  /typescript/4.8.2:
+    resolution: {integrity: sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
 
   /uc.micro/1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
