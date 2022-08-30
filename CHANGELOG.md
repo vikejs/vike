@@ -7,6 +7,11 @@
 * use Vite's built-in `import.meta.glob()` instead of `vite-plugin-glob` (fix [#431](https://github.com/brillout/vite-plugin-ssr/issues/431)) ([19385ef](https://github.com/brillout/vite-plugin-ssr/commit/19385ef06bd4997955e267c72bc4f416fbf8dcb1))
 
 
+### BREAKING CHANGES
+
+* `vite-plugin-ssr@0.4.29` doesn't work with Vite 2 anymore: make sure to update to Vite 3.
+
+
 
 ## [0.4.28](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.27...v0.4.28) (2022-08-29)
 
