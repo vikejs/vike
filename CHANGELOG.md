@@ -1,3 +1,13 @@
+## [0.4.29](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.28...v0.4.29) (2022-08-30)
+
+
+### Bug Fixes
+
+* support `includeAssetsImportedByServer` for linked dependencies ([eaa857b](https://github.com/brillout/vite-plugin-ssr/commit/eaa857b0067899ddfab5c756cf5055fef0f9e8d8))
+* use Vite's built-in `import.meta.glob()` instead of `vite-plugin-glob` (fix [#431](https://github.com/brillout/vite-plugin-ssr/issues/431)) ([19385ef](https://github.com/brillout/vite-plugin-ssr/commit/19385ef06bd4997955e267c72bc4f416fbf8dcb1))
+
+
+
 ## [0.4.28](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.27...v0.4.28) (2022-08-29)
 
 
