@@ -605,7 +605,7 @@ importers:
       vite-plugin-solid: 2.2.6
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
-  examples/solid-spa-tailwind-shoelace:
+  examples/solid-spa:
     specifiers:
       solid-js: ^1.4.7
       vite: ^3.0.0
