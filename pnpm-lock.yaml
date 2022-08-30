@@ -1,9 +1,6 @@
 lockfileVersion: 5.4
 
 overrides:
-  vite: 3.0.9
-  '@vitejs/plugin-react': 2.0.1
-  '@vitejs/plugin-vue': 3.0.3
   vite-plugin-ssr: link:./vite-plugin-ssr/
 
 packageExtensionsChecksum: f050d50401848e89704474c6985d439e
@@ -32,14 +29,14 @@ importers:
 
   boilerplates/boilerplate-react:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
       sirv: ^2.0.2
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -59,7 +56,7 @@ importers:
       '@types/node': ^17.0.31
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
@@ -68,7 +65,7 @@ importers:
       sirv: ^2.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/compression': 1.7.2
@@ -90,14 +87,14 @@ importers:
 
   boilerplates/boilerplate-vue:
     specifiers:
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
       sirv: ^2.0.2
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
@@ -117,7 +114,7 @@ importers:
       '@types/compression': ^1.7.2
       '@types/express': ^4.17.13
       '@types/node': ^17.0.31
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
       compression: ^1.7.4
@@ -126,7 +123,7 @@ importers:
       sirv: ^2.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
@@ -157,7 +154,7 @@ importers:
       react-dom: ^18.2.0
       typescript: ^4.3.2
       vikepress: ^0.0.37
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
       '@mdx-js/react': 2.1.2_react@18.2.0
@@ -174,10 +171,10 @@ importers:
 
   examples/base-url:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -188,14 +185,14 @@ importers:
 
   examples/base-url-cdn:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       concurrently: ^7.1.0
       cors: ^2.8.5
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -211,10 +208,10 @@ importers:
   examples/cloudflare-workers-react:
     specifiers:
       '@cloudflare/kv-asset-handler': ~0.2.0
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.0.21
     dependencies:
@@ -229,13 +226,13 @@ importers:
   examples/cloudflare-workers-react-full:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       express: ^4.18.1
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.0.21
     dependencies:
@@ -253,10 +250,10 @@ importers:
   examples/cloudflare-workers-vue:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       wrangler: ^2.0.21
@@ -272,12 +269,12 @@ importers:
 
   examples/custom-server-render-integration:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -290,10 +287,10 @@ importers:
 
   examples/file-structure-domain-driven:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -305,14 +302,14 @@ importers:
   examples/graphql-apollo-react:
     specifiers:
       '@apollo/client': ^3.6.9
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.0
       cross-env: ^7.0.3
       express: ^4.18.1
       graphql: ^16.5.0
       node-fetch: ^2.6.1
       react: ^18.2.0
       react-dom: ^18.2.0
-      vite: 3.0.9
+      vite: ^3.0.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@apollo/client': 3.6.9_phmus7xcbidy3raesi6r6zwaqe
@@ -329,7 +326,7 @@ importers:
   examples/graphql-apollo-vue:
     specifiers:
       '@apollo/client': ^3.6.9
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.1
       '@vue/apollo-composable': ^4.0.0-alpha.19
       '@vue/compiler-sfc': ^3.2.27
       '@vue/server-renderer': ^3.2.27
@@ -338,7 +335,7 @@ importers:
       cross-fetch: ^3.1.5
       express: ^4.18.1
       graphql: ^16.5.0
-      vite: 3.0.9
+      vite: ^3.0.2
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.27
     dependencies:
@@ -359,7 +356,7 @@ importers:
   examples/html-fragments:
     specifiers:
       typescript: ^4.6.4
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       typescript: 4.6.4
@@ -368,10 +365,10 @@ importers:
 
   examples/i18n:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -382,10 +379,10 @@ importers:
 
   examples/layouts-react:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -396,10 +393,10 @@ importers:
 
   examples/layouts-vue:
     specifiers:
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
@@ -416,7 +413,7 @@ importers:
       '@types/node': ^17.0.31
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
@@ -424,7 +421,7 @@ importers:
       serve: ^13.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/express': 4.17.13
@@ -449,7 +446,7 @@ importers:
       '@preact/preset-vite': ^2.3.0
       preact: ^10.10.0
       preact-render-to-string: ^5.2.1
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@babel/core': 7.17.10
@@ -467,7 +464,7 @@ importers:
       '@preact/preset-vite': ^2.3.0
       preact: ^10.10.0
       preact-render-to-string: ^5.2.1
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@babel/core': 7.17.10
@@ -480,11 +477,11 @@ importers:
 
   examples/react:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -496,10 +493,10 @@ importers:
 
   examples/react-17:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -518,13 +515,13 @@ importers:
       '@types/node-fetch': ^2.5.12
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.0
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
       typescript: ^4.6.4
-      vite: 3.0.9
+      vite: ^3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@mdx-js/mdx': 2.1.1
@@ -546,12 +543,12 @@ importers:
 
   examples/react-router:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-router: ^6.3.0
       react-router-dom: ^6.3.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -564,12 +561,12 @@ importers:
 
   examples/redux:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-redux: ^8.0.1
       redux: ^4.2.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -582,10 +579,10 @@ importers:
 
   examples/render-modes:
     specifiers:
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
@@ -598,7 +595,7 @@ importers:
     specifiers:
       solid-js: ^1.1.0
       typescript: ^4.3.2
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-solid: ^2.0.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -612,7 +609,7 @@ importers:
     specifiers:
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': 2.0.1
+      '@vitejs/plugin-react': ^2.0.1
       graphql: ^16.4.0
       isomorphic-fetch: ^3.0.0
       node-fetch: ^3.0.0
@@ -621,7 +618,7 @@ importers:
       react-ssr-prepass: ^1.5.0
       typescript: ^4.6.4
       urql: ^2.2.3
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/react': 18.0.8
@@ -640,10 +637,10 @@ importers:
 
   examples/vue:
     specifiers:
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
@@ -658,13 +655,13 @@ importers:
     specifiers:
       '@types/node': ^17.0.31
       '@types/node-fetch': ^2.5.12
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33
       cross-fetch: ^3.1.5
       node-fetch: ^2.6.1
       typescript: ^4.6.4
-      vite: 3.0.9
+      vite: ^3.0.4
       vite-plugin-md: ^0.11.8
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
@@ -684,11 +681,11 @@ importers:
 
   examples/vue-pinia:
     specifiers:
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.31
       '@vue/server-renderer': ^3.2.37
       pinia: ^2.0.14
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.37
     dependencies:
@@ -702,10 +699,10 @@ importers:
 
   examples/vue-router:
     specifiers:
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       vue-router: ^4.0.14
@@ -720,10 +717,10 @@ importers:
 
   examples/vuex:
     specifiers:
-      '@vitejs/plugin-vue': 3.0.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       vuex: ^4.0.2
@@ -788,7 +785,7 @@ importers:
 
   test:
     specifiers:
-      vite: 3.0.9
+      vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
       vite: 3.0.9
@@ -812,7 +809,7 @@ importers:
       rollup: ^2.71.1
       symlink-dir: ^5.0.1
       typescript: 4.6.4
-      vite: 3.0.9
+      vite: ^3.0.9
     dependencies:
       '@brillout/json-s': 0.4.6
       '@brillout/vite-plugin-import-build': 0.1.0
@@ -10390,14 +10387,36 @@ packages:
       merge-anything: 5.0.2
       solid-js: 1.3.17
       solid-refresh: 0.4.0_solid-js@1.3.17
-      vite: 3.0.9
+      vite: 2.9.15
     transitivePeerDependencies:
       - less
       - sass
       - stylus
       - supports-color
-      - terser
     dev: false
+
+  /vite/2.9.15:
+    resolution: {integrity: sha512-fzMt2jK4vQ3yK56te3Kqpkaeq9DkcZfBbzHwYpobasvgYmP2SoAr6Aic05CsB4CzCZbsDv4sujX3pkEGhLabVQ==}
+    engines: {node: '>=12.2.0'}
+    hasBin: true
+    peerDependencies:
+      less: '*'
+      sass: '*'
+      stylus: '*'
+    peerDependenciesMeta:
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+    dependencies:
+      esbuild: 0.14.47
+      postcss: 8.4.16
+      resolve: 1.22.1
+      rollup: 2.77.0
+    optionalDependencies:
+      fsevents: 2.3.2
 
   /vite/3.0.9:
     resolution: {integrity: sha512-waYABTM+G6DBTCpYAxvevpG50UOlZuynR0ckTK5PawNVt7ebX6X7wNXHaGIO6wYYFXSM7/WcuFuO2QzhBB6aMw==}
@@ -10451,13 +10470,12 @@ packages:
       local-pkg: 0.4.1
       tinypool: 0.1.3
       tinyspy: 0.3.2
-      vite: 3.0.9
+      vite: 2.9.15
     transitivePeerDependencies:
       - less
       - sass
       - stylus
       - supports-color
-      - terser
     dev: true
 
   /vscode-oniguruma/1.6.2:
