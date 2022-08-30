@@ -25,6 +25,13 @@ function generateImportGlobs(): Plugin {
   let config: Config
   return {
     name: 'vite-plugin-ssr:virtualModulePageFiles',
+    config() {
+      return {
+        experimental: {
+          importGlobRestoreExtension: true
+        }
+      }
+    },
     async configResolved(config_) {
       assertConfigVpsResolved(config_)
       config = config_
@@ -113,7 +120,7 @@ function getGlobs(
   includePaths: string[],
   isBuild: boolean,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  query: 'extractExportNames' | 'extractStyles' | '' = ''
+  query?: 'extractExportNames' | 'extractStyles'
 ): string {
   const isEager = isBuild && (query === 'extractExportNames' || fileSuffix === 'page.route')
 
@@ -132,12 +139,14 @@ function getGlobs(
   } else if (query === 'extractStyles') {
     assert(!isEager)
     pageFilesVar = 'neverLoaded'
-  } else {
+  } else if (!query) {
     if (!isEager) {
       pageFilesVar = 'pageFilesLazy'
     } else {
       pageFilesVar = 'pageFilesEager'
     }
+  } else {
+    assert(false)
   }
 
   const varNameSuffix =
@@ -154,8 +163,10 @@ function getGlobs(
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
       const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
-      const globOptions = `{ eager: ${isEager ? true : false}, query: "${query}" }`
-      return `const ${varNameLocal} = import.meta.importGlob(${globPath}, ${globOptions});`
+      const globOptions = JSON.stringify({ eager: isEager, as: query })
+      assert(globOptions.startsWith('{"eager":true') || globOptions.startsWith('{"eager":false'))
+      const globLine = `const ${varNameLocal} = import.meta.glob(${globPath}, ${globOptions});`
+      return globLine
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
     `${pageFilesVar}['.${fileSuffix}'] = ${varName};`,

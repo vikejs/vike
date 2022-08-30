@@ -90,7 +90,7 @@ function extractStylesPlugin(): Plugin[] {
           //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
           //  - importer: `.page.server.vue?extractStyles&lang.vue`
           const isVueSFC = source.includes('?vue&')
-          // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
+          // The first `?extractStyles` queries are appended to `.page.sever.js` files by `import.meta.glob()`
           assert(extractStylesRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
           assert(
             importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC

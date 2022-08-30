@@ -52,6 +52,9 @@
   },
   "pnpm": {
     "overrides": {
+      "vite": "3.0.9",
+      "@vitejs/plugin-react": "2.0.1",
+      "@vitejs/plugin-vue": "3.0.3",
       "vite-plugin-ssr": "link:./vite-plugin-ssr/"
     },
     "packageExtensions": {
