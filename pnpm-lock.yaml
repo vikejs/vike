@@ -608,11 +608,13 @@ importers:
   examples/solid-spa:
     specifiers:
       solid-js: ^1.4.7
+      typescript: ^4.6.4
       vite: ^3.0.0
       vite-plugin-solid: ^2.3.0
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       solid-js: 1.5.2
+      typescript: 4.6.4
       vite: 3.0.9
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
