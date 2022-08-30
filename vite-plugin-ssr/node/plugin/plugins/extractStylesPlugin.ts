@@ -90,7 +90,7 @@ function extractStylesPlugin(): Plugin[] {
           //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
           //  - importer: `.page.server.vue?extractStyles&lang.vue`
           const isVueSFC = source.includes('?vue&')
-          // The first `?extractStyles` queries are appended to `.page.sever.js` files by `vite-plugin-glob`
+          // The first `?extractStyles` queries are appended to `.page.sever.js` files by `import.meta.glob()`
           assert(extractStylesRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
           assert(
             importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC
@@ -128,18 +128,21 @@ function extractStylesPlugin(): Plugin[] {
 
         // If the dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
         if (
-          config.vitePluginSsr.includeCSS.some(
-            /* Should also work:
-            (dependency) =>
-              source === dependency ||
-              source.startsWith(dependency + '/') ||
-              // Include relative imports. (This only works for dependencies because user may use import path aliases.)
-              source.startsWith('.'),
-            /*/
-            (dependency) =>
-              file.includes('node_modules/' + dependency + '/') || file.includes('node_modules\\' + dependency + '\\')
-            //*/
-          )
+          config.vitePluginSsr.includeCSS.some((depName) => {
+            const check1 =
+              source === depName ||
+              source.startsWith(depName + '/') ||
+              // Include relative imports within modules of `depName`. (This only works for dependencies: user may use import path aliases.)
+              source.startsWith('.')
+            // This doesn't work for linked dependencies
+            const check2 =
+              file.includes('node_modules/' + depName + '/') || file.includes('node_modules\\' + depName + '\\')
+            if (check1) {
+              return true
+            }
+            assert(!check2)
+            return false
+          })
         ) {
           return appendExtractStylesQuery(file, importer)
         }

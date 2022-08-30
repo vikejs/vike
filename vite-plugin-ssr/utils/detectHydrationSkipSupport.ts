@@ -25,7 +25,9 @@ function isReactApp() {
 
   // Heursitic using values set by `@vitejs/plugin-react`
   const isReact3 = !!(window as any).__vite_plugin_react_preamble_installed__
+  /* Is also set by Preact plugin
   const isReact4 = !!(window as any).$RefreshReg$
+  */
 
   const assertHeuristic = (condition: boolean) => {
     assertWarning(
@@ -36,14 +38,14 @@ function isReactApp() {
   }
 
   if (isReact1 || isReact2) {
-    assertHeuristic(isReact1 && isReact2 && isReact3 && isReact4)
+    // Sometimes `react1 === true && react2 === false`
+    assertHeuristic(isReact1 && isReact3)
     return true
   }
 
-  if (isReact3 || isReact4) {
+  if (isReact3) {
     // See explanation above of why `isReact1` and `isReact2` are `false`
     assert(isReact1 === false && isReact2 === false)
-    assertHeuristic(isReact3 && isReact4)
     return true
   }
 

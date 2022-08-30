@@ -3,12 +3,12 @@
     "dev": "vite dev"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^1.3.2",
+    "@vitejs/plugin-react": "^2.0.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
-    "vite": "^2.9.14",
-    "vite-plugin-ssr": "0.4.27"
+    "vite": "^3.0.9",
+    "vite-plugin-ssr": "0.4.29"
   }
 }

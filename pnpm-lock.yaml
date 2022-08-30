@@ -9,11 +9,11 @@ importers:
 
   .:
     specifiers:
-      '@brillout/dev-my-dep': 0.0.9
+      '@brillout/dev-my-dep': 0.0.10
       '@brillout/submodule-init': 0.1.2
       vitest: ^0.14.1
     devDependencies:
-      '@brillout/dev-my-dep': 0.0.9
+      '@brillout/dev-my-dep': 0.0.10
       '@brillout/submodule-init': 0.1.2
       vitest: 0.14.1
 
@@ -29,24 +29,24 @@ importers:
 
   boilerplates/boilerplate-react:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
       sirv: ^2.0.2
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       sirv: 2.0.2
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-react-ts:
@@ -56,7 +56,7 @@ importers:
       '@types/node': ^17.0.31
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
@@ -65,7 +65,7 @@ importers:
       sirv: ^2.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/compression': 1.7.2
@@ -73,7 +73,7 @@ importers:
       '@types/node': 17.0.31
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.3
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
@@ -82,30 +82,30 @@ importers:
       sirv: 2.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   boilerplates/boilerplate-vue:
     specifiers:
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
       compression: ^1.7.4
       cross-env: ^7.0.3
       express: ^4.18.1
       sirv: ^2.0.2
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       compression: 1.7.4
       cross-env: 7.0.3
       express: 4.18.1
       sirv: 2.0.2
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -114,7 +114,7 @@ importers:
       '@types/compression': ^1.7.2
       '@types/express': ^4.17.13
       '@types/node': ^17.0.31
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
       compression: ^1.7.4
@@ -123,14 +123,14 @@ importers:
       sirv: ^2.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
       '@types/compression': 1.7.2
       '@types/express': 4.17.13
       '@types/node': 17.0.31
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       compression: 1.7.4
@@ -139,7 +139,7 @@ importers:
       sirv: 2.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -153,8 +153,8 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ^4.3.2
-      vikepress: ^0.0.36
-      vite: ^2.9.14
+      vikepress: ^0.0.37
+      vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
       '@mdx-js/react': 2.1.2_react@18.2.0
@@ -165,138 +165,138 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       typescript: 4.6.4
-      vikepress: 0.0.36_biqbaboplfbrettd7655fr4n2y
-      vite: 2.9.14
+      vikepress: 0.0.37_biqbaboplfbrettd7655fr4n2y
+      vite: 3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
 
   examples/base-url:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/base-url-cdn:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       concurrently: ^7.1.0
       cors: ^2.8.5
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       concurrently: 7.1.0
       cors: 2.8.5
       cross-env: 7.0.3
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/cloudflare-workers-react:
     specifiers:
       '@cloudflare/kv-asset-handler': ~0.2.0
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.0.21
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: 2.0.21
 
   examples/cloudflare-workers-react-full:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       express: ^4.18.1
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.0.21
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       express: 4.18.1
       node-fetch: 2.6.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-streaming: 0.2.15_biqbaboplfbrettd7655fr4n2y
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: 2.0.21
 
   examples/cloudflare-workers-vue:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       wrangler: ^2.0.21
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
       wrangler: 2.0.21
 
   examples/custom-server-render-integration:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       cross-env: 7.0.3
       express: 4.18.1
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/file-structure-domain-driven:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/graphql-apollo-react:
@@ -313,14 +313,14 @@ importers:
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@apollo/client': 3.6.9_phmus7xcbidy3raesi6r6zwaqe
-      '@vitejs/plugin-react': 2.0.0_vite@3.0.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       cross-env: 7.0.3
       express: 4.18.1
       graphql: 16.5.0
       node-fetch: 2.6.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      vite: 3.0.2
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/graphql-apollo-vue:
@@ -340,7 +340,7 @@ importers:
       vue: ^3.2.27
     dependencies:
       '@apollo/client': 3.6.9_graphql@16.5.0
-      '@vitejs/plugin-vue': 3.0.1_vite@3.0.2+vue@3.2.37
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.37
       '@vue/apollo-composable': 4.0.0-alpha.19_evl73agsd2l2vqwzmhm3tuflgi
       '@vue/compiler-sfc': 3.2.37
       '@vue/server-renderer': 3.2.37_vue@3.2.37
@@ -349,61 +349,61 @@ importers:
       cross-fetch: 3.1.5
       express: 4.18.1
       graphql: 16.5.0
-      vite: 3.0.2
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.37
 
   examples/html-fragments:
     specifiers:
       typescript: ^4.6.4
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       typescript: 4.6.4
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/i18n:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       vite: ^3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 3.0.4
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/layouts-react:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/layouts-vue:
     specifiers:
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -413,7 +413,7 @@ importers:
       '@types/node': ^17.0.31
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       cross-env: ^7.0.3
       express: ^4.18.1
       react: ^18.1.0
@@ -421,14 +421,14 @@ importers:
       serve: ^13.0.2
       ts-node: ^10.7.0
       typescript: ^4.6.4
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/express': 4.17.13
       '@types/node': 17.0.31
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.3
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       cross-env: 7.0.3
       express: 4.18.1
       react: 18.1.0
@@ -436,7 +436,7 @@ importers:
       serve: 13.0.2
       ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/preact-client-routing:
@@ -446,15 +446,15 @@ importers:
       '@preact/preset-vite': ^2.3.0
       preact: ^10.10.0
       preact-render-to-string: ^5.2.1
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
-      '@preact/preset-vite': 2.3.0_fsigpennamhrx3fxr7oq672p7m
+      '@preact/preset-vite': 2.3.0_w2p3owjzz5thgq7p76qorbx5ne
       preact: 10.10.0
       preact-render-to-string: 5.2.1_preact@10.10.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/preact-server-routing:
@@ -464,45 +464,45 @@ importers:
       '@preact/preset-vite': ^2.3.0
       preact: ^10.10.0
       preact-render-to-string: ^5.2.1
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
-      '@preact/preset-vite': 2.3.0_fsigpennamhrx3fxr7oq672p7m
+      '@preact/preset-vite': 2.3.0_w2p3owjzz5thgq7p76qorbx5ne
       preact: 10.10.0
       preact-render-to-string: 5.2.1_preact@10.10.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.2.15
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.15_ef5jwxihqo6n7gxfmzogljlgcm
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-17:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^17.0.2
       react-dom: ^17.0.2
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-full:
@@ -532,76 +532,76 @@ importers:
       '@types/node-fetch': 2.6.1
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.3
-      '@vitejs/plugin-react': 2.0.0_vite@3.0.4
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.2.15_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
-      vite: 3.0.4
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/react-router:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-router: ^6.3.0
       react-router-dom: ^6.3.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-router: 6.3.0_react@18.1.0
       react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/redux:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
       react-redux: ^8.0.1
       redux: ^4.2.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-redux: 8.0.1_zi7aoi7ced5urpsfm5fjpojgnm
       redux: 4.2.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/render-modes:
     specifiers:
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/solid:
     specifiers:
       solid-js: ^1.1.0
       typescript: ^4.3.2
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-solid: ^2.0.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       solid-js: 1.3.17
       typescript: 4.6.4
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-solid: 2.2.6
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -609,7 +609,7 @@ importers:
     specifiers:
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
-      '@vitejs/plugin-react': ^1.3.2
+      '@vitejs/plugin-react': ^2.0.1
       graphql: ^16.4.0
       isomorphic-fetch: ^3.0.0
       node-fetch: ^3.0.0
@@ -618,12 +618,12 @@ importers:
       react-ssr-prepass: ^1.5.0
       typescript: ^4.6.4
       urql: ^2.2.3
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.3
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       graphql: 16.4.0
       isomorphic-fetch: 3.0.0
       node-fetch: 3.2.4
@@ -632,22 +632,22 @@ importers:
       react-ssr-prepass: 1.5.0_react@18.1.0
       typescript: 4.6.4
       urql: 2.2.3_cxfcglayresyyxxylwnor5zopi
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
   examples/vue:
     specifiers:
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
@@ -655,7 +655,7 @@ importers:
     specifiers:
       '@types/node': ^17.0.31
       '@types/node-fetch': ^2.5.12
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33
       cross-fetch: ^3.1.5
@@ -668,67 +668,67 @@ importers:
     dependencies:
       '@types/node': 17.0.31
       '@types/node-fetch': 2.6.1
-      '@vitejs/plugin-vue': 2.3.1_vite@3.0.4+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
       cross-fetch: 3.1.5
       node-fetch: 2.6.7
       typescript: 4.6.4
-      vite: 3.0.4
-      vite-plugin-md: 0.11.9_vite@3.0.4
+      vite: 3.0.9
+      vite-plugin-md: 0.11.9_vite@3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
 
   examples/vue-pinia:
     specifiers:
-      '@vitejs/plugin-vue': ^2.3.3
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.31
       '@vue/server-renderer': ^3.2.37
       pinia: ^2.0.14
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.37
     dependencies:
-      '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.37
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.37
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.37_vue@3.2.37
       pinia: 2.0.14_vue@3.2.37
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.37
 
   examples/vue-router:
     specifiers:
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       vue-router: ^4.0.14
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
       vue-router: 4.0.14_vue@3.2.33
 
   examples/vuex:
     specifiers:
-      '@vitejs/plugin-vue': ^2.3.1
+      '@vitejs/plugin-vue': ^3.0.3
       '@vue/compiler-sfc': ^3.2.33
       '@vue/server-renderer': ^3.2.33
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: ^3.2.33
       vuex: ^4.0.2
     dependencies:
-      '@vitejs/plugin-vue': 2.3.1_vite@2.9.14+vue@3.2.33
+      '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.33
       '@vue/compiler-sfc': 3.2.33
       '@vue/server-renderer': 3.2.33_vue@3.2.33
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       vue: 3.2.33
       vuex: 4.0.2_vue@3.2.33
@@ -785,10 +785,10 @@ importers:
 
   test:
     specifiers:
-      vite: ^2.9.14
+      vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
-      vite: 2.9.14
+      vite: 3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
 
   vite-plugin-ssr:
@@ -810,7 +810,6 @@ importers:
       symlink-dir: ^5.0.1
       typescript: 4.6.4
       vite: ^3.0.9
-      vite-plugin-glob: 0.2.8
     dependencies:
       '@brillout/json-s': 0.4.6
       '@brillout/vite-plugin-import-build': 0.1.0
@@ -821,7 +820,6 @@ importers:
       picocolors: 1.0.0
       resolve: 1.22.0
       symlink-dir: 5.0.1
-      vite-plugin-glob: 0.2.8
     devDependencies:
       '@brillout/part-regex': 0.1.2
       '@types/jest': 27.4.1
@@ -961,6 +959,29 @@ packages:
       - supports-color
     dev: false
 
+  /@babel/core/7.18.13:
+    resolution: {integrity: sha512-ZisbOvRRusFktksHSG6pjj1CSvkPkcZq/KHD45LAkVP/oiHJkNBZWfpvlLmX8OtHDG8IuzsFlVRWo08w7Qxn0A==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@ampproject/remapping': 2.2.0
+      '@babel/code-frame': 7.18.6
+      '@babel/generator': 7.18.13
+      '@babel/helper-compilation-targets': 7.18.9_@babel+core@7.18.13
+      '@babel/helper-module-transforms': 7.18.9
+      '@babel/helpers': 7.18.9
+      '@babel/parser': 7.18.13
+      '@babel/template': 7.18.10
+      '@babel/traverse': 7.18.13
+      '@babel/types': 7.18.13
+      convert-source-map: 1.8.0
+      debug: 4.3.4
+      gensync: 1.0.0-beta.2
+      json5: 2.2.1
+      semver: 6.3.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /@babel/core/7.18.9:
     resolution: {integrity: sha512-1LIb1eL8APMy91/IMW+31ckrfBM4yCoLaVzoDhZUKSM4cu1L1nIidyxkCgzPAgrC5WEz36IPEr/eSeSF9pIn+g==}
     engines: {node: '>=6.9.0'}
@@ -993,6 +1014,15 @@ packages:
       jsesc: 2.5.2
     dev: false
 
+  /@babel/generator/7.18.13:
+    resolution: {integrity: sha512-CkPg8ySSPuHTYPJYo7IRALdqyjM9HCbt/3uOBEFbzyGVP6Mn8bwFPB0jX6982JVNBlYzM1nnPkfjuXSOPtQeEQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/types': 7.18.13
+      '@jridgewell/gen-mapping': 0.3.2
+      jsesc: 2.5.2
+    dev: false
+
   /@babel/generator/7.18.9:
     resolution: {integrity: sha512-wt5Naw6lJrL1/SGkipMiFxJjtyczUWTP38deiP1PO60HsBjDeKk08CGC3S8iVuvf0FmTdgKwU1KIXzSKL1G0Ug==}
     engines: {node: '>=6.9.0'}
@@ -1013,7 +1043,7 @@ packages:
     resolution: {integrity: sha512-duORpUiYrEpzKIop6iNbjnwKLAKnJ47csTyRACyEmWj0QdUrm5aqNJGHSSEQSUAvNW0ojX0dOmK9dZduvkfeXA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.9
+      '@babel/types': 7.18.13
     dev: false
 
   /@babel/helper-compilation-targets/7.17.10_@babel+core@7.17.10:
@@ -1025,6 +1055,19 @@ packages:
       '@babel/compat-data': 7.17.10
       '@babel/core': 7.17.10
       '@babel/helper-validator-option': 7.16.7
+      browserslist: 4.20.3
+      semver: 6.3.0
+    dev: false
+
+  /@babel/helper-compilation-targets/7.18.9_@babel+core@7.18.13:
+    resolution: {integrity: sha512-tzLCyVmqUiFlcFoAPLA/gL9TeYrF61VLNtb+hvkuVaB5SUjW7jcfrglBIX1vUIoT7CLP3bBlIMeyEsIl2eFQNg==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0
+    dependencies:
+      '@babel/compat-data': 7.18.8
+      '@babel/core': 7.18.13
+      '@babel/helper-validator-option': 7.18.6
       browserslist: 4.20.3
       semver: 6.3.0
     dev: false
@@ -1084,8 +1127,8 @@ packages:
     resolution: {integrity: sha512-fJgWlZt7nxGksJS9a0XdSaI4XvpExnNIgRP+rVefWh5U7BL8pPuir6SJUmFKRfjWQ51OtWSzwOxhaH/EBWWc0A==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/template': 7.18.6
-      '@babel/types': 7.18.9
+      '@babel/template': 7.18.10
+      '@babel/types': 7.18.13
     dev: false
 
   /@babel/helper-hoist-variables/7.16.7:
@@ -1099,7 +1142,7 @@ packages:
     resolution: {integrity: sha512-UlJQPkFqFULIcyW5sbzgbkxn2FKRgwWiRexcuaR8RNJRy8+LLveqPjwZV/bwrLZCN0eUHD/x8D0heK1ozuoo6Q==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.9
+      '@babel/types': 7.18.13
     dev: false
 
   /@babel/helper-member-expression-to-functions/7.17.7:
@@ -1127,7 +1170,7 @@ packages:
     resolution: {integrity: sha512-0NFvs3VkuSYbFi1x2Vd6tKrywq+z/cLeYC/RJNFrIX/30Bf5aiGYbtvGXolEktzJH8o5E5KJ3tT+nkxuuZFVlA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.9
+      '@babel/types': 7.18.13
     dev: false
 
   /@babel/helper-module-transforms/7.17.7:
@@ -1155,9 +1198,9 @@ packages:
       '@babel/helper-simple-access': 7.18.6
       '@babel/helper-split-export-declaration': 7.18.6
       '@babel/helper-validator-identifier': 7.18.6
-      '@babel/template': 7.18.6
-      '@babel/traverse': 7.18.9
-      '@babel/types': 7.18.9
+      '@babel/template': 7.18.10
+      '@babel/traverse': 7.18.13
+      '@babel/types': 7.18.13
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1203,7 +1246,7 @@ packages:
     resolution: {integrity: sha512-iNpIgTgyAvDQpDj76POqg+YEt8fPxx3yaNBg3S30dxNKm2SWfYhD0TGrK/Eu9wHpUW63VQU894TsTg+GLbUa1g==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.9
+      '@babel/types': 7.18.13
     dev: false
 
   /@babel/helper-split-export-declaration/7.16.7:
@@ -1217,7 +1260,12 @@ packages:
     resolution: {integrity: sha512-bde1etTx6ZyTmobl9LLMMQsaizFVZrquTEHOqKeQESMKo4PlObf+8+JA25ZsIpZhT/WEd39+vOdLXAFG/nELpA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.9
+      '@babel/types': 7.18.13
+    dev: false
+
+  /@babel/helper-string-parser/7.18.10:
+    resolution: {integrity: sha512-XtIfWmeNY3i4t7t4D2t02q50HvqHybPqW2ki1kosnvWCwuCMeo81Jf0gwr85jy/neUdg5XDdeFE/80DXiO+njw==}
+    engines: {node: '>=6.9.0'}
     dev: false
 
   /@babel/helper-validator-identifier/7.18.6:
@@ -1250,9 +1298,9 @@ packages:
     resolution: {integrity: sha512-Jf5a+rbrLoR4eNdUmnFu8cN5eNJT6qdTdOg5IHIzq87WwyRw9PwguLFOWYgktN/60IP4fgDUawJvs7PjQIzELQ==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/template': 7.18.6
-      '@babel/traverse': 7.18.9
-      '@babel/types': 7.18.9
+      '@babel/template': 7.18.10
+      '@babel/traverse': 7.18.13
+      '@babel/types': 7.18.13
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1281,6 +1329,14 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.18.9
+    dev: false
+
+  /@babel/parser/7.18.13:
+    resolution: {integrity: sha512-dgXcIfMuQ0kgzLB2b9tRZs7TTFFaGM2AbtA4fJgUUYukzGH4jwsS7hzQHEGs67jdehpm22vkgKwvbU+aEflgwg==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+    dependencies:
+      '@babel/types': 7.18.13
     dev: false
 
   /@babel/parser/7.18.9:
@@ -1356,13 +1412,13 @@ packages:
       '@babel/helper-plugin-utils': 7.18.9
     dev: false
 
-  /@babel/plugin-syntax-jsx/7.18.6_@babel+core@7.18.9:
+  /@babel/plugin-syntax-jsx/7.18.6_@babel+core@7.18.13:
     resolution: {integrity: sha512-6mmljtAedFGTWu2p/8WIORGwy+61PLgOMPOdazc7YoJ9ZCWUyFy3A6CpPkRKLKD1ToAesxX8KGEViAiLo9N+7Q==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.18.9
+      '@babel/core': 7.18.13
       '@babel/helper-plugin-utils': 7.18.9
     dev: false
 
@@ -1440,16 +1496,6 @@ packages:
       '@babel/helper-plugin-utils': 7.16.7
     dev: false
 
-  /@babel/plugin-transform-react-jsx-development/7.16.7_@babel+core@7.17.10:
-    resolution: {integrity: sha512-RMvQWvpla+xy6MlBpPlrKZCMRs2AGiHOGHY3xRwl0pEeim348dDyxeH4xBsMPbIMhujeq7ihE702eM2Ew0Wo+A==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.17.10
-      '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
-    dev: false
-
   /@babel/plugin-transform-react-jsx-development/7.18.6_@babel+core@7.17.10:
     resolution: {integrity: sha512-SA6HEjwYFKF7WDjWcMcMGUimmw/nhNRDWxr+KaLSCrkD/LMDBvWRmHAYgE1HDeF8KUuI8OAu+RT6EOtKxSW2qA==}
     engines: {node: '>=6.9.0'}
@@ -1457,56 +1503,36 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.17.10
-      '@babel/plugin-transform-react-jsx': 7.18.6_@babel+core@7.17.10
+      '@babel/plugin-transform-react-jsx': 7.18.10_@babel+core@7.17.10
     dev: false
 
-  /@babel/plugin-transform-react-jsx-development/7.18.6_@babel+core@7.18.9:
+  /@babel/plugin-transform-react-jsx-development/7.18.6_@babel+core@7.18.13:
     resolution: {integrity: sha512-SA6HEjwYFKF7WDjWcMcMGUimmw/nhNRDWxr+KaLSCrkD/LMDBvWRmHAYgE1HDeF8KUuI8OAu+RT6EOtKxSW2qA==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.18.9
-      '@babel/plugin-transform-react-jsx': 7.18.6_@babel+core@7.18.9
+      '@babel/core': 7.18.13
+      '@babel/plugin-transform-react-jsx': 7.18.10_@babel+core@7.18.13
     dev: false
 
-  /@babel/plugin-transform-react-jsx-self/7.16.7_@babel+core@7.17.10:
-    resolution: {integrity: sha512-oe5VuWs7J9ilH3BCCApGoYjHoSO48vkjX2CbA5bFVhIuO2HKxA3vyF7rleA4o6/4rTDbk6r8hBW7Ul8E+UZrpA==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.17.10
-      '@babel/helper-plugin-utils': 7.16.7
-    dev: false
-
-  /@babel/plugin-transform-react-jsx-self/7.18.6_@babel+core@7.18.9:
+  /@babel/plugin-transform-react-jsx-self/7.18.6_@babel+core@7.18.13:
     resolution: {integrity: sha512-A0LQGx4+4Jv7u/tWzoJF7alZwnBDQd6cGLh9P+Ttk4dpiL+J5p7NSNv/9tlEFFJDq3kjxOavWmbm6t0Gk+A3Ig==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.18.9
+      '@babel/core': 7.18.13
       '@babel/helper-plugin-utils': 7.18.9
     dev: false
 
-  /@babel/plugin-transform-react-jsx-source/7.16.7_@babel+core@7.17.10:
-    resolution: {integrity: sha512-rONFiQz9vgbsnaMtQlZCjIRwhJvlrPET8TabIUK2hzlXw9B9s2Ieaxte1SCOOXMbWRHodbKixNf3BLcWVOQ8Bw==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.17.10
-      '@babel/helper-plugin-utils': 7.16.7
-    dev: false
-
-  /@babel/plugin-transform-react-jsx-source/7.18.6_@babel+core@7.18.9:
+  /@babel/plugin-transform-react-jsx-source/7.18.6_@babel+core@7.18.13:
     resolution: {integrity: sha512-utZmlASneDfdaMh0m/WausbjUjEdGrQJz0vFK93d7wD3xf5wBtX219+q6IlCNZeguIcxS2f/CvLZrlLSvSHQXw==}
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
     dependencies:
-      '@babel/core': 7.18.9
+      '@babel/core': 7.18.13
       '@babel/helper-plugin-utils': 7.18.9
     dev: false
 
@@ -1524,6 +1550,34 @@ packages:
       '@babel/types': 7.17.10
     dev: false
 
+  /@babel/plugin-transform-react-jsx/7.18.10_@babel+core@7.17.10:
+    resolution: {integrity: sha512-gCy7Iikrpu3IZjYZolFE4M1Sm+nrh1/6za2Ewj77Z+XirT4TsbJcvOFOyF+fRPwU6AKKK136CZxx6L8AbSFG6A==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.17.10
+      '@babel/helper-annotate-as-pure': 7.18.6
+      '@babel/helper-module-imports': 7.18.6
+      '@babel/helper-plugin-utils': 7.18.9
+      '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.17.10
+      '@babel/types': 7.18.13
+    dev: false
+
+  /@babel/plugin-transform-react-jsx/7.18.10_@babel+core@7.18.13:
+    resolution: {integrity: sha512-gCy7Iikrpu3IZjYZolFE4M1Sm+nrh1/6za2Ewj77Z+XirT4TsbJcvOFOyF+fRPwU6AKKK136CZxx6L8AbSFG6A==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.18.13
+      '@babel/helper-annotate-as-pure': 7.18.6
+      '@babel/helper-module-imports': 7.18.6
+      '@babel/helper-plugin-utils': 7.18.9
+      '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.18.13
+      '@babel/types': 7.18.13
+    dev: false
+
   /@babel/plugin-transform-react-jsx/7.18.6_@babel+core@7.17.10:
     resolution: {integrity: sha512-Mz7xMPxoy9kPS/JScj6fJs03TZ/fZ1dJPlMjRAgTaxaS0fUBk8FV/A2rRgfPsVCZqALNwMexD+0Uaf5zlcKPpw==}
     engines: {node: '>=6.9.0'}
@@ -1535,20 +1589,6 @@ packages:
       '@babel/helper-module-imports': 7.18.6
       '@babel/helper-plugin-utils': 7.18.9
       '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.17.10
-      '@babel/types': 7.18.9
-    dev: false
-
-  /@babel/plugin-transform-react-jsx/7.18.6_@babel+core@7.18.9:
-    resolution: {integrity: sha512-Mz7xMPxoy9kPS/JScj6fJs03TZ/fZ1dJPlMjRAgTaxaS0fUBk8FV/A2rRgfPsVCZqALNwMexD+0Uaf5zlcKPpw==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0-0
-    dependencies:
-      '@babel/core': 7.18.9
-      '@babel/helper-annotate-as-pure': 7.18.6
-      '@babel/helper-module-imports': 7.18.6
-      '@babel/helper-plugin-utils': 7.18.9
-      '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.18.9
       '@babel/types': 7.18.9
     dev: false
 
@@ -1596,6 +1636,15 @@ packages:
       '@babel/types': 7.18.9
     dev: false
 
+  /@babel/template/7.18.10:
+    resolution: {integrity: sha512-TI+rCtooWHr3QJ27kJxfjutghu44DLnasDMwpDqCXVTal9RLp3RSYNh4NdBrRP2cQAoG9A8juOQl6P6oZG4JxA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/code-frame': 7.18.6
+      '@babel/parser': 7.18.13
+      '@babel/types': 7.18.13
+    dev: false
+
   /@babel/template/7.18.6:
     resolution: {integrity: sha512-JoDWzPe+wgBsTTgdnIma3iHNFC7YVJoPssVBDjiHfNlyt4YcunDtcDOUmfVDfCK5MfdsaIoX9PkijPhjH3nYUw==}
     engines: {node: '>=6.9.0'}
@@ -1617,6 +1666,24 @@ packages:
       '@babel/helper-split-export-declaration': 7.16.7
       '@babel/parser': 7.17.10
       '@babel/types': 7.17.10
+      debug: 4.3.4
+      globals: 11.12.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@babel/traverse/7.18.13:
+    resolution: {integrity: sha512-N6kt9X1jRMLPxxxPYWi7tgvJRH/rtoU+dbKAPDM44RFHiMH8igdsaSBgFeskhSl/kLWLDUvIh1RXCrTmg0/zvA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/code-frame': 7.18.6
+      '@babel/generator': 7.18.13
+      '@babel/helper-environment-visitor': 7.18.9
+      '@babel/helper-function-name': 7.18.9
+      '@babel/helper-hoist-variables': 7.18.6
+      '@babel/helper-split-export-declaration': 7.18.6
+      '@babel/parser': 7.18.13
+      '@babel/types': 7.18.13
       debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
@@ -1649,6 +1716,15 @@ packages:
       to-fast-properties: 2.0.0
     dev: false
 
+  /@babel/types/7.18.13:
+    resolution: {integrity: sha512-ePqfTihzW0W6XAU+aMw2ykilisStJfDnsejDCXRchCcMJ4O0+8DhPXf2YUbZ6wjBlsEmZwLK/sPweWtu8hcJYQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/helper-string-parser': 7.18.10
+      '@babel/helper-validator-identifier': 7.18.6
+      to-fast-properties: 2.0.0
+    dev: false
+
   /@babel/types/7.18.9:
     resolution: {integrity: sha512-WwMLAg2MvJmt/rKEVQBBhIVffMmnilX4oe0sRe7iPOHIGsqpruFHHdrfj4O1CMMtgMtCU4oPafZjDPCRgO57Wg==}
     engines: {node: '>=6.9.0'}
@@ -1661,8 +1737,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: false
 
-  /@brillout/dev-my-dep/0.0.9:
-    resolution: {integrity: sha512-x1/qCMGwE0wCARtnqYIPBbDxwtYUmum0sDQyohR0LwCGvPR3V3GAWzBNUYVnu2rcsJ/mKidYBlQkFeyYB3n9Kw==}
+  /@brillout/dev-my-dep/0.0.10:
+    resolution: {integrity: sha512-cvSrvCxnZYzQmiOj0nwIuf298DvaM/2eAAOsBSbBpsdOEpYsnbQGvFxew9oSXEi3HH1TZMmLy8VyvyJJ+LsmCw==}
     hasBin: true
     dev: true
 
@@ -2295,7 +2371,7 @@ packages:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
     dev: false
 
-  /@preact/preset-vite/2.3.0_fsigpennamhrx3fxr7oq672p7m:
+  /@preact/preset-vite/2.3.0_w2p3owjzz5thgq7p76qorbx5ne:
     resolution: {integrity: sha512-0kOuz7wdrQLqrPlyI/Ypw9IWDF2++GGcOHMRBYO5T2w2+dheelaBH+XrIN/okqdsGIflzFIFNyIGubo5BC8wbQ==}
     peerDependencies:
       '@babel/core': 7.x
@@ -2304,13 +2380,13 @@ packages:
       '@babel/core': 7.17.10
       '@babel/plugin-transform-react-jsx': 7.18.6_@babel+core@7.17.10
       '@babel/plugin-transform-react-jsx-development': 7.18.6_@babel+core@7.17.10
-      '@prefresh/vite': 2.2.8_preact@10.10.0+vite@2.9.14
+      '@prefresh/vite': 2.2.8_preact@10.10.0+vite@3.0.9
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2_@babel+core@7.17.10
       debug: 4.3.4
       kolorist: 1.5.1
       resolve: 1.22.1
-      vite: 2.9.14
+      vite: 3.0.9
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -2332,7 +2408,7 @@ packages:
     resolution: {integrity: sha512-Mb9abhJTOV4yCfkXrMrcgFiFT7MfNOw8sDa+XyZBdq/Ai2p4Zyxqsb3EgHLOEdHpMj6J9aiZ54W8H6FTam1u+A==}
     dev: false
 
-  /@prefresh/vite/2.2.8_preact@10.10.0+vite@2.9.14:
+  /@prefresh/vite/2.2.8_preact@10.10.0+vite@3.0.9:
     resolution: {integrity: sha512-yGGa+PKPYPTzMlxgQ8aBgxw9K69I8X4iQ0E6KOcIvls96WKqKLLOYZW9SUgCve446jpUXvc9udviPBZjCeZIIQ==}
     peerDependencies:
       preact: ^10.4.0
@@ -2344,7 +2420,7 @@ packages:
       '@prefresh/utils': 1.1.3
       '@rollup/pluginutils': 4.2.1
       preact: 10.10.0
-      vite: 2.9.14
+      vite: 3.0.9
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2738,99 +2814,43 @@ packages:
       wonka: 4.0.15
     dev: false
 
-  /@vitejs/plugin-react/1.3.2:
-    resolution: {integrity: sha512-aurBNmMo0kz1O4qRoY+FM4epSA39y3ShWGuqfLRA/3z0oEJAdtoSfgA3aO98/PCCHAqMaduLxIxErWrVKIFzXA==}
-    engines: {node: '>=12.0.0'}
-    dependencies:
-      '@babel/core': 7.17.10
-      '@babel/plugin-transform-react-jsx': 7.17.3_@babel+core@7.17.10
-      '@babel/plugin-transform-react-jsx-development': 7.16.7_@babel+core@7.17.10
-      '@babel/plugin-transform-react-jsx-self': 7.16.7_@babel+core@7.17.10
-      '@babel/plugin-transform-react-jsx-source': 7.16.7_@babel+core@7.17.10
-      '@rollup/pluginutils': 4.2.1
-      react-refresh: 0.13.0
-      resolve: 1.22.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@vitejs/plugin-react/2.0.0_vite@3.0.2:
-    resolution: {integrity: sha512-zHkRR+X4zqEPNBbKV2FvWSxK7Q6crjMBVIAYroSU8Nbb4M3E5x4qOiLoqJBHtXgr27kfednXjkwr3lr8jS6Wrw==}
-    engines: {node: '>=14.18.0'}
+  /@vitejs/plugin-react/2.0.1_vite@3.0.9:
+    resolution: {integrity: sha512-uINzNHmjrbunlFtyVkST6lY1ewSfz/XwLufG0PIqvLGnpk2nOIOa/1CACTDNcKi1/RwaCzJLmsXwm1NsUVV/NA==}
+    engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^3.0.0
     dependencies:
-      '@babel/core': 7.18.9
-      '@babel/plugin-transform-react-jsx': 7.18.6_@babel+core@7.18.9
-      '@babel/plugin-transform-react-jsx-development': 7.18.6_@babel+core@7.18.9
-      '@babel/plugin-transform-react-jsx-self': 7.18.6_@babel+core@7.18.9
-      '@babel/plugin-transform-react-jsx-source': 7.18.6_@babel+core@7.18.9
+      '@babel/core': 7.18.13
+      '@babel/plugin-transform-react-jsx': 7.18.10_@babel+core@7.18.13
+      '@babel/plugin-transform-react-jsx-development': 7.18.6_@babel+core@7.18.13
+      '@babel/plugin-transform-react-jsx-self': 7.18.6_@babel+core@7.18.13
+      '@babel/plugin-transform-react-jsx-source': 7.18.6_@babel+core@7.18.13
       magic-string: 0.26.2
       react-refresh: 0.14.0
-      vite: 3.0.2
+      vite: 3.0.9
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /@vitejs/plugin-react/2.0.0_vite@3.0.4:
-    resolution: {integrity: sha512-zHkRR+X4zqEPNBbKV2FvWSxK7Q6crjMBVIAYroSU8Nbb4M3E5x4qOiLoqJBHtXgr27kfednXjkwr3lr8jS6Wrw==}
-    engines: {node: '>=14.18.0'}
-    peerDependencies:
-      vite: ^3.0.0
-    dependencies:
-      '@babel/core': 7.18.9
-      '@babel/plugin-transform-react-jsx': 7.18.6_@babel+core@7.18.9
-      '@babel/plugin-transform-react-jsx-development': 7.18.6_@babel+core@7.18.9
-      '@babel/plugin-transform-react-jsx-self': 7.18.6_@babel+core@7.18.9
-      '@babel/plugin-transform-react-jsx-source': 7.18.6_@babel+core@7.18.9
-      magic-string: 0.26.2
-      react-refresh: 0.14.0
-      vite: 3.0.4
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
-  /@vitejs/plugin-vue/2.3.1_vite@2.9.14+vue@3.2.33:
-    resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      vite: ^2.5.10
-      vue: ^3.2.25
-    dependencies:
-      vite: 2.9.14
-      vue: 3.2.33
-    dev: false
-
-  /@vitejs/plugin-vue/2.3.1_vite@3.0.4+vue@3.2.33:
-    resolution: {integrity: sha512-YNzBt8+jt6bSwpt7LP890U1UcTOIZZxfpE5WOJ638PNxSEKOqAi0+FSKS0nVeukfdZ0Ai/H7AFd6k3hayfGZqQ==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      vite: ^2.5.10
-      vue: ^3.2.25
-    dependencies:
-      vite: 3.0.4
-      vue: 3.2.33
-    dev: false
-
-  /@vitejs/plugin-vue/2.3.3_vite@2.9.14+vue@3.2.37:
-    resolution: {integrity: sha512-SmQLDyhz+6lGJhPELsBdzXGc+AcaT8stgkbiTFGpXPe8Tl1tJaBw1A6pxDqDuRsVkD8uscrkx3hA7QDOoKYtyw==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      vite: ^2.5.10
-      vue: ^3.2.25
-    dependencies:
-      vite: 2.9.14
-      vue: 3.2.37
-    dev: false
-
-  /@vitejs/plugin-vue/3.0.1_vite@3.0.2+vue@3.2.37:
-    resolution: {integrity: sha512-Ll9JgxG7ONIz/XZv3dssfoMUDu9qAnlJ+km+pBA0teYSXzwPCIzS/e1bmwNYl5dcQGs677D21amgfYAnzMl17A==}
+  /@vitejs/plugin-vue/3.0.3_vite@3.0.9+vue@3.2.33:
+    resolution: {integrity: sha512-U4zNBlz9mg+TA+i+5QPc3N5lQvdUXENZLO2h0Wdzp56gI1MWhqJOv+6R+d4kOzoaSSq6TnGPBdZAXKOe4lXy6g==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^3.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 3.0.2
+      vite: 3.0.9
+      vue: 3.2.33
+    dev: false
+
+  /@vitejs/plugin-vue/3.0.3_vite@3.0.9+vue@3.2.37:
+    resolution: {integrity: sha512-U4zNBlz9mg+TA+i+5QPc3N5lQvdUXENZLO2h0Wdzp56gI1MWhqJOv+6R+d4kOzoaSSq6TnGPBdZAXKOe4lXy6g==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^3.0.0
+      vue: ^3.2.25
+    dependencies:
+      vite: 3.0.9
       vue: 3.2.37
     dev: false
 
@@ -4511,26 +4531,10 @@ packages:
     resolution: {integrity: sha512-Um/+FxMr9CISWh0bi5Zv0iOD+4cFh5qLeks1qhAopKVAJw3drgKbKySikp7wGhDL0HPeaja0P5ULZrxLkniUVg==}
     dev: false
 
-  /esbuild-android-64/0.14.38:
-    resolution: {integrity: sha512-aRFxR3scRKkbmNuGAK+Gee3+yFxkTJO/cx83Dkyzo4CnQl/2zVSurtG6+G86EQIZ+w+VYngVyK7P3HyTBKu3nw==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [android]
-    requiresBuild: true
-    optional: true
-
   /esbuild-android-64/0.14.47:
     resolution: {integrity: sha512-R13Bd9+tqLVFndncMHssZrPWe6/0Kpv2/dt4aA69soX4PRxlzsVpCvoJeFE8sOEoeVEiBkI0myjlkDodXlHa0g==}
     engines: {node: '>=12'}
     cpu: [x64]
-    os: [android]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-android-arm64/0.14.38:
-    resolution: {integrity: sha512-L2NgQRWuHFI89IIZIlpAcINy9FvBk6xFVZ7xGdOwIm8VyhX1vNCEqUJO3DPSSy945Gzdg98cxtNt8Grv1CsyhA==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
     os: [android]
     requiresBuild: true
     optional: true
@@ -4543,26 +4547,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-darwin-64/0.14.38:
-    resolution: {integrity: sha512-5JJvgXkX87Pd1Og0u/NJuO7TSqAikAcQQ74gyJ87bqWRVeouky84ICoV4sN6VV53aTW+NE87qLdGY4QA2S7KNA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    optional: true
-
   /esbuild-darwin-64/0.14.47:
     resolution: {integrity: sha512-R6oaW0y5/u6Eccti/TS6c/2c1xYTb1izwK3gajJwi4vIfNs1s8B1dQzI1UiC9T61YovOQVuePDcfqHLT3mUZJA==}
     engines: {node: '>=12'}
     cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-darwin-arm64/0.14.38:
-    resolution: {integrity: sha512-eqF+OejMI3mC5Dlo9Kdq/Ilbki9sQBw3QlHW3wjLmsLh+quNfHmGMp3Ly1eWm981iGBMdbtSS9+LRvR2T8B3eQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     optional: true
@@ -4575,26 +4563,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-freebsd-64/0.14.38:
-    resolution: {integrity: sha512-epnPbhZUt93xV5cgeY36ZxPXDsQeO55DppzsIgWM8vgiG/Rz+qYDLmh5ts3e+Ln1wA9dQ+nZmVHw+RjaW3I5Ig==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
-    optional: true
-
   /esbuild-freebsd-64/0.14.47:
     resolution: {integrity: sha512-ZH8K2Q8/Ux5kXXvQMDsJcxvkIwut69KVrYQhza/ptkW50DC089bCVrJZZ3sKzIoOx+YPTrmsZvqeZERjyYrlvQ==}
     engines: {node: '>=12'}
     cpu: [x64]
-    os: [freebsd]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-freebsd-arm64/0.14.38:
-    resolution: {integrity: sha512-/9icXUYJWherhk+y5fjPI5yNUdFPtXHQlwP7/K/zg8t8lQdHVj20SqU9/udQmeUo5pDFHMYzcEFfJqgOVeKNNQ==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
     os: [freebsd]
     requiresBuild: true
     optional: true
@@ -4607,26 +4579,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-linux-32/0.14.38:
-    resolution: {integrity: sha512-QfgfeNHRFvr2XeHFzP8kOZVnal3QvST3A0cgq32ZrHjSMFTdgXhMhmWdKzRXP/PKcfv3e2OW9tT9PpcjNvaq6g==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-32/0.14.47:
     resolution: {integrity: sha512-FxZOCKoEDPRYvq300lsWCTv1kcHgiiZfNrPtEhFAiqD7QZaXrad8LxyJ8fXGcWzIFzRiYZVtB3ttvITBvAFhKw==}
     engines: {node: '>=12'}
     cpu: [ia32]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-64/0.14.38:
-    resolution: {integrity: sha512-uuZHNmqcs+Bj1qiW9k/HZU3FtIHmYiuxZ/6Aa+/KHb/pFKr7R3aVqvxlAudYI9Fw3St0VCPfv7QBpUITSmBR1Q==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [linux]
     requiresBuild: true
     optional: true
@@ -4639,26 +4595,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-linux-arm/0.14.38:
-    resolution: {integrity: sha512-FiFvQe8J3VKTDXG01JbvoVRXQ0x6UZwyrU4IaLBZeq39Bsbatd94Fuc3F1RGqPF5RbIWW7RvkVQjn79ejzysnA==}
-    engines: {node: '>=12'}
-    cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-arm/0.14.47:
     resolution: {integrity: sha512-ZGE1Bqg/gPRXrBpgpvH81tQHpiaGxa8c9Rx/XOylkIl2ypLuOcawXEAo8ls+5DFCcRGt/o3sV+PzpAFZobOsmA==}
     engines: {node: '>=12'}
     cpu: [arm]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-arm64/0.14.38:
-    resolution: {integrity: sha512-HlMGZTEsBrXrivr64eZ/EO0NQM8H8DuSENRok9d+Jtvq8hOLzrxfsAT9U94K3KOGk2XgCmkaI2KD8hX7F97lvA==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
     os: [linux]
     requiresBuild: true
     optional: true
@@ -4671,26 +4611,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-linux-mips64le/0.14.38:
-    resolution: {integrity: sha512-qd1dLf2v7QBiI5wwfil9j0HG/5YMFBAmMVmdeokbNAMbcg49p25t6IlJFXAeLzogv1AvgaXRXvgFNhScYEUXGQ==}
-    engines: {node: '>=12'}
-    cpu: [mips64el]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-mips64le/0.14.47:
     resolution: {integrity: sha512-mg3D8YndZ1LvUiEdDYR3OsmeyAew4MA/dvaEJxvyygahWmpv1SlEEnhEZlhPokjsUMfRagzsEF/d/2XF+kTQGg==}
     engines: {node: '>=12'}
     cpu: [mips64el]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-ppc64le/0.14.38:
-    resolution: {integrity: sha512-mnbEm7o69gTl60jSuK+nn+pRsRHGtDPfzhrqEUXyCl7CTOCLtWN2bhK8bgsdp6J/2NyS/wHBjs1x8aBWwP2X9Q==}
-    engines: {node: '>=12'}
-    cpu: [ppc64]
     os: [linux]
     requiresBuild: true
     optional: true
@@ -4703,26 +4627,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-linux-riscv64/0.14.38:
-    resolution: {integrity: sha512-+p6YKYbuV72uikChRk14FSyNJZ4WfYkffj6Af0/Tw63/6TJX6TnIKE+6D3xtEc7DeDth1fjUOEqm+ApKFXbbVQ==}
-    engines: {node: '>=12'}
-    cpu: [riscv64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
   /esbuild-linux-riscv64/0.14.47:
     resolution: {integrity: sha512-1fI6bP3A3rvI9BsaaXbMoaOjLE3lVkJtLxsgLHqlBhLlBVY7UqffWBvkrX/9zfPhhVMd9ZRFiaqXnB1T7BsL2g==}
     engines: {node: '>=12'}
     cpu: [riscv64]
-    os: [linux]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-linux-s390x/0.14.38:
-    resolution: {integrity: sha512-0zUsiDkGJiMHxBQ7JDU8jbaanUY975CdOW1YDrurjrM0vWHfjv9tLQsW9GSyEb/heSK1L5gaweRjzfUVBFoybQ==}
-    engines: {node: '>=12'}
-    cpu: [s390x]
     os: [linux]
     requiresBuild: true
     optional: true
@@ -4735,27 +4643,11 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-netbsd-64/0.14.38:
-    resolution: {integrity: sha512-cljBAApVwkpnJZfnRVThpRBGzCi+a+V9Ofb1fVkKhtrPLDYlHLrSYGtmnoTVWDQdU516qYI8+wOgcGZ4XIZh0Q==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [netbsd]
-    requiresBuild: true
-    optional: true
-
   /esbuild-netbsd-64/0.14.47:
     resolution: {integrity: sha512-Qjdjr+KQQVH5Q2Q1r6HBYswFTToPpss3gqCiSw2Fpq/ua8+eXSQyAMG+UvULPqXceOwpnPo4smyZyHdlkcPppQ==}
     engines: {node: '>=12'}
     cpu: [x64]
     os: [netbsd]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-openbsd-64/0.14.38:
-    resolution: {integrity: sha512-CDswYr2PWPGEPpLDUO50mL3WO/07EMjnZDNKpmaxUPsrW+kVM3LoAqr/CE8UbzugpEiflYqJsGPLirThRB18IQ==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [openbsd]
     requiresBuild: true
     optional: true
 
@@ -4767,14 +4659,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-sunos-64/0.14.38:
-    resolution: {integrity: sha512-2mfIoYW58gKcC3bck0j7lD3RZkqYA7MmujFYmSn9l6TiIcAMpuEvqksO+ntBgbLep/eyjpgdplF7b+4T9VJGOA==}
-    engines: {node: '>=12'}
-    cpu: [x64]
-    os: [sunos]
-    requiresBuild: true
-    optional: true
-
   /esbuild-sunos-64/0.14.47:
     resolution: {integrity: sha512-uOeSgLUwukLioAJOiGYm3kNl+1wJjgJA8R671GYgcPgCx7QR73zfvYqXFFcIO93/nBdIbt5hd8RItqbbf3HtAQ==}
     engines: {node: '>=12'}
@@ -4783,26 +4667,10 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-windows-32/0.14.38:
-    resolution: {integrity: sha512-L2BmEeFZATAvU+FJzJiRLFUP+d9RHN+QXpgaOrs2klshoAm1AE6Us4X6fS9k33Uy5SzScn2TpcgecbqJza1Hjw==}
-    engines: {node: '>=12'}
-    cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
   /esbuild-windows-32/0.14.47:
     resolution: {integrity: sha512-H0fWsLTp2WBfKLBgwYT4OTfFly4Im/8B5f3ojDv1Kx//kiubVY0IQunP2Koc/fr/0wI7hj3IiBDbSrmKlrNgLQ==}
     engines: {node: '>=12'}
     cpu: [ia32]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
-  /esbuild-windows-64/0.14.38:
-    resolution: {integrity: sha512-Khy4wVmebnzue8aeSXLC+6clo/hRYeNIm0DyikoEqX+3w3rcvrhzpoix0S+MF9vzh6JFskkIGD7Zx47ODJNyCw==}
-    engines: {node: '>=12'}
-    cpu: [x64]
     os: [win32]
     requiresBuild: true
     optional: true
@@ -4815,14 +4683,6 @@ packages:
     requiresBuild: true
     optional: true
 
-  /esbuild-windows-arm64/0.14.38:
-    resolution: {integrity: sha512-k3FGCNmHBkqdJXuJszdWciAH77PukEyDsdIryEHn9cKLQFxzhT39dSumeTuggaQcXY57UlmLGIkklWZo2qzHpw==}
-    engines: {node: '>=12'}
-    cpu: [arm64]
-    os: [win32]
-    requiresBuild: true
-    optional: true
-
   /esbuild-windows-arm64/0.14.47:
     resolution: {integrity: sha512-HFSW2lnp62fl86/qPQlqw6asIwCnEsEoNIL1h2uVMgakddf+vUuMcCbtUY1i8sst7KkgHrVKCJQB33YhhOweCQ==}
     engines: {node: '>=12'}
@@ -4830,33 +4690,6 @@ packages:
     os: [win32]
     requiresBuild: true
     optional: true
-
-  /esbuild/0.14.38:
-    resolution: {integrity: sha512-12fzJ0fsm7gVZX1YQ1InkOE5f9Tl7cgf6JPYXRJtPIoE0zkWAbHdPHVPPaLi9tYAcEBqheGzqLn/3RdTOyBfcA==}
-    engines: {node: '>=12'}
-    hasBin: true
-    requiresBuild: true
-    optionalDependencies:
-      esbuild-android-64: 0.14.38
-      esbuild-android-arm64: 0.14.38
-      esbuild-darwin-64: 0.14.38
-      esbuild-darwin-arm64: 0.14.38
-      esbuild-freebsd-64: 0.14.38
-      esbuild-freebsd-arm64: 0.14.38
-      esbuild-linux-32: 0.14.38
-      esbuild-linux-64: 0.14.38
-      esbuild-linux-arm: 0.14.38
-      esbuild-linux-arm64: 0.14.38
-      esbuild-linux-mips64le: 0.14.38
-      esbuild-linux-ppc64le: 0.14.38
-      esbuild-linux-riscv64: 0.14.38
-      esbuild-linux-s390x: 0.14.38
-      esbuild-netbsd-64: 0.14.38
-      esbuild-openbsd-64: 0.14.38
-      esbuild-sunos-64: 0.14.38
-      esbuild-windows-32: 0.14.38
-      esbuild-windows-64: 0.14.38
-      esbuild-windows-arm64: 0.14.38
 
   /esbuild/0.14.47:
     resolution: {integrity: sha512-wI4ZiIfFxpkuxB8ju4MHrGwGLyp1+awEHAHVpx6w7a+1pmYIq8T9FGEVVwFo0iFierDoMj++Xq69GXWYn2EiwA==}
@@ -7856,6 +7689,7 @@ packages:
     resolution: {integrity: sha512-p1sjXuopFs0xg+fPASzQ28agW1oHD7xDsd9Xkf3T15H3c/cifrFHVwrh74PdoklAPi+i7MdRsE47vm2r6JoB+w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
+    dev: false
 
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
@@ -8582,6 +8416,7 @@ packages:
       nanoid: 3.3.3
       picocolors: 1.0.0
       source-map-js: 1.0.2
+    dev: false
 
   /postcss/8.4.14:
     resolution: {integrity: sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==}
@@ -8599,7 +8434,6 @@ packages:
       nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: true
 
   /preact-render-to-string/5.2.1_preact@10.10.0:
     resolution: {integrity: sha512-Wp3ner1aIVBpKg02C4AoLdBiw4kNaiFSYHr4wUF+fR7FWKAQzNri+iPfPp31sEhAtBfWoJrSxiEFzd5wp5zCgQ==}
@@ -8875,11 +8709,6 @@ packages:
       react-is: 18.1.0
       redux: 4.2.0
       use-sync-external-store: 1.1.0_react@18.1.0
-    dev: false
-
-  /react-refresh/0.13.0:
-    resolution: {integrity: sha512-XP8A9BT0CpRBD+NYLLeIhld/RqG9+gktUjW1FkE+Vm7OCinbG1SshcK5tb9ls4kzvjZr9mOQc7HYgBngEyPAXg==}
-    engines: {node: '>=0.10.0'}
     dev: false
 
   /react-refresh/0.14.0:
@@ -9220,6 +9049,7 @@ packages:
       is-core-module: 2.9.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+    dev: false
 
   /resolve/1.22.1:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
@@ -9279,13 +9109,6 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
-
-  /rollup/2.73.0:
-    resolution: {integrity: sha512-h/UngC3S4Zt28mB3g0+2YCMegT5yoftnQplwzPqGZcKvlld5e+kT/QRmJiL+qxGyZKOYpgirWGdLyEO1b0dpLQ==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.2
 
   /rollup/2.77.0:
     resolution: {integrity: sha512-vL8xjY4yOQEw79DvyXLijhnhh+R/O9zpF/LEgkCebZFtb6ELeN9H3/2T0r8+mp+fFTBHZ5qGpOpW2ela2zRt3g==}
@@ -10232,10 +10055,6 @@ packages:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
     dev: false
 
-  /ufo/0.8.3:
-    resolution: {integrity: sha512-AIkk06G21y/P+NCatfU+1qldCmI0XCszZLn8AkuKotffF3eqCvlce0KuwM7ZemLE/my0GSYADOAeM5zDYWMB+A==}
-    dev: false
-
   /uglify-js/3.15.4:
     resolution: {integrity: sha512-vMOPGDuvXecPs34V74qDKk4iJ/SN4vL3Ow/23ixafENYvtrNvtbcgUeugTcUGRGsOF/5fU8/NYSL5Hyb3l1OJA==}
     engines: {node: '>=0.8.0'}
@@ -10517,8 +10336,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.36_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-BWq4/1aNKFD9ki6QJLIdRI8nC42MQtMkTBOgw9Z14n/CRDRAW5e17UqmzAx/R6s32pciWBjuNn/wpyyEhHwp7A==}
+  /vikepress/0.0.37_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-S5GhplVYn+LCKDfoFNQR4gscaER2onCAqiLpQPTBFOlqOqbbF39qLVcITvdC78mOrSaAqMkAjho+tRqdgZklGQ==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -10527,7 +10346,7 @@ packages:
       '@mdx-js/mdx': 2.1.1
       '@mdx-js/react': 2.1.2_react@18.2.0
       '@mdx-js/rollup': 2.1.1
-      '@vitejs/plugin-react': 1.3.2
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       express: 4.18.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -10535,8 +10354,7 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
-      vite: 2.9.14
-      vite-plugin-glob: 0.2.8
+      vite: 3.0.9
       vite-plugin-ssr: link:vite-plugin-ssr
     transitivePeerDependencies:
       - less
@@ -10544,19 +10362,10 @@ packages:
       - sass
       - stylus
       - supports-color
+      - terser
     dev: false
 
-  /vite-plugin-glob/0.2.8:
-    resolution: {integrity: sha512-Xs9rlEdDW33yfs72Iugu/y3H0AK48DkldM8t5i+LAlXF3GaKA9oFerWZih7qp5cibg4JI99wnMSYHcj/awP7Eg==}
-    dependencies:
-      acorn: 8.7.1
-      fast-glob: 3.2.11
-      magic-string: 0.26.2
-      micromatch: 4.0.5
-      ufo: 0.8.3
-    dev: false
-
-  /vite-plugin-md/0.11.9_vite@3.0.4:
+  /vite-plugin-md/0.11.9_vite@3.0.9:
     resolution: {integrity: sha512-0uD2BPIct3FbEA1hAm56hlrBByEn542HTsS/FoWf33lJIgijVBDDV6FE12ud0SHS6sculITKliF2ntog2kiHmQ==}
     peerDependencies:
       vite: ^2.0.0
@@ -10566,7 +10375,7 @@ packages:
       '@types/markdown-it': 12.2.3
       gray-matter: 4.0.3
       markdown-it: 12.3.2
-      vite: 3.0.4
+      vite: 3.0.9
     dev: false
 
   /vite-plugin-solid/2.2.6:
@@ -10578,7 +10387,7 @@ packages:
       merge-anything: 5.0.2
       solid-js: 1.3.17
       solid-refresh: 0.4.0_solid-js@1.3.17
-      vite: 2.9.14
+      vite: 2.9.15
     transitivePeerDependencies:
       - less
       - sass
@@ -10586,8 +10395,8 @@ packages:
       - supports-color
     dev: false
 
-  /vite/2.9.14:
-    resolution: {integrity: sha512-P/UCjSpSMcE54r4mPak55hWAZPlyfS369svib/gpmz8/01L822lMPOJ/RYW6tLCe1RPvMvOsJ17erf55bKp4Hw==}
+  /vite/2.9.15:
+    resolution: {integrity: sha512-fzMt2jK4vQ3yK56te3Kqpkaeq9DkcZfBbzHwYpobasvgYmP2SoAr6Aic05CsB4CzCZbsDv4sujX3pkEGhLabVQ==}
     engines: {node: '>=12.2.0'}
     hasBin: true
     peerDependencies:
@@ -10602,66 +10411,12 @@ packages:
       stylus:
         optional: true
     dependencies:
-      esbuild: 0.14.38
-      postcss: 8.4.13
-      resolve: 1.22.0
-      rollup: 2.73.0
-    optionalDependencies:
-      fsevents: 2.3.2
-
-  /vite/3.0.2:
-    resolution: {integrity: sha512-TAqydxW/w0U5AoL5AsD9DApTvGb2iNbGs3sN4u2VdT1GFkQVUfgUldt+t08TZgi23uIauh1TUOQJALduo9GXqw==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
       esbuild: 0.14.47
-      postcss: 8.4.14
+      postcss: 8.4.16
       resolve: 1.22.1
       rollup: 2.77.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: false
-
-  /vite/3.0.4:
-    resolution: {integrity: sha512-NU304nqnBeOx2MkQnskBQxVsa0pRAH5FphokTGmyy8M3oxbvw7qAXts2GORxs+h/2vKsD+osMhZ7An6yK6F1dA==}
-    engines: {node: ^14.18.0 || >=16.0.0}
-    hasBin: true
-    peerDependencies:
-      less: '*'
-      sass: '*'
-      stylus: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      less:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      esbuild: 0.14.47
-      postcss: 8.4.14
-      resolve: 1.22.1
-      rollup: 2.77.0
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: false
 
   /vite/3.0.9:
     resolution: {integrity: sha512-waYABTM+G6DBTCpYAxvevpG50UOlZuynR0ckTK5PawNVt7ebX6X7wNXHaGIO6wYYFXSM7/WcuFuO2QzhBB6aMw==}
@@ -10688,7 +10443,6 @@ packages:
       rollup: 2.77.0
     optionalDependencies:
       fsevents: 2.3.2
-    dev: true
 
   /vitest/0.14.1:
     resolution: {integrity: sha512-2UUm6jYgkwh7Y3VKSRR8OuaNCm+iA5LPDnal7jyITN39maZK9L+JVxqjtQ39PSFo5Fl3/BgaJvER6GGHX9JLxg==}
@@ -10716,7 +10470,7 @@ packages:
       local-pkg: 0.4.1
       tinypool: 0.1.3
       tinyspy: 0.3.2
-      vite: 2.9.14
+      vite: 2.9.15
     transitivePeerDependencies:
       - less
       - sass

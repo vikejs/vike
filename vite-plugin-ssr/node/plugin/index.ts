@@ -3,7 +3,6 @@ export { plugin }
 export { plugin as ssr }
 
 import type { Plugin } from 'vite'
-import GlobPlugin from 'vite-plugin-glob'
 import { assertUsage } from './utils'
 import { buildConfig } from './plugins/buildConfig'
 import { previewConfig } from './plugins/previewConfig'
@@ -41,11 +40,7 @@ function plugin(vpsConfig?: ConfigVpsUser): any {
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     retrieveDevServer(),
-    ...importBuild(),
-    GlobPlugin({
-      // @ts-expect-error
-      restoreQueryExtension: true
-    }) as any
+    ...importBuild()
   ]
   return plugins
 }

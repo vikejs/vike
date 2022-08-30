@@ -1,3 +1,28 @@
+## [0.4.29](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.28...v0.4.29) (2022-08-30)
+
+
+### Bug Fixes
+
+* support `includeAssetsImportedByServer` for linked dependencies ([eaa857b](https://github.com/brillout/vite-plugin-ssr/commit/eaa857b0067899ddfab5c756cf5055fef0f9e8d8))
+* use Vite's built-in `import.meta.glob()` instead of `vite-plugin-glob` (fix [#431](https://github.com/brillout/vite-plugin-ssr/issues/431)) ([19385ef](https://github.com/brillout/vite-plugin-ssr/commit/19385ef06bd4997955e267c72bc4f416fbf8dcb1))
+
+
+### BREAKING CHANGES
+
+* `vite-plugin-ssr@0.4.29` doesn't work with Vite 2 anymore: make sure to update to Vite 3.
+
+
+
+## [0.4.28](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.27...v0.4.28) (2022-08-29)
+
+
+### Bug Fixes
+
+* improve `getFileUrl()` assertions ([4799316](https://github.com/brillout/vite-plugin-ssr/commit/4799316bba2ec8e3fe6edb0cbae6d6fb8aa43d24))
+* update react detection heuristic ([#423](https://github.com/brillout/vite-plugin-ssr/issues/423)) ([931a8e9](https://github.com/brillout/vite-plugin-ssr/commit/931a8e95e8d56130be3c3e5488b33b60d7c3d8b2))
+
+
+
 ## [0.4.27](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.26...v0.4.27) (2022-08-26)
 
 
