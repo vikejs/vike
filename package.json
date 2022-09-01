@@ -1,5 +1,4 @@
 {
-  "packageManager": "pnpm@7.6.0",
   "scripts": {
     "========= Dev": "",
     "// Develop vite-plugin-ssr": "",
@@ -66,5 +65,6 @@
         }
       }
     }
-  }
+  },
+  "packageManager": "pnpm@7.9.5"
 }
