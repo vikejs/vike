@@ -1,3 +1,12 @@
+## [0.4.30](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.29...v0.4.30) (2022-09-02)
+
+
+### Performance Improvements
+
+* use picocolors instead of kolorist ([f4f2e1c](https://github.com/brillout/vite-plugin-ssr/commit/f4f2e1ce472fe2b1f6ff24629ed32e2d30c37439))
+
+
+
 ## [0.4.29](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.28...v0.4.29) (2022-08-30)
 
 

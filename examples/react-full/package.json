@@ -20,7 +20,7 @@
     "react-streaming": "^0.2.15",
     "typescript": "^4.6.4",
     "vite": "^3.0.4",
-    "vite-plugin-ssr": "0.4.29"
+    "vite-plugin-ssr": "0.4.30"
   },
   "type": "module"
 }
