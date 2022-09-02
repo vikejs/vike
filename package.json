@@ -36,7 +36,7 @@
     "// Upgrade all dependencies of all `package.json` that have tests": "",
     "bump": "cd libframe/scripts/ && pnpm run bump",
     "========= Release": "",
-    "release": "cd libframe/scripts/ && pnpm run release",
+    "release": "cd vite-plugin-ssr/ && pnpm run release",
     "========= Clean": "",
     "// Remove all generated files": "",
     "clean": "git clean -Xdf",
@@ -45,8 +45,8 @@
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
-    "@brillout/submodule-init": "0.1.2",
     "@brillout/dev-my-dep": "0.0.10",
+    "@brillout/submodule-init": "0.1.2",
     "vitest": "^0.14.1"
   },
   "pnpm": {
