@@ -21,11 +21,11 @@
     "dev:fast": "pnpm run tsc:watch:node & pnpm run tsc:watch:client",
     "tsc:watch:node": "tsc --incremental --watch --project ./node/tsconfig.json",
     "tsc:watch:client": "tsc --incremental --watch --project ./client/tsconfig.json",
-    "release": "release-me"
+    "release": "release-me patch"
   },
   "devDependencies": {
     "@brillout/part-regex": "^0.1.2",
-    "@brillout/release-me": "^0.0.2",
+    "@brillout/release-me": "^0.0.3",
     "@types/jest": "^27.4.1",
     "@types/node": "17.0.31",
     "@types/resolve": "^1.20.2",
