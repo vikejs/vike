@@ -12,7 +12,6 @@
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "dependencies": {
     "enquirer": "^2.3.6",
-    "kolorist": "^1.5.1",
     "minimist": "^1.2.6"
   }
 }

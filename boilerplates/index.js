@@ -5,10 +5,27 @@ const fs = require('fs')
 const path = require('path')
 const argv = require('minimist')(process.argv.slice(2))
 const { prompt } = require('enquirer')
-const { green, cyan, stripColors, bold } = require('kolorist')
+const { green, cyan, bold } = require('picocolors')
 const { execSync } = require('child_process')
 
-const BOILERPLATES = [green('vue'), green('vue-ts'), cyan('react'), cyan('react-ts')]
+const BOILERPLATES = [
+  {
+    name: 'vue',
+    color: green
+  },
+  {
+    name: 'vue-ts',
+    color: green
+  },
+  {
+    name: 'react',
+    color: cyan
+  },
+  {
+    name: 'react-ts',
+    color: cyan
+  }
+]
 const IGNORE_FILES = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
 //const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
 const IGNORE_PACKAGE_JSON = []
@@ -65,7 +82,7 @@ async function init() {
 
   // --boilerplate expects a value
   if (typeof boilerplate === 'string') {
-    const availableBoilerplates = BOILERPLATES.map(stripColors)
+    const availableBoilerplates = BOILERPLATES.map((b) => b.name)
     isValidBoilerplate = availableBoilerplates.includes(boilerplate)
     message = `${boilerplate} isn't a valid boilerplate. Please choose from below:`
   }
@@ -78,9 +95,12 @@ async function init() {
       type: 'select',
       name: 't',
       message,
-      choices: BOILERPLATES
+      choices: BOILERPLATES.map((b) => ({
+        message: b.color(b.name),
+        name: b.name
+      }))
     })
-    boilerplate = stripColors(t)
+    boilerplate = t
   }
 
   const boilerplateDir = path.join(__dirname, `boilerplate-${boilerplate}`)

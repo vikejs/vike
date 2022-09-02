@@ -26,7 +26,7 @@ import {
 } from './utils'
 import { pLimit, PLimit } from '../utils/pLimit'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
-import { blue, green, gray, cyan } from 'kolorist'
+import { blue, green, gray, cyan } from 'picocolors'
 import { cpus } from 'os'
 import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, GlobalContext } from './globalContext'
