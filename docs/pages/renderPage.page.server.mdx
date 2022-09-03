@@ -34,7 +34,7 @@ async function startServer() {
   app.get('*', async (req, res, next) => {
     const pageContextInit = { urlOriginal: req.originalUrl }
     const pageContext = await renderPage(pageContextInit)
-    if (!pageContext.httpResponse) return next()
+    if (pageContext.httpResponse === null) return next()
     const { body, statusCode, contentType } = pageContext.httpResponse
     res.status(statusCode).type(contentType).send(body)
   })
@@ -45,10 +45,13 @@ async function startServer() {
 }
 ```
 
-- `pageContext.httpResponse` is `null` when a) an error occurred while rendering `_error.page.js`, or b) we didn't define the page `_error.page.js` and and an error occured.
 - `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
 - `pageContext.httpResponse.contentType` is either `text/html` or `application/json`. (The `Content-Type` is `application/json` when <Link text="Client Routing" href="/client-routing" /> fetches the `pageContext` of the newly navigated page.)
 - `pageContext.httpResponse.body` is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render" /> with additional `<script>` and `<style>` tags automatically injected by `vite-plugin-ssr`.
+- `pageContext.httpResponse` is `null` if:
+   - An error occurs while rendering the page and you didn't create an `_error.page.js` file.
+   - An error occurs while rendering `_error.page.js`.
+   - The URL is skipped: `vite-plugin-ssr` doesn't render certain URLs. (E.g. `pageContext.urlOriginal === '/favicon.ico'` because browsers automatically make favicon requests).
 
 `renderPage()` is framework agnostic: we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment (AWS, Cloudflare Workers, Vercel, ...).
 
