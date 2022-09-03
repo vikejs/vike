@@ -1,8 +1,8 @@
 import type { PageContextUrls } from './addComputedUrlProps'
 
-export type PageContextBuiltIn = {
+export type PageContextBuiltIn<Page = any> = {
   /** The `export { Page }` of your `.page.js` file, see https://vite-plugin-ssr.com/Page */
-  Page: any
+  Page: Page
   /** Route Parameters, e.g. `pageContext.routeParams.productId` for a Route String `/product/@productId`, see https://vite-plugin-ssr.com/route-string */
   routeParams: Record<string, string>
   /** Custom Exports/Hooks, see https://vite-plugin-ssr.com/exports */

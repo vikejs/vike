@@ -1,7 +1,10 @@
 import type { PageContextBuiltIn } from '../../shared/types'
 
-export type PageContextBuiltInClient = Partial<PageContextBuiltIn> &
-  Pick<PageContextBuiltIn, 'Page' | 'pageExports' | 'exports' | 'url' | 'urlOriginal' | 'urlPathname' | 'urlParsed'> & {
+export type PageContextBuiltInClient<Page = any> = Partial<PageContextBuiltIn<Page>> &
+  Pick<
+    PageContextBuiltIn<Page>,
+    'Page' | 'pageExports' | 'exports' | 'url' | 'urlOriginal' | 'urlPathname' | 'urlParsed'
+  > & {
     /** Whether the current page is already rendered to HTML */
     isHydration: boolean
     /**
