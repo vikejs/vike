@@ -2,14 +2,13 @@ import { renderToString } from '@vue/server-renderer'
 import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { createApp } from './app'
 import logoUrl from './logo.svg'
-import type { PageContext } from './types'
-import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextServer } from './types'
 
 export { render }
 // See https://vite-plugin-ssr.com/data-fetching
 export const passToClient = ['pageProps', 'urlPathname']
 
-async function render(pageContext: PageContextBuiltIn & PageContext) {
+async function render(pageContext: PageContextServer) {
   const app = createApp(pageContext)
   const appHtml = await renderToString(app)
 
