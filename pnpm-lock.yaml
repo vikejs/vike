@@ -21,9 +21,11 @@ importers:
     specifiers:
       enquirer: ^2.3.6
       minimist: ^1.2.6
+      picocolors: ^1.0.0
     dependencies:
       enquirer: 2.3.6
       minimist: 1.2.6
+      picocolors: 1.0.0
 
   boilerplates/boilerplate-react:
     specifiers:

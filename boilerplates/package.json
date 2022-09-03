@@ -1,6 +1,6 @@
 {
   "name": "create-vite-plugin-ssr",
-  "version": "0.0.182",
+  "version": "0.0.183",
   "license": "MIT",
   "bin": {
     "create-vite-plugin-ssr": "index.js"
@@ -12,6 +12,7 @@
   "repository": "https://github.com/brillout/vite-plugin-ssr",
   "dependencies": {
     "enquirer": "^2.3.6",
-    "minimist": "^1.2.6"
+    "minimist": "^1.2.6",
+    "picocolors": "^1.0.0"
   }
 }
