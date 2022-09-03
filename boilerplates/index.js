@@ -26,7 +26,7 @@ const BOILERPLATES = [
     color: cyan
   }
 ]
-const IGNORE_FILES = ['.prettierrc', '.test-dev.spec.ts', '.test-prod.spec.ts']
+const IGNORE_FILES = ['.prettierrc', '.dev.test.ts', '.prod.test.ts']
 //const IGNORE_PACKAGE_JSON = ['name', 'version', '// Needed for Yarn workspaces']
 const IGNORE_PACKAGE_JSON = []
 const RENAME_FILES = {
