@@ -29,6 +29,6 @@ describe('renderPage()', () => {
 async function createDevServer() {
   await createServer({
     root: __dirname,
-    server: { middlewareMode: 'ssr' }
+    server: { middlewareMode: true }
   })
 }

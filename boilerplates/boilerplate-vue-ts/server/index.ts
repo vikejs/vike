@@ -20,7 +20,7 @@ async function startServer() {
     const viteDevMiddleware = (
       await vite.createServer({
         root,
-        server: { middlewareMode: 'ssr' }
+        server: { middlewareMode: true }
       })
     ).middlewares
     app.use(viteDevMiddleware)
