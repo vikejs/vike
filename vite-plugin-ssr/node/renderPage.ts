@@ -371,10 +371,7 @@ function createHttpResponseObject(
         assert(renderFilePath)
         assertUsage(
           false,
-          errMsg(
-            'body',
-            'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead'
-          )
+          errMsg('body', 'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead')
         )
       }
       const body = htmlRender
