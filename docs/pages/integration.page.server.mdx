@@ -17,7 +17,7 @@ import renderToHtml from 'some-ui-framework'
 export { render }
 
 async function render(pageContext) {
-  // `Page` is the `export { Page }` (or `export default Page`) of our `*.page.js` files;
+  // `Page` is the `export { Page }` of our `*.page.js` files;
   // `vite-plugin-ssr` doesn't do anything with `Page` and just makes it available as
   // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
   const { Page } = pageContext
