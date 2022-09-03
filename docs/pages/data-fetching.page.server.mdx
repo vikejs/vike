@@ -103,7 +103,7 @@ function Page(pageProps) {
 
 ## Custom Exports
 
-For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` once in `/renderer/_default.page.server.js` while using a <Link text="Custom Export/Hook" href="/exports" />.
+For more convenience, instead of creating a new `onBeforeRender()` hook for each page, we can define `onBeforeRender()` only once in `/renderer/_default.page.server.js` while using a <Link text="Custom Export/Hook" href="/exports" />.
 
 For example:
 
@@ -121,6 +121,7 @@ export const query = { modelName: 'Product', select: ['name', 'price'] }
 // /renderer/_default.page.server.js
 // Environment: Node.js
 
+// We use a single global `onBeforeRender()` hook
 export { onBeforeRender }
 
 import { runQuery } from 'some-sql-engine'
@@ -151,7 +152,7 @@ then we can define `onBeforeRender()` in `.page.js` instead.
 
 ## GraphQL
 
-When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in `onBeforeRender()`.
+When using GraphQL, we define GraphQL queries/fragments on a component-level, while we fetch the GraphQL data in a single global `onBeforeRender()` hook.
 
 In general, with `vite-plugin-ssr`, we have full control over rendering which means that integrating GraphQL is mostly only a matter of following the official SSR guide of the tool we want to use.
 
