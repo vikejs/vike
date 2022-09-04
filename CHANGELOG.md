@@ -1,3 +1,13 @@
+## [0.4.31](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.30...v0.4.31) (2022-09-04)
+
+
+### Bug Fixes
+
+* make streaming SSR work on Firefox ([a0c791c](https://github.com/brillout/vite-plugin-ssr/commit/a0c791ce14a0add270e8c3369e2480d953d31abd))
+* typescript: allow user to define `Page` type ([4e3ac79](https://github.com/brillout/vite-plugin-ssr/commit/4e3ac790f165c73c6189630cef08b04129f4905a))
+
+
+
 ## [0.4.30](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.29...v0.4.30) (2022-09-02)
 
 
