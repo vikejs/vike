@@ -315,7 +315,7 @@ function assertError(err: unknown) {
 }
 
 type StatusCode = 200 | 404 | 500
-type ContentType = 'application/json' | 'text/html'
+type ContentType = 'application/json' | 'text/html;charset=utf-8'
 type HttpResponse = {
   statusCode: StatusCode
   contentType: ContentType
@@ -365,7 +365,7 @@ function createHttpResponseObject(
 
   return {
     statusCode,
-    contentType: pageContext._isPageContextRequest ? 'application/json' : 'text/html',
+    contentType: pageContext._isPageContextRequest ? 'application/json' : 'text/html;charset=utf-8',
     get body() {
       if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
