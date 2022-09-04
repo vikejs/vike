@@ -32,6 +32,8 @@ initHistoryState()
 
 let onPageTransitionStart: Function | undefined
 
+let isUsingClientRouting = false
+
 let disabled = false
 function disableClientRouting() {
   disabled = true
@@ -43,6 +45,8 @@ function disableClientRouting() {
 }
 
 function useClientRouter() {
+  isUsingClientRouting = true
+
   autoSaveScrollPosition()
 
   onLinkClick((url: string, { keepScrollPosition }) => {
@@ -216,6 +220,10 @@ async function navigate(
   assertUsage(
     isBrowser(),
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
+  )
+  assertUsage(
+    isUsingClientRouting,
+    'navigate() is only available when using Client Routing, see https://vite-plugin-ssr.com/navigate'
   )
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
   assertUsage(
