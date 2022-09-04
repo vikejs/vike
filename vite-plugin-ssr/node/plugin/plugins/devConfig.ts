@@ -21,9 +21,8 @@ function devConfig(): Plugin[] {
             'vite-plugin-ssr/client/router',
             'vite-plugin-ssr/routing',
             // We cannot add these to `optimizeDeps.include` because of `pnpm`
-            '@brillout/json-s',
-            '@brillout/json-s/parse',
-            '@brillout/json-s/stringify'
+            '@brillout/json-serializer/parse',
+            '@brillout/json-serializer/stringify'
           ]
         }
       }),

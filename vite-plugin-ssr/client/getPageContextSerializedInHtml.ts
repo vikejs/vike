@@ -1,4 +1,4 @@
-import { parse } from '@brillout/json-s/parse'
+import { parse } from '@brillout/json-serializer/parse'
 import { hasProp, objectAssign, assert, getProjectError } from './utils'
 
 export { getPageContextSerializedInHtml }

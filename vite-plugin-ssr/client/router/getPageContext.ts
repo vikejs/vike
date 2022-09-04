@@ -9,7 +9,7 @@ import {
   getProjectError,
   serverSideRouteTo
 } from './utils'
-import { parse } from '@brillout/json-s/parse'
+import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
