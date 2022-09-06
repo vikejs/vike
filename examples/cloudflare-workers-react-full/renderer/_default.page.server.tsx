@@ -11,12 +11,15 @@ const passToClient = ['pageProps']
 
 async function render(pageContext: any) {
   const { Page, pageProps } = pageContext
-  const stream = await renderToStream(
+
+  const page = (
     <PageLayout pageContext={pageContext}>
       <Page {...pageProps} />
-    </PageLayout>,
-    { userAgent: pageContext.userAgent }
+    </PageLayout>
   )
+
+  // Streaming is optional and we can use renderToString() instead
+  const stream = await renderToStream(page, { userAgent: pageContext.userAgent })
 
   return escapeInject`<!DOCTYPE html>
     <html>

@@ -13,11 +13,12 @@ const passToClient = ['pageProps']
 async function render(pageContext: any) {
   const app = createApp(pageContext)
 
+  // Streaming is optional: we can use renderToString() instead.
   const pipe = isWorker()
     ? (writable: WritableStream) => {
         pipeToWebWritable(app, {}, writable)
       }
-    : // While developing, we use Vite's development sever instead of a Cloudflare worker. Instead of `pipeToNodeWritable`, we could as well use `renderToString`.
+    : // While developing, we use Vite's development sever instead of a Cloudflare worker. Instead of `pipeToNodeWritable()`, we could as well use `renderToString()`.
       (writable: Writable) => {
         pipeToNodeWritable(app, {}, writable)
       }
