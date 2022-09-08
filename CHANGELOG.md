@@ -1,3 +1,13 @@
+## [0.4.32](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.31...v0.4.32) (2022-09-08)
+
+
+### Bug Fixes
+
+* comply to common reverse proxy setups (fix [#443](https://github.com/brillout/vite-plugin-ssr/issues/443)) ([7b76001](https://github.com/brillout/vite-plugin-ssr/commit/7b76001da5e212c00f492e1bb62ddf066708e5b2))
+* improve error message upon trying to use `navigate()` without Client Routing (fix [#441](https://github.com/brillout/vite-plugin-ssr/issues/441)) ([5c97cc4](https://github.com/brillout/vite-plugin-ssr/commit/5c97cc4d07f689bdb303a50be955d2580df429e9))
+
+
+
 ## [0.4.31](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.30...v0.4.31) (2022-09-04)
 
 

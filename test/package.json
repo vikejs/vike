@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "vite": "^3.0.9",
-    "vite-plugin-ssr": "0.4.31"
+    "vite-plugin-ssr": "0.4.32"
   }
 }
