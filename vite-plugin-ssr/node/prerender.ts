@@ -12,7 +12,6 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  getFileUrl,
   isPlainObject,
   projectInfo,
   objectAssign,
@@ -22,7 +21,8 @@ import {
   loadModuleAtRuntime,
   isObject,
   hasPropertyGetter,
-  assertPosixPath
+  assertPosixPath,
+  urlToFile
 } from './utils'
 import { pLimit, PLimit } from '../utils/pLimit'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
@@ -35,6 +35,7 @@ import { assertConfigVpsResolved } from './plugin/plugins/config/assertConfigVps
 import type { InlineConfig } from 'vite'
 import { setProductionEnvVar } from '../shared/setProduction'
 import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
+import {getPageContextRequestUrl} from '../shared/getPageContextRequestUrl'
 
 export { prerender }
 
@@ -643,11 +644,13 @@ function write(
   logLevel: 'info' | 'warn'
 ) {
   return concurrencyLimit(async () => {
-    const fileUrl = getFileUrl(
-      urlOriginal,
-      fileExtension,
-      fileExtension === '.pageContext.json' || doNotCreateExtraDirectory
-    )
+    let fileUrl: string
+    if (fileExtension === '.html') {
+      fileUrl = urlToFile(urlOriginal, '.html', doNotCreateExtraDirectory)
+    } else {
+      fileUrl = getPageContextRequestUrl(urlOriginal)
+    }
+
     assertPosixPath(fileUrl)
     assert(fileUrl.startsWith('/'))
     const filePathRelative = fileUrl.slice(1)

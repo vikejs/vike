@@ -1,14 +1,5 @@
 import { navigationState } from '../navigationState'
-import {
-  assert,
-  assertUsage,
-  getFileUrl,
-  hasProp,
-  isPlainObject,
-  objectAssign,
-  getProjectError,
-  serverSideRouteTo
-} from './utils'
+import { assert, assertUsage, hasProp, isPlainObject, objectAssign, getProjectError, serverSideRouteTo } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { PageContextExports, PageFile } from '../../shared/getPageFiles'
@@ -20,6 +11,7 @@ import { getHook } from '../../shared/getHook'
 import { releasePageContext } from './releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
+import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 
 export { getPageContext }
 export { getPageContextErrorPage }
@@ -209,7 +201,7 @@ async function retrievePageContextFromServer(pageContext: {
   urlOriginal: string
   _urlPristine?: string
 }): Promise<Record<string, unknown>> {
-  const pageContextUrl = getFileUrl(pageContext._urlPristine ?? pageContext.urlOriginal, '.pageContext.json', true)
+  const pageContextUrl = getPageContextRequestUrl(pageContext._urlPristine ?? pageContext.urlOriginal)
   const response = await fetch(pageContextUrl)
 
   {

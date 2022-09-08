@@ -16,7 +16,6 @@ import {
   PromiseType,
   isParsable,
   isPromise,
-  handlePageContextRequestSuffix,
   parseUrl,
   makeFirst,
   isSameErrorMessage,
@@ -54,6 +53,7 @@ import type { ViteDevServer } from 'vite'
 import { ViteManifest } from './viteManifest'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
+import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 
 export { renderPage }
 export { prerenderPage }
@@ -209,7 +209,7 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
 
   {
     assert(urlOriginal.startsWith('/') || urlOriginal.startsWith('http'))
-    const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestSuffix(urlOriginal)
+    const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
     const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
     if (!hasBaseUrl) {
       objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
@@ -217,7 +217,7 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
     }
     objectAssign(pageContextAddendum, {
       _isPageContextRequest: isPageContextRequest,
-      _urlProcessor: (url: string) => handlePageContextRequestSuffix(url).urlWithoutPageContextRequestSuffix
+      _urlProcessor: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
     })
   }
 
