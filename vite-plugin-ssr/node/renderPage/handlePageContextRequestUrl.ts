@@ -24,10 +24,11 @@ function removePageContextUrlSuffix(url: string): string {
   const urlParsed = parseUrl(url, baseUrl)
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
-  assert(doNotCreateExtraDirectory === true)
-  assert(pathnameOriginal.endsWith(fileExtension), { url })
-  let pathnameModified = slice(pathnameOriginal, 0, -1 * fileExtension.length)
-  if (pathnameModified === '/index') pathnameModified = '/'
+  assert(doNotCreateExtraDirectory === false)
+  const urlSuffix = `/index${fileExtension}`
+  assert(pathnameOriginal.endsWith(urlSuffix), { url })
+  let pathnameModified = slice(pathnameOriginal, 0, -1 * urlSuffix.length)
+  if (pathnameModified === '') pathnameModified = '/'
   assert(url === `${origin || ''}${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
   return `${origin || ''}${pathnameModified}${searchOriginal || ''}${hashOriginal || ''}`
 }
