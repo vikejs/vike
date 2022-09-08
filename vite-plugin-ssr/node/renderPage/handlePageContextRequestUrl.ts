@@ -22,13 +22,12 @@ function hasSuffix(url: string) {
 
 function removePageContextUrlSuffix(url: string): string {
   const urlParsed = parseUrl(url, baseUrl)
-  const { origin, searchOriginal, hashOriginal } = urlParsed
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
-  let pathname = urlParsed.pathnameOriginal
+  const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
   assert(doNotCreateExtraDirectory === true)
-  assert(pathname.endsWith(fileExtension), { url, pathname })
-  assert(url === `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`, { url })
-  pathname = slice(pathname, 0, -1 * fileExtension.length)
-  if (pathname === '/index') pathname = '/'
-  return `${origin || ''}${pathname}${searchOriginal || ''}${hashOriginal || ''}`
+  assert(pathnameOriginal.endsWith(fileExtension), { url })
+  let pathnameModified = slice(pathnameOriginal, 0, -1 * fileExtension.length)
+  if (pathnameModified === '/index') pathnameModified = '/'
+  assert(url === `${origin || ''}${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
+  return `${origin || ''}${pathnameModified}${searchOriginal || ''}${hashOriginal || ''}`
 }
