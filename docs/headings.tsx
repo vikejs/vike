@@ -497,6 +497,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Angular',
+    url: '/angular'
+  },
+  {
+    level: 2,
     titleInNav: 'Other',
     title: 'UI Frameworks',
     url: '/ui-framework'
