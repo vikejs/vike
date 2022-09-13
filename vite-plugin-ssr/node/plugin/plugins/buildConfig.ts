@@ -34,9 +34,11 @@ function buildConfig(): Plugin {
         ssr: { noExternal: true },
         //*/
       }
+      /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
       if (viteIsSSR(config)) {
         configMod.publicDir = false
       }
+      */
       return configMod
     }
   }
