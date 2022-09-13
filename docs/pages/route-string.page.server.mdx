@@ -24,15 +24,23 @@ We can define multiple parameters.
 export default '/news/@year/@slug'
 ```
 
+
 ## Catch-All
 
 We can use Route Strings to implement [catch-all routes](/catch-all).
+
 
 ## Precedence
 
 Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific.
 
 See <Link href="/routing-precedence" />.
+
+
+## Escape `@`
+
+The special character `@` cannot be escaped, use a [Route Function](/route-function) instead.
+
 
 ## More
 
