@@ -1,3 +1,12 @@
+## [0.4.33](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.32...v0.4.33) (2022-09-13)
+
+
+### Bug Fixes
+
+* revert "fix: do not copy static assets to `dist/server/`" (fix [#447](https://github.com/brillout/vite-plugin-ssr/issues/447)) ([ec93afe](https://github.com/brillout/vite-plugin-ssr/commit/ec93afe7240aeb19e9ec8458c0579c995329f26a))
+
+
+
 ## [0.4.32](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.31...v0.4.32) (2022-09-08)
 
 
