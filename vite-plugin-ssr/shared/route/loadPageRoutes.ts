@@ -29,11 +29,10 @@ async function loadPageRoutes(pageContext: {
   _pageFilesAll: PageFile[]
   _allPageIds: string[]
 }): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
-  let onBeforeRouteHook: null | OnBeforeRouteHook = null
-  const filesystemRoots: FilesystemRoot[] = []
-
   await Promise.all(pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
 
+  let onBeforeRouteHook: null | OnBeforeRouteHook = null
+  const filesystemRoots: FilesystemRoot[] = []
   pageContext._pageFilesAll
     .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)
     .forEach(({ filePath, fileExports }) => {
@@ -62,10 +61,8 @@ async function loadPageRoutes(pageContext: {
       }
     })
 
-  const allPageIds = pageContext._allPageIds
   const pageRoutes: PageRoutes = []
-
-  allPageIds
+  pageContext._allPageIds
     .filter((pageId) => !isErrorPageId(pageId))
     .filter((pageId) => {
       const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
