@@ -95,5 +95,6 @@ function isParam(routeSegment: string) {
 function isStaticRouteString(routeString: string): boolean {
   const url = routeString
   const match = resolveRouteString(routeString, url)
-  return match !== null && Object.keys(match.routeParams).length === 0
+  assert(match)
+  return Object.keys(match.routeParams).length === 0
 }
