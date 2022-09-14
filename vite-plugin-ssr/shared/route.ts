@@ -1,3 +1,9 @@
+export { route }
+export { loadPageRoutes }
+export { isErrorPageId }
+export { getErrorPageId } from './route/error-page'
+export type { PageRoutes, PageContextForRoute, RouteMatches }
+
 import type { PageFile } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
@@ -8,13 +14,6 @@ import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
 import { isErrorPageId } from './route/error-page'
 import { debug } from './route/debug'
-
-export { route, loadPageRoutes }
-export type { PageRoutes, PageContextForRoute, RouteMatches }
-
-export { isErrorPageId }
-export { getErrorPageId } from './route/error-page'
-export { isStaticRouteString } from './route/resolveRouteString'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]

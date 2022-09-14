@@ -1,6 +1,6 @@
 import './page-files/setup'
 import path from 'path'
-import { isErrorPageId, isStaticRouteString, loadPageRoutes, route } from '../shared/route'
+import { isErrorPageId, loadPageRoutes, route } from '../shared/route'
 import {
   assert,
   assertUsage,
@@ -30,7 +30,7 @@ import type { InlineConfig } from 'vite'
 import { setProductionEnvVar } from '../shared/setProduction'
 import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
 import { getPageContextRequestUrl } from '../shared/getPageContextRequestUrl'
-import { getUrlFromRouteString } from '../shared/route/getFilesystemRouteString'
+import { getUrlFromRouteString } from '../shared/route/resolveRouteString'
 
 export { prerender }
 

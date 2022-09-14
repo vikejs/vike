@@ -1,4 +1,5 @@
 export { resolveRouteString }
+export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
 
@@ -55,6 +56,15 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
   }
 
   return { routeParams }
+}
+
+function getUrlFromRouteString(routeString: string): null | string {
+  assert(routeString.startsWith('/'))
+  if (isStaticRouteString(routeString)) {
+    const url = routeString
+    return url
+  }
+  return null
 }
 
 function assertGlob(routeString: string) {

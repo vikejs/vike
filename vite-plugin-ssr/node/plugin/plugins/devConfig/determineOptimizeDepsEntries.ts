@@ -2,11 +2,9 @@ export { determineOptimizeDepsEntries }
 
 import type { ResolvedConfig } from 'vite'
 import { getPageFileObject } from '../../../../shared/getPageFiles/getPageFileObject'
-import {
-  getFilesystemRouteString,
-  getUrlFromRouteString
-} from '../../../../shared/route/getFilesystemRouteString'
+import { getFilesystemRouteString } from '../../../../shared/route/getFilesystemRouteString'
 import { findPageRouteFile } from '../../../../shared/route/loadPageRoutes'
+import { getUrlFromRouteString } from '../../../../shared/route/resolveRouteString'
 import { findPageFiles } from '../../helpers'
 import { makeFilePathAbsolute } from '../../utils'
 
