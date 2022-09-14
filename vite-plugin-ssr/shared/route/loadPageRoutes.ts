@@ -30,9 +30,18 @@ async function loadPageRoutes(pageContext: {
   _allPageIds: string[]
 }): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
+  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageContext)
+  const pageRoutes = getPageRoutes(filesystemRoots, pageContext)
+  return { pageRoutes, onBeforeRouteHook }
+}
 
-  const { onBeforeRouteHook, filesystemRoots } = findGlobalHooks(pageContext)
-
+function getPageRoutes(
+  filesystemRoots: FilesystemRoot[],
+  pageContext: {
+    _pageFilesAll: PageFile[]
+    _allPageIds: string[]
+  }
+): PageRoutes {
   const pageRoutes: PageRoutes = []
   pageContext._allPageIds
     .filter((pageId) => !isErrorPageId(pageId))
@@ -69,11 +78,10 @@ async function loadPageRoutes(pageContext: {
         })
       }
     })
-
-  return { pageRoutes, onBeforeRouteHook }
+  return pageRoutes
 }
 
-function findGlobalHooks(pageContext: { _pageFilesAll: PageFile[] }): {
+function getGlobalHooks(pageContext: { _pageFilesAll: PageFile[] }): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
 } {
