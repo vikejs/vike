@@ -1,3 +1,13 @@
+## [0.4.34](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.33...v0.4.34) (2022-09-14)
+
+
+### Bug Fixes
+
+* [#449](https://github.com/brillout/vite-plugin-ssr/issues/449) ([ef2718e](https://github.com/brillout/vite-plugin-ssr/commit/ef2718ec5a66f62580a11eca1683156b9cdf35ea))
+* apply routing precedence to FileSystem Routing (fix [#448](https://github.com/brillout/vite-plugin-ssr/issues/448)) ([61ecb82](https://github.com/brillout/vite-plugin-ssr/commit/61ecb820a03419655265cbe79d8530c11789ecb4))
+
+
+
 ## [0.4.33](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.32...v0.4.33) (2022-09-13)
 
 
