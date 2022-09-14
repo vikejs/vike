@@ -15,36 +15,7 @@ function resolveFilesystemRoute(
   filesystemRoute: string,
   urlPathname: string
 ): null | { routeParams: Record<string, string> } {
-  if (isParameterizedFilesystemRoute(filesystemRoute)) {
-    return resolveRouteString(filesystemRoute, urlPathname)
-  } else {
-    return resolveAsStaticPath(filesystemRoute, urlPathname)
-  }
-}
-
-function resolveAsStaticPath(filesystemRoute: string, urlPathname: string) {
-  urlPathname = removeTrailingSlash(urlPathname)
-  assert(urlPathname.startsWith('/'))
-  assert(filesystemRoute.startsWith('/'))
-  assert(!urlPathname.endsWith('/') || urlPathname === '/')
-  assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
-  if (urlPathname !== filesystemRoute) {
-    return null
-  }
-  return { routeParams: {} }
-}
-
-function removeTrailingSlash(url: string) {
-  if (!url.endsWith('/')) {
-    return url
-  }
-  while (url.endsWith('/')) {
-    url = slice(url, 0, -1)
-  }
-  if (url === '') {
-    return '/'
-  }
-  return url
+  return resolveRouteString(filesystemRoute, urlPathname)
 }
 
 function getFilesystemRoute(pageId: string, filesystemRoots: FilesystemRoot[]): string {
