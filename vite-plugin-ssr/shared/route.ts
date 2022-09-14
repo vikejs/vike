@@ -40,17 +40,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   addComputedUrlProps(pageContext)
 
   const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext)
-  debug(
-    'Pages routes:',
-    pageRoutes.map((pageRoute) => ({
-      pageId: pageRoute.pageId,
-      filesystemRoute: pageRoute.filesystemRoute,
-      pageRouteFile: pageRoute.pageRouteFile && {
-        filePath: pageRoute.pageRouteFile.filePath,
-        routeValue: pageRoute.pageRouteFile.routeValue
-      }
-    }))
-  )
+  debug('Pages routes:', pageRoutes)
 
   const pageContextAddendum = {}
   if (onBeforeRouteHook) {
@@ -91,48 +81,48 @@ async function route(pageContext: PageContextForRoute): Promise<{
   const routeMatches: RouteMatch[] = []
   await Promise.all(
     pageRoutes.map(async (pageRoute): Promise<void> => {
-      const { pageId, filesystemRoute, pageRouteFile } = pageRoute
+      const { pageId, routeType } = pageRoute
 
-      if (!pageRouteFile) {
-        const match = resolveRouteString(filesystemRoute, urlPathname)
+      // Filesytem Routing
+      if (pageRoute.routeType === 'FILESYSTEM') {
+        const { routeString } = pageRoute
+        const match = resolveRouteString(routeString, urlPathname)
         if (match) {
           const { routeParams } = match
-          routeMatches.push({ pageId, routeParams, routeString: filesystemRoute, routeType: 'FILESYSTEM' })
+          routeMatches.push({ pageId, routeParams, routeString, routeType })
         }
-      } else {
-        const pageRouteFileExports = pageRouteFile.fileExports
-        const pageRouteFilePath = pageRouteFile.filePath
-
-        // Route with Route String defined in `.page.route.js`
-        if (hasProp(pageRouteFileExports, 'default', 'string')) {
-          const routeString = pageRouteFileExports.default
-          assertUsage(
-            routeString.startsWith('/'),
-            `A Route String should start with a leading \`/\` but \`${pageRouteFilePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
-          )
-          const match = resolveRouteString(routeString, urlPathname)
-          if (match) {
-            const { routeParams } = match
-            routeMatches.push({
-              pageId,
-              routeString,
-              routeParams,
-              routeType: 'STRING'
-            })
-          }
-        }
-
-        // Route with Route Function defined in `.page.route.js`
-        else if (hasProp(pageRouteFileExports, 'default', 'function')) {
-          const match = await resolveRouteFunction(pageRouteFileExports, pageContext, pageRouteFilePath)
-          if (match) {
-            const { routeParams, precedence } = match
-            routeMatches.push({ pageId, precedence, routeParams, routeType: 'FUNCTION' })
-          }
-        } else {
-          assert(false)
-        }
+        return
       }
+
+      // Route String defined in `.page.route.js`
+      if (pageRoute.routeType === 'STRING') {
+        const { routeString } = pageRoute
+        const match = resolveRouteString(routeString, urlPathname)
+        if (match) {
+          const { routeParams } = match
+          assert(routeType === 'STRING')
+          routeMatches.push({
+            pageId,
+            routeString,
+            routeParams,
+            routeType
+          })
+        }
+        return
+      }
+
+      // Route Function defined in `.page.route.js`
+      if (pageRoute.routeType === 'FUNCTION') {
+        const { routeFunction, allowAsync, pageRouteFilePath } = pageRoute
+        const match = await resolveRouteFunction(routeFunction, allowAsync, pageContext, pageRouteFilePath)
+        if (match) {
+          const { routeParams, precedence } = match
+          routeMatches.push({ pageId, precedence, routeParams, routeType })
+        }
+        return
+      }
+
+      assert(false)
     })
   )
 
@@ -151,11 +141,14 @@ async function route(pageContext: PageContextForRoute): Promise<{
     return { pageContextAddendum }
   }
 
-  const { pageId, routeParams } = winner
-  assert(isPlainObject(routeParams))
-  objectAssign(pageContextAddendum, {
-    _pageId: pageId,
-    routeParams
-  })
+  {
+    const { routeParams } = winner
+    assert(isPlainObject(routeParams))
+    objectAssign(pageContextAddendum, {
+      _pageId: winner.pageId,
+      routeParams: winner.routeParams
+    })
+  }
+
   return { pageContextAddendum }
 }

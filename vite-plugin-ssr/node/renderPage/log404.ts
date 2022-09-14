@@ -43,21 +43,19 @@ async function log404(pageContext: {
 function getPagesAndRoutesInfo(pageRoutes: PageRoutes) {
   return pageRoutes
     .map((pageRoute) => {
-      const { pageId, filesystemRoute, pageRouteFile } = pageRoute
-      let route
-      let routeType
-      if (pageRouteFile) {
-        const { routeValue } = pageRouteFile
-        route =
-          typeof routeValue === 'string'
-            ? routeValue
-            : truncateString(String(routeValue).split(/\s/).filter(Boolean).join(' '), 64)
-        routeType = typeof routeValue === 'string' ? 'Route String' : 'Route Function'
+      let route_humanReadable: string
+      let routeType_humanReadable: string
+      if (pageRoute.routeType === 'STRING') {
+        route_humanReadable = pageRoute.routeString
+        routeType_humanReadable = 'Route String'
+      } else if (pageRoute.routeType === 'FUNCTION') {
+        route_humanReadable = truncateString(String(pageRoute.routeFunction).split(/\s/).filter(Boolean).join(' '), 64)
+        routeType_humanReadable = 'Route Function'
       } else {
-        route = filesystemRoute
-        routeType = 'Filesystem Route'
+        route_humanReadable = pageRoute.routeString
+        routeType_humanReadable = 'Filesystem Route'
       }
-      return `\`${route}\` (${routeType} of \`${pageId}.page.*\`)`
+      return `\`${route_humanReadable}\` (${routeType_humanReadable} of \`${pageRoute.pageId}.page.*\`)`
     })
     .sort(compareString)
     .map((line, i) => {

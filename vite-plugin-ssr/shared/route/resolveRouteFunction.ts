@@ -5,7 +5,8 @@ import { assertURLs, PageContextUrls, PageContextUrlSource } from '../addCompute
 import { assert, assertUsage, hasProp, isPlainObject, isPromise } from './utils'
 
 async function resolveRouteFunction(
-  pageRouteFileExports: { default: Function; iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean },
+  routeFunction: Function,
+  allowAsync: boolean,
   pageContext: PageContextUrls & PageContextUrlSource,
   pageRouteFilePath: string
 ): Promise<null | {
@@ -13,9 +14,9 @@ async function resolveRouteFunction(
   routeParams: Record<string, string>
 }> {
   assertURLs(pageContext)
-  let result: unknown = pageRouteFileExports.default(pageContext)
+  let result: unknown = routeFunction(pageContext)
   assertUsage(
-    !isPromise(result) || pageRouteFileExports.iKnowThePerformanceRisksOfAsyncRouteFunctions,
+    !isPromise(result) || allowAsync,
     `The Route Function ${pageRouteFilePath} returned a promise; async route functions are opt-in, see https://vite-plugin-ssr.com/route-function#async`
   )
   result = await result

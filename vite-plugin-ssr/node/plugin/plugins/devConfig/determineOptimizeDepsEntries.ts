@@ -4,7 +4,7 @@ import type { ResolvedConfig } from 'vite'
 import { getPageFileObject } from '../../../../shared/getPageFiles/getPageFileObject'
 import {
   getFilesystemRouteString,
-  getUrlFromFilesystemRouteString
+  getUrlFromRouteString
 } from '../../../../shared/route/getFilesystemRouteString'
 import { findPageRouteFile } from '../../../../shared/route/loadPageRoutes'
 import { findPageFiles } from '../../helpers'
@@ -24,12 +24,12 @@ async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<str
         return false
       }
       {
-        const filesystemRouteString = getFilesystemRouteString(
+        const routeString = getFilesystemRouteString(
           p.pageId,
           // There is no easy way to get the `filesystemRoots` at Vite config resolve time
           []
         )
-        const url = getUrlFromFilesystemRouteString(filesystemRouteString)
+        const url = getUrlFromRouteString(routeString)
         return url === '/'
       }
     })

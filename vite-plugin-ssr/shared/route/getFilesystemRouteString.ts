@@ -2,7 +2,7 @@ import { isStaticRouteString } from './resolveRouteString'
 import { assert, higherFirst, slice } from './utils'
 
 export { getFilesystemRouteString }
-export { getUrlFromFilesystemRouteString }
+export { getUrlFromRouteString }
 export type { FilesystemRoot }
 
 type FilesystemRoot = {
@@ -10,9 +10,10 @@ type FilesystemRoot = {
   routeRoot: string
 }
 
-function getUrlFromFilesystemRouteString(filesystemRouteString: string): null | string {
-  if (isStaticRouteString(filesystemRouteString)) {
-    const url = filesystemRouteString
+function getUrlFromRouteString(routeString: string): null | string {
+  assert(routeString.startsWith('/'))
+  if (isStaticRouteString(routeString)) {
+    const url = routeString
     return url
   }
   return null

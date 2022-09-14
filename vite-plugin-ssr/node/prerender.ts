@@ -30,7 +30,7 @@ import type { InlineConfig } from 'vite'
 import { setProductionEnvVar } from '../shared/setProduction'
 import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
 import { getPageContextRequestUrl } from '../shared/getPageContextRequestUrl'
-import { getUrlFromFilesystemRouteString } from '../shared/route/getFilesystemRouteString'
+import { getUrlFromRouteString } from '../shared/route/getFilesystemRouteString'
 
 export { prerender }
 
@@ -322,19 +322,14 @@ async function handlePagesWithStaticRoutes(
         }
 
         let urlOriginal: string
-        if (pageRoute.pageRouteFile) {
-          const { routeValue } = pageRoute.pageRouteFile
-          if (typeof routeValue === 'string' && isStaticRouteString(routeValue)) {
-            assert(routeValue.startsWith('/'))
-            urlOriginal = routeValue
-          } else {
-            // Abort since the page's route is a Route Function or parameterized Route String
-            return
-          }
+        if (!('routeString' in pageRoute)) {
+          // Abort since the page's route is a Route Function
+          assert(pageRoute.routeType === 'FUNCTION')
+          return
         } else {
-          const url = getUrlFromFilesystemRouteString(pageRoute.filesystemRoute)
+          const url = getUrlFromRouteString(pageRoute.routeString)
           if (!url) {
-            // Abort since URLs of Parameterized Filesystem Routes can't be deduced
+            // Abort since no URL can be deduced from a parameterized Route String
             return
           }
           urlOriginal = url
@@ -356,7 +351,7 @@ async function handlePagesWithStaticRoutes(
           _routeMatches: [
             {
               pageId,
-              routeType: pageRoute.pageRouteFile ? ('STRING' as const) : ('FILESYSTEM' as const),
+              routeType: pageRoute.pageRouteFilePath ? ('STRING' as const) : ('FILESYSTEM' as const),
               routeString: urlOriginal,
               routeParams
             }
