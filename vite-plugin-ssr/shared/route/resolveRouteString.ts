@@ -1,7 +1,6 @@
 export { resolveRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
-export { PARAM_TOKEN_NEW }
 
 import { assertWarning } from '../utils'
 import { assert, assertUsage } from './utils'

@@ -1,21 +1,11 @@
-import { PARAM_TOKEN_NEW, resolveRouteString } from './resolveRouteString'
 import { assert, higherFirst, slice } from './utils'
 
-export { resolveFilesystemRoute }
 export { getFilesystemRoute }
-export { isParameterizedFilesystemRoute }
 export type { FilesystemRoot }
 
 type FilesystemRoot = {
   filesystemRoot: string
   routeRoot: string
-}
-
-function resolveFilesystemRoute(
-  filesystemRoute: string,
-  urlPathname: string
-): null | { routeParams: Record<string, string> } {
-  return resolveRouteString(filesystemRoute, urlPathname)
 }
 
 function getFilesystemRoute(pageId: string, filesystemRoots: FilesystemRoot[]): string {
@@ -68,8 +58,4 @@ function getFilesystemRoute(pageId: string, filesystemRoots: FilesystemRoot[]): 
   assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
 
   return filesystemRoute
-}
-
-function isParameterizedFilesystemRoute(filesystemRoute: string): boolean {
-  return filesystemRoute.includes(PARAM_TOKEN_NEW)
 }

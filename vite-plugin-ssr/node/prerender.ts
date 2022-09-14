@@ -1,12 +1,6 @@
 import './page-files/setup'
 import path from 'path'
-import {
-  isErrorPageId,
-  isStaticRouteString,
-  loadPageRoutes,
-  route,
-  isParameterizedFilesystemRoute
-} from '../shared/route'
+import { isErrorPageId, isStaticRouteString, loadPageRoutes, route } from '../shared/route'
 import {
   assert,
   assertUsage,
@@ -35,7 +29,7 @@ import { assertConfigVpsResolved } from './plugin/plugins/config/assertConfigVps
 import type { InlineConfig } from 'vite'
 import { setProductionEnvVar } from '../shared/setProduction'
 import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
-import {getPageContextRequestUrl} from '../shared/getPageContextRequestUrl'
+import { getPageContextRequestUrl } from '../shared/getPageContextRequestUrl'
 
 export { prerender }
 
@@ -338,7 +332,7 @@ async function handlePagesWithStaticRoutes(
           }
         } else {
           urlOriginal = pageRoute.filesystemRoute
-          if (isParameterizedFilesystemRoute(urlOriginal)) {
+          if (!isStaticRouteString(urlOriginal)) {
             // Abort since URLs of Parameterized Filesystem Routes can't be deduced
             return
           }

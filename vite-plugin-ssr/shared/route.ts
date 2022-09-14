@@ -3,7 +3,6 @@ import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './uti
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
 import { resolvePrecendence, RouteType } from './route/resolvePrecedence'
 import { resolveRouteString } from './route/resolveRouteString'
-import { resolveFilesystemRoute } from './route/resolveFilesystemRoute'
 import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
@@ -16,7 +15,6 @@ export type { PageRoutes, PageContextForRoute, RouteMatches }
 export { isErrorPageId }
 export { getErrorPageId } from './route/error-page'
 export { isStaticRouteString } from './route/resolveRouteString'
-export { isParameterizedFilesystemRoute } from './route/resolveFilesystemRoute'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
@@ -96,7 +94,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
       const { pageId, filesystemRoute, pageRouteFile } = pageRoute
 
       if (!pageRouteFile) {
-        const match = resolveFilesystemRoute(filesystemRoute, urlPathname)
+        const match = resolveRouteString(filesystemRoute, urlPathname)
         if (match) {
           const { routeParams } = match
           routeMatches.push({ pageId, routeParams, routeString: filesystemRoute, routeType: 'FILESYSTEM' })
