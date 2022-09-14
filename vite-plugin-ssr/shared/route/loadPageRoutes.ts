@@ -2,7 +2,7 @@ import { PageFile } from '../getPageFiles'
 import { isErrorPageId } from './error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
-import { FilesystemRoot, getFilesystemRoute } from './resolveFilesystemRoute'
+import { FilesystemRoot, getFilesystemRouteString } from './getFilesystemRouteString'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -95,12 +95,12 @@ async function loadPageRoutes(pageContext: {
     })
 
   allPageIdsWithFilesystemRoute.forEach((pageId) => {
-    const filesystemRoute = getFilesystemRoute(pageId, filesystemRoots)
-    assert(filesystemRoute.startsWith('/'))
-    assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
+    const filesystemRouteString = getFilesystemRouteString(pageId, filesystemRoots)
+    assert(filesystemRouteString.startsWith('/'))
+    assert(!filesystemRouteString.endsWith('/') || filesystemRouteString === '/')
     pageRoutes.push({
       pageId,
-      filesystemRoute,
+      filesystemRoute: filesystemRouteString,
       pageRouteFile: null
     })
   })

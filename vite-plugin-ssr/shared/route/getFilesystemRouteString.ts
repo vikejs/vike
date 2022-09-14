@@ -1,6 +1,6 @@
 import { assert, higherFirst, slice } from './utils'
 
-export { getFilesystemRoute }
+export { getFilesystemRouteString }
 export type { FilesystemRoot }
 
 type FilesystemRoot = {
@@ -8,7 +8,7 @@ type FilesystemRoot = {
   routeRoot: string
 }
 
-function getFilesystemRoute(pageId: string, filesystemRoots: FilesystemRoot[]): string {
+function getFilesystemRouteString(pageId: string, filesystemRoots: FilesystemRoot[]): string {
   // Handle Filesystem Routing Root
   const filesystemRootsMatch = filesystemRoots
     .filter(({ filesystemRoot }) => pageId.startsWith(filesystemRoot))
