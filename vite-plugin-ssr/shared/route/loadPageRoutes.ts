@@ -31,6 +31,52 @@ async function loadPageRoutes(pageContext: {
 }): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
 
+  const { onBeforeRouteHook, filesystemRoots } = findGlobalHooks(pageContext)
+
+  const pageRoutes: PageRoutes = []
+  pageContext._allPageIds
+    .filter((pageId) => !isErrorPageId(pageId))
+    .forEach((pageId) => {
+      const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
+      if (!pageRouteFile) {
+        const filesystemRouteString = getFilesystemRouteString(pageId, filesystemRoots)
+        assert(filesystemRouteString.startsWith('/'))
+        assert(!filesystemRouteString.endsWith('/') || filesystemRouteString === '/')
+        pageRoutes.push({
+          pageId,
+          filesystemRoute: filesystemRouteString,
+          pageRouteFile: null
+        })
+      } else {
+        const { filePath, fileExports } = pageRouteFile
+        assert(fileExports)
+        assertUsage('default' in fileExports, `${filePath} should have a default export.`)
+        assertUsage(
+          hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
+          `The default export of ${filePath} should be a string or a function.`
+        )
+        assertUsage(
+          !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
+            hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
+          `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`
+        )
+        const routeValue: RouteValue = fileExports.default
+
+        pageRoutes.push({
+          pageId,
+          filesystemRoute: null,
+          pageRouteFile: { filePath, fileExports, routeValue }
+        })
+      }
+    })
+
+  return { pageRoutes, onBeforeRouteHook }
+}
+
+function findGlobalHooks(pageContext: { _pageFilesAll: PageFile[] }): {
+  onBeforeRouteHook: null | OnBeforeRouteHook
+  filesystemRoots: FilesystemRoot[]
+} {
   let onBeforeRouteHook: null | OnBeforeRouteHook = null
   const filesystemRoots: FilesystemRoot[] = []
   pageContext._pageFilesAll
@@ -60,46 +106,7 @@ async function loadPageRoutes(pageContext: {
         })
       }
     })
-
-  const pageRoutes: PageRoutes = []
-  pageContext._allPageIds
-    .filter((pageId) => !isErrorPageId(pageId))
-    .forEach((pageId) => {
-      const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
-      if (!pageRouteFile) {
-        const filesystemRouteString = getFilesystemRouteString(pageId, filesystemRoots)
-        assert(filesystemRouteString.startsWith('/'))
-        assert(!filesystemRouteString.endsWith('/') || filesystemRouteString === '/')
-        pageRoutes.push({
-          pageId,
-          filesystemRoute: filesystemRouteString,
-          pageRouteFile: null
-        })
-        return
-      } else {
-        const { filePath, fileExports } = pageRouteFile
-        assert(fileExports)
-        assertUsage('default' in fileExports, `${filePath} should have a default export.`)
-        assertUsage(
-          hasProp(fileExports, 'default', 'string') || hasProp(fileExports, 'default', 'function'),
-          `The default export of ${filePath} should be a string or a function.`
-        )
-        assertUsage(
-          !('iKnowThePerformanceRisksOfAsyncRouteFunctions' in fileExports) ||
-            hasProp(fileExports, 'iKnowThePerformanceRisksOfAsyncRouteFunctions', 'boolean'),
-          `The export \`iKnowThePerformanceRisksOfAsyncRouteFunctions\` of ${filePath} should be a boolean.`
-        )
-        const routeValue: RouteValue = fileExports.default
-
-        pageRoutes.push({
-          pageId,
-          filesystemRoute: null,
-          pageRouteFile: { filePath, fileExports, routeValue }
-        })
-      }
-    })
-
-  return { pageRoutes, onBeforeRouteHook }
+  return { onBeforeRouteHook, filesystemRoots }
 }
 
 function findPageRouteFile(pageId: string, pageFilesAll: PageFile[]) {
