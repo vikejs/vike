@@ -1,11 +1,11 @@
 import type { PageFile } from './getPageFiles'
 import { assert, assertUsage, hasProp, isPlainObject, objectAssign } from './utils'
 import { addComputedUrlProps, PageContextUrlSource } from './addComputedUrlProps'
-import { resolvePrecendence, RouteType } from './route/resolvePrecedence'
+import { resolvePrecendence } from './route/resolvePrecedence'
 import { resolveRouteString } from './route/resolveRouteString'
 import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
-import { PageRoutes, loadPageRoutes } from './route/loadPageRoutes'
+import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
 import { isErrorPageId } from './route/error-page'
 import { debug } from './route/debug'
 

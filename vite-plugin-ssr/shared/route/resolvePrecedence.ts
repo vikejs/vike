@@ -1,13 +1,12 @@
 export { resolvePrecendence }
-export type { RouteType }
 // export type { RouteMatch }
 
 import { analyzeRouteString } from './resolveRouteString'
 import { higherFirst } from './utils'
 import { makeFirst } from './utils'
 import { isStaticRouteString } from './resolveRouteString'
+import type { RouteType } from './loadPageRoutes'
 
-type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 type RouteMatch = {
   precedence?: number | null
   routeString?: string

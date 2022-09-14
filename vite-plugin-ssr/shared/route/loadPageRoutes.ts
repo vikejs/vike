@@ -7,11 +7,13 @@ import { FilesystemRoot, getFilesystemRouteString } from './getFilesystemRouteSt
 export { loadPageRoutes }
 export { findPageRouteFile }
 export type { PageRoutes }
+export type { RouteType }
 
 type PageRoutes = ({ pageId: string } & (
   | { filesystemRoute: string; pageRouteFile: null }
   | { filesystemRoute: null; pageRouteFile: PageRouteFile }
 ))[]
+type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 type PageRouteFile = {
   filePath: string
   fileExports: Record<string, unknown> & {
@@ -63,12 +65,20 @@ async function loadPageRoutes(pageContext: {
   const allPageIds = pageContext._allPageIds
   const pageRoutes: PageRoutes = []
 
-  const allPageIdsWithFilesystemRoute = allPageIds
+  allPageIds
     .filter((pageId) => !isErrorPageId(pageId))
     .filter((pageId) => {
       const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
       if (!pageRouteFile) {
-        return true
+        const filesystemRouteString = getFilesystemRouteString(pageId, filesystemRoots)
+        assert(filesystemRouteString.startsWith('/'))
+        assert(!filesystemRouteString.endsWith('/') || filesystemRouteString === '/')
+        pageRoutes.push({
+          pageId,
+          filesystemRoute: filesystemRouteString,
+          pageRouteFile: null
+        })
+        return
       }
 
       const { filePath, fileExports } = pageRouteFile
@@ -93,17 +103,6 @@ async function loadPageRoutes(pageContext: {
 
       return false
     })
-
-  allPageIdsWithFilesystemRoute.forEach((pageId) => {
-    const filesystemRouteString = getFilesystemRouteString(pageId, filesystemRoots)
-    assert(filesystemRouteString.startsWith('/'))
-    assert(!filesystemRouteString.endsWith('/') || filesystemRouteString === '/')
-    pageRoutes.push({
-      pageId,
-      filesystemRoute: filesystemRouteString,
-      pageRouteFile: null
-    })
-  })
 
   return { pageRoutes, onBeforeRouteHook }
 }
