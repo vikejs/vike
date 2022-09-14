@@ -5,7 +5,7 @@ import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
-import { getFilesystemRouteString } from '../../../shared/route/getFilesystemRouteString'
+import { deduceRouteStringFromFilesystemPath } from '../../../shared/route/deduceRouteStringFromFilesystemPath'
 import { extractStylesRE } from './extractStylesPlugin'
 
 function distFileNames(): Plugin {
@@ -93,7 +93,7 @@ function deduceChunkNameFromFilesystemRouting(id: string, root: string): string 
   const pathRelative = path.posix.relative(root, id)
   assert(!pathRelative.startsWith('.') && !pathRelative.startsWith('/'), { id, root })
   const pageId = determinePageId('/' + pathRelative)
-  const routeString = getFilesystemRouteString(pageId, [])
+  const routeString = deduceRouteStringFromFilesystemPath(pageId, [])
   const dirS = routeString.split('/')
   const pageFileName = dirS[dirS.length - 1]
   return pageFileName ?? null
