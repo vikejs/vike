@@ -99,7 +99,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
         const match = resolveFilesystemRoute(filesystemRoute, urlPathname)
         if (match) {
           const { routeParams } = match
-          routeMatches.push({ pageId, routeParams, routeType: 'FILESYSTEM' })
+          routeMatches.push({ pageId, routeParams, routeString: filesystemRoute, routeType: 'FILESYSTEM' })
         }
       } else {
         const pageRouteFileExports = pageRouteFile.fileExports
