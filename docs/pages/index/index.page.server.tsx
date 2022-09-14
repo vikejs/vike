@@ -1,8 +1,7 @@
 import React from 'react'
 import { Header, MobileCallToAction } from './Header'
 import { Features } from './features/Features'
-import { ContactUs } from 'vikepress'
-import { HorizontalLine } from 'vikepress'
+import { ContactUs, HorizontalLine, Sponsors } from 'vikepress'
 
 export { Page }
 
@@ -15,6 +14,8 @@ function Page() {
       <HorizontalLine />
       <ContactUs text="Have a question? Want a feature? A tool integration is not working?" />
       <MobileCallToAction />
+      <HorizontalLine />
+      <Sponsors />
       <div style={{ height: 70 }} />
     </>
   )
