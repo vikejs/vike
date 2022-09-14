@@ -1,9 +1,13 @@
 import { resolvePrecendence } from '../resolvePrecedence'
 import { expect, describe, it } from 'vitest'
 
-const routeFilesystem = {
+const routeFilesystemStatic = {
   routeType: 'FILESYSTEM' as const,
   routeString: '/product/lolipop'
+}
+const routeFilesystemParam = {
+  routeType: 'FILESYSTEM' as const,
+  routeString: '/product/@name',
 }
 const routeStringStatic = {
   routeType: 'STRING' as const,
@@ -40,7 +44,10 @@ const routeFunctions = [...routeFunctionsLowerPrio, routeFunctionHighPrio, route
 
 describe('routing - resolvePrecendence', () => {
   it('basics', () => {
-    expect(resolve([routeFilesystem])).toBe(routeFilesystem)
+    expect(resolve([routeFilesystemStatic])).toBe(routeFilesystemStatic)
+
+    expect(resolve([routeFilesystemParam, routeFilesystemStatic])).toBe(routeFilesystemStatic)
+    expect(resolve([routeFilesystemStatic, routeFilesystemParam])).toBe(routeFilesystemStatic)
 
     expect(resolve([routeStringParam, routeStringStatic])).toBe(routeStringStatic)
     expect(resolve([routeFunction, routeStringStatic])).toBe(routeStringStatic)
@@ -50,12 +57,12 @@ describe('routing - resolvePrecendence', () => {
     expect(resolve([...routeFunctionsLowerPrio, routeStringParam])).toBe(routeFunction)
     expect(resolve([routeFunctionLowPrio, routeStringParam])).toBe(routeStringParam)
 
-    expect(resolve([routeFunction, routeFilesystem])).toBe(routeFilesystem)
-    expect(resolve([routeFunctionHighPrio, routeFilesystem])).toBe(routeFunctionHighPrio)
-    expect(resolve([...routeFunctionsLowerPrio, ...routeStrings, routeFilesystem])).toBe(routeFilesystem)
+    expect(resolve([routeFunction, routeFilesystemStatic])).toBe(routeFilesystemStatic)
+    expect(resolve([routeFunctionHighPrio, routeFilesystemStatic])).toBe(routeFunctionHighPrio)
+    expect(resolve([...routeFunctionsLowerPrio, ...routeStrings, routeFilesystemStatic])).toBe(routeFilesystemStatic)
 
     expect(resolve([routeFunctionHighPrio, routeFunctionLowPrio])).toBe(routeFunctionHighPrio)
-    expect(resolve([...routeFunctions, ...routeStrings, routeFilesystem])).toBe(routeFunctionHighestPrio)
+    expect(resolve([...routeFunctions, ...routeStrings, routeFilesystemStatic])).toBe(routeFunctionHighestPrio)
   })
 })
 
