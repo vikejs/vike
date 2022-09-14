@@ -30,6 +30,7 @@ import type { InlineConfig } from 'vite'
 import { setProductionEnvVar } from '../shared/setProduction'
 import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
 import { getPageContextRequestUrl } from '../shared/getPageContextRequestUrl'
+import { getUrlFromFilesystemRouteString } from '../shared/route/getFilesystemRouteString'
 
 export { prerender }
 
@@ -331,11 +332,12 @@ async function handlePagesWithStaticRoutes(
             return
           }
         } else {
-          urlOriginal = pageRoute.filesystemRoute
-          if (!isStaticRouteString(urlOriginal)) {
+          const url = getUrlFromFilesystemRouteString(pageRoute.filesystemRoute)
+          if (!url) {
             // Abort since URLs of Parameterized Filesystem Routes can't be deduced
             return
           }
+          urlOriginal = url
         }
         assert(urlOriginal.startsWith('/'))
 
