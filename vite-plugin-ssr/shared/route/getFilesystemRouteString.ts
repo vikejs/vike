@@ -1,4 +1,4 @@
-import {isStaticRouteString} from './resolveRouteString'
+import { isStaticRouteString } from './resolveRouteString'
 import { assert, higherFirst, slice } from './utils'
 
 export { getFilesystemRouteString }
@@ -11,7 +11,7 @@ type FilesystemRoot = {
 }
 
 function getUrlFromFilesystemRouteString(filesystemRouteString: string): null | string {
-  if( isStaticRouteString(filesystemRouteString) ) {
+  if (isStaticRouteString(filesystemRouteString)) {
     const url = filesystemRouteString
     return url
   }

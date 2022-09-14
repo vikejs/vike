@@ -54,7 +54,7 @@ async function getPageAssets(
     if (isDev && mediaType === 'text/css') {
       // https://github.com/brillout/vite-plugin-ssr/issues/449
       if (src.endsWith('?inline')) {
-        return;
+        return
       }
       // https://github.com/brillout/vite-plugin-ssr/issues/401
       src = src + '?direct'

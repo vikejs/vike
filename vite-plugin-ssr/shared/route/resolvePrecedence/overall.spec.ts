@@ -7,7 +7,7 @@ const routeFilesystemStatic = {
 }
 const routeFilesystemParam = {
   routeType: 'FILESYSTEM' as const,
-  routeString: '/product/@name',
+  routeString: '/product/@name'
 }
 const routeStringStatic = {
   routeType: 'STRING' as const,
