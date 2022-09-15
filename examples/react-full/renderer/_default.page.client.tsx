@@ -1,15 +1,16 @@
+export const clientRouting = true
+export { render }
+export { onHydrationEnd }
+export { onPageTransitionStart }
+export { onPageTransitionEnd }
+
+import './css/index.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
 import type { PageContext } from './types'
-
-export const clientRouting = true
-export { render }
-export { onHydrationEnd }
-export { onPageTransitionStart }
-export { onPageTransitionEnd }
 
 let root: ReactDOM.Root
 async function render(pageContext: PageContextBuiltInClient & PageContext) {
