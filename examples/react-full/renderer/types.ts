@@ -1,14 +1,29 @@
-// The `pageContext` that are available in both on the server-side and browser-side
-export type PageContext = {
-  Page: React.ReactNode
+export type { PageContextServer }
+export type { PageContextClient }
+export type { PageContext }
+export type { PageProps }
+
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router' // When using Client Routing
+// import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client' // When using Server Routing
+
+type Page = (pageProps: PageProps) => React.ReactElement
+type PageProps = Record<string, unknown>
+
+export type PageContextCustom = {
+  Page: Page
+  pageProps?: PageProps
   exports: {
     documentProps?: {
       title: string
     }
   }
-  urlPathname: string
-  pageProps: Record<string, unknown>
   documentProps?: {
     title: string
   }
 }
+
+type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom
+type PageContextClient = PageContextBuiltInClient<Page> & PageContextCustom
+
+type PageContext = PageContextClient | PageContextServer

@@ -9,11 +9,10 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { PageShell } from './PageShell'
 import { getPageTitle } from './getPageTitle'
-import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
-import type { PageContext } from './types'
+import type { PageContextClient } from './types'
 
 let root: ReactDOM.Root
-async function render(pageContext: PageContextBuiltInClient & PageContext) {
+async function render(pageContext: PageContextClient) {
   const { Page, pageProps } = pageContext
   const page = (
     <PageShell pageContext={pageContext}>
