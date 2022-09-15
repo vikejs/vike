@@ -6,6 +6,7 @@ export { onBeforeRender }
 export { prerender }
 
 async function onBeforeRender() {
+  await sleep(1000) // Simulate slow network
   const movies = await getStarWarsMovies()
   return {
     pageContext: {
@@ -75,4 +76,8 @@ async function prerender() {
 function getTitle(movies: Movie[] | MovieDetails[]): string {
   const title = `${movies.length} Star Wars Movies`
   return title
+}
+
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, milliseconds))
 }
