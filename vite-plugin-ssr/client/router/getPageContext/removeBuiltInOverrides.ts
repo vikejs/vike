@@ -16,7 +16,7 @@ function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in
         assert(prop.startsWith('url'))
         assertWarning(
           false,
-          `\`pageContext.${prop}\` is already available in the browser when using \`useClientRouter()\`; including \`${prop}\` in \`passToClient\` has no effect.`,
+          `\`pageContext.${prop}\` is already available in the browser when using Client Routing; including \`${prop}\` in \`passToClient\` has no effect.`,
           { onlyOnce: true }
         )
       } else {
