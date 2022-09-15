@@ -5,8 +5,6 @@ import { PageShell } from './PageShell'
 export { render }
 
 async function render(pageContext) {
-  // We do Server Routing, but we can also do Client Routing by using `useClientRouter()`
-  // instead of `getPage()`, see https://vite-plugin-ssr.com/useClientRouter
   const { Page, pageProps } = pageContext
   hydrateRoot(
     document.getElementById('page-view'),
