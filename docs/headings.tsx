@@ -6,6 +6,10 @@ export { headings }
 
 const redirections = [
   {
+    title: <code>useClientRouter()</code>,
+    url: '/useClientRouter'
+  },
+  {
     title: (
       <>
         Migration <code>0.4</code>
