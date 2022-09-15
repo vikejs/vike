@@ -1,4 +1,4 @@
-Example of using `vite-plugin-ssr` with React that showcases many features.
+React example showcasing many features.
 
 For a simpler example, check out [/examples/react/](/examples/react/).
 
@@ -13,6 +13,7 @@ Features:
  - Active Links
  - Access `pageContext` from any React component (using React Context)
  - HTML streaming
+ - Page Transition Loading Animation
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr
