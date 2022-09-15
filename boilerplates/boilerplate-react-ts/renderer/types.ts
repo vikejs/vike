@@ -1,6 +1,6 @@
 export type { PageContextServer }
 export type { PageContextClient }
-export type { PageContextCommon }
+export type { PageContext }
 export type { PageProps }
 
 import type { PageContextBuiltIn } from 'vite-plugin-ssr'
@@ -25,4 +25,4 @@ export type PageContextCustom = {
 type PageContextServer = PageContextBuiltIn<Page> & PageContextCustom
 type PageContextClient = PageContextBuiltInClient<Page> & PageContextCustom
 
-type PageContextCommon = PageContextClient | PageContextServer
+type PageContext = PageContextClient | PageContextServer

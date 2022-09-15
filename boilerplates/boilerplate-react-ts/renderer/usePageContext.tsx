@@ -2,14 +2,14 @@
 // See https://vite-plugin-ssr.com/pageContext-anywhere
 
 import React, { useContext } from 'react'
-import type { PageContextCommon } from './types'
+import type { PageContext } from './types'
 
 export { PageContextProvider }
 export { usePageContext }
 
-const Context = React.createContext<PageContextCommon>(undefined as any)
+const Context = React.createContext<PageContext>(undefined as any)
 
-function PageContextProvider({ pageContext, children }: { pageContext: PageContextCommon; children: React.ReactNode }) {
+function PageContextProvider({ pageContext, children }: { pageContext: PageContext; children: React.ReactNode }) {
   return <Context.Provider value={pageContext}>{children}</Context.Provider>
 }
 
