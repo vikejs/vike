@@ -1,3 +1,12 @@
+## [0.4.35](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.34...v0.4.35) (2022-09-17)
+
+
+### Bug Fixes
+
+* don't treat page as HTML-only if it define client renderer (fix [#446](https://github.com/brillout/vite-plugin-ssr/issues/446)) ([a89540f](https://github.com/brillout/vite-plugin-ssr/commit/a89540f824cc23fef4d6b73329395e385d340a22))
+
+
+
 ## [0.4.34](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.33...v0.4.34) (2022-09-14)
 
 
