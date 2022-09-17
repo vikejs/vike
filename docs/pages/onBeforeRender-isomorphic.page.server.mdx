@@ -19,12 +19,11 @@ Examples:
 
 ## Recommendation
 
-When defined in `.page.js`, we need to ensure that our `onBeforeRender()` hook is isomorphic:
-it needs to be able to run in both Node.js and the browser.
-That's why, in general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` since it's easier to write code that only runs
+In general, we recommend defining `onBeforeRender()` hooks in `.page.server.js` since it's easier to write code that only runs
 in Node.js.
 
 That said, if we want to minimize requests made to our Node.js server, then we may want to define our `onBeforeRender()` hooks in `.page.js`.
+But then we need to ensure that our `onBeforeRender()` hook is isomorphic: it needs to be able to run in both Node.js and the browser.
 
 ## Server Routing
 
