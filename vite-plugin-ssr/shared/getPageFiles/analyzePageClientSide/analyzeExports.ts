@@ -32,10 +32,10 @@ function analyzeExports({
     }
 
     {
-      const hasClientRenderer = pageFilesClientSide.some(
+      const definesClientRenderer = pageFilesClientSide.some(
         (p) => p.pageId === pageId && p.fileType === '.page.client' && getExportNames(p).includes('render')
       )
-      if (hasClientRenderer) {
+      if (definesClientRenderer) {
         return false
       }
     }
