@@ -16,14 +16,22 @@ function analyzeExports({
   return { isHtmlOnly: isHtmlOnly(), isClientRouting: isClientRouting() }
 
   function isHtmlOnly(): boolean {
-    const hasPageIdIsmrphFile = pageFilesServerSide.some((p) => p.pageId === pageId && p.fileType === '.page')
-    if (hasPageIdIsmrphFile) {
-      assertClientSideRenderHook()
-      return false
+    {
+      const hasPageIdIsmrphFile = pageFilesServerSide.some((p) => p.pageId === pageId && p.fileType === '.page')
+      if (hasPageIdIsmrphFile) {
+        assertClientSideRenderHook()
+        return false
+      }
     }
 
-    const hasPageIdServerFile = pageFilesServerSide.some((p) => p.pageId === pageId && p.fileType === '.page.server')
-    return hasPageIdServerFile
+    {
+      const hasPageIdServerFile = pageFilesServerSide.some((p) => p.pageId === pageId && p.fileType === '.page.server')
+      if (!hasPageIdServerFile) {
+        return false
+      }
+    }
+
+    return true
   }
 
   function assertClientSideRenderHook() {
