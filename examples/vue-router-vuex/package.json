@@ -1,0 +1,26 @@
+{
+  "name": "obsr",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "npm run server",
+    "prod": "npm run build && npm run server:prod",
+    "build": "vite build",
+    "server": "node ./server/server",
+    "server:prod": "cross-env NODE_ENV=production node ./server/server"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^3.0.3",
+    "@vue/compiler-sfc": "^3.2.33",
+    "@vue/server-renderer": "^3.2.33",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "express": "^4.18.1",
+    "sirv": "^2.0.2",
+    "vite": "^3.0.9",
+    "vite-plugin-ssr": "0.4.31",
+    "vue": "^3.2.33",
+    "vue-router": "^4.0.14",
+    "vuex": "^4.0.2",
+    "vuex-persist": "^3.1.3"
+  }
+}
