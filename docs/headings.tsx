@@ -346,6 +346,81 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 1,
+    title: 'Deploy',
+    titleEmoji: 'earth'
+  },
+  {
+    level: 4,
+    title: 'Static hosts'
+  },
+  {
+    level: 2,
+    title: 'GitHub Pages',
+    url: '/github-pages'
+  },
+  {
+    level: 2,
+    title: 'Cloudflare Pages',
+    url: '/cloudflare-pages'
+  },
+  {
+    level: 2,
+    title: 'Netlify',
+    url: '/netlify'
+  },
+  {
+    level: 2,
+    title: 'Static Hosts',
+    titleInNav: 'Other',
+    url: '/static-hosts'
+  },
+  {
+    level: 4,
+    title: 'Serverless'
+  },
+  {
+    level: 2,
+    title: 'Cloudflare Workers',
+    url: '/cloudflare-workers',
+    sectionTitles: ['Cloudflare Pages']
+  },
+  {
+    level: 2,
+    title: 'Vercel',
+    url: '/vercel'
+  },
+  {
+    level: 2,
+    title: 'Netlify Functions',
+    url: '/netlify-functions'
+  },
+  {
+    level: 2,
+    title: 'AWS Lambda',
+    url: '/aws-lambda'
+  },
+  {
+    level: 2,
+    title: 'Firebase',
+    url: '/firebase'
+  },
+  {
+    level: 4,
+    title: 'Other'
+  },
+  {
+    level: 2,
+    title: 'Docker',
+    url: '/docker'
+  },
+  {
+    level: 2,
+    title: 'Deploy',
+    titleInNav: 'Other',
+    url: '/deploy'
+  },
+  {
+    level: 1,
     title: 'Integration',
     titleEmoji: 'plug'
   },
@@ -534,81 +609,6 @@ const headings: HeadingDefinition[] = [
     title: 'Other Integrations',
     titleInNav: 'Other',
     url: '/integration'
-  },
-  {
-    level: 1,
-    title: 'Deploy',
-    titleEmoji: 'earth'
-  },
-  {
-    level: 4,
-    title: 'Static hosts'
-  },
-  {
-    level: 2,
-    title: 'GitHub Pages',
-    url: '/github-pages'
-  },
-  {
-    level: 2,
-    title: 'Cloudflare Pages',
-    url: '/cloudflare-pages'
-  },
-  {
-    level: 2,
-    title: 'Netlify',
-    url: '/netlify'
-  },
-  {
-    level: 2,
-    title: 'Static Hosts',
-    titleInNav: 'Other',
-    url: '/static-hosts'
-  },
-  {
-    level: 4,
-    title: 'Serverless'
-  },
-  {
-    level: 2,
-    title: 'Cloudflare Workers',
-    url: '/cloudflare-workers',
-    sectionTitles: ['Cloudflare Pages']
-  },
-  {
-    level: 2,
-    title: 'Vercel',
-    url: '/vercel'
-  },
-  {
-    level: 2,
-    title: 'Netlify Functions',
-    url: '/netlify-functions'
-  },
-  {
-    level: 2,
-    title: 'AWS Lambda',
-    url: '/aws-lambda'
-  },
-  {
-    level: 2,
-    title: 'Firebase',
-    url: '/firebase'
-  },
-  {
-    level: 4,
-    title: 'Other'
-  },
-  {
-    level: 2,
-    title: 'Docker',
-    url: '/docker'
-  },
-  {
-    level: 2,
-    title: 'Deploy',
-    titleInNav: 'Other',
-    url: '/deploy'
   },
   {
     level: 1,
