@@ -31,6 +31,15 @@ function analyzeExports({
       }
     }
 
+    {
+      const hasClientRenderer = pageFilesClientSide.some(
+        (p) => p.pageId === pageId && p.fileType === '.page.client' && getExportNames(p).includes('render')
+      )
+      if (hasClientRenderer) {
+        return false
+      }
+    }
+
     return true
   }
 
