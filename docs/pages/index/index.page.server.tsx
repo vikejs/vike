@@ -14,7 +14,7 @@ function Page() {
       <MobileCallToAction />
       <HorizontalLine />
       <Sponsors />
-      <div style={{ height: 70 }} />
+      <div style={{ height: 50 }} />
     </>
   )
 }

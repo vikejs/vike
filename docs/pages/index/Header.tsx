@@ -117,7 +117,7 @@ function MobileCallToAction() {
     <div id="mobile-call-to-action">
       <HorizontalLine />
       <div style={{ height: 10 }} />
-      <TourCallToAction style={{ maxWidth: 400, padding: '0 10px', margin: 'auto', textAlign: 'center' }} />
+      <TourCallToAction style={{ maxWidth: 400, margin: 'auto', textAlign: 'center' }} />
     </div>
   )
 }

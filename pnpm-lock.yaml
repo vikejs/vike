@@ -149,11 +149,10 @@ importers:
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
-      balloon-css: ^1.2.0
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ^4.3.2
-      vikepress: ^0.0.39
+      vikepress: ^0.0.40
       vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
@@ -161,11 +160,10 @@ importers:
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
-      balloon-css: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       typescript: 4.6.4
-      vikepress: 0.0.39_biqbaboplfbrettd7655fr4n2y
+      vikepress: 0.0.40_biqbaboplfbrettd7655fr4n2y
       vite: 3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
 
@@ -5177,7 +5175,7 @@ packages:
     dev: false
 
   /fs.realpath/1.0.0:
-    resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
+    resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
   /fsevents/2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
@@ -5666,7 +5664,7 @@ packages:
     dev: false
 
   /inflight/1.0.6:
-    resolution: {integrity: sha1-Sb1jMdfQLQwJvJEKEHW6gWW1bfk=}
+    resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
@@ -7947,7 +7945,7 @@ packages:
     dev: false
 
   /once/1.4.0:
-    resolution: {integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E=}
+    resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
       wrappy: 1.0.2
 
@@ -8169,7 +8167,7 @@ packages:
     engines: {node: '>=8'}
 
   /path-is-absolute/1.0.1:
-    resolution: {integrity: sha1-F0uSaHNVNP+8es5r9TpanhtcX18=}
+    resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
 
   /path-is-inside/1.0.2:
@@ -10226,8 +10224,8 @@ packages:
       vfile-message: 3.1.2
     dev: false
 
-  /vikepress/0.0.39_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-2SC5rFa3trzgJfXTKK1Ec2NZtcTCSXgcGl8NksFUYYgsjSnGsLKiOPJCawxjgqtqZAzEzCGIyo235jvKsbGupA==}
+  /vikepress/0.0.40_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-fHdrqiJT7ShP1k3E+BlG7RIM+yjB2+wj49EurB8qSsInbjaXkd11TC2ywuOIWVhyewXay1Mki7sRRbK8S+AuLA==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -10237,6 +10235,7 @@ packages:
       '@mdx-js/react': 2.1.2_react@18.2.0
       '@mdx-js/rollup': 2.1.1
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
+      balloon-css: 1.2.0
       express: 4.18.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -10625,7 +10624,7 @@ packages:
       strip-ansi: 6.0.1
 
   /wrappy/1.0.2:
-    resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
+    resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
   /write-file-atomic/3.0.3:
     resolution: {integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q==}
