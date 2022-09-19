@@ -1,3 +1,12 @@
+## [0.4.36](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.35...v0.4.36) (2022-09-19)
+
+
+### Bug Fixes
+
+* improve error message when using Vite 2 (fix [#455](https://github.com/brillout/vite-plugin-ssr/issues/455)) ([3a274ef](https://github.com/brillout/vite-plugin-ssr/commit/3a274ef530b93c8a0953e2116fd7616cd9666b72))
+
+
+
 ## [0.4.35](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.34...v0.4.35) (2022-09-17)
 
 
