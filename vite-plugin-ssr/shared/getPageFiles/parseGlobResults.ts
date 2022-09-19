@@ -1,6 +1,6 @@
 export { parseGlobResults }
 
-import { assert, hasProp, isCallable, isObject, cast } from '../utils'
+import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils'
 import { assertExportValues } from './assertExports'
 import { getPageFileObject } from './getPageFileObject'
 import { FileType, fileTypes, PageFile } from './types'
@@ -37,6 +37,11 @@ function parseGlobResults(pageFilesExports: unknown) {
     pageFile.loadExportNames = async () => {
       if (!('exportNames' in pageFile)) {
         const moduleExports = await loadModule()
+        // Vite 2 seems to choke following assertion: https://github.com/brillout/vite-plugin-ssr/issues/455
+        assertUsage(
+          'exportNames' in moduleExports,
+          'You seem to be using Vite 2 but the latest vite-plugin-ssr versions only work with Vite 3'
+        )
         assert(hasProp(moduleExports, 'exportNames', 'string[]'), pageFile.filePath)
         pageFile.exportNames = moduleExports.exportNames
       }
