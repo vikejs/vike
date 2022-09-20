@@ -1,7 +1,6 @@
 export { route }
-export { loadPageRoutes }
-export { isErrorPageId }
-export { getErrorPageId } from './route/error-page'
+export { loadPageRoutes } from './route/loadPageRoutes'
+export { isErrorPageId, getErrorPageId } from './route/error-page'
 export type { PageRoutes, PageContextForRoute, RouteMatches }
 
 import type { PageFile } from './getPageFiles'
@@ -12,7 +11,6 @@ import { resolveRouteString } from './route/resolveRouteString'
 import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
-import { isErrorPageId } from './route/error-page'
 import { debug } from './route/debug'
 
 type PageContextForRoute = PageContextUrlSource & {
