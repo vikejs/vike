@@ -14,9 +14,9 @@ Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `v
 1. Route Function, returned high positive `precedence` number (e.g. `99`)
 1. Route Function, returned low positive `precedence` number (e.g. `1`)
 1. Filesystem Routing
-1. Route String, static (i.e. without `:param` segment, e.g. `/about/company`)
+1. Route String, static (i.e. without `@param` segment, e.g. `/about/company`)
 1. Route Function, returned no `precedence` number (or `0`)
-1. Route String, parameterized (i.e. with `:param` segement, e.g. `/product/@productId` or `/product/*`)
+1. Route String, parameterized (i.e. with `@param` segement, e.g. `/product/@productId` or `/product/*`)
 1. Route Function, returned low negative `precedence` number (e.g. `-1`)
 1. Route Function, returned high negative `precedence` number (e.g. `-99`)
 
@@ -63,8 +63,8 @@ URL                           MATCHES                                    WINNER
 /product/wrong/url            product/catch-all.page.route.js (7)        ⬅️
 ```
 
-4: Route String, static (without `:param` segment, e.g. `/about/company`)  
-6: Route String, parameterized (with `:param` segements, e.g. `/product/@productId` or `/product/*`)  
+4: Route String, static (without `@param` segment, e.g. `/about/company`)  
+6: Route String, parameterized (with `@param` segements, e.g. `/product/@productId` or `/product/*`)  
 7: Route Function, returned low negative `precedence` number (e.g. `-1`)  
 
 **Example (1) + (4)**:
@@ -99,6 +99,6 @@ URL                   pageContext.user       MATCHES                       WINNE
 ```
 
 1: Route Function, returned high positive `precedence` number  
-4: Route String, static (without `:param` segment, e.g. `/about/company`)  
+4: Route String, static (without `@param` segment, e.g. `/about/company`)  
 
 > More examples at [`resolvePrecedence/overall.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/shared/route/resolvePrecedence/overall.spec.ts).
