@@ -4,17 +4,9 @@ Environment: `Browser`.
 
 By default, `vite-plugin-ssr` does <Link text="Server Routing" href="/server-routing" />.
 
-We opt in to <Link text="Client Routing" href="/client-routing" /> by:
- 1. Setting the option `clientRouting` to `true`.
- 2. Adapting our <Link text={<>client-side <code>render()</code> hook</>} href="/render-client" />.
-
-```js
-// /renderer/_default.page.client.js
-// Environment: Browser
-
-// Tell vite-plugin-ssr to do Client Routing
-export const clientRouting = true
-```
+We opt into <Link text="Client Routing" href="/client-routing" /> by modifying `/renderer/_default.client.js` to:
+ 1. Set `export const clientRouting = true`.
+ 2. Update and adapt the <Link text={<>client-side <code>render()</code> hook</>} href="/render-client" />.
 
 React example:
  - <RepoLink path='/examples/react-full/renderer/_default.page.client.tsx' />

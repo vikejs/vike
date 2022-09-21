@@ -1,11 +1,11 @@
 import { Link } from 'vikepress'
 
-By default `vite-plugin-ssr` does Server Routing, but we can opt in to Client Routing by setting <Link text={<code>clientRouting</code>} href="/clientRouting" /> to `true`.
+By default `vite-plugin-ssr` does Server Routing. We can opt into Client Routing by setting the <Link text={<><code>clientRouting</code> option</>} href="/clientRouting" /> option to `true`.
 
-Client(-side) Routing denotes the practice of implementing page navigation on the client-side:
+*Client(-side) Routing* denotes the practice of implementing page navigation on the client-side:
 when the user navigates to a new page,
-instead of discarding the current page and requesting the HTML of the new page,
-the client preserves the current page and renders the new page by manipulating the DOM of the page.
+instead of completely discarding the current page and requesting the HTML of the new page,
+the current page is preserved and the new page is rendered by manipulating the DOM of the page.
 
 Client Routing enables:
 - Faster page navigation.

@@ -1,12 +1,10 @@
-import { RepoLink, Link } from 'vikepress'
+import { RepoLink, Link, Note } from 'vikepress'
 
 Environment: `Browser`, `Client Routing`.
 
-We use `navigate('/some/url')` to programmatically switch pages.
+We can use `navigate('/some/url')` to programmatically switch pages.
 
-> `navigate()` is only available when using <Link text="Client Routing" href="/client-routing" /> (i.e. when <Link text={<>setting <code>export const clientRouting = true</code></>} href="/clientRouting" />).
->
-> If we use <Link text="Server Routing" href="/server-routing" />, we can simply do `window.location.href = '/some/url'` instead.
+<Note type="warning">`navigate()` is only available if you use <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Note>
 
 `navigate()` is useful when the navigation isn't triggered by the user clicking on an anchor tag `<a>`.
 For example, when redirecting a user after a successful form submission.
