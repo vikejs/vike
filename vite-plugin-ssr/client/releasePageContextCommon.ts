@@ -1,9 +1,10 @@
 export { releasePageContextCommon }
 export type { PageContextRelease }
 
-import { assert, assertUsage, isObject, objectAssign } from './utils'
+import { assert, assertUsage, isObject, objectAssign, getGlobalObject } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import type { PageContextExports } from '../shared/getPageFiles'
+const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('releasePageContextCommon.ts', {})
 
 type PageContextRelease = PageContextExports & {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
@@ -52,8 +53,7 @@ const JAVASCRIPT_BUILT_INS = [
 ]
 const PASS_TO_CLIENT_BUILT_INS = ['_pageId', '_serverSideErrorWhileStreaming'] as const
 
-// Hints the user to use `paassToClient` when accessing undefined `pageContext` props
-let disable: false | string = false
+// Hint the user to use `paassToClient` when accessing undefined `pageContext` props
 function getProxy<
   T extends Record<string, unknown> & { _pageContextRetrievedFromServer: null | Record<string, unknown> }
 >(pageContext: T): T {
@@ -69,15 +69,15 @@ function getProxy<
   }
 
   function get(_: never, prop: string) {
-    if (disable !== false && disable !== prop) {
+    if (globalObject.disableAssertPassToClient !== prop) {
       assertPassToClient(pageContext._pageContextRetrievedFromServer, prop, isMissing(prop))
     }
 
     // We disable `assertPassToClient` for the next attempt to read `prop`, because of how Vue's reactivity work.
     // (When changing a reactive object, Vue tries to read it's old value first. This triggers a `assertPassToClient()` failure if e.g. `pageContextOldReactive.routeParams = pageContextNew.routeParams` and `pageContextOldReactive` has no `routeParams`.)
-    disable = prop
+    globalObject.disableAssertPassToClient = prop
     window.setTimeout(() => {
-      disable = false
+      globalObject.disableAssertPassToClient = undefined
     }, 0)
 
     return pageContext[prop]

@@ -5,6 +5,7 @@ export { assertInfo }
 export { getProjectError }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
+import { getGlobalObject } from './getGlobalObject'
 import { projectInfo } from './projectInfo'
 
 const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
@@ -59,7 +60,7 @@ function getProjectError(errorMessage: string) {
   return pluginError
 }
 
-let alreadyLogged: Set<string> = new Set()
+const globalObject = getGlobalObject<{ alreadyLogged: Set<string> }>('assert.ts', { alreadyLogged: new Set() })
 function assertWarning(
   condition: unknown,
   errorMessage: string,
@@ -70,6 +71,8 @@ function assertWarning(
   }
   const msg = `${warningPrefix} ${errorMessage}`
   if (onlyOnce) {
+    const { alreadyLogged } = globalObject
+    assert(alreadyLogged)
     const key = onlyOnce === true ? msg : onlyOnce
     if (alreadyLogged.has(key)) {
       return
@@ -90,6 +93,8 @@ function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { on
   }
   const msg = `${infoPrefix} ${errorMessage}`
   if (onlyOnce) {
+    const { alreadyLogged } = globalObject
+    assert(alreadyLogged)
     const key = msg
     if (alreadyLogged.has(key)) {
       return

@@ -3,26 +3,29 @@ export { setViteDevServer }
 export { getViteDevServer }
 export type { GlobalContext }
 
-import { PromiseType, assert, assertUsage, hasProp, objectAssign } from './utils'
+import { PromiseType, assert, assertUsage, hasProp, objectAssign, getGlobalObject } from './utils'
 import type { ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
 import { assertViteManifest } from './viteManifest'
 import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
 import { getRuntimeConfig, setRuntimeConfig } from './globalContext/runtimeConfig'
+const globalObject = getGlobalObject<{ viteDevServer: null | ViteDevServer }>('globalContext.ts', {
+  viteDevServer: null
+})
 
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
-let viteDevServer: ViteDevServer | null = null
-function setViteDevServer(viteDevServer_: ViteDevServer) {
-  viteDevServer = viteDevServer_
+function setViteDevServer(viteDevServer: ViteDevServer) {
   assert(viteDevServer)
+  globalObject.viteDevServer = viteDevServer
 }
-function getViteDevServer() {
-  return viteDevServer
+function getViteDevServer(): ViteDevServer | null {
+  return globalObject.viteDevServer
 }
 
 async function getGlobalContext(isPreRendering: boolean) {
+  const { viteDevServer } = globalObject
   assertProdEnv(viteDevServer)
 
   const globalContext = {}

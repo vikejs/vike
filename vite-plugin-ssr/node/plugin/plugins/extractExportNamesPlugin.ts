@@ -5,10 +5,12 @@ export { extractExportNamesRE }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, getFileExtension, viteIsSSR_options, createDebugger, isDebugEnabled } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
+import { getGlobalObject } from '../../utils'
 const extractExportNamesRE = /(\?|&)extractExportNames(?:&|$)/
 const debugNamespace = 'vps:extractExportNames'
 const debug = createDebugger(debugNamespace)
 const debugEnabled = isDebugEnabled(debugNamespace)
+const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})
 
 function extractExportNamesPlugin(): Plugin {
   let config: ResolvedConfig
@@ -37,8 +39,8 @@ function extractExportNamesPlugin(): Plugin {
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
   const { exportNames, wildcardReExports } = await getExportNames(src)
-  if (isClientSide) {
-    checkIfClientRouting(exportNames)
+  if (isClientSide && exportNames.includes('clientRouting')) {
+    globalObject.usesClientRouter = true
   }
   const code = getCode(exportNames, wildcardReExports, isClientSide, isProduction)
   return removeSourceMap(code)
@@ -93,12 +95,6 @@ function injectHmr(code: string, isClientSide: boolean, isProduction: boolean) {
   return code
 }
 
-var usesClientRouter: undefined | true
-function checkIfClientRouting(exportNames: string[]) {
-  if (exportNames.includes('clientRouting')) {
-    usesClientRouter = true
-  }
-}
 function isUsingClientRouter(): boolean {
-  return usesClientRouter === true
+  return globalObject.usesClientRouter === true
 }

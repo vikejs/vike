@@ -1,8 +1,8 @@
 export { getBaseUrl }
 
-function getBaseUrl() {
+function getBaseUrl(): string {
   // @ts-ignore
-  const baseUrl = import.meta.env.BASE_URL
+  const baseUrl = import.meta.env.BASE_URL as string
   if (isBaseAssets(baseUrl)) {
     return '/'
   }

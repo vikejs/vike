@@ -1,25 +1,27 @@
-import { assert, assertBaseUrl } from '../utils'
-import { assertBaseRuntime, assertBaseConfig } from './runtimeConfig/assertBase'
-
 export { getRuntimeConfig }
 export { setRuntimeConfig }
 export { resolveRuntimeConfig }
 export type { RuntimeConfig }
+
+import { assert, assertBaseUrl, getGlobalObject } from '../utils'
+import { assertBaseRuntime, assertBaseConfig } from './runtimeConfig/assertBase'
+const globalObject = getGlobalObject<{ runtimeConfig?: RuntimeConfig }>('runtimeConfig.ts', {})
 
 type RuntimeConfig = {
   baseUrl: string
   baseAssets: string | null
   includeAssetsImportedByServer: boolean
 }
-let runtimeConfig: null | RuntimeConfig = null
-function setRuntimeConfig(runtimeConfig_: RuntimeConfig) {
-  assert(runtimeConfig_)
-  assertBaseRuntime(runtimeConfig_)
-  runtimeConfig = runtimeConfig_
+
+function setRuntimeConfig(runtimeConfig: RuntimeConfig) {
+  assert(runtimeConfig)
+  assertBaseRuntime(runtimeConfig)
   assert(typeof runtimeConfig.includeAssetsImportedByServer === 'boolean')
   assertBaseUrl(runtimeConfig.baseUrl)
+  globalObject.runtimeConfig = runtimeConfig
 }
 function getRuntimeConfig() {
+  const { runtimeConfig } = globalObject
   assert(runtimeConfig)
   assertBaseRuntime(runtimeConfig)
   return runtimeConfig

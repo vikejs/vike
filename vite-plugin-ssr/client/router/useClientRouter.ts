@@ -11,7 +11,8 @@ import {
   objectAssign,
   serverSideRouteTo,
   throttle,
-  sleep
+  sleep,
+  getGlobalObject
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
@@ -25,18 +26,20 @@ import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
+const globalObject = getGlobalObject<{
+  onPageTransitionStart?: Function
+  isUsingClientRouting?: true
+  clientRoutingIsDisabled?: true
+  previousState: ReturnType<typeof getState>
+  initialRenderIsDone?: true
+}>('useClientRouter.ts', { previousState: getState() })
 
 setupNativeScrollRestoration()
 
 initHistoryState()
 
-let onPageTransitionStart: Function | undefined
-
-let isUsingClientRouting = false
-
-let disabled = false
 function disableClientRouting() {
-  disabled = true
+  globalObject.clientRoutingIsDisabled = true
   assertInfo(
     false,
     `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`,
@@ -45,7 +48,7 @@ function disableClientRouting() {
 }
 
 function useClientRouter() {
-  isUsingClientRouting = true
+  globalObject.isUsingClientRouting = true
 
   autoSaveScrollPosition()
 
@@ -85,7 +88,7 @@ function useClientRouter() {
     overwriteLastHistoryEntry?: boolean
     isBackwardNavigation: boolean | null
   }): Promise<void> {
-    if (disabled) {
+    if (globalObject.clientRoutingIsDisabled) {
       serverSideRouteTo(url)
       return
     }
@@ -101,7 +104,7 @@ function useClientRouter() {
     // Start transition before any await's
     if (renderingNumber > 1) {
       if (isTransitioning === false) {
-        onPageTransitionStart?.(pageContext)
+        globalObject.onPageTransitionStart?.(pageContext)
         isTransitioning = true
       }
     }
@@ -168,7 +171,7 @@ function useClientRouter() {
     }
     objectAssign(pageContext, pageContextAddendum)
     assertHook(pageContext, 'onPageTransitionStart')
-    onPageTransitionStart = pageContext.exports.onPageTransitionStart
+    globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,
@@ -209,7 +212,7 @@ function useClientRouter() {
 
     setScrollPosition(scrollTarget)
     browserNativeScrollRestoration_disable()
-    initialRenderIsDone = true
+    globalObject.initialRenderIsDone = true
   }
 }
 
@@ -222,7 +225,7 @@ async function navigate(
     '[`navigate(url)`] The `navigate(url)` function is only callable in the browser but you are calling it in Node.js.'
   )
   assertUsage(
-    isUsingClientRouting,
+    globalObject.isUsingClientRouting,
     'navigate() is only available when using Client Routing, see https://vite-plugin-ssr.com/navigate'
   )
   assertUsage(url, '[navigate(url)] Missing argument `url`.')
@@ -292,7 +295,6 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
   }
 }
 
-let previousState = getState()
 function onBrowserHistoryNavigation(
   callback: (scrollPosition: ScrollTarget, isBackwardNavigation: null | boolean) => void
 ) {
@@ -303,6 +305,9 @@ function onBrowserHistoryNavigation(
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
 
+    const { previousState } = globalObject
+    assert(previousState)
+
     const isHashNavigation = currentState.urlWithoutHash === previousState.urlWithoutHash
 
     const isBackwardNavigation =
@@ -310,7 +315,7 @@ function onBrowserHistoryNavigation(
         ? null
         : currentState.historyState.timestamp < previousState.historyState.timestamp
 
-    previousState = currentState
+    globalObject.previousState = currentState
 
     if (isHashNavigation) {
       // - `history.state` is uninitialized (`null`) when:
@@ -328,7 +333,7 @@ function onBrowserHistoryNavigation(
       if (window.history.state === null) {
         // The browser already scrolled to `#${hash}` => the current scroll position is the right one => we save it with `initHistoryState()`.
         initHistoryState()
-        previousState = getState()
+        globalObject.previousState = getState()
       } else {
         // If `history.state !== null` then it means that `popstate` was triggered by the user clicking on his browser's forward/backward history button.
         setScrollPosition(scrollTarget)
@@ -344,7 +349,7 @@ function changeUrl(url: string, overwriteLastHistoryEntry: boolean) {
   if (getCurrentUrl() === url) return
   browserNativeScrollRestoration_disable()
   pushHistory(url, overwriteLastHistoryEntry)
-  previousState = getState()
+  globalObject.previousState = getState()
 }
 
 function getState() {
@@ -428,12 +433,11 @@ function getUrlHash(): string | null {
   return hash
 }
 
-let initialRenderIsDone: boolean = false
 // We use the browser's native scroll restoration mechanism only for the first render
 function setupNativeScrollRestoration() {
   browserNativeScrollRestoration_enable()
   onPageHide(browserNativeScrollRestoration_enable)
-  onPageShow(() => initialRenderIsDone && browserNativeScrollRestoration_disable())
+  onPageShow(() => globalObject.initialRenderIsDone && browserNativeScrollRestoration_disable())
 }
 function browserNativeScrollRestoration_disable() {
   if ('scrollRestoration' in window.history) {

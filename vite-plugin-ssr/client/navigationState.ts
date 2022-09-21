@@ -1,14 +1,14 @@
-import { getCurrentUrl } from './utils'
+import { getCurrentUrl, getGlobalObject } from './utils'
+const globalObject = getGlobalObject<{ navigationChanged?: true }>('navigationState.ts', {})
 
 const urlFirst = getCurrentUrl()
-let navigationChanged = false
 
 export const navigationState = {
   markNavigationChange() {
-    navigationChanged = true
+    globalObject.navigationChanged = true
   },
   get noNavigationChangeYet() {
-    return !navigationChanged && this.isFirstUrl(getCurrentUrl())
+    return !globalObject.navigationChanged && this.isFirstUrl(getCurrentUrl())
   },
   isFirstUrl(url: string) {
     return url === urlFirst
