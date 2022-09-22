@@ -2,7 +2,7 @@
 
 // DO NOT include `utils/*` that are only needed by vite-plugin-ssr's server-side runtime.
 
-export * from '../../utils/getBaseUrl'
+export * from '../../utils/isBaseUrl'
 export * from '../../utils/isExternalLink'
 export * from '../../utils/throttle'
 export * from '../../utils/getUrlPathname'

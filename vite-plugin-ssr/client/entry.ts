@@ -4,7 +4,7 @@ import { assertRenderHook } from './assertRenderHook'
 import { assertHook } from '../shared/getHook'
 import { assertIsBundledOnce } from './utils'
 
-assertIsBundledOnce()
+if (import.meta.env.PROD) assertIsBundledOnce()
 hydrate()
 
 async function hydrate() {

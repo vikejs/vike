@@ -1,7 +1,8 @@
 export { skipLink }
 export { isClientSideRenderable } from './skipLink/isClientSideRenderable'
 
-import { parseUrl, assertBaseUrl, isParsable, getBaseUrl, isExternalLink } from './utils'
+import { getBaseUrl } from '../getBaseUrl'
+import { parseUrl, assertBaseUrl, isParsable, isExternalLink } from './utils'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')

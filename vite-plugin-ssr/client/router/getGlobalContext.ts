@@ -1,7 +1,8 @@
 export { getGlobalContext }
 
 import { getPageFilesAll } from '../../shared/getPageFiles'
-import { assertBaseUrl, PromiseType, getBaseUrl, objectAssign, getGlobalObject } from './utils'
+import { getBaseUrl } from '../getBaseUrl'
+import { assertBaseUrl, PromiseType, objectAssign, getGlobalObject } from './utils'
 const globalObject = getGlobalObject<{
   globalContext?: PromiseType<ReturnType<typeof retrieveGlobalContext>>
 }>('getGlobalContext.ts', {})
@@ -20,8 +21,7 @@ async function retrieveGlobalContext() {
     _urlProcessor: null,
     _baseUrl: baseUrl,
     _objectCreatedByVitePluginSsr: true,
-    // @ts-ignore
-    _isProduction: import.meta.env.PROD as boolean
+    _isProduction: import.meta.env.PROD
   }
   const { pageFilesAll, allPageIds } = await getPageFilesAll(true)
   objectAssign(globalContext, {
