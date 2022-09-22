@@ -1,5 +1,6 @@
 import './pageFiles'
-import '../../shared/assertSingleVersion'
-import '../assertIsBundledOnce'
+import { assertIsBundledOnce } from './utils'
 import { useClientRouter } from './useClientRouter'
+
+assertIsBundledOnce()
 useClientRouter()

@@ -11,7 +11,6 @@ import { setBuildGetters } from './plugin/plugins/importBuild/loadBuild'
 export const __internals = { setBuildGetters }
 
 import './page-files/setup'
-import '../shared/assertSingleVersion'
 import { assertUsage, isBrowser } from './utils'
 
 assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
