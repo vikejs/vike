@@ -1,2 +1,2 @@
-import 'vikepress/client/initFeatureList'
+import '@brillout/docpress/client/initFeatureList'
 import './ScaffoldCallToAction.client'

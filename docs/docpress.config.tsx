@@ -1,4 +1,4 @@
-import type { Config } from 'vikepress'
+import type { Config } from '@brillout/docpress'
 import { headings, headingsWithoutLink } from './headings'
 import { projectInfo } from './utils'
 import faviconUrl from './images/icons/vite-plugin-ssr.svg'

@@ -1,8 +1,8 @@
 export { DataArchitecture }
 
 import React from 'react'
-import { assert } from 'vikepress'
-import { P, Link, Info, ReadingRecommendation } from 'vikepress'
+import { assert } from '@brillout/docpress'
+import { P, Link, Info, ReadingRecommendation } from '@brillout/docpress'
 
 function DataArchitecture({
   toolName,

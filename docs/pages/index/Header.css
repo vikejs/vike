@@ -29,7 +29,7 @@
     font-size: 2.3em;
   }
 }
-/* Vikepress's Mobile/Tablet break point */
+/* DocPress's Mobile/Tablet break point */
 @media screen and (max-width: 1139px) {
   #header-logo h1 {
     margin-left: 0!important;

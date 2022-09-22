@@ -1,5 +1,5 @@
 import React from 'react'
-import type { HeadingDefinition, HeadingWithoutLink } from 'vikepress'
+import type { HeadingDefinition, HeadingWithoutLink } from '@brillout/docpress'
 
 export { headingsWithoutLink }
 export { headings }

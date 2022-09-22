@@ -1,7 +1,7 @@
 export { Integration }
 
 import React from 'react'
-import { assert } from 'vikepress'
+import { assert } from '@brillout/docpress'
 import { Invitation } from './Invitation'
 
 function Integration({ toolTypeName }: { toolTypeName: string }) {

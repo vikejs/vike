@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "vikepress dev",
-    "build": "vikepress build",
-    "preview": "vikepress build && vikepress preview"
+    "dev": "docpress dev",
+    "build": "docpress build",
+    "preview": "docpress build && docpress preview"
   },
   "dependencies": {
     "@mdx-js/react": "^2.1.2",
@@ -12,7 +12,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^4.3.2",
-    "vikepress": "^0.0.44",
+    "@brillout/docpress": "^0.0.46",
     "vite": "^3.0.9",
     "vite-plugin-ssr": "0.4.38"
   },

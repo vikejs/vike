@@ -145,6 +145,7 @@ importers:
 
   docs:
     specifiers:
+      '@brillout/docpress': ^0.0.46
       '@mdx-js/react': ^2.1.2
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
@@ -152,10 +153,10 @@ importers:
       react: ^18.2.0
       react-dom: ^18.2.0
       typescript: ^4.3.2
-      vikepress: ^0.0.44
       vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
+      '@brillout/docpress': 0.0.46_biqbaboplfbrettd7655fr4n2y
       '@mdx-js/react': 2.1.2_react@18.2.0
       '@types/node': 15.14.9
       '@types/react': 17.0.45
@@ -163,7 +164,6 @@ importers:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       typescript: 4.6.4
-      vikepress: 0.0.44_biqbaboplfbrettd7655fr4n2y
       vite: 3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
 
@@ -1760,6 +1760,36 @@ packages:
     resolution: {integrity: sha512-cvSrvCxnZYzQmiOj0nwIuf298DvaM/2eAAOsBSbBpsdOEpYsnbQGvFxew9oSXEi3HH1TZMmLy8VyvyJJ+LsmCw==}
     hasBin: true
     dev: true
+
+  /@brillout/docpress/0.0.46_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-fQZEOP5jVJWZ1PZvgJpZiNOempC6nP21gRxhAHKkNubRNTGTG1PrN9WtM1zlQ44KYlH51Pqk0UZFqpKODWqibQ==}
+    hasBin: true
+    peerDependencies:
+      react: '18'
+      react-dom: '18'
+    dependencies:
+      '@mdx-js/mdx': 2.1.1
+      '@mdx-js/react': 2.1.2_react@18.2.0
+      '@mdx-js/rollup': 2.1.1
+      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
+      balloon-css: 1.2.0
+      express: 4.18.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      rehype-pretty-code: 0.3.2_shiki@0.10.1
+      remark-gfm: 3.0.1
+      shiki: 0.10.1
+      twemoji: 13.1.1
+      vite: 3.0.9
+      vite-plugin-ssr: link:vite-plugin-ssr
+    transitivePeerDependencies:
+      - less
+      - rollup
+      - sass
+      - stylus
+      - supports-color
+      - terser
+    dev: false
 
   /@brillout/json-s/0.4.6:
     resolution: {integrity: sha512-mDgMMNFSKyN9Fy0G4yQTcWwQ1BXUE65D3i3RXPX44xD5AuIU4QQDQBi+DKiEDCS6L6nEa2frC2lCUa/ob700Aw==}
@@ -10222,36 +10252,6 @@ packages:
       is-buffer: 2.0.5
       unist-util-stringify-position: 3.0.2
       vfile-message: 3.1.2
-    dev: false
-
-  /vikepress/0.0.44_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-3SgC2h7Uw23hDsv8MYizqRBRyE5KlM+6dHJiG724tKOEjp2gxgMukycVEOLBd9oqPdYn+svXHACXVe4OmrxTgw==}
-    hasBin: true
-    peerDependencies:
-      react: '18'
-      react-dom: '18'
-    dependencies:
-      '@mdx-js/mdx': 2.1.1
-      '@mdx-js/react': 2.1.2_react@18.2.0
-      '@mdx-js/rollup': 2.1.1
-      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
-      balloon-css: 1.2.0
-      express: 4.18.1
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      rehype-pretty-code: 0.3.2_shiki@0.10.1
-      remark-gfm: 3.0.1
-      shiki: 0.10.1
-      twemoji: 13.1.1
-      vite: 3.0.9
-      vite-plugin-ssr: link:vite-plugin-ssr
-    transitivePeerDependencies:
-      - less
-      - rollup
-      - sass
-      - stylus
-      - supports-color
-      - terser
     dev: false
 
   /vite-plugin-md/0.11.9_vite@3.0.9:

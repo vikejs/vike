@@ -3,7 +3,7 @@ import './Header.css'
 import iconPlugin from '../../images/icons/vite-plugin-ssr.svg'
 import iconReact from '../../images/icons/react.svg'
 import iconVue from '../../images/icons/vue.svg'
-import { HorizontalLine } from 'vikepress'
+import { HorizontalLine } from '@brillout/docpress'
 import { CallToActionDescription, ScaffoldCallToAction } from './ScaffoldCallToAction'
 
 export { Header }

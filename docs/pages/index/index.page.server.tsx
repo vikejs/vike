@@ -1,7 +1,7 @@
 import React from 'react'
 import { Header, MobileCallToAction } from './Header'
 import { Features } from './features/Features'
-import { HorizontalLine, Sponsors } from 'vikepress'
+import { HorizontalLine, Sponsors } from '@brillout/docpress'
 
 export { Page }
 
