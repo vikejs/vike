@@ -305,15 +305,12 @@ function onBrowserHistoryNavigation(
 
     const scrollTarget = currentState.historyState.scrollPosition || 'scroll-to-top-or-hash'
 
-    const { previousState } = globalObject
-    assert(previousState)
-
-    const isHashNavigation = currentState.urlWithoutHash === previousState.urlWithoutHash
+    const isHashNavigation = currentState.urlWithoutHash === globalObject.previousState.urlWithoutHash
 
     const isBackwardNavigation =
-      !currentState.historyState.timestamp || !previousState.historyState.timestamp
+      !currentState.historyState.timestamp || !globalObject.previousState.historyState.timestamp
         ? null
-        : currentState.historyState.timestamp < previousState.historyState.timestamp
+        : currentState.historyState.timestamp < globalObject.previousState.historyState.timestamp
 
     globalObject.previousState = currentState
 

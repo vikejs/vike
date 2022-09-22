@@ -72,7 +72,6 @@ function assertWarning(
   const msg = `${warningPrefix} ${errorMessage}`
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
-    assert(alreadyLogged)
     const key = onlyOnce === true ? msg : onlyOnce
     if (alreadyLogged.has(key)) {
       return
@@ -94,7 +93,6 @@ function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { on
   const msg = `${infoPrefix} ${errorMessage}`
   if (onlyOnce) {
     const { alreadyLogged } = globalObject
-    assert(alreadyLogged)
     const key = msg
     if (alreadyLogged.has(key)) {
       return

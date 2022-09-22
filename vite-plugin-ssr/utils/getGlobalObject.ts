@@ -1,9 +1,10 @@
 export function getGlobalObject<T extends Record<string, unknown> = never>(
-  fileName: `${string}.ts`,
+  // We use the filename as key; each `getGlobalObject()` should provide a unqie filename.
+  key: `${string}.ts`,
   defaultValue: T
 ): T {
   const allGlobalObjects = (globalThis.__vite_plugin_ssr = globalThis.__vite_plugin_ssr || {})
-  const globalObject = (allGlobalObjects[fileName] = (allGlobalObjects[fileName] as T) || defaultValue)
+  const globalObject = (allGlobalObjects[key] = (allGlobalObjects[key] as T) || defaultValue)
   return globalObject
 }
 declare global {
