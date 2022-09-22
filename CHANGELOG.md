@@ -1,3 +1,12 @@
+## [0.4.38](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.37...v0.4.38) (2022-09-22)
+
+
+### Bug Fixes
+
+* check bundle package duplicate only for production ([59c832e](https://github.com/brillout/vite-plugin-ssr/commit/59c832eb800a9affd58d9e02adf11c3d25301765))
+
+
+
 ## [0.4.37](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.36...v0.4.37) (2022-09-22)
 
 
