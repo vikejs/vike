@@ -1,3 +1,14 @@
+## [0.4.37](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.36...v0.4.37) (2022-09-22)
+
+
+### Bug Fixes
+
+* fix exports (fix [#457](https://github.com/brillout/vite-plugin-ssr/issues/457)) ([172fae9](https://github.com/brillout/vite-plugin-ssr/commit/172fae9f9942b91decf03d76f3c80f51501c95f7))
+* improve single loaded version assertion ([a97bc12](https://github.com/brillout/vite-plugin-ssr/commit/a97bc1233e9fc1a336dd8ff4696b6ca6c9ba1bf4))
+* stop assuming single module instances (fix [#460](https://github.com/brillout/vite-plugin-ssr/issues/460)) ([f0f4991](https://github.com/brillout/vite-plugin-ssr/commit/f0f4991514a460c909903e3d09b0271f13f5dbbe))
+
+
+
 ## [0.4.36](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.35...v0.4.36) (2022-09-19)
 
 
