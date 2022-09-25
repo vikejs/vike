@@ -1,4 +1,4 @@
-import { fetchHtml, run } from '../../libframe/test/setup'
+import { fetchHtml, run, test, expect } from '@brillout/test-e2e'
 
 run('npm run dev')
 

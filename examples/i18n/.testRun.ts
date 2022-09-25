@@ -1,4 +1,4 @@
-import { run, page, urlBase, fetchHtml, autoRetry } from '../../libframe/test/setup'
+import { run, page, test, expect, urlBase, fetchHtml, autoRetry } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -33,8 +33,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     })
 
     // Localized routing
-    expect(await page.$('a[href="/about"]')).toBeNull()
-    expect(await page.$('a[href="/fr-FR/about"]')).not.toBeNull()
+    expect(await page.$('a[href="/about"]')).toBe(null)
+    expect(await page.$('a[href="/fr-FR/about"]')).not.toBe(null)
     await page.click('a[href="/fr-FR/about"]')
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('Bonjour')
@@ -52,7 +52,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   test('default locale', async () => {
     await page.goto(urlBase + '/')
     expect(await page.textContent('h1')).toContain('Welcome')
-    expect(await page.$('a[href="/about"]')).not.toBeNull()
-    expect(await page.$('a[href="/fr-FR/about"]')).toBeNull()
+    expect(await page.$('a[href="/about"]')).not.toBe(null)
+    expect(await page.$('a[href="/fr-FR/about"]')).toBe(null)
   })
 }

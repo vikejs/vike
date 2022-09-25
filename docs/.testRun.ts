@@ -1,9 +1,14 @@
 export { testRun }
 
-import { page, run, fetchHtml, partRegex, urlBase } from '../libframe/test/setup'
+import { page, test, expect, run, fetchHtml, partRegex, urlBase } from '@brillout/test-e2e'
 
 function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
-  run(cmd)
+  {
+    // Preview => `npm run preview` takes a long time
+    // Dev => `Learn more collapsible` takes a long time
+    const additionalTimeout = 120 * 1000
+    run(cmd, { additionalTimeout })
+  }
 
   /*
   const isPreview = cmd === 'pnpm run preview'

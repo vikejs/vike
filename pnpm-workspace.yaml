@@ -8,5 +8,4 @@ packages:
   - 'examples/framework/*'
   - 'examples/renderer/*'
   - 'libframe/test/'
-  - 'libframe/docs/'
   - 'libframe/scripts/'

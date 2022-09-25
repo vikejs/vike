@@ -1,4 +1,4 @@
-import { autoRetry, fetchHtml, page, partRegex, run, urlBase } from '../../libframe/test/setup'
+import { autoRetry, fetchHtml, page, test, expect, partRegex, run, urlBase } from '@brillout/test-e2e'
 
 run('npm run dev')
 

@@ -1,6 +1,6 @@
 export { testRun }
 
-import { fetchHtml, run } from '../../libframe/test/setup'
+import { fetchHtml, run, test, expect } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   run(cmd)

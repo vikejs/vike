@@ -1,12 +1,10 @@
 export { testRun }
 
-import { autoRetry, fetchHtml, page, run, urlBase } from '../../libframe/test/setup'
+import { autoRetry, fetchHtml, page, test, expect, run, urlBase, skip } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   if (cmd === 'npm run prod') {
-    const msg = 'SKIPPED prod until it properly supports Vite 3.'
-    console.log(msg)
-    test(msg, () => {})
+    skip('SKIPPED prod until it properly supports Vite 3.')
     return
   }
 

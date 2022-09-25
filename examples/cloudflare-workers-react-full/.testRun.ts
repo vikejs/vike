@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase } from '../../libframe/test/setup'
+import { page, test, expect, run, autoRetry, fetchHtml, isGithubAction, urlBase, skip } from '@brillout/test-e2e'
 
 // Node.js 18's fetch implementation fails to resolve `localhost`.
 //  - Seems to happen only for wrangler
@@ -10,25 +10,22 @@ import { page, run, autoRetry, fetchHtml, isGithubAction, urlBase } from '../../
 function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { hasStarWarsPage: boolean }) {
   const isWrangler = cmd === 'npm run preview'
 
-  if (isGithubAction()) {
-    // - `CLOUDFLARE_ACCOUNT_ID`/`CLOUDFLARE_API_TOKEN` not available for:
-    //   - Vite's ecosystem CI
-    //   - Pull Requests
-    //     - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
-    if (!process.env['CLOUDFLARE_ACCOUNT_ID']) {
-      expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeFalsy()
-      expect(process.env['CLOUDFLARE_API_TOKEN']).toBeFalsy()
-      if (isWrangler) {
-        const msg =
-          "SKIPPED: wrangler tests cannot be run. Because missing environment variables `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. (This is expected in Pull Requests and Vite's ecosystem CI.)"
-        console.log(msg)
-        test(msg, () => {})
-        return
-      }
-    } else {
-      expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeTruthy()
-      expect(process.env['CLOUDFLARE_API_TOKEN']).toBeTruthy()
+  // - `CLOUDFLARE_ACCOUNT_ID`/`CLOUDFLARE_API_TOKEN` not available for:
+  //   - Vite's ecosystem CI
+  //   - Pull Requests
+  //     - https://github.community/t/feature-request-allow-secrets-in-approved-external-pull-requests/18071/4
+  if (!process.env['CLOUDFLARE_ACCOUNT_ID']) {
+    expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeFalsy()
+    expect(process.env['CLOUDFLARE_API_TOKEN']).toBeFalsy()
+    if (isWrangler) {
+      skip(
+        "SKIPPED: wrangler tests cannot be run. Because missing environment variables `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. (This is expected in Pull Requests and Vite's ecosystem CI.)"
+      )
+      return
     }
+  } else {
+    expect(process.env['CLOUDFLARE_ACCOUNT_ID']).toBeTruthy()
+    expect(process.env['CLOUDFLARE_API_TOKEN']).toBeTruthy()
   }
 
   {

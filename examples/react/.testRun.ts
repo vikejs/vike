@@ -1,4 +1,4 @@
-import { page, run, partRegex, autoRetry, fetchHtml, urlBase } from '../../libframe/test/setup'
+import { page, test, expect, run, partRegex, autoRetry, fetchHtml, urlBase } from '@brillout/test-e2e'
 
 export { testRun }
 

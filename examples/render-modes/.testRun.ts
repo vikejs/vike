@@ -1,6 +1,6 @@
 import {
   run,
-  page,
+  page, test, expect,
   urlBase,
   fetchHtml,
   autoRetry,
@@ -8,7 +8,7 @@ import {
   editFile,
   editFileRevert,
   sleep
-} from '../../libframe/test/setup'
+} from '@brillout/test-e2e'
 import assert from 'assert'
 
 export { testRun }

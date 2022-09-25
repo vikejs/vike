@@ -14,8 +14,8 @@
     "// Run tests": "",
     "test": "pnpm run test:units && pnpm run test:e2e && pnpm run test:types",
     "test:units": "vitest",
-    "test:e2e": "cd libframe/test/ && pnpm run test:jest",
-    "test:types": "cd libframe/test/ && pnpm run test:types",
+    "test:e2e": "test-e2e",
+    "test:types": "test-types",
     "// Run `$ pnpm test:setup` before running `$ pnpm test`": "",
     "test:setup": "pnpm run clean && pnpm install && pnpm run build",
     "========= Docs": "",
@@ -47,6 +47,8 @@
   "devDependencies": {
     "@brillout/dev-my-dep": "0.0.10",
     "@brillout/submodule-init": "0.1.2",
+    "@brillout/test-e2e": "^0.1.5",
+    "@brillout/test-types": "^0.1.2",
     "vitest": "^0.14.1"
   },
   "pnpm": {

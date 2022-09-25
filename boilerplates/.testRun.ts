@@ -10,8 +10,10 @@ import {
   expectBrowserError,
   editFile,
   editFileRevert,
-  sleep
-} from '../libframe/test/setup'
+  sleep,
+  test,
+  expect
+} from '@brillout/test-e2e'
 import assert from 'assert'
 
 function testRun(

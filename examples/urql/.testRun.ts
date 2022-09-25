@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, run, autoRetry, fetchHtml, urlBase } from '../../libframe/test/setup'
+import { page, test, expect, run, autoRetry, fetchHtml, urlBase } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)

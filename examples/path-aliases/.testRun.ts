@@ -1,4 +1,4 @@
-import { autoRetry, page, run, urlBase } from '../../libframe/test/setup'
+import { autoRetry, page, test, expect, run, urlBase } from '@brillout/test-e2e'
 
 export { testRun }
 
