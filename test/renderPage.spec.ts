@@ -9,7 +9,7 @@ beforeAll(async () => {
 describe('renderPage()', () => {
   it('basics', async () => {
     {
-      const pageContext = await renderPage({ url: '/' })
+      const pageContext = await renderPage({ urlOriginal: '/' })
       const { body, statusCode, contentType } = pageContext.httpResponse
       expect(statusCode).toBe(200)
       expect(contentType).toBe('text/html;charset=utf-8')
@@ -19,7 +19,7 @@ describe('renderPage()', () => {
     }
     /*
     {
-      const pageContext = await renderPage({ url: '/does-not-exist' })
+      const pageContext = await renderPage({ urlOriginal: '/does-not-exist' })
       expect(pageContext.httpResponse).toBe(null)
     }
     */
