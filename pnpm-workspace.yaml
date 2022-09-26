@@ -7,5 +7,3 @@ packages:
   - 'examples/*'
   - 'examples/framework/*'
   - 'examples/renderer/*'
-  - 'libframe/test/'
-  - 'libframe/scripts/'

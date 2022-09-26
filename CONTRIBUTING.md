@@ -13,7 +13,7 @@
 
 - Unix (e.g. macOS or Linux). (Windows may work but there are no guarantees.)
 - Node.js `>= v15.0.0`.
-- [pnpm](https://pnpm.io/) `>= v6.21.0`. (To install it: `$ npm install -g pnpm`.)
+- [pnpm](https://pnpm.io/). (To install it: `$ npm install -g pnpm`.)
 
 > These requirements are for developing only; `vite-plugin-ssr` can be used with any package manager, Windows, and Node.js `>= v12.19.0`.
 
@@ -26,11 +26,8 @@ Install all dependencies of the entire monorepo:
 ```shell
 git clone git@github.com:brillout/vite-plugin-ssr
 cd vite-plugin-ssr/
-pnpm run setup
 pnpm install
 ```
-
-> We need `pnpm run setup` for setting up the [`libframe/`](https://github.com/vikejs/libframe) submodule.
 
 Build the `vite-plugin-ssr` source code:
 

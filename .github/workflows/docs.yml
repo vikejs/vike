@@ -7,7 +7,6 @@ on:
     # We only run this GitHub action if there are changes in the `docs/` directory
     paths:
       - docs/**
-      - libframe
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -17,9 +16,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
-
-      - name: Setup
-        run: pnpm run setup
 
       - name: Install
         run: pnpm install

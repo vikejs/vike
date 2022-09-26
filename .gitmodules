@@ -1,4 +1,0 @@
-[submodule "libframe"]
-  path = libframe
-  url = https://github.com/brillout/libframe.git
-  branch = master
