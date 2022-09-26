@@ -57,9 +57,8 @@ To run the example:
 
 ```shell
 cd examples/some-example/
+# See `package.json#scripts`, e.g. `dev`:
 pnpm run dev
-# Or, depending on the example:
-pnpm run start
 ```
 
 Check whether the tests defined in `examples/some-example/*.spec.ts` are still valid and make changes accordingly.
@@ -97,16 +96,18 @@ Follow the instructions of [Install & Build](#install--build).
 To run all tests:
 
 ```shell
-pnpm run test
-# To skip TypeScript type checking:
-pnpm run test --skipTs
+# Run the end-to-end tests (`**/*.test.js`)
+pnpm exec test-e2e
+# Run the unit tests (`**/*.spec.js`)
+pnpm exec vitest
+# Typecheck all `.ts` files
+pnpm exec test-types
 ```
 
-To run only the tests of a single example/boilerplate:
+To run only the tests of one example/boilerplate:
 
 ```shell
-# Provide example/boilerplate path
-pnpm run test examples/some-example/
-# Or provide a substring of the path
-pnpm run test ome-exampl
+cd examples/some-example/ && pnpm exec test-e2e
+# Altenertively: provide a substring of the path
+pnpm exec test-e2e ome-exampl
 ```
