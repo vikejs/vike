@@ -150,7 +150,6 @@ importers:
   docs:
     specifiers:
       '@brillout/docpress': ^0.0.46
-      '@mdx-js/react': ^2.1.2
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
@@ -161,7 +160,6 @@ importers:
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
       '@brillout/docpress': 0.0.46_biqbaboplfbrettd7655fr4n2y
-      '@mdx-js/react': 2.1.2_react@18.2.0
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
