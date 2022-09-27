@@ -10,15 +10,13 @@ importers:
   .:
     specifiers:
       '@brillout/bump-dependencies': ^0.1.1
-      '@brillout/dev-my-dep': 0.0.10
-      '@brillout/submodule-init': 0.1.2
+      '@brillout/dev-my-dep': ^0.0.10
       '@brillout/test-e2e': ^0.1.5
       '@brillout/test-types': ^0.1.2
       vitest: ^0.14.1
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.0.10
-      '@brillout/submodule-init': 0.1.2
       '@brillout/test-e2e': 0.1.5
       '@brillout/test-types': 0.1.2
       vitest: 0.14.1
@@ -1659,11 +1657,6 @@ packages:
       js-yaml: 4.1.0
       picocolors: 1.0.0
       semver: 7.3.7
-    dev: true
-
-  /@brillout/submodule-init/0.1.2:
-    resolution: {integrity: sha512-rfmmKGvFQkwnPFnr2bMwqvXBQa52bw24iuZgPOWrueHziTm7fHThnsb/p22EC+mLFEPhPeGj/A8A4CrFgfA80Q==}
-    hasBin: true
     dev: true
 
   /@brillout/test-e2e/0.1.5:
