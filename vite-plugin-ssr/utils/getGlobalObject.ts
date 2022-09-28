@@ -1,5 +1,5 @@
 export function getGlobalObject<T extends Record<string, unknown> = never>(
-  // We use the filename as key; each `getGlobalObject()` should provide a unqie filename.
+  // We use the filename as key; each `getGlobalObject()` call should live in a unique filename.
   key: `${string}.ts`,
   defaultValue: T
 ): T {
