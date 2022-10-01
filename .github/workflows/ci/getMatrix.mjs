@@ -13,7 +13,7 @@ export { getMatrix }
 if (args.includes('--ci')) cli()
 
 /** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup) } MatrixEntry */
-/** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } TestJob */
+/** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } Job */
 /** @typedef {{os: string, node_version: string}} Setup */
 
 function getTestFiles() {
@@ -23,21 +23,21 @@ function getTestFiles() {
   return testFiles
 }
 
-/** @type { (testFiles: string[]) => TestJob[] } */
-function getTestJobs(testFiles) {
-  /** @type { TestJob[] } */
-  const testJobs = [
+/** @type { (testFiles: string[]) => Job[] } */
+function getJobs(testFiles) {
+  /** @type { Job[] } */
+  const jobs = [
     // Unit tests
     {
       name: 'Unit Tests',
       testCmd: 'pnpm run test:units',
       testFiles: testFiles.filter((f) => f.includes('.spec.')),
-      setups: [{ os: 'windows-latest', node_version: '14' }],
+      setups: [{ os: 'windows-latest', node_version: '14' }]
     },
     {
       name: 'TypeScript',
       testCmd: 'pnpm run test:types',
-      setups: [{ os: 'ubuntu-latest', node_version: '18' }],
+      setups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     {
       name: 'Examples React',
@@ -46,13 +46,13 @@ function getTestJobs(testFiles) {
       setups: [
         {
           os: 'ubuntu-latest',
-          node_version: '16',
+          node_version: '16'
         },
         {
           os: 'windows-latest',
-          node_version: '14',
-        },
-      ],
+          node_version: '14'
+        }
+      ]
     },
     {
       name: 'Examples Vue/Others',
@@ -60,14 +60,14 @@ function getTestJobs(testFiles) {
       setups: [
         {
           os: 'ubuntu-latest',
-          node_version: '16',
+          node_version: '16'
         },
         {
           os: 'windows-latest',
-          node_version: '14',
-        },
+          node_version: '14'
+        }
       ],
-      testCmd: 'pnpm run test:e2e',
+      testCmd: 'pnpm run test:e2e'
     },
     {
       name: 'Boilerplates',
@@ -76,9 +76,9 @@ function getTestJobs(testFiles) {
       setups: [
         {
           os: 'macos-latest',
-          node_version: '17',
-        },
-      ],
+          node_version: '17'
+        }
+      ]
     },
     {
       name: 'Cloudflare',
@@ -86,10 +86,10 @@ function getTestJobs(testFiles) {
       setups: [
         {
           os: 'ubuntu-latest',
-          node_version: '16',
-        },
+          node_version: '16'
+        }
       ],
-      testCmd: 'pnpm run test:e2e',
+      testCmd: 'pnpm run test:e2e'
     },
     {
       name: 'https://vite-plugin-ssr.com',
@@ -98,12 +98,12 @@ function getTestJobs(testFiles) {
       setups: [
         {
           os: 'ubuntu-latest',
-          node_version: '17',
-        },
-      ],
-    },
+          node_version: '17'
+        }
+      ]
+    }
   ]
-  return testJobs
+  return jobs
 }
 
 /** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: true}) => string[] } */
@@ -142,22 +142,22 @@ function getMatrix({ isMatrixTest } = {}) {
     testFiles = focusFilter(testFiles, focus)
   }
 
-  let testJobs = getTestJobs(testFiles)
+  let jobs = getJobs(testFiles)
   if (focus) {
-    testJobs = testJobs.filter((job) => job.testFiles && job.testFiles.length >= 1)
+    jobs = jobs.filter((job) => job.testFiles && job.testFiles.length >= 1)
   }
 
-  assertJobs(testFiles, testJobs)
+  assertTestFileCoverage(testFiles, jobs)
 
   /** @type MatrixEntry[] */
   const matrix = []
-  testJobs.forEach(({ name, testFiles, setups, testCmd }) => {
+  jobs.forEach(({ name, testFiles, setups, testCmd }) => {
     setups.forEach((setup) => {
       matrix.push({
         testCmd,
         name: name + getJobName(setup),
         TEST_FILES: (testFiles ?? []).join(' '),
-        ...setup,
+        ...setup
       })
     })
   })
@@ -180,14 +180,14 @@ function getFocus() {
   return focusFiles[0]
 }
 
-/** @type { (testFiles: string[], testJobs: TestJob[]) => void } */
-function assertJobs(testFiles, testJobs) {
+/** @type { (testFiles: string[], jobs: Job[]) => void } */
+function assertTestFileCoverage(testFiles, jobs) {
   testFiles.forEach((testFile) => {
-    const jobs = testJobs.filter((job) => job.testFiles?.includes(testFile))
-    assert(jobs.length > 0, `Test ${testFile} is missing in categories.`)
+    const testFileJobs = jobs.filter((job) => job.testFiles?.includes(testFile))
+    assert(testFileJobs.length > 0, `Test ${testFile} is missing in categories.`)
     assert(
-      jobs.length <= 1,
-      `Test ${testFile} is multiple categories: ${jobs.map((j) => '`' + j.name + '`').join(' ')}.`,
+      testFileJobs.length <= 1,
+      `Test ${testFile} is multiple categories: ${testFileJobs.map((j) => '`' + j.name + '`').join(' ')}.`
     )
   })
 }
