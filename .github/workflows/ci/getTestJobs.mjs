@@ -47,36 +47,6 @@ function getTestJobs() {
       jobCmd: 'pnpm run test:types',
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
-    {
-      jobName: 'Examples React',
-      jobCmd: 'pnpm run test:e2e',
-      jobTestFiles: findExamples(testFiles, { react: true }),
-      jobSetups: [
-        {
-          os: 'ubuntu-latest',
-          node_version: '16'
-        },
-        {
-          os: 'windows-latest',
-          node_version: '14'
-        }
-      ]
-    },
-    {
-      jobName: 'Examples Vue/Others',
-      jobTestFiles: findExamples(testFiles, { react: false }),
-      jobSetups: [
-        {
-          os: 'ubuntu-latest',
-          node_version: '16'
-        },
-        {
-          os: 'windows-latest',
-          node_version: '14'
-        }
-      ],
-      jobCmd: 'pnpm run test:e2e'
-    },
     ...crawlTestJobs()
   ]
 
@@ -170,33 +140,6 @@ function getTestJobFiles(projectFiles) {
   return testJobFiles
 }
 
-/** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: true}) => string[] } */
-function findExamples(testFiles, { react, cloudflare }) {
-  return testFiles.filter((testFile) => {
-    if (!testFile.startsWith('examples/')) {
-      return false
-    }
-
-    if (testFile.includes('cloudflare')) {
-      return cloudflare === true
-    }
-
-    if (isReactExample(testFile)) {
-      return react === true
-    } else {
-      return react === false
-    }
-  })
-}
-
-/** @type { (testFile: string) => boolean } */
-function isReactExample(testFile) {
-  const pkgJsonFile = path.join(root, path.dirname(testFile), './package.json')
-  // await import(pkgJsonFile, { assert: { type: 'json'}})
-  const pkgJson = require(pkgJsonFile)
-  return !!pkgJson.dependencies['react']
-}
-
 function getMatrix() {
   const jobs = getTestJobs()
 
@@ -244,7 +187,7 @@ function logMatrix() {
 /** @type { (setup: Setup) => string } */
 function getSetupName(setup) {
   const { os, node_version } = setup
-  let osName
+  let osName = undefined
   if (os === 'ubuntu-latest') {
     osName = 'Ubuntu'
   }
@@ -254,6 +197,8 @@ function getSetupName(setup) {
   if (os === 'windows-latest') {
     osName = 'Win'
   }
+  assert(osName, `Unknown Operating System ${os}`)
+  assert(node_version)
   const setupName = ` - ${osName} - Node.js ${node_version}`
   return setupName
 }
