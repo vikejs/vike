@@ -133,8 +133,12 @@ function crawlTestJobs() {
     assert(typeof jobName === 'string')
 
     const dir = path.dirname(testJobFile) + path.sep
-    const jobTestFiles = getTestFiles().filter((f) => f.startsWith(dir))
-    assert(jobTestFiles.length > 0, `No test files found in \`${dir}\` (for \`${testJobFile}\`).`)
+    const testFiles = getTestFiles()
+    const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
+    assert(
+      jobTestFiles.length > 0,
+      `No test files found in \`${dir}\` (for \`${testJobFile}\`). Test files: \n${JSON.stringify(testFiles, null, 2)}`
+    )
 
     const job = jobs.find((job) => job.jobName == jobName)
     if (job === undefined) {
@@ -215,7 +219,7 @@ function assertTestFilesCoverage(testFiles, jobs) {
     const jobsFound = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
     assert(
       jobsFound.length > 0,
-      `Test file ${testFile} isn't included in any job. Jobs: ${JSON.stringify(jobs, null, 2)}`
+      `Test file ${testFile} isn't included in any job. Jobs: \n${JSON.stringify(jobs, null, 2)}`
     )
     assert(
       jobsFound.length <= 1,
