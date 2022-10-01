@@ -88,17 +88,6 @@ function getTestJobs() {
         }
       ]
     },
-    {
-      jobName: 'Cloudflare',
-      jobTestFiles: findExamples(testFiles, { cloudflare: true }),
-      jobSetups: [
-        {
-          os: 'ubuntu-latest',
-          node_version: '16'
-        }
-      ],
-      jobCmd: 'pnpm run test:e2e'
-    },
     ...crawlTestJobs()
   ]
 
@@ -110,41 +99,78 @@ function getTestJobs() {
 /** @type { () => Job[] } */
 function crawlTestJobs() {
   const projectFiles = getProjectFiles()
-  const testJobs = projectFiles
-    .filter((file) => file.endsWith('.testJob.json'))
-    .map((testJobFile) => {
-      /** @type { Record<string, unknown> } */
-      const testJobJson = require(path.join(root, testJobFile))
-      const dir = path.dirname(testJobFile)
-      const jobTestFiles = getTestFiles().filter((f) => f.startsWith(dir))
 
-      const jobName = testJobJson.name
-      assert(jobName)
-      assert(typeof jobName === 'string')
-      /** @type { {os: string, node_version: string }[] }  */
-      const jobSetups = []
-      const { setups } = testJobJson
-      assert(Array.isArray(setups))
-      setups.forEach((setup) => {
-        const { os, node_version } = setup
-        assert(os)
-        assert(typeof os === 'string')
-        assert(node_version)
-        assert(typeof node_version === 'string')
-        jobSetups.push({
-          os,
-          node_version
-        })
+  /** @type { Job[] } */
+  const jobs = []
+
+  const testJobsFile = getTestJobsFile(projectFiles)
+  /** @type { Record<string, unknown>[] } */
+  const jobsJson = require(testJobsFile)
+  jobsJson.forEach((jobJson) => {
+    const jobName = jobJson.name
+    assert(jobName)
+    assert(typeof jobName === 'string')
+
+    /** @type { { os: string, node_version: string }[] }  */
+    const jobSetups = []
+    const { setups } = jobJson
+    assert(Array.isArray(setups))
+    setups.forEach((setup) => {
+      const { os, node_version } = setup
+      assert(os)
+      assert(typeof os === 'string')
+      assert(node_version)
+      assert(typeof node_version === 'string')
+      jobSetups.push({
+        os,
+        node_version
       })
-      return {
-        jobName,
-        jobTestFiles,
-        jobSetups,
-        jobCmd: 'pnpm run test:e2e'
-      }
     })
 
-  return testJobs
+    jobs.push({
+      jobName,
+      jobTestFiles: [],
+      jobSetups,
+      jobCmd: 'pnpm run test:e2e'
+    })
+  })
+
+  getTestJobFiles(projectFiles).forEach((testJobFile) => {
+    /** @type { Record<string, unknown> } */
+    const jobJson = require(path.join(root, testJobFile))
+
+    const jobName = jobJson.name
+    assert(jobName)
+    assert(typeof jobName === 'string')
+
+    const dir = path.dirname(testJobFile) + path.sep
+    const jobTestFiles = getTestFiles().filter((f) => f.startsWith(dir))
+
+    const job = jobs.find((job) => job.jobName == jobName)
+    if (job === undefined) {
+      throw new Error(`Make sure ${jobName} is defined in ${testJobsFile}`)
+    }
+    assert(job.jobTestFiles)
+    job.jobTestFiles.push(...jobTestFiles)
+  })
+
+  return jobs
+}
+
+/** @type { (projectFiles: string[]) => string } */
+function getTestJobsFile(projectFiles) {
+  const matches = projectFiles.filter((file) => file.endsWith('.testJobs.json'))
+  if (matches.length === 0) throw new Error('File `.testJobs.json` missing')
+  if (matches.length > 1) throw new Error('Only one file `.testJobs.json` is allowed')
+  const testJobsFile = path.join(root, matches[0])
+  return testJobsFile
+}
+
+/** @type { (projectFiles: string[]) => string[] } */
+function getTestJobFiles(projectFiles) {
+  const testJobFiles = projectFiles.filter((file) => file.endsWith('.testJob.json'))
+  if (testJobFiles.length === 0) throw new Error('No file `.testJob.json` found')
+  return testJobFiles
 }
 
 /** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: true}) => string[] } */
