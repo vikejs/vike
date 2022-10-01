@@ -222,11 +222,11 @@ function getMatrix() {
 /** @type { (testFiles: string[], jobs: Job[]) => void } */
 function assertTestFilesCoverage(testFiles, jobs) {
   testFiles.forEach((testFile) => {
-    const testFileJobs = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
-    assert(testFileJobs.length > 0, `Test ${testFile} is missing in categories.`)
+    const jobsFound = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
+    assert(jobsFound.length > 0, `Test file ${testFile} isn't included in any job. Jobs: ${JSON.stringify(jobs, null, 2)}`)
     assert(
-      testFileJobs.length <= 1,
-      `Test ${testFile} is multiple categories: ${testFileJobs.map((j) => '`' + j.jobName + '`').join(' ')}.`
+      jobsFound.length <= 1,
+      `Test ${testFile} is multiple categories: ${jobsFound.map((j) => '`' + j.jobName + '`').join(' ')}.`
     )
   })
 }
