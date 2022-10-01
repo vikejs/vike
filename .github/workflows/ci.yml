@@ -49,7 +49,6 @@ jobs:
           cache: "pnpm"
 
       - run: pnpm install
-      - run: pnpm exec playwright install
       - run: pnpm run build
 
       - name: Run tests
