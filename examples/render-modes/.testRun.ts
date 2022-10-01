@@ -1,6 +1,8 @@
 import {
   run,
-  page, test, expect,
+  page,
+  test,
+  expect,
   urlBase,
   fetchHtml,
   autoRetry,

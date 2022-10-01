@@ -32,7 +32,7 @@
 /* DocPress's Mobile/Tablet break point */
 @media screen and (max-width: 1139px) {
   #header-logo h1 {
-    margin-left: 0!important;
+    margin-left: 0 !important;
   }
 }
 @media screen and (min-width: 1160px) {
