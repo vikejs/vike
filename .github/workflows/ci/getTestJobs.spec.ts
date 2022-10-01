@@ -1,7 +1,7 @@
 import { getMatrix } from './getTestJobs.mjs'
 import { expect, describe, it } from 'vitest'
 
-//*/
+/*/
 const SKIP = true
 /*/
 const SKIP = false
@@ -20,7 +20,7 @@ describe('getMatrix()', () => {
     expect(matrix).toMatchInlineSnapshot(`
       [
         {
-          "TEST_FILES": ".github/workflows/ci/getMatrix.spec.ts test/renderPage.spec.ts vite-plugin-ssr/shared/route/resolveFilesystemRoute.spec.ts vite-plugin-ssr/shared/route/resolvePrecedence/overall.spec.ts vite-plugin-ssr/shared/route/resolvePrecedence/route-strings.spec.ts vite-plugin-ssr/shared/route/resolveRouteString.spec.ts vite-plugin-ssr/utils/parseUrl.spec.ts vite-plugin-ssr/utils/pathHandling.spec.ts",
+          "TEST_FILES": ".github/workflows/ci/getTestJobs.spec.ts test/renderPage.spec.ts vite-plugin-ssr/shared/route/deduceRouteStringFromFilesystemPath.spec.ts vite-plugin-ssr/shared/route/resolvePrecedence/overall.spec.ts vite-plugin-ssr/shared/route/resolvePrecedence/route-strings.spec.ts vite-plugin-ssr/shared/route/resolveRouteString.spec.ts vite-plugin-ssr/utils/parseUrl.spec.ts",
           "name": "Unit Tests - Win - Node.js 14",
           "node_version": "14",
           "os": "windows-latest",
@@ -34,28 +34,28 @@ describe('getMatrix()', () => {
           "testCmd": "pnpm run test:types",
         },
         {
-          "TEST_FILES": "examples/base-url-cdn/.test.ts examples/base-url/.dev-base-url.test.ts examples/base-url/.dev.test.ts examples/base-url/.prod-ssg.test.ts examples/base-url/.prod-ssr.test.ts examples/custom-server-render-integration/.dev.test.ts examples/custom-server-render-integration/.prod.test.ts examples/file-structure-domain-driven/.dev.test.ts examples/file-structure-domain-driven/.prod.test.ts examples/graphql-apollo/.test.ts examples/i18n-prerender/.dev.test.ts examples/i18n-prerender/.prod.test.ts examples/i18n/.dev.test.ts examples/layouts-react/.dev.test.ts examples/layouts-react/.preview.test.ts examples/path-aliases/.dev.test.ts examples/path-aliases/.prod-static.test.ts examples/path-aliases/.prod.test.ts examples/react-17/.dev.test.ts examples/react-17/.prod.test.ts examples/react-full/.dev.test.ts examples/react-full/.preview.test.ts examples/react-router/.test.ts examples/react/.dev.test.ts examples/react/.prod.test.ts examples/redux/.test.ts examples/render-modes/.dev.test.ts examples/render-modes/.prod.test.ts examples/urql/.dev.test.ts examples/urql/.prod.test.ts",
+          "TEST_FILES": "examples/base-url-cdn/.test.ts examples/base-url/.dev.test.ts examples/base-url/.preview.test.ts examples/custom-server-render-integration/.dev.test.ts examples/custom-server-render-integration/.prod.test.ts examples/file-structure-domain-driven/.dev.test.ts examples/file-structure-domain-driven/.preview.test.ts examples/graphql-apollo-react/.dev.test.ts examples/graphql-apollo-react/.prod.test.ts examples/i18n/.dev.test.ts examples/i18n/.preview.test.ts examples/layouts-react/.dev.test.ts examples/layouts-react/.preview.test.ts examples/path-aliases/.dev.test.ts examples/path-aliases/.prod-static.test.ts examples/path-aliases/.prod.test.ts examples/react-17/.dev.test.ts examples/react-17/.preview.test.ts examples/react-full/.dev.test.ts examples/react-full/.preview.test.ts examples/react-router/.test.ts examples/react/.dev.test.ts examples/react/.preview.test.ts examples/redux/.test.ts examples/render-modes/.dev.test.ts examples/render-modes/.preview.test.ts examples/urql/.dev.test.ts examples/urql/.preview.test.ts",
           "name": "Examples React - Ubuntu - Node.js 16",
           "node_version": "16",
           "os": "ubuntu-latest",
           "testCmd": "pnpm run test:e2e",
         },
         {
-          "TEST_FILES": "examples/base-url-cdn/.test.ts examples/base-url/.dev-base-url.test.ts examples/base-url/.dev.test.ts examples/base-url/.prod-ssg.test.ts examples/base-url/.prod-ssr.test.ts examples/custom-server-render-integration/.dev.test.ts examples/custom-server-render-integration/.prod.test.ts examples/file-structure-domain-driven/.dev.test.ts examples/file-structure-domain-driven/.prod.test.ts examples/graphql-apollo/.test.ts examples/i18n-prerender/.dev.test.ts examples/i18n-prerender/.prod.test.ts examples/i18n/.dev.test.ts examples/layouts-react/.dev.test.ts examples/layouts-react/.preview.test.ts examples/path-aliases/.dev.test.ts examples/path-aliases/.prod-static.test.ts examples/path-aliases/.prod.test.ts examples/react-17/.dev.test.ts examples/react-17/.prod.test.ts examples/react-full/.dev.test.ts examples/react-full/.preview.test.ts examples/react-router/.test.ts examples/react/.dev.test.ts examples/react/.prod.test.ts examples/redux/.test.ts examples/render-modes/.dev.test.ts examples/render-modes/.prod.test.ts examples/urql/.dev.test.ts examples/urql/.prod.test.ts",
+          "TEST_FILES": "examples/base-url-cdn/.test.ts examples/base-url/.dev.test.ts examples/base-url/.preview.test.ts examples/custom-server-render-integration/.dev.test.ts examples/custom-server-render-integration/.prod.test.ts examples/file-structure-domain-driven/.dev.test.ts examples/file-structure-domain-driven/.preview.test.ts examples/graphql-apollo-react/.dev.test.ts examples/graphql-apollo-react/.prod.test.ts examples/i18n/.dev.test.ts examples/i18n/.preview.test.ts examples/layouts-react/.dev.test.ts examples/layouts-react/.preview.test.ts examples/path-aliases/.dev.test.ts examples/path-aliases/.prod-static.test.ts examples/path-aliases/.prod.test.ts examples/react-17/.dev.test.ts examples/react-17/.preview.test.ts examples/react-full/.dev.test.ts examples/react-full/.preview.test.ts examples/react-router/.test.ts examples/react/.dev.test.ts examples/react/.preview.test.ts examples/redux/.test.ts examples/render-modes/.dev.test.ts examples/render-modes/.preview.test.ts examples/urql/.dev.test.ts examples/urql/.preview.test.ts",
           "name": "Examples React - Win - Node.js 14",
           "node_version": "14",
           "os": "windows-latest",
           "testCmd": "pnpm run test:e2e",
         },
         {
-          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.prod.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.prod.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.prod.test.ts examples/vue-pinia/.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.prod.test.ts examples/vuex/.test.ts",
+          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.preview.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.preview.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.preview.test.ts examples/vue-pinia/.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.preview.test.ts examples/vuex/.test.ts",
           "name": "Examples Vue/Others - Ubuntu - Node.js 16",
           "node_version": "16",
           "os": "ubuntu-latest",
           "testCmd": "pnpm run test:e2e",
         },
         {
-          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.prod.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.prod.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.prod.test.ts examples/vue-pinia/.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.prod.test.ts examples/vuex/.test.ts",
+          "TEST_FILES": "examples/graphql-apollo-vue/.dev.test.ts examples/graphql-apollo-vue/.prod.test.ts examples/html-fragments/.test.ts examples/layouts-vue/.dev.test.ts examples/layouts-vue/.preview.test.ts examples/preact-client-routing/.dev.test.ts examples/preact-client-routing/.preview.test.ts examples/preact-server-routing/.dev.test.ts examples/preact-server-routing/.preview.test.ts examples/vue-full/.dev.test.ts examples/vue-full/.preview.test.ts examples/vue-pinia/.test.ts examples/vue-router/.test.ts examples/vue/.dev.test.ts examples/vue/.preview.test.ts examples/vuex/.test.ts",
           "name": "Examples Vue/Others - Win - Node.js 14",
           "node_version": "14",
           "os": "windows-latest",
@@ -69,15 +69,8 @@ describe('getMatrix()', () => {
           "testCmd": "pnpm run test:e2e",
         },
         {
-          "TEST_FILES": "examples/cloudflare-workers-vue/.dev.test.ts examples/cloudflare-workers-vue/.miniflare.test.ts examples/cloudflare-workers-vue/.wrangler.test.ts examples/cloudflare-workers/.dev.test.ts examples/cloudflare-workers/.miniflare.test.ts examples/cloudflare-workers/.wrangler.test.ts",
-          "name": "Cloudflare + esbuild - Ubuntu - Node.js 16",
-          "node_version": "16",
-          "os": "ubuntu-latest",
-          "testCmd": "pnpm run test:e2e",
-        },
-        {
-          "TEST_FILES": "examples/cloudflare-workers-webpack/.dev.test.ts examples/cloudflare-workers-webpack/.miniflare.test.ts examples/cloudflare-workers-webpack/.wrangler.test.ts",
-          "name": "Cloudflare + webpack - Ubuntu - Node.js 16",
+          "TEST_FILES": "examples/cloudflare-workers-react-full/.dev.test.ts examples/cloudflare-workers-react-full/.wrangler.test.ts examples/cloudflare-workers-react/.dev.test.ts examples/cloudflare-workers-react/.preview.test.ts examples/cloudflare-workers-vue/.dev.test.ts examples/cloudflare-workers-vue/.wrangler.test.ts",
+          "name": "Cloudflare - Ubuntu - Node.js 16",
           "node_version": "16",
           "os": "ubuntu-latest",
           "testCmd": "pnpm run test:e2e",
