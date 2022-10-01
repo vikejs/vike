@@ -13,6 +13,8 @@ import assert from 'assert'
 
 export { testRun }
 
+const HMR_SLEEP = 500
+
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
 
@@ -87,12 +89,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SPA')
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFile('./pages/spa/index.page.client.jsx', (s) => s.replace('<h1>SPA</h1>', '<h1>SPA !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA !')
         })
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SPA')
@@ -102,10 +104,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('green')
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFile('./pages/spa/index.css', (s) => s.replace('color: green', 'color: gray'))
         await testColor('gray')
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFileRevert()
         await testColor('green')
       }
@@ -168,12 +170,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         expect(await page.textContent('h1')).toBe('SSR')
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFile('./pages/ssr/index.page.jsx', (s) => s.replace('<h1>SSR</h1>', '<h1>SSR !</h1>'))
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR !')
         })
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFileRevert()
         await autoRetry(async () => {
           expect(await page.textContent('h1')).toBe('SSR')
@@ -183,10 +185,10 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
         await testColor('blue')
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
         await testColor('gray')
-        await sleep(300)
+        await sleep(HMR_SLEEP)
         editFileRevert()
         await testColor('blue')
       }
