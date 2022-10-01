@@ -10,11 +10,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     run(cmd, { additionalTimeout })
   }
 
-  /*
-  const isPreview = cmd === 'pnpm run preview'
-  const isDev = cmd === 'pnpm run dev'
-  */
-
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain(
