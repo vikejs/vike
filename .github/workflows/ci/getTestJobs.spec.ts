@@ -159,7 +159,7 @@ describe('getTestJobs()', () => {
             "examples/cloudflare-workers-react/.test-dev.test.ts",
             "examples/cloudflare-workers-react/.test-preview.test.ts",
             "examples/cloudflare-workers-vue/.test-dev.test.ts",
-            "examples/cloudflare-workers-vue/.wrangler.test.ts",
+            "examples/cloudflare-workers-vue/.test-wrangler.test.ts",
           ],
         },
         {
