@@ -33,7 +33,7 @@ jobs:
     env:
       TEST_FILES: ${{ matrix.TEST_FILES }}
     runs-on: ${{ matrix.os }}
-    name: '${{ matrix.name }}'
+    name: '${{ matrix.jobName }}'
 
     steps:
       - name: Checkout
@@ -57,7 +57,7 @@ jobs:
         run: pnpm run build
 
       - name: Run tests
-        run: ${{ matrix.testCmd }}
+        run: ${{ matrix.jobCmd }}
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

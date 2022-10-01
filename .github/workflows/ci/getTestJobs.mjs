@@ -10,34 +10,34 @@ const root = cmd('git rev-parse --show-toplevel')
 const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
 const testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
 
-export { getMatrix }
+export { getTestJobs }
 if (args.includes('--ci')) logMatrix()
 
-/** @typedef { { testName: string, TEST_FILES: string, testCmd: string } & Setup } MatrixEntry */
-/** @typedef { { testName: string, testFiles?: string[], setups: Setup[], testCmd: string } } Job */
+/** @typedef { { jobName: string, TEST_FILES: string, jobCmd: string } & Setup } MatrixEntry */
+/** @typedef { { jobName: string, jobTestFiles?: string[], jobSetups: Setup[], jobCmd: string } } Job */
 /** @typedef { { os: string, node_version: string } } Setup */
 
 /** @type { () => Job[] } */
-function getJobs() {
+function getTestJobs() {
   /** @type { Job[] } */
   const jobs = [
     // Unit tests
     {
-      testName: 'Unit Tests',
-      testCmd: 'pnpm run test:units',
-      testFiles: testFiles.filter((f) => f.includes('.spec.')),
-      setups: [{ os: 'windows-latest', node_version: '14' }]
+      jobName: 'Unit Tests',
+      jobCmd: 'pnpm run test:units',
+      jobTestFiles: testFiles.filter((f) => f.includes('.spec.')),
+      jobSetups: [{ os: 'windows-latest', node_version: '14' }]
     },
     {
-      testName: 'TypeScript',
-      testCmd: 'pnpm run test:types',
-      setups: [{ os: 'ubuntu-latest', node_version: '18' }]
+      jobName: 'TypeScript',
+      jobCmd: 'pnpm run test:types',
+      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     {
-      testName: 'Examples React',
-      testCmd: 'pnpm run test:e2e',
-      testFiles: findExamples(testFiles, { react: true }),
-      setups: [
+      jobName: 'Examples React',
+      jobCmd: 'pnpm run test:e2e',
+      jobTestFiles: findExamples(testFiles, { react: true }),
+      jobSetups: [
         {
           os: 'ubuntu-latest',
           node_version: '16'
@@ -49,9 +49,9 @@ function getJobs() {
       ]
     },
     {
-      testName: 'Examples Vue/Others',
-      testFiles: findExamples(testFiles, { react: false }),
-      setups: [
+      jobName: 'Examples Vue/Others',
+      jobTestFiles: findExamples(testFiles, { react: false }),
+      jobSetups: [
         {
           os: 'ubuntu-latest',
           node_version: '16'
@@ -61,13 +61,13 @@ function getJobs() {
           node_version: '14'
         }
       ],
-      testCmd: 'pnpm run test:e2e'
+      jobCmd: 'pnpm run test:e2e'
     },
     {
-      testName: 'Boilerplates',
-      testCmd: 'pnpm run test:e2e',
-      testFiles: testFiles.filter((f) => f.startsWith('boilerplates/')),
-      setups: [
+      jobName: 'Boilerplates',
+      jobCmd: 'pnpm run test:e2e',
+      jobTestFiles: testFiles.filter((f) => f.startsWith('boilerplates/')),
+      jobSetups: [
         {
           os: 'macos-latest',
           node_version: '17'
@@ -75,21 +75,21 @@ function getJobs() {
       ]
     },
     {
-      testName: 'Cloudflare',
-      testFiles: findExamples(testFiles, { cloudflare: true }),
-      setups: [
+      jobName: 'Cloudflare',
+      jobTestFiles: findExamples(testFiles, { cloudflare: true }),
+      jobSetups: [
         {
           os: 'ubuntu-latest',
           node_version: '16'
         }
       ],
-      testCmd: 'pnpm run test:e2e'
+      jobCmd: 'pnpm run test:e2e'
     },
     {
-      testName: 'https://vite-plugin-ssr.com',
-      testCmd: 'pnpm run test:e2e',
-      testFiles: testFiles.filter((f) => f.startsWith('docs/')),
-      setups: [
+      jobName: 'https://vite-plugin-ssr.com',
+      jobCmd: 'pnpm run test:e2e',
+      jobTestFiles: testFiles.filter((f) => f.startsWith('docs/')),
+      jobSetups: [
         {
           os: 'ubuntu-latest',
           node_version: '17'
@@ -97,6 +97,9 @@ function getJobs() {
       ]
     }
   ]
+
+  assertTestFilesCoverage(testFiles, jobs)
+
   return jobs
 }
 
@@ -128,18 +131,16 @@ function isReactExample(testFile) {
 }
 
 function getMatrix() {
-  const jobs = getJobs()
-
-  assertTestFilesCoverage(testFiles, jobs)
+  const jobs = getTestJobs()
 
   /** @type MatrixEntry[] */
   const matrix = []
-  jobs.forEach(({ testName, testFiles, setups, testCmd }) => {
-    setups.forEach((setup) => {
+  jobs.forEach(({ jobName, jobTestFiles, jobSetups, jobCmd }) => {
+    jobSetups.forEach((setup) => {
       matrix.push({
-        testCmd,
-        testName: testName + getJobName(setup),
-        TEST_FILES: (testFiles ?? []).join(' '),
+        jobCmd,
+        jobName: jobName + getSetupName(setup),
+        TEST_FILES: (jobTestFiles ?? []).join(' '),
         ...setup
       })
     })
@@ -151,11 +152,11 @@ function getMatrix() {
 /** @type { (testFiles: string[], jobs: Job[]) => void } */
 function assertTestFilesCoverage(testFiles, jobs) {
   testFiles.forEach((testFile) => {
-    const testFileJobs = jobs.filter((job) => job.testFiles?.includes(testFile))
+    const testFileJobs = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
     assert(testFileJobs.length > 0, `Test ${testFile} is missing in categories.`)
     assert(
       testFileJobs.length <= 1,
-      `Test ${testFile} is multiple categories: ${testFileJobs.map((j) => '`' + j.testName + '`').join(' ')}.`
+      `Test ${testFile} is multiple categories: ${testFileJobs.map((j) => '`' + j.jobName + '`').join(' ')}.`
     )
   })
 }
@@ -171,7 +172,7 @@ function logMatrix() {
 }
 
 /** @type { (setup: Setup) => string } */
-function getJobName(setup) {
+function getSetupName(setup) {
   const { os, node_version } = setup
   let osName
   if (os === 'ubuntu-latest') {
