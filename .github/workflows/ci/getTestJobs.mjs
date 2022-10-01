@@ -1,4 +1,4 @@
-import { cmd } from './utils.mjs'
+import { cmd, isObject } from './utils.mjs'
 import assert from 'assert'
 import path from 'path'
 import { createRequire } from 'module'
@@ -61,39 +61,55 @@ function crawlE2eJobs(testFiles) {
   /** @type { Job[] } */
   const jobs = []
 
-  const testJobsFile = getTestJobsFile(projectFiles)
-  /** @type { Record<string, unknown>[] } */
-  const jobsJson = require(testJobsFile)
-  jobsJson.forEach((jobJson) => {
-    const jobName = jobJson.name
-    assert(jobName)
-    assert(typeof jobName === 'string')
+  const testJobFiles = getTestJobFiles(projectFiles)
+  const configFile = getConfigFile(projectFiles)
+  if (testJobFiles.length >= 1 && !configFile) throw new Error('File `test-e2e.config.json` missing')
+  if (configFile && testJobFiles.length === 0) throw new Error('No file `.testJob.json` found')
 
-    /** @type { { os: string, node_version: string }[] }  */
-    const jobSetups = []
-    const { setups } = jobJson
-    assert(Array.isArray(setups))
-    setups.forEach((setup) => {
-      const { os, node_version } = setup
-      assert(os)
-      assert(typeof os === 'string')
-      assert(node_version)
-      assert(typeof node_version === 'string')
-      jobSetups.push({
-        os,
-        node_version
+  if (testJobFiles.length >= 1) {
+    assert(configFile)
+    if (!configFile) throw new Error('File `test-e2e.config.json` missing')
+    /** @type { unknown } */
+    const config = require(configFile)
+    assert(isObject(config))
+    const { ci } = config
+    assert(isObject(ci))
+    const jobSpecs = ci.jobs
+    assert(Array.isArray(jobSpecs))
+    jobSpecs.forEach((jobSpec) => {
+      assert(isObject(jobSpec))
+      const jobName = jobSpec.name
+      assert(jobName)
+      assert(typeof jobName === 'string')
+
+      /** @type { { os: string, node_version: string }[] }  */
+      const jobSetups = []
+      const { setups } = jobSpec
+      assert(Array.isArray(setups))
+      setups.forEach((setup) => {
+        const { os, node_version } = setup
+        assert(os)
+        assert(typeof os === 'string')
+        assert(node_version)
+        assert(typeof node_version === 'string')
+        jobSetups.push({
+          os,
+          node_version
+        })
+      })
+
+      jobs.push({
+        jobName,
+        jobTestFiles: [],
+        jobSetups,
+        jobCmd: 'pnpm run test:e2e'
       })
     })
+  }
 
-    jobs.push({
-      jobName,
-      jobTestFiles: [],
-      jobSetups,
-      jobCmd: 'pnpm run test:e2e'
-    })
-  })
+  testJobFiles.forEach((testJobFile) => {
+    assert(configFile)
 
-  getTestJobFiles(projectFiles).forEach((testJobFile) => {
     /** @type { Record<string, unknown> } */
     const jobJson = require(path.join(root, testJobFile))
 
@@ -113,7 +129,7 @@ function crawlE2eJobs(testFiles) {
 
     const job = jobs.find((job) => job.jobName == jobName)
     if (job === undefined) {
-      throw new Error(`Make sure ${jobName} is defined in ${testJobsFile}`)
+      throw new Error(`Make sure ${jobName} is defined in ${configFile}`)
     }
     assert(job.jobTestFiles)
     job.jobTestFiles.push(...jobTestFiles)
@@ -146,19 +162,18 @@ function crawlE2eJobs(testFiles) {
   return jobs
 }
 
-/** @type { (projectFiles: string[]) => string } */
-function getTestJobsFile(projectFiles) {
-  const matches = projectFiles.filter((file) => file.endsWith('.testJobs.json'))
-  if (matches.length === 0) throw new Error('File `.testJobs.json` missing')
-  if (matches.length > 1) throw new Error('Only one file `.testJobs.json` is allowed')
-  const testJobsFile = path.join(root, matches[0])
-  return testJobsFile
+/** @type { (projectFiles: string[]) => string | null } */
+function getConfigFile(projectFiles) {
+  const matches = projectFiles.filter((file) => file.endsWith('test-e2e.config.json'))
+  if (matches.length > 1) throw new Error('Only one file `test-e2e.config.json` is allowed')
+  if (matches.length === 0) return null
+  const configFile = path.join(root, matches[0])
+  return configFile
 }
 
 /** @type { (projectFiles: string[]) => string[] } */
 function getTestJobFiles(projectFiles) {
   const testJobFiles = projectFiles.filter((file) => file.endsWith('.testJob.json'))
-  if (testJobFiles.length === 0) throw new Error('No file `.testJob.json` found')
   return testJobFiles
 }
 
