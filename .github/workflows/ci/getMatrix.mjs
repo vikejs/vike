@@ -8,6 +8,8 @@ const args = process.argv
 
 const root = cmd('git rev-parse --show-toplevel')
 const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
+/** @type string[] */
+let testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
 
 export { getMatrix }
 if (args.includes('--ci')) cli()
@@ -16,15 +18,8 @@ if (args.includes('--ci')) cli()
 /** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } Job */
 /** @typedef {{os: string, node_version: string}} Setup */
 
-function getTestFiles() {
-  const testRE = /\.(test|spec)\./
-  /** @type string[] */
-  const testFiles = projectFiles.filter((file) => testRE.test(file))
-  return testFiles
-}
-
-/** @type { (testFiles: string[]) => Job[] } */
-function getJobs(testFiles) {
+/** @type { () => Job[] } */
+function getJobs() {
   /** @type { Job[] } */
   const jobs = [
     // Unit tests
@@ -135,19 +130,17 @@ function isReactExample(testFile) {
 
 /** @type { (args: {isMatrixTest?: true }) => MatrixEntry[] } */
 function getMatrix({ isMatrixTest } = {}) {
-  let testFiles = getTestFiles()
-
   const focus = !isMatrixTest && getFocus()
   if (focus) {
     testFiles = focusFilter(testFiles, focus)
   }
 
-  let jobs = getJobs(testFiles)
+  let jobs = getJobs()
   if (focus) {
     jobs = jobs.filter((job) => job.testFiles && job.testFiles.length >= 1)
   }
 
-  assertTestFileCoverage(testFiles, jobs)
+  assertTestFilesCoverage(testFiles, jobs)
 
   /** @type MatrixEntry[] */
   const matrix = []
@@ -181,7 +174,7 @@ function getFocus() {
 }
 
 /** @type { (testFiles: string[], jobs: Job[]) => void } */
-function assertTestFileCoverage(testFiles, jobs) {
+function assertTestFilesCoverage(testFiles, jobs) {
   testFiles.forEach((testFile) => {
     const testFileJobs = jobs.filter((job) => job.testFiles?.includes(testFile))
     assert(testFileJobs.length > 0, `Test ${testFile} is missing in categories.`)
