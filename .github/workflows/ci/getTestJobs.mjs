@@ -33,6 +33,7 @@ function getProjectFiles() {
 /** @type { () => Job[] } */
 function getTestJobs() {
   const testFiles = getTestFiles()
+
   /** @type { Job[] } */
   const jobs = [
     // Unit tests
@@ -47,7 +48,7 @@ function getTestJobs() {
       jobCmd: 'pnpm run test:types',
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
-    ...crawlTestJobs()
+    ...crawlTestJobs(testFiles)
   ]
 
   assertTestFilesCoverage(testFiles, jobs)
@@ -55,8 +56,8 @@ function getTestJobs() {
   return jobs
 }
 
-/** @type { () => Job[] } */
-function crawlTestJobs() {
+/** @type { (testFiles: string[]) => Job[] } */
+function crawlTestJobs(testFiles) {
   const projectFiles = getProjectFiles()
 
   /** @type { Job[] } */
@@ -106,7 +107,6 @@ function crawlTestJobs() {
       path.dirname(testJobFile) +
       // `$ git ls-files` returns posix paths
       path.posix.sep
-    const testFiles = getTestFiles()
     const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
     assert(
       jobTestFiles.length > 0,

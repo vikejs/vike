@@ -62,6 +62,8 @@ describe('getTestJobs()', () => {
             },
           ],
           "jobTestFiles": [
+            "examples/render-modes/.test-dev.test.ts",
+            "examples/render-modes/.test-preview.test.ts",
             "examples/base-url-cdn/.test.ts",
             "examples/base-url/.test-dev.test.ts",
             "examples/base-url/.test-preview.test.ts",
@@ -86,8 +88,6 @@ describe('getTestJobs()', () => {
             "examples/react/.test-dev.test.ts",
             "examples/react/.test-preview.test.ts",
             "examples/redux/.test.ts",
-            "examples/render-modes/.test-dev.test.ts",
-            "examples/render-modes/.test-preview.test.ts",
             "examples/urql/.test-dev.test.ts",
             "examples/urql/.test-preview.test.ts",
           ],
