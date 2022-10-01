@@ -64,7 +64,7 @@ function crawlE2eJobs(testFiles) {
   const testJobFiles = getTestJobFiles(projectFiles)
   const configFile = getConfigFile(projectFiles)
   if (testJobFiles.length >= 1 && !configFile) throw new Error('File `test-e2e.config.json` missing')
-  if (configFile && testJobFiles.length === 0) throw new Error('No file `.testJob.json` found')
+  if (configFile && testJobFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
 
   if (testJobFiles.length >= 1) {
     assert(configFile)
@@ -173,7 +173,7 @@ function getConfigFile(projectFiles) {
 
 /** @type { (projectFiles: string[]) => string[] } */
 function getTestJobFiles(projectFiles) {
-  const testJobFiles = projectFiles.filter((file) => file.endsWith('.testJob.json'))
+  const testJobFiles = projectFiles.filter((file) => file.endsWith('.testCiJob.json'))
   return testJobFiles
 }
 
