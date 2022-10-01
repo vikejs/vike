@@ -8,15 +8,14 @@ const args = process.argv
 
 const root = cmd('git rev-parse --show-toplevel')
 const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
-/** @type string[] */
-let testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
+const testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
 
 export { getMatrix }
-if (args.includes('--ci')) cli()
+if (args.includes('--ci')) logMatrix()
 
-/** @typedef { ({ name: string, TEST_FILES: string, testCmd: string } & Setup) } MatrixEntry */
+/** @typedef { { name: string, TEST_FILES: string, testCmd: string } & Setup } MatrixEntry */
 /** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } Job */
-/** @typedef {{os: string, node_version: string}} Setup */
+/** @typedef { { os: string, node_version: string } } Setup */
 
 /** @type { () => Job[] } */
 function getJobs() {
@@ -128,17 +127,8 @@ function isReactExample(testFile) {
   return !!pkgJson.dependencies['react']
 }
 
-/** @type { (args: {isMatrixTest?: true }) => MatrixEntry[] } */
-function getMatrix({ isMatrixTest } = {}) {
-  const focus = !isMatrixTest && getFocus()
-  if (focus) {
-    testFiles = focusFilter(testFiles, focus)
-  }
-
-  let jobs = getJobs()
-  if (focus) {
-    jobs = jobs.filter((job) => job.testFiles && job.testFiles.length >= 1)
-  }
+function getMatrix() {
+  const jobs = getJobs()
 
   assertTestFilesCoverage(testFiles, jobs)
 
@@ -158,12 +148,6 @@ function getMatrix({ isMatrixTest } = {}) {
   return matrix
 }
 
-/** @type { (testFiles: string[], focus: string) => string[] } */
-function focusFilter(testFiles, focus) {
-  const focusDir = path.dirname(focus)
-  testFiles = testFiles.filter((f) => f.startsWith(focusDir))
-  return testFiles
-}
 function getFocus() {
   const focusFiles = projectFiles.filter((file) => file.endsWith('/focus'))
   if (focusFiles.length === 0) {
@@ -185,7 +169,7 @@ function assertTestFilesCoverage(testFiles, jobs) {
   })
 }
 
-function cli() {
+function logMatrix() {
   const matrix = getMatrix()
   if (args.includes('--debug')) {
     console.log(JSON.stringify(matrix, null, 2))

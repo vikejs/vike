@@ -1,4 +1,4 @@
-import { getMatrix } from './getMatrix.mjs'
+import { getMatrix } from './getTestJobs.mjs'
 import { expect, describe, it } from 'vitest'
 
 //*/
@@ -16,7 +16,7 @@ describe('getMatrix()', () => {
   }
 
   it('basics', () => {
-    const matrix = getMatrix({ isMatrixTest: true })
+    const matrix = getMatrix()
     expect(matrix).toMatchInlineSnapshot(`
       [
         {
