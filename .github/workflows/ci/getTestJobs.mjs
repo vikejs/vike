@@ -77,17 +77,6 @@ function getTestJobs() {
       ],
       jobCmd: 'pnpm run test:e2e'
     },
-    {
-      jobName: 'Boilerplates',
-      jobCmd: 'pnpm run test:e2e',
-      jobTestFiles: testFiles.filter((f) => f.startsWith('boilerplates/')),
-      jobSetups: [
-        {
-          os: 'macos-latest',
-          node_version: '17'
-        }
-      ]
-    },
     ...crawlTestJobs()
   ]
 
@@ -145,6 +134,7 @@ function crawlTestJobs() {
 
     const dir = path.dirname(testJobFile) + path.sep
     const jobTestFiles = getTestFiles().filter((f) => f.startsWith(dir))
+    assert(jobTestFiles.length > 0, `No test files found in \`${dir}\` (for \`${testJobFile}\`).`)
 
     const job = jobs.find((job) => job.jobName == jobName)
     if (job === undefined) {
@@ -223,7 +213,10 @@ function getMatrix() {
 function assertTestFilesCoverage(testFiles, jobs) {
   testFiles.forEach((testFile) => {
     const jobsFound = jobs.filter((job) => job.jobTestFiles?.includes(testFile))
-    assert(jobsFound.length > 0, `Test file ${testFile} isn't included in any job. Jobs: ${JSON.stringify(jobs, null, 2)}`)
+    assert(
+      jobsFound.length > 0,
+      `Test file ${testFile} isn't included in any job. Jobs: ${JSON.stringify(jobs, null, 2)}`
+    )
     assert(
       jobsFound.length <= 1,
       `Test ${testFile} is multiple categories: ${jobsFound.map((j) => '`' + j.jobName + '`').join(' ')}.`
