@@ -1,0 +1,9 @@
+{
+  "name": "https://vite-plugin-ssr.com",
+  "setups": [
+    {
+      "os": "ubuntu-latest",
+      "node_version": "17"
+    }
+  ]
+}

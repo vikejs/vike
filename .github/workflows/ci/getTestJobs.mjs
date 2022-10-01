@@ -7,8 +7,6 @@ const require = createRequire(import.meta.url)
 const args = process.argv
 
 const root = cmd('git rev-parse --show-toplevel')
-const projectFiles = cmd(`git ls-files`, { cwd: root }).split(' ')
-const testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
 
 export { getTestJobs }
 if (args.includes('--ci')) logMatrix()
@@ -17,8 +15,24 @@ if (args.includes('--ci')) logMatrix()
 /** @typedef { { jobName: string, jobTestFiles?: string[], jobSetups: Setup[], jobCmd: string } } Job */
 /** @typedef { { os: string, node_version: string } } Setup */
 
+function getTestFiles() {
+  const projectFiles = getProjectFiles()
+  const testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
+  return testFiles
+}
+
+function getProjectFiles() {
+  const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
+  // Also include untracked files.
+  //  - In other words, we remove git ignored files. (Staged files are tracked and listed by `$ git ls-files`.)
+  //  - `git ls-files --others --exclude-standard` from https://stackoverflow.com/questions/3801321/git-list-only-untracked-files-also-custom-commands/3801554#3801554
+  const projectFiles2 = cmd(`git ls-files --others --exclude-standard`, { cwd: root }).split(' ')
+  return [...projectFiles1, ...projectFiles2]
+}
+
 /** @type { () => Job[] } */
 function getTestJobs() {
+  const testFiles = getTestFiles()
   /** @type { Job[] } */
   const jobs = [
     // Unit tests
@@ -85,22 +99,52 @@ function getTestJobs() {
       ],
       jobCmd: 'pnpm run test:e2e'
     },
-    {
-      jobName: 'https://vite-plugin-ssr.com',
-      jobCmd: 'pnpm run test:e2e',
-      jobTestFiles: testFiles.filter((f) => f.startsWith('docs/')),
-      jobSetups: [
-        {
-          os: 'ubuntu-latest',
-          node_version: '17'
-        }
-      ]
-    }
+    ...crawlTestJobs()
   ]
 
   assertTestFilesCoverage(testFiles, jobs)
 
   return jobs
+}
+
+/** @type { () => Job[] } */
+function crawlTestJobs() {
+  const projectFiles = getProjectFiles()
+  const testJobs = projectFiles
+    .filter((file) => file.endsWith('.testJob.json'))
+    .map((testJobFile) => {
+      /** @type { { name: string, setups: {os: string, node_version: string }[] } } */
+      const testJobJson = require(path.join(root, testJobFile))
+      const dir = path.dirname(testJobFile)
+      const testFiles = getTestFiles().filter((f) => f.startsWith(dir))
+      return { testJobJson, testFiles }
+    })
+    .map(({ testJobJson, testFiles }) => {
+      const jobName = testJobJson.name
+      assert(jobName)
+      assert(typeof jobName === 'string')
+      /** @type { {os: string, node_version: string }[] }  */
+      const jobSetups = []
+      testJobJson.setups.forEach((setup) => {
+        const { os, node_version } = setup
+        assert(os)
+        assert(typeof os === 'string')
+        assert(node_version)
+        assert(typeof node_version === 'string')
+        jobSetups.push({
+          os,
+          node_version
+        })
+      })
+      return {
+        jobName,
+        jobTestFiles: testFiles,
+        jobSetups: testJobJson.setups,
+        jobCmd: 'pnpm run test:e2e'
+      }
+    })
+
+  return testJobs
 }
 
 /** @type { (testFiles: string[], opts: {react?: boolean, cloudflare?: true}) => string[] } */
