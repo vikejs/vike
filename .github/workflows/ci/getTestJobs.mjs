@@ -113,19 +113,19 @@ function crawlTestJobs() {
   const testJobs = projectFiles
     .filter((file) => file.endsWith('.testJob.json'))
     .map((testJobFile) => {
-      /** @type { { name: string, setups: {os: string, node_version: string }[] } } */
+      /** @type { Record<string, unknown> } */
       const testJobJson = require(path.join(root, testJobFile))
       const dir = path.dirname(testJobFile)
-      const testFiles = getTestFiles().filter((f) => f.startsWith(dir))
-      return { testJobJson, testFiles }
-    })
-    .map(({ testJobJson, testFiles }) => {
+      const jobTestFiles = getTestFiles().filter((f) => f.startsWith(dir))
+
       const jobName = testJobJson.name
       assert(jobName)
       assert(typeof jobName === 'string')
       /** @type { {os: string, node_version: string }[] }  */
       const jobSetups = []
-      testJobJson.setups.forEach((setup) => {
+      const { setups } = testJobJson
+      assert(Array.isArray(setups))
+      setups.forEach((setup) => {
         const { os, node_version } = setup
         assert(os)
         assert(typeof os === 'string')
@@ -138,8 +138,8 @@ function crawlTestJobs() {
       })
       return {
         jobName,
-        jobTestFiles: testFiles,
-        jobSetups: testJobJson.setups,
+        jobTestFiles,
+        jobSetups,
         jobCmd: 'pnpm run test:e2e'
       }
     })
