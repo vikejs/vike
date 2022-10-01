@@ -15,12 +15,6 @@ if (args.includes('--ci')) logMatrix()
 /** @typedef { { jobName: string, jobTestFiles?: string[], jobSetups: Setup[], jobCmd: string } } Job */
 /** @typedef { { os: string, node_version: string } } Setup */
 
-function getTestFiles() {
-  const projectFiles = getProjectFiles()
-  const testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
-  return testFiles
-}
-
 function getProjectFiles() {
   const projectFiles1 = cmd(`git ls-files`, { cwd: root }).split(' ')
   // Also include untracked files.
@@ -32,7 +26,9 @@ function getProjectFiles() {
 
 /** @type { () => Job[] } */
 function getTestJobs() {
-  const testFiles = getTestFiles()
+  const projectFiles = getProjectFiles()
+  const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
+  const testFiles = projectFiles.filter((file) => file.includes('.test.'))
 
   /** @type { Job[] } */
   const jobs = [
@@ -40,15 +36,17 @@ function getTestJobs() {
     {
       jobName: 'Unit Tests',
       jobCmd: 'pnpm run test:units',
-      jobTestFiles: testFiles.filter((f) => f.includes('.spec.')),
+      jobTestFiles: specFiles,
       jobSetups: [{ os: 'windows-latest', node_version: '14' }]
     },
+    // Typecheck `.ts` files
     {
       jobName: 'TypeScript',
       jobCmd: 'pnpm run test:types',
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
-    ...crawlTestJobs(testFiles)
+    // E2e tests
+    ...crawlE2eJobs(testFiles)
   ]
 
   assertTestFilesCoverage(testFiles, jobs)
@@ -57,7 +55,7 @@ function getTestJobs() {
 }
 
 /** @type { (testFiles: string[]) => Job[] } */
-function crawlTestJobs(testFiles) {
+function crawlE2eJobs(testFiles) {
   const projectFiles = getProjectFiles()
 
   /** @type { Job[] } */
@@ -120,6 +118,30 @@ function crawlTestJobs(testFiles) {
     assert(job.jobTestFiles)
     job.jobTestFiles.push(...jobTestFiles)
   })
+
+  {
+    /** @type { null | Job } */
+    let job = null
+    testFiles.forEach((testFile) => {
+      const isMissing = !jobs.some((job) => {
+        assert(job.jobTestFiles)
+        return job.jobTestFiles.includes(testFile)
+      })
+      if (isMissing) {
+        if (!job) {
+          job = {
+            jobName: 'E2E Tests',
+            jobCmd: 'pnpm run test:e2e',
+            jobTestFiles: [],
+            jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
+          }
+          jobs.push(job)
+        }
+        assert(job.jobTestFiles)
+        job.jobTestFiles.push(testFile)
+      }
+    })
+  }
 
   return jobs
 }
