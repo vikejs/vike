@@ -132,7 +132,10 @@ function crawlTestJobs() {
     assert(jobName)
     assert(typeof jobName === 'string')
 
-    const dir = path.dirname(testJobFile) + path.sep
+    const dir =
+      path.dirname(testJobFile) +
+      // `$ git ls-files` returns posix paths
+      path.posix.sep
     const testFiles = getTestFiles()
     const jobTestFiles = testFiles.filter((f) => f.startsWith(dir))
     assert(
