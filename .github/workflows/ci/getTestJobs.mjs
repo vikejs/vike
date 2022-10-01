@@ -13,8 +13,8 @@ const testFiles = projectFiles.filter((file) => /\.(test|spec)\./.test(file))
 export { getMatrix }
 if (args.includes('--ci')) logMatrix()
 
-/** @typedef { { name: string, TEST_FILES: string, testCmd: string } & Setup } MatrixEntry */
-/** @typedef { { name: string, testFiles?: string[], setups: Setup[], testCmd: string } } Job */
+/** @typedef { { testName: string, TEST_FILES: string, testCmd: string } & Setup } MatrixEntry */
+/** @typedef { { testName: string, testFiles?: string[], setups: Setup[], testCmd: string } } Job */
 /** @typedef { { os: string, node_version: string } } Setup */
 
 /** @type { () => Job[] } */
@@ -23,18 +23,18 @@ function getJobs() {
   const jobs = [
     // Unit tests
     {
-      name: 'Unit Tests',
+      testName: 'Unit Tests',
       testCmd: 'pnpm run test:units',
       testFiles: testFiles.filter((f) => f.includes('.spec.')),
       setups: [{ os: 'windows-latest', node_version: '14' }]
     },
     {
-      name: 'TypeScript',
+      testName: 'TypeScript',
       testCmd: 'pnpm run test:types',
       setups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     {
-      name: 'Examples React',
+      testName: 'Examples React',
       testCmd: 'pnpm run test:e2e',
       testFiles: findExamples(testFiles, { react: true }),
       setups: [
@@ -49,7 +49,7 @@ function getJobs() {
       ]
     },
     {
-      name: 'Examples Vue/Others',
+      testName: 'Examples Vue/Others',
       testFiles: findExamples(testFiles, { react: false }),
       setups: [
         {
@@ -64,7 +64,7 @@ function getJobs() {
       testCmd: 'pnpm run test:e2e'
     },
     {
-      name: 'Boilerplates',
+      testName: 'Boilerplates',
       testCmd: 'pnpm run test:e2e',
       testFiles: testFiles.filter((f) => f.startsWith('boilerplates/')),
       setups: [
@@ -75,7 +75,7 @@ function getJobs() {
       ]
     },
     {
-      name: 'Cloudflare',
+      testName: 'Cloudflare',
       testFiles: findExamples(testFiles, { cloudflare: true }),
       setups: [
         {
@@ -86,7 +86,7 @@ function getJobs() {
       testCmd: 'pnpm run test:e2e'
     },
     {
-      name: 'https://vite-plugin-ssr.com',
+      testName: 'https://vite-plugin-ssr.com',
       testCmd: 'pnpm run test:e2e',
       testFiles: testFiles.filter((f) => f.startsWith('docs/')),
       setups: [
@@ -134,11 +134,11 @@ function getMatrix() {
 
   /** @type MatrixEntry[] */
   const matrix = []
-  jobs.forEach(({ name, testFiles, setups, testCmd }) => {
+  jobs.forEach(({ testName, testFiles, setups, testCmd }) => {
     setups.forEach((setup) => {
       matrix.push({
         testCmd,
-        name: name + getJobName(setup),
+        testName: testName + getJobName(setup),
         TEST_FILES: (testFiles ?? []).join(' '),
         ...setup
       })
@@ -148,15 +148,6 @@ function getMatrix() {
   return matrix
 }
 
-function getFocus() {
-  const focusFiles = projectFiles.filter((file) => file.endsWith('/focus'))
-  if (focusFiles.length === 0) {
-    return false
-  }
-  assert(focusFiles.length === 1, 'There cannot be only one `focus` file but found multiple: ' + focusFiles.join(' '))
-  return focusFiles[0]
-}
-
 /** @type { (testFiles: string[], jobs: Job[]) => void } */
 function assertTestFilesCoverage(testFiles, jobs) {
   testFiles.forEach((testFile) => {
@@ -164,7 +155,7 @@ function assertTestFilesCoverage(testFiles, jobs) {
     assert(testFileJobs.length > 0, `Test ${testFile} is missing in categories.`)
     assert(
       testFileJobs.length <= 1,
-      `Test ${testFile} is multiple categories: ${testFileJobs.map((j) => '`' + j.name + '`').join(' ')}.`
+      `Test ${testFile} is multiple categories: ${testFileJobs.map((j) => '`' + j.testName + '`').join(' ')}.`
     )
   })
 }
