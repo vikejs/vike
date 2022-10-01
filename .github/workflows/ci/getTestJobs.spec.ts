@@ -75,8 +75,8 @@ describe('getTestJobs()', () => {
             "examples/i18n/.test-preview.test.ts",
             "examples/layouts-react/.test-dev.test.ts",
             "examples/layouts-react/.test-preview.test.ts",
-            "examples/path-aliases/.prod-static.test.ts",
             "examples/path-aliases/.test-dev.test.ts",
+            "examples/path-aliases/.test-prod-static.test.ts",
             "examples/path-aliases/.test-prod.test.ts",
             "examples/react-17/.test-dev.test.ts",
             "examples/react-17/.test-preview.test.ts",
@@ -155,7 +155,7 @@ describe('getTestJobs()', () => {
           ],
           "jobTestFiles": [
             "examples/cloudflare-workers-react-full/.test-dev.test.ts",
-            "examples/cloudflare-workers-react-full/.wrangler.test.ts",
+            "examples/cloudflare-workers-react-full/.test-wrangler.test.ts",
             "examples/cloudflare-workers-react/.test-dev.test.ts",
             "examples/cloudflare-workers-react/.test-preview.test.ts",
             "examples/cloudflare-workers-vue/.test-dev.test.ts",
