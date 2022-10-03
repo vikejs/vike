@@ -1,3 +1,12 @@
+## [0.4.39](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.38...v0.4.39) (2022-10-03)
+
+
+### Bug Fixes
+
+* add timeout to hook calls ([1f5be92](https://github.com/brillout/vite-plugin-ssr/commit/1f5be92b09a33d290908da0d24913ca556370036))
+
+
+
 ## [0.4.38](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.37...v0.4.38) (2022-09-22)
 
 
