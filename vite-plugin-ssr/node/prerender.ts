@@ -16,7 +16,8 @@ import {
   isObject,
   hasPropertyGetter,
   assertPosixPath,
-  urlToFile
+  urlToFile,
+  callHookWithTimeout
 } from './utils'
 import { pLimit, PLimit } from '../utils/pLimit'
 import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
@@ -404,14 +405,14 @@ async function callOnBeforePrerenderHook(globalContext: {
     assert(p.fileExports)
     const { onBeforePrerender } = p.fileExports
     assert(onBeforePrerender)
-    const { filePath } = p
-    return { filePath, onBeforePrerender }
+    const hookFilePath = p.filePath
+    return { hookFilePath, onBeforePrerender }
   })
   assert(hooks.length === 1)
   const hook = hooks[0]!
-  const { onBeforePrerender, filePath } = hook
+  const { onBeforePrerender, hookFilePath } = hook
 
-  const msgPrefix = `\`export { onBeforePrerender }\` of ${filePath}`
+  const msgPrefix = `\`export { onBeforePrerender }\` of ${hookFilePath}`
 
   assertUsage(isCallable(onBeforePrerender), `${msgPrefix} should be a function.`)
 
@@ -433,11 +434,11 @@ async function callOnBeforePrerenderHook(globalContext: {
     assert(pageContext.urlOriginal)
   })
 
-  const result = await onBeforePrerender(globalContext)
+  const result = await callHookWithTimeout(() => onBeforePrerender(globalContext), 'onBeforePrerender', hookFilePath)
   if (result === null || result === undefined) {
     return
   }
-  const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${filePath}\``
+  const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${hookFilePath}\``
   assertUsage(
     isObjectWithKeys(result, ['globalContext'] as const) && hasProp(result, 'globalContext'),
     `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object \`{ globalContext: { /* ... */ } }\`.`

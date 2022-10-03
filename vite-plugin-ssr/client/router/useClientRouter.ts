@@ -12,7 +12,8 @@ import {
   serverSideRouteTo,
   throttle,
   sleep,
-  getGlobalObject
+  getGlobalObject,
+  callHookWithTimeout
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
@@ -188,12 +189,15 @@ function useClientRouter() {
     renderPromise = (async () => {
       const pageContextReadyForRelease = releasePageContext(pageContext)
       assertRenderHook(pageContext)
+      const hookFilePath = pageContext.exportsAll.render![0]!._filePath
+      assert(hookFilePath)
       // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-      const hookResult = await pageContext.exports.render(pageContextReadyForRelease)
-      assertUsage(
-        hookResult === undefined,
-        '`export { render }` of ' + pageContext.exportsAll.render![0]!._filePath + ' should not return any value'
+      const hookResult = await callHookWithTimeout(
+        () => pageContext.exports.render(pageContextReadyForRelease),
+        'render',
+        hookFilePath
       )
+      assertUsage(hookResult === undefined, `The render() hook of ${hookFilePath} isn't allowed to return a value`)
       addLinkPrefetchHandlers(pageContext)
     })()
     await renderPromise
@@ -201,7 +205,12 @@ function useClientRouter() {
 
     if (pageContext._isFirstRenderAttempt) {
       assertHook(pageContext, 'onHydrationEnd')
-      await pageContext.exports.onHydrationEnd?.(pageContext)
+      const { onHydrationEnd } = pageContext.exports
+      if (onHydrationEnd) {
+        const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!._filePath
+        assert(hookFilePath)
+        await callHookWithTimeout(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
+      }
     } else if (renderingNumber === renderingCounter) {
       if (pageContext.exports.onPageTransitionEnd) {
         assertHook(pageContext, 'onPageTransitionEnd')

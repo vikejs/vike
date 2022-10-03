@@ -1,5 +1,14 @@
 import { navigationState } from '../navigationState'
-import { assert, assertUsage, hasProp, isPlainObject, objectAssign, getProjectError, serverSideRouteTo } from './utils'
+import {
+  assert,
+  assertUsage,
+  hasProp,
+  isPlainObject,
+  objectAssign,
+  getProjectError,
+  serverSideRouteTo,
+  callHookWithTimeout
+} from './utils'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
 import { PageContextExports, PageFile } from '../../shared/getPageFiles'
@@ -159,7 +168,11 @@ async function onBeforeRenderExecute(
       ...pageContext,
       ...pageContextAddendum
     })
-    const hookResult = await onBeforeRender(pageContextReadyForRelease)
+    const hookResult = await callHookWithTimeout(
+      () => onBeforeRender(pageContextReadyForRelease),
+      'onBeforeRender',
+      hook.filePath
+    )
     assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.filePath)
     const pageContextFromHook = hookResult?.pageContext
     objectAssign(pageContextAddendum, pageContextFromHook)

@@ -3,6 +3,7 @@ export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
+export { errorPrefix }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
@@ -56,7 +57,11 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
 }
 
 function getProjectError(errorMessage: string) {
-  const pluginError = createErrorWithCleanStackTrace(`${errorPrefix} ${errorMessage}`, numberOfStackTraceLinesToRemove)
+  const sep = errorMessage.startsWith('[') ? '' : ' '
+  const pluginError = createErrorWithCleanStackTrace(
+    `${errorPrefix}${sep}${errorMessage}`,
+    numberOfStackTraceLinesToRemove
+  )
   return pluginError
 }
 

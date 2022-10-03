@@ -19,7 +19,8 @@ import {
   parseUrl,
   makeFirst,
   isSameErrorMessage,
-  createDebugger
+  createDebugger,
+  callHookWithTimeout
 } from './utils'
 import type { PageAsset } from './html/injectAssets'
 import { getPageAssets } from './renderPage/getPageAssets'
@@ -723,7 +724,7 @@ async function executeOnBeforeRenderHooks(
   }
   const onBeforeRender = hook.hook
   preparePageContextForRelease(pageContext)
-  const hookResult = await onBeforeRender(pageContext)
+  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.filePath)
 
   assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.filePath)
   const pageContextFromHook = hookResult?.pageContext
@@ -763,7 +764,7 @@ async function executeRenderHook(
   const renderFilePath = hook.filePath
 
   preparePageContextForRelease(pageContext)
-  const result = await render(pageContext)
+  const result = await callHookWithTimeout(() => render(pageContext), 'render', hook.filePath)
   if (isObject(result) && !isDocumentHtml(result)) {
     assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
   }

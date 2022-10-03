@@ -4,9 +4,11 @@ export { assertObjectKeys }
 import { assert, assertUsage, isPlainObject, stringifyStringArray } from './utils'
 import { assertPageContextProvidedByUser } from './assertPageContextProvidedByUser'
 
+type HookName = 'render' | 'onBeforeRender'
+
 function assertHookResult<Keys extends readonly string[]>(
   hookResult: unknown,
-  hookName: 'onBeforeRender' | 'render',
+  hookName: HookName,
   hookResultKeys: Keys,
   hookFile: string
 ): asserts hookResult is undefined | null | { [key in Keys[number]]?: unknown } {
