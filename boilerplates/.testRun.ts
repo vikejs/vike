@@ -121,7 +121,7 @@ function testRun(
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {
       await page.click('button')
-      expect(await page.textContent('button')).toContain('Counter 1')
+      expect(await page.textContent('button')).toBe('Counter 1')
     })
   })
 
@@ -140,16 +140,17 @@ function testRun(
         }
         assert(false)
       })()
-      expect(await page.textContent('button')).toContain('Counter 1')
+      expect(await page.textContent('button')).toBe('Counter 1')
       expect(await page.textContent('h1')).toBe('Welcome')
       await sleep(300)
       editFile(file, (s) => s.replace('Welcome', 'Welcome !'))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Welcome !')
       })
+      expect(await page.textContent('button')).toBe('Counter 1')
       await sleep(300)
       editFileRevert()
-      expect(await page.textContent('button')).toContain('Counter 1')
+      expect(await page.textContent('button')).toBe('Counter 1')
     })
   }
 
