@@ -46,6 +46,15 @@
         ]
       },
       {
+        "name": "Unit Tests E2E",
+        "setups": [
+          {
+            "os": "windows-latest",
+            "node_version": "18"
+          }
+        ]
+      },
+      {
         "name": "https://vite-plugin-ssr.com",
         "setups": [
           {
