@@ -65,6 +65,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
         // But auto reload works
         expect(await page.textContent('h1')).toBe('HTML-only !')
         editFileRevert()
+        await page.waitForNavigation()
+        expect(await page.textContent('h1')).toBe('HTML-only')
       }
       {
         await testColor('orange')
@@ -146,6 +148,8 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
         // But auto reload works
         expect(await page.textContent('h1')).toBe('HTML + JS !')
         editFileRevert()
+        await page.waitForNavigation()
+        expect(await page.textContent('h1')).toBe('HTML + JS')
       }
       {
         await testColor('red')
