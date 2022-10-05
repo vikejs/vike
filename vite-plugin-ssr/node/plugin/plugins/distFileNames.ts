@@ -6,7 +6,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
 import { deduceRouteStringFromFilesystemPath } from '../../../shared/route/deduceRouteStringFromFilesystemPath'
-import { extractStylesRE } from './extractStylesPlugin'
+import { extractAssetsRE } from './extractAssetsPlugin'
 
 function distFileNames(): Plugin {
   return {
@@ -36,13 +36,13 @@ function getAssetFileName(
     assetFileName ??= `${assetsDir}/chunk-[hash][extname]`
   }
 
-  // dist/client/assets/index.page.server.jsx_extractStyles_lang.e4e33422.css
+  // dist/client/assets/index.page.server.jsx_extractAssets_lang.e4e33422.css
   // => dist/client/assets/index.page.server.e4e33422.css
   if (
     // Vite 2
-    assetInfo.name?.endsWith('_extractStyles_lang.css') ||
+    assetInfo.name?.endsWith('_extractAssets_lang.css') ||
     // Vite 3
-    assetInfo.name?.endsWith('?extractStyles&lang.css')
+    assetInfo.name?.endsWith('?extractAssets&lang.css')
   ) {
     const nameBase = assetInfo.name.split('.').slice(0, -2).join('.')
     assetFileName ??= `${assetsDir}/${nameBase}.[hash][extname]`
@@ -69,7 +69,7 @@ function getChunkFileName(chunkInfo: PreRenderedChunk, chunkFileName: string | u
     !id ||
     id.includes('/node_modules/') ||
     !id.startsWith(root) ||
-    (id.includes('.page.server.') && extractStylesRE.test(id))
+    (id.includes('.page.server.') && extractAssetsRE.test(id))
   ) {
     chunkFileName ??= `${assetsDir}/chunk-[hash].js`
     return chunkFileName

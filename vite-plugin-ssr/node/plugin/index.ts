@@ -15,7 +15,7 @@ import { generateImportGlobs } from './plugins/generateImportGlobs'
 import { setVitePluginSsrConfig } from './plugins/config'
 import type { ConfigVpsUser } from './plugins/config/ConfigVps'
 import { distFileNames } from './plugins/distFileNames'
-import { extractStylesPlugin } from './plugins/extractStylesPlugin'
+import { extractAssetsPlugin } from './plugins/extractAssetsPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
@@ -36,7 +36,7 @@ function plugin(vpsConfig?: ConfigVpsUser): any {
     packageJsonFile(),
     removeRequireHookPlugin(),
     distFileNames(),
-    ...extractStylesPlugin(),
+    ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     retrieveDevServer(),

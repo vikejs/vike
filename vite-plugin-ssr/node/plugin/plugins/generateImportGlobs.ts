@@ -97,7 +97,7 @@ export const isGeneratedFile = true;
       getGlobs(includePaths, isBuild, 'page', 'extractExportNames')
     ].join('\n')
     if (config.vitePluginSsr.includeAssetsImportedByServer) {
-      fileContent += getGlobs(includePaths, isBuild, 'page.server', 'extractStyles')
+      fileContent += getGlobs(includePaths, isBuild, 'page.server', 'extractAssets')
     }
   } else {
     fileContent += [
@@ -120,7 +120,7 @@ function getGlobs(
   includePaths: string[],
   isBuild: boolean,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
-  query?: 'extractExportNames' | 'extractStyles'
+  query?: 'extractExportNames' | 'extractAssets'
 ): string {
   const isEager = isBuild && (query === 'extractExportNames' || fileSuffix === 'page.route')
 
@@ -136,7 +136,7 @@ function getGlobs(
     } else {
       pageFilesVar = 'pageFilesExportNamesEager'
     }
-  } else if (query === 'extractStyles') {
+  } else if (query === 'extractAssets') {
     assert(!isEager)
     pageFilesVar = 'neverLoaded'
   } else if (!query) {

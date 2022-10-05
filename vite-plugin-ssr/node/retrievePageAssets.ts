@@ -5,7 +5,7 @@ import { assert, assertUsage, styleFileRE } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
-import { extractStylesAddQuery } from './plugin/plugins/extractStylesPlugin/extractStylesAddQuery'
+import { extractAssetsAddQuery } from './plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
@@ -47,7 +47,7 @@ async function retrieveAssetsProd(
       if (!includeAssetsImportedByServer) {
         return
       }
-      id = extractStylesAddQuery(id)
+      id = extractAssetsAddQuery(id)
     }
     const entry = getManifestEntry(id, clientManifest)
     if (!entry) {

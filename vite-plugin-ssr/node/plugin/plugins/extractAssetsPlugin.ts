@@ -1,9 +1,9 @@
 // This plugin makes the client-side bundle include CSS imports that live in files loaded only on the server-side. (Needed for HTML-only pages, and React Server Components.)
-// We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vps:extractStyles pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
+// We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vps:extractAssets pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
 // This appraoch supports import path aliases set by `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
 
-export { extractStylesPlugin }
-export { extractStylesRE }
+export { extractAssetsPlugin }
+export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ResolvedId } from 'rollup'
@@ -18,7 +18,7 @@ import {
   isScriptFile
 } from '../utils'
 import { removeSourceMap, getImportStatements, ImportStatement } from '../helpers'
-import { extractStylesAddQuery } from './extractStylesPlugin/extractStylesAddQuery'
+import { extractAssetsAddQuery } from './extractAssetsPlugin/extractAssetsAddQuery'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'
@@ -27,28 +27,28 @@ import {
   virtualModuleIdPageFilesClientCR
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 
-const extractStylesRE = /(\?|&)extractStyles(?:&|$)/
+const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
 const rawRE = /(\?|&)raw(?:&|$)/
 const urlRE = /(\?|&)url(?:&|$)/
 const EMPTY_MODULE_ID = 'virtual:vite-plugin-ssr:empty-module'
 
-const debugNamespace = 'vps:extractStyles'
+const debugNamespace = 'vps:extractAssets'
 const debug = createDebugger(debugNamespace)
 const debugEnabled = isDebugEnabled(debugNamespace)
 
 type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
 
-function extractStylesPlugin(): Plugin[] {
+function extractAssetsPlugin(): Plugin[] {
   let config: Config
   return [
-    // Remove all JS from `.page.server.js` files and `?extractStyles` imports, so that only CSS remains
+    // Remove all JS from `.page.server.js` files and `?extractAssets` imports, so that only CSS remains
     {
-      name: 'vite-plugin-ssr:extractStyles-1',
+      name: 'vite-plugin-ssr:extractAssets-1',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
       apply: 'build',
       enforce: 'post',
       async transform(src, id, options) {
-        if (!extractStylesRE.test(id)) {
+        if (!extractAssetsRE.test(id)) {
           return
         }
         assert(config.vitePluginSsr.includeAssetsImportedByServer)
@@ -61,7 +61,7 @@ function extractStylesPlugin(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:extractStyles-2',
+      name: 'vite-plugin-ssr:extractAssets-2',
       apply: 'build',
       // We ensure this plugin to be run before:
       //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
@@ -69,9 +69,9 @@ function extractStylesPlugin(): Plugin[] {
       enforce: 'pre',
       async resolveId(source, importer, options) {
         if (viteIsSSR_options(options)) {
-          // When building for the server, there should never be a `?extractStyles` query
-          assert(!extractStylesRE.test(source))
-          assert(importer === undefined || !extractStylesRE.test(importer))
+          // When building for the server, there should never be a `?extractAssets` query
+          assert(!extractAssetsRE.test(source))
+          assert(importer === undefined || !extractAssetsRE.test(importer))
           return
         }
 
@@ -80,7 +80,7 @@ function extractStylesPlugin(): Plugin[] {
           return
         }
 
-        if (!extractStylesRE.test(importer)) {
+        if (!extractAssetsRE.test(importer)) {
           return
         }
         assert(config.vitePluginSsr.includeAssetsImportedByServer)
@@ -88,16 +88,16 @@ function extractStylesPlugin(): Plugin[] {
         if (source.includes('.page.server.')) {
           // For a Vue SFC `.page.server.vue`:
           //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
-          //  - importer: `.page.server.vue?extractStyles&lang.vue`
+          //  - importer: `.page.server.vue?extractAssets&lang.vue`
           const isVueSFC = source.includes('?vue&')
-          // The first `?extractStyles` queries are appended to `.page.sever.js` files by `import.meta.glob()`
-          assert(extractStylesRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
+          // The first `?extractAssets` queries are appended to `.page.sever.js` files by `import.meta.glob()`
+          assert(extractAssetsRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
           assert(
             importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC
           )
         } else {
-          // All other `?extractStyles` queries are appended when this `resolveId()` hook returns `appendExtractStylesQuery()`
-          assert(!extractStylesRE.test(source), { source })
+          // All other `?extractAssets` queries are appended when this `resolveId()` hook returns `appendExtractAssetsQuery()`
+          assert(!extractAssetsRE.test(source), { source })
         }
 
         let resolution: null | ResolvedId = null
@@ -144,7 +144,7 @@ function extractStylesPlugin(): Plugin[] {
             return false
           })
         ) {
-          return appendExtractStylesQuery(file, importer)
+          return appendExtractAssetsQuery(file, importer)
         }
 
         // If the import path resolves to a file in `node_modules/`, we ignore that file:
@@ -160,11 +160,11 @@ function extractStylesPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        return appendExtractStylesQuery(file, importer)
+        return appendExtractAssetsQuery(file, importer)
       }
     },
     {
-      name: 'vite-plugin-ssr:extractStyles-3',
+      name: 'vite-plugin-ssr:extractAssets-3',
       apply: 'build',
       configResolved(config_) {
         assertConfigVpsResolved(config_)
@@ -172,7 +172,7 @@ function extractStylesPlugin(): Plugin[] {
       },
       load(id) {
         if (id === EMPTY_MODULE_ID) {
-          return '// Erased by `vite-plugin-ssr:extractStyles`.'
+          return '// Erased by `vite-plugin-ssr:extractAssets`.'
         }
       },
       config() {
@@ -188,9 +188,9 @@ function emptyModule(file: string, importer: string) {
   debugOperation('NUKED', file, importer)
   return EMPTY_MODULE_ID
 }
-function appendExtractStylesQuery(file: string, importer: string) {
+function appendExtractAssetsQuery(file: string, importer: string) {
   debugOperation('TRANSFORMED', file, importer)
-  return extractStylesAddQuery(file)
+  return extractAssetsAddQuery(file)
 }
 
 function getImportedModules(importStatements: ImportStatement[]): string[] {
