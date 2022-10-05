@@ -150,6 +150,9 @@ function testRun(
       expect(await page.textContent('button')).toBe('Counter 1')
       await sleep(300)
       editFileRevert()
+      await autoRetry(async () => {
+        expect(await page.textContent('h1')).toBe('Welcome')
+      })
       expect(await page.textContent('button')).toBe('Counter 1')
     })
   }
