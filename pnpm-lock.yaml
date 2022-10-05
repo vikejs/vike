@@ -747,13 +747,13 @@ importers:
       vue: 3.2.33
       vuex: 4.0.2_vue@3.2.33
 
-  test:
+  test/renderPage:
     specifiers:
       vite: ^3.0.9
-      vite-plugin-ssr: link:../vite-plugin-ssr
+      vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       vite: 3.0.9
-      vite-plugin-ssr: link:../vite-plugin-ssr
+      vite-plugin-ssr: link:../../vite-plugin-ssr
 
   vite-plugin-ssr:
     specifiers:
