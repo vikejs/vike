@@ -510,7 +510,6 @@ importers:
       '@mdx-js/mdx': ^2.1.1
       '@mdx-js/react': ^2.1.1
       '@mdx-js/rollup': ^2.1.1
-      '@types/express': ^4.17.13
       '@types/node': ^17.0.31
       '@types/node-fetch': ^2.5.12
       '@types/react': ^18.0.8
@@ -527,7 +526,6 @@ importers:
       '@mdx-js/mdx': 2.1.1
       '@mdx-js/react': 2.1.1_react@18.1.0
       '@mdx-js/rollup': 2.1.1
-      '@types/express': 4.17.13
       '@types/node': 17.0.31
       '@types/node-fetch': 2.6.1
       '@types/react': 18.0.8
