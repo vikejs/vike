@@ -116,7 +116,8 @@ function extractAssetsPlugin(): Plugin[] {
         // Include:
         //  - CSS(/LESS/SCSS/...) files
         //  - Asset files (`.svg`, `.pdf`, ...)
-        if (styleFileRE.test(file) || isAsset(file)) {
+        //  - URL imports (e.g. `import scriptUrl from './script.js?url'`)
+        if (styleFileRE.test(file) || isAsset(file) || urlRE.test(file)) {
           debugOperation('INCLUDED', file, importer)
           return resolution
         }
@@ -221,12 +222,13 @@ function analyzeImport(importStatement: ImportStatement): { moduleName: string |
     return { moduleName, skip: true }
   }
 
-  if (
-    // Remove imports such as `import logoUrl from './logo.svg?url'`
-    rawRE.test(moduleName) ||
-    // Remove imports such as `import logoUrl from './logo.svg?raw'`
-    urlRE.test(moduleName)
-  ) {
+  // Add imports such as `import logoUrl from './logo.svg?url'`
+  if (urlRE.test(moduleName)) {
+    return { moduleName, skip: false }
+  }
+
+  // Remove imports such as `import logoUrl from './logo.svg?raw'`
+  if (rawRE.test(moduleName)) {
     return { moduleName, skip: true }
   }
 
