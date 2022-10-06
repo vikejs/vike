@@ -22,7 +22,7 @@ function extractExportNamesPlugin(): Plugin {
       const isClientSide = !viteIsSSR_options(options)
       if (extractExportNamesRE.test(id)) {
         const code = await getExtractExportNamesCode(src, isClientSide, isProduction)
-        debug('id:', id, '\nresult:\n' + code.code.trim(), '\nsrc:\n' + src.trim())
+        debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
         return code
       }
     },

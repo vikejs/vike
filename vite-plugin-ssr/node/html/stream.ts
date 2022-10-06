@@ -264,11 +264,13 @@ async function processStream<StreamType extends Stream>(
   const getManipulationHandlers = ({
     writeData,
     closeStream,
-    getStream
+    getStream,
+    flush
   }: {
-    writeData: (chunk: string) => void
+    writeData: (chunk: unknown) => void
     closeStream: () => void
     getStream: () => StreamType
+    flush?: () => void
   }) => {
     let resolve: (result: StreamWrapper<StreamType>) => void
     const streamPromise = new Promise<StreamWrapper<StreamType>>((r) => (resolve = r))
@@ -283,7 +285,7 @@ async function processStream<StreamType extends Stream>(
     }
 
     let streamStarted = false
-    const write = (chunk: string) => {
+    const write = (chunk: unknown) => {
       writeData(chunk)
       if (streamStarted === false) {
         resolve({ stream: getStream() })
@@ -295,14 +297,19 @@ async function processStream<StreamType extends Stream>(
       let promise: Promise<void> | null = null
       return async () => {
         if (promise === null) {
-          debug('stream begin')
+          debug('vite-plugin-ssr wrapper stream begin')
           promise = new Promise<void>(async (resolve) => {
             if (injectStringAtBegin) {
+              // Not sure why but this is needed for https://www.npmjs.com/package/compression
               const stringBegin = await injectStringAtBegin()
               write(stringBegin)
-              debug('vps begin injection written')
+              if (flush) {
+                debug('stream flush() call (vite-plugin-ssr)')
+                flush()
+              }
+              debug('begin injection done')
             } else {
-              debug('no vps begin injection')
+              debug('no begin injection')
             }
             resolve()
           })
@@ -311,11 +318,9 @@ async function processStream<StreamType extends Stream>(
       }
     })()
 
-    const onData = async (chunk: string) => {
+    const onData = async (chunk: unknown) => {
       await streamBegin()
-
       write(chunk)
-      debug('data written')
     }
 
     const onBegin = () => {
@@ -330,7 +335,7 @@ async function processStream<StreamType extends Stream>(
         return
       }
       streamEnded = true
-      debug('user stream ended')
+      debug('original stream ended')
 
       // If empty stream: the stream ends before any data was written, but we still need to ensure that we inject `stringBegin`
       await streamBegin()
@@ -338,13 +343,17 @@ async function processStream<StreamType extends Stream>(
       if (injectStringAtEnd) {
         const stringEnd = await injectStringAtEnd()
         write(stringEnd)
-        debug('vps end injection written')
+        if (flush) {
+          debug('stream flush() call (vite-plugin-ssr)')
+          flush()
+        }
+        debug('end injection done')
       } else {
-        debug('no vps end injection')
+        debug('no end injection')
       }
 
       close()
-      debug('vps wrapper stream ended')
+      debug('vite-plugin-ssr wrapper stream ended')
     }
     const onError = async (err: unknown) => {
       if (streamStarted === false) {
@@ -375,32 +384,51 @@ async function processStream<StreamType extends Stream>(
 
   if (isStreamPipeNode(streamOriginal)) {
     debug('render() hook returned Node.js Stream Pipe')
-    const buffer: string[] = []
+    const buffer: unknown[] = []
     const flushBuffer = () => {
       assert(writableOriginalReady)
       assert(writableOriginal)
       if (buffer.length !== 0) {
-        buffer.forEach((c) => {
-          writableOriginal.write(c)
+        buffer.forEach((chunk) => {
+          writableOriginal.write(chunk)
+          if (debug.isEnabled) {
+            debug('data written (from buffer) (Node.js Writable)', String(chunk))
+          }
         })
         buffer.length = 0
+        debug('buffer flushed (Node.js Writable)')
       }
       if (streamEnded) {
         writableOriginal.end()
       }
     }
     let streamEnded = false
+    let shouldFlush = false
+    const flush = () => {
+      if (writableOriginalReady && typeof writableOriginal.flush === 'function') {
+        writableOriginal.flush()
+        debug('stream flush() success (Node.js Writable)')
+        shouldFlush = false
+      } else {
+        debug('stream flush() postponed (Node.js Writable)')
+        shouldFlush = true
+      }
+    }
     const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: string) {
+      writeData(chunk: unknown) {
         if (!writableOriginalReady) {
-          // console.log('buffer: '+chunk)
           buffer.push(chunk)
+          debug('data buffered (Node.js Writable)')
         } else {
           flushBuffer()
-          // console.log('write: '+chunk)
           writableOriginal.write(chunk)
+          if (debug.isEnabled) {
+            debug('data written (Node.js Writable)', String(chunk))
+          }
+          if (shouldFlush) flush()
         }
       },
+      flush,
       closeStream() {
         streamEnded = true
         if (!writableOriginalReady) {
@@ -422,7 +450,9 @@ async function processStream<StreamType extends Stream>(
     const pipeNodeWrapper = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       writableOriginalReady = true
+      debug('original stream received (Node.js Writable)')
       flushBuffer()
+      if (shouldFlush) flush()
     }
     stampPipe(pipeNodeWrapper, 'node-stream')
     const { Writable } = await loadStreamNodeModule()
@@ -444,16 +474,11 @@ async function processStream<StreamType extends Stream>(
       }
     })
 
-    // Forward the flush() command to avoid GZIP buffering
-    //   - https://github.com/reactwg/react-18/discussions/114
-    //   - https://github.com/reactwg/react-18/discussions/110
-    //   - https://github.com/facebook/react/blob/main/packages/react-server/src/ReactServerStreamConfigNode.js#L27-L35
-    //   - Only needed for Node Streams: Web Streams do not support GZIP flushing.
+    // Forward the flush() call. E.g. used by React to flush GZIP buffers, see https://github.com/brillout/vite-plugin-ssr/issues/466#issuecomment-1269601710
     objectAssign(writableProxy, {
-      flush() {
-        if (writableOriginalReady && typeof writableOriginal.flush === 'function') {
-          writableOriginal.flush()
-        }
+      flush: () => {
+        debug('stream flush() call (original stream)')
+        flush()
       }
     })
     assert(typeof writableProxy.flush === 'function')
@@ -465,30 +490,40 @@ async function processStream<StreamType extends Stream>(
 
   if (isStreamPipeWeb(streamOriginal)) {
     debug('render() hook returned Web Stream Pipe')
-    const buffer: string[] = []
+    const buffer: unknown[] = []
     const flushBuffer = () => {
       assert(writableOriginalReady)
       assert(writerOriginal)
       if (buffer.length !== 0) {
-        buffer.forEach((c) => write(c))
+        buffer.forEach((chunk) => {
+          write(chunk)
+          if (debug.isEnabled) {
+            debug('data written (from buffer) (Web Writable)', String(chunk))
+          }
+        })
         buffer.length = 0
+        debug('buffer flushed (Web Writable)')
       }
       if (streamEnded) {
         writerOriginal.close()
       }
     }
-    const write = (c: unknown) => {
+    const write = (chunk: unknown) => {
       assert(writableOriginalReady)
-      writerOriginal.write(encodeForWebStream(c))
+      writerOriginal.write(encodeForWebStream(chunk))
     }
     let streamEnded = false
     const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: string) {
+      writeData(chunk: unknown) {
         if (!writableOriginalReady) {
           buffer.push(chunk)
+          debug('data buffered (Web Writable)')
         } else {
           flushBuffer()
           write(chunk)
+          if (debug.isEnabled) {
+            debug('data written (Web Writable)', String(chunk))
+          }
         }
       },
       closeStream() {
@@ -507,7 +542,7 @@ async function processStream<StreamType extends Stream>(
       }
     })
     onBegin()
-    let writerOriginal: WritableStreamDefaultWriter<any>
+    let writerOriginal: WritableStreamDefaultWriter<unknown>
     let writableOriginalReady = false
     const pipeWebWrapper = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
@@ -518,6 +553,7 @@ async function processStream<StreamType extends Stream>(
           await writerOriginal.ready
         } catch (e: any) {}
         writableOriginalReady = true
+        debug('original stream received (Web Writable)')
         flushBuffer()
       })()
     }
@@ -546,8 +582,11 @@ async function processStream<StreamType extends Stream>(
     debug('render() hook returned Web Readable')
     const readableWebOriginal: StreamReadableWeb = streamOriginal
     const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: string) {
+      writeData(chunk: unknown) {
         controller.enqueue(encodeForWebStream(chunk))
+        if (debug.isEnabled) {
+          debug('data written (Web Readable)', String(chunk))
+        }
       },
       closeStream() {
         controller.close()
@@ -581,8 +620,11 @@ async function processStream<StreamType extends Stream>(
     }
     const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
     const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: string) {
+      writeData(chunk: unknown) {
         readableNodeWrapper.push(chunk)
+        if (debug.isEnabled) {
+          debug('data written (Node.js Readable)', String(chunk))
+        }
       },
       closeStream() {
         readableNodeWrapper.push(null)
@@ -612,7 +654,7 @@ async function processStream<StreamType extends Stream>(
 
 async function handleReadableWeb(
   readable: ReadableStream,
-  { onData, onError, onEnd }: { onData: (chunk: string) => void; onError: (err: unknown) => void; onEnd: () => void }
+  { onData, onError, onEnd }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => void }
 ) {
   const reader = readable.getReader()
   while (true) {

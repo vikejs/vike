@@ -22,59 +22,86 @@ type Options = {
 
 function createDebugger(namespace: string, optionsGlobal?: Options) {
   const debugWithOptions = (options: Options) => {
-    return (...msgs: unknown[]) => {
+    return (msg: string, info?: unknown) => {
       if (!isDebugEnabled(namespace)) return
-      const msgsStr = msgs.map((msg) => strMsg(msg, { ...optionsGlobal, ...options }))
-      console.log('\x1b[1m%s\x1b[0m', namespace, ...msgsStr)
+      if (info !== undefined) {
+        msg += strInfo(info, { ...optionsGlobal, ...options })
+      }
+      console.log('\x1b[1m%s\x1b[0m', namespace, msg)
     }
   }
-  const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
-  objectAssign(debug, { options: debugWithOptions })
+  const debug = (msg: string, info?: unknown) => debugWithOptions({})(msg, info)
+  objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(namespace) })
   return debug
 }
 
-function isDebugEnabled(namespace: string) {
+function isDebugEnabled(namespace: string): boolean {
   let DEBUG: undefined | string
   // - `process` can be undefined in edge workers
   // - We want bundlers to be able to statically replace `process.env.*`
   try {
     DEBUG = process.env.DEBUG
   } catch {}
-  return DEBUG?.includes(namespace)
+  return DEBUG?.includes(namespace) ?? false
 }
 
-function strMsg(msg: unknown, options: Options): string {
-  if (typeof msg === 'string') {
-    return msg
+function strInfo(info: unknown, options: Options): string | undefined {
+  if (info === undefined) {
+    return undefined
   }
-  if (Array.isArray(msg)) {
-    if (msg.length === 0) {
-      return options.serialization?.emptyArray ?? '[]'
+
+  let str = '\n'
+
+  if (typeof info === 'string') {
+    str += info
+  } else if (Array.isArray(info)) {
+    if (info.length === 0) {
+      str += options.serialization?.emptyArray ?? '[]'
+    } else {
+      str += info.map(strUnknown).join('\n')
     }
-    return '\n' + msg.map((entry) => strEntry(entry)).join('\n')
-  }
-  return strEntry(msg)
-}
-
-const padding1 = '   - '
-const padding2 = '     '
-function strEntry(entry: unknown) {
-  return padding1 + (typeof entry === 'string' ? entry : strObj(entry))
-}
-
-function strObj(obj: unknown, newLines = false) {
-  let str: string
-  if (newLines) {
-    str = JSON.stringify(obj, replacer, 2)
-    str = str.split('\n').join('\n' + padding2)
   } else {
-    str = JSON.stringify(obj, replacer, undefined)
+    str += strUnknown(info)
   }
+
+  str = pad(str)
+
   return str
-  function replacer(this: Record<string, unknown>, _key: string, value: unknown) {
-    if (isCallable(value)) {
-      return value.toString().split(/\s+/).join(' ')
+}
+
+function pad(str: string): string {
+  const PADDING = '     '
+  const WIDTH = process.stdout.columns as number | undefined
+  const lines: string[] = []
+  str.split('\n').forEach((line) => {
+    if (!WIDTH) {
+      lines.push(line)
+    } else {
+      chunk(line, WIDTH - PADDING.length).forEach((chunk) => {
+        lines.push(chunk)
+      })
     }
-    return value
+  })
+  return lines.join('\n' + PADDING)
+}
+function chunk(str: string, size: number): string[] {
+  if (str.length <= size) {
+    return [str]
   }
+  const chunks = str.match(new RegExp('.{1,' + size + '}', 'g'))
+  assert(chunks)
+  return chunks
+}
+
+function strUnknown(thing: unknown) {
+  return typeof thing === 'string' ? thing : strObj(thing)
+}
+function strObj(obj: unknown, newLines = false) {
+  return JSON.stringify(obj, replaceFunctionSerializer, newLines ? 2 : undefined)
+}
+function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, value: unknown) {
+  if (isCallable(value)) {
+    return value.toString().split(/\s+/).join(' ')
+  }
+  return value
 }
