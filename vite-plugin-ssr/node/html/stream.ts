@@ -277,7 +277,7 @@ async function processStream<StreamType extends Stream>(
   let shouldFlushStream = false
   let injectionBeginDone = false
   let streamOriginalHasStartedEmitting = false
-  let isReady = false
+  let isReadyToWrite = false
   let promiseHasResolved = false
   let wrapperCreated = false
 
@@ -292,9 +292,9 @@ async function processStream<StreamType extends Stream>(
 
   const { streamWrapper, streamOperations } = await manipulateStream({
     streamOriginal,
-    onReady() {
+    onReadyToWrite() {
       debug('stream begin')
-      isReady = true
+      isReadyToWrite = true
       flushBuffer()
     },
     onError(err) {
@@ -327,7 +327,7 @@ async function processStream<StreamType extends Stream>(
   function writeStream(chunk: unknown) {
     buffer.push(chunk)
 
-    if (writeIsLocked()) return
+    if (isInitializing()) return
 
     flushBuffer()
 
@@ -335,7 +335,7 @@ async function processStream<StreamType extends Stream>(
   }
 
   function flushBuffer() {
-    if (writeIsLocked() || !isReady) return
+    if (isInitializing() || !isReadyToWrite) return
     buffer.forEach((chunk) => {
       streamOperations.writeChunk(chunk)
     })
@@ -344,13 +344,13 @@ async function processStream<StreamType extends Stream>(
   }
 
   function flushStream() {
-    if (writeIsLocked() || !isReady || !shouldFlushStream || streamOperations.flushStream === null) return
+    if (isInitializing() || !isReadyToWrite || !shouldFlushStream || streamOperations.flushStream === null) return
     streamOperations.flushStream()
     shouldFlushStream = false
     debug('stream flushed')
   }
 
-  function writeIsLocked() {
+  function isInitializing() {
     return !wrapperCreated || !injectionBeginDone || (!streamOriginalHasStartedEmitting && !enableEagerStreaming)
   }
 }
@@ -361,14 +361,14 @@ async function manipulateStream<StreamType extends Stream>({
   onData,
   onEnd,
   onFlush,
-  onReady
+  onReadyToWrite
 }: {
   streamOriginal: StreamType
   onError: (err: unknown) => void
   onData: (chunk: unknown) => void
   onEnd: () => Promise<void>
   onFlush: () => void
-  onReady: () => void
+  onReadyToWrite: () => void
 }): Promise<{
   streamWrapper: StreamType
   streamOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
@@ -386,9 +386,9 @@ async function manipulateStream<StreamType extends Stream>({
     const pipeProxy = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
       debug('original Node.js Writable received')
-      onReady()
+      onReadyToWrite()
       if (hasEnded) {
-        // `onReady()` already wrote everything; we can close the stream right away
+        // `onReadyToWrite()` already wrote everything; we can close the stream right away
         writableOriginal.end()
       }
     }
@@ -463,9 +463,9 @@ async function manipulateStream<StreamType extends Stream>({
         try {
           await writerOriginal.ready
         } catch (e: any) {}
-        onReady()
+        onReadyToWrite()
         if (hasEnded) {
-          // `onReady()` already wrote everything; we can close the stream right away
+          // `onReadyToWrite()` already wrote everything; we can close the stream right away
           writerOriginal.close()
         }
       })()
@@ -538,7 +538,7 @@ async function manipulateStream<StreamType extends Stream>({
     const readableProxy = new ReadableStream<unknown>({
       start(controller) {
         controllerProxy = controller
-        onReady()
+        onReadyToWrite()
         handleReadableWeb(readableOriginal, {
           onData,
           onError(err) {
@@ -589,7 +589,7 @@ async function manipulateStream<StreamType extends Stream>({
     }
     const readableProxy: StreamReadableNode = new Readable({ read() {} })
 
-    onReady()
+    onReadyToWrite()
 
     readableOriginal.on('data', (chunk) => {
       onData(chunk)
