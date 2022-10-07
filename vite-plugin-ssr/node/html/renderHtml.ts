@@ -50,15 +50,11 @@ async function renderHtml(
   }
   if (isStream(documentHtml)) {
     const stream = documentHtml
-    const result = await renderHtmlStream(stream, {
+    const streamWrapper = await renderHtmlStream(stream, {
       pageContext,
       onErrorWhileStreaming
     })
-    if ('errorBeforeFirstData' in result) {
-      throw result.errorBeforeFirstData
-    } else {
-      return result.stream
-    }
+    return streamWrapper
   }
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml[__template]
@@ -69,7 +65,7 @@ async function renderHtml(
       return htmlString
     }
     if (render.type === 'stream') {
-      const result = await renderHtmlStream(render.stream, {
+      const streamWrapper = await renderHtmlStream(render.stream, {
         injectString: {
           stringBegin: render.stringBegin,
           stringEnd: render.stringEnd
@@ -77,11 +73,7 @@ async function renderHtml(
         pageContext,
         onErrorWhileStreaming
       })
-      if ('errorBeforeFirstData' in result) {
-        throw result.errorBeforeFirstData
-      } else {
-        return result.stream
-      }
+      return streamWrapper
     }
     checkType<never>(render)
     assert(false)
@@ -121,9 +113,8 @@ async function renderHtmlStream(
       }
     })
   }
-  const result = await processStream(streamOriginal, opts)
-  assert('errorBeforeFirstData' in result || isStream(result.stream))
-  return result
+  const streamWrapper = await processStream(streamOriginal, opts)
+  return streamWrapper
 }
 
 function isTemplateWrapped(something: unknown): something is TemplateWrapped {

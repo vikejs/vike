@@ -246,7 +246,6 @@ function pipeToStreamWritableNode(htmlRender: HtmlRender, writable: StreamWritab
   return false
 }
 
-type StreamWrapper<StreamType> = { stream: StreamType } | { errorBeforeFirstData: unknown }
 async function processStream<StreamType extends Stream>(
   streamOriginal: StreamType,
   {
@@ -260,122 +259,129 @@ async function processStream<StreamType extends Stream>(
     onErrorWhileStreaming: (err: unknown) => void
     enableEagerStreaming?: boolean
   }
-): Promise<StreamWrapper<StreamType>> {
-  const getManipulationHandlers = ({
-    writeData,
-    closeStream,
-    getStream,
-    flush
-  }: {
-    writeData: (chunk: unknown) => void
-    closeStream: () => void
-    getStream: () => StreamType
-    flush?: () => void
-  }) => {
-    let resolve: (result: StreamWrapper<StreamType>) => void
-    const streamPromise = new Promise<StreamWrapper<StreamType>>((r) => (resolve = r))
-
-    let streamClosed = false
-    const close = () => {
-      if (streamClosed) {
-        return
-      }
-      streamClosed = true
-      closeStream()
+): Promise<StreamType> {
+  let resolve: (result: StreamType) => void
+  let reject: (err: unknown) => void
+  const streamWrapperPromise = new Promise<StreamType>((resolve_, reject_) => {
+    resolve = (streamWrapper) => {
+      assert(promiseHasResolved === true)
+      resolve_(streamWrapper)
     }
-
-    let streamStarted = false
-    const write = (chunk: unknown) => {
-      writeData(chunk)
-      if (streamStarted === false) {
-        resolve({ stream: getStream() })
-        streamStarted = true
-      }
+    reject = (err) => {
+      assert(promiseHasResolved === false)
+      reject_(err)
     }
+  })
 
-    const streamBegin = (() => {
-      let promise: Promise<void> | null = null
-      return async () => {
-        if (promise === null) {
-          debug('vite-plugin-ssr wrapper stream begin')
-          promise = new Promise<void>(async (resolve) => {
-            if (injectStringAtBegin) {
-              // Not sure why but this is needed for https://www.npmjs.com/package/compression
-              const stringBegin = await injectStringAtBegin()
-              write(stringBegin)
-              if (flush) {
-                debug('stream flush() call (vite-plugin-ssr)')
-                flush()
-              }
-              debug('begin injection done')
-            } else {
-              debug('no begin injection')
-            }
-            resolve()
-          })
-        }
-        await promise
-      }
-    })()
+  const buffer: unknown[] = []
+  let shouldFlushStream = false
+  let injectionBeginDone = false
+  let streamOriginalHasStarted = false
+  let isReady = false
+  let promiseHasResolved = false
+  let wrapperCreated = false
 
-    const onData = async (chunk: unknown) => {
-      await streamBegin()
-      write(chunk)
-    }
+  if (!injectStringAtBegin) {
+    injectionBeginDone = true
+  } else {
+    const injectionBegin: string = await injectStringAtBegin()
+    injectionBeginDone = true
+    shouldFlushStream = true
+    writeStream(injectionBegin)
+  }
 
-    const onBegin = () => {
-      if (enableEagerStreaming) {
-        streamBegin()
-      }
-    }
-
-    let streamEnded = false
-    const onEnd = async () => {
-      if (streamEnded) {
-        return
-      }
-      streamEnded = true
-      debug('original stream ended')
-
-      // If empty stream: the stream ends before any data was written, but we still need to ensure that we inject `stringBegin`
-      await streamBegin()
-
-      if (injectStringAtEnd) {
-        const stringEnd = await injectStringAtEnd()
-        write(stringEnd)
-        if (flush) {
-          debug('stream flush() call (vite-plugin-ssr)')
-          flush()
-        }
-        debug('end injection done')
+  const { streamWrapper, streamOperations } = await manipulateStream({
+    streamOriginal,
+    onReady() {
+      debug('stream begin')
+      isReady = true
+      flushBuffer()
+    },
+    onError(err) {
+      if (!promiseHasResolved) {
+        reject(err)
       } else {
-        debug('no end injection')
-      }
-
-      close()
-      debug('vite-plugin-ssr wrapper stream ended')
-    }
-    const onError = async (err: unknown) => {
-      if (streamStarted === false) {
-        close()
-        // Stream has not begun yet, which means that we have sent no HTML to the browser, and we can gracefully abort the stream.
-        resolve({ errorBeforeFirstData: err })
-      } else {
-        await onEnd()
-        // Some HTML as already been sent to the browser
         onErrorWhileStreaming(err)
       }
+    },
+    onData(chunk: unknown) {
+      streamOriginalHasStarted = true
+      writeStream(chunk)
+    },
+    async onEnd() {
+      if (!injectStringAtEnd) return
+      const injectEnd = await injectStringAtEnd()
+      writeStream(injectEnd)
+      debug('stream end')
+    },
+    onFlush() {
+      shouldFlushStream = true
+      flushStream()
+    }
+  })
+  wrapperCreated = true
+
+  return streamWrapperPromise
+
+  function writeStream(chunk: unknown) {
+    buffer.push(chunk)
+
+    if (writeIsLocked()) return
+
+    if (isReady) {
+      flushBuffer()
     }
 
-    return {
-      onData,
-      onBegin,
-      onEnd,
-      onError,
-      streamPromise
+    promiseHasResolved = true
+    resolve(streamWrapper)
+  }
+
+  function flushBuffer() {
+    if (writeIsLocked()) return
+    if (!isReady) return
+    buffer.forEach((chunk) => {
+      streamOperations.writeChunk(chunk)
+    })
+    buffer.length = 0
+    flushStream()
+  }
+
+  function flushStream() {
+    if (writeIsLocked()) return
+    if (!isReady) return
+    if (shouldFlushStream && streamOperations.flushStream) {
+      streamOperations.flushStream()
+      shouldFlushStream = false
+      debug('stream flushed')
     }
   }
 
+  function writeIsLocked() {
+    if (!wrapperCreated) return true
+    if (!injectionBeginDone) return true
+    if (!streamOriginalHasStarted && !enableEagerStreaming) return true
+    return false
+  }
+}
+
+async function manipulateStream<StreamType extends Stream>({
+  streamOriginal,
+  onError,
+  onData,
+  onEnd,
+  onFlush,
+  onReady
+}: {
+  streamOriginal: StreamType
+  onError: (err: unknown) => void
+  onData: (chunk: unknown) => void
+  onEnd: () => Promise<void>
+  onFlush: () => void
+  onReady: () => void
+}): Promise<{
+  streamWrapper: StreamType
+  streamOperations: { writeChunk: (chunk: unknown) => void; flushStream?: () => void }
+}> {
   if (isStreamReactStreaming(streamOriginal)) {
     debug('render() hook returned `react-streaming` result')
     const stream = getStreamFromReactStreaming(streamOriginal)
@@ -384,269 +390,229 @@ async function processStream<StreamType extends Stream>(
 
   if (isStreamPipeNode(streamOriginal)) {
     debug('render() hook returned Node.js Stream Pipe')
-    const buffer: unknown[] = []
-    const flushBuffer = () => {
-      assert(writableOriginalReady)
-      assert(writableOriginal)
-      if (buffer.length !== 0) {
-        buffer.forEach((chunk) => {
-          writableOriginal.write(chunk)
-          if (debug.isEnabled) {
-            debug('data written (from buffer) (Node.js Writable)', String(chunk))
-          }
-        })
-        buffer.length = 0
-        debug('buffer flushed (Node.js Writable)')
-      }
-      if (streamEnded) {
-        writableOriginal.end()
-      }
-    }
-    let streamEnded = false
-    let shouldFlush = false
-    const flush = () => {
-      if (writableOriginalReady && typeof writableOriginal.flush === 'function') {
-        writableOriginal.flush()
-        debug('stream flush() success (Node.js Writable)')
-        shouldFlush = false
-      } else {
-        debug('stream flush() postponed (Node.js Writable)')
-        shouldFlush = true
-      }
-    }
-    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: unknown) {
-        if (!writableOriginalReady) {
-          buffer.push(chunk)
-          debug('data buffered (Node.js Writable)')
-        } else {
-          flushBuffer()
-          writableOriginal.write(chunk)
-          if (debug.isEnabled) {
-            debug('data written (Node.js Writable)', String(chunk))
-          }
-          if (shouldFlush) flush()
-        }
-      },
-      flush,
-      closeStream() {
-        streamEnded = true
-        if (!writableOriginalReady) {
-          return
-        }
-        assert(buffer.length === 0)
-        writableOriginal.end()
-      },
-      getStream() {
-        checkType<StreamPipeNode>(pipeNodeWrapper)
-        checkType<StreamPipeNodeWrapped>(streamOriginal)
-        const stream = pipeNodeWrapper as typeof streamOriginal
-        return stream
-      }
-    })
-    onBegin()
-    let writableOriginal: StreamWritableNode & { flush?: () => void }
-    let writableOriginalReady = false
-    const pipeNodeWrapper = (writable_: StreamWritableNode) => {
+
+    let writableOriginal: null | (StreamWritableNode & { flush?: () => void }) = null
+    const pipeProxy = (writable_: StreamWritableNode) => {
       writableOriginal = writable_
-      writableOriginalReady = true
-      debug('original stream received (Node.js Writable)')
-      flushBuffer()
-      if (shouldFlush) flush()
+      debug('original Node.js Writable received')
+      onReady()
+      if (hasEnded) {
+        // `onReady()` already wrote everything; we can close the stream right away
+        writableOriginal.end()
+      }
     }
-    stampPipe(pipeNodeWrapper, 'node-stream')
+    stampPipe(pipeProxy, 'node-stream')
+    const writeChunk = (chunk: unknown) => {
+      assert(writableOriginal)
+      writableOriginal.write(chunk)
+      if (debug.isEnabled) {
+        debug('data written (Node.js Writable)', String(chunk))
+      }
+    }
+    // For libraries such as https://www.npmjs.com/package/compression
+    //  - React calls writable.flush() when available
+    //  - https://github.com/brillout/vite-plugin-ssr/issues/466#issuecomment-1269601710
+    const flushStream = () => {
+      assert(writableOriginal)
+      if (typeof writableOriginal.flush === 'function') {
+        writableOriginal.flush()
+        debug('stream flush() performed (Node.js Writable)')
+      }
+    }
+
+    let hasEnded = false
+    const endStream = () => {
+      hasEnded = true
+      if (writableOriginal) {
+        writableOriginal.end()
+      }
+    }
+
     const { Writable } = await loadStreamNodeModule()
     const writableProxy = new Writable({
       async write(chunk, _encoding, callback) {
-        await onData(chunk)
+        onData(chunk)
         callback()
       },
-      async final(callback) {
-        await onEnd()
-        callback()
-      },
-      async destroy(err) {
+      async destroy(err, callback) {
         if (err) {
-          await onError(err)
+          onError(err)
         } else {
           await onEnd()
         }
+        callback(err)
+        endStream()
       }
     })
 
-    // Forward the flush() call. E.g. used by React to flush GZIP buffers, see https://github.com/brillout/vite-plugin-ssr/issues/466#issuecomment-1269601710
+    // Forward the flush() call
     objectAssign(writableProxy, {
       flush: () => {
-        debug('stream flush() call (original stream)')
-        flush()
+        onFlush()
       }
     })
     assert(typeof writableProxy.flush === 'function')
 
-    const streamPipeNode = getStreamPipeNode(streamOriginal)
-    streamPipeNode(writableProxy)
-    return streamPromise
+    const pipeOriginal = getStreamPipeNode(streamOriginal)
+    pipeOriginal(writableProxy)
+
+    return { streamWrapper: pipeProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
     debug('render() hook returned Web Stream Pipe')
-    const buffer: unknown[] = []
-    const flushBuffer = () => {
-      assert(writableOriginalReady)
-      assert(writerOriginal)
-      if (buffer.length !== 0) {
-        buffer.forEach((chunk) => {
-          write(chunk)
-          if (debug.isEnabled) {
-            debug('data written (from buffer) (Web Writable)', String(chunk))
-          }
-        })
-        buffer.length = 0
-        debug('buffer flushed (Web Writable)')
-      }
-      if (streamEnded) {
-        writerOriginal.close()
-      }
-    }
-    const write = (chunk: unknown) => {
-      assert(writableOriginalReady)
-      writerOriginal.write(encodeForWebStream(chunk))
-    }
-    let streamEnded = false
-    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: unknown) {
-        if (!writableOriginalReady) {
-          buffer.push(chunk)
-          debug('data buffered (Web Writable)')
-        } else {
-          flushBuffer()
-          write(chunk)
-          if (debug.isEnabled) {
-            debug('data written (Web Writable)', String(chunk))
-          }
-        }
-      },
-      closeStream() {
-        streamEnded = true
-        if (!writableOriginalReady) {
-          return
-        }
-        assert(buffer.length === 0)
-        writerOriginal.close()
-      },
-      getStream() {
-        checkType<StreamPipeWeb>(pipeWebWrapper)
-        checkType<StreamPipeWebWrapped>(streamOriginal)
-        const stream = pipeWebWrapper as typeof streamOriginal
-        return stream
-      }
-    })
-    onBegin()
-    let writerOriginal: WritableStreamDefaultWriter<unknown>
-    let writableOriginalReady = false
-    const pipeWebWrapper = (writableOriginal: StreamWritableWeb) => {
+
+    let writerOriginal: null | WritableStreamDefaultWriter<unknown> = null
+    const pipeProxy = (writableOriginal: StreamWritableWeb) => {
       writerOriginal = writableOriginal.getWriter()
+      debug('original Web Writable received')
       ;(async () => {
         // CloudFlare Workers does not implement `ready` property
         //  - https://github.com/vuejs/vue-next/issues/4287
         try {
           await writerOriginal.ready
         } catch (e: any) {}
-        writableOriginalReady = true
-        debug('original stream received (Web Writable)')
-        flushBuffer()
+        onReady()
+        if (hasEnded) {
+          // `onReady()` already wrote everything; we can close the stream right away
+          writerOriginal.close()
+        }
       })()
     }
-    stampPipe(pipeWebWrapper, 'web-stream')
-    let writableProxy: WritableStream
+    stampPipe(pipeProxy, 'web-stream')
+    const writeChunk = (chunk: unknown) => {
+      assert(writerOriginal)
+      writerOriginal.write(encodeForWebStream(chunk))
+      if (debug.isEnabled) {
+        debug('data written (Web Writable)', String(chunk))
+      }
+    }
+    // Web Streams have compression built-in
+    //  - https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API
+    //  - It seems that there is no flush interface? Flushing just works automagically?
+    const flushStream = () => {}
+
+    let hasEnded = false
+    const endStream = () => {
+      hasEnded = true
+      if (writerOriginal) {
+        writerOriginal.close()
+      }
+    }
+
+    let writableProxy: WritableStream<unknown>
     if (typeof ReadableStream !== 'function') {
       writableProxy = new WritableStream({
         write(chunk) {
           onData(chunk)
         },
-        close() {
-          onEnd()
+        async close() {
+          await onEnd()
+          endStream()
+        },
+        abort(err) {
+          onError(err)
+          endStream()
         }
       })
     } else {
       const { readable, writable } = new TransformStream()
       writableProxy = writable
-      handleReadableWeb(readable, { onData, onError, onEnd })
+      handleReadableWeb(readable, {
+        onData,
+        onError(err) {
+          onError(err)
+          endStream()
+        },
+        async onEnd() {
+          await onEnd()
+          endStream()
+        }
+      })
     }
-    const streamPipeWeb = getStreamPipeWeb(streamOriginal)
-    streamPipeWeb(writableProxy)
-    return streamPromise
+
+    const pipeOriginal = getStreamPipeWeb(streamOriginal)
+    pipeOriginal(writableProxy)
+
+    return { streamWrapper: pipeProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamReadableWeb(streamOriginal)) {
     debug('render() hook returned Web Readable')
-    const readableWebOriginal: StreamReadableWeb = streamOriginal
-    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: unknown) {
-        controller.enqueue(encodeForWebStream(chunk))
-        if (debug.isEnabled) {
-          debug('data written (Web Readable)', String(chunk))
-        }
-      },
-      closeStream() {
-        controller.close()
-      },
-      getStream() {
-        checkType<StreamReadableWeb>(readableWebWrapper)
-        checkType<StreamReadableWeb>(streamOriginal)
-        const stream = readableWebWrapper as typeof streamOriginal
-        return stream
-      }
-    })
-    onBegin()
-    let controller: ReadableStreamController<any>
+
+    const readableOriginal: StreamReadableWeb = streamOriginal
+
+    let controllerProxy: ReadableStreamController<unknown>
     assertReadableStreamConstructor()
-    const readableWebWrapper = new ReadableStream({
-      start(controller_) {
-        controller = controller_
-        handleReadableWeb(readableWebOriginal, { onData, onError, onEnd })
+    const readableProxy = new ReadableStream<unknown>({
+      start(controller) {
+        controllerProxy = controller
+        onReady()
+        handleReadableWeb(readableOriginal, {
+          onData,
+          onError(err) {
+            onError(err)
+            controllerProxy.close()
+          },
+          async onEnd() {
+            await onEnd()
+            controllerProxy.close()
+          }
+        })
       }
     })
-    return streamPromise
+
+    const writeChunk = (chunk: unknown) => {
+      controllerProxy.enqueue(encodeForWebStream(chunk))
+      if (debug.isEnabled) {
+        debug('data written (Web Readable)', String(chunk))
+      }
+    }
+    // Readables don't have the notion of flushing
+    const flushStream = () => {}
+
+    return { streamWrapper: readableProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamReadableNode(streamOriginal)) {
     debug('render() hook returned Node.js Readable')
-    const readableNodeOriginal: StreamReadableNode = streamOriginal
+
+    const readableOriginal: StreamReadableNode = streamOriginal
+
     const { Readable } = await loadStreamNodeModule()
     // Vue doesn't always set the `read()` handler: https://github.com/brillout/vite-plugin-ssr/issues/138#issuecomment-934743375
-    if (readableNodeOriginal._read === Readable.prototype._read) {
-      readableNodeOriginal._read = function () {}
+    if (readableOriginal._read === Readable.prototype._read) {
+      readableOriginal._read = function () {}
     }
-    const readableNodeWrapper: StreamReadableNode = new Readable({ read() {} })
-    const { onData, onBegin, onEnd, onError, streamPromise } = getManipulationHandlers({
-      writeData(chunk: unknown) {
-        readableNodeWrapper.push(chunk)
-        if (debug.isEnabled) {
-          debug('data written (Node.js Readable)', String(chunk))
-        }
-      },
-      closeStream() {
-        readableNodeWrapper.push(null)
-      },
-      getStream() {
-        checkType<StreamReadableNode>(readableNodeWrapper)
-        checkType<StreamReadableNode>(streamOriginal)
-        const stream = readableNodeWrapper as typeof streamOriginal
-        return stream
+
+    const writeChunk = (chunk: unknown) => {
+      readableProxy.push(chunk)
+      if (debug.isEnabled) {
+        debug('data written (Node.js Readable)', String(chunk))
       }
-    })
-    onBegin()
-    readableNodeOriginal.on('data', async (chunk) => {
+    }
+    // Readables don't have the notion of flushing
+    const flushStream = () => {}
+    const closeProxy = () => {
+      readableProxy.push(null)
+    }
+    const readableProxy: StreamReadableNode = new Readable({ read() {} })
+
+    onReady()
+
+    readableOriginal.on('data', (chunk) => {
       onData(chunk)
     })
-    readableNodeOriginal.on('error', async (err) => {
+    readableOriginal.on('error', (err) => {
       onError(err)
+      closeProxy()
     })
-    readableNodeOriginal.on('end', async () => {
-      onEnd()
+    readableOriginal.on('end', async () => {
+      await onEnd()
+      closeProxy()
     })
-    return streamPromise
+
+    return { streamWrapper: readableProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
 
   assert(false)
@@ -654,11 +620,15 @@ async function processStream<StreamType extends Stream>(
 
 async function handleReadableWeb(
   readable: ReadableStream,
-  { onData, onError, onEnd }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => void }
+  {
+    onData,
+    onError,
+    onEnd
+  }: { onData: (chunk: unknown) => void; onError: (err: unknown) => void; onEnd: () => Promise<void> }
 ) {
   const reader = readable.getReader()
   while (true) {
-    let result: ReadableStreamDefaultReadResult<any>
+    let result: ReadableStreamDefaultReadResult<unknown>
     try {
       result = await reader.read()
     } catch (err) {
@@ -671,7 +641,7 @@ async function handleReadableWeb(
     }
     onData(value)
   }
-  onEnd()
+  await onEnd()
 }
 
 function isStream(something: unknown): something is Stream {
