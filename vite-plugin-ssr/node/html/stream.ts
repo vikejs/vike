@@ -264,11 +264,11 @@ async function processStream<StreamType extends Stream>(
   let reject: (err: unknown) => void
   const streamWrapperPromise = new Promise<StreamType>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
-      assert(promiseHasResolved === true)
+      promiseHasResolved = true
       resolve_(streamWrapper)
     }
     reject = (err) => {
-      assert(promiseHasResolved === false)
+      promiseHasResolved = true
       reject_(err)
     }
   })
@@ -276,7 +276,7 @@ async function processStream<StreamType extends Stream>(
   const buffer: unknown[] = []
   let shouldFlushStream = false
   let injectionBeginDone = false
-  let streamOriginalHasStarted = false
+  let streamOriginalHasStartedEmitting = false
   let isReady = false
   let promiseHasResolved = false
   let wrapperCreated = false
@@ -305,13 +305,14 @@ async function processStream<StreamType extends Stream>(
       }
     },
     onData(chunk: unknown) {
-      streamOriginalHasStarted = true
+      streamOriginalHasStartedEmitting = true
       writeStream(chunk)
     },
     async onEnd() {
-      if (!injectStringAtEnd) return
-      const injectEnd = await injectStringAtEnd()
-      writeStream(injectEnd)
+      if (injectStringAtEnd) {
+        const injectEnd = await injectStringAtEnd()
+        writeStream(injectEnd)
+      }
       debug('stream end')
     },
     onFlush() {
@@ -328,17 +329,13 @@ async function processStream<StreamType extends Stream>(
 
     if (writeIsLocked()) return
 
-    if (isReady) {
-      flushBuffer()
-    }
+    flushBuffer()
 
-    promiseHasResolved = true
     resolve(streamWrapper)
   }
 
   function flushBuffer() {
-    if (writeIsLocked()) return
-    if (!isReady) return
+    if (writeIsLocked() || !isReady) return
     buffer.forEach((chunk) => {
       streamOperations.writeChunk(chunk)
     })
@@ -347,20 +344,14 @@ async function processStream<StreamType extends Stream>(
   }
 
   function flushStream() {
-    if (writeIsLocked()) return
-    if (!isReady) return
-    if (shouldFlushStream && streamOperations.flushStream) {
-      streamOperations.flushStream()
-      shouldFlushStream = false
-      debug('stream flushed')
-    }
+    if (writeIsLocked() || !isReady || !shouldFlushStream || streamOperations.flushStream === null) return
+    streamOperations.flushStream()
+    shouldFlushStream = false
+    debug('stream flushed')
   }
 
   function writeIsLocked() {
-    if (!wrapperCreated) return true
-    if (!injectionBeginDone) return true
-    if (!streamOriginalHasStarted && !enableEagerStreaming) return true
-    return false
+    return !wrapperCreated || !injectionBeginDone || (!streamOriginalHasStartedEmitting && !enableEagerStreaming)
   }
 }
 
@@ -380,7 +371,7 @@ async function manipulateStream<StreamType extends Stream>({
   onReady: () => void
 }): Promise<{
   streamWrapper: StreamType
-  streamOperations: { writeChunk: (chunk: unknown) => void; flushStream?: () => void }
+  streamOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
   if (isStreamReactStreaming(streamOriginal)) {
     debug('render() hook returned `react-streaming` result')
@@ -490,7 +481,7 @@ async function manipulateStream<StreamType extends Stream>({
     // Web Streams have compression built-in
     //  - https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API
     //  - It seems that there is no flush interface? Flushing just works automagically?
-    const flushStream = () => {}
+    const flushStream = null
 
     let hasEnded = false
     const endStream = () => {
@@ -569,7 +560,7 @@ async function manipulateStream<StreamType extends Stream>({
       }
     }
     // Readables don't have the notion of flushing
-    const flushStream = () => {}
+    const flushStream = null
 
     return { streamWrapper: readableProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
@@ -592,7 +583,7 @@ async function manipulateStream<StreamType extends Stream>({
       }
     }
     // Readables don't have the notion of flushing
-    const flushStream = () => {}
+    const flushStream = null
     const closeProxy = () => {
       readableProxy.push(null)
     }
