@@ -227,6 +227,7 @@ importers:
     specifiers:
       '@cloudflare/kv-asset-handler': ^0.2.0
       '@vitejs/plugin-react': ^2.0.1
+      compression: ^1.7.4
       express: ^4.18.1
       node-fetch: ^2.6.1
       react: ^18.1.0
@@ -238,6 +239,7 @@ importers:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.2.0
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
+      compression: 1.7.4
       express: 4.18.1
       node-fetch: 2.6.7
       react: 18.2.0
@@ -3027,7 +3029,7 @@ packages:
     dev: false
 
   /bytes/3.0.0:
-    resolution: {integrity: sha512-pMhOfFDPiv9t5jjIXkHosWmkSyQbvsgEVNkz0ERHbuLh2T/7j4Mqqpz523Fe8MVY89KC6Sh/QfS2sM+SjgFDcw==}
+    resolution: {integrity: sha1-0ygVQE1olpn4Wk6k+odV3ROpYEg=}
     engines: {node: '>= 0.8'}
     dev: false
 
