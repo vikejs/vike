@@ -6,6 +6,8 @@ const vite = require('vite')
 const fetch = require('node-fetch')
 const compression = require('compression')
 
+Error.stackTraceLimit = Infinity;
+
 startServer()
 
 async function startServer() {
@@ -33,6 +35,17 @@ async function startServer() {
     const { httpResponse } = pageContext
     if (!httpResponse) return next()
     res.type(httpResponse.contentType).status(httpResponse.statusCode)
+    const { write, flush } = res
+    res.write = function(chunk, ...args) {
+      console.log(new Error().stack);
+      console.log('\x1b[1m%s\x1b[0m', "write", String(chunk), ...args)
+      return write.call(res, chunk, ...args)
+    };
+    res.flush = function(...args) {
+      console.log(new Error().stack);
+      console.log('\x1b[1m%s\x1b[0m', "flush", ...args)
+      return flush.apply(res, args)
+    };
     httpResponse.pipe(res)
   })
 
