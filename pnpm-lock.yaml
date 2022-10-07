@@ -231,7 +231,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.15
+      react-streaming: ^0.3.4
       vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: ^2.0.21
@@ -242,7 +242,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.2.15_biqbaboplfbrettd7655fr4n2y
+      react-streaming: 0.3.4_biqbaboplfbrettd7655fr4n2y
       vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
       wrangler: 2.0.21
@@ -480,14 +480,14 @@ importers:
       '@vitejs/plugin-react': ^2.0.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.15
+      react-streaming: ^0.3.4
       vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 2.0.1_vite@3.0.9
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.15_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.3.4_ef5jwxihqo6n7gxfmzogljlgcm
       vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -518,7 +518,7 @@ importers:
       node-fetch: ^2.6.1
       react: ^18.1.0
       react-dom: ^18.1.0
-      react-streaming: ^0.2.15
+      react-streaming: ^0.3.4
       typescript: ^4.6.4
       vite: ^3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -534,7 +534,7 @@ importers:
       node-fetch: 2.6.7
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-      react-streaming: 0.2.15_ef5jwxihqo6n7gxfmzogljlgcm
+      react-streaming: 0.3.4_ef5jwxihqo6n7gxfmzogljlgcm
       typescript: 4.6.4
       vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -1638,10 +1638,6 @@ packages:
       - stylus
       - supports-color
       - terser
-    dev: false
-
-  /@brillout/json-s/0.4.6:
-    resolution: {integrity: sha512-mDgMMNFSKyN9Fy0G4yQTcWwQ1BXUE65D3i3RXPX44xD5AuIU4QQDQBi+DKiEDCS6L6nEa2frC2lCUa/ob700Aw==}
     dev: false
 
   /@brillout/json-serializer/0.5.1:
@@ -7163,34 +7159,28 @@ packages:
       react: 18.1.0
     dev: false
 
-  /react-streaming/0.2.15_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-8WyZeKDB7payAXb3iQxyEPSZxAbV2kPd1J5gixLbsKcDUh0Cxw2SjPWTUwwu1RZiyA1itc3gAJDzGjTRCSMD6w==}
+  /react-streaming/0.3.4_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-qq+GlDV1faZFwFXRdUqOq6iaYWEfLTibGFCgZse6VxLirGYUfABYKnU8/cjpeeC1fboa0zb0bUeWQjntzW9hCg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@brillout/json-s': 0.4.6
-      debug: 4.3.4
+      '@brillout/json-serializer': 0.5.1
       isbot-fast: 1.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
-  /react-streaming/0.2.15_ef5jwxihqo6n7gxfmzogljlgcm:
-    resolution: {integrity: sha512-8WyZeKDB7payAXb3iQxyEPSZxAbV2kPd1J5gixLbsKcDUh0Cxw2SjPWTUwwu1RZiyA1itc3gAJDzGjTRCSMD6w==}
+  /react-streaming/0.3.4_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-qq+GlDV1faZFwFXRdUqOq6iaYWEfLTibGFCgZse6VxLirGYUfABYKnU8/cjpeeC1fboa0zb0bUeWQjntzW9hCg==}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
     dependencies:
-      '@brillout/json-s': 0.4.6
-      debug: 4.3.4
+      '@brillout/json-serializer': 0.5.1
       isbot-fast: 1.2.0
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /react/17.0.2:
