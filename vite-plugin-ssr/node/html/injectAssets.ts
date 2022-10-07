@@ -8,6 +8,7 @@ import type { ViteDevServer } from 'vite'
 import { inferAssetTag } from './injectAssets/infertAssetTag'
 import { getViteDevScripts } from './injectAssets/getViteDevScripts'
 import { mergeScriptTags } from './injectAssets/mergeScriptTags'
+import type { InjectToStream } from 'react-streaming/server'
 
 export { injectAssets__public }
 export { injectAssets }
@@ -64,7 +65,7 @@ async function injectAssets(htmlString: string, pageContext: PageContextInjectAs
 
 function injectAssetsToStream(
   pageContext: PageContextInjectAssets,
-  injectToStream: null | ((htmlChunk: string) => void)
+  injectToStream: null | InjectToStream
 ) {
   let htmlSnippets: HtmlSnippet[]
 

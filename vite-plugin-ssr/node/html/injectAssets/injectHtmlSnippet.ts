@@ -2,6 +2,7 @@ export { injectHtmlSnippets }
 export { createHtmlHeadIfMissing }
 
 import { assert, slice } from '../../utils'
+import type { InjectToStream } from 'react-streaming/server'
 
 type Position = 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END' | 'STREAM'
 const POSITIONS = ['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
@@ -10,7 +11,7 @@ function injectHtmlSnippet(
   position: Position,
   htmlSnippet: string | (() => string),
   htmlString: string,
-  injectToStream: null | ((chunk: string) => void)
+  injectToStream: null | InjectToStream
 ): string {
   htmlSnippet = getHtmlSnippet(htmlSnippet)
   if (position === 'HEAD_OPENING') {
@@ -36,7 +37,7 @@ function injectHtmlSnippet(
   }
   if (position === 'STREAM') {
     assert(injectToStream)
-    injectToStream(htmlSnippet)
+    injectToStream(htmlSnippet, { flush: true })
     return htmlString
   }
   assert(false)
@@ -46,11 +47,7 @@ type Snippet = {
   htmlSnippet: string | (() => string)
   position: Position
 }
-function injectHtmlSnippets(
-  htmlString: string,
-  snippets: Snippet[],
-  injectToStream: null | ((chunk: string) => void)
-): string {
+function injectHtmlSnippets(htmlString: string, snippets: Snippet[], injectToStream: null | InjectToStream): string {
   const snippetsBundled = bundleSnippets(snippets)
   snippetsBundled.forEach((snippet) => {
     htmlString = injectHtmlSnippet(snippet.position, snippet.htmlSnippet, htmlString, injectToStream)

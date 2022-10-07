@@ -7,6 +7,7 @@ export { getStreamFromReactStreaming }
 
 import { assert, hasProp } from '../../utils'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream'
+import type { InjectToStream } from 'react-streaming/server'
 
 // ```js
 // import { renderToStream } from 'react-streaming/server'
@@ -14,7 +15,7 @@ import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, S
 // ```
 type StreamReactStreaming =
   | {
-      injectToStream: (chunk: string) => void
+      injectToStream: InjectToStream
       // Older `react-streaming` versions do not define `disabled`
       disabled?: boolean
     } & (
