@@ -23,7 +23,7 @@ function MovieList() {
     const fetch = pageContext.fetch ?? globalThis.fetch
     const response = await fetch('https://star-wars.brillout.com/api/films.json')
     // Simulate slow network
-    await new Promise((r) => setTimeout(r, 5 * 1000))
+    await new Promise((r) => setTimeout(r, 2 * 1000))
     const movies = await getMovies(response)
     return movies
   })
