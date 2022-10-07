@@ -26,17 +26,17 @@ function callHookWithTimeout<T>(call: () => T, hookName: HookName, hookFilePath:
     clearTimeout(t2)
   }
   const t1 = setTimeout(() => {
-    const msg = `${errorPrefix}[Slow Hook] The ${hookName}() hook of ${hookFilePath} is taking more than ${humanizeTime(
-      timeoutErr
+    const msg = `${errorPrefix}[Warning] The ${hookName}() hook of ${hookFilePath} is taking more than ${humanizeTime(
+      timeoutWarn
     )}`
     console.warn(msg)
-  }, timeoutErr)
+  }, timeoutWarn)
   const t2 = setTimeout(() => {
     const err = getProjectError(
-      `[Hook Timeout] The ${hookName}() hook of ${hookFilePath} didn't finish after ${humanizeTime(timeoutWarn)}`
+      `Hook timeout: the ${hookName}() hook of ${hookFilePath} didn't finish after ${humanizeTime(timeoutErr)}`
     )
     reject(err)
-  }, timeoutWarn)
+  }, timeoutErr)
 
   ;(async () => {
     try {
