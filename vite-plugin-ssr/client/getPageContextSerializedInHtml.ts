@@ -15,12 +15,14 @@ function getPageContextSerializedInHtml(): {
   assert(hasProp(parseResult, 'pageContext', 'object'))
   const { pageContext } = parseResult
   assert(hasProp(pageContext, '_pageId', 'string'))
+  /*
   if ('_serverSideErrorWhileStreaming' in pageContext) {
     const err = getProjectError(
       `An error occurred on the server while rendering/streaming to HTML. Check your server logs.`
     )
     throw err
   }
+  */
 
   objectAssign(pageContext, {
     _pageContextRetrievedFromServer: { ...pageContext },

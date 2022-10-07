@@ -839,10 +839,12 @@ async function executeRenderHook(
   const onErrorWhileStreaming = (err: unknown) => {
     assertError(err)
     logError(err)
+    /*
     objectAssign(pageContext, {
       errorWhileRendering: err,
       _serverSideErrorWhileStreaming: true
     })
+    */
   }
   const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))

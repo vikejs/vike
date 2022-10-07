@@ -51,7 +51,10 @@ const JAVASCRIPT_BUILT_INS = [
   'then',
   'toJSON' // Vue tries to access `toJSON`
 ]
-const PASS_TO_CLIENT_BUILT_INS = ['_pageId', '_serverSideErrorWhileStreaming'] as const
+const PASS_TO_CLIENT_BUILT_INS = [
+  '_pageId'
+  // '_serverSideErrorWhileStreaming'
+] as const
 
 // Hint the user to use `paassToClient` when accessing undefined `pageContext` props
 function getProxy<

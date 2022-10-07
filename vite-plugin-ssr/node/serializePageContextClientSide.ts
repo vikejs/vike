@@ -30,10 +30,12 @@ function serializePageContextClientSide(pageContext: {
   passToClient.forEach((prop) => {
     pageContextClient[prop] = (pageContext as PageContextUser)[prop]
   })
+  /*
   if (hasProp(pageContext, '_serverSideErrorWhileStreaming')) {
     assert(pageContext._serverSideErrorWhileStreaming === true)
     pageContextClient['_serverSideErrorWhileStreaming'] = true
   }
+  */
 
   assert(isPlainObject(pageContextClient))
   let pageContextSerialized: string
