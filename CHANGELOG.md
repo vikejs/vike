@@ -1,3 +1,16 @@
+## [0.4.40](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.39...v0.4.40) (2022-10-07)
+
+
+### Bug Fixes
+
+* [stream] ensure order of stream writing and stream flushing ([#466](https://github.com/brillout/vite-plugin-ssr/issues/466)) ([11a5cbd](https://github.com/brillout/vite-plugin-ssr/commit/11a5cbd629fb67d134f2c8f1e414cf9345da2ab8))
+* [stream] flush HTML begin/end injections ([#466](https://github.com/brillout/vite-plugin-ssr/issues/466)) ([50bd119](https://github.com/brillout/vite-plugin-ssr/commit/50bd1193bee6444317eb109c6a03eb8c4cb12489))
+* [stream] flush script injection ([e618438](https://github.com/brillout/vite-plugin-ssr/commit/e618438b33f7bac658c08ed5cd8d62ad43b6f5a0))
+* fix slow hook timeouts ([58525c1](https://github.com/brillout/vite-plugin-ssr/commit/58525c129450c7a36f0a89653282a668e45134a6))
+* make `includeAssetsImportedByServer` support `?url` imports (fix [#464](https://github.com/brillout/vite-plugin-ssr/issues/464)) ([29f046e](https://github.com/brillout/vite-plugin-ssr/commit/29f046e72e99f4889372538cdbb9b90899f2d73f))
+
+
+
 ## [0.4.39](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.38...v0.4.39) (2022-10-03)
 
 
