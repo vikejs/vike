@@ -118,7 +118,7 @@ async function prerender(
 
   const logLevel = !!options.onPagePrerender ? 'warn' : 'info'
   if (logLevel === 'info') {
-    console.log(`${cyan(`vite-plugin-ssr ${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
+    console.log(`${cyan(`vite-plugin-ssr v${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
   }
 
   setProductionEnvVar()
