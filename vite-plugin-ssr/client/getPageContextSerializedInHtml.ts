@@ -8,7 +8,7 @@ function getPageContextSerializedInHtml(): {
   _pageContextRetrievedFromServer: Record<string, unknown>
   _comesDirectlyFromServer: true
 } {
-  const pageContextJson = document.getElementById('vite-plugin-ssr_pageContext')?.textContent
+  const pageContextJson = document.scripts.namedItem('vite-plugin-ssr_pageContext')?.textContent
   assert(pageContextJson)
 
   const parseResult = parse(pageContextJson)
