@@ -63,10 +63,7 @@ async function injectAssets(htmlString: string, pageContext: PageContextInjectAs
   return htmlString
 }
 
-function injectAssetsToStream(
-  pageContext: PageContextInjectAssets,
-  injectToStream: null | InjectToStream
-) {
+function injectAssetsToStream(pageContext: PageContextInjectAssets, injectToStream: null | InjectToStream) {
   let htmlSnippets: HtmlSnippet[]
 
   return {
