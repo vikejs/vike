@@ -1,21 +1,19 @@
-import { Link } from '@brillout/docpress'
+import { Link, Note } from '@brillout/docpress'
 
-Using a Vercel API Route is the recommended way to deploy `vite-plugin-ssr` to [Vercel](https://vercel.com/).
+Using a Vercel API Route is the recommended way for deploying `vite-plugin-ssr` to [Vercel](https://vercel.com/).
 
 There are also alternatives, in particular [vite-plugin-vercel](#vite-plugin-vercel) if we want partial static deploy and/or [ISR](#isr).
 
 
 ## API Route
 
-We can deploy our `vite-plugin-ssr` app to Vercel by
-creating a Vercel API Route `api/ssr.js` that server-side renders our app.
+We can deploy our `vite-plugin-ssr` app to Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders our app.
 
 Example: [github.com/brillout/vite-plugin-ssr_vercel](https://github.com/brillout/vite-plugin-ssr_vercel).
 
-> Vercel runs our API Route `api/ssr.js` as a serverless function.
-> See [Vercel Docs > Serverless Functions > Deploying](https://vercel.com/docs/concepts/functions/serverless-functions#deploying-serverless-functions).
+<Note type="warning">Make sure to properly set `FRAMEWORK PRESET` and `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md`.</Note>
 
-Using such API Route is the recommended way. API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a fast moving target with frequent breaking changes.) Once we setup our server-side rendering API Route, we can safely expect it to work for the foreseeable future.
+> Using such API Route is the recommended way because API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a fast moving target with frequent breaking changes.) Once we setup our server-side rendering API Route, we can expect it to work for the foreseeable future.
 
 
 ## vite-plugin-vercel
