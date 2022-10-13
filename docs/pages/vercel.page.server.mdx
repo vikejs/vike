@@ -1,36 +1,16 @@
 import { Link, Note } from '@brillout/docpress'
 
-Using a Vercel API Route is the recommended way for deploying `vite-plugin-ssr` to [Vercel](https://vercel.com/).
-
-There are also alternatives, in particular [vite-plugin-vercel](#vite-plugin-vercel) if we want partial static deploy and/or [ISR](#isr).
-
-
-## API Route
-
-We can deploy our `vite-plugin-ssr` app to Vercel simply by creating a Vercel API Route `api/ssr.js` that server-side renders our app.
-
-Example: [github.com/brillout/vite-plugin-ssr_vercel](https://github.com/brillout/vite-plugin-ssr_vercel).
-
-<Note type="warning">Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Note>
-
-> Using a Vercel API Route is the recommended way because API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a fast moving target with frequent breaking changes.) Once we setup our server-side rendering API Route, we can expect it to work for the foreseeable future.
-
+[Vercel](https://vercel.com) is a frontend platform with support for 35+ frameworks, including Vite. We recommend using `vite-plugin-ssr` in combination with [vite-plugin-vercel](#vite-plugin-vercel) to enable support for all Vercel features, including Server-Side Rendering (SSR), Incremental Static Regeneration (ISR), Edge Middleware, and more.
 
 ## vite-plugin-vercel
 
-For a zero-config integration with [ISR](https://vercel.com/docs/concepts/next.js/incremental-static-regeneration) support, we can use [`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel).
+[`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel) enables zero-configuration support for all Vercel features, including [Incremental Static Regeneration](https://vercel.com/docs/concepts/incremental-static-regeneration/overview).
 
 If we <Link text="pre-render our pages only partially" href="/prerender-config#partial" />, we can also use `vite-plugin-vercel` to statically deploy our pre-rendered pages while dynamically serving our non-prerendered pages.
 
+Under the hood, `vite-plugin-vercel` uses Vercel's [Build Output API](https://vercel.com/docs/build-output-api/v3).
+
 > See `vite-plugin-ssr` + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with vite-plugin-ssr](https://github.com/magne4000/vite-plugin-vercel#usage-with-vite-plugin-ssr).
-
-
-## Build Output API
-
-For more flexibility and configuration options, we can use the [Build Output API](https://vercel.com/docs/build-output-api/v3).
-
-Example: [github.com/brillout/vite-plugin-ssr_vercel_build-output-api](https://github.com/brillout/vite-plugin-ssr_vercel_build-output-api).
-
 
 ## Data APIs (GraphQL, RESTful, RPC)
 
@@ -50,7 +30,6 @@ In other words, we add a data layer by:
 
 > When using SSR, we recommend using [RPC instead of GraphQL](https://telefunc.com/RPC-vs-GraphQL-REST), which most of time leads to a drastic simplification and increased development speed.
 
+## Incremental Static Regeneration (ISR)
 
-## ISR
-
-We can use Vercel's [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/next.js/incremental-static-regeneration) by using [vite-plugin-vercel](https://github.com/magne4000/vite-plugin-vercel), see [above](#vite-plugin-vercel).
+We can use Vercel's [Incremental Static Regeneration (ISR)](https://vercel.com/docs/concepts/incremental-static-regeneration/overview) by using [vite-plugin-vercel](https://github.com/magne4000/vite-plugin-vercel), see [above](#vite-plugin-vercel).
