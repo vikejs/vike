@@ -22,6 +22,7 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('Learn more collapsible', async () => {
     await page.goto(urlBase + '/')
+    await page.waitForFunction(() => (window as any).__docpress_hydrationFinished);
     const text = 'you control how your pages are rendered'
     const selector = `p:has-text("${text}")`
     await page.waitForSelector(selector, { state: 'hidden' })
