@@ -11,16 +11,16 @@ We can deploy our `vite-plugin-ssr` app to Vercel simply by creating a Vercel AP
 
 Example: [github.com/brillout/vite-plugin-ssr_vercel](https://github.com/brillout/vite-plugin-ssr_vercel).
 
-<Note type="warning">Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md`.</Note>
+<Note type="warning">Make sure to properly set `OUTPUT DIRECTORY` in your Vercel dashboard, see the example's `readme.md` instructions.</Note>
 
-> Using such API Route is the recommended way because API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a fast moving target with frequent breaking changes.) Once we setup our server-side rendering API Route, we can expect it to work for the foreseeable future.
+> Using a Vercel API Route is the recommended way because API Routes is a core Vercel feature: it's here to stay and, most importantly, stable. (Whereas Vercel's Build Output API is a fast moving target with frequent breaking changes.) Once we setup our server-side rendering API Route, we can expect it to work for the foreseeable future.
 
 
 ## vite-plugin-vercel
 
 For a zero-config integration with [ISR](https://vercel.com/docs/concepts/next.js/incremental-static-regeneration) support, we can use [`vite-plugin-vercel`](https://github.com/magne4000/vite-plugin-vercel).
 
-If we <Link text="pre-render our pages only partially" href="/prerender-config#partial" />, we can also use `vite-plugin-vercel` to statically deploy our pre-rendered pages while dynamically serving our non-pre-rendered pages.
+If we <Link text="pre-render our pages only partially" href="/prerender-config#partial" />, we can also use `vite-plugin-vercel` to statically deploy our pre-rendered pages while dynamically serving our non-prerendered pages.
 
 > See `vite-plugin-ssr` + `vite-plugin-vercel` installation instructions at [`vite-plugin-vercel` > Usage with vite-plugin-ssr](https://github.com/magne4000/vite-plugin-vercel#usage-with-vite-plugin-ssr).
 
