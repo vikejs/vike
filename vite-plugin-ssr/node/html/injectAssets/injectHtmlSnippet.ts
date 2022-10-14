@@ -139,6 +139,9 @@ function createHtmlHeadIfMissing(htmlString: string): string {
 }
 
 type Tag = 'html' | 'head' | 'body' | '!doctype'
+// Pay attention to performance when searching for tags
+// Use the most effective way to test or match tag existence
+// Use tag existence checking with caution as it is costly operation
 function tagOpeningExists(tag: Tag, htmlString: string) {
   const tagOpeningRE = getTagOpening(tag)
   return tagOpeningRE.test(htmlString)
