@@ -215,6 +215,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     })
   }
   async function clickCounter() {
+    await page.waitForFunction(() => window.document.body.textContent.includes('Counter')) // Wait until page has loaded
     expect(await page.textContent('button')).toContain('Counter 0')
     await autoRetry(async () => {
       await page.click('button')
