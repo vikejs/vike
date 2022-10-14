@@ -3,13 +3,13 @@ import { toPosixPath } from '../utils'
 export { isViteCliCall }
 
 function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'; ssr?: true } = {}) {
-  const { isViteCli, viteCliCommand, viteCliOptions } = analyzise()
+  const { isViteCli, viteCliCommand, viteCliArgs } = analyzise()
 
   if (!isViteCli) {
     return false
   }
 
-  if (ssr && !viteCliOptions.includes('--ssr')) {
+  if (ssr && !viteCliArgs.includes('--ssr')) {
     return false
   }
 
@@ -31,16 +31,16 @@ function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'
 function analyzise() {
   const { argv } = process
 
-  const viteCliOptions: string[] = []
+  const viteCliArgs: string[] = []
   let viteCliCommand: string = ''
 
   let isViteCli = false
   for (const arg of argv) {
     if (isViteCli) {
       if (arg.startsWith('-')) {
-        viteCliOptions.push(arg)
+        viteCliArgs.push(arg)
       } else {
-        if (viteCliOptions.length === 0) {
+        if (viteCliArgs.length === 0) {
           viteCliCommand = arg
         }
       }
@@ -57,5 +57,5 @@ function analyzise() {
     }
   }
 
-  return { isViteCli, viteCliOptions, viteCliCommand }
+  return { isViteCli, viteCliArgs, viteCliCommand }
 }
