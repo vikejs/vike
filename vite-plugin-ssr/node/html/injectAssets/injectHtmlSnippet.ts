@@ -78,8 +78,6 @@ function getHtmlSnippet(htmlSnippet: string | (() => string)) {
 }
 
 function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: string, htmlSnippet: string): string {
-  assert(tagOpeningExists(tag, htmlString))
-
   const openingTag = getTagOpening(tag)
   const matches = htmlString.match(openingTag)
   assert(matches && matches.length >= 1)
@@ -95,8 +93,6 @@ function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: strin
 }
 
 function injectAtClosingTag(tag: 'head' | 'body' | 'html', htmlString: string, htmlSnippet: string): string {
-  assert(tagClosingExists(tag, htmlString))
-
   const tagClosing = getTagClosing(tag)
   const matches = htmlString.match(tagClosing)
   assert(matches && matches.length >= 1)
