@@ -98,13 +98,17 @@ function injectAtClosingTag(tag: 'head' | 'body' | 'html', htmlString: string, h
   assert(tagClosingExists(tag, htmlString))
 
   const tagClosing = getTagClosing(tag)
-  const htmlParts = htmlString.split(tagClosing)
+  const matches = htmlString.match(tagClosing)
+  assert(matches && matches.length >= 1)
+  const tagInstance = matches[0]
+  assert(tagInstance)
+  const htmlParts = htmlString.split(tagInstance)
   assert(htmlParts.length >= 2)
 
   // Insert `htmlSnippet` before last `tagClosing`
-  const before = slice(htmlParts, 0, -1).join(tagClosing)
+  const before = slice(htmlParts, 0, -1).join(tagInstance)
   const after = slice(htmlParts, -1, 0)
-  return before + htmlSnippet + tagClosing + after
+  return before + htmlSnippet + tagInstance + after
 }
 
 function createHtmlHeadIfMissing(htmlString: string): string {
@@ -140,14 +144,14 @@ function tagOpeningExists(tag: Tag, htmlString: string) {
   return tagOpeningRE.test(htmlString)
 }
 function tagClosingExists(tag: Tag, htmlString: string) {
-  const tagClosing = getTagClosing(tag)
-  return htmlString.toLowerCase().includes(tagClosing.toLowerCase())
+  const tagClosingRE = getTagClosing(tag)
+  return tagClosingRE.test(htmlString)
 }
 function getTagOpening(tag: Tag) {
   const tagOpening = new RegExp(`<${tag}(>| [^>]*>)`, 'i')
   return tagOpening
 }
 function getTagClosing(tag: Tag) {
-  const tagClosing = `</${tag}>`
+  const tagClosing = new RegExp(`</${tag}>`, 'i');
   return tagClosing
 }
