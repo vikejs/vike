@@ -1,4 +1,5 @@
 export { isViteCliCall }
+export { getConfigFromCli }
 
 import { assert, toPosixPath } from '../utils'
 
@@ -9,7 +10,7 @@ function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'
     return false
   }
 
-  if (ssr && !viteCliArgs['--ssr']) {
+  if (ssr && !viteCliArgs['ssr']) {
     return false
   }
 
@@ -28,19 +29,35 @@ function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'
   return true
 }
 
+type CliArgVal = boolean | string
+
 function analyzise() {
   const { argv } = process
 
-  const viteCliArgs: Record<string, true | string> = {}
+  const viteCliArgs: Record<string, CliArgVal> = {}
   let viteCliCommand: string = ''
 
   let isViteCli = false
-  let currentArg: string | null = null
+  let currentArgName: string | null = null
   let currentArgValues: string[] = []
   const currentArgAdd = () => {
-    if (currentArg) {
-      viteCliArgs[currentArg] = currentArgValues.length === 0 ? true : currentArgValues.join(' ')
-      currentArg = null
+    if (currentArgName) {
+      viteCliArgs[currentArgName] = (() => {
+        if (currentArgValues.length === 0) {
+          return true
+        }
+        if (currentArgValues.length === 1) {
+          const val = currentArgValues[0]
+          if (val === 'false') {
+            return false
+          }
+          if (val === 'true') {
+            return true
+          }
+        }
+        return currentArgValues.join(' ')
+      })()
+      currentArgName = null
       currentArgValues = []
     }
   }
@@ -60,10 +77,12 @@ function analyzise() {
 
     assert(isViteCli)
     if (word.startsWith('-')) {
+      word = resolveCliArgName(word)
+      assert(!word.startsWith('-'))
       currentArgAdd()
-      currentArg = word
+      currentArgName = word
     } else {
-      if (Object.keys(viteCliArgs).length === 0 && currentArg === null) {
+      if (Object.keys(viteCliArgs).length === 0 && currentArgName === null) {
         viteCliCommand = word
       } else {
         currentArgValues.push(word)
@@ -72,6 +91,46 @@ function analyzise() {
   }
   currentArgAdd()
 
-  assert(currentArg === null)
+  assert(currentArgName === null)
   return { isViteCli, viteCliArgs, viteCliCommand }
+}
+
+function resolveCliArgName(cliWord: string) {
+  const shortHands = {
+    '-w': 'watch',
+    '-c': 'config',
+    '-l': 'logLevel',
+    '-d': 'debug',
+    '-f': 'filter',
+    '-m': 'mode',
+    '-h': 'help'
+  }
+  if (cliWord in shortHands) {
+    return shortHands[cliWord as keyof typeof shortHands]
+  }
+  assert(cliWord.startsWith('--'), cliWord)
+  cliWord = cliWord.slice(2)
+  return cliWord
+}
+
+type ConfigFromCli = Record<string, unknown> & { build: Record<string, unknown>; optimizeDeps: Record<string, unknown> }
+function getConfigFromCli(): ConfigFromCli {
+  const { isViteCli, viteCliCommand, viteCliArgs } = analyzise()
+  assert(isViteCli)
+  assert(viteCliCommand === 'build')
+
+  const configFromCli: ConfigFromCli = { build: {}, optimizeDeps: {} }
+  Object.entries(viteCliArgs).forEach(([name, val]) => {
+    if (['mode', 'base', 'logLevel', 'clearScreen', 'debug', 'filter'].includes(name)) {
+      configFromCli[name] = val
+    } else if (['force'].includes(name)) {
+      configFromCli.optimizeDeps[name] = val
+    } else if ('config' === name) {
+      configFromCli.configFile = val
+    } else {
+      configFromCli.build[name] = val
+    }
+  })
+
+  return configFromCli
 }

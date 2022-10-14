@@ -2,7 +2,7 @@ export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils'
-import { isViteCliCall } from '../helpers'
+import { getConfigFromCli, isViteCliCall } from '../helpers'
 import { prerender } from '../../prerender'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
@@ -27,16 +27,24 @@ function autoFullBuild(): Plugin {
           return
         }
 
-        const { configFile, root } = config
-        const configSSR = {
-          build: { ssr: true },
-          configFile,
-          root
+        const configFromCli = getConfigFromCli()
+        if (!configFromCli.configFile) {
+          configFromCli.configFile = config.configFile
         }
-        await build(configSSR)
+        if (!configFromCli.root) {
+          configFromCli.root = config.root
+        }
+
+        await build({
+          ...configFromCli,
+          build: {
+            ...configFromCli.build,
+            ssr: true
+          }
+        })
 
         if (config.vitePluginSsr.prerender && !config.vitePluginSsr.prerender.disableAutoRun) {
-          await prerender({ viteConfig: { configFile, root } })
+          await prerender({ viteConfig: configFromCli })
         }
       } catch (err) {
         // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
