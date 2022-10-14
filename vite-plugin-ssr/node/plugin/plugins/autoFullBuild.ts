@@ -22,12 +22,12 @@ function autoFullBuild(): Plugin {
     },
     // TODO: use `sequential: true` once available
     async writeBundle() {
-      if (config.build.ssr || config.vitePluginSsr.disableAutoFullBuild || !isViteCliCall()) {
-        return
-      }
       try {
-        const { configFile, root } = config
+        if (config.build.ssr || config.vitePluginSsr.disableAutoFullBuild || !isViteCliCall()) {
+          return
+        }
 
+        const { configFile, root } = config
         const configSSR = {
           build: { ssr: true },
           configFile,
