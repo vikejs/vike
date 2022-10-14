@@ -9,9 +9,9 @@ export { passToClient }
 const passToClient = ['pageProps']
 
 async function render(pageContext) {
-  const { Page, pageProps, url } = pageContext
+  const { Page, pageProps, urlPathname } = pageContext
   const pageHtml = renderToString(
-    <StaticRouter location={url}>
+    <StaticRouter location={urlPathname}>
       <Page {...pageProps} />
     </StaticRouter>
   )

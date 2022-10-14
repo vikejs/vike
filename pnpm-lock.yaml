@@ -11,13 +11,13 @@ importers:
     specifiers:
       '@brillout/bump-dependencies': ^0.1.1
       '@brillout/dev-my-dep': ^0.0.10
-      '@brillout/test-e2e': ^0.1.13
+      '@brillout/test-e2e': ^0.1.14
       '@brillout/test-types': ^0.1.2
       vitest: ^0.23.4
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.0.10
-      '@brillout/test-e2e': 0.1.13
+      '@brillout/test-e2e': 0.1.14
       '@brillout/test-types': 0.1.2
       vitest: 0.23.4
 
@@ -149,7 +149,7 @@ importers:
 
   docs:
     specifiers:
-      '@brillout/docpress': ^0.1.4
+      '@brillout/docpress': ^0.1.5
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
@@ -159,7 +159,7 @@ importers:
       vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
-      '@brillout/docpress': 0.1.4_biqbaboplfbrettd7655fr4n2y
+      '@brillout/docpress': 0.1.5_biqbaboplfbrettd7655fr4n2y
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
@@ -1614,8 +1614,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@brillout/docpress/0.1.4_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-ZXr40SjnJI5vWO5x/itJASUUcQYB3krpIYjetd/Po7ZAzDGnwx3sUpMMqq+JOdik/JRUoaWTiqMVgLGLKKhppQ==}
+  /@brillout/docpress/0.1.5_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-MsEFpWFZ08BPmUa/lx9yLw2I4AXGDFkH30oAgiTxJBuNnKwZQNejHHfdYRxpJXE0HZgA/XWkrMqkXWhy75kfkQ==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -1662,8 +1662,8 @@ packages:
       semver: 7.3.7
     dev: true
 
-  /@brillout/test-e2e/0.1.13:
-    resolution: {integrity: sha512-LFyQcQrzOWWh74ITKUIiinX+grkAAfcPutgljA6yhRxWfdV8zSJ8jWambx25sZiLiK3BItS2iBv1RN+yjr7LcA==}
+  /@brillout/test-e2e/0.1.14:
+    resolution: {integrity: sha512-LBnYtyjB+wjeVDN2YF8vbl9DSAvtRMbiB0bWQW/HBF+Jbw0lKiDMO7zdWyquIsbbEgNkVHepO/U+zWnZdH++8g==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
@@ -2793,7 +2793,7 @@ packages:
     dev: false
 
   /ansi-regex/2.1.1:
-    resolution: {integrity: sha1-w7M6te42DYbg5ijwRorn7yfWVN8=}
+    resolution: {integrity: sha512-TIGnTpdo+E3+pCyAluZvtED5p5wCqLdezCyhPZzKPcxvFplEt4i+W7OONCKgeZFT3+y5NZZfOOS/Bdcanm1MYA==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -7915,7 +7915,7 @@ packages:
     dev: false
 
   /strip-ansi/3.0.1:
-    resolution: {integrity: sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=}
+    resolution: {integrity: sha512-VhumSSbBqDTP8p2ZLKj40UjBCV4+v8bUSEpUb4KjRgWk9pbqGF4REFj6KEagidb2f/M6AzC0EmFyDNGaw9OCzg==}
     engines: {node: '>=0.10.0'}
     dependencies:
       ansi-regex: 2.1.1

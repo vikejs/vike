@@ -9,7 +9,7 @@ async function render(pageContext) {
   const { app, router } = createApp({ Page })
 
   // set the router to the desired URL before rendering
-  router.push(pageContext.url)
+  router.push(pageContext.urlPathname)
   await router.isReady()
 
   const appHtml = await renderToString(app)
