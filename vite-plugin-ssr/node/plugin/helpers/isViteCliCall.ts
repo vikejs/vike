@@ -1,6 +1,6 @@
-import { toPosixPath } from '../utils'
-
 export { isViteCliCall }
+
+import { assert, toPosixPath } from '../utils'
 
 function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'; ssr?: true } = {}) {
   const { isViteCli, viteCliCommand, viteCliArgs } = analyzise()
@@ -9,7 +9,7 @@ function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'
     return false
   }
 
-  if (ssr && !viteCliArgs.includes('--ssr')) {
+  if (ssr && !viteCliArgs['--ssr']) {
     return false
   }
 
@@ -31,31 +31,47 @@ function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'
 function analyzise() {
   const { argv } = process
 
-  const viteCliArgs: string[] = []
+  const viteCliArgs: Record<string, true | string> = {}
   let viteCliCommand: string = ''
 
   let isViteCli = false
-  for (const arg of argv) {
-    if (isViteCli) {
-      if (arg.startsWith('-')) {
-        viteCliArgs.push(arg)
-      } else {
-        if (viteCliArgs.length === 0) {
-          viteCliCommand = arg
-        }
-      }
-    } else {
-      const a = toPosixPath(arg)
+  let currentArg: string | null = null
+  let currentArgValues: string[] = []
+  const currentArgAdd = () => {
+    if (currentArg) {
+      viteCliArgs[currentArg] = currentArgValues.length === 0 ? true : currentArgValues.join(' ')
+      currentArg = null
+      currentArgValues = []
+    }
+  }
+  for (let word of argv) {
+    if (!isViteCli) {
+      word = toPosixPath(word)
       if (
         // pnpm
-        a.endsWith('/bin/vite.js') ||
+        word.endsWith('/bin/vite.js') ||
         // npm & yarn
-        a.endsWith('/.bin/vite')
+        word.endsWith('/.bin/vite')
       ) {
         isViteCli = true
       }
+      continue
+    }
+
+    assert(isViteCli)
+    if (word.startsWith('-')) {
+      currentArgAdd()
+      currentArg = word
+    } else {
+      if (Object.keys(viteCliArgs).length === 0 && currentArg === null) {
+        viteCliCommand = word
+      } else {
+        currentArgValues.push(word)
+      }
     }
   }
+  currentArgAdd()
 
+  assert(currentArg === null)
   return { isViteCli, viteCliArgs, viteCliCommand }
 }
