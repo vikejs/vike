@@ -152,6 +152,6 @@ function getTagOpening(tag: Tag) {
   return tagOpening
 }
 function getTagClosing(tag: Tag) {
-  const tagClosing = new RegExp(`</${tag}>`, 'i');
+  const tagClosing = new RegExp(`</${tag}>`, 'i')
   return tagClosing
 }
