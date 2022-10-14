@@ -2,7 +2,7 @@ import { toPosixPath } from '../utils'
 
 export { isViteCliCall }
 
-function isViteCliCall({ command, ssr }: { command: 'build' | 'dev' | 'preview'; ssr?: true }) {
+function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'; ssr?: true } = {}) {
   const { isViteCli, viteCliCommand, viteCliOptions } = analyzise()
 
   if (!isViteCli) {
@@ -13,13 +13,15 @@ function isViteCliCall({ command, ssr }: { command: 'build' | 'dev' | 'preview';
     return false
   }
 
-  if (command === 'dev') {
-    if (!['dev', 'serve', ''].includes(viteCliCommand)) {
-      return false
-    }
-  } else {
-    if (command !== viteCliCommand) {
-      return false
+  if (command) {
+    if (command === 'dev') {
+      if (!['dev', 'serve', ''].includes(viteCliCommand)) {
+        return false
+      }
+    } else {
+      if (command !== viteCliCommand) {
+        return false
+      }
     }
   }
 
