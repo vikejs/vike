@@ -27,6 +27,7 @@ function autoFullBuild(): Plugin {
       } catch (err) {
         // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
         console.error(err)
+        process.exit(1)
       }
     }
   }
