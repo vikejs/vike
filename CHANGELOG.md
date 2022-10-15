@@ -1,3 +1,13 @@
+## [0.4.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.40...v0.4.41) (2022-10-15)
+
+
+### Bug Fixes
+
+* avoid Rollup handling chained build errors ([#472](https://github.com/brillout/vite-plugin-ssr/issues/472)) ([70d90a2](https://github.com/brillout/vite-plugin-ssr/commit/70d90a26a21bf526520b0fc77abd84007f77e4ca))
+* support Vite CLI arguments (fix [#444](https://github.com/brillout/vite-plugin-ssr/issues/444)) ([b907fe2](https://github.com/brillout/vite-plugin-ssr/commit/b907fe214ee98bf968fd5ec432b9253b715c4796))
+
+
+
 ## [0.4.40](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.39...v0.4.40) (2022-10-07)
 
 

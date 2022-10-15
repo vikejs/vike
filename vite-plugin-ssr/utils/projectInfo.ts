@@ -1,6 +1,6 @@
 import { addPackageInstance } from './assertPackageInstances'
 
-const PROJECT_VERSION = '0.4.40'
+const PROJECT_VERSION = '0.4.41'
 
 export const projectInfo = {
   projectName: 'vite-plugin-ssr' as const,
