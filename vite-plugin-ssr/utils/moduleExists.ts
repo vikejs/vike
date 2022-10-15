@@ -1,7 +1,7 @@
+export { moduleExists }
+
 import { isAbsolute, resolve } from 'path'
 import { assert } from './assert'
-
-export { moduleExists }
 
 function moduleExists(modulePath: string, dirPath?: string): boolean {
   if (!isAbsolute(modulePath)) {
@@ -17,7 +17,7 @@ function moduleExists(modulePath: string, dirPath?: string): boolean {
   try {
     req.resolve(modulePath)
     return true
-  } catch (err) {
+  } catch {
     return false
   }
 }
