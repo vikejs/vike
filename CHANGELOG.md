@@ -1,10 +1,21 @@
 ## [0.4.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.40...v0.4.41) (2022-10-15)
 
 
+### BREAKING CHANGES
+
+* [disableAutoFullBuild](https://vite-plugin-ssr.com/disableAutoFullBuild) defaults to `true` when using Vite's `build()` API.
+  > We introduce this breaking change in a minor because it affects only very small number of users.
+
+
 ### Bug Fixes
 
 * avoid Rollup handling chained build errors ([#472](https://github.com/brillout/vite-plugin-ssr/issues/472)) ([70d90a2](https://github.com/brillout/vite-plugin-ssr/commit/70d90a26a21bf526520b0fc77abd84007f77e4ca))
 * support Vite CLI arguments (fix [#444](https://github.com/brillout/vite-plugin-ssr/issues/444)) ([b907fe2](https://github.com/brillout/vite-plugin-ssr/commit/b907fe214ee98bf968fd5ec432b9253b715c4796))
+
+
+### Performance Improvements
+
+* faster script injection ([#474](https://github.com/brillout/vite-plugin-ssr/pull/474))
 
 
 
