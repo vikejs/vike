@@ -23,34 +23,38 @@ function autoFullBuild(): Plugin {
     // TODO: use `sequential: true` once available
     async writeBundle() {
       try {
-        if (config.build.ssr || config.vitePluginSsr.disableAutoFullBuild || !isViteCliCall()) {
-          return
-        }
-
-        const configFromCli = getConfigFromCli()
-        if (!configFromCli.configFile) {
-          configFromCli.configFile = config.configFile
-        }
-        if (!configFromCli.root) {
-          configFromCli.root = config.root
-        }
-
-        await build({
-          ...configFromCli,
-          build: {
-            ...configFromCli.build,
-            ssr: true
-          }
-        })
-
-        if (config.vitePluginSsr.prerender && !config.vitePluginSsr.prerender.disableAutoRun) {
-          await prerender({ viteConfig: configFromCli })
-        }
+        await triggerFullBuild(config)
       } catch (err) {
         // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
         console.error(err)
       }
     }
+  }
+}
+
+async function triggerFullBuild(config: Config) {
+  if (config.build.ssr || config.vitePluginSsr.disableAutoFullBuild || !isViteCliCall()) {
+    return
+  }
+
+  const configFromCli = getConfigFromCli()
+  if (!configFromCli.configFile) {
+    configFromCli.configFile = config.configFile
+  }
+  if (!configFromCli.root) {
+    configFromCli.root = config.root
+  }
+
+  await build({
+    ...configFromCli,
+    build: {
+      ...configFromCli.build,
+      ssr: true
+    }
+  })
+
+  if (config.vitePluginSsr.prerender && !config.vitePluginSsr.prerender.disableAutoRun) {
+    await prerender({ viteConfig: configFromCli })
   }
 }
 
