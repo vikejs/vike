@@ -79,7 +79,7 @@ function assertState(state: unknown): asserts state is HistoryState {
   }
 }
 function replaceHistoryState(state: HistoryState, url?: string) {
-  window.history.replaceState(state, '', url)
+  window.history.replaceState(state, '', url ?? /* Passing `undefined` chokes older Edge versions */ null)
 }
 function pushHistoryState(state: HistoryState, url: string) {
   window.history.pushState(state, '', url)
