@@ -21,9 +21,9 @@ function autoFullBuild(): Plugin {
       abortSSRBuild(config)
     },
     // TODO: use `sequential: true` once available
-    async writeBundle() {
+    async writeBundle(_options, bundle) {
       try {
-        await triggerFullBuild(config)
+        await triggerFullBuild(config, bundle)
       } catch (err) {
         // Avoid Rollup prefixing the error with `[vite-plugin-ssr:autoFullBuild]`, for example see https://github.com/brillout/vite-plugin-ssr/issues/472#issuecomment-1276274203
         console.error(err)
@@ -33,8 +33,14 @@ function autoFullBuild(): Plugin {
   }
 }
 
-async function triggerFullBuild(config: Config) {
-  if (config.build.ssr || config.vitePluginSsr.disableAutoFullBuild || !isViteCliCall()) {
+async function triggerFullBuild(config: Config, bundle: Record<string, unknown>) {
+  if (
+    config.build.ssr ||
+    config.vitePluginSsr.disableAutoFullBuild ||
+    !isViteCliCall() ||
+    // `vite-plugin-ssr.json` missing => it isn't a `$ vite build` call (e.g. @vitejs/plugin-legacy calls Vite's `build()`) => skip
+    !bundle['vite-plugin-ssr.json']
+  ) {
     return
   }
 
