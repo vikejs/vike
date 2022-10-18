@@ -18,9 +18,6 @@ type MediaType = null | {
     | 'font/woff2'
 }
 function inferMediaType(href: string): MediaType {
-  assert(href.startsWith('/'))
-  assert(!href.startsWith('//'))
-
   // Basics
   if (styleFileRE.test(href)) {
     return { mediaType: 'text/css', preloadType: 'style' }
