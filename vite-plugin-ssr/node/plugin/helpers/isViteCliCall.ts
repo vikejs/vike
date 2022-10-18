@@ -117,7 +117,6 @@ type ConfigFromCli = Record<string, unknown> & { build: Record<string, unknown>;
 function getConfigFromCli(): ConfigFromCli {
   const { isViteCli, viteCliCommand, viteCliArgs } = analyzise()
   assert(isViteCli)
-  assert(viteCliCommand === 'build')
 
   const configFromCli: ConfigFromCli = { build: {}, optimizeDeps: {} }
   Object.entries(viteCliArgs).forEach(([name, val]) => {
