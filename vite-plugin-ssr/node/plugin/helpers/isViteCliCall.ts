@@ -39,28 +39,26 @@ function analyzise() {
 
   let isViteCli = false
   let currentArgName: string | null = null
-  let currentArgValues: string[] = []
+  let currentArgValue: string | null = null
   const currentArgAdd = () => {
     if (currentArgName) {
       viteCliArgs[currentArgName] = (() => {
-        if (currentArgValues.length === 0) {
+        if (currentArgValue === null) {
           return true
         }
-        if (currentArgValues.length === 1) {
-          const val = currentArgValues[0]
-          if (val === 'false') {
-            return false
-          }
-          if (val === 'true') {
-            return true
-          }
+        if (currentArgValue === 'false') {
+          return false
         }
-        return currentArgValues.join(' ')
+        if (currentArgValue === 'true') {
+          return true
+        }
+        return currentArgValue
       })()
       currentArgName = null
-      currentArgValues = []
+      currentArgValue = null
     }
   }
+
   for (let word of argv) {
     if (!isViteCli) {
       word = toPosixPath(word)
@@ -82,10 +80,11 @@ function analyzise() {
       currentArgAdd()
       currentArgName = word
     } else {
-      if (Object.keys(viteCliArgs).length === 0 && currentArgName === null) {
+      if (currentArgName === null) {
         viteCliCommand = word
       } else {
-        currentArgValues.push(word)
+        currentArgValue = word
+        currentArgAdd()
       }
     }
   }
