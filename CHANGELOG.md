@@ -1,3 +1,16 @@
+## [0.4.42](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.41...v0.4.42) (2022-10-18)
+
+
+### Bug Fixes
+
+* remove erronous assertions (fix [#469](https://github.com/brillout/vite-plugin-ssr/issues/469)) ([7e2bf51](https://github.com/brillout/vite-plugin-ssr/commit/7e2bf51c567a0698a74b14fa8a2ffe11e5eb6f32))
+* skip autoFullBuild upon @vitejs/plugin-legacy internal build() ([#477](https://github.com/brillout/vite-plugin-ssr/issues/477)) ([d578381](https://github.com/brillout/vite-plugin-ssr/commit/d578381f3e353640a4e8618beaf21ed82af66966))
+* stop assuming build command ([9254b66](https://github.com/brillout/vite-plugin-ssr/commit/9254b6681cd4f8e56fed14ad6ab80082ce375979))
+* stop assuming Vite CLI command to occur first ([b9738b7](https://github.com/brillout/vite-plugin-ssr/commit/b9738b7ab9481aa5bb55ab3aa1a956036652e0cd))
+* support older Edge browsers ([#477](https://github.com/brillout/vite-plugin-ssr/issues/477)) ([9b9f551](https://github.com/brillout/vite-plugin-ssr/commit/9b9f55172493fad660a10c74387ecb94a33117e9))
+
+
+
 ## [0.4.41](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.40...v0.4.41) (2022-10-15)
 
 
