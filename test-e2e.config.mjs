@@ -6,34 +6,34 @@ export default {
 }
 
 function tolerateError(log) {
-  return isSlowHookWarning() || isFetchExperimentalWarning()
+  return isSlowHookWarning() || isFetchExperimentalWarning() || isViteBug()
 
-  // Tolerate:
-  // ```
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
-  // ```
   function isSlowHookWarning() {
-    if (log.logSource === 'stderr') {
-      const t = log.logText
-      if (t.includes('[Warning]') && t.includes('hook of') && t.includes('is taking more than 4 seconds')) {
-        return true
-      }
-    }
-    return false
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes('[Warning]') &&
+      log.logText.includes('hook of') &&
+      log.logText.includes('is taking more than 4 seconds')
+    )
   }
 
   function isFetchExperimentalWarning() {
-    if (log.logSource === 'stderr') {
-      const t = log.logText
-      if (
-        t.includes(
-          'ExperimentalWarning: The Fetch API is an experimental feature. This feature could change at any time'
-        )
-      ) {
-        return true
-      }
-    }
-    return false
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes(
+        'ExperimentalWarning: The Fetch API is an experimental feature. This feature could change at any time'
+      )
+    )
+  }
+
+  // [16:10:29.456][\examples\preact-client-routing][npm run preview][stderr] 4:10:29 PM [vite] Internal server error: The service is no longer running
+  function isViteBug() {
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes('vite') &&
+      log.logText.includes('Internal server error: The service is no longer running')
+    )
   }
 }
 
