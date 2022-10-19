@@ -11,13 +11,13 @@ importers:
     specifiers:
       '@brillout/bump-dependencies': ^0.1.1
       '@brillout/dev-my-dep': ^0.0.10
-      '@brillout/test-e2e': ^0.1.19
+      '@brillout/test-e2e': ^0.1.20
       '@brillout/test-types': ^0.1.2
       vitest: ^0.23.4
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.0.10
-      '@brillout/test-e2e': 0.1.19
+      '@brillout/test-e2e': 0.1.20
       '@brillout/test-types': 0.1.2
       vitest: 0.23.4
 
@@ -1662,8 +1662,8 @@ packages:
       semver: 7.3.7
     dev: true
 
-  /@brillout/test-e2e/0.1.19:
-    resolution: {integrity: sha512-8iTHikRqJye5dez1YP4UZ0PmG2EhNq8PX+zKnHKmIg/DeYcchOev1dXlEiEa/+kMFDtZtizGWPmYTQHmngZXsQ==}
+  /@brillout/test-e2e/0.1.20:
+    resolution: {integrity: sha512-BlNJUI6fAWpIqvGM1cfc8vBF/R79PhwZlJlOtbR2JfNGhoZ/niH4aO05YEO0WBQcMgljv4GRmWG5ogwBeuTBqA==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
@@ -4388,6 +4388,7 @@ packages:
       glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.5
+    dev: false
 
   /fast-glob/3.2.12:
     resolution: {integrity: sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==}
@@ -4697,7 +4698,7 @@ packages:
     dependencies:
       array-union: 2.1.0
       dir-glob: 3.0.1
-      fast-glob: 3.2.11
+      fast-glob: 3.2.12
       ignore: 5.2.0
       merge2: 1.4.1
       slash: 3.0.0

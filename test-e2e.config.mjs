@@ -6,10 +6,7 @@ export default {
 }
 
 function tolerateError(log) {
-  if (isSlowHookWarning()) {
-    return true
-  }
-  return false
+  return isSlowHookWarning() || isFetchExperimentalWarning()
 
   // Tolerate:
   // ```
@@ -22,6 +19,21 @@ function tolerateError(log) {
         return true
       }
     }
+    return false
+  }
+
+  function isFetchExperimentalWarning() {
+    if (log.logSource === 'stderr') {
+      const t = log.logText
+      if (
+        t.includes(
+          'ExperimentalWarning: The Fetch API is an experimental feature. This feature could change at any time'
+        )
+      ) {
+        return true
+      }
+    }
+    return false
   }
 }
 
