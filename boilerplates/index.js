@@ -180,8 +180,8 @@ function initGitRepo(cwd) {
     return
   }
 
-  execSync('git init', { cwd })
-  execSync('git add .', { cwd })
+  execSync('git init', { cwd, stdio: 'ignore' })
+  execSync('git add .', { cwd, stdio: 'ignore' })
   execSync(
     [
       'git',
@@ -191,7 +191,7 @@ function initGitRepo(cwd) {
       '--no-gpg-sign',
       '--message="boilerplate Vite w/ vite-plugin-ssr"'
     ].join(' '),
-    { cwd }
+    { cwd, stdio: 'ignore' }
   )
 }
 function isGitInstalled() {
