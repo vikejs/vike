@@ -1,3 +1,14 @@
+## [0.4.43](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.42...v0.4.43) (2022-10-19)
+
+
+### Bug Fixes
+
+* align CLI option parsing with Vite ([54d2b22](https://github.com/brillout/vite-plugin-ssr/commit/54d2b22591c5fba1e2f901d6e268c4713df7f1b2))
+* don't preload virtual css modules (fix [#479](https://github.com/brillout/vite-plugin-ssr/issues/479)) ([3f7b991](https://github.com/brillout/vite-plugin-ssr/commit/3f7b9916dddc84e29e2c20d2b0df7211b6f1acbd))
+* improve error message upon environment loading wrong exports entry (fix [#481](https://github.com/brillout/vite-plugin-ssr/issues/481)) ([3c58410](https://github.com/brillout/vite-plugin-ssr/commit/3c58410c7785467456b40a92243b15142b49d726))
+
+
+
 ## [0.4.42](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.41...v0.4.42) (2022-10-18)
 
 
