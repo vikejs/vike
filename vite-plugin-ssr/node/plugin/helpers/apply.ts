@@ -12,7 +12,7 @@ function apply(
     assert(command)
     assert(mode)
 
-    if (onlyViteCli && !isViteCliCall({ command: when })) {
+    if (onlyViteCli && !isViteCliCall()) {
       return false
     }
 

@@ -1,134 +1,85 @@
 export { isViteCliCall }
-export { getConfigFromCli }
+export { getViteBuildCliConfig }
 
 import { assert, toPosixPath } from '../utils'
+import { cac } from 'cac'
 
-function isViteCliCall({ command, ssr }: { command?: 'build' | 'dev' | 'preview'; ssr?: true } = {}) {
-  const { isViteCli, viteCliCommand, viteCliArgs } = analyzise()
-
-  if (!isViteCli) {
-    return false
-  }
-
-  if (ssr && !viteCliArgs['ssr']) {
-    return false
-  }
-
-  if (command) {
-    if (command === 'dev') {
-      if (!['dev', 'serve', ''].includes(viteCliCommand)) {
-        return false
-      }
-    } else {
-      if (command !== viteCliCommand) {
-        return false
-      }
-    }
-  }
-
-  return true
+function isViteCliCall() {
+  let execPath = process.argv[1]
+  assert(execPath)
+  execPath = toPosixPath(execPath)
+  return (
+    // pnpm
+    execPath.endsWith('/bin/vite.js') ||
+    // npm & yarn
+    execPath.endsWith('/.bin/vite')
+  )
 }
 
-type CliArgVal = boolean | string
+// Copied and adapted from https://github.com/vitejs/vite/blob/8d0a9c1ab8ddd26973509ca230b29604e872e2cd/packages/vite/src/node/cli.ts#L137-L197
+type BuildArgs = Record<string, unknown> & { build: Record<string, unknown> }
+function getViteBuildCliConfig(): BuildArgs {
+  const cli = cac('vite-plugin-ssr:vite-simulation')
+  const desc = 'FAKE_CLI'
 
-function analyzise() {
-  const { argv } = process
+  cli
+    .option('-c, --config <file>', desc)
+    .option('--base <path>', desc)
+    .option('-l, --logLevel <level>', desc)
+    .option('--clearScreen', desc)
+    .option('-d, --debug [feat]', desc)
+    .option('-f, --filter <filter>', desc)
+    .option('-m, --mode <mode>', desc)
 
-  const viteCliArgs: Record<string, CliArgVal> = {}
-  let viteCliCommand: string = ''
-
-  let isViteCli = false
-  let currentArgName: string | null = null
-  let currentArgValue: string | null = null
-  const currentArgAdd = () => {
-    if (currentArgName) {
-      viteCliArgs[currentArgName] = (() => {
-        if (currentArgValue === null) {
-          return true
-        }
-        if (currentArgValue === 'false') {
-          return false
-        }
-        if (currentArgValue === 'true') {
-          return true
-        }
-        return currentArgValue
-      })()
-      currentArgName = null
-      currentArgValue = null
-    }
-  }
-
-  for (let word of argv) {
-    if (!isViteCli) {
-      word = toPosixPath(word)
-      if (
-        // pnpm
-        word.endsWith('/bin/vite.js') ||
-        // npm & yarn
-        word.endsWith('/.bin/vite')
-      ) {
-        isViteCli = true
+  // build
+  cli
+    .command('build [root]', desc)
+    .option('--target <target>', desc)
+    .option('--outDir <dir>', desc)
+    .option('--assetsDir <dir>', desc)
+    .option('--assetsInlineLimit <number>', desc)
+    .option('--ssr [entry]', desc)
+    .option('--sourcemap', desc)
+    .option('--minify [minifier]', desc)
+    .option('--manifest [name]', desc)
+    .option('--ssrManifest [name]', desc)
+    .option('--force', desc)
+    .option('--emptyOutDir', desc)
+    .option('-w, --watch', desc)
+    .action((root: string, options: Record<string, unknown>) => {
+      const buildOptions = cleanOptions(options)
+      config = {
+        root,
+        base: options.base,
+        mode: options.mode,
+        configFile: options.config,
+        logLevel: options.logLevel,
+        clearScreen: options.clearScreen,
+        optimizeDeps: { force: options.force },
+        build: buildOptions
       }
-      continue
-    }
+    })
 
-    assert(isViteCli)
-    if (word.startsWith('-')) {
-      word = resolveCliArgName(word)
-      assert(!word.startsWith('-'))
-      currentArgAdd()
-      currentArgName = word
-    } else {
-      if (currentArgName === null) {
-        viteCliCommand = word
-      } else {
-        currentArgValue = word
-        currentArgAdd()
-      }
-    }
+  let config!: BuildArgs
+  cli.parse()
+  assert(config)
+  return config
+
+  function cleanOptions(options: Record<string, unknown>) {
+    const ret = { ...options }
+    delete ret['--']
+    delete ret.c
+    delete ret.config
+    delete ret.base
+    delete ret.l
+    delete ret.logLevel
+    delete ret.clearScreen
+    delete ret.d
+    delete ret.debug
+    delete ret.f
+    delete ret.filter
+    delete ret.m
+    delete ret.mode
+    return ret
   }
-  currentArgAdd()
-
-  assert(currentArgName === null)
-  return { isViteCli, viteCliArgs, viteCliCommand }
-}
-
-function resolveCliArgName(cliWord: string) {
-  const shortHands = {
-    '-w': 'watch',
-    '-c': 'config',
-    '-l': 'logLevel',
-    '-d': 'debug',
-    '-f': 'filter',
-    '-m': 'mode',
-    '-h': 'help'
-  }
-  if (cliWord in shortHands) {
-    return shortHands[cliWord as keyof typeof shortHands]
-  }
-  assert(cliWord.startsWith('--'), cliWord)
-  cliWord = cliWord.slice(2)
-  return cliWord
-}
-
-type ConfigFromCli = Record<string, unknown> & { build: Record<string, unknown>; optimizeDeps: Record<string, unknown> }
-function getConfigFromCli(): ConfigFromCli {
-  const { isViteCli, viteCliCommand, viteCliArgs } = analyzise()
-  assert(isViteCli)
-
-  const configFromCli: ConfigFromCli = { build: {}, optimizeDeps: {} }
-  Object.entries(viteCliArgs).forEach(([name, val]) => {
-    if (['mode', 'base', 'logLevel', 'clearScreen', 'debug', 'filter'].includes(name)) {
-      configFromCli[name] = val
-    } else if (['force'].includes(name)) {
-      configFromCli.optimizeDeps[name] = val
-    } else if ('config' === name) {
-      configFromCli.configFile = val
-    } else {
-      configFromCli.build[name] = val
-    }
-  })
-
-  return configFromCli
 }

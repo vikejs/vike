@@ -2,7 +2,7 @@ export { autoFullBuild }
 
 import { build, Plugin, ResolvedConfig } from 'vite'
 import { assertWarning } from '../utils'
-import { getConfigFromCli, isViteCliCall } from '../helpers'
+import { getViteBuildCliConfig, isViteCliCall } from '../helpers'
 import { prerender } from '../../prerender'
 import { assertConfigVpsResolved } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
@@ -44,7 +44,7 @@ async function triggerFullBuild(config: Config, bundle: Record<string, unknown>)
     return
   }
 
-  const configFromCli = getConfigFromCli()
+  const configFromCli = getViteBuildCliConfig()
   if (!configFromCli.configFile) {
     configFromCli.configFile = config.configFile
   }
@@ -66,7 +66,7 @@ async function triggerFullBuild(config: Config, bundle: Record<string, unknown>)
 }
 
 function abortSSRBuild(config: Config) {
-  if (!config.vitePluginSsr.disableAutoFullBuild && isViteCliCall({ command: 'build', ssr: true })) {
+  if (!config.vitePluginSsr.disableAutoFullBuild && isViteCliCall() && getViteBuildCliConfig().build.ssr) {
     assertWarning(
       false,
       "The CLI call `$ vite build --ssr` is superfluous since `$ vite build` also builds the server-side. If you want two separate build steps then use https://vite-plugin-ssr.com/disableAutoFullBuild or use Vite's `build()` API.",
