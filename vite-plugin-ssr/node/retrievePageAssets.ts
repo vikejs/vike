@@ -116,7 +116,15 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
   if (visitedModules.has(mod.url)) return
   visitedModules.add(mod.url)
   if (isStyle(mod) && (!importer || !isStyle(importer))) {
-    styleUrls.add(mod.url)
+    if (mod.url.startsWith('/')) {
+      styleUrls.add(mod.url)
+    } else {
+      // Vuetify uses virtual SCSS modules which we skip
+      //  - We skip because `<link rel="stylesheet" type="text/css" href="virtual-module.css">` doesn't work
+      //  - Reproduction: https://github.com/brillout/vite-plugin-ssr/issues/479
+      //  - Possible workaround: `<script>import 'virtual-module.css'</script>`
+      // logModule(mod)
+    }
   }
   mod.importedModules.forEach((dep) => {
     collectCss(dep, styleUrls, visitedModules, mod)
@@ -124,5 +132,24 @@ function collectCss(mod: ModuleNode, styleUrls: Set<string>, visitedModules: Set
 }
 
 function isStyle(mod: ModuleNode) {
-  return styleFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))
+  if (styleFileRE.test(mod.url) || (mod.id && /\?vue&type=style/.test(mod.id))) {
+    // `mod.type` seems broken
+    assert(mod.type === 'js')
+    // logModule(mod)
+    return true
+  }
+  return false
 }
+
+/*
+function logModule(mod: ModuleNode) {
+  const redacted = 'redacted'
+  console.log({
+    ...mod,
+    ssrModule: redacted,
+    ssrTransformResult: redacted,
+    importedModules: redacted,
+    importers: redacted
+  })
+}
+//*/
