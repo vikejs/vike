@@ -6,7 +6,7 @@ import fetch from 'cross-fetch'
 
 function render(pageContext) {
   const defaultClient = new ApolloClient({
-    link: new HttpLink({ uri: 'https://rickandmortyapi.com/graphql', fetch }),
+    link: new HttpLink({ uri: 'https://countries.trevorblades.com', fetch }),
     cache: new InMemoryCache().restore(pageContext.apolloInitialState),
     connectToDevTools: true
   })

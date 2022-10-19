@@ -48,7 +48,7 @@ function makeApolloClient() {
   const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
-      uri: 'https://rickandmortyapi.com/graphql',
+      uri: 'https://countries.trevorblades.com',
       fetch
     }),
     cache: new InMemoryCache()

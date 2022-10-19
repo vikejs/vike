@@ -7,6 +7,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
 
   test('page is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain('<div>Name character: Rick Sanchez</div>')
+    expect(html).toContain('<p>List of countries.')
+    expect(html).toContain('<li>Angola</li><li>Antarctica</li><li>Argentina</li><li>American Samoa</li>')
   })
 }
