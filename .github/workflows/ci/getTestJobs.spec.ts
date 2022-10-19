@@ -15,8 +15,8 @@ describe('getTestJobs()', () => {
     return
   }
 
-  it('basics', () => {
-    const jobs = getTestJobs()
+  it('basics', async () => {
+    const jobs = await getTestJobs()
     expect(jobs).toMatchInlineSnapshot(`
       [
         {

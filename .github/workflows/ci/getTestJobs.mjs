@@ -7,6 +7,7 @@ const require = createRequire(import.meta.url)
 const args = process.argv
 
 const root = cmd('git rev-parse --show-toplevel')
+const configFileName = 'test-e2e.config.mjs'
 
 export { getTestJobs }
 if (args.includes('--ci')) logMatrix()
@@ -24,8 +25,8 @@ function getProjectFiles() {
   return [...projectFiles1, ...projectFiles2]
 }
 
-/** @type { () => Job[] } */
-function getTestJobs() {
+/** @type { () => Promise<Job[]> } */
+async function getTestJobs() {
   const projectFiles = getProjectFiles()
   const specFiles = projectFiles.filter((file) => file.includes('.spec.'))
   const testFiles = projectFiles.filter((file) => file.includes('.test.'))
@@ -46,7 +47,7 @@ function getTestJobs() {
       jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     // E2e tests
-    ...crawlE2eJobs(testFiles)
+    ...(await crawlE2eJobs(testFiles))
   ]
 
   assertTestFilesCoverage(testFiles, jobs)
@@ -54,8 +55,8 @@ function getTestJobs() {
   return jobs
 }
 
-/** @type { (testFiles: string[]) => Job[] } */
-function crawlE2eJobs(testFiles) {
+/** @type { (testFiles: string[]) => Promise<Job[]> } */
+async function crawlE2eJobs(testFiles) {
   const projectFiles = getProjectFiles()
 
   /** @type { Job[] } */
@@ -63,14 +64,12 @@ function crawlE2eJobs(testFiles) {
 
   const testJobFiles = getTestJobFiles(projectFiles)
   const configFile = getConfigFile(projectFiles)
-  if (testJobFiles.length >= 1 && !configFile) throw new Error('File `test-e2e.config.json` missing')
   if (configFile && testJobFiles.length === 0) throw new Error('No file `.testCiJob.json` found')
 
   if (testJobFiles.length >= 1) {
-    assert(configFile)
-    if (!configFile) throw new Error('File `test-e2e.config.json` missing')
-    /** @type { unknown } */
-    const config = require(configFile)
+    if (!configFile) throw new Error(`Config file \`${configFileName}\` not found`)
+    /** @type {{ default: unknown }} */
+    const { default: config } = await import(configFile)
     assert(isObject(config))
     const { ci } = config
     assert(isObject(ci))
@@ -164,8 +163,8 @@ function crawlE2eJobs(testFiles) {
 
 /** @type { (projectFiles: string[]) => string | null } */
 function getConfigFile(projectFiles) {
-  const matches = projectFiles.filter((file) => file.endsWith('test-e2e.config.json'))
-  if (matches.length > 1) throw new Error('Only one file `test-e2e.config.json` is allowed')
+  const matches = projectFiles.filter((file) => file.endsWith(configFileName))
+  if (matches.length > 1) throw new Error(`Only one file \`${configFileName}\` is allowed`)
   if (matches.length === 0) return null
   const configFile = path.join(root, matches[0])
   return configFile
@@ -177,8 +176,8 @@ function getTestJobFiles(projectFiles) {
   return testJobFiles
 }
 
-function getMatrix() {
-  const jobs = getTestJobs()
+async function getMatrix() {
+  const jobs = await getTestJobs()
 
   /** @type MatrixEntry[] */
   const matrix = []
@@ -211,8 +210,8 @@ function assertTestFilesCoverage(testFiles, jobs) {
   })
 }
 
-function logMatrix() {
-  const matrix = getMatrix()
+async function logMatrix() {
+  const matrix = await getMatrix()
   if (args.includes('--debug')) {
     console.log(JSON.stringify(matrix, null, 2))
     console.log(matrix.length)

@@ -1,4 +1,4 @@
-import { run, page, test, expect, urlBase, fetchHtml, autoRetry, expectBrowserError, sleep } from '@brillout/test-e2e'
+import { run, page, test, expect, urlBase, fetchHtml, autoRetry, expectError, sleep } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -138,10 +138,11 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     test('throw RenderErrorPage', async () => {
       await page.goto(urlBase + '/hello/bob')
       expect(await page.textContent('h1')).toBe('404 Page Not Found')
-      expectBrowserError(
-        (browserLog) =>
-          browserLog.logText.includes('http://localhost:3000/hello/bob') &&
-          browserLog.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
+      expectError(
+        (log) =>
+          log.logSource === 'Browser Error' &&
+          log.logText.includes('http://localhost:3000/hello/bob') &&
+          log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
       )
       const txt = 'Unknown name: bob.'
       expect(await page.textContent('body')).toContain(txt)
