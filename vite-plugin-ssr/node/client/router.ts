@@ -5,7 +5,7 @@ import { isBrowser } from '../../utils/isBrowser'
 
 assertUsage(
   !isBrowser(),
-  '[`navigate(url)`] Something is wrong with your environment (it loads the wrong `vite-plugin-ssr/client/router` entry). This may be happening if you use Jest or Babel. Open a new GitHub issue to discuss a solution.'
+  'Something is wrong with your environment (it loads the wrong `vite-plugin-ssr/client/router` entry). This may be happening if you use Jest or Babel. Open a new GitHub issue to discuss a solution.'
 )
 
 function navigate(): never {
