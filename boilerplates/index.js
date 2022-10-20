@@ -180,20 +180,35 @@ function initGitRepo(cwd) {
     return
   }
 
-  execSync('git init', { cwd, stdio: 'ignore' })
-  execSync('git add .', { cwd, stdio: 'ignore' })
-  execSync(
-    [
-      'git',
-      '-c user.name="Romuald Brillout"',
-      '-c user.email="vite-plugin-ssr@brillout.com"',
-      'commit',
-      '--no-gpg-sign',
-      '--message="boilerplate Vite w/ vite-plugin-ssr"'
-    ].join(' '),
-    { cwd, stdio: 'ignore' }
-  )
+  let isInitialized = false
+  try {
+    // Attempt to create a git repository.
+    // We hide standard git-related logs from the user, but
+    // do log information for any process that exits with an error.
+    execSync('git init', { cwd, stdio: 'ignore' })
+    isInitialized = true
+
+    execSync('git add .', { cwd, stdio: 'ignore' })
+    execSync(
+      [
+        'git',
+        '-c user.name="Romuald Brillout"',
+        '-c user.email="vite-plugin-ssr@brillout.com"',
+        'commit',
+        '--no-gpg-sign',
+        '--message="boilerplate Vite w/ vite-plugin-ssr"'
+      ].join(' '),
+      { cwd, stdio: 'ignore' }
+    )
+  } catch (error) {
+    if (isInitialized) {
+      fs.rmSync(path.join(cwd, '.git'), { recursive: true, force: true })
+    }
+    console.warn('\nCould not initialize a git repository.')
+    console.warn(error)
+  }
 }
+
 function isGitInstalled() {
   let stdout
   try {
