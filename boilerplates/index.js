@@ -180,13 +180,12 @@ function initGitRepo(cwd) {
     return
   }
 
-  let isInitialized = false
   try {
-    // Attempt to create a git repository.
-    // We hide standard git-related logs from the user, but
-    // do log information for any process that exits with an error.
-    execSync('git init', { cwd, stdio: 'ignore' })
-    isInitialized = true
+    execSync('git init', {
+      cwd,
+      // See https://github.com/brillout/vite-plugin-ssr/issues/478
+      stdio: 'ignore'
+    })
 
     execSync('git add .', { cwd, stdio: 'ignore' })
     execSync(
@@ -200,12 +199,11 @@ function initGitRepo(cwd) {
       ].join(' '),
       { cwd, stdio: 'ignore' }
     )
-  } catch (error) {
-    if (isInitialized) {
+  } catch {
+    try {
       fs.rmSync(path.join(cwd, '.git'), { recursive: true, force: true })
-    }
-    console.warn('\nCould not initialize a git repository.')
-    console.warn(error)
+    } catch {}
+    console.warn('Could not initialize a git repository.')
   }
 }
 
