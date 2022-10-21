@@ -11,7 +11,7 @@ function assertConfigVpsUser(
   assert(isObject(vitePluginSsr))
   assertConfig(
     'disableAutoFullBuild',
-    'should be a boolean (or undefined)',
+    'should be a boolean',
     hasProp(vitePluginSsr, 'disableAutoFullBuild', 'boolean') ||
       hasProp(vitePluginSsr, 'disableAutoFullBuild', 'undefined')
   )
@@ -24,7 +24,7 @@ function assertConfigVpsUser(
   )
   assertConfig(
     'includeAssetsImportedByServer',
-    'should be a boolean (or undefined)',
+    'should be a boolean',
     hasProp(vitePluginSsr, 'includeAssetsImportedByServer', 'boolean') ||
       hasProp(vitePluginSsr, 'includeAssetsImportedByServer', 'undefined')
   )
@@ -36,7 +36,7 @@ function assertConfigVpsUser(
   ): asserts vitePluginSsr is Pick<ConfigVpsResolved, 'prerender'> {
     assertConfig(
       'prerender',
-      'should be an object or a boolean (or undefined)',
+      'should be an object or a boolean',
       hasProp(vitePluginSsr, 'prerender', 'object') ||
         hasProp(vitePluginSsr, 'prerender', 'boolean') ||
         hasProp(vitePluginSsr, 'prerender', 'undefined')
@@ -46,24 +46,24 @@ function assertConfigVpsUser(
     if (prerender && typeof prerender !== 'boolean') {
       assertConfig(
         'prerender.partial',
-        'should be a boolean (or undefined)',
+        'should be a boolean',
         hasProp(prerender, 'partial', 'undefined') || hasProp(prerender, 'partial', 'boolean')
       )
       assertConfig(
         'prerender.noExtraDir',
-        'should be a boolean (or undefined)',
+        'should be a boolean',
         hasProp(prerender, 'noExtraDir', 'undefined') || hasProp(prerender, 'noExtraDir', 'boolean')
       )
       assertConfig(
         'prerender.parallel',
-        'should be a boolean or a number (or undefined)',
+        'should be a boolean or a number',
         hasProp(prerender, 'parallel', 'undefined') ||
           hasProp(prerender, 'parallel', 'boolean') ||
           hasProp(prerender, 'parallel', 'number')
       )
       assertConfig(
         'prerender.disableAutoRun',
-        'should be a boolean (or undefined)',
+        'should be a boolean',
         hasProp(prerender, 'disableAutoRun', 'undefined') || hasProp(prerender, 'disableAutoRun', 'boolean')
       )
     }
@@ -74,7 +74,7 @@ function assertConfigVpsUser(
   ): asserts vitePluginSsr is Pick<ConfigVpsResolved, 'pageFiles'> {
     assertConfig(
       'pageFiles',
-      'should be an object (or undefined)',
+      'should be an object',
       hasProp(vitePluginSsr, 'pageFiles', 'undefined') || hasProp(vitePluginSsr, 'pageFiles', 'object')
     )
     if (!vitePluginSsr.pageFiles) {
@@ -83,7 +83,7 @@ function assertConfigVpsUser(
     if (vitePluginSsr.pageFiles?.include !== undefined) {
       assertConfig(
         'pageFiles.include',
-        'should be a string array (or undefined)',
+        'should be a string array',
         hasProp(vitePluginSsr.pageFiles, 'include', 'string[]')
       )
     }
