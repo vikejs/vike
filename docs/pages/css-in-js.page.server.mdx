@@ -25,7 +25,7 @@ function render(pageContext) {
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>
-        <style>{dangerouslySkipEscape(collect.getCSS())}</style>
+        <style>${dangerouslySkipEscape(collect.getCSS())}</style>
       </head>
       <body>
         <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
