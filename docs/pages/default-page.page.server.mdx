@@ -10,13 +10,14 @@ For example, we usually define a <Link text={<><code>render()</code> hook</>} hr
 
 // This `render()` hook applies to all our pages
 export async function render(pageContext) {
+  const { Page } = pageContext;
   return escapeInject`<!DOCTYPE html>
     <html>
       <head>
         <title>My SSR App</title>
       </head>
       <body>
-        <div id="root">${dangerouslySkipEscape(renderToHtml(pageContext.Page))}</div>
+        <div id="root">${dangerouslySkipEscape(renderToHtml(<Page />))}</div>
       </body>
     </html>`
 }
