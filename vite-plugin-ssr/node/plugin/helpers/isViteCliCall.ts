@@ -12,7 +12,9 @@ function isViteCliCall() {
     // pnpm
     execPath.endsWith('/bin/vite.js') ||
     // npm & yarn
-    execPath.endsWith('/.bin/vite')
+    execPath.endsWith('/.bin/vite') ||
+    // Global install
+    execPath.endsWith('/bin/vite')
   )
 }
 
