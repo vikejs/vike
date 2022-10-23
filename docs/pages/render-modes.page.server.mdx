@@ -208,12 +208,13 @@ See <Link href="/pre-rendering" />.
 To render a page to HTML-only:
 
  1. We define `.page.server.js` instead of `.page.js`.
+ 1. (Optional) We define `.page.client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
  1. We set <Link text={<code>includeAssetsImportedByServer</code>} href="/includeAssetsImportedByServer" /> to `true`.
 
 
 ```js
 // /pages/about.page.server.js
-// Environment: Browser
+// Environment: Node.js
 
 // Usually `Page` is defined in `*.page.js` but for HTML-only we
 // define `Page` in `*.page.server.js` instead.
@@ -230,6 +231,16 @@ function Page() {
 ```
 
 ```js
+// /pages/about.page.client.js
+// Environment: Browser
+
+// This file represents the entire browser-side JavaScript.
+// We can omit defining `.page.client.js` in which case the page has zero browser-side JavaScript.
+
+console.log("I'm the page's only browser-side JavaScript line.")
+```
+
+```js
 // vite.config.js
 
 import { ssr } from 'vite-plugin-ssr/plugin'
@@ -242,3 +253,9 @@ export default {
   ]
 }
 ```
+
+Examples:
+ - React Example (zero JavaScript): <RepoLink path="/examples/render-modes/pages/html-only/" />
+ - React Example (minimal JavaScript): <RepoLink path="/examples/render-modes/pages/html-js/" />
+ - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
+ - [@brillout/docpress](https://github.com/brillout/docpress) which powers this website `https://vite-plugin-ssr.com` (this website uses the HTML-only technique).
