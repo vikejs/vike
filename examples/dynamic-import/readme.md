@@ -1,4 +1,4 @@
-Example of using all [Render Modes](https://vite-plugin-ssr.com/render-modes).
+Example dynamic client-side import in ssr rendering
 
 ```bash
 git clone git@github.com:brillout/vite-plugin-ssr

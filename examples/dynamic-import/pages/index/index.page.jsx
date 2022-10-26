@@ -7,7 +7,7 @@ const Loading = () => <div>Loading</div>
 function Page() {
   return (
     <>
-      <h1>SSR</h1>
+      <h1>Dynamic Import in SSR Render</h1>
       <p>This page is:</p>
       <ul>
         <li>Rendered to HTML and hydrated in the browser.</li>
