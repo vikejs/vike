@@ -1,35 +1,17 @@
-We can use `import()` to lazily load components.
+We can use `import()` to lazily load components:
 
 ```diff
-- import { SomeComponent } from 'some-component'
-```
-```js
-// Somewhere in our code
-function someFunction() {
-  // We load `<SomeComponent>` at a later point, after the initial JavaScript
-  // is already loaded & running.
-  const { SomeComponent } = await import('some-component')
-  // We can even conditionally load a component:
-  if (someCondition) {
-    const { SomeOtherComponent } = await import('some-other-component')
-  }
-}
+- import SomeComponent from 'some-component'
++ const { SomeComponent } = await import('some-component')
 ```
 
-> Vite automatically code-splits at `import()`:
-> the code of `some-component` is not included in the initial JavaScript browser-side bundle;
-> instead, it is only loaded when/if `import('some-component')` is executed.
+> Vite automatically code-splits at `import()` and the code of `some-component` is not included in the initial JavaScript browser-side bundle:
+> the code is loaded only if/when `import('some-component')` is executed.
 
-There are two use cases for dynamically importing components:
- - For **performance**. The idea here is to defer loading heavy components (e.g. an interactive map), so that the user can already interact with our page before the browser has loaded that heavy component.
- - For **client-side only components**. Some components don't work in Node.js; we use `import()` to load & render them only on the client-side.
-   ```js
-   const isBrowser = typeof window !== 'undefined'
-   if (isBrowser) {
-     // We load the component only in the browser; we never load `some-component` in Node.js.
-     const { SomeComponent } = await import('some-component')
-   }
-   ```
+There are two use cases for using `import()` to dynamically import components:
+ - **Performance**. The idea here is to defer loading heavy components (e.g. a heavy interactive map), so that the user can already interact with our page before the browser has loaded that heavy component.
+ - **Client-side only components**. Some components don't work in Node.js; we use `import()` to load & render them only on the client-side.
+   > UI Frameworks usually don't execute `import()` upon SSR (this is, for example, the case with React and Vue). This means that compoments imported with `import()` are never loaded on the server-side.
 
 UI frameworks usually have built-in support for dynamically loading components:
  - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
@@ -37,37 +19,27 @@ UI frameworks usually have built-in support for dynamically loading components:
  - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)
 
 
-React Example:
+## React Example
 
 ```jsx
 // pages/pick-location.page.jsx
 
 import React from 'react'
-import { Loading } from './Loading'
 
 export function Page() {
-  // Users will see the text `Please pick a location` before the browser loads the `<Map>`
-  // component's code. (This is the case anyways when using SSR, but `import()` allows the
-  // user to not only see but also interact with our page before `<Map>` is loaded.)
+  // Users can see and interact with the "Please pick a location" button
+  // before the browser loads the code of <SomeHeavyMapComponent>.
   return <>
-    Please pick a location.
+    <button>Please pick a location</button>
     <Map />
   </>
 }
 
 function Map() {
-  const isBrowser = typeof window !== 'undefined'
-  const isNodejs = !isBrowser
-
-  // We skip rendering the interactive map on the server-side (SSR'ing a map is mostly useless).
-  if (isNodejs) {
-    return <Loading />
-  }
-
-  // We lazily load `<SomeHeavyMapComponent>`
+  // We lazy-load the code of `<SomeHeavyMapComponent>`
   const SomeHeavyMapComponent = React.lazy(() => import('some-heavy-map-component'))
   return (
-    <React.Suspense fallback={<Loading />}>
+    <React.Suspense fallback={'Loading Map...'}>
       <SomeHeavyMapComponent />
     </React.Suspense>
   )
