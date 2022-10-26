@@ -39,11 +39,11 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     if (!isPreview) {
       expect(await page.textContent('button')).toContain('Counter 1')
       {
-        expect(await page.textContent('h1')).toBe('Dynamic Import in SSR')
+        expect(await page.textContent('h1')).toBe('Dynamic Import in SSR Render')
         await sleep(HMR_SLEEP)
         editFileRevert()
         await autoRetry(async () => {
-          expect(await page.textContent('h1')).toBe('Dynamic Import in SSR')
+          expect(await page.textContent('h1')).toBe('Dynamic Import in SSR Render')
         })
       }
       // Ensure HMR instead of page reload
