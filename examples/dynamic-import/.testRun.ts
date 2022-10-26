@@ -51,7 +51,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       {
         await testColor('blue')
         await sleep(HMR_SLEEP)
-        editFile('./pages/ssr/index.css', (s) => s.replace('color: blue', 'color: gray'))
+        editFile('./pages/index/index.css', (s) => s.replace('color: blue', 'color: gray'))
         await testColor('gray')
         await sleep(HMR_SLEEP)
         editFileRevert()
