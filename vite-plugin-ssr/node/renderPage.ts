@@ -229,7 +229,7 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
 async function renderPage<
   PageContextAdded extends {},
   PageContextInit extends {
-    /** Outdated, do not use */
+    /** @deprecated do not use */
     url?: string
     /** The URL of the HTTP request */
     urlOriginal?: string
@@ -540,6 +540,7 @@ async function renderStatic404Page(globalContext: GlobalRenderingContext & { _is
 
 type PageContextPublic = {
   urlOriginal: string
+  /** @deprecated */
   url: string // outdated
   urlPathname: string
   urlParsed: PageContextUrls['urlParsed']
