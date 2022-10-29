@@ -9,12 +9,12 @@ export type PageContextBuiltIn<Page = any> = {
   exports: Record<string, unknown>
   /** Same as `pageContext.exports` but cumulative */
   exportsAll: Record<string, { exportValue: unknown }[]>
-  /** @deprecated Don't use. */
+  /** @deprecated */
   url: string
   /** The URL of the current page */
   urlOriginal: string
   /** If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Server Error`, see https://vite-plugin-ssr.com/error-page */
   is404?: boolean
-  /** @deprecated do not use */
+  /** @deprecated */
   pageExports: Record<string, unknown>
 } & PageContextUrls

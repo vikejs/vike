@@ -16,7 +16,7 @@ import type { InjectToStream } from 'react-streaming/server'
 type StreamReactStreaming =
   | {
       injectToStream: InjectToStream
-      // Older `react-streaming` versions do not define `disabled`
+      // Older `react-streaming` versions don't define `disabled`
       disabled?: boolean
     } & (
       | {

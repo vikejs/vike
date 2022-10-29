@@ -229,7 +229,7 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
 async function renderPage<
   PageContextAdded extends {},
   PageContextInit extends {
-    /** @deprecated do not use */
+    /** @deprecated */
     url?: string
     /** The URL of the HTTP request */
     urlOriginal?: string
@@ -324,10 +324,13 @@ type HttpResponse = {
   getBody: () => Promise<string>
   getReadableWebStream: () => StreamReadableWeb
   pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
-  // outdated
+  /** @deprecated */
   getNodeStream: () => Promise<StreamReadableNode>
+  /** @deprecated */
   getWebStream: () => StreamReadableWeb
+  /** @deprecated */
   pipeToNodeWritable: StreamPipeNode
+  /** @deprecated */
   pipeToWebWritable: StreamPipeWeb
 }
 function createHttpResponseObject(
@@ -541,7 +544,7 @@ async function renderStatic404Page(globalContext: GlobalRenderingContext & { _is
 type PageContextPublic = {
   urlOriginal: string
   /** @deprecated */
-  url: string // outdated
+  url: string
   urlPathname: string
   urlParsed: PageContextUrls['urlParsed']
   routeParams: Record<string, string>

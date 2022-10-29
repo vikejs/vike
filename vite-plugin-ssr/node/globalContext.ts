@@ -87,7 +87,7 @@ async function getGlobalContext(isPreRendering: boolean) {
 }
 
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
-  // "Do not install vite-plugin-ssr after building your app. Instead, install your app's dependencies before building.",
+  // "Don't install vite-plugin-ssr after building your app. Instead, install your app's dependencies before building.",
   const errMsg = [
     `You are tyring to run`,
     isPreRendering ? '`$ vite-plugin-ssr prerender`' : 'the server for production',
@@ -100,7 +100,7 @@ function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean):
 function assertProdEnv(viteDevServer: null | ViteDevServer) {
   assertUsage(
     !(isProdEnv() && viteDevServer),
-    "You created a Vite dev server with `createServer()` (`import { createServer } from 'vite'`) while setting `process.env.NODE_ENV` to `production`. This is contradictory: for production skip `createServer()`, and for development do not set `process.env.NODE_ENV` to `production`."
+    "You created a Vite dev server with `createServer()` (`import { createServer } from 'vite'`) while setting `process.env.NODE_ENV` to `production`. This is contradictory: for production skip `createServer()`, and for development don't set `process.env.NODE_ENV` to `production`."
   )
 }
 function isProdEnv() {

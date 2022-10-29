@@ -15,6 +15,7 @@ type Options = {
   base?: string
   baseAssets?: string | null
 }
+/** @deprecated */
 function createPageRenderer(options: Options): RenderPage {
   showWarnings(options)
   return renderPage

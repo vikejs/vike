@@ -23,10 +23,10 @@ export type { StreamPipeWeb }
 export type { StreamPipeNode }
 
 // Public: consumed by vite-plugin-ssr users
-export { pipeWebStream }
-export { pipeNodeStream }
 export { stampPipe }
 export { pipeStream }
+export { pipeWebStream }
+export { pipeNodeStream }
 
 import {
   assert,
@@ -663,6 +663,7 @@ function isStream(something: unknown): something is Stream {
 
 const __streamPipeWeb = '__streamPipeWeb'
 type StreamPipeWebWrapped = { [__streamPipeWeb]: StreamPipeWeb }
+/** @deprecated */
 function pipeWebStream(pipe: StreamPipeWeb): StreamPipeWebWrapped {
   assertWarning(false, 'pipeWebStream() is outdated, use stampPipe() instead. See https://vite-plugin-ssr.com/stream', {
     onlyOnce: true,
@@ -698,6 +699,7 @@ function isStreamPipeWeb(thing: unknown): thing is StreamPipeWebWrapped {
 
 const __streamPipeNode = '__streamPipeNode'
 type StreamPipeNodeWrapped = { [__streamPipeNode]: StreamPipeNode }
+/** @deprecated */
 function pipeNodeStream(pipe: StreamPipeNode): StreamPipeNodeWrapped {
   assertWarning(
     false,

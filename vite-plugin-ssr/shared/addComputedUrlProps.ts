@@ -19,17 +19,17 @@ type UrlParsed = {
   searchAll: Record<string, string[]>
   /** The URL search parameterer string, e.g. `?details=yes` of `https://example.com/product/42?details=yes#reviews` */
   searchOriginal: null | string
-  /** @deprecated do not use */
+  /** @deprecated */
   searchString: null | string
   /** The URL hash, e.g. `reviews` of `https://example.com/product/42?details=yes#reviews` */
   hash: string
   /** The URL hash string, e.g. `#reviews` of `https://example.com/product/42?details=yes#reviews` */
   hashOriginal: null | string
-  /** @deprecated do not use */
+  /** @deprecated */
   hashString: null | string
 }
 type PageContextUrls = {
-  /** @deprecated Don't use. */
+  /** @deprecated */
   url: string
   /** The URL of the HTTP request */
   urlOriginal: string

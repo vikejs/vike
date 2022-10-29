@@ -27,7 +27,7 @@ type ConfigVpsUser = {
     | boolean
     | {
         /**
-         * Do not create a new directory for each HTML file.
+         * Don't create a new directory for each HTML file.
          *
          * For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
          *
@@ -63,7 +63,7 @@ type ConfigVpsUser = {
       }
   /**
    * @internal
-   * Do not use without having talked to a vite-plugin-ssr maintainer.
+   * Don't use without having talked to a vite-plugin-ssr maintainer.
    */
   pageFiles?: { include?: string[] }
   /**
@@ -76,7 +76,7 @@ type ConfigVpsUser = {
   disableAutoFullBuild?: boolean
   /**
    * @internal
-   * Do not use without having talked to a vite-plugin-ssr maintainer.
+   * Don't use without having talked to a vite-plugin-ssr maintainer.
    */
   includeCSS?: string[]
   /**

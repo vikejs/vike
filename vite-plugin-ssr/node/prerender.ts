@@ -91,13 +91,13 @@ async function prerender(
     viteConfig?: InlineConfig
     /**
      * @internal
-     * Do not use without having talked to a vite-plugin-ssr maintainer.
+     * Don't use without having talked to a vite-plugin-ssr maintainer.
      */
     onPagePrerender?: Function
 
-    // ===============================
-    // ==== Deprecated / outdated ====
-    // ===============================
+    // =====================
+    // ==== Deprecated  ====
+    // =====================
     /** @deprecated Define `prerender({ viteConfig: { root }})` instead. */
     root?: string
     /** @deprecated Define `prerender({ viteConfig: { configFile }})` instead. */
@@ -108,9 +108,9 @@ async function prerender(
     noExtraDir?: boolean
     /** @deprecated Define `parallel` in vite.config.js instead, see https://vite-plugin-ssr.com/prerender-config */
     parallel?: number
-    // Outdated
+    /** @deprecated */
     outDir?: string
-    // Outdated
+    /** @deprecated */
     base?: string
   } = {}
 ) {
@@ -535,7 +535,7 @@ function warnContradictoryNoPrerenderList(
       assert(_prerenderHookFile)
       assertUsage(
         false,
-        `Your \`prerender()\` hook defined in ${_prerenderHookFile} returns the URL \`${urlOriginal}\` which matches the page with \`${doNotPrerenderListHit?.pageFilePath}#doNotPrerender === true\`. This is contradictory: either do not set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
+        `Your \`prerender()\` hook defined in ${_prerenderHookFile} returns the URL \`${urlOriginal}\` which matches the page with \`${doNotPrerenderListHit?.pageFilePath}#doNotPrerender === true\`. This is contradictory: either don't set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
       )
     }
   })
