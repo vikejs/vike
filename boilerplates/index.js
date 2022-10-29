@@ -24,6 +24,10 @@ const BOILERPLATES = [
   {
     name: 'react-ts',
     color: cyan
+  },
+  {
+    name: 'react-ts-fastify',
+    color: cyan
   }
 ]
 const IGNORE_FILES = ['.prettierrc', '.test-dev.test.ts', '.test-prod.test.ts', '.testCiJob.json']
