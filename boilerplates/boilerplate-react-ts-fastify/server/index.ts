@@ -1,9 +1,10 @@
 import compress from '@fastify/compress'
 import middie from '@fastify/middie'
+import fastifyStatic from '@fastify/static'
 import fastify from 'fastify'
+import path from 'path'
 import vite from 'vite'
 import { renderPage } from 'vite-plugin-ssr'
-
 const isProduction = process.env.NODE_ENV === 'production'
 const root = `${__dirname}/..`
 
@@ -16,8 +17,11 @@ async function startServer() {
   await app.register(compress)
 
   if (isProduction) {
-    const sirv = require('sirv')
-    app.use(sirv(`${root}/dist/client`))
+    const distPath = path.join(root, '/dist/client/assets')
+    app.register(fastifyStatic, {
+      root: distPath,
+      prefix: '/assets/'
+    })
   } else {
     const viteServer = await vite.createServer({
       root,
