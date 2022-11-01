@@ -58,7 +58,7 @@ function parseUrl(
   })
 
   // Origin + pathname
-  const { origin, pathnameResolved } = parseWithNewUrl(url, baseUrl)
+  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch, baseUrl)
   assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
   assert(origin === null || url.startsWith(origin), { url, origin })
@@ -102,17 +102,17 @@ function decodePathname(urlPathname: string) {
     .map((dir) => decodeSafe(dir).split('/').join('%2F'))
     .join('/')
 }
-function parseWithNewUrl(url: string, baseUrl: string) {
+function parseWithNewUrl(urlWithoutSearch: string, baseUrl: string) {
   // `new URL('//', 'https://example.org')` throws `ERR_INVALID_URL`
-  if (url.startsWith('//')) {
-    return { origin: null, pathnameResolved: url }
+  if (urlWithoutSearch.startsWith('//')) {
+    return { origin: null, pathnameResolved: urlWithoutSearch }
   }
 
   let origin: string | null
   let pathnameResolved: string
   try {
     // `new URL(url)` throws an error if `url` doesn't have an origin
-    const urlParsed = new URL(url)
+    const urlParsed = new URL(urlWithoutSearch)
     origin = urlParsed.origin
     pathnameResolved = urlParsed.pathname
   } catch (err) {
@@ -130,11 +130,11 @@ function parseWithNewUrl(url: string, baseUrl: string) {
     //  - `url === '?queryWithoutPath'`
     //  - `url === '''`
     // `base` in `new URL(url, base)` is used for resolving relative paths (`new URL()` doesn't remove `base` from `pathname`)
-    const urlParsed = new URL(url, base)
+    const urlParsed = new URL(urlWithoutSearch, base)
     pathnameResolved = urlParsed.pathname
   }
 
-  assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
+  assert(pathnameResolved.startsWith('/'), { urlWithoutSearch, pathnameResolved })
   // The URL pathname should be the URL without origin, query string, and hash.
   //  - https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
   assert(pathnameResolved === pathnameResolved.split('?')[0]!.split('#')[0])

@@ -283,6 +283,16 @@ describe('parseUrl', () => {
       pathnameOriginal: '///',
       pathname: '///'
     })
+
+    // #495
+    expect(parseUrl('///en/?redirect_zone=ru', '/')).toEqual({
+      ...resultBase,
+      pathnameOriginal: '///en/',
+      pathname: '///en/',
+      search: { redirect_zone: 'ru' },
+      searchAll: { redirect_zone: ['ru'] },
+      searchOriginal: '?redirect_zone=ru'
+    })
   })
 
   it('missing pathname', () => {
