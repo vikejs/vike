@@ -41,6 +41,10 @@ npm run deploy
 
 ## Node.js shim warning
 
-The example sets `wrangler.toml#node_compat` to `true` which makes wrangler show a warning (`[WARNING] Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.`) but we can safely ignore it (the only Node.js shims used are all robust).
+The example sets `wrangler.toml#node_compat` to `true` which makes wrangler show a warning:
+```
+[WARNING] Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.
+```
+We can safely ignore it (the only Node.js shims used are all robust).
 
 > The Node.js shims add around `200KB`-`300KB` to your worker code, which is significant considering the `1MB` limit. There is work-in-progress to remove the need for Node.js shims, see [#445](https://github.com/brillout/vite-plugin-ssr/issues/445).
