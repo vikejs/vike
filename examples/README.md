@@ -6,6 +6,7 @@ For more examples see:
 
 Showcases:
  - [Infinite scroll with SSR'd initial scroll view, using Vue Query](https://github.com/wobsoriano/vite-plugin-ssr-vue-query)
+ - [Dyamic import with React](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
 
 Integrations:
  - [`vite-plugin-ssr` + PM2](https://github.com/hemengke1997/vite-plugin-ssr-pm2)
