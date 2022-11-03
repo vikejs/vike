@@ -765,7 +765,7 @@ importers:
 
   vite-plugin-ssr:
     specifiers:
-      '@brillout/json-serializer': ^0.5.1
+      '@brillout/json-serializer': ^0.5.3
       '@brillout/part-regex': ^0.1.2
       '@brillout/release-me': ^0.0.8
       '@brillout/vite-plugin-import-build': ^0.1.0
@@ -784,7 +784,7 @@ importers:
       typescript: 4.6.4
       vite: ^3.0.9
     dependencies:
-      '@brillout/json-serializer': 0.5.1
+      '@brillout/json-serializer': 0.5.3
       '@brillout/vite-plugin-import-build': 0.1.0
       cac: 6.7.12
       es-module-lexer: 0.10.5
@@ -1646,6 +1646,10 @@ packages:
 
   /@brillout/json-serializer/0.5.1:
     resolution: {integrity: sha512-wTTbuWmrNBlF9WYq/YJ91UZvEi27uYdV12dOeKBujUojPihs5EhMi8uItugF8iJ797o3la8A9oWfy52OwCIs+Q==}
+
+  /@brillout/json-serializer/0.5.3:
+    resolution: {integrity: sha512-IxlOMD5gOM0WfFGdeR98jHKiC82Ad1tUnSjvLS5jnRkfMEKBI+YzHA32Umw8W3Ccp5N4fNEX229BW6RaRpxRWQ==}
+    dev: false
 
   /@brillout/part-regex/0.1.2:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
