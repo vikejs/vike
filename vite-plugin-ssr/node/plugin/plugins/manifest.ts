@@ -16,14 +16,14 @@ function manifest(): Plugin[] {
       name: 'vite-plugin-ssr:runtimeConfig',
       apply: apply('dev'),
       configResolved(config) {
-        configResolved(config)
+        onConfigResolved(config)
         setRuntimeConfig(runtimeConfig)
       }
     },
     {
       name: 'vite-plugin-ssr:pluginManifest',
       apply: 'build',
-      configResolved,
+      configResolved: onConfigResolved,
       generateBundle() {
         assert(typeof ssr === 'boolean')
         assert(runtimeConfig)
@@ -43,7 +43,7 @@ function manifest(): Plugin[] {
     }
   ] as Plugin[]
 
-  function configResolved(config: ResolvedConfig) {
+  function onConfigResolved(config: ResolvedConfig) {
     assertConfigVpsResolved(config)
     ssr = viteIsSSR(config)
     runtimeConfig = resolveRuntimeConfig(config)
