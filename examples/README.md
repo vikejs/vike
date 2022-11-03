@@ -1,12 +1,8 @@
 For more examples see:
- - [vite-plugin-ssr.com](https://vite-plugin-ssr.com/) > `CTRL+K` > Search
+ - [vite-plugin-ssr.com](https://vite-plugin-ssr.com/) > `CTRL+K` > search
  - The community examples below
 
 # Community Examples
-
-Showcases:
- - [Infinite scroll with SSR'd initial scroll view, using Vue Query](https://github.com/wobsoriano/vite-plugin-ssr-vue-query)
- - [Dyamic import with React](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
 
 Integrations:
  - [`vite-plugin-ssr` + PM2](https://github.com/hemengke1997/vite-plugin-ssr-pm2)
@@ -24,3 +20,7 @@ Integrations:
  - [`vite-plugin-ssr` + Vuetify (2)](https://github.com/brillout/vite-plugin-ssr-vuetify)
  - [`vite-plugin-ssr` + Windi CSS](https://github.com/brillout/vite-plugin-ssr_windi-css)
  - [`vite-plugin-ssr` + Storeon + `@phensley/cldr` + TailwindCSS + PostCSS + `schema-dts`](https://github.com/mate-h/vite-ssr-web)
+
+Showcases:
+ - [Infinite scroll with SSR'd initial scroll view, using Vue Query](https://github.com/wobsoriano/vite-plugin-ssr-vue-query)
+ - [Dyamic import with React](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
