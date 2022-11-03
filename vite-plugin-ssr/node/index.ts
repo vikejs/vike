@@ -7,9 +7,6 @@ export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
 export type { PageContextBuiltIn } from './types'
 
-import { setBuildGetters } from './plugin/plugins/importBuild/loadBuild'
-export const __internals = { setBuildGetters }
-
 import './page-files/setup'
 import { assertUsage, isBrowser } from './utils'
 

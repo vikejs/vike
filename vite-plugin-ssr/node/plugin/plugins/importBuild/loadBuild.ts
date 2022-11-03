@@ -1,5 +1,5 @@
 export { loadBuild }
-export { setBuildGetters }
+export { setLoaders }
 
 import { assert, assertUsage } from '../../utils'
 import { loadBuild as loadBuild_, importBuildFileName } from '@brillout/vite-plugin-import-build/loadBuild'
@@ -14,7 +14,7 @@ type BuildGetters = null | {
   pluginManifest: () => Promise<Record<string, unknown>>
 }
 
-function setBuildGetters(getters: BuildGetters) {
+function setLoaders(getters: BuildGetters) {
   buildGetters.getters = getters
 }
 

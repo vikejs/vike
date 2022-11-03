@@ -33,8 +33,8 @@ function getImporterCode(config: ResolvedConfig, pageFilesEntry: string) {
   const { outDirServer } = getOutDirs(config)
   const importPath = path.posix.relative(outDirServer, importPathAbsolute)
   const importerCode = [
-    `const { setBuildGetters } = require('${importPath}');`,
-    'setBuildGetters({',
+    `const { setLoaders } = require('${importPath}');`,
+    'setLoaders({',
     `  pageFiles: () => import('./${pageFilesEntry}'),`,
     "  clientManifest: () => require('../client/manifest.json'),",
     "  pluginManifest: () => require('../client/vite-plugin-ssr.json'),",
