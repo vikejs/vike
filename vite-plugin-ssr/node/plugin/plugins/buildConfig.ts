@@ -1,11 +1,11 @@
-import type { Plugin, UserConfig } from 'vite'
+export { buildConfig }
+
+import type { Plugin } from 'vite'
 import type { InputOption } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import { assert, determineOutDir, isObject, viteIsSSR, makeFilePathAbsolute } from '../utils'
 import { modifyResolvedConfig, findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
-
-export { buildConfig }
 
 function buildConfig(): Plugin {
   return {
@@ -19,27 +19,17 @@ function buildConfig(): Plugin {
       modifyResolvedConfig(config, { build: { rollupOptions: { input } } })
     },
     config(config) {
-      const configMod: UserConfig = {
+      return {
         build: {
           outDir: determineOutDir(config),
           manifest: !viteIsSSR(config),
-          // @ts-ignore
           polyfillDynamicImport: false
         },
-        //*
-        // @ts-ignore
         ssr: { external: ['vite-plugin-ssr'] }
-        /*/
-        // Try Hydrogen's `noExternal: true` bundling strategy for Cloudflare Workers
-        ssr: { noExternal: true },
-        //*/
+        /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
+        plublicDir: !viteIsSSR(config),
+        */
       }
-      /* We cannot do this because of https://github.com/brillout/vite-plugin-ssr/issues/447
-      if (viteIsSSR(config)) {
-        configMod.publicDir = false
-      }
-      */
-      return configMod
     }
   }
 }

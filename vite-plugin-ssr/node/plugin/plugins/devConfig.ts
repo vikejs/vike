@@ -20,7 +20,7 @@ function devConfig(): Plugin[] {
             'vite-plugin-ssr/client',
             'vite-plugin-ssr/client/router',
             'vite-plugin-ssr/routing',
-            // We cannot add these to `optimizeDeps.include` because of `pnpm`
+            // We also have to exclude these because of `pnpm`
             '@brillout/json-serializer/parse',
             '@brillout/json-serializer/stringify'
           ]
@@ -32,7 +32,7 @@ function devConfig(): Plugin[] {
       }
     },
     {
-      name: 'vite-plugin-ssr:dev:ssr-middleware',
+      name: 'vite-plugin-ssr:devConfig:serverMiddleware',
       apply: apply('dev', { skipMiddlewareMode: true, onlyViteCli: true }),
       configureServer(server) {
         return () => {
