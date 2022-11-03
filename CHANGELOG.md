@@ -1,3 +1,16 @@
+## [0.4.44](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.43...v0.4.44) (2022-11-03)
+
+
+### Bug Fixes
+
+* improve wrong usage error message ([#496](https://github.com/brillout/vite-plugin-ssr/issues/496)) ([8f8cab4](https://github.com/brillout/vite-plugin-ssr/commit/8f8cab47c2a229ab6161e8bb01d3fda447602ceb))
+* support autoFullBuild for globally installed Vite (fix [#484](https://github.com/brillout/vite-plugin-ssr/issues/484)) ([ef5c49f](https://github.com/brillout/vite-plugin-ssr/commit/ef5c49fdf3e66a33c53161d14dd4a3e763db4aa3))
+* tolerate navigate to be loaded and called in tests (fix [#496](https://github.com/brillout/vite-plugin-ssr/issues/496)) ([d1ccd25](https://github.com/brillout/vite-plugin-ssr/commit/d1ccd25a50509cceb86fb27d5e4afd0a90e3b2c7))
+* use jsdoc [@deprecated](https://github.com/deprecated) ([#491](https://github.com/brillout/vite-plugin-ssr/issues/491)) ([dbeb556](https://github.com/brillout/vite-plugin-ssr/commit/dbeb556b4a4bd783b34d0a955a7d5dd6c6078b92))
+* workaround new URL() bug (fix [#495](https://github.com/brillout/vite-plugin-ssr/issues/495)) ([ced0fea](https://github.com/brillout/vite-plugin-ssr/commit/ced0fea8072243b40f936edf87297bf5621771f0))
+
+
+
 ## [0.4.43](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.42...v0.4.43) (2022-10-19)
 
 
