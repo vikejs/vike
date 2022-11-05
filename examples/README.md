@@ -1,6 +1,4 @@
-For more examples see:
- - [vite-plugin-ssr.com](https://vite-plugin-ssr.com/) > `CTRL+K` > search
- - The community examples below
+For more examples search the docs [vite-plugin-ssr.com](https://vite-plugin-ssr.com/) > `CTRL+K`.
 
 # Community Examples
 
