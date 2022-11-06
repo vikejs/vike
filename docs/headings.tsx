@@ -587,12 +587,7 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 4,
-    title: 'Other'
-  },
-  {
-    level: 2,
-    title: 'Markdown',
-    url: '/markdown'
+    title: 'Server'
   },
   {
     level: 2,
@@ -603,6 +598,20 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'hapi',
     url: '/hapi'
+  },
+  {
+    level: 2,
+    title: 'Fastify',
+    url: '/fastify'
+  },
+  {
+    level: 4,
+    title: 'Other'
+  },
+  {
+    level: 2,
+    title: 'Markdown',
+    url: '/markdown'
   },
   {
     level: 2,
