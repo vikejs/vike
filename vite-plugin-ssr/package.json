@@ -57,6 +57,7 @@
       "browser": "./dist/esm/client/index.js"
     },
     "./client/router": {
+      "types": "./dist/esm/client/router/index.d.ts",
       "worker": "./dist/cjs/node/client/router.js",
       "node": "./dist/cjs/node/client/router.js",
       "browser": "./dist/esm/client/router/index.js"
