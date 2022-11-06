@@ -21,17 +21,21 @@ Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `v
 1. Route Function, returned high negative `precedence` number (e.g. `-99`)
 
 **Example (4) + (6) + (7)**:
-
 ```js
-// product/item.page.route.js
-export default '/product/@productId'
-```
-```js
+Example 4: 
 // product/list.page.route.js
 export default '/product'
 ```
 
 ```js
+Example 6:
+// product/item.page.route.js
+export default '/product/@productId'
+```
+
+
+```js
+Example 7:
 // product/catch-all.page.route.js
 export default pageContext => {
   if (!pageContext.urlPathname.startsWith('/product/')) return false
@@ -44,19 +48,21 @@ export default pageContext => {
   }
 }
 ```
-
+ 
+ ```
+URL                           MATCHES                                    WINNER
+==================            ===================================        ======
+/product                      product/list.page.route.js      (4)        ⬅️
+                              product/catch-all.page.route.js (7)
+```
+ 
 ```
 URL                           MATCHES                                    WINNER
 ==================            ===================================        ======
 /product/42                   product/item.page.route.js      (6)        ⬅️
                               product/catch-all.page.route.js (7)
 ```
-```
-URL                           MATCHES                                    WINNER
-==================            ===================================        ======
-/product                      product/list.page.route.js      (4)        ⬅️
-                              product/catch-all.page.route.js (7)
-```
+
 ```
 URL                           MATCHES                                    WINNER
 ==================            ===================================        ======
