@@ -521,7 +521,7 @@ importers:
       react: ^18.1.0
       react-dom: ^18.1.0
       react-streaming: ^0.3.5
-      typescript: ^4.6.4
+      typescript: ^4.8.4
       vite: ^3.0.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
@@ -537,7 +537,7 @@ importers:
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
       react-streaming: 0.3.5_ef5jwxihqo6n7gxfmzogljlgcm
-      typescript: 4.6.4
+      typescript: 4.8.4
       vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
@@ -8240,6 +8240,12 @@ packages:
 
   /typescript/4.8.2:
     resolution: {integrity: sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
+
+  /typescript/4.8.4:
+    resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: false
