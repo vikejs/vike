@@ -1,7 +1,7 @@
 // Utils needed by Server Routing.
 
-// DO NOT include `utils/*` that are only needed by vite-plugin-ssr's server-side runtime.
-// DO NOT include `utils/*` that are only needed by Client Routing.
+// DON'T include `utils/*` that are only needed by vite-plugin-ssr's server-side runtime.
+// DON'T include `utils/*` that are only needed by Client Routing.
 
 export * from '../utils/getCurrentUrl'
 export * from '../utils/assert'

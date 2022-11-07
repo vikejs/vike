@@ -21,7 +21,7 @@ async function getStarWarsMovies() {
 }
 ```
 
-## Do not mutate `pageContext`
+## Don't mutate `pageContext`
 
 In general, we should try to avoid mutating `pageContext`:
 
@@ -46,7 +46,7 @@ In general, we should try to avoid mutating `pageContext`:
 
 > While nothing stops us from mutating `pageContext` today, future `vite-plugin-ssr` versions will print a warning discouraging us from mutations (although we will be able to escape hatch and suppress the warning as some rare use cases warrant mutations).
 
-## Do not return entire `pageContext`
+## Don't return entire `pageContext`
 
 We also shouldn't do this:
 

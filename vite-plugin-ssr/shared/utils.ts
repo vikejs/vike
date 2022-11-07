@@ -4,7 +4,7 @@
 
 // Note that these are NOT needed/loaded for the Server Routing client-side runtime.
 
-// DO NOT include `utils/*` that are needed by only one of the runtimes.
+// DON'T include `utils/*` that are needed by only one of the runtimes.
 
 export * from '../utils/assert'
 export * from '../utils/parseUrl'

@@ -1,6 +1,6 @@
 import { Link } from '@brillout/docpress'
 
-In some situations we do not want to pre-render a page.
+In some situations we don't want to pre-render a page.
 For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
 
 We can use `.page.server.js#noNoPrerender` to tell `vite-plugin-ssr` to skip a page from pre-rendering.

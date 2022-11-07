@@ -1,7 +1,7 @@
 // Utils needed by vite-plugin-ssr's server-side runtime.
 
-// DO NOT include `util/*` that used only by the client-side.
-// DO NOT include `plugin/helpers/*` which are used only by vite-plugin-ssr's Vite plugin. (The Vite plugin code is only loaded/needed in dev and while building; it is not and should be a server-side runtime requirement.)
+// DON'T include `util/*` that used only by the client-side.
+// DON'T include `plugin/helpers/*` which are used only by vite-plugin-ssr's Vite plugin. (The Vite plugin code is only loaded/needed in dev and while building; it is not and should be a server-side runtime requirement.)
 
 export * from '../utils/assert'
 export * from '../utils/cast'

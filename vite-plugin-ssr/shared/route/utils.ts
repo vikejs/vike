@@ -3,7 +3,7 @@
 //  - client-side runtime (Server Routing)
 //  - client-side runtime (Client Routing)
 
-// DO NOT include `utils/*` that are needed by only a subset of the runtimes.
+// DON'T include `utils/*` that are needed by only a subset of the runtimes.
 
 export * from '../../utils/assert'
 export * from '../../utils/hasProp'
