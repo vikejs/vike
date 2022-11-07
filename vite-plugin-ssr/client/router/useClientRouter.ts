@@ -225,9 +225,16 @@ function useClientRouter() {
   }
 }
 
+/** Programmatically nagivate to a new page, see https://vite-plugin-ssr.com/navigate */
 async function navigate(
+  /** URL of the page to nagivate to */
   url: string,
-  { keepScrollPosition = false, overwriteLastHistoryEntry = false } = {}
+  {
+    /** Don't scroll to the top of the page; keep scroll position where it is instead. (Useful for Nested Layouts.) */
+    keepScrollPosition = false,
+    /**  Don't create a new entry in the browser's history; the new URL will replace the current URL (this effectively removes the current URL from the history). */
+    overwriteLastHistoryEntry = false
+  } = {}
 ): Promise<void> {
   assertUsage(
     isBrowser(),
