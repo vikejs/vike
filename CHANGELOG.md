@@ -1,3 +1,14 @@
+## [0.4.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.44...v0.4.45) (2022-11-07)
+
+
+### Bug Fixes
+
+* add JSDoc to `navigate()` ([c240e8e](https://github.com/brillout/vite-plugin-ssr/commit/c240e8e144a9573b4511a635bbab387f0ba420eb))
+* also check whether new page is renderable for `navigate()` (fix [#502](https://github.com/brillout/vite-plugin-ssr/issues/502)) ([d7729e9](https://github.com/brillout/vite-plugin-ssr/commit/d7729e9f12432f3ddac8e6d459c2b0f85fe3520c))
+* fix `navigate()` type export for newer TypeScript versions ([3713643](https://github.com/brillout/vite-plugin-ssr/commit/3713643db771c6914eb960c4823fac21babc31f2))
+
+
+
 ## [0.4.44](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.43...v0.4.44) (2022-11-03)
 
 

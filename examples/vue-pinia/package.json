@@ -8,7 +8,7 @@
     "@vue/server-renderer": "^3.2.37",
     "pinia": "^2.0.14",
     "vite": "^3.0.9",
-    "vite-plugin-ssr": "0.4.44",
+    "vite-plugin-ssr": "0.4.45",
     "vue": "^3.2.37"
   }
 }
