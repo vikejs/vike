@@ -1,3 +1,12 @@
+## [0.4.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.45...v0.4.46) (2022-11-07)
+
+
+### Bug Fixes
+
+* fix `navigate()` type ([#501](https://github.com/brillout/vite-plugin-ssr/issues/501)) ([76f1e75](https://github.com/brillout/vite-plugin-ssr/commit/76f1e75280f115c7ff67813ea0566254958ee3c8))
+
+
+
 ## [0.4.45](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.44...v0.4.45) (2022-11-07)
 
 
