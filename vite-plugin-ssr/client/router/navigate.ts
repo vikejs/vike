@@ -7,14 +7,14 @@ const globalObject = getGlobalObject<{
   navigate?: typeof navigate
 }>('navigate.ts', {})
 
-/** Programmatically nagivate to a new page, see https://vite-plugin-ssr.com/navigate */
+/** Programmatically navigate to a new page, see https://vite-plugin-ssr.com/navigate */
 async function navigate(
-  /** URL of the page to nagivate to */
+  /** URL of the page to navigate to */
   url: string,
   {
-    /** Don't scroll to the top of the page; keep scroll position where it is instead. (Useful for Nested Layouts.) */
+    /** Don't scroll to the top of the page; keep scroll position where it is instead. */
     keepScrollPosition = false,
-    /**  Don't create a new entry in the browser's history; the new URL will replace the current URL (this effectively removes the current URL from the history). */
+    /**  Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history). */
     overwriteLastHistoryEntry = false
   } = {}
 ): Promise<void> {
