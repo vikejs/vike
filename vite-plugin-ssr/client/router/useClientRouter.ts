@@ -55,7 +55,7 @@ function useClientRouter() {
 
   onLinkClick((url: string, { keepScrollPosition }) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    fetchAndRender({ scrollTarget, url, isBackwardNavigation: false })
+    fetchAndRender({ scrollTarget, url, isBackwardNavigation: false, checkClientSideRenderable: true })
   })
   onBrowserHistoryNavigation((scrollTarget, isBackwardNavigation) => {
     fetchAndRender({ scrollTarget, isBackwardNavigation })
@@ -68,7 +68,13 @@ function useClientRouter() {
     }: { keepScrollPosition: boolean; overwriteLastHistoryEntry: boolean }
   ) => {
     const scrollTarget = keepScrollPosition ? 'preserve-scroll' : 'scroll-to-top-or-hash'
-    await fetchAndRender({ scrollTarget, url, overwriteLastHistoryEntry, isBackwardNavigation: false })
+    await fetchAndRender({
+      scrollTarget,
+      url,
+      overwriteLastHistoryEntry,
+      isBackwardNavigation: false,
+      checkClientSideRenderable: true
+    })
   }
 
   let renderingCounter = 0
@@ -82,14 +88,20 @@ function useClientRouter() {
     scrollTarget,
     url = getCurrentUrl(),
     overwriteLastHistoryEntry = false,
-    isBackwardNavigation
+    isBackwardNavigation,
+    checkClientSideRenderable
   }: {
     scrollTarget: ScrollTarget
     url?: string
     overwriteLastHistoryEntry?: boolean
     isBackwardNavigation: boolean | null
+    checkClientSideRenderable?: true
   }): Promise<void> {
     if (globalObject.clientRoutingIsDisabled) {
+      serverSideRouteTo(url)
+      return
+    }
+    if (checkClientSideRenderable && !(await isClientSideRenderable(url))) {
       serverSideRouteTo(url)
       return
     }
@@ -285,10 +297,6 @@ function onLinkClick(callback: (url: string, { keepScrollPosition }: { keepScrol
     if (skipLink(linkTag)) return
     assert(url)
     ev.preventDefault()
-    if (!(await isClientSideRenderable(url))) {
-      serverSideRouteTo(url)
-      return
-    }
 
     const keepScrollPosition = ![null, 'false'].includes(linkTag.getAttribute('keep-scroll-position'))
 
