@@ -47,7 +47,7 @@ async function render(pageContext) {
       await hydrate(pageContext.Page)
     } else {
       // We render a new page. (When the user navigates to a new page.)
-      await render(pageContext.Page)
+      await renderToDom(pageContext.Page)
     }
   }
 }
