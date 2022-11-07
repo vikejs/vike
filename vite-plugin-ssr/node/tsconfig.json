@@ -5,5 +5,12 @@
     "target": "ES2020",
     "module": "CommonJS"
   },
-  "include": ["../node/**/*", "../shared/**/*", "../utils/**/*", "../__internal/**/*"]
+  "include": [
+    "../node/**/*",
+    "../shared/**/*",
+    "../utils/**/*",
+    "../__internal/**/*",
+    "../client/router/navigate.ts",
+    "../client/router/utils.ts"
+  ]
 }
