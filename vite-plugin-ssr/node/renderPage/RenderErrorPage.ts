@@ -19,7 +19,7 @@ function RenderErrorPage({ pageContext }: { pageContext?: Record<string, unknown
     const that: unknown = this
     assertUsage(
       !(typeof that === 'object' && that?.constructor === RenderErrorPage),
-      'Don\'t use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`.'
+      "Don't use the `new` operator: use `throw RenderErrorPage()` instead of `throw new RenderErrorPage()`."
     )
   }
   assertPageContextProvidedByUser(pageContext, {
