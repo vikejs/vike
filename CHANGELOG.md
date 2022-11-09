@@ -1,3 +1,12 @@
+## [0.4.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.46...v0.4.47) (2022-11-09)
+
+
+### Bug Fixes
+
+* remove internal heuristic in favor of new config `hydrationCanBeAborted` (fix [#423](https://github.com/brillout/vite-plugin-ssr/issues/423)) ([56f6c3e](https://github.com/brillout/vite-plugin-ssr/commit/56f6c3e91bc58d13739470aeb6745aee9cff0ec2))
+
+
+
 ## [0.4.46](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.45...v0.4.46) (2022-11-07)
 
 
