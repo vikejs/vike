@@ -10,11 +10,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    if (viewFramework === 'react') {
-      expect(html).toContain('<h1>Welcome to <!-- --><code>vite-plugin-ssr</code></h1>')
-    } else {
-      expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
-    }
+    expect(html).toContain('<h1>Welcome to <code>vite-plugin-ssr</code></h1>')
   })
 
   test('page is rendered to the DOM and interactive', async () => {
@@ -63,14 +59,8 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
 
   test('data fetching page, HTML', async () => {
     const html = await fetchHtml('/star-wars')
-    if (viewFramework === 'react') {
-      expect(html).toContain('<a href="/star-wars/6">Revenge of the Sith</a>')
-      expect(html).toContain('<a href="/star-wars/4">The Phantom Menace</a>')
-    }
-    if (viewFramework === 'vue') {
-      expect(html).toContain('<a href="/star-wars/6">Revenge of the Sith</a>')
-      expect(html).toContain('<a href="/star-wars/4">The Phantom Menace</a>')
-    }
+    expect(html).toContain('<a href="/star-wars/6">Revenge of the Sith</a>')
+    expect(html).toContain('<a href="/star-wars/4">The Phantom Menace</a>')
   })
 
   test('data fetching page, DOM', async () => {
@@ -97,13 +87,9 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   test('markdown page HTML', async () => {
     const html = await fetchHtml('/markdown')
     expect(html).toContain('<title>Some Markdown Page</title>')
+    expect(html).toContain('This page is written in <em>Markdown</em>')
     if (viewFramework === 'react') {
-      expect(html).toContain('This page is written in <!-- --><em>Markdown</em>')
-    } else {
-      expect(html).toContain('This page is written in <em>Markdown</em>')
-    }
-    if (viewFramework === 'react') {
-      expect(html).toContain('<button>Counter <!-- -->0<!-- --></button>')
+      expect(html).toContain('<button>Counter <!-- -->0</button>')
     } else {
       expect(html).toContain('<button>Counter 0</button>')
     }
