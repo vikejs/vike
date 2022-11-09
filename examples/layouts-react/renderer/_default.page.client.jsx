@@ -1,5 +1,6 @@
 export { render }
 export const clientRouting = true
+export const hydrationCanBeAborted = true
 
 import React from 'react'
 import { createRoot, hydrateRoot } from 'react-dom/client'

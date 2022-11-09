@@ -1,18 +1,6 @@
-export { detectHydrationSkipSupport }
-
-import { assert, assertWarning } from './assert'
-
-function detectHydrationSkipSupport(): boolean {
-  const isReact = isReactApp()
-  if (isReact) {
-    return true
-  }
-  return false
-}
-
 // There doesn't seem to be a reliable way to detect React:
 //  - https://stackoverflow.com/questions/73156433/detect-with-javascript-whether-the-website-is-using-react
-function isReactApp() {
+export function isReact() {
   // Heursitic using values set by React (Dev Tools)
   // - `window.__REACT_DEVTOOLS_GLOBAL_HOOK__` is an internal API for React Dev Tools
   //   - https://stackoverflow.com/questions/46807826/how-does-react-developer-tools-determine-that-the-webpage-is-using-react/46808361#46808361
@@ -25,29 +13,10 @@ function isReactApp() {
 
   // Heursitic using values set by `@vitejs/plugin-react`
   const isReact3 = !!(window as any).__vite_plugin_react_preamble_installed__
-  /* Is also set by Preact plugin
+  /* Also set by Preact Vite plugin `@preact/preset-vite`
   const isReact4 = !!(window as any).$RefreshReg$
   */
 
-  const assertHeuristic = (condition: boolean) => {
-    assertWarning(
-      condition,
-      'An internal heuristic needs to be updated, see https://github.com/brillout/vite-plugin-ssr/issues/423',
-      { onlyOnce: true }
-    )
-  }
-
-  if (isReact1 || isReact2) {
-    // Sometimes `react1 === true && react2 === false`
-    assertHeuristic(isReact1 && isReact3)
-    return true
-  }
-
-  if (isReact3) {
-    // See explanation above of why `isReact1` and `isReact2` are `false`
-    assert(isReact1 === false && isReact2 === false)
-    return true
-  }
-
-  return false
+  // console.log({ isReact1, isReact2, isReact3 })
+  return isReact1 || isReact2 || isReact3
 }

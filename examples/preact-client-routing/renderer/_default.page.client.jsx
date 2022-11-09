@@ -1,5 +1,5 @@
-export const clientRouting = true
 export { render }
+export const clientRouting = true
 
 import { hydrate, render as render_ } from 'preact'
 import { PageShell } from './PageShell'

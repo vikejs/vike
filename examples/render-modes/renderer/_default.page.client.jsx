@@ -1,5 +1,6 @@
 export { render }
 export const clientRouting = true
+export const hydrationCanBeAborted = true
 
 import ReactDOM from 'react-dom/client'
 import { PageLayout } from './PageLayout'

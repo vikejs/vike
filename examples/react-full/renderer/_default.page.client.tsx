@@ -1,8 +1,9 @@
-export const clientRouting = true
 export { render }
 export { onHydrationEnd }
 export { onPageTransitionStart }
 export { onPageTransitionEnd }
+export const clientRouting = true
+export const hydrationCanBeAborted = true
 
 import './css/index.css'
 import React from 'react'

@@ -19,7 +19,7 @@ import { releasePageContext } from './releasePageContext'
 import { getGlobalContext } from './getGlobalContext'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { addLinkPrefetchHandlers } from './prefetch'
-import { assertInfo, detectHydrationSkipSupport, PromiseType } from './utils'
+import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
 import { assertRenderHook } from '../assertRenderHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
@@ -112,12 +112,14 @@ function useClientRouter() {
       }
     }
 
+    let hydrationCanBeAborted = false
     const shouldAbort = () => {
-      const ensureHydration = detectHydrationSkipSupport()
-
-      // We should never abort the hydration if `ensureHydration: true`
-      if (ensureHydration && renderingNumber === 1) {
-        return false
+      {
+        // We should never abort the hydration if `hydrationCanBeAborted` isn't `true`
+        const isHydration = renderingNumber === 1
+        if (isHydration && hydrationCanBeAborted === false) {
+          return false
+        }
       }
       // If there is a newer rendering, we should abort all previous renderings
       if (renderingNumber !== renderingCounter) {
@@ -168,13 +170,22 @@ function useClientRouter() {
         }
       }
     }
+    objectAssign(pageContext, pageContextAddendum)
+    assertHook(pageContext, 'onPageTransitionStart')
+    globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
+    if (pageContext.exports.hydrationCanBeAborted) {
+      hydrationCanBeAborted = true
+    } else {
+      assertWarning(
+        !isReact(),
+        'You seem to be using React; we recommend setting `hydrationCanBeAborted` to `true`, see https://vite-plugin-ssr.com/clientRouting',
+        { onlyOnce: true }
+      )
+    }
 
     if (shouldAbort()) {
       return
     }
-    objectAssign(pageContext, pageContextAddendum)
-    assertHook(pageContext, 'onPageTransitionStart')
-    globalObject.onPageTransitionStart = pageContext.exports.onPageTransitionStart
 
     if (renderPromise) {
       // Always make sure that the previous render has finished,

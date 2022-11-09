@@ -1,5 +1,6 @@
-export const clientRouting = true
 export { render }
+export const clientRouting = true
+export const hydrationCanBeAborted = true
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
