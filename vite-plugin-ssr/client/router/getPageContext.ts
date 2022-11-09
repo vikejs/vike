@@ -11,7 +11,7 @@ import {
 } from './utils'
 import { parse } from '@brillout/json-serializer/parse'
 import { getPageContextSerializedInHtml } from '../getPageContextSerializedInHtml'
-import { PageContextExports, PageFile } from '../../shared/getPageFiles'
+import type { PageContextExports, PageFile } from '../../shared/getPageFiles'
 import { analyzePageServerSide } from '../../shared/getPageFiles/analyzePageServerSide'
 import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'

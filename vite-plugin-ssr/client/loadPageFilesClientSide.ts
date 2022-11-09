@@ -1,11 +1,14 @@
-import { getPageFilesClientSide, getExports, PageFile } from '../shared/getPageFiles'
+import { getPageFilesClientSide, getExports, type PageFile, type PageContextExports } from '../shared/getPageFiles'
 
 export { loadPageFilesClientSide }
 export { isErrorFetchingStaticAssets }
 
 const stamp = '__whileFetchingAssets'
 
-async function loadPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
+async function loadPageFilesClientSide(
+  pageFilesAll: PageFile[],
+  pageId: string
+): Promise<PageContextExports & { _pageFilesLoaded: PageFile[] }> {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   try {
     await Promise.all(pageFilesClientSide.map((p) => p.loadFile?.()))
