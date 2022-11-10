@@ -517,6 +517,7 @@ importers:
       '@types/react': ^18.0.8
       '@types/react-dom': ^18.0.3
       '@vitejs/plugin-react': ^2.2.0
+      cross-fetch: ^3.1.5
       node-fetch: ^2.6.1
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -533,6 +534,7 @@ importers:
       '@types/react': 18.0.8
       '@types/react-dom': 18.0.3
       '@vitejs/plugin-react': 2.2.0_vite@3.0.9
+      cross-fetch: 3.1.5
       node-fetch: 2.6.7
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
