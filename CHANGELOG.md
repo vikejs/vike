@@ -1,3 +1,12 @@
+## [0.4.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.47...v0.4.48) (2022-11-10)
+
+
+### Features
+
+* expose `pageContext.exportsAll[exportName][0].filePath` ([0dec2ce](https://github.com/brillout/vite-plugin-ssr/commit/0dec2ce56a96ab485ef05bc353c7efe209db95af))
+
+
+
 ## [0.4.47](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.46...v0.4.47) (2022-11-09)
 
 
