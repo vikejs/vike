@@ -57,7 +57,9 @@ export { render }
 async function render(pageContext) {
   const { description } = pageContext.exports
   // We use `escapeInject` for an HTML fragment
-  const descriptionTag = !description ? '' : escapeInject`<meta name="description" content="${description}">`
+  const descriptionTag = !description ?
+    '' :
+    escapeInject`<meta name="description" content="${description}">`
 
   // We use `escapeInject` again for the overall HTML
   return escapeInject`<html>
