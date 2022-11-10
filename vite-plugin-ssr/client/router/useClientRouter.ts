@@ -202,7 +202,7 @@ function useClientRouter() {
     renderPromise = (async () => {
       const pageContextReadyForRelease = releasePageContext(pageContext)
       assertRenderHook(pageContext)
-      const hookFilePath = pageContext.exportsAll.render![0]!._filePath
+      const hookFilePath = pageContext.exportsAll.render![0]!.filePath
       assert(hookFilePath)
       // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
       const hookResult = await callHookWithTimeout(
@@ -220,7 +220,7 @@ function useClientRouter() {
       assertHook(pageContext, 'onHydrationEnd')
       const { onHydrationEnd } = pageContext.exports
       if (onHydrationEnd) {
-        const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!._filePath
+        const hookFilePath = pageContext.exportsAll.onHydrationEnd![0]!.filePath
         assert(hookFilePath)
         await callHookWithTimeout(() => onHydrationEnd(pageContext), 'onHydrationEnd', hookFilePath)
       }
