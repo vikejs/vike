@@ -8,7 +8,7 @@ export type PageContextBuiltIn<Page = any> = {
   /** Custom Exports/Hooks, see https://vite-plugin-ssr.com/exports */
   exports: Record<string, unknown>
   /** Same as `pageContext.exports` but cumulative */
-  exportsAll: Record<string, { exportValue: unknown, filePath: string }[]>
+  exportsAll: Record<string, { exportValue: unknown; filePath: string }[]>
   /** @deprecated */
   url: string
   /** The URL of the current page */
