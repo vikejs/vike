@@ -55,10 +55,10 @@ import { renderToHtml } from 'some-ui-framework'
 export { render }
 
 async function render(pageContext) {
-  const { description } = pageContext.exports
-  // We use `escapeInject` for an HTML fragment
+  const description = pageContext.exports.description
   const descriptionTag = !description ?
     '' :
+    // We use `escapeInject` for an HTML fragment
     escapeInject`<meta name="description" content="${description}">`
 
   // We use `escapeInject` again for the overall HTML
