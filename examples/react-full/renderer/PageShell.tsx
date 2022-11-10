@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from './logo.svg'
+import logoUrl from './logo.svg'
 import { PageContextProvider } from './usePageContext'
 import { Link } from './Link'
 import type { PageContext } from './types'
@@ -82,7 +82,7 @@ function Logo() {
       }}
     >
       <a href="/">
-        <img src={logo} height={64} width={64} />
+        <img src={logoUrl} height={64} width={64} />
       </a>
     </div>
   )
