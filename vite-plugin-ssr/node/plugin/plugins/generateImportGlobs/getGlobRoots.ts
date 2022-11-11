@@ -56,6 +56,7 @@ async function createIncludePath(
   )
   const { pkgJson, pkgRoot } = resolvePackage(pkgName, { preserveSymlinks: true, root })
   const pageFilesDir = pkgJson['vite-plugin-ssr']?.pageFilesDir ?? ''
+  assertUsage(!pageFilesDir, 'package.json#vite-plugin-ssr.pageFilesDir is deprecated. Reach out to a VPS maintainer')
   const includeRoot = resolvePackageRoot(pkgName, { preserveSymlinks: false, root })
 
   {
