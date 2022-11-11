@@ -21,7 +21,8 @@ function resolveConfigVps(
   const vitePluginSsr: ConfigVpsResolved = {
     disableAutoFullBuild: fromPluginOptions.disableAutoFullBuild ?? fromViteConfig.disableAutoFullBuild ?? false,
     pageFiles: {
-      include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])]
+      include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
+      includeDist: [...(fromPluginOptions.pageFiles?.includeDist ?? []), ...(fromViteConfig.pageFiles?.includeDist ?? [])]
     },
     prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
     includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],

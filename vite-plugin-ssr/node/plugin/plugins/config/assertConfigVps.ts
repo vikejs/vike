@@ -43,6 +43,11 @@ function checkConfigVpsUserProvided(configVps: unknown): null | { prop: string; 
       if (!hasProp(configVpsPageFiles, p, 'string[]') && !hasProp(configVpsPageFiles, p, 'undefined'))
         return { prop: `pageFiles.${p}`, errMsg: 'should be an array of strings' }
     }
+    {
+      const p = 'includeDist'
+      if (!hasProp(configVpsPageFiles, p, 'string[]') && !hasProp(configVpsPageFiles, p, 'undefined'))
+        return { prop: `pageFiles.${p}`, errMsg: 'should be an array of strings' }
+    }
   }
 
   const configVpsPrerender = configVps.prerender

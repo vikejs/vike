@@ -8,11 +8,25 @@ import resolve from 'resolve'
 import type { ResolvedConfig } from 'vite'
 import { assertConfigVpsResolved } from '../config/assertConfigVps'
 
-type GlobRoot = {
-  pkgName: null | string
-  fsAllowRoot: null |string
-  includePath: null | string
-}
+type GlobRoot =
+  | {
+      pkgName: null
+      fsAllowRoot: null
+      includePath: '/'
+      includePageFiles: null
+    }
+  | {
+      pkgName: string
+      fsAllowRoot: string
+      includePath: null | string
+      includePageFiles: null
+    }
+  | {
+      pkgName: null
+      fsAllowRoot: null
+      includePath: null
+      includePageFiles: string[]
+    }
 
 async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
   assertConfigVpsResolved(config)
@@ -22,31 +36,23 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
     {
       pkgName: null,
       fsAllowRoot: null,
-      includePath: '/'
+      includePath: '/',
+      includePageFiles: null
     },
     ...(
       await Promise.all(
         config.vitePluginSsr.pageFiles.include
-          .map(normalizeIncludePaths)
-          .map((pkgName) => createIncludePath(pkgName, root))
+          .map((pkgName) => processSourceInclude(pkgName, root))
       )
-    ).filter(isNotNullish)
+    ).filter(isNotNullish),
   ]
   return globRoots
 }
 
-function normalizeIncludePaths(includePath: string): string {
-  includePath = toPosixPath(includePath)
-  if (includePath.endsWith('/')) {
-    includePath = includePath.slice(0, -1)
-  }
-  return includePath
-}
-
-async function createIncludePath(
+async function processSourceInclude(
   pkgName: string,
   root: string
-): Promise<{ pkgName: string; fsAllowRoot: string; includePath: string | null }> {
+): Promise<{ pkgName: string; fsAllowRoot: string; includePath: string | null; includePageFiles: null }> {
   assertUsage(
     isNpmName(pkgName),
     `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`
@@ -64,7 +70,7 @@ async function createIncludePath(
     assertPosixPath(fsAllowRoot)
     const appRootIncludedInPkgRoot = root.startsWith(fsAllowRoot)
     if (appRootIncludedInPkgRoot) {
-      return { pkgName, fsAllowRoot, includePath: null }
+      return { pkgName, fsAllowRoot, includePath: null, includePageFiles: null }
     }
   }
 
@@ -77,7 +83,7 @@ async function createIncludePath(
   const pkgRootRelative = path.posix.relative(root, pkgRoot)
   if (!pkgRootRelative.startsWith('..')) {
     const includePath = path.posix.join(pkgRootRelative, pageFilesDir)
-    return { pkgName, fsAllowRoot, includePath }
+    return { pkgName, fsAllowRoot, includePath, includePageFiles: null }
   }
 
   const includePath = path.posix.join('node_modules', '.vite-plugin-ssr', pkgName, pageFilesDir)
@@ -90,7 +96,7 @@ async function createIncludePath(
     const target = path.posix.relative(root, targetAbsolute)
     await symlinkDir(source, target)
   }
-  return { pkgName, fsAllowRoot, includePath }
+  return { pkgName, fsAllowRoot, includePath, includePageFiles: null }
 }
 
 function isNpmName(str: string) {
