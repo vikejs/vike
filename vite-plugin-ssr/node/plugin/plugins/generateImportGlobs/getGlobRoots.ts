@@ -18,24 +18,21 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
   assertConfigVpsResolved(config)
   const { root } = config
   assertPosixPath(root)
-  const includePageFiles = resolveConfig(config.vitePluginSsr.pageFiles)
   const globRoots: GlobRoot[] = [
     {
       pkgName: null,
       includeRoot: root,
       includePath: '/'
     },
-    ...(await Promise.all(includePageFiles.map((pkgName) => createIncludePath(pkgName, root)))).filter(isNotNullish)
+    ...(
+      await Promise.all(
+        config.vitePluginSsr.pageFiles.include
+          .map(normalizeIncludePaths)
+          .map((pkgName) => createIncludePath(pkgName, root))
+      )
+    ).filter(isNotNullish)
   ]
   return globRoots
-}
-
-function resolveConfig(pageFiles?: { include?: string[] }) {
-  const includePageFiles: string[] = []
-  if (pageFiles?.include) {
-    includePageFiles.push(...pageFiles.include.map(normalizeIncludePaths))
-  }
-  return includePageFiles
 }
 
 function normalizeIncludePaths(includePath: string): string {
