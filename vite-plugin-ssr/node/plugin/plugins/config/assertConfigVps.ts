@@ -1,111 +1,82 @@
 export { assertConfigVpsResolved }
-export { assertConfigVpsUserProvided }
+export { checkConfigVpsUserProvided }
 
-import { assert, assertUsage, hasProp, isObject } from '../../../utils'
-import { ConfigVpsResolved } from './ConfigVps'
+import { assert, hasProp, isObject } from '../../utils'
+import type { ConfigVpsResolved } from './ConfigVps'
 
-function assertConfigVpsUserProvided(
-  vitePluginSsr: unknown,
-  userInputFormat: null | ((args: { configPath: string; configPathInObject: string; configProp: string }) => string)
-): asserts vitePluginSsr is ConfigVpsResolved {
-  assert(isObject(vitePluginSsr))
-  assertConfig(
-    'disableAutoFullBuild',
-    'should be a boolean',
-    hasProp(vitePluginSsr, 'disableAutoFullBuild', 'boolean') ||
-      hasProp(vitePluginSsr, 'disableAutoFullBuild', 'undefined')
-  )
-  assertPageFilesConfig(vitePluginSsr)
-  assertPrerenderConfig(vitePluginSsr)
-  assertConfig(
-    'includeCSS',
-    'should be an array of strings',
-    hasProp(vitePluginSsr, 'includeCSS', 'string[]') || hasProp(vitePluginSsr, 'includeCSS', 'undefined')
-  )
-  assertConfig(
-    'includeAssetsImportedByServer',
-    'should be a boolean',
-    hasProp(vitePluginSsr, 'includeAssetsImportedByServer', 'boolean') ||
-      hasProp(vitePluginSsr, 'includeAssetsImportedByServer', 'undefined')
-  )
-
-  return
-
-  function assertPrerenderConfig(
-    vitePluginSsr: Record<string, unknown>
-  ): asserts vitePluginSsr is Pick<ConfigVpsResolved, 'prerender'> {
-    assertConfig(
-      'prerender',
-      'should be an object or a boolean',
-      hasProp(vitePluginSsr, 'prerender', 'object') ||
-        hasProp(vitePluginSsr, 'prerender', 'boolean') ||
-        hasProp(vitePluginSsr, 'prerender', 'undefined')
+function checkConfigVpsUserProvided(configVps: unknown): null | { prop: string; errMsg: `should be a${string}` } {
+  assert(isObject(configVps))
+  {
+    const prop = 'disableAutoFullBuild'
+    if (!hasProp(configVps, prop, 'boolean') && !hasProp(configVps, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
+    const prop = 'includeAssetsImportedByServer'
+    if (!hasProp(configVps, prop, 'boolean') && !hasProp(configVps, prop, 'undefined'))
+      return { prop, errMsg: 'should be a boolean' }
+  }
+  {
+    const prop = 'includeCSS'
+    if (!hasProp(configVps, prop, 'string[]') && !hasProp(configVps, prop, 'undefined'))
+      return { prop, errMsg: 'should be an array of strings' }
+  }
+  {
+    const prop = 'pageFiles'
+    if (!hasProp(configVps, prop, 'object') && !hasProp(configVps, prop, 'undefined'))
+      return { prop, errMsg: 'should be an object' }
+  }
+  {
+    const prop = 'prerender'
+    if (
+      !hasProp(configVps, prop, 'object') &&
+      !hasProp(configVps, prop, 'boolean') &&
+      !hasProp(configVps, prop, 'undefined')
     )
+      return { prop, errMsg: 'should be an object or a boolean' }
+  }
 
-    const prerender = vitePluginSsr.prerender ?? {}
-    if (prerender && typeof prerender !== 'boolean') {
-      assertConfig(
-        'prerender.partial',
-        'should be a boolean',
-        hasProp(prerender, 'partial', 'undefined') || hasProp(prerender, 'partial', 'boolean')
-      )
-      assertConfig(
-        'prerender.noExtraDir',
-        'should be a boolean',
-        hasProp(prerender, 'noExtraDir', 'undefined') || hasProp(prerender, 'noExtraDir', 'boolean')
-      )
-      assertConfig(
-        'prerender.parallel',
-        'should be a boolean or a number',
-        hasProp(prerender, 'parallel', 'undefined') ||
-          hasProp(prerender, 'parallel', 'boolean') ||
-          hasProp(prerender, 'parallel', 'number')
-      )
-      assertConfig(
-        'prerender.disableAutoRun',
-        'should be a boolean',
-        hasProp(prerender, 'disableAutoRun', 'undefined') || hasProp(prerender, 'disableAutoRun', 'boolean')
-      )
+  const configVpsPageFiles = configVps.pageFiles
+  if (typeof configVpsPageFiles === 'object') {
+    {
+      const p = 'include'
+      if (!hasProp(configVpsPageFiles, p, 'string[]') && !hasProp(configVpsPageFiles, p, 'undefined'))
+        return { prop: `pageFiles.${p}`, errMsg: 'should be an array of strings' }
     }
   }
 
-  function assertPageFilesConfig(
-    vitePluginSsr: Record<string, unknown>
-  ): asserts vitePluginSsr is Pick<ConfigVpsResolved, 'pageFiles'> {
-    assertConfig(
-      'pageFiles',
-      'should be an object',
-      hasProp(vitePluginSsr, 'pageFiles', 'undefined') || hasProp(vitePluginSsr, 'pageFiles', 'object')
-    )
-    if (!vitePluginSsr.pageFiles) {
-      return
+  const configVpsPrerender = configVps.prerender
+  if (typeof configVpsPrerender === 'object') {
+    {
+      const p = 'partial'
+      if (!hasProp(configVpsPrerender, p, 'boolean') && !hasProp(configVpsPrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
     }
-    if (vitePluginSsr.pageFiles?.include !== undefined) {
-      assertConfig(
-        'pageFiles.include',
-        'should be a string array',
-        hasProp(vitePluginSsr.pageFiles, 'include', 'string[]')
+    {
+      const p = 'noExtraDir'
+      if (!hasProp(configVpsPrerender, p, 'boolean') && !hasProp(configVpsPrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'disableAutoRun'
+      if (!hasProp(configVpsPrerender, p, 'boolean') && !hasProp(configVpsPrerender, p, 'undefined'))
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean' }
+    }
+    {
+      const p = 'parallel'
+      if (
+        !hasProp(configVpsPrerender, p, 'boolean') &&
+        !hasProp(configVpsPrerender, p, 'number') &&
+        !hasProp(configVpsPrerender, p, 'undefined')
       )
+        return { prop: `prerender.${p}`, errMsg: 'should be a boolean or a number' }
     }
   }
 
-  function assertConfig(configPath: string, errMsg: string, condition: boolean): asserts condition {
-    if (!userInputFormat) {
-      assert(condition)
-    } else {
-      const p = configPath.split('.')
-      assert(p.length <= 2)
-      const configPathInObject = p.length === 2 ? `${p[0]}: { ${p[1]} }` : configPath
-      const configProp = p[p.length - 1]
-      assert(configProp)
-      assertUsage(condition, `${userInputFormat({ configPath, configPathInObject, configProp })} ${errMsg}.`)
-    }
-  }
+  return null
 }
 
 function assertConfigVpsResolved<T>(config: T): asserts config is T & { vitePluginSsr: ConfigVpsResolved } {
   assert(hasProp(config, 'vitePluginSsr', 'object'))
-  const { vitePluginSsr } = config
-  // Internal assertion
-  assertConfigVpsUserProvided(vitePluginSsr, null)
+  assert(checkConfigVpsUserProvided(config.vitePluginSsr) === null)
 }

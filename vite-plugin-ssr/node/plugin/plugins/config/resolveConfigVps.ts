@@ -1,11 +1,22 @@
 export { resolveConfigVps }
 
-import { assertConfigVpsUserProvided, assertConfigVpsResolved } from './assertConfigVps'
+import { checkConfigVpsUserProvided, assertConfigVpsResolved } from './assertConfigVps'
 import type { ConfigVpsResolved, ConfigVpsUserProvided } from './ConfigVps'
+import { assertUsage } from '../../utils'
 
-function resolveConfigVps(fromPluginOptions: unknown, fromViteConfig: unknown): ConfigVpsResolved {
-  assertUserInputFromPluginOptions(fromPluginOptions)
-  assertUserInputFromViteConfig(fromViteConfig)
+function resolveConfigVps(
+  fromPluginOptions: ConfigVpsUserProvided,
+  fromViteConfig: ConfigVpsUserProvided
+): ConfigVpsResolved {
+  {
+    const validationErr = checkConfigVpsUserProvided(fromPluginOptions)
+    if (validationErr)
+      assertUsage(false, `vite.config.js > vite-plugin-ssr option ${validationErr.prop} ${validationErr.errMsg}`)
+  }
+  {
+    const validationErr = checkConfigVpsUserProvided(fromViteConfig)
+    if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
+  }
 
   const vitePluginSsr: ConfigVpsResolved = {
     disableAutoFullBuild: fromPluginOptions.disableAutoFullBuild ?? fromViteConfig.disableAutoFullBuild ?? false,
@@ -37,17 +48,4 @@ function resolvePrerenderOptions(fromPluginOptions: ConfigVpsUserProvided, fromV
     }
   }
   return prerender
-}
-
-function assertUserInputFromPluginOptions(
-  fromPluginOptions: unknown
-): asserts fromPluginOptions is ConfigVpsUserProvided {
-  assertConfigVpsUserProvided(
-    fromPluginOptions,
-    ({ configPathInObject, configProp }) =>
-      `[vite.config.js][ssr({ ${configPathInObject} })] Configuration \`${configProp}\``
-  )
-}
-function assertUserInputFromViteConfig(fromViteConfig: unknown): asserts fromViteConfig is ConfigVpsUserProvided {
-  assertConfigVpsUserProvided(fromViteConfig, ({ configPath }) => `vite.config.js#vitePluginSsr.${configPath}`)
 }
