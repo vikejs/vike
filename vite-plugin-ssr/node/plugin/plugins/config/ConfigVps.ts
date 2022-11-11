@@ -1,6 +1,5 @@
 export type { ConfigVpsUserProvided }
 export type { ConfigVpsResolved }
-//export type ConfigVps = { vitePluginSsr: VpsConfig }
 
 type ConfigVpsResolved = {
   prerender:
