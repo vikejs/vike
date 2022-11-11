@@ -1,4 +1,4 @@
-export type { ConfigVpsUser }
+export type { ConfigVpsUserProvided }
 export type { ConfigVpsResolved }
 //export type ConfigVps = { vitePluginSsr: VpsConfig }
 
@@ -17,7 +17,7 @@ type ConfigVpsResolved = {
   includeAssetsImportedByServer: boolean
 }
 
-type ConfigVpsUser = {
+type ConfigVpsUserProvided = {
   /**
    * Whether your pages are pre-rendered to HTML.
    *

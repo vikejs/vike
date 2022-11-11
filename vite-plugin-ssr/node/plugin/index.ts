@@ -13,7 +13,7 @@ import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
 import { setVitePluginSsrConfig } from './plugins/config'
-import type { ConfigVpsUser } from './plugins/config/ConfigVps'
+import type { ConfigVpsUserProvided } from './plugins/config/ConfigVps'
 import { distFileNames } from './plugins/distFileNames'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
@@ -23,7 +23,7 @@ import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vpsConfig?: ConfigVpsUser): any {
+function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   const plugins: Plugin[] = [
     commonConfig(),
     setVitePluginSsrConfig(vpsConfig),
