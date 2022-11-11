@@ -10,7 +10,7 @@ import { assertConfigVpsResolved } from '../config/assertConfigVps'
 
 type GlobRoot = {
   pkgName: null | string
-  includeRoot: string
+  fsAllowRoot: null |string
   includePath: null | string
 }
 
@@ -21,7 +21,7 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
   const globRoots: GlobRoot[] = [
     {
       pkgName: null,
-      includeRoot: root,
+      fsAllowRoot: null,
       includePath: '/'
     },
     ...(
@@ -46,26 +46,29 @@ function normalizeIncludePaths(includePath: string): string {
 async function createIncludePath(
   pkgName: string,
   root: string
-): Promise<{ pkgName: string; includeRoot: string; includePath: string | null }> {
+): Promise<{ pkgName: string; fsAllowRoot: string; includePath: string | null }> {
   assertUsage(
     isNpmName(pkgName),
     `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`
   )
   const { pkgJson, pkgRoot } = resolvePackage(pkgName, { preserveSymlinks: true, root })
   const pageFilesDir = pkgJson['vite-plugin-ssr']?.pageFilesDir ?? ''
-  assertUsage(!pageFilesDir, 'package.json#vite-plugin-ssr.pageFilesDir is deprecated. Reach out to a vite-plugin-ssr maintainer.')
-  const includeRoot = resolvePackageRoot(pkgName, { preserveSymlinks: false, root })
+  assertUsage(
+    !pageFilesDir,
+    'package.json#vite-plugin-ssr.pageFilesDir is deprecated. Reach out to a vite-plugin-ssr maintainer.'
+  )
+  const fsAllowRoot = resolvePackageRoot(pkgName, { preserveSymlinks: false, root })
 
   {
     assertPosixPath(root)
-    assertPosixPath(includeRoot)
-    const appRootIncludedInPkgRoot = root.startsWith(includeRoot)
+    assertPosixPath(fsAllowRoot)
+    const appRootIncludedInPkgRoot = root.startsWith(fsAllowRoot)
     if (appRootIncludedInPkgRoot) {
-      return { pkgName, includeRoot, includePath: null }
+      return { pkgName, fsAllowRoot, includePath: null }
     }
   }
 
-  const crawlRoot = path.posix.join(includeRoot, pageFilesDir)
+  const crawlRoot = path.posix.join(fsAllowRoot, pageFilesDir)
   assertUsage(
     !root.startsWith(crawlRoot),
     `The page files include path ${crawlRoot} is a parent of the app's root ${root}. You need to use/change the \`pageFilesDir\` options. Contact the vite-plugin-ssr maintainer on GitHub / Discord for more information.`
@@ -74,7 +77,7 @@ async function createIncludePath(
   const pkgRootRelative = path.posix.relative(root, pkgRoot)
   if (!pkgRootRelative.startsWith('..')) {
     const includePath = path.posix.join(pkgRootRelative, pageFilesDir)
-    return { pkgName, includeRoot, includePath }
+    return { pkgName, fsAllowRoot, includePath }
   }
 
   const includePath = path.posix.join('node_modules', '.vite-plugin-ssr', pkgName, pageFilesDir)
@@ -87,7 +90,7 @@ async function createIncludePath(
     const target = path.posix.relative(root, targetAbsolute)
     await symlinkDir(source, target)
   }
-  return { pkgName, includeRoot, includePath }
+  return { pkgName, fsAllowRoot, includePath }
 }
 
 function isNpmName(str: string) {

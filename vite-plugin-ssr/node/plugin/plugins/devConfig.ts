@@ -70,9 +70,9 @@ async function determineFsAllowList(config: ResolvedConfig) {
   fsAllow.push(vitePluginSsrRoot)
 
   const globRoots = await getGlobRoots(config)
-  globRoots
-    .filter(({ pkgName }) => pkgName)
-    .forEach(({ includeRoot }) => {
-      fsAllow.push(includeRoot)
-    })
+  globRoots.forEach(({ fsAllowRoot }) => {
+    if (fsAllowRoot) {
+      fsAllow.push(fsAllowRoot)
+    }
+  })
 }
