@@ -72,7 +72,7 @@ async function determineFsAllowList(config: ResolvedConfig) {
   const globRoots = await getGlobRoots(config)
   globRoots
     .filter(({ pkgName }) => pkgName)
-    .forEach(({ pkgRootResolved }) => {
-      fsAllow.push(pkgRootResolved)
+    .forEach(({ incudeRoot }) => {
+      fsAllow.push(incudeRoot)
     })
 }
