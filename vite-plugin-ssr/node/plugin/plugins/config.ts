@@ -1,20 +1,20 @@
-export { setVitePluginSsrConfig }
+export { resolveVpsConfig }
 
 import type { Plugin } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
 import { checkConfigVpsUserProvided, assertConfigVpsResolved } from './config/assertConfigVps'
 import { assertUsage } from '../utils'
 
-function setVitePluginSsrConfig(vpsConfig: unknown) {
+function resolveVpsConfig(vpsConfig: unknown) {
   return {
-    name: 'vite-plugin-ssr:setVitePluginSsrConfig',
+    name: 'vite-plugin-ssr:resolveVpsConfig',
     enforce: 'pre',
-    config(config) {
+    configResolved(config) {
       const vitePluginSsr = resolveConfigVps(
         (vpsConfig ?? {}) as ConfigVpsUserProvided,
         ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
       )
-      return { vitePluginSsr }
+      ;(config as Record<string, unknown>).vitePluginSsr = vitePluginSsr
     }
   } as Plugin
 }

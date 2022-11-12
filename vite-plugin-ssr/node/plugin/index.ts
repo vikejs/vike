@@ -13,7 +13,7 @@ import { manifest } from './plugins/manifest'
 import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
-import { setVitePluginSsrConfig } from './plugins/config'
+import { resolveVpsConfig } from './plugins/config'
 import type { ConfigVpsUserProvided as UserConfig } from './plugins/config/ConfigVps'
 import { distFileNames } from './plugins/distFileNames'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin'
@@ -26,8 +26,8 @@ import { commonConfig } from './plugins/commonConfig'
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vpsConfig?: UserConfig): any {
   const plugins: Plugin[] = [
+    resolveVpsConfig(vpsConfig), // `resolveVpsConfig()`'s hook `configResolved()` should be the first called
     commonConfig(),
-    setVitePluginSsrConfig(vpsConfig),
     generateImportGlobs(),
     ...devConfig(),
     buildConfig(),
