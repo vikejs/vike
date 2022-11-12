@@ -38,7 +38,7 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
     ...(
       await Promise.all(config.vitePluginSsr.pageFiles.include.map((pkgName) => processIncludeSrc(pkgName, root)))
     ).filter(isNotNullish),
-    ...config.vitePluginSsr.pageFiles.includeDist.map((includeDistEntry) => ({
+    ...config.vitePluginSsr.pageFiles.addPageFiles.map((includeDistEntry) => ({
       addFsAllowRoot: null,
       addCrawlRoot: null,
       addPageFile: includeDistEntry

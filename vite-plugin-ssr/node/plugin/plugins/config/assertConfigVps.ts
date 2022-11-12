@@ -44,7 +44,7 @@ function checkConfigVpsUserProvided(configVps: unknown): null | { prop: string; 
         return { prop: `pageFiles.${p}`, errMsg: 'should be an array of strings' }
     }
     {
-      const p = 'includeDist'
+      const p = 'addPageFiles'
       if (!hasProp(configVpsPageFiles, p, 'string[]') && !hasProp(configVpsPageFiles, p, 'undefined'))
         return { prop: `pageFiles.${p}`, errMsg: 'should be an array of strings' }
     }

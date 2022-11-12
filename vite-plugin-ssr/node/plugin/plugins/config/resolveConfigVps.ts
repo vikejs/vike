@@ -22,7 +22,10 @@ function resolveConfigVps(
     disableAutoFullBuild: fromPluginOptions.disableAutoFullBuild ?? fromViteConfig.disableAutoFullBuild ?? false,
     pageFiles: {
       include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
-      includeDist: [...(fromPluginOptions.pageFiles?.includeDist ?? []), ...(fromViteConfig.pageFiles?.includeDist ?? [])]
+      addPageFiles: [
+        ...(fromPluginOptions.pageFiles?.addPageFiles ?? []),
+        ...(fromViteConfig.pageFiles?.addPageFiles ?? [])
+      ]
     },
     prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
     includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],
