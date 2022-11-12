@@ -3,6 +3,7 @@ export { getAllPageIdFilesServerSide }
 
 import type { FileType, PageFile } from './types'
 import { assert, assertUsage, assertPosixPath, isNotNullish } from '../utils'
+import { assertPageFilePath } from '../assertPageFilePath'
 
 function getAllPageIdFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, true)
@@ -110,10 +111,8 @@ function defaultFilesSorter(fileTypeEnv: FileType, pageId: string) {
 }
 
 function getPathDistance(pathA: string, pathB: string): number {
-  assertPosixPath(pathA)
-  assertPosixPath(pathB)
-  assert(pathA.startsWith('/'))
-  assert(pathB.startsWith('/'))
+  assertPageFilePath(pathA)
+  assertPageFilePath(pathB)
 
   // Index of first different character
   let idx = 0

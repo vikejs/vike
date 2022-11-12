@@ -1,7 +1,7 @@
 export { getGlobRoots }
 
 import fs from 'fs'
-import { assertUsage, assertPosixPath, toPosixPath, assert, isNotNullish } from '../../utils'
+import { assertUsage, assertPosixPath, toPosixPath, assert, isNotNullish, isNpmPackageName } from '../../utils'
 import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
@@ -52,7 +52,7 @@ async function processIncludeSrc(
   root: string
 ): Promise<{ addFsAllowRoot: string; addCrawlRoot: string | null; addPageFile: null }> {
   assertUsage(
-    isNpmName(pkgName),
+    isNpmPackageName(pkgName),
     `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`
   )
   const { pkgJson, pkgRoot } = resolvePackage(pkgName, { preserveSymlinks: true, root })
@@ -95,22 +95,6 @@ async function processIncludeSrc(
     await symlinkDir(source, target)
   }
   return { addFsAllowRoot, addCrawlRoot, addPageFile: null }
-}
-
-function isNpmName(str: string) {
-  if (str.includes('.')) {
-    return false
-  }
-  if (str.includes('\\')) {
-    return false
-  }
-  if (!str.includes('/')) {
-    return true
-  }
-  if (str.split('/').length === 2 && str.startsWith('@')) {
-    return true
-  }
-  return false
 }
 
 function resolvePackage(pkgName: string, options: ResolveOptions) {

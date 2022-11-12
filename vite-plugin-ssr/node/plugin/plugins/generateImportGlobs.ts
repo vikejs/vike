@@ -1,7 +1,7 @@
 export { generateImportGlobs }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, viteIsSSR_options, isNotNullish } from '../utils'
+import { assert, viteIsSSR_options, isNotNullish, assertUsage } from '../utils'
 import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
@@ -67,24 +67,35 @@ async function getCode(config: Config, isForClientSide: boolean, isClientRouting
   }
   {
     const addPageFiles = globRoots.map((g) => g.addPageFile).filter(isNotNullish)
-    content += generateAddPageFileImports(addPageFiles)
+    content += generateAddPageFileImports(addPageFiles, isForClientSide)
   }
   debugGlob('Glob imports: ', content)
   return content
 }
 
-function generateAddPageFileImports(addPageFiles: string[]) {
+function generateAddPageFileImports(addPageFiles: string[], isForClientSide: boolean) {
   let fileContent = '\n\n'
   addPageFiles.forEach((importPath) => {
+    assertUsage(
+      isJsPath(importPath),
+      `Config pageFiles.addPageFiles entry '${importPath}' should end with '.js', '.mjs', or '.cjs'`
+    )
     const fileType = getFileType(importPath)
     assert(fileType !== '.page.route') // Populate `pageFilesEager` instead of `pageFilesLazy`
-    fileContent += `pageFilesLazy['${fileType}']['${importPath}'] = () => import('${importPath}'); `
+    let query = ''
+    let pageFilesVar: 'pageFilesLazy' | 'pageFilesExportNamesLazy' = 'pageFilesLazy'
+    if ((isForClientSide && fileType === '.page.server') || (!isForClientSide && fileType === '.page.client')) {
+      query = '?extractExportNames'
+      pageFilesVar = 'pageFilesExportNamesLazy'
+    }
+    fileContent += `${pageFilesVar}['${fileType}']['${importPath}'] = () => import('${importPath}${query}'); `
     fileContent += '\n'
   })
   return fileContent
 }
 
 function getFileType(filePath: string): FileType {
+  assert(isJsPath(filePath), { filePath })
   let fileType: FileType | undefined
   if (filePath.includes('.page.route.')) {
     assert(!fileType)
@@ -103,6 +114,10 @@ function getFileType(filePath: string): FileType {
     fileType = '.page'
   }
   return fileType
+}
+
+function isJsPath(filePath: string): boolean {
+  return ['.js', '.mjs', '.cjs'].some((ext) => filePath.endsWith(ext))
 }
 
 function getContent(
