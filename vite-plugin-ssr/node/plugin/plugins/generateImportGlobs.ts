@@ -12,6 +12,7 @@ import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
+import type { FileType } from '../../../shared/getPageFiles/types'
 
 const virtualModuleIds = [
   virtualModuleIdPageFilesServer,
@@ -59,10 +60,49 @@ async function getCode(config: Config, isForClientSide: boolean, isClientRouting
   const isBuild = command === 'build'
   const globRoots = await getGlobRoots(config)
   debugGlob('Glob roots: ', globRoots)
-  const crawlRoots = globRoots.map((g) => g.addCrawlRoot).filter(isNotNullish)
-  const content = getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, config)
+  let content = ''
+  {
+    const crawlRoots = globRoots.map((g) => g.addCrawlRoot).filter(isNotNullish)
+    content += getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, config)
+  }
+  {
+    const addPageFiles = globRoots.map((g) => g.addPageFile).filter(isNotNullish)
+    content += generateAddPageFileImports(addPageFiles)
+  }
   debugGlob('Glob imports: ', content)
   return content
+}
+
+function generateAddPageFileImports(addPageFiles: string[]) {
+  let fileContent = '\n\n'
+  addPageFiles.forEach((importPath) => {
+    const fileType = getFileType(importPath)
+    assert(fileType !== '.page.route') // Populate `pageFilesEager` instead of `pageFilesLazy`
+    fileContent += `pageFilesLazy['${fileType}']['${importPath}'] = () => import('${importPath}'); `
+    fileContent += '\n'
+  })
+  return fileContent
+}
+
+function getFileType(filePath: string): FileType {
+  let fileType: FileType | undefined
+  if (filePath.includes('.page.route.')) {
+    assert(!fileType)
+    fileType = '.page.route'
+  }
+  if (filePath.includes('.page.client.')) {
+    assert(!fileType)
+    fileType = '.page.client'
+  }
+  if (filePath.includes('.page.server.')) {
+    assert(!fileType)
+    fileType = '.page.server'
+  }
+  if (!fileType) {
+    assert(filePath.includes('.page.'))
+    fileType = '.page'
+  }
+  return fileType
 }
 
 function getContent(
@@ -143,6 +183,7 @@ function getGlobs(
     if (!isEager) {
       pageFilesVar = 'pageFilesLazy'
     } else {
+      // Used for `.page.route.js` files
       pageFilesVar = 'pageFilesEager'
     }
   } else {

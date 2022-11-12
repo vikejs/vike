@@ -47,6 +47,7 @@ function parseGlobResults(pageFilesExports: unknown) {
       }
     }
   })
+  // `pageFilesEager` contains `.page.route.js` files
   parseGlobResult(pageFilesExports.pageFilesEager).forEach(({ filePath, pageFile, globValue }) => {
     pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
     const moduleExports = globValue
