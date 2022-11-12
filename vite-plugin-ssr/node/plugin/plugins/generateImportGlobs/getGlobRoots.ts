@@ -10,19 +10,19 @@ import { assertConfigVpsResolved } from '../config/assertConfigVps'
 
 type GlobRoot =
   | {
-      fsAllowRoot: null
-      includePath: '/'
-      includePageFile: null
+      addFsAllowRoot: null
+      addCrawlRoot: '/'
+      addPageFile: null
     }
   | {
-      fsAllowRoot: string
-      includePath: null | string
-      includePageFile: null
+      addFsAllowRoot: string
+      addCrawlRoot: null | string
+      addPageFile: null
     }
   | {
-      fsAllowRoot: null
-      includePath: null
-      includePageFile: string
+      addFsAllowRoot: null
+      addCrawlRoot: null
+      addPageFile: string
     }
 
 async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
@@ -31,17 +31,17 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
   assertPosixPath(root)
   const globRoots: GlobRoot[] = [
     {
-      fsAllowRoot: null,
-      includePath: '/',
-      includePageFile: null
+      addFsAllowRoot: null,
+      addCrawlRoot: '/',
+      addPageFile: null
     },
     ...(
       await Promise.all(config.vitePluginSsr.pageFiles.include.map((pkgName) => processIncludeSrc(pkgName, root)))
     ).filter(isNotNullish),
     ...config.vitePluginSsr.pageFiles.includeDist.map((includeDistEntry) => ({
-      fsAllowRoot: null,
-      includePath: null,
-      includePageFile: includeDistEntry
+      addFsAllowRoot: null,
+      addCrawlRoot: null,
+      addPageFile: includeDistEntry
     }))
   ]
   return globRoots
@@ -50,7 +50,7 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
 async function processIncludeSrc(
   pkgName: string,
   root: string
-): Promise<{ fsAllowRoot: string; includePath: string | null; includePageFile: null }> {
+): Promise<{ addFsAllowRoot: string; addCrawlRoot: string | null; addPageFile: null }> {
   assertUsage(
     isNpmName(pkgName),
     `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`
@@ -61,18 +61,18 @@ async function processIncludeSrc(
     !pageFilesDir,
     'package.json#vite-plugin-ssr.pageFilesDir is deprecated. Reach out to a vite-plugin-ssr maintainer.'
   )
-  const fsAllowRoot = resolvePackageRoot(pkgName, { preserveSymlinks: false, root })
+  const addFsAllowRoot = resolvePackageRoot(pkgName, { preserveSymlinks: false, root })
 
   {
     assertPosixPath(root)
-    assertPosixPath(fsAllowRoot)
-    const appRootIncludedInPkgRoot = root.startsWith(fsAllowRoot)
+    assertPosixPath(addFsAllowRoot)
+    const appRootIncludedInPkgRoot = root.startsWith(addFsAllowRoot)
     if (appRootIncludedInPkgRoot) {
-      return { fsAllowRoot, includePath: null, includePageFile: null }
+      return { addFsAllowRoot, addCrawlRoot: null, addPageFile: null }
     }
   }
 
-  const crawlRoot = path.posix.join(fsAllowRoot, pageFilesDir)
+  const crawlRoot = path.posix.join(addFsAllowRoot, pageFilesDir)
   assertUsage(
     !root.startsWith(crawlRoot),
     `The page files include path ${crawlRoot} is a parent of the app's root ${root}. You need to use/change the \`pageFilesDir\` options. Contact the vite-plugin-ssr maintainer on GitHub / Discord for more information.`
@@ -80,21 +80,21 @@ async function processIncludeSrc(
 
   const pkgRootRelative = path.posix.relative(root, pkgRoot)
   if (!pkgRootRelative.startsWith('..')) {
-    const includePath = path.posix.join(pkgRootRelative, pageFilesDir)
-    return { fsAllowRoot, includePath, includePageFile: null }
+    const addCrawlRoot = path.posix.join(pkgRootRelative, pageFilesDir)
+    return { addFsAllowRoot, addCrawlRoot, addPageFile: null }
   }
 
-  const includePath = path.posix.join('node_modules', '.vite-plugin-ssr', pkgName, pageFilesDir)
-  if (!fs.existsSync(includePath)) {
+  const addCrawlRoot = path.posix.join('node_modules', '.vite-plugin-ssr', pkgName, pageFilesDir)
+  if (!fs.existsSync(addCrawlRoot)) {
     const sourceAbsolute = crawlRoot
-    const targetAbsolute = `${root}/${includePath}`
+    const targetAbsolute = `${root}/${addCrawlRoot}`
     assert(!root.startsWith(crawlRoot)) // See above
     assert(!targetAbsolute.startsWith(sourceAbsolute)) // Ensure it's not a cyclic symlink
     const source = path.posix.relative(root, sourceAbsolute)
     const target = path.posix.relative(root, targetAbsolute)
     await symlinkDir(source, target)
   }
-  return { fsAllowRoot, includePath, includePageFile: null }
+  return { addFsAllowRoot, addCrawlRoot, addPageFile: null }
 }
 
 function isNpmName(str: string) {

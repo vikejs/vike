@@ -59,14 +59,14 @@ async function getCode(config: Config, isForClientSide: boolean, isClientRouting
   const isBuild = command === 'build'
   const globRoots = await getGlobRoots(config)
   debugGlob('Glob roots: ', globRoots)
-  const includePaths = globRoots.map((g) => g.includePath)
-  const content = getContent(includePaths.filter(isNotNullish), isBuild, isForClientSide, isClientRouting, config)
+  const crawlRoots = globRoots.map((g) => g.addCrawlRoot).filter(isNotNullish)
+  const content = getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, config)
   debugGlob('Glob imports: ', content)
   return content
 }
 
 function getContent(
-  includePaths: string[],
+  crawlRoots: string[],
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
@@ -83,32 +83,32 @@ export const isGeneratedFile = true;
 
 `
 
-  fileContent += getGlobs(includePaths, isBuild, 'page')
+  fileContent += getGlobs(crawlRoots, isBuild, 'page')
   if (!isForClientSide || isClientRouting) {
-    fileContent += '\n' + getGlobs(includePaths, isBuild, 'page.route')
+    fileContent += '\n' + getGlobs(crawlRoots, isBuild, 'page.route')
   }
   fileContent += '\n'
 
   if (isForClientSide) {
     fileContent += [
-      getGlobs(includePaths, isBuild, 'page.client'),
-      getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames'),
-      getGlobs(includePaths, isBuild, 'page.server', 'extractExportNames'),
-      getGlobs(includePaths, isBuild, 'page', 'extractExportNames')
+      getGlobs(crawlRoots, isBuild, 'page.client'),
+      getGlobs(crawlRoots, isBuild, 'page.client', 'extractExportNames'),
+      getGlobs(crawlRoots, isBuild, 'page.server', 'extractExportNames'),
+      getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames')
     ].join('\n')
     if (config.vitePluginSsr.includeAssetsImportedByServer) {
-      fileContent += getGlobs(includePaths, isBuild, 'page.server', 'extractAssets')
+      fileContent += getGlobs(crawlRoots, isBuild, 'page.server', 'extractAssets')
     }
   } else {
     fileContent += [
-      getGlobs(includePaths, isBuild, 'page.server'),
-      getGlobs(includePaths, isBuild, 'page.client', 'extractExportNames')
+      getGlobs(crawlRoots, isBuild, 'page.server'),
+      getGlobs(crawlRoots, isBuild, 'page.client', 'extractExportNames')
     ].join('\n')
     if (isBuild && config.vitePluginSsr.prerender) {
       // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
       fileContent += [
-        getGlobs(includePaths, true, 'page', 'extractExportNames'),
-        getGlobs(includePaths, true, 'page.server', 'extractExportNames')
+        getGlobs(crawlRoots, true, 'page', 'extractExportNames'),
+        getGlobs(crawlRoots, true, 'page.server', 'extractExportNames')
       ].join('\n')
     }
   }
@@ -117,7 +117,7 @@ export const isGeneratedFile = true;
 }
 
 function getGlobs(
-  includePaths: string[],
+  crawlRoots: string[],
   isBuild: boolean,
   fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
   query?: 'extractExportNames' | 'extractAssets'
@@ -159,7 +159,7 @@ function getGlobs(
 
   const varNameLocals: string[] = []
   return [
-    ...includePaths.map((globRoot, i) => {
+    ...crawlRoots.map((globRoot, i) => {
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
       const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
