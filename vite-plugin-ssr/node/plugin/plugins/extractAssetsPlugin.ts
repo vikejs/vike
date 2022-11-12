@@ -19,7 +19,7 @@ import {
 } from '../utils'
 import { removeSourceMap, getImportStatements, ImportStatement } from '../helpers'
 import { extractAssetsAddQuery } from './extractAssetsPlugin/extractAssetsAddQuery'
-import { assertConfigVpsResolved } from './config/assertConfigVps'
+import { getConfigVps } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { extractExportNamesRE } from './extractExportNamesPlugin'
 import {
@@ -36,10 +36,9 @@ const debugNamespace = 'vps:extractAssets'
 const debug = createDebugger(debugNamespace)
 const debugEnabled = isDebugEnabled(debugNamespace)
 
-type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
-
 function extractAssetsPlugin(): Plugin[] {
-  let config: Config
+  let config: ResolvedConfig
+  let configVps: ConfigVpsResolved
   return [
     // Remove all JS from `.page.server.js` files and `?extractAssets` imports, so that only CSS remains
     {
@@ -51,7 +50,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(id)) {
           return
         }
-        assert(config.vitePluginSsr.includeAssetsImportedByServer)
+        assert(configVps.includeAssetsImportedByServer)
         assert(!viteIsSSR_options(options))
         const importStatements = await getImportStatements(src)
         const moduleNames = getImportedModules(importStatements)
@@ -83,7 +82,7 @@ function extractAssetsPlugin(): Plugin[] {
         if (!extractAssetsRE.test(importer)) {
           return
         }
-        assert(config.vitePluginSsr.includeAssetsImportedByServer)
+        assert(configVps.includeAssetsImportedByServer)
 
         if (source.includes('.page.server.')) {
           // For a Vue SFC `.page.server.vue`:
@@ -127,9 +126,9 @@ function extractAssetsPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the dependency is in `vite.config.js#config.vitePluginSsr.includeCSS`, then include its CSS
+        // If the dependency is in `configVps.includeCSS`, then include its CSS
         if (
-          config.vitePluginSsr.includeCSS.some((depName) => {
+          configVps.includeCSS.some((depName) => {
             const check1 =
               source === depName ||
               source.startsWith(depName + '/') ||
@@ -167,8 +166,8 @@ function extractAssetsPlugin(): Plugin[] {
     {
       name: 'vite-plugin-ssr:extractAssets-3',
       apply: 'build',
-      configResolved(config_) {
-        assertConfigVpsResolved(config_)
+      async configResolved(config_) {
+        configVps = await getConfigVps(config_)
         config = config_
       },
       load(id) {

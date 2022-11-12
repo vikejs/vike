@@ -2,6 +2,7 @@
   "name": "vite-plugin-ssr",
   "version": "0.4.48",
   "dependencies": {
+    "@brillout/import": "^0.1.2",
     "@brillout/json-serializer": "^0.5.3",
     "@brillout/vite-plugin-import-build": "^0.1.0",
     "cac": "^6.7.12",
@@ -31,12 +32,12 @@
     "react-streaming": "^0.3.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.71.1",
-    "typescript": "4.6.4",
+    "typescript": "4.8.4",
     "vite": "^3.0.9"
   },
   "peerDependencies": {
-    "vite": ">=3.0.0",
-    "react-streaming": ">=0.3.5"
+    "react-streaming": ">=0.3.5",
+    "vite": ">=3.0.0"
   },
   "peerDependenciesMeta": {
     "react-streaming": {

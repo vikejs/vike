@@ -631,7 +631,7 @@ async function handleReadableWeb(
 ) {
   const reader = readable.getReader()
   while (true) {
-    let result: ReadableStreamDefaultReadResult<unknown>
+    let result: ReadableStreamReadResult<unknown>
     try {
       result = await reader.read()
     } catch (err) {

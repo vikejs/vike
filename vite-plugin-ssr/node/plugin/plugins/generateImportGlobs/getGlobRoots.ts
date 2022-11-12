@@ -6,7 +6,7 @@ import path from 'path'
 import symlinkDir from 'symlink-dir'
 import resolve from 'resolve'
 import type { ResolvedConfig } from 'vite'
-import { assertConfigVpsResolved } from '../config/assertConfigVps'
+import type { ConfigVpsResolved } from '../config/ConfigVps'
 
 type GlobRoot =
   | {
@@ -25,8 +25,7 @@ type GlobRoot =
       addPageFile: string
     }
 
-async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
-  assertConfigVpsResolved(config)
+async function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): Promise<GlobRoot[]> {
   const { root } = config
   assertPosixPath(root)
   const globRoots: GlobRoot[] = [
@@ -35,10 +34,10 @@ async function getGlobRoots(config: ResolvedConfig): Promise<GlobRoot[]> {
       addCrawlRoot: '/',
       addPageFile: null
     },
-    ...(
-      await Promise.all(config.vitePluginSsr.pageFiles.include.map((pkgName) => processIncludeSrc(pkgName, root)))
-    ).filter(isNotNullish),
-    ...config.vitePluginSsr.pageFiles.addPageFiles.map((includeDistEntry) => ({
+    ...(await Promise.all(configVps.pageFiles.include.map((pkgName) => processIncludeSrc(pkgName, root)))).filter(
+      isNotNullish
+    ),
+    ...configVps.pageFiles.addPageFiles.map((includeDistEntry) => ({
       addFsAllowRoot: null,
       addCrawlRoot: null,
       addPageFile: includeDistEntry

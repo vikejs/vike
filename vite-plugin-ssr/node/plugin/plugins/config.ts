@@ -2,69 +2,74 @@ export { resolveVpsConfig }
 
 import type { Plugin } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
-import { checkConfigVpsUserProvided, assertConfigVpsResolved } from './config/assertConfigVps'
-import { assertUsage } from '../utils'
+import { checkConfigVps } from './config/assertConfigVps'
+import { assert, assertUsage } from '../utils'
+import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 
 function resolveVpsConfig(vpsConfig: unknown) {
   return {
     name: 'vite-plugin-ssr:resolveVpsConfig',
     enforce: 'pre',
-    configResolved(config) {
-      const vitePluginSsr = resolveConfigVps(
+    async configResolved(config) {
+      const configVpsPromise = resolveConfigVps(
         (vpsConfig ?? {}) as ConfigVpsUserProvided,
-        ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided
+        ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided,
+        config.root
       )
-      ;(config as Record<string, unknown>).vitePluginSsr = vitePluginSsr
+      ;(config as Record<string, unknown>).configVpsPromise = configVpsPromise
     }
   } as Plugin
 }
 
-function resolveConfigVps(
+async function resolveConfigVps(
   fromPluginOptions: ConfigVpsUserProvided,
-  fromViteConfig: ConfigVpsUserProvided
-): ConfigVpsResolved {
+  fromViteConfig: ConfigVpsUserProvided,
+  root: string
+): Promise<ConfigVpsResolved> {
   {
-    const validationErr = checkConfigVpsUserProvided(fromPluginOptions)
+    const validationErr = checkConfigVps(fromPluginOptions)
     if (validationErr)
       assertUsage(false, `vite.config.js > vite-plugin-ssr option ${validationErr.prop} ${validationErr.errMsg}`)
   }
   {
-    const validationErr = checkConfigVpsUserProvided(fromViteConfig)
+    const validationErr = checkConfigVps(fromViteConfig)
     if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
   }
+  const fromStemPackages = await findConfigVpsFromStemPackages(root)
+  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
 
-  const vitePluginSsr: ConfigVpsResolved = {
-    disableAutoFullBuild: fromPluginOptions.disableAutoFullBuild ?? fromViteConfig.disableAutoFullBuild ?? false,
+  const configVps: ConfigVpsResolved = {
+    disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
     pageFiles: {
-      include: [...(fromPluginOptions.pageFiles?.include ?? []), ...(fromViteConfig.pageFiles?.include ?? [])],
-      addPageFiles: [
-        ...(fromPluginOptions.pageFiles?.addPageFiles ?? []),
-        ...(fromViteConfig.pageFiles?.addPageFiles ?? [])
-      ]
+      include: configs.map((c) => c.pageFiles?.include ?? []).flat(),
+      addPageFiles: configs.map((c) => c.pageFiles?.addPageFiles ?? []).flat()
     },
-    prerender: resolvePrerenderOptions(fromPluginOptions, fromViteConfig),
-    includeCSS: fromPluginOptions.includeCSS ?? fromViteConfig.includeCSS ?? [],
-    includeAssetsImportedByServer:
-      fromPluginOptions.includeAssetsImportedByServer ?? fromViteConfig.includeAssetsImportedByServer ?? false
+    prerender: resolvePrerenderOptions(configs),
+    includeCSS: configs.map((c) => c.includeCSS ?? []).flat(),
+    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false
   }
 
-  assertConfigVpsResolved({ vitePluginSsr })
-  return vitePluginSsr
+  assert(checkConfigVps(configVps) === null)
+  return configVps
 }
 
-function resolvePrerenderOptions(fromPluginOptions: ConfigVpsUserProvided, fromViteConfig: ConfigVpsUserProvided) {
-  let prerender: ConfigVpsResolved['prerender'] = false
-
-  if (fromPluginOptions.prerender || fromViteConfig.prerender) {
-    const prerenderUserOptions =
-      typeof fromPluginOptions.prerender === 'boolean' ? {} : fromPluginOptions.prerender ?? {}
-    const prerenderViteConfig = typeof fromViteConfig.prerender === 'boolean' ? {} : fromViteConfig.prerender ?? {}
-    prerender = {
-      partial: prerenderUserOptions.partial ?? prerenderViteConfig.partial ?? false,
-      noExtraDir: prerenderUserOptions.noExtraDir ?? prerenderViteConfig.noExtraDir ?? false,
-      parallel: prerenderUserOptions.parallel ?? prerenderViteConfig.parallel ?? true,
-      disableAutoRun: prerenderUserOptions.disableAutoRun ?? prerenderViteConfig.disableAutoRun ?? false
-    }
+function resolvePrerenderOptions(configs: ConfigVpsUserProvided[]): ConfigVpsResolved['prerender'] {
+  if (!configs.some((c) => c.prerender)) {
+    return false
   }
-  return prerender
+  const configsPrerender = configs.map((c) => c.prerender).filter(isObject)
+  return {
+    partial: pickFirst(configsPrerender.map((c) => c.partial)) ?? false,
+    noExtraDir: pickFirst(configsPrerender.map((c) => c.noExtraDir)) ?? false,
+    parallel: pickFirst(configsPrerender.map((c) => c.parallel)) ?? true,
+    disableAutoRun: pickFirst(configsPrerender.map((c) => c.disableAutoRun)) ?? false
+  }
+}
+
+function pickFirst<T>(arr: T[]): T | undefined {
+  return arr.filter((v) => v !== undefined)[0]
+}
+
+function isObject<T>(p: T | boolean | undefined): p is T {
+  return typeof p === 'object'
 }

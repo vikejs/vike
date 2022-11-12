@@ -6,6 +6,8 @@ import { apply, addSsrMiddleware } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import path from 'path'
+import { getConfigVps } from './config/assertConfigVps'
+import { ConfigVpsResolved } from './config/ConfigVps'
 
 function devConfig(): Plugin[] {
   return [
@@ -27,8 +29,9 @@ function devConfig(): Plugin[] {
         }
       }),
       async configResolved(config) {
+        const configVps = await getConfigVps(config)
         addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
-        await determineFsAllowList(config)
+        await determineFsAllowList(config, configVps)
       }
     },
     {
@@ -60,7 +63,7 @@ function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
   config.optimizeDeps.entries = total
 }
 
-async function determineFsAllowList(config: ResolvedConfig) {
+async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow
 
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
@@ -69,7 +72,7 @@ async function determineFsAllowList(config: ResolvedConfig) {
   require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
   fsAllow.push(vitePluginSsrRoot)
 
-  const globRoots = await getGlobRoots(config)
+  const globRoots = await getGlobRoots(config, configVps)
   globRoots.forEach(({ addFsAllowRoot }) => {
     if (addFsAllowRoot) {
       fsAllow.push(addFsAllowRoot)

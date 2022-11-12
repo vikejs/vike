@@ -3,14 +3,16 @@ export { previewConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, getOutDirs, determineOutDir } from '../utils'
 import { apply, addSsrMiddleware } from '../helpers'
-import { assertConfigVpsResolved } from './config/assertConfigVps'
+import { getConfigVps } from './config/assertConfigVps'
 import fs from 'fs'
 import path from 'path'
 import type { ViteDevServer } from 'vite'
+import { ConfigVpsResolved } from './config/ConfigVps'
 type ConnectServer = ViteDevServer['middlewares']
 
 function previewConfig(): Plugin {
   let config: ResolvedConfig
+  let configVps: ConfigVpsResolved
   return {
     name: 'vite-plugin-ssr:previewConfig',
     apply: apply('preview'),
@@ -21,14 +23,14 @@ function previewConfig(): Plugin {
         }
       }
     },
-    configResolved(config_) {
+    async configResolved(config_) {
       config = config_
+      configVps = await getConfigVps(config)
     },
     configurePreviewServer(server) {
       return () => {
         assertDist()
-        assertConfigVpsResolved(config)
-        if (!config.vitePluginSsr.prerender) {
+        if (!configVps.prerender) {
           addSsrMiddleware(server.middlewares)
         }
         addStatic404Middleware(server.middlewares)

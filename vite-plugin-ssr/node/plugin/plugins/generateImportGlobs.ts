@@ -6,7 +6,7 @@ import { getGlobPath } from './generateImportGlobs/getGlobPath'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import { debugGlob } from '../../utils'
 import type { ConfigVpsResolved } from './config/ConfigVps'
-import { assertConfigVpsResolved } from './config/assertConfigVps'
+import { getConfigVps } from './config/assertConfigVps'
 import {
   virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesClientCR,
@@ -20,10 +20,9 @@ const virtualModuleIds = [
   virtualModuleIdPageFilesClientCR
 ]
 
-type Config = ResolvedConfig & { vitePluginSsr: ConfigVpsResolved }
-
 function generateImportGlobs(): Plugin {
-  let config: Config
+  let config: ResolvedConfig
+  let configVps: ConfigVpsResolved
   return {
     name: 'vite-plugin-ssr:virtualModulePageFiles',
     config() {
@@ -34,7 +33,7 @@ function generateImportGlobs(): Plugin {
       }
     },
     async configResolved(config_) {
-      assertConfigVpsResolved(config_)
+      configVps = await getConfigVps(config_)
       config = config_
     },
     resolveId(id) {
@@ -47,23 +46,28 @@ function generateImportGlobs(): Plugin {
         const isForClientSide = id !== virtualModuleIdPageFilesServer
         assert(isForClientSide === !viteIsSSR_options(options))
         const isClientRouting = id === virtualModuleIdPageFilesClientCR
-        const code = await getCode(config, isForClientSide, isClientRouting)
+        const code = await getCode(config, configVps, isForClientSide, isClientRouting)
         return code
       }
     }
   } as Plugin
 }
 
-async function getCode(config: Config, isForClientSide: boolean, isClientRouting: boolean) {
+async function getCode(
+  config: ResolvedConfig,
+  configVps: ConfigVpsResolved,
+  isForClientSide: boolean,
+  isClientRouting: boolean
+) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
   const isBuild = command === 'build'
-  const globRoots = await getGlobRoots(config)
+  const globRoots = await getGlobRoots(config, configVps)
   debugGlob('Glob roots: ', globRoots)
   let content = ''
   {
     const crawlRoots = globRoots.map((g) => g.addCrawlRoot).filter(isNotNullish)
-    content += getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, config)
+    content += getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, configVps)
   }
   {
     const addPageFiles = globRoots.map((g) => g.addPageFile).filter(isNotNullish)
@@ -125,7 +129,7 @@ function getContent(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  config: Config
+  configVps: ConfigVpsResolved
 ) {
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
@@ -151,7 +155,7 @@ export const isGeneratedFile = true;
       getGlobs(crawlRoots, isBuild, 'page.server', 'extractExportNames'),
       getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames')
     ].join('\n')
-    if (config.vitePluginSsr.includeAssetsImportedByServer) {
+    if (configVps.includeAssetsImportedByServer) {
       fileContent += getGlobs(crawlRoots, isBuild, 'page.server', 'extractAssets')
     }
   } else {
@@ -159,7 +163,7 @@ export const isGeneratedFile = true;
       getGlobs(crawlRoots, isBuild, 'page.server'),
       getGlobs(crawlRoots, isBuild, 'page.client', 'extractExportNames')
     ].join('\n')
-    if (isBuild && config.vitePluginSsr.prerender) {
+    if (isBuild && configVps.prerender) {
       // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
       fileContent += [
         getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames'),

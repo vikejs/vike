@@ -26,9 +26,9 @@ function getRuntimeConfig() {
   assertBaseRuntime(runtimeConfig)
   return runtimeConfig
 }
-function resolveRuntimeConfig(viteConfig: { base: string; vitePluginSsr: { includeAssetsImportedByServer: boolean } }) {
-  const { baseUrl, baseAssets } = resolveBase(viteConfig.base)
-  const { includeAssetsImportedByServer } = viteConfig.vitePluginSsr
+function resolveRuntimeConfig(config: { base: string }, configVps: { includeAssetsImportedByServer: boolean }) {
+  const { baseUrl, baseAssets } = resolveBase(config.base)
+  const { includeAssetsImportedByServer } = configVps
   const runtimeConfig = {
     baseUrl,
     baseAssets,

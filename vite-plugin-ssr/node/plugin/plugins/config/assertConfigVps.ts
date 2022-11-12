@@ -1,10 +1,10 @@
-export { assertConfigVpsResolved }
-export { checkConfigVpsUserProvided }
+export { getConfigVps }
+export { checkConfigVps }
 
 import { assert, hasProp, isObject } from '../../utils'
 import type { ConfigVpsResolved } from './ConfigVps'
 
-function checkConfigVpsUserProvided(configVps: unknown): null | { prop: string; errMsg: `should be a${string}` } {
+function checkConfigVps(configVps: unknown): null | { prop: string; errMsg: `should be a${string}` } {
   assert(isObject(configVps))
   {
     const prop = 'disableAutoFullBuild'
@@ -81,7 +81,8 @@ function checkConfigVpsUserProvided(configVps: unknown): null | { prop: string; 
   return null
 }
 
-function assertConfigVpsResolved<T>(config: T): asserts config is T & { vitePluginSsr: ConfigVpsResolved } {
-  assert(hasProp(config, 'vitePluginSsr', 'object'))
-  assert(checkConfigVpsUserProvided(config.vitePluginSsr) === null)
+async function getConfigVps(config: Record<string, unknown>): Promise<ConfigVpsResolved> {
+  const configVps: ConfigVpsResolved = (await config.configVpsPromise) as any
+  assert(checkConfigVps(configVps) === null)
+  return configVps
 }

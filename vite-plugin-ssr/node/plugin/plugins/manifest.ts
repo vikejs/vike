@@ -6,7 +6,7 @@ import { apply } from '../helpers'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
-import { assertConfigVpsResolved } from './config/assertConfigVps'
+import { getConfigVps } from './config/assertConfigVps'
 
 function manifest(): Plugin[] {
   let ssr: boolean
@@ -15,8 +15,8 @@ function manifest(): Plugin[] {
     {
       name: 'vite-plugin-ssr:runtimeConfig',
       apply: apply('dev'),
-      configResolved(config) {
-        onConfigResolved(config)
+      async configResolved(config) {
+        await onConfigResolved(config)
         setRuntimeConfig(runtimeConfig)
       }
     },
@@ -43,9 +43,9 @@ function manifest(): Plugin[] {
     }
   ] as Plugin[]
 
-  function onConfigResolved(config: ResolvedConfig) {
-    assertConfigVpsResolved(config)
+  async function onConfigResolved(config: ResolvedConfig) {
+    const configVps = await getConfigVps(config)
     ssr = viteIsSSR(config)
-    runtimeConfig = resolveRuntimeConfig(config)
+    runtimeConfig = resolveRuntimeConfig(config, configVps)
   }
 }
