@@ -621,6 +621,22 @@ importers:
       vite-plugin-solid: 2.3.0_solid-js@1.5.2+vite@3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/stem-react:
+    specifiers:
+      '@vitejs/plugin-react': ^2.2.0
+      react: ^18.2.0
+      stem-react: ^0.0.3
+      typescript: 4.6.4
+      vite: ^3.0.9
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 2.2.0_vite@3.0.9
+      react: 18.2.0
+      stem-react: 0.0.3_q6pjmdvgahhoupu4u3n73pwxdm
+      typescript: 4.6.4
+      vite: 3.0.9
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/urql:
     specifiers:
       '@types/react': ^18.0.8
@@ -1055,7 +1071,7 @@ packages:
     resolution: {integrity: sha512-duORpUiYrEpzKIop6iNbjnwKLAKnJ47csTyRACyEmWj0QdUrm5aqNJGHSSEQSUAvNW0ojX0dOmK9dZduvkfeXA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.13
+      '@babel/types': 7.20.2
     dev: false
 
   /@babel/helper-compilation-targets/7.17.10_@babel+core@7.17.10:
@@ -1175,7 +1191,7 @@ packages:
     resolution: {integrity: sha512-UlJQPkFqFULIcyW5sbzgbkxn2FKRgwWiRexcuaR8RNJRy8+LLveqPjwZV/bwrLZCN0eUHD/x8D0heK1ozuoo6Q==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.13
+      '@babel/types': 7.20.2
     dev: false
 
   /@babel/helper-member-expression-to-functions/7.18.9:
@@ -1203,7 +1219,7 @@ packages:
     resolution: {integrity: sha512-0NFvs3VkuSYbFi1x2Vd6tKrywq+z/cLeYC/RJNFrIX/30Bf5aiGYbtvGXolEktzJH8o5E5KJ3tT+nkxuuZFVlA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.13
+      '@babel/types': 7.20.2
     dev: false
 
   /@babel/helper-module-transforms/7.17.7:
@@ -1321,7 +1337,7 @@ packages:
     resolution: {integrity: sha512-bde1etTx6ZyTmobl9LLMMQsaizFVZrquTEHOqKeQESMKo4PlObf+8+JA25ZsIpZhT/WEd39+vOdLXAFG/nELpA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.18.13
+      '@babel/types': 7.20.2
     dev: false
 
   /@babel/helper-string-parser/7.18.10:
@@ -1337,11 +1353,11 @@ packages:
   /@babel/helper-validator-identifier/7.18.6:
     resolution: {integrity: sha512-MmetCkz9ej86nJQV+sFCxoGGrUbU3q02kgLciwkrt9QqEB7cP39oKEY0PakknEO0Gu20SskMRi+AYZ3b1TpN9g==}
     engines: {node: '>=6.9.0'}
+    dev: false
 
   /@babel/helper-validator-identifier/7.19.1:
     resolution: {integrity: sha512-awrNfaMtnHUr653GgGEs++LlAvW6w+DcPrOliSMXWCKo597CwL5Acf/wWdNkf/tfEQE3mjkeD1YOVZOUV/od1w==}
     engines: {node: '>=6.9.0'}
-    dev: false
 
   /@babel/helper-validator-option/7.16.7:
     resolution: {integrity: sha512-TRtenOuRUVo9oIQGPC5G9DgK4743cdxvtOw0weQNpZXaS16SCBi5MNjZF8vba3ETURjZpTbVn7Vvcf2eAwFozQ==}
@@ -1399,7 +1415,7 @@ packages:
     resolution: {integrity: sha512-u7stbOuYjaPezCuLj29hNW1v64M2Md2qupEKP1fHc7WdOA3DgLh37suiSrZYY7haUB7iBeQZ9P1uiRF359do3g==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-validator-identifier': 7.18.6
+      '@babel/helper-validator-identifier': 7.19.1
       chalk: 2.4.2
       js-tokens: 4.0.0
 
@@ -1688,8 +1704,8 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/code-frame': 7.18.6
-      '@babel/parser': 7.18.13
-      '@babel/types': 7.18.13
+      '@babel/parser': 7.20.3
+      '@babel/types': 7.20.2
     dev: false
 
   /@babel/template/7.18.6:
@@ -8124,6 +8140,26 @@ packages:
   /statuses/2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /stem-react/0.0.3_q6pjmdvgahhoupu4u3n73pwxdm:
+    resolution: {integrity: sha512-idKQhUWDv4cNxbmC8q5M5/IVYeAC1DqTQa6qWuV8wcfIYE/BL+uY05B2ydQvtpGmx3FNrVJrlSQCSOBKugm/Kw==}
+    peerDependencies:
+      react: 18.x.x
+      vite: '*'
+      vite-plugin-ssr: ^0.4.48
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      vite:
+        optional: true
+      vite-plugin-ssr:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 3.0.9
+      vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
   /streamsearch/1.1.0:

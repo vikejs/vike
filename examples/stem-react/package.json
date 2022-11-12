@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite build && vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^2.2.0",
+    "react": "^18.2.0",
+    "stem-react": "^0.0.3",
+    "typescript": "4.6.4",
+    "vite": "^3.0.9",
+    "vite-plugin-ssr": "0.4.48"
+  },
+  "type": "module"
+}

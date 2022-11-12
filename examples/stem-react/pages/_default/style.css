@@ -1,0 +1,31 @@
+/* Links */
+a {
+  text-decoration: none;
+}
+a.navigation-link {
+  padding: 2px 10px;
+  margin-left: -10px;
+}
+a.navigation-link.is-active,
+a.navigation-link.is-active-parent
+{
+  background-color: #eee;
+}
+
+/* Reset */
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+* {
+  box-sizing: border-box;
+}
+
+/* Page Transition Anmiation */
+#page-content {
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+body.page-is-transitioning #page-content {
+  opacity: 0;
+}
