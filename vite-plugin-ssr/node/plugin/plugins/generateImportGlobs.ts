@@ -75,6 +75,7 @@ function getContent(
   let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
 export const pageFilesLazy = {};
+export const pageFilesEager = {};
 export const pageFilesExportNamesLazy = {};
 export const pageFilesExportNamesEager = {};
 export const neverLoaded = {};
@@ -125,6 +126,7 @@ function getGlobs(
 
   let pageFilesVar:
     | 'pageFilesLazy'
+    | 'pageFilesEager'
     | 'pageFilesExportNamesLazy'
     | 'pageFilesExportNamesEager'
     | 'neverLoaded'
@@ -137,10 +139,14 @@ function getGlobs(
   } else if (query === 'extractAssets') {
     assert(!isEager)
     pageFilesVar = 'neverLoaded'
+  } else if (!query) {
+    if (!isEager) {
+      pageFilesVar = 'pageFilesLazy'
+    } else {
+      pageFilesVar = 'pageFilesEager'
+    }
   } else {
-    assert(!query)
-    assert(!isEager)
-    pageFilesVar = 'pageFilesLazy'
+    assert(false)
   }
 
   const varNameSuffix =
