@@ -10,7 +10,6 @@ function parseGlobResults(pageFilesExports: unknown) {
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
   assert(hasProp(pageFilesExports, 'pageFilesLazy', 'object'))
-  assert(hasProp(pageFilesExports, 'pageFilesEager', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesExportNamesLazy', 'object'))
   assert(hasProp(pageFilesExports, 'pageFilesExportNamesEager', 'object'))
   assert(hasProp(pageFilesExports.pageFilesLazy, '.page'))
@@ -46,12 +45,6 @@ function parseGlobResults(pageFilesExports: unknown) {
         pageFile.exportNames = moduleExports.exportNames
       }
     }
-  })
-  parseGlobResult(pageFilesExports.pageFilesEager).forEach(({ filePath, pageFile, globValue }) => {
-    pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
-    const moduleExports = globValue
-    assert(isObject(moduleExports))
-    pageFile.fileExports = moduleExports
   })
   parseGlobResult(pageFilesExports.pageFilesExportNamesEager).forEach(({ filePath, pageFile, globValue }) => {
     pageFile = pageFilesMap[filePath] = pageFilesMap[filePath] ?? pageFile
