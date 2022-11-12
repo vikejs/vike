@@ -147,8 +147,8 @@ export const isGeneratedFile = true;
     if (isBuild && config.vitePluginSsr.prerender) {
       // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
       fileContent += [
-        getGlobs(crawlRoots, true, 'page', 'extractExportNames'),
-        getGlobs(crawlRoots, true, 'page.server', 'extractExportNames')
+        getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames'),
+        getGlobs(crawlRoots, isBuild, 'page.server', 'extractExportNames')
       ].join('\n')
     }
   }
