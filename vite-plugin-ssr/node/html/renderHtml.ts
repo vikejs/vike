@@ -7,6 +7,7 @@ import type { InjectToStream } from 'react-streaming/server'
 
 // Public
 export { escapeInject }
+export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
 export { dangerouslySkipEscape }
 
 // Private
