@@ -16,9 +16,7 @@ async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUse
   if (!hasProp(pkgJson, 'dependencies', 'object')) {
     return []
   }
-  const stemPackages = Object.keys(pkgJson.dependencies).filter(
-    (depName) => depName.startsWith('stem-') || depName.split('/')[1]?.startsWith('stem-')
-  )
+  const stemPackages = Object.keys(pkgJson.dependencies).filter((depName) => depName.split('/')[1]?.startsWith('stem-'))
   const configVpsFromStemPackages: ConfigVpsUserProvided[] = []
   await Promise.all(
     stemPackages.map(async (pkgName) => {
