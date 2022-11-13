@@ -35,7 +35,7 @@ export const prefetchStaticAssets = { when: 'VIEWPORT' }
 // Whether your UI framework allows the hydration to be aborted. (Allowing vite-plugin-ssr
 // to abort the hydration if the user clicks on a link before the hydration finished.)
 // Only React users should set `hydrationCanBeAborted` to `true`. (Other frameworks,
-// such as Vue, fail if the hydration is aborted.)
+// such as Vue, throw an error if the hydration is aborted.)
 export const hydrationCanBeAborted = true
 
 // Create custom page transition animations
