@@ -3,6 +3,7 @@ export { Layout }
 import './style.css'
 import React from 'react'
 import logoUrl from './logo.svg'
+import { Link } from './Link'
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -26,6 +27,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
+      id="sidebar"
       style={{
         padding: 20,
         flexShrink: 0,
@@ -70,25 +72,4 @@ function Logo() {
       </a>
     </div>
   )
-}
-
-/* TOOD
-function Link({ href, children }: { href: string; children: string }) {
-  const pageContext = usePageContext()
-  const urlPathname = pageContext.urlPathname
-  const isActive = normalize(urlPathname) === normalize(href)
-  const isActiveParent = !isActive && normalize(urlPathname).startsWith(`${normalize(href)}/`)
-  const className = ['navigation-link', isActive && 'is-active', isActiveParent && 'is-active-parent']
-    .filter(Boolean)
-    .join(' ')
-  return (
-    <a href={href} className={className}>
-      {children}
-    </a>
-  )
-}
-*/
-
-function Link({ href, children }: { href: string; children: string }) {
-  return <a href={href}>{children}</a>
 }

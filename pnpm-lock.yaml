@@ -623,16 +623,16 @@ importers:
 
   examples/stem-react:
     specifiers:
+      '@brillout/stem-react': ^0.0.7
       '@vitejs/plugin-react': ^2.2.0
       react: ^18.2.0
-      stem-react: ^0.0.4
       typescript: 4.6.4
       vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
+      '@brillout/stem-react': 0.0.7_q6pjmdvgahhoupu4u3n73pwxdm
       '@vitejs/plugin-react': 2.2.0_vite@3.0.9
       react: 18.2.0
-      stem-react: 0.0.4_q6pjmdvgahhoupu4u3n73pwxdm
       typescript: 4.6.4
       vite: 3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -1899,6 +1899,26 @@ packages:
       picocolors: 1.0.0
       semver: 7.3.7
     dev: true
+
+  /@brillout/stem-react/0.0.7_q6pjmdvgahhoupu4u3n73pwxdm:
+    resolution: {integrity: sha512-DmDola7SLaelkvATldAuMmgY5RcpV0fr+ZAaFPvg87K4wv1fEgeb7YtOU2z/0VmffHTrY5ONkqoRaOqO7A8JrA==}
+    peerDependencies:
+      react: 18.x.x
+      vite: '*'
+      vite-plugin-ssr: ^0.4.48
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      vite:
+        optional: true
+      vite-plugin-ssr:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 3.0.9
+      vite-plugin-ssr: link:vite-plugin-ssr
+    dev: false
 
   /@brillout/test-e2e/0.1.22:
     resolution: {integrity: sha512-a6LOFW5Ju0viN8u29eKPM3fFpf+haWoB82cNqmqn9ggUFaupz4fO97/lgPb3HS4aTI+2No2VmKyJz/CIPJs9UQ==}
@@ -8146,26 +8166,6 @@ packages:
   /statuses/2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
-    dev: false
-
-  /stem-react/0.0.4_q6pjmdvgahhoupu4u3n73pwxdm:
-    resolution: {integrity: sha512-thotcqXYj5Qel83iVpMaCQ/WZxBVFMVDu0jyO/EtQ+mUIbnX4cFJq8vyIz2K1qxTHjDXZVHVKSPDSKikzDwwfw==}
-    peerDependencies:
-      react: 18.x.x
-      vite: '*'
-      vite-plugin-ssr: ^0.4.48
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      vite:
-        optional: true
-      vite-plugin-ssr:
-        optional: true
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      vite: 3.0.9
-      vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
   /streamsearch/1.1.0:

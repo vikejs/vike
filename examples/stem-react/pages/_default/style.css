@@ -2,13 +2,11 @@
 a {
   text-decoration: none;
 }
-a.navigation-link {
+#sidebar a {
   padding: 2px 10px;
   margin-left: -10px;
 }
-a.navigation-link.is-active,
-a.navigation-link.is-active-parent
-{
+#sidebar a.is-active {
   background-color: #eee;
 }
 
