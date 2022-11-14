@@ -2,21 +2,21 @@ export { findConfigVpsFromStemPackages }
 
 import type { ConfigVpsUserProvided } from './ConfigVps'
 import path from 'path'
-import { assert, hasProp, isObject } from '../../utils'
+import { assert, assertWarning, hasProp, isObject } from '../../utils'
 import { import_ } from '@brillout/import'
 
 async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUserProvided[]> {
   const userPackageJsonPath = path.posix.join(root, './package.json')
-  let pkgJson: Record<string, unknown> = {}
+  let pkg: { dependencies: string[] }
   try {
-    pkgJson = require(userPackageJsonPath)
+    pkg = require(userPackageJsonPath)
   } catch {
     return []
   }
-  if (!hasProp(pkgJson, 'dependencies', 'object')) {
+  if (!hasProp(pkg, 'dependencies', 'object')) {
     return []
   }
-  const stemPackages = Object.keys(pkgJson.dependencies).filter((depName) => depName.split('/')[1]?.startsWith('stem-'))
+  const stemPackages = getStemPacakages(pkg.dependencies)
   const configVpsFromStemPackages: ConfigVpsUserProvided[] = []
   await Promise.all(
     stemPackages.map(async (pkgName) => {
@@ -32,4 +32,19 @@ async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUse
     })
   )
   return configVpsFromStemPackages
+}
+
+function getStemPacakages(dependencies: string[]) {
+  const stemPackages = Object.keys(dependencies).filter((depName) => {
+    if (depName.startsWith('stem-')) {
+      assertWarning(
+        false,
+        `${depName} should be renamed to @someNpmOrg/${depName} (to follow the convention that all Stem packages belond to an npm organization)`,
+        { onlyOnce: true }
+      )
+      return true
+    }
+    return depName.split('/')[1]?.startsWith('stem-')
+  })
+  return stemPackages
 }
