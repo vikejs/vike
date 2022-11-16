@@ -5,7 +5,7 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@brillout/stem-react": "^0.0.7",
+    "@brillout/stem-react": "^0.0.13",
     "@vitejs/plugin-react": "^2.2.0",
     "react": "^18.2.0",
     "typescript": "4.6.4",
