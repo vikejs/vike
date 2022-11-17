@@ -10,7 +10,7 @@
     "react": "^18.2.0",
     "typescript": "4.6.4",
     "vite": "^3.0.9",
-    "vite-plugin-ssr": "0.4.48"
+    "vite-plugin-ssr": "0.4.49"
   },
   "type": "module"
 }

@@ -1,3 +1,25 @@
+## [0.4.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.48...v0.4.49) (2022-11-17)
+
+
+### Bug Fixes
+
+* `export type { TemplateWrapped }` (fix [#511](https://github.com/brillout/vite-plugin-ssr/issues/511)) ([e9be7fe](https://github.com/brillout/vite-plugin-ssr/commit/e9be7fe6c6ca751716c4015835545cd3b8f725d4))
+* `export type { UserConfig }` ([e760135](https://github.com/brillout/vite-plugin-ssr/commit/e760135db68aa82fe9885a121a850ffbfedfcbe4))
+* add Stem entries to optimizeDeps.include ([b65b639](https://github.com/brillout/vite-plugin-ssr/commit/b65b63995511f1d7d71f2c7f66609e2b16d6eec2))
+* avoid importBuild var collision ([43811ba](https://github.com/brillout/vite-plugin-ssr/commit/43811ba4dc09b7e9ada46761f085190460b3325e))
+* deprecate `package.json#vite-plugin-ssr.pageFilesDir` ([e0b2291](https://github.com/brillout/vite-plugin-ssr/commit/e0b2291ddc5a41de46202f36d56767c8278c6880))
+* enforce Stem npm packages to belong to an npm org ([c1a9bc4](https://github.com/brillout/vite-plugin-ssr/commit/c1a9bc44d3a194d7e78de47942eb690828200882))
+* fix `pageContext.exportsAll` type ([dda92b8](https://github.com/brillout/vite-plugin-ssr/commit/dda92b86fb51263964631012e5304878caafaf90))
+* improve Stem package resolver ([c929ab4](https://github.com/brillout/vite-plugin-ssr/commit/c929ab46a349c7e17abc4978171a21bec4381b9b))
+* warn instead of err upon wrong Stem package name ([7c198b9](https://github.com/brillout/vite-plugin-ssr/commit/7c198b9ce8e32dfae11412fed122ab171fbd3047))
+
+
+### Features
+
+* enable Stem packages to define vite-plugin-ssr config ([25a204f](https://github.com/brillout/vite-plugin-ssr/commit/25a204f4f3f0822cfb4bb7894ac491adb63e6147))
+
+
+
 ## [0.4.48](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.47...v0.4.48) (2022-11-10)
 
 
