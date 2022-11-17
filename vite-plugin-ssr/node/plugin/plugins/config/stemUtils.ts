@@ -4,8 +4,9 @@ export { getStemPackages }
 export type { StemPackage }
 
 import path from 'path'
-import { assert, assertWarning, toPosixPath, assertPosixPath } from '../../utils'
+import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath } from '../../utils'
 import { import_ } from '@brillout/import'
+import fs from 'fs'
 
 type StemPackage = {
   stemPackageName: string
@@ -13,8 +14,8 @@ type StemPackage = {
   loadModule: (moduleId: string) => Promise<Record<string, unknown>>
 }
 
-async function getStemPackages(userRootDir: string): Promise<StemPackage[]> {
-  userRootDir = toPosixPath(userRootDir)
+async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
+  const userRootDir = findUserRootDir(currentDir)
 
   const userPkgJson = getUserPackageJson(userRootDir)
 
@@ -50,6 +51,26 @@ async function getStemPackages(userRootDir: string): Promise<StemPackage[]> {
   )
 
   return stemPackages
+}
+
+function findUserRootDir(currentDir: string): string {
+  const userPkgJsonPath = findUserPackageJsonPath(currentDir)
+  assertUsage(userPkgJsonPath, `Couldn't find package.json in any parent directory starting from ${currentDir}`)
+  return toPosixPath(path.dirname(userPkgJsonPath))
+}
+function findUserPackageJsonPath(currentDir: string): null | string {
+  let dir = currentDir
+  while (true) {
+    const configFilePath = path.join(dir, './package.json')
+    if (fs.existsSync(configFilePath)) {
+      return configFilePath
+    }
+    const dirPrevious = dir
+    dir = path.dirname(dir)
+    if (dir === dirPrevious) {
+      return null
+    }
+  }
 }
 
 function getStemPkgNames(userPkgJson: UserPkgJson): string[] {
