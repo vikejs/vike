@@ -625,6 +625,7 @@ importers:
     specifiers:
       '@brillout/stem-react': ^0.0.15
       '@vitejs/plugin-react': ^2.2.0
+      cross-fetch: ^3.1.5
       react: ^18.2.0
       typescript: 4.6.4
       vite: ^3.0.9
@@ -632,6 +633,7 @@ importers:
     dependencies:
       '@brillout/stem-react': 0.0.15_q6pjmdvgahhoupu4u3n73pwxdm
       '@vitejs/plugin-react': 2.2.0_vite@3.0.9
+      cross-fetch: 3.1.5
       react: 18.2.0
       typescript: 4.6.4
       vite: 3.0.9
