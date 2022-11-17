@@ -13,7 +13,7 @@
     "typescript": "^4.3.2",
     "@brillout/docpress": "^0.1.5",
     "vite": "^3.0.9",
-    "vite-plugin-ssr": "0.4.49"
+    "vite-plugin-ssr": "0.4.50"
   },
   "type": "module"
 }

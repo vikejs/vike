@@ -1,3 +1,13 @@
+## [0.4.50](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.49...v0.4.50) (2022-11-17)
+
+
+### Bug Fixes
+
+* improve error message upon wrong Vite dev server usage (fix [#516](https://github.com/brillout/vite-plugin-ssr/issues/516)) ([0b7c9bc](https://github.com/brillout/vite-plugin-ssr/commit/0b7c9bc3935f1df2430ce4939134d910d773a935))
+* look for package.json as well as in parent directories (fix [#518](https://github.com/brillout/vite-plugin-ssr/issues/518)) ([5bd5434](https://github.com/brillout/vite-plugin-ssr/commit/5bd54349d6fcf48c8608a07f9d8de5ee12d98653))
+
+
+
 ## [0.4.49](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.48...v0.4.49) (2022-11-17)
 
 
