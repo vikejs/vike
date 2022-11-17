@@ -35,6 +35,7 @@ function devConfig(): Plugin[] {
       }),
       async configResolved(config) {
         const configVps = await getConfigVps(config)
+        addStemEntriesToOpimizeDeps(config, configVps)
         addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
         await determineFsAllowList(config, configVps)
       }
@@ -49,6 +50,11 @@ function devConfig(): Plugin[] {
       }
     }
   ]
+}
+
+function addStemEntriesToOpimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved) {
+  config.optimizeDeps.include = config.optimizeDeps.include ?? []
+  config.optimizeDeps.include.push(...configVps.pageFiles.addPageFiles)
 }
 
 function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
