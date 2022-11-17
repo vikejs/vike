@@ -96,7 +96,7 @@ function chunk(str: string, size: number): string[] {
 function strUnknown(thing: unknown) {
   return typeof thing === 'string' ? thing : strObj(thing)
 }
-function strObj(obj: unknown, newLines = false) {
+function strObj(obj: unknown, newLines = true) {
   return JSON.stringify(obj, replaceFunctionSerializer, newLines ? 2 : undefined)
 }
 function replaceFunctionSerializer(this: Record<string, unknown>, _key: string, value: unknown) {

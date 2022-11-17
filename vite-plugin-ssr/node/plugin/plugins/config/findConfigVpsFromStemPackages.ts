@@ -1,50 +1,25 @@
 export { findConfigVpsFromStemPackages }
 
 import type { ConfigVpsUserProvided } from './ConfigVps'
-import path from 'path'
-import { assert, assertWarning, hasProp, isObject } from '../../utils'
-import { import_ } from '@brillout/import'
+import { assert, createDebugger, isObject } from '../../utils'
+import { getStemPackages } from './stemUtils'
+
+const debug = createDebugger('vps:stem')
 
 async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUserProvided[]> {
-  const userPackageJsonPath = path.posix.join(root, './package.json')
-  let pkg: { dependencies: string[] }
-  try {
-    pkg = require(userPackageJsonPath)
-  } catch {
-    return []
-  }
-  if (!hasProp(pkg, 'dependencies', 'object')) {
-    return []
-  }
-  const stemPackages = getStemPacakages(pkg.dependencies)
+  const stemPackages = await getStemPackages(root)
   const configVpsFromStemPackages: ConfigVpsUserProvided[] = []
+  debug(
+    'Stem packages found:',
+    stemPackages.map(({ stemPackageName, stemPackageRootDir }) => ({ stemPackageName, stemPackageRootDir }))
+  )
   await Promise.all(
-    stemPackages.map(async (pkgName) => {
-      let mod: Record<string, unknown>
-      try {
-        mod = await import_(`${pkgName}/vite-plugin-ssr.config.js`)
-      } catch {
-        return
-      }
-      const configVps: ConfigVpsUserProvided = mod.default as any
+    stemPackages.map(async ({ loadModule }) => {
+      const moduleExports = await loadModule('vite-plugin-ssr.config.js')
+      const configVps: ConfigVpsUserProvided = moduleExports.default as any
       assert(isObject(configVps))
       configVpsFromStemPackages.push(configVps)
     })
   )
   return configVpsFromStemPackages
-}
-
-function getStemPacakages(dependencies: string[]) {
-  const stemPackages = Object.keys(dependencies).filter((depName) => {
-    if (depName.startsWith('stem-')) {
-      assertWarning(
-        false,
-        `${depName} should be renamed to @someNpmOrg/${depName} (to follow the convention that all Stem packages belond to an npm organization)`,
-        { onlyOnce: true }
-      )
-      return true
-    }
-    return depName.split('/')[1]?.startsWith('stem-')
-  })
-  return stemPackages
 }
