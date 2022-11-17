@@ -623,14 +623,14 @@ importers:
 
   examples/stem-react:
     specifiers:
-      '@brillout/stem-react': ^0.0.13
+      '@brillout/stem-react': ^0.0.15
       '@vitejs/plugin-react': ^2.2.0
       react: ^18.2.0
       typescript: 4.6.4
       vite: ^3.0.9
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@brillout/stem-react': 0.0.13_q6pjmdvgahhoupu4u3n73pwxdm
+      '@brillout/stem-react': 0.0.15_q6pjmdvgahhoupu4u3n73pwxdm
       '@vitejs/plugin-react': 2.2.0_vite@3.0.9
       react: 18.2.0
       typescript: 4.6.4
@@ -1874,14 +1874,15 @@ packages:
       - terser
     dev: false
 
-  /@brillout/eject/0.0.2:
-    resolution: {integrity: sha512-/ylkjs9emZvQbscrzlgl4NUDujZMhNvYFqV18cnKpikgrpBgcvMsXjUl3YF//go0LdTbb1LwBav2rzBsgqSntA==}
+  /@brillout/eject/0.1.1:
+    resolution: {integrity: sha512-EjS4QFuT3NFLRFywo3a4FbIXOA+Mf+kC9HwPsnCnMC4znQS6HpyF2yzrccy2JAcBppTaYiAY2kBvJTX3iv31vw==}
     hasBin: true
     dependencies:
       '@brillout/import': 0.1.3
       '@brillout/release-me': 0.0.8
       '@types/fs-extra': 9.0.13
       fs-extra: 10.1.0
+      picocolors: 1.0.0
     dev: false
 
   /@brillout/import/0.1.2:
@@ -1913,12 +1914,12 @@ packages:
       picocolors: 1.0.0
       semver: 7.3.7
 
-  /@brillout/stem-react/0.0.13_q6pjmdvgahhoupu4u3n73pwxdm:
-    resolution: {integrity: sha512-nspvpFNC+89Cnk6U4Ny+rj8XM2AybNr2G1g36ctxPF7Nt8Z4IaTIsEU3gA7UTSY0qNhQDA4sXnO+B9cZouvH2A==}
+  /@brillout/stem-react/0.0.15_q6pjmdvgahhoupu4u3n73pwxdm:
+    resolution: {integrity: sha512-cUMtWCjywG0Y3p8nRpS7bnyu9tXUa5hipt2ZUuOcMXVvNls1sW2X2L+QpKSsKJUsnMkRFEsVJcYH0bxhYYmH1g==}
     peerDependencies:
       react: 18.x.x
       vite: '*'
-      vite-plugin-ssr: ^0.4.48
+      vite-plugin-ssr: ^0.4.49
     peerDependenciesMeta:
       react-dom:
         optional: true
@@ -1927,7 +1928,7 @@ packages:
       vite-plugin-ssr:
         optional: true
     dependencies:
-      '@brillout/eject': 0.0.2
+      '@brillout/eject': 0.1.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       vite: 3.0.9
