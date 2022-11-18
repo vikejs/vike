@@ -62,7 +62,7 @@ function getManifestEntry(
   if (manifestKeyMap[id]) {
     const manifestKey = manifestKeyMap[id]!
     const manifestEntry = clientManifest[manifestKey]
-    assert(manifestEntry)
+    assert(manifestEntry, { manifestKey, manifestKeys: Object.keys(clientManifest) })
     return { manifestEntry, manifestKey }
   }
 

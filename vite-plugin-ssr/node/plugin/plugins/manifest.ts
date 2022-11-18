@@ -1,7 +1,7 @@
 export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
-import { assert, projectInfo, viteIsSSR } from '../utils'
+import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath } from '../utils'
 import { apply } from '../helpers'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
@@ -60,7 +60,9 @@ function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig)
   const manifestKeyMap: Record<string, string> = {}
   configVps.pageFiles.addPageFiles.forEach((entry) => {
     // Recreating https://github.com/vitejs/vite/blob/8158ece72b66307e7b607b98496891610ca70ea2/packages/vite/src/node/plugins/manifest.ts#L38
-    const key = path.relative(config.root, require.resolve(entry, { paths: [config.root] }))
+    const key = path.posix.relative(config.root, toPosixPath(require.resolve(entry, { paths: [config.root] })))
+    assertPosixPath(key)
+    assertPosixPath(entry)
     manifestKeyMap[entry] = key
   })
   return manifestKeyMap
