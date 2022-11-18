@@ -787,7 +787,7 @@ importers:
 
   vite-plugin-ssr:
     specifiers:
-      '@brillout/import': ^0.1.2
+      '@brillout/import': ^0.2.1
       '@brillout/json-serializer': ^0.5.3
       '@brillout/part-regex': ^0.1.2
       '@brillout/release-me': ^0.0.8
@@ -807,7 +807,7 @@ importers:
       typescript: 4.8.4
       vite: ^3.0.9
     dependencies:
-      '@brillout/import': 0.1.2
+      '@brillout/import': 0.2.1
       '@brillout/json-serializer': 0.5.3
       '@brillout/vite-plugin-import-build': 0.1.0
       cac: 6.7.12
@@ -1889,12 +1889,12 @@ packages:
       picocolors: 1.0.0
     dev: false
 
-  /@brillout/import/0.1.2:
-    resolution: {integrity: sha512-UYxk0fxswiI8C16Mh/wBP5EfD84BlwMhmHYPYVs3SLvkx2dNCRV4VwXbR8ZLhcJ/lU/AdyV6SxJzJl7krY70Sg==}
-    dev: false
-
   /@brillout/import/0.1.3:
     resolution: {integrity: sha512-8l5PreHrFY8OhKD+cOm55zZhriLzlfCsugVwUGzrNU0MV7YEwdBn31PMXqFAMI20Nwiu4nezVEBlV63yyFC8Bg==}
+    dev: false
+
+  /@brillout/import/0.2.1:
+    resolution: {integrity: sha512-4qA9sNtQZCY02MeLjTP+O9LfY9T6d2ajYS7whyvgBklJzWzLUNbJp940ClxK64hbDPqag9AQZt45beEAGcSYYA==}
     dev: false
 
   /@brillout/json-serializer/0.5.1:

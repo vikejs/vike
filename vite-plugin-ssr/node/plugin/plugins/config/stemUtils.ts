@@ -40,15 +40,8 @@ async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
         }
       }
       const loadModule = async (moduleId: string): Promise<null | Record<string, unknown>> => {
-        let modulePath = resolveModulePath(moduleId)
+        const modulePath = resolveModulePath(moduleId)
         if (modulePath === null) return null
-        // TODO move fix to `@brillout/import_`
-        if (process.platform === 'win32') {
-          const prefix = 'file://'
-          if (path.isAbsolute(modulePath) && !modulePath.startsWith(prefix)) {
-            modulePath = prefix + modulePath
-          }
-        }
         const moduleExports: Record<string, unknown> = moduleId.endsWith('.json')
           ? require(modulePath)
           : await import_(modulePath)
