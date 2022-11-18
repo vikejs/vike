@@ -1,7 +1,7 @@
 export { retrieveAssetsProd }
 export { retrieveAssetsDev }
 
-import { assert, assertUsage, styleFileRE } from './utils'
+import { assert, styleFileRE } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
@@ -37,7 +37,8 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
 async function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
-  includeAssetsImportedByServer: boolean
+  includeAssetsImportedByServer: boolean,
+  manifestKeyMap: Record<string, string>
 ): Promise<string[]> {
   let assetUrls = new Set<string>()
   assert(clientManifest)
@@ -49,25 +50,9 @@ async function retrieveAssetsProd(
       }
       id = extractAssetsAddQuery(id)
     }
-    const entry = getManifestEntry(id, clientManifest)
-    if (!entry) {
-      console.log(clientManifest)
-      assertUsage(
-        entry,
-        `You stumbled upon a rare Rollup bug. Reach out to the vite-plugin-ssr maintainer on GitHub or Discord. (The entry ${id} is missing in the client manifest which is printed above.)`
-      )
-    }
-    /*
-    assertWarning(
-      entry,
-      "You stumbled upon a Rollup bug that is known to the vite-plugin-ssr maintainer. It's usually benign but it may cause problems. Feel free to reach out on GitHub or Discord.",
-      { onlyOnce: true },
-    )
-    if (!entry) {
-      // Circumvent Rollup Bug, see https://github.com/brillout/vite-plugin-ssr/issues/51
-      return
-    }
-    */
+    const entry = getManifestEntry(id, clientManifest, manifestKeyMap)
+    const manifestKeys = Object.keys(clientManifest)
+    assert(entry, { id, manifestKeys })
     const { manifestKey } = entry
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })

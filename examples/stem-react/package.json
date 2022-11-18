@@ -11,7 +11,7 @@
     "node-fetch": "^2.6.7",
     "react": "^18.2.0",
     "typescript": "^4.6.4",
-    "vite": "^3.0.9",
+    "vite": "^3.2.4",
     "vite-plugin-ssr": "0.4.50"
   },
   "type": "module"

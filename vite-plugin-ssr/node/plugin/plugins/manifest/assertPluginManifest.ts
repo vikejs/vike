@@ -9,6 +9,7 @@ type PluginManifest = {
   baseAssets: string
   usesClientRouter: boolean
   includeAssetsImportedByServer: boolean
+  manifestKeyMap: Record<string, string>
 }
 function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest is PluginManifest {
   assert(isPlainObject(pluginManifest))
@@ -17,6 +18,7 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   assert(typeof pluginManifest.usesClientRouter === 'boolean')
   assert(typeof pluginManifest.version === 'string')
   assert(typeof pluginManifest.includeAssetsImportedByServer === 'boolean')
+  assert(isPlainObject(pluginManifest.manifestKeyMap))
   assert(
     pluginManifest.baseAssets === null ||
       (typeof pluginManifest.baseAssets === 'string' && pluginManifest.baseAssets.startsWith('http'))

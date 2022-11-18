@@ -18,6 +18,7 @@ async function getPageAssets(
     _viteDevServer: null | ViteDevServer
     _manifestClient: null | ViteManifest
     _includeAssetsImportedByServer: boolean
+    _manifestPlugin?: { manifestKeyMap: Record<string, string> }
   },
   clientDependencies: ClientDependency[],
   clientEntries: string[],
@@ -35,8 +36,17 @@ async function getPageAssets(
   } else {
     const clientManifest = pageContext._manifestClient
     assert(clientManifest)
-    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesProd(clientEntry, clientManifest!))
-    assetUrls = await retrieveAssetsProd(clientDependencies, clientManifest, pageContext._includeAssetsImportedByServer)
+    const manifestKeyMap = pageContext._manifestPlugin?.manifestKeyMap
+    assert(manifestKeyMap)
+    clientEntriesSrc = clientEntries.map((clientEntry) =>
+      resolveClientEntriesProd(clientEntry, clientManifest, manifestKeyMap)
+    )
+    assetUrls = await retrieveAssetsProd(
+      clientDependencies,
+      clientManifest,
+      pageContext._includeAssetsImportedByServer,
+      manifestKeyMap
+    )
   }
 
   let pageAssets: PageAsset[] = []
@@ -138,8 +148,12 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
   filePath = '/@fs' + filePath
   return filePath
 }
-function resolveClientEntriesProd(clientEntry: string, clientManifest: ViteManifest): string {
-  const entry = getManifestEntry(clientEntry, clientManifest)
+function resolveClientEntriesProd(
+  clientEntry: string,
+  clientManifest: ViteManifest,
+  manifestKeyMap: Record<string, string>
+): string {
+  const entry = getManifestEntry(clientEntry, clientManifest, manifestKeyMap)
   assert(entry)
   const { manifestEntry } = entry
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry, { clientEntry })

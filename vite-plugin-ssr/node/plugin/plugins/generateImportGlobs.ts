@@ -92,8 +92,9 @@ function generateAddPageFileImports(addPageFiles: string[], isForClientSide: boo
       query = '?extractExportNames'
       pageFilesVar = 'pageFilesExportNamesLazy'
     }
-    fileContent += `${pageFilesVar}['${fileType}']['${importPath}'] = () => import('${importPath}${query}'); `
-    fileContent += '\n'
+    const mapVar = `${pageFilesVar}['${fileType}']`
+    fileContent += `${mapVar} = ${mapVar} ?? {};\n`
+    fileContent += `${mapVar}['${importPath}'] = () => import('${importPath}${query}');\n`
   })
   return fileContent
 }
