@@ -3,7 +3,7 @@ export { Head }
 import React from 'react'
 import logoUrl from './logo.svg'
 
-const description = 'Playing with Vite and Stem'
+const description = 'My first Vite/Stem app'
 
 function Head() {
   return (
