@@ -4,7 +4,7 @@ export { getStemPackages }
 export type { StemPackage }
 
 import path from 'path'
-import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath } from '../../utils'
+import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, isObject } from '../../utils'
 import { import_ } from '@brillout/import'
 import fs from 'fs'
 
@@ -31,11 +31,11 @@ async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
           return modulePath
         } catch (err) {
           // - ERR_PACKAGE_PATH_NOT_EXPORTED => package.json#exports[importPath] is missing
-          // - We assume Stem pacakges to always have a package.json#exports map
+          // - We assert that Stem pacakges always define package.json#exports down below
           if ((err as any).code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
             return null
           }
-          // We merely probe the existence of package.json#exports[importPath] => all other errors such as ERR_MODULE_NOT_FOUND should be thrown
+          // All other errors such as ERR_MODULE_NOT_FOUND should be thrown
           throw err
         }
       }
@@ -49,8 +49,8 @@ async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
       }
       const stemPackageJsonPath = resolveModulePath('package.json')
       assertUsage(
-        stemPackageJsonPath,
-        `Make sure to define \`${stemPackageName}#exports["./package.json"]\``
+        stemPackageJsonPath && isObject(require(stemPackageJsonPath).exports),
+        `${stemPackageName} should define package.json#exports["./package.json"]`
       )
       const stemPackageRootDir = toPosixPath(path.dirname(stemPackageJsonPath))
       return {
