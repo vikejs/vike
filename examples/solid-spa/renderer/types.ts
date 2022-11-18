@@ -8,7 +8,7 @@ import type { PageContextBuiltIn } from 'vite-plugin-ssr'
 import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client' // When using Server Routing
 import type { Component } from 'solid-js'
 
-type Page = Component
+type Page = Component<PageProps>
 type PageProps = {}
 
 export type PageContextCustom = {
