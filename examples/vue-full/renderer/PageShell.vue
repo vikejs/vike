@@ -7,7 +7,7 @@
       <Link href="/">Welcome</Link>
       <Link href="/markdown">Markdown</Link>
       <Link href="/star-wars">Data Fetching</Link>
-      <Link href="/hello/alice">Routing</Link>
+      <Link href="/hello">Routing</Link>
     </div>
     <div class="content"><slot /></div>
   </div>
