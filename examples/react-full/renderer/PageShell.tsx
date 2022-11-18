@@ -16,7 +16,7 @@ function PageShell({ pageContext, children }: { pageContext: PageContext; childr
             <Link href="/">Welcome</Link>
             <Link href="/markdown">Markdown</Link>
             <Link href="/star-wars">Data Fetching</Link>
-            <Link href="/hello/alice">Routing</Link>
+            <Link href="/hello">Routing</Link>
           </Sidebar>
           <Content>{children}</Content>
         </Layout>
@@ -42,6 +42,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 function Sidebar({ children }: { children: React.ReactNode }) {
   return (
     <div
+      id="sidebar"
       style={{
         padding: 20,
         flexShrink: 0,
