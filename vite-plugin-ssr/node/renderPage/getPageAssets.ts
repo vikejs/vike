@@ -41,7 +41,7 @@ async function getPageAssets(
     clientEntriesSrc = clientEntries.map((clientEntry) =>
       resolveClientEntriesProd(clientEntry, clientManifest, manifestKeyMap)
     )
-    assetUrls = await retrieveAssetsProd(
+    assetUrls = retrieveAssetsProd(
       clientDependencies,
       clientManifest,
       pageContext._includeAssetsImportedByServer,

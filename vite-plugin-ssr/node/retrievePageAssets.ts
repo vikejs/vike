@@ -34,12 +34,12 @@ async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDev
   return Array.from(assetUrls)
 }
 
-async function retrieveAssetsProd(
+function retrieveAssetsProd(
   clientDependencies: ClientDependency[],
   clientManifest: ViteManifest,
   includeAssetsImportedByServer: boolean,
   manifestKeyMap: Record<string, string>
-): Promise<string[]> {
+): string[] {
   let assetUrls = new Set<string>()
   assert(clientManifest)
   const visistedAssets = new Set<string>()
