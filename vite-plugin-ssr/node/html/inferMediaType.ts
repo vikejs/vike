@@ -1,4 +1,4 @@
-import { assert, styleFileRE } from '../utils'
+import { styleFileRE } from '../utils'
 
 export { inferMediaType }
 export { MediaType }
