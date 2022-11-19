@@ -12,7 +12,7 @@ If we do, we check whether our Docker container has enough memory, and we may al
 // package.json
 {
   "scripts": {
-    "// We use Node.js' environment variable `NODE_OPTIONS` to increase memory size to 3GB": ""
+    "// We use Node.js' environment variable `NODE_OPTIONS` to increase memory size to 3GB": "",
     "build": "NODE_OPTIONS=--max-old-space-size=3072 npm run build:run",
     "build:run": "vite build"
   }
