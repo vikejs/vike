@@ -1,14 +1,22 @@
 export { getPageAssets }
+export { PageAsset }
 
 import { assert, higherFirst, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
 import { retrieveAssetsDev, retrieveAssetsProd } from '../retrievePageAssets'
 import type { ViteManifest } from '../viteManifest'
 import path from 'path'
 import { inferMediaType } from '../html/inferMediaType'
-import { PageAsset } from '../html/injectAssets'
 import { getManifestEntry } from '../getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import type { MediaType } from '../html/inferMediaType'
+
+type PageAsset = {
+  src: string
+  assetType: null | NonNullable<MediaType>['assetType']
+  mediaType: null | NonNullable<MediaType>['mediaType']
+  isEntry: boolean
+}
 
 async function getPageAssets(
   pageContext: {
@@ -55,13 +63,15 @@ async function getPageAssets(
       src: clientEntrySrc,
       assetType: 'script',
       mediaType: 'text/javascript',
-      preloadType: null
+      isEntry: true
     })
   })
   assetUrls.forEach((src) => {
-    const { mediaType = null, preloadType = null } = inferMediaType(src) || {}
-    const assetType = mediaType === 'text/css' ? 'style' : 'preload'
-    if (isDev && mediaType === 'text/css') {
+    if (clientEntriesSrc.includes(src)) return
+
+    const { mediaType = null, assetType = null } = inferMediaType(src) || {}
+
+    if (isDev && assetType === 'style') {
       // https://github.com/brillout/vite-plugin-ssr/issues/449
       if (src.endsWith('?inline')) {
         return
@@ -69,12 +79,18 @@ async function getPageAssets(
       // https://github.com/brillout/vite-plugin-ssr/issues/401
       src = src + '?direct'
     }
+
     pageAssets.push({
       src,
       assetType,
       mediaType,
-      preloadType
+      // Vite automatically injects CSS, not only in development, but also in production (albeit FOUC). Therefore, strictly speaking, CSS aren't entries. We still, however, set `isEntry: true` for CSS in order to denote page assets that should absolutely be injected in the HTML, regardless of preload strategy (not injecting CSS leads to FOUC).
+      isEntry: assetType === 'style'
     })
+  })
+
+  pageAssets.forEach(({ src }) => {
+    assert(1 === pageAssets.filter((p) => p.src === src).length)
   })
 
   pageAssets = pageAssets.map((pageAsset) => {
@@ -83,32 +99,31 @@ async function getPageAssets(
     return pageAsset
   })
 
-  sortPageAssetsForHttpPush(pageAssets)
+  sortPageAssetsForEarlyHintsHeader(pageAssets)
 
   return pageAssets
 }
 
-function sortPageAssetsForHttpPush(pageAssets: PageAsset[]) {
+function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
   pageAssets.sort(
-    higherFirst(({ assetType, preloadType }) => {
+    higherFirst(({ assetType }) => {
       let priority = 0
 
       // CSS has highest priority
       if (assetType === 'style') return priority
       priority--
-      if (preloadType === 'style') return priority
-      priority--
 
       // Visual assets have high priority
-      if (preloadType === 'font') return priority
+      if (assetType === 'font') return priority
       priority--
-      if (preloadType === 'image') return priority
+      if (assetType === 'image') return priority
+      priority--
+
+      // Others
+      if (assetType !== 'script') return priority
       priority--
 
       // JavaScript has lowest priority
-      if (assetType === 'script') return priority - 1
-      if (preloadType === 'script') return priority - 2
-
       return priority
     })
   )

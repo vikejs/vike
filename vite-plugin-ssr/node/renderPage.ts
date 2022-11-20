@@ -22,8 +22,7 @@ import {
   createDebugger,
   callHookWithTimeout
 } from './utils'
-import type { PageAsset } from './html/injectAssets'
-import { getPageAssets } from './renderPage/getPageAssets'
+import { getPageAssets, type PageAsset } from './renderPage/getPageAssets'
 import { sortPageContext } from '../shared/sortPageContext'
 import { assertHookResult, assertObjectKeys } from '../shared/assertHookResult'
 import {
@@ -55,6 +54,7 @@ import { ViteManifest } from './viteManifest'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
+import type { MediaType } from './html/inferMediaType'
 
 export { renderPage }
 export { prerenderPage }
@@ -617,13 +617,37 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
     }
   })
 
+  // TODO: BREAK THIS
   Object.assign(pageContextAddendum, {
     _getPageAssets: async () => {
       assertWarning(false, 'pageContext._getPageAssets() deprecated in favor of TODO', {
         onlyOnce: true,
         showStackTrace: true
       })
-      return pageContextAddendum.__getPageAssets()
+      const pageAssetsOldFormat: {
+        src: string
+        assetType: 'script' | 'style' | 'preload'
+        mediaType: null | NonNullable<MediaType>['mediaType']
+        preloadType: null | 'image' | 'script' | 'font' | 'style'
+      }[] = []
+
+      ;(await pageContextAddendum.__getPageAssets()).forEach((p) => {
+        if (p.assetType === 'script' && p.isEntry) {
+          pageAssetsOldFormat.push({
+            src: p.src,
+            preloadType: null,
+            assetType: 'script',
+            mediaType: p.mediaType
+          })
+        }
+        pageAssetsOldFormat.push({
+          src: p.src,
+          preloadType: p.assetType,
+          assetType: p.assetType === 'style' ? 'style' : 'preload',
+          mediaType: p.mediaType
+        })
+      })
+      return pageAssetsOldFormat
     }
   })
 

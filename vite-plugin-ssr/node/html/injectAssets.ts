@@ -1,11 +1,11 @@
 import { assert, assertUsage, assertWarning, castProp, hasProp } from '../utils'
-import type { MediaType } from './inferMediaType'
+import type { PageAsset } from '../renderPage/getPageAssets'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
 import { sanitizeJson } from './injectAssets/sanitizeJson'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { createHtmlHeadIfMissing, injectHtmlSnippets } from './injectAssets/injectHtmlSnippet'
 import type { ViteDevServer } from 'vite'
-import { inferAssetTag } from './injectAssets/infertAssetTag'
+import { inferAssetTag, inferPreloadTag } from './injectAssets/inferHtmlTags'
 import { getViteDevScripts } from './injectAssets/getViteDevScripts'
 import { mergeScriptTags } from './injectAssets/mergeScriptTags'
 import type { InjectToStream } from 'react-streaming/server'
@@ -14,14 +14,6 @@ export { injectAssets__public }
 export { injectAssets }
 export { injectAssetsToStream }
 export type { PageContextInjectAssets }
-export { PageAsset }
-
-type PageAsset = {
-  src: string
-  assetType: 'script' | 'style' | 'preload'
-  mediaType: null | NonNullable<MediaType>['mediaType']
-  preloadType: null | NonNullable<MediaType>['preloadType']
-}
 
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
   assertWarning(false, '`_injectAssets()` is deprecated and will be removed.', { onlyOnce: true, showStackTrace: true })
@@ -147,27 +139,20 @@ async function getHtmlSnippets(
   }
 
   for (const pageAsset of pageAssets) {
-    const { assetType, preloadType } = pageAsset
+    const { assetType } = pageAsset
 
-    // JavaScript tags
+    // JavaScript
     if (assetType === 'script') {
-      // Already included with `getMergedScriptTag()`
-      continue
-    }
-    if (assetType === 'preload' && preloadType === 'script') {
-      const htmlSnippet = inferAssetTag(pageAsset)
+      // We only add preload tags: asset tags are already included with `getMergedScriptTag()`
+      const htmlSnippet = inferPreloadTag(pageAsset)
       if (!isHtmlOnly) {
         htmlSnippets.push({ htmlSnippet, position: positionJs })
       }
       continue
     }
 
-    // Style tags
-    if (
-      assetType === 'style' ||
-      (assetType === 'preload' && preloadType === 'style') ||
-      (assetType === 'preload' && preloadType === 'font')
-    ) {
+    // CSS
+    if (assetType === 'style') {
       // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
       //   - https://github.com/vitejs/vite/issues/2282
       //   - https://github.com/brillout/vite-plugin-ssr/issues/261
@@ -176,15 +161,16 @@ async function getHtmlSnippets(
       continue
     }
 
-    // Misc tags
-    //  - Image and unknown preload tags
-    if (assetType === 'preload' && preloadType !== 'script') {
-      const htmlSnippet = inferAssetTag(pageAsset)
-      htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
+    // Fonts
+    if (assetType === 'font') {
+      const htmlSnippet = inferPreloadTag(pageAsset)
+      htmlSnippets.push({ htmlSnippet, position: 'HEAD_OPENING' })
       continue
     }
 
-    assert(false, { assetType, preloadType })
+    // Other (e.g. images)
+    const htmlSnippet = inferPreloadTag(pageAsset)
+    htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
   }
 
   return htmlSnippets
@@ -194,7 +180,7 @@ async function getMergedScriptTag(
   pageAssets: PageAsset[],
   pageContext: PageContextInjectAssets
 ): Promise<null | string> {
-  const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.assetType === 'script')
+  const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts(pageContext)
   const scriptTagsHtml = `${viteScripts}${scriptAssets.map(inferAssetTag).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml, pageContext)

@@ -69,25 +69,25 @@ function testRun(
           partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js" async>`
         )
         expect(html).toMatch(
-          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-client-routing.${hashRegexp}.js">`
+          partRegex`<link rel="modulepreload" href="/assets/entry-client-routing.${hashRegexp}.js" as="script" type="text/javascript">`
         )
       } catch (err) {
         expect(html).toMatch(
           partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js" async>`
         )
         expect(html).toMatch(
-          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/entry-server-routing.${hashRegexp}.js">`
+          partRegex`<link rel="modulepreload" href="/assets/entry-server-routing.${hashRegexp}.js" as="script" type="text/javascript">`
         )
       }
 
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/chunk-${hashRegexp}.js">`
+        partRegex`<link rel="modulepreload" href="/assets/chunk-${hashRegexp}.js" as="script" type="text/javascript">`
       )
       expect(html).toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/pages/index/index.page.${hashRegexp}.js">`
+        partRegex`<link rel="modulepreload" href="/assets/pages/index/index.page.${hashRegexp}.js" as="script" type="text/javascript">`
       )
       expect(html).not.toMatch(
-        partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/pages/about/index.page.${hashRegexp}.js">`
+        partRegex`<link rel="modulepreload" href="/assets/pages/about/index.page.${hashRegexp}.js" as="script" type="text/javascript">`
       )
       if (!noDefaultPageInUserCode) {
         try {
@@ -108,7 +108,7 @@ function testRun(
           }
         }
         expect(html).toMatch(
-          partRegex`<link rel="modulepreload" as="script" type="text/javascript" href="/assets/renderer/_default.page.client.${hashRegexp}.js">`
+          partRegex`<link rel="modulepreload" href="/assets/renderer/_default.page.client.${hashRegexp}.js" as="script" type="text/javascript">`
         )
       }
     }
