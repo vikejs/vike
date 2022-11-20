@@ -15,7 +15,7 @@ type PageAsset = {
   src: string
   assetType: null | NonNullable<MediaType>['assetType']
   mediaType: null | NonNullable<MediaType>['mediaType']
-  isEntry: boolean
+  isPreload: boolean
 }
 
 async function getPageAssets(
@@ -63,7 +63,7 @@ async function getPageAssets(
       src: clientEntrySrc,
       assetType: 'script',
       mediaType: 'text/javascript',
-      isEntry: true
+      isPreload: false
     })
   })
   assetUrls.forEach((src) => {
@@ -84,8 +84,8 @@ async function getPageAssets(
       src,
       assetType,
       mediaType,
-      // Vite automatically injects CSS, not only in development, but also in production (albeit FOUC). Therefore, strictly speaking, CSS aren't entries. We still, however, set `isEntry: true` for CSS, in order to denote page assets that should absolutely be injected in the HTML, regardless of preload strategy (not injecting CSS leads to FOUC).
-      isEntry: assetType === 'style'
+      // Vite automatically injects CSS, not only in development, but also in production (albeit FOUC). Therefore, strictly speaking, CSS aren't entries. We still, however, set `isPreload: false` for CSS, in order to denote page assets that should absolutely be injected in the HTML, regardless of preload strategy (not injecting CSS leads to FOUC).
+      isPreload: assetType !== 'style'
     })
   })
 

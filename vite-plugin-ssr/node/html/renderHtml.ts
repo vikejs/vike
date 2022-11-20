@@ -1,14 +1,17 @@
-import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
+import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign, isObject } from '../utils'
 import { injectAssets, injectAssetsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 import { isStreamReactStreaming } from './stream/react-streaming'
 import type { InjectToStream } from 'react-streaming/server'
+import type { PageAsset } from '../renderPage/getPageAssets'
+import { inferPreloadTag } from './injectAssets/inferHtmlTags'
 
 // Public
 export { escapeInject }
 export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
 export { dangerouslySkipEscape }
+export { injectPreloadTags }
 
 // Private
 export { renderHtml }
@@ -19,8 +22,15 @@ export type { HtmlRender }
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
 
+type PageAssetPublic = {
+  src: PageAsset['src']
+  assetType: PageAsset['assetType']
+  mediaType: PageAsset['mediaType']
+}
+type InjectPreloadTags = { _injectPreloadTags: true | ((filter: PageAssetPublic[]) => PageAssetPublic[]) }
+
 type TemplateStrings = TemplateStringsArray
-type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
+type TemplateVariable = string | EscapedString | Stream | TemplateWrapped | InjectPreloadTags
 type TemplateWrapped = {
   _template: TemplateContent
 }
@@ -37,6 +47,10 @@ function isDocumentHtml(something: unknown): something is DocumentHtml {
   return false
 }
 
+type PageContextRenderHtml = PageContextInjectAssets & {
+  __getPageAssets: () => Promise<PageAsset[]>
+}
+
 async function renderHtml(
   documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
@@ -45,33 +59,33 @@ async function renderHtml(
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectAssets(htmlString, pageContext)
+    htmlString = await injectAssets(htmlString, pageContext, false)
     return htmlString
   }
   if (isStream(documentHtml)) {
     const stream = documentHtml
-    const streamWrapper = await renderHtmlStream(stream, {
-      pageContext,
-      onErrorWhileStreaming
-    })
+    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, false)
     return streamWrapper
   }
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml._template
-    const render = renderTemplate(templateContent, renderFilePath)
+    const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if ('htmlString' in render) {
-      let { htmlString } = render
-      htmlString = await injectAssets(htmlString, pageContext)
+      let { htmlString, disableAutoInjectPreloadTags } = render
+      htmlString = await injectAssets(htmlString, pageContext, disableAutoInjectPreloadTags)
       return htmlString
     } else {
-      const streamWrapper = await renderHtmlStream(render.htmlStream, {
-        injectString: {
+      const { htmlStream, disableAutoInjectPreloadTags } = render
+      const streamWrapper = await renderHtmlStream(
+        htmlStream,
+        {
           stringBegin: render.stringBegin,
           stringEnd: render.stringEnd
         },
         pageContext,
-        onErrorWhileStreaming
-      })
+        onErrorWhileStreaming,
+        disableAutoInjectPreloadTags
+      )
       return streamWrapper
     }
   }
@@ -81,15 +95,10 @@ async function renderHtml(
 
 async function renderHtmlStream(
   streamOriginal: Stream & { injectionBuffer?: string[] },
-  {
-    injectString,
-    pageContext,
-    onErrorWhileStreaming
-  }: {
-    injectString?: { stringBegin: string; stringEnd: string }
-    pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean }
-    onErrorWhileStreaming: (err: unknown) => void
-  }
+  injectString: null | { stringBegin: string; stringEnd: string },
+  pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean },
+  onErrorWhileStreaming: (err: unknown) => void,
+  disableAutoInjectPreloadTags: boolean
 ) {
   const opts = {
     onErrorWhileStreaming,
@@ -103,7 +112,7 @@ async function renderHtmlStream(
     const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
-        return await injectAtStreamBegin(injectString.stringBegin)
+        return await injectAtStreamBegin(injectString.stringBegin, disableAutoInjectPreloadTags)
       },
       injectStringAtEnd: async () => {
         return await injectAtStreamEnd(injectString.stringEnd)
@@ -169,13 +178,19 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   return { _escaped: arg }
 }
 
-function renderTemplate(
+async function renderTemplate(
   templateContent: TemplateContent,
-  renderFilePath: string
-): { htmlString: string } | { htmlStream: Stream; stringBegin: string; stringEnd: string } {
+  renderFilePath: string,
+  pageContext: PageContextRenderHtml
+): Promise<
+  ({ htmlString: string } | { htmlStream: Stream; stringBegin: string; stringEnd: string }) & {
+    disableAutoInjectPreloadTags: boolean
+  }
+> {
   let stringBegin = ''
   let htmlStream: null | Stream = null
   let stringEnd = ''
+  let disableAutoInjectPreloadTags = false
 
   const addString = (str: string) => {
     assert(typeof str === 'string')
@@ -210,7 +225,7 @@ function renderTemplate(
     // Process `escapeInject` fragments
     if (isTemplateWrapped(templateVar)) {
       const templateContentInner = templateVar._template
-      const result = renderTemplate(templateContentInner, renderFilePath)
+      const result = await renderTemplate(templateContentInner, renderFilePath, pageContext)
       if ('htmlString' in result) {
         addString(result.htmlString)
       } else {
@@ -244,6 +259,30 @@ function renderTemplate(
       continue
     }
 
+    if (isObject(templateVar) && '_injectPreloadTags' in templateVar) {
+      const pageAssets = await pageContext.__getPageAssets()
+      let pageAssetsToInject = pageAssets.filter(({ isPreload }) => isPreload)
+      const userFilter = templateVar._injectPreloadTags === true ? null : templateVar._injectPreloadTags
+      if (userFilter) {
+        const pageAssetsPublic = pageAssetsToInject.map((p) => {
+          return {
+            src: p.src,
+            assetType: p.assetType,
+            mediaType: p.mediaType
+          }
+        })
+        pageAssetsToInject = userFilter(pageAssetsPublic).map((pageAssetPublic: PageAssetPublic) => {
+          const pageAsset: PageAsset = { ...pageAssetPublic, isPreload: true }
+          return pageAsset
+        })
+      }
+      pageAssetsToInject.forEach((pageAsset) => {
+        addString(inferPreloadTag(pageAsset))
+      })
+      disableAutoInjectPreloadTags = true
+      continue
+    }
+
     {
       const varType = typeof templateVar
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
@@ -262,14 +301,16 @@ function renderTemplate(
   if (htmlStream === null) {
     assert(stringEnd === '')
     return {
-      htmlString: stringBegin
+      htmlString: stringBegin,
+      disableAutoInjectPreloadTags
     }
   }
 
   return {
     htmlStream,
     stringBegin,
-    stringEnd
+    stringEnd,
+    disableAutoInjectPreloadTags
   }
 }
 
@@ -293,4 +334,8 @@ async function getHtmlString(htmlRender: HtmlRender): Promise<string> {
   }
   checkType<never>(htmlRender)
   assert(false)
+}
+
+function injectPreloadTags(filter?: (filter: PageAssetPublic[]) => PageAssetPublic[]): InjectPreloadTags {
+  return { _injectPreloadTags: filter ?? true }
 }

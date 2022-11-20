@@ -4,6 +4,7 @@ export { escapeInject, dangerouslySkipEscape } from './html/renderHtml'
 export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/stream'
 export { injectAssets__public as _injectAssets } from './html/injectAssets'
 export { RenderErrorPage } from './renderPage/RenderErrorPage'
+export { injectPreloadTags } from './html/renderHtml'
 
 export type { PageContextBuiltIn } from './types'
 
