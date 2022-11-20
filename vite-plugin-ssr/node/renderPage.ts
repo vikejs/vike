@@ -739,7 +739,7 @@ async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
     _isPreRendering: boolean
-    _getPageAssets: () => Promise<PageAsset[]>
+    __getPageAssets: () => Promise<PageAsset[]>
     _passToClient: string[]
     _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean
