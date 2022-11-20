@@ -59,13 +59,12 @@ async function renderHtml(
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml._template
     const render = renderTemplate(templateContent, renderFilePath)
-    if (render.type === 'string') {
-      let htmlString = render.value
+    if ('htmlString' in render) {
+      let { htmlString } = render
       htmlString = await injectAssets(htmlString, pageContext)
       return htmlString
-    }
-    if (render.type === 'stream') {
-      const streamWrapper = await renderHtmlStream(render.stream, {
+    } else {
+      const streamWrapper = await renderHtmlStream(render.htmlStream, {
         injectString: {
           stringBegin: render.stringBegin,
           stringEnd: render.stringEnd
@@ -75,8 +74,6 @@ async function renderHtml(
       })
       return streamWrapper
     }
-    checkType<never>(render)
-    assert(false)
   }
   checkType<never>(documentHtml)
   assert(false)
@@ -175,26 +172,26 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
 function renderTemplate(
   templateContent: TemplateContent,
   renderFilePath: string
-): { type: 'string'; value: string } | { type: 'stream'; stream: Stream; stringBegin: string; stringEnd: string } {
+): { htmlString: string } | { htmlStream: Stream; stringBegin: string; stringEnd: string } {
   let stringBegin = ''
-  let stream: null | Stream = null
+  let htmlStream: null | Stream = null
   let stringEnd = ''
 
   const addString = (str: string) => {
     assert(typeof str === 'string')
-    if (stream === null) {
+    if (htmlStream === null) {
       stringBegin += str
     } else {
       stringEnd += str
     }
   }
 
-  const setStream = (stream_: Stream) => {
+  const setStream = (stream: Stream) => {
     assertUsage(
-      !stream,
+      !htmlStream,
       `Injecting two streams in \`escapeInject\` template tag of render() hook of ${renderFilePath}. Inject only one stream instead.`
     )
-    stream = stream_
+    htmlStream = stream
   }
 
   const { templateStrings, templateVariables } = templateContent
@@ -213,15 +210,13 @@ function renderTemplate(
     // Process `escapeInject` fragments
     if (isTemplateWrapped(templateVar)) {
       const templateContentInner = templateVar._template
-      const render = renderTemplate(templateContentInner, renderFilePath)
-      if (render.type === 'string') {
-        addString(render.value)
-      } else if (render.type === 'stream') {
-        addString(render.stringBegin)
-        setStream(render.stream)
-        addString(render.stringEnd)
+      const result = renderTemplate(templateContentInner, renderFilePath)
+      if ('htmlString' in result) {
+        addString(result.htmlString)
       } else {
-        assert(false)
+        addString(result.stringBegin)
+        setStream(result.htmlStream)
+        addString(result.stringEnd)
       }
       continue
     }
@@ -264,17 +259,15 @@ function renderTemplate(
   assert(templateStrings.length === templateVariables.length + 1)
   addString(templateStrings[templateStrings.length - 1]!)
 
-  if (stream === null) {
+  if (htmlStream === null) {
     assert(stringEnd === '')
     return {
-      type: 'string',
-      value: stringBegin
+      htmlString: stringBegin
     }
   }
 
   return {
-    type: 'stream',
-    stream,
+    htmlStream,
     stringBegin,
     stringEnd
   }
