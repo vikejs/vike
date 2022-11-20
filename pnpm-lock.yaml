@@ -269,6 +269,22 @@ importers:
       vue: 3.2.33
       wrangler: 2.0.21
 
+  examples/custom-preload:
+    specifiers:
+      '@vitejs/plugin-react': ^2.2.0
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      react-streaming: ^0.3.5
+      vite: ^3.0.9
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      '@vitejs/plugin-react': 2.2.0_vite@3.2.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-streaming: 0.3.5_biqbaboplfbrettd7655fr4n2y
+      vite: 3.2.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/custom-server-render-integration:
     specifiers:
       '@vitejs/plugin-react': ^2.0.1
