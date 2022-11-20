@@ -19,11 +19,10 @@ export type { HtmlRender }
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
 
-const __template = '__template'
 type TemplateStrings = TemplateStringsArray
 type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
 type TemplateWrapped = {
-  [__template]: TemplateContent
+  _template: TemplateContent
 }
 type TemplateContent = {
   templateStrings: TemplateStrings
@@ -58,7 +57,7 @@ async function renderHtml(
     return streamWrapper
   }
   if (isTemplateWrapped(documentHtml)) {
-    const templateContent = documentHtml[__template]
+    const templateContent = documentHtml._template
     const render = renderTemplate(templateContent, renderFilePath)
     if (render.type === 'string') {
       let htmlString = render.value
@@ -119,12 +118,12 @@ async function renderHtmlStream(
 }
 
 function isTemplateWrapped(something: unknown): something is TemplateWrapped {
-  return hasProp(something, __template)
+  return hasProp(something, '_template')
 }
 function isEscapedString(something: unknown): something is EscapedString {
-  const result = hasProp(something, __escaped)
+  const result = hasProp(something, '_escaped')
   if (result) {
-    assert(hasProp(something, __escaped, 'string'))
+    assert(hasProp(something, '_escaped', 'string'))
     checkType<EscapedString>(something)
   }
   return result
@@ -132,8 +131,8 @@ function isEscapedString(something: unknown): something is EscapedString {
 
 function getEscapedString(escapedString: EscapedString): string {
   let htmlString: string
-  assert(hasProp(escapedString, __escaped))
-  htmlString = escapedString[__escaped]
+  assert(hasProp(escapedString, '_escaped'))
+  htmlString = escapedString._escaped
   assert(typeof htmlString === 'string')
   return htmlString
 }
@@ -147,19 +146,18 @@ function escapeInject(
     'You seem to use `escapeInject` as a function, but `escapeInject` is a string template tag, see https://vite-plugin-ssr.com/escapeInject'
   )
   return {
-    [__template]: {
+    _template: {
       templateStrings,
       templateVariables: templateVariables as TemplateVariable[]
     }
   }
 }
-const __escaped = '__escaped'
-type EscapedString = { [__escaped]: string }
+type EscapedString = { _escaped: string }
 function dangerouslySkipEscape(alreadyEscapedString: string): EscapedString {
   return _dangerouslySkipEscape(alreadyEscapedString)
 }
 function _dangerouslySkipEscape(arg: unknown): EscapedString {
-  if (hasProp(arg, __escaped)) {
+  if (hasProp(arg, '_escaped')) {
     assert(isEscapedString(arg))
     return arg
   }
@@ -171,7 +169,7 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
     typeof arg === 'string',
     `[dangerouslySkipEscape(str)] Argument \`str\` should be a string but we got \`typeof str === "${typeof arg}"\`.`
   )
-  return { [__escaped]: arg }
+  return { _escaped: arg }
 }
 
 function renderTemplate(
@@ -206,7 +204,7 @@ function renderTemplate(
 
     // Process `escapeInject` tag composition
     if (isTemplateWrapped(templateVar)) {
-      const templateContentInner = templateVar[__template]
+      const templateContentInner = templateVar._template
       const render = renderTemplate(templateContentInner, renderFilePath)
       assertUsage(
         !(stream !== null && render.type === 'stream'),
