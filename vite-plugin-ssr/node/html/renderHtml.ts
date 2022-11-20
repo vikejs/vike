@@ -189,6 +189,14 @@ function renderTemplate(
     }
   }
 
+  const setStream = (stream_: Stream) => {
+    assertUsage(
+      !stream,
+      `Injecting two streams in \`escapeInject\` template tag of render() hook of ${renderFilePath}. Inject only one stream instead.`
+    )
+    stream = stream_
+  }
+
   const { templateStrings, templateVariables } = templateContent
   for (let i = 0; i < templateVariables.length; i++) {
     addString(templateStrings[i]!)
@@ -202,19 +210,15 @@ function renderTemplate(
       continue
     }
 
-    // Process `escapeInject` tag composition
+    // Process `escapeInject` fragments
     if (isTemplateWrapped(templateVar)) {
       const templateContentInner = templateVar._template
       const render = renderTemplate(templateContentInner, renderFilePath)
-      assertUsage(
-        !(stream !== null && render.type === 'stream'),
-        `You are trying to eject two streams in your \`escapeInject\` template tag of your render() hook exported by ${renderFilePath}. Inject only one stream instead.`
-      )
       if (render.type === 'string') {
         addString(render.value)
       } else if (render.type === 'stream') {
         addString(render.stringBegin)
-        stream = render.stream
+        setStream(render.stream)
         addString(render.stringEnd)
       } else {
         assert(false)
@@ -223,7 +227,7 @@ function renderTemplate(
     }
 
     if (isStream(templateVar)) {
-      stream = templateVar
+      setStream(templateVar)
       continue
     }
 
