@@ -36,16 +36,16 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
     '. Make sure that `pageContext` is the object that `vite-plugin-ssr` provided to your `render(pageContext)` hook.'
   assertUsage(hasProp(pageContext, 'urlPathname', 'string'), errMsg('`pageContext.urlPathname` should be a string'))
   assertUsage(hasProp(pageContext, '_pageId', 'string'), errMsg('`pageContext._pageId` should be a string'))
-  assertUsage(hasProp(pageContext, '_getPageAssets'), errMsg('`pageContext._getPageAssets` is missing'))
+  assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
-  castProp<() => Promise<PageAsset[]>, typeof pageContext, '_getPageAssets'>(pageContext, '_getPageAssets')
+  castProp<() => Promise<PageAsset[]>, typeof pageContext, '__getPageAssets'>(pageContext, '__getPageAssets')
   htmlString = await injectAssets(htmlString, pageContext as any)
   return htmlString
 }
 
 type PageContextInjectAssets = {
   urlPathname: string
-  _getPageAssets: () => Promise<PageAsset[]>
+  __getPageAssets: () => Promise<PageAsset[]>
   _pageId: string
   _passToClient: string[]
   _isHtmlOnly: boolean
@@ -123,7 +123,7 @@ async function getHtmlSnippets(
     isHtmlOnly: boolean
   }
 ) {
-  const pageAssets = await pageContext._getPageAssets()
+  const pageAssets = await pageContext.__getPageAssets()
 
   const htmlSnippets: HtmlSnippet[] = []
 

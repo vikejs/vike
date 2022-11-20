@@ -604,7 +604,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
   })
 
   objectAssign(pageContextAddendum, {
-    _getPageAssets: async () => {
+    __getPageAssets: async () => {
       if ('_pageAssets' in pageContext) {
         return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
       } else {
@@ -614,6 +614,16 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
       }
+    }
+  })
+
+  Object.assign(pageContextAddendum, {
+    _getPageAssets: async () => {
+      assertWarning(false, 'pageContext._getPageAssets() deprecated in favor of TODO', {
+        onlyOnce: true,
+        showStackTrace: true
+      })
+      return pageContextAddendum.__getPageAssets()
     }
   })
 
