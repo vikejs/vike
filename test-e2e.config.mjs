@@ -58,7 +58,7 @@ function getCiJobs() {
 }
 
 function tolerateError(log) {
-  return isSlowHookWarning() || isNoErrorPageWarning() || isFetchExperimentalWarning() || isViteEsbuildBug()
+  return isSlowHookWarning() || isNoErrorPageWarning() || isFetchExperimentalWarning() || isViteEsbuildBug() || isGetPageAssetsDeprecationWarning()
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
   function isSlowHookWarning() {
@@ -107,6 +107,16 @@ function tolerateError(log) {
       process.platform === 'win32' &&
       log.logSource === 'stderr' &&
       (log.logText.includes('The service is no longer running') || log.logText.includes('The service was stopped'))
+    )
+  }
+
+  // [vite-plugin-ssr@0.4.51][Warning] pageContext._getPageAssets() deprecated in favor of TODO
+  function isGetPageAssetsDeprecationWarning() {
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes('[vite-plugin-ssr@') &&
+      log.logText.includes('[Warning]') &&
+      log.logText.includes('pageContext._getPageAssets() deprecated in favor of TODO')
     )
   }
 }
