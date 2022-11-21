@@ -244,17 +244,19 @@ async function renderTemplate(
 
     const getErrMsg = (typeText: string, end: null | string) => {
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return [
-        `Each HTML variable should be a string (or a stream), but the ${nth} HTML variable is ${typeText}, see \`render()\` hook of ${renderFilePath}.`,
-        end
-      ]
+      return [`The ${nth} HTML variable is ${typeText}, see render() hook of ${renderFilePath}.`, end]
         .filter(Boolean)
         .join(' ')
     }
 
     assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
 
-    if (templateVar === undefined || templateVar === null) {
+    if (templateVar === null) {
+      addString('')
+      continue
+    }
+
+    if (templateVar === undefined) {
       assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { onlyOnce: false })
       addString('')
       continue
