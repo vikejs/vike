@@ -1,4 +1,4 @@
-import { renderPage } from 'vite-plugin-ssr'
+import { renderPage } from '../../vite-plugin-ssr/node/renderPage'
 import { createServer } from 'vite'
 import { expect, describe, it, beforeAll } from 'vitest'
 
