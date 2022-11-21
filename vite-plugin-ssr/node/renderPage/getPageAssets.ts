@@ -151,10 +151,19 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
     assert(path.posix.isAbsolute(clientEntry))
     filePath = path.posix.join(root, clientEntry)
   } else {
+    assert(clientEntry.startsWith('@@vite-plugin-ssr/dist/esm/client/'))
+    assert(clientEntry.endsWith('.js'))
     const req = require // Prevent webpack from bundling client code
     const res = req.resolve
-    // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
-    filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/', '../../../../')))
+    try {
+      // For Vitest
+      // Current file: node_modules/vite-plugin-ssr/node/html/injectAssets.js
+      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../client/').replace('.js', '.ts')))
+    } catch {
+      // For users
+      // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
+      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../dist/esm/client/')))
+    }
   }
   if (!filePath.startsWith('/')) {
     assert(process.platform === 'win32')

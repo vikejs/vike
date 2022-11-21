@@ -38,7 +38,7 @@ async function getTestJobs() {
       jobName: 'Unit Tests',
       jobCmd: 'pnpm run test:units',
       jobTestFiles: specFiles,
-      jobSetups: [{ os: 'windows-latest', node_version: '14' }]
+      jobSetups: [{ os: 'ubuntu-latest', node_version: '18' }]
     },
     // Typecheck `.ts` files
     {

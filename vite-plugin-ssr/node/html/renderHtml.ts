@@ -18,6 +18,7 @@ export { renderHtml }
 export { isDocumentHtml }
 export { getHtmlString }
 export type { HtmlRender }
+export type { PageAssetPublic }
 
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream

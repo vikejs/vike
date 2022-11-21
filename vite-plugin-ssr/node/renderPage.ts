@@ -1,5 +1,5 @@
 import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
-import { HtmlRender, isDocumentHtml, renderHtml, getHtmlString } from './html/renderHtml'
+import { type HtmlRender, isDocumentHtml, renderHtml, getHtmlString, type PageAssetPublic } from './html/renderHtml'
 import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
 import { getHook } from '../shared/getHook'
@@ -55,6 +55,7 @@ import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientS
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import type { MediaType } from './html/inferMediaType'
+import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 
 export { renderPage }
 export { prerenderPage }
@@ -67,6 +68,7 @@ type GlobalRenderingContext = GlobalContext & {
 }
 
 type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
+type GetPageAssets = () => Promise<PageAsset[]>
 
 async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext: {}): Promise<RenderResult> {
   {
@@ -142,7 +144,7 @@ async function renderPageContext(
       objectAssign(pageContext, { _isError: true })
     }
     const body: string = serializePageContextClientSide(pageContext)
-    const httpResponse = createHttpResponseObject(body, null, pageContext)
+    const httpResponse = await createHttpResponseObject(body, null, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -154,20 +156,20 @@ async function renderPageContext(
     return pageContext
   } else {
     const { htmlRender, renderFilePath } = renderHookResult
-    const httpResponse = createHttpResponseObject(htmlRender, renderFilePath, pageContext)
+    const httpResponse = await createHttpResponseObject(htmlRender, renderFilePath, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
 }
 
-function handleErrorWithoutErrorPage(pageContext: {
+async function handleErrorWithoutErrorPage(pageContext: {
   _isPageContextRequest: boolean
   errorWhileRendering: null | Error
   is404: null | boolean
   _pageId: null
   urlOriginal: string
   _isProduction: boolean
-}): RenderResult {
+}): Promise<RenderResult> {
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
@@ -177,7 +179,9 @@ function handleErrorWithoutErrorPage(pageContext: {
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
-    const httpResponse = createHttpResponseObject(stringify({ serverSideError: true }), null, pageContext)
+    const __getPageAssets: GetPageAssets = async () => []
+    objectAssign(pageContext, { __getPageAssets })
+    const httpResponse = await createHttpResponseObject(stringify({ serverSideError: true }), null, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -317,6 +321,9 @@ function assertError(err: unknown) {
 
 type StatusCode = 200 | 404 | 500
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
+type EarlyHint = PageAssetPublic & {
+  earlyHintLink: string
+}
 type HttpResponse = {
   statusCode: StatusCode
   contentType: ContentType
@@ -324,6 +331,7 @@ type HttpResponse = {
   getBody: () => Promise<string>
   getReadableWebStream: () => StreamReadableWeb
   pipe: (writable: StreamWritableWeb | StreamWritableNode) => void
+  earlyHints: EarlyHint[]
   /** @deprecated */
   getNodeStream: () => Promise<StreamReadableNode>
   /** @deprecated */
@@ -333,7 +341,7 @@ type HttpResponse = {
   /** @deprecated */
   pipeToWebWritable: StreamPipeWeb
 }
-function createHttpResponseObject(
+async function createHttpResponseObject(
   htmlRender: null | HtmlRender,
   renderFilePath: null | string,
   pageContext: {
@@ -341,8 +349,9 @@ function createHttpResponseObject(
     _pageId: null | string
     is404: null | boolean
     errorWhileRendering: null | Error
+    __getPageAssets: GetPageAssets
   }
-): HttpResponse | null {
+): Promise<HttpResponse | null> {
   if (htmlRender === null) {
     return null
   }
@@ -367,9 +376,17 @@ function createHttpResponseObject(
 
   const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
 
+  const earlyHints: EarlyHint[] = (await pageContext.__getPageAssets()).map((a) => ({
+    src: a.src,
+    assetType: a.assetType,
+    mediaType: a.mediaType,
+    earlyHintLink: inferEarlyHintLink(a)
+  }))
+
   return {
     statusCode,
     contentType: pageContext._isPageContextRequest ? 'application/json' : 'text/html;charset=utf-8',
+    earlyHints,
     get body() {
       if (typeof htmlRender !== 'string') {
         assert(renderFilePath)
@@ -620,7 +637,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
   // TODO: BREAK THIS
   Object.assign(pageContextAddendum, {
     _getPageAssets: async () => {
-      assertWarning(false, 'pageContext._getPageAssets() deprecated in favor of TODO', {
+      assertWarning(false, 'pageContext._getPageAssets() deprecated, see https://vite-plugin-ssr.com/preload', {
         onlyOnce: true,
         showStackTrace: true
       })
@@ -773,7 +790,7 @@ async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
     _isPreRendering: boolean
-    __getPageAssets: () => Promise<PageAsset[]>
+    __getPageAssets: GetPageAssets
     _passToClient: string[]
     _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean

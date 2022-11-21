@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     // `.test.ts` => Jest
     // `.spec.ts` => Vitest
-    include: ['{.github/**,**}/*.spec.ts']
+    include: ['{.github/**,**}/*.spec.ts'],
+    outputTruncateLength: Infinity
   }
 })

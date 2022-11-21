@@ -14,6 +14,10 @@ function getCiJobs() {
     os: 'ubuntu-latest',
     node_version: '17'
   }
+  const ubuntu18 = {
+    os: 'ubuntu-latest',
+    node_version: '18'
+  }
   const win14 = {
     os: 'windows-latest',
     node_version: '14'
@@ -45,6 +49,10 @@ function getCiJobs() {
     {
       name: 'Cloudflare',
       setups: [ubuntu16]
+    },
+    {
+      name: 'Custom Preload',
+      setups: [ubuntu18, win18]
     },
     {
       name: 'Unit Tests E2E',
@@ -116,7 +124,7 @@ function tolerateError(log) {
       log.logSource === 'stderr' &&
       log.logText.includes('[vite-plugin-ssr@') &&
       log.logText.includes('[Warning]') &&
-      log.logText.includes('pageContext._getPageAssets() deprecated in favor of TODO')
+      log.logText.includes('pageContext._getPageAssets() deprecated')
     )
   }
 }
