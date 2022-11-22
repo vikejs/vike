@@ -73,11 +73,11 @@ function bundleTags(htmlFragments: HtmlFragment[]): HtmlFragment[] {
   return htmlFragmentsBundled
 }
 
-function resolveHtmlTag(htmlTag: string | (() => string)) {
+function resolveHtmlTag(htmlTag: HtmlTag['htmlTag']) {
   return typeof htmlTag !== 'string' ? htmlTag() : htmlTag
 }
 
-function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: string, htmlTag: string): string {
+function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: string, htmlFragment: string): string {
   const openingTag = getTagOpening(tag)
   const matches = htmlString.match(openingTag)
   assert(matches && matches.length >= 1)
@@ -86,13 +86,13 @@ function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: strin
   const htmlParts = htmlString.split(tagInstance)
   assert(htmlParts.length >= 2)
 
-  // Insert `htmlTag` after first `tagInstance`
+  // Insert `htmlFragment` after first `tagInstance`
   const before = slice(htmlParts, 0, 1)
   const after = slice(htmlParts, 1, 0).join(tagInstance)
-  return before + tagInstance + htmlTag + after
+  return before + tagInstance + htmlFragment + after
 }
 
-function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlTag: string): string {
+function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlFragment: string): string {
   const tagClosing = getTagClosing(tag)
   const matches = htmlString.match(tagClosing)
   assert(matches && matches.length >= 1)
@@ -101,14 +101,13 @@ function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlTag: s
   const htmlParts = htmlString.split(tagInstance)
   assert(htmlParts.length >= 2)
 
-  // Insert `htmlTag` before last `tagClosing`
+  // Insert `htmlFragment` before last `tagClosing`
   const before = slice(htmlParts, 0, -1).join(tagInstance)
   const after = slice(htmlParts, -1, 0)
 
-  htmlTag = injectBreakLines(htmlTag, before)
+  htmlFragment = injectBreakLines(htmlFragment, before)
 
-  // TODO: rename htmlTag + htmlSnippets
-  return before + htmlTag + tagInstance + after
+  return before + htmlFragment + tagInstance + after
 }
 
 function injectBreakLines(htmlFragment: string, before: string ) {
@@ -129,21 +128,21 @@ function createHtmlHeadIfMissing(htmlString: string): string {
     return htmlString
   }
 
-  const htmlTag = '<head></head>'
+  const htmlFragment = '<head></head>'
 
   if (tagOpeningExists('html', htmlString)) {
-    htmlString = injectAtOpeningTag('html', htmlString, htmlTag)
+    htmlString = injectAtOpeningTag('html', htmlString, htmlFragment)
     assertion()
     return htmlString
   }
 
   if (tagOpeningExists('!doctype', htmlString)) {
-    htmlString = injectAtOpeningTag('!doctype', htmlString, htmlTag)
+    htmlString = injectAtOpeningTag('!doctype', htmlString, htmlFragment)
     assertion()
     return htmlString
   }
 
-  htmlString = htmlTag + '\n' + htmlString
+  htmlString = htmlFragment + '\n' + htmlString
   assertion()
   return htmlString
 }

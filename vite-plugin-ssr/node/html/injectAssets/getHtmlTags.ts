@@ -39,7 +39,7 @@ async function getHtmlTags(
 
   let pageAssets = await pageContext.__getPageAssets()
 
-  const htmlSnippets: HtmlTag[] = []
+  const htmlTags: HtmlTag[] = []
 
   let preloadFilterEntries: PreloadFilterEntry[] = pageAssets
     .filter((p) => p.assetType !== 'script')
@@ -64,7 +64,7 @@ async function getHtmlTags(
   for (const entry of preloadFilterEntries) {
     if (entry.inject) {
       const htmlTag = entry.isPreload ? inferPreloadTag(entry) : inferAssetTag(entry)
-      htmlSnippets.push({ htmlTag, position: entry.inject })
+      htmlTags.push({ htmlTag, position: entry.inject })
     }
   }
 
@@ -72,7 +72,7 @@ async function getHtmlTags(
 
   const jsScript = await getMergedScriptTag(pageAssets, pageContext)
   if (jsScript) {
-    htmlSnippets.push({
+    htmlTags.push({
       htmlTag: jsScript,
       position: positionJs
     })
@@ -85,7 +85,7 @@ async function getHtmlTags(
       // We only add preload tags: script tags are already included with `getMergedScriptTag()`
       const htmlTag = inferPreloadTag(pageAsset)
       if (!isHtmlOnly) {
-        htmlSnippets.push({ htmlTag, position: positionJs })
+        htmlTags.push({ htmlTag, position: positionJs })
       }
       continue
     }
@@ -93,14 +93,14 @@ async function getHtmlTags(
 
   // Serialized pageContext
   if (!isHtmlOnly) {
-    htmlSnippets.push({
+    htmlTags.push({
       // Needs to be called after `resolvePageContextPromise()`
       htmlTag: () => getPageContextTag(pageContext),
       position: positionJs
     })
   }
 
-  return htmlSnippets
+  return htmlTags
 }
 
 async function getMergedScriptTag(
