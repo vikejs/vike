@@ -28,7 +28,7 @@ async function render(pageContext: any) {
 
   return {
     documentHtml,
-    preloadFilter(assets: PreloadFilterEntry[]): PreloadFilterEntry[] {
+    injectFilter(assets: PreloadFilterEntry[]): PreloadFilterEntry[] {
       return assets.map((asset) => {
         if (preloadStrategy === 'EAGER') {
           return {

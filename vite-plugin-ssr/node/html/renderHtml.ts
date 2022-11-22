@@ -53,16 +53,16 @@ async function renderDocumentHtml(
   },
   renderFilePath: string,
   onErrorWhileStreaming: (err: unknown) => void,
-  preloadFilter: PreloadFilter
+  injectFilter: PreloadFilter
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectHtmlTagsToString([htmlString], pageContext, preloadFilter)
+    htmlString = await injectHtmlTagsToString([htmlString], pageContext, injectFilter)
     return htmlString
   }
   if (isStream(documentHtml)) {
     const stream = documentHtml
-    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, preloadFilter)
+    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, injectFilter)
     return streamWrapper
   }
   if (isTemplateWrapped(documentHtml)) {
@@ -70,7 +70,7 @@ async function renderDocumentHtml(
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if (!('htmlStream' in render)) {
       const { htmlPartsAll } = render
-      const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, preloadFilter)
+      const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, injectFilter)
       return htmlString
     } else {
       const { htmlStream } = render
@@ -82,7 +82,7 @@ async function renderDocumentHtml(
         },
         pageContext,
         onErrorWhileStreaming,
-        preloadFilter
+        injectFilter
       )
       return streamWrapper
     }
@@ -96,7 +96,7 @@ async function renderHtmlStream(
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
   pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean },
   onErrorWhileStreaming: (err: unknown) => void,
-  preloadFilter: PreloadFilter
+  injectFilter: PreloadFilter
 ) {
   const opts = {
     onErrorWhileStreaming,
@@ -110,7 +110,7 @@ async function renderHtmlStream(
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(
       pageContext,
       injectToStream,
-      preloadFilter
+      injectFilter
     )
     objectAssign(opts, {
       injectStringAtBegin: async () => {

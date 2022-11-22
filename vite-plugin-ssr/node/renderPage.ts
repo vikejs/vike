@@ -829,7 +829,7 @@ async function executeRenderHook(
   preparePageContextForRelease(pageContext)
   const result = await callHookWithTimeout(() => render(pageContext), 'render', hook.filePath)
   if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'preloadFilter'] as const, renderFilePath)
+    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderFilePath)
   }
   objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
 
@@ -909,10 +909,10 @@ async function executeRenderHook(
     */
   }
 
-  let preloadFilter: PreloadFilter = null
-  if (hasProp(result, 'preloadFilter')) {
-    assertUsage(isCallable(result.preloadFilter), 'preloadFilter should be a function')
-    preloadFilter = result.preloadFilter
+  let injectFilter: PreloadFilter = null
+  if (hasProp(result, 'injectFilter')) {
+    assertUsage(isCallable(result.injectFilter), 'injectFilter should be a function')
+    injectFilter = result.injectFilter
   }
 
   const htmlRender = await renderDocumentHtml(
@@ -920,7 +920,7 @@ async function executeRenderHook(
     pageContext,
     renderFilePath,
     onErrorWhileStreaming,
-    preloadFilter
+    injectFilter
   )
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }

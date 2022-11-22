@@ -30,7 +30,7 @@ type HtmlTag = {
 async function getHtmlTags(
   pageContext: PageContextInjectAssets,
   injectToStream: null | InjectToStream,
-  preloadFilter: PreloadFilter
+  injectFilter: PreloadFilter
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
@@ -42,7 +42,7 @@ async function getHtmlTags(
 
   const htmlTags: HtmlTag[] = []
 
-  let preloadFilterEntries: PreloadFilterEntry[] = pageAssets
+  let injectFilterEntries: PreloadFilterEntry[] = pageAssets
     .filter((p) => {
       if (p.assetType !== 'script') {
         return true
@@ -68,10 +68,10 @@ async function getHtmlTags(
         inject
       }
     })
-  if (preloadFilter) {
-    preloadFilterEntries = preloadFilter(preloadFilterEntries)
+  if (injectFilter) {
+    injectFilterEntries = injectFilter(injectFilterEntries)
   }
-  preloadFilterEntries.forEach((a) => {
+  injectFilterEntries.forEach((a) => {
     if (a.assetType === 'style') {
       // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
       //  - https://github.com/vitejs/vite/issues/2282
@@ -87,7 +87,7 @@ async function getHtmlTags(
   })
 
   // Non JavaScript
-  for (const asset of preloadFilterEntries) {
+  for (const asset of injectFilterEntries) {
     if (asset.assetType !== 'script' && asset.inject) {
       const htmlTag = asset.isPreload ? inferPreloadTag(asset) : inferAssetTag(asset)
       htmlTags.push({ htmlTag, position: asset.inject })
@@ -103,7 +103,7 @@ async function getHtmlTags(
       position: positionJs
     })
   }
-  for (const asset of preloadFilterEntries) {
+  for (const asset of injectFilterEntries) {
     if (asset.assetType === 'script' && asset.inject) {
       const htmlTag = asset.isPreload ? inferPreloadTag(asset) : inferAssetTag(asset)
       const position = asset.inject === 'HTML_END' ? positionJs : asset.inject

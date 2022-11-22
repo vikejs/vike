@@ -28,9 +28,9 @@ type PageContextInjectAssets = {
 async function injectHtmlTagsToString(
   htmlParts: HtmlPart[],
   pageContext: PageContextInjectAssets,
-  preloadFilter: PreloadFilter
+  injectFilter: PreloadFilter
 ): Promise<string> {
-  const htmlTags = await getHtmlTags(pageContext, null, preloadFilter)
+  const htmlTags = await getHtmlTags(pageContext, null, injectFilter)
   const pageAssets = await pageContext.__getPageAssets()
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
   htmlString = injectToHtmlBegin(htmlString, htmlTags, null)
@@ -41,7 +41,7 @@ async function injectHtmlTagsToString(
 function injectHtmlTagsToStream(
   pageContext: PageContextInjectAssets,
   injectToStream: null | InjectToStream,
-  preloadFilter: PreloadFilter
+  injectFilter: PreloadFilter
 ) {
   let htmlTags: HtmlTag[] | undefined
 
@@ -51,7 +51,7 @@ function injectHtmlTagsToStream(
   }
 
   async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
-    htmlTags = await getHtmlTags(pageContext, injectToStream, preloadFilter)
+    htmlTags = await getHtmlTags(pageContext, injectToStream, injectFilter)
 
     const pageAssets = await pageContext.__getPageAssets()
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
