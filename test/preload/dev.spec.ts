@@ -16,14 +16,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -62,14 +62,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -108,14 +108,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -154,14 +154,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
-          "isPreload": false,
+          "isEntry": true,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -206,8 +206,8 @@ async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-font-on
   const body = stabilizePaths(httpResponse!.body)
   const earlyHints = httpResponse!.earlyHints.map((hint) =>
     Object.fromEntries(
-      Object.entries(hint).map(([key, val]: [string, null | string]) => {
-        val = val && stabilizePaths(val)
+      Object.entries(hint).map(([key, val]: [string, null | boolean | string]) => {
+        val = typeof val !== 'string' ? val : stabilizePaths(val)
         return [key, val]
       })
     )

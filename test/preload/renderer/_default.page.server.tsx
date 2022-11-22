@@ -37,7 +37,7 @@ async function render(pageContext: any) {
           }
         }
 
-        if (!asset.isPreload) {
+        if (asset.isEntry) {
           return asset
         }
 
@@ -47,7 +47,6 @@ async function render(pageContext: any) {
         }
         if (
           preloadStrategy === 'ONLY_FONT' &&
-          asset.isPreload &&
           asset.assetType !== 'font' &&
           asset.assetType !== 'script'
         ) {

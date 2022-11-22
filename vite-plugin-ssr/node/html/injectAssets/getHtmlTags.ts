@@ -19,7 +19,7 @@ type InjectFilterEntry = {
   src: string
   assetType: null | PageAsset['assetType']
   mediaType: null | PageAsset['mediaType']
-  isPreload: boolean
+  isEntry: boolean
   inject: PreloadFilterInject
 }
 
@@ -43,28 +43,25 @@ async function getHtmlTags(
   const htmlTags: HtmlTag[] = []
 
   let injectFilterEntries: InjectFilterEntry[] = pageAssets
-    .filter((p) => {
-      if (p.assetType !== 'script') {
+    .filter((asset) => {
+      if (asset.assetType !== 'script') {
         return true
       } else {
         return (
           // We don't allow the user the manipulate <script> tags because it can break hydration while streaming
-          p.isPreload &&
+          !asset.isEntry &&
           // We don't allow the user to preload JavaScript when the page is HTML-only
           !isHtmlOnly
         )
       }
     })
-    .map((p) => {
+    .map((asset) => {
       let inject: PreloadFilterInject = 'HTML_END'
-      if (p.assetType === 'style' || p.assetType === 'font') {
+      if (asset.assetType === 'style' || asset.assetType === 'font') {
         inject = 'HTML_BEGIN'
       }
       return {
-        src: p.src,
-        assetType: p.assetType,
-        mediaType: p.mediaType,
-        isPreload: p.isPreload,
+        ...asset,
         inject
       }
     })
@@ -89,7 +86,7 @@ async function getHtmlTags(
   // Non JavaScript
   for (const asset of injectFilterEntries) {
     if (asset.assetType !== 'script' && asset.inject) {
-      const htmlTag = asset.isPreload ? inferPreloadTag(asset) : inferAssetTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
       htmlTags.push({ htmlTag, position: asset.inject })
     }
   }
@@ -105,7 +102,7 @@ async function getHtmlTags(
   }
   for (const asset of injectFilterEntries) {
     if (asset.assetType === 'script' && asset.inject) {
-      const htmlTag = asset.isPreload ? inferPreloadTag(asset) : inferAssetTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
       const position = asset.inject === 'HTML_END' ? positionJs : asset.inject
       htmlTags.push({ htmlTag, position })
     }
@@ -127,7 +124,7 @@ async function getMergedScriptTag(
   pageAssets: PageAsset[],
   pageContext: PageContextInjectAssets
 ): Promise<null | string> {
-  const scriptAssets = pageAssets.filter((pageAsset) => !pageAsset.isPreload && pageAsset.assetType === 'script')
+  const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts(pageContext)
   const scriptTagsHtml = `${viteScripts}${scriptAssets.map(inferAssetTag).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml, pageContext)

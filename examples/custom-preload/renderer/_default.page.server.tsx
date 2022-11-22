@@ -32,7 +32,7 @@ async function render(pageContext: any) {
       return assets.map((asset) => {
         if (
           // We always inject assets that aren't about preloading
-          !asset.isPreload ||
+          asset.isEntry ||
           // We always inject scripts preload tags (recommended)
           asset.assetType === 'script'
         ) {

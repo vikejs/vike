@@ -654,7 +654,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
       }[] = []
 
       ;(await pageContextAddendum.__getPageAssets()).forEach((p) => {
-        if (p.assetType === 'script' && !p.isPreload) {
+        if (p.assetType === 'script' && p.isEntry) {
           pageAssetsOldFormat.push({
             src: p.src,
             preloadType: null,
