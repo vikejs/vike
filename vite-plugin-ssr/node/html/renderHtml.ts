@@ -80,8 +80,8 @@ async function renderDocumentHtml(
       const streamWrapper = await renderHtmlStream(
         htmlStream,
         {
-          stringBegin: render.stringBegin,
-          stringEnd: render.stringEnd
+          htmlPartsBegin: render.htmlPartsBegin,
+          htmlPartsEnd: render.htmlPartsEnd
         },
         pageContext,
         onErrorWhileStreaming,
@@ -96,7 +96,7 @@ async function renderDocumentHtml(
 
 async function renderHtmlStream(
   streamOriginal: Stream & { injectionBuffer?: string[] },
-  injectString: null | { stringBegin: string; stringEnd: string },
+  injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
   pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean },
   onErrorWhileStreaming: (err: unknown) => void,
   disableAutoInjectPreloadTags: boolean
@@ -113,10 +113,12 @@ async function renderHtmlStream(
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
-        return await injectAtStreamBegin(injectString.stringBegin, disableAutoInjectPreloadTags)
+        const htmlBegin = htmlPartsToString(injectString.htmlPartsBegin)
+        return await injectAtStreamBegin(htmlBegin, disableAutoInjectPreloadTags)
       },
       injectStringAtEnd: async () => {
-        return await injectAtStreamEnd(injectString.stringEnd)
+        const htmlEnd = htmlPartsToString(injectString.htmlPartsEnd)
+        return await injectAtStreamEnd(htmlEnd)
       }
     })
   }
@@ -179,26 +181,29 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   return { _escaped: arg }
 }
 
+type HtmlPart = string | (() => string)
+
 async function renderTemplate(
   templateContent: TemplateContent,
   renderFilePath: string,
   pageContext: PageContextInjectAssets
 ): Promise<
-  ({ htmlString: string } | { htmlStream: Stream; stringBegin: string; stringEnd: string }) & {
+  ({ htmlString: string } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }) & {
     disableAutoInjectPreloadTags: boolean
+    disableAutoInjectAssetTags: boolean
   }
 > {
-  let stringBegin = ''
+  const htmlPartsBegin: HtmlPart[] = []
+  const htmlPartsEnd: HtmlPart[] = []
   let htmlStream: null | Stream = null
-  let stringEnd = ''
   let disableAutoInjectPreloadTags = false
+  let disableAutoInjectAssetTags = false
 
-  const addString = (str: string) => {
-    assert(typeof str === 'string')
+  const addHtmlPart = (htmlPart: HtmlPart) => {
     if (htmlStream === null) {
-      stringBegin += str
+      htmlPartsBegin.push(htmlPart)
     } else {
-      stringEnd += str
+      htmlPartsEnd.push(htmlPart)
     }
   }
 
@@ -212,14 +217,14 @@ async function renderTemplate(
 
   const { templateStrings, templateVariables } = templateContent
   for (let i = 0; i < templateVariables.length; i++) {
-    addString(templateStrings[i]!)
+    addHtmlPart(templateStrings[i]!)
     const templateVar = templateVariables[i]
 
     // Process `dangerouslySkipEscape()`
     if (isEscapedString(templateVar)) {
       const htmlString = getEscapedString(templateVar)
       // User used `dangerouslySkipEscape()` so we assume the string to be safe
-      addString(htmlString)
+      addHtmlPart(htmlString)
       continue
     }
 
@@ -228,11 +233,11 @@ async function renderTemplate(
       const templateContentInner = templateVar._template
       const result = await renderTemplate(templateContentInner, renderFilePath, pageContext)
       if ('htmlString' in result) {
-        addString(result.htmlString)
+        addHtmlPart(result.htmlString)
       } else {
-        addString(result.stringBegin)
+        result.htmlPartsBegin.forEach(addHtmlPart)
         setStream(result.htmlStream)
-        addString(result.stringEnd)
+        result.htmlPartsEnd.forEach(addHtmlPart)
       }
       continue
     }
@@ -252,13 +257,13 @@ async function renderTemplate(
     assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
 
     if (templateVar === null) {
-      addString('')
+      addHtmlPart('')
       continue
     }
 
     if (templateVar === undefined) {
       assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { onlyOnce: false })
-      addString('')
+      addHtmlPart('')
       continue
     }
 
@@ -280,9 +285,10 @@ async function renderTemplate(
         })
       }
       pageAssetsToInject.forEach((pageAsset) => {
-        addString(inferPreloadTag(pageAsset))
+        addHtmlPart(inferPreloadTag(pageAsset))
       })
       disableAutoInjectPreloadTags = true
+      disableAutoInjectAssetTags = true
       continue
     }
 
@@ -309,7 +315,7 @@ async function renderTemplate(
         })
       }
       pageAssetsToInject.forEach((pageAsset) => {
-        addString(inferAssetTag(pageAsset))
+        addHtmlPart(inferAssetTag(pageAsset))
       })
       continue
       */
@@ -324,25 +330,27 @@ async function renderTemplate(
     }
 
     // Escape untrusted template variable
-    addString(escapeHtml(templateVar))
+    addHtmlPart(escapeHtml(templateVar))
   }
 
   assert(templateStrings.length === templateVariables.length + 1)
-  addString(templateStrings[templateStrings.length - 1]!)
+  addHtmlPart(templateStrings[templateStrings.length - 1]!)
 
   if (htmlStream === null) {
-    assert(stringEnd === '')
+    assert(htmlPartsEnd.length === 0)
     return {
-      htmlString: stringBegin,
-      disableAutoInjectPreloadTags
+      htmlString: htmlPartsToString(htmlPartsBegin),
+      disableAutoInjectPreloadTags,
+      disableAutoInjectAssetTags
     }
   }
 
   return {
     htmlStream,
-    stringBegin,
-    stringEnd,
-    disableAutoInjectPreloadTags
+    htmlPartsBegin,
+    htmlPartsEnd,
+    disableAutoInjectPreloadTags,
+    disableAutoInjectAssetTags
   }
 }
 
@@ -373,4 +381,12 @@ function injectPreloadTags(filter?: (filter: PageAssetPublic[]) => PageAssetPubl
 }
 function injectAssetTags(filter?: (filter: PageAssetPublic[]) => PageAssetPublic[]): InjectAssetTags {
   return { _injectAssetTags: filter ?? true }
+}
+
+function htmlPartsToString(htmlParts: HtmlPart[]): string {
+  let htmlString = ''
+  htmlParts.forEach((p) => {
+    htmlString += typeof p === 'string' ? p : p()
+  })
+  return htmlString
 }
