@@ -23,8 +23,7 @@ type PreloadFilterEntry = {
 
 type HtmlTag = {
   htmlTag: string | (() => string)
-  // TODO: remove HEAD_CLOSING
-  position: 'HEAD_CLOSING' | 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
+  position: 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
 }
 async function getHtmlTags(
   pageContext: PageContextInjectAssets,

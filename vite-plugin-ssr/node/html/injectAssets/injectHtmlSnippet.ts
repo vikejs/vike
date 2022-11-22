@@ -4,8 +4,8 @@ export { createHtmlHeadIfMissing }
 import { assert, slice } from '../../utils'
 import type { InjectToStream } from 'react-streaming/server'
 
-type Position = 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END' | 'STREAM'
-const POSITIONS = ['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
+type Position = 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
+const POSITIONS = ['HEAD_OPENING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
 
 function injectHtmlFragments(
   position: Position,
@@ -16,11 +16,6 @@ function injectHtmlFragments(
   if (position === 'HEAD_OPENING') {
     assert(tagOpeningExists('head', htmlString))
     htmlString = injectAtOpeningTag('head', htmlString, htmlFragment)
-    return htmlString
-  }
-  if (position === 'HEAD_CLOSING') {
-    assert(tagClosingExists('head', htmlString))
-    htmlString = injectAtClosingTag('head', htmlString, htmlFragment)
     return htmlString
   }
   if (position === 'DOCUMENT_END') {
@@ -100,7 +95,7 @@ function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: strin
   return before + tagInstance + htmlTag + after
 }
 
-function injectAtClosingTag(tag: 'head' | 'body' | 'html', htmlString: string, htmlTag: string): string {
+function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlTag: string): string {
   const tagClosing = getTagClosing(tag)
   const matches = htmlString.match(tagClosing)
   assert(matches && matches.length >= 1)
