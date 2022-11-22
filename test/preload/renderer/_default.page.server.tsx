@@ -45,7 +45,12 @@ async function render(pageContext: any) {
         if (preloadStrategy === 'DISABLED') {
           dontInject = true
         }
-        if (preloadStrategy === 'ONLY_FONT' && asset.isPreload && asset.assetType !== 'font') {
+        if (
+          preloadStrategy === 'ONLY_FONT' &&
+          asset.isPreload &&
+          asset.assetType !== 'font' &&
+          asset.assetType !== 'script'
+        ) {
           dontInject = true
         }
         if (dontInject) {
