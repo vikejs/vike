@@ -257,13 +257,11 @@ async function renderTemplate(
     assertUsage(!isPromise(templateVar), getErrMsg('a promise', 'Did you forget to `await` the promise?'))
 
     if (templateVar === null) {
-      addHtmlPart('')
       continue
     }
 
     if (templateVar === undefined) {
       assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { onlyOnce: false })
-      addHtmlPart('')
       continue
     }
 
