@@ -16,12 +16,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -60,12 +62,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -104,12 +108,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },
@@ -148,12 +154,14 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/renderer/PageLayout.css?direct",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
         },

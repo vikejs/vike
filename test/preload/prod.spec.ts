@@ -16,48 +16,56 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</assets/_default.page.client.$HASH.css>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/assets/_default.page.client.$HASH.css",
         },
         {
           "assetType": "font",
           "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "isPreload": true,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
         },
         {
           "assetType": "image",
           "earlyHintLink": "</assets/logo.$HASH.svg>; rel=preload; as=image",
+          "isPreload": true,
           "mediaType": "image/svg+xml",
           "src": "/assets/logo.$HASH.svg",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/assets/entry-server-routing.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/pages/index.page.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/pages/index.page.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/renderer/_default.page.client.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/renderer/_default.page.client.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
@@ -94,48 +102,56 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</assets/_default.page.client.$HASH.css>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/assets/_default.page.client.$HASH.css",
         },
         {
           "assetType": "font",
           "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "isPreload": true,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
         },
         {
           "assetType": "image",
           "earlyHintLink": "</assets/logo.$HASH.svg>; rel=preload; as=image",
+          "isPreload": true,
           "mediaType": "image/svg+xml",
           "src": "/assets/logo.$HASH.svg",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/assets/entry-server-routing.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/pages/preload-disabled.page.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/pages/preload-disabled.page.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/renderer/_default.page.client.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/renderer/_default.page.client.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
@@ -166,48 +182,56 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</assets/_default.page.client.$HASH.css>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/assets/_default.page.client.$HASH.css",
         },
         {
           "assetType": "font",
           "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "isPreload": true,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
         },
         {
           "assetType": "image",
           "earlyHintLink": "</assets/logo.$HASH.svg>; rel=preload; as=image",
+          "isPreload": true,
           "mediaType": "image/svg+xml",
           "src": "/assets/logo.$HASH.svg",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/assets/entry-server-routing.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/pages/preload-font-only.page.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/pages/preload-font-only.page.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/renderer/_default.page.client.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/renderer/_default.page.client.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
@@ -243,48 +267,56 @@ describe('preload tags', () => {
         {
           "assetType": "style",
           "earlyHintLink": "</assets/_default.page.client.$HASH.css>; rel=preload; as=style",
+          "isPreload": false,
           "mediaType": "text/css",
           "src": "/assets/_default.page.client.$HASH.css",
         },
         {
           "assetType": "font",
           "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "isPreload": true,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
         },
         {
           "assetType": "image",
           "earlyHintLink": "</assets/logo.$HASH.svg>; rel=preload; as=image",
+          "isPreload": true,
           "mediaType": "image/svg+xml",
           "src": "/assets/logo.$HASH.svg",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/entry-server-routing.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": false,
           "mediaType": "text/javascript",
           "src": "/assets/entry-server-routing.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/pages/preload-eager.page.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/pages/preload-eager.page.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/renderer/_default.page.client.$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/renderer/_default.page.client.$HASH.js",
         },
         {
           "assetType": "script",
           "earlyHintLink": "</assets/chunk-$HASH.js>; rel=modulepreload; as=script",
+          "isPreload": true,
           "mediaType": "text/javascript",
           "src": "/assets/chunk-$HASH.js",
         },
@@ -333,8 +365,8 @@ async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-font-on
   const body = stabilizeHashs(httpResponse!.body)
   const earlyHints = httpResponse!.earlyHints.map((hint) =>
     Object.fromEntries(
-      Object.entries(hint).map(([key, val]: [string, null | string]) => {
-        val = val && stabilizeHashs(val)
+      Object.entries(hint).map(([key, val]: [string, null | boolean | string]) => {
+        val = typeof val !== 'string' ? val : stabilizeHashs(val)
         return [key, val]
       })
     )

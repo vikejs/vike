@@ -4,7 +4,6 @@ import {
   isDocumentHtml,
   renderDocumentHtml,
   getHtmlString,
-  type PageAssetPublic
 } from './html/renderHtml'
 import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
@@ -31,7 +30,7 @@ import {
 } from './utils'
 import { getPageAssets, type PageAsset } from './renderPage/getPageAssets'
 import { sortPageContext } from '../shared/sortPageContext'
-import { assertHookResult, assertObjectKeys } from '../shared/assertHookResult'
+import { assertHookResult } from '../shared/assertHookResult'
 import {
   getStreamReadableNode,
   getStreamReadableWeb,
@@ -329,7 +328,7 @@ function assertError(err: unknown) {
 
 type StatusCode = 200 | 404 | 500
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
-type EarlyHint = PageAssetPublic & {
+type EarlyHint = PageAsset & {
   earlyHintLink: string
 }
 type HttpResponse = {
@@ -384,11 +383,9 @@ async function createHttpResponseObject(
 
   const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
 
-  const earlyHints: EarlyHint[] = (await pageContext.__getPageAssets()).map((a) => ({
-    src: a.src,
-    assetType: a.assetType,
-    mediaType: a.mediaType,
-    earlyHintLink: inferEarlyHintLink(a)
+  const earlyHints: EarlyHint[] = (await pageContext.__getPageAssets()).map((asset) => ({
+    ...asset,
+    earlyHintLink: inferEarlyHintLink(asset)
   }))
 
   return {

@@ -8,7 +8,6 @@ export { renderDocumentHtml }
 export { isDocumentHtml }
 export { getHtmlString }
 export type { HtmlRender }
-export type { PageAssetPublic }
 export type { HtmlPart }
 import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
@@ -21,12 +20,6 @@ import type { PreloadFilter } from './injectAssets/getHtmlTags'
 
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
-
-type PageAssetPublic = {
-  src: PageAsset['src']
-  assetType: PageAsset['assetType']
-  mediaType: PageAsset['mediaType']
-}
 
 type TemplateStrings = TemplateStringsArray
 type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
@@ -107,11 +100,7 @@ async function renderHtmlStream(
     if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
       injectToStream = streamOriginal.injectToStream
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(
-      pageContext,
-      injectToStream,
-      injectFilter
-    )
+    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream, injectFilter)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.htmlPartsBegin)
