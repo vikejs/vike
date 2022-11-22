@@ -1,5 +1,5 @@
 import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign, isObject } from '../utils'
-import { injectAssets, injectAssetsToStream } from './injectAssets'
+import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 import { isStreamReactStreaming } from './stream/react-streaming'
@@ -60,7 +60,7 @@ async function renderDocumentHtml(
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectAssets(htmlString, pageContext, false)
+    htmlString = await injectHtmlTagsToString(htmlString, pageContext, false)
     return htmlString
   }
   if (isStream(documentHtml)) {
@@ -73,7 +73,7 @@ async function renderDocumentHtml(
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if ('htmlString' in render) {
       let { htmlString, disableAutoInjectPreloadTags } = render
-      htmlString = await injectAssets(htmlString, pageContext, disableAutoInjectPreloadTags)
+      htmlString = await injectHtmlTagsToString(htmlString, pageContext, disableAutoInjectPreloadTags)
       return htmlString
     } else {
       const { htmlStream, disableAutoInjectPreloadTags } = render
@@ -110,7 +110,7 @@ async function renderHtmlStream(
     if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
       injectToStream = streamOriginal.injectToStream
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, injectToStream)
+    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.stringBegin, disableAutoInjectPreloadTags)

@@ -11,8 +11,8 @@ import { mergeScriptTags } from './injectAssets/mergeScriptTags'
 import type { InjectToStream } from 'react-streaming/server'
 
 export { injectAssets__public }
-export { injectAssets }
-export { injectAssetsToStream }
+export { injectHtmlTagsToString }
+export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
 
 // TODO: BREAK THIS
@@ -32,7 +32,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   castProp<() => Promise<PageAsset[]>, typeof pageContext, '__getPageAssets'>(pageContext, '__getPageAssets')
-  htmlString = await injectAssets(htmlString, pageContext as any, false)
+  htmlString = await injectHtmlTagsToString(htmlString, pageContext as any, false)
   return htmlString
 }
 
@@ -49,18 +49,18 @@ type PageContextInjectAssets = {
   _baseUrl: string
   is404: null | boolean
 }
-async function injectAssets(
+async function injectHtmlTagsToString(
   htmlString: string,
   pageContext: PageContextInjectAssets,
   disableAutoInjectPreloadTags: boolean
 ): Promise<string> {
-  const { injectAtStreamBegin, injectAtStreamEnd } = injectAssetsToStream(pageContext, null)
+  const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, null)
   htmlString = await injectAtStreamBegin(htmlString, disableAutoInjectPreloadTags)
   htmlString = await injectAtStreamEnd(htmlString)
   return htmlString
 }
 
-function injectAssetsToStream(pageContext: PageContextInjectAssets, injectToStream: null | InjectToStream) {
+function injectHtmlTagsToStream(pageContext: PageContextInjectAssets, injectToStream: null | InjectToStream) {
   let htmlSnippets: HtmlSnippet[]
 
   return {
