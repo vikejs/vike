@@ -42,7 +42,7 @@ function showWarnings(options: Options) {
       `The options ${str(
         opts
       )} you passed to \`createPageRenderer()\` have no effect anymore: they are now automatically determined.`,
-      { onlyOnce: true }
+      { showStackTrace: false, onlyOnce: true }
     )
   }
   {
@@ -52,7 +52,7 @@ function showWarnings(options: Options) {
       `The options ${str(
         opts
       )} you passed to \`createPageRenderer()\` have no effect. See https://vite-plugin-ssr.com/migration-0.4`,
-      { onlyOnce: true }
+      { showStackTrace: false, onlyOnce: true }
     )
   }
 }

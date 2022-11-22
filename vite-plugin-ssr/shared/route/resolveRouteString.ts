@@ -42,7 +42,7 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
         `Outdated route string \`${routeString}\`, use \`${routeString
           .split(PARAM_TOKEN_OLD)
           .join(PARAM_TOKEN_NEW)}\` instead.`,
-        { onlyOnce: true }
+        { showStackTrace: false, onlyOnce: true }
       )
       if (!urlSegment) {
         return null

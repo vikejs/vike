@@ -273,7 +273,7 @@ async function renderTemplate(
     }
 
     if (templateVar === undefined) {
-      assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { onlyOnce: false })
+      assertWarning(false, getErrMsg(`\`${templateVar}\``, ''), { showStackTrace: false, onlyOnce: false })
       continue
     }
 

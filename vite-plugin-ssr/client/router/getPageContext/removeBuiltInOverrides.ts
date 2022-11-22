@@ -17,13 +17,13 @@ function removeBuiltInOverrides(pageContext: Record<string, unknown> & { [key in
         assertWarning(
           false,
           `\`pageContext.${prop}\` is already available in the browser when using Client Routing; including \`${prop}\` in \`passToClient\` has no effect.`,
-          { onlyOnce: true }
+          { showStackTrace: false, onlyOnce: true }
         )
       } else {
         assertWarning(
           false,
           `\`pageContext.${prop}\` is a built-in that cannot be overriden; including \`${prop}\` in \`passToClient\` has no effect.`,
-          { onlyOnce: true }
+          { showStackTrace: false, onlyOnce: true }
         )
       }
       delete pageContext[prop]

@@ -322,7 +322,7 @@ function assertError(err: unknown) {
     assertWarning(
       false,
       "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
-      { onlyOnce: false }
+      { showStackTrace: false, onlyOnce: false }
     )
   }
 }
@@ -946,7 +946,7 @@ function assertArguments(...args: unknown[]) {
     assertWarning(
       false,
       '`pageContext.url` has been renamed to `pageContext.urlOriginal`: replace `renderPage({ url })` with `renderPage({ urlOriginal })`. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
-      { onlyOnce: true }
+      { showStackTrace: false, onlyOnce: true }
     )
     pageContextInit.urlOriginal = pageContextInit.url
     delete pageContextInit.url
@@ -993,7 +993,7 @@ function warnMissingErrorPage(pageContext: { _isProduction: boolean }) {
     assertWarning(
       false,
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
-      { onlyOnce: true }
+      { showStackTrace: false, onlyOnce: true }
     )
   }
 }

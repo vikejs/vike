@@ -12,7 +12,7 @@ cli
     assertWarning(
       false,
       'The `$ vite-plugin-ssr prerender` CLI is outdated. Set the `vite.config.js` option `prerender` instead. See https://vite-plugin-ssr.com/prerender-config for more information.',
-      { onlyOnce: true }
+      { showStackTrace: false, onlyOnce: true }
     )
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options

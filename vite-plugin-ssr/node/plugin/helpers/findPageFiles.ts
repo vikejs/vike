@@ -18,6 +18,7 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Pro
     time < 2 * 1000,
     `Finding your page files \`**/*.page.*\` took more than two seconds (${time}ms). Reach out to the vite-plugin-ssr maintainers.`,
     {
+      showStackTrace: false,
       onlyOnce: 'slow-page-files-search'
     }
   )

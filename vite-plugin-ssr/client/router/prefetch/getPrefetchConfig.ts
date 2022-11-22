@@ -62,7 +62,7 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
   })()
 
   if (prefetchStaticAssets && prefetchStaticAssets.when === 'VIEWPORT' && !pageContext._isProduction) {
-    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
+    assertInfo(false, 'Viewport prefetching is disabled in development', { showStackTrace: false, onlyOnce: true })
     prefetchStaticAssets = { when: 'HOVER' }
   }
 
@@ -71,7 +71,10 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
 
 function getPrefetchAttribute(linkTag: HTMLElement): boolean | null {
   let prefetchAttribute = linkTag.getAttribute('data-prefetch')
-  assertWarning(prefetchAttribute === null, 'The `data-prefetch` attribute is outdated.', { onlyOnce: true })
+  assertWarning(prefetchAttribute === null, 'The `data-prefetch` attribute is outdated.', {
+    showStackTrace: false,
+    onlyOnce: true
+  })
 
   if (prefetchAttribute === null) return null
   assert(typeof prefetchAttribute === 'string')

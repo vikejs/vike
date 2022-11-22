@@ -31,6 +31,6 @@ function assertPageContextProvidedByUser(
   assertWarning(
     !('_pageId' in pageContextProvidedByUser),
     'You are using `onBeforeRoute()` to override vite-plugin-ssr routing. This is experimental: make sure to contact a vite-plugin-ssr maintainer before using this.',
-    { onlyOnce: true }
+    { showStackTrace: false, onlyOnce: true }
   )
 }

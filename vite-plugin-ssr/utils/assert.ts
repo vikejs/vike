@@ -69,7 +69,7 @@ const globalObject = getGlobalObject<{ alreadyLogged: Set<string> }>('assert.ts'
 function assertWarning(
   condition: unknown,
   errorMessage: string,
-  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace?: boolean }
+  { onlyOnce, showStackTrace }: { onlyOnce: boolean | string; showStackTrace: boolean }
 ): void {
   if (condition) {
     return
@@ -91,7 +91,7 @@ function assertWarning(
   }
 }
 
-function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean }): void {
+function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean, showStackTrace?: false }): void {
   if (condition) {
     return
   }

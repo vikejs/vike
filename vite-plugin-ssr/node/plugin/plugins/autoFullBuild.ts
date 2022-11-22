@@ -69,7 +69,7 @@ function abortSSRBuild(configVps: ConfigVpsResolved) {
     assertWarning(
       false,
       "The CLI call `$ vite build --ssr` is superfluous since `$ vite build` also builds the server-side. If you want two separate build steps then use https://vite-plugin-ssr.com/disableAutoFullBuild or use Vite's `build()` API.",
-      { onlyOnce: true }
+      { showStackTrace: false, onlyOnce: true }
     )
     process.exit(0)
   }

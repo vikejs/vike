@@ -423,7 +423,7 @@ async function callOnBeforePrerenderHook(globalContext: {
           false,
           msgPrefix +
             ' uses `pageContext.url` but it should use `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
-          { onlyOnce: true }
+          { showStackTrace: false, onlyOnce: true }
         )
         return pageContext.urlOriginal
       },
@@ -456,7 +456,7 @@ async function callOnBeforePrerenderHook(globalContext: {
         false,
         msgPrefix +
           ' provided `pageContext.url` but it should provide `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
-        { onlyOnce: true }
+        { showStackTrace: false, onlyOnce: true }
       )
       pageContext.urlOriginal = pageContext.url
     }
@@ -555,7 +555,7 @@ function warnMissingPages(
       assertWarning(
         partial,
         `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,
-        { onlyOnce: true }
+        { showStackTrace: false, onlyOnce: true }
       )
     })
 }
@@ -746,6 +746,7 @@ function checkOutdatedOptions(options: {
       options[prop] === undefined,
       `[prerender()] Option \`${prop}\` is outdated and has no effect (vite-plugin-ssr now automatically determines \`${prop}\`)`,
       {
+        showStackTrace: false,
         onlyOnce: true
       }
     )

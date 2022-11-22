@@ -179,7 +179,7 @@ function useClientRouter() {
       assertWarning(
         !isReact(),
         'You seem to be using React; we recommend setting `hydrationCanBeAborted` to `true`, see https://vite-plugin-ssr.com/clientRouting',
-        { onlyOnce: true }
+        { showStackTrace: false, onlyOnce: true }
       )
     }
 

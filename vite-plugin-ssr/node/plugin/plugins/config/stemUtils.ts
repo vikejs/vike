@@ -89,8 +89,8 @@ function getStemPkgNames(userPkgJson: UserPkgJson): string[] {
     if (depName.startsWith('stem-')) {
       assertWarning(
         false,
-        `${depName} should be renamed to @someNpmOrg/${depName} (to follow the convention that all Stem packages belond to an npm organization)`,
-        { onlyOnce: true }
+        `${depName} should be renamed to @someNpmOrgOrUser/${depName} (to follow the convention that all Stem packages belond to an npm organization)`,
+        { showStackTrace: false, onlyOnce: true }
       )
       return true
     }
