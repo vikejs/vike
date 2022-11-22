@@ -1,7 +1,7 @@
 export { getHtmlTags }
 export type { HtmlTag }
 export type { PreloadFilter }
-export type { PreloadFilterEntry }
+export type { InjectFilterEntry }
 
 import { assert, assertWarning } from '../../utils'
 import { serializePageContextClientSide } from '../../serializePageContextClientSide'
@@ -13,9 +13,9 @@ import type { PageContextInjectAssets } from '../injectAssets'
 import type { InjectToStream } from 'react-streaming/server'
 import type { PageAsset } from '../../renderPage/getPageAssets'
 
-type PreloadFilter = null | ((assets: PreloadFilterEntry[]) => PreloadFilterEntry[])
+type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
-type PreloadFilterEntry = {
+type InjectFilterEntry = {
   src: string
   assetType: null | PageAsset['assetType']
   mediaType: null | PageAsset['mediaType']
@@ -42,7 +42,7 @@ async function getHtmlTags(
 
   const htmlTags: HtmlTag[] = []
 
-  let injectFilterEntries: PreloadFilterEntry[] = pageAssets
+  let injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((p) => {
       if (p.assetType !== 'script') {
         return true

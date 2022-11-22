@@ -6,7 +6,7 @@ export { injectAssets__public as _injectAssets } from './html/injectAssets/injec
 export { RenderErrorPage } from './renderPage/RenderErrorPage'
 
 export type { PageContextBuiltIn } from './types'
-export type { PreloadFilterEntry } from './html/injectAssets/getHtmlTags'
+export type { InjectFilterEntry } from './html/injectAssets/getHtmlTags'
 
 import './page-files/setup'
 import { assertUsage, isBrowser } from './utils'
