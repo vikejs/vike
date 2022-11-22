@@ -91,7 +91,11 @@ function assertWarning(
   }
 }
 
-function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean, showStackTrace?: false }): void {
+function assertInfo(
+  condition: unknown,
+  errorMessage: string,
+  { onlyOnce }: { onlyOnce: boolean; showStackTrace?: false }
+): void {
   if (condition) {
     return
   }

@@ -50,9 +50,7 @@ function injectHtmlTagsToStream(
     injectAtStreamEnd
   }
 
-  async function injectAtStreamBegin(
-    htmlPartsBegin: HtmlPart[],
-  ): Promise<string> {
+  async function injectAtStreamBegin(htmlPartsBegin: HtmlPart[]): Promise<string> {
     htmlTags = await getHtmlTags(pageContext, injectToStream, preloadFilter)
 
     const pageAssets = await pageContext.__getPageAssets()

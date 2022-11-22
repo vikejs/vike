@@ -158,11 +158,15 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
     try {
       // For Vitest
       // Current file: node_modules/vite-plugin-ssr/node/html/injectAssets.js
-      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../client/').replace('.js', '.ts')))
+      filePath = toPosixPath(
+        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../client/').replace('.js', '.ts'))
+      )
     } catch {
       // For users
       // Current file: node_modules/vite-plugin-ssr/dist/cjs/node/html/injectAssets.js
-      filePath = toPosixPath(res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../dist/esm/client/')))
+      filePath = toPosixPath(
+        res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../dist/esm/client/'))
+      )
     }
   }
   if (!filePath.startsWith('/')) {

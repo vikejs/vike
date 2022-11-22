@@ -110,7 +110,7 @@ function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlFragme
   return before + htmlFragment + tagInstance + after
 }
 
-function injectBreakLines(htmlFragment: string, before: string ) {
+function injectBreakLines(htmlFragment: string, before: string) {
   const whitespaceOriginal: string = before.match(/\s*$/)![0]!
   const whitespaceExtra = whitespaceOriginal ? '  ' : ''
   const whitespace = `${whitespaceOriginal}${whitespaceExtra}`
