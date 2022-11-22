@@ -104,7 +104,21 @@ function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlTag: s
   // Insert `htmlTag` before last `tagClosing`
   const before = slice(htmlParts, 0, -1).join(tagInstance)
   const after = slice(htmlParts, -1, 0)
+
+  htmlTag = injectBreakLines(htmlTag, before)
+
+  // TODO: rename htmlTag + htmlSnippets
   return before + htmlTag + tagInstance + after
+}
+
+function injectBreakLines(htmlFragment: string, before: string ) {
+  const whitespaceOriginal: string = before.match(/\s*$/)![0]!
+  const whitespaceExtra = whitespaceOriginal ? '  ' : ''
+  const whitespace = `${whitespaceOriginal}${whitespaceExtra}`
+  htmlFragment = htmlFragment.split(/<(?=[^\/])/).join(`${whitespace}<`) + whitespaceOriginal
+  assert(htmlFragment.startsWith(whitespace))
+  htmlFragment = whitespaceExtra + htmlFragment.slice(whitespace.length)
+  return htmlFragment
 }
 
 function createHtmlHeadIfMissing(htmlString: string): string {

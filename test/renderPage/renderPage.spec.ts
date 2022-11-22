@@ -13,8 +13,8 @@ describe('renderPage()', () => {
       const { body, statusCode, contentType } = pageContext.httpResponse
       expect(statusCode).toBe(200)
       expect(contentType).toBe('text/html;charset=utf-8')
-      expect(body).toBe(
-        `<html><head></head><body>hello<script type=\"module\" src=\"/@vite/client\"></script></body></html>`
+      expect(body).toMatchInlineSnapshot(
+        '"<html><head></head><body><p>hello</p><script type=\\"module\\" src=\\"/@vite/client\\"></script></body></html>"'
       )
     }
     /*

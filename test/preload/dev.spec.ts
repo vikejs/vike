@@ -34,7 +34,7 @@ describe('preload tags', () => {
           <html><head><link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\"></head>
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/renderer/logo.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Default</h1><p>This page showcases the default preloading strategy: in production, both the image and the font are preloaded.</p></div></div></div>
-            <script type=\\"module\\" async>
+              <script type=\\"module\\" async>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
@@ -42,7 +42,10 @@ describe('preload tags', () => {
       window.__vite_plugin_react_preamble_installed__ = true
       import(\\"/@vite/client\\");
       import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
-      </script><link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\"><script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/index\\",\\"pageProps\\":\\"!undefined\\"}}</script></body>
+      </script>
+              <link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\">
+              <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/index\\",\\"pageProps\\":\\"!undefined\\"}}</script>
+            </body>
           </html>"
     `
     )
@@ -73,7 +76,7 @@ describe('preload tags', () => {
           <html><head><link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\"></head>
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/renderer/logo.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Disabled</h1><p>This page showcases completely disabled preloading: the image nor the font are preloaded.</p></div></div></div>
-            <script type=\\"module\\" async>
+              <script type=\\"module\\" async>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
@@ -81,7 +84,10 @@ describe('preload tags', () => {
       window.__vite_plugin_react_preamble_installed__ = true
       import(\\"/@vite/client\\");
       import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
-      </script><link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\"><script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-disabled\\",\\"pageProps\\":\\"!undefined\\"}}</script></body>
+      </script>
+              <link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\">
+              <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-disabled\\",\\"pageProps\\":\\"!undefined\\"}}</script>
+            </body>
           </html>"
     `
     )
@@ -112,7 +118,7 @@ describe('preload tags', () => {
           <html><head><link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\"></head>
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/renderer/logo.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Font Only</h1><p>This page showcases a custom strategy of only preloading the font (i.e. the image isn&#x27;t preloaded).</p></div></div></div>
-            <script type=\\"module\\" async>
+              <script type=\\"module\\" async>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
@@ -120,7 +126,10 @@ describe('preload tags', () => {
       window.__vite_plugin_react_preamble_installed__ = true
       import(\\"/@vite/client\\");
       import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
-      </script><link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\"><script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-font-only\\",\\"pageProps\\":\\"!undefined\\"}}</script></body>
+      </script>
+              <link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\">
+              <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-font-only\\",\\"pageProps\\":\\"!undefined\\"}}</script>
+            </body>
           </html>"
     `
     )
