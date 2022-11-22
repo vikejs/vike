@@ -1,16 +1,7 @@
-import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
-import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
-import type { PageContextInjectAssets } from './injectAssets'
-import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
-import { isStreamReactStreaming } from './stream/react-streaming'
-import type { InjectToStream } from 'react-streaming/server'
-import type { PageAsset } from '../renderPage/getPageAssets'
-import type { PreloadFilter } from './injectAssets/getHtmlTags'
-
 // Public
 export { escapeInject }
-export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
 export { dangerouslySkipEscape }
+export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
 
 // Private
 export { renderDocumentHtml }
@@ -19,6 +10,14 @@ export { getHtmlString }
 export type { HtmlRender }
 export type { PageAssetPublic }
 export type { HtmlPart }
+import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
+import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
+import type { PageContextInjectAssets } from './injectAssets'
+import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
+import { isStreamReactStreaming } from './stream/react-streaming'
+import type { InjectToStream } from 'react-streaming/server'
+import type { PageAsset } from '../renderPage/getPageAssets'
+import type { PreloadFilter } from './injectAssets/getHtmlTags'
 
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
@@ -181,6 +180,7 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   return { _escaped: arg }
 }
 
+// Currently, `HtmlPart` is always a `string`. But we may need string-returning-functions for advanced stream integrations such as RSC.
 type HtmlPart = string | ((pageAssets: PageAsset[]) => string)
 
 async function renderTemplate(
