@@ -285,24 +285,6 @@ importers:
       vite: 3.2.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
-  examples/custom-server-render-integration:
-    specifiers:
-      '@vitejs/plugin-react': ^2.0.1
-      cross-env: ^7.0.3
-      express: ^4.18.1
-      react: ^18.1.0
-      react-dom: ^18.1.0
-      vite: ^3.0.9
-      vite-plugin-ssr: link:../../vite-plugin-ssr
-    dependencies:
-      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
-      cross-env: 7.0.3
-      express: 4.18.1
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      vite: 3.0.9
-      vite-plugin-ssr: link:../../vite-plugin-ssr
-
   examples/file-structure-domain-driven:
     specifiers:
       '@vitejs/plugin-react': ^2.0.1
