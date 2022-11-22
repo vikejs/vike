@@ -54,12 +54,12 @@ function injectHtmlSnippets(htmlString: string, htmlTags: HtmlTags[], injectToSt
   let htmlFragments: HtmlFragments[] = []
   htmlTags.forEach(({ htmlSnippet, position }) => {
     const htmlTag: string = getHtmlSnippet(htmlSnippet)
-    if (!htmlString.includes(htmlTag)) {
-      htmlFragments.push({
-        htmlFragment: htmlTag,
-        position
-      })
-    }
+    // if (!htmlString.includes(htmlTag)) {
+    htmlFragments.push({
+      htmlFragment: htmlTag,
+      position
+    })
+    // }
   })
   htmlFragments = bundleTags(htmlFragments)
   htmlFragments.forEach((htmlFragment) => {
