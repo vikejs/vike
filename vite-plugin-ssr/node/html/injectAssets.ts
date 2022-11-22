@@ -5,10 +5,10 @@ export type { PageContextInjectAssets }
 import { assert } from '../utils'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
-import { createHtmlHeadIfMissing, injectHtmlSnippets } from './injectAssets/injectHtmlSnippet'
+import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags'
 import type { ViteDevServer } from 'vite'
 import type { InjectToStream } from 'react-streaming/server'
-import { HtmlPart } from './renderHtml'
+import type { HtmlPart } from './renderHtml'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags'
 
 type PageContextInjectAssets = {
@@ -80,14 +80,14 @@ function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[], injectToStrea
   // Ensure existence of `<head>`
   htmlBegin = createHtmlHeadIfMissing(htmlBegin)
 
-  htmlBegin = injectHtmlSnippets(htmlBegin, htmlSnippetsAtBegin, injectToStream)
+  htmlBegin = injectHtmlTags(htmlBegin, htmlSnippetsAtBegin, injectToStream)
 
   return htmlBegin
 }
 
 function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
   const htmlSnippetsAtEnd = htmlTags.filter((snippet) => snippet.position === 'DOCUMENT_END')
-  htmlEnd = injectHtmlSnippets(htmlEnd, htmlSnippetsAtEnd, null)
+  htmlEnd = injectHtmlTags(htmlEnd, htmlSnippetsAtEnd, null)
   return htmlEnd
 }
 

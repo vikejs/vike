@@ -1,11 +1,31 @@
-export { injectHtmlSnippets }
+export { injectHtmlTags }
 export { createHtmlHeadIfMissing }
 
 import { assert, slice } from '../../utils'
 import type { InjectToStream } from 'react-streaming/server'
+import type { HtmlTag } from './getHtmlTags'
 
 type Position = 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
 const POSITIONS = ['HEAD_OPENING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
+
+type HtmlFragment = {
+  htmlFragment: string
+  position: Position
+}
+function injectHtmlTags(htmlString: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
+  let htmlFragments: HtmlFragment[] = []
+  htmlTags.forEach(({ htmlTag, position }) => {
+    htmlFragments.push({
+      htmlFragment: resolveHtmlTag(htmlTag),
+      position
+    })
+  })
+  htmlFragments = bundleTags(htmlFragments)
+  htmlFragments.forEach((htmlFragment) => {
+    htmlString = injectHtmlFragments(htmlFragment.position, htmlFragment.htmlFragment, htmlString, injectToStream)
+  })
+  return htmlString
+}
 
 function injectHtmlFragments(
   position: Position,
@@ -37,32 +57,9 @@ function injectHtmlFragments(
   assert(false)
 }
 
-type HtmlTags = {
-  htmlTag: string | (() => string)
-  position: Position
-}
-type HtmlFragments = {
-  htmlFragment: string
-  position: Position
-}
-function injectHtmlSnippets(htmlString: string, htmlTags: HtmlTags[], injectToStream: null | InjectToStream): string {
-  let htmlFragments: HtmlFragments[] = []
-  htmlTags.forEach(({ htmlTag, position }) => {
-    htmlFragments.push({
-      htmlFragment: resolveHtmlTag(htmlTag),
-      position
-    })
-  })
-  htmlFragments = bundleTags(htmlFragments)
-  htmlFragments.forEach((htmlFragment) => {
-    htmlString = injectHtmlFragments(htmlFragment.position, htmlFragment.htmlFragment, htmlString, injectToStream)
-  })
-  return htmlString
-}
-
 // Is this really needed?
-function bundleTags(htmlFragments: HtmlFragments[]): HtmlFragments[] {
-  const htmlFragmentsBundled: HtmlFragments[] = []
+function bundleTags(htmlFragments: HtmlFragment[]): HtmlFragment[] {
+  const htmlFragmentsBundled: HtmlFragment[] = []
   POSITIONS.forEach((position) => {
     const fragments: string[] = htmlFragments.filter((h) => h.position === position).map((h) => h.htmlFragment)
     if (fragments.length > 0) {
