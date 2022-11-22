@@ -56,9 +56,12 @@ async function getHtmlTags(
       }
     })
     .map((asset) => {
-      let inject: PreloadFilterInject = 'HTML_END'
+      let inject: PreloadFilterInject = false
       if (asset.assetType === 'style' || asset.assetType === 'font') {
         inject = 'HTML_BEGIN'
+      }
+      if (asset.assetType === 'script') {
+        inject = 'HTML_END'
       }
       return {
         ...asset,

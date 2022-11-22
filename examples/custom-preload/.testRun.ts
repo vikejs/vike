@@ -20,7 +20,7 @@ function testRun(cmd: 'npm run preview') {
   test('Default preloading', async () => {
     const html = await fetchHtml('/')
     testCommon(html)
-    expect(html).toMatch(logoRE)
+    expect(html).not.toMatch(logoRE)
     expect(html).toMatch(fontRE)
   })
 

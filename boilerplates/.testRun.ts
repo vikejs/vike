@@ -60,9 +60,6 @@ function testRun(
     if (isProd) {
       const hashRegexp = /[a-z0-9]+/
       expect(html).toMatch(partRegex`<link rel="icon" href="/assets/logo.${hashRegexp}.svg" />`)
-      expect(html).toMatch(
-        partRegex`<link rel="preload" href="/assets/logo.${hashRegexp}.svg" as="image" type="image/svg+xml">`
-      )
 
       try {
         expect(html).toMatch(
