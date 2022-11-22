@@ -131,6 +131,47 @@ describe('preload tags', () => {
     `
     )
   })
+  it('Page 4', async () => {
+    const { body, earlyHints } = await render('/preload-eager')
+    expect(earlyHints).toMatchInlineSnapshot(
+      `
+      [
+        {
+          "assetType": "style",
+          "earlyHintLink": "</renderer/PageLayout.css?direct>; rel=preload; as=style",
+          "mediaType": "text/css",
+          "src": "/renderer/PageLayout.css?direct",
+        },
+        {
+          "assetType": "script",
+          "earlyHintLink": "</@fs/$ROOT/vite-plugin-ssr/client/entry.ts>; rel=modulepreload; as=script",
+          "mediaType": "text/javascript",
+          "src": "/@fs/$ROOT/vite-plugin-ssr/client/entry.ts",
+        },
+      ]
+    `
+    )
+    expect(body).toMatchInlineSnapshot(
+      `
+      "<!DOCTYPE html>
+          <html><head><link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\"></head>
+            <body>
+              <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/renderer/logo.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Eager</h1><p>This page showcases eager preloading (all assets are preloaded ASAP).</p></div></div></div>
+              <script type=\\"module\\" async>
+      import RefreshRuntime from \\"/@react-refresh\\"
+      RefreshRuntime.injectIntoGlobalHook(window)
+      window.$RefreshReg$ = () => {}
+      window.$RefreshSig$ = () => (type) => type
+      window.__vite_plugin_react_preamble_installed__ = true
+      import(\\"/@vite/client\\");
+      import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
+      </script>
+              <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-eager\\",\\"pageProps\\":\\"!undefined\\"}}</script>
+            </body>
+          </html>"
+    `
+    )
+  })
 })
 
 async function devApp() {
@@ -140,7 +181,7 @@ async function devApp() {
   })
 }
 
-async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-font-only') {
+async function render(urlOriginal: '/' | '/preload-disabled' | '/preload-font-only' | '/preload-eager') {
   const { httpResponse } = await renderPage({ urlOriginal })
   const body = stabilizePaths(httpResponse!.body)
   const earlyHints = httpResponse!.earlyHints.map((hint) =>

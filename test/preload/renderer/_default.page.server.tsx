@@ -28,22 +28,26 @@ async function render(pageContext: any) {
 
   return {
     documentHtml,
-    preloadFilter(assets: PreloadFilterEntry[]) {
+    preloadFilter(assets: PreloadFilterEntry[]): PreloadFilterEntry[] {
       return assets.map((asset) => {
+        if (preloadStrategy === 'EAGER') {
+          return {
+            ...asset,
+            inject: 'HTML_BEGIN'
+          }
+        }
+
         if (!asset.isPreload) {
           return asset
         }
 
         let dontInject = false
-
         if (preloadStrategy === 'DISABLED') {
           dontInject = true
         }
-
         if (preloadStrategy === 'ONLY_FONT' && asset.isPreload && asset.assetType !== 'font') {
           dontInject = true
         }
-
         if (dontInject) {
           return {
             ...asset,

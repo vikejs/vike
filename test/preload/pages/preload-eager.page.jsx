@@ -1,0 +1,13 @@
+export { Page }
+export const preloadStrategy = 'EAGER'
+
+import React from 'react'
+
+function Page() {
+  return (
+    <>
+      <h1>Eager</h1>
+      <p>This page showcases eager preloading (all assets are preloaded ASAP).</p>
+    </>
+  )
+}
