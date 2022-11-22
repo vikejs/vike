@@ -149,7 +149,7 @@ importers:
 
   docs:
     specifiers:
-      '@brillout/docpress': ^0.1.5
+      '@brillout/docpress': ^0.1.9
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
@@ -159,7 +159,7 @@ importers:
       vite: ^3.0.9
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
-      '@brillout/docpress': 0.1.5_biqbaboplfbrettd7655fr4n2y
+      '@brillout/docpress': 0.1.9_6bdbsu2yzpeczxw5qylih75b3i
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
@@ -1858,8 +1858,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@brillout/docpress/0.1.5_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-MsEFpWFZ08BPmUa/lx9yLw2I4AXGDFkH30oAgiTxJBuNnKwZQNejHHfdYRxpJXE0HZgA/XWkrMqkXWhy75kfkQ==}
+  /@brillout/docpress/0.1.9_6bdbsu2yzpeczxw5qylih75b3i:
+    resolution: {integrity: sha512-dqNNLPzk8XPe+QjntHhn+TYTfp9c89HuMAucZCKPpnhP+stZIoQjwqCDluXfayFy8+rblzFbT41L5y6qoBCZtg==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -1868,7 +1868,7 @@ packages:
       '@mdx-js/mdx': 2.1.1
       '@mdx-js/react': 2.1.2_react@18.2.0
       '@mdx-js/rollup': 2.1.1
-      '@vitejs/plugin-react': 2.0.1_vite@3.0.9
+      '@vitejs/plugin-react': 2.2.0_vite@3.2.4
       balloon-css: 1.2.0
       express: 4.18.1
       react: 18.2.0
@@ -1877,13 +1877,15 @@ packages:
       remark-gfm: 3.0.1
       shiki: 0.10.1
       twemoji: 13.1.1
-      vite: 3.0.9
+      vite: 3.2.4_@types+node@15.14.9
       vite-plugin-ssr: link:vite-plugin-ssr
     transitivePeerDependencies:
+      - '@types/node'
       - less
       - rollup
       - sass
       - stylus
+      - sugarss
       - supports-color
       - terser
     dev: false
@@ -8889,6 +8891,40 @@ packages:
       terser:
         optional: true
     dependencies:
+      esbuild: 0.15.9
+      postcss: 8.4.19
+      resolve: 1.22.1
+      rollup: 2.79.1
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: false
+
+  /vite/3.2.4_@types+node@15.14.9:
+    resolution: {integrity: sha512-Z2X6SRAffOUYTa+sLy3NQ7nlHFU100xwanq1WDwqaiFiCe+25zdxP1TfCS5ojPV2oDDcXudHIoPnI1Z/66B7Yw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': '>= 14'
+      less: '*'
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      '@types/node': 15.14.9
       esbuild: 0.15.9
       postcss: 8.4.19
       resolve: 1.22.1

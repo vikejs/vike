@@ -256,6 +256,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Preload',
+    url: '/preload'
+  },
+  {
+    level: 2,
     title: 'HTML Streaming',
     url: '/stream'
   },

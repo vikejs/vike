@@ -1,0 +1,100 @@
+import { Link } from '@brillout/docpress'
+
+> **What is preload?** Preloading denotes the practice of loadings assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/JavaScript, in order to avoid network round trips.
+
+By default, vite-plugin-ssr automatically injects script, style, and preload tags to our HTML.
+It also automatically generates [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103).
+
+With `injectFilter()` we can control which preload tags are inserted and where.
+
+
+## Early Hints
+
+The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the successor of the now deprecated HTTP2/Push and is the recommend way for preloading assets.
+
+```js
+// server.js
+app.get('*', async (req, res) => {
+  const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
+  const { httpResponse } = pageContext
+  // For exampe with Node.js 18:
+  res.writeEarlyHints({ link: httpResponse.earlyHints.map((e) => e.earlyHintLink) })
+})
+```
+```ts
+type PageContext = {
+  httpResponse: {
+    earlyHints: {
+      earlyHintLink: string, // Header Line for the Early Hint Header
+      assetType: "image" | "script" | "font" | "style" | null
+      mediaType: string // MIME type
+      src: string // Asset's URL
+      isEntry: boolean // true  => asset is an entry
+                       // false => asset is a dependency of an entry
+    }[]
+  }
+}
+```
+
+Example: `$ npm init vite-plugin-ssr@latest`.
+
+See also:
+ - [developer.chrome.com > Early Hints](https://developer.chrome.com/blog/early-hints/)
+ - [Node.js 18 Support](https://nodejs.org/dist/latest-v19.x/docs/api/http.html#responsewriteearlyhintshints-callback)
+
+## `injectFilter()`
+
+Vite-plugin-ssr automatically injects preload tags.
+
+If vite-plugin-ssr's preload strategy doesn't work for us, we can control what and where preload/asset tags are injected.
+
+```ts
+// /renderer/_default.page.server.js
+
+export async function render(pageContext) {
+  // ...
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    injectFilter(assets: InjectFilterEntry[]): InjectFilterEntry[] {
+      return assets.map((asset) => {
+        // Only inject font preload tags
+        if (!asset.isEntry && asset.assetType !== 'font') {
+          return {
+            ...asset,
+            inject: false
+          }
+        } else {
+          // Default vite-plugin-ssr's preloading behavior
+          return {
+            ...asset,
+            inject: 'HTML_END'
+          }
+        }
+      })
+    }
+  }
+}
+```
+```ts
+type InjectFilterEntry = {
+  inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
+  src: string // Asset's URL
+  assetType: "image" | "script" | "font" | "style" | null
+  mediaType: string // MIME type
+  isEntry: boolean // true  => <script> or <link rel="stylesheet" type="text/css">
+                   // false => preload tag, e.g. <link rel="preload" as="font">
+}
+type InjectFilter = (assets: InjectFilterEntry[]) => InjectFilterEntry[]
+```
+
+Examples:
+ - <Link href="/examples/custom-preload/renderer/_default.page.server.tsx" />.
+ - <Link href="/test/preload/renderer/_default.page.server.tsx" />.
