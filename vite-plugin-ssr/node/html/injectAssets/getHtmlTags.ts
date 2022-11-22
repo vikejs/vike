@@ -23,7 +23,7 @@ type PreloadFilterEntry = {
 
 type HtmlTag = {
   htmlTag: string | (() => string)
-  position: 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
+  position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 }
 async function getHtmlTags(
   pageContext: PageContextInjectAssets,
@@ -63,20 +63,17 @@ async function getHtmlTags(
       // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
       //   - https://github.com/vitejs/vite/issues/2282
       //   - https://github.com/brillout/vite-plugin-ssr/issues/261
-      // TODO: enforce `showStackTrace`
       assertWarning(a.inject, `We recommend against not injecting ${a.src}`, { onlyOnce: true, showStackTrace: false })
     }
   })
   for (const entry of preloadFilterEntries) {
     if (entry.inject) {
       const htmlTag = entry.isPreload ? inferPreloadTag(entry) : inferAssetTag(entry)
-      // TODO: align naming
-      const position = entry.inject === 'HTML_BEGIN' ? 'HEAD_OPENING' : 'DOCUMENT_END'
-      htmlSnippets.push({ htmlTag, position })
+      htmlSnippets.push({ htmlTag, position: entry.inject })
     }
   }
 
-  const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'DOCUMENT_END'
+  const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
 
   // Serialized pageContext
   if (!isHtmlOnly) {

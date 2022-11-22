@@ -75,7 +75,7 @@ function injectHtmlTagsToStream(
 }
 
 function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[], injectToStream: null | InjectToStream): string {
-  const htmlSnippetsAtBegin = htmlTags.filter((snippet) => snippet.position !== 'DOCUMENT_END')
+  const htmlSnippetsAtBegin = htmlTags.filter((snippet) => snippet.position !== 'HTML_END')
 
   // Ensure existence of `<head>`
   htmlBegin = createHtmlHeadIfMissing(htmlBegin)
@@ -86,7 +86,7 @@ function injectToHtmlBegin(htmlBegin: string, htmlTags: HtmlTag[], injectToStrea
 }
 
 function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
-  const htmlSnippetsAtEnd = htmlTags.filter((snippet) => snippet.position === 'DOCUMENT_END')
+  const htmlSnippetsAtEnd = htmlTags.filter((snippet) => snippet.position === 'HTML_END')
   htmlEnd = injectHtmlTags(htmlEnd, htmlSnippetsAtEnd, null)
   return htmlEnd
 }

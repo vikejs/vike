@@ -5,8 +5,8 @@ import { assert, slice } from '../../utils'
 import type { InjectToStream } from 'react-streaming/server'
 import type { HtmlTag } from './getHtmlTags'
 
-type Position = 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
-const POSITIONS = ['HEAD_OPENING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
+type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
+const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]
 
 type HtmlFragment = {
   htmlFragment: string
@@ -33,12 +33,12 @@ function injectHtmlFragments(
   htmlString: string,
   injectToStream: null | InjectToStream
 ): string {
-  if (position === 'HEAD_OPENING') {
+  if (position === 'HTML_BEGIN') {
     assert(tagOpeningExists('head', htmlString))
     htmlString = injectAtOpeningTag('head', htmlString, htmlFragment)
     return htmlString
   }
-  if (position === 'DOCUMENT_END') {
+  if (position === 'HTML_END') {
     if (tagClosingExists('body', htmlString)) {
       return injectAtClosingTag('body', htmlString, htmlFragment)
     }
