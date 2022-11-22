@@ -1,3 +1,8 @@
+export { injectHtmlTagsToString }
+export { injectHtmlTagsToStream }
+export type { PageContextInjectAssets }
+export { injectAssets__public }
+
 import { assert, assertUsage, assertWarning, castProp, hasProp } from '../utils'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import { serializePageContextClientSide } from '../serializePageContextClientSide'
@@ -10,11 +15,6 @@ import { getViteDevScripts } from './injectAssets/getViteDevScripts'
 import { mergeScriptTags } from './injectAssets/mergeScriptTags'
 import type { InjectToStream } from 'react-streaming/server'
 import { HtmlPart } from './renderHtml'
-
-export { injectAssets__public }
-export { injectHtmlTagsToString }
-export { injectHtmlTagsToStream }
-export type { PageContextInjectAssets }
 
 // TODO: BREAK THIS
 async function injectAssets__public(htmlString: string, pageContext: Record<string, unknown>): Promise<string> {
@@ -65,7 +65,7 @@ async function injectHtmlTagsToString(
 }
 
 function injectHtmlTagsToStream(pageContext: PageContextInjectAssets, injectToStream: null | InjectToStream) {
-  let htmlSnippets: HtmlSnippet[]
+  let htmlSnippets: HtmlSnippet[] | undefined
 
   return {
     injectAtStreamBegin,
@@ -86,6 +86,7 @@ function injectHtmlTagsToStream(pageContext: PageContextInjectAssets, injectToSt
   }
 
   async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[]): Promise<string> {
+    assert(htmlSnippets)
     await resolvePageContextPromise(pageContext)
     const pageAssets = await pageContext.__getPageAssets()
     let htmlEnd = htmlPartsToString(htmlPartsEnd, pageAssets)
