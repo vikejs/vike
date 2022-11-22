@@ -68,15 +68,9 @@ function testRun(
         expect(html).toMatch(
           partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js" async>`
         )
-        expect(html).toMatch(
-          partRegex`<link rel="modulepreload" href="/assets/entry-client-routing.${hashRegexp}.js" as="script" type="text/javascript">`
-        )
       } catch (err) {
         expect(html).toMatch(
           partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js" async>`
-        )
-        expect(html).toMatch(
-          partRegex`<link rel="modulepreload" href="/assets/entry-server-routing.${hashRegexp}.js" as="script" type="text/javascript">`
         )
       }
 

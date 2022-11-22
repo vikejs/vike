@@ -43,7 +43,6 @@ describe('preload tags', () => {
       import(\\"/@vite/client\\");
       import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
       </script>
-              <link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\">
               <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/index\\",\\"pageProps\\":\\"!undefined\\"}}</script>
             </body>
           </html>"
@@ -85,7 +84,6 @@ describe('preload tags', () => {
       import(\\"/@vite/client\\");
       import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
       </script>
-              <link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\">
               <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-disabled\\",\\"pageProps\\":\\"!undefined\\"}}</script>
             </body>
           </html>"
@@ -127,7 +125,6 @@ describe('preload tags', () => {
       import(\\"/@vite/client\\");
       import(\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\");
       </script>
-              <link rel=\\"modulepreload\\" href=\\"/@fs/$ROOT/vite-plugin-ssr/client/entry.ts\\" as=\\"script\\" type=\\"text/javascript\\">
               <script id=\\"vite-plugin-ssr_pageContext\\" type=\\"application/json\\">{\\"pageContext\\":{\\"_pageId\\":\\"/pages/preload-font-only\\",\\"pageProps\\":\\"!undefined\\"}}</script>
             </body>
           </html>"

@@ -72,7 +72,6 @@ describe('preload tags', () => {
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/assets/logo.$HASH.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Default</h1><p>This page showcases the default preloading strategy: in production, both the image and the font are preloaded.</p></div></div></div>
               <link rel=\\"preload\\" href=\\"/assets/logo.$HASH.svg\\" as=\\"image\\" type=\\"image/svg+xml\\">
               <script type=\\"module\\" src=\\"/assets/entry-server-routing.$HASH.js\\" async></script>
-              <link rel=\\"modulepreload\\" href=\\"/assets/entry-server-routing.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/pages/index.page.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/renderer/_default.page.client.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
@@ -146,7 +145,6 @@ describe('preload tags', () => {
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/assets/logo.$HASH.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Disabled</h1><p>This page showcases completely disabled preloading: the image nor the font are preloaded.</p></div></div></div>
               <script type=\\"module\\" src=\\"/assets/entry-server-routing.$HASH.js\\" async></script>
-              <link rel=\\"modulepreload\\" href=\\"/assets/entry-server-routing.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/pages/preload-disabled.page.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/renderer/_default.page.client.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
@@ -220,7 +218,6 @@ describe('preload tags', () => {
             <body>
               <div id=\\"page-view\\"><div style=\\"display:flex;max-width:900px;margin:auto\\"><div style=\\"padding:20px;padding-top:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;line-height:1.8em\\"><div style=\\"margin-top:20px;margin-bottom:10px\\"><a href=\\"/\\"><img src=\\"/assets/logo.$HASH.svg\\" height=\\"64\\" width=\\"64\\"/></a></div><a class=\\"navitem\\" href=\\"/\\">Preload Default</a><a class=\\"navitem\\" href=\\"/preload-disabled\\">Preload Disabled</a><a class=\\"navitem\\" href=\\"/preload-font-only\\">Preload Only Font</a></div><div style=\\"padding:20px;padding-bottom:50px;border-left:2px solid #eee;min-height:100vh\\"><h1>Font Only</h1><p>This page showcases a custom strategy of only preloading the font (i.e. the image isn&#x27;t preloaded).</p></div></div></div>
               <script type=\\"module\\" src=\\"/assets/entry-server-routing.$HASH.js\\" async></script>
-              <link rel=\\"modulepreload\\" href=\\"/assets/entry-server-routing.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/pages/preload-font-only.page.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/chunk-$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">
               <link rel=\\"modulepreload\\" href=\\"/assets/renderer/_default.page.client.$HASH.js\\" as=\\"script\\" type=\\"text/javascript\\">

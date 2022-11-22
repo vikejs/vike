@@ -81,8 +81,8 @@ async function getHtmlTags(
     const { assetType } = pageAsset
 
     // JavaScript
-    if (assetType === 'script') {
-      // We only add preload tags: asset tags are already included with `getMergedScriptTag()`
+    if (assetType === 'script' && pageAsset.isPreload) {
+      // We only add preload tags: script tags are already included with `getMergedScriptTag()`
       const htmlTag = inferPreloadTag(pageAsset)
       if (!isHtmlOnly) {
         htmlSnippets.push({ htmlTag, position: positionJs })
