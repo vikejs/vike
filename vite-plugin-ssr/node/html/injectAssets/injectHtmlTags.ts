@@ -1,6 +1,10 @@
 export { injectHtmlTags }
 export { createHtmlHeadIfMissing }
 
+// Export for unit testing
+export { injectAtOpeningTag }
+export { injectAtClosingTag }
+
 import { assert, slice } from '../../utils'
 import type { InjectToStream } from 'react-streaming/server'
 import type { HtmlTag } from './getHtmlTags'
@@ -87,9 +91,12 @@ function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: strin
   assert(htmlParts.length >= 2)
 
   // Insert `htmlFragment` after first `tagInstance`
-  const before = slice(htmlParts, 0, 1)
+  const before = slice(htmlParts, 0, 1)[0]! + tagInstance
   const after = slice(htmlParts, 1, 0).join(tagInstance)
-  return before + tagInstance + htmlFragment + after
+
+  htmlFragment = injectBreakLines(htmlFragment, before, after)
+
+  return before + htmlFragment + after
 }
 
 function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlFragment: string): string {
@@ -103,20 +110,39 @@ function injectAtClosingTag(tag: 'body' | 'html', htmlString: string, htmlFragme
 
   // Insert `htmlFragment` before last `tagClosing`
   const before = slice(htmlParts, 0, -1).join(tagInstance)
-  const after = slice(htmlParts, -1, 0)
+  const after = tagInstance + slice(htmlParts, -1, 0)
 
-  htmlFragment = injectBreakLines(htmlFragment, before)
+  htmlFragment = injectBreakLines(htmlFragment, before, after)
 
-  return before + htmlFragment + tagInstance + after
+  return before + htmlFragment + after
 }
 
-function injectBreakLines(htmlFragment: string, before: string) {
-  const whitespaceOriginal: string = before.match(/\s*$/)![0]!
-  const whitespaceExtra = whitespaceOriginal ? '  ' : ''
-  const whitespace = `${whitespaceOriginal}${whitespaceExtra}`
-  htmlFragment = htmlFragment.split(/<(?=[^\/])/).join(`${whitespace}<`) + whitespaceOriginal
-  assert(htmlFragment.startsWith(whitespace))
-  htmlFragment = whitespaceExtra + htmlFragment.slice(whitespace.length)
+function injectBreakLines(htmlFragment: string, before: string, after: string) {
+  assert(htmlFragment.trim() === htmlFragment)
+
+  const currentLineBefore = before.split('\n').slice(-1)[0]!
+  let paddingParent: string = currentLineBefore.match(/\s*$/)![0]!
+  let isBlankLine = !!paddingParent
+  if (!paddingParent) {
+    paddingParent = currentLineBefore!.match(/^\s*/)![0]!
+  }
+  if (!paddingParent) return htmlFragment
+
+  const whitespaceExtra = paddingParent ? '  ' : ''
+  const whitespace = `${paddingParent}${whitespaceExtra}`
+  const padding = `\n${whitespace}`
+
+  htmlFragment = htmlFragment.split(/<(?=[^\/])/).join(`${padding}<`)
+  if (isBlankLine) {
+    assert(htmlFragment.startsWith(padding), { htmlFragment })
+    htmlFragment = whitespaceExtra + htmlFragment.slice(padding.length)
+  }
+
+  const currentLineAfter = after.split('\n')[0]!
+  if (currentLineAfter.trim().length > 0) {
+    htmlFragment += '\n' + paddingParent
+  }
+
   return htmlFragment
 }
 
