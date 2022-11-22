@@ -71,8 +71,10 @@ async function renderDocumentHtml(
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml._template
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
-    if ('htmlString' in render) {
-      let { htmlString, disableAutoInjectPreloadTags } = render
+    if (!('htmlStream' in render)) {
+      const { htmlPartsAll, disableAutoInjectPreloadTags } = render
+      const pageAssets = await pageContext.__getPageAssets()
+      let htmlString = htmlPartsToString(htmlPartsAll, pageAssets)
       htmlString = await injectHtmlTagsToString(htmlString, pageContext, disableAutoInjectPreloadTags)
       return htmlString
     } else {
@@ -113,11 +115,13 @@ async function renderHtmlStream(
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
-        const htmlBegin = htmlPartsToString(injectString.htmlPartsBegin)
+        const pageAssets = await pageContext.__getPageAssets()
+        const htmlBegin = htmlPartsToString(injectString.htmlPartsBegin, pageAssets)
         return await injectAtStreamBegin(htmlBegin, disableAutoInjectPreloadTags)
       },
       injectStringAtEnd: async () => {
-        const htmlEnd = htmlPartsToString(injectString.htmlPartsEnd)
+        const pageAssets = await pageContext.__getPageAssets()
+        const htmlEnd = htmlPartsToString(injectString.htmlPartsEnd, pageAssets)
         return await injectAtStreamEnd(htmlEnd)
       }
     })
@@ -181,14 +185,14 @@ function _dangerouslySkipEscape(arg: unknown): EscapedString {
   return { _escaped: arg }
 }
 
-type HtmlPart = string | (() => string)
+type HtmlPart = string | ((pageAssets: PageAsset[]) => string)
 
 async function renderTemplate(
   templateContent: TemplateContent,
   renderFilePath: string,
   pageContext: PageContextInjectAssets
 ): Promise<
-  ({ htmlString: string } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }) & {
+  ({ htmlPartsAll: HtmlPart[] } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }) & {
     disableAutoInjectPreloadTags: boolean
     disableAutoInjectAssetTags: boolean
   }
@@ -232,8 +236,8 @@ async function renderTemplate(
     if (isTemplateWrapped(templateVar)) {
       const templateContentInner = templateVar._template
       const result = await renderTemplate(templateContentInner, renderFilePath, pageContext)
-      if ('htmlString' in result) {
-        addHtmlPart(result.htmlString)
+      if (!('htmlStream' in result)) {
+        result.htmlPartsAll.forEach(addHtmlPart)
       } else {
         result.htmlPartsBegin.forEach(addHtmlPart)
         setStream(result.htmlStream)
@@ -266,33 +270,36 @@ async function renderTemplate(
     }
 
     if (isObject(templateVar) && '_injectPreloadTags' in templateVar) {
-      const pageAssets = await pageContext.__getPageAssets()
-      let pageAssetsToInject = pageAssets.filter(({ isPreload }) => isPreload)
-      const userFilter = templateVar._injectPreloadTags === true ? null : templateVar._injectPreloadTags
-      if (userFilter) {
-        const pageAssetsPublic = pageAssetsToInject.map((p) => {
-          return {
-            src: p.src,
-            assetType: p.assetType,
-            mediaType: p.mediaType
-          }
-        })
-        pageAssetsToInject = userFilter(pageAssetsPublic).map((pageAssetPublic: PageAssetPublic) => {
-          const pageAsset: PageAsset = { ...pageAssetPublic, isPreload: true }
-          return pageAsset
-        })
-      }
-      pageAssetsToInject.forEach((pageAsset) => {
-        addHtmlPart(inferPreloadTag(pageAsset))
-      })
       disableAutoInjectPreloadTags = true
-      disableAutoInjectAssetTags = true
+      addHtmlPart((pageAssets) => {
+        let pageAssetsToInject = pageAssets.filter(({ isPreload }) => isPreload)
+        const userFilter = templateVar._injectPreloadTags === true ? null : templateVar._injectPreloadTags
+        if (userFilter) {
+          const pageAssetsPublic = pageAssetsToInject.map((p) => {
+            return {
+              src: p.src,
+              assetType: p.assetType,
+              mediaType: p.mediaType
+            }
+          })
+          pageAssetsToInject = userFilter(pageAssetsPublic).map((pageAssetPublic: PageAssetPublic) => {
+            const pageAsset: PageAsset = { ...pageAssetPublic, isPreload: true }
+            return pageAsset
+          })
+        }
+        let htmlString = ''
+        pageAssetsToInject.forEach((pageAsset) => {
+          htmlString += inferPreloadTag(pageAsset)
+        })
+        return htmlString
+      })
       continue
     }
 
     if (isObject(templateVar) && '_injectAssetTags' in templateVar) {
       continue // TODO
       /*
+      disableAutoInjectAssetTags = true
       if (!pageContext._isProduction) {
         continue
       }
@@ -337,7 +344,7 @@ async function renderTemplate(
   if (htmlStream === null) {
     assert(htmlPartsEnd.length === 0)
     return {
-      htmlString: htmlPartsToString(htmlPartsBegin),
+      htmlPartsAll: htmlPartsBegin,
       disableAutoInjectPreloadTags,
       disableAutoInjectAssetTags
     }
@@ -381,10 +388,10 @@ function injectAssetTags(filter?: (filter: PageAssetPublic[]) => PageAssetPublic
   return { _injectAssetTags: filter ?? true }
 }
 
-function htmlPartsToString(htmlParts: HtmlPart[]): string {
+function htmlPartsToString(htmlParts: HtmlPart[], pageAssets: PageAsset[]): string {
   let htmlString = ''
   htmlParts.forEach((p) => {
-    htmlString += typeof p === 'string' ? p : p()
+    htmlString += typeof p === 'string' ? p : p(pageAssets)
   })
   return htmlString
 }
