@@ -118,7 +118,7 @@ function tolerateError(log) {
     )
   }
 
-  // [vite-plugin-ssr@0.4.51][Warning] pageContext._getPageAssets() deprecated in favor of TODO
+  // [vite-plugin-ssr@0.4.51][Warning] pageContext._getPageAssets() deprecated, see https://vite-plugin-ssr.com/preload
   function isGetPageAssetsDeprecationWarning() {
     return (
       log.logSource === 'stderr' &&
