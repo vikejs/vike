@@ -63,7 +63,7 @@ import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServe
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import type { MediaType } from './html/inferMediaType'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
-import type { PreloadFilter } from './html/injectAssets'
+import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
 
 export { renderPage }
 export { prerenderPage }

@@ -43,7 +43,7 @@ function injectHtmlFragments(
 }
 
 type HtmlTags = {
-  htmlSnippet: string | (() => string)
+  htmlTag: string | (() => string)
   position: Position
 }
 type HtmlFragments = {
@@ -52,14 +52,11 @@ type HtmlFragments = {
 }
 function injectHtmlSnippets(htmlString: string, htmlTags: HtmlTags[], injectToStream: null | InjectToStream): string {
   let htmlFragments: HtmlFragments[] = []
-  htmlTags.forEach(({ htmlSnippet, position }) => {
-    const htmlTag: string = getHtmlSnippet(htmlSnippet)
-    // if (!htmlString.includes(htmlTag)) {
+  htmlTags.forEach(({ htmlTag, position }) => {
     htmlFragments.push({
-      htmlFragment: htmlTag,
+      htmlFragment: resolveHtmlTag(htmlTag),
       position
     })
-    // }
   })
   htmlFragments = bundleTags(htmlFragments)
   htmlFragments.forEach((htmlFragment) => {
@@ -84,11 +81,11 @@ function bundleTags(htmlFragments: HtmlFragments[]): HtmlFragments[] {
   return htmlFragmentsBundled
 }
 
-function getHtmlSnippet(htmlSnippet: string | (() => string)) {
-  return typeof htmlSnippet !== 'string' ? htmlSnippet() : htmlSnippet
+function resolveHtmlTag(htmlTag: string | (() => string)) {
+  return typeof htmlTag !== 'string' ? htmlTag() : htmlTag
 }
 
-function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: string, htmlSnippet: string): string {
+function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: string, htmlTag: string): string {
   const openingTag = getTagOpening(tag)
   const matches = htmlString.match(openingTag)
   assert(matches && matches.length >= 1)
@@ -97,13 +94,13 @@ function injectAtOpeningTag(tag: 'head' | 'html' | '!doctype', htmlString: strin
   const htmlParts = htmlString.split(tagInstance)
   assert(htmlParts.length >= 2)
 
-  // Insert `htmlSnippet` after first `tagInstance`
+  // Insert `htmlTag` after first `tagInstance`
   const before = slice(htmlParts, 0, 1)
   const after = slice(htmlParts, 1, 0).join(tagInstance)
-  return before + tagInstance + htmlSnippet + after
+  return before + tagInstance + htmlTag + after
 }
 
-function injectAtClosingTag(tag: 'head' | 'body' | 'html', htmlString: string, htmlSnippet: string): string {
+function injectAtClosingTag(tag: 'head' | 'body' | 'html', htmlString: string, htmlTag: string): string {
   const tagClosing = getTagClosing(tag)
   const matches = htmlString.match(tagClosing)
   assert(matches && matches.length >= 1)
@@ -112,10 +109,10 @@ function injectAtClosingTag(tag: 'head' | 'body' | 'html', htmlString: string, h
   const htmlParts = htmlString.split(tagInstance)
   assert(htmlParts.length >= 2)
 
-  // Insert `htmlSnippet` before last `tagClosing`
+  // Insert `htmlTag` before last `tagClosing`
   const before = slice(htmlParts, 0, -1).join(tagInstance)
   const after = slice(htmlParts, -1, 0)
-  return before + htmlSnippet + tagInstance + after
+  return before + htmlTag + tagInstance + after
 }
 
 function createHtmlHeadIfMissing(htmlString: string): string {
@@ -126,21 +123,21 @@ function createHtmlHeadIfMissing(htmlString: string): string {
     return htmlString
   }
 
-  const htmlSnippet = '<head></head>'
+  const htmlTag = '<head></head>'
 
   if (tagOpeningExists('html', htmlString)) {
-    htmlString = injectAtOpeningTag('html', htmlString, htmlSnippet)
+    htmlString = injectAtOpeningTag('html', htmlString, htmlTag)
     assertion()
     return htmlString
   }
 
   if (tagOpeningExists('!doctype', htmlString)) {
-    htmlString = injectAtOpeningTag('!doctype', htmlString, htmlSnippet)
+    htmlString = injectAtOpeningTag('!doctype', htmlString, htmlTag)
     assertion()
     return htmlString
   }
 
-  htmlString = htmlSnippet + '\n' + htmlString
+  htmlString = htmlTag + '\n' + htmlString
   assertion()
   return htmlString
 }
