@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeAll } from 'vitest'
-import { renderPage } from '../../vite-plugin-ssr/node/renderPage'
+import { renderPage } from '../../vite-plugin-ssr/node'
 import { createServer } from 'vite'
 import path from 'path'
 

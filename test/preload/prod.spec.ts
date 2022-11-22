@@ -1,5 +1,5 @@
 import { expect, describe, it, beforeAll } from 'vitest'
-import { renderPage } from '../../vite-plugin-ssr/node/renderPage'
+import { renderPage } from '../../vite-plugin-ssr/node'
 import { build } from 'vite'
 import { stabilizeHashs } from './utils/stabilizeHashs'
 

@@ -1,5 +1,5 @@
 import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
-import { type HtmlRender, isDocumentHtml, renderHtml, getHtmlString, type PageAssetPublic } from './html/renderHtml'
+import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString, type PageAssetPublic } from './html/renderHtml'
 import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
 import { getHook } from '../shared/getHook'
@@ -901,7 +901,7 @@ async function executeRenderHook(
     })
     */
   }
-  const htmlRender = await renderHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
+  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }
 }

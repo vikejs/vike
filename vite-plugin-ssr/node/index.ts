@@ -5,6 +5,7 @@ export { pipeWebStream, pipeNodeStream, pipeStream, stampPipe } from './html/str
 export { injectAssets__public as _injectAssets } from './html/injectAssets'
 export { RenderErrorPage } from './renderPage/RenderErrorPage'
 export { injectPreloadTags } from './html/renderHtml'
+export { injectAssetTags } from './html/renderHtml'
 
 export type { PageContextBuiltIn } from './types'
 

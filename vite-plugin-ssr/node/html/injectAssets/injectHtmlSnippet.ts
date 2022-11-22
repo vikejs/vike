@@ -7,70 +7,81 @@ import type { InjectToStream } from 'react-streaming/server'
 type Position = 'HEAD_OPENING' | 'HEAD_CLOSING' | 'DOCUMENT_END' | 'STREAM'
 const POSITIONS = ['HEAD_OPENING' as const, 'HEAD_CLOSING' as const, 'DOCUMENT_END' as const, 'STREAM' as const]
 
-function injectHtmlSnippet(
+function injectHtmlFragments(
   position: Position,
-  htmlSnippet: string | (() => string),
+  htmlFragment: string,
   htmlString: string,
   injectToStream: null | InjectToStream
 ): string {
-  htmlSnippet = getHtmlSnippet(htmlSnippet)
   if (position === 'HEAD_OPENING') {
     assert(tagOpeningExists('head', htmlString))
-    htmlString = injectAtOpeningTag('head', htmlString, htmlSnippet)
+    htmlString = injectAtOpeningTag('head', htmlString, htmlFragment)
     return htmlString
   }
   if (position === 'HEAD_CLOSING') {
     assert(tagClosingExists('head', htmlString))
-    htmlString = injectAtClosingTag('head', htmlString, htmlSnippet)
+    htmlString = injectAtClosingTag('head', htmlString, htmlFragment)
     return htmlString
   }
   if (position === 'DOCUMENT_END') {
     if (tagClosingExists('body', htmlString)) {
-      return injectAtClosingTag('body', htmlString, htmlSnippet)
+      return injectAtClosingTag('body', htmlString, htmlFragment)
     }
 
     if (tagClosingExists('html', htmlString)) {
-      return injectAtClosingTag('html', htmlString, htmlSnippet)
+      return injectAtClosingTag('html', htmlString, htmlFragment)
     }
 
-    return htmlString + '\n' + htmlSnippet
+    return htmlString + '\n' + htmlFragment
   }
   if (position === 'STREAM') {
     assert(injectToStream)
-    injectToStream(htmlSnippet, { flush: true })
+    injectToStream(htmlFragment, { flush: true })
     return htmlString
   }
   assert(false)
 }
 
-type Snippet = {
+type HtmlTags = {
   htmlSnippet: string | (() => string)
   position: Position
 }
-function injectHtmlSnippets(htmlString: string, snippets: Snippet[], injectToStream: null | InjectToStream): string {
-  const snippetsBundled = bundleSnippets(snippets)
-  snippetsBundled.forEach((snippet) => {
-    htmlString = injectHtmlSnippet(snippet.position, snippet.htmlSnippet, htmlString, injectToStream)
+type HtmlFragments = {
+  htmlFragment: string
+  position: Position
+}
+function injectHtmlSnippets(htmlString: string, htmlTags: HtmlTags[], injectToStream: null | InjectToStream): string {
+  let htmlFragments: HtmlFragments[] = []
+  htmlTags.forEach(({ htmlSnippet, position }) => {
+    const htmlTag: string = getHtmlSnippet(htmlSnippet)
+    if (!htmlString.includes(htmlTag)) {
+      htmlFragments.push({
+        htmlFragment: htmlTag,
+        position
+      })
+    }
+  })
+  htmlFragments = bundleTags(htmlFragments)
+  htmlFragments.forEach((htmlFragment) => {
+    htmlString = injectHtmlFragments(htmlFragment.position, htmlFragment.htmlFragment, htmlString, injectToStream)
   })
   return htmlString
 }
 
 // Is this really needed?
-function bundleSnippets(snippets: Snippet[]): Snippet[] {
-  const snippetsBundled: Snippet[] = []
+function bundleTags(htmlFragments: HtmlFragments[]): HtmlFragments[] {
+  const htmlFragmentsBundled: HtmlFragments[] = []
   POSITIONS.forEach((position) => {
-    const htmlSnippets: string[] = snippets
-      .filter((h) => h.position === position)
-      .map((h) => getHtmlSnippet(h.htmlSnippet))
-    if (htmlSnippets.length > 0) {
-      const htmlSnippetsBundled = htmlSnippets.join('')
-      snippetsBundled.push({
-        htmlSnippet: htmlSnippetsBundled,
+    const fragments: string[] = htmlFragments.filter((h) => h.position === position).map((h) => h.htmlFragment)
+    if (fragments.length > 0) {
+      const bundle = fragments.join('')
+      htmlFragmentsBundled.push({
+        htmlFragment: bundle,
         position
       })
     }
   })
-  return snippetsBundled
+  return htmlFragmentsBundled
 }
 
 function getHtmlSnippet(htmlSnippet: string | (() => string)) {
