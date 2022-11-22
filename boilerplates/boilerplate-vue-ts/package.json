@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "@types/compression": "^1.7.2",
-    "@types/express": "^4.17.13",
-    "@types/node": "^17.0.31",
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.9",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/compiler-sfc": "^3.2.33",
     "@vue/server-renderer": "^3.2.33",
