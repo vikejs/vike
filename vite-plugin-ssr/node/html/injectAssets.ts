@@ -1,6 +1,7 @@
 export { injectHtmlTagsToString }
 export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
+export type { PreloadFilter }
 export { injectAssets__public }
 
 import { assert, assertUsage, assertWarning, castProp, hasProp } from '../utils'
@@ -33,7 +34,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   castProp<() => Promise<PageAsset[]>, typeof pageContext, '__getPageAssets'>(pageContext, '__getPageAssets')
-  htmlString = await injectHtmlTagsToString([htmlString], pageContext as any, false)
+  htmlString = await injectHtmlTagsToString([htmlString], pageContext as any, false, null)
   return htmlString
 }
 
@@ -51,12 +52,22 @@ type PageContextInjectAssets = {
   is404: null | boolean
 }
 
+type PreloadFilter = null | ((assets: PreloadFilterEntry[]) => PreloadFilterEntry[])
+type PreloadFilterEntry = {
+  src: string
+  assetType: null | PageAsset['assetType']
+  mediaType: null | PageAsset['mediaType']
+  isPreload: boolean
+  inject: null | 'HTML_BEGIN' | 'HTML_END'
+}
+
 async function injectHtmlTagsToString(
   htmlParts: HtmlPart[],
   pageContext: PageContextInjectAssets,
-  disableAutoInjectPreloadTags: boolean
+  disableAutoInjectPreloadTags: boolean,
+  preloadFilter: PreloadFilter
 ): Promise<string> {
-  const htmlSnippets = await getHtmlSnippets(pageContext, null, disableAutoInjectPreloadTags)
+  const htmlSnippets = await getHtmlSnippets(pageContext, null, disableAutoInjectPreloadTags, preloadFilter)
   const pageAssets = await pageContext.__getPageAssets()
   let htmlString = htmlPartsToString(htmlParts, pageAssets)
   htmlString = injectToHtmlBegin(htmlString, htmlSnippets, null)
@@ -64,7 +75,11 @@ async function injectHtmlTagsToString(
   return htmlString
 }
 
-function injectHtmlTagsToStream(pageContext: PageContextInjectAssets, injectToStream: null | InjectToStream) {
+function injectHtmlTagsToStream(
+  pageContext: PageContextInjectAssets,
+  injectToStream: null | InjectToStream,
+  preloadFilter: PreloadFilter
+) {
   let htmlSnippets: HtmlSnippet[] | undefined
 
   return {
@@ -76,7 +91,7 @@ function injectHtmlTagsToStream(pageContext: PageContextInjectAssets, injectToSt
     htmlPartsBegin: HtmlPart[],
     disableAutoInjectPreloadTags: boolean
   ): Promise<string> {
-    htmlSnippets = await getHtmlSnippets(pageContext, injectToStream, disableAutoInjectPreloadTags)
+    htmlSnippets = await getHtmlSnippets(pageContext, injectToStream, disableAutoInjectPreloadTags, preloadFilter)
 
     const pageAssets = await pageContext.__getPageAssets()
     let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
@@ -130,12 +145,16 @@ async function resolvePageContextPromise(pageContext: {
 
 type HtmlSnippet = {
   htmlSnippet: string | (() => string)
+  // TODO: remove HEAD_CLOSING
   position: 'HEAD_CLOSING' | 'HEAD_OPENING' | 'DOCUMENT_END' | 'STREAM'
 }
+// TODO: rename htmlSnippets => htmtTags
+// TODO: move getHtmlSnippets to own module
 async function getHtmlSnippets(
   pageContext: PageContextInjectAssets,
   injectToStream: null | InjectToStream,
-  disableAutoInjectPreloadTags: boolean
+  disableAutoInjectPreloadTags: boolean,
+  preloadFilter: PreloadFilter
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
@@ -145,11 +164,42 @@ async function getHtmlSnippets(
 
   let pageAssets = await pageContext.__getPageAssets()
 
+  // TODO: remove
   if (disableAutoInjectPreloadTags) {
     pageAssets = pageAssets.filter(({ isPreload }) => !isPreload)
   }
 
   const htmlSnippets: HtmlSnippet[] = []
+
+  let preloadFilterEntries: PreloadFilterEntry[] = pageAssets
+    .filter((p) => p.assetType !== 'script')
+    .map((p) => ({
+      src: p.src,
+      assetType: p.assetType,
+      mediaType: p.mediaType,
+      isPreload: p.isPreload,
+      inject: p.assetType === 'style' || p.assetType === 'font' ? 'HTML_BEGIN' : 'HTML_END'
+    }))
+  if (preloadFilter) {
+    preloadFilterEntries = preloadFilter(preloadFilterEntries)
+  }
+  preloadFilterEntries.forEach((a) => {
+    if (a.assetType === 'style') {
+      // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
+      //   - https://github.com/vitejs/vite/issues/2282
+      //   - https://github.com/brillout/vite-plugin-ssr/issues/261
+      // TODO: enforce `showStackTrace`
+      assertWarning(a.inject, `We recommend against not injecting ${a.src}`, { onlyOnce: true, showStackTrace: false })
+    }
+  })
+  for (const entry of preloadFilterEntries) {
+    if (entry.inject) {
+      const htmlSnippet = entry.isPreload ? inferPreloadTag(entry) : inferAssetTag(entry)
+      // TODO: align naming
+      const position = entry.inject === 'HTML_BEGIN' ? 'HEAD_OPENING' : 'DOCUMENT_END'
+      htmlSnippets.push({ htmlSnippet, position })
+    }
+  }
 
   const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'DOCUMENT_END'
 
@@ -169,7 +219,6 @@ async function getHtmlSnippets(
       position: positionJs
     })
   }
-
   for (const pageAsset of pageAssets) {
     const { assetType } = pageAsset
 
@@ -182,27 +231,6 @@ async function getHtmlSnippets(
       }
       continue
     }
-
-    // CSS
-    if (assetType === 'style') {
-      // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
-      //   - https://github.com/vitejs/vite/issues/2282
-      //   - https://github.com/brillout/vite-plugin-ssr/issues/261
-      const htmlSnippet = inferAssetTag(pageAsset)
-      htmlSnippets.push({ htmlSnippet, position: 'HEAD_OPENING' })
-      continue
-    }
-
-    // Fonts
-    if (assetType === 'font') {
-      const htmlSnippet = inferPreloadTag(pageAsset)
-      htmlSnippets.push({ htmlSnippet, position: 'HEAD_OPENING' })
-      continue
-    }
-
-    // Other (e.g. images)
-    const htmlSnippet = inferPreloadTag(pageAsset)
-    htmlSnippets.push({ htmlSnippet, position: 'DOCUMENT_END' })
   }
 
   return htmlSnippets

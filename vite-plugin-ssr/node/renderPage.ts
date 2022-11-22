@@ -1,5 +1,11 @@
 import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
-import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString, type PageAssetPublic } from './html/renderHtml'
+import {
+  type HtmlRender,
+  isDocumentHtml,
+  renderDocumentHtml,
+  getHtmlString,
+  type PageAssetPublic
+} from './html/renderHtml'
 import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
 import { getHook } from '../shared/getHook'
@@ -20,7 +26,8 @@ import {
   makeFirst,
   isSameErrorMessage,
   createDebugger,
-  callHookWithTimeout
+  callHookWithTimeout,
+  isCallable
 } from './utils'
 import { getPageAssets, type PageAsset } from './renderPage/getPageAssets'
 import { sortPageContext } from '../shared/sortPageContext'
@@ -56,6 +63,7 @@ import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServe
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import type { MediaType } from './html/inferMediaType'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
+import type { PreloadFilter } from './html/injectAssets'
 
 export { renderPage }
 export { prerenderPage }
@@ -821,7 +829,7 @@ async function executeRenderHook(
   preparePageContextForRelease(pageContext)
   const result = await callHookWithTimeout(() => render(pageContext), 'render', hook.filePath)
   if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(result, 'render', ['documentHtml', 'pageContext'] as const, renderFilePath)
+    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'preloadFilter'] as const, renderFilePath)
   }
   objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
 
@@ -901,7 +909,20 @@ async function executeRenderHook(
     })
     */
   }
-  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, renderFilePath, onErrorWhileStreaming)
+
+  let preloadFilter: PreloadFilter = null
+  if (hasProp(result, 'preloadFilter')) {
+    assertUsage(isCallable(result.preloadFilter), 'preloadFilter should be a function')
+    preloadFilter = result.preloadFilter
+  }
+
+  const htmlRender = await renderDocumentHtml(
+    documentHtml,
+    pageContext,
+    renderFilePath,
+    onErrorWhileStreaming,
+    preloadFilter
+  )
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }
 }

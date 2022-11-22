@@ -1,5 +1,5 @@
 import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign, isObject } from '../utils'
-import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
+import { injectHtmlTagsToString, injectHtmlTagsToStream, type PreloadFilter } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 import { isStreamReactStreaming } from './stream/react-streaming'
@@ -57,16 +57,17 @@ async function renderDocumentHtml(
     _isProduction: boolean
   },
   renderFilePath: string,
-  onErrorWhileStreaming: (err: unknown) => void
+  onErrorWhileStreaming: (err: unknown) => void,
+  preloadFilter: PreloadFilter
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectHtmlTagsToString([htmlString], pageContext, false)
+    htmlString = await injectHtmlTagsToString([htmlString], pageContext, false, preloadFilter)
     return htmlString
   }
   if (isStream(documentHtml)) {
     const stream = documentHtml
-    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, false)
+    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, false, preloadFilter)
     return streamWrapper
   }
   if (isTemplateWrapped(documentHtml)) {
@@ -74,7 +75,12 @@ async function renderDocumentHtml(
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if (!('htmlStream' in render)) {
       const { htmlPartsAll, disableAutoInjectPreloadTags } = render
-      const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, disableAutoInjectPreloadTags)
+      const htmlString = await injectHtmlTagsToString(
+        htmlPartsAll,
+        pageContext,
+        disableAutoInjectPreloadTags,
+        preloadFilter
+      )
       return htmlString
     } else {
       const { htmlStream, disableAutoInjectPreloadTags } = render
@@ -86,7 +92,8 @@ async function renderDocumentHtml(
         },
         pageContext,
         onErrorWhileStreaming,
-        disableAutoInjectPreloadTags
+        disableAutoInjectPreloadTags,
+        preloadFilter
       )
       return streamWrapper
     }
@@ -100,7 +107,8 @@ async function renderHtmlStream(
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
   pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean },
   onErrorWhileStreaming: (err: unknown) => void,
-  disableAutoInjectPreloadTags: boolean
+  disableAutoInjectPreloadTags: boolean,
+  preloadFilter: PreloadFilter
 ) {
   const opts = {
     onErrorWhileStreaming,
@@ -111,7 +119,11 @@ async function renderHtmlStream(
     if (isStreamReactStreaming(streamOriginal) && !streamOriginal.disabled) {
       injectToStream = streamOriginal.injectToStream
     }
-    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream)
+    const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(
+      pageContext,
+      injectToStream,
+      preloadFilter
+    )
     objectAssign(opts, {
       injectStringAtBegin: async () => {
         return await injectAtStreamBegin(injectString.htmlPartsBegin, disableAutoInjectPreloadTags)
