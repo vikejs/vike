@@ -1,6 +1,7 @@
 export { getHtmlTags }
 export type { HtmlTag }
 export type { PreloadFilter }
+export type { PreloadFilterEntry }
 
 import { assert, assertWarning } from '../../utils'
 import { serializePageContextClientSide } from '../../serializePageContextClientSide'
@@ -18,7 +19,7 @@ type PreloadFilterEntry = {
   assetType: null | PageAsset['assetType']
   mediaType: null | PageAsset['mediaType']
   isPreload: boolean
-  inject: null | 'HTML_BEGIN' | 'HTML_END'
+  inject: false | 'HTML_BEGIN' | 'HTML_END'
 }
 
 type HtmlTag = {
@@ -28,7 +29,6 @@ type HtmlTag = {
 async function getHtmlTags(
   pageContext: PageContextInjectAssets,
   injectToStream: null | InjectToStream,
-  disableAutoInjectPreloadTags: boolean,
   preloadFilter: PreloadFilter
 ) {
   assert([true, false].includes(pageContext._isHtmlOnly))
@@ -38,11 +38,6 @@ async function getHtmlTags(
   const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
 
   let pageAssets = await pageContext.__getPageAssets()
-
-  // TODO: remove
-  if (disableAutoInjectPreloadTags) {
-    pageAssets = pageAssets.filter(({ isPreload }) => !isPreload)
-  }
 
   const htmlSnippets: HtmlTag[] = []
 
@@ -75,15 +70,6 @@ async function getHtmlTags(
 
   const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
 
-  // Serialized pageContext
-  if (!isHtmlOnly) {
-    htmlSnippets.push({
-      // Needs to be called after `resolvePageContextPromise()`
-      htmlTag: () => getPageContextTag(pageContext),
-      position: positionJs
-    })
-  }
-
   const jsScript = await getMergedScriptTag(pageAssets, pageContext)
   if (jsScript) {
     htmlSnippets.push({
@@ -103,6 +89,15 @@ async function getHtmlTags(
       }
       continue
     }
+  }
+
+  // Serialized pageContext
+  if (!isHtmlOnly) {
+    htmlSnippets.push({
+      // Needs to be called after `resolvePageContextPromise()`
+      htmlTag: () => getPageContextTag(pageContext),
+      position: positionJs
+    })
   }
 
   return htmlSnippets

@@ -21,6 +21,6 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   castProp<() => Promise<PageAsset[]>, typeof pageContext, '__getPageAssets'>(pageContext, '__getPageAssets')
-  htmlString = await injectHtmlTagsToString([htmlString], pageContext as any, false, null)
+  htmlString = await injectHtmlTagsToString([htmlString], pageContext as any, null)
   return htmlString
 }

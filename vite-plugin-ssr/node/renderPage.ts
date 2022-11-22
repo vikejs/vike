@@ -874,7 +874,6 @@ async function executeRenderHook(
     )
     documentHtml = result
   } else {
-    assertObjectKeys(result, ['documentHtml', 'pageContext'] as const, errPrefix)
     if ('documentHtml' in result) {
       documentHtml = result.documentHtml
       assertUsage(

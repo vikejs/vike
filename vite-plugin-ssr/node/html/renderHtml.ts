@@ -1,19 +1,16 @@
-import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign, isObject } from '../utils'
+import { assert, assertUsage, assertWarning, checkType, hasProp, isPromise, objectAssign } from '../utils'
 import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 import { isStreamReactStreaming } from './stream/react-streaming'
 import type { InjectToStream } from 'react-streaming/server'
 import type { PageAsset } from '../renderPage/getPageAssets'
-import { inferPreloadTag } from './injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './injectAssets/getHtmlTags'
 
 // Public
 export { escapeInject }
 export type { TemplateWrapped } // https://github.com/brillout/vite-plugin-ssr/issues/511
 export { dangerouslySkipEscape }
-export { injectPreloadTags }
-export { injectAssetTags }
 
 // Private
 export { renderDocumentHtml }
@@ -31,11 +28,9 @@ type PageAssetPublic = {
   assetType: PageAsset['assetType']
   mediaType: PageAsset['mediaType']
 }
-type InjectPreloadTags = { _injectPreloadTags: true | ((filter: PageAssetPublic[]) => PageAssetPublic[]) }
-type InjectAssetTags = { _injectAssetTags: true | ((filter: PageAssetPublic[]) => PageAssetPublic[]) }
 
 type TemplateStrings = TemplateStringsArray
-type TemplateVariable = string | EscapedString | Stream | TemplateWrapped | InjectPreloadTags | InjectAssetTags
+type TemplateVariable = string | EscapedString | Stream | TemplateWrapped
 type TemplateWrapped = {
   _template: TemplateContent
 }
@@ -63,28 +58,23 @@ async function renderDocumentHtml(
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectHtmlTagsToString([htmlString], pageContext, false, preloadFilter)
+    htmlString = await injectHtmlTagsToString([htmlString], pageContext, preloadFilter)
     return htmlString
   }
   if (isStream(documentHtml)) {
     const stream = documentHtml
-    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, false, preloadFilter)
+    const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, preloadFilter)
     return streamWrapper
   }
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml._template
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if (!('htmlStream' in render)) {
-      const { htmlPartsAll, disableAutoInjectPreloadTags } = render
-      const htmlString = await injectHtmlTagsToString(
-        htmlPartsAll,
-        pageContext,
-        disableAutoInjectPreloadTags,
-        preloadFilter
-      )
+      const { htmlPartsAll } = render
+      const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, preloadFilter)
       return htmlString
     } else {
-      const { htmlStream, disableAutoInjectPreloadTags } = render
+      const { htmlStream } = render
       const streamWrapper = await renderHtmlStream(
         htmlStream,
         {
@@ -93,7 +83,6 @@ async function renderDocumentHtml(
         },
         pageContext,
         onErrorWhileStreaming,
-        disableAutoInjectPreloadTags,
         preloadFilter
       )
       return streamWrapper
@@ -108,7 +97,6 @@ async function renderHtmlStream(
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
   pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean },
   onErrorWhileStreaming: (err: unknown) => void,
-  disableAutoInjectPreloadTags: boolean,
   preloadFilter: PreloadFilter
 ) {
   const opts = {
@@ -127,7 +115,7 @@ async function renderHtmlStream(
     )
     objectAssign(opts, {
       injectStringAtBegin: async () => {
-        return await injectAtStreamBegin(injectString.htmlPartsBegin, disableAutoInjectPreloadTags)
+        return await injectAtStreamBegin(injectString.htmlPartsBegin)
       },
       injectStringAtEnd: async () => {
         return await injectAtStreamEnd(injectString.htmlPartsEnd)
@@ -200,16 +188,11 @@ async function renderTemplate(
   renderFilePath: string,
   pageContext: PageContextInjectAssets
 ): Promise<
-  ({ htmlPartsAll: HtmlPart[] } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }) & {
-    disableAutoInjectPreloadTags: boolean
-    disableAutoInjectAssetTags: boolean
-  }
+  { htmlPartsAll: HtmlPart[] } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }
 > {
   const htmlPartsBegin: HtmlPart[] = []
   const htmlPartsEnd: HtmlPart[] = []
   let htmlStream: null | Stream = null
-  let disableAutoInjectPreloadTags = false
-  let disableAutoInjectAssetTags = false
 
   const addHtmlPart = (htmlPart: HtmlPart) => {
     if (htmlStream === null) {
@@ -277,63 +260,6 @@ async function renderTemplate(
       continue
     }
 
-    if (isObject(templateVar) && '_injectPreloadTags' in templateVar) {
-      disableAutoInjectPreloadTags = true
-      addHtmlPart((pageAssets) => {
-        let pageAssetsToInject = pageAssets.filter(({ isPreload }) => isPreload)
-        const userFilter = templateVar._injectPreloadTags === true ? null : templateVar._injectPreloadTags
-        if (userFilter) {
-          const pageAssetsPublic = pageAssetsToInject.map((p) => {
-            return {
-              src: p.src,
-              assetType: p.assetType,
-              mediaType: p.mediaType
-            }
-          })
-          pageAssetsToInject = userFilter(pageAssetsPublic).map((pageAssetPublic: PageAssetPublic) => {
-            const pageAsset: PageAsset = { ...pageAssetPublic, isPreload: true }
-            return pageAsset
-          })
-        }
-        let htmlString = ''
-        pageAssetsToInject.forEach((pageAsset) => {
-          htmlString += inferPreloadTag(pageAsset)
-        })
-        return htmlString
-      })
-      continue
-    }
-
-    if (isObject(templateVar) && '_injectAssetTags' in templateVar) {
-      continue // TODO
-      /*
-      disableAutoInjectAssetTags = true
-      if (!pageContext._isProduction) {
-        continue
-      }
-      const pageAssets = await pageContext.__getPageAssets()
-      let pageAssetsToInject = pageAssets.filter(({ isPreload }) => !isPreload)
-      const userFilter = templateVar._injectAssetTags === true ? null : templateVar._injectAssetTags
-      if (userFilter) {
-        const pageAssetsPublic = pageAssetsToInject.map((p) => {
-          return {
-            src: p.src,
-            assetType: p.assetType,
-            mediaType: p.mediaType
-          }
-        })
-        pageAssetsToInject = userFilter(pageAssetsPublic).map((pageAssetPublic: PageAssetPublic) => {
-          const pageAsset: PageAsset = { ...pageAssetPublic, isPreload: false }
-          return pageAsset
-        })
-      }
-      pageAssetsToInject.forEach((pageAsset) => {
-        addHtmlPart(inferAssetTag(pageAsset))
-      })
-      continue
-      */
-    }
-
     {
       const varType = typeof templateVar
       const streamNote = ['boolean', 'number', 'bigint', 'symbol'].includes(varType)
@@ -352,18 +278,14 @@ async function renderTemplate(
   if (htmlStream === null) {
     assert(htmlPartsEnd.length === 0)
     return {
-      htmlPartsAll: htmlPartsBegin,
-      disableAutoInjectPreloadTags,
-      disableAutoInjectAssetTags
+      htmlPartsAll: htmlPartsBegin
     }
   }
 
   return {
     htmlStream,
     htmlPartsBegin,
-    htmlPartsEnd,
-    disableAutoInjectPreloadTags,
-    disableAutoInjectAssetTags
+    htmlPartsEnd
   }
 }
 
@@ -387,11 +309,4 @@ async function getHtmlString(htmlRender: HtmlRender): Promise<string> {
   }
   checkType<never>(htmlRender)
   assert(false)
-}
-
-function injectPreloadTags(filter?: (filter: PageAssetPublic[]) => PageAssetPublic[]): InjectPreloadTags {
-  return { _injectPreloadTags: filter ?? true }
-}
-function injectAssetTags(filter?: (filter: PageAssetPublic[]) => PageAssetPublic[]): InjectAssetTags {
-  return { _injectAssetTags: filter ?? true }
 }
