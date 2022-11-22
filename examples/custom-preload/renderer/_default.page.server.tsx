@@ -28,7 +28,7 @@ async function render(pageContext: any) {
 
   return {
     documentHtml,
-    preloadFilter(assets: PreloadFilterEntry[]) {
+    preloadFilter(assets: PreloadFilterEntry[]): PreloadFilterEntry[] {
       return assets.map((asset) => {
         if (!asset.isPreload) {
           return asset
