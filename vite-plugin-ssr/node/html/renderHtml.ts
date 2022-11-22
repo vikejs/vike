@@ -20,6 +20,7 @@ export { isDocumentHtml }
 export { getHtmlString }
 export type { HtmlRender }
 export type { PageAssetPublic }
+export type { HtmlPart }
 
 type DocumentHtml = TemplateWrapped | EscapedString | Stream
 type HtmlRender = string | Stream
@@ -60,7 +61,7 @@ async function renderDocumentHtml(
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
     let htmlString = getEscapedString(documentHtml)
-    htmlString = await injectHtmlTagsToString(htmlString, pageContext, false)
+    htmlString = await injectHtmlTagsToString([htmlString], pageContext, false)
     return htmlString
   }
   if (isStream(documentHtml)) {
@@ -73,9 +74,7 @@ async function renderDocumentHtml(
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if (!('htmlStream' in render)) {
       const { htmlPartsAll, disableAutoInjectPreloadTags } = render
-      const pageAssets = await pageContext.__getPageAssets()
-      let htmlString = htmlPartsToString(htmlPartsAll, pageAssets)
-      htmlString = await injectHtmlTagsToString(htmlString, pageContext, disableAutoInjectPreloadTags)
+      const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, disableAutoInjectPreloadTags)
       return htmlString
     } else {
       const { htmlStream, disableAutoInjectPreloadTags } = render
@@ -115,14 +114,10 @@ async function renderHtmlStream(
     const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, injectToStream)
     objectAssign(opts, {
       injectStringAtBegin: async () => {
-        const pageAssets = await pageContext.__getPageAssets()
-        const htmlBegin = htmlPartsToString(injectString.htmlPartsBegin, pageAssets)
-        return await injectAtStreamBegin(htmlBegin, disableAutoInjectPreloadTags)
+        return await injectAtStreamBegin(injectString.htmlPartsBegin, disableAutoInjectPreloadTags)
       },
       injectStringAtEnd: async () => {
-        const pageAssets = await pageContext.__getPageAssets()
-        const htmlEnd = htmlPartsToString(injectString.htmlPartsEnd, pageAssets)
-        return await injectAtStreamEnd(htmlEnd)
+        return await injectAtStreamEnd(injectString.htmlPartsEnd)
       }
     })
   }
@@ -386,12 +381,4 @@ function injectPreloadTags(filter?: (filter: PageAssetPublic[]) => PageAssetPubl
 }
 function injectAssetTags(filter?: (filter: PageAssetPublic[]) => PageAssetPublic[]): InjectAssetTags {
   return { _injectAssetTags: filter ?? true }
-}
-
-function htmlPartsToString(htmlParts: HtmlPart[], pageAssets: PageAsset[]): string {
-  let htmlString = ''
-  htmlParts.forEach((p) => {
-    htmlString += typeof p === 'string' ? p : p(pageAssets)
-  })
-  return htmlString
 }

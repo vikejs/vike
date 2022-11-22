@@ -9,6 +9,7 @@ import { inferAssetTag, inferPreloadTag } from './injectAssets/inferHtmlTags'
 import { getViteDevScripts } from './injectAssets/getViteDevScripts'
 import { mergeScriptTags } from './injectAssets/mergeScriptTags'
 import type { InjectToStream } from 'react-streaming/server'
+import { HtmlPart } from './renderHtml'
 
 export { injectAssets__public }
 export { injectHtmlTagsToString }
@@ -32,7 +33,7 @@ async function injectAssets__public(htmlString: string, pageContext: Record<stri
   assertUsage(hasProp(pageContext, '__getPageAssets'), errMsg('`pageContext.__getPageAssets` is missing'))
   assertUsage(hasProp(pageContext, '_passToClient', 'string[]'), errMsg('`pageContext._passToClient` is missing'))
   castProp<() => Promise<PageAsset[]>, typeof pageContext, '__getPageAssets'>(pageContext, '__getPageAssets')
-  htmlString = await injectHtmlTagsToString(htmlString, pageContext as any, false)
+  htmlString = await injectHtmlTagsToString([htmlString], pageContext as any, false)
   return htmlString
 }
 
@@ -49,14 +50,17 @@ type PageContextInjectAssets = {
   _baseUrl: string
   is404: null | boolean
 }
+
 async function injectHtmlTagsToString(
-  htmlString: string,
+  htmlParts: HtmlPart[],
   pageContext: PageContextInjectAssets,
   disableAutoInjectPreloadTags: boolean
 ): Promise<string> {
-  const { injectAtStreamBegin, injectAtStreamEnd } = injectHtmlTagsToStream(pageContext, null)
-  htmlString = await injectAtStreamBegin(htmlString, disableAutoInjectPreloadTags)
-  htmlString = await injectAtStreamEnd(htmlString)
+  const htmlSnippets = await getHtmlSnippets(pageContext, null, disableAutoInjectPreloadTags)
+  const pageAssets = await pageContext.__getPageAssets()
+  let htmlString = htmlPartsToString(htmlParts, pageAssets)
+  htmlString = injectToHtmlBegin(htmlString, htmlSnippets, null)
+  htmlString = injectToHtmlEnd(htmlString, htmlSnippets)
   return htmlString
 }
 
@@ -68,35 +72,47 @@ function injectHtmlTagsToStream(pageContext: PageContextInjectAssets, injectToSt
     injectAtStreamEnd
   }
 
-  async function injectAtStreamBegin(htmlBegin: string, disableAutoInjectPreloadTags: boolean): Promise<string> {
-    assert([true, false].includes(pageContext._isHtmlOnly))
-    const isHtmlOnly = pageContext._isHtmlOnly
+  async function injectAtStreamBegin(
+    htmlPartsBegin: HtmlPart[],
+    disableAutoInjectPreloadTags: boolean
+  ): Promise<string> {
+    htmlSnippets = await getHtmlSnippets(pageContext, injectToStream, disableAutoInjectPreloadTags)
 
-    assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
-    const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
+    const pageAssets = await pageContext.__getPageAssets()
+    let htmlBegin = htmlPartsToString(htmlPartsBegin, pageAssets)
 
-    htmlSnippets = await getHtmlSnippets(
-      pageContext,
-      injectJavaScriptDuringStream,
-      isHtmlOnly,
-      disableAutoInjectPreloadTags
-    )
-    const htmlSnippetsAtBegin = htmlSnippets.filter((snippet) => snippet.position !== 'DOCUMENT_END')
-
-    // Ensure existence of `<head>`
-    htmlBegin = createHtmlHeadIfMissing(htmlBegin)
-
-    htmlBegin = injectHtmlSnippets(htmlBegin, htmlSnippetsAtBegin, injectToStream)
-
+    htmlBegin = injectToHtmlBegin(htmlBegin, htmlSnippets, injectToStream)
     return htmlBegin
   }
 
-  async function injectAtStreamEnd(htmlEnd: string): Promise<string> {
+  async function injectAtStreamEnd(htmlPartsEnd: HtmlPart[]): Promise<string> {
     await resolvePageContextPromise(pageContext)
-    const htmlSnippetsAtEnd = htmlSnippets.filter((snippet) => snippet.position === 'DOCUMENT_END')
-    htmlEnd = injectHtmlSnippets(htmlEnd, htmlSnippetsAtEnd, null)
+    const pageAssets = await pageContext.__getPageAssets()
+    let htmlEnd = htmlPartsToString(htmlPartsEnd, pageAssets)
+    htmlEnd = injectToHtmlEnd(htmlEnd, htmlSnippets)
     return htmlEnd
   }
+}
+
+function injectToHtmlBegin(
+  htmlBegin: string,
+  htmlSnippets: HtmlSnippet[],
+  injectToStream: null | InjectToStream
+): string {
+  const htmlSnippetsAtBegin = htmlSnippets.filter((snippet) => snippet.position !== 'DOCUMENT_END')
+
+  // Ensure existence of `<head>`
+  htmlBegin = createHtmlHeadIfMissing(htmlBegin)
+
+  htmlBegin = injectHtmlSnippets(htmlBegin, htmlSnippetsAtBegin, injectToStream)
+
+  return htmlBegin
+}
+
+function injectToHtmlEnd(htmlEnd: string, htmlSnippets: HtmlSnippet[]): string {
+  const htmlSnippetsAtEnd = htmlSnippets.filter((snippet) => snippet.position === 'DOCUMENT_END')
+  htmlEnd = injectHtmlSnippets(htmlEnd, htmlSnippetsAtEnd, null)
+  return htmlEnd
 }
 
 // https://vite-plugin-ssr.com/stream#initial-data-after-streaming
@@ -117,10 +133,15 @@ type HtmlSnippet = {
 }
 async function getHtmlSnippets(
   pageContext: PageContextInjectAssets,
-  injectJavaScriptDuringStream: boolean,
-  isHtmlOnly: boolean,
+  injectToStream: null | InjectToStream,
   disableAutoInjectPreloadTags: boolean
 ) {
+  assert([true, false].includes(pageContext._isHtmlOnly))
+  const isHtmlOnly = pageContext._isHtmlOnly
+
+  assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
+  const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
+
   let pageAssets = await pageContext.__getPageAssets()
 
   if (disableAutoInjectPreloadTags) {
@@ -201,4 +222,12 @@ function getPageContextTag(pageContext: { _pageId: string; _passToClient: string
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlSnippet = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
   return htmlSnippet
+}
+
+function htmlPartsToString(htmlParts: HtmlPart[], pageAssets: PageAsset[]): string {
+  let htmlString = ''
+  htmlParts.forEach((p) => {
+    htmlString += typeof p === 'string' ? p : p(pageAssets)
+  })
+  return htmlString
 }
