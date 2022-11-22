@@ -30,20 +30,22 @@ async function render(pageContext: any) {
     documentHtml,
     injectFilter(assets: PreloadFilterEntry[]): PreloadFilterEntry[] {
       return assets.map((asset) => {
-        if (!asset.isPreload) {
+        if (
+          // We always inject assets that aren't about preloading
+          !asset.isPreload ||
+          // We always inject scripts preload tags (recommended)
+          asset.assetType === 'script'
+        ) {
           return asset
         }
 
         let dontInject = false
-
         if (preloadStrategy === 'DISABLED') {
           dontInject = true
         }
-
-        if (preloadStrategy === 'ONLY_FONT' && asset.isPreload && asset.assetType !== 'font') {
+        if (preloadStrategy === 'ONLY_FONT' && asset.assetType !== 'font') {
           dontInject = true
         }
-
         if (dontInject) {
           return {
             ...asset,
