@@ -8,7 +8,7 @@ beforeAll(async () => {
 }, 10 * 1000)
 
 describe('preload tags', () => {
-  it('Page 1', async () => {
+  it('Preload Default', async () => {
     const { body, earlyHints } = await render('/')
     expect(earlyHints).toMatchInlineSnapshot(
       `
@@ -54,7 +54,7 @@ describe('preload tags', () => {
     `
     )
   })
-  it('Page 2', async () => {
+  it('Preload Disabled', async () => {
     const { body, earlyHints } = await render('/preload-disabled')
     expect(earlyHints).toMatchInlineSnapshot(
       `
@@ -100,7 +100,7 @@ describe('preload tags', () => {
     `
     )
   })
-  it('Page 3', async () => {
+  it('Preload Images', async () => {
     const { body, earlyHints } = await render('/preload-images')
     expect(earlyHints).toMatchInlineSnapshot(
       `
@@ -146,7 +146,7 @@ describe('preload tags', () => {
     `
     )
   })
-  it('Page 4', async () => {
+  it('Preload Eager', async () => {
     const { body, earlyHints } = await render('/preload-eager')
     expect(earlyHints).toMatchInlineSnapshot(
       `
