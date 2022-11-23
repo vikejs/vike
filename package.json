@@ -47,7 +47,9 @@
   "pnpm": {
     "overrides": {
       "vite-plugin-ssr": "link:./vite-plugin-ssr/",
-      "@brillout/docpress>vite": "npm:@brillout/vite@3.2.4-patch.11145"
+      "@vitejs/plugin-react": "3.0.0",
+      "@vitejs/plugin-vue": "4.0.0",
+      "vite": "4.0.0"
     },
     "packageExtensions": {
       "@apollo/client": {
