@@ -10,6 +10,7 @@ import { getManifestEntry } from '../getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import type { MediaType } from '../html/inferMediaType'
+import {sortPageAssetsForEarlyHintsHeader} from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
 
 type PageAsset = {
   src: string
@@ -99,34 +100,9 @@ async function getPageAssets(
     return pageAsset
   })
 
-  sortPageAssetsForEarlyHintsHeader(pageAssets)
+  sortPageAssetsForEarlyHintsHeader(pageAssets, pageContext)
 
   return pageAssets
-}
-
-function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
-  pageAssets.sort(
-    higherFirst(({ assetType }) => {
-      let priority = 0
-
-      // CSS has highest priority
-      if (assetType === 'style') return priority
-      priority--
-
-      // Visual assets have high priority
-      if (assetType === 'font') return priority
-      priority--
-      if (assetType === 'image') return priority
-      priority--
-
-      // Others
-      if (assetType !== 'script') return priority
-      priority--
-
-      // JavaScript has lowest priority
-      return priority
-    })
-  )
 }
 
 function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): string {

@@ -49,11 +49,13 @@ async function renderDocumentHtml(
   injectFilter: PreloadFilter
 ): Promise<HtmlRender> {
   if (isEscapedString(documentHtml)) {
+    objectAssign(pageContext, { _isStream: false as const })
     let htmlString = getEscapedString(documentHtml)
     htmlString = await injectHtmlTagsToString([htmlString], pageContext, injectFilter)
     return htmlString
   }
   if (isStream(documentHtml)) {
+    objectAssign(pageContext, { _isStream: true as const })
     const stream = documentHtml
     const streamWrapper = await renderHtmlStream(stream, null, pageContext, onErrorWhileStreaming, injectFilter)
     return streamWrapper
@@ -62,10 +64,12 @@ async function renderDocumentHtml(
     const templateContent = documentHtml._template
     const render = await renderTemplate(templateContent, renderFilePath, pageContext)
     if (!('htmlStream' in render)) {
+      objectAssign(pageContext, { _isStream: false as const })
       const { htmlPartsAll } = render
       const htmlString = await injectHtmlTagsToString(htmlPartsAll, pageContext, injectFilter)
       return htmlString
     } else {
+      objectAssign(pageContext, { _isStream: true as const })
       const { htmlStream } = render
       const streamWrapper = await renderHtmlStream(
         htmlStream,
@@ -87,7 +91,7 @@ async function renderDocumentHtml(
 async function renderHtmlStream(
   streamOriginal: Stream & { injectionBuffer?: string[] },
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
-  pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean },
+  pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean; _isStream: true },
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
 ) {

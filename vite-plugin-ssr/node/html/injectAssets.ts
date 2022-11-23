@@ -27,7 +27,7 @@ type PageContextInjectAssets = {
 
 async function injectHtmlTagsToString(
   htmlParts: HtmlPart[],
-  pageContext: PageContextInjectAssets,
+  pageContext: PageContextInjectAssets & { _isStream: false },
   injectFilter: PreloadFilter
 ): Promise<string> {
   const htmlTags = await getHtmlTags(pageContext, null, injectFilter)
@@ -39,7 +39,7 @@ async function injectHtmlTagsToString(
 }
 
 function injectHtmlTagsToStream(
-  pageContext: PageContextInjectAssets,
+  pageContext: PageContextInjectAssets & { _isStream: true },
   injectToStream: null | InjectToStream,
   injectFilter: PreloadFilter
 ) {

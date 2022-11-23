@@ -28,7 +28,7 @@ type HtmlTag = {
   position: 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 }
 async function getHtmlTags(
-  pageContext: PageContextInjectAssets,
+  pageContext: PageContextInjectAssets & { _isStream: boolean },
   injectToStream: null | InjectToStream,
   injectFilter: PreloadFilter
 ) {
@@ -38,31 +38,29 @@ async function getHtmlTags(
   assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
   const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
 
-  let pageAssets = await pageContext.__getPageAssets()
-
-  const htmlTags: HtmlTag[] = []
+  const pageAssets = await pageContext.__getPageAssets()
 
   const stamp = Symbol('injectFilterEntryStamp')
   const getInject = (asset: PageAsset): PreloadFilterInject => {
-    let inject: PreloadFilterInject = false
+    if (!pageContext._isProduction) {
+      return 'HTML_BEGIN'
+    }
     if (asset.assetType === 'style' || asset.assetType === 'font') {
-      inject = 'HTML_BEGIN'
+      return 'HTML_BEGIN'
     }
     if (asset.assetType === 'script') {
-      inject = 'HTML_END'
+      return 'HTML_END'
     }
-    return inject
+    return false
   }
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
-      if (asset.assetType === 'script') {
-        return (
-          // Don't allow the user to manipulate <script> tags because it can break hydration while streaming.
-          // The <script> tags are handled separately by vite-plugin-ssr down below.
-          !asset.isEntry &&
-          // Don't allow the user to preload JavaScript when the page is HTML-only
-          !isHtmlOnly
-        )
+      if (asset.isEntry && asset.assetType === 'script') {
+        // We could in principle allow the user to change the position of <script> but we don't because of `getMergedScriptTag()`
+        return false
+      }
+      if (isHtmlOnly && asset.assetType === 'script') {
+        return false
       }
       return true
     })
@@ -87,21 +85,31 @@ async function getHtmlTags(
     const res = injectFilter(injectFilterEntries)
     assertUsage(res === undefined, 'Wrong injectFilter() usage, see https://vite-plugin-ssr.com/injectFilter')
     assertInjectFilterUsage(injectFilterEntries, stamp)
+    injectFilterEntries.forEach((a) => {
+      /*
+      if (a.assetType === 'script' && a.isEntry) {
+        assertUsage(a.inject, `[injectFilter()] ${a.src} needs to be injected`)
+      }
+      */
+      if (a.assetType === 'style' && a.isEntry) {
+        // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
+        //  - https://github.com/vitejs/vite/issues/2282
+        //  - https://github.com/brillout/vite-plugin-ssr/issues/261
+        assertWarning(a.inject, `[injectFilter()] We recommend against not injecting ${a.src}`, {
+          onlyOnce: true,
+          showStackTrace: false
+        })
+      }
+      if (!isHtmlOnly && a.assetType === 'script') {
+        assertWarning(a.inject, `[injectFilter()] We recommend against not preloading JavaScript (${a.src})`, {
+          onlyOnce: true,
+          showStackTrace: false
+        })
+      }
+    })
   }
-  injectFilterEntries.forEach((a) => {
-    if (a.assetType === 'style') {
-      // In development, Vite automatically inject styles, but we still inject `<link rel="stylesheet" type="text/css" href="${src}">` tags in order to avoid FOUC (flash of unstyled content).
-      //  - https://github.com/vitejs/vite/issues/2282
-      //  - https://github.com/brillout/vite-plugin-ssr/issues/261
-      assertWarning(a.inject, `We recommend against not injecting ${a.src}`, { onlyOnce: true, showStackTrace: false })
-    }
-    if (!isHtmlOnly && a.assetType === 'script') {
-      assertWarning(a.inject, `We recommend against not preloading JavaScript (${a.src})`, {
-        onlyOnce: true,
-        showStackTrace: false
-      })
-    }
-  })
+
+  const htmlTags: HtmlTag[] = []
 
   // Non-JavaScript
   for (const asset of injectFilterEntries) {
@@ -112,28 +120,37 @@ async function getHtmlTags(
   }
 
   // JavaScript
-  const positionJs = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
+  const positionProd = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
+  const positionScript = !pageContext._isProduction ? 'HTML_BEGIN' : positionProd
+  const positionJsonData =
+    !pageContext._isProduction && !pageContext._pageContextPromise && !pageContext._isStream
+      ? 'HTML_BEGIN'
+      : positionProd
   const jsScript = await getMergedScriptTag(pageAssets, pageContext)
   if (jsScript) {
     htmlTags.push({
       htmlTag: jsScript,
-      position: positionJs
+      position: positionScript
     })
   }
   for (const asset of injectFilterEntries) {
     if (asset.assetType === 'script' && asset.inject) {
       const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
-      const position = asset.inject === 'HTML_END' ? positionJs : asset.inject
+      const position = asset.inject === 'HTML_END' ? positionScript : asset.inject
       htmlTags.push({ htmlTag, position })
     }
   }
 
   // `pageContext` JSON data
   if (!isHtmlOnly) {
+    // Don't allow the user to manipulate with injectFilter(): injecting <script type="application/json"> before the stream can break the app when:
+    //  - using https://vite-plugin-ssr.com/stream#initial-data-after-streaming
+    //  - `pageContext` is modified during the stream, e.g. /examples/vue-pinia which uses https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch
+    // The <script> tags are handled separately by vite-plugin-ssr down below.
     htmlTags.push({
       // Needs to be called after `resolvePageContextPromise()`
       htmlTag: () => getPageContextTag(pageContext),
-      position: positionJs
+      position: positionJsonData
     })
   }
 

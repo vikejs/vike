@@ -40,7 +40,7 @@ async function render(pageContext: any) {
 
       if (preloadStrategy === 'DISABLED') {
         assets.forEach((asset) => {
-          // We don't touch entry assets (recommended)
+          // Entries always need to be injected
           if (asset.isEntry) return
           asset.inject = false
         })
