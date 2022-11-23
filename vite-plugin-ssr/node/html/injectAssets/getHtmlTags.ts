@@ -45,9 +45,7 @@ async function getHtmlTags(
   const stamp = Symbol('injectFilterEntryStamp')
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
-      if (asset.assetType !== 'script') {
-        return true
-      } else {
+      if (asset.assetType === 'script') {
         return (
           // We don't allow the user the manipulate <script> tags because it can break hydration while streaming
           !asset.isEntry &&
@@ -55,6 +53,7 @@ async function getHtmlTags(
           !isHtmlOnly
         )
       }
+      return true
     })
     .map((asset) => {
       let inject: PreloadFilterInject = false
