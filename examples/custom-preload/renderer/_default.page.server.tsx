@@ -28,34 +28,37 @@ async function render(pageContext: any) {
 
   return {
     documentHtml,
-    injectFilter(assets: InjectFilterEntry[]): InjectFilterEntry[] {
-      return assets.map((asset) => {
-        if (
-          // We always inject assets that aren't about preloading
-          asset.isEntry ||
-          // We always inject scripts preload tags (recommended)
-          asset.assetType === 'script'
-        ) {
-          return asset
-        }
+    injectFilter(assets: InjectFilterEntry[]) {
+      // Default vite-plugin-ssr's preloading strategy
+      if (!preloadStrategy) return
 
-        let dontInject = false
-        if (preloadStrategy === 'DISABLED') {
-          dontInject = true
-        }
-        if (preloadStrategy === 'ONLY_FONT' && asset.assetType !== 'font') {
-          dontInject = true
-        }
-        if (dontInject) {
-          return {
-            ...asset,
-            inject: false
+      if (preloadStrategy === 'DISABLED') {
+        assets.forEach((asset) => {
+          if (
+            // We don't touch entry assets (recommended)
+            asset.isEntry ||
+            // We don't touch JavaScript preloading (recommended)
+            asset.assetType === 'script'
+          ) {
+            return
           }
-        }
+          asset.inject = false
+        })
+      }
 
-        // Default vite-plugin-ssr's preloading behavior
-        return asset
-      })
+      if (preloadStrategy === 'ONLY_FONT') {
+        assets.forEach((asset) => {
+          if (
+            // We don't touch entry assets (recommended)
+            asset.isEntry ||
+            // We don't touch JavaScript preloading (recommended)
+            asset.assetType === 'script'
+          ) {
+            return
+          }
+          asset.inject = asset.assetType !== 'font' ? false : 'HTML_BEGIN'
+        })
+      }
     }
   }
 }

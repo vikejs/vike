@@ -28,40 +28,37 @@ async function render(pageContext: any) {
 
   return {
     documentHtml,
-    injectFilter(assets: InjectFilterEntry[]): InjectFilterEntry[] {
-      return assets.map((asset) => {
-        if (preloadStrategy === 'EAGER') {
-          return {
-            ...asset,
-            inject: 'HTML_BEGIN'
+    injectFilter(assets: InjectFilterEntry[]) {
+      // Default vite-plugin-ssr's preloading strategy
+      if (!preloadStrategy) return
+
+      if (preloadStrategy === 'EAGER') {
+        assets.forEach((asset) => {
+          asset.inject = 'HTML_BEGIN'
+        })
+      }
+
+      if (preloadStrategy === 'DISABLED') {
+        assets.forEach((asset) => {
+          // We don't touch entry assets (recommended)
+          if (asset.isEntry) return
+          asset.inject = false
+        })
+      }
+
+      if (preloadStrategy === 'ONLY_FONT') {
+        assets.forEach((asset) => {
+          if (
+            // We don't touch entry assets (recommended)
+            asset.isEntry ||
+            // We don't touch JavaScript preloading (recommended)
+            asset.assetType === 'script'
+          ) {
+            return
           }
-        }
-
-        if (asset.isEntry) {
-          return asset
-        }
-
-        let dontInject = false
-        if (preloadStrategy === 'DISABLED') {
-          dontInject = true
-        }
-        if (
-          preloadStrategy === 'ONLY_FONT' &&
-          asset.assetType !== 'font' &&
-          asset.assetType !== 'script'
-        ) {
-          dontInject = true
-        }
-        if (dontInject) {
-          return {
-            ...asset,
-            inject: false
-          }
-        }
-
-        // Default vite-plugin-ssr's preloading behavior
-        return asset
-      })
+          asset.inject = asset.assetType !== 'font' ? false : 'HTML_BEGIN'
+        })
+      }
     }
   }
 }

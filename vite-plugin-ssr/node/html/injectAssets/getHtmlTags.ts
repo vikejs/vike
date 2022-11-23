@@ -3,7 +3,7 @@ export type { HtmlTag }
 export type { PreloadFilter }
 export type { InjectFilterEntry }
 
-import { assert, assertWarning } from '../../utils'
+import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils'
 import { serializePageContextClientSide } from '../../serializePageContextClientSide'
 import { sanitizeJson } from './sanitizeJson'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags'
@@ -42,7 +42,8 @@ async function getHtmlTags(
 
   const htmlTags: HtmlTag[] = []
 
-  let injectFilterEntries: InjectFilterEntry[] = pageAssets
+  const stamp = Symbol('injectFilterEntryStamp')
+  const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
       if (asset.assetType !== 'script') {
         return true
@@ -63,13 +64,21 @@ async function getHtmlTags(
       if (asset.assetType === 'script') {
         inject = 'HTML_END'
       }
-      return {
+      const entry: InjectFilterEntry = {
         ...asset,
-        inject
+        inject,
+        // @ts-ignore
+        [stamp]: true
       }
+      freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
+      return entry
     })
+  assertInjectFilterEntries(injectFilterEntries, stamp)
+
   if (injectFilter) {
-    injectFilterEntries = injectFilter(injectFilterEntries)
+    const res = injectFilter(injectFilterEntries)
+    assertUsage(res === undefined, 'Wrong injectFilter() usage, see https://vite-plugin-ssr.com/injectFilter')
+    assertInjectFilterUsage(injectFilterEntries, stamp)
   }
   injectFilterEntries.forEach((a) => {
     if (a.assetType === 'style') {
@@ -86,7 +95,7 @@ async function getHtmlTags(
     }
   })
 
-  // Non JavaScript
+  // Non-JavaScript
   for (const asset of injectFilterEntries) {
     if (asset.assetType !== 'script' && asset.inject) {
       const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
@@ -138,4 +147,30 @@ function getPageContextTag(pageContext: { _pageId: string; _passToClient: string
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlTag = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
   return htmlTag
+}
+
+function assertInjectFilterEntries(injectFilterEntries: InjectFilterEntry[], stamp: any) {
+  try {
+    assertInjectFilterUsage(injectFilterEntries, stamp)
+  } catch (err) {
+    if ((err as undefined | { message: string })?.message.includes('[Wrong Usage]')) {
+      assert(false)
+    }
+    throw err
+  }
+}
+function assertInjectFilterUsage(injectFilterEntries: InjectFilterEntry[], stamp: any) {
+  injectFilterEntries.forEach((entry, i) => {
+    assertUsage(isObject(entry), `[injectFilter()] Entry ${i} isn't an object`)
+    assertUsage(typeof entry.src === 'string', `[injectFilter()] Entry ${i} is missing property \`src\``)
+    assertUsage(
+      (entry as any)[stamp] === true,
+      `[injectFilter()] Entry ${i} (${entry.src}) isn't the original object, see https://vite-plugin-ssr.com/injectFilter`
+    )
+    assert([false, 'HTML_BEGIN', 'HTML_END'].includes(entry.inject))
+    assert(entry.assetType === null || typeof entry.assetType === 'string')
+    assert(entry.mediaType === null || typeof entry.mediaType === 'string')
+    assert(typeof entry.isEntry === 'boolean')
+    assert(Object.keys(entry).length === 5)
+  })
 }
