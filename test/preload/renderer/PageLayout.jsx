@@ -16,8 +16,8 @@ function PageLayout({ children }) {
           <a className="navitem" href="/preload-disabled">
             Preload Disabled
           </a>
-          <a className="navitem" href="/preload-font-only">
-            Preload Only Font
+          <a className="navitem" href="/preload-images">
+            Preload Images
           </a>
         </Sidebar>
         <Content>{children}</Content>

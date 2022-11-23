@@ -24,14 +24,14 @@ function testRun(cmd: 'npm run preview') {
     expect(html).toMatch(fontRE)
   })
 
-  test('Custom preloading: only fonts', async () => {
-    const html = await fetchHtml('/preload-font-only')
+  test('Preload images', async () => {
+    const html = await fetchHtml('/preload-images')
     testCommon(html)
-    expect(html).not.toMatch(logoRE)
+    expect(html).toMatch(logoRE)
     expect(html).toMatch(fontRE)
   })
 
-  test('Custom preloading: completely disabled', async () => {
+  test('Preload disabled', async () => {
     const html = await fetchHtml('/preload-disabled')
     testCommon(html)
     expect(html).not.toMatch(logoRE)

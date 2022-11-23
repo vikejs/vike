@@ -46,17 +46,11 @@ async function render(pageContext: any) {
         })
       }
 
-      if (preloadStrategy === 'ONLY_FONT') {
+      if (preloadStrategy === 'IMAGES') {
         assets.forEach((asset) => {
-          if (
-            // We don't touch entry assets (recommended)
-            asset.isEntry ||
-            // We don't touch JavaScript preloading (recommended)
-            asset.assetType === 'script'
-          ) {
-            return
+          if (asset.assetType === 'image') {
+            asset.inject = 'HTML_BEGIN'
           }
-          asset.inject = asset.assetType !== 'font' ? false : 'HTML_BEGIN'
         })
       }
     }
