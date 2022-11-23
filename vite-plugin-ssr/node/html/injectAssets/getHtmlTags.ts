@@ -70,12 +70,16 @@ async function getHtmlTags(
         // @ts-ignore
         [stamp]: true
       }
-      freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
       return entry
     })
   assertInjectFilterEntries(injectFilterEntries, stamp)
 
   if (injectFilter) {
+    Object.freeze(injectFilterEntries)
+    Object.values(injectFilterEntries).forEach((entry) =>
+      freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
+    )
+
     const res = injectFilter(injectFilterEntries)
     assertUsage(res === undefined, 'Wrong injectFilter() usage, see https://vite-plugin-ssr.com/injectFilter')
     assertInjectFilterUsage(injectFilterEntries, stamp)
