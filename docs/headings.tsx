@@ -737,6 +737,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: '`injectFilter()`',
+    url: '/injectFilter'
+  },
+  {
+    level: 2,
     title: '`escapeInject`',
     url: '/escapeInject'
   },

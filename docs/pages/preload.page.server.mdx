@@ -16,9 +16,9 @@ The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Statu
 // server.js
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
-  const { httpResponse } = pageContext
+  const { earlyHints } = pageContext.httpResponse
   // For exampe with Node.js 18:
-  res.writeEarlyHints({ link: httpResponse.earlyHints.map((e) => e.earlyHintLink) })
+  res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
 })
 ```
 ```ts
@@ -36,17 +36,18 @@ type PageContext = {
 }
 ```
 
-Example: `$ npm init vite-plugin-ssr@latest`.
+Examples: `$ npm init vite-plugin-ssr@latest`.
 
 See also:
  - [developer.chrome.com > Early Hints](https://developer.chrome.com/blog/early-hints/)
  - [Node.js 18 Support](https://nodejs.org/dist/latest-v19.x/docs/api/http.html#responsewriteearlyhintshints-callback)
 
+
 ## `injectFilter()`
 
 Vite-plugin-ssr automatically injects preload tags.
 
-If vite-plugin-ssr's preload strategy doesn't work for us, we can control what and where preload/asset tags are injected.
+If vite-plugin-ssr's default preload strategy doesn't work for us, we can control what and where preload/asset tags are injected.
 
 ```ts
 // /renderer/_default.page.server.js
@@ -57,44 +58,21 @@ export async function render(pageContext) {
   const documentHtml = escapeInject`<!DOCTYPE html>
     <html>
       <body>
-        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+        <div id="page-view">${stream}</div>
       </body>
     </html>`
 
-  return {
-    documentHtml,
-    injectFilter(assets: InjectFilterEntry[]): InjectFilterEntry[] {
-      return assets.map((asset) => {
-        // Only inject font preload tags
-        if (!asset.isEntry && asset.assetType !== 'font') {
-          return {
-            ...asset,
-            inject: false
-          }
-        } else {
-          // Default vite-plugin-ssr's preloading behavior
-          return {
-            ...asset,
-            inject: 'HTML_END'
-          }
-        }
-      })
-    }
+  const injectFilter = (assets: InjectFilterEntry[]): void => {
+    assets.forEach(asset => {
+      // Preload images
+      if (asset.assetType === 'image') {
+        asset.inject = 'HTML_BEGIN'
+      }
+    })
   }
+
+  return { documentHtml, injectFilter }
 }
-```
-```ts
-type InjectFilterEntry = {
-  inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
-  src: string // Asset's URL
-  assetType: "image" | "script" | "font" | "style" | null
-  mediaType: string // MIME type
-  isEntry: boolean // true  => <script> or <link rel="stylesheet" type="text/css">
-                   // false => preload tag, e.g. <link rel="preload" as="font">
-}
-type InjectFilter = (assets: InjectFilterEntry[]) => InjectFilterEntry[]
 ```
 
-Examples:
- - <Link href="/examples/custom-preload/renderer/_default.page.server.tsx" />.
- - <Link href="/test/preload/renderer/_default.page.server.tsx" />.
+See <Link href="/injectFilter" />.
