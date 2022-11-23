@@ -43,26 +43,31 @@ async function getHtmlTags(
   const htmlTags: HtmlTag[] = []
 
   const stamp = Symbol('injectFilterEntryStamp')
+  const getInject = (asset: PageAsset): PreloadFilterInject => {
+    let inject: PreloadFilterInject = false
+    if (asset.assetType === 'style' || asset.assetType === 'font') {
+      inject = 'HTML_BEGIN'
+    }
+    if (asset.assetType === 'script') {
+      inject = 'HTML_END'
+    }
+    return inject
+  }
   const injectFilterEntries: InjectFilterEntry[] = pageAssets
     .filter((asset) => {
       if (asset.assetType === 'script') {
         return (
-          // We don't allow the user the manipulate <script> tags because it can break hydration while streaming
+          // Don't allow the user to manipulate <script> tags because it can break hydration while streaming.
+          // The <script> tags are handled separately by vite-plugin-ssr down below.
           !asset.isEntry &&
-          // We don't allow the user to preload JavaScript when the page is HTML-only
+          // Don't allow the user to preload JavaScript when the page is HTML-only
           !isHtmlOnly
         )
       }
       return true
     })
     .map((asset) => {
-      let inject: PreloadFilterInject = false
-      if (asset.assetType === 'style' || asset.assetType === 'font') {
-        inject = 'HTML_BEGIN'
-      }
-      if (asset.assetType === 'script') {
-        inject = 'HTML_END'
-      }
+      const inject = getInject(asset)
       const entry: InjectFilterEntry = {
         ...asset,
         inject,
