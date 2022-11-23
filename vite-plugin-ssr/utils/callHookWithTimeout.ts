@@ -51,14 +51,14 @@ function callHookWithTimeout<T>(call: () => T, hookName: HookName, hookFilePath:
 }
 
 function getTimeouts(hookName: HookName) {
-  let timeoutErr = 20 * 1000
+  let timeoutErr = 40 * 1000
   let timeoutWarn = 4 * 1000
   if (hookName === 'onBeforeRoute') {
     timeoutErr = 5 * 1000
     timeoutWarn = 1 * 1000
   }
   if (hookName === 'onBeforePrerender') {
-    timeoutErr = 60 * 1000
+    timeoutErr = 10 * 60 * 1000
     timeoutWarn = 30 * 1000
   }
   return { timeoutErr, timeoutWarn }
