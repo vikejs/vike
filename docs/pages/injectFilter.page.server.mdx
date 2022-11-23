@@ -1,4 +1,4 @@
-import { Link } from '@brillout/docpress'
+import { Link, Note } from '@brillout/docpress'
 
 The `injectFilter()` hook allows us to control what and where preload/asset tags are injected in our HTML.
 
@@ -10,6 +10,9 @@ See <Link href="/preload" />.
  - <Link href="/test/preload/renderer/_default.page.server.tsx" />.
 
 ## Usage
+
+<Note type='warning'>`injectFilter()` is a beta feature: it may change in any minor version update.</Note>
+<Note type='warning'>`injectFilter()` is called only in production: it has no effect in development.</Note>
 
 ```ts
 // /renderer/_default.page.server.js

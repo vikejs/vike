@@ -74,7 +74,7 @@ async function getHtmlTags(
     })
   assertInjectFilterEntries(injectFilterEntries, stamp)
 
-  if (injectFilter) {
+  if (injectFilter && pageContext._isProduction) {
     Object.freeze(injectFilterEntries)
     Object.values(injectFilterEntries).forEach((entry) =>
       freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
