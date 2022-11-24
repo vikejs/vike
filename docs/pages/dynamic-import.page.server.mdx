@@ -1,4 +1,6 @@
-We can use `import()` to lazily load components:
+import { Link } from '@brillout/docpress'
+
+We can use a dynamic `import()` to lazy-load a component:
 
 ```diff
 - import SomeComponent from 'some-component'
@@ -8,12 +10,12 @@ We can use `import()` to lazily load components:
 > Vite automatically code-splits at `import()` and the code of `some-component` is not included in the initial JavaScript browser-side bundle:
 > the code is loaded only if/when `import('some-component')` is executed.
 
-There are two use cases for using `import()` to dynamically import components:
- - **Performance**. The idea here is to defer loading heavy components (e.g. a heavy interactive map), so that the user can already interact with our page before the browser has loaded that heavy component.
- - **Client-side only components**. Some components don't work in Node.js; we use `import()` to load & render them only on the client-side.
-   > UI Frameworks usually don't execute `import()` upon SSR (this is, for example, the case with React and Vue). This means that compoments imported with `import()` are never loaded on the server-side.
+The most common use cases are:
+ - **Performance**: we can use a dynamic `import()` to defer loading heavy components (e.g. a heavy interactive map), so that the user can already interact with our page before even the browser has started loading that heavy component.
+ - **Client-side only components**: we can use a dynamic `import()` to load & render a component only on the client-side. (Some components don't work in Node.js, see <Link href="/client-only-components" />.)
+   > Most UI Frameworks's (e.g. React and Vue) built-in support for dynamically loading a component execute the dynamic `import()` only on the browser-side. In other words, compoments loaded that way are never loaded on the server-side.
 
-UI frameworks usually have built-in support for dynamically loading components:
+UI frameworks usually have built-in support for dynamically loading a component with `import()`:
  - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
  - [Vue 3 Docs > Async Components](https://v3.vuejs.org/guide/component-dynamic-async.html#async-components)
  - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)

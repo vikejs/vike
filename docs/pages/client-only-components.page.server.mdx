@@ -1,11 +1,12 @@
 import { Link } from '@brillout/docpress'
 
-A frequent problem with SSR is that some component libraries,
-such as [react-leaflet](https://github.com/PaulLeCam/react-leaflet) or [vue-leaflet](https://github.com/vue-leaflet/vue-leaflet),
-may only work in the browser.
+Some component libraries are meant to work only in the browser,
+such as [react-leaflet](https://github.com/PaulLeCam/react-leaflet) or [vue-leaflet](https://github.com/vue-leaflet/vue-leaflet).
 
-Server-side rendering such components may crash our Node.js server.
+Most such client-only libraries nowadays support being server-side rendered. (Rendering an empty shell on the server-side while replacing that empty shell on the browser-side with the "real" component.)
 
-With `vite-plugin-ssr`, there are two ways to handle client-only components:
- - We render our page as SPA, see <Link href="/render-modes" />.
- - We render our page with SSR while we load & render such components only on the browser-side, see <Link href="/dynamic-import" />.
+But some client-only libraries still don't support being server-side rendered, and some even crash when they are loaded on the server-side.
+
+To avoid loading client-only components on the server-side, we can:
+ - Render our page as SPA, see <Link href="/render-modes" />.
+ - Render our page with SSR while we load & render such components only on the browser-side, see <Link href="/dynamic-import" />.
