@@ -1,10 +1,11 @@
+export { processStream }
+export { streamToString }
+
 export { getStreamReadableNode }
 export { getStreamReadableWeb }
 export { pipeToStreamWritableNode }
 export { pipeToStreamWritableWeb }
-export { processStream }
 export { isStream }
-export { streamToString }
 export { getStreamName }
 export { inferStreamName }
 
