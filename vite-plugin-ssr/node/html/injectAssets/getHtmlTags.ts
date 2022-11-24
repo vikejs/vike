@@ -77,7 +77,7 @@ async function getHtmlTags(
   assertInjectFilterEntries(injectFilterEntries, stamp)
 
   if (injectFilter && pageContext._isProduction) {
-    Object.seal(injectFilterEntries)
+    Object.seal(injectFilterEntries) // `Object.seal()` instead of `Object.freeze()` to allow the user to `assets.sort()`
     Object.values(injectFilterEntries).forEach((entry) =>
       freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
     )
