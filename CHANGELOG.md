@@ -1,3 +1,33 @@
+## [0.4.52](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.51...v0.4.52) (2022-11-24)
+
+
+### Bug Fixes
+
+* allow arbitrary mode, independently of dev/prod (fix [#516](https://github.com/brillout/vite-plugin-ssr/issues/516)) ([65bcf53](https://github.com/brillout/vite-plugin-ssr/commit/65bcf53eec6b53634d611f77a87fa6cf64312eb0))
+* allow user to control script preloading ([b0374b1](https://github.com/brillout/vite-plugin-ssr/commit/b0374b14881633fda79b24dbcc0669060c951a87))
+* explicitly fail when using two streams ([7dbdae8](https://github.com/brillout/vite-plugin-ssr/commit/7dbdae8a38bf415ddc8b6f1db43a610c4477dc6e))
+* improve html whitespace handling ([0915436](https://github.com/brillout/vite-plugin-ssr/commit/0915436124ace75a861ac6ef3338f0eb724c9a7b))
+* improve PageAsset data structure ([#262](https://github.com/brillout/vite-plugin-ssr/issues/262)) ([e41ab39](https://github.com/brillout/vite-plugin-ssr/commit/e41ab396536d03b568019f3c135c9587537f2dca))
+* improve warning message upon wrong HTML variable value ([19f3423](https://github.com/brillout/vite-plugin-ssr/commit/19f342380dcfeb849a0ec136b352a1645390d818))
+* increase timeouts ([7f25745](https://github.com/brillout/vite-plugin-ssr/commit/7f257452911bb560efd263575112efb89240be6b))
+* make HTML injections more readable ([38c97c7](https://github.com/brillout/vite-plugin-ssr/commit/38c97c7b92c58ffc9440204cbd808d7067991040))
+* only preload fonts and JavaScript by default ([00cbf39](https://github.com/brillout/vite-plugin-ssr/commit/00cbf392bb8608f7d52fee83ec8f325a80f80815))
+* remove superflous preload tag ([70cc112](https://github.com/brillout/vite-plugin-ssr/commit/70cc1121963ff0c8bcccb0025c9018139868198d))
+* remove unnecessary NODE_ENV check ([#516](https://github.com/brillout/vite-plugin-ssr/issues/516)) ([11f0155](https://github.com/brillout/vite-plugin-ssr/commit/11f0155a01e1acec0afdb82df002a54d2b5f545f))
+
+
+### Features
+
+* `pageContext.httpResponse.earlyHints` (closes [#262](https://github.com/brillout/vite-plugin-ssr/issues/262)) ([3c20516](https://github.com/brillout/vite-plugin-ssr/commit/3c20516612fadbb6684a5afb08dc61e00fd2e8b4))
+* implement `injectFilter()` (closes [#262](https://github.com/brillout/vite-plugin-ssr/issues/262), closes [#419](https://github.com/brillout/vite-plugin-ssr/issues/419), closes [#420](https://github.com/brillout/vite-plugin-ssr/issues/420), closes [#510](https://github.com/brillout/vite-plugin-ssr/issues/510)) ([e0785a6](https://github.com/brillout/vite-plugin-ssr/commit/e0785a6afa9c5855ea698fd7109f53d90cfa3d6c))
+
+
+### Performance Improvements
+
+* in dev, load scripts before static assets ([3358460](https://github.com/brillout/vite-plugin-ssr/commit/335846010d490d300f4074af671db53717d3cd87))
+
+
+
 ## [0.4.51](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.50...v0.4.51) (2022-11-19)
 
 
