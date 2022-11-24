@@ -12,13 +12,14 @@ We can use a dynamic `import()` to lazy-load a component:
 
 Common use cases:
  - **Performance**: we can use `import()` to defer loading a heavy component (e.g. an interactive map), so that the user can already interact with our page before even the browser started loading that heavy component.
- - **Client-side only components**: we can use `import()` to load & render a component only on the client-side. (Some omponent libraries cannot be server-side rendered, see <Link href="/client-only-components" />.)
-   > The UI frameworks's built-in support for such lazy-loaded component usually execute the dynamic `import()` only on the browser-side (e.g. React and Vue), i.e. the lazy compoment is never loaded on the server-side.
+ - **Client-side only components**: we can use `import()` to avoid loading/rendering a component on the server-side. (Some component libraries cannot be server-side rendered, see <Link href="/client-only-components" />.)
 
 UI frameworks support for lazy components using `import()`:
  - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
  - [Vue 3 Docs > Async Components](https://v3.vuejs.org/guide/component-dynamic-async.html#async-components)
  - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)
+
+> UI frameworks, such as React and Vue, execute the dynamic `import()` of lazy components only on the browser-side, i.e. the lazy compoment is never loaded on the server-side.
 
 
 ## React Example
