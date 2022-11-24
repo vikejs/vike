@@ -28,7 +28,7 @@ import { getGlobalContext, GlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
-import { setProductionEnvVar } from '../shared/setProduction'
+import { setProduction } from '../shared/setProduction'
 import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
 import { getPageContextRequestUrl } from '../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../shared/route/resolveRouteString'
@@ -121,7 +121,7 @@ async function prerender(
     console.log(`${cyan(`vite-plugin-ssr v${projectInfo.projectVersion}`)} ${green('pre-rendering HTML...')}`)
   }
 
-  setProductionEnvVar()
+  setProduction()
 
   disableReactStreaming()
 

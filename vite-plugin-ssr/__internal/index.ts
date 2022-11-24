@@ -3,7 +3,7 @@
 import { loadPageRoutes, PageRoutes, route } from '../shared/route'
 import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
 import { getGlobalContext } from '../node/globalContext'
-import { setProductionEnvVar } from '../shared/setProduction'
+import { setProduction } from '../shared/setProduction'
 
 export { route, getPagesAndRoutes }
 export type { PageRoutes, PageFile }
@@ -15,7 +15,7 @@ export type { PageRoutes, PageFile }
  * @param config
  */
 async function getPagesAndRoutes() {
-  setProductionEnvVar()
+  setProduction()
   await getGlobalContext(true)
 
   const { pageFilesAll, allPageIds } = await getPageFilesAll(false, true)
