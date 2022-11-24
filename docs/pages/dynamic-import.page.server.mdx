@@ -11,8 +11,8 @@ We can use a dynamic `import()` to lazy-load a component:
 > the code is loaded only if/when `import('some-component')` is executed.
 
 Common use cases:
- - **Performance**: we can use a `import()` to defer loading a heavy component (e.g. a heavy interactive map), so that the user can already interact with our page before even the browser has started loading that heavy component.
- - **Client-side only components**: we can use a `import()` to load & render a component only on the client-side. (Some components don't work in Node.js, see <Link href="/client-only-components" />.)
+ - **Performance**: we can use `import()` to defer loading a heavy component (e.g. a heavy interactive map), so that the user can already interact with our page before even the browser started loading that heavy component.
+ - **Client-side only components**: we can use `import()` to load & render a component only on the client-side. (Some components don't work in Node.js, see <Link href="/client-only-components" />.)
    > Most UI Frameworks's built-in support for dynamically loading a component execute the dynamic `import()` only on the browser-side (e.g. React and Vue). In other words, compoments loaded that way are never loaded on the server-side.
 
 UI frameworks built-in support for dynamically loading a component with `import()`:
