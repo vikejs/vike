@@ -10,12 +10,12 @@ We can use a dynamic `import()` to lazy-load a component:
 > Vite automatically code-splits at `import()` and the code of `some-component` is not included in the initial JavaScript browser-side bundle:
 > the code is loaded only if/when `import('some-component')` is executed.
 
-The most common use cases are:
- - **Performance**: we can use a dynamic `import()` to defer loading heavy components (e.g. a heavy interactive map), so that the user can already interact with our page before even the browser has started loading that heavy component.
- - **Client-side only components**: we can use a dynamic `import()` to load & render a component only on the client-side. (Some components don't work in Node.js, see <Link href="/client-only-components" />.)
-   > Most UI Frameworks's (e.g. React and Vue) built-in support for dynamically loading a component execute the dynamic `import()` only on the browser-side. In other words, compoments loaded that way are never loaded on the server-side.
+Common use cases:
+ - **Performance**: we can use a `import()` to defer loading a heavy component (e.g. a heavy interactive map), so that the user can already interact with our page before even the browser has started loading that heavy component.
+ - **Client-side only components**: we can use a `import()` to load & render a component only on the client-side. (Some components don't work in Node.js, see <Link href="/client-only-components" />.)
+   > Most UI Frameworks's built-in support for dynamically loading a component execute the dynamic `import()` only on the browser-side (e.g. React and Vue). In other words, compoments loaded that way are never loaded on the server-side.
 
-UI frameworks usually have built-in support for dynamically loading a component with `import()`:
+UI frameworks built-in support for dynamically loading a component with `import()`:
  - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
  - [Vue 3 Docs > Async Components](https://v3.vuejs.org/guide/component-dynamic-async.html#async-components)
  - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)
