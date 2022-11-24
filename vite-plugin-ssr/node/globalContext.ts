@@ -26,7 +26,6 @@ function getViteDevServer(): ViteDevServer | null {
 
 async function getGlobalContext(isPreRendering: boolean) {
   const { viteDevServer } = globalObject
-  assertProdEnv(viteDevServer)
 
   const globalContext = {}
 
@@ -95,15 +94,4 @@ function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean):
     isPreRendering ? 'pre-rendering.' : 'running the server.'
   ].join(' ')
   assertUsage(buildEntries, errMsg)
-}
-
-function assertProdEnv(viteDevServer: null | ViteDevServer) {
-  assertUsage(
-    !(isProdEnv() && viteDevServer),
-    "You created a Vite dev server with `createServer()` (`import { createServer } from 'vite'`) while setting `process.env.NODE_ENV` to `production`. This is contradictory: for production skip `createServer()`, and for development don't set `process.env.NODE_ENV` to `production`."
-  )
-}
-function isProdEnv() {
-  if (typeof process == 'undefined' || !hasProp(process, 'env')) return true
-  return process.env.NODE_ENV === 'production'
 }
