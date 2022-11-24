@@ -2,7 +2,7 @@ export { previewConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assertUsage, getOutDirs, determineOutDir } from '../utils'
-import { apply, addSsrMiddleware } from '../helpers'
+import { addSsrMiddleware } from '../helpers'
 import { getConfigVps } from './config/assertConfigVps'
 import fs from 'fs'
 import path from 'path'
@@ -15,7 +15,7 @@ function previewConfig(): Plugin {
   let configVps: ConfigVpsResolved
   return {
     name: 'vite-plugin-ssr:previewConfig',
-    apply: apply('preview'),
+    apply: 'serve',
     config(config) {
       return {
         build: {

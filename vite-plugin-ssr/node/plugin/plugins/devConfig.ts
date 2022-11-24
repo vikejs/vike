@@ -2,7 +2,7 @@ export { devConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert } from '../utils'
-import { apply, addSsrMiddleware } from '../helpers'
+import { addSsrMiddleware, isViteCliCall } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import path from 'path'
@@ -13,7 +13,6 @@ function devConfig(): Plugin[] {
   return [
     {
       name: 'vite-plugin-ssr:devConfig',
-      apply: apply('dev'),
       config: () => ({
         ssr: { external: ['vite-plugin-ssr'] },
         optimizeDeps: {
@@ -38,12 +37,9 @@ function devConfig(): Plugin[] {
         addStemEntriesToOpimizeDeps(config, configVps)
         addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
         await determineFsAllowList(config, configVps)
-      }
-    },
-    {
-      name: 'vite-plugin-ssr:devConfig:serverMiddleware',
-      apply: apply('dev', { skipMiddlewareMode: true, onlyViteCli: true }),
+      },
       configureServer(server) {
+        if (!isViteCliCall()) return
         return () => {
           addSsrMiddleware(server.middlewares)
         }

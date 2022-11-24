@@ -2,9 +2,8 @@ export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
 import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath } from '../utils'
-import { apply } from '../helpers'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
-import { setRuntimeConfig, RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
+import { RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
 import { getConfigVps } from './config/assertConfigVps'
 import { ConfigVpsResolved } from './config/ConfigVps'
@@ -17,17 +16,14 @@ function manifest(): Plugin[] {
   let runtimeConfig: RuntimeConfig
   return [
     {
-      name: 'vite-plugin-ssr:runtimeConfig',
-      apply: apply('dev'),
-      async configResolved(config) {
-        await onConfigResolved(config)
-        setRuntimeConfig(runtimeConfig)
-      }
-    },
-    {
       name: 'vite-plugin-ssr:pluginManifest',
       apply: 'build',
-      configResolved: onConfigResolved,
+      async configResolved(config_: ResolvedConfig) {
+        config = config_
+        configVps = await getConfigVps(config)
+        ssr = viteIsSSR(config)
+        runtimeConfig = resolveRuntimeConfig(config, configVps)
+      },
       generateBundle() {
         assert(typeof ssr === 'boolean')
         assert(runtimeConfig)
@@ -47,13 +43,6 @@ function manifest(): Plugin[] {
       }
     }
   ] as Plugin[]
-
-  async function onConfigResolved(config_: ResolvedConfig) {
-    config = config_
-    configVps = await getConfigVps(config)
-    ssr = viteIsSSR(config)
-    runtimeConfig = resolveRuntimeConfig(config, configVps)
-  }
 }
 
 function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig): Record<string, string> {
