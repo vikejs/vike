@@ -6,7 +6,7 @@ beforeAll(async () => {
   await createDevServer()
 })
 
-/*/
+//*/
 const SKIP = true
 /*/
 const SKIP = false
