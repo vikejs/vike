@@ -1,6 +1,6 @@
 import { Link, Note } from '@brillout/docpress'
 
-The `injectFilter()` hook allows us to control what and where preload/asset tags are injected in our HTML.
+The `injectFilter()` hook allows us to control which and where preload and asset tags are injected in our HTML.
 
 See <Link href="/preload" />.
 
@@ -15,7 +15,7 @@ See <Link href="/preload" />.
 <Note type='warning'>Note that `injectFilter()` is called only in production: it has no effect in development.</Note>
 
 ```ts
-// /renderer/_default.page.server.js
+// /renderer/_default.page.server.ts
 
 import type { InjectFilterEntry } from 'vite-plugin-ssr'
 
@@ -66,7 +66,7 @@ type InjectFilterEntry = {
   src: string // Asset's URL
   assetType: "image" | "script" | "font" | "style" | null
   mediaType: string // MIME type
-  isEntry: boolean // true  => <script> or <link rel="stylesheet" type="text/css">
-                   // false => preload tag, e.g. <link rel="preload" as="font">
+  isEntry: boolean // true  ⇒ <script> or <link rel="stylesheet" type="text/css">
+                   // false ⇒ preload tag, e.g. <link rel="preload" as="font">
 }
 ```

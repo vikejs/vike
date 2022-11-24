@@ -5,7 +5,7 @@ import { Link } from '@brillout/docpress'
 By default, vite-plugin-ssr automatically injects script, style, and preload tags to our HTML.
 It also automatically generates [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103).
 
-With `injectFilter()` we can control which preload tags are inserted and where.
+With `injectFilter()` we can control which and where preload tags are inserted.
 
 
 ## Early Hints
@@ -14,6 +14,9 @@ The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Statu
 
 ```js
 // server.js
+
+import { renderPage } from 'vite-plugin-ssr'
+
 app.get('*', async (req, res) => {
   const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
   const { earlyHints } = pageContext.httpResponse
@@ -29,8 +32,8 @@ type PageContext = {
       assetType: "image" | "script" | "font" | "style" | null
       mediaType: string // MIME type
       src: string // Asset's URL
-      isEntry: boolean // true  => asset is an entry
-                       // false => asset is a dependency of an entry
+      isEntry: boolean // true  ⇒ asset is an entry
+                       // false ⇒ asset is a dependency of an entry
     }[]
   }
 }
@@ -45,9 +48,7 @@ See also:
 
 ## `injectFilter()`
 
-Vite-plugin-ssr automatically injects preload tags.
-
-If vite-plugin-ssr's default preload strategy doesn't work for us, we can control what and where preload/asset tags are injected.
+Vite-plugin-ssr automatically injects preload and asset tags but, if vite-plugin-ssr's default preload strategy doesn't work for us, we can control which and where preload and asset tags are injected.
 
 ```ts
 // /renderer/_default.page.server.js
@@ -62,7 +63,7 @@ export async function render(pageContext) {
       </body>
     </html>`
 
-  const injectFilter = (assets: InjectFilterEntry[]): void => {
+  const injectFilter = (assets) => {
     assets.forEach(asset => {
       // Preload images
       if (asset.assetType === 'image') {
