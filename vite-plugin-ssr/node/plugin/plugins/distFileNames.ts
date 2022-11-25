@@ -1,5 +1,9 @@
 export { distFileNames }
 
+// Attempt to preserve file structure of `.page.js` files:
+//  - https://github.com/brillout/vite-plugin-ssr/commit/11a4c49e5403aa7c37c8020c462b499425b41854
+//  - Blocker: https://github.com/rollup/rollup/issues/4724
+
 import { assertPosixPath, assert, assertUsage } from '../utils'
 import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
