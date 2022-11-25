@@ -226,7 +226,7 @@ function getGlobs(
       const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
       const globOptions = JSON.stringify({ eager: isEager, as: query })
       assert(globOptions.startsWith('{"eager":true') || globOptions.startsWith('{"eager":false'))
-      const globLine = `const ${varNameLocal} = import.meta.glob(${globPath}, ${globOptions});`
+      const globLine = `const ${varNameLocal} = import.meta.glob([${globPath}, "!/dist/**"], ${globOptions});`
       return globLine
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
