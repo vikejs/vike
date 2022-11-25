@@ -828,7 +828,6 @@ importers:
       react-streaming: ^0.3.5
       resolve: ^1.22.0
       rimraf: ^3.0.2
-      rollup: ^2.71.1
       symlink-dir: ^5.0.1
       typescript: 4.8.4
       vite: ^3.0.9
@@ -850,7 +849,6 @@ importers:
       '@types/resolve': 1.20.2
       react-streaming: 0.3.5
       rimraf: 3.0.2
-      rollup: 2.71.1
       typescript: 4.8.4
       vite: 3.0.9
 
@@ -1520,7 +1518,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.20.2
-      '@babel/helper-plugin-utils': 7.20.2
+      '@babel/helper-plugin-utils': 7.18.9
     dev: false
 
   /@babel/plugin-syntax-typescript/7.18.6_@babel+core@7.18.13:
@@ -1560,7 +1558,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.20.2
-      '@babel/plugin-transform-react-jsx': 7.19.0_@babel+core@7.20.2
+      '@babel/plugin-transform-react-jsx': 7.18.10_@babel+core@7.20.2
     dev: false
 
   /@babel/plugin-transform-react-jsx-self/7.18.6_@babel+core@7.18.13:
@@ -1580,7 +1578,7 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.20.2
-      '@babel/helper-plugin-utils': 7.20.2
+      '@babel/helper-plugin-utils': 7.18.9
     dev: false
 
   /@babel/plugin-transform-react-jsx-source/7.18.6_@babel+core@7.18.13:
@@ -1642,6 +1640,20 @@ packages:
       '@babel/helper-module-imports': 7.18.6
       '@babel/helper-plugin-utils': 7.18.9
       '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.18.13
+      '@babel/types': 7.18.13
+    dev: false
+
+  /@babel/plugin-transform-react-jsx/7.18.10_@babel+core@7.20.2:
+    resolution: {integrity: sha512-gCy7Iikrpu3IZjYZolFE4M1Sm+nrh1/6za2Ewj77Z+XirT4TsbJcvOFOyF+fRPwU6AKKK136CZxx6L8AbSFG6A==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.20.2
+      '@babel/helper-annotate-as-pure': 7.18.6
+      '@babel/helper-module-imports': 7.18.6
+      '@babel/helper-plugin-utils': 7.18.9
+      '@babel/plugin-syntax-jsx': 7.18.6_@babel+core@7.20.2
       '@babel/types': 7.18.13
     dev: false
 
@@ -7747,14 +7759,6 @@ packages:
     dependencies:
       estree-walker: 0.6.1
     dev: false
-
-  /rollup/2.71.1:
-    resolution: {integrity: sha512-lMZk3XfUBGjrrZQpvPSoXcZSfKcJ2Bgn+Z0L1MoW2V8Wh7BVM+LOBJTPo16yul2MwL59cXedzW1ruq3rCjSRgw==}
-    engines: {node: '>=10.0.0'}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.2
-    dev: true
 
   /rollup/2.77.0:
     resolution: {integrity: sha512-vL8xjY4yOQEw79DvyXLijhnhh+R/O9zpF/LEgkCebZFtb6ELeN9H3/2T0r8+mp+fFTBHZ5qGpOpW2ela2zRt3g==}
