@@ -57,17 +57,24 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     test('HTML-only - HMR', async () => {
       {
         expect(await page.textContent('h1')).toBe('HTML-only')
-        editFile('./pages/html-only/index.page.server.jsx', (s) =>
-          s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>')
-        )
-        // No HMR for HTML-only
-        await page.waitForNavigation()
-        // But auto reload works
-        expect(await page.textContent('h1')).toBe('HTML-only !')
-        editFileRevert()
-        await page.waitForNavigation()
-        expect(await page.textContent('h1')).toBe('HTML-only')
+        // No HMR for JavaScript
+        {
+          const navPromise = page.waitForNavigation()
+          editFile('./pages/html-only/index.page.server.jsx', (s) =>
+            s.replace('<h1>HTML-only</h1>', '<h1>HTML-only !</h1>')
+          )
+          await navPromise
+          // But auto reload works
+          expect(await page.textContent('h1')).toBe('HTML-only !')
+        }
+        {
+          const navPromise = page.waitForNavigation()
+          editFileRevert()
+          await navPromise
+          expect(await page.textContent('h1')).toBe('HTML-only')
+        }
       }
+      // HMR works for CSS
       {
         await testColor('orange')
         editFile('./pages/html-only/index.css', (s) => s.replace('color: orange', 'color: gray'))
