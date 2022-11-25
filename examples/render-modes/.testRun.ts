@@ -56,7 +56,17 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   if (!isPreview) {
     test('HTML-only - HMR', async () => {
       {
-        expect(await page.textContent('h1')).toBe('HTML-only')
+        {
+          const waitVite = page.waitForEvent('console', {
+            predicate: (consoleMessage) => {
+              const text = consoleMessage.text()
+              return text === '[vite] connected.'
+            }
+          })
+          await page.goto(urlBase + '/html-only')
+          expect(await page.textContent('h1')).toBe('HTML-only')
+          await waitVite
+        }
         // No HMR for JavaScript
         {
           const navPromise = page.waitForNavigation()
