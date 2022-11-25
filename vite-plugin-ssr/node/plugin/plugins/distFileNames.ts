@@ -1,7 +1,6 @@
 export { distFileNames }
 
 import { assertPosixPath, assert, isCallable, assertUsage } from '../utils'
-import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 import { determinePageId } from '../../../shared/determinePageId'
@@ -20,8 +19,11 @@ function distFileNames(): Plugin {
   }
 }
 
-type ChunkFileNames = string | ((chunkInfo: PreRenderedChunk) => string) | undefined
-type AssetFileNames = string | ((chunkInfo: PreRenderedAsset) => string) | undefined
+type Output = ResolvedConfig['build']['rollupOptions']['output']
+type ChunkFileNames = Extract<Output, { chunkFileNames?: unknown }>['chunkFileNames']
+type AssetFileNames = Extract<Output, { assetFileNames?: unknown }>['assetFileNames']
+type PreRenderedChunk = Parameters<Extract<ChunkFileNames, Function>>[0]
+type PreRenderedAsset = Parameters<Extract<AssetFileNames, Function>>[0]
 
 const BLACK_LIST = ['assertRenderHook.css']
 function getAssetFileName(
