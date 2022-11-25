@@ -1,5 +1,6 @@
 ## [0.4.53](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.52...v0.4.53) (2022-11-25)
 
+* support Vite 4
 
 
 ## [0.4.52](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.51...v0.4.52) (2022-11-24)
