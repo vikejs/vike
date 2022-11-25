@@ -13,15 +13,19 @@ function distFileNames(): Plugin {
     apply: 'build',
     enforce: 'post',
     async configResolved(config) {
+      const rollupOutput = getRollupOutput(config)
+      if (!config.build.ssr && !rollupOutput.entryFileNames) {
+        rollupOutput.entryFileNames = 'assets/[name].[hash].js'
+      }
       setChunkFileNames(config, getChunkFileName)
       setAssetFileNames(config, getAssetFileName)
     }
   }
 }
 
-type Output = ResolvedConfig['build']['rollupOptions']['output']
-type ChunkFileNames = Extract<Output, { chunkFileNames?: unknown }>['chunkFileNames']
-type AssetFileNames = Extract<Output, { assetFileNames?: unknown }>['assetFileNames']
+type Output = Extract<ResolvedConfig['build']['rollupOptions']['output'], { entryFileNames?: unknown }>
+type ChunkFileNames = Output['chunkFileNames']
+type AssetFileNames = Output['assetFileNames']
 type PreRenderedChunk = Parameters<Extract<ChunkFileNames, Function>>[0]
 type PreRenderedAsset = Parameters<Extract<AssetFileNames, Function>>[0]
 
@@ -183,4 +187,14 @@ function getAssetsDir(config: ResolvedConfig) {
   assertUsage(assetsDir, `${assetsDir} cannot be an empty string`)
   assetsDir = assetsDir.split(/\/|\\/).filter(Boolean).join('/')
   return assetsDir
+}
+
+function getRollupOutput(config: ResolvedConfig) {
+  // @ts-expect-error is read-only
+  config.build ??= {}
+  config.build.rollupOptions ??= {}
+  config.build.rollupOptions.output ??= {}
+  const { output } = config.build.rollupOptions
+  assert(!Array.isArray(output)) // Do we need to support `output` being an `array`?
+  return output
 }
