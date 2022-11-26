@@ -38,7 +38,7 @@ describe('preload tags', () => {
             <html>
               <head>
                 <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
-                <script type=\\"module\\" async>
+                <script type=\\"module\\" defer>
         import RefreshRuntime from \\"/@react-refresh\\"
         RefreshRuntime.injectIntoGlobalHook(window)
         window.$RefreshReg$ = () => {}
@@ -86,7 +86,7 @@ describe('preload tags', () => {
           <html>
             <head>
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
-              <script type=\\"module\\" async>
+              <script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
@@ -132,7 +132,7 @@ describe('preload tags', () => {
           <html>
             <head>
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
-              <script type=\\"module\\" async>
+              <script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
@@ -178,7 +178,7 @@ describe('preload tags', () => {
           <html>
             <head>
               <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/renderer/PageLayout.css?direct\\">
-              <script type=\\"module\\" async>
+              <script type=\\"module\\" defer>
       import RefreshRuntime from \\"/@react-refresh\\"
       RefreshRuntime.injectIntoGlobalHook(window)
       window.$RefreshReg$ = () => {}
