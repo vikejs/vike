@@ -1,3 +1,13 @@
+## [0.4.54](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.53...v0.4.54) (2022-11-26)
+
+
+### Bug Fixes
+
+* always use defer instead of async in dev ([#524](https://github.com/brillout/vite-plugin-ssr/issues/524)) ([7513326](https://github.com/brillout/vite-plugin-ssr/commit/75133261d75a2cc2e3dcc2352addbe55e3d8e755))
+* use defer in dev (fix [#524](https://github.com/brillout/vite-plugin-ssr/issues/524)) ([d0d27ff](https://github.com/brillout/vite-plugin-ssr/commit/d0d27ffffa55ce9c182cc28c0d9836c64c679c6f))
+
+
+
 ## [0.4.53](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.52...v0.4.53) (2022-11-25)
 
 * support Vite 4
