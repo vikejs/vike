@@ -34,7 +34,8 @@ function mergeScriptTags(scriptTagsHtml: string, pageContext: { _isProduction: b
         }
       })
       if (contents.length > 0) {
-        scriptTag += `<script type="module" async>\n${contents.join('\n')}\n</script>`
+        // `defer` instead of `async` for Firefox: https://github.com/brillout/vite-plugin-ssr/issues/524
+        scriptTag += `<script type="module" defer>\n${contents.join('\n')}\n</script>`
       }
     }
   }
