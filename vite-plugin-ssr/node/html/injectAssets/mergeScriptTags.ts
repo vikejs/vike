@@ -1,6 +1,7 @@
 export { mergeScriptTags }
 
 import { assert } from '../../utils'
+import { inferScriptExecTime } from './inferHtmlTags'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
@@ -34,8 +35,7 @@ function mergeScriptTags(scriptTagsHtml: string, pageContext: { _isProduction: b
         }
       })
       if (contents.length > 0) {
-        // `defer` instead of `async` for Firefox: https://github.com/brillout/vite-plugin-ssr/issues/524
-        scriptTag += `<script type="module" defer>\n${contents.join('\n')}\n</script>`
+        scriptTag += `<script type="module" ${inferScriptExecTime(pageContext)}>\n${contents.join('\n')}\n</script>`
       }
     }
   }
