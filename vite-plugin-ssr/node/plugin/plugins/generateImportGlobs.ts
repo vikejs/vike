@@ -71,13 +71,13 @@ async function getCode(
   }
   {
     const addPageFiles = globRoots.map((g) => g.addPageFile).filter(isNotNullish)
-    content += generateAddPageFileImports(addPageFiles, isForClientSide)
+    content += generateAddPageFileImports(addPageFiles, isForClientSide, isBuild)
   }
   debugGlob('Glob imports: ', content)
   return content
 }
 
-function generateAddPageFileImports(addPageFiles: string[], isForClientSide: boolean) {
+function generateAddPageFileImports(addPageFiles: string[], isForClientSide: boolean, isBuild: boolean) {
   let fileContent = '\n\n'
   addPageFiles.forEach((importPath) => {
     assertUsage(
@@ -87,28 +87,42 @@ function generateAddPageFileImports(addPageFiles: string[], isForClientSide: boo
     const fileType = getFileType(importPath)
     assert(fileType !== '.page.route') // Populate `pageFilesEager` instead of `pageFilesLazy`
     if (fileType === '.page.server') {
-      fileContent += addImport(importPath, fileType, true)
+      fileContent += addImport(importPath, fileType, true, isBuild)
       if (!isForClientSide) {
-        fileContent += addImport(importPath, fileType, false)
+        fileContent += addImport(importPath, fileType, false, isBuild)
       }
     } else {
-      fileContent += addImport(importPath, fileType, fileType === '.page.client' && !isForClientSide)
+      fileContent += addImport(importPath, fileType, fileType === '.page.client' && !isForClientSide, isBuild)
     }
   })
   return fileContent
 }
 
-function addImport(importPath: string, fileType: FileType, exportNames: boolean): string {
+let varCounter = 0
+function addImport(importPath: string, fileType: FileType, exportNames: boolean, isBuild: boolean): string {
+  let pageFilesVar: PageFileVar = 'pageFilesLazy'
   let query: '' | '?extractExportNames' = ''
-  let pageFilesVar: 'pageFilesLazy' | 'pageFilesExportNamesLazy' = 'pageFilesLazy'
   if (exportNames) {
     query = '?extractExportNames'
-    pageFilesVar = 'pageFilesExportNamesLazy'
+    if (isBuild) {
+      pageFilesVar = 'pageFilesExportNamesEager'
+    } else {
+      pageFilesVar = 'pageFilesExportNamesLazy'
+    }
   }
   let fileContent = ''
   const mapVar = `${pageFilesVar}['${fileType}']`
   fileContent += `${mapVar} = ${mapVar} ?? {};\n`
-  fileContent += `${mapVar}['${importPath}'] = () => import('${importPath}${query}');\n`
+  const value = (() => {
+    if (!pageFilesVar.endsWith('Eager')) {
+      return `() => import('${importPath}${query}')`
+    } else {
+      const importVar = `__import_${varCounter++}`
+      fileContent += `import * as ${importVar} from '${importPath}${query}';\n`
+      return importVar
+    }
+  })()
+  fileContent += `${mapVar}['${importPath}'] = ${value};\n`
   return fileContent
 }
 
@@ -189,6 +203,13 @@ export const isGeneratedFile = true;
   return fileContent
 }
 
+type PageFileVar =
+  | 'pageFilesLazy'
+  | 'pageFilesEager'
+  | 'pageFilesExportNamesLazy'
+  | 'pageFilesExportNamesEager'
+  | 'neverLoaded'
+
 function getGlobs(
   crawlRoots: string[],
   isBuild: boolean,
@@ -197,12 +218,7 @@ function getGlobs(
 ): string {
   const isEager = isBuild && (query === 'extractExportNames' || fileSuffix === 'page.route')
 
-  let pageFilesVar:
-    | 'pageFilesLazy'
-    | 'pageFilesEager'
-    | 'pageFilesExportNamesLazy'
-    | 'pageFilesExportNamesEager'
-    | 'neverLoaded'
+  let pageFilesVar: PageFileVar
   if (query === 'extractExportNames') {
     if (!isEager) {
       pageFilesVar = 'pageFilesExportNamesLazy'
