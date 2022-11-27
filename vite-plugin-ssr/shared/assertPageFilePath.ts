@@ -1,8 +1,8 @@
 export { assertPageFilePath }
 
-import { assert, isNpmPackageName, assertPosixPath } from './utils'
+import { assert, isNpmPackageModulePath, assertPosixPath } from './utils'
 
 function assertPageFilePath(filePath: string): void {
   assertPosixPath(filePath)
-  assert(filePath.startsWith('/') || isNpmPackageName(filePath.split('/')[0]), { filePath })
+  assert(filePath.startsWith('/') || isNpmPackageModulePath(filePath), { filePath })
 }

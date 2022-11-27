@@ -50,7 +50,7 @@ function devConfig(): Plugin[] {
 
 function addStemEntriesToOpimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   config.optimizeDeps.include = config.optimizeDeps.include ?? []
-  config.optimizeDeps.include.push(...configVps.pageFiles.addPageFiles)
+  config.optimizeDeps.include.push(...configVps.pageFiles.addPageFiles.map((e) => e.entry))
 }
 
 function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {

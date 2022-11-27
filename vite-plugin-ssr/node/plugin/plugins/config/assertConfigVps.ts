@@ -83,6 +83,5 @@ function checkConfigVps(configVps: unknown): null | { prop: string; errMsg: `sho
 
 async function getConfigVps(config: Record<string, unknown>): Promise<ConfigVpsResolved> {
   const configVps: ConfigVpsResolved = (await config.configVpsPromise) as any
-  assert(checkConfigVps(configVps) === null)
   return configVps
 }

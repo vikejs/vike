@@ -1,9 +1,9 @@
 export { resolveVpsConfig }
 
-import type { Plugin } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/assertConfigVps'
-import { assert, assertUsage } from '../utils'
+import { assertUsage, getNpmPackageName } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 
 function resolveVpsConfig(vpsConfig: unknown) {
@@ -14,7 +14,7 @@ function resolveVpsConfig(vpsConfig: unknown) {
       const configVpsPromise = resolveConfigVps(
         (vpsConfig ?? {}) as ConfigVpsUserProvided,
         ((config as Record<string, unknown>).vitePluginSsr ?? {}) as ConfigVpsUserProvided,
-        config.root
+        config
       )
       ;(config as Record<string, unknown>).configVpsPromise = configVpsPromise
     }
@@ -24,7 +24,7 @@ function resolveVpsConfig(vpsConfig: unknown) {
 async function resolveConfigVps(
   fromPluginOptions: ConfigVpsUserProvided,
   fromViteConfig: ConfigVpsUserProvided,
-  root: string
+  config: ResolvedConfig
 ): Promise<ConfigVpsResolved> {
   {
     const validationErr = checkConfigVps(fromPluginOptions)
@@ -35,22 +35,46 @@ async function resolveConfigVps(
     const validationErr = checkConfigVps(fromViteConfig)
     if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
   }
-  const fromStemPackages = await findConfigVpsFromStemPackages(root)
+  const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
 
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
     pageFiles: {
       include: configs.map((c) => c.pageFiles?.include ?? []).flat(),
-      addPageFiles: configs.map((c) => c.pageFiles?.addPageFiles ?? []).flat()
+      addPageFiles: resolveAddPageFiles(configs, config)
     },
     prerender: resolvePrerenderOptions(configs),
     includeCSS: configs.map((c) => c.includeCSS ?? []).flat(),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false
   }
 
-  assert(checkConfigVps(configVps) === null)
   return configVps
+}
+
+function resolveAddPageFiles(configs: ConfigVpsUserProvided[], config: ResolvedConfig) {
+  const entries = configs.map((c) => c.pageFiles?.addPageFiles ?? []).flat()
+  return entries.map((entry) => {
+    const npmPackageName = getNpmPackageName(entry)
+    assertUsage(npmPackageName, `Entry '${entry}' of pageFiles.addPageFiles should be a module of an npm package`)
+    let entryResolved: string
+    try {
+      entryResolved = require.resolve(entry, { paths: [config.root] })
+    } catch (err: any) {
+      if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+        assertUsage(
+          false,
+          `Define ${entry} in package.json#exports of ${npmPackageName} with a Node.js export condition (even if it's a browser file like CSS).`
+        )
+      }
+      throw err
+    }
+    return {
+      entry,
+      entryResolved,
+      npmPackageName
+    }
+  })
 }
 
 function resolvePrerenderOptions(configs: ConfigVpsUserProvided[]): ConfigVpsResolved['prerender'] {

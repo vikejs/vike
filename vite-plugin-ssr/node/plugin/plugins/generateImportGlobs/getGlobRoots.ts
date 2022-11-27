@@ -37,10 +37,10 @@ async function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved
     ...(await Promise.all(configVps.pageFiles.include.map((pkgName) => processIncludeSrc(pkgName, root)))).filter(
       isNotNullish
     ),
-    ...configVps.pageFiles.addPageFiles.map((includeDistEntry) => ({
+    ...configVps.pageFiles.addPageFiles.map((e) => ({
       addFsAllowRoot: null,
       addCrawlRoot: null,
-      addPageFile: includeDistEntry
+      addPageFile: e.entry
     }))
   ]
   return globRoots

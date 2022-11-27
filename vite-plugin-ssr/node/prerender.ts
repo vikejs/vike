@@ -250,6 +250,7 @@ async function collectDoNoPrerenderList(
 
 function assertExportNames(pageFile: PageFile) {
   const { exportNames, fileType } = pageFile
+  console.log(fileType, exportNames, pageFile.filePath)
   assert(exportNames || fileType === '.page.route', wrongViteConfigErrorMessage)
 }
 

@@ -10,9 +10,16 @@ type ConfigVpsResolved = {
         partial: boolean
         disableAutoRun: boolean
       }
-  pageFiles: { include: string[]; addPageFiles: string[] }
+  pageFiles: {
+    include: string[] // TODO: remove
+    addPageFiles: {
+      entry: string
+      entryResolved: string
+      npmPackageName: string
+    }[]
+  }
   disableAutoFullBuild: boolean
-  includeCSS: string[]
+  includeCSS: string[] // TODO: remove
   includeAssetsImportedByServer: boolean
 }
 
