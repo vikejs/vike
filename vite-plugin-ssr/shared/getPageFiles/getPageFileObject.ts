@@ -5,22 +5,30 @@ import { assertPageFilePath } from '../assertPageFilePath'
 import { isErrorPageId } from '../route'
 import { assert, assertPosixPath, slice } from '../utils'
 import type { FileType, PageFile } from './types'
+import { isScriptFile } from '../../utils/isScriptFile'
 
 function getPageFileObject(filePath: string): PageFile {
   const isRelevant = (pageId: string): boolean =>
     pageFile.pageId === pageId ||
-    (pageFile.isDefaultPageFile && (pageFile.isRendererPageFile || isAncestorDefaultPage(pageId, pageFile.filePath)))
+    (pageFile.isDefaultPageFile && (isRendererFilePath(pageFile.filePath) || isAncestorDefaultPage(pageId, pageFile.filePath)))
   const fileType = determineFileType(filePath)
   const pageFile = {
     filePath,
     fileType,
     isRelevant,
     isDefaultPageFile: isDefaultFilePath(filePath),
-    isRendererPageFile: isDefaultFilePath(filePath) && isRendererFilePath(filePath),
+    isRendererPageFile: !isCSS(filePath) && isDefaultFilePath(filePath) && isRendererFilePath(filePath),
     isErrorPageFile: isErrorPageId(filePath),
+    // isCSS: isCSS(filePath), // TODO: remove if not needed
     pageId: determinePageId(filePath)
   }
   return pageFile
+}
+
+function isCSS(filePath: string): boolean {
+  const isCSS = filePath.endsWith('.css')
+  assert(isScriptFile(filePath) || isCSS)
+  return isCSS
 }
 
 function determineFileType(filePath: string): FileType {

@@ -1,7 +1,7 @@
 export { retrieveAssetsProd }
 export { retrieveAssetsDev }
 
-import { assert, styleFileRE } from './utils'
+import { assert, styleFileRE, isNpmPackageModulePath } from './utils'
 import { ViteManifest } from './viteManifest'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from './getManifestEntry'
@@ -45,10 +45,17 @@ function retrieveAssetsProd(
   const visistedAssets = new Set<string>()
   clientDependencies.forEach(({ id, onlyAssets }) => {
     if (onlyAssets && id.includes('.page.server.')) {
-      if (!includeAssetsImportedByServer) {
+      if (
+        includeAssetsImportedByServer &&
+        // We assume that all npm packages have already built their VPS page files.
+        //  - Bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets
+        //  - VPS used to support npm packages containing source files, but we deprecate this practice
+        !isNpmPackageModulePath(id)
+      ) {
+        id = extractAssetsAddQuery(id)
+      } else {
         return
       }
-      id = extractAssetsAddQuery(id)
     }
     const entry = getManifestEntry(id, clientManifest, manifestKeyMap)
     const manifestKeys = Object.keys(clientManifest)

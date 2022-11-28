@@ -24,7 +24,7 @@ function getNpmPackageName(str: string): null | string {
 function parseNpmPackageModulePath(
   str: string | undefined
 ): null | { npmPackageName: string; modulePath: null | string } {
-  if (str === undefined || str.includes('\\')) {
+  if (str === undefined || str.includes('\\') || str.startsWith('/')) {
     return null
   }
 

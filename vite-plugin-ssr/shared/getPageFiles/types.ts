@@ -14,6 +14,7 @@ type PageFile = {
   isRelevant: (pageId: string) => boolean
   isDefaultPageFile: boolean
   isRendererPageFile: boolean
+  // isCSS: boolean
   isErrorPageFile: boolean
   pageId: string
 }

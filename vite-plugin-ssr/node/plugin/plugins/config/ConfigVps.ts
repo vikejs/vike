@@ -1,5 +1,12 @@
 export type { ConfigVpsUserProvided }
 export type { ConfigVpsResolved }
+// export type { AddPageFile } // TODO: remove if not needed
+
+type AddPageFile = {
+  entry: string
+  entryResolved: string
+  npmPackageName: string
+}
 
 type ConfigVpsResolved = {
   prerender:
@@ -12,11 +19,7 @@ type ConfigVpsResolved = {
       }
   pageFiles: {
     include: string[] // TODO: remove
-    addPageFiles: {
-      entry: string
-      entryResolved: string
-      npmPackageName: string
-    }[]
+    addPageFiles: AddPageFile[]
   }
   disableAutoFullBuild: boolean
   includeCSS: string[] // TODO: remove

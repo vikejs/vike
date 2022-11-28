@@ -1,6 +1,6 @@
 export { loadPageFilesServerSide }
 
-import { getPageFilesServerSide } from './getPageFilesServerSide'
+import { getPageFilesServerSide } from '../getAllPageIdFiles'
 import { getExports } from '../getExports'
 import type { PageFile } from '../types'
 

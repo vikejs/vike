@@ -29,7 +29,7 @@ import { resolveConfig } from 'vite'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
 import { setProduction } from '../shared/setProduction'
-import { getPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/getPageFilesServerSide'
+import { getPageFilesServerSide } from '../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../shared/route/resolveRouteString'
 

@@ -1,7 +1,7 @@
 export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
-import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath, assertUsage, getNpmPackageName } from '../utils'
+import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath } from '../utils'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'

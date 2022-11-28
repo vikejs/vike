@@ -1,7 +1,7 @@
 export { getPageAssets }
 export { PageAsset }
 
-import { assert, higherFirst, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
+import { assert, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
 import { retrieveAssetsDev, retrieveAssetsProd } from '../retrievePageAssets'
 import type { ViteManifest } from '../viteManifest'
 import path from 'path'
@@ -160,7 +160,8 @@ function resolveClientEntriesProd(
   const entry = getManifestEntry(clientEntry, clientManifest, manifestKeyMap)
   assert(entry)
   const { manifestEntry } = entry
-  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry, { clientEntry })
+  // TODO: importing assets (e.g. SVG images) from CSS => does VPS crawl the link?
+  assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry
   assert(!file.startsWith('/'))
   return '/' + file

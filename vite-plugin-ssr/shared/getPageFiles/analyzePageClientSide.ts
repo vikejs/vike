@@ -3,8 +3,8 @@ export { analyzePageClientSideInit }
 
 import { analyzeExports } from './analyzePageClientSide/analyzeExports'
 import { determineClientEntry } from './analyzePageClientSide/determineClientEntry'
-import { getPageFilesClientSide } from './analyzePageClientSide/getPageFilesClientSide'
-import { getPageFilesServerSide } from './analyzePageServerSide/getPageFilesServerSide'
+import { getPageFilesClientSide } from './getAllPageIdFiles'
+import { getPageFilesServerSide } from './getAllPageIdFiles'
 import type { PageFile } from './types'
 import { assert } from '../utils'
 import { getExportNames } from './analyzePageClientSide/getExportNames'

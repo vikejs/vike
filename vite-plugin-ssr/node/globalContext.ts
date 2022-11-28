@@ -3,7 +3,7 @@ export { setViteDevServer }
 export { getViteDevServer }
 export type { GlobalContext }
 
-import { PromiseType, assert, assertUsage, hasProp, objectAssign, getGlobalObject } from './utils'
+import { PromiseType, assert, assertUsage, objectAssign, getGlobalObject } from './utils'
 import type { ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
@@ -58,29 +58,8 @@ async function getGlobalContext(isPreRendering: boolean) {
     _baseAssets: runtimeConfig.baseAssets,
     _viteDevServer: viteDevServer,
     _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
-    //_outDir: viteDevServer?.runtimeConfig.build.outDir ?? getPluginManifest().outDir)
     _objectCreatedByVitePluginSsr: true
   })
-  /*
-  if( !viteDevServer ) {
-    return {
-    isProduction: true,
-    root: process.cwd(),
-    outDir: 'dist',
-    baseUrl: '/',
-    baseAssets: null,
-    viteDevServer: undefined,
-    }
-  }
-  return {
-    isProduction: false,
-    root: process.cwd(),
-    outDir: 'dist',
-    baseUrl: '/',
-    baseAssets: null,
-    viteDevServer,
-  }
-  */
 
   return globalContext
 }

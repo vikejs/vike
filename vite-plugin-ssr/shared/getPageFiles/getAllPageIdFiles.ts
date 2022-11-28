@@ -1,14 +1,14 @@
-export { getAllPageIdFilesClientSide }
-export { getAllPageIdFilesServerSide }
+export { getPageFilesClientSide }
+export { getPageFilesServerSide }
 
 import type { FileType, PageFile } from './types'
-import { assert, assertUsage, assertPosixPath, isNotNullish } from '../utils'
+import { assert, assertUsage, isNotNullish } from '../utils'
 import { assertPageFilePath } from '../assertPageFilePath'
 
-function getAllPageIdFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
+function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, true)
 }
-function getAllPageIdFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
+function getPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, false)
 }
 function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean): PageFile[] {

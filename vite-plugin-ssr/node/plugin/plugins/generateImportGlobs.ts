@@ -73,7 +73,7 @@ async function getCode(
     const addPageFiles = globRoots.map((g) => g.addPageFile).filter(isNotNullish)
     content += generateAddPageFileImports(addPageFiles, isForClientSide, isBuild)
   }
-  debugGlob('Glob imports: ', content)
+  debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
 }
 

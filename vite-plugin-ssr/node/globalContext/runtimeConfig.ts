@@ -5,6 +5,8 @@ export type { RuntimeConfig }
 
 import { assert, assertBaseUrl, getGlobalObject } from '../utils'
 import { assertBaseRuntime, assertBaseConfig } from './runtimeConfig/assertBase'
+import type { ConfigVpsResolved } from '.././plugin/plugins/config/ConfigVps'
+import { ResolvedConfig } from 'vite'
 const globalObject = getGlobalObject<{ runtimeConfig?: RuntimeConfig }>('runtimeConfig.ts', {})
 
 type RuntimeConfig = {
@@ -13,20 +15,20 @@ type RuntimeConfig = {
   includeAssetsImportedByServer: boolean
 }
 
-function setRuntimeConfig(runtimeConfig: RuntimeConfig) {
+function setRuntimeConfig(runtimeConfig: RuntimeConfig): void {
   assert(runtimeConfig)
   assertBaseRuntime(runtimeConfig)
   assert(typeof runtimeConfig.includeAssetsImportedByServer === 'boolean')
   assertBaseUrl(runtimeConfig.baseUrl)
   globalObject.runtimeConfig = runtimeConfig
 }
-function getRuntimeConfig() {
+function getRuntimeConfig(): RuntimeConfig {
   const { runtimeConfig } = globalObject
   assert(runtimeConfig)
   assertBaseRuntime(runtimeConfig)
   return runtimeConfig
 }
-function resolveRuntimeConfig(config: { base: string }, configVps: { includeAssetsImportedByServer: boolean }) {
+function resolveRuntimeConfig(config: ResolvedConfig, configVps: ConfigVpsResolved): RuntimeConfig {
   const { baseUrl, baseAssets } = resolveBase(config.base)
   const { includeAssetsImportedByServer } = configVps
   const runtimeConfig = {
