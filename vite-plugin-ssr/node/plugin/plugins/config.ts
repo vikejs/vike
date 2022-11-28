@@ -1,11 +1,12 @@
 export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
+import type { ConfigVpsUserProvided, ConfigVpsResolved, ExtensionResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/assertConfigVps'
-import { assertUsage, getNpmPackageName, toPosixPath } from '../utils'
+import { assertUsage, getNpmPackageName, toPosixPath, isNpmPackageName } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
+import {isValidFileType} from '../../../shared/getPageFiles/types'
 
 function resolveVpsConfig(vpsConfig: unknown) {
   return {
@@ -37,14 +38,14 @@ async function resolveConfigVps(
     if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
   }
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
-  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
+  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig] // rename `configs` to `configsVpsUserProvided`
 
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
     pageFiles: {
-      include: configs.map((c) => c.pageFiles?.include ?? []).flat(),
-      addPageFiles: resolveAddPageFiles(configs, config)
+      include: configs.map((c) => c.pageFiles?.include ?? []).flat()
     },
+    extensions: resolveExtensions(configs, config),
     prerender: resolvePrerenderOptions(configs),
     includeCSS: configs.map((c) => c.includeCSS ?? []).flat(),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false
@@ -53,40 +54,73 @@ async function resolveConfigVps(
   return configVps
 }
 
-function resolveAddPageFiles(configs: ConfigVpsUserProvided[], config: ResolvedConfig) {
-  const entries = configs.map((c) => c.pageFiles?.addPageFiles ?? []).flat()
-  return entries.map((entry) => {
-    const npmPackageName = getNpmPackageName(entry)
-    assertUsage(npmPackageName, `Entry '${entry}' of pageFiles.addPageFiles should be a module of an npm package`)
-    let entryResolved: string
-    try {
-      entryResolved = require.resolve(entry, { paths: [config.root] })
-    } catch (err: any) {
-      if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
-        assertUsage(
-          false,
-          `Define ${entry} in package.json#exports of ${npmPackageName} with a Node.js export condition (even if it's a browser file like CSS).`
-        )
-      }
-      throw err
-    }
-    let packageJsonPath: string
-    try {
-      packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [config.root] })
-    } catch (err: any) {
-      if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
-        assertUsage(false, `Cannot read ${npmPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${npmPackageName}.`)
-      }
-      throw err
-    }
-    const npmPackageRootDir = path.posix.dirname(toPosixPath(packageJsonPath))
-    return {
-      entry,
-      entryResolved,
+function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] { // TODO: Move to own file
+  const extensions = configs.map((c) => c.extensions ?? []).flat()
+  return extensions.map((extension) => {
+    const { npmPackageName, pageFiles, assetsManifest } = extension
+    assertUsage(
+      isNpmPackageName(npmPackageName),
+      `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
+    )
+    const npmPackageRootDir = getNpmPackageRootDir(npmPackageName, config)
+    const pageFilesResolved = pageFiles.map((importPath) => resolvePageFiles(importPath, npmPackageName, config))
+    const extensionResolved: ExtensionResolved = {
       npmPackageName,
-      npmPackageRootDir
+      npmPackageRootDir,
+      pageFilesResolved,
+      assetsManifest: assetsManifest ?? null
     }
+    return extensionResolved
   })
+}
+
+function getNpmPackageRootDir(npmPackageName: string, config: ResolvedConfig) {
+  let packageJsonPath: string
+  try {
+    packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [config.root] })
+  } catch (err: any) {
+    if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+      assertUsage(
+        false,
+        `Cannot read ${npmPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${npmPackageName}.`
+      )
+    }
+    throw err
+  }
+  const npmPackageRootDir = path.posix.dirname(toPosixPath(packageJsonPath))
+  return npmPackageRootDir
+}
+
+function resolvePageFiles(
+  importPath: string,
+  npmPackageName: string,
+  config: ResolvedConfig
+): ExtensionResolved['pageFilesResolved'][number] {
+  const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
+  assertUsage(
+    npmPackageName === getNpmPackageName(importPath),
+    `${errPrefix} be a ${npmPackageName} module (e.g. '${npmPackageName}/renderer/_default.page.server.js')`
+  )
+  assertUsage(
+    isValidFileType(importPath),
+    `${errPrefix} should end with '.js', '.mjs', '.cjs', or '.css'`
+  )
+  let filePath: string
+  try {
+    filePath = require.resolve(importPath, { paths: [config.root] })
+  } catch (err: any) {
+    if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+      assertUsage(
+        false,
+        `Define ${importPath} in the package.json#exports of ${npmPackageName} with a Node.js export condition (even if it's a browser file like CSS).`
+      )
+    }
+    throw err
+  }
+  return {
+    importPath,
+    filePath
+  }
 }
 
 function resolvePrerenderOptions(configs: ConfigVpsUserProvided[]): ConfigVpsResolved['prerender'] {

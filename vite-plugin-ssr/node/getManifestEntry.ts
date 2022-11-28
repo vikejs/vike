@@ -57,7 +57,7 @@ function getManifestEntry(
     }
   }
 
-  // For npm packages using `pageFiles.addPageFiles`
+  // For VPS extensions
   if (isNpmPackageModulePath(id)) {
     const manifestKey = manifestKeyMap[id]
     assert(manifestKey, { id })

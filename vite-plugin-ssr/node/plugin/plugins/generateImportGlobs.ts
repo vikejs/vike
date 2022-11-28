@@ -12,7 +12,7 @@ import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
-import type { FileType } from '../../../shared/getPageFiles/types'
+import { FileType, isValidFileType } from '../../../shared/getPageFiles/types'
 
 const virtualModuleIds = [
   virtualModuleIdPageFilesServer,
@@ -70,20 +70,17 @@ async function getCode(
     content += getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, configVps)
   }
   {
-    const addPageFiles = globRoots.map((g) => g.addPageFile).filter(isNotNullish)
-    content += generateAddPageFileImports(addPageFiles, isForClientSide, isBuild)
+    const extensionsImportPaths = globRoots.map((g) => g.addExtensionPageFileImport).filter(isNotNullish)
+    content += generateAddPageFileImports(extensionsImportPaths, isForClientSide, isBuild)
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
 }
 
-function generateAddPageFileImports(addPageFiles: string[], isForClientSide: boolean, isBuild: boolean) {
+function generateAddPageFileImports(extensionsImportPaths: string[], isForClientSide: boolean, isBuild: boolean) {
   let fileContent = '\n\n'
-  addPageFiles.forEach((importPath) => {
-    assertUsage(
-      isValidFileType(importPath),
-      `Config pageFiles.addPageFiles entry '${importPath}' should end with '.js', '.mjs', '.cjs', or '.css'`
-    )
+  extensionsImportPaths.forEach((importPath) => {
+    assert(isValidFileType(importPath))
     const fileType = getFileType(importPath)
     assert(fileType !== '.page.route') // Populate `pageFilesEager` instead of `pageFilesLazy`
     if (fileType === '.page.server') {
@@ -126,8 +123,11 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
   return fileContent
 }
 
-function getFileType(filePath: string): FileType {
+function getFileType(filePath: string): FileType { // TODO: move to fileTypes.ts
   assert(isValidFileType(filePath), { filePath })
+  if (filePath.endsWith('.css')) {
+    return '.css'
+  }
   let fileType: FileType | undefined
   if (filePath.includes('.page.route.')) {
     assert(!fileType)
@@ -146,10 +146,6 @@ function getFileType(filePath: string): FileType {
     fileType = '.page'
   }
   return fileType
-}
-
-function isValidFileType(filePath: string): boolean {
-  return ['.js', '.mjs', '.cjs', '.css'].some((ext) => filePath.endsWith(ext))
 }
 
 function getContent(

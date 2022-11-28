@@ -47,12 +47,15 @@ function manifest(): Plugin[] {
 
 function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig): Record<string, string> {
   const manifestKeyMap: Record<string, string> = {}
-  configVps.pageFiles.addPageFiles.forEach(({ entry, entryResolved }) => {
-    // Recreating https://github.com/vitejs/vite/blob/8158ece72b66307e7b607b98496891610ca70ea2/packages/vite/src/node/plugins/manifest.ts#L38
-    const key = path.posix.relative(config.root, toPosixPath(entryResolved))
-    assertPosixPath(key)
-    assertPosixPath(entry)
-    manifestKeyMap[entry] = key
-  })
+  configVps.extensions
+    .map(({ pageFilesResolved }) => pageFilesResolved)
+    .flat()
+    .forEach(({ importPath, filePath }) => {
+      // Recreating https://github.com/vitejs/vite/blob/8158ece72b66307e7b607b98496891610ca70ea2/packages/vite/src/node/plugins/manifest.ts#L38
+      const filePathRelative = path.posix.relative(config.root, toPosixPath(filePath))
+      assertPosixPath(filePathRelative)
+      assertPosixPath(importPath)
+      manifestKeyMap[importPath] = filePathRelative
+    })
   return manifestKeyMap
 }

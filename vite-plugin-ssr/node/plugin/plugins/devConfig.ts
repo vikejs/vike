@@ -50,7 +50,12 @@ function devConfig(): Plugin[] {
 
 function addStemEntriesToOpimizeDeps(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   config.optimizeDeps.include = config.optimizeDeps.include ?? []
-  config.optimizeDeps.include.push(...configVps.pageFiles.addPageFiles.map((e) => e.entry))
+  config.optimizeDeps.include.push(
+    ...configVps.extensions
+      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .flat()
+      .map(({ importPath }) => importPath)
+  )
 }
 
 function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
@@ -86,7 +91,7 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
     }
   })
 
-  configVps.pageFiles.addPageFiles.forEach((e) => {
-    fsAllow.push(e.npmPackageRootDir)
+  configVps.extensions.forEach(({ npmPackageRootDir }) => {
+    fsAllow.push(npmPackageRootDir)
   })
 }

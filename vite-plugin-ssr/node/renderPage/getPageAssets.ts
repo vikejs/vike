@@ -158,10 +158,14 @@ function resolveClientEntriesDev(
       )
     }
   } else {
-    assert(isNpmPackageModulePath(clientEntry)) // TODO: factor out check? Make test more precise to check presence in addPageFiles?
-    const entry = configVps.pageFiles.addPageFiles.find((e) => e.entry === clientEntry)
-    assert(entry, clientEntry)
-    filePath = entry.entryResolved
+    // VPS extensions
+    assert(isNpmPackageModulePath(clientEntry)) // TODO: factor out check? Make test more precise to check presence in extensions[number].pageFiles?
+    const extensionPageFile = configVps.extensions
+      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .flat()
+      .find((e) => e.importPath === clientEntry)
+    assert(extensionPageFile, clientEntry)
+    filePath = extensionPageFile.filePath
   }
   if (!filePath.startsWith('/')) {
     assert(process.platform === 'win32')

@@ -1,12 +1,24 @@
 export type { ConfigVpsUserProvided }
 export type { ConfigVpsResolved }
-// export type { AddPageFile } // TODO: remove if not needed
+export type { ExtensionResolved }
 
-type AddPageFile = {
-  entry: string
-  entryResolved: string
+type AssetsManifest = {
+    format: 'esbuild@15',
+    manifestFilePath: string
+}
+type ExtensionUserProvided = {
+  npmPackageName: string
+  pageFiles: string[]
+  assetsManifest?: AssetsManifest
+}
+type ExtensionResolved = {
   npmPackageName: string
   npmPackageRootDir: string
+  pageFilesResolved: {
+    importPath: string
+    filePath: string
+  }[],
+  assetsManifest: null | AssetsManifest
 }
 
 type ConfigVpsResolved = {
@@ -20,8 +32,8 @@ type ConfigVpsResolved = {
       }
   pageFiles: {
     include: string[] // TODO: remove
-    addPageFiles: AddPageFile[] // TODO: rename to `configVps.includeFiles`?
   }
+  extensions: ExtensionResolved[]
   disableAutoFullBuild: boolean
   includeCSS: string[] // TODO: remove
   includeAssetsImportedByServer: boolean
@@ -75,7 +87,14 @@ type ConfigVpsUserProvided = {
    * @internal
    * Don't use without having talked to a vite-plugin-ssr maintainer.
    */
-  pageFiles?: { include?: string[]; addPageFiles?: string[] }
+  pageFiles?: {
+    include?: string[] // TODO: remove
+  }
+  /**
+   * @beta
+   * Don't use without having talked to a vite-plugin-ssr maintainer.
+   */
+  extensions?: ExtensionUserProvided[]
   /**
    * Set to `true` to disable the automatic chaining of all the build steps.
    *

@@ -8,22 +8,23 @@ import resolve from 'resolve'
 import type { ResolvedConfig } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 
-type GlobRoot =
-  | {
-      addFsAllowRoot: null
-      addCrawlRoot: '/'
-      addPageFile: null
-    }
-  | {
-      addFsAllowRoot: string
-      addCrawlRoot: null | string
-      addPageFile: null
-    }
-  | {
-      addFsAllowRoot: null
-      addCrawlRoot: null
-      addPageFile: string
-    }
+type GlobRoot = // TODO: refactor
+
+    | {
+        addFsAllowRoot: null
+        addCrawlRoot: '/'
+        addExtensionPageFileImport: null
+      }
+    | {
+        addFsAllowRoot: string
+        addCrawlRoot: null | string
+        addExtensionPageFileImport: null
+      }
+    | {
+        addFsAllowRoot: null
+        addCrawlRoot: null
+        addExtensionPageFileImport: string
+      }
 
 async function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): Promise<GlobRoot[]> {
   const { root } = config
@@ -32,16 +33,19 @@ async function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved
     {
       addFsAllowRoot: null,
       addCrawlRoot: '/',
-      addPageFile: null
+      addExtensionPageFileImport: null
     },
     ...(await Promise.all(configVps.pageFiles.include.map((pkgName) => processIncludeSrc(pkgName, root)))).filter(
       isNotNullish
     ),
-    ...configVps.pageFiles.addPageFiles.map((e) => ({
-      addFsAllowRoot: null,
-      addCrawlRoot: null,
-      addPageFile: e.entry
-    }))
+    ...configVps.extensions
+      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .flat()
+      .map(({ importPath }) => ({
+        addFsAllowRoot: null,
+        addCrawlRoot: null,
+        addExtensionPageFileImport: importPath
+      }))
   ]
   return globRoots
 }
@@ -49,7 +53,7 @@ async function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved
 async function processIncludeSrc(
   pkgName: string,
   root: string
-): Promise<{ addFsAllowRoot: string; addCrawlRoot: string | null; addPageFile: null }> {
+): Promise<{ addFsAllowRoot: string; addCrawlRoot: string | null; addExtensionPageFileImport: null }> {
   assertUsage(
     isNpmPackageName(pkgName),
     `Wrong vite-plugin-ssr config \`pageFiles.include\`: the string \`${pkgName}\` is not a valid npm package name.`
@@ -67,7 +71,7 @@ async function processIncludeSrc(
     assertPosixPath(addFsAllowRoot)
     const appRootIncludedInPkgRoot = root.startsWith(addFsAllowRoot)
     if (appRootIncludedInPkgRoot) {
-      return { addFsAllowRoot, addCrawlRoot: null, addPageFile: null }
+      return { addFsAllowRoot, addCrawlRoot: null, addExtensionPageFileImport: null }
     }
   }
 
@@ -80,7 +84,7 @@ async function processIncludeSrc(
   const pkgRootRelative = path.posix.relative(root, pkgRoot)
   if (!pkgRootRelative.startsWith('..')) {
     const addCrawlRoot = path.posix.join(pkgRootRelative, pageFilesDir)
-    return { addFsAllowRoot, addCrawlRoot, addPageFile: null }
+    return { addFsAllowRoot, addCrawlRoot, addExtensionPageFileImport: null }
   }
 
   const addCrawlRoot = path.posix.join('node_modules', '.vite-plugin-ssr', pkgName, pageFilesDir)
@@ -93,7 +97,7 @@ async function processIncludeSrc(
     const target = path.posix.relative(root, targetAbsolute)
     await symlinkDir(source, target)
   }
-  return { addFsAllowRoot, addCrawlRoot, addPageFile: null }
+  return { addFsAllowRoot, addCrawlRoot, addExtensionPageFileImport: null }
 }
 
 function resolvePackage(pkgName: string, options: ResolveOptions) {

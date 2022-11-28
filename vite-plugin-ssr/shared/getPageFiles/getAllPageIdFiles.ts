@@ -1,7 +1,7 @@
 export { getPageFilesClientSide }
 export { getPageFilesServerSide }
 
-import type { FileType, PageFile } from './types'
+import type { PageFile } from './types'
 import { assert, assertUsage, isNotNullish } from '../utils'
 import { assertPageFilePath } from '../assertPageFilePath'
 
@@ -11,16 +11,16 @@ function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
 function getPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, false)
 }
-function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: boolean): PageFile[] {
-  const fileTypeEnv = forClientSide ? ('.page.client' as const) : ('.page.server' as const)
-  const sorter = defaultFilesSorter(fileTypeEnv, pageId)
+function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolean): PageFile[] {
+  const env = envIsClient ? 'client' : 'server'
+  const sorter = defaultFilesSorter(envIsClient, pageId)
 
   const pageFilesRelevant = pageFilesAll.filter((p) => p.isRelevant(pageId))
 
-  const getRendererFile = (fileType: FileType) =>
-    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.fileType === fileType).sort(sorter)[0]
-  const getPageIdFile = (fileType: FileType) => {
-    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.fileType === fileType)
+  const getRendererFile = (isomph: boolean) =>
+    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnvFile(isomph ? 'isomph' : env)).sort(sorter)[0]
+  const getPageIdFile = (isomph: boolean) => {
+    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.isEnvFile(isomph ? 'isomph' : env))
     assertUsage(
       files.length <= 1,
       `Merge the following files into a single file: ${files.map((p) => p.filePath).join(' ')}`
@@ -33,16 +33,19 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
   // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
   // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`.
   const defaultFilesNonRenderer = pageFilesRelevant.filter(
-    (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.fileType === fileTypeEnv || p.fileType === '.page')
+    (p) =>
+      p.isDefaultPageFile &&
+      !p.isRendererPageFile &&
+      (p.isEnvFile(env) || p.isEnvFile('isomph'))
   )
   defaultFilesNonRenderer.sort(sorter)
 
   // A page can have only one renderer. In other words: Multiple `renderer/` overwrite each other.
-  const rendererFileEnv = getRendererFile(fileTypeEnv)
-  const rendererFileIso = getRendererFile('.page')
+  const rendererFileEnv = getRendererFile(false)
+  const rendererFileIso = getRendererFile(true)
 
-  const pageIdFileEnv = getPageIdFile(fileTypeEnv)
-  const pageIdFileIso = getPageIdFile('.page')
+  const pageIdFileEnv = getPageIdFile(false)
+  const pageIdFileIso = getPageIdFile(true)
 
   // Ordered by `pageContext.exports` precendence
   let pageFiles = [pageIdFileEnv, pageIdFileIso, ...defaultFilesNonRenderer, rendererFileEnv, rendererFileIso].filter(
@@ -52,7 +55,8 @@ function determine(pageFilesAll: PageFile[], pageId: string, forClientSide: bool
   return pageFiles
 }
 
-function defaultFilesSorter(fileTypeEnv: FileType, pageId: string) {
+function defaultFilesSorter(envIsClient: boolean, pageId: string) {
+  const env = envIsClient ? 'client' : 'server'
   const e1First = -1 as const
   const e2First = +1 as const
   const noOrder = 0 as const
@@ -87,22 +91,11 @@ function defaultFilesSorter(fileTypeEnv: FileType, pageId: string) {
 
     // `.page.server.js`/`.page.client.js` before `.page.js`
     {
-      if (e1.fileType === fileTypeEnv && e2.fileType !== fileTypeEnv) {
+      if (e1.isEnvFile(env) && e2.isEnvFile('isomph')) {
         return e1First
       }
-      if (e2.fileType === fileTypeEnv && e1.fileType !== fileTypeEnv) {
+      if (e2.isEnvFile(env) && e1.isEnvFile('isomph')) {
         return e2First
-      }
-    }
-
-    // Probably useless since `e1.fileType`/`e2.fileType` is always either `fileTypeEnv` or `.page.js`
-    // But to be clear that `.page.js` always comes after `.page.server.js`/`.page.client.js`
-    {
-      if (e1.fileType === '.page' && e2.fileType !== '.page') {
-        return e2First
-      }
-      if (e2.fileType === '.page' && e1.fileType !== '.page') {
-        return e1First
       }
     }
 

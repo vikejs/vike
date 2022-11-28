@@ -10,29 +10,45 @@ import { isScriptFile } from '../../utils/isScriptFile'
 function getPageFileObject(filePath: string): PageFile {
   const isRelevant = (pageId: string): boolean =>
     pageFile.pageId === pageId ||
-    (pageFile.isDefaultPageFile && (isRendererFilePath(pageFile.filePath) || isAncestorDefaultPage(pageId, pageFile.filePath)))
+    (pageFile.isDefaultPageFile &&
+      (isRendererFilePath(pageFile.filePath) || isAncestorDefaultPage(pageId, pageFile.filePath)))
   const fileType = determineFileType(filePath)
+  const isEnvFile = (env: 'client' | 'server' | 'isomph'): boolean => {
+    if (env === 'client') {
+      return fileType === '.page.client' || fileType === '.css'
+    }
+    if (env === 'server') {
+      return fileType === '.page.server'
+    }
+    if (env === 'isomph') {
+      return fileType === '.page'
+    }
+    assert(false)
+  }
   const pageFile = {
     filePath,
     fileType,
+    isEnvFile,
     isRelevant,
     isDefaultPageFile: isDefaultFilePath(filePath),
-    isRendererPageFile: !isCSS(filePath) && isDefaultFilePath(filePath) && isRendererFilePath(filePath),
+    isRendererPageFile: fileType !== '.css' && isDefaultFilePath(filePath) && isRendererFilePath(filePath),
     isErrorPageFile: isErrorPageId(filePath),
-    // isCSS: isCSS(filePath), // TODO: remove if not needed
     pageId: determinePageId(filePath)
   }
   return pageFile
 }
 
-function isCSS(filePath: string): boolean {
-  const isCSS = filePath.endsWith('.css')
-  assert(isScriptFile(filePath) || isCSS)
-  return isCSS
-}
-
 function determineFileType(filePath: string): FileType {
   assertPosixPath(filePath)
+
+  {
+    const isCSS = filePath.endsWith('.css')
+    assert(isScriptFile(filePath) || isCSS) // `.css` page files are only supported for npm packages
+    if (isCSS) {
+      return '.css'
+    }
+  }
+
   const fileName = filePath.split('/').slice(-1)[0]!
   const fileNameSegments = fileName.split('.')
   const suffix1 = fileNameSegments.slice(-3)[0]
