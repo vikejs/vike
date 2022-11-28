@@ -27,7 +27,7 @@ function inferAssetTag(pageAsset: PageAsset, pageContext: { _isProduction: boole
   if (assetType === 'style') {
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
-  assert(false)
+  assert(false, { pageAsset })
 }
 
 // - In dev, <script> is before <script <script id="vite-plugin-ssr_pageContext" type="application/json">

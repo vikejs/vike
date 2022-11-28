@@ -23,7 +23,7 @@ import {
   callHookWithTimeout,
   isCallable
 } from './utils'
-import { getPageAssets, type PageAsset } from './renderPage/getPageAssets'
+import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './renderPage/getPageAssets'
 import { sortPageContext } from '../shared/sortPageContext'
 import { assertHookResult } from '../shared/assertHookResult'
 import {
@@ -58,6 +58,7 @@ import { handlePageContextRequestUrl } from './renderPage/handlePageContextReque
 import type { MediaType } from './html/inferMediaType'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
+import { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
 
 export { renderPage }
 export { prerenderPage }
@@ -590,17 +591,11 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
   }
 }
 
-type PageContext_loadPageFilesServer = {
+type PageContext_loadPageFilesServer = PageContextGetPageAssets & PageContextDebug & {
   urlOriginal: string
-  _baseUrl: string
-  _baseAssets: string | null
   _pageFilesAll: PageFile[]
   _isPreRendering: boolean
-  _isProduction: boolean
-  _viteDevServer: null | ViteDevServer
-  _manifestClient: null | ViteManifest
-  _includeAssetsImportedByServer: boolean
-} & PageContextDebug
+}
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([

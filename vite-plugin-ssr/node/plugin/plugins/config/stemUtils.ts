@@ -50,7 +50,7 @@ async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
       const stemPackageJsonPath = resolveModulePath('package.json')
       assertUsage(
         stemPackageJsonPath && isObject(require(stemPackageJsonPath).exports),
-        `${stemPackageName} should define package.json#exports["./package.json"]`
+        `Cannot read ${stemPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${stemPackageName}.`
       )
       const stemPackageRootDir = toPosixPath(path.dirname(stemPackageJsonPath))
       return {

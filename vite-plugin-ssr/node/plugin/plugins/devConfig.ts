@@ -79,10 +79,14 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
   require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
   fsAllow.push(vitePluginSsrRoot)
 
-  const globRoots = await getGlobRoots(config, configVps)
+  const globRoots = await getGlobRoots(config, configVps) // TODO: remove whole getGlobRoots logic
   globRoots.forEach(({ addFsAllowRoot }) => {
     if (addFsAllowRoot) {
       fsAllow.push(addFsAllowRoot)
     }
+  })
+
+  configVps.pageFiles.addPageFiles.forEach((e) => {
+    fsAllow.push(e.npmPackageRootDir)
   })
 }

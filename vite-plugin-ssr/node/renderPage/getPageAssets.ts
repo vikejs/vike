@@ -1,7 +1,16 @@
 export { getPageAssets }
-export { PageAsset }
+export type { PageAsset }
+export type { PageContextGetPageAssets }
 
-import { assert, normalizePath, prependBaseUrl, assertPosixPath, toPosixPath } from '../utils'
+import {
+  assert,
+  normalizePath,
+  prependBaseUrl,
+  assertPosixPath,
+  toPosixPath,
+  isNpmPackageModulePath,
+  unique
+} from '../utils'
 import { retrieveAssetsDev, retrieveAssetsProd } from '../retrievePageAssets'
 import type { ViteManifest } from '../viteManifest'
 import path from 'path'
@@ -10,7 +19,8 @@ import { getManifestEntry } from '../getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import type { MediaType } from '../html/inferMediaType'
-import {sortPageAssetsForEarlyHintsHeader} from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
+import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
+import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
 
 type PageAsset = {
   src: string
@@ -19,16 +29,19 @@ type PageAsset = {
   isEntry: boolean
 }
 
+type PageContextGetPageAssets = {
+  _baseUrl: string
+  _baseAssets: string | null
+  _isProduction: boolean
+  _viteDevServer: null | ViteDevServer
+  _manifestClient: null | ViteManifest
+  _includeAssetsImportedByServer: boolean
+  _manifestPlugin: null | { manifestKeyMap: Record<string, string> }
+  _configVps: null | ConfigVpsResolved
+}
+
 async function getPageAssets(
-  pageContext: {
-    _baseUrl: string
-    _baseAssets: string | null
-    _isProduction: boolean
-    _viteDevServer: null | ViteDevServer
-    _manifestClient: null | ViteManifest
-    _includeAssetsImportedByServer: boolean
-    _manifestPlugin?: { manifestKeyMap: Record<string, string> }
-  },
+  pageContext: PageContextGetPageAssets,
   clientDependencies: ClientDependency[],
   clientEntries: string[],
   isPreRendering: boolean
@@ -40,7 +53,11 @@ async function getPageAssets(
   if (isDev) {
     const viteDevServer = pageContext._viteDevServer
     assert(viteDevServer)
-    clientEntriesSrc = clientEntries.map((clientEntry) => resolveClientEntriesDev(clientEntry, viteDevServer))
+    const configVps = pageContext._configVps
+    assert(configVps)
+    clientEntriesSrc = clientEntries.map((clientEntry) =>
+      resolveClientEntriesDev(clientEntry, viteDevServer, configVps)
+    )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
     const clientManifest = pageContext._manifestClient
@@ -59,17 +76,7 @@ async function getPageAssets(
   }
 
   let pageAssets: PageAsset[] = []
-  clientEntriesSrc.forEach((clientEntrySrc) => {
-    pageAssets.push({
-      src: clientEntrySrc,
-      assetType: 'script',
-      mediaType: 'text/javascript',
-      isEntry: true
-    })
-  })
-  assetUrls.forEach((src) => {
-    if (clientEntriesSrc.includes(src)) return
-
+  unique([...clientEntriesSrc, ...assetUrls]).forEach((src: string) => {
     const { mediaType = null, assetType = null } = inferMediaType(src) || {}
 
     if (isDev && assetType === 'style') {
@@ -81,12 +88,16 @@ async function getPageAssets(
       src = src + '?direct'
     }
 
+    const isEntry =
+      clientEntriesSrc.includes(src) ||
+      // Vite automatically injects CSS, not only in development, but also in production (albeit with a FOUC). Therefore, strictly speaking, CSS aren't entries. We still, however, set `isEntry: true` for CSS, in order to denote page assets that should absolutely be injected in the HTML, regardless of preload strategy (not injecting CSS leads to FOUC).
+      assetType === 'style'
+
     pageAssets.push({
       src,
       assetType,
       mediaType,
-      // Vite automatically injects CSS, not only in development, but also in production (albeit with a FOUC). Therefore, strictly speaking, CSS aren't entries. We still, however, set `isEntry: true` for CSS, in order to denote page assets that should absolutely be injected in the HTML, regardless of preload strategy (not injecting CSS leads to FOUC).
-      isEntry: assetType === 'style'
+      isEntry
     })
   })
 
@@ -105,7 +116,11 @@ async function getPageAssets(
   return pageAssets
 }
 
-function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServer): string {
+function resolveClientEntriesDev(
+  clientEntry: string,
+  viteDevServer: ViteDevServer,
+  configVps: ConfigVpsResolved
+): string {
   let root = viteDevServer.config.root
   assert(root)
   root = toPosixPath(root)
@@ -123,11 +138,9 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
 
   assertPosixPath(clientEntry)
   let filePath: string
-  if (!clientEntry.startsWith('@@vite-plugin-ssr/')) {
-    assert(path.posix.isAbsolute(clientEntry))
+  if (path.posix.isAbsolute(clientEntry)) {
     filePath = path.posix.join(root, clientEntry)
-  } else {
-    assert(clientEntry.startsWith('@@vite-plugin-ssr/dist/esm/client/'))
+  } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
     assert(clientEntry.endsWith('.js'))
     const req = require // Prevent webpack from bundling client code
     const res = req.resolve
@@ -144,12 +157,19 @@ function resolveClientEntriesDev(clientEntry: string, viteDevServer: ViteDevServ
         res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../dist/esm/client/'))
       )
     }
+  } else {
+    assert(isNpmPackageModulePath(clientEntry)) // TODO: factor out check? Make test more precise to check presence in addPageFiles?
+    const entry = configVps.pageFiles.addPageFiles.find((e) => e.entry === clientEntry)
+    assert(entry, clientEntry)
+    filePath = entry.entryResolved
   }
   if (!filePath.startsWith('/')) {
     assert(process.platform === 'win32')
     filePath = '/' + filePath
   }
   filePath = '/@fs' + filePath
+  assertPosixPath(filePath)
+
   return filePath
 }
 function resolveClientEntriesProd(

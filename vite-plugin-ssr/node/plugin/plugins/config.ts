@@ -3,8 +3,9 @@ export { resolveVpsConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/assertConfigVps'
-import { assertUsage, getNpmPackageName } from '../utils'
+import { assertUsage, getNpmPackageName, toPosixPath } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
+import path from 'path'
 
 function resolveVpsConfig(vpsConfig: unknown) {
   return {
@@ -69,10 +70,21 @@ function resolveAddPageFiles(configs: ConfigVpsUserProvided[], config: ResolvedC
       }
       throw err
     }
+    let packageJsonPath: string
+    try {
+      packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [config.root] })
+    } catch (err: any) {
+      if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+        assertUsage(false, `Cannot read ${npmPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${npmPackageName}.`)
+      }
+      throw err
+    }
+    const npmPackageRootDir = path.posix.dirname(toPosixPath(packageJsonPath))
     return {
       entry,
       entryResolved,
-      npmPackageName
+      npmPackageName,
+      npmPackageRootDir
     }
   })
 }

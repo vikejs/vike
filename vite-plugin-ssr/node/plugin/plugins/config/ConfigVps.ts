@@ -6,6 +6,7 @@ type AddPageFile = {
   entry: string
   entryResolved: string
   npmPackageName: string
+  npmPackageRootDir: string
 }
 
 type ConfigVpsResolved = {
@@ -19,7 +20,7 @@ type ConfigVpsResolved = {
       }
   pageFiles: {
     include: string[] // TODO: remove
-    addPageFiles: AddPageFile[]
+    addPageFiles: AddPageFile[] // TODO: rename to `configVps.includeFiles`?
   }
   disableAutoFullBuild: boolean
   includeCSS: string[] // TODO: remove

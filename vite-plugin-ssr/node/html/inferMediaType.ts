@@ -1,3 +1,4 @@
+import { isScriptFile } from '../plugin/utils'
 import { styleFileRE } from '../utils'
 
 export { inferMediaType }
@@ -23,7 +24,7 @@ function inferMediaType(href: string): MediaType {
   if (styleFileRE.test(href)) {
     return { mediaType: 'text/css', assetType: 'style' }
   }
-  if (href.endsWith('.js')) {
+  if (isScriptFile(href)) {
     return { mediaType: 'text/javascript', assetType: 'script' }
   }
 
