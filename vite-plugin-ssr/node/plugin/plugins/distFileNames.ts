@@ -11,6 +11,11 @@ import { determinePageId } from '../../../shared/determinePageId'
 import { deduceRouteStringFromFilesystemPath } from '../../../shared/route/deduceRouteStringFromFilesystemPath'
 import { extractAssetsRE } from './extractAssetsPlugin'
 
+// Same as `import type { PreRenderedChunk, PreRenderedAsset } from 'rollup'` but safe when Vite updates Rollup version
+type Output = Extract<ResolvedConfig['build']['rollupOptions']['output'], { chunkFileNames?: unknown }>
+type PreRenderedChunk = Parameters<Extract<Output['chunkFileNames'], Function>>[0]
+type PreRenderedAsset = Parameters<Extract<Output['assetFileNames'], Function>>[0]
+
 function distFileNames(): Plugin {
   return {
     name: 'vite-plugin-ssr:distFileNames',
@@ -103,12 +108,6 @@ function getRollupOutput(config: ResolvedConfig) {
   assert(!Array.isArray(output)) // Do we need to support `output` being an `array`?
   return output
 }
-
-type Output = Extract<ResolvedConfig['build']['rollupOptions']['output'], { chunkFileNames?: unknown }>
-type ChunkFileNames = Output['chunkFileNames']
-type AssetFileNames = Output['assetFileNames']
-type PreRenderedChunk = Parameters<Extract<ChunkFileNames, Function>>[0]
-type PreRenderedAsset = Parameters<Extract<AssetFileNames, Function>>[0]
 
 function getAssetsDir(config: ResolvedConfig) {
   let { assetsDir } = config.build

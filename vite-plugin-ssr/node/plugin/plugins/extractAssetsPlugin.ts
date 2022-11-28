@@ -6,7 +6,6 @@ export { extractAssetsPlugin }
 export { extractAssetsRE }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ResolvedId } from 'rollup'
 import {
   viteIsSSR_options,
   assert,
@@ -26,6 +25,7 @@ import {
   virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesClientCR
 } from './generateImportGlobs/virtualModuleIdPageFiles'
+type ResolvedId = NonNullable<Awaited<ReturnType<ThisParameterType<NonNullable<Plugin['resolveId']>>['resolve']>>> // same as `import type { ResolvedId } from 'rollup'` but safe when Vite updates Rollup version
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
 const rawRE = /(\?|&)raw(?:&|$)/
