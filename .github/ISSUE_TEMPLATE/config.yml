@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Discord Chat
+  - name: "💬 Discord Chat"
     url: https://discord.com/invite/dSDMGGJZQy
-    about: Ask questions and discuss with other vite-plugin-sssr users in real time.
+    about: Discussions about vite-plugin-ssr and broader topics.
+  - name: "🙏 Help"
+    url: https://github.com/brillout/vite-plugin-sssr/discussions
+    about: Use GitHub discussions to get help.
