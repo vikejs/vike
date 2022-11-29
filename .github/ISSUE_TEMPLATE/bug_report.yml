@@ -13,13 +13,12 @@ body:
         :red_circle: **Bad**: We won't help with problems unrelated to vite-plugin-ssr. Only ask us if you have evidence that your problem is related to vite-plugin-ssr.
         > We have this error originating from vite-plugin-ssr.
         
-        :green_circle: **Good**: Post the full stack trace, so we can start fixing the error right away :-).
+        :green_circle: **Good**: Post the error message and error stack, we'll start fixing the error right away (usually under 24 hours).
   - type: textarea
     attributes:
       label: Description
-      description: "Describe the bug. Optional: the error stack is usually enough."
+      description: "Describe the bug. Optional: an Error Stack originating from vite-plugin-ssr is usually enough."
   - type: textarea
     attributes:
       render: shell
-      label: Error Stack
-      description: Bugs usually throw an error. Paste the full error stack here.
+      label: Error Message + Error Stack
