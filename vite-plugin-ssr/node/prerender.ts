@@ -250,7 +250,7 @@ async function collectDoNoPrerenderList(
 
 function assertExportNames(pageFile: PageFile) {
   const { exportNames, fileType } = pageFile
-  assert(exportNames || fileType === '.page.route', wrongViteConfigErrorMessage)
+  assert(exportNames || fileType === '.page.route' || fileType === '.css', pageFile.filePath)
 }
 
 async function callPrerenderHooks(globalContext: GlobalPrerenderingContext, concurrencyLimit: PLimit) {

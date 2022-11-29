@@ -1,6 +1,6 @@
 // Utils needed by vite-plugin-ssr's Vite plugin.
 
-// We tolerate the fact that we load all of `node/utils/*` even though some of it is not needed
+// We tolerate the fact that we load all of `node/utils/*` even though some of it is not needed - TODO: remove this file
 export * from '../../node/utils'
 
 // Utils only needed by `plugin/*`

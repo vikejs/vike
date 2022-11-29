@@ -22,6 +22,7 @@ import { suppressRollupWarning } from './plugins/suppressRollupWarning'
 import { retrieveDevServer } from './plugins/retrieveDevServer'
 import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
+import { extensionsAssets } from './plugins/extensionsAssets'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
 function plugin(vpsConfig?: UserConfig): any {
@@ -41,7 +42,8 @@ function plugin(vpsConfig?: UserConfig): any {
     extractExportNamesPlugin(),
     suppressRollupWarning(),
     retrieveDevServer(),
-    ...importBuild()
+    ...importBuild(),
+    extensionsAssets()
   ]
   return plugins
 }

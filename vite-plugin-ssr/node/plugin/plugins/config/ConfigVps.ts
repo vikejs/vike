@@ -3,13 +3,14 @@ export type { ConfigVpsResolved }
 export type { ExtensionResolved }
 
 type AssetsManifest = {
-    format: 'esbuild@15',
-    manifestFilePath: string
+  format: 'esbuild@15'
+  manifestFilePath: string
 }
 type ExtensionUserProvided = {
   npmPackageName: string
   pageFiles: string[]
   assetsManifest?: AssetsManifest
+  assetsDir?: string
 }
 type ExtensionResolved = {
   npmPackageName: string
@@ -17,7 +18,8 @@ type ExtensionResolved = {
   pageFilesResolved: {
     importPath: string
     filePath: string
-  }[],
+  }[]
+  assetsDir: null | string
   assetsManifest: null | AssetsManifest
 }
 

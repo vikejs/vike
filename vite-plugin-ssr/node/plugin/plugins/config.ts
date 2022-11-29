@@ -6,7 +6,7 @@ import { checkConfigVps } from './config/assertConfigVps'
 import { assertUsage, getNpmPackageName, toPosixPath, isNpmPackageName } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
-import {isValidFileType} from '../../../shared/getPageFiles/types'
+import { isValidFileType } from '../../../shared/getPageFiles/types'
 
 function resolveVpsConfig(vpsConfig: unknown) {
   return {
@@ -54,7 +54,8 @@ async function resolveConfigVps(
   return configVps
 }
 
-function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] { // TODO: Move to own file
+function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
+  // TODO: Move to own file
   const extensions = configs.map((c) => c.extensions ?? []).flat()
   return extensions.map((extension) => {
     const { npmPackageName, pageFiles, assetsManifest } = extension
@@ -67,8 +68,15 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
       npmPackageRootDir,
-      pageFilesResolved,
-      assetsManifest: assetsManifest ?? null
+      pageFilesResolved, // TODO: rename
+      assetsManifest: assetsManifest ?? null, // TODO: remove
+      assetsDir: (() => {
+        if (!extension.assetsDir) {
+          return null
+        }
+        const assetsDir = path.posix.join(npmPackageRootDir, toPosixPath(extension.assetsDir))
+        return assetsDir
+      })()
     }
     return extensionResolved
   })
@@ -101,10 +109,7 @@ function resolvePageFiles(
     npmPackageName === getNpmPackageName(importPath),
     `${errPrefix} be a ${npmPackageName} module (e.g. '${npmPackageName}/renderer/_default.page.server.js')`
   )
-  assertUsage(
-    isValidFileType(importPath),
-    `${errPrefix} should end with '.js', '.mjs', '.cjs', or '.css'`
-  )
+  assertUsage(isValidFileType(importPath), `${errPrefix} should end with '.js', '.mjs', '.cjs', or '.css'`)
   let filePath: string
   try {
     filePath = require.resolve(importPath, { paths: [config.root] })

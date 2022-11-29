@@ -6,7 +6,7 @@ import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
 import { getConfigVps } from './config/assertConfigVps'
-import { ConfigVpsResolved } from './config/ConfigVps'
+import type { ConfigVpsResolved } from './config/ConfigVps'
 import path from 'path'
 
 function manifest(): Plugin[] {
