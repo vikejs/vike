@@ -621,7 +621,7 @@ importers:
 
   examples/stem-react:
     specifiers:
-      '@brillout/stem-react': ^0.0.15
+      '@brillout/stem-react': ^0.1.2
       '@vitejs/plugin-react': ^2.2.0
       cross-fetch: ^3.1.5
       node-fetch: ^2.6.7
@@ -630,7 +630,7 @@ importers:
       vite: ^3.2.4
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@brillout/stem-react': 0.0.15_gpl7tpoeeq7bzdiw3pgjue2aie
+      '@brillout/stem-react': 0.1.2_gpl7tpoeeq7bzdiw3pgjue2aie
       '@vitejs/plugin-react': 2.2.0_vite@3.2.4
       cross-fetch: 3.1.5
       node-fetch: 2.6.7
@@ -1944,8 +1944,8 @@ packages:
       picocolors: 1.0.0
       semver: 7.3.7
 
-  /@brillout/stem-react/0.0.15_gpl7tpoeeq7bzdiw3pgjue2aie:
-    resolution: {integrity: sha512-cUMtWCjywG0Y3p8nRpS7bnyu9tXUa5hipt2ZUuOcMXVvNls1sW2X2L+QpKSsKJUsnMkRFEsVJcYH0bxhYYmH1g==}
+  /@brillout/stem-react/0.1.2_gpl7tpoeeq7bzdiw3pgjue2aie:
+    resolution: {integrity: sha512-jqrpQGk0ePGv8ZPmqmOgAwlnpy4doQ8hLEjJedYQ2dngbXCY2WfJM1ddQBoyI+gtqrOAlcpj6UUfkSoesZPHVA==}
     peerDependencies:
       react: 18.x.x
       vite: '*'
@@ -1959,6 +1959,7 @@ packages:
         optional: true
     dependencies:
       '@brillout/eject': 0.1.1
+      '@brillout/release-me': 0.0.8
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       vite: 3.2.4
@@ -2583,7 +2584,7 @@ packages:
   /@types/fs-extra/9.0.13:
     resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
     dependencies:
-      '@types/node': 17.0.31
+      '@types/node': 18.11.9
     dev: false
 
   /@types/hast/2.3.4:
