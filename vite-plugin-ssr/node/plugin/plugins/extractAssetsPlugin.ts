@@ -25,7 +25,8 @@ import {
   virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesClientCR
 } from './generateImportGlobs/virtualModuleIdPageFiles'
-type ResolvedId = NonNullable<Awaited<ReturnType<ThisParameterType<NonNullable<Plugin['resolveId']>>['resolve']>>> // same as `import type { ResolvedId } from 'rollup'` but safe when Vite updates Rollup version
+//type ResolvedId = NonNullable<Awaited<ReturnType<ThisParameterType<NonNullable<Plugin['resolveId']>>['resolve']>>> // same as `import type { ResolvedId } from 'rollup'` but safe when Vite updates Rollup version
+type ResolvedId = any // TODO
 
 const extractAssetsRE = /(\?|&)extractAssets(?:&|$)/
 const rawRE = /(\?|&)raw(?:&|$)/
