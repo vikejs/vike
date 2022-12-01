@@ -181,9 +181,7 @@ function resolveClientEntriesProd(
   clientManifest: ViteManifest,
   manifestKeyMap: Record<string, string>
 ): string {
-  const entry = getManifestEntry(clientEntry, clientManifest, manifestKeyMap)
-  assert(entry)
-  const { manifestEntry } = entry
+  const { manifestEntry } = getManifestEntry(clientEntry, clientManifest, manifestKeyMap)
   // TODO: importing assets (e.g. SVG images) from CSS => does VPS crawl the link?
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry

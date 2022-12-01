@@ -57,10 +57,7 @@ function retrieveAssetsProd(
         return
       }
     }
-    const entry = getManifestEntry(id, clientManifest, manifestKeyMap)
-    const manifestKeys = Object.keys(clientManifest)
-    assert(entry, { id, manifestKeys })
-    const { manifestKey } = entry
+    const { manifestKey } = getManifestEntry(id, clientManifest, manifestKeyMap)
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
 

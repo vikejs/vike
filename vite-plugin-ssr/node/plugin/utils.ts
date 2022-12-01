@@ -1,6 +1,6 @@
 // Utils needed by vite-plugin-ssr's Vite plugin.
 
-// We tolerate the fact that we load all of `node/utils/*` even though some of it is not needed - TODO: remove this file
+// We tolerate the fact that we load all of `node/utils/*` even though some of it is not needed
 export * from '../../node/utils'
 
 // Utils only needed by `plugin/*`
@@ -11,3 +11,4 @@ export * from '../../utils/getFileExtension'
 export * from '../../utils/makeFilePathAbsolute'
 export * from '../../utils/isScriptFile'
 export * from '../../utils/isNpmPackageName'
+export * from '../../utils/getDependencyPackageJson'

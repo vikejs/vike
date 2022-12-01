@@ -7,7 +7,7 @@ function getManifestEntry(
   id: string,
   clientManifest: ViteManifest,
   manifestKeyMap: Record<string, string>
-): null | { manifestKey: string; manifestEntry: ViteManifestEntry } {
+): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertPosixPath(id)
   assert(!id.startsWith('/@fs'), { id })
   assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/') || isNpmPackageModulePath(id), { id }) // TODO: new util function
@@ -31,9 +31,11 @@ function getManifestEntry(
 
   // For Vilay and @brillout/docpress
   // TODO: deprecate this and migrate @brillout/docpress to Stem approach
-  if (id.startsWith('/node_modules')) {
-    let manifestKeyEnd = id.slice('/node_modules'.length)
-    assert(manifestKeyEnd.startsWith('/'))
+  if (id.startsWith('/node_modules/') || id.startsWith('/../')) {
+    let manifestKeyEnd = id.split('/node_modules/').slice(-1)[0]
+    assert(manifestKeyEnd, id)
+    assert(!manifestKeyEnd.startsWith('/'))
+    manifestKeyEnd = '/' + manifestKeyEnd
     {
       const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
       if (manifestEntry) {
@@ -55,6 +57,7 @@ function getManifestEntry(
         return { manifestEntry, manifestKey }
       }
     }
+    assert(false, id)
   }
 
   // For VPS extensions
@@ -66,7 +69,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  return null
+  assert(false, id)
 }
 
 function findEntryWithKeyEnd(manifestKeyEnd: string, clientManifest: ViteManifest, id: string) {
