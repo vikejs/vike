@@ -3,7 +3,7 @@ export { resolveVpsConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved, ExtensionResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/assertConfigVps'
-import { assertUsage, getNpmPackageName, toPosixPath, isNpmPackageName } from '../utils'
+import { assertUsage, getNpmPackageName, toPosixPath, isNpmPackageName, getDependencyRootDir } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
 import { isValidFileType } from '../../../shared/getPageFiles/types'
@@ -63,7 +63,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       isNpmPackageName(npmPackageName),
       `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
-    const npmPackageRootDir = getNpmPackageRootDir(npmPackageName, config)
+    const npmPackageRootDir = getDependencyRootDir(npmPackageName)
     const pageFilesResolved = pageFiles.map((importPath) => resolvePageFiles(importPath, npmPackageName, config))
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
@@ -80,23 +80,6 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     }
     return extensionResolved
   })
-}
-
-function getNpmPackageRootDir(npmPackageName: string, config: ResolvedConfig) {
-  let packageJsonPath: string
-  try {
-    packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [config.root] })
-  } catch (err: any) {
-    if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
-      assertUsage(
-        false,
-        `Cannot read ${npmPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${npmPackageName}.`
-      )
-    }
-    throw err
-  }
-  const npmPackageRootDir = path.posix.dirname(toPosixPath(packageJsonPath))
-  return npmPackageRootDir
 }
 
 function resolvePageFiles(

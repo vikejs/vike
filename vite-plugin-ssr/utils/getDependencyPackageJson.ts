@@ -37,6 +37,12 @@ function getDependencyPackageJsonPath(npmPackageName: string): string {
       throw err
     }
     packageJsonPath = retrievePackageJsonPathFromErrMsg(err.message!)
+    /* If retrievePackageJsonPathFromErrMsg() isn't reliable:
+    assertUsage(
+      packageJsonPath,
+      `Cannot read ${npmPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${npmPackageName}.`
+    )
+    */
   }
   packageJsonPath = toPosixPath(packageJsonPath)
   assert(packageJsonPath.endsWith('/package.json'), packageJsonPath) // package.json#exports["package.json"] may point to another file than package.json
