@@ -66,7 +66,14 @@ function getCiJobs() {
 }
 
 function tolerateError(log) {
-  return isSlowHookWarning() || isNoErrorPageWarning() || isFetchExperimentalWarning() || isViteEsbuildBug() || isGetPageAssetsDeprecationWarning()
+  return (
+    isSlowHookWarning() ||
+    isNoErrorPageWarning() ||
+    isFetchExperimentalWarning() ||
+    isViteEsbuildBug() ||
+    isGetPageAssetsDeprecationWarning() ||
+    isDocpressAssetWarning()
+  )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
   function isSlowHookWarning() {
@@ -125,6 +132,15 @@ function tolerateError(log) {
       log.logText.includes('[vite-plugin-ssr@') &&
       log.logText.includes('[Warning]') &&
       log.logText.includes('pageContext._getPageAssets() deprecated')
+    )
+  }
+
+  // /assets/Inter-Var-IOAEQULN.ttf referenced in /home/runner/work/vite-plugin-ssr/vite-plugin-ssr/node_modules/.pnpm/@brillout+docpress@0.1.12_6bdbsu2yzpeczxw5qylih75b3i/node_modules/@brillout/docpress/dist/renderer/_default.page.client.css?used didn't resolve at build time, it will remain unchanged to be resolved at runtime
+  function isDocpressAssetWarning() {
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes("didn't resolve at build time, it will remain unchanged to be resolved at runtime") &&
+      log.logText.includes('node_modules/@brillout/docpress')
     )
   }
 }

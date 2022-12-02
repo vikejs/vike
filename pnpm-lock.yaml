@@ -150,22 +150,22 @@ importers:
 
   docs:
     specifiers:
-      '@brillout/docpress': ^0.1.9
+      '@brillout/docpress': ^0.1.13
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
       react: ^18.2.0
       react-dom: ^18.2.0
-      typescript: ^4.3.2
+      typescript: ^4.9.3
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
-      '@brillout/docpress': 0.1.9_6bdbsu2yzpeczxw5qylih75b3i
+      '@brillout/docpress': 0.1.13_6bdbsu2yzpeczxw5qylih75b3i
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      typescript: 4.6.4
+      typescript: 4.9.3
       vite-plugin-ssr: link:../vite-plugin-ssr
 
   examples/base-url:
@@ -1886,8 +1886,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@brillout/docpress/0.1.9_6bdbsu2yzpeczxw5qylih75b3i:
-    resolution: {integrity: sha512-dqNNLPzk8XPe+QjntHhn+TYTfp9c89HuMAucZCKPpnhP+stZIoQjwqCDluXfayFy8+rblzFbT41L5y6qoBCZtg==}
+  /@brillout/docpress/0.1.13_6bdbsu2yzpeczxw5qylih75b3i:
+    resolution: {integrity: sha512-0xOzeo1EvCJv0TSJQjMGcAQUW9yeBMwsYilvYwDiucYMYUqVMzdLgxdETeTO2tH7AtcyTn05AyYqPhEXCtMZjw==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -8560,6 +8560,12 @@ packages:
     resolution: {integrity: sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
+
+  /typescript/4.9.3:
+    resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: false
 
   /uc.micro/1.0.6:
     resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
