@@ -9,7 +9,7 @@ type AssetsManifest = { // TODO: remove
 type ExtensionUserProvided = {
   npmPackageName: string
   pageFilesDist?: string[]
-  pageFilesSource?: string,
+  pageFilesSrc?: string,
   assetsManifest?: AssetsManifest
   assetsDir?: string
 }
@@ -20,7 +20,7 @@ type ExtensionResolved = {
     importPath: string
     filePath: string
   }[]
-  pageFilesSource: null | string,
+  pageFilesSrc: null | string,
   assetsDir: null | string
   assetsManifest: null | AssetsManifest
 }

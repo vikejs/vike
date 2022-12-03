@@ -63,20 +63,20 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     const pageFilesDist = !extension.pageFilesDist
       ? null
       : extension.pageFilesDist.map((importPath) => resolvePageFilesDist(importPath, npmPackageName, config))
-    let pageFilesSource: null | string = null
-    if (extension.pageFilesSource) {
-      assertPathProvidedByUser('pageFilesSource', extension.pageFilesSource, true)
-      pageFilesSource = path.posix.join(npmPackageRootDir, extension.pageFilesSource.slice(0, -1))
+    let pageFilesSrc: null | string = null
+    if (extension.pageFilesSrc) {
+      assertPathProvidedByUser('pageFilesSrc', extension.pageFilesSrc, true)
+      pageFilesSrc = path.posix.join(npmPackageRootDir, extension.pageFilesSrc.slice(0, -1))
     }
     assertUsage(
-      (pageFilesSource || pageFilesDist) && (!pageFilesDist || !pageFilesSource),
-      `Extension ${npmPackageName} should define either extension[number].pageFiles or extension[number].pageFilesSource (at least one but not both)`
+      (pageFilesSrc || pageFilesDist) && (!pageFilesDist || !pageFilesSrc),
+      `Extension ${npmPackageName} should define either extension[number].pageFiles or extension[number].pageFilesSrc (at least one but not both)`
     )
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
       npmPackageRootDir,
       pageFilesDist,
-      pageFilesSource,
+      pageFilesSrc,
       assetsManifest: assetsManifest ?? null, // TODO: remove
       assetsDir: (() => {
         if (!extension.assetsDir) {
@@ -91,7 +91,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
   })
 }
 
-function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageFilesSource', pathValue: string, starSuffix?: true) {
+function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageFilesSrc', pathValue: string, starSuffix?: true) {
   const errMsg = `extension[number].${pathName} value '${pathValue}'`
   assertUsage(
     !pathValue.includes('\\'),

@@ -127,10 +127,10 @@ function extractAssetsPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the dependency is a VPS extension and has `configVps.extension[number].pageFilesSource`, then include its CSS
+        // If the dependency is a VPS extension and has `configVps.extension[number].pageFilesSrc`, then include its CSS
         if (
           configVps.extensions
-            .filter(({ pageFilesSource }) => pageFilesSource !== null)
+            .filter(({ pageFilesSrc }) => pageFilesSrc !== null)
             .some(({ npmPackageName }) => {
               const check1 =
                 source === npmPackageName ||
