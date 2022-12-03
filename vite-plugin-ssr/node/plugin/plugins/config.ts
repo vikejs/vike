@@ -60,8 +60,11 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       isNpmPackageName(npmPackageName),
       `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
+
     const npmPackageRootDir = getDependencyRootDir(npmPackageName, config)
+
     const pageFilesDist = resolvePageFilesDist(extension.pageFilesDist, npmPackageName, config, npmPackageRootDir)
+
     let pageFilesSrc: null | string = null
     if (extension.pageFilesSrc) {
       assertPathProvidedByUser('pageFilesSrc', extension.pageFilesSrc, true)
@@ -71,20 +74,27 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       (pageFilesSrc || pageFilesDist) && (!pageFilesDist || !pageFilesSrc),
       `Extension ${npmPackageName} should define either extension[number].pageFilesDist or extension[number].pageFilesSrc (at least one but not both)`
     )
+
+    const assetsDir = (() => {
+      if (!extension.assetsDir) {
+        return null
+      }
+      assertPathProvidedByUser('assetsDir', extension.assetsDir)
+      const assetsDir = path.posix.join(npmPackageRootDir, toPosixPath(extension.assetsDir))
+      return assetsDir
+    })()
+    assertUsage(
+      !(assetsDir && pageFilesSrc),
+      `Extension ${npmPackageName} shouldn't define both extension[number].pageFilesSrc and extension[number].assetsDir`
+    )
+
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
       npmPackageRootDir,
       pageFilesDist,
       pageFilesSrc,
       assetsManifest: assetsManifest ?? null, // TODO: remove
-      assetsDir: (() => {
-        if (!extension.assetsDir) {
-          return null
-        }
-        assertPathProvidedByUser('assetsDir', extension.assetsDir)
-        const assetsDir = path.posix.join(npmPackageRootDir, toPosixPath(extension.assetsDir))
-        return assetsDir
-      })()
+      assetsDir
     }
     return extensionResolved
   })
