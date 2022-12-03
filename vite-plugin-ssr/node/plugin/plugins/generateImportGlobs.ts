@@ -269,10 +269,7 @@ function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): str
     .map(({ pageFilesSrc }) => pageFilesSrc)
     .filter(isNotNullish)
     .forEach((pageFilesSrc) => {
-      let globRoot = path.posix.relative(config.root, pageFilesSrc)
-      if (!globRoot.startsWith('.')) {
-        globRoot = './' + globRoot
-      }
+      const globRoot = path.posix.relative(config.root, pageFilesSrc)
       globRoots.push(globRoot)
     })
   return globRoots
