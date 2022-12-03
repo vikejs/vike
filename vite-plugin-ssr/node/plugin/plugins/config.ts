@@ -65,15 +65,8 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       : extension.pageFilesDist.map((importPath) => resolvePageFilesDist(importPath, npmPackageName, config))
     let pageFilesSource: null | string = null
     if (extension.pageFilesSource) {
-      const val: string = extension.pageFilesSource
-      const errMsg = `extension[number].pageFilesSource value '${val}'`
-      assertUsage(
-        !val.includes('\\'),
-        `${errMsg} shouldn't contain any backward slahes '\' (replace them with forward slahes '/')`
-      )
-      assertUsage(val.endsWith('/*'), `${errMsg} should end with '/*'`)
-      assertUsage(val.startsWith('/'), `${errMsg} should start with '/'`)
-      pageFilesSource = path.posix.join(npmPackageRootDir, val.slice(0, -1))
+      assertPathProvidedByUser('pageFilesSource', extension.pageFilesSource, true)
+      pageFilesSource = path.posix.join(npmPackageRootDir, extension.pageFilesSource.slice(0, -1))
     }
     assertUsage(
       (pageFilesSource || pageFilesDist) && (!pageFilesDist || !pageFilesSource),
@@ -89,12 +82,23 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
         if (!extension.assetsDir) {
           return null
         }
+        assertPathProvidedByUser('assetsDir', extension.assetsDir)
         const assetsDir = path.posix.join(npmPackageRootDir, toPosixPath(extension.assetsDir))
         return assetsDir
       })()
     }
     return extensionResolved
   })
+}
+
+function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageFilesSource', pathValue: string, starSuffix?: true) {
+  const errMsg = `extension[number].${pathName} value '${pathValue}'`
+  assertUsage(
+    !pathValue.includes('\\'),
+    `${errMsg} shouldn't contain any backward slahes '\' (replace them with forward slahes '/')`
+  )
+  assertUsage(!starSuffix || pathValue.endsWith('/*'), `${errMsg} should end with '/*'`)
+  assertUsage(pathValue.startsWith('/'), `${errMsg} should start with '/'`)
 }
 
 function resolvePageFilesDist(
