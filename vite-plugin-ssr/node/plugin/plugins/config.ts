@@ -6,6 +6,7 @@ import { checkConfigVps } from './config/assertConfigVps'
 import { assertUsage, getNpmPackageName, toPosixPath, isNpmPackageName, getDependencyRootDir } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
+import fs from 'fs'
 import { isValidFileType } from '../../../shared/getPageFiles/types'
 
 function resolveVpsConfig(vpsConfig: unknown) {
@@ -60,9 +61,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
     const npmPackageRootDir = getDependencyRootDir(npmPackageName)
-    const pageFilesDist = !extension.pageFilesDist
-      ? null
-      : extension.pageFilesDist.map((importPath) => resolvePageFilesDist(importPath, npmPackageName, config))
+    const pageFilesDist = resolvePageFilesDist(extension.pageFilesDist, npmPackageName, config)
     let pageFilesSrc: null | string = null
     if (extension.pageFilesSrc) {
       assertPathProvidedByUser('pageFilesSrc', extension.pageFilesSrc, true)
@@ -70,7 +69,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
     }
     assertUsage(
       (pageFilesSrc || pageFilesDist) && (!pageFilesDist || !pageFilesSrc),
-      `Extension ${npmPackageName} should define either extension[number].pageFiles or extension[number].pageFilesSrc (at least one but not both)`
+      `Extension ${npmPackageName} should define either extension[number].pageFilesDist or extension[number].pageFilesSrc (at least one but not both)`
     )
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
@@ -102,16 +101,46 @@ function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageFilesSrc', pathVa
 }
 
 function resolvePageFilesDist(
-  importPath: string,
+  pageFilesDist: undefined | string[],
   npmPackageName: string,
   config: ResolvedConfig
-): NonNullable<ExtensionResolved['pageFilesDist']>[number] {
-  const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
-  assertUsage(
-    npmPackageName === getNpmPackageName(importPath),
-    `${errPrefix} be a ${npmPackageName} module (e.g. '${npmPackageName}/renderer/_default.page.server.js')`
-  )
-  assertUsage(isValidFileType(importPath), `${errPrefix} should end with '.js', '.mjs', '.cjs', or '.css'`)
+): null | NonNullable<ExtensionResolved['pageFilesDist']>[number][] {
+  if (!pageFilesDist) return null
+
+  const pageFilesDistResolved: NonNullable<ExtensionResolved['pageFilesDist']>[number][] = []
+
+  pageFilesDist.forEach((importPath) => {
+    const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
+    assertUsage(
+      npmPackageName === getNpmPackageName(importPath),
+      `${errPrefix} be a ${npmPackageName} module (e.g. '${npmPackageName}/renderer/_default.page.server.js')`
+    )
+    assertUsage(isValidFileType(importPath), `${errPrefix} end with '.js', '.mjs', '.cjs', or '.css'`)
+
+    const filePath = resolveImportPath(importPath, npmPackageName, config)
+    pageFilesDistResolved.push({
+      importPath,
+      filePath
+    })
+
+    const filePathCSS = getPathCSS(filePath)
+    if (filePathCSS !== filePath && fs.existsSync(filePathCSS)) {
+      const importPathCSS = getPathCSS(importPath)
+      assertUsage(
+        filePathCSS === resolveImportPath(importPathCSS, npmPackageName, config),
+        `The entry package.json#exports["${importPathCSS}"] in the package.json of ${npmPackageName} has a wrong value: make sure it resolves to ${filePathCSS}`
+      )
+      pageFilesDistResolved.push({
+        importPath: importPathCSS,
+        filePath: filePathCSS
+      })
+    }
+  })
+
+  return pageFilesDistResolved
+}
+
+function resolveImportPath(importPath: string, npmPackageName: string, config: ResolvedConfig): string {
   let filePath: string
   try {
     filePath = require.resolve(importPath, { paths: [config.root] })
@@ -119,15 +148,16 @@ function resolvePageFilesDist(
     if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
       assertUsage(
         false,
-        `Define ${importPath} in the package.json#exports of ${npmPackageName} with a Node.js export condition (even if it's a browser file like CSS).`
+        `Define ${importPath} in the package.json#exports of ${npmPackageName} with a Node.js export condition (even if it's a browser file like CSS)`
       )
     }
     throw err
   }
-  return {
-    importPath,
-    filePath
-  }
+  return filePath
+}
+
+function getPathCSS(filePath: string): string {
+  return filePath.split('.').slice(0, -1).join('.') + '.css'
 }
 
 function resolvePrerenderOptions(configs: ConfigVpsUserProvided[]): ConfigVpsResolved['prerender'] {
