@@ -44,9 +44,10 @@ function distFileNames(): Plugin {
 const BLACK_LIST = ['assertRenderHook.css']
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
   const assetsDir = getAssetsDir(config)
+  const filename = assetInfo.name && path.basename(assetInfo.name)
 
   // Not sure when/why this happens
-  if (assetInfo.name && BLACK_LIST.includes(assetInfo.name)) {
+  if (filename && BLACK_LIST.includes(filename)) {
     return `${assetsDir}/chunk-[hash][extname]`
   }
 
@@ -54,12 +55,12 @@ function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): 
   // => dist/client/assets/index.page.server.e4e33422.css
   if (
     // Vite 2
-    assetInfo.name?.endsWith('_extractAssets_lang.css') ||
+    filename?.endsWith('_extractAssets_lang.css') ||
     // Vite 3
-    assetInfo.name?.endsWith('?extractAssets&lang.css')
+    filename?.endsWith('?extractAssets&lang.css')
   ) {
-    const nameBase = assetInfo.name.split('.').slice(0, -2).join('.')
-    return `${assetsDir}/${nameBase}.[hash][extname]`
+    const filenameBase = filename.split('.').slice(0, -2).join('.')
+    return `${assetsDir}/${filenameBase}.[hash][extname]`
   }
 
   return `${assetsDir}/[name].[hash][extname]`
