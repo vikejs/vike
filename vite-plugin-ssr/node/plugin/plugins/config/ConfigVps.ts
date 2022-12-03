@@ -8,7 +8,7 @@ type AssetsManifest = { // TODO: remove
 }
 type ExtensionUserProvided = {
   npmPackageName: string
-  pageFiles?: string[]
+  pageFilesDist?: string[]
   pageFilesSource?: string,
   assetsManifest?: AssetsManifest
   assetsDir?: string
@@ -16,7 +16,7 @@ type ExtensionUserProvided = {
 type ExtensionResolved = {
   npmPackageName: string
   npmPackageRootDir: string
-  pageFilesResolved: null | {
+  pageFilesDist: null | {
     importPath: string
     filePath: string
   }[]
@@ -83,13 +83,6 @@ type ConfigVpsUserProvided = {
          */
         disableAutoRun?: boolean
       }
-  /**
-   * @internal
-   * Don't use without having talked to a vite-plugin-ssr maintainer.
-   */
-  pageFiles?: {
-    include?: string[] // TODO: remove
-  }
   /**
    * @beta
    * Don't use without having talked to a vite-plugin-ssr maintainer.

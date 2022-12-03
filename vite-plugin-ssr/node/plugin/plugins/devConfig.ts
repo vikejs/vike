@@ -52,7 +52,7 @@ function addStemEntriesToOpimizeDeps(config: ResolvedConfig, configVps: ConfigVp
   config.optimizeDeps.include = config.optimizeDeps.include ?? []
   config.optimizeDeps.include.push(
     ...configVps.extensions
-      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .map(({ pageFilesDist }) => pageFilesDist)
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)

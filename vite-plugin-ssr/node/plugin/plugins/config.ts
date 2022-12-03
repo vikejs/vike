@@ -54,15 +54,15 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
   // TODO: Move to own file
   const extensions = configs.map((c) => c.extensions ?? []).flat()
   return extensions.map((extension) => {
-    const { npmPackageName, pageFiles, assetsManifest } = extension
+    const { npmPackageName, assetsManifest } = extension
     assertUsage(
       isNpmPackageName(npmPackageName),
       `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
     const npmPackageRootDir = getDependencyRootDir(npmPackageName)
-    const pageFilesResolved = !pageFiles
+    const pageFilesDist = !extension.pageFilesDist
       ? null
-      : pageFiles.map((importPath) => resolvePageFiles(importPath, npmPackageName, config))
+      : extension.pageFilesDist.map((importPath) => resolvePageFilesDist(importPath, npmPackageName, config))
     let pageFilesSource: null | string = null
     if (extension.pageFilesSource) {
       const val: string = extension.pageFilesSource
@@ -76,13 +76,13 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       pageFilesSource = path.posix.join(npmPackageRootDir, val.slice(0, -1))
     }
     assertUsage(
-      (pageFilesSource || pageFilesResolved) && (!pageFilesResolved || !pageFilesSource),
+      (pageFilesSource || pageFilesDist) && (!pageFilesDist || !pageFilesSource),
       `Extension ${npmPackageName} should define either extension[number].pageFiles or extension[number].pageFilesSource (at least one but not both)`
     )
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
       npmPackageRootDir,
-      pageFilesResolved, // TODO: rename
+      pageFilesDist,
       pageFilesSource,
       assetsManifest: assetsManifest ?? null, // TODO: remove
       assetsDir: (() => {
@@ -97,11 +97,11 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
   })
 }
 
-function resolvePageFiles(
+function resolvePageFilesDist(
   importPath: string,
   npmPackageName: string,
   config: ResolvedConfig
-): NonNullable<ExtensionResolved['pageFilesResolved']>[number] {
+): NonNullable<ExtensionResolved['pageFilesDist']>[number] {
   const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
   assertUsage(
     npmPackageName === getNpmPackageName(importPath),

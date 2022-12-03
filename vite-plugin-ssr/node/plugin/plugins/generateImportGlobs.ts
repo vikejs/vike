@@ -69,7 +69,7 @@ async function getCode(
   }
   {
     const extensionsImportPaths = configVps.extensions
-      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .map(({ pageFilesDist }) => pageFilesDist)
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)

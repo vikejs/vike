@@ -162,7 +162,7 @@ function resolveClientEntriesDev(
     // VPS extensions
     assert(isNpmPackageModulePath(clientEntry)) // TODO: factor out check? Make test more precise to check presence in extensions[number].pageFiles?
     const extensionPageFile = configVps.extensions
-      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .map(({ pageFilesDist }) => pageFilesDist)
       .flat()
       .filter(isNotNullish)
       .find((e) => e.importPath === clientEntry)
