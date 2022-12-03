@@ -6,6 +6,7 @@ import { assert, isNotNullish, toPosixPath } from '../utils'
 import { addSsrMiddleware, isViteCliCall } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
+import fs from 'fs'
 import { getConfigVps } from './config/assertConfigVps'
 import { ConfigVpsResolved } from './config/ConfigVps'
 
@@ -87,6 +88,8 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
   fsAllow.push(vitePluginSsrRoot)
 
   configVps.extensions.forEach(({ npmPackageRootDir }) => {
+    const npmPackageRootDirReal = fs.realpathSync(npmPackageRootDir)
     fsAllow.push(npmPackageRootDir)
+    fsAllow.push(npmPackageRootDirReal)
   })
 }
