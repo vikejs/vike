@@ -127,23 +127,26 @@ function extractAssetsPlugin(): Plugin[] {
           return emptyModule(file, importer)
         }
 
-        // If the dependency is in `configVps.includeCSS`, then include its CSS
+        // If the dependency is a VPS extension and has `configVps.extension[number].pageFilesSource`, then include its CSS
         if (
-          configVps.includeCSS.some((depName) => {
-            const check1 =
-              source === depName ||
-              source.startsWith(depName + '/') ||
-              // Include relative imports within modules of `depName`. (This only works for dependencies: user may use import path aliases.)
-              source.startsWith('.')
-            // This doesn't work for linked dependencies
-            const check2 =
-              file.includes('node_modules/' + depName + '/') || file.includes('node_modules\\' + depName + '\\')
-            if (check1) {
-              return true
-            }
-            assert(!check2)
-            return false
-          })
+          configVps.extensions
+            .filter(({ pageFilesSource }) => pageFilesSource !== null)
+            .some(({ npmPackageName }) => {
+              const check1 =
+                source === npmPackageName ||
+                source.startsWith(npmPackageName + '/') ||
+                // Include relative imports within modules of `npmPackageName`. (This only works for dependencies: user may use import path aliases.)
+                source.startsWith('.')
+              // This doesn't work for linked dependencies
+              const check2 =
+                file.includes('node_modules/' + npmPackageName + '/') ||
+                file.includes('node_modules\\' + npmPackageName + '\\')
+              if (check1) {
+                return true
+              }
+              assert(!check2)
+              return false
+            })
         ) {
           return appendExtractAssetsQuery(file, importer)
         }

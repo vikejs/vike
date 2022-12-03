@@ -5,7 +5,6 @@ export * from '../../node/utils'
 
 // Utils only needed by `plugin/*`
 export * from '../../utils/viteIsSSR'
-export * from '../../utils/isNotNullish'
 export * from '../../utils/isAsset'
 export * from '../../utils/getFileExtension'
 export * from '../../utils/makeFilePathAbsolute'

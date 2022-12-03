@@ -17,16 +17,6 @@ function checkConfigVps(configVps: unknown): null | { prop: string; errMsg: `sho
       return { prop, errMsg: 'should be a boolean' }
   }
   {
-    const prop = 'includeCSS'
-    if (!hasProp(configVps, prop, 'string[]') && !hasProp(configVps, prop, 'undefined'))
-      return { prop, errMsg: 'should be an array of strings' }
-  }
-  {
-    const prop = 'pageFiles'
-    if (!hasProp(configVps, prop, 'object') && !hasProp(configVps, prop, 'undefined'))
-      return { prop, errMsg: 'should be an object' }
-  }
-  {
     const prop = 'prerender'
     if (
       !hasProp(configVps, prop, 'object') &&
@@ -34,15 +24,6 @@ function checkConfigVps(configVps: unknown): null | { prop: string; errMsg: `sho
       !hasProp(configVps, prop, 'undefined')
     )
       return { prop, errMsg: 'should be an object or a boolean' }
-  }
-
-  const configVpsPageFiles = configVps.pageFiles
-  if (typeof configVpsPageFiles === 'object') {
-    {
-      const p = 'include'
-      if (!hasProp(configVpsPageFiles, p, 'string[]') && !hasProp(configVpsPageFiles, p, 'undefined'))
-        return { prop: `pageFiles.${p}`, errMsg: 'should be an array of strings' }
-    }
   }
 
   const configVpsPrerender = configVps.prerender

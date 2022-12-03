@@ -1,7 +1,7 @@
 export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
-import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath } from '../utils'
+import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
 import { RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
@@ -50,6 +50,7 @@ function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig)
   configVps.extensions
     .map(({ pageFilesResolved }) => pageFilesResolved)
     .flat()
+    .filter(isNotNullish)
     .forEach(({ importPath, filePath }) => {
       // Recreating https://github.com/vitejs/vite/blob/8158ece72b66307e7b607b98496891610ca70ea2/packages/vite/src/node/plugins/manifest.ts#L38
       const filePathRelative = path.posix.relative(config.root, toPosixPath(filePath))

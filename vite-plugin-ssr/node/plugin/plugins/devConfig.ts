@@ -1,10 +1,10 @@
 export { devConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert } from '../utils'
+import { searchForWorkspaceRoot } from 'vite'
+import { assert, isNotNullish, toPosixPath } from '../utils'
 import { addSsrMiddleware, isViteCliCall } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
-import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
 import path from 'path'
 import { getConfigVps } from './config/assertConfigVps'
 import { ConfigVpsResolved } from './config/ConfigVps'
@@ -54,6 +54,7 @@ function addStemEntriesToOpimizeDeps(config: ResolvedConfig, configVps: ConfigVp
     ...configVps.extensions
       .map(({ pageFilesResolved }) => pageFilesResolved)
       .flat()
+      .filter(isNotNullish)
       .map(({ importPath }) => importPath)
   )
 }
@@ -77,19 +78,13 @@ function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow
+  assert(fsAllow.map(toPosixPath).includes(toPosixPath(searchForWorkspaceRoot(process.cwd()))))
 
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
   // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
   require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
   fsAllow.push(vitePluginSsrRoot)
-
-  const globRoots = await getGlobRoots(config, configVps) // TODO: remove whole getGlobRoots logic
-  globRoots.forEach(({ addFsAllowRoot }) => {
-    if (addFsAllowRoot) {
-      fsAllow.push(addFsAllowRoot)
-    }
-  })
 
   configVps.extensions.forEach(({ npmPackageRootDir }) => {
     fsAllow.push(npmPackageRootDir)

@@ -9,7 +9,8 @@ import {
   assertPosixPath,
   toPosixPath,
   isNpmPackageModulePath,
-  unique
+  unique,
+  isNotNullish
 } from '../utils'
 import { retrieveAssetsDev, retrieveAssetsProd } from '../retrievePageAssets'
 import type { ViteManifest } from '../viteManifest'
@@ -163,6 +164,7 @@ function resolveClientEntriesDev(
     const extensionPageFile = configVps.extensions
       .map(({ pageFilesResolved }) => pageFilesResolved)
       .flat()
+      .filter(isNotNullish)
       .find((e) => e.importPath === clientEntry)
     assert(extensionPageFile, clientEntry)
     filePath = extensionPageFile.filePath

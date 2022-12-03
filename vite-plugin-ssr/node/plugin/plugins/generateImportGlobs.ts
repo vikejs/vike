@@ -1,9 +1,7 @@
 export { generateImportGlobs }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, viteIsSSR_options, isNotNullish, assertUsage } from '../utils'
-import { getGlobPath } from './generateImportGlobs/getGlobPath'
-import { getGlobRoots } from './generateImportGlobs/getGlobRoots'
+import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions } from '../utils'
 import { debugGlob } from '../../utils'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { getConfigVps } from './config/assertConfigVps'
@@ -13,6 +11,7 @@ import {
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 import { FileType, isValidFileType } from '../../../shared/getPageFiles/types'
+import path from 'path'
 
 const virtualModuleIds = [
   virtualModuleIdPageFilesServer,
@@ -62,15 +61,18 @@ async function getCode(
   const { command } = config
   assert(command === 'serve' || command === 'build')
   const isBuild = command === 'build'
-  const globRoots = await getGlobRoots(config, configVps)
-  debugGlob('Glob roots: ', globRoots)
   let content = ''
   {
-    const crawlRoots = globRoots.map((g) => g.addCrawlRoot).filter(isNotNullish)
-    content += getContent(crawlRoots, isBuild, isForClientSide, isClientRouting, configVps)
+    const globRoots = getGlobRoots(config, configVps)
+    debugGlob('Glob roots: ', globRoots)
+    content += getContent(globRoots, isBuild, isForClientSide, isClientRouting, configVps)
   }
   {
-    const extensionsImportPaths = globRoots.map((g) => g.addExtensionPageFileImport).filter(isNotNullish)
+    const extensionsImportPaths = configVps.extensions
+      .map(({ pageFilesResolved }) => pageFilesResolved)
+      .flat()
+      .filter(isNotNullish)
+      .map(({ importPath }) => importPath)
     content += generateAddPageFileImports(extensionsImportPaths, isForClientSide, isBuild)
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
@@ -123,7 +125,8 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
   return fileContent
 }
 
-function getFileType(filePath: string): FileType { // TODO: move to fileTypes.ts
+function getFileType(filePath: string): FileType {
+  // TODO: move to fileTypes.ts
   assert(isValidFileType(filePath), { filePath })
   if (filePath.endsWith('.css')) {
     return '.css'
@@ -149,7 +152,7 @@ function getFileType(filePath: string): FileType { // TODO: move to fileTypes.ts
 }
 
 function getContent(
-  crawlRoots: string[],
+  crawlRoots: string[], // TODO: rename to globRoots
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
@@ -258,4 +261,28 @@ function getGlobs(
     `${pageFilesVar}['.${fileSuffix}'] = ${varName};`,
     ''
   ].join('\n')
+}
+
+function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): string[] {
+  const globRoots = ['/']
+  configVps.extensions
+    .map(({ pageFilesSource }) => pageFilesSource)
+    .filter(isNotNullish)
+    .forEach((pageFilesSource) => {
+      let globRoot = path.posix.relative(config.root, pageFilesSource)
+      if (!globRoot.startsWith('.')) {
+        globRoot = './' + globRoot
+      }
+      globRoots.push(globRoot)
+    })
+  return globRoots
+}
+
+function getGlobPath(globRoot: string, fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route'): string {
+  assertPosixPath(globRoot)
+  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${scriptFileExtensions}`].filter(Boolean).join('/')
+  if (!globPath.startsWith('/')) {
+    globPath = '/' + globPath
+  }
+  return globPath
 }

@@ -42,12 +42,8 @@ async function resolveConfigVps(
 
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
-    pageFiles: {
-      include: configs.map((c) => c.pageFiles?.include ?? []).flat()
-    },
     extensions: resolveExtensions(configs, config),
     prerender: resolvePrerenderOptions(configs),
-    includeCSS: configs.map((c) => c.includeCSS ?? []).flat(),
     includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false
   }
 
@@ -64,11 +60,30 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
     const npmPackageRootDir = getDependencyRootDir(npmPackageName)
-    const pageFilesResolved = pageFiles.map((importPath) => resolvePageFiles(importPath, npmPackageName, config))
+    const pageFilesResolved = !pageFiles
+      ? null
+      : pageFiles.map((importPath) => resolvePageFiles(importPath, npmPackageName, config))
+    let pageFilesSource: null | string = null
+    if (extension.pageFilesSource) {
+      const val: string = extension.pageFilesSource
+      const errMsg = `extension[number].pageFilesSource value '${val}'`
+      assertUsage(
+        !val.includes('\\'),
+        `${errMsg} shouldn't contain any backward slahes '\' (replace them with forward slahes '/')`
+      )
+      assertUsage(val.endsWith('/*'), `${errMsg} should end with '/*'`)
+      assertUsage(val.startsWith('/'), `${errMsg} should start with '/'`)
+      pageFilesSource = path.posix.join(npmPackageRootDir, val.slice(0, -1))
+    }
+    assertUsage(
+      (pageFilesSource || pageFilesResolved) && (!pageFilesResolved || !pageFilesSource),
+      `Extension ${npmPackageName} should define either extension[number].pageFiles or extension[number].pageFilesSource (at least one but not both)`
+    )
     const extensionResolved: ExtensionResolved = {
       npmPackageName,
       npmPackageRootDir,
       pageFilesResolved, // TODO: rename
+      pageFilesSource,
       assetsManifest: assetsManifest ?? null, // TODO: remove
       assetsDir: (() => {
         if (!extension.assetsDir) {
@@ -86,7 +101,7 @@ function resolvePageFiles(
   importPath: string,
   npmPackageName: string,
   config: ResolvedConfig
-): ExtensionResolved['pageFilesResolved'][number] {
+): NonNullable<ExtensionResolved['pageFilesResolved']>[number] {
   const errPrefix = `The page file '${importPath}' (provided in extensions[number].pageFiles) should`
   assertUsage(
     npmPackageName === getNpmPackageName(importPath),

@@ -2,23 +2,25 @@ export type { ConfigVpsUserProvided }
 export type { ConfigVpsResolved }
 export type { ExtensionResolved }
 
-type AssetsManifest = {
+type AssetsManifest = { // TODO: remove
   format: 'esbuild@15'
   manifestFilePath: string
 }
 type ExtensionUserProvided = {
   npmPackageName: string
-  pageFiles: string[]
+  pageFiles?: string[]
+  pageFilesSource?: string,
   assetsManifest?: AssetsManifest
   assetsDir?: string
 }
 type ExtensionResolved = {
   npmPackageName: string
   npmPackageRootDir: string
-  pageFilesResolved: {
+  pageFilesResolved: null | {
     importPath: string
     filePath: string
   }[]
+  pageFilesSource: null | string,
   assetsDir: null | string
   assetsManifest: null | AssetsManifest
 }
@@ -32,12 +34,8 @@ type ConfigVpsResolved = {
         partial: boolean
         disableAutoRun: boolean
       }
-  pageFiles: {
-    include: string[] // TODO: remove
-  }
   extensions: ExtensionResolved[]
   disableAutoFullBuild: boolean
-  includeCSS: string[] // TODO: remove
   includeAssetsImportedByServer: boolean
 }
 
@@ -105,11 +103,6 @@ type ConfigVpsUserProvided = {
    * @default false
    */
   disableAutoFullBuild?: boolean
-  /**
-   * @internal
-   * Don't use without having talked to a vite-plugin-ssr maintainer.
-   */
-  includeCSS?: string[]
   /**
    * Support importing assets (CSS, images, etc.) from server code.
    *
