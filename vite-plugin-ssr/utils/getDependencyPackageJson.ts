@@ -13,24 +13,25 @@ import { toPosixPath } from './filesystemPathHandling'
 import { isObject } from './isObject'
 import path from 'path'
 import fs from 'fs'
+import type { ResolvedConfig } from 'vite'
 
-function getDependencyPackageJson(npmPackageName: string): Record<string, unknown> {
-  const packageJsonPath = getDependencyPackageJsonPath(npmPackageName)
+function getDependencyPackageJson(npmPackageName: string, config: ResolvedConfig): Record<string, unknown> {
+  const packageJsonPath = getDependencyPackageJsonPath(npmPackageName, config)
   const packageJson = fs.readFileSync(packageJsonPath, 'utf8')
   assert(isObject(packageJson))
   return packageJson
 }
 
-function getDependencyRootDir(npmPackageName: string): string {
-  const rootDir = path.posix.dirname(getDependencyPackageJsonPath(npmPackageName))
+function getDependencyRootDir(npmPackageName: string, config: ResolvedConfig): string {
+  const rootDir = path.posix.dirname(getDependencyPackageJsonPath(npmPackageName, config))
   return rootDir
 }
 
-function getDependencyPackageJsonPath(npmPackageName: string): string {
+function getDependencyPackageJsonPath(npmPackageName: string, config: ResolvedConfig): string {
   assert(isNpmPackageName(npmPackageName))
   let packageJsonPath: string
   try {
-    packageJsonPath = require.resolve(`${npmPackageName}/package.json`)
+    packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [config.root] })
   } catch (err_) {
     const err: { code?: string; message?: string } = err_ as any
     if (err.code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED') {

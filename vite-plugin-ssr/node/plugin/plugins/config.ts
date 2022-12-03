@@ -60,8 +60,8 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       isNpmPackageName(npmPackageName),
       `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
-    const npmPackageRootDir = getDependencyRootDir(npmPackageName)
-    const pageFilesDist = resolvePageFilesDist(extension.pageFilesDist, npmPackageName, config)
+    const npmPackageRootDir = getDependencyRootDir(npmPackageName, config)
+    const pageFilesDist = resolvePageFilesDist(extension.pageFilesDist, npmPackageName, config, npmPackageRootDir)
     let pageFilesSrc: null | string = null
     if (extension.pageFilesSrc) {
       assertPathProvidedByUser('pageFilesSrc', extension.pageFilesSrc, true)
@@ -103,7 +103,8 @@ function assertPathProvidedByUser(pathName: 'assetsDir' | 'pageFilesSrc', pathVa
 function resolvePageFilesDist(
   pageFilesDist: undefined | string[],
   npmPackageName: string,
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  npmPackageRootDir: string
 ): null | NonNullable<ExtensionResolved['pageFilesDist']>[number][] {
   if (!pageFilesDist) return null
 
@@ -117,7 +118,7 @@ function resolvePageFilesDist(
     )
     assertUsage(isValidFileType(importPath), `${errPrefix} end with '.js', '.mjs', '.cjs', or '.css'`)
 
-    const filePath = resolveImportPath(importPath, npmPackageName, config)
+    const filePath = resolveImportPath(importPath, npmPackageName, config, npmPackageRootDir)
     pageFilesDistResolved.push({
       importPath,
       filePath
@@ -127,7 +128,7 @@ function resolvePageFilesDist(
     if (filePathCSS !== filePath && fs.existsSync(filePathCSS)) {
       const importPathCSS = getPathCSS(importPath)
       assertUsage(
-        filePathCSS === resolveImportPath(importPathCSS, npmPackageName, config),
+        filePathCSS === resolveImportPath(importPathCSS, npmPackageName, config, npmPackageRootDir),
         `The entry package.json#exports["${importPathCSS}"] in the package.json of ${npmPackageName} has a wrong value: make sure it resolves to ${filePathCSS}`
       )
       pageFilesDistResolved.push({
@@ -140,7 +141,12 @@ function resolvePageFilesDist(
   return pageFilesDistResolved
 }
 
-function resolveImportPath(importPath: string, npmPackageName: string, config: ResolvedConfig): string {
+function resolveImportPath(
+  importPath: string,
+  npmPackageName: string,
+  config: ResolvedConfig,
+  npmPackageRootDir: string
+): string {
   let filePath: string
   try {
     filePath = require.resolve(importPath, { paths: [config.root] })
@@ -148,7 +154,7 @@ function resolveImportPath(importPath: string, npmPackageName: string, config: R
     if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
       assertUsage(
         false,
-        `Define ${importPath} in the package.json#exports of ${npmPackageName} with a Node.js export condition (even if it's a browser file like CSS)`
+        `Define ${importPath} in the package.json#exports of ${npmPackageName} (${npmPackageRootDir}/package.json) with a Node.js export condition (even if it's a browser file like CSS)`
       )
     }
     throw err
