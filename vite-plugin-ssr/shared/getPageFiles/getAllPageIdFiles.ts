@@ -15,7 +15,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
   const env = envIsClient ? 'client' : 'server'
   const sorter = defaultFilesSorter(envIsClient, pageId)
 
-  const pageFilesRelevant = pageFilesAll.filter((p) => p.isRelevant(pageId))
+  const pageFilesRelevant = pageFilesAll.filter((p) => p.isRelevant(pageId) && p.fileType !== '.page.route')
 
   const getRendererFile = (isomph: boolean) =>
     pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnvFile(isomph ? 'isomph' : env)).sort(sorter)[0]

@@ -27,7 +27,7 @@ function getDependencyRootDir(npmPackageName: string, config: ResolvedConfig): s
   return rootDir
 }
 
-function getDependencyPackageJsonPath(npmPackageName: string, config: ResolvedConfig): string {
+function getDependencyPackageJsonPath(npmPackageName: string, config: ResolvedConfig): string { // TODO: reuse for stemUtils.ts
   assert(isNpmPackageName(npmPackageName))
   let packageJsonPath: string
   try {

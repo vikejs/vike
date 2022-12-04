@@ -8,16 +8,16 @@ const fileTypes = [
   '.page.server',
   '.page.route',
   '.page.client',
-  // - `.css` page files are only supported for npm packages
-  // - npm packages are expected to always build their page files
-  // - We can therefore expect that there isn't any `.page.server.sass`/...
+  // New type `.page.css`/`.page.server.css`/`.page.client.css` for `extensions[number].pageFileDist`.
+  //  - Extensions using `pageFileDist` are expected to use a bundler that generates a `.css` colocated next to the original `.page.js` file (e.g. `/renderer/_default.page.server.css` for `/renderer/_default.page.server.js`.
+  //  - Since these `.page.css` files Bundlers We can therefore expect that there isn't any `.page.server.sass`/...
   '.css'
 ] as const
 type FileType = typeof fileTypes[number]
 type PageFile = {
   filePath: string
   fileType: FileType
-  isEnvFile: (env: 'client' | 'server' | 'isomph') => boolean
+  isEnvFile: (env: 'client' | 'server' | 'isomph') => boolean // TODO: rename to `isClientOnly` + `isServerOnly`? (+ `isClientAndServer` if needed?) // rename to `isEnv` + rename `cient` => `CLIENT_ONLY`, `isomph` => `CLIENT+SERVER`
   fileExports?: Record<string, unknown>
   loadFile?: () => Promise<void>
   exportNames?: string[]

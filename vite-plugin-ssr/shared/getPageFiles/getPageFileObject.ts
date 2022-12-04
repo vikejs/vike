@@ -14,6 +14,7 @@ function getPageFileObject(filePath: string): PageFile {
       (isRendererFilePath(pageFile.filePath) || isAncestorDefaultPage(pageId, pageFile.filePath)))
   const fileType = determineFileType(filePath)
   const isEnvFile = (env: 'client' | 'server' | 'isomph'): boolean => {
+    assert(fileType !== '.page.route') // We can't determine `.page.route.js`
     if (env === 'client') {
       return fileType === '.page.client' || fileType === '.css'
     }
