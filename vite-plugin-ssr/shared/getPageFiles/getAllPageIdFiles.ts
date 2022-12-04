@@ -61,7 +61,13 @@ function getPageFilesSorter(envIsClient: boolean, pageId: string) {
   const e2First = +1 as const
   const noOrder = 0 as const
   return (e1: PageFile, e2: PageFile): 0 | 1 | -1 => {
-    assert(e1.isDefaultPageFile && e2.isDefaultPageFile)
+    // `.page.js` files specific to `pageId` first
+    if (!e1.isDefaultPageFile && e2.isDefaultPageFile) {
+      return e1First
+    }
+    if (!e2.isDefaultPageFile && e1.isDefaultPageFile) {
+      return e2First
+    }
 
     // Non-renderer `_default.page.*` before `renderer/**/_default.page.*`
     {
