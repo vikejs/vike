@@ -13,12 +13,13 @@ function getPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
 }
 function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolean): PageFile[] {
   const env = envIsClient ? 'client' : 'server'
-  const sorter = defaultFilesSorter(envIsClient, pageId)
 
-  const pageFilesRelevant = pageFilesAll.filter((p) => p.isRelevant(pageId) && p.fileType !== '.page.route')
+  const pageFilesRelevant =
+    pageFilesAll.filter((p) => p.isRelevant(pageId) && p.fileType !== '.page.route')
+  .sort(defaultFilesSorter(envIsClient, pageId))
 
   const getRendererFile = (isomph: boolean) =>
-    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnvFile(isomph ? 'isomph' : env)).sort(sorter)[0]
+    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnvFile(isomph ? 'isomph' : env))[0]
   const getPageIdFile = (isomph: boolean) => {
     const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.isEnvFile(isomph ? 'isomph' : env))
     assertUsage(
@@ -38,7 +39,6 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
       !p.isRendererPageFile &&
       (p.isEnvFile(env) || p.isEnvFile('isomph'))
   )
-  defaultFilesNonRenderer.sort(sorter)
 
   // A page can have only one renderer. In other words: Multiple `renderer/` overwrite each other.
   const rendererFileEnv = getRendererFile(false)
