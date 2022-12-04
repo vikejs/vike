@@ -65,7 +65,7 @@ async function getCode(
   {
     const globRoots = getGlobRoots(config, configVps)
     debugGlob('Glob roots: ', globRoots)
-    content += getContent(globRoots, isBuild, isForClientSide, isClientRouting, configVps)
+    content += generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, configVps)
   }
   {
     const extensionsImportPaths = configVps.extensions
@@ -73,41 +73,82 @@ async function getCode(
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
-    content += generateExtenionImports(extensionsImportPaths, isForClientSide, isBuild)
+    content += generateExtensionImports(extensionsImportPaths, isForClientSide, isBuild, isClientRouting)
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
 }
 
-function generateExtenionImports(extensionsImportPaths: string[], isForClientSide: boolean, isBuild: boolean) {
+function generateExtensionImports(
+  extensionsImportPaths: string[],
+  isForClientSide: boolean,
+  isBuild: boolean,
+  isClientRouting: boolean
+) {
   let fileContent = '\n\n'
   extensionsImportPaths.forEach((importPath) => {
     const fileType = getFileType(importPath)
-    assert(fileType !== '.page.route') // Populate `pageFilesEager` instead of `pageFilesLazy`
-    if (fileType === '.page.server') {
+    const { includeImport, includeExportNames } = determineInjection({ fileType, isForClientSide, isClientRouting })
+    if (includeImport) {
+      fileContent += addImport(importPath, fileType, false, isBuild)
+    }
+    if (includeExportNames) {
       fileContent += addImport(importPath, fileType, true, isBuild)
-      if (!isForClientSide) {
-        fileContent += addImport(importPath, fileType, false, isBuild)
-      }
-    } else {
-      fileContent += addImport(importPath, fileType, fileType === '.page.client' && !isForClientSide, isBuild)
     }
   })
   return fileContent
 }
 
-let varCounter = 0
-function addImport(importPath: string, fileType: FileType, exportNames: boolean, isBuild: boolean): string {
-  let pageFilesVar: PageFileVar = 'pageFilesLazy'
-  let query: '' | '?extractExportNames' = ''
-  if (exportNames) {
-    query = '?extractExportNames'
-    if (isBuild) {
-      pageFilesVar = 'pageFilesExportNamesEager'
+function determineInjection({
+  fileType,
+  isForClientSide,
+  isClientRouting
+}: {
+  fileType: FileType
+  isForClientSide: boolean
+  isClientRouting: boolean
+}): { includeImport: boolean; includeExportNames: boolean } {
+  const includeExportNames = fileType === '.page.client' || fileType === '.page.server' || fileType === '.page'
+  if (!isForClientSide) {
+    return {
+      includeImport: fileType === '.page.server' || fileType === '.page' || fileType === '.page.route',
+      includeExportNames
+    }
+  } else {
+    const includeImport = fileType === '.page.client' || fileType === '.css' || fileType === '.page'
+    if (!isClientRouting) {
+      return {
+        includeImport,
+        includeExportNames: false
+      }
     } else {
-      pageFilesVar = 'pageFilesExportNamesLazy'
+      return {
+        includeImport: includeImport || fileType === '.page.route',
+        includeExportNames
+      }
     }
   }
+}
+
+let varCounter = 0
+function addImport(importPath: string, fileType: FileType, exportNames: boolean, isBuild: boolean): string {
+  const pageFilesVar: PageFileVar = (() => {
+    if (exportNames) {
+      if (isBuild) {
+        return 'pageFilesExportNamesEager'
+      } else {
+        return 'pageFilesExportNamesLazy'
+      }
+    } else {
+      if (fileType === '.page.route') {
+        return 'pageFilesEager'
+      } else {
+        return 'pageFilesLazy'
+      }
+    }
+  })()
+  const query = !exportNames ? '' : '?extractExportNames'
+
   let fileContent = ''
   const mapVar = `${pageFilesVar}['${fileType}']`
   fileContent += `${mapVar} = ${mapVar} ?? {};\n`
@@ -121,6 +162,7 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
     }
   })()
   fileContent += `${mapVar}['${importPath}'] = ${value};\n`
+
   return fileContent
 }
 
@@ -150,7 +192,7 @@ function getFileType(filePath: string): FileType {
   return fileType
 }
 
-function getContent(
+function generateGlobImports(
   crawlRoots: string[], // TODO: rename to globRoots
   isBuild: boolean,
   isForClientSide: boolean,
