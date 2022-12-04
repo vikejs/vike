@@ -169,6 +169,7 @@ function resolveImportPath(
     }
     throw err
   }
+  filePath = toPosixPath(filePath)
   return filePath
 }
 
