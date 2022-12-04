@@ -101,7 +101,8 @@ function generateExtensionImports(
       fileType,
       isForClientSide,
       isClientRouting,
-      isPrerendering
+      isPrerendering,
+      isBuild
     })
     if (includeImport) {
       fileContent += addImport(importPath, fileType, false, isBuild)
@@ -120,12 +121,14 @@ function determineInjection({
   fileType,
   isForClientSide,
   isClientRouting,
-  isPrerendering
+  isPrerendering,
+  isBuild
 }: {
   fileType: FileType
   isForClientSide: boolean
   isClientRouting: boolean
   isPrerendering: boolean
+  isBuild: boolean
 }): { includeImport: boolean; includeExportNames: boolean } {
   const includeExportNames = fileType === '.page.client' || fileType === '.page.server' || fileType === '.page'
   if (!isForClientSide) {
@@ -143,7 +146,10 @@ function determineInjection({
     } else {
       return {
         includeImport: includeImport || fileType === '.page.route',
-        includeExportNames: !isPrerendering ? fileType === '.page.client' : includeExportNames
+        includeExportNames:
+          isPrerendering && isBuild
+            ? includeExportNames // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
+            : fileType === '.page.client'
       }
     }
   }
