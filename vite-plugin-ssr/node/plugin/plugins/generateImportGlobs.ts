@@ -10,7 +10,7 @@ import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
-import { FileType, isValidFileType } from '../../../shared/getPageFiles/types'
+import { type FileType, fileTypes, isValidFileType } from '../../../shared/getPageFiles/types'
 import path from 'path'
 
 const virtualModuleIds = [
@@ -134,7 +134,10 @@ function determineInjection({
   if (!isForClientSide) {
     return {
       includeImport: fileType === '.page.server' || fileType === '.page' || fileType === '.page.route',
-      includeExportNames
+      includeExportNames:
+        isPrerendering && isBuild
+          ? includeExportNames // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
+          : fileType === '.page.client'
     }
   } else {
     const includeImport = fileType === '.page.client' || fileType === '.css' || fileType === '.page'
@@ -146,10 +149,7 @@ function determineInjection({
     } else {
       return {
         includeImport: includeImport || fileType === '.page.route',
-        includeExportNames:
-          isPrerendering && isBuild
-            ? includeExportNames // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
-            : fileType === '.page.client'
+        includeExportNames
       }
     }
   }
@@ -237,34 +237,26 @@ export const isGeneratedFile = true;
 
 `
 
-  fileContent += getGlobs(crawlRoots, isBuild, 'page')
-  if (!isForClientSide || isClientRouting) {
-    fileContent += '\n' + getGlobs(crawlRoots, isBuild, 'page.route')
-  }
-  fileContent += '\n'
-
-  if (isForClientSide) {
-    fileContent += [
-      getGlobs(crawlRoots, isBuild, 'page.client'),
-      getGlobs(crawlRoots, isBuild, 'page.client', 'extractExportNames'),
-      getGlobs(crawlRoots, isBuild, 'page.server', 'extractExportNames'),
-      getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames')
-    ].join('\n')
-    if (configVps.includeAssetsImportedByServer) {
-      fileContent += getGlobs(crawlRoots, isBuild, 'page.server', 'extractAssets')
-    }
-  } else {
-    fileContent += [
-      getGlobs(crawlRoots, isBuild, 'page.server'),
-      getGlobs(crawlRoots, isBuild, 'page.client', 'extractExportNames')
-    ].join('\n')
-    if (isBuild && isPrerendering) {
-      // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
-      fileContent += [
-        getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames'),
-        getGlobs(crawlRoots, isBuild, 'page.server', 'extractExportNames')
-      ].join('\n')
-    }
+  fileTypes
+    .filter((fileType) => fileType !== '.css')
+    .forEach((fileType) => {
+      assert(fileType !== '.css')
+      const { includeImport, includeExportNames } = determineInjection({
+        fileType,
+        isForClientSide,
+        isClientRouting,
+        isPrerendering,
+        isBuild
+      })
+      if (includeImport) {
+        fileContent += getGlobs(crawlRoots, isBuild, fileType)
+      }
+      if (includeExportNames) {
+        fileContent += getGlobs(crawlRoots, isBuild, fileType, 'extractExportNames')
+      }
+    })
+  if (configVps.includeAssetsImportedByServer && isForClientSide) {
+    fileContent += getGlobs(crawlRoots, isBuild, '.page.server', 'extractAssets')
   }
 
   return fileContent
@@ -280,10 +272,10 @@ type PageFileVar =
 function getGlobs(
   crawlRoots: string[],
   isBuild: boolean,
-  fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route',
+  fileType: Exclude<FileType, '.css'>,
   query?: 'extractExportNames' | 'extractAssets'
 ): string {
-  const isEager = isBuild && (query === 'extractExportNames' || fileSuffix === 'page.route')
+  const isEager = isBuild && (query === 'extractExportNames' || fileType === '.page.route')
 
   let pageFilesVar: PageFileVar
   if (query === 'extractExportNames') {
@@ -307,10 +299,10 @@ function getGlobs(
   }
 
   const varNameSuffix =
-    (fileSuffix === 'page' && 'Isomorph') ||
-    (fileSuffix === 'page.client' && 'Client') ||
-    (fileSuffix === 'page.server' && 'Server') ||
-    (fileSuffix === 'page.route' && 'Route')
+    (fileType === '.page' && 'Isomorph') ||
+    (fileType === '.page.client' && 'Client') ||
+    (fileType === '.page.server' && 'Server') ||
+    (fileType === '.page.route' && 'Route')
   assert(varNameSuffix)
   const varName = `${pageFilesVar}${varNameSuffix}`
 
@@ -319,14 +311,14 @@ function getGlobs(
     ...crawlRoots.map((globRoot, i) => {
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
-      const globPath = `'${getGlobPath(globRoot, fileSuffix)}'`
+      const globPath = `'${getGlobPath(globRoot, fileType)}'`
       const globOptions = JSON.stringify({ eager: isEager, as: query })
       assert(globOptions.startsWith('{"eager":true') || globOptions.startsWith('{"eager":false'))
       const globLine = `const ${varNameLocal} = import.meta.glob(${globPath}, ${globOptions});`
       return globLine
     }),
     `const ${varName} = {${varNameLocals.map((varNameLocal) => `...${varNameLocal}`).join(',')}};`,
-    `${pageFilesVar}['.${fileSuffix}'] = ${varName};`,
+    `${pageFilesVar}['${fileType}'] = ${varName};`,
     ''
   ].join('\n')
 }
@@ -343,9 +335,9 @@ function getGlobRoots(config: ResolvedConfig, configVps: ConfigVpsResolved): str
   return globRoots
 }
 
-function getGlobPath(globRoot: string, fileSuffix: 'page' | 'page.client' | 'page.server' | 'page.route'): string {
+function getGlobPath(globRoot: string, fileType: FileType): string {
   assertPosixPath(globRoot)
-  let globPath = [...globRoot.split('/'), '**', `*.${fileSuffix}.${scriptFileExtensions}`].filter(Boolean).join('/')
+  let globPath = [...globRoot.split('/'), '**', `*${fileType}.${scriptFileExtensions}`].filter(Boolean).join('/')
   if (!globPath.startsWith('/')) {
     globPath = '/' + globPath
   }

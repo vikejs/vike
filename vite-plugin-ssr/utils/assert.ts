@@ -27,7 +27,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
       return ''
     }
     const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : '`' + JSON.stringify(debugInfo) + '`'
-    return `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}.`
+    return `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
   })()
 
   const internalError = createErrorWithCleanStackTrace(
