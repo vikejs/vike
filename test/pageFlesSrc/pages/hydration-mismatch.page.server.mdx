@@ -1,0 +1,61 @@
+A recurring problem when doing SSR are so-called *hydration mismatches*.
+
+## Hydration mismatch
+
+> We recommend having a clear understanding of what hydration is, see the [What is hydration?](/hydration) guide.
+
+A hydration mismatch is when the content rendered to HTML in Node.js is not the same than the content rendered in the browser.
+
+Hydration mismatches
+can induce performance degradation
+and bugs and should therefore be avoided.
+
+## Example
+
+Let's imagine we render the current date's milliseconds:
+```jsx
+<span>{ new Date().getMilliseconds() }</span>
+```
+This induces a hydration mismatch
+because the milliseconds rendered to HTML
+(e.g. `<span>123</span>`)
+won't match the milliseconds rendered on the browser-side
+(e.g. `<span>167</span>`).
+
+
+To prevent the hydration mismatch, we should ensure that the same milliseconds value is rendered.
+We can do that by using the [`onBeforeRender()` hook](/onBeforeRender).
+
+```js
+export { onBeforeRender }
+
+async function onBeforeRender() {
+  const milliseconds = new Date().getMilliseconds()
+  return {
+    pageContext: {
+      milliseconds
+    }
+  }
+}
+```
+```jsx
+<span>{ pageContext.milliseconds }</span>
+```
+
+What happens here is that `pageContext.milliseconds` will be set exactly once, so that the same milliseconds value will be rendered to HTML in Node.js and hydrated on the browser-side. (We use [`export passToClient = ['milliseconds']`](/passToClient) to pass `pageContext.milliseconds` to the browser.)
+
+## Common causes & solutions
+
+Common causes:
+ - **Rendered content is actually different**. Make sure that your components render the same content in Node.js as well as in the browser.
+ - **Browser cache**: While developing, make sure to disable your browser's cache to ensure that your browser doesn't load cached & outdated JavaScript.
+ - **Proxies**: If you use a proxy, make sure it doesn't apply problematic HTML transfomers. For example, if you use Cloudflare, you have to disable Cloudflare's automatic HTML minifier.
+
+With React:
+ - **Old React versions** are buggy around stiching text segments leading to `Warning: Text content did not match.`. Make sure to use the latest React version.
+
+## Suppress Hydration Mismatch
+
+There are situations when mismatches are inevitable. To suppress hydration mismatch warnings:
+ - React: [StackOverflow - Is there any way to avoid "Text content did not match" warning in SSR with React?](https://stackoverflow.com/questions/53959948/is-there-any-way-to-avoid-text-content-did-not-match-warning-in-ssr-with-react/68438131)
+ - Vue: [StackOverflow - [Vue][SSR] Suppress hydration mismatch warning](https://stackoverflow.com/questions/68438016/vuessr-suppress-hydration-mismatch-warning/68438108)

@@ -1,0 +1,33 @@
+import { Link } from '@brillout/docpress'
+
+Set to `true` to disable the automatic chaining of all build steps.
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      disableAutoFullBuild: true
+    })
+  ]
+}
+```
+
+Running `$ vite build` executes three build steps:
+ 1. Client-side build (`dist/client/`).
+ 1. Server-side build (`dist/server/`).
+ 1. Pre-rendering (if <Link text="pre-rendering is enabled" href="/pre-rendering" />).
+
+When setting `disableAutoFullBuild` to `true` then only step `1` is executed. To run the full build, we then have to:
+
+ - Run `$ vite build`, to build the client-side (`dist/client/`).
+ - Run `$ vite build --ssr`, to build the server-side (`dist/server/`).
+ - Run the pre-rendering programmatically, see <Link href="/prerender-programmatic" />.
+
+> We use `disableAutoFullBuild` when we want fine grain programmatic control over the build process.
+
+> If our goal is to <Link text="programmatically run pre-rendering" href="/prerender-programmatic" /> then,
+> instead, we can set <Link text={<code>prerender.disableAutoRun</code>} href="/prerender-config#disableautorun" /> to `true` as it merely disables the automatic run of step `3`.

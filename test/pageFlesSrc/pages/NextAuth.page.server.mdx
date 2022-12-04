@@ -1,0 +1,53 @@
+import { Link } from '@brillout/docpress'
+
+[NextAuth.js](https://next-auth.js.org/) can be used with Vite + `vite-plugin-ssr`.
+
+## Examples
+
+ - [github.com/iMrDJAi/vps-nextauth-example](https://github.com/iMrDJAi/vps-nextauth-example)
+ - [github.com/s-kris/vite-ssr-next-auth](https://github.com/s-kris/vite-ssr-next-auth)
+
+## `process.env.NEXTAUTH_URL`
+
+To access environment variables on the client-side, such as `process.env.NEXTAUTH_URL`, we can use
+[`vite.config.js#define`](https://vitejs.dev/config/#define)
+or
+[`vite.config.js#envPrefix`](https://vitejs.dev/config/#envprefix).
+
+> Don't add `NEXTAUTH_` to `envPrefix` as it would leak `NEXTAUTH_SECRET`.
+
+See also:
+- [Vite > Config > Environment Variables](https://vitejs.dev/config/#environment-variables)
+
+> We can use `process.env` as usual for server (e.g. Express.js) code. (Since server code is not processed by Vite.)
+
+
+## Fetch polyfill for `getSession()`
+
+In order to use NextAuth.js's [`getSession()`](https://next-auth.js.org/getting-started/client#getsession) on the server-side, we need to globally install a fetch polyfill.
+
+> A polyfill is not needed if we use `getSession()` only on the client-side, or if we use Node v18 which [natively supports `fetch()`](https://nodejs.org/en/blog/announcements/v18-release-announce/#fetch-experimental).
+
+We can use [`node-fetch` to patch the global object](https://github.com/node-fetch/node-fetch#providing-global-access):
+
+```js
+// server.js
+
+// Only install the polyfill on the server (e.g. Express.js). Browsers already implement
+// `fetch()` natively and it would be wasteful to load the polyfill on the browser-side.
+
+// Use node-fetch@2 instead of node-fetch@3 if your `package.json#type` is not `"module"`.
+// Or some other `fetch()` polyfill, e.g. `cross-fetch`.
+import fetch, { Headers, Request, Response } from 'node-fetch'
+
+if (!globalThis.fetch) {
+  globalThis.fetch = fetch
+  globalThis.Headers = Headers
+  globalThis.Request = Request
+  globalThis.Response = Response
+}
+```
+
+## See Also
+
+- <Link href="/auth" />

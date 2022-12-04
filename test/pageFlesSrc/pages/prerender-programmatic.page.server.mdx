@@ -1,0 +1,100 @@
+import { Note, Link } from '@brillout/docpress'
+
+> See <Link href="/pre-rendering" /> for an overview of what pre-rendering is and how to enable it.
+
+Pre-rendering is automatically initiated when running `$ vite build`. (If <Link text="pre-rendering is enabled" href="/pre-rendering#how-to-pre-render" />.)
+
+Instead, we can programmatically initiate pre-rendering:
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      prerender: {
+        // Stop `$ vite build` from initiating pre-rendering
+        disableAutoRun: true
+      }
+    })
+  ]
+}
+```
+```js
+// my-custom-build-script.js
+
+import { prerender } from 'vite-plugin-ssr/prerender'
+
+// Without options
+prerender()
+
+// All options are optional
+prerender({
+  pageContextInit,
+  viteConfig,
+  onPagePrerender
+})
+```
+
+
+## `pageContextInit`
+
+The initial value of each page's `pageContext` object.
+
+```js
+prerender({
+  pageContextInit: {
+    someData: 42,
+    // ...
+  }
+})
+```
+
+## `viteConfig`
+
+The Vite config.
+
+It's optional: if omitted, Vite automatically loads our `vite.config.js`.
+
+We recommend to either omit this option or set it to `prerender({ viteConfig: { root }})`: the `vite.config.js` file living at `root` will be loaded.
+
+Alternatively you can:
+ - Set:
+   ```js
+   prerender({
+     viteConfig: {
+       configFile: require.resolve('./path/to/vite.config.js')
+     }
+   })
+   ```
+ - Not load any `vite.config.js` file and, instead, use `prerender({ viteConfig: { configFile: false, ...myViteConfig }})` to programmatically define the entire Vite config.
+
+You can also load a `vite.config.js` file while overriding parts of the Vite config.
+
+See [Vite > JavaScript API > `InlineConfig`](https://vitejs.dev/guide/api-javascript.html#inlineconfig).
+
+
+## `onPagePrerender()`
+
+<Note type="warning">DON'T use this option without having contacted a `vite-plugin-ssr` maintainer: this functionality may be completely changed/removed at anytime if you don't.</Note>
+
+<Note type="warning">This feature is experimental and may be changed in any minor version update.</Note>
+
+The `onPagePrerender` option allows us to override where the HTML is written.
+
+```js
+prerender({
+  // If we provide `onPagePrerender` then vite-plugin-ssr won't write the HTML to the filesystem
+  onPagePrerender(pageContext) {
+    // TODO: write the HTML to the filesystem.
+    // ...
+  }
+})
+```
+
+
+## More configs
+
+For more configurations, see the global config at <Link href="/prerender-config" />.

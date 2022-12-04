@@ -1,0 +1,124 @@
+In general,
+thanks to the fact that we have control over how our pages are rendered,
+we can use whatever tool we want.
+
+In fact, `vite-plugin-ssr` is already being used with a high variety of tools within all kinds of diverse environments.
+
+## View tools
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+// This can be any UI framework (React, Vue, Svelte, ...)
+import renderToHtml from 'some-ui-framework'
+
+export { render }
+
+async function render(pageContext) {
+  // `Page` is the `export { Page }` of our `*.page.js` files;
+  // `vite-plugin-ssr` doesn't do anything with `Page` and just makes it available as
+  // `pageContex.Page`; we can export any `Page` value we want and do whatever we want with it.
+  const { Page } = pageContext
+
+  // We have control over how we use our UI framework to render our pages to HTML
+  const pageHtml = await renderToHtml(Page)
+
+  // We have control over the entire HTML
+  return escapeInject`<html>
+    <body>
+      <head>
+        <!-- Some libraries recommend loading code from a CDN -->
+        <script src="https://cdn.example.com/some-library/3.3.7/lib.min.js"></script>
+      </head>
+      <div id="root">
+        ${dangerouslySkipEscape(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+import { hydrateDom } from 'some-ui-framework'
+
+async render(pageContex) {
+  const { Page } = pageContext
+  // We have control over how our pages are hydrated
+  await hydrateDom(Page)
+}
+```
+
+Since we control how our pages are render to HTML and hydrated, we can use:
+- Any UI framework (React 16, React 17, Vue 2, Vue 3, `petite-vue`, Svelte, Solid, Preact, ...)
+- Any view library (Vuex, Redux, Relay, Apollo GraphQL, PullState, Recoil, Vue Router, React Router, ...)
+
+And, more importantly, integrating a view tool is simply a matter of following its official installation guide.
+
+## Browser tools
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+import { hydrateDom } from 'some-ui-framework'
+
+// This is a good place to initialize error tracking such as Sentry or Bugsnag.
+Sentry.init()
+// And also for initializing a Service Worker.
+navigator.serviceWorker.register(/* ... */)
+
+async render(pageContex) {
+  // Here we can integrate performance measurement tools, e.g. to measure hydration performance
+  const { Page } = pageContex
+  await hydrateDom(Page)
+  init()
+}
+
+function init() {
+  // After hydration we usually initialize vanilla JS component libraries, for example tooltips
+  tooltip.init(document.querySelectorAll('.tooltip')
+  // Or some vanilla JS modal library
+  $('.my-modals').modal()
+}
+```
+
+We can use:
+ - Any CSS framework (Tailwind CSS, Bulma, Bootstrap, Material Design, ...)
+ - Any browser library (Vanilla JS component libraries, Bugsnag, Sentry, jQuery, Google Analytics, ...)
+ - Any browser technology (Service Workers, PWA, ...)
+
+Integrating a browser tool is only a matter of following its official installation guide.
+
+## Server tools
+
+From a server architecture perspective, `vite-plugin-ssr` is just a server middleware.
+
+```js
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // The `renderPage()` function, for a given URL, returns the result of our
+  // `render()` hook (usually an HTML string). It doesn't know anything about Express.js and
+  // can be used in any server environment, including serverless such as Cloudflare Workers
+  // or Vercel.
+  const pageContext = await renderPage({ urlOriginal: req.url })
+  res.send(pageContext.httpResponse.body)
+})
+```
+
+By [pre-rendering](/pre-rendering) we can remove the need for a Node.js production server and deploy to any static host instead.
+
+We can use:
+- Any server framework (Express, Koa, Fastify, Hapi, ...)
+- Any authentication strategy & tool (email/password, OAuth, NextAuth.js, Passport.js, Grant, Auth0, ...).
+- Any serverless environment (Cloudflare Workers, Vercel, Firebase, AWS Lambda, Google Cloud Functions, ...)
+- Any server environment (AWS EC2, Google Cloud, ...)
+- Any static host (Cloudflare Pages, GitHub Pages, Netlify, ...)

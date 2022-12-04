@@ -1,0 +1,126 @@
+import { RepoLink, Link } from '@brillout/docpress'
+
+By default `pageContext` is available:
+ - only on the server-side, and
+ - only at the root (Vue/React/...) component `Page`.
+
+But we can make `pageContext` available anywhere.
+
+## Browser-side
+
+To make `pageContext` available in the browser, we use [`passToClient`](/passToClient).
+
+## React
+
+We can use [React Context](https://reactjs.org/docs/context.html)
+to make `pageContext` accessible from any React component.
+
+Example:
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/usePageContext.jsx' /> (hook <code>usePageContext()</code> implementation)
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/Link.jsx' /> (using <code>usePageContext()</code> to access <code>pageContext</code> from any React component)
+ - <RepoLink path='/boilerplates/boilerplate-react/renderer/PageShell.jsx' /> (<code>{'<PageContextProvider>'}</code> integration)
+
+## Vue 3 - Composition API
+
+We can use
+[`app.provide()`](https://v3.vuejs.org/api/application-api.html#provide)
+with
+[`inject()`](https://v3.vuejs.org/api/composition-api.html#provide-inject)
+to make `pageContext` accessible from any Vue component.
+
+```js
+// app.js
+
+const app = createSSRApp(/*...*/)
+app.provide('pageContext', pageContext)
+```
+```vue
+<!-- someComponent.vue -->
+
+<template>
+  <!-- We can access `pageContext` here -->
+  {{ pageContext.someProp }}
+</template>
+
+<script setup>
+import { inject } from 'vue'
+const pageContext = inject('pageContext')
+</script>
+```
+
+We can also implement a `usePageContext()` hook:
+
+```js
+// usePageContext.js
+
+import { inject } from 'vue'
+
+export { usePageContext }
+export { setPageContext }
+
+const key = Symbol()
+
+function usePageContext() {
+  const pageContext = inject(key)
+  return pageContext
+}
+function setPageContext(app, pageContext) {
+  app.provide(key, pageContext)
+}
+```
+```js
+const app = createSSRApp(/*...*/)
+setPageContext(app, pageContext)
+```
+```vue
+<script setup>
+import { usePageContext } from './path/to/usePageContext'
+const pageContext = usePageContext()
+</script>
+```
+
+Example:
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/usePageContext.js' /> (<code>usePageContext()</code> implementation)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/Link.vue' /> (using <code>usePageContext()</code> to access <code>pageContext</code> from any Vue component)
+ - <RepoLink path='/boilerplates/boilerplate-vue/renderer/app.js' /> (<code>setPageContext(app, pageContext)</code>)
+
+If we use <Link href="/client-routing" noBreadcrumb={true} />, we need to make `pageContext` reactive:
+ - <RepoLink path='/examples/vue-full/renderer/app.ts' />
+
+## Vue 3 - `globalProperties`
+
+Alternatively, we can make `pageContext` available to all Vue components by using [app.config.globalProperties](https://v3.vuejs.org/api/application-config.html#globalproperties).
+
+```js
+// app.js
+
+const app = createSSRApp(/*...*/)
+app.config.globalProperties.$pageContext = pageContext
+```
+```vue
+<!-- someComponent.vue -->
+
+<template>
+  <!-- We can access `pageContext` here -->
+  {{ $pageContext.someProp }}
+</template>
+
+<script setup>
+import { getCurrentInstance } from 'vue'
+// We can access `pageContext` here
+const pageContext = getCurrentInstance().appContext.config.globalProperties.$pageContext
+</script>
+```
+
+Example:
+ - [/boilerplates/boilerplate-vue/renderer/app.js (@abff8de)](https://github.com/brillout/vite-plugin-ssr/blob/abff8debc4c7cd6ab11e99e757379e5237a6c18c/boilerplates/boilerplate-vue/renderer/app.js#L26)
+   (`app.config.globalProperties.$pageContext = pageContext`)
+ - [/boilerplates/boilerplate-vue/renderer/Link.vue (@abff8de)](https://github.com/brillout/vite-plugin-ssr/blob/abff8debc4c7cd6ab11e99e757379e5237a6c18c/boilerplates/boilerplate-vue/renderer/Link.vue#L2)
+   (accessing `pageContext` from any Vue component)
+
+If we use <Link href="/client-routing" noBreadcrumb={true} />, we make `$pageContext` reactive:
+ - [/examples/vue-full/renderer/app.ts (@aca560b)](https://github.com/brillout/vite-plugin-ssr/blob/aca560bd286b37524b4164555e5ab3f77e3688af/examples/vue-full/renderer/app.ts#L43-L47)
+
+## Vue 2
+
+For Vue 2 we can use [Vue.prototype](https://vuejs.org/v2/cookbook/adding-instance-properties.html#Base-Example).

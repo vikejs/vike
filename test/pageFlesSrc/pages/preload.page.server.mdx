@@ -1,0 +1,79 @@
+import { Link } from '@brillout/docpress'
+
+> **What is preload?** Preloading denotes the practice of loadings assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/JavaScript, in order to avoid network round trips.
+
+By default, vite-plugin-ssr automatically injects script, style, and preload tags to our HTML.
+It also automatically generates [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103).
+
+With `injectFilter()` we can control which and where preload tags are inserted.
+
+
+## Early Hints
+
+The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the successor of the now deprecated HTTP2/Push and is the recommend way for preloading assets.
+
+```js
+// server.js
+
+import { renderPage } from 'vite-plugin-ssr'
+
+app.get('*', async (req, res) => {
+  const pageContext = await renderPage({ urlOriginal: req.originalUrl } )
+  const { earlyHints } = pageContext.httpResponse
+  // For exampe with Node.js 18:
+  res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+})
+```
+```ts
+type PageContext = {
+  httpResponse: {
+    earlyHints: {
+      earlyHintLink: string, // Header Line for the Early Hint Header
+      assetType: "image" | "script" | "font" | "style" | null
+      mediaType: string // MIME type
+      src: string // Asset's URL
+      isEntry: boolean // true  ⇒ asset is an entry
+                       // false ⇒ asset is a dependency of an entry
+    }[]
+  }
+}
+```
+
+Examples: `$ npm init vite-plugin-ssr@latest`.
+
+See also:
+ - [developer.chrome.com > Early Hints](https://developer.chrome.com/blog/early-hints/)
+ - [Node.js 18 Support](https://nodejs.org/dist/latest-v19.x/docs/api/http.html#responsewriteearlyhintshints-callback)
+
+
+## `injectFilter()`
+
+Vite-plugin-ssr automatically injects preload and asset tags but, if vite-plugin-ssr's default preload strategy doesn't work for us, we can control which and where preload and asset tags are injected.
+
+```ts
+// /renderer/_default.page.server.js
+
+export async function render(pageContext) {
+  // ...
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+
+  const injectFilter = (assets) => {
+    assets.forEach(asset => {
+      // Preload images
+      if (asset.assetType === 'image') {
+        asset.inject = 'HTML_BEGIN'
+      }
+    })
+  }
+
+  return { documentHtml, injectFilter }
+}
+```
+
+See <Link href="/injectFilter" />.

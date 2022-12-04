@@ -1,0 +1,175 @@
+import { Link } from '@brillout/docpress'
+
+Guide for migrating from `0.3.x` to `0.4.x`.
+
+See <Link href="/migration" /> for other breaking updates.
+
+<br/>
+
+### Non-breaking
+
+Most changes are non-breaking: follow the warnings to progressively update to the new `0.4` interface.
+
+<br/>
+
+### Breaking
+
+ 1. Use Vite `>=2.9.10` or Vite `>=3.0.0-beta.7`.
+ 1. [Deprecated: `getPage()` (Server Routing)](#getpage).
+ 1. [Deprecated: `useClientRouter()` (Client Routing)](#useclientrouter).
+ 1. [Deprecated: pre-render CLI `$ vite-plugin-ssr prerender`](#pre-render-cli).
+ 1. [Base URL options `base` and `baseAsset` are now defined as `vite.config.js#base`](#base-url).
+ 1. [`export default Page` deprecated: use `export { Page }` instead](#export-default-page).
+ 1. [Deprecated: Multiple `onBeforeRender()` hooks](#multiple-onbeforerender).
+
+
+## `getPage()`
+
+If you use <Link href="/server-routing" noBreadcrumb />:
+
+```diff
+  // /renderer/_default.page.client.js
+
+- import { getPage } from 'vite-plugin-ssr/client'
++ export { render }
+
+- const pageContext = await getPage()
++ async function render(pageContext) {
++   /* ... */
++ }
+```
+
+
+## `useClientRouter()`
+
+If you use <Link href="/client-routing" noBreadcrumb />:
+
+```diff
+  // renderer/_default.page.client.js
+
+- import { useClientRouter } from 'vite-plugin-ssr/client'
++ export { render }
++ export const clientRouting = true
+
+- useClientRouter({
+-   render: (pageContext) => {
+-     /* ... */
+-   }
+- })
++ async function render(pageContext) {
++   /* ... */
++ }
+```
+
+All `useClientRouter()` options are now exports:
+
+```js
+// renderer/_default.page.client.js
+
+export { render }
+export { onHydrationEnd }
+export { onPageTransitionStart }
+export { onPageTransitionEnd }
+export const prefetchStaticAssets = { when: 'VIEWPORT' } // (instead of `prefetchLinks`)
+```
+
+## Pre-render CLI
+
+The pre-render CLI `$ vite-plugin-ssr prerender` is deprecated in favor of setting the `prerender` option to `true` in `vite.config.js`.
+
+```diff
+- $ vite build && vite-plugin-ssr prerender
++ $ vite build
+```
+```diff
+  // vite.config.js
+  import { ssr } from 'vite-plugin-ssr/plugin'
+
+  export config {
+    plugins: [
+-     ssr()
++     ssr({ prerender: true })
+    ]
+  }
+```
+
+> The CLI command `$ vite build` will then automatically run the pre-rendering process.
+
+All pre-render options are now defined in `vite.config.js`:
+
+```diff
+- $ vite-plugin-ssr prerender --partial -- noExtraDir --root src/ --outDir build/ --parallel 1
+```
+```diff
+  // vite.config.js
+  import { ssr } from 'vite-plugin-ssr/plugin'
+
+  export config {
++   root: 'src/',
++   build: {
++     outDir: 'build/
++   },
+    plugins: [
+      ssr({
++       prerender: {
++         partial: true,
++         noExtraDir: true,
++         parallel: 1 // Can be `number` or `boolean`
++       }
+      })
+    ]
+  }
+```
+
+
+## Base URL
+
+ 1. With `0.3`, we defined `base` in both `createPageRenderer()` and `vite.config.js`. With `0.4`, we define it only in `vite.config.js`.
+ 1. The `baseAsset` option is removed: set `base` to an absolute URL instead. (A URL that starts with `http://` or `https://`.)
+
+```diff
+  // server.js
+
+- import { createPageRenderer } from 'vite-plugin-ssr'
+- const renderPage = createPageRenderer({ base })
+
++ import { renderPage } from 'vite-plugin-ssr'
++ // We don't need to set `base` here anymore.
+
+  const pageContext = await renderPage({ url })
+```
+
+```js
+// vite.config.js
+
+export default {
+  base: '/some/base/url/'
+  // Or, if you used `baseAsset`:
+  base: 'https://cdn.example.org/'
+}
+```
+
+
+## `export default Page`
+
+Most users already `export { Page }` in `.page.js` files, but some users use the default export instead (`export default Page`) which is not supported anymore.
+
+```diff
+  // /pages/index.page.js
+
+- export default Page
++ export { Page }
+
+  function Page() {
+    /* ... */
+  }
+```
+
+> Single File Components (`.vue`, `.svelte`, ...) still work.
+
+
+## Multiple `onBeforeRender()`
+
+<Link text={<>Multiple <code>onBeforeRender()</code> hooks</>} href="/onBeforeRender-multiple" /> are deprecated in favor of <Link href="/data-fetching#custom-exports" text="Custom Hooks/Exports"/>.
+
+> Having one `onBeforeRender()` hook per page is still supported and hasn't changed.

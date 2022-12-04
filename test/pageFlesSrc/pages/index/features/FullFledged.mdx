@@ -1,0 +1,45 @@
+import { ViteLogo } from './ViteLogo'
+
+### Fast HMR
+
+Blazing fast HMR powered by Vite <ViteLogo />.
+
+HMR stays fast as you scale thanks to Vite's novel lazy-transpiling approach.
+
+### Routing
+
+Pages are automatically routed:
+```
+FILESYSTEM                        URL
+pages/index.page.js               /
+pages/about.page.js               /about
+pages/faq/index.page.js           /faq
+pages/movie/@id/index.page.js     /movie/1, /movie/2, /movie/3, ...
+```
+
+You can also use so-called *Route Strings* and *Route Functions*.
+```js
+// Route String
+export default '/movie/@id'
+
+// Route Function — for full flexibility
+export default pageContext => pageContext.urlPathname === '/admin' && pageContext.isAdmin
+```
+
+You can choose between:
+
+- Client Routing for a faster page navigation. (DOM mutation upon page navigation.)
+- Server Routing for a simpler app architecture. (Full HTML reload upon page navigation.)
+
+### Render Modes (SSR, SPA, SSG, HTML-only)
+
+For each page, you can choose between:
+ - SSR: the page's HTML is rendered at request-time.
+ - SSG: the page's HTML is pre-rendered at build-time.
+ - SPA: the page is not rendered to HTML; it's only loaded & rendered in the browser.
+ - HTML-only: the page is rendered only to HTML with zero/minimal browser-side JavaScript.
+
+For example, you can render an admin panel as an SPA while rendering marketing pages only to HTML with zero browser-side JavaScript.
+
+This very website, `https://vite-plugin-ssr.com`, is HTML-only and loads only few KBs of JavaScript (which implements the few bits of interactivity such as
+the collapsible `LEARN MORE` sections of this page).

@@ -1,0 +1,16 @@
+In production, the files living at `dist/server/` are automagically loaded.
+
+But, in some (rare) situations, the tricks used by `vite-plugin-ssr` don't work. In that case, we have to manually load the files living at `dist/server/`. We do this by importing `dist/server/importBuild.cjs`:
+
+```js
+// server.js
+
+// Load files living at `dist/server/`
+import './path/to/dist/server/importBuild.cjs'
+```
+
+> `dist/server/importBuild.cjs` needs to be imported at server start. So we should include the import at the beginning of our Express.js server, Vercel serverless function, worker (Cloudflare Workers), etc.
+
+> Feel free to reach out to `vite-plugin-ssr` maintainers if you run into problems. (The tricks used by `vite-plugin-ssr` were newly introduced in `0.4` and some edge cases may need to be ironed out.)
+
+> See [#403](https://github.com/brillout/vite-plugin-ssr/issues/403) if you are curious about the tricks used by vite-plugin-ssr to automagically import `dist/server/` files.

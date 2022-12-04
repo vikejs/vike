@@ -1,0 +1,16 @@
+import { Link } from '@brillout/docpress'
+import { StaticHostDocIntro, StaticHostDocOutro } from '../components/static-host'
+
+<StaticHostDocIntro
+  staticHostLink={<>, such as <a href="https://pages.cloudflare.com/">Cloudflare Pages</a></>}
+/>
+
+If we want Cloudflare Pages to build our app for us, `vite-plugin-ssr` requires Node.js `>=12.19.0` and we may need to change <a href="https://developers.cloudflare.com/pages/platform/build-configuration#language-support-and-tools">Cloudflare Pages' default Node.js version</a>.
+
+<StaticHostDocOutro />
+
+## Wrangler 2 & Cloudflare Worker
+
+With [wrangler v2](https://github.com/cloudflare/wrangler2), we can deploy a Cloudflare Worker (server code) along Cloudflare Pages.
+
+See <Link href="/cloudflare-workers#cloudflare-pages" doNotInferSectionTitle={true} />.

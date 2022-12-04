@@ -1,0 +1,39 @@
+By default `vite-plugin-ssr` does Filesystem Routing: the URL of a page is determined based on where its `.page.js` file is located.
+
+```bash
+FILESYSTEM                        URL
+pages/about.page.js               /about
+# `index` is mapped to the empty string
+pages/index/index.page.js         /
+# Case sensitive
+pages/HELLO.page.js               /HELLO
+# Parameterized
+pages/movie/@id.page.js           /movie/1, /movie/2, /movie/3, ...
+```
+
+Filesystem Routing ignores all the following directories:
+ - `index/`
+ - `pages/`
+ - `src/`
+
+For example:
+
+```
+FILESYSTEM                                         URL
+src/pages/jobs/index.page.js                       /jobs
+pages/pages/src/src/index/pages/about.page.js      /about
+```
+
+This allows us to have a [domain-driven file structure](/file-structure#domain-driven) such as:
+
+```
+FILESYSTEM                        URL
+user/pages/list.page.js           /user/list
+user/pages/create.page.js         /user/create
+todo/pages/list.page.js           /todo/list
+todo/pages/create.page.js         /todo/create
+```
+
+We can change the URL root of Filesystem Routing by using [`_default.page.route.js#filesystemRoutingRoot`](/filesystemRoutingRoot).
+
+For more advanced routing, see [Route Strings](/route-string) and [Route Functions](route-function).

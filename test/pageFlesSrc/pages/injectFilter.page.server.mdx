@@ -1,0 +1,72 @@
+import { Link, Note } from '@brillout/docpress'
+
+The `injectFilter()` hook allows us to control which and where preload and asset tags are injected in our HTML.
+
+See <Link href="/preload" />.
+
+## Examples
+
+ - <Link href="/examples/custom-preload/renderer/_default.page.server.tsx" />.
+ - <Link href="/test/preload/renderer/_default.page.server.tsx" />.
+
+## Usage
+
+<Note type='warning'>`injectFilter()` is a beta feature: it may change in any minor version update.</Note>
+<Note type='warning'>Note that `injectFilter()` is called only in production: it has no effect in development.</Note>
+
+```ts
+// /renderer/_default.page.server.ts
+
+import type { InjectFilterEntry } from 'vite-plugin-ssr'
+
+export async function render(pageContext) {
+  // ...
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+
+  const injectFilter = (assets: InjectFilterEntry[]): void => {
+    assets.forEach(asset => {
+      if (
+        // We don't touch entry assets (recommended)
+        asset.isEntry ||
+        // We don't touch JavaScript preloading (recommended)
+        asset.assetType === 'script'
+      ) {
+        return
+      }
+
+      // Preload images
+      if (asset.assetType === 'image') {
+        asset.inject = 'HTML_BEGIN'
+      }
+
+      // Don't preload fonts
+      if (asset.assetType === 'font') {
+        asset.inject = false
+      }
+
+      // Preload videos
+      if (asset.mediaType?.startsWith('video')) {
+        asset.inject = 'HTML_END'
+      }
+    })
+  }
+
+  return { documentHtml, injectFilter }
+}
+```
+```ts
+type InjectFilterEntry = {
+  inject: false | 'HTML_BEGIN' | 'HTML_END' // Whether and where to inject
+  src: string // Asset's URL
+  assetType: "image" | "script" | "font" | "style" | null
+  mediaType: string // MIME type
+  isEntry: boolean // true  ⇒ <script> or <link rel="stylesheet" type="text/css">
+                   // false ⇒ preload tag, e.g. <link rel="preload" as="font">
+}
+```

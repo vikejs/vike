@@ -1,0 +1,34 @@
+import { Link } from '@brillout/docpress'
+
+There are no [gRPC](https://github.com/grpc) client for the browser.
+(Protocol Buffers does not support the browser.)
+
+This means we cannot call gRPC enpdoints directly from the browser;
+we always need to call gRPC enpdoints from our Node.js server.
+
+For fetching data,
+we can simply use a <Link text={<code>onBeforeRender()</code>} href="/data-fetching" /> hook,
+since `onBeforeRender()` hooks are called in Node.js.
+
+For mutating data:
+1. We create a new HTTP endpoint. For example, if we use [Express.js](https://github.com/expressjs/express):
+   ```js
+   // Environment: Node.js
+
+   import express from 'express'
+
+   const app = express()
+   app.use(express.json()) // Parse the HTTP request body as JSON
+
+   app.post('/mutations/updateText', (req, res) => {
+     const { text } = req.body
+     // We can call gRPC enpdoints here
+   })
+   ```
+2. We then call our HTTP endpoint from the browser.
+   ```jsx
+   // Environment: Browser
+
+   const body = JSON.stringify({ text: 'Some new text' })
+   await fetch('/mutations/updateText', { body })
+   ```

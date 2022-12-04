@@ -1,0 +1,88 @@
+import { RepoLink } from '@brillout/docpress'
+
+Instead of using relative import paths,
+which are often cumbersome,
+we can use path aliases:
+
+```diff
+- import { Counter } from '../../../../components/Counter'
++ import { Counter } from `#root/components/Counter`
+```
+
+where `#root/` denotes our project's root directory.
+
+We may need to define path aliases at up to three different places:
+ - `vite.config.js#resolve.alias` (for files processed by Vite)
+ - `package.json#imports` (for Node.js files not processed by Vite)
+ - `tsconfig.json#compilerOptions.paths` (for TypeScript)
+
+Example:
+ - <RepoLink path='/examples/path-aliases' />
+
+## Vite
+
+```js
+// vite.config.js
+
+export default {
+  resolve: {
+    alias: {
+     "#root": __dirname,
+    }
+  }
+}
+```
+
+> Only applies for files that are processed by Vite;
+> some of our Node.js server files may not be processed by Vite,
+> see the [Node.js section](#node-js) below.
+
+Docs: [vitejs.dev/config/#resolve-alias](https://vitejs.dev/config/#resolve-alias)
+
+Example: <RepoLink path='/examples/path-aliases/vite.config.ts' />
+
+## Node.js
+
+```json
+// package.json
+
+{
+  "imports": {
+    "#root/*": "./*.js" // Or `./*.ts` if using TypeScript
+  }
+}
+```
+
+Docs: [nodejs.org/api/packages.html#subpath-patterns](https://nodejs.org/api/packages.html#subpath-patterns)
+
+Example: <RepoLink path='/examples/path-aliases/package.json' />
+
+Vite's `vite.config.js#resolve.alias` only applies to files that are processed by Vite.
+(All following files and their imports: `*.page.js`, `*.page.server.js`,`*.page.client.js`, `*.page.route.js`.)
+
+Browser files are always processed by Vite,
+but this is not always the case for Node.js server files,
+for example <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>.
+
+For these files we can use Node.js's built-in support `package.json#imports` or, alternatively, we can use one of many npm packages such as [`module-alias`](https://github.com/ilearnio/module-alias). (Example of using `module-alias`: [/examples/path-aliases (@c914dad)](https://github.com/brillout/vite-plugin-ssr/tree/c914dade5f0809ff330478c3531928055abdadef/examples/path-aliases).)
+
+## TypeScript
+
+```json
+// tsconfig.json
+
+{
+  "compilerOptions": {
+    "paths": {
+      "#root/*": ["./*"]
+    }
+  }
+}
+```
+
+If we use TypeScript, then TypeScript needs to know about our path aliases.
+
+Docs: [typescriptlang.org/tsconfig#paths](https://www.typescriptlang.org/tsconfig#paths)
+
+Example: <RepoLink path='/examples/path-aliases/tsconfig.json' />
+

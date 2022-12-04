@@ -1,0 +1,95 @@
+import { RepoLink, Link } from '@brillout/docpress'
+
+We can internationalize (i18n) a `vite-plugin-ssr` app by using a <Link text={<><code>onBeforeRoute()</code> hook</>} href="/onBeforeRoute" />.
+
+```js
+// /renderer/_default.page.route.js
+
+export { onBeforeRoute }
+
+function onBeforeRoute(pageContext) {
+  const { urlWithoutLocale, locale } = extractLocale(pageContext.urlOriginal)
+  return {
+    pageContext: {
+      // We make `locale` available as `pageContext.locale`
+      locale,
+      // We overwrite `pageContext.urlOriginal`
+      urlOriginal: urlWithoutLocale
+    }
+  }
+}
+
+// We can also use a library instead of implementing our own locale retrieval mechanism
+function extractLocale(url) {
+  // We determine the locale, for example:
+  //  extractLocale('/en-US/film/42').locale === 'en-US'
+  //  extractLocale('/de-DE/film/42').locale === 'de-DE'
+  const locale = /* ... */
+
+  // We remove the locale, for example:
+  //  extractLocale('/en-US/film/42').urlWithoutLocale === '/film/42'
+  //  extractLocale('/de-DE/film/42').urlWithoutLocale === '/film/42'
+  //  ...
+  urlWithoutLocale = /* ... */
+
+  return { locale, urlWithoutLocale }
+}
+```
+
+Upon rendering a page, `onBeforeRoute()` is the first hook that `vite-plugin-ssr` calls, which means that the rest of our app doesn't have to deal with localized URLs anymore and we can simply use `pageContext.locale` instead.
+
+> See <Link href="/pageContext-anywhere" /> for being able to access `pageContext.locale` in any React/Vue component.
+
+This technique also works with:
+
+- `?lang=fr` query parameters
+- `domain.fr` domain TLDs
+- `Accept-Language: fr-FR` headers
+   > The `Accept-Language` header can be used for redirecting the user to the right localized URL (e.g. URL `/about` + Header `Accept-Language: de-DE` => redirect to `/de-DE/about`). Once the user is redirected to a localized URL, we can use the technique described above. We can perform the redirection by using our server (e.g. Express.js) independently of vite-plugin-ssr.
+
+   > Using the `Accept-Language` header to show different languages for the same URL is considered bad practice for both SEO and UX reasons. It's recommended to use `Accept-Language` only to redirect the user.
+
+
+## Example
+
+See <RepoLink path='/examples/i18n/' />.
+
+
+## Pre-rendering
+
+For <Link text="pre-rendering" href="/pre-rendering" /> we can use `onBeforePrerender()`.
+
+```js
+// _default.page.server.js
+
+export { onBeforePrerender }
+
+const locales = ['en-US', 'de-DE', 'fr-FR']
+
+function onBeforePrerender(globalContext) {
+  const prerenderPageContexts = []
+  globalContext.prerenderPageContexts.forEach((pageContext) => {
+    prerenderPageContexts.push({
+      ...pageContext,
+      locale: localeDefault
+    })
+    // We add the localized pages to the list of pages that are going to be pre-rendered
+    locales
+      .filter((locale) => locale !== localeDefault)
+      .forEach((locale) => {
+        prerenderPageContexts.push({
+          ...pageContext,
+          urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+          locale
+        })
+      })
+  })
+  return {
+    globalContext: {
+      prerenderPageContexts,
+    }
+  }
+}
+```
+
+See <RepoLink path='/examples/i18n/' /> for an example of using `onBeforePrerender()`.

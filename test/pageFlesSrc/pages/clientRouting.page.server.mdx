@@ -1,0 +1,248 @@
+import { Link, RepoLink, ReadingRecommendation } from '@brillout/docpress'
+
+Environment: `Browser`.
+
+By default, `vite-plugin-ssr` does <Link text="Server Routing" href="/server-routing" />.
+
+We opt into <Link text="Client Routing" href="/client-routing" /> by modifying `/renderer/_default.client.js` to:
+ 1. Set `export const clientRouting = true`.
+ 2. Update and adapt the <Link text={<>client-side <code>render()</code> hook</>} href="/render-client" />.
+
+React example:
+ - <RepoLink path='/examples/react-full/renderer/_default.page.client.tsx' />
+ - <RepoLink path='/examples/react-full/pages/index.page.tsx' /> (example of using <code>navigate()</code>)
+
+Vue example:
+ - <RepoLink path='/examples/vue-full/renderer/_default.page.client.ts' />
+ - <RepoLink path='/examples/vue-full/renderer/app.ts' />
+ - <RepoLink path='/examples/vue-full/pages/index.page.vue' /> (example of using <code>navigate()</code>)
+
+
+## Usage & options
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+// Enable Client Routing
+export const clientRouting = true
+
+// See `Link prefetching` section below. Default value: `{ when: 'HOVER' }`.
+export const prefetchStaticAssets = { when: 'VIEWPORT' }
+
+// Whether your UI framework allows the hydration to be aborted. (Allowing vite-plugin-ssr
+// to abort the hydration if the user clicks on a link before the hydration finished.)
+// Only React users should set `hydrationCanBeAborted` to `true`. (Other frameworks,
+// such as Vue, throw an error if the hydration is aborted.)
+export const hydrationCanBeAborted = true
+
+// Create custom page transition animations
+export { onPageTransitionStart }
+export { onPageTransitionEnd }
+
+import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+async function render(pageContext) {
+    // `pageContext.isHydration` is set by `vite-plugin-ssr` and is `true` when the page
+    // is already rendered to HTML.
+    if (pageContext.isHydration) {
+      // We hydrate the first page. (Since we do SSR, the first page is already
+      // rendered to HTML and we merely have to hydrate it.)
+      await hydrate(pageContext.Page)
+    } else {
+      // We render a new page. (When the user navigates to a new page.)
+      await renderToDom(pageContext.Page)
+    }
+  }
+}
+
+function onPageTransitionStart(pageContext) {
+  console.log('Page transition start')
+  // `pageContext.isBackwardNavigation` is also set at `render(pageContext)`
+  // and `onPageTransitionEnd(pageContext)`.
+  console.log('Is backwards navigation?', pageContext.isBackwardNavigation)
+  // For example:
+  document.body.classList.add('page-transition')
+}
+function onPageTransitionEnd(pageContext) {
+  console.log('Page transition end')
+  // For example:
+  document.body.classList.remove('page-transition')
+}
+```
+
+> Note that `pageContext` is completely discarded and created anew upon page navigation.
+> That's why it's called *page*Context (and not *app*Context).
+
+We can keep using `<a href="/some-url">` links: the Client Router automatically intercepts clicks on `<a>` elements.
+
+We can skip the Client Router by adding the `rel="external"` attribute, e.g. `<a rel="external" href="/some/url">The Client Router won't intercept me</a>`.
+
+We can use <Link text={<code>navigate('/some/url')</code>} href="/navigate"/> to programmatically navigate the user to a new page.
+
+By default, the Client-side Router scrolls to the top of the page upon page change;
+we can use `<a keep-scroll-position />` / `navigate('/some/url', { keepScrollPosition: true })`
+if we want to preserve the scroll position instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.)
+
+
+## State initialization
+
+Usually, when using tools such as Apollo GraphQL, Redux or Vuex, we determine the initial state of our UI on the server-side while rendering HTML, and then initialize the client-side with that initial state.
+
+Depending on the tool, we do either one of the following:
+ - We initialize the state once.
+ - We re-initialize the state on every page navigation.
+
+<ReadingRecommendation tour={true} links={['/data-fetching', '/data-fetching-tools', '/store']} />
+
+To initialize once:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { render }
+export { passToClient }
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-ui-framework'
+import { getInitialState } from './getInitialState'
+
+const passToClient = ['initialState']
+
+// The `render()` hook is called only for the first page.
+// (Whereas `onBeforeRender()` is called as well upon page navigation.)
+async function render(pageContext) {
+  const initialState = await getInitialState()
+
+  // We use `initialState` for rendering the HTML, so that the HTML contains
+  // the content of `initialState`.
+  const pageHtml = await renderToHtml(pageContext.Page, initialState)
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div>${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      initialState
+    }
+  }
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+import { initClientSide } from './initClientSide'
+
+async function render(pageContext) {
+  // The first page is rendered to HTML and `pageContext.isHydration === true`
+  if (pageContext.isHydration) {
+    // `pageContext.initialState` is available here
+    initClientSide(pageContext.initialState)
+  } else {
+    // Note that `pageContext.initialState` is not available here,
+    // since our `render()` hook is only called for the first page.
+  }
+
+  // ...
+}
+```
+
+To initialize on every page navigation:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { onBeforeRender }
+export { passToClient }
+
+import { getInitialState } from './getInitialState'
+
+const passToClient = ['initialState']
+
+// The `onBeforeRender()` hook is called for the first page as well as upon page navigation.
+// (Whereas `render()` is called only for the first page.)
+async function onBeforeRender() {
+  const initialState = await getInitialState()
+  return {
+    pageContext: {
+      initialState
+    }
+  }
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+import { initClientSide } from './initClientSide'
+
+async function render(pageContext) {
+  // We initialize the state for every page rendering. So not only
+  // the first page but also any subsequent page navigation.
+  initClientSide(pageContext.initialState)
+
+  // ...
+}
+```
+
+## Link prefetching
+
+By default,
+the static assets of `/some-url` are loaded as soon as the user hovers his mouse over a link `<a href="/some-url">`.
+This means that static assets are often already loaded before even the user clicks on the link.
+
+We can prefetch even more eagerly by using viewport prefetching: the links are then prefetched as soon as they appear in the viewport of the user's browser.
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+// Prefetch links as soon as they enter the viewport
+export const prefetchStaticAssets = { when: 'VIEWPORT' }
+
+// Prefetch links when the user's mouse hovers a link
+export const prefetchStaticAssets = { when: 'HOVER' }
+
+// Disable prefetching
+export const prefetchStaticAssets = false
+```
+
+> Viewport prefetching is disabled in development. (Because it would make Vite transpile all preloaded pages and thus siginficantly slow down development.)
+
+We can override the link prefetching behavior for individual links by setting `<a data-prefetch="true" href="/some-url" />`.
+
+> Only static assets are prefetched; the pages' `pageContext` is currently not prefetched, see [#246](https://github.com/brillout/vite-plugin-ssr/issues/246).
+
+We can also have viewport prefetching for mobile users while having hover prefetching for desktop users:
+
+```js
+// For small screens, such as mobile, viewport prefetching can be a sensible strategy
+export const prefetchStaticAssets = window.matchMedia('(max-width: 600px)').matches
+  ? { when: "VIEWPORT" }
+  : { when: "HOVER" };
+```
+```js
+// Or we enable viewport prefetching for any device without a mouse: mobile and tablets (but
+// not laptops that have a touch display).
+export const prefetchStaticAssets = window.matchMedia('(any-hover: none)').matches
+  ? { when: "VIEWPORT" }
+  : { when: "HOVER" };
+```
+
+See also:
+ - [MDN > Web API > Window > matchMedia()](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia)
+ - [Stack Overflow > Detecting that the browser has no mouse and is touch-only](https://stackoverflow.com/questions/7838680/detecting-that-the-browser-has-no-mouse-and-is-touch-only/52854585#52854585)

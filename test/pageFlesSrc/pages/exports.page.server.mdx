@@ -1,0 +1,224 @@
+`pageContext.exports` holds the `export` values of:
+ - The current page's `.page.js`/`.page.server.js`/`.page.client.js` files.
+ - The `_default.page.*` files.
+
+For example:
+
+```js
+// /pages/countries.page.js
+// Environment: Node.js & Browser
+
+export const title = 'Earth Countries'
+```
+```js
+// /pages/countries.page.server.js
+// Environment: Node.js
+
+export const dataUrl = 'https://restcountries.com/v3.1/all'
+```
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { onBeforeRender }
+
+import fetch from 'node-fetch'
+
+async function onBeforeRender(pageContext) {
+  const response = await fetch(pageContext.exports.dataUrl)
+  // ...
+}
+
+function render(pageContext) {
+   const titleTag = `<title>${pageContext.exports.title}</title>`
+   // ...
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export const clientRouting = true
+export { render }
+
+function render(pageContext) {
+  if (!pageContext.isHydration) {
+    // Update the website's title upon page navigation.
+    document.title = pageContext.exports.title
+  }
+  // ...
+}
+```
+> Note how `pageContext.exports.title` is available in both Node.js and the browser: that's because `export { title }` is defined in a `.page.js` file which is loaded in Node.js as well as in the browser.
+>
+> Whereas `pageContext.exports.dataUrl` isn't available in the browser: `.page.server.js` files are loaded only in Node.js.
+
+We call this technique *Custom Exports* / *Custom Hooks*.
+
+
+## Example: Page Layout
+
+A common technique is to use a custom export `pageContext.exports.Layout` to define the layout of a page.
+
+```js
+// /pages/product.page.js
+// Environment: Browser & Node.js
+
+export { Layout } from '../layouts/Responsive'
+export function Page() {
+   /* ... */
+}
+```
+
+```js
+// /pages/admin.page.js
+// Environment: Browser & Node.js
+
+export { Layout } from '../layouts/Dashboard'
+export function Page() {
+   /* ... */
+}
+```
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { renderToHtml } from 'some-ui-framework'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+
+export function render(pageContext) {
+  const { Page, Layout } = pageContext.exports
+  const pageHtml = renderToHtml(<Layout><Page /></Layout>)
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { renderDom } from 'some-ui-framework'
+
+export function render(pageContext) {
+  // `.page.js` files are also loaded in the browser: `Layout` and `Page` are also available here
+  const { Page, Layout } = pageContext.exports
+  renderDom(
+    <Layout><Page /></Layout>,
+    document.getElementById("root")
+  )
+}
+```
+
+> Note how we use `pageContext.exports.Page` instead of `pageContext.Page`: that's because `pageContext.Page` is actually just an alias for `pageContext.exports.Page ?? pageContext.exports.default`.
+
+
+## Example: Data Query
+
+Another common example is to use a custom export `pageContext.exports.query` to define the data query of a page.
+
+```js
+// /pages/product.page.js
+export const query = { modelName: 'Product', select: ['name', 'price'] }
+```
+
+```js
+// /pages/user.page.js
+export const query = { modelName: 'User', select: ['firstName', 'lastName'] }
+```
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { onBeforeRender }
+export { render }
+export const passToClient = ['pageProps']
+
+import { renderToHtml } from 'some-ui-framework'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { runQuery } from 'some-sql-engine'
+
+async function onBeforeRender(pageContext) {
+  const { query } = pageContext.exports
+  const data = await runQuery(query)
+  const pageProps = { data }
+  return { pageContext: { pageProps } }
+}
+
+function render(pageContext) {
+  const { Page, pageProps } = pageContext
+  const pageHtml = renderToHtml(<Page {...pageProps} />)
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+import { renderDom } from 'some-ui-framework'
+
+function render(pageContext) {
+  const { Page, pageProps } = pageContext
+  renderDom(
+    <Page {...pageProps} />,
+    document.getElementById("root")
+  )
+}
+```
+
+## Example: Meta Data
+
+We can also use a custom export `pageContext.export.meta` to define the meta data of a page.
+
+```js
+// /pages/product.page.js
+// Environment: Node.js
+export const title = 'Product'
+export const getDescription = pageProps => `Product: ${pageProps.productName}`
+```
+
+```js
+// /pages/user.page.js
+// Environment: Node.js
+export const title = 'User'
+export const getDescription = pageProps => `User: ${pageProps.firstName} ${pageProps.lastName}`
+```
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { render }
+
+import { renderToHtml } from 'some-ui-framework'
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+
+function render(pageContext) {
+  const { Page, pageProps } = pageContext
+  const { title, getDescription } = pageContext.exports
+  const description = getDescription(pageProps)
+  const pageHtml = renderToHtml(<Page {...pageProps} />)
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${title}</title>
+        <meta name="description" content="${description}" />
+      </head>
+      <body>
+        <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```

@@ -1,0 +1,60 @@
+import { RepoLink, Link } from '@brillout/docpress'
+
+Environment: `Node.js`.
+
+We use `renderPage()` to server-side render a page:
+
+```js
+// server.js
+// Environment: Node.js server
+
+// In this example we use Express.js but we could use any other server framework
+import express from 'express'
+import { renderPage } from 'vite-plugin-ssr'
+
+const isProduction = process.env.NODE_ENV === 'production'
+const root = `${__dirname}/..`
+
+startServer()
+
+async function startServer() {
+  const app = express()
+
+  if (isProduction) {
+    app.use(express.static(`${root}/${outDir}/client`))
+  } else {
+    const vite = await import('vite')
+    viteDevMiddleware = (await vite.createServer({
+      root,
+      server: { middlewareMode: true }
+    })).middlewares
+    app.use(viteDevMiddleware)
+  }
+
+  app.get('*', async (req, res, next) => {
+    const pageContextInit = { urlOriginal: req.originalUrl }
+    const pageContext = await renderPage(pageContextInit)
+    if (pageContext.httpResponse === null) return next()
+    const { body, statusCode, contentType } = pageContext.httpResponse
+    res.status(statusCode).type(contentType).send(body)
+  })
+
+  const port = 3000
+  app.listen(port)
+  console.log(`Server running at http://localhost:${port}`)
+}
+```
+
+- `pageContext.httpResponse.statusCode` is either `200`, `404`, or `500`.
+- `pageContext.httpResponse.contentType` is either `text/html;charset=utf-8` or `application/json`. (The `Content-Type` is `application/json` when <Link text="Client Routing" href="/client-routing" /> fetches the `pageContext` of the newly navigated page.)
+- `pageContext.httpResponse.body` is the HTML string returned by the <Link text={<><code>render()</code> hook</>} href="/render" /> with additional `<script>` and `<style>` tags automatically injected by `vite-plugin-ssr`.
+- `pageContext.httpResponse` is `null` if:
+   - An error occurs while rendering the page and you didn't create an `_error.page.js` file.
+   - An error occurs while rendering `_error.page.js`.
+   - The URL is skipped: `vite-plugin-ssr` doesn't render certain URLs. (E.g. `pageContext.urlOriginal === '/favicon.ico'` because browsers automatically make favicon requests).
+
+`renderPage()` is framework agnostic: we can use `vite-plugin-ssr` with any server framework (Koa, Hapi, Fastify, vanilla Node.js, ...) and any deploy environment (AWS, Cloudflare Workers, Vercel, ...).
+
+Examples:
+ - <RepoLink text='With JavaScript' path='/boilerplates/boilerplate-vue/server/index.js' />
+ - <RepoLink text='With TypeScript' path='/boilerplates/boilerplate-vue-ts/server/index.ts' />

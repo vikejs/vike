@@ -1,0 +1,19 @@
+import { RepoLink, Link } from '@brillout/docpress'
+
+We can use any routing library, such as Vue Router or React Router.
+
+Shallow integration: (React/Vue Router supersedes `vite-plugin-ssr`'s built-in router.)
+ - <RepoLink path='/examples/vue-router/' />
+ - <RepoLink path='/examples/react-router/' />
+
+Deep integration: (React/Vue Router works hand-in-hand with `vite-plugin-ssr`'s built-in router.)
+ - Vue Router: [work-in-progress](https://github.com/brillout/vite-plugin-ssr/issues/9#issuecomment-937477110).
+ - React Router: should be possible using the [`onBeforeRoute()` hook](/onBeforeRoute).
+
+That said, we recommend to only use `vite-plugin-ssr`'s built-in router: it's fundamentally simpler.
+
+> When doing SSR, there is no need for sophisticated routing libraries such as React Router or Vue Router.
+
+Note that `vite-plugin-ssr`'s built-in router supports:
+ - <Link text="Client Routing" href="/client-routing" />
+ - <Link text="Nested Layouts" href="/layouts#nested-layouts" />

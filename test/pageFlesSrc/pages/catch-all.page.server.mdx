@@ -1,0 +1,54 @@
+import { RepoLink } from '@brillout/docpress'
+
+We can use [Route Strings](/route-string) and [Route Functions](/route-function) to implement catch-all routes.
+
+```js
+// product.page.route.js
+
+// Match URLs that start with `/product/*`:
+// `/product/42`
+// `/product/1337/details`
+// `/product/2048/some/deeply/nested/path`
+//  ...
+export default '/product/*'
+```
+
+The value of the catch-all is available at `pageContext.routeParams['*']`.
+
+> The difference between `/product/*` and `/product/@productId` is that the former includes nested paths whereas the latter doesn't.
+> For example `/product/42/details` matches `/product/*` but doesn't match `/product/@productId`.
+
+To route all URLs to a single page:
+
+```js
+// catch-all.page.route.js
+
+export default '/*'
+```
+```js
+// catch-all.page.js
+
+// `Page` is the only page of our app.
+export { Page }
+
+// ...
+```
+
+Route Functions enable all kinds of catch-all behavior.
+
+```js
+// user.page.route.js
+
+export default async pageContext => {
+  // Parse the URL
+  const urlParts = pageContext.urlPathname.slice(1).split('/')
+
+  // Only URLs that start with `/product/*`
+  if (urlParts[0] !== 'product') {
+    return false
+  }
+
+  // Any logic we want really
+  // ...
+}
+```

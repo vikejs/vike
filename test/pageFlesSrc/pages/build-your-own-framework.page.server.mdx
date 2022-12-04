@@ -1,0 +1,43 @@
+import { Note, Link } from '@brillout/docpress'
+
+<Note type="warning">This documentation is work-in-progress. Reach out to the vite-plugin-ssr maintainer if you're interested in this.</Note>
+
+With vite-plugin-ssr, you can create your own Next.js / Nuxt with only hundreds of lines of code.
+
+Vite-plugin-ssr frameworks use the same interface as regular vite-plugin-ssr apps: the only difference is that some page files (e.g. <Link text={<><code>/renderer/_default.page.server.js</code></>} href="/default-page" />) live in `app/node_modules/framework/` instead of `app/`.
+
+Your framework can include more functionality beyond vite-plugin-ssr, such as a custom server, a CLI, deployment, etc.
+
+
+## Basic framework
+
+A basic vite-plugin-ssr framework provides a renderer so that the user doesn't have to implement it:
+
+```bash
+# Renderer implemented by the framework
+node_modules/framework/renderer/_default.page.server.js
+node_modules/framework/renderer/_default.page.client.js
+
+# User page files
+pages/index.page.js
+pages/about.page.js
+```
+
+In other words, the framework takes care of the UI framework integration (React, Vue, ...) so that all the framework's users have left to do is to define UI components and `/pages/**/*.page.js` files.
+
+> **Progressively build your framework**. We recommend to build your framework progressively by first implementing a normal vite-plugin-ssr app without building any framework. Once you're satisfied with the architecture of your vite-plugin-ssr app, you can start creating your own framework by moving `renderer/` from `my-app/renderer/` to `my-app/node_modules/my-own-framework/renderer/`.
+
+> **Work-in-progress**: this page will include examples of basic vite-plugin-ssr frameworks.
+
+
+## All-included framework
+
+Essentially, a vite-plugin-ssr framework is a framework that includes page files (`.page.js`, `.page.server.js`, `.page.client.js`, and/or `.page.route.js`). Beyond that, there is nothing special about a vite-plugin-ssr framework and you can include anything you want to your framework, such as a custom server (e.g. Express.js), a database and ORM (e.g. SQLite + Prisma), deployment (e.g. Cloudflare Workers), error tracking (e.g. Sentry), a CLI, etc.
+
+You can implement an [all-included framework](https://vike.land/#all-included) so that all your framework's users have left to do is: define UI components, and define data models (if your framework has a database).
+
+> **Work-in-progress**: this page will include examples of such frameworks.
+
+## More tools
+
+See [Vike > Getting Started](https://vike.land/#getting-started) for more tools to build your own framework.

@@ -1,0 +1,20 @@
+We can track errors by using `pageContext.errorWhileRendering`:
+
+```js
+// server.js
+
+const { renderPage } = require('vite-plugin-ssr')
+
+app.get('*', async (req, res, next) => {
+  const pageContext = await renderPage({ urlOriginal: req.url })
+
+  // An error occured during server-side rendering
+  if (pageContext.errorWhileRendering) {
+    myErrorTracker(pageContext.errorWhileRendering)
+  }
+
+  // ...
+})
+```
+
+So that we can, for example, install the tracker code of a tracking service such as [Sentry](https://sentry.io/), [Bugsnag](https://www.bugsnag.com/), or [Rollbar](https://rollbar.com/).

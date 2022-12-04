@@ -1,0 +1,54 @@
+The `.page.js` files can have a `export { Page }` which represents the page's root (React/Vue/...) component.
+
+`vite-plugin-ssr` doesn't do anything with `Page` and just makes it available at `pageContext.Page`:
+
+```js
+// /pages/hello.page.js
+// Environment: Browser, Node.js
+
+export { Page }
+
+// We export a JSX component, but we can export anything we want since vite-plugin-ssr doesn't
+// do anything with `Page`: it just makes it available at `pageContext.Page`.
+function Page() {
+  return <>Hello</>
+}
+```
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { render }
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import renderToHtml from 'some-ui-framework'
+
+async function render(pageContext) {
+  // `Page` is available at `pageContext.Page`
+  const { Page } = pageContext
+  const pageHtml = await renderToHtml(Page)
+
+  return escapeInject`<html>
+    <body>
+      <div id="root">
+        ${dangerouslySkipEscape(pageHtml)}
+      </div>
+    </body>
+  </html>`
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+export { render }
+
+import { hydrateDom } from 'some-ui-framework'
+
+async function render(pageContext) {
+  // `pageContext.Page` is also available in the browser.
+  const { Page } = pageContext
+  await hydrateDom(Page, document.getElementById('root'))
+}
+```

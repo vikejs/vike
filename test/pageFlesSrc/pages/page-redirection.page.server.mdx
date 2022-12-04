@@ -1,0 +1,171 @@
+import { Link } from '@brillout/docpress'
+
+> Vite-plugin-ssr has no built-in redirect mechanism. 
+> Instead, the control that vite-plugin-ssr provides
+> can be used to implement a redirect mechanism. 
+
+## Auth Redirection
+
+URL redirections are often about protecting URLs from unauthenticated users:
+if a user is not authenticated and goes to `/admin` then we redirect the user to `/login`.
+
+With vite-plugin-ssr, instead of doing a URL redirection, we can use a Route Function:
+
+```js
+// /pages/login.page.route.js
+
+// Route Function to render the login page to non-authenticated users, regardless of the URL.
+
+export default pageContext => {
+  // Only render the login page to non-authenticated users
+  if (userIsLoggedIn(pageContext)) {
+    return false
+  }
+
+  return {
+    // We use a high precedence number of `99` to override all other routes.
+    // This means that non-authenticated users always see the login page,
+    // regardless of the URL.
+    precedence: 99
+  }
+}
+
+function userIsLoggedIn(pageContext) {
+  return pageContext.user !== null
+}
+```
+
+See <Link href="/route-function#precedence" />.
+
+After the user successfully logs in, we reload the page with `window.location.reload()` (<Link href="/server-routing"  noBreadcrumb={true} />) or <Link text={<code>navigate(window.location.pathname)</code>} href="/navigate" /> (<Link href="/client-routing" noBreadcrumb={true} />).
+
+This approach preserves the URL during the entire login flow:
+ 1. Unauthenticated user goes to URL `/admin` and sees the Login Page. (URL is `/admin`.)
+ 2. User fills the sign-in form and successfully logs in. (URL is still `/admin`.)
+ 3. Page is reloaded and the user now sees the Admin Page. (URL is still `/admin`.)
+
+The original intention of the user is preserved and there is no need for some complex URL restoration mechanism.
+
+Instead of using this approach, we can also use the more traditional approach of performing a page redirection. See sections below.
+
+
+## Server-side
+
+We can perform a URL redirection by using `pageContext`:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export function render() {
+  if (someCondition) {
+    return {
+      documentHtml: null,
+      pageContext: {
+        redirectTo: '/some/url'
+      }
+    }
+  }
+
+  // The usual stuff
+  // ...
+}
+```
+```js
+// server.js
+
+app.get('*', async (req, res, next) => {
+  const pageContextInit = { urlOriginal: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  if (pageContext.redirectTo) {
+    res.redirect(307, '/movie/add')
+  } else if (!pageContext.httpResponse) {
+    return next()
+  } else {
+    const { body, statusCode, contentType } = pageContext.httpResponse
+    res.status(statusCode).type(contentType).send(body)
+  }
+})
+```
+
+We can also trigger a page redirection from a page:
+
+```js
+// movie.page.route.js
+export default "/star-wars/@movieId"
+```
+```js
+// movie.page.server.js
+
+export { onBeforeRender }
+
+async function onBeforeRender(pageContext) {
+  const movie = await fetchMovie(pageContext.routeParams.movieId)
+  // If the user goes to `/movie/42` but there is no movie with ID `42` then
+  // we redirect the user to `/movie/add` so he can add a new movie.
+  if (movie === null) {
+    return {
+      pageContext: {
+        redirectTo: '/movie/add'
+      }
+    }
+  }
+}
+```
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+export { render }
+
+function render(pageContext) {
+  const { redirectTo } = pageContext
+  if (redirectTo) {
+    return {
+      pageContext: {
+        redirectTo
+      }
+    }
+  }
+
+  // The usual stuff
+  // ...
+}
+```
+
+## Client-side
+
+If we use <Link href="/client-routing" noBreadcrumb={true} />, then we can also redirect on the client-side.
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+// We make `pageContext.redirectTo` available to the browser for client-side redirection
+export const passToClient = [/*...*/, 'redirectTo']
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { navigate } from "vite-plugin-ssr/client/router";
+
+export function render(pageContext) {
+  const { redirectTo } = pageContext
+  if (redirectTo) {
+    navigate(redirectTo)
+    return
+  }
+
+  // The usual stuff
+  // ...
+}
+```
+
+## Hydration Mismatch
+
+If we use Client Routing we may end up with a [hydration mismatch](/hydration-mismatch).
+
+To remove the hydration mismatch, we may need to redirect on both the client-side and server-side.
+
+There are situations when server-side redirection is not an option and we can only redirect on the client-side. In such case we can [suppress the hydration mismatch warning](/hydration-mismatch#suppress-hydration-mismatch). Alternatively, we can also first hydrate the original page (before redirecting) and then redirect and render the new page.

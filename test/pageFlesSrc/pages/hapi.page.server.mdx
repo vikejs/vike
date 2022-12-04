@@ -1,0 +1,22 @@
+import { Link } from '@brillout/docpress'
+
+We can use `vite-plugin-ssr` as well with [hapi](https://hapi.dev/).
+
+> hapi is a [Express.js](https://expressjs.com/) alternative.
+
+We recommend the following setup.
+
+In development, we use *two* servers:
+ 1. We use Vite's development server (`$ vite`). (It automatically includes `vite-plugin-ssr`).
+ 1. We use our hapi server *without* Vite nor `vite-plugin-ssr`.
+
+This means that in development, Vite is responsible for serving the entire frontend, while our hapi server is responsible only for serving the backend.
+
+> When using Express.js we usually integrate the Vite development middleware to Express.js but we cannot do that with hapi, because hapi doesn't support connect middlewares (the Vite development middleware is a connect middleware). See
+>  - [GitHub > hapi > Support Vite (#4369)](https://github.com/hapijs/hapi/issues/4369)
+>  - [GitHub > hapi > Express/Connect middleware support (#80)](https://github.com/hapijs/hapi/issues/80)
+
+In production, we use only *one* server:
+ 1. Our hapi server that serves the backend *as well* as the frontend: it serves the static files living at `dist/client/` and does server-side rendering by using `vite-plugin-ssr`'s <Link text={<code>renderPage()</code>} href="/renderPage" />.
+
+> See [GitHub > `vite-plugin-ssr` > hapi (#366)](https://github.com/brillout/vite-plugin-ssr/issues/366#issuecomment-1189144446).

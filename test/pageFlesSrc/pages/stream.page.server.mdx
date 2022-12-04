@@ -1,0 +1,277 @@
+import { RepoLink, Link } from '@brillout/docpress'
+
+
+## Examples & docs
+
+Examples:
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Node.js: <RepoLink path='/examples/react-full/' />
+ - React 18 + [`react-streaming`](https://github.com/brillout/react-streaming) + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-react-full/' />
+ - React 18 + Relay: [Vilay](https://github.com/XiNiHa/vilay)
+ - Vue's `renderToNodeStream()` + Node.js: <RepoLink path='/examples/vue-full/' />
+ - Vue's `pipeToWebWritable()` + Cloudflare Workers: <RepoLink path='/examples/cloudflare-workers-vue/' />
+
+Stream Docs & API:
+ - [Node.js Streams](https://nodejs.org/api/stream.html)
+ - [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+
+
+## Basics
+
+```js
+// renderer/_deault.page.server.js
+
+export { render }
+
+import { escapeInject } from 'vite-plugin-ssr'
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+}
+```
+
+Node.js platforms (Vercel, AWS EC2, AWS Lambda, ...):
+
+```js
+// server.js
+
+import { renderPage } from 'vite-plugin-ssr'
+
+app.get("*", async (req, res, next) => {
+  const pageContextInit = { urlOriginal: req.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) return next()
+  // `httpResponse.pipe()` works with Node.js Streams as well as Web Streams.
+  httpResponse.pipe(res)
+})
+```
+
+Edge platforms (e.g. Cloudflare Workers):
+
+```js
+// worker.js
+
+import { renderPage } from 'vite-plugin-ssr'
+
+addEventListener('fetch', (event) => {
+  event.respondWith(handleFetchEvent(event))
+})
+
+async function handleFetchEvent(event) {
+  const pageContextInit = { urlOriginal: event.request.url }
+  const pageContext = await renderPage(pageContextInit)
+  const { httpResponse } = pageContext
+  if (!httpResponse) {
+    return null
+  } else {
+    // `httpResponse.getReadableWebStream()` only works for Web Streams
+    const readable = httpResponse.getReadableWebStream()
+    const { statusCode, contentType } = httpResponse
+    return new Response(readable, {
+      headers: { 'content-type': contentType },
+      status: statusCode,
+    })
+  }
+}
+```
+
+
+## `pageContext.enableEagerStreaming`
+
+By default, the HTML template (we provide in our `render()` hook) isn't immediately written to the stream: instead, `vite-plugin-ssr` awaits for our UI framework to start writing to the stream.
+
+```js
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  // The HTML template (e.g. `<title>`) isn't immediately written to the stream.
+  // Instead, vite-plugin-ssr awaits for `stream` to start.
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+}
+```
+
+If we set `pageContext.enableEagerStreaming` to `true` then `vite-plugin-ssr` starts writing the HTML template right away.
+
+```js
+async function render(pageContext) {
+  // The HTML template (e.g. `<title>`) is immediately written to the stream
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Hello</title>
+      </head>
+      <body>
+        <div id="page-view">${renderToStream(pageContext.Page)}</div>
+      </body>
+    </html>`
+
+  return {
+    documentHtml,
+    pageContext: {
+      enableEagerStreaming: true
+    }
+  }
+}
+```
+
+## Stream to string
+
+We can convert the stream to a string:
+
+```js
+/* This won't work: (a stream cannot be consumed synchronously)
+const { body } = httpResponse
+res.send(body)
+*/
+
+// But we can do:
+const body = await httpResponse.getBody()
+assert(typeof body === 'string')
+res.send(body)
+```
+
+## Stream pipes
+
+To be able to use stream pipes, we need to use `stampPipe()`:
+
+```js
+// renderer/_deault.page.server.js
+
+export { render }
+
+import { renderToStreamPipe } from 'some-ui-framework' // React, Vue, ...
+import { escapeInject, stampPipe } from 'vite-plugin-ssr'
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  const pipe = renderToStreamPipe(Page)
+
+  // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
+  stampPipe(pipe, 'web-stream')
+  // If `pipe(writable)` expects `writable` to be a Writable Web Stream
+  stampPipe(pipe, 'node-stream')
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${pipe}</div>
+      </body>
+    </html>`
+}
+```
+
+For Node.js:
+
+```js
+// server.js
+
+const pageContext = await renderPage(pageContextInit)
+const { httpResponse } = pageContext
+// We can use `httpResponse.pipe()` as usual
+httpResponse.pipe(res)
+```
+
+For Edge platforms that need a readable stream, such as Cloudflare Workers, we can use `new TransformStream()`:
+
+```js
+// worker.js
+
+const { readable, writable } = new TransformStream()
+httpResponse.pipe(writable)
+const resp = new Response(readable)
+```
+
+For some UI frameworks, such as Vue, we need a pipe wrapper:
+
+```js
+// renderer/_deault.page.server.js
+
+import { pipePageToWritable } from 'some-ui-framework'
+import { stampPipe, escapeInject } from 'vite-plugin-ssr'
+
+export function render(pageContext) {
+  const { Page } = pageContext
+
+  // We use a pipe wrapper so that `pipePageToWritable()` can access `Page`
+  const pipeWrapper = (writable) => {
+    pipePageToWritable(Page, writable)
+  }
+  stampPipe(pipeWrapper, 'node-stream')
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${pipeWrapper}</div>
+      </body>
+    </html>`
+}
+```
+
+See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, and using `new TransformStream()` for Cloudflare Workers.
+
+
+## Initial data after streaming
+
+Some data fetching tools, such as <Link href="/relay" text="Relay">Relay</Link>, provide the initial data only after the stream as ended.
+
+In such situations, we can return a `pageContext` promise in our `render()` hook:
+
+```js
+// renderer/_deault.page.server.js
+
+export { render }
+export { passToClient }
+
+import { escapeInject } from 'vite-plugin-ssr'
+import { renderToStream } from 'some-ui-framework' // React, Vue, ...
+
+const passToClient = ['initialData']
+
+async function render(pageContext) {
+  const { Page } = pageContext
+
+  const stream = renderToStream(Page)
+
+  const documentHtml = escapeInject`<!DOCTYPE html>
+    <html>
+      <body>
+        <div id="page-view">${stream}</div>
+      </body>
+    </html>`
+
+  const pageContextPromise = (async () => {
+     return {
+       // Some `initialData` provided after the stream has ended
+       initialData,
+     }
+  })()
+
+  return {
+    documentHtml,
+    pageContext: pageContextPromise
+  }
+}
+```

@@ -1,0 +1,45 @@
+import { RepoLink, Link, Note } from '@brillout/docpress'
+
+Environment: `Browser`, `Client Routing`.
+
+We can use `navigate('/some/url')` to programmatically switch pages.
+
+<Note type="warning">`navigate()` is only available if you use <Link text="Client Routing" href="/client-routing" />. If you use <Link text="Server Routing" href="/server-routing" />, then do `window.location.href = '/some/url'` instead.</Note>
+
+`navigate()` is useful when the navigation isn't triggered by the user clicking on an anchor tag `<a>`.
+For example, when redirecting a user after a successful form submission.
+
+```jsx
+import { navigate } from "vite-plugin-ssr/client/router";
+
+// Some deeply nested view component
+function Form() {
+   return (
+     <form onSubmit={onSubmit}>
+       {/* ... */}
+     </form>
+   );
+}
+
+async function onSubmit() {
+  /* ...  */
+
+  const navigationPromise = navigate('/form/success');
+
+  console.log("The URL changed but the new page hasn't rendered yet.");
+  await navigationPromise
+  console.log("The new page has finished rendering.");
+}
+```
+
+If you want to redirect your user at page-load time, see the [Page Redirection](/page-redirection) guide instead.
+
+Options:
+ - `navigate('/some-url', { keepScrollPosition: true })`: Don't scroll to the top of the page; keep scroll position where it is instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.) (We can also use `<a href="/some-url" keep-scroll-position />`.)
+ - `navigate('/some-url', { overwriteLastHistoryEntry: true })`: Don't create a new entry in the browser's history, instead let the new URL replace the current URL. (This effectively removes the current URL from the browser history).
+
+Vue example:
+ - <RepoLink path='/examples/vue-full/pages/index.page.vue' />
+
+React example:
+ - <RepoLink path='/examples/react-full/pages/index.page.tsx' />

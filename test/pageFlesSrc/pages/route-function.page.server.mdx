@@ -1,0 +1,232 @@
+import { Link } from '@brillout/docpress'
+
+Route Functions give us full programmatic flexibility to implement advanced routing logic.
+
+```js
+// /pages/product/edit.page.route.js
+
+import partRegex from 'part-regex'
+
+export default (pageContext) => {
+  // Route guard
+  if (!pageContext.user.isAdmin) {
+    return false
+  }
+
+  // We can use RegExp and any library we want
+  if (!partRegex`/product/${/[0-9]+/}/edit`.test(pageContext.urlPathname)) {
+    return false
+  }
+  const id = pageContext.urlPathname.split('/')[2]
+
+  return {
+    // We make `id` available as `pageContext.routeParams.id`
+    routeParams: { id },
+    // For routing conflicts
+    precedence: 10,
+  }
+}
+```
+
+The `precedence` number is for resolving routing conflicts, see <Link href="/routing-precedence" />.
+
+We can use any routing tool we want, such as:
+ - [`resolveRoute()`](#resolveroute)
+ - [partRegex](https://github.com/brillout/part-regex)
+
+
+## `resolveRoute()`
+
+Route Functions can use vite-plugin-ssr's Route String resolver:
+
+```js
+// /pages/product/edit.page.route.js
+
+import { resolveRoute } from 'vite-plugin-ssr/routing'
+
+export default (pageContext) => {
+  if (!pageContext.user.isAdmin) {
+    return false
+  }
+  return resolveRoute('/product/@id/edit', pageContext.urlPathname)
+}
+```
+
+```js
+// /pages/product/index.page.route.js
+
+import { resolveRoute } from 'vite-plugin-ssr/routing'
+
+export default (pageContext) => {
+  {
+    const result = resolveRoute('/product/@id', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'overview'
+      return result
+    }
+  }
+
+  const result = resolveRoute('/product/@id/@view', pageContext.urlPathname)
+  if (!['reviews', 'pricing'].includes(result.routeParams.view)) {
+    return false
+  }
+  return result
+}
+```
+
+
+## Always Run
+
+Everytime a page is rendered (i.e. upon each [`renderPage()`](/renderPage) call), `vite-plugin-ssr` executes *all* Route Functions.
+
+That's because `vite-plugin-ssr` cannot predict whether a Route Function will return a high precedence number overriding all other routes.
+
+For example:
+
+```js
+// /pages/login.page.route.js
+
+// Route Function to render the login page to non-authenticated users, regardless of the URL.
+
+export default pageContext => {
+  // Only render the login page to non-authenticated users
+  if (userIsLoggedIn(pageContext)) {
+    return false
+  }
+
+  return {
+    // We override all other routes by setting a high `precedence` value of `99`.
+    // This means that *all* URLs render the login page (if the user isn't authenticated).
+    precedence: 99
+  }
+}
+
+function userIsLoggedIn(pageContext) {
+  return pageContext.user !== null
+}
+```
+
+This means that `vite-plugin-ssr` always has to execute this Route Function in order to resolve routing.
+
+> This trick is further explained at [Guides > Page Redirection > Auth Redirection](/page-redirection#auth-redirection).
+
+
+## Async
+
+Async route functions may significantly slow down our app: as we have seen in the previous section, every time a page is rendered the Route Functions of all our pages are called and awaited for.
+
+This means that a slow Route Function will slow down all our pages.
+
+By default, async route functions are forbidden, but we can enable them by setting `iKnowThePerformanceRisksOfAsyncRouteFunctions`.
+
+```js
+// *.page.route.js
+
+export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
+
+// We can now use an async Route Function
+export default async () => { /* ... */ }
+```
+
+Also, providing `pageContext` in route functions if forbidden (even for async route functions).
+
+```js
+// *.page.route.js
+
+export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
+
+// This is not possible and `vite-plugin-ssr` will complain
+export default async () => {
+  return {
+    pageContext: {
+      // Some additional `pageContext`
+    }
+  }
+}
+```
+
+Often, the motivation for using async route functions is to determine whether the URL exists:
+
+```js
+// user.page.route.js
+
+export const iKnowThePerformanceRisksOfAsyncRouteFunctions = true
+
+export default async pageContext => {
+  const { url } = pageContext
+
+  // Parse the URL
+  const urlParts = url.slice(1).split('/')
+
+  // Only URLs that start with `/user/@userId`
+  if (urlParts[0] !== 'user') return false
+  const userId = urlParts[1]
+  if (!userId) return false
+
+  // Only if there is a user matching `userId`
+  const user = await db.fetchUser(userId)
+  if (!user) {
+    return false
+  }
+
+  return {
+    routeParams: {
+      userId
+    },
+    // `vite-plugin-ssr` complains
+    pageContext: {
+      user
+    }
+  }
+}
+```
+
+Instead, we can `throw RenderErrorPage()` in our `onBeforeRender()` hook:
+
+```js
+// user.page.server.js
+
+export { onBeforeRender }
+
+import { RenderErrorPage } from 'vite-plugin-ssr'
+
+function onBeforeRender(pageContext) {
+  const { userId } = pageContext.routeParams
+
+  const user = await db.fetchUser(userId)
+
+  if (!user) {
+    // `vite-plugin-ssr` will render `_error.page.js`
+    throw RenderErrorPage({
+      pageContext: {
+        // We can provide some additional `pageContext` to use in `_error.page.js`
+        errorInfo: `User ${userId} doesn't exist`
+      }
+    })
+  }
+
+  // ...
+}
+```
+
+> `RenderErrorPage()` can only be used on the server-side. If you want to use it on the browser-side, then create a new Feature Request on GitHub.
+
+```js
+// user.page.route.js
+
+export default pageContext => {
+  const { url } = pageContext
+
+  const urlParts = url.slice(1).split('/')
+
+  if (urlParts[0] !== 'user') return false
+  const userId = urlParts[1]
+  if (!userId) return false
+
+  return {
+    routeParams: {
+      userId
+    }
+  }
+}
+```

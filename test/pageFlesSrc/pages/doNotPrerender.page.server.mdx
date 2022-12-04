@@ -1,0 +1,67 @@
+import { Link } from '@brillout/docpress'
+
+In some situations we don't want to pre-render a page.
+For example a news page that displays the latest news fetched from a database should be rendered at request-time and certainly not at build-time.
+
+We can use `.page.server.js#noNoPrerender` to tell `vite-plugin-ssr` to skip a page from pre-rendering.
+
+```js
+// /pages/news.page.server.js
+
+export const doNotPrerender = true
+```
+
+> We can define `doNotPrerender` also in `.page.js` files, but not in `.page.client.js` files (because `.page.client.js` files are never loaded in Node.js).
+
+
+## `_default.page.`
+
+We can define `doNotPrerender` in `_default.page.` files.
+
+For example, to make pre-rendering opt-in instead of opt-out:
+
+```js
+// /renderer/_default.page.server.js
+
+// By default, our pages are not pre-rendered
+export const doNotPrerender = true
+```
+
+```js
+// /pages/about-us.page.js
+
+// Opt-in pre-rendering
+export const doNotPrerender = false
+```
+
+This is especially handy with <Link text="Domain-Driven File Structure" href='/file-structure#domain-driven' />:
+
+```js
+// /pages/mareting/_default.page.server.js
+
+// We use Domain-Driven File Structure and `_default.page.server.js` applies to
+// all our marketing pages.
+
+// Enable pre-rendering for all our marketing pages
+export const doNotPrerender = false
+```
+
+
+## Conditional pre-rendering
+
+We can pre-render pages conditionally:
+
+```js
+// /renderer/_default.page.server.js
+
+export const doNotPrerender = isCmsPreview() ? true : false
+```
+
+> This is particularly usefull for previewing CMS pages (we don't want to pre-renderer a CMS preview deploy).
+
+Note that <Link text={<><code>prerender()</code> hooks</>} href="prerender" /> are always called, regardless of `doNotPrerender`. If we want to call `prerender()` hooks conditionally as well:
+
+```js
+export const doNotPrerender = someCondition() ? true : false
+export const prerender = doNotPrerender ? undefined : myPrerenderHook
+```

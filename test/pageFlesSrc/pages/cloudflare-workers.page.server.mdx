@@ -1,0 +1,77 @@
+import { RepoLink, Link, Note } from '@brillout/docpress'
+
+
+## Examples
+
+ - React: <RepoLink path='/examples/cloudflare-workers-react/' />
+ - React + SSR Streaming: <RepoLink path='/examples/cloudflare-workers-react-full/' />
+ - Vue: <RepoLink path='/examples/cloudflare-workers-vue/' />
+
+> The examples set `wrangler.toml#node_compat` to `true` which makes wrangler show a warning:
+> ```
+> [WARNING] Enabling node.js compatibility mode for built-ins and globals. This
+> is experimental and has serious tradeoffs.
+> ````
+> But we can safely ignore the warning (the only Node.js shims used are all robust). However, the Node.js shims add around `200KB`-`300KB` to your worker code, which is significant considering the `1MB` limit. There is work-in-progress to remove the need for Node.js shims, see [#445](https://github.com/brillout/vite-plugin-ssr/issues/445).
+
+
+## Wrangler
+
+Cloudflare Workers requires our entire worker code to be bundled into a single file.
+
+> Cloudflare uses the term "worker code" to denote server code that is run on its edge infrastructure.
+
+We recommend using [Wrangler v2](https://github.com/cloudflare/wrangler2) (the v2 uses [esbuild](https://esbuild.github.io/) under the hood).
+
+
+## vite-plugin-cloudflare
+
+We can also use [vite-plugin-cloudflare](https://github.com/Aslemammad/vite-plugin-cloudflare) which enables us to simply use `$ vite build` and `$ vite dev` to build and develop our worker code (including HMR support!).
+
+Example: [GitHub > `Aslemammad/vite-plugin-cloudflare` > `examples/vite-plugin-ssr/`](https://github.com/Aslemammad/vite-plugin-cloudflare/tree/main/examples/vite-plugin-ssr).
+
+
+## Extend 1MB limit
+
+The bundle size of our worker should not exceed 1MB, but we can request sizes of up to 100MB and beyond:
+ - [Cloudflare Workers > Larger Scripts](https://www.cloudflare.com/larger-scripts-on-workers-early-access/)
+ - [Cloudflare Workers > Limits > Worker Size](https://developers.cloudflare.com/workers/platform/limits/#worker-size)
+
+
+## Cloudflare Pages
+
+We can also use [Cloudflare Pages](https://developers.cloudflare.com/pages/) to deploy our `vite-plugin-ssr` app.
+
+To deploy our SSR worker, we use a [Cloudflare Pages Function](https://developers.cloudflare.com/pages/platform/functions/).
+
+<Note type="warning">Cloudflare Pages Functions is [in beta](https://developers.cloudflare.com/pages/platform/functions/).</Note>
+
+Example:
+ - [github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo](https://github.com/Immortalin/vite-plugin-ssr-cloudflare-pages-demo)
+
+See also:
+ - [Wrangler 2.0 — a new developer experience for Cloudflare Workers](https://blog.cloudflare.com/wrangler-v2-beta/)
+
+
+## Development
+
+For a significantly faster development experience, we recommend, whenever possible, using Vite's development server instead of wrangler (or an Express.js server).
+
+This means:
+ - We skip `wrangler` / Cloudflare Workers altogether while developing our app.
+ - We use `wrangler dev` to preview our worker.
+ - We use `wrangler publish` to deploy our worker to Cloudflare Workers.
+
+See the setup of the [examples](#examples).
+
+
+## Universal `fetch()`
+
+When using Node.js for development and Cloudflare Workers for production, we may need a `fetch()` function that works in both environments.
+
+But libraries such as `node-fetch` or `cross-fetch` usually don't work with Cloudflare Workers.
+
+What we can do is to define a fetch function at `pageContext.fetch` that works in all environments.
+The trick is to add a different `fetch()` implementation to `pageContextInit` at <Link text={<code>renderPage(pageContextInit)</code>} href="/renderPage" />.
+
+Example: <RepoLink path='/examples/cloudflare-workers-react-full#universal-fetch' />.

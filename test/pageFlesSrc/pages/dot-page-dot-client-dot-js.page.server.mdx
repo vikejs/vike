@@ -1,0 +1,26 @@
+Environment: `Browser`.
+
+The `.page.client.js` file defines the page's browser-side code.
+
+It represents the entire browser-side code. This means that if don't create any `.page.client.js` file, then our app has zero browser-side JavaScript.
+(Except of Vite's dev code when not in production.)
+
+This also means that we have full control over the browser-side code. Not only can we render/hydrate our pages as we wish, but we can also easily & naturally integrate browser libraries.
+
+```js
+// _default.page.client.js
+
+export { render }
+
+import { hydrate } from 'some-ui-framework'
+
+async function render(pageContext) {
+  const { Page } = pageContext
+  await hydrate(Page)
+}
+```
+
+The browser-side is usually about [hydrating](/hydration) the page,
+but we can also do partial/island hydration,
+only install a couple of JavaScript event handlers,
+etc.

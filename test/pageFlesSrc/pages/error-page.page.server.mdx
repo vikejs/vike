@@ -1,0 +1,48 @@
+import { Link } from '@brillout/docpress'
+
+We define `renderer/_error.page.tsx` for rendering a page when an error occurs.
+
+```js
+// renderer/_error.page.js
+
+export { Page }
+
+function Page(pageProps) {
+  if (pageProps.is404) {
+    // Return a UI component "Page Not Found."
+  } else {
+    // Return a UI component "Our server is having problems. Sincere apologies. Try again later."
+  }
+}
+```
+
+> We can define hooks just like any other page, for example to define a <Link text="custom layout" href="/layouts#custom-export" />.
+
+
+## Pre-rendering
+
+If we enable <Link text="pre-rendering" href="/pre-rendering" />, then vite-plugin-ssr uses `_error.page.js` to generate `dist/client/404.html`.
+
+> Most Static Hosts automatically pick up `404.html` and use it to render a 404 page.
+
+
+## Details
+
+The page `_error.page.js` is rendered when:
+ 1. None of our pages matches the URL (`404 Page Not Found`).
+ 2. One of our hooks (in `.page.js` / `.page.server.js` / `.page.route.js`) throws an error (`500 Internal Server Error`).
+ 3. One of our hooks executes <Link href="/route-function#async" text={<code>throw RenderErrorPage()</code>}></Link>.
+
+For `1.` and `3.`, `vite-plugin-ssr` automatically sets the following:
+ - `pageContext.is404 === true`
+ - `pageContext.pageProps.is404 === true`
+
+> We can `throw RenderErrorPage({ pageContext: { is404: false }})` to have `pageContext.is404 === false` as well as `pageContext.pageProps.is404 === false`.
+
+For `2.`:
+ - `pageContext.is404 === false`
+ - `pageContext.pageProps.is404 === false`
+
+> Normally, the `vite-plugin-ssr` source code doesn't know anything about `pageContext.pageProps` but this is the only exception.
+
+That way, we can use `pageContext.pageProps.is404` to decide what error message to show our user.

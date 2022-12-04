@@ -1,0 +1,67 @@
+import { Link } from '@brillout/docpress'
+
+With `vite-plugin-ssr` we have the choice between:
+ - Server Routing and Client Routing.
+ - Filesystem Routing, Route Strings and Route Functions.
+
+## Server Routing or Client Routing?
+
+`vite-plugin-ssr` has first-class support for both Server-side Routing (full HTML reload upon page navigation) and Client-side Routing (DOM mutations upon page navigation).
+
+<Link href="/server-routing-vs-client-routing" /> helps us choose which one to use.
+
+## React Router / Vue Router
+
+Instead of using React Router or Vue Router, we recommend to only use `vite-plugin-ssr`'s built-in router.
+
+That said, `vite-plugin-ssr` has support for both Vue Router and React Router, see <Link href="/vue-router-and-react-router" />.
+
+## Route Strings & Route Functions
+
+By default, `vite-plugin-ssr` does Filesystem Routing:
+
+```
+FILESYSTEM                        URL
+pages/index.page.js               /
+pages/about.page.js               /about
+pages/faq/index.page.js           /faq
+pages/movie/@id/index.page.js     /movie/1, /movie/2, /movie/3, ...
+```
+
+We can also define so-called "Route Strings" and "Route Functions".
+
+```js
+// /pages/product.page.route.js
+
+// This file defines the route of `/pages/product.page.js`
+
+// Route String
+export default '/product/@productId'
+```
+
+> The parameter `productId` is available at `pageContext.routeParams.productId`.
+
+Route Functions give us full programmatic flexibility to implement advanced routing logic, for example route guards:
+
+```js
+// /pages/product/edit.page.route.js
+
+// This file defines the route of `/pages/product/edit.page.js`
+
+import { resolveRoute } from 'vite-plugin-ssr/routing'
+
+export default async (pageContext) => {
+  // Ensure that `/product/@id/edit` can be accessed only by admins
+  if (!pageContext.user.isAdmin) {
+    return false
+  }
+
+  // We can use vite-plugin-ssr's Route String resolver
+  return resolveRoute('/product/@id/edit', pageContext.urlPathname)
+}
+```
+
+See also:
+ - <Link href="/filesystem-routing" />
+ - <Link href="/route-string" />
+ - <Link href="/route-function" />

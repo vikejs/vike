@@ -1,0 +1,122 @@
+import { Link } from '@brillout/docpress'
+import TourRecommendation from '../components/TourRecommendation.mdx'
+
+<TourRecommendation />
+
+For advanced apps we recommend a domain-driven file structure with multiple `pages/` directories,
+while for basic apps we recommend a single `pages/` directory.
+
+## Basic Apps
+
+```bash
+# Landing page (URL: `/`)
+/pages/index/index.page.js
+/pages/index/SomeComponentForLandingPage.js
+/pages/index/**/* # More files specific to the landing page
+# About page (URL: `/about`)
+/pages/about/index.page.js
+/pages/about/SomeComponentForAboutPage.js
+/pages/about/**/* # More files specific to the about page
+# Other pages (we recommend creating a directory for each page, e.g.
+# `/pages/about/index.page.js` instead of `/pages/about.page.js`)
+/pages/*/*.page.js
+
+# Components shared by several pages
+/components/*
+
+# Code that specifies how our pages are rendered
+/renderer/_default.page.server.js
+/renderer/_default.page.client.js
+/renderer/_error.page.js
+/renderer/PageShell.js  # The root (React/Vue/...) component that wraps the `Page` component
+/renderer/PageShell.css # exported by `/pages/**/*.page.js`.
+/renderer/Header.js # Our website header
+/renderer/Footer.js # Our website footer
+/renderer/logo.svg # Our website logo
+
+# Express.js/Fastify/... code
+/server/*
+```
+
+Examples:
+- <Link href='/examples/react/' />
+- <Link href='/examples/vue/' />
+- The boilerplates ([`$ npm init vite-plugin-ssr@latest`](/scaffold))
+
+## Domain-driven
+
+```bash
+# Marketing pages
+/marketing/pages/index/index.page.js # Landing page (URL: `/`)
+/marketing/pages/about/index.page.js # About page (URL: `/about`)
+/marketing/pages/jobs/index.page.js # Jobs page (URL: `/jobs`)
+/marketing/_default.page.route.js # Route to `/*` instead of `/marketing/*` (see below)
+
+# Auth related code & pages
+/auth/pages/signup/index.page.js
+/auth/pages/login/index.page.js
+/auth/components/UserInfo.js
+/auth/db/fetchUser.js
+
+# All code related to products
+/products/pages/index/index.page.js
+/products/pages/product/index.page.js
+/products/pages/product/index.page.route.js
+/products/db/fetchProduct.js
+/products/db/fetchProductList.js
+
+# Same as "Basic Apps" above
+/renderer/*
+/server/*
+```
+
+```js
+// /marketing/_default.page.route.js
+
+// We route our marketing pages to `/*` instead of `/marketing/*`
+export const filesystemRoutingRoot = '/'
+```
+
+```js
+// /product/pages/product/index.page.route.js
+
+// We can use a Route String (or Route Function) to define parameterized routes
+// and/or to override Filesystem Routing.
+export default '/product/@productId'
+```
+
+Resulting route table:
+
+```
+PROJECT FILES                                    URL
+/marketing/pages/index/index.page.js             /
+/marketing/pages/about/index.page.js             /about
+/marketing/pages/jobs/index.page.js              /jobs
+
+/auth/pages/signup/index.page.js                 /auth/signup
+/auth/pages/login/index.page.js                  /auth/login
+
+/products/pages/index/index.page.js              /products
+/products/pages/product/index.page.js            /product/@productId
+```
+
+Same as for basic apps, we recommend creating a directory for each page,
+e.g. `/products/pages/index/index.page.js` instead of `/products/pages/index.page.js`.
+
+Example:
+ - <Link href='/examples/file-structure-domain-driven/' />
+
+See also:
+- <Link href="/filesystemRoutingRoot" />
+
+## `src/pages/`
+
+We can embed `pages/` in `src/`:
+
+```bash
+/src/pages/index/index.page.js # => URL: `/`
+/src/pages/about/index.page.js # => URL: `/about`
+```
+
+See also:
+ - <Link href="/filesystem-routing" />.

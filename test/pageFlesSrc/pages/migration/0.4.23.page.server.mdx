@@ -1,0 +1,91 @@
+import { Link } from '@brillout/docpress'
+
+`0.4.23` renames `pageContext.url` to `pageContext.urlOriginal`.
+
+> This is a soft breaking change: the `0.4.22` interface is still supported, i.e. most apps should still work without any change.
+
+Most notable relevant places:
+
+- [`renderPage()`: provide `pageContext.urlOriginal` instead of `pageContext.url`.](#renderpage)
+- [Route Functions: use `pageContext.urlPathname` instead of `pageContext.url`.](#route-functions)
+- [If using `onBeforeRoute()`: use and provide `pageContext.urlOriginal` instead of `pageContext.url`.](#onbeforeroute)
+- [If using `onBeforePrerender()`: use and provide `pageContext.urlOriginal` instead of `pageContext.url`.](#onbeforeprerender)
+
+> The `onBeforeRoute()` and `onBeforePrerender()` hooks are usually only used for i18n, see <Link href="/i18n" />.
+
+## `renderPage()`
+
+```diff
+  // server.js
+
+  // `vite-plugin-ssr` server middleware (e.g. Express.js)
+  app.get('*', async (req, res) => {
+    const pageContextInit = {
+-     url: req.url
++     urlOriginal: req.url
+    }
+    const result = await renderPage(pageContextInit)
+
+    /* ... */
+  })
+```
+
+
+## Route Functions
+
+```diff
+  // /pages/**/*.page.route.js
+
+  export default pageContext => {
+-   const url = pageContext.url
++   const url = pageContext.urlPathname
+    /* ... */
+  }
+```
+
+
+## `onBeforeRoute()`
+
+```diff
+  // /renderer/_default.page.route.js
+
+  export function onBeforeRoute(pageContext) {
+-   let urlMod = pageContext.url
++   let urlMod = pageContext.urlOriginal
+
+    urlMod = changeUrl(urlMod)
+
+    return {
+      pageContext: {
+-       url: urlMod,
++       urlOriginal: urlMod,
+      }
+    }
+  }
+```
+
+
+## `onBeforePrerender()`
+
+```diff
+  // /renderer/_default.page.server.js
+
+  export function onBeforePrerender(globalContext) {
+    const prerenderPageContexts = []
+    globalContext.prerenderPageContexts.forEach((pageContext) => {
+      ['en-US', 'fr-FR', 'de-DE'].forEach((locale) => {
+        prerenderPageContexts.push({
+          ...pageContext,
+-         url: `/${locale}${pageContext.url}`,
++         urlOriginal: `/${locale}${pageContext.urlOriginal}`,
+          locale
+        })
+      })
+    })
+    return {
+      globalContext: {
+        prerenderPageContexts,
+      }
+    }
+  }
+```

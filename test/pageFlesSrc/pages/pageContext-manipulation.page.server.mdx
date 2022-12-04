@@ -1,0 +1,73 @@
+The hooks [`onBeforeRender()`](/onBeforeRender), [`render()`](/render), and [`onBeforeRoute()`](/onBeforeRoute) enable us to extend `pageContext`.
+
+```js
+// .page.server.js
+
+export { onBeforeRender }
+
+function onBeforeRender(pageContext) {
+  const starWarsMovies = await getStarWarsMovies()
+  return {
+    pageContext: {
+      // We make `starWarsMovies` available at `pageContext.starWarsMovies`
+      starWarsMovies
+    }
+  }
+}
+
+async function getStarWarsMovies() {
+  const starWarsMovies = await fetch('https://star-wars.brillout.com/api/films.json')
+  return starWarsMovies
+}
+```
+
+## Don't mutate `pageContext`
+
+In general, we should try to avoid mutating `pageContext`:
+
+```diff
+  // .page.server.js
+
+  export { onBeforeRender }
+
+  function onBeforeRender(pageContext) {
+    const starWarsMovies = await getStarWarsMovies()
+-   pageContext.starWarsMovies = starWarsMovies
++   // We should do this instead
++   return {
++     pageContext: {
++       starWarsMovies
++     }
++   }
+  }
+```
+
+> **Why?** Mutations make reasoning harder; it is easier to think in terms of extending an immutable object.
+
+> While nothing stops us from mutating `pageContext` today, future `vite-plugin-ssr` versions will print a warning discouraging us from mutations (although we will be able to escape hatch and suppress the warning as some rare use cases warrant mutations).
+
+## Don't return entire `pageContext`
+
+We also shouldn't do this:
+
+```diff
+  // .page.server.js
+
+  export { onBeforeRender }
+
+  function onBeforeRender(pageContext) {
+    const starWarsMovies = await getStarWarsMovies()
+    return {
+-     pageContext: {
+-       ...pageContext,
+-       starWarsMovies
+-     }
++     // Do this instead
++     pageContext: {
++       starWarsMovies
++     }
+    }
+  }
+```
+
+> **Why?** See argument above about mutations.

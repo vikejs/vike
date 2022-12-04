@@ -1,0 +1,45 @@
+import { Note } from '@brillout/docpress'
+
+1. Install:
+   ```shell
+   npm install vite-plugin-windicss windicss
+   ```
+
+2. Add `vite-plugin-windicss` to `vite.config.js`:
+   ```js
+   // vite.config.js
+
+   import ssr from "vite-plugin-ssr/plugin"
+   import WindiCSS from "vite-plugin-windicss"
+
+   export default {
+     plugins: [
+       ssr(),
+       WindiCSS({
+         scan: {
+           // By default only `src/` is scanned
+           dirs: ["pages"],
+           // We only have to specify the file extensions we actually use.
+           fileExtensions: ["vue", "js", "ts", "jsx", "tsx"]
+         }
+       })
+     ]
+   }
+   ```
+
+   <Note type="warning">Make sure that all your files are included in `scan.dirs`.</Note>
+
+   > These options can also be defined in `windi.config.js`.
+
+3. Import `virtual:windi.css` in `_default.page.client.js`.
+   ```js
+   // renderer/_default.page.client.js
+
+   import 'virtual:windi.css'
+
+   // ...
+   ```
+
+See also:
+ - Example of using `vite-plugin-ssr` with Windi CSS: [github.com/brillout/vite-plugin-ssr_windi-css](https://github.com/brillout/vite-plugin-ssr_windi-css).
+ - [WindiCSS Vite Guide](https://windicss.org/integrations/vite.html).

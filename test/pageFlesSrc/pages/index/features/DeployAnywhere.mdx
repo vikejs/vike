@@ -1,0 +1,20 @@
+import { Emoji } from '@brillout/docpress'
+import { PrerenderPreview } from './PrerenderPreview'
+import ServerMiddleware from './ServerMiddleware.mdx'
+
+### It's just a middleware
+
+From the server-side point of view, `vite-plugin-ssr` is just a server middleware.
+
+<ServerMiddleware />
+
+### Pre-rendering (aka SSG)
+
+You can also pre-render your app to remove the need for a production Node.js server and deploy to any static host
+(Cloudflare Pages, GitHub Pages, Netlify, ...).
+
+<PrerenderPreview />
+
+<h3>Cloudflare Workers + <code>vite-plugin-ssr</code> = <Emoji name="red-heart" /></h3>
+
+Thanks to `vite-plugin-ssr`'s lean architecture, your app is much less limited by Cloudflare Workers's 1MB bundle size limit.

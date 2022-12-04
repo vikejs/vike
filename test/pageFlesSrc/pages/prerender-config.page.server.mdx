@@ -1,0 +1,78 @@
+import { Link } from '@brillout/docpress'
+
+> See <Link href="/pre-rendering" /> for an overview of how to pre-render our app.
+
+By default, pre-rendering is disabled. To enable it:
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      // Use the default pre-render config:
+      prerender: true
+      // Deviate from the default pre-render config:
+      prerender: {
+        partial?: boolean
+        noExtraDir?: boolean
+        parallel?: boolean | number
+        disableAutoRun?: boolean
+      }
+    })
+  ]
+}
+```
+
+
+## `partial`
+
+Optional, default value: `false`.
+
+Allow only some of our pages to be pre-rendered.
+
+This setting doesn't affect the pre-rendering process: it merely suppresses the warnings when some of our pages cannot be pre-rendered.
+
+> As explained in <Link href="/pre-rendering" />, if we don't pre-render all pages, then we need a production server. By using <Link text={<code>vite-plugin-vercel</code>} href="/vercel#vite-plugin-vercel" />, we can still statically deploy our pre-rendered pages while using a production server for our non-pre-rendered pages.
+
+> `vite-plugin-ssr` shows a warning that a page cannot be pre-rendered, when the page has a parameterized route (e.g. a  <Link text="Route String" href="/route-string" /> `/movie/@movieId`, or a <Link text="Route Function" href="/route-function" />), and there isn't any <Link text={<><code>prerender()</code> hook</>} href="prerender" /> that provides at least one URL matching the page's route (e.g. `/movie/42`).
+
+
+## `noExtraDir`
+
+Optional, default value: `false`.
+
+Don't create a new directory for each HTML file.
+
+For example, generate `dist/client/about.html` instead of `dist/client/about/index.html`.
+
+> Generting a directory for each HTML file is the most reliable way for telling Static Hosts the static URL of each static HTML.
+> But some static hosts prefer the other way.
+
+
+## `parallel`
+
+Optional, default value: [`os.cpus().length`](https://nodejs.org/api/os.html#os_os_cpus).
+
+Number of concurrent pre-render jobs.
+
+Set to `false` (or `1`) to disable concurrency.
+
+> The default value is the fastest, but it may induce high spikes of memory usage.
+>
+> Disable concurrency if:
+> - You encounter `JavaScript heap out of memory` errors.
+> - If pre-rendering takes an abnormal high amount of time. (Caused by the very slow process of memory swapping that kicks-in when memory starts to saturates).
+
+
+## `disableAutoRun`
+
+Optional, default value: `false`.
+
+Disable the automatic initiation of the pre-rendering process when running `$ vite build`.
+
+Use this if you want to programmatically initiate the pre-rendering process instead.
+
+See <Link href="/prerender-programmatic" />.

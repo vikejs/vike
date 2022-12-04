@@ -1,0 +1,11 @@
+```js
+import { renderPage } from 'vite-plugin-ssr'
+
+// `app` can be any server framework such as Express.js/Fastify/Koa/Hapi/...
+app.get('*', async (req, res) => {
+  // `renderPage()` can also be used in serverless environments such as
+  // Cloudflare Workers and Vercel
+  const { httpResponse } = await renderPage({ urlOriginal: req.url })
+  res.send(httpResponse.body)
+})
+```

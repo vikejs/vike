@@ -1,0 +1,33 @@
+import { Integration } from '../components/Integration'
+
+We can add information about the authenticated user to `pageContext` at the server middlware:
+
+```js
+// `vite-plugin-ssr` server middleware
+app.get('*', async (req, res) => {
+  // Authentication middlewares (e.g. Passport.js or Grant) provide information
+  // about the logged-in user on the `req` object.
+  const user = req.user
+
+  /* Or when using a third-party authentication provider (e.g. Auth0):
+  const user = await authProviderApi.getUser(req.headers)
+  */
+
+  const pageContextInit = {
+    urlOriginal: req.url,
+    // We make logged-in user information available to pages as `pageContextInit.user`
+    user
+  }
+  const result = await renderPage(pageContextInit)
+
+  /* ... */
+})
+```
+
+Common auth tools:
+- [NextAuth.js](https://github.com/nextauthjs/next-auth) (also [works with Vite](/nextauth))
+- [Grant](https://github.com/simov/grant)
+- [Passport.js](https://github.com/jaredhanson/passport)
+- [Auth0](https://auth0.com/)
+
+<Integration toolTypeName="authentication tool" />

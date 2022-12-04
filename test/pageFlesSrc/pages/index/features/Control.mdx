@@ -1,0 +1,52 @@
+With `vite-plugin-ssr`, you control how your pages are rendered:
+
+```jsx
+// /pages/about.page.js
+// Environment: Browser & Node.js
+
+// vite-plugin-ssr uses Filesystem Routing: the file `/pages/about.page.js` matches the URL `/about`.
+
+// `Page` can be anything you want — typically a React/Vue/Svelte/... component.
+export function Page() {
+  return <>
+    <h1>About</h1>
+    <p>This is our first vite-plugin-ssr app.</p>
+  </>
+}
+```
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+// This can be any UI framework (React, Vue, Svelte, ...)
+import { renderToHtml } from 'my-favorite-ui-framework'
+
+// You control how `Page` is rendered to HTML
+export async function render({ Page }) {
+  const pageHtml = await renderToHtml(Page)
+  const title = 'My first vite-plugin-ssr app'
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>{title}</title>
+      </head>
+      <body>
+        <div id="page-root">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`
+}
+```
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { hydrateDom } from 'my-favorite-ui-framework'
+
+// You control how `Page` is hydrated
+export async function render({ Page }) {
+  await hydrateDom(Page)
+}
+```
+
+This level control means you can use and integrate any tool you want.

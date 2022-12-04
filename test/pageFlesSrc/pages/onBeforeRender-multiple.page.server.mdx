@@ -1,0 +1,96 @@
+import { Note, Link } from '@brillout/docpress'
+
+<Note type="error">Support for multiple `onBeforeRender()` hooks is deprecated. Use <Link href="data-fetching#custom-exports" text="Custom Exports/Hooks"/> instead. Reach out on Discord or GitHub if you cannot replace your multiple `onBeforeRender()` hooks with one `onBeforeRender()` hook + Custom Hooks.</Note>
+
+While rendering a page `some.page.js`, up to four different `onBeforeRender()` hooks can be executed:
+ - `export { onBeforeRender }` in `_default.page.js`
+ - `export { onBeforeRender }` in `_default.page.server.js`
+ - `export { onBeforeRender }` in `some.page.js`
+ - `export { onBeforeRender }` in `some.page.server.js`
+
+We have full control over the order in which multiple `onBeforeRender()` hooks are executed.
+
+## Server Hooks
+
+[`onBeforeRender()` in `.page.server.js`](/onBeforeRender).
+
+```js
+// some.page.server.js
+
+// Skip the `onBeforeRender()` hook of `_default.page.server.js`.
+// This essentially allows us to override the default hook.
+export const skipOnBeforeRenderDefaultHook = false
+
+export { onBeforeRender }
+
+function onBeforeRender(pageContext) {
+  /* ... */
+}
+```
+
+```js
+// _default.page.server.js
+
+export { onBeforeRender }
+
+function onBeforeRender(pageContext) {
+  if (Math.random() > 0.5) {
+    // Run the `onBeforeRender()` hook of `some.page.server.js`
+    const { pageContext: pageContextAddendum } =
+      await pageContext.runOnBeforeRenderPageHook(pageContext)
+  } else {
+    // Skip the `onBeforeRender()` hook of `some.page.server.js`
+    pageContext.skipOnBeforeRenderPageHook()
+  }
+}
+```
+
+## Isomorphic Hooks
+
+[`onBeforeRender()` in `.page.js`](/onBeforeRender-isomorphic).
+
+```js
+// some.page.js
+
+// Skip the `onBeforeRender()` hook of `_default.page.js`
+export const skipOnBeforeRenderDefaultHook = false
+
+export { onBeforeRender }
+
+function onBeforeRender(pageContext) {
+  if (Math.random() > 0.5) {
+    // Run the `onBeforeRender()` hooks of `_default.page.server.js` and `some.page.server.js`.
+    // (Note that unlike `pageContext.runOnBeforeRenderPageHook(pageContext)`, we cannot pass
+    // `pageContext` to `runOnBeforeRenderServerHooks()`.)
+    const { pageContext: pageContextAddendum } = await pageContext.runOnBeforeRenderServerHooks()
+  } else {
+    // Skip the `onBeforeRender()` hooks of `_default.page.server.js` and `some.page.server.js`
+    pageContext.skipOnBeforeRenderServerHooks()
+  }
+}
+```
+
+```js
+// _default.page.js
+
+export { onBeforeRender }
+
+function onBeforeRender(pageContext) {
+  if (Math.random() > 0.5) {
+    // Run the `onBeforeRender()` hook of `some.page.js`
+    const { pageContext: pageContextAddendum } =
+      await pageContext.runOnBeforeRenderPageHook(pageContext)
+  } else {
+    // Skip the `onBeforeRender()` hook of `some.page.js`
+    pageContext.skipOnBeforeRenderPageHook()
+  }
+
+  // Same than above: we can also invoke the server hooks here
+  if (Math.random() > 0.5) {
+    const { pageContext: pageContextAddendum } = await pageContext.runOnBeforeRenderServerHooks()
+  } else {
+    pageContext.skipOnBeforeRenderServerHooks()
+  }
+}
+```
+

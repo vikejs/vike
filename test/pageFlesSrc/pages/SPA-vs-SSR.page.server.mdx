@@ -1,0 +1,94 @@
+import { Link, RepoLink } from '@brillout/docpress'
+
+Modern UI frameworks (React/Vue/...) enable a wide range of render modes:
+ - SPA
+ - SSR
+ - Pre-rendering (aka SSG)
+ - HTML-only
+
+We compare these render modes with each other and explain which render mode should be used when.
+
+> See <Link href="/render-modes" /> for how to use render modes with your `vite-plugin-ssr` app.
+
+
+## Technical Overview
+
+Technically and precisely speaking, the difference between each render mode is the following.
+ - **SSR**: the page is rendered twice. It's rendered to HTML on the server-side as well as rendered (hydrated) on the browser-side. (The page is loaded both in Node.js and in the browser.)
+ - **SPA**: the page is only rendered in the browser. The page's content is not rendered to HTML. (The page is loaded only in the browser.)
+ - **HTML-only**: the page is rendered only on the server-side (to HTML). It's not rendered in the browser and has zero/minimal browser-side JavaScript. (The page is loaded only in Node.js.)
+ - **Pre-rendering** (aka SSG): the page is rendered to HTML at build-time (instead of request-time).
+
+
+## SPA
+
+SPA means that the page is loaded & rendered only in the browser.
+
+In general, if our page:
+ 1. doesn't need SEO (e.g. an Admin Panel doesn't need to appear in Google searches), and
+ 2. mobile performance is not crucial (e.g. the user is expected to use the Admin Panel on a desktop device)
+
+then SPA is an option.
+
+SPA advantages:
+ - Our page's code doesn't need to be able to run in Node.js. For example, SPA is the only option for UI libraries that don't work with SSR.
+   > Most libraries nowadays support SSR (or have workarounds).
+ - SPA doesn't enforce the usage of a production Node.js server: <Link text="SPAs can be deployed to a static host" href="/pre-rendering#should-i-pre-render" />.
+   > We can remove the need for a production Node.js server for SSR apps by using pre-rendering.
+ - Decreased backend workload.
+
+While for certain types of pages, such as an Admin Panel where there is a clear choice in favor of SPA, there often isn't a clear cut whether we should use SPA or SSR.
+
+
+## SSR
+
+SSR means that our page is rendered to HTML as well as as rendered (hydrated) in the browser.
+
+It is the most capable mode as it enables:
+ - Improved SEO (e.g. high ranking on Google)
+ - Improved mobile performance
+
+For example, social news websites need SSR. (They are interactive while needing both SEO and mobile performance.)
+
+SSR improves mobile performance in the sense that the page's content is rendered to HTML and can already be shown to the user before the browser-side JavaScript even starts loading. (Loading & executing JavaScript is usually very slow on mobile.)
+
+For pages that are not <Link text="content centric" href="/content-vs-interactive" /> (e.g. a to-do list app) and don't need SEO, we can consider [SPA](#spa) instead of SSR.
+
+
+## Pre-rendering
+
+Pre-rendering means to render the page's HTML at build-time instead of request-time.
+
+We should use pre-rendering whenever we can, as it allows us to deploy our app to a Static Host.
+
+For example, `https://vite-plugin-ssr.com` is pre-rendered and deployed to [GitHub Pages](/github-pages).
+
+> See <Link href="/pre-rendering" />.
+
+
+## HTML-only
+
+HTML-only means that the page is only loaded & rendered on the server-side.
+
+For <Link text="content centric" href="/content-vs-interactive" /> pages with no/little interactivity (the page has no/few stateful components), then using HTML-only is an option.
+
+Examples:
+ - Blog
+ - Portfolio/homepage
+ - Marketing pages
+ - Software Documentation (e.g. `https://vite-plugin-ssr.com`)
+
+The advantage of HTML-only is that the page has no/little browser-side JavaScript, which leads to considerably faster loading times (especially on mobile).
+
+For the few bits of interactivity (such as an image carousel or a collapsible section),
+the page can load a couple of vanilla browser-side JavaScript libraries to surgically implement these few bits of interactivity.
+This is what `https://vite-plugin-ssr.com` does: if we inspect the browser-side JavaScript of this page, we'll see only around 1-2KB of JavaScript.
+
+
+## SSG
+
+Tools that pre-render pages are also known as "SSG" (Static-Site Generators).
+
+In the context of `vite-plugin-ssr`, we use the terms "SSG" and "pre-rendering" interchangeably.
+
+> See <Link href="/pre-rendering" />.

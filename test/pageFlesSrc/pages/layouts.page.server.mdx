@@ -1,0 +1,207 @@
+import { RepoLink, Link } from '@brillout/docpress'
+
+> **What are layouts?**
+> Apps often have different layouts:
+> for example a landing page usually has a different layout than an admin panel.
+> *Layouts* are about defining different layouts for different pages.
+
+
+## The simple way
+
+Import and use the right layout for each page:
+
+```jsx
+// /pages/index.page.js
+
+export { Page }
+
+import { LayoutDefault } from '../layouts/LayoutDefault'
+
+function Page() {
+  return <>
+    <LayoutDefault>
+      {/* ... */}
+    </LayoutDefault>
+  </>
+}
+```
+
+```jsx
+// /pages/admin.page.js
+
+export { Page }
+
+import { LayoutDashboard } from '../layouts/LayoutDashboard'
+
+function Page() {
+  return <>
+    <LayoutDashboard>
+      {/* ... */}
+    </LayoutDashboard>
+  </>
+}
+```
+
+
+## Custom Export
+
+Alternatively, we can use a <Link href="/exports" text="Custom Export" />.
+
+```js
+// /pages/admin.page.js
+
+// Set `pageContext.exports.Layout` to `LayoutDashboard`
+export { LayoutDashboard as Layout } from '../layouts/LayoutDashboard'
+export { Page }
+
+function Page() {
+  // ...
+}
+```
+
+Our renderer can then access `pageContext.exports.Layout` and render it accordningly:
+
+```js
+// /renderer/_default.page.{server|client}.js
+
+export { render }
+
+import { LayoutDefault } from '../layouts/LayoutDefault'
+
+function render() {
+  const Layout = pageContext.exports.Layout || LayoutDefault
+  const { Page } = pageContext
+  // We render `<Layout><Page/></Layout>`
+  // ...
+}
+```
+
+```js
+// /pages/index.page.js
+
+// We don't need to `export { Layout }` because the landing page uses `<LayoutDefault>`
+export { Page }
+
+function Page() {
+  // As usual
+  // ...
+}
+```
+
+We can use `_default.page.js` to set the layout for several pages at once:
+
+```js
+// /pages/product/_default.page.js
+
+// Set the Layout for all `/pages/product/**/*.page.js`
+export { LayoutProduct as Layout } from '../../layouts/LayoutProduct'
+```
+
+Which fits well <Link text="Domain-driven file structure" href='/file-structure#domain-driven' />.
+
+Examples:
+ - <RepoLink path="/examples/layouts-react/" />
+ - <RepoLink path="/examples/layouts-vue/" />
+
+
+## Nested Layouts
+
+> **What are nested layouts?** A nested layout is, essentially, when a page has a route with multiple parameters.
+>
+> For example `/product/@productId/@productView`.
+> ```
+> URL                        productId     productView
+> /product/1337              1337          null
+> /product/1337/pricing      1337          pricing
+> /product/42/reviews        42            reviews
+> ```
+> ```
+> /product/42/pricing                   /product/42/reviews
+> +------------------+                  +-----------------+
+> | Product          |                  | Product         |
+> | +--------------+ |                  | +-------------+ |
+> | | Pricing      | |  +------------>  | | Reviews     | |
+> | |              | |                  | |             | |
+> | +--------------+ |                  | +-------------+ |
+> +------------------+                  +-----------------+
+> ```
+
+> For a DX similar to Next.js's new Layout RFC, see [#346](https://github.com/brillout/vite-plugin-ssr/issues/346).
+> Add a comment if you need/want this and it will be implemented.
+
+> If our nested layout doesn't need to be persisted/assigned to a URL (e.g. the "Product Pricing" page and the "Product Reviews" page share the same URL `/product/42`), then we can simply use a stateful component.
+
+Until [#346](https://github.com/brillout/vite-plugin-ssr/issues/346) is implemented,
+a way to implement a nested layout is to use a Route Function:
+
+```js
+// /pages/product/index.page.route.js
+
+import { resolveRoute } from 'vite-plugin-ssr/routing'
+
+export default (pageContext) => {
+  {
+    const result = resolveRoute('/product/@id', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'overview'
+      return result
+    }
+  }
+  {
+    const result = resolveRoute('/product/@id/reviews', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'reviews'
+      return result
+    }
+  }
+  {
+    const result = resolveRoute('/product/@id/pricing', pageContext.urlPathname)
+    if (result.match) {
+      result.routeParams.view = 'pricing'
+      return result
+    }
+  }
+  return false
+}
+```
+
+```jsx
+// /pages/product/index.page.js
+
+export { Page }
+
+import { usePageContext } from '../../renderer/usePageContext'
+
+function Page() {
+  const pageContext = usePageContext()
+  const { view } = pageContext.routeParams
+  const innerView = view === 'overview' ?
+      <Overview/> :
+      view === 'reviews' ?
+        <Reviews/> :
+        <Pricing/>
+  return <>
+     {/* ... */}
+       {/* Somewhere deep */ }
+       { innerView }
+     {/* ... */}
+  </>
+}
+```
+
+> `usePageContext()` allows us to access `pageContext` in any component, see <Link href="/pageContext-anywhere" noBreadcrumb={true} />.
+
+For smooth nested layout navigation, we recommend using <Link href="/client-routing" noBreadcrumb={true} />.
+
+```js
+// pages/product/index.page.client.js
+
+// We can omit this if our app already uses Client Routing.
+export const clientRouting = true
+```
+
+We use `<a href="/product/42/reviews" keep-scroll-position />` (or `navigate('/product/42/reviews', { keepScrollPosition: true })`) to avoid the browser to scroll to the top.
+
+Examples (see the `/starship` page):
+ - <RepoLink path="/examples/layouts-react/" />
+ - <RepoLink path="/examples/layouts-vue/" />

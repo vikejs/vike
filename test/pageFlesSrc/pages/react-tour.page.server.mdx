@@ -1,0 +1,179 @@
+import { ScaffoldCallToActionTour } from './index/ScaffoldCallToAction'
+
+## Routing
+
+Similarly to Next.js,
+we define a new page by creating a new `.page.jsx` file.
+
+```jsx
+// /pages/index.page.jsx
+// Environment: Browser, Node.js
+
+import React, { useState } from "react";
+import { Counter } from "../components/Counter";
+
+export { Page };
+
+function Page() {
+  return <>
+    This page is rendered to HTML and interactive: <Counter />
+  </>;
+}
+```
+
+By default, `vite-plugin-ssr` does Filesystem Routing.
+```
+FILESYSTEM                  URL
+/pages/index.page.jsx        /
+/pages/about.page.jsx        /about
+```
+
+We can also define a page's route with a *Route String* (for parameterized routes such as `/movies/@id`) or a *Route Function* (for full programmatic flexibility).
+
+```js
+// /pages/index.page.route.js
+// Environment: Node.js (and Browser if we choose Client Routing)
+
+// Note how the two files share the same base `/pages/index.page.`; this is how `vite-plugin-ssr`
+// knows that `/pages/index.page.route.js` defines the route of `/pages/index.page.jsx`.
+
+// Route Function
+export default pageContext => pageContext.urlPathname === '/';
+
+// If we don't create a `.page.route.js` file then vite-plugin-ssr does Filesystem Routing
+```
+
+
+## Render Control
+
+Unlike Next.js, we control how our pages are rendered.
+
+```jsx
+// /renderer/_default.page.server.jsx
+// Environment: Node.js
+
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
+
+export { render };
+
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext;
+  const viewHtml = ReactDOMServer.renderToString(
+    <Page {...pageProps} />
+  );
+
+  const title = "Vite SSR";
+
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <title>${title}</title>
+      </head>
+      <body>
+        <div id="page-view">${dangerouslySkipEscape(viewHtml)}</div>
+      </body>
+    </html>`;
+}
+```
+```jsx
+// /renderer/_default.page.client.jsx
+// Environment: Browser
+
+import ReactDOM from "react-dom";
+import React from "react";
+
+export { render };
+
+async function render(pageContext) {
+  const { Page, pageProps } = pageContext
+  ReactDOM.hydrate(
+    <Page {...pageProps} />,
+    document.getElementById("page-view")
+  );
+}
+```
+
+This control enables us to *easily* and *naturally* integrate any tool we want (Redux, GraphQL, Service Worker, Preact, ...).
+
+There are four page file suffixes:
+ - `.page.js`: runs in the browser as well as in Node.js
+ - `.page.client.js`: runs only in the browser
+ - `.page.server.js`: runs only in Node.js
+ - `.page.route.js`: defines the page's Route String or Route Function.
+
+Instead of creating a `.page.client.js` and `.page.server.js` file for each page,
+we can create `/renderer/_default.page.client.js` and `/renderer/_default.page.server.js` which apply as default for all pages.
+
+The last two files we created are actually `/renderer/_default.page.client.jsx` and `/renderer/_default.page.server.jsx`,
+which means that we can now create a new page just by defining a new `.page.jsx` file (the `.page.route.js` file is optional).
+
+The `_default.page.` files can be overridden. For example, we can overriding our `render()` hooks for rendering some of our pages with a completely different UI framework such as Vue.
+
+
+## Data Fetching
+
+Let's now have a look at how to fetch data.
+
+```jsx
+// /pages/star-wars/movie.page.jsx
+// Environment: Browser, Node.js
+
+import React from "react";
+
+export { Page };
+
+function Page(pageProps) {
+  const { movie } = pageProps;
+  return <>
+    <h1>{movie.title}</h1>
+    <p>Release Date: {movie.release_date}</p>
+    <p>Director: {movie.director}</p>
+  </>;
+}
+```
+```js
+// /pages/star-wars/movie.page.route.js
+// Environment: Node.js
+
+// Route String
+export default "/star-wars/@movieId";
+```
+```js
+// /pages/star-wars/movie.page.server.js
+// Environment: Node.js
+
+import fetch from "node-fetch";
+
+export async function onBeforeRender(pageContext) {
+  // The route parameter of `/star-wars/@movieId` is available at `pageContext.routeParams`
+  const { movieId } = pageContext.routeParams;
+
+  // `.page.server.js` files always run in Node.js; we could use SQL/ORM queries here.
+  const response = await fetch(`https://swapi.dev/api/films/${movieId}`);
+  let movie = await response.json();
+
+  // Our render and hydrate functions we defined earlier pass `pageContext.pageProps` to
+  // the root React component `Page`; this is where we define `pageProps`.
+  const pageProps = { movie };
+
+  // We make `pageProps` available as `pageContext.pageProps`
+  return {
+    pageContext: {
+      pageProps
+    }
+  };
+}
+
+// By default `pageContext` is available only on the server. But our hydrate function
+// we defined earlier runs in the browser and needs `pageContext.pageProps`; we use
+// `passToClient` to tell `vite-plugin-ssr` to serialize and make `pageContext.pageProps`
+// available to the browser.
+export const passToClient = ["pageProps"];
+```
+
+That's it for the tour and we have actually already seen most of the interface;
+not only is `vite-plugin-ssr` flexible but it's also simple to use!
+
+<ScaffoldCallToActionTour />

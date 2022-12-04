@@ -1,0 +1,52 @@
+import { Link } from '@brillout/docpress'
+
+We can use a dynamic `import()` to lazy-load a component:
+
+```diff
+- import SomeComponent from 'some-component'
++ const { SomeComponent } = await import('some-component')
+```
+
+> Vite automatically code-splits at `import()` and the code of `some-component` is not included in the initial JavaScript bundle:
+> the code is loaded only if/when `import('some-component')` is executed.
+
+Common use cases:
+ - **Performance**: we can use `import()` to defer loading a heavy component (e.g. an interactive map), so that the user can already interact with our page before even the browser started loading that heavy component.
+ - **Client-side only components**: we can use `import()` to avoid loading/rendering a component on the server-side. (Some component libraries cannot be server-side rendered, see <Link href="/client-only-components" />.)
+
+UI frameworks support for lazy components using `import()`:
+ - [React Docs > Code-Splitting > `React.lazy`](https://reactjs.org/docs/code-splitting.html#reactlazy)
+ - [Vue 3 Docs > Async Components](https://v3.vuejs.org/guide/component-dynamic-async.html#async-components)
+ - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)
+
+> UI frameworks, such as React and Vue, execute the dynamic `import()` of lazy components only on the browser-side, i.e. the lazy compoment is never loaded on the server-side.
+
+
+## React Example
+
+See: [Github > `arthurgailes/vite-plugin-ssr_dynamic-import-example`](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example).
+
+```jsx
+// pages/pick-location.page.jsx
+
+import React from 'react'
+
+export function Page() {
+  // Users can see and interact with the "Please pick a location" button
+  // before the browser loads the code of <SomeHeavyMapComponent>.
+  return <>
+    <button>Please pick a location</button>
+    <Map />
+  </>
+}
+
+function Map() {
+  // We lazy-load the code of `<SomeHeavyMapComponent>`
+  const SomeHeavyMapComponent = React.lazy(() => import('some-heavy-map-component'))
+  return (
+    <React.Suspense fallback={'Loading Map...'}>
+      <SomeHeavyMapComponent />
+    </React.Suspense>
+  )
+}
+```

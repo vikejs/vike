@@ -1,0 +1,30 @@
+## vite-plugin-ssr
+
+To use `vite-plugin-ssr`'s debug logs:
+
+```shell
+# Inspect the routing
+DEBUG=vps:routing npm run dev
+# Inspect what `.page.js` files are found and how they are treated
+DEBUG=vps:pageFiles npm run dev
+# Inspect HTTP Streaming
+DEBUG=vps:stream npm run dev
+```
+
+> These debug logs allow you to understand how `vite-plugin-ssr` thinks of your app. For example, to figure out why your app is `404`'ing, you can use `vps:routing` and `vps:pageFiles`.
+
+There are also `vps:glob` / `vps:extractAssets` / `vps:extractExportNames` but these are meant for vite-plugin-ssr maintainers.
+
+> If you want more debug logs, add a comment at [#249](https://github.com/brillout/vite-plugin-ssr/issues/249).
+
+## Vite
+
+To enable Vite's debug logs, set the environment variable `DEBUG` to `vite:*`.
+
+```shell
+$ DEBUG=vite:* npm run dev
+```
+
+In case you stumbled upon a Vite bug, we recommend to directly inspect Vite's built source code at `node_modules/vite/`, for example by injecting `console.log()` calls to bisect down the bug.
+
+> It may sound scary to dig into Vite's source code, but it's actually often a faster (and a more interesting ;-)) way to find the root cause of problems. Vite's source code is well written and pleasurable to read. It also get's you closer to actually being able to fix the problem and, if you open a Vite PR, feel free to reach out to the `vite-plugin-ssr` maintainers to get your PR merged quicker.

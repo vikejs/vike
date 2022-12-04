@@ -1,0 +1,47 @@
+import { Link } from '@brillout/docpress'
+
+For a page `/pages/film.page.js`, a Route String can be defined in a `/pages/film.page.route.js` adjacent file.
+
+```js
+// /pages/film.page.route.js
+
+// Match URLs `/film/1`, `/film/2`, ...
+export default '/film/@filmId'
+```
+
+The value of `filmId` is available at `pageContext.routeParams.filmId`.
+
+## Multiple Parameters
+
+We can define multiple parameters.
+
+```js
+// /pages/film.page.route.js
+
+// Parameters available at:
+//  - `pageContext.routeParams.year`
+//  - `pageContext.routeParams.slug`
+export default '/news/@year/@slug'
+```
+
+
+## Catch-All
+
+We can use Route Strings to implement [catch-all routes](/catch-all).
+
+
+## Precedence
+
+Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific.
+
+See <Link href="/routing-precedence" />.
+
+
+## Escape `@`
+
+The special character `@` cannot be escaped, use a [Route Function](/route-function) instead.
+
+
+## More
+
+For more advanced routing, we can use [Route Functions](/route-function) which are fundamentally more powerful than Route Strings.

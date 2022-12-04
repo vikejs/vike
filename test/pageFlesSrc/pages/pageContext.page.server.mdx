@@ -1,0 +1,134 @@
+import { Link } from '@brillout/docpress'
+
+The `pageContext` is at the core of `vite-plugin-ssr`: it holds all the information about the page that is currently being rendered.
+
+> Note that `pageContext` is completely discarded and created anew when a new page is rendered.
+> That's why it's called *page*Context (and not *app*Context).
+
+It has built-in properties and we can extend it with custom properties.
+
+## Built-in
+
+ - **`pageContext.Page`**: the `export { Page }` or `export default` of the page's `.page.js` file.
+ - **`pageContext.routeParams`**: the route parameters. (E.g. `pageContext.routeParams.movieId` for a page with a Route String `/movie/@movieId`.)
+ - **`pageContext.urlOriginal`**: the current URL.
+
+   On the server-side, `pageContext.urlOriginal` is the value we passed at the server middleware:
+    ```js
+    // Server middleware
+    app.get('*', async (req, res, next) => {
+      const pageContextInit = {}
+      // `pageContext.urlOriginal` is defined here
+      pageContextInit.urlOriginal = req.url
+      const result = await renderPage(pageContextInit)
+      /* ... */
+    })
+    ```
+
+    On the client-side, when using <Link text="Server Routing" href="/server-routing-vs-client-routing" />, the `pageContext.urlOriginal` value is `undefined` (unless we use [`passToClient`](/passToClient)).
+
+    On the client-side, when using [Client Routing](/clientRouting), the value of `pageContext.urlOriginal` is the browser's current URL (`window.location.href`).
+ - **`pageContext.urlPathname`**: alias of `pageContext.urlParsed.pathname`.
+ - **`pageContext.urlParsed`**: URL information:
+   ```ts
+   {
+     origin: null | string
+     pathname: string
+     pathnameOriginal: string
+     search: Record<string, string>
+     searchAll: Record<string, string[]>
+     searchOriginal: null | string
+     hash: string
+     hashOriginal: null | string
+   }
+   ```
+
+   For example:
+   ```js
+   // https://example.com/some-base-url/hello/s%C3%A9bastien?fruit=%C3%A2pple&fruit=orânge#%C3%A2ge
+   {
+     origin: 'https://example.com',
+     pathname: '/hello/sébastien', // Without Base URL
+     pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',
+     search: { fruit: 'orânge' },
+     searchAll: { fruit: ['âpple', 'orânge'] },
+     searchOriginal: '?fruit=%C3%A2pple&fruit=orânge',
+     hash: 'âge',
+     hashOriginal: '#%C3%A2ge'
+   }
+   ```
+ - **`pageContext.exports`**: See <Link href="/exports" />.
+ - **`pageContext.exportsAll`**: Same as `pageContext.exports` but cumulative.
+ - **`pageContext.isHydration`**: Whether the current page is already rendered to HTML. (Usually `true` for the first page the user navigates to, and `false` if the user navigates to a new page when using Client Routing.)
+ - **`pageContext.isBackwardNavigation`**: Whether the user is navigating back in history. The value is `true` when the user clicks on his browser's backward navigation button, or when invoking `history.back()`. The `isBackwardNavigation` property only works with Client Routing. (The value is always `null` when using Server Routing.)
+ - **`pageContext.is404`**: If an error occurs, whether the error is a `404 Page Not Found` or a `500 Internal Server Error`, see <Link href="/error-page" />.
+
+## Custom
+
+In addition to the built-in `pageContext` values set by `vite-plugin-ssr`, we can define custom `pageContext` values at:
+ - Hooks [`onBeforeRender()`](/onBeforeRender) and [`render()`](/render).
+    ```js
+    export function onBeforeRender() {
+      return {
+        pageContext: {
+          // We can define some custom `pageContext` here
+        }
+      }
+    }
+    ```
+    ```js
+    export function render() {
+      return {
+        documentHtml: escapeInject`<html><!--...--></html>`,
+        pageContext: {
+          // We can define some custom `pageContext` here
+        }
+      }
+    }
+    ```
+ - Server middleware.
+    ```js
+    // Server middleware
+    app.get('*', async (req, res, next) => {
+      const pageContextInit = {
+        urlOriginal: req.url,
+        // We can define some custom `pageContext` here
+      }
+      const pageContext = await renderPage(pageContextInit)
+      /* ... */
+    })
+    ```
+
+## Browser
+
+While some `pageContext` values are also available on the client-side, most values are only available in Node.js and we have to use [`passToClient`](/passToClient) to make them available in the browser.
+
+When using <Link href="/server-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
+ - `pageContext.Page`
+ - `pageContext.exports`
+
+When using <Link href="/client-routing" noBreadcrumb={true} />, the following are also available in the browser by default:
+ - `pageContext.Page`
+ - `pageContext.exports`
+ - `pageContext.isHydration`
+ - `pageContext.isBackwardNavigation`
+ - `pageContext.routeParams`
+ - `pageContext.urlOriginal`
+ - `pageContext.urlPathname`
+ - `pageContext.urlParsed`
+
+
+## TypeScript
+
+TypeScript utility types:
+
+```ts
+// Server-side `pageContext` built-in values
+import type { PageContextBuiltIn } from 'vite-plugin-ssr'
+
+// Client-side `pageContext` built-in values, when using Server Routing
+import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client'
+
+// Client-side `pageContext` built-in values, when using Client Routing
+import type { PageContextBuiltInClient } from 'vite-plugin-ssr/client/router'
+```

@@ -1,0 +1,103 @@
+If the route of two pages both match the same URL then we have a routing conflict: `vite-plugin-ssr` has to decide which of the two pages should be rendered for that URL.
+
+Upon Route String conflicts, `vite-plugin-ssr` chooses the first route from most specific to least specific. For example:
+
+1. `/about/team` (most specific: it matches only a single URL)
+1. `/about/@path` (less specific: it also matches `/about/company`, `/about/vision`, ...)
+1. `/about/*` (less specific: it also matches `/about/some/nested/path`)
+1. `/*` (least specific: it matches all URLs)
+
+> More examples at [`resolvePrecedence/route-strings.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/shared/route/resolvePrecedence/route-strings.spec.ts).
+
+Upon conflicts between Filesystem Routing, Route Strings and Route Functions, `vite-plugin-ssr` chooses the first route in following order:
+
+1. Route Function, returned high positive `precedence` number (e.g. `99`)
+1. Route Function, returned low positive `precedence` number (e.g. `1`)
+1. Filesystem Routing
+1. Route String, static (i.e. without `@param` segment, e.g. `/about/company`)
+1. Route Function, returned no `precedence` number (or `0`)
+1. Route String, parameterized (i.e. with `@param` segement, e.g. `/product/@productId` or `/product/*`)
+1. Route Function, returned low negative `precedence` number (e.g. `-1`)
+1. Route Function, returned high negative `precedence` number (e.g. `-99`)
+
+**Example (4) + (6) + (7)**:
+
+```js
+// product/list.page.route.js
+export default '/product'
+```
+```js
+// product/item.page.route.js
+export default '/product/@productId'
+```
+```js
+// product/catch-all.page.route.js
+export default pageContext => {
+  if (!pageContext.urlPathname.startsWith('/product/')) return false
+  return {
+    precedence: -1,
+    pageContext: {
+      // E.g. redirect `/product/wrong/url` to `/product`
+      redirectTo: '/product'
+    }
+  }
+}
+```
+
+```
+URL                           MATCHES                                    WINNER
+==================            ===================================        ======
+/product/42                   product/item.page.route.js      (6)        ⬅️
+                              product/catch-all.page.route.js (7)
+```
+```
+URL                           MATCHES                                    WINNER
+==================            ===================================        ======
+/product                      product/list.page.route.js      (4)        ⬅️
+                              product/catch-all.page.route.js (7)
+```
+```
+URL                           MATCHES                                    WINNER
+==================            ===================================        ======
+/product/wrong/url            product/catch-all.page.route.js (7)        ⬅️
+```
+
+4: Route String, static (without `@param` segment, e.g. `/about/company`)  
+6: Route String, parameterized (with `@param` segements, e.g. `/product/@productId` or `/product/*`)  
+7: Route Function, returned low negative `precedence` number (e.g. `-1`)  
+
+**Example (1) + (4)**:
+
+```js
+// admin.page.route.js
+export default '/admin'
+```
+```js
+// login.page.route.js
+
+export default pageContext => {
+  if( pageContext.user === null ) {
+    return {
+      precedence: 99
+    }
+  }
+  return false
+}
+```
+
+```
+URL                   pageContext.user       MATCHES                       WINNER
+======                ================       =======================       ======
+/admin                null                   login.page.route.js (1)       ⬅️
+                                             admin.page.route.js (4)
+```
+```
+URL                   pageContext.user       MATCHES                       WINNER
+======                ================       =======================       ======
+/admin                'brillout'             admin.page.route.js (4)       ⬅️
+```
+
+1: Route Function, returned high positive `precedence` number  
+4: Route String, static (without `@param` segment, e.g. `/about/company`)  
+
+> More examples at [`resolvePrecedence/overall.spec.ts`](https://github.com/brillout/vite-plugin-ssr/blob/main/vite-plugin-ssr/shared/route/resolvePrecedence/overall.spec.ts).

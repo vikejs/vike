@@ -1,0 +1,19 @@
+import { Link } from '@brillout/docpress'
+import { DataArchitecture } from '../components'
+
+<DataArchitecture
+  toolName={'Relay'}
+  toolLink={'https://relay.dev/'}
+  isGeneric={false}
+  toolType="data-fetching"
+  toolDocs={<a href="https://github.com/facebook/relay/issues/3468#issuecomment-824872147">Relay - #3468: SSR docs</a>}
+/>
+
+## React Streaming
+
+For using Relay with React Streaming, see:
+ - <Link href="/stream#initial-data-after-streaming" />
+ - [Relay - #3762 React 18 docs](https://github.com/facebook/relay/issues/3762)
+
+Example of a deep Relay integration with React 18's new SSR Suspense Render-as-you-Fetch architecture:
+ - [Vilay](https://github.com/XiNiHa/vilay)

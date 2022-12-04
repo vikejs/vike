@@ -1,0 +1,14 @@
+import { Link } from '@brillout/docpress'
+
+By default `vite-plugin-ssr` does Server Routing. We can opt into Client Routing by setting the <Link text={<><code>clientRouting</code> option</>} href="/clientRouting" /> option to `true`.
+
+*Client(-side) Routing* denotes the practice of implementing page navigation on the client-side:
+when the user navigates to a new page,
+instead of completely discarding the current page and requesting the HTML of the new page,
+the current page is preserved and the new page is rendered by manipulating the DOM of the page.
+
+Client Routing enables:
+- Faster page navigation.
+- Client-side state preserved across navigation.
+- Nested Layouts.
+- Custom page transition animations.

@@ -1,0 +1,35 @@
+import { CSSinJSTool } from '../components'
+
+<CSSinJSTool prefix="Some CSS-in-JS tools allows us to" />
+
+```jsx
+// renderer/_default.page.server.jsx
+
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { CssCollector } from 'some-css-in-js-tool'
+
+export { render };
+
+function render(pageContext) {
+  const { Page } = pageContext;
+  const page = <Page />;
+
+  const collect = new CssCollector()
+
+  const pageHtml = ReactDOMServer.renderToString(collect(page));
+
+  // `vite-plugin-ssr` inserts the `<script>` tags at the end of the HTML; the
+  // browser will load the `<style>` tag first.
+  return escapeInject`<!DOCTYPE html>
+    <html>
+      <head>
+        <style>${dangerouslySkipEscape(collect.getCSS())}</style>
+      </head>
+      <body>
+        <div id="page-view">${dangerouslySkipEscape(pageHtml)}</div>
+      </body>
+    </html>`;
+}
+```

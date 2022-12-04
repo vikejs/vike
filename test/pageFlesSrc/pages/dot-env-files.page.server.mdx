@@ -1,0 +1,15 @@
+import { RepoLink } from '@brillout/docpress'
+import { ImportMeta } from '@brillout/docpress'
+
+Vite automatically makes environment variables defined in `.env` files available at <ImportMeta prop='env' />, see [Vite's docs about `.env` files](https://vitejs.dev/guide/env-and-mode.html#env-files).
+
+Note that:
+ - It only works for environment variables that are prefixed with `VITE_` (for security reasons).
+ - It only works for files processed by Vite. (All following files and their imports: `*.page.js`, `*.page.server.js`, `*.page.client.js`, `*.page.route.js`.)
+   For files not processed by Vite (e.g. <RepoLink path="/boilerplates/boilerplate-react/server/index.js" text="Express.js server code"/>) we can use a Node.js tool such as [`dotenv`](https://github.com/motdotla/dotenv) (all browser files are always processed by Vite):
+   ```js
+   // server.js
+   if (!isProduction) {
+     require('dotenv').config() // npm install dotenv
+   }
+   ```

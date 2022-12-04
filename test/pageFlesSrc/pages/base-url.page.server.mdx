@@ -1,0 +1,40 @@
+import { RepoLink } from '@brillout/docpress'
+import { ImportMeta } from '@brillout/docpress'
+
+> **What is the Base URL?** Changing the Base URL (aka "Public Base Path") is about changing the URL pathname root from `/` to `/some/base/url/`:
+> for example, instead of deploying our app to `https://example.org/*` (the Base URL is `/`) we can change the Base URL to `/some/base/url/` and deploy it to `https://example.org/some/base/url/*` instead.
+
+To change the Base URL we:
+
+1. Set [`vite.config.js#base`](https://vitejs.dev/config/#base).
+   ```js
+   // vite.config.js
+   export default {
+     base: '/some/base/url/'
+   }
+   ```
+1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
+1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
+
+Example: <RepoLink path='/examples/base-url/' />.
+
+
+## CDN
+
+If we want to deploy our static assets to a CDN, then we set the `vite.config.js#base` value to the assets' CDN URL root.
+
+```js
+// vite.config.js
+export default {
+  base: 'https://cdn.example.org/my-website-assets/'
+}
+```
+
+> If `vite.config.js#base` is an absolute URL (a URL that starts with `http://` or `https://`), then `vite-plugin-ssr` applies the Base URL only to our assets (and not to our page URLs). Because using a CDN means that we server-side render our pages on a separate sever with a different URL.
+
+Example: <RepoLink path='/examples/base-url-cdn/' />.
+
+
+## See also
+
+- [Vite Docs - Public Base Path](https://vitejs.dev/guide/build.html#public-base-path)

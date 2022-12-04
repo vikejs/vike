@@ -1,0 +1,61 @@
+By default `pageContext` is available only on the server-side, but we can use `passToClient` to make some `pageContext` available in the browser.
+
+```js
+// *.page.server.js
+// Environment: Node.js
+
+export { passToClient }
+
+// Example of `pageContext` often passed to the browser
+const passToClient = [
+  'pageProps',
+  'routeParams',
+  // (Deep selection is not implemented yet; open a GitHub ticket if you want this.)
+  'user.id',
+  'user.name'
+]
+```
+
+```js
+// *.page.client.js
+// Environment: Browser
+
+export { render }
+
+async function render(pageContext) {
+  // Thanks to `passToClient`, these `pageContext` are available here in the browser
+  pageContext.pageProps
+  pageContext.routeParams
+  pageContext.user.id
+  pageContext.user.name
+
+  /* ... */
+}
+```
+
+`passToClient` is usually used together with the `onBeforeRender()` hook:
+data is fetched in `async onBeforeRender()` and then made available to the browser with `passToClient`, see [Data Fetching](/data-fetching).
+
+Serialization is done with [`@brillout/json-serializer`](https://github.com/brillout/json-serializer).
+
+
+## User-defined classes
+
+User-defined classes are lost during serialization:
+
+```js
+class MyClass {
+  prop = 42
+}
+
+// On the server-side:
+const obj = new MyClass()
+console.log(obj) // MyClass { prop: 42 }
+console.log(obj instanceof MyClass) // true
+
+// On the browser-side, after `obj` was (de)serialized:
+console.log(obj) // { prop: 42 }
+console.log(obj instanceof MyClass) // false
+```
+
+See [GitHub > `brillout/json-serializer` > #3 Support user-defined classes](https://github.com/brillout/json-serializer/issues/3).

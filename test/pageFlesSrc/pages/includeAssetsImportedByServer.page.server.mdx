@@ -1,0 +1,74 @@
+import { Link, Note } from '@brillout/docpress'
+
+<Note type='warning'>This config is experimental.</Note>
+
+By default, static assets (CSS, images, ...) imported *only* by server code are missing in the client production bundle (i.e. `/dist/client/assets/`).
+
+A workaround is to make sure that all assets are imported at least once from client code. For example:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+// If we were to import logo.svg only in this file, then `logoUrl` would be
+// `undefined` in production.
+import logoUrl from './logo.svg'
+
+export function render() {
+  return escapeInject`<html>
+    <head>
+      <!-- Favicon -->
+      <link rel="icon" href="${logoUrl}" />
+    </head>
+    <!-- ... -->
+  </html>`
+}
+```
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+// Workaround: we import logo.svg here as well, even though we don't use it in this file,
+// to make Vite include logo.svg in the client bundle.
+import './logo.svg'
+```
+
+While this workaround works fine for most app, it is cumbersome for <Link text="HTML-only" href="/render-modes#HTML-only" /> apps.
+
+Instead of using this workaround, we can set `includeAssetsImportedByServer` to `true`.
+
+> Because it is experimental, we recommend to use `includeAssetsImportedByServer` only for HTML-only apps.
+
+For example:
+
+```js
+// /**/*.page.server.js
+// Environment: Node.js
+
+// This file is loaded *only* in Node.js
+
+// We need to set `includeAssetsImportedByServer` to `true` if we want
+// `some-style.css` to be included, otherwise it will be ignored.
+import './some-style.css'
+
+// Same for other static assets such as images, fonts, etc.
+import imageUrl from './some-image.svg'
+
+// Prints `undefined` if `includeAssetsImportedByServer` isn't `true`.
+console.log(imageUrl)
+```
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      includeAssetsImportedByServer: true
+    })
+  ]
+}
+```

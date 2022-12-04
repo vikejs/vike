@@ -1,0 +1,125 @@
+#npm-init-code-snippet:before {
+  z-index: 11;
+}
+#npm-init-code-snippet:after {
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: -4px 0px 15px 5px red;
+  box-shadow: -7px 0px 30px 5px white;
+  box-shadow: -2px 0px 15px 2px white;
+}
+
+#mobile-call-to-action {
+  display: none;
+}
+@media screen and (max-width: 1159px) {
+  #header-right-side {
+    display: none;
+  }
+  #mobile-call-to-action {
+    display: block;
+  }
+}
+#header-logo h1 {
+  margin: 0;
+  margin-left: 0.3em;
+  font-size: 2em;
+}
+@media screen and (min-width: 400px) {
+  #header-logo h1 {
+    font-size: 2.3em;
+  }
+}
+/* DocPress's Mobile/Tablet break point */
+@media screen and (max-width: 1139px) {
+  #header-logo h1 {
+    margin-left: 0 !important;
+  }
+}
+@media screen and (min-width: 1160px) {
+  #header-logo h1 {
+    font-size: 2.1em;
+  }
+}
+@media screen and (min-width: 1190px) {
+  #header-logo h1 {
+    font-size: 2.3em;
+  }
+}
+@media screen and (min-width: 1229px) {
+  #header-logo h1 {
+    font-size: 2.6em;
+  }
+}
+
+:root {
+  --header-max-width: 920px;
+}
+#header {
+  display: flex;
+  margin: auto;
+  max-width: var(--header-max-width);
+  padding: var(--header-padding) 0px;
+}
+@media screen and (min-width: 720px) {
+  :root {
+    --header-padding: 20px;
+  }
+  #header {
+    padding-top: 30px;
+  }
+  .header-separator-line {
+    padding-top: 15px;
+    padding-bottom: 25px;
+  }
+  .header-separator-line.primary {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  #header-logo {
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+  }
+  #header-logo img {
+    height: 90px;
+    margin-right: 20;
+  }
+  #header-tagline {
+    font-size: 2em;
+    padding: 0;
+    margin: 0;
+  }
+}
+@media screen and (max-width: 1159px) {
+  :root {
+    --header-padding: 10px;
+  }
+  #header {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    justify-content: center;
+  }
+  #header-left-side {
+    max-width: 400px;
+  }
+  .header-separator-line {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  #header-logo {
+    padding-bottom: 20px;
+    margin-bottom: 0px;
+  }
+  #header-logo {
+    flex-direction: column;
+  }
+  #header-logo img {
+    height: 160px;
+    margin-bottom: 20px;
+  }
+  #header-tagline {
+    font-size: 1.3em;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+  }
+}

@@ -61,6 +61,10 @@ function getCiJobs() {
     {
       name: 'https://vite-plugin-ssr.com',
       setups: [ubuntu17]
+    },
+    {
+      name: 'pageFilesSrc',
+      setups: [ubuntu17]
     }
   ]
 }

@@ -1,0 +1,261 @@
+import { Link, RepoLink, Note } from '@brillout/docpress'
+
+For each page, we can choose a different render mode:
+ - SPA
+ - SSR
+ - HTML-only
+ - Pre-rendering (aka SSG)
+
+For example, we can render an admin panel as SPA while rendering marketing pages with SSR.
+
+> What "SPA", "SSR", "HTML-only" and "SSG" mean, and which one should be used, is explained at <Link href="/SPA-vs-SSR" />.
+
+> The `vite-plugin-ssr` boilerplates do SSR by default, which is a sensible default that works for most apps.
+
+
+## SPA
+
+Rendering a page as SPA means that the page is loaded and rendered only in the browser.
+
+To achieve that:
+ 1. We define `.page.client.js` instead of `.page.js`.
+ 2. We adapt our `render()` hooks.
+
+
+**1. `.page.js` => `.page.client.js`**
+
+By defining `/pages/about.page.client.js` instead of `/pages/about.page` we ensure that the page is loaded only in the browser.
+
+Example:
+ - React Example: <RepoLink path="/examples/render-modes/pages/spa/index.page.client.jsx" />
+ - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/spa.page.client.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
+
+
+**2. `render()` hooks (SPA only)**
+
+If we only have SPA pages, then we adapt our `render()` hooks like the folllowing.
+
+Client-side `render()` hook:
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { renderToDom } from 'some-ui-framework'
+
+export { render }
+
+async function render(pageContext) {
+  const { Page } = pageContext
+  // UI frameworks usually have two methods, such as `renderToDom()` and `hydrateDom()`.
+  // Note how we use `renderToDom()` and not `hydrateDom()`.
+  await renderToDom(document.getElementById('root'), Page)
+}
+```
+
+> See <Link href="/hydration" /> for understanding the difference between "rendering to the DOM" and "hydrating the DOM".
+
+We also adapt our server-side `render()` hook:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject } from 'vite-plugin-ssr'
+
+export function render() {
+  // Note that `div#root` is empty
+  return escapeInject`<html>
+    <body>
+      <div id="root"></div>
+    </body>
+  </html>`
+}
+```
+
+This is the key difference between SPA and SSR: in SPA `div#root` is empty, whereas with SSR `div#root` contains our Page's root component `pageContext.Page` rendererd to HTML.
+
+This means that, with SPA, we use our server-side `render()` hook to generate HTML that is just an empty shell: the HTML doesn't contain the page's content.
+
+For production, we usually want to <Link text="pre-render" href="/pre-rendering" /> the HTML of our SPA pages in order to remove the need for a production Node.js server.
+
+We can also use our server-side `render()` hook to render `<head>`:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject } from 'vite-plugin-ssr'
+
+export function render(pageContext) {
+  const { title, description } = pageContext.exports.meta
+  // Even though we load and render our page's components only in the browser,
+  // we define our page's `<title>` and `<meta name="description">` on the server-side.
+  return escapeInject`<html>
+    <head>
+      <title>${title}</title>
+      <meta name="description" content="${description}" />
+    </head>
+    <body>
+      <div id="root"></div>
+    </body>
+  </html>`
+}
+```
+
+> `pageContext.exports` is explained at <Link href="/exports" />.
+
+```js
+// /pages/about.page.js
+export const meta = {
+  title: 'About | My App',
+  description: 'My App is ...'
+}
+```
+
+Note how we define `pageContext.exports.meta` in `about.page.js` instead of `about.page.client.js`. That's because we need to be able to access `pageContext.exports.meta` from the server-side.
+
+This means that we define both `about.page.js` (defining meta data) and `about.page.client.js` (defining our page's root component `pageContext.Page`).
+
+
+**2. `render()` hooks (SPA + SSR)**
+
+If we have both SPA and SSR pages, then we adapt our `render()` hooks like this:
+
+```js
+// /renderer/_default.page.server.js
+// Environment: Node.js
+
+import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
+import { renderToHtml } from 'some-ui-framework'
+
+export function render(pageContext) {
+  let pageHtml
+  if (pageContext.Page) {
+    // For SSR pages
+    pageHtml = renderToHtml(pageContext.Page)
+  } else {
+    // For SPA pages
+    pageHtml = ''
+  }
+  return escapeInject`<html>
+    <body>
+      <div id="root">${dangerouslySkipEscape(pageHtml)}</div>
+    </body>
+  </html>`
+}
+```
+
+> If we define a page's root component (`pageContext.Page`) in `.page.client.js` instead of `.page.js`, then `pageContext.Page` is only defined in the browser.
+
+```js
+// /renderer/_default.page.client.js
+// Environment: Browser
+
+import { renderToDom, hydrateDom } from 'some-ui-framework'
+
+export async function render(pageContext) {
+  const { Page } = pageContext
+  const root = document.getElementById('root')
+  if (
+    // We detect SPAs by using the fact that `innerHTML === ''` for the first render of an SPA
+    root.innerHTML === '' ||
+    // Upon Client Routing page navigation, vite-plugin-ssr sets `pageContext.isHydration`
+    // to `false`.
+    !pageContext.isHydration
+  ) {
+    // - SPA pages don't have any hydration steps: they need to be fully rendered.
+    // - Page navigation of SSR pages also need to be fully rendered (if we use Client Routing)
+    await renderToDom(root, Page)
+  } else {
+    // The first render of SSR pages is merely a hydration (instead of a full render)
+    await hydrateDom(root, Page)
+  }
+}
+```
+
+React example: <Link href="/examples/render-modes/" />.
+ - Server-side hook: <Link text="/renderer/_default.page.server.jsx" href="/examples/render-modes/renderer/_default.page.server.jsx" />
+ - Client-side hook: <Link text="/renderer/_default.page.client.jsx" href="/examples/render-modes/renderer/_default.page.client.jsx" />
+ - SPA page: <Link text="/pages/spa/index.page.client.jsx" href="/examples/render-modes/pages/spa/index.page.client.jsx" />
+ - SSR page: <Link text="/pages/ssr/index.page.jsx" href="/examples/render-modes/pages/ssr/index.page.jsx" />
+
+Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example).
+ - Server-side hook: [/pages/_default/_default.page.server.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.server.ts)
+ - Client-side hook: [/pages/_default/_default.page.client.ts](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/_default/_default.page.client.ts)
+ - SPA page: [/pages/spa.page.client.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/spa.page.client.vue)
+ - SSR page: [/pages/ssr.page.vue](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/ssr.page.vue)
+
+
+## SSR
+
+The `vite-plugin-ssr` boilerplates and documentation use SSR by default.
+
+So, if we only have SSR pages, then there is nothing for us to do: we simply follow the boilerplates/docs.
+
+If we want to have both SSR and SPA pages, then see [the SPA section](#spa).
+
+
+## Pre-rendering
+
+See <Link href="/pre-rendering" />.
+
+
+## HTML-only
+
+<Note type="warning">Using modern UI frameworks (React/Vue/...) to render pages only to HTML is a novel technique and should be considered experimental.</Note>
+
+To render a page to HTML-only:
+
+ 1. We define `.page.server.js` instead of `.page.js`.
+ 1. (Optional) We define `.page.client.js` (e.g. to add minimal amount of JavaScript surgically injecting bits of interactivity).
+ 1. We set <Link text={<code>includeAssetsImportedByServer</code>} href="/includeAssetsImportedByServer" /> to `true`.
+
+
+```js
+// /pages/about.page.server.js
+// Environment: Node.js
+
+// Usually `Page` is defined in `*.page.js` but for HTML-only we
+// define `Page` in `*.page.server.js` instead.
+export { Page }
+
+function Page() {
+  return <>
+    <h1>HTML-only page</h1>
+    <p>
+      This page is rendered only to HTML. (It's not loaded/rendered in the browser-side.)
+    </p>
+  </>
+}
+```
+
+```js
+// /pages/about.page.client.js
+// Environment: Browser
+
+// This file represents the entire browser-side JavaScript.
+// We can omit defining `.page.client.js` in which case the page has zero browser-side JavaScript.
+
+console.log("I'm the page's only browser-side JavaScript line.")
+```
+
+```js
+// vite.config.js
+
+import { ssr } from 'vite-plugin-ssr/plugin'
+
+export default {
+  plugins: [
+    ssr({
+      includeAssetsImportedByServer: true
+    })
+  ]
+}
+```
+
+Examples:
+ - React Example (zero JavaScript): <RepoLink path="/examples/render-modes/pages/html-only/" />
+ - React Example (minimal JavaScript): <RepoLink path="/examples/render-modes/pages/html-js/" />
+ - Vue Example: [GitHub > `AaronBeaudoin/vite-plugin-ssr-example` > `/pages/html.page.server.vue`](https://github.com/AaronBeaudoin/vite-plugin-ssr-example/blob/main/pages/html.page.server.vue)
+ - [@brillout/docpress](https://github.com/brillout/docpress) which powers this website `https://vite-plugin-ssr.com` (this website uses the HTML-only technique).

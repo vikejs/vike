@@ -1,0 +1,15 @@
+import { StaticHostDocIntro, StaticHostDocOutro } from '../components/static-host'
+import { RepoLink } from '@brillout/docpress'
+
+<StaticHostDocIntro
+  staticHostLink={<>, such as <a href="https://pages.github.com/">GitHub Pages</a></>}
+/>
+
+We add an empty file `.nojekyll` to avoid [GitHub Pages ignoring files starting with `_`](https://stackoverflow.com/questions/6397780/names-starting-with-underscore-shows-errors-page-doesnot-exists-for-gh-pages-bra) which breaks files such as `_default.page.client.js`.
+
+We recommend using the [GitHub Pages Deploy Action](https://github.com/JamesIves/github-pages-deploy-action), for example:
+- `vite-plugin-ssr.com`'s GitHub Action that automatically deploys to GitHub Pages: <RepoLink path='.github/workflows/docs.yml' />.
+
+<StaticHostDocOutro
+  baseUrlAddendum={<> E.g. we need to do this if we use GitHub Page's default deployment to <code><i>username</i>.github.io/<i>repo-name/*</i></code>.</>}
+/>

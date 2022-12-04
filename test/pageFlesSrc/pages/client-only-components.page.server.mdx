@@ -1,0 +1,14 @@
+import { Link } from '@brillout/docpress'
+
+To avoid loading/rendering a client-only component on the server-side, we can:
+ - Render our page as SPA, see <Link href="/render-modes" />.
+ - Render our page with SSR while loading & rendering the component only on the browser-side, see <Link href="/dynamic-import" />.
+
+> **Client-only components**
+>
+> Some component libraries are meant to work only in the browser,
+> such as [react-leaflet](https://github.com/PaulLeCam/react-leaflet) or [vue-leaflet](https://github.com/vue-leaflet/vue-leaflet).
+>
+> Many such client-side only components support being server-side rendered. (Rendering an empty shell on the server-side while replacing that empty shell with the actual component on the browser-side.)
+>
+> But some client-only components don't support being server-side rendered, and some even crash when they are merely loaded on the server-side.
