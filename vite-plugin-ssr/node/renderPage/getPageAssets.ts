@@ -140,8 +140,10 @@ function resolveClientEntriesDev(
   assertPosixPath(clientEntry)
   let filePath: string
   if (path.posix.isAbsolute(clientEntry)) {
+    // User files
     filePath = path.posix.join(root, clientEntry)
   } else if (clientEntry.startsWith('@@vite-plugin-ssr/')) {
+    // VPS client entry
     assert(clientEntry.endsWith('.js'))
     const req = require // Prevent webpack from bundling client code
     const res = req.resolve
@@ -169,10 +171,12 @@ function resolveClientEntriesDev(
     assert(extensionPageFile, clientEntry)
     filePath = extensionPageFile.filePath
   }
+
   if (!filePath.startsWith('/')) {
     assert(process.platform === 'win32')
     filePath = '/' + filePath
   }
+
   filePath = '/@fs' + filePath
   assertPosixPath(filePath)
 
@@ -184,7 +188,6 @@ function resolveClientEntriesProd(
   manifestKeyMap: Record<string, string>
 ): string {
   const { manifestEntry } = getManifestEntry(clientEntry, clientManifest, manifestKeyMap)
-  // TODO: importing assets (e.g. SVG images) from CSS => does VPS crawl the link?
   assert(manifestEntry.isEntry || manifestEntry.isDynamicEntry || clientEntry.endsWith('.css'), { clientEntry })
   let { file } = manifestEntry
   assert(!file.startsWith('/'))

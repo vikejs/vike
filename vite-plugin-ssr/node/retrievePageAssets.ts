@@ -49,7 +49,6 @@ function retrieveAssetsProd(
         includeAssetsImportedByServer &&
         // We assume that all npm packages have already built their VPS page files.
         //  - Bundlers (Rollup, esbuild, tsup, ...) extract the CSS out of JavaScript => we can assume JavaScript to not import any CSS/assets
-        //  - VPS used to support npm packages containing source files, but we deprecate this practice
         !isNpmPackageModulePath(id)
       ) {
         id = extractAssetsAddQuery(id)

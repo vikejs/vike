@@ -22,7 +22,7 @@ function setRuntimeConfig(runtimeConfig: RuntimeConfig): void {
   assertBaseUrl(runtimeConfig.baseUrl)
   globalObject.runtimeConfig = runtimeConfig
 }
-function getRuntimeConfig(): RuntimeConfig {
+function getRuntimeConfig(): RuntimeConfig { // TODO: merge `getRuntimeConfig()` into `getGlobalContext()` + remove this file
   const { runtimeConfig } = globalObject
   assert(runtimeConfig)
   assertBaseRuntime(runtimeConfig)

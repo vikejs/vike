@@ -73,16 +73,15 @@ async function getCode(
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
-    content += generateAddPageFileImports(extensionsImportPaths, isForClientSide, isBuild)
+    content += generateExtenionImports(extensionsImportPaths, isForClientSide, isBuild)
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
 }
 
-function generateAddPageFileImports(extensionsImportPaths: string[], isForClientSide: boolean, isBuild: boolean) {
+function generateExtenionImports(extensionsImportPaths: string[], isForClientSide: boolean, isBuild: boolean) {
   let fileContent = '\n\n'
   extensionsImportPaths.forEach((importPath) => {
-    assert(isValidFileType(importPath))
     const fileType = getFileType(importPath)
     assert(fileType !== '.page.route') // Populate `pageFilesEager` instead of `pageFilesLazy`
     if (fileType === '.page.server') {

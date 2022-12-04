@@ -29,8 +29,16 @@ function getManifestEntry(
     }
   }
 
-  // For Vilay and @brillout/docpress
-  // TODO: deprecate this and migrate @brillout/docpress to Stem approach
+  // For extensions[number].pageFilesDist
+  if (isNpmPackageModulePath(id)) {
+    const manifestKey = manifestKeyMap[id]
+    assert(manifestKey, { id })
+    const manifestEntry = clientManifest[manifestKey]
+    assert(manifestEntry, { id, manifestKey })
+    return { manifestEntry, manifestKey }
+  }
+
+  // For extensions[number].pageFilesSrc
   if (id.startsWith('/node_modules/') || id.startsWith('/../')) {
     let manifestKeyEnd = id.split('/node_modules/').slice(-1)[0]
     assert(manifestKeyEnd, id)
@@ -58,15 +66,6 @@ function getManifestEntry(
       }
     }
     assert(false, id)
-  }
-
-  // For VPS extensions
-  if (isNpmPackageModulePath(id)) {
-    const manifestKey = manifestKeyMap[id]
-    assert(manifestKey, { id })
-    const manifestEntry = clientManifest[manifestKey]
-    assert(manifestEntry, { id, manifestKey })
-    return { manifestEntry, manifestKey }
   }
 
   assert(false, id)
