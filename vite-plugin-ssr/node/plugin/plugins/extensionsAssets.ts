@@ -2,7 +2,7 @@ export { extensionsAssets }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ViteDevServer } from 'vite'
-import { assert, isAsset, isScriptFile, isNotNullish, assertUsage } from '../utils'
+import { assert, isAsset, isScriptFile, assertUsage, assertPosixPath } from '../utils'
 import fs from 'fs'
 import path from 'path'
 import sirv from 'sirv'
@@ -26,7 +26,7 @@ function extensionsAssets(): Plugin {
         serveExtensionsAssets(server.middlewares, extensionsAssetsDir, config)
       }
     },
-    async writeBundle() {
+    writeBundle() {
       if (!config.build.ssr) {
         copyExtensionsAssetsDir(config, extensionsAssetsDir)
       }
@@ -59,12 +59,19 @@ function getExtensionsAssetsDir(config: ResolvedConfig, configVps: ConfigVpsReso
     ASSET_DIR === getAsssetsDirConfig(config),
     'Cannot modify vite.config.js#build.assetsDir while using ' + extensionsWithAssetsDir[0]!.npmPackageName
   )
-  const extensionsAssetsDir = extensionsWithAssetsDir.map(({ assetsDir }) => assetsDir!)
+  const extensionsAssetsDir = extensionsWithAssetsDir.map(({ assetsDir }) => {
+    assert(assetsDir)
+    assertPosixPath(assetsDir)
+    return assetsDir
+  })
   return extensionsAssetsDir
 }
 
 function getAsssetsDirConfig(config: ResolvedConfig) {
-  return config.build.assetsDir.split('/').join('')
+  let { assetsDir } = config.build
+  assertPosixPath(assetsDir)
+  assetsDir = assetsDir.split('/').filter(Boolean).join('/')
+  return assetsDir
 }
 
 function copyExtensionsAssetsDir(config: ResolvedConfig, extensionsAssetsDirs: string[]) {
