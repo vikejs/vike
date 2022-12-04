@@ -29,6 +29,7 @@ type PageFile = {
   pageId: string
 }
 
+// TODO: move this
 function isValidFileType(filePath: string): boolean {
   return ['.js', '.mjs', '.cjs', '.css'].some((ext) => filePath.endsWith(ext))
 }

@@ -58,7 +58,7 @@ function addExtensionsToOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
   )
-  /* Doens't work since `pageFilesSrc` ends with '*'
+  /* Doesn't work since `pageFilesSrc` ends with '*'. We could make it work by using find-glob.
   config.optimizeDeps.include.push(
     ...configVps.extensions
       .map(({ pageFilesSrc }) => pageFilesSrc)

@@ -3,7 +3,15 @@ export { resolveVpsConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsUserProvided, ConfigVpsResolved, ExtensionResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/assertConfigVps'
-import { assertUsage, getNpmPackageName, toPosixPath, isNpmPackageName, getDependencyRootDir } from '../utils'
+import {
+  assert,
+  assertUsage,
+  getNpmPackageName,
+  toPosixPath,
+  isNpmPackageName,
+  getDependencyRootDir,
+  assertPosixPath
+} from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
 import fs from 'fs'
@@ -39,7 +47,7 @@ async function resolveConfigVps(
     if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
   }
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
-  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig] // rename `configs` to `configsVpsUserProvided`
+  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig] // TODO: rename `configs` to `configsVpsUserProvided`
 
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
@@ -51,23 +59,25 @@ async function resolveConfigVps(
   return configVps
 }
 
+// TODO: Move to own file
 function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
-  // TODO: Move to own file
   const extensions = configs.map((c) => c.extensions ?? []).flat()
   return extensions.map((extension) => {
     const { npmPackageName, assetsManifest } = extension
     assertUsage(
       isNpmPackageName(npmPackageName),
-      `VPS extension npm package '${npmPackageName}' doesn't seem to be a valid npm package name`
+      `Extension '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
 
     const npmPackageRootDir = getDependencyRootDir(npmPackageName, config)
+    assertPosixPath(npmPackageRootDir)
 
     const pageFilesDist = resolvePageFilesDist(extension.pageFilesDist, npmPackageName, config, npmPackageRootDir)
 
     let pageFilesSrc: null | string = null
     if (extension.pageFilesSrc) {
       assertPathProvidedByUser('pageFilesSrc', extension.pageFilesSrc, true)
+      assert(extension.pageFilesSrc.endsWith('*'))
       pageFilesSrc = path.posix.join(npmPackageRootDir, extension.pageFilesSrc.slice(0, -1))
     }
     assertUsage(
@@ -80,7 +90,8 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
         return null
       }
       assertPathProvidedByUser('assetsDir', extension.assetsDir)
-      const assetsDir = path.posix.join(npmPackageRootDir, toPosixPath(extension.assetsDir))
+      assertPosixPath(extension.assetsDir)
+      const assetsDir = path.posix.join(npmPackageRootDir, extension.assetsDir)
       return assetsDir
     })()
     assertUsage(
@@ -139,7 +150,7 @@ function resolvePageFilesDist(
       const importPathCSS = getPathCSS(importPath)
       assertUsage(
         filePathCSS === resolveImportPath(importPathCSS, npmPackageName, config, npmPackageRootDir),
-        `The entry package.json#exports["${importPathCSS}"] in the package.json of ${npmPackageName} has a wrong value: make sure it resolves to ${filePathCSS}`
+        `The entry package.json#exports["${importPathCSS}"] in the package.json of ${npmPackageName} (${npmPackageRootDir}/package.json) has a wrong value: make sure it resolves to ${filePathCSS}`
       )
       pageFilesDistResolved.push({
         importPath: importPathCSS,
@@ -164,7 +175,7 @@ function resolveImportPath(
     if (err?.code === 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
       assertUsage(
         false,
-        `Define ${importPath} in the package.json#exports of ${npmPackageName} (${npmPackageRootDir}/package.json) with a Node.js export condition (even if it's a browser file like CSS)`
+        `Define ${importPath} in the package.json#exports of ${npmPackageName} (${npmPackageRootDir}/package.json) with a Node.js export condition (even if it's a browser file such as CSS)`
       )
     }
     throw err

@@ -61,7 +61,7 @@ async function getGlobalContext(isPreRendering: boolean) {
 
   const runtimeConfig = getRuntimeConfig()
   objectAssign(globalContext, {
-    _baseUrl: runtimeConfig.baseUrl,
+    _baseUrl: runtimeConfig.baseUrl, // TODO: remove from pageContext in favor of directly accessing globalContext?
     _baseAssets: runtimeConfig.baseAssets,
     _viteDevServer: viteDevServer ?? null,
     _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
