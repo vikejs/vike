@@ -34,7 +34,7 @@ async function getGlobalContext(isPreRendering: boolean) {
 
   const globalContext = {}
 
-  const isProduction = isPreRendering || !viteDevServer
+  const isProduction = !viteDevServer
   if (isProduction) {
     const buildEntries = await loadBuild()
     assertBuildEntries(buildEntries, isPreRendering)
@@ -72,7 +72,6 @@ async function getGlobalContext(isPreRendering: boolean) {
 }
 
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
-  // "Don't install vite-plugin-ssr after building your app. Instead, install your app's dependencies before building.",
   const errMsg = [
     `You are tyring to run`,
     isPreRendering ? '`$ vite-plugin-ssr prerender`' : 'the server for production',
