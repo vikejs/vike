@@ -130,13 +130,12 @@ function determineInjection({
   isPrerendering: boolean
   isBuild: boolean
 }): { includeImport: boolean; includeExportNames: boolean } {
-  const includeExportNames = fileType === '.page.client' || fileType === '.page.server' || fileType === '.page'
   if (!isForClientSide) {
     return {
       includeImport: fileType === '.page.server' || fileType === '.page' || fileType === '.page.route',
       includeExportNames:
         isPrerendering && isBuild
-          ? includeExportNames // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
+          ? fileType === '.page.client' || fileType === '.page.server' || fileType === '.page' // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
           : fileType === '.page.client'
     }
   } else {
@@ -149,7 +148,7 @@ function determineInjection({
     } else {
       return {
         includeImport: includeImport || fileType === '.page.route',
-        includeExportNames
+        includeExportNames: fileType === '.page.client' || fileType === '.page.server' || fileType === '.page'
       }
     }
   }
