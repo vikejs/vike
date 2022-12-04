@@ -58,12 +58,14 @@ function addExtensionsToOptimizeDeps(config: ResolvedConfig, configVps: ConfigVp
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
   )
+  /* Doens't work since `pageFilesSrc` ends with '*'
   config.optimizeDeps.include.push(
     ...configVps.extensions
       .map(({ pageFilesSrc }) => pageFilesSrc)
       .flat()
       .filter(isNotNullish)
   )
+  */
 }
 
 function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
