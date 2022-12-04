@@ -45,7 +45,8 @@ function generateImportGlobs(): Plugin {
         const isForClientSide = id !== virtualModuleIdPageFilesServer
         assert(isForClientSide === !viteIsSSR_options(options))
         const isClientRouting = id === virtualModuleIdPageFilesClientCR
-        const code = await getCode(config, configVps, isForClientSide, isClientRouting)
+        const isPrerendering = !!configVps.prerender
+        const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering)
         return code
       }
     }
@@ -56,7 +57,8 @@ async function getCode(
   config: ResolvedConfig,
   configVps: ConfigVpsResolved,
   isForClientSide: boolean,
-  isClientRouting: boolean
+  isClientRouting: boolean,
+  isPrerendering: boolean
 ) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
@@ -65,7 +67,7 @@ async function getCode(
   {
     const globRoots = getGlobRoots(config, configVps)
     debugGlob('Glob roots: ', globRoots)
-    content += generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, configVps)
+    content += generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, configVps, isPrerendering)
   }
   {
     const extensionsImportPaths = configVps.extensions
@@ -73,7 +75,13 @@ async function getCode(
       .flat()
       .filter(isNotNullish)
       .map(({ importPath }) => importPath)
-    content += generateExtensionImports(extensionsImportPaths, isForClientSide, isBuild, isClientRouting)
+    content += generateExtensionImports(
+      extensionsImportPaths,
+      isForClientSide,
+      isBuild,
+      isClientRouting,
+      isPrerendering
+    )
   }
   debugGlob(`Glob imports for ${isForClientSide ? 'client' : 'server'}:\n`, content)
   return content
@@ -83,12 +91,18 @@ function generateExtensionImports(
   extensionsImportPaths: string[],
   isForClientSide: boolean,
   isBuild: boolean,
-  isClientRouting: boolean
+  isClientRouting: boolean,
+  isPrerendering: boolean
 ) {
   let fileContent = '\n\n'
   extensionsImportPaths.forEach((importPath) => {
     const fileType = getFileType(importPath)
-    const { includeImport, includeExportNames } = determineInjection({ fileType, isForClientSide, isClientRouting })
+    const { includeImport, includeExportNames } = determineInjection({
+      fileType,
+      isForClientSide,
+      isClientRouting,
+      isPrerendering
+    })
     if (includeImport) {
       fileContent += addImport(importPath, fileType, false, isBuild)
     }
@@ -105,11 +119,13 @@ function generateExtensionImports(
 function determineInjection({
   fileType,
   isForClientSide,
-  isClientRouting
+  isClientRouting,
+  isPrerendering
 }: {
   fileType: FileType
   isForClientSide: boolean
   isClientRouting: boolean
+  isPrerendering: boolean
 }): { includeImport: boolean; includeExportNames: boolean } {
   const includeExportNames = fileType === '.page.client' || fileType === '.page.server' || fileType === '.page'
   if (!isForClientSide) {
@@ -127,7 +143,7 @@ function determineInjection({
     } else {
       return {
         includeImport: includeImport || fileType === '.page.route',
-        includeExportNames
+        includeExportNames: !isPrerendering ? fileType === '.page.client' : includeExportNames
       }
     }
   }
@@ -200,7 +216,8 @@ function generateGlobImports(
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  configVps: ConfigVpsResolved
+  configVps: ConfigVpsResolved,
+  isPrerendering: boolean
 ) {
   let fileContent = `// Generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
@@ -235,7 +252,7 @@ export const isGeneratedFile = true;
       getGlobs(crawlRoots, isBuild, 'page.server'),
       getGlobs(crawlRoots, isBuild, 'page.client', 'extractExportNames')
     ].join('\n')
-    if (isBuild && configVps.prerender) {
+    if (isBuild && isPrerendering) {
       // We extensively use `PageFile['exportNames']` while pre-rendering, in order to avoid loading page files unnecessarily, and therefore reducing memory usage.
       fileContent += [
         getGlobs(crawlRoots, isBuild, 'page', 'extractExportNames'),
