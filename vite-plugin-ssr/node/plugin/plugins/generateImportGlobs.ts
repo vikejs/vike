@@ -95,6 +95,9 @@ function generateExtensionImports(
     if (includeExportNames) {
       fileContent += addImport(importPath, fileType, true, isBuild)
     }
+    if (!includeImport && !includeExportNames && !isForClientSide) {
+      fileContent += `pageFilesList.push("${importPath}");` + '\n'
+    }
   })
   return fileContent
 }
@@ -199,12 +202,13 @@ function generateGlobImports(
   isClientRouting: boolean,
   configVps: ConfigVpsResolved
 ) {
-  let fileContent = `// This file was generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
+  let fileContent = `// Generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
 export const pageFilesLazy = {};
 export const pageFilesEager = {};
 export const pageFilesExportNamesLazy = {};
 export const pageFilesExportNamesEager = {};
+export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
