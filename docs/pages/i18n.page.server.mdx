@@ -66,10 +66,10 @@ export { onBeforePrerender }
 
 const locales = ['en-US', 'de-DE', 'fr-FR']
 
-function onBeforePrerender(globalContext) {
-  const prerenderPageContexts = []
-  globalContext.prerenderPageContexts.forEach((pageContext) => {
-    prerenderPageContexts.push({
+function onBeforePrerender(prerenderContext) {
+  const pageContexts = []
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    pageContexts.push({
       ...pageContext,
       locale: localeDefault
     })
@@ -77,7 +77,7 @@ function onBeforePrerender(globalContext) {
     locales
       .filter((locale) => locale !== localeDefault)
       .forEach((locale) => {
-        prerenderPageContexts.push({
+        pageContexts.push({
           ...pageContext,
           urlOriginal: `/${locale}${pageContext.urlOriginal}`,
           locale
@@ -85,8 +85,8 @@ function onBeforePrerender(globalContext) {
       })
   })
   return {
-    globalContext: {
-      prerenderPageContexts,
+    prerenderContext: {
+      pageContexts
     }
   }
 }

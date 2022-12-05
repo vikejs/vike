@@ -454,43 +454,65 @@ async function callOnBeforePrerenderHook(
     assert(pageContext.urlOriginal)
   })
 
+  const docLink = 'https://vite-plugin-ssr.com/i18n#pre-rendering'
+
   let result: unknown = await callHookWithTimeout(
-    () => onBeforePrerender({
-      pageContexts: prerenderContext.pageContexts,
-      prerenderPageContexts: prerenderContext.pageContexts
-    }),
+    () =>
+      onBeforePrerender({
+        pageContexts: prerenderContext.pageContexts,
+        // TODO: remove upon next major release
+        get prerenderPageContexts() {
+          assertWarning(false, `prerenderPageContexts has been renamed pageContexts, see ${docLink}`, {
+            showStackTrace: true,
+            onlyOnce: true
+          })
+          return prerenderContext.pageContexts
+        }
+      }),
     'onBeforePrerender',
     hookFilePath
   )
   if (result === null || result === undefined) {
     return
   }
-  const errPrefix = `The \`onBeforePrerender()\` hook exported by \`${hookFilePath}\``
-  /*
-  if( hasProp(result, 'globalContext') ) {
-    assert(hasProp(result, 'globalContext', 'object') && hasProp(result.globalContext, 'prerenderPageContexts', 'array'))
-    assertWarning(false, `${errPrefix} returns { globalContext: {  } } `, { onlyOnce: true, showStackTrace: false })
-    objectAssign( result, {
+
+  const errPrefix = `The onBeforePrerender() hook exported by ${hookFilePath}`
+  const rightUsage = `${errPrefix} should return \`null\`, \`undefined\`, or \`{ prerenderContext: { pageContexts } }\`.`
+
+  // TODO: remove upon next major release
+  if (hasProp(result, 'globalContext')) {
+    assertUsage(
+      isObjectWithKeys(result, ['globalContext'] as const) &&
+        hasProp(result, 'globalContext', 'object') &&
+        hasProp(result.globalContext, 'prerenderPageContexts', 'array'),
+      rightUsage
+    )
+    assertWarning(
+      false,
+      `${errPrefix} returns \`{ globalContext: { prerenderPageContexts } }\` but the return value has been renamed to \`{ prerenderContext: { pageContexts } }\`, see ${docLink}`,
+      { onlyOnce: true, showStackTrace: false }
+    )
+    result = {
       prerenderContext: {
         pageContexts: result.globalContext.prerenderPageContexts
       }
-    })
+    }
   }
-  */
+
   assertUsage(
-    isObjectWithKeys(result, ['globalContext'] as const) &&
-      hasProp(result, 'globalContext', 'object') &&
-      hasProp(result.globalContext, 'prerenderPageContexts', 'array'),
-    `${errPrefix} should return \`null\`, \`undefined\`, or \`{ globalContext: { prerenderPageContexts } }\`.`
+    isObjectWithKeys(result, ['prerenderContext'] as const) &&
+      hasProp(result, 'prerenderContext', 'object') &&
+      hasProp(result.prerenderContext, 'pageContexts', 'array'),
+    rightUsage
   )
-  prerenderContext.pageContexts = result.globalContext.prerenderPageContexts as PageContext[]
+  prerenderContext.pageContexts = result.prerenderContext.pageContexts as PageContext[]
 
   prerenderContext.pageContexts.forEach((pageContext: PageContext & { url?: string }) => {
     if (pageContext.url && !hasPropertyGetter(pageContext, 'url')) {
       assertWarning(
         false,
         msgPrefix +
-          ' provided `pageContext.url` but it should provide `pageContext.urlOriginal` instead. (See https://vite-plugin-ssr.com/migration/0.4.23 for more information.)',
+          ' provided `pageContext.url` but it should provide `pageContext.urlOriginal` instead, see https://vite-plugin-ssr.com/migration/0.4.23',
         { showStackTrace: false, onlyOnce: true }
       )
       pageContext.urlOriginal = pageContext.url
