@@ -153,30 +153,27 @@ async function prerender(
   const renderContext = await getRenderContext()
   renderContext.pageFilesAll.forEach(assertExportNames)
 
-  // const globalContext2 = getGlobalContext2
-
-  const globalContext = {}
-  objectAssign(globalContext, {
+  const prerenderContext = {}
+  objectAssign(prerenderContext, {
     _urlHandler: null,
     _noExtraDir: noExtraDir ?? false,
-    _root: root,
     prerenderPageContexts: [] as PageContext[]
   })
 
-  objectAssign(globalContext, options.pageContextInit)
+  objectAssign(prerenderContext, options.pageContextInit)
 
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(renderContext, doNotPrerenderList, concurrencyLimit)
 
-  await callPrerenderHooks(globalContext, renderContext, concurrencyLimit)
+  await callPrerenderHooks(prerenderContext, renderContext, concurrencyLimit)
 
-  await handlePagesWithStaticRoutes(globalContext, renderContext, doNotPrerenderList, concurrencyLimit)
+  await handlePagesWithStaticRoutes(prerenderContext, renderContext, doNotPrerenderList, concurrencyLimit)
 
-  await callOnBeforePrerenderHook(globalContext, renderContext)
+  await callOnBeforePrerenderHook(prerenderContext, renderContext)
 
   const prerenderPageIds: PrerenderedPageIds = {}
   const htmlFiles: HtmlFile[] = []
-  await routeAndPrerender(globalContext, htmlFiles, prerenderPageIds, concurrencyLimit)
+  await routeAndPrerender(prerenderContext, htmlFiles, prerenderPageIds, concurrencyLimit)
 
   warnContradictoryNoPrerenderList(prerenderPageIds, doNotPrerenderList)
 
@@ -255,7 +252,7 @@ function assertExportNames(pageFile: PageFile) {
 }
 
 async function callPrerenderHooks(
-  globalContext: GlobalPrerenderingContext,
+  prerenderContext: GlobalPrerenderingContext,
   renderContext: RenderContext,
   concurrencyLimit: PLimit
 ) {
@@ -288,15 +285,15 @@ async function callPrerenderHooks(
             assert(typeof url === 'string')
             assert(url.startsWith('/'))
             assert(pageContext === null || isPlainObject(pageContext))
-            let pageContextFound: PageContext | undefined = globalContext.prerenderPageContexts.find(
+            let pageContextFound: PageContext | undefined = prerenderContext.prerenderPageContexts.find(
               (pageContext) => pageContext.urlOriginal === url
             )
             if (!pageContextFound) {
-              const pageContext = createPageContextObject(url, renderContext, globalContext)
+              const pageContext = createPageContextObject(url, renderContext, prerenderContext)
               objectAssign(pageContext, {
                 _prerenderHookFile: prerenderHookFile
               })
-              globalContext.prerenderPageContexts.push(pageContext)
+              prerenderContext.prerenderPageContexts.push(pageContext)
               pageContextFound = pageContext
             }
             if (pageContext) {
@@ -312,7 +309,7 @@ async function callPrerenderHooks(
 }
 
 async function handlePagesWithStaticRoutes(
-  globalContext: GlobalPrerenderingContext,
+  prerenderContext: GlobalPrerenderingContext,
   renderContext: RenderContext,
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
@@ -347,13 +344,13 @@ async function handlePagesWithStaticRoutes(
         assert(urlOriginal.startsWith('/'))
 
         // Already included in a `prerender()` hook
-        if (globalContext.prerenderPageContexts.find((pageContext) => pageContext.urlOriginal === urlOriginal)) {
+        if (prerenderContext.prerenderPageContexts.find((pageContext) => pageContext.urlOriginal === urlOriginal)) {
           // Not sure if there is a use case for it, but why not allowing users to use a `prerender()` hook in order to provide some `pageContext` for a page with a static route
           return
         }
 
         const routeParams = {}
-        const pageContext = createPageContextObject(urlOriginal, renderContext, globalContext)
+        const pageContext = createPageContextObject(urlOriginal, renderContext, prerenderContext)
         objectAssign(pageContext, {
           _prerenderHookFile: null,
           routeParams,
@@ -369,7 +366,7 @@ async function handlePagesWithStaticRoutes(
         })
         objectAssign(pageContext, await loadPageFilesServer(pageContext))
 
-        globalContext.prerenderPageContexts.push(pageContext)
+        prerenderContext.prerenderPageContexts.push(pageContext)
       })
     )
   )
@@ -378,7 +375,7 @@ async function handlePagesWithStaticRoutes(
 function createPageContextObject(
   urlOriginal: string,
   renderContext: RenderContext,
-  globalContext: GlobalPrerenderingContext
+  prerenderContext: GlobalPrerenderingContext
 ) {
   const pageContext = {}
   const pageContextInit = { urlOriginal }
@@ -388,8 +385,8 @@ function createPageContextObject(
   }
   objectAssign(pageContext, {
     _urlHandler: null,
-    _noExtraDir: globalContext._noExtraDir,
-    prerenderPageContexts: globalContext.prerenderPageContexts
+    _noExtraDir: prerenderContext._noExtraDir,
+    prerenderPageContexts: prerenderContext.prerenderPageContexts
   })
   /* We cannot add the computed URL properties because they can be iterated & copied in a `onBeforePrerender()` hook, e.g. `/examples/i18n/'
   addComputedUrlProps(pageContext)
@@ -398,7 +395,7 @@ function createPageContextObject(
 }
 
 async function callOnBeforePrerenderHook(
-  globalContext: {
+  prerenderContext: {
     prerenderPageContexts: PageContext[]
   },
   renderContext: RenderContext
@@ -439,7 +436,7 @@ async function callOnBeforePrerenderHook(
 
   assertUsage(isCallable(onBeforePrerender), `${msgPrefix} should be a function.`)
 
-  globalContext.prerenderPageContexts.forEach((pageContext) => {
+  prerenderContext.prerenderPageContexts.forEach((pageContext) => {
     Object.defineProperty(pageContext, 'url', {
       get() {
         assertWarning(
@@ -457,7 +454,7 @@ async function callOnBeforePrerenderHook(
     assert(pageContext.urlOriginal)
   })
 
-  const result = await callHookWithTimeout(() => onBeforePrerender(globalContext), 'onBeforePrerender', hookFilePath)
+  const result = await callHookWithTimeout(() => onBeforePrerender(prerenderContext), 'onBeforePrerender', hookFilePath)
   if (result === null || result === undefined) {
     return
   }
@@ -471,9 +468,9 @@ async function callOnBeforePrerenderHook(
     isPlainObject(globalContextAddedum),
     `${errPrefix} returned \`{ globalContext }\` but \`globalContext\` should be a plain JavaScript object.`
   )
-  objectAssign(globalContext, globalContextAddedum)
+  objectAssign(prerenderContext, globalContextAddedum)
 
-  globalContext.prerenderPageContexts.forEach((pageContext: PageContext & { url?: string }) => {
+  prerenderContext.prerenderPageContexts.forEach((pageContext: PageContext & { url?: string }) => {
     if (pageContext.url && !hasPropertyGetter(pageContext, 'url')) {
       assertWarning(
         false,
@@ -488,7 +485,7 @@ async function callOnBeforePrerenderHook(
 }
 
 async function routeAndPrerender(
-  globalContext: GlobalPrerenderingContext & { prerenderPageContexts: PageContext[] },
+  prerenderContext: GlobalPrerenderingContext & { prerenderPageContexts: PageContext[] },
   htmlFiles: HtmlFile[],
   prerenderPageIds: PrerenderedPageIds,
   concurrencyLimit: PLimit
@@ -498,7 +495,7 @@ async function routeAndPrerender(
 
   // Route all URLs
   await Promise.all(
-    globalContext.prerenderPageContexts.map((pageContext) =>
+    prerenderContext.prerenderPageContexts.map((pageContext) =>
       concurrencyLimit(async () => {
         const { urlOriginal, _prerenderHookFile: prerenderHookFile } = pageContext
         assert(urlOriginal)
@@ -527,13 +524,6 @@ async function routeAndPrerender(
         const { _pageId: pageId } = pageContext
 
         const pageFilesData = await loadPageFilesServer(pageContext)
-        /*
-          ...globalContext,
-          urlOriginal,
-          _pageId: pageId,
-          _routeMatches: pageContext._routeMatches
-        })
-        */
         objectAssign(pageContext, pageFilesData)
 
         objectAssign(pageContext, {
@@ -547,7 +537,7 @@ async function routeAndPrerender(
           pageContext,
           htmlString: documentHtml,
           pageContextSerialized,
-          doNotCreateExtraDirectory: globalContext._noExtraDir,
+          doNotCreateExtraDirectory: prerenderContext._noExtraDir,
           pageId
         })
         prerenderPageIds[pageId] = pageContext
