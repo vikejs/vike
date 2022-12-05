@@ -122,7 +122,6 @@ async function getGlobalContext(isPreRendering: boolean) {
     assertPluginManifest(pluginManifest)
     setPageFiles(pageFiles)
     objectAssign(globalContext, {
-      _isProduction: true as const,
       _manifestClient: clientManifest,
       _manifestPlugin: pluginManifest,
       _configVps: null
@@ -131,7 +130,6 @@ async function getGlobalContext(isPreRendering: boolean) {
   } else {
     assert(configVps)
     objectAssign(globalContext, {
-      _isProduction: false as const,
       _manifestClient: null,
       _manifestPlugin: null,
       _configVps: configVps ?? null

@@ -73,6 +73,7 @@ type GetPageAssets = () => Promise<PageAsset[]>
 
 async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext: {}): Promise<RenderResult> {
   await initGlobalContext()
+
   {
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -205,8 +206,10 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
   const globalContext = await getGlobalContext(pageContextAddendum._isPreRendering)
   objectAssign(pageContextAddendum, globalContext)
 
+  const globalContext2 = getGlobalContext2()
+
   {
-    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext._isProduction)
+    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext2.isProduction)
     objectAssign(pageContextAddendum, {
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds

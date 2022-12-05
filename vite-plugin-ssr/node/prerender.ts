@@ -150,10 +150,9 @@ async function prerender(
     _root: root,
     prerenderPageContexts: [] as PageContext[]
   })
-  assert(globalContext._isProduction)
 
   {
-    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext._isProduction)
+    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, true)
     objectAssign(globalContext, {
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds
