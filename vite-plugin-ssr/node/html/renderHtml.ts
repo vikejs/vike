@@ -41,9 +41,7 @@ function isDocumentHtml(something: unknown): something is DocumentHtml {
 
 async function renderDocumentHtml(
   documentHtml: DocumentHtml,
-  pageContext: PageContextInjectAssets & {
-    _isProduction: boolean
-  },
+  pageContext: PageContextInjectAssets,
   renderFilePath: string,
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
@@ -91,7 +89,7 @@ async function renderDocumentHtml(
 async function renderHtmlStream(
   streamOriginal: Stream & { injectionBuffer?: string[] },
   injectString: null | { htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] },
-  pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isProduction: boolean; _isStream: true },
+  pageContext: PageContextInjectAssets & { enableEagerStreaming?: boolean; _isStream: true },
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
 ) {

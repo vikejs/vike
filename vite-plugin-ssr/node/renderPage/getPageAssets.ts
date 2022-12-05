@@ -22,6 +22,7 @@ import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClie
 import type { MediaType } from '../html/inferMediaType'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
 import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
+import { getGlobalContext2 } from '../globalContext'
 
 type PageAsset = {
   src: string
@@ -33,7 +34,6 @@ type PageAsset = {
 type PageContextGetPageAssets = {
   _baseUrl: string
   _baseAssets: string | null
-  _isProduction: boolean
   _viteDevServer: null | ViteDevServer
   _manifestClient: null | ViteManifest
   _includeAssetsImportedByServer: boolean
@@ -44,10 +44,10 @@ type PageContextGetPageAssets = {
 async function getPageAssets(
   pageContext: PageContextGetPageAssets,
   clientDependencies: ClientDependency[],
-  clientEntries: string[],
-  isPreRendering: boolean
+  clientEntries: string[]
 ): Promise<PageAsset[]> {
-  const isDev = !isPreRendering && !pageContext._isProduction
+  const globalContext2 = getGlobalContext2()
+  const isDev = !globalContext2.isProduction
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
@@ -112,7 +112,7 @@ async function getPageAssets(
     return pageAsset
   })
 
-  sortPageAssetsForEarlyHintsHeader(pageAssets, pageContext)
+  sortPageAssetsForEarlyHintsHeader(pageAssets)
 
   return pageAssets
 }

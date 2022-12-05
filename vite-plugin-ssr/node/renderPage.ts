@@ -48,7 +48,7 @@ import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addC
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { log404 } from './renderPage/log404'
-import { getGlobalContext, getGlobalContext2, GlobalContext } from './globalContext'
+import { getGlobalContext, getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
@@ -72,6 +72,7 @@ type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; er
 type GetPageAssets = () => Promise<PageAsset[]>
 
 async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext: {}): Promise<RenderResult> {
+  await initGlobalContext()
   {
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
     objectAssign(pageContext, pageContextInitAddendum)
@@ -169,12 +170,11 @@ async function handleErrorWithoutErrorPage(pageContext: {
   is404: null | boolean
   _pageId: null
   urlOriginal: string
-  _isProduction: boolean
 }): Promise<RenderResult> {
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
-  warnMissingErrorPage(pageContext)
+  warnMissingErrorPage()
 
   if (!pageContext._isPageContextRequest) {
     objectAssign(pageContext, { httpResponse: null })
@@ -589,11 +589,12 @@ function preparePageContextForRelease<T extends PageContextPublic>(pageContext: 
   }
 }
 
-type PageContext_loadPageFilesServer = PageContextGetPageAssets & PageContextDebug & {
-  urlOriginal: string
-  _pageFilesAll: PageFile[]
-  _isPreRendering: boolean
-}
+type PageContext_loadPageFilesServer = PageContextGetPageAssets &
+  PageContextDebug & {
+    urlOriginal: string
+    _pageFilesAll: PageFile[]
+    _isPreRendering: boolean
+  }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
@@ -620,7 +621,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
       } else {
         const isPreRendering = pageContext._isPreRendering
         assert([true, false].includes(isPreRendering))
-        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries, isPreRendering)
+        const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries)
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
       }
@@ -787,7 +788,6 @@ async function executeRenderHook(
     _passToClient: string[]
     _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean
-    _isProduction: boolean
     _viteDevServer: ViteDevServer | null
     _baseUrl: string
     _pageFilePathsLoaded: string[]
@@ -972,8 +972,9 @@ function assertArguments(...args: unknown[]) {
   }
 }
 
-function warnMissingErrorPage(pageContext: { _isProduction: boolean }) {
-  if (!pageContext._isProduction) {
+function warnMissingErrorPage() {
+  const globalContext2 = getGlobalContext2()
+  if (!globalContext2.isProduction) {
     assertWarning(
       false,
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',

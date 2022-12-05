@@ -2,6 +2,7 @@ export { log404 }
 
 import { PageFile } from '../../shared/getPageFiles'
 import { PageRoutes, loadPageRoutes } from '../../shared/route'
+import { getGlobalContext2 } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
 import { isRenderErrorPageException } from './RenderErrorPage'
 
@@ -11,7 +12,6 @@ async function log404(pageContext: {
   _pageFilesAll: PageFile[]
   _allPageIds: string[]
   _isPageContextRequest: boolean
-  _isProduction: boolean
 }) {
   const { urlPathname } = pageContext
 
@@ -29,14 +29,15 @@ async function log404(pageContext: {
     pageRoutes.length > 0,
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
   )
-  if (!pageContext._isProduction && !isFileRequest(urlPathname) && !pageContext._isPageContextRequest) {
+  const globalContext2 = getGlobalContext2()
+  if (!globalContext2.isProduction && !isFileRequest(urlPathname) && !pageContext._isPageContextRequest) {
     assertInfo(
       false,
       [
         `URL \`${urlPathname}\` isn't matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing and/or set the environment variable \`DEBUG=vps:routing\` for more information. (This info isn't shown in production.) Your page routes:`,
         ...getPagesAndRoutesInfo(pageRoutes)
       ].join('\n'),
-      { onlyOnce: false }
+      { onlyOnce: false } // TODO: ensure that don't show stack trace
     )
   }
 }

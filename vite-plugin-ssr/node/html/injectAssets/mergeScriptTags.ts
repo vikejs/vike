@@ -7,7 +7,7 @@ const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
 const typeRE = /\btype\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
 
-function mergeScriptTags(scriptTagsHtml: string, pageContext: { _isProduction: boolean }): string {
+function mergeScriptTags(scriptTagsHtml: string, isProduction: boolean): string {
   let scriptTag = ''
 
   const scripts = parseScripts(scriptTagsHtml)
@@ -23,7 +23,7 @@ function mergeScriptTags(scriptTagsHtml: string, pageContext: { _isProduction: b
         const hasInnerHtml = !!innerHtml.trim()
         if (src) {
           assert(!hasInnerHtml)
-          if (pageContext._isProduction) {
+          if (isProduction) {
             contents.push(`import ${JSON.stringify(src)};`)
           } else {
             // Ensure HMR preamble code is executed before client entries
@@ -35,7 +35,7 @@ function mergeScriptTags(scriptTagsHtml: string, pageContext: { _isProduction: b
         }
       })
       if (contents.length > 0) {
-        scriptTag += `<script type="module" ${inferScriptExecTime(pageContext)}>\n${contents.join('\n')}\n</script>`
+        scriptTag += `<script type="module" ${inferScriptExecTime(isProduction)}>\n${contents.join('\n')}\n</script>`
       }
     }
   }

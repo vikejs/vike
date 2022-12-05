@@ -1,17 +1,18 @@
 export { getViteDevScripts }
 
 import type { ViteDevServer } from 'vite'
+import { getGlobalContext2 } from '../../globalContext'
 import { assert, assertUsage } from '../../utils'
 
 type PageContext = {
-  _isProduction: boolean
   _viteDevServer: null | ViteDevServer
   _baseUrl: string
   urlPathname: string
 }
 
 async function getViteDevScripts(pageContext: PageContext): Promise<string> {
-  if (pageContext._isProduction) {
+  const globalContext2 = getGlobalContext2()
+  if (globalContext2.isProduction) {
     return ''
   }
   assert(pageContext._viteDevServer)

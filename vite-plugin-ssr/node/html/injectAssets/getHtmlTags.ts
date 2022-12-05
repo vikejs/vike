@@ -12,6 +12,7 @@ import { mergeScriptTags } from './mergeScriptTags'
 import type { PageContextInjectAssets } from '../injectAssets'
 import type { InjectToStream } from 'react-streaming/server'
 import type { PageAsset } from '../../renderPage/getPageAssets'
+import { getGlobalContext2 } from '../../globalContext'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
@@ -35,6 +36,9 @@ async function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
 
+  const globalContext2 = getGlobalContext2()
+  const { isProduction } = globalContext2
+
   assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
   const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
 
@@ -42,7 +46,7 @@ async function getHtmlTags(
 
   const stamp = Symbol('injectFilterEntryStamp')
   const getInject = (asset: PageAsset): PreloadFilterInject => {
-    if (!pageContext._isProduction) {
+    if (!isProduction) {
       return 'HTML_BEGIN'
     }
     if (asset.assetType === 'style' || asset.assetType === 'font') {
@@ -76,7 +80,7 @@ async function getHtmlTags(
     })
   assertInjectFilterEntries(injectFilterEntries, stamp)
 
-  if (injectFilter && pageContext._isProduction) {
+  if (injectFilter && isProduction) {
     Object.seal(injectFilterEntries) // `Object.seal()` instead of `Object.freeze()` to allow the user to `assets.sort()`
     Object.values(injectFilterEntries).forEach((entry) =>
       freezePartial(entry, { inject: (val) => val === false || val === 'HTML_BEGIN' || val === 'HTML_END' })
@@ -114,19 +118,17 @@ async function getHtmlTags(
   // Non-JavaScript
   for (const asset of injectFilterEntries) {
     if (asset.assetType !== 'script' && asset.inject) {
-      const htmlTag = asset.isEntry ? inferAssetTag(asset, pageContext) : inferPreloadTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset, isProduction) : inferPreloadTag(asset)
       htmlTags.push({ htmlTag, position: asset.inject })
     }
   }
 
   // JavaScript
   const positionProd = injectJavaScriptDuringStream ? 'STREAM' : 'HTML_END'
-  const positionScript = !pageContext._isProduction ? 'HTML_BEGIN' : positionProd
+  const positionScript = !isProduction ? 'HTML_BEGIN' : positionProd
   const positionJsonData =
-    !pageContext._isProduction && !pageContext._pageContextPromise && !pageContext._isStream
-      ? 'HTML_BEGIN'
-      : positionProd
-  const jsScript = await getMergedScriptTag(pageAssets, pageContext)
+    !isProduction && !pageContext._pageContextPromise && !pageContext._isStream ? 'HTML_BEGIN' : positionProd
+  const jsScript = await getMergedScriptTag(pageAssets, pageContext, isProduction)
   if (jsScript) {
     htmlTags.push({
       htmlTag: jsScript,
@@ -135,7 +137,7 @@ async function getHtmlTags(
   }
   for (const asset of injectFilterEntries) {
     if (asset.assetType === 'script' && asset.inject) {
-      const htmlTag = asset.isEntry ? inferAssetTag(asset, pageContext) : inferPreloadTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset, isProduction) : inferPreloadTag(asset)
       const position = asset.inject === 'HTML_END' ? positionScript : asset.inject
       htmlTags.push({ htmlTag, position })
     }
@@ -159,12 +161,13 @@ async function getHtmlTags(
 
 async function getMergedScriptTag(
   pageAssets: PageAsset[],
-  pageContext: PageContextInjectAssets
+  pageContext: PageContextInjectAssets,
+  isProduction: boolean
 ): Promise<null | string> {
   const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts(pageContext)
-  const scriptTagsHtml = `${viteScripts}${scriptAssets.map((asset) => inferAssetTag(asset, pageContext)).join('')}`
-  const scriptTag = mergeScriptTags(scriptTagsHtml, pageContext)
+  const scriptTagsHtml = `${viteScripts}${scriptAssets.map((asset) => inferAssetTag(asset, isProduction)).join('')}`
+  const scriptTag = mergeScriptTags(scriptTagsHtml, isProduction)
   return scriptTag
 }
 

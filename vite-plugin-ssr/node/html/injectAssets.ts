@@ -19,7 +19,6 @@ type PageContextInjectAssets = {
   _isHtmlOnly: boolean
   _pageContextPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
-  _isProduction: boolean
   _viteDevServer: null | ViteDevServer
   _baseUrl: string
   is404: null | boolean
