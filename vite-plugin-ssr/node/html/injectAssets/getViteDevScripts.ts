@@ -1,26 +1,19 @@
 export { getViteDevScripts }
 
-import type { ViteDevServer } from 'vite'
 import { getGlobalContext2 } from '../../globalContext'
 import { assert, assertUsage } from '../../utils'
 
-type PageContext = {
-  _viteDevServer: null | ViteDevServer
-  _baseUrl: string
-  urlPathname: string
-}
-
-async function getViteDevScripts(pageContext: PageContext): Promise<string> {
+async function getViteDevScripts(): Promise<string> {
   const globalContext2 = getGlobalContext2()
   if (globalContext2.isProduction) {
     return ''
   }
-  assert(pageContext._viteDevServer)
+  const { viteDevServer } = globalContext2
 
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'
   let fakeHtml = fakeHtmlBegin + fakeHtmlEnd
-  fakeHtml = await pageContext._viteDevServer.transformIndexHtml('/', fakeHtml)
+  fakeHtml = await viteDevServer.transformIndexHtml('/', fakeHtml)
   assertUsage(
     !fakeHtml.includes('vite-plugin-pwa'),
     'The HTML transformer of `vite-plugin-pwa` cannot be applied, see workaround at https://github.com/brillout/vite-plugin-ssr/issues/388#issuecomment-1199280084'

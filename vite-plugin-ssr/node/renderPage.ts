@@ -783,7 +783,6 @@ async function executeRenderHook(
     _passToClient: string[]
     _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean
-    _viteDevServer: ViteDevServer | null
     _baseUrl: string
     _pageFilePathsLoaded: string[]
   }

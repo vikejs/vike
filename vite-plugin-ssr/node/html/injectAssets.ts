@@ -6,7 +6,6 @@ import { assert } from '../utils'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags'
-import type { ViteDevServer } from 'vite'
 import type { InjectToStream } from 'react-streaming/server'
 import type { HtmlPart } from './renderHtml'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags'
@@ -19,7 +18,6 @@ type PageContextInjectAssets = {
   _isHtmlOnly: boolean
   _pageContextPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
-  _viteDevServer: null | ViteDevServer
   _baseUrl: string
   is404: null | boolean
 }

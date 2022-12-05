@@ -34,11 +34,9 @@ type PageAsset = {
 type PageContextGetPageAssets = {
   _baseUrl: string
   _baseAssets: string | null
-  _viteDevServer: null | ViteDevServer
   _manifestClient: null | ViteManifest
   _includeAssetsImportedByServer: boolean
   _manifestPlugin: null | { manifestKeyMap: Record<string, string> }
-  _configVps: null | ConfigVpsResolved
 }
 
 async function getPageAssets(
@@ -52,10 +50,7 @@ async function getPageAssets(
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isDev) {
-    const viteDevServer = pageContext._viteDevServer
-    assert(viteDevServer)
-    const configVps = pageContext._configVps
-    assert(configVps)
+    const { viteDevServer, configVps } = globalContext2
     clientEntriesSrc = clientEntries.map((clientEntry) =>
       resolveClientEntriesDev(clientEntry, viteDevServer, configVps)
     )

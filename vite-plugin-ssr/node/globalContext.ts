@@ -124,7 +124,6 @@ async function getGlobalContext(isPreRendering: boolean) {
     objectAssign(globalContext, {
       _manifestClient: clientManifest,
       _manifestPlugin: pluginManifest,
-      _configVps: null
     })
     setRuntimeConfig(pluginManifest)
   } else {
@@ -132,7 +131,6 @@ async function getGlobalContext(isPreRendering: boolean) {
     objectAssign(globalContext, {
       _manifestClient: null,
       _manifestPlugin: null,
-      _configVps: configVps ?? null
     })
   }
 
@@ -140,7 +138,6 @@ async function getGlobalContext(isPreRendering: boolean) {
   objectAssign(globalContext, {
     _baseUrl: runtimeConfig.baseUrl, // TODO: remove from pageContext in favor of directly accessing globalContext?
     _baseAssets: runtimeConfig.baseAssets,
-    _viteDevServer: viteDevServer ?? null,
     _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
     _objectCreatedByVitePluginSsr: true // TODO: remove
   })

@@ -128,7 +128,7 @@ async function getHtmlTags(
   const positionScript = !isProduction ? 'HTML_BEGIN' : positionProd
   const positionJsonData =
     !isProduction && !pageContext._pageContextPromise && !pageContext._isStream ? 'HTML_BEGIN' : positionProd
-  const jsScript = await getMergedScriptTag(pageAssets, pageContext, isProduction)
+  const jsScript = await getMergedScriptTag(pageAssets, isProduction)
   if (jsScript) {
     htmlTags.push({
       htmlTag: jsScript,
@@ -161,11 +161,10 @@ async function getHtmlTags(
 
 async function getMergedScriptTag(
   pageAssets: PageAsset[],
-  pageContext: PageContextInjectAssets,
   isProduction: boolean
 ): Promise<null | string> {
   const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
-  const viteScripts = await getViteDevScripts(pageContext)
+  const viteScripts = await getViteDevScripts()
   const scriptTagsHtml = `${viteScripts}${scriptAssets.map((asset) => inferAssetTag(asset, isProduction)).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml, isProduction)
   return scriptTag
