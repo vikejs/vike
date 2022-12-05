@@ -14,6 +14,7 @@ async function getGlobalContext() {
   return globalObject.globalContext
 }
 
+// TODO: refactor
 async function retrieveGlobalContext() {
   const baseUrl = getBaseUrl()
   assertBaseUrl(baseUrl)

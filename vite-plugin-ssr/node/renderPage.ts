@@ -211,7 +211,11 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
     const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext2.isProduction)
     objectAssign(pageContextAddendum, {
       _pageFilesAll: pageFilesAll,
-      _allPageIds: allPageIds
+      _allPageIds: allPageIds,
+      // The following is define on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
+      _baseUrl: globalContext2.baseUrl,
+      _baseAssets: globalContext2.baseAssets,
+      _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer
     })
   }
 
