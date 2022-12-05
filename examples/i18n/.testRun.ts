@@ -3,7 +3,7 @@ import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@br
 export { testRun }
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
-  run(cmd, { doNotFailOnWarning: true })
+  run(cmd)
 
   test('localized content is rendered to HTML', async () => {
     const html = await fetchHtml('/de-DE')
