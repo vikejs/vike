@@ -24,7 +24,7 @@ import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './rende
 import { blue, green, gray, cyan } from 'picocolors'
 import { cpus } from 'os'
 import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
-import { getGlobalContext, GlobalContext } from './globalContext'
+import { getGlobalContext, getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
@@ -51,7 +51,6 @@ type GlobalPrerenderingContext = GlobalContext & {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
   _isPreRendering: true
-  _usesClientRouter: boolean
   _noExtraDir: boolean
   prerenderPageContexts: PageContext[]
   _urlProcessor: null
@@ -140,6 +139,9 @@ async function prerender(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
   )
 
+  await initGlobalContext({ isPrerendering: true })
+  // const globalContext2 = getGlobalContext2
+
   const globalContext = await getGlobalContext(true)
   objectAssign(globalContext, {
     _isPreRendering: true as const,
@@ -149,9 +151,6 @@ async function prerender(
     prerenderPageContexts: [] as PageContext[]
   })
   assert(globalContext._isProduction)
-  objectAssign(globalContext, {
-    _usesClientRouter: globalContext._manifestPlugin.usesClientRouter
-  })
 
   {
     const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext._isProduction)
@@ -470,6 +469,9 @@ async function routeAndPrerender(
   prerenderPageIds: PrerenderedPageIds,
   concurrencyLimit: PLimit
 ) {
+  const globalContext2 = getGlobalContext2()
+  assert(globalContext2.isPrerendering)
+
   // Route all URLs
   await Promise.all(
     globalContext.prerenderPageContexts.map((pageContext) =>
@@ -508,7 +510,10 @@ async function routeAndPrerender(
         })
         objectAssign(pageContext, pageFilesData)
 
-        objectAssign(pageContext, { is404: null })
+        objectAssign(pageContext, {
+          is404: null,
+          _usesClientRouter: globalContext2.pluginManifest.usesClientRouter
+        })
 
         const { documentHtml, pageContextSerialized } = await prerenderPage(pageContext)
         htmlFiles.push({

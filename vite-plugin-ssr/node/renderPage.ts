@@ -48,17 +48,15 @@ import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addC
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { log404 } from './renderPage/log404'
-import { getGlobalContext, GlobalContext } from './globalContext'
+import { getGlobalContext, getGlobalContext2, GlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ViteDevServer } from 'vite'
-import { ViteManifest } from './viteManifest'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import type { MediaType } from './html/inferMediaType'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
-import { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
 
 export { renderPage }
 export { prerenderPage }

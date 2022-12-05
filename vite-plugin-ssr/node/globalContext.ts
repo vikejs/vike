@@ -1,3 +1,4 @@
+export { initGlobalContext }
 export { getGlobalContext }
 export { getGlobalContext2 }
 export { setGlobalContextViteDevServer }
@@ -58,14 +59,16 @@ function getViteDevServer(): ViteDevServer | null {
   return globalObject.viteDevServer ?? null
 }
 
-async function initGlobalContext(isPrerendering: boolean): Promise<void> {
+async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } = {}): Promise<void> {
+  if (globalObject.globalContext) return
+
   const { viteDevServer, configVps } = globalObject
   const isProduction = !viteDevServer
 
   if (isProduction) {
     assert(!configVps)
     const buildEntries = await loadBuild()
-    assertBuildEntries(buildEntries, isPrerendering)
+    assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, clientManifest, pluginManifest } = buildEntries
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)
@@ -74,7 +77,7 @@ async function initGlobalContext(isPrerendering: boolean): Promise<void> {
     const runtimeConfig = getRuntimeConfig()
     globalObject.globalContext = {
       isProduction,
-      isPrerendering,
+      isPrerendering: isPrerendering ?? false,
       clientManifest,
       pluginManifest,
       viteDevServer: null,
@@ -85,7 +88,7 @@ async function initGlobalContext(isPrerendering: boolean): Promise<void> {
     }
   } else {
     assert(configVps)
-    assert(isPrerendering === false)
+    assert(!isPrerendering)
     const runtimeConfig = getRuntimeConfig()
     globalObject.globalContext = {
       isProduction,
