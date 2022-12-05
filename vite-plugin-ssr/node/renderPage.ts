@@ -50,7 +50,6 @@ import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from 
 import { log404 } from './renderPage/log404'
 import { getGlobalContext, getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
-import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
@@ -71,7 +70,11 @@ type GlobalRenderingContext = GlobalContext & {
 type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 type GetPageAssets = () => Promise<PageAsset[]>
 
-async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext: {}): Promise<RenderResult> {
+async function renderPage_(
+  pageContextInit: { urlOriginal: string },
+  pageContext: {},
+  renderContext: RenderContext
+): Promise<RenderResult> {
   {
     const { urlOriginal } = pageContextInit
     if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
@@ -81,10 +84,8 @@ async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext
     }
   }
 
-  await initGlobalContext()
-
   {
-    const pageContextInitAddendum = await initializePageContext(pageContextInit)
+    const pageContextInitAddendum = await initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
@@ -201,7 +202,7 @@ async function handleErrorWithoutErrorPage(pageContext: {
   }
 }
 
-async function initializePageContext(pageContextInit: { urlOriginal: string }) {
+async function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   const { urlOriginal } = pageContextInit
   assert(urlOriginal)
 
@@ -215,18 +216,31 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
   objectAssign(pageContextAddendum, globalContext)
 
   {
-    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext2.isProduction)
     objectAssign(pageContextAddendum, {
-      _pageFilesAll: pageFilesAll,
-      _allPageIds: allPageIds,
       // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
       _baseUrl: globalContext2.baseUrl,
       _baseAssets: globalContext2.baseAssets,
-      _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer
+      _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer,
+      _pageFilesAll: renderContext.pageFilesAll,
+      _allPageIds: renderContext.allPageIds
     })
   }
 
   return pageContextAddendum
+}
+
+type RenderContext = {
+  pageFilesAll: PageFile[]
+  allPageIds: string[]
+}
+async function getRenderContext(): Promise<RenderContext> {
+  const globalContext2 = getGlobalContext2()
+  const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext2.isProduction)
+  const renderContext = {
+    pageFilesAll: pageFilesAll,
+    allPageIds: allPageIds
+  }
+  return renderContext
 }
 
 function handleUrl(pageContext: { urlOriginal: string; _baseUrl: string }): {
@@ -267,25 +281,28 @@ async function renderPage<
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
 
-  const pageContextOfOriginalError = {}
+  await initGlobalContext()
+  const renderContext = await getRenderContext()
+
+  const pageContext = {}
   try {
-    return await renderPage_(pageContextInit, pageContextOfOriginalError)
+    return await renderPage_(pageContextInit, pageContext, renderContext)
   } catch (errOriginal) {
     assertError(errOriginal)
     if (!isRenderErrorPageException(errOriginal)) {
       logError(errOriginal)
     }
     try {
-      return await renderErrorPage(pageContextInit, errOriginal, pageContextOfOriginalError)
+      return await renderErrorPage(pageContextInit, errOriginal, pageContext, renderContext)
     } catch (err) {
       logErrorIfDifferentFromOriginal(err, errOriginal)
-      const pageContext = {}
-      objectAssign(pageContext, pageContextInit)
-      objectAssign(pageContext, {
+      const pageContextErr = {}
+      objectAssign(pageContextErr, pageContextInit)
+      objectAssign(pageContextErr, {
         httpResponse: null,
         errorWhileRendering: errOriginal
       })
-      return pageContext
+      return pageContextErr
     }
   }
 }
@@ -293,14 +310,13 @@ async function renderPage<
 async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   pageContextInit: PageContextInit,
   errOriginal: unknown,
-  pageContextOfOriginalError: Record<string, unknown>
+  pageContextOriginal: Record<string, unknown>,
+  renderContext: RenderContext
 ) {
   const pageContext = {}
   {
-    const pageContextInitAddendum = await initializePageContext(pageContextInit)
+    const pageContextInitAddendum = await initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
-    // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
-    assert(!('httpResponse' in pageContext))
   }
   {
     const pageContextAddendum = handleUrl(pageContext)
@@ -323,7 +339,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   }
 
   objectAssign(pageContext, {
-    _routeMatches: (pageContextOfOriginalError as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
+    _routeMatches: (pageContextOriginal as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
   })
 
   assert(pageContext.errorWhileRendering)
