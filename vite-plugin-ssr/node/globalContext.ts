@@ -38,7 +38,7 @@ type GlobalContext2 = (
       viteDevServer: null
     }
 ) & {
-  baseUrl: null | string
+  baseUrl: string
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
 }

@@ -1,3 +1,8 @@
+export { renderPage }
+export { prerenderPage }
+export { renderStatic404Page }
+export { loadPageFilesServer }
+
 import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from './html/renderHtml'
 import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
@@ -48,7 +53,7 @@ import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addC
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { log404 } from './renderPage/log404'
-import { getGlobalContext, getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
+import { getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
@@ -56,11 +61,6 @@ import { handlePageContextRequestUrl } from './renderPage/handlePageContextReque
 import type { MediaType } from './html/inferMediaType'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
-
-export { renderPage }
-export { prerenderPage }
-export { renderStatic404Page }
-export { loadPageFilesServer }
 
 type GlobalRenderingContext = GlobalContext & {
   _allPageIds: string[]
@@ -70,7 +70,7 @@ type GlobalRenderingContext = GlobalContext & {
 type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 type GetPageAssets = () => Promise<PageAsset[]>
 
-async function renderPage_(
+async function renderPageAttempt(
   pageContextInit: { urlOriginal: string },
   pageContext: {},
   renderContext: RenderContext
@@ -203,27 +203,18 @@ async function handleErrorWithoutErrorPage(pageContext: {
 }
 
 async function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
-  const { urlOriginal } = pageContextInit
-  assert(urlOriginal)
-
-  const pageContextAddendum = {
-    ...pageContextInit
-  }
+  assert(pageContextInit.urlOriginal)
 
   const globalContext2 = getGlobalContext2()
-
-  const globalContext = await getGlobalContext(globalContext2.isPrerendering)
-  objectAssign(pageContextAddendum, globalContext)
-
-  {
-    objectAssign(pageContextAddendum, {
-      // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
-      _baseUrl: globalContext2.baseUrl,
-      _baseAssets: globalContext2.baseAssets,
-      _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer,
-      _pageFilesAll: renderContext.pageFilesAll,
-      _allPageIds: renderContext.allPageIds
-    })
+  const pageContextAddendum = {
+    ...pageContextInit,
+    _objectCreatedByVitePluginSsr: true,
+    _pageFilesAll: renderContext.pageFilesAll,
+    _allPageIds: renderContext.allPageIds,
+    // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
+    _baseUrl: globalContext2.baseUrl,
+    _baseAssets: globalContext2.baseAssets,
+    _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer
   }
 
   return pageContextAddendum
@@ -286,7 +277,7 @@ async function renderPage<
 
   const pageContext = {}
   try {
-    return await renderPage_(pageContextInit, pageContext, renderContext)
+    return await renderPageAttempt(pageContextInit, pageContext, renderContext)
   } catch (errOriginal) {
     assertError(errOriginal)
     if (!isRenderErrorPageException(errOriginal)) {
