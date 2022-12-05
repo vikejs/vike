@@ -30,17 +30,17 @@ function render(pageContext) {
 }
 
 // We only need this for pre-rendered apps
-function onBeforePrerender(globalContext) {
-  const prerenderPageContexts = []
-  globalContext.prerenderPageContexts.forEach((pageContext) => {
-    prerenderPageContexts.push({
+function onBeforePrerender(prerenderContext) {
+  const pageContexts = []
+  prerenderContext.pageContexts.forEach((pageContext) => {
+    pageContexts.push({
       ...pageContext,
       locale: localeDefault
     })
     locales
       .filter((locale) => locale !== localeDefault)
       .forEach((locale) => {
-        prerenderPageContexts.push({
+        pageContexts.push({
           ...pageContext,
           urlOriginal: `/${locale}${pageContext.urlOriginal}`,
           locale
@@ -48,8 +48,8 @@ function onBeforePrerender(globalContext) {
       })
   })
   return {
-    globalContext: {
-      prerenderPageContexts
+    prerenderContext: {
+      pageContexts
     }
   }
 }
