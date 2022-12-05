@@ -4,6 +4,7 @@ export { renderStatic404Page }
 export { loadPageFilesServer }
 export { initPageContext }
 export { getRenderContext }
+export type { RenderContext }
 
 import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from './html/renderHtml'
@@ -55,7 +56,7 @@ import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addC
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { log404 } from './renderPage/log404'
-import { getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
+import { getGlobalContext2, initGlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
@@ -64,7 +65,7 @@ import type { MediaType } from './html/inferMediaType'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
 
-type GlobalRenderingContext = GlobalContext & {
+type GlobalRenderingContext = {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
 }
@@ -87,7 +88,7 @@ async function renderPageAttempt(
   }
 
   {
-    const pageContextInitAddendum = await initPageContext(pageContextInit, renderContext)
+    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
@@ -204,7 +205,7 @@ async function handleErrorWithoutErrorPage(pageContext: {
   }
 }
 
-async function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
+function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   assert(pageContextInit.urlOriginal)
 
   const globalContext2 = getGlobalContext2()
@@ -308,7 +309,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
 ) {
   const pageContext = {}
   {
-    const pageContextInitAddendum = await initPageContext(pageContextInit, renderContext)
+    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
   }
   {
@@ -535,6 +536,7 @@ async function prerenderPage(
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
     is404: null | boolean
+    _baseUrl: string
   } & PageFiles &
     GlobalRenderingContext
 ) {
@@ -563,22 +565,28 @@ async function prerenderPage(
   }
 }
 
-async function renderStatic404Page(globalContext: GlobalRenderingContext) {
-  const errorPageId = getErrorPageId(globalContext._allPageIds)
+async function renderStatic404Page(renderContext: RenderContext) {
+  const errorPageId = getErrorPageId(renderContext.allPageIds)
   if (!errorPageId) {
     return null
   }
 
-  const pageContext = {
-    ...globalContext,
+  const pageContext = {}
+  const pageContextInit = {
+    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
+  }
+  {
+    const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
+    objectAssign(pageContext, pageContextInitAddendum)
+  }
+  objectAssign(pageContext, {
     _pageId: errorPageId,
     is404: true,
     routeParams: {},
-    urlOriginal: '/fake-404-url', // A URL is needed for `applyViteHtmlTransform`
     // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
     _routeMatches: []
-  }
+  })
 
   const pageFiles = await loadPageFilesServer(pageContext)
   objectAssign(pageContext, pageFiles)
