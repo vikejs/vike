@@ -20,10 +20,10 @@ import {
   callHookWithTimeout
 } from './utils'
 import { pLimit, PLimit } from '../utils/pLimit'
-import { loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
+import { getRenderContext, loadPageFilesServer, prerenderPage, renderStatic404Page } from './renderPage'
 import { blue, green, gray, cyan } from 'picocolors'
 import { cpus } from 'os'
-import { getPageFilesAll, type PageFile } from '../shared/getPageFiles'
+import type { PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, getGlobalContext2, GlobalContext, initGlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
@@ -149,16 +149,14 @@ async function prerender(
     prerenderPageContexts: [] as PageContext[]
   })
 
-  {
-    const { pageFilesAll, allPageIds } = await getPageFilesAll(false, true)
-    objectAssign(globalContext, {
-      _pageFilesAll: pageFilesAll,
-      _allPageIds: allPageIds
-    })
-    globalContext._pageFilesAll.forEach(assertExportNames)
-  }
+  const renderContext = await getRenderContext()
+  renderContext.pageFilesAll.forEach(assertExportNames)
 
   objectAssign(globalContext, options.pageContextInit)
+  objectAssign(globalContext, {
+    _pageFilesAll: renderContext.pageFilesAll,
+    _allPageIds: renderContext.allPageIds
+  })
 
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(globalContext, doNotPrerenderList, concurrencyLimit)

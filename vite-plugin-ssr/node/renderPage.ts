@@ -2,6 +2,8 @@ export { renderPage }
 export { prerenderPage }
 export { renderStatic404Page }
 export { loadPageFilesServer }
+export { initPageContext }
+export { getRenderContext }
 
 import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from './html/renderHtml'
