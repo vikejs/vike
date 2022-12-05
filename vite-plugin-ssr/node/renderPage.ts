@@ -88,8 +88,8 @@ async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext
     objectAssign(pageContext, pageContextInitAddendum)
   }
 
-  if ('httpResponse' in pageContext) {
-    assert(pageContext.httpResponse === null)
+  if (!pageContext._hasBaseUrl) {
+    objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
   }
 
@@ -227,13 +227,11 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
     assert(urlOriginal.startsWith('/') || urlOriginal.startsWith('http'))
     const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
     const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
-    if (!hasBaseUrl) {
-      objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
-      return pageContextAddendum
-    }
     objectAssign(pageContextAddendum, {
       _isPageContextRequest: isPageContextRequest,
-      _urlProcessor: (url: string) => handlePageContextRequestUrl(url).urlWithoutPageContextRequestSuffix
+      _hasBaseUrl: hasBaseUrl,
+      // The onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
+      _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix
     })
   }
 
@@ -296,8 +294,6 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
     assert(!('httpResponse' in pageContext))
   }
 
-  addComputedUrlProps(pageContext)
-
   assert(errOriginal)
   objectAssign(pageContext, {
     is404: false,
@@ -305,6 +301,8 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
     errorWhileRendering: errOriginal as Error,
     routeParams: {} as Record<string, string>
   })
+
+  addComputedUrlProps(pageContext)
 
   if (isRenderErrorPageException(pageContext.errorWhileRendering)) {
     objectAssign(pageContext, { is404: true })
@@ -520,7 +518,7 @@ async function prerenderPage(
 ) {
   objectAssign(pageContext, {
     _isPageContextRequest: false,
-    _urlProcessor: null
+    _urlHandler: null
   })
 
   addComputedUrlProps(pageContext)

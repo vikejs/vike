@@ -52,7 +52,7 @@ type GlobalPrerenderingContext = GlobalContext & {
   _pageFilesAll: PageFile[]
   _noExtraDir: boolean
   prerenderPageContexts: PageContext[]
-  _urlProcessor: null
+  _urlHandler: null
 }
 
 type PageContext = GlobalPrerenderingContext & {
@@ -143,7 +143,7 @@ async function prerender(
 
   const globalContext = await getGlobalContext(true)
   objectAssign(globalContext, {
-    _urlProcessor: null,
+    _urlHandler: null,
     _noExtraDir: noExtraDir ?? false,
     _root: root,
     prerenderPageContexts: [] as PageContext[]

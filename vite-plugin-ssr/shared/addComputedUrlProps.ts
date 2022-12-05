@@ -75,16 +75,16 @@ function addComputedUrlProps<PageContext extends Record<string, unknown> & PageC
 type PageContextUrlSource = {
   urlOriginal: string
   _baseUrl: string
-  _urlProcessor: null | ((url: string) => string)
+  _urlHandler: null | ((url: string) => string)
 }
 function getUrlParsed(pageContext: PageContextUrlSource) {
-  let url = pageContext.urlOriginal
-  const { _baseUrl: baseUrl, _urlProcessor: urlProcessor } = pageContext
-  assert(baseUrl.startsWith('/'))
-  assert(urlProcessor === null || isCallable(urlProcessor))
-  if (urlProcessor !== null) {
-    url = urlProcessor(url)
+  let urlHandler = pageContext._urlHandler
+  if (!urlHandler) {
+    urlHandler = (urlOriginal: string) => urlOriginal
   }
+  const url = urlHandler(pageContext.urlOriginal)
+  const baseUrl = pageContext._baseUrl
+  assert(baseUrl.startsWith('/'))
   return parseUrl(url, baseUrl)
 }
 function urlPathnameGetter(this: PageContextUrlSource) {
