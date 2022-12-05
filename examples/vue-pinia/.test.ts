@@ -1,4 +1,4 @@
-import { fetchHtml, run, page, test, expect, urlBase, autoRetry } from '@brillout/test-e2e'
+import { fetchHtml, run, page, test, expect, getServerUrl, autoRetry } from '@brillout/test-e2e'
 
 testRun()
 
@@ -17,7 +17,7 @@ function testRun() {
   })
 
   test('client-side', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
 
     // Interactive button
     expect(await page.textContent('button')).toBe('Counter 0')

@@ -1,4 +1,4 @@
-import { run, page, test, expect, urlBase, fetchHtml, autoRetry } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -11,7 +11,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   })
 
   test('localized page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + '/fr-FR')
+    await page.goto(getServerUrl() + '/fr-FR')
     expect(await page.textContent('h1')).toBe('Bienvenue')
 
     // Interactive button
@@ -50,7 +50,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   })
 
   test('default locale', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toContain('Welcome')
     expect(await page.$('a[href="/about"]')).not.toBe(null)
     expect(await page.$('a[href="/fr-FR/about"]')).toBe(null)

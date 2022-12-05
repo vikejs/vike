@@ -1,4 +1,4 @@
-import { run, page, test, expect, urlBase, fetchHtml, autoRetry } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -11,7 +11,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toBe('Vite-plugin-ssr + Stem React')
 
     // Interactive button
@@ -46,7 +46,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   })
 
   test('data fetching page, DOM', async () => {
-    await page.goto(urlBase + '/star-wars')
+    await page.goto(getServerUrl() + '/star-wars')
     const text = await page.textContent('body')
     expect(text).toContain('Revenge of the Sith')
     expect(text).toContain('The Phantom Menace')

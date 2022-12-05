@@ -1,6 +1,6 @@
 export { testRun }
 
-import { page, test, expect, run, autoRetry, fetchHtml, urlBase } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, getServerUrl } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview') {
   run(cmd)
@@ -15,7 +15,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {

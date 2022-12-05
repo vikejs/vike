@@ -1,4 +1,4 @@
-import { autoRetry, fetchHtml, page, test, expect, run, urlBase } from '@brillout/test-e2e'
+import { autoRetry, fetchHtml, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
 
 run('npm run dev')
 
@@ -9,7 +9,7 @@ test('page content is rendered to HTML', async () => {
 })
 
 test('page content is rendered to DOM', async () => {
-  page.goto(`${urlBase}/`)
+  page.goto(`${getServerUrl()}/`)
   expect(await page.textContent('body')).toContain('Count: 0.')
   // `autoRetry` because browser-side code may not be loaded yet
   await autoRetry(async () => {

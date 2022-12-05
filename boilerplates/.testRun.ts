@@ -6,7 +6,7 @@ import {
   partRegex,
   autoRetry,
   fetchHtml,
-  urlBase,
+  getServerUrl,
   expectError,
   editFile,
   editFileRevert,
@@ -106,7 +106,7 @@ function testRun(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
@@ -175,7 +175,7 @@ function testRun(
 
   if (!isPrerendered) {
     test('error page', async () => {
-      await page.goto(urlBase + '/does-not-exist')
+      await page.goto(getServerUrl() + '/does-not-exist')
       expect(await page.textContent('h1')).toBe('404 Page Not Found')
       expect(await page.textContent('p')).toBe('This page could not be found.')
       expectError(

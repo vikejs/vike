@@ -1,4 +1,4 @@
-import { run, page, test, expect, urlBase, fetchHtml, autoRetry, expectError, sleep } from '@brillout/test-e2e'
+import { run, page, test, expect, getServerUrl, fetchHtml, autoRetry, expectError, sleep } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -14,7 +14,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
     expect(await page.textContent('h1')).toBe('Welcome to vite-plugin-ssr')
 
     // Interactive button
@@ -41,18 +41,18 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   })
 
   test('supports route functions', async () => {
-    await page.goto(urlBase + '/hello/alice')
+    await page.goto(getServerUrl() + '/hello/alice')
     expect(await page.textContent('h1')).toContain('Hello')
     expect(await page.textContent('body')).toContain('Hi alice')
 
-    await page.goto(urlBase + '/hello/evan')
+    await page.goto(getServerUrl() + '/hello/evan')
     expect(await page.textContent('h1')).toContain('Hello')
     expect(await page.textContent('body')).toContain('Hi evan')
 
     if (!isPreview) {
-      await page.goto(urlBase + '/hello')
+      await page.goto(getServerUrl() + '/hello')
       expect(await page.textContent('body')).toContain('Hi anonymous')
-      await page.goto(urlBase + '/hello/')
+      await page.goto(getServerUrl() + '/hello/')
       expect(await page.textContent('body')).toContain('Hi anonymous')
     }
   })
@@ -64,7 +64,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   })
 
   test('data fetching page, DOM', async () => {
-    await page.goto(urlBase + '/star-wars')
+    await page.goto(getServerUrl() + '/star-wars')
     const text = await page.textContent('body')
     expect(text).toContain('Revenge of the Sith')
     expect(text).toContain('The Phantom Menace')
@@ -96,7 +96,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   })
 
   test('markdown page DOM', async () => {
-    await page.goto(urlBase + '/markdown')
+    await page.goto(getServerUrl() + '/markdown')
     expect(await page.textContent('body')).toContain('This page is written in Markdown')
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
@@ -122,7 +122,7 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
   // In production, we pre-render all pages and thus `throw RenderErrorPage()` will never be called.
   if (viewFramework === 'react' && isDev) {
     test('throw RenderErrorPage', async () => {
-      await page.goto(urlBase + '/hello/bob')
+      await page.goto(getServerUrl() + '/hello/bob')
       expect(await page.textContent('h1')).toBe('404 Page Not Found')
       expectError(
         (log) =>

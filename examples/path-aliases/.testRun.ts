@@ -1,4 +1,4 @@
-import { autoRetry, page, test, expect, run, urlBase } from '@brillout/test-e2e'
+import { autoRetry, page, test, expect, run, getServerUrl } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -6,7 +6,7 @@ function testRun(npmScript: 'npm run dev' | 'npm run prod' | 'npm run prod:stati
   run(npmScript)
 
   test(`Counter works`, async () => {
-    page.goto(`${urlBase}/`)
+    page.goto(`${getServerUrl()}/`)
     expect(await page.textContent('body')).toContain('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {
@@ -31,7 +31,7 @@ function testRun(npmScript: 'npm run dev' | 'npm run prod' | 'npm run prod:stati
   // This tests the `vite-plugin-ssr:extractAssets` plugin.
   // (Retrieving the CSS from aliased import paths is not trivial.)
   test('CSS loaded also for HTML-only pages', async () => {
-    page.goto(`${urlBase}/about`)
+    page.goto(`${getServerUrl()}/about`)
     await autoRetry(async () => {
       expect(await page.$eval('a', (e) => getComputedStyle(e).color)).toBe(`rgb(0, 0, 255)`)
     })

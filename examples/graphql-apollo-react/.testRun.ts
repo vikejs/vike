@@ -1,6 +1,6 @@
 export { testRun }
 
-import { autoRetry, fetchHtml, page, test, expect, run, urlBase, skip } from '@brillout/test-e2e'
+import { autoRetry, fetchHtml, page, test, expect, run, getServerUrl, skip } from '@brillout/test-e2e'
 
 function testRun(cmd: 'npm run dev' | 'npm run prod') {
   if (cmd === 'npm run prod') {
@@ -17,7 +17,7 @@ function testRun(cmd: 'npm run dev' | 'npm run prod') {
   })
 
   test('page is hydrated to DOM', async () => {
-    page.goto(`${urlBase}/`)
+    page.goto(`${getServerUrl()}/`)
     expect(await page.textContent('button')).toBe('Counter 0')
     // `autoRetry` because browser-side code may not be loaded yet
     await autoRetry(async () => {

@@ -1,4 +1,4 @@
-import { page, test, expect, run, autoRetry, fetchHtml, partRegex, urlBase } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, fetchHtml, partRegex, getServerUrl } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -27,7 +27,7 @@ function testRun(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(urlBase + addBaseHtml('/'))
+    await page.goto(getServerUrl() + addBaseHtml('/'))
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     await autoRetry(async () => {

@@ -1,4 +1,4 @@
-import { page, test, expect, run, autoRetry, urlBase } from '@brillout/test-e2e'
+import { page, test, expect, run, autoRetry, getServerUrl } from '@brillout/test-e2e'
 
 export { testRun }
 
@@ -6,21 +6,21 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', uiFrameworkRoot: 'react
   run(cmd)
 
   test('landing page', async () => {
-    await page.goto(urlBase + '/')
+    await page.goto(getServerUrl() + '/')
 
     // Landing page layout
     await testLayoutWidth(700)
   })
 
   test('about page', async () => {
-    await page.goto(urlBase + '/about')
+    await page.goto(getServerUrl() + '/about')
 
     // Default layout
     await testLayoutWidth(900)
   })
 
   test('starship page', async () => {
-    await page.goto(urlBase + '/starship')
+    await page.goto(getServerUrl() + '/starship')
 
     // Default layout
     await testLayoutWidth(900)

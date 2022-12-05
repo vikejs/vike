@@ -3,7 +3,7 @@ import {
   page,
   test,
   expect,
-  urlBase,
+  getServerUrl,
   fetchHtml,
   autoRetry,
   partRegex,
@@ -50,7 +50,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/renderer/PageLayout.css?direct">')
       expect(html).toContain('<link rel="stylesheet" type="text/css" href="/pages/html-only/index.css?direct">')
     }
-    await page.goto(urlBase + '/html-only')
+    await page.goto(getServerUrl() + '/html-only')
     await testColor('orange')
   })
   if (!isPreview) {
@@ -63,7 +63,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
               return text === '[vite] connected.'
             }
           })
-          await page.goto(urlBase + '/html-only')
+          await page.goto(getServerUrl() + '/html-only')
           expect(await page.textContent('h1')).toBe('HTML-only')
           await viteClientConnected
         }
@@ -103,7 +103,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       testClientRouting(html)
     }
 
-    await page.goto(urlBase + '/spa')
+    await page.goto(getServerUrl() + '/spa')
     await clickCounter()
 
     if (!isPreview) {
@@ -150,7 +150,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       }
     }
 
-    await page.goto(urlBase + '/html-js')
+    await page.goto(getServerUrl() + '/html-js')
     await clickCounter()
   })
   if (!isPreview) {
@@ -191,7 +191,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       testClientRouting(html)
     }
 
-    await page.goto(urlBase + '/ssr')
+    await page.goto(getServerUrl() + '/ssr')
     await clickCounter()
     expect(await page.textContent('button')).toContain('Counter 1')
 
