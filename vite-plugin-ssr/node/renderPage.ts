@@ -72,6 +72,15 @@ type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; er
 type GetPageAssets = () => Promise<PageAsset[]>
 
 async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext: {}): Promise<RenderResult> {
+  {
+    const { urlOriginal } = pageContextInit
+    if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
+      const pageContext = { ...pageContextInit }
+      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+      return pageContext
+    }
+  }
+
   await initGlobalContext()
 
   {
@@ -195,11 +204,6 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
 
   const pageContextAddendum = {
     ...pageContextInit
-  }
-
-  if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
-    objectAssign(pageContextAddendum, { httpResponse: null, errorWhileRendering: null })
-    return pageContextAddendum
   }
 
   const globalContext2 = getGlobalContext2()
