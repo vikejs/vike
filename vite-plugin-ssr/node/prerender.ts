@@ -50,7 +50,6 @@ type PrerenderedPageIds = Record<string, { urlOriginal: string; _prerenderHookFi
 type GlobalPrerenderingContext = GlobalContext & {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
-  _isPreRendering: true
   _noExtraDir: boolean
   prerenderPageContexts: PageContext[]
   _urlProcessor: null
@@ -144,7 +143,6 @@ async function prerender(
 
   const globalContext = await getGlobalContext(true)
   objectAssign(globalContext, {
-    _isPreRendering: true as const,
     _urlProcessor: null,
     _noExtraDir: noExtraDir ?? false,
     _root: root,

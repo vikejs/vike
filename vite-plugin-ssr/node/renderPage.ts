@@ -194,7 +194,6 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
   assert(urlOriginal)
 
   const pageContextAddendum = {
-    _isPreRendering: false as const,
     ...pageContextInit
   }
 
@@ -203,10 +202,10 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
     return pageContextAddendum
   }
 
-  const globalContext = await getGlobalContext(pageContextAddendum._isPreRendering)
-  objectAssign(pageContextAddendum, globalContext)
-
   const globalContext2 = getGlobalContext2()
+
+  const globalContext = await getGlobalContext(globalContext2.isPrerendering)
+  objectAssign(pageContextAddendum, globalContext)
 
   {
     const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext2.isProduction)
@@ -502,7 +501,6 @@ async function prerenderPage(
   pageContext: {
     urlOriginal: string
     routeParams: Record<string, string>
-    _isPreRendering: true
     _pageId: string
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
@@ -510,8 +508,6 @@ async function prerenderPage(
   } & PageFiles &
     GlobalRenderingContext
 ) {
-  assert(pageContext._isPreRendering === true)
-
   objectAssign(pageContext, {
     _isPageContextRequest: false,
     _urlProcessor: null
@@ -537,7 +533,7 @@ async function prerenderPage(
   }
 }
 
-async function renderStatic404Page(globalContext: GlobalRenderingContext & { _isPreRendering: true }) {
+async function renderStatic404Page(globalContext: GlobalRenderingContext) {
   const errorPageId = getErrorPageId(globalContext._allPageIds)
   if (!errorPageId) {
     return null
@@ -596,7 +592,6 @@ type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
-    _isPreRendering: boolean
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
@@ -622,8 +617,6 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
       if ('_pageAssets' in pageContext) {
         return (pageContext as any as { _pageAssets: PageAsset[] })._pageAssets
       } else {
-        const isPreRendering = pageContext._isPreRendering
-        assert([true, false].includes(isPreRendering))
         const pageAssets = await getPageAssets(pageContext, clientDependencies, clientEntries)
         objectAssign(pageContext, { _pageAssets: pageAssets })
         return pageContext._pageAssets
@@ -786,7 +779,6 @@ async function executeOnBeforeRenderHooks(
 async function executeRenderHook(
   pageContext: PageContextPublic & {
     _pageId: string
-    _isPreRendering: boolean
     __getPageAssets: GetPageAssets
     _passToClient: string[]
     _pageFilesAll: PageFile[]
