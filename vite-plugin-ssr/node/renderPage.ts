@@ -216,7 +216,7 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
     objectAssign(pageContextAddendum, {
       _pageFilesAll: pageFilesAll,
       _allPageIds: allPageIds,
-      // The following is define on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
+      // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
       _baseUrl: globalContext2.baseUrl,
       _baseAssets: globalContext2.baseAssets,
       _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer
@@ -298,6 +298,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
 
   addComputedUrlProps(pageContext)
 
+  assert(errOriginal)
   objectAssign(pageContext, {
     is404: false,
     _pageId: null,
@@ -314,6 +315,7 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
     _routeMatches: (pageContextOfOriginalError as PageContextDebug)._routeMatches || 'ROUTE_ERROR'
   })
 
+  assert(pageContext.errorWhileRendering)
   return renderPageContext(pageContext)
 }
 
