@@ -5,7 +5,7 @@ import { humanizeTime } from './humanizeTime'
 
 type HookName = 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute' | 'onHydrationEnd'
 
-function callHookWithTimeout<T>(call: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
+function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
 
   let resolve!: (ret: T) => void
