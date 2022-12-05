@@ -109,7 +109,7 @@ function getGlobalContext2(): GlobalContext2 {
 }
 
 async function getGlobalContext(isPreRendering: boolean) {
-  const { viteDevServer, configVps } = globalObject
+  const { viteDevServer } = globalObject
 
   const globalContext = {}
 
@@ -121,17 +121,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     assertViteManifest(clientManifest)
     assertPluginManifest(pluginManifest)
     setPageFiles(pageFiles)
-    objectAssign(globalContext, {
-      _manifestClient: clientManifest,
-      _manifestPlugin: pluginManifest,
-    })
     setRuntimeConfig(pluginManifest)
-  } else {
-    assert(configVps)
-    objectAssign(globalContext, {
-      _manifestClient: null,
-      _manifestPlugin: null,
-    })
   }
 
   const runtimeConfig = getRuntimeConfig()

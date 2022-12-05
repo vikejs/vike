@@ -34,9 +34,7 @@ type PageAsset = {
 type PageContextGetPageAssets = {
   _baseUrl: string
   _baseAssets: string | null
-  _manifestClient: null | ViteManifest
   _includeAssetsImportedByServer: boolean
-  _manifestPlugin: null | { manifestKeyMap: Record<string, string> }
 }
 
 async function getPageAssets(
@@ -56,10 +54,8 @@ async function getPageAssets(
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
-    const clientManifest = pageContext._manifestClient
-    assert(clientManifest)
-    const manifestKeyMap = pageContext._manifestPlugin?.manifestKeyMap
-    assert(manifestKeyMap)
+    const { pluginManifest, clientManifest } = globalContext2
+    const manifestKeyMap = pluginManifest.manifestKeyMap
     clientEntriesSrc = clientEntries.map((clientEntry) =>
       resolveClientEntriesProd(clientEntry, clientManifest, manifestKeyMap)
     )
