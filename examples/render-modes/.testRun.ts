@@ -157,16 +157,22 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
     test('HTML + JS - HMR', async () => {
       {
         expect(await page.textContent('h1')).toBe('HTML + JS')
-        editFile('./pages/html-js/index.page.server.jsx', (s) =>
-          s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>')
-        )
-        // No HMR for HTML + JS
-        await page.waitForNavigation()
-        // But auto reload works
-        expect(await page.textContent('h1')).toBe('HTML + JS !')
-        editFileRevert()
-        await page.waitForNavigation()
-        expect(await page.textContent('h1')).toBe('HTML + JS')
+        {
+          // No HMR for HTML + JS
+          const navPromise = page.waitForNavigation()
+          editFile('./pages/html-js/index.page.server.jsx', (s) =>
+            s.replace('<h1>HTML + JS</h1>', '<h1>HTML + JS !</h1>')
+          )
+          await navPromise
+          // But auto reload works
+          expect(await page.textContent('h1')).toBe('HTML + JS !')
+        }
+        {
+          const navPromise = page.waitForNavigation()
+          editFileRevert()
+          await navPromise
+          expect(await page.textContent('h1')).toBe('HTML + JS')
+        }
       }
       {
         await testColor('red')
