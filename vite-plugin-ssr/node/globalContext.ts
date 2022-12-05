@@ -46,10 +46,12 @@ type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
   assert(!globalObject.globalContext)
+  assert(!globalObject.viteDevServer)
   globalObject.viteDevServer = viteDevServer
 }
 function setGlobalContextConfigVps(configVps: ConfigVpsResolved): void {
   assert(!globalObject.globalContext)
+  assert(!globalObject.configVps)
   globalObject.configVps = configVps
 }
 
