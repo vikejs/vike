@@ -1,4 +1,5 @@
 export { getGlobalContext }
+export { getGlobalContext2 }
 export { setGlobalContextViteDevServer }
 export { setGlobalContextConfigVps }
 export { getViteDevServer }
@@ -8,12 +9,38 @@ import { PromiseType, assert, assertUsage, objectAssign, getGlobalObject } from 
 import type { ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
-import { assertViteManifest } from './viteManifest'
-import { assertPluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
+import { assertViteManifest, type ViteManifest } from './viteManifest'
+import { assertPluginManifest, PluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
 import { getRuntimeConfig, setRuntimeConfig } from './globalContext/runtimeConfig'
-import {ConfigVpsResolved} from './plugin/plugins/config/ConfigVps'
-const globalObject = getGlobalObject<{ viteDevServer?: ViteDevServer, configVps?: ConfigVpsResolved }>('globalContext.ts', {
-})
+import { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
+const globalObject = getGlobalObject<{
+  viteDevServer?: ViteDevServer
+  configVps?: ConfigVpsResolved
+  globalContext?: GlobalContext2
+}>('globalContext.ts', {})
+
+type GlobalContext2 = (
+  | {
+      isProduction: false
+      isPrerendering: false
+      viteDevServer: ViteDevServer
+      configVps: ConfigVpsResolved
+      clientManifest: null
+      pluginManifest: null
+    }
+  | {
+      isProduction: true
+      isPrerendering: boolean
+      clientManifest: ViteManifest
+      pluginManifest: PluginManifest
+      configVps: null
+      viteDevServer: null
+    }
+) & {
+  baseUrl: null | string
+  baseAssets: null | string
+  includeAssetsImportedByServer: boolean
+}
 
 type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
@@ -27,6 +54,54 @@ function getViteDevServer(): ViteDevServer | null {
 function setGlobalContextConfigVps(configVps: ConfigVpsResolved): void {
   assert(configVps)
   globalObject.configVps = configVps
+}
+
+async function initGlobalContext(isPrerendering: boolean): Promise<void> {
+  const { viteDevServer, configVps } = globalObject
+  const isProduction = !viteDevServer
+
+  if (isProduction) {
+    assert(!configVps)
+    const buildEntries = await loadBuild()
+    assertBuildEntries(buildEntries, isPrerendering)
+    const { pageFiles, clientManifest, pluginManifest } = buildEntries
+    assertViteManifest(clientManifest)
+    assertPluginManifest(pluginManifest)
+    setRuntimeConfig(pluginManifest)
+    setPageFiles(pageFiles)
+    const runtimeConfig = getRuntimeConfig()
+    globalObject.globalContext = {
+      isProduction,
+      isPrerendering,
+      clientManifest,
+      pluginManifest,
+      viteDevServer: null,
+      configVps: null,
+      baseUrl: runtimeConfig.baseUrl,
+      baseAssets: runtimeConfig.baseAssets,
+      includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer
+    }
+  } else {
+    assert(configVps)
+    assert(isPrerendering === false)
+    const runtimeConfig = getRuntimeConfig()
+    globalObject.globalContext = {
+      isProduction,
+      isPrerendering: false,
+      clientManifest: null,
+      pluginManifest: null,
+      viteDevServer,
+      configVps,
+      baseUrl: runtimeConfig.baseUrl,
+      baseAssets: runtimeConfig.baseAssets,
+      includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer
+    }
+  }
+}
+
+function getGlobalContext2(): GlobalContext2 {
+  assert(globalObject.globalContext)
+  return globalObject.globalContext
 }
 
 async function getGlobalContext(isPreRendering: boolean) {
@@ -65,7 +140,7 @@ async function getGlobalContext(isPreRendering: boolean) {
     _baseAssets: runtimeConfig.baseAssets,
     _viteDevServer: viteDevServer ?? null,
     _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
-    _objectCreatedByVitePluginSsr: true
+    _objectCreatedByVitePluginSsr: true // TODO: remove
   })
 
   return globalContext

@@ -1,4 +1,5 @@
 export { assertPluginManifest }
+export type { PluginManifest }
 
 import { assertBaseUrlValue } from '../../../globalContext/runtimeConfig/assertBase'
 import { assert, assertUsage, isPlainObject, projectInfo } from '../../utils'
