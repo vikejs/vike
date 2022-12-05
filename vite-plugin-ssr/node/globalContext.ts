@@ -46,6 +46,7 @@ type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
   assert(viteDevServer)
+  assert(!globalObject.viteDevServer)
   globalObject.viteDevServer = viteDevServer
 }
 function getViteDevServer(): ViteDevServer | null {
