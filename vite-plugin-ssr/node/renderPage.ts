@@ -56,7 +56,7 @@ import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addC
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { log404 } from './renderPage/log404'
-import { getGlobalContext2, initGlobalContext } from './globalContext'
+import { getGlobalContext, initGlobalContext } from './globalContext'
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
@@ -208,16 +208,16 @@ async function handleErrorWithoutErrorPage(pageContext: {
 function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   assert(pageContextInit.urlOriginal)
 
-  const globalContext2 = getGlobalContext2()
+  const globalContext = getGlobalContext()
   const pageContextAddendum = {
     ...pageContextInit,
     _objectCreatedByVitePluginSsr: true,
     _pageFilesAll: renderContext.pageFilesAll,
     _allPageIds: renderContext.allPageIds,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
-    _baseUrl: globalContext2.baseUrl,
-    _baseAssets: globalContext2.baseAssets,
-    _includeAssetsImportedByServer: globalContext2.includeAssetsImportedByServer
+    _baseUrl: globalContext.baseUrl,
+    _baseAssets: globalContext.baseAssets,
+    _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer
   }
 
   return pageContextAddendum
@@ -228,8 +228,8 @@ type RenderContext = {
   allPageIds: string[]
 }
 async function getRenderContext(): Promise<RenderContext> {
-  const globalContext2 = getGlobalContext2()
-  const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext2.isProduction)
+  const globalContext = getGlobalContext()
+  const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext.isProduction)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     allPageIds: allPageIds
@@ -1005,8 +1005,8 @@ function assertArguments(...args: unknown[]) {
 }
 
 function warnMissingErrorPage() {
-  const globalContext2 = getGlobalContext2()
-  if (!globalContext2.isProduction) {
+  const globalContext = getGlobalContext()
+  if (!globalContext.isProduction) {
     assertWarning(
       false,
       'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',

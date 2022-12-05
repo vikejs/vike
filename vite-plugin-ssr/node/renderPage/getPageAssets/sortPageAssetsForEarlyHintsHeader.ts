@@ -1,15 +1,15 @@
 export { sortPageAssetsForEarlyHintsHeader }
 
-import { getGlobalContext2 } from '../../globalContext'
+import { getGlobalContext } from '../../globalContext'
 import { higherFirst } from '../../utils'
 import type { PageAsset } from '../getPageAssets'
 
 function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {
-  const globalContext2 = getGlobalContext2()
+  const globalContext = getGlobalContext()
   pageAssets.sort(
     higherFirst(({ assetType }) => {
       // In dev, we load scripts first in order to parallelize I/O and CPU
-      if (!globalContext2.isProduction && assetType === 'script') {
+      if (!globalContext.isProduction && assetType === 'script') {
         return 1
       }
 

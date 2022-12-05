@@ -2,7 +2,7 @@
 
 import { loadPageRoutes, PageRoutes, route } from '../shared/route'
 import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
-import { getGlobalContext } from '../node/globalContext'
+import { getGlobalContext, initGlobalContext } from '../node/globalContext'
 import { setProduction } from '../shared/setProduction'
 
 export { route, getPagesAndRoutes }
@@ -16,7 +16,8 @@ export type { PageRoutes, PageFile }
  */
 async function getPagesAndRoutes() {
   setProduction()
-  await getGlobalContext(true)
+  await initGlobalContext({ isPrerendering: true })
+  getGlobalContext()
 
   const { pageFilesAll, allPageIds } = await getPageFilesAll(false, true)
 

@@ -2,7 +2,7 @@ export { log404 }
 
 import { PageFile } from '../../shared/getPageFiles'
 import { PageRoutes, loadPageRoutes } from '../../shared/route'
-import { getGlobalContext2 } from '../globalContext'
+import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../utils'
 import { isRenderErrorPageException } from './RenderErrorPage'
 
@@ -29,8 +29,8 @@ async function log404(pageContext: {
     pageRoutes.length > 0,
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'
   )
-  const globalContext2 = getGlobalContext2()
-  if (!globalContext2.isProduction && !isFileRequest(urlPathname) && !pageContext._isPageContextRequest) {
+  const globalContext = getGlobalContext()
+  if (!globalContext.isProduction && !isFileRequest(urlPathname) && !pageContext._isPageContextRequest) {
     assertInfo(
       false,
       [

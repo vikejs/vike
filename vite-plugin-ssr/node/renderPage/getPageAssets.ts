@@ -22,7 +22,7 @@ import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClie
 import type { MediaType } from '../html/inferMediaType'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
 import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
-import { getGlobalContext2 } from '../globalContext'
+import { getGlobalContext } from '../globalContext'
 
 type PageAsset = {
   src: string
@@ -42,19 +42,19 @@ async function getPageAssets(
   clientDependencies: ClientDependency[],
   clientEntries: string[]
 ): Promise<PageAsset[]> {
-  const globalContext2 = getGlobalContext2()
-  const isDev = !globalContext2.isProduction
+  const globalContext = getGlobalContext()
+  const isDev = !globalContext.isProduction
 
   let assetUrls: string[]
   let clientEntriesSrc: string[]
   if (isDev) {
-    const { viteDevServer, configVps } = globalContext2
+    const { viteDevServer, configVps } = globalContext
     clientEntriesSrc = clientEntries.map((clientEntry) =>
       resolveClientEntriesDev(clientEntry, viteDevServer, configVps)
     )
     assetUrls = await retrieveAssetsDev(clientDependencies, viteDevServer)
   } else {
-    const { pluginManifest, clientManifest } = globalContext2
+    const { pluginManifest, clientManifest } = globalContext
     const manifestKeyMap = pluginManifest.manifestKeyMap
     clientEntriesSrc = clientEntries.map((clientEntry) =>
       resolveClientEntriesProd(clientEntry, clientManifest, manifestKeyMap)

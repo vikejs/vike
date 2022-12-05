@@ -1,14 +1,14 @@
 export { getViteDevScripts }
 
-import { getGlobalContext2 } from '../../globalContext'
+import { getGlobalContext } from '../../globalContext'
 import { assert, assertUsage } from '../../utils'
 
 async function getViteDevScripts(): Promise<string> {
-  const globalContext2 = getGlobalContext2()
-  if (globalContext2.isProduction) {
+  const globalContext = getGlobalContext()
+  if (globalContext.isProduction) {
     return ''
   }
-  const { viteDevServer } = globalContext2
+  const { viteDevServer } = globalContext
 
   const fakeHtmlBegin = '<html> <head>' // White space to test whether user is using a minifier
   const fakeHtmlEnd = '</head><body></body></html>'

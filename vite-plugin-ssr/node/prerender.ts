@@ -31,7 +31,7 @@ import {
 import { blue, green, gray, cyan } from 'picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../shared/getPageFiles'
-import { getGlobalContext2, initGlobalContext } from './globalContext'
+import { getGlobalContext, initGlobalContext } from './globalContext'
 import { resolveConfig } from 'vite'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
 import type { InlineConfig } from 'vite'
@@ -490,8 +490,8 @@ async function routeAndPrerender(
   prerenderPageIds: PrerenderedPageIds,
   concurrencyLimit: PLimit
 ) {
-  const globalContext2 = getGlobalContext2()
-  assert(globalContext2.isPrerendering)
+  const globalContext = getGlobalContext()
+  assert(globalContext.isPrerendering)
 
   // Route all URLs
   await Promise.all(
@@ -528,7 +528,7 @@ async function routeAndPrerender(
 
         objectAssign(pageContext, {
           is404: null,
-          _usesClientRouter: globalContext2.pluginManifest.usesClientRouter
+          _usesClientRouter: globalContext.pluginManifest.usesClientRouter
         })
 
         const { documentHtml, pageContextSerialized } = await prerenderPage(pageContext)

@@ -12,7 +12,7 @@ import { mergeScriptTags } from './mergeScriptTags'
 import type { PageContextInjectAssets } from '../injectAssets'
 import type { InjectToStream } from 'react-streaming/server'
 import type { PageAsset } from '../../renderPage/getPageAssets'
-import { getGlobalContext2 } from '../../globalContext'
+import { getGlobalContext } from '../../globalContext'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
@@ -36,8 +36,8 @@ async function getHtmlTags(
   assert([true, false].includes(pageContext._isHtmlOnly))
   const isHtmlOnly = pageContext._isHtmlOnly
 
-  const globalContext2 = getGlobalContext2()
-  const { isProduction } = globalContext2
+  const globalContext = getGlobalContext()
+  const { isProduction } = globalContext
 
   assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
   const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream

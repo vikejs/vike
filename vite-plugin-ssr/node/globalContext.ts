@@ -1,12 +1,10 @@
 export { initGlobalContext }
 export { getGlobalContext }
-export { getGlobalContext2 }
 export { setGlobalContextViteDevServer }
 export { setGlobalContextConfigVps }
 export { getViteDevServer }
-export type { GlobalContext }
 
-import { PromiseType, assert, assertUsage, objectAssign, getGlobalObject } from './utils'
+import { assert, assertUsage, getGlobalObject } from './utils'
 import type { ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
@@ -42,8 +40,6 @@ type GlobalContext2 = (
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
 }
-
-type GlobalContext = PromiseType<ReturnType<typeof getGlobalContext>>
 
 function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
   assert(!globalObject.globalContext)
@@ -103,36 +99,9 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   }
 }
 
-function getGlobalContext2(): GlobalContext2 {
+function getGlobalContext(): GlobalContext2 {
   assert(globalObject.globalContext)
   return globalObject.globalContext
-}
-
-async function getGlobalContext(isPreRendering: boolean) {
-  const { viteDevServer } = globalObject
-
-  const globalContext = {}
-
-  const isProduction = !viteDevServer
-  if (isProduction) {
-    const buildEntries = await loadBuild()
-    assertBuildEntries(buildEntries, isPreRendering)
-    const { pageFiles, clientManifest, pluginManifest } = buildEntries
-    assertViteManifest(clientManifest)
-    assertPluginManifest(pluginManifest)
-    setPageFiles(pageFiles)
-    setRuntimeConfig(pluginManifest)
-  }
-
-  const runtimeConfig = getRuntimeConfig()
-  objectAssign(globalContext, {
-    _baseUrl: runtimeConfig.baseUrl, // TODO: remove from pageContext in favor of directly accessing globalContext?
-    _baseAssets: runtimeConfig.baseAssets,
-    _includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer,
-    _objectCreatedByVitePluginSsr: true // TODO: remove
-  })
-
-  return globalContext
 }
 
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
