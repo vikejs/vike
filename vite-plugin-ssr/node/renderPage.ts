@@ -87,7 +87,10 @@ async function renderPage_(pageContextInit: { urlOriginal: string }, pageContext
     const pageContextInitAddendum = await initializePageContext(pageContextInit)
     objectAssign(pageContext, pageContextInitAddendum)
   }
-
+  {
+    const pageContextAddendum = handleUrl(pageContext)
+    objectAssign(pageContext, pageContextAddendum)
+  }
   if (!pageContext._hasBaseUrl) {
     objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
@@ -223,18 +226,24 @@ async function initializePageContext(pageContextInit: { urlOriginal: string }) {
     })
   }
 
-  {
-    assert(urlOriginal.startsWith('/') || urlOriginal.startsWith('http'))
-    const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-    const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, globalContext._baseUrl)
-    objectAssign(pageContextAddendum, {
-      _isPageContextRequest: isPageContextRequest,
-      _hasBaseUrl: hasBaseUrl,
-      // The onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
-      _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix
-    })
-  }
+  return pageContextAddendum
+}
 
+function handleUrl(pageContext: { urlOriginal: string; _baseUrl: string }): {
+  _isPageContextRequest: boolean
+  _hasBaseUrl: boolean
+  _urlHandler: (urlOriginal: string) => string
+} {
+  const { urlOriginal } = pageContext
+  assert(urlOriginal.startsWith('/') || urlOriginal.startsWith('http'))
+  const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
+  const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseUrl)
+  const pageContextAddendum = {
+    _isPageContextRequest: isPageContextRequest,
+    _hasBaseUrl: hasBaseUrl,
+    // The onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
+    _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix
+  }
   return pageContextAddendum
 }
 
@@ -292,6 +301,10 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
     objectAssign(pageContext, pageContextInitAddendum)
     // `pageContext.httpResponse===null` should have already been handled in `renderPage()`
     assert(!('httpResponse' in pageContext))
+  }
+  {
+    const pageContextAddendum = handleUrl(pageContext)
+    objectAssign(pageContext, pageContextAddendum)
   }
 
   assert(errOriginal)
