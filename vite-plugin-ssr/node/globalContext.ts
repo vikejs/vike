@@ -66,7 +66,6 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   const isProduction = !viteDevServer
 
   if (isProduction) {
-    assert(!configVps)
     const buildEntries = await loadBuild()
     assertBuildEntries(buildEntries, isPrerendering ?? false)
     const { pageFiles, clientManifest, pluginManifest } = buildEntries
