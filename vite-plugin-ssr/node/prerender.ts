@@ -289,7 +289,7 @@ async function callPrerenderHooks(
               (pageContext) => pageContext.urlOriginal === url
             )
             if (!pageContextFound) {
-              const pageContext = createPageContextObject(url, renderContext, prerenderContext)
+              const pageContext = createPageContext(url, renderContext, prerenderContext)
               objectAssign(pageContext, {
                 _prerenderHookFile: prerenderHookFile
               })
@@ -350,7 +350,7 @@ async function handlePagesWithStaticRoutes(
         }
 
         const routeParams = {}
-        const pageContext = createPageContextObject(urlOriginal, renderContext, prerenderContext)
+        const pageContext = createPageContext(urlOriginal, renderContext, prerenderContext)
         objectAssign(pageContext, {
           _prerenderHookFile: null,
           routeParams,
@@ -372,7 +372,7 @@ async function handlePagesWithStaticRoutes(
   )
 }
 
-function createPageContextObject(
+function createPageContext(
   urlOriginal: string,
   renderContext: RenderContext,
   prerenderContext: PrerenderContext

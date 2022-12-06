@@ -1,18 +1,14 @@
-import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
-import { route } from '../../shared/route'
-import { getGlobalContext } from './getGlobalContext'
-
 export { getPageId }
 
+import { route } from '../../shared/route'
+import { createPageContext } from './createPageContext'
+
 async function getPageId(url: string) {
-  const globalContext = await getGlobalContext()
-  const pageContext = {
-    urlOriginal: url,
-    ...globalContext
-  }
-  const pageFilesAll = globalContext._pageFilesAll
-  addComputedUrlProps(pageContext)
+  const pageContext = await createPageContext({
+    urlOriginal: url
+  })
   const routeContext = await route(pageContext)
+  const pageFilesAll = pageContext._pageFilesAll
   if (!('pageContextAddendum' in routeContext)) {
     return { pageId: null, pageFilesAll }
   }

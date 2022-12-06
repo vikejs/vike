@@ -16,8 +16,7 @@ import {
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
 import { releasePageContext } from './releasePageContext'
-import { getGlobalContext } from './getGlobalContext'
-import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
+import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
 import { assertRenderHook } from '../assertRenderHook'
@@ -96,7 +95,7 @@ function useClientRouter() {
       return
     }
 
-    const pageContext = {
+    const pageContextBase = {
       urlOriginal: url,
       isBackwardNavigation
     }
@@ -107,7 +106,7 @@ function useClientRouter() {
     // Start transition before any await's
     if (renderingNumber > 1) {
       if (isTransitioning === false) {
-        globalObject.onPageTransitionStart?.(pageContext)
+        globalObject.onPageTransitionStart?.(pageContextBase)
         isTransitioning = true
       }
     }
@@ -128,7 +127,7 @@ function useClientRouter() {
       return false
     }
 
-    const globalContext = await getGlobalContext()
+    const pageContext = await createPageContext(pageContextBase)
     if (shouldAbort()) {
       return
     }
@@ -136,8 +135,6 @@ function useClientRouter() {
     objectAssign(pageContext, {
       _isFirstRenderAttempt: isFirstRenderAttempt
     })
-    objectAssign(pageContext, globalContext)
-    addComputedUrlProps(pageContext)
 
     let pageContextAddendum: PromiseType<ReturnType<typeof getPageContext>>
     try {
