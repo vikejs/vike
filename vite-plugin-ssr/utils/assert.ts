@@ -49,8 +49,9 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
     return
   }
   const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
+  const errMsg = `${usageErrorPrefix}${whiteSpace}${errorMessage}`
   const usageError = createErrorWithCleanStackTrace(
-    `${usageErrorPrefix}${whiteSpace}${errorMessage}`,
+    errMsg,
     numberOfStackTraceLinesToRemove
   )
   throw usageError
@@ -94,7 +95,7 @@ function assertWarning(
 function assertInfo(
   condition: unknown,
   errorMessage: string,
-  { onlyOnce }: { onlyOnce: boolean; showStackTrace?: false }
+  { onlyOnce }: { onlyOnce: boolean }
 ): void {
   if (condition) {
     return

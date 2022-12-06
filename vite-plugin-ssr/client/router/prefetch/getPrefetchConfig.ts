@@ -62,7 +62,7 @@ function getStaticAssetsConfig(pageContext: PageContextPrefetch, linkTag: HTMLEl
   })()
 
   if (prefetchStaticAssets && prefetchStaticAssets.when === 'VIEWPORT' && !pageContext._isProduction) {
-    assertInfo(false, 'Viewport prefetching is disabled in development', { showStackTrace: false, onlyOnce: true })
+    assertInfo(false, 'Viewport prefetching is disabled in development', { onlyOnce: true })
     prefetchStaticAssets = { when: 'HOVER' }
   }
 

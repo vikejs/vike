@@ -255,7 +255,7 @@ async function executeRenderHook(
       'No server-side `render()` hook found.',
       'See https://vite-plugin-ssr.com/render-modes for more information.',
       [
-        'Loaded server-side page files (none of them `export { render }`):', // TODO: stop showing stack trace for this error
+        'Loaded server-side page files (none of them `export { render }`):',
         ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
       ].join('\n')
     ].join(' ')

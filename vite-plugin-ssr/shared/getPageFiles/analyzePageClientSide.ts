@@ -44,10 +44,7 @@ async function analyzePageClientSideInit(
       if (sharedPageFilesAlreadyLoaded && p.isEnv('CLIENT_AND_SERVER')) {
         return
       }
-      // TODO:
-      //  - Is `loadExportNames()` cached ?
-      //  - Does it use filesExports if possible?
-      //  - HMR?
+      // TODO: Is `loadExportNames()` cached ? Does it use filesExports if possible? HMR?
       await p.loadExportNames?.()
       /*
       if (pageFile.exportNames) {
