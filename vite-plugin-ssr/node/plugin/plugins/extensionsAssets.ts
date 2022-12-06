@@ -2,7 +2,8 @@ export { extensionsAssets }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ViteDevServer } from 'vite'
-import { assert, isAsset, isScriptFile, assertUsage, assertPosixPath } from '../utils'
+import { assert, isScriptFile, assertUsage, assertPosixPath } from '../utils'
+import { isAsset } from '../helpers'
 import fs from 'fs'
 import path from 'path'
 import sirv from 'sirv'

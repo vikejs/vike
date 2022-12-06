@@ -10,13 +10,12 @@ import {
   viteIsSSR_options,
   assert,
   assertPosixPath,
-  isAsset,
   styleFileRE,
   createDebugger,
   isDebugEnabled,
   isScriptFile
 } from '../utils'
-import { removeSourceMap, getImportStatements, ImportStatement } from '../helpers'
+import { removeSourceMap, getImportStatements, type ImportStatement, isAsset } from '../helpers'
 import { extractAssetsAddQuery } from './extractAssetsPlugin/extractAssetsAddQuery'
 import { getConfigVps } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'

@@ -61,7 +61,7 @@ import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
-import type { MediaType } from './html/inferMediaType'
+import type { MediaType } from './helpers'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
 
