@@ -57,7 +57,7 @@ import { assertPageContextProvidedByUser } from '../shared/assertPageContextProv
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
 import { log404 } from './renderPage/log404'
 import { getGlobalContext, initGlobalContext } from './globalContext'
-import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
+import { viteAlreadyLoggedError, viteErrorCleanup } from './renderPage/viteLogging'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
