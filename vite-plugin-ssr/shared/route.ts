@@ -36,7 +36,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
 }> {
   addComputedUrlProps(pageContext)
 
-  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext)
+  const { pageRoutes, onBeforeRouteHook } = await loadPageRoutes(pageContext._pageFilesAll, pageContext._allPageIds)
   debug('Pages routes:', pageRoutes)
 
   const pageContextAddendum = {}

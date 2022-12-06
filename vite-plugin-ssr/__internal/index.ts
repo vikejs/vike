@@ -21,10 +21,7 @@ async function getPagesAndRoutes() {
 
   const { pageFilesAll, allPageIds } = await getPageFilesAll(false, true)
 
-  const { pageRoutes } = await loadPageRoutes({
-    _pageFilesAll: pageFilesAll,
-    _allPageIds: allPageIds
-  })
+  const { pageRoutes } = await loadPageRoutes(pageFilesAll, allPageIds)
 
   return {
     pageRoutes,

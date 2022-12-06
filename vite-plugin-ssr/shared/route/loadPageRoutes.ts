@@ -16,28 +16,22 @@ type PageRoutes = ({ pageId: string } & (
 ))[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
-async function loadPageRoutes(pageContext: {
-  _pageFilesAll: PageFile[]
-  _allPageIds: string[]
-}): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
-  await Promise.all(pageContext._pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
-  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageContext)
-  const pageRoutes = getPageRoutes(filesystemRoots, pageContext)
+async function loadPageRoutes(
+  pageFilesAll: PageFile[],
+  allPageIds: string[]
+): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
+  await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
+  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll)
+  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, allPageIds)
   return { pageRoutes, onBeforeRouteHook }
 }
 
-function getPageRoutes(
-  filesystemRoots: FilesystemRoot[],
-  pageContext: {
-    _pageFilesAll: PageFile[]
-    _allPageIds: string[]
-  }
-): PageRoutes {
+function getPageRoutes(filesystemRoots: FilesystemRoot[], pageFilesAll: PageFile[], allPageIds: string[]): PageRoutes {
   const pageRoutes: PageRoutes = []
-  pageContext._allPageIds
+  allPageIds
     .filter((pageId) => !isErrorPageId(pageId))
     .forEach((pageId) => {
-      const pageRouteFile = findPageRouteFile(pageId, pageContext._pageFilesAll)
+      const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
       if (!pageRouteFile) {
         const routeString = deduceRouteStringFromFilesystemPath(pageId, filesystemRoots)
         assert(routeString.startsWith('/'))
@@ -92,13 +86,13 @@ function getPageRoutes(
   return pageRoutes
 }
 
-function getGlobalHooks(pageContext: { _pageFilesAll: PageFile[] }): {
+function getGlobalHooks(pageFilesAll: PageFile[]): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
 } {
   let onBeforeRouteHook: null | OnBeforeRouteHook = null
   const filesystemRoots: FilesystemRoot[] = []
-  pageContext._pageFilesAll
+  pageFilesAll
     .filter((p) => p.fileType === '.page.route' && p.isDefaultPageFile)
     .forEach(({ filePath, fileExports }) => {
       assert(fileExports)
