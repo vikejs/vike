@@ -20,7 +20,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
 
   // Load the `.page.js` files specific to `pageId`
   const getPageIdFile = (isomph: boolean) => {
-    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.isEnvFile(isomph ? 'isomph' : env))
+    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.isEnv(isomph ? 'isomph' : env))
     assertUsage(
       files.length <= 1,
       `Merge the following files into a single file: ${files.map((p) => p.filePath).join(' ')}`
@@ -35,7 +35,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
   // A page can have only one renderer. In other words: Multiple `renderer/` overwrite each other.
   // Load only load renderer (`/renderer/_default.*`)
   const getRendererFile = (isomph: boolean) =>
-    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnvFile(isomph ? 'isomph' : env))[0]
+    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnv(isomph ? 'isomph' : env))[0]
   const rendererFileEnv = getRendererFile(false)
   const rendererFileIso = getRendererFile(true)
 
@@ -45,7 +45,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
     (p) =>
       p.isDefaultPageFile &&
       !p.isRendererPageFile &&
-      (p.isEnvFile(env) || p.isEnvFile('isomph'))
+      (p.isEnv(env) || p.isEnv('isomph'))
   )
 
   // Ordered by `pageContext.exports` precendence
@@ -97,10 +97,10 @@ function getPageFilesSorter(envIsClient: boolean, pageId: string) {
 
     // `.page.server.js`/`.page.client.js` before `.page.js`
     {
-      if (e1.isEnvFile(env) && e2.isEnvFile('isomph')) {
+      if (e1.isEnv(env) && e2.isEnv('isomph')) {
         return e1First
       }
-      if (e2.isEnvFile(env) && e1.isEnvFile('isomph')) {
+      if (e2.isEnv(env) && e1.isEnv('isomph')) {
         return e2First
       }
     }
