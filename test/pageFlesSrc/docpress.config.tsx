@@ -1,26 +1,57 @@
 import type { Config } from '@brillout/docpress'
-import { headings, headingsWithoutLink } from './headings'
-import { projectInfo } from './utils'
-import faviconUrl from './images/icons/vite-plugin-ssr.svg'
 import React from 'react'
-import { NavHeader, NavHeaderMobile } from './NavHeader'
+import logoUrl from './images/logo.svg'
+import { headings, headingsWithoutLink } from './headings'
 
-const config: Config = {
-  projectInfo,
-  faviconUrl,
-  navHeader: <NavHeader />,
-  navHeaderMobile: <NavHeaderMobile />,
-  headings,
-  headingsWithoutLink,
-  tagline: 'Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin.',
-  titleNormalCase: false,
-  twitterHandle: '@brillout',
-  websiteUrl: 'https://vite-plugin-ssr.com',
-  algolia: {
-    appId: 'MUXG1ZE9F6',
-    apiKey: '8d5986fca9ba9110bcbbfc51263de88b',
-    indexName: 'vite-pluginssr'
+export default {
+  projectInfo: {
+    projectName: 'DocPress Demo' as const,
+    projectVersion: '0.0.0',
+    githubRepository: 'https://github.com/brillout/docpress' as const,
+    githubIssues: 'https://github.com/brillout/docpress/issues/new' as const,
+    discordInvite: 'https://discord.com/invite/dSDMGGJZQy' as const,
+    twitterProfile: 'https://twitter.com/brillout' as const
   },
-  bannerUrl: 'https://vite-plugin-ssr.com/banner.png'
+  faviconUrl: logoUrl,
+  algolia: null,
+  navHeaderMobile: <NavHeaderMobile />,
+  navHeader: <NavHeader />,
+  tagline: 'DocPress Demo',
+  titleNormalCase: true,
+  headings,
+  headingsWithoutLink
+} as Config
+
+function NavHeaderMobile() {
+  const LOGO_SIZE = 40
+  return (
+    <>
+      <img src={logoUrl} height={LOGO_SIZE} width={LOGO_SIZE} />
+      <HeaderTitle fontSize={'1.25em'} marginLeft={5} />
+    </>
+  )
 }
-export default config
+
+function NavHeader() {
+  const LOGO_SIZE = 55
+  return (
+    <>
+      <img src={logoUrl} height={LOGO_SIZE} width={LOGO_SIZE} />
+      <HeaderTitle fontSize={'1.55em'} marginLeft={10} />
+    </>
+  )
+}
+
+function HeaderTitle({ fontSize, marginLeft }: { fontSize: string; marginLeft: number }) {
+  return (
+    <span
+      style={{
+        fontSize,
+        padding: '2px 5px',
+        marginLeft
+      }}
+    >
+      {'DocPress Demo'}
+    </span>
+  )
+}

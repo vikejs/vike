@@ -12,24 +12,25 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
 
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
-    expect(html).toContain(
-      '<meta name="description" content="Like Next.js/Nuxt but as do-one-thing-do-it-well Vite plugin." />'
-    )
-    expect(html).toContain('integrate tools manually')
-    expect(html).toMatch(partRegex`<h2>${/[^\/]+/}Control</h2>`)
-    expect(html).toContain('<h2>🔧<!-- --> Control</h2>')
+    expect(html).toContain('<meta name="description" content="DocPress Demo" />')
+    expect(html).toContain('Praesent eu augue lacinia, tincidunt purus nec, ultrices ante.')
+    expect(html).toMatch(partRegex`<h2>${/[^\/]+/}Feature 2</h2>`)
   })
 
   test('Learn more collapsible', async () => {
     await page.goto(getServerUrl() + '/')
     await page.waitForFunction(() => (window as any).__docpress_hydrationFinished)
-    const text = 'you control how your pages are rendered'
+    const text = 'More content for Feature 2.'
     const selector = `p:has-text("${text}")`
-    await page.waitForSelector(selector, { state: 'hidden' })
-    await page.locator('h2:has-text("Control")').click()
+    const locator = page.locator(selector)
+    expect(await locator.count()).toBe(1)
+    expect(await locator.isHidden()).toBe(true)
+    await page.locator('h2:has-text("Feature 2")').click()
     await page.waitForSelector(selector, { state: 'visible' })
-    await page.locator('h2:has-text("Control")').click()
+    expect(await locator.isHidden()).toBe(false)
+    await page.locator('h2:has-text("Feature 2")').click()
     await page.waitForSelector(selector, { state: 'hidden' })
+    expect(await locator.isHidden()).toBe(true)
   })
 
   test('Layout', async () => {
@@ -55,8 +56,8 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
     testWidth(layout.html, 1280)
     testWidth(layout.body, 1280)
     testWidth(layout.page, 1280)
-    testWidth(layout.left, 308)
-    testWidth(layout.right, 973)
+    testWidth(layout.left, 300)
+    testWidth(layout.right, 981)
 
     return
 
