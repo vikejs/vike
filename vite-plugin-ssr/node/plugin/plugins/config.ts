@@ -63,7 +63,7 @@ async function resolveConfigVps(
 function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedConfig): ExtensionResolved[] {
   const extensions = configs.map((c) => c.extensions ?? []).flat()
   return extensions.map((extension) => {
-    const { npmPackageName, assetsManifest } = extension
+    const { npmPackageName } = extension
     assertUsage(
       isNpmPackageName(npmPackageName),
       `Extension '${npmPackageName}' doesn't seem to be a valid npm package name`
@@ -104,7 +104,6 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       npmPackageRootDir,
       pageFilesDist,
       pageFilesSrc,
-      assetsManifest: assetsManifest ?? null, // TODO: remove
       assetsDir
     }
     return extensionResolved

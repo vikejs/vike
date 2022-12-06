@@ -2,15 +2,10 @@ export type { ConfigVpsUserProvided }
 export type { ConfigVpsResolved }
 export type { ExtensionResolved }
 
-type AssetsManifest = { // TODO: remove
-  format: 'esbuild@15'
-  manifestFilePath: string
-}
 type ExtensionUserProvided = {
   npmPackageName: string
   pageFilesDist?: string[]
   pageFilesSrc?: string,
-  assetsManifest?: AssetsManifest
   assetsDir?: string
 }
 type ExtensionResolved = {
@@ -22,7 +17,6 @@ type ExtensionResolved = {
   }[]
   pageFilesSrc: null | string,
   assetsDir: null | string
-  assetsManifest: null | AssetsManifest
 }
 
 type ConfigVpsResolved = {
