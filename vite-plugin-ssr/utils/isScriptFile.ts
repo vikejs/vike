@@ -1,8 +1,10 @@
-// Also see `./isJavaScriptFile.ts`
 export { isScriptFile }
+export { isTemplateFile }
 export { scriptFileExtensions }
 
-// All possible JavaScript file extensions as Glob Pattern.
+import { assert } from './assert'
+
+// We can't use a RegExp:
 //  - Needs to work with Micromatch: https://github.com/micromatch/micromatch because:
 //    - Vite's `import.meta.glob()` uses Micromatch
 //  - We need this to be a whitelist because:
@@ -11,12 +13,43 @@ export { scriptFileExtensions }
 //   - Black listing doesn't work.
 //     - We cannot implement a blacklist with a glob pattern.
 //     - A post `import.meta.glob()` blacklist filtering doesn't work because Vite would still process the files (e.g. including them in the bundle).
-const scriptFileExtensions = '(js|cjs|mjs|ts|cts|mts|jsx|cjsx|mjsx|tsx|ctsx|mtsx|vue|svelte|marko|md|mdx)'
 
-function isScriptFile(file: string) {
-  const extensionList = parseGlob(scriptFileExtensions)
-  return extensionList.some((ext) => file.endsWith('.' + ext))
+// prettier-ignore
+const extJavaScript = [
+  'js',
+  'ts',
+  'cjs',
+  'cts',
+  'mjs',
+  'mts',
+  'jsx',
+  'tsx',
+  'cjsx',
+  'ctsx',
+  'mjsx',
+  'mtsx',
+]
+// prettier-ignore
+const extTemplates = [
+  'vue',
+  'svelte',
+  'marko',
+  'md',
+  'mdx'
+]
+const extList = [...extJavaScript, ...extTemplates]
+const scriptFileExtensions: string = '(' + extList.join('|') + ')'
+
+function isScriptFile(filePath: string): boolean {
+  const yes = extList.some((ext) => filePath.endsWith('.' + ext))
+  assert(!isJavaScriptFile(filePath) || yes)
+  return yes
 }
-function parseGlob(pattern: string) {
-  return pattern.slice(1, -1).split('|')
+
+function isJavaScriptFile(filePath: string) {
+  return /\.(c|m)?(j|t)sx?$/.test(filePath)
+}
+
+function isTemplateFile(filePath: string) {
+  return extTemplates.some((ext) => filePath.endsWith('.' + ext))
 }

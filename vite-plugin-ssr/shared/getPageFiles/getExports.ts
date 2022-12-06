@@ -3,7 +3,8 @@ export { getExports }
 export type { ExportsAll }
 export type { PageContextExports }
 
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, isJavaScriptFile } from '../utils'
+import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
+import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType, PageFile } from './types'
 
@@ -69,6 +70,7 @@ function getExports(pageFiles: PageFile[]): PageContextExports {
 function getExportValues(pageFile: PageFile) {
   const { filePath, fileExports } = pageFile
   assert(fileExports) // assume pageFile.loadFile() was called
+  assert(isScriptFile(filePath))
 
   const exportValues: {
     exportName: string
@@ -82,8 +84,7 @@ function getExportValues(pageFile: PageFile) {
       let isFromDefaultExport = exportName === 'default'
 
       if (isFromDefaultExport) {
-        if (!isJavaScriptFile(filePath)) {
-          // `.vue` and `.md` files
+        if (isTemplateFile(filePath)) {
           exportName = 'Page'
         } else {
           assertUsage(isObject(exportValue), `The \`export default\` of ${filePath} should be an object.`)
