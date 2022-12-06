@@ -2,7 +2,7 @@ export { retrieveAssetsProd }
 export { retrieveAssetsDev }
 
 import { assert, styleFileRE, isNpmPackageModule } from '../utils'
-import { ViteManifest } from '../viteManifest'
+import { ViteManifest } from '../helpers'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import { getManifestEntry } from '../getManifestEntry'
 import { extractAssetsAddQuery } from '../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'

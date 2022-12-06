@@ -13,9 +13,8 @@ import {
   isNotNullish
 } from '../utils'
 import { retrieveAssetsDev, retrieveAssetsProd } from './retrievePageAssets'
-import type { ViteManifest } from '../viteManifest'
 import path from 'path'
-import { inferMediaType, type MediaType } from '../helpers'
+import { inferMediaType, type MediaType, type ViteManifest } from '../helpers'
 import { getManifestEntry } from '../getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
