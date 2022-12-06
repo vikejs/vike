@@ -27,21 +27,21 @@ function determineFileType(filePath: string): FileType {
 
   {
     const isCSS = filePath.endsWith('.css')
-    assert(isScriptFile(filePath) || isCSS)
     if (isCSS) {
       assert(isNpmPackageModule(filePath), filePath) // `.css` page files are only supported for npm packages
       return '.css'
     }
   }
+  assert(isScriptFile(filePath), filePath)
 
   const fileName = filePath.split('/').slice(-1)[0]!
-  const fileNameSegments = fileName.split('.')
-  const suffix1 = fileNameSegments.slice(-3)[0]
-  const suffix2 = fileNameSegments.slice(-2)[0]
+  const parts = fileName.split('.')
+  const suffix1 = parts.slice(-3)[0]
+  const suffix2 = parts.slice(-2)[0]
   if (suffix2 === 'page') {
     return '.page'
   }
-  assert(suffix1 === 'page', { filePath })
+  assert(suffix1 === 'page', filePath)
   if (suffix2 === 'server') {
     return '.page.server'
   }
@@ -51,6 +51,5 @@ function determineFileType(filePath: string): FileType {
   if (suffix2 === 'route') {
     return '.page.route'
   }
-  assert(false, { filePath })
+  assert(false, filePath)
 }
-

@@ -10,7 +10,7 @@ import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
-import { type FileType, fileTypes, isValidFileType } from '../../../shared/getPageFiles/fileTypes'
+import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 
 const virtualModuleIds = [
@@ -96,7 +96,7 @@ function generateExtensionImports(
 ) {
   let fileContent = '\n\n'
   extensionsImportPaths.forEach((importPath) => {
-    const fileType = getFileType(importPath)
+    const fileType = determineFileType(importPath)
     const { includeImport, includeExportNames } = determineInjection({
       fileType,
       isForClientSide,
@@ -188,32 +188,6 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
   fileContent += `${mapVar}['${importPath}'] = ${value};\n`
 
   return fileContent
-}
-
-function getFileType(filePath: string): FileType {
-  // TODO: move to fileTypes.ts
-  assert(isValidFileType(filePath), { filePath })
-  if (filePath.endsWith('.css')) {
-    return '.css'
-  }
-  let fileType: FileType | undefined
-  if (filePath.includes('.page.route.')) {
-    assert(!fileType)
-    fileType = '.page.route'
-  }
-  if (filePath.includes('.page.client.')) {
-    assert(!fileType)
-    fileType = '.page.client'
-  }
-  if (filePath.includes('.page.server.')) {
-    assert(!fileType)
-    fileType = '.page.server'
-  }
-  if (!fileType) {
-    assert(filePath.includes('.page.'))
-    fileType = '.page'
-  }
-  return fileType
 }
 
 function generateGlobImports(
