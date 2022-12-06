@@ -27,7 +27,7 @@ import {
   type RenderContext,
   renderStatic404Page,
   initPageContext
-} from './renderPage'
+} from './renderPage/renderPageContext'
 import { blue, green, gray, cyan } from 'picocolors'
 import { cpus } from 'os'
 import type { PageFile } from '../shared/getPageFiles'
@@ -372,11 +372,7 @@ async function handlePagesWithStaticRoutes(
   )
 }
 
-function createPageContext(
-  urlOriginal: string,
-  renderContext: RenderContext,
-  prerenderContext: PrerenderContext
-) {
+function createPageContext(urlOriginal: string, renderContext: RenderContext, prerenderContext: PrerenderContext) {
   const pageContext = {}
   const pageContextInit = { urlOriginal }
   {
