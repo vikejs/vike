@@ -12,15 +12,15 @@ function getPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, false)
 }
 function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolean): PageFile[] {
-  const env = envIsClient ? 'client' : 'server'
+  const env = envIsClient ? 'CLIENT_ONLY' : 'SERVER_ONLY'
 
-  const pageFilesRelevant =
-    pageFilesAll.filter((p) => p.isRelevant(pageId) && p.fileType !== '.page.route')
-  .sort(getPageFilesSorter(envIsClient, pageId))
+  const pageFilesRelevant = pageFilesAll
+    .filter((p) => p.isRelevant(pageId) && p.fileType !== '.page.route')
+    .sort(getPageFilesSorter(envIsClient, pageId))
 
   // Load the `.page.js` files specific to `pageId`
-  const getPageIdFile = (isomph: boolean) => {
-    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.isEnv(isomph ? 'isomph' : env))
+  const getPageIdFile = (iso: boolean) => {
+    const files = pageFilesRelevant.filter((p) => p.pageId === pageId && p.isEnv(iso ? 'CLIENT_AND_SERVER' : env))
     assertUsage(
       files.length <= 1,
       `Merge the following files into a single file: ${files.map((p) => p.filePath).join(' ')}`
@@ -34,18 +34,15 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
 
   // A page can have only one renderer. In other words: Multiple `renderer/` overwrite each other.
   // Load only load renderer (`/renderer/_default.*`)
-  const getRendererFile = (isomph: boolean) =>
-    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnv(isomph ? 'isomph' : env))[0]
+  const getRendererFile = (iso: boolean) =>
+    pageFilesRelevant.filter((p) => p.isRendererPageFile && p.isEnv(iso ? 'CLIENT_AND_SERVER' : env))[0]
   const rendererFileEnv = getRendererFile(false)
   const rendererFileIso = getRendererFile(true)
 
   // A page can load multiple `_defaut.page.*` files of the same `fileType`. In other words: non-renderer `_default.page.*` files are cumulative.
   // The exception being HTML-only pages because we pick a single page file as client entry. We handle that use case at `renderPage()`.
   const defaultFilesNonRenderer = pageFilesRelevant.filter(
-    (p) =>
-      p.isDefaultPageFile &&
-      !p.isRendererPageFile &&
-      (p.isEnv(env) || p.isEnv('isomph'))
+    (p) => p.isDefaultPageFile && !p.isRendererPageFile && (p.isEnv(env) || p.isEnv('CLIENT_AND_SERVER'))
   )
 
   // Ordered by `pageContext.exports` precendence
@@ -56,7 +53,7 @@ function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolea
 }
 
 function getPageFilesSorter(envIsClient: boolean, pageId: string) {
-  const env = envIsClient ? 'client' : 'server'
+  const env = envIsClient ? 'CLIENT_ONLY' : 'SERVER_ONLY'
   const e1First = -1 as const
   const e2First = +1 as const
   const noOrder = 0 as const
@@ -97,10 +94,10 @@ function getPageFilesSorter(envIsClient: boolean, pageId: string) {
 
     // `.page.server.js`/`.page.client.js` before `.page.js`
     {
-      if (e1.isEnv(env) && e2.isEnv('isomph')) {
+      if (e1.isEnv(env) && e2.isEnv('CLIENT_AND_SERVER')) {
         return e1First
       }
-      if (e2.isEnv(env) && e1.isEnv('isomph')) {
+      if (e2.isEnv(env) && e1.isEnv('CLIENT_AND_SERVER')) {
         return e2First
       }
     }

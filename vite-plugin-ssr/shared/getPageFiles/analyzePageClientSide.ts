@@ -17,7 +17,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
   if (isHtmlOnly) {
     // HTML-only pages don't need any client-side `render()` hook. For apps that have both HTML-only and SSR/SPA pages, we skip the `.page.client.js` file that defines `render()` for HTML-only pages.
     pageFilesClientSide = pageFilesClientSide.filter(
-      (p) => p.isEnv('client') && !getExportNames(p).includes('render')
+      (p) => p.isEnv('CLIENT_ONLY') && !getExportNames(p).includes('render')
     )
     pageFilesClientSide = removeOverridenPageFiles(pageFilesClientSide)
   }
@@ -40,8 +40,8 @@ async function analyzePageClientSideInit(
 
   await Promise.all(
     pageFilesClientSide.map(async (p) => {
-      assert(p.isEnv('client') || p.isEnv('isomph'))
-      if (sharedPageFilesAlreadyLoaded && p.isEnv('isomph')) {
+      assert(p.isEnv('CLIENT_ONLY') || p.isEnv('CLIENT_AND_SERVER'))
+      if (sharedPageFilesAlreadyLoaded && p.isEnv('CLIENT_AND_SERVER')) {
         return
       }
       // TODO:

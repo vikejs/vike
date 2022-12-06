@@ -11,7 +11,7 @@ import { isScriptFile } from '../../utils/isScriptFile'
 type PageFile = {
   filePath: string
   fileType: FileType
-  isEnv: (env: 'client' | 'server' | 'isomph') => boolean // TODO: rename to `isClientOnly` + `isServerOnly`? (+ `isClientAndServer` if needed?) // rename to `isEnv` + rename `cient` => `CLIENT_ONLY`, `isomph` => `CLIENT+SERVER`
+  isEnv: (env: 'CLIENT_ONLY' | 'SERVER_ONLY' | 'CLIENT_AND_SERVER') => boolean
   fileExports?: Record<string, unknown>
   loadFile?: () => Promise<void>
   exportNames?: string[]
@@ -29,15 +29,15 @@ function getPageFileObject(filePath: string): PageFile {
     (pageFile.isDefaultPageFile &&
       (isRendererFilePath(pageFile.filePath) || isAncestorDefaultPage(pageId, pageFile.filePath)))
   const fileType = determineFileType(filePath)
-  const isEnv = (env: 'client' | 'server' | 'isomph'): boolean => {
+  const isEnv = (env: 'CLIENT_ONLY' | 'SERVER_ONLY' | 'CLIENT_AND_SERVER'): boolean => {
     assert(fileType !== '.page.route') // We can't determine `.page.route.js`
-    if (env === 'client') {
+    if (env === 'CLIENT_ONLY') {
       return fileType === '.page.client' || fileType === '.css'
     }
-    if (env === 'server') {
+    if (env === 'SERVER_ONLY') {
       return fileType === '.page.server'
     }
-    if (env === 'isomph') {
+    if (env === 'CLIENT_AND_SERVER') {
       return fileType === '.page'
     }
     assert(false)
