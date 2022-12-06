@@ -26,7 +26,6 @@ import {
   isPromise,
   parseUrl,
   makeFirst,
-  isSameErrorMessage,
   createDebugger,
   callHookWithTimeout,
   isCallable
@@ -38,15 +37,15 @@ import { isStream } from '../html/stream'
 import { addIs404ToPageProps, serializePageContextClientSide, type MediaType } from '../helpers'
 import { addComputedUrlProps, assertURLs, PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
-import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './RenderErrorPage'
+import { isRenderErrorPageException } from './RenderErrorPage'
 import { log404 } from './log404'
 import { getGlobalContext, initGlobalContext } from '../globalContext'
-import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './handlePageContextRequestUrl'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
+import { assertError, logError, logErrorIfDifferentFromOriginal } from './logError'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -321,19 +320,6 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
 
   assert(pageContext.errorWhileRendering)
   return renderPageContext(pageContext)
-}
-
-function assertError(err: unknown) {
-  assertRenderErrorPageExceptionUsage(err)
-  if (!isObject(err)) {
-    console.warn('[vite-plugin-ssr] The thrown value is:')
-    console.warn(err)
-    assertWarning(
-      false,
-      "Your source code threw a value that is not an object. Make sure to wrap the value with `new Error()`. For example, if your code throws `throw 'some-string'` then do `throw new Error('some-string')` instead. The thrown value is printed above. Feel free to contact vite-plugin-ssr maintainers to get help.",
-      { showStackTrace: false, onlyOnce: false }
-    )
-  }
 }
 
 async function prerenderPageContext(
@@ -821,42 +807,4 @@ function warnMissingErrorPage() {
       { showStackTrace: false, onlyOnce: true }
     )
   }
-}
-
-function logError(err: unknown) {
-  assertError(err)
-
-  if (viteAlreadyLoggedError(err)) {
-    return
-  }
-
-  // Avoid logging error twice (not sure if this actually ever happens?)
-  if (hasAlreadyLogged(err)) {
-    return
-  }
-
-  viteErrorCleanup(err)
-
-  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
-  console.error(errStr)
-  setAlreadyLogged(err)
-}
-
-function logErrorIfDifferentFromOriginal(err: unknown, errOriginal: unknown) {
-  assertError(err)
-  if (!isSameErrorMessage(errOriginal, err) || !hasAlreadyLogged(errOriginal)) {
-    logError(err)
-  }
-}
-
-function hasAlreadyLogged(err: unknown) {
-  if (!isObject(err)) return false
-  const key = '_wasAlreadyConsoleLogged'
-  return err[key] === true
-}
-function setAlreadyLogged(err: unknown) {
-  if (!isObject(err)) return
-  const key = '_wasAlreadyConsoleLogged'
-  err[key] = true
 }
