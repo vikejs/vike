@@ -19,7 +19,7 @@ import { distFileNames } from './plugins/distFileNames'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
 import { suppressRollupWarning } from './plugins/suppressRollupWarning'
-import { retrieveDevServer } from './plugins/retrieveDevServer'
+import { setGlobalContext } from './plugins/setGlobalContext'
 import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
 import { extensionsAssets } from './plugins/extensionsAssets'
@@ -41,7 +41,7 @@ function plugin(vpsConfig?: UserConfig): any {
     ...extractAssetsPlugin(),
     extractExportNamesPlugin(),
     suppressRollupWarning(),
-    retrieveDevServer(),
+    setGlobalContext(),
     ...importBuild(),
     extensionsAssets()
   ]

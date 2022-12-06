@@ -1,28 +1,30 @@
 export { initGlobalContext }
 export { getGlobalContext }
 export { setGlobalContextViteDevServer }
-export { setGlobalContextConfigVps }
+export { setGlobalContextViteConfig }
 export { getViteDevServer }
 
 import { assert, assertUsage, getGlobalObject } from './utils'
-import type { ViteDevServer } from 'vite'
+import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
 import { assertViteManifest, type ViteManifest } from './viteManifest'
 import { assertPluginManifest, PluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
-import { getRuntimeConfig, setRuntimeConfig } from './globalContext/runtimeConfig'
+import { getRuntimeConfig, resolveRuntimeConfig, setRuntimeConfig } from './globalContext/runtimeConfig'
 import { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
+import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
 const globalObject = getGlobalObject<{
+  globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
-  configVps?: ConfigVpsResolved
-  globalContext?: GlobalContext2
+  config?: ResolvedConfig
 }>('globalContext.ts', {})
 
-type GlobalContext2 = (
+type GlobalContext = (
   | {
       isProduction: false
       isPrerendering: false
       viteDevServer: ViteDevServer
+      config: ResolvedConfig
       configVps: ConfigVpsResolved
       clientManifest: null
       pluginManifest: null
@@ -32,6 +34,7 @@ type GlobalContext2 = (
       isPrerendering: boolean
       clientManifest: ViteManifest
       pluginManifest: PluginManifest
+      config: null
       configVps: null
       viteDevServer: null
     }
@@ -41,13 +44,18 @@ type GlobalContext2 = (
   includeAssetsImportedByServer: boolean
 }
 
+function getGlobalContext(): GlobalContext {
+  assert(globalObject.globalContext)
+  return globalObject.globalContext
+}
+
 function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
   assert(!globalObject.globalContext)
   globalObject.viteDevServer = viteDevServer
 }
-function setGlobalContextConfigVps(configVps: ConfigVpsResolved): void {
+function setGlobalContextViteConfig(config: ResolvedConfig): void {
   assert(!globalObject.globalContext)
-  globalObject.configVps = configVps
+  globalObject.config = config
 }
 
 // TODO: remove
@@ -58,7 +66,7 @@ function getViteDevServer(): ViteDevServer | null {
 async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } = {}): Promise<void> {
   if (globalObject.globalContext) return
 
-  const { viteDevServer, configVps } = globalObject
+  const { viteDevServer, config } = globalObject
   const isProduction = !viteDevServer
 
   if (isProduction) {
@@ -76,14 +84,20 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
       clientManifest,
       pluginManifest,
       viteDevServer: null,
+      config: null,
       configVps: null,
       baseUrl: runtimeConfig.baseUrl,
       baseAssets: runtimeConfig.baseAssets,
       includeAssetsImportedByServer: runtimeConfig.includeAssetsImportedByServer
     }
   } else {
-    assert(configVps)
+    assert(config)
     assert(!isPrerendering)
+    const configVps = await getConfigVps(config)
+    {
+      const runtimeConfig = resolveRuntimeConfig(config, configVps)
+      setRuntimeConfig(runtimeConfig)
+    }
     const runtimeConfig = getRuntimeConfig()
     globalObject.globalContext = {
       isProduction,
@@ -91,6 +105,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
       clientManifest: null,
       pluginManifest: null,
       viteDevServer,
+      config,
       configVps,
       baseUrl: runtimeConfig.baseUrl,
       baseAssets: runtimeConfig.baseAssets,
@@ -99,15 +114,10 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
   }
 }
 
-function getGlobalContext(): GlobalContext2 {
-  assert(globalObject.globalContext)
-  return globalObject.globalContext
-}
-
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {
   const errMsg = [
     `You are tyring to run`,
-    isPreRendering ? '`$ vite-plugin-ssr prerender`' : 'the server for production',
+    isPreRendering ? 'pre-rendering' : 'the server for production',
     "but your app isn't built yet. Run `$ vite build` before ",
     isPreRendering ? 'pre-rendering.' : 'running the server.'
   ].join(' ')
