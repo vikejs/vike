@@ -49,7 +49,7 @@ async function resolveConfigVps(
     if (validationErr) assertUsage(false, `vite.config.js#vitePluginSsr.${validationErr.prop} ${validationErr.errMsg}`)
   }
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
-  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig] // TODO: rename `configs` to `configsVpsUserProvided`
+  const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
 
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
