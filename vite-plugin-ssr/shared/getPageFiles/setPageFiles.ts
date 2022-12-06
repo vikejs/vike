@@ -4,7 +4,7 @@ export { getPageFilesAll }
 
 import { assert, unique } from '../utils'
 import { determinePageId } from '../determinePageId'
-import type { PageFile } from './types'
+import type { PageFile } from './getPageFileObject'
 import { parseGlobResults } from './parseGlobResults'
 
 const pageFiles = (globalThis.__vite_plugin_ssr__pageFiles = globalThis.__vite_plugin_ssr__pageFiles || {

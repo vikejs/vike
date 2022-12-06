@@ -1,11 +1,27 @@
 export { getPageFileObject }
+export type { PageFile }
 
 import { determinePageId } from '../determinePageId'
 import { assertPageFilePath } from '../assertPageFilePath'
 import { isErrorPageId } from '../route'
 import { assert, assertPosixPath, slice, isNpmPackageModule } from '../utils'
-import type { FileType, PageFile } from './types'
+import type { FileType } from './fileTypes'
 import { isScriptFile } from '../../utils/isScriptFile'
+
+type PageFile = {
+  filePath: string
+  fileType: FileType
+  isEnvFile: (env: 'client' | 'server' | 'isomph') => boolean // TODO: rename to `isClientOnly` + `isServerOnly`? (+ `isClientAndServer` if needed?) // rename to `isEnv` + rename `cient` => `CLIENT_ONLY`, `isomph` => `CLIENT+SERVER`
+  fileExports?: Record<string, unknown>
+  loadFile?: () => Promise<void>
+  exportNames?: string[]
+  loadExportNames?: () => Promise<void>
+  isRelevant: (pageId: string) => boolean
+  isDefaultPageFile: boolean
+  isRendererPageFile: boolean
+  isErrorPageFile: boolean
+  pageId: string
+}
 
 function getPageFileObject(filePath: string): PageFile {
   const isRelevant = (pageId: string): boolean =>
@@ -39,7 +55,8 @@ function getPageFileObject(filePath: string): PageFile {
   return pageFile
 }
 
-function determineFileType(filePath: string): FileType { // TODO: Move to `fileType.ts`
+function determineFileType(filePath: string): FileType {
+  // TODO: Move to `fileType.ts`
   assertPosixPath(filePath)
 
   {

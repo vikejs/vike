@@ -1,5 +1,5 @@
 // Types
-export type { PageFile } from './getPageFiles/types'
+export type { PageFile } from './getPageFiles/getPageFileObject'
 export type { ExportsAll, PageContextExports } from './getPageFiles/getExports'
 
 // Utils

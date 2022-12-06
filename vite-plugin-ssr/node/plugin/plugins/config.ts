@@ -15,7 +15,7 @@ import {
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
 import fs from 'fs'
-import { isValidFileType } from '../../../shared/getPageFiles/types'
+import { isValidFileType } from '../../../shared/getPageFiles/fileTypes'
 
 function resolveVpsConfig(vpsConfig: unknown) {
   return {

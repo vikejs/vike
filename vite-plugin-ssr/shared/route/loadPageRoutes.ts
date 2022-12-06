@@ -1,4 +1,4 @@
-import { PageFile } from '../getPageFiles'
+import type { PageFile } from '../getPageFiles'
 import { isErrorPageId } from './error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'

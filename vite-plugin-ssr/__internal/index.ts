@@ -1,7 +1,7 @@
 // Internal functions of vps needed by other plugins are exported via this file
 
 import { loadPageRoutes, PageRoutes, route } from '../shared/route'
-import { getPageFilesAll, PageFile } from '../shared/getPageFiles'
+import { getPageFilesAll, type PageFile } from '../shared/getPageFiles'
 import { getGlobalContext, initGlobalContext } from '../node/globalContext'
 import { setProduction } from '../shared/setProduction'
 

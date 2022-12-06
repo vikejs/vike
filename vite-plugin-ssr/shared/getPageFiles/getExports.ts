@@ -6,7 +6,8 @@ export type { PageContextExports }
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
-import type { FileType, PageFile } from './types'
+import type { FileType } from './fileTypes'
+import type { PageFile } from './getPageFileObject'
 
 type ExportsAll = Record<
   string,

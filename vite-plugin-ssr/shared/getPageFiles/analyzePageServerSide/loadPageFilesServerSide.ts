@@ -2,7 +2,7 @@ export { loadPageFilesServerSide }
 
 import { getPageFilesServerSide } from '../getAllPageIdFiles'
 import { getExports } from '../getExports'
-import type { PageFile } from '../types'
+import type { PageFile } from '../getPageFileObject'
 
 async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)

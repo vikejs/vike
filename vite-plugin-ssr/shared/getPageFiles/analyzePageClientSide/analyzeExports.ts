@@ -1,8 +1,8 @@
 export { analyzeExports }
 
-import type { PageFile } from '../types'
 import { getExportNames } from './getExportNames'
 import { assertUsage } from '../../utils'
+import type { PageFile } from '../getPageFileObject'
 
 function analyzeExports({
   pageFilesClientSide,

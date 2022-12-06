@@ -1,6 +1,6 @@
 import { assertUsage, hasProp } from './utils'
-import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { assertHook } from '../shared/getHook'
+import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 
 export { assertRenderHook }
 

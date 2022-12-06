@@ -10,7 +10,7 @@ import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
-import { type FileType, fileTypes, isValidFileType } from '../../../shared/getPageFiles/types'
+import { type FileType, fileTypes, isValidFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 
 const virtualModuleIds = [

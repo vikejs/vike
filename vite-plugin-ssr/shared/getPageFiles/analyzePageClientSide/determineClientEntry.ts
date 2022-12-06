@@ -1,7 +1,7 @@
 export { determineClientEntry }
 
-import { PageFile } from '../../../shared/getPageFiles'
 import type { ClientDependency } from './ClientDependency'
+import type { PageFile } from '../../../shared/getPageFiles'
 
 function determineClientEntry({
   pageFilesClientSide,

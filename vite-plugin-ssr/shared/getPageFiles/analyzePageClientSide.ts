@@ -5,9 +5,9 @@ import { analyzeExports } from './analyzePageClientSide/analyzeExports'
 import { determineClientEntry } from './analyzePageClientSide/determineClientEntry'
 import { getPageFilesClientSide } from './getAllPageIdFiles'
 import { getPageFilesServerSide } from './getAllPageIdFiles'
-import type { PageFile } from './types'
 import { assert } from '../utils'
 import { getExportNames } from './analyzePageClientSide/getExportNames'
+import type { PageFile } from './getPageFileObject'
 
 function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
   let pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)

@@ -1,9 +1,9 @@
 export { getPageFilesClientSide }
 export { getPageFilesServerSide }
 
-import type { PageFile } from './types'
 import { assert, assertUsage, isNotNullish } from '../utils'
 import { assertPageFilePath } from '../assertPageFilePath'
+import type { PageFile } from './getPageFileObject'
 
 function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
   return determine(pageFilesAll, pageId, true)

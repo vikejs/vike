@@ -3,7 +3,7 @@ export { findPageFiles }
 import glob from 'fast-glob'
 import type { ResolvedConfig } from 'vite'
 import { assertWarning, toPosixPath, scriptFileExtensions } from '../utils'
-import type { FileType } from '../../../shared/getPageFiles/types'
+import type { FileType } from '../../../shared/getPageFiles/fileTypes'
 
 async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Promise<string[]> {
   const cwd = config.root

@@ -3,7 +3,7 @@ export { assertExportValues }
 export { forbiddenDefaultExports }
 
 import { assert, assertUsage } from '../utils'
-import type { PageFile } from './types'
+import type { PageFile } from './getPageFileObject'
 
 const enforceTrue = ['clientRouting']
 function assertExportValues(pageFile: PageFile) {

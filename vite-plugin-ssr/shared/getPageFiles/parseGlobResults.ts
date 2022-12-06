@@ -2,8 +2,8 @@ export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils'
 import { assertExportValues } from './assertExports'
-import { getPageFileObject } from './getPageFileObject'
-import { FileType, fileTypes, PageFile } from './types'
+import { getPageFileObject, type PageFile } from './getPageFileObject'
+import { fileTypes, type FileType } from './fileTypes'
 
 function parseGlobResults(pageFilesExports: unknown) {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
