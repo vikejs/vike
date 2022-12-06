@@ -25,7 +25,7 @@ import {
   loadPageFilesServer,
   prerenderPageContext,
   type RenderContext,
-  renderStatic404Page,
+  prerender404Page,
   initPageContext
 } from './renderPage/renderPageContext'
 import { blue, green, gray, cyan } from 'picocolors'
@@ -177,7 +177,7 @@ async function prerender(
 
   warnContradictoryNoPrerenderList(prerenderPageIds, doNotPrerenderList)
 
-  await prerender404Page(htmlFiles, renderContext)
+  await prerender404(htmlFiles, renderContext)
 
   if (logLevel === 'info') {
     console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
@@ -614,9 +614,9 @@ function warnMissingPages(
     })
 }
 
-async function prerender404Page(htmlFiles: HtmlFile[], renderContext: RenderContext) {
+async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext) {
   if (!htmlFiles.find(({ urlOriginal }) => urlOriginal === '/404')) {
-    const result = await renderStatic404Page(renderContext)
+    const result = await prerender404Page(renderContext)
     if (result) {
       const urlOriginal = '/404'
       const { documentHtml, pageContext } = result

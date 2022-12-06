@@ -1,6 +1,6 @@
 export { renderPageContext }
 export { prerenderPageContext }
-export { renderStatic404Page }
+export { prerender404Page }
 export { loadPageFilesServer }
 export { initPageContext }
 export { getRenderContext }
@@ -9,13 +9,11 @@ export type { RenderResult }
 
 import { getErrorPageId } from '../../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from '../html/renderHtml'
-import { type PageFile, PageContextExports, getPageFilesAll } from '../../shared/getPageFiles'
+import { type PageFile, type PageContextExports, getPageFilesAll } from '../../shared/getPageFiles'
 import { getHook } from '../../shared/getHook'
-import { stringify } from '@brillout/json-serializer/stringify'
 import {
   assert,
   assertUsage,
-  assertWarning,
   hasProp,
   isObject,
   objectAssign,
@@ -27,15 +25,16 @@ import type { PageAsset } from './getPageAssets'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { isStream } from '../html/stream'
 import { serializePageContextClientSide } from '../helpers'
-import { addComputedUrlProps, PageContextUrls } from '../../shared/addComputedUrlProps'
+import { addComputedUrlProps, type PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { log404 } from './log404'
 import { getGlobalContext } from '../globalContext'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
 import { assertError, logError, logErrorIfDifferentFromOriginal } from './logError'
-import { loadPageFilesServer, PageContext_loadPageFilesServer, PageFiles } from './loadPageFilesServer'
+import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
+import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -114,30 +113,6 @@ async function renderPageContext(
   }
 }
 
-async function handleErrorWithoutErrorPage(pageContext: {
-  _isPageContextRequest: boolean
-  errorWhileRendering: null | Error
-  is404: null | boolean
-  _pageId: null
-  urlOriginal: string
-}): Promise<RenderResult> {
-  assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
-  assert(pageContext.errorWhileRendering || pageContext.is404)
-
-  warnMissingErrorPage()
-
-  if (!pageContext._isPageContextRequest) {
-    objectAssign(pageContext, { httpResponse: null })
-    return pageContext
-  } else {
-    const __getPageAssets: GetPageAssets = async () => []
-    objectAssign(pageContext, { __getPageAssets })
-    const httpResponse = await createHttpResponseObject(stringify({ serverSideError: true }), null, pageContext)
-    objectAssign(pageContext, { httpResponse })
-    return pageContext
-  }
-}
-
 function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
   assert(pageContextInit.urlOriginal)
 
@@ -207,7 +182,7 @@ async function prerenderPageContext(
   }
 }
 
-async function renderStatic404Page(renderContext: RenderContext) {
+async function prerender404Page(renderContext: RenderContext) {
   const errorPageId = getErrorPageId(renderContext.allPageIds)
   if (!errorPageId) {
     return null
@@ -225,7 +200,7 @@ async function renderStatic404Page(renderContext: RenderContext) {
     _pageId: errorPageId,
     is404: true,
     routeParams: {},
-    // `renderStatic404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
+    // `prerender404Page()` is about generating `dist/client/404.html` for static hosts; there is no Client Routing.
     _usesClientRouter: false,
     _routeMatches: []
   })
@@ -386,15 +361,4 @@ async function executeRenderHook(
   )
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }
-}
-
-function warnMissingErrorPage(): void {
-  const globalContext = getGlobalContext()
-  if (!globalContext.isProduction) {
-    assertWarning(
-      false,
-      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
-      { showStackTrace: false, onlyOnce: true }
-    )
-  }
 }
