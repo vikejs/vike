@@ -1,5 +1,6 @@
 export { getPageAssets }
 export type { PageAsset }
+export type { GetPageAssets }
 export type { PageContextGetPageAssets }
 
 import {
@@ -28,6 +29,7 @@ type PageAsset = {
   mediaType: null | NonNullable<MediaType>['mediaType']
   isEntry: boolean
 }
+type GetPageAssets = () => Promise<PageAsset[]>
 
 type PageContextGetPageAssets = {
   _baseUrl: string

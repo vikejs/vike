@@ -23,7 +23,7 @@ import { pLimit, PLimit } from '../utils/pLimit'
 import {
   getRenderContext,
   loadPageFilesServer,
-  prerenderPage,
+  prerenderPageContext,
   type RenderContext,
   renderStatic404Page,
   initPageContext
@@ -568,7 +568,7 @@ async function routeAndPrerender(
           _usesClientRouter: globalContext.pluginManifest.usesClientRouter
         })
 
-        const { documentHtml, pageContextSerialized } = await prerenderPage(pageContext)
+        const { documentHtml, pageContextSerialized } = await prerenderPageContext(pageContext)
         htmlFiles.push({
           urlOriginal,
           pageContext,
