@@ -4,7 +4,7 @@ export { getStemPackages }
 export type { StemPackage }
 
 import path from 'path'
-import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, isObject } from '../../utils'
+import { assert, assertUsage, assertWarning, toPosixPath, assertPosixPath, getDependencyRootDir } from '../../utils'
 import { import_ } from '@brillout/import'
 import fs from 'fs'
 
@@ -14,8 +14,8 @@ type StemPackage = {
   loadModule: (moduleId: string) => Promise<null | Record<string, unknown>>
 }
 
-async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
-  const userRootDir = findUserRootDir(currentDir)
+async function getStemPackages(userAppRootDir: string): Promise<StemPackage[]> {
+  const userRootDir = findUserRootDir(userAppRootDir)
 
   const userPkgJson = getUserPackageJson(userRootDir)
 
@@ -47,12 +47,7 @@ async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
           : await import_(modulePath)
         return moduleExports
       }
-      const stemPackageJsonPath = resolveModulePath('package.json')
-      assertUsage(
-        stemPackageJsonPath && isObject(require(stemPackageJsonPath).exports),
-        `Cannot read ${stemPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${stemPackageName}.`
-      )
-      const stemPackageRootDir = toPosixPath(path.dirname(stemPackageJsonPath))
+      const stemPackageRootDir = getDependencyRootDir(stemPackageName, userAppRootDir)
       return {
         stemPackageName,
         stemPackageRootDir,
@@ -64,13 +59,13 @@ async function getStemPackages(currentDir: string): Promise<StemPackage[]> {
   return stemPackages
 }
 
-function findUserRootDir(currentDir: string): string {
-  const userPkgJsonPath = findUserPackageJsonPath(currentDir)
-  assertUsage(userPkgJsonPath, `Couldn't find package.json in any parent directory starting from ${currentDir}`)
+function findUserRootDir(userAppRootDir: string): string {
+  const userPkgJsonPath = findUserPackageJsonPath(userAppRootDir)
+  assertUsage(userPkgJsonPath, `Couldn't find package.json in any parent directory starting from ${userAppRootDir}`)
   return toPosixPath(path.dirname(userPkgJsonPath))
 }
-function findUserPackageJsonPath(currentDir: string): null | string {
-  let dir = currentDir
+function findUserPackageJsonPath(userAppRootDir: string): null | string {
+  let dir = userAppRootDir
   while (true) {
     const configFilePath = path.join(dir, './package.json')
     if (fs.existsSync(configFilePath)) {

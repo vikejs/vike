@@ -69,7 +69,7 @@ function resolveExtensions(configs: ConfigVpsUserProvided[], config: ResolvedCon
       `Extension '${npmPackageName}' doesn't seem to be a valid npm package name`
     )
 
-    const npmPackageRootDir = getDependencyRootDir(npmPackageName, config)
+    const npmPackageRootDir = getDependencyRootDir(npmPackageName, config.root)
     assertPosixPath(npmPackageRootDir)
 
     const pageFilesDist = resolvePageFilesDist(extension.pageFilesDist, npmPackageName, config, npmPackageRootDir)
