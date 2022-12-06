@@ -6,11 +6,11 @@ export { initPageContext }
 export { getRenderContext }
 export type { RenderContext }
 
-import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../shared/route'
-import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from './html/renderHtml'
-import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../shared/getPageFiles'
-import { analyzePageClientSide, analyzePageClientSideInit } from '../shared/getPageFiles/analyzePageClientSide'
-import { getHook } from '../shared/getHook'
+import { getErrorPageId, route, isErrorPageId, RouteMatches } from '../../shared/route'
+import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from '../html/renderHtml'
+import { PageFile, PageContextExports, getExportUnion, getPageFilesAll, ExportsAll } from '../../shared/getPageFiles'
+import { analyzePageClientSide, analyzePageClientSideInit } from '../../shared/getPageFiles/analyzePageClientSide'
+import { getHook } from '../../shared/getHook'
 import { stringify } from '@brillout/json-serializer/stringify'
 import pc from 'picocolors'
 import {
@@ -30,23 +30,23 @@ import {
   createDebugger,
   callHookWithTimeout,
   isCallable
-} from './utils'
-import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './renderPage/getPageAssets'
-import { sortPageContext } from '../shared/sortPageContext'
-import { assertHookResult } from '../shared/assertHookResult'
-import { isStream } from './html/stream'
-import { addIs404ToPageProps, serializePageContextClientSide, type MediaType } from './helpers'
-import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addComputedUrlProps'
-import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
-import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
-import { log404 } from './renderPage/log404'
-import { getGlobalContext, initGlobalContext } from './globalContext'
-import { viteAlreadyLoggedError, viteErrorCleanup } from './renderPage/viteLogging'
-import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
-import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
-import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
-import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
-import { createHttpResponseObject, HttpResponse } from './renderPage/createHttpResponseObject'
+} from '../utils'
+import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
+import { sortPageContext } from '../../shared/sortPageContext'
+import { assertHookResult } from '../../shared/assertHookResult'
+import { isStream } from '../html/stream'
+import { addIs404ToPageProps, serializePageContextClientSide, type MediaType } from '../helpers'
+import { addComputedUrlProps, assertURLs, PageContextUrls } from '../../shared/addComputedUrlProps'
+import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
+import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './RenderErrorPage'
+import { log404 } from './log404'
+import { getGlobalContext, initGlobalContext } from '../globalContext'
+import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
+import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import { loadPageFilesServerSide } from '../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
+import { handlePageContextRequestUrl } from './handlePageContextRequestUrl'
+import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
+import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
