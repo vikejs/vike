@@ -21,15 +21,20 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
   })
 
   test('Learn more collapsible', async () => {
+    const collapsibleText = 'you control how your pages are rendered'
+    const sectionHeading = 'Control'
     await page.goto(getServerUrl() + '/')
     await page.waitForFunction(() => (window as any).__docpress_hydrationFinished)
-    const text = 'you control how your pages are rendered'
-    const selector = `p:has-text("${text}")`
-    await page.waitForSelector(selector, { state: 'hidden' })
-    await page.locator('h2:has-text("Control")').click()
+    const selector = `p:has-text("${collapsibleText}")`
+    const locator = page.locator(selector)
+    expect(await locator.count()).toBe(1)
+    expect(await locator.isHidden()).toBe(true)
+    await page.locator(`h2:has-text("${sectionHeading}")`).click()
     await page.waitForSelector(selector, { state: 'visible' })
-    await page.locator('h2:has-text("Control")').click()
+    expect(await locator.isHidden()).toBe(false)
+    await page.locator(`h2:has-text("${sectionHeading}")`).click()
     await page.waitForSelector(selector, { state: 'hidden' })
+    expect(await locator.isHidden()).toBe(true)
   })
 
   test('Layout', async () => {
