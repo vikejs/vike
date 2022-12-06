@@ -6,9 +6,9 @@ export { initPageContext }
 export { getRenderContext }
 export type { RenderContext }
 
-import { getErrorPageId, route, isErrorPageId } from '../../shared/route'
+import { getErrorPageId, route } from '../../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from '../html/renderHtml'
-import { type PageFile, PageContextExports, getPageFilesAll, ExportsAll } from '../../shared/getPageFiles'
+import { type PageFile, PageContextExports, getPageFilesAll } from '../../shared/getPageFiles'
 import { getHook } from '../../shared/getHook'
 import { stringify } from '@brillout/json-serializer/stringify'
 import {
@@ -16,7 +16,6 @@ import {
   assertUsage,
   assertWarning,
   hasProp,
-  isPlainObject,
   isObject,
   objectAssign,
   isParsable,
@@ -26,11 +25,10 @@ import {
   isCallable
 } from '../utils'
 import type { PageAsset } from './getPageAssets'
-import { sortPageContext } from '../../shared/sortPageContext'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { isStream } from '../html/stream'
-import { addIs404ToPageProps, serializePageContextClientSide } from '../helpers'
-import { addComputedUrlProps, assertURLs, PageContextUrls } from '../../shared/addComputedUrlProps'
+import { serializePageContextClientSide } from '../helpers'
+import { addComputedUrlProps, PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException } from './RenderErrorPage'
 import { log404 } from './log404'
@@ -42,6 +40,7 @@ import { assertError, logError, logErrorIfDifferentFromOriginal } from './logErr
 import { assertArguments } from './assertArguments'
 import type { PageContextDebug } from './debugPageFiles'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, PageFiles } from './loadPageFilesServer'
+import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -382,38 +381,6 @@ async function renderStatic404Page(renderContext: RenderContext) {
   objectAssign(pageContext, pageFiles)
 
   return prerenderPageContext(pageContext)
-}
-
-type PageContextPublic = {
-  urlOriginal: string
-  /** @deprecated */
-  url: string
-  urlPathname: string
-  urlParsed: PageContextUrls['urlParsed']
-  routeParams: Record<string, string>
-  Page: unknown
-  pageExports: Record<string, unknown>
-  exports: Record<string, unknown>
-  exportsAll: ExportsAll
-  _pageId: string
-  is404: null | boolean
-  pageProps?: Record<string, unknown>
-}
-function preparePageContextForRelease<T extends PageContextPublic>(pageContext: T) {
-  assertURLs(pageContext)
-
-  assert(isPlainObject(pageContext.routeParams))
-  assert('Page' in pageContext)
-  assert(isObject(pageContext.pageExports))
-  assert(isObject(pageContext.exports))
-  assert(isObject(pageContext.exportsAll))
-
-  sortPageContext(pageContext)
-
-  if (isErrorPageId(pageContext._pageId)) {
-    assert(hasProp(pageContext, 'is404', 'boolean'))
-    addIs404ToPageProps(pageContext)
-  }
 }
 
 async function executeOnBeforeRenderHooks(
