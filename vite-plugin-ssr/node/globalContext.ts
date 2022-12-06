@@ -2,7 +2,6 @@ export { initGlobalContext }
 export { getGlobalContext }
 export { setGlobalContextViteDevServer }
 export { setGlobalContextViteConfig }
-export { getViteDevServer }
 
 import { assert, assertUsage, getGlobalObject } from './utils'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
@@ -56,11 +55,6 @@ function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
 function setGlobalContextViteConfig(config: ResolvedConfig): void {
   assert(!globalObject.globalContext)
   globalObject.config = config
-}
-
-// TODO: remove
-function getViteDevServer(): ViteDevServer | null {
-  return globalObject.viteDevServer ?? null
 }
 
 async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } = {}): Promise<void> {
