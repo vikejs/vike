@@ -8,7 +8,7 @@ import {
   prependBaseUrl,
   assertPosixPath,
   toPosixPath,
-  isNpmPackageModulePath,
+  isNpmPackageModule,
   unique,
   isNotNullish
 } from '../utils'
@@ -153,7 +153,7 @@ function resolveClientEntriesDev(
     }
   } else {
     // VPS extensions
-    assert(isNpmPackageModulePath(clientEntry)) // TODO: factor out check? Make test more precise to check presence in extensions[number].pageFiles?
+    assert(isNpmPackageModule(clientEntry)) // TODO: factor out check? Make test more precise to check presence in extensions[number].pageFiles?
     const extensionPageFile = configVps.extensions
       .map(({ pageFilesDist }) => pageFilesDist)
       .flat()

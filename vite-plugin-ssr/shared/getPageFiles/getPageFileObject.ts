@@ -3,7 +3,7 @@ export { getPageFileObject }
 import { determinePageId } from '../determinePageId'
 import { assertPageFilePath } from '../assertPageFilePath'
 import { isErrorPageId } from '../route'
-import { assert, assertPosixPath, slice, isNpmPackageModulePath } from '../utils'
+import { assert, assertPosixPath, slice, isNpmPackageModule } from '../utils'
 import type { FileType, PageFile } from './types'
 import { isScriptFile } from '../../utils/isScriptFile'
 
@@ -46,7 +46,7 @@ function determineFileType(filePath: string): FileType { // TODO: Move to `fileT
     const isCSS = filePath.endsWith('.css')
     assert(isScriptFile(filePath) || isCSS)
     if (isCSS) {
-      assert(isNpmPackageModulePath(filePath), filePath) // `.css` page files are only supported for npm packages // TODO: consolidate this comment
+      assert(isNpmPackageModule(filePath), filePath) // `.css` page files are only supported for npm packages // TODO: consolidate this comment
       return '.css'
     }
   }

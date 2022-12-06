@@ -1,27 +1,27 @@
 export { isNpmPackageName }
-export { isNpmPackageModulePath }
+export { isNpmPackageModule }
 export { getNpmPackageName }
 
 import { assert } from './assert'
 const invalidNameRE = /[^a-zA-Z-_]/
 
 function isNpmPackageName(str: string | undefined): boolean {
-  const res = parseNpmPackageModulePath(str)
+  const res = parseNpmPath(str)
   return res !== null && res.modulePath === null
 }
 
-function isNpmPackageModulePath(str: string): boolean {
-  const res = parseNpmPackageModulePath(str)
+function isNpmPackageModule(str: string): boolean {
+  const res = parseNpmPath(str)
   return res !== null
 }
 
 function getNpmPackageName(str: string): null | string {
-  const res = parseNpmPackageModulePath(str)
+  const res = parseNpmPath(str)
   if (!res) return null
   return res.npmPackageName
 }
 
-function parseNpmPackageModulePath( // TODO: rename to `parseNpmPath()`
+function parseNpmPath(
   str: string | undefined
 ): null | { npmPackageName: string; modulePath: null | string } {
   if (str === undefined || str.includes('\\') || str.startsWith('/')) {

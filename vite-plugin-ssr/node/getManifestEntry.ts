@@ -1,5 +1,5 @@
 import type { ViteManifest, ViteManifestEntry } from './viteManifest'
-import { assert, assertPosixPath, slice, isNpmPackageModulePath } from './utils'
+import { assert, assertPosixPath, slice, isNpmPackageModule } from './utils'
 
 export { getManifestEntry }
 
@@ -10,7 +10,7 @@ function getManifestEntry(
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertPosixPath(id)
   assert(!id.startsWith('/@fs'), { id })
-  assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/') || isNpmPackageModulePath(id), { id }) // TODO: new util function
+  assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/') || isNpmPackageModule(id), { id }) // TODO: new util function
 
   // For vite-plugin-ssr client entry
   if (id.startsWith('@@vite-plugin-ssr/')) {
@@ -30,7 +30,7 @@ function getManifestEntry(
   }
 
   // For extensions[number].pageFilesDist
-  if (isNpmPackageModulePath(id)) {
+  if (isNpmPackageModule(id)) {
     const manifestKey = manifestKeyMap[id]
     assert(manifestKey, { id })
     const manifestEntry = clientManifest[manifestKey]
