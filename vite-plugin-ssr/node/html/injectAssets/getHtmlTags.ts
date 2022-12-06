@@ -4,7 +4,7 @@ export type { PreloadFilter }
 export type { InjectFilterEntry }
 
 import { assert, assertWarning, assertUsage, isObject, freezePartial } from '../../utils'
-import { serializePageContextClientSide } from '../../serializePageContextClientSide'
+import { serializePageContextClientSide } from '../../helpers'
 import { sanitizeJson } from './sanitizeJson'
 import { inferAssetTag, inferPreloadTag } from './inferHtmlTags'
 import { getViteDevScripts } from './getViteDevScripts'

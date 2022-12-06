@@ -1,9 +1,9 @@
-import { stringify } from '@brillout/json-serializer/stringify'
-import { isErrorPageId } from '../shared/route'
-import { assert, assertUsage, hasProp, isPlainObject, unique } from './utils'
-
 export { serializePageContextClientSide }
 export { addIs404ToPageProps }
+
+import { stringify } from '@brillout/json-serializer/stringify'
+import { isErrorPageId } from '../../shared/route'
+import { assert, assertUsage, hasProp, isPlainObject, unique } from '../utils'
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>

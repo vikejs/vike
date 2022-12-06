@@ -51,7 +51,7 @@ import {
   isStreamWritableWeb,
   isStreamWritableNode
 } from './html/stream'
-import { addIs404ToPageProps, serializePageContextClientSide } from './serializePageContextClientSide'
+import { addIs404ToPageProps, serializePageContextClientSide, type MediaType } from './helpers'
 import { addComputedUrlProps, assertURLs, PageContextUrls } from '../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../shared/assertPageContextProvidedByUser'
 import { isRenderErrorPageException, assertRenderErrorPageExceptionUsage } from './renderPage/RenderErrorPage'
@@ -61,7 +61,6 @@ import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import type { ClientDependency } from '../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { loadPageFilesServerSide } from '../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
-import type { MediaType } from './helpers'
 import { inferEarlyHintLink } from './html/injectAssets/inferHtmlTags'
 import type { PreloadFilter } from './html/injectAssets/getHtmlTags'
 
