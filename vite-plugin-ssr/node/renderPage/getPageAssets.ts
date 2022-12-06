@@ -12,7 +12,7 @@ import {
   unique,
   isNotNullish
 } from '../utils'
-import { retrieveAssetsDev, retrieveAssetsProd } from './retrievePageAssets'
+import { retrieveAssetsDev, retrieveAssetsProd } from './getPageAssets/retrievePageAssets'
 import path from 'path'
 import { inferMediaType, type MediaType, type ViteManifest } from '../helpers'
 import { getManifestEntry } from '../getManifestEntry'
