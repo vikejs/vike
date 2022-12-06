@@ -1,16 +1,15 @@
 export { getManifestEntry }
 
 import type { ViteManifest, ViteManifestEntry } from '../../helpers'
-import { assert, assertPosixPath, slice, isNpmPackageModule } from '../../utils'
+import { assert, slice, isNpmPackageModule } from '../../utils'
+import { assertClientEntryId } from './assertClientEntryId'
 
 function getManifestEntry(
   id: string,
   clientManifest: ViteManifest,
   manifestKeyMap: Record<string, string>
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
-  assertPosixPath(id)
-  assert(!id.startsWith('/@fs'), { id })
-  assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/') || isNpmPackageModule(id), { id }) // TODO: new util function
+  assertClientEntryId(id)
 
   // For vite-plugin-ssr client entry
   if (id.startsWith('@@vite-plugin-ssr/')) {

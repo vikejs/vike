@@ -22,6 +22,7 @@ import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClie
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
 import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
 import { getGlobalContext } from '../globalContext'
+import { assertClientEntryId } from './getPageAssets/assertClientEntryId'
 
 type PageAsset = {
   src: string
@@ -113,6 +114,8 @@ function resolveClientEntriesDev(
   viteDevServer: ViteDevServer,
   configVps: ConfigVpsResolved
 ): string {
+  assertClientEntryId(clientEntry)
+
   let root = viteDevServer.config.root
   assert(root)
   root = toPosixPath(root)
@@ -151,9 +154,7 @@ function resolveClientEntriesDev(
         res(clientEntry.replace('@@vite-plugin-ssr/dist/esm/client/', '../../../../dist/esm/client/'))
       )
     }
-  } else {
-    // VPS extensions
-    assert(isNpmPackageModule(clientEntry)) // TODO: factor out check? Make test more precise to check presence in extensions[number].pageFiles?
+  } else if (isNpmPackageModule(clientEntry)) {
     const extensionPageFile = configVps.extensions
       .map(({ pageFilesDist }) => pageFilesDist)
       .flat()
@@ -161,6 +162,8 @@ function resolveClientEntriesDev(
       .find((e) => e.importPath === clientEntry)
     assert(extensionPageFile, clientEntry)
     filePath = extensionPageFile.filePath
+  } else {
+    assert(false)
   }
 
   if (!filePath.startsWith('/')) {
