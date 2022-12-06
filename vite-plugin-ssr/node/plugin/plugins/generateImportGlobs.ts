@@ -217,7 +217,7 @@ function getFileType(filePath: string): FileType {
 }
 
 function generateGlobImports(
-  crawlRoots: string[], // TODO: rename to globRoots
+  globRoots: string[],
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
@@ -248,14 +248,14 @@ export const isGeneratedFile = true;
         isBuild
       })
       if (includeImport) {
-        fileContent += getGlobs(crawlRoots, isBuild, fileType)
+        fileContent += getGlobs(globRoots, isBuild, fileType)
       }
       if (includeExportNames) {
-        fileContent += getGlobs(crawlRoots, isBuild, fileType, 'extractExportNames')
+        fileContent += getGlobs(globRoots, isBuild, fileType, 'extractExportNames')
       }
     })
   if (configVps.includeAssetsImportedByServer && isForClientSide) {
-    fileContent += getGlobs(crawlRoots, isBuild, '.page.server', 'extractAssets')
+    fileContent += getGlobs(globRoots, isBuild, '.page.server', 'extractAssets')
   }
 
   return fileContent
@@ -269,7 +269,7 @@ type PageFileVar =
   | 'neverLoaded'
 
 function getGlobs(
-  crawlRoots: string[],
+  globRoots: string[],
   isBuild: boolean,
   fileType: Exclude<FileType, '.css'>,
   query?: 'extractExportNames' | 'extractAssets'
@@ -307,7 +307,7 @@ function getGlobs(
 
   const varNameLocals: string[] = []
   return [
-    ...crawlRoots.map((globRoot, i) => {
+    ...globRoots.map((globRoot, i) => {
       const varNameLocal = `${varName}${i + 1}`
       varNameLocals.push(varNameLocal)
       const globPath = `'${getGlobPath(globRoot, fileType)}'`
