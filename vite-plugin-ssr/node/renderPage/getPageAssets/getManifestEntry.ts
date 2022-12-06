@@ -1,7 +1,7 @@
-import type { ViteManifest, ViteManifestEntry } from './helpers'
-import { assert, assertPosixPath, slice, isNpmPackageModule } from './utils'
-
 export { getManifestEntry }
+
+import type { ViteManifest, ViteManifestEntry } from '../../helpers'
+import { assert, assertPosixPath, slice, isNpmPackageModule } from '../../utils'
 
 function getManifestEntry(
   id: string,

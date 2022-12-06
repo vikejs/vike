@@ -4,7 +4,7 @@ export { retrieveAssetsDev }
 import { assert, styleFileRE, isNpmPackageModule } from '../../utils'
 import { ViteManifest } from '../../helpers'
 import type { ModuleNode, ViteDevServer } from 'vite'
-import { getManifestEntry } from '../../getManifestEntry'
+import { getManifestEntry } from './getManifestEntry'
 import { extractAssetsAddQuery } from '../../plugin/plugins/extractAssetsPlugin/extractAssetsAddQuery'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 
