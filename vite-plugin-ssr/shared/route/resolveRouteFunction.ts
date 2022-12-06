@@ -2,7 +2,7 @@ export { resolveRouteFunction }
 export { assertRouteParams }
 
 import { assertURLs, PageContextUrls, PageContextUrlSource } from '../addComputedUrlProps'
-import { assert, assertUsage, hasProp, isPlainObject, isPromise } from './utils'
+import { assert, assertUsage, hasProp, isPlainObject, isPromise, isStringRecord } from './utils'
 
 async function resolveRouteFunction(
   routeFunction: Function,
@@ -83,9 +83,7 @@ function assertRouteParams<T>(
   if (!hasProp(result, 'routeParams')) {
     return
   }
+  assert(errPrefix.endsWith(' should'))
   assertUsage(isPlainObject(result.routeParams), `${errPrefix} be a plain JavaScript object.`)
-  assertUsage(
-    Object.values(result.routeParams).every((val) => typeof val === 'string'),
-    `${errPrefix} only hold string values.`
-  )
+  assertUsage(isStringRecord(result.routeParams), `${errPrefix} only hold string values.`)
 }

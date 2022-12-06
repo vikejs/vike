@@ -1,19 +1,17 @@
 export { manifest }
 
 import { Plugin, ResolvedConfig } from 'vite'
-import { assert, projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils'
+import { projectInfo, viteIsSSR, toPosixPath, assertPosixPath, isNotNullish } from '../utils'
 import { assertPluginManifest } from './manifest/assertPluginManifest'
-import { RuntimeConfig, resolveRuntimeConfig } from '../../globalContext/runtimeConfig'
 import { isUsingClientRouter } from './extractExportNamesPlugin'
 import { getConfigVps } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import path from 'path'
+import { getRuntimeManifest } from '../../globalContext'
 
 function manifest(): Plugin[] {
-  let ssr: boolean
   let configVps: ConfigVpsResolved
   let config: ResolvedConfig
-  let runtimeConfig: RuntimeConfig
   return [
     {
       name: 'vite-plugin-ssr:pluginManifest',
@@ -21,18 +19,15 @@ function manifest(): Plugin[] {
       async configResolved(config_: ResolvedConfig) {
         config = config_
         configVps = await getConfigVps(config)
-        ssr = viteIsSSR(config)
-        runtimeConfig = resolveRuntimeConfig(config, configVps)
       },
       generateBundle() {
-        assert(typeof ssr === 'boolean')
-        assert(runtimeConfig)
-        if (ssr) return
+        if (viteIsSSR(config)) return
+        const runtimeManifest = getRuntimeManifest(config, configVps)
         const manifest = {
           version: projectInfo.projectVersion,
           usesClientRouter: isUsingClientRouter(),
           manifestKeyMap: getManifestKeyMap(configVps, config),
-          ...runtimeConfig
+          ...runtimeManifest
         }
         assertPluginManifest(manifest)
         this.emitFile({
