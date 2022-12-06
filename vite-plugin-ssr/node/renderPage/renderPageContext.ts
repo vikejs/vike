@@ -113,38 +113,6 @@ async function renderPageContext(
   }
 }
 
-function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
-  assert(pageContextInit.urlOriginal)
-
-  const globalContext = getGlobalContext()
-  const pageContextAddendum = {
-    ...pageContextInit,
-    _objectCreatedByVitePluginSsr: true,
-    _pageFilesAll: renderContext.pageFilesAll,
-    _allPageIds: renderContext.allPageIds,
-    // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
-    _baseUrl: globalContext.baseUrl,
-    _baseAssets: globalContext.baseAssets,
-    _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer
-  }
-
-  return pageContextAddendum
-}
-
-type RenderContext = {
-  pageFilesAll: PageFile[]
-  allPageIds: string[]
-}
-async function getRenderContext(): Promise<RenderContext> {
-  const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext.isProduction)
-  const renderContext = {
-    pageFilesAll: pageFilesAll,
-    allPageIds: allPageIds
-  }
-  return renderContext
-}
-
 async function prerenderPageContext(
   pageContext: {
     urlOriginal: string
@@ -209,6 +177,38 @@ async function prerender404Page(renderContext: RenderContext) {
   objectAssign(pageContext, pageFiles)
 
   return prerenderPageContext(pageContext)
+}
+
+function initPageContext(pageContextInit: { urlOriginal: string }, renderContext: RenderContext) {
+  assert(pageContextInit.urlOriginal)
+
+  const globalContext = getGlobalContext()
+  const pageContextAddendum = {
+    ...pageContextInit,
+    _objectCreatedByVitePluginSsr: true,
+    _pageFilesAll: renderContext.pageFilesAll,
+    _allPageIds: renderContext.allPageIds,
+    // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
+    _baseUrl: globalContext.baseUrl,
+    _baseAssets: globalContext.baseAssets,
+    _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer
+  }
+
+  return pageContextAddendum
+}
+
+type RenderContext = {
+  pageFilesAll: PageFile[]
+  allPageIds: string[]
+}
+async function getRenderContext(): Promise<RenderContext> {
+  const globalContext = getGlobalContext()
+  const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext.isProduction)
+  const renderContext = {
+    pageFilesAll: pageFilesAll,
+    allPageIds: allPageIds
+  }
+  return renderContext
 }
 
 async function executeOnBeforeRenderHooks(

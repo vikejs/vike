@@ -1,16 +1,22 @@
 export { renderPage }
 
-import { getRenderContext, initPageContext, RenderContext, renderPageContext, RenderResult } from './renderPageContext'
-import { route } from '../../shared/route'
-import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
-import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
-import { isRenderErrorPageException } from './RenderErrorPage'
-import { initGlobalContext } from '../globalContext'
-import { handlePageContextRequestUrl } from './handlePageContextRequestUrl'
-import { HttpResponse } from './createHttpResponseObject'
-import { assertError, logError, logErrorIfDifferentFromOriginal } from './logError'
-import { assertArguments } from './assertArguments'
-import type { PageContextDebug } from './debugPageFiles'
+import {
+  getRenderContext,
+  initPageContext,
+  RenderContext,
+  renderPageContext,
+  RenderResult
+} from './renderPage/renderPageContext'
+import { route } from '../shared/route'
+import { assert, hasProp, objectAssign, isParsable, parseUrl } from './utils'
+import { addComputedUrlProps } from '../shared/addComputedUrlProps'
+import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
+import { initGlobalContext } from './globalContext'
+import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
+import { HttpResponse } from './renderPage/createHttpResponseObject'
+import { assertError, logError, logErrorIfDifferentFromOriginal } from './renderPage/logError'
+import { assertArguments } from './renderPage/assertArguments'
+import type { PageContextDebug } from './renderPage/debugPageFiles'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
