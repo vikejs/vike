@@ -1,6 +1,7 @@
-// This plugin makes the client-side bundle include CSS imports that live in files loaded only on the server-side. (Needed for HTML-only pages, and React Server Components.)
-// We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vps:extractAssets pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
-// This appraoch supports import path aliases set by `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
+// This plugin makes client-side bundles include the CSS imports living in server-side-only code.
+//  - This is needed for HTML-only pages, and React Server Components.
+//  - We recommend using the debug flag to get an idea of how this plugin works: `$ DEBUG=vps:extractAssets pnpm exec vite build`. Then have a look at `dist/client/manifest.json` and see how `.page.server.js` entries have zero JavaScript but only CSS.
+//  - This appraoch supports import path aliases `vite.config.js#resolve.alias` https://vitejs.dev/config/#resolve-alias
 
 export { extractAssetsPlugin }
 export { extractAssetsRE }
@@ -40,9 +41,9 @@ function extractAssetsPlugin(): Plugin[] {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
   return [
-    // Remove all JS from `.page.server.js` files and `?extractAssets` imports, so that only CSS remains
+    // This plugin removes all JavaScript from server-side only code, so that only CSS imports remains. (And also satic files imports e.g. `import logoURL from './logo.svg'`).
     {
-      name: 'vite-plugin-ssr:extractAssets-1',
+      name: 'vite-plugin-ssr:extractAssets:remove-javaScript',
       // In dev, things just work. (Because Vite's module graph erroneously conflates the Vite server-side importees with the client-side importees.)
       apply: 'build',
       enforce: 'post',
@@ -59,8 +60,9 @@ function extractAssetsPlugin(): Plugin[] {
         return removeSourceMap(code)
       }
     },
+    // This plugin appends `?extractAssets` to module IDs
     {
-      name: 'vite-plugin-ssr:extractAssets-2',
+      name: 'vite-plugin-ssr:extractAssets:append-extractAssets-query',
       apply: 'build',
       // We ensure this plugin to be run before:
       //  - rollup's `alias` plugin; https://github.com/rollup/plugins/blob/5363f55aa1933b6c650832b08d6a54cb9ea64539/packages/alias/src/index.ts
@@ -74,30 +76,17 @@ function extractAssetsPlugin(): Plugin[] {
           return
         }
 
-        // We don't need to consider the entry modules
+        // If there is no `importer` then `module` is an entry.
+        // We don't need to append `?extractAssets` to entries because they already have `?extractAssets` as VPS appends `?extractAssets` to entries by using `import.meta.glob('/**/*.page.server.js', { as: "extractAssets" })` (see `generateImportGlobs.ts`).
         if (!importer) {
           return
         }
 
+        // We only append `?extractAssets` if the parent module has `?extractAssets`
         if (!extractAssetsRE.test(importer)) {
           return
         }
         assert(configVps.includeAssetsImportedByServer)
-
-        if (source.includes('.page.server.')) {
-          // For a Vue SFC `.page.server.vue`:
-          //  - source: `.page.server.vue?vue&type=script&setup=true&lang.ts`
-          //  - importer: `.page.server.vue?extractAssets&lang.vue`
-          const isVueSFC = source.includes('?vue&')
-          // The first `?extractAssets` queries are appended to `.page.sever.js` files by `import.meta.glob()`
-          assert(extractAssetsRE.test(source) || extractExportNamesRE.test(source) || isVueSFC, { source, importer })
-          assert(
-            importer === virtualModuleIdPageFilesClientSR || importer === virtualModuleIdPageFilesClientCR || isVueSFC
-          )
-        } else {
-          // All other `?extractAssets` queries are appended when this `resolveId()` hook returns `appendExtractAssetsQuery()`
-          assert(!extractAssetsRE.test(source), { source })
-        }
 
         let resolution: null | ResolvedId = null
         try {
@@ -112,7 +101,7 @@ function extractAssetsPlugin(): Plugin[] {
         // Nothing is externalized when building for the client-side
         assert(external === false)
 
-        // Include:
+        // We include:
         //  - CSS(/LESS/SCSS/...) files
         //  - Asset files (`.svg`, `.pdf`, ...)
         //  - URL imports (e.g. `import scriptUrl from './script.js?url'`)
@@ -121,7 +110,7 @@ function extractAssetsPlugin(): Plugin[] {
           return resolution
         }
 
-        // If the resolved file doesn't end with a JavaScript file extension, we remove it.
+        // We erase `source` if its file doesn't contain JavaScript
         if (!isScriptFile(file)) {
           return emptyModule(file, importer)
         }
