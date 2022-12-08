@@ -16,12 +16,13 @@ To change the Base URL we:
 1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
 1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
 
-Example: <RepoLink path='/examples/base-url/' />.
+Example:
+ - <RepoLink path='/examples/base-url/' />.
 
 
 ## CDN
 
-If we deploy our static assets to a CDN, then we use the `baseAssets` configuration.
+We can deploy our static assets to a CDN using the `baseAssets` configuration.
 
 ```js
 // vite.config.js
@@ -37,8 +38,10 @@ export default {
 }
 ```
 
-Example: <RepoLink path='/examples/base-url-cdn/' />.
+Example:
+ - <RepoLink path='/examples/base-url-cdn/' />.
 
+> We can use `process.env.BASE_ASSETS` and <ImportMeta prop='env.BASE_ASSETS' /> to access the base value in our code.
 
 ## CDN + Server
 
@@ -61,4 +64,7 @@ export default {
 }
 ```
 
-Example: <RepoLink path='/examples/base-url-server/' />.
+Example:
+ - <RepoLink path='/examples/base-url-server/' />.
+
+> We can use `process.env.BASE_ASSETS`/`process.env.BASE_SERVER` and <ImportMeta prop='env.BASE_ASSETS' /> / <ImportMeta prop='env.BASE_SERVER' /> to access the base values in our code.
