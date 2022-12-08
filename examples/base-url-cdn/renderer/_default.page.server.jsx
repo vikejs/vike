@@ -22,7 +22,7 @@ function render(pageContext) {
 
   // Vite automatically injects the Base URL to `logoUrl`.
   // We can also manually inject the Base URL:
-  const manifestUrl = import.meta.env.BASE_URL + 'manifest.json'
+  const manifestUrl = import.meta.env.BASE_ASSETS + 'manifest.json'
 
   return escapeInject`<!DOCTYPE html>
     <html lang="en">
