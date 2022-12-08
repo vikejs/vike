@@ -39,7 +39,7 @@ type GlobalContext = (
       viteDevServer: null
     }
 ) & {
-  baseServer: string // TODO: rename to baseServer
+  baseServer: string
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
 }
@@ -104,14 +104,14 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
 }
 
 type RuntimeManifest = {
-  baseServer: string // TODO: rename
+  baseServer: string
   baseAssets: string
   includeAssetsImportedByServer: boolean
 }
 function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
   const { includeAssetsImportedByServer, baseServer, baseAssets } = configVps
   const manifest = {
-    baseServer: baseServer,
+    baseServer,
     baseAssets,
     includeAssetsImportedByServer
   }

@@ -1,21 +1,10 @@
 export { resolveVpsConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { ConfigVpsUserProvided, ConfigVpsResolved, ExtensionResolved } from './config/ConfigVps'
+import type { ConfigVpsUserProvided, ConfigVpsResolved } from './config/ConfigVps'
 import { checkConfigVps } from './config/assertConfigVps'
-import {
-  assert,
-  assertUsage,
-  getNpmPackageName,
-  toPosixPath,
-  isNpmPackageName,
-  getDependencyRootDir,
-  assertPosixPath
-} from '../utils'
+import { assertUsage } from '../utils'
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
-import path from 'path'
-import fs from 'fs'
-import { isValidFileType } from '../../../shared/getPageFiles/fileTypes' // TODO: remove unused vars
 import { pickFirst } from './config/pickFirst'
 import { resolveExtensions } from './config/resolveExtensions'
 import { resolveBase } from './config/resolveBase'
