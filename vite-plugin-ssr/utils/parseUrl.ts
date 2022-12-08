@@ -1,13 +1,13 @@
-import { slice } from './slice'
-import { assert, assertUsage } from './assert'
-
 export { parseUrl }
 export { isParsable }
-
-export { prependBaseServer }
-export { assertBaseServer }
+export { prependBase }
 export { assertUsageBaseServer }
 export { normalizeBaseServer }
+export { isBaseServer }
+export { isBaseAssets }
+
+import { slice } from './slice'
+import { assert, assertUsage } from './assert'
 
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
@@ -152,11 +152,7 @@ function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: stri
     baseServer.startsWith('/'),
     usageErrorMessagePrefix + 'Wrong `base` value `' + baseServer + '`; `base` should start with `/`.'
   )
-  assertBaseServer(baseServer)
-}
-
-function assertBaseServer(baseServer: string) {
-  assert(baseServer.startsWith('/'))
+  assert(isBaseServer(baseServer))
 }
 
 function assertUrlPathname(urlPathname: string) {
@@ -165,9 +161,12 @@ function assertUrlPathname(urlPathname: string) {
   assert(!urlPathname.includes('#'))
 }
 
-function analyzeBaseServer(urlPathnameWithBase: string, baseServer: string): { pathname: string; hasBaseServer: boolean } {
+function analyzeBaseServer(
+  urlPathnameWithBase: string,
+  baseServer: string
+): { pathname: string; hasBaseServer: boolean } {
   assertUrlPathname(urlPathnameWithBase)
-  assertBaseServer(baseServer)
+  assert(isBaseServer(baseServer))
 
   // Mutable
   let urlPathname = urlPathnameWithBase
@@ -200,15 +199,15 @@ function analyzeBaseServer(urlPathnameWithBase: string, baseServer: string): { p
   return { pathname: urlPathname, hasBaseServer: true }
 }
 
-function prependBaseServer(url: string, baseServer: string): string {
-  if (isBaseAssets(baseServer)) {
+function prependBase(url: string, baseServer: string): string {
+  if (baseServer.startsWith('http')) {
     const baseAssets = baseServer
     const baseAssetsNormalized = normalizeBaseAssets(baseAssets)
     assert(!baseAssetsNormalized.endsWith('/'))
     assert(url.startsWith('/'))
     return `${baseAssetsNormalized}${url}`
   }
-  assertBaseServer(baseServer)
+  assert(isBaseServer(baseServer))
 
   const baseServerNormalized = normalizeBaseServer(baseServer)
 
@@ -229,11 +228,11 @@ function normalizeBaseServer(baseServer: string) {
   return baseServerNormalized
 }
 
-function isBaseAssets(base: string) {
-  if (base.startsWith('http')) {
-    return true
-  }
-  return false
+function isBaseServer(baseServer: string): boolean {
+  return baseServer.startsWith('/')
+}
+function isBaseAssets(base: string): boolean {
+  return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
 }
 function normalizeBaseAssets(baseAssets: string) {
   let baseAssetsNormalized = baseAssets

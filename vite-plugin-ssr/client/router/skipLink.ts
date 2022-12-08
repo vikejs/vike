@@ -2,7 +2,7 @@ export { skipLink }
 export { isClientSideRenderable } from './skipLink/isClientSideRenderable'
 
 import { getBaseServer } from '../getBaseServer'
-import { parseUrl, assertBaseServer, isParsable, isExternalLink } from './utils'
+import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
@@ -38,7 +38,7 @@ function isHashUrl(url: string) {
 }
 function hasBaseServer(url: string): boolean {
   const baseServer = getBaseServer()
-  assertBaseServer(baseServer)
+  assert(isBaseServer(baseServer))
   const { hasBaseServer } = parseUrl(url, baseServer)
   return hasBaseServer
 }

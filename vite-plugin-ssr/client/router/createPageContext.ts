@@ -3,7 +3,7 @@ export { createPageContext }
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { getPageFilesAll } from '../../shared/getPageFiles'
 import { getBaseServer } from '../getBaseServer'
-import { assertBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils'
+import { assert, isBaseServer, PromiseType, objectAssign, getGlobalObject } from './utils'
 const globalObject = getGlobalObject<{
   pageFilesData?: PromiseType<ReturnType<typeof getPageFilesAll>>
 }>('createPageContext.ts', {})
@@ -14,7 +14,7 @@ async function createPageContext<T extends { urlOriginal: string }>(pageContextB
   }
   const { pageFilesAll, allPageIds } = globalObject.pageFilesData
   const baseServer = getBaseServer()
-  assertBaseServer(baseServer)
+  assert(isBaseServer(baseServer))
   const pageContext = {
     _objectCreatedByVitePluginSsr: true,
     _urlHandler: null,

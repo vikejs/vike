@@ -1,7 +1,7 @@
 export { resolveBase }
 export { resolveBaseFromUserConfig }
 
-import { assert, assertUsage } from '../../utils'
+import { assert, assertUsage, isBaseServer, isBaseAssets } from '../../utils'
 import type { ResolvedConfig, UserConfig } from 'vite'
 import type { ConfigVpsUserProvided } from './ConfigVps'
 import { pickFirst } from './pickFirst'
@@ -24,8 +24,8 @@ function resolveBaseFromUserConfig(config: UserConfig, configVps: undefined | Co
 function resolve(base: string | null, baseServer_: string | null, baseAssets_: string | null): BaseServers {
   {
     const wrongBase = (val: string) => `should start with '/', 'http://', or 'https://' (it is ${val} instead)`
-    assertUsage(base === null || isValidBase(base), `vite.config.js#base ${wrongBase(base!)}`)
-    assertUsage(baseAssets_ === null || isValidBase(baseAssets_), `Config \`baseAssets\` ${wrongBase(baseAssets_!)}`)
+    assertUsage(base === null || isBaseAssets(base), `vite.config.js#base ${wrongBase(base!)}`)
+    assertUsage(baseAssets_ === null || isBaseAssets(baseAssets_), `Config \`baseAssets\` ${wrongBase(baseAssets_!)}`)
     assertUsage(
       baseServer_ === null || baseServer_.startsWith('/'),
       `Config \`baseServer\` should start with a leading slash '/' (it is '${baseServer_}' instead)`
@@ -41,14 +41,10 @@ function resolve(base: string | null, baseServer_: string | null, baseAssets_: s
   }
   const baseServer = baseServer_ ?? '/'
   const baseAssets = baseAssets_ ?? '/'
-  assert(isValidBase(baseAssets))
-  assert(baseServer.startsWith('/')) // TODO: use `isBaseServer()`
+  assert(isBaseAssets(baseAssets))
+  assert(isBaseServer(baseServer))
   return {
     baseServer,
     baseAssets
   }
-}
-
-function isValidBase(base: string): boolean { // TODO: move to `utils/parseUrl.ts`
-  return base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://')
 }

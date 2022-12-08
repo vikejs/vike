@@ -5,7 +5,7 @@ export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
 export { assertRuntimeManifest }
 
-import { assert, assertUsage, getGlobalObject, isObject, hasProp, assertBaseServer, checkType } from './utils'
+import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, isBaseAssets, checkType } from './utils'
 import { assertViteManifest, type ViteManifest } from './helpers'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
@@ -123,8 +123,8 @@ function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & R
   assert(isObject(obj))
   assert(hasProp(obj, 'baseServer', 'string'))
   assert(hasProp(obj, 'baseAssets', 'string'))
-  assertBaseServer(obj.baseServer) // TODO: assert(isBaseSserver(obj.baseServer))
-  // TODO: use assert(isBaseAssets(obj.baseAssets))
+  assert(isBaseServer(obj.baseServer))
+  assert(isBaseAssets(obj.baseAssets))
   assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
   checkType<RuntimeManifest>(obj)
 }
