@@ -6,18 +6,12 @@ import { debugGlob } from '../../utils'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import { getConfigVps } from './config/assertConfigVps'
 import {
-  virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-
-const virtualModuleIds = [
-  virtualModuleIdPageFilesServer,
-  virtualModuleIdPageFilesClientSR,
-  virtualModuleIdPageFilesClientCR
-]
+import { getRealId, getVirtualId } from './generateImportGlobs/virtualIdHandling'
 
 function generateImportGlobs(): Plugin {
   let config: ResolvedConfig
@@ -36,19 +30,17 @@ function generateImportGlobs(): Plugin {
       config = config_
     },
     resolveId(id) {
-      if (virtualModuleIds.includes(id)) {
-        return id
-      }
+      return getVirtualId(id)
     },
-    async load(id, options) {
-      if (virtualModuleIds.includes(id)) {
-        const isForClientSide = id !== virtualModuleIdPageFilesServer
-        assert(isForClientSide === !viteIsSSR_options(options))
-        const isClientRouting = id === virtualModuleIdPageFilesClientCR
-        const isPrerendering = !!configVps.prerender
-        const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering)
-        return code
-      }
+    async load(id_, options) {
+      const id = getRealId(id_)
+      if (!id) return undefined
+      const isForClientSide = id !== virtualModuleIdPageFilesServer
+      assert(isForClientSide === !viteIsSSR_options(options))
+      const isClientRouting = id === virtualModuleIdPageFilesClientCR
+      const isPrerendering = !!configVps.prerender
+      const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering)
+      return code
     }
   } as Plugin
 }
