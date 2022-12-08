@@ -50,10 +50,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   }
   const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
   const errMsg = `${usageErrorPrefix}${whiteSpace}${errorMessage}`
-  const usageError = createErrorWithCleanStackTrace(
-    errMsg,
-    numberOfStackTraceLinesToRemove
-  )
+  const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
   throw usageError
 }
 
@@ -92,11 +89,7 @@ function assertWarning(
   }
 }
 
-function assertInfo(
-  condition: unknown,
-  errorMessage: string,
-  { onlyOnce }: { onlyOnce: boolean }
-): void {
+function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { onlyOnce: boolean }): void {
   if (condition) {
     return
   }

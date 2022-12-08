@@ -159,10 +159,7 @@ async function getHtmlTags(
   return htmlTags
 }
 
-async function getMergedScriptTag(
-  pageAssets: PageAsset[],
-  isProduction: boolean
-): Promise<null | string> {
+async function getMergedScriptTag(pageAssets: PageAsset[], isProduction: boolean): Promise<null | string> {
   const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts()
   const scriptTagsHtml = `${viteScripts}${scriptAssets.map((asset) => inferAssetTag(asset, isProduction)).join('')}`

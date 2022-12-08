@@ -5,17 +5,19 @@ export type { ExtensionResolved }
 type ExtensionUserProvided = {
   npmPackageName: string
   pageFilesDist?: string[]
-  pageFilesSrc?: string,
+  pageFilesSrc?: string
   assetsDir?: string
 }
 type ExtensionResolved = {
   npmPackageName: string
   npmPackageRootDir: string
-  pageFilesDist: null | {
-    importPath: string
-    filePath: string
-  }[]
-  pageFilesSrc: null | string,
+  pageFilesDist:
+    | null
+    | {
+        importPath: string
+        filePath: string
+      }[]
+  pageFilesSrc: null | string
   assetsDir: null | string
 }
 

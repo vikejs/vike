@@ -21,9 +21,7 @@ function getNpmPackageName(str: string): null | string {
   return res.npmPackageName
 }
 
-function parseNpmPath(
-  str: string | undefined
-): null | { npmPackageName: string; modulePath: null | string } {
+function parseNpmPath(str: string | undefined): null | { npmPackageName: string; modulePath: null | string } {
   if (str === undefined || str.includes('\\') || str.startsWith('/')) {
     return null
   }
