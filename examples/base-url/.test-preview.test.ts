@@ -1,2 +1,3 @@
 import { testRun } from './.testRun'
-testRun('npm run preview', { base: '/some/base-url/' })
+const base = '/some/base-url/'
+testRun('npm run preview', { baseServer: base, baseAssets: base })

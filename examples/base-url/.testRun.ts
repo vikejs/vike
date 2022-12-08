@@ -4,10 +4,13 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
-  { base = '/', baseAssets }: { base?: '/' | '/some/base-url/'; baseAssets?: 'http://localhost:8080/cdn/' } = {} // TODO: use baseServer baseAssets combo
+  {
+    baseServer,
+    baseAssets
+  }: { baseServer: '/' | '/some/base-url/'; baseAssets: '/' | '/some/base-url/' | 'http://localhost:8080/cdn/' }
 ) {
-  const addBaseServer = (url: string) => base.slice(0, -1) + url
-  const addBaseAssets = (url: string) => (baseAssets ?? base).slice(0, -1) + url
+  const addBaseServer = (url: string) => baseServer.slice(0, -1) + url
+  const addBaseAssets = (url: string) => baseAssets.slice(0, -1) + url
   const isDev = cmd === 'npm run dev'
 
   run(cmd)
