@@ -112,5 +112,8 @@
     "vite",
     "vite-plugin",
     "ssr"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
