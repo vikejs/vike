@@ -11,7 +11,7 @@ import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
-import { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
+import type { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
@@ -39,7 +39,7 @@ type GlobalContext = (
       viteDevServer: null
     }
 ) & {
-  baseUrl: string
+  baseUrl: string // TODO: rename to baseServer
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
 }
@@ -87,7 +87,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
     assert(config)
     assert(!isPrerendering)
     const configVps = await getConfigVps(config)
-    const pluginManifest = getRuntimeManifest(config, configVps)
+    const pluginManifest = getRuntimeManifest(configVps)
     globalObject.globalContext = {
       isProduction,
       isPrerendering: false,
@@ -104,15 +104,14 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
 }
 
 type RuntimeManifest = {
-  baseUrl: string
-  baseAssets: string | null
+  baseUrl: string // TODO: rename
+  baseAssets: string
   includeAssetsImportedByServer: boolean
 }
-function getRuntimeManifest(config: ResolvedConfig, configVps: ConfigVpsResolved): RuntimeManifest {
-  const { baseUrl, baseAssets } = resolveBase(config.base)
-  const { includeAssetsImportedByServer } = configVps
+function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
+  const { includeAssetsImportedByServer, baseServer, baseAssets } = configVps
   const manifest = {
-    baseUrl,
+    baseUrl: baseServer,
     baseAssets,
     includeAssetsImportedByServer
   }
@@ -123,28 +122,11 @@ function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & R
   assert(obj)
   assert(isObject(obj))
   assert(hasProp(obj, 'baseUrl', 'string'))
-  assertBaseUrl(obj.baseUrl)
-  assert(hasProp(obj, 'baseAssets', 'string') || hasProp(obj, 'baseAssets', 'null'))
+  assert(hasProp(obj, 'baseAssets', 'string'))
+  assertBaseUrl(obj.baseUrl) // TODO: assert(isBaseSserver(obj.baseServer))
+  // TODO: use assert(isBaseAssets(obj.baseAssets))
   assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
   checkType<RuntimeManifest>(obj)
-}
-function resolveBase(base: string): { baseUrl: string; baseAssets: string | null } {
-  assertUsage(
-    base.startsWith('/') || base.startsWith('http://') || base.startsWith('https://'),
-    "vite.config.js#base should start with '/', 'http://', or 'https://'"
-  )
-  let baseUrl = '/'
-  let baseAssets = null
-  assert(base)
-  if (base.startsWith('http')) {
-    baseAssets = base
-  } else {
-    baseUrl = base
-  }
-  return {
-    baseUrl,
-    baseAssets
-  }
 }
 
 function assertBuildEntries<T>(buildEntries: T | null, isPreRendering: boolean): asserts buildEntries is T {

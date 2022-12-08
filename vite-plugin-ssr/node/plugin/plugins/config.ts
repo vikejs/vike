@@ -15,9 +15,10 @@ import {
 import { findConfigVpsFromStemPackages } from './config/findConfigVpsFromStemPackages'
 import path from 'path'
 import fs from 'fs'
-import { isValidFileType } from '../../../shared/getPageFiles/fileTypes'
+import { isValidFileType } from '../../../shared/getPageFiles/fileTypes' // TODO: remove unused vars
 import { pickFirst } from './config/pickFirst'
 import { resolveExtensions } from './config/resolveExtensions'
+import { resolveBase } from './config/resolveBase'
 
 function resolveVpsConfig(vpsConfig: unknown) {
   return {
@@ -51,11 +52,15 @@ async function resolveConfigVps(
   const fromStemPackages = await findConfigVpsFromStemPackages(config.root)
   const configs = [fromPluginOptions, ...fromStemPackages, fromViteConfig]
 
+  const { baseServer, baseAssets } = resolveBase(configs, config)
+
   const configVps: ConfigVpsResolved = {
     disableAutoFullBuild: pickFirst(configs.map((c) => c.disableAutoFullBuild)) ?? false,
     extensions: resolveExtensions(configs, config),
     prerender: resolvePrerenderOptions(configs),
-    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false
+    includeAssetsImportedByServer: pickFirst(configs.map((c) => c.includeAssetsImportedByServer)) ?? false,
+    baseServer,
+    baseAssets
   }
 
   return configVps

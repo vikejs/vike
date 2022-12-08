@@ -31,6 +31,8 @@ type ConfigVpsResolved = {
   extensions: ExtensionResolved[]
   disableAutoFullBuild: boolean
   includeAssetsImportedByServer: boolean
+  baseAssets: string
+  baseServer: string
 }
 
 type ConfigVpsUserProvided = {
@@ -98,4 +100,8 @@ type ConfigVpsUserProvided = {
    * @experimental
    */
   includeAssetsImportedByServer?: boolean
+  /** The Base URL of your server, see https://vite-plugin-ssr.com/base-url */
+  baseServer?: string
+  /** The Base URL of your static assets, see https://vite-plugin-ssr.com/base-url */
+  baseAssets?: string
 }

@@ -1,8 +1,6 @@
-import { isBaseAssets } from '../utils/isBaseUrl'
+import { assert } from './utils'
 export function getBaseUrl(): string {
-  const baseUrl = import.meta.env.BASE_URL
-  if (isBaseAssets(baseUrl)) {
-    return '/'
-  }
+  const baseUrl: string = import.meta.env.BASE_SERVER
+  assert(baseUrl.startsWith('/'))
   return baseUrl
 }

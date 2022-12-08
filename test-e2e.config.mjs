@@ -35,6 +35,10 @@ function getCiJobs() {
 
   return [
     {
+      name: 'Boilerplates',
+      setups: [mac17]
+    },
+    {
       name: 'Examples React',
       setups: setupsExamples
     },
@@ -43,8 +47,8 @@ function getCiJobs() {
       setups: setupsExamples
     },
     {
-      name: 'Boilerplates',
-      setups: [mac17]
+      name: 'Base URL',
+      setups: [win18]
     },
     {
       name: 'Cloudflare',

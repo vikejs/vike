@@ -1,7 +1,7 @@
 export default plugin
 export { plugin }
 export { plugin as ssr }
-export type { UserConfig }
+export type { ConfigVpsUserProvided as UserConfig }
 
 import type { Plugin } from 'vite'
 import { assertUsage } from './utils'
@@ -14,7 +14,7 @@ import { packageJsonFile } from './plugins/packageJsonFile'
 import { removeRequireHookPlugin } from './plugins/removeRequireHookPlugin'
 import { generateImportGlobs } from './plugins/generateImportGlobs'
 import { resolveVpsConfig } from './plugins/config'
-import type { ConfigVpsUserProvided as UserConfig } from './plugins/config/ConfigVps'
+import type { ConfigVpsUserProvided } from './plugins/config/ConfigVps'
 import { distFileNames } from './plugins/distFileNames'
 import { extractAssetsPlugin } from './plugins/extractAssetsPlugin'
 import { extractExportNamesPlugin } from './plugins/extractExportNamesPlugin'
@@ -23,9 +23,10 @@ import { setGlobalContext } from './plugins/setGlobalContext'
 import { importBuild } from './plugins/importBuild'
 import { commonConfig } from './plugins/commonConfig'
 import { extensionsAssets } from './plugins/extensionsAssets'
+import { baseUrls } from './plugins/baseUrls'
 
 // Return as `any` to avoid Plugin type mismatches when there are multiple Vite versions installed
-function plugin(vpsConfig?: UserConfig): any {
+function plugin(vpsConfig?: ConfigVpsUserProvided): any {
   const plugins: Plugin[] = [
     resolveVpsConfig(vpsConfig), // `resolveVpsConfig()`'s hook `configResolved()` should be the first called
     commonConfig(),
@@ -43,7 +44,8 @@ function plugin(vpsConfig?: UserConfig): any {
     suppressRollupWarning(),
     setGlobalContext(),
     ...importBuild(),
-    extensionsAssets()
+    extensionsAssets(),
+    baseUrls(vpsConfig)
   ]
   return plugins
 }

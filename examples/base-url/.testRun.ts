@@ -4,20 +4,20 @@ export { testRun }
 
 function testRun(
   cmd: 'npm run dev' | 'npm run preview' | 'npm run start',
-  { base = '/', baseAssets }: { base?: '/' | '/some/base-url/'; baseAssets?: 'http://localhost:8080/cdn/' } = {}
+  { base = '/', baseAssets }: { base?: '/' | '/some/base-url/'; baseAssets?: 'http://localhost:8080/cdn/' } = {} // TODO: use baseServer baseAssets combo
 ) {
-  const addBaseHtml = (url: string) => base.slice(0, -1) + url
+  const addBaseServer = (url: string) => base.slice(0, -1) + url
   const addBaseAssets = (url: string) => (baseAssets ?? base).slice(0, -1) + url
   const isDev = cmd === 'npm run dev'
 
   run(cmd)
 
-  test('URLs are correctly contain Base URL in HTML', async () => {
-    const html = await fetchHtml(addBaseHtml('/'))
+  test('URLs correctly contain Base URL in HTML', async () => {
+    const html = await fetchHtml(addBaseServer('/'))
 
     expect(html).toContain('<h1>Welcome</h1>')
-    expect(html).toContain(`<a href="${addBaseHtml('/')}">Home</a>`)
-    expect(html).toContain(`<a href="${addBaseHtml('/about')}">About</a>`)
+    expect(html).toContain(`<a href="${addBaseServer('/')}">Home</a>`)
+    expect(html).toContain(`<a href="${addBaseServer('/about')}">About</a>`)
     expect(html).toContain(`<link rel="manifest" href="${addBaseAssets('/manifest.json')}">`)
     if (isDev) {
       expect(html).toContain(`<link rel="icon" href="${addBaseAssets('/renderer/logo.svg')}" />`)
@@ -27,7 +27,7 @@ function testRun(
   })
 
   test('page is rendered to the DOM and interactive', async () => {
-    await page.goto(getServerUrl() + addBaseHtml('/'))
+    await page.goto(getServerUrl() + addBaseServer('/'))
     expect(await page.textContent('h1')).toBe('Welcome')
     expect(await page.textContent('button')).toBe('Counter 0')
     await autoRetry(async () => {
@@ -37,7 +37,7 @@ function testRun(
   })
 
   test('Client Routing', async () => {
-    await page.click(`a[href="${addBaseHtml('/about')}"]`)
+    await page.click(`a[href="${addBaseServer('/about')}"]`)
     await autoRetry(async () => {
       expect(await page.textContent('h1')).toBe('About')
     })

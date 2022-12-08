@@ -22,7 +22,7 @@ function manifest(): Plugin[] {
       },
       generateBundle() {
         if (viteIsSSR(config)) return
-        const runtimeManifest = getRuntimeManifest(config, configVps)
+        const runtimeManifest = getRuntimeManifest(configVps)
         const manifest = {
           version: projectInfo.projectVersion,
           usesClientRouter: isUsingClientRouter(),
