@@ -15,7 +15,7 @@ import {
 
 type PluginManifest = {
   version: string
-  baseUrl: string
+  baseServer: string
   baseAssets: string | null
   usesClientRouter: boolean
   includeAssetsImportedByServer: boolean

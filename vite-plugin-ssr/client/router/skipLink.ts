@@ -1,8 +1,8 @@
 export { skipLink }
 export { isClientSideRenderable } from './skipLink/isClientSideRenderable'
 
-import { getBaseUrl } from '../getBaseUrl'
-import { parseUrl, assertBaseUrl, isParsable, isExternalLink } from './utils'
+import { getBaseServer } from '../getBaseServer'
+import { parseUrl, assertBaseServer, isParsable, isExternalLink } from './utils'
 
 function skipLink(linkTag: HTMLElement): boolean {
   const url = linkTag.getAttribute('href')
@@ -12,7 +12,7 @@ function skipLink(linkTag: HTMLElement): boolean {
   if (isExternalLink(url)) return true
   if (isNewTabLink(linkTag)) return true
   if (isHashUrl(url)) return true
-  if (!hasBaseUrl(url)) {
+  if (!hasBaseServer(url)) {
     return true
   }
   if (!isParsable(url)) {
@@ -36,9 +36,9 @@ function isHashUrl(url: string) {
   }
   return false
 }
-function hasBaseUrl(url: string): boolean {
-  const baseUrl = getBaseUrl()
-  assertBaseUrl(baseUrl)
-  const { hasBaseUrl } = parseUrl(url, baseUrl)
-  return hasBaseUrl
+function hasBaseServer(url: string): boolean {
+  const baseServer = getBaseServer()
+  assertBaseServer(baseServer)
+  const { hasBaseServer } = parseUrl(url, baseServer)
+  return hasBaseServer
 }

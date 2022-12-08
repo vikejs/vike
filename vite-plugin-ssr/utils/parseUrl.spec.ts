@@ -3,7 +3,7 @@ import { expect, describe, it } from 'vitest'
 import assert from 'assert'
 
 const resultBase = {
-  hasBaseUrl: true,
+  hasBaseServer: true,
   pathnameOriginal: '/',
   pathname: '/',
   hash: '',
@@ -59,13 +59,13 @@ describe('parseUrl', () => {
     })
     expect(parseUrl('/hello', '/base')).toEqual({
       ...resultBase,
-      hasBaseUrl: false,
+      hasBaseServer: false,
       pathnameOriginal: '/hello',
       pathname: '/hello'
     })
     expect(parseUrl('/base/hello', '/base/nested')).toEqual({
       ...resultBase,
-      hasBaseUrl: false,
+      hasBaseServer: false,
       pathnameOriginal: '/base/hello',
       pathname: '/base/hello'
     })
@@ -329,14 +329,14 @@ describe('parseUrl', () => {
     })
     expect(parseUrl('..', '/b1/b2/')).toEqual({
       ...resultBase,
-      hasBaseUrl: false,
+      hasBaseServer: false,
       pathnameOriginal: '..',
       pathname: '/b1/'
     })
   })
   expect(parseUrl('../../', '/b1/b2/')).toEqual({
     ...resultBase,
-    hasBaseUrl: false,
+    hasBaseServer: false,
     pathnameOriginal: '../../',
     pathname: '/'
   })
@@ -348,7 +348,7 @@ describe('parseUrl', () => {
         '/some-base-url'
       )
     ).toEqual({
-      hasBaseUrl: true,
+      hasBaseServer: true,
       origin: 'https://example.com',
       pathname: '/hello/sébastien',
       pathnameOriginal: '/some-base-url/hello/s%C3%A9bastien',

@@ -5,7 +5,7 @@ export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
 export { assertRuntimeManifest }
 
-import { assert, assertUsage, getGlobalObject, isObject, hasProp, assertBaseUrl, checkType } from './utils'
+import { assert, assertUsage, getGlobalObject, isObject, hasProp, assertBaseServer, checkType } from './utils'
 import { assertViteManifest, type ViteManifest } from './helpers'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
@@ -39,7 +39,7 @@ type GlobalContext = (
       viteDevServer: null
     }
 ) & {
-  baseUrl: string // TODO: rename to baseServer
+  baseServer: string // TODO: rename to baseServer
   baseAssets: null | string
   includeAssetsImportedByServer: boolean
 }
@@ -79,7 +79,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
       viteDevServer: null,
       config: null,
       configVps: null,
-      baseUrl: pluginManifest.baseUrl,
+      baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
     }
@@ -96,7 +96,7 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
       viteDevServer,
       config,
       configVps,
-      baseUrl: pluginManifest.baseUrl,
+      baseServer: pluginManifest.baseServer,
       baseAssets: pluginManifest.baseAssets,
       includeAssetsImportedByServer: pluginManifest.includeAssetsImportedByServer
     }
@@ -104,14 +104,14 @@ async function initGlobalContext({ isPrerendering }: { isPrerendering?: true } =
 }
 
 type RuntimeManifest = {
-  baseUrl: string // TODO: rename
+  baseServer: string // TODO: rename
   baseAssets: string
   includeAssetsImportedByServer: boolean
 }
 function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
   const { includeAssetsImportedByServer, baseServer, baseAssets } = configVps
   const manifest = {
-    baseUrl: baseServer,
+    baseServer: baseServer,
     baseAssets,
     includeAssetsImportedByServer
   }
@@ -121,9 +121,9 @@ function getRuntimeManifest(configVps: ConfigVpsResolved): RuntimeManifest {
 function assertRuntimeManifest(obj: unknown): asserts obj is RuntimeManifest & Record<string, unknown> {
   assert(obj)
   assert(isObject(obj))
-  assert(hasProp(obj, 'baseUrl', 'string'))
+  assert(hasProp(obj, 'baseServer', 'string'))
   assert(hasProp(obj, 'baseAssets', 'string'))
-  assertBaseUrl(obj.baseUrl) // TODO: assert(isBaseSserver(obj.baseServer))
+  assertBaseServer(obj.baseServer) // TODO: assert(isBaseSserver(obj.baseServer))
   // TODO: use assert(isBaseAssets(obj.baseAssets))
   assert(hasProp(obj, 'includeAssetsImportedByServer', 'boolean'))
   checkType<RuntimeManifest>(obj)

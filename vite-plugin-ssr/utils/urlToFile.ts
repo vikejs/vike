@@ -1,5 +1,5 @@
 export { urlToFile }
-export { baseUrl }
+export { baseServer }
 
 import { assert } from './assert'
 import { parseUrl } from './parseUrl'
@@ -7,10 +7,10 @@ import { slice } from './slice'
 
 // - When doing a `.pageContext.json` HTTP request, the base URL should be preserved. (The server-side will handle the base URL.)
 // - While prerendering there is no base URL
-const baseUrl = '/'
+const baseServer = '/'
 
 function urlToFile(url: string, fileExtension: '.pageContext.json' | '.html', doNotCreateExtraDirectory: boolean) {
-  const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseUrl)
+  const { pathnameOriginal, searchOriginal, hashOriginal } = parseUrl(url, baseServer)
   if (url.startsWith('/')) {
     assert(url === `${pathnameOriginal}${searchOriginal || ''}${hashOriginal || ''}`, { url })
   }

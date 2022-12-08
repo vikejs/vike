@@ -1,7 +1,7 @@
 export { handlePageContextRequestUrl }
 
 import { fileExtension, doNotCreateExtraDirectory } from '../../shared/getPageContextRequestUrl'
-import { baseUrl, parseUrl, assert, slice } from '../utils'
+import { baseServer, parseUrl, assert, slice } from '../utils'
 
 // See shared/getPageContextRequestUrl.ts
 function handlePageContextRequestUrl(url: string): {
@@ -15,13 +15,13 @@ function handlePageContextRequestUrl(url: string): {
 }
 
 function hasSuffix(url: string) {
-  const { pathnameOriginal, pathname } = parseUrl(url, baseUrl)
+  const { pathnameOriginal, pathname } = parseUrl(url, baseServer)
   assert(pathnameOriginal.endsWith(fileExtension) === pathname.endsWith(fileExtension), { url })
   return pathnameOriginal.endsWith(fileExtension)
 }
 
 function removePageContextUrlSuffix(url: string): string {
-  const urlParsed = parseUrl(url, baseUrl)
+  const urlParsed = parseUrl(url, baseServer)
   // We cannot use `urlParsed.pathname` because it would break the `urlParsed.pathnameOriginal` value of subsequent `parseUrl()` calls.
   const { origin, pathnameOriginal, searchOriginal, hashOriginal } = urlParsed
   assert(doNotCreateExtraDirectory === false)

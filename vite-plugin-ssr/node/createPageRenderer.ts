@@ -77,23 +77,23 @@ function assertArguments(
     root?: unknown
     outDir?: unknown
     isProduction?: unknown
-    baseUrl?: unknown
+    baseServer?: unknown
     baseAssets?: unknown
   },
   args: unknown[],
 ): asserts ssrEnv is SsrEnv {
-  const { viteDevServer, root, outDir, isProduction, baseUrl, baseAssets } = ssrEnv
+  const { viteDevServer, root, outDir, isProduction, baseServer, baseAssets } = ssrEnv
   assertUsage(
     root === undefined || typeof root === 'string',
     '`createPageRenderer({ root })`: argument `root` should be a string.',
   )
   assertUsage(typeof outDir === 'string', '`createPageRenderer({ outDir })`: argument `outDir` should be a string.')
-  assertUsage(typeof baseUrl === 'string', '`createPageRenderer({ base })`: argument `base` should be a string.')
+  assertUsage(typeof baseServer === 'string', '`createPageRenderer({ base })`: argument `base` should be a string.')
   assertUsage(
     baseAssets === null || typeof baseAssets === 'string',
     '`createPageRenderer({ baseAssets })`: argument `baseAssets` should be a string.',
   )
-  assertUsageBaseUrl(baseUrl, '`createPageRenderer({ base })`: ')
+  assertUsageBaseServer(baseServer, '`createPageRenderer({ base })`: ')
   assertUsage(
     isProduction === true || isProduction === false || isProduction === undefined,
     '`createPageRenderer({ isProduction })`: argument `isProduction` should be `true`, `false`, or `undefined`.',

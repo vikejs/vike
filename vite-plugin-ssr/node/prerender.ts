@@ -63,7 +63,7 @@ type PageContext = {
   urlOriginal: string
   pageContexts: PageContext[]
   _prerenderHookFile: string | null
-  _baseUrl: string
+  _baseServer: string
   _urlHandler: null
   _allPageIds: string[]
   _pageFilesAll: PageFile[]

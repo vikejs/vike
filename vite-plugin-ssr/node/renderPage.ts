@@ -86,7 +86,7 @@ async function renderPageAttempt(
     const pageContextAddendum = handleUrl(pageContext)
     objectAssign(pageContext, pageContextAddendum)
   }
-  if (!pageContext._hasBaseUrl) {
+  if (!pageContext._hasBaseServer) {
     objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
     return pageContext
   }
@@ -142,18 +142,18 @@ async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
   return renderPageContext(pageContext)
 }
 
-function handleUrl(pageContext: { urlOriginal: string; _baseUrl: string }): {
+function handleUrl(pageContext: { urlOriginal: string; _baseServer: string }): {
   _isPageContextRequest: boolean
-  _hasBaseUrl: boolean
+  _hasBaseServer: boolean
   _urlHandler: (urlOriginal: string) => string
 } {
   const { urlOriginal } = pageContext
   assert(urlOriginal.startsWith('/') || urlOriginal.startsWith('http'))
   const { urlWithoutPageContextRequestSuffix, isPageContextRequest } = handlePageContextRequestUrl(urlOriginal)
-  const { hasBaseUrl } = parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseUrl)
+  const { hasBaseServer } = parseUrl(urlWithoutPageContextRequestSuffix, pageContext._baseServer)
   const pageContextAddendum = {
     _isPageContextRequest: isPageContextRequest,
-    _hasBaseUrl: hasBaseUrl,
+    _hasBaseServer: hasBaseServer,
     // The onBeforeRoute() hook may modify pageContext.urlOriginal (e.g. for i18n)
     _urlHandler: (urlOriginal: string) => handlePageContextRequestUrl(urlOriginal).urlWithoutPageContextRequestSuffix
   }

@@ -6,7 +6,7 @@ export type { PageContextGetPageAssets }
 import {
   assert,
   normalizePath,
-  prependBaseUrl,
+  prependBaseServer,
   assertPosixPath,
   toPosixPath,
   isNpmPackageModule,
@@ -34,7 +34,7 @@ type PageAsset = {
 type GetPageAssets = () => Promise<PageAsset[]>
 
 type PageContextGetPageAssets = {
-  _baseUrl: string
+  _baseServer: string
   _baseAssets: string | null
   _includeAssetsImportedByServer: boolean
 }
@@ -100,8 +100,8 @@ async function getPageAssets(
   })
 
   pageAssets = pageAssets.map((pageAsset) => {
-    const baseUrlAssets = pageContext._baseAssets || pageContext._baseUrl
-    pageAsset.src = prependBaseUrl(normalizePath(pageAsset.src), baseUrlAssets)
+    const baseServerAssets = pageContext._baseAssets || pageContext._baseServer
+    pageAsset.src = prependBaseServer(normalizePath(pageAsset.src), baseServerAssets)
     return pageAsset
   })
 

@@ -18,7 +18,7 @@ type PageContextInjectAssets = {
   _isHtmlOnly: boolean
   _pageContextPromise: Promise<unknown> | null
   _renderHook: { hookFilePath: string; hookName: 'render' }
-  _baseUrl: string
+  _baseServer: string
   is404: null | boolean
 }
 

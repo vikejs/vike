@@ -4,10 +4,10 @@ import { assert, assertUsage } from './assert'
 export { parseUrl }
 export { isParsable }
 
-export { prependBaseUrl }
-export { assertBaseUrl }
-export { assertUsageBaseUrl }
-export { normalizeBaseUrl }
+export { prependBaseServer }
+export { assertBaseServer }
+export { assertUsageBaseServer }
+export { normalizeBaseServer }
 
 function isParsable(url: string): boolean {
   // `parseUrl()` works with these URLs
@@ -23,12 +23,12 @@ function isParsable(url: string): boolean {
 
 function parseUrl(
   url: string,
-  baseUrl: string
+  baseServer: string
 ): {
   origin: null | string
   pathname: string
   pathnameOriginal: string
-  hasBaseUrl: boolean
+  hasBaseServer: boolean
   search: Record<string, string>
   searchAll: Record<string, string[]>
   searchOriginal: null | string
@@ -36,7 +36,7 @@ function parseUrl(
   hashOriginal: null | string
 } {
   assert(isParsable(url), { url })
-  assert(baseUrl.startsWith('/'), { url, baseUrl })
+  assert(baseServer.startsWith('/'), { url, baseServer })
 
   // Hash
   const [urlWithoutHash, ...hashList] = url.split('#')
@@ -58,7 +58,7 @@ function parseUrl(
   })
 
   // Origin + pathname
-  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch, baseUrl)
+  const { origin, pathnameResolved } = parseWithNewUrl(urlWithoutSearch, baseServer)
   assert(origin === null || origin === decodeSafe(origin), { origin }) // AFAICT decoding the origin is useless
   assert(pathnameResolved.startsWith('/'), { url, pathnameResolved })
   assert(origin === null || url.startsWith(origin), { url, origin })
@@ -71,7 +71,7 @@ function parseUrl(
   }
 
   // Base URL
-  let { pathname, hasBaseUrl } = analyzeBaseUrl(pathnameResolved, baseUrl)
+  let { pathname, hasBaseServer } = analyzeBaseServer(pathnameResolved, baseServer)
   pathname = decodePathname(pathname)
 
   assert(pathname.startsWith('/'))
@@ -79,7 +79,7 @@ function parseUrl(
     origin,
     pathname,
     pathnameOriginal: pathnameOriginal,
-    hasBaseUrl,
+    hasBaseServer,
     search,
     searchAll,
     searchOriginal,
@@ -102,7 +102,7 @@ function decodePathname(urlPathname: string) {
     .map((dir) => decodeSafe(dir).split('/').join('%2F'))
     .join('/')
 }
-function parseWithNewUrl(urlWithoutSearch: string, baseUrl: string) {
+function parseWithNewUrl(urlWithoutSearch: string, baseServer: string) {
   // `new URL('//', 'https://example.org')` throws `ERR_INVALID_URL`
   if (urlWithoutSearch.startsWith('//')) {
     return { origin: null, pathnameResolved: urlWithoutSearch }
@@ -123,7 +123,7 @@ function parseWithNewUrl(urlWithoutSearch: string, baseUrl: string) {
       typeof window !== 'undefined' &&
       // We need to access safely in case the user sets `window` in Node.js
       window?.document?.baseURI
-    base = base || 'http://fake.example.org' + baseUrl
+    base = base || 'http://fake.example.org' + baseServer
     // `new Url()` supports:
     //  - `url === '/absolute/path'`
     //  - `url === './relative/path'`
@@ -142,21 +142,21 @@ function parseWithNewUrl(urlWithoutSearch: string, baseUrl: string) {
   return { origin, pathnameResolved }
 }
 
-function assertUsageBaseUrl(baseUrl: string, usageErrorMessagePrefix: string = '') {
+function assertUsageBaseServer(baseServer: string, usageErrorMessagePrefix: string = '') {
   assertUsage(
-    !baseUrl.startsWith('http'),
+    !baseServer.startsWith('http'),
     usageErrorMessagePrefix +
       '`base` is not allowed to start with `http`. Consider using `baseAssets` instead, see https://vite-plugin-ssr.com/base-url'
   )
   assertUsage(
-    baseUrl.startsWith('/'),
-    usageErrorMessagePrefix + 'Wrong `base` value `' + baseUrl + '`; `base` should start with `/`.'
+    baseServer.startsWith('/'),
+    usageErrorMessagePrefix + 'Wrong `base` value `' + baseServer + '`; `base` should start with `/`.'
   )
-  assertBaseUrl(baseUrl)
+  assertBaseServer(baseServer)
 }
 
-function assertBaseUrl(baseUrl: string) {
-  assert(baseUrl.startsWith('/'))
+function assertBaseServer(baseServer: string) {
+  assert(baseServer.startsWith('/'))
 }
 
 function assertUrlPathname(urlPathname: string) {
@@ -165,68 +165,68 @@ function assertUrlPathname(urlPathname: string) {
   assert(!urlPathname.includes('#'))
 }
 
-function analyzeBaseUrl(urlPathnameWithBase: string, baseUrl: string): { pathname: string; hasBaseUrl: boolean } {
+function analyzeBaseServer(urlPathnameWithBase: string, baseServer: string): { pathname: string; hasBaseServer: boolean } {
   assertUrlPathname(urlPathnameWithBase)
-  assertBaseUrl(baseUrl)
+  assertBaseServer(baseServer)
 
   // Mutable
   let urlPathname = urlPathnameWithBase
 
   assert(urlPathname.startsWith('/'))
-  assert(baseUrl.startsWith('/'))
+  assert(baseServer.startsWith('/'))
 
-  if (baseUrl === '/') {
+  if (baseServer === '/') {
     const pathname = urlPathnameWithBase
-    return { pathname, hasBaseUrl: true }
+    return { pathname, hasBaseServer: true }
   }
 
-  // Support `url === '/some-base-url' && baseUrl === '/some-base-url/'`
-  let baseUrlNormalized = baseUrl
-  if (baseUrl.endsWith('/') && urlPathname === slice(baseUrl, 0, -1)) {
-    baseUrlNormalized = slice(baseUrl, 0, -1)
-    assert(urlPathname === baseUrlNormalized)
+  // Support `url === '/some-base-url' && baseServer === '/some-base-url/'`
+  let baseServerNormalized = baseServer
+  if (baseServer.endsWith('/') && urlPathname === slice(baseServer, 0, -1)) {
+    baseServerNormalized = slice(baseServer, 0, -1)
+    assert(urlPathname === baseServerNormalized)
   }
 
-  if (!urlPathname.startsWith(baseUrlNormalized)) {
+  if (!urlPathname.startsWith(baseServerNormalized)) {
     const pathname = urlPathnameWithBase
-    return { pathname, hasBaseUrl: false }
+    return { pathname, hasBaseServer: false }
   }
   assert(urlPathname.startsWith('/') || urlPathname.startsWith('http'))
-  assert(urlPathname.startsWith(baseUrlNormalized))
-  urlPathname = urlPathname.slice(baseUrlNormalized.length)
+  assert(urlPathname.startsWith(baseServerNormalized))
+  urlPathname = urlPathname.slice(baseServerNormalized.length)
   if (!urlPathname.startsWith('/')) urlPathname = '/' + urlPathname
 
   assert(urlPathname.startsWith('/'))
-  return { pathname: urlPathname, hasBaseUrl: true }
+  return { pathname: urlPathname, hasBaseServer: true }
 }
 
-function prependBaseUrl(url: string, baseUrl: string): string {
-  if (isBaseAssets(baseUrl)) {
-    const baseAssets = baseUrl
+function prependBaseServer(url: string, baseServer: string): string {
+  if (isBaseAssets(baseServer)) {
+    const baseAssets = baseServer
     const baseAssetsNormalized = normalizeBaseAssets(baseAssets)
     assert(!baseAssetsNormalized.endsWith('/'))
     assert(url.startsWith('/'))
     return `${baseAssetsNormalized}${url}`
   }
-  assertBaseUrl(baseUrl)
+  assertBaseServer(baseServer)
 
-  const baseUrlNormalized = normalizeBaseUrl(baseUrl)
+  const baseServerNormalized = normalizeBaseServer(baseServer)
 
-  if (baseUrlNormalized === '/') return url
+  if (baseServerNormalized === '/') return url
 
-  assert(!baseUrlNormalized.endsWith('/'))
+  assert(!baseServerNormalized.endsWith('/'))
   assert(url.startsWith('/'))
-  return `${baseUrlNormalized}${url}`
+  return `${baseServerNormalized}${url}`
 }
 
-function normalizeBaseUrl(baseUrl: string) {
-  let baseUrlNormalized = baseUrl
-  if (baseUrlNormalized.endsWith('/') && baseUrlNormalized !== '/') {
-    baseUrlNormalized = slice(baseUrlNormalized, 0, -1)
+function normalizeBaseServer(baseServer: string) {
+  let baseServerNormalized = baseServer
+  if (baseServerNormalized.endsWith('/') && baseServerNormalized !== '/') {
+    baseServerNormalized = slice(baseServerNormalized, 0, -1)
   }
-  // We can and should expect `baseUrl` to not contain `/` doublets.
-  assert(!baseUrlNormalized.endsWith('/') || baseUrlNormalized === '/')
-  return baseUrlNormalized
+  // We can and should expect `baseServer` to not contain `/` doublets.
+  assert(!baseServerNormalized.endsWith('/') || baseServerNormalized === '/')
+  return baseServerNormalized
 }
 
 function isBaseAssets(base: string) {

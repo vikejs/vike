@@ -121,7 +121,7 @@ async function prerenderPageContext(
     _usesClientRouter: boolean
     _pageContextAlreadyProvidedByPrerenderHook?: true
     is404: null | boolean
-    _baseUrl: string
+    _baseServer: string
   } & PageFiles &
     GlobalRenderingContext
 ) {
@@ -189,7 +189,7 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     _pageFilesAll: renderContext.pageFilesAll,
     _allPageIds: renderContext.allPageIds,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
-    _baseUrl: globalContext.baseUrl,
+    _baseServer: globalContext.baseServer,
     _baseAssets: globalContext.baseAssets,
     _includeAssetsImportedByServer: globalContext.includeAssetsImportedByServer
   }
@@ -241,7 +241,7 @@ async function executeRenderHook(
     _passToClient: string[]
     _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean
-    _baseUrl: string
+    _baseServer: string
     _pageFilePathsLoaded: string[]
   }
 ): Promise<{
