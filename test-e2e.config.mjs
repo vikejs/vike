@@ -80,7 +80,8 @@ function tolerateError(log) {
     isFetchExperimentalWarning() ||
     isViteEsbuildBug() ||
     isGetPageAssetsDeprecationWarning() ||
-    isDocpressAssetWarning()
+    isDocpressAssetWarning() ||
+    isSourceMapWarning()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -149,6 +150,13 @@ function tolerateError(log) {
       log.logSource === 'stderr' &&
       log.logText.includes("didn't resolve at build time, it will remain unchanged to be resolved at runtime") &&
       log.logText.includes('node_modules/@brillout/docpress')
+    )
+  }
+
+  function isSourceMapWarning() {
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes('Sourcemap for "/@react-refresh" points to missing source files')
     )
   }
 }
