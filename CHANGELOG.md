@@ -1,3 +1,21 @@
+## [0.4.55](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.54...v0.4.55) (2022-12-09)
+
+
+### Bug Fixes
+
+* implement new configurations `baseAssets` and `baseServer` (fix [#542](https://github.com/brillout/vite-plugin-ssr/issues/542)) ([3b41f93](https://github.com/brillout/vite-plugin-ssr/commit/3b41f935fda055757a7b2c0f0cfdd12203dac782))
+* improve onBeforePrerender() interface ([48b953f](https://github.com/brillout/vite-plugin-ssr/commit/48b953f648daffca783bb869d85ab61a43927a72))
+* properly handle virtual IDs ([2e596c5](https://github.com/brillout/vite-plugin-ssr/commit/2e596c5549be563a418839f73230a5d01dd4bbfe))
+* remove convoluted extractAssets assertions and improve comments ([05fc470](https://github.com/brillout/vite-plugin-ssr/commit/05fc4700ac84dc4b1b8c05029c39d9b8afcaa4d5))
+* simplify processing of extension source page files ([948b131](https://github.com/brillout/vite-plugin-ssr/commit/948b131011958bb674eac1eed61dc1a9e62ebba1))
+
+
+### Features
+
+* implement extensions ([fbd3b44](https://github.com/brillout/vite-plugin-ssr/commit/fbd3b449717b9df7cba60eefed150cbc66f3ae9a))
+
+
+
 ## [0.4.54](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.53...v0.4.54) (2022-11-26)
 
 

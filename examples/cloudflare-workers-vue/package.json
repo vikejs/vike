@@ -10,7 +10,7 @@
     "@vue/compiler-sfc": "^3.2.33",
     "@vue/server-renderer": "^3.2.33",
     "vite": "^3.0.9",
-    "vite-plugin-ssr": "0.4.54",
+    "vite-plugin-ssr": "0.4.55",
     "vue": "^3.2.33",
     "wrangler": "^2.0.21"
   }
