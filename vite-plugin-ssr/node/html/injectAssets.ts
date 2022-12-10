@@ -2,7 +2,7 @@ export { injectHtmlTagsToString }
 export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
 
-import { assert } from '../utils'
+import { assert, isCallable, isPromise, assertUsage } from '../utils'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags'
@@ -85,15 +85,28 @@ function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
 }
 
 // https://vite-plugin-ssr.com/stream#initial-data-after-streaming
+type PageContextPromise = null | Promise<unknown> | (() => void | Promise<unknown>)
 async function resolvePageContextPromise(pageContext: {
-  _pageContextPromise: null | Promise<unknown>
+  _pageContextPromise: PageContextPromise
   _renderHook: { hookFilePath: string; hookName: 'render' }
 }) {
-  if (pageContext._pageContextPromise !== null) {
-    const pageContextProvidedByUser = await pageContext._pageContextPromise
-    assertPageContextProvidedByUser(pageContextProvidedByUser, { hook: pageContext._renderHook })
-    Object.assign(pageContext, pageContextProvidedByUser)
+  const pageContextPromise = pageContext._pageContextPromise
+  if (!pageContextPromise) {
+    return
   }
+  let pageContextProvidedByUser: unknown
+  if (isCallable(pageContextPromise)) {
+    pageContextProvidedByUser = await pageContextPromise()
+  } else if (isPromise(pageContextPromise)) {
+    pageContextProvidedByUser = await pageContextPromise
+  } else {
+    assertUsage(false, 'pageContextPromise should be a promise or a function')
+  }
+  assertPageContextProvidedByUser(pageContextProvidedByUser, {
+    pageContextName: 'pageContextPromise',
+    hook: pageContext._renderHook
+  })
+  Object.assign(pageContext, pageContextProvidedByUser)
 }
 
 function htmlPartsToString(htmlParts: HtmlPart[], pageAssets: PageAsset[]): string {
