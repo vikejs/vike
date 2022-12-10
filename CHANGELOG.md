@@ -1,3 +1,18 @@
+## [0.4.56](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.55...v0.4.56) (2022-12-10)
+
+
+### Bug Fixes
+
+* stop showing warning upon `$ vite-plugin-ssr prerender` ([659f28b](https://github.com/brillout/vite-plugin-ssr/commit/659f28beb116ec3c777ec922ddae751d3e6b2844))
+* tolerate hook file path to be an npm package module (fix [#550](https://github.com/brillout/vite-plugin-ssr/issues/550)) ([2215db7](https://github.com/brillout/vite-plugin-ssr/commit/2215db7120d5398c67303ffadbce7d0d6645ea5c))
+
+
+### Features
+
+* allow pageContextPromise to be a lazy-called function (fix [#548](https://github.com/brillout/vite-plugin-ssr/issues/548)) ([a273ce3](https://github.com/brillout/vite-plugin-ssr/commit/a273ce33b3ce48a7b8ddb369653a8d2088e8139b))
+
+
+
 ## [0.4.55](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.54...v0.4.55) (2022-12-09)
 
 
