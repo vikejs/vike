@@ -133,7 +133,7 @@ function testRun(
       })()
       expect(await page.textContent('button')).toBe('Counter 1')
       expect(await page.textContent('h1')).toBe('Welcome')
-      await sleep(300)
+      await sleep(500)
       editFile(file, (s) => s.replace('Welcome', 'Welcome !'))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Welcome !')
