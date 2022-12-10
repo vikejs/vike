@@ -1,6 +1,6 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
-import { prerender } from '../prerender'
+import { runPrerender } from '../prerender/runPrerender'
 import { projectInfo, assertUsage, assertWarning } from '../utils'
 
 const cli = cac(projectInfo.projectName)
@@ -17,7 +17,7 @@ cli
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options
     const root = options.root && resolve(options.root)
-    await prerender({ partial, noExtraDir, base, root, parallel, outDir, configFile })
+    await runPrerender({ partial, noExtraDir, base, root, parallel, outDir, configFile })
   })
 
 function assertOptions() {
