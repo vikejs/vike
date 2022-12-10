@@ -262,14 +262,13 @@ async function render(pageContext) {
       </body>
     </html>`
 
-  // pageContextPromise can be a promise, or a function that
-  // will be called after the stream has ended.
-  const pageContextPromise = (async () => {
+  // pageContextPromise can be a promise, or a function that VPS calls after the stream ends
+  const pageContextPromise = async () => {
      // I'm called after the stream has ended
      return {
        initialData,
      }
-  })
+  }
 
   return {
     documentHtml,
