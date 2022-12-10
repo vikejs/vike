@@ -1,4 +1,4 @@
-import { assert, assertUsage, assertWarning, isObject } from './utils'
+import { assert, assertUsage, assertWarning, isObject, isNpmPackageModule } from './utils'
 
 export { assertPageContextProvidedByUser }
 
@@ -15,7 +15,7 @@ function assertPageContextProvidedByUser(
   if (!errorMessagePrefix) {
     assert(hook)
     const { hookName, hookFilePath } = hook
-    assert(hookFilePath.startsWith('/'))
+    assert(hookFilePath.startsWith('/') || isNpmPackageModule(hookFilePath))
     assert(!hookName.endsWith(')'))
     errorMessagePrefix = `The \`pageContext\` provided by the \`export { ${hookName} }\` of ${hookFilePath}`
   }
