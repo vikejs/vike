@@ -1,7 +1,7 @@
 import { cac } from 'cac'
 import { resolve } from 'path'
 import { runPrerender } from '../prerender/runPrerender'
-import { projectInfo, assertUsage, assertWarning } from '../utils'
+import { projectInfo, assertUsage } from '../utils'
 
 const cli = cac(projectInfo.projectName)
 
@@ -9,11 +9,6 @@ cli
   .command('prerender', 'Pre-render the HTML of your pages', { allowUnknownOptions: true })
   .option('--configFile <path>', '[string] Path to `vite.config.js`.')
   .action(async (options) => {
-    assertWarning(
-      false,
-      'The `$ vite-plugin-ssr prerender` CLI is outdated. Set the `vite.config.js` option `prerender` instead. See https://vite-plugin-ssr.com/prerender-config for more information.',
-      { showStackTrace: false, onlyOnce: true }
-    )
     assertOptions()
     const { partial, noExtraDir, base, parallel, outDir, configFile } = options
     const root = options.root && resolve(options.root)

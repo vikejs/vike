@@ -73,9 +73,6 @@ type PageContext = {
   _pageContextAlreadyProvidedByPrerenderHook?: true
 }
 
-const wrongViteConfigErrorMessage =
-  'Your Vite config should enable pre-rendering (e.g. `ssr({ prerender: true })`), see https://vite-plugin-ssr.com/prerender-config'
-
 type PrerenderOptions = {
   /** Initial `pageContext` values */
   pageContextInit?: Record<string, unknown>
@@ -143,9 +140,11 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   const { outDirClient } = getOutDirs_prerender(viteConfig)
   const { root } = viteConfig
   const prerenderConfig = configVps.prerender
-  assertUsage(prerenderConfig !== false, wrongViteConfigErrorMessage)
-  assert(isObject(prerenderConfig))
-  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig
+  assertWarning(prerenderConfig, 'Set config `prerender` to `true`, see https://vite-plugin-ssr.com/prerender-config', {
+    showStackTrace: false,
+    onlyOnce: true
+  })
+  const { partial = false, noExtraDir = false, parallel = true } = prerenderConfig || {}
 
   const concurrencyLimit = pLimit(
     parallel === false || parallel === 0 ? 1 : parallel === true || parallel === undefined ? cpus().length : parallel
