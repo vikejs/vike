@@ -21,13 +21,11 @@ function testRun(
   {
     skipCssTest,
     noDefaultPageInUserCode,
-    isPrerendered,
     uiFramewok,
     lang
   }: {
     skipCssTest?: boolean
     noDefaultPageInUserCode?: true
-    isPrerendered?: true
     uiFramewok: 'react' | 'vue' | 'preact'
     lang?: 'ts'
   }
@@ -173,17 +171,15 @@ function testRun(
     })
   })
 
-  if (!isPrerendered) {
-    test('error page', async () => {
-      await page.goto(getServerUrl() + '/does-not-exist')
-      expect(await page.textContent('h1')).toBe('404 Page Not Found')
-      expect(await page.textContent('p')).toBe('This page could not be found.')
-      expectError(
-        (log) =>
-          log.logSource === 'Browser Error' &&
-          partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText) &&
-          log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
-      )
-    })
-  }
+  test('error page', async () => {
+    await page.goto(getServerUrl() + '/does-not-exist')
+    expect(await page.textContent('h1')).toBe('404 Page Not Found')
+    expect(await page.textContent('p')).toBe('This page could not be found.')
+    expectError(
+      (log) =>
+        log.logSource === 'Browser Error' &&
+        partRegex`http://${/[^\/]+/}:3000/does-not-exist`.test(log.logText) &&
+        log.logText.includes('Failed to load resource: the server responded with a status of 404 (Not Found)')
+    )
+  })
 }
