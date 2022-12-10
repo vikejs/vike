@@ -1,8 +1,9 @@
 export { injectHtmlTagsToString }
 export { injectHtmlTagsToStream }
 export type { PageContextInjectAssets }
+export type { PageContextPromise }
 
-import { assert, isCallable, isPromise, assertUsage } from '../utils'
+import { assert, isCallable, isPromise } from '../utils'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
 import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags'
@@ -16,7 +17,7 @@ type PageContextInjectAssets = {
   _pageId: string
   _passToClient: string[]
   _isHtmlOnly: boolean
-  _pageContextPromise: Promise<unknown> | null
+  _pageContextPromise: PageContextPromise
   _renderHook: { hookFilePath: string; hookName: 'render' }
   _baseServer: string
   is404: null | boolean
@@ -100,10 +101,9 @@ async function resolvePageContextPromise(pageContext: {
   } else if (isPromise(pageContextPromise)) {
     pageContextProvidedByUser = await pageContextPromise
   } else {
-    assertUsage(false, 'pageContextPromise should be a promise or a function')
+    assert(false)
   }
   assertPageContextProvidedByUser(pageContextProvidedByUser, {
-    pageContextName: 'pageContextPromise',
     hook: pageContext._renderHook
   })
   Object.assign(pageContext, pageContextProvidedByUser)

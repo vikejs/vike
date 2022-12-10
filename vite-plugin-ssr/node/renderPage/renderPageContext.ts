@@ -35,6 +35,7 @@ import { assertError, logError, logErrorIfDifferentFromOriginal } from './logErr
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
+import type { PageContextPromise } from '../html/injectAssets'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
@@ -270,10 +271,10 @@ async function executeRenderHook(
   }
   objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
 
-  let pageContextPromise: Promise<unknown> | null = null
+  let pageContextPromise: PageContextPromise = null
   if (hasProp(result, 'pageContext')) {
     const pageContextProvidedByRenderHook = result.pageContext
-    if (isPromise(pageContextProvidedByRenderHook)) {
+    if (isPromise(pageContextProvidedByRenderHook) || isCallable(pageContextProvidedByRenderHook)) {
       pageContextPromise = pageContextProvidedByRenderHook
     } else {
       assertPageContextProvidedByUser(pageContextProvidedByRenderHook, { hook: pageContext._renderHook })

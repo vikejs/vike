@@ -237,7 +237,7 @@ See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using
 
 Some data fetching tools, such as <Link href="/relay" text="Relay">Relay</Link> or [Vue's `onServerPrefetch()`](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch), provide initial data only after the stream has ended.
 
-In such situations, we can return a `pageContextPromise` in our `render()` hook:
+In such situations, we can return a `pageContext` promise in our `render()` hook:
 
 ```js
 // renderer/_deault.page.server.js
@@ -267,7 +267,6 @@ async function render(pageContext) {
   const pageContextPromise = (async () => {
      // I'm called after the stream has ended
      return {
-       // Some `initialData` provided after the stream has ended
        initialData,
      }
   })

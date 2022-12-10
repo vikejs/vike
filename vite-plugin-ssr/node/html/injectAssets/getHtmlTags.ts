@@ -39,8 +39,7 @@ async function getHtmlTags(
   const globalContext = getGlobalContext()
   const { isProduction } = globalContext
 
-  assert(pageContext._pageContextPromise === null || pageContext._pageContextPromise)
-  const injectJavaScriptDuringStream = pageContext._pageContextPromise === null && !!injectToStream
+  const injectJavaScriptDuringStream = !pageContext._pageContextPromise && !!injectToStream
 
   const pageAssets = await pageContext.__getPageAssets()
 

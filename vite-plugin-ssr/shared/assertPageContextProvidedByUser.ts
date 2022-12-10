@@ -6,10 +6,8 @@ function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
     hook,
-    errorMessagePrefix,
-    pageContextName = 'pageContext'
+    errorMessagePrefix
   }: {
-    pageContextName?: 'pageContext' | 'pageContextPromise'
     hook?: { hookFilePath: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
     errorMessagePrefix?: string
   }
@@ -19,7 +17,7 @@ function assertPageContextProvidedByUser(
     const { hookName, hookFilePath } = hook
     assert(hookFilePath.startsWith('/') || isNpmPackageModule(hookFilePath))
     assert(!hookName.endsWith(')'))
-    errorMessagePrefix = `The \`${pageContextName}\` provided by the \`export { ${hookName} }\` of ${hookFilePath}`
+    errorMessagePrefix = `The \`pageContext\` provided by the \`export { ${hookName} }\` of ${hookFilePath}`
   }
 
   assertUsage(isObject(pageContextProvidedByUser), `${errorMessagePrefix} should be an object.`)
