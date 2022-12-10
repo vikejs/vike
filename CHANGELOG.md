@@ -1,3 +1,12 @@
+## [0.4.57](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.56...v0.4.57) (2022-12-10)
+
+
+### Bug Fixes
+
+* pageContext promise function ([776b156](https://github.com/brillout/vite-plugin-ssr/commit/776b156800fbaa58a205056c6b4af6378f18b32e))
+
+
+
 ## [0.4.56](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.55...v0.4.56) (2022-12-10)
 
 
