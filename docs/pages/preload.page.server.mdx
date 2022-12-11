@@ -1,16 +1,15 @@
 import { Link } from '@brillout/docpress'
 
-> **What is preload?** Preloading denotes the practice of loadings assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/JavaScript, in order to avoid network round trips.
+> **What is preloading?** Preloading denotes the practice of loadings assets (JavaScript, CSS, images, etc.) before the browser discovers them in HTML/CSS/JavaScript code. That way we reduce the network round trips required before the browser starts discovering and loading all dependencies.
 
-By default, vite-plugin-ssr automatically injects script, style, and preload tags to our HTML.
-It also automatically generates [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103).
+By default, vite-plugin-ssr automatically inject tags to our HTML, such as `<script type="module" stc="script.js">`, `<link rel="stylesheet" type="text/css" href="style.css">`, and `<link rel="preload" href="font.ttf" as="font" type="font/ttf">`. It does so while using a preload strategy that works for most users but we can use `injectFilter()` to customize which and where tags are inserted.
 
-With `injectFilter()` we can control which and where preload tags are inserted.
+To further improve preloading performance, we can use [Early Hints](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) which vite-plugin-ssr automatically generates.
 
 
 ## Early Hints
 
-The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the successor of the now deprecated HTTP2/Push and is the recommend way for preloading assets.
+> The [Early Hints Header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103) is the successor of the now deprecated HTTP2/Push and is the recommend way for preloading assets.
 
 ```js
 // server.js
@@ -48,7 +47,7 @@ See also:
 
 ## `injectFilter()`
 
-Vite-plugin-ssr automatically injects preload and asset tags but, if vite-plugin-ssr's default preload strategy doesn't work for us, we can control which and where preload and asset tags are injected.
+If vite-plugin-ssr's default preload strategy doesn't work for us, we can control which and where preload/asset tags are injected.
 
 ```ts
 // /renderer/_default.page.server.js
