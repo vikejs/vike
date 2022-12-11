@@ -6,6 +6,9 @@ Examples (official): [examples/](https://github.com/brillout/vite-plugin-ssr/tre
 <br/>
 Examples (community): [examples/README.md](https://github.com/brillout/vite-plugin-ssr/tree/main/examples#community-examples)
 
+Comparison: [vite-plugin-ssr vs. NextJS](https://github.com/brillout/vite-plugin-ssr/issues/158)
+
+
 Version history (& breaking changes): [CHANGELOG.md](/CHANGELOG.md)
 
 Follow: [Twitter > @brillout](https://twitter.com/brillout)
