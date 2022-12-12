@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 overrides:
   vite-plugin-ssr: link:./vite-plugin-ssr/
-  '@brillout/docpress>@vitejs/plugin-react-swc': npm:@brillout/plugin-react-swc@3.0.0-patch-21
 
 packageExtensionsChecksum: f050d50401848e89704474c6985d439e
 
@@ -798,7 +797,7 @@ importers:
 
   test/pageFlesSrc:
     specifiers:
-      '@brillout/docpress': ^0.1.18
+      '@brillout/docpress': ^0.1.20
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
@@ -807,7 +806,7 @@ importers:
       typescript: ^4.9.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
-      '@brillout/docpress': 0.1.18_6bdbsu2yzpeczxw5qylih75b3i
+      '@brillout/docpress': 0.1.20_6bdbsu2yzpeczxw5qylih75b3i
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
@@ -1911,8 +1910,8 @@ packages:
     hasBin: true
     dev: true
 
-  /@brillout/docpress/0.1.18_6bdbsu2yzpeczxw5qylih75b3i:
-    resolution: {integrity: sha512-3i7/pOOTnbjvG1P5/CAnPyskOPOXzc2lGYputtWUEG6WBwmYLW30BHkFoGZnkjYuT2BQK+irJDEm3ee9KsFpoA==}
+  /@brillout/docpress/0.1.20_6bdbsu2yzpeczxw5qylih75b3i:
+    resolution: {integrity: sha512-iAsB0mtkhrpCRsAU5WQwU/LQGnR4sjaUagWXMwdULCmAz6b6Sjhdt5MhXJiu7wbxaH3WC4LYm2xlEr9GX0CkWw==}
     hasBin: true
     peerDependencies:
       react: '18'
@@ -1921,7 +1920,7 @@ packages:
       '@mdx-js/mdx': 2.1.1
       '@mdx-js/react': 2.1.2_react@18.2.0
       '@mdx-js/rollup': 2.1.1
-      '@vitejs/plugin-react-swc': /@brillout/plugin-react-swc/3.0.0-patch-21_@brillout+vite@4.0.1-fix
+      '@vitejs/plugin-react': 3.0.0_@brillout+vite@4.0.1-fix
       balloon-css: 1.2.0
       express: 4.18.1
       react: 18.2.0
@@ -1953,7 +1952,7 @@ packages:
       '@mdx-js/mdx': 2.1.1
       '@mdx-js/react': 2.1.2_react@18.2.0
       '@mdx-js/rollup': 2.1.1
-      '@vitejs/plugin-react-swc': /@brillout/plugin-react-swc/3.0.0-patch-21_@brillout+vite@4.0.1-fix
+      '@vitejs/plugin-react-swc': 3.0.0_@brillout+vite@4.0.1-fix
       balloon-css: 1.2.0
       express: 4.18.1
       react: 18.2.0
@@ -2004,15 +2003,6 @@ packages:
   /@brillout/part-regex/0.1.2:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}
     dev: true
-
-  /@brillout/plugin-react-swc/3.0.0-patch-21_@brillout+vite@4.0.1-fix:
-    resolution: {integrity: sha512-sZrV4Rtp3qiMeHYUo8tFtDESw7nscUmAmlAd00viNNQC6H0AF5zIVz816drRr1ILZDOEHnx9mlpIwUfBYKrZKw==}
-    peerDependencies:
-      vite: ^4.0.0
-    dependencies:
-      '@swc/core': 1.3.22
-      vite: /@brillout/vite/4.0.1-fix_@types+node@15.14.9
-    dev: false
 
   /@brillout/release-me/0.0.8:
     resolution: {integrity: sha512-sZUjOMkcQ2Eq3tDiL24t4Mgt93tMAs7oeNy/LHqPBlWGO+db8U+ZSpdAhae7rIyse53fBuXV9KLH0DdDkFkLGA==}
@@ -2394,7 +2384,7 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       '@jridgewell/set-array': 1.1.0
-      '@jridgewell/sourcemap-codec': 1.4.11
+      '@jridgewell/sourcemap-codec': 1.4.14
     dev: false
 
   /@jridgewell/gen-mapping/0.3.2:
@@ -2402,7 +2392,7 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       '@jridgewell/set-array': 1.1.0
-      '@jridgewell/sourcemap-codec': 1.4.11
+      '@jridgewell/sourcemap-codec': 1.4.14
       '@jridgewell/trace-mapping': 0.3.9
     dev: false
 
@@ -2416,15 +2406,15 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
-  /@jridgewell/sourcemap-codec/1.4.11:
-    resolution: {integrity: sha512-Fg32GrJo61m+VqYSdRSjRXMjQ06j8YIYfcTqndLYVAaHmroZHLJZCydsWBOTDqXS2v+mjxohBWEMfg97GXmYQg==}
+  /@jridgewell/sourcemap-codec/1.4.14:
+    resolution: {integrity: sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==}
     dev: false
 
   /@jridgewell/trace-mapping/0.3.9:
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
     dependencies:
       '@jridgewell/resolve-uri': 3.0.6
-      '@jridgewell/sourcemap-codec': 1.4.11
+      '@jridgewell/sourcemap-codec': 1.4.14
     dev: false
 
   /@mdx-js/mdx/2.1.1:
@@ -3172,6 +3162,15 @@ packages:
       wonka: 4.0.15
     dev: false
 
+  /@vitejs/plugin-react-swc/3.0.0_@brillout+vite@4.0.1-fix:
+    resolution: {integrity: sha512-vYlodz/mjYRbxMGbHzDgR8aPR+z8n7K/enWkyBGH096xrL2DIPCuTvQVRYPTXGyy6wO7OFiMxZ3r4nKQD1sH0A==}
+    peerDependencies:
+      vite: ^4.0.0
+    dependencies:
+      '@swc/core': 1.3.22
+      vite: /@brillout/vite/4.0.1-fix_@types+node@15.14.9
+    dev: false
+
   /@vitejs/plugin-react/2.0.1_vite@3.0.9:
     resolution: {integrity: sha512-uINzNHmjrbunlFtyVkST6lY1ewSfz/XwLufG0PIqvLGnpk2nOIOa/1CACTDNcKi1/RwaCzJLmsXwm1NsUVV/NA==}
     engines: {node: ^14.18.0 || >=16.0.0}
@@ -3222,6 +3221,22 @@ packages:
       magic-string: 0.26.7
       react-refresh: 0.14.0
       vite: 3.2.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@vitejs/plugin-react/3.0.0_@brillout+vite@4.0.1-fix:
+    resolution: {integrity: sha512-1mvyPc0xYW5G8CHQvJIJXLoMjl5Ct3q2g5Y2s6Ccfgwm45y48LBvsla7az+GkkAtYikWQ4Lxqcsq5RHLcZgtNQ==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+    peerDependencies:
+      vite: ^4.0.0
+    dependencies:
+      '@babel/core': 7.20.5
+      '@babel/plugin-transform-react-jsx-self': 7.18.6_@babel+core@7.20.5
+      '@babel/plugin-transform-react-jsx-source': 7.19.6_@babel+core@7.20.5
+      magic-string: 0.27.0
+      react-refresh: 0.14.0
+      vite: /@brillout/vite/4.0.1-fix_@types+node@15.14.9
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -6207,6 +6222,13 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       sourcemap-codec: 1.4.8
+    dev: false
+
+  /magic-string/0.27.0:
+    resolution: {integrity: sha512-8UnnX2PeRAPZuN12svgR9j7M1uWMovg/CEnIwIG0LFkXSJJe4PdfUGiTGl8V9bsBHFUtfVINcSyYxd7q+kx9fA==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.14
     dev: false
 
   /make-dir/3.1.0:

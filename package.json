@@ -46,8 +46,7 @@
   },
   "pnpm": {
     "overrides": {
-      "vite-plugin-ssr": "link:./vite-plugin-ssr/",
-      "@brillout/docpress>@vitejs/plugin-react-swc": "npm:@brillout/plugin-react-swc@3.0.0-patch-21"
+      "vite-plugin-ssr": "link:./vite-plugin-ssr/"
     },
     "packageExtensions": {
       "@apollo/client": {
