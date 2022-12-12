@@ -4,7 +4,7 @@ import { ImportMeta } from '@brillout/docpress'
 > **What is the Base URL?** Changing the Base URL (aka Public Path) is about changing the URL serving root.
 > For example, instead of deploying our app to `https://example.org/*` (the Base URL is `/`) we can change the Base URL to `/some-base/` and deploy it to `https://example.org/some-base/*` instead.
 
-# `base`
+## `base`
 
 To change the Base URL we:
 
@@ -28,11 +28,11 @@ To change the Base URL we:
     <link href="/some-base/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <navigation>
+    <nav>
       <!-- Note how the Base URL is '/some-base/' -->
       <a href="/some-base/">Landing Page</a>
       <a href="/some-base/about">About Page</a>
-    </navigation>
+    </nav>
     <!-- Note how the Base URL is '/some-base/' -->
     <script src="/some-base/script.js" type="module" async></script>
   </body>
@@ -82,13 +82,13 @@ Note how the Base URL of our server isn't changed: our app is still served at `h
     >
   </head>
   <body>
-    <navigation>
+    <nav>
       <!-- Note how the Base URL is '/' -->
       <a href="/">Landing Page</a>
       <a href="/about">About Page</a>
-    </navigation>
+    </nav>
     <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
-    <script src="https://cdn.example.org/my-website-assets/script.js" type="module" async></script>
+    <script src="https://cdn.example.org/my-website-assets/script.js" type="module" async>
   </body>
 </html>
 ```
@@ -137,13 +137,13 @@ export default {
     >
   </head>
   <body>
-    <navigation>
+    <nav>
       <!-- Note how the Base URL is '/some-base/' -->
       <a href="/some-base/">Landing Page</a>
       <a href="/some-base/about">About Page</a>
-    </navigation>
+    </nav>
     <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
-    <script src="https://cdn.example.org/my-website-assets/script.js" type="module" async></script>
+    <script src="https://cdn.example.org/my-website-assets/script.js" type="module" async>
   </body>
 </html>
 ```
