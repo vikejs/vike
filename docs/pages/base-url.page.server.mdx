@@ -1,8 +1,10 @@
 import { RepoLink } from '@brillout/docpress'
 import { ImportMeta } from '@brillout/docpress'
 
-> **What is the Base URL?** Changing the Base URL (aka Public Path) is about changing the URL root.
+> **What is the Base URL?** Changing the Base URL (aka Public Path) is about changing the URL serving root.
 > For example, instead of deploying our app to `https://example.org/*` (the Base URL is `/`) we can change the Base URL to `/some-base/` and deploy it to `https://example.org/some-base/*` instead.
+
+# `base`
 
 To change the Base URL we:
 
@@ -16,13 +18,36 @@ To change the Base URL we:
 1. Use [<ImportMeta prop='env.BASE_URL' />](https://vitejs.dev/guide/build.html#public-base-path) to construct a `<Link>` component that prepends the Base URL. Example: <RepoLink path='/examples/base-url/components/Link.jsx' />.
 1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
 
+```html
+<!-- view-source:https://my-website.com/ -->
+
+<html>
+  <head>
+    <!-- Note how the Base URL is '/some-base/' -->
+    <link href="/some-base/logo.svg" rel="icon">
+    <link href="/some-base/style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <navigation>
+      <!-- Note how the Base URL is '/some-base/' -->
+      <a href="/some-base/">Landing Page</a>
+      <a href="/some-base/about">About Page</a>
+    </navigation>
+    <!-- Note how the Base URL is '/some-base/' -->
+    <script src="/some-base/script.js" type="module" async></script>
+  </body>
+</html>
+```
+
 Example:
- - <RepoLink path='/examples/base-url/' />.
+ - <RepoLink path='/examples/base-url/' />
 
 
-## CDN
+## `baseAssets`
 
-We can deploy our static assets to a CDN using the `baseAssets` configuration.
+We can change the Base URL *only* of our assets by using the `baseAssets` configuration.
+
+> The most common use case for this is when deploying assets to a CDN.
 
 ```js
 // vite.config.js
@@ -38,12 +63,43 @@ export default {
 }
 ```
 
+Note how the Base URL of our server isn't changed: our app is still served at `https://my-website.com/*`, i.e. the Base URL is still `/`.
+
+```html
+<!-- view-source:https://my-website.com/ -->
+
+<html>
+  <head>
+    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <link
+      href="https://cdn.example.org/my-website-assets/logo.svg"
+      rel="icon"
+    >
+    <link
+      href="https://cdn.example.org/my-website-assets/style.css"
+      rel="stylesheet"
+      type="text/css"
+    >
+  </head>
+  <body>
+    <navigation>
+      <!-- Note how the Base URL is '/' -->
+      <a href="/">Landing Page</a>
+      <a href="/about">About Page</a>
+    </navigation>
+    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <script src="https://cdn.example.org/my-website-assets/script.js" type="module" async></script>
+  </body>
+</html>
+```
+
+> We can use `process.env.BASE_ASSETS` and <ImportMeta prop='env.BASE_ASSETS' /> to access the `baseAssets` value in our code.
+
 Example:
- - <RepoLink path='/examples/base-url-cdn/' />.
+ - <RepoLink path='/examples/base-url-cdn/' />
 
-> We can use `process.env.BASE_ASSETS` and <ImportMeta prop='env.BASE_ASSETS' /> to access the base value in our code.
 
-## CDN + Server
+## `baseServer`
 
 We can do both:
  - Deploy our static assets to a CDN using the `baseAssets` configuration.
@@ -64,7 +120,35 @@ export default {
 }
 ```
 
-Example:
- - <RepoLink path='/examples/base-url-server/' />.
+```html
+<!-- view-source:https://my-website.com/ -->
 
-> We can use `process.env.BASE_ASSETS`/`process.env.BASE_SERVER` and <ImportMeta prop='env.BASE_ASSETS' /> / <ImportMeta prop='env.BASE_SERVER' /> to access the base values in our code.
+<html>
+  <head>
+    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <link
+      href="https://cdn.example.org/my-website-assets/logo.svg"
+      rel="icon"
+    >
+    <link
+      href="https://cdn.example.org/my-website-assets/style.css"
+      rel="stylesheet"
+      type="text/css"
+    >
+  </head>
+  <body>
+    <navigation>
+      <!-- Note how the Base URL is '/some-base/' -->
+      <a href="/some-base/">Landing Page</a>
+      <a href="/some-base/about">About Page</a>
+    </navigation>
+    <!-- Note how the Base URL is 'https://cdn.example.org/my-website-assets/' -->
+    <script src="https://cdn.example.org/my-website-assets/script.js" type="module" async></script>
+  </body>
+</html>
+```
+
+> We can use `process.env.BASE_SERVER` and <ImportMeta prop='env.BASE_SERVER' /> to access the `baseServer` value in our code.
+
+Example:
+ - <RepoLink path='/examples/base-url-server/' />
