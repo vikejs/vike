@@ -47,7 +47,7 @@ Example:
 
 We can change the Base URL *only* of our assets by using the `baseAssets` configuration.
 
-> The most common use case for this is when deploying assets to a CDN.
+> The most common use case for using `baseAssets` is when deploying assets to a CDN.
 
 ```js
 // vite.config.js
@@ -63,7 +63,7 @@ export default {
 }
 ```
 
-Note how the Base URL of our server isn't changed: our app is still served at `https://my-website.com/*`, i.e. the Base URL is still `/`.
+Note how the Base URL of our server isn't changed: our app is still served at `https://my-website.com/*` (i.e. the Base URL is still `/`).
 
 ```html
 <!-- view-source:https://my-website.com/ -->
