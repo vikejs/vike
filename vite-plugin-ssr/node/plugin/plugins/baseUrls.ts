@@ -20,7 +20,12 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       process.env.BASE_SERVER = baseServer
       process.env.BASE_ASSETS = baseAssets
       return {
-        envPrefix: ['BASE_SERVER', 'BASE_ASSETS'],
+        envPrefix: [
+          // Vite doesn't seem to merge in its default, see https://github.com/brillout/vite-plugin-ssr/issues/554
+          'VITE_',
+          'BASE_SERVER',
+          'BASE_ASSETS'
+        ],
         // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg'`
         base: baseAssets
       }
