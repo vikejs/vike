@@ -1,3 +1,12 @@
+## [0.4.58](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.57...v0.4.58) (2022-12-13)
+
+
+### Bug Fixes
+
+* add 'VITE_' to envPrefix (fix [#554](https://github.com/brillout/vite-plugin-ssr/issues/554)) ([6095042](https://github.com/brillout/vite-plugin-ssr/commit/609504200fa4d94708c60d9e2dae695f6fc46b74))
+
+
+
 ## [0.4.57](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.56...v0.4.57) (2022-12-10)
 
 

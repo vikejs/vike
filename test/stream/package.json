@@ -10,7 +10,7 @@
     "react-dom": "^18.2.0",
     "react-streaming": "^0.3.5",
     "vite": "^3.2.4",
-    "vite-plugin-ssr": "0.4.57"
+    "vite-plugin-ssr": "0.4.58"
   },
   "type": "module"
 }
