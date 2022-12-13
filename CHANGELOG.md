@@ -1,3 +1,13 @@
+## [0.4.59](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.58...v0.4.59) (2022-12-13)
+
+
+### Bug Fixes
+
+* soft-deprecate pageContext promises in favor of pageContext async functions ([f0bc24d](https://github.com/brillout/vite-plugin-ssr/commit/f0bc24d1b3a437a1c0505d764c6c21f2a664de08))
+* update outdated assertion (fix [#552](https://github.com/brillout/vite-plugin-ssr/issues/552)) ([6477dbd](https://github.com/brillout/vite-plugin-ssr/commit/6477dbd48036fb39a8f589d4c5a71f8e2632e06e))
+
+
+
 ## [0.4.58](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.57...v0.4.58) (2022-12-13)
 
 
