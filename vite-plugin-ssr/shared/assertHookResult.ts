@@ -10,10 +10,11 @@ function assertHookResult<Keys extends readonly string[]>(
   hookResult: unknown,
   hookName: HookName,
   hookResultKeys: Keys,
-  hookFile: string
+  hookFile: string,
+  canBePromise = false
 ): asserts hookResult is undefined | null | { [key in Keys[number]]?: unknown } {
   assert(!hookName.endsWith(')'))
-  const errPrefix = `The \`export { ${hookName} }\` of ${hookFile}`
+  const errPrefix = `The ${hookName}() hook of ${hookFile}`
   assertUsage(
     hookResult === null || hookResult === undefined || isPlainObject(hookResult),
     `${errPrefix} should return \`null\`, \`undefined\`, or a plain JavaScript object.`
@@ -23,7 +24,10 @@ function assertHookResult<Keys extends readonly string[]>(
   }
   assertObjectKeys(hookResult, hookResultKeys, errPrefix)
   if ('pageContext' in hookResult) {
-    assertPageContextProvidedByUser(hookResult['pageContext'], { hook: { hookName, hookFilePath: hookFile } })
+    assertPageContextProvidedByUser(hookResult['pageContext'], {
+      hook: { hookName, hookFilePath: hookFile },
+      canBePromise
+    })
   }
 }
 

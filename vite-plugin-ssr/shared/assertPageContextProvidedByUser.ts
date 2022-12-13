@@ -1,4 +1,4 @@
-import { assert, assertUsage, assertWarning, isObject, isNpmPackageModule } from './utils'
+import { assert, assertUsage, assertWarning, isObject, isNpmPackageModule, isCallable, isPromise } from './utils'
 
 export { assertPageContextProvidedByUser }
 
@@ -6,10 +6,12 @@ function assertPageContextProvidedByUser(
   pageContextProvidedByUser: unknown,
   {
     hook,
-    errorMessagePrefix
+    errorMessagePrefix,
+    canBePromise
   }: {
     hook?: { hookFilePath: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
     errorMessagePrefix?: string
+    canBePromise?: boolean
   }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (!errorMessagePrefix) {
@@ -17,7 +19,15 @@ function assertPageContextProvidedByUser(
     const { hookName, hookFilePath } = hook
     assert(hookFilePath.startsWith('/') || isNpmPackageModule(hookFilePath))
     assert(!hookName.endsWith(')'))
-    errorMessagePrefix = `The \`pageContext\` provided by the \`export { ${hookName} }\` of ${hookFilePath}`
+    errorMessagePrefix = `The \`pageContext\` provided by the ${hookName}() hook of ${hookFilePath}`
+  }
+
+  if (canBePromise && !isObject(pageContextProvidedByUser)) {
+    assertUsage(
+      isCallable(pageContextProvidedByUser) || isPromise(pageContextProvidedByUser),
+      `${errorMessagePrefix} should be an object, or an async function https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`
+    )
+    return
   }
 
   assertUsage(isObject(pageContextProvidedByUser), `${errorMessagePrefix} should be an object.`)

@@ -268,7 +268,7 @@ async function executeRenderHook(
   preparePageContextForRelease(pageContext)
   const result = await callHookWithTimeout(() => render(pageContext), 'render', hook.filePath)
   if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderFilePath)
+    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderFilePath, true)
   }
   objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
 
