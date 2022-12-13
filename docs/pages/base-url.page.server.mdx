@@ -19,21 +19,21 @@ To change the Base URL we:
 1. Use <ImportMeta prop='env.BASE_URL' /> for referencing static assets living in [`public/`](/static-directory#public). Example: <RepoLink path='/examples/base-url/renderer/_default.page.server.jsx' />.
 
 ```html
-<!-- view-source:https://my-website.com/ -->
+<!-- view-source:https://my-website.com/some-base/ -->
+
+<!-- Note how our website is served at https://my-website.com/some-base/ and
+     how the asset URLs are prepended with the Base URL /some-base/ -->
 
 <html>
   <head>
-    <!-- Note how the Base URL is '/some-base/' -->
     <link href="/some-base/logo.svg" rel="icon">
     <link href="/some-base/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
     <nav>
-      <!-- Note how the Base URL is '/some-base/' -->
       <a href="/some-base/">Landing Page</a>
       <a href="/some-base/about">About Page</a>
     </nav>
-    <!-- Note how the Base URL is '/some-base/' -->
     <script src="/some-base/script.js" type="module" async></script>
   </body>
 </html>
@@ -45,7 +45,7 @@ Example:
 
 ## `baseAssets`
 
-We can change the Base URL *only* of our assets by using the `baseAssets` configuration.
+We can change the Base URL *only* of our assets by using the `baseAssets` configuration. The Base URL of our page URLs is left unchanged.
 
 > The most common use case for using `baseAssets` is when deploying assets to a CDN.
 
@@ -63,7 +63,7 @@ export default {
 }
 ```
 
-Note how the Base URL of our server isn't changed: our app is still served at `https://my-website.com/*` (i.e. the Base URL is still `/`).
+Note how the Base URL of our page URLs isn't changed: our app is still served at `https://my-website.com/*` (the Base URL is still `/`).
 
 ```html
 <!-- view-source:https://my-website.com/ -->
