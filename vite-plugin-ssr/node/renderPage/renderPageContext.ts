@@ -280,7 +280,7 @@ async function executeRenderHook(
     if (isPromise(pageContextProvidedByRenderHook) || isCallable(pageContextProvidedByRenderHook)) {
       assertWarning(
         !isPromise(pageContextProvidedByRenderHook),
-        `${errPrefix} returns a pageContext promise, which is deprecated in favor of returning a pageContext async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
+        `${errPrefix} returns a pageContext promise which is deprecated in favor of returning a pageContext async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
         { onlyOnce: true, showStackTrace: false }
       )
       pageContextPromise = pageContextProvidedByRenderHook
