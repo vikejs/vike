@@ -1,0 +1,85 @@
+import { Note } from '@brillout/docpress'
+
+Libraries often publish invalid ESM code making Node.js throw one of the following errors.
+
+See [solution](#solution) down below.
+
+## Common ESM errors
+
+```
+(node:30335) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+node_modules/some-library/dist/esm/index.js:1
+SyntaxError: Cannot use import statement outside a module
+    at Object.compileFunction (node:vm:352:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1033:15)
+    at Module._compile (node:internal/modules/cjs/loader:1069:27)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1159:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Module._load (node:internal/modules/cjs/loader:827:12)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:170:29)
+    at ModuleJob.run (node:internal/modules/esm/module_job:198:25)
+    at async Promise.all (index 0)
+    at async ESMLoader.import (node:internal/modules/esm/loader:409:24)
+
+Node.js v18.0.0
+```
+> Node.js's message `set "type": "module" in package.json or use the .mjs extension` is misleading because it means the library's `node_modules/some-library/package.json`, not our `package.json`. It's not really actionable (unless we patch the library, e.g. with [pnpm.packageExtensions](https://pnpm.io/package_json#pnpmpackageextensions) or [pnpm patch](https://pnpm.io/cli/patch)).
+
+```
+import { SomeImport } from "some-library";
+         ^^^^^^^^^^
+SyntaxError: Named export 'SomeImport' not found. The requested module 'some-library' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'some-library';
+const { SomeImport } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:124:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:190:5)
+
+Node.js v18.0.0
+```
+
+> The workaround proposed by Node.js often doesn't work. (Because, while the server-side imports CJS which always includes a default export, the browser-side imports ESM which usually doesn't have a default export.)
+
+```
+node:internal/process/esm_loader:91
+    internalBinding('errors').triggerUncaughtException(
+                              ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/some-library/dist/esm/some-file' imported from node_modules/some-library/dist/esm/index.js
+Did you mean to import some-file.js?
+    at new NodeError (node:internal/errors:372:5)
+    at finalizeResolution (node:internal/modules/esm/resolve:405:11)
+    at moduleResolve (node:internal/modules/esm/resolve:966:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1176:11)
+    at ESMLoader.resolve (node:internal/modules/esm/loader:605:30)
+    at ESMLoader.getModuleJob (node:internal/modules/esm/loader:318:18)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:80:40)
+    at link (node:internal/modules/esm/module_job:78:36) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+
+Node.js v18.0.0
+```
+
+> The error is usually thrown when the library's ESM code contains `import './some-file'`. (It should be `import './some-file.js'` instead, as imports in ESM code are required to include the file extension.)
+
+## Solution
+
+The easiest and most robust solution is to add libraries containing invalid ESM to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+
+```js
+// vite.config.js
+
+export default {
+  ssr: {
+    // Add libraries containing invalid ESM here
+    noExternal: ['some-library']
+  }
+}
+```
+
+> The reason why so many libraries ship erronous ESM code is because frameworks like Next.js bundle the server-side code of libraries, whereas Vite lets Node.js directly import the libraries. By adding the libraries to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
+
+<Note type="warning">While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the library author, e.g. [GitHub > `aws-amplify/amplify-ui` > `#3155`](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should ship valid ESM code.</Note>

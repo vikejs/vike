@@ -122,6 +122,14 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   {
     title: 'SPA vs SSR (and more)',
     url: '/SPA-vs-SSR'
+  },
+  {
+    title: 'Hydration Mismatch',
+    url: '/hydration-mismatch'
+  },
+  {
+    title: 'Libraries with invalid ESM',
+    url: '/invalid-esm'
   }
 ]
 
@@ -199,6 +207,11 @@ const headings: HeadingDefinition[] = [
     url: '/pageContext-anywhere'
   },
   {
+    level: 2,
+    title: 'Common Problems',
+    url: '/common-problems'
+  },
+  {
     level: 4,
     title: 'More'
   },
@@ -211,11 +224,6 @@ const headings: HeadingDefinition[] = [
     level: 2,
     title: 'Static Directory (`public/`)',
     url: '/static-directory'
-  },
-  {
-    level: 2,
-    title: 'Hydration Mismatch',
-    url: '/hydration-mismatch'
   },
   {
     level: 2,
