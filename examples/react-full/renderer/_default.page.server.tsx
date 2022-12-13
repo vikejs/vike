@@ -36,11 +36,11 @@ async function render(pageContext: PageContextServer) {
 
   return {
     documentHtml,
-    // We can return a `pageContext` promise
+    // See https://vite-plugin-ssr.com/stream#initial-data-after-stream-end
     pageContext: (async () => {
       return {
         someAsyncProps: 42
       }
-    })()
+    })
   }
 }
