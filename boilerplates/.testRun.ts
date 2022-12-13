@@ -131,7 +131,7 @@ function testRun(
       })()
       expect(await page.textContent('button')).toBe('Counter 1')
       expect(await page.textContent('h1')).toBe('Welcome')
-      await sleep(500)
+      await sleep(2 * 1000) // timeout can probably be decreased
       editFile(file, (s) => s.replace('Welcome', 'Welcome !'))
       await autoRetry(async () => {
         expect(await page.textContent('h1')).toBe('Welcome !')

@@ -36,7 +36,7 @@ function getCiJobs() {
   return [
     {
       name: 'Boilerplates',
-      setups: [mac17]
+      setups: [ubuntu18]
     },
     {
       name: 'Examples React',
@@ -56,7 +56,7 @@ function getCiJobs() {
     },
     {
       name: 'Custom Preload',
-      setups: [ubuntu18, win18]
+      setups: [ubuntu18, win18, mac17]
     },
     {
       name: 'Unit Tests E2E',
