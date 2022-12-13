@@ -14,6 +14,7 @@ import { getHook } from '../../shared/getHook'
 import {
   assert,
   assertUsage,
+  assertWarning,
   hasProp,
   isObject,
   objectAssign,
@@ -271,10 +272,17 @@ async function executeRenderHook(
   }
   objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
 
+  const errPrefix = 'The render() hook exported by ' + renderFilePath
+
   let pageContextPromise: PageContextPromise = null
   if (hasProp(result, 'pageContext')) {
     const pageContextProvidedByRenderHook = result.pageContext
     if (isPromise(pageContextProvidedByRenderHook) || isCallable(pageContextProvidedByRenderHook)) {
+      assertWarning(
+        !isPromise(pageContextProvidedByRenderHook),
+        `${errPrefix} returns a pageContext promise, which is deprecated in favor of returning a pageContext async function, see https://vite-plugin-ssr.com/stream#initial-data-after-stream-end`,
+        { onlyOnce: true, showStackTrace: false }
+      )
       pageContextPromise = pageContextProvidedByRenderHook
     } else {
       assertPageContextProvidedByUser(pageContextProvidedByRenderHook, { hook: pageContext._renderHook })
@@ -283,7 +291,6 @@ async function executeRenderHook(
   }
   objectAssign(pageContext, { _pageContextPromise: pageContextPromise })
 
-  const errPrefix = 'The `render()` hook exported by ' + renderFilePath
   const errSuffix = [
     'a string generated with the `escapeInject` template tag or a string returned by `dangerouslySkipEscape()`,',
     'see https://vite-plugin-ssr.com/escapeInject'

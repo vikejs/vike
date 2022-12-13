@@ -145,7 +145,7 @@ async function getHtmlTags(
   // `pageContext` JSON data
   if (!isHtmlOnly) {
     // Don't allow the user to manipulate with injectFilter(): injecting <script type="application/json"> before the stream can break the app when:
-    //  - using https://vite-plugin-ssr.com/stream#initial-data-after-streaming
+    //  - using https://vite-plugin-ssr.com/stream#initial-data-after-stream-end
     //  - `pageContext` is modified during the stream, e.g. /examples/vue-pinia which uses https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch
     // The <script> tags are handled separately by vite-plugin-ssr down below.
     htmlTags.push({

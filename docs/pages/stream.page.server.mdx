@@ -233,11 +233,13 @@ export function render(pageContext) {
 See <RepoLink path='/examples/cloudflare-workers-vue' /> for an example of using a pipe wrapper with Vue's `pipeToWebWritable()`/`pipeToNodeWritable()`, and using `new TransformStream()` for Cloudflare Workers.
 
 
-## Initial data after streaming
+## Initial data after stream end
 
-Some data fetching tools, such as <Link href="/relay" text="Relay">Relay</Link> or [Vue's `onServerPrefetch()`](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch), provide initial data only after the stream has ended.
+Some data fetching tools, such as <Link href="/relay" text="Relay">Relay</Link> and [Vue's `onServerPrefetch()`](https://vuejs.org/api/composition-api-lifecycle.html#onserverprefetch), collect data during the stream.
 
-In such situations, we can return a `pageContext` promise in our `render()` hook:
+Consequently, we can determine the initial data (passed to the browser) only after the stream has ended.
+
+In such situations, we can return a `pageContext` async function in our `render()` hook:
 
 ```js
 // renderer/_deault.page.server.js
@@ -262,7 +264,6 @@ async function render(pageContext) {
       </body>
     </html>`
 
-  // pageContextPromise can be a promise, or a function that VPS calls after the stream ends
   const pageContextPromise = async () => {
      // I'm called after the stream has ended
      return {
