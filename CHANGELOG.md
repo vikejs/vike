@@ -1,3 +1,12 @@
+## [0.4.60](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.59...v0.4.60) (2022-12-14)
+
+
+### Bug Fixes
+
+* workaround searchForWorkspaceRoot() windows bug (fix [#555](https://github.com/brillout/vite-plugin-ssr/issues/555)) ([5ddb5a4](https://github.com/brillout/vite-plugin-ssr/commit/5ddb5a47fad91eb4bcf4ebc7c1d5379797b511ec))
+
+
+
 ## [0.4.59](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.58...v0.4.59) (2022-12-13)
 
 
