@@ -1,0 +1,65 @@
+## In short: No black box.
+
+With vite-plugin-ssr you keep control and stay flexible & scalable, at the cost of a little bit more initial boilerplate.
+
+At scale, Next.js/Nuxt's black-box nature become painfully limiting.
+
+In contrast, vite-plugin-ssr is transparent: you keep control over both the server- and browser-side.
+
+As you scale, you usually need increasingly custom SSR integrations; vite-plugin-ssr's flexibility accommodates such needs.
+Since you can progressively replace it with Vite's native SSR API which is lower-level and even more flexible.
+
+## General benefits from using vite-plugin-ssr instead of NextJS:
+
+Written by community member @Axxxx0n :
+
+1. Development speed is better because is Vite based plugin (no bundling, native ESM).
+2. NextJS has to have many examples in repo and whole plethora of libraries are existing just to integrate some lib with nextjs because is not trivial (for example https://github.com/isaachinman/next-i18next). With this plugin you just read lib docs you want to integrate and you are good to go.
+3. When new React or Vue feature arrives you can start to use it right away and don't have to wait next team to integrate it (streaming API, Server components, Suspense on server, partial hydration...) because you have control over render functions, both on client and on server.
+4. You can use every possible routing library.
+5. You can use other rendering frameworks, not only React.
+6. NextJS can't read files in /public directory after it was built. i.e. user upload images.
+7. With getServerSideProps next blocks client-side rendering.
+8. Allow bypass "getData" of page component on client side navigation vercel/next.js#23921 while with vite-plugin-ssr you are flexible and can choose what you want.
+9. NextJS is really pushing vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
+10. NextJS is leaning on serverless and complicates usage when you don't want it.
+
+## Detailed comparison table:
+
+Sourced by community member @patryk-smc :
+
+|                                                                 | Vite + vite-plugin-ssr                                     | Next.js                       |
+| --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
+|                                                                 |                                                            |                               |
+| View frameworks                                                  | React & other supported by Vite (Vue, Preact, Svelte, Lit) | React only                    |
+| TypeScript support                                              | Yes                                                        | Yes                           |
+| Code-splitting and Bundling                                     | Yes                                                        | Yes                           |
+| Fast Refresh                                                    | Yes                                                        | Yes                           |
+|                                                                 |                                                            |                               |
+| <p align="center">**SSR:**</p>                                                             |                                                            |                               |
+| Control                                                         | Full control                                               | Limited / Black box                      |
+| Renderers                                                       | Yes, create as many you need                               | Just one (\_app.ts file)      |
+|                                                                 |                                                            |                               |
+| <p align="center">**Routing:**</p>                                                        |                                                            |                               |
+| File system routing                                             | Yes                                                        | Yes                           |
+| Client routing                                                  | Supported                                                  | Supported                     |
+| Client router                                                   | Use bulit-in or bring your own (eg. React Router)          | Built-in [or [hack it](https://colinhacks.com/essays/building-a-spa-with-nextjs)]                      |
+| Server routing                                                  | Supported                                                  | Not supported (?)             |
+|                                                                 |                                                            |                               |
+| <p align="center">**Integrations:**</p>                                                    |                                                            |                               |
+HTTP server | Not included | Baked-in, but custom server partially supported, with [caveats](https://stackoverflow.com/a/70945468/380607) |
+| Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
+|                                                                 |                                                            |                               |
+| <p align="center">**Extras**: \*</p> |                                                            |                               |
+| Head component                                                  | No, use react-helmet                                       | Yes, next/head                |
+| Image component                                                 | No                                                         | Yes, next/image               |
+| API routes                                                      | No, use your server                                        | Yes                           |
+| Internationalization (i18n)                                            | Yes                                                    | Yes                           |
+|                                                                 |                                                            |                               |
+| <p align="center">**Deployment options:**</p>                                              |                                                            |                               |
+| Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
+| Cloudflare Workers                                              | Yes, minimal config                                        | No, [[work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)]                            |
+| Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
+RSC (React Server Components) | [Work in progress](https://github.com/Shopify/hydrogen/discussions/2225#discussioncomment-3854516) | Yes, experimental
+
+\* - Vite/vite-plugin-ssr do not ship those extras by design.
