@@ -20,7 +20,6 @@ function testRun(cmd: 'pnpm run dev' | 'pnpm run preview') {
       expect(html).toMatch(partRegex`<h2>${/[^\/]+/}Control</h2>`)
       expect(html).toContain('<h2>🔧<!-- --> Control</h2>')
     }
-
     {
       const html = await fetchHtml('/stream')
       expect(html).toContain('<title>HTML Streaming | vite-plugin-ssr</title>')
