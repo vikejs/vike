@@ -49,12 +49,8 @@ function testRun(viewFramework: 'vue' | 'react', cmd: 'npm run dev' | 'npm run p
     expect(await page.textContent('h1')).toContain('Hello')
     expect(await page.textContent('body')).toContain('Hi evan')
 
-    if (!isPreview) {
-      await page.goto(getServerUrl() + '/hello')
-      expect(await page.textContent('body')).toContain('Hi anonymous')
-      await page.goto(getServerUrl() + '/hello/')
-      expect(await page.textContent('body')).toContain('Hi anonymous')
-    }
+    await page.goto(getServerUrl() + '/hello')
+    expect(await page.textContent('body')).toContain('Hi anonymous')
   })
 
   test('data fetching page, HTML', async () => {

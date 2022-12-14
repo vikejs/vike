@@ -20,7 +20,6 @@ async function onBeforeRender(pageContext: PageContextBuiltIn) {
   }
 }
 
-function prerender() {
-  const urls = names.map((name) => `/hello/${name}`)
-  return urls
+function prerender(): string[] {
+  return ['/hello', ...names.map((name) => `/hello/${name}`)]
 }
