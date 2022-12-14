@@ -87,7 +87,10 @@ function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow
-  assert(fsAllow.map(toPosixPath).includes(toPosixPath(searchForWorkspaceRoot(process.cwd()))))
+  assert(
+    process.platform === 'win32' || // searchForWorkspaceRoot() seems buggy on Windows https://github.com/brillout/vite-plugin-ssr/issues/555
+      fsAllow.map(toPosixPath).includes(toPosixPath(searchForWorkspaceRoot(process.cwd())))
+  )
 
   // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
