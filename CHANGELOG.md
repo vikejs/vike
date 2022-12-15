@@ -1,3 +1,12 @@
+## [0.4.61](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.60...v0.4.61) (2022-12-15)
+
+
+### Bug Fixes
+
+* apply extension assets handling only if needed ([#556](https://github.com/brillout/vite-plugin-ssr/issues/556)) ([6f7ee64](https://github.com/brillout/vite-plugin-ssr/commit/6f7ee64bf9c1e9702567a910d88f5ff1adc49d32))
+
+
+
 ## [0.4.60](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.59...v0.4.60) (2022-12-14)
 
 
