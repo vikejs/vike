@@ -1,3 +1,12 @@
+## [0.4.62](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.61...v0.4.62) (2022-12-15)
+
+
+### Bug Fixes
+
+* always use original Base URL config for determining fine-grained Base URLs (fix [#556](https://github.com/brillout/vite-plugin-ssr/issues/556)) ([8dd3f75](https://github.com/brillout/vite-plugin-ssr/commit/8dd3f75188a14d86639991dcceebe22aaaa29185))
+
+
+
 ## [0.4.61](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.60...v0.4.61) (2022-12-15)
 
 

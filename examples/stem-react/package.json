@@ -12,7 +12,7 @@
     "react": "^18.2.0",
     "typescript": "^4.6.4",
     "vite": "^3.2.4",
-    "vite-plugin-ssr": "0.4.61"
+    "vite-plugin-ssr": "0.4.62"
   },
   "type": "module"
 }
