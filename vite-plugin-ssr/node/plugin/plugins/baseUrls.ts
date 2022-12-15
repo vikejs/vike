@@ -26,7 +26,7 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
           'BASE_ASSETS'
         ],
         base: baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg'`
-        _baseOriginal: config.base ?? null
+        _baseOriginal: config.base ?? '/__UNSET__' // Vite resolves `_baseOriginal: null` to `undefined`
       }
     },
     async configResolved(config) {

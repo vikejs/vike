@@ -14,7 +14,8 @@ type BaseServers = {
 function resolveBase(configs: ConfigVpsUserProvided[], config: ResolvedConfig): BaseServers {
   const baseServer = pickFirst(configs.map((c) => c.baseServer)) ?? null
   const baseAssets = pickFirst(configs.map((c) => c.baseAssets)) ?? null
-  const baseOriginal: unknown = (config as Record<string, unknown>)._baseOriginal
+  let baseOriginal: unknown = (config as Record<string, unknown>)._baseOriginal
+  if (baseOriginal === '/__UNSET__') baseOriginal = null
   assert(baseOriginal === null || typeof baseOriginal == 'string')
   return resolve(baseOriginal, baseServer, baseAssets)
 }
