@@ -2,14 +2,14 @@ import { Link } from '@brillout/docpress'
 
 VPS (vite-plugin-ssr) differs from Next.js in two fundamental ways:
  1. VPS is UI Framework agnostic.
-    > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, ...)
-
-    > This means you have full control over React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js (currently and in the foreseeable future).
+    > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, ...).
+    >
+    > With VPS, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js (currently and in the foreseeable future).
  1. VPS is server and deployment agnostic.
-    > This means you can use any deployment strategy you want and keep full control over your server and deployment.
+    > With VPS, you keep full control over your server and can use any deployment strategy.
 
-Beyond these differences,
-VPS also introduces unique features such blazing fast HMR powered by Vite, first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structue, Automatic Deployment Synchronization, Build Your Own Framework, etc.
+Beyond these structural differences,
+VPS also introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structue, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, Build Your Own Framework, etc.
 
 > Turbopack replicates some of Vite's blazing fast DX techniques, but it's still in its infancy and it'll take a while until Turbopack is stable and supported by the ecosystem. In contrast, you can use Vite's lightning fast DX today.
 
@@ -18,35 +18,33 @@ Finally, VPS is a community project: instead of leaning on a framework with busi
 
 ## UI Framework agnostic
 
-VPS is completely agnostic to React: its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, ...).
-
-With VPS, you integrate React yourself. You need to write a little bit more boilerplate code but, in exchange, you get a lot more flexibility. This is why you can use tools like Relay or Apollo in ways that aren't possible with Next.js.
+With VPS, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility. This is why you can use tools like Relay or Apollo in ways that aren't possible with Next.js.
 
 > Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in details the benefits of Relay.
+>
+> Many users, including sponsors, leverage VPS's flexibility to deeply integrate Relay with SSR Streaming (which isn't possible with Next.js).
 
 Because you integrate React yourself, you have full control over the frontend integration of your favorite tools for data fetching, state management, authentication, etc.
 
-Except React and server integration, VPS includes everything you're used to and love about Next.js: blazing fast Client-side Routing, HMR (powered by Vite), Filesystem Routing, state-of-the-art Code Splitting (powered by Rollup).
+Except of React and server integration, VPS includes everything you'd expect from a frontend framework: blazing fast Client-side Routing, HMR (powered by Vite), Filesystem Routing, state-of-the-art Code Splitting (powered by Rollup), etc.
 
 
 ## Server/deployment agnostic
 
-From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that runs anywhere (AWS/Vercel/Cloudflare/...).
+From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that runs anywhere (AWS, Vercel, Cloudflare, Deno Deploy, ...).
 
-This means you can easily deploy VPS anywhere you want.
+To integrate VPS, you just add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  ...).
 
-> To integrate VPS, you just add VPS's middleware to your server (Express.js/Fastify/...).
-
-Because you manually integrate VPS with your server, you have full control over your server and deployment, which is one of the most critical piece of architecture.
+With VPS, you have full control over your server/deployment, one of the most critical aspect of your architecture.
 
 
 ## Manual integrations
 
 As depicted above, VPS's philosophy is that you integrate tools manually instead of being locked into decisions made by your framework. Use any tool you want, however you want.
 
-VPS is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than ease of use.
+All-in-all, VPS is less easy but simpler. For large scale projects, simplicity is *fundamentally* more important than ease of use.
 
-Last but not least, manual integration is fun, gives you a sense of freedom, and is insightful. (Whereas fighting a framework is pesky.)
+Last but not least, manual integration is fun, provides freedom, and is insightful. (Whereas fighting a framework is pesky.)
 
 
 ## Build your own framework
@@ -57,7 +55,7 @@ You can build your own Next.js with only hundreds of lines of code.
 
 > While there are many [uses cases for building your own framework](https://vike.land/), the most prominent one is [building company internal frameworks](https://vike.land/#scale).
 
-VPS's vision is to foster a proliferation of highly-tailored React frameworks.
+VPS's vision is to foster a proliferation of React frameworks highly-tailored to specific use cases.
 
 
 ## User feedback
@@ -67,7 +65,7 @@ VPS's vision is to foster a proliferation of highly-tailored React frameworks.
 1. Blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
 1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With VPS, you just read the documentation of the library you want to integrate and you're good to go.
 1. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, partial hydration, etc.)
-1. Next.js can't read files in `/public` directory after it was built. i.e. user upload images.
+1. Next.js can't read files in `/public` directory after it was built, i.e. user uploaded images.
 1. With `getServerSideProps()`, Next.js blocks client-side rendering.
 1. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921)) while with VPS you're flexible and can choose what you want.
 1. Next.js is really pushing the Vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
