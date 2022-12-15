@@ -21,13 +21,12 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       process.env.BASE_ASSETS = baseAssets
       return {
         envPrefix: [
-          // Vite doesn't seem to merge in its default, see https://github.com/brillout/vite-plugin-ssr/issues/554
-          'VITE_',
+          'VITE_', // Vite doesn't seem to merge in its default, see https://github.com/brillout/vite-plugin-ssr/issues/554
           'BASE_SERVER',
           'BASE_ASSETS'
         ],
-        // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg'`
-        base: baseAssets
+        base: baseAssets, // Make Vite inject baseAssets to imports e.g. `import logoUrl from './logo.svg'`
+        _baseOriginal: config.base ?? null
       }
     },
     async configResolved(config) {
@@ -35,7 +34,10 @@ function baseUrls(configVps?: ConfigVpsUserProvided): Plugin {
       // Ensure that the premature base URL resolving we did in config() isn't erroneous
       assert(configVps.baseServer === baseServer)
       assert(configVps.baseAssets === baseAssets)
+      /* Vite seems buggy around setting vite.config.js#base to an absolute URL in dev (e.g. http://localhost:8080/cdn/)
+       * Instead of letting the assertion fail, we let the user discover Vite's buggy behavior.
       assert(config.base === baseAssets)
+      */
     }
   }
 }
