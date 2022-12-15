@@ -23,12 +23,14 @@ function extensionsAssets(): Plugin {
       extensionsAssetsDir = getExtensionsAssetsDir(config, configVps)
     },
     configureServer(server) {
-      return () => {
-        serveExtensionsAssets(server.middlewares, extensionsAssetsDir, config)
+      if (extensionsAssetsDir.length > 0) {
+        return () => {
+          serveExtensionsAssets(server.middlewares, extensionsAssetsDir, config)
+        }
       }
     },
     writeBundle() {
-      if (!config.build.ssr) {
+      if (!config.build.ssr && extensionsAssetsDir.length > 0) {
         copyExtensionsAssetsDir(config, extensionsAssetsDir)
       }
     }
