@@ -11,12 +11,13 @@ function buildConfig(): Plugin {
   return {
     name: 'vite-plugin-ssr:buildConfig',
     apply: 'build',
+    enforce: 'post',
     async configResolved(config) {
       const input = {
         ...(await entryPoints(config)),
         ...normalizeRollupInput(config.build.rollupOptions.input)
       }
-      Object.assign(config.build.rollupOptions, { input })
+      config.build.rollupOptions.input = input
     },
     config(config) {
       return {

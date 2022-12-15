@@ -21,7 +21,7 @@ function distFileNames(): Plugin {
     name: 'vite-plugin-ssr:distFileNames',
     apply: 'build',
     enforce: 'post',
-    async configResolved(config) {
+    configResolved(config) {
       const rollupOutput = getRollupOutput(config)
       if (!rollupOutput.entryFileNames) {
         if (!config.build.ssr) {
