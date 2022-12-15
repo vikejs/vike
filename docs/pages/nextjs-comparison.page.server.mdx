@@ -1,65 +1,113 @@
-## In short: No black box.
+import { Link } from '@brillout/docpress'
 
-With vite-plugin-ssr you keep control and stay flexible & scalable, at the cost of a little bit more initial boilerplate.
+VPS (vite-plugin-ssr) differs from Next.js in two fundamental ways:
+ 1. VPS is UI Framework agnostic.
+    > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, ...)
 
-At scale, Next.js/Nuxt's black-box nature become painfully limiting.
+    > This means you have full control over React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js (currently and in the foreseeable future).
+ 1. VPS is server and deployment agnostic.
+    > This means you can use any deployment strategy you want and keep full control over your server and deployment.
 
-In contrast, vite-plugin-ssr is transparent: you keep control over both the server- and browser-side.
+Beyond these differences,
+VPS also introduces unique features such blazing fast HMR powered by Vite, first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structue, Automatic Deployment Synchronization, Build Your Own Framework, etc.
 
-As you scale, you usually need increasingly custom SSR integrations; vite-plugin-ssr's flexibility accommodates such needs.
-Since you can progressively replace it with Vite's native SSR API which is lower-level and even more flexible.
+> Turbopack replicates some of Vite's blazing fast DX techniques, but it's still in its infancy and it'll take a while until Turbopack is stable and supported by the ecosystem. In contrast, you can use Vite's lightning fast DX today.
 
-## General benefits from using vite-plugin-ssr instead of NextJS:
+Finally, VPS is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by and made for the community.
 
-Written by community member @Axxxx0n :
 
-1. Development speed is better because is Vite based plugin (no bundling, native ESM).
-2. NextJS has to have many examples in repo and whole plethora of libraries are existing just to integrate some lib with nextjs because is not trivial (for example https://github.com/isaachinman/next-i18next). With this plugin you just read lib docs you want to integrate and you are good to go.
-3. When new React or Vue feature arrives you can start to use it right away and don't have to wait next team to integrate it (streaming API, Server components, Suspense on server, partial hydration...) because you have control over render functions, both on client and on server.
-4. You can use every possible routing library.
-5. You can use other rendering frameworks, not only React.
-6. NextJS can't read files in /public directory after it was built. i.e. user upload images.
-7. With getServerSideProps next blocks client-side rendering.
-8. Allow bypass "getData" of page component on client side navigation vercel/next.js#23921 while with vite-plugin-ssr you are flexible and can choose what you want.
-9. NextJS is really pushing vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
-10. NextJS is leaning on serverless and complicates usage when you don't want it.
+## UI Framework agnostic
 
-## Detailed comparison table:
+VPS is completely agnostic to React: its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, ...).
 
-Sourced by community member @patryk-smc :
+With VPS, you integrate React yourself. You need to write a little bit more boilerplate code but, in exchange, you get a lot more flexibility. This is why you can use tools like Relay or Apollo in ways that aren't possible with Next.js.
 
-|                                                                 | Vite + vite-plugin-ssr                                     | Next.js                       |
+> Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in details the benefits of Relay.
+
+Because you integrate React yourself, you have full control over the frontend integration of your favorite tools for data fetching, state management, authentication, etc.
+
+Except React and server integration, VPS includes everything you're used to and love about Next.js: blazing fast Client-side Routing, HMR (powered by Vite), Filesystem Routing, state-of-the-art Code Splitting (powered by Rollup).
+
+
+## Server/deployment agnostic
+
+From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that runs anywhere (AWS/Vercel/Cloudflare/...).
+
+This means you can easily deploy VPS anywhere you want.
+
+> To integrate VPS, you just add VPS's middleware to your server (Express.js/Fastify/...).
+
+Because you manually integrate VPS with your server, you have full control over your server and deployment, which is one of the most critical piece of architecture.
+
+
+## Manual integrations
+
+As depicted above, VPS's philosophy is that you integrate tools manually instead of being locked into decisions made by your framework. Use any tool you want, however you want.
+
+VPS is less easy, but simpler. For large scale projects, simplicity is *fundamentally* more important than ease of use.
+
+Last but not least, manual integration is fun, gives you a sense of freedom, and is insightful. (Whereas fighting a framework is pesky.)
+
+
+## Build your own framework
+
+VPS is designed from the ground up to enable users to build frameworks on top of VPS.
+
+You can build your own Next.js with only hundreds of lines of code.
+
+> While there are many [uses cases for building your own framework](https://vike.land/), the most prominent one is [building company internal frameworks](https://vike.land/#scale).
+
+VPS's vision is to foster a proliferation of highly-tailored React frameworks.
+
+
+## User feedback
+
+[From @Axxxx0n](https://github.com/brillout/vite-plugin-ssr/issues/158#issuecomment-934224512):
+
+1. Blazing fast development speed powered by Vite (on-demand transpiling, native ESM).
+1. Next.js has to have many examples and a whole plethora of libraries are existing just to integrate some library with Next.js because it's not trivial (for example [next-i18next](https://github.com/isaachinman/next-i18next)). With VPS, you just read the documentation of the library you want to integrate and you're good to go.
+1. When new React features arrive you can start to use it right away and don't have to wait for the Next.js team to integrate it. (Streaming API, server components, suspense on server, partial hydration, etc.)
+1. Next.js can't read files in `/public` directory after it was built. i.e. user upload images.
+1. With `getServerSideProps()`, Next.js blocks client-side rendering.
+1. You cannot bypass data fetching on client-side navigation ([Next.js - 	&#35;23921](https://github.com/vercel/next.js/discussions/23921)) while with VPS you're flexible and can choose what you want.
+1. Next.js is really pushing the Vercel platform and is starting to show in recent feature updates. Features that align with this are getting priority while important fixes are delayed.
+1. Next.js is leaning on serverless and complicates usage when you don't want it.
+
+
+## Detailed comparison table
+
+[From @patryk-smc and @redbar0n](https://github.com/brillout/vite-plugin-ssr/issues/158#issuecomment-1250068578):
+
+|                                                                 | VPS                                                        | Next.js                       |
 | --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
-|                                                                 |                                                            |                               |
-| View frameworks                                                  | React & other supported by Vite (Vue, Preact, Svelte, Lit) | React only                    |
-| TypeScript support                                              | Yes                                                        | Yes                           |
-| Code-splitting and Bundling                                     | Yes                                                        | Yes                           |
-| Fast Refresh                                                    | Yes                                                        | Yes                           |
-|                                                                 |                                                            |                               |
-| <p align="center">**SSR:**</p>                                                             |                                                            |                               |
+| UI Framework                                                    | Any (React, Preact, Solid, ...)                            | React only                    |
+| Code-splitting and bundling                                     | Yes                                                        | Yes                           |
+| HMR                                                             | Yes, fast                                                  | Yes, slow                     |
+| SPA                                                             | Yes                                                        | Limited                       |
+| <p align="center">**SSR**</p>                                                             |                                                            |                               |
 | Control                                                         | Full control                                               | Limited / Black box                      |
-| Renderers                                                       | Yes, create as many you need                               | Just one (\_app.ts file)      |
-|                                                                 |                                                            |                               |
-| <p align="center">**Routing:**</p>                                                        |                                                            |                               |
-| File system routing                                             | Yes                                                        | Yes                           |
-| Client routing                                                  | Supported                                                  | Supported                     |
-| Client router                                                   | Use bulit-in or bring your own (eg. React Router)          | Built-in [or [hack it](https://colinhacks.com/essays/building-a-spa-with-nextjs)]                      |
-| Server routing                                                  | Supported                                                  | Not supported (?)             |
-|                                                                 |                                                            |                               |
-| <p align="center">**Integrations:**</p>                                                    |                                                            |                               |
-HTTP server | Not included | Baked-in, but custom server partially supported, with [caveats](https://stackoverflow.com/a/70945468/380607) |
+| Renderers                                                       | Yes, create as many you need                               | Just one (`_app.ts` file)      |
+| RSC (React Server Components) | [Work in progress](https://github.com/Shopify/hydrogen/discussions/2225#discussioncomment-3854516) | Yes, experimental |
+| <p align="center">**Routing**</p>                                                        |                                                            |                               |
+| Filesystem Routing                                              | Yes                                                        | Yes                           |
+| Domain-driven Filesystem Routing                                | Yes                                                        | No                            |
+| Client Routing                                                  | Yes                                                        | Yes                           |
+| Server Routing                                                  | Yes                                                        | No                            |
+| Base URL                                                        | Yes                                                        | Limited                       |
+| <p align="center">**Integrations**</p>                                                    |                                                            |                               |
+HTTP server | Not included* | Baked-in, but custom server partially supported, with [caveats](https://stackoverflow.com/a/70945468/380607) |
 | Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
-|                                                                 |                                                            |                               |
-| <p align="center">**Extras**: \*</p> |                                                            |                               |
-| Head component                                                  | No, use react-helmet                                       | Yes, next/head                |
-| Image component                                                 | No                                                         | Yes, next/image               |
-| API routes                                                      | No, use your server                                        | Yes                           |
-| Internationalization (i18n)                                            | Yes                                                    | Yes                           |
-|                                                                 |                                                            |                               |
-| <p align="center">**Deployment options:**</p>                                              |                                                            |                               |
+| Relay with SSR                                                  | Fully supported                                            | Partially supported           |
+| <p align="center">**Extras**</p> |                                                            |                               |
+| Head component                                                  | No*, use react-helmet                                       | Yes, next/head                |
+| Image component                                                 | No*                                                         | Yes, next/image               |
+| API routes                                                      | No*, use your server or RPC tool                                       | Yes                           |
+| Internationalization (i18n)                                     | Yes                                                         | Yes                           |
+| Deployment synchronization                                                            | Yes                                                         | No                            |
+| Build your own framework                                        | Yes                                                         | No                            |
+| <p align="center">**Deployment options**</p>                                              |                                                            |                               |
 | Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
-| Cloudflare Workers                                              | Yes, minimal config                                        | No, [[work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)]                            |
+| Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |
 | Node server (Docker, Heroku, Digital Ocean etc.)                | Yes, minimal config                                        | Yes, but limited              |
-RSC (React Server Components) | [Work in progress](https://github.com/Shopify/hydrogen/discussions/2225#discussioncomment-3854516) | Yes, experimental
 
-\* - Vite/vite-plugin-ssr do not ship those extras by design.
+(\*) VPS doesn't ship those extras by design.
