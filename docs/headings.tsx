@@ -145,6 +145,11 @@ const headings: HeadingDefinition[] = [
     titleDocument: 'vite-plugin-ssr',
     url: '/'
   },
+  {
+    level: 2,
+    title: 'Next.js Comparison',
+    url: '/nextjs-comparison'
+  },
   /*
   {
     level: 2,
