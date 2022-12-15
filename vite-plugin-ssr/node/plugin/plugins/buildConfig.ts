@@ -3,7 +3,7 @@ export { buildConfig }
 import type { Plugin } from 'vite'
 import type { ResolvedConfig } from 'vite'
 import { assert, determineOutDir, isObject, viteIsSSR, makeFilePathAbsolute } from '../utils'
-import { modifyResolvedConfig, findPageFiles } from '../helpers'
+import { findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
 
@@ -16,7 +16,7 @@ function buildConfig(): Plugin {
         ...(await entryPoints(config)),
         ...normalizeRollupInput(config.build.rollupOptions.input)
       }
-      modifyResolvedConfig(config, { build: { rollupOptions: { input } } })
+      Object.assign(config.build.rollupOptions, { input })
     },
     config(config) {
       return {
