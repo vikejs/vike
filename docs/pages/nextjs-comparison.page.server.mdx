@@ -2,16 +2,16 @@ import { Link } from '@brillout/docpress'
 
 VPS (vite-plugin-ssr) differs from Next.js in two fundamental ways:
  1. VPS is UI Framework agnostic.
-    > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, ...).
+    > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, etc.).
     >
     > With VPS, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js (currently and in the foreseeable future).
  1. VPS is server and deployment agnostic.
-    > With VPS, you keep full control over your server and can use any deployment strategy.
+    > With VPS, you keep full control over your server and you can use any deployment strategy.
 
 Beyond these structural differences,
-VPS also introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structue, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, Build Your Own Framework, etc.
+VPS introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structue, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
 
-> Turbopack replicates some of Vite's blazing fast DX techniques, but it's still in its infancy and it'll take a while until Turbopack is stable and supported by the ecosystem. In contrast, you can use Vite's lightning fast DX today.
+> Turbopack replicates some of Vite's blazing fast DX techniques, but it's still in its infancy and it'll take a while until Turbopack is production-ready. With Vite, you can use lightning fast DX today.
 
 Finally, VPS is a community project: instead of leaning on a framework with business interests that are fundamentally at odds with yours, use a community-driven project that is sponsored by and made for the community.
 
@@ -22,18 +22,18 @@ With VPS, you integrate React yourself. This means you need to write a little bi
 
 > Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in details the benefits of Relay.
 >
-> Many users, including sponsors, leverage VPS's flexibility to deeply integrate Relay with SSR Streaming (which isn't possible with Next.js).
+> Many users and sponsors leverage VPS's flexibility to integrate Relay with SSR Streaming (which isn't possible with Next.js).
 
-Because you integrate React yourself, you have full control over the frontend integration of your favorite tools for data fetching, state management, authentication, etc.
+Because you integrate React yourself, you have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
 
-Except of React and server integration, VPS includes everything you'd expect from a frontend framework: blazing fast Client-side Routing, HMR (powered by Vite), Filesystem Routing, state-of-the-art Code Splitting (powered by Rollup), etc.
+Except of React and a server, VPS includes everything you'd expect from a frontend framework: blazing fast Client-side Routing, HMR (powered by Vite), Filesystem Routing, state-of-the-art Code Splitting (powered by Rollup), etc.
 
 
 ## Server/deployment agnostic
 
-From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that runs anywhere (AWS, Vercel, Cloudflare, Deno Deploy, ...).
+From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that runs anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
 
-To integrate VPS, you just add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  ...).
+To integrate VPS, you just add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
 
 With VPS, you have full control over your server/deployment, one of the most critical aspect of your architecture.
 
@@ -44,7 +44,7 @@ As depicted above, VPS's philosophy is that you integrate tools manually instead
 
 All-in-all, VPS is less easy but simpler. For large scale projects, simplicity is *fundamentally* more important than ease of use.
 
-Last but not least, manual integration is fun, provides freedom, and is insightful. (Whereas fighting a framework is pesky.)
+Last but not least, manual integration is fun and insightful. (Whereas fighting a framework is pesky.)
 
 
 ## Build your own framework
@@ -53,7 +53,7 @@ VPS is designed from the ground up to enable users to build frameworks on top of
 
 You can build your own Next.js with only hundreds of lines of code.
 
-> While there are many [uses cases for building your own framework](https://vike.land/), the most prominent one is [building company internal frameworks](https://vike.land/#scale).
+> While there are many [uses cases for building your own framework](https://vike.land), the most prominent one is [building company internal frameworks](https://vike.land#scale).
 
 VPS's vision is to foster a proliferation of React frameworks highly-tailored to specific use cases.
 
@@ -78,7 +78,7 @@ VPS's vision is to foster a proliferation of React frameworks highly-tailored to
 
 |                                                                 | VPS                                                        | Next.js                       |
 | --------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------- |
-| UI Framework                                                    | Any (React, Preact, Solid, ...)                            | React only                    |
+| UI Framework                                                    | Any (React, Preact, Solid, etc.)                           | React only                    |
 | Code-splitting and bundling                                     | Yes                                                        | Yes                           |
 | HMR                                                             | Yes, fast                                                  | Yes, slow                     |
 | SPA                                                             | Yes                                                        | Limited                       |
