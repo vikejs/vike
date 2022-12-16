@@ -18,24 +18,26 @@ Finally, VPS is a community project: instead of leaning on a framework with busi
 
 ## UI Framework agnostic
 
-With VPS, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility. This is why you can use tools like Relay or Apollo in ways that aren't possible with Next.js.
+With VPS, you integrate React yourself. This means you need to write a little bit more boilerplate but, in exchange, you get a lot more flexibility.
+
+Because you integrate React yourself, you have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
+
+For example, you can use tools like Relay or Apollo in ways that aren't possible with Next.js.
 
 > Relay is a state-of-the-art GraphQL client developed and used at scale by Facebook (which invented GraphQL). The [YouTube video "Re-introducing Relay"](https://www.youtube.com/watch?v=lhVGdErZuN4) explains in details the benefits of Relay.
 >
 > Many users and sponsors leverage VPS's flexibility to integrate Relay with SSR Streaming (which isn't possible with Next.js).
-
-Because you integrate React yourself, you have full control over the frontend integration of your favorite tools (data fetching, state management, authentication, etc.).
 
 Except of React and a server, VPS includes everything you'd expect from a frontend framework: blazing fast Client-side Routing, HMR (powered by Vite), Filesystem Routing, state-of-the-art Code Splitting (powered by Rollup), etc.
 
 
 ## Server/deployment agnostic
 
-From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that runs anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
+From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that can run anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
 
 To integrate VPS, you just add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
 
-With VPS, you have full control over your server/deployment, one of the most critical aspect of your architecture.
+With VPS, you have full control over your server and deployment, one of the most critical aspect of your architecture.
 
 
 ## Manual integrations
