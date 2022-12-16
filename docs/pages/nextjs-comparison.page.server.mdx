@@ -1,12 +1,16 @@
 import { Link } from '@brillout/docpress'
 
-VPS (vite-plugin-ssr) differs from Next.js in two fundamental ways:
+VPS (vite-plugin-ssr) differs from Next.js in three fundamental ways:
  1. VPS is UI Framework agnostic.
     > VPS is completely agnostic to React and its source code has zero dependency on React. You can actually use VPS with any other UI Framework (Vue, Preact, Solid, etc.).
     >
     > With VPS, you implement and fully control the React integration, which has many benefits. For example, you can use Relay in the same way that Facebook does (with a render-as-you-fetch stream) which isn't possible with Next.js (currently and in the foreseeable future).
  1. VPS is server and deployment agnostic.
     > With VPS, you keep full control over your server and you can use any deployment strategy.
+ 1. VPS has zero dependency.
+    > All `node_modules/vite-plugin-ssr/package.json#dependencies` are either shared with Vite (such as [`fast-glob`](https://github.com/mrmlnc/fast-glob) or fully owned (such as [`@brillout/json-serializer`](https://github.com/brillout/json-serializer)).
+    >
+    > We believe VPS hits the sweet spot of being a full-fledged frontend tool while avoiding unnecessary bells and whistles.
 
 Beyond these structural differences,
 VPS introduces features such as blazing fast HMR (powered by Vite), first-class SPA support (especially with the upcoming new VPS design), Domain-driven File Structure, state-of-the-art Code Splitting (powered by Vite/Rollup), Automatic Deployment Synchronization, [Build Your Own Framework](https://vike.land), etc.
