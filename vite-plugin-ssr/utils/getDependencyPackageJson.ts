@@ -3,11 +3,12 @@ export { getDependencyPackageJsonPath }
 export { getDependencyRootDir }
 
 // There doesn't seem to be any alternative:
+//  - https://github.com/antfu/local-pkg
 //  - https://stackoverflow.com/questions/74640378/find-and-read-package-json-of-a-dependency
 //  - https://stackoverflow.com/questions/58442451/finding-the-root-directory-of-a-dependency-in-npm
 //  - https://stackoverflow.com/questions/10111163/how-can-i-get-the-path-of-a-module-i-have-loaded-via-require-that-is-not-mine/63441056#63441056
 
-import { assert } from './assert'
+import { assert, assertUsage } from './assert'
 import { isNpmPackageName } from './isNpmPackageName'
 import { toPosixPath } from './filesystemPathHandling'
 import { isObject } from './isObject'
@@ -28,47 +29,61 @@ function getDependencyRootDir(npmPackageName: string, userAppRootDir: string): s
 
 function getDependencyPackageJsonPath(npmPackageName: string, userAppRootDir: string): string {
   assert(isNpmPackageName(npmPackageName))
-  let packageJsonPath: string
-  try {
-    packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [userAppRootDir] })
-  } catch (err_) {
-    const err: { code?: string; message?: string } = err_ as any
-    if (err.code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
-      throw err
-    }
-    packageJsonPath = retrievePackageJsonPathFromErrMsg(err.message!)
-    /* If retrievePackageJsonPathFromErrMsg() isn't reliable:
-    assertUsage(
-      packageJsonPath,
-      `Cannot read ${npmPackageName}/package.json. Add package.json#exports["./package.json"] with the value "./package.json" to the package.json of ${npmPackageName}.`
-    )
-    */
+  let packageJsonPath = resolvePackageJsonDirectly(npmPackageName, userAppRootDir)
+
+  if (!packageJsonPath) {
+    packageJsonPath = resolvePackageJsonWithMainEntry(npmPackageName, userAppRootDir)
   }
+
+  assertUsage(
+    packageJsonPath,
+    `Cannot read ${npmPackageName}/package.json. Define package.json#exports["./package.json"] with the value "./package.json" in the package.json of ${npmPackageName}.`
+  )
+
   packageJsonPath = toPosixPath(packageJsonPath)
   assert(packageJsonPath.endsWith('/package.json'), packageJsonPath) // package.json#exports["package.json"] may point to another file than package.json
   return packageJsonPath
 }
 
-/* Node.js 18 throws the following. Same for other Node.js versions? Let's see.
-```
-Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './package.json' is not defined by "exports" in /home/romuuu/.prog/files/code/vite-plugin-ssr/examples/stem-react/node_modules/@brillout/stem-react/package.json
-    at __node_internal_captureLargerStackTrace (node:internal/errors:465:5)
-    at new NodeError (node:internal/errors:372:5)
-    at throwExportsNotFound (node:internal/modules/esm/resolve:440:9)
-    at packageExportsResolve (node:internal/modules/esm/resolve:719:3)
-    at resolveExports (node:internal/modules/cjs/loader:483:36)
-    at Module._findPath (node:internal/modules/cjs/loader:523:31)
-    at Module._resolveFilename (node:internal/modules/cjs/loader:925:27)
-    at Function.resolve (node:internal/modules/cjs/helpers:108:19) {
-  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+function resolvePackageJsonDirectly(npmPackageName: string, userAppRootDir: string): null | string {
+  let packageJsonPath: string
+  try {
+    packageJsonPath = require.resolve(`${npmPackageName}/package.json`, { paths: [userAppRootDir] })
+  } catch (err) {
+    if (isUnexpectedError(err)) throw err
+    return null
+  }
+  return packageJsonPath
 }
-```
-*/
-function retrievePackageJsonPathFromErrMsg(errMsg: string): string {
-  const words = errMsg.split(' ')
-  const match = words.filter((word) => word.endsWith('package.json'))
-  assert(match.length === 1, errMsg)
-  const filePath = match[0]!
-  assert(path.isAbsolute(filePath), errMsg)
-  return filePath
+
+function resolvePackageJsonWithMainEntry(npmPackageName: string, userAppRootDir: string): null | string {
+  let mainEntry: string
+  try {
+    mainEntry = require.resolve(npmPackageName, { paths: [userAppRootDir] })
+  } catch (err) {
+    if (isUnexpectedError(err)) throw err
+    return null
+  }
+  const packageJsonPath = searchPackageJSON(mainEntry)
+  return packageJsonPath
+}
+
+// If the npm package doesn't define package.json#exports then require.resolve(`${npmPackageName}/package.json`) just works.
+// This means we can assume packageJson#exports to be defined and, consequently, we can assume the error code to always be ERR_PACKAGE_PATH_NOT_EXPORTED.
+// (If MODULE_NOT_FOUND is thrown then this means that npmPackageName isn't installed.)
+function isUnexpectedError(err: any): boolean {
+  return err?.code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+
+// Copied and adapted from https://github.com/antfu/local-pkg
+function searchPackageJSON(dir: string): string {
+  let packageJsonPath
+  while (true) {
+    assert(dir)
+    const newDir = path.dirname(dir)
+    assert(newDir !== dir)
+    dir = newDir
+    packageJsonPath = path.join(dir, 'package.json')
+    if (fs.existsSync(packageJsonPath)) return packageJsonPath
+  }
 }
