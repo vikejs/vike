@@ -39,7 +39,7 @@ Except of React, VPS includes everything you'd expect from a frontend framework:
 
 From a server persepctive, <Link text="VPS is just a middleware" href="/deploy" /> that can run anywhere (AWS, Vercel, Cloudflare, Deno Deploy, etc.).
 
-To integrate VPS, you just add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
+To integrate VPS, you simply add VPS's middleware to your server (Express.js, Fastify, Edge Worker, Serverless Function,  etc.).
 
 With VPS, you have full control over your server and deployment, one of the most critical aspect of your architecture.
 
@@ -61,7 +61,7 @@ You can build your own Next.js with only hundreds of lines of code.
 
 > While there are many [uses cases for building your own framework](https://vike.land), the most prominent one is [building company internal frameworks](https://vike.land#scale).
 
-VPS's vision is to foster a proliferation of React frameworks highly-tailored to specific use cases.
+We foster the proliferation of React frameworks, highly-tailored to specific use cases.
 
 
 ## User feedback
@@ -88,16 +88,16 @@ VPS's vision is to foster a proliferation of React frameworks highly-tailored to
 | Code-splitting and bundling                                     | Yes                                                        | Yes                           |
 | HMR                                                             | Yes, fast                                                  | Yes, slow                     |
 | SPA                                                             | Yes                                                        | Limited                       |
-| <p align="center">**SSR**</p>                                                             |                                                            |                               |
+| <p align="center">**SSR**</p>                                   |                                                            |                               |
 | Control                                                         | Full control                                               | Limited / Black box                      |
 | Renderers                                                       | Yes, create as many you need                               | Just one (`_app.ts` file)      |
 | RSC (React Server Components) | [Work in progress](https://github.com/Shopify/hydrogen/discussions/2225#discussioncomment-3854516) | Yes, experimental |
 | <p align="center">**Routing**</p>                                                        |                                                            |                               |
 | Filesystem Routing                                              | Yes                                                        | Yes                           |
-| Domain-driven Filesystem Routing                                | Yes                                                        | No                            |
-| Client Routing                                                  | Yes                                                        | Yes                           |
-| Server Routing                                                  | Yes                                                        | No                            |
-| Base URL                                                        | Yes                                                        | Limited                       |
+| <Link text="Domain-driven Filesystem Routing" href="/file-structure#domain-driven" />                                        | Yes                                                        | No                            |
+| <Link text="Client Routing" href="/client-routing" />           | Yes                                                        | Yes                           |
+| <Link text="Server Routing" href="/server-routing" />           | Yes                                                        | No                            |
+| <Link text="Base URL" href="/base-url" />                       | Yes                                                        | Limited                       |
 | <p align="center">**Integrations**</p>                                                    |                                                            |                               |
 HTTP server | No*, bring your own | Baked-in, custom server partially supported with caveats[[1]](https://github.com/brillout/vite-plugin-ssr/issues/158#issuecomment-1355306156)[[2]](https://stackoverflow.com/questions/58742343/do-i-have-to-use-express-in-next-js-project/70945468#70945468) |
 | Apollo Client with SSR                                          | Fully supported                                            | Partially supported           |
@@ -107,8 +107,8 @@ HTTP server | No*, bring your own | Baked-in, custom server partially supported 
 | Image component                                                 | No*, use a Vite plugin like:<ul><li> [vite-imagetools](https://github.com/JonasKruckenberg/imagetools) </li><li>[vite-plugin-image-presets](https://github.com/ElMassimo/vite-plugin-image-presets)</li></ul>See [awesome-vite](https://github.com/vitejs/awesome-vite).                                                         | Yes, next/image               |
 | API routes                                                      | No*, use your server or an <Link text="RPC tool" href="/api-routes" />.   | Yes                           |
 | Internationalization (i18n)                                     | Yes                                                         | Limited                       |
-| Deployment synchronization                                                            | Yes                                                         | No                            |
-| Build your own framework                                        | Yes                                                         | No                            |
+| <Link href="/deploy-sync" />                                    | Yes                                                         | No                            |
+| [Build your own framework](https://vike.land)                   | Yes                                                         | No                            |
 | <p align="center">**Deployment options**</p>                                              |                                                            |                               |
 | Vercel                                                          | Yes, minimal config                                        | Yes, zero config              |
 | Cloudflare Workers                                              | Yes, minimal config                                        | No, [work in progress](https://github.com/vercel/next.js/discussions/34179#discussioncomment-3578259)                            |

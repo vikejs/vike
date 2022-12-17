@@ -130,6 +130,10 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   {
     title: 'Libraries with invalid ESM',
     url: '/invalid-esm'
+  },
+  {
+    title: 'Deployment synchronization',
+    url: '/deploy-sync'
   }
 ]
 
