@@ -9,6 +9,6 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "vite": "^3.0.4",
-    "vite-plugin-ssr": "0.4.62"
+    "vite-plugin-ssr": "0.4.63"
   }
 }

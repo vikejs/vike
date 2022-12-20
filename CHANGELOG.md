@@ -1,3 +1,13 @@
+## [0.4.63](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.62...v0.4.63) (2022-12-20)
+
+
+### Bug Fixes
+
+* always use defer for scripts ([#567](https://github.com/brillout/vite-plugin-ssr/issues/567)) ([53dbf91](https://github.com/brillout/vite-plugin-ssr/commit/53dbf91432d24a60f00be6cf117fcad9c20ab747))
+* improve interoperability ([c49a5ae](https://github.com/brillout/vite-plugin-ssr/commit/c49a5ae070946bd5ac0a63e706b91ce88e89a708))
+
+
+
 ## [0.4.62](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.61...v0.4.62) (2022-12-15)
 
 
