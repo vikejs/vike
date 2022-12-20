@@ -43,7 +43,7 @@ describe('renderPage()', () => {
       const body = await render(true)
       expect(body).toMatchInlineSnapshot(
         `
-        "<html><head><script type=\\"module\\" async>
+        "<html><head><script type=\\"module\\" defer>
         import RefreshRuntime from \\"/@react-refresh\\"
         RefreshRuntime.injectIntoGlobalHook(window)
         window.$RefreshReg$ = () => {}

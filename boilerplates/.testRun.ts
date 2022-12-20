@@ -61,11 +61,11 @@ function testRun(
 
       try {
         expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js" async>`
+          partRegex`<script type="module" src="/assets/entry-client-routing.${hashRegexp}.js" defer>`
         )
       } catch (err) {
         expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js" async>`
+          partRegex`<script type="module" src="/assets/entry-server-routing.${hashRegexp}.js" defer>`
         )
       }
 

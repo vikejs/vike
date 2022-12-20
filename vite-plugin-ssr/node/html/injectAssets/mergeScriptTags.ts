@@ -1,7 +1,6 @@
 export { mergeScriptTags }
 
 import { assert } from '../../utils'
-import { inferScriptExecTime } from './inferHtmlTags'
 
 const scriptRE = /(<script\b(?:\s[^>]*>|>))(.*?)<\/script>/gims
 const srcRE = /\bsrc\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s'">]+))/im
@@ -35,7 +34,7 @@ function mergeScriptTags(scriptTagsHtml: string, isProduction: boolean): string 
         }
       })
       if (contents.length > 0) {
-        scriptTag += `<script type="module" ${inferScriptExecTime(isProduction)}>\n${contents.join('\n')}\n</script>`
+        scriptTag += `<script type="module" defer>\n${contents.join('\n')}\n</script>`
       }
     }
   }

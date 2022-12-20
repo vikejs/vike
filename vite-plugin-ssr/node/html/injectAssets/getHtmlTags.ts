@@ -117,7 +117,7 @@ async function getHtmlTags(
   // Non-JavaScript
   for (const asset of injectFilterEntries) {
     if (asset.assetType !== 'script' && asset.inject) {
-      const htmlTag = asset.isEntry ? inferAssetTag(asset, isProduction) : inferPreloadTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
       htmlTags.push({ htmlTag, position: asset.inject })
     }
   }
@@ -136,7 +136,7 @@ async function getHtmlTags(
   }
   for (const asset of injectFilterEntries) {
     if (asset.assetType === 'script' && asset.inject) {
-      const htmlTag = asset.isEntry ? inferAssetTag(asset, isProduction) : inferPreloadTag(asset)
+      const htmlTag = asset.isEntry ? inferAssetTag(asset) : inferPreloadTag(asset)
       const position = asset.inject === 'HTML_END' ? positionScript : asset.inject
       htmlTags.push({ htmlTag, position })
     }
@@ -161,7 +161,7 @@ async function getHtmlTags(
 async function getMergedScriptTag(pageAssets: PageAsset[], isProduction: boolean): Promise<null | string> {
   const scriptAssets = pageAssets.filter((pageAsset) => pageAsset.isEntry && pageAsset.assetType === 'script')
   const viteScripts = await getViteDevScripts()
-  const scriptTagsHtml = `${viteScripts}${scriptAssets.map((asset) => inferAssetTag(asset, isProduction)).join('')}`
+  const scriptTagsHtml = `${viteScripts}${scriptAssets.map((asset) => inferAssetTag(asset)).join('')}`
   const scriptTag = mergeScriptTags(scriptTagsHtml, isProduction)
   return scriptTag
 }

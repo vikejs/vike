@@ -143,7 +143,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
       expect(html).toContain('This page is rendered to HTML and has only few lines of browser-side JavaScript.')
       if (isPreview) {
         expect(html).toMatch(
-          partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" async>`
+          partRegex`<script type="module" src="/assets/pages/html-js/_default.page.client.${hash}.js" defer>`
         )
       } else {
         expect(html).toMatch(partRegex`import("/@fs/${path}/pages/html-js/_default.page.client.js");`)
@@ -247,7 +247,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview') {
   }
   function testClientRouting(html: string) {
     if (isPreview) {
-      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js" async>`)
+      expect(html).toMatch(partRegex`<script type="module" src="/assets/entry-client-routing.${hash}.js" defer>`)
     } else {
       expect(html).toMatch(
         partRegex`import("/@fs/${path}/vite-plugin-ssr/vite-plugin-ssr/dist/esm/client/router/entry.js");`

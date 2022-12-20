@@ -1,7 +1,6 @@
 export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
-export { inferScriptExecTime }
 
 import { assert } from '../../utils'
 import type { PageAsset } from '../../renderPage/getPageAssets'
@@ -17,25 +16,19 @@ function inferPreloadTag(pageAsset: PageAsset): string {
   return `<link rel="${rel}" href="${src}"${as}${type}${crossorigin}>`
 }
 
-function inferAssetTag(pageAsset: PageAsset, isProduction: boolean): string {
+function inferAssetTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType } = pageAsset
   if (assetType === 'script') {
     assert(mediaType === 'text/javascript')
-    // Vite transpiles all browser-side JavaScript to ESM
-    return `<script type="module" src="${src}" ${inferScriptExecTime(isProduction)}></script>`
+    // Using <script async> seems problematic:
+    //  - in dev: https://github.com/brillout/vite-plugin-ssr/issues/524
+    //  - in prod: https://github.com/brillout/vite-plugin-ssr/issues/567
+    return `<script type="module" src="${src}" defer></script>`
   }
   if (assetType === 'style') {
     return `<link rel="stylesheet" type="text/css" href="${src}">`
   }
   assert(false, { pageAsset })
-}
-
-// - In dev, <script> is before <script <script id="vite-plugin-ssr_pageContext" type="application/json">
-// - We therefore need to use `defer` instead of `async`
-// - Firefox fails when using `async` instead of `defer`, https://github.com/brillout/vite-plugin-ssr/issues/524
-function inferScriptExecTime(isProduction: boolean): 'async' | 'defer' {
-  const exec = isProduction ? 'async' : 'defer'
-  return exec
 }
 
 function inferEarlyHintLink(pageAsset: PageAsset): string {
