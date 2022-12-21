@@ -2,7 +2,7 @@ export { devConfig }
 
 import type { Plugin, ResolvedConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
-import { assert, isNotNullish, toPosixPath } from '../utils'
+import { assert, isNotNullish } from '../utils'
 import { addSsrMiddleware, isViteCliCall } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
@@ -87,17 +87,26 @@ function addOptimizeDepsEntries(config: ResolvedConfig, entries: string[]) {
 
 async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVpsResolved) {
   const fsAllow = config.server.fs.allow
-  assert(
-    process.platform === 'win32' || // searchForWorkspaceRoot() seems buggy on Windows https://github.com/brillout/vite-plugin-ssr/issues/555
-      fsAllow.map(toPosixPath).includes(toPosixPath(searchForWorkspaceRoot(process.cwd())))
-  )
 
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
-  const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
-  // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
-  require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
-  fsAllow.push(vitePluginSsrRoot)
+  // fsAllow should already contain searchForWorkspaceRoot()
+  assert(fsAllow.length >= 1)
 
+  fsAllow.push(process.cwd())
+  // searchForWorkspaceRoot() is buggy: https://github.com/brillout/vite-plugin-ssr/issues/555.
+  // BUt that's not a problem since Vite automatically inserts searchForWorkspaceRoot().
+  // We add it again just to be sure.
+  fsAllow.push(searchForWorkspaceRoot(process.cwd()))
+
+  // Add node_modules/vite-plugin-ssr/
+  {
+    // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
+    const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
+    // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
+    require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
+    fsAllow.push(vitePluginSsrRoot)
+  }
+
+  // Add VPS extensions, e.g. node_modules/stem-react/
   configVps.extensions.forEach(({ npmPackageRootDir }) => {
     const npmPackageRootDirReal = fs.realpathSync(npmPackageRootDir)
     fsAllow.push(npmPackageRootDir)
