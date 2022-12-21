@@ -1,3 +1,13 @@
+## [0.4.64](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.63...v0.4.64) (2022-12-21)
+
+
+### Bug Fixes
+
+* expose internal _pageContextHtmlTag ([#545](https://github.com/brillout/vite-plugin-ssr/issues/545)) ([05c1c3b](https://github.com/brillout/vite-plugin-ssr/commit/05c1c3b81b9a6e1431b96bc36a6996839fedd960))
+* refactor fsAllow handling (fix [#555](https://github.com/brillout/vite-plugin-ssr/issues/555)) ([7cb77a9](https://github.com/brillout/vite-plugin-ssr/commit/7cb77a9fe6acfb168020464347d2a82968955f3f))
+
+
+
 ## [0.4.63](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.62...v0.4.63) (2022-12-20)
 
 
