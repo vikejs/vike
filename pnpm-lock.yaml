@@ -787,6 +787,18 @@ importers:
       vue: 3.2.33
       vuex: 4.0.2_vue@3.2.33
 
+  test/contra:
+    specifiers:
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      vite: ^3.0.9
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      vite: 3.2.4
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   test/includeAssetsImportedByServer:
     specifiers:
       vite: ^3.0.9
