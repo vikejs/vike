@@ -1,4 +1,4 @@
-import {beforeAll } from 'vitest'
+import { beforeAll } from 'vitest'
 import { build } from 'vite'
 import { test } from './test'
 
