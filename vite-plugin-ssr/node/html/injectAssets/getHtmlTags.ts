@@ -169,6 +169,8 @@ async function getMergedScriptTag(pageAssets: PageAsset[], isProduction: boolean
 function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[]; is404: null | boolean }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlTag = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
+  // @ts-ignore
+  pageContext._pageContextHtmlTag = htmlTag
   return htmlTag
 }
 
