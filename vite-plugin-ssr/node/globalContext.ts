@@ -50,10 +50,12 @@ function getGlobalContext(): GlobalContext {
 }
 
 function setGlobalContextViteDevServer(viteDevServer: ViteDevServer) {
+  if (globalObject.viteDevServer) return
   assert(!globalObject.globalContext)
   globalObject.viteDevServer = viteDevServer
 }
 function setGlobalContextViteConfig(config: ResolvedConfig): void {
+  if (globalObject.config) return
   assert(!globalObject.globalContext)
   globalObject.config = config
 }
