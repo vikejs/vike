@@ -1,3 +1,12 @@
+## [0.4.65](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.64...v0.4.65) (2022-12-22)
+
+
+### Bug Fixes
+
+* tolerate superfluous globaContext setters (fix [#572](https://github.com/brillout/vite-plugin-ssr/issues/572)) ([74954c1](https://github.com/brillout/vite-plugin-ssr/commit/74954c1348f18ed29c178a4535faef362d43df5f))
+
+
+
 ## [0.4.64](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.63...v0.4.64) (2022-12-21)
 
 
