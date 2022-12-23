@@ -2,8 +2,8 @@
   "compilerOptions": {
     "strict": true,
     "module": "ES2020",
-    "moduleResolution": "Node",
     "target": "ES2020",
+    "moduleResolution": "Node",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
     "skipLibCheck": true,
@@ -11,8 +11,9 @@
   },
   "ts-node": {
     "transpileOnly": true,
+    "esm": true,
     "compilerOptions": {
-      "module": "CommonJS"
+      "moduleResolution": "Node16"
     }
   }
 }
