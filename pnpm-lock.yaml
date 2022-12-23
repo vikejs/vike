@@ -149,7 +149,7 @@ importers:
 
   docs:
     specifiers:
-      '@brillout/docpress': ^0.2.3
+      '@brillout/docpress': ^0.3.0
       '@types/node': ^15.12.1
       '@types/react': ^17.0.45
       '@types/react-dom': ^17.0.6
@@ -158,7 +158,7 @@ importers:
       typescript: ^4.9.3
       vite-plugin-ssr: link:../vite-plugin-ssr
     dependencies:
-      '@brillout/docpress': 0.2.3_6bdbsu2yzpeczxw5qylih75b3i
+      '@brillout/docpress': 0.3.0_6bdbsu2yzpeczxw5qylih75b3i
       '@types/node': 15.14.9
       '@types/react': 17.0.45
       '@types/react-dom': 17.0.16
@@ -1955,8 +1955,8 @@ packages:
       - terser
     dev: false
 
-  /@brillout/docpress/0.2.3_6bdbsu2yzpeczxw5qylih75b3i:
-    resolution: {integrity: sha512-jp0dbAI5S0b2D+0wi5xmBmEHHWYBMH2PjPG2PGna5IXQaParRuU/1jhjF+CYOw36kNbju5GUHwUAAwkJq6orjA==}
+  /@brillout/docpress/0.3.0_6bdbsu2yzpeczxw5qylih75b3i:
+    resolution: {integrity: sha512-ujQZYnoAUtNHxIwhDmCZ+bsSuSVx1RR6oNY5hAzpCL5eF3cnB4WQEKfcUXR0rHK6D5YY6Wb1fRjIM56jsWNdOg==}
     hasBin: true
     peerDependencies:
       react: '18'
