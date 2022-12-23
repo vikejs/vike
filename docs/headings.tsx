@@ -134,6 +134,14 @@ const headingsWithoutLink: HeadingWithoutLink[] = [
   {
     title: 'Deployment synchronization',
     url: '/deploy-sync'
+  },
+  {
+    title: 'Languages',
+    url: '/languages'
+  },
+  {
+    title: 'Common Problems',
+    url: '/common-problems'
   }
 ]
 
@@ -217,8 +225,8 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Common Problems',
-    url: '/common-problems'
+    title: 'Common Issues',
+    url: '/common-issues'
   },
   {
     level: 4,

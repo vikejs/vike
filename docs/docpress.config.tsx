@@ -21,6 +21,7 @@ const config: Config = {
     apiKey: '8d5986fca9ba9110bcbbfc51263de88b',
     indexName: 'vite-pluginssr'
   },
-  bannerUrl: 'https://vite-plugin-ssr.com/banner.png'
+  bannerUrl: 'https://vite-plugin-ssr.com/banner.png',
+  i18n: true
 }
 export default config

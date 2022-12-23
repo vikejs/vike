@@ -1,0 +1,57 @@
+import { Link } from '@brillout/docpress'
+
+## Node.js Libraries containing invalid ESM code
+
+See explanation and solution at <Link href="/invalid-esm" />.
+
+Errors thrown by Node.js:
+
+```
+To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+```
+```
+import { SomeImport } from "some-library";
+         ^^^^^^^^^^
+SyntaxError: Named export 'SomeImport' not found. The requested module 'some-library' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'some-library';
+const { SomeImport } = pkg;
+```
+```
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/some-library/dist/esm/some-file' imported from node_modules/some-library/dist/esm/index.js
+Did you mean to import some-file.js?
+```
+
+## Hydration mismatch
+
+See explanation and solution at <Link href="/hydration-mismatch" />.
+
+Errors thrown by **Vue** (in the browser):
+```js
+[Vue warn]: Hydration text mismatch:
+ - Client: "foo"
+ - Server: "bar"
+   at <SomeComponent>
+   at <App>
+```
+```
+Hydration completed but contains mismatches.
+```
+
+Errors thrown by **React** (in the browser):
+```
+Warning: Text content did not match. Server: "foo" Client: "bar"
+```
+```
+An error occurred during hydration. The server HTML was replaced with client content in <SomeComponent>.
+```
+```
+Text content does not match server-rendered HTML.
+```
+```
+Hydration failed because the initial UI does not match what was rendered on the server.
+```
+```
+There was an error while hydrating. Because the error happened outside of a Suspense boundary, the entire root will switch to client rendering.
+```
