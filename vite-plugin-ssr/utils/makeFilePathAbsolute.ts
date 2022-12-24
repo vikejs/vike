@@ -11,6 +11,6 @@ function makeFilePathAbsolute(filePathRelative: string, config: ResolvedConfig):
   assertPosixPath(filePathRelative)
   assert(filePathRelative.startsWith('/'))
   const cwd = config.root
-  const filePathAbsolue = toPosixPath(require.resolve(path.join(cwd, filePathRelative)))
-  return filePathAbsolue
+  const filePathAbsolute = toPosixPath(require.resolve(path.join(cwd, filePathRelative)))
+  return filePathAbsolute
 }
