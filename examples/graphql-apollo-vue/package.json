@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
-    "@vitejs/plugin-vue": "^3.0.1",
+    "@vitejs/plugin-vue": "^4.0.0",
     "@vue/apollo-composable": "^4.0.0-alpha.19",
     "@vue/compiler-sfc": "^3.2.27",
     "@vue/server-renderer": "^3.2.27",
@@ -17,7 +17,7 @@
     "cross-fetch": "^3.1.5",
     "express": "^4.18.1",
     "graphql": "^16.5.0",
-    "vite": "^3.0.2",
+    "vite": "^4.0.3",
     "vite-plugin-ssr": "0.4.65",
     "vue": "^3.2.27"
   }

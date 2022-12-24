@@ -5,10 +5,10 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "@vitejs/plugin-vue": "^3.0.3",
+    "@vitejs/plugin-vue": "^4.0.0",
     "@vue/compiler-sfc": "^3.2.33",
     "@vue/server-renderer": "^3.2.33",
-    "vite": "^3.0.9",
+    "vite": "^4.0.3",
     "vite-plugin-ssr": "0.4.65",
     "vue": "^3.2.33"
   }

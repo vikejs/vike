@@ -5,7 +5,7 @@
     "preview": "vite build && vite preview"
   },
   "dependencies": {
-    "vite": "^3.0.9",
+    "vite": "^4.0.3",
     "vite-plugin-ssr": "0.4.65"
   },
   "type": "module"
