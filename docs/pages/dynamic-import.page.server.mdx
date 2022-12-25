@@ -11,7 +11,7 @@ We can use `import()` to load a component in a lazy manner:
 > is loaded only if/when `import('some-component')` is executed.
 
 Common use cases:
- - **Performance**: we can use `import()` to defer loading a heavy component (e.g. an interactive map), so that the user can already interact with our page before even the browser started loading that heavy component.
+ - **Performance**: we can use `import()` to defer loading a heavy component (e.g. an interactive map), so that the user can already interact with our page before even the browser starts loading that heavy component.
  - **Client-side only components**: we can use `import()` to avoid loading/rendering a component on the server-side. (Some component libraries cannot be server-side rendered, see <Link href="/client-only-components" />.)
 
 UI framework support for lazy-loading components using `import()`:
@@ -19,34 +19,77 @@ UI framework support for lazy-loading components using `import()`:
  - [Vue 3 Docs > Async Components](https://v3.vuejs.org/guide/component-dynamic-async.html#async-components)
  - [Vue 2 Docs > Async Components](https://vuejs.org/v2/guide/components-dynamic-async.html)
 
-> Most UI frameworks, such as React and Vue, load lazy components only in the browser, i.e. lazy components are never loaded on the server.
-
 
 ## React Example
 
-See: [Github > `arthurgailes/vite-plugin-ssr_dynamic-import-example`](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example).
-
 ```jsx
-// pages/pick-location.page.jsx
+// pages/location/pick.page.jsx
 
 import React from 'react'
 
 export function Page() {
-  // Users can see and interact with the "Please pick a location" button
-  // before the browser loads the code of <SomeHeavyMapComponent>.
+  // Users can see and interact with the button "Please pick a location"
+  // before the browser starts loading the code of <Map>.
   return <>
     <button>Please pick a location</button>
     <Map />
   </>
 }
 
+// <Map> is:
+//  - Lazy-loaded
+//  - Loaded and rendererd only in the browser
 function Map() {
-  // We lazy-load the code of `<SomeHeavyMapComponent>`
-  const SomeHeavyMapComponent = React.lazy(() => import('some-heavy-map-component'))
+  const [Component, setComponent] = React.useState(() => Loading)
+
+  // The useEffect() callback is run only in the browser, consequently the map component
+  // is loaded and rendererd only in the browser.
+  React.useEffect(() => {
+    setComponent(() => React.lazy(() => import('some-heavy-map-component')))
+  }, [])
+
   return (
-    <React.Suspense fallback={'Loading Map...'}>
-      <SomeHeavyMapComponent />
+    <React.Suspense fallback={<Loading />}>
+      <Component />
+    </React.Suspense>
+  )
+}
+
+function Loading() {
+  return <div>Loading map...</div>
+}
+```
+
+We can also extract the logic into a generic `<ClientOnly>` component:
+
+```jsx
+import React from 'react'
+
+function Map() {
+  return (
+    <ClientOnly
+      load={() => import('some-heavy-map-component')}
+      fallback={<Loading />}
+    />
+  )
+}
+
+function ClientOnly({ load, fallback }) {
+  const [Component, setComponent] = React.useState(() => fallback)
+
+  React.useEffect(() => {
+    setComponent(() => React.lazy(load))
+  }, [])
+
+  return (
+    <React.Suspense fallback={fallback}>
+      <Component />
     </React.Suspense>
   )
 }
 ```
+
+See also:
+ - [Github > `arthurgailes/vite-plugin-ssr_dynamic-import-example`](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example)
+ - [Github > `arthurgailes/vite-plugin-ssr_dynamic-import-example` > `/pages/index/index.page.jsx`](https://github.com/arthurgailes/vite-plugin-ssr_dynamic-import-example/blob/ecf7cda9beac5cae7b0eb642bd77d25f71e0f2e5/pages/index/index.page.jsx#L20-L35)
+
