@@ -29,7 +29,7 @@ import React from 'react'
 
 export function Page() {
   // Users can see and interact with the button "Please pick a location"
-  // before the browser starts loading the code of <Map>.
+  // before the browser starts loading the code for <Map>.
   return <>
     <button>Please pick a location</button>
     <Map />
@@ -38,11 +38,11 @@ export function Page() {
 
 // <Map> is:
 //  - Lazy-loaded
-//  - Loaded and rendererd only in the browser
+//  - Loaded and rendered only in the browser
 function Map() {
   const [Component, setComponent] = React.useState(() => Loading)
 
-  // The useEffect() callback is run only in the browser, consequently the map component
+  // useEffect() callbacks are only run in the browser, consequently the map component
   // is loaded and rendererd only in the browser.
   React.useEffect(() => {
     setComponent(() => React.lazy(() => import('some-heavy-map-component')))
@@ -60,7 +60,7 @@ function Loading() {
 }
 ```
 
-We can also extract the logic into a generic `<ClientOnly>` component:
+We can extract the logic into a generic `<ClientOnly>` component:
 
 ```jsx
 import React from 'react'
