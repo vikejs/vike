@@ -56,6 +56,7 @@ type PrerenderedPageIds = Record<string, { urlOriginal: string; _prerenderHookFi
 
 type PrerenderContext = {
   pageContexts: PageContext[]
+  pageContextInit: Record<string, unknown> | null
   _noExtraDir: boolean
 }
 
@@ -157,10 +158,9 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   objectAssign(prerenderContext, {
     _urlHandler: null,
     _noExtraDir: noExtraDir ?? false,
-    pageContexts: [] as PageContext[]
+    pageContexts: [] as PageContext[],
+    pageContextInit: options.pageContextInit ?? null
   })
-
-  objectAssign(prerenderContext, options.pageContextInit)
 
   const doNotPrerenderList: DoNotPrerenderList = []
   await collectDoNoPrerenderList(renderContext, doNotPrerenderList, concurrencyLimit)
@@ -371,7 +371,10 @@ async function handlePagesWithStaticRoutes(
 
 function createPageContext(urlOriginal: string, renderContext: RenderContext, prerenderContext: PrerenderContext) {
   const pageContext = {}
-  const pageContextInit = { urlOriginal }
+  const pageContextInit = {
+    urlOriginal,
+    ...prerenderContext.pageContextInit
+  }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)
     objectAssign(pageContext, pageContextInitAddendum)
