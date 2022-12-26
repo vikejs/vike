@@ -458,7 +458,7 @@ async function manipulateStream<StreamType extends Stream>({
     assert(typeof writableProxy.flush === 'function')
 
     const pipeOriginal = getStreamPipeNode(streamOriginal)
-    pipeOriginal(writableProxy)
+    setTimeout(() => pipeOriginal(writableProxy))
 
     return { streamWrapper: pipeProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
@@ -536,7 +536,7 @@ async function manipulateStream<StreamType extends Stream>({
     }
 
     const pipeOriginal = getStreamPipeWeb(streamOriginal)
-    pipeOriginal(writableProxy)
+    setTimeout(() => pipeOriginal(writableProxy))
 
     return { streamWrapper: pipeProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
   }
