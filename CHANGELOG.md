@@ -1,3 +1,13 @@
+## [0.4.66](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.65...v0.4.66) (2022-12-26)
+
+
+### Bug Fixes
+
+* also apply pageContextInit to pre-rendered 404 page ([#576](https://github.com/brillout/vite-plugin-ssr/issues/576)) ([4c027f7](https://github.com/brillout/vite-plugin-ssr/commit/4c027f7447d03fa9af35c206d97f280135af0460))
+* apply prerender pageContextInit (fix [#576](https://github.com/brillout/vite-plugin-ssr/issues/576)) ([32f0860](https://github.com/brillout/vite-plugin-ssr/commit/32f08606a859f71ca995ee09d3a9aff2356cd3f6))
+
+
+
 ## [0.4.65](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.64...v0.4.65) (2022-12-22)
 
 
