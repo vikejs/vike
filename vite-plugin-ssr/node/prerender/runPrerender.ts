@@ -16,7 +16,6 @@ import {
   isCallable,
   getOutDirs_prerender,
   loadModuleAtRuntime,
-  isObject,
   hasPropertyGetter,
   assertPosixPath,
   urlToFile,
