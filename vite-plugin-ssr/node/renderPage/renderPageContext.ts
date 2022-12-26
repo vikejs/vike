@@ -152,7 +152,7 @@ async function prerenderPageContext(
   }
 }
 
-async function prerender404Page(renderContext: RenderContext) {
+async function prerender404Page(renderContext: RenderContext, pageContextInit_: Record<string, unknown> | null) {
   const errorPageId = getErrorPageId(renderContext.allPageIds)
   if (!errorPageId) {
     return null
@@ -160,7 +160,8 @@ async function prerender404Page(renderContext: RenderContext) {
 
   const pageContext = {}
   const pageContextInit = {
-    urlOriginal: '/fake-404-url' // A URL is needed for `applyViteHtmlTransform`
+    urlOriginal: '/fake-404-url', // A URL is needed for `applyViteHtmlTransform`
+    ...pageContextInit_
   }
   {
     const pageContextInitAddendum = initPageContext(pageContextInit, renderContext)

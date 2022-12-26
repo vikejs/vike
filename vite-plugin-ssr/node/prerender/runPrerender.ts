@@ -177,7 +177,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
 
   warnContradictoryNoPrerenderList(prerenderPageIds, doNotPrerenderList)
 
-  await prerender404(htmlFiles, renderContext)
+  await prerender404(htmlFiles, renderContext, prerenderContext)
 
   if (logLevel === 'info') {
     console.log(`${green(`✓`)} ${htmlFiles.length} HTML documents pre-rendered.`)
@@ -614,9 +614,9 @@ function warnMissingPages(
     })
 }
 
-async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext) {
+async function prerender404(htmlFiles: HtmlFile[], renderContext: RenderContext, prerenderContext: PrerenderContext) {
   if (!htmlFiles.find(({ urlOriginal }) => urlOriginal === '/404')) {
-    const result = await prerender404Page(renderContext)
+    const result = await prerender404Page(renderContext, prerenderContext.pageContextInit)
     if (result) {
       const urlOriginal = '/404'
       const { documentHtml, pageContext } = result
