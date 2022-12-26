@@ -359,10 +359,10 @@ async function processStream<StreamType extends Stream>(
   // Delay streaming, so that if the page shell fails to render then show the error page.
   //  - This is what React expects.
   //  - Does this make sense for UI frameworks other than React?
-  //  - We don't this anymore if we implement a client-side recover mechanism.
-  //     - I.e. if we render the error page on the client-side if there is an error during the stream.
+  //  - We don't need this anymore if we implement a client-side recover mechanism.
+  //     - I.e. rendering the error page on the client-side if there is an error during the stream.
   //       - We cannot do this with Server Routing
-  //     - Emitting the wrong status code doesn't matter with libraries like `react-streaming` which automatically disable streaming for bots. (Emitting the wrong status code doesn't matter for website users).
+  //     - Emitting the wrong status code doesn't matter with libraries like `react-streaming` which automatically disable streaming for bots. (Emitting the right status code only matters for bots.)
   function isDelayingStart() {
     return !streamOriginalHasStartedEmitting && !enableEagerStreaming
   }
