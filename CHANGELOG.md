@@ -1,3 +1,12 @@
+## [0.4.67](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.66...v0.4.67) (2022-12-27)
+
+
+### Bug Fixes
+
+* pipe original stream asynchronously ([c87c32e](https://github.com/brillout/vite-plugin-ssr/commit/c87c32e975316279891f4096a6bbdeb788d9a393))
+
+
+
 ## [0.4.66](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.65...v0.4.66) (2022-12-26)
 
 
