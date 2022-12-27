@@ -308,19 +308,17 @@ async function processStream<StreamType extends Stream>(
     onData(chunk: unknown) {
       streamOriginalHasStartedEmitting = true
       writeStream(chunk)
-      if (wrapperCreated) {
-        resolvePromise()
-      }
+      if (wrapperCreated) resolvePromise()
     },
     async onEnd() {
       debug('stream end')
       streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
-      resolvePromise() // In case original stream (stream provided by user) emits no data
+      if (wrapperCreated) resolvePromise() // In case original stream (stream provided by user) emits no data
       if (injectStringAtEnd) {
         const injectEnd = await injectStringAtEnd()
         writeStream(injectEnd)
       }
-      await promiseReadyToWrite
+      await promiseReadyToWrite // E.g. if the user calls the pipe wrapper after the original writable has ended
       assert(isReady())
       flushBuffer()
       debug('stream ended')
@@ -331,9 +329,10 @@ async function processStream<StreamType extends Stream>(
   })
   wrapperCreated = true
 
-  if (!delayStreamStart()) {
-    resolvePromise()
-  }
+  flushBuffer() // In case onReadyToWrite() was already called (the flushBuffer() of onReadyToWrite() wasn't called because `wrapperCreated === false`)
+
+  if (!delayStreamStart()) resolvePromise()
+
   return streamWrapperPromise
 
   function writeStream(chunk: unknown) {
@@ -353,7 +352,8 @@ async function processStream<StreamType extends Stream>(
   }
 
   function resolvePromise() {
-    if (!wrapperCreated || delayStreamStart()) return
+    assert(!delayStreamStart()) // The stream promise shouldn't resolve before delayStreamStart()
+    assert(wrapperCreated) // Doesn't make sense to resolve streamWrapper if it isn't defined yet
     debug('stream promise resolved')
     resolve(streamWrapper)
   }
