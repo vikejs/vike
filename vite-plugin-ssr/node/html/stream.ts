@@ -314,6 +314,8 @@ async function processStream<StreamType extends Stream>(
         const injectEnd = await injectStringAtEnd()
         writeStream(injectEnd)
       }
+      assert(isReady())
+      flushBuffer()
       debug('stream end')
     },
     onFlush() {
