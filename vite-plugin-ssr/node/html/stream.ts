@@ -331,7 +331,7 @@ async function processStream<StreamType extends Stream>(
   })
   wrapperCreated = true
 
-  if (delayStreamStart()) {
+  if (!delayStreamStart()) {
     resolvePromise()
   }
   return streamWrapperPromise
