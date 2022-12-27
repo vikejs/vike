@@ -291,7 +291,7 @@ async function processStream<StreamType extends Stream>(
     writeStream(injectionBegin)
   }
 
-  const { streamWrapper, streamOperations } = await manipulateStream({
+  const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
     streamOriginal,
     onReadyToWrite() {
       debug('stream begin')
@@ -328,7 +328,7 @@ async function processStream<StreamType extends Stream>(
   function writeStream(chunk: unknown) {
     buffer.push(chunk)
 
-    if (isInitializing()) return
+    if (!isReady()) return
 
     flushBuffer()
 
@@ -336,24 +336,31 @@ async function processStream<StreamType extends Stream>(
   }
 
   function flushBuffer() {
-    if (isInitializing() || !isReadyToWrite) return
+    if (!isReady() || !isReadyToWrite) return
     buffer.forEach((chunk) => {
-      streamOperations.writeChunk(chunk)
+      streamWrapperOperations.writeChunk(chunk)
     })
     buffer.length = 0
     flushStream()
   }
 
   function flushStream() {
-    if (isInitializing() || !isReadyToWrite) return
-    if (!shouldFlushStream || streamOperations.flushStream === null) return
-    streamOperations.flushStream()
+    if (!isReady() || !isReadyToWrite) return
+    if (!shouldFlushStream || streamWrapperOperations.flushStream === null) return
+    streamWrapperOperations.flushStream()
     shouldFlushStream = false
     debug('stream flushed')
   }
 
-  function isInitializing() {
-    return !wrapperCreated || !injectionBeginDone || isDelayingStart()
+  function isReady() {
+    return (
+      // We can't write to the stream wrapper if it doesn't exist
+      wrapperCreated &&
+      // We shouldn't write until the static HTML begin has been written
+      injectionBeginDone &&
+      // See comment below
+      !delayStreamStart()
+    )
   }
 
   // Delay streaming, so that if the page shell fails to render then show the error page.
@@ -363,12 +370,12 @@ async function processStream<StreamType extends Stream>(
   //     - I.e. rendering the error page on the client-side if there is an error during the stream.
   //       - We cannot do this with Server Routing
   //     - Emitting the wrong status code doesn't matter with libraries like `react-streaming` which automatically disable streaming for bots. (Emitting the right status code only matters for bots.)
-  function isDelayingStart() {
-    return !streamOriginalHasStartedEmitting && !enableEagerStreaming
+  function delayStreamStart() {
+    return !enableEagerStreaming && !streamOriginalHasStartedEmitting
   }
 }
 
-async function manipulateStream<StreamType extends Stream>({
+async function createStreamWrapper<StreamType extends Stream>({
   streamOriginal,
   onError,
   onData,
@@ -384,7 +391,7 @@ async function manipulateStream<StreamType extends Stream>({
   onReadyToWrite: () => void
 }): Promise<{
   streamWrapper: StreamType
-  streamOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
+  streamWrapperOperations: { writeChunk: (chunk: unknown) => void; flushStream: null | (() => void) }
 }> {
   if (isStreamReactStreaming(streamOriginal)) {
     debug('render() hook returned `react-streaming` result')
@@ -458,10 +465,10 @@ async function manipulateStream<StreamType extends Stream>({
     assert(typeof writableProxy.flush === 'function')
 
     const pipeOriginal = getStreamPipeNode(streamOriginal)
-    // https://github.com/brillout/vite-plugin-ssr/pull/577
+    // https://github.com/brillout/vite-plugin-ssr/pull/577#issuecomment-1365834621
     setTimeout(() => pipeOriginal(writableProxy))
 
-    return { streamWrapper: pipeProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
+    return { streamWrapper: pipeProxy as typeof streamOriginal, streamWrapperOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamPipeWeb(streamOriginal)) {
@@ -537,10 +544,10 @@ async function manipulateStream<StreamType extends Stream>({
     }
 
     const pipeOriginal = getStreamPipeWeb(streamOriginal)
-    // https://github.com/brillout/vite-plugin-ssr/pull/577
+    // https://github.com/brillout/vite-plugin-ssr/pull/577#issuecomment-1365834621
     setTimeout(() => pipeOriginal(writableProxy))
 
-    return { streamWrapper: pipeProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
+    return { streamWrapper: pipeProxy as typeof streamOriginal, streamWrapperOperations: { writeChunk, flushStream } }
   }
 
   if (isStreamReadableWeb(streamOriginal)) {
@@ -577,7 +584,10 @@ async function manipulateStream<StreamType extends Stream>({
     // Readables don't have the notion of flushing
     const flushStream = null
 
-    return { streamWrapper: readableProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
+    return {
+      streamWrapper: readableProxy as typeof streamOriginal,
+      streamWrapperOperations: { writeChunk, flushStream }
+    }
   }
 
   if (isStreamReadableNode(streamOriginal)) {
@@ -618,7 +628,10 @@ async function manipulateStream<StreamType extends Stream>({
       closeProxy()
     })
 
-    return { streamWrapper: readableProxy as typeof streamOriginal, streamOperations: { writeChunk, flushStream } }
+    return {
+      streamWrapper: readableProxy as typeof streamOriginal,
+      streamWrapperOperations: { writeChunk, flushStream }
+    }
   }
 
   assert(false)
