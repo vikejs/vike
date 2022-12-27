@@ -263,6 +263,7 @@ async function processStream<StreamType extends Stream>(
 ): Promise<StreamType> {
   let resolve: (result: StreamType) => void
   let reject: (err: unknown) => void
+  let promiseHasResolved = false
   const streamWrapperPromise = new Promise<StreamType>((resolve_, reject_) => {
     resolve = (streamWrapper) => {
       promiseHasResolved = true
@@ -276,20 +277,18 @@ async function processStream<StreamType extends Stream>(
 
   const buffer: unknown[] = []
   let shouldFlushStream = false
-  let injectionBeginDone = false
   let streamOriginalHasStartedEmitting = false
   let isReadyToWrite = false
-  let promiseHasResolved = false
   let wrapperCreated = false
 
-  if (!injectStringAtBegin) {
-    injectionBeginDone = true
-  } else {
+  if (injectStringAtBegin) {
     const injectionBegin: string = await injectStringAtBegin()
-    injectionBeginDone = true
     writeStream(injectionBegin)
     flushStream()
   }
+
+  let resolveReadyToWrite: () => void
+  const promiseReadyToWrite = new Promise<void>((r) => (resolveReadyToWrite = r))
 
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
     streamOriginal,
@@ -297,6 +296,7 @@ async function processStream<StreamType extends Stream>(
       debug('stream begin')
       isReadyToWrite = true
       flushBuffer()
+      resolveReadyToWrite()
     },
     onError(err) {
       if (!promiseHasResolved) {
@@ -308,15 +308,22 @@ async function processStream<StreamType extends Stream>(
     onData(chunk: unknown) {
       streamOriginalHasStartedEmitting = true
       writeStream(chunk)
+      if (wrapperCreated) {
+        resolvePromise()
+      }
     },
     async onEnd() {
+      debug('stream end')
+      streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
+      resolvePromise() // In case original stream (stream provided by user) emits no data
       if (injectStringAtEnd) {
         const injectEnd = await injectStringAtEnd()
         writeStream(injectEnd)
       }
+      await promiseReadyToWrite
       assert(isReady())
       flushBuffer()
-      debug('stream end')
+      debug('stream ended')
     },
     onFlush() {
       flushStream()
@@ -324,7 +331,9 @@ async function processStream<StreamType extends Stream>(
   })
   wrapperCreated = true
 
-  releaseStreamWrapper()
+  if (delayStreamStart()) {
+    resolvePromise()
+  }
   return streamWrapperPromise
 
   function writeStream(chunk: unknown) {
@@ -341,11 +350,11 @@ async function processStream<StreamType extends Stream>(
     if (shouldFlushStream) {
       flushStream()
     }
-    releaseStreamWrapper()
   }
 
-  function releaseStreamWrapper() {
+  function resolvePromise() {
     if (!wrapperCreated || delayStreamStart()) return
+    debug('stream promise resolved')
     resolve(streamWrapper)
   }
 
@@ -361,12 +370,15 @@ async function processStream<StreamType extends Stream>(
   }
 
   function isReady() {
+    /*
+    console.log('isReadyToWrite', isReadyToWrite)
+    console.log('wrapperCreated', wrapperCreated)
+    console.log('!delayStreamStart()', !delayStreamStart())
+    */
     return (
       isReadyToWrite &&
       // We can't write to the stream wrapper if it doesn't exist
       wrapperCreated &&
-      // We shouldn't write until the static HTML begin has been written
-      injectionBeginDone &&
       // See comment below
       !delayStreamStart()
     )
