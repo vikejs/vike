@@ -1,3 +1,15 @@
+## [0.4.68](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.67...v0.4.68) (2022-12-27)
+
+
+### Bug Fixes
+
+* ensure stream buffer is flushed at stream end ([#577](https://github.com/brillout/vite-plugin-ssr/issues/577)) ([9956583](https://github.com/brillout/vite-plugin-ssr/commit/9956583c6184e3198898b6bd708cbb6b920549ef))
+* improve stream wrapper handling ([#577](https://github.com/brillout/vite-plugin-ssr/issues/577)) ([61d2010](https://github.com/brillout/vite-plugin-ssr/commit/61d2010882465293f1e3bcf11b2fdf6c5a0dc707))
+* improve stream wrapper release logic ([#577](https://github.com/brillout/vite-plugin-ssr/issues/577)) ([49ce49e](https://github.com/brillout/vite-plugin-ssr/commit/49ce49e4c05c126bab0d90bb1901cca460129440))
+* revert hacky workaround ([#577](https://github.com/brillout/vite-plugin-ssr/issues/577)) ([fa6b1a0](https://github.com/brillout/vite-plugin-ssr/commit/fa6b1a0591dd0d1c426127081d7eb84ee39f0c6a))
+
+
+
 ## [0.4.67](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.66...v0.4.67) (2022-12-27)
 
 
