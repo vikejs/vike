@@ -365,7 +365,6 @@ async function processStream<StreamType extends Stream>(
       isReadyToWrite &&
       // We can't write to the stream wrapper if it doesn't exist
       wrapperCreated &&
-      // Some stream
       // We shouldn't write until the static HTML begin has been written
       injectionBeginDone &&
       // See comment below
