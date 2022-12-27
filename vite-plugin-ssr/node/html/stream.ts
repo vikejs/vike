@@ -323,7 +323,6 @@ async function processStream<StreamType extends Stream>(
   wrapperCreated = true
 
   releaseStreamWrapper()
-
   return streamWrapperPromise
 
   function writeStream(chunk: unknown) {
@@ -585,7 +584,7 @@ async function createStreamWrapper<StreamType extends Stream>({
     })
 
     const writeChunk = (chunk: unknown) => {
-      controllerProxy.enqueue(encodeForWebStream(chunk))
+      controllerProxy.enqueue(encodeForWebStream(chunk) as any)
       if (debug.isEnabled) {
         debug('data written (Web Readable)', String(chunk))
       }
