@@ -322,13 +322,13 @@ async function processStream<StreamType extends Stream>(
   })
   wrapperCreated = true
 
+  releaseStreamWrapper()
+
   return streamWrapperPromise
 
   function writeStream(chunk: unknown) {
     buffer.push(chunk)
-    if (!isReady()) return
     flushBuffer()
-    resolve(streamWrapper)
   }
 
   function flushBuffer() {
@@ -340,6 +340,12 @@ async function processStream<StreamType extends Stream>(
     if (shouldFlushStream) {
       flushStream()
     }
+    releaseStreamWrapper()
+  }
+
+  function releaseStreamWrapper() {
+    if (!wrapperCreated || delayStreamStart()) return
+    resolve(streamWrapper)
   }
 
   function flushStream() {
