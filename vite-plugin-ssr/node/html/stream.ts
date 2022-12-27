@@ -261,6 +261,12 @@ async function processStream<StreamType extends Stream>(
     enableEagerStreaming?: boolean
   }
 ): Promise<StreamType> {
+  const buffer: unknown[] = []
+  let shouldFlushStream = false
+  let streamOriginalHasStartedEmitting = false
+  let isReadyToWrite = false
+  let wrapperCreated = false
+  let streamEnded = false
   let resolve: (result: StreamType) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
@@ -274,22 +280,14 @@ async function processStream<StreamType extends Stream>(
       reject_(err)
     }
   })
-
-  const buffer: unknown[] = []
-  let shouldFlushStream = false
-  let streamOriginalHasStartedEmitting = false
-  let isReadyToWrite = false
-  let wrapperCreated = false
-  let streamEnded = false
+  let resolveReadyToWrite: () => void
+  const promiseReadyToWrite = new Promise<void>((r) => (resolveReadyToWrite = r))
 
   if (injectStringAtBegin) {
     const injectionBegin: string = await injectStringAtBegin()
     writeStream(injectionBegin)
-    flushStream()
+    flushStream() // Sets shouldFlushStream to `true`
   }
-
-  let resolveReadyToWrite: () => void
-  const promiseReadyToWrite = new Promise<void>((r) => (resolveReadyToWrite = r))
 
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
     streamOriginal,
@@ -380,14 +378,15 @@ async function processStream<StreamType extends Stream>(
     */
     return (
       isReadyToWrite &&
-      // We can't write to the stream wrapper if it doesn't exist
+      // We can't use streamWrapperOperations.writeChunk() if it isn't defined yet
       wrapperCreated &&
       // See comment below
       !delayStreamStart()
     )
   }
 
-  // Delay streaming, so that if the page shell fails to render then show the error page.
+  // Delay streaming, so that if the page shell fails then VPS is able to render the error page.
+  //  - We can't erase the previously written stream data => we need to delay streaming if we want to be able to restart rendering anew for the error page
   //  - This is what React expects.
   //  - Does this make sense for UI frameworks other than React?
   //  - We don't need this anymore if we implement a client-side recover mechanism.
