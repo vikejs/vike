@@ -488,8 +488,7 @@ async function createStreamWrapper<StreamType extends Stream>({
     assert(typeof writableProxy.flush === 'function')
 
     const pipeOriginal = getStreamPipeNode(streamOriginal)
-    // https://github.com/brillout/vite-plugin-ssr/pull/577#issuecomment-1365834621
-    setTimeout(() => pipeOriginal(writableProxy))
+    pipeOriginal(writableProxy)
 
     return { streamWrapper: pipeProxy as typeof streamOriginal, streamWrapperOperations: { writeChunk, flushStream } }
   }
@@ -567,8 +566,7 @@ async function createStreamWrapper<StreamType extends Stream>({
     }
 
     const pipeOriginal = getStreamPipeWeb(streamOriginal)
-    // https://github.com/brillout/vite-plugin-ssr/pull/577#issuecomment-1365834621
-    setTimeout(() => pipeOriginal(writableProxy))
+    pipeOriginal(writableProxy)
 
     return { streamWrapper: pipeProxy as typeof streamOriginal, streamWrapperOperations: { writeChunk, flushStream } }
   }
