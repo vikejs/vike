@@ -262,11 +262,11 @@ async function processStream<StreamType extends Stream>(
   }
 ): Promise<StreamType> {
   const buffer: unknown[] = []
-  let shouldFlushStream = false
   let streamOriginalHasStartedEmitting = false
+  let streamEnded = false
   let isReadyToWrite = false
   let wrapperCreated = false
-  let streamEnded = false
+  let shouldFlushStream = false
   let resolve: (result: StreamType) => void
   let reject: (err: unknown) => void
   let promiseHasResolved = false
@@ -285,7 +285,7 @@ async function processStream<StreamType extends Stream>(
 
   if (injectStringAtBegin) {
     const injectionBegin: string = await injectStringAtBegin()
-    writeStream(injectionBegin)
+    writeStream(injectionBegin) // Adds injectionBegin to buffer
     flushStream() // Sets shouldFlushStream to `true`
   }
 
@@ -347,9 +347,7 @@ async function processStream<StreamType extends Stream>(
       streamWrapperOperations.writeChunk(chunk)
     })
     buffer.length = 0
-    if (shouldFlushStream) {
-      flushStream()
-    }
+    if (shouldFlushStream) flushStream()
   }
 
   function resolvePromise() {
