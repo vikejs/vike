@@ -280,6 +280,7 @@ async function processStream<StreamType extends Stream>(
   let streamOriginalHasStartedEmitting = false
   let isReadyToWrite = false
   let wrapperCreated = false
+  let streamEnded = false
 
   if (injectStringAtBegin) {
     const injectionBegin: string = await injectStringAtBegin()
@@ -306,14 +307,16 @@ async function processStream<StreamType extends Stream>(
       }
     },
     onData(chunk: unknown) {
+      assert(streamEnded === false)
       streamOriginalHasStartedEmitting = true
       writeStream(chunk)
       if (wrapperCreated) resolvePromise()
     },
     async onEnd() {
       debug('stream end')
+      streamEnded = true
       streamOriginalHasStartedEmitting = true // In case original stream (stream provided by user) emits no data
-      if (wrapperCreated) resolvePromise() // In case original stream (stream provided by user) emits no data
+      if (wrapperCreated) resolvePromise() //    In case original stream (stream provided by user) emits no data
       if (injectStringAtEnd) {
         const injectEnd = await injectStringAtEnd()
         writeStream(injectEnd)
