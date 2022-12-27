@@ -287,8 +287,8 @@ async function processStream<StreamType extends Stream>(
   } else {
     const injectionBegin: string = await injectStringAtBegin()
     injectionBeginDone = true
-    shouldFlushStream = true
     writeStream(injectionBegin)
+    flushStream()
   }
 
   const { streamWrapper, streamWrapperOperations } = await createStreamWrapper({
@@ -317,7 +317,6 @@ async function processStream<StreamType extends Stream>(
       debug('stream end')
     },
     onFlush() {
-      shouldFlushStream = true
       flushStream()
     }
   })
@@ -327,26 +326,28 @@ async function processStream<StreamType extends Stream>(
 
   function writeStream(chunk: unknown) {
     buffer.push(chunk)
-
     if (!isReady()) return
-
     flushBuffer()
-
     resolve(streamWrapper)
   }
 
   function flushBuffer() {
-    if (!isReady() || !isReadyToWrite) return
+    if (!isReady()) return
     buffer.forEach((chunk) => {
       streamWrapperOperations.writeChunk(chunk)
     })
     buffer.length = 0
-    flushStream()
+    if (shouldFlushStream) {
+      flushStream()
+    }
   }
 
   function flushStream() {
-    if (!isReady() || !isReadyToWrite) return
-    if (!shouldFlushStream || streamWrapperOperations.flushStream === null) return
+    if (!isReady()) {
+      shouldFlushStream = true
+      return
+    }
+    if (streamWrapperOperations.flushStream === null) return
     streamWrapperOperations.flushStream()
     shouldFlushStream = false
     debug('stream flushed')
@@ -354,8 +355,10 @@ async function processStream<StreamType extends Stream>(
 
   function isReady() {
     return (
+      isReadyToWrite &&
       // We can't write to the stream wrapper if it doesn't exist
       wrapperCreated &&
+      // Some stream
       // We shouldn't write until the static HTML begin has been written
       injectionBeginDone &&
       // See comment below
