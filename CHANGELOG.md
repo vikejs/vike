@@ -1,3 +1,12 @@
+## [0.4.69](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.68...v0.4.69) (2022-12-29)
+
+
+### Bug Fixes
+
+* support Deno (fix [#579](https://github.com/brillout/vite-plugin-ssr/issues/579)) ([3fbd912](https://github.com/brillout/vite-plugin-ssr/commit/3fbd912a1b9093edcbea92da7367574baa6f8155))
+
+
+
 ## [0.4.68](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.67...v0.4.68) (2022-12-27)
 
 
