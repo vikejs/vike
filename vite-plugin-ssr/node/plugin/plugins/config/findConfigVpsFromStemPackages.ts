@@ -7,6 +7,7 @@ import { getStemPackages } from './stemUtils'
 const debug = createDebugger('vps:stem')
 
 async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUserProvided[]> {
+  if (isDeno()) return []
   const stemPackages = await getStemPackages(root)
   const configVpsFromStemPackages: ConfigVpsUserProvided[] = []
   debug(
@@ -23,4 +24,9 @@ async function findConfigVpsFromStemPackages(root: string): Promise<ConfigVpsUse
     })
   )
   return configVpsFromStemPackages
+}
+
+function isDeno(): boolean {
+  // @ts-ignore
+  return typeof Deno !== 'undefined' && Deno.env
 }
