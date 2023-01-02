@@ -19,6 +19,7 @@ Integrations:
  - [`vite-plugin-ssr` + Windi CSS](https://github.com/brillout/vite-plugin-ssr_windi-css)
  - [`vite-plugin-ssr` + Storeon + `@phensley/cldr` + TailwindCSS + PostCSS + `schema-dts`](https://github.com/mate-h/vite-ssr-web)
  - [`vite-plugin-ssr` + Fastify](https://github.com/giacomorebonato/vite-plugin-ssr-fastify)
+ - [`vite-plugin-ssr` + Vue 3 + TSX](https://github.com/justwiner/vue3-tsx)
 
 Showcases:
  - [Infinite scroll with SSR'd initial scroll view, using Vue Query](https://github.com/wobsoriano/vite-plugin-ssr-vue-query)
