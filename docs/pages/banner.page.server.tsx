@@ -1,3 +1,10 @@
+// HOW-TO generate a 2600x1300 banner.png
+//  - Go to https://vite-plugin-ssr.com/banner
+//  - Use responsive design preview of Chrome's dev console
+//  - Set it to 1300x650 (half of 2600x1300)
+//  - Select "Capture Screenshot" in dropdown of the responsive design preview toolbar
+//  - Chrome will generate a 2600x1300 PNG
+
 export { render }
 export { Design2 as Page }
 
