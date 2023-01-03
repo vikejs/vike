@@ -1,13 +1,20 @@
 import { Link } from '@brillout/docpress'
 
-## Node.js Libraries containing invalid ESM code
+## Libraries containing invalid ESM
 
-See explanation and solution at <Link href="/invalid-esm" />.
+Some libraries publish invalid [ESM code](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/), making Node.js throw errors like the following.
 
-Errors thrown by Node.js:
+> The workaround is to add the library to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal), see explanation at <Link href="/invalid-esm#solution" />.
 
 ```
+SyntaxError: Cannot use import statement outside a module
+```
+```
 To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+```
+```
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/some-library/dist/esm/some-file' imported from node_modules/some-library/dist/esm/index.js
+Did you mean to import some-file.js?
 ```
 ```
 import { SomeImport } from "some-library";
@@ -18,14 +25,12 @@ CommonJS modules can always be imported via the default export, for example usin
 import pkg from 'some-library';
 const { SomeImport } = pkg;
 ```
-```
-Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'node_modules/some-library/dist/esm/some-file' imported from node_modules/some-library/dist/esm/index.js
-Did you mean to import some-file.js?
-```
 
 ## Hydration mismatch
 
-See explanation and solution at <Link href="/hydration-mismatch" />.
+A recurring problem when doing SSR are so-called *hydration mismatches*: a hydration mismatch is when the content rendered to HTML in Node.js isn't the same than the content rendered in the browser.
+
+> See deep dive explanation and solution at <Link href="/hydration-mismatch" />.
 
 Errors thrown by **Vue** (in the browser):
 ```js

@@ -1,11 +1,14 @@
 import { Note } from '@brillout/docpress'
 
-Libraries often publish invalid ESM code making Node.js throw one of the following errors.
+Some libraries publish invalid [ESM code](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/) making Node.js throw one of the following errors.
 
-See [solution](#solution) down below.
+See [solution](#solution).
 
-## Common ESM errors
+## Errors
 
+```
+SyntaxError: Cannot use import statement outside a module
+```
 ```
 (node:30335) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
 node_modules/some-library/dist/esm/index.js:1
@@ -67,7 +70,7 @@ Node.js v18.0.0
 
 ## Solution
 
-The easiest and most robust solution is to add libraries containing invalid ESM to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
+The workaround is to add libraries containing invalid ESM to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal).
 
 ```js
 // vite.config.js
@@ -80,6 +83,6 @@ export default {
 }
 ```
 
-> The reason why so many libraries ship erronous ESM code is because frameworks like Next.js bundle the server-side code of libraries, whereas Vite lets Node.js directly import the libraries. By adding the libraries to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
+> The reason why some libraries ship erronous ESM code is because frameworks like Next.js bundle the server-side code of libraries, whereas Vite lets Node.js directly import the libraries (this is what makes Vite so fast as Vite only transpiles what is strictly needed). Where Next.js is permissive and is able to process invalid ESM code, Node.js is strict and throws an error upon invalid ESM code. By adding the libraries to [`vite.config.js > ssr.noExternal`](https://vitejs.dev/config/ssr-options.html#ssr-noexternal) we replicate the behavior of frameworks like Next.js.
 
 <Note type="warning">While using `vite.config.js > ssr.noExternal` fixes the problem, we recommend to contact the library author, e.g. [GitHub > `aws-amplify/amplify-ui` > `#3155`](https://github.com/aws-amplify/amplify-ui/issues/3155). Vite is fast because it transpiles only what is strictly needed. To preserve Vite's speed, library authors should ship valid ESM code.</Note>
