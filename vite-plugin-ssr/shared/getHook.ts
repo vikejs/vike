@@ -1,16 +1,13 @@
 export { getHook }
 export { assertHook }
-export type { Hook }
 
 import { PageContextExports } from './getPageFiles'
 import { assert, assertUsage, isCallable } from './utils'
 
-type Hook = { hook: (arg: unknown) => unknown; filePath: string }
-
 function getHook(
   pageContext: PageContextExports,
-  hookName: 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute' | 'onRenderHtml' | 'onRenderClient'
-): null | Hook {
+  hookName: 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute'
+): null | { hook: (arg: unknown) => unknown; filePath: string } {
   if (!(hookName in pageContext.exports)) {
     return null
   }
