@@ -5,7 +5,7 @@ import { isErrorPageId } from '../../../shared/route'
 import type { ExportsAll } from '../../../shared/getPageFiles'
 import { assert, hasProp, isPlainObject, isObject } from '../../utils'
 import { sortPageContext } from '../../../shared/sortPageContext'
-import { addIs404ToPageProps } from '../helpers'
+import { addIs404ToPageProps } from '../../helpers'
 import { assertURLs, PageContextUrls } from '../../../shared/addComputedUrlProps'
 
 type PageContextPublic = {
