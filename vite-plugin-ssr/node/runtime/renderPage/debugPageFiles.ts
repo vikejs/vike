@@ -5,7 +5,7 @@ import { RouteMatches } from '../../../shared/route'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import type { PageFile } from '../../../shared/getPageFiles'
 import pc from 'picocolors'
-import { assert, makeFirst, createDebugger } from '../utils'
+import { assert, makeFirst, createDebugger } from '../../utils'
 
 type PageContextDebug = {
   _routeMatches: 'ROUTE_ERROR' | RouteMatches

@@ -5,7 +5,7 @@ export { createHtmlHeadIfMissing }
 export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
-import { assert, slice } from '../../utils'
+import { assert, slice } from '../../../utils'
 import type { InjectToStream } from 'react-streaming/server'
 import type { HtmlTag } from './getHtmlTags'
 

@@ -2,7 +2,7 @@ export { handleErrorWithoutErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext'
-import { assert, assertWarning, objectAssign } from '../utils'
+import { assert, assertWarning, objectAssign } from '../../utils'
 import { createHttpResponseObject } from './createHttpResponseObject'
 import type { GetPageAssets } from './getPageAssets'
 import type { RenderResult } from './renderPageContext'

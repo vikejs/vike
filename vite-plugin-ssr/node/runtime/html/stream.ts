@@ -40,7 +40,7 @@ import {
   assertWarning,
   isCallable,
   createDebugger
-} from '../utils'
+} from '../../utils'
 import { HtmlRender } from './renderHtml'
 // In order to support Cloudflare Workers, we cannot statically import the `stream` module.
 // Instead we only import the types and dynamically import `stream` in `loadStreamNodeModule()`.

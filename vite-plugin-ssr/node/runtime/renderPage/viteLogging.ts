@@ -2,7 +2,7 @@ export { viteErrorCleanup }
 export { viteAlreadyLoggedError }
 
 import { getGlobalContext } from '../globalContext'
-import { hasProp } from '../utils'
+import { hasProp } from '../../utils'
 
 function viteErrorCleanup(err: unknown) {
   const { viteDevServer } = getGlobalContext()

@@ -1,6 +1,6 @@
 export { retrieveAssetsDev }
 
-import { assert, styleFileRE } from '../../utils'
+import { assert, styleFileRE } from '../../../utils'
 import type { ModuleNode, ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 

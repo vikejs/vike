@@ -4,7 +4,7 @@ export type { PageContext_loadPageFilesServer }
 
 import { type PageFile, getExportUnion } from '../../../shared/getPageFiles'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
-import { assertWarning, objectAssign, PromiseType } from '../utils'
+import { assertWarning, objectAssign, PromiseType } from '../../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'

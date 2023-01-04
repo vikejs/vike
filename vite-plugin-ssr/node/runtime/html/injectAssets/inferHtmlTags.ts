@@ -2,7 +2,7 @@ export { inferAssetTag }
 export { inferPreloadTag }
 export { inferEarlyHintLink }
 
-import { assert } from '../../utils'
+import { assert } from '../../../utils'
 import type { PageAsset } from '../../renderPage/getPageAssets'
 
 function inferPreloadTag(pageAsset: PageAsset): string {

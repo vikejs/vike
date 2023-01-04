@@ -4,7 +4,7 @@ export { assertError }
 
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import { assertRenderErrorPageExceptionUsage } from './RenderErrorPage'
-import { assertWarning, hasProp, isObject, isSameErrorMessage } from '../utils'
+import { assertWarning, hasProp, isObject, isSameErrorMessage } from '../../utils'
 
 function logError(err: unknown): void {
   assertError(err)

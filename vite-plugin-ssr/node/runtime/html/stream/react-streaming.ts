@@ -5,7 +5,7 @@ export { isStreamReactStreaming }
 export { streamReactStreamingToString }
 export { getStreamFromReactStreaming }
 
-import { assert, hasProp } from '../../utils'
+import { assert, hasProp } from '../../../utils'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream'
 import type { InjectToStream } from 'react-streaming/server'
 

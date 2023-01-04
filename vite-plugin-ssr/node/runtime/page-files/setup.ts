@@ -1,5 +1,5 @@
 import { setPageFilesAsync } from '../../../shared/getPageFiles'
-import { assert, debugGlob } from '../utils'
+import { assert, debugGlob } from '../../utils'
 import { getGlobalContext } from '../globalContext'
 import { virtualModuleIdPageFilesServer } from '../../plugin/plugins/generateImportGlobs/virtualModuleIdPageFiles'
 

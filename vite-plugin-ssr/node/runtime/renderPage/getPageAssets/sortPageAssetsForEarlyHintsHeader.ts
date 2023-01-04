@@ -1,7 +1,7 @@
 export { sortPageAssetsForEarlyHintsHeader }
 
 import { getGlobalContext } from '../../globalContext'
-import { higherFirst } from '../../utils'
+import { higherFirst } from '../../../utils'
 import type { PageAsset } from '../getPageAssets'
 
 function sortPageAssetsForEarlyHintsHeader(pageAssets: PageAsset[]) {

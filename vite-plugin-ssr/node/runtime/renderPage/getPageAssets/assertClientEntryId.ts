@@ -1,7 +1,7 @@
 export { assertClientEntryId }
 
 import { getGlobalContext } from '../../globalContext'
-import { assert, assertPosixPath, isNpmPackageModule } from '../../utils'
+import { assert, assertPosixPath, isNpmPackageModule } from '../../../utils'
 
 function assertClientEntryId(id: string) {
   assertPosixPath(id)

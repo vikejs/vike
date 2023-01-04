@@ -21,7 +21,7 @@ import {
   isPromise,
   callHookWithTimeout,
   isCallable
-} from '../utils'
+} from '../../utils'
 import type { PageAsset } from './getPageAssets'
 import { assertHookResult } from '../../../shared/assertHookResult'
 import { isStream } from '../html/stream'

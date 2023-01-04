@@ -3,7 +3,7 @@ export { log404 }
 import { PageFile } from '../../../shared/getPageFiles'
 import { PageRoutes, loadPageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
-import { assert, assertUsage, assertInfo, compareString } from '../utils'
+import { assert, assertUsage, assertInfo, compareString } from '../../utils'
 import { isRenderErrorPageException } from './RenderErrorPage'
 
 async function log404(pageContext: {
