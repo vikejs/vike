@@ -25,7 +25,7 @@ import {
 import type { PageAsset } from './getPageAssets'
 import { assertHookResult } from '../../../shared/assertHookResult'
 import { isStream } from '../html/stream'
-import { serializePageContextClientSide } from '../../helpers'
+import { serializePageContextClientSide } from '../helpers'
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import { log404 } from './log404'

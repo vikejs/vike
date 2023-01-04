@@ -16,7 +16,7 @@ import {
 import { retrieveAssetsDev } from './getPageAssets/retrieveAssetsDev'
 import { retrieveAssetsProd } from './getPageAssets/retrieveAssetsProd'
 import path from 'path'
-import { inferMediaType, type MediaType, type ViteManifest } from '../../helpers'
+import { inferMediaType, type MediaType, type ViteManifest } from '../helpers'
 import { getManifestEntry } from './getPageAssets/getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'

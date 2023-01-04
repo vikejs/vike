@@ -6,7 +6,7 @@ export { getRuntimeManifest }
 export { assertRuntimeManifest }
 
 import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, isBaseAssets, checkType } from '../utils'
-import { assertViteManifest, type ViteManifest } from '../helpers'
+import { assertViteManifest, type ViteManifest } from './helpers'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadBuild } from '../plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../../shared/getPageFiles'

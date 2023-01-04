@@ -8,7 +8,7 @@ import { assertWarning, objectAssign, PromiseType } from '../../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
-import type { MediaType } from '../../helpers'
+import type { MediaType } from '../helpers'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
