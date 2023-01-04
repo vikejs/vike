@@ -7,10 +7,10 @@ export { getRenderContext }
 export type { RenderContext }
 export type { RenderResult }
 
-import { getErrorPageId } from '../../shared/route'
+import { getErrorPageId } from '../../../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from '../html/renderHtml'
-import { type PageFile, type PageContextExports, getPageFilesAll } from '../../shared/getPageFiles'
-import { getHook } from '../../shared/getHook'
+import { type PageFile, type PageContextExports, getPageFilesAll } from '../../../shared/getPageFiles'
+import { getHook } from '../../../shared/getHook'
 import {
   assert,
   assertUsage,
@@ -23,11 +23,11 @@ import {
   isCallable
 } from '../utils'
 import type { PageAsset } from './getPageAssets'
-import { assertHookResult } from '../../shared/assertHookResult'
+import { assertHookResult } from '../../../shared/assertHookResult'
 import { isStream } from '../html/stream'
 import { serializePageContextClientSide } from '../helpers'
-import { addComputedUrlProps, type PageContextUrls } from '../../shared/addComputedUrlProps'
-import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
+import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
+import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import { log404 } from './log404'
 import { getGlobalContext } from '../globalContext'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'

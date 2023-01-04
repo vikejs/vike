@@ -21,7 +21,7 @@ import {
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
 import type { PageAsset, GetPageAssets } from './getPageAssets'
 import { assert, assertUsage, assertWarning } from '../utils'
-import { isErrorPageId } from '../../shared/route'
+import { isErrorPageId } from '../../../shared/route'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 
 type StatusCode = 200 | 404 | 500

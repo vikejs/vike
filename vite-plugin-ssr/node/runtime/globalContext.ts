@@ -9,7 +9,7 @@ import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, 
 import { assertViteManifest, type ViteManifest } from './helpers'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
-import { setPageFiles } from '../shared/getPageFiles'
+import { setPageFiles } from '../../shared/getPageFiles'
 import { assertPluginManifest, PluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
 import type { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
 import { getConfigVps } from './plugin/plugins/config/assertConfigVps'

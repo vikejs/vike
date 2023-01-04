@@ -1,9 +1,9 @@
 export { debugPageFiles }
 export type { PageContextDebug }
 
-import { RouteMatches } from '../../shared/route'
-import type { ClientDependency } from '../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
-import type { PageFile } from '../../shared/getPageFiles'
+import { RouteMatches } from '../../../shared/route'
+import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
+import type { PageFile } from '../../../shared/getPageFiles'
 import pc from 'picocolors'
 import { assert, makeFirst, createDebugger } from '../utils'
 

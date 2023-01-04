@@ -2,7 +2,7 @@ export { isRenderErrorPageException }
 export { RenderErrorPage }
 export { assertRenderErrorPageExceptionUsage }
 
-import { assertPageContextProvidedByUser } from '../../shared/assertPageContextProvidedByUser'
+import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import { assert, assertUsage, objectAssign, isBrowser } from '../utils'
 const stamp = '__isRenderErrorPageException'
 
