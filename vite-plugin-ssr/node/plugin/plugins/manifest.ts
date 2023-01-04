@@ -7,7 +7,7 @@ import { isUsingClientRouter } from './extractExportNamesPlugin'
 import { getConfigVps } from './config/assertConfigVps'
 import type { ConfigVpsResolved } from './config/ConfigVps'
 import path from 'path'
-import { getRuntimeManifest } from '../../globalContext'
+import { getRuntimeManifest } from '../../runtime/globalContext'
 
 function manifest(): Plugin[] {
   let configVps: ConfigVpsResolved

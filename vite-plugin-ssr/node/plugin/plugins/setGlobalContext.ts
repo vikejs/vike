@@ -1,7 +1,7 @@
 export { setGlobalContext }
 
 import type { Plugin } from 'vite'
-import { setGlobalContextViteDevServer, setGlobalContextViteConfig } from '../../globalContext'
+import { setGlobalContextViteDevServer, setGlobalContextViteConfig } from '../../runtime/globalContext'
 
 function setGlobalContext(): Plugin {
   return {

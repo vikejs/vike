@@ -1,7 +1,7 @@
 export { assertPluginManifest }
 export type { PluginManifest }
 
-import { assertRuntimeManifest } from '../../../globalContext'
+import { assertRuntimeManifest } from '../../../runtime/globalContext'
 import {
   assert,
   assertUsage,
