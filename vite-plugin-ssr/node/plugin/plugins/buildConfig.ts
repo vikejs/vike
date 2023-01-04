@@ -63,7 +63,7 @@ function removeFileExtention(filePath: string) {
 
 function resolve(filePath: string) {
   assert(filePath.startsWith('dist/'))
-  // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
+  // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/
   return require.resolve(`../../../../../${filePath}`)
 }
 

@@ -99,7 +99,7 @@ async function determineFsAllowList(config: ResolvedConfig, configVps: ConfigVps
 
   // Add node_modules/vite-plugin-ssr/
   {
-    // Current directory: vite-plugin-ssr/dist/cjs/node/plugin/plugins/
+    // [RELATIVE_PATH_FROM_DIST] Current directory: node_modules/vite-plugin-ssr/dist/cjs/node/plugin/plugins/
     const vitePluginSsrRoot = path.join(__dirname, '../../../../../')
     // Assert that `vitePluginSsrRoot` is indeed pointing to `node_modules/vite-plugin-ssr/`
     require.resolve(`${vitePluginSsrRoot}/dist/cjs/node/plugin/plugins/devConfig.js`)
