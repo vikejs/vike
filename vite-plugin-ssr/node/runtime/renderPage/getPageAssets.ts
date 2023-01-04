@@ -21,7 +21,7 @@ import { getManifestEntry } from './getPageAssets/getManifestEntry'
 import type { ViteDevServer } from 'vite'
 import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageClientSide/ClientDependency'
 import { sortPageAssetsForEarlyHintsHeader } from './getPageAssets/sortPageAssetsForEarlyHintsHeader'
-import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
+import type { ConfigVpsResolved } from '../../plugin/plugins/config/ConfigVps'
 import { getGlobalContext } from '../globalContext'
 import { assertClientEntryId } from './getPageAssets/assertClientEntryId'
 
