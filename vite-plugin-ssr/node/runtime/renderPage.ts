@@ -8,7 +8,7 @@ import {
   RenderResult
 } from './renderPage/renderPageContext'
 import { route } from '../../shared/route'
-import { assert, hasProp, objectAssign, isParsable, parseUrl } from './utils'
+import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
 import { initGlobalContext } from './globalContext'

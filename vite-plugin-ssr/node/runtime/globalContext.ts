@@ -5,14 +5,14 @@ export { setGlobalContextViteConfig }
 export { getRuntimeManifest }
 export { assertRuntimeManifest }
 
-import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, isBaseAssets, checkType } from './utils'
-import { assertViteManifest, type ViteManifest } from './helpers'
+import { assert, assertUsage, getGlobalObject, isObject, hasProp, isBaseServer, isBaseAssets, checkType } from '../utils'
+import { assertViteManifest, type ViteManifest } from '../helpers'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import { loadBuild } from './plugin/plugins/importBuild/loadBuild'
+import { loadBuild } from '../plugin/plugins/importBuild/loadBuild'
 import { setPageFiles } from '../../shared/getPageFiles'
-import { assertPluginManifest, PluginManifest } from './plugin/plugins/manifest/assertPluginManifest'
-import type { ConfigVpsResolved } from './plugin/plugins/config/ConfigVps'
-import { getConfigVps } from './plugin/plugins/config/assertConfigVps'
+import { assertPluginManifest, PluginManifest } from '../plugin/plugins/manifest/assertPluginManifest'
+import type { ConfigVpsResolved } from '../plugin/plugins/config/ConfigVps'
+import { getConfigVps } from '../plugin/plugins/config/assertConfigVps'
 const globalObject = getGlobalObject<{
   globalContext?: GlobalContext
   viteDevServer?: ViteDevServer
