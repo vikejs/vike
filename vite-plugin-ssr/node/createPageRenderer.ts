@@ -1,7 +1,7 @@
 // TODO: remove upon next major release
 
 //import { SsrEnv, setSsrEnv } from './ssrEnv'
-import { renderPage } from './renderPage'
+import { renderPage } from './runtime/renderPage'
 import { assertWarning } from './utils'
 //import { importBuildWasLoaded } from './importBuild'
 

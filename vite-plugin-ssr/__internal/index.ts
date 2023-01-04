@@ -2,7 +2,7 @@
 
 import { loadPageRoutes, PageRoutes, route } from '../shared/route'
 import { getPageFilesAll, type PageFile } from '../shared/getPageFiles'
-import { getGlobalContext, initGlobalContext } from '../node/globalContext'
+import { getGlobalContext, initGlobalContext } from '../node/runtime/globalContext'
 import { setProduction } from '../shared/setProduction'
 
 export { route, getPagesAndRoutes }
