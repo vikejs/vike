@@ -1,7 +1,7 @@
 export { runPrerender }
 export type { PrerenderOptions }
 
-import '../page-files/setup'
+import '../runtime/page-files/setup'
 import path from 'path'
 import { isErrorPageId, loadPageRoutes, route } from '../../shared/route'
 import {
