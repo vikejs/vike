@@ -10,7 +10,7 @@ export type { RenderResult }
 import { getErrorPageId } from '../../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from '../html/renderHtml'
 import { type PageFile, type PageContextExports, getPageFilesAll } from '../../shared/getPageFiles'
-import { getHook } from '../../shared/getHook'
+import { getHook, type Hook } from '../../shared/getHook'
 import {
   assert,
   assertUsage,
@@ -102,7 +102,7 @@ async function renderPageContext(
     return pageContext
   }
 
-  const renderHookResult = await executeRenderHook(pageContext)
+  const renderHookResult = await executeOnRenderHtmlHook(pageContext)
 
   if (renderHookResult.htmlRender === null) {
     objectAssign(pageContext, { httpResponse: null })
@@ -136,7 +136,7 @@ async function prerenderPageContext(
 
   await executeOnBeforeRenderHooks(pageContext)
 
-  const renderHookResult = await executeRenderHook(pageContext)
+  const renderHookResult = await executeOnRenderHtmlHook(pageContext)
   assertUsage(
     renderHookResult.htmlRender !== null,
     `Cannot pre-render \`${pageContext.urlOriginal}\` because the \`render()\` hook exported by ${renderHookResult.renderFilePath} didn't return an HTML string.`
@@ -237,7 +237,7 @@ async function executeOnBeforeRenderHooks(
   Object.assign(pageContext, pageContextFromHook)
 }
 
-async function executeRenderHook(
+async function executeOnRenderHtmlHook(
   pageContext: PageContextPublic & {
     _pageId: string
     __getPageAssets: GetPageAssets
@@ -251,14 +251,24 @@ async function executeRenderHook(
   renderFilePath: string
   htmlRender: null | HtmlRender
 }> {
-  const hook = getHook(pageContext, 'render')
+  let hook: null | Hook = null
+  {
+    const renderHook = getHook(pageContext, 'render')
+    // assertWarning(!renderHook, 'Hook render() has been renamed to onRenderHtml() and onRenderClient()', { onlyOnce: true, showStackTrace: false })
+    hook = renderHook
+  }
+  /*
+  {
+    const renderHook = getHook(pageContext, 'onRenderHtml')
+  }
+  */
   assertUsage(
     hook,
     [
-      'No server-side `render()` hook found.',
-      'See https://vite-plugin-ssr.com/render-modes for more information.',
+      'No onRenderHtml() hook found.',
+      'See https://vite-plugin-ssr.com/render-modes for more information.', // TODO
       [
-        'Loaded server-side page files (none of them `export { render }`):',
+        'Loaded server-side page files (none of them `export { onRenderHtml }`):', // TODO
         ...pageContext._pageFilePathsLoaded.map((f, i) => ` (${i + 1}): ${f}`)
       ].join('\n')
     ].join(' ')
