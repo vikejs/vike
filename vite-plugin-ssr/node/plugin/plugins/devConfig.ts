@@ -3,7 +3,7 @@ export { devConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
 import { assert, isNotNullish } from '../utils'
-import { addSsrMiddleware, isViteCliCall, loadPagesConfig } from '../helpers'
+import { addSsrMiddleware, assertRoot, isViteCliCall, loadPagesConfig, resolveRoot } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'
@@ -11,11 +11,13 @@ import { getConfigVps } from './config/assertConfigVps'
 import { ConfigVpsResolved } from './config/ConfigVps'
 
 function devConfig(): Plugin[] {
+  let root: string
   return [
     {
       name: 'vite-plugin-ssr:devConfig',
-      async config() {
-        await loadPagesConfig(process.cwd())
+      async config(config) {
+        root = resolveRoot(config)
+        await loadPagesConfig(root)
         return {
           ssr: { external: ['vite-plugin-ssr'] },
           optimizeDeps: {
@@ -37,6 +39,7 @@ function devConfig(): Plugin[] {
         }
       },
       async configResolved(config) {
+        assertRoot(root, config)
         const configVps = await getConfigVps(config)
         addExtensionsToOptimizeDeps(config, configVps)
         addOptimizeDepsEntries(config, await determineOptimizeDepsEntries(config))
