@@ -15,8 +15,8 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Pro
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))
   const time = new Date().getTime() - timeBase
   assertWarning(
-    time < 2 * 1000,
-    `Finding your page files \`**/*.page.*\` took more than two seconds (${time}ms). Reach out to the vite-plugin-ssr maintainers.`,
+    time < 1.5 * 1000,
+    `Finding your page files \`**/*.page.*\` took an unexpected long time (${time}ms). Reach out to the vite-plugin-ssr maintainer.`,
     {
       showStackTrace: false,
       onlyOnce: 'slow-page-files-search'
