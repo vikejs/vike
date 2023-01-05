@@ -10,7 +10,7 @@ async function findPageFiles(config: ResolvedConfig, fileTypes: FileType[]): Pro
   const timeBase = new Date().getTime()
   let pageFiles = await glob(
     fileTypes.map((fileType) => `**/*${fileType}.${scriptFileExtensions}`),
-    { ignore: ['**/node_modules/**'], cwd }
+    { ignore: ['**/node_modules/**'], cwd, dot: false }
   )
   pageFiles = pageFiles.map((p) => '/' + toPosixPath(p))
   const time = new Date().getTime() - timeBase
