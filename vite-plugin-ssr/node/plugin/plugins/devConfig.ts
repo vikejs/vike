@@ -3,7 +3,7 @@ export { devConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
 import { assert, isNotNullish } from '../utils'
-import { addSsrMiddleware, isViteCliCall } from '../helpers'
+import { addSsrMiddleware, isViteCliCall, loadPagesConfig } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'
@@ -15,6 +15,7 @@ function devConfig(): Plugin[] {
     {
       name: 'vite-plugin-ssr:devConfig',
       async config() {
+        await loadPagesConfig(process.cwd())
         return {
           ssr: { external: ['vite-plugin-ssr'] },
           optimizeDeps: {
