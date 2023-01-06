@@ -203,6 +203,7 @@ type RenderContext = {
   pageFilesAll: PageFile[]
   allPageIds: string[]
 }
+// TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
   const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext.isProduction)

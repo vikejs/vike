@@ -8,6 +8,7 @@ import { loadScript } from './loadScript'
 async function loadPagesConfig(userRootDir: string) {
   const pageConfigFiles = await findPagesConfigFiles(userRootDir)
   const pageConfigs = await Promise.all(pageConfigFiles.map((configFilePath) => loadScript(configFilePath))) // TODO: make esbuild everyting at once
+  // TODO
   console.log(pageConfigs)
 }
 

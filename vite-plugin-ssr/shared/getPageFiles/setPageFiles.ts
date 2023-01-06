@@ -4,18 +4,20 @@ export { getPageFilesAll }
 
 import { assert, unique } from '../utils'
 import { determinePageId } from '../determinePageId'
-import type { PageFile } from './getPageFileObject'
+import type { PageConfigFile, PageFile } from './getPageFileObject'
 import { parseGlobResults } from './parseGlobResults'
 import { getGlobalObject } from '../../utils/getGlobalObject'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
+  pageConfigFiles?: PageConfigFile[] | undefined
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
 
 function setPageFiles(pageFilesExports: unknown) {
   const { pageFiles, pageConfigFiles } = parseGlobResults(pageFilesExports)
   globalObject.pageFilesAll = pageFiles
+  globalObject.pageConfigFiles = pageConfigFiles
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   globalObject.pageFilesGetter = async () => {
@@ -26,7 +28,7 @@ function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
 async function getPageFilesAll(
   isClientSide: boolean,
   isProduction?: boolean
-): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[] }> {
+): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[]; pageConfigFiles: PageConfigFile[] }> {
   if (isClientSide) {
     assert(!globalObject.pageFilesGetter)
     assert(isProduction === undefined)
@@ -41,13 +43,13 @@ async function getPageFilesAll(
       await globalObject.pageFilesGetter()
     }
   }
-  assert(globalObject.pageFilesAll)
-  const pageFilesAll = globalObject.pageFilesAll
-  const allPageIds = getAllPageIds(pageFilesAll)
-  return { pageFilesAll, allPageIds }
+  const { pageFilesAll, pageConfigFiles } = globalObject
+  assert(pageFilesAll && pageConfigFiles)
+  const allPageIds = getAllPageIds(pageFilesAll, pageConfigFiles)
+  return { pageFilesAll, allPageIds, pageConfigFiles }
 }
 
-function getAllPageIds(allPageFiles: { filePath: string; isDefaultPageFile: boolean }[]): string[] {
+function getAllPageIds(allPageFiles: { filePath: string; isDefaultPageFile: boolean }[], pageConfigFiles: PageConfigFile[]): string[] {
   const fileIds = allPageFiles
     .filter(({ isDefaultPageFile }) => !isDefaultPageFile)
     .map(({ filePath }) => filePath)

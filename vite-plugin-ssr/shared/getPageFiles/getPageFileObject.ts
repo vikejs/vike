@@ -1,4 +1,5 @@
 export { getPageFileObject }
+export { resolvePageConfigFile }
 export type { PageFile }
 export type { PageConfigFile }
 export type { PageConfig }
@@ -6,7 +7,7 @@ export type { PageConfig }
 import { determinePageId } from '../determinePageId'
 import { assertPageFilePath } from '../assertPageFilePath'
 import { isErrorPageId } from '../route'
-import { assert, slice } from '../utils'
+import { assert, isObject, slice } from '../utils'
 import { determineFileType, FileType } from './fileTypes'
 
 type PageFile = {
@@ -32,11 +33,35 @@ type PageConfig = {
 type PageConfigFile = {
   filePath: string
   getPageConfig: () => Promise<PageConfig>
+  pageId: null | string
   /*
   filesystemId: string
   loadConfig: () => Promise<void>
   configValue?: Record<string, unknown>
   */
+}
+
+function resolvePageConfigFile(filePath: string, loadFile: () => Promise<Record<string, unknown>>): PageConfigFile {
+  let pageConfig: null | PageConfig = null
+  const pageConfigFile: PageConfigFile = {
+    filePath,
+    pageId: determinePageId(filePath),
+    async getPageConfig() {
+      if (!pageConfig) {
+        const fileExports = await loadFile()
+        pageConfig = resolvePageConfig(fileExports)
+      }
+      assert(pageConfig)
+      return pageConfig
+    }
+  }
+  return pageConfigFile
+}
+function resolvePageConfig(pageConfigFileExports: Record<string, unknown>): PageConfig {
+  // TODO: add validation
+  const pageConfigUserDefined = pageConfigFileExports.default
+  assert(isObject(pageConfigUserDefined))
+  return pageConfigUserDefined
 }
 
 function getPageFileObject(filePath: string): PageFile {

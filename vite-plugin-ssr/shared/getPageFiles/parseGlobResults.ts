@@ -2,7 +2,12 @@ export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils'
 import { assertExportValues } from './assertExports'
-import { getPageFileObject, type PageConfig, type PageConfigFile, type PageFile } from './getPageFileObject'
+import {
+  getPageFileObject,
+  resolvePageConfigFile,
+  type PageConfigFile,
+  type PageFile
+} from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
 
 function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigFiles: PageConfigFile[] } {
@@ -23,17 +28,7 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   const pageConfigFiles: PageConfigFile[] = []
   Object.entries(pageFilesExports.pageConfigFiles).forEach(([filePath, loadFile]) => {
     assertLoadModule(loadFile)
-    let pageConfig: null | PageConfig = null
-    const pageConfigFile: PageConfigFile = {
-      filePath,
-      async getPageConfig() {
-        if (!pageConfig) {
-          pageConfig = (await loadFile()) as any
-        }
-        assert(pageConfig)
-        return pageConfig
-      }
-    }
+    const pageConfigFile = resolvePageConfigFile(filePath, loadFile)
     pageConfigFiles.push(pageConfigFile)
   })
 
