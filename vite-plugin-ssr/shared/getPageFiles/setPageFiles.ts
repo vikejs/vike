@@ -13,7 +13,8 @@ const pageFiles = (globalThis.__vite_plugin_ssr__pageFiles = globalThis.__vite_p
 })
 
 function setPageFiles(pageFilesExports: unknown) {
-  pageFiles.pageFilesAll = parseGlobResults(pageFilesExports)
+  const result = parseGlobResults(pageFilesExports)
+  pageFiles.pageFilesAll = result.pageFiles
 }
 function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
   pageFiles.pageFilesGetter = async () => {

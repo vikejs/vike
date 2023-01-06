@@ -1,5 +1,7 @@
 export { getPageFileObject }
 export type { PageFile }
+export type { PageConfigFile }
+export type { PageConfig }
 
 import { determinePageId } from '../determinePageId'
 import { assertPageFilePath } from '../assertPageFilePath'
@@ -20,6 +22,21 @@ type PageFile = {
   isRendererPageFile: boolean
   isErrorPageFile: boolean
   pageId: string
+}
+
+type PageConfig = {
+  onRenderHtml?: string | Function
+  onRenderClient?: string | Function
+  Page?: string | unknown
+} & Record<string, unknown>
+type PageConfigFile = {
+  filePath: string
+  getPageConfig: () => Promise<PageConfig>
+  /*
+  filesystemId: string
+  loadConfig: () => Promise<void>
+  configValue?: Record<string, unknown>
+  */
 }
 
 function getPageFileObject(filePath: string): PageFile {

@@ -2,10 +2,10 @@ export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils'
 import { assertExportValues } from './assertExports'
-import { getPageFileObject, type PageFile } from './getPageFileObject'
+import { getPageFileObject, type PageConfig, type PageConfigFile, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
 
-function parseGlobResults(pageFilesExports: unknown) {
+function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigFiles: PageConfigFile[] } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
@@ -18,6 +18,24 @@ function parseGlobResults(pageFilesExports: unknown) {
     hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server')
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
+  assert(hasProp(pageFilesExports, 'pageConfigFiles', 'object'))
+
+  const pageConfigFiles: PageConfigFile[] = []
+  Object.entries(pageFilesExports.pageConfigFiles).forEach(([filePath, loadFile]) => {
+    assertLoadModule(loadFile)
+    let pageConfig: null | PageConfig = null
+    const pageConfigFile: PageConfigFile = {
+      filePath,
+      async getPageConfig() {
+        if (!pageConfig) {
+          pageConfig = (await loadFile()) as any
+        }
+        assert(pageConfig)
+        return pageConfig
+      }
+    }
+    pageConfigFiles.push(pageConfigFile)
+  })
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -72,7 +90,7 @@ function parseGlobResults(pageFilesExports: unknown) {
     assert(!filePath.includes('\\'))
   })
 
-  return pageFiles
+  return { pageFiles, pageConfigFiles }
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]

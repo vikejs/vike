@@ -200,6 +200,8 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
+export const pageConfigFiles = import.meta.glob('/**/+config.${scriptFileExtensions}');
+
 `
 
   fileTypes

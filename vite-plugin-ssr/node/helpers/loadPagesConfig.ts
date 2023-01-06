@@ -6,9 +6,9 @@ import { assertWarning, toPosixPath, scriptFileExtensions, assertPosixPath } fro
 import { loadScript } from './loadScript'
 
 async function loadPagesConfig(userRootDir: string) {
-  const pagesConfigFiles = await findPagesConfigFiles(userRootDir)
-  const pagesConfigs = await Promise.all(pagesConfigFiles.map((configFilePath) => loadScript(configFilePath))) // TODO: make esbuild everyting at once
-  console.log(pagesConfigs)
+  const pageConfigFiles = await findPagesConfigFiles(userRootDir)
+  const pageConfigs = await Promise.all(pageConfigFiles.map((configFilePath) => loadScript(configFilePath))) // TODO: make esbuild everyting at once
+  console.log(pageConfigs)
 }
 
 async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {
