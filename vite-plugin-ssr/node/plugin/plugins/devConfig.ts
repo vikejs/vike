@@ -16,8 +16,9 @@ function devConfig(): Plugin[] {
     {
       name: 'vite-plugin-ssr:devConfig',
       async config(config) {
-        root = resolveRoot(config)
-        await loadPagesConfig(root)
+        root = resolveRoot(config) // TODO: remove resolveRoot() helper?
+        // TODO: remove?
+        // await loadPagesConfig(root)
         return {
           ssr: { external: ['vite-plugin-ssr'] },
           optimizeDeps: {

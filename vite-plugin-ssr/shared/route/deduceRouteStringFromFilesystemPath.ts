@@ -1,6 +1,8 @@
 import { assert, higherFirst, slice } from './utils'
 
 export { deduceRouteStringFromFilesystemPath }
+export { determineRouteFromFilesystemPath }
+export { determinePageId2 }
 export type { FilesystemRoot }
 
 type FilesystemRoot = {
@@ -8,6 +10,7 @@ type FilesystemRoot = {
   routeRoot: string
 }
 
+// TODO/next-major-update: remove this and whole filesystemRoot mechanism
 function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: FilesystemRoot[]): string {
   // Handle Filesystem Routing Root
   const filesystemRootsMatch = filesystemRoots
@@ -58,4 +61,55 @@ function deduceRouteStringFromFilesystemPath(pageId: string, filesystemRoots: Fi
   assert(!filesystemRoute.endsWith('/') || filesystemRoute === '/')
 
   return filesystemRoute
+}
+
+// TODO make deduceRouteStringFromFilesystemPath() use determineRouteFromFilesystemPath()
+function determineRouteFromFilesystemPath(filesystemPath: string): string {
+  const pageId2 = determinePageId2(filesystemPath)
+
+  let routeString = pageId2
+
+  {
+    let paths = routeString.split('/')
+    // Remove `pages/`, `index/, and `src/`, directories
+    paths = paths.filter((dir) => dir !== 'pages' && dir !== 'src' && dir !== 'index')
+    routeString = paths.join('/')
+  }
+
+  if (routeString === '') {
+    routeString = '/'
+  }
+
+  assert(routeString.startsWith('/'))
+  assert(!routeString.endsWith('/') || routeString === '/')
+
+  return routeString
+}
+
+function determinePageId2(filesystemPath: string): string {
+  assertFilesystemPath(filesystemPath)
+
+  let paths = filesystemPath.split('/')
+
+  // Remove filename e.g. `+config.js`
+  {
+    const last = paths[paths.length - 1]!
+    if (last.includes('.')) {
+      paths = paths.slice(0, -1)
+    }
+  }
+
+  const pageId2 = paths.join('/')
+  assert(pageId2.startsWith('/'))
+  assert(
+    !pageId2.endsWith('/') ||
+      // Unlikely, but may happen
+      pageId2 === '/'
+  )
+  return pageId2
+}
+
+function assertFilesystemPath(filesystemPath: string): void {
+  assert(!filesystemPath.includes('\\'))
+  assert(filesystemPath.startsWith('/'))
 }

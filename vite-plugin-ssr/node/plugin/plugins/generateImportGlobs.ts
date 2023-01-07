@@ -12,6 +12,7 @@ import {
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 import { getRealId, getVirtualId } from './generateImportGlobs/virtualIdHandling'
+import { generatePageCodeLoaders } from './generateImportGlobs/generatePageCodeLoaders'
 
 function generateImportGlobs(): Plugin {
   let config: ResolvedConfig
@@ -59,7 +60,15 @@ async function getCode(
   {
     const globRoots = getGlobRoots(config, configVps)
     debugGlob('Glob roots: ', globRoots)
-    content += generateGlobImports(globRoots, isBuild, isForClientSide, isClientRouting, configVps, isPrerendering)
+    content += await generateGlobImports(
+      globRoots,
+      isBuild,
+      isForClientSide,
+      isClientRouting,
+      configVps,
+      isPrerendering,
+      config
+    )
   }
   {
     const extensionsImportPaths = configVps.extensions
@@ -182,13 +191,14 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
   return fileContent
 }
 
-function generateGlobImports(
+async function generateGlobImports(
   globRoots: string[],
   isBuild: boolean,
   isForClientSide: boolean,
   isClientRouting: boolean,
   configVps: ConfigVpsResolved,
-  isPrerendering: boolean
+  isPrerendering: boolean,
+  config: ResolvedConfig
 ) {
   let fileContent = `// Generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
@@ -201,6 +211,7 @@ export const neverLoaded = {};
 export const isGeneratedFile = true;
 
 export const pageConfigFiles = import.meta.glob('/**/+config.${scriptFileExtensions}');
+${await generatePageCodeLoaders(config.root)}
 
 `
 
