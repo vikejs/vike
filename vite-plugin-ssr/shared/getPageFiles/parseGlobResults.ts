@@ -2,15 +2,11 @@ export { parseGlobResults }
 
 import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../utils'
 import { assertExportValues } from './assertExports'
-import {
-  getPageFileObject,
-  resolvePageConfigFile,
-  type PageConfigFile,
-  type PageFile
-} from './getPageFileObject'
+import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
+import { getPageConfigsFromGlob, type PageConfig } from '../../node/helpers/loadPagesConfig'
 
-function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigFiles: PageConfigFile[] } {
+function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig[] } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
@@ -24,13 +20,9 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
   assert(hasProp(pageFilesExports, 'pageConfigFiles', 'object'))
+  assert(hasProp(pageFilesExports, 'root', 'string')) // TODO: use globalContext instead? Is root really needed? I'd expect root not to be needed to resolve the config path values
 
-  const pageConfigFiles: PageConfigFile[] = []
-  Object.entries(pageFilesExports.pageConfigFiles).forEach(([filePath, loadFile]) => {
-    assertLoadModule(loadFile)
-    const pageConfigFile = resolvePageConfigFile(filePath, loadFile)
-    pageConfigFiles.push(pageConfigFile)
-  })
+  const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles, pageFilesExports.root)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {
@@ -85,7 +77,7 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
     assert(!filePath.includes('\\'))
   })
 
-  return { pageFiles, pageConfigFiles }
+  return { pageFiles, pageConfigs }
 }
 
 type GlobResult = { filePath: string; pageFile: PageFile; globValue: unknown }[]

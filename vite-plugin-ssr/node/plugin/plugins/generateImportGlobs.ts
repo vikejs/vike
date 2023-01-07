@@ -210,7 +210,7 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-export const pageConfigFiles = import.meta.glob('/**/+config.${scriptFileExtensions}');
+export const pageConfigFiles = import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true });
 ${await generatePageCodeLoaders(config.root)}
 
 `

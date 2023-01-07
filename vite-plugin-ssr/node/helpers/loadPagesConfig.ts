@@ -1,5 +1,7 @@
 export { loadPagesConfig }
 export { getPageConfigs }
+export { getPageConfigsFromGlob }
+export type { PageConfig }
 
 import glob from 'fast-glob'
 import path from 'path'
@@ -52,6 +54,28 @@ async function loadPagesConfig(userRootDir: string): Promise<PageConfigFile[]> {
   return pageConfigFiles
 }
 
+function getPageConfigsFromGlob(globResult: Record<string, unknown>, root: string): PageConfig[] {
+  const pageConfigFiles: PageConfigFile[] = []
+  Object.entries(globResult).forEach(([pageConfigFilePath, pageConfigFileExports]) => {
+    assert(isObject(pageConfigFileExports))
+    {
+      const configeErr = checkPageConfigFile(pageConfigFileExports)
+      if (configeErr) {
+        assertUsage(false, configeErr)
+      }
+    }
+    assert(isValidPageConfigFile(pageConfigFileExports))
+    const pageConfigValues: PageConfigValues = pageConfigFileExports.default
+    pageConfigFiles.push({
+      pageConfigFilePath,
+      pageConfigValues
+    })
+  })
+
+  const pageConfigs = getPageConfigs(pageConfigFiles, root)
+  return pageConfigs
+}
+
 type PageConfig = {
   onRenderClient: string
   onRenderHtml: string
@@ -100,7 +124,7 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], root: string): PageCo
 }
 
 function isAbstract(pageConfigFile: PageConfigFile): boolean {
-  return !!(pageConfigFile.pageConfigValues.Page || pageConfigFile.pageConfigValues.route)
+  return !pageConfigFile.pageConfigValues.Page && !pageConfigFile.pageConfigValues.route
 }
 
 function resolvePath(configValuePath: string, pageConfigFilePath: string, root: string): string {
@@ -136,8 +160,6 @@ function checkPageConfigFile(pageConfigFileExports: Record<string, unknown>): nu
   return null
 }
 
-function validate() {}
-
 async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {
   assertPosixPath(userRootDir)
   const timeBase = new Date().getTime()
@@ -158,3 +180,43 @@ async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {
   configFiles = configFiles.map((p) => path.posix.join(userRootDir, toPosixPath(p)))
   return configFiles
 }
+
+/*
+type PageConfig = {
+  onRenderHtml?: string | Function
+  onRenderClient?: string | Function
+  Page?: string | unknown
+} & Record<string, unknown>
+type PageConfigFile = {
+  filePath: string
+  getPageConfig: () => Promise<PageConfig>
+  pageId: null | string
+  // filesystemId: string
+  // loadConfig: () => Promise<void>
+  // configValue?: Record<string, unknown>
+}
+
+export { resolvePageConfigFile }
+function resolvePageConfigFile(filePath: string, loadFile: () => Promise<Record<string, unknown>>): PageConfigFile {
+  let pageConfig: null | PageConfig = null
+  const pageConfigFile: PageConfigFile = {
+    filePath,
+    pageId: determinePageId(filePath),
+    async getPageConfig() {
+      if (!pageConfig) {
+        const fileExports = await loadFile()
+        pageConfig = resolvePageConfig(fileExports)
+      }
+      assert(pageConfig)
+      return pageConfig
+    }
+  }
+  return pageConfigFile
+}
+function resolvePageConfig(pageConfigFileExports: Record<string, unknown>): PageConfig {
+  // TODO: add validation
+  const pageConfigUserDefined = pageConfigFileExports.default
+  assert(isObject(pageConfigUserDefined))
+  return pageConfigUserDefined
+}
+  */

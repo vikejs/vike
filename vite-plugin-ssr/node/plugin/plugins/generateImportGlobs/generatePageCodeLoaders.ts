@@ -3,7 +3,10 @@ import { getPageConfigs, loadPagesConfig } from '../../helpers'
 export { generatePageCodeLoaders }
 
 async function generatePageCodeLoaders(root: string): Promise<string> {
-  let code = 'export const pageCodeLoaders = {};'
+  let code = ''
+
+  code += `export const root = '${root}';`
+  code += 'export const pageCodeLoaders = {};'
 
   const pageConfigFiles = await loadPagesConfig(root)
   const pageConfigs = getPageConfigs(pageConfigFiles, root)
