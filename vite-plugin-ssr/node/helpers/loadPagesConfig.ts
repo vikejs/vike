@@ -17,7 +17,8 @@ async function loadPagesConfig(userRootDir: string): Promise<PageConfigFile[]> {
   // TODO: make esbuild build everyting at once
   await Promise.all(
     pageConfigFilePaths.map(async (pageConfigFilePath) => {
-      const pageConfigFileExports = await loadScript(pageConfigFilePath)
+      const pageConfigFilePathAbsolute = path.posix.join(userRootDir, pageConfigFilePath)
+      const pageConfigFileExports = await loadScript(pageConfigFilePathAbsolute)
       // TODO: don't assert here
       assert(isValidPageConfigFile(pageConfigFileExports))
       const pageConfigValues: PageConfigValues = pageConfigFileExports.default
@@ -48,6 +49,6 @@ async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {
       onlyOnce: 'slow-page-files-search'
     }
   )
-  configFiles = configFiles.map((p) => path.posix.join(userRootDir, toPosixPath(p)))
+  configFiles = configFiles.map((p) => path.posix.join('/', toPosixPath(p)))
   return configFiles
 }

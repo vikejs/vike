@@ -20,9 +20,8 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
   assert(hasProp(pageFilesExports, 'pageConfigFiles', 'object'))
-  assert(hasProp(pageFilesExports, 'root', 'string')) // TODO: use globalContext instead? Is root really needed? I'd expect root not to be needed to resolve the config path values
 
-  const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles, pageFilesExports.root)
+  const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {

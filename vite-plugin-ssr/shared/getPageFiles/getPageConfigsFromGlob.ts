@@ -29,7 +29,7 @@ type PageConfigFile = {
   pageConfigValues: PageConfigValues
 }
 
-function getPageConfigsFromGlob(globResult: Record<string, unknown>, root: string): PageConfig[] {
+function getPageConfigsFromGlob(globResult: Record<string, unknown>): PageConfig[] {
   const pageConfigFiles: PageConfigFile[] = []
   Object.entries(globResult).forEach(([pageConfigFilePath, pageConfigFileExports]) => {
     assert(isObject(pageConfigFileExports))
@@ -47,11 +47,11 @@ function getPageConfigsFromGlob(globResult: Record<string, unknown>, root: strin
     })
   })
 
-  const pageConfigs = getPageConfigs(pageConfigFiles, root)
+  const pageConfigs = getPageConfigs(pageConfigFiles)
   return pageConfigs
 }
 
-function getPageConfigs(pageConfigFiles: PageConfigFile[], root: string): PageConfig[] {
+function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfig[] {
   if (pageConfigFiles.length === 0) return [] // temporary
 
   const pageConfigs: PageConfig[] = []
@@ -62,15 +62,23 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], root: string): PageCo
   pageConfigFiles
     .filter((p) => !isAbstract(p))
     .forEach(({ pageConfigFilePath, pageConfigValues }) => {
-      let onRenderHtml = pageConfigValues.onRenderHtml || pageConfigFileAbstract.pageConfigValues.onRenderHtml
-      let onRenderClient = pageConfigValues.onRenderClient || pageConfigFileAbstract.pageConfigValues.onRenderClient
+      const onRenderHtml =
+        resolvePathOptional(pageConfigValues.onRenderHtml, pageConfigFilePath) ||
+        resolvePathOptional(
+          pageConfigFileAbstract.pageConfigValues.onRenderHtml,
+          pageConfigFileAbstract.pageConfigFilePath
+        )
+      const onRenderClient =
+        resolvePathOptional(pageConfigValues.onRenderClient, pageConfigFilePath) ||
+        resolvePathOptional(
+          pageConfigFileAbstract.pageConfigValues.onRenderClient,
+          pageConfigFileAbstract.pageConfigFilePath
+        )
       assert(onRenderHtml)
       assert(onRenderClient)
-      onRenderHtml = resolvePath(onRenderHtml, pageConfigFilePath, root)
-      onRenderClient = resolvePath(onRenderClient, pageConfigFilePath, root)
 
       let Page = pageConfigValues.Page
-      if (Page) Page = resolvePath(Page, pageConfigFilePath, root)
+      if (Page) Page = resolvePath(Page, pageConfigFilePath)
 
       const route =
         pageConfigValues.route || // TODO: assertUsage that route isn't a path
@@ -94,15 +102,17 @@ function isAbstract(pageConfigFile: PageConfigFile): boolean {
   return !pageConfigFile.pageConfigValues.Page && !pageConfigFile.pageConfigValues.route
 }
 
-function resolvePath(configValuePath: string, pageConfigFilePath: string, root: string): string {
+function resolvePathOptional(configValuePath: string | undefined, pageConfigFilePath: string): string | undefined {
+  if (configValuePath === undefined) return undefined
+  return resolvePath(configValuePath, pageConfigFilePath)
+}
+function resolvePath(configValuePath: string, pageConfigFilePath: string): string {
   assertPosixPath(configValuePath) // TODO: assertUsage()
-  assertPosixPath(root)
   assertPosixPath(pageConfigFilePath)
-  assert(pageConfigFilePath.startsWith(root))
-  let p = path.posix.join(pageConfigFilePath, configValuePath)
-  p = path.relative(root, p)
-  assert(!p.startsWith('.') && !p.startsWith('/'))
-  p = '/' + p
+  assert(pageConfigFilePath.startsWith('/pages/'), pageConfigFilePath) // TODO: remove
+  let p = path.posix.join(path.posix.dirname(pageConfigFilePath), configValuePath)
+  assert(p.startsWith('/'), p)
+  assert(p.startsWith('/pages/'), p) // TODO: remove
   return p
 }
 

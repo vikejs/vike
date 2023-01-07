@@ -4,24 +4,23 @@ import { loadPagesConfig } from '../../helpers'
 export { generatePageCodeLoaders }
 
 async function generatePageCodeLoaders(root: string): Promise<string> {
-  let code = ''
+  const lines: string[] = []
 
-  code += `export const root = '${root}';`
-  code += 'export const pageCodeLoaders = {};'
+  lines.push('export const pageCodeLoaders = {};')
 
   const pageConfigFiles = await loadPagesConfig(root)
-  const pageConfigs = getPageConfigs(pageConfigFiles, root)
+  const pageConfigs = getPageConfigs(pageConfigFiles)
   pageConfigs.forEach((pageConfig) => {
-    code += `pageCodeLoaders['${pageConfig.pageId2}'] = async () => ({`
+    lines.push(`pageCodeLoaders['${pageConfig.pageId2}'] = async () => ({`)
     ;(['onRenderHtml', 'onRenderClient', 'Page'] as const).forEach((prop) => {
       const importPath = pageConfig[prop]
       if (importPath) {
         // TODO: use virtual file instead
-        code += `  ${prop}: await import('${importPath}'),`
+        lines.push(`  ${prop}: await import('${importPath}'),`)
       }
     })
-    code += `});`
+    lines.push(`});`)
   })
 
-  return code
+  return lines.join('\n')
 }
