@@ -53,7 +53,7 @@ async function entryPoints(config: ResolvedConfig): Promise<Record<string, strin
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
       // ...pageFilesObject,
-      pageFiles: virtualModuleIdPageFilesServer,
+      pageFiles: virtualModuleIdPageFilesServer, // TODO/next-major-release: rename to pageConfigFiles
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
