@@ -1,4 +1,5 @@
-import { getPageConfigs, loadPagesConfig } from '../../helpers'
+import { getPageConfigs } from '../../../../shared/getPageFiles/getPageConfigsFromGlob'
+import { loadPagesConfig } from '../../helpers'
 
 export { generatePageCodeLoaders }
 

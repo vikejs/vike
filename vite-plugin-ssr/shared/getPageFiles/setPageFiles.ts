@@ -7,7 +7,7 @@ import { determinePageId } from '../determinePageId'
 import type { PageFile } from './getPageFileObject'
 import { parseGlobResults } from './parseGlobResults'
 import { getGlobalObject } from '../../utils/getGlobalObject'
-import { PageConfig } from '../../node/helpers/loadPagesConfig'
+import type { PageConfig } from './getPageConfigsFromGlob'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined

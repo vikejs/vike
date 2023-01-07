@@ -4,7 +4,7 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
-import { getPageConfigsFromGlob, type PageConfig } from '../../node/helpers/loadPagesConfig'
+import { getPageConfigsFromGlob, type PageConfig } from './getPageConfigsFromGlob'
 
 function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig[] } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
