@@ -59,5 +59,8 @@ function getAllPageIds(
     .map(({ filePath }) => filePath)
     .map(determinePageId)
   const allPageIds = unique(fileIds)
-  return allPageIds
+
+  const allPageIds2 = pageConfigs.map((p) => p.pageId2)
+
+  return [...allPageIds, ...allPageIds2]
 }

@@ -12,9 +12,11 @@ import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
 import { debug } from './route/debug'
+import { PageConfig } from './getPageFiles/getPageConfigsFromGlob'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
   _allPageIds: string[]
 }
 type RouteMatch = {
@@ -69,7 +71,7 @@ async function route(pageContext: PageContextForRoute): Promise<{
   const allPageIds = pageContext._allPageIds
   assert(allPageIds.length >= 0)
   assertUsage(
-    pageContext._pageFilesAll.length > 0,
+    pageContext._pageFilesAll.length > 0 || pageContext._pageConfigs.length > 0,
     'No *.page.js file found. You must create at least one *.page.js file.'
   )
   assertUsage(allPageIds.length > 0, "You must create at least one *.page.js file that isn't _default.page.*")

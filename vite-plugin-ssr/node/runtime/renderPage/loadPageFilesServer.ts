@@ -9,16 +9,18 @@ import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPa
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { MediaType } from '../helpers'
+import type { PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfig[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
-    loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageId),
+    loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =

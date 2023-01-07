@@ -20,8 +20,9 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
   assert(hasProp(pageFilesExports, 'pageConfigFiles', 'object'))
+  assert(hasProp(pageFilesExports, 'pageCodeLoaders', 'object'))
 
-  const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles)
+  const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles, pageFilesExports.pageCodeLoaders)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {

@@ -41,6 +41,7 @@ import { setProduction } from '../../shared/setProduction'
 import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
+import { PageConfig } from '../../shared/getPageFiles/getPageConfigsFromGlob'
 
 type HtmlFile = {
   urlOriginal: string
@@ -68,6 +69,7 @@ type PageContext = {
   _urlHandler: null
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
   _baseAssets: null | string
   _includeAssetsImportedByServer: boolean
   _pageContextAlreadyProvidedByPrerenderHook?: true

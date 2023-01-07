@@ -21,6 +21,7 @@ import { releasePageContext } from './releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
+import type { PageConfig } from '../../shared/getPageFiles/getPageConfigsFromGlob'
 
 export { getPageContext }
 export { getPageContextErrorPage }
@@ -54,6 +55,7 @@ async function getPageContext(
 
 async function getPageContextFirstRender(pageContext: {
   _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
   _isFirstRenderAttempt: true
   urlOriginal: string
 }): Promise<PageContextAddendum> {
@@ -67,7 +69,7 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId) // TODO
   )
 
   return pageContextAddendum
@@ -78,6 +80,7 @@ async function getPageContextErrorPage(pageContext: {
   _allPageIds: string[]
   _isFirstRenderAttempt: boolean
   _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
 }): Promise<PageContextAddendum> {
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (!errorPageId) {
@@ -92,7 +95,7 @@ async function getPageContextErrorPage(pageContext: {
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
   )
 
   return pageContextAddendum
@@ -109,7 +112,7 @@ async function getPageContextUponNavigation(
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
   )
 
   const pageContextFromHook = await onBeforeRenderExecute({ ...pageContext, ...pageContextAddendum })
@@ -136,7 +139,7 @@ async function getPageContextUponNavigation(
     objectAssign(pageContextAddendum, pageContextFromHook)
     objectAssign(
       pageContextAddendum,
-      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContextAddendum._pageId)
+      await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
     )
     return pageContextAddendum
   }
@@ -148,6 +151,7 @@ async function onBeforeRenderExecute(
     urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfig[]
   } & PageContextExports &
     PageContextPassThrough
 ): Promise<

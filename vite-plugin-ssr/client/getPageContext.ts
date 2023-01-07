@@ -31,12 +31,13 @@ function assertPristineUrl() {
 
 async function loadPageFilesClient(pageId: string) {
   const pageContextAddendum = {}
-  const { pageFilesAll } = await getPageFilesAll(true)
+  const { pageFilesAll, pageConfigs } = await getPageFilesAll(true)
   objectAssign(pageContextAddendum, {
-    _pageFilesAll: pageFilesAll
+    _pageFilesAll: pageFilesAll,
+    _pageConfigs: pageConfigs
   })
 
-  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageFilesAll, pageId))
+  objectAssign(pageContextAddendum, await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId))
 
   pageFilesAll
     .filter((p) => p.fileType !== '.page.server')

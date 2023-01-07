@@ -4,18 +4,31 @@ export { isValidPageConfigFile }
 export type { PageConfig }
 export type { PageConfigFile }
 export type { PageConfigValues }
+export type { PageConfigTmp }
 
 import { determinePageId2, determineRouteFromFilesystemPath } from '../route/deduceRouteStringFromFilesystemPath'
 import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../utils'
 import path from 'path' // TODO: remove from shared/
 
-type PageConfig = {
+type PageConfigInfo = {
   onRenderClient: string
   onRenderHtml: string
   Page?: string
   route: string | Function
   pageId2: string
 }
+
+type CodeExport = {
+  codeExportName: string
+  codeExportValue: unknown
+  codeExportFilePath: string
+}
+type PageConfigTmp = PageConfigInfo & {
+  loadCode: () => Promise<void>
+  codeExports: null | CodeExport[]
+}
+
+type PageConfig = PageConfigTmp
 
 type PageConfigValues = {
   onRenderClient?: string
@@ -29,7 +42,10 @@ type PageConfigFile = {
   pageConfigValues: PageConfigValues
 }
 
-function getPageConfigsFromGlob(globResult: Record<string, unknown>): PageConfig[] {
+function getPageConfigsFromGlob(
+  globResult: Record<string, unknown>,
+  pageCodeLoaders: Record<string, unknown>
+): PageConfig[] {
   const pageConfigFiles: PageConfigFile[] = []
   Object.entries(globResult).forEach(([pageConfigFilePath, pageConfigFileExports]) => {
     assert(isObject(pageConfigFileExports))
@@ -47,14 +63,46 @@ function getPageConfigsFromGlob(globResult: Record<string, unknown>): PageConfig
     })
   })
 
-  const pageConfigs = getPageConfigs(pageConfigFiles)
+  const pageConfigsInfo = getPageConfigs(pageConfigFiles)
+  const pageConfigs = pageConfigsInfo.map((pageConfigInfo) => {
+    const pageConfig: PageConfig = {
+      ...pageConfigInfo,
+      codeExports: null,
+      async loadCode() {
+        const load = pageCodeLoaders[pageConfigInfo.pageId2]
+        assert(isCallable(load))
+        const codeExports: CodeExport[] = []
+        {
+          const codeExportsUntyped: unknown = await load()
+          assert(Array.isArray(codeExportsUntyped))
+          codeExportsUntyped.forEach((codeExport) => {
+            assert(isObject(codeExport))
+            const { codeExportName, codeExportFilePath, codeExportFileExports } = codeExport
+            assert(isObject(codeExportFileExports))
+            assert(typeof codeExportName === 'string')
+            assert(typeof codeExportFilePath === 'string')
+            assertUsage('default' in codeExportFileExports, 'TODO')
+            assertUsage(Object.keys(codeExportFileExports).length === 1, 'TODO')
+            codeExports.push({
+              codeExportName,
+              codeExportFilePath,
+              codeExportValue: codeExportFileExports.default
+            })
+          })
+        }
+        pageConfig.codeExports = codeExports
+      }
+    }
+    return pageConfig
+  })
+
   return pageConfigs
 }
 
-function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfig[] {
+function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
   if (pageConfigFiles.length === 0) return [] // temporary
 
-  const pageConfigs: PageConfig[] = []
+  const pageConfigsInfo: PageConfigInfo[] = []
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   assert(pageConfigFilesAbstract.length === 1) // TODO
@@ -86,7 +134,7 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfig[] {
 
       const pageId2 = determinePageId2(pageConfigFilePath)
 
-      pageConfigs.push({
+      pageConfigsInfo.push({
         onRenderHtml,
         onRenderClient,
         Page,
@@ -95,7 +143,7 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfig[] {
       })
     })
 
-  return pageConfigs
+  return pageConfigsInfo
 }
 
 function isAbstract(pageConfigFile: PageConfigFile): boolean {

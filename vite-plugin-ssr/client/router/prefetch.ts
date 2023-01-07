@@ -19,10 +19,10 @@ async function prefetch(url: string): Promise<void> {
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
 
-  const { pageId, pageFilesAll } = await getPageId(url)
+  const { pageId, pageFilesAll, pageConfigs } = await getPageId(url) // TODO
   if (pageId) {
     try {
-      await loadPageFilesClientSide(pageFilesAll, pageId)
+      await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId)
     } catch (err) {
       if (isErrorFetchingStaticAssets(err)) {
         disableClientRouting(err, true)

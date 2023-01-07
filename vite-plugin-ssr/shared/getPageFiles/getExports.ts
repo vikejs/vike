@@ -7,6 +7,7 @@ import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType } from './fileTypes'
+import { PageConfig } from './getPageConfigsFromGlob'
 import type { PageFile } from './getPageFileObject'
 
 type ExportsAll = Record<
@@ -24,9 +25,8 @@ type PageContextExports = {
   exports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[]): PageContextExports {
+function getExports(pageFiles: PageFile[], pageConfigs: PageConfig[]): PageContextExports {
   const exportsAll: ExportsAll = {}
-
   pageFiles.forEach((pageFile) => {
     const exportValues = getExportValues(pageFile)
     exportValues.forEach(({ exportName, exportValue, isFromDefaultExport }) => {
@@ -36,9 +36,24 @@ function getExports(pageFiles: PageFile[]): PageContextExports {
         exportValue,
         filePath: pageFile.filePath,
         // @ts-expect-error
-        _filePath: pageFile.filePath,
+        _filePath: pageFile.filePath, // TODO/next-major-release: remove
         _fileType: pageFile.fileType,
         _isFromDefaultExport: isFromDefaultExport
+      })
+    })
+  })
+  pageConfigs.forEach((pageConfig) => {
+    const { codeExports } = pageConfig
+    assert(codeExports) // pageConfig.loadCode() should already have been called
+    codeExports.forEach(({ codeExportName, codeExportValue, codeExportFilePath }) => {
+      const exportName = codeExportName
+      exportsAll[exportName] = exportsAll[exportName] ?? []
+      exportsAll[exportName]!.push({
+        exportValue: codeExportValue,
+        filePath: codeExportFilePath,
+        // @ts-ignore
+        _fileType: 'TODO',
+        _isFromDefaultExport: false // TODO
       })
     })
   })

@@ -4,7 +4,7 @@ import { getPageId } from '../getPageId'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
 
 async function isClientSideRenderable(url: string): Promise<boolean> {
-  const { pageId, pageFilesAll } = await getPageId(url)
+  const { pageId, pageFilesAll } = await getPageId(url) // TODO
   if (!pageId) {
     return false
   }

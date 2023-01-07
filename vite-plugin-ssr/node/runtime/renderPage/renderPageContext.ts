@@ -36,10 +36,12 @@ import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } 
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageContextPromise } from '../html/injectAssets'
+import { PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
+  _pageConfigs: PageConfig[]
 }
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
@@ -189,6 +191,7 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
     ...pageContextInit,
     _objectCreatedByVitePluginSsr: true,
     _pageFilesAll: renderContext.pageFilesAll,
+    _pageConfigs: renderContext.pageConfigs,
     _allPageIds: renderContext.allPageIds,
     // The following is defined on `pageContext` because we can eventually make these non-global (e.g. sot that two pages can have different includeAssetsImportedByServer settings)
     _baseServer: globalContext.baseServer,
@@ -201,14 +204,16 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
 
 type RenderContext = {
   pageFilesAll: PageFile[]
+  pageConfigs: PageConfig[]
   allPageIds: string[]
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
-  const { pageFilesAll, allPageIds } = await getPageFilesAll(false, globalContext.isProduction)
+  const { pageFilesAll, allPageIds, pageConfigs } = await getPageFilesAll(false, globalContext.isProduction)
   const renderContext = {
     pageFilesAll: pageFilesAll,
+    pageConfigs,
     allPageIds: allPageIds
   }
   return renderContext
@@ -242,7 +247,6 @@ async function executeRenderHook(
     _pageId: string
     __getPageAssets: GetPageAssets
     _passToClient: string[]
-    _pageFilesAll: PageFile[]
     _isHtmlOnly: boolean
     _baseServer: string
     _pageFilePathsLoaded: string[]

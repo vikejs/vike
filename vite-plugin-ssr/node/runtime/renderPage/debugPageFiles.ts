@@ -6,6 +6,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import type { PageFile } from '../../../shared/getPageFiles'
 import pc from 'picocolors'
 import { assert, makeFirst, createDebugger } from '../../utils'
+import type { PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
 
 type PageContextDebug = {
   _routeMatches: 'ROUTE_ERROR' | RouteMatches
@@ -24,6 +25,7 @@ function debugPageFiles({
     urlOriginal: string
     _pageId: string
     _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfig[]
   } & PageContextDebug
   isHtmlOnly: boolean
   isClientRouting: boolean
@@ -36,7 +38,7 @@ function debugPageFiles({
   const debug = createDebugger('vps:pageFiles', { serialization: { emptyArray: 'None' } })
   const padding = '   - '
 
-  debug('All page files:', printPageFiles(pageContext._pageFilesAll, true))
+  debug('All page files:', printPageFiles(pageContext._pageFilesAll, true)) // TODO
   debug(`URL:`, pageContext.urlOriginal)
   debug.options({ serialization: { emptyArray: 'No match' } })(`Routing:`, printRouteMatches(pageContext._routeMatches))
   debug(`pageId:`, pageContext._pageId)

@@ -5,10 +5,10 @@ import { assert, assertUsage, isNotNullish } from '../utils'
 import { assertPageFilePath } from '../assertPageFilePath'
 import type { PageFile } from './getPageFileObject'
 
-function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string) {
+function getPageFilesClientSide(pageFilesAll: PageFile[], pageId: string): PageFile[] {
   return determine(pageFilesAll, pageId, true)
 }
-function getPageFilesServerSide(pageFilesAll: PageFile[], pageId: string) {
+function getPageFilesServerSide(pageFilesAll: PageFile[], pageId: string): PageFile[] {
   return determine(pageFilesAll, pageId, false)
 }
 function determine(pageFilesAll: PageFile[], pageId: string, envIsClient: boolean): PageFile[] {
