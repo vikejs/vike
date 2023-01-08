@@ -5,16 +5,20 @@ export type { PageConfig }
 export type { PageConfigFile }
 export type { PageConfigValues }
 
+// TODO: ensure that `route` isn't a file path but a route string (same for onBeforeRoute)
+
 import { determinePageId2, determineRouteFromFilesystemPath } from '../route/deduceRouteStringFromFilesystemPath'
 import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../utils'
 import path from 'path' // TODO: remove from shared/
 
-type PageConfigInfo = PageConfigValues & {
-  onRenderClient: string // required
-  onRenderHtml: string // required
-  pageId2: string
-  pageConfigFiles: PageConfigFile[]
-}
+const filePathConfigs = ['onRenderHtml', 'onRenderClient', 'onBeforeRoute', 'Page']
+
+type PageConfigRequired = 'onRenderClient' | 'onRenderHtml' | 'route'
+type PageConfigInfo = Omit<PageConfigValues, PageConfigRequired> &
+  Required<Pick<PageConfigValues, PageConfigRequired>> & {
+    pageId2: string
+    pageConfigFiles: PageConfigFile[]
+  }
 
 type CodeExport = {
   codeExportName: string
@@ -30,9 +34,11 @@ type PageConfigValues = {
   onRenderClient?: string
   onRenderHtml?: string
   onBeforeRoute?: Function
+  onBeforeRender?: Function
   passToClient?: string[]
   Page?: string
   route?: string | Function
+  iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean
 }
 type PageConfigFile = {
   pageConfigFilePath: string
@@ -108,20 +114,19 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
     .filter((p) => !isAbstract(p))
     .forEach((pageConfigFile) => {
       const { pageConfigFilePath, pageConfigValues } = pageConfigFile
-      const onRenderHtml =
-        resolvePathOptional(pageConfigValues.onRenderHtml, pageConfigFilePath) ||
-        resolvePathOptional(
-          pageConfigFileAbstract.pageConfigValues.onRenderHtml,
-          pageConfigFileAbstract.pageConfigFilePath
-        )
-      const onRenderClient =
-        resolvePathOptional(pageConfigValues.onRenderClient, pageConfigFilePath) ||
-        resolvePathOptional(
-          pageConfigFileAbstract.pageConfigValues.onRenderClient,
-          pageConfigFileAbstract.pageConfigFilePath
-        )
-      assert(onRenderHtml)
-      assert(onRenderClient)
+
+      const onRenderHtml = resolveConfigValue(pageConfigFile, pageConfigFilesAbstract, 'onRenderHtml')
+      assert(onRenderHtml) // TODO: assertUsage()
+      const onRenderClient = resolveConfigValue(pageConfigFile, pageConfigFilesAbstract, 'onRenderClient')
+      assert(onRenderClient) // TODO: assertUsage()
+      const passToClient = resolveConfigValue(pageConfigFile, pageConfigFilesAbstract, 'passToClient')
+      const onBeforeRender = resolveConfigValue(pageConfigFile, pageConfigFilesAbstract, 'onBeforeRender')
+      const onBeforeRoute = resolveConfigValue(pageConfigFile, pageConfigFilesAbstract, 'onBeforeRoute')
+      const iKnowThePerformanceRisksOfAsyncRouteFunctions = resolveConfigValue(
+        pageConfigFile,
+        pageConfigFilesAbstract,
+        'iKnowThePerformanceRisksOfAsyncRouteFunctions'
+      )
 
       let Page = pageConfigValues.Page
       if (Page) Page = resolvePath(Page, pageConfigFilePath)
@@ -133,26 +138,51 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
       const pageId2 = determinePageId2(pageConfigFilePath)
 
       pageConfigsInfo.push({
+        pageId2,
+        pageConfigFiles: [pageConfigFile, pageConfigFileAbstract], // TODO: there can be several abstract page configs + ensure order is right (specific first)
         onRenderHtml,
         onRenderClient,
         Page,
         route,
-        pageId2,
-        pageConfigFiles: [pageConfigFile, pageConfigFileAbstract] // TODO: there can be several abstract page configs + ensure order is right (specific first)
+        onBeforeRoute,
+        onBeforeRender,
+        passToClient,
+        iKnowThePerformanceRisksOfAsyncRouteFunctions
       })
     })
 
   return pageConfigsInfo
 }
 
+function resolveConfigValue<K extends keyof PageConfigValues>(
+  pageConfigFile: PageConfigFile,
+  pageConfigFilesAbstract: PageConfigFile[],
+  pageConfigName: K
+): PageConfigValues[K] | undefined {
+  let pageConfigValue: PageConfigValues[K] | undefined = undefined
+  for (const { pageConfigFilePath, pageConfigValues } of [pageConfigFile, ...pageConfigFilesAbstract]) {
+    pageConfigValue = pageConfigValues[pageConfigName]
+    if (pageConfigValue !== undefined) {
+      if (filePathConfigs.includes(pageConfigName)) {
+        assert(typeof pageConfigValue === 'string') // TODO: assertUsage()
+        pageConfigValue = resolvePath(pageConfigValue, pageConfigFilePath) as any
+      }
+      break
+    }
+  }
+  return pageConfigValue
+}
+
 function isAbstract(pageConfigFile: PageConfigFile): boolean {
   return !pageConfigFile.pageConfigValues.Page && !pageConfigFile.pageConfigValues.route
 }
 
+/*
 function resolvePathOptional(configValuePath: string | undefined, pageConfigFilePath: string): string | undefined {
   if (configValuePath === undefined) return undefined
   return resolvePath(configValuePath, pageConfigFilePath)
 }
+*/
 function resolvePath(configValuePath: string, pageConfigFilePath: string): string {
   assertPosixPath(configValuePath) // TODO: assertUsage()
   assertPosixPath(pageConfigFilePath)
@@ -184,7 +214,7 @@ function checkPageConfigFile(pageConfigFileExports: Record<string, unknown>): nu
   return null
 }
 
-/*
+/* TODO: remove
 type PageConfig = {
   onRenderHtml?: string | Function
   onRenderClient?: string | Function

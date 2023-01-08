@@ -11,11 +11,12 @@ export { findPageRouteFile }
 export type { PageRoutes }
 export type { RouteType }
 
-type PageRoutes = ({ pageId: string } & (
+type PageRoute = { pageId: string } & (
   | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM' }
   | { routeString: string; pageRouteFilePath: string; routeType: 'STRING' }
   | { routeFunction: Function; pageRouteFilePath: string; allowAsync: boolean; routeType: 'FUNCTION' }
-))[]
+)
+type PageRoutes = PageRoute[]
 type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
@@ -91,6 +92,33 @@ function getPageRoutes(
         assertUsage(false, `The default export of ${filePath} should be a string or a function.`)
       }
     })
+
+  pageConfigs.forEach((pageConfig) => {
+    const pageId = pageConfig.pageId2
+
+    let pageRoute: null | PageRoute = null
+    for (const pageConfigFile of pageConfig.pageConfigFiles) {
+      const { route } = pageConfigFile.pageConfigValues
+      if (route) {
+        assert(pageConfig.route === route)
+        const pageRouteFilePath = pageConfigFile.pageConfigFilePath
+        if (typeof route === 'string') {
+          pageRoute = { pageId, routeString: route, pageRouteFilePath, routeType: 'STRING' }
+        } else {
+          assert(isCallable(route))
+          const allowAsync = pageConfig.iKnowThePerformanceRisksOfAsyncRouteFunctions ?? false
+
+          pageRoute = { pageId, routeFunction: route, pageRouteFilePath, routeType: 'FUNCTION', allowAsync }
+        }
+        break
+      }
+    }
+    if (!pageRoute) {
+      const { route } = pageConfig
+      assert(typeof route === 'string')
+      pageRoute = { pageId, routeString: route, pageRouteFilePath: null, routeType: 'FILESYSTEM' }
+    }
+  })
   return pageRoutes
 }
 
@@ -139,7 +167,7 @@ function getGlobalHooks(
           const filePath = pageConfigFile.pageConfigFilePath
           assertUsage(
             isCallable(onBeforeRoute),
-            `The hook onBeforeRoute() defined by ${filePath} should be a function.`
+            `The hook onBeforeRoute() defined by ${filePath} should be a function.` // TODO: move assertUsage() to a central place containing all assertUsage()?
           )
           assert(onBeforeRoute === pageConfig.onBeforeRoute) // pageConfig.pageConfigFiles should have the right order
           onBeforeRouteHook = { filePath, onBeforeRoute }
