@@ -1,5 +1,8 @@
 export { generateImportGlobs }
 
+// TODO/next-major-version: remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
+//  - Systematically remove all pageFilesAll references does the trick?
+
 import type { Plugin, ResolvedConfig } from 'vite'
 import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions } from '../utils'
 import { debugGlob } from '../../utils'

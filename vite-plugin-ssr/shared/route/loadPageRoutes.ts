@@ -4,6 +4,7 @@ import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import type { PageConfig } from '../getPageFiles/getPageConfigsFromGlob'
+import { isCallable } from '../utils'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -23,12 +24,17 @@ async function loadPageRoutes(
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
-  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll)
-  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, allPageIds)
+  const { onBeforeRouteHook, filesystemRoots } = getGlobalHooks(pageFilesAll, pageConfigs)
+  const pageRoutes = getPageRoutes(filesystemRoots, pageFilesAll, pageConfigs, allPageIds)
   return { pageRoutes, onBeforeRouteHook }
 }
 
-function getPageRoutes(filesystemRoots: FilesystemRoot[], pageFilesAll: PageFile[], allPageIds: string[]): PageRoutes {
+function getPageRoutes(
+  filesystemRoots: FilesystemRoot[],
+  pageFilesAll: PageFile[],
+  pageConfigs: PageConfig[],
+  allPageIds: string[]
+): PageRoutes {
   const pageRoutes: PageRoutes = []
   allPageIds
     .filter((pageId) => !isErrorPageId(pageId))
@@ -88,7 +94,10 @@ function getPageRoutes(filesystemRoots: FilesystemRoot[], pageFilesAll: PageFile
   return pageRoutes
 }
 
-function getGlobalHooks(pageFilesAll: PageFile[]): {
+function getGlobalHooks(
+  pageFilesAll: PageFile[],
+  pageConfigs: PageConfig[]
+): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
 } {
@@ -121,6 +130,25 @@ function getGlobalHooks(pageFilesAll: PageFile[]): {
         })
       }
     })
+
+  pageConfigs.forEach((pageConfig) => {
+    if (pageConfig.onBeforeRoute) {
+      for (const pageConfigFile of pageConfig.pageConfigFiles) {
+        const onBeforeRoute = pageConfigFile.pageConfigValues.onBeforeRoute
+        if (onBeforeRoute) {
+          const filePath = pageConfigFile.pageConfigFilePath
+          assertUsage(
+            isCallable(onBeforeRoute),
+            `The hook onBeforeRoute() defined by ${filePath} should be a function.`
+          )
+          assert(onBeforeRoute === pageConfig.onBeforeRoute) // pageConfig.pageConfigFiles should have the right order
+          onBeforeRouteHook = { filePath, onBeforeRoute }
+          break
+        }
+      }
+    }
+  })
+
   return { onBeforeRouteHook, filesystemRoots }
 }
 

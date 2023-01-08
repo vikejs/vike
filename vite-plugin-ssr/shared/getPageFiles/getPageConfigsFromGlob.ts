@@ -4,18 +4,16 @@ export { isValidPageConfigFile }
 export type { PageConfig }
 export type { PageConfigFile }
 export type { PageConfigValues }
-export type { PageConfigTmp }
 
 import { determinePageId2, determineRouteFromFilesystemPath } from '../route/deduceRouteStringFromFilesystemPath'
 import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../utils'
 import path from 'path' // TODO: remove from shared/
 
-type PageConfigInfo = {
-  onRenderClient: string
-  onRenderHtml: string
-  Page?: string
-  route: string | Function
+type PageConfigInfo = PageConfigValues & {
+  onRenderClient: string // required
+  onRenderHtml: string // required
   pageId2: string
+  pageConfigFiles: PageConfigFile[]
 }
 
 type CodeExport = {
@@ -23,16 +21,15 @@ type CodeExport = {
   codeExportValue: unknown
   codeExportFilePath: string
 }
-type PageConfigTmp = PageConfigInfo & {
+type PageConfig = PageConfigInfo & {
   loadCode: () => Promise<void>
   codeExports: null | CodeExport[]
 }
 
-type PageConfig = PageConfigTmp
-
 type PageConfigValues = {
   onRenderClient?: string
   onRenderHtml?: string
+  onBeforeRoute?: Function
   passToClient?: string[]
   Page?: string
   route?: string | Function
@@ -109,7 +106,8 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
   const pageConfigFileAbstract = pageConfigFilesAbstract[0]!
   pageConfigFiles
     .filter((p) => !isAbstract(p))
-    .forEach(({ pageConfigFilePath, pageConfigValues }) => {
+    .forEach((pageConfigFile) => {
+      const { pageConfigFilePath, pageConfigValues } = pageConfigFile
       const onRenderHtml =
         resolvePathOptional(pageConfigValues.onRenderHtml, pageConfigFilePath) ||
         resolvePathOptional(
@@ -139,7 +137,8 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
         onRenderClient,
         Page,
         route,
-        pageId2
+        pageId2,
+        pageConfigFiles: [pageConfigFile, pageConfigFileAbstract] // TODO: there can be several abstract page configs + ensure order is right (specific first)
       })
     })
 
