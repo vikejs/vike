@@ -84,8 +84,18 @@ function getPageConfigsFromGlob(
             assert(isObject(codeExportFileExports))
             assert(typeof codeExportName === 'string')
             assert(typeof codeExportFilePath === 'string')
-            assertUsage('default' in codeExportFileExports, 'TODO')
-            assertUsage(Object.keys(codeExportFileExports).length === 1, 'TODO')
+            assertUsage(
+              !(codeExportName in codeExportFileExports),
+              `${codeExportFilePath} should have \`export default ${codeExportName}\` instead of \`export { ${codeExportName} }\``
+            )
+            const invalidExports = Object.keys(codeExportFileExports).filter((e) => e !== 'default')
+            assertUsage(
+              invalidExports.length === 0,
+              `${codeExportFilePath} has \`export { ${invalidExports.join(
+                ', '
+              )} }\` which is forbidden: it should have a single \`export default\` instead`
+            )
+            assertUsage('default' in codeExportFileExports, `${codeExportFilePath} should have a \`export default\``)
             codeExports.push({
               codeExportName,
               codeExportFilePath,

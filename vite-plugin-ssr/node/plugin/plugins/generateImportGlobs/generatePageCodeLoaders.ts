@@ -19,8 +19,8 @@ async function generatePageCodeLoaders(root: string): Promise<string> {
         lines.push(
           ...[
             `  {`,
-            `    codeExportName: ${codeExportName},`,
-            `    codeExportFilePath: ${codeExportFilePath},`,
+            `    codeExportName: '${codeExportName}',`,
+            `    codeExportFilePath: '${codeExportFilePath}',`,
             `    codeExportFileExports: await import('${codeExportFilePath}')`,
             `  },`
           ]

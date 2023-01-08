@@ -1,12 +1,11 @@
+export default onRenderHtml
+
 import React from 'react'
 import { renderToStream } from 'react-streaming/server'
 import { escapeInject } from 'vite-plugin-ssr'
 import { PageLayout } from './PageLayout'
 
-export { render }
-export { passToClient }
-
-async function render(pageContext) {
+async function onRenderHtml(pageContext) {
   const { Page, pageProps, userAgent } = pageContext
   const stream = await renderToStream(
     <PageLayout>

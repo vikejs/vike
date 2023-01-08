@@ -7,7 +7,7 @@ import type { PageFile } from '../getPageFileObject'
 
 async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageConfigs: PageConfig[], pageId: string) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+  await Promise.all([...pageFilesServerSide.map((p) => p.loadFile?.()), ...pageConfigs.map((p) => p.loadCode())])
   const { exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigs)
   return {
     exports,

@@ -1,5 +1,5 @@
 export default {
-  onRenderClient: './+config/onRenderClient.js',
-  onRenderHtml: './+config/onRenderHtml.js',
+  onRenderClient: './+config/onRenderClient.jsx',
+  onRenderHtml: './+config/onRenderHtml.jsx',
   passToClient: ['pageProps']
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import './index.css'
 
-export { Page }
+export default Page
 
 function Page() {
   return (
