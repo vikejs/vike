@@ -26,7 +26,11 @@ async function log404(pageContext: {
     return
   }
 
-  const { pageRoutes } = await loadPageRoutes(pageContext._pageFilesAll, pageContext._allPageIds)
+  const { pageRoutes } = await loadPageRoutes(
+    pageContext._pageFilesAll,
+    pageContext._pageConfigs,
+    pageContext._allPageIds
+  )
   assertUsage(
     pageRoutes.length > 0,
     'No page found. Create a file that ends with the suffix `.page.js` (or `.page.vue`, `.page.jsx`, ...).'

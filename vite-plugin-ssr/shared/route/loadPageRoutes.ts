@@ -3,6 +3,7 @@ import { isErrorPageId } from './error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
+import type { PageConfig } from '../getPageFiles/getPageConfigsFromGlob'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -18,6 +19,7 @@ type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
   pageFilesAll: PageFile[],
+  pageConfigs: PageConfig[],
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))

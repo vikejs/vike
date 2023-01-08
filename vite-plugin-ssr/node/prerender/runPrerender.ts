@@ -317,7 +317,11 @@ async function handlePagesWithStaticRoutes(
   concurrencyLimit: PLimit
 ) {
   // Pre-render pages with a static route
-  const { pageRoutes } = await loadPageRoutes(renderContext.pageFilesAll, renderContext.allPageIds)
+  const { pageRoutes } = await loadPageRoutes(
+    renderContext.pageFilesAll,
+    renderContext.pageConfigs,
+    renderContext.allPageIds
+  )
   await Promise.all(
     pageRoutes.map((pageRoute) =>
       concurrencyLimit(async () => {
