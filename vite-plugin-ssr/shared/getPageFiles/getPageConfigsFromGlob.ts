@@ -38,6 +38,8 @@ type PageConfigValues = {
   onBeforeRoute?: Function
   onBeforeRender?: Function
   passToClient?: string[]
+  clientRouting?: boolean,
+  clientEntry?: string
   Page?: string
   route?: string | Function
   iKnowThePerformanceRisksOfAsyncRouteFunctions?: boolean

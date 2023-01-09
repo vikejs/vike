@@ -2,14 +2,43 @@ export { analyzePageClientSide }
 export { analyzePageClientSideInit }
 
 import { analyzeExports } from './analyzePageClientSide/analyzeExports'
-import { determineClientEntry } from './analyzePageClientSide/determineClientEntry'
+import { determineClientEntry, getVPSClientEntry } from './analyzePageClientSide/determineClientEntry'
 import { getPageFilesClientSide } from './getAllPageIdFiles'
 import { getPageFilesServerSide } from './getAllPageIdFiles'
 import { assert } from '../utils'
 import { getExportNames } from './analyzePageClientSide/getExportNames'
 import type { PageFile } from './getPageFileObject'
+import type { PageConfig } from './getPageConfigsFromGlob'
+import { ClientDependency } from './analyzePageClientSide/ClientDependency'
 
-function analyzePageClientSide(pageFilesAll: PageFile[], pageId: string) {
+function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
+  if (pageConfig) {
+    const isClientRouting = pageConfig.clientRouting ?? false
+    const isHtmlOnly = !!pageConfig.clientEntry
+    const clientEntry: string = isHtmlOnly ? pageConfig.clientEntry! : getVPSClientEntry(isClientRouting)
+    assert(pageConfig.codeExports) // We assume pageConfig.loadCode() was already called
+    const clientDependencies: ClientDependency[] = pageConfig.codeExports.map((c) => ({
+      id: c.codeExportFilePath,
+      onlyAssets: false
+    }))
+    // clientDependencies.push({ id: pageConfig.onRenderHtml, onlyAssets: true }) // TODO: make sure onRenderHtml is an absolute path
+    // if( typeof pageConfig.Page === 'string') clientDependencies.push(...) // TODO: collect all file paths
+    clientDependencies.push({
+      id: clientEntry,
+      onlyAssets: false
+    })
+    const clientEntries: string[] = [clientEntry]
+    return {
+      isHtmlOnly,
+      isClientRouting,
+      clientEntries,
+      clientDependencies,
+      // pageFilesClientSide and pageFilesServerSide are only used for debugging
+      pageFilesClientSide: [],
+      pageFilesServerSide: []
+    }
+  }
+
   let pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const { isHtmlOnly, isClientRouting } = analyzeExports({ pageFilesClientSide, pageFilesServerSide, pageId })

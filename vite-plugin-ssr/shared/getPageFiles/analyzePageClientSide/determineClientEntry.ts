@@ -1,4 +1,5 @@
 export { determineClientEntry }
+export { getVPSClientEntry }
 
 import type { ClientDependency } from './ClientDependency'
 import type { PageFile } from '../../../shared/getPageFiles'
@@ -27,15 +28,19 @@ function determineClientEntry({
     clientEntries = pageFilesClientSide.map((p) => p.filePath)
   } else {
     // Add the vps client entry
-    const clientEntry = isClientRouting
-      ? // $userRoot/dist/client/entry-client-routing.js
-        '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
-      : // $userRoot/dist/client/entry-server-routing.js
-        '@@vite-plugin-ssr/dist/esm/client/entry.js'
+    const clientEntry = getVPSClientEntry(isClientRouting)
     clientDependencies.push({ id: clientEntry, onlyAssets: false })
     clientEntries = [clientEntry]
   }
 
   // console.log(pageFilesClientSide, pageFilesServerSide, clientDependencies, clientEntry)
   return { clientEntries, clientDependencies }
+}
+
+function getVPSClientEntry(isClientRouting: boolean) {
+  return isClientRouting
+    ? // $userRoot/dist/client/entry-client-routing.js
+      '@@vite-plugin-ssr/dist/esm/client/router/entry.js'
+    : // $userRoot/dist/client/entry-server-routing.js
+      '@@vite-plugin-ssr/dist/esm/client/entry.js'
 }

@@ -9,7 +9,7 @@ import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPa
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { MediaType } from '../helpers'
-import type { PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
+import { findPageConfig, PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
@@ -19,12 +19,14 @@ type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
+  const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
+
   const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
-    loadPageFilesServerSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContext._pageId),
+    loadPageFilesServerSide(pageContext._pageFilesAll, pageConfig, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    analyzePageClientSide(pageContext._pageFilesAll, pageContext._pageId)
+    analyzePageClientSide(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
     exports,
