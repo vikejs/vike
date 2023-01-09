@@ -25,8 +25,9 @@ type PageContextExports = {
   exports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], pageConfigs: PageConfig[]): PageContextExports {
+function getExports(pageFiles: PageFile[], pageConfig: PageConfig): PageContextExports {
   const exportsAll: ExportsAll = {}
+  // VPS 0.4
   pageFiles.forEach((pageFile) => {
     const exportValues = getExportValues(pageFile)
     exportValues.forEach(({ exportName, exportValue, isFromDefaultExport }) => {
@@ -42,7 +43,8 @@ function getExports(pageFiles: PageFile[], pageConfigs: PageConfig[]): PageConte
       })
     })
   })
-  pageConfigs.forEach((pageConfig) => {
+  // VPS 1.0
+  {
     const { codeExports } = pageConfig
     assert(codeExports) // pageConfig.loadCode() should already have been called
     codeExports.forEach(({ codeExportName, codeExportValue, codeExportFilePath }) => {
@@ -56,7 +58,7 @@ function getExports(pageFiles: PageFile[], pageConfigs: PageConfig[]): PageConte
         _isFromDefaultExport: false // TODO
       })
     })
-  })
+  }
 
   const pageExports = createObjectWithDeprecationWarning()
   const exports: Record<string, unknown> = {}

@@ -1,5 +1,5 @@
 import { getPageFilesClientSide, getExports, type PageFile, type PageContextExports } from '../shared/getPageFiles'
-import type { PageConfig } from '../shared/getPageFiles/getPageConfigsFromGlob'
+import { findPageConfig, PageConfig } from '../shared/getPageFiles/getPageConfigsFromGlob'
 
 export { loadPageFilesClientSide }
 export { isErrorFetchingStaticAssets }
@@ -12,11 +12,12 @@ async function loadPageFilesClientSide(
   pageId: string
 ): Promise<PageContextExports & { _pageFilesLoaded: PageFile[] }> {
   const pageFilesClientSide = getPageFilesClientSide(pageFilesAll, pageId)
+  const pageConfig = findPageConfig(pageConfigs, pageId)
   try {
     // prettier-ignore
     await Promise.all([
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
-      ...pageConfigs.map(p => p.loadCode())
+      pageConfig.loadCode()
     ])
   } catch (err: any) {
     if (err) {
@@ -24,7 +25,7 @@ async function loadPageFilesClientSide(
     }
     throw err
   }
-  const { exports, exportsAll, pageExports } = getExports(pageFilesClientSide, pageConfigs)
+  const { exports, exportsAll, pageExports } = getExports(pageFilesClientSide, pageConfig)
   const pageContextAddendum = {
     exports,
     exportsAll,

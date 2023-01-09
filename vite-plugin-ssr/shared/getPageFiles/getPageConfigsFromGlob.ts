@@ -1,6 +1,7 @@
 export { getPageConfigsFromGlob }
 export { getPageConfigs }
 export { isValidPageConfigFile }
+export { findPageConfig }
 export type { PageConfig }
 export type { PageConfigFile }
 export type { PageConfigValues }
@@ -286,3 +287,10 @@ function resolvePageConfig(pageConfigFileExports: Record<string, unknown>): Page
   return pageConfigUserDefined
 }
   */
+
+function findPageConfig(pageConfigs: PageConfig[], pageId2: string): PageConfig {
+  const result = pageConfigs.filter((p) => p.pageId2 === pageId2)
+  assert(result.length === 1)
+  const pageConfig = result[0]!
+  return pageConfig
+}
