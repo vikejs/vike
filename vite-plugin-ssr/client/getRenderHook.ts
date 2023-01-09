@@ -10,7 +10,7 @@ function assertRenderHook<
     urlOriginal?: string
     _pageId: string
   } & PageContextExports
->(pageContext: PC, bla: boolean): asserts pageContext is PC & { exports: { render: Function } } {
+>(pageContext: PC): asserts pageContext is PC & { exports: { render: Function } } {
   if (hasProp(pageContext.exports, 'render')) {
     assertHook(pageContext, 'render')
   } else {

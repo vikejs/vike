@@ -1,6 +1,6 @@
 import './pageFiles'
 import { getPageContext } from './getPageContext'
-import { assertRenderHook } from './assertRenderHook'
+import { assertRenderHook } from './getRenderHook'
 import { assertHook } from '../shared/getHook'
 import { assertIsBundledOnce } from './utils'
 

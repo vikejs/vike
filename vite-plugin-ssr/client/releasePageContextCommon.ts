@@ -5,6 +5,8 @@ import { assert, assertUsage, isObject, objectAssign, getGlobalObject } from './
 import { sortPageContext } from '../shared/sortPageContext'
 import type { PageContextExports } from '../shared/getPageFiles'
 const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('releasePageContextCommon.ts', {})
+import type { PageContextBuiltInClient as PageContextBuiltInClientServerRouter } from './types'
+import type { PageContextBuiltInClient as PageContextBuiltInClientClientRouter } from './router/types'
 
 type PageContextRelease = PageContextExports & {
   _pageContextRetrievedFromServer: null | Record<string, unknown>
@@ -23,7 +25,20 @@ type PageContextRelease = PageContextExports & {
 // // See entire example at `/examples/vue-full/`
 // const pageContextReactive = reactive(pageContext)
 // ```
-function releasePageContextCommon<T extends PageContextRelease>(pageContext: T) {
+function releasePageContextCommon<T extends PageContextRelease>(
+  pageContext: T,
+  isClientRouter: boolean
+): T & { Page: unknown } {
+  if (isClientRouter) {
+    const pageContextTyped = pageContext as any as PageContextBuiltInClientClientRouter
+    assert([true, false].includes(pageContextTyped.isHydration))
+    assert([true, false, null].includes(pageContextTyped.isBackwardNavigation))
+  } else {
+    const pageContextTyped = pageContext as any as PageContextBuiltInClientServerRouter
+    assert(pageContextTyped.isHydration === true)
+    assert(pageContextTyped.isBackwardNavigation === null)
+  }
+
   assert('exports' in pageContext)
   assert('exportsAll' in pageContext)
   assert('pageExports' in pageContext)
