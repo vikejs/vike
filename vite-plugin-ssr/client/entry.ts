@@ -1,6 +1,6 @@
 import './pageFiles'
 import { getPageContext } from './getPageContext'
-import { executeOnClientRender } from './executeRenderHook'
+import { executeOnClientRender } from './executeOnClientRender'
 import { assertHook } from '../shared/getHook'
 import { assertIsBundledOnce } from './utils'
 
