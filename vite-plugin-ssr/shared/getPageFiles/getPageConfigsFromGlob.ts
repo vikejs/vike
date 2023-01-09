@@ -12,7 +12,8 @@ import { determinePageId2, determineRouteFromFilesystemPath } from '../route/ded
 import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../utils'
 // import path from 'path' // TODO: can we use move this file from shared/ to node/ and then use path?
 
-const filePathConfigs = ['onRenderHtml', 'onRenderClient', 'onBeforeRoute', 'Page']
+const filePathConfigs = ['onRenderHtml', 'onRenderClient', 'onBeforeRoute', 'Page'] as const // TODO
+const directConfigs = ['passToClient'] as const // TODO
 
 type PageConfigRequired = 'onRenderClient' | 'onRenderHtml' | 'route'
 type PageConfigInfo = Omit<PageConfigValues, PageConfigRequired> &
@@ -73,10 +74,11 @@ function getPageConfigsFromGlob(
       ...pageConfigInfo,
       codeExports: null,
       async loadCode() {
-        const load = pageCodeLoaders[pageConfigInfo.pageId2]
-        assert(isCallable(load))
         const codeExports: CodeExport[] = []
+
         {
+          const load = pageCodeLoaders[pageConfigInfo.pageId2]
+          assert(isCallable(load))
           const codeExportsUntyped: unknown = await load()
           assert(Array.isArray(codeExportsUntyped))
           codeExportsUntyped.forEach((codeExport) => {
@@ -104,6 +106,24 @@ function getPageConfigsFromGlob(
             })
           })
         }
+
+        // TODO: rename codeExports
+        {
+          directConfigs.forEach((configName) => {
+            for (const { pageConfigFilePath, pageConfigValues } of pageConfigFiles) {
+              const codeExportValue = pageConfigValues[configName]
+              if (codeExportValue !== undefined) {
+                codeExports.push({
+                  codeExportName: configName, // Unify naming
+                  codeExportFilePath: pageConfigFilePath,
+                  codeExportValue: pageConfigValues[configName]
+                })
+                break
+              }
+            }
+          })
+        }
+
         pageConfig.codeExports = codeExports
       }
     }
@@ -174,7 +194,7 @@ function resolveConfigValue<K extends keyof PageConfigValues>(
   for (const { pageConfigFilePath, pageConfigValues } of [pageConfigFile, ...pageConfigFilesAbstract]) {
     pageConfigValue = pageConfigValues[pageConfigName]
     if (pageConfigValue !== undefined) {
-      if (filePathConfigs.includes(pageConfigName)) {
+      if ((filePathConfigs as readonly string[]).includes(pageConfigName)) {
         assert(typeof pageConfigValue === 'string') // TODO: assertUsage()
         pageConfigValue = resolvePath(pageConfigValue, pageConfigFilePath) as any
       }
