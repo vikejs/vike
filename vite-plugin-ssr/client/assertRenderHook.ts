@@ -17,7 +17,11 @@ function assertRenderHook<
     const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
     let errMsg: string
     if (pageClientsFilesLoaded.length === 0) {
-      const url = pageContext.urlOriginal ?? window.location.href
+      let url: string | undefined
+      try {
+        url = pageContext.urlOriginal
+      } catch {}
+      url = url ?? window.location.href
       errMsg = 'No file `*.page.client.*` found for URL ' + url
     } else {
       errMsg =
