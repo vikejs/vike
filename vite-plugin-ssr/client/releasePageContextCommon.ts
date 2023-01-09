@@ -105,10 +105,10 @@ function assertPassToClient(
   assertUsage(
     false,
     [
-      `\`pageContext.${prop}\` is not available in the browser.`,
-      `Make sure that \`passToClient.includes('${prop}')\`.`,
-      `(Currently \`passToClient\` is \`[${passToClientInferred.map((prop) => `'${prop}'`).join(', ')}]\`.)`,
-      'See https://vite-plugin-ssr.com/passToClient'
+      `pageContext.${prop} isn't available in the browser.`,
+      `Make sure to add '${prop}' to passToClient`,
+      `(passToClient is [${passToClientInferred.map((prop) => `'${prop}'`).join(', ')}]),`,
+      `see https://vite-plugin-ssr.com/passToClient`
     ].join(' ')
   )
 }

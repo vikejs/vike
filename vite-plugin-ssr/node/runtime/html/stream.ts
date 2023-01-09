@@ -811,7 +811,7 @@ function assertReadableStreamConstructor() {
   assertUsage(
     typeof ReadableStream === 'function',
     // Error message copied from vue's `renderToWebStream()` implementation
-    `ReadableStream constructor is not available in the global scope. ` +
+    `ReadableStream constructor isn't available in the global scope. ` +
       `If the target environment does support web streams, consider using ` +
       `pipeToWebWritable() with an existing WritableStream instance instead.`
   )
