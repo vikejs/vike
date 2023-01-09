@@ -214,7 +214,7 @@ export const neverLoaded = {};
 export const isGeneratedFile = true;
 
 export const pageConfigFiles = import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true });
-${await generatePageCodeLoaders(config.root)}
+${await generatePageCodeLoaders(config.root, isForClientSide)}
 
 `
 
