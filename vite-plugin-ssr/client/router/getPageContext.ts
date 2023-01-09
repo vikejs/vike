@@ -17,7 +17,7 @@ import type { PageContextUrls } from '../../shared/addComputedUrlProps'
 import { assertHookResult } from '../../shared/assertHookResult'
 import { getErrorPageId, PageContextForRoute, route } from '../../shared/route'
 import { getHook } from '../../shared/getHook'
-import { releasePageContext } from './releasePageContext'
+import { releasePageContext } from '../releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
@@ -168,10 +168,13 @@ async function onBeforeRenderExecute(
       _comesDirectlyFromServer: false,
       _pageContextRetrievedFromServer: null
     }
-    const pageContextReadyForRelease = releasePageContext({
-      ...pageContext,
-      ...pageContextAddendum
-    })
+    const pageContextReadyForRelease = releasePageContext(
+      {
+        ...pageContext,
+        ...pageContextAddendum
+      },
+      true
+    )
     const hookResult = await callHookWithTimeout(
       () => onBeforeRender(pageContextReadyForRelease),
       'onBeforeRender',

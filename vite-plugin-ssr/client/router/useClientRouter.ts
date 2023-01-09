@@ -15,7 +15,7 @@ import {
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
-import { releasePageContext } from './releasePageContext'
+import { releasePageContext } from '../releasePageContext'
 import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
@@ -205,7 +205,7 @@ function useClientRouter() {
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      const pageContextReadyForRelease = releasePageContext(pageContext)
+      const pageContextReadyForRelease = releasePageContext(pageContext, true)
       assertRenderHook(pageContext)
       const hookFilePath = pageContext.exportsAll.render![0]!.filePath
       assert(hookFilePath)

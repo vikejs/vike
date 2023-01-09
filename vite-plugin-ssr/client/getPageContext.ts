@@ -16,7 +16,7 @@ async function getPageContext() {
   objectAssign(pageContext, await loadPageFilesClient(pageContext._pageId))
 
   assertPristineUrl()
-  const pageContextReadyForRelease = releasePageContext(pageContext)
+  const pageContextReadyForRelease = releasePageContext(pageContext, false)
   checkType<PageContextBuiltInClient>(pageContextReadyForRelease)
   return pageContextReadyForRelease
 }
