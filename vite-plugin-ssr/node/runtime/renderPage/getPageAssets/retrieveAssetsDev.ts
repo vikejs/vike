@@ -7,7 +7,6 @@ import type { ClientDependency } from '../../../../shared/getPageFiles/analyzePa
 async function retrieveAssetsDev(clientDependencies: ClientDependency[], viteDevServer: ViteDevServer) {
   const visitedModules = new Set<string>()
   const assetUrls = new Set<string>()
-  console.log('clientDependencies', clientDependencies)
   await Promise.all(
     clientDependencies.map(async ({ id }) => {
       if (id.startsWith('@@vite-plugin-ssr')) return // vps doesn't have any CSS

@@ -38,7 +38,7 @@ type PageConfigValues = {
   onBeforeRoute?: Function
   onBeforeRender?: Function
   passToClient?: string[]
-  clientRouting?: boolean,
+  clientRouting?: boolean
   clientEntry?: string
   Page?: string
   route?: string | Function
@@ -245,7 +245,8 @@ function pathJoin(path1: string, path2: string): string {
 function parsePath(path_: string) {
   assertPosixPath(path_)
   const isAbsolute = path_.startsWith('/')
-  const parts = path_.split('/').filter(Boolean)
+  let parts = path_.split('/').filter(Boolean)
+  if (parts[0] === '.') parts = parts.slice(1)
   return { isAbsolute, parts }
 }
 
