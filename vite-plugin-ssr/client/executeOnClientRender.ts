@@ -1,15 +1,17 @@
 export { executeOnClientRender }
 
-import { assert, assertUsage, callHookWithTimeout, hasProp, isCallable } from './utils'
-import { assertHook, getHook, type Hook } from '../shared/getHook'
+import { assert, assertUsage, callHookWithTimeout } from './utils'
+import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
+import type { PageConfig } from '../shared/getPageFiles/getPageConfigsFromGlob'
 
 async function executeOnClientRender<
   PC extends {
     _pageFilesLoaded: PageFile[]
     urlOriginal?: string
     _pageId: string
+    _pageConfigs: PageConfig[]
   } & PageContextExports &
     PageContextRelease
 >(pageContext: PC, isClientRouter: boolean): Promise<void> {
@@ -32,26 +34,29 @@ async function executeOnClientRender<
     }
   }
 
-  /* TODO
-  if (!hasProp(pageContext.exports, 'render')) {
+  if (!hook) {
     const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
     let errMsg: string
-    if (pageClientsFilesLoaded.length === 0) {
-      let url: string | undefined
-      // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextReadyForRelease
-      try {
-        url = pageContext.urlOriginal
-      } catch {}
-      url = url ?? window.location.href
-      errMsg = 'No file `*.page.client.*` found for URL ' + url // TODO
+    if (pageContext._pageConfigs.length > 0) {
+      // assertUsage(false, 'No onRenderClient() hook found. None of your config files define onRenderClient(): '+ pageContext._pageFilesLoaded.map(p => p.pageConfigFilePath).join(' ')) // TODO: define and use pageContext._pageConfigFiles
+      assertUsage(false, 'No onRenderClient() hook found') // TODO: define and use pageContext._pageConfigFiles
     } else {
-      errMsg =
-        'One of the following files should export a `render()` hook: ' + // TODO
-        pageClientsFilesLoaded.map((p) => p.filePath).join(' ')
+      if (pageClientsFilesLoaded.length === 0) {
+        let url: string | undefined
+        // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextReadyForRelease
+        try {
+          url = pageContext.urlOriginal
+        } catch {}
+        url = url ?? window.location.href
+        errMsg = 'No file `*.page.client.*` found for URL ' + url // TODO
+      } else {
+        errMsg =
+          'One of the following files should export a `render()` hook: ' + // TODO
+          pageClientsFilesLoaded.map((p) => p.filePath).join(' ')
+      }
+      assertUsage(false, errMsg)
     }
-    assertUsage(false, errMsg)
   }
-  */
 
   assert(hook)
   const renderHook = hook.hook
