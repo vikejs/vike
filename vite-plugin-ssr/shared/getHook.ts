@@ -20,7 +20,7 @@ function getHook(
   const { filePath } = file
   assert(filePath)
   assert(!hookName.endsWith(')'))
-  assertUsage(isCallable(hook), `\`export { ${hookName} }\` of ${filePath} should be a function`)
+  assertUsage(isCallable(hook), `hook ${hookName}() defined by ${filePath} should be a function`)
   return { hook, filePath }
 }
 
