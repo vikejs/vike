@@ -1,6 +1,6 @@
 import './pageFiles'
 import { getPageContext } from './getPageContext'
-import { assertRenderHook } from './getRenderHook'
+import { executeOnClientRender } from './getRenderHook'
 import { assertHook } from '../shared/getHook'
 import { assertIsBundledOnce } from './utils'
 
@@ -9,8 +9,7 @@ hydrate()
 
 async function hydrate() {
   const pageContext = await getPageContext()
-  assertRenderHook(pageContext)
-  await pageContext.exports.render(pageContext)
+  await executeOnClientRender(pageContext, false)
   assertHook(pageContext, 'onHydrationEnd')
   await pageContext.exports.onHydrationEnd?.(pageContext)
 }

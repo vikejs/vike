@@ -1,19 +1,23 @@
-import { assertUsage, hasProp } from './utils'
+export { executeOnClientRender }
+
+import { assert, assertUsage, callHookWithTimeout, hasProp } from './utils'
 import { assertHook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
+import { type PageContextRelease, releasePageContext } from './releasePageContext'
 
-export { assertRenderHook }
-
-function assertRenderHook<
+async function executeOnClientRender<
   PC extends {
     _pageFilesLoaded: PageFile[]
     urlOriginal?: string
     _pageId: string
-  } & PageContextExports
->(pageContext: PC): asserts pageContext is PC & { exports: { render: Function } } {
-  if (hasProp(pageContext.exports, 'render')) {
-    assertHook(pageContext, 'render')
-  } else {
+  } & PageContextExports &
+    PageContextRelease
+>(pageContext: PC, isClientRouter: boolean): Promise<void> {
+  const pageContextReadyForRelease = releasePageContext(pageContext, isClientRouter)
+
+  // const renderHook = pageContext.exports.render
+
+  if (!hasProp(pageContext.exports, 'render')) {
     const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
     let errMsg: string
     if (pageClientsFilesLoaded.length === 0) {
@@ -30,4 +34,16 @@ function assertRenderHook<
     }
     assertUsage(false, errMsg)
   }
+
+  assertHook(pageContext, 'render')
+
+  const hookFilePath = pageContext.exportsAll.render![0]!.filePath
+  assert(hookFilePath)
+  // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
+  const hookResult = await callHookWithTimeout(
+    () => pageContext.exports.render!(pageContextReadyForRelease),
+    'render',
+    hookFilePath
+  )
+  assertUsage(hookResult === undefined, `The render() hook of ${hookFilePath} isn't allowed to return a value`)
 }

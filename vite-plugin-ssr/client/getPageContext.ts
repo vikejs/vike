@@ -1,6 +1,4 @@
-import { assertUsage, assertWarning, checkType, getCurrentUrl, objectAssign } from './utils'
-import type { PageContextBuiltInClient } from './types'
-import { releasePageContext } from './releasePageContext'
+import { assertUsage, assertWarning, getCurrentUrl, objectAssign } from './utils'
 import { getPageContextSerializedInHtml } from './getPageContextSerializedInHtml'
 import { getPageFilesAll } from '../shared/getPageFiles'
 import { loadPageFilesClientSide } from './loadPageFilesClientSide'
@@ -12,13 +10,9 @@ const urlFirst = getCurrentUrl({ withoutHash: true })
 async function getPageContext() {
   const pageContext = getPageContextSerializedInHtml()
   objectAssign(pageContext, { isHydration: true as const, isBackwardNavigation: null })
-
   objectAssign(pageContext, await loadPageFilesClient(pageContext._pageId))
-
   assertPristineUrl()
-  const pageContextReadyForRelease = releasePageContext(pageContext, false)
-  checkType<PageContextBuiltInClient>(pageContextReadyForRelease)
-  return pageContextReadyForRelease
+  return pageContext
 }
 
 function assertPristineUrl() {

@@ -3,7 +3,6 @@ export { disableClientRouting }
 
 import {
   assert,
-  assertUsage,
   getCurrentUrl,
   isSameErrorMessage,
   objectAssign,
@@ -15,11 +14,10 @@ import {
 } from './utils'
 import { navigationState } from '../navigationState'
 import { getPageContext, getPageContextErrorPage } from './getPageContext'
-import { releasePageContext } from '../releasePageContext'
 import { createPageContext } from './createPageContext'
 import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
-import { assertRenderHook } from '../getRenderHook'
+import { executeOnClientRender } from '../getRenderHook'
 import { assertHook } from '../../shared/getHook'
 import { isClientSideRenderable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
@@ -205,17 +203,7 @@ function useClientRouter() {
     navigationState.markNavigationChange()
     assert(renderPromise === undefined)
     renderPromise = (async () => {
-      const pageContextReadyForRelease = releasePageContext(pageContext, true)
-      assertRenderHook(pageContext)
-      const hookFilePath = pageContext.exportsAll.render![0]!.filePath
-      assert(hookFilePath)
-      // We don't use a try-catch wrapper because rendering errors are usually handled by the UI framework. (E.g. React's Error Boundaries.)
-      const hookResult = await callHookWithTimeout(
-        () => pageContext.exports.render(pageContextReadyForRelease),
-        'render',
-        hookFilePath
-      )
-      assertUsage(hookResult === undefined, `The render() hook of ${hookFilePath} isn't allowed to return a value`)
+      await executeOnClientRender(pageContext, true)
       addLinkPrefetchHandlers(pageContext)
     })()
     await renderPromise

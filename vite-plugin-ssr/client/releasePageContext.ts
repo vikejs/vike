@@ -1,7 +1,7 @@
 export { releasePageContext }
 export type { PageContextRelease }
 
-import { assert, assertUsage, isObject, objectAssign, getGlobalObject } from './utils'
+import { assert, assertUsage, isObject, objectAssign, getGlobalObject, checkType } from './utils'
 import { sortPageContext } from '../shared/sortPageContext'
 import type { PageContextExports } from '../shared/getPageFiles'
 const globalObject = getGlobalObject<{ disableAssertPassToClient?: string }>('releasePageContext.ts', {})
