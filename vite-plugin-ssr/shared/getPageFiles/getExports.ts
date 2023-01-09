@@ -25,7 +25,7 @@ type PageContextExports = {
   exports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], pageConfig: PageConfig): PageContextExports {
+function getExports(pageFiles: PageFile[], pageConfig: PageConfig | null): PageContextExports {
   const exportsAll: ExportsAll = {}
   // VPS 0.4
   pageFiles.forEach((pageFile) => {
@@ -44,7 +44,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfig): PageContextE
     })
   })
   // VPS 1.0
-  {
+  if (pageConfig) {
     const { codeExports } = pageConfig
     assert(codeExports) // pageConfig.loadCode() should already have been called
     codeExports.forEach(({ codeExportName, codeExportValue, codeExportFilePath }) => {

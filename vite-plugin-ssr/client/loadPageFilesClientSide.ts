@@ -17,7 +17,7 @@ async function loadPageFilesClientSide(
     // prettier-ignore
     await Promise.all([
       ...pageFilesClientSide.map((p) => p.loadFile?.()),
-      pageConfig.loadCode()
+      pageConfig?.loadCode()
     ])
   } catch (err: any) {
     if (err) {

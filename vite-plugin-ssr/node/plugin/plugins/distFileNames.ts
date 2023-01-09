@@ -44,7 +44,12 @@ function distFileNames(): Plugin {
   }
 }
 
-const BLACK_LIST = ['assertRenderHook.css']
+const BLACK_LIST: string[] = [
+  /* There use to exist a file client/assertRenderHook.ts
+   * We need to check whether we still need such black list for Rollup 4
+  'assertRenderHook.css'
+  */
+]
 function getAssetFileName(assetInfo: PreRenderedAsset, config: ResolvedConfig): string {
   const assetsDir = getAssetsDir(config)
   const filename = assetInfo.name && path.basename(assetInfo.name)

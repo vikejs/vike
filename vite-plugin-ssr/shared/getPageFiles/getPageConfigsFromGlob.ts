@@ -308,9 +308,9 @@ function resolvePageConfig(pageConfigFileExports: Record<string, unknown>): Page
 }
   */
 
-function findPageConfig(pageConfigs: PageConfig[], pageId2: string): PageConfig {
+function findPageConfig(pageConfigs: PageConfig[], pageId2: string): null | PageConfig {
   const result = pageConfigs.filter((p) => p.pageId2 === pageId2)
-  assert(result.length === 1)
-  const pageConfig = result[0]!
+  assert(result.length <= 1)
+  const pageConfig = result[0] ?? null
   return pageConfig
 }
