@@ -9,7 +9,7 @@ export type { PageConfigValues }
 
 import { determinePageId2, determineRouteFromFilesystemPath } from '../route/deduceRouteStringFromFilesystemPath'
 import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../utils'
-import path from 'path' // TODO: remove from shared/
+// import path from 'path' // TODO: can we use move this file from shared/ to node/ and then use path?
 
 const filePathConfigs = ['onRenderHtml', 'onRenderClient', 'onBeforeRoute', 'Page']
 
@@ -197,10 +197,33 @@ function resolvePath(configValuePath: string, pageConfigFilePath: string): strin
   assertPosixPath(configValuePath) // TODO: assertUsage()
   assertPosixPath(pageConfigFilePath)
   assert(pageConfigFilePath.startsWith('/pages/'), pageConfigFilePath) // TODO: remove
-  let p = path.posix.join(path.posix.dirname(pageConfigFilePath), configValuePath)
+  let p = pathJoin(pathDirname(pageConfigFilePath), configValuePath)
   assert(p.startsWith('/'), p)
   assert(p.startsWith('/pages/'), p) // TODO: remove
   return p
+}
+
+// TODO: Maybe not needed if we move this file to node/
+// Node.js code/shim: https://github.com/jinder/path
+function pathDirname(path_: string): string {
+  const { isAbsolute, parts } = parsePath(path_)
+  assert(isAbsolute)
+  const fileDir = '/' + parts.slice(0, -1).join('/')
+  assert(!fileDir.endsWith('/'))
+  return fileDir
+}
+function pathJoin(path1: string, path2: string): string {
+  assert(!path2.startsWith('..')) // TODO
+  const { isAbsolute, parts } = parsePath(path1)
+  let path_ = [...parts, ...parsePath(path2).parts].join('/')
+  if (isAbsolute) path_ = '/' + path_
+  return path_
+}
+function parsePath(path_: string) {
+  assertPosixPath(path_)
+  const isAbsolute = path_.startsWith('/')
+  const parts = path_.split('/').filter(Boolean)
+  return { isAbsolute, parts }
 }
 
 // TODO: write error messages
