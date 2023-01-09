@@ -38,7 +38,13 @@ async function executeOnClientRender<
     const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
     let errMsg: string
     if (pageContext._pageConfigs.length > 0) {
-      // assertUsage(false, 'No onRenderClient() hook found. None of your config files define onRenderClient(): '+ pageContext._pageFilesLoaded.map(p => p.pageConfigFilePath).join(' ')) // TODO: define and use pageContext._pageConfigFiles
+      /*
+      if ( !pageContext._pageConfigFiles.some(p => 'onClientRender' in p.pageConfigValues) ) {
+        assertUsage(false, 'No onRenderClient() hook found. None of your config files define onRenderClient(): '+ pageContext._pageFilesLoaded.map(p => p.pageConfigFilePath).join(' ')) // TODO: define and use pageContext._pageConfigFiles
+      } else {
+        assertUsage(false, 'No onRenderClient() hook found for URL ...); // TODO: show URL + show relevant page config files 
+      }
+      */
       assertUsage(false, 'No onRenderClient() hook found') // TODO: define and use pageContext._pageConfigFiles
     } else {
       if (pageClientsFilesLoaded.length === 0) {
