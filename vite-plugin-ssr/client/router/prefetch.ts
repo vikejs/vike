@@ -19,7 +19,7 @@ async function prefetch(url: string): Promise<void> {
   if (isAlreadyPrefetched(url)) return
   markAsAlreadyPrefetched(url)
 
-  const { pageId, pageFilesAll, pageConfigs } = await getPageId(url) // TODO
+  const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)
   if (pageId) {
     try {
       await loadPageFilesClientSide(pageFilesAll, pageConfigs, pageId)

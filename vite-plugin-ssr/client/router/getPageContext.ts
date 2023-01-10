@@ -69,7 +69,7 @@ async function getPageContextFirstRender(pageContext: {
 
   objectAssign(
     pageContextAddendum,
-    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId) // TODO
+    await loadPageFilesClientSide(pageContext._pageFilesAll, pageContext._pageConfigs, pageContextAddendum._pageId)
   )
 
   return pageContextAddendum
