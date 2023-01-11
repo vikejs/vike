@@ -34,7 +34,8 @@ function generateImportGlobs(): Plugin {
       config = config_
     },
     resolveId(id) {
-      return getVirtualId(id)
+      const idVirtual = getVirtualId(id)
+      return idVirtual
     },
     async load(id_, options) {
       const id = getRealId(id_)

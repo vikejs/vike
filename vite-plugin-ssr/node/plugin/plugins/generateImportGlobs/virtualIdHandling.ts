@@ -11,10 +11,11 @@ import {
 const idsVirtual = [virtualModuleIdPageFilesServer, virtualModuleIdPageFilesClientSR, virtualModuleIdPageFilesClientCR]
 const idsReal = idsVirtual.map((id) => '\0' + id)
 
-function getVirtualId(id: string): undefined | string {
-  const idx = idsVirtual.indexOf(id)
+function getVirtualId(idReal: string): undefined | string {
+  const idx = idsVirtual.indexOf(idReal)
   if (idx === -1) return undefined
-  return idsReal[idx]!
+  const idVirtual = idsReal[idx]!
+  return idVirtual
 }
 function getRealId(idVirtual: string): null | string {
   const idx = idsReal.indexOf(idVirtual)
