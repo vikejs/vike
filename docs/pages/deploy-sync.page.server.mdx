@@ -2,7 +2,7 @@ import { Link } from '@brillout/docpress'
 
 When you deploy a new version, then the user's client-side automatically transitions to the new deployed version when the user navigates to a new page.
 
-> **How does it work?** Whenever retrieving a static asset returns a `404`, then vite-plugin-ssr fallsback to <Link text="Server Routing" href="/server-routing" />. This effectively reloads the entire client-side when the user navigates to a new page. (This works because all static asset URLs contain a unique hash.)
+> **How does it work?** Whenever retrieving a static asset returns a `404`, then vite-plugin-ssr falls back temporarily to <Link text="Server Routing" href="/server-routing" />. At the point when the user navigates to a new page then the entire client-side is reloaded from the server (so static asset URLs are updated). (This works because all static asset URLs contain a unique hash.) Since the client-side is reloaded, any potential client-only state would be lost if not persisted (to local storage, for instance). After the reload the webapp resumes normal routing.
 >
 > It works automatically and there is nothing for you to do.
 >
