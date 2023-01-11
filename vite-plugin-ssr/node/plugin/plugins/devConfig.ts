@@ -3,7 +3,7 @@ export { devConfig }
 import type { Plugin, ResolvedConfig } from 'vite'
 import { searchForWorkspaceRoot } from 'vite'
 import { assert, isNotNullish } from '../utils'
-import { addSsrMiddleware, assertRoot, isViteCliCall, loadPagesConfig, resolveRoot } from '../helpers'
+import { addSsrMiddleware, assertRoot, isViteCliCall, resolveRoot } from '../helpers'
 import { determineOptimizeDepsEntries } from './devConfig/determineOptimizeDepsEntries'
 import path from 'path'
 import fs from 'fs'

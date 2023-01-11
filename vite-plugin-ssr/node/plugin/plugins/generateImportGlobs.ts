@@ -37,8 +37,8 @@ function generateImportGlobs(): Plugin {
       const idVirtual = getVirtualId(id)
       return idVirtual
     },
-    async load(id_, options) {
-      const id = getRealId(id_)
+    async load(idVirtual, options) {
+      const id = getRealId(idVirtual)
       if (!id) return undefined
       const isForClientSide = id !== virtualModuleIdPageFilesServer
       assert(isForClientSide === !viteIsSSR_options(options))

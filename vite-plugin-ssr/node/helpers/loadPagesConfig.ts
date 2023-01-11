@@ -1,35 +1,47 @@
-export { loadPagesConfig }
+export { loadPageConfigFiles }
 
 import glob from 'fast-glob'
 import path from 'path'
-import {
-  isValidPageConfigFile,
-  type PageConfigFile,
-  type PageConfigValues
-} from '../../shared/getPageFiles/getPageConfigsFromGlob'
+import { isValidPageConfigFile, type PageConfigFile } from '../../shared/getPageFiles/getPageConfigsFromGlob'
 import { assertWarning, toPosixPath, scriptFileExtensions, assertPosixPath, assert } from '../utils'
 import { loadScript } from './loadScript'
 
-async function loadPagesConfig(userRootDir: string): Promise<PageConfigFile[]> {
+// type Result = { pageConfigFilePath: string; pageConfigFileExports: Record<string, unknown> }
+type Result = PageConfigFile
+
+async function loadPageConfigFiles(userRootDir: string): Promise<{ hasError: true } | { pageConfigFiles: Result[] }> {
   const pageConfigFilePaths = await findPagesConfigFiles(userRootDir)
 
-  const pageConfigFiles: PageConfigFile[] = []
+  const pageConfigFiles: Result[] = []
   // TODO: make esbuild build everyting at once
-  await Promise.all(
+  const results = await Promise.all(
     pageConfigFilePaths.map(async (pageConfigFilePath) => {
       const pageConfigFilePathAbsolute = path.posix.join(userRootDir, pageConfigFilePath)
-      const pageConfigFileExports = await loadScript(pageConfigFilePathAbsolute)
-      // TODO: don't assert here
-      assert(isValidPageConfigFile(pageConfigFileExports))
-      const pageConfigValues: PageConfigValues = pageConfigFileExports.default
-      pageConfigFiles.push({
-        pageConfigFilePath,
-        pageConfigValues
-      })
+      const result = await loadScript(pageConfigFilePathAbsolute)
+      if ('err' in result) {
+        return { hasError: true }
+      }
+      const pageConfigFileExports = result.exports
+      if (!isValidPageConfigFile(pageConfigFileExports)) {
+        return { hasError: true }
+      }
+      const pageConfigValues = pageConfigFileExports.default
+      return { pageConfigFilePath, pageConfigValues }
     })
   )
+  if (results.some(({ hasError }) => hasError)) {
+    return { hasError: true }
+  }
+  results.forEach((result) => {
+    assert(!('hasError' in result))
+    const { pageConfigFilePath, pageConfigValues } = result
+    pageConfigFiles.push({
+      pageConfigFilePath,
+      pageConfigValues
+    })
+  })
 
-  return pageConfigFiles
+  return { pageConfigFiles }
 }
 
 async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {

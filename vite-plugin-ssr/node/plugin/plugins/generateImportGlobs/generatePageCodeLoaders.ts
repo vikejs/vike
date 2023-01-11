@@ -1,5 +1,5 @@
 import { getPageConfigs } from '../../../../shared/getPageFiles/getPageConfigsFromGlob'
-import { loadPagesConfig } from '../../helpers'
+import { loadPageConfigFiles } from '../../helpers'
 
 export { generatePageCodeLoaders }
 
@@ -10,27 +10,32 @@ async function generatePageCodeLoaders(root: string, isForClientSide: boolean): 
 
   const codeExportNames = ['Page', isForClientSide ? 'onRenderClient' : 'onRenderHtml'] as const // TODO move this logic
 
-  const pageConfigFiles = await loadPagesConfig(root)
-  const pageConfigs = getPageConfigs(pageConfigFiles)
-  pageConfigs.forEach((pageConfig) => {
-    lines.push(`pageCodeLoaders['${pageConfig.pageId2}'] = async () => ([`)
-    codeExportNames.forEach((codeExportName) => {
-      const codeExportFilePath = pageConfig[codeExportName]
-      if (codeExportFilePath) {
-        // TODO: use virtual file instead
-        lines.push(
-          ...[
-            `  {`,
-            `    codeExportName: '${codeExportName}',`,
-            `    codeExportFilePath: '${codeExportFilePath}',`,
-            `    codeExportFileExports: await import('${codeExportFilePath}')`,
-            `  },`
-          ]
-        )
-      }
+  const result = await loadPageConfigFiles(root)
+  if ('hasError' in result) {
+    lines.push('export const pageConfigHasBuildError = true;')
+  } else {
+    const { pageConfigFiles } = result
+    const pageConfigs = getPageConfigs(pageConfigFiles)
+    pageConfigs.forEach((pageConfig) => {
+      lines.push(`pageCodeLoaders['${pageConfig.pageId2}'] = async () => ([`)
+      codeExportNames.forEach((codeExportName) => {
+        const codeExportFilePath = pageConfig[codeExportName]
+        if (codeExportFilePath) {
+          // TODO: use virtual file instead
+          lines.push(
+            ...[
+              `  {`,
+              `    codeExportName: '${codeExportName}',`,
+              `    codeExportFilePath: '${codeExportFilePath}',`,
+              `    codeExportFileExports: await import('${codeExportFilePath}')`,
+              `  },`
+            ]
+          )
+        }
+      })
+      lines.push(`]);`)
     })
-    lines.push(`]);`)
-  })
+  }
 
   return lines.join('\n')
 }
