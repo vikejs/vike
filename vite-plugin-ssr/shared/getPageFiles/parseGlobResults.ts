@@ -21,8 +21,10 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
   assert(hasProp(pageFilesExports, 'pageConfigFiles', 'object'))
   assert(hasProp(pageFilesExports, 'pageCodeLoaders', 'object'))
+  assert(hasProp(pageFilesExports, 'pageConfigsHaveError', 'boolean'))
 
   const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles, pageFilesExports.pageCodeLoaders)
+  assert(pageFilesExports.pageConfigsHaveError === false) // if `pageConfigsHaveError === true` then call isValidPageConfigFile() in getPageConfigsFromGlob() throws error
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {

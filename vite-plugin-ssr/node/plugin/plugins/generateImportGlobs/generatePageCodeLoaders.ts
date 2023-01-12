@@ -12,8 +12,9 @@ async function generatePageCodeLoaders(root: string, isForClientSide: boolean): 
 
   const result = await loadPageConfigFiles(root)
   if ('hasError' in result) {
-    lines.push('export const pageConfigHasBuildError = true;')
+    lines.push('export const pageConfigsHaveError = true;')
   } else {
+    lines.push('export const pageConfigsHaveError = false;')
     const { pageConfigFiles } = result
     const pageConfigs = getPageConfigs(pageConfigFiles)
     pageConfigs.forEach((pageConfig) => {
