@@ -51,7 +51,7 @@ async function build(entry: string) {
       metafile: true,
       target: ['node14.18', 'node16'],
       outfile: 'NEVER_EMITTED.js',
-      logLevel: 'warning',
+      logLevel: 'silent',
       format: 'esm',
       bundle: true,
       packages: 'external',
