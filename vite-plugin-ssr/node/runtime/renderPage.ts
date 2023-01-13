@@ -11,14 +11,14 @@ import { route } from '../../shared/route'
 import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
-import { initGlobalContext } from './globalContext'
+import { getGlobalContext, initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
 import { assertError, logError, logErrorIfDifferentFromOriginal } from './renderPage/logError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 
-// `renderPage()` calls `renderPageAttempt()` while ensuring an `err` is always `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
+// `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
   PageContextAdded extends {},
   PageContextInit extends {
@@ -38,8 +38,29 @@ async function renderPage<
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
 
-  await initGlobalContext()
-  const renderContext = await getRenderContext()
+  try {
+    await initGlobalContext()
+  } catch (err) {
+    logError(err)
+    const pageContextErr = getPageContextErr(err, pageContextInit)
+    return pageContextErr
+  }
+
+  let renderContext: RenderContext
+  try {
+    renderContext = await getRenderContext()
+  } catch (err) {
+    if ((err as any)._isTranspileError) {
+      const { viteDevServer } = getGlobalContext()
+      assert(viteDevServer)
+      assert(viteDevServer.isRollupError(err))
+      viteDevServer.logRollupError(viteDevServer, err)
+    } else {
+      logError(err)
+    }
+    const pageContextErr = getPageContextErr(err, pageContextInit)
+    return pageContextErr
+  }
 
   const pageContext = {}
   try {
@@ -53,15 +74,20 @@ async function renderPage<
       return await renderErrorPage(pageContextInit, errOriginal, pageContext, renderContext)
     } catch (err) {
       logErrorIfDifferentFromOriginal(err, errOriginal)
-      const pageContextErr = {}
-      objectAssign(pageContextErr, pageContextInit)
-      objectAssign(pageContextErr, {
-        httpResponse: null,
-        errorWhileRendering: errOriginal
-      })
+      const pageContextErr = getPageContextErr(err, pageContextInit)
       return pageContextErr
     }
   }
+}
+
+function getPageContextErr(err: unknown, pageContextInit: Record<string, unknown>) {
+  const pageContextErr = {}
+  objectAssign(pageContextErr, pageContextInit)
+  objectAssign(pageContextErr, {
+    httpResponse: null,
+    errorWhileRendering: err
+  })
+  return pageContextErr
 }
 
 async function renderPageAttempt(

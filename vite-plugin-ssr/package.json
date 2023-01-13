@@ -9,7 +9,8 @@
     "es-module-lexer": "^0.10.5",
     "fast-glob": "^3.2.11",
     "picocolors": "^1.0.0",
-    "sirv": "^2.0.2"
+    "sirv": "^2.0.2",
+    "strip-ansi": "^6.0.0"
   },
   "scripts": {
     "build": "rimraf dist/ && tsc -b",
