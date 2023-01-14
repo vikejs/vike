@@ -1,15 +1,15 @@
-export { logError as logRollupError }
-export { isRollupError }
+export { logError as logTranspileError }
+export { isTranspileError }
 
-// Copied from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
+// Copied & adapted from https://github.com/vitejs/vite/blob/9c114c5c72a6af87e3330d5573362554b4511265/packages/vite/src/node/server/middlewares/error.ts
 
-import strip from 'strip-ansi'
+// import strip from 'strip-ansi'
 import colors from 'picocolors'
 import type { ViteDevServer } from 'vite'
 import type { RollupError } from 'rollup'
 import { isObject } from '../utils'
 
-function isRollupError(err: unknown): err is RollupError {
+function isTranspileError(err: unknown): err is RollupError {
   return isObject(err) && !!err.id && !!err.frame
 }
 
@@ -31,11 +31,14 @@ export function logError(server: ViteDevServer, err: RollupError): void {
     error: err
   })
 
+  /* Showing the error layover doesn't properly work
   server.ws.send({
     type: 'error',
     err: prepareError(err)
   })
+  */
 }
+/*
 function prepareError(err: any): any {
   // only copy the information we need and avoid serializing unnecessary
   // properties, since some errors may attach full objects (e.g. PostCSS)
@@ -49,6 +52,7 @@ function prepareError(err: any): any {
     loc: err.loc
   }
 }
+*/
 
 // strip UTF-8 BOM
 export function stripBomTag(content: string): string {

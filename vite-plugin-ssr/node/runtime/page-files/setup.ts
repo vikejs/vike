@@ -16,7 +16,6 @@ async function getPageFilesExports(): Promise<Record<string, unknown>> {
   if ('transpileError' in result) {
     const { transpileError } = result
     debugGlob(`Glob error: ${virtualModuleIdPageFilesServer} transpile error: `, transpileError.message)
-    Object.assign(transpileError, { _isTranspileError: true })
     throw transpileError
   } else {
     debugGlob('Glob result: ', result.moduleExports)
@@ -41,7 +40,7 @@ async function transpileaAndLoadModule(
   try {
     result = await viteDevServer.ssrLoadModule(moduleId)
   } catch (err) {
-    if (viteDevServer.isRollupError(err)) {
+    if (viteDevServer.isTranspileError(err)) {
       return { transpileError: err }
     }
     throw err

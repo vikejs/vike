@@ -5,6 +5,7 @@ export { assertError }
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import { assertRenderErrorPageExceptionUsage } from './RenderErrorPage'
 import { assertWarning, hasProp, isObject, isSameErrorMessage } from '../../utils'
+import { getGlobalContext } from '../globalContext'
 
 function logError(err: unknown): void {
   assertError(err)
@@ -20,9 +21,16 @@ function logError(err: unknown): void {
 
   viteErrorCleanup(err)
 
-  // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
-  const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
-  console.error(errStr)
+  const { viteDevServer } = getGlobalContext()
+  if (viteDevServer && viteDevServer.isTranspileError(err)) {
+    // We handle transpile errors globally in logError() because transpile errors can be thrown not only when calling viteDevServer.ssrLoadModule() but also later when calling user hooks (since Vite loads/transpiles user code in a lazy manner)
+    viteDevServer.logTranspileError(viteDevServer, err)
+  } else {
+    // We ensure we print a string; Cloudflare Workers doesn't seem to properly stringify `Error` objects.
+    const errStr = (hasProp(err, 'stack') && String(err.stack)) || String(err)
+    console.error(errStr)
+  }
+
   setAlreadyLogged(err)
 }
 

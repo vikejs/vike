@@ -880,7 +880,6 @@ importers:
       react-streaming: ^0.3.5
       rimraf: ^3.0.2
       sirv: ^2.0.2
-      strip-ansi: ^6.0.0
       typescript: 4.8.4
       vite: ^4.0.3
     dependencies:
@@ -892,7 +891,6 @@ importers:
       fast-glob: 3.2.11
       picocolors: 1.0.0
       sirv: 2.0.2
-      strip-ansi: 6.0.1
     devDependencies:
       '@brillout/part-regex': 0.1.2
       '@brillout/release-me': 0.0.8
@@ -2960,7 +2958,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.3
+      vite: 4.0.3_@types+node@18.11.9
       vue: 3.2.33
     dev: false
 

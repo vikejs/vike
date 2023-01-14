@@ -11,7 +11,7 @@ import { route } from '../../shared/route'
 import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
-import { getGlobalContext, initGlobalContext } from './globalContext'
+import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
 import { assertError, logError, logErrorIfDifferentFromOriginal } from './renderPage/logError'
@@ -38,26 +38,12 @@ async function renderPage<
   assertArguments(...arguments)
   assert(hasProp(pageContextInit, 'urlOriginal', 'string'))
 
-  try {
-    await initGlobalContext()
-  } catch (err) {
-    logError(err)
-    const pageContextErr = getPageContextErr(err, pageContextInit)
-    return pageContextErr
-  }
-
   let renderContext: RenderContext
   try {
+    await initGlobalContext()
     renderContext = await getRenderContext()
   } catch (err) {
-    if ((err as any)._isTranspileError) {
-      const { viteDevServer } = getGlobalContext()
-      assert(viteDevServer)
-      assert(viteDevServer.isRollupError(err))
-      viteDevServer.logRollupError(viteDevServer, err)
-    } else {
-      logError(err)
-    }
+    logError(err)
     const pageContextErr = getPageContextErr(err, pageContextInit)
     return pageContextErr
   }
