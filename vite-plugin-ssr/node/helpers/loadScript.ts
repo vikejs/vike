@@ -35,7 +35,7 @@ function getFilePathTmp(filePath: string): string {
   const dirname = path.posix.dirname(filePath)
   const filename = path.posix.basename(filePath)
   const filenameBase = filename.split('.')[0]
-  const randomString = Math.pow(10, 5).toString().split('.')[0]
+  const randomString = (Math.random() * Math.pow(10, 5)).toString().split('.')[0]
   const filePathTmp = path.posix.join(dirname, `${filenameBase}_tmp-${randomString}.mjs`)
   return filePathTmp
 }

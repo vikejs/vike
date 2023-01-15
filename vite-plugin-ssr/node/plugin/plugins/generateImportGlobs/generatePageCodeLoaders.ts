@@ -38,5 +38,6 @@ async function generatePageCodeLoaders(root: string, isForClientSide: boolean): 
     })
   }
 
-  return lines.join('\n')
+  const code = lines.join('\n')
+  return code
 }

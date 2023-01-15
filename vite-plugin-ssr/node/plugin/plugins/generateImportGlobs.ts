@@ -37,6 +37,15 @@ function generateImportGlobs(): Plugin {
       const idVirtual = getVirtualId(id)
       return idVirtual
     },
+    /* TODO: remove
+    configureServer(server) {
+      server.watcher.on('change', (filePath) => {
+        console.log('filePath', filePath)
+        // server.moduleGraph.onFileChange(virtualModuleIdPageFilesServer)
+        // server.moduleGraph.onFileChange(virtualModuleIdPageFilesClientCR)
+      })
+    },
+    */
     async load(idVirtual, options) {
       const id = getRealId(idVirtual)
       if (!id) return undefined
