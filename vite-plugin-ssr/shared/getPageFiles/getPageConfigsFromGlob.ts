@@ -1,5 +1,5 @@
 export { getPageConfigsFromGlob }
-export { getPageConfigs }
+export { getPageConfigsOld }
 export { isValidPageConfigFile }
 export { findPageConfig }
 export type { PageConfig }
@@ -70,7 +70,7 @@ function getPageConfigsFromGlob(
     })
   })
 
-  const pageConfigsInfo = getPageConfigs(pageConfigFiles)
+  const pageConfigsInfo = getPageConfigsOld(pageConfigFiles)
   const pageConfigs = pageConfigsInfo.map((pageConfigInfo) => {
     const pageConfig: PageConfig = {
       ...pageConfigInfo,
@@ -135,7 +135,7 @@ function getPageConfigsFromGlob(
   return pageConfigs
 }
 
-function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
+function getPageConfigsOld(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
   if (pageConfigFiles.length === 0) return [] // temporary
 
   const pageConfigsInfo: PageConfigInfo[] = []

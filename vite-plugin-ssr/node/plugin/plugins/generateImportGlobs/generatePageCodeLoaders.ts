@@ -1,4 +1,4 @@
-import { getPageConfigs } from '../../../../shared/getPageFiles/getPageConfigsFromGlob'
+import { getPageConfigsOld } from '../../../../shared/getPageFiles/getPageConfigsFromGlob'
 import { loadPageConfigFiles } from '../../helpers'
 
 export { generatePageCodeLoaders }
@@ -16,7 +16,7 @@ async function generatePageCodeLoaders(root: string, isForClientSide: boolean): 
   } else {
     lines.push('export const pageConfigsHaveError = false;')
     const { pageConfigFiles } = result
-    const pageConfigs = getPageConfigs(pageConfigFiles)
+    const pageConfigs = getPageConfigsOld(pageConfigFiles)
     pageConfigs.forEach((pageConfig) => {
       lines.push(`pageCodeLoaders['${pageConfig.pageId2}'] = async () => ([`)
       codeExportNames.forEach((codeExportName) => {
