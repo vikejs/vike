@@ -10,6 +10,7 @@ import type { ConfigVpsResolved } from './config/ConfigVps'
 import { getConfigVps } from './config/assertConfigVps'
 import {
   virtualModuleIdPageFilesClientCR,
+  virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesServer
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
@@ -49,6 +50,14 @@ function generateImportGlobs(): Plugin {
     async load(idVirtual, options) {
       const id = getRealId(idVirtual)
       if (!id) return undefined
+      assert(
+        // prettier-ignore
+        [
+          virtualModuleIdPageFilesServer,
+          virtualModuleIdPageFilesClientCR,
+          virtualModuleIdPageFilesClientSR
+        ].includes(id)
+      )
       const isForClientSide = id !== virtualModuleIdPageFilesServer
       assert(isForClientSide === !viteIsSSR_options(options))
       const isClientRouting = id === virtualModuleIdPageFilesClientCR
