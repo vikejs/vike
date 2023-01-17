@@ -1,6 +1,6 @@
 // export { getPageConfigsFromGlob }
 // export { getPageConfigs }
-export { isValidPageConfigFile }
+//export { isValidPageConfigFile }
 export { generatePageConfigsDataCode }
 
 // TODO: ensure that `route` isn't a file path but a route string (same for onBeforeRoute)
@@ -13,54 +13,46 @@ import {
 import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../../utils'
 // import path from 'path' // TODO: can we use move this file from shared/ to node/ and then use path?
 
-import type {
-  CodeEnv,
-  PageConfigFile,
-  PageConfigValues
-} from '../../../../shared/page-configs/PageConfig'
-import { loadPageConfigFiles } from '../../helpers'
+import type { CodeEnv, ConfigSource } from '../../../../shared/page-configs/PageConfig'
+import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 
 /*
 const filePathConfigs = ['onRenderHtml', 'onRenderClient', 'onBeforeRoute', 'Page'] as const // TODO: remove
 const directConfigs = ['passToClient'] as const // TODO: remove
 */
 
-const configDefinitions: {
-  cName: string // TODO: rename
-  configLocation: 'file' | 'inline'
-  codeEnv: CodeEnv
-}[] = [
+const configDefinitions: Record<
+  string,
   {
-    cName: 'onRenderHtml',
-    configLocation: 'file',
+    configValueLocation: 'file' | 'inline'
+    codeEnv: CodeEnv
+  }
+> = {
+  onRenderHtml: {
+    configValueLocation: 'file',
     codeEnv: 'server-only'
   },
-  {
-    cName: 'onRenderClient',
-    configLocation: 'file',
+  onRenderClient: {
+    configValueLocation: 'file',
     codeEnv: 'client-only'
   },
-  {
-    cName: 'Page',
-    configLocation: 'file',
+  Page: {
+    configValueLocation: 'file',
     codeEnv: 'server-and-client'
   },
-  {
-    cName: 'passToClient',
-    configLocation: 'inline',
+  passToClient: {
+    configValueLocation: 'inline',
     codeEnv: 'server-only'
   },
-  {
-    cName: 'route',
-    configLocation: 'inline',
+  route: {
+    configValueLocation: 'inline',
     codeEnv: 'server-and-client'
   },
-  {
-    cName: 'iKnowThePerformanceRisksOfAsyncRouteFunctions',
-    configLocation: 'inline',
+  iKnowThePerformanceRisksOfAsyncRouteFunctions: {
+    configValueLocation: 'inline',
     codeEnv: 'server-and-client'
   }
-]
+}
 
 /*
 function getPageConfigsFromGlob(
@@ -178,7 +170,7 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
       )
 
       let Page = pageConfigValues.Page
-      if (Page) Page = resolvePath(Page, pageConfigFilePath)
+      if (Page) Page = resolveCodeFilePath(Page, pageConfigFilePath)
 
       const route =
         pageConfigValues.route || // TODO: assertUsage that route isn't a path
@@ -221,53 +213,63 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
   pageConfigFiles
     .filter((p) => !isAbstract(p))
     .forEach((pageConfigFile) => {
-      const { pageConfigFilePath, pageConfigValues } = pageConfigFile
+      const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
+      const pageConfigValues = getPageConfigValues(pageConfigFile)
       const pageId2 = determinePageId2(pageConfigFilePath)
       const route =
         pageConfigValues.route || // TODO: assertUsage that route isn't a path
         determineRouteFromFilesystemPath(pageConfigFilePath)
 
-      const configSources: ({
+      const configSources: {
         configName: string
-        sourcePath: string
-      } & { confValue?: unknown })[] = []
-      configDefinitions
-        .filter(({ codeEnv }) => codeEnv !== (isForClientSide ? 'server-only' : 'client-only'))
-        .forEach(({ cName, configLocation }) => {
-          const result = resolveConfigValue(cName, pageConfigFile, pageConfigFilesAbstract)
+        configSource: ConfigSource
+      }[] = []
+      Object.entries(configDefinitions)
+        .filter(([_configName, { codeEnv }]) => codeEnv !== (isForClientSide ? 'server-only' : 'client-only'))
+        .forEach(([configName, { configValueLocation, codeEnv }]) => {
+          const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
           if (!result) return
           const { pageConfigValue, pageConfigValueFilePath } = result
-          if (configLocation === 'inline') {
+          if (configValueLocation === 'inline') {
             configSources.push({
-              configName: cName,
-              sourcePath: pageConfigValueFilePath,
-              confValue: pageConfigValue
+              configName,
+              configSource: {
+                configFilePath: pageConfigValueFilePath,
+                configValue: pageConfigValue
+              }
             })
           }
-          if (configLocation === 'file') {
+          if (configValueLocation === 'file') {
             assertUsage(typeof pageConfigValue === 'string', 'TODO')
-            const importPath = resolvePath(pageConfigValue, pageConfigValueFilePath)
+            const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath)
             configSources.push({
-              configName: cName,
-              sourcePath: importPath
+              configName,
+              configSource: {
+                codeFilePath,
+                codeEnv
+              }
             })
           }
         })
 
       lines.push('')
-      lines.push('pageConfigsData.push({')
+      lines.push('pageConfigs.push({')
       lines.push(`  pageId2: '${pageId2}',`)
       lines.push(`  route: '${route}',`)
       lines.push(`  configSources: {`)
-      configSources.forEach(({ configName, sourcePath, confValue }) => {
+      configSources.forEach(({ configName, configSource }) => {
         lines.push(`    ['${configName}']: {`)
-        lines.push(`      sourcePath: '${sourcePath}',`)
-        if (confValue !== undefined) {
-          lines.push(`      confValue: ${JSON.stringify(confValue)}`)
+        if ('codeFilePath' in configSource) {
+          const { codeFilePath, codeEnv } = configSource
+          lines.push(`      codeFilePath: () => '${codeFilePath}',`)
+          lines.push(`      codeEnv: () => '${codeEnv}',`)
+          lines.push(`      loadCodeFile: () => import('${codeFilePath}')`)
         } else {
-          lines.push(`      loadValue: () => import('${sourcePath}')`)
+          const { configFilePath, configValue } = configSource
+          lines.push(`      configFilePath: '${configFilePath}',`)
+          lines.push(`      configValue: ${JSON.stringify(configValue)}`)
         }
-        lines.push(`},`)
+        lines.push(`    },`)
       })
       lines.push(`  }`)
       lines.push('});')
@@ -290,7 +292,7 @@ function resolveConfigValue2<K extends keyof PageConfigValues>(
     if (pageConfigValue !== undefined) {
       if ((filePathConfigs as readonly string[]).includes(pageConfigName)) {
         assert(typeof pageConfigValue === 'string') // TODO: assertUsage()
-        pageConfigValue = resolvePath(pageConfigValue, pageConfigFilePath) as any
+        pageConfigValue = resolveCodeFilePath(pageConfigValue, pageConfigFilePath) as any
       }
       break
     }
@@ -305,26 +307,37 @@ function resolveConfigValue(
   pageConfigFilesAbstract: PageConfigFile[]
 ): null | { pageConfigValueFilePath: string; pageConfigValue: unknown } {
   const configFiles: PageConfigFile[] = [pageConfigFile, ...pageConfigFilesAbstract]
-  for (const { pageConfigFilePath, pageConfigValues } of configFiles) {
+  for (const configFile of configFiles) {
+    const pageConfigValues = getPageConfigValues(configFile)
     const pageConfigValue = pageConfigValues[pageConfigName]
     if (pageConfigValue !== undefined) {
-      return { pageConfigValueFilePath: pageConfigFilePath, pageConfigValue }
+      return { pageConfigValueFilePath: configFile.pageConfigFilePath, pageConfigValue }
     }
   }
   return null
 }
 
+function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
+  const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
+  assert(Object.keys(pageConfigFileExports).length === 1) // TODO: assertUsage()
+  assert('default' in pageConfigFileExports) // TODO: assertUsage()
+  const pageConfigValues = pageConfigFileExports.default
+  assert(isObject(pageConfigValues))
+  return pageConfigValues
+}
+
 function isAbstract(pageConfigFile: PageConfigFile): boolean {
-  return !pageConfigFile.pageConfigValues.Page && !pageConfigFile.pageConfigValues.route
+  const pageConfigValues = getPageConfigValues(pageConfigFile)
+  return !pageConfigValues.Page && !pageConfigValues.route
 }
 
 /*
 function resolvePathOptional(configValuePath: string | undefined, pageConfigFilePath: string): string | undefined {
   if (configValuePath === undefined) return undefined
-  return resolvePath(configValuePath, pageConfigFilePath)
+  return resolveCodeFilePath(configValuePath, pageConfigFilePath)
 }
 */
-function resolvePath(configValuePath: string, pageConfigFilePath: string): string {
+function resolveCodeFilePath(configValuePath: string, pageConfigFilePath: string): string {
   assertPosixPath(configValuePath) // TODO: assertUsage()
   assertPosixPath(pageConfigFilePath)
   assert(pageConfigFilePath.startsWith('/pages/'), pageConfigFilePath) // TODO: remove
@@ -334,7 +347,7 @@ function resolvePath(configValuePath: string, pageConfigFilePath: string): strin
   return p
 }
 
-// TODO: Maybe not needed if we move this file to node/
+// TODO: Not needed anymore
 // Node.js code/shim: https://github.com/jinder/path
 function pathDirname(path_: string): string {
   const { isAbsolute, parts } = parsePath(path_)
@@ -358,7 +371,9 @@ function parsePath(path_: string) {
   return { isAbsolute, parts }
 }
 
+/*
 // TODO: write error messages
+// TODO: is this still needed?
 function isValidPageConfigFile(
   pageConfigFileExports: Record<string, unknown>
 ): pageConfigFileExports is { default: PageConfigValues } {
@@ -378,6 +393,7 @@ function checkPageConfigFile(pageConfigFileExports: Record<string, unknown>): nu
     return 'TODO'
   return null
 }
+*/
 
 /* TODO: remove
 type PageConfig = {

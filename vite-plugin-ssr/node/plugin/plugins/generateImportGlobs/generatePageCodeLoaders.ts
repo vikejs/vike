@@ -6,7 +6,7 @@ async function generatePageCodeLoaders(root: string, isForClientSide: boolean): 
   const code = await generatePageConfigsDataCode(root, isForClientSide)
   return code
 
-  /*
+  /* TODO: remove?
   const codeExportNames = ['Page', isForClientSide ? 'onRenderClient' : 'onRenderHtml'] as const // TODO move this logic
 
   const result = await loadPageConfigFiles(root)

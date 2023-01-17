@@ -11,6 +11,6 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(isObject(pageConfig))
     assert(hasProp(pageConfig, 'id', 'string'))
     assert(hasProp(pageConfig, 'route', 'string'))
-    assert(hasProp(pageConfig, 'configSources', 'array'))
+    assert(hasProp(pageConfig, 'configSources', 'object'))
   })
 }

@@ -1,11 +1,15 @@
 export { loadPageConfigFiles }
+export type { PageConfigFile }
 
 import glob from 'fast-glob'
 import path from 'path'
-import type { PageConfigFile } from '../../shared/page-configs/PageConfig'
-import { isValidPageConfigFile } from '../plugin/plugins/generateImportGlobs/getPageConfigs'
 import { assertWarning, toPosixPath, scriptFileExtensions, assertPosixPath, assert } from '../utils'
 import { loadScript } from './loadScript'
+
+type PageConfigFile = {
+  pageConfigFilePath: string
+  pageConfigFileExports: Record<string, unknown>
+}
 
 // type Result = { pageConfigFilePath: string; pageConfigFileExports: Record<string, unknown> }
 type Result = PageConfigFile
@@ -23,11 +27,7 @@ async function loadPageConfigFiles(userRootDir: string): Promise<{ hasError: tru
         return { hasError: true }
       }
       const pageConfigFileExports = result.exports
-      if (!isValidPageConfigFile(pageConfigFileExports)) {
-        return { hasError: true }
-      }
-      const pageConfigValues = pageConfigFileExports.default
-      return { pageConfigFilePath, pageConfigValues }
+      return { pageConfigFilePath, pageConfigFileExports }
     })
   )
   if (results.some(({ hasError }) => hasError)) {
@@ -35,10 +35,10 @@ async function loadPageConfigFiles(userRootDir: string): Promise<{ hasError: tru
   }
   results.forEach((result) => {
     assert(!('hasError' in result))
-    const { pageConfigFilePath, pageConfigValues } = result
+    const { pageConfigFilePath, pageConfigFileExports } = result
     pageConfigFiles.push({
       pageConfigFilePath,
-      pageConfigValues
+      pageConfigFileExports
     })
   })
 
