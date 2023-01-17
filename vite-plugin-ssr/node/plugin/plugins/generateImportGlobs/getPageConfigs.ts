@@ -200,14 +200,14 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
   const result = await loadPageConfigFiles(userRootDir)
 
   if ('hasError' in result) {
-    return 'export const pageConfigsData = null;'
+    return 'export const pageConfigs = null;'
   }
 
   const { pageConfigFiles } = result
 
   const lines: string[] = []
 
-  lines.push('export const pageConfigsData = [];')
+  lines.push('export const pageConfigs = [];')
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   pageConfigFiles
@@ -252,7 +252,6 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
           }
         })
 
-      lines.push('')
       lines.push('pageConfigs.push({')
       lines.push(`  pageId2: '${pageId2}',`)
       lines.push(`  route: '${route}',`)
@@ -261,8 +260,8 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
         lines.push(`    ['${configName}']: {`)
         if ('codeFilePath' in configSource) {
           const { codeFilePath, codeEnv } = configSource
-          lines.push(`      codeFilePath: () => '${codeFilePath}',`)
-          lines.push(`      codeEnv: () => '${codeEnv}',`)
+          lines.push(`      codeFilePath: '${codeFilePath}',`)
+          lines.push(`      codeEnv: '${codeEnv}',`)
           lines.push(`      loadCodeFile: () => import('${codeFilePath}')`)
         } else {
           const { configFilePath, configValue } = configSource

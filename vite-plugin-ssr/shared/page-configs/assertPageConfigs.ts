@@ -9,7 +9,7 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
   assert(pageConfigs !== null)
   pageConfigs.forEach((pageConfig) => {
     assert(isObject(pageConfig))
-    assert(hasProp(pageConfig, 'id', 'string'))
+    assert(hasProp(pageConfig, 'pageId2', 'string'))
     assert(hasProp(pageConfig, 'route', 'string'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
   })
