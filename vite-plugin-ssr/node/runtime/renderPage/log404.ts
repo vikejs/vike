@@ -5,13 +5,13 @@ import { PageRoutes, loadPageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../../utils'
 import { isRenderErrorPageException } from './RenderErrorPage'
-import type { PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
+import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
 
 async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfig2[]
   _allPageIds: string[]
   _isPageContextRequest: boolean
 }) {

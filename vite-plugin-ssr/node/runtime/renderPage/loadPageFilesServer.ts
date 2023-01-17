@@ -9,19 +9,20 @@ import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPa
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { MediaType } from '../helpers'
-import { findPageConfig, PageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
+import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
+import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfig2[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {
   const pageConfig = findPageConfig(pageContext._pageConfigs, pageContext._pageId) // Make pageConfig globally available as pageContext._pageConfig?
 
-  const [{ exports, exportsAll, pageExports, pageFilesLoaded }] = await Promise.all([
+  const [{ exports, exportsAll, pageExports, pageFilesLoaded, pageConfigLoaded }] = await Promise.all([
     loadPageFilesServerSide(pageContext._pageFilesAll, pageConfig, pageContext._pageId),
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
   ])

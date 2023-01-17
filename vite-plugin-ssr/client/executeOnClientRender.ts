@@ -4,14 +4,14 @@ import { assert, assertUsage, callHookWithTimeout } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
-import type { PageConfig } from '../shared/getPageFiles/getPageConfigsFromGlob'
+import type { PageConfig2 } from '../shared/page-configs/PageConfig'
 
 async function executeOnClientRender<
   PC extends {
     _pageFilesLoaded: PageFile[]
     urlOriginal?: string
     _pageId: string
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfig2[]
   } & PageContextExports &
     PageContextRelease
 >(pageContext: PC, isClientRouter: boolean): Promise<void> {

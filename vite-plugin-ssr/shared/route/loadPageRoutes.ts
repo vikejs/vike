@@ -3,8 +3,8 @@ import { isErrorPageId } from './error-page'
 import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
-import type { PageConfig } from '../getPageFiles/getPageConfigsFromGlob'
 import { isCallable } from '../utils'
+import type { PageConfig2 } from '../page-configs/PageConfig'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -21,7 +21,7 @@ type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[],
+  pageConfigs: PageConfig2[],
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
@@ -33,7 +33,7 @@ async function loadPageRoutes(
 function getPageRoutes(
   filesystemRoots: FilesystemRoot[],
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[],
+  pageConfigs: PageConfig2[],
   allPageIds: string[]
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
@@ -97,20 +97,28 @@ function getPageRoutes(
     const pageId = pageConfig.pageId2
 
     let pageRoute: null | PageRoute = null
-    for (const pageConfigFile of pageConfig.pageConfigFiles) {
-      const { route } = pageConfigFile.pageConfigValues
-      if (route) {
-        assert(pageConfig.route === route)
-        const pageRouteFilePath = pageConfigFile.pageConfigFilePath
+    {
+      const routeConfig = pageConfig.configSources.route
+      if (routeConfig) {
+        assert(!('codeFilePath' in routeConfig)) // TODO: improve this?
+        assert(routeConfig.configFilePath)
+        assert(routeConfig.configValue === pageConfig.route)
+        const route = routeConfig.configValue
+        const pageRouteFilePath = routeConfig.configFilePath
         if (typeof route === 'string') {
           pageRoute = { pageId, routeString: route, pageRouteFilePath, routeType: 'STRING' }
         } else {
           assert(isCallable(route))
-          const allowAsync = pageConfig.iKnowThePerformanceRisksOfAsyncRouteFunctions ?? false
-
+          let allowAsync = false
+          const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
+          if (allowSyncConfig) {
+            assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
+            const val = allowSyncConfig.configValue
+            assert(typeof val === 'boolean') // TODO: assertUsage()
+            allowAsync = val
+          }
           pageRoute = { pageId, routeFunction: route, pageRouteFilePath, routeType: 'FUNCTION', allowAsync }
         }
-        break
       }
     }
     if (!pageRoute) {
@@ -124,7 +132,7 @@ function getPageRoutes(
 
 function getGlobalHooks(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig[]
+  pageConfigs: PageConfig2[]
 ): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]
@@ -159,6 +167,7 @@ function getGlobalHooks(
       }
     })
 
+  /* TODO: define onBeforeRoute hook on globalConfig instead of pageConfigs
   pageConfigs.forEach((pageConfig) => {
     if (pageConfig.onBeforeRoute) {
       for (const pageConfigFile of pageConfig.pageConfigFiles) {
@@ -176,6 +185,7 @@ function getGlobalHooks(
       }
     }
   })
+  */
 
   return { onBeforeRouteHook, filesystemRoots }
 }

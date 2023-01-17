@@ -2,17 +2,20 @@ export { loadPageFilesServerSide }
 
 import { getPageFilesServerSide } from '../getAllPageIdFiles'
 import { getExports } from '../getExports'
-import { PageConfig } from '../getPageConfigsFromGlob'
 import type { PageFile } from '../getPageFileObject'
+import type { PageConfig2 } from '../../page-configs/PageConfig'
+import { loadPageCode } from '../../page-configs/loadPageCode'
 
-async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
+async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig2, pageId: string) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
-  await Promise.all([...pageFilesServerSide.map((p) => p.loadFile?.()), pageConfig?.loadCode()])
-  const { exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfig)
+  const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig)
+  await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))
+  const { exports, exportsAll, pageExports } = getExports(pageFilesServerSide, pageConfigLoaded)
   return {
     exports,
     exportsAll,
     pageExports,
-    pageFilesLoaded: pageFilesServerSide
+    pageFilesLoaded: pageFilesServerSide,
+    pageConfigLoaded
   }
 }

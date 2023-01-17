@@ -2,7 +2,8 @@ export { loadPageConfigFiles }
 
 import glob from 'fast-glob'
 import path from 'path'
-import { isValidPageConfigFile, type PageConfigFile } from '../../shared/getPageFiles/getPageConfigsFromGlob'
+import type { PageConfigFile } from '../../shared/page-configs/PageConfig'
+import { isValidPageConfigFile } from '../plugin/plugins/generateImportGlobs/getPageConfigs'
 import { assertWarning, toPosixPath, scriptFileExtensions, assertPosixPath, assert } from '../utils'
 import { loadScript } from './loadScript'
 

@@ -8,21 +8,25 @@ import { getPageFilesServerSide } from './getAllPageIdFiles'
 import { assert } from '../utils'
 import { getExportNames } from './analyzePageClientSide/getExportNames'
 import type { PageFile } from './getPageFileObject'
-import type { PageConfig } from './getPageConfigsFromGlob'
 import { ClientDependency } from './analyzePageClientSide/ClientDependency'
+import type { PageConfig2 } from '../page-configs/PageConfig'
+import { getCodeFilePath, getConfigValue } from '../page-configs/utils'
 
-function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
+function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig2, pageId: string) {
   if (pageConfig) {
-    const isClientRouting = pageConfig.clientRouting ?? false
-    const isHtmlOnly = !!pageConfig.clientEntry
-    const clientEntry: string = isHtmlOnly ? pageConfig.clientEntry! : getVPSClientEntry(isClientRouting)
-    assert(pageConfig.codeExports) // We assume pageConfig.loadCode() was already called
-    const clientDependencies: ClientDependency[] = pageConfig.codeExports.map((c) => ({
-      id: c.codeExportFilePath,
-      onlyAssets: false
-    }))
-    // clientDependencies.push({ id: pageConfig.onRenderHtml, onlyAssets: true }) // TODO: make sure onRenderHtml is an absolute path
-    // if( typeof pageConfig.Page === 'string') clientDependencies.push(...) // TODO: collect all file paths
+    const isClientRouting = getConfigValue(pageConfig, 'isClientRouting', 'boolean') ?? false
+    const clientEntryPageConfig = getCodeFilePath(pageConfig, 'clientEntry')
+    const isHtmlOnly = !!clientEntryPageConfig
+    const clientEntry = isHtmlOnly ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
+    const clientDependencies: ClientDependency[] = []
+    Object.values(pageConfig.configSources).forEach((configSource) => {
+      if ('codeFilePath' in configSource) {
+        clientDependencies.push({
+          id: configSource.codeFilePath,
+          onlyAssets: configSource.codeEnv === 'server-only'
+        })
+      }
+    })
     clientDependencies.push({
       id: clientEntry,
       onlyAssets: false

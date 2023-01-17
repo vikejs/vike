@@ -7,8 +7,9 @@ import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
 import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType } from './fileTypes'
-import { PageConfig } from './getPageConfigsFromGlob'
+import type { PageConfigLoaded } from './../page-configs/PageConfig'
 import type { PageFile } from './getPageFileObject'
+import { getSourceFilePath } from '../page-configs/utils'
 
 type ExportsAll = Record<
   string,
@@ -25,7 +26,7 @@ type PageContextExports = {
   exports: Record<string, unknown>
 }
 
-function getExports(pageFiles: PageFile[], pageConfig: PageConfig | null): PageContextExports {
+function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null): PageContextExports {
   const exportsAll: ExportsAll = {}
   // VPS 0.4
   pageFiles.forEach((pageFile) => {
@@ -45,14 +46,15 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfig | null): PageC
   })
   // VPS 1.0
   if (pageConfig) {
-    const { codeExports } = pageConfig
-    assert(codeExports) // pageConfig.loadCode() should already have been called
-    codeExports.forEach(({ codeExportName, codeExportValue, codeExportFilePath }) => {
-      const exportName = codeExportName
+    const { configValues } = pageConfig
+    Object.entries(configValues).forEach(([configName, configValue]) => {
+      const exportName = configName
+      const filePath = getSourceFilePath(pageConfig, configName)
+      assert(filePath)
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
-        exportValue: codeExportValue,
-        filePath: codeExportFilePath,
+        exportValue: configValue,
+        filePath,
         // @ts-ignore
         _fileType: 'TODO',
         _isFromDefaultExport: false // TODO

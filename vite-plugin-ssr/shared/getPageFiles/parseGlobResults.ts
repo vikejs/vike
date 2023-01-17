@@ -4,9 +4,10 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
-import { getPageConfigsFromGlob, type PageConfig } from './getPageConfigsFromGlob'
+import type { PageConfig2 } from '../page-configs/PageConfig'
+import { assertPageConfigs } from '../page-configs/assertPageConfigs'
 
-function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig[] } {
+function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig2[] } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)
@@ -19,12 +20,10 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
     hasProp(pageFilesExports.pageFilesLazy, '.page.client') || hasProp(pageFilesExports.pageFilesLazy, '.page.server')
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
-  assert(hasProp(pageFilesExports, 'pageConfigFiles', 'object'))
-  assert(hasProp(pageFilesExports, 'pageCodeLoaders', 'object'))
-  assert(hasProp(pageFilesExports, 'pageConfigsHaveError', 'boolean'))
 
-  const pageConfigs = getPageConfigsFromGlob(pageFilesExports.pageConfigFiles, pageFilesExports.pageCodeLoaders)
-  assert(pageFilesExports.pageConfigsHaveError === false) // if `pageConfigsHaveError === true` then call isValidPageConfigFile() in getPageConfigsFromGlob() throws error
+  assert(hasProp(pageFilesExports, 'pageConfigs'))
+  const { pageConfigs } = pageFilesExports
+  assertPageConfigs(pageConfigs)
 
   const pageFilesMap: Record<string, PageFile> = {}
   parseGlobResult(pageFilesExports.pageFilesLazy).forEach(({ filePath, pageFile, globValue }) => {

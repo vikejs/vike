@@ -1,22 +1,23 @@
-import { getPageConfigsOld } from '../../../../shared/getPageFiles/getPageConfigsFromGlob'
-import { loadPageConfigFiles } from '../../helpers'
+import { generatePageConfigsDataCode } from './getPageConfigs'
 
 export { generatePageCodeLoaders }
 
 async function generatePageCodeLoaders(root: string, isForClientSide: boolean): Promise<string> {
-  const lines: string[] = []
+  const code = await generatePageConfigsDataCode(root, isForClientSide)
+  return code
 
-  lines.push('export const pageCodeLoaders = {};')
-
+  /*
   const codeExportNames = ['Page', isForClientSide ? 'onRenderClient' : 'onRenderHtml'] as const // TODO move this logic
 
   const result = await loadPageConfigFiles(root)
   if ('hasError' in result) {
-    lines.push('export const pageConfigsHaveError = true;')
+    lines.push('export const pageConfigFilesCannotBeLoaded = true;')
+    lines.push('export const pageConfigFiles = null;')
+    lines.push('export const pageConfigs = null;')
   } else {
-    lines.push('export const pageConfigsHaveError = false;')
+    lines.push('export const pageConfigFilesCannotBeLoaded = false;')
     const { pageConfigFiles } = result
-    const pageConfigs = getPageConfigsOld(pageConfigFiles)
+    const pageConfigs = getPageConfigs(pageConfigFiles)
     pageConfigs.forEach((pageConfig) => {
       lines.push(`pageCodeLoaders['${pageConfig.pageId2}'] = async () => ([`)
       codeExportNames.forEach((codeExportName) => {
@@ -37,7 +38,6 @@ async function generatePageCodeLoaders(root: string, isForClientSide: boolean): 
       lines.push(`]);`)
     })
   }
-
   const code = lines.join('\n')
-  return code
+  */
 }

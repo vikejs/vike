@@ -2,7 +2,7 @@ export { isClientSideRenderable }
 
 import { getPageId } from '../getPageId'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
-import { findPageConfig } from '../../../shared/getPageFiles/getPageConfigsFromGlob'
+import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 
 async function isClientSideRenderable(url: string): Promise<boolean> {
   const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)

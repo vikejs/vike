@@ -21,7 +21,7 @@ import { releasePageContext } from '../releasePageContext'
 import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
-import type { PageConfig } from '../../shared/getPageFiles/getPageConfigsFromGlob'
+import type { PageConfig2 } from '../../shared/page-configs/PageConfig'
 
 export { getPageContext }
 export { getPageContextErrorPage }
@@ -55,7 +55,7 @@ async function getPageContext(
 
 async function getPageContextFirstRender(pageContext: {
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfig2[]
   _isFirstRenderAttempt: true
   urlOriginal: string
 }): Promise<PageContextAddendum> {
@@ -80,7 +80,7 @@ async function getPageContextErrorPage(pageContext: {
   _allPageIds: string[]
   _isFirstRenderAttempt: boolean
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig[]
+  _pageConfigs: PageConfig2[]
 }): Promise<PageContextAddendum> {
   const errorPageId = getErrorPageId(pageContext._allPageIds)
   if (!errorPageId) {
@@ -151,7 +151,7 @@ async function onBeforeRenderExecute(
     urlOriginal: string
     isHydration: boolean
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig[]
+    _pageConfigs: PageConfig2[]
   } & PageContextExports &
     PageContextPassThrough
 ): Promise<
