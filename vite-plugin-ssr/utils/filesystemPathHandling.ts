@@ -13,16 +13,9 @@ function isPosixPath(path: string) {
 }
 
 function toPosixPath(path: string) {
-  if (isPosixEnv()) {
-    assertPosixPath(path)
-    return path
-  }
-  if (isWin32Env()) {
-    const pathPosix = path.split(sepWin32).join(sepPosix)
-    assertPosixPath(pathPosix)
-    return pathPosix
-  }
-  assert(false)
+  const pathPosix = path.split(sepWin32).join(sepPosix)
+  assertPosixPath(pathPosix)
+  return pathPosix
 }
 
 function assertPosixPath(path: string) {

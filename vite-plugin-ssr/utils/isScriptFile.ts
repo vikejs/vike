@@ -1,6 +1,7 @@
 export { isScriptFile }
 export { isTemplateFile }
 export { scriptFileExtensions }
+export { scriptFileExtensionList }
 
 import { assert } from './assert'
 
@@ -28,7 +29,7 @@ const extJavaScript = [
   'ctsx',
   'mjsx',
   'mtsx',
-]
+] as const
 // prettier-ignore
 const extTemplates = [
   'vue',
@@ -36,12 +37,12 @@ const extTemplates = [
   'marko',
   'md',
   'mdx'
-]
-const extList = [...extJavaScript, ...extTemplates]
-const scriptFileExtensions: string = '(' + extList.join('|') + ')'
+] as const
+const scriptFileExtensionList = [...extJavaScript, ...extTemplates] as const
+const scriptFileExtensions: string = '(' + scriptFileExtensionList.join('|') + ')'
 
 function isScriptFile(filePath: string): boolean {
-  const yes = extList.some((ext) => filePath.endsWith('.' + ext))
+  const yes = scriptFileExtensionList.some((ext) => filePath.endsWith('.' + ext))
   assert(!isJavaScriptFile(filePath) || yes)
   return yes
 }

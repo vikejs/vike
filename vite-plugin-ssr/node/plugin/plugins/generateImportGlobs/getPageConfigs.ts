@@ -16,7 +16,8 @@ import {
   assertUsage,
   isPosixPath,
   toPosixPath,
-  assertWarning
+  assertWarning,
+  addFileExtensionsToRequireResolve
 } from '../../utils'
 import path from 'path'
 
@@ -105,68 +106,67 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
-  pageConfigFilesConcrete
-    .forEach((pageConfigFile) => {
-      const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
-      const pageConfigValues = getPageConfigValues(pageConfigFile)
-      const pageId2 = determinePageId2(pageConfigFilePath)
-      const route =
-        pageConfigValues.route || // TODO: assertUsage that route isn't a path
-        determineRouteFromFilesystemPath(pageConfigFilePath)
+  pageConfigFilesConcrete.forEach((pageConfigFile) => {
+    const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
+    const pageConfigValues = getPageConfigValues(pageConfigFile)
+    const pageId2 = determinePageId2(pageConfigFilePath)
+    const route =
+      pageConfigValues.route || // TODO: assertUsage that route isn't a path
+      determineRouteFromFilesystemPath(pageConfigFilePath)
 
-      const configSources: {
-        configName: string
-        configSource: ConfigSource
-      }[] = []
-      Object.entries(configDefinitions)
-        .filter(([_configName, { codeEnv }]) => codeEnv !== (isForClientSide ? 'server-only' : 'client-only'))
-        .forEach(([configName, { configValueLocation, codeEnv }]) => {
-          const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
-          if (!result) return
-          const { pageConfigValue, pageConfigValueFilePath } = result
-          if (configValueLocation === 'inline') {
-            configSources.push({
-              configName,
-              configSource: {
-                configFilePath: pageConfigValueFilePath,
-                configValue: pageConfigValue
-              }
-            })
-          }
-          if (configValueLocation === 'file') {
-            assertUsage(typeof pageConfigValue === 'string', 'TODO')
-            const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName)
-            configSources.push({
-              configName,
-              configSource: {
-                codeFilePath,
-                codeEnv
-              }
-            })
-          }
-        })
-
-      lines.push('pageConfigs.push({')
-      lines.push(`  pageId2: '${pageId2}',`)
-      lines.push(`  route: '${route}',`)
-      lines.push(`  configSources: {`)
-      configSources.forEach(({ configName, configSource }) => {
-        lines.push(`    ['${configName}']: {`)
-        if ('codeFilePath' in configSource) {
-          const { codeFilePath, codeEnv } = configSource
-          lines.push(`      codeFilePath: '${codeFilePath}',`)
-          lines.push(`      codeEnv: '${codeEnv}',`)
-          lines.push(`      loadCodeFile: () => import('${codeFilePath}')`)
-        } else {
-          const { configFilePath, configValue } = configSource
-          lines.push(`      configFilePath: '${configFilePath}',`)
-          lines.push(`      configValue: ${JSON.stringify(configValue)}`)
+    const configSources: {
+      configName: string
+      configSource: ConfigSource
+    }[] = []
+    Object.entries(configDefinitions)
+      .filter(([_configName, { codeEnv }]) => codeEnv !== (isForClientSide ? 'server-only' : 'client-only'))
+      .forEach(([configName, { configValueLocation, codeEnv }]) => {
+        const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
+        if (!result) return
+        const { pageConfigValue, pageConfigValueFilePath } = result
+        if (configValueLocation === 'inline') {
+          configSources.push({
+            configName,
+            configSource: {
+              configFilePath: pageConfigValueFilePath,
+              configValue: pageConfigValue
+            }
+          })
         }
-        lines.push(`    },`)
+        if (configValueLocation === 'file') {
+          assertUsage(typeof pageConfigValue === 'string', 'TODO')
+          const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName)
+          configSources.push({
+            configName,
+            configSource: {
+              codeFilePath,
+              codeEnv
+            }
+          })
+        }
       })
-      lines.push(`  }`)
-      lines.push('});')
+
+    lines.push('pageConfigs.push({')
+    lines.push(`  pageId2: '${pageId2}',`)
+    lines.push(`  route: '${route}',`)
+    lines.push(`  configSources: {`)
+    configSources.forEach(({ configName, configSource }) => {
+      lines.push(`    ['${configName}']: {`)
+      if ('codeFilePath' in configSource) {
+        const { codeFilePath, codeEnv } = configSource
+        lines.push(`      codeFilePath: '${codeFilePath}',`)
+        lines.push(`      codeEnv: '${codeEnv}',`)
+        lines.push(`      loadCodeFile: () => import('${codeFilePath}')`)
+      } else {
+        const { configFilePath, configValue } = configSource
+        lines.push(`      configFilePath: '${configFilePath}',`)
+        lines.push(`      configValue: ${JSON.stringify(configValue)}`)
+      }
+      lines.push(`    },`)
     })
+    lines.push(`  }`)
+    lines.push('});')
+  })
 
   const code = lines.join('\n')
   return code
@@ -190,7 +190,7 @@ function resolveConfigValue(
 
 function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
   const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
-      /* TDOO
+  /* TDOO
             assertUsage(
               !(codeExportName in codeExportFileExports),
               `${codeExportFilePath} should have \`export default ${codeExportName}\` instead of \`export { ${codeExportName} }\``
@@ -222,7 +222,8 @@ function resolveCodeFilePath(
   userRootDir: string,
   configName: string
 ): string {
-  const errIntro = `${pageConfigFilePath} sets the config '${configName}' to '${configValue}'`
+  const errIntro1 = `${pageConfigFilePath} sets the config '${configName}' to the value '${configValue}'`
+  const errIntro2 = `${errIntro1} but the value should be`
   const warnArgs = { onlyOnce: true, showStackTrace: false } as const
 
   if (!isPosixPath(configValue)) {
@@ -230,34 +231,39 @@ function resolveCodeFilePath(
     const configValueFixed = toPosixPath(configValue)
     assertWarning(
       false,
-      `${errIntro} but it should be '${configValueFixed}' instead (replace backslashes '\' with forward slahes '/')`,
+      `${errIntro2} '${configValueFixed}' instead (replace backslashes '\\' with forward slahes '/')`,
       warnArgs
     )
     configValue = configValueFixed
   }
 
-  const pageConfigDir = path.posix.dirname(pageConfigFilePath)
   let codeFilePath: string
-  if (configValue.startsWith('/')) {
-    assertWarning(
-      false,
-      `${errIntro} but it should be a relative path (i.e. a path that starts with './' or '../') that is relative to ${pageConfigDir}`,
-      warnArgs
-    )
-    codeFilePath = configValue
-  } else {
-    assertPosixPath(configValue)
-    assertPosixPath(pageConfigFilePath)
-    codeFilePath = path.posix.join(pageConfigDir, configValue)
+  {
+    const pageConfigDir = dirnameNormalized(pageConfigFilePath)
+    if (configValue.startsWith('/')) {
+      assertWarning(
+        false,
+        `${errIntro2} a relative path instead (i.e. a path that starts with './' or '../') that is relative to ${pageConfigDir}`,
+        warnArgs
+      )
+      codeFilePath = configValue
+    } else {
+      assertPosixPath(configValue)
+      assertPosixPath(pageConfigFilePath)
+      codeFilePath = path.posix.join(pageConfigDir, configValue)
+    }
   }
 
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
   let codeFilePathAbsolute = path.posix.join(userRootDir, codeFilePath)
+  const clean = addFileExtensionsToRequireResolve()
   try {
     codeFilePathAbsolute = require.resolve(codeFilePathAbsolute)
   } catch {
-    assertUsage(false, `${errIntro} but a file wasn't found at ${codeFilePathAbsolute}`)
+    assertUsage(false, `${errIntro1} but no file was found at ${codeFilePathAbsolute}`)
+  } finally {
+    clean()
   }
 
   {
@@ -270,23 +276,32 @@ function resolveCodeFilePath(
         // Warning for `/` already handled above
         '/'
       ].some((prefix) => configValue.startsWith(prefix)),
-      `${errIntro} but it should be '${configValueFixed}' instead (make sure to prefix your paths with './' or '../')`,
+      `${errIntro2} '${configValueFixed}' instead (make sure to prefix paths with './' or '../')`,
       warnArgs
     )
   }
   {
     const filename = path.posix.basename(codeFilePathAbsolute)
-    const configValueFixed = path.posix.join(path.posix.dirname(configValue), filename)
+    const configValueDir = dirnameNormalized(configValue)
+    const configValueFixed = configValueDir + filename
     const fileExt = path.posix.extname(filename)
     assertWarning(
       configValue.endsWith(filename),
-      `${errIntro} but it should be '${configValueFixed}' instead (don't omit the file extension '${fileExt}')`,
+      `${errIntro2} '${configValueFixed}' instead (don't omit the file extension '${fileExt}')`,
       warnArgs
     )
   }
 
   assert(codeFilePath.startsWith('/'))
   return codeFilePath
+}
+
+function dirnameNormalized(filePath: string) {
+  assertPosixPath(filePath)
+  let fileDir = path.posix.dirname(filePath)
+  assert(!fileDir.endsWith('/'))
+  fileDir = fileDir + '/'
+  return fileDir
 }
 
 /*
