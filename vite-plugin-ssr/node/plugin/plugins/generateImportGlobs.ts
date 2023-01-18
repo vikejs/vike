@@ -16,11 +16,12 @@ import {
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 import { getRealId, getVirtualId } from './generateImportGlobs/virtualIdHandling'
-import { generatePageCodeLoaders } from './generateImportGlobs/generatePageCodeLoaders'
+import { generatePageConfigsSourceCode } from './generateImportGlobs/getPageConfigs'
 
 function generateImportGlobs(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
+  let isDev = false
   return {
     name: 'vite-plugin-ssr:virtualModulePageFiles',
     config() {
@@ -62,8 +63,11 @@ function generateImportGlobs(): Plugin {
       assert(isForClientSide === !viteIsSSR_options(options))
       const isClientRouting = id === virtualModuleIdPageFilesClientCR
       const isPrerendering = !!configVps.prerender
-      const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering)
+      const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev)
       return code
+    },
+    configureServer() {
+      isDev = true
     }
   }
 }
@@ -73,11 +77,13 @@ async function getCode(
   configVps: ConfigVpsResolved,
   isForClientSide: boolean,
   isClientRouting: boolean,
-  isPrerendering: boolean
+  isPrerendering: boolean,
+  isDev: boolean
 ) {
   const { command } = config
   assert(command === 'serve' || command === 'build')
   const isBuild = command === 'build'
+  assert(isDev === !isBuild)
   let content = ''
   {
     const globRoots = getGlobRoots(config, configVps)
@@ -89,7 +95,8 @@ async function getCode(
       isClientRouting,
       configVps,
       isPrerendering,
-      config
+      config,
+      isDev
     )
   }
   {
@@ -220,7 +227,8 @@ async function generateGlobImports(
   isClientRouting: boolean,
   configVps: ConfigVpsResolved,
   isPrerendering: boolean,
-  config: ResolvedConfig
+  config: ResolvedConfig,
+  isDev: boolean
 ) {
   let fileContent = `// Generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
 
@@ -232,8 +240,8 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-export const pageConfigFiles = import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true });
-${await generatePageCodeLoaders(config.root, isForClientSide)}
+import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true });
+${await generatePageConfigsSourceCode(config.root, isForClientSide, isDev)}
 
 `
 

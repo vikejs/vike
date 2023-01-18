@@ -1,17 +1,24 @@
 // export { getPageConfigsFromGlob }
 // export { getPageConfigs }
 //export { isValidPageConfigFile }
-export { generatePageConfigsDataCode }
+export { generatePageConfigsSourceCode }
 
 // TODO: ensure that `route` isn't a file path but a route string (same for onBeforeRoute)
-// TODO: Stop server-side runtime from importing this file?
 
 import {
   determinePageId2,
   determineRouteFromFilesystemPath
 } from '../../../../shared/route/deduceRouteStringFromFilesystemPath'
-import { assertPosixPath, assert, isObject, assertUsage, isCallable } from '../../utils'
-// import path from 'path' // TODO: can we use move this file from shared/ to node/ and then use path?
+import {
+  assertPosixPath,
+  assert,
+  isObject,
+  assertUsage,
+  isPosixPath,
+  toPosixPath,
+  assertWarning
+} from '../../utils'
+import path from 'path'
 
 import type { CodeEnv, ConfigSource } from '../../../../shared/page-configs/PageConfig'
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
@@ -54,149 +61,36 @@ const configDefinitions: Record<
   }
 }
 
-/*
-function getPageConfigsFromGlob(
-  globResult: Record<string, unknown>,
-  pageCodeLoaders: Record<string, unknown>
-): PageConfig[] {
-  const pageConfigFiles: PageConfigFile[] = []
-  Object.entries(globResult).forEach(([pageConfigFilePath, pageConfigFileExports]) => {
-    assert(isObject(pageConfigFileExports))
-    {
-      const configeErr = checkPageConfigFile(pageConfigFileExports)
-      if (configeErr) {
-        assertUsage(false, configeErr)
-      }
+async function generatePageConfigsSourceCode(
+  userRootDir: string,
+  isForClientSide: boolean,
+  isDev: boolean
+): Promise<string> {
+  try {
+    return await getCode(userRootDir, isForClientSide)
+  } catch (err) {
+    // Properly handle error during transpilation so that we can use assertUsage() during transpilation
+    if (isDev) {
+      throw err
+    } else {
+      // TODO update error message example
+      // Avoid ugly:
+      // ```
+      // [vite-plugin-ssr:virtualModulePageFiles] Could not load virtual:vite-plugin-ssr:pageFiles:client:client-routing (imported by ../../vite-plugin-ssr/dist/esm/client/router/pageFiles.js): eiqwuh
+      // error during build:
+      // Error: Could not load virtual:vite-plugin-ssr:pageFiles:client:client-routing (imported by ../../vite-plugin-ssr/dist/esm/client/router/pageFiles.js): eiqwuh
+      //     at Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:55:19)
+      //     at file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:23399:40
+      //  ELIFECYCLE  Command failed with exit code 1.
+      // ```
+      console.log('')
+      console.error(err)
+      process.exit(1)
     }
-    assert(isValidPageConfigFile(pageConfigFileExports))
-    const pageConfigValues: PageConfigValues = pageConfigFileExports.default
-    pageConfigFiles.push({
-      pageConfigFilePath,
-      pageConfigValues
-    })
-  })
-
-  const pageConfigsInfo = getPageConfigs(pageConfigFiles)
-  const pageConfigs = pageConfigsInfo.map((pageConfigInfo) => {
-    const pageConfig: PageConfig = {
-      ...pageConfigInfo,
-      codeExports: null,
-      async loadCode() {
-        const codeExports: CodeExport[] = []
-
-        {
-          const load = pageCodeLoaders[pageConfigInfo.pageId2]
-          assert(isCallable(load))
-          const codeExportsUntyped: unknown = await load()
-          assert(Array.isArray(codeExportsUntyped))
-          codeExportsUntyped.forEach((codeExport) => {
-            assert(isObject(codeExport))
-            const { codeExportName, codeExportFilePath, codeExportFileExports } = codeExport
-            assert(isObject(codeExportFileExports))
-            assert(typeof codeExportName === 'string')
-            assert(typeof codeExportFilePath === 'string')
-            assertUsage(
-              !(codeExportName in codeExportFileExports),
-              `${codeExportFilePath} should have \`export default ${codeExportName}\` instead of \`export { ${codeExportName} }\``
-            )
-            const invalidExports = Object.keys(codeExportFileExports).filter((e) => e !== 'default')
-            assertUsage(
-              invalidExports.length === 0,
-              `${codeExportFilePath} has \`export { ${invalidExports.join(
-                ', '
-              )} }\` which is forbidden: it should have a single \`export default\` instead`
-            )
-            assertUsage('default' in codeExportFileExports, `${codeExportFilePath} should have a \`export default\``)
-            codeExports.push({
-              codeExportName,
-              codeExportFilePath,
-              codeExportValue: codeExportFileExports.default
-            })
-          })
-        }
-
-        // TODO: rename codeExports
-        {
-          directConfigs.forEach((configName) => {
-            for (const { pageConfigFilePath, pageConfigValues } of pageConfigFiles) {
-              const codeExportValue = pageConfigValues[configName]
-              if (codeExportValue !== undefined) {
-                codeExports.push({
-                  codeExportName: configName, // Unify naming
-                  codeExportFilePath: pageConfigFilePath,
-                  codeExportValue: pageConfigValues[configName]
-                })
-                break
-              }
-            }
-          })
-        }
-
-        pageConfig.codeExports = codeExports
-      }
-    }
-    return pageConfig
-  })
-
-  return pageConfigs
+  }
 }
-*/
 
-/*
-function getPageConfigs(pageConfigFiles: PageConfigFile[]): PageConfigInfo[] {
-  if (pageConfigFiles.length === 0) return [] // temporary
-
-  const pageConfigsInfo: PageConfigInfo[] = []
-
-  const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
-  assert(pageConfigFilesAbstract.length === 1) // TODO
-  const pageConfigFileAbstract = pageConfigFilesAbstract[0]!
-  pageConfigFiles
-    .filter((p) => !isAbstract(p))
-    .forEach((pageConfigFile) => {
-      const { pageConfigFilePath, pageConfigValues } = pageConfigFile
-
-      const onRenderHtml = resolveConfigValue2(pageConfigFile, pageConfigFilesAbstract, 'onRenderHtml')
-      assert(onRenderHtml) // TODO: assertUsage()
-      const onRenderClient = resolveConfigValue2(pageConfigFile, pageConfigFilesAbstract, 'onRenderClient')
-      assert(onRenderClient) // TODO: assertUsage()
-      const passToClient = resolveConfigValue2(pageConfigFile, pageConfigFilesAbstract, 'passToClient')
-      const onBeforeRender = resolveConfigValue2(pageConfigFile, pageConfigFilesAbstract, 'onBeforeRender')
-      const onBeforeRoute = resolveConfigValue2(pageConfigFile, pageConfigFilesAbstract, 'onBeforeRoute')
-      const iKnowThePerformanceRisksOfAsyncRouteFunctions = resolveConfigValue2(
-        pageConfigFile,
-        pageConfigFilesAbstract,
-        'iKnowThePerformanceRisksOfAsyncRouteFunctions'
-      )
-
-      let Page = pageConfigValues.Page
-      if (Page) Page = resolveCodeFilePath(Page, pageConfigFilePath)
-
-      const route =
-        pageConfigValues.route || // TODO: assertUsage that route isn't a path
-        determineRouteFromFilesystemPath(pageConfigFilePath)
-
-      const pageId2 = determinePageId2(pageConfigFilePath)
-
-      pageConfigsInfo.push({
-        pageId2,
-        pageConfigFiles: [pageConfigFile, pageConfigFileAbstract], // TODO: there can be several abstract page configs + ensure order is right (specific first)
-        onRenderHtml,
-        onRenderClient,
-        Page,
-        route,
-        onBeforeRoute,
-        onBeforeRender,
-        passToClient,
-        iKnowThePerformanceRisksOfAsyncRouteFunctions
-      })
-    })
-
-  return pageConfigsInfo
-}
-*/
-
-async function generatePageConfigsDataCode(userRootDir: string, isForClientSide: boolean): Promise<string> {
+async function getCode(userRootDir: string, isForClientSide: boolean): Promise<string> {
   const result = await loadPageConfigFiles(userRootDir)
 
   if ('hasError' in result) {
@@ -210,8 +104,8 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
   lines.push('export const pageConfigs = [];')
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
-  pageConfigFiles
-    .filter((p) => !isAbstract(p))
+  const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
+  pageConfigFilesConcrete
     .forEach((pageConfigFile) => {
       const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
       const pageConfigValues = getPageConfigValues(pageConfigFile)
@@ -241,7 +135,7 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
           }
           if (configValueLocation === 'file') {
             assertUsage(typeof pageConfigValue === 'string', 'TODO')
-            const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath)
+            const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName)
             configSources.push({
               configName,
               configSource: {
@@ -278,28 +172,6 @@ async function generatePageConfigsDataCode(userRootDir: string, isForClientSide:
   return code
 }
 
-// TODO: remove
-/*
-function resolveConfigValue2<K extends keyof PageConfigValues>(
-  pageConfigFile: PageConfigFile,
-  pageConfigFilesAbstract: PageConfigFile[],
-  pageConfigName: K
-): PageConfigValues[K] | undefined {
-  let pageConfigValue: PageConfigValues[K] | undefined = undefined
-  for (const { pageConfigFilePath, pageConfigValues } of [pageConfigFile, ...pageConfigFilesAbstract]) {
-    pageConfigValue = pageConfigValues[pageConfigName]
-    if (pageConfigValue !== undefined) {
-      if ((filePathConfigs as readonly string[]).includes(pageConfigName)) {
-        assert(typeof pageConfigValue === 'string') // TODO: assertUsage()
-        pageConfigValue = resolveCodeFilePath(pageConfigValue, pageConfigFilePath) as any
-      }
-      break
-    }
-  }
-  return pageConfigValue
-}
-*/
-
 function resolveConfigValue(
   pageConfigName: string,
   pageConfigFile: PageConfigFile,
@@ -318,6 +190,20 @@ function resolveConfigValue(
 
 function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
   const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
+      /* TDOO
+            assertUsage(
+              !(codeExportName in codeExportFileExports),
+              `${codeExportFilePath} should have \`export default ${codeExportName}\` instead of \`export { ${codeExportName} }\``
+            )
+            const invalidExports = Object.keys(codeExportFileExports).filter((e) => e !== 'default')
+            assertUsage(
+              invalidExports.length === 0,
+              `${codeExportFilePath} has \`export { ${invalidExports.join(
+                ', '
+              )} }\` which is forbidden: it should have a single \`export default\` instead`
+            )
+            assertUsage('default' in codeExportFileExports, `${codeExportFilePath} should have a \`export default\``)
+      */
   assert(Object.keys(pageConfigFileExports).length === 1) // TODO: assertUsage()
   assert('default' in pageConfigFileExports) // TODO: assertUsage()
   const pageConfigValues = pageConfigFileExports.default
@@ -330,44 +216,77 @@ function isAbstract(pageConfigFile: PageConfigFile): boolean {
   return !pageConfigValues.Page && !pageConfigValues.route
 }
 
-/*
-function resolvePathOptional(configValuePath: string | undefined, pageConfigFilePath: string): string | undefined {
-  if (configValuePath === undefined) return undefined
-  return resolveCodeFilePath(configValuePath, pageConfigFilePath)
-}
-*/
-function resolveCodeFilePath(configValuePath: string, pageConfigFilePath: string): string {
-  assertPosixPath(configValuePath) // TODO: assertUsage()
-  assertPosixPath(pageConfigFilePath)
-  assert(pageConfigFilePath.startsWith('/pages/'), pageConfigFilePath) // TODO: remove
-  let p = pathJoin(pathDirname(pageConfigFilePath), configValuePath)
-  assert(p.startsWith('/'), p)
-  assert(p.startsWith('/pages/'), p) // TODO: remove
-  return p
-}
+function resolveCodeFilePath(
+  configValue: string,
+  pageConfigFilePath: string,
+  userRootDir: string,
+  configName: string
+): string {
+  const errIntro = `${pageConfigFilePath} sets the config '${configName}' to '${configValue}'`
+  const warnArgs = { onlyOnce: true, showStackTrace: false } as const
 
-// TODO: Not needed anymore
-// Node.js code/shim: https://github.com/jinder/path
-function pathDirname(path_: string): string {
-  const { isAbsolute, parts } = parsePath(path_)
-  assert(isAbsolute)
-  const fileDir = '/' + parts.slice(0, -1).join('/')
-  assert(!fileDir.endsWith('/'))
-  return fileDir
-}
-function pathJoin(path1: string, path2: string): string {
-  assert(!path2.startsWith('..')) // TODO
-  const { isAbsolute, parts } = parsePath(path1)
-  let path_ = [...parts, ...parsePath(path2).parts].join('/')
-  if (isAbsolute) path_ = '/' + path_
-  return path_
-}
-function parsePath(path_: string) {
-  assertPosixPath(path_)
-  const isAbsolute = path_.startsWith('/')
-  let parts = path_.split('/').filter(Boolean)
-  if (parts[0] === '.') parts = parts.slice(1)
-  return { isAbsolute, parts }
+  if (!isPosixPath(configValue)) {
+    assert(configValue.includes('\\'))
+    const configValueFixed = toPosixPath(configValue)
+    assertWarning(
+      false,
+      `${errIntro} but it should be '${configValueFixed}' instead (replace backslashes '\' with forward slahes '/')`,
+      warnArgs
+    )
+    configValue = configValueFixed
+  }
+
+  const pageConfigDir = path.posix.dirname(pageConfigFilePath)
+  let codeFilePath: string
+  if (configValue.startsWith('/')) {
+    assertWarning(
+      false,
+      `${errIntro} but it should be a relative path (i.e. a path that starts with './' or '../') that is relative to ${pageConfigDir}`,
+      warnArgs
+    )
+    codeFilePath = configValue
+  } else {
+    assertPosixPath(configValue)
+    assertPosixPath(pageConfigFilePath)
+    codeFilePath = path.posix.join(pageConfigDir, configValue)
+  }
+
+  assertPosixPath(userRootDir)
+  assertPosixPath(codeFilePath)
+  let codeFilePathAbsolute = path.posix.join(userRootDir, codeFilePath)
+  try {
+    codeFilePathAbsolute = require.resolve(codeFilePathAbsolute)
+  } catch {
+    assertUsage(false, `${errIntro} but a file wasn't found at ${codeFilePathAbsolute}`)
+  }
+
+  {
+    // It's not possible to omit '../' so we can assume that the path is relative to pageConfigDir
+    const configValueFixed = './' + configValue
+    assertWarning(
+      [
+        './',
+        '../',
+        // Warning for `/` already handled above
+        '/'
+      ].some((prefix) => configValue.startsWith(prefix)),
+      `${errIntro} but it should be '${configValueFixed}' instead (make sure to prefix your paths with './' or '../')`,
+      warnArgs
+    )
+  }
+  {
+    const filename = path.posix.basename(codeFilePathAbsolute)
+    const configValueFixed = path.posix.join(path.posix.dirname(configValue), filename)
+    const fileExt = path.posix.extname(filename)
+    assertWarning(
+      configValue.endsWith(filename),
+      `${errIntro} but it should be '${configValueFixed}' instead (don't omit the file extension '${fileExt}')`,
+      warnArgs
+    )
+  }
+
+  assert(codeFilePath.startsWith('/'))
+  return codeFilePath
 }
 
 /*

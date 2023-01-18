@@ -1,18 +1,23 @@
-import { assert } from './assert'
-
 export { toPosixPath }
 export { assertPosixPath }
 export { toSystemPath }
+export { isPosixPath }
+
+import { assert } from './assert'
 
 const sepPosix = '/'
 const sepWin32 = '\\'
 
+function isPosixPath(path: string) {
+  return !path.includes(sepWin32)
+}
+
 function toPosixPath(path: string) {
-  if (isPosix()) {
+  if (isPosixEnv()) {
     assertPosixPath(path)
     return path
   }
-  if (isWin32()) {
+  if (isWin32Env()) {
     const pathPosix = path.split(sepWin32).join(sepPosix)
     assertPosixPath(pathPosix)
     return pathPosix
@@ -25,18 +30,18 @@ function assertPosixPath(path: string) {
 }
 
 function toSystemPath(path: string) {
-  if (isPosix()) {
+  if (isPosixEnv()) {
     return toPosixPath(path)
   }
-  if (isWin32()) {
+  if (isWin32Env()) {
     return path.split(sepPosix).join(sepWin32)
   }
   assert(false)
 }
 
-function isWin32() {
+function isWin32Env() {
   return process.platform === 'win32'
 }
-function isPosix() {
-  return !isWin32()
+function isPosixEnv() {
+  return !isWin32Env()
 }
