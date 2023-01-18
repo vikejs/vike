@@ -33,6 +33,12 @@ function assertPluginManifest(pluginManifest: unknown): asserts pluginManifest i
   assert(hasProp(pluginManifest, 'manifestKeyMap', 'object'))
   const { manifestKeyMap } = pluginManifest
   assert(isStringRecord(manifestKeyMap))
-  objectAssign(pluginManifest, { manifestKeyMap })
-  checkType<PluginManifest>(pluginManifest)
+  // Avoid:
+  // ```
+  // Uncaught (in promise) TypeError: Cannot set property manifestKeyMap of #<Object> which has only a getter
+  // ```
+  // See https://github.com/brillout/vite-plugin-ssr/issues/596
+  const pluginManifestClone = { ...pluginManifest }
+  objectAssign(pluginManifestClone, { manifestKeyMap })
+  checkType<PluginManifest>(pluginManifestClone)
 }
