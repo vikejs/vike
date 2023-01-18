@@ -1,3 +1,14 @@
+## [0.4.70](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.69...v0.4.70) (2023-01-18)
+
+
+### Bug Fixes
+
+* improve formatting of transpilation error logs in dev ([d158d97](https://github.com/brillout/vite-plugin-ssr/commit/d158d979ffe559b9e007922de64d14fd7fbc2612))
+* improve transpile error handling ([1f9f45d](https://github.com/brillout/vite-plugin-ssr/commit/1f9f45d29064cb3409a77d01f05b5e9b13d55751))
+* workaround immutable exports (fix [#596](https://github.com/brillout/vite-plugin-ssr/issues/596)) ([3753cc2](https://github.com/brillout/vite-plugin-ssr/commit/3753cc23e9f1af61ec1341f6c983a9db087c6e8c))
+
+
+
 ## [0.4.69](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.68...v0.4.69) (2022-12-29)
 
 
