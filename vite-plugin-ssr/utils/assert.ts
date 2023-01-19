@@ -4,10 +4,14 @@ export { assertWarning }
 export { assertInfo }
 export { getProjectError }
 export { errorPrefix }
+export { addOnBeforeLogHook }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
 import { getGlobalObject } from './getGlobalObject'
 import { projectInfo } from './projectInfo'
+const globalObject = getGlobalObject<{ alreadyLogged: Set<string>; onBeforeLog?: () => void }>('assert.ts', {
+  alreadyLogged: new Set()
+})
 
 const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
 const internalErrorPrefix = `${errorPrefix}[Bug]`
@@ -41,6 +45,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
     numberOfStackTraceLinesToRemove
   )
 
+  globalObject.onBeforeLog?.()
   throw internalError
 }
 
@@ -51,6 +56,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
   const whiteSpace = errorMessage.startsWith('[') ? '' : ' '
   const errMsg = `${usageErrorPrefix}${whiteSpace}${errorMessage}`
   const usageError = createErrorWithCleanStackTrace(errMsg, numberOfStackTraceLinesToRemove)
+  globalObject.onBeforeLog?.()
   throw usageError
 }
 
@@ -63,7 +69,6 @@ function getProjectError(errorMessage: string) {
   return pluginError
 }
 
-const globalObject = getGlobalObject<{ alreadyLogged: Set<string> }>('assert.ts', { alreadyLogged: new Set() })
 function assertWarning(
   condition: unknown,
   errorMessage: string,
@@ -82,6 +87,7 @@ function assertWarning(
       alreadyLogged.add(key)
     }
   }
+  globalObject.onBeforeLog?.()
   if (showStackTrace) {
     console.warn(new Error(msg))
   } else {
@@ -103,5 +109,10 @@ function assertInfo(condition: unknown, errorMessage: string, { onlyOnce }: { on
       alreadyLogged.add(key)
     }
   }
+  globalObject.onBeforeLog?.()
   console.log(msg)
+}
+
+function addOnBeforeLogHook(onBeforeLog: () => void) {
+  globalObject.onBeforeLog = onBeforeLog
 }

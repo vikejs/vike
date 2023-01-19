@@ -2,7 +2,7 @@ export { buildConfig }
 
 import type { Plugin } from 'vite'
 import type { ResolvedConfig } from 'vite'
-import { assert, determineOutDir, isObject, viteIsSSR, makeFilePathAbsolute } from '../utils'
+import { assert, determineOutDir, isObject, viteIsSSR, makeFilePathAbsolute, addOnBeforeLogHook } from '../utils'
 import { findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
@@ -18,6 +18,7 @@ function buildConfig(): Plugin {
         ...normalizeRollupInput(config.build.rollupOptions.input)
       }
       config.build.rollupOptions.input = input
+      addLogHook()
     },
     config(config) {
       return {
@@ -80,4 +81,31 @@ function normalizeRollupInput(input?: InputOption): Record<string, string> {
   }
   assert(isObject(input))
   return input
+}
+
+function addLogHook() {
+  const tty = process.stdout.isTTY && !process.env.CI // Equals https://github.com/vitejs/vite/blob/193d55c7b9cbfec5b79ebfca276d4a721e7de14d/packages/vite/src/node/plugins/reporter.ts#L27
+  if (!tty) return
+  let lastLog: string | null = null
+  ;(['stdout', 'stderr'] as const).forEach((stdName) => {
+    var methodOriginal = process[stdName].write
+    process[stdName].write = function (...args) {
+      lastLog = String(args[0])
+      return methodOriginal.apply(process[stdName], args as any)
+    }
+  })
+  // Exhaustive list extracted from writeLine() calls at https://github.com/vitejs/vite/blob/193d55c7b9cbfec5b79ebfca276d4a721e7de14d/packages/vite/src/node/plugins/reporter.ts
+  // prettier-ignore
+  const viteTransientLogs = [
+    'transforming (',
+    'rendering chunks (',
+    'computing gzip size ('
+  ]
+  addOnBeforeLogHook(() => {
+    // Using viteTransientLogs is very conservative as clearing the current line is low risk. (We can assume that important messages, such as errors, include a trailing new line. Usually, only transient messages have no trailing new lines.)
+    if (viteTransientLogs.some((s) => lastLog?.startsWith(s))) {
+      process.stdout.clearLine(0)
+      process.stdout.cursorTo(0)
+    }
+  })
 }
