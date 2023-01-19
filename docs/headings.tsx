@@ -621,13 +621,18 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'HTTPS',
+    url: '/https'
+  },
+  {
+    level: 2,
     title: 'Express.js',
     url: '/express'
   },
   {
     level: 2,
-    title: 'HTTPS',
-    url: '/https'
+    title: 'Fastify',
+    url: '/fastify'
   },
   {
     level: 2,
@@ -636,8 +641,8 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
-    title: 'Fastify',
-    url: '/fastify'
+    title: 'Firebase',
+    url: '/firebase'
   },
   {
     level: 4,
