@@ -645,6 +645,12 @@ const headings: HeadingDefinition[] = [
     url: '/firebase'
   },
   {
+    level: 2,
+    title: 'Server Integration',
+    titleInNav: 'Other',
+    url: '/server'
+  },
+  {
     level: 4,
     title: 'Other'
   },
