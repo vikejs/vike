@@ -21,6 +21,7 @@ type ConfigSource =
 type PageConfig2 = {
   pageId2: string
   route: string
+  pageConfigFilePath?: string
   configSources: Record<ConfigName, ConfigSource> // TODO: rename?
 }
 

@@ -4,6 +4,7 @@ import { PageFile } from '../../../shared/getPageFiles'
 import { PageRoutes, loadPageRoutes } from '../../../shared/route'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../../utils'
+import pc from 'picocolors'
 import { isRenderErrorPageException } from './RenderErrorPage'
 import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
 
@@ -40,7 +41,7 @@ async function log404(pageContext: {
     assertInfo(
       false,
       [
-        `URL \`${urlPathname}\` isn't matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing and/or set the environment variable \`DEBUG=vps:routing\` for more information. (This info isn't shown in production.) Your page routes:`,
+        `URL '${urlPathname}' isn't matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing and/or set the environment variable \`DEBUG=vps:routing\` for more information. (This log isn't shown in production.) Your page routes:`,
         ...getPagesAndRoutesInfo(pageRoutes)
       ].join('\n'),
       { onlyOnce: false }
@@ -52,6 +53,20 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes) {
     .map((pageRoute) => {
       let route_humanReadable: string
       let routeType_humanReadable: string
+      let routeSource: string
+      {
+        if (!pageRoute.comesFromV1PageConfig) {
+          routeSource = `of \`${pageRoute.pageId}.page.*\``
+        } else {
+          if (pageRoute.routeType === 'FILESYSTEM') {
+            assert(pageRoute.pageConfigFilePath)
+            routeSource = `of ${pageRoute.pageConfigFilePath}`
+          } else {
+            assert(pageRoute.pageRouteFilePath)
+            routeSource = `defined in ${pageRoute.pageRouteFilePath}`
+          }
+        }
+      }
       if (pageRoute.routeType === 'STRING') {
         route_humanReadable = pageRoute.routeString
         routeType_humanReadable = 'Route String'
@@ -62,7 +77,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes) {
         route_humanReadable = pageRoute.routeString
         routeType_humanReadable = 'Filesystem Route'
       }
-      return `\`${route_humanReadable}\` (${routeType_humanReadable} of \`${pageRoute.pageId}.page.*\`)`
+      return `${pc.bold(route_humanReadable)} ${routeType_humanReadable} ${routeSource}`
     })
     .sort(compareString)
     .map((line, i) => {

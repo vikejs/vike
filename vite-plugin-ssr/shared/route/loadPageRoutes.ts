@@ -11,8 +11,8 @@ export { findPageRouteFile }
 export type { PageRoutes }
 export type { RouteType }
 
-type PageRoute = { pageId: string } & (
-  | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM' }
+type PageRoute = { pageId: string; comesFromV1PageConfig: boolean } & (
+  | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM'; pageConfigFilePath?: string }
   | { routeString: string; pageRouteFilePath: string; routeType: 'STRING' }
   | { routeFunction: Function; pageRouteFilePath: string; allowAsync: boolean; routeType: 'FUNCTION' }
 )
@@ -40,101 +40,128 @@ function getPageRoutes(
 
   let pageIds = [...allPageIds]
 
-  pageConfigs.forEach((pageConfig) => {
-    const pageId = pageConfig.pageId2
-    pageIds = removePageId(pageIds, pageId)
+  // VPS 1.0
+  {
+    const comesFromV1PageConfig = true
+    pageConfigs.forEach((pageConfig) => {
+      const pageId = pageConfig.pageId2
+      pageIds = removePageId(pageIds, pageId)
 
-    let pageRoute: null | PageRoute = null
-    {
-      const routeConfig = pageConfig.configSources.route
-      if (routeConfig) {
-        assert(!('codeFilePath' in routeConfig))
-        assert(routeConfig.configFilePath)
-        assert(routeConfig.configValue === pageConfig.route)
-        const route = routeConfig.configValue
-        const pageRouteFilePath = routeConfig.configFilePath
-        if (typeof route === 'string') {
-          pageRoute = { pageId, routeString: route, pageRouteFilePath, routeType: 'STRING' }
-        } else {
-          assert(isCallable(route))
-          let allowAsync = false
-          const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
-          if (allowSyncConfig) {
-            assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
-            const val = allowSyncConfig.configValue
-            assert(typeof val === 'boolean') // TODO: assertUsage()
-            allowAsync = val
+      let pageRoute: null | PageRoute = null
+      {
+        const routeConfig = pageConfig.configSources.route
+        if (routeConfig) {
+          assert(!('codeFilePath' in routeConfig))
+          assert(routeConfig.configFilePath)
+          assert(routeConfig.configValue === pageConfig.route)
+          const route = routeConfig.configValue
+          const pageRouteFilePath = routeConfig.configFilePath
+          if (typeof route === 'string') {
+            pageRoute = { pageId, comesFromV1PageConfig, routeString: route, pageRouteFilePath, routeType: 'STRING' }
+          } else {
+            assert(isCallable(route))
+            let allowAsync = false
+            const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
+            if (allowSyncConfig) {
+              assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
+              const val = allowSyncConfig.configValue
+              assert(typeof val === 'boolean') // TODO: assertUsage()
+              allowAsync = val
+            }
+            pageRoute = {
+              pageId,
+              comesFromV1PageConfig,
+              routeFunction: route,
+              pageRouteFilePath,
+              routeType: 'FUNCTION',
+              allowAsync
+            }
           }
-          pageRoute = { pageId, routeFunction: route, pageRouteFilePath, routeType: 'FUNCTION', allowAsync }
         }
       }
-    }
 
-    if (!pageRoute) {
-      const { route } = pageConfig
-      assert(typeof route === 'string')
-      pageRoute = { pageId, routeString: route, pageRouteFilePath: null, routeType: 'FILESYSTEM' }
-    }
-
-    assert(pageRoute)
-    pageRoutes.push(pageRoute)
-  })
-
-  pageIds
-    .filter((pageId) => !isErrorPageId(pageId))
-    .forEach((pageId) => {
-      const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
-      if (!pageRouteFile) {
-        const routeString = deduceRouteStringFromFilesystemPath(pageId, filesystemRoots)
-        assert(routeString.startsWith('/'))
-        assert(!routeString.endsWith('/') || routeString === '/')
-        pageRoutes.push({
+      if (!pageRoute) {
+        const { route, pageConfigFilePath } = pageConfig
+        assert(pageConfigFilePath)
+        assert(typeof route === 'string')
+        pageRoute = {
           pageId,
-          routeString,
+          pageConfigFilePath,
+          comesFromV1PageConfig,
+          routeString: route,
           pageRouteFilePath: null,
           routeType: 'FILESYSTEM'
-        })
-      } else {
-        const { filePath, fileExports } = pageRouteFile
-        assert(fileExports)
-        assertUsage('default' in fileExports, `${filePath} should have a default export.`)
-        if (hasProp(fileExports, 'default', 'string')) {
-          const routeString = fileExports.default
-          assertUsage(
-            routeString.startsWith('/'),
-            `A Route String should start with a leading \`/\` but \`${filePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
-          )
-          pageRoutes.push({
-            pageId,
-            routeString,
-            pageRouteFilePath: filePath,
-            routeType: 'STRING'
-          })
-          return
         }
-        if (hasProp(fileExports, 'default', 'function')) {
-          const routeFunction = fileExports.default
-          let allowAsync = false
-          const allowKey = 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
-          if (allowKey in fileExports) {
-            assertUsage(
-              hasProp(fileExports, allowKey, 'boolean'),
-              `The export \`${allowKey}\` of ${filePath} should be a boolean.`
-            )
-            allowAsync = fileExports[allowKey]
-          }
-          pageRoutes.push({
-            pageId,
-            routeFunction,
-            pageRouteFilePath: filePath,
-            allowAsync,
-            routeType: 'FUNCTION'
-          })
-          return
-        }
-        assertUsage(false, `The default export of ${filePath} should be a string or a function.`)
       }
+
+      assert(pageRoute)
+      pageRoutes.push(pageRoute)
     })
+  }
+
+  // VPS 0.4
+  {
+    const comesFromV1PageConfig = false
+    pageIds
+      .filter((pageId) => !isErrorPageId(pageId))
+      .forEach((pageId) => {
+        const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
+        if (!pageRouteFile) {
+          const routeString = deduceRouteStringFromFilesystemPath(pageId, filesystemRoots)
+          assert(routeString.startsWith('/'))
+          assert(!routeString.endsWith('/') || routeString === '/')
+          pageRoutes.push({
+            pageId,
+            comesFromV1PageConfig,
+            routeString,
+            pageRouteFilePath: null,
+            routeType: 'FILESYSTEM'
+          })
+        } else {
+          const { filePath, fileExports } = pageRouteFile
+          assert(fileExports)
+          assertUsage('default' in fileExports, `${filePath} should have a default export.`)
+          if (hasProp(fileExports, 'default', 'string')) {
+            const routeString = fileExports.default
+            assertUsage(
+              routeString.startsWith('/'),
+              `A Route String should start with a leading \`/\` but \`${filePath}\` has \`export default '${routeString}'\`. Make sure to \`export default '/${routeString}'\` instead.`
+            )
+            pageRoutes.push({
+              pageId,
+              comesFromV1PageConfig,
+              routeString,
+              pageRouteFilePath: filePath,
+              routeType: 'STRING'
+            })
+            return
+          }
+          if (hasProp(fileExports, 'default', 'function')) {
+            const routeFunction = fileExports.default
+            let allowAsync = false
+            const allowKey = 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
+            if (allowKey in fileExports) {
+              assertUsage(
+                hasProp(fileExports, allowKey, 'boolean'),
+                `The export \`${allowKey}\` of ${filePath} should be a boolean.`
+              )
+              allowAsync = fileExports[allowKey]
+            }
+            pageRoutes.push({
+              pageId,
+              comesFromV1PageConfig,
+              routeFunction,
+              pageRouteFilePath: filePath,
+              allowAsync,
+              routeType: 'FUNCTION'
+            })
+            return
+          }
+          assertUsage(false, `The default export of ${filePath} should be a string or a function.`)
+        }
+      })
+  }
+
   return pageRoutes
 }
 

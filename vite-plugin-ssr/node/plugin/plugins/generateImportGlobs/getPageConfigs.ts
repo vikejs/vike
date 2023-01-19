@@ -166,6 +166,7 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
     lines.push('pageConfigs.push({')
     lines.push(`  pageId2: '${pageId2}',`)
     lines.push(`  route: '${route}',`)
+    lines.push(`  pageConfigFilePath: '${pageConfigFilePath}',`)
     lines.push(`  configSources: {`)
     configSources.forEach(({ configName, configSource }) => {
       lines.push(`    ['${configName}']: {`)
