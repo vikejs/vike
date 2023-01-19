@@ -12,9 +12,9 @@ async function loadPageCode(pageConfig: PageConfig2): Promise<PageConfigLoaded> 
       if ('configValue' in configSource) {
         configValue = configSource.configValue
       }
-      if ('loadCodeFile' in configSource) {
-        if (!configSource.loadCodeFile) return
-        const fileExports = await configSource.loadCodeFile()
+      if ('loadCode' in configSource) {
+        if (!configSource.loadCode) return
+        const fileExports = await configSource.loadCode()
         assert(Object.keys(fileExports).length === 1) // TODO: assertUsage()
         assert('default' in fileExports) // TODO: assertUsage()
         configValue = fileExports.default

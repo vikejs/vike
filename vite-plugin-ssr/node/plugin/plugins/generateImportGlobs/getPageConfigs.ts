@@ -21,44 +21,42 @@ import {
 } from '../../utils'
 import path from 'path'
 
-import type { CodeEnv, ConfigSource } from '../../../../shared/page-configs/PageConfig'
+import type { c_Env, ConfigSource } from '../../../../shared/page-configs/PageConfig'
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 
-/*
-const filePathConfigs = ['onRenderHtml', 'onRenderClient', 'onBeforeRoute', 'Page'] as const // TODO: remove
-const directConfigs = ['passToClient'] as const // TODO: remove
-*/
-
+// TODO: remove c_ prefix
 const configDefinitions: Record<
   string,
   {
-    configValueLocation: 'file' | 'inline'
-    codeEnv: CodeEnv
+    c_type: 'file' | 'inline' // TODO: refactor
+    c_env: c_Env
+    c_required?: boolean
   }
 > = {
   onRenderHtml: {
-    configValueLocation: 'file',
-    codeEnv: 'server-only'
+    c_type: 'file',
+    c_required: true,
+    c_env: 'server-only'
   },
   onRenderClient: {
-    configValueLocation: 'file',
-    codeEnv: 'client-only'
+    c_type: 'file',
+    c_env: 'client-only'
   },
   Page: {
-    configValueLocation: 'file',
-    codeEnv: 'server-and-client'
+    c_type: 'file',
+    c_env: 'server-and-client'
   },
   passToClient: {
-    configValueLocation: 'inline',
-    codeEnv: 'server-only'
+    c_type: 'inline',
+    c_env: 'server-only'
   },
   route: {
-    configValueLocation: 'inline',
-    codeEnv: 'server-and-client'
+    c_type: 'inline',
+    c_env: 'config'
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    configValueLocation: 'inline',
-    codeEnv: 'server-and-client'
+    c_type: 'inline',
+    c_env: 'server-and-client'
   }
 }
 
@@ -74,14 +72,30 @@ async function generatePageConfigsSourceCode(
     if (isDev) {
       throw err
     } else {
-      // TODO update error message example
-      // Avoid ugly:
+      // Avoid ugly error format:
       // ```
-      // [vite-plugin-ssr:virtualModulePageFiles] Could not load virtual:vite-plugin-ssr:pageFiles:client:client-routing (imported by ../../vite-plugin-ssr/dist/esm/client/router/pageFiles.js): eiqwuh
-      // error during build:
-      // Error: Could not load virtual:vite-plugin-ssr:pageFiles:client:client-routing (imported by ../../vite-plugin-ssr/dist/esm/client/router/pageFiles.js): eiqwuh
-      //     at Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:55:19)
-      //     at file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:23399:40
+      // [vite-plugin-ssr:virtualModulePageFiles] Could not load virtual:vite-plugin-ssr:pageFiles:server: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
+      // Error: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
+      //     at resolveCodeFilePath (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:203:33)
+      //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:100:38
+      //     at Array.forEach (<anonymous>)
+      //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:84:14
+      //     at Array.forEach (<anonymous>)
+      //     at getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:75:29)
+      //     at async generatePageConfigsSourceCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:40:16)
+      //     at async generateGlobImports (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:188:3)
+      //     at async getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:78:20)
+      //     at async Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:60:26)
+      //     at async file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:22610:75
+      //     at async Queue.work (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:23509:32) {
+      //   code: 'PLUGIN_ERROR',
+      //   plugin: 'vite-plugin-ssr:virtualModulePageFiles',
+      //   hook: 'load',
+      //   watchFiles: [
+      //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/importBuild.js',
+      //     '\x00virtual:vite-plugin-ssr:pageFiles:server'
+      //   ]
+      // }
       //  ELIFECYCLE  Command failed with exit code 1.
       // ```
       console.log('')
@@ -119,12 +133,12 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
       configSource: ConfigSource
     }[] = []
     Object.entries(configDefinitions)
-      .filter(([_configName, { codeEnv }]) => codeEnv !== (isForClientSide ? 'server-only' : 'client-only'))
-      .forEach(([configName, { configValueLocation, codeEnv }]) => {
+      .filter(([_configName, { c_env }]) => c_env !== (isForClientSide ? 'server-only' : 'client-only'))
+      .forEach(([configName, { c_type, c_env }]) => {
         const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
         if (!result) return
         const { pageConfigValue, pageConfigValueFilePath } = result
-        if (configValueLocation === 'inline') {
+        if (c_type === 'inline') {
           configSources.push({
             configName,
             configSource: {
@@ -133,14 +147,14 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
             }
           })
         }
-        if (configValueLocation === 'file') {
+        if (c_type === 'file') {
           assertUsage(typeof pageConfigValue === 'string', 'TODO')
           const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName)
           configSources.push({
             configName,
             configSource: {
               codeFilePath,
-              codeEnv
+              c_env
             }
           })
         }
@@ -153,10 +167,10 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
     configSources.forEach(({ configName, configSource }) => {
       lines.push(`    ['${configName}']: {`)
       if ('codeFilePath' in configSource) {
-        const { codeFilePath, codeEnv } = configSource
+        const { codeFilePath, c_env } = configSource
         lines.push(`      codeFilePath: '${codeFilePath}',`)
-        lines.push(`      codeEnv: '${codeEnv}',`)
-        lines.push(`      loadCodeFile: () => import('${codeFilePath}')`)
+        lines.push(`      c_env: '${c_env}',`)
+        lines.push(`      loadCode: () => import('${codeFilePath}')`)
       } else {
         const { configFilePath, configValue } = configSource
         lines.push(`      configFilePath: '${configFilePath}',`)
@@ -222,7 +236,7 @@ function resolveCodeFilePath(
   userRootDir: string,
   configName: string
 ): string {
-  const errIntro1 = `${pageConfigFilePath} sets the config '${configName}' to the value '${configValue}'`
+  const errIntro1 = `${pageConfigFilePath} sets the config ${configName} to the value '${configValue}'`
   const errIntro2 = `${errIntro1} but the value should be`
   const warnArgs = { onlyOnce: true, showStackTrace: false } as const
 
@@ -303,67 +317,3 @@ function dirnameNormalized(filePath: string) {
   fileDir = fileDir + '/'
   return fileDir
 }
-
-/*
-// TODO: write error messages
-// TODO: is this still needed?
-function isValidPageConfigFile(
-  pageConfigFileExports: Record<string, unknown>
-): pageConfigFileExports is { default: PageConfigValues } {
-  return checkPageConfigFile(pageConfigFileExports) === null
-}
-function checkPageConfigFile(pageConfigFileExports: Record<string, unknown>): null | string {
-  assert(isObject(pageConfigFileExports))
-  if (!('default' in pageConfigFileExports)) return 'TODO'
-  const defaultExport = pageConfigFileExports.default
-  if (!isObject(defaultExport)) return 'TODO'
-  if (!(defaultExport.onRenderHtml === undefined || typeof defaultExport.onRenderHtml === 'string')) return 'TODO'
-  if (!(defaultExport.onRenderClient === undefined || typeof defaultExport.onRenderClient === 'string')) return 'TODO'
-  if (!(defaultExport.Page === undefined || typeof defaultExport.Page === 'string')) return 'TODO'
-  if (
-    !(defaultExport.route === undefined || typeof defaultExport.route === 'string' || isCallable(defaultExport.route))
-  )
-    return 'TODO'
-  return null
-}
-*/
-
-/* TODO: remove
-type PageConfig = {
-  onRenderHtml?: string | Function
-  onRenderClient?: string | Function
-  Page?: string | unknown
-} & Record<string, unknown>
-type PageConfigFile = {
-  filePath: string
-  getPageConfig: () => Promise<PageConfig>
-  pageId: null | string
-  // filesystemId: string
-  // loadConfig: () => Promise<void>
-  // configValue?: Record<string, unknown>
-}
-
-export { resolvePageConfigFile }
-function resolvePageConfigFile(filePath: string, loadFile: () => Promise<Record<string, unknown>>): PageConfigFile {
-  let pageConfig: null | PageConfig = null
-  const pageConfigFile: PageConfigFile = {
-    filePath,
-    pageId: determinePageId(filePath),
-    async getPageConfig() {
-      if (!pageConfig) {
-        const fileExports = await loadFile()
-        pageConfig = resolvePageConfig(fileExports)
-      }
-      assert(pageConfig)
-      return pageConfig
-    }
-  }
-  return pageConfigFile
-}
-function resolvePageConfig(pageConfigFileExports: Record<string, unknown>): PageConfig {
-  // TODO: add validation
-  const pageConfigUserDefined = pageConfigFileExports.default
-  assert(isObject(pageConfigUserDefined))
-  return pageConfigUserDefined
-}
-  */

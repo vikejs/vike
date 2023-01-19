@@ -1,9 +1,9 @@
 export type { PageConfig2 }
 export type { PageConfigLoaded }
-export type { CodeEnv }
+export type { c_Env }
 export type { ConfigSource }
 
-type CodeEnv = 'client-only' | 'server-only' | 'server-and-client'
+type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'config'
 
 type ConfigName = string
 type ConfigSource =
@@ -13,8 +13,8 @@ type ConfigSource =
     }
   | {
       codeFilePath: string
-      codeEnv: CodeEnv
-      loadCodeFile?: () => Promise<Record<string, unknown>>
+      c_env: c_Env
+      loadCode?: () => Promise<Record<string, unknown>>
     }
 
 // TODO: rename

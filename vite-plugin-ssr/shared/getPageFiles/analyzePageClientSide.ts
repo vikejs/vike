@@ -23,7 +23,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | Page
       if ('codeFilePath' in configSource) {
         clientDependencies.push({
           id: configSource.codeFilePath,
-          onlyAssets: configSource.codeEnv === 'server-only'
+          onlyAssets: configSource.c_env === 'server-only'
         })
       }
     })
