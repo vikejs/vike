@@ -2,6 +2,7 @@ export { resolveRouteString }
 export { getUrlFromRouteString }
 export { isStaticRouteString }
 export { analyzeRouteString }
+export { assertRouteString }
 
 import { assertWarning } from '../utils'
 import { assert, assertUsage } from './utils'
@@ -9,13 +10,17 @@ import { assert, assertUsage } from './utils'
 const PARAM_TOKEN_NEW = '@'
 const PARAM_TOKEN_OLD = ':'
 
-function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
+function assertRouteString(routeString: string) {
   assertUsage(
     routeString === '*' || routeString.startsWith('/'),
     `Invalid route string \`${routeString}\`${
       routeString === '' ? ' (empty string)' : ''
     }: route strings should start with a leading slash \`/\` (or be \`*\`).`
   )
+}
+
+function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
+  assertRouteString(routeString)
   assert(urlPathname.startsWith('/'))
 
   const routeSegments = routeString.split('/')
@@ -29,7 +34,6 @@ function resolveRouteString(routeString: string, urlPathname: string): null | { 
     routeString = '/*'
   }
 
-  //console.log(routeString, urlPathname)
   for (let i = 0; i < Math.max(routeSegments.length, urlSegments.length); i++) {
     const routeSegment = routeSegments[i]
     const urlSegment = urlSegments[i]

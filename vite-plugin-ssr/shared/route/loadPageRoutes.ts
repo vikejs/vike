@@ -37,7 +37,50 @@ function getPageRoutes(
   allPageIds: string[]
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
-  allPageIds
+
+  let pageIds = [...allPageIds]
+
+  pageConfigs.forEach((pageConfig) => {
+    const pageId = pageConfig.pageId2
+    pageIds = removePageId(pageIds, pageId)
+
+    let pageRoute: null | PageRoute = null
+    {
+      const routeConfig = pageConfig.configSources.route
+      if (routeConfig) {
+        assert(!('codeFilePath' in routeConfig))
+        assert(routeConfig.configFilePath)
+        assert(routeConfig.configValue === pageConfig.route)
+        const route = routeConfig.configValue
+        const pageRouteFilePath = routeConfig.configFilePath
+        if (typeof route === 'string') {
+          pageRoute = { pageId, routeString: route, pageRouteFilePath, routeType: 'STRING' }
+        } else {
+          assert(isCallable(route))
+          let allowAsync = false
+          const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
+          if (allowSyncConfig) {
+            assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
+            const val = allowSyncConfig.configValue
+            assert(typeof val === 'boolean') // TODO: assertUsage()
+            allowAsync = val
+          }
+          pageRoute = { pageId, routeFunction: route, pageRouteFilePath, routeType: 'FUNCTION', allowAsync }
+        }
+      }
+    }
+
+    if (!pageRoute) {
+      const { route } = pageConfig
+      assert(typeof route === 'string')
+      pageRoute = { pageId, routeString: route, pageRouteFilePath: null, routeType: 'FILESYSTEM' }
+    }
+
+    assert(pageRoute)
+    pageRoutes.push(pageRoute)
+  })
+
+  pageIds
     .filter((pageId) => !isErrorPageId(pageId))
     .forEach((pageId) => {
       const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
@@ -92,41 +135,6 @@ function getPageRoutes(
         assertUsage(false, `The default export of ${filePath} should be a string or a function.`)
       }
     })
-
-  pageConfigs.forEach((pageConfig) => {
-    const pageId = pageConfig.pageId2
-
-    let pageRoute: null | PageRoute = null
-    {
-      const routeConfig = pageConfig.configSources.route
-      if (routeConfig) {
-        assert(!('codeFilePath' in routeConfig)) // TODO: improve this?
-        assert(routeConfig.configFilePath)
-        assert(routeConfig.configValue === pageConfig.route)
-        const route = routeConfig.configValue
-        const pageRouteFilePath = routeConfig.configFilePath
-        if (typeof route === 'string') {
-          pageRoute = { pageId, routeString: route, pageRouteFilePath, routeType: 'STRING' }
-        } else {
-          assert(isCallable(route))
-          let allowAsync = false
-          const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
-          if (allowSyncConfig) {
-            assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
-            const val = allowSyncConfig.configValue
-            assert(typeof val === 'boolean') // TODO: assertUsage()
-            allowAsync = val
-          }
-          pageRoute = { pageId, routeFunction: route, pageRouteFilePath, routeType: 'FUNCTION', allowAsync }
-        }
-      }
-    }
-    if (!pageRoute) {
-      const { route } = pageConfig
-      assert(typeof route === 'string')
-      pageRoute = { pageId, routeString: route, pageRouteFilePath: null, routeType: 'FILESYSTEM' }
-    }
-  })
   return pageRoutes
 }
 
@@ -202,4 +210,11 @@ function dirname(filePath: string): string {
   assert(dirPath.startsWith('/'))
   assert(!dirPath.endsWith('/') || dirPath === '/')
   return dirPath
+}
+
+function removePageId(pageIds: string[], pageId: string): string[] {
+  const { length } = pageIds
+  pageIds = pageIds.filter((id) => id !== pageId)
+  assert(pageIds.length === length - 1)
+  return pageIds
 }
