@@ -10,16 +10,22 @@ import { assert, assertUsage } from './utils'
 const PARAM_TOKEN_NEW = '@'
 const PARAM_TOKEN_OLD = ':'
 
-function assertRouteString(routeString: string) {
+function assertRouteString(routeString: string, errMsgPrefix?: string) {
+  if (!errMsgPrefix) {
+    errMsgPrefix = 'Invalid'
+  } else {
+    errMsgPrefix = errMsgPrefix + ' invalid'
+  }
   assertUsage(
     routeString === '*' || routeString.startsWith('/'),
-    `Invalid route string \`${routeString}\`${
+    `${errMsgPrefix} route string '${routeString}'${
       routeString === '' ? ' (empty string)' : ''
-    }: route strings should start with a leading slash \`/\` (or be \`*\`).`
+    }: route strings should start with a leading slash '/' (or be '*')`
   )
 }
 
 function resolveRouteString(routeString: string, urlPathname: string): null | { routeParams: Record<string, string> } {
+  // TODO/v1: make this an internal assert
   assertRouteString(routeString)
   assert(urlPathname.startsWith('/'))
 

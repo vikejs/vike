@@ -1,9 +1,4 @@
-// export { getPageConfigsFromGlob }
-// export { getPageConfigs }
-//export { isValidPageConfigFile }
 export { generatePageConfigsSourceCode }
-
-// TODO: ensure that `route` isn't a file path but a route string (same for onBeforeRoute)
 
 import {
   determinePageId2,
@@ -17,12 +12,14 @@ import {
   isPosixPath,
   toPosixPath,
   assertWarning,
-  addFileExtensionsToRequireResolve
+  addFileExtensionsToRequireResolve,
+  isCallable
 } from '../../utils'
 import path from 'path'
 
 import type { c_Env, ConfigSource } from '../../../../shared/page-configs/PageConfig'
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
+import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 
 // TODO: remove c_ prefix
 const configDefinitions: Record<
@@ -121,12 +118,18 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
   pageConfigFilesConcrete.forEach((pageConfigFile) => {
-    const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
+    const { pageConfigFilePath } = pageConfigFile
     const pageConfigValues = getPageConfigValues(pageConfigFile)
     const pageId2 = determinePageId2(pageConfigFilePath)
-    const route =
-      pageConfigValues.route || // TODO: assertUsage that route isn't a path
-      determineRouteFromFilesystemPath(pageConfigFilePath)
+
+    const route: unknown = pageConfigValues.route || determineRouteFromFilesystemPath(pageConfigFilePath)
+    assertUsage(
+      typeof route === 'string' || isCallable(route),
+      `${pageConfigFilePath} sets the config route to a value with an invalid type \`${typeof route}\`: the route value should be either a string or a function`
+    )
+    if (typeof route === 'string') {
+      assertRouteString(route, `${pageConfigFilePath} defines an`)
+    }
 
     const configSources: {
       configName: string
