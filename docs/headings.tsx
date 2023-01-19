@@ -621,6 +621,11 @@ const headings: HeadingDefinition[] = [
   },
   {
     level: 2,
+    title: 'Express.js',
+    url: '/express'
+  },
+  {
+    level: 2,
     title: 'HTTPS',
     url: '/https'
   },
