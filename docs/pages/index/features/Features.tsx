@@ -280,7 +280,7 @@ function Features() {
                 conflation, no bugs (known in <code>vite-plugin-ssr</code>'s source code).
               </p>
               <p>
-                With <code>vite-plugin-ssr</code>, <b>you are under control &mdash; it's addictively fun</b>.
+                With <code>vite-plugin-ssr</code>, <b>you are under control which is addictively fun</b>.
               </p>
             </>
           ),
