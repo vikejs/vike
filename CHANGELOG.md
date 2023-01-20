@@ -1,3 +1,13 @@
+## [0.4.71](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.70...v0.4.71) (2023-01-20)
+
+
+### Bug Fixes
+
+* fix react-streaming optional TypeScript dependency ([8a6af79](https://github.com/brillout/vite-plugin-ssr/commit/8a6af7994e920d1bb9f82a970f0a35720ec8a9f3))
+* improve logging of build warnings ([7780b27](https://github.com/brillout/vite-plugin-ssr/commit/7780b277f70826e853ef3eb1a19a92e76e6ac9e3))
+
+
+
 ## [0.4.70](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.69...v0.4.70) (2023-01-18)
 
 
