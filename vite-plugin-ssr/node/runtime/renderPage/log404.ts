@@ -77,6 +77,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes) {
         route_humanReadable = pageRoute.routeString
         routeType_humanReadable = 'Filesystem Route'
       }
+      // TODO: display as table
       return `${pc.bold(route_humanReadable)} ${routeType_humanReadable} ${routeSource}`
     })
     .sort(compareString)

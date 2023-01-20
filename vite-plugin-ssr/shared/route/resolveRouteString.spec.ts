@@ -10,11 +10,11 @@ describe('resolveRouteString', () => {
 
     expectError(
       () => resolveRouteString('', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`\` (empty string): route strings should start with a leading slash \`/\` (or be \`*\`).`
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string '' (empty string): route strings should start with a leading slash '/' (or be '*')`
     )
     expectError(
       () => resolveRouteString('a', '/a/b/c'),
-      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string \`a\`: route strings should start with a leading slash \`/\` (or be \`*\`).`
+      partRegex`[vite-plugin-ssr@${/[\.0-9]+/}][Wrong Usage] Invalid route string 'a': route strings should start with a leading slash '/' (or be '*')`
     )
   })
 
