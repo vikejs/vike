@@ -41,50 +41,82 @@ async function log404(pageContext: {
     assertInfo(
       false,
       [
-        `URL '${urlPathname}' isn't matching any of your ${pageRoutes.length} page routes. See https://vite-plugin-ssr.com/routing and/or set the environment variable \`DEBUG=vps:routing\` for more information. (This log isn't shown in production.) Your page routes:`,
-        ...getPagesAndRoutesInfo(pageRoutes)
+        `The URL '${urlPathname}' isn't matching any of your page routes. See https://vite-plugin-ssr.com/routing for more information about routing, and set the environment variable \`DEBUG=vps:routing\` to inspect your app's routing. (This log isn't shown in production.) Your page routes:`,
+        getPagesAndRoutesInfo(pageRoutes)
       ].join('\n'),
       { onlyOnce: false }
     )
   }
 }
-function getPagesAndRoutesInfo(pageRoutes: PageRoutes) {
-  return pageRoutes
+function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
+  const entries = pageRoutes
     .map((pageRoute) => {
-      let route_humanReadable: string
-      let routeType_humanReadable: string
-      let routeSource: string
+      let routeStr: string
+      let routeTypeSrc: 'Route String' | 'Route Function' | 'Filesystem Route'
+      let routeDefinedByStr: string
       {
         if (!pageRoute.comesFromV1PageConfig) {
-          routeSource = `of \`${pageRoute.pageId}.page.*\``
+          routeDefinedByStr = `${pageRoute.pageId}.page.*`
         } else {
           if (pageRoute.routeType === 'FILESYSTEM') {
             assert(pageRoute.pageConfigFilePath)
-            routeSource = `of ${pageRoute.pageConfigFilePath}`
+            routeDefinedByStr = pageRoute.pageConfigFilePath
           } else {
             assert(pageRoute.pageRouteFilePath)
-            routeSource = `defined in ${pageRoute.pageRouteFilePath}`
+            routeDefinedByStr = pageRoute.pageRouteFilePath
           }
         }
       }
       if (pageRoute.routeType === 'STRING') {
-        route_humanReadable = pageRoute.routeString
-        routeType_humanReadable = 'Route String'
+        routeStr = pageRoute.routeString
+        routeTypeSrc = 'Route String'
       } else if (pageRoute.routeType === 'FUNCTION') {
-        route_humanReadable = truncateString(String(pageRoute.routeFunction).split(/\s/).filter(Boolean).join(' '), 64)
-        routeType_humanReadable = 'Route Function'
+        routeStr = truncateString(String(pageRoute.routeFunction).split(/\s/).filter(Boolean).join(' '), 64)
+        routeTypeSrc = 'Route Function'
       } else {
-        route_humanReadable = pageRoute.routeString
-        routeType_humanReadable = 'Filesystem Route'
+        routeStr = pageRoute.routeString
+        routeTypeSrc = 'Filesystem Route'
       }
-      // TODO: display as table
-      return `${pc.bold(route_humanReadable)} ${routeType_humanReadable} ${routeSource}`
+      return { routeStr, routeTypeSrc, routeDefinedByStr }
     })
-    .sort(compareString)
-    .map((line, i) => {
-      const nth = (i + 1).toString().padStart(pageRoutes.length.toString().length, '0')
-      return ` (${nth}) ${line}`
+    .sort((e1, e2) => {
+      if (e1.routeTypeSrc !== 'Route Function' && e2.routeTypeSrc === 'Route Function') {
+        return -1
+      }
+      if (e1.routeTypeSrc === 'Route Function' && e2.routeTypeSrc !== 'Route Function') {
+        return 1
+      }
+      return compareString(e1.routeStr, e2.routeStr)
     })
+
+  const lines = [
+    {
+      routeStr: 'ROUTE',
+      routeTypeSrc: 'ROUTE TYPE',
+      routeDefinedByStr: 'DEFINED BY'
+    },
+    ...entries
+  ]
+
+  const column1Width = 2 + Math.max(...lines.map(({ routeStr }) => routeStr.length))
+  const column2Width = 2 + Math.max(...lines.map(({ routeTypeSrc }) => routeTypeSrc.length))
+  const column3Width = 2 + Math.max(...lines.map(({ routeDefinedByStr }) => routeDefinedByStr.length))
+
+  return lines
+    .map(({ routeStr, routeTypeSrc, routeDefinedByStr }, i) => {
+      let cell1 = routeStr.padEnd(column1Width, ' ')
+      if (i !== 0) cell1 = pc.bold(cell1)
+      let cell2 = routeTypeSrc.padEnd(column2Width, ' ')
+      let cell3 = routeDefinedByStr.padEnd(column3Width, ' ')
+      if (i === 0) {
+        cell1 = pc.cyan(cell1)
+        cell2 = pc.cyan(cell2)
+        cell3 = pc.cyan(cell3)
+      }
+      const line = [cell1, cell2, cell3].join(' ')
+      return line
+    })
+    .join('\n')
 }
 
 function truncateString(str: string, len: number) {

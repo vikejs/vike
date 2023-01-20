@@ -37,7 +37,7 @@ function warnMissingErrorPage(): void {
   if (!globalContext.isProduction) {
     assertWarning(
       false,
-      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)',
+      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. (This warning is not shown in production.)', // TODO
       { showStackTrace: false, onlyOnce: true }
     )
   }
