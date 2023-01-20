@@ -181,8 +181,8 @@ function Features() {
           desc: (
             <>
               <p>
-                <b>DX that scales</b> to hundreds of kLOCs: HMR & dev start that stays fast, powered by Vite{' '}
-                <ViteLogo />.
+                <b>DX that scales</b> to hundreds of kLOCs with HMR & development startup that stays fast. Powered by
+                Vite <ViteLogo />.
               </p>
               <p>
                 <b>Architectural flexibility that scales</b> from small hobby projects to large-scale enterprise
@@ -238,8 +238,8 @@ function Features() {
           desc: (
             <>
               <p>
-                State-of-the-art performance with <b>Code Splitting</b>, <b>Client Routing</b>, <b>Link Prefetching</b>,
-                and <b>Fast Cold Starts</b>.
+                State-of-the-art performance with <b>Code Splitting</b>, <b>Client-side Routing</b>,{' '}
+                <b>Link Prefetching</b>, and <b>Fast Production Cold Starts</b>.
               </p>
               <p>Lighthouse Score: 100%.</p>
             </>
@@ -280,7 +280,7 @@ function Features() {
                 conflation, no bugs (known in <code>vite-plugin-ssr</code>'s source code).
               </p>
               <p>
-                With <code>vite-plugin-ssr</code>, <b>you are under control; it's addictively fun</b>.
+                With <code>vite-plugin-ssr</code>, <b>you are under control &mdash; it's addictively fun</b>.
               </p>
             </>
           ),
