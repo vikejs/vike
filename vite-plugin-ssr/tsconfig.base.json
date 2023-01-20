@@ -3,6 +3,7 @@
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
     // Output
     "declaration": true,
     // Composite setttings

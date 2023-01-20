@@ -151,7 +151,13 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
           })
         }
         if (c_type === 'file') {
-          assertUsage(typeof pageConfigValue === 'string', 'TODO')
+          assertUsage(
+            typeof pageConfigValue === 'string',
+            `${getErrorIntro(
+              pageConfigFilePath,
+              configName
+            )} to a value with a wrong type \`${typeof pageConfigValue}\`: it should be a string instead`
+          )
           const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName)
           configSources.push({
             configName,
@@ -208,24 +214,21 @@ function resolveConfigValue(
 
 function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
   const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
-  /* TDOO
-            assertUsage(
-              !(codeExportName in codeExportFileExports),
-              `${codeExportFilePath} should have \`export default ${codeExportName}\` instead of \`export { ${codeExportName} }\``
-            )
-            const invalidExports = Object.keys(codeExportFileExports).filter((e) => e !== 'default')
-            assertUsage(
-              invalidExports.length === 0,
-              `${codeExportFilePath} has \`export { ${invalidExports.join(
-                ', '
-              )} }\` which is forbidden: it should have a single \`export default\` instead`
-            )
-            assertUsage('default' in codeExportFileExports, `${codeExportFilePath} should have a \`export default\``)
-      */
-  assert(Object.keys(pageConfigFileExports).length === 1) // TODO: assertUsage()
-  assert('default' in pageConfigFileExports) // TODO: assertUsage()
+  {
+    const invalidExports = Object.keys(pageConfigFileExports).filter((e) => e !== 'default')
+    const invalidExportsStr = invalidExports.join(', ')
+    const verb = invalidExports.length === 1 ? 'is' : 'are'
+    assertUsage(
+      invalidExports.length === 0,
+      `${pageConfigFilePath} has \`export { ${invalidExportsStr} }\` which ${verb} forbidden: it should have a single \`export default\` instead`
+    )
+  }
+  assertUsage('default' in pageConfigFileExports, `${pageConfigFilePath} should have a \`export default\``)
   const pageConfigValues = pageConfigFileExports.default
-  assert(isObject(pageConfigValues))
+  assertUsage(
+    isObject(pageConfigValues),
+    `${pageConfigFilePath} should export an object (it exports a \`${typeof pageConfigValues}\` instead)`
+  )
   return pageConfigValues
 }
 
@@ -240,7 +243,7 @@ function resolveCodeFilePath(
   userRootDir: string,
   configName: string
 ): string {
-  const errIntro1 = `${pageConfigFilePath} sets the config ${configName} to the value '${configValue}'`
+  const errIntro1 = `${getErrorIntro(pageConfigFilePath, configName)} to the value '${configValue}'`
   const errIntro2 = `${errIntro1} but the value should be`
   const warnArgs = { onlyOnce: true, showStackTrace: false } as const
 
@@ -320,4 +323,10 @@ function dirnameNormalized(filePath: string) {
   assert(!fileDir.endsWith('/'))
   fileDir = fileDir + '/'
   return fileDir
+}
+
+function getErrorIntro(pageConfigFilePath: string, configName: string): string {
+  assert(pageConfigFilePath.startsWith('/'))
+  assert(!configName.startsWith('/'))
+  return `${pageConfigFilePath} sets the config ${configName}`
 }
