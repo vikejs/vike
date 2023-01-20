@@ -10,7 +10,7 @@ import { inferAssetTag, inferPreloadTag } from './inferHtmlTags'
 import { getViteDevScripts } from './getViteDevScripts'
 import { mergeScriptTags } from './mergeScriptTags'
 import type { PageContextInjectAssets } from '../injectAssets'
-import type { InjectToStream } from 'react-streaming/server'
+import type { InjectToStream } from '../stream/react-streaming'
 import type { PageAsset } from '../../renderPage/getPageAssets'
 import { getGlobalContext } from '../../globalContext'
 

@@ -15,7 +15,7 @@ import { injectHtmlTagsToString, injectHtmlTagsToStream } from './injectAssets'
 import type { PageContextInjectAssets } from './injectAssets'
 import { processStream, isStream, Stream, streamToString, StreamTypePatch } from './stream'
 import { isStreamReactStreaming } from './stream/react-streaming'
-import type { InjectToStream } from 'react-streaming/server'
+import type { InjectToStream } from './stream/react-streaming'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import type { PreloadFilter } from './injectAssets/getHtmlTags'
 

@@ -1,13 +1,24 @@
 // Zero-config support for https://www.npmjs.com/package/react-streaming
 
-export type { StreamReactStreaming }
 export { isStreamReactStreaming }
 export { streamReactStreamingToString }
 export { getStreamFromReactStreaming }
+export type { StreamReactStreaming }
+export type { InjectToStream }
 
 import { assert, hasProp } from '../../../utils'
 import { streamPipeNodeToString, StreamReadableWeb, streamReadableWebToString, StreamWritableNode } from '../stream'
-import type { InjectToStream } from 'react-streaming/server'
+
+// Same type than:
+// ```
+// import type { InjectToStream } from 'react-streaming/server'
+// ```
+type InjectToStream = (
+  chunk: unknown,
+  options?: {
+    flush?: boolean
+  }
+) => void
 
 // ```js
 // import { renderToStream } from 'react-streaming/server'

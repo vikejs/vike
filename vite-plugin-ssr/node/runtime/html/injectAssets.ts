@@ -7,9 +7,9 @@ import { assert, isCallable, isPromise } from '../../utils'
 import type { PageAsset } from '../renderPage/getPageAssets'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
 import { injectHtmlTags, createHtmlHeadIfMissing } from './injectAssets/injectHtmlTags'
-import type { InjectToStream } from 'react-streaming/server'
 import type { HtmlPart } from './renderHtml'
 import { getHtmlTags, type PreloadFilter, type HtmlTag } from './injectAssets/getHtmlTags'
+import type { InjectToStream } from './stream/react-streaming'
 
 type PageContextInjectAssets = {
   urlPathname: string

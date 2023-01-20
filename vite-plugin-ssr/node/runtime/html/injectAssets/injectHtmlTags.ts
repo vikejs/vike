@@ -6,8 +6,8 @@ export { injectAtOpeningTag }
 export { injectAtClosingTag }
 
 import { assert, slice } from '../../../utils'
-import type { InjectToStream } from 'react-streaming/server'
 import type { HtmlTag } from './getHtmlTags'
+import type { InjectToStream } from '../stream/react-streaming'
 
 type Position = 'HTML_BEGIN' | 'HTML_END' | 'STREAM'
 const POSITIONS = ['HTML_BEGIN' as const, 'HTML_END' as const, 'STREAM' as const]

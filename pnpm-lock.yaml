@@ -877,7 +877,6 @@ importers:
       es-module-lexer: ^0.10.5
       fast-glob: ^3.2.11
       picocolors: ^1.0.0
-      react-streaming: ^0.3.5
       rimraf: ^3.0.2
       sirv: ^2.0.2
       typescript: 4.8.4
@@ -897,7 +896,6 @@ importers:
       '@types/jest': 27.4.1
       '@types/node': 17.0.31
       '@types/resolve': 1.20.2
-      react-streaming: 0.3.5
       rimraf: 3.0.2
       typescript: 4.8.4
       vite: 4.0.3_@types+node@17.0.31
@@ -1754,6 +1752,7 @@ packages:
 
   /@brillout/json-serializer/0.5.1:
     resolution: {integrity: sha512-wTTbuWmrNBlF9WYq/YJ91UZvEi27uYdV12dOeKBujUojPihs5EhMi8uItugF8iJ797o3la8A9oWfy52OwCIs+Q==}
+    dev: false
 
   /@brillout/json-serializer/0.5.3:
     resolution: {integrity: sha512-IxlOMD5gOM0WfFGdeR98jHKiC82Ad1tUnSjvLS5jnRkfMEKBI+YzHA32Umw8W3Ccp5N4fNEX229BW6RaRpxRWQ==}
@@ -5658,6 +5657,7 @@ packages:
   /isbot-fast/1.2.0:
     resolution: {integrity: sha512-twjuQzy2gKMDVfKGQyQqrx6Uy4opu/fiVUTTpdqtFsd7OQijIp5oXvb27n5EemYXaijh5fomndJt/SPRLsEdSg==}
     engines: {node: '>=6.0.0'}
+    dev: false
 
   /isexe/2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
@@ -7631,16 +7631,6 @@ packages:
     dependencies:
       react: 18.1.0
     dev: false
-
-  /react-streaming/0.3.5:
-    resolution: {integrity: sha512-/Yy4Uarn2qiGe8pRY+LvzFRBAVjU2vN8CfzQI9qdW6E6gbqg6PsCgy04zudZO3Ht0xwg7B3WWZuA+kZ2HHwR9Q==}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-    dependencies:
-      '@brillout/json-serializer': 0.5.1
-      isbot-fast: 1.2.0
-    dev: true
 
   /react-streaming/0.3.5_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-/Yy4Uarn2qiGe8pRY+LvzFRBAVjU2vN8CfzQI9qdW6E6gbqg6PsCgy04zudZO3Ht0xwg7B3WWZuA+kZ2HHwR9Q==}
