@@ -27,7 +27,8 @@ const configDefinitions: Record<
   {
     c_type: 'file' | 'inline' // TODO: refactor
     c_env: c_Env
-    c_required?: boolean
+    c_required?: boolean // TODO: apply validation
+    c_global?: boolean // TODO
   }
 > = {
   onRenderHtml: {
@@ -54,7 +55,21 @@ const configDefinitions: Record<
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     c_type: 'inline',
     c_env: 'server-and-client'
+  },
+  /* TODO
+  onBeforeRoute: {
+    c_type: 'inline',
+    c_env: 'config'
   }
+  configDefinitions: {
+    c_type: 'inline',
+    c_env: 'config'
+  },
+  onBeforeRender: {
+    c_type: 'file',
+    c_env: 'server-only'
+  },
+  */
 }
 
 async function generatePageConfigsSourceCode(
