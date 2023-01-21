@@ -5,11 +5,11 @@ import { hydrateRoot } from 'react-dom/client'
 import { PageLayout } from './PageLayout'
 
 async function render(pageContext) {
-  const { Page } = pageContext
+  const { Page, pageProps } = pageContext
   hydrateRoot(
     document.getElementById('page-view'),
     <PageLayout>
-      <Page />
+      <Page {...pageProps} />
     </PageLayout>
   )
 }
