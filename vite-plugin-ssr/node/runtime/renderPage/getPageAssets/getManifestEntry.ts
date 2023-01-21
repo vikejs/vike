@@ -23,9 +23,8 @@ function getManifestEntry(
   if (id.startsWith('/')) {
     const manifestKey = id.slice(1)
     let manifestEntry = clientManifest[manifestKey]
-    if (manifestEntry) {
-      return { manifestEntry, manifestKey }
-    }
+    assert(manifestEntry, id)
+    return { manifestEntry, manifestKey }
   }
 
   // For extensions[number].pageFilesDist
