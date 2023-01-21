@@ -10,12 +10,11 @@ export { passToClient }
 const passToClient = ['pageProps']
 
 async function render(pageContext) {
-  const { Page, pageProps, userAgent } = pageContext
+  const { Page, pageProps } = pageContext
   const pageHtml = renderToString(
     <PageLayout>
       <Page {...pageProps} />
-    </PageLayout>,
-    { userAgent }
+    </PageLayout>
   )
 
   return escapeInject`<!DOCTYPE html>
