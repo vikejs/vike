@@ -6,11 +6,11 @@ import { escapeInject, dangerouslySkipEscape } from 'vite-plugin-ssr'
 import { PageLayout } from './PageLayout'
 
 async function onRenderHtml(pageContext) {
-  const { Page, pageProps, userAgent } = pageContext
+  const { Page } = pageContext
   const viewHtml = dangerouslySkipEscape(
     renderToString(
       <PageLayout>
-        <Page {...pageProps} />
+        <Page />
       </PageLayout>
     )
   )
