@@ -1,3 +1,5 @@
+// Note that this file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+
 const express = require('express')
 const compression = require('compression')
 const { renderPage } = require('vite-plugin-ssr')

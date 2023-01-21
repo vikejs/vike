@@ -1,3 +1,5 @@
+// Note that this file isn't processed by Vite, see https://github.com/brillout/vite-plugin-ssr/issues/562
+
 import express from 'express'
 import compression from 'compression'
 import { renderPage } from 'vite-plugin-ssr'
