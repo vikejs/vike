@@ -15,7 +15,7 @@ function getManifestEntry(
   if (id.startsWith('@@vite-plugin-ssr/')) {
     const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
     const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
-    assert(manifestEntry && manifestKey, { id })
+    assert(manifestEntry && manifestKey, id)
     return { manifestEntry, manifestKey }
   }
 
@@ -31,7 +31,7 @@ function getManifestEntry(
   // For extensions[number].pageFilesDist
   if (isNpmPackageModule(id)) {
     const manifestKey = manifestKeyMap[id]
-    assert(manifestKey, { id })
+    assert(manifestKey, id)
     const manifestEntry = clientManifest[manifestKey]
     assert(manifestEntry, { id, manifestKey })
     return { manifestEntry, manifestKey }
@@ -55,7 +55,7 @@ function getManifestEntry(
       const dirS = manifestKeyEnd.split('/')
       assert(dirS[0] === '')
       manifestKeyEnd = '/' + dirS.slice(2).join('/')
-      assert(manifestKeyEnd.startsWith('/'), { id })
+      assert(manifestKeyEnd.startsWith('/'), id)
     }
     {
       const { manifestEntry, manifestKey } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
