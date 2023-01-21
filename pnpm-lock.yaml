@@ -717,7 +717,6 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.5
       typescript: 4.8.4
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -728,7 +727,6 @@ importers:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.5_biqbaboplfbrettd7655fr4n2y
       typescript: 4.8.4
       vite: 4.0.3_@types+node@17.0.31
       vite-plugin-ssr: link:../../vite-plugin-ssr
@@ -1970,6 +1968,7 @@ packages:
 
   /@brillout/json-serializer/0.5.3:
     resolution: {integrity: sha512-IxlOMD5gOM0WfFGdeR98jHKiC82Ad1tUnSjvLS5jnRkfMEKBI+YzHA32Umw8W3Ccp5N4fNEX229BW6RaRpxRWQ==}
+    dev: false
 
   /@brillout/part-regex/0.1.2:
     resolution: {integrity: sha512-3b/5PLhJ4xMF/cyY1aJXIMQT0TONFFgUX3tH2wfdrHe78OYe8igl0iaHkJ3kzgN0V+x562Of2AoMwThtLaAj5Q==}

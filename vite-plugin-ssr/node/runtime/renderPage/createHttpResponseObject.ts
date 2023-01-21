@@ -193,7 +193,7 @@ async function createHttpResponseObject(
     assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
     assert(!fixMsg || !fixMsg.endsWith('.'))
     return [
-      `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook (${renderFilePath}) provides ${htmlRenderName}`,
+      `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook (${renderFilePath}) provides ${htmlRenderName}`, // TODO
       fixMsg,
       streamDocs
     ]
