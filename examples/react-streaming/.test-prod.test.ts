@@ -1,2 +1,2 @@
 import { testRun } from '../react/.testRun'
-testRun('npm run preview')
+testRun('npm run prod')

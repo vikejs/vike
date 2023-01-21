@@ -2,7 +2,7 @@ import { page, test, expect, run, partRegex, autoRetry, fetchHtml, getServerUrl 
 
 export { testRun }
 
-function testRun(cmd: 'npm run dev' | 'npm run preview') {
+function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   run(cmd)
 
   test('page content is rendered to HTML', async () => {
