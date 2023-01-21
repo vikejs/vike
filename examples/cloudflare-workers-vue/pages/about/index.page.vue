@@ -1,11 +1,4 @@
 <template>
   <h1>About</h1>
-  <p>A colored page.</p>
+  <p>Example of using VPS.</p>
 </template>
-
-<style>
-h1,
-p {
-  color: green;
-}
-</style>
