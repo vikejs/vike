@@ -55,7 +55,7 @@ const configDefinitions: Record<
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     c_type: 'inline',
     c_env: 'server-and-client'
-  },
+  }
   /* TODO
   onBeforeRoute: {
     c_type: 'inline',
@@ -265,6 +265,7 @@ function resolveCodeFilePath(
   if (!isPosixPath(configValue)) {
     assert(configValue.includes('\\'))
     const configValueFixed = toPosixPath(configValue)
+    assert(!configValue.includes('\\'))
     assertWarning(
       false,
       `${errIntro2} '${configValueFixed}' instead (replace backslashes '\\' with forward slahes '/')`,
@@ -301,6 +302,7 @@ function resolveCodeFilePath(
   } finally {
     clean()
   }
+  codeFilePathAbsolute = toPosixPath(codeFilePathAbsolute)
 
   {
     // It's not possible to omit '../' so we can assume that the path is relative to pageConfigDir
