@@ -1,7 +1,7 @@
+export { PageLayout }
+
 import React from 'react'
 import './PageLayout.css'
-
-export { PageLayout }
 
 function PageLayout({ children }) {
   return (
