@@ -500,14 +500,12 @@ importers:
       '@vitejs/plugin-react': ^3.0.0
       react: ^18.2.0
       react-dom: ^18.2.0
-      react-streaming: ^0.3.5
       vite: ^4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
     dependencies:
       '@vitejs/plugin-react': 3.0.0_vite@4.0.3
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-streaming: 0.3.5_biqbaboplfbrettd7655fr4n2y
       vite: 4.0.3
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
