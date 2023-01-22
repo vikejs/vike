@@ -1,6 +1,18 @@
 export { testRun }
 
-import { page, test, expect, run, partRegex, autoRetry, fetchHtml, getServerUrl } from '@brillout/test-e2e'
+import {
+  page,
+  test,
+  expect,
+  run,
+  partRegex,
+  autoRetry,
+  fetchHtml,
+  getServerUrl,
+  testScreenshotFixture
+} from '@brillout/test-e2e'
+import path from 'path'
+import url from 'url'
 
 function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   run(cmd)
@@ -23,6 +35,22 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
       await page.click('button')
       expect(await page.textContent('button')).toBe('Counter 1')
     })
+  })
+
+  test('screenshot fixture', async () => {
+    {
+      const { platform } = process
+      if (!['linux', 'win32', 'darwin'].includes(platform))
+        throw new Error(`Unexpted platform operating system '${platform}'`)
+      if (platform !== 'linux') return
+    }
+    {
+      const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
+      await testScreenshotFixture({
+        // __dirname isn't the directory of this file: because this file is bundled with the entry, e.g. __dirname is the directory examples/react-17/ of the entry /examples/react-17/.test-dev.test.ts
+        screenshotFixturePath: path.join(__dirname, '../react/.test-screenshot-fixture.png')
+      })
+    }
   })
 
   test('about page', async () => {
