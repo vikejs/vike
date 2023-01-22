@@ -25,48 +25,48 @@ import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 const configDefinitions: Record<
   string,
   {
-    c_type: 'file' | 'inline' // TODO: refactor
     c_env: c_Env
     c_required?: boolean // TODO: apply validation
     c_global?: boolean // TODO
+    isCode?: boolean
   }
 > = {
   onRenderHtml: {
-    c_type: 'file',
+    isCode: true,
     c_required: true,
     c_env: 'server-only'
   },
   onRenderClient: {
-    c_type: 'file',
+    isCode: true,
     c_env: 'client-only'
   },
   Page: {
-    c_type: 'file',
+    isCode: true,
     c_env: 'server-and-client'
   },
   passToClient: {
-    c_type: 'inline',
+    isCode: false,
     c_env: 'server-only'
   },
   route: {
-    c_type: 'inline',
+    isCode: false,
     c_env: 'config'
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    c_type: 'inline',
+    isCode: false,
     c_env: 'server-and-client'
   }
   /* TODO
   onBeforeRoute: {
-    c_type: 'inline',
+    isCode: false,
     c_env: 'config'
   }
   configDefinitions: {
-    c_type: 'inline',
+    isCode: false,
     c_env: 'config'
   },
   onBeforeRender: {
-    c_type: 'file',
+    isCode: true,
     c_env: 'server-only'
   },
   */
@@ -152,11 +152,11 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
     }[] = []
     Object.entries(configDefinitions)
       .filter(([_configName, { c_env }]) => c_env !== (isForClientSide ? 'server-only' : 'client-only'))
-      .forEach(([configName, { c_type, c_env }]) => {
+      .forEach(([configName, { isCode, c_env }]) => {
         const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
         if (!result) return
         const { pageConfigValue, pageConfigValueFilePath } = result
-        if (c_type === 'inline') {
+        if (!isCode) {
           configSources.push({
             configName,
             configSource: {
@@ -164,8 +164,7 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
               configValue: pageConfigValue
             }
           })
-        }
-        if (c_type === 'file') {
+        } else {
           assertUsage(
             typeof pageConfigValue === 'string',
             `${getErrorIntro(
