@@ -17,7 +17,7 @@ import {
 } from '../../utils'
 import path from 'path'
 
-import type { c_Env, ConfigSource } from '../../../../shared/page-configs/PageConfig'
+import type { c_Env, PageConfig2 } from '../../../../shared/page-configs/PageConfig'
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 
@@ -55,7 +55,7 @@ const configDefinitions: Record<
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     c_code: false,
     c_env: 'server-and-client'
-  },
+  }
   /* TODO
   onBeforeRoute: {
     c_code: true,
@@ -127,11 +127,8 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
 
   const { pageConfigFiles } = result
 
-  const lines: string[] = []
-
-  lines.push('export const pageConfigs = [];')
-
   // const pageConfigGlobal = {}
+  const pageConfigs: PageConfig2[] = []
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
@@ -149,10 +146,7 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
       assertRouteString(route, `${pageConfigFilePath} defines an`)
     }
 
-    const configSources: {
-      configName: string
-      configSource: ConfigSource
-    }[] = []
+    const configSources: PageConfig2['configSources'] = {}
     Object.entries(configDefinitions)
       .filter(([_configName, { c_env }]) => c_env !== (isForClientSide ? 'server-only' : 'client-only'))
       .forEach(([configName, { c_code, c_env }]) => {
@@ -160,13 +154,10 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
         if (!result) return
         const { pageConfigValue, pageConfigValueFilePath } = result
         if (!c_code) {
-          configSources.push({
-            configName,
-            configSource: {
-              configFilePath: pageConfigValueFilePath,
-              configValue: pageConfigValue
-            }
-          })
+          configSources[configName] = {
+            configFilePath: pageConfigValueFilePath,
+            configValue: pageConfigValue
+          }
         } else {
           assertUsage(
             typeof pageConfigValue === 'string',
@@ -176,22 +167,37 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
             )} to a value with a wrong type \`${typeof pageConfigValue}\`: it should be a string instead`
           )
           const codeFilePath = resolveCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName)
-          configSources.push({
-            configName,
-            configSource: {
-              codeFilePath,
-              c_env
-            }
-          })
+          configSources[configName] = {
+            codeFilePath,
+            c_env
+          }
         }
       })
 
+    pageConfigs.push({
+      pageConfigFilePath,
+      pageId2,
+      route,
+      configSources
+    })
+  })
+
+  return serializePageConfigs(pageConfigs)
+}
+
+function serializePageConfigs(pageConfigs: PageConfig2[]): string {
+  const lines: string[] = []
+
+  lines.push('export const pageConfigs = [];')
+
+  pageConfigs.forEach((pageConfig) => {
+    const { pageConfigFilePath, pageId2, route, configSources } = pageConfig
     lines.push('pageConfigs.push({')
     lines.push(`  pageId2: '${pageId2}',`)
     lines.push(`  route: '${route}',`)
     lines.push(`  pageConfigFilePath: '${pageConfigFilePath}',`)
     lines.push(`  configSources: {`)
-    configSources.forEach(({ configName, configSource }) => {
+    Object.entries(configSources).forEach(([configName, configSource]) => {
       lines.push(`    ['${configName}']: {`)
       if ('codeFilePath' in configSource) {
         const { codeFilePath, c_env } = configSource
