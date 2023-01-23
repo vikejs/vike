@@ -3,7 +3,7 @@ export type { PageConfigLoaded }
 export type { c_Env }
 export type { ConfigSource }
 
-type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'config'
+type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'config' | 'routing'
 
 type ConfigName = string
 type ConfigSource =

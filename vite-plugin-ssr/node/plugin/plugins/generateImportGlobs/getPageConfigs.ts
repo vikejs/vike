@@ -28,45 +28,46 @@ const configDefinitions: Record<
     c_env: c_Env
     c_required?: boolean // TODO: apply validation
     c_global?: boolean // TODO
-    isCode?: boolean
+    c_code?: boolean
   }
 > = {
   onRenderHtml: {
-    isCode: true,
+    c_code: true,
     c_required: true,
     c_env: 'server-only'
   },
   onRenderClient: {
-    isCode: true,
+    c_code: true,
     c_env: 'client-only'
   },
   Page: {
-    isCode: true,
+    c_code: true,
     c_env: 'server-and-client'
   },
   passToClient: {
-    isCode: false,
+    c_code: false,
     c_env: 'server-only'
   },
   route: {
-    isCode: false,
-    c_env: 'config'
+    c_code: false,
+    c_env: 'routing'
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    isCode: false,
+    c_code: false,
     c_env: 'server-and-client'
-  }
+  },
   /* TODO
   onBeforeRoute: {
-    isCode: false,
-    c_env: 'config'
+    c_code: true,
+    c_global: true,
+    c_env: 'routing'
   }
   configDefinitions: {
-    isCode: false,
+    c_code: false,
     c_env: 'config'
   },
   onBeforeRender: {
-    isCode: true,
+    c_code: true,
     c_env: 'server-only'
   },
   */
@@ -130,6 +131,8 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
 
   lines.push('export const pageConfigs = [];')
 
+  // const pageConfigGlobal = {}
+
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
   pageConfigFilesConcrete.forEach((pageConfigFile) => {
@@ -152,11 +155,11 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
     }[] = []
     Object.entries(configDefinitions)
       .filter(([_configName, { c_env }]) => c_env !== (isForClientSide ? 'server-only' : 'client-only'))
-      .forEach(([configName, { isCode, c_env }]) => {
+      .forEach(([configName, { c_code, c_env }]) => {
         const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
         if (!result) return
         const { pageConfigValue, pageConfigValueFilePath } = result
-        if (!isCode) {
+        if (!c_code) {
           configSources.push({
             configName,
             configSource: {
