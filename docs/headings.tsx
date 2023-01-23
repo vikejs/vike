@@ -352,7 +352,8 @@ const headings: HeadingDefinition[] = [
   {
     level: 2,
     title: 'Page Redirection',
-    url: '/page-redirection'
+    url: '/page-redirection',
+    sectionTitles: ['Client-side', 'Server-side']
   },
   {
     level: 2,

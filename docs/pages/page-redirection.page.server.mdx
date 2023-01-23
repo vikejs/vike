@@ -1,15 +1,21 @@
 import { Link } from '@brillout/docpress'
 
-> Vite-plugin-ssr has no built-in redirect mechanism. 
-> Instead, the control that vite-plugin-ssr provides
-> can be used to implement a redirect mechanism. 
+> Vite-plugin-ssr doesn't have a built-in redirect mechanism, but
+> it provides enough control: we can implement URL redirections ourselves.
 
-## Auth Redirection
+URL redirections (aka "page redirections") are commonly used to protect private pages by redirecting unauthenticated users (e.g. from `/admin` to `/login`).
+With vite-plugin-ssr, we can use a Route Function instead of doing such URL redirection, see <Link href="#authentication" />.
 
-URL redirections are often about protecting URLs from unauthenticated users:
-if a user is not authenticated and goes to `/admin` then we redirect the user to `/login`.
+For other use cases, we can implement redirections on
+the server-side (see <Link href="#server-side" />) as well as on
+the client-side (see <Link href="#client-side" />).
 
-With vite-plugin-ssr, instead of doing a URL redirection, we can use a Route Function:
+A frequent problem with client-side redirections are hydration mismatches, see <Link href="#hydration-mismatch" />.
+
+
+## Authentication
+
+Instead of using URL redirections to protecting private pages from unauthenticated users, we can use a Route Function to show a different page depending on whether the user is logged-in or not:
 
 ```js
 // /pages/login.page.route.js
@@ -35,7 +41,7 @@ function userIsLoggedIn(pageContext) {
 }
 ```
 
-See <Link href="/route-function#precedence" />.
+See <Link href="/routing-precedence" />.
 
 After the user successfully logs in, we reload the page with `window.location.reload()` (<Link href="/server-routing"  noBreadcrumb={true} />) or <Link text={<code>navigate(window.location.pathname)</code>} href="/navigate" /> (<Link href="/client-routing" noBreadcrumb={true} />).
 
@@ -88,7 +94,7 @@ app.get('*', async (req, res, next) => {
 })
 ```
 
-We can also trigger a page redirection from a page:
+We can also trigger a page redirection from `onBeforeRender()`:
 
 ```js
 // movie.page.route.js
@@ -133,6 +139,9 @@ function render(pageContext) {
 }
 ```
 
+> Note that vite-plugin-ssr doesn't know anything about `pageContext.redirectTo`: it's a <Link text={<>custom <code>pageContext</code> value</>} href="/pageContext#custom" />.
+
+
 ## Client-side
 
 If we use <Link href="/client-routing" noBreadcrumb={true} />, then we can also redirect on the client-side.
@@ -161,6 +170,9 @@ export function render(pageContext) {
   // ...
 }
 ```
+
+> Note that vite-plugin-ssr doesn't know anything about `pageContext.redirectTo`: it's a <Link text={<>custom <code>pageContext</code> value</>} href="/pageContext#custom" />.
+
 
 ## Hydration Mismatch
 
