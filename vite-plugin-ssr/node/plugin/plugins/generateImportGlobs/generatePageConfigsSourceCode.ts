@@ -89,13 +89,13 @@ async function generatePageConfigsSourceCode(
       // ```
       // [vite-plugin-ssr:virtualModulePageFiles] Could not load virtual:vite-plugin-ssr:pageFiles:server: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
       // Error: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
-      //     at resolveCodeFilePath (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:203:33)
-      //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:100:38
+      //     at resolveCodeFilePath (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:203:33)
+      //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:100:38
       //     at Array.forEach (<anonymous>)
-      //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:84:14
+      //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:84:14
       //     at Array.forEach (<anonymous>)
-      //     at getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:75:29)
-      //     at async generatePageConfigsSourceCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/getPageConfigs.js:40:16)
+      //     at getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:75:29)
+      //     at async file (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:40:16)
       //     at async generateGlobImports (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:188:3)
       //     at async getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:78:20)
       //     at async Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:60:26)
@@ -120,13 +120,15 @@ async function generatePageConfigsSourceCode(
 
 async function getCode(userRootDir: string, isForClientSide: boolean): Promise<string> {
   const result = await loadPageConfigFiles(userRootDir)
-
   if ('hasError' in result) {
     return 'export const pageConfigs = null;'
   }
-
   const { pageConfigFiles } = result
+  const { pageConfigs } = getPageConfigs(pageConfigFiles, userRootDir, isForClientSide)
+  return serializePageConfigs(pageConfigs)
+}
 
+function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, isForClientSide: boolean) {
   // const pageConfigGlobal = {}
   const pageConfigs: PageConfig2[] = []
 
@@ -182,7 +184,7 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
     })
   })
 
-  return serializePageConfigs(pageConfigs)
+  return { pageConfigs }
 }
 
 function serializePageConfigs(pageConfigs: PageConfig2[]): string {

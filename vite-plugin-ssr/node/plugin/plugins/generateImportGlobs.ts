@@ -16,7 +16,7 @@ import {
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
 import { getRealId, getVirtualId } from './generateImportGlobs/virtualIdHandling'
-import { generatePageConfigsSourceCode } from './generateImportGlobs/getPageConfigs'
+import { generatePageConfigsSourceCode } from './generateImportGlobs/generatePageConfigsSourceCode'
 
 function generateImportGlobs(): Plugin {
   let config: ResolvedConfig
