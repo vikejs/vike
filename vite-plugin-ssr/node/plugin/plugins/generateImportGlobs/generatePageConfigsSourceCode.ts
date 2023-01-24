@@ -313,7 +313,7 @@ function getCodeFilePath(
     return null
   }
 
-  let codeFilePath = getVitePath(toPosixPath(configValue), pageConfigFilePath)
+  let codeFilePath = getVitePathFromConfigValue(toPosixPath(configValue), pageConfigFilePath)
   assertPosixPath(userRootDir)
   assertPosixPath(codeFilePath)
   codeFilePath = path.posix.join(userRootDir, codeFilePath)
@@ -328,9 +328,12 @@ function getCodeFilePath(
     clean()
   }
   codeFilePath = toPosixPath(codeFilePath)
-  if (!enforce && !fileExists) return null
 
+  if (!enforce && !fileExists) return null
   assertConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
+
+  // Make relative to userRootDir
+  codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
 
   assert(fileExists)
   assertPosixPath(codeFilePath)
@@ -393,7 +396,7 @@ function assertConfigValue(
   }
 }
 
-function getVitePath(codeFilePath: string, pageConfigFilePath: string): string {
+function getVitePathFromConfigValue(codeFilePath: string, pageConfigFilePath: string): string {
   const pageConfigDir = dirnameNormalized(pageConfigFilePath)
   if (!codeFilePath.startsWith('/')) {
     assertPosixPath(codeFilePath)
@@ -402,6 +405,17 @@ function getVitePath(codeFilePath: string, pageConfigFilePath: string): string {
   }
   assert(codeFilePath.startsWith('/'))
   return codeFilePath
+}
+
+function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {
+  assertPosixPath(filePathAbsolute)
+  assertPosixPath(root)
+  assert(root.startsWith('/'))
+  assert(filePathAbsolute.startsWith(root))
+  let vitePath = path.posix.relative(root, filePathAbsolute)
+  assert(!vitePath.startsWith('/') && !vitePath.startsWith('.'))
+  vitePath = '/' + vitePath
+  return vitePath
 }
 
 function dirnameNormalized(filePath: string) {
