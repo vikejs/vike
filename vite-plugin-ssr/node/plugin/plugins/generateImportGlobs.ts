@@ -17,6 +17,7 @@ import { type FileType, fileTypes, determineFileType } from '../../../shared/get
 import path from 'path'
 import { getRealId, getVirtualId } from './generateImportGlobs/virtualIdHandling'
 import { generatePageConfigsSourceCode } from './generateImportGlobs/generatePageConfigsSourceCode'
+import { generateEagerImport } from './generateImportGlobs/generateEagerImport'
 
 function generateImportGlobs(): Plugin {
   let config: ResolvedConfig
@@ -184,7 +185,6 @@ function determineInjection({
   }
 }
 
-let varCounter = 0
 function addImport(importPath: string, fileType: FileType, exportNames: boolean, isBuild: boolean): string {
   const pageFilesVar: PageFileVar = (() => {
     if (exportNames) {
@@ -210,8 +210,8 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
     if (!pageFilesVar.endsWith('Eager')) {
       return `() => import('${importPath}${query}')`
     } else {
-      const importVar = `__import_${varCounter++}`
-      fileContent += `import * as ${importVar} from '${importPath}${query}';\n`
+      const { importVar, importCode } = generateEagerImport(`${importPath}${query}`)
+      fileContent += importCode + '\n'
       return importVar
     }
   })()
