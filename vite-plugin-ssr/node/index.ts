@@ -8,6 +8,7 @@ export { RenderErrorPage } from './runtime/renderPage/RenderErrorPage'
 export type { PageContextBuiltIn } from './types'
 export type { InjectFilterEntry } from './runtime/html/injectAssets/getHtmlTags'
 
+// import '../utils/trackLogs'
 import './runtime/page-files/setup'
 import { assertUsage, isBrowser } from './utils'
 
