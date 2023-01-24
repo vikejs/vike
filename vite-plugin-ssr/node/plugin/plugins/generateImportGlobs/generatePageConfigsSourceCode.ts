@@ -411,7 +411,6 @@ function getVitePathFromConfigValue(codeFilePath: string, pageConfigFilePath: st
 function getVitePathFromAbsolutePath(filePathAbsolute: string, root: string): string {
   assertPosixPath(filePathAbsolute)
   assertPosixPath(root)
-  assert(root.startsWith('/'))
   assert(filePathAbsolute.startsWith(root))
   let vitePath = path.posix.relative(root, filePathAbsolute)
   assert(!vitePath.startsWith('/') && !vitePath.startsWith('.'))
