@@ -23,6 +23,7 @@ import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 import { generateEagerImport } from './generateEagerImport'
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
+// TODO: ensure that route file returns a default export being a string or function
 
 // TODO: remove c_ prefix
 const configDefinitions: Record<
