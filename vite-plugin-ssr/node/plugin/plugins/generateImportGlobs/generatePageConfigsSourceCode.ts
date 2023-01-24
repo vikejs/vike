@@ -213,16 +213,16 @@ function serializePageConfigs(pageConfigs: PageConfigData[], pageConfigGlobal: P
     lines.push(`    configSources: {`)
     Object.entries(config).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
-      const { configFilePath } = configSource
+      const { configFilePath, c_env } = configSource
       lines.push(`        configFilePath: '${configFilePath}',`)
+      lines.push(`        c_env: '${c_env}',`)
       if ('configValue' in configSource) {
         const { configValue } = configSource
         lines.push(`        configValue: ${JSON.stringify(configValue)}`)
-      } else if ('codeFilePath' in configSource) {
+      } else if (configSource.codeFilePath) {
         const { codeFilePath, c_env } = configSource
+        lines.push(`        codeFilePath: '${codeFilePath}',`)
         if (c_env !== 'routing') {
-          lines.push(`        codeFilePath: '${codeFilePath}',`)
-          lines.push(`        c_env: '${c_env}',`)
           lines.push(`        loadCode: () => import('${codeFilePath}')`)
         } else {
           const { importVar, importStatement } = generateEagerImport(codeFilePath)

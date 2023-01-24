@@ -11,26 +11,31 @@ type ConfigResolved = {
   configFilePath: string
   configValue: unknown
 }
-type ConfigSource =
+type ConfigSource = {
+  codeFilePath?: string
+  configFilePath: string
+  c_env: string
+} & (
   | ConfigResolved
   | {
       codeFilePath: string
       c_env: c_Env
       loadCode?: () => Promise<Record<string, unknown>>
     }
+)
+type ConfigSource1 = {
+  configFilePath: string
+  codeFilePath?: string
+  loadCode?: () => Promise<Record<string, unknown>>
+  configValue?: unknown
+}
 
 type PageConfigGlobal = Record<ConfigName, ConfigResolved>
 type PageConfig1 = {
   pageId2: string
   route: string | Function
   pageConfigFilePath: string
-  config: Record<ConfigName, ConfigSource>
-}
-type ConfigSource1 = {
-  configFilePath: string
-  codeFilePath: null | string
-  loadCode?: () => Promise<Record<string, unknown>>
-  configValue?: unknown
+  config: Record<ConfigName, ConfigSource1>
 }
 type ConfigResolved1 = Omit<ConfigSource1, 'loadCode' | 'configValue'> & { configValue: unknown }
 type PageConfig1Loaded = Omit<PageConfig1, 'config'> & { config: Record<ConfigName, ConfigResolved1> }

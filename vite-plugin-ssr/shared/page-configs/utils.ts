@@ -23,7 +23,7 @@ function getCodeFilePath(pageConfig: PageConfig2, configName: string): null | st
   if (!configSource) {
     return null
   }
-  assert('codeFilePath' in configSource) // TODO: assertUsage()
+  assert(configSource.codeFilePath) // TODO: assertUsage()
   const { codeFilePath } = configSource
   return codeFilePath
 }
@@ -31,8 +31,10 @@ function getCodeFilePath(pageConfig: PageConfig2, configName: string): null | st
 function getSourceFilePath(pageConfig: PageConfig2, configName: string): null | string {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) return null
-  if ('codeFilePath' in configSource) {
+  if (configSource.codeFilePath) {
     return configSource.codeFilePath
   }
-  return configSource.configFilePath
+  const { configFilePath } = configSource
+  assert(configFilePath)
+  return configFilePath
 }

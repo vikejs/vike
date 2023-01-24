@@ -12,5 +12,9 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'pageId2', 'string'))
     assert(hasProp(pageConfig, 'route', 'string') || hasProp(pageConfig, 'route', 'function'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
+    Object.entries(pageConfig.configSources).forEach(([_configName, configSource]) => {
+      assert(hasProp(configSource, 'c_env', 'string'))
+      assert(hasProp(configSource, 'configFilePath', 'string'))
+    })
   })
 }

@@ -20,10 +20,12 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | Page
     const clientEntry = isHtmlOnly ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
     Object.values(pageConfig.configSources).forEach((configSource) => {
-      if ('codeFilePath' in configSource) {
+      if (configSource.codeFilePath) {
+        const { c_env } = configSource
+        assert(c_env)
         clientDependencies.push({
           id: configSource.codeFilePath,
-          onlyAssets: configSource.c_env === 'server-only'
+          onlyAssets: c_env === 'server-only'
         })
       }
     })

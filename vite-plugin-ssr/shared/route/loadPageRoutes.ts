@@ -51,11 +51,11 @@ function getPageRoutes(
       {
         const routeConfig = pageConfig.configSources.route
         if (routeConfig) {
-          assert(!('codeFilePath' in routeConfig))
-          assert(routeConfig.configFilePath)
+          assert('configValue' in routeConfig)
           assert(routeConfig.configValue === pageConfig.route)
           const route = routeConfig.configValue
-          const pageRouteFilePath = routeConfig.configFilePath
+          const pageRouteFilePath = routeConfig.codeFilePath || routeConfig.configFilePath
+          assert(pageRouteFilePath)
           if (typeof route === 'string') {
             pageRoute = { pageId, comesFromV1PageConfig, routeString: route, pageRouteFilePath, routeType: 'STRING' }
           } else {
