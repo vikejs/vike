@@ -6,6 +6,9 @@ import type { PageConfig2, PageConfigLoaded } from './PageConfig'
 async function loadPageCode(pageConfig: PageConfig2): Promise<PageConfigLoaded> {
   const configValues: Record<string, unknown> = {}
 
+  // Ensure loadPageCode() wasn't already called
+  assert(!('configValues' in pageConfig))
+
   await Promise.all(
     Object.entries(pageConfig.configSources).map(async ([configName, configSource]) => {
       let configValue: unknown
