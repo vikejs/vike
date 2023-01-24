@@ -210,8 +210,8 @@ function addImport(importPath: string, fileType: FileType, exportNames: boolean,
     if (!pageFilesVar.endsWith('Eager')) {
       return `() => import('${importPath}${query}')`
     } else {
-      const { importVar, importCode } = generateEagerImport(`${importPath}${query}`)
-      fileContent += importCode + '\n'
+      const { importVar, importStatement } = generateEagerImport(`${importPath}${query}`)
+      fileContent += importStatement + '\n'
       return importVar
     }
   })()
