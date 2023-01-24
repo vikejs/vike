@@ -41,7 +41,7 @@ async function log404(pageContext: {
     assertInfo(
       false,
       [
-        `The URL '${urlPathname}' isn't matching any of your page routes. See https://vite-plugin-ssr.com/routing for more information about routing, and set the environment variable \`DEBUG=vps:routing\` to inspect your app's routing. (This log isn't shown in production.) Your page routes:`,
+        `The URL '${urlPathname}' isn't matching any of your page routes. See https://vite-plugin-ssr.com/routing for more information about routing. Set the environment variable \`DEBUG=vps:routing\` to inspect your app's routing. (This log isn't shown in production.) Your page routes:`,
         getPagesAndRoutesInfo(pageRoutes)
       ].join('\n'),
       { onlyOnce: false }
