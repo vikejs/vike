@@ -44,7 +44,7 @@ function devConfig(): Plugin[] {
       configureServer(server) {
         if (!isViteCliCall()) return
         return () => {
-          addSsrMiddleware(server.middlewares)
+          addSsrMiddleware(server.middlewares, server)
         }
       }
     }

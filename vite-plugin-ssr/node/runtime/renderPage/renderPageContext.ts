@@ -31,7 +31,7 @@ import { assertPageContextProvidedByUser } from '../../../shared/assertPageConte
 import { getGlobalContext } from '../globalContext'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
-import { assertError, isNewError, logError } from './logError'
+import { isNewError, logError } from './logError'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
@@ -344,7 +344,6 @@ async function executeRenderHook(
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
-    assertError(err)
     logError(err)
     /*
     objectAssign(pageContext, {

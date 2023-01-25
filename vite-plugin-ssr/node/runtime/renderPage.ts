@@ -14,7 +14,7 @@ import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
-import { assertError, logError, isNewError } from './renderPage/logError'
+import { logError, isNewError } from './renderPage/logError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
@@ -55,42 +55,75 @@ async function renderPage<
   let errOriginal: unknown
   {
     const pageContext = {}
+    let errored: boolean
     try {
       pageContextOriginal = await renderPageAttempt(pageContextInit, pageContext, renderContext)
+      errored = false
     } catch (errOriginal_) {
+      errored = true
       errOriginal = errOriginal_
       pageContextOriginalPartial = pageContext
     }
-    assert(errOriginal || pageContextOriginal === pageContext)
+    if (errored) {
+      assert(errOriginal)
+    } else {
+      assert(pageContextOriginal === pageContext)
+    }
   }
 
   const errorPageIsMissing = !getErrorPageId(renderContext.allPageIds)
+  const is404: boolean = !!pageContextOriginal && 'is404' in pageContextOriginal && pageContextOriginal.is404 === true
+  const statusCode = errOriginal ? null : is404 ? (errorPageIsMissing ? null : 404) : 200 // We need to determine the status code early for the onRenderResult() hook
+  {
+    const onRenderResult = (pageContextInit as Record<string, unknown>)._onRenderResult as undefined | Function
+    const isError: boolean = !!errOriginal || is404
+    onRenderResult?.(isError, statusCode)
+  }
 
   if (errOriginal === undefined) {
     assert(pageContextOriginal)
-    if ('is404' in pageContextOriginal && pageContextOriginal.is404) {
+    if (is404) {
       if (errorPageIsMissing) {
         assert(pageContextOriginal.httpResponse === null)
         warnMissingErrorPage()
       }
+      assert('is404' in pageContextOriginal)
       log404(pageContextOriginal)
     }
+    assert((pageContextOriginal.httpResponse?.statusCode ?? null) === statusCode)
     return pageContextOriginal
   } else {
+    assert(errOriginal)
     assert(pageContextOriginal === undefined)
     assert(pageContextOriginalPartial)
-    assertError(errOriginal)
+    assert(statusCode === null) // We can't determine the status code before actually trying to render the error page (it can be either `null` or `500`)
     if (errorPageIsMissing) {
       warnMissingErrorPage()
     }
     logError(errOriginal)
+    let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderErrorPage>>
+    let errErrorPage: unknown
     try {
-      return await renderErrorPage(pageContextInit, errOriginal, pageContextOriginalPartial, renderContext)
-    } catch (err) {
-      if (isNewError(err, errOriginal)) {
-        logError(err)
+      pageContextErrorPage = await renderErrorPage(
+        pageContextInit,
+        errOriginal,
+        pageContextOriginalPartial,
+        renderContext
+      )
+    } catch (errErrorPage_) {
+      errErrorPage = errErrorPage_
+    }
+    if (errErrorPage === undefined) {
+      assert(pageContextErrorPage)
+      return pageContextErrorPage
+    } else {
+      assert(errErrorPage)
+      assert(pageContextErrorPage === undefined)
+      if (isNewError(errErrorPage, errOriginal)) {
+        logError(errErrorPage)
       }
       const pageContextErr = getPageContextErr(errOriginal, pageContextInit)
+      assert(pageContextErr.httpResponse === null)
       return pageContextErr
     }
   }

@@ -1,6 +1,5 @@
 export { logError }
 export { isNewError }
-export { assertError }
 
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
 import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from './RenderErrorPage'
