@@ -49,9 +49,24 @@ async function renderPage<
   }
 
   const pageContext = {}
+  let pageContextAfterRender: undefined | RenderResult
+  let errOriginal: unknown
   try {
-    return await renderPageAttempt(pageContextInit, pageContext, renderContext)
-  } catch (errOriginal) {
+    pageContextAfterRender = await renderPageAttempt(pageContextInit, pageContext, renderContext)
+  } catch (errOriginal_) {
+    errOriginal = errOriginal_
+  }
+
+  if (pageContextAfterRender) {
+    assert(errOriginal === undefined)
+    assert(pageContextAfterRender !== undefined)
+
+    assert(pageContext === pageContextAfterRender)
+    return pageContextAfterRender
+  } else {
+    assert(errOriginal !== undefined)
+    assert(pageContextAfterRender === undefined)
+
     assertError(errOriginal)
     logError(errOriginal)
     try {
