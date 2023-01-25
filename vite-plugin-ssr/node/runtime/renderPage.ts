@@ -49,24 +49,18 @@ async function renderPage<
   }
 
   const pageContext = {}
-  let pageContextAfterRender: undefined | RenderResult
   let errOriginal: unknown
   try {
-    pageContextAfterRender = await renderPageAttempt(pageContextInit, pageContext, renderContext)
+    await renderPageAttempt(pageContextInit, pageContext, renderContext)
   } catch (errOriginal_) {
     errOriginal = errOriginal_
   }
 
-  if (pageContextAfterRender) {
+  if (errOriginal === undefined) {
     assert(errOriginal === undefined)
-    assert(pageContextAfterRender !== undefined)
-
-    assert(pageContext === pageContextAfterRender)
-    return pageContextAfterRender
+    assertPageContextAfterRender(pageContext)
+    return pageContext
   } else {
-    assert(errOriginal !== undefined)
-    assert(pageContextAfterRender === undefined)
-
     assertError(errOriginal)
     logError(errOriginal)
     try {
@@ -79,6 +73,16 @@ async function renderPage<
       return pageContextErr
     }
   }
+}
+
+function assertPageContextAfterRender(pageContext: object): asserts pageContext is RenderResult {
+  assert(hasProp(pageContext, 'urlOriginal', 'string'))
+  assert(hasProp(pageContext, 'httpResponse', 'null') || hasProp(pageContext, 'httpResponse', 'object'))
+  if (pageContext.httpResponse) {
+    assert(hasProp(pageContext.httpResponse, 'statusCode', 'number'))
+    assert(hasProp(pageContext.httpResponse, 'contentType', 'string'))
+  }
+  assert(hasProp(pageContext, 'errorWhileRendering', 'null') || hasProp(pageContext, 'errorWhileRendering', 'object'))
 }
 
 function getPageContextErr(err: unknown, pageContextInit: Record<string, unknown>) {
