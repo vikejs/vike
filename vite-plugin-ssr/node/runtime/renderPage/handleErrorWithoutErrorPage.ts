@@ -5,6 +5,7 @@ import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext'
 import { assert, assertWarning, objectAssign } from '../../utils'
 import { createHttpResponseObject } from './createHttpResponseObject'
+import pc from 'picocolors'
 import type { GetPageAssets } from './getPageAssets'
 import type { PageContextAfterRender } from './renderPageContext'
 
@@ -37,7 +38,9 @@ function warnMissingErrorPage(): void {
   if (!globalContext.isProduction) {
     assertWarning(
       false,
-      'No `_error.page.js` found. We recommend creating a `_error.page.js` file. See https://vite-plugin-ssr.com/error-page for more information. (This warning is not shown in production.)',
+      `No ${pc.cyan('_error.page.js')} found. We recommend creating a ${pc.cyan(
+        '_error.page.js'
+      )} file. See https://vite-plugin-ssr.com/error-page for more information. (This warning isn't shown in production.)`,
       { showStackTrace: false, onlyOnce: true }
     )
   }
