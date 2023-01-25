@@ -1,4 +1,5 @@
 export { handleErrorWithoutErrorPage }
+export { warnMissingErrorPage }
 
 import { stringify } from '@brillout/json-serializer/stringify'
 import { getGlobalContext } from '../globalContext'
@@ -7,17 +8,17 @@ import { createHttpResponseObject } from './createHttpResponseObject'
 import type { GetPageAssets } from './getPageAssets'
 import type { RenderResult } from './renderPageContext'
 
-async function handleErrorWithoutErrorPage(pageContext: {
-  _isPageContextRequest: boolean
-  errorWhileRendering: null | Error
-  is404: null | boolean
-  _pageId: null
-  urlOriginal: string
-}): Promise<RenderResult> {
+async function handleErrorWithoutErrorPage<
+  PageContext extends {
+    _isPageContextRequest: boolean
+    errorWhileRendering: null | Error
+    is404: null | boolean
+    _pageId: null
+    urlOriginal: string
+  }
+>(pageContext: PageContext): Promise<PageContext & RenderResult> {
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
   assert(pageContext.errorWhileRendering || pageContext.is404)
-
-  warnMissingErrorPage()
 
   if (!pageContext._isPageContextRequest) {
     objectAssign(pageContext, { httpResponse: null })

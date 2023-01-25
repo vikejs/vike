@@ -1,15 +1,13 @@
 export { renderPage }
 
 import {
-  assertPageContextAfterRender,
-  checkPageContextAfterRender,
   getRenderContext,
   initPageContext,
   RenderContext,
   renderPageContext,
   RenderResult
 } from './renderPage/renderPageContext'
-import { route } from '../../shared/route'
+import { route, getErrorPageId } from '../../shared/route'
 import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
 import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
@@ -19,6 +17,8 @@ import { HttpResponse } from './renderPage/createHttpResponseObject'
 import { assertError, logError, isNewError } from './renderPage/logError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
+import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
+import { log404 } from './renderPage/log404'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -50,22 +50,42 @@ async function renderPage<
     return pageContextErr
   }
 
-  const pageContext = {}
+  let pageContextOriginal: undefined | Awaited<ReturnType<typeof renderPageAttempt>>
+  let pageContextOriginalPartial: undefined | Record<string, unknown>
   let errOriginal: unknown
-  try {
-    await renderPageAttempt(pageContextInit, pageContext, renderContext)
-  } catch (errOriginal_) {
-    errOriginal = errOriginal_
+  {
+    const pageContext = {}
+    try {
+      pageContextOriginal = await renderPageAttempt(pageContextInit, pageContext, renderContext)
+    } catch (errOriginal_) {
+      errOriginal = errOriginal_
+      pageContextOriginalPartial = pageContext
+    }
+    assert(errOriginal || pageContextOriginal === pageContext)
   }
 
+  const errorPageIsMissing = !getErrorPageId(renderContext.allPageIds)
+
   if (errOriginal === undefined) {
-    assertPageContextAfterRender(pageContext)
-    return pageContext
+    assert(pageContextOriginal)
+    if ('is404' in pageContextOriginal && pageContextOriginal.is404) {
+      if (errorPageIsMissing) {
+        assert(pageContextOriginal.httpResponse === null)
+        warnMissingErrorPage()
+      }
+      log404(pageContextOriginal)
+    }
+    return pageContextOriginal
   } else {
+    assert(pageContextOriginal === undefined)
+    assert(pageContextOriginalPartial)
     assertError(errOriginal)
+    if (errorPageIsMissing) {
+      warnMissingErrorPage()
+    }
     logError(errOriginal)
     try {
-      return await renderErrorPage(pageContextInit, errOriginal, pageContext, renderContext)
+      return await renderErrorPage(pageContextInit, errOriginal, pageContextOriginalPartial, renderContext)
     } catch (err) {
       if (isNewError(err, errOriginal)) {
         logError(err)
@@ -86,18 +106,17 @@ function getPageContextErr(err: unknown, pageContextInit: Record<string, unknown
   return pageContextErr
 }
 
-async function renderPageAttempt(
-  pageContextInit: { urlOriginal: string },
+async function renderPageAttempt<PageContextInit extends { urlOriginal: string }>(
+  pageContextInit: PageContextInit,
   pageContext: {},
   renderContext: RenderContext
-): Promise<void> {
+) {
   {
     const { urlOriginal } = pageContextInit
     if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
       const pageContext = { ...pageContextInit }
       objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-      checkPageContextAfterRender(pageContext)
-      return
+      return pageContext
     }
   }
 
@@ -111,8 +130,7 @@ async function renderPageAttempt(
   }
   if (!pageContext._hasBaseServer) {
     objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-    checkPageContextAfterRender(pageContext)
-    return
+    return pageContext
   }
 
   addComputedUrlProps(pageContext)
@@ -125,8 +143,8 @@ async function renderPageAttempt(
 
   objectAssign(pageContext, { errorWhileRendering: null })
   const pageContextAfterRender = await renderPageContext(pageContext)
-  checkPageContextAfterRender(pageContextAfterRender)
-  assert((pageContext as any as RenderResult)===pageContextAfterRender)
+  assert((pageContext as any as RenderResult) === pageContextAfterRender)
+  return pageContextAfterRender
 }
 
 async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(

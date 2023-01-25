@@ -4,8 +4,6 @@ export { prerender404Page }
 export { loadPageFilesServer }
 export { initPageContext }
 export { getRenderContext }
-export { assertPageContextAfterRender }
-export { checkPageContextAfterRender }
 export type { RenderContext }
 export type { RenderResult }
 
@@ -30,7 +28,6 @@ import { isStream } from '../html/stream'
 import { serializePageContextClientSide } from '../helpers'
 import { addComputedUrlProps, type PageContextUrls } from '../../../shared/addComputedUrlProps'
 import { assertPageContextProvidedByUser } from '../../../shared/assertPageContextProvidedByUser'
-import { log404 } from './log404'
 import { getGlobalContext } from '../globalContext'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
@@ -48,8 +45,8 @@ type GlobalRenderingContext = {
 type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 type GetPageAssets = () => Promise<PageAsset[]>
 
-async function renderPageContext(
-  pageContext: {
+async function renderPageContext<
+  PageContext extends {
     _pageId: null | string
     _pageContextAlreadyProvidedByPrerenderHook?: true
     _isPageContextRequest: boolean
@@ -59,9 +56,7 @@ async function renderPageContext(
     errorWhileRendering: null | Error
   } & PageContextUrls &
     PageContext_loadPageFilesServer
-): Promise<RenderResult> {
-  if (pageContext.is404) log404(pageContext)
-
+>(pageContext: PageContext): Promise<PageContext & RenderResult> {
   const isError = pageContext.is404 || pageContext.errorWhileRendering
 
   if (isError) {
@@ -375,14 +370,3 @@ async function executeRenderHook(
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }
 }
-
-function checkPageContextAfterRender(_pageContext: RenderResult) {}
-function assertPageContextAfterRender(pageContext: object): asserts pageContext is RenderResult {
-  assert(hasProp(pageContext, 'urlOriginal', 'string'))
-  assert(hasProp(pageContext, 'httpResponse', 'null') || hasProp(pageContext, 'httpResponse', 'object'))
-  if (pageContext.httpResponse) {
-    assert(hasProp(pageContext.httpResponse, 'statusCode', 'number'))
-    assert(hasProp(pageContext.httpResponse, 'contentType', 'string'))
-  }
-}
-
