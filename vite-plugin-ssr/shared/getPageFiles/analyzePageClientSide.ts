@@ -19,19 +19,23 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | Page
     const isHtmlOnly = !!clientEntryPageConfig
     const clientEntry = isHtmlOnly ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)
     const clientDependencies: ClientDependency[] = []
+    assert(pageConfig.configSources.onRenderHtml)
+    assert(pageConfig.configSources.onRenderClient)
     Object.values(pageConfig.configSources).forEach((configSource) => {
       if (configSource.codeFilePath) {
         const { c_env } = configSource
         assert(c_env)
         clientDependencies.push({
           id: configSource.codeFilePath,
-          onlyAssets: c_env === 'server-only'
+          onlyAssets: c_env === 'server-only',
+          eagerlyImported: c_env === 'routing'
         })
       }
     })
     clientDependencies.push({
       id: clientEntry,
-      onlyAssets: false
+      onlyAssets: false,
+      eagerlyImported: false
     })
     const clientEntries: string[] = [clientEntry]
     return {

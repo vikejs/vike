@@ -20,8 +20,13 @@ function determineClientEntry({
   const pageFilesServerSideOnly = pageFilesServerSide.filter((p) => !pageFilesClientSide.includes(p))
 
   const clientDependencies: ClientDependency[] = []
-  clientDependencies.push(...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false })))
-  clientDependencies.push(...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true }))) // CSS & assets
+  clientDependencies.push(
+    ...pageFilesClientSide.map((p) => ({ id: p.filePath, onlyAssets: false, eagerlyImported: false }))
+  )
+  // CSS & assets
+  clientDependencies.push(
+    ...pageFilesServerSideOnly.map((p) => ({ id: p.filePath, onlyAssets: true, eagerlyImported: false }))
+  )
 
   // Handle SPA & SSR pages.
   if (isHtmlOnly) {
@@ -29,7 +34,7 @@ function determineClientEntry({
   } else {
     // Add the vps client entry
     const clientEntry = getVPSClientEntry(isClientRouting)
-    clientDependencies.push({ id: clientEntry, onlyAssets: false })
+    clientDependencies.push({ id: clientEntry, onlyAssets: false, eagerlyImported: false })
     clientEntries = [clientEntry]
   }
 

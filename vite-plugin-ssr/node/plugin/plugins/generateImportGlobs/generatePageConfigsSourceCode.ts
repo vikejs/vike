@@ -24,6 +24,7 @@ import { generateEagerImport } from './generateEagerImport'
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 // TODO: ensure that route file returns a default export being a string or function
+// TODO: create one virtual file per route
 
 // TODO: remove c_ prefix
 const configDefinitions: Record<
@@ -129,7 +130,7 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
   }
   const { pageConfigFiles } = result
   const { pageConfigs, pageConfigGlobal } = getPageConfigs(pageConfigFiles, userRootDir, isForClientSide)
-  return serializePageConfigs(pageConfigs, pageConfigGlobal)
+  return serializePageConfigs(pageConfigs, pageConfigGlobal, isForClientSide)
 }
 
 function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, isForClientSide: boolean) {
@@ -156,36 +157,34 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, 
     */
 
     const config: PageConfigData['config'] = {}
-    Object.entries(configDefinitions)
-      .filter(([_configName, { c_env }]) => c_env !== (isForClientSide ? 'server-only' : 'client-only'))
-      .forEach(([configName, { c_env, c_code }]) => {
-        const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
-        if (!result) return
-        const { pageConfigValue, pageConfigValueFilePath } = result
-        const configFilePath = pageConfigValueFilePath
-        const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
-        assert(codeFilePath || !c_code)
-        if (!codeFilePath) {
-          config[configName] = {
-            configFilePath,
-            c_env,
-            configValue: pageConfigValue
-          }
-        } else {
-          assertUsage(
-            typeof pageConfigValue === 'string',
-            `${getErrorIntro(
-              pageConfigFilePath,
-              configName
-            )} to a value with a wrong type \`${typeof pageConfigValue}\`: it should be a string instead`
-          )
-          config[configName] = {
-            configFilePath,
-            codeFilePath,
-            c_env
-          }
+    Object.entries(configDefinitions).forEach(([configName, { c_env, c_code }]) => {
+      const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
+      if (!result) return
+      const { pageConfigValue, pageConfigValueFilePath } = result
+      const configFilePath = pageConfigValueFilePath
+      const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
+      assert(codeFilePath || !c_code)
+      if (!codeFilePath) {
+        config[configName] = {
+          configFilePath,
+          c_env,
+          configValue: pageConfigValue
         }
-      })
+      } else {
+        assertUsage(
+          typeof pageConfigValue === 'string',
+          `${getErrorIntro(
+            pageConfigFilePath,
+            configName
+          )} to a value with a wrong type \`${typeof pageConfigValue}\`: it should be a string instead`
+        )
+        config[configName] = {
+          configFilePath,
+          codeFilePath,
+          c_env
+        }
+      }
+    })
 
     pageConfigs.push({
       pageConfigFilePath,
@@ -198,7 +197,11 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, 
   return { pageConfigs, pageConfigGlobal }
 }
 
-function serializePageConfigs(pageConfigs: PageConfigData[], pageConfigGlobal: PageConfigGlobal): string {
+function serializePageConfigs(
+  pageConfigs: PageConfigData[],
+  pageConfigGlobal: PageConfigGlobal,
+  isForClientSide: boolean
+): string {
   const lines: string[] = []
   const importStatements: string[] = []
 
@@ -223,7 +226,9 @@ function serializePageConfigs(pageConfigs: PageConfigData[], pageConfigGlobal: P
         const { codeFilePath, c_env } = configSource
         lines.push(`        codeFilePath: '${codeFilePath}',`)
         if (c_env !== 'routing') {
-          lines.push(`        loadCode: () => import('${codeFilePath}')`)
+          if (c_env !== (isForClientSide ? 'server-only' : 'client-only')) {
+            lines.push(`        loadCode: () => import('${codeFilePath}')`)
+          }
         } else {
           const { importVar, importStatement } = generateEagerImport(codeFilePath)
           lines.push(`        configValue: ${importVar}.default`)

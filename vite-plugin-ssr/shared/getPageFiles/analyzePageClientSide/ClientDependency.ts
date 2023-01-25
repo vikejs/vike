@@ -6,4 +6,5 @@ type ClientDependency = {
   //  - `@vite-plugin-ssr/dist/...`.
   id: string
   onlyAssets: boolean
+  eagerlyImported: boolean
 }
