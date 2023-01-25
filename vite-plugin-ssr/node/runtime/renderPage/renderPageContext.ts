@@ -4,6 +4,8 @@ export { prerender404Page }
 export { loadPageFilesServer }
 export { initPageContext }
 export { getRenderContext }
+export { assertPageContextAfterRender }
+export { checkPageContextAfterRender }
 export type { RenderContext }
 export type { RenderResult }
 
@@ -373,3 +375,14 @@ async function executeRenderHook(
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderFilePath }
 }
+
+function checkPageContextAfterRender(_pageContext: RenderResult) {}
+function assertPageContextAfterRender(pageContext: object): asserts pageContext is RenderResult {
+  assert(hasProp(pageContext, 'urlOriginal', 'string'))
+  assert(hasProp(pageContext, 'httpResponse', 'null') || hasProp(pageContext, 'httpResponse', 'object'))
+  if (pageContext.httpResponse) {
+    assert(hasProp(pageContext.httpResponse, 'statusCode', 'number'))
+    assert(hasProp(pageContext.httpResponse, 'contentType', 'string'))
+  }
+}
+

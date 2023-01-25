@@ -1,6 +1,8 @@
 export { renderPage }
 
 import {
+  assertPageContextAfterRender,
+  checkPageContextAfterRender,
   getRenderContext,
   initPageContext,
   RenderContext,
@@ -57,7 +59,6 @@ async function renderPage<
   }
 
   if (errOriginal === undefined) {
-    assert(errOriginal === undefined)
     assertPageContextAfterRender(pageContext)
     return pageContext
   } else {
@@ -75,16 +76,6 @@ async function renderPage<
   }
 }
 
-function assertPageContextAfterRender(pageContext: object): asserts pageContext is RenderResult {
-  assert(hasProp(pageContext, 'urlOriginal', 'string'))
-  assert(hasProp(pageContext, 'httpResponse', 'null') || hasProp(pageContext, 'httpResponse', 'object'))
-  if (pageContext.httpResponse) {
-    assert(hasProp(pageContext.httpResponse, 'statusCode', 'number'))
-    assert(hasProp(pageContext.httpResponse, 'contentType', 'string'))
-  }
-  assert(hasProp(pageContext, 'errorWhileRendering', 'null') || hasProp(pageContext, 'errorWhileRendering', 'object'))
-}
-
 function getPageContextErr(err: unknown, pageContextInit: Record<string, unknown>) {
   const pageContextErr = {}
   objectAssign(pageContextErr, pageContextInit)
@@ -99,13 +90,14 @@ async function renderPageAttempt(
   pageContextInit: { urlOriginal: string },
   pageContext: {},
   renderContext: RenderContext
-): Promise<RenderResult> {
+): Promise<void> {
   {
     const { urlOriginal } = pageContextInit
     if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
       const pageContext = { ...pageContextInit }
       objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-      return pageContext
+      checkPageContextAfterRender(pageContext)
+      return
     }
   }
 
@@ -119,7 +111,8 @@ async function renderPageAttempt(
   }
   if (!pageContext._hasBaseServer) {
     objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
-    return pageContext
+    checkPageContextAfterRender(pageContext)
+    return
   }
 
   addComputedUrlProps(pageContext)
@@ -131,7 +124,9 @@ async function renderPageAttempt(
   objectAssign(pageContext, { is404 })
 
   objectAssign(pageContext, { errorWhileRendering: null })
-  return renderPageContext(pageContext)
+  const pageContextAfterRender = await renderPageContext(pageContext)
+  checkPageContextAfterRender(pageContextAfterRender)
+  assert((pageContext as any as RenderResult)===pageContextAfterRender)
 }
 
 async function renderErrorPage<PageContextInit extends { urlOriginal: string }>(
