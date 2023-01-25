@@ -3,12 +3,16 @@ export { logErrorIfDifferentFromOriginal }
 export { assertError }
 
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
-import { assertRenderErrorPageExceptionUsage } from './RenderErrorPage'
+import { assertRenderErrorPageExceptionUsage, isRenderErrorPageException } from './RenderErrorPage'
 import { assertWarning, hasProp, isObject, isSameErrorMessage } from '../../utils'
 import { getGlobalContext } from '../globalContext'
 
 function logError(err: unknown): void {
   assertError(err)
+
+  if (isRenderErrorPageException(err)) {
+    return
+  }
 
   if (viteAlreadyLoggedError(err)) {
     return

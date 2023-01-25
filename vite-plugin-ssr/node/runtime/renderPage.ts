@@ -53,9 +53,7 @@ async function renderPage<
     return await renderPageAttempt(pageContextInit, pageContext, renderContext)
   } catch (errOriginal) {
     assertError(errOriginal)
-    if (!isRenderErrorPageException(errOriginal)) {
-      logError(errOriginal)
-    }
+    logError(errOriginal)
     try {
       return await renderErrorPage(pageContextInit, errOriginal, pageContext, renderContext)
     } catch (err) {
