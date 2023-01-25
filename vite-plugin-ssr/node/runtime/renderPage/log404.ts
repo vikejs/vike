@@ -18,7 +18,7 @@ async function log404(pageContext: {
   if (isRenderErrorPageException(pageContext.errorWhileRendering)) {
     assertInfo(
       false,
-      `\`throw RenderErrorPage()\` was thrown while rendering URL \`${urlPathname}\`. (This info isn't shown in production.)`,
+      `\`throw RenderErrorPage()\` was thrown while rendering URL \`${urlPathname}\`. (This log isn't shown in production.)`,
       { onlyOnce: false }
     )
     return
