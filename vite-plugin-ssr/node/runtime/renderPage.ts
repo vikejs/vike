@@ -60,7 +60,7 @@ async function renderPage<
       if (isNewError(err, errOriginal)) {
         logError(err)
       }
-      const pageContextErr = getPageContextErr(err, pageContextInit)
+      const pageContextErr = getPageContextErr(errOriginal, pageContextInit)
       return pageContextErr
     }
   }
