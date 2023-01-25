@@ -36,7 +36,7 @@ import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } 
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageContextPromise } from '../html/injectAssets'
-import type {PageConfig2} from '../../../shared/page-configs/PageConfig'
+import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]

@@ -6,7 +6,7 @@ import type { ClientDependency } from '../../../shared/getPageFiles/analyzePageC
 import type { PageFile } from '../../../shared/getPageFiles'
 import pc from 'picocolors'
 import { assert, makeFirst, createDebugger } from '../../utils'
-import type {PageConfig2} from '../../../shared/page-configs/PageConfig'
+import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
 
 type PageContextDebug = {
   _routeMatches: 'ROUTE_ERROR' | RouteMatches

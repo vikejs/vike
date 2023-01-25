@@ -8,7 +8,8 @@ import { getUrlFromRouteString } from '../../../../shared/route/resolveRouteStri
 import { findPageFiles } from '../../helpers'
 import { makeFilePathAbsolute } from '../../utils'
 
-async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> { // TODO
+// TODO v1
+async function determineOptimizeDepsEntries(config: ResolvedConfig): Promise<string[]> {
   const pageFilesAll = (await findPageFiles(config, ['.page', '.page.client', '.page.route'])).map((p) =>
     getPageFileObject(p)
   )
