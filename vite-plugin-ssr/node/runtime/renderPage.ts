@@ -147,7 +147,7 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
   {
     const { urlOriginal } = pageContextInit
     if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
-      const pageContext = { ...pageContextInit }
+      objectAssign(pageContext, pageContextInit)
       objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
       return pageContext
     }
