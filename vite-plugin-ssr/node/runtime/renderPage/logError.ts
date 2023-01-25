@@ -1,5 +1,5 @@
 export { logError }
-export { logErrorIfDifferentFromOriginal }
+export { isNewError }
 export { assertError }
 
 import { viteAlreadyLoggedError, viteErrorCleanup } from './viteLogging'
@@ -38,11 +38,9 @@ function logError(err: unknown): void {
   setAlreadyLogged(err)
 }
 
-function logErrorIfDifferentFromOriginal(err: unknown, errOriginal: unknown): void {
+function isNewError(err: unknown, errOriginal: unknown): boolean {
   assertError(err)
-  if (!isSameErrorMessage(errOriginal, err) || !hasAlreadyLogged(errOriginal)) {
-    logError(err)
-  }
+  return !isSameErrorMessage(errOriginal, err) || !hasAlreadyLogged(errOriginal)
 }
 
 function hasAlreadyLogged(err: unknown) {

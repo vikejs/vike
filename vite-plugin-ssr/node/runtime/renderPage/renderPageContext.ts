@@ -32,7 +32,7 @@ import { log404 } from './log404'
 import { getGlobalContext } from '../globalContext'
 import type { PreloadFilter } from '../html/injectAssets/getHtmlTags'
 import { createHttpResponseObject, HttpResponse } from './createHttpResponseObject'
-import { assertError, logError, logErrorIfDifferentFromOriginal } from './logError'
+import { assertError, isNewError, logError } from './logError'
 import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } from './loadPageFilesServer'
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
@@ -88,7 +88,9 @@ async function renderPageContext(
     try {
       await executeOnBeforeRenderHooks(pageContext)
     } catch (err) {
-      logErrorIfDifferentFromOriginal(err, pageContext.errorWhileRendering)
+      if (isNewError(err, pageContext.errorWhileRendering)) {
+        logError(err)
+      }
     }
   }
 

@@ -14,7 +14,7 @@ import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
-import { assertError, logError, logErrorIfDifferentFromOriginal } from './renderPage/logError'
+import { assertError, logError, isNewError } from './renderPage/logError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 
@@ -57,7 +57,9 @@ async function renderPage<
     try {
       return await renderErrorPage(pageContextInit, errOriginal, pageContext, renderContext)
     } catch (err) {
-      logErrorIfDifferentFromOriginal(err, errOriginal)
+      if (isNewError(err, errOriginal)) {
+        logError(err)
+      }
       const pageContextErr = getPageContextErr(err, pageContextInit)
       return pageContextErr
     }
