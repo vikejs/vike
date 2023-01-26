@@ -6,6 +6,7 @@ import pc from 'picocolors'
 import { assert, projectInfo } from '../utils'
 
 type ConnectServer = ViteDevServer['middlewares']
+let isErrorPrevious: undefined | boolean
 
 function addSsrMiddleware(middlewares: ConnectServer, viteDevServer: null | ViteDevServer) {
   middlewares.use(async (req, res, next) => {
@@ -46,11 +47,13 @@ function onRenderResult(isError: unknown, statusCode: unknown, url: string, vite
   assert(statusCode === null || statusCode === 200 || statusCode === 404)
   const color = (s: number | string) => pc.bold(isError ? pc.red(s) : pc.green(s))
   const msg = [pc.green('HTTP Request'), color(statusCode || 'ERR'), pc.gray(url)].join(' ')
-  log(msg, viteDevServer)
+  const clear = isError || isErrorPrevious === true
+  isErrorPrevious = isError
+  log(msg, viteDevServer, clear)
 }
 
 // Copied and adapted from https://github.com/vitejs/vite/blob/9adb2a3a29e26302647092d783ea78cff6ca3473/packages/vite/src/node/logger.ts
-function log(msg: string, viteDevServer: ViteDevServer) {
+function log(msg: string, viteDevServer: ViteDevServer, clear: boolean) {
   const tag = pc.cyan(pc.bold(`[${projectInfo.projectName}]`))
-  viteDevServer.config.logger.info(`${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msg}`, { clear: true })
+  viteDevServer.config.logger.info(`${pc.dim(new Date().toLocaleTimeString())} ${tag} ${msg}`, { clear })
 }
