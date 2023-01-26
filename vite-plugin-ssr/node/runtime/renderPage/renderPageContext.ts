@@ -5,7 +5,7 @@ export { loadPageFilesServer }
 export { initPageContext }
 export { getRenderContext }
 export type { RenderContext }
-export type { RenderResult }
+export type { PageContextAfterRender }
 
 import { getErrorPageId } from '../../../shared/route'
 import { type HtmlRender, isDocumentHtml, renderDocumentHtml, getHtmlString } from '../html/renderHtml'
@@ -42,7 +42,7 @@ type GlobalRenderingContext = {
   _pageFilesAll: PageFile[]
 }
 
-type RenderResult = { urlOriginal: string; httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
+type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
 type GetPageAssets = () => Promise<PageAsset[]>
 
 async function renderPageContext<
@@ -56,7 +56,7 @@ async function renderPageContext<
     errorWhileRendering: null | Error
   } & PageContextUrls &
     PageContext_loadPageFilesServer
->(pageContext: PageContext): Promise<PageContext & RenderResult> {
+>(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   const isError = pageContext.is404 || pageContext.errorWhileRendering
 
   if (isError) {

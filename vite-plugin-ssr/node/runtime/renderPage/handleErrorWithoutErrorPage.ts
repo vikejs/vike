@@ -6,7 +6,7 @@ import { getGlobalContext } from '../globalContext'
 import { assert, assertWarning, objectAssign } from '../../utils'
 import { createHttpResponseObject } from './createHttpResponseObject'
 import type { GetPageAssets } from './getPageAssets'
-import type { RenderResult } from './renderPageContext'
+import type { PageContextAfterRender } from './renderPageContext'
 
 async function handleErrorWithoutErrorPage<
   PageContext extends {
@@ -16,7 +16,7 @@ async function handleErrorWithoutErrorPage<
     _pageId: null
     urlOriginal: string
   }
->(pageContext: PageContext): Promise<PageContext & RenderResult> {
+>(pageContext: PageContext): Promise<PageContext & PageContextAfterRender> {
   assert(pageContext._pageId === null) // User didn't define a `_error.page.js` file
   assert(pageContext.errorWhileRendering || pageContext.is404)
 
