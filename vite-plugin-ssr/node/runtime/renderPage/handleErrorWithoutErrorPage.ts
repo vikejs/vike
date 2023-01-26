@@ -41,7 +41,7 @@ function warnMissingErrorPage(): void {
       `No ${pc.cyan('_error.page.js')} found. We recommend creating a ${pc.cyan(
         '_error.page.js'
       )} file. See https://vite-plugin-ssr.com/error-page for more information. (This warning isn't shown in production.)`,
-      { showStackTrace: false, onlyOnce: true }
+      { showStackTrace: false, onlyOnce: false }
     )
   }
 }
