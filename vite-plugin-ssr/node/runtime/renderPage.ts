@@ -1,12 +1,6 @@
 export { renderPage }
 
-import {
-  getRenderContext,
-  initPageContext,
-  RenderContext,
-  renderPageContext,
-  RenderResult
-} from './renderPage/renderPageContext'
+import { getRenderContext, initPageContext, RenderContext, renderPageContext } from './renderPage/renderPageContext'
 import { route, getErrorPageId } from '../../shared/route'
 import { assert, hasProp, objectAssign, isParsable, parseUrl } from '../utils'
 import { addComputedUrlProps } from '../../shared/addComputedUrlProps'
@@ -184,7 +178,7 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
 
   objectAssign(pageContext, { errorWhileRendering: null })
   const pageContextAfterRender = await renderPageContext(pageContext)
-  assert((pageContext as any as RenderResult) === pageContextAfterRender)
+  assert(pageContext === pageContextAfterRender)
   return pageContextAfterRender
 }
 
