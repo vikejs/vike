@@ -73,8 +73,16 @@ async function renderPage<
 
   const errorPageIsMissing = !getErrorPageId(renderContext.allPageIds)
   const is404: boolean = !!pageContextOriginal && 'is404' in pageContextOriginal && pageContextOriginal.is404 === true
-  const statusCode = errOriginal ? null : is404 ? (errorPageIsMissing ? null : 404) : 200 // We need to determine the status code early for the onRenderResult() hook
-  {
+  const isSkipped: boolean = !!pageContextOriginal && '_skippedRendering' in pageContextOriginal
+  // We need to determine the status code early for the onRenderResult() hook
+  const statusCode = (() => {
+    if (isSkipped) return null
+    // We cannot determine the status code early for errors (see comment below)
+    if (errOriginal) return null
+    if (is404) return errorPageIsMissing ? null : 404
+    return 200
+  })()
+  if (!isSkipped) {
     const onRenderResult = (pageContextInit as Record<string, unknown>)._onRenderResult as undefined | Function
     const isError: boolean = !!errOriginal || is404
     onRenderResult?.(isError, statusCode)
@@ -148,7 +156,7 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
     const { urlOriginal } = pageContextInit
     if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
       objectAssign(pageContext, pageContextInit)
-      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
+      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null, _skippedRendering: true })
       return pageContext
     }
   }
