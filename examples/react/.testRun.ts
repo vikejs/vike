@@ -20,9 +20,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
   test('page content is rendered to HTML', async () => {
     const html = await fetchHtml('/')
     expect(html).toContain('<h1>Welcome</h1>')
-    // Vue injects: `!--[-->Home<!--]-->`
-    expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
-    expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
+    expectHtmlCommon(html)
   })
 
   test('page is rendered to the DOM and interactive', async () => {
@@ -57,5 +55,15 @@ function testRun(cmd: 'npm run dev' | 'npm run preview' | 'npm run prod') {
     await page.click('a[href="/about"]')
     expect(await page.textContent('h1')).toBe('About')
     expect(await page.textContent('p')).toBe('Example of using VPS.')
+    const html = await fetchHtml('/about')
+    expect(html).toContain('<h1>About</h1>')
+    expectHtmlCommon(html)
   })
+}
+
+function expectHtmlCommon(html: string) {
+  // Vue injects: `!--[-->Home<!--]-->`
+  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}Home${/.*/}</a>`)
+  expect(html).toMatch(partRegex`<a ${/[^\>]+/}>${/.*/}About${/.*/}</a>`)
+  expect(html).toContain('<link rel="stylesheet" type="text/css"')
 }
