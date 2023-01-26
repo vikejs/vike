@@ -25,17 +25,18 @@ import { generateEagerImport } from './generateEagerImport'
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 // TODO: ensure that route file returns a default export being a string or function
 // TODO: create one virtual file per route
+// TODO: if conf isn't file path then assert that it's serialazable
 
 // TODO: remove c_ prefix
-const configDefinitions: Record<
-  string,
-  {
-    c_env: c_Env
-    c_required?: boolean // TODO: apply validation
-    c_global?: boolean // TODO
-    c_code?: boolean
-  }
-> = {
+type ConfigName = string
+type ConfigSpec = {
+  c_env: c_Env
+  c_global?: boolean // TODO: implement
+  c_required?: boolean // TODO: apply validation
+  c_code?: boolean // TODO: remove? Or rename to `type: 'code'`
+  c_validate?: Function
+}
+const configDefinitions: Record<ConfigName, ConfigSpec> = {
   onRenderHtml: {
     c_code: true,
     c_required: true,
@@ -55,7 +56,10 @@ const configDefinitions: Record<
   },
   route: {
     c_code: false,
-    c_env: 'routing'
+    c_env: 'routing',
+    c_validate() {
+      // TODO
+    }
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     c_code: false,
@@ -157,26 +161,24 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, 
     */
 
     const config: PageConfigData['config'] = {}
-    Object.entries(configDefinitions).forEach(([configName, { c_env, c_code }]) => {
-      const result = resolveConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
+    Object.entries(configDefinitions).forEach(([configName, configSpec]) => {
+      const result = resolveConfig(configName, configSpec, pageConfigFile, pageConfigFilesAbstract, userRootDir)
       if (!result) return
-      const { pageConfigValue, pageConfigValueFilePath } = result
-      const configFilePath = pageConfigValueFilePath
-      const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
-      assert(codeFilePath || !c_code)
+      const { c_env } = configSpec
+      const { configValue, codeFilePath, configFilePath } = result
       if (!codeFilePath) {
         config[configName] = {
           configFilePath,
           c_env,
-          configValue: pageConfigValue
+          configValue
         }
       } else {
         assertUsage(
-          typeof pageConfigValue === 'string',
+          typeof configValue === 'string',
           `${getErrorIntro(
             pageConfigFilePath,
             configName
-          )} to a value with a wrong type \`${typeof pageConfigValue}\`: it should be a string instead`
+          )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
         )
         config[configName] = {
           configFilePath,
@@ -260,7 +262,7 @@ function serializePageConfigs(
   return code
 }
 
-function resolveConfigValue(
+function getConfigValue(
   pageConfigName: string,
   pageConfigFile: PageConfigFile,
   pageConfigFilesAbstract: PageConfigFile[]
@@ -274,6 +276,24 @@ function resolveConfigValue(
     }
   }
   return null
+}
+
+function resolveConfig(
+  configName: string,
+  configSpec: ConfigSpec,
+  pageConfigFile: PageConfigFile,
+  pageConfigFilesAbstract: PageConfigFile[],
+  userRootDir: string
+) {
+  const result = getConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
+  if (!result) return null
+  const { pageConfigValue, pageConfigValueFilePath } = result
+  const configValue = pageConfigValue
+  const configFilePath = pageConfigValueFilePath
+  const { c_code } = configSpec
+  const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
+  assert(codeFilePath || !c_code)
+  return { configValue, configFilePath, codeFilePath }
 }
 
 function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
