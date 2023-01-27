@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite build && vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
