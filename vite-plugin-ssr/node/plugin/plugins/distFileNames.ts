@@ -22,21 +22,24 @@ function distFileNames(): Plugin {
     apply: 'build',
     enforce: 'post',
     configResolved(config) {
-      const rollupOutput = getRollupOutput(config)
-      if (!rollupOutput.entryFileNames) {
-        if (!config.build.ssr) {
-          const assetsDir = getAssetsDir(config)
-          rollupOutput.entryFileNames = `${assetsDir}/[name].[hash].js`
-        } else {
-          // We let Vite set the name of server entries
+      const rollupOutputs = getRollupOutputs(config)
+      // We need to support multiple outputs: @vite/plugin-legacy adds an ouput, see https://github.com/brillout/vite-plugin-ssr/issues/477#issuecomment-1406434802
+      rollupOutputs.forEach((rollupOutput) => {
+        if (!rollupOutput.entryFileNames) {
+          if (!config.build.ssr) {
+            const assetsDir = getAssetsDir(config)
+            rollupOutput.entryFileNames = `${assetsDir}/[name].[hash].js`
+          } else {
+            // We let Vite set the name of server entries
+          }
         }
-      }
-      if (!rollupOutput.chunkFileNames) {
-        rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
-      }
-      if (!rollupOutput.assetFileNames) {
-        rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
-      }
+        if (!rollupOutput.chunkFileNames) {
+          rollupOutput.chunkFileNames = (chunkInfo) => getChunkFileName(chunkInfo, config)
+        }
+        if (!rollupOutput.assetFileNames) {
+          rollupOutput.assetFileNames = (chunkInfo) => getAssetFileName(chunkInfo, config)
+        }
+      })
     }
   }
 }
@@ -100,13 +103,15 @@ function getChunkFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig) {
   return `${assetsDir}/[name].[hash].js`
 }
 
-function getRollupOutput(config: ResolvedConfig) {
+function getRollupOutputs(config: ResolvedConfig) {
   // @ts-expect-error is read-only
   config.build ??= {}
   config.build.rollupOptions ??= {}
   config.build.rollupOptions.output ??= {}
   const { output } = config.build.rollupOptions
-  assert(!Array.isArray(output)) // Do we need to support `output` being an `array`?
+  if (!Array.isArray(output)) {
+    return [output]
+  }
   return output
 }
 
