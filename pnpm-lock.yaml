@@ -888,7 +888,7 @@ importers:
       '@brillout/import': ^0.2.1
       '@brillout/json-serializer': ^0.5.3
       '@brillout/part-regex': ^0.1.2
-      '@brillout/release-me': ^0.0.8
+      '@brillout/release-me': ^0.1.1
       '@brillout/vite-plugin-import-build': ^0.1.0
       '@types/jest': ^27.4.1
       '@types/node': 17.0.31
@@ -912,7 +912,7 @@ importers:
       sirv: 2.0.2
     devDependencies:
       '@brillout/part-regex': 0.1.2
-      '@brillout/release-me': 0.0.8
+      '@brillout/release-me': 0.1.1
       '@types/jest': 27.4.1
       '@types/node': 17.0.31
       '@types/resolve': 1.20.2
@@ -1791,6 +1791,18 @@ packages:
       js-yaml: 4.1.0
       picocolors: 1.0.0
       semver: 7.3.7
+    dev: false
+
+  /@brillout/release-me/0.1.1:
+    resolution: {integrity: sha512-zxinHWsqw1rvEnaYFWIZQnQAmtxgFMGtD+IbxObbaHztBWTee0xKDap9aOnihP1umopKXDKk5os46h5gWudDwQ==}
+    hasBin: true
+    dependencies:
+      conventional-changelog: 3.1.25
+      execa: 5.1.1
+      js-yaml: 4.1.0
+      picocolors: 1.0.0
+      semver: 7.3.7
+    dev: true
 
   /@brillout/stem-react/0.1.3_to2m24ssazcvyl3lhiavb27ciu:
     resolution: {integrity: sha512-OAmzO5Tm1dhymXY1W3dlsYAYq6OwlZTXru6vG55RanyHifvGd2lmtPGaYuRnjOShFtF+xdYpqW/BgVsRSxLhpg==}
@@ -4009,7 +4021,7 @@ packages:
     dev: false
 
   /core-util-is/1.0.2:
-    resolution: {integrity: sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=}
+    resolution: {integrity: sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ==}
     dev: true
 
   /core-util-is/1.0.3:
@@ -5637,7 +5649,7 @@ packages:
     dev: false
 
   /is-stream/1.1.0:
-    resolution: {integrity: sha1-EtSj3U5o4Lec6428hBc66A2RykQ=}
+    resolution: {integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -6998,7 +7010,7 @@ packages:
     dev: true
 
   /npm-run-path/2.0.2:
-    resolution: {integrity: sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8=}
+    resolution: {integrity: sha512-lJxZYlT4DW/bRUtFh1MQIWqmLwQfAxnqWG4HhEdjMlkrJYnJn0Jrr2u3mgxqaWsdiBc76TYkTG/mhrnYTuzfHw==}
     engines: {node: '>=4'}
     dependencies:
       path-key: 2.0.1
@@ -7237,7 +7249,7 @@ packages:
     dev: false
 
   /path-key/2.0.1:
-    resolution: {integrity: sha1-QRyttXTFoUDTpLGRDUDYDMn0C0A=}
+    resolution: {integrity: sha512-fEHGKCSmUSDPv4uoj8AlD+joPlq3peND+HRYyxFz4KPw4z926S/b8rIuFs2FYJg3BwsxJf6A9/3eIdLaYC+9Dw==}
     engines: {node: '>=4'}
     dev: false
 
@@ -8115,7 +8127,7 @@ packages:
     dev: false
 
   /shebang-command/1.2.0:
-    resolution: {integrity: sha1-RKrGW2lbAzmJaMOfNj/uXer98eo=}
+    resolution: {integrity: sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg==}
     engines: {node: '>=0.10.0'}
     dependencies:
       shebang-regex: 1.0.0
@@ -8128,7 +8140,7 @@ packages:
       shebang-regex: 3.0.0
 
   /shebang-regex/1.0.0:
-    resolution: {integrity: sha1-2kL0l0DAtC2yypcoVxyxkMmO/qM=}
+    resolution: {integrity: sha512-wpoSFAxys6b2a2wHZ1XpDSgD7N9iVjg29Ph9uV/uaP9Ex/KXlkTZTeddxDPSYQpgvzKLGJke2UU0AzoGCjNIvQ==}
     engines: {node: '>=0.10.0'}
     dev: false
 
@@ -8321,7 +8333,7 @@ packages:
     dev: false
 
   /string-width/1.0.2:
-    resolution: {integrity: sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M=}
+    resolution: {integrity: sha512-0XsVpQLnVCXHJfyEs8tC0zpTVIr5PKKsQtkT29IwupnPTjtPmQ3xT/4yCREF9hYkV/3M3kzcUTSAZT6a6h81tw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       code-point-at: 1.1.0
