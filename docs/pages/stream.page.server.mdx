@@ -170,9 +170,9 @@ async function render(pageContext) {
   const pipe = renderToStreamPipe(Page)
 
   // If `pipe(writable)` expects `writable` to be a Writable Node.js Stream
-  stampPipe(pipe, 'web-stream')
-  // If `pipe(writable)` expects `writable` to be a Writable Web Stream
   stampPipe(pipe, 'node-stream')
+  // If `pipe(writable)` expects `writable` to be a Writable Web Stream
+  stampPipe(pipe, 'web-stream')
 
   return escapeInject`<!DOCTYPE html>
     <html>
