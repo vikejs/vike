@@ -23,6 +23,7 @@ import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../shared
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 import { generateEagerImport } from './generateEagerImport'
+const virtualIdPageConfigCode = 'virtual:vite-plugin-ssr:pageConfigCode:'
 
 let pageConfigsData: null | PageConfigData[] = null
 
@@ -233,6 +234,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
+    lines.push(`    loadCodeFiles: () => import('${virtualIdPageConfigCode}${pageId2}'),`)
     lines.push(`    configSources: {`)
     Object.entries(config).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
@@ -282,9 +284,8 @@ function generateSourceCodeOfPageConfigs(
 }
 
 function generatePageConfigVirtualFile(id: string, isForClientSide: boolean) {
-  const virtualIdPrefix = 'virtual:vite-plugin-ssr:pageConfigCode:'
-  if (!id.startsWith(virtualIdPrefix)) return
-  const pageId = id.slice(virtualIdPrefix.length)
+  if (!id.startsWith(virtualIdPageConfigCode)) return
+  const pageId = id.slice(virtualIdPageConfigCode.length)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)

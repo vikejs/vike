@@ -15,10 +15,10 @@ import {
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { getRealId, getVirtualId } from './generateImportGlobs/virtualIdHandling'
-import { generatePageConfigsSourceCode } from './generateImportGlobs/generatePageConfigsSourceCode'
+import { generatePageConfigsSourceCode, generatePageConfigVirtualFile } from './generateImportGlobs/generatePageConfigsSourceCode'
 import { generateEagerImport } from './generateImportGlobs/generateEagerImport'
 
+// TODO: rename to generateVirtualFiles()
 function generateImportGlobs(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
@@ -37,8 +37,9 @@ function generateImportGlobs(): Plugin {
       config = config_
     },
     resolveId(id) {
-      const idVirtual = getVirtualId(id)
-      return idVirtual
+      if (id.startsWith('virtual:vite-plugin-ssr:')) {
+        return '\0' + id
+      }
     },
     /* TODO: remove
     configureServer(server) {
@@ -49,9 +50,19 @@ function generateImportGlobs(): Plugin {
       })
     },
     */
-    async load(idVirtual, options) {
-      const id = getRealId(idVirtual)
-      if (!id) return undefined
+    async load(id, options) {
+      if (id.startsWith('\0virtual:vite-plugin-ssr:')) {
+        id = id.slice('\0'.length)
+      } else {
+        return undefined
+      }
+
+      /*
+      {
+        const code = generatePageConfigVirtualFile(id)
+      }
+      */
+
       assert(
         // prettier-ignore
         [
