@@ -15,7 +15,10 @@ import {
 } from './generateImportGlobs/virtualModuleIdPageFiles'
 import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import { generatePageConfigsSourceCode, generatePageConfigVirtualFile } from './generateImportGlobs/generatePageConfigsSourceCode'
+import {
+  generatePageConfigsSourceCode,
+  generatePageConfigVirtualFile
+} from './generateImportGlobs/generatePageConfigsSourceCode'
 import { generateEagerImport } from './generateImportGlobs/generateEagerImport'
 
 // TODO: rename to generateVirtualFiles()
@@ -57,31 +60,41 @@ function generateImportGlobs(): Plugin {
         return undefined
       }
 
-      /*
       {
-        const code = generatePageConfigVirtualFile(id)
+        const code = generatePageConfigVirtualFile(id, !options?.ssr)
+        if (code) return code
       }
-      */
 
-      assert(
-        // prettier-ignore
-        [
-          virtualModuleIdPageFilesServer,
-          virtualModuleIdPageFilesClientCR,
-          virtualModuleIdPageFilesClientSR
-        ].includes(id)
-      )
-      const isForClientSide = id !== virtualModuleIdPageFilesServer
-      assert(isForClientSide === !viteIsSSR_options(options))
-      const isClientRouting = id === virtualModuleIdPageFilesClientCR
-      const isPrerendering = !!configVps.prerender
-      const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev)
+      const code = await generatePageFilesVirtualFile(id, options, configVps, config, isDev)
       return code
     },
     configureServer() {
       isDev = true
     }
   }
+}
+
+async function generatePageFilesVirtualFile(
+  id: string,
+  options: { ssr?: boolean } | undefined,
+  configVps: ConfigVpsResolved,
+  config: ResolvedConfig,
+  isDev: boolean
+) {
+  assert(
+    // prettier-ignore
+    [
+          virtualModuleIdPageFilesServer,
+          virtualModuleIdPageFilesClientCR,
+          virtualModuleIdPageFilesClientSR
+        ].includes(id)
+  )
+  const isForClientSide = id !== virtualModuleIdPageFilesServer
+  assert(isForClientSide === !viteIsSSR_options(options))
+  const isClientRouting = id === virtualModuleIdPageFilesClientCR
+  const isPrerendering = !!configVps.prerender
+  const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering, isDev)
+  return code
 }
 
 async function getCode(
