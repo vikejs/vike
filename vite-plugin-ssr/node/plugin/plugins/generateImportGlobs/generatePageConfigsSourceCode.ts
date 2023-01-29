@@ -13,17 +13,17 @@ import {
   toPosixPath,
   assertWarning,
   addFileExtensionsToRequireResolve,
-  isCallable
+  isCallable,
+  assertDefaultExport
 } from '../../utils'
 import path from 'path'
 
-import type { c_Env, PageConfig2, PageConfigData, PageConfigGlobal } from '../../../../shared/page-configs/PageConfig'
+import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../shared/page-configs/PageConfig'
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 import { generateEagerImport } from './generateEagerImport'
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
-// TODO: ensure that route file returns a default export being a string or function
 // TODO: create one virtual file per route
 // TODO: if conf isn't file path then assert that it's serialazable
 
@@ -34,7 +34,11 @@ type ConfigSpec = {
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
   c_code?: boolean // TODO: remove? Or rename to `type: 'code'`
-  c_validate?: Function
+  c_validate?: (
+    configResolved: ({ configValue: unknown } | { configValue: string; codeFilePath: string }) & {
+      configFilePath: string
+    }
+  ) => void | undefined
 }
 const configDefinitions: Record<ConfigName, ConfigSpec> = {
   onRenderHtml: {
@@ -57,8 +61,28 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   route: {
     c_code: false,
     c_env: 'routing',
-    c_validate() {
-      // TODO
+    c_validate(configResolved) {
+      const { configFilePath, configValue } = configResolved
+      if ('codeFilePath' in configResolved) return
+      if (typeof configValue === 'string') {
+        assertRouteString(configValue, `${configFilePath} defines an`)
+      } else {
+        if (isCallable(configValue)) {
+          const routeFunctionName = configValue.name || 'myRouteFunction'
+          // TODO/v1: point to https://vite-plugin-ssr.com/route-function
+          // TODO: write https://vite-plugin-ssr.com/v1-design
+          assertUsage(
+            false,
+            `${configFilePath} sets a Route Function directly \`route: function ${routeFunctionName}() { /* ... */ }\` which is forbidden: instead define a file \`route: './path/to/route-file.js'\` that exports your Route Function \`export default ${routeFunctionName}() { /* ... */ }\`. See https://vite-plugin-ssr.com/v1-design for more information.`
+          )
+        }
+        // TODO/v1: point to https://vite-plugin-ssr.com/routing#route-strings-route-functions
+        // TODO: write https://vite-plugin-ssr.com/v1-design
+        assertUsage(
+          false,
+          `${configFilePath} sets the configuration 'route' to a value with an invalid type \`${typeof configValue}\`: the value should be a string (a Route String or the path of a route file exporting a Route Function). See https://vite-plugin-ssr.com/v1-design for more information.`
+        )
+      }
     }
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
@@ -133,11 +157,11 @@ async function getCode(userRootDir: string, isForClientSide: boolean): Promise<s
     return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
   }
   const { pageConfigFiles } = result
-  const { pageConfigs, pageConfigGlobal } = getPageConfigs(pageConfigFiles, userRootDir, isForClientSide)
+  const { pageConfigs, pageConfigGlobal } = getPageConfigs(pageConfigFiles, userRootDir)
   return serializePageConfigs(pageConfigs, pageConfigGlobal, isForClientSide)
 }
 
-function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, isForClientSide: boolean) {
+function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigs: PageConfigData[] = []
 
@@ -145,20 +169,9 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string, 
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
   pageConfigFilesConcrete.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
-    const pageConfigValues = getPageConfigValues(pageConfigFile)
     const pageId2 = determinePageId2(pageConfigFilePath)
 
     const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
-    /* TODO
-    const route: unknown = pageConfigValues.route || 
-    assertUsage(
-      typeof route === 'string' || isCallable(route),
-      `${pageConfigFilePath} sets the config route to a value with an invalid type \`${typeof route}\`: the route value should be either a string or a function`
-    )
-    if (typeof route === 'string') {
-      assertRouteString(route, `${pageConfigFilePath} defines an`)
-    }
-    */
 
     const config: PageConfigData['config'] = {}
     Object.entries(configDefinitions).forEach(([configName, configSpec]) => {
@@ -233,6 +246,7 @@ function serializePageConfigs(
           }
         } else {
           const { importVar, importStatement } = generateEagerImport(codeFilePath)
+          // TODO: expose all exports so that assertDefaultExport() can be applied
           lines.push(`        configValue: ${importVar}.default`)
           importStatements.push(importStatement)
         }
@@ -290,24 +304,24 @@ function resolveConfig(
   const { pageConfigValue, pageConfigValueFilePath } = result
   const configValue = pageConfigValue
   const configFilePath = pageConfigValueFilePath
-  const { c_code } = configSpec
+  const { c_code, c_validate } = configSpec
   const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
-  assert(codeFilePath || !c_code)
+  assert(codeFilePath || !c_code) // TODO: assertUsage() or remove
+  if (c_validate) {
+    const commonArgs = { configFilePath }
+    if (codeFilePath) {
+      assert(typeof configValue === 'string')
+      c_validate({ configValue, codeFilePath, ...commonArgs })
+    } else {
+      c_validate({ configValue, ...commonArgs })
+    }
+  }
   return { configValue, configFilePath, codeFilePath }
 }
 
 function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unknown> {
   const { pageConfigFilePath, pageConfigFileExports } = pageConfigFile
-  {
-    const invalidExports = Object.keys(pageConfigFileExports).filter((e) => e !== 'default')
-    const invalidExportsStr = invalidExports.join(', ')
-    const verb = invalidExports.length === 1 ? 'is' : 'are'
-    assertUsage(
-      invalidExports.length === 0,
-      `${pageConfigFilePath} has \`export { ${invalidExportsStr} }\` which ${verb} forbidden: it should have a single \`export default\` instead`
-    )
-  }
-  assertUsage('default' in pageConfigFileExports, `${pageConfigFilePath} should have a \`export default\``)
+  assertDefaultExport(pageConfigFileExports, pageConfigFilePath)
   const pageConfigValues = pageConfigFileExports.default
   assertUsage(
     isObject(pageConfigValues),
@@ -356,7 +370,7 @@ function getCodeFilePath(
   codeFilePath = toPosixPath(codeFilePath)
 
   if (!enforce && !fileExists) return null
-  assertConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
+  assertCodeFilePathConfigValue(configValue, pageConfigFilePath, codeFilePath, fileExists, configName)
 
   // Make relative to userRootDir
   codeFilePath = getVitePathFromAbsolutePath(codeFilePath, userRootDir)
@@ -367,7 +381,7 @@ function getCodeFilePath(
   return codeFilePath
 }
 
-function assertConfigValue(
+function assertCodeFilePathConfigValue(
   configValue: string,
   pageConfigFilePath: string,
   codeFilePath: string,
