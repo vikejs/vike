@@ -1,4 +1,5 @@
 export { generatePageConfigsSourceCode }
+export { generatePageConfigVirtualFile }
 
 import {
   determinePageId2,
@@ -22,6 +23,8 @@ import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../shared
 import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 import { generateEagerImport } from './generateEagerImport'
+
+let pageConfigsData: null | PageConfigData[] = null
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 // TODO: create one virtual file per route
@@ -152,18 +155,20 @@ async function generatePageConfigsSourceCode(
 }
 
 async function getCode(userRootDir: string, isForClientSide: boolean): Promise<string> {
-  const result = await loadPageConfigFiles(userRootDir)
-  if ('hasError' in result) {
+  const result1 = await loadPageConfigFiles(userRootDir)
+  if ('hasError' in result1) {
     return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
   }
-  const { pageConfigFiles } = result
-  const { pageConfigs, pageConfigGlobal } = getPageConfigs(pageConfigFiles, userRootDir)
-  return serializePageConfigs(pageConfigs, pageConfigGlobal, isForClientSide)
+  const { pageConfigFiles } = result1
+  const result2 = getPageConfigsData(pageConfigFiles, userRootDir)
+  pageConfigsData = result2.pageConfigsData
+  const { pageConfigGlobal } = result2
+  return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide)
 }
 
-function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string) {
+function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}
-  const pageConfigs: PageConfigData[] = []
+  const pageConfigsData: PageConfigData[] = []
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
@@ -201,7 +206,7 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string) 
       }
     })
 
-    pageConfigs.push({
+    pageConfigsData.push({
       pageConfigFilePath,
       pageId2,
       routeFilesystem,
@@ -209,11 +214,11 @@ function getPageConfigs(pageConfigFiles: PageConfigFile[], userRootDir: string) 
     })
   })
 
-  return { pageConfigs, pageConfigGlobal }
+  return { pageConfigsData, pageConfigGlobal }
 }
 
-function serializePageConfigs(
-  pageConfigs: PageConfigData[],
+function generateSourceCodeOfPageConfigs(
+  pageConfigsData: PageConfigData[],
   pageConfigGlobal: PageConfigGlobal,
   isForClientSide: boolean
 ): string {
@@ -221,7 +226,7 @@ function serializePageConfigs(
   const importStatements: string[] = []
 
   lines.push('export const pageConfigs = [];')
-  pageConfigs.forEach((pageConfig, i) => {
+  pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePath, pageId2, routeFilesystem, config } = pageConfig
     const pageConfigVar = `pageConfig${i + 1}`
     lines.push(`{`)
@@ -272,6 +277,34 @@ function serializePageConfigs(
   })
   lines.push('};')
 
+  const code = [...importStatements, ...lines].join('\n')
+  return code
+}
+
+function generatePageConfigVirtualFile(id: string, isForClientSide: boolean) {
+  const virtualIdPrefix = 'virtual:vite-plugin-ssr:pageConfigCode:'
+  if (!id.startsWith(virtualIdPrefix)) return
+  const pageId = id.slice(virtualIdPrefix.length)
+  assert(pageConfigsData)
+  const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
+  assert(pageConfigData)
+  return generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide)
+}
+
+function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigData, isForClientSide: boolean): string {
+  const lines: string[] = []
+  const importStatements: string[] = []
+  lines.push('export default {')
+  let varCounter = 0
+  Object.entries(pageConfigData.config).forEach(([configName, configSource]) => {
+    if (!('codeFilePath' in configSource)) return
+    const { c_env, codeFilePath } = configSource
+    if (c_env === (isForClientSide ? 'server-only' : 'client-only')) return
+    const { importVar, importStatement } = generateEagerImport(codeFilePath, varCounter++)
+    importStatements.push(importStatement)
+    lines.push(`  ['${configName}']: ${importVar},`)
+  })
+  lines.push('};')
   const code = [...importStatements, ...lines].join('\n')
   return code
 }
