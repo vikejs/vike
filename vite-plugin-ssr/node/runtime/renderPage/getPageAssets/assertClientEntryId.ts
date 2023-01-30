@@ -10,6 +10,6 @@ function assertClientEntryId(id: string) {
   assert(id.startsWith('@@vite-plugin-ssr/') || id.startsWith('/') || isPkg, id)
   if (isPkg) {
     const { configVps } = getGlobalContext()
-    assert(configVps === null || configVps.extensions.some(({ npmPackageName }) => id))
+    assert(configVps === null || configVps.extensions.some(({ npmPackageName }) => id.startsWith(npmPackageName)), id)
   }
 }
