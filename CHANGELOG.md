@@ -1,3 +1,16 @@
+## [0.4.72](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.71...v0.4.72) (2023-01-30)
+
+
+### Bug Fixes
+
+* don't log RenderErrorPage ([8b7afc4](https://github.com/brillout/vite-plugin-ssr/commit/8b7afc4037c4e45f09c2044dd977f604317d54ec))
+* improve Vite dev server logging ([e588487](https://github.com/brillout/vite-plugin-ssr/commit/e5884873c646bf7d7ccbb6c14f5ba6e249a78706))
+* set pageContext.errorWhileRendering to original error ([d58e024](https://github.com/brillout/vite-plugin-ssr/commit/d58e0241feb63879a925495a8b8a5c3f8109bbbd))
+* support multiple Rollup output entries ([#477](https://github.com/brillout/vite-plugin-ssr/issues/477)) ([65a1053](https://github.com/brillout/vite-plugin-ssr/commit/65a105315addc89587c0fa40557df7657e3d39e2))
+* update vite-plugin-import-build (fix [#612](https://github.com/brillout/vite-plugin-ssr/issues/612)) ([72999ef](https://github.com/brillout/vite-plugin-ssr/commit/72999ef9b1eeac70fb37041be3255adcc58715bc))
+
+
+
 ## [0.4.71](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.70...v0.4.71) (2023-01-20)
 
 
