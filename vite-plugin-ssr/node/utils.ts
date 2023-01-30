@@ -3,6 +3,10 @@
 // DON'T include `util/*` that used only by the client-side.
 // DON'T include `plugin/helpers/*` which are used only by vite-plugin-ssr's Vite plugin. (The Vite plugin code is only loaded/needed in dev and while building; it is not and should be a server-side runtime requirement.)
 
+/* Track down log origins
+import '../utils/trackLogs'
+//*/
+
 export * from '../utils/assert'
 export * from '../utils/cast'
 export * from '../utils/checkType'

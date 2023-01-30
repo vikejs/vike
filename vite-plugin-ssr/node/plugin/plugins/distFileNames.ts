@@ -45,7 +45,7 @@ function distFileNames(): Plugin {
 }
 
 const BLACK_LIST: string[] = [
-  /* There use to exist a file client/assertRenderHook.ts
+  /* There used to exist a file client/assertRenderHook.ts
    * We need to check whether we still need such black list for Rollup 4
   'assertRenderHook.css'
   */
