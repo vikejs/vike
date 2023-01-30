@@ -84,10 +84,10 @@ async function generatePageFilesVirtualFile(
   assert(
     // prettier-ignore
     [
-          virtualModuleIdPageFilesServer,
-          virtualModuleIdPageFilesClientCR,
-          virtualModuleIdPageFilesClientSR
-        ].includes(id)
+      virtualModuleIdPageFilesServer,
+      virtualModuleIdPageFilesClientCR,
+      virtualModuleIdPageFilesClientSR
+    ].includes(id)
   )
   const isForClientSide = id !== virtualModuleIdPageFilesServer
   assert(isForClientSide === !viteIsSSR_options(options))

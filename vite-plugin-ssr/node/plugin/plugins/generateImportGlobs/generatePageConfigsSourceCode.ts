@@ -230,11 +230,13 @@ function generateSourceCodeOfPageConfigs(
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePath, pageId2, routeFilesystem, config } = pageConfig
     const pageConfigVar = `pageConfig${i + 1}`
+    const codeFilesImporter = `${virtualIdPageConfigCode}${pageId2}`
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
-    lines.push(`    loadCodeFiles: async () => (await import('${virtualIdPageConfigCode}${pageId2}')).default,`)
+    lines.push(`    codeFilesImporter: '${codeFilesImporter}',`)
+    lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
     Object.entries(config).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
@@ -247,11 +249,7 @@ function generateSourceCodeOfPageConfigs(
       } else if (configSource.codeFilePath) {
         const { codeFilePath, c_env } = configSource
         lines.push(`        codeFilePath: '${codeFilePath}',`)
-        if (c_env !== 'routing') {
-          if (c_env !== (isForClientSide ? 'server-only' : 'client-only')) {
-            lines.push(`        loadCode: () => import('${codeFilePath}')`)
-          }
-        } else {
+        if (c_env === 'routing') {
           const { importVar, importStatement } = generateEagerImport(codeFilePath)
           // TODO: expose all exports so that assertDefaultExport() can be applied
           lines.push(`        configValue: ${importVar}.default`)

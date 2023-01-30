@@ -11,7 +11,7 @@ function getManifestEntry(
 ): { manifestKey: string; manifestEntry: ViteManifestEntry } {
   assertClientEntryId(id)
 
-  // For vite-plugin-ssr client entry
+  // VPS client entry
   if (id.startsWith('@@vite-plugin-ssr/')) {
     const manifestKeyEnd = slice(id, '@@vite-plugin-ssr'.length, 0)
     const { manifestKey, manifestEntry } = findEntryWithKeyEnd(manifestKeyEnd, clientManifest, id)
@@ -19,7 +19,15 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // For user files
+  // Code files importer
+  if (id.startsWith('virtual:vite-plugin-ssr:')) {
+    const manifestKey = id
+    let manifestEntry = clientManifest[manifestKey]
+    assert(manifestEntry, id)
+    return { manifestEntry, manifestKey }
+  }
+
+  // User files
   if (id.startsWith('/')) {
     const manifestKey = id.slice(1)
     let manifestEntry = clientManifest[manifestKey]
@@ -27,7 +35,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // For extensions[number].pageFilesDist
+  // extensions[number].pageFilesDist
   if (isNpmPackageModule(id)) {
     const manifestKey = manifestKeyMap[id]
     assert(manifestKey, id)
@@ -36,7 +44,7 @@ function getManifestEntry(
     return { manifestEntry, manifestKey }
   }
 
-  // For extensions[number].pageFilesSrc
+  // extensions[number].pageFilesSrc
   if (id.startsWith('/node_modules/') || id.startsWith('/../')) {
     let manifestKeyEnd = id.split('/node_modules/').slice(-1)[0]
     assert(manifestKeyEnd, id)

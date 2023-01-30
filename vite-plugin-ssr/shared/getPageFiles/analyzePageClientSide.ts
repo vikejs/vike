@@ -21,15 +21,24 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | Page
     const clientDependencies: ClientDependency[] = []
     assert(pageConfig.configSources.onRenderHtml)
     assert(pageConfig.configSources.onRenderClient)
+    clientDependencies.push({
+      id: pageConfig.codeFilesImporter,
+      onlyAssets: false,
+      eagerlyImported: false
+    })
     Object.values(pageConfig.configSources).forEach((configSource) => {
       if (configSource.codeFilePath) {
         const { c_env } = configSource
         assert(c_env)
-        clientDependencies.push({
-          id: configSource.codeFilePath,
-          onlyAssets: c_env === 'server-only',
-          eagerlyImported: c_env === 'routing'
-        })
+        const onlyAssets = c_env === 'server-only'
+        const eagerlyImported = c_env === 'routing'
+        if (onlyAssets || eagerlyImported) {
+          clientDependencies.push({
+            id: configSource.codeFilePath,
+            onlyAssets,
+            eagerlyImported
+          })
+        }
       }
     })
     clientDependencies.push({
