@@ -1,3 +1,12 @@
+## [0.4.73](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.72...v0.4.73) (2023-01-30)
+
+
+### Bug Fixes
+
+* simplify and correct status code for onRenderResult (fix [#619](https://github.com/brillout/vite-plugin-ssr/issues/619)) ([e0b2f20](https://github.com/brillout/vite-plugin-ssr/commit/e0b2f20015d350af91e0e8ed9c44db85d9731c8c))
+
+
+
 ## [0.4.72](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.71...v0.4.72) (2023-01-30)
 
 
