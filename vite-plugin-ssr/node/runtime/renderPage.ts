@@ -13,6 +13,7 @@ import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
 import { log404 } from './renderPage/log404'
+import { executeOnRenderResult } from './renderPage/onRenderResult'
 
 // `renderPage()` calls `renderPageAttempt()` while ensuring that errors are `console.error(err)` instead of `throw err`, so that `vite-plugin-ssr` never triggers a server shut down. (Throwing an error in an Express.js middleware shuts down the whole Express.js server.)
 async function renderPage<
@@ -66,39 +67,43 @@ async function renderPage<
   }
 
   const errorPageIsMissing = !getErrorPageId(renderContext.allPageIds)
-  const is404: boolean = !!pageContextOriginal && 'is404' in pageContextOriginal && pageContextOriginal.is404 === true
-  const isSkipped: boolean = !!pageContextOriginal && '_skippedRendering' in pageContextOriginal
-  // We need to determine the status code early for the onRenderResult() hook
-  const statusCode = (() => {
-    if (isSkipped) return null
-    // We cannot determine the status code early for errors (see comment below)
-    if (errOriginal) return null
-    if (is404) return errorPageIsMissing ? null : 404
-    return 200
-  })()
-  if (!isSkipped) {
-    const onRenderResult = (pageContextInit as Record<string, unknown>)._onRenderResult as undefined | Function
-    const isError: boolean = !!errOriginal || is404
-    onRenderResult?.(isError, statusCode)
-  }
 
   if (errOriginal === undefined) {
     assert(pageContextOriginal)
-    if (is404) {
+    const statusCode = pageContextOriginal.httpResponse?.statusCode ?? null
+    if (!!pageContextOriginal && 'is404' in pageContextOriginal && pageContextOriginal.is404 === true) {
+      assert(
+        statusCode === 404 ||
+          // No HTTP response if user didn't define an error page
+          statusCode === null
+      )
+      // We call onRenderResult() before any log/warning
+      executeOnRenderResult(pageContextInit, true, statusCode)
       if (errorPageIsMissing) {
         assert(pageContextOriginal.httpResponse === null)
         warnMissingErrorPage()
       }
-      assert('is404' in pageContextOriginal)
       log404(pageContextOriginal)
+    } else {
+      if (pageContextOriginal.httpResponse) {
+        assert(statusCode === 200)
+        executeOnRenderResult(pageContextInit, false, statusCode)
+      } else {
+        // Don't call onRenderResult() hook if rendering was skipped (e.g. /favicon.ico HTTP requests, or HTTP requests that don't match the Base URL)
+      }
     }
-    assert((pageContextOriginal.httpResponse?.statusCode ?? null) === statusCode)
     return pageContextOriginal
   } else {
     assert(errOriginal)
     assert(pageContextOriginal === undefined)
     assert(pageContextOriginalPartial)
-    assert(statusCode === null) // We can't determine the status code before actually trying to render the error page (it can be either `null` or `500`)
+    // We call onRenderResult() before any log/warning
+    executeOnRenderResult(
+      pageContextInit,
+      true,
+      // We can't determine the status code before actually trying to render the error page (it can be either `null` or `500`)
+      null
+    )
     if (errorPageIsMissing) {
       warnMissingErrorPage()
     }
@@ -150,7 +155,7 @@ async function renderPageAttempt<PageContextInit extends { urlOriginal: string }
     const { urlOriginal } = pageContextInit
     if (urlOriginal.endsWith('/__vite_ping') || urlOriginal.endsWith('/favicon.ico') || !isParsable(urlOriginal)) {
       objectAssign(pageContext, pageContextInit)
-      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null, _skippedRendering: true })
+      objectAssign(pageContext, { httpResponse: null, errorWhileRendering: null })
       return pageContext
     }
   }

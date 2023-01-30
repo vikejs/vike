@@ -4,6 +4,7 @@ import { renderPage } from '../runtime/renderPage'
 import type { ViteDevServer } from 'vite'
 import pc from 'picocolors'
 import { assert, projectInfo } from '../utils'
+import type { OnRenderResult } from '../runtime/renderPage/onRenderResult'
 
 type ConnectServer = ViteDevServer['middlewares']
 let isErrorPrevious: undefined | boolean
@@ -14,12 +15,13 @@ function addSsrMiddleware(middlewares: ConnectServer, viteDevServer: null | Vite
     const url = req.originalUrl || req.url
     if (!url) return next()
     const userAgent = req.headers['user-agent']
+    const onRenderResult: OnRenderResult = (isError, statusCode) => {
+      onRenderResultCallback(isError, statusCode, url, viteDevServer)
+    }
     const pageContextInit = {
       urlOriginal: url,
       userAgent,
-      _onRenderResult(isError: unknown, statusCode: unknown) {
-        onRenderResult(isError, statusCode, url, viteDevServer)
-      }
+      _onRenderResult: onRenderResult
     }
     let pageContext: Awaited<ReturnType<typeof renderPage>>
     try {
@@ -41,7 +43,12 @@ function addSsrMiddleware(middlewares: ConnectServer, viteDevServer: null | Vite
   })
 }
 
-function onRenderResult(isError: unknown, statusCode: unknown, url: string, viteDevServer: null | ViteDevServer): void {
+function onRenderResultCallback(
+  isError: boolean,
+  statusCode: 200 | 404 | null,
+  url: string,
+  viteDevServer: null | ViteDevServer
+) {
   if (!viteDevServer) return
   assert(typeof isError === 'boolean')
   assert(statusCode === null || statusCode === 200 || statusCode === 404)
