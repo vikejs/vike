@@ -30,6 +30,7 @@ let pageConfigsData: null | PageConfigData[] = null
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 // TODO: create one virtual file per route
 // TODO: if conf isn't file path then assert that it's serialazable
+// TODO: use Math.random() instead of timestamp in built file + think why I had concurrent issues
 
 // TODO: remove c_ prefix
 type ConfigName = string
