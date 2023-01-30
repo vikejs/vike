@@ -190,7 +190,7 @@ export { onBeforeRender }
 
 import { RenderErrorPage } from 'vite-plugin-ssr'
 
-function onBeforeRender(pageContext) {
+async function onBeforeRender(pageContext) {
   const { userId } = pageContext.routeParams
 
   const user = await db.fetchUser(userId)
