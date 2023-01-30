@@ -36,7 +36,6 @@ type PageConfig1 = {
   route: string | Function
   pageConfigFilePath: string
   config: Record<ConfigName, ConfigSource1>
-  loadCodeFiles: () => Promise<{ codeFilePath: string, codeFileExports: Record<string, unknown>[] }>
 }
 type ConfigResolved1 = Omit<ConfigSource1, 'loadCode' | 'configValue'> & { configValue: unknown }
 type PageConfig1Loaded = Omit<PageConfig1, 'config'> & { config: Record<ConfigName, ConfigResolved1> }
@@ -59,12 +58,15 @@ type PageConfigData = {
   >
 }
 
+type CodeFile = { configName: string; codeFilePath: string; codeFileExports: Record<string, unknown> }
+
 // TODO: use PageConfig1 instead
 type PageConfig2 = {
   pageId2: string // TODO: rename
   route: string | Function
   pageConfigFilePath: string
   configSources: Record<ConfigName, ConfigSource> // TODO: rename?
+  loadCodeFiles: () => Promise<CodeFile[]>
 }
 
 type PageConfigLoaded = PageConfig2 & {

@@ -234,7 +234,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
-    lines.push(`    loadCodeFiles: () => import('${virtualIdPageConfigCode}${pageId2}'),`)
+    lines.push(`    loadCodeFiles: async () => (await import('${virtualIdPageConfigCode}${pageId2}')).default,`)
     lines.push(`    configSources: {`)
     Object.entries(config).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
@@ -295,7 +295,7 @@ function generatePageConfigVirtualFile(id: string, isForClientSide: boolean) {
 function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigData, isForClientSide: boolean): string {
   const lines: string[] = []
   const importStatements: string[] = []
-  lines.push('export default {')
+  lines.push('export default [')
   let varCounter = 0
   Object.entries(pageConfigData.config).forEach(([configName, configSource]) => {
     if (!('codeFilePath' in configSource)) return
@@ -303,9 +303,13 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
     if (c_env === (isForClientSide ? 'server-only' : 'client-only')) return
     const { importVar, importStatement } = generateEagerImport(codeFilePath, varCounter++)
     importStatements.push(importStatement)
-    lines.push(`  ['${configName}']: ${importVar},`)
+    lines.push(`  {`)
+    lines.push(`    configName: '${configName}',`)
+    lines.push(`    codeFilePath: '${codeFilePath}',`)
+    lines.push(`    codeFileExports: ${importVar}`)
+    lines.push(`  },`)
   })
-  lines.push('};')
+  lines.push('];')
   const code = [...importStatements, ...lines].join('\n')
   return code
 }

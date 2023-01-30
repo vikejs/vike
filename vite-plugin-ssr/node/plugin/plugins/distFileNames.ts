@@ -81,6 +81,12 @@ function getChunkFileName(chunkInfo: PreRenderedChunk, config: ResolvedConfig) {
 
   const id = chunkInfo.facadeModuleId
 
+  /* TODO: remove
+  if (chunkInfo.isDynamicEntry || chunkInfo.isEntry) {
+    return `${assetsDir}/[name].[hash].js`
+  }
+  */
+
   if (id) {
     assertPosixPath(id)
   }
