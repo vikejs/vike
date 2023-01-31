@@ -7,7 +7,9 @@ import { import_ } from '@brillout/import'
 import { assertPosixPath } from './filesystemPathHandling'
 import { getRandomId } from './getRandomId'
 
-async function transpileAndLoadScriptFile(scriptFile: string): Promise<{ exports: Record<string, unknown> } | { err: unknown }> {
+async function transpileAndLoadScriptFile(
+  scriptFile: string
+): Promise<{ exports: Record<string, unknown> } | { err: unknown }> {
   assertPosixPath(scriptFile)
   const buildResult = await build(scriptFile)
   if ('err' in buildResult) {
@@ -23,18 +25,7 @@ async function transpileAndLoadScriptFile(scriptFile: string): Promise<{ exports
   } catch (err) {
     return { err }
   } finally {
-    if (process.platform !== 'win32') {
-      clean()
-    } else {
-      try {
-        clean()
-      } catch {
-        // Swallow following error in GitHub Actions, which seems to happen only on Windows (and only in GitHub Actions?).
-        // ```
-        // Error: ENOENT: no such file or directory, unlink 'D:/a/vite-plugin-ssr/vite-plugin-ssr/examples/v1/pages/+config-build_timestamp-1674554369906.mjs'
-        // ```
-      }
-    }
+    clean()
   }
   // Return a plain JavaScript object
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
