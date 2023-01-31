@@ -4,7 +4,7 @@ export { generatePageConfigVirtualFile }
 import {
   determinePageId2,
   determineRouteFromFilesystemPath
-} from '../../../../shared/route/deduceRouteStringFromFilesystemPath'
+} from '../../../../../shared/route/deduceRouteStringFromFilesystemPath'
 import {
   assertPosixPath,
   assert,
@@ -16,13 +16,13 @@ import {
   addFileExtensionsToRequireResolve,
   isCallable,
   assertDefaultExport
-} from '../../utils'
+} from '../../../utils'
 import path from 'path'
 
-import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../shared/page-configs/PageConfig'
-import { assertRouteString } from '../../../../shared/route/resolveRouteString'
-import { generateEagerImport } from './generateEagerImport'
-import { loadPageConfigFiles, type PageConfigFile } from './generatePageConfigsSourceCode/loadPageConfigFiles'
+import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
+import { assertRouteString } from '../../../../../shared/route/resolveRouteString'
+import { generateEagerImport } from '../generateEagerImport'
+import { loadPageConfigFiles, type PageConfigFile } from './loadPageConfigFiles'
 const virtualIdPageConfigCode = 'virtual:vite-plugin-ssr:pageConfigCode:'
 
 let pageConfigsData: null | PageConfigData[] = null
