@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { import_ } from '@brillout/import'
 import { assertPosixPath } from '../utils'
+import { getRandomId } from '../../utils/getRandomId'
 
 async function loadScript(scriptFile: string): Promise<{ exports: Record<string, unknown> } | { err: unknown }> {
   assertPosixPath(scriptFile)
@@ -47,7 +48,7 @@ function getFilePathTmp(filePath: string): string {
   const dirname = path.posix.dirname(filePath)
   const filename = path.posix.basename(filePath)
   const filenameBase = filename.split('.')[0]
-  const filePathTmp = path.posix.join(dirname, `${filenameBase}-build_timestamp-${Date.now()}.mjs`)
+  const filePathTmp = path.posix.join(dirname, `${filenameBase}-build:${getRandomId(12)}.mjs`)
   return filePathTmp
 }
 
