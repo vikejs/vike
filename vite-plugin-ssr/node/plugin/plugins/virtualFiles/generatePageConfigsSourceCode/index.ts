@@ -176,8 +176,11 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
       }
     })
 
+    const codeFilesImporter = `${virtualIdPageConfigCode}${pageId2}`
+
     pageConfigsData.push({
       pageConfigFilePath,
+      codeFilesImporter,
       pageId2,
       routeFilesystem,
       configSources
@@ -197,9 +200,8 @@ function generateSourceCodeOfPageConfigs(
 
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePath, pageId2, routeFilesystem, configSources } = pageConfig
+    const { pageConfigFilePath, pageId2, routeFilesystem, configSources, codeFilesImporter } = pageConfig
     const pageConfigVar = `pageConfig${i + 1}`
-    const codeFilesImporter = `${virtualIdPageConfigCode}${pageId2}`
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)

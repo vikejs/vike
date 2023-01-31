@@ -22,24 +22,12 @@ type ConfigSource = {
       c_env: c_Env
     }
 )
-type ConfigSource1 = {
-  configFilePath: string
-  codeFilePath?: string
-  configValue?: unknown
-}
 
 type PageConfigGlobal = Record<ConfigName, ConfigResolved>
-type PageConfig1 = {
-  pageId2: string
-  route: string | Function
-  pageConfigFilePath: string
-  config: Record<ConfigName, ConfigSource1>
-}
-type ConfigResolved1 = Omit<ConfigSource1, 'configValue'> & { configValue: unknown }
-type PageConfig1Loaded = Omit<PageConfig1, 'config'> & { config: Record<ConfigName, ConfigResolved1> }
 
 type PageConfigData = {
   pageId2: string
+  codeFilesImporter: string
   routeFilesystem: null | string
   pageConfigFilePath: string
   configSources: Record<
