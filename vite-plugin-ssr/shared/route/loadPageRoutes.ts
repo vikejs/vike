@@ -52,7 +52,6 @@ function getPageRoutes(
         const routeConfig = pageConfig.configSources.route
         if (routeConfig) {
           assert('configValue' in routeConfig) // Route files are eagerly loaded
-          assert(routeConfig.configValue === pageConfig.route)
           const route = routeConfig.configValue
           const pageRouteFilePath: string = routeConfig.codeFilePath || routeConfig.configFilePath
           assert(pageRouteFilePath)
@@ -81,14 +80,14 @@ function getPageRoutes(
       }
 
       if (!pageRoute) {
-        const { route, pageConfigFilePath } = pageConfig
+        const { routeFilesystem, pageConfigFilePath } = pageConfig
         assert(pageConfigFilePath)
-        assert(typeof route === 'string')
+        assert(typeof routeFilesystem === 'string')
         pageRoute = {
           pageId,
           pageConfigFilePath,
           comesFromV1PageConfig,
-          routeString: route,
+          routeString: routeFilesystem,
           pageRouteFilePath: null,
           routeType: 'FILESYSTEM'
         }

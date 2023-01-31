@@ -36,9 +36,9 @@ type CodeFile = { configName: string; codeFilePath: string; codeFileExports: Rec
 // TODO: rename
 type PageConfig2 = {
   pageId2: string // TODO: rename
-  codeFilesImporter: string
-  route: string | Function
   pageConfigFilePath: string
+  routeFilesystem: null | string
+  codeFilesImporter: string
   configSources: Record<ConfigName, ConfigSource>
   loadCodeFiles: () => Promise<CodeFile[]>
 }

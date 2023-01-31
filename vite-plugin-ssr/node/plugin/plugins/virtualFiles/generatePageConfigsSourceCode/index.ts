@@ -201,11 +201,12 @@ function generateSourceCodeOfPageConfigs(
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePath, pageId2, routeFilesystem, configSources, codeFilesImporter } = pageConfig
-    const pageConfigVar = `pageConfig${i + 1}`
+    const pageConfigVar = `pageConfig${i + 1}` // Removed outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
+    lines.push(`    routeFilesystem: '${routeFilesystem}',`)
     lines.push(`    codeFilesImporter: '${codeFilesImporter}',`)
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
@@ -233,11 +234,6 @@ function generateSourceCodeOfPageConfigs(
     })
     lines.push(`    }`)
     lines.push('  };')
-    if (!pageConfig.configSources.route) {
-      lines.push(`  ${pageConfigVar}.route = '${routeFilesystem}';`)
-    } else {
-      lines.push(`  ${pageConfigVar}.route = ${pageConfigVar}.configSources.route.configValue;`)
-    }
     lines.push(`  pageConfigs.push(${pageConfigVar})`)
     lines.push(`}`)
   })
