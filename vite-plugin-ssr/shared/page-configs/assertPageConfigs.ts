@@ -11,10 +11,13 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(isObject(pageConfig))
     assert(hasProp(pageConfig, 'pageId2', 'string'))
     assert(hasProp(pageConfig, 'pageConfigFilePath', 'string'))
+    assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
+    assert(hasProp(pageConfig, 'codeFilesImporter', 'string'))
+    assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
     Object.entries(pageConfig.configSources).forEach(([configName, configSource]) => {
-      assert(hasProp(configSource, 'c_env', 'string'))
       assert(hasProp(configSource, 'configFilePath', 'string'))
+      assert(hasProp(configSource, 'c_env', 'string'))
       if ('codeFilePath' in configSource) {
         const { codeFilePath } = configSource
         assert(typeof codeFilePath === 'string')
@@ -29,9 +32,5 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
         }
       }
     })
-    // Already asserted with assertUsage():
-    //  - Above (for route files), and
-    //  - At config resolve time (when user directly defines a Route String without using a route file)
-    assert(hasProp(pageConfig, 'route', 'string') || hasProp(pageConfig, 'route', 'function'))
   })
 }
