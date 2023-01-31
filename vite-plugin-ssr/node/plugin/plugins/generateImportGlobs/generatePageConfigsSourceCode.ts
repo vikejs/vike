@@ -20,9 +20,9 @@ import {
 import path from 'path'
 
 import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../shared/page-configs/PageConfig'
-import { loadPageConfigFiles, PageConfigFile } from '../../helpers'
 import { assertRouteString } from '../../../../shared/route/resolveRouteString'
 import { generateEagerImport } from './generateEagerImport'
+import { loadPageConfigFiles, type PageConfigFile } from './generatePageConfigsSourceCode/loadPageConfigFiles'
 const virtualIdPageConfigCode = 'virtual:vite-plugin-ssr:pageConfigCode:'
 
 let pageConfigsData: null | PageConfigData[] = null

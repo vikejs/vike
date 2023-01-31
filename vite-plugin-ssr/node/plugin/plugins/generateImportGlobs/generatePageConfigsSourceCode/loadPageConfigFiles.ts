@@ -3,8 +3,14 @@ export type { PageConfigFile }
 
 import glob from 'fast-glob'
 import path from 'path'
-import { assertWarning, toPosixPath, scriptFileExtensions, assertPosixPath, assert } from '../utils'
-import { loadScript } from './loadScript'
+import {
+  assertWarning,
+  toPosixPath,
+  scriptFileExtensions,
+  assertPosixPath,
+  assert,
+  transpileAndLoadScriptFile
+} from '../../../utils'
 
 type PageConfigFile = {
   pageConfigFilePath: string
@@ -22,7 +28,7 @@ async function loadPageConfigFiles(userRootDir: string): Promise<{ hasError: tru
   const results = await Promise.all(
     pageConfigFilePaths.map(async (pageConfigFilePath) => {
       const pageConfigFilePathAbsolute = path.posix.join(userRootDir, pageConfigFilePath)
-      const result = await loadScript(pageConfigFilePathAbsolute)
+      const result = await transpileAndLoadScriptFile(pageConfigFilePathAbsolute)
       if ('err' in result) {
         return { hasError: true }
       }

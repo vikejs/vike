@@ -1,13 +1,13 @@
-export { loadScript }
+export { transpileAndLoadScriptFile }
 
 import esbuild, { type BuildResult } from 'esbuild'
 import fs from 'fs'
 import path from 'path'
 import { import_ } from '@brillout/import'
-import { assertPosixPath } from '../utils'
-import { getRandomId } from '../../utils/getRandomId'
+import { assertPosixPath } from './filesystemPathHandling'
+import { getRandomId } from './getRandomId'
 
-async function loadScript(scriptFile: string): Promise<{ exports: Record<string, unknown> } | { err: unknown }> {
+async function transpileAndLoadScriptFile(scriptFile: string): Promise<{ exports: Record<string, unknown> } | { err: unknown }> {
   assertPosixPath(scriptFile)
   const buildResult = await build(scriptFile)
   if ('err' in buildResult) {
@@ -38,7 +38,7 @@ async function loadScript(scriptFile: string): Promise<{ exports: Record<string,
   }
   // Return a plain JavaScript object
   //  - import() returns `[Module: null prototype] { default: { onRenderClient: '...' }}`
-  //  - AFAICT, this special object is unnecessary
+  //  - We don't need this special object
   exports = { ...exports }
   return { exports }
 }
