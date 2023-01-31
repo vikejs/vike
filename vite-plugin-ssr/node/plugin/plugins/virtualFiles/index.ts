@@ -1,8 +1,5 @@
 export { virtualFiles }
 
-// TODO/next-major-version: remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
-//  - Systematically remove all pageFilesAll references does the trick?
-
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { ConfigVpsResolved } from '../config/ConfigVps'
 import { getConfigVps } from '../config/assertConfigVps'

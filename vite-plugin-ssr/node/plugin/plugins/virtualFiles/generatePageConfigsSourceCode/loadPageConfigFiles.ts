@@ -17,13 +17,12 @@ type PageConfigFile = {
   pageConfigFileExports: Record<string, unknown>
 }
 
-// type Result = { pageConfigFilePath: string; pageConfigFileExports: Record<string, unknown> }
-type Result = PageConfigFile
-
-async function loadPageConfigFiles(userRootDir: string): Promise<{ hasError: true } | { pageConfigFiles: Result[] }> {
+async function loadPageConfigFiles(
+  userRootDir: string
+): Promise<{ hasError: true } | { pageConfigFiles: PageConfigFile[] }> {
   const pageConfigFilePaths = await findPagesConfigFiles(userRootDir)
 
-  const pageConfigFiles: Result[] = []
+  const pageConfigFiles: PageConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
     pageConfigFilePaths.map(async (pageConfigFilePath) => {
