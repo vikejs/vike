@@ -19,7 +19,7 @@ type PageConfigFile = {
 
 async function loadPageConfigFiles(
   userRootDir: string
-): Promise<{ hasError: true } | { pageConfigFiles: PageConfigFile[] }> {
+): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
   const pageConfigFilePaths = await findPagesConfigFiles(userRootDir)
 
   const pageConfigFiles: PageConfigFile[] = []
@@ -29,17 +29,22 @@ async function loadPageConfigFiles(
       const pageConfigFilePathAbsolute = path.posix.join(userRootDir, pageConfigFilePath)
       const result = await transpileAndLoadScriptFile(pageConfigFilePathAbsolute)
       if ('err' in result) {
-        return { hasError: true }
+        return { err: result.err }
       }
       const pageConfigFileExports = result.exports
       return { pageConfigFilePath, pageConfigFileExports }
     })
   )
-  if (results.some(({ hasError }) => hasError)) {
-    return { hasError: true }
+  for (const result of results) {
+    if ('err' in result) {
+      assert(result.err)
+      return {
+        err: result.err
+      }
+    }
   }
   results.forEach((result) => {
-    assert(!('hasError' in result))
+    assert(!('err' in result))
     const { pageConfigFilePath, pageConfigFileExports } = result
     pageConfigFiles.push({
       pageConfigFilePath,

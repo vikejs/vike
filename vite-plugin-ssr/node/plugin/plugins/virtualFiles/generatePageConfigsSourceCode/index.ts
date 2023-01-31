@@ -8,6 +8,7 @@ import { generateEagerImport } from '../generateEagerImport'
 import { loadPageConfigFiles } from './loadPageConfigFiles'
 import { getPageConfigsData } from './getPageConfigsData'
 import { virtualIdPageConfigCode } from './virtualIdPageConfigCode'
+import { handleBuildError } from './handleBuildError'
 
 let pageConfigsData: null | PageConfigData[] = null
 
@@ -24,17 +25,17 @@ async function generatePageConfigsSourceCode(
   try {
     return await getCode(userRootDir, isForClientSide)
   } catch (err) {
-    handleError(err, isDev)
+    handleBuildError(err, isDev)
     assert(false)
   }
 }
 
 async function getCode(userRootDir: string, isForClientSide: boolean): Promise<string> {
-  const result1 = await loadPageConfigFiles(userRootDir)
-  if ('hasError' in result1) {
+  const result = await loadPageConfigFiles(userRootDir)
+  if ('err' in result) {
     return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
   }
-  const { pageConfigFiles } = result1
+  const { pageConfigFiles } = result
   const result2 = getPageConfigsData(pageConfigFiles, userRootDir)
   pageConfigsData = result2.pageConfigsData
   const { pageConfigGlobal } = result2
@@ -128,41 +129,4 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
   lines.push('];')
   const code = [...importStatements, ...lines].join('\n')
   return code
-}
-
-function handleError(err: unknown, isDev: boolean) {
-  // Properly handle error during transpilation so that we can use assertUsage() during transpilation
-  if (isDev) {
-    throw err
-  } else {
-    // Avoid ugly error format:
-    // ```
-    // [vite-plugin-ssr:virtualModulePageFiles] Could not load virtual:vite-plugin-ssr:pageFiles:server: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
-    // Error: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
-    //     at resolveCodeFilePath (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:203:33)
-    //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:100:38
-    //     at Array.forEach (<anonymous>)
-    //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:84:14
-    //     at Array.forEach (<anonymous>)
-    //     at getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:75:29)
-    //     at async file (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:40:16)
-    //     at async generateGlobImports (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:188:3)
-    //     at async getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:78:20)
-    //     at async Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:60:26)
-    //     at async file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:22610:75
-    //     at async Queue.work (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:23509:32) {
-    //   code: 'PLUGIN_ERROR',
-    //   plugin: 'vite-plugin-ssr:virtualModulePageFiles',
-    //   hook: 'load',
-    //   watchFiles: [
-    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/importBuild.js',
-    //     '\x00virtual:vite-plugin-ssr:pageFiles:server'
-    //   ]
-    // }
-    //  ELIFECYCLE  Command failed with exit code 1.
-    // ```
-    console.log('')
-    console.error(err)
-    process.exit(1)
-  }
 }

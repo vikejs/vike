@@ -3,11 +3,11 @@ export { getCodeFilePath }
 export { getSourceFilePath }
 
 import { assert } from '../utils'
-import type { PageConfig } from './PageConfig'
+import type { PageConfig, PageConfigData } from './PageConfig'
 
-function getConfigValue(pageConfig: PageConfig, configName: string, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfig, configName: string, type: 'boolean'): null | boolean
-function getConfigValue(pageConfig: PageConfig, configName: string, type: 'string' | 'boolean'): null | unknown {
+function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string'): null | string
+function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'boolean'): null | boolean
+function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string' | 'boolean'): null | unknown {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) {
     return null

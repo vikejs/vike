@@ -1,3 +1,5 @@
+// TODO/v1-release: remove this
+
 export { assertDefaultExports }
 export { assertExportValues }
 export { forbiddenDefaultExports }

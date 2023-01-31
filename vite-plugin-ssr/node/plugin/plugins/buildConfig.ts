@@ -13,6 +13,10 @@ import {
 } from '../utils'
 import { findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './virtualFiles/virtualModuleIdPageFiles'
+import { getPageConfigsData } from './virtualFiles/generatePageConfigsSourceCode/getPageConfigsData'
+import { handleBuildError } from './virtualFiles/generatePageConfigsSourceCode/handleBuildError'
+import { loadPageConfigFiles } from './virtualFiles/generatePageConfigsSourceCode/loadPageConfigFiles'
+import { getConfigValue } from '../../../shared/page-configs/utils'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
 
 function buildConfig(): Plugin {
@@ -22,7 +26,7 @@ function buildConfig(): Plugin {
     enforce: 'post',
     async configResolved(config) {
       const input = {
-        ...(await entryPoints(config)),
+        ...(await getEntries(config)),
         ...normalizeRollupInput(config.build.rollupOptions.input)
       }
       config.build.rollupOptions.input = input
@@ -44,9 +48,15 @@ function buildConfig(): Plugin {
   }
 }
 
-async function entryPoints(config: ResolvedConfig): Promise<Record<string, string>> {
+async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const ssr = viteIsSSR(config)
-  const pageFileEntries = await getPageFileEntries(config)
+  const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
+  let { hasClientRouting, hasServerRouting } = await analyzeAppRouting(config)
+  if (Object.entries(pageFileEntries).length > 0) {
+    hasClientRouting = true
+    hasServerRouting = true
+  }
+  assert(hasClientRouting || hasServerRouting)
   if (ssr) {
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
@@ -55,12 +65,42 @@ async function entryPoints(config: ResolvedConfig): Promise<Record<string, strin
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
-    return {
-      ...pageFileEntries,
-      ['entry-client-routing']: resolve(`dist/esm/client/router/entry.js`),
-      ['entry-server-routing']: resolve(`dist/esm/client/entry.js`)
+    const entries = {
+      ...pageFileEntries
     }
+    const clientRoutingEntry = resolve(`dist/esm/client/router/entry.js`)
+    const serverRoutingEntry = resolve(`dist/esm/client/entry.js`)
+    if (hasClientRouting) {
+      entries['entry-client-routing'] = clientRoutingEntry
+    }
+    if (hasServerRouting) {
+      entries['entry-server-routing'] = serverRoutingEntry
+    }
+    return entries
   }
+}
+
+async function analyzeAppRouting(config: ResolvedConfig) {
+  const userRootDir = config.root
+  const result = await loadPageConfigFiles(userRootDir)
+  if ('err' in result) {
+    handleBuildError(result.err, false)
+    assert(false)
+  }
+  const { pageConfigFiles } = result
+  const { pageConfigsData } = getPageConfigsData(pageConfigFiles, userRootDir)
+
+  let hasClientRouting = false
+  let hasServerRouting = false
+  pageConfigsData.forEach((pageConfigData) => {
+    const clietnRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
+    if (clietnRouting) {
+      hasClientRouting = true
+    } else {
+      hasServerRouting = true
+    }
+  })
+  return { hasClientRouting, hasServerRouting }
 }
 
 // Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
