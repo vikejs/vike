@@ -36,12 +36,12 @@ import { loadPageFilesServer, PageContext_loadPageFilesServer, type PageFiles } 
 import { preparePageContextForRelease, type PageContextPublic } from './preparePageContextForRelease'
 import { handleErrorWithoutErrorPage } from './handleErrorWithoutErrorPage'
 import type { PageContextPromise } from '../html/injectAssets'
-import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 type GlobalRenderingContext = {
   _allPageIds: string[]
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig2[]
+  _pageConfigs: PageConfig[]
 }
 
 type PageContextAfterRender = { httpResponse: null | HttpResponse; errorWhileRendering: null | Error }
@@ -204,7 +204,7 @@ function initPageContext(pageContextInit: { urlOriginal: string }, renderContext
 
 type RenderContext = {
   pageFilesAll: PageFile[]
-  pageConfigs: PageConfig2[]
+  pageConfigs: PageConfig[]
   allPageIds: string[]
 }
 // TODO: remove getRenderContext() in favor of getGlobalObject() + reloadGlobalContext()

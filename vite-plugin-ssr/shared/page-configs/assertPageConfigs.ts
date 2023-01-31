@@ -1,9 +1,9 @@
 export { assertPageConfigs }
 
 import { assert, isObject, hasProp, assertUsage, isCallable } from '../utils'
-import type { PageConfig2 } from './PageConfig'
+import type { PageConfig } from './PageConfig'
 
-function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig2[] {
+function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageConfig[] {
   assert(Array.isArray(pageConfigs) || pageConfigs === null)
   // if `pageConfigFilesCannotBeLoaded === null` => then `import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true })` cannot be transpiled/loaded => code of virtual file cannot be generated or run => assertPageConfigs() is never called
   assert(pageConfigs !== null)

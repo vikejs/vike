@@ -1,4 +1,4 @@
-export type { PageConfig2 }
+export type { PageConfig }
 export type { PageConfigLoaded }
 export type { PageConfigGlobal }
 export type { c_Env }
@@ -24,8 +24,7 @@ type PageConfigData = {
   >
 }
 
-// TODO: rename
-type PageConfig2 = PageConfigData & {
+type PageConfig = PageConfigData & {
   loadCodeFiles: () => Promise<
     {
       configName: string
@@ -35,7 +34,7 @@ type PageConfig2 = PageConfigData & {
   >
 }
 
-type PageConfigLoaded = PageConfig2 & {
+type PageConfigLoaded = PageConfig & {
   configValues: Record<string, unknown>
 }
 

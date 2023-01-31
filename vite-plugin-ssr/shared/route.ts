@@ -12,11 +12,11 @@ import { resolveRouteFunction } from './route/resolveRouteFunction'
 import { callOnBeforeRouteHook } from './route/callOnBeforeRouteHook'
 import { PageRoutes, loadPageRoutes, RouteType } from './route/loadPageRoutes'
 import { debug } from './route/debug'
-import type { PageConfig2 } from './page-configs/PageConfig'
+import type { PageConfig } from './page-configs/PageConfig'
 
 type PageContextForRoute = PageContextUrlSource & {
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig2[]
+  _pageConfigs: PageConfig[]
   _allPageIds: string[]
 }
 type RouteMatch = {

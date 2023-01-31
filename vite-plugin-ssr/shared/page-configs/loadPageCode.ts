@@ -1,9 +1,9 @@
 export { loadPageCode }
 
 import { assert, assertDefaultExport } from '../utils'
-import type { PageConfig2, PageConfigLoaded } from './PageConfig'
+import type { PageConfig, PageConfigLoaded } from './PageConfig'
 
-async function loadPageCode(pageConfig: PageConfig2): Promise<PageConfigLoaded> {
+async function loadPageCode(pageConfig: PageConfig): Promise<PageConfigLoaded> {
   const configValues: Record<string, unknown> = {}
 
   // Ensure loadPageCode() wasn't already called

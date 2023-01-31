@@ -3,10 +3,10 @@ export { loadPageFilesServerSide }
 import { getPageFilesServerSide } from '../getAllPageIdFiles'
 import { getExports } from '../getExports'
 import type { PageFile } from '../getPageFileObject'
-import type { PageConfig2 } from '../../page-configs/PageConfig'
+import type { PageConfig } from '../../page-configs/PageConfig'
 import { loadPageCode } from '../../page-configs/loadPageCode'
 
-async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig2, pageId: string) {
+async function loadPageFilesServerSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
   const pageFilesServerSide = getPageFilesServerSide(pageFilesAll, pageId)
   const pageConfigLoaded = !pageConfig ? null : await loadPageCode(pageConfig)
   await Promise.all(pageFilesServerSide.map((p) => p.loadFile?.()))

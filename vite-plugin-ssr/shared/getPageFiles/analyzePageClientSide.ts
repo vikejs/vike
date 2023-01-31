@@ -9,10 +9,10 @@ import { assert } from '../utils'
 import { getExportNames } from './analyzePageClientSide/getExportNames'
 import type { PageFile } from './getPageFileObject'
 import { ClientDependency } from './analyzePageClientSide/ClientDependency'
-import type { PageConfig2 } from '../page-configs/PageConfig'
+import type { PageConfig } from '../page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../page-configs/utils'
 
-function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig2, pageId: string) {
+function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
   if (pageConfig) {
     const isClientRouting = getConfigValue(pageConfig, 'isClientRouting', 'boolean') ?? false
     const clientEntryPageConfig = getCodeFilePath(pageConfig, 'clientEntry')

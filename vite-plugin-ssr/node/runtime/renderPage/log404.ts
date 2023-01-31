@@ -6,13 +6,13 @@ import { getGlobalContext } from '../globalContext'
 import { assert, assertUsage, assertInfo, compareString } from '../../utils'
 import pc from 'picocolors'
 import { isRenderErrorPageException } from './RenderErrorPage'
-import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 
 async function log404(pageContext: {
   urlPathname: string
   errorWhileRendering: null | Error
   _pageFilesAll: PageFile[]
-  _pageConfigs: PageConfig2[]
+  _pageConfigs: PageConfig[]
   _allPageIds: string[]
   _isPageContextRequest: boolean
 }) {

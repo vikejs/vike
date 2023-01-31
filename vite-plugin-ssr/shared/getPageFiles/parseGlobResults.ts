@@ -4,10 +4,10 @@ import { assert, hasProp, isCallable, isObject, cast, assertUsage } from '../uti
 import { assertExportValues } from './assertExports'
 import { getPageFileObject, type PageFile } from './getPageFileObject'
 import { fileTypes, type FileType } from './fileTypes'
-import type { PageConfig2 } from '../page-configs/PageConfig'
+import type { PageConfig } from '../page-configs/PageConfig'
 import { assertPageConfigs } from '../page-configs/assertPageConfigs'
 
-function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig2[] } {
+function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; pageConfigs: PageConfig[] } {
   assert(hasProp(pageFilesExports, 'isGeneratedFile'), 'Missing `isGeneratedFile`.')
   assert(pageFilesExports.isGeneratedFile !== false, `vite-plugin-ssr was re-installed(/re-built). Restart your app.`)
   assert(pageFilesExports.isGeneratedFile === true, `\`isGeneratedFile === ${pageFilesExports.isGeneratedFile}\``)

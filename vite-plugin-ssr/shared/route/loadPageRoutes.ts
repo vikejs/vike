@@ -4,7 +4,7 @@ import { assert, assertUsage, hasProp, slice } from './utils'
 import type { OnBeforeRouteHook } from './callOnBeforeRouteHook'
 import { FilesystemRoot, deduceRouteStringFromFilesystemPath } from './deduceRouteStringFromFilesystemPath'
 import { isCallable } from '../utils'
-import type { PageConfig2 } from '../page-configs/PageConfig'
+import type { PageConfig } from '../page-configs/PageConfig'
 
 export { loadPageRoutes }
 export { findPageRouteFile }
@@ -21,7 +21,7 @@ type RouteType = 'STRING' | 'FUNCTION' | 'FILESYSTEM'
 
 async function loadPageRoutes(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig2[],
+  pageConfigs: PageConfig[],
   allPageIds: string[]
 ): Promise<{ pageRoutes: PageRoutes; onBeforeRouteHook: null | OnBeforeRouteHook }> {
   await Promise.all(pageFilesAll.filter((p) => p.fileType === '.page.route').map((p) => p.loadFile?.()))
@@ -33,7 +33,7 @@ async function loadPageRoutes(
 function getPageRoutes(
   filesystemRoots: FilesystemRoot[],
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig2[],
+  pageConfigs: PageConfig[],
   allPageIds: string[]
 ): PageRoutes {
   const pageRoutes: PageRoutes = []
@@ -166,7 +166,7 @@ function getPageRoutes(
 
 function getGlobalHooks(
   pageFilesAll: PageFile[],
-  pageConfigs: PageConfig2[]
+  pageConfigs: PageConfig[]
 ): {
   onBeforeRouteHook: null | OnBeforeRouteHook
   filesystemRoots: FilesystemRoot[]

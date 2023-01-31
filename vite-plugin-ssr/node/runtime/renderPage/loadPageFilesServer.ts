@@ -9,14 +9,14 @@ import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPa
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
 import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { MediaType } from '../helpers'
-import type { PageConfig2 } from '../../../shared/page-configs/PageConfig'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
     urlOriginal: string
     _pageFilesAll: PageFile[]
-    _pageConfigs: PageConfig2[]
+    _pageConfigs: PageConfig[]
   }
 type PageFiles = PromiseType<ReturnType<typeof loadPageFilesServer>>
 async function loadPageFilesServer(pageContext: { _pageId: string } & PageContext_loadPageFilesServer) {

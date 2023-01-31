@@ -7,11 +7,11 @@ import { determinePageId } from '../determinePageId'
 import type { PageFile } from './getPageFileObject'
 import { parseGlobResults } from './parseGlobResults'
 import { getGlobalObject } from '../../utils/getGlobalObject'
-import type { PageConfig2 } from '../page-configs/PageConfig'
+import type { PageConfig } from '../page-configs/PageConfig'
 
 const globalObject = getGlobalObject<{
   pageFilesAll?: PageFile[] | undefined
-  pageConfigs?: PageConfig2[] | undefined
+  pageConfigs?: PageConfig[] | undefined
   pageFilesGetter?: () => Promise<void> | undefined
 }>('setPageFiles.ts', {})
 
@@ -29,7 +29,7 @@ function setPageFilesAsync(getPageFilesExports: () => Promise<unknown>) {
 async function getPageFilesAll(
   isClientSide: boolean,
   isProduction?: boolean
-): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[]; pageConfigs: PageConfig2[] }> {
+): Promise<{ pageFilesAll: PageFile[]; allPageIds: string[]; pageConfigs: PageConfig[] }> {
   if (isClientSide) {
     assert(!globalObject.pageFilesGetter)
     assert(isProduction === undefined)
@@ -52,7 +52,7 @@ async function getPageFilesAll(
 
 function getAllPageIds(
   allPageFiles: { filePath: string; isDefaultPageFile: boolean }[],
-  pageConfigs: PageConfig2[]
+  pageConfigs: PageConfig[]
 ): string[] {
   const fileIds = allPageFiles
     .filter(({ isDefaultPageFile }) => !isDefaultPageFile)

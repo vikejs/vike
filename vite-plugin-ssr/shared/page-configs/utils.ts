@@ -3,11 +3,11 @@ export { getCodeFilePath }
 export { getSourceFilePath }
 
 import { assert } from '../utils'
-import type { PageConfig2 } from './PageConfig'
+import type { PageConfig } from './PageConfig'
 
-function getConfigValue(pageConfig: PageConfig2, configName: string, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfig2, configName: string, type: 'boolean'): null | boolean
-function getConfigValue(pageConfig: PageConfig2, configName: string, type: 'string' | 'boolean'): null | unknown {
+function getConfigValue(pageConfig: PageConfig, configName: string, type: 'string'): null | string
+function getConfigValue(pageConfig: PageConfig, configName: string, type: 'boolean'): null | boolean
+function getConfigValue(pageConfig: PageConfig, configName: string, type: 'string' | 'boolean'): null | unknown {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) {
     return null
@@ -18,7 +18,7 @@ function getConfigValue(pageConfig: PageConfig2, configName: string, type: 'stri
   return configValue
 }
 
-function getCodeFilePath(pageConfig: PageConfig2, configName: string): null | string {
+function getCodeFilePath(pageConfig: PageConfig, configName: string): null | string {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) {
     return null
@@ -28,7 +28,7 @@ function getCodeFilePath(pageConfig: PageConfig2, configName: string): null | st
   return codeFilePath
 }
 
-function getSourceFilePath(pageConfig: PageConfig2, configName: string): null | string {
+function getSourceFilePath(pageConfig: PageConfig, configName: string): null | string {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) return null
   if (configSource.codeFilePath) {
