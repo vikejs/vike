@@ -2,6 +2,7 @@ export { assertClientEntryId }
 
 import { getGlobalContext } from '../../globalContext'
 import { assert, assertPosixPath, isNpmPackageModule } from '../../../utils'
+import { virtualIdPageConfigCode } from '../../../plugin/plugins/virtualFiles/generatePageConfigsSourceCode/virtualIdPageConfigCode'
 
 function assertClientEntryId(id: string) {
   assertPosixPath(id)
@@ -13,7 +14,7 @@ function assertClientEntryId(id: string) {
       // User files
       id.startsWith('/') ||
       // Code files importer
-      id.startsWith('virtual:vite-plugin-ssr:') ||
+      id.startsWith(virtualIdPageConfigCode) ||
       // Stem packages
       isPkg,
     id

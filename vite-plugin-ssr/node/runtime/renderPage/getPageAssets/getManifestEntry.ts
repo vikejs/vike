@@ -3,6 +3,7 @@ export { getManifestEntry }
 import type { ViteManifest, ViteManifestEntry } from '../../helpers'
 import { assert, slice, isNpmPackageModule } from '../../../utils'
 import { assertClientEntryId } from './assertClientEntryId'
+import { virtualIdPageConfigCode } from '../../../plugin/plugins/virtualFiles/generatePageConfigsSourceCode/virtualIdPageConfigCode'
 
 function getManifestEntry(
   id: string,
@@ -20,7 +21,7 @@ function getManifestEntry(
   }
 
   // Code files importer
-  if (id.startsWith('virtual:vite-plugin-ssr:')) {
+  if (id.startsWith(virtualIdPageConfigCode)) {
     const manifestKey = id
     let manifestEntry = clientManifest[manifestKey]
     assert(manifestEntry, id)
