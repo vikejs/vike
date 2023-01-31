@@ -46,24 +46,31 @@ function buildConfig(): Plugin {
 
 async function entryPoints(config: ResolvedConfig): Promise<Record<string, string>> {
   const ssr = viteIsSSR(config)
-  const pageFiles = await findPageFiles(config, ssr ? ['.page', '.page.server'] : ['.page', '.page.client'])
-  const pageFilesObject: Record<string, string> = {}
-  pageFiles.forEach((p) => (pageFilesObject[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))
+  const pageFileEntries = await getPageFileEntries(config)
   if (ssr) {
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
-      // ...pageFilesObject,
+      // ...pageFileEntries,
       pageFiles: virtualModuleIdPageFilesServer, // TODO/next-major-release: rename to pageConfigFiles
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
     return {
-      // #350
-      ...pageFilesObject,
+      ...pageFileEntries,
       ['entry-client-routing']: resolve(`dist/esm/client/router/entry.js`),
       ['entry-server-routing']: resolve(`dist/esm/client/entry.js`)
     }
   }
+}
+
+// Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
+// (Ohterwise the page files may be missing in the client manifest.json)
+async function getPageFileEntries(config: ResolvedConfig) {
+  const ssr = viteIsSSR(config)
+  const pageFiles = await findPageFiles(config, ssr ? ['.page', '.page.server'] : ['.page', '.page.client'])
+  const pageFileEntries: Record<string, string> = {}
+  pageFiles.forEach((p) => (pageFileEntries[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))
+  return pageFileEntries
 }
 
 function resolve(filePath: string) {
