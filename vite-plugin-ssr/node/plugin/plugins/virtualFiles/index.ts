@@ -1,33 +1,28 @@
-export { generateImportGlobs }
+export { virtualFiles }
 
 // TODO/next-major-version: remove old `.page.js`/`.page.client.js`/`.page.server.js` interface
 //  - Systematically remove all pageFilesAll references does the trick?
 
 import type { Plugin, ResolvedConfig } from 'vite'
-import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions } from '../utils'
-import { debugGlob } from '../../utils'
-import type { ConfigVpsResolved } from './config/ConfigVps'
-import { getConfigVps } from './config/assertConfigVps'
+import { assert, assertPosixPath, viteIsSSR_options, isNotNullish, scriptFileExtensions, debugGlob } from '../../utils'
+import type { ConfigVpsResolved } from '../config/ConfigVps'
+import { getConfigVps } from '../config/assertConfigVps'
 import {
   virtualModuleIdPageFilesClientCR,
   virtualModuleIdPageFilesClientSR,
   virtualModuleIdPageFilesServer
-} from './generateImportGlobs/virtualModuleIdPageFiles'
-import { type FileType, fileTypes, determineFileType } from '../../../shared/getPageFiles/fileTypes'
+} from './virtualModuleIdPageFiles'
+import { type FileType, fileTypes, determineFileType } from '../../../../shared/getPageFiles/fileTypes'
 import path from 'path'
-import {
-  generatePageConfigsSourceCode,
-  generatePageConfigVirtualFile
-} from './generateImportGlobs/generatePageConfigsSourceCode'
-import { generateEagerImport } from './generateImportGlobs/generateEagerImport'
+import { generatePageConfigsSourceCode, generatePageConfigVirtualFile } from './generatePageConfigsSourceCode'
+import { generateEagerImport } from './generateEagerImport'
 
-// TODO: rename to generateVirtualFiles()
-function generateImportGlobs(): Plugin {
+function virtualFiles(): Plugin {
   let config: ResolvedConfig
   let configVps: ConfigVpsResolved
   let isDev = false
   return {
-    name: 'vite-plugin-ssr:virtualModulePageFiles',
+    name: 'vite-plugin-ssr:virtualFiles',
     config() {
       return {
         experimental: {
@@ -254,7 +249,7 @@ async function generateGlobImports(
   config: ResolvedConfig,
   isDev: boolean
 ) {
-  let fileContent = `// Generatead by \`node/plugin/plugins/generateImportGlobs.ts\`.
+  let fileContent = `// Generatead by node/plugin/plugins/virtualFiles/index.ts
 
 export const pageFilesLazy = {};
 export const pageFilesEager = {};
