@@ -267,7 +267,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
   lines.push('export default [')
   let varCounter = 0
   Object.entries(pageConfigData.configSources).forEach(([configName, configSource]) => {
-    if (!('codeFilePath' in configSource)) return
+    if (!configSource.codeFilePath) return
     const { c_env, codeFilePath } = configSource
     if (c_env === (isForClientSide ? 'server-only' : 'client-only')) return
     const { importVar, importStatement } = generateEagerImport(codeFilePath, varCounter++)
