@@ -148,14 +148,14 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
 
     const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
 
-    const config: PageConfigData['config'] = {}
+    const configSources: PageConfigData['configSources'] = {}
     Object.entries(configDefinitions).forEach(([configName, configSpec]) => {
       const result = resolveConfig(configName, configSpec, pageConfigFile, pageConfigFilesAbstract, userRootDir)
       if (!result) return
       const { c_env } = configSpec
       const { configValue, codeFilePath, configFilePath } = result
       if (!codeFilePath) {
-        config[configName] = {
+        configSources[configName] = {
           configFilePath,
           c_env,
           configValue
@@ -168,7 +168,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
             configName
           )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
         )
-        config[configName] = {
+        configSources[configName] = {
           configFilePath,
           codeFilePath,
           c_env
@@ -180,7 +180,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
       pageConfigFilePath,
       pageId2,
       routeFilesystem,
-      config
+      configSources
     })
   })
 
@@ -197,7 +197,7 @@ function generateSourceCodeOfPageConfigs(
 
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePath, pageId2, routeFilesystem, config } = pageConfig
+    const { pageConfigFilePath, pageId2, routeFilesystem, configSources } = pageConfig
     const pageConfigVar = `pageConfig${i + 1}`
     const codeFilesImporter = `${virtualIdPageConfigCode}${pageId2}`
     lines.push(`{`)
@@ -207,7 +207,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    codeFilesImporter: '${codeFilesImporter}',`)
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
-    Object.entries(config).forEach(([configName, configSource]) => {
+    Object.entries(configSources).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
       const { configFilePath, c_env } = configSource
       lines.push(`        configFilePath: '${configFilePath}',`)
@@ -231,7 +231,7 @@ function generateSourceCodeOfPageConfigs(
     })
     lines.push(`    }`)
     lines.push('  };')
-    if (!pageConfig.config.route) {
+    if (!pageConfig.configSources.route) {
       lines.push(`  ${pageConfigVar}.route = '${routeFilesystem}';`)
     } else {
       lines.push(`  ${pageConfigVar}.route = ${pageConfigVar}.configSources.route.configValue;`)
@@ -264,7 +264,7 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
   const importStatements: string[] = []
   lines.push('export default [')
   let varCounter = 0
-  Object.entries(pageConfigData.config).forEach(([configName, configSource]) => {
+  Object.entries(pageConfigData.configSources).forEach(([configName, configSource]) => {
     if (!('codeFilePath' in configSource)) return
     const { c_env, codeFilePath } = configSource
     if (c_env === (isForClientSide ? 'server-only' : 'client-only')) return

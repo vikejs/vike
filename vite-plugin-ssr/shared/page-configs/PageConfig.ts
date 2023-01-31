@@ -42,7 +42,7 @@ type PageConfigData = {
   pageId2: string
   routeFilesystem: null | string
   pageConfigFilePath: string
-  config: Record<
+  configSources: Record<
     ConfigName,
     {
       configFilePath: string
