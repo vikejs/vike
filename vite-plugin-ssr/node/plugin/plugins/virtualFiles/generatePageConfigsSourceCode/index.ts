@@ -16,6 +16,10 @@ let pageConfigsData: null | PageConfigData[] = null
 // TODO: create one virtual file per route
 // TODO: if conf isn't file path then assert that it's serialazable
 // TODO: use Math.random() instead of timestamp in built file + think why I had concurrent issues
+// TODO: Improve Vite error logging when:
+//       ```
+//        /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
+//       ```
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,

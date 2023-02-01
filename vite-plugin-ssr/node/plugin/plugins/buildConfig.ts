@@ -55,7 +55,6 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     hasClientRouting = true
     hasServerRouting = true
   }
-  assert(hasClientRouting || hasServerRouting)
   if (viteIsSSR(config)) {
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
