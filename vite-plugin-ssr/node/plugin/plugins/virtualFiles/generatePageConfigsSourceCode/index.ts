@@ -53,7 +53,7 @@ function generateSourceCodeOfPageConfigs(
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePath, pageId2, routeFilesystem, configSources, codeFilesImporter } = pageConfig
-    const pageConfigVar = `pageConfig${i + 1}` // Removed outdated & unncessary variable creation
+    const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
