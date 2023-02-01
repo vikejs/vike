@@ -83,6 +83,11 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     c_code: false,
     c_env: 'server-and-client'
+  },
+  // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
+  clientEntry: {
+    c_code: true,
+    c_env: 'client-only'
   }
   /* TODO
   onBeforeRoute: {
@@ -90,10 +95,6 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
     c_global: true,
     c_env: 'routing'
   }
-  configDefinitions: {
-    c_code: false,
-    c_env: 'config'
-  },
   onBeforeRender: {
     c_code: true,
     c_env: 'server-only'
@@ -104,6 +105,14 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
 function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigsData: PageConfigData[] = []
+
+  pageConfigFiles.forEach((pageConfigFile) => {
+    const pageConfigValues = getPageConfigValues(pageConfigFile)
+    const { pageConfigFilePath } = pageConfigFile
+    Object.keys(pageConfigValues).forEach((configName) => {
+      assertUsage(configName in configDefinitions, `Unknown config '${configName}' defined by ${pageConfigFilePath}`)
+    })
+  })
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))

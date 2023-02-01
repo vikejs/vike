@@ -9,14 +9,15 @@ import {
   viteIsSSR,
   makeFilePathAbsolute,
   addOnBeforeLogHook,
-  removeFileExtention
+  removeFileExtention,
+  unique
 } from '../utils'
 import { findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './virtualFiles/virtualModuleIdPageFiles'
 import { getPageConfigsData } from './virtualFiles/generatePageConfigsSourceCode/getPageConfigsData'
 import { handleBuildError } from './virtualFiles/generatePageConfigsSourceCode/handleBuildError'
 import { loadPageConfigFiles } from './virtualFiles/generatePageConfigsSourceCode/loadPageConfigFiles'
-import { getConfigValue } from '../../../shared/page-configs/utils'
+import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
 
 function buildConfig(): Plugin {
@@ -50,7 +51,7 @@ function buildConfig(): Plugin {
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
-  let { hasClientRouting, hasServerRouting } = await analyzeAppRouting(config)
+  let { hasClientRouting, hasServerRouting, clientEntries } = await analyzeAppRouting(config)
   if (Object.entries(pageFileEntries).length > 0) {
     hasClientRouting = true
     hasServerRouting = true
@@ -63,7 +64,8 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
       importBuild: resolve('dist/cjs/node/importBuild.js')
     }
   } else {
-    const entries = {
+    const entries: Record<string, string> = {
+      ...clientEntries,
       ...pageFileEntries
     }
     const clientRoutingEntry = resolve(`dist/esm/client/router/entry.js`)
@@ -90,6 +92,7 @@ async function analyzeAppRouting(config: ResolvedConfig) {
 
   let hasClientRouting = false
   let hasServerRouting = false
+  let clients: string[] = []
   pageConfigsData.forEach((pageConfigData) => {
     const clientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
     if (clientRouting) {
@@ -97,8 +100,13 @@ async function analyzeAppRouting(config: ResolvedConfig) {
     } else {
       hasServerRouting = true
     }
+    const clientEntry = getCodeFilePath(pageConfigData, 'clientEntry')
+    if (clientEntry) {
+      clients.push(clientEntry)
+    }
   })
-  return { hasClientRouting, hasServerRouting }
+  const clientEntries = formatEntries(clients, config)
+  return { hasClientRouting, hasServerRouting, clientEntries }
 }
 
 // Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
@@ -108,9 +116,15 @@ async function getPageFileEntries(config: ResolvedConfig) {
     config,
     viteIsSSR(config) ? ['.page', '.page.server'] : ['.page', '.page.client']
   )
-  const pageFileEntries: Record<string, string> = {}
-  pageFiles.forEach((p) => (pageFileEntries[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))
+  const pageFileEntries = formatEntries(pageFiles, config)
   return pageFileEntries
+}
+
+function formatEntries(entryList: string[], config: ResolvedConfig): Record<string, string> {
+  entryList = unique(entryList)
+  const entries: Record<string, string> = {}
+  entryList.forEach((p) => (entries[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))
+  return entries
 }
 
 function resolve(filePath: string) {

@@ -18,7 +18,7 @@ function getConfigValue(pageConfig: PageConfigData, configName: string, type: 's
   return configValue
 }
 
-function getCodeFilePath(pageConfig: PageConfig, configName: string): null | string {
+function getCodeFilePath(pageConfig: PageConfigData, configName: string): null | string {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) {
     return null

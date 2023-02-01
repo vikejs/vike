@@ -1,3 +1,4 @@
 export default {
-  Page: './Page.js'
+  Page: './Page.js',
+  clientEntry: './client.js'
 }
