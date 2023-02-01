@@ -8,8 +8,8 @@ function PageLayout(children) {
       Sidebar(
         // prettier-ignore
         [
-          '<a className="navitem" href="/">Home</a>',
-          '<a className="navitem" href="/about">About</a>'
+          '<a class="navitem" href="/">Home</a>',
+          '<a class="navitem" href="/about">About</a>'
         ].join('\n')
       ),
       Content(children)
@@ -42,7 +42,7 @@ function Sidebar(children) {
     'flex-shrink: 0',
     'display: flex',
     'flex-direction: column',
-    'align-ttems: center',
+    'align-items: center',
     'line-height: 1.8em',
   ].join(';')}"
 >
