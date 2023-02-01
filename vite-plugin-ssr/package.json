@@ -77,7 +77,7 @@
       "node": "./dist/cjs/__internal/index.js"
     },
     "./__internal/setup": {
-      "node": "./dist/cjs/node/page-files/setup.js"
+      "node": "./dist/cjs/node/runtime/page-files/setup.js"
     }
   },
   "files": [
