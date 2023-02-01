@@ -103,10 +103,12 @@ async function analyzeAppRouting(config: ResolvedConfig) {
 }
 
 // Ensure Rollup creates entries for each page file, see https://github.com/brillout/vite-plugin-ssr/issues/350
-// (Ohterwise the page files may be missing in the client manifest.json)
+// (Otherwise the page files may be missing in the client manifest.json)
 async function getPageFileEntries(config: ResolvedConfig) {
-  const ssr = viteIsSSR(config)
-  const pageFiles = await findPageFiles(config, ssr ? ['.page', '.page.server'] : ['.page', '.page.client'])
+  const pageFiles = await findPageFiles(
+    config,
+    viteIsSSR(config) ? ['.page', '.page.server'] : ['.page', '.page.client']
+  )
   const pageFileEntries: Record<string, string> = {}
   pageFiles.forEach((p) => (pageFileEntries[removeFileExtention(p.slice(1))] = makeFilePathAbsolute(p, config)))
   return pageFileEntries
