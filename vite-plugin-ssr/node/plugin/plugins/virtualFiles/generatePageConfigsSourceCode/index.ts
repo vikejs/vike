@@ -7,8 +7,11 @@ import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/pag
 import { generateEagerImport } from '../generateEagerImport'
 import { loadPageConfigFiles } from './loadPageConfigFiles'
 import { getPageConfigsData } from './getPageConfigsData'
-import { virtualIdPageConfigCode } from './virtualIdPageConfigCode'
 import { handleBuildError } from './handleBuildError'
+import {
+  getVirutalModuleIdPageCodeFilesImporter,
+  isVirutalModulePageCodeFilesImporter
+} from './virtualIdPageCodeFilesImporter'
 
 let pageConfigsData: null | PageConfigData[] = null
 
@@ -59,14 +62,14 @@ function generateSourceCodeOfPageConfigs(
 
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePath, pageId2, routeFilesystem, configSources, codeFilesImporter } = pageConfig
+    const { pageConfigFilePath, pageId2, routeFilesystem, configSources } = pageConfig
+    const codeFilesImporter = getVirutalModuleIdPageCodeFilesImporter(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
     lines.push(`    routeFilesystem: '${routeFilesystem}',`)
-    lines.push(`    codeFilesImporter: '${codeFilesImporter}',`)
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
@@ -108,8 +111,10 @@ function generateSourceCodeOfPageConfigs(
 }
 
 function generatePageConfigVirtualFile(id: string, isForClientSide: boolean): null | string {
-  if (!id.startsWith(virtualIdPageConfigCode)) return null
-  const pageId = id.slice(virtualIdPageConfigCode.length)
+  const result = isVirutalModulePageCodeFilesImporter(id)
+  if (!result) return null
+  assert(result.isForClientSide === isForClientSide)
+  const { pageId } = result
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)

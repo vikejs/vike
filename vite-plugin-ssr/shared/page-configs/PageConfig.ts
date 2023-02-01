@@ -12,7 +12,6 @@ type PageConfigData = {
   pageId2: string // TODO: rename
   pageConfigFilePath: string
   routeFilesystem: null | string
-  codeFilesImporter: string
   configSources: Record<
     ConfigName,
     {

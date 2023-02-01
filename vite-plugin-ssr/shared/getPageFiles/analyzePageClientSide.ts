@@ -1,3 +1,5 @@
+// TODO: move code from shared/ to node/
+
 export { analyzePageClientSide }
 export { analyzePageClientSideInit }
 
@@ -11,6 +13,7 @@ import type { PageFile } from './getPageFileObject'
 import { ClientDependency } from './analyzePageClientSide/ClientDependency'
 import type { PageConfig } from '../page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../page-configs/utils'
+import { getVirutalModuleIdPageCodeFilesImporter } from './virtualIdPageCodeFilesImporter'
 
 function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string) {
   if (pageConfig) {
@@ -22,10 +25,16 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | Page
     assert(pageConfig.configSources.onRenderHtml)
     assert(pageConfig.configSources.onRenderClient)
     clientDependencies.push({
-      id: pageConfig.codeFilesImporter,
+      id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, true),
       onlyAssets: false,
       eagerlyImported: false
     })
+    clientDependencies.push({
+      id: getVirutalModuleIdPageCodeFilesImporter(pageConfig.pageId2, false),
+      onlyAssets: true,
+      eagerlyImported: false
+    })
+    /* TODO: remove?
     Object.values(pageConfig.configSources).forEach((configSource) => {
       if (configSource.codeFilePath) {
         const { c_env } = configSource
@@ -41,6 +50,7 @@ function analyzePageClientSide(pageFilesAll: PageFile[], pageConfig: null | Page
         }
       }
     })
+    */
     clientDependencies.push({
       id: clientEntry,
       onlyAssets: false,

@@ -12,7 +12,6 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'pageId2', 'string'))
     assert(hasProp(pageConfig, 'pageConfigFilePath', 'string'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
-    assert(hasProp(pageConfig, 'codeFilesImporter', 'string'))
     assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
     Object.entries(pageConfig.configSources).forEach(([configName, configSource]) => {

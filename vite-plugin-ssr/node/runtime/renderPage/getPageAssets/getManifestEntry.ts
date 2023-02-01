@@ -3,7 +3,7 @@ export { getManifestEntry }
 import type { ViteManifest, ViteManifestEntry } from '../../helpers'
 import { assert, slice, isNpmPackageModule } from '../../../utils'
 import { assertClientEntryId } from './assertClientEntryId'
-import { virtualIdPageConfigCode } from '../../../plugin/plugins/virtualFiles/generatePageConfigsSourceCode/virtualIdPageConfigCode'
+import { isVirutalModulePageCodeFilesImporter } from '../../../plugin/plugins/virtualFiles/generatePageConfigsSourceCode/virtualIdPageCodeFilesImporter'
 
 function getManifestEntry(
   id: string,
@@ -21,7 +21,7 @@ function getManifestEntry(
   }
 
   // Code files importer
-  if (id.startsWith(virtualIdPageConfigCode)) {
+  if (isVirutalModulePageCodeFilesImporter(id)) {
     const manifestKey = id
     let manifestEntry = clientManifest[manifestKey]
     assert(manifestEntry, id)

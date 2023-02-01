@@ -20,7 +20,6 @@ import path from 'path'
 import type { c_Env, PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import { assertRouteString } from '../../../../../shared/route/resolveRouteString'
 import type { PageConfigFile } from './loadPageConfigFiles'
-import { virtualIdPageConfigCode } from './virtualIdPageConfigCode'
 
 // TODO: remove c_ prefix
 type ConfigName = string
@@ -142,11 +141,8 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
       }
     })
 
-    const codeFilesImporter = `${virtualIdPageConfigCode}${pageId2}`
-
     pageConfigsData.push({
       pageConfigFilePath,
-      codeFilesImporter,
       pageId2,
       routeFilesystem,
       configSources
