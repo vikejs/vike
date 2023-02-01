@@ -5,14 +5,12 @@ import './PageLayout.css'
 function PageLayout(children) {
   return Layout(
     [
-      // prettier-ignore
       Sidebar(
-`<a className="navitem" href="/">
-  Home
-</a>
-<a className="navitem" href="/about">
-  About
-</a>`
+        // prettier-ignore
+        [
+          '<a className="navitem" href="/">Home</a>',
+          '<a className="navitem" href="/about">About</a>'
+        ].join('\n')
       ),
       Content(children)
     ].join('\n')
