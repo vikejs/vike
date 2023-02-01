@@ -731,6 +731,16 @@ importers:
       vite: 4.0.3_@types+node@17.0.31
       vite-plugin-ssr: link:../../vite-plugin-ssr
 
+  examples/vanilla-v1:
+    specifiers:
+      typescript: 4.8.4
+      vite: ^4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+    dependencies:
+      typescript: 4.8.4
+      vite: 4.0.3
+      vite-plugin-ssr: link:../../vite-plugin-ssr
+
   examples/vue:
     specifiers:
       '@vitejs/plugin-vue': ^4.0.0
