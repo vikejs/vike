@@ -49,7 +49,6 @@ function buildConfig(): Plugin {
 }
 
 async function getEntries(config: ResolvedConfig): Promise<Record<string, string>> {
-  const ssr = viteIsSSR(config)
   const pageFileEntries = await getPageFileEntries(config) // TODO/v1-release: remove
   let { hasClientRouting, hasServerRouting } = await analyzeAppRouting(config)
   if (Object.entries(pageFileEntries).length > 0) {
@@ -57,7 +56,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
     hasServerRouting = true
   }
   assert(hasClientRouting || hasServerRouting)
-  if (ssr) {
+  if (viteIsSSR(config)) {
     return {
       // We don't add the page files because it seems to be a breaking change for the internal Vite plugin `vite:dep-scan` (not sure why?). It then throws an error `No known conditions for "./server" entry in "react-streaming" package` where it previously didn't.
       // ...pageFileEntries,
@@ -93,8 +92,8 @@ async function analyzeAppRouting(config: ResolvedConfig) {
   let hasClientRouting = false
   let hasServerRouting = false
   pageConfigsData.forEach((pageConfigData) => {
-    const clietnRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
-    if (clietnRouting) {
+    const clientRouting = getConfigValue(pageConfigData, 'clientRouting', 'boolean')
+    if (clientRouting) {
       hasClientRouting = true
     } else {
       hasServerRouting = true
