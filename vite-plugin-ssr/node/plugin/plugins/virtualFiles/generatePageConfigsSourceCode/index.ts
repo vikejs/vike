@@ -1,7 +1,7 @@
 export { generatePageConfigsSourceCode }
 export { generatePageConfigVirtualFile }
 
-import { assert } from '../../../utils'
+import { assert, createDebugger } from '../../../utils'
 
 import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
@@ -11,6 +11,9 @@ import { virtualIdPageConfigCode } from './virtualIdPageConfigCode'
 import { handleBuildError } from './handleBuildError'
 
 let pageConfigsData: null | PageConfigData[] = null
+
+// TODO remove old debug:glob
+export const debug = createDebugger('vps:virtual-files')
 
 // TODO: ensure that client-side of Server Routing loads less than Client Routing
 // TODO: create one virtual file per route
@@ -104,13 +107,15 @@ function generateSourceCodeOfPageConfigs(
   return code
 }
 
-function generatePageConfigVirtualFile(id: string, isForClientSide: boolean) {
-  if (!id.startsWith(virtualIdPageConfigCode)) return
+function generatePageConfigVirtualFile(id: string, isForClientSide: boolean): null | string {
+  if (!id.startsWith(virtualIdPageConfigCode)) return null
   const pageId = id.slice(virtualIdPageConfigCode.length)
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)
-  return generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide)
+  const code = generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData, isForClientSide)
+  debug(id, isForClientSide ? 'CLIENT-SIDE' : 'SERVER-SIDE', code)
+  return code
 }
 
 function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigData, isForClientSide: boolean): string {
