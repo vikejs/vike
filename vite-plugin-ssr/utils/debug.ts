@@ -22,15 +22,23 @@ type Options = {
 
 function createDebugger(namespace: string, optionsGlobal?: Options) {
   const debugWithOptions = (options: Options) => {
-    return (msg: string, info?: unknown) => {
+    return (...msgs: unknown[]) => {
       if (!isDebugEnabled(namespace)) return
-      if (info !== undefined) {
-        msg += strInfo(info, { ...optionsGlobal, ...options })
-      }
-      console.log('\x1b[1m%s\x1b[0m', namespace, msg)
+      let [msgFirst, ...msgsRest] = msgs
+      const padding = ' '.repeat(namespace.length + 1)
+      const optionsResolved = { ...optionsGlobal, ...options }
+      msgFirst = formatMsg(msgFirst, optionsResolved, padding, 'FIRST')
+      msgsRest = msgsRest.map((msg, i) => {
+        const position = i === msgsRest.length - 1 ? 'LAST' : 'MIDDLE'
+        return formatMsg(msg, optionsResolved, padding, position)
+      })
+      console.log('\x1b[1m%s\x1b[0m', namespace, msgFirst)
+      msgsRest.forEach((msg) => {
+        console.log(msg)
+      })
     }
   }
-  const debug = (msg: string, info?: unknown) => debugWithOptions({})(msg, info)
+  const debug = (...msgs: unknown[]) => debugWithOptions({})(...msgs)
   objectAssign(debug, { options: debugWithOptions, isEnabled: isDebugEnabled(namespace) })
   return debug
 }
@@ -45,12 +53,17 @@ function isDebugEnabled(namespace: string): boolean {
   return DEBUG?.includes(namespace) ?? false
 }
 
-function strInfo(info: unknown, options: Options): string | undefined {
+function formatMsg(
+  info: unknown,
+  options: Options,
+  padding: string,
+  position?: 'FIRST' | 'MIDDLE' | 'LAST'
+): string | undefined {
   if (info === undefined) {
     return undefined
   }
 
-  let str = '\n'
+  let str = position === 'FIRST' ? '' : padding
 
   if (typeof info === 'string') {
     str += info
@@ -64,25 +77,28 @@ function strInfo(info: unknown, options: Options): string | undefined {
     str += strUnknown(info)
   }
 
-  str = pad(str)
+  str = pad(str, padding)
+
+  if (position !== 'LAST') {
+    str += '\n'
+  }
 
   return str
 }
 
-function pad(str: string): string {
-  const PADDING = '     '
+function pad(str: string, padding: string): string {
   const WIDTH = process.stdout.columns as number | undefined
   const lines: string[] = []
   str.split('\n').forEach((line) => {
     if (!WIDTH) {
       lines.push(line)
     } else {
-      chunk(line, WIDTH - PADDING.length).forEach((chunk) => {
+      chunk(line, WIDTH - padding.length).forEach((chunk) => {
         lines.push(chunk)
       })
     }
   })
-  return lines.join('\n' + PADDING)
+  return lines.join('\n' + padding)
 }
 function chunk(str: string, size: number): string[] {
   if (str.length <= size) {
