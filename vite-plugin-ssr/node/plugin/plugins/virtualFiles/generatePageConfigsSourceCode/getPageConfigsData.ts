@@ -190,7 +190,7 @@ function resolveConfig(
 
 function isAbstract(pageConfigFile: PageConfigFile): boolean {
   const pageConfigValues = getPageConfigValues(pageConfigFile)
-  return !pageConfigValues.Page && !pageConfigValues.route
+  return !('Page' in pageConfigValues) && !('route' in pageConfigValues)
 }
 
 function getCodeFilePath(
