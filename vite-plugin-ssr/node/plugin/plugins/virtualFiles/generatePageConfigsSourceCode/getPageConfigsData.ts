@@ -88,8 +88,14 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   clientEntry: {
     c_code: true,
     c_env: 'client-only'
+  },
+  clientRouting: {
+    c_code: false,
+    c_env: 'server-and-client'
   }
   /* TODO
+  htmlFirst: {
+  }
   onBeforeRoute: {
     c_code: true,
     c_global: true,
