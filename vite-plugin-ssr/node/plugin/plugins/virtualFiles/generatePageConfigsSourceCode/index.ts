@@ -11,7 +11,7 @@ import { handleBuildError } from './handleBuildError'
 import {
   getVirutalModuleIdPageCodeFilesImporter,
   isVirutalModulePageCodeFilesImporter
-} from './virtualIdPageCodeFilesImporter'
+} from '../../../../commons/virtualIdPageCodeFilesImporter'
 
 let pageConfigsData: null | PageConfigData[] = null
 

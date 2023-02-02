@@ -3,7 +3,7 @@ export type { PageFiles }
 export type { PageContext_loadPageFilesServer }
 
 import { type PageFile, getExportUnion } from '../../../shared/getPageFiles'
-import { analyzePageClientSide, analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
+import { analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
 import { assertWarning, objectAssign, PromiseType } from '../../utils'
 import { getPageAssets, PageContextGetPageAssets, type PageAsset } from './getPageAssets'
 import { loadPageFilesServerSide } from '../../../shared/getPageFiles/analyzePageServerSide/loadPageFilesServerSide'
@@ -11,6 +11,7 @@ import { debugPageFiles, type PageContextDebug } from './debugPageFiles'
 import type { MediaType } from '../helpers'
 import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { findPageConfig } from '../../../shared/page-configs/findPageConfig'
+import { analyzePage } from './analyzePage'
 
 type PageContext_loadPageFilesServer = PageContextGetPageAssets &
   PageContextDebug & {
@@ -27,7 +28,7 @@ async function loadPageFilesServer(pageContext: { _pageId: string } & PageContex
     analyzePageClientSideInit(pageContext._pageFilesAll, pageContext._pageId, { sharedPageFilesAlreadyLoaded: true })
   ])
   const { isHtmlOnly, isClientRouting, clientEntries, clientDependencies, pageFilesClientSide, pageFilesServerSide } =
-    analyzePageClientSide(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
+    analyzePage(pageContext._pageFilesAll, pageConfig, pageContext._pageId)
   const pageContextAddendum = {}
   objectAssign(pageContextAddendum, {
     exports,

@@ -1,7 +1,7 @@
 export { isVirutalModulePageCodeFilesImporter }
 export { getVirutalModuleIdPageCodeFilesImporter }
 
-import { assert } from '../../../utils'
+import { assert } from '../utils'
 
 const idBase = 'virtual:vite-plugin-ssr:pageCodeFilesImporter:'
 const idBaseClient = `${idBase}client:` as const
