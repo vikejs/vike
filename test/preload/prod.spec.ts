@@ -22,7 +22,7 @@ describe('preload tags', () => {
         },
         {
           "assetType": "font",
-          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font",
           "isEntry": false,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
@@ -107,7 +107,7 @@ describe('preload tags', () => {
         },
         {
           "assetType": "font",
-          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font",
           "isEntry": false,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
@@ -187,7 +187,7 @@ describe('preload tags', () => {
         },
         {
           "assetType": "font",
-          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font",
           "isEntry": false,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
@@ -273,7 +273,7 @@ describe('preload tags', () => {
         },
         {
           "assetType": "font",
-          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font; crossorigin",
+          "earlyHintLink": "</assets/Sono-Light.$HASH.ttf>; rel=preload; as=font",
           "isEntry": false,
           "mediaType": "font/ttf",
           "src": "/assets/Sono-Light.$HASH.ttf",
