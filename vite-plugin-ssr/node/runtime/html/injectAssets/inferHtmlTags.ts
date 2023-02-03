@@ -7,13 +7,18 @@ import type { PageAsset } from '../../renderPage/getPageAssets'
 
 function inferPreloadTag(pageAsset: PageAsset): string {
   const { src, assetType, mediaType } = pageAsset
-  // `crossorigin` is needed for fonts, see https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload#cors-enabled_fetches
-  const crossorigin = isCrossOrigin(pageAsset) ? ' crossorigin' : ''
-  // Vite transpiles all browser-side JavaScript to ESM
   const rel = getRel(pageAsset)
-  const as = !assetType ? '' : ` as="${assetType}"`
-  const type = !mediaType ? '' : ` type="${mediaType}"`
-  return `<link rel="${rel}" href="${src}"${as}${type}${crossorigin}>`
+  const attributes = [
+    `rel="${rel}"`,
+    `href="${src}"`,
+    !assetType ? null : `as="${assetType}"`,
+    !mediaType ? null : `type="${mediaType}"`,
+    // `crossorigin` is needed for fonts, see https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload#cors-enabled_fetches
+    !isCrossOrigin(pageAsset) ? null : 'crossorigin'
+  ]
+    .filter(Boolean)
+    .join(' ')
+  return `<link ${attributes}>`
 }
 
 function inferAssetTag(pageAsset: PageAsset): string {
@@ -39,8 +44,11 @@ function inferEarlyHintLink(pageAsset: PageAsset): string {
 }
 
 function getRel({ assetType }: PageAsset): string {
-  const rel = assetType === 'script' ? 'modulepreload' : 'preload'
-  return rel
+  if (assetType === 'script') {
+    // Vite transpiles all browser-side JavaScript to ESM
+    return 'modulepreload'
+  }
+  return 'preload'
 }
 
 function isCrossOrigin({ src, assetType }: PageAsset): boolean {
