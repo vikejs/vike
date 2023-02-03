@@ -9,7 +9,7 @@ function getConfigValue(pageConfig: PageConfigData, configName: string, type: 's
 function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'boolean'): null | boolean
 function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string' | 'boolean'): null | unknown {
   const configSource = pageConfig.configSources[configName]
-  if (!configSource) {
+  if (!configSource || isNullish(pageConfig, configName)) {
     return null
   }
   const { configFilePath } = configSource
@@ -27,7 +27,7 @@ function getConfigValue(pageConfig: PageConfigData, configName: string, type: 's
 
 function getCodeFilePath(pageConfig: PageConfigData, configName: string): null | string {
   const configSource = pageConfig.configSources[configName]
-  if (!configSource) {
+  if (!configSource || isNullish(pageConfig, configName)) {
     return null
   }
   const { codeFilePath, configFilePath, configValue } = configSource
@@ -42,9 +42,19 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: string): null |
 
 function getSourceFilePath(pageConfig: PageConfig, configName: string): null | string {
   const configSource = pageConfig.configSources[configName]
-  if (!configSource) return null
+  if (!configSource || isNullish(pageConfig, configName)) {
+    return null
+  }
   if (configSource.codeFilePath) {
     return configSource.codeFilePath
   }
   return configSource.configFilePath
+}
+
+function isNullish(pageConfig: PageConfigData, configName: string): boolean {
+  const configSource = pageConfig.configSources[configName]
+  if (!configSource) return true
+  const { codeFilePath, configValue } = configSource
+  if (codeFilePath) return false
+  return configValue === null || configValue === undefined
 }
