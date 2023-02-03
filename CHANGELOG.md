@@ -1,3 +1,12 @@
+## [0.4.75](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.74...v0.4.75) (2023-02-03)
+
+
+### Bug Fixes
+
+* determine fallback asset by also removing hash from filename (fix [#634](https://github.com/brillout/vite-plugin-ssr/issues/634)) ([66fe475](https://github.com/brillout/vite-plugin-ssr/commit/66fe47522299eb9ba01cfd0a6dc16002699c46fd))
+
+
+
 ## [0.4.74](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.73...v0.4.74) (2023-02-03)
 
 
