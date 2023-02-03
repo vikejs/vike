@@ -86,7 +86,7 @@ async function createHttpResponseObject(
     const assets = await pageContext.__getPageAssets()
     assets.forEach((asset) => {
       // Don't early hint fallback assets, https://github.com/brillout/vite-plugin-ssr/issues/624
-      if (earlyHints.some((hint) => removeFileExtention(hint.src) === removeFileExtention(asset.src))) return
+      if (earlyHints.some((hint) => removeFileExtention(hint.src, true) === removeFileExtention(asset.src), true)) return
       earlyHints.push({
         ...asset,
         earlyHintLink: inferEarlyHintLink(asset)
