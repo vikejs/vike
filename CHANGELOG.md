@@ -1,3 +1,14 @@
+## [0.4.74](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.73...v0.4.74) (2023-02-03)
+
+
+### Bug Fixes
+
+* package.json ./__itnernal/setup export ([d11401d](https://github.com/brillout/vite-plugin-ssr/commit/d11401dcee15aa6b0803c577d599c8bff608b062))
+* remove early hint crossorigin property (fix [#618](https://github.com/brillout/vite-plugin-ssr/issues/618)) ([fd7f76e](https://github.com/brillout/vite-plugin-ssr/commit/fd7f76ed2170625fa6623f83f29518dd5a756060))
+* remove fallback assets from early hints (fix [#624](https://github.com/brillout/vite-plugin-ssr/issues/624)) ([693ff00](https://github.com/brillout/vite-plugin-ssr/commit/693ff006e5971ed310a3916304157586e255c896))
+
+
+
 ## [0.4.73](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.72...v0.4.73) (2023-01-30)
 
 
