@@ -13,7 +13,8 @@ import {
   toPosixPath,
   assertWarning,
   addFileExtensionsToRequireResolve,
-  assertDefaultExport
+  assertDefaultExport,
+  objectEntries
 } from '../../../utils'
 import path from 'path'
 import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
@@ -41,7 +42,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
     const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
 
     const configSources: PageConfigData['configSources'] = {}
-    Object.entries(configDefinitions).forEach(([configName, configSpec]) => {
+    objectEntries(configDefinitions).forEach(([configName, configSpec]) => {
       const result = resolveConfig(configName, configSpec, pageConfigFile, pageConfigFilesAbstract, userRootDir)
       if (!result) return
       const { c_env } = configSpec

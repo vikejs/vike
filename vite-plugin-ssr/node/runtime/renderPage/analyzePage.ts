@@ -11,7 +11,7 @@ import { getVirutalModuleIdPageCodeFilesImporter } from '../../commons/virtualId
 
 function analyzePage(pageFilesAll: PageFile[], pageConfig: null | PageConfig, pageId: string): AnalysisResult {
   if (pageConfig) {
-    const isClientRouting = getConfigValue(pageConfig, 'isClientRouting', 'boolean') ?? false
+    const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
     const clientEntryPageConfig = getCodeFilePath(pageConfig, 'clientEntry')
     const isHtmlOnly = !!clientEntryPageConfig
     const clientEntry = isHtmlOnly ? clientEntryPageConfig : getVPSClientEntry(isClientRouting)

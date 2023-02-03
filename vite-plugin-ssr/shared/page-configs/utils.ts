@@ -3,12 +3,16 @@ export { getCodeFilePath }
 export { getSourceFilePath }
 
 import { assertUsage } from '../utils'
-import type { PageConfig, PageConfigData } from './PageConfig'
+import type { ConfigName, PageConfig, PageConfigData } from './PageConfig'
 
-function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string'): null | string
-function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'boolean'): null | boolean
-// function getConfigValue(pageConfig: PageConfigData, configName: string): unknown
-function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string' | 'boolean'): null | unknown {
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
+function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'boolean'): null | boolean
+// function getConfigValue(pageConfig: PageConfigData, configName: ConfigName): unknown
+function getConfigValue(
+  pageConfig: PageConfigData,
+  configName: ConfigName,
+  type: 'string' | 'boolean'
+): null | unknown {
   const configSource = pageConfig.configSources[configName]
   if (!configSource || isNullish(pageConfig, configName)) {
     return null
@@ -26,7 +30,7 @@ function getConfigValue(pageConfig: PageConfigData, configName: string, type: 's
   return configValue
 }
 
-function getCodeFilePath(pageConfig: PageConfigData, configName: string): null | string {
+function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): null | string {
   const configSource = pageConfig.configSources[configName]
   if (!configSource || isNullish(pageConfig, configName)) {
     return null
@@ -41,7 +45,7 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: string): null |
   return codeFilePath
 }
 
-function getSourceFilePath(pageConfig: PageConfig, configName: string): null | string {
+function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null | string {
   const configSource = pageConfig.configSources[configName]
   if (!configSource || isNullish(pageConfig, configName)) {
     return null
@@ -52,7 +56,7 @@ function getSourceFilePath(pageConfig: PageConfig, configName: string): null | s
   return configSource.configFilePath
 }
 
-function isNullish(pageConfig: PageConfigData, configName: string): boolean {
+function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) return true
   const { codeFilePath, configValue } = configSource

@@ -1,9 +1,8 @@
 export { configDefinitions }
 export type { ConfigSpec }
-export type { ConfigName }
 
 import { assertUsage, isCallable } from '../../../utils'
-import type { c_Env } from '../../../../../shared/page-configs/PageConfig'
+import type { ConfigName, c_Env } from '../../../../../shared/page-configs/PageConfig'
 import { assertRouteString } from '../../../../../shared/route/resolveRouteString'
 
 // TODO: remove c_ prefix
@@ -18,43 +17,42 @@ type ConfigSpec = {
     }
   ) => void | undefined
 }
-type ConfigName = keyof typeof configDefinitions_
 
-const configDefinitions_ = {
+const configDefinitions: Record<ConfigName, ConfigSpec> = {
   onRenderHtml: {
     c_code: true,
     c_required: true,
-    c_env: 'server-only' as const
+    c_env: 'server-only'
   },
   onRenderClient: {
     c_code: true,
-    c_env: 'client-only' as const
+    c_env: 'client-only'
   },
   Page: {
     c_code: true,
-    c_env: 'server-and-client' as const
+    c_env: 'server-and-client'
   },
   passToClient: {
     c_code: false,
-    c_env: 'server-only' as const
+    c_env: 'server-only'
   },
   route: {
     c_code: false,
-    c_env: 'routing' as const,
+    c_env: 'routing',
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
     c_code: false,
-    c_env: 'server-and-client' as const
+    c_env: 'server-and-client'
   },
   // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
   clientEntry: {
     c_code: true,
-    c_env: 'client-only' as const
+    c_env: 'client-only'
   },
   clientRouting: {
     c_code: false,
-    c_env: 'server-and-client' as const
+    c_env: 'server-and-client'
   }
   /* TODO
   htmlFirst: {
@@ -70,7 +68,6 @@ const configDefinitions_ = {
   },
   */
 }
-const configDefinitions: Record<ConfigName, ConfigSpec> = configDefinitions_
 
 function getRouteValidator() {
   const validateRoute: ConfigSpec['c_validate'] = (configResolved) => {

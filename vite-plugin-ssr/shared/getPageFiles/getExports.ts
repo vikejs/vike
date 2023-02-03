@@ -4,7 +4,7 @@ export type { ExportsAll }
 export type { PageContextExports }
 
 import { isScriptFile, isTemplateFile } from '../../utils/isScriptFile'
-import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser } from '../utils'
+import { assert, hasProp, isObject, assertWarning, assertUsage, makeLast, isBrowser, objectEntries } from '../utils'
 import { assertDefaultExports, forbiddenDefaultExports } from './assertExports'
 import type { FileType } from './fileTypes'
 import type { PageConfigLoaded } from './../page-configs/PageConfig'
@@ -47,7 +47,7 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
   // VPS 1.0
   if (pageConfig) {
     const { configValues } = pageConfig
-    Object.entries(configValues).forEach(([configName, configValue]) => {
+    objectEntries(configValues).forEach(([configName, configValue]) => {
       const exportName = configName
       const filePath = getSourceFilePath(pageConfig, configName)
       assert(filePath)

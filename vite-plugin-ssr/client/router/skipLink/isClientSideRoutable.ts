@@ -25,7 +25,7 @@ function analyze(
 ): { isClientSideRenderable: boolean; isClientRouting: boolean } {
   if (pageConfig) {
     const isClientRouting = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
-    const isClientSideRenderable = !!getCodeFilePath(pageConfig, 'onClientRender')
+    const isClientSideRenderable = !!getCodeFilePath(pageConfig, 'onRenderClient')
     return { isClientSideRenderable, isClientRouting }
   } else {
     // TOOD: globally rename isHtmlOnly to !isClientSideRenderable
