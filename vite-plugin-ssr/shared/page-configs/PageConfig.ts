@@ -10,6 +10,12 @@ type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'routing'
 type ConfigName =
   | 'onRenderHtml'
   | 'onRenderClient'
+  | 'onBeforeRender'
+  /*
+  | 'onBeforeRoute'
+  | 'onBeforePrerender'
+  */
+  | 'onPrerender'
   | 'Page'
   | 'passToClient'
   | 'route'

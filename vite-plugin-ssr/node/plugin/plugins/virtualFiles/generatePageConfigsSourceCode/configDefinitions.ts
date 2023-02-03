@@ -28,6 +28,14 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
     c_code: true,
     c_env: 'client-only'
   },
+  onBeforeRender: {
+    c_code: true,
+    c_env: 'server-only'
+  },
+  onPrerender: {
+    c_code: true,
+    c_env: 'client-only'
+  },
   Page: {
     c_code: true,
     c_env: 'server-and-client'
@@ -53,19 +61,18 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   clientRouting: {
     c_code: false,
     c_env: 'server-and-client'
-  }
+  },
   /* TODO
-  htmlFirst: {
-  }
   onBeforeRoute: {
     c_code: true,
     c_global: true,
     c_env: 'routing'
   }
-  onBeforeRender: {
+  onBeforePrerender: {
     c_code: true,
-    c_env: 'server-only'
-  },
+    c_global: true,
+    c_env: 'server'
+  }
   */
 }
 

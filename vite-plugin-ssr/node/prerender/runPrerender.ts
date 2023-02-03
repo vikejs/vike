@@ -258,7 +258,13 @@ async function callPrerenderHooks(
   renderContext: RenderContext,
   concurrencyLimit: PLimit
 ) {
+  const onPrerenderHooks: {
+    hookFn: Function
+    hookName: 'prerender' | 'onPrerender'
+    hookFilePath: string
+  }[] = []
   // Render URLs returned by `prerender()` hooks
+
   await Promise.all(
     renderContext.pageFilesAll
       .filter((p) => {
@@ -274,39 +280,50 @@ async function callPrerenderHooks(
         concurrencyLimit(async () => {
           await p.loadFile?.()
 
-          const prerender = p.fileExports?.prerender
-          if (!prerender) return
-          assertUsage(isCallable(prerender), `\`export { prerender }\` of ${p.filePath} should be a function.`)
-          const prerenderHookFile = p.filePath
-          assert(prerenderHookFile)
-
-          const prerenderResult: unknown = await prerender()
-          const result = normalizePrerenderResult(prerenderResult, prerenderHookFile)
-
-          result.forEach(({ url, pageContext }) => {
-            assert(typeof url === 'string')
-            assert(url.startsWith('/'))
-            assert(pageContext === null || isPlainObject(pageContext))
-            let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
-              isSameUrl(pageContext.urlOriginal, url)
-            )
-            if (!pageContextFound) {
-              const pageContext = createPageContext(url, renderContext, prerenderContext)
-              objectAssign(pageContext, {
-                _prerenderHookFile: prerenderHookFile
-              })
-              prerenderContext.pageContexts.push(pageContext)
-              pageContextFound = pageContext
-            }
-            if (pageContext) {
-              objectAssign(pageContextFound, {
-                _pageContextAlreadyProvidedByPrerenderHook: true,
-                ...pageContext
-              })
-            }
+          const hookFn = p.fileExports?.prerender
+          if (!hookFn) return
+          assertUsage(isCallable(hookFn), `\`export { prerender }\` of ${p.filePath} should be a function.`)
+          const hookFilePath = p.filePath
+          assert(hookFilePath)
+          onPrerenderHooks.push({
+            hookFn,
+            hookName: 'prerender',
+            hookFilePath
           })
         })
       )
+  )
+
+  await Promise.all(
+    onPrerenderHooks.map(({ hookFn, hookName, hookFilePath }) =>
+      concurrencyLimit(async () => {
+        const prerenderResult: unknown = await hookFn()
+        const result = normalizePrerenderResult(prerenderResult, hookFilePath, hookName)
+
+        result.forEach(({ url, pageContext }) => {
+          assert(typeof url === 'string')
+          assert(url.startsWith('/'))
+          assert(pageContext === null || isPlainObject(pageContext))
+          let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find(
+            (pageContext) => isSameUrl(pageContext.urlOriginal, url)
+          )
+          if (!pageContextFound) {
+            const pageContext = createPageContext(url, renderContext, prerenderContext)
+            objectAssign(pageContext, {
+              _prerenderHookFile: hookFilePath
+            })
+            prerenderContext.pageContexts.push(pageContext)
+            pageContextFound = pageContext
+          }
+          if (pageContext) {
+            objectAssign(pageContextFound, {
+              _pageContextAlreadyProvidedByPrerenderHook: true,
+              ...pageContext
+            })
+          }
+        })
+      })
+    )
   )
 }
 
@@ -740,7 +757,8 @@ function write(
 
 function normalizePrerenderResult(
   prerenderResult: unknown,
-  prerenderHookFile: string
+  prerenderHookFile: string,
+  hookName: 'prerender' | 'onPrerender'
 ): { url: string; pageContext: null | Record<string, unknown> }[] {
   if (Array.isArray(prerenderResult)) {
     return prerenderResult.map(normalize)
@@ -751,9 +769,8 @@ function normalizePrerenderResult(
   function normalize(prerenderElement: unknown): { url: string; pageContext: null | Record<string, unknown> } {
     if (typeof prerenderElement === 'string') return { url: prerenderElement, pageContext: null }
 
-    const errMsg1 = `The \`prerender()\` hook defined in \`${prerenderHookFile}\` returned an invalid value`
-    const errMsg2 =
-      'Make sure your `prerender()` hook returns an object `{ url, pageContext }` or an array of such objects.'
+    const errMsg1 = `The ${hookName}() hook defined in \`${prerenderHookFile}\` returned an invalid value`
+    const errMsg2 = `Make sure your ${hookName}() hook returns an object \`{ url, pageContext }\` or an array of such objects.`
     assertUsage(isPlainObject(prerenderElement), `${errMsg1}. ${errMsg2}`)
     assertUsage(hasProp(prerenderElement, 'url'), `${errMsg1}: \`url\` is missing. ${errMsg2}`)
     assertUsage(
@@ -772,7 +789,7 @@ function normalizePrerenderResult(
     }
     assertUsage(
       hasProp(prerenderElement, 'pageContext', 'object'),
-      `The \`prerender()\` hook exported by ${prerenderHookFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
+      `The \`${hookName}()\` hook exported by ${prerenderHookFile} returned an invalid \`pageContext\` value: make sure \`pageContext\` is a plain JavaScript object.`
     )
     return prerenderElement
   }
