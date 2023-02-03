@@ -2,7 +2,7 @@ export { getConfigValue }
 export { getCodeFilePath }
 export { getSourceFilePath }
 
-import { assert } from '../utils'
+import { assertUsage } from '../utils'
 import type { PageConfig, PageConfigData } from './PageConfig'
 
 function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string'): null | string
@@ -12,9 +12,16 @@ function getConfigValue(pageConfig: PageConfigData, configName: string, type: 's
   if (!configSource) {
     return null
   }
-  assert(!('codeFilePath' in configSource)) // TODO: assertUsage()
+  const { configFilePath } = configSource
+  assertUsage(
+    !('codeFilePath' in configSource),
+    `${configFilePath} sets the config ${configName} to a file path, but it should be a ${type} instead`
+  )
   const { configValue } = configSource
-  assert(typeof configValue === type) // TODO: assertUsage()
+  assertUsage(
+    typeof configValue === type,
+    `${configFilePath} sets the config ${configName} to a value with an invalid type \`${typeof configValue}\`: the value should be a ${type} instead`
+  )
   return configValue
 }
 
@@ -23,8 +30,13 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: string): null |
   if (!configSource) {
     return null
   }
-  assert(configSource.codeFilePath) // TODO: assertUsage()
-  const { codeFilePath } = configSource
+  const { codeFilePath, configFilePath, configValue } = configSource
+  assertUsage(
+    codeFilePath,
+    `${configFilePath} sets the config ${configName} to the value \`${String(
+      configValue
+    )}\` but it should be a file path instead`
+  )
   return codeFilePath
 }
 
@@ -34,7 +46,5 @@ function getSourceFilePath(pageConfig: PageConfig, configName: string): null | s
   if (configSource.codeFilePath) {
     return configSource.codeFilePath
   }
-  const { configFilePath } = configSource
-  assert(configFilePath)
-  return configFilePath
+  return configSource.configFilePath
 }
