@@ -7,6 +7,7 @@ import type { PageConfig, PageConfigData } from './PageConfig'
 
 function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string'): null | string
 function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'boolean'): null | boolean
+// function getConfigValue(pageConfig: PageConfigData, configName: string): unknown
 function getConfigValue(pageConfig: PageConfigData, configName: string, type: 'string' | 'boolean'): null | unknown {
   const configSource = pageConfig.configSources[configName]
   if (!configSource || isNullish(pageConfig, configName)) {
