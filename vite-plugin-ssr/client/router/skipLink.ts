@@ -1,5 +1,5 @@
 export { skipLink }
-export { isClientSideRenderable } from './skipLink/isClientSideRenderable'
+export { isClientSideRoutable } from './skipLink/isClientSideRoutable'
 
 import { getBaseServer } from '../getBaseServer'
 import { assert, parseUrl, isBaseServer, isParsable, isExternalLink } from './utils'

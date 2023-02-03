@@ -1,4 +1,4 @@
-export { isClientSideRenderable }
+export { isClientSideRoutable }
 
 import { getPageId } from '../getPageId'
 import { analyzePageClientSide, analyzePageClientSideInit } from '../../../shared/getPageFiles/analyzePageClientSide'
@@ -7,7 +7,7 @@ import type { PageConfig } from '../../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 import type { PageFile } from '../../../shared/getPageFiles'
 
-async function isClientSideRenderable(url: string): Promise<boolean> {
+async function isClientSideRoutable(url: string): Promise<boolean> {
   const { pageId, pageFilesAll, pageConfigs } = await getPageId(url)
   if (!pageId) {
     return false

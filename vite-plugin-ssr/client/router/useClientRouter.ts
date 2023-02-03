@@ -19,7 +19,7 @@ import { addLinkPrefetchHandlers } from './prefetch'
 import { assertInfo, assertWarning, isReact, PromiseType } from './utils'
 import { executeOnClientRender } from '../executeOnClientRender'
 import { assertHook } from '../../shared/getHook'
-import { isClientSideRenderable, skipLink } from './skipLink'
+import { isClientSideRoutable, skipLink } from './skipLink'
 import { isErrorFetchingStaticAssets } from '../loadPageFilesClientSide'
 import { initHistoryState, getHistoryState, pushHistory, ScrollPosition, saveScrollPosition } from './history'
 import { defineNavigate } from './navigate'
@@ -96,7 +96,7 @@ function useClientRouter() {
       serverSideRouteTo(url)
       return
     }
-    if (checkClientSideRenderable && !(await isClientSideRenderable(url))) {
+    if (checkClientSideRenderable && !(await isClientSideRoutable(url))) {
       serverSideRouteTo(url)
       return
     }

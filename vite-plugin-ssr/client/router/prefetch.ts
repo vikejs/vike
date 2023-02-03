@@ -2,7 +2,7 @@ export { addLinkPrefetchHandlers, prefetch }
 
 import { assert, assertUsage, isExternalLink } from './utils'
 import { isErrorFetchingStaticAssets, loadPageFilesClientSide } from '../loadPageFilesClientSide'
-import { isClientSideRenderable, skipLink } from './skipLink'
+import { isClientSideRoutable, skipLink } from './skipLink'
 import { getPageId } from './getPageId'
 import { getPrefetchConfig } from './prefetch/getPrefetchConfig'
 import { isAlreadyPrefetched, markAsAlreadyPrefetched } from './prefetch/alreadyPrefetched'
@@ -50,7 +50,7 @@ function addLinkPrefetchHandlers(pageContext: {
 
     if (skipLink(linkTag)) return
     assert(url)
-    if (!(await isClientSideRenderable(url))) return
+    if (!(await isClientSideRoutable(url))) return
 
     if (isAlreadyPrefetched(url)) return
 
