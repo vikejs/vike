@@ -14,22 +14,23 @@ async function isClientSideRoutable(url: string): Promise<boolean> {
   }
   await analyzePageClientSideInit(pageFilesAll, pageId, { sharedPageFilesAlreadyLoaded: false })
   const pageConfig = findPageConfig(pageConfigs, pageId)
-  const { isHtmlOnly, isClientRouting } = analyze(pageConfig, pageFilesAll, pageId)
-  return !isHtmlOnly && isClientRouting
+  const { isClientSideRenderable, isClientRouting } = analyze(pageConfig, pageFilesAll, pageId)
+  return isClientSideRenderable && isClientRouting
 }
 
 function analyze(
   pageConfig: PageConfig | null,
   pageFilesAll: PageFile[],
   pageId: string
-): { isHtmlOnly: boolean; isClientRouting: boolean } {
+): { isClientSideRenderable: boolean; isClientRouting: boolean } {
   if (pageConfig) {
     const isClientRouting = getConfigValue(pageConfig, 'isClientRouting', 'boolean') ?? false
     const clientEntryPageConfig = getCodeFilePath(pageConfig, 'clientEntry')
-    const isHtmlOnly = !!clientEntryPageConfig
-    return { isHtmlOnly, isClientRouting }
+    const isClientSideRenderable = !clientEntryPageConfig
+    return { isClientSideRenderable, isClientRouting }
   } else {
+    // TOOD: globally rename isHtmlOnly to !isClientSideRenderable
     const { isHtmlOnly, isClientRouting } = analyzePageClientSide(pageFilesAll, pageId)
-    return { isHtmlOnly, isClientRouting }
+    return { isClientSideRenderable: !isHtmlOnly, isClientRouting }
   }
 }
