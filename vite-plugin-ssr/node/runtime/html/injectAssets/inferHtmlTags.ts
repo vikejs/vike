@@ -31,12 +31,12 @@ function inferAssetTag(pageAsset: PageAsset): string {
   assert(false, { pageAsset })
 }
 
+// We ignore crossorigin, it seems like Early Hints doesn't have a "crossorigin" property: https://github.com/brillout/vite-plugin-ssr/issues/618#issuecomment-1415752222
 function inferEarlyHintLink(pageAsset: PageAsset): string {
   const { src, assetType } = pageAsset
   const rel = getRel(pageAsset)
   const as = !assetType ? '' : `; as=${assetType}`
-  const crossorigin = isCrossOrigin(pageAsset) ? '; crossorigin' : ''
-  return `<${src}>; rel=${rel}${as}${crossorigin}`
+  return `<${src}>; rel=${rel}${as}`
 }
 
 function getRel({ assetType }: PageAsset): string {
