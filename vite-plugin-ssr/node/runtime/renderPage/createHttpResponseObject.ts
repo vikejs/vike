@@ -20,7 +20,7 @@ import {
 } from '../html/stream'
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
 import type { PageAsset, GetPageAssets } from './getPageAssets'
-import { assert, assertUsage, assertWarning } from '../../utils'
+import { assert, assertUsage, assertWarning, removeFileExtention } from '../../utils'
 import { isErrorPageId } from '../../../shared/route'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 
@@ -81,10 +81,18 @@ async function createHttpResponseObject(
 
   const streamDocs = 'See https://vite-plugin-ssr.com/stream for more information.'
 
-  const earlyHints: EarlyHint[] = (await pageContext.__getPageAssets()).map((asset) => ({
-    ...asset,
-    earlyHintLink: inferEarlyHintLink(asset)
-  }))
+  const earlyHints: EarlyHint[] = []
+  {
+    const assets = await pageContext.__getPageAssets()
+    assets.forEach((asset) => {
+      // Don't early hint fallback assets, https://github.com/brillout/vite-plugin-ssr/issues/624
+      if (earlyHints.some((hint) => removeFileExtention(hint.src) === removeFileExtention(asset.src))) return
+      earlyHints.push({
+        ...asset,
+        earlyHintLink: inferEarlyHintLink(asset)
+      })
+    })
+  }
 
   return {
     statusCode,

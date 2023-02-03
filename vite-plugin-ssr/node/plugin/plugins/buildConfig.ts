@@ -2,7 +2,15 @@ export { buildConfig }
 
 import type { Plugin } from 'vite'
 import type { ResolvedConfig } from 'vite'
-import { assert, determineOutDir, isObject, viteIsSSR, makeFilePathAbsolute, addOnBeforeLogHook } from '../utils'
+import {
+  assert,
+  determineOutDir,
+  isObject,
+  viteIsSSR,
+  makeFilePathAbsolute,
+  addOnBeforeLogHook,
+  removeFileExtention
+} from '../utils'
 import { findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './generateImportGlobs/virtualModuleIdPageFiles'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
@@ -56,10 +64,6 @@ async function entryPoints(config: ResolvedConfig): Promise<Record<string, strin
       ['entry-server-routing']: resolve(`dist/esm/client/entry.js`)
     }
   }
-}
-
-function removeFileExtention(filePath: string) {
-  return filePath.split('.').slice(0, -1).join('.')
 }
 
 function resolve(filePath: string) {
