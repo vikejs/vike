@@ -35,8 +35,7 @@ function inferAssetTag(pageAsset: PageAsset): string {
 function inferEarlyHintLink(pageAsset: PageAsset): string {
   const { src, assetType } = pageAsset
   const rel = getRel(pageAsset)
-  const as = !assetType ? '' : `; as=${assetType}`
-  return `<${src}>; rel=${rel}${as}`
+  return [`<${src}>`, `rel=${rel}`, !assetType ? null : `as=${assetType}`].filter(Boolean).join('; ')
 }
 
 function getRel({ assetType }: PageAsset): string {
