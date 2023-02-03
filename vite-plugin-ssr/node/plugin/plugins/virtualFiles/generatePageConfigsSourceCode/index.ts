@@ -27,6 +27,7 @@ export const debug = createDebugger('vps:virtual-files')
 //        /pages/+config.ts sets the config onRenderHtml to the value './+config/onRenderHtml.js' but a file wasn't found at /home/rom/code/vite-plugin-ssr/examples/vanilla-v1/pages/+config/onRenderHtml.js
 //       ```
 // TODO: comment https://github.com/reactjs/reactjs.org/pull/5487#issuecomment-1409720741
+// TODO: Define pageContext.pageId
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,

@@ -16,6 +16,7 @@ type ConfigName =
   | 'onBeforePrerender'
   */
   | 'onPrerender'
+  | 'prerender'
   | 'Page'
   | 'passToClient'
   | 'route'

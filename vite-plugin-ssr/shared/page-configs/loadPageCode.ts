@@ -1,13 +1,14 @@
 export { loadPageCode }
 
-import { assert, assertDefaultExport } from '../utils'
+import { assert, assertDefaultExport, objectAssign } from '../utils'
 import type { PageConfig, PageConfigLoaded } from './PageConfig'
 
 async function loadPageCode(pageConfig: PageConfig): Promise<PageConfigLoaded> {
   const configValues: Record<string, unknown> = {}
 
-  // Ensure loadPageCode() wasn't already called
-  assert(!('configValues' in pageConfig))
+  if ('configValues' in pageConfig) {
+    return pageConfig as PageConfigLoaded
+  }
 
   const codeFiles = await pageConfig.loadCodeFiles()
   codeFiles.forEach(({ configName, codeFilePath, codeFileExports }) => {
@@ -25,8 +26,7 @@ async function loadPageCode(pageConfig: PageConfig): Promise<PageConfigLoaded> {
     })
   )
 
-  return {
-    ...pageConfig,
-    configValues
-  }
+  objectAssign(pageConfig, { configValues })
+
+  return pageConfig
 }

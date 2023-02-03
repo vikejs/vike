@@ -62,6 +62,10 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
     c_code: false,
     c_env: 'server-and-client'
   },
+  prerender: {
+    c_code: true,
+    c_env: 'server-only'
+  }
   /* TODO
   onBeforeRoute: {
     c_code: true,
@@ -71,7 +75,7 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   onBeforePrerender: {
     c_code: true,
     c_global: true,
-    c_env: 'server'
+    c_env: 'server-only'
   }
   */
 }

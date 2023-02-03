@@ -42,6 +42,8 @@ import { getPageFilesServerSide } from '../../shared/getPageFiles'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
+import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
+import { loadPageCode } from '../../shared/page-configs/loadPageCode'
 
 type HtmlFile = {
   urlOriginal: string
@@ -207,6 +209,12 @@ async function collectDoNoPrerenderList(
   doNotPrerenderList: DoNotPrerenderList,
   concurrencyLimit: PLimit
 ) {
+  renderContext.pageConfigs.forEach((pageConfig) => {
+    if (getConfigValue(pageConfig, 'prerender', 'boolean')) {
+      doNotPrerenderList.push({ pageId: pageConfig.pageId2, pageFilePath: pageConfig.pageConfigFilePath })
+    }
+  })
+
   await Promise.all(
     renderContext.pageFilesAll
       .filter((p) => {
@@ -263,8 +271,24 @@ async function callPrerenderHooks(
     hookName: 'prerender' | 'onPrerender'
     hookFilePath: string
   }[] = []
-  // Render URLs returned by `prerender()` hooks
-
+  await Promise.all(
+    renderContext.pageConfigs.filter((pageConfig) =>
+      concurrencyLimit(async () => {
+        if (!pageConfig.configSources.onPrerender) return
+        const codeFilePath = getCodeFilePath(pageConfig, 'onPrerender')
+        assert(codeFilePath)
+        const pageConfigLoaded = await loadPageCode(pageConfig)
+        const hookFn = pageConfigLoaded.configValues.onPrerender
+        assert(hookFn)
+        assertUsage(isCallable(hookFn), `The onPrerender() hook defined by ${codeFilePath} should be a function`)
+        onPrerenderHooks.push({
+          hookFn,
+          hookName: 'onPrerender',
+          hookFilePath: codeFilePath
+        })
+      })
+    )
+  )
   await Promise.all(
     renderContext.pageFilesAll
       .filter((p) => {
