@@ -211,12 +211,28 @@ type RenderContext = {
 async function getRenderContext(): Promise<RenderContext> {
   const globalContext = getGlobalContext()
   const { pageFilesAll, allPageIds, pageConfigs } = await getPageFilesAll(false, globalContext.isProduction)
+  assertNonMixedDesign(pageFilesAll, pageConfigs)
   const renderContext = {
     pageFilesAll: pageFilesAll,
     pageConfigs,
     allPageIds: allPageIds
   }
   return renderContext
+}
+
+function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[]) {
+  if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
+  const indent = '- '
+  assertUsage(
+    false,
+    [
+      'Mixing the new V1 design with the old V0.4 design is forbidden.',
+      'V1 files:',
+      ...pageConfigs.map((p) => indent + p.pageConfigFilePath),
+      'V0.4 files:',
+      ...pageFilesAll.map((p) => indent + p.filePath)
+    ].join('\n')
+  )
 }
 
 async function executeOnBeforeRenderHooks(
