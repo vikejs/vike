@@ -8,7 +8,7 @@ import { isRenderErrorPageException } from './renderPage/RenderErrorPage'
 import { initGlobalContext } from './globalContext'
 import { handlePageContextRequestUrl } from './renderPage/handlePageContextRequestUrl'
 import { HttpResponse } from './renderPage/createHttpResponseObject'
-import { logError, isNewError } from './renderPage/logError'
+import { logErrorWithVite, isNewError, logErrorWithoutVite } from './renderPage/logError'
 import { assertArguments } from './renderPage/assertArguments'
 import type { PageContextDebug } from './renderPage/debugPageFiles'
 import { warnMissingErrorPage } from './renderPage/handleErrorWithoutErrorPage'
@@ -40,7 +40,9 @@ async function renderPage<
     await initGlobalContext()
     renderContext = await getRenderContext()
   } catch (err) {
-    logError(err)
+    // Errors are expected since assertUsage() is used in both initGlobalContext() and getRenderContext().
+    // initGlobalContext() and getRenderContext() don't call any user hooks => err isn't thrown from user code => we use logErrorWithoutVite() instead of logErrorWithVite().
+    logErrorWithoutVite(err)
     const pageContextErr = getPageContextErr(err, pageContextInit)
     return pageContextErr
   }
@@ -107,7 +109,7 @@ async function renderPage<
     if (errorPageIsMissing) {
       warnMissingErrorPage()
     }
-    logError(errOriginal)
+    logErrorWithVite(errOriginal)
     let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderErrorPage>>
     let errErrorPage: unknown
     try {
@@ -127,7 +129,7 @@ async function renderPage<
       assert(errErrorPage)
       assert(pageContextErrorPage === undefined)
       if (isNewError(errErrorPage, errOriginal)) {
-        logError(errErrorPage)
+        logErrorWithVite(errErrorPage)
       }
       const pageContextErr = getPageContextErr(errOriginal, pageContextInit)
       assert(pageContextErr.httpResponse === null)
