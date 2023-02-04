@@ -36,8 +36,16 @@ setupNativeScrollRestoration()
 
 initHistoryState()
 
-function disableClientRouting() {
+function disableClientRouting(err: unknown, logError: boolean) {
+  assert(isErrorFetchingStaticAssets(err))
+
   globalObject.clientRoutingIsDisabled = true
+
+  if (logError) {
+    // We don't use console.error() to avoid flooding error trackers such as Sentry
+    console.log(err)
+  }
+
   assertInfo(
     false,
     `New deployed frontend detected. The next page navigation will use Server Routing instead of Client Routing.`,
@@ -460,12 +468,13 @@ function handleErrorFetchingStaticAssets(
     return false
   }
 
-  disableClientRouting()
-
   if (pageContext._isFirstRenderAttempt) {
+    disableClientRouting(err, false)
     // This may happen if the frontend was newly deployed during hydration.
     // Ideally: re-try a couple of times by reloading the page (not entirely trivial to implement since `localStorage` is needed.)
     throw err
+  } else {
+    disableClientRouting(err, true)
   }
 
   serverSideRouteTo(pageContext.urlOriginal)

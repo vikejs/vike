@@ -25,7 +25,7 @@ async function prefetch(url: string): Promise<void> {
       await loadPageFilesClientSide(pageFilesAll, pageId)
     } catch (err) {
       if (isErrorFetchingStaticAssets(err)) {
-        disableClientRouting()
+        disableClientRouting(err, true)
       } else {
         throw err
       }
