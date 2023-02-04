@@ -1,6 +1,3 @@
-export function removeFileExtention(filePath: string, filenameContainsHash?: true) {
-  return filePath
-    .split('.')
-    .slice(0, filenameContainsHash ? -2 : -1)
-    .join('.')
+export function removeFileExtention(filePath: string) {
+  return filePath.split('.').slice(0, -1).join('.')
 }

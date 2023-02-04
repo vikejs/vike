@@ -20,7 +20,7 @@ import {
 } from '../html/stream'
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
 import type { PageAsset, GetPageAssets } from './getPageAssets'
-import { assert, assertUsage, assertWarning, removeFileExtention } from '../../utils'
+import { assert, assertUsage, assertWarning } from '../../utils'
 import { isErrorPageId } from '../../../shared/route'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
 
@@ -85,8 +85,8 @@ async function createHttpResponseObject(
   {
     const assets = await pageContext.__getPageAssets()
     assets.forEach((asset) => {
-      // Don't early hint fallback assets, https://github.com/brillout/vite-plugin-ssr/issues/624
-      if (earlyHints.some((hint) => removeFileExtention(hint.src, true) === removeFileExtention(asset.src), true)) return
+      // Don't early hint fallback fonts, https://github.com/brillout/vite-plugin-ssr/issues/624
+      if (isFontFallback(asset, earlyHints)) return
       earlyHints.push({
         ...asset,
         earlyHintLink: inferEarlyHintLink(asset)
@@ -205,4 +205,27 @@ async function createHttpResponseObject(
     assert(['a ', 'an ', 'the '].some((s) => streamName.startsWith(s)))
     return `Make sure your \`render()\` hook provides ${streamName} instead`
   }
+}
+
+function isFontFallback(asset: PageAsset, earlyHints: EarlyHint[]): boolean {
+  if (asset.assetType !== 'font') {
+    return false
+  }
+  const fontUrlBase = removeFileExtentionAndHash(asset.src)
+  return earlyHints.some((hint) => {
+    return hint.assetType === 'font' && removeFileExtentionAndHash(hint.src) === fontUrlBase
+  })
+}
+
+function removeFileExtentionAndHash(assetUrl: string): string {
+  assert(assetUrl.startsWith('/'))
+  assert(!assetUrl.includes('\\'))
+  // The logic below doesn't work for '/assets/chunk-0e184ced.js'
+  assert(!assetUrl.endsWith('.js'))
+  const paths = assetUrl.split('/')
+  const filename = paths[paths.length - 1]!
+  const filenameParts = filename.split('.').slice(0, -2)
+  assert(filenameParts.length >= 1)
+  paths[paths.length - 1] = filenameParts.join('.')
+  return paths.join('/')
 }
