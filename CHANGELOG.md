@@ -1,3 +1,12 @@
+## [0.4.76](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.75...v0.4.76) (2023-02-04)
+
+
+### Bug Fixes
+
+* consider only fonts as fallback assets (fix [#624](https://github.com/brillout/vite-plugin-ssr/issues/624)) ([523167f](https://github.com/brillout/vite-plugin-ssr/commit/523167f64ef5e7a747e88a817bcd72f511fd3f66))
+
+
+
 ## [0.4.75](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.74...v0.4.75) (2023-02-03)
 
 
