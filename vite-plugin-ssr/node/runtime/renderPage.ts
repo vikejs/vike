@@ -69,6 +69,7 @@ async function renderPage<
   }
 
   const errorPageIsMissing = !getErrorPageId(renderContext.allPageIds)
+  const isV1 = renderContext.pageConfigs.length > 0
 
   if (errOriginal === undefined) {
     assert(pageContextOriginal)
@@ -83,7 +84,7 @@ async function renderPage<
       executeOnRenderResult(pageContextInit, true, statusCode)
       if (errorPageIsMissing) {
         assert(pageContextOriginal.httpResponse === null)
-        warnMissingErrorPage()
+        warnMissingErrorPage(isV1)
       }
       log404(pageContextOriginal)
     } else {
@@ -107,7 +108,7 @@ async function renderPage<
       null
     )
     if (errorPageIsMissing) {
-      warnMissingErrorPage()
+      warnMissingErrorPage(isV1)
     }
     logErrorWithVite(errOriginal)
     let pageContextErrorPage: undefined | Awaited<ReturnType<typeof renderErrorPage>>
