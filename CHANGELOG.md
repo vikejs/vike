@@ -1,3 +1,12 @@
+## [0.4.77](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.76...v0.4.77) (2023-02-04)
+
+
+### Bug Fixes
+
+* improve error logging logic (fix [#625](https://github.com/brillout/vite-plugin-ssr/issues/625)) ([56cb9ca](https://github.com/brillout/vite-plugin-ssr/commit/56cb9ca2501e9853b9e5001c02678e8c1ee5c274))
+
+
+
 ## [0.4.76](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.75...v0.4.76) (2023-02-04)
 
 
