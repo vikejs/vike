@@ -19,10 +19,9 @@ async function loadPageCode(pageConfig: PageConfig): Promise<PageConfigLoaded> {
 
   await Promise.all(
     Object.entries(pageConfig.configSources).map(async ([configName, configSource]) => {
-      if ('configValue' in configSource) {
-        assert(!(configName in configValues))
-        configValues[configName] = configSource.configValue
-      }
+      if (configSource.codeFilePath) return
+      assert(!(configName in configValues))
+      configValues[configName] = configSource.configValue
     })
   )
 
