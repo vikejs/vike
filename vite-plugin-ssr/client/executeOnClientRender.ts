@@ -1,6 +1,6 @@
 export { executeOnClientRender }
 
-import { assert, assertUsage, callHookWithTimeout } from './utils'
+import { assert, assertUsage, callHookWithTimeout, unique } from './utils'
 import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
@@ -22,7 +22,7 @@ async function executeOnClientRender<
 
   {
     const renderHook = getHook(pageContext, 'render')
-    // assertWarning(!renderHook, 'Hook render() has been renamed to onRenderHtml() and onRenderClient()', { onlyOnce: true, showStackTrace: false }) // TODO
+    // assertWarning(!renderHook, 'Hook render() has been renamed to onRenderHtml() and onRenderClient()', { onlyOnce: true, showStackTrace: false }) // TODO/v1: replace this warning with waning that user should migrate to v1
     hook = renderHook
     hookName = 'render'
   }
@@ -35,29 +35,17 @@ async function executeOnClientRender<
   }
 
   if (!hook) {
-    const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
-    let errMsg: string
+    const url = getUrl(pageContext)
     if (pageContext._pageConfigs.length > 0) {
-      /*
-      if ( !pageContext._pageConfigFiles.some(p => 'onClientRender' in p.pageConfigValues) ) {
-        assertUsage(false, 'No onRenderClient() hook found. None of your config files define onRenderClient(): '+ pageContext._pageFilesLoaded.map(p => p.pageConfigFilePath).join(' ')) // TODO: define and use pageContext._pageConfigFiles
-      } else {
-        assertUsage(false, 'No onRenderClient() hook found for URL ...); // TODO: show URL + show relevant page config files 
-      }
-      */
-      assertUsage(false, 'No onRenderClient() hook found') // TODO: define and use pageContext._pageConfigFiles
+      assertMissingHook(pageContext._pageId, pageContext._pageConfigs, url)
     } else {
+      const pageClientsFilesLoaded = pageContext._pageFilesLoaded.filter((p) => p.fileType === '.page.client')
+      let errMsg: string
       if (pageClientsFilesLoaded.length === 0) {
-        let url: string | undefined
-        // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextReadyForRelease
-        try {
-          url = pageContext.urlOriginal
-        } catch {}
-        url = url ?? window.location.href
-        errMsg = 'No file `*.page.client.*` found for URL ' + url // TODO
+        errMsg = 'No file `*.page.client.*` found for URL ' + url
       } else {
         errMsg =
-          'One of the following files should export a `render()` hook: ' + // TODO
+          'One of the following files should export a `render()` hook: ' +
           pageClientsFilesLoaded.map((p) => p.filePath).join(' ')
       }
       assertUsage(false, errMsg)
@@ -74,4 +62,57 @@ async function executeOnClientRender<
     hookResult === undefined,
     `The ${hookName}() hook defined by ${hook.filePath} isn't allowed to return a value`
   )
+}
+
+function getUrl(pageContext: { urlOriginal?: string }): string {
+  let url: string | undefined
+  // try/catch to avoid passToClient assertUsage(), although I'd expect this to not be needed since we're accessing pageContext and not pageContextReadyForRelease
+  try {
+    url = pageContext.urlOriginal
+  } catch {}
+  url = url ?? window.location.href
+  return url
+}
+
+function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: string) {
+  const pageConfig = pageConfigs.find((p) => p.pageId2 === pageId)
+  assert(pageConfigs.length > 0)
+  assert(pageConfig)
+  assert(!pageConfig.configSources.onRenderClient?.configValue)
+  assert(pageConfig.configSources.clientRouting?.configValue === true)
+
+  const pageConfigFilesDefiningHook: { codeFilePath: string; configFilePath: string }[] = []
+  let pageConfigFilesAll: string[] = []
+  pageConfigs.forEach((pageConfig) => {
+    pageConfigFilesAll.push(...pageConfig.pageConfigFilePathAll)
+    const configSource = pageConfig.configSources.onRenderClient
+    if (configSource && configSource.configValue) {
+      const { configFilePath, codeFilePath } = configSource
+      assert(codeFilePath)
+      pageConfigFilesDefiningHook.push({ configFilePath, codeFilePath })
+    }
+  })
+  pageConfigFilesAll = unique(pageConfigFilesAll)
+
+  const indent = '- '
+  const msgIntro = `No onRenderClient() hook found for URL \`${url}\`. (A onRenderClient() hook is required when using Client Routing: the config \`clientRouting\` is \`true\` for the URL \`${url}\`.)`
+  if (pageConfigFilesDefiningHook.length === 0) {
+    assertUsage(
+      false,
+      [
+        `${msgIntro} No onRenderClient() hook is defined by any of your page config files. Your page config files (which none of them defines \`onClientRender()\`):`,
+        ...pageConfigFilesAll.map((p) => indent + p)
+      ].join('\n')
+    )
+  } else {
+    const plural = pageConfigFilesDefiningHook.length >= 2
+    assertUsage(
+      false,
+      [
+        `${msgIntro} Note that onRenderClient() is defined by following page config file${plural ? 's' : ''}:`,
+        ...pageConfigFilesDefiningHook.map((p) => `${indent}${p.configFilePath} (defines ${p.codeFilePath})`),
+        `but ${plural ? 'none of them' : "it doesn't"} apply to the URL \`${url}\`.`
+      ].join('\n')
+    )
+  }
 }

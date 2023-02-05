@@ -65,13 +65,14 @@ function generateSourceCodeOfPageConfigs(
 
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePath, pageId2, routeFilesystem, configSources } = pageConfig
+    const { pageConfigFilePath, pageConfigFilePathAll, pageId2, routeFilesystem, configSources } = pageConfig
     const codeFilesImporter = getVirutalModuleIdPageCodeFilesImporter(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
+    lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: '${routeFilesystem}',`)
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)

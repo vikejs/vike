@@ -27,6 +27,7 @@ type ConfigName =
 type PageConfigData = {
   pageId2: string // TODO: rename
   pageConfigFilePath: string
+  pageConfigFilePathAll: string[]
   routeFilesystem: null | string
   configSources: Partial<
     Record<

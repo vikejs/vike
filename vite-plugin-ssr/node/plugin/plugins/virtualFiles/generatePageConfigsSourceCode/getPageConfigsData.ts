@@ -43,6 +43,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
 
     const configSources: PageConfigData['configSources'] = {}
     objectEntries(configDefinitions).forEach(([configName, configSpec]) => {
+      // TODO: properly determine relevant abstract page configs
       const result = resolveConfig(configName, configSpec, pageConfigFile, pageConfigFilesAbstract, userRootDir)
       if (!result) return
       const { c_env } = configSpec
@@ -69,8 +70,15 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
       }
     })
 
+    // TODO: properly determine relevant abstract page configs
+    const pageConfigFilePathAll = [
+      pageConfigFile.pageConfigFilePath,
+      ...pageConfigFilesAbstract.map((p) => p.pageConfigFilePath)
+    ]
+
     pageConfigsData.push({
       pageConfigFilePath,
+      pageConfigFilePathAll,
       pageId2,
       routeFilesystem,
       configSources
