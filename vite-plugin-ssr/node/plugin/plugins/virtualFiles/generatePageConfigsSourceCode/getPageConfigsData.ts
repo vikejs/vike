@@ -19,7 +19,7 @@ import {
 import path from 'path'
 import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import type { PageConfigFile } from './loadPageConfigFiles'
-import { configDefinitions, type ConfigSpec } from './configDefinitions'
+import { configDefinitionsBuiltIn, type ConfigSpec } from './configDefinitionsBuiltIn'
 
 function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}
@@ -29,7 +29,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
     const pageConfigValues = getPageConfigValues(pageConfigFile)
     const { pageConfigFilePath } = pageConfigFile
     Object.keys(pageConfigValues).forEach((configName) => {
-      assertUsage(configName in configDefinitions, `Unknown config '${configName}' defined by ${pageConfigFilePath}`)
+      assertUsage(configName in configDefinitionsBuiltIn, `Unknown config '${configName}' defined by ${pageConfigFilePath}`)
     })
   })
 
@@ -42,7 +42,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
     const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
 
     const configSources: PageConfigData['configSources'] = {}
-    objectEntries(configDefinitions).forEach(([configName, configSpec]) => {
+    objectEntries(configDefinitionsBuiltIn).forEach(([configName, configSpec]) => {
       // TODO: properly determine relevant abstract page configs
       const result = resolveConfig(configName, configSpec, pageConfigFile, pageConfigFilesAbstract, userRootDir)
       if (!result) return

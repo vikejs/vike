@@ -1,4 +1,4 @@
-export { configDefinitions }
+export { configDefinitionsBuiltIn }
 export type { ConfigSpec }
 
 import { assertUsage, isCallable } from '../../../utils'
@@ -18,7 +18,7 @@ type ConfigSpec = {
   ) => void | undefined
 }
 
-const configDefinitions: Record<ConfigName, ConfigSpec> = {
+const configDefinitionsBuiltIn: Record<ConfigName, ConfigSpec> = {
   onRenderHtml: {
     c_code: true,
     c_required: true,
