@@ -1,7 +1,6 @@
 export default {
   Page: './Page.mdx',
-  /* TODO documentProps: {
+  documentProps: {
     title: 'Some Markdown Page'
   }
-  */
 }

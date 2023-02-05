@@ -1,13 +1,13 @@
 export { configDefinitionsBuiltIn }
-export type { ConfigSpec }
+export type { ConfigDefinition }
 
 import { assertUsage, isCallable } from '../../../utils'
 import type { ConfigName, c_Env } from '../../../../../shared/page-configs/PageConfig'
 import { assertRouteString } from '../../../../../shared/route/resolveRouteString'
 
 // TODO: remove c_ prefix
-type ConfigSpec = {
-  c_env: c_Env
+type ConfigDefinition = {
+  c_env: c_Env // TODO: rename to runtime? or runtimeEnv?
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
   c_code?: boolean // TODO: remove? Or rename to `type: 'code'`
@@ -18,7 +18,8 @@ type ConfigSpec = {
   ) => void | undefined
 }
 
-const configDefinitionsBuiltIn: Record<ConfigName, ConfigSpec> = {
+type ConfigDefinitionsBuiltIn = Record<ConfigName, ConfigDefinition>
+const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   onRenderHtml: {
     c_code: true,
     c_required: true,
@@ -85,7 +86,7 @@ const configDefinitionsBuiltIn: Record<ConfigName, ConfigSpec> = {
 }
 
 function getRouteValidator() {
-  const validateRoute: ConfigSpec['c_validate'] = (configResolved) => {
+  const validateRoute: ConfigDefinition['c_validate'] = (configResolved) => {
     const { configFilePath, configValue } = configResolved
     if ('codeFilePath' in configResolved) return
     if (typeof configValue === 'string') {

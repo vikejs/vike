@@ -1,11 +1,9 @@
 export default {
   Page: './Page.tsx',
-  onBeforeRender: './onBeforeRender.ts'
-  /* TODO
+  onBeforeRender: './onBeforeRender.ts',
   configDefinitions: {
     onBeforeRender: {
-      c_env: ['server-and-client']
+      c_env: 'server-and-client'
     }
   }
-  */
 }

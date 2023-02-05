@@ -14,42 +14,51 @@ import {
   assertWarning,
   addFileExtensionsToRequireResolve,
   assertDefaultExport,
-  objectEntries
+  objectEntries,
+  hasProp
 } from '../../../utils'
 import path from 'path'
-import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
+import type { ConfigName, PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import type { PageConfigFile } from './loadPageConfigFiles'
-import { configDefinitionsBuiltIn, type ConfigSpec } from './configDefinitionsBuiltIn'
+import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
+
+type ConfigDefinitionsAll = Record<string, ConfigDefinition>
 
 function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigsData: PageConfigData[] = []
 
-  pageConfigFiles.forEach((pageConfigFile) => {
-    const pageConfigValues = getPageConfigValues(pageConfigFile)
-    const { pageConfigFilePath } = pageConfigFile
-    Object.keys(pageConfigValues).forEach((configName) => {
-      assertUsage(configName in configDefinitionsBuiltIn, `Unknown config '${configName}' defined by ${pageConfigFilePath}`)
-    })
-  })
-
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
+
   pageConfigFilesConcrete.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
     const pageId2 = determinePageId2(pageConfigFilePath)
 
     const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
 
+    const pageConfigFilesRelevant = [pageConfigFile, ...pageConfigFilesAbstract]
+    const configDefinitionsAll = getConfigDefinitionsAll(pageConfigFilesRelevant)
+
+    {
+      const pageConfigValues = getPageConfigValues(pageConfigFile)
+      Object.keys(pageConfigValues).forEach((configName) => {
+        assertUsage(
+          configName in configDefinitionsAll || configName === 'configDefinitions',
+          `${pageConfigFilePath} defines an unknown config '${configName}'`
+        )
+      })
+    }
+
     const configSources: PageConfigData['configSources'] = {}
-    objectEntries(configDefinitionsBuiltIn).forEach(([configName, configSpec]) => {
+    objectEntries(configDefinitionsAll).forEach(([configName, configDef]) => {
       // TODO: properly determine relevant abstract page configs
-      const result = resolveConfig(configName, configSpec, pageConfigFile, pageConfigFilesAbstract, userRootDir)
+      const result = resolveConfig(configName, configDef, pageConfigFile, pageConfigFilesAbstract, userRootDir)
       if (!result) return
-      const { c_env } = configSpec
+      const { c_env } = configDef
       const { configValue, codeFilePath, configFilePath } = result
       if (!codeFilePath) {
-        configSources[configName] = {
+        configSources[configName as ConfigName] = {
           configFilePath,
           c_env,
           configValue
@@ -62,7 +71,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
             configName
           )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
         )
-        configSources[configName] = {
+        configSources[configName as ConfigName] = {
           configFilePath,
           codeFilePath,
           c_env
@@ -90,7 +99,7 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
 
 function resolveConfig(
   configName: string,
-  configSpec: ConfigSpec,
+  configDef: ConfigDefinition,
   pageConfigFile: PageConfigFile,
   pageConfigFilesAbstract: PageConfigFile[],
   userRootDir: string
@@ -100,7 +109,7 @@ function resolveConfig(
   const { pageConfigValue, pageConfigValueFilePath } = result
   const configValue = pageConfigValue
   const configFilePath = pageConfigValueFilePath
-  const { c_code, c_validate } = configSpec
+  const { c_code, c_validate } = configDef
   const codeFilePath = getCodeFilePath(pageConfigValue, pageConfigValueFilePath, userRootDir, configName, c_code)
   assert(codeFilePath || !c_code) // TODO: assertUsage() or remove
   if (c_validate) {
@@ -282,3 +291,48 @@ function getPageConfigValues(pageConfigFile: PageConfigFile): Record<string, unk
   )
   return pageConfigValues
 }
+
+function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): ConfigDefinitionsAll {
+  const configDefinitionsAll: ConfigDefinitionsAll = { ...configDefinitionsBuiltIn }
+  pageConfigFilesRelevant.forEach((pageConfigFile) => {
+    const { pageConfigFilePath } = pageConfigFile
+    const { configDefinitions } = getPageConfigValues(pageConfigFile)
+    if (configDefinitions) {
+      const msgWrongType = `to a value with an invalid type \`${typeof pageConfigFilePath}\`: it should be an object instead`
+      assertUsage(
+        isObject(configDefinitions),
+        `${pageConfigFilePath} sets the config 'configDefinitions' ${msgWrongType}`
+      )
+      objectEntries(configDefinitions).forEach(([configName, configDef]) => {
+        assertUsage(isObject(configDef), `${pageConfigFilePath} sets 'configDefinitions.${configName}' ${msgWrongType}`)
+        const configDefMerged = {
+          ...(configDefinitionsAll[configName] as ConfigDefinition | undefined),
+          ...configDef
+        }
+        const msgHint = `Make sure to define the 'c_env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'`
+        assertUsage(
+          hasProp(configDefMerged, 'c_env', 'string'),
+          `${pageConfigFilePath} defines 'configDefinitions.${configName}' but without defining its 'c_env' value which is required. ${msgHint}`
+        )
+        assertUsage(
+          ['client-only', 'server-only', 'server-and-client'].includes(configDefMerged.c_env),
+          `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to an invalid value '${configDefMerged.c_env}'. ${msgHint}`
+        )
+        configDefinitionsAll[configName] = configDefMerged
+      })
+    }
+  })
+  return configDefinitionsAll
+}
+
+/* TODO: remove
+      assertConfigDefinitions(configDefinitions, pageConfigFilePath)
+function assertConfigDefinitions(
+  configDefinitions: unknown,
+  pageConfigFilePath: string
+): asserts configDefinitions is ConfigDefinitionsAll {
+  Object.values(configDefinitions).forEach((configDef) => {
+    // TODO
+  })
+}
+*/
