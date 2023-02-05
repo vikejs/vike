@@ -65,6 +65,10 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   prerender: {
     c_code: true,
     c_env: 'server-only'
+  },
+  hydrationCanBeAborted: {
+    c_code: false,
+    c_env: 'client-only'
   }
   /* TODO
   onBeforeRoute: {

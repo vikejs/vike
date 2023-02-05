@@ -21,6 +21,7 @@ type ConfigName =
   | 'passToClient'
   | 'route'
   | 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
+  | 'hydrationCanBeAborted'
   | 'clientEntry'
   | 'clientRouting'
 

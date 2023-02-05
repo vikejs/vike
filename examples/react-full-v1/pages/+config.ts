@@ -3,5 +3,5 @@ export default {
   onRenderClient: './+config/onRenderClient.tsx',
   passToClient: ['pageProps', 'documentProps', 'someAsyncProps'],
   clientRouting: true,
-  // hydrationCanBeAborted: true // TODO
+  hydrationCanBeAborted: true
 }
