@@ -34,7 +34,7 @@ const configDefinitions: Record<ConfigName, ConfigSpec> = {
   },
   onPrerender: {
     c_code: true,
-    c_env: 'client-only'
+    c_env: 'server-only'
   },
   Page: {
     c_code: true,

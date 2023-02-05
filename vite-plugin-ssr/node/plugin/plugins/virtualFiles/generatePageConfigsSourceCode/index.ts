@@ -28,6 +28,7 @@ export const debug = createDebugger('vps:virtual-files')
 //       ```
 // TODO: comment https://github.com/reactjs/reactjs.org/pull/5487#issuecomment-1409720741
 // TODO: Define pageContext.pageId
+// TODO: Check/improve dist/ names
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,
