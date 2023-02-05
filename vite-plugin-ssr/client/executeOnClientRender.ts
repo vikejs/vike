@@ -5,6 +5,7 @@ import { getHook, type Hook } from '../shared/getHook'
 import type { PageFile, PageContextExports } from '../shared/getPageFiles'
 import { type PageContextRelease, releasePageContext } from './releasePageContext'
 import type { PageConfig } from '../shared/page-configs/PageConfig'
+import { getPageConfig } from '../shared/page-configs/utils'
 
 async function executeOnClientRender<
   PC extends {
@@ -75,9 +76,7 @@ function getUrl(pageContext: { urlOriginal?: string }): string {
 }
 
 function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: string) {
-  const pageConfig = pageConfigs.find((p) => p.pageId2 === pageId)
-  assert(pageConfigs.length > 0)
-  assert(pageConfig)
+  const pageConfig = getPageConfig(pageId, pageConfigs)
   assert(!pageConfig.configSources.onRenderClient?.configValue)
   assert(pageConfig.configSources.clientRouting?.configValue === true)
 

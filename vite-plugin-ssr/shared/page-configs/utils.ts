@@ -1,8 +1,9 @@
 export { getConfigValue }
 export { getCodeFilePath }
 export { getSourceFilePath }
+export { getPageConfig }
 
-import { assertUsage } from '../utils'
+import { assert, assertUsage } from '../utils'
 import type { ConfigName, PageConfig, PageConfigData } from './PageConfig'
 
 function getConfigValue(pageConfig: PageConfigData, configName: ConfigName, type: 'string'): null | string
@@ -62,4 +63,11 @@ function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean 
   const { codeFilePath, configValue } = configSource
   if (codeFilePath) return false
   return configValue === null || configValue === undefined
+}
+
+function getPageConfig(pageId: string, pageConfigs: PageConfig[]): PageConfig {
+  const pageConfig = pageConfigs.find((p) => p.pageId2 === pageId)
+  assert(pageConfigs.length > 0)
+  assert(pageConfig)
+  return pageConfig
 }

@@ -22,6 +22,7 @@ import { loadPageFilesClientSide } from '../loadPageFilesClientSide'
 import { removeBuiltInOverrides } from './getPageContext/removeBuiltInOverrides'
 import { getPageContextRequestUrl } from '../../shared/getPageContextRequestUrl'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
+import { getCodeFilePath, getPageConfig } from '../../shared/page-configs/utils'
 
 export { getPageContext }
 export { getPageContextErrorPage }
@@ -187,9 +188,7 @@ async function onBeforeRenderExecute(
   }
 
   // `export { onBeforeRender }` defined in `.page.server.js`
-  else if (
-    (await analyzePageServerSide(pageContext._pageFilesAll, pageContext._pageId)).hasOnBeforeRenderServerSideOnlyHook
-  ) {
+  if (await onBeforeRenderServerSideExists(pageContext)) {
     const pageContextFromServer = await retrievePageContextFromServer(pageContext)
     const pageContextAddendum = {}
     Object.assign(pageContextAddendum, pageContextFromServer)
@@ -203,6 +202,31 @@ async function onBeforeRenderExecute(
   // No `export { onBeforeRender }` defined
   const pageContextAddendum = { _comesDirectlyFromServer: false, _pageContextRetrievedFromServer: null }
   return pageContextAddendum
+}
+
+async function onBeforeRenderServerSideExists(
+  pageContext: {
+    _pageId: string
+    urlOriginal: string
+    isHydration: boolean
+    _pageFilesAll: PageFile[]
+    _pageConfigs: PageConfig[]
+  } & PageContextExports &
+    PageContextPassThrough
+): Promise<boolean> {
+  if (pageContext._pageConfigs.length > 0) {
+    const pageConfig = getPageConfig(pageContext._pageId, pageContext._pageConfigs)
+    return (
+      !!getCodeFilePath(pageConfig, 'onBeforeRender') &&
+      pageConfig.configSources.onBeforeRender!.c_env === 'server-only'
+    )
+  } else {
+    const { hasOnBeforeRenderServerSideOnlyHook } = await analyzePageServerSide(
+      pageContext._pageFilesAll,
+      pageContext._pageId
+    )
+    return hasOnBeforeRenderServerSideOnlyHook
+  }
 }
 
 async function getPageContextFromRoute(
