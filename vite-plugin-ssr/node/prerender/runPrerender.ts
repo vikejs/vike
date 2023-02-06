@@ -607,9 +607,20 @@ async function routeAndPrerender(
         const pageFilesData = await loadPageFilesServer(pageContext)
         objectAssign(pageContext, pageFilesData)
 
+        let usesClientRouter: boolean
+        {
+          if (pageContext._pageConfigs.length > 0) {
+            const pageConfig = pageContext._pageConfigs.find((p) => p.pageId2 === pageId)
+            assert(pageConfig)
+            usesClientRouter = getConfigValue(pageConfig, 'clientRouting', 'boolean') ?? false
+          } else {
+            usesClientRouter = globalContext.pluginManifest.usesClientRouter
+          }
+        }
+
         objectAssign(pageContext, {
           is404: null,
-          _usesClientRouter: globalContext.pluginManifest.usesClientRouter
+          _usesClientRouter: usesClientRouter
         })
 
         const { documentHtml, pageContextSerialized } = await prerenderPageContext(pageContext)
