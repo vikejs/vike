@@ -1,16 +1,18 @@
-In production, the files living at `dist/server/` are automagically loaded.
+import { Link } from '@brillout/docpress'
 
-But, in some (rare) situations, the tricks used by `vite-plugin-ssr` don't work. In that case, we have to manually load the files living at `dist/server/`. We do this by importing `dist/server/importBuild.cjs`:
+In production, the server build (which live at `dist/server/`) are automagically loaded.
+
+But, in some (rare) situations, the trick used by `vite-plugin-ssr` doesn't work. In that case, we have to manually load the files living at `dist/server/`. We do this by importing `dist/server/importBuild.cjs`:
 
 ```js
 // server.js
 
-// Load files living at `dist/server/`
+// We load the server build living at `dist/server/`
 import './path/to/dist/server/importBuild.cjs'
 ```
 
-> `dist/server/importBuild.cjs` needs to be imported at server start. So we should include the import at the beginning of our Express.js server, Vercel serverless function, worker (Cloudflare Workers), etc.
+If you use [`vite.config.js > build.outDir`](https://vitejs.dev/config/build-options.html#build-outdir), then replace the path `dist/server/` with the path to your custom build directory `${build.outDir}/server`.
 
-> Feel free to reach out to `vite-plugin-ssr` maintainers if you run into problems. (The tricks used by `vite-plugin-ssr` were newly introduced in `0.4` and some edge cases may need to be ironed out.)
+> `dist/server/importBuild.cjs` needs to be imported before running `vite-plugin-ssr`'s server middleware <Link text={<code>renderPage()</code>} href="/renderPage" />. That's why we recommend to insert `import '.../importBuild.cjs` at the beginning of your server entry (e.g. the first `.js` file of your Express.js server, Vercel serverless function, worker (Cloudflare Workers), ...) or at the beginning of your server SSR middleware JavaScript file.
 
-> See [#403](https://github.com/brillout/vite-plugin-ssr/issues/403) if you are curious about the tricks used by vite-plugin-ssr to automagically import `dist/server/` files.
+> See [#403](https://github.com/brillout/vite-plugin-ssr/issues/403) if you're curious about the trick used by vite-plugin-ssr to automagically import `dist/server/` files.

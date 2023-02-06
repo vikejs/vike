@@ -23,7 +23,7 @@ async function loadBuild() {
     const { success, entryFile } = await loadBuild_()
     assertUsage(
       success,
-      `Cannot find production build. Did you to run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`
+      `Cannot find production build. Did you run \`$ vite build\`? If you did, then you may need to use \`${importBuildFileName}\`, see https://vite-plugin-ssr.com/importBuild.cjs`
     )
     assert(buildGetters.getters, { entryFile })
   }
