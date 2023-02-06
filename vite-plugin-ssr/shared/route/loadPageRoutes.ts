@@ -41,65 +41,65 @@ function getPageRoutes(
   let pageIds = [...allPageIds]
 
   // VPS 1.0
-  {
+  if (pageConfigs.length > 0) {
     const comesFromV1PageConfig = true
-    pageConfigs.forEach((pageConfig) => {
-      const pageId = pageConfig.pageId2
-      pageIds = removePageId(pageIds, pageId)
+    pageConfigs
+      .filter((p) => !p.isErrorPage)
+      .forEach((pageConfig) => {
+        const pageId = pageConfig.pageId2
+        pageIds = removePageId(pageIds, pageId)
 
-      let pageRoute: null | PageRoute = null
-      {
-        const routeConfig = pageConfig.configSources.route
-        if (routeConfig) {
-          assert('configValue' in routeConfig) // Route files are eagerly loaded
-          const route = routeConfig.configValue
-          const pageRouteFilePath: string = routeConfig.codeFilePath || routeConfig.configFilePath
-          assert(pageRouteFilePath)
-          if (typeof route === 'string') {
-            pageRoute = { pageId, comesFromV1PageConfig, routeString: route, pageRouteFilePath, routeType: 'STRING' }
-          } else {
-            assert(isCallable(route))
-            let allowAsync = false
-            const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
-            if (allowSyncConfig) {
-              assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
-              const val = allowSyncConfig.configValue
-              assert(typeof val === 'boolean') // TODO: assertUsage()
-              allowAsync = val
-            }
-            pageRoute = {
-              pageId,
-              comesFromV1PageConfig,
-              routeFunction: route,
-              pageRouteFilePath,
-              routeType: 'FUNCTION',
-              allowAsync
+        let pageRoute: null | PageRoute = null
+        {
+          const routeConfig = pageConfig.configSources.route
+          if (routeConfig) {
+            assert('configValue' in routeConfig) // Route files are eagerly loaded
+            const route = routeConfig.configValue
+            const pageRouteFilePath: string = routeConfig.codeFilePath || routeConfig.configFilePath
+            assert(pageRouteFilePath)
+            if (typeof route === 'string') {
+              pageRoute = { pageId, comesFromV1PageConfig, routeString: route, pageRouteFilePath, routeType: 'STRING' }
+            } else {
+              assert(isCallable(route))
+              let allowAsync = false
+              const allowSyncConfig = pageConfig.configSources.iKnowThePerformanceRisksOfAsyncRouteFunctions
+              if (allowSyncConfig) {
+                assert(!('codeFilePath' in allowSyncConfig)) // TODO: improve this?
+                const val = allowSyncConfig.configValue
+                assert(typeof val === 'boolean') // TODO: assertUsage()
+                allowAsync = val
+              }
+              pageRoute = {
+                pageId,
+                comesFromV1PageConfig,
+                routeFunction: route,
+                pageRouteFilePath,
+                routeType: 'FUNCTION',
+                allowAsync
+              }
             }
           }
         }
-      }
 
-      if (!pageRoute) {
-        const { routeFilesystem, pageConfigFilePath } = pageConfig
-        assert(pageConfigFilePath)
-        assert(typeof routeFilesystem === 'string')
-        pageRoute = {
-          pageId,
-          pageConfigFilePath,
-          comesFromV1PageConfig,
-          routeString: routeFilesystem,
-          pageRouteFilePath: null,
-          routeType: 'FILESYSTEM'
+        if (!pageRoute) {
+          const { routeFilesystem, pageConfigFilePath } = pageConfig
+          assert(pageConfigFilePath)
+          assert(typeof routeFilesystem === 'string')
+          pageRoute = {
+            pageId,
+            pageConfigFilePath,
+            comesFromV1PageConfig,
+            routeString: routeFilesystem,
+            pageRouteFilePath: null,
+            routeType: 'FILESYSTEM'
+          }
         }
-      }
 
-      assert(pageRoute)
-      pageRoutes.push(pageRoute)
-    })
-  }
-
-  // VPS 0.4
-  {
+        assert(pageRoute)
+        pageRoutes.push(pageRoute)
+      })
+  } else {
+    // VPS 0.4
     const comesFromV1PageConfig = false
     pageIds
       .filter((pageId) => !isErrorPageId(pageId, false))

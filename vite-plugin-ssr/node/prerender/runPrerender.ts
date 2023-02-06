@@ -3,7 +3,7 @@ export type { PrerenderOptions }
 
 import '../runtime/page-files/setup'
 import path from 'path'
-import { isErrorPageId, loadPageRoutes, route } from '../../shared/route'
+import { loadPageRoutes, route } from '../../shared/route'
 import {
   assert,
   assertUsage,
@@ -654,6 +654,7 @@ function warnMissingPages(
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
     .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
+      // TODO: adapt warning to V1
       assertWarning(
         partial,
         `Could not pre-render page \`${pageId}.page.*\` because it has a non-static route, and no \`prerender()\` hook returned (an) URL(s) matching the page's route. Either use a \`prerender()\` hook to pre-render the page, or use the \`--partial\` option to suppress this warning.`,

@@ -35,8 +35,6 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
     const { pageConfigFilePath } = pageConfigFile
     const pageId2 = determinePageId2(pageConfigFilePath)
 
-    const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
-
     const pageConfigFilesRelevant = [pageConfigFile, ...pageConfigFilesAbstract]
     const configDefinitionsAll = getConfigDefinitionsAll(pageConfigFilesRelevant)
 
@@ -86,6 +84,8 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
     ]
 
     const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
+
+    const routeFilesystem = isErrorPage ? null : determineRouteFromFilesystemPath(pageConfigFilePath)
 
     pageConfigsData.push({
       pageId2,
