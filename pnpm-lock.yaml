@@ -11,13 +11,13 @@ importers:
     specifiers:
       '@brillout/bump-dependencies': ^0.1.1
       '@brillout/dev-my-dep': ^0.1.5
-      '@brillout/test-e2e': ^0.3.11
+      '@brillout/test-e2e': ^0.3.12
       '@brillout/test-types': ^0.1.5
       vitest: ^0.25.3
     devDependencies:
       '@brillout/bump-dependencies': 0.1.1
       '@brillout/dev-my-dep': 0.1.5
-      '@brillout/test-e2e': 0.3.11
+      '@brillout/test-e2e': 0.3.12
       '@brillout/test-types': 0.1.5
       vitest: 0.25.3
 
@@ -2064,8 +2064,8 @@ packages:
       vite-plugin-ssr: link:vite-plugin-ssr
     dev: false
 
-  /@brillout/test-e2e/0.3.11:
-    resolution: {integrity: sha512-XXDVlybBNcXhAspg4+i1O3km9ExXNtjMh4A0CgnbxDg+Sl8/VLk9pgfHP+dugtFZbHN+mIZs0pRC7hHB+KlzXQ==}
+  /@brillout/test-e2e/0.3.12:
+    resolution: {integrity: sha512-V5j6c3Cpa+PyDwlmAdXc66zj56LmE37igtcExok54Y2ZNtVhf9EsQ+1kcxSyYLfvsSFfPfM2Heuf1UdOqyprig==}
     hasBin: true
     dependencies:
       '@brillout/part-regex': 0.1.2
