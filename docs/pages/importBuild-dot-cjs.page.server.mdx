@@ -1,5 +1,3 @@
-import { Link } from '@brillout/docpress'
-
 In production, the server build (which live at `dist/server/`) are automagically loaded.
 
 But, in some (rare) situations, the trick used by `vite-plugin-ssr` doesn't work. In that case, we have to manually load the files living at `dist/server/`. We do this by importing `dist/server/importBuild.cjs`:
@@ -7,12 +5,14 @@ But, in some (rare) situations, the trick used by `vite-plugin-ssr` doesn't work
 ```js
 // server.js
 
-// We load the server build living at `dist/server/`
+// We load the server build living at dist/server/
 import './path/to/dist/server/importBuild.cjs'
+
+// Your server code, e.g. Express.js code, Vercel serverless function, Cloudflare Worker, ...
+import { renderPage } from 'vite-plugin-ssr'
+// ...
 ```
 
-If you use [`vite.config.js > build.outDir`](https://vitejs.dev/config/build-options.html#build-outdir), then replace the path `dist/server/` with the path to your custom build directory `${build.outDir}/server`.
-
-> `dist/server/importBuild.cjs` needs to be imported before running `vite-plugin-ssr`'s server middleware <Link text={<code>renderPage()</code>} href="/renderPage" />. That's why we recommend to insert `import '.../importBuild.cjs` at the beginning of your server entry (e.g. the first `.js` file of your Express.js server, Vercel serverless function, worker (Cloudflare Workers), ...) or at the beginning of your server SSR middleware JavaScript file.
+If you use [`vite.config.js > build.outDir`](https://vitejs.dev/config/build-options.html#build-outdir), then replace the path `./path/to/dist/server/importBuild.cjs` with the path to your custom build directory `./path/to/${build.outDir}/server/importBuild.cjs`.
 
 > See [#403](https://github.com/brillout/vite-plugin-ssr/issues/403) if you're curious about the trick used by vite-plugin-ssr to automagically import `dist/server/` files.
