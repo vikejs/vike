@@ -1,7 +1,6 @@
 export default {
-  // TODO: rename dir `+config/` to `config/`
-  onRenderHtml: './+config/onRenderHtml.tsx',
-  onRenderClient: './+config/onRenderClient.tsx',
+  onRenderHtml: './config/onRenderHtml.tsx',
+  onRenderClient: './config/onRenderClient.tsx',
   // TODO: make adding documentProps to passToClient obsolete?
   passToClient: ['pageProps', 'documentProps', 'someAsyncProps'],
   clientRouting: true,
@@ -15,7 +14,7 @@ export default {
   pages: [
     {
       isErrorPage: true,
-      Page: './+config/ErrorPage.tsx'
+      Page: './config/ErrorPage.tsx'
     }
   ]
   */
