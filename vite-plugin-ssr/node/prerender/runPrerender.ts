@@ -273,7 +273,7 @@ async function callPrerenderHooks(
     hookFilePath: string
   }[] = []
   await Promise.all(
-    renderContext.pageConfigs.filter((pageConfig) =>
+    renderContext.pageConfigs.map((pageConfig) =>
       concurrencyLimit(async () => {
         if (!pageConfig.configSources.onPrerender) return
         const codeFilePath = getCodeFilePath(pageConfig, 'onPrerender')
