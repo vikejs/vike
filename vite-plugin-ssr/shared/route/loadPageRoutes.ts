@@ -102,7 +102,7 @@ function getPageRoutes(
   {
     const comesFromV1PageConfig = false
     pageIds
-      .filter((pageId) => !isErrorPageId(pageId))
+      .filter((pageId) => !isErrorPageId(pageId, false))
       .forEach((pageId) => {
         const pageRouteFile = findPageRouteFile(pageId, pageFilesAll)
         if (!pageRouteFile) {

@@ -30,6 +30,7 @@ export const debug = createDebugger('vps:virtual-files')
 // TODO: Define pageContext.pageId
 // TODO: Check/improve dist/ names
 // TODO: export type { Config } for users
+// TODO: improve Vite dev error handling upon user setting unknown config
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,
@@ -66,12 +67,14 @@ function generateSourceCodeOfPageConfigs(
 
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePath, pageConfigFilePathAll, pageId2, routeFilesystem, configSources } = pageConfig
+    const { pageConfigFilePath, pageConfigFilePathAll, pageId2, routeFilesystem, configSources, isErrorPage } =
+      pageConfig
     const codeFilesImporter = getVirutalModuleIdPageCodeFilesImporter(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
     lines.push(`    pageId2: '${pageId2}',`)
+    lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
     lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
     lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
     lines.push(`    routeFilesystem: '${routeFilesystem}',`)

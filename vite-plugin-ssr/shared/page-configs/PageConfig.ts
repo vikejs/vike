@@ -21,12 +21,14 @@ type ConfigName =
   | 'passToClient'
   | 'route'
   | 'iKnowThePerformanceRisksOfAsyncRouteFunctions'
+  | 'isErrorPage'
   | 'hydrationCanBeAborted'
   | 'clientEntry'
   | 'clientRouting'
 
 type PageConfigData = {
   pageId2: string // TODO: rename
+  isErrorPage: boolean
   pageConfigFilePath: string
   pageConfigFilePathAll: string[]
   routeFilesystem: null | string

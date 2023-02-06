@@ -63,7 +63,7 @@ async function renderPageContext<
 
   if (isError) {
     assert(pageContext._pageId === null)
-    const errorPageId = getErrorPageId(pageContext._allPageIds)
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
     if (errorPageId) {
       objectAssign(pageContext, { _pageId: errorPageId })
     } else {
@@ -154,7 +154,7 @@ async function prerenderPageContext(
 }
 
 async function prerender404Page(renderContext: RenderContext, pageContextInit_: Record<string, unknown> | null) {
-  const errorPageId = getErrorPageId(renderContext.allPageIds)
+  const errorPageId = getErrorPageId(renderContext.pageFilesAll, renderContext.pageConfigs)
   if (!errorPageId) {
     return null
   }

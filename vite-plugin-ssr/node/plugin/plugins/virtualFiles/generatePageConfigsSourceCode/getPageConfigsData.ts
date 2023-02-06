@@ -85,10 +85,13 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
       ...pageConfigFilesAbstract.map((p) => p.pageConfigFilePath)
     ]
 
+    const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
+
     pageConfigsData.push({
+      pageId2,
+      isErrorPage,
       pageConfigFilePath,
       pageConfigFilePathAll,
-      pageId2,
       routeFilesystem,
       configSources
     })
@@ -126,7 +129,7 @@ function resolveConfig(
 
 function isAbstract(pageConfigFile: PageConfigFile): boolean {
   const pageConfigValues = getPageConfigValues(pageConfigFile)
-  return !('Page' in pageConfigValues) && !('route' in pageConfigValues)
+  return !pageConfigValues.Page && !pageConfigValues.route && !pageConfigValues.isErrorPage
 }
 
 function getCodeFilePath(
@@ -324,15 +327,3 @@ function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): Con
   })
   return configDefinitionsAll
 }
-
-/* TODO: remove
-      assertConfigDefinitions(configDefinitions, pageConfigFilePath)
-function assertConfigDefinitions(
-  configDefinitions: unknown,
-  pageConfigFilePath: string
-): asserts configDefinitions is ConfigDefinitionsAll {
-  Object.values(configDefinitions).forEach((configDef) => {
-    // TODO
-  })
-}
-*/

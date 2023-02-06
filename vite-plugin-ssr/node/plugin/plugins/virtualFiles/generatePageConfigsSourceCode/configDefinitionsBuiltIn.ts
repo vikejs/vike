@@ -70,6 +70,10 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
   hydrationCanBeAborted: {
     c_code: false,
     c_env: 'client-only'
+  },
+  isErrorPage: {
+    c_code: false,
+    c_env: 'routing'
   }
   /* TODO
   onBeforeRoute: {

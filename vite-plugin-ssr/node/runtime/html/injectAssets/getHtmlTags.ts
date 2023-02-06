@@ -13,6 +13,7 @@ import type { PageContextInjectAssets } from '../injectAssets'
 import type { InjectToStream } from '../stream/react-streaming'
 import type { PageAsset } from '../../renderPage/getPageAssets'
 import { getGlobalContext } from '../../globalContext'
+import type { PageConfig } from '../../../../shared/page-configs/PageConfig'
 
 type PreloadFilter = null | ((assets: InjectFilterEntry[]) => InjectFilterEntry[])
 type PreloadFilterInject = false | 'HTML_BEGIN' | 'HTML_END'
@@ -166,7 +167,7 @@ async function getMergedScriptTag(pageAssets: PageAsset[], isProduction: boolean
   return scriptTag
 }
 
-function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[]; is404: null | boolean }): string {
+function getPageContextTag(pageContext: { _pageId: string; _passToClient: string[]; is404: null | boolean, _pageConfigs: PageConfig[] }): string {
   const pageContextSerialized = sanitizeJson(serializePageContextClientSide(pageContext))
   const htmlTag = `<script id="vite-plugin-ssr_pageContext" type="application/json">${pageContextSerialized}</script>`
   // @ts-expect-error

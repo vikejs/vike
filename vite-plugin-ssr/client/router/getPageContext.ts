@@ -83,7 +83,7 @@ async function getPageContextErrorPage(pageContext: {
   _pageFilesAll: PageFile[]
   _pageConfigs: PageConfig[]
 }): Promise<PageContextAddendum> {
-  const errorPageId = getErrorPageId(pageContext._allPageIds)
+  const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
   if (!errorPageId) {
     throw new Error('No error page')
   }
@@ -130,7 +130,7 @@ async function getPageContextUponNavigation(
     assert(hasProp(pageContextFromHook.pageProps, 'is404', 'boolean'))
     // When the user hasn't define a `_error.page.js` file: the mechanism with `serverSideError: true` is used instead
     assert(!('serverSideError' in pageContextFromHook))
-    const errorPageId = getErrorPageId(pageContext._allPageIds)
+    const errorPageId = getErrorPageId(pageContext._pageFilesAll, pageContext._pageConfigs)
     assert(errorPageId)
 
     objectAssign(pageContextAddendum, {

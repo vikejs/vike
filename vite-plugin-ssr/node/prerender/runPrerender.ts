@@ -44,6 +44,7 @@ import { getUrlFromRouteString } from '../../shared/route/resolveRouteString'
 import type { PageConfig } from '../../shared/page-configs/PageConfig'
 import { getCodeFilePath, getConfigValue } from '../../shared/page-configs/utils'
 import { loadPageCode } from '../../shared/page-configs/loadPageCode'
+import { isErrorPage } from '../../shared/route/error-page'
 
 type HtmlFile = {
   urlOriginal: string
@@ -651,7 +652,7 @@ function warnMissingPages(
   renderContext.allPageIds
     .filter((pageId) => !prerenderPageIds[pageId])
     .filter((pageId) => !doNotPrerenderList.find((p) => p.pageId === pageId))
-    .filter((pageId) => !isErrorPageId(pageId))
+    .filter((pageId) => !isErrorPage(pageId, renderContext.pageConfigs))
     .forEach((pageId) => {
       assertWarning(
         partial,

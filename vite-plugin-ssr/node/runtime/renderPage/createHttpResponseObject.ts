@@ -21,8 +21,9 @@ import {
 import { inferEarlyHintLink } from '../html/injectAssets/inferHtmlTags'
 import type { PageAsset, GetPageAssets } from './getPageAssets'
 import { assert, assertUsage, assertWarning } from '../../utils'
-import { isErrorPageId } from '../../../shared/route'
 import { getHtmlString, type HtmlRender } from '../html/renderHtml'
+import type { PageConfig } from '../../../shared/page-configs/PageConfig'
+import { isErrorPage } from '../../../shared/route/error-page'
 
 type StatusCode = 200 | 404 | 500
 type ContentType = 'application/json' | 'text/html;charset=utf-8'
@@ -55,6 +56,7 @@ async function createHttpResponseObject(
     is404: null | boolean
     errorWhileRendering: null | Error
     __getPageAssets: GetPageAssets
+    _pageConfigs: PageConfig[]
   }
 ): Promise<HttpResponse | null> {
   if (htmlRender === null) {
@@ -63,7 +65,8 @@ async function createHttpResponseObject(
 
   let statusCode: StatusCode
   {
-    const isError = !pageContext._pageId || isErrorPageId(pageContext._pageId)
+    const isError =
+      !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
       assert(isError)
     }

@@ -48,7 +48,7 @@ function getPageFileObject(filePath: string): PageFile {
     isRelevant,
     isDefaultPageFile: isDefaultFilePath(filePath),
     isRendererPageFile: fileType !== '.css' && isDefaultFilePath(filePath) && isRendererFilePath(filePath),
-    isErrorPageFile: isErrorPageId(filePath),
+    isErrorPageFile: isErrorPageId(filePath, false),
     pageId: determinePageId(filePath)
   }
   return pageFile
@@ -56,7 +56,7 @@ function getPageFileObject(filePath: string): PageFile {
 
 function isDefaultFilePath(filePath: string): boolean {
   assertPageFilePath(filePath)
-  if (isErrorPageId(filePath)) {
+  if (isErrorPageId(filePath, false)) {
     return false
   }
   return filePath.includes('/_default')

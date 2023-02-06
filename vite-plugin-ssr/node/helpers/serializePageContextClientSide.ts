@@ -2,8 +2,9 @@ export { serializePageContextClientSide }
 export { addIs404ToPageProps }
 
 import { stringify } from '@brillout/json-serializer/stringify'
-import { isErrorPageId } from '../../shared/route'
 import { assert, assertUsage, hasProp, isPlainObject, unique } from '../utils'
+import type { PageConfig } from '../../shared/page-configs/PageConfig'
+import { isErrorPage } from '../../shared/route/error-page'
 
 type PageContextUser = Record<string, unknown>
 type PageContextClient = { _pageId: string } & Record<string, unknown>
@@ -11,6 +12,7 @@ type PageContextClient = { _pageId: string } & Record<string, unknown>
 function serializePageContextClientSide(pageContext: {
   _pageId: string
   _passToClient: string[]
+  _pageConfigs: PageConfig[]
   is404: null | boolean
   pageProps?: Record<string, unknown>
   _isError?: true
@@ -19,7 +21,7 @@ function serializePageContextClientSide(pageContext: {
 
   let passToClient = [...pageContext._passToClient]
 
-  if (isErrorPageId(pageContext._pageId)) {
+  if (isErrorPage(pageContext._pageId, pageContext._pageConfigs)) {
     assert(hasProp(pageContext, 'is404', 'boolean'))
     addIs404ToPageProps(pageContext)
     passToClient.push(...['pageProps', 'is404', '_isError'])
