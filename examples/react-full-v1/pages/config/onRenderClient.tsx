@@ -1,9 +1,4 @@
 export default onRenderClient
-/* TODO
-export { onHydrationEnd }
-export { onPageTransitionStart }
-export { onPageTransitionEnd }
-*/
 
 import './css/index.css'
 import React from 'react'
@@ -30,16 +25,4 @@ async function onRenderClient(pageContext: PageContextClient) {
     root.render(page)
   }
   document.title = getPageTitle(pageContext)
-}
-
-function onHydrationEnd() {
-  console.log('Hydration finished; page is now interactive.')
-}
-function onPageTransitionStart() {
-  console.log('Page transition start')
-  document.querySelector('body')!.classList.add('page-is-transitioning')
-}
-function onPageTransitionEnd() {
-  console.log('Page transition end')
-  document.querySelector('body')!.classList.remove('page-is-transitioning')
 }

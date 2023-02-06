@@ -29,6 +29,18 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_code: true,
     c_env: 'client-only'
   },
+  onHydrationEnd: {
+    c_code: true,
+    c_env: 'client-only'
+  },
+  onPageTransitionStart: {
+    c_code: true,
+    c_env: 'client-only'
+  },
+  onPageTransitionEnd: {
+    c_code: true,
+    c_env: 'client-only'
+  },
   onBeforeRender: {
     c_code: true,
     c_env: 'server-only'

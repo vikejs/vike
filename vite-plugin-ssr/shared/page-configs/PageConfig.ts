@@ -15,6 +15,9 @@ type ConfigName =
   | 'onBeforeRoute'
   | 'onBeforePrerender'
   */
+  | 'onHydrationEnd'
+  | 'onPageTransitionStart'
+  | 'onPageTransitionEnd'
   | 'onPrerender'
   | 'prerender'
   | 'Page'
