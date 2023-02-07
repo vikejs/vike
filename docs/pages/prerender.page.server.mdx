@@ -10,7 +10,7 @@ Most of the time, we use the `prerender()` hook in order to provide the URLs of 
 // /pages/movie.page.route.js
 // Environment: Node.js
 
-export default '/movie/@movieId`
+export default '/movie/@movieId'
 ```
 ```js
 // /pages/movie.page.server.js
@@ -42,7 +42,7 @@ We can make it significantly faster by providing the `pageContext` of pages in `
 // /pages/movie.page.route.js
 // Environment: Node.js
 
-export default '/movie/@movieId`
+export default '/movie/@movieId'
 ```
 ```js
 // /pages/movie.page.server.js
@@ -61,7 +61,7 @@ async function prerender() {
       const pageContext = { pageProps }
       return {
         url,
-        // Beacuse we already provide the `pageContext`, vite-plugin-ssr will *not* call
+        // Because we already provide the `pageContext`, vite-plugin-ssr will *not* call
         // the `onBeforeRender()` hook for `url`.
         pageContext
       }
