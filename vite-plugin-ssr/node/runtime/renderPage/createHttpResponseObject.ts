@@ -62,6 +62,7 @@ async function createHttpResponseObject(
   if (htmlRender === null) {
     return null
   }
+  assert(renderSrc || typeof htmlRender === 'string')
 
   let statusCode: StatusCode
   {
@@ -102,7 +103,6 @@ async function createHttpResponseObject(
     earlyHints,
     get body() {
       if (typeof htmlRender !== 'string') {
-        assert(renderSrc)
         assertUsage(
           false,
           errMsg('body', 'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead')
@@ -123,7 +123,9 @@ async function createHttpResponseObject(
         { onlyOnce: true, showStackTrace: true }
       )
       const nodeStream = await getStreamReadableNode(htmlRender)
-      assertUsage(nodeStream !== null, errMsg('getNodeStream()', fixMsg('readable', 'node')))
+      if (nodeStream === null) {
+        assertUsage(false, errMsg('getNodeStream()', fixMsg('readable', 'node')))
+      }
       return nodeStream
     },
     getWebStream() {
@@ -134,12 +136,16 @@ async function createHttpResponseObject(
         { onlyOnce: true, showStackTrace: true }
       )
       const webStream = getStreamReadableWeb(htmlRender)
-      assertUsage(webStream !== null, errMsg('getWebStream()', fixMsg('readable', 'web')))
+      if (webStream === null) {
+        assertUsage(false, errMsg('getWebStream()', fixMsg('readable', 'web')))
+      }
       return webStream
     },
     getReadableWebStream() {
       const webStream = getStreamReadableWeb(htmlRender)
-      assertUsage(webStream !== null, errMsg('getReadableWebStream()', fixMsg('readable', 'web')))
+      if (webStream === null) {
+        assertUsage(false, errMsg('getReadableWebStream()', fixMsg('readable', 'web')))
+      }
       return webStream
     },
     pipeToWebWritable(writable: StreamWritableWeb) {
@@ -150,7 +156,9 @@ async function createHttpResponseObject(
         { onlyOnce: true, showStackTrace: true }
       )
       const success = pipeToStreamWritableWeb(htmlRender, writable)
-      assertUsage(success, errMsg('pipeToWebWritable()'))
+      if (!success) {
+        assertUsage(false, errMsg('pipeToWebWritable()'))
+      }
     },
     pipeToNodeWritable(writable: StreamWritableNode) {
       assertWarning(
@@ -160,17 +168,23 @@ async function createHttpResponseObject(
         { onlyOnce: true, showStackTrace: true }
       )
       const success = pipeToStreamWritableNode(htmlRender, writable)
-      assertUsage(success, errMsg('pipeToNodeWritable()'))
+      if (!success) {
+        assertUsage(false, errMsg('pipeToNodeWritable()'))
+      }
     },
     pipe(writable: StreamWritableNode | StreamWritableWeb) {
       if (isStreamWritableWeb(writable)) {
         const success = pipeToStreamWritableWeb(htmlRender, writable)
-        assertUsage(success, errMsg('pipe()'))
+        if (!success) {
+          assertUsage(false, errMsg('pipe()'))
+        }
         return
       }
       if (isStreamWritableNode(writable)) {
         const success = pipeToStreamWritableNode(htmlRender, writable)
-        assertUsage(success, errMsg('pipe()'))
+        if (!success) {
+          assertUsage(false, errMsg('pipe()'))
+        }
         return
       }
       assertUsage(
