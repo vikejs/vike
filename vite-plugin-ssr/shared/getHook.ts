@@ -5,7 +5,7 @@ export type { Hook }
 import { PageContextExports } from './getPageFiles'
 import { assert, assertUsage, isCallable } from './utils'
 
-type Hook = { hook: (arg: unknown) => unknown; filePath: string }
+type Hook = { hook: (arg: unknown) => unknown; hookSrc: string }
 
 function getHook(
   pageContext: PageContextExports,
@@ -17,11 +17,11 @@ function getHook(
   const hook = pageContext.exports[hookName]
   const file = pageContext.exportsAll[hookName]![0]!
   assert(file.exportValue === hook)
-  const { filePath } = file
-  assert(filePath)
+  const hookSrc = file.exportSource
+  assert(hookSrc)
   assert(!hookName.endsWith(')'))
-  assertUsage(isCallable(hook), `hook ${hookName}() defined by ${filePath} should be a function`)
-  return { hook, filePath }
+  assertUsage(isCallable(hook), `hook ${hookName}() defined by ${hookSrc} should be a function`)
+  return { hook, hookSrc }
 }
 
 function assertHook<PC extends PageContextExports, HookName extends PropertyKey>(

@@ -184,7 +184,7 @@ function getGlobalHooks(
           `\`export { onBeforeRoute }\` of ${filePath} should be a function.`
         )
         const { onBeforeRoute } = fileExports
-        onBeforeRouteHook = { filePath, onBeforeRoute }
+        onBeforeRouteHook = { hookSrc: `${filePath} > \`export { onBeforeRoute }\``, onBeforeRoute }
       }
       if ('filesystemRoutingRoot' in fileExports) {
         assertUsage(

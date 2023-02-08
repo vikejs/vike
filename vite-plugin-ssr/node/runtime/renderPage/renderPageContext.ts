@@ -109,8 +109,8 @@ async function renderPageContext<
     objectAssign(pageContext, { httpResponse: null })
     return pageContext
   } else {
-    const { htmlRender, renderFilePath } = renderHookResult
-    const httpResponse = await createHttpResponseObject(htmlRender, renderFilePath, pageContext)
+    const { htmlRender, renderSrc } = renderHookResult
+    const httpResponse = await createHttpResponseObject(htmlRender, renderSrc, pageContext)
     objectAssign(pageContext, { httpResponse })
     return pageContext
   }
@@ -140,7 +140,7 @@ async function prerenderPageContext(
   const renderHookResult = await executeOnRenderHtmlHook(pageContext)
   assertUsage(
     renderHookResult.htmlRender !== null,
-    `Cannot pre-render \`${pageContext.urlOriginal}\` because the \`render()\` hook exported by ${renderHookResult.renderFilePath} didn't return an HTML string.`
+    `Cannot pre-render \`${pageContext.urlOriginal}\` because the \`render()\` hook defined by ${renderHookResult.renderSrc} didn't return an HTML string.`
   )
   assert(pageContext._isPageContextRequest === false)
   const documentHtml = await getHtmlString(renderHookResult.htmlRender)
@@ -251,9 +251,9 @@ async function executeOnBeforeRenderHooks(
   }
   const onBeforeRender = hook.hook
   preparePageContextForRelease(pageContext)
-  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.filePath)
+  const hookResult = await callHookWithTimeout(() => onBeforeRender(pageContext), 'onBeforeRender', hook.hookSrc)
 
-  assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.filePath)
+  assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.hookSrc)
   const pageContextFromHook = hookResult?.pageContext
   Object.assign(pageContext, pageContextFromHook)
 }
@@ -268,7 +268,7 @@ async function executeOnRenderHtmlHook(
     _pageFilePathsLoaded: string[]
   }
 ): Promise<{
-  renderFilePath: string
+  renderSrc: string
   htmlRender: null | HtmlRender
 }> {
   let hook: null | Hook = null
@@ -297,16 +297,16 @@ async function executeOnRenderHtmlHook(
     ].join(' ')
   )
   const render = hook.hook
-  const renderFilePath = hook.filePath
+  const renderSrc = hook.hookSrc
 
   preparePageContextForRelease(pageContext)
-  const result = await callHookWithTimeout(() => render(pageContext), 'render', hook.filePath)
+  const result = await callHookWithTimeout(() => render(pageContext), 'render', renderSrc)
   if (isObject(result) && !isDocumentHtml(result)) {
-    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderFilePath, true)
+    assertHookResult(result, 'render', ['documentHtml', 'pageContext', 'injectFilter'] as const, renderSrc, true)
   }
-  objectAssign(pageContext, { _renderHook: { hookFilePath: renderFilePath, hookName: 'render' as const } })
+  objectAssign(pageContext, { _renderHook: { hookSrc: renderSrc, hookName: 'render' as const } })
 
-  const errPrefix = 'The render() hook exported by ' + renderFilePath
+  const errPrefix = 'The render() hook defined by ' + renderSrc
 
   let pageContextPromise: PageContextPromise = null
   if (hasProp(result, 'pageContext')) {
@@ -374,7 +374,7 @@ async function executeOnRenderHtmlHook(
   assert(documentHtml === undefined || documentHtml === null || isDocumentHtml(documentHtml))
 
   if (documentHtml === null || documentHtml === undefined) {
-    return { htmlRender: null, renderFilePath }
+    return { htmlRender: null, renderSrc }
   }
 
   const onErrorWhileStreaming = (err: unknown) => {
@@ -396,10 +396,10 @@ async function executeOnRenderHtmlHook(
   const htmlRender = await renderDocumentHtml(
     documentHtml,
     pageContext,
-    renderFilePath,
+    renderSrc,
     onErrorWhileStreaming,
     injectFilter
   )
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
-  return { htmlRender, renderFilePath }
+  return { htmlRender, renderSrc }
 }

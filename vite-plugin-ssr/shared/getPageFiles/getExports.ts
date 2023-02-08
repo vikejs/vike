@@ -15,15 +15,24 @@ type ExportsAll = Record<
   string,
   {
     exportValue: unknown
+    exportSource: string
+    // TODO/v1-release: remove
+    /** @deprecated */
+    _fileType: FileType | null
+    /** @deprecated */
+    _isFromDefaultExport: boolean | null
+    /** @deprecated */
     filePath: string
-    _fileType: FileType
-    _isFromDefaultExport: boolean
+    /** @deprecated */
+    _filePath: string
   }[]
 >
 type PageContextExports = {
-  exportsAll: ExportsAll
-  pageExports: Record<string, unknown>
   exports: Record<string, unknown>
+  exportsAll: ExportsAll
+  // TODO/v1-release: remove
+  /** @deprecated */
+  pageExports: Record<string, unknown>
 }
 
 function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null): PageContextExports {
@@ -36,8 +45,10 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue,
+        exportSource: `${pageFile.filePath} > ${
+          isFromDefaultExport ? `\`export default { ${exportName} }\`` : `\`export { ${exportName} }\``
+        }`,
         filePath: pageFile.filePath,
-        // @ts-expect-error
         _filePath: pageFile.filePath, // TODO/next-major-release: remove
         _fileType: pageFile.fileType,
         _isFromDefaultExport: isFromDefaultExport
@@ -49,15 +60,16 @@ function getExports(pageFiles: PageFile[], pageConfig: PageConfigLoaded | null):
     const { configValues } = pageConfig
     objectEntries(configValues).forEach(([configName, configValue]) => {
       const exportName = configName
-      const filePath = getSourceFilePath(pageConfig, configName)
-      assert(filePath)
+      const configSrc = getSourceFilePath(pageConfig, configName)
+      assert(configSrc)
       exportsAll[exportName] = exportsAll[exportName] ?? []
       exportsAll[exportName]!.push({
         exportValue: configValue,
-        filePath,
-        // @ts-ignore
-        _fileType: 'TODO',
-        _isFromDefaultExport: false // TODO
+        exportSource: configSrc,
+        filePath: configSrc,
+        _filePath: configSrc,
+        _fileType: null,
+        _isFromDefaultExport: null
       })
     })
   }
@@ -157,10 +169,7 @@ function getExportUnion(exportsAll: ExportsAll, propName: string): string[] {
   return (
     exportsAll[propName]
       ?.map((e) => {
-        assertUsage(
-          hasProp(e, 'exportValue', 'string[]'),
-          `\`export { ${propName} }\` of ${e.filePath} should be an array of strings.`
-        )
+        assertUsage(hasProp(e, 'exportValue', 'string[]'), `${e.exportSource} should be an array of strings.`)
         return e.exportValue
       })
       .flat() ?? []

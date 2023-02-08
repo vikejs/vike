@@ -19,7 +19,7 @@ type PageContextInjectAssets = {
   _passToClient: string[]
   _isHtmlOnly: boolean
   _pageContextPromise: PageContextPromise
-  _renderHook: { hookFilePath: string; hookName: 'render' }
+  _renderHook: { hookSrc: string; hookName: 'render' }
   _baseServer: string
   _pageConfigs: PageConfig[]
   is404: null | boolean
@@ -91,7 +91,7 @@ function injectToHtmlEnd(htmlEnd: string, htmlTags: HtmlTag[]): string {
 type PageContextPromise = null | Promise<unknown> | (() => void | Promise<unknown>)
 async function resolvePageContextPromise(pageContext: {
   _pageContextPromise: PageContextPromise
-  _renderHook: { hookFilePath: string; hookName: 'render' }
+  _renderHook: { hookSrc: string; hookName: 'render' }
 }) {
   const pageContextPromise = pageContext._pageContextPromise
   if (!pageContextPromise) {

@@ -179,9 +179,9 @@ async function onBeforeRenderExecute(
     const hookResult = await callHookWithTimeout(
       () => onBeforeRender(pageContextReadyForRelease),
       'onBeforeRender',
-      hook.filePath
+      hook.hookSrc
     )
-    assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.filePath)
+    assertHookResult(hookResult, 'onBeforeRender', ['pageContext'], hook.hookSrc)
     const pageContextFromHook = hookResult?.pageContext
     objectAssign(pageContextAddendum, pageContextFromHook)
     return pageContextAddendum

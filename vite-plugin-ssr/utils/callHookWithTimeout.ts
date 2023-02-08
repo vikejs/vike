@@ -5,7 +5,7 @@ import { humanizeTime } from './humanizeTime'
 
 type HookName = 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute' | 'onHydrationEnd'
 
-function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hookFilePath: string): Promise<T> {
+function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hookSrc: string): Promise<T> {
   const { timeoutErr, timeoutWarn } = getTimeouts(hookName)
 
   let resolve!: (ret: T) => void
@@ -26,14 +26,14 @@ function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hoo
     clearTimeout(t2)
   }
   const t1 = setTimeout(() => {
-    const msg = `${logPrefix}[Warning] The ${hookName}() hook of ${hookFilePath} is taking more than ${humanizeTime(
+    const msg = `${logPrefix}[Warning] The ${hookName}() hook defined by ${hookSrc} is taking more than ${humanizeTime(
       timeoutWarn
     )}`
     console.warn(msg)
   }, timeoutWarn)
   const t2 = setTimeout(() => {
     const err = getProjectError(
-      `Hook timeout: the ${hookName}() hook of ${hookFilePath} didn't finish after ${humanizeTime(timeoutErr)}`
+      `Hook timeout: the ${hookName}() hook defined by ${hookSrc} didn't finish after ${humanizeTime(timeoutErr)}`
     )
     reject(err)
   }, timeoutErr)

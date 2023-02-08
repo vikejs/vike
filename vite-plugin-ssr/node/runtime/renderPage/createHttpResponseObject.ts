@@ -49,7 +49,7 @@ type HttpResponse = {
 }
 async function createHttpResponseObject(
   htmlRender: null | HtmlRender,
-  renderFilePath: null | string,
+  renderSrc: null | string,
   pageContext: {
     _isPageContextRequest: boolean
     _pageId: null | string
@@ -102,7 +102,7 @@ async function createHttpResponseObject(
     earlyHints,
     get body() {
       if (typeof htmlRender !== 'string') {
-        assert(renderFilePath)
+        assert(renderSrc)
         assertUsage(
           false,
           errMsg('body', 'Use `pageContext.httpResponse.pipe()` or `pageContext.httpResponse.getBody()` instead')
@@ -194,8 +194,9 @@ async function createHttpResponseObject(
     }
     assert(['a ', 'an ', 'the '].some((s) => htmlRenderName.startsWith(s)))
     assert(!fixMsg || !fixMsg.endsWith('.'))
+    assert(renderSrc)
     return [
-      `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook (${renderFilePath}) provides ${htmlRenderName}`, // TODO
+      `\`pageContext.httpResponse.${method}\` can't be used because your \`render()\` hook defined by ${renderSrc} provides ${htmlRenderName}`, // TODO
       fixMsg,
       streamDocs
     ]

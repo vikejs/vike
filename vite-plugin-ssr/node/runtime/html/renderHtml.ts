@@ -43,7 +43,7 @@ function isDocumentHtml(something: unknown): something is DocumentHtml {
 async function renderDocumentHtml(
   documentHtml: DocumentHtml,
   pageContext: PageContextInjectAssets,
-  renderFilePath: string,
+  renderSrc: string,
   onErrorWhileStreaming: (err: unknown) => void,
   injectFilter: PreloadFilter
 ): Promise<HtmlRender> {
@@ -61,7 +61,7 @@ async function renderDocumentHtml(
   }
   if (isTemplateWrapped(documentHtml)) {
     const templateContent = documentHtml._template
-    const render = await renderTemplate(templateContent, renderFilePath, pageContext)
+    const render = await renderTemplate(templateContent, renderSrc, pageContext)
     if (!('htmlStream' in render)) {
       objectAssign(pageContext, { _isStream: false as const })
       const { htmlPartsAll } = render
@@ -177,7 +177,7 @@ type HtmlPart = string | ((pageAssets: PageAsset[]) => string)
 
 async function renderTemplate(
   templateContent: TemplateContent,
-  renderFilePath: string,
+  renderSrc: string,
   pageContext: PageContextInjectAssets
 ): Promise<
   { htmlPartsAll: HtmlPart[] } | { htmlStream: Stream; htmlPartsBegin: HtmlPart[]; htmlPartsEnd: HtmlPart[] }
@@ -197,7 +197,7 @@ async function renderTemplate(
   const setStream = (stream: Stream) => {
     assertUsage(
       !htmlStream,
-      `Injecting two streams in \`escapeInject\` template tag of render() hook of ${renderFilePath}. Inject only one stream instead.`
+      `Injecting two streams in \`escapeInject\` template tag of render() hook defined by ${renderSrc}. Inject only one stream instead.`
     )
     htmlStream = stream
   }
@@ -218,7 +218,7 @@ async function renderTemplate(
     // Process `escapeInject` fragments
     if (isTemplateWrapped(templateVar)) {
       const templateContentInner = templateVar._template
-      const result = await renderTemplate(templateContentInner, renderFilePath, pageContext)
+      const result = await renderTemplate(templateContentInner, renderSrc, pageContext)
       if (!('htmlStream' in result)) {
         result.htmlPartsAll.forEach(addHtmlPart)
       } else {
@@ -236,7 +236,7 @@ async function renderTemplate(
 
     const getErrMsg = (typeText: string, end: null | string) => {
       const nth: string = (i === 0 && '1st') || (i === 1 && '2nd') || (i === 2 && '3rd') || `${i}-th`
-      return [`The ${nth} HTML variable is ${typeText}, see render() hook of ${renderFilePath}.`, end]
+      return [`The ${nth} HTML variable is ${typeText}, see render() hook defined by ${renderSrc}.`, end]
         .filter(Boolean)
         .join(' ')
     }

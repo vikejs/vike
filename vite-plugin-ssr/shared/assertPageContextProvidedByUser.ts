@@ -1,4 +1,4 @@
-import { assert, assertUsage, assertWarning, isObject, isNpmPackageModule, isCallable, isPromise } from './utils'
+import { assert, assertUsage, assertWarning, isObject, isCallable, isPromise } from './utils'
 
 export { assertPageContextProvidedByUser }
 
@@ -9,17 +9,16 @@ function assertPageContextProvidedByUser(
     errorMessagePrefix,
     canBePromise
   }: {
-    hook?: { hookFilePath: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
+    hook?: { hookSrc: string; hookName: 'onBeforeRender' | 'render' | 'onBeforeRoute' }
     errorMessagePrefix?: string
     canBePromise?: boolean
   }
 ): asserts pageContextProvidedByUser is Record<string, unknown> {
   if (!errorMessagePrefix) {
     assert(hook)
-    const { hookName, hookFilePath } = hook
-    assert(hookFilePath.startsWith('/') || isNpmPackageModule(hookFilePath))
+    const { hookName, hookSrc } = hook
     assert(!hookName.endsWith(')'))
-    errorMessagePrefix = `The \`pageContext\` provided by the ${hookName}() hook of ${hookFilePath}`
+    errorMessagePrefix = `The \`pageContext\` provided by the ${hookName}() hook defined by ${hookSrc}`
   }
 
   if (canBePromise && !isObject(pageContextProvidedByUser)) {
