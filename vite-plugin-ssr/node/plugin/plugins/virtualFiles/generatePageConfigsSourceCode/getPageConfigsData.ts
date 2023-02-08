@@ -301,27 +301,49 @@ function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): Con
     const { pageConfigFilePath } = pageConfigFile
     const { configDefinitions } = getPageConfigValues(pageConfigFile)
     if (configDefinitions) {
-      const msgWrongType = `to a value with an invalid type \`${typeof pageConfigFilePath}\`: it should be an object instead`
       assertUsage(
         isObject(configDefinitions),
-        `${pageConfigFilePath} sets the config 'configDefinitions' ${msgWrongType}`
+        `${pageConfigFilePath} sets the config 'configDefinitions' to a value with an invalid type \`${typeof configDefinitions}\`: it should be an object instead.`
       )
-      objectEntries(configDefinitions).forEach(([configName, configDef]) => {
-        assertUsage(isObject(configDef), `${pageConfigFilePath} sets 'configDefinitions.${configName}' ${msgWrongType}`)
-        const configDefMerged = {
+      objectEntries(configDefinitions).forEach(([configName, configDefinition]) => {
+        assertUsage(
+          isObject(configDefinition),
+          `${pageConfigFilePath} sets 'configDefinitions.${configName}' to a value with an invalid type \`${typeof configDefinition}\`: it should be an object instead.`
+        )
+
+        // User can override an existing config definition
+        const def = {
           ...(configDefinitionsAll[configName] as ConfigDefinition | undefined),
-          ...configDef
+          ...configDefinition
         }
-        const msgHint = `Make sure to define the 'c_env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'`
-        assertUsage(
-          hasProp(configDefMerged, 'c_env', 'string'),
-          `${pageConfigFilePath} defines 'configDefinitions.${configName}' but without defining its 'c_env' value which is required. ${msgHint}`
-        )
-        assertUsage(
-          ['client-only', 'server-only', 'server-and-client'].includes(configDefMerged.c_env),
-          `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to an invalid value '${configDefMerged.c_env}'. ${msgHint}`
-        )
-        configDefinitionsAll[configName] = configDefMerged
+
+        // Validation
+        {
+          const msgMissing = (prop: 'c_env' | 'c_code', hint: string) =>
+            `${pageConfigFilePath} doesn't define 'configDefinitions.${configName}.${prop}' which is required. ${hint}`
+          const msgInvalidType = (prop: 'c_env' | 'c_code', hint: string) =>
+            `${pageConfigFilePath} sets 'configDefinitions.${configName}.${prop}' to a value with an invalid type ${typeof def[
+              prop
+            ]}. ${hint}`
+          {
+            const prop = 'c_env'
+            const hint = `Make sure to define the 'c_env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
+            assertUsage(prop in def, msgMissing(prop, hint))
+            assertUsage(hasProp(def, prop, 'string'), msgInvalidType(prop, hint))
+            assertUsage(
+              ['client-only', 'server-only', 'server-and-client'].includes(def.c_env),
+              `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to an invalid value '${def.c_env}'. ${hint}`
+            )
+          }
+          {
+            const prop = 'c_code'
+            const hint = `Make sure to define the 'c_code' value of '${configName}' to \`true\` or \`false\`.`
+            assertUsage(prop in def, msgMissing(prop, hint))
+            assertUsage(hasProp(def, prop, 'boolean'), msgInvalidType(prop, hint))
+          }
+        }
+
+        configDefinitionsAll[configName] = def
       })
     }
   })

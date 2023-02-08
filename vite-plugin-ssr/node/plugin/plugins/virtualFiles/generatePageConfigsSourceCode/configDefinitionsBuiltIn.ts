@@ -10,7 +10,7 @@ type ConfigDefinition = {
   c_env: c_Env // TODO: rename to runtime? or runtimeEnv?
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
-  c_code?: boolean // TODO: remove? Or rename to `type: 'code'`
+  c_code: boolean // TODO: remove? Or rename to `type: 'code'`
   c_validate?: (
     configResolved: ({ configValue: unknown } | { configValue: string; codeFilePath: string }) & {
       configFilePath: string
