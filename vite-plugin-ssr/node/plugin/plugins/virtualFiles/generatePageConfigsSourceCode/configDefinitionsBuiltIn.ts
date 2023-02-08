@@ -57,7 +57,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'server-only'
   },
   route: {
-    c_env: 'routing',
+    c_env: 'c_config',
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
@@ -79,13 +79,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'client-only'
   },
   isErrorPage: {
-    c_env: 'routing'
+    c_env: 'c_config'
   }
   /* TODO
   onBeforeRoute: {
     c_code: true,
     c_global: true,
-    c_env: 'routing'
+    c_env: 'c_config'
   }
   onBeforePrerender: {
     c_code: true,

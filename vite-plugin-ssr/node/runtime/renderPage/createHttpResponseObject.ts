@@ -65,8 +65,7 @@ async function createHttpResponseObject(
 
   let statusCode: StatusCode
   {
-    const isError =
-      !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)
+    const isError = !pageContext._pageId || isErrorPage(pageContext._pageId, pageContext._pageConfigs)
     if (pageContext.errorWhileRendering) {
       assert(isError)
     }
