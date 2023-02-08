@@ -5,7 +5,7 @@ export type { c_Env }
 export type { PageConfigData }
 export type { ConfigName }
 
-type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'c_config'
+type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'c_routing'
 
 type ConfigName =
   | 'onRenderHtml'

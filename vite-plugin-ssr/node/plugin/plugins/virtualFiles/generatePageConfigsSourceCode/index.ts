@@ -92,7 +92,7 @@ function generateSourceCodeOfPageConfigs(
       } else if (configSource.codeFilePath) {
         const { codeFilePath, c_env } = configSource
         lines.push(`        codeFilePath: '${codeFilePath}',`)
-        if (c_env === 'c_config') {
+        if (c_env === 'c_routing') {
           const { importVar, importStatement } = generateEagerImport(codeFilePath)
           // TODO: expose all exports so that assertDefaultExport() can be applied
           lines.push(`        configValue: ${importVar}.default`)
