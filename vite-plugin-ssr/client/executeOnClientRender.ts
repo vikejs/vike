@@ -82,15 +82,13 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
 
   // We miss abstract page config files (that define onClientRender()) that don't apply to any concrete page config
   //  - A solution is to assertUsage() when an abstract page file doens't apply to any concrete page config
-  const pageConfigFilesDefiningHook: { codeFilePath: string; configFilePath: string }[] = []
+  const pageConfigFilesDefiningHook: string[] = []
   let pageConfigFilesAll: string[] = []
   pageConfigs.forEach((pageConfig) => {
     pageConfigFilesAll.push(...pageConfig.pageConfigFilePathAll)
     const configSource = pageConfig.configSources.onRenderClient
     if (configSource && configSource.configValue) {
-      const { configFilePath, codeFilePath } = configSource
-      assert(codeFilePath)
-      pageConfigFilesDefiningHook.push({ configFilePath, codeFilePath })
+      pageConfigFilesDefiningHook.push(configSource.configSrc)
     }
   })
   pageConfigFilesAll = unique(pageConfigFilesAll)
@@ -101,6 +99,7 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
     assertUsage(
       false,
       [
+        // TODO: update msg
         `${msgIntro} No onRenderClient() hook is defined by any of your page config files. Your page config files (which none of them defines \`onClientRender()\`):`,
         ...pageConfigFilesAll.map((p) => indent + p)
       ].join('\n')
@@ -110,8 +109,8 @@ function assertMissingHook(pageId: string, pageConfigs: PageConfig[], url: strin
     assertUsage(
       false,
       [
-        `${msgIntro} Note that onRenderClient() is defined by following page config file${plural ? 's' : ''}:`,
-        ...pageConfigFilesDefiningHook.map((p) => `${indent}${p.configFilePath} (defines ${p.codeFilePath})`),
+        `${msgIntro} Note that onRenderClient() is defined at:`,
+        ...pageConfigFilesDefiningHook.map((p) => `${indent}${p}`),
         `but ${plural ? 'none of them' : "it doesn't"} apply to the URL \`${url}\`.`
       ].join('\n')
     )

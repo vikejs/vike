@@ -17,7 +17,9 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
     Object.entries(pageConfig.configSources).forEach(([configName, configSource]) => {
-      assert(hasProp(configSource, 'configFilePath', 'string'))
+      assert(hasProp(configSource, 'configSrc', 'string'))
+      assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
+      assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
       assert(hasProp(configSource, 'c_env', 'string'))
       if ('codeFilePath' in configSource) {
         const { codeFilePath } = configSource

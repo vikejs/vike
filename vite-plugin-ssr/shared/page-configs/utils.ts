@@ -18,15 +18,10 @@ function getConfigValue(
   if (!configSource || isNullish(pageConfig, configName)) {
     return null
   }
-  const { configFilePath } = configSource
-  assertUsage(
-    !('codeFilePath' in configSource),
-    `${configFilePath} sets the config ${configName} to a file path, but it should be a ${type} instead`
-  )
-  const { configValue } = configSource
+  const { configValue, configSrc } = configSource
   assertUsage(
     typeof configValue === type,
-    `${configFilePath} sets the config ${configName} to a value with an invalid type \`${typeof configValue}\`: the value should be a ${type} instead`
+    `${configSrc} has an invalid type \`${typeof configValue}\`: is should be a ${type} instead`
   )
   return configValue
 }
@@ -36,16 +31,15 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
   if (!configSource || isNullish(pageConfig, configName)) {
     return null
   }
-  const { codeFilePath, configFilePath, configValue } = configSource
-  if (codeFilePath) {
-    return codeFilePath
+  if (configSource.codeFilePath2 !== null) {
+    return configSource.codeFilePath2
   }
-  const errIntro = `${configFilePath} sets the config ${configName}`
+  const { configValue, configSrc } = configSource
   assertUsage(
     typeof configValue === 'string',
-    `${configFilePath} to a value with an invalid type \`${typeof configValue}\` but it should be a \`string\` instead`
+    `${configSrc} has an invalid type \`${typeof configValue}\`: it should be a \`string\` instead`
   )
-  assertUsage(false, `${errIntro} to the value \`${configValue}\` but it should be a file path instead`)
+  assertUsage(false, `${configSrc} has an invalid value \`${configValue}\`: it should be a file path instead`)
 }
 
 function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null | string {
@@ -53,17 +47,14 @@ function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null
   if (!configSource || isNullish(pageConfig, configName)) {
     return null
   }
-  if (configSource.codeFilePath) {
-    return configSource.codeFilePath
-  }
-  return configSource.configFilePath
+  return configSource.configSrc
 }
 
 function isNullish(pageConfig: PageConfigData, configName: ConfigName): boolean {
   const configSource = pageConfig.configSources[configName]
   if (!configSource) return true
-  const { codeFilePath, configValue } = configSource
-  if (codeFilePath) return false
+  const { codeFilePath2, configValue } = configSource
+  if (codeFilePath2) return false
   return configValue === null || configValue === undefined
 }
 

@@ -78,7 +78,9 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
       const { configValue, codeFilePath, configFilePath } = result
       if (!codeFilePath) {
         configSources[configName as ConfigName] = {
-          configFilePath,
+          configFilePath2: configFilePath,
+          configSrc: `${configFilePath} > ${configName}`,
+          codeFilePath2: null,
           c_env,
           configValue
         }
@@ -91,8 +93,9 @@ function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: stri
           )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
         )
         configSources[configName as ConfigName] = {
-          configFilePath,
-          codeFilePath,
+          configFilePath2: configFilePath,
+          codeFilePath2: codeFilePath,
+          configSrc: `${codeFilePath} > \`export default\``,
           c_env
         }
       }

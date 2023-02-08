@@ -68,23 +68,23 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
-      const { configFilePath, c_env } = configSource
-      lines.push(`        configFilePath: '${configFilePath}',`)
+      const { configSrc, c_env, codeFilePath2, configFilePath2 } = configSource
+      lines.push(`        configSrc: '${configSrc}',`)
+      lines.push(`        codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
+      lines.push(`        configFilePath2: ${JSON.stringify(configFilePath2)},`)
       lines.push(`        c_env: '${c_env}',`)
       if ('configValue' in configSource) {
         const { configValue } = configSource
         lines.push(`        configValue: ${JSON.stringify(configValue)}`)
-      } else if (configSource.codeFilePath) {
-        const { codeFilePath, c_env } = configSource
-        lines.push(`        codeFilePath: '${codeFilePath}',`)
+      } else {
+        assert(configSource.codeFilePath2)
+        const { codeFilePath2, c_env } = configSource
         if (c_env === 'c_routing') {
-          const { importVar, importStatement } = generateEagerImport(codeFilePath)
+          const { importVar, importStatement } = generateEagerImport(codeFilePath2)
           // TODO: expose all exports so that assertDefaultExport() can be applied
           lines.push(`        configValue: ${importVar}.default`)
           importStatements.push(importStatement)
         }
-      } else {
-        assert(false)
       }
       lines.push(`      },`)
     })
@@ -123,14 +123,15 @@ function generateSourceCodeOfLoadCodeFileVirtualFile(pageConfigData: PageConfigD
   lines.push('export default [')
   let varCounter = 0
   Object.entries(pageConfigData.configSources).forEach(([configName, configSource]) => {
-    if (!configSource.codeFilePath) return
-    const { c_env, codeFilePath } = configSource
+    if (!configSource.codeFilePath2) return
+    const { c_env, codeFilePath2 } = configSource
+    if (c_env === 'c_routing' || c_env === 'c_config') return
     if (c_env === (isForClientSide ? 'server-only' : 'client-only')) return
-    const { importVar, importStatement } = generateEagerImport(codeFilePath, varCounter++)
+    const { importVar, importStatement } = generateEagerImport(codeFilePath2, varCounter++)
     importStatements.push(importStatement)
     lines.push(`  {`)
     lines.push(`    configName: '${configName}',`)
-    lines.push(`    codeFilePath: '${codeFilePath}',`)
+    lines.push(`    codeFilePath3: '${codeFilePath2}',`)
     lines.push(`    codeFileExports: ${importVar}`)
     lines.push(`  },`)
   })

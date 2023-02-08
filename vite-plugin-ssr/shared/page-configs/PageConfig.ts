@@ -29,6 +29,23 @@ type ConfigName =
   | 'clientEntry'
   | 'clientRouting'
 
+type ConfigSoureFile = {
+  configSrc: string
+} & (
+  | {
+      configFilePath2: string
+      codeFilePath2: null
+    }
+  | {
+      configFilePath2: null
+      codeFilePath2: string
+    }
+  | {
+      configFilePath2: string
+      codeFilePath2: string
+    }
+)
+
 type PageConfigData = {
   pageId2: string // TODO: rename
   isErrorPage: boolean
@@ -38,11 +55,9 @@ type PageConfigData = {
   configSources: Partial<
     Record<
       ConfigName,
-      {
-        configFilePath: string
+      ConfigSoureFile & {
         c_env: c_Env
         configValue?: unknown
-        codeFilePath?: string
       }
     >
   >
@@ -52,7 +67,7 @@ type PageConfig = PageConfigData & {
   loadCodeFiles: () => Promise<
     {
       configName: string
-      codeFilePath: string
+      codeFilePath3: string
       codeFileExports: Record<string, unknown>
     }[]
   >

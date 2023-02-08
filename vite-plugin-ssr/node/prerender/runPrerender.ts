@@ -403,7 +403,7 @@ async function handlePagesWithStaticRoutes(
           _routeMatches: [
             {
               pageId,
-              routeType: pageRoute.pageRouteFilePath ? ('STRING' as const) : ('FILESYSTEM' as const),
+              routeType: pageRoute.routeType,
               routeString: urlOriginal,
               routeParams
             }

@@ -11,15 +11,15 @@ async function loadPageCode(pageConfig: PageConfig): Promise<PageConfigLoaded> {
   }
 
   const codeFiles = await pageConfig.loadCodeFiles()
-  codeFiles.forEach(({ configName, codeFilePath, codeFileExports }) => {
-    assertDefaultExport(codeFileExports, codeFilePath)
+  codeFiles.forEach(({ configName, codeFilePath3, codeFileExports }) => {
+    assertDefaultExport(codeFileExports, codeFilePath3)
     assert(!(configName in configValues))
     configValues[configName] = codeFileExports.default
   })
 
   await Promise.all(
     Object.entries(pageConfig.configSources).map(async ([configName, configSource]) => {
-      if (configSource.codeFilePath) return
+      if (configSource.codeFilePath2) return
       assert(!(configName in configValues))
       configValues[configName] = configSource.configValue
     })
