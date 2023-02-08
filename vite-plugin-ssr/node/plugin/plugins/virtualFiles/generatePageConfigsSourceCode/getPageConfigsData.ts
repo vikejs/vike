@@ -145,7 +145,7 @@ function getCodeFilePath(
       `${getErrorIntro(
         pageConfigFilePath,
         configName
-      )} to a value with type '${typeof configValue}' but it should be a string instead`
+      )} to a value with an invalid type \`${typeof configValue}\` but it should be a \`string\` instead`
     )
     return null
   }

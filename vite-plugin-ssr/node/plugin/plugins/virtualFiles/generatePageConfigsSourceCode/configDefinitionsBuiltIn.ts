@@ -10,7 +10,7 @@ type ConfigDefinition = {
   c_env: c_Env // TODO: rename to runtime? or runtimeEnv?
   c_global?: boolean // TODO: implement
   c_required?: boolean // TODO: apply validation
-  c_code: boolean // TODO: remove? Or rename to `type: 'code'`
+  c_code?: true // TODO: remove? Replace with `type: 'code'` or `type: 'file-path'`? A `type: 'boolean'` would be comfy for custom config 'ssr'`
   c_validate?: (
     configResolved: ({ configValue: unknown } | { configValue: string; codeFilePath: string }) & {
       configFilePath: string
@@ -54,16 +54,13 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'server-and-client'
   },
   passToClient: {
-    c_code: false,
     c_env: 'server-only'
   },
   route: {
-    c_code: false,
     c_env: 'routing',
     c_validate: getRouteValidator()
   },
   iKnowThePerformanceRisksOfAsyncRouteFunctions: {
-    c_code: false,
     c_env: 'server-and-client'
   },
   // TODO: rename to 'client'? I think so if client is cumulative to onRenderClient (while HTML-only needs to set `onRenderClient: null`)
@@ -72,7 +69,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'client-only'
   },
   clientRouting: {
-    c_code: false,
     c_env: 'server-and-client'
   },
   prerender: {
@@ -80,11 +76,9 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'server-only'
   },
   hydrationCanBeAborted: {
-    c_code: false,
     c_env: 'client-only'
   },
   isErrorPage: {
-    c_code: false,
     c_env: 'routing'
   }
   /* TODO

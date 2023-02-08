@@ -37,13 +37,15 @@ function getCodeFilePath(pageConfig: PageConfigData, configName: ConfigName): nu
     return null
   }
   const { codeFilePath, configFilePath, configValue } = configSource
+  if (codeFilePath) {
+    return codeFilePath
+  }
+  const errIntro = `${configFilePath} sets the config ${configName}`
   assertUsage(
-    codeFilePath,
-    `${configFilePath} sets the config ${configName} to the value \`${String(
-      configValue
-    )}\` but it should be a file path instead`
+    typeof configValue === 'string',
+    `${configFilePath} to a value with an invalid type \`${typeof configValue}\` but it should be a \`string\` instead`
   )
-  return codeFilePath
+  assertUsage(false, `${errIntro} to the value \`${configValue}\` but it should be a file path instead`)
 }
 
 function getSourceFilePath(pageConfig: PageConfig, configName: ConfigName): null | string {
