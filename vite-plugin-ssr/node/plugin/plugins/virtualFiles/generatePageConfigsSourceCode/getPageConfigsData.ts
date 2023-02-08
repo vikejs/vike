@@ -319,27 +319,21 @@ function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): Con
 
         // Validation
         {
-          const msgMissing = (prop: 'c_env' | 'c_code', hint: string) =>
-            `${pageConfigFilePath} doesn't define 'configDefinitions.${configName}.${prop}' which is required. ${hint}`
-          const msgInvalidType = (prop: 'c_env' | 'c_code', hint: string) =>
-            `${pageConfigFilePath} sets 'configDefinitions.${configName}.${prop}' to a value with an invalid type ${typeof def[
-              prop
-            ]}. ${hint}`
           {
             const prop = 'c_env'
             const hint = `Make sure to define the 'c_env' value of '${configName}' to 'client-only', 'server-only', or 'server-and-client'.`
-            assertUsage(prop in def, msgMissing(prop, hint))
-            assertUsage(hasProp(def, prop, 'string'), msgInvalidType(prop, hint))
+            assertUsage(
+              prop in def,
+              `${pageConfigFilePath} doesn't define 'configDefinitions.${configName}.c_env' which is required. ${hint}`
+            )
+            assertUsage(
+              hasProp(def, prop, 'string'),
+              `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to a value with an invalid type ${typeof def.c_env}. ${hint}`
+            )
             assertUsage(
               ['client-only', 'server-only', 'server-and-client'].includes(def.c_env),
               `${pageConfigFilePath} sets 'configDefinitions.${configName}.c_env' to an invalid value '${def.c_env}'. ${hint}`
             )
-          }
-          {
-            const prop = 'c_code'
-            const hint = `Make sure to define the 'c_code' value of '${configName}' to \`true\` or \`false\`.`
-            assertUsage(prop in def, msgMissing(prop, hint))
-            assertUsage(hasProp(def, prop, 'boolean'), msgInvalidType(prop, hint))
           }
         }
 
