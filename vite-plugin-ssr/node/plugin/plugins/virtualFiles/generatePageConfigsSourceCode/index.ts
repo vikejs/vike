@@ -32,6 +32,7 @@ export const debug = createDebugger('vps:virtual-files')
 // TODO: export type { Config } for users
 // TODO: improve Vite dev error handling upon user setting unknown config
 // TODO: assertUsage isErrorPage not allowed to be abstract
+// TODO: check whether onBeforerRender() is isomorph or server-only in react-full-v1 example
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,

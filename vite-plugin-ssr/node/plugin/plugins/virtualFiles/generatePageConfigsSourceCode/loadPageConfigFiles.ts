@@ -20,19 +20,17 @@ type PageConfigFile = {
 async function loadPageConfigFiles(
   userRootDir: string
 ): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
-  const pageConfigFilePaths = await findPagesConfigFiles(userRootDir)
+  const pageConfigFilePaths = await findUserFiles(`**/+config.${scriptFileExtensions}`, userRootDir)
 
   const pageConfigFiles: PageConfigFile[] = []
   // TODO: make esbuild build everyting at once
   const results = await Promise.all(
-    pageConfigFilePaths.map(async (pageConfigFilePath) => {
-      const pageConfigFilePathAbsolute = path.posix.join(userRootDir, pageConfigFilePath)
-      const result = await transpileAndLoadScriptFile(pageConfigFilePathAbsolute)
+    pageConfigFilePaths.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const result = await transpileAndLoadScriptFile(filePathAbsolute)
       if ('err' in result) {
         return { err: result.err }
       }
-      const pageConfigFileExports = result.exports
-      return { pageConfigFilePath, pageConfigFileExports }
+      return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.exports }
     })
   )
   for (const result of results) {
@@ -55,10 +53,10 @@ async function loadPageConfigFiles(
   return { pageConfigFiles }
 }
 
-async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {
+async function findUserFiles(pattern: string, userRootDir: string) {
   assertPosixPath(userRootDir)
   const timeBase = new Date().getTime()
-  let configFiles = await glob(`**/+config.${scriptFileExtensions}`, {
+  const result = await glob(pattern, {
     ignore: ['**/node_modules/**'],
     cwd: userRootDir,
     dot: false
@@ -66,12 +64,17 @@ async function findPagesConfigFiles(userRootDir: string): Promise<string[]> {
   const time = new Date().getTime() - timeBase
   assertWarning(
     time < 2 * 1000,
-    `Finding your +config.js files took an unexpected long time (${time}ms). Reach out to the vite-plugin-ssr maintainer.`,
+    `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
     {
       showStackTrace: false,
       onlyOnce: 'slow-page-files-search'
     }
   )
-  configFiles = configFiles.map((p) => path.posix.join('/', toPosixPath(p)))
-  return configFiles
+  const userFiles = result.map((p) => {
+    p = toPosixPath(p)
+    const filePathRelativeToUserRootDir = path.posix.join('/', p)
+    const filePathAbsolute = path.posix.join(userRootDir, p)
+    return { filePathRelativeToUserRootDir, filePathAbsolute }
+  })
+  return userFiles
 }
