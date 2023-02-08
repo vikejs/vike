@@ -10,9 +10,10 @@ export default {
   hydrationCanBeAborted: true,
   configDefinitions: {
     documentProps: {
-      c_env: 'server-and-client'
+      c_env: 'server-and-client',
+      c_code: false
     }
-  },
+  }
   /* TODO
   pages: [
     {
