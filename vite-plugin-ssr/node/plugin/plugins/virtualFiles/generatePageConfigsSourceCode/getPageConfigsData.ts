@@ -1,4 +1,4 @@
-export { getPageConfigsData }
+export { loadPageConfigsData }
 
 import {
   determinePageId2,
@@ -19,10 +19,31 @@ import {
 } from '../../../utils'
 import path from 'path'
 import type { ConfigName, PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
-import type { PageConfigFile } from './loadPageConfigFiles'
+import { loadPageConfigFiles, PageConfigFile } from './loadPageConfigFiles'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
+import { handleBuildError } from './handleBuildError'
 
 type ConfigDefinitionsAll = Record<string, ConfigDefinition>
+
+async function loadPageConfigsData(
+  userRootDir: string,
+  isDev: boolean
+): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobal }> {
+  const result = await loadPageConfigFiles(userRootDir)
+  /* TODO: - remove this if we don't need this for optimizeDeps.entries
+   *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
+  if ('err' in result) {
+    return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
+  }
+  */
+  if ('err' in result) {
+    handleBuildError(result.err, isDev)
+    assert(false)
+  }
+  const { pageConfigFiles } = result
+  const { pageConfigsData, pageConfigGlobal } = getPageConfigsData(pageConfigFiles, userRootDir)
+  return { pageConfigsData, pageConfigGlobal }
+}
 
 function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}

@@ -14,9 +14,7 @@ import {
 } from '../utils'
 import { findPageFiles } from '../helpers'
 import { virtualModuleIdPageFilesServer } from './virtualFiles/virtualModuleIdPageFiles'
-import { getPageConfigsData } from './virtualFiles/generatePageConfigsSourceCode/getPageConfigsData'
-import { handleBuildError } from './virtualFiles/generatePageConfigsSourceCode/handleBuildError'
-import { loadPageConfigFiles } from './virtualFiles/generatePageConfigsSourceCode/loadPageConfigFiles'
+import { loadPageConfigsData } from './virtualFiles/generatePageConfigsSourceCode/getPageConfigsData'
 import { getCodeFilePath, getConfigValue } from '../../../shared/page-configs/utils'
 type InputOption = ResolvedConfig['build']['rollupOptions']['input'] // same as `import type { InputOption } from 'rollup'` but safe when Vite updates Rollup version
 
@@ -81,14 +79,7 @@ async function getEntries(config: ResolvedConfig): Promise<Record<string, string
 }
 
 async function analyzeAppRouting(config: ResolvedConfig) {
-  const userRootDir = config.root
-  const result = await loadPageConfigFiles(userRootDir)
-  if ('err' in result) {
-    handleBuildError(result.err, false)
-    assert(false)
-  }
-  const { pageConfigFiles } = result
-  const { pageConfigsData } = getPageConfigsData(pageConfigFiles, userRootDir)
+  const { pageConfigsData } = await loadPageConfigsData(config.root, false)
 
   let hasClientRouting = false
   let hasServerRouting = false

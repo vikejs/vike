@@ -5,13 +5,11 @@ import { assert, createDebugger } from '../../../utils'
 
 import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
-import { loadPageConfigFiles } from './loadPageConfigFiles'
-import { getPageConfigsData } from './getPageConfigsData'
-import { handleBuildError } from './handleBuildError'
 import {
   getVirutalModuleIdPageCodeFilesImporter,
   isVirutalModulePageCodeFilesImporter
 } from '../../../../commons/virtualIdPageCodeFilesImporter'
+import { loadPageConfigsData } from './getPageConfigsData'
 
 let pageConfigsData: null | PageConfigData[] = null
 
@@ -39,23 +37,9 @@ async function generatePageConfigsSourceCode(
   isForClientSide: boolean,
   isDev: boolean
 ): Promise<string> {
-  try {
-    return await getCode(userRootDir, isForClientSide)
-  } catch (err) {
-    handleBuildError(err, isDev)
-    assert(false)
-  }
-}
-
-async function getCode(userRootDir: string, isForClientSide: boolean): Promise<string> {
-  const result = await loadPageConfigFiles(userRootDir)
-  if ('err' in result) {
-    return ['export const pageConfigs = null;', 'export const pageConfigGlobal = null;'].join('\n')
-  }
-  const { pageConfigFiles } = result
-  const result2 = getPageConfigsData(pageConfigFiles, userRootDir)
-  pageConfigsData = result2.pageConfigsData
-  const { pageConfigGlobal } = result2
+  const result = await loadPageConfigsData(userRootDir, isDev)
+  pageConfigsData = result.pageConfigsData
+  const { pageConfigGlobal } = result
   return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide)
 }
 
