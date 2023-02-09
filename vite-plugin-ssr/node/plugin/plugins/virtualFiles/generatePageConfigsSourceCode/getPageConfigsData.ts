@@ -42,11 +42,7 @@ async function loadPageConfigsData(
     assert(false)
   }
   const { pageConfigFiles } = result
-  const { pageConfigsData, pageConfigGlobal } = getPageConfigsData(pageConfigFiles, userRootDir)
-  return { pageConfigsData, pageConfigGlobal }
-}
 
-function getPageConfigsData(pageConfigFiles: PageConfigFile[], userRootDir: string) {
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigsData: PageConfigData[] = []
 
