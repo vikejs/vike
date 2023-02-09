@@ -15,13 +15,14 @@ import {
   addFileExtensionsToRequireResolve,
   assertDefaultExport,
   objectEntries,
-  hasProp
+  hasProp,
+  scriptFileExtensions,
+  transpileAndLoadScriptFile
 } from '../../../utils'
 import path from 'path'
 import type { ConfigName, PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
-import { loadPageConfigFiles, PageConfigFile } from './loadPageConfigFiles'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
-import { handleBuildError } from './handleBuildError'
+import glob from 'fast-glob'
 
 type ConfigDefinitionsAll = Record<string, ConfigDefinition>
 
@@ -366,4 +367,108 @@ function getConfigDefinitionsAll(pageConfigFilesRelevant: PageConfigFile[]): Con
     }
   })
   return configDefinitionsAll
+}
+
+type PageConfigFile = {
+  pageConfigFilePath: string
+  pageConfigFileExports: Record<string, unknown>
+}
+
+async function loadPageConfigFiles(
+  userRootDir: string
+): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
+  const pageConfigFilePaths = await findUserFiles(`**/+config.${scriptFileExtensions}`, userRootDir)
+
+  const pageConfigFiles: PageConfigFile[] = []
+  // TODO: make esbuild build everyting at once
+  const results = await Promise.all(
+    pageConfigFilePaths.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const result = await transpileAndLoadScriptFile(filePathAbsolute)
+      if ('err' in result) {
+        return { err: result.err }
+      }
+      return { pageConfigFilePath: filePathRelativeToUserRootDir, pageConfigFileExports: result.exports }
+    })
+  )
+  for (const result of results) {
+    if ('err' in result) {
+      assert(result.err)
+      return {
+        err: result.err
+      }
+    }
+  }
+  results.forEach((result) => {
+    assert(!('err' in result))
+    const { pageConfigFilePath, pageConfigFileExports } = result
+    pageConfigFiles.push({
+      pageConfigFilePath,
+      pageConfigFileExports
+    })
+  })
+
+  return { pageConfigFiles }
+}
+
+async function findUserFiles(pattern: string | string[], userRootDir: string) {
+  assertPosixPath(userRootDir)
+  const timeBase = new Date().getTime()
+  const result = await glob(pattern, {
+    ignore: ['**/node_modules/**'],
+    cwd: userRootDir,
+    dot: false
+  })
+  const time = new Date().getTime() - timeBase
+  assertWarning(
+    time < 2 * 1000,
+    `Crawling your user files took an unexpected long time (${time}ms). Create a new issue on vite-plugin-ssr's GitHub.`,
+    {
+      showStackTrace: false,
+      onlyOnce: 'slow-page-files-search'
+    }
+  )
+  const userFiles = result.map((p) => {
+    p = toPosixPath(p)
+    const filePathRelativeToUserRootDir = path.posix.join('/', p)
+    const filePathAbsolute = path.posix.join(userRootDir, p)
+    return { filePathRelativeToUserRootDir, filePathAbsolute }
+  })
+  return userFiles
+}
+
+function handleBuildError(err: unknown, isDev: boolean) {
+  // Properly handle error during transpilation so that we can use assertUsage() during transpilation
+  if (isDev) {
+    throw err
+  } else {
+    // Avoid ugly error format:
+    // ```
+    // [vite-plugin-ssr:virtualModulePageFiles] Could not load virtual:vite-plugin-ssr:pageFiles:server: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
+    // Error: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
+    //     at resolveCodeFilePath (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:203:33)
+    //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:100:38
+    //     at Array.forEach (<anonymous>)
+    //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:84:14
+    //     at Array.forEach (<anonymous>)
+    //     at getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:75:29)
+    //     at async file (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:40:16)
+    //     at async generateGlobImports (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:188:3)
+    //     at async getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:78:20)
+    //     at async Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:60:26)
+    //     at async file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:22610:75
+    //     at async Queue.work (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:23509:32) {
+    //   code: 'PLUGIN_ERROR',
+    //   plugin: 'vite-plugin-ssr:virtualModulePageFiles',
+    //   hook: 'load',
+    //   watchFiles: [
+    //     '/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/importBuild.js',
+    //     '\x00virtual:vite-plugin-ssr:pageFiles:server'
+    //   ]
+    // }
+    //  ELIFECYCLE  Command failed with exit code 1.
+    // ```
+    console.log('')
+    console.error(err)
+    process.exit(1)
+  }
 }
