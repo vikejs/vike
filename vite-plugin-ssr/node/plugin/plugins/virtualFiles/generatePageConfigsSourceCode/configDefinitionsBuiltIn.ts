@@ -72,7 +72,6 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'server-and-client'
   },
   prerender: {
-    c_code: true,
     c_env: 'server-only'
   },
   hydrationCanBeAborted: {
