@@ -4,6 +4,7 @@ export type { PageConfigGlobal }
 export type { c_Env }
 export type { PageConfigData }
 export type { ConfigName }
+export type { ConfigSource }
 
 type c_Env = 'client-only' | 'server-only' | 'server-and-client' | 'c_routing' | 'c_config'
 
@@ -31,6 +32,7 @@ type ConfigName =
 
 type ConfigSoureFile = {
   configSrc: string
+  configDefinedByFile: string
 } & (
   | {
       configFilePath2: string
@@ -46,21 +48,18 @@ type ConfigSoureFile = {
     }
 )
 
+type ConfigSource = ConfigSoureFile & {
+  c_env: c_Env
+  configValue?: unknown
+}
+
 type PageConfigData = {
   pageId2: string // TODO: rename
   isErrorPage: boolean
-  pageConfigFilePath: string
   pageConfigFilePathAll: string[]
   routeFilesystem: null | string
-  configSources: Partial<
-    Record<
-      ConfigName,
-      ConfigSoureFile & {
-        c_env: c_Env
-        configValue?: unknown
-      }
-    >
-  >
+  routeFilesystemDefinedBy: string
+  configSources: Partial<Record<ConfigName, ConfigSource>>
 }
 
 type PageConfig = PageConfigData & {

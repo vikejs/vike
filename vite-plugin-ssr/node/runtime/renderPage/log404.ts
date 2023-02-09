@@ -60,18 +60,12 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
       let routeStr: string
       let routeTypeSrc: 'Route String' | 'Route Function' | 'Filesystem Route'
       let routeDefinedByStr: string
-      {
-        if (!pageRoute.comesFromV1PageConfig) {
-          routeDefinedByStr = `${pageRoute.pageId}.page.*`
-        } else {
-          if (pageRoute.routeType === 'FILESYSTEM') {
-            assert(pageRoute.pageConfigFilePath)
-            routeDefinedByStr = pageRoute.pageConfigFilePath
-          } else {
-            assert(pageRoute.pageRouteFilePath)
-            routeDefinedByStr = pageRoute.pageRouteFilePath
-          }
-        }
+      if (pageRoute.routeType === 'FILESYSTEM') {
+        assert(pageRoute.routeFilesystemDefinedBy)
+        routeDefinedByStr = pageRoute.routeFilesystemDefinedBy
+      } else {
+        assert(pageRoute.pageRouteFilePath)
+        routeDefinedByStr = pageRoute.pageRouteFilePath
       }
       if (pageRoute.routeType === 'STRING') {
         routeStr = pageRoute.routeString
@@ -83,6 +77,7 @@ function getPagesAndRoutesInfo(pageRoutes: PageRoutes): string {
         routeStr = pageRoute.routeString
         routeTypeSrc = 'Filesystem Route'
       }
+      assert(routeStr && routeTypeSrc && routeDefinedByStr)
       return { routeStr, routeTypeSrc, routeDefinedByStr }
     })
     .sort((e1, e2) => {

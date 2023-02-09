@@ -17,10 +17,16 @@ import {
   objectEntries,
   hasProp,
   scriptFileExtensions,
-  transpileAndLoadScriptFile
+  transpileAndLoadScriptFile,
+  objectAssign
 } from '../../../utils'
 import path from 'path'
-import type { ConfigName, PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
+import type {
+  ConfigName,
+  ConfigSource,
+  PageConfigData,
+  PageConfigGlobal
+} from '../../../../../shared/page-configs/PageConfig'
 import { configDefinitionsBuiltIn, type ConfigDefinition } from './configDefinitionsBuiltIn'
 import glob from 'fast-glob'
 
@@ -30,7 +36,7 @@ async function loadPageConfigsData(
   userRootDir: string,
   isDev: boolean
 ): Promise<{ pageConfigsData: PageConfigData[]; pageConfigGlobal: PageConfigGlobal }> {
-  const result = await loadPageConfigFiles(userRootDir)
+  const result = await findAndLoadPageConfigFiles1(userRootDir)
   /* TODO: - remove this if we don't need this for optimizeDeps.entries
    *       - also remove whole result.err try-catch mechanism, just let esbuild throw instead
   if ('err' in result) {
@@ -43,40 +49,110 @@ async function loadPageConfigsData(
   }
   const { pageConfigFiles } = result
 
+  const configValueFiles = await findAndLoadConfigValueFiles(
+    // TODO: pass configDefinitionsAll instead
+    configDefinitionsBuiltIn,
+    userRootDir
+  )
+
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigsData: PageConfigData[] = []
 
   const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
   const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
 
+  const pageIds: {
+    pageId2: string
+    routeFilesystem: string
+    pageConfigFile: null | PageConfigFile
+    routeFilesystemDefinedBy: string
+  }[] = []
   pageConfigFilesConcrete.forEach((pageConfigFile) => {
     const { pageConfigFilePath } = pageConfigFile
     const pageId2 = determinePageId2(pageConfigFilePath)
+    const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
+    pageIds.push({
+      pageId2,
+      routeFilesystem,
+      pageConfigFile,
+      routeFilesystemDefinedBy: pageConfigFilePath
+    })
+  })
+  configValueFiles.map(({ configValueFilePath }) => {
+    const pageId2 = determinePageId2(configValueFilePath)
+    const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
+    assertPosixPath(configValueFilePath)
+    const routeFilesystemDefinedBy = path.posix.dirname(configValueFilePath) + '/'
+    assert(!routeFilesystemDefinedBy.endsWith('//'))
+    {
+      const alreadyIncluded = pageIds.some((p) => {
+        if (p.pageId2 === pageId2) {
+          assert(p.routeFilesystem === routeFilesystem)
+          assert(p.routeFilesystemDefinedBy === routeFilesystemDefinedBy)
+          return true
+        }
+        return false
+      })
+      if (alreadyIncluded) return
+    }
+    pageIds.push({
+      pageId2,
+      routeFilesystem,
+      pageConfigFile: null,
+      routeFilesystemDefinedBy
+    })
+  })
 
-    const pageConfigFilesRelevant = [pageConfigFile, ...pageConfigFilesAbstract]
+  pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
+      // TODO: properly determine relevant abstract page configs
+    const pageConfigFilesRelevant = [...pageConfigFilesAbstract]
+    if (pageConfigFile) pageConfigFilesRelevant.unshift(pageConfigFile)
     const configDefinitionsAll = getConfigDefinitionsAll(pageConfigFilesRelevant)
 
-    {
+    if (pageConfigFile) {
       const pageConfigValues = getPageConfigValues(pageConfigFile)
       Object.keys(pageConfigValues).forEach((configName) => {
+        // TODO: this applies only against concrete config files, we should also apply to abstract config files
         assertUsage(
           configName in configDefinitionsAll || configName === 'configDefinitions',
-          `${pageConfigFilePath} defines an unknown config '${configName}'`
+          `${pageConfigFile.pageConfigFilePath} defines an unknown config '${configName}'`
         )
       })
     }
 
     const configSources: PageConfigData['configSources'] = {}
+    configValueFiles.forEach((configValueFile) => {
+      if (configValueFile.pageId !== pageId2) return
+      const { configName, configValueFilePath } = configValueFile
+      const configDef = configDefinitionsAll[configName]
+      assert(configDef)
+      const configSource: ConfigSource = {
+        c_env: configDef.c_env,
+        // TODO: rename codeFilePath2 to configValueFilePath?
+        codeFilePath2: configValueFilePath,
+        configFilePath2: null,
+        configSrc: `${configValueFilePath} > \`export default\``,
+        configDefinedByFile: configValueFilePath
+      }
+      if ('configValue' in configValueFile) {
+        configSource.configValue = configValueFile.configValue
+      }
+      configSources[configName as ConfigName] = configSource
+    })
+
     objectEntries(configDefinitionsAll).forEach(([configName, configDef]) => {
-      // TODO: properly determine relevant abstract page configs
-      const result = resolveConfig(configName, configDef, pageConfigFile, pageConfigFilesAbstract, userRootDir)
+      const result = resolveConfig(configName, configDef, pageConfigFilesRelevant, userRootDir)
       if (!result) return
+      if (configName in configSources) {
+        assertUsage(false, 'Defined twice ... TODO')
+      }
       const { c_env } = configDef
       const { configValue, codeFilePath, configFilePath } = result
       if (!codeFilePath) {
         configSources[configName as ConfigName] = {
           configFilePath2: configFilePath,
           configSrc: `${configFilePath} > ${configName}`,
+          configDefinedByFile: configFilePath,
           codeFilePath2: null,
           c_env,
           configValue
@@ -85,7 +161,7 @@ async function loadPageConfigsData(
         assertUsage(
           typeof configValue === 'string',
           `${getErrorIntro(
-            pageConfigFilePath,
+            configFilePath,
             configName
           )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
         )
@@ -93,27 +169,20 @@ async function loadPageConfigsData(
           configFilePath2: configFilePath,
           codeFilePath2: codeFilePath,
           configSrc: `${codeFilePath} > \`export default\``,
+          configDefinedByFile: codeFilePath,
           c_env
         }
       }
     })
 
-    // TODO: properly determine relevant abstract page configs
-    const pageConfigFilePathAll = [
-      pageConfigFile.pageConfigFilePath,
-      ...pageConfigFilesAbstract.map((p) => p.pageConfigFilePath)
-    ]
-
     const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
-
-    const routeFilesystem = isErrorPage ? null : determineRouteFromFilesystemPath(pageConfigFilePath)
 
     pageConfigsData.push({
       pageId2,
       isErrorPage,
-      pageConfigFilePath,
-      pageConfigFilePathAll,
-      routeFilesystem,
+      routeFilesystemDefinedBy,
+      pageConfigFilePathAll: pageConfigFilesRelevant.map( p => p.pageConfigFilePath),
+      routeFilesystem: isErrorPage ? null : routeFilesystem,
       configSources
     })
   })
@@ -124,11 +193,10 @@ async function loadPageConfigsData(
 function resolveConfig(
   configName: string,
   configDef: ConfigDefinition,
-  pageConfigFile: PageConfigFile,
-  pageConfigFilesAbstract: PageConfigFile[],
+  pageConfigFilesRelevant: PageConfigFile[],
   userRootDir: string
 ) {
-  const result = getConfigValue(configName, pageConfigFile, pageConfigFilesAbstract)
+  const result = getConfigValue(configName, pageConfigFilesRelevant)
   if (!result) return null
   const { pageConfigValue, pageConfigValueFilePath } = result
   const configValue = pageConfigValue
@@ -291,11 +359,9 @@ function getErrorIntro(pageConfigFilePath: string, configName: string): string {
 
 function getConfigValue(
   pageConfigName: string,
-  pageConfigFile: PageConfigFile,
-  pageConfigFilesAbstract: PageConfigFile[]
+  pageConfigFilesRelevant: PageConfigFile[]
 ): null | { pageConfigValueFilePath: string; pageConfigValue: unknown } {
-  const configFiles: PageConfigFile[] = [pageConfigFile, ...pageConfigFilesAbstract]
-  for (const configFile of configFiles) {
+  for (const configFile of pageConfigFilesRelevant) {
     const pageConfigValues = getPageConfigValues(configFile)
     const pageConfigValue = pageConfigValues[pageConfigName]
     if (pageConfigValue !== undefined) {
@@ -370,7 +436,54 @@ type PageConfigFile = {
   pageConfigFileExports: Record<string, unknown>
 }
 
-async function loadPageConfigFiles(
+type ConfigValueFile = {
+  pageId: string
+  configName: string
+  configValueFilePath: string
+} & ({} | { configValue: unknown })
+async function findAndLoadConfigValueFiles(
+  configDefinitionsAll: ConfigDefinitionsAll,
+  userRootDir: string
+): Promise<ConfigValueFile[]> {
+  const configNames = Object.keys(configDefinitionsAll)
+  const pattern = configNames.map((configName) => `**/+${configName}.${scriptFileExtensions}`)
+  const found = await findUserFiles(pattern, userRootDir)
+  const configValueFiles: ConfigValueFile[] = await Promise.all(
+    found.map(async ({ filePathAbsolute, filePathRelativeToUserRootDir }) => {
+      const configName = extractConfigName(filePathRelativeToUserRootDir)
+      const configDef = configDefinitionsAll[configName]
+      assert(configDef)
+      const configValueFile: ConfigValueFile = {
+        configName,
+        pageId: determinePageId2(filePathRelativeToUserRootDir),
+        configValueFilePath: filePathRelativeToUserRootDir
+      }
+      if (configDef.c_env !== 'c_config') {
+        return configValueFile
+      }
+      const result = await transpileAndLoadScriptFile(filePathAbsolute)
+      if ('err' in result) {
+        throw result.err
+      }
+      const fileExports = result.exports
+      assertDefaultExport(fileExports, filePathRelativeToUserRootDir)
+      const configValue = fileExports.default
+      objectAssign(configValueFile, { configValue })
+      return configValueFile
+    })
+  )
+  return configValueFiles
+}
+
+function extractConfigName(filePath: string) {
+  assertPosixPath(filePath)
+  const basename = path.posix.basename(filePath).split('.')[0]!
+  assert(basename.startsWith('+'))
+  const configName = basename.slice(1)
+  return configName
+}
+
+async function findAndLoadPageConfigFiles1(
   userRootDir: string
 ): Promise<{ err: unknown } | { pageConfigFiles: PageConfigFile[] }> {
   const pageConfigFilePaths = await findUserFiles(`**/+config.${scriptFileExtensions}`, userRootDir)

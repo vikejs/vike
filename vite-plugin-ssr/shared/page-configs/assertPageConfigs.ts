@@ -11,27 +11,27 @@ function assertPageConfigs(pageConfigs: unknown): asserts pageConfigs is PageCon
   pageConfigs.forEach((pageConfig) => {
     assert(isObject(pageConfig))
     assert(hasProp(pageConfig, 'pageId2', 'string'))
-    assert(hasProp(pageConfig, 'pageConfigFilePath', 'string'))
     assert(hasProp(pageConfig, 'pageConfigFilePathAll', 'string[]'))
     assert(hasProp(pageConfig, 'routeFilesystem', 'string') || hasProp(pageConfig, 'routeFilesystem', 'null'))
+    assert(hasProp(pageConfig, 'routeFilesystemDefinedBy', 'string'))
     assert(hasProp(pageConfig, 'loadCodeFiles', 'function'))
     assert(hasProp(pageConfig, 'isErrorPage', 'boolean'))
     assert(hasProp(pageConfig, 'configSources', 'object'))
     Object.entries(pageConfig.configSources).forEach(([configName, configSource]) => {
       assert(hasProp(configSource, 'configSrc', 'string'))
-      assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
       assert(hasProp(configSource, 'configFilePath2', 'string') || hasProp(configSource, 'configFilePath2', 'null'))
       assert(hasProp(configSource, 'c_env', 'string'))
-      if ('codeFilePath' in configSource) {
-        const { codeFilePath } = configSource
-        assert(typeof codeFilePath === 'string')
+      assert(hasProp(configSource, 'codeFilePath2', 'string') || hasProp(configSource, 'codeFilePath2', 'null'))
+      if (configSource.codeFilePath2) {
+        const { codeFilePath2 } = configSource
         if (configName === 'route') {
           assert(hasProp(configSource, 'configValue')) // route files are eagerly loaded
           const { configValue } = configSource
           const configValueType = typeof configValue
+          // TODO: validate earlier?
           assertUsage(
             configValueType === 'string' || isCallable(configValue),
-            `${codeFilePath} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
+            `${codeFilePath2} has a default export with an invalid type '${configValueType}': the default export should be a string or a function`
           )
         }
       }

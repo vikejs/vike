@@ -31,6 +31,7 @@ export const debug = createDebugger('vps:virtual-files')
 // TODO: improve Vite dev error handling upon user setting unknown config
 // TODO: assertUsage isErrorPage not allowed to be abstract
 // TODO: check whether onBeforerRender() is isomorph or server-only in react-full-v1 example
+// TODO: rename configSrc/configSource to configDefinedBy
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,
@@ -53,23 +54,24 @@ function generateSourceCodeOfPageConfigs(
 
   lines.push('export const pageConfigs = [];')
   pageConfigsData.forEach((pageConfig, i) => {
-    const { pageConfigFilePath, pageConfigFilePathAll, pageId2, routeFilesystem, configSources, isErrorPage } =
+    const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configSources, isErrorPage } =
       pageConfig
     const codeFilesImporter = getVirutalModuleIdPageCodeFilesImporter(pageId2, isForClientSide)
     const pageConfigVar = `pageConfig${i + 1}` // TODO: remove outdated & unncessary variable creation
     lines.push(`{`)
     lines.push(`  const ${pageConfigVar} = {`)
-    lines.push(`    pageId2: '${pageId2}',`)
+    lines.push(`    pageId2: ${JSON.stringify(pageId2)},`)
     lines.push(`    isErrorPage: ${JSON.stringify(isErrorPage)},`)
-    lines.push(`    pageConfigFilePath: '${pageConfigFilePath}',`)
     lines.push(`    pageConfigFilePathAll: ${JSON.stringify(pageConfigFilePathAll)},`)
-    lines.push(`    routeFilesystem: '${routeFilesystem}',`)
+    lines.push(`    routeFilesystem: ${JSON.stringify(routeFilesystem)},`)
+    lines.push(`    routeFilesystemDefinedBy: ${JSON.stringify(routeFilesystemDefinedBy)},`)
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
       lines.push(`      ['${configName}']: {`)
-      const { configSrc, c_env, codeFilePath2, configFilePath2 } = configSource
-      lines.push(`        configSrc: '${configSrc}',`)
+      const { configSrc, configDefinedByFile, c_env, codeFilePath2, configFilePath2 } = configSource
+      lines.push(`        configSrc: ${JSON.stringify(configSrc)},`)
+      lines.push(`        configDefinedByFile: ${JSON.stringify(configDefinedByFile)},`)
       lines.push(`        codeFilePath2: ${JSON.stringify(codeFilePath2)},`)
       lines.push(`        configFilePath2: ${JSON.stringify(configFilePath2)},`)
       lines.push(`        c_env: '${c_env}',`)

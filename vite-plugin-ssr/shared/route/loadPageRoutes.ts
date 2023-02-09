@@ -11,9 +11,11 @@ export { findPageRouteFile }
 export type { PageRoutes }
 export type { RouteType }
 
-type PageRoute = { pageId: string; comesFromV1PageConfig: boolean } & (
-  // TODO: rename pageRouteFilePath to routeSrc (since pageRouteFilePath can be configSrc)
-  | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM'; pageConfigFilePath?: string }
+type PageRoute = {
+  pageId: string
+  comesFromV1PageConfig: boolean
+} & ( // TODO: rename pageRouteFilePath to routeSrc (since pageRouteFilePath can be configSrc)
+  | { routeString: string; pageRouteFilePath: null; routeType: 'FILESYSTEM'; routeFilesystemDefinedBy: string }
   | { routeString: string; pageRouteFilePath: string; routeType: 'STRING' }
   | { routeFunction: Function; pageRouteFilePath: string; allowAsync: boolean; routeType: 'FUNCTION' }
 )
@@ -83,12 +85,13 @@ function getPageRoutes(
         }
 
         if (!pageRoute) {
-          const { routeFilesystem, pageConfigFilePath } = pageConfig
-          assert(pageConfigFilePath)
-          assert(typeof routeFilesystem === 'string')
+          const { routeFilesystem, routeFilesystemDefinedBy } = pageConfig
+          assert(routeFilesystem)
+          assert(routeFilesystem.startsWith('/'))
+          assert(routeFilesystemDefinedBy)
           pageRoute = {
             pageId,
-            pageConfigFilePath,
+            routeFilesystemDefinedBy,
             comesFromV1PageConfig,
             routeString: routeFilesystem,
             pageRouteFilePath: null,
@@ -115,6 +118,7 @@ function getPageRoutes(
             comesFromV1PageConfig,
             routeString,
             pageRouteFilePath: null,
+            routeFilesystemDefinedBy: `${pageId}.page.*`,
             routeType: 'FILESYSTEM'
           })
         } else {

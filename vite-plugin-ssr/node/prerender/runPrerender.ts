@@ -55,7 +55,19 @@ type HtmlFile = {
   pageId: string | null
 }
 
-type DoNotPrerenderList = { pageId: string; pageFilePath: string }[]
+type DoNotPrerenderList = ({ pageId: string; prerenderConfigSrc: string } & (
+  | {
+      // TODO/v1-release: remove 0.4 case
+      prerenderHookName: 'prerender'
+      prerenderConfigName: 'doNotPrerender'
+      prerenderConfigValue: true
+    }
+  | {
+      prerenderHookName: 'onPrerender'
+      prerenderConfigName: 'prerender'
+      prerenderConfigValue: false
+    }
+))[]
 type PrerenderedPageIds = Record<string, { urlOriginal: string; _prerenderHookFile: string | null }>
 
 type PrerenderContext = {
@@ -211,8 +223,18 @@ async function collectDoNoPrerenderList(
   concurrencyLimit: PLimit
 ) {
   renderContext.pageConfigs.forEach((pageConfig) => {
-    if (getConfigValue(pageConfig, 'prerender', 'boolean')) {
-      doNotPrerenderList.push({ pageId: pageConfig.pageId2, pageFilePath: pageConfig.pageConfigFilePath })
+    const prerenderConfigValue = getConfigValue(pageConfig, 'prerender', 'boolean')
+    if (prerenderConfigValue === false) {
+      const configSource = pageConfig.configSources.prerender
+      assert(configSource)
+      assert(configSource.configValue === false)
+      doNotPrerenderList.push({
+        pageId: pageConfig.pageId2,
+        prerenderConfigSrc: configSource.configSrc,
+        prerenderHookName: 'onPrerender',
+        prerenderConfigName: 'prerender',
+        prerenderConfigValue
+      })
     }
   })
 
@@ -251,7 +273,13 @@ async function collectDoNoPrerenderList(
         return
       } else {
         // Don't pre-render `pageId`
-        doNotPrerenderList.push({ pageId, pageFilePath: p.filePath })
+        doNotPrerenderList.push({
+          pageId,
+          prerenderConfigSrc: `${p.filePath} > \`export { doNotPrerender }\``,
+          prerenderHookName: 'prerender',
+          prerenderConfigName: 'doNotPrerender',
+          prerenderConfigValue: doNotPrerender
+        })
       }
     }
   })
@@ -646,9 +674,10 @@ function warnContradictoryNoPrerenderList(
     const doNotPrerenderListHit = doNotPrerenderList.find((p) => p.pageId === pageId)
     if (doNotPrerenderListHit) {
       assert(_prerenderHookFile)
+      const { prerenderConfigSrc, prerenderHookName, prerenderConfigName, prerenderConfigValue } = doNotPrerenderListHit
       assertUsage(
         false,
-        `Your \`prerender()\` hook defined in ${_prerenderHookFile} returns the URL \`${urlOriginal}\` which matches the page with \`${doNotPrerenderListHit?.pageFilePath}#doNotPrerender === true\`. This is contradictory: either don't set \`doNotPrerender\` or remove the URL from the list of URLs to be pre-rendered.`
+        `Your \`${prerenderHookName}()\` hook defined by ${_prerenderHookFile} returns the URL \`${urlOriginal}\` while \`${prerenderConfigSrc} is \`${prerenderConfigValue}\`. This is contradictory: either don't set \`${prerenderConfigName}\` to \`${prerenderConfigValue}\` or remove the URL from the list of URLs to be pre-rendered.`
       )
     }
   })

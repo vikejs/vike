@@ -20,7 +20,8 @@ import {
   objectAssign,
   isPromise,
   callHookWithTimeout,
-  isCallable
+  isCallable,
+  unique
 } from '../../utils'
 import type { PageAsset } from './getPageAssets'
 import { assertHookResult } from '../../../shared/assertHookResult'
@@ -223,12 +224,15 @@ async function getRenderContext(): Promise<RenderContext> {
 function assertNonMixedDesign(pageFilesAll: PageFile[], pageConfigs: PageConfig[]) {
   if (pageFilesAll.length === 0 || pageConfigs.length === 0) return
   const indent = '- '
+  const v1Files: string[] = unique(
+    pageConfigs.map((p) => Object.values(p.configSources).map((c) => indent + c.configDefinedByFile)).flat()
+  )
   assertUsage(
     false,
     [
       'Mixing the new V1 design with the old V0.4 design is forbidden.',
       'V1 files:',
-      ...pageConfigs.map((p) => indent + p.pageConfigFilePath),
+      ...v1Files,
       'V0.4 files:',
       ...pageFilesAll.map((p) => indent + p.filePath)
     ].join('\n')
@@ -393,13 +397,7 @@ async function executeOnRenderHtmlHook(
     injectFilter = result.injectFilter
   }
 
-  const htmlRender = await renderDocumentHtml(
-    documentHtml,
-    pageContext,
-    renderSrc,
-    onErrorWhileStreaming,
-    injectFilter
-  )
+  const htmlRender = await renderDocumentHtml(documentHtml, pageContext, renderSrc, onErrorWhileStreaming, injectFilter)
   assert(typeof htmlRender === 'string' || isStream(htmlRender))
   return { htmlRender, renderSrc }
 }
