@@ -206,7 +206,11 @@ export const pageFilesList = [];
 export const neverLoaded = {};
 export const isGeneratedFile = true;
 
-import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true });
+${
+  ''
+  // TODO: remove?
+  // import.meta.glob('/**/+config.${scriptFileExtensions}', { eager: true });
+}
 ${await generatePageConfigsSourceCode(config.root, isForClientSide, isDev)}
 
 `
