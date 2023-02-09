@@ -69,16 +69,16 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'client-only'
   },
   clientRouting: {
-    c_env: 'server-and-client'
+    c_env: 'server-and-client' // TODO: c_config instead?
   },
   prerender: {
     c_env: 'c_config'
   },
   hydrationCanBeAborted: {
-    c_env: 'client-only'
+    c_env: 'client-only' // TODO: c_config instead?
   },
   isErrorPage: {
-    c_env: 'c_routing'
+    c_env: 'c_routing' // TODO: c_config instead?
   }
   /* TODO
   onBeforeRoute: {
