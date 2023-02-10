@@ -1,3 +1,15 @@
+## [0.4.78](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.77...v0.4.78) (2023-02-10)
+
+
+### Bug Fixes
+
+* improve assertion failure log ([1bff480](https://github.com/brillout/vite-plugin-ssr/commit/1bff480a92b26ef5b7f2b1173b0bf214b3425a17))
+* improve importBuild.cjs instructions (fix [#627](https://github.com/brillout/vite-plugin-ssr/issues/627)) ([cd7ba41](https://github.com/brillout/vite-plugin-ssr/commit/cd7ba41ac5436ff35836409189e6820c74b2255b))
+* log fetch error causing new frontend deploy detection ([f54b3b7](https://github.com/brillout/vite-plugin-ssr/commit/f54b3b7c36edd1a3e5e0e87f70d75b6a4b2edf3d))
+* update @brillout/vite-plugin-import-build ([463fe05](https://github.com/brillout/vite-plugin-ssr/commit/463fe05e8cfe300213fffb27f3f53ba130b290a9))
+
+
+
 ## [0.4.77](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.76...v0.4.77) (2023-02-04)
 
 
