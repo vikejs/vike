@@ -28,7 +28,7 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
 
   const debugStr = (() => {
     if (!debugInfo) {
-      return ''
+      return null
     }
     const debugInfoSerialized = typeof debugInfo === 'string' ? debugInfo : '`' + JSON.stringify(debugInfo) + '`'
     return `Debug info (this is for the ${projectInfo.projectName} maintainers; you can ignore this): ${debugInfoSerialized}`
@@ -41,7 +41,9 @@ function assert(condition: unknown, debugInfo?: unknown): asserts condition {
       'A maintainer will fix the bug (usually under 24 hours).',
       `Don't hesitate to reach out as it makes ${projectInfo.projectName} more robust.`,
       debugStr
-    ].join(' '),
+    ]
+      .filter(Boolean)
+      .join(' '),
     numberOfStackTraceLinesToRemove
   )
 
