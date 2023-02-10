@@ -88,7 +88,6 @@ async function loadPageConfigsData(
       const alreadyIncluded = pageIds.some((p) => {
         if (p.pageId2 === pageId2) {
           assert(p.routeFilesystem === routeFilesystem)
-          assert(p.routeFilesystemDefinedBy === routeFilesystemDefinedBy)
           return true
         }
         return false
