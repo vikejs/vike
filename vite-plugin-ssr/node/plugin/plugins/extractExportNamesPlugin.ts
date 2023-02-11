@@ -2,7 +2,7 @@ export { extractExportNamesPlugin }
 export { isUsingClientRouter }
 export { extractExportNamesRE }
 
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin } from 'vite'
 import { assert, getFileExtension, viteIsSSR_options, createDebugger, isDebugEnabled } from '../utils'
 import { removeSourceMap, getExportNames } from '../helpers'
 import { getGlobalObject } from '../../utils'
@@ -13,28 +13,27 @@ const debugEnabled = isDebugEnabled(debugNamespace)
 const globalObject = getGlobalObject<{ usesClientRouter?: true }>('extractExportNamesPlugin.ts', {})
 
 function extractExportNamesPlugin(): Plugin {
-  let config: ResolvedConfig
+  let isDev = false
   return {
     name: 'vite-plugin-ssr:extractExportNames',
     enforce: 'post',
     async transform(src, id, options) {
-      const { isProduction } = config
       const isClientSide = !viteIsSSR_options(options)
       if (extractExportNamesRE.test(id)) {
-        const code = await getExtractExportNamesCode(src, isClientSide, isProduction)
+        const code = await getExtractExportNamesCode(src, isClientSide, !isDev)
         debug('id ' + id, ['result:\n' + code.code.trim(), 'src:\n' + src.trim()])
         return code
       }
     },
-    configResolved(config_) {
-      config = config_
+    configureServer() {
+      isDev = true
     },
     config() {
       if (debugEnabled) {
         return { logLevel: 'silent' }
       }
     }
-  } as Plugin
+  }
 }
 
 async function getExtractExportNamesCode(src: string, isClientSide: boolean, isProduction: boolean) {
