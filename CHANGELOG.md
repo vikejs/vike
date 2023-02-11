@@ -1,3 +1,12 @@
+## [0.4.79](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.78...v0.4.79) (2023-02-11)
+
+
+### Bug Fixes
+
+* use configureDevServer() instead of config.isProduction to diff dev/prod ([dbad544](https://github.com/brillout/vite-plugin-ssr/commit/dbad544c5b9944afe714ad9d02dc7ac6ae530b81))
+
+
+
 ## [0.4.78](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.77...v0.4.78) (2023-02-10)
 
 
