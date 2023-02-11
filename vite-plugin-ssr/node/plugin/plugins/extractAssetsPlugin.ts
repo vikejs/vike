@@ -168,7 +168,7 @@ function extractAssetsPlugin(): Plugin[] {
         }
       }
     }
-  ] as Plugin[]
+  ]
 }
 
 function emptyModule(file: string, importer: string) {

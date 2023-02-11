@@ -37,7 +37,7 @@ function manifest(): Plugin[] {
         })
       }
     }
-  ] as Plugin[]
+  ]
 }
 
 function getManifestKeyMap(configVps: ConfigVpsResolved, config: ResolvedConfig): Record<string, string> {

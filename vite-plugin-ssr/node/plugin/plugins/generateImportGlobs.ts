@@ -42,7 +42,7 @@ function generateImportGlobs(): Plugin {
       const code = await getCode(config, configVps, isForClientSide, isClientRouting, isPrerendering)
       return code
     }
-  } as Plugin
+  }
 }
 
 async function getCode(

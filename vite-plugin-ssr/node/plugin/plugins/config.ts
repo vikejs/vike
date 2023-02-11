@@ -9,7 +9,7 @@ import { pickFirst } from './config/pickFirst'
 import { resolveExtensions } from './config/resolveExtensions'
 import { resolveBase } from './config/resolveBase'
 
-function resolveVpsConfig(vpsConfig: unknown) {
+function resolveVpsConfig(vpsConfig: unknown): Plugin {
   return {
     name: 'vite-plugin-ssr:resolveVpsConfig',
     enforce: 'pre',
@@ -21,7 +21,7 @@ function resolveVpsConfig(vpsConfig: unknown) {
       )
       ;(config as Record<string, unknown>).configVpsPromise = configVpsPromise
     }
-  } as Plugin
+  }
 }
 
 async function resolveConfigVps(

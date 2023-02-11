@@ -32,7 +32,7 @@ function packageJsonFile(): Plugin {
         source: getPackageJsonContent(isEsm)
       })
     }
-  } as Plugin
+  }
 }
 
 function getPackageJsonContent(isEsm: boolean): string {

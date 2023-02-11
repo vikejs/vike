@@ -23,5 +23,5 @@ function setGlobalContext(): Plugin {
     async configResolved(config) {
       setGlobalContextViteConfig(config)
     }
-  } as Plugin
+  }
 }
