@@ -1,3 +1,12 @@
+## [0.4.80](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.79...v0.4.80) (2023-02-12)
+
+
+### Bug Fixes
+
+* collect single css when `cssCodeSplit: false` (fix [#644](https://github.com/brillout/vite-plugin-ssr/issues/644)) ([0040e48](https://github.com/brillout/vite-plugin-ssr/commit/0040e4826fdefed626fcf4770d63761b6e7303c8))
+
+
+
 ## [0.4.79](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.78...v0.4.79) (2023-02-11)
 
 
