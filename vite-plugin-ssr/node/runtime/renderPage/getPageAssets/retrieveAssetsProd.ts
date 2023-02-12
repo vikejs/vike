@@ -32,6 +32,8 @@ function retrieveAssetsProd(
     collectAssets(manifestKey, assetUrls, visistedAssets, clientManifest, onlyAssets)
   })
 
+  collectSingleStyle(assetUrls, clientManifest)
+
   return Array.from(assetUrls)
 }
 
@@ -65,5 +67,13 @@ function collectAssets(
   }
   for (const asset of assets) {
     assetUrls.add(`/${asset}`)
+  }
+}
+
+// Support `config.build.cssCodeSplit: false`, https://github.com/brillout/vite-plugin-ssr/issues/644
+function collectSingleStyle(assetUrls: Set<string>, manifest: ViteManifest) {
+  const style = manifest['style.css']
+  if (style && Object.values(manifest).filter((asset) => asset.file.endsWith('.css')).length === 1) {
+    assetUrls.add(`/${style.file}`)
   }
 }
