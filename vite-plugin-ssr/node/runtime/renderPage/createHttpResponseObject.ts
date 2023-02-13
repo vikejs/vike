@@ -224,8 +224,11 @@ function removeFileExtentionAndHash(assetUrl: string): string {
   assert(!assetUrl.endsWith('.js'))
   const paths = assetUrl.split('/')
   const filename = paths[paths.length - 1]!
-  const filenameParts = filename.split('.').slice(0, -2)
-  assert(filenameParts.length >= 1)
-  paths[paths.length - 1] = filenameParts.join('.')
+  const filenameParts = filename.split('.')
+  assert(filenameParts.length >= 2)
+  // User may set config.build.rollupOptions.output.assetFileNames => we can't assume the filename to be `*.${hash}.${ext}`
+  const filenameBase = filenameParts.slice(0, filenameParts.length === 2 ? -1 : -2)
+  assert(filenameBase.length >= 1)
+  paths[paths.length - 1] = filenameBase.join('.')
   return paths.join('/')
 }
