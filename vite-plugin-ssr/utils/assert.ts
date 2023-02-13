@@ -3,7 +3,7 @@ export { assertUsage }
 export { assertWarning }
 export { assertInfo }
 export { getProjectError }
-export { errorPrefix }
+export { logPrefix }
 export { addOnBeforeLogHook }
 
 import { createErrorWithCleanStackTrace } from './createErrorWithCleanStackTrace'
@@ -13,11 +13,11 @@ const globalObject = getGlobalObject<{ alreadyLogged: Set<string>; onBeforeLog?:
   alreadyLogged: new Set()
 })
 
-const errorPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]`
-const internalErrorPrefix = `${errorPrefix}[Bug]`
-const usageErrorPrefix = `${errorPrefix}[Wrong Usage]`
-const warningPrefix = `${errorPrefix}[Warning]`
-const infoPrefix = `${errorPrefix}[Info]`
+const logPrefix = `[${projectInfo.npmPackageName}@${projectInfo.projectVersion}]` as const
+const internalErrorPrefix = `${logPrefix}[Bug]` as const
+const usageErrorPrefix = `${logPrefix}[Wrong Usage]` as const
+const warningPrefix = `${logPrefix}[Warning]` as const
+const infoPrefix = `${logPrefix}[Info]` as const
 
 const numberOfStackTraceLinesToRemove = 2
 
@@ -65,7 +65,7 @@ function assertUsage(condition: unknown, errorMessage: string): asserts conditio
 function getProjectError(errorMessage: string) {
   const sep = errorMessage.startsWith('[') ? '' : ' '
   const pluginError = createErrorWithCleanStackTrace(
-    `${errorPrefix}${sep}${errorMessage}`,
+    `${logPrefix}${sep}${errorMessage}`,
     numberOfStackTraceLinesToRemove
   )
   return pluginError

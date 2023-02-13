@@ -1,6 +1,6 @@
 export { callHookWithTimeout }
 
-import { errorPrefix, getProjectError } from './assert'
+import { logPrefix, getProjectError } from './assert'
 import { humanizeTime } from './humanizeTime'
 
 type HookName = 'render' | 'onBeforeRender' | 'onBeforePrerender' | 'onBeforeRoute' | 'onHydrationEnd'
@@ -26,7 +26,7 @@ function callHookWithTimeout<T = unknown>(call: () => T, hookName: HookName, hoo
     clearTimeout(t2)
   }
   const t1 = setTimeout(() => {
-    const msg = `${errorPrefix}[Warning] The ${hookName}() hook of ${hookFilePath} is taking more than ${humanizeTime(
+    const msg = `${logPrefix}[Warning] The ${hookName}() hook of ${hookFilePath} is taking more than ${humanizeTime(
       timeoutWarn
     )}`
     console.warn(msg)
