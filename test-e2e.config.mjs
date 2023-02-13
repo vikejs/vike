@@ -81,7 +81,8 @@ function tolerateError(log) {
     isViteEsbuildBug() ||
     isGetPageAssetsDeprecationWarning() ||
     isDocpressAssetWarning() ||
-    isSourceMapWarning()
+    isSourceMapWarning() ||
+    isCloudflareFalseError2()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -158,5 +159,9 @@ function tolerateError(log) {
       log.logSource === 'stderr' &&
       log.logText.includes('Sourcemap for "/@react-refresh" points to missing source files')
     )
+  }
+
+  function isCloudflareFalseError2() {
+    return log.logSource === 'stderr' && log.logText.includes('Script modified; context reset.')
   }
 }

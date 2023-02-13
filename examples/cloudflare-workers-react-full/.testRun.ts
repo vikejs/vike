@@ -40,12 +40,12 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
     const additionalTimeout = !isWrangler ? 0 : (isGithubAction() ? 2 : 1) * 10 * 1000
     const serverIsReadyMessage = (() => {
       if (isWrangler) {
-        return 'Listening at http://localhost:3000'
+        return 'Listening at'
       }
       // Vite/Express.js dev server
       return undefined
     })()
-    run(cmd, { additionalTimeout, serverIsReadyMessage })
+    run(cmd, { additionalTimeout, serverIsReadyMessage, doNotFailOnWarning: true })
   }
 
   test('page content is rendered to HTML', async () => {
