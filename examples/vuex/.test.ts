@@ -1,4 +1,4 @@
-import { fetchHtml, run, test, expect, skip } from '@brillout/test-e2e'
+import { fetchHtml, run, test, expect } from '@brillout/test-e2e'
 run('npm run dev')
 
 test('page content is rendered to HTML', async () => {

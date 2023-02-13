@@ -806,20 +806,20 @@ importers:
   examples/vuex:
     specifiers:
       '@vitejs/plugin-vue': ^4.0.0
-      '@vue/compiler-sfc': ^3.2.33
-      '@vue/server-renderer': ^3.2.33
-      vite: ^4.0.3
+      '@vue/compiler-sfc': ^3.2.47
+      '@vue/server-renderer': ^3.2.47
+      vite: ^4.1.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
-      vue: ^3.2.33
-      vuex: ^4.0.2
+      vue: ^3.2.47
+      vuex: ^4.1.0
     dependencies:
-      '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.33
-      '@vue/compiler-sfc': 3.2.33
-      '@vue/server-renderer': 3.2.33_vue@3.2.33
-      vite: 4.0.3
+      '@vitejs/plugin-vue': 4.0.0_vite@4.1.1+vue@3.2.47
+      '@vue/compiler-sfc': 3.2.47
+      '@vue/server-renderer': 3.2.47_vue@3.2.47
+      vite: 4.1.1
       vite-plugin-ssr: link:../../vite-plugin-ssr
-      vue: 3.2.33
-      vuex: 4.0.2_vue@3.2.33
+      vue: 3.2.47
+      vuex: 4.1.0_vue@3.2.47
 
   test/contra:
     specifiers:
@@ -10184,13 +10184,13 @@ packages:
       '@vue/shared': 3.2.47
     dev: false
 
-  /vuex/4.0.2_vue@3.2.33:
-    resolution: {integrity: sha512-M6r8uxELjZIK8kTKDGgZTYX/ahzblnzC4isU1tpmEuOIIKmV+TRdc+H4s8ds2NuZ7wpUTdGRzJRtoj+lI+pc0Q==}
+  /vuex/4.1.0_vue@3.2.47:
+    resolution: {integrity: sha512-hmV6UerDrPcgbSy9ORAtNXDr9M4wlNP4pEFKye4ujJF8oqgFFuxDCdOLS3eNoRTtq5O3hoBDh9Doj1bQMYHRbQ==}
     peerDependencies:
-      vue: ^3.0.2
+      vue: ^3.2.0
     dependencies:
       '@vue/devtools-api': 6.1.4
-      vue: 3.2.33
+      vue: 3.2.47
     dev: false
 
   /web-streams-polyfill/3.2.1:
