@@ -1,3 +1,12 @@
+## [0.4.82](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.81...v0.4.82) (2023-02-13)
+
+
+### Bug Fixes
+
+* update @brillout/vite-plugin-import-build ([07a1265](https://github.com/brillout/vite-plugin-ssr/commit/07a126525d7c9c0d91920c7ba9f4cdd16cafa168))
+
+
+
 ## [0.4.81](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.80...v0.4.81) (2023-02-13)
 
 
