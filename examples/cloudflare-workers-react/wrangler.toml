@@ -3,6 +3,7 @@ name = "vite-plugin-ssr_worker-example"
 compatibility_date = "2021-09-29"
 workers_dev = true
 node_compat = true
+send_metrics = false
 
 [site]
 bucket = "./dist/client"
