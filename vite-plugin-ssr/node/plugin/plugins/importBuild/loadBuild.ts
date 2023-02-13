@@ -1,8 +1,8 @@
 export { loadBuild }
 export { setLoaders }
 
-import { assert, assertUsage } from '../../utils'
-import { loadServerBuild, importBuildFileName } from '@brillout/vite-plugin-import-build/loadServerBuild'
+import { assert } from '../../utils'
+import { loadServerBuild } from '@brillout/vite-plugin-import-build/loadServerBuild'
 
 const buildGetters = (globalThis.__vite_plugin_ssr__buildGetters = globalThis.__vite_plugin_ssr__buildGetters || {
   getters: null

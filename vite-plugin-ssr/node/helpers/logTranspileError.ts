@@ -28,7 +28,7 @@ export function logError(server: ViteDevServer, err: RollupError): void {
   server.config.logger.error(msg, {
     clear: true,
     timestamp: true,
-    error: err
+    error: err as any // avoid Rollup and Vite's Rollup version mismatch
   })
 
   /* Showing the error layover doesn't properly work
