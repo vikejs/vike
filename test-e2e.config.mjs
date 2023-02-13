@@ -82,6 +82,7 @@ function tolerateError(log) {
     isGetPageAssetsDeprecationWarning() ||
     isDocpressAssetWarning() ||
     isSourceMapWarning() ||
+    isCloudflareFalseError1() ||
     isCloudflareFalseError2()
   )
 
@@ -161,6 +162,14 @@ function tolerateError(log) {
     )
   }
 
+  function isCloudflareFalseError1() {
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes(
+        'Enabling node.js compatibility mode for built-ins and globals. This is experimental and has serious tradeoffs.'
+      )
+    )
+  }
   function isCloudflareFalseError2() {
     return log.logSource === 'stderr' && log.logText.includes('Script modified; context reset.')
   }

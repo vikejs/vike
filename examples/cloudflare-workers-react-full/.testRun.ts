@@ -45,7 +45,7 @@ function testRun(cmd: 'npm run dev' | 'npm run preview', { hasStarWarsPage }: { 
       // Vite/Express.js dev server
       return undefined
     })()
-    run(cmd, { additionalTimeout, serverIsReadyMessage, doNotFailOnWarning: true })
+    run(cmd, { additionalTimeout, serverIsReadyMessage })
   }
 
   test('page content is rendered to HTML', async () => {
