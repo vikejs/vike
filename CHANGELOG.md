@@ -1,3 +1,12 @@
+## [0.4.81](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.80...v0.4.81) (2023-02-13)
+
+
+### Bug Fixes
+
+* fix support for custom config.build.rollupOptions.output.assetFileNames (fix [#647](https://github.com/brillout/vite-plugin-ssr/issues/647)) ([bcc248e](https://github.com/brillout/vite-plugin-ssr/commit/bcc248ee4b5e7e8f5ee686190b48aeaa66107c5a))
+
+
+
 ## [0.4.80](https://github.com/brillout/vite-plugin-ssr/compare/v0.4.79...v0.4.80) (2023-02-12)
 
 
