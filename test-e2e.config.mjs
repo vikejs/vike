@@ -83,7 +83,8 @@ function tolerateError(log) {
     isDocpressAssetWarning() ||
     isSourceMapWarning() ||
     isCloudflareFalseError1() ||
-    isCloudflareFalseError2()
+    isCloudflareFalseError2() ||
+    isCloudflareVueWarning()
   )
 
   // [vite-plugin-ssr@0.4.42][Warning] The onBeforeRender() hook of /pages/star-wars/index/index.page.server.ts is taking more than 4 seconds
@@ -172,5 +173,11 @@ function tolerateError(log) {
   }
   function isCloudflareFalseError2() {
     return log.logSource === 'stderr' && log.logText.includes('Script modified; context reset.')
+  }
+  function isCloudflareVueWarning() {
+    return (
+      log.logSource === 'stderr' &&
+      log.logText.includes('Feature flags __VUE_OPTIONS_API__, __VUE_PROD_DEVTOOLS__ are not explicitly defined.')
+    )
   }
 }
