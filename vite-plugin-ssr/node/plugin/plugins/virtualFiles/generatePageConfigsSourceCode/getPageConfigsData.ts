@@ -103,7 +103,7 @@ async function loadPageConfigsData(
   })
 
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
-      // TODO: properly determine relevant abstract page configs
+    // TODO: properly determine relevant abstract page configs
     const pageConfigFilesRelevant = [...pageConfigFilesAbstract]
     if (pageConfigFile) pageConfigFilesRelevant.unshift(pageConfigFile)
     const configDefinitionsAll = getConfigDefinitionsAll(pageConfigFilesRelevant)
@@ -180,7 +180,7 @@ async function loadPageConfigsData(
       pageId2,
       isErrorPage,
       routeFilesystemDefinedBy,
-      pageConfigFilePathAll: pageConfigFilesRelevant.map( p => p.pageConfigFilePath),
+      pageConfigFilePathAll: pageConfigFilesRelevant.map((p) => p.pageConfigFilePath),
       routeFilesystem: isErrorPage ? null : routeFilesystem,
       configSources
     })

@@ -13,12 +13,4 @@ export default {
       c_env: 'server-and-client'
     }
   }
-  /* TODO
-  pages: [
-    {
-      isErrorPage: true,
-      Page: './config/ErrorPage.tsx'
-    }
-  ]
-  */
 }
