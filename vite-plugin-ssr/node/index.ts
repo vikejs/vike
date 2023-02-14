@@ -1,3 +1,5 @@
+// TODO: move this file to ./runtime/index.ts
+
 export { renderPage } from './runtime/renderPage'
 export { createPageRenderer } from './createPageRenderer'
 export { escapeInject, dangerouslySkipEscape } from './runtime/html/renderHtml'
