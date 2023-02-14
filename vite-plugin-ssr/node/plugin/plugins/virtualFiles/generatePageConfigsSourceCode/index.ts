@@ -1,7 +1,7 @@
 export { generatePageConfigsSourceCode }
 export { generatePageConfigVirtualFile }
 
-import { assert, createDebugger } from '../../../utils'
+import { assert, createDebugger, scriptFileExtensions } from '../../../utils'
 
 import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
@@ -53,6 +53,7 @@ function generateSourceCodeOfPageConfigs(
   const importStatements: string[] = []
 
   lines.push('export const pageConfigs = [];')
+  const configNamesAll = new Set<string>()
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configSources, isErrorPage } =
       pageConfig
@@ -68,6 +69,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
+      configNamesAll.add(configName)
       lines.push(`      ['${configName}']: {`)
       const { configSrc, configDefinedByFile, c_env, codeFilePath2, configFilePath2 } = configSource
       lines.push(`        configSrc: ${JSON.stringify(configSrc)},`)
@@ -101,6 +103,13 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`['${configName}']: ${configValue}`)
   })
   lines.push('};')
+
+  // Make Vite invalidate virtual module upon file change/creation/removal
+  lines.push('import.meta.glob([')
+  ;['config', ...configNamesAll].forEach((configName) => {
+    lines.push(`'/**/+${configName}.${scriptFileExtensions}',`)
+  })
+  lines.push(']);')
 
   const code = [...importStatements, ...lines].join('\n')
   return code
