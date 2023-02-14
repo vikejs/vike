@@ -12,3 +12,9 @@ import './runtime/page-files/setup'
 import { assertUsage, isBrowser } from './utils'
 
 assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
+
+// Help Telefunc detect the user's stack
+globalThis._isVitePluginSsr = true
+declare global {
+  var _isVitePluginSsr: true
+}
