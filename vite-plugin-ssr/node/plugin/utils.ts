@@ -14,3 +14,7 @@ export * from '../../utils/addFileExtensionsToRequireResolve'
 export * from '../../utils/assertDefaultExport'
 export * from '../../utils/transpileAndLoadScriptFile'
 export * from '../../utils/debugGlob'
+
+// Ensure this file isn't loaded by the server runtime
+import { markAsNotServerRuntime } from '../../utils/markAsServerRuntime'
+markAsNotServerRuntime()

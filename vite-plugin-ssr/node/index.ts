@@ -11,9 +11,10 @@ export type { PageContextBuiltIn } from './types'
 export type { InjectFilterEntry } from './runtime/html/injectAssets/getHtmlTags'
 
 import './runtime/page-files/setup'
-import { assertUsage, isBrowser } from './utils'
+import { assertUsage, isBrowser, markAsServerRuntime } from './utils'
 
 assertUsage(!isBrowser(), 'The `vite-plugin-ssr` module cannot be imported in the browser.')
+markAsServerRuntime()
 
 // Help Telefunc detect the user's stack
 globalThis._isVitePluginSsr = true
