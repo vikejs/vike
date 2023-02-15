@@ -5,12 +5,8 @@ export * from '../../node/utils'
 
 // Utils only needed by `plugin/*`
 export * from '../../utils/viteIsSSR'
-export * from '../../utils/getFileExtension'
 export * from '../../utils/makeFilePathAbsolute'
-export * from '../../utils/isNpmPackageName'
 export * from '../../utils/getDependencyPackageJson'
-export * from '../../utils/isStringRecord'
 export * from '../../utils/addFileExtensionsToRequireResolve'
 export * from '../../utils/assertDefaultExport'
 export * from '../../utils/transpileAndLoadScriptFile'
-export * from '../../utils/debugGlob'

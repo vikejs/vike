@@ -1,8 +1,9 @@
 export { loadBuild }
 export { setLoaders }
 
-import { assert } from '../../utils'
 import { loadServerBuild } from '@brillout/vite-plugin-import-build/loadServerBuild'
+// We import from node/utils.ts insead of node/plugin/utils.ts because this file is loaded by the server runtime
+import { assert } from '../../../../node/utils'
 
 const buildGetters = (globalThis.__vite_plugin_ssr__buildGetters = globalThis.__vite_plugin_ssr__buildGetters || {
   getters: null

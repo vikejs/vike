@@ -1,6 +1,7 @@
 export { extractAssetsAddQuery }
 
-import { assert, getFileExtension } from '../../utils'
+// We import from node/utils.ts insead of node/plugin/utils.ts because this file is loaded by the server runtime
+import { assert, getFileExtension } from '../../../../node/utils'
 
 const query = 'extractAssets'
 
