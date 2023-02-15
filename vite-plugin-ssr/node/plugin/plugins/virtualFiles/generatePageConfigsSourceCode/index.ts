@@ -32,6 +32,7 @@ export const debug = createDebugger('vps:virtual-files')
 // TODO: assertUsage isErrorPage not allowed to be abstract
 // TODO: check whether onBeforerRender() is isomorph or server-only in react-full-v1 example
 // TODO: rename configSrc/configSource to configDefinedBy
+// TODO: check error handling when no onRenderHtml defined
 
 async function generatePageConfigsSourceCode(
   userRootDir: string,
@@ -105,21 +106,30 @@ function generateSourceCodeOfPageConfigs(
   lines.push('};')
 
   // Make Vite invalidate virtual module upon file change/creation/removal
-  lines.push('import.meta.glob([')
-  ;['config', ...configNamesAll].forEach((configName) => {
-    lines.push(`'/**/+${configName}.${scriptFileExtensions}',`)
-  })
-  lines.push(']);')
+  // lines.push('import.meta.glob([')
+  // ;['config', ...configNamesAll].forEach((configName) => {
+  //   lines.push(`'/**/+${configName}.${scriptFileExtensions}',`)
+  // })
+  // lines.push(']);')
 
   const code = [...importStatements, ...lines].join('\n')
   return code
 }
 
-function generatePageConfigVirtualFile(id: string, isForClientSide: boolean): null | string {
+async function generatePageConfigVirtualFile(
+  id: string,
+  isForClientSide: boolean,
+  userRootDir: string,
+  isDev: boolean
+): Promise<null | string> {
   const result = isVirutalModulePageCodeFilesImporter(id)
   if (!result) return null
   assert(result.isForClientSide === isForClientSide)
   const { pageId } = result
+  if (!pageConfigsData) {
+    const result = await loadPageConfigsData(userRootDir, isDev)
+    pageConfigsData = result.pageConfigsData
+  }
   assert(pageConfigsData)
   const pageConfigData = pageConfigsData.find((pageConfigData) => pageConfigData.pageId2 === pageId)
   assert(pageConfigData)

@@ -58,26 +58,25 @@ async function loadPageConfigsData(
   const pageConfigGlobal: PageConfigGlobal = {}
   const pageConfigsData: PageConfigData[] = []
 
-  const pageConfigFilesAbstract = pageConfigFiles.filter((p) => isAbstract(p))
-  const pageConfigFilesConcrete = pageConfigFiles.filter((p) => !isAbstract(p))
-
   const pageIds: {
     pageId2: string
     routeFilesystem: string
     pageConfigFile: null | PageConfigFile
     routeFilesystemDefinedBy: string
   }[] = []
-  pageConfigFilesConcrete.forEach((pageConfigFile) => {
-    const { pageConfigFilePath } = pageConfigFile
-    const pageId2 = determinePageId2(pageConfigFilePath)
-    const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
-    pageIds.push({
-      pageId2,
-      routeFilesystem,
-      pageConfigFile,
-      routeFilesystemDefinedBy: pageConfigFilePath
+  pageConfigFiles
+    .filter((p) => isDefiningPage(p))
+    .forEach((pageConfigFile) => {
+      const { pageConfigFilePath } = pageConfigFile
+      const pageId2 = determinePageId2(pageConfigFilePath)
+      const routeFilesystem = determineRouteFromFilesystemPath(pageConfigFilePath)
+      pageIds.push({
+        pageId2,
+        routeFilesystem,
+        pageConfigFile,
+        routeFilesystemDefinedBy: pageConfigFilePath
+      })
     })
-  })
   configValueFiles.map(({ configValueFilePath }) => {
     const pageId2 = determinePageId2(configValueFilePath)
     const routeFilesystem = determineRouteFromFilesystemPath(configValueFilePath)
@@ -103,9 +102,7 @@ async function loadPageConfigsData(
   })
 
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
-    // TODO: properly determine relevant abstract page configs
-    const pageConfigFilesRelevant = [...pageConfigFilesAbstract]
-    if (pageConfigFile) pageConfigFilesRelevant.unshift(pageConfigFile)
+    const pageConfigFilesRelevant = getPageConfigFilesRelevant(pageId2, pageConfigFiles)
     const configDefinitionsAll = getConfigDefinitionsAll(pageConfigFilesRelevant)
 
     if (pageConfigFile) {
@@ -215,9 +212,9 @@ function resolveConfig(
   return { configValue, configFilePath, codeFilePath }
 }
 
-function isAbstract(pageConfigFile: PageConfigFile): boolean {
+function isDefiningPage(pageConfigFile: PageConfigFile): boolean {
   const pageConfigValues = getPageConfigValues(pageConfigFile)
-  return !pageConfigValues.Page && !pageConfigValues.route && !pageConfigValues.isErrorPage
+  return !!pageConfigValues.Page || !!pageConfigValues.route || !!pageConfigValues.isErrorPage
 }
 
 function getCodeFilePath(
@@ -555,16 +552,7 @@ function handleBuildError(err: unknown, isDev: boolean) {
     // Error: [vite-plugin-ssr@0.4.70][Wrong Usage] /pages/+config.ts sets the config 'onRenderHtml' to the value './+config/onRenderHtml-i-dont-exist.js' but no file was found at /home/rom/code/vite-plugin-ssr/examples/v1/pages/+config/onRenderHtml-i-dont-exist.js
     //     at resolveCodeFilePath (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:203:33)
     //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:100:38
-    //     at Array.forEach (<anonymous>)
-    //     at /home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:84:14
-    //     at Array.forEach (<anonymous>)
-    //     at getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:75:29)
-    //     at async file (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs/file.js:40:16)
-    //     at async generateGlobImports (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:188:3)
-    //     at async getCode (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:78:20)
-    //     at async Object.load (/home/rom/code/vite-plugin-ssr/vite-plugin-ssr/dist/cjs/node/plugin/plugins/generateImportGlobs.js:60:26)
-    //     at async file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:22610:75
-    //     at async Queue.work (file:///home/rom/code/vite-plugin-ssr/node_modules/.pnpm/rollup@3.7.3/node_modules/rollup/dist/es/shared/rollup.js:23509:32) {
+    //     ...
     //   code: 'PLUGIN_ERROR',
     //   plugin: 'vite-plugin-ssr:virtualModulePageFiles',
     //   hook: 'load',
@@ -579,4 +567,20 @@ function handleBuildError(err: unknown, isDev: boolean) {
     console.error(err)
     process.exit(1)
   }
+}
+
+function getPageConfigFilesRelevant(pageId: string, pageConfigFiles: PageConfigFile[]) {
+  const pageConfigFilesRelevant = pageConfigFiles
+    .filter((p) => !isDefiningPage(p))
+    .filter(({ pageConfigFilePath }) => {
+      assertPosixPath(pageConfigFilePath)
+      assert(pageConfigFilePath.startsWith('/'))
+      const configFsRoot = pageConfigFilePath
+        .split('/')
+        .filter((p) => p !== 'renderer')
+        .slice(0, -1) // remove filename +config.js
+        .join('/')
+      return pageId.startsWith(configFsRoot)
+    })
+  return pageConfigFilesRelevant
 }
