@@ -571,7 +571,6 @@ function handleBuildError(err: unknown, isDev: boolean) {
 
 function getPageConfigFilesRelevant(pageId: string, pageConfigFiles: PageConfigFile[]) {
   const pageConfigFilesRelevant = pageConfigFiles
-    .filter((p) => !isDefiningPage(p))
     .filter(({ pageConfigFilePath }) => {
       assertPosixPath(pageConfigFilePath)
       assert(pageConfigFilePath.startsWith('/'))
