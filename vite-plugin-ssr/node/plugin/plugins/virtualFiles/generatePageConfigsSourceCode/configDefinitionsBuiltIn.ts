@@ -78,7 +78,7 @@ const configDefinitionsBuiltIn: ConfigDefinitionsBuiltIn = {
     c_env: 'client-only' // TODO: c_config instead?
   },
   isErrorPage: {
-    c_env: 'c_routing' // TODO: c_config instead?
+    c_env: 'c_config' // TODO: c_config instead?
   }
   /* TODO
   onBeforeRoute: {
