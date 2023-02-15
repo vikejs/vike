@@ -570,16 +570,15 @@ function handleBuildError(err: unknown, isDev: boolean) {
 }
 
 function getPageConfigFilesRelevant(pageId: string, pageConfigFiles: PageConfigFile[]) {
-  const pageConfigFilesRelevant = pageConfigFiles
-    .filter(({ pageConfigFilePath }) => {
-      assertPosixPath(pageConfigFilePath)
-      assert(pageConfigFilePath.startsWith('/'))
-      const configFsRoot = pageConfigFilePath
-        .split('/')
-        .filter((p) => p !== 'renderer')
-        .slice(0, -1) // remove filename +config.js
-        .join('/')
-      return pageId.startsWith(configFsRoot)
-    })
+  const pageConfigFilesRelevant = pageConfigFiles.filter(({ pageConfigFilePath }) => {
+    assertPosixPath(pageConfigFilePath)
+    assert(pageConfigFilePath.startsWith('/'))
+    const configFsRoot = pageConfigFilePath
+      .split('/')
+      .filter((p) => p !== 'renderer')
+      .slice(0, -1) // remove filename +config.js
+      .join('/')
+    return pageId.startsWith(configFsRoot)
+  })
   return pageConfigFilesRelevant
 }
