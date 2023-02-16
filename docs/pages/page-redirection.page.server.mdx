@@ -20,17 +20,17 @@ Instead of using URL redirections to protect private pages from unauthenticated 
 ```js
 // /pages/login.page.route.js
 
-// Route Function to render the login page to non-authenticated users, regardless of the URL.
+// Route Function to render the login page to unauthenticated users, regardless of the URL.
 
 export default pageContext => {
-  // Only render the login page to non-authenticated users
+  // Only render the login page to unauthenticated users
   if (userIsLoggedIn(pageContext)) {
     return false
   }
 
   return {
     // We use a high precedence number of `99` to override all other routes.
-    // This means that non-authenticated users always see the login page,
+    // This means that unauthenticated users always see the login page,
     // regardless of the URL.
     precedence: 99
   }
