@@ -106,11 +106,12 @@ function generateSourceCodeOfPageConfigs(
   })
   lines.push('};')
 
-  // Make Vite invalidate virtual module upon file change/creation/removal
+  // Make Vite invalidate virtual module upon + file creation/removal
   if (isDev) {
+    // The crawled files are never loaded, the only effect of this glob is to invalidate the virtual module whenever a + file is created/removed
     lines.push("export const plusFilesGlob = import.meta.glob('/**/+*');")
   } else {
-    lines.push("export const plusFilesGlob = null;")
+    lines.push('export const plusFilesGlob = null;')
   }
   // TODO: remove
   // lines.push('import.meta.glob([')
