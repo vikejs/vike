@@ -38,8 +38,7 @@ function getFilePathTmp(filePath: string): string {
   assertPosixPath(filePath)
   const dirname = path.posix.dirname(filePath)
   const filename = path.posix.basename(filePath)
-  const filenameBase = filename.split('.')[0]
-  const filePathTmp = path.posix.join(dirname, `${filenameBase}-build:${getRandomId(12)}.mjs`)
+  const filePathTmp = path.posix.join(dirname, `[build:${getRandomId(12)}]${filename}.mjs`)
   return filePathTmp
 }
 

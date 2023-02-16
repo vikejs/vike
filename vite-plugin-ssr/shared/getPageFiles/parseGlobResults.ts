@@ -21,6 +21,14 @@ function parseGlobResults(pageFilesExports: unknown): { pageFiles: PageFile[]; p
   )
   assert(hasProp(pageFilesExports, 'pageFilesList', 'string[]'))
 
+  assert(hasProp(pageFilesExports, 'plusFilesGlob', 'object') || hasProp(pageFilesExports, 'plusFilesGlob', 'null'))
+  if (pageFilesExports.plusFilesGlob) {
+    Object.keys(pageFilesExports.plusFilesGlob).forEach((p) => {
+      const filename = p.split('/').slice(-1)[0]!
+      assert(filename.startsWith('+'))
+    })
+  }
+
   assert(hasProp(pageFilesExports, 'pageConfigs'))
   const { pageConfigs } = pageFilesExports
   assertPageConfigs(pageConfigs)

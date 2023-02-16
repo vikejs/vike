@@ -1,7 +1,7 @@
 export { generatePageConfigsSourceCode }
 export { generatePageConfigVirtualFile }
 
-import { assert, createDebugger, scriptFileExtensions } from '../../../utils'
+import { assert, createDebugger } from '../../../utils'
 
 import type { PageConfigData, PageConfigGlobal } from '../../../../../shared/page-configs/PageConfig'
 import { generateEagerImport } from '../generateEagerImport'
@@ -42,19 +42,20 @@ async function generatePageConfigsSourceCode(
   const result = await loadPageConfigsData(userRootDir, isDev)
   pageConfigsData = result.pageConfigsData
   const { pageConfigGlobal } = result
-  return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide)
+  return generateSourceCodeOfPageConfigs(pageConfigsData, pageConfigGlobal, isForClientSide, isDev)
 }
 
 function generateSourceCodeOfPageConfigs(
   pageConfigsData: PageConfigData[],
   pageConfigGlobal: PageConfigGlobal,
-  isForClientSide: boolean
+  isForClientSide: boolean,
+  isDev: boolean
 ): string {
   const lines: string[] = []
   const importStatements: string[] = []
 
   lines.push('export const pageConfigs = [];')
-  const configNamesAll = new Set<string>()
+  // const configNamesAll = new Set<string>()
   pageConfigsData.forEach((pageConfig, i) => {
     const { pageConfigFilePathAll, pageId2, routeFilesystem, routeFilesystemDefinedBy, configSources, isErrorPage } =
       pageConfig
@@ -70,7 +71,7 @@ function generateSourceCodeOfPageConfigs(
     lines.push(`    loadCodeFiles: async () => (await import('${codeFilesImporter}')).default,`)
     lines.push(`    configSources: {`)
     Object.entries(configSources).forEach(([configName, configSource]) => {
-      configNamesAll.add(configName)
+      // configNamesAll.add(configName)
       lines.push(`      ['${configName}']: {`)
       const { configSrc, configDefinedByFile, c_env, codeFilePath2, configFilePath2 } = configSource
       lines.push(`        configSrc: ${JSON.stringify(configSrc)},`)
@@ -106,6 +107,12 @@ function generateSourceCodeOfPageConfigs(
   lines.push('};')
 
   // Make Vite invalidate virtual module upon file change/creation/removal
+  if (isDev) {
+    lines.push("export const plusFilesGlob = import.meta.glob('/**/+*');")
+  } else {
+    lines.push("export const plusFilesGlob = null;")
+  }
+  // TODO: remove
   // lines.push('import.meta.glob([')
   // ;['config', ...configNamesAll].forEach((configName) => {
   //   lines.push(`'/**/+${configName}.${scriptFileExtensions}',`)
