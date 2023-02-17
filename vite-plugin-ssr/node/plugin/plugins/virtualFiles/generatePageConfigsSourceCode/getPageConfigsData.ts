@@ -17,12 +17,14 @@ import {
   objectEntries,
   scriptFileExtensions,
   transpileAndLoadScriptFile,
-  objectAssign
+  objectAssign,
+  hasProp
 } from '../../../utils'
 import path from 'path'
 import type {
   ConfigName,
   ConfigSource,
+  c_Env,
   PageConfigData,
   PageConfigGlobal
 } from '../../../../../shared/page-configs/PageConfig'
@@ -105,13 +107,6 @@ async function loadPageConfigsData(
     const configValueFilesRelevant = configValueFiles.filter((c) => c.pageId === pageId2)
     let configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
 
-    configDefinitionsRelevant = applySideEffects(
-      configDefinitionsRelevant,
-      pageConfigFilesRelevant,
-      userRootDir,
-      configValueFilesRelevant
-    )
-
     if (pageConfigFile) {
       const pageConfigValues = getPageConfigValues(pageConfigFile)
       Object.keys(pageConfigValues).forEach((configName) => {
@@ -131,7 +126,7 @@ async function loadPageConfigsData(
       )
     })
 
-    const configSources: PageConfigData['configSources'] = {}
+    let configSources: PageConfigData['configSources'] = {}
     objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
       const configSource = resolveConfigSource(
         configName,
@@ -143,6 +138,14 @@ async function loadPageConfigsData(
       if (!configSource) return
       configSources[configName as ConfigName] = configSource
     })
+
+    configSources = applySideEffects(
+      configSources,
+      configDefinitionsRelevant,
+      pageConfigFilesRelevant,
+      userRootDir,
+      configValueFilesRelevant
+    )
 
     const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
 
@@ -453,7 +456,7 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
   return configDefinitionsAll
 }
 
-function mergeConfigDefinition(def: ConfigDefinition, mods: Partial<ConfigDefinition>): ConfigDefinition
+//function mergeConfigDefinition(def: ConfigDefinition, mods: Partial<ConfigDefinition>): ConfigDefinition
 function mergeConfigDefinition(
   def: ConfigDefinition | undefined,
   mods: Partial<ConfigDefinition>
@@ -468,38 +471,67 @@ function mergeConfigDefinition(
   }
 }
 
+type ConfigSources = Record<string, ConfigSource>
+
 function applySideEffects(
+  configSources: ConfigSources,
   configDefinitionsRelevant: ConfigDefinitionsAll,
   pageConfigFilesRelevant: PageConfigFile[],
   userRootDir: string,
   configValueFilesRelevant: ConfigValueFile[]
-): ConfigDefinitionsAll {
-  const configDefinitionsMods: ConfigDefinitionsAll = { ...configDefinitionsRelevant }
+): ConfigSources {
+  const configSourcesMod = { ...configSources }
+
+  const configDefinitionsMod = { ...configDefinitionsRelevant }
+
   objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-    if (configDef.sideEffect) {
-      assertUsage(configDef.c_env === 'c_config', 'TODO')
-      const configSource = resolveConfigSource(
-        configName,
-        configDef,
-        pageConfigFilesRelevant,
-        userRootDir,
-        configValueFilesRelevant
-      )
-      if (!configSource) return
-      assert('configValue' in configSource)
-      const { configValue, configDefinedByFile } = configSource
-      const mods = configDef.sideEffect({
-        configValue,
-        configDefinedBy: configDefinedByFile // TODO: align naming
-      })
-      objectEntries(mods).forEach(([configName, configDefMods]) => {
+    if (!configDef.sideEffect) return
+    assertUsage(configDef.c_env === 'c_config', 'TODO')
+    const configSourceSideEffect = configSources[configName]
+    /*
+    resolveConfigSource(
+      configName,
+      configDef,
+      pageConfigFilesRelevant,
+      userRootDir,
+      configValueFilesRelevant
+    )
+    */
+    if (!configSourceSideEffect) return
+    assert('configValue' in configSourceSideEffect)
+    const { configValue, configDefinedByFile } = configSourceSideEffect
+    const configMod = configDef.sideEffect({
+      configValue,
+      configDefinedBy: configDefinedByFile // TODO: align naming
+    })
+    objectEntries(configMod).forEach(([configName, configModValue]) => {
+      if (configName === 'configDefinitions') {
+        assertUsage(isObject(configModValue), 'TODO')
+        objectEntries(configModValue).forEach(([configTargetName, configTargetModValue]) => {
+          assertUsage(isObject(configTargetModValue), 'TODO')
+          assertUsage(Object.keys(configTargetModValue).length === 1, 'TODO')
+          assertUsage(hasProp(configTargetModValue, 'c_env', 'string'), 'TODO')
+          const c_env = configTargetModValue.c_env as c_Env // TODO: proper validation
+          configSourcesMod[configTargetName]!.c_env = c_env
+        })
+      } else {
         const configDef = configDefinitionsRelevant[configName]
         assertUsage(configDef, `sideEffect of TODO returns unknown config '${configName}'`)
-        configDefinitionsMods[configName] = mergeConfigDefinition(configDef, configDefMods)
-      })
-    }
+        const configSourceTargetOld = configSourcesMod[configName]
+        assert(configSourceTargetOld)
+        configSourcesMod[configName] = {
+          // TODO-begin
+          ...configSourceSideEffect,
+          configSrc: `${configSourceSideEffect} (side-effect)`,
+          // TODO-end
+          c_env: configSourceTargetOld.c_env,
+          configValue: configModValue
+        }
+      }
+    })
   })
-  return configDefinitionsMods
+
+  return configSourcesMod
 }
 
 type PageConfigFile = {
