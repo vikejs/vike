@@ -16,6 +16,7 @@ type ConfigDefinition = {
       configFilePath: string
     }
   ) => void | undefined
+  sideEffect?: (config: { configValue: unknown; configDefinedBy: string }) => /* TODO */ any
 }
 
 type ConfigDefinitionsBuiltIn = Record<ConfigName, ConfigDefinition>

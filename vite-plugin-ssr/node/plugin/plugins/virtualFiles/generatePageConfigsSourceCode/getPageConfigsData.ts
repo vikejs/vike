@@ -17,7 +17,8 @@ import {
   objectEntries,
   scriptFileExtensions,
   transpileAndLoadScriptFile,
-  objectAssign
+  objectAssign,
+  hasProp
 } from '../../../utils'
 import path from 'path'
 import type {
@@ -102,7 +103,8 @@ async function loadPageConfigsData(
 
   pageIds.forEach(({ pageId2, routeFilesystem, pageConfigFile, routeFilesystemDefinedBy }) => {
     const pageConfigFilesRelevant = getPageConfigFilesRelevant(pageId2, pageConfigFiles)
-    const configDefinitionsRelevant = getConfigDefinitions(pageConfigFilesRelevant)
+    const configValueFilesRelevant = configValueFiles.filter((c) => c.pageId === pageId2)
+    const configDefinitionsRelevant = getConfigDefinitionsComputed(pageConfigFilesRelevant)
 
     if (pageConfigFile) {
       const pageConfigValues = getPageConfigValues(pageConfigFile)
@@ -115,59 +117,25 @@ async function loadPageConfigsData(
       })
     }
 
-    const configSources: PageConfigData['configSources'] = {}
-    configValueFiles.forEach((configValueFile) => {
-      if (configValueFile.pageId !== pageId2) return
+    configValueFilesRelevant.forEach((configValueFile) => {
       const { configName, configValueFilePath } = configValueFile
-      const configDef = configDefinitionsRelevant[configName]
-      assert(configDef)
-      const configSource: ConfigSource = {
-        c_env: configDef.c_env,
-        // TODO: rename codeFilePath2 to configValueFilePath?
-        codeFilePath2: configValueFilePath,
-        configFilePath2: null,
-        configSrc: `${configValueFilePath} > \`export default\``,
-        configDefinedByFile: configValueFilePath
-      }
-      if ('configValue' in configValueFile) {
-        configSource.configValue = configValueFile.configValue
-      }
-      configSources[configName as ConfigName] = configSource
+      assertUsage(
+        configName in configDefinitionsRelevant || configName === 'configDefinitions',
+        `${configValueFilePath} defines an unknown config '${configName}'`
+      )
     })
 
+    const configSources: PageConfigData['configSources'] = {}
     objectEntries(configDefinitionsRelevant).forEach(([configName, configDef]) => {
-      const result = resolveConfig(configName, configDef, pageConfigFilesRelevant, userRootDir)
-      if (!result) return
-      if (configName in configSources) {
-        assertUsage(false, 'Defined twice ... TODO')
-      }
-      const { c_env } = configDef
-      const { configValue, codeFilePath, configFilePath } = result
-      if (!codeFilePath) {
-        configSources[configName as ConfigName] = {
-          configFilePath2: configFilePath,
-          configSrc: `${configFilePath} > ${configName}`,
-          configDefinedByFile: configFilePath,
-          codeFilePath2: null,
-          c_env,
-          configValue
-        }
-      } else {
-        assertUsage(
-          typeof configValue === 'string',
-          `${getErrorIntro(
-            configFilePath,
-            configName
-          )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
-        )
-        configSources[configName as ConfigName] = {
-          configFilePath2: configFilePath,
-          codeFilePath2: codeFilePath,
-          configSrc: `${codeFilePath} > \`export default\``,
-          configDefinedByFile: codeFilePath,
-          c_env
-        }
-      }
+      const configSource = resolveConfigSource(
+        configName,
+        configDef,
+        pageConfigFilesRelevant,
+        userRootDir,
+        configValueFilesRelevant
+      )
+      if (!configSource) return
+      configSources[configName as ConfigName] = configSource
     })
 
     const isErrorPage: boolean = !!configSources.isErrorPage?.configValue
@@ -185,12 +153,38 @@ async function loadPageConfigsData(
   return { pageConfigsData, pageConfigGlobal }
 }
 
-function resolveConfig(
+function resolveConfigSource(
   configName: string,
   configDef: ConfigDefinition,
   pageConfigFilesRelevant: PageConfigFile[],
-  userRootDir: string
-) {
+  userRootDir: string,
+  configValueFilesRelevant: ConfigValueFile[]
+): null | ConfigSource {
+  // TODO: implement warning if implemented in non-abstract +config.js as well as in +{configName}.js
+
+  {
+    const configValueFiles = configValueFilesRelevant.filter((configValueFile) => {
+      configValueFile.configName === configName
+    })
+    if (configValueFiles.length !== 0) {
+      assert(configValueFiles.length === 1)
+      const configValueFile = configValueFiles[0]!
+      const { configValueFilePath } = configValueFile
+      const configSource: ConfigSource = {
+        c_env: configDef.c_env,
+        // TODO: rename codeFilePath2 to configValueFilePath?
+        codeFilePath2: configValueFilePath,
+        configFilePath2: null,
+        configSrc: `${configValueFilePath} > \`export default\``,
+        configDefinedByFile: configValueFilePath
+      }
+      if ('configValue' in configValueFile) {
+        configSource.configValue = configValueFile.configValue
+      }
+      return configSource
+    }
+  }
+
   const result = getConfigValue(configName, pageConfigFilesRelevant)
   if (!result) return null
   const { pageConfigValue, pageConfigValueFilePath } = result
@@ -208,7 +202,32 @@ function resolveConfig(
       c_validate({ configValue, ...commonArgs })
     }
   }
-  return { configValue, configFilePath, codeFilePath }
+  const { c_env } = configDef
+  if (!codeFilePath) {
+    return {
+      configFilePath2: configFilePath,
+      configSrc: `${configFilePath} > ${configName}`,
+      configDefinedByFile: configFilePath,
+      codeFilePath2: null,
+      c_env,
+      configValue
+    }
+  } else {
+    assertUsage(
+      typeof configValue === 'string',
+      `${getErrorIntro(
+        configFilePath,
+        configName
+      )} to a value with a wrong type \`${typeof configValue}\`: it should be a string instead`
+    )
+    return {
+      configFilePath2: configFilePath,
+      codeFilePath2: codeFilePath,
+      configSrc: `${codeFilePath} > \`export default\``,
+      configDefinedByFile: codeFilePath,
+      c_env
+    }
+  }
 }
 
 function isDefiningPage(pageConfigFile: PageConfigFile): boolean {
@@ -426,6 +445,16 @@ function getConfigDefinitions(pageConfigFilesRelevant: PageConfigFile[]): Config
     }
   })
   return configDefinitionsAll
+}
+
+function getConfigDefinitionsComputed(pageConfigFilesRelevant: PageConfigFile[]) {
+  return getConfigDefinitions(pageConfigFilesRelevant)
+  /*
+  if( hasProp(def, 'sideEffect') ) {
+    assertUsage(def.c_env==='c_config', 'TODO')
+    def.sideEffect({ })
+  }
+  */
 }
 
 type PageConfigFile = {
