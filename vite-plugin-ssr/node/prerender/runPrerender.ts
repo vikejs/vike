@@ -74,6 +74,7 @@ type PrerenderContext = {
   pageContexts: PageContext[]
   pageContextInit: Record<string, unknown> | null
   _noExtraDir: boolean
+  _pageContextMatcher: (pageContext: PageContext, url: string) => boolean
 }
 
 type PageContext = {
@@ -117,6 +118,11 @@ type PrerenderOptions = {
    * Don't use without having talked to a vite-plugin-ssr maintainer.
    */
   onPagePrerender?: Function
+  /**
+   * Function which is used to find the corresponding `pageContext` for the url.
+   * Provide the matcher only if you change `urlOriginal` in route hooks.
+   */
+  pageContextMatcher?: (pageContext: PageContext, url: string) => boolean
 
   // TODO: remove upon next major release
   // =====================
@@ -175,6 +181,7 @@ async function runPrerender(options: PrerenderOptions): Promise<void> {
   objectAssign(prerenderContext, {
     _urlHandler: null,
     _noExtraDir: noExtraDir ?? false,
+    _pageContextMatcher: options.pageContextMatcher ?? ((ctx, url) => isSameUrl(ctx.urlOriginal, url)),
     pageContexts: [] as PageContext[],
     pageContextInit: options.pageContextInit ?? null
   })
@@ -358,7 +365,7 @@ async function callPrerenderHooks(
           assert(url.startsWith('/'))
           assert(pageContext === null || isPlainObject(pageContext))
           let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find(
-            (pageContext) => isSameUrl(pageContext.urlOriginal, url)
+            (pageContext) =>  prerenderContext._pageContextMatcher(pageContext, url)
           )
           if (!pageContextFound) {
             const pageContext = createPageContext(url, renderContext, prerenderContext)
@@ -417,7 +424,7 @@ async function handlePagesWithStaticRoutes(
         assert(urlOriginal.startsWith('/'))
 
         // Already included in a `prerender()` hook
-        if (prerenderContext.pageContexts.find((pageContext) => isSameUrl(pageContext.urlOriginal, urlOriginal))) {
+        if (prerenderContext.pageContexts.find((pageContext) => prerenderContext._pageContextMatcher(pageContext, urlOriginal))) {
           // Not sure if there is a use case for it, but why not allowing users to use a `prerender()` hook in order to provide some `pageContext` for a page with a static route
           return
         }
