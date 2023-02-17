@@ -504,6 +504,7 @@ function applySideEffects(
       configValue,
       configDefinedBy: configDefinedByFile // TODO: align naming
     })
+    if (!configMod) return
     objectEntries(configMod).forEach(([configName, configModValue]) => {
       if (configName === 'configDefinitions') {
         assertUsage(isObject(configModValue), 'TODO')
