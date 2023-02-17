@@ -83,7 +83,7 @@ We can skip the Client Router by adding the `rel="external"` attribute, e.g. `<a
 We can use <Link text={<code>navigate('/some/url')</code>} href="/navigate"/> to programmatically navigate the user to a new page.
 
 By default, the Client-side Router scrolls to the top of the page upon page change;
-we can use `<a keep-scroll-position />` / `navigate('/some/url', { keepScrollPosition: true })`
+we can use `<a href="/some/url" keep-scroll-position />` / `navigate('/some/url', { keepScrollPosition: true })`
 if we want to preserve the scroll position instead. (Useful for <Link text="Nested Layouts" href="/layouts#nested-layouts" />.)
 
 
