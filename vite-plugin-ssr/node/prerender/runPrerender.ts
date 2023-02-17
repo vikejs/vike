@@ -357,8 +357,8 @@ async function callPrerenderHooks(
           assert(typeof url === 'string')
           assert(url.startsWith('/'))
           assert(pageContext === null || isPlainObject(pageContext))
-          let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find(
-            (pageContext) => isSameUrl(pageContext.urlOriginal, url)
+          let pageContextFound: PageContext | undefined = prerenderContext.pageContexts.find((pageContext) =>
+            isSameUrl(pageContext.urlOriginal, url)
           )
           if (!pageContextFound) {
             const pageContext = createPageContext(url, renderContext, prerenderContext)
